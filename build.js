@@ -135,7 +135,8 @@ async function build() {
     'sara-byrd.jpg',
     'og-default.png',
     'og-default.svg',
-    'og-podcast.svg'
+    'og-podcast.svg',
+    'main.js'
   ];
   
   staticFiles.forEach(file => {
