@@ -1632,4 +1632,47 @@ img {
         flex-direction: column;
         align-items: flex-start;
     }
+}/* ===========================================
+   LOGO STYLES - Add these to your styles.css
+   =========================================== */
+
+/* Navbar Logo */
+.nav-logo .logo-image {
+    height: 50px;
+    width: auto;
+}
+
+/* Hero Logo */
+.hero-logo {
+    width: 150px;
+    height: auto;
+    margin-bottom: 1.5rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Footer Logo */
+.footer-logo {
+    width: 100px;
+    height: auto;
+    margin-bottom: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .nav-logo .logo-image {
+        height: 40px;
+    }
+    
+    .hero-logo {
+        width: 120px;
+    }
+    
+    .footer-logo {
+        width: 80px;
+    }
 }
