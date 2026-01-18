@@ -9,13 +9,14 @@
     <meta property="og:description" content="The podcast for federal health IT and defense innovation.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://missionmeetstech.com/podcast">
-    <meta property="og:image" content="https://missionmeetstech.com/images/og-default.png">
+    <meta property="og:image" content="https://missionmeetstech.com/og-podcast.svg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Fed UP: Where Mission Meets Reality">
     <meta name="twitter:description" content="The podcast for federal health IT and defense innovation.">
-    <meta name="twitter:image" content="https://missionmeetstech.com/images/og-default.png">
+    <meta name="twitter:image" content="https://missionmeetstech.com/og-podcast.svg">
     
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
@@ -35,7 +36,7 @@
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">
-                <span class="logo-mission">MISSION</span><span class="logo-meets">MEETS</span><span class="logo-tech">TECH</span>
+                <img src="mmt-logo-nav.png" alt="Mission Meets Tech" class="logo-image">
             </a>
             <div class="nav-links">
                 <a href="index.html">Home</a>
@@ -75,8 +76,8 @@
 
         <section class="section">
             <div class="container">
-                <h2 class="section-title">Listen on Your Favorite Platform</h2>
-                <div class="platform-grid">
+                <h2 class="section-title animate-on-scroll">Listen on Your Favorite Platform</h2>
+                <div class="platform-grid stagger-children">
                     <a href="https://podcasts.apple.com/podcast/fed-up-where-mission-meets-reality/id1870101530" class="platform-card" target="_blank" rel="noopener">
                         <i class="fab fa-apple"></i>
                         <span>Apple Podcasts</span>
@@ -110,7 +111,7 @@
                         <span>Overcast</span>
                     </a>
                 </div>
-                <div class="rss-box">
+                <div class="rss-box animate-on-scroll">
                     <span class="rss-label"><i class="fas fa-rss"></i> RSS Feed:</span>
                     <code class="rss-url">https://feeds.transistor.fm/fed-up-where-mission-meets-reality</code>
                     <button class="copy-btn" onclick="navigator.clipboard.writeText('https://feeds.transistor.fm/fed-up-where-mission-meets-reality').then(() => this.innerHTML = '<i class=\'fas fa-check\'></i>')">
@@ -122,19 +123,27 @@
 
         <section class="section section-alt">
             <div class="container">
-                <span class="section-label">EMBEDDED PLAYER</span>
-                <h2 class="section-title">Listen Right Here</h2>
-                <div class="player-embed">
-                    <iframe src="https://share.transistor.fm/e/fed-up-where-mission-meets-reality" width="100%" height="180" frameborder="0" scrolling="no" seamless="true" style="width:100%; height:180px; border-radius: 12px;"></iframe>
+                <span class="section-label animate-on-scroll">EMBEDDED PLAYER</span>
+                <h2 class="section-title animate-on-scroll">Listen Right Here</h2>
+                <div class="player-embed animate-on-scroll">
+                    <iframe 
+                        src="https://share.transistor.fm/e/fed-up-where-mission-meets-reality/latest" 
+                        width="100%" 
+                        height="180" 
+                        frameborder="0" 
+                        scrolling="no" 
+                        seamless="true" 
+                        style="width:100%; height:180px; border-radius: 12px;">
+                    </iframe>
                 </div>
             </div>
         </section>
 
         <section class="section">
             <div class="container">
-                <span class="section-label">ALL EPISODES</span>
-                <h2 class="section-title">Episode Archive <span class="episode-count">({{EPISODE_COUNT}} episodes)</span></h2>
-                <div class="episodes-grid">
+                <span class="section-label animate-on-scroll">ALL EPISODES</span>
+                <h2 class="section-title animate-on-scroll">Episode Archive <span class="episode-count">({{EPISODE_COUNT}} episodes)</span></h2>
+                <div class="episodes-grid stagger-children">
                     {{EPISODE_CARDS}}
                 </div>
             </div>
@@ -142,19 +151,25 @@
 
         <section class="section section-alt">
             <div class="container">
-                <h2 class="section-title">Your Hosts</h2>
-                <div class="hosts-grid">
+                <h2 class="section-title animate-on-scroll">Your Hosts</h2>
+                <div class="hosts-grid stagger-children">
                     <div class="host-card">
-                        <img src="images/mary-womack.jpg" alt="Mary Womack" class="host-image" onerror="this.style.display='none'">
+                        <img src="mary-womack.jpg" alt="Mary Womack" class="host-image" onerror="this.style.display='none'">
                         <h3>Mary Womack</h3>
                         <p class="host-title">Publisher, Mission Meets Tech</p>
                         <p>Deep expertise in DHA, VA, MHS GENESIS, and the intersection of federal health policy and emerging technology.</p>
+                        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" class="host-link" target="_blank" rel="noopener">
+                            <i class="fab fa-linkedin"></i> Connect
+                        </a>
                     </div>
                     <div class="host-card">
-                        <img src="images/sara-byrd.jpg" alt="Sara Byrd" class="host-image" onerror="this.style.display='none'">
+                        <img src="sara-byrd.jpg" alt="Sara Byrd" class="host-image" onerror="this.style.display='none'">
                         <h3>Sara Byrd</h3>
                         <p class="host-title">Founder, Byrd Strategies</p>
                         <p>Two-time FedHealthIT100 honoree with 15+ years in federal health IT. Former roles at Leidos, Frontier Technology, and Intelligent Waves.</p>
+                        <a href="https://www.linkedin.com/in/saraebyrd/" class="host-link" target="_blank" rel="noopener">
+                            <i class="fab fa-linkedin"></i> Connect
+                        </a>
                     </div>
                 </div>
             </div>
@@ -162,10 +177,10 @@
 
         <section class="section">
             <div class="container">
-                <h2 class="section-title">Want to Be a Guest?</h2>
-                <p style="text-align: center; max-width: 600px; margin: 0 auto 2rem;">We're always looking for leaders with bold ideas about federal health IT, defense innovation, and the future of military medicine. If you have a story to tell, let's talk.</p>
-                <div style="text-align: center;">
-                    <a href="https://www.linkedin.com/in/marywomack/" class="cta-button" target="_blank" rel="noopener">
+                <h2 class="section-title animate-on-scroll">Want to Be a Guest?</h2>
+                <p class="animate-on-scroll" style="text-align: center; max-width: 600px; margin: 0 auto 2rem;">We're always looking for leaders with bold ideas about federal health IT, defense innovation, and the future of military medicine. If you have a story to tell, let's talk.</p>
+                <div class="animate-on-scroll" style="text-align: center;">
+                    <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" class="cta-button" target="_blank" rel="noopener">
                         <i class="fab fa-linkedin"></i> Connect on LinkedIn
                     </a>
                 </div>
@@ -176,7 +191,7 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-brand">
-                <span class="logo-mission">MISSION</span><span class="logo-meets">MEETS</span><span class="logo-tech">TECH</span>
+                <img src="mmt-logo.png" alt="Mission Meets Tech" class="footer-logo">
                 <p>Federal health IT intelligence for decision-makers.</p>
             </div>
             <div class="footer-links">
@@ -193,8 +208,9 @@
         </div>
         <div class="footer-bottom">
             <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
-            <p class="build-info">Last updated: {{LAST_UPDATED}}</p>
         </div>
     </footer>
+
+    <script src="main.js"></script>
 </body>
 </html>
