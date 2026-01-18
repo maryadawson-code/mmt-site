@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a0a"/>
+      <stop offset="100%" style="stop-color:#050505"/>
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00F0FF"/>
+      <stop offset="100%" style="stop-color:#00FF85"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGrad)"/>
+  
+  <!-- Subtle grid pattern -->
+  <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+    <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+  </pattern>
+  <rect width="1200" height="630" fill="url(#grid)" opacity="0.3"/>
+  
+  <!-- Accent line -->
+  <rect x="80" y="200" width="6" height="230" fill="url(#textGrad)"/>
+  
+  <!-- Text -->
+  <text x="120" y="280" font-family="Arial Black, sans-serif" font-size="72" font-weight="900" fill="#ffffff">MISSION</text>
+  <text x="120" y="360" font-family="Arial Black, sans-serif" font-size="72" font-weight="900" fill="url(#textGrad)">MEETS TECH</text>
+  <text x="120" y="420" font-family="Arial, sans-serif" font-size="28" fill="#888888">Federal Health IT Intelligence</text>
+  
+  <!-- URL -->
+  <text x="120" y="560" font-family="Arial, sans-serif" font-size="22" fill="#00F0FF">missionmeetstech.com</text>
+</svg>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact | Mission Meets Tech</title>
+    <meta name="description" content="Get in touch with Mission Meets Tech for speaking engagements, partnerships, or story tips.">
+    
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:title" content="Contact Mission Meets Tech">
+    <meta property="og:description" content="Speaking, partnerships, story tips, and newsletter signup.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://missionmeetstech.com/contact">
+    <meta property="og:image" content="https://missionmeetstech.com/images/og-default.png">
+    
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PRG234VSXM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-PRG234VSXM');
+    </script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-mission">MISSION</span><span class="logo-meets">MEETS</span><span class="logo-tech">TECH</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="newsletter.html">Newsletter</a>
+                <a href="podcast.html">Podcast</a>
+                <a href="resources.html">Resources</a>
+                <a href="about.html">About</a>
+                <a href="https://www.linkedin.com/newsletters/7307800960485969920/" class="nav-cta" target="_blank" rel="noopener">Subscribe</a>
+            </div>
+            <div class="hamburger" onclick="this.classList.toggle('active'); document.querySelector('.nav-links').classList.toggle('active')">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero hero-small">
+            <div class="hero-content">
+                <span class="section-label">GET IN TOUCH</span>
+                <h1><span class="highlight">Contact</span> Us</h1>
+                <p class="hero-subtitle">Speaking engagements, partnerships, story tips, or just want to connect.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="contact-layout">
+                    <!-- Main Contact Form -->
+                    <div class="contact-main">
+                        <h2>Send a Message</h2>
+                        <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="contact-form">
+                            <input type="hidden" name="form-name" value="contact">
+                            <p class="hidden" style="display:none;">
+                                <label>Don't fill this out if you're human: <input name="bot-field"></label>
+                            </p>
+                            
+                            <div class="form-group">
+                                <label for="name">Name *</label>
+                                <input type="text" id="name" name="name" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email">Email *</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="organization">Organization</label>
+                                <input type="text" id="organization" name="organization">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="inquiry-type">What can we help with? *</label>
+                                <select id="inquiry-type" name="inquiry-type" required>
+                                    <option value="">Select an option...</option>
+                                    <option value="speaking">Speaking Engagement</option>
+                                    <option value="partnership">Partnership / Sponsorship</option>
+                                    <option value="story-tip">Story Tip</option>
+                                    <option value="podcast-guest">Podcast Guest Pitch</option>
+                                    <option value="general">General Inquiry</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="message">Message *</label>
+                                <textarea id="message" name="message" rows="5" required></textarea>
+                            </div>
+                            
+                            <button type="submit" class="cta-button">
+                                <i class="fas fa-paper-plane"></i> Send Message
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <!-- Sidebar with quick links and email signup -->
+                    <div class="contact-sidebar">
+                        <!-- Email Signup Box -->
+                        <div class="sidebar-card email-signup-card">
+                            <h3><i class="fas fa-envelope"></i> Get Notified</h3>
+                            <p>Want updates beyond LinkedIn? Drop your email and we'll keep you in the loop on major announcements.</p>
+                            <form name="email-signup" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="email-form">
+                                <input type="hidden" name="form-name" value="email-signup">
+                                <p class="hidden" style="display:none;">
+                                    <label>Don't fill this out: <input name="bot-field"></label>
+                                </p>
+                                <div class="email-input-group">
+                                    <input type="email" name="signup-email" placeholder="your@email.com" required>
+                                    <button type="submit"><i class="fas fa-arrow-right"></i></button>
+                                </div>
+                            </form>
+                            <p class="email-note">We'll never spam. Unsubscribe anytime.</p>
+                        </div>
+                        
+                        <!-- Quick Connect -->
+                        <div class="sidebar-card">
+                            <h3><i class="fab fa-linkedin"></i> Connect on LinkedIn</h3>
+                            <p>The fastest way to reach us is usually LinkedIn.</p>
+                            <div class="linkedin-profiles">
+                                <a href="https://www.linkedin.com/in/marywomack/" target="_blank" rel="noopener" class="profile-link">
+                                    <img src="images/mary-womack.jpg" alt="Mary Womack" onerror="this.style.display='none'">
+                                    <span>Mary Womack</span>
+                                </a>
+                                <a href="https://www.linkedin.com/in/sarabyrd/" target="_blank" rel="noopener" class="profile-link">
+                                    <img src="images/sara-byrd.jpg" alt="Sara Byrd" onerror="this.style.display='none'">
+                                    <span>Sara Byrd</span>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- What We're Looking For -->
+                        <div class="sidebar-card">
+                            <h3><i class="fas fa-lightbulb"></i> Story Tips Welcome</h3>
+                            <p>Have inside knowledge on:</p>
+                            <ul class="tip-topics">
+                                <li>Leadership changes at DHA, VA, or contractors</li>
+                                <li>Contract awards or protests</li>
+                                <li>Policy shifts affecting federal health IT</li>
+                                <li>Technology deployments (MHS GENESIS, telehealth, AI)</li>
+                            </ul>
+                            <p class="confidential-note"><i class="fas fa-lock"></i> Confidentiality respected. We protect our sources.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <span class="logo-mission">MISSION</span><span class="logo-meets">MEETS</span><span class="logo-tech">TECH</span>
+                <p>Federal health IT intelligence for decision-makers.</p>
+            </div>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="newsletter.html">Newsletter</a>
+                <a href="podcast.html">Podcast</a>
+                <a href="resources.html">Resources</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </div>
+        <div class="footer-disclaimer">
+            <p><strong>Disclaimer:</strong> The views expressed on this site are my own and do not represent the official position of any organization. This content is for informational purposes only and does not constitute professional advice.</p>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
