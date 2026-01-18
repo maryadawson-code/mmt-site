@@ -60,10 +60,10 @@
                 <p class="hero-subtitle">Federal health IT intelligence for decision-makers who need to know what's actually happening—not the press release version.</p>
                 <div class="hero-cta">
                     <a href="https://www.linkedin.com/newsletters/7307800960485969920/" class="cta-button" target="_blank" rel="noopener">
-                        <i class="fab fa-linkedin"></i> Subscribe on LinkedIn
+                        <i class="fab fa-linkedin"></i> Get the Intel First
                     </a>
                     <a href="podcast.html" class="cta-button secondary">
-                        <i class="fas fa-podcast"></i> Listen to Podcast
+                        <i class="fas fa-microphone"></i> Hear What They Won't Say
                     </a>
                 </div>
             </div>
@@ -80,9 +80,9 @@
 
         <section class="section">
             <div class="container">
-                <span class="section-label">WHAT WE COVER</span>
-                <h2 class="section-title">The Analysis You Won't Find Elsewhere</h2>
-                <div class="focus-grid">
+                <span class="section-label animate-on-scroll">WHAT WE COVER</span>
+                <h2 class="section-title animate-on-scroll">The Analysis You Won't Find Elsewhere</h2>
+                <div class="focus-grid stagger-children">
                     <div class="focus-card">
                         <div class="focus-icon"><i class="fas fa-user-tie"></i></div>
                         <h3>Leadership Analysis</h3>
@@ -109,9 +109,9 @@
 
         <section class="section section-alt">
             <div class="container">
-                <span class="section-label">LATEST NEWSLETTER</span>
-                <h2 class="section-title">The MHS Triad</h2>
-                <div class="featured-content">
+                <span class="section-label animate-on-scroll">LATEST NEWSLETTER</span>
+                <h2 class="section-title animate-on-scroll">The MHS Triad</h2>
+                <div class="featured-content animate-on-scroll">
                     <p class="featured-text">Keith Bass, Emil Michael, and Admiral Darin Via are about to transform military medicine. We're calling them the "MHS Triad"—and together, they're reshaping how we think about combat readiness, AI adoption, and the future of the Defense Health Agency.</p>
                     <blockquote class="featured-quote">
                         "The three magic words are governance, speed, and survivability."
@@ -123,9 +123,9 @@
 
         <section class="section">
             <div class="container">
-                <span class="section-label">THE PODCAST</span>
-                <h2 class="section-title">Fed UP: Where Mission Meets Reality</h2>
-                <div class="podcast-teaser">
+                <span class="section-label animate-on-scroll">THE PODCAST</span>
+                <h2 class="section-title animate-on-scroll">Fed UP: Where Mission Meets Reality</h2>
+                <div class="podcast-teaser animate-on-scroll">
                     <div class="waveform-container">
                         <div class="waveform">
                             <span></span><span></span><span></span><span></span><span></span>
@@ -140,19 +140,19 @@
 
         <section class="section section-alt">
             <div class="container">
-                <span class="section-label">OUR AUDIENCE</span>
-                <h2 class="section-title">Who Reads Mission Meets Tech</h2>
-                <div class="stats-grid">
+                <span class="section-label animate-on-scroll">OUR AUDIENCE</span>
+                <h2 class="section-title animate-on-scroll">Who Reads Mission Meets Tech</h2>
+                <div class="stats-grid stagger-children">
                     <div class="stat-card">
-                        <div class="stat-number">2,000+</div>
+                        <div class="stat-number" data-target="2000" data-suffix="+">0</div>
                         <div class="stat-label">Subscribers</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-number">59%</div>
+                        <div class="stat-number" data-target="59" data-suffix="%">0</div>
                         <div class="stat-label">CXO/Director Level</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-number">500K+</div>
+                        <div class="stat-number" data-target="500" data-suffix="K+">0</div>
                         <div class="stat-label">Monthly Impressions</div>
                     </div>
                 </div>
@@ -161,9 +161,9 @@
 
         <section class="section">
             <div class="container">
-                <h2 class="section-title">Ready to Stay Ahead?</h2>
-                <p style="text-align: center; max-width: 600px; margin: 0 auto 2rem;">Join the federal health IT leaders who rely on Mission Meets Tech for the analysis that matters.</p>
-                <div style="text-align: center;">
+                <h2 class="section-title animate-on-scroll">Ready to Stay Ahead?</h2>
+                <p class="animate-on-scroll" style="text-align: center; max-width: 600px; margin: 0 auto 2rem;">Join the federal health IT leaders who rely on Mission Meets Tech for the analysis that matters.</p>
+                <div class="animate-on-scroll" style="text-align: center;">
                     <a href="https://www.linkedin.com/newsletters/7307800960485969920/" class="cta-button" target="_blank" rel="noopener">
                         <i class="fab fa-linkedin"></i> Subscribe Free on LinkedIn
                     </a>
@@ -194,5 +194,103 @@
             <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
         </div>
     </footer>
+
+    <script>
+        // ========================================
+        // NAVBAR SCROLL BEHAVIOR
+        // ========================================
+        const navbar = document.querySelector('.navbar');
+        let lastScroll = 0;
+        
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+            
+            lastScroll = currentScroll;
+        });
+
+        // ========================================
+        // SCROLL-TRIGGERED ANIMATIONS
+        // ========================================
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                    
+                    // Trigger stat counter if it's a stats grid
+                    if (entry.target.classList.contains('stats-grid')) {
+                        animateStats();
+                    }
+                }
+            });
+        }, observerOptions);
+
+        // Observe all animated elements
+        document.querySelectorAll('.animate-on-scroll, .stagger-children').forEach(el => {
+            observer.observe(el);
+        });
+
+        // ========================================
+        // ANIMATED STATS COUNTER
+        // ========================================
+        let statsAnimated = false;
+
+        function animateStats() {
+            if (statsAnimated) return;
+            statsAnimated = true;
+
+            document.querySelectorAll('.stat-number[data-target]').forEach(stat => {
+                const target = parseInt(stat.dataset.target);
+                const suffix = stat.dataset.suffix || '';
+                const duration = 2000;
+                const increment = target / (duration / 16);
+                let current = 0;
+
+                const updateCounter = () => {
+                    current += increment;
+                    if (current < target) {
+                        stat.textContent = Math.floor(current).toLocaleString() + suffix;
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        stat.textContent = target.toLocaleString() + suffix;
+                    }
+                };
+
+                updateCounter();
+            });
+        }
+
+        // ========================================
+        // MOBILE MENU - Close when clicking outside
+        // ========================================
+        document.addEventListener('click', (e) => {
+            const hamburger = document.querySelector('.hamburger');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+            }
+        });
+
+        // Close menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.querySelector('.hamburger').classList.remove('active');
+                document.querySelector('.nav-links').classList.remove('active');
+            });
+        });
+    </script>
 </body>
 </html>
