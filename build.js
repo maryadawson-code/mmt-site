@@ -92,8 +92,14 @@ async function build() {
     `;
   }
 
-  // Read template and inject content
-  let template = fs.readFileSync(path.join(__dirname, 'src', 'podcast.template.html'), 'utf8');
+  // Read template from ROOT (not src folder) and inject content
+  const templatePath = path.join(__dirname, 'podcast.template.html');
+  if (!fs.existsSync(templatePath)) {
+    console.error('❌ podcast.template.html not found at root level');
+    process.exit(1);
+  }
+  
+  let template = fs.readFileSync(templatePath, 'utf8');
   
   template = template.replace('{{EPISODE_CARDS}}', episodeCards || '<p class="no-episodes">No episodes yet. Check back soon!</p>');
   template = template.replace('{{LATEST_EPISODE_HERO}}', latestEpisodeHero);
@@ -110,44 +116,33 @@ async function build() {
   fs.writeFileSync(path.join(distDir, 'podcast.html'), template);
   console.log('✅ Generated podcast.html');
 
-  // Copy all other static files from src to dist
-  const staticFiles = ['index.html', 'about.html', 'newsletter.html', 'newsletter-archive.html', 'resources.html', 'contact.html', 'styles.css', 'favicon.svg'];
+  // Copy all static files from ROOT to dist
+  const staticFiles = [
+    'index.html', 
+    'about.html', 
+    'newsletter.html', 
+    'newsletter-archive.html', 
+    'resources.html', 
+    'contact.html', 
+    'styles.css', 
+    'favicon.svg',
+    'newsletters.json',
+    'mary-womack.jpg',
+    'sara-byrd.jpg',
+    'og-default.png',
+    'og-default.svg',
+    'og-podcast.svg'
+  ];
+  
   staticFiles.forEach(file => {
-    const srcPath = path.join(__dirname, 'src', file);
+    const srcPath = path.join(__dirname, file);
     if (fs.existsSync(srcPath)) {
       fs.copyFileSync(srcPath, path.join(distDir, file));
       console.log(`✅ Copied ${file}`);
+    } else {
+      console.log(`⚠️ Skipped ${file} (not found)`);
     }
   });
-
-  // Copy data folder
-  const dataSrc = path.join(__dirname, 'src', 'data');
-  const dataDist = path.join(distDir, 'data');
-  if (fs.existsSync(dataSrc)) {
-    if (!fs.existsSync(dataDist)) {
-      fs.mkdirSync(dataDist, { recursive: true });
-    }
-    fs.readdirSync(dataSrc).forEach(file => {
-      fs.copyFileSync(path.join(dataSrc, file), path.join(dataDist, file));
-    });
-    console.log('✅ Copied data files');
-  }
-
-  // Copy images folder
-  const imgSrc = path.join(__dirname, 'src', 'images');
-  const imgDist = path.join(distDir, 'images');
-  if (fs.existsSync(imgSrc)) {
-    if (!fs.existsSync(imgDist)) {
-      fs.mkdirSync(imgDist, { recursive: true });
-    }
-    const imgFiles = fs.readdirSync(imgSrc).filter(f => !f.startsWith('.'));
-    imgFiles.forEach(file => {
-      fs.copyFileSync(path.join(imgSrc, file), path.join(imgDist, file));
-    });
-    if (imgFiles.length > 0) {
-      console.log(`✅ Copied ${imgFiles.length} images`);
-    }
-  }
 
   console.log('🎉 Build complete!');
 }
@@ -172,4 +167,7 @@ function formatDuration(duration) {
   return `${minutes}:${secs.toString().padStart(2, '0')}`;
 }
 
-build().catch(console.error);
+build().catch(err => {
+  console.error('❌ Build failed:', err);
+  process.exit(1);
+});
