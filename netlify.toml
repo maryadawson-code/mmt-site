@@ -1,55 +1,9 @@
-# Netlify Configuration for Mission Meets Tech
-# Static site - no build required
-
 [build]
   publish = "."
 
-# Redirects for clean URLs
-[[redirects]]
-  from = "/newsletter"
-  to = "/newsletter.html"
-  status = 200
-
-[[redirects]]
-  from = "/podcast"
-  to = "/podcast.html"
-  status = 200
-
-[[redirects]]
-  from = "/about"
-  to = "/about.html"
-  status = 200
-
-[[redirects]]
-  from = "/contact"
-  to = "/contact.html"
-  status = 200
-
-[[redirects]]
-  from = "/resources"
-  to = "/resources.html"
-  status = 200
-
-# Headers for security and caching
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-
-[[headers]]
-  for = "/images/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/*.css"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/*.js"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"

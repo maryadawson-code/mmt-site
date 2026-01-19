@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fed UP Podcast | Mission Meets Tech</title>
-  <meta name="description" content="Fed UP: Where Mission Meets Reality. A podcast diving deep into policy fights, technology bets, and leadership decisions shaping federal health IT.">
+  <title>Fed UP: Where Mission Meets Reality | Mission Meets Tech</title>
+  <meta name="description" content="Fed UP is the podcast for federal health IT leaders who are tired of talking points and ready for real talk about defense innovation.">
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="/favicon.png">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   
   <!-- Styles -->
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="styles.css">
   
-  <!-- Analytics -->
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  
+  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-PRG234VSXM"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -31,147 +31,135 @@
   <!-- Navigation -->
   <nav class="nav">
     <div class="container">
-      <a href="/" class="nav-logo">
-        <img src="/mmt-logo-nav.png" alt="Mission Meets Tech">
+      <a href="index.html" class="nav-logo">
+        <img src="mmt-logo-nav.png" alt="Mission Meets Tech">
       </a>
       <button class="nav-toggle" aria-label="Toggle navigation">
-        <span>☰</span>
+        <span></span>
+        <span></span>
+        <span></span>
       </button>
       <ul class="nav-menu">
-        <li><a href="/newsletter.html">Newsletter</a></li>
-        <li><a href="/podcast.html">Podcast</a></li>
-        <li><a href="/resources.html">Resources</a></li>
-        <li><a href="/about.html">About</a></li>
-        <li><a href="/contact.html">Contact</a></li>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="newsletter.html">Newsletter</a></li>
+        <li><a href="podcast.html" class="active">Podcast</a></li>
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/" target="_blank" class="btn btn-primary">Subscribe</a></li>
       </ul>
     </div>
   </nav>
 
-  <!-- Page Header -->
-  <section class="page-header">
+  <!-- Podcast Hero -->
+  <section class="podcast-hero">
     <div class="container">
-      <h1><span class="gradient-text">Fed UP:</span> Where Mission Meets Reality</h1>
-      <p>A podcast diving deep into the policy fights, technology bets, and leadership decisions shaping federal health IT and defense innovation.</p>
-    </div>
-  </section>
-
-  <!-- Why Fed UP Section -->
-  <section>
-    <div class="container">
-      <div class="glass-card" style="max-width: 800px; margin: 0 auto; padding: 3rem;">
-        <h2 style="margin-bottom: 1.5rem; text-align: center;">Why "Fed UP"?</h2>
-        <p style="color: var(--text-secondary); margin-bottom: 1rem;">
-          Because we're fed up with the talking points. Fed up with vendors who pitch innovation theater while the warfighter waits. Fed up with policies that look great in PowerPoint but die in implementation. And frankly, fed up with watching the same patterns repeat while the threat environment accelerates.
-        </p>
-        <p style="color: var(--text-secondary);">
-          But we're also <strong style="color: var(--mint-accent);">fired up</strong> about the leaders who get it, the technologies that actually work, and the mission that keeps us coming back to this space.
-        </p>
+      <h1>Fed UP: Where Mission Meets Reality</h1>
+      <p style="font-size: 1.25rem; max-width: 700px; margin: 1rem auto 2rem;">The podcast for federal health IT leaders who are tired of talking points and ready for real talk about defense innovation.</p>
+      
+      <div class="subscribe-buttons">
+        <a href="https://podcasts.apple.com/us/podcast/id1870101530" target="_blank" class="btn btn-primary">Apple Podcasts</a>
+        <a href="https://open.spotify.com/show/fed-up-where-mission-meets-reality" target="_blank" class="btn btn-secondary">Spotify</a>
+        <a href="https://feeds.transistor.fm/fed-up-where-mission-meets-reality" target="_blank" class="btn btn-secondary">RSS Feed</a>
       </div>
     </div>
   </section>
 
-  <!-- Listen Section -->
-  <section>
+  <!-- Latest Episode -->
+  <section style="padding: 4rem 0; background: var(--slate-navy);">
     <div class="container">
-      <div class="section-title">
-        <h2 class="gradient-text">Listen Now</h2>
-        <p>Available on all major podcast platforms</p>
-      </div>
-      <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-bottom: 3rem;">
-        <a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank" class="btn btn-primary">Apple Podcasts</a>
-        <a href="https://open.spotify.com/show/fed-up" target="_blank" class="btn btn-secondary">Spotify</a>
-        <a href="https://missionmeetsreality.transistor.fm" target="_blank" class="btn btn-secondary">All Platforms</a>
+      <h2 class="section-title">Latest Episode</h2>
+      
+      <div class="podcast-embed">
+        <iframe src="https://share.transistor.fm/e/fed-up-where-mission-meets-reality" width="100%" height="180" frameborder="0" scrolling="no" seamless="true" style="width:100%; height:180px; border-radius: 12px;"></iframe>
       </div>
       
-      <!-- Transistor Embed -->
-      <div style="max-width: 700px; margin: 0 auto;">
-        <iframe src="https://share.transistor.fm/e/fed-up-where-mission-meets-reality/playlist" width="100%" height="360" frameborder="0" scrolling="no" seamless style="border-radius: 12px;"></iframe>
+      <div class="text-center mt-3">
+        <a href="https://missionmeetsreality.transistor.fm" target="_blank" class="btn btn-text">View All Episodes →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About the Show -->
+  <section style="padding: 5rem 0;">
+    <div class="container">
+      <div style="max-width: 800px; margin: 0 auto;">
+        <h2 class="section-title">About the Show</h2>
+        
+        <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">Why "Fed UP"? Because we're fed up with the talking points. Fed up with vendors who pitch innovation theater while the warfighter waits. And frankly, fed up with watching the same patterns repeat while the threat environment accelerates.</p>
+        
+        <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">But we're also fired up. Fired up about the leaders who get it, the technologies that actually work, and the mission that keeps us coming back to this space.</p>
+        
+        <p style="font-size: 1.1rem; line-height: 1.8;">Each episode, we dive deep into the policy fights, technology bets, and leadership decisions shaping federal health IT and defense innovation. No scripts, no sponsor reads—just two practitioners telling you what's really happening.</p>
       </div>
     </div>
   </section>
 
   <!-- Hosts Section -->
-  <section>
+  <section style="padding: 5rem 0; background: var(--slate-navy);">
     <div class="container">
-      <div class="section-title">
-        <h2>Your Hosts</h2>
-      </div>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 800px; margin: 0 auto;">
-        
-        <!-- Mary -->
-        <div class="glass-card" style="text-align: center; padding: 2.5rem;">
-          <img src="/mary-womack.jpg" alt="Mary Womack" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%; border: 3px solid var(--primary-cyan); margin-bottom: 1.5rem;" onerror="this.style.display='none'">
-          <h3 style="margin-bottom: 0.5rem;">Mary Womack</h3>
-          <p style="color: var(--mint-accent); margin-bottom: 1rem;">Federal Civilian Account Lead, Rocket Data</p>
-          <p style="color: var(--text-secondary); font-size: 0.9rem;">
-            Mary bridges health strategy and government/digital health, helping leaders navigate complexity with practical, mission-focused intelligence. Author of Mission Meets Tech newsletter.
-          </p>
-          <div style="margin-top: 1.5rem;">
-            <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Connect on LinkedIn</a>
-          </div>
+      <h2 class="section-title">Your Hosts</h2>
+      <p class="section-subtitle">Two perspectives. One mission.</p>
+      
+      <div class="hosts-grid">
+        <div class="host-card glass-card">
+          <img src="mary-womack.jpg" alt="Mary Womack" class="host-image">
+          <h3>Mary Womack</h3>
+          <p class="host-title">Founder, Mission Meets Tech</p>
+          <p>Mary bridges health strategy and government/digital health, providing mission-focused intelligence through her newsletter reaching 1,100+ senior decision-makers. With deep expertise in defense health acquisition and data governance, she translates policy complexity into actionable insights.</p>
         </div>
         
-        <!-- Sara -->
-        <div class="glass-card" style="text-align: center; padding: 2.5rem;">
-          <img src="/sara-byrd.jpg" alt="Sara Byrd" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%; border: 3px solid var(--mint-accent); margin-bottom: 1.5rem;" onerror="this.style.display='none'">
-          <h3 style="margin-bottom: 0.5rem;">Sara Byrd</h3>
-          <p style="color: var(--mint-accent); margin-bottom: 1rem;">Federal Health IT Expert</p>
-          <p style="color: var(--text-secondary); font-size: 0.9rem;">
-            Sara brings deep expertise in federal health IT operations and policy implementation, with a focus on translating complex requirements into actionable strategies.
-          </p>
-          <div style="margin-top: 1.5rem;">
-            <a href="https://www.linkedin.com/in/sarabyrd/" target="_blank" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Connect on LinkedIn</a>
-          </div>
+        <div class="host-card glass-card">
+          <img src="sara-byrd.jpg" alt="Sara Byrd" class="host-image">
+          <h3>Sara Byrd</h3>
+          <p class="host-title">Co-Host, Fed UP</p>
+          <p>Sara brings a complementary perspective to the federal health IT conversation. Together with Mary, she co-founded Fed UP to create the honest, practitioner-level discussions that the defense health community needs but rarely gets.</p>
         </div>
-        
       </div>
+      
+      <p style="text-align: center; margin-top: 2rem; color: var(--text-muted); font-size: 0.9rem;">Fed UP is a 50/50 partnership between Mary and Sara.</p>
     </div>
   </section>
 
-  <!-- Topics Section -->
-  <section>
+  <!-- Topics We Cover -->
+  <section style="padding: 5rem 0;">
     <div class="container">
-      <div class="section-title">
-        <h2>What We Cover</h2>
-      </div>
-      <div class="features-grid">
-        <div class="glass-card feature-card">
-          <div class="feature-icon">🏛️</div>
-          <h3>Policy Fights</h3>
-          <p>NDAA provisions, executive orders, and the regulatory battles that shape federal health IT.</p>
+      <h2 class="section-title">What We Cover</h2>
+      
+      <div class="features-grid" style="margin-top: 2rem;">
+        <div class="glass-card">
+          <h3>Leadership & Strategy</h3>
+          <p>The people making decisions and the doctrine driving change. From the MHS Triad to service-level transformation.</p>
         </div>
-        <div class="glass-card feature-card">
-          <div class="feature-icon">🚀</div>
-          <h3>Technology Bets</h3>
-          <p>Which platforms are winning, which are failing, and where the smart money is going.</p>
+        
+        <div class="glass-card">
+          <h3>Technology & Innovation</h3>
+          <p>What's actually working versus what's just PowerPoint. AI, telehealth, wearables, and the platforms that matter.</p>
         </div>
-        <div class="glass-card feature-card">
-          <div class="feature-icon">👥</div>
-          <h3>Leadership Decisions</h3>
-          <p>The people driving transformation and the strategies behind their moves.</p>
-        </div>
-        <div class="glass-card feature-card">
-          <div class="feature-icon">⚔️</div>
-          <h3>Mission Reality</h3>
-          <p>Cutting through the talking points to what actually matters for warfighters and beneficiaries.</p>
+        
+        <div class="glass-card">
+          <h3>Acquisition & Policy</h3>
+          <p>NDAA provisions, contract vehicles, SBIR pathways, and navigating the complexity of federal procurement.</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Subscribe CTA -->
-  <section>
-    <div class="container">
-      <div class="glass-card" style="text-align: center; padding: 3rem;">
-        <h2 style="margin-bottom: 1rem;">Never Miss an Episode</h2>
-        <p style="margin-bottom: 2rem; color: var(--text-secondary);">Subscribe to the Fed UP newsletter for episode alerts and show notes.</p>
-        <form name="podcast-subscribe" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="signup-form" style="justify-content: center;">
-          <input type="hidden" name="form-name" value="podcast-subscribe">
-          <p hidden><label>Don't fill this out: <input name="bot-field"></label></p>
-          <input type="email" name="email" placeholder="Enter your email" required>
-          <button type="submit" class="btn btn-primary">Subscribe</button>
-        </form>
+  <section class="newsletter-section">
+    <div class="container text-center">
+      <h2 class="section-title">Never Miss an Episode</h2>
+      <p class="section-subtitle">Subscribe wherever you listen to podcasts.</p>
+      
+      <div class="subscribe-buttons" style="justify-content: center;">
+        <a href="https://podcasts.apple.com/us/podcast/id1870101530" target="_blank" class="btn btn-primary">Apple Podcasts</a>
+        <a href="https://open.spotify.com/show/fed-up-where-mission-meets-reality" target="_blank" class="btn btn-secondary">Spotify</a>
+        <a href="https://feeds.transistor.fm/fed-up-where-mission-meets-reality" target="_blank" class="btn btn-secondary">RSS Feed</a>
       </div>
+      
+      <p style="margin-top: 2rem;">
+        <a href="https://www.linkedin.com/company/fed-up-mission-meets-reality/" target="_blank" class="btn btn-text">Follow on LinkedIn →</a>
+      </p>
     </div>
   </section>
 
@@ -180,40 +168,41 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <img src="/mmt-logo.png" alt="Mission Meets Tech" style="height: 80px;">
-          <p>Mission. Technology. Transformation.</p>
+          <a href="index.html" class="footer-logo">
+            <img src="mmt-logo.png" alt="Mission Meets Tech">
+          </a>
+          <p class="footer-description">Mission-focused intelligence for federal health IT leaders and defense contractors.</p>
         </div>
-        <div>
-          <h4>Content</h4>
+        
+        <div class="footer-nav">
+          <h4>Navigation</h4>
           <ul>
-            <li><a href="/newsletter.html">Newsletter</a></li>
-            <li><a href="/podcast.html">Podcast</a></li>
-            <li><a href="/resources.html">Resources</a></li>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="newsletter.html">Newsletter</a></li>
+            <li><a href="podcast.html">Podcast</a></li>
+            <li><a href="resources.html">Resources</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
           </ul>
         </div>
-        <div>
+        
+        <div class="footer-social">
           <h4>Connect</h4>
-          <ul>
-            <li><a href="/about.html">About</a></li>
-            <li><a href="/contact.html">Contact</a></li>
-            <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank">LinkedIn</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4>Listen</h4>
-          <ul>
-            <li><a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank">Apple Podcasts</a></li>
-            <li><a href="https://open.spotify.com/show/fed-up" target="_blank">Spotify</a></li>
-            <li><a href="https://missionmeetsreality.transistor.fm" target="_blank">All Platforms</a></li>
-          </ul>
+          <div class="social-links">
+            <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" aria-label="LinkedIn">
+              <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            </a>
+          </div>
         </div>
       </div>
+      
       <div class="footer-bottom">
         <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem;">The views expressed are our own and do not represent any organization.</p>
       </div>
     </div>
   </footer>
 
-  <script src="/main.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
