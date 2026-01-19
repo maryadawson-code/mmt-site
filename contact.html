@@ -4,23 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact | Mission Meets Tech</title>
-    <meta name="description" content="Get in touch with Mission Meets Tech for speaking engagements, partnerships, or story tips.">
-    
-    <!-- Open Graph / Social Sharing -->
+    <meta name="description" content="Get in touch with Mary Womack. Story tips, federal health IT questions, speaking engagements, or podcast guest inquiries.">
     <meta property="og:title" content="Contact Mission Meets Tech">
-    <meta property="og:description" content="Speaking, partnerships, story tips, and newsletter signup.">
+    <meta property="og:description" content="Get in touch with Mary Womack.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://missionmeetstech.com/contact">
-    <meta property="og:image" content="https://missionmeetstech.com/images/og-default.png">
+    <meta property="og:image" content="https://missionmeetstech.com/og-default.png">
     
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
     
-    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-PRG234VSXM"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -33,7 +31,7 @@
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">
-                <span class="logo-mission">MISSION</span><span class="logo-meets">MEETS</span><span class="logo-tech">TECH</span>
+                <img src="mmt-logo-nav.png" alt="Mission Meets Tech" class="logo-image">
             </a>
             <div class="nav-links">
                 <a href="index.html">Home</a>
@@ -55,108 +53,68 @@
         <section class="hero hero-small">
             <div class="hero-content">
                 <span class="section-label">GET IN TOUCH</span>
-                <h1><span class="highlight">Contact</span> Us</h1>
-                <p class="hero-subtitle">Speaking engagements, partnerships, story tips, or just want to connect.</p>
+                <h1>Let's <span class="highlight">Talk</span></h1>
+                <p class="hero-subtitle">Story tips, hard questions, or just want to connect. I'm on LinkedIn.</p>
             </div>
         </section>
 
         <section class="section">
             <div class="container">
-                <div class="contact-layout">
-                    <!-- Main Contact Form -->
-                    <div class="contact-main">
-                        <h2>Send a Message</h2>
-                        <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="contact-form">
-                            <input type="hidden" name="form-name" value="contact">
-                            <p class="hidden" style="display:none;">
-                                <label>Don't fill this out if you're human: <input name="bot-field"></label>
-                            </p>
-                            
-                            <div class="form-group">
-                                <label for="name">Name *</label>
-                                <input type="text" id="name" name="name" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="email">Email *</label>
-                                <input type="email" id="email" name="email" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="organization">Organization</label>
-                                <input type="text" id="organization" name="organization">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="inquiry-type">What can we help with? *</label>
-                                <select id="inquiry-type" name="inquiry-type" required>
-                                    <option value="">Select an option...</option>
-                                    <option value="speaking">Speaking Engagement</option>
-                                    <option value="partnership">Partnership / Sponsorship</option>
-                                    <option value="story-tip">Story Tip</option>
-                                    <option value="podcast-guest">Podcast Guest Pitch</option>
-                                    <option value="general">General Inquiry</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="message">Message *</label>
-                                <textarea id="message" name="message" rows="5" required></textarea>
-                            </div>
-                            
-                            <button type="submit" class="cta-button">
-                                <i class="fas fa-paper-plane"></i> Send Message
-                            </button>
-                        </form>
+                <h2 class="section-title animate-on-scroll">Connect</h2>
+                <div class="contact-grid stagger-children">
+                    <div class="contact-card">
+                        <i class="fab fa-linkedin"></i>
+                        <h3>LinkedIn</h3>
+                        <p>Best way to reach me. DMs are open for substantive conversations.</p>
+                        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" class="cta-button" target="_blank" rel="noopener">Connect</a>
                     </div>
-                    
-                    <!-- Sidebar with quick links and email signup -->
-                    <div class="contact-sidebar">
-                        <!-- Email Signup Box -->
-                        <div class="sidebar-card email-signup-card">
-                            <h3><i class="fas fa-envelope"></i> Get Notified</h3>
-                            <p>Want updates beyond LinkedIn? Drop your email and we'll keep you in the loop on major announcements.</p>
-                            <form name="email-signup" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="email-form">
-                                <input type="hidden" name="form-name" value="email-signup">
-                                <p class="hidden" style="display:none;">
-                                    <label>Don't fill this out: <input name="bot-field"></label>
-                                </p>
-                                <div class="email-input-group">
-                                    <input type="email" name="signup-email" placeholder="your@email.com" required>
-                                    <button type="submit"><i class="fas fa-arrow-right"></i></button>
-                                </div>
-                            </form>
-                            <p class="email-note">We'll never spam. Unsubscribe anytime.</p>
-                        </div>
-                        
-                        <!-- Quick Connect -->
-                        <div class="sidebar-card">
-                            <h3><i class="fab fa-linkedin"></i> Connect on LinkedIn</h3>
-                            <p>The fastest way to reach us is usually LinkedIn.</p>
-                            <div class="linkedin-profiles">
-                                <a href="https://www.linkedin.com/in/marywomack/" target="_blank" rel="noopener" class="profile-link">
-                                    <img src="images/mary-womack.jpg" alt="Mary Womack" onerror="this.style.display='none'">
-                                    <span>Mary Womack</span>
-                                </a>
-                                <a href="https://www.linkedin.com/in/sarabyrd/" target="_blank" rel="noopener" class="profile-link">
-                                    <img src="images/sara-byrd.jpg" alt="Sara Byrd" onerror="this.style.display='none'">
-                                    <span>Sara Byrd</span>
-                                </a>
-                            </div>
-                        </div>
-                        
-                        <!-- What We're Looking For -->
-                        <div class="sidebar-card">
-                            <h3><i class="fas fa-lightbulb"></i> Story Tips Welcome</h3>
-                            <p>Have inside knowledge on:</p>
-                            <ul class="tip-topics">
-                                <li>Leadership changes at DHA, VA, or contractors</li>
-                                <li>Contract awards or protests</li>
-                                <li>Policy shifts affecting federal health IT</li>
-                                <li>Technology deployments (MHS GENESIS, telehealth, AI)</li>
-                            </ul>
-                            <p class="confidential-note"><i class="fas fa-lock"></i> Confidentiality respected. We protect our sources.</p>
-                        </div>
+                    <div class="contact-card">
+                        <i class="fas fa-newspaper"></i>
+                        <h3>Newsletter</h3>
+                        <p>Subscribe and reply to any edition. I read everything.</p>
+                        <a href="https://www.linkedin.com/newsletters/7307800960485969920/" class="cta-button" target="_blank" rel="noopener">Subscribe</a>
+                    </div>
+                    <div class="contact-card">
+                        <i class="fas fa-microphone"></i>
+                        <h3>Podcast Guest?</h3>
+                        <p>Fed UP is looking for guests with something real to say about federal health IT.</p>
+                        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" class="cta-button" target="_blank" rel="noopener">Pitch a Topic</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section section-alt">
+            <div class="container">
+                <h2 class="section-title animate-on-scroll">What I'm Looking For</h2>
+                <div class="mission-statement animate-on-scroll">
+                    <p><strong>Story tips.</strong> Something doesn't add up? A program that's actually working? Leadership changes that matter? I want to know.</p>
+                    <p><strong>Hard questions.</strong> What's confusing about federal health IT? What analysis would actually help? The best content comes from real questions.</p>
+                    <p><strong>Different perspectives.</strong> Contractors, government leaders, clinicians, beneficiaries—if you have a view on what's working (or not) in military medicine, let's talk.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <h2 class="section-title animate-on-scroll">What I'm Not Looking For</h2>
+                <div class="mission-statement animate-on-scroll">
+                    <p>Vendor pitches disguised as thought leadership. Sponsored content that doesn't serve readers. Pay-for-play arrangements.</p>
+                    <p>If your main goal is getting your company mentioned, we're probably not a fit. If your goal is genuinely helping people understand this space better—even if that happens to involve your work—that's different.</p>
+                    <p>The test is simple: Does it help readers understand what's actually happening? Does it serve the warfighter or the beneficiary?</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section section-alt">
+            <div class="container">
+                <h2 class="section-title animate-on-scroll">About Fed UP Guest Appearances</h2>
+                <div class="mission-statement animate-on-scroll">
+                    <p>Fed UP: Where Mission Meets Reality is a podcast I co-host with Sara Byrd. We bring different perspectives—I focus on strategic vision, policy, and enabling technology; Sara brings deep expertise on enterprise modernization and execution.</p>
+                    <p>We're looking for guests who can speak candidly about what's actually happening. Government leaders, industry innovators, practitioners who have something real to say—not talking points.</p>
+                    <p><strong>The "No Infomercial" rule applies:</strong> Appearances are for substantive discussion. If the goal is a product pitch, we'll cut it.</p>
+                    <div style="margin-top: var(--space-5);">
+                        <a href="podcast.html" class="cta-button secondary">Learn More About the Podcast</a>
                     </div>
                 </div>
             </div>
@@ -166,7 +124,7 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-brand">
-                <span class="logo-mission">MISSION</span><span class="logo-meets">MEETS</span><span class="logo-tech">TECH</span>
+                <img src="mmt-logo.png" alt="Mission Meets Tech" class="footer-logo">
                 <p>Federal health IT intelligence for decision-makers.</p>
             </div>
             <div class="footer-links">
@@ -185,5 +143,7 @@
             <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
         </div>
     </footer>
+
+    <script src="main.js"></script>
 </body>
 </html>
