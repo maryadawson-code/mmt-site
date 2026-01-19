@@ -1252,6 +1252,236 @@ a:hover {
   }
 }
 
+/* ---------- PODCAST PAGE STYLES ---------- */
+.platform-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.platform-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--gray-600);
+  border-radius: var(--radius-lg);
+  transition: all var(--duration-normal) var(--ease-out);
+  text-decoration: none;
+  color: var(--gray-300);
+}
+
+.platform-card:hover {
+  background: rgba(0, 240, 255, 0.05);
+  border-color: var(--cyan);
+  color: var(--white);
+  transform: translateY(-3px);
+}
+
+.platform-card i {
+  font-size: var(--text-3xl);
+  color: var(--cyan);
+}
+
+.platform-card span {
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.rss-box {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background: var(--void-lighter);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.rss-label {
+  color: var(--cyan);
+  font-weight: 600;
+}
+
+.rss-url {
+  background: var(--void);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  color: var(--gray-300);
+  word-break: break-all;
+}
+
+.copy-btn {
+  background: var(--cyan);
+  color: var(--void);
+  border: none;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.copy-btn:hover {
+  background: var(--white);
+}
+
+.player-embed {
+  max-width: 800px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  min-height: 180px;
+}
+
+.player-embed iframe {
+  display: block;
+  width: 100%;
+  min-height: 180px;
+  border: none;
+}
+
+.episodes-grid {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.hosts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-6);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.host-card {
+  text-align: center;
+  padding: var(--space-6);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--gray-600);
+  border-radius: var(--radius-lg);
+}
+
+.host-card:hover {
+  border-color: rgba(0, 240, 255, 0.3);
+}
+
+.host-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--cyan);
+  box-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
+  margin-bottom: var(--space-4);
+}
+
+.host-card h3 {
+  margin-bottom: var(--space-2);
+}
+
+.host-title {
+  color: var(--cyan);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-3);
+}
+
+.host-card p:last-of-type {
+  color: var(--gray-300);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-4);
+}
+
+.host-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--cyan);
+  font-weight: 500;
+  font-size: var(--text-sm);
+}
+
+.host-link:hover {
+  color: var(--white);
+}
+
+/* ---------- RESOURCE PAGE STYLES ---------- */
+.resource-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-5);
+}
+
+.resource-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--gray-600);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.resource-card:hover {
+  background: rgba(0, 240, 255, 0.03);
+  border-color: rgba(0, 240, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.resource-card h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.resource-card h3 i {
+  color: var(--cyan);
+  font-size: var(--text-xl);
+}
+
+.resource-card p {
+  color: var(--gray-300);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-4);
+  line-height: 1.6;
+}
+
+.resource-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--cyan);
+  font-weight: 500;
+  font-size: var(--text-sm);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.resource-link:hover {
+  color: var(--white);
+}
+
+.resource-link i {
+  font-size: var(--text-xs);
+}
+
+/* ---------- CONTACT GRID ENHANCEMENT ---------- */
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-5);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
 /* ---------- UTILITY CLASSES ---------- */
 .text-center { text-align: center; }
 .text-left { text-align: left; }
