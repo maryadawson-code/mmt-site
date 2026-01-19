@@ -1,0 +1,95 @@
+# ========================================
+# Mission Meets Tech - .gitignore
+# ========================================
+
+# ===== Environment & Secrets =====
+.env
+.env.local
+.env.*.local
+*.env
+secrets.json
+credentials.json
+config.local.js
+
+# ===== OS Generated Files =====
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# ===== IDE & Editor Files =====
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+.project
+.settings/
+.classpath
+
+# ===== Node.js =====
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# ===== Build Outputs =====
+dist/
+build/
+.cache/
+.parcel-cache/
+.output/
+
+# ===== Python (if using build scripts) =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+ENV/
+env/
+
+# ===== Logs =====
+logs/
+*.log
+npm-debug.log*
+
+# ===== Testing =====
+coverage/
+.nyc_output/
+
+# ===== Temporary Files =====
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# ===== Local Development =====
+.netlify/
+.vercel/
+
+# ===== Large Media (upload separately) =====
+# Uncomment if you want to exclude large media files
+# *.mp4
+# *.mov
+# *.avi
+# *.psd
+# *.ai
+
+# ===== Sensitive Documents =====
+# Add any sensitive document patterns here
+*.pdf.bak
+drafts/
+private/

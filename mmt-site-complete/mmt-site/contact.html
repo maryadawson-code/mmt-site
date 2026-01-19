@@ -23,7 +23,7 @@
     <nav class="nav">
         <div class="nav-container">
             <a href="/" class="nav-logo">
-                <img src="mmt-logo-nav.png" alt="Mission Meets Tech">
+                <img src="mmt-logo-nav.png" alt="Mission Meets Tech logo">
             </a>
             <ul class="nav-menu">
                 <li><a href="/">Home</a></li>
@@ -33,7 +33,7 @@
                 <li><a href="about.html">About</a></li>
                 <li><a href="contact.html" class="active">Contact</a></li>
             </ul>
-            <div class="nav-toggle">
+            <div class="nav-toggle" aria-label="Toggle navigation menu">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -64,17 +64,17 @@
                         
                         <div class="form-group">
                             <label for="name">Name *</label>
-                            <input type="text" id="name" name="name" required>
+                            <input type="text" id="name" name="name" required autocomplete="name">
                         </div>
                         
                         <div class="form-group">
                             <label for="email">Email *</label>
-                            <input type="email" id="email" name="email" required>
+                            <input type="email" id="email" name="email" required autocomplete="email">
                         </div>
                         
                         <div class="form-group">
                             <label for="company">Company / Organization</label>
-                            <input type="text" id="company" name="company">
+                            <input type="text" id="company" name="company" autocomplete="organization">
                         </div>
                         
                         <div class="form-group">
@@ -100,7 +100,7 @@
                 </div>
                 
                 <div class="text-center mt-4">
-                    <p style="color: var(--color-text-muted);">Or connect with me directly on <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener">LinkedIn</a></p>
+                    <p style="color: var(--color-text-muted);">Or connect with me directly on <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener noreferrer">LinkedIn</a></p>
                 </div>
             </div>
         </div>
@@ -111,21 +111,21 @@
         <div class="container">
             <div class="features" style="max-width: 900px; margin: 0 auto;">
                 <div class="glass-card feature-card">
-                    <div class="feature-icon">💼</div>
+                    <div class="feature-icon" aria-hidden="true">💼</div>
                     <h3>LinkedIn</h3>
                     <p>Connect with me for industry updates and professional networking.</p>
-                    <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="btn btn-text" style="margin-top: 1rem;">Connect →</a>
+                    <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener noreferrer" class="btn btn-text" style="margin-top: 1rem;">Connect →</a>
                 </div>
                 
                 <div class="glass-card feature-card">
-                    <div class="feature-icon">📰</div>
+                    <div class="feature-icon" aria-hidden="true">📰</div>
                     <h3>Newsletter</h3>
                     <p>Subscribe for weekly federal health IT intelligence delivered to your inbox.</p>
                     <a href="newsletter.html" class="btn btn-text" style="margin-top: 1rem;">Subscribe →</a>
                 </div>
                 
                 <div class="glass-card feature-card">
-                    <div class="feature-icon">🎙️</div>
+                    <div class="feature-icon" aria-hidden="true">🎙️</div>
                     <h3>Podcast</h3>
                     <p>Interested in being a guest on Fed UP? Let's talk about it.</p>
                     <a href="podcast.html" class="btn btn-text" style="margin-top: 1rem;">Learn More →</a>
@@ -139,7 +139,7 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <img src="mmt-logo.png" alt="Mission Meets Tech">
+                    <img src="mmt-logo.png" alt="Mission Meets Tech logo">
                     <p>Translating federal health IT complexity into actionable intelligence.</p>
                 </div>
                 
@@ -163,9 +163,9 @@
                 <div class="footer-links">
                     <h4>Connect</h4>
                     <ul>
-                        <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener">LinkedIn</a></li>
-                        <li><a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank" rel="noopener">Apple Podcasts</a></li>
-                        <li><a href="https://open.spotify.com/show/fed-up-mission-meets-reality" target="_blank" rel="noopener">Spotify</a></li>
+                        <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                        <li><a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank" rel="noopener noreferrer">Apple Podcasts</a></li>
+                        <li><a href="https://open.spotify.com/show/fed-up-mission-meets-reality" target="_blank" rel="noopener noreferrer">Spotify</a></li>
                     </ul>
                 </div>
             </div>
@@ -173,8 +173,8 @@
             <div class="footer-bottom">
                 <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
                 <div class="social-links">
-                    <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" aria-label="LinkedIn">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener noreferrer" aria-label="Connect on LinkedIn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                             <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                         </svg>
                     </a>
