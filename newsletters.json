@@ -2,57 +2,57 @@
   {
     "title": "The $90 Billion Squeeze: What the Triad's Budget Really Means for Your Capture Strategy",
     "date": "January 18, 2026",
-    "description": "Two massive funding streams are converging at the exact moment the Pentagon is tearing up its acquisition rulebook. The $40.5 billion Defense Health Program budget sits alongside a brand-new $50 billion Rural Health Transformation Program.",
-    "url": "https://www.linkedin.com/pulse/90-billion-squeeze-mary-womack",
+    "description": "Two massive funding streams converge as the Pentagon tears up its acquisition rulebook. Understanding the DHP budget, Rural Health Transformation Program, and what Hegseth's 8(a) crackdown means for defense health contractors.",
+    "url": "https://www.linkedin.com/pulse/90-billion-squeeze-what-triads-budget-really-means-your-mary-womack",
     "tags": ["Budget", "Acquisition", "Strategy"]
   },
   {
-    "title": "The MHS Triad Part 2: The Capability Stack",
+    "title": "The MHS Triad, Part 2: The Capability Stack",
     "date": "January 16, 2026",
-    "description": "H2F proves the doctrine works. The telehealth landscape they're inheriting. What it all means for contractors, beneficiaries, and the warfighter.",
+    "description": "H2F, telehealth platforms, Oracle's Clinical AI Agent, and what the Oura disaster teaches us about audit-ready data architecture. Plus predictions for 2026-2028.",
     "url": "https://www.linkedin.com/pulse/mhs-triad-part-2-capability-stack-mary-womack",
-    "tags": ["MHS Triad", "Telehealth", "H2F"]
+    "tags": ["MHS Triad", "Telehealth", "Technology"]
   },
   {
-    "title": "The MHS Triad Part 1: Meet the Three Leaders Who Will Reshape Military Medicine",
+    "title": "The MHS Triad, Part 1: Meet the Three Leaders Who Will Reshape Military Medicine",
     "date": "January 13, 2026",
-    "description": "Keith Bass, Emil Michael, and Admiral Darin Via. We're calling them the MHS Triad. Together, they're about to transform how we think about military medicine.",
-    "url": "https://www.linkedin.com/pulse/mhs-triad-part-1-mary-womack",
-    "tags": ["MHS Triad", "Leadership", "DHA"]
+    "description": "Keith Bass, Emil Michael, and Admiral Darin Via form an interlocking system that's about to transform the Military Health System. Here's what you need to know.",
+    "url": "https://www.linkedin.com/pulse/mhs-triad-part-1-meet-three-leaders-reshape-military-medicine-womack",
+    "tags": ["MHS Triad", "Leadership", "Strategy"]
   },
   {
-    "title": "We're the Department of War Now",
+    "title": "Department of War: The Doctrine Shift That Changes Everything",
     "date": "January 6, 2026",
-    "description": "Executive Order 14347 authorized the Pentagon to use 'Department of War' as a secondary title. This isn't just optics. It's doctrine. Here's what it means for military medicine.",
-    "url": "https://www.linkedin.com/pulse/department-war-mary-womack",
-    "tags": ["Policy", "DoD", "Strategy"]
+    "description": "Executive Order 14347 isn't just optics. The shift from patient satisfaction to return-to-duty rates signals a fundamental reorientation of military medicine.",
+    "url": "https://www.linkedin.com/pulse/department-war-doctrine-shift-changes-everything-mary-womack",
+    "tags": ["Policy", "Strategy", "DoD"]
   },
   {
     "title": "The Audit Mandate: Why Everything Has to Work Now",
     "date": "December 30, 2025",
-    "description": "DoD must achieve a clean audit opinion by December 31, 2028. Section 1002 of the FY2026 NDAA gives this mandate real teeth: authority to fire or demote SES employees for audit failures.",
-    "url": "https://www.linkedin.com/pulse/audit-mandate-mary-womack",
-    "tags": ["Audit", "NDAA", "Compliance"]
+    "description": "DoD must achieve a clean audit opinion by December 31, 2028. Section 1002 of the FY2026 NDAA gives this mandate real teeth. Here's what it means for health IT.",
+    "url": "https://www.linkedin.com/pulse/audit-mandate-why-everything-has-work-now-mary-womack",
+    "tags": ["Compliance", "Audit", "MHS GENESIS"]
   },
   {
-    "title": "The Oura Disaster: What Wearables Vendors Need to Know",
+    "title": "The Oura Disaster: Lessons from a $96M Wearables Failure",
     "date": "December 16, 2025",
-    "description": "The $96M sole-source contract didn't die because WHOOP filed a protest. It died because DHA realized it couldn't audit the data. The next solicitation will require Audit-Ready Data Architecture.",
-    "url": "https://www.linkedin.com/pulse/oura-disaster-mary-womack",
-    "tags": ["Wearables", "Acquisition", "Data"]
+    "description": "The sole-source contract didn't die because WHOOP filed a protest. It died because DHA couldn't audit the data. What this means for the future of wearables in defense health.",
+    "url": "https://www.linkedin.com/pulse/oura-disaster-lessons-96m-wearables-failure-mary-womack",
+    "tags": ["Wearables", "Acquisition", "Data Governance"]
   },
   {
-    "title": "Human Performance Optimization: Via's Doctrine Made Real",
+    "title": "Human Performance Optimization: The Human Weapon System Doctrine",
     "date": "December 9, 2025",
-    "description": "The Army's H2F program is showing 35% reduction in injury volume, 37% fewer suicides, and 23% higher ACFT pass rate. This is Via's Human Weapon System doctrine made real.",
-    "url": "https://www.linkedin.com/pulse/human-performance-optimization-mary-womack",
-    "tags": ["H2F", "HPO", "Readiness"]
+    "description": "Admiral Via's vision for military medicine isn't healthcare. It's treating warfighters as the most important weapon system in our arsenal.",
+    "url": "https://www.linkedin.com/pulse/human-performance-optimization-human-weapon-system-doctrine-womack",
+    "tags": ["HPO", "H2F", "Readiness"]
   },
   {
-    "title": "GenAI.mil: Emil Michael's AI Push",
+    "title": "GenAI.mil: AI is America's Next Manifest Destiny",
     "date": "December 2, 2025",
-    "description": "On December 9, Michael launched GenAI.mil, putting Google's Gemini for Government on every DoD desktop. 3 million users, right now, at every classification level.",
-    "url": "https://www.linkedin.com/pulse/genai-mil-mary-womack",
-    "tags": ["AI", "GenAI", "Technology"]
+    "description": "Emil Michael just put Google's Gemini on every DoD desktop. 3 million users, every classification level. This isn't a pilot program.",
+    "url": "https://www.linkedin.com/pulse/genaimilai-americas-next-manifest-destiny-mary-womack",
+    "tags": ["AI", "GenAI.mil", "Technology"]
   }
 ]

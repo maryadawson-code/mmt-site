@@ -1,9 +1,8 @@
-# Mission Meets Tech - Static Site Configuration
-# NO BUILD COMMAND - This is a static HTML site
+# Netlify Configuration for Mission Meets Tech
+# Static site - no build required
 
 [build]
   publish = "."
-  # No build command - static files only
 
 # Redirects for clean URLs
 [[redirects]]
@@ -17,11 +16,6 @@
   status = 200
 
 [[redirects]]
-  from = "/resources"
-  to = "/resources.html"
-  status = 200
-
-[[redirects]]
   from = "/about"
   to = "/about.html"
   status = 200
@@ -29,6 +23,11 @@
 [[redirects]]
   from = "/contact"
   to = "/contact.html"
+  status = 200
+
+[[redirects]]
+  from = "/resources"
+  to = "/resources.html"
   status = 200
 
 # Headers for security and caching
@@ -41,16 +40,16 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
 
 [[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
   for = "/*.css"
   [headers.values]
-    Cache-Control = "public, max-age=31536000"
+    Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
   for = "/*.js"
   [headers.values]
-    Cache-Control = "public, max-age=31536000"
-
-[[headers]]
-  for = "/*.png"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000"
+    Cache-Control = "public, max-age=31536000, immutable"
