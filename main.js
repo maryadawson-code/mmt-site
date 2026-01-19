@@ -1,113 +1,128 @@
-// ============================================
-// MISSION MEETS TECH - Main JavaScript
-// ============================================
+// Mission Meets Tech - Main JavaScript
+// Navigation, scroll animations, form handling, and newsletter loading
+
+document.addEventListener('DOMContentLoaded', function() {
+    initNavigation();
+    initScrollAnimations();
+    initNavbarScroll();
+    loadRecentIssues();
+});
 
 // Mobile Navigation Toggle
-document.addEventListener('DOMContentLoaded', function() {
+function initNavigation() {
     const navToggle = document.querySelector('.nav-toggle');
     const navMenu = document.querySelector('.nav-menu');
     
-    if (navToggle && navMenu) {
-        navToggle.addEventListener('click', function() {
-            navToggle.classList.toggle('active');
-            navMenu.classList.toggle('active');
-        });
-        
-        // Close menu when clicking a link
-        navMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', function() {
-                navToggle.classList.remove('active');
-                navMenu.classList.remove('active');
-            });
-        });
-        
-        // Close menu when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
-                navToggle.classList.remove('active');
-                navMenu.classList.remove('active');
-            }
-        });
-    }
-});
+    if (!navToggle || !navMenu) return;
+    
+    navToggle.addEventListener('click', function() {
+        navMenu.classList.toggle('active');
+        navToggle.classList.toggle('active');
+    });
 
-// Scroll Animations
-document.addEventListener('DOMContentLoaded', function() {
-    const scrollElements = document.querySelectorAll('[data-scroll]');
-    
-    const elementInView = (el, dividend = 1) => {
-        const elementTop = el.getBoundingClientRect().top;
-        return (
-            elementTop <= (window.innerHeight || document.documentElement.clientHeight) / dividend
-        );
-    };
-    
-    const displayScrollElement = (element) => {
-        element.classList.add('visible');
-    };
-    
-    const handleScrollAnimation = () => {
-        scrollElements.forEach((el) => {
-            if (elementInView(el, 1.25)) {
-                displayScrollElement(el);
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+            navMenu.classList.remove('active');
+            navToggle.classList.remove('active');
+        }
+    });
+
+    // Close menu when clicking a link
+    navMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            navMenu.classList.remove('active');
+            navToggle.classList.remove('active');
+        });
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href !== '#') {
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
             }
         });
+    });
+}
+
+// Scroll animations - fade in elements as they come into view
+function initScrollAnimations() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
     };
-    
-    // Initial check
-    handleScrollAnimation();
-    
-    // Throttled scroll listener
-    let ticking = false;
+
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, observerOptions);
+
+    // Observe elements with fade-in class
+    document.querySelectorAll('.fade-in, .glass-card, .feature-card').forEach(el => {
+        observer.observe(el);
+    });
+}
+
+// Add/remove navbar background on scroll
+function initNavbarScroll() {
+    const nav = document.querySelector('.nav');
+    if (!nav) return;
+
     window.addEventListener('scroll', () => {
-        if (!ticking) {
-            window.requestAnimationFrame(() => {
-                handleScrollAnimation();
-                ticking = false;
-            });
-            ticking = true;
+        if (window.pageYOffset > 50) {
+            nav.classList.add('scrolled');
+        } else {
+            nav.classList.remove('scrolled');
         }
     });
-});
+}
 
-// Smooth scroll for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-    });
-});
+// Load and display recent newsletter issues
+async function loadRecentIssues() {
+    const issuesGrid = document.getElementById('issues-grid');
+    if (!issuesGrid) return;
 
-// Add active state to current nav link
-document.addEventListener('DOMContentLoaded', function() {
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    const navLinks = document.querySelectorAll('.nav-menu a');
-    
-    navLinks.forEach(link => {
-        const href = link.getAttribute('href');
-        if (href === currentPage || (currentPage === '' && href === 'index.html')) {
-            link.classList.add('active');
-        }
-    });
-});
+    try {
+        const response = await fetch('newsletters.json');
+        if (!response.ok) throw new Error('Failed to load newsletters');
+        
+        const newsletters = await response.json();
+        
+        // Display up to 6 recent issues
+        const recentIssues = newsletters.slice(0, 6);
+        
+        issuesGrid.innerHTML = recentIssues.map(issue => `
+            <article class="glass-card issue-card">
+                <div class="issue-date">${issue.date}</div>
+                <h3 class="issue-title">${issue.title}</h3>
+                <p class="issue-description">${issue.description}</p>
+                <div class="issue-tags">
+                    ${issue.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                </div>
+                <a href="${issue.url}" target="_blank" rel="noopener noreferrer" class="btn btn-text">
+                    Read on LinkedIn →
+                </a>
+            </article>
+        `).join('');
 
-// Form submission feedback (for Netlify Forms)
-document.addEventListener('DOMContentLoaded', function() {
-    const forms = document.querySelectorAll('form[data-netlify="true"]');
-    
-    forms.forEach(form => {
-        form.addEventListener('submit', function(e) {
-            const submitBtn = form.querySelector('button[type="submit"]');
-            if (submitBtn) {
-                submitBtn.textContent = 'Sending...';
-                submitBtn.disabled = true;
-            }
-        });
-    });
-});
+    } catch (error) {
+        console.error('Error loading newsletters:', error);
+        issuesGrid.innerHTML = `
+            <div class="glass-card" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                <p style="color: var(--color-text-muted);">Unable to load recent issues. Visit my <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener">LinkedIn</a> for the latest content.</p>
+            </div>
+        `;
+    }
+}

@@ -3,137 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Contact Mary Womack at Mission Meets Tech - Federal health IT consulting and advisory.">
     <title>Contact | Mission Meets Tech</title>
-    <meta name="description" content="Get in touch with Mary Womack about federal health IT, defense innovation, or collaboration opportunities.">
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="Contact | Mission Meets Tech">
-    <meta property="og:description" content="Get in touch about federal health IT, defense innovation, or collaboration opportunities.">
-    <meta property="og:image" content="https://missionmeetstech.com/og-default.png">
-    <meta property="og:url" content="https://missionmeetstech.com/contact.html">
-    <meta property="og:type" content="website">
-    
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Contact | Mission Meets Tech">
-    <meta name="twitter:description" content="Get in touch with Mary Womack.">
-    <meta name="twitter:image" content="https://missionmeetstech.com/og-default.png">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="icon" type="image/png" href="favicon.png">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
     
     <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
-    
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PRG234VSXM"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-PRG234VSXM');
-    </script>
 </head>
 <body>
     <!-- Navigation -->
     <nav class="nav">
         <div class="nav-container">
-            <a href="index.html" class="nav-logo">
+            <a href="/" class="nav-logo">
                 <img src="mmt-logo-nav.png" alt="Mission Meets Tech">
             </a>
-            <button class="nav-toggle" aria-label="Toggle navigation">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
             <ul class="nav-menu">
-                <li><a href="index.html">Home</a></li>
+                <li><a href="/">Home</a></li>
                 <li><a href="newsletter.html">Newsletter</a></li>
                 <li><a href="podcast.html">Podcast</a></li>
                 <li><a href="resources.html">Resources</a></li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="contact.html" class="active">Contact</a></li>
             </ul>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="page-hero">
+    <!-- Page Header -->
+    <header class="page-header">
         <div class="container">
-            <h1 class="section-title">Contact</h1>
-            <p class="page-subtitle">Have a question, idea, or opportunity? I'd love to hear from you.</p>
+            <h1>Get in Touch</h1>
+            <p>Have a question, want to collaborate, or just want to say hello? I'd love to hear from you.</p>
         </div>
-    </section>
+    </header>
 
-    <!-- Contact Section -->
-    <section class="contact-section">
+    <!-- Contact Form Section -->
+    <section>
         <div class="container">
-            <div class="contact-grid">
-                <div class="contact-info" data-scroll>
-                    <h2>Let's Connect</h2>
-                    <p>Whether you have a question about federal health IT, want to discuss a collaboration, or have feedback on the newsletter or podcast, I'm always happy to connect.</p>
-                    
-                    <div class="contact-methods">
-                        <div class="contact-method">
-                            <h3>LinkedIn</h3>
-                            <p>The best place for professional conversations and to follow my latest content.</p>
-                            <a href="https://www.linkedin.com/in/marywomack/" target="_blank" rel="noopener" class="btn btn-secondary">Connect on LinkedIn</a>
-                        </div>
-                        
-                        <div class="contact-method">
-                            <h3>Newsletter</h3>
-                            <p>Subscribe for weekly insights on federal health IT and defense innovation.</p>
-                            <a href="https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/" target="_blank" rel="noopener" class="btn btn-secondary">Subscribe</a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="contact-form-container glass-card" data-scroll>
-                    <h2>Send a Message</h2>
-                    <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="contact-form">
+            <div class="contact-section">
+                <div class="glass-card">
+                    <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
                         <input type="hidden" name="form-name" value="contact">
-                        <p class="hidden" style="display:none;">
+                        
+                        <!-- Honeypot field for spam protection -->
+                        <p style="display: none;">
                             <label>Don't fill this out: <input name="bot-field"></label>
                         </p>
                         
                         <div class="form-group">
-                            <label for="name">Name</label>
+                            <label for="name">Name *</label>
                             <input type="text" id="name" name="name" required>
                         </div>
                         
                         <div class="form-group">
-                            <label for="email">Email</label>
+                            <label for="email">Email *</label>
                             <input type="email" id="email" name="email" required>
                         </div>
                         
                         <div class="form-group">
-                            <label for="subject">Subject</label>
+                            <label for="company">Company / Organization</label>
+                            <input type="text" id="company" name="company">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject">Subject *</label>
                             <select id="subject" name="subject" required>
                                 <option value="">Select a topic...</option>
-                                <option value="newsletter">Newsletter Feedback</option>
-                                <option value="podcast">Podcast / Guest Inquiry</option>
-                                <option value="collaboration">Collaboration Opportunity</option>
-                                <option value="question">General Question</option>
+                                <option value="newsletter">Newsletter Inquiry</option>
+                                <option value="podcast">Podcast Guest / Collaboration</option>
+                                <option value="consulting">Consulting / Advisory</option>
+                                <option value="speaking">Speaking Engagement</option>
+                                <option value="media">Media / Press</option>
                                 <option value="other">Other</option>
                             </select>
                         </div>
                         
                         <div class="form-group">
-                            <label for="message">Message</label>
-                            <textarea id="message" name="message" rows="5" required></textarea>
+                            <label for="message">Message *</label>
+                            <textarea id="message" name="message" required placeholder="Tell me how I can help..."></textarea>
                         </div>
                         
-                        <button type="submit" class="btn btn-primary btn-full">Send Message</button>
-                        
-                        <p class="form-disclaimer">Your information is kept private and never shared. I'll respond as soon as I can.</p>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
                     </form>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <p style="color: var(--color-text-muted);">Or connect with me directly on <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener">LinkedIn</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Alternative Contact -->
+    <section>
+        <div class="container">
+            <div class="features" style="max-width: 900px; margin: 0 auto;">
+                <div class="glass-card feature-card">
+                    <div class="feature-icon">💼</div>
+                    <h3>LinkedIn</h3>
+                    <p>Connect with me for industry updates and professional networking.</p>
+                    <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="btn btn-text" style="margin-top: 1rem;">Connect →</a>
+                </div>
+                
+                <div class="glass-card feature-card">
+                    <div class="feature-icon">📰</div>
+                    <h3>Newsletter</h3>
+                    <p>Subscribe for weekly federal health IT intelligence delivered to your inbox.</p>
+                    <a href="newsletter.html" class="btn btn-text" style="margin-top: 1rem;">Subscribe →</a>
+                </div>
+                
+                <div class="glass-card feature-card">
+                    <div class="feature-icon">🎙️</div>
+                    <h3>Podcast</h3>
+                    <p>Interested in being a guest on Fed UP? Let's talk about it.</p>
+                    <a href="podcast.html" class="btn btn-text" style="margin-top: 1rem;">Learn More →</a>
                 </div>
             </div>
         </div>
@@ -144,34 +139,46 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <img src="mmt-logo.png" alt="Mission Meets Tech" class="footer-logo">
-                    <p>Insights at the intersection of health strategy, policy, and technology.</p>
+                    <img src="mmt-logo.png" alt="Mission Meets Tech">
+                    <p>Translating federal health IT complexity into actionable intelligence.</p>
                 </div>
+                
                 <div class="footer-links">
-                    <h4>Quick Links</h4>
+                    <h4>Content</h4>
                     <ul>
                         <li><a href="newsletter.html">Newsletter</a></li>
                         <li><a href="podcast.html">Podcast</a></li>
                         <li><a href="resources.html">Resources</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>About</h4>
+                    <ul>
+                        <li><a href="about.html">About Mary</a></li>
                         <li><a href="contact.html">Contact</a></li>
                     </ul>
                 </div>
-                <div class="footer-connect">
+                
+                <div class="footer-links">
                     <h4>Connect</h4>
                     <ul>
-                        <li><a href="https://www.linkedin.com/in/marywomack/" target="_blank" rel="noopener">LinkedIn</a></li>
-                        <li><a href="https://feeds.transistor.fm/fed-up-where-mission-meets-reality" target="_blank" rel="noopener">RSS Feed</a></li>
+                        <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener">LinkedIn</a></li>
+                        <li><a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank" rel="noopener">Apple Podcasts</a></li>
+                        <li><a href="https://open.spotify.com/show/fed-up-mission-meets-reality" target="_blank" rel="noopener">Spotify</a></li>
                     </ul>
                 </div>
             </div>
             
-            <!-- Disclaimer -->
-            <div class="footer-disclaimer">
-                <p>The views and opinions expressed on this site are my own and do not represent the official position of my employer, any government agency, or any other organization. Content is for informational purposes only and does not constitute legal, financial, or medical advice.</p>
-            </div>
-            
             <div class="footer-bottom">
-                <p>&copy; 2026 Mary Womack. All rights reserved.</p>
+                <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" aria-label="LinkedIn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                    </a>
+                </div>
             </div>
         </div>
     </footer>

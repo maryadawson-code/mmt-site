@@ -1,17 +1,13 @@
+# Netlify Configuration for Mission Meets Tech
+
 [build]
-  command = "npm install && npm run build"
-  publish = "dist"
+  publish = "."
 
 # Redirects for clean URLs
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-  conditions = {Role = ["admin"]}
-
-# Handle form submissions
-[build.environment]
-  NODE_VERSION = "18"
+  from = "/index"
+  to = "/"
+  status = 301
 
 # Headers for security and caching
 [[headers]]
@@ -33,16 +29,17 @@
     Cache-Control = "public, max-age=31536000"
 
 [[headers]]
-  for = "/*.jpg"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000"
-
-[[headers]]
   for = "/*.png"
   [headers.values]
     Cache-Control = "public, max-age=31536000"
 
 [[headers]]
-  for = "/*.svg"
+  for = "/*.jpg"
   [headers.values]
     Cache-Control = "public, max-age=31536000"
+
+# Form handling
+[build.processing]
+  skip_processing = false
+[build.processing.html]
+  pretty_urls = true
