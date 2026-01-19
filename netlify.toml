@@ -1,13 +1,35 @@
-# Netlify Configuration for Mission Meets Tech
+# Mission Meets Tech - Static Site Configuration
+# NO BUILD COMMAND - This is a static HTML site
 
 [build]
   publish = "."
+  # No build command - static files only
 
 # Redirects for clean URLs
 [[redirects]]
-  from = "/index"
-  to = "/"
-  status = 301
+  from = "/newsletter"
+  to = "/newsletter.html"
+  status = 200
+
+[[redirects]]
+  from = "/podcast"
+  to = "/podcast.html"
+  status = 200
+
+[[redirects]]
+  from = "/resources"
+  to = "/resources.html"
+  status = 200
+
+[[redirects]]
+  from = "/about"
+  to = "/about.html"
+  status = 200
+
+[[redirects]]
+  from = "/contact"
+  to = "/contact.html"
+  status = 200
 
 # Headers for security and caching
 [[headers]]
@@ -32,14 +54,3 @@
   for = "/*.png"
   [headers.values]
     Cache-Control = "public, max-age=31536000"
-
-[[headers]]
-  for = "/*.jpg"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000"
-
-# Form handling
-[build.processing]
-  skip_processing = false
-[build.processing.html]
-  pretty_urls = true

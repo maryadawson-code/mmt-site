@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newsletter | Mission Meets Tech</title>
+    <meta name="description" content="Federal health IT intelligence delivered weekly. Subscribe to Mission Meets Tech for actionable insights on DHA, MHS GENESIS, and defense health contracting.">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PRG234VSXM"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PRG234VSXM');
+    </script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav" role="navigation" aria-label="Main navigation">
+        <div class="nav-container">
+            <a href="/" class="nav-logo" aria-label="Mission Meets Tech Home">
+                <img src="mmt-logo-nav.png" alt="Mission Meets Tech logo" height="40">
+            </a>
+            <button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="/">Home</a></li>
+                <li><a href="/newsletter.html" class="active">Newsletter</a></li>
+                <li><a href="/podcast.html">Podcast</a></li>
+                <li><a href="/resources.html">Resources</a></li>
+                <li><a href="/about.html">About</a></li>
+                <li><a href="/contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="container">
+            <h1>Newsletter</h1>
+            <p>Federal health IT intelligence delivered weekly. Actionable insights on DHA, MHS GENESIS, defense health contracting, and the policies shaping military medicine.</p>
+        </div>
+    </header>
+
+    <!-- Subscribe Section -->
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div class="glass-card text-center">
+                <h2 class="text-cyan mb-24">Subscribe to Mission Meets Tech</h2>
+                <p class="mb-24">Join 1,191+ decision-makers getting federal health IT intelligence. No spam, just signal.</p>
+                <form class="signup-form" name="newsletter-signup" method="POST" data-netlify="true" netlify-honeypot="bot-field" style="max-width: 500px; margin: 0 auto;">
+                    <input type="hidden" name="form-name" value="newsletter-signup">
+                    <p hidden><label>Don't fill this out: <input name="bot-field"></label></p>
+                    <input type="email" name="email" placeholder="Enter your email" required autocomplete="email">
+                    <button type="submit" class="btn btn-primary">Subscribe</button>
+                </form>
+                <p class="mt-24" style="font-size: 0.875rem; color: var(--color-gray);">Or subscribe on <a href="https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/" target="_blank" rel="noopener noreferrer">LinkedIn</a></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Issues -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Recent Issues</h2>
+            <div class="issues-grid" id="issues-grid">
+                <!-- Issues loaded via JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <img src="mmt-logo.png" alt="Mission Meets Tech logo" height="50">
+                    <p>Translating complex federal health IT policy into actionable intelligence.</p>
+                    <div class="social-links">
+                        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="/newsletter.html">Newsletter</a></li>
+                        <li><a href="/podcast.html">Podcast</a></li>
+                        <li><a href="/resources.html">Resources</a></li>
+                        <li><a href="/about.html">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="/contact.html">Contact</a></li>
+                        <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
+                <p style="margin-top: 8px; font-size: 0.8rem;">The views expressed are my own and do not represent the official position of any organization.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>
