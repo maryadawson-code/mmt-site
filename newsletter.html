@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newsletter | Mission Meets Tech</title>
+    <meta name="description" content="Subscribe to Mission Meets Tech for weekly insights on federal health IT, defense innovation, and digital health strategy.">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Mission Meets Tech Newsletter">
+    <meta property="og:description" content="Weekly insights on federal health IT, defense innovation, and digital health strategy. Join 1,191+ subscribers.">
+    <meta property="og:image" content="https://missionmeetstech.com/og-default.png">
+    <meta property="og:url" content="https://missionmeetstech.com/newsletter.html">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Mission Meets Tech Newsletter">
+    <meta name="twitter:description" content="Weekly insights on federal health IT and defense innovation.">
+    <meta name="twitter:image" content="https://missionmeetstech.com/og-default.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PRG234VSXM"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PRG234VSXM');
+    </script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <img src="mmt-logo-nav.png" alt="Mission Meets Tech">
+            </a>
+            <button class="nav-toggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="newsletter.html" class="active">Newsletter</a></li>
+                <li><a href="podcast.html">Podcast</a></li>
+                <li><a href="resources.html">Resources</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="page-hero">
+        <div class="container">
+            <h1 class="section-title">Mission Meets Tech Newsletter</h1>
+            <p class="page-subtitle">Weekly insights on federal health IT, defense innovation, and the policy decisions that actually matter.</p>
+        </div>
+    </section>
+
+    <!-- Newsletter Info Section -->
+    <section class="newsletter-info-section">
+        <div class="container">
+            <div class="newsletter-info-grid">
+                <div class="newsletter-info-content" data-scroll>
+                    <h2>What You'll Get</h2>
+                    <p>Every week, I break down the complex world of federal health IT and defense innovation into actionable intelligence. No fluff. No vendor pitches. Just clarity on what works and what doesn't.</p>
+                    
+                    <h3>Topics I Cover</h3>
+                    <ul class="topic-list">
+                        <li>MHS GENESIS and military health system modernization</li>
+                        <li>VA digital transformation initiatives</li>
+                        <li>Defense Health Agency strategy and leadership</li>
+                        <li>AI adoption in federal healthcare</li>
+                        <li>Acquisition reform and contracting intelligence</li>
+                        <li>Telehealth and remote patient monitoring</li>
+                        <li>Human performance optimization programs</li>
+                    </ul>
+                    
+                    <h3>Who Reads It</h3>
+                    <p>1,191+ leaders across federal health, defense, and industry. Decision-makers who need to understand where policy, technology, and mission intersect.</p>
+                </div>
+                
+                <div class="newsletter-subscribe-card glass-card" data-scroll>
+                    <h2>Subscribe Now</h2>
+                    <p>Join the community of leaders navigating federal health IT and defense innovation.</p>
+                    <a href="https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/" target="_blank" rel="noopener" class="btn btn-primary btn-full">Subscribe on LinkedIn</a>
+                    <p class="form-disclaimer">By subscribing, you'll receive my weekly newsletter. I respect your privacy and never share your information.</p>
+                    
+                    <div class="subscribe-divider">
+                        <span>or</span>
+                    </div>
+                    
+                    <h3>Get Notified by Email</h3>
+                    <form name="email-signup" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="email-form">
+                        <input type="hidden" name="form-name" value="email-signup">
+                        <p class="hidden" style="display:none;">
+                            <label>Don't fill this out: <input name="bot-field"></label>
+                        </p>
+                        <div class="form-group">
+                            <input type="email" name="email" placeholder="your@email.com" required>
+                            <button type="submit" class="btn btn-secondary">Notify Me</button>
+                        </div>
+                    </form>
+                    <p class="form-disclaimer">I'll let you know when new issues drop. No spam, ever.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Issues Section -->
+    <section class="recent-issues-section">
+        <div class="container">
+            <h2 class="section-title">Recent Issues</h2>
+            <div class="issues-grid" id="recent-issues">
+                <!-- Populated by JavaScript from newsletters.json -->
+            </div>
+            <div class="section-cta">
+                <a href="newsletter-archive.html" class="btn btn-secondary">View Full Archive</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <img src="mmt-logo.png" alt="Mission Meets Tech" class="footer-logo">
+                    <p>Insights at the intersection of health strategy, policy, and technology.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="newsletter.html">Newsletter</a></li>
+                        <li><a href="podcast.html">Podcast</a></li>
+                        <li><a href="resources.html">Resources</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-connect">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="https://www.linkedin.com/in/marywomack/" target="_blank" rel="noopener">LinkedIn</a></li>
+                        <li><a href="https://feeds.transistor.fm/fed-up-where-mission-meets-reality" target="_blank" rel="noopener">RSS Feed</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Disclaimer -->
+            <div class="footer-disclaimer">
+                <p>The views and opinions expressed on this site are my own and do not represent the official position of my employer, any government agency, or any other organization. Content is for informational purposes only and does not constitute legal, financial, or medical advice.</p>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2026 Mary Womack. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script>
+        // Load recent newsletter issues
+        fetch('newsletters.json')
+            .then(response => response.json())
+            .then(newsletters => {
+                const container = document.getElementById('recent-issues');
+                const recent = newsletters.slice(0, 3);
+                
+                recent.forEach(issue => {
+                    const card = document.createElement('div');
+                    card.className = 'issue-card glass-card';
+                    card.setAttribute('data-scroll', '');
+                    
+                    const tags = issue.tags ? issue.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : '';
+                    
+                    card.innerHTML = `
+                        <span class="issue-date">${issue.date}</span>
+                        <h3>${issue.title}</h3>
+                        <p>${issue.description}</p>
+                        <div class="issue-tags">${tags}</div>
+                        <a href="${issue.url}" target="_blank" rel="noopener" class="btn btn-text">Read on LinkedIn →</a>
+                    `;
+                    
+                    container.appendChild(card);
+                });
+            })
+            .catch(error => console.error('Error loading newsletters:', error));
+    </script>
+</body>
+</html>
