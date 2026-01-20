@@ -309,6 +309,16 @@ section {
   margin: 0 auto 3rem;
 }
 
+/* Features Section */
+.features {
+  background: var(--deep-navy);
+}
+
+/* Recent Issues Section */
+.recent-issues {
+  background: var(--deep-navy);
+}
+
 /* Features Grid */
 .features-grid {
   display: grid;
@@ -341,17 +351,26 @@ section {
   gap: 2rem;
 }
 
+@media (max-width: 400px) {
+  .issues-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .issue-card {
+  display: block;
   background: rgba(0, 31, 52, 0.6);
   border: 1px solid rgba(0, 229, 250, 0.1);
   border-radius: 12px;
   padding: 1.5rem;
   transition: all 0.3s ease;
+  text-decoration: none;
 }
 
 .issue-card:hover {
   border-color: var(--primary-cyan);
   transform: translateY(-3px);
+  color: inherit;
 }
 
 .issue-date {
@@ -361,15 +380,19 @@ section {
 }
 
 .issue-title {
+  font-family: var(--font-heading);
   font-size: 1.25rem;
+  font-weight: 600;
   margin-bottom: 0.75rem;
   color: var(--text-primary);
+  line-height: 1.3;
 }
 
 .issue-description {
   color: var(--text-secondary);
   font-size: 0.95rem;
   margin-bottom: 1rem;
+  line-height: 1.5;
 }
 
 .issue-tags {
@@ -393,8 +416,14 @@ section {
 
 .about-preview-grid {
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 280px 1fr;
   gap: 3rem;
+  align-items: center;
+}
+
+.about-preview-image-container {
+  display: flex;
+  justify-content: center;
   align-items: center;
 }
 
@@ -409,6 +438,7 @@ section {
 
 .about-preview-content h2 {
   margin-bottom: 0.5rem;
+  color: var(--text-primary);
 }
 
 .about-preview-title {
@@ -426,6 +456,10 @@ section {
   .about-preview-grid {
     grid-template-columns: 1fr;
     text-align: center;
+  }
+  
+  .about-preview-image-container {
+    justify-content: center;
   }
   
   .about-preview-image {
@@ -465,6 +499,11 @@ section {
   grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
   margin-top: 2rem;
+}
+
+/* About Content Section */
+.about-content-section {
+  background: var(--deep-navy);
 }
 
 .expertise-item {
@@ -735,6 +774,10 @@ section {
   grid-template-columns: 2fr 1fr 1fr;
   gap: 3rem;
   margin-bottom: 3rem;
+}
+
+.footer-brand {
+  display: block;
 }
 
 .footer-logo img {

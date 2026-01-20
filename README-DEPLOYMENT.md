@@ -1,12 +1,38 @@
-# MMT Website Update - Complete Package
+# MMT Website Update - QA/QC Fixed Version
 ## January 19, 2026
 
 ---
 
 ## STATUS: READY FOR DEPLOYMENT ✅
 
-### Package Contents (17 files)
-All files are in `mmt-website-update-jan19.zip`:
+Use **`mmt-website-QA-fixed-jan19.zip`** (this is the corrected version)
+
+---
+
+## QA/QC FIXES APPLIED
+
+The following issues were identified and fixed in this version:
+
+### CSS Fixes:
+1. **Issue cards as links** - Added `display: block` and proper text color inheritance so newsletter cards display correctly when rendered as `<a>` tags
+2. **Missing `.features` section class** - Added background styling
+3. **Missing `.recent-issues` section class** - Added background styling
+4. **Missing `.about-content-section` class** - Added background styling
+5. **Missing `.footer-brand` class** - Added display block styling
+6. **Missing `.about-preview-image-container` class** - Added flexbox centering
+7. **Fixed issue card text colors** - Added proper `font-family`, `line-height`, and explicit colors for `.issue-title` and `.issue-description` so they don't inherit link cyan color
+8. **Added responsive breakpoint** for issues grid at 400px mobile screens
+
+### Validation Results:
+- ✅ All 6 HTML files: Tags balanced
+- ✅ CSS: 157 braces balanced, no syntax errors
+- ✅ JSON: Valid with 8 newsletter entries
+- ✅ All HTML classes now have corresponding CSS definitions
+- ✅ All file references (images, CSS, JS) verified present
+
+---
+
+## PACKAGE CONTENTS (17 files)
 
 **HTML Pages (6):**
 - `index.html` - Homepage with About Mary section, Recent Issues
@@ -17,7 +43,7 @@ All files are in `mmt-website-update-jan19.zip`:
 - `contact.html` - Contact form
 
 **CSS & JavaScript:**
-- `styles.css` - Complete brand-compliant styles (colors: #00E5FA, #00D29F, #00050F)
+- `styles.css` - Complete brand-compliant styles (15KB, all classes defined)
 - `main.js` - Newsletter loader, mobile nav, scroll animations
 - `newsletters.json` - 8 newsletter entries
 
@@ -27,37 +53,11 @@ All files are in `mmt-website-update-jan19.zip`:
 - `mmt-icon.png` - Icon only
 - `favicon.png` - Browser tab icon (32px)
 - `apple-touch-icon.png` - Mobile bookmark (128px)
-- `mary-womack.jpg` - Placeholder headshot (replace with real photo)
-- `sara-byrd.jpg` - Placeholder headshot (replace with real photo)
+- `mary-womack.jpg` - Placeholder headshot (REPLACE with real photo)
+- `sara-byrd.jpg` - Placeholder headshot (REPLACE with real photo)
 
 **Config:**
 - `netlify.toml` - Build configuration
-
----
-
-## KEY UPDATES MADE
-
-### 1. Home Link Added to All Pages ✅
-Navigation now includes "Home" link on every page.
-
-### 2. Mary's Bio - No Employer Reference ✅
-- Positioned as **"Founder, Mission Meets Tech"**
-- No mention of Rocket Data or any current employer
-- Bio appears on BOTH homepage AND about page
-- First-person voice, non-salesy
-
-### 3. Comprehensive Resources Page ✅
-Includes:
-- Official Government Sources (Health.mil, DHA, VA, TRICARE, DARPA BTO, CDMRP)
-- Research & Analysis (CRS, GAO, DoD Comptroller, Congress.gov, RAND)
-- Acquisition & Contracting (SAM.gov, FPDS, Tradewinds, SBA, FAR, USAMRAA)
-- Industry News (Breaking Defense, Federal News Network, Healthcare IT News, Military.com, DefenseScoop)
-- Key Terms & Acronyms glossary (16 terms)
-
-### 4. Podcast Page ✅
-- Mary and Sara presented as equal co-hosts
-- 50/50 partnership noted
-- Mary's bio: no employer reference
 
 ---
 
@@ -66,15 +66,15 @@ Includes:
 ### Option A: GitHub Web Upload (Recommended)
 1. Go to github.com → maryadawson-code/mmt-site
 2. Click "Add file" → "Upload files"
-3. Unzip the package locally first
+3. **Unzip `mmt-website-QA-fixed-jan19.zip` locally first**
 4. Drag ALL 17 files into the upload area
-5. Commit message: "Website update - Jan 19"
+5. Commit message: "Website update - Jan 19 QA fixes"
 6. Click "Commit changes"
 7. Wait 2 minutes for Netlify auto-deploy
-8. Hard refresh browser (Ctrl+Shift+R)
+8. Hard refresh browser (Ctrl+Shift+R or Cmd+Shift+R)
 
 ### Option B: Replace Entire Repo Contents
-1. Delete all existing files in repo (except .git folder)
+1. Delete all existing files in repo (keep .git folder if using git locally)
 2. Upload all 17 files from the ZIP
 3. Commit and wait for deploy
 
@@ -82,7 +82,7 @@ Includes:
 
 ## PLACEHOLDER IMAGES TO REPLACE
 
-The package includes placeholder headshots that should be replaced with real photos:
+The package includes placeholder headshots that should be replaced:
 
 - `mary-womack.jpg` - Replace with your professional headshot
 - `sara-byrd.jpg` - Replace with Sara's professional headshot
@@ -107,17 +107,23 @@ Recommended size: 400x400px or larger, square aspect ratio.
 - First-person "I" for Mary's content
 - Non-salesy, mission-focused
 - No employer endorsements implied
+- Mary positioned as "Founder, Mission Meets Tech"
 
 ---
 
-## WHAT'S WORKING
+## KEY FEATURES
 
+- ✅ Home link on ALL pages
 - ✅ Newsletter loader fetches from `newsletters.json`
 - ✅ Mobile-responsive navigation with hamburger menu
 - ✅ Netlify forms for contact and email signup
 - ✅ Google Analytics (G-PRG234VSXM)
-- ✅ All resource links are standard .gov/.mil URLs
+- ✅ Mary's bio on homepage AND about page (no employer)
+- ✅ Comprehensive resources page with government links
+- ✅ 16-term glossary of federal health IT acronyms
+- ✅ Podcast page with Sara as equal co-host (50/50)
 
 ---
 
 *Package created: January 19, 2026*
+*QA/QC fixes applied: January 19, 2026*
