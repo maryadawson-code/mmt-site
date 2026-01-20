@@ -1,76 +1,48 @@
-/* Mission Meets Tech - Production JavaScript v2.0 */
+// Mission Meets Tech - Main JavaScript
 
 document.addEventListener('DOMContentLoaded', function() {
-    initNavigation();
-    initNewsletterLoader();
-});
-
-function initNavigation() {
-    var navToggle = document.querySelector('.nav-toggle');
-    var navMenu = document.querySelector('.nav-menu');
-    if (!navToggle || !navMenu) return;
+    // Mobile Menu Toggle
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const navLinks = document.querySelector('.nav-links');
     
-    navToggle.addEventListener('click', function() {
-        navToggle.classList.toggle('active');
-        navMenu.classList.toggle('active');
+    if (mobileMenuBtn && navLinks) {
+        mobileMenuBtn.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+            mobileMenuBtn.classList.toggle('active');
+        });
+        
+        // Close menu when clicking a link
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                mobileMenuBtn.classList.remove('active');
+            });
+        });
+    }
+    
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
     });
     
-    var links = navMenu.querySelectorAll('a');
-    for (var i = 0; i < links.length; i++) {
-        links[i].addEventListener('click', function() {
-            navToggle.classList.remove('active');
-            navMenu.classList.remove('active');
+    // Add scroll effect to nav
+    const nav = document.querySelector('nav');
+    if (nav) {
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                nav.style.background = 'rgba(5, 10, 15, 0.98)';
+            } else {
+                nav.style.background = 'rgba(10, 15, 20, 0.95)';
+            }
         });
     }
-}
-
-function initNewsletterLoader() {
-    var container = document.getElementById('recent-issues');
-    if (!container) return;
-    
-    fetch('newsletters.json')
-        .then(function(response) {
-            if (!response.ok) throw new Error('Failed to load');
-            return response.json();
-        })
-        .then(function(data) {
-            if (!data || data.length === 0) {
-                container.innerHTML = '<p class="loading">No newsletters available.</p>';
-                return;
-            }
-            renderNewsletters(container, data.slice(0, 6));
-        })
-        .catch(function() {
-            container.innerHTML = '<p class="loading">Unable to load newsletters.</p>';
-        });
-}
-
-function renderNewsletters(container, items) {
-    var html = '';
-    for (var i = 0; i < items.length; i++) {
-        var item = items[i];
-        var tagsHtml = '';
-        if (item.tags && item.tags.length > 0) {
-            tagsHtml = '<div class="tags">';
-            for (var j = 0; j < item.tags.length; j++) {
-                tagsHtml += '<span class="tag">' + escapeHtml(item.tags[j]) + '</span>';
-            }
-            tagsHtml += '</div>';
-        }
-        html += '<article class="issue-card">' +
-            '<h3>' + escapeHtml(item.title) + '</h3>' +
-            '<p class="date">' + escapeHtml(item.date) + '</p>' +
-            '<p>' + escapeHtml(item.description) + '</p>' +
-            tagsHtml +
-            '<a href="' + escapeHtml(item.url) + '" target="_blank" rel="noopener" class="btn btn-text">Read on LinkedIn →</a>' +
-            '</article>';
-    }
-    container.innerHTML = html;
-}
-
-function escapeHtml(text) {
-    if (!text) return '';
-    var div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
+});

@@ -4,150 +4,128 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fed UP Podcast | Mission Meets Tech</title>
-    <meta name="description" content="Fed UP: Where Mission Meets Reality. Mary Womack and Sara Byrd break down federal health IT policy fights and technology bets.">
+    <meta name="description" content="Fed UP: Where Mission Meets Reality - A podcast about federal health IT, military medicine, and what actually works.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="icon" type="image/png" href="mmt-logo.png">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
 <body>
     <nav>
-        <div class="container">
-            <a href="index.html" class="logo">
-                <img src="mmt-logo.png" alt="Mission Meets Tech" class="logo-img">
-                <span class="logo-text">Mission Meets Tech</span>
+        <div class="container nav-container">
+            <a href="index.html" class="nav-logo">
+                <img src="mmt-logo-nav.png" alt="Mission Meets Tech" >
             </a>
+            <button class="mobile-menu-btn" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
             <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="podcast.html">Podcast</a></li>
                 <li><a href="newsletter.html">Newsletter</a></li>
+                <li><a href="podcast.html">Podcast</a></li>
                 <li><a href="resources.html">Resources</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
             </ul>
-            <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" class="nav-cta" target="_blank">Subscribe</a>
         </div>
     </nav>
 
     <section class="podcast-hero">
         <div class="container">
-            <h1>Fed UP: Where Mission Meets Reality</h1>
-            <p>Mary Womack and Sara Byrd break down the policy fights and technology bets shaping federal health IT. No talking points. No vendor spin. Just the unfiltered truth.</p>
+            <h1>Fed UP</h1>
+            <p class="section-subtitle" style="font-size: 1.3rem; margin-bottom: 8px;">Where Mission Meets Reality</p>
+            <p style="color: var(--white-dim);">Unfiltered conversations about federal health IT</p>
         </div>
     </section>
 
     <section>
         <div class="container">
-            <h2 class="section-title">Listen Now</h2>
-            <div class="podcast-embed">
-                <iframe src="https://share.transistor.fm/e/fed-up-where-mission-meets-reality" width="100%" height="400" frameborder="0" scrolling="no" seamless style="border-radius: 8px;"></iframe>
+            <h2 class="section-title text-center" style="margin-bottom: 48px;">Latest Episodes</h2>
+            <div class="embed-container">
+                <iframe src="https://share.transistor.fm/e/fed-up-where-mission-meets-reality" width="100%" height="450" frameborder="0" scrolling="no" seamless="true"></iframe>
             </div>
         </div>
     </section>
 
-    <section class="alt">
+    <section class="coverage-section">
         <div class="container">
-            <h2 class="section-title">Subscribe on Your Platform</h2>
-            <div class="subscribe-platforms">
-                <a href="https://podcasts.apple.com/us/podcast/id1870101530" class="platform-btn" target="_blank">
-                    <i class="fab fa-apple"></i> Apple Podcasts
-                </a>
-                <a href="https://open.spotify.com/show/7sND342duH7Buw1cUs60lP" class="platform-btn" target="_blank">
-                    <i class="fab fa-spotify"></i> Spotify
-                </a>
-                <a href="https://www.youtube.com/channel/UCfuM3t-cm6Kq01lnzYf8KZQ" class="platform-btn" target="_blank">
-                    <i class="fab fa-youtube"></i> YouTube
-                </a>
-                <a href="https://music.amazon.com/podcasts/920fec9b-4fae-4bd0-ae4d-eaf1459cad2f" class="platform-btn" target="_blank">
-                    <i class="fab fa-amazon"></i> Amazon Music
-                </a>
-                <a href="https://overcast.fm/itunes1870101530" class="platform-btn" target="_blank">
-                    <i class="fas fa-podcast"></i> Overcast
-                </a>
-                <a href="https://castro.fm/itunes/1870101530" class="platform-btn" target="_blank">
-                    <i class="fas fa-podcast"></i> Castro
-                </a>
-                <a href="https://castbox.fm/vic/1870101530" class="platform-btn" target="_blank">
-                    <i class="fas fa-podcast"></i> Castbox
-                </a>
-                <a href="https://www.goodpods.com/podcasts-aid/1870101530" class="platform-btn" target="_blank">
-                    <i class="fas fa-podcast"></i> Goodpods
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <section>
-        <div class="container">
-            <h2 class="section-title">Your Hosts</h2>
+            <h2 class="section-title text-center">Your Hosts</h2>
+            <p class="section-subtitle">Two federal health IT veterans who aren't afraid to say what everyone's thinking</p>
+            
             <div class="hosts-section">
                 <div class="host-card">
                     <img src="marywomack.jpg" alt="Mary Womack" class="host-image">
                     <h3>Mary Womack</h3>
-                    <p>Founder, Mission Meets Tech. Federal health IT strategist translating complex policy into actionable intelligence.</p>
-                    <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" class="social-link" target="_blank" style="justify-content: center;">LinkedIn →</a>
+                    <p>Founder, Mission Meets Tech</p>
                 </div>
                 <div class="host-card">
                     <img src="sarabyrd.jpg" alt="Sara Byrd" class="host-image">
                     <h3>Sara Byrd</h3>
-                    <p>Federal Health IT Veteran & FedHealthIT100 Honoree. Co-Founder, FedTechCares. Deep expertise in defense acquisition and health IT.</p>
-                    <a href="https://www.linkedin.com/in/saraebyrd/" class="social-link" target="_blank" style="justify-content: center;">LinkedIn →</a>
+                    <p>Federal Health IT Veteran & FedHealthIT100 Honoree</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="alt">
-        <div class="container" style="text-align: center;">
-            <h2 class="section-title">Never Miss an Episode</h2>
-            <p style="max-width: 500px; margin: 0 auto 24px;">Subscribe to the Fed UP newsletter for episode alerts and show notes.</p>
-            <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7410672315090276353" class="btn btn-primary" target="_blank">Subscribe to Fed UP Updates</a>
+    <section>
+        <div class="container text-center">
+            <h2 class="section-title">Subscribe on Your Platform</h2>
+            <p class="section-subtitle">Never miss an episode</p>
+            
+            <div class="subscribe-platforms">
+                <a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1789422839" target="_blank" class="platform-btn">
+                    🍎 Apple Podcasts
+                </a>
+                <a href="https://open.spotify.com/show/4O7N6M2X0vN3n1K1U5fG6m" target="_blank" class="platform-btn">
+                    🎵 Spotify
+                </a>
+                <a href="https://www.youtube.com/@MissionMeetsTech" target="_blank" class="platform-btn">
+                    ▶️ YouTube
+                </a>
+                <a href="https://music.amazon.com/podcasts/920fec9b-4fae-4bd0-ae4d-eaf1459cad2f" target="_blank" class="platform-btn">
+                    🎧 Amazon Music
+                </a>
+            </div>
         </div>
     </section>
 
     <footer>
         <div class="container">
-            <div class="footer-content">
+            <div class="footer-grid">
                 <div class="footer-brand">
-                    <a href="index.html" class="logo">
-                        <img src="mmt-logo.png" alt="Mission Meets Tech" class="logo-img">
-                        <span class="logo-text">Mission Meets Tech</span>
-                    </a>
-                    <p>Federal health IT intelligence for people who care about the warfighter and the mission.</p>
-                    <div class="footer-social">
-                        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank"><i class="fab fa-linkedin"></i></a>
-                        <a href="https://www.youtube.com/channel/UCfuM3t-cm6Kq01lnzYf8KZQ" target="_blank"><i class="fab fa-youtube"></i></a>
-                    </div>
+                    <img src="mmt-logo.png" alt="Mission Meets Tech" class="footer-logo" >
+                    <p>Mission. Technology. Transformation.</p>
                 </div>
                 <div class="footer-links">
-                    <h4>Navigate</h4>
+                    <h4>Content</h4>
                     <ul>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="podcast.html">Podcast</a></li>
                         <li><a href="newsletter.html">Newsletter</a></li>
+                        <li><a href="podcast.html">Podcast</a></li>
                         <li><a href="resources.html">Resources</a></li>
                     </ul>
                 </div>
                 <div class="footer-links">
                     <h4>Connect</h4>
                     <ul>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="contact.html">Contact</a></li>
                         <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank">LinkedIn</a></li>
-                        <li><a href="https://www.linkedin.com/company/fed-up-mission-meets-reality/" target="_blank">Fed UP Page</a></li>
-                        <li><a href="mailto:mary@missionmeetstech.com">Contact</a></li>
                     </ul>
                 </div>
                 <div class="footer-links">
-                    <h4>Subscribe</h4>
+                    <h4>Listen</h4>
                     <ul>
-                        <li><a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank">MMT Newsletter</a></li>
-                        <li><a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7410672315090276353" target="_blank">Fed UP Updates</a></li>
-                        <li><a href="https://feeds.transistor.fm/fed-up-where-mission-meets-reality" target="_blank">Podcast RSS</a></li>
+                        <li><a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1789422839" target="_blank">Apple Podcasts</a></li>
+                        <li><a href="https://open.spotify.com/show/4O7N6M2X0vN3n1K1U5fG6m" target="_blank">Spotify</a></li>
+                        <li><a href="https://share.transistor.fm/s/fed-up-where-mission-meets-reality" target="_blank">All Platforms</a></li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p class="disclaimer">The views expressed on this site are my own and do not represent the official position of any organization. This content is for informational purposes only and does not constitute professional advice.</p>
                 <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
             </div>
         </div>
     </footer>
+    <script src="main.js"></script>
 </body>
 </html>

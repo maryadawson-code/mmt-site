@@ -1,12 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <defs>
-    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#00E5FA"/>
       <stop offset="100%" style="stop-color:#00FF85"/>
     </linearGradient>
   </defs>
-  <path d="M50 5 L90 20 L90 55 C90 85 50 115 50 115 C50 115 10 85 10 55 L10 20 Z" 
-        fill="none" stroke="url(#shieldGrad)" stroke-width="4"/>
-  <text x="50" y="52" text-anchor="middle" fill="#00E5FA" font-family="Arial, sans-serif" font-size="16" font-weight="bold">MMT</text>
-  <text x="50" y="72" text-anchor="middle" fill="#00FF85" font-family="Arial, sans-serif" font-size="9" font-weight="bold">FED UP</text>
+  <rect width="64" height="64" fill="#050a0f"/>
+  <path d="M32 8 L52 16 L52 36 Q52 52 32 58 Q12 52 12 36 L12 16 Z" 
+        fill="none" stroke="url(#grad)" stroke-width="3"/>
+  <path d="M18 32 L26 32 L29 24 L35 40 L38 32 L46 32" 
+        fill="none" stroke="url(#grad)" stroke-width="2.5" stroke-linecap="round"/>
 </svg>

@@ -5,25 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resources | Mission Meets Tech</title>
     <meta name="description" content="Free resources, guides, and reference materials for federal health IT contractors and government leaders.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="icon" type="image/png" href="mmt-logo.png">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
 <body>
     <nav>
-        <div class="container">
-            <a href="index.html" class="logo">
-                <img src="mmt-logo.png" alt="Mission Meets Tech" class="logo-img">
-                <span class="logo-text">Mission Meets Tech</span>
+        <div class="container nav-container">
+            <a href="index.html" class="nav-logo">
+                <img src="mmt-logo-nav.png" alt="Mission Meets Tech" >
             </a>
+            <button class="mobile-menu-btn" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
             <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="podcast.html">Podcast</a></li>
                 <li><a href="newsletter.html">Newsletter</a></li>
+                <li><a href="podcast.html">Podcast</a></li>
                 <li><a href="resources.html">Resources</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
             </ul>
-            <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" class="nav-cta" target="_blank">Subscribe</a>
         </div>
     </nav>
 
@@ -41,10 +45,9 @@
                 <div class="resource-badge">Featured</div>
                 <div class="resource-content">
                     <h2>The MHS Triad Quick Reference</h2>
-                    <p>Keith Bass, Emil Michael, and Admiral Via—the three leaders reshaping military medicine. One-page profiles with mandates, backgrounds, and what to watch for each.</p>
+                    <p>Keith Bass, Emil Michael, and Admiral Viaâ€”the three leaders reshaping military medicine. One-page profiles with mandates, backgrounds, and what to watch for each.</p>
                     <div class="resource-meta">
                         <span><i class="far fa-calendar"></i> Updated January 2026</span>
-                        <span><i class="fas fa-link"></i> Sources: <a href="https://www.defense.gov/News/" target="_blank" style="color: var(--cyan);">DoD News</a>, <a href="https://breakingdefense.com/" target="_blank" style="color: var(--cyan);">Breaking Defense</a>, <a href="https://federalnewsnetwork.com/" target="_blank" style="color: var(--cyan);">Federal News Network</a></span>
                     </div>
                     
                     <!-- Quick Reference Table Inline -->
@@ -95,7 +98,6 @@
             <!-- Enterprise Telehealth Table -->
             <div class="reference-block">
                 <h3><i class="fas fa-satellite-dish"></i> Enterprise Telehealth Platforms</h3>
-                <p class="source-note"><i class="fas fa-external-link-alt"></i> Sources: <a href="https://sam.gov" target="_blank">SAM.gov</a> | <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&company=amwell" target="_blank">SEC EDGAR (Amwell filings)</a> | DHA acquisition announcements</p>
                 <div class="inline-table">
                     <table>
                         <thead>
@@ -139,7 +141,6 @@
             <!-- DARPA Programs Table -->
             <div class="reference-block">
                 <h3><i class="fas fa-brain"></i> Key DARPA Medical Programs</h3>
-                <p class="source-note"><i class="fas fa-external-link-alt"></i> Source: <a href="https://www.darpa.mil/research/programs" target="_blank">DARPA Program Information</a></p>
                 <div class="inline-table">
                     <table>
                         <thead>
@@ -183,7 +184,6 @@
             <!-- H2F Program Status -->
             <div class="reference-block">
                 <h3><i class="fas fa-dumbbell"></i> H2F Program Status by Service</h3>
-                <p class="source-note"><i class="fas fa-external-link-alt"></i> Sources: <a href="https://www.army.mil/h2f" target="_blank">U.S. Army H2F</a> | Service Surgeon General offices | <a href="https://www.spaceforce.mil" target="_blank">Space Force</a> SPFMAN 36-2905</p>
                 <div class="inline-table">
                     <table>
                         <thead>
@@ -232,7 +232,6 @@
             <!-- Legislative Tracker -->
             <div class="reference-block">
                 <h3><i class="fas fa-landmark"></i> FY2026 NDAA Provisions That Matter</h3>
-                <p class="source-note"><i class="fas fa-external-link-alt"></i> Source: <a href="https://www.congress.gov/bill/119th-congress/house-bill/2670" target="_blank">P.L. 119-60 (Congress.gov)</a> | <a href="https://crsreports.congress.gov/" target="_blank">CRS Reports</a></p>
                 <div class="inline-table">
                     <table>
                         <thead>
@@ -272,87 +271,6 @@
                     </table>
                 </div>
             </div>
-
-            <!-- Budget Overview -->
-            <div class="reference-block">
-                <h3><i class="fas fa-dollar-sign"></i> FY2026 Defense Health Budget Overview</h3>
-                <p class="source-note"><i class="fas fa-external-link-alt"></i> Sources: <a href="https://crsreports.congress.gov/product/pdf/IF/IF13108" target="_blank">CRS IF13108</a> | <a href="https://comptroller.defense.gov/Budget-Materials/" target="_blank">DoD Comptroller</a></p>
-                <div class="inline-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Account</th>
-                                <th>FY2026 Request</th>
-                                <th>Notes</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>DHP Total</strong></td>
-                                <td>$40.5B</td>
-                                <td>Primary MHS engine (+0.2% over FY2025)</td>
-                            </tr>
-                            <tr>
-                                <td><strong>DHP O&M</strong></td>
-                                <td>$39.2B</td>
-                                <td>+$897.3M net increase</td>
-                            </tr>
-                            <tr>
-                                <td><strong>DHP RDT&E</strong></td>
-                                <td>~$1.0B</td>
-                                <td>-$722.7M from FY2025</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Rural Health Transformation</strong></td>
-                                <td>$10B/year</td>
-                                <td>$50B over 5 years (FY2026-2030) via CMS</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- OMNIBUS IV -->
-            <div class="reference-block">
-                <h3><i class="fas fa-file-contract"></i> OMNIBUS IV Contract Vehicle</h3>
-                <p class="source-note"><i class="fas fa-external-link-alt"></i> Source: <a href="https://sam.gov" target="_blank">SAM.gov</a> | USAMRAA announcements</p>
-                <div class="inline-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Element</th>
-                                <th>Detail</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Contract Type</strong></td>
-                                <td>Multiple Award IDIQ</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Ceiling Value</strong></td>
-                                <td>$10 Billion</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Ordering Period</strong></td>
-                                <td>10 years (through 2032)</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Current Awardees</strong></td>
-                                <td>56 companies (May 2022 awards)</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Task Orders Awarded</strong></td>
-                                <td>51 orders, ~$600M total value</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Small Business On-Ramp</strong></td>
-                                <td>Active (January 2026 pre-solicitation)</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
         </div>
     </section>
 
@@ -368,9 +286,9 @@
                     <h4>Organizations</h4>
                     <dl class="glossary-list">
                         <dt>DHA</dt>
-                        <dd>Defense Health Agency—the joint Combat Support Agency enabling Army, Navy, and Air Force medical services</dd>
+                        <dd>Defense Health Agencyâ€”the joint Combat Support Agency enabling Army, Navy, and Air Force medical services</dd>
                         <dt>MTF</dt>
-                        <dd>Military Treatment Facility—the 721+ hospitals and clinics serving military beneficiaries</dd>
+                        <dd>Military Treatment Facilityâ€”the 721+ hospitals and clinics serving military beneficiaries</dd>
                         <dt>JTCCN</dt>
                         <dd>Joint Tactical Combat Casualty Care Network</dd>
                         <dt>DARPA</dt>
@@ -383,11 +301,11 @@
                     <h4>Programs & Systems</h4>
                     <dl class="glossary-list">
                         <dt>MHS GENESIS</dt>
-                        <dd>The Military Health System electronic health record—Oracle Cerner-based, replacing legacy systems</dd>
+                        <dd>The Military Health System electronic health recordâ€”Oracle Cerner-based, replacing legacy systems</dd>
                         <dt>DHMSM</dt>
                         <dd>Defense Healthcare Management Systems Modernization program</dd>
                         <dt>H2F</dt>
-                        <dd>Holistic Health and Fitness—Army program with embedded performance teams</dd>
+                        <dd>Holistic Health and Fitnessâ€”Army program with embedded performance teams</dd>
                         <dt>TRICARE</dt>
                         <dd>The health care program serving uniformed service members, retirees, and families</dd>
                         <dt>GenAI.mil</dt>
@@ -400,11 +318,11 @@
                         <dt>Role 2E</dt>
                         <dd>Expeditionary medical unit with surgical capability; can hold casualties 96+ hours</dd>
                         <dt>HPO</dt>
-                        <dd>Human Performance Optimization—treating warfighters as "human weapon systems"</dd>
+                        <dd>Human Performance Optimizationâ€”treating warfighters as "human weapon systems"</dd>
                         <dt>RPM</dt>
-                        <dd>Remote Patient Monitoring—continuous health tracking outside clinical settings</dd>
+                        <dd>Remote Patient Monitoringâ€”continuous health tracking outside clinical settings</dd>
                         <dt>Med COI</dt>
-                        <dd>Medical Community of Interest—security authorization boundary</dd>
+                        <dd>Medical Community of Interestâ€”security authorization boundary</dd>
                         <dt>Golden Hour</dt>
                         <dd>Critical window for trauma care; increasingly a "golden day" in Pacific scenarios</dd>
                     </dl>
@@ -413,17 +331,17 @@
                     <h4>Acquisition & Contracting</h4>
                     <dl class="glossary-list">
                         <dt>SBIR/STTR</dt>
-                        <dd>Small Business Innovation Research / Technology Transfer programs (LAPSED Oct 2025)</dd>
+                        <dd>Small Business Innovation Research / Technology Transfer programs (currently lapsed)</dd>
                         <dt>OTA</dt>
-                        <dd>Other Transaction Authority—flexible procurement outside FAR</dd>
+                        <dd>Other Transaction Authorityâ€”flexible procurement outside FAR</dd>
                         <dt>IDIQ</dt>
                         <dd>Indefinite Delivery/Indefinite Quantity contract vehicle</dd>
                         <dt>PAE</dt>
-                        <dd>Portfolio Acquisition Executive—new structure replacing PEOs</dd>
+                        <dd>Portfolio Acquisition Executiveâ€”new structure replacing PEOs</dd>
                         <dt>8(a)</dt>
-                        <dd>SBA program for small disadvantaged businesses; under Hegseth "lethality review"</dd>
+                        <dd>SBA program for small disadvantaged businesses; under Hegseth review</dd>
                         <dt>ATO</dt>
-                        <dd>Authority to Operate—security authorization to deploy systems</dd>
+                        <dd>Authority to Operateâ€”security authorization to deploy systems</dd>
                     </dl>
                 </div>
             </div>
@@ -435,7 +353,7 @@
         <div class="container">
             <span class="section-label center">Calendar</span>
             <h2 class="section-title">2026 Key Dates</h2>
-            <p class="section-subtitle">Mark your capture calendar. <span style="font-size: 0.85rem; color: var(--white-dim);">Sources: P.L. 119-60, P.L. 119-37, DHA OPMED Sync (Jan 5, 2026)</span></p>
+            <p class="section-subtitle">Mark your capture calendar.</p>
             
             <div class="timeline">
                 <div class="timeline-item">
@@ -467,20 +385,6 @@
                     </div>
                 </div>
                 <div class="timeline-item">
-                    <div class="timeline-date">APR 1</div>
-                    <div class="timeline-content">
-                        <h4>AI Sandbox Task Force</h4>
-                        <p>FY2026 NDAA Section 1534 requires AI Sandbox Task Force established by this date.</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-date">JUN 1</div>
-                    <div class="timeline-content">
-                        <h4>Cybersecurity Harmonization</h4>
-                        <p>Section 866 requires cybersecurity regulatory harmonization across the defense industrial base.</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
                     <div class="timeline-date">SUMMER</div>
                     <div class="timeline-content">
                         <h4>Bass "Virtual Care First" Directive</h4>
@@ -499,13 +403,6 @@
                     <div class="timeline-content">
                         <h4>Role 2E IOC</h4>
                         <p>First Role 2E unit expected to achieve initial operating capability in the Pacific.</p>
-                    </div>
-                </div>
-                <div class="timeline-item timeline-item-future">
-                    <div class="timeline-date">JAN 1, 2028</div>
-                    <div class="timeline-content">
-                        <h4>AI Systems Assessment Deadline</h4>
-                        <p>FY2026 NDAA Section 1533 requires all major DoD AI systems assessed by this date.</p>
                     </div>
                 </div>
                 <div class="timeline-item timeline-item-future">
@@ -564,56 +461,48 @@
                 <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" class="btn btn-primary btn-large" target="_blank">
                     <i class="fab fa-linkedin"></i> Subscribe Free
                 </a>
-                <p class="cta-note">Join defense health IT professionals getting the intelligence they need.</p>
+                <p class="cta-note">Join 1,500+ defense health IT professionals.</p>
             </div>
         </div>
     </section>
 
     <footer>
         <div class="container">
-            <div class="footer-content">
+            <div class="footer-grid">
                 <div class="footer-brand">
-                    <a href="index.html" class="logo">
-                        <img src="mmt-logo.png" alt="Mission Meets Tech" class="logo-img">
-                        <span class="logo-text">Mission Meets Tech</span>
-                    </a>
-                    <p>Federal health IT intelligence for people who care about the warfighter and the mission.</p>
-                    <div class="footer-social">
-                        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank"><i class="fab fa-linkedin"></i></a>
-                        <a href="https://www.youtube.com/channel/UCfuM3t-cm6Kq01lnzYf8KZQ" target="_blank"><i class="fab fa-youtube"></i></a>
-                    </div>
+                    <img src="mmt-logo.png" alt="Mission Meets Tech" class="footer-logo" >
+                    <p>Mission. Technology. Transformation.</p>
                 </div>
                 <div class="footer-links">
-                    <h4>Navigate</h4>
+                    <h4>Content</h4>
                     <ul>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="podcast.html">Podcast</a></li>
                         <li><a href="newsletter.html">Newsletter</a></li>
+                        <li><a href="podcast.html">Podcast</a></li>
                         <li><a href="resources.html">Resources</a></li>
                     </ul>
                 </div>
                 <div class="footer-links">
                     <h4>Connect</h4>
                     <ul>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="contact.html">Contact</a></li>
                         <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank">LinkedIn</a></li>
-                        <li><a href="https://www.linkedin.com/company/fed-up-mission-meets-reality/" target="_blank">Fed UP Page</a></li>
-                        <li><a href="mailto:mary@missionmeetstech.com">Contact</a></li>
                     </ul>
                 </div>
                 <div class="footer-links">
-                    <h4>Subscribe</h4>
+                    <h4>Listen</h4>
                     <ul>
-                        <li><a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank">MMT Newsletter</a></li>
-                        <li><a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7410672315090276353" target="_blank">Fed UP Updates</a></li>
-                        <li><a href="https://feeds.transistor.fm/fed-up-where-mission-meets-reality" target="_blank">Podcast RSS</a></li>
+                        <li><a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1789422839" target="_blank">Apple Podcasts</a></li>
+                        <li><a href="https://open.spotify.com/show/4O7N6M2X0vN3n1K1U5fG6m" target="_blank">Spotify</a></li>
+                        <li><a href="https://share.transistor.fm/s/fed-up-where-mission-meets-reality" target="_blank">All Platforms</a></li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p class="disclaimer">The views expressed on this site are my own and do not represent the official position of any organization. This content is for informational purposes only and does not constitute professional advice.</p>
                 <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
             </div>
         </div>
     </footer>
+    <script src="main.js"></script>
 </body>
 </html>
