@@ -5,14 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resources | Mission Meets Tech</title>
     <meta name="description" content="Free resources, guides, and reference materials for federal health IT contractors and government leaders.">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
 <body>
     <nav>
         <div class="container">
-            <a href="index.html" class="logo">Mission Meets <span>Tech</span></a>
+            <a href="index.html" class="logo">MISSION MEETS TECH</a>
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="about.html">About</a></li>
@@ -152,16 +157,16 @@
                                 <td>Via's Role 2E requires extended casualty stabilization</td>
                             </tr>
                             <tr>
-                                <td><strong>AIxCC</strong></td>
-                                <td>AI-assisted cyber defense</td>
-                                <td>Ongoing; Finals Aug 2025</td>
-                                <td>Michael's GenAI.mil security mandate</td>
+                                <td><strong>TRACIR</strong></td>
+                                <td>Traumatic brain injury reversal</td>
+                                <td>Phase II (ongoing)</td>
+                                <td>Aligns with H2F cognitive performance mandate</td>
                             </tr>
                             <tr>
-                                <td><strong>ARIA</strong></td>
-                                <td>Advanced research for intel advantage</td>
-                                <td>New program FY26</td>
-                                <td>Cross-domain research coordination</td>
+                                <td><strong>PREPARE</strong></td>
+                                <td>Rapid medical countermeasures</td>
+                                <td>Multi-phase; 60-day vax target</td>
+                                <td>Michael's tech security includes bio-defense</td>
                             </tr>
                         </tbody>
                     </table>
@@ -170,16 +175,23 @@
         </div>
     </section>
 
-    <!-- Timeline -->
+    <!-- 2026 Timeline -->
     <section>
         <div class="container">
-            <span class="section-label center">Key Dates</span>
-            <h2 class="section-title">2026 Timeline</h2>
-            <p class="section-subtitle">Critical milestones for defense health IT.</p>
+            <span class="section-label center">Timeline</span>
+            <h2 class="section-title">2026 Key Dates</h2>
+            <p class="section-subtitle">Milestones that will shape federal health IT this year.</p>
             
             <div class="timeline">
                 <div class="timeline-item">
                     <div class="timeline-date">JAN 19</div>
+                    <div class="timeline-content">
+                        <h4>Trump Inauguration</h4>
+                        <p>New administration begins. Watch for immediate executive orders affecting DHA and VA.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">JAN 24</div>
                     <div class="timeline-content">
                         <h4>CR Expiration</h4>
                         <p>Continuing Resolution P.L. 119-37 expires. Watch for FY2026 Defense Appropriations compromise or another CR.</p>
@@ -269,7 +281,7 @@
                 <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" class="btn btn-primary btn-large" target="_blank">
                     <i class="fab fa-linkedin"></i> Subscribe Free
                 </a>
-                <p class="cta-note">Join 1,500+ defense health IT professionals.</p>
+                <p class="cta-note">Join 1,191+ defense health IT professionals.</p>
             </div>
         </div>
     </section>
@@ -278,7 +290,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
-                    <a href="index.html" class="logo">Mission Meets <span>Tech</span></a>
+                    <a href="index.html" class="logo">MISSION MEETS TECH</a>
                     <p>Federal health IT intelligence for people who care about the warfighter and the mission.</p>
                     <div class="footer-social">
                         <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank"><i class="fab fa-linkedin"></i></a>
@@ -295,12 +307,11 @@
                     </ul>
                 </div>
                 <div class="footer-links">
-                    <h4>Listen</h4>
+                    <h4>Connect</h4>
                     <ul>
-                        <li><a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1789422839" target="_blank">Apple Podcasts</a></li>
-                        <li><a href="https://open.spotify.com/show/4O7N6M2X0vN3n1K1U5fG6m" target="_blank">Spotify</a></li>
-                        <li><a href="https://www.youtube.com/@MissionMeetsTech" target="_blank">YouTube</a></li>
-                        <li><a href="https://music.amazon.com/podcasts/920fec9b-4fae-4bd0-ae4d-eaf1459cad2f" target="_blank">Amazon Music</a></li>
+                        <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank">LinkedIn</a></li>
+                        <li><a href="https://www.linkedin.com/company/fed-up-mission-meets-reality/" target="_blank">Fed UP Page</a></li>
+                        <li><a href="mailto:mary@missionmeetstech.com">Contact</a></li>
                     </ul>
                 </div>
                 <div class="footer-links">
@@ -318,5 +329,11 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        function toggleMenu() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        }
+    </script>
 </body>
 </html>

@@ -5,13 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mission Meets Tech | Federal Health IT Intelligence</title>
     <meta name="description" content="Fed up with the talking points. Fired up about what actually works. Federal health IT intelligence for defense contractors and government leaders.">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
 <body>
     <nav>
         <div class="container">
-            <a href="index.html" class="logo">Mission Meets <span>Tech</span></a>
+            <a href="index.html" class="logo">MISSION MEETS TECH</a>
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="about.html">About</a></li>
@@ -19,12 +25,13 @@
                 <li><a href="newsletter.html">Newsletter</a></li>
                 <li><a href="resources.html">Resources</a></li>
             </ul>
+            <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" class="nav-cta" target="_blank">Subscribe</a>
         </div>
     </nav>
 
     <section class="hero">
         <div class="container">
-            <h1>Fed up with the talking points.<br><span>Fired up</span> about what actually works.</h1>
+            <h1>Fed up with the talking points.<br><span class="gradient-text">Fired up</span> about what actually works.</h1>
             <p>Federal health IT intelligence for defense contractors, government leaders, and anyone who cares about the warfighter. No innovation theater. No vendor spin. Just the unfiltered truth.</p>
             
             <div class="hero-stats">
@@ -74,9 +81,7 @@
     <section class="alt">
         <div class="container" style="text-align: center;">
             <h2 class="section-title">The Question That Matters</h2>
-            <p style="font-size: 1.5rem; color: var(--cyan); font-weight: 600; max-width: 700px; margin: 0 auto 24px;">
-                "Does this save lives or enhance readiness?"
-            </p>
+            <p class="quote-block">"Does this save lives or enhance readiness?"</p>
             <p style="max-width: 600px; margin: 0 auto 32px; color: var(--white-muted);">
                 If your solution can't answer that question in one sentence, you're going to have a hard time in 2026.
             </p>
@@ -88,8 +93,12 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
-                    <a href="index.html" class="logo">Mission Meets <span>Tech</span></a>
+                    <a href="index.html" class="logo">MISSION MEETS TECH</a>
                     <p>Federal health IT intelligence for people who care about the warfighter and the mission.</p>
+                    <div class="footer-social">
+                        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://www.youtube.com/@MissionMeetsTech" target="_blank"><i class="fab fa-youtube"></i></a>
+                    </div>
                 </div>
                 <div class="footer-links">
                     <h4>Navigate</h4>
@@ -101,26 +110,33 @@
                     </ul>
                 </div>
                 <div class="footer-links">
-                    <h4>Listen</h4>
-                    <ul>
-                        <li><a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1789422839" target="_blank">Apple Podcasts</a></li>
-                        <li><a href="https://open.spotify.com/show/4O7N6M2X0vN3n1K1U5fG6m" target="_blank">Spotify</a></li>
-                        <li><a href="https://www.youtube.com/@MissionMeetsTech" target="_blank">YouTube</a></li>
-                        <li><a href="https://music.amazon.com/podcasts/920fec9b-4fae-4bd0-ae4d-eaf1459cad2f" target="_blank">Amazon Music</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
                     <h4>Connect</h4>
                     <ul>
                         <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank">LinkedIn</a></li>
                         <li><a href="https://www.linkedin.com/company/fed-up-mission-meets-reality/" target="_blank">Fed UP Page</a></li>
+                        <li><a href="mailto:mary@missionmeetstech.com">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Subscribe</h4>
+                    <ul>
+                        <li><a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank">MMT Newsletter</a></li>
+                        <li><a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7410672315090276353" target="_blank">Fed UP Updates</a></li>
+                        <li><a href="https://feeds.transistor.fm/fed-up-where-mission-meets-reality" target="_blank">Podcast RSS</a></li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 Mission Meets Tech. All views are my own and do not represent any organization.</p>
+                <p class="disclaimer">The views expressed on this site are my own and do not represent the official position of any organization. This content is for informational purposes only and does not constitute professional advice.</p>
+                <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
             </div>
         </div>
     </footer>
+
+    <script>
+        function toggleMenu() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        }
+    </script>
 </body>
 </html>
