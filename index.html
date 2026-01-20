@@ -3,8 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary Meta Tags -->
   <title>Mission Meets Tech | Federal Health IT Intelligence</title>
-  <meta name="description" content="Translating federal health IT policy into actionable intelligence for government contractors, defense stakeholders, and decision-makers.">
+  <meta name="title" content="Mission Meets Tech | Federal Health IT Intelligence">
+  <meta name="description" content="Translating federal health IT policy into actionable intelligence for government contractors and defense stakeholders. Weekly analysis of DHA, VA, and military health programs by Mary Womack.">
+  <meta name="author" content="Mary Womack">
+  <meta name="keywords" content="federal health IT, DHA, Defense Health Agency, military health, government contracting, MHS GENESIS, VA health, defense innovation">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://missionmeetstech.com/">
+  <meta property="og:title" content="Mission Meets Tech | Federal Health IT Intelligence">
+  <meta property="og:description" content="Translating federal health IT policy into actionable intelligence for government contractors and defense stakeholders.">
+  <meta property="og:image" content="https://missionmeetstech.com/mmt-social-card.png">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://missionmeetstech.com/">
+  <meta name="twitter:title" content="Mission Meets Tech | Federal Health IT Intelligence">
+  <meta name="twitter:description" content="Translating federal health IT policy into actionable intelligence for government contractors and defense stakeholders.">
+  <meta name="twitter:image" content="https://missionmeetstech.com/mmt-social-card.png">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,10 +37,6 @@
   <!-- Styles -->
   <link rel="stylesheet" href="styles.css">
   
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-PRG234VSXM"></script>
   <script>
@@ -26,25 +45,48 @@
     gtag('js', new Date());
     gtag('config', 'G-PRG234VSXM');
   </script>
+  
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Mission Meets Tech",
+    "url": "https://missionmeetstech.com",
+    "logo": "https://missionmeetstech.com/mmt-logo.png",
+    "description": "Federal Health IT Intelligence Newsletter",
+    "founder": {
+      "@type": "Person",
+      "name": "Mary Womack",
+      "jobTitle": "Federal Health IT Strategist",
+      "url": "https://www.linkedin.com/in/marydwomack-digitalhealth/"
+    },
+    "sameAs": [
+      "https://www.linkedin.com/in/marydwomack-digitalhealth/",
+      "https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530"
+    ]
+  }
+  </script>
 </head>
 <body>
-  <!-- Skip Link for Accessibility -->
-  <a href="#main-content" class="skip-link">Skip to main content</a>
-
   <!-- Navigation -->
   <nav class="nav">
     <div class="container">
-      <a href="/" class="nav-logo">
+      <a href="index.html" class="nav-logo">
         <img src="mmt-logo-nav.png" alt="Mission Meets Tech">
       </a>
+      
       <ul class="nav-menu">
-        <li><a href="/">Home</a></li>
-        <li><a href="/newsletter">Newsletter</a></li>
-        <li><a href="/podcast">Podcast</a></li>
-        <li><a href="/resources">Resources</a></li>
-        <li><a href="/about">About</a></li>
-        <li><a href="/contact">Contact</a></li>
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="newsletter.html">Newsletter</a></li>
+        <li><a href="podcast.html">Podcast</a></li>
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
       </ul>
+      
+      <a href="newsletter.html" class="btn btn-primary btn-small nav-cta">Subscribe</a>
+      
       <button class="nav-toggle" aria-label="Toggle navigation">
         <span></span>
         <span></span>
@@ -53,106 +95,185 @@
     </div>
   </nav>
 
-  <!-- Main Content -->
-  <main id="main-content">
-    <!-- Hero Section -->
-    <section class="hero">
-      <div class="container">
-        <div class="hero-grid">
-          <div class="hero-content">
-            <h1>Mission. Technology. Transformation.</h1>
-            <p>Translating federal health IT policy into actionable intelligence for government contractors, defense stakeholders, and decision-makers.</p>
-            <div class="hero-buttons">
-              <a href="/newsletter" class="btn btn-primary">Subscribe to Newsletter</a>
-              <a href="/podcast" class="btn btn-secondary">Listen to Podcast</a>
-            </div>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span>Federal Health IT Intelligence</span>
+        </div>
+        
+        <h1>Mission. Technology. Transformation.</h1>
+        
+        <p class="hero-subtitle">
+          I help federal health IT leaders navigate complexity and drive meaningful change. 
+          Weekly analysis of DHA, VA, and military health programs—unfiltered, actionable, mission-focused.
+        </p>
+        
+        <div class="hero-ctas">
+          <a href="newsletter.html" class="btn btn-primary btn-large">Subscribe to Newsletter</a>
+          <a href="podcast.html" class="btn btn-secondary">Listen to Podcast</a>
+        </div>
+        
+        <div class="hero-stats">
+          <div class="stat">
+            <div class="stat-value">1,200+</div>
+            <div class="stat-label">Subscribers</div>
           </div>
-          <div class="hero-image">
-            <img src="mmt-logo.png" alt="Mission Meets Tech Shield">
+          <div class="stat">
+            <div class="stat-value">Weekly</div>
+            <div class="stat-label">Analysis</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">15+</div>
+            <div class="stat-label">Years Experience</div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- What I Cover Section -->
-    <section class="section">
-      <div class="container">
-        <h2 class="section-title">What I Cover</h2>
-        <p class="section-subtitle">Deep analysis of the policies, technologies, and leadership decisions shaping federal health IT</p>
-        
-        <div class="features-grid">
-          <div class="glass-card feature-card fade-in">
-            <div class="feature-icon">🛡️</div>
-            <h3>Defense Health Agency</h3>
-            <p>MHS GENESIS, DHA leadership, telehealth platforms, and the transformation of military medicine for great power conflict.</p>
-          </div>
-          
-          <div class="glass-card feature-card fade-in">
-            <div class="feature-icon">📊</div>
-            <h3>Data & AI</h3>
-            <p>GenAI.mil, Oracle's Clinical AI, audit-ready architecture, and the race to embed AI in military health workflows.</p>
-          </div>
-          
-          <div class="glass-card feature-card fade-in">
-            <div class="feature-icon">🎯</div>
-            <h3>Acquisition Strategy</h3>
-            <p>NDAA analysis, contract vehicles, SBIR pathways, and how to position for the shift to portfolio-based acquisition.</p>
-          </div>
-          
-          <div class="glass-card feature-card fade-in">
-            <div class="feature-icon">⚡</div>
-            <h3>Human Performance</h3>
-            <p>H2F, wearables, RPM, and the doctrine shift from patient satisfaction to return-to-duty rates.</p>
-          </div>
-        </div>
-      </div>
-    </section>
+  <!-- Credibility Bar -->
+  <section class="credibility-bar">
+    <div class="container">
+      <p class="credentials">
+        Written by <strong>Mary Womack</strong> — Federal Civilian Account Lead at Rocket Data. 
+        15+ years inside DHA, VA, and federal contractor ecosystems. 
+        Founder, Mission Meets Tech.
+      </p>
+    </div>
+  </section>
 
-    <!-- Recent Issues Section -->
-    <section class="section" style="background: var(--midnight);">
-      <div class="container">
-        <h2 class="section-title">Recent Issues</h2>
-        <p class="section-subtitle">The latest analysis from Mission Meets Tech</p>
-        
-        <div class="issues-grid" id="recent-issues">
-          <!-- Newsletter cards loaded dynamically from newsletters.json -->
-          <div class="loading"></div>
-        </div>
-        
-        <div style="text-align: center; margin-top: 2rem;">
-          <a href="/newsletter" class="btn btn-secondary">View All Issues</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- The Question Section -->
-    <section class="section">
-      <div class="container" style="max-width: 800px;">
-        <h2 class="section-title">The Question That Matters</h2>
-        <div class="quote-box">
-          <p><strong>Does this save lives or enhance readiness?</strong></p>
-        </div>
-        <p style="text-align: center; font-size: 1.1rem;">
-          Every piece of analysis comes back to this question. If your solution can't answer it in one sentence, you're going to have a hard time in 2026.
+  <!-- The Filter Question -->
+  <section class="section section-gradient">
+    <div class="container">
+      <div class="glass-card text-center" style="max-width: 800px; margin: 0 auto;">
+        <h2 style="font-size: 1.75rem; margin-bottom: 16px;">The Question That Matters</h2>
+        <p style="font-size: 1.5rem; color: var(--primary-cyan); font-weight: 500; margin-bottom: 0;">
+          "Does this save lives or enhance readiness?"
+        </p>
+        <p style="margin-top: 16px; color: var(--text-muted);">
+          Every policy, technology, and contract I analyze gets filtered through this single question. 
+          If you're building or buying for the Military Health System, this is your North Star.
         </p>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- CTA Section -->
-    <section class="cta-section">
-      <div class="container">
-        <h2>Stay Mission-Ready</h2>
-        <p>Join 1,191+ federal health IT professionals getting unfiltered analysis.</p>
+  <!-- Features Section -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">What I Cover</h2>
+        <p>Deep analysis across four pillars of federal health IT transformation</p>
+      </div>
+      
+      <div class="features-grid">
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🏥</div>
+          <h3>Defense Health Agency</h3>
+          <p>MHS GENESIS modernization, DHA reorganization, MTF operations, and the shift to combat readiness under the new MHS Triad leadership.</p>
+        </div>
         
-        <form name="email-signup" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="cta-form">
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🤖</div>
+          <h3>Data & AI</h3>
+          <p>GenAI.mil rollout, AskSage deployment, Oracle's Clinical AI Agent, and what the AI adoption metrics mean for your programs.</p>
+        </div>
+        
+        <div class="feature-card fade-in">
+          <div class="feature-icon">📋</div>
+          <h3>Acquisition Strategy</h3>
+          <p>Portfolio Acquisition Executives, SPEED Act implications, 8(a) reforms, and how to position for the new "commercial-first" mandate.</p>
+        </div>
+        
+        <div class="feature-card fade-in">
+          <div class="feature-icon">⚡</div>
+          <h3>Human Performance</h3>
+          <p>H2F expansion, wearables procurement (lessons from Oura), SANTOS simulation, and Admiral Via's "Human Weapon System" doctrine.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent Issues Section -->
+  <section class="section section-dark">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Recent Issues</h2>
+        <p>The latest analysis from Mission Meets Tech</p>
+      </div>
+      
+      <div id="recent-issues" data-limit="6">
+        <!-- Dynamically loaded from newsletters.json -->
+        <div class="loading">Loading recent issues</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Preview -->
+  <section class="section">
+    <div class="container">
+      <div class="about-preview">
+        <img src="mary-womack.jpg" alt="Mary Womack" class="about-image" onerror="this.style.display='none'">
+        <div class="about-content">
+          <h3>Mary Womack</h3>
+          <p class="about-role">Founder, Mission Meets Tech</p>
+          <p>
+            I've spent 15+ years inside federal health IT—from the halls of DHA to the contractor boardroom. 
+            I launched Mission Meets Tech because I was fed up with the talking points and innovation theater. 
+            Now I translate policy complexity into actionable intelligence for the people actually building and buying.
+          </p>
+          <p>
+            Currently Federal Civilian Account Lead at Rocket Data. Previously at Leidos. 
+            Co-host of the Fed UP podcast with Sara Byrd.
+          </p>
+          <a href="about.html" class="btn btn-text">Read Full Bio</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter CTA Section -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2>Get the Intelligence That Matters</h2>
+        <p>
+          Join 1,200+ federal health IT professionals who start their week with Mission Meets Tech. 
+          One email. No fluff. Actionable insight.
+        </p>
+        
+        <form class="signup-form" name="email-signup" method="POST" data-netlify="true" netlify-honeypot="bot-field">
           <input type="hidden" name="form-name" value="email-signup">
-          <p class="hidden"><label>Don't fill this out: <input name="bot-field"></label></p>
-          <input type="email" name="email" placeholder="Enter your email" required>
+          <!-- Honeypot field - hidden from users -->
+          <div class="honeypot" aria-hidden="true">
+            <label for="bot-field">Leave this empty</label>
+            <input type="text" name="bot-field" id="bot-field" tabindex="-1" autocomplete="off">
+          </div>
+          <input type="email" name="email" placeholder="Enter your work email" required>
           <button type="submit" class="btn btn-primary">Subscribe</button>
         </form>
+        
+        <p class="form-note">Delivered weekly. Unsubscribe anytime.</p>
+        <p class="sample-link">
+          Not sure yet? <a href="newsletter.html#recent-issues">Read recent issues first →</a>
+        </p>
       </div>
-    </section>
-  </main>
+    </div>
+  </section>
+
+  <!-- Podcast Teaser -->
+  <section class="section section-dark">
+    <div class="container text-center">
+      <h2 class="section-title" style="margin-bottom: 16px;">Fed UP: Where Mission Meets Reality</h2>
+      <p style="max-width: 600px; margin: 0 auto 24px;">
+        The podcast companion to Mission Meets Tech. Sara Byrd and I break down the policy fights, 
+        technology bets, and leadership decisions shaping federal health IT. No innovation theater. Just the unfiltered truth.
+      </p>
+      <a href="podcast.html" class="btn btn-secondary">Listen Now</a>
+    </div>
+  </section>
 
   <!-- Footer -->
   <footer class="footer">
@@ -160,40 +281,54 @@
       <div class="footer-grid">
         <div class="footer-brand">
           <img src="mmt-logo.png" alt="Mission Meets Tech">
-          <p>Mission. Technology. Transformation.</p>
+          <p>Translating federal health IT policy into actionable intelligence for government contractors and defense stakeholders.</p>
         </div>
+        
         <div class="footer-links">
-          <h4>Content</h4>
+          <h4>Navigate</h4>
           <ul>
-            <li><a href="/newsletter">Newsletter</a></li>
-            <li><a href="/podcast">Podcast</a></li>
-            <li><a href="/resources">Resources</a></li>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="newsletter.html">Newsletter</a></li>
+            <li><a href="podcast.html">Podcast</a></li>
+            <li><a href="resources.html">Resources</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
           </ul>
         </div>
+        
         <div class="footer-links">
           <h4>Connect</h4>
           <ul>
-            <li><a href="/about">About</a></li>
-            <li><a href="/contact">Contact</a></li>
             <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener">LinkedIn</a></li>
-          </ul>
-        </div>
-        <div class="footer-links">
-          <h4>Listen</h4>
-          <ul>
-            <li><a href="https://podcasts.apple.com/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank" rel="noopener">Apple Podcasts</a></li>
+            <li><a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank" rel="noopener">Apple Podcasts</a></li>
             <li><a href="https://open.spotify.com/show/7sND342duH7Buw1cUs60lP" target="_blank" rel="noopener">Spotify</a></li>
-            <li><a href="https://missionmeetsreality.transistor.fm" target="_blank" rel="noopener">All Platforms</a></li>
+            <li><a href="https://www.youtube.com/channel/UCfuM3t-cm6Kq01lnzYf8KZQ" target="_blank" rel="noopener">YouTube</a></li>
           </ul>
         </div>
       </div>
+      
       <div class="footer-bottom">
         <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
+        <p style="font-size: 0.8rem;">The views expressed are my own and do not represent any organization.</p>
       </div>
     </div>
   </footer>
 
-  <!-- JavaScript -->
+  <!-- Scroll-Triggered CTA -->
+  <div class="scroll-cta" id="scroll-cta">
+    <p>Join 1,200+ federal health IT professionals. One email per week.</p>
+    <form name="scroll-signup" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="scroll-signup">
+      <div class="honeypot" aria-hidden="true">
+        <input type="text" name="bot-field" tabindex="-1" autocomplete="off">
+      </div>
+      <input type="email" name="email" placeholder="Your email" required>
+      <button type="submit" class="btn btn-primary btn-small">Subscribe</button>
+    </form>
+    <button class="close-cta" aria-label="Close">&times;</button>
+  </div>
+
+  <!-- Scripts -->
   <script src="main.js"></script>
 </body>
 </html>
