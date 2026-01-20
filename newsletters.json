@@ -1,37 +1,44 @@
-[
-  {
-    "title": "The MHS Triad: Three Leaders Reshaping Military Medicine",
-    "date": "January 15, 2026",
-    "description": "Keith Bass, Emil Michael, and Admiral Via—who they are, what their mandates mean, and how contractors should position for the new priorities.",
-    "url": "https://www.linkedin.com/pulse/mhs-triad-three-leaders-reshaping-military-medicine-mary-womack",
-    "tags": ["Leadership", "DHA", "Policy"]
-  },
-  {
-    "title": "The $90B Squeeze: DHP Meets Rural Health Transformation",
-    "date": "January 8, 2026",
-    "description": "Budget convergence is creating new capture opportunities—and new risks. Here's what the Defense Health Program funding shift means for your pipeline.",
-    "url": "https://www.linkedin.com/pulse/90b-squeeze-dhp-meets-rural-health-transformation-mary-womack",
-    "tags": ["Budget", "Acquisition", "Strategy"]
-  },
-  {
-    "title": "The 8(a) Reckoning: Hegseth's Lethality Test",
-    "date": "January 1, 2026",
-    "description": "What the new 'lethality test' means for small business set-asides in defense health. Winners, losers, and how to adapt.",
-    "url": "https://www.linkedin.com/pulse/8a-reckoning-hegseths-lethality-test-mary-womack",
-    "tags": ["Small Business", "Policy", "NDAA"]
-  },
-  {
-    "title": "MHS GENESIS: Year Two Reality Check",
-    "date": "December 18, 2025",
-    "description": "One year after full deployment—what's working, what's broken, and where the follow-on opportunities are hiding.",
-    "url": "https://www.linkedin.com/pulse/mhs-genesis-year-two-reality-check-mary-womack",
-    "tags": ["MHS GENESIS", "Technology", "DHA"]
-  },
-  {
-    "title": "The AI Mandate: GenAI.mil and What It Means for You",
-    "date": "December 11, 2025",
-    "description": "Emil Michael's AI adoption push is real. Here's the timeline, the contract vehicles, and how to get in the door.",
-    "url": "https://www.linkedin.com/pulse/ai-mandate-genaimiland-what-means-you-mary-womack",
-    "tags": ["AI", "Technology", "Innovation"]
-  }
-]
+{
+  "newsletters": [
+    {
+      "id": "mhs-triad-bass-michael-via",
+      "title": "The MHS Triad: Bass, Michael, and Via",
+      "date": "2026-01-15",
+      "url": "https://www.linkedin.com/pulse/mhs-triad-mary-womack",
+      "summary": "Keith Bass, Emil Michael, and Admiral Darin Via—the three leaders reshaping military medicine and what contractors need to know.",
+      "tags": ["leadership", "dha", "policy"]
+    },
+    {
+      "id": "90b-squeeze",
+      "title": "The $90 Billion Squeeze",
+      "date": "2026-01-08",
+      "url": "https://www.linkedin.com/pulse/90b-squeeze-mary-womack",
+      "summary": "DHP + Rural Health Transformation. What the convergence means for capture strategy in 2026.",
+      "tags": ["budget", "acquisition", "strategy"]
+    },
+    {
+      "id": "8a-reckoning",
+      "title": "The 8(a) Reckoning",
+      "date": "2026-01-01",
+      "url": "https://www.linkedin.com/pulse/8a-reckoning-mary-womack",
+      "summary": "Hegseth's 'lethality test' and what it means for defense health small business.",
+      "tags": ["acquisition", "small-business", "policy"]
+    },
+    {
+      "id": "virtual-care-first",
+      "title": "Virtual Care First: The Bass Doctrine",
+      "date": "2025-12-18",
+      "url": "https://www.linkedin.com/pulse/virtual-care-first-mary-womack",
+      "summary": "GlobalMed background, telehealth scale-up plans, and what Keith Bass's appointment signals for MTF transformation.",
+      "tags": ["telehealth", "leadership", "dha"]
+    },
+    {
+      "id": "genesis-reality-check",
+      "title": "MHS GENESIS Reality Check",
+      "date": "2025-12-11",
+      "url": "https://www.linkedin.com/pulse/genesis-reality-check-mary-womack",
+      "summary": "Where the deployment actually stands, what's working, and what contractors need to position for next.",
+      "tags": ["mhs-genesis", "technology", "strategy"]
+    }
+  ]
+}

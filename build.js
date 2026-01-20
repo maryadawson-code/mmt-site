@@ -20,17 +20,94 @@ async function build() {
   });
 
   let feed;
-  let hasEpisodes = false;
-  
   try {
     feed = await parser.parseURL(RSS_FEED);
-    hasEpisodes = feed.items && feed.items.length > 0;
     console.log(`✅ Found ${feed.items.length} episodes`);
   } catch (error) {
     console.error('⚠️ Error fetching RSS feed:', error.message);
-    console.log('📝 Using static podcast page instead');
     feed = { items: [], title: 'Fed UP: Where Mission Meets Reality' };
   }
+
+  // Generate episode cards HTML
+  const episodeCards = feed.items.slice(0, 10).map((item, index) => {
+    const pubDate = new Date(item.pubDate);
+    const formattedDate = pubDate.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    });
+    
+    const duration = item.duration || '';
+    const episodeNum = item.episodeNumber ? `Episode ${item.episodeNumber}` : '';
+    const description = item.contentSnippet || item.content || '';
+    const truncatedDesc = description.length > 200 
+      ? description.substring(0, 200) + '...' 
+      : description;
+    
+    const isNew = index === 0 ? '<span class="new-badge">NEW</span>' : '';
+    
+    return `
+      <div class="episode-card">
+        <div class="episode-header">
+          <span class="episode-number">${episodeNum}</span>
+          <span class="episode-date">${formattedDate}</span>
+          ${isNew}
+        </div>
+        <h3 class="episode-title">${item.title}</h3>
+        <p class="episode-description">${truncatedDesc}</p>
+        <div class="episode-footer">
+          ${duration ? `<span class="episode-duration">⏱️ ${formatDuration(duration)}</span>` : ''}
+          <a href="${item.link}" class="episode-link" target="_blank" rel="noopener">
+            Listen Now →
+          </a>
+        </div>
+      </div>
+    `;
+  }).join('\n');
+
+  // Generate latest episode hero section
+  const latestEpisode = feed.items[0];
+  let latestEpisodeHero = '';
+  if (latestEpisode) {
+    const pubDate = new Date(latestEpisode.pubDate);
+    const formattedDate = pubDate.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    latestEpisodeHero = `
+      <section class="section section-alt">
+        <div class="container">
+          <div class="latest-episode-hero">
+            <span class="section-label">LATEST EPISODE</span>
+            <h2>${latestEpisode.title}</h2>
+            <p class="episode-meta">${formattedDate}${latestEpisode.duration ? ` • ${formatDuration(latestEpisode.duration)}` : ''}</p>
+            <p class="episode-teaser">${(latestEpisode.contentSnippet || '').substring(0, 300)}...</p>
+            <a href="${latestEpisode.link}" class="btn btn-primary" target="_blank" rel="noopener">
+              ▶️ Listen to Latest Episode
+            </a>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  // Read template from ROOT (flat structure)
+  const templatePath = path.join(__dirname, 'podcast.template.html');
+  
+  if (!fs.existsSync(templatePath)) {
+    console.log('ℹ️ No podcast.template.html found, skipping template generation');
+    // Just copy static files to dist
+    copyStaticFiles();
+    return;
+  }
+
+  let template = fs.readFileSync(templatePath, 'utf8');
+  
+  template = template.replace('{{EPISODE_CARDS}}', episodeCards || '<p class="no-episodes">No episodes yet. Check back soon!</p>');
+  template = template.replace('{{LATEST_EPISODE_HERO}}', latestEpisodeHero);
+  template = template.replace('{{LAST_UPDATED}}', new Date().toISOString());
+  template = template.replace('{{EPISODE_COUNT}}', feed.items.length.toString());
 
   // Ensure dist directory exists
   const distDir = path.join(__dirname, 'dist');
@@ -38,99 +115,32 @@ async function build() {
     fs.mkdirSync(distDir, { recursive: true });
   }
 
-  // If we have episodes, generate dynamic podcast page from template
-  if (hasEpisodes) {
-    const templatePath = path.join(__dirname, 'podcast.template.html');
-    if (fs.existsSync(templatePath)) {
-      const episodeCards = feed.items.slice(0, 10).map((item, index) => {
-        const pubDate = new Date(item.pubDate);
-        const formattedDate = pubDate.toLocaleDateString('en-US', { 
-          year: 'numeric', 
-          month: 'short', 
-          day: 'numeric' 
-        });
-        
-        const duration = item.duration || '';
-        const episodeNum = item.episodeNumber ? `Episode ${item.episodeNumber}` : '';
-        const description = item.contentSnippet || item.content || '';
-        const truncatedDesc = description.length > 200 
-          ? description.substring(0, 200) + '...' 
-          : description;
-        
-        const isNew = index === 0 ? '<span class="new-badge">NEW</span>' : '';
-        
-        return `
-          <div class="episode-card">
-            <div class="episode-header">
-              <span class="episode-number">${episodeNum}</span>
-              <span class="episode-date">${formattedDate}</span>
-              ${isNew}
-            </div>
-            <h3 class="episode-title">${item.title}</h3>
-            <p class="episode-description">${truncatedDesc}</p>
-            <div class="episode-footer">
-              ${duration ? `<span class="episode-duration"><i class="fas fa-clock"></i> ${formatDuration(duration)}</span>` : ''}
-              <a href="${item.link}" class="episode-link" target="_blank" rel="noopener">
-                Listen Now <i class="fas fa-external-link-alt"></i>
-              </a>
-            </div>
-          </div>
-        `;
-      }).join('\n');
+  // Write the generated podcast page
+  fs.writeFileSync(path.join(distDir, 'podcast.html'), template);
+  console.log('✅ Generated podcast.html from template');
 
-      const latestEpisode = feed.items[0];
-      let latestEpisodeHero = '';
-      if (latestEpisode) {
-        const pubDate = new Date(latestEpisode.pubDate);
-        const formattedDate = pubDate.toLocaleDateString('en-US', { 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric' 
-        });
-        latestEpisodeHero = `
-          <section class="section section-alt">
-            <div class="container">
-              <div class="latest-episode-hero">
-                <span class="section-label">LATEST EPISODE</span>
-                <h2>${latestEpisode.title}</h2>
-                <p class="episode-meta">${formattedDate}${latestEpisode.duration ? ` • ${formatDuration(latestEpisode.duration)}` : ''}</p>
-                <p class="episode-teaser">${(latestEpisode.contentSnippet || '').substring(0, 300)}...</p>
-                <a href="${latestEpisode.link}" class="cta-button" target="_blank" rel="noopener">
-                  <i class="fas fa-play"></i> Listen to Latest Episode
-                </a>
-              </div>
-            </div>
-          </section>
-        `;
-      }
+  copyStaticFiles();
+}
 
-      let template = fs.readFileSync(templatePath, 'utf8');
-      template = template.replace('{{EPISODE_CARDS}}', episodeCards || '<p class="no-episodes">No episodes yet. Check back soon!</p>');
-      template = template.replace('{{LATEST_EPISODE_HERO}}', latestEpisodeHero);
-      template = template.replace('{{LAST_UPDATED}}', new Date().toISOString());
-      template = template.replace('{{EPISODE_COUNT}}', feed.items.length.toString());
-
-      fs.writeFileSync(path.join(distDir, 'podcast.html'), template);
-      console.log('✅ Generated dynamic podcast.html with episodes');
-    }
-  } else {
-    const staticPodcast = path.join(__dirname, 'podcast.html');
-    if (fs.existsSync(staticPodcast)) {
-      fs.copyFileSync(staticPodcast, path.join(distDir, 'podcast.html'));
-      console.log('✅ Copied static podcast.html (no episodes found)');
-    }
+function copyStaticFiles() {
+  const distDir = path.join(__dirname, 'dist');
+  
+  if (!fs.existsSync(distDir)) {
+    fs.mkdirSync(distDir, { recursive: true });
   }
 
-  // FLAT STRUCTURE: Copy static files from ROOT to dist
+  // Copy all static files from ROOT to dist (flat structure)
   const staticFiles = [
     'index.html', 
     'about.html', 
+    'podcast.html',
     'newsletter.html', 
-    'newsletter-archive.html', 
     'resources.html', 
     'styles.css', 
     'favicon.svg',
-    'newsletters.json'
+    'marywomack.jpg',
+    'sarabyrd.jpg',
+    'video_intro.mp4'
   ];
   
   staticFiles.forEach(file => {
@@ -139,40 +149,33 @@ async function build() {
       fs.copyFileSync(srcPath, path.join(distDir, file));
       console.log(`✅ Copied ${file}`);
     } else {
-      console.warn(`⚠️ Missing file: ${file}`);
+      console.log(`⚠️ Skipping ${file} (not found)`);
     }
   });
 
-  // FLAT STRUCTURE: Copy images from ROOT to dist/images/
-  const imgDist = path.join(distDir, 'images');
-  if (!fs.existsSync(imgDist)) {
-    fs.mkdirSync(imgDist, { recursive: true });
-  }
-  
-  // Handle both naming conventions
-  const imageMap = [
-    { sources: ['mary-womack.jpg', 'marywomack.jpg'], dest: 'mary-womack.jpg' },
-    { sources: ['sara-byrd.jpg', 'sarabyrd.jpg'], dest: 'sara-byrd.jpg' }
-  ];
-  
-  imageMap.forEach(({ sources, dest }) => {
-    for (const img of sources) {
-      const imgSrc = path.join(__dirname, img);
-      if (fs.existsSync(imgSrc)) {
-        fs.copyFileSync(imgSrc, path.join(imgDist, dest));
-        console.log(`✅ Copied ${img} → images/${dest}`);
-        break;
-      }
+  // Copy data folder if exists
+  const dataSrc = path.join(__dirname, 'data');
+  const dataDist = path.join(distDir, 'data');
+  if (fs.existsSync(dataSrc)) {
+    if (!fs.existsSync(dataDist)) {
+      fs.mkdirSync(dataDist, { recursive: true });
     }
-  });
+    fs.readdirSync(dataSrc).forEach(file => {
+      fs.copyFileSync(path.join(dataSrc, file), path.join(dataDist, file));
+    });
+    console.log('✅ Copied data files');
+  }
 
   console.log('🎉 Build complete!');
 }
 
 function formatDuration(duration) {
   if (!duration) return '';
+  
+  // If already formatted (HH:MM:SS or MM:SS)
   if (duration.includes(':')) return duration;
   
+  // If seconds as a number
   const seconds = parseInt(duration);
   if (isNaN(seconds)) return duration;
   

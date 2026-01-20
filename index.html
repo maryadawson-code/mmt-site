@@ -5,49 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mission Meets Tech | Federal Health IT Intelligence</title>
     <meta name="description" content="Fed up with the talking points. Fired up about what actually works. Federal health IT intelligence for defense contractors and government leaders.">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <nav>
         <div class="container">
-            <a href="index.html" class="logo">MISSION MEETS TECH</a>
-            <div class="hamburger" onclick="toggleMenu()">
+            <a href="index.html" class="logo">Mission Meets <span>Tech</span></a>
+            <button class="hamburger" onclick="toggleMenu()" aria-label="Toggle navigation">
                 <span></span>
                 <span></span>
                 <span></span>
-            </div>
+            </button>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="podcast.html">Podcast</a></li>
                 <li><a href="newsletter.html">Newsletter</a></li>
                 <li><a href="resources.html">Resources</a></li>
+                <li><a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" class="nav-cta" target="_blank">Subscribe</a></li>
             </ul>
-            <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" class="nav-cta" target="_blank">Subscribe</a>
         </div>
     </nav>
 
-    <section class="hero">
-        <div class="container">
+    <section class="video-hero">
+        <div class="video-container">
+            <video id="heroVideo" autoplay muted loop playsinline poster="marywomack.jpg">
+                <source src="video_intro.mp4" type="video/mp4">
+            </video>
+            <div class="video-overlay"></div>
+        </div>
+        <div class="container hero-content">
+            <a href="#subscribe-section" class="hero-logo-link" aria-label="Subscribe to Fed UP Podcast">
+                <div class="hero-shield">
+                    <svg viewBox="0 0 100 120" class="shield-icon">
+                        <path d="M50 5 L90 20 L90 55 C90 85 50 115 50 115 C50 115 10 85 10 55 L10 20 Z" 
+                              fill="none" stroke="url(#shieldGradient)" stroke-width="3"/>
+                        <defs>
+                            <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#00E5FA"/>
+                                <stop offset="100%" style="stop-color:#00FF85"/>
+                            </linearGradient>
+                        </defs>
+                        <text x="50" y="55" text-anchor="middle" fill="#00E5FA" font-family="Space Grotesk, sans-serif" font-size="14" font-weight="700">MMT</text>
+                        <text x="50" y="75" text-anchor="middle" fill="#00FF85" font-family="Space Grotesk, sans-serif" font-size="8">FED UP</text>
+                    </svg>
+                </div>
+            </a>
             <h1>Fed up with the talking points.<br><span class="gradient-text">Fired up</span> about what actually works.</h1>
             <p>Federal health IT intelligence for defense contractors, government leaders, and anyone who cares about the warfighter. No innovation theater. No vendor spin. Just the unfiltered truth.</p>
-            
-            <div class="hero-stats">
-                <div class="stat">
-                    <div class="stat-number">1,191+</div>
-                    <div class="stat-label">Newsletter Subscribers</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-number">59%</div>
-                    <div class="stat-label">CXO/Director Level</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-number">100K+</div>
-                    <div class="stat-label">Monthly Impressions</div>
-                </div>
-            </div>
 
             <div class="cta-buttons">
                 <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" class="btn btn-primary" target="_blank">Subscribe to the Newsletter</a>
@@ -56,7 +62,7 @@
         </div>
     </section>
 
-    <section>
+    <section id="subscribe-section">
         <div class="container">
             <h2 class="section-title">What We Cover</h2>
             <p class="section-subtitle">One question drives everything we do: Does this save lives or enhance readiness?</p>
@@ -81,7 +87,9 @@
     <section class="alt">
         <div class="container" style="text-align: center;">
             <h2 class="section-title">The Question That Matters</h2>
-            <p class="quote-block">"Does this save lives or enhance readiness?"</p>
+            <p class="quote-block">
+                "Does this save lives or enhance readiness?"
+            </p>
             <p style="max-width: 600px; margin: 0 auto 32px; color: var(--white-muted);">
                 If your solution can't answer that question in one sentence, you're going to have a hard time in 2026.
             </p>
@@ -93,11 +101,15 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
-                    <a href="index.html" class="logo">MISSION MEETS TECH</a>
+                    <a href="index.html" class="logo">Mission Meets <span>Tech</span></a>
                     <p>Federal health IT intelligence for people who care about the warfighter and the mission.</p>
                     <div class="footer-social">
-                        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank"><i class="fab fa-linkedin"></i></a>
-                        <a href="https://www.youtube.com/@MissionMeetsTech" target="_blank"><i class="fab fa-youtube"></i></a>
+                        <a href="https://www.youtube.com/channel/UCfuM3t-cm6Kq01lnzYf8KZQ" target="_blank" aria-label="YouTube" class="social-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                        </a>
+                        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" aria-label="LinkedIn" class="social-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                        </a>
                     </div>
                 </div>
                 <div class="footer-links">
@@ -110,33 +122,43 @@
                     </ul>
                 </div>
                 <div class="footer-links">
-                    <h4>Connect</h4>
+                    <h4>Listen</h4>
                     <ul>
-                        <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank">LinkedIn</a></li>
-                        <li><a href="https://www.linkedin.com/company/fed-up-mission-meets-reality/" target="_blank">Fed UP Page</a></li>
-                        <li><a href="mailto:mary@missionmeetstech.com">Contact</a></li>
+                        <li><a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank">Apple Podcasts</a></li>
+                        <li><a href="https://open.spotify.com/show/7sND342duH7Buw1cUs60lP" target="_blank">Spotify</a></li>
+                        <li><a href="https://music.amazon.com/podcasts/920fec9b-4fae-4bd0-ae4d-eaf1459cad2f" target="_blank">Amazon Music</a></li>
+                        <li><a href="https://www.youtube.com/channel/UCfuM3t-cm6Kq01lnzYf8KZQ" target="_blank">YouTube</a></li>
                     </ul>
                 </div>
                 <div class="footer-links">
-                    <h4>Subscribe</h4>
+                    <h4>Connect</h4>
                     <ul>
-                        <li><a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank">MMT Newsletter</a></li>
-                        <li><a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7410672315090276353" target="_blank">Fed UP Updates</a></li>
-                        <li><a href="https://feeds.transistor.fm/fed-up-where-mission-meets-reality" target="_blank">Podcast RSS</a></li>
+                        <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank">Mary on LinkedIn</a></li>
+                        <li><a href="https://www.linkedin.com/in/saraebyrd/" target="_blank">Sara on LinkedIn</a></li>
+                        <li><a href="https://www.linkedin.com/company/fed-up-mission-meets-reality/" target="_blank">Fed UP Page</a></li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p class="disclaimer">The views expressed on this site are my own and do not represent the official position of any organization. This content is for informational purposes only and does not constitute professional advice.</p>
-                <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
+                <p>The views expressed on this site are my own and do not represent the official position of any organization.</p>
             </div>
         </div>
     </footer>
 
     <script>
         function toggleMenu() {
-            document.querySelector('.nav-links').classList.toggle('active');
+            const nav = document.querySelector('.nav-links');
+            const hamburger = document.querySelector('.hamburger');
+            nav.classList.toggle('active');
+            hamburger.classList.toggle('active');
         }
+
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.querySelector('.nav-links').classList.remove('active');
+                document.querySelector('.hamburger').classList.remove('active');
+            });
+        });
     </script>
 </body>
 </html>
