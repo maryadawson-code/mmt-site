@@ -1,13 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <defs>
-    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#00E5FA"/>
-      <stop offset="100%" style="stop-color:#00FF85"/>
+    <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00F0FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00FF85;stop-opacity:1" />
     </linearGradient>
   </defs>
-  <rect width="64" height="64" fill="#050a0f"/>
-  <path d="M32 8 L52 16 L52 36 Q52 52 32 58 Q12 52 12 36 L12 16 Z" 
-        fill="none" stroke="url(#grad)" stroke-width="3"/>
-  <path d="M18 32 L26 32 L29 24 L35 40 L38 32 L46 32" 
-        fill="none" stroke="url(#grad)" stroke-width="2.5" stroke-linecap="round"/>
+  <rect width="32" height="32" rx="4" fill="#050505"/>
+  <text x="16" y="23" font-family="system-ui, sans-serif" font-size="18" font-weight="700" fill="url(#brandGrad)" text-anchor="middle">M</text>
 </svg>
