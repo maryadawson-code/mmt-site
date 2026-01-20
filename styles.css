@@ -741,7 +741,28 @@ footer {
     font-family: 'Orbitron', sans-serif;
     color: var(--white);
     font-size: 1.1rem;
+    margin-bottom: 8px;
+}
+
+.source-note {
+    font-size: 0.8rem;
+    color: var(--white-dim);
     margin-bottom: 16px;
+}
+
+.source-note a {
+    color: var(--cyan);
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.source-note a:hover {
+    color: var(--green);
+    text-decoration: underline;
+}
+
+.source-note i {
+    margin-right: 6px;
 }
 
 .reference-block h3 i {
@@ -989,6 +1010,22 @@ footer {
     .inline-table td {
         padding: 10px 12px;
     }
+}
+
+/* Video Container */
+.video-container {
+    max-width: 800px;
+    margin: 0 auto;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid var(--cyan);
+    box-shadow: 0 0 40px rgba(0, 240, 255, 0.2);
+}
+
+.video-container video {
+    width: 100%;
+    display: block;
+    background: var(--void);
 }
 
 /* Glossary Grid */
