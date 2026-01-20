@@ -165,7 +165,7 @@
         // Load newsletter archive from JSON
         async function loadArchive() {
             try {
-                const response = await fetch('data/newsletters.json');
+                const response = await fetch('newsletters.json');
                 const newsletters = await response.json();
                 
                 const container = document.getElementById('archive-container');
