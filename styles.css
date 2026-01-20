@@ -1040,3 +1040,15 @@ textarea:focus {
 }
 
 /* End of Production Patch */
+/* LOGO FIX */
+.nav-logo img,
+.hero-image img,
+.footer-brand img {
+  filter: none !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.nav-logo img { height: 45px; }
+.hero-image img { max-width: 300px; }
+.footer-brand img { height: 80px; }
