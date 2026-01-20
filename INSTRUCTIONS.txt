@@ -1,0 +1,51 @@
+# FIX v2 - Correct Logo Files
+
+The previous white logo files were blank. These are the ACTUAL logos.
+
+---
+
+## STEP 1: Upload these 3 files to GitHub
+
+Upload and REPLACE:
+- mmt-logo.png (full logo with text - for hero/footer)
+- mmt-logo-nav.png (icon only - for nav bar)
+- podcast.html (fixed podcast page)
+
+---
+
+## STEP 2: Fix the CSS
+
+If you added the previous CSS filter code, you need to either:
+
+**Option A (easier):** Add this to the END of styles.css:
+
+```css
+/* Remove logo filters */
+.nav-logo img,
+.nav .logo img,
+header .logo img,
+.hero-logo img,
+.hero-image img,
+footer .logo img,
+.footer-logo img,
+.footer-brand img {
+    filter: none !important;
+}
+```
+
+**Option B:** Find and DELETE any code that starts with:
+`/* Logo Fix - Converts white logo to cyan`
+or contains `filter: brightness(0) saturate`
+
+---
+
+## STEP 3: Commit, wait 2 min, hard refresh
+
+---
+
+## What you'll see:
+- Nav: Shield icon (cyan with subtle glow)
+- Hero: Full logo with "MISSION MEETS TECH" text
+- Podcast page: Working Transistor embed
+
+The glow effect is baked into these logos - it's not perfect but the logo will actually show now.

@@ -1,0 +1,18 @@
+
+/* ============================================
+   LOGO FIX v2 - REMOVE FILTERS
+   Add this to END of styles.css
+   (or replace previous logo fix code)
+   ============================================ */
+
+/* Remove any filters - use logos as-is */
+.nav-logo img,
+.nav .logo img,
+header .logo img,
+.hero-logo img,
+.hero-image img,
+footer .logo img,
+.footer-logo img,
+.footer-brand img {
+    filter: none !important;
+}
