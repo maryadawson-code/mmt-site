@@ -1,10 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <defs>
-    <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#00F0FF;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#00FF85;stop-opacity:1" />
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00F0FF"/>
+      <stop offset="100%" style="stop-color:#00FF85"/>
     </linearGradient>
   </defs>
-  <rect width="32" height="32" rx="4" fill="#050505"/>
-  <text x="16" y="23" font-family="system-ui, sans-serif" font-size="18" font-weight="700" fill="url(#brandGrad)" text-anchor="middle">M</text>
+  <path d="M16 2 L28 7 V15 C28 22 23 28 16 30 C9 28 4 22 4 15 V7 L16 2Z" 
+        fill="none" stroke="url(#grad)" stroke-width="2"/>
+  <path d="M8 15 H11 L13 12 L16 20 L19 10 L21 15 H24" 
+        fill="none" stroke="url(#grad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
