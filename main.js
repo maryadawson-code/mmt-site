@@ -1,113 +1,76 @@
-// ============================================
-// Mission Meets Tech - Main JavaScript
-// ============================================
+/* Mission Meets Tech - Production JavaScript v2.0 */
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Mobile Navigation Toggle
-    const navToggle = document.querySelector('.nav-toggle');
-    const navMenu = document.querySelector('.nav-menu');
-
-    if (navToggle && navMenu) {
-        navToggle.addEventListener('click', function() {
-            navToggle.classList.toggle('active');
-            navMenu.classList.toggle('active');
-        });
-
-        // Close menu when clicking a link
-        navMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                navToggle.classList.remove('active');
-                navMenu.classList.remove('active');
-            });
-        });
-    }
-
-    // Load Recent Issues
-    const issuesContainer = document.getElementById('recent-issues');
-    if (issuesContainer) {
-        loadNewsletters(issuesContainer);
-    }
-
-    // Scroll CTA (appears after 70% scroll)
-    const scrollCTA = document.querySelector('.scroll-cta');
-    if (scrollCTA) {
-        window.addEventListener('scroll', function() {
-            const scrollPercent = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
-            if (scrollPercent > 70) {
-                scrollCTA.classList.add('visible');
-            } else {
-                scrollCTA.classList.remove('visible');
-            }
-        });
-    }
-
-    // Smooth scroll for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    });
+    initNavigation();
+    initNewsletterLoader();
 });
 
-// Load newsletters from JSON
-async function loadNewsletters(container) {
-    try {
-        const response = await fetch('newsletters.json');
-        if (!response.ok) throw new Error('Failed to load newsletters');
-        
-        const newsletters = await response.json();
-        
-        if (newsletters.length === 0) {
-            container.innerHTML = '<p class="loading">No newsletters available yet.</p>';
-            return;
-        }
-
-        // Display up to 6 most recent
-        const recentIssues = newsletters.slice(0, 6);
-        
-        container.innerHTML = recentIssues.map(issue => `
-            <article class="issue-card">
-                <h3>${escapeHtml(issue.title)}</h3>
-                <p class="date">${escapeHtml(issue.date)}</p>
-                <p>${escapeHtml(issue.description)}</p>
-                ${issue.tags ? `
-                    <div class="tags">
-                        ${issue.tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}
-                    </div>
-                ` : ''}
-                <a href="${escapeHtml(issue.url)}" target="_blank" rel="noopener" class="btn btn-text">
-                    Read More →
-                </a>
-            </article>
-        `).join('');
-    } catch (error) {
-        console.error('Error loading newsletters:', error);
-        container.innerHTML = '<p class="loading">Unable to load newsletters. Please refresh the page.</p>';
+function initNavigation() {
+    var navToggle = document.querySelector('.nav-toggle');
+    var navMenu = document.querySelector('.nav-menu');
+    if (!navToggle || !navMenu) return;
+    
+    navToggle.addEventListener('click', function() {
+        navToggle.classList.toggle('active');
+        navMenu.classList.toggle('active');
+    });
+    
+    var links = navMenu.querySelectorAll('a');
+    for (var i = 0; i < links.length; i++) {
+        links[i].addEventListener('click', function() {
+            navToggle.classList.remove('active');
+            navMenu.classList.remove('active');
+        });
     }
 }
 
-// Escape HTML to prevent XSS
+function initNewsletterLoader() {
+    var container = document.getElementById('recent-issues');
+    if (!container) return;
+    
+    fetch('newsletters.json')
+        .then(function(response) {
+            if (!response.ok) throw new Error('Failed to load');
+            return response.json();
+        })
+        .then(function(data) {
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p class="loading">No newsletters available.</p>';
+                return;
+            }
+            renderNewsletters(container, data.slice(0, 6));
+        })
+        .catch(function() {
+            container.innerHTML = '<p class="loading">Unable to load newsletters.</p>';
+        });
+}
+
+function renderNewsletters(container, items) {
+    var html = '';
+    for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        var tagsHtml = '';
+        if (item.tags && item.tags.length > 0) {
+            tagsHtml = '<div class="tags">';
+            for (var j = 0; j < item.tags.length; j++) {
+                tagsHtml += '<span class="tag">' + escapeHtml(item.tags[j]) + '</span>';
+            }
+            tagsHtml += '</div>';
+        }
+        html += '<article class="issue-card">' +
+            '<h3>' + escapeHtml(item.title) + '</h3>' +
+            '<p class="date">' + escapeHtml(item.date) + '</p>' +
+            '<p>' + escapeHtml(item.description) + '</p>' +
+            tagsHtml +
+            '<a href="' + escapeHtml(item.url) + '" target="_blank" rel="noopener" class="btn btn-text">Read on LinkedIn →</a>' +
+            '</article>';
+    }
+    container.innerHTML = html;
+}
+
 function escapeHtml(text) {
     if (!text) return '';
-    const div = document.createElement('div');
+    var div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
-
-// Form submission handling (for Netlify forms)
-document.querySelectorAll('form[data-netlify="true"]').forEach(form => {
-    form.addEventListener('submit', function(e) {
-        const submitBtn = form.querySelector('button[type="submit"]');
-        if (submitBtn) {
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Sending...';
-        }
-    });
-});
