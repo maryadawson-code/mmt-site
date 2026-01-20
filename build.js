@@ -5,7 +5,7 @@ const path = require('path');
 const RSS_FEED = 'https://feeds.transistor.fm/fed-up-where-mission-meets-reality';
 
 async function build() {
-  console.log('🎙️ Fetching podcast episodes from Transistor...');
+  console.log('ðŸŽ™ï¸ Fetching podcast episodes from Transistor...');
   
   const parser = new Parser({
     customFields: {
@@ -22,9 +22,9 @@ async function build() {
   let feed;
   try {
     feed = await parser.parseURL(RSS_FEED);
-    console.log(`✅ Found ${feed.items.length} episodes`);
+    console.log(`âœ… Found ${feed.items.length} episodes`);
   } catch (error) {
-    console.error('⚠️ Error fetching RSS feed:', error.message);
+    console.error('âŒ Error fetching RSS feed:', error.message);
     feed = { items: [], title: 'Fed UP: Where Mission Meets Reality' };
   }
 
@@ -56,9 +56,9 @@ async function build() {
         <h3 class="episode-title">${item.title}</h3>
         <p class="episode-description">${truncatedDesc}</p>
         <div class="episode-footer">
-          ${duration ? `<span class="episode-duration">⏱️ ${formatDuration(duration)}</span>` : ''}
+          ${duration ? `<span class="episode-duration"><i class="fas fa-clock"></i> ${formatDuration(duration)}</span>` : ''}
           <a href="${item.link}" class="episode-link" target="_blank" rel="noopener">
-            Listen Now →
+            Listen Now <i class="fas fa-external-link-alt"></i>
           </a>
         </div>
       </div>
@@ -81,10 +81,10 @@ async function build() {
           <div class="latest-episode-hero">
             <span class="section-label">LATEST EPISODE</span>
             <h2>${latestEpisode.title}</h2>
-            <p class="episode-meta">${formattedDate}${latestEpisode.duration ? ` • ${formatDuration(latestEpisode.duration)}` : ''}</p>
+            <p class="episode-meta">${formattedDate}${latestEpisode.duration ? ` â€¢ ${formatDuration(latestEpisode.duration)}` : ''}</p>
             <p class="episode-teaser">${(latestEpisode.contentSnippet || '').substring(0, 300)}...</p>
-            <a href="${latestEpisode.link}" class="btn btn-primary" target="_blank" rel="noopener">
-              ▶️ Listen to Latest Episode
+            <a href="${latestEpisode.link}" class="cta-button" target="_blank" rel="noopener">
+              <i class="fas fa-play"></i> Listen to Latest Episode
             </a>
           </div>
         </div>
@@ -92,17 +92,8 @@ async function build() {
     `;
   }
 
-  // Read template from ROOT (flat structure)
-  const templatePath = path.join(__dirname, 'podcast.template.html');
-  
-  if (!fs.existsSync(templatePath)) {
-    console.log('ℹ️ No podcast.template.html found, skipping template generation');
-    // Just copy static files to dist
-    copyStaticFiles();
-    return;
-  }
-
-  let template = fs.readFileSync(templatePath, 'utf8');
+  // Read template and inject content
+  let template = fs.readFileSync(path.join(__dirname, 'src', 'podcast.template.html'), 'utf8');
   
   template = template.replace('{{EPISODE_CARDS}}', episodeCards || '<p class="no-episodes">No episodes yet. Check back soon!</p>');
   template = template.replace('{{LATEST_EPISODE_HERO}}', latestEpisodeHero);
@@ -117,44 +108,20 @@ async function build() {
 
   // Write the generated podcast page
   fs.writeFileSync(path.join(distDir, 'podcast.html'), template);
-  console.log('✅ Generated podcast.html from template');
+  console.log('âœ… Generated podcast.html');
 
-  copyStaticFiles();
-}
-
-function copyStaticFiles() {
-  const distDir = path.join(__dirname, 'dist');
-  
-  if (!fs.existsSync(distDir)) {
-    fs.mkdirSync(distDir, { recursive: true });
-  }
-
-  // Copy all static files from ROOT to dist (flat structure)
-  const staticFiles = [
-    'index.html', 
-    'about.html', 
-    'podcast.html',
-    'newsletter.html', 
-    'resources.html', 
-    'styles.css', 
-    'favicon.svg',
-    'marywomack.jpg',
-    'sarabyrd.jpg',
-    'video_intro.mp4'
-  ];
-  
+  // Copy all other static files from src to dist
+  const staticFiles = ['index.html', 'about.html', 'newsletter.html', 'newsletter-archive.html', 'resources.html', 'contact.html', 'styles.css', 'favicon.svg'];
   staticFiles.forEach(file => {
-    const srcPath = path.join(__dirname, file);
+    const srcPath = path.join(__dirname, 'src', file);
     if (fs.existsSync(srcPath)) {
       fs.copyFileSync(srcPath, path.join(distDir, file));
-      console.log(`✅ Copied ${file}`);
-    } else {
-      console.log(`⚠️ Skipping ${file} (not found)`);
+      console.log(`âœ… Copied ${file}`);
     }
   });
 
-  // Copy data folder if exists
-  const dataSrc = path.join(__dirname, 'data');
+  // Copy data folder
+  const dataSrc = path.join(__dirname, 'src', 'data');
   const dataDist = path.join(distDir, 'data');
   if (fs.existsSync(dataSrc)) {
     if (!fs.existsSync(dataDist)) {
@@ -163,10 +130,26 @@ function copyStaticFiles() {
     fs.readdirSync(dataSrc).forEach(file => {
       fs.copyFileSync(path.join(dataSrc, file), path.join(dataDist, file));
     });
-    console.log('✅ Copied data files');
+    console.log('âœ… Copied data files');
   }
 
-  console.log('🎉 Build complete!');
+  // Copy images folder
+  const imgSrc = path.join(__dirname, 'src', 'images');
+  const imgDist = path.join(distDir, 'images');
+  if (fs.existsSync(imgSrc)) {
+    if (!fs.existsSync(imgDist)) {
+      fs.mkdirSync(imgDist, { recursive: true });
+    }
+    const imgFiles = fs.readdirSync(imgSrc).filter(f => !f.startsWith('.'));
+    imgFiles.forEach(file => {
+      fs.copyFileSync(path.join(imgSrc, file), path.join(imgDist, file));
+    });
+    if (imgFiles.length > 0) {
+      console.log(`âœ… Copied ${imgFiles.length} images`);
+    }
+  }
+
+  console.log('ðŸŽ‰ Build complete!');
 }
 
 function formatDuration(duration) {
