@@ -1,161 +1,141 @@
-# Mission Meets Tech Website - Improved Version
-## Deployment Guide & Changelog
-
-**Generated:** January 19, 2026
+# Resources Page Deployment Guide
+## Defense Appropriations Analysis Toolkit Integration
 
 ---
 
-## 📦 Package Contents
+## What's Included
 
-The `mmt-site-improved.zip` contains 17 files:
+The `mmt-resources-page.zip` contains 8 files:
 
-### HTML Pages (6)
-- `index.html` - Homepage with hero, features, recent issues, about preview
-- `newsletter.html` - Subscribe form + recent issues archive
-- `podcast.html` - Fed UP podcast with host bios
-- `about.html` - Mary's full bio
-- `contact.html` - Contact form
-- `resources.html` - Government links + quick reference
-
-### Assets (6)
-- `styles.css` - Complete stylesheet with brand colors
-- `main.js` - Navigation, newsletter loading, scroll CTA
-- `newsletters.json` - Newsletter data (8 issues)
-- `netlify.toml` - Build & redirect config
-- `mmt-logo.png` - Footer logo
-- `mmt-logo-nav.png` - Navigation logo
-- `mmt-icon.png` - Icon only
-- `favicon.png` - Browser tab icon (32px)
-- `apple-touch-icon.png` - iOS bookmark (128px)
-- `mmt-social-card.png` - Social sharing image
+| File | Purpose |
+|------|---------|
+| `resources.html` | New comprehensive resources page with DAAT |
+| `styles.css` | Complete stylesheet (replaces existing) |
+| `main.js` | JavaScript for navigation + newsletter loading |
+| `newsletters.json` | Newsletter data (8 entries) |
+| `mmt-logo.png` | Footer logo |
+| `mmt-logo-nav.png` | Navigation bar logo |
+| `favicon.png` | Browser tab icon |
+| `apple-touch-icon.png` | Mobile bookmark icon |
 
 ---
 
-## ✅ Improvements Made
+## Features Added
 
-### Critical Fixes (P0)
-1. **Fixed honeypot spam field** - Now properly hidden with CSS
-2. **Newsletter previews working** - Loads from newsletters.json
-3. **SEO meta tags added** - OG, Twitter Cards, Schema.org on all pages
+### Defense Appropriations Analysis Toolkit (DAAT)
+- **6 copy-paste prompt templates** for AI-assisted appropriations analysis
+- **Interactive methodology section** with expandable guides
+- **Quick reference glossary** with MHS Triad, key concepts, budget context
+- **Government links section** with authoritative sources
 
-### Trust & Credibility (P1)
-4. **Credibility bar** - "Written by Mary Womack - 15+ years..." below hero
-5. **Brand colors applied** - Primary Cyan #00E5FA, Deep Navy #00050F
-6. **Proper CTA hierarchy** - Newsletter primary, podcast secondary
+### Independence Maintained
+- Clear disclaimer: "This toolkit is my personal contribution..."
+- No references to Rocket Data, Sean, or any employer
+- Positioned as Mary Womack's independent community resource
+- Educational content framing
 
-### Conversion Optimization (P2)
-7. **"Read recent issues" link** - Sample before subscribing
-8. **Scroll-triggered CTA** - Appears at 70% scroll depth
-9. **Hero stats** - 1,200+ subscribers, Weekly analysis, 15+ years
-
-### Podcast Page (P3)
-10. **Dedicated podcast page** - Host bios, platform links
-11. **Sara Byrd credited** - As co-host with LinkedIn link
-12. **Transistor embed** - Latest episode player
-13. **All platform links** - Apple, Spotify, YouTube, Amazon, RSS
-
-### Resources Page
-14. **Government resources** - DHA, VA, SAM.gov, TRICARE, DARPA
-15. **Industry news links** - Breaking Defense, Federal News Network, etc.
-16. **Quick reference glossary** - MHS Triad, H2F, Role 2E definitions
+### Page Features
+- **Tabbed interface**: Prompts | Methodology | Glossary | Links
+- **Copy button** on each prompt (turns green + says "Copied!")
+- **Accordion sections** for methodology details
+- **Mobile responsive** design
+- **Brand consistent** with MMT colors and fonts
 
 ---
 
-## 🚀 Deployment Instructions
+## Deployment Steps
 
-### Option A: GitHub Web Upload (Recommended)
+### Option A: Replace Only Resources Page
 
 1. Go to [github.com/maryadawson-code/mmt-site](https://github.com/maryadawson-code/mmt-site)
-2. Delete all existing files (or create fresh repo)
-3. Click "Add file" → "Upload files"
-4. Extract the zip and drag all files into upload area
-5. Commit message: "Website improvements - Jan 19, 2026"
-6. Click "Commit changes"
-7. Wait ~2 minutes for Netlify auto-deploy
-8. Hard refresh browser: `Ctrl+Shift+R` (Windows) or `Cmd+Shift+R` (Mac)
+2. Click on `resources.html` in the file list
+3. Click the pencil icon (Edit)
+4. Select all, delete, paste new content
+5. Commit with message: "Update resources page with DAAT toolkit"
+6. Wait ~2 minutes for Netlify to deploy
 
-### Option B: Netlify Direct Upload
+### Option B: Full Update (Recommended)
 
-1. Go to [app.netlify.com](https://app.netlify.com)
-2. Find your site (curious-pony-0dec76)
-3. Go to "Deploys" tab
-4. Drag the extracted folder onto the deploy area
-5. Wait for deployment to complete
-
----
-
-## 📝 Post-Deployment Checklist
-
-- [ ] Verify homepage loads with logo
-- [ ] Check "Recent Issues" section populates
-- [ ] Test newsletter signup form (submit test email)
-- [ ] Test contact form
-- [ ] Verify podcast page has Transistor embed
-- [ ] Check mobile navigation works
-- [ ] Test scroll-triggered CTA appears
-- [ ] Verify Google Analytics tracking (check GA dashboard)
+1. Go to [github.com/maryadawson-code/mmt-site](https://github.com/maryadawson-code/mmt-site)
+2. Click "Add file" → "Upload files"
+3. Extract and drag all 8 files from `mmt-resources-page.zip`
+4. Commit with message: "Add DAAT toolkit to resources page"
+5. Wait ~2 minutes for Netlify to deploy
+6. Hard refresh (Ctrl+Shift+R) to see changes
 
 ---
 
-## 🖼️ Missing Assets (Need Your Files)
+## Prompt Templates Included
 
-The package includes brand logos but needs your actual photos:
-
-1. **mary-womack.jpg** - Your headshot for About page and hero
-2. **sara-byrd.jpg** - Sara's headshot for Podcast page
-3. **fed-up-cover.png** - Podcast cover art (if different from logo)
-
-Upload these to the same directory as the HTML files.
-
----
-
-## 🎨 Brand Reference
-
-### Colors (CSS Variables)
-```css
---primary-cyan: #00E5FA
---neon-teal: #00BDAE  
---mint-accent: #00D29F
---deep-navy: #00050F
---slate-navy: #001F34
-```
-
-### Fonts
-- **Headings:** Space Grotesk (Bold/Semibold)
-- **Body:** Inter (Regular/Medium)
+| Prompt | Use Case | Time |
+|--------|----------|------|
+| **Drop-Day Triage** | Quick scan when new bill drops | 10-15 min |
+| **Leadership Decision Pack** | Comprehensive executive briefing | 30-45 min |
+| **Fence & Prohibition Tracker** | Execution blockers and compliance | 15-20 min |
+| **Version Comparison** | House vs Senate delta analysis | 20-30 min |
+| **CDMRP Research Tracker** | Medical research funding by topic | 15-20 min |
+| **Transfer Authority** | Funding flexibility analysis | 10-15 min |
 
 ---
 
-## 📊 Analytics Events to Track
+## Methodology Sections
 
-The site is configured for these events (add to GA4 as needed):
-- `newsletter_signup_started` - User clicks email field
-- `newsletter_signup_completed` - Form submitted
-- `podcast_platform_click` - Platform button clicked
-- `scroll_depth_70` - Triggers scroll CTA
-
----
-
-## 🔗 Key URLs
-
-| Resource | URL |
-|----------|-----|
-| Live Site | https://missionmeetstech.com |
-| Netlify Dashboard | app.netlify.com (curious-pony-0dec76) |
-| GitHub Repo | github.com/maryadawson-code/mmt-site |
-| Google Analytics | G-PRG234VSXM |
+1. **Core Principles** - Open records first, citation mandatory, evidence labeling
+2. **Source Hierarchy** - Congress.gov, GovInfo, Committee sites priority order
+3. **Two-Step Budget Rule** - Authorization vs Appropriation distinction
+4. **Directive Classification** - REQUIREMENT vs DIRECTIVE vs INTENT
+5. **DHP Special Handling** - Title VI parsing and synonym mapping
+6. **Fence Detection** - PROHIBITION, WITHHOLD/FENCE, FLOOR patterns
+7. **QA Checklist** - Must-pass checks and common failure modes
 
 ---
 
-## 📞 Support
+## Quick Reference Topics
 
-If you run into issues with deployment, the most common fixes are:
-
-1. **Logo not showing** - Make sure PNG files are in root directory, not subfolder
-2. **Newsletter not loading** - Check that newsletters.json is present and valid JSON
-3. **Forms not working** - Ensure `data-netlify="true"` attribute is present
-4. **Styles broken** - Clear browser cache with hard refresh
+- MHS Triad (Bass, Michael, Via)
+- Key Concepts (Human Weapon System, Role 2E, H2F, Golden Dome)
+- Appropriations Terms (DHP, JES, CDMRP, Hollow Authorization)
+- The Filter Question ("Does this save lives or enhance readiness?")
+- Telehealth Landscape (Amwell, GlobalMed, Medweb)
+- Budget Context (FY2026 figures, 2028 audit mandate)
 
 ---
 
-*Built with care for Mission Meets Tech*
+## Government Links Included
+
+**Appropriations & Legislation**
+- Congress.gov
+- GovInfo.gov
+- House Appropriations Committee
+- Senate Appropriations Committee
+
+**Defense Health**
+- Health.mil (DHA)
+- TRICARE
+- VA
+- CDMRP
+
+**Contracting & Acquisition**
+- SAM.gov
+- FPDS
+- DARPA
+- OUSD A&S
+
+**Research & Analysis**
+- GAO
+- CRS Reports
+- CBO
+- DoD Comptroller
+
+---
+
+## Notes
+
+- The toolkit is designed for use with Claude, ChatGPT, or any AI with web search
+- All prompts emphasize open public records and mandatory citations
+- No proprietary methods or employer IP included
+- Completely standalone from your Rocket Data work
+
+---
+
+*Prepared January 20, 2026*
