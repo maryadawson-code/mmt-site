@@ -915,7 +915,10 @@ footer .logo img,
 header .logo img:hover {
     filter: brightness(0) saturate(100%) invert(79%) sepia(65%) saturate(1000%) hue-rotate(145deg) brightness(103%) contrast(101%) drop-shadow(0 0 30px rgba(0, 229, 250, 0.7));
 }
-
+/* Remove logo filters */
+.nav-logo img, .hero-image img, footer .logo img, .footer-brand img {
+    filter: none !important;
+}
 .subscribe-card:hover {
     transform: translateY(-3px);
 }
