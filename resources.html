@@ -7,25 +7,23 @@
     <meta name="description" content="Free resources, guides, and reference materials for federal health IT contractors and government leaders.">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" href="images/mmt-logo.png">
 </head>
 <body>
     <nav>
         <div class="container">
-            <a href="index.html" class="logo">Mission Meets <span>Tech</span></a>
-            <button class="hamburger" onclick="toggleMenu()" aria-label="Toggle navigation">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+            <a href="index.html" class="logo">
+                <img src="images/mmt-logo.png" alt="Mission Meets Tech" class="logo-img">
+                <span class="logo-text">Mission Meets Tech</span>
+            </a>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="podcast.html">Podcast</a></li>
                 <li><a href="newsletter.html">Newsletter</a></li>
                 <li><a href="resources.html">Resources</a></li>
-                <li><a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" class="nav-cta" target="_blank">Subscribe</a></li>
             </ul>
+            <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" class="nav-cta" target="_blank">Subscribe</a>
         </div>
     </nav>
 
@@ -279,49 +277,67 @@
             <h2 class="section-title">Acronym Decoder</h2>
             <p class="section-subtitle">Because nobody should have to Google "DHMSM" in a meeting.</p>
             
-            <div class="glossary-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
-                <div class="glossary-section" style="background: var(--void-card); padding: 24px; border-radius: 8px; border: 1px solid rgba(0, 229, 250, 0.2);">
-                    <h4 style="color: var(--primary-cyan); font-family: 'Space Grotesk', sans-serif; margin-bottom: 16px;">Organizations</h4>
-                    <dl style="margin: 0;">
-                        <dt style="color: var(--white); font-weight: 600; margin-top: 12px;">DHA</dt>
-                        <dd style="color: var(--white-muted); font-size: 0.9rem; margin-left: 0;">Defense Health Agency—the joint Combat Support Agency enabling Army, Navy, and Air Force medical services</dd>
-                        <dt style="color: var(--white); font-weight: 600; margin-top: 12px;">MTF</dt>
-                        <dd style="color: var(--white-muted); font-size: 0.9rem; margin-left: 0;">Military Treatment Facility—the 721+ hospitals and clinics serving military beneficiaries</dd>
-                        <dt style="color: var(--white); font-weight: 600; margin-top: 12px;">JTCCN</dt>
-                        <dd style="color: var(--white-muted); font-size: 0.9rem; margin-left: 0;">Joint Tactical Combat Casualty Care Network</dd>
+            <div class="glossary-grid">
+                <div class="glossary-section">
+                    <h4>Organizations</h4>
+                    <dl class="glossary-list">
+                        <dt>DHA</dt>
+                        <dd>Defense Health Agency—the joint Combat Support Agency enabling Army, Navy, and Air Force medical services</dd>
+                        <dt>MTF</dt>
+                        <dd>Military Treatment Facility—the 721+ hospitals and clinics serving military beneficiaries</dd>
+                        <dt>JTCCN</dt>
+                        <dd>Joint Tactical Combat Casualty Care Network</dd>
+                        <dt>DARPA</dt>
+                        <dd>Defense Advanced Research Projects Agency</dd>
+                        <dt>PEO DHMS</dt>
+                        <dd>Program Executive Office, Defense Healthcare Management Systems</dd>
                     </dl>
                 </div>
-                <div class="glossary-section" style="background: var(--void-card); padding: 24px; border-radius: 8px; border: 1px solid rgba(0, 229, 250, 0.2);">
-                    <h4 style="color: var(--primary-cyan); font-family: 'Space Grotesk', sans-serif; margin-bottom: 16px;">Programs & Systems</h4>
-                    <dl style="margin: 0;">
-                        <dt style="color: var(--white); font-weight: 600; margin-top: 12px;">MHS GENESIS</dt>
-                        <dd style="color: var(--white-muted); font-size: 0.9rem; margin-left: 0;">The Military Health System electronic health record—Oracle Cerner-based</dd>
-                        <dt style="color: var(--white); font-weight: 600; margin-top: 12px;">H2F</dt>
-                        <dd style="color: var(--white-muted); font-size: 0.9rem; margin-left: 0;">Holistic Health and Fitness—Army program with embedded performance teams</dd>
-                        <dt style="color: var(--white); font-weight: 600; margin-top: 12px;">GenAI.mil</dt>
-                        <dd style="color: var(--white-muted); font-size: 0.9rem; margin-left: 0;">DoD's enterprise AI platform deploying Google Gemini across 3M users</dd>
+                <div class="glossary-section">
+                    <h4>Programs & Systems</h4>
+                    <dl class="glossary-list">
+                        <dt>MHS GENESIS</dt>
+                        <dd>The Military Health System electronic health record—Oracle Cerner-based, replacing legacy systems</dd>
+                        <dt>DHMSM</dt>
+                        <dd>Defense Healthcare Management Systems Modernization program</dd>
+                        <dt>H2F</dt>
+                        <dd>Holistic Health and Fitness—Army program with embedded performance teams</dd>
+                        <dt>TRICARE</dt>
+                        <dd>The health care program serving uniformed service members, retirees, and families</dd>
+                        <dt>GenAI.mil</dt>
+                        <dd>DoD's enterprise AI platform deploying Google Gemini across 3M users</dd>
                     </dl>
                 </div>
-                <div class="glossary-section" style="background: var(--void-card); padding: 24px; border-radius: 8px; border: 1px solid rgba(0, 229, 250, 0.2);">
-                    <h4 style="color: var(--primary-cyan); font-family: 'Space Grotesk', sans-serif; margin-bottom: 16px;">Medical Concepts</h4>
-                    <dl style="margin: 0;">
-                        <dt style="color: var(--white); font-weight: 600; margin-top: 12px;">Role 2E</dt>
-                        <dd style="color: var(--white-muted); font-size: 0.9rem; margin-left: 0;">Expeditionary medical unit with surgical capability; can hold casualties 96+ hours</dd>
-                        <dt style="color: var(--white); font-weight: 600; margin-top: 12px;">HPO</dt>
-                        <dd style="color: var(--white-muted); font-size: 0.9rem; margin-left: 0;">Human Performance Optimization—treating warfighters as "human weapon systems"</dd>
-                        <dt style="color: var(--white); font-weight: 600; margin-top: 12px;">Golden Hour</dt>
-                        <dd style="color: var(--white-muted); font-size: 0.9rem; margin-left: 0;">Critical window for trauma care; increasingly a "golden day" in Pacific scenarios</dd>
+                <div class="glossary-section">
+                    <h4>Medical Concepts</h4>
+                    <dl class="glossary-list">
+                        <dt>Role 2E</dt>
+                        <dd>Expeditionary medical unit with surgical capability; can hold casualties 96+ hours</dd>
+                        <dt>HPO</dt>
+                        <dd>Human Performance Optimization—treating warfighters as "human weapon systems"</dd>
+                        <dt>RPM</dt>
+                        <dd>Remote Patient Monitoring—continuous health tracking outside clinical settings</dd>
+                        <dt>Med COI</dt>
+                        <dd>Medical Community of Interest—security authorization boundary</dd>
+                        <dt>Golden Hour</dt>
+                        <dd>Critical window for trauma care; increasingly a "golden day" in Pacific scenarios</dd>
                     </dl>
                 </div>
-                <div class="glossary-section" style="background: var(--void-card); padding: 24px; border-radius: 8px; border: 1px solid rgba(0, 229, 250, 0.2);">
-                    <h4 style="color: var(--primary-cyan); font-family: 'Space Grotesk', sans-serif; margin-bottom: 16px;">Acquisition</h4>
-                    <dl style="margin: 0;">
-                        <dt style="color: var(--white); font-weight: 600; margin-top: 12px;">OTA</dt>
-                        <dd style="color: var(--white-muted); font-size: 0.9rem; margin-left: 0;">Other Transaction Authority—flexible procurement outside FAR</dd>
-                        <dt style="color: var(--white); font-weight: 600; margin-top: 12px;">IDIQ</dt>
-                        <dd style="color: var(--white-muted); font-size: 0.9rem; margin-left: 0;">Indefinite Delivery/Indefinite Quantity contract vehicle</dd>
-                        <dt style="color: var(--white); font-weight: 600; margin-top: 12px;">ATO</dt>
-                        <dd style="color: var(--white-muted); font-size: 0.9rem; margin-left: 0;">Authority to Operate—security authorization to deploy systems</dd>
+                <div class="glossary-section">
+                    <h4>Acquisition & Contracting</h4>
+                    <dl class="glossary-list">
+                        <dt>SBIR/STTR</dt>
+                        <dd>Small Business Innovation Research / Technology Transfer programs (currently lapsed)</dd>
+                        <dt>OTA</dt>
+                        <dd>Other Transaction Authority—flexible procurement outside FAR</dd>
+                        <dt>IDIQ</dt>
+                        <dd>Indefinite Delivery/Indefinite Quantity contract vehicle</dd>
+                        <dt>PAE</dt>
+                        <dd>Portfolio Acquisition Executive—new structure replacing PEOs</dd>
+                        <dt>8(a)</dt>
+                        <dd>SBA program for small disadvantaged businesses; under Hegseth review</dd>
+                        <dt>ATO</dt>
+                        <dd>Authority to Operate—security authorization to deploy systems</dd>
                     </dl>
                 </div>
             </div>
@@ -351,10 +367,17 @@
                     </div>
                 </div>
                 <div class="timeline-item">
+                    <div class="timeline-date">MAR</div>
+                    <div class="timeline-content">
+                        <h4>Via Confirmation Target</h4>
+                        <p>Predicted confirmation as DHA Director by end of Q1.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
                     <div class="timeline-date">APR</div>
                     <div class="timeline-content">
                         <h4>DHA PAE Decision Point</h4>
-                        <p>CAE decides whether Medical Products becomes permanent Portfolio Acquisition Executive.</p>
+                        <p>CAE decides whether Medical Products becomes permanent Portfolio Acquisition Executive. Watch for Medical Devices and Equipment PMO chartering.</p>
                     </div>
                 </div>
                 <div class="timeline-item">
@@ -383,6 +406,13 @@
                     <div class="timeline-content">
                         <h4>DoD Audit Deadline</h4>
                         <p>Congressional mandate for clean audit opinion. Section 1002 gives SES firing authority for failures.</p>
+                    </div>
+                </div>
+                <div class="timeline-item timeline-item-future">
+                    <div class="timeline-date">2032</div>
+                    <div class="timeline-content">
+                        <h4>Full H2F Implementation</h4>
+                        <p>Army target for H2F deployment to all 236 brigades.</p>
                     </div>
                 </div>
             </div>
@@ -427,7 +457,7 @@
                 <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" class="btn btn-primary btn-large" target="_blank">
                     <i class="fab fa-linkedin"></i> Subscribe Free
                 </a>
-                <p class="cta-note">Join defense health IT professionals getting the intelligence they need.</p>
+                <p class="cta-note">Join 1,500+ defense health IT professionals.</p>
             </div>
         </div>
     </section>
@@ -436,15 +466,14 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
-                    <a href="index.html" class="logo">Mission Meets <span>Tech</span></a>
+                    <a href="index.html" class="logo">
+                        <img src="images/mmt-logo.png" alt="Mission Meets Tech" class="logo-img">
+                        <span class="logo-text">Mission Meets Tech</span>
+                    </a>
                     <p>Federal health IT intelligence for people who care about the warfighter and the mission.</p>
                     <div class="footer-social">
-                        <a href="https://www.youtube.com/channel/UCfuM3t-cm6Kq01lnzYf8KZQ" target="_blank" aria-label="YouTube" class="social-icon">
-                            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                        </a>
-                        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" aria-label="LinkedIn" class="social-icon">
-                            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                        </a>
+                        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://www.youtube.com/channel/UCfuM3t-cm6Kq01lnzYf8KZQ" target="_blank"><i class="fab fa-youtube"></i></a>
                     </div>
                 </div>
                 <div class="footer-links">
@@ -457,43 +486,27 @@
                     </ul>
                 </div>
                 <div class="footer-links">
-                    <h4>Listen</h4>
+                    <h4>Connect</h4>
                     <ul>
-                        <li><a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank">Apple Podcasts</a></li>
-                        <li><a href="https://open.spotify.com/show/7sND342duH7Buw1cUs60lP" target="_blank">Spotify</a></li>
-                        <li><a href="https://music.amazon.com/podcasts/920fec9b-4fae-4bd0-ae4d-eaf1459cad2f" target="_blank">Amazon Music</a></li>
-                        <li><a href="https://www.youtube.com/channel/UCfuM3t-cm6Kq01lnzYf8KZQ" target="_blank">YouTube</a></li>
+                        <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank">LinkedIn</a></li>
+                        <li><a href="https://www.linkedin.com/company/fed-up-mission-meets-reality/" target="_blank">Fed UP Page</a></li>
+                        <li><a href="mailto:mary@missionmeetstech.com">Contact</a></li>
                     </ul>
                 </div>
                 <div class="footer-links">
-                    <h4>Connect</h4>
+                    <h4>Subscribe</h4>
                     <ul>
-                        <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank">Mary on LinkedIn</a></li>
-                        <li><a href="https://www.linkedin.com/in/saraebyrd/" target="_blank">Sara on LinkedIn</a></li>
-                        <li><a href="https://www.linkedin.com/company/fed-up-mission-meets-reality/" target="_blank">Fed UP Page</a></li>
+                        <li><a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank">MMT Newsletter</a></li>
+                        <li><a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7410672315090276353" target="_blank">Fed UP Updates</a></li>
+                        <li><a href="https://feeds.transistor.fm/fed-up-where-mission-meets-reality" target="_blank">Podcast RSS</a></li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>The views expressed on this site are my own and do not represent the official position of any organization.</p>
+                <p class="disclaimer">The views expressed on this site are my own and do not represent the official position of any organization. This content is for informational purposes only and does not constitute professional advice.</p>
+                <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
             </div>
         </div>
     </footer>
-
-    <script>
-        function toggleMenu() {
-            const nav = document.querySelector('.nav-links');
-            const hamburger = document.querySelector('.hamburger');
-            nav.classList.toggle('active');
-            hamburger.classList.toggle('active');
-        }
-
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                document.querySelector('.nav-links').classList.remove('active');
-                document.querySelector('.hamburger').classList.remove('active');
-            });
-        });
-    </script>
 </body>
 </html>
