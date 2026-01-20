@@ -491,10 +491,43 @@ nav .container {
     margin-top: 8px;
 }
 
+/* ===== Hero Stats ===== */
+.hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-number {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: var(--gradient-horizontal);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--white-dim);
+    margin-top: 4px;
+}
+
 /* ===== Sections ===== */
 section {
     padding: 100px 0;
     position: relative;
+}
+
+.question-cta {
+    padding: 80px 0;
 }
 
 section.alt {
