@@ -4,1380 +4,319 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resources | Mission Meets Tech</title>
-    <meta name="description" content="Free tools and resources for federal health IT professionals. Defense Appropriations Analysis Toolkit, government links, and quick reference guides.">
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="Resources | Mission Meets Tech">
-    <meta property="og:description" content="Free tools for federal health IT: Defense Appropriations Analysis Toolkit, government links, and quick reference guides.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://missionmeetstech.com/resources">
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="favicon.png">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PRG234VSXM"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-PRG234VSXM');
-    </script>
-    
+    <meta name="description" content="Free resources, guides, and reference materials for federal health IT contractors and government leaders.">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="styles.css">
-    <style>
-        /* Resources Page Specific Styles */
-        .toolkit-hero {
-            background: linear-gradient(135deg, var(--slate-navy) 0%, var(--deep-navy) 100%);
-            padding: 4rem 0;
-            border-bottom: 1px solid rgba(0, 229, 250, 0.2);
-        }
-        
-        .toolkit-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(0, 229, 250, 0.1);
-            border: 1px solid rgba(0, 229, 250, 0.3);
-            padding: 0.5rem 1rem;
-            border-radius: 2rem;
-            font-size: 0.85rem;
-            color: var(--primary-cyan);
-            margin-bottom: 1.5rem;
-        }
-        
-        .toolkit-badge svg {
-            width: 16px;
-            height: 16px;
-        }
-        
-        .toolkit-title {
-            font-family: var(--font-heading);
-            font-size: clamp(2rem, 5vw, 3rem);
-            font-weight: 700;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--primary-cyan) 0%, var(--mint-accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .toolkit-subtitle {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            max-width: 700px;
-            line-height: 1.6;
-        }
-        
-        .disclaimer-box {
-            background: rgba(255, 193, 7, 0.1);
-            border: 1px solid rgba(255, 193, 7, 0.3);
-            border-radius: 8px;
-            padding: 1rem 1.5rem;
-            margin: 2rem 0;
-            display: flex;
-            gap: 1rem;
-            align-items: flex-start;
-        }
-        
-        .disclaimer-box svg {
-            flex-shrink: 0;
-            color: #ffc107;
-            width: 24px;
-            height: 24px;
-        }
-        
-        .disclaimer-box p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            line-height: 1.6;
-            margin: 0;
-        }
-        
-        .resource-tabs {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            border-bottom: 1px solid rgba(0, 229, 250, 0.2);
-            padding-bottom: 1rem;
-        }
-        
-        .tab-btn {
-            background: transparent;
-            border: 1px solid rgba(0, 229, 250, 0.3);
-            color: var(--text-secondary);
-            padding: 0.75rem 1.5rem;
-            border-radius: 4px;
-            font-family: var(--font-heading);
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .tab-btn:hover {
-            border-color: var(--primary-cyan);
-            color: var(--primary-cyan);
-        }
-        
-        .tab-btn.active {
-            background: var(--primary-cyan);
-            border-color: var(--primary-cyan);
-            color: var(--deep-navy);
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* Prompt Cards */
-        .prompt-card {
-            background: var(--slate-navy);
-            border: 1px solid rgba(0, 229, 250, 0.2);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            position: relative;
-        }
-        
-        .prompt-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-        }
-        
-        .prompt-card h3 {
-            font-family: var(--font-heading);
-            font-size: 1.1rem;
-            color: var(--primary-cyan);
-            margin: 0;
-        }
-        
-        .prompt-card .use-case {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-top: 0.25rem;
-        }
-        
-        .copy-btn {
-            background: rgba(0, 229, 250, 0.1);
-            border: 1px solid rgba(0, 229, 250, 0.3);
-            color: var(--primary-cyan);
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .copy-btn:hover {
-            background: var(--primary-cyan);
-            color: var(--deep-navy);
-        }
-        
-        .copy-btn.copied {
-            background: var(--mint-accent);
-            border-color: var(--mint-accent);
-            color: var(--deep-navy);
-        }
-        
-        .prompt-code {
-            background: var(--deep-navy);
-            border: 1px solid rgba(0, 229, 250, 0.1);
-            border-radius: 8px;
-            padding: 1rem;
-            font-family: 'Courier New', monospace;
-            font-size: 0.85rem;
-            color: var(--mint-accent);
-            white-space: pre-wrap;
-            word-break: break-word;
-            line-height: 1.5;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        
-        /* Accordion for methodology */
-        .accordion {
-            margin: 1.5rem 0;
-        }
-        
-        .accordion-item {
-            border: 1px solid rgba(0, 229, 250, 0.2);
-            border-radius: 8px;
-            margin-bottom: 0.75rem;
-            overflow: hidden;
-        }
-        
-        .accordion-header {
-            background: var(--slate-navy);
-            padding: 1rem 1.5rem;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background 0.3s ease;
-        }
-        
-        .accordion-header:hover {
-            background: rgba(0, 229, 250, 0.05);
-        }
-        
-        .accordion-header h4 {
-            font-family: var(--font-heading);
-            font-size: 1rem;
-            color: var(--text-primary);
-            margin: 0;
-        }
-        
-        .accordion-icon {
-            color: var(--primary-cyan);
-            transition: transform 0.3s ease;
-        }
-        
-        .accordion-item.open .accordion-icon {
-            transform: rotate(180deg);
-        }
-        
-        .accordion-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-        
-        .accordion-item.open .accordion-content {
-            max-height: 2000px;
-        }
-        
-        .accordion-body {
-            padding: 1.5rem;
-            background: var(--deep-navy);
-        }
-        
-        .accordion-body p {
-            color: var(--text-secondary);
-            line-height: 1.7;
-            margin-bottom: 1rem;
-        }
-        
-        .accordion-body ul {
-            color: var(--text-secondary);
-            padding-left: 1.5rem;
-            line-height: 1.8;
-        }
-        
-        .accordion-body li {
-            margin-bottom: 0.5rem;
-        }
-        
-        .accordion-body code {
-            background: rgba(0, 229, 250, 0.1);
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            color: var(--primary-cyan);
-        }
-        
-        /* Quick Reference Grid */
-        .quick-ref-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
-        }
-        
-        .quick-ref-card {
-            background: var(--slate-navy);
-            border: 1px solid rgba(0, 229, 250, 0.2);
-            border-radius: 12px;
-            padding: 1.5rem;
-        }
-        
-        .quick-ref-card h4 {
-            font-family: var(--font-heading);
-            color: var(--primary-cyan);
-            margin-bottom: 1rem;
-            font-size: 1rem;
-        }
-        
-        .term-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .term-list li {
-            padding: 0.75rem 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-        }
-        
-        .term-list li:last-child {
-            border-bottom: none;
-        }
-        
-        .term-name {
-            color: var(--mint-accent);
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-        
-        .term-def {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            line-height: 1.5;
-        }
-        
-        /* Government Links */
-        .gov-links-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1rem;
-        }
-        
-        .gov-link-card {
-            background: var(--slate-navy);
-            border: 1px solid rgba(0, 229, 250, 0.2);
-            border-radius: 8px;
-            padding: 1.25rem;
-            display: flex;
-            align-items: flex-start;
-            gap: 1rem;
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
-        
-        .gov-link-card:hover {
-            border-color: var(--primary-cyan);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(0, 229, 250, 0.1);
-        }
-        
-        .gov-link-icon {
-            width: 40px;
-            height: 40px;
-            background: rgba(0, 229, 250, 0.1);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        
-        .gov-link-icon svg {
-            width: 20px;
-            height: 20px;
-            color: var(--primary-cyan);
-        }
-        
-        .gov-link-content h5 {
-            color: var(--text-primary);
-            font-family: var(--font-heading);
-            font-size: 0.95rem;
-            margin: 0 0 0.25rem 0;
-        }
-        
-        .gov-link-content p {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            margin: 0;
-            line-height: 1.4;
-        }
-        
-        /* Section Headers */
-        .section-header {
-            margin-bottom: 2rem;
-        }
-        
-        .section-header h2 {
-            font-family: var(--font-heading);
-            font-size: 1.75rem;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-        
-        .section-header p {
-            color: var(--text-secondary);
-            font-size: 1rem;
-        }
-        
-        /* Tag Pills */
-        .tag-pill {
-            display: inline-block;
-            background: rgba(0, 210, 159, 0.1);
-            border: 1px solid rgba(0, 210, 159, 0.3);
-            color: var(--mint-accent);
-            padding: 0.25rem 0.75rem;
-            border-radius: 1rem;
-            font-size: 0.75rem;
-            margin-right: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .resources-section {
-            padding: 4rem 0;
-        }
-        
-        .resources-section:nth-child(even) {
-            background: var(--slate-navy);
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="nav">
+    <nav>
         <div class="container">
-            <a href="index.html" class="nav-logo">
-                <img src="mmt-logo-nav.png" alt="Mission Meets Tech" height="40">
-            </a>
-            <button class="nav-toggle" aria-label="Toggle navigation">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            <ul class="nav-menu">
+            <a href="index.html" class="logo">Mission Meets <span>Tech</span></a>
+            <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
-                <li><a href="newsletter.html">Newsletter</a></li>
-                <li><a href="podcast.html">Podcast</a></li>
-                <li><a href="resources.html" class="active">Resources</a></li>
                 <li><a href="about.html">About</a></li>
-                <li><a href="contact.html">Contact</a></li>
+                <li><a href="podcast.html">Podcast</a></li>
+                <li><a href="newsletter.html">Newsletter</a></li>
+                <li><a href="resources.html">Resources</a></li>
             </ul>
+            <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" class="nav-cta" target="_blank">Subscribe</a>
         </div>
     </nav>
 
-    <!-- Toolkit Hero -->
-    <section class="toolkit-hero">
+    <section class="about-hero">
         <div class="container">
-            <div class="toolkit-badge">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                </svg>
-                Free Community Resource
-            </div>
-            <h1 class="toolkit-title">Defense Appropriations Analysis Toolkit</h1>
-            <p class="toolkit-subtitle">
-                An open-source methodology for extracting, analyzing, and briefing defense health appropriations. 
-                Copy these prompts into Claude or ChatGPT to decode bill text, track fences, and generate leadership decision briefs.
-            </p>
-            
-            <div class="disclaimer-box">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                <p>
-                    <strong>Independence Notice:</strong> This toolkit is my personal contribution to the federal health IT community. 
-                    It reflects methodology I've developed through years of working with appropriations analysis. 
-                    This resource is not affiliated with, endorsed by, or representative of any current or former employer. 
-                    Use at your own discretion; this is educational content, not legal or official guidance.
-                </p>
+            <h1>Resources</h1>
+            <p>Reference materials, quick guides, and tools to help you navigate federal health IT.</p>
+        </div>
+    </section>
+
+    <!-- Featured Resource: MHS Triad -->
+    <section>
+        <div class="container">
+            <div class="featured-resource">
+                <div class="resource-badge">Featured</div>
+                <div class="resource-content">
+                    <h2>The MHS Triad Quick Reference</h2>
+                    <p>Keith Bass, Emil Michael, and Admiral Via—the three leaders reshaping military medicine. One-page profiles with mandates, backgrounds, and what to watch for each.</p>
+                    <div class="resource-meta">
+                        <span><i class="far fa-calendar"></i> Updated January 2026</span>
+                    </div>
+                    
+                    <!-- Quick Reference Table Inline -->
+                    <div class="inline-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Leader</th>
+                                    <th>Role</th>
+                                    <th>The Mandate</th>
+                                    <th>What to Watch</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Keith Bass</strong></td>
+                                    <td>ASD Health Affairs</td>
+                                    <td>Governance & Cost Control</td>
+                                    <td>Telehealth scale-up; pharmacy compliance; GlobalMed background</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Emil Michael</strong></td>
+                                    <td>USD Research & Engineering</td>
+                                    <td>AI Adoption & Tech Security</td>
+                                    <td>GenAI.mil/AskSage rollout; university fights; China decoupling</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Admiral Darin Via</strong></td>
+                                    <td>DHA Director (expected Feb)</td>
+                                    <td>Operational Readiness</td>
+                                    <td>Role 2E deployment; HPO/wearables; JTCCN expansion</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Main Resources Content -->
-    <main class="resources-section">
+    <!-- Quick References -->
+    <section class="alt">
         <div class="container">
-            <!-- Tab Navigation -->
-            <div class="resource-tabs">
-                <button class="tab-btn active" data-tab="prompts">Prompt Templates</button>
-                <button class="tab-btn" data-tab="methodology">Methodology</button>
-                <button class="tab-btn" data-tab="glossary">Quick Reference</button>
-                <button class="tab-btn" data-tab="links">Government Links</button>
-            </div>
-
-            <!-- Tab: Prompt Templates -->
-            <div id="prompts" class="tab-content active">
-                <div class="section-header">
-                    <h2>Copy-Paste Prompts for AI Analysis</h2>
-                    <p>These prompts work with Claude, ChatGPT, or any AI assistant with web search enabled. Start with "Drop-Day Triage" for quick analysis or "Leadership Decision Pack" for comprehensive briefings.</p>
-                </div>
-
-                <!-- Prompt 1: Drop-Day Triage -->
-                <div class="prompt-card">
-                    <div class="prompt-card-header">
-                        <div>
-                            <h3>🚀 Drop-Day Triage</h3>
-                            <p class="use-case">Use when: New appropriations bill drops, need quick assessment</p>
-                        </div>
-                        <button class="copy-btn" onclick="copyPrompt(this, 'prompt1')">
-                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                            </svg>
-                            Copy
-                        </button>
-                    </div>
-                    <div class="prompt-code" id="prompt1">You are a Defense Appropriations Analyst. Use web search to find the latest Defense Appropriations bill text and explanatory statement from Congress.gov, GovInfo, or House/Senate Appropriations Committee sites.
-
-TOPIC SET = DHP, DHA, MHS, TRICARE, IM-IT/EHR, AI, cyber, CDMRP.
-
-For each topic, extract:
-1. Funding amounts (normalize "in thousands" to full dollars)
-2. Report language directives (classify as REQUIREMENT/DIRECTIVE/INTENT)
-3. Any fences, withholds, or prohibitions
-
-Every item MUST include citation: document name + page + section + link.
-Label claims as FACT / INFERENCE / UNKNOWN.
-
-Output: Top 10 material items with pillar tags, quick summary, and action items.</div>
-                    <div style="margin-top: 1rem;">
-                        <span class="tag-pill">Quick Scan</span>
-                        <span class="tag-pill">10-15 min</span>
-                        <span class="tag-pill">Health Focus</span>
-                    </div>
-                </div>
-
-                <!-- Prompt 2: Leadership Decision Pack -->
-                <div class="prompt-card">
-                    <div class="prompt-card-header">
-                        <div>
-                            <h3>📊 Leadership Decision Pack</h3>
-                            <p class="use-case">Use when: Briefing executives, need decisions + options + risks</p>
-                        </div>
-                        <button class="copy-btn" onclick="copyPrompt(this, 'prompt2')">
-                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                            </svg>
-                            Copy
-                        </button>
-                    </div>
-                    <div class="prompt-code" id="prompt2">You are a Defense Appropriations Analyst supporting senior leadership decision-makers.
-
-TOPIC SET = DHP, DHA, MHS, TRICARE, IM-IT/EHR, AI, cyber, CDMRP, mental health, TBI, pharmacy.
-
-Use web search to retrieve the latest Defense Appropriations bill text + explanatory statement.
-
-OUTPUT REQUIRED:
-1. META: Sources checked, latest version, coverage caveats
-2. DECISION BRIEF: 3 Key Decisions with Option A/B, Recommendation, Risks, Evidence Basis (citations)
-3. TOPLINES: 10 bullets + 30-second talking points + "What NOT to say"
-4. TOP 20 MATERIAL ITEMS: Table with $, Delta, Type, Confidence, Citations
-5. FENCE HEATMAP: Any "none of the funds" or "not more than X% until" (Severity/Type/Unlock condition/Owner/Deadline)
-6. KEY DIRECTIVES + DEADLINES: Deliverables tracker with owners
-7. ACTION PLAYBOOK: First 72 hours + 30/60/90 day actions
-
-RULES:
-- Every item needs citation (doc + page + link)
-- Label as FACT/INFERENCE/UNKNOWN
-- No recommendation without evidence
-- Distinguish AUTHORIZATION (NDAA) vs APPROPRIATION (spending authority)</div>
-                    <div style="margin-top: 1rem;">
-                        <span class="tag-pill">Comprehensive</span>
-                        <span class="tag-pill">30-45 min</span>
-                        <span class="tag-pill">Executive Ready</span>
-                    </div>
-                </div>
-
-                <!-- Prompt 3: Fence Heatmap -->
-                <div class="prompt-card">
-                    <div class="prompt-card-header">
-                        <div>
-                            <h3>🚧 Fence & Prohibition Tracker</h3>
-                            <p class="use-case">Use when: Need to identify execution blockers and compliance risks</p>
-                        </div>
-                        <button class="copy-btn" onclick="copyPrompt(this, 'prompt3')">
-                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                            </svg>
-                            Copy
-                        </button>
-                    </div>
-                    <div class="prompt-code" id="prompt3">You are a Defense Appropriations Analyst focused on execution constraints.
-
-Search the latest Defense Appropriations bill text and explanatory statement for:
-
-FENCE PATTERNS TO DETECT:
-- PROHIBITION: "None of the funds may be used for..."
-- WITHHOLD/FENCE: "Not more than X% may be obligated until..."
-- FLOOR: "Of which not less than..."
-
-For each fence found, extract:
-| Severity (High/Med/Low) | Type | What is Blocked | Unlock Condition | Who Must Act | Deadline | Citation |
-
-Focus on Title VI (DHP) and Title VIII (General Provisions).
-
-Also extract any transfer authority caps and reprogramming restrictions.
-
-Output as a heatmap table sorted by severity, with specific page citations.</div>
-                    <div style="margin-top: 1rem;">
-                        <span class="tag-pill">Compliance</span>
-                        <span class="tag-pill">15-20 min</span>
-                        <span class="tag-pill">Risk Focus</span>
-                    </div>
-                </div>
-
-                <!-- Prompt 4: House vs Senate Compare -->
-                <div class="prompt-card">
-                    <div class="prompt-card-header">
-                        <div>
-                            <h3>⚖️ Version Comparison (House vs Senate)</h3>
-                            <p class="use-case">Use when: Conference is pending, need to track what's at stake</p>
-                        </div>
-                        <button class="copy-btn" onclick="copyPrompt(this, 'prompt4')">
-                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                            </svg>
-                            Copy
-                        </button>
-                    </div>
-                    <div class="prompt-code" id="prompt4">You are a Defense Appropriations Analyst comparing bill versions.
-
-TOPIC SET = DHP, IM-IT/EHR, AI, cyber, CDMRP.
-
-Search for both House and Senate Defense Appropriations versions and their committee reports.
-
-Create a DELTA TABLE with columns:
-| Item | House Position | Senate Position | Delta | Consequence | House Citation | Senate Citation |
-
-Identify TOP 10 CONSEQUENTIAL DIFFERENCES ranked by:
-1. Dollar magnitude
-2. Policy significance  
-3. Likelihood of contention in conference
-
-For each difference, note which chamber's position is more favorable to health IT modernization.
-
-Flag any items where one chamber has a provision and the other is silent (asymmetric risk).</div>
-                    <div style="margin-top: 1rem;">
-                        <span class="tag-pill">Comparison</span>
-                        <span class="tag-pill">20-30 min</span>
-                        <span class="tag-pill">Strategic</span>
-                    </div>
-                </div>
-
-                <!-- Prompt 5: CDMRP Tracker -->
-                <div class="prompt-card">
-                    <div class="prompt-card-header">
-                        <div>
-                            <h3>🔬 CDMRP Research Funding Tracker</h3>
-                            <p class="use-case">Use when: Tracking congressionally directed medical research programs</p>
-                        </div>
-                        <button class="copy-btn" onclick="copyPrompt(this, 'prompt5')">
-                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                            </svg>
-                            Copy
-                        </button>
-                    </div>
-                    <div class="prompt-code" id="prompt5">You are a Defense Appropriations Analyst focused on medical research funding.
-
-Search the latest Defense Appropriations explanatory statement for CDMRP (Congressionally Directed Medical Research Programs) tables.
-
-Look for:
-- "Peer-Reviewed Medical Research" tables
-- Disease/condition topic allocations
-- Programmatic increases by research area
-
-Extract into a PROGRAMMATIC ADD TABLE:
-| Research Topic | Amount | Account (RDT&E/O&M) | Delta vs Prior Year | Citation |
-
-Common CDMRP topics: breast cancer, prostate cancer, ovarian cancer, lung cancer, kidney cancer, melanoma, ALS, Parkinson's, Alzheimer's, autism, epilepsy, hearing restoration, vision research, orthopedic research, trauma research, TBI, PTSD, suicide prevention.
-
-Also identify any new research topics added this cycle.
-
-Note: CDMRP is separate from DHP base funding - extract as its own table, don't merge.</div>
-                    <div style="margin-top: 1rem;">
-                        <span class="tag-pill">Research</span>
-                        <span class="tag-pill">15-20 min</span>
-                        <span class="tag-pill">CDMRP Focus</span>
-                    </div>
-                </div>
-
-                <!-- Prompt 6: Transfer Authority -->
-                <div class="prompt-card">
-                    <div class="prompt-card-header">
-                        <div>
-                            <h3>🔄 Transfer & Reprogramming Authority</h3>
-                            <p class="use-case">Use when: Need to understand funding flexibility and constraints</p>
-                        </div>
-                        <button class="copy-btn" onclick="copyPrompt(this, 'prompt6')">
-                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                            </svg>
-                            Copy
-                        </button>
-                    </div>
-                    <div class="prompt-code" id="prompt6">You are a Defense Appropriations Analyst tracking funding flexibility.
-
-Search Title VIII (General Provisions) of the latest Defense Appropriations bill for:
-
-1. GENERAL TRANSFER AUTHORITY
-   - Total cap (usually "not to exceed $X")
-   - Restrictions on which accounts can send/receive
-   - Notification requirements
-
-2. REPROGRAMMING THRESHOLDS
-   - Prior approval thresholds (dollar amounts requiring committee approval)
-   - Notification-only thresholds
-   - Any changes from prior year
-
-3. SPECIAL TRANSFER PROVISIONS
-   - Any DHP-specific transfer language
-   - Emergency authorities
-   - Contingency authorities
-
-Output a TRANSFER TRACKER table:
-| Authority Type | Cap/Threshold | Conditions | Notification Requirement | Citation |
-
-Flag any changes from prior year that increase or decrease flexibility.</div>
-                    <div style="margin-top: 1rem;">
-                        <span class="tag-pill">Execution</span>
-                        <span class="tag-pill">10-15 min</span>
-                        <span class="tag-pill">Flexibility</span>
-                    </div>
+            <span class="section-label center">Quick References</span>
+            <h2 class="section-title">Cheat Sheets & Data Tables</h2>
+            <p class="section-subtitle">The intelligence that matters, formatted to reference fast.</p>
+            
+            <!-- Enterprise Telehealth Table -->
+            <div class="reference-block">
+                <h3><i class="fas fa-satellite-dish"></i> Enterprise Telehealth Platforms</h3>
+                <div class="inline-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Vendor</th>
+                                <th>Contract Value</th>
+                                <th>ATO Status</th>
+                                <th>Primary Use Case</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Amwell/Leidos</strong></td>
+                                <td>$180M (Oct 2023)</td>
+                                <td>MHS GENESIS integrated</td>
+                                <td>Enterprise virtual visits; Digital First flagship</td>
+                            </tr>
+                            <tr>
+                                <td><strong>GlobalMed</strong></td>
+                                <td>IDIQ via Excentium</td>
+                                <td>Med COI ATO (renewed Dec 2025)</td>
+                                <td>Clinical-grade MTF telehealth; 721 facilities</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Medweb</strong></td>
+                                <td>$52.8M (Feb 2020)</td>
+                                <td>Tri-service ATO (15+ years)</td>
+                                <td>Deployed tele-radiology; 40+ Navy vessels</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Outpatient App</strong></td>
+                                <td>SBIR Phase III</td>
+                                <td>Tradewinds-ready</td>
+                                <td>Medical readiness; VHM; provider coordination</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
-            <!-- Tab: Methodology -->
-            <div id="methodology" class="tab-content">
-                <div class="section-header">
-                    <h2>Analysis Methodology</h2>
-                    <p>The principles and rules that make appropriations analysis accurate and actionable. These aren't just prompts—they're a framework for rigorous open-source intelligence.</p>
-                </div>
-
-                <div class="accordion">
-                    <!-- Core Principles -->
-                    <div class="accordion-item">
-                        <div class="accordion-header" onclick="toggleAccordion(this)">
-                            <h4>📋 Core Principles</h4>
-                            <svg class="accordion-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </div>
-                        <div class="accordion-content">
-                            <div class="accordion-body">
-                                <p><strong>Open Records First:</strong> Start with authoritative public sources—don't rely on summaries or secondary analysis. Go to the source.</p>
-                                <p><strong>Citation Mandatory:</strong> Every extracted item must include document name, page number, section heading (if present), and link. No exceptions.</p>
-                                <p><strong>Evidence Labeling:</strong> Mark everything as:</p>
-                                <ul>
-                                    <li><code>FACT</code> — Explicitly stated in primary text/table</li>
-                                    <li><code>INFERENCE</code> — Reasonable conclusion from context</li>
-                                    <li><code>UNKNOWN</code> — Cannot be determined from available sources</li>
-                                </ul>
-                                <p><strong>No Recommendation Without Evidence:</strong> Every recommendation must cite the driver item(s). If evidence is incomplete, the recommendation must be conditional and name what's missing.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Source Hierarchy -->
-                    <div class="accordion-item">
-                        <div class="accordion-header" onclick="toggleAccordion(this)">
-                            <h4>📚 Source Hierarchy</h4>
-                            <svg class="accordion-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </div>
-                        <div class="accordion-content">
-                            <div class="accordion-body">
-                                <p><strong>Priority Order (most authoritative first):</strong></p>
-                                <ul>
-                                    <li><strong>1. Enacted/Conference text + Joint Explanatory Statement (JES)</strong> — This is the law and accompanying intent</li>
-                                    <li><strong>2. House/Senate versions + committee reports</strong> — Use when conference isn't complete</li>
-                                    <li><strong>3. Prior-year enacted</strong> — Baseline for comparison</li>
-                                    <li><strong>4. President's Budget (PB) justification</strong> — Context only, not controlling</li>
-                                </ul>
-                                <p><strong>Key Sources:</strong></p>
-                                <ul>
-                                    <li>Congress.gov — Bill text and status</li>
-                                    <li>GovInfo.gov — Official publications</li>
-                                    <li>House/Senate Appropriations Committee sites — Reports and explanatory statements</li>
-                                    <li>DoD Comptroller — Budget justification books (context only)</li>
-                                </ul>
-                                <p><strong>Provenance Labels:</strong> Tag every line as <code>ENACTED</code>, <code>JES</code>, <code>HOUSE</code>, <code>SENATE</code>, or <code>PB (REQUEST)</code>.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Two-Step Budget Rule -->
-                    <div class="accordion-item">
-                        <div class="accordion-header" onclick="toggleAccordion(this)">
-                            <h4>💰 The Two-Step Budget Rule</h4>
-                            <svg class="accordion-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </div>
-                        <div class="accordion-content">
-                            <div class="accordion-body">
-                                <p><strong>This is the #1 mistake in appropriations analysis:</strong></p>
-                                <ul>
-                                    <li><strong>AUTHORIZATION (NDAA)</strong> = Permission/policy ceilings. Says what you're allowed to do and sets maximum amounts.</li>
-                                    <li><strong>APPROPRIATION (Defense Approps)</strong> = Legal authority to spend. This is the actual money.</li>
-                                </ul>
-                                <p><strong>Critical Rule:</strong> Never treat NDAA dollars as spending authority. Any "funding" answer must be appropriations-based unless the user explicitly asks about authorization.</p>
-                                <p><strong>Hollow Authorization:</strong> If NDAA authorizes a program but appropriations provide $0 (or materially less), flag it as: <code>HOLLOW AUTHORIZATION — authorized, not funded</code></p>
-                                <p><strong>Tag Every $ Figure:</strong> <code>REQUEST (PB)</code> / <code>HOUSE</code> / <code>SENATE</code> / <code>JES</code> / <code>ENACTED</code></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Directive Classification -->
-                    <div class="accordion-item">
-                        <div class="accordion-header" onclick="toggleAccordion(this)">
-                            <h4>⚖️ Directive Strength Classification</h4>
-                            <svg class="accordion-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </div>
-                        <div class="accordion-content">
-                            <div class="accordion-body">
-                                <p><strong>REQUIREMENT (STATUTORY) — Binding</strong></p>
-                                <ul>
-                                    <li>Keywords: "shall," "must," "none of the funds," "provided that," "may not"</li>
-                                    <li>Source: Bill text (statutory language)</li>
-                                    <li>Action: Treat as execution blocker if violated</li>
-                                </ul>
-                                <p><strong>DIRECTIVE — Strongly Expected</strong></p>
-                                <ul>
-                                    <li>Keywords: "directs"</li>
-                                    <li>Source: JES or committee report</li>
-                                    <li>Action: High political risk if ignored; often becomes reporting requirement</li>
-                                </ul>
-                                <p><strong>INTENT — Soft Guidance</strong></p>
-                                <ul>
-                                    <li>Keywords: "encourages," "urges," "notes," "expects," "believes"</li>
-                                    <li>Action: Informational; elevate only if material to strategy</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- DHP Special Handling -->
-                    <div class="accordion-item">
-                        <div class="accordion-header" onclick="toggleAccordion(this)">
-                            <h4>🏥 DHP Special Handling (Title VI)</h4>
-                            <svg class="accordion-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </div>
-                        <div class="accordion-content">
-                            <div class="accordion-body">
-                                <p><strong>Location:</strong> Defense Health Program (DHP) is consolidated in Title VI (Other DoD Programs)</p>
-                                <p><strong>Sub-Accounts:</strong></p>
-                                <ul>
-                                    <li><strong>DHP O&M</strong> — Majority of funding; includes private sector care/TRICARE</li>
-                                    <li><strong>DHP RDT&E</strong> — Medical research, often includes CDMRP</li>
-                                    <li><strong>DHP Procurement</strong> — Equipment and IT</li>
-                                </ul>
-                                <p><strong>Synonym Map (what to search for):</strong></p>
-                                <ul>
-                                    <li>TRICARE → "Private Sector Care," "Managed Care," "Retail Pharmacy"</li>
-                                    <li>EHR/IT → "Information Management," "IM/IT," "MHS GENESIS"</li>
-                                    <li>Readiness → "Consolidated Health Support," "Education and Training"</li>
-                                    <li>CDMRP → "Peer-Reviewed Medical Research," disease/topic tables</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Fence Detection -->
-                    <div class="accordion-item">
-                        <div class="accordion-header" onclick="toggleAccordion(this)">
-                            <h4>🚧 Fence & Limitation Detection</h4>
-                            <svg class="accordion-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </div>
-                        <div class="accordion-content">
-                            <div class="accordion-body">
-                                <p><strong>Fence Types to Detect:</strong></p>
-                                <ul>
-                                    <li><strong>PROHIBITION:</strong> "None of the funds may be used for..."</li>
-                                    <li><strong>WITHHOLD/FENCE:</strong> "Not more than X% may be obligated until..."</li>
-                                    <li><strong>FLOOR:</strong> "Of which not less than..."</li>
-                                </ul>
-                                <p><strong>For Each Fence, Extract:</strong></p>
-                                <ul>
-                                    <li>What is blocked or required</li>
-                                    <li>Condition to unlock (if withhold)</li>
-                                    <li>Who must act</li>
-                                    <li>Due date</li>
-                                    <li>Citation</li>
-                                </ul>
-                                <p><strong>Where to Look:</strong> Title VIII (General Provisions) and within specific account language in Title VI.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- QA Checklist -->
-                    <div class="accordion-item">
-                        <div class="accordion-header" onclick="toggleAccordion(this)">
-                            <h4>✅ QA Checklist & Failure Modes</h4>
-                            <svg class="accordion-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </div>
-                        <div class="accordion-content">
-                            <div class="accordion-body">
-                                <p><strong>Must-Pass Checks:</strong></p>
-                                <ul>
-                                    <li>No row without citation</li>
-                                    <li>Units normalized when stated ("in thousands" → full dollars)</li>
-                                    <li>Provenance tags present (ENACTED/JES/HOUSE/SENATE/PB)</li>
-                                    <li>Directive strength classified</li>
-                                    <li>Fences extracted from Title VIII/general provisions</li>
-                                    <li>DHP handled in Title VI (if DHP topics requested)</li>
-                                    <li>Unknowns logged with "verify next" steps</li>
-                                </ul>
-                                <p><strong>Common Failure Modes:</strong></p>
-                                <ul>
-                                    <li>Treating NDAA dollars as appropriations</li>
-                                    <li>Mixing House/Senate report language as final</li>
-                                    <li>Missing incorporation-by-reference adoption</li>
-                                    <li>Misreading table units</li>
-                                    <li>Silent OCR failure (false confidence)</li>
-                                    <li>Over-inference without explicit report language support</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tab: Glossary -->
-            <div id="glossary" class="tab-content">
-                <div class="section-header">
-                    <h2>Quick Reference Glossary</h2>
-                    <p>Key terms and frameworks from my newsletter analysis. Bookmark this page for quick lookups.</p>
-                </div>
-
-                <div class="quick-ref-grid">
-                    <!-- MHS Triad -->
-                    <div class="quick-ref-card">
-                        <h4>The MHS Triad (2026)</h4>
-                        <ul class="term-list">
-                            <li>
-                                <span class="term-name">Keith Bass (ASD Health Affairs)</span>
-                                <span class="term-def">The political architect. Governance, cost control, telehealth scale-up. GlobalMed background.</span>
-                            </li>
-                            <li>
-                                <span class="term-name">Emil Michael (USD R&E)</span>
-                                <span class="term-def">The Silicon Valley disruptor. GenAI.mil rollout, China decoupling, university funding fights.</span>
-                            </li>
-                            <li>
-                                <span class="term-name">Admiral Darin Via (DHA Director)</span>
-                                <span class="term-def">The operational commander. "Human Weapon System" doctrine, Role 2E, HPO infrastructure.</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <!-- Key Concepts -->
-                    <div class="quick-ref-card">
-                        <h4>Key Concepts</h4>
-                        <ul class="term-list">
-                            <li>
-                                <span class="term-name">Human Weapon System</span>
-                                <span class="term-def">Via's doctrine treating warfighters as platforms to be optimized, not patients to be treated.</span>
-                            </li>
-                            <li>
-                                <span class="term-name">Role 2E</span>
-                                <span class="term-def">Expeditionary Medical Unit. Light, mobile surgical teams on high-speed vessels for 96-hour casualty hold.</span>
-                            </li>
-                            <li>
-                                <span class="term-name">H2F (Holistic Health & Fitness)</span>
-                                <span class="term-def">Army program: 35% fewer injuries, 37% fewer suicides. 20-22 embedded contractors per brigade.</span>
-                            </li>
-                            <li>
-                                <span class="term-name">Golden Dome Act</span>
-                                <span class="term-def">FY2026 NDAA provisions for layered homeland missile defense. Squeezes O&M where healthcare lives.</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <!-- Appropriations Terms -->
-                    <div class="quick-ref-card">
-                        <h4>Appropriations Terms</h4>
-                        <ul class="term-list">
-                            <li>
-                                <span class="term-name">DHP (Defense Health Program)</span>
-                                <span class="term-def">Title VI consolidated health funding. ~$40B annually for MHS operations.</span>
-                            </li>
-                            <li>
-                                <span class="term-name">JES (Joint Explanatory Statement)</span>
-                                <span class="term-def">Conference report language explaining congressional intent. More authoritative than committee reports.</span>
-                            </li>
-                            <li>
-                                <span class="term-name">CDMRP</span>
-                                <span class="term-def">Congressionally Directed Medical Research Programs. Peer-reviewed research by disease topic.</span>
-                            </li>
-                            <li>
-                                <span class="term-name">Hollow Authorization</span>
-                                <span class="term-def">When NDAA authorizes but appropriations provide $0. Authorized ≠ funded.</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <!-- The Filter Question -->
-                    <div class="quick-ref-card">
-                        <h4>The Filter Question</h4>
-                        <ul class="term-list">
-                            <li>
-                                <span class="term-name">"Does this save lives or enhance readiness?"</span>
-                                <span class="term-def">The question the Triad asks about every initiative. If you can't answer it in one sentence, you're going to have a hard time in 2026.</span>
-                            </li>
-                            <li>
-                                <span class="term-name">Three Magic Words</span>
-                                <span class="term-def"><strong>Governance, Speed, Survivability.</strong> What Bass, Michael, and Via need from contractors.</span>
-                            </li>
-                            <li>
-                                <span class="term-name">Audit-Ready Data Architecture</span>
-                                <span class="term-def">Why the Oura deal died. Table stakes for any wearables/RPM pitch to DHA.</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <!-- Telehealth Landscape -->
-                    <div class="quick-ref-card">
-                        <h4>Telehealth Landscape</h4>
-                        <ul class="term-list">
-                            <li>
-                                <span class="term-name">Amwell/Leidos ($180M)</span>
-                                <span class="term-def">Enterprise flagship. MHS GENESIS integrated. Contract uncertainty beyond July 2026.</span>
-                            </li>
-                            <li>
-                                <span class="term-name">GlobalMed</span>
-                                <span class="term-def">Med COI ATO across 721 MTFs. Hardware-integrated clinical telehealth. Bass's former employer.</span>
-                            </li>
-                            <li>
-                                <span class="term-name">Medweb ($52.8M)</span>
-                                <span class="term-def">Deployed mission: PACS/tele-radiology on 40+ Navy vessels. Critical for Role 2E.</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <!-- Budget Context -->
-                    <div class="quick-ref-card">
-                        <h4>Budget Context (FY2026)</h4>
-                        <ul class="term-list">
-                            <li>
-                                <span class="term-name">$40.5B DHP Request</span>
-                                <span class="term-def">Defense Health Program. 0.2% increase over FY2025.</span>
-                            </li>
-                            <li>
-                                <span class="term-name">$50B Rural Health Transformation</span>
-                                <span class="term-def">One Big Beautiful Bill Act (July 2025). Symbiotic technology priorities with MHS.</span>
-                            </li>
-                            <li>
-                                <span class="term-name">2028 Clean Audit Mandate</span>
-                                <span class="term-def">DoD must achieve clean audit opinion. Section 1002: SES firing authority for failures.</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tab: Government Links -->
-            <div id="links" class="tab-content">
-                <div class="section-header">
-                    <h2>Government Resources</h2>
-                    <p>Direct links to authoritative sources for defense health IT research and appropriations tracking.</p>
-                </div>
-
-                <h3 style="color: var(--primary-cyan); margin: 2rem 0 1rem; font-family: var(--font-heading);">Appropriations & Legislation</h3>
-                <div class="gov-links-grid">
-                    <a href="https://www.congress.gov/" target="_blank" rel="noopener" class="gov-link-card">
-                        <div class="gov-link-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                            </svg>
-                        </div>
-                        <div class="gov-link-content">
-                            <h5>Congress.gov</h5>
-                            <p>Bill text, status, voting records, and congressional actions</p>
-                        </div>
-                    </a>
-                    <a href="https://www.govinfo.gov/" target="_blank" rel="noopener" class="gov-link-card">
-                        <div class="gov-link-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                            </svg>
-                        </div>
-                        <div class="gov-link-content">
-                            <h5>GovInfo.gov</h5>
-                            <p>Official government publications including conference reports</p>
-                        </div>
-                    </a>
-                    <a href="https://appropriations.house.gov/" target="_blank" rel="noopener" class="gov-link-card">
-                        <div class="gov-link-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                        </div>
-                        <div class="gov-link-content">
-                            <h5>House Appropriations Committee</h5>
-                            <p>Committee reports, markups, and explanatory statements</p>
-                        </div>
-                    </a>
-                    <a href="https://www.appropriations.senate.gov/" target="_blank" rel="noopener" class="gov-link-card">
-                        <div class="gov-link-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                        </div>
-                        <div class="gov-link-content">
-                            <h5>Senate Appropriations Committee</h5>
-                            <p>Senate committee reports and markup documents</p>
-                        </div>
-                    </a>
-                </div>
-
-                <h3 style="color: var(--primary-cyan); margin: 2rem 0 1rem; font-family: var(--font-heading);">Defense Health</h3>
-                <div class="gov-links-grid">
-                    <a href="https://www.health.mil/" target="_blank" rel="noopener" class="gov-link-card">
-                        <div class="gov-link-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                            </svg>
-                        </div>
-                        <div class="gov-link-content">
-                            <h5>Health.mil (DHA)</h5>
-                            <p>Defense Health Agency official site and MHS resources</p>
-                        </div>
-                    </a>
-                    <a href="https://www.tricare.mil/" target="_blank" rel="noopener" class="gov-link-card">
-                        <div class="gov-link-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                            </svg>
-                        </div>
-                        <div class="gov-link-content">
-                            <h5>TRICARE</h5>
-                            <p>Military health plan information and beneficiary resources</p>
-                        </div>
-                    </a>
-                    <a href="https://www.va.gov/" target="_blank" rel="noopener" class="gov-link-card">
-                        <div class="gov-link-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/>
-                            </svg>
-                        </div>
-                        <div class="gov-link-content">
-                            <h5>Department of Veterans Affairs</h5>
-                            <p>VA health care and interoperability initiatives</p>
-                        </div>
-                    </a>
-                    <a href="https://cdmrp.health.mil/" target="_blank" rel="noopener" class="gov-link-card">
-                        <div class="gov-link-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
-                            </svg>
-                        </div>
-                        <div class="gov-link-content">
-                            <h5>CDMRP</h5>
-                            <p>Congressionally Directed Medical Research Programs</p>
-                        </div>
-                    </a>
-                </div>
-
-                <h3 style="color: var(--primary-cyan); margin: 2rem 0 1rem; font-family: var(--font-heading);">Contracting & Acquisition</h3>
-                <div class="gov-links-grid">
-                    <a href="https://sam.gov/" target="_blank" rel="noopener" class="gov-link-card">
-                        <div class="gov-link-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                            </svg>
-                        </div>
-                        <div class="gov-link-content">
-                            <h5>SAM.gov</h5>
-                            <p>Contract opportunities, entity registration, wage determinations</p>
-                        </div>
-                    </a>
-                    <a href="https://www.fpds.gov/" target="_blank" rel="noopener" class="gov-link-card">
-                        <div class="gov-link-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                            </svg>
-                        </div>
-                        <div class="gov-link-content">
-                            <h5>FPDS</h5>
-                            <p>Federal Procurement Data System - contract award history</p>
-                        </div>
-                    </a>
-                    <a href="https://www.darpa.mil/" target="_blank" rel="noopener" class="gov-link-card">
-                        <div class="gov-link-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                            </svg>
-                        </div>
-                        <div class="gov-link-content">
-                            <h5>DARPA</h5>
-                            <p>Defense Advanced Research Projects Agency programs</p>
-                        </div>
-                    </a>
-                    <a href="https://www.acq.osd.mil/" target="_blank" rel="noopener" class="gov-link-card">
-                        <div class="gov-link-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-                            </svg>
-                        </div>
-                        <div class="gov-link-content">
-                            <h5>OUSD A&S</h5>
-                            <p>Office of the Under Secretary of Defense for Acquisition</p>
-                        </div>
-                    </a>
-                </div>
-
-                <h3 style="color: var(--primary-cyan); margin: 2rem 0 1rem; font-family: var(--font-heading);">Research & Analysis</h3>
-                <div class="gov-links-grid">
-                    <a href="https://www.gao.gov/" target="_blank" rel="noopener" class="gov-link-card">
-                        <div class="gov-link-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
-                            </svg>
-                        </div>
-                        <div class="gov-link-content">
-                            <h5>GAO</h5>
-                            <p>Government Accountability Office reports and audits</p>
-                        </div>
-                    </a>
-                    <a href="https://crsreports.congress.gov/" target="_blank" rel="noopener" class="gov-link-card">
-                        <div class="gov-link-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                            </svg>
-                        </div>
-                        <div class="gov-link-content">
-                            <h5>CRS Reports</h5>
-                            <p>Congressional Research Service analysis and background</p>
-                        </div>
-                    </a>
-                    <a href="https://www.cbo.gov/" target="_blank" rel="noopener" class="gov-link-card">
-                        <div class="gov-link-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
-                            </svg>
-                        </div>
-                        <div class="gov-link-content">
-                            <h5>CBO</h5>
-                            <p>Congressional Budget Office cost estimates and projections</p>
-                        </div>
-                    </a>
-                    <a href="https://comptroller.defense.gov/" target="_blank" rel="noopener" class="gov-link-card">
-                        <div class="gov-link-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
-                            </svg>
-                        </div>
-                        <div class="gov-link-content">
-                            <h5>DoD Comptroller</h5>
-                            <p>Budget justification books and financial management</p>
-                        </div>
-                    </a>
+            <!-- DARPA Programs Table -->
+            <div class="reference-block">
+                <h3><i class="fas fa-brain"></i> Key DARPA Medical Programs</h3>
+                <div class="inline-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Program</th>
+                                <th>Focus</th>
+                                <th>Timeline</th>
+                                <th>Relevance to Triad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>MASH</strong></td>
+                                <td>Autonomous hemorrhage control</td>
+                                <td>$32.4M; 36 months (2025-2028)</td>
+                                <td>Via's Role 2E requires extended casualty stabilization</td>
+                            </tr>
+                            <tr>
+                                <td><strong>AIxCC</strong></td>
+                                <td>AI-assisted cyber defense</td>
+                                <td>Ongoing; Finals Aug 2025</td>
+                                <td>Michael's GenAI.mil security mandate</td>
+                            </tr>
+                            <tr>
+                                <td><strong>ARIA</strong></td>
+                                <td>Advanced research for intel advantage</td>
+                                <td>New program FY26</td>
+                                <td>Cross-domain research coordination</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </main>
+    </section>
+
+    <!-- Timeline -->
+    <section>
+        <div class="container">
+            <span class="section-label center">Key Dates</span>
+            <h2 class="section-title">2026 Timeline</h2>
+            <p class="section-subtitle">Critical milestones for defense health IT.</p>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">JAN 19</div>
+                    <div class="timeline-content">
+                        <h4>CR Expiration</h4>
+                        <p>Continuing Resolution P.L. 119-37 expires. Watch for FY2026 Defense Appropriations compromise or another CR.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">FEB</div>
+                    <div class="timeline-content">
+                        <h4>Via Confirmation Expected</h4>
+                        <p>Admiral Darin Via expected to be named DHA Director. Congressional sources indicate announcement coming.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">APR</div>
+                    <div class="timeline-content">
+                        <h4>DHA PAE Decision Point</h4>
+                        <p>CAE decides whether Medical Products becomes permanent Portfolio Acquisition Executive. Watch for Medical Devices and Equipment PMO chartering.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">SUMMER</div>
+                    <div class="timeline-content">
+                        <h4>Bass "Virtual Care First" Directive</h4>
+                        <p>Predicted announcement setting targets for shifting routine beneficiary care off MTF campuses to virtual platforms.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">JUL</div>
+                    <div class="timeline-content">
+                        <h4>Amwell Contract Uncertainty</h4>
+                        <p>Current $180M contract terms uncertain beyond this date per SEC filings. Watch for extension or transition planning.</p>
+                    </div>
+                </div>
+                <div class="timeline-item timeline-item-future">
+                    <div class="timeline-date">2027-28</div>
+                    <div class="timeline-content">
+                        <h4>Role 2E IOC</h4>
+                        <p>First Role 2E unit expected to achieve initial operating capability in the Pacific.</p>
+                    </div>
+                </div>
+                <div class="timeline-item timeline-item-future">
+                    <div class="timeline-date">DEC 31, 2028</div>
+                    <div class="timeline-content">
+                        <h4>DoD Audit Deadline</h4>
+                        <p>Congressional mandate for clean audit opinion. Section 1002 gives SES firing authority for failures.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Three Magic Words -->
+    <section class="alt">
+        <div class="container">
+            <div class="magic-words-section">
+                <span class="section-label center">Contractor Guidance</span>
+                <h2 class="section-title">The Three Magic Words</h2>
+                <p class="section-subtitle">What the Triad actually needs from your solution:</p>
+                
+                <div class="magic-words-grid">
+                    <div class="magic-word-card">
+                        <div class="magic-icon"><i class="fas fa-shield-halved"></i></div>
+                        <h3>Governance</h3>
+                        <p>Bass needs AI that audits itself for compliance. If you can't demonstrate how your data flows into MHS GENESIS with full audit traceability, you're not ready for DHA.</p>
+                    </div>
+                    <div class="magic-word-card">
+                        <div class="magic-icon"><i class="fas fa-bolt"></i></div>
+                        <h3>Speed</h3>
+                        <p>Michael needs solutions that deploy into GenAI.mil and AskSage ecosystems by April. "Speed to capability delivery" is now the organizing principle of the Department of War.</p>
+                    </div>
+                    <div class="magic-word-card">
+                        <div class="magic-icon"><i class="fas fa-crosshairs"></i></div>
+                        <h3>Survivability</h3>
+                        <p>Via needs systems that work when the network goes dark. If your platform requires persistent connectivity to function, you're building for the wrong war.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Newsletter CTA -->
-    <section style="padding: 4rem 0; background: var(--slate-navy);">
-        <div class="container" style="text-align: center;">
-            <h2 style="font-family: var(--font-heading); color: var(--text-primary); margin-bottom: 1rem;">Get Analysis Delivered Weekly</h2>
-            <p style="color: var(--text-secondary); margin-bottom: 2rem; max-width: 500px; margin-left: auto; margin-right: auto;">
-                Join 1,200+ federal health IT professionals getting unfiltered analysis on DHA, MHS modernization, and defense health policy.
-            </p>
-            <a href="newsletter.html" class="btn btn-primary">Subscribe to Newsletter</a>
+    <section class="question-cta">
+        <div class="container">
+            <div class="cta-box">
+                <h2>Get Fresh Intel Weekly</h2>
+                <p>These resources come from the newsletter. Subscribe to get analysis and updates as they happen.</p>
+                <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" class="btn btn-primary btn-large" target="_blank">
+                    <i class="fab fa-linkedin"></i> Subscribe Free
+                </a>
+                <p class="cta-note">Join 1,500+ defense health IT professionals.</p>
+            </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
+    <footer>
         <div class="container">
-            <div class="footer-grid">
+            <div class="footer-content">
                 <div class="footer-brand">
-                    <img src="mmt-logo.png" alt="Mission Meets Tech" height="50">
-                    <p>Mission. Technology. Transformation.</p>
+                    <a href="index.html" class="logo">Mission Meets <span>Tech</span></a>
+                    <p>Federal health IT intelligence for people who care about the warfighter and the mission.</p>
+                    <div class="footer-social">
+                        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://www.youtube.com/@MissionMeetsTech" target="_blank"><i class="fab fa-youtube"></i></a>
+                    </div>
                 </div>
                 <div class="footer-links">
                     <h4>Navigate</h4>
                     <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="newsletter.html">Newsletter</a></li>
-                        <li><a href="podcast.html">Podcast</a></li>
-                        <li><a href="resources.html">Resources</a></li>
                         <li><a href="about.html">About</a></li>
-                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="podcast.html">Podcast</a></li>
+                        <li><a href="newsletter.html">Newsletter</a></li>
+                        <li><a href="resources.html">Resources</a></li>
                     </ul>
                 </div>
-                <div class="footer-connect">
-                    <h4>Connect</h4>
+                <div class="footer-links">
+                    <h4>Listen</h4>
                     <ul>
-                        <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener">LinkedIn</a></li>
-                        <li><a href="https://podcasts.apple.com/us/podcast/id1870101530" target="_blank" rel="noopener">Apple Podcasts</a></li>
-                        <li><a href="https://open.spotify.com/show/7sND342duH7Buw1cUs60lP" target="_blank" rel="noopener">Spotify</a></li>
+                        <li><a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1789422839" target="_blank">Apple Podcasts</a></li>
+                        <li><a href="https://open.spotify.com/show/4O7N6M2X0vN3n1K1U5fG6m" target="_blank">Spotify</a></li>
+                        <li><a href="https://www.youtube.com/@MissionMeetsTech" target="_blank">YouTube</a></li>
+                        <li><a href="https://music.amazon.com/podcasts/920fec9b-4fae-4bd0-ae4d-eaf1459cad2f" target="_blank">Amazon Music</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Subscribe</h4>
+                    <ul>
+                        <li><a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank">MMT Newsletter</a></li>
+                        <li><a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7410672315090276353" target="_blank">Fed UP Updates</a></li>
+                        <li><a href="https://feeds.transistor.fm/fed-up-where-mission-meets-reality" target="_blank">Podcast RSS</a></li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
+                <p class="disclaimer">The views expressed on this site are my own and do not represent the official position of any organization. This content is for informational purposes only and does not constitute professional advice.</p>
                 <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">
-                    The views expressed are my own and do not represent any organization.
-                </p>
             </div>
         </div>
     </footer>
-
-    <script src="main.js"></script>
-    <script>
-        // Tab switching
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                // Remove active from all tabs and content
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                
-                // Add active to clicked tab and corresponding content
-                btn.classList.add('active');
-                document.getElementById(btn.dataset.tab).classList.add('active');
-            });
-        });
-
-        // Copy prompt function
-        function copyPrompt(btn, promptId) {
-            const promptText = document.getElementById(promptId).textContent;
-            navigator.clipboard.writeText(promptText).then(() => {
-                btn.classList.add('copied');
-                btn.innerHTML = `
-                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                    </svg>
-                    Copied!
-                `;
-                setTimeout(() => {
-                    btn.classList.remove('copied');
-                    btn.innerHTML = `
-                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                        </svg>
-                        Copy
-                    `;
-                }, 2000);
-            });
-        }
-
-        // Accordion toggle
-        function toggleAccordion(header) {
-            const item = header.parentElement;
-            item.classList.toggle('open');
-        }
-    </script>
 </body>
 </html>

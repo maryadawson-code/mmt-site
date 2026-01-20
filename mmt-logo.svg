@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120" fill="none">
+  <defs>
+    <linearGradient id="brandGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00E5FA"/>
+      <stop offset="100%" stop-color="#00FF85"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Shield Outline -->
+  <path 
+    d="M50 5 L90 20 L90 55 C90 80 70 100 50 115 C30 100 10 80 10 55 L10 20 Z" 
+    stroke="url(#brandGradient)" 
+    stroke-width="3" 
+    fill="none"
+    filter="url(#glow)"
+  />
+  
+  <!-- Circuit Lines Inside Shield -->
+  <g stroke="url(#brandGradient)" stroke-width="2" stroke-linecap="round" filter="url(#glow)">
+    <!-- Central vertical line -->
+    <line x1="50" y1="30" x2="50" y2="70"/>
+    
+    <!-- Top horizontal branch -->
+    <line x1="50" y1="40" x2="70" y2="40"/>
+    <line x1="70" y1="40" x2="70" y2="50"/>
+    
+    <!-- Left branch -->
+    <line x1="50" y1="55" x2="30" y2="55"/>
+    <line x1="30" y1="55" x2="30" y2="70"/>
+    
+    <!-- Right lower branch -->
+    <line x1="50" y1="60" x2="65" y2="60"/>
+    
+    <!-- Circuit nodes -->
+    <circle cx="50" cy="40" r="3" fill="url(#brandGradient)"/>
+    <circle cx="70" cy="50" r="3" fill="url(#brandGradient)"/>
+    <circle cx="50" cy="55" r="3" fill="url(#brandGradient)"/>
+    <circle cx="30" cy="70" r="3" fill="url(#brandGradient)"/>
+    <circle cx="65" cy="60" r="3" fill="url(#brandGradient)"/>
+    <circle cx="50" cy="70" r="3" fill="url(#brandGradient)"/>
+  </g>
+</svg>
