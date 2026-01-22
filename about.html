@@ -7,20 +7,24 @@
     <meta name="description" content="Mary Womack translates complex federal health IT policy into actionable intelligence for defense contractors and government decision-makers.">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
 <body>
     <nav>
         <div class="container">
-            <a href="index.html" class="logo">MISSION MEETS TECH</a>
+            <a href="index.html" class="logo">Mission Meets Tech</a>
+            <button class="nav-toggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="podcast.html">Podcast</a></li>
                 <li><a href="newsletter.html">Newsletter</a></li>
                 <li><a href="resources.html">Resources</a></li>
+                <li><a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" class="nav-cta" target="_blank">Subscribe</a></li>
             </ul>
-            <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" class="nav-cta" target="_blank">Subscribe</a>
         </div>
     </nav>
 
@@ -37,20 +41,20 @@
                 <img src="images/mary-womack.jpg" alt="Mary Womack" class="bio-image">
                 <div class="bio-content">
                     <h2>Mary Womack</h2>
-                    <span class="bio-role">Federal Civilian Account Lead at Rocket Data</span>
+                    <p class="bio-role">Founder, Mission Meets Tech</p>
                     
-                    <p>I've spent my career at the intersection of federal health IT, defense contracting, and technology transformation. After years at Leidos working on some of the most complex healthcare modernization programs in government, I joined Rocket Data to help bring commercial best practices to federal health challenges.</p>
+                    <p>I've spent my career at the intersection of federal health IT, defense contracting, and technology transformation. I've worked on some of the most complex healthcare modernization programs in government and seen firsthand what works—and what doesn't.</p>
                     
                     <p>Mission Meets Tech started as a way to share what I was learning with the broader community. It grew into something more: a platform for unfiltered analysis of what's actually happening in defense health IT, not the sanitized version you get in press releases.</p>
                     
-                    <p>My newsletter reaches 1,191+ subscribers, with 59.4% at CXO or director level. These are the decision-makers who need intelligence they can act on, not talking points they've already heard.</p>
+                    <p>My newsletter reaches defense health IT professionals, with the majority at CXO or director level. These are the decision-makers who need intelligence they can act on, not talking points they've already heard.</p>
                     
                     <p>I also co-host <a href="podcast.html" style="color: var(--cyan);">Fed UP: Where Mission Meets Reality</a> with Sara Byrd, where we dive deep into the policy fights and technology bets shaping federal health innovation.</p>
                     
                     <p><strong>One question drives everything I do:</strong> Does this save lives or enhance readiness?</p>
                     
                     <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" class="social-link" target="_blank">
-                        → Connect on LinkedIn
+                        <i class="fab fa-linkedin"></i> Connect on LinkedIn
                     </a>
                 </div>
             </div>
@@ -62,17 +66,14 @@
             <h2 class="section-title">What I Cover</h2>
             <div class="focus-grid" style="max-width: 900px; margin: 32px auto 0;">
                 <div class="focus-card">
-                    <div class="card-icon"><i class="fas fa-hospital"></i></div>
                     <h3>Defense Health Agency</h3>
                     <p>DHA transformation, MHS GENESIS, TRICARE modernization, and the shift to combat readiness.</p>
                 </div>
                 <div class="focus-card">
-                    <div class="card-icon"><i class="fas fa-flag-usa"></i></div>
                     <h3>Veterans Affairs</h3>
                     <p>VA health IT, interoperability with DoD, and lessons that cross agency boundaries.</p>
                 </div>
                 <div class="focus-card">
-                    <div class="card-icon"><i class="fas fa-file-contract"></i></div>
                     <h3>Federal Acquisition</h3>
                     <p>Contract vehicles, capture strategy, NDAA implications, and what the budget reality means for your pipeline.</p>
                 </div>
@@ -92,11 +93,11 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
-                    <a href="index.html" class="logo">MISSION MEETS TECH</a>
+                    <a href="index.html" class="logo">Mission Meets Tech</a>
                     <p>Federal health IT intelligence for people who care about the warfighter and the mission.</p>
                     <div class="footer-social">
-                        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank"><i class="fab fa-linkedin"></i></a>
-                        <a href="https://www.youtube.com/@MissionMeetsTech" target="_blank"><i class="fab fa-youtube"></i></a>
+                        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://www.youtube.com/@MissionMeetsTech" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
                     </div>
                 </div>
                 <div class="footer-links">
@@ -127,9 +128,15 @@
             </div>
             <div class="footer-bottom">
                 <p class="disclaimer">The views expressed on this site are my own and do not represent the official position of any organization. This content is for informational purposes only and does not constitute professional advice.</p>
-                <p>© 2026 Mission Meets Tech. All rights reserved.</p>
+                <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
             </div>
         </div>
     </footer>
+
+    <script>
+        document.querySelector('.nav-toggle').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+    </script>
 </body>
 </html>
