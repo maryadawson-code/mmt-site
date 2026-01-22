@@ -97,6 +97,7 @@ nav .container {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     transition: all 0.3s;
+    -webkit-text-fill-color: var(--void) !important;
 }
 
 .nav-cta:hover {
@@ -896,10 +897,6 @@ footer {
     
     .nav-toggle {
         display: block;
-    }
-    
-    .nav-cta {
-        display: none;
     }
     
     .hero h1 {
