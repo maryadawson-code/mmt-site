@@ -1,8 +1,9 @@
-# Mission Meets Tech - Netlify Configuration
-# Pure static site - no build step required
-
 [build]
+  command = "echo 'No build needed'"
   publish = "."
+
+[build.environment]
+  NODE_VERSION = "18"
 
 [[headers]]
   for = "/*.html"
@@ -12,45 +13,4 @@
 [[headers]]
   for = "/styles.css"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/*.jpg"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/*.png"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/*.svg"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-# Clean URL redirects
-[[redirects]]
-  from = "/about"
-  to = "/about.html"
-  status = 200
-
-[[redirects]]
-  from = "/podcast"
-  to = "/podcast.html"
-  status = 200
-
-[[redirects]]
-  from = "/newsletter"
-  to = "/newsletter.html"
-  status = 200
-
-[[redirects]]
-  from = "/resources"
-  to = "/resources.html"
-  status = 200
-
-[[redirects]]
-  from = "/contact"
-  to = "/contact.html"
-  status = 200
+    Cache-Control = "public, max-age=0, must-revalidate"
