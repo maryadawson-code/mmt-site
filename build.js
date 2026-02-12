@@ -5,7 +5,7 @@ const path = require('path');
 const RSS_FEED = 'https://feeds.transistor.fm/fed-up-where-mission-meets-reality';
 
 async function build() {
-  console.log('ðŸŽ™ï¸ Fetching podcast episodes from Transistor...');
+  console.log('🎙️ Fetching podcast episodes from Transistor...');
   
   const parser = new Parser({
     customFields: {
@@ -22,9 +22,9 @@ async function build() {
   let feed;
   try {
     feed = await parser.parseURL(RSS_FEED);
-    console.log(`âœ… Found ${feed.items.length} episodes`);
+    console.log(`✅ Found ${feed.items.length} episodes`);
   } catch (error) {
-    console.error('âŒ Error fetching RSS feed:', error.message);
+    console.error('❌ Error fetching RSS feed:', error.message);
     feed = { items: [], title: 'Fed UP: Where Mission Meets Reality' };
   }
 
@@ -81,7 +81,7 @@ async function build() {
           <div class="latest-episode-hero">
             <span class="section-label">LATEST EPISODE</span>
             <h2>${latestEpisode.title}</h2>
-            <p class="episode-meta">${formattedDate}${latestEpisode.duration ? ` â€¢ ${formatDuration(latestEpisode.duration)}` : ''}</p>
+            <p class="episode-meta">${formattedDate}${latestEpisode.duration ? ` • ${formatDuration(latestEpisode.duration)}` : ''}</p>
             <p class="episode-teaser">${(latestEpisode.contentSnippet || '').substring(0, 300)}...</p>
             <a href="${latestEpisode.link}" class="cta-button" target="_blank" rel="noopener">
               <i class="fas fa-play"></i> Listen to Latest Episode
@@ -92,35 +92,76 @@ async function build() {
     `;
   }
 
-  // Read template and inject content
-  let template = fs.readFileSync(path.join(__dirname, 'src', 'podcast.template.html'), 'utf8');
-  
-  template = template.replace('{{EPISODE_CARDS}}', episodeCards || '<p class="no-episodes">No episodes yet. Check back soon!</p>');
-  template = template.replace('{{LATEST_EPISODE_HERO}}', latestEpisodeHero);
-  template = template.replace('{{LAST_UPDATED}}', new Date().toISOString());
-  template = template.replace('{{EPISODE_COUNT}}', feed.items.length.toString());
-
   // Ensure dist directory exists
   const distDir = path.join(__dirname, 'dist');
   if (!fs.existsSync(distDir)) {
     fs.mkdirSync(distDir, { recursive: true });
   }
 
-  // Write the generated podcast page
-  fs.writeFileSync(path.join(distDir, 'podcast.html'), template);
-  console.log('âœ… Generated podcast.html');
+  // --- PODCAST PAGE ---
+  // Check for podcast template in src/ (legacy build behavior)
+  const podcastTemplatePath = path.join(__dirname, 'src', 'podcast.template.html');
+  const podcastRootPath = path.join(__dirname, 'podcast.html');
+  
+  if (fs.existsSync(podcastTemplatePath)) {
+    // Use template-based generation if template exists
+    let template = fs.readFileSync(podcastTemplatePath, 'utf8');
+    template = template.replace('{{EPISODE_CARDS}}', episodeCards || '<p class="no-episodes">No episodes yet. Check back soon!</p>');
+    template = template.replace('{{LATEST_EPISODE_HERO}}', latestEpisodeHero);
+    template = template.replace('{{LAST_UPDATED}}', new Date().toISOString());
+    template = template.replace('{{EPISODE_COUNT}}', feed.items.length.toString());
+    fs.writeFileSync(path.join(distDir, 'podcast.html'), template);
+    console.log('✅ Generated podcast.html from template');
+  } else if (fs.existsSync(podcastRootPath)) {
+    // Copy static podcast.html from root
+    fs.copyFileSync(podcastRootPath, path.join(distDir, 'podcast.html'));
+    console.log('✅ Copied podcast.html from root');
+  }
 
-  // Copy all other static files from src to dist
-  const staticFiles = ['index.html', 'about.html', 'newsletter.html', 'newsletter-archive.html', 'resources.html', 'contact.html', 'styles.css', 'favicon.svg'];
+  // --- STATIC HTML/CSS FILES ---
+  // Priority: root first, then src/ as fallback
+  const staticFiles = [
+    'index.html', 
+    'about.html', 
+    'newsletter.html', 
+    'newsletter-archive.html', 
+    'resources.html', 
+    'contact.html', 
+    'styles.css', 
+    'favicon.svg'
+  ];
+  
   staticFiles.forEach(file => {
+    const rootPath = path.join(__dirname, file);
     const srcPath = path.join(__dirname, 'src', file);
-    if (fs.existsSync(srcPath)) {
+    
+    if (fs.existsSync(rootPath)) {
+      fs.copyFileSync(rootPath, path.join(distDir, file));
+      console.log(`✅ Copied ${file} (from root)`);
+    } else if (fs.existsSync(srcPath)) {
       fs.copyFileSync(srcPath, path.join(distDir, file));
-      console.log(`âœ… Copied ${file}`);
+      console.log(`✅ Copied ${file} (from src/)`);
     }
   });
 
-  // Copy data folder
+  // --- NEWSLETTERS.JSON ---
+  // Check root first, then src/data/
+  const newslettersRoot = path.join(__dirname, 'newsletters.json');
+  const newslettersSrcData = path.join(__dirname, 'src', 'data', 'newsletters.json');
+  
+  if (fs.existsSync(newslettersRoot)) {
+    fs.copyFileSync(newslettersRoot, path.join(distDir, 'newsletters.json'));
+    console.log('✅ Copied newsletters.json (from root)');
+  } else if (fs.existsSync(newslettersSrcData)) {
+    const dataDist = path.join(distDir, 'data');
+    if (!fs.existsSync(dataDist)) {
+      fs.mkdirSync(dataDist, { recursive: true });
+    }
+    fs.copyFileSync(newslettersSrcData, path.join(dataDist, 'newsletters.json'));
+    console.log('✅ Copied newsletters.json (from src/data/)');
+  }
+
+  // --- DATA FOLDER (legacy) ---
   const dataSrc = path.join(__dirname, 'src', 'data');
   const dataDist = path.join(distDir, 'data');
   if (fs.existsSync(dataSrc)) {
@@ -130,10 +171,21 @@ async function build() {
     fs.readdirSync(dataSrc).forEach(file => {
       fs.copyFileSync(path.join(dataSrc, file), path.join(dataDist, file));
     });
-    console.log('âœ… Copied data files');
+    console.log('✅ Copied data files');
   }
 
-  // Copy images folder
+  // --- IMAGES ---
+  // Copy from root (flat structure: marywomack.jpg, sarabyrd.jpg)
+  const rootImages = ['marywomack.jpg', 'sarabyrd.jpg', 'favicon.svg', 'favicon.png'];
+  rootImages.forEach(file => {
+    const rootPath = path.join(__dirname, file);
+    if (fs.existsSync(rootPath)) {
+      fs.copyFileSync(rootPath, path.join(distDir, file));
+      console.log(`✅ Copied ${file} (image from root)`);
+    }
+  });
+
+  // Also copy src/images/ if it exists (legacy support)
   const imgSrc = path.join(__dirname, 'src', 'images');
   const imgDist = path.join(distDir, 'images');
   if (fs.existsSync(imgSrc)) {
@@ -145,11 +197,11 @@ async function build() {
       fs.copyFileSync(path.join(imgSrc, file), path.join(imgDist, file));
     });
     if (imgFiles.length > 0) {
-      console.log(`âœ… Copied ${imgFiles.length} images`);
+      console.log(`✅ Copied ${imgFiles.length} images (from src/images/)`);
     }
   }
 
-  console.log('ðŸŽ‰ Build complete!');
+  console.log('🎉 Build complete!');
 }
 
 function formatDuration(duration) {
