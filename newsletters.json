@@ -1,44 +1,79 @@
-{
-  "newsletters": [
-    {
-      "id": "mhs-triad-bass-michael-via",
-      "title": "The MHS Triad: Bass, Michael, and Via",
-      "date": "2026-01-15",
-      "url": "https://www.linkedin.com/pulse/mhs-triad-mary-womack",
-      "summary": "Keith Bass, Emil Michael, and Admiral Darin Via—the three leaders reshaping military medicine and what contractors need to know.",
-      "tags": ["leadership", "dha", "policy"]
-    },
-    {
-      "id": "90b-squeeze",
-      "title": "The $90 Billion Squeeze",
-      "date": "2026-01-08",
-      "url": "https://www.linkedin.com/pulse/90b-squeeze-mary-womack",
-      "summary": "DHP + Rural Health Transformation. What the convergence means for capture strategy in 2026.",
-      "tags": ["budget", "acquisition", "strategy"]
-    },
-    {
-      "id": "8a-reckoning",
-      "title": "The 8(a) Reckoning",
-      "date": "2026-01-01",
-      "url": "https://www.linkedin.com/pulse/8a-reckoning-mary-womack",
-      "summary": "Hegseth's 'lethality test' and what it means for defense health small business.",
-      "tags": ["acquisition", "small-business", "policy"]
-    },
-    {
-      "id": "virtual-care-first",
-      "title": "Virtual Care First: The Bass Doctrine",
-      "date": "2025-12-18",
-      "url": "https://www.linkedin.com/pulse/virtual-care-first-mary-womack",
-      "summary": "GlobalMed background, telehealth scale-up plans, and what Keith Bass's appointment signals for MTF transformation.",
-      "tags": ["telehealth", "leadership", "dha"]
-    },
-    {
-      "id": "genesis-reality-check",
-      "title": "MHS GENESIS Reality Check",
-      "date": "2025-12-11",
-      "url": "https://www.linkedin.com/pulse/genesis-reality-check-mary-womack",
-      "summary": "Where the deployment actually stands, what's working, and what contractors need to position for next.",
-      "tags": ["mhs-genesis", "technology", "strategy"]
-    }
-  ]
-}
+[
+  {
+    "title": "The Largest Healthcare Contract in American History Just Hit the Street",
+    "date": "February 5, 2026",
+    "description": "On January 21, 2026, the VA held a landmark industry event for the largest healthcare contract ever. What contractors need to know.",
+    "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
+    "tags": ["VA", "Acquisition", "Healthcare"]
+  },
+  {
+    "title": "The VA Is Executing the Largest Healthcare Reorganization Since the 1990s",
+    "date": "January 29, 2026",
+    "description": "If you're not paying attention to the VA's restructuring, you're already behind. Here's what the reorganization means for contractors.",
+    "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
+    "tags": ["VA", "Reorganization", "Strategy"]
+  },
+  {
+    "title": "VA Solicits Demos for Next-Gen Referral and Care Coordination System",
+    "date": "January 22, 2026",
+    "description": "VA's OIT posted an RFI for a next-generation referral, authorization, utilization management, and care coordination system.",
+    "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
+    "tags": ["VA", "RFI", "Care Coordination"]
+  },
+  {
+    "title": "Healthcare's Agentic AI Reckoning: The Operating Model Shift No One Can Postpone",
+    "date": "January 15, 2026",
+    "description": "IBM's 2025 report reveals organizations mastering AI adoption are 32X more likely to reach top-tier performance. 78% of execs say a new operating model is required.",
+    "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
+    "tags": ["AI", "Strategy", "Healthcare"]
+  },
+  {
+    "title": "Somewhere in the Pacific: When Telehealth Routes Through Contested Systems",
+    "date": "January 8, 2026",
+    "description": "A Navy corpsman is waiting on a telehealth consult that routes through systems maintained by contested infrastructure. The readiness implications are real.",
+    "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
+    "tags": ["Telehealth", "Readiness", "MHS"]
+  },
+  {
+    "title": "The MHS Triad: What Their Appointment Actually Means",
+    "date": "December 18, 2025",
+    "description": "Last week we introduced the MHS Triad. This week, what Keith Bass, Emil Michael, and their appointment actually signals for defense health.",
+    "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
+    "tags": ["MHS", "Leadership", "DHA"]
+  },
+  {
+    "title": "Meet the MHS Triad: Keith Bass, Emil Michael, and the Silicon Valley Bet",
+    "date": "December 11, 2025",
+    "description": "The political architect, the Silicon Valley operator, and what their installation means for the future of military healthcare.",
+    "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
+    "tags": ["MHS", "Leadership", "Strategy"]
+  },
+  {
+    "title": "On Keeping Your COTS Products in the Mattress",
+    "date": "December 4, 2025",
+    "description": "After the Great Depression, people kept money in the mattress. Some defense health IT vendors are doing the same with their COTS products.",
+    "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
+    "tags": ["COTS", "Acquisition", "DHA"]
+  },
+  {
+    "title": "We're Official: Introducing Fed UP",
+    "date": "November 2025",
+    "description": "Sara Byrd and I have been talking about doing this for months. Fed UP: Where Mission Meets Reality is live.",
+    "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
+    "tags": ["Podcast", "Announcement"]
+  },
+  {
+    "title": "Pixels and Promises: The Fragmented Foundation of MHS Imaging (Part 1)",
+    "date": "May 20, 2025",
+    "description": "At 2 a.m. at Camp Lejeune, a medic's tablet stalls. In Kandahar, a CT scan saves a life in minutes. The paradox of MHS enterprise imaging.",
+    "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
+    "tags": ["Enterprise Imaging", "MHS", "Innovation"]
+  },
+  {
+    "title": "From Silos to Synergy: Building the Future of MHS Enterprise Imaging (Part 2)",
+    "date": "May 27, 2025",
+    "description": "From diagnosis to action — charting the path to unify MHS imaging through DTRS, VNAs, cloud, and AI across 700+ facilities.",
+    "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
+    "tags": ["Enterprise Imaging", "MHS", "AI"]
+  }
+]
