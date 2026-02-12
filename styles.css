@@ -251,7 +251,7 @@ section { padding: 80px 0; }
 .host-image {
     width: 180px; height: 180px; border-radius: 16px; object-fit: cover;
     object-position: top center; margin-bottom: 16px;
-    border: 3px solid rgba(0, 229, 250, 0.3);
+    border: none;
 }
 .host-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.15rem; margin-bottom: 8px; }
 .host-card p { color: var(--white-muted); font-size: 0.9rem; line-height: 1.6; }
@@ -274,7 +274,7 @@ section { padding: 80px 0; }
 
 .bio-section { display: grid; grid-template-columns: auto 1fr; gap: 40px; align-items: start; max-width: 900px; margin: 0 auto; }
 .bio-image-container { text-align: center; }
-.bio-image { width: 200px; height: 200px; border-radius: 12px; object-fit: cover; border: 3px solid rgba(0, 229, 250, 0.3); }
+.bio-image { width: 200px; height: 200px; border-radius: 12px; object-fit: cover; object-position: top center; border: none; }
 .bio-social-links { display: flex; gap: 12px; justify-content: center; margin-top: 16px; }
 .social-btn {
     width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
