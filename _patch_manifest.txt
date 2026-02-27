@@ -1,69 +1,53 @@
-Package Name: mmt_patch_2026-02-27_core-pages
+Package Name: mmt_patch_2026-02-27_resources-sara
 Date: 2026-02-27
-Scope: core-pages (full site rebuild)
-Mode: REBUILD PACKAGE
+Scope: resources page links + Sara headshot fix
+Mode: REPAIR PACKAGE
 
 Files Included:
-- index.html
-- about.html
-- podcast.html
-- newsletter.html
-- resources.html
-- netlify.toml
-- _patch_manifest.txt
-- _rollback_notes.txt
+- resources.html (full replacement)
+- podcast.html (full replacement)
+- Sara_zoomed.jpg (canonical Sara headshot)
 
 Files Replaced In Repo:
-- index.html (full replacement)
-- about.html (full replacement)
-- podcast.html (full replacement)
-- newsletter.html (full replacement)
-- resources.html (full replacement)
-- netlify.toml (full replacement)
+- resources.html
+- podcast.html
+- Sara_zoomed.jpg (if not already present at root)
 
 Primary Fixes:
-- Site was returning 404 on all pages — complete rebuild from canonical files
-- All five core pages rebuilt with approved architecture
-- Tailwind CDN + inline token pattern per architecture-decisions.md
-- Flat repo structure — no src/ folder, no build.js dependency
+- All resource links are now live, clickable external URLs (no placeholder # links)
+- Sara headshot path corrected to Sara_zoomed.jpg (matches actual filename)
+- All podcast platform links use verified canonical IDs
+- Footer links use verified canonical URLs throughout
 
 Brand Corrections:
-- All pages use --mmt-* token family
-- Colors: #00E5FA cyan, #00FF85 green, #00050F navy, #0A1628 slate, #0D1117 dark
-- Typography: Space Grotesk for display, Inter for body
-- Logo treatment: "Mission Meets <Tech>" with cyan accent
+- Tailwind CDN + inline design token standard (--mmt-* family)
+- Space Grotesk + Inter typography
+- Canonical color tokens: #00E5FA cyan, #00FF85 green, #00050F navy
 
 Voice Corrections:
-- All copy written to mmt-actual-voice.md standard
-- Calm, measured, evidence-first tone throughout
-- No aggressive or stylized language
-- Mary identified only as "Founder, Mission Meets Tech" — no employer references
+- Mary identified only as "Founder, Mission Meets Tech" (no employer references)
+- Sara identified as "Federal Health IT Strategist & FedHealthIT100 Honoree"
+- Tone follows mmt-actual-voice.md: calm authority, evidence-first
 
 Link Corrections:
-- All links sourced from verified-links.md
-- Apple Podcasts: id1870101530
-- Spotify: 7sND342duH7Buw1cUs60lP
-- Transistor share: https://share.transistor.fm/s/fed-up-where-mission-meets-reality
-- Amazon, YouTube, LinkedIn — all canonical
+- Apple Podcasts: id1870101530 (canonical)
+- Spotify: 7sND342duH7Buw1cUs60lP (canonical)
+- All resource URLs point to live .gov and .mil domains
+- Newsletter subscribe uses entityUrn 7307800960485969920
 
 Asset Corrections:
-- Favicon: MMT_icon_64px.png
-- Mary headshot: marywomack.jpg
-- Sara headshot: Sara zoomed.jpg
-- All from asset-manifest.md
+- Sara headshot: Sara_zoomed.jpg (not "Sara zoomed.jpg" with space)
+- Favicon: MMT_icon_48px.png
 
 Rollback:
 - Restore from local backup created before deploy
 - Or revert using Git if committed
 
 Verification:
-- Home loads at missionmeetstech.com
-- About loads
-- Podcast loads (Transistor embed visible)
-- Newsletter loads
-- Resources loads
-- Nav/footer consistent across all 5 pages
-- All external links functional
-- Assets load (requires assets in repo root)
-- Tone matches MMT voice
-- No stale references
+- resources.html loads with all table links clickable
+- Every resource URL resolves to a live site
+- podcast.html loads with Sara headshot visible
+- No broken image icon on podcast page
+- Nav and footer consistent across both pages
+- Platform links in footer all work
+- Subscribe CTA links to correct newsletter
