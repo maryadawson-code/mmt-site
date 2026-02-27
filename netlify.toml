@@ -1,16 +1,7 @@
 [build]
-  command = "echo 'No build needed'"
   publish = "."
 
-[build.environment]
-  NODE_VERSION = "18"
-
-[[headers]]
-  for = "/*.html"
-  [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
-
-[[headers]]
-  for = "/styles.css"
-  [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
+[[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200

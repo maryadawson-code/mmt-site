@@ -1,0 +1,19 @@
+ROLLBACK NOTES
+==============
+Package: mmt_patch_2026-02-27_core-pages
+Date: 2026-02-27
+
+If this patch needs to be reverted:
+
+Option 1 — Local Backup
+Restore files from the backup created before deployment at:
+C:\Users\MaryWomack\mmt-site_backup_*
+
+Option 2 — Git Revert
+cd /d C:\Users\MaryWomack\mmt-site
+git log --oneline -5
+git revert HEAD
+
+Note: The previous site was returning 404 on all pages,
+so reverting would restore a non-functional state.
+In most cases, fixing forward is preferred over rollback.

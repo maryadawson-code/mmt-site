@@ -1,162 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About | Mission Meets Tech</title>
-    <meta name="description" content="Meet Mary Womack and Sara Byrd — the voices behind Mission Meets Tech and Fed UP podcast.">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <meta property="og:title" content="About | Mission Meets Tech">
-    <meta property="og:description" content="Meet the voices behind Mission Meets Tech and Fed UP podcast.">
-    <meta property="og:type" content="website">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — Mission Meets Tech</title>
+  <meta name="description" content="About Mission Meets Tech — an independent federal health IT intelligence platform founded by Mary Womack.">
+  <link rel="icon" href="MMT_icon_64px.png" type="image/png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --mmt-cyan: #00E5FA;
+      --mmt-green: #00FF85;
+      --mmt-navy: #00050F;
+      --mmt-slate: #0A1628;
+      --mmt-dark: #0D1117;
+      --mmt-white: #FFFFFF;
+      --mmt-white-muted: rgba(255,255,255,0.8);
+      --mmt-white-dim: rgba(255,255,255,0.6);
+    }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--mmt-navy); color: var(--mmt-white); }
+    .font-display { font-family: 'Space Grotesk', system-ui, sans-serif; }
+    .bg-navy { background-color: var(--mmt-navy); }
+    .bg-dark { background-color: var(--mmt-dark); }
+    .bg-slate { background-color: var(--mmt-slate); }
+    .text-cyan { color: var(--mmt-cyan); }
+    .text-green { color: var(--mmt-green); }
+    .text-muted { color: var(--mmt-white-muted); }
+    .text-dim { color: var(--mmt-white-dim); }
+    .gradient-text { background: linear-gradient(135deg, var(--mmt-cyan) 0%, var(--mmt-green) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .btn-primary { background: linear-gradient(135deg, var(--mmt-cyan) 0%, var(--mmt-green) 100%); color: var(--mmt-navy); font-weight: 700; }
+    .btn-primary:hover { box-shadow: 0 0 20px rgba(0, 229, 250, 0.45); transform: translateY(-1px); }
+    .btn-secondary { border: 1px solid var(--mmt-cyan); color: var(--mmt-white); }
+    .btn-secondary:hover { background: rgba(0, 229, 250, 0.1); }
+    .card { background-color: var(--mmt-slate); border: 1px solid rgba(0, 229, 250, 0.1); }
+    .nav-glass { background: rgba(0, 5, 15, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0, 229, 250, 0.1); }
+    .nav-link { color: var(--mmt-white-muted); transition: color 0.2s; }
+    .nav-link:hover { color: var(--mmt-cyan); }
+    #mobile-menu { display: none; }
+    #mobile-menu.active { display: flex; }
+  </style>
 </head>
-<body>
-    <nav>
-        <div class="container">
-            <a href="index.html" class="logo">MISSION MEETS <span>TECH</span></a>
-            <button class="hamburger" aria-label="Toggle menu">
-                <span></span><span></span><span></span>
-            </button>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="podcast.html">Podcast</a></li>
-                <li><a href="newsletter.html">Newsletter</a></li>
-                <li><a href="resources.html">Resources</a></li>
-            </ul>
-            <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" class="nav-cta" target="_blank">Subscribe</a>
+<body class="bg-navy min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="nav-glass fixed top-0 left-0 right-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+      <a href="index.html" class="font-display font-bold text-xl">Mission Meets <span class="text-cyan">Tech</span></a>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="index.html" class="nav-link text-sm font-medium">Home</a>
+        <a href="about.html" class="nav-link text-sm font-medium">About</a>
+        <a href="podcast.html" class="nav-link text-sm font-medium">Podcast</a>
+        <a href="newsletter.html" class="nav-link text-sm font-medium">Newsletter</a>
+        <a href="resources.html" class="nav-link text-sm font-medium">Resources</a>
+        <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold transition-all">Subscribe</a>
+      </div>
+      <button id="menu-toggle" class="md:hidden text-white" aria-label="Toggle menu">
+        <i class="fas fa-bars text-xl"></i>
+      </button>
+    </div>
+    <div id="mobile-menu" class="md:hidden flex-col px-4 pb-4 gap-3">
+      <a href="index.html" class="nav-link text-sm py-2">Home</a>
+      <a href="about.html" class="nav-link text-sm py-2">About</a>
+      <a href="podcast.html" class="nav-link text-sm py-2">Podcast</a>
+      <a href="newsletter.html" class="nav-link text-sm py-2">Newsletter</a>
+      <a href="resources.html" class="nav-link text-sm py-2">Resources</a>
+      <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold text-center mt-2 inline-block">Subscribe</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="pt-32 pb-16 px-4 sm:px-6">
+    <div class="max-w-4xl mx-auto text-center">
+      <h1 class="font-display font-bold text-4xl sm:text-5xl mb-6">About Mission Meets <span class="text-cyan">Tech</span></h1>
+      <p class="text-muted text-lg max-w-2xl mx-auto leading-relaxed">An independent platform that translates federal health IT complexity into clear, actionable intelligence.</p>
+    </div>
+  </section>
+
+  <!-- Mission -->
+  <section class="bg-dark py-20 px-4 sm:px-6">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="font-display font-bold text-2xl sm:text-3xl mb-6">Why This Exists</h2>
+      <p class="text-muted leading-relaxed mb-4">Federal health IT sits at the intersection of national security, healthcare delivery, and government technology. The decisions made inside DHA, VA, and Congress directly shape care for millions of service members, veterans, and their families.</p>
+      <p class="text-muted leading-relaxed mb-4">The problem isn't a lack of information. It's a lack of translation. Policy documents run hundreds of pages. Budget justifications are dense. Procurement signals are scattered across dozens of sources. The people who need to act on this information — contractors, program managers, technology leaders — often don't have time to synthesize it themselves.</p>
+      <p class="text-muted leading-relaxed">Mission Meets Tech exists to close that gap. Every piece of content is filtered through one question: <strong class="text-white">does this save lives or enhance readiness?</strong></p>
+    </div>
+  </section>
+
+  <!-- Founder -->
+  <section class="py-20 px-4 sm:px-6">
+    <div class="max-w-4xl mx-auto">
+      <div class="card rounded-xl p-8 md:flex md:items-start md:gap-8">
+        <div class="flex-shrink-0 mb-6 md:mb-0">
+          <img src="marywomack.jpg" alt="Mary Womack" class="w-36 h-36 rounded-full object-cover mx-auto md:mx-0 border-2 border-cyan/20">
         </div>
-    </nav>
-
-    <section class="about-hero">
-        <div class="container">
-            <h1>About Us</h1>
-            <p>Fed up with the talking points. Fired up about what actually works. We're bringing clarity to federal health IT.</p>
+        <div>
+          <p class="text-cyan text-xs font-semibold tracking-widest uppercase mb-2">Founder</p>
+          <h3 class="font-display font-bold text-2xl mb-1">Mary Womack</h3>
+          <p class="text-dim text-sm mb-4">Founder, Mission Meets Tech</p>
+          <p class="text-muted text-sm leading-relaxed mb-3">Mary has worked in federal health IT since 2007, building expertise across the Defense Health Agency, the Veterans Affairs health system, and the broader Military Health System. Her work spans digital health strategy, federal acquisition, health IT modernization, and the policy frameworks that connect them.</p>
+          <p class="text-muted text-sm leading-relaxed mb-4">She founded Mission Meets Tech to provide independent analysis of the trends, budgets, and decisions shaping federal healthcare technology — written for people who need to act on the information, not just observe it.</p>
+          <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="text-cyan text-sm hover:underline"><i class="fab fa-linkedin mr-1"></i> LinkedIn</a>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- Mission Section -->
-    <section>
-        <div class="container">
-            <div class="mission-box">
-                <div class="mission-quote"><i class="fas fa-quote-left"></i></div>
-                <h2>"Does this save lives or enhance readiness?"</h2>
-                <p>One question drives everything we do. The Military Health System serves 9.5 million beneficiaries and supports the readiness of America's fighting force. We cut through the noise to deliver intelligence that actually matters — for contractors, government leaders, and anyone who cares about the warfighter.</p>
-            </div>
+  <!-- What We Do -->
+  <section class="bg-dark py-20 px-4 sm:px-6">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-display font-bold text-2xl sm:text-3xl mb-8 text-center">What We Do</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="card rounded-xl p-6 text-center">
+          <div class="text-cyan text-2xl mb-3"><i class="fas fa-newspaper"></i></div>
+          <h3 class="font-display font-bold mb-2">Newsletter</h3>
+          <p class="text-dim text-sm leading-relaxed">Regular analysis of federal health IT policy, defense health budgets, and acquisition strategy delivered to your LinkedIn feed.</p>
         </div>
-    </section>
-
-    <!-- Mary's Bio — VOICE INDEPENDENCE COMPLIANT (ISSUE-011 fixed) -->
-    <section class="alt">
-        <div class="container">
-            <div class="bio-section">
-                <div class="bio-image-container">
-                    <img src="marywomack.jpg" alt="Mary Womack" class="bio-image">
-                    <div class="bio-social-links">
-                        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="social-btn"><i class="fab fa-linkedin"></i></a>
-                        <a href="/cdn-cgi/l/email-protection#751814070c35181c06061c1a1b18101001060110161d5b161a18" class="social-btn"><i class="fas fa-envelope"></i></a>
-                    </div>
-                </div>
-                <div class="bio-content">
-                    <span class="section-label">Publisher & Co-Host</span>
-                    <h2>Mary Womack</h2>
-                    <p class="bio-role">Mission Meets Tech | Fed UP: Where Mission Meets Reality</p>
-
-                    <p>Mary Womack is the publisher of Mission Meets Tech and co-host of the Fed UP podcast, delivering unfiltered intelligence on federal health IT transformation to defense contractors, government leaders, and industry decision-makers.</p>
-
-                    <p>With deep expertise spanning the Defense Health Agency, Veterans Affairs, Military Health System modernization, data governance, and AI implementation, Mary translates complex policy into actionable intelligence. Her analysis has reached hundreds of thousands of impressions, with 59% of her newsletter subscribers at the CXO or director level.</p>
-
-                    <p>Mary's career spans the intersection of healthcare technology and federal acquisition, giving her unique insight into what actually works — and what's just innovation theater.</p>
-
-                    <p>Mary's work is anchored by one question: <em>"Does this save lives or enhance readiness?"</em></p>
-                </div>
-            </div>
+        <div class="card rounded-xl p-6 text-center">
+          <div class="text-cyan text-2xl mb-3"><i class="fas fa-microphone"></i></div>
+          <h3 class="font-display font-bold mb-2">Podcast</h3>
+          <p class="text-dim text-sm leading-relaxed">Fed UP: Where Mission Meets Reality — candid conversations about what's working and what's broken in the system.</p>
         </div>
-    </section>
-
-    <!-- Sara's Bio -->
-    <section>
-        <div class="container">
-            <div class="bio-section">
-                <div class="bio-image-container">
-                    <img src="sarabyrd.jpg" alt="Sara Byrd" class="bio-image">
-                    <div class="bio-social-links">
-                        <a href="https://www.linkedin.com/in/saraebyrd/" target="_blank" rel="noopener" class="social-btn"><i class="fab fa-linkedin"></i></a>
-                    </div>
-                </div>
-                <div class="bio-content">
-                    <span class="section-label">Co-Host</span>
-                    <h2>Sara Byrd</h2>
-                    <p class="bio-role">Founder, Byrd Strategies | Fed UP: Where Mission Meets Reality</p>
-
-                    <p>Sara Byrd is the co-host of Fed UP and founder of Byrd Strategies, where she helps government contractors, mission-driven businesses, and creative entrepreneurs build smarter growth paths backed by expertise in federal strategy and business transformation.</p>
-
-                    <p>A two-time FedHealthIT100 honoree with 15+ years across defense, health, and civilian markets, Sara has earned the trust of leaders in government and industry. Her career includes senior roles at Leidos, Frontier Technology, and Intelligent Waves, giving her a sharp perspective on where technology can serve the mission — and where the system falls short.</p>
-                </div>
-            </div>
+        <div class="card rounded-xl p-6 text-center">
+          <div class="text-cyan text-2xl mb-3"><i class="fas fa-book-open"></i></div>
+          <h3 class="font-display font-bold mb-2">Resources</h3>
+          <p class="text-dim text-sm leading-relaxed">Curated guides to the programs, budgets, and policy sources that matter most in federal health IT.</p>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- CTA -->
-    <section class="alt">
-        <div class="container">
-            <div class="cta-box">
-                <h2>Get the Intelligence</h2>
-                <p>Join the newsletter for weekly federal health IT analysis, or listen to Fed UP for the conversations behind the headlines.</p>
-                <div class="hero-buttons">
-                    <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" class="btn btn-primary" target="_blank" rel="noopener"><i class="fab fa-linkedin"></i> Subscribe Free</a>
-                    <a href="podcast.html" class="btn btn-secondary">Listen to Fed UP</a>
-                </div>
-            </div>
+  <!-- Footer -->
+  <footer class="bg-dark border-t border-white/5 pt-16 pb-8 px-4 sm:px-6">
+    <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+      <div>
+        <p class="font-display font-bold text-lg mb-2">Mission Meets <span class="text-cyan">Tech</span></p>
+        <p class="text-dim text-xs leading-relaxed">Federal health IT intelligence for people who build, buy, and deploy mission-critical systems.</p>
+        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="text-dim hover:text-cyan text-sm mt-3 inline-block"><i class="fab fa-linkedin"></i></a>
+      </div>
+      <div>
+        <p class="font-display font-semibold text-sm mb-3 text-muted">Platform</p>
+        <div class="flex flex-col gap-2">
+          <a href="newsletter.html" class="text-dim text-xs hover:text-cyan transition-colors">Newsletter</a>
+          <a href="podcast.html" class="text-dim text-xs hover:text-cyan transition-colors">Podcast</a>
+          <a href="resources.html" class="text-dim text-xs hover:text-cyan transition-colors">Resources</a>
         </div>
-    </section>
-
-    <!-- Footer (standardized 4-column per ISSUE-007) -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <a href="index.html" class="logo">MISSION MEETS <span>TECH</span></a>
-                    <p>Federal health IT intelligence for defense contractors, government leaders, and anyone who cares about the warfighter.</p>
-                    <div class="footer-social">
-                        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="https://www.youtube.com/@MissionMeetsTech" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-                <div class="footer-links">
-                    <h4>Platform</h4>
-                    <ul>
-                        <li><a href="newsletter.html">Newsletter</a></li>
-                        <li><a href="podcast.html">Podcast</a></li>
-                        <li><a href="resources.html">Resources</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Company</h4>
-                    <ul>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="/cdn-cgi/l/email-protection#4b262a39320b26223838222425262e2e3f383f2e282365282426">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Listen</h4>
-                    <ul>
-                        <li><a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1789422839" target="_blank" rel="noopener">Apple Podcasts</a></li>
-                        <li><a href="https://open.spotify.com/show/4O7N6M2X0vN3n1K1U5fG6m" target="_blank" rel="noopener">Spotify</a></li>
-                        <li><a href="https://music.amazon.com/podcasts/920fec9b-4fae-4bd0-ae4d-eaf1459cad2f" target="_blank" rel="noopener">Amazon Music</a></li>
-                        <li><a href="https://www.youtube.com/@MissionMeetsTech" target="_blank" rel="noopener">YouTube</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p class="disclaimer">The views expressed on this site are solely those of the authors and do not represent any organization. This content is for informational purposes only.</p>
-                <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
-            </div>
+      </div>
+      <div>
+        <p class="font-display font-semibold text-sm mb-3 text-muted">Company</p>
+        <div class="flex flex-col gap-2">
+          <a href="about.html" class="text-dim text-xs hover:text-cyan transition-colors">About</a>
+          <a href="mailto:mary@missionmeetstech.com" class="text-dim text-xs hover:text-cyan transition-colors">Contact</a>
+          <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="text-dim text-xs hover:text-cyan transition-colors">LinkedIn</a>
         </div>
-    </footer>
+      </div>
+      <div>
+        <p class="font-display font-semibold text-sm mb-3 text-muted">Listen</p>
+        <div class="flex flex-col gap-2">
+          <a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank" rel="noopener" class="text-dim text-xs hover:text-cyan transition-colors">Apple Podcasts</a>
+          <a href="https://open.spotify.com/show/7sND342duH7Buw1cUs60lP" target="_blank" rel="noopener" class="text-dim text-xs hover:text-cyan transition-colors">Spotify</a>
+          <a href="https://music.amazon.com/podcasts/920fec9b-4fae-4bd0-ae4d-eaf1459cad2f" target="_blank" rel="noopener" class="text-dim text-xs hover:text-cyan transition-colors">Amazon Music</a>
+          <a href="https://www.youtube.com/@MissionMeetsTech" target="_blank" rel="noopener" class="text-dim text-xs hover:text-cyan transition-colors">YouTube</a>
+        </div>
+      </div>
+    </div>
+    <div class="max-w-6xl mx-auto border-t border-white/5 pt-6 text-center">
+      <p class="text-dim text-xs">The views expressed on this site are the author's own and do not represent the position of any employer or organization.</p>
+      <p class="text-dim text-xs mt-2">&copy; 2026 Mission Meets Tech. All rights reserved.</p>
+    </div>
+  </footer>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-    // Hamburger menu toggle
-    document.querySelector('
+  <script>
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+      document.getElementById('mobile-menu').classList.toggle('active');
+    });
+  </script>
+</body>
+</html>

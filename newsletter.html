@@ -1,180 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Newsletter | Mission Meets Tech</title>
-    <meta name="description" content="Federal health IT intelligence delivered weekly. No vendor spin, no innovation theater — just what you need to know.">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Newsletter — Mission Meets Tech</title>
+  <meta name="description" content="Subscribe to the Mission Meets Tech newsletter for clear-eyed analysis of federal health IT policy, defense health budgets, and technology decisions.">
+  <link rel="icon" href="MMT_icon_64px.png" type="image/png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --mmt-cyan: #00E5FA;
+      --mmt-green: #00FF85;
+      --mmt-navy: #00050F;
+      --mmt-slate: #0A1628;
+      --mmt-dark: #0D1117;
+      --mmt-white: #FFFFFF;
+      --mmt-white-muted: rgba(255,255,255,0.8);
+      --mmt-white-dim: rgba(255,255,255,0.6);
+    }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--mmt-navy); color: var(--mmt-white); }
+    .font-display { font-family: 'Space Grotesk', system-ui, sans-serif; }
+    .bg-navy { background-color: var(--mmt-navy); }
+    .bg-dark { background-color: var(--mmt-dark); }
+    .bg-slate { background-color: var(--mmt-slate); }
+    .text-cyan { color: var(--mmt-cyan); }
+    .text-green { color: var(--mmt-green); }
+    .text-muted { color: var(--mmt-white-muted); }
+    .text-dim { color: var(--mmt-white-dim); }
+    .gradient-text { background: linear-gradient(135deg, var(--mmt-cyan) 0%, var(--mmt-green) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .btn-primary { background: linear-gradient(135deg, var(--mmt-cyan) 0%, var(--mmt-green) 100%); color: var(--mmt-navy); font-weight: 700; }
+    .btn-primary:hover { box-shadow: 0 0 20px rgba(0, 229, 250, 0.45); transform: translateY(-1px); }
+    .btn-secondary { border: 1px solid var(--mmt-cyan); color: var(--mmt-white); }
+    .btn-secondary:hover { background: rgba(0, 229, 250, 0.1); }
+    .card { background-color: var(--mmt-slate); border: 1px solid rgba(0, 229, 250, 0.1); }
+    .nav-glass { background: rgba(0, 5, 15, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0, 229, 250, 0.1); }
+    .nav-link { color: var(--mmt-white-muted); transition: color 0.2s; }
+    .nav-link:hover { color: var(--mmt-cyan); }
+    #mobile-menu { display: none; }
+    #mobile-menu.active { display: flex; }
+  </style>
 </head>
-<body>
-    <nav>
-        <div class="container">
-            <a href="index.html" class="logo">MISSION MEETS <span>TECH</span></a>
-            <button class="hamburger" aria-label="Toggle menu">
-                <span></span><span></span><span></span>
-            </button>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="podcast.html">Podcast</a></li>
-                <li><a href="newsletter.html">Newsletter</a></li>
-                <li><a href="resources.html">Resources</a></li>
-            </ul>
-            <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" class="nav-cta" target="_blank">Subscribe</a>
+<body class="bg-navy min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="nav-glass fixed top-0 left-0 right-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+      <a href="index.html" class="font-display font-bold text-xl">Mission Meets <span class="text-cyan">Tech</span></a>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="index.html" class="nav-link text-sm font-medium">Home</a>
+        <a href="about.html" class="nav-link text-sm font-medium">About</a>
+        <a href="podcast.html" class="nav-link text-sm font-medium">Podcast</a>
+        <a href="newsletter.html" class="nav-link text-sm font-medium">Newsletter</a>
+        <a href="resources.html" class="nav-link text-sm font-medium">Resources</a>
+        <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold transition-all">Subscribe</a>
+      </div>
+      <button id="menu-toggle" class="md:hidden text-white" aria-label="Toggle menu">
+        <i class="fas fa-bars text-xl"></i>
+      </button>
+    </div>
+    <div id="mobile-menu" class="md:hidden flex-col px-4 pb-4 gap-3">
+      <a href="index.html" class="nav-link text-sm py-2">Home</a>
+      <a href="about.html" class="nav-link text-sm py-2">About</a>
+      <a href="podcast.html" class="nav-link text-sm py-2">Podcast</a>
+      <a href="newsletter.html" class="nav-link text-sm py-2">Newsletter</a>
+      <a href="resources.html" class="nav-link text-sm py-2">Resources</a>
+      <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold text-center mt-2 inline-block">Subscribe</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="pt-32 pb-16 px-4 sm:px-6">
+    <div class="max-w-4xl mx-auto text-center">
+      <p class="text-cyan text-sm font-semibold tracking-widest uppercase mb-4">Newsletter</p>
+      <h1 class="font-display font-bold text-4xl sm:text-5xl mb-6">Mission Meets <span class="text-cyan">Tech</span></h1>
+      <p class="text-muted text-lg max-w-2xl mx-auto leading-relaxed mb-8">Clear-eyed analysis of federal health IT policy, defense health budgets, and the technology decisions that shape care for millions of service members and veterans.</p>
+      <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-8 py-3 rounded-lg text-base font-bold transition-all inline-block">Subscribe on LinkedIn</a>
+    </div>
+  </section>
+
+  <!-- What to Expect -->
+  <section class="bg-dark py-20 px-4 sm:px-6">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="font-display font-bold text-2xl sm:text-3xl mb-8 text-center">What to Expect</h2>
+      <div class="space-y-6">
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2 text-cyan">Policy Analysis</h3>
+          <p class="text-muted text-sm leading-relaxed">Each issue breaks down federal health IT policy changes and explains what they mean for the people who have to implement them. No jargon walls. No filler. Just the operational implications.</p>
         </div>
-    </nav>
-
-    <section class="newsletter-hero">
-        <div class="container">
-            <h1>Mission Meets Tech</h1>
-            <p class="hero-description">Federal health IT intelligence for defense contractors, government leaders, and anyone who cares about the warfighter. No vendor spin. No innovation theater. Just what you need to know.</p>
-
-            <div class="hero-stats" style="margin-top: 40px;">
-                <div class="stat">
-                    <div class="stat-number">1,500+</div>
-                    <div class="stat-label">Subscribers</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-number">59%</div>
-                    <div class="stat-label">CXO/Director Level</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-number">Weekly</div>
-                    <div class="stat-label">Delivery</div>
-                </div>
-            </div>
-
-            <div style="margin-top: 40px;">
-                <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" class="btn btn-primary btn-large" target="_blank" rel="noopener">
-                    <i class="fab fa-linkedin"></i> Subscribe Free on LinkedIn
-                </a>
-            </div>
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2 text-cyan">Budget Intelligence</h3>
+          <p class="text-muted text-sm leading-relaxed">Defense health appropriations, contract vehicle updates, and the budget signals that indicate where the market is heading. Translated from budget-speak into actionable context.</p>
         </div>
-    </section>
-
-    <!-- What You Get -->
-    <section class="alt">
-        <div class="container" style="text-align: center;">
-            <h2 class="section-title">What You Get</h2>
-            <p class="section-subtitle">Analysis that cuts through the noise.</p>
-
-            <div class="focus-grid">
-                <div class="focus-card">
-                    <div class="focus-icon">🎯</div>
-                    <h3>DHA & MHS Intelligence</h3>
-                    <p>Deep dives on Defense Health Agency transformation, MHS GENESIS rollout, and what it means for contractors and beneficiaries.</p>
-                </div>
-                <div class="focus-card">
-                    <div class="focus-icon">🏥</div>
-                    <h3>VA Health IT</h3>
-                    <p>Veterans Affairs modernization updates, telehealth expansion, and the interoperability battle between DoD and VA systems.</p>
-                </div>
-                <div class="focus-card">
-                    <div class="focus-icon">📋</div>
-                    <h3>Acquisition Strategy</h3>
-                    <p>Contract awards, SBIR/STTR opportunities, OTAs, and the acquisition moves that signal where the market is heading.</p>
-                </div>
-            </div>
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2 text-cyan">Market Context</h3>
+          <p class="text-muted text-sm leading-relaxed">DHA modernization, VA health IT strategy, TRICARE reform, and the acquisition dynamics that create opportunity — or risk — for contractors and program managers.</p>
         </div>
-    </section>
-
-    <!-- Recent Issues -->
-    <section>
-        <div class="container" style="text-align: center;">
-            <h2 class="section-title">Recent Issues</h2>
-            <p class="section-subtitle">Catch up on what you missed.</p>
-            <div id="newsletter-grid" class="issue-grid">
-                <div class="loading">Loading recent issues...</div>
-            </div>
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2 text-cyan">Practitioner Perspective</h3>
+          <p class="text-muted text-sm leading-relaxed">Written by someone who has worked in this space since 2007. Every issue is grounded in firsthand experience with the systems, agencies, and stakeholders involved.</p>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- CTA -->
-    <section class="alt">
-        <div class="container">
-            <div class="cta-box">
-                <h2>Don't Miss the Next One</h2>
-                <p>Join the defense health IT leaders who start their week with Mission Meets Tech.</p>
-                <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" class="btn btn-primary btn-large" target="_blank" rel="noopener"><i class="fab fa-linkedin"></i> Subscribe Free</a>
-            </div>
+  <!-- Who It's For -->
+  <section class="py-20 px-4 sm:px-6">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="font-display font-bold text-2xl sm:text-3xl mb-6">Who This Is For</h2>
+      <p class="text-muted leading-relaxed mb-4">Mission Meets Tech is written for defense contractors, government program managers, health IT leaders, and technology strategists who need to understand the federal health landscape without reading 200-page policy documents themselves.</p>
+      <p class="text-muted leading-relaxed mb-8">If your work touches DHA, VA, MHS, TRICARE, or defense health acquisition, this newsletter gives you the context you need to make better decisions faster.</p>
+      <div class="text-center">
+        <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-8 py-3 rounded-lg text-base font-bold transition-all inline-block">Subscribe on LinkedIn</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Also Listen -->
+  <section class="bg-dark py-16 px-4 sm:px-6">
+    <div class="max-w-3xl mx-auto text-center">
+      <p class="text-dim text-sm mb-3">Want more?</p>
+      <h3 class="font-display font-bold text-xl mb-3">Listen to the Podcast</h3>
+      <p class="text-muted text-sm mb-6">Fed UP: Where Mission Meets Reality takes the newsletter's analysis further with candid, in-depth conversation.</p>
+      <a href="podcast.html" class="btn-secondary px-6 py-2.5 rounded-lg text-sm font-medium transition-all inline-block">Explore the Podcast</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-dark border-t border-white/5 pt-16 pb-8 px-4 sm:px-6">
+    <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+      <div>
+        <p class="font-display font-bold text-lg mb-2">Mission Meets <span class="text-cyan">Tech</span></p>
+        <p class="text-dim text-xs leading-relaxed">Federal health IT intelligence for people who build, buy, and deploy mission-critical systems.</p>
+        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="text-dim hover:text-cyan text-sm mt-3 inline-block"><i class="fab fa-linkedin"></i></a>
+      </div>
+      <div>
+        <p class="font-display font-semibold text-sm mb-3 text-muted">Platform</p>
+        <div class="flex flex-col gap-2">
+          <a href="newsletter.html" class="text-dim text-xs hover:text-cyan transition-colors">Newsletter</a>
+          <a href="podcast.html" class="text-dim text-xs hover:text-cyan transition-colors">Podcast</a>
+          <a href="resources.html" class="text-dim text-xs hover:text-cyan transition-colors">Resources</a>
         </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <a href="index.html" class="logo">MISSION MEETS <span>TECH</span></a>
-                    <p>Federal health IT intelligence for defense contractors, government leaders, and anyone who cares about the warfighter.</p>
-                    <div class="footer-social">
-                        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="https://www.youtube.com/@MissionMeetsTech" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-                <div class="footer-links">
-                    <h4>Platform</h4>
-                    <ul>
-                        <li><a href="newsletter.html">Newsletter</a></li>
-                        <li><a href="podcast.html">Podcast</a></li>
-                        <li><a href="resources.html">Resources</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Company</h4>
-                    <ul>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="mailto:mary@missionmeetstech.com">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Listen</h4>
-                    <ul>
-                        <li><a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1789422839" target="_blank" rel="noopener">Apple Podcasts</a></li>
-                        <li><a href="https://open.spotify.com/show/4O7N6M2X0vN3n1K1U5fG6m" target="_blank" rel="noopener">Spotify</a></li>
-                        <li><a href="https://music.amazon.com/podcasts/920fec9b-4fae-4bd0-ae4d-eaf1459cad2f" target="_blank" rel="noopener">Amazon Music</a></li>
-                        <li><a href="https://www.youtube.com/@MissionMeetsTech" target="_blank" rel="noopener">YouTube</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p class="disclaimer">The views expressed on this site are solely those of the authors and do not represent any organization. This content is for informational purposes only.</p>
-                <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
-            </div>
+      </div>
+      <div>
+        <p class="font-display font-semibold text-sm mb-3 text-muted">Company</p>
+        <div class="flex flex-col gap-2">
+          <a href="about.html" class="text-dim text-xs hover:text-cyan transition-colors">About</a>
+          <a href="mailto:mary@missionmeetstech.com" class="text-dim text-xs hover:text-cyan transition-colors">Contact</a>
+          <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="text-dim text-xs hover:text-cyan transition-colors">LinkedIn</a>
         </div>
-    </footer>
+      </div>
+      <div>
+        <p class="font-display font-semibold text-sm mb-3 text-muted">Listen</p>
+        <div class="flex flex-col gap-2">
+          <a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank" rel="noopener" class="text-dim text-xs hover:text-cyan transition-colors">Apple Podcasts</a>
+          <a href="https://open.spotify.com/show/7sND342duH7Buw1cUs60lP" target="_blank" rel="noopener" class="text-dim text-xs hover:text-cyan transition-colors">Spotify</a>
+          <a href="https://music.amazon.com/podcasts/920fec9b-4fae-4bd0-ae4d-eaf1459cad2f" target="_blank" rel="noopener" class="text-dim text-xs hover:text-cyan transition-colors">Amazon Music</a>
+          <a href="https://www.youtube.com/@MissionMeetsTech" target="_blank" rel="noopener" class="text-dim text-xs hover:text-cyan transition-colors">YouTube</a>
+        </div>
+      </div>
+    </div>
+    <div class="max-w-6xl mx-auto border-t border-white/5 pt-6 text-center">
+      <p class="text-dim text-xs">The views expressed on this site are the author's own and do not represent the position of any employer or organization.</p>
+      <p class="text-dim text-xs mt-2">&copy; 2026 Mission Meets Tech. All rights reserved.</p>
+    </div>
+  </footer>
 
-    <script>
-    // Hamburger menu toggle
-    document.querySelector('.hamburger').addEventListener('click', function() {
-        this.classList.toggle('active');
-        document.querySelector('.nav-links').classList.toggle('active');
+  <script>
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+      document.getElementById('mobile-menu').classList.toggle('active');
     });
-
-    // Load newsletter issues from JSON
-    fetch('newsletters.json')
-        .then(r => r.json())
-        .then(data => {
-            const grid = document.getElementById('newsletter-grid');
-            if (!data || data.length === 0) {
-                grid.innerHTML = '<p style="color:var(--white-dim);">No issues yet. Check back soon!</p>';
-                return;
-            }
-            grid.innerHTML = data.slice(0, 6).map(item => `
-                <a href="${item.url}" target="_blank" rel="noopener" class="issue-card">
-                    <div class="issue-date">${item.date}</div>
-                    <div class="issue-title">${item.title}</div>
-                    <div class="issue-description">${item.description || ''}</div>
-                    ${item.tags ? '<div class="issue-tags">' + item.tags.map(t => '<span class="issue-tag">' + t + '</span>').join('') + '</div>' : ''}
-                </a>
-            `).join('');
-        })
-        .catch(() => {
-            document.getElementById('newsletter-grid').innerHTML = '<p style="color:var(--white-dim);">Unable to load issues.</p>';
-        });
-    </script>
+  </script>
 </body>
 </html>

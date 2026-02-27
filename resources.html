@@ -1,515 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resources | Mission Meets Tech</title>
-    <meta name="description" content="Free resources, guides, and reference materials for federal health IT contractors and government leaders.">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resources — Mission Meets Tech</title>
+  <meta name="description" content="Curated federal health IT resources: key programs, budget sources, policy references, and acquisition tools for defense health contractors and government leaders.">
+  <link rel="icon" href="MMT_icon_64px.png" type="image/png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --mmt-cyan: #00E5FA;
+      --mmt-green: #00FF85;
+      --mmt-navy: #00050F;
+      --mmt-slate: #0A1628;
+      --mmt-dark: #0D1117;
+      --mmt-white: #FFFFFF;
+      --mmt-white-muted: rgba(255,255,255,0.8);
+      --mmt-white-dim: rgba(255,255,255,0.6);
+    }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--mmt-navy); color: var(--mmt-white); }
+    .font-display { font-family: 'Space Grotesk', system-ui, sans-serif; }
+    .bg-navy { background-color: var(--mmt-navy); }
+    .bg-dark { background-color: var(--mmt-dark); }
+    .bg-slate { background-color: var(--mmt-slate); }
+    .text-cyan { color: var(--mmt-cyan); }
+    .text-green { color: var(--mmt-green); }
+    .text-muted { color: var(--mmt-white-muted); }
+    .text-dim { color: var(--mmt-white-dim); }
+    .gradient-text { background: linear-gradient(135deg, var(--mmt-cyan) 0%, var(--mmt-green) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .btn-primary { background: linear-gradient(135deg, var(--mmt-cyan) 0%, var(--mmt-green) 100%); color: var(--mmt-navy); font-weight: 700; }
+    .btn-primary:hover { box-shadow: 0 0 20px rgba(0, 229, 250, 0.45); transform: translateY(-1px); }
+    .btn-secondary { border: 1px solid var(--mmt-cyan); color: var(--mmt-white); }
+    .btn-secondary:hover { background: rgba(0, 229, 250, 0.1); }
+    .card { background-color: var(--mmt-slate); border: 1px solid rgba(0, 229, 250, 0.1); }
+    .nav-glass { background: rgba(0, 5, 15, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0, 229, 250, 0.1); }
+    .nav-link { color: var(--mmt-white-muted); transition: color 0.2s; }
+    .nav-link:hover { color: var(--mmt-cyan); }
+    #mobile-menu { display: none; }
+    #mobile-menu.active { display: flex; }
+  </style>
 </head>
-<body>
-    <nav>
-        <div class="container">
-            <a href="index.html" class="logo">MISSION MEETS <span>TECH</span></a>
-            <button class="hamburger" aria-label="Toggle menu">
-                <span></span><span></span><span></span>
-            </button>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="podcast.html">Podcast</a></li>
-                <li><a href="newsletter.html">Newsletter</a></li>
-                <li><a href="resources.html">Resources</a></li>
-            </ul>
-            <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" class="nav-cta" target="_blank">Subscribe</a>
+<body class="bg-navy min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="nav-glass fixed top-0 left-0 right-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+      <a href="index.html" class="font-display font-bold text-xl">Mission Meets <span class="text-cyan">Tech</span></a>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="index.html" class="nav-link text-sm font-medium">Home</a>
+        <a href="about.html" class="nav-link text-sm font-medium">About</a>
+        <a href="podcast.html" class="nav-link text-sm font-medium">Podcast</a>
+        <a href="newsletter.html" class="nav-link text-sm font-medium">Newsletter</a>
+        <a href="resources.html" class="nav-link text-sm font-medium">Resources</a>
+        <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold transition-all">Subscribe</a>
+      </div>
+      <button id="menu-toggle" class="md:hidden text-white" aria-label="Toggle menu">
+        <i class="fas fa-bars text-xl"></i>
+      </button>
+    </div>
+    <div id="mobile-menu" class="md:hidden flex-col px-4 pb-4 gap-3">
+      <a href="index.html" class="nav-link text-sm py-2">Home</a>
+      <a href="about.html" class="nav-link text-sm py-2">About</a>
+      <a href="podcast.html" class="nav-link text-sm py-2">Podcast</a>
+      <a href="newsletter.html" class="nav-link text-sm py-2">Newsletter</a>
+      <a href="resources.html" class="nav-link text-sm py-2">Resources</a>
+      <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold text-center mt-2 inline-block">Subscribe</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="pt-32 pb-16 px-4 sm:px-6">
+    <div class="max-w-4xl mx-auto text-center">
+      <p class="text-cyan text-sm font-semibold tracking-widest uppercase mb-4">Resources</p>
+      <h1 class="font-display font-bold text-4xl sm:text-5xl mb-6">Federal Health IT Reference Desk</h1>
+      <p class="text-muted text-lg max-w-2xl mx-auto leading-relaxed">Key programs, budget sources, policy references, and acquisition tools — curated for people who work in or around defense healthcare technology.</p>
+    </div>
+  </section>
+
+  <!-- Key Organizations -->
+  <section class="bg-dark py-20 px-4 sm:px-6">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-display font-bold text-2xl sm:text-3xl mb-8">Key Organizations</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2 text-cyan">Defense Health Agency (DHA)</h3>
+          <p class="text-dim text-sm leading-relaxed">The combat support agency responsible for MHS operations, TRICARE, and health IT modernization across the Military Health System.</p>
         </div>
-    </nav>
-
-    <section class="about-hero">
-        <div class="container">
-            <h1>Resources</h1>
-            <p>Reference materials, quick guides, and tools to help you navigate federal health IT.</p>
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2 text-cyan">Veterans Affairs (VA) OIT</h3>
+          <p class="text-dim text-sm leading-relaxed">The Office of Information and Technology manages VA's health IT portfolio including EHR modernization and interoperability programs.</p>
         </div>
-    </section>
-
-    <!-- Featured Resource: MHS Triad -->
-    <section>
-        <div class="container">
-            <div class="featured-resource">
-                <div class="resource-badge">Featured</div>
-                <div class="resource-content">
-                    <h2>The MHS Triad Quick Reference</h2>
-                    <p>Keith Bass, Emil Michael, and Admiral Viaâ€”the three leaders reshaping military medicine. One-page profiles with mandates, backgrounds, and what to watch for each.</p>
-                    <div class="resource-meta">
-                        <span><i class="far fa-calendar"></i> Updated January 2026</span>
-                    </div>
-                    
-                    <!-- Quick Reference Table Inline -->
-                    <div class="inline-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Leader</th>
-                                    <th>Role</th>
-                                    <th>The Mandate</th>
-                                    <th>What to Watch</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>Keith Bass</strong></td>
-                                    <td>ASD Health Affairs</td>
-                                    <td>Governance & Cost Control</td>
-                                    <td>Telehealth scale-up; pharmacy compliance; GlobalMed background</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Emil Michael</strong></td>
-                                    <td>USD Research & Engineering</td>
-                                    <td>AI Adoption & Tech Security</td>
-                                    <td>GenAI.mil/AskSage rollout; university fights; China decoupling</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Admiral Darin Via</strong></td>
-                                    <td>DHA Director (expected Feb)</td>
-                                    <td>Operational Readiness</td>
-                                    <td>Role 2E deployment; HPO/wearables; JTCCN expansion</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2 text-cyan">Federal Electronic Health Record Modernization (FEHRM)</h3>
+          <p class="text-dim text-sm leading-relaxed">The joint program office responsible for deploying a single, shared EHR across DoD and VA.</p>
         </div>
-    </section>
-
-    <!-- Quick References -->
-    <section class="alt">
-        <div class="container">
-            <span class="section-label center">Quick References</span>
-            <h2 class="section-title">Cheat Sheets & Data Tables</h2>
-            <p class="section-subtitle">The intelligence that matters, formatted to reference fast.</p>
-            
-            <!-- Enterprise Telehealth Table -->
-            <div class="reference-block">
-                <h3><i class="fas fa-satellite-dish"></i> Enterprise Telehealth Platforms</h3>
-                <div class="inline-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Vendor</th>
-                                <th>Contract Value</th>
-                                <th>ATO Status</th>
-                                <th>Primary Use Case</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Amwell/Leidos</strong></td>
-                                <td>$180M (Oct 2023)</td>
-                                <td>MHS GENESIS integrated</td>
-                                <td>Enterprise virtual visits; Digital First flagship</td>
-                            </tr>
-                            <tr>
-                                <td><strong>GlobalMed</strong></td>
-                                <td>IDIQ via Excentium</td>
-                                <td>Med COI ATO (renewed Dec 2025)</td>
-                                <td>Clinical-grade MTF telehealth; 721 facilities</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Medweb</strong></td>
-                                <td>$52.8M (Feb 2020)</td>
-                                <td>Tri-service ATO (15+ years)</td>
-                                <td>Deployed tele-radiology; 40+ Navy vessels</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Outpatient App</strong></td>
-                                <td>SBIR Phase III</td>
-                                <td>Tradewinds-ready</td>
-                                <td>Medical readiness; VHM; provider coordination</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- DARPA Programs Table -->
-            <div class="reference-block">
-                <h3><i class="fas fa-brain"></i> Key DARPA Medical Programs</h3>
-                <div class="inline-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Program</th>
-                                <th>Focus</th>
-                                <th>Timeline</th>
-                                <th>Relevance to Triad</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>MASH</strong></td>
-                                <td>Autonomous hemorrhage control</td>
-                                <td>$32.4M; 36 months (2025-2028)</td>
-                                <td>Via's Role 2E requires extended casualty stabilization</td>
-                            </tr>
-                            <tr>
-                                <td><strong>GOLDEVAC</strong></td>
-                                <td>Automated resuscitation (48hr)</td>
-                                <td>Active</td>
-                                <td>Prolonged field care when evacuation delayed</td>
-                            </tr>
-                            <tr>
-                                <td><strong>ITM</strong></td>
-                                <td>AI triage decision support</td>
-                                <td>Phase 2 completing 2025-2026</td>
-                                <td>Enables medics to operate with specialist-level judgment</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Triage Challenge</strong></td>
-                                <td>Autonomous casualty detection</td>
-                                <td>Final event 2026</td>
-                                <td>Drone-based casualty ID for contested environments</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- H2F Program Status -->
-            <div class="reference-block">
-                <h3><i class="fas fa-dumbbell"></i> H2F Program Status by Service</h3>
-                <div class="inline-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Service</th>
-                                <th>Program</th>
-                                <th>Embedded Teams</th>
-                                <th>Key Outcomes</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Army</strong></td>
-                                <td>H2F</td>
-                                <td>71 brigades (20-22 staff each)</td>
-                                <td>35% fewer injuries; 37% fewer suicides</td>
-                                <td>Full force by 2032</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Navy</strong></td>
-                                <td>NOFFS</td>
-                                <td>None (resources only)</td>
-                                <td>No comparable data</td>
-                                <td>No expansion planned</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Air Force</strong></td>
-                                <td>CAF</td>
-                                <td>AFSPECWAR only</td>
-                                <td>Limited to SOF pipeline</td>
-                                <td>Framework, not program</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Space Force</strong></td>
-                                <td>GRTs</td>
-                                <td>All bases</td>
-                                <td>Closest to Army H2F</td>
-                                <td>SPFMAN 36-2905 (Sep 2025)</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Legislative Tracker -->
-            <div class="reference-block">
-                <h3><i class="fas fa-landmark"></i> FY2026 NDAA Provisions That Matter</h3>
-                <div class="inline-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Issue</th>
-                                <th>NDAA Citation</th>
-                                <th>What It Does</th>
-                                <th>2027 Signal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Audit Pressure</strong></td>
-                                <td>Section 1002</td>
-                                <td>SES firing authority for audit failures</td>
-                                <td>"Zero-Based Budgeting" for non-auditable programs</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Missile Defense Squeeze</strong></td>
-                                <td>"Golden Dome Act"</td>
-                                <td>Multi-year procurement for 10 missile types</td>
-                                <td>"Homeland Shield" taking >15% of total procurement</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Research Security</strong></td>
-                                <td>Section 223</td>
-                                <td>"Risk Review Repository" & 1260H entity ban</td>
-                                <td>"Research Sovereignty": 100% domestic lab supply chain</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Acquisition Speed</strong></td>
-                                <td>"SPEED Act"</td>
-                                <td>Portfolio-based acquisition authority</td>
-                                <td>"Commercial First": mandate to buy off-the-shelf</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2 text-cyan">DoD CIO / DISA</h3>
+          <p class="text-dim text-sm leading-relaxed">Oversees defense IT policy, cybersecurity standards, and the infrastructure backbone that health systems depend on.</p>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- Glossary -->
-    <section>
-        <div class="container">
-            <span class="section-label center">Reference</span>
-            <h2 class="section-title">Acronym Decoder</h2>
-            <p class="section-subtitle">Because nobody should have to Google "DHMSM" in a meeting.</p>
-            
-            <div class="glossary-grid">
-                <div class="glossary-section">
-                    <h4>Organizations</h4>
-                    <dl class="glossary-list">
-                        <dt>DHA</dt>
-                        <dd>Defense Health Agencyâ€”the joint Combat Support Agency enabling Army, Navy, and Air Force medical services</dd>
-                        <dt>MTF</dt>
-                        <dd>Military Treatment Facilityâ€”the 721+ hospitals and clinics serving military beneficiaries</dd>
-                        <dt>JTCCN</dt>
-                        <dd>Joint Tactical Combat Casualty Care Network</dd>
-                        <dt>DARPA</dt>
-                        <dd>Defense Advanced Research Projects Agency</dd>
-                        <dt>PEO DHMS</dt>
-                        <dd>Program Executive Office, Defense Healthcare Management Systems</dd>
-                    </dl>
-                </div>
-                <div class="glossary-section">
-                    <h4>Programs & Systems</h4>
-                    <dl class="glossary-list">
-                        <dt>MHS GENESIS</dt>
-                        <dd>The Military Health System electronic health recordâ€”Oracle Cerner-based, replacing legacy systems</dd>
-                        <dt>DHMSM</dt>
-                        <dd>Defense Healthcare Management Systems Modernization program</dd>
-                        <dt>H2F</dt>
-                        <dd>Holistic Health and Fitnessâ€”Army program with embedded performance teams</dd>
-                        <dt>TRICARE</dt>
-                        <dd>The health care program serving uniformed service members, retirees, and families</dd>
-                        <dt>GenAI.mil</dt>
-                        <dd>DoD's enterprise AI platform deploying Google Gemini across 3M users</dd>
-                    </dl>
-                </div>
-                <div class="glossary-section">
-                    <h4>Medical Concepts</h4>
-                    <dl class="glossary-list">
-                        <dt>Role 2E</dt>
-                        <dd>Expeditionary medical unit with surgical capability; can hold casualties 96+ hours</dd>
-                        <dt>HPO</dt>
-                        <dd>Human Performance Optimizationâ€”treating warfighters as "human weapon systems"</dd>
-                        <dt>RPM</dt>
-                        <dd>Remote Patient Monitoringâ€”continuous health tracking outside clinical settings</dd>
-                        <dt>Med COI</dt>
-                        <dd>Medical Community of Interestâ€”security authorization boundary</dd>
-                        <dt>Golden Hour</dt>
-                        <dd>Critical window for trauma care; increasingly a "golden day" in Pacific scenarios</dd>
-                    </dl>
-                </div>
-                <div class="glossary-section">
-                    <h4>Acquisition & Contracting</h4>
-                    <dl class="glossary-list">
-                        <dt>SBIR/STTR</dt>
-                        <dd>Small Business Innovation Research / Technology Transfer programs (currently lapsed)</dd>
-                        <dt>OTA</dt>
-                        <dd>Other Transaction Authorityâ€”flexible procurement outside FAR</dd>
-                        <dt>IDIQ</dt>
-                        <dd>Indefinite Delivery/Indefinite Quantity contract vehicle</dd>
-                        <dt>PAE</dt>
-                        <dd>Portfolio Acquisition Executiveâ€”new structure replacing PEOs</dd>
-                        <dt>8(a)</dt>
-                        <dd>SBA program for small disadvantaged businesses; under Hegseth review</dd>
-                        <dt>ATO</dt>
-                        <dd>Authority to Operateâ€”security authorization to deploy systems</dd>
-                    </dl>
-                </div>
-            </div>
+  <!-- Budget & Policy Sources -->
+  <section class="py-20 px-4 sm:px-6">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-display font-bold text-2xl sm:text-3xl mb-8">Budget &amp; Policy Sources</h2>
+      <div class="space-y-4">
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2">DoD Comptroller Budget Documents</h3>
+          <p class="text-dim text-sm leading-relaxed">Annual defense health program budget justification materials. The primary source for understanding where health IT dollars are going.</p>
         </div>
-    </section>
-
-    <!-- Key Dates Timeline -->
-    <section class="alt">
-        <div class="container">
-            <span class="section-label center">Calendar</span>
-            <h2 class="section-title">2026 Key Dates</h2>
-            <p class="section-subtitle">Mark your capture calendar.</p>
-            
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-date">JAN 30</div>
-                    <div class="timeline-content">
-                        <h4>CR Expiration</h4>
-                        <p>Continuing Resolution P.L. 119-37 expires. Watch for FY2026 Defense Appropriations compromise or another CR.</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-date">FEB</div>
-                    <div class="timeline-content">
-                        <h4>Via Confirmation Expected</h4>
-                        <p>Admiral Darin Via expected to be named DHA Director. Congressional sources indicate announcement coming.</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-date">MAR</div>
-                    <div class="timeline-content">
-                        <h4>Via Confirmation Target</h4>
-                        <p>Predicted confirmation as DHA Director by end of Q1.</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-date">APR</div>
-                    <div class="timeline-content">
-                        <h4>DHA PAE Decision Point</h4>
-                        <p>CAE decides whether Medical Products becomes permanent Portfolio Acquisition Executive. Watch for Medical Devices and Equipment PMO chartering.</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-date">SUMMER</div>
-                    <div class="timeline-content">
-                        <h4>Bass "Virtual Care First" Directive</h4>
-                        <p>Predicted announcement setting targets for shifting routine beneficiary care off MTF campuses to virtual platforms.</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-date">JUL</div>
-                    <div class="timeline-content">
-                        <h4>Amwell Contract Uncertainty</h4>
-                        <p>Current $180M contract terms uncertain beyond this date per SEC filings. Watch for extension or transition planning.</p>
-                    </div>
-                </div>
-                <div class="timeline-item timeline-item-future">
-                    <div class="timeline-date">2027-28</div>
-                    <div class="timeline-content">
-                        <h4>Role 2E IOC</h4>
-                        <p>First Role 2E unit expected to achieve initial operating capability in the Pacific.</p>
-                    </div>
-                </div>
-                <div class="timeline-item timeline-item-future">
-                    <div class="timeline-date">DEC 31, 2028</div>
-                    <div class="timeline-content">
-                        <h4>DoD Audit Deadline</h4>
-                        <p>Congressional mandate for clean audit opinion. Section 1002 gives SES firing authority for failures.</p>
-                    </div>
-                </div>
-                <div class="timeline-item timeline-item-future">
-                    <div class="timeline-date">2032</div>
-                    <div class="timeline-content">
-                        <h4>Full H2F Implementation</h4>
-                        <p>Army target for H2F deployment to all 236 brigades.</p>
-                    </div>
-                </div>
-            </div>
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2">Congressional Research Service (CRS)</h3>
+          <p class="text-dim text-sm leading-relaxed">Non-partisan policy analysis on defense health, VA healthcare, and military personnel programs. High-quality synthesis of legislative action.</p>
         </div>
-    </section>
-
-    <!-- The Three Magic Words -->
-    <section>
-        <div class="container">
-            <div class="magic-words-section">
-                <span class="section-label center">Contractor Guidance</span>
-                <h2 class="section-title">The Three Magic Words</h2>
-                <p class="section-subtitle">What the Triad actually needs from your solution:</p>
-                
-                <div class="magic-words-grid">
-                    <div class="magic-word-card">
-                        <div class="magic-icon"><i class="fas fa-shield-halved"></i></div>
-                        <h3>Governance</h3>
-                        <p>Bass needs AI that audits itself for compliance. If you can't demonstrate how your data flows into MHS GENESIS with full audit traceability, you're not ready for DHA.</p>
-                    </div>
-                    <div class="magic-word-card">
-                        <div class="magic-icon"><i class="fas fa-bolt"></i></div>
-                        <h3>Speed</h3>
-                        <p>Michael needs solutions that deploy into GenAI.mil and AskSage ecosystems by April. "Speed to capability delivery" is now the organizing principle of the Department of War.</p>
-                    </div>
-                    <div class="magic-word-card">
-                        <div class="magic-icon"><i class="fas fa-crosshairs"></i></div>
-                        <h3>Survivability</h3>
-                        <p>Via needs systems that work when the network goes dark. If your platform requires persistent connectivity to function, you're building for the wrong war.</p>
-                    </div>
-                </div>
-            </div>
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2">Government Accountability Office (GAO)</h3>
+          <p class="text-dim text-sm leading-relaxed">Audit and evaluation reports covering IT modernization, cost overruns, program effectiveness, and acquisition oversight.</p>
         </div>
-    </section>
-
-    <!-- Newsletter CTA -->
-    <section class="question-cta alt">
-        <div class="container">
-            <div class="cta-box">
-                <h2>Get Fresh Intel Weekly</h2>
-                <p>These resources come from the newsletter. Subscribe to get analysis and updates as they happen.</p>
-                <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" class="btn btn-primary btn-large" target="_blank">
-                    <i class="fab fa-linkedin"></i> Subscribe Free
-                </a>
-                <p class="cta-note">Join 1,500+ defense health IT professionals.</p>
-            </div>
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2">National Defense Authorization Act (NDAA)</h3>
+          <p class="text-dim text-sm leading-relaxed">The annual defense policy bill that sets direction for military health programs, technology mandates, and acquisition reform.</p>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <a href="index.html" class="logo">MISSION MEETS <span>TECH</span></a>
-                    <p>Federal health IT intelligence for defense contractors, government leaders, and anyone who cares about the warfighter.</p>
-                    <div class="footer-social">
-                        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="https://www.youtube.com/@MissionMeetsTech" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-                <div class="footer-links">
-                    <h4>Platform</h4>
-                    <ul>
-                        <li><a href="newsletter.html">Newsletter</a></li>
-                        <li><a href="podcast.html">Podcast</a></li>
-                        <li><a href="resources.html">Resources</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Company</h4>
-                    <ul>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="mailto:mary@missionmeetstech.com">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Listen</h4>
-                    <ul>
-                        <li><a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1789422839" target="_blank" rel="noopener">Apple Podcasts</a></li>
-                        <li><a href="https://open.spotify.com/show/4O7N6M2X0vN3n1K1U5fG6m" target="_blank" rel="noopener">Spotify</a></li>
-                        <li><a href="https://music.amazon.com/podcasts/920fec9b-4fae-4bd0-ae4d-eaf1459cad2f" target="_blank" rel="noopener">Amazon Music</a></li>
-                        <li><a href="https://www.youtube.com/@MissionMeetsTech" target="_blank" rel="noopener">YouTube</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p class="disclaimer">The views expressed on this site are solely those of the authors and do not represent any organization. This content is for informational purposes only.</p>
-                <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
-            </div>
+  <!-- Acquisition Tools -->
+  <section class="bg-dark py-20 px-4 sm:px-6">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-display font-bold text-2xl sm:text-3xl mb-8">Acquisition &amp; Contracting</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2 text-cyan">SAM.gov</h3>
+          <p class="text-dim text-sm leading-relaxed">The System for Award Management — where federal opportunities are posted and contract data is published.</p>
         </div>
-    </footer>
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2 text-cyan">FPDS.gov</h3>
+          <p class="text-dim text-sm leading-relaxed">Federal Procurement Data System — the authoritative source for historical contract award data across all federal agencies.</p>
+        </div>
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2 text-cyan">USAspending.gov</h3>
+          <p class="text-dim text-sm leading-relaxed">Federal spending transparency — track agency spending, contract awards, and budget execution across health programs.</p>
+        </div>
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2 text-cyan">OSDBU Resources</h3>
+          <p class="text-dim text-sm leading-relaxed">Small business contracting guidance from the Office of Small and Disadvantaged Business Utilization at DoD and VA.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <script>
-    document.querySelector('.hamburger').addEventListener('click', function() {
-        this.classList.toggle('active');
-        document.querySelector('.nav-links').classList.toggle('active');
+  <!-- CTA -->
+  <section class="py-16 px-4 sm:px-6">
+    <div class="max-w-3xl mx-auto text-center">
+      <h3 class="font-display font-bold text-xl mb-3">Stay Connected</h3>
+      <p class="text-muted text-sm mb-6">Get analysis that turns these sources into actionable intelligence.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-6 py-2.5 rounded-lg text-sm font-bold transition-all inline-block">Subscribe to the Newsletter</a>
+        <a href="podcast.html" class="btn-secondary px-6 py-2.5 rounded-lg text-sm font-medium transition-all inline-block">Listen to Fed UP</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-dark border-t border-white/5 pt-16 pb-8 px-4 sm:px-6">
+    <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+      <div>
+        <p class="font-display font-bold text-lg mb-2">Mission Meets <span class="text-cyan">Tech</span></p>
+        <p class="text-dim text-xs leading-relaxed">Federal health IT intelligence for people who build, buy, and deploy mission-critical systems.</p>
+        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="text-dim hover:text-cyan text-sm mt-3 inline-block"><i class="fab fa-linkedin"></i></a>
+      </div>
+      <div>
+        <p class="font-display font-semibold text-sm mb-3 text-muted">Platform</p>
+        <div class="flex flex-col gap-2">
+          <a href="newsletter.html" class="text-dim text-xs hover:text-cyan transition-colors">Newsletter</a>
+          <a href="podcast.html" class="text-dim text-xs hover:text-cyan transition-colors">Podcast</a>
+          <a href="resources.html" class="text-dim text-xs hover:text-cyan transition-colors">Resources</a>
+        </div>
+      </div>
+      <div>
+        <p class="font-display font-semibold text-sm mb-3 text-muted">Company</p>
+        <div class="flex flex-col gap-2">
+          <a href="about.html" class="text-dim text-xs hover:text-cyan transition-colors">About</a>
+          <a href="mailto:mary@missionmeetstech.com" class="text-dim text-xs hover:text-cyan transition-colors">Contact</a>
+          <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="text-dim text-xs hover:text-cyan transition-colors">LinkedIn</a>
+        </div>
+      </div>
+      <div>
+        <p class="font-display font-semibold text-sm mb-3 text-muted">Listen</p>
+        <div class="flex flex-col gap-2">
+          <a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank" rel="noopener" class="text-dim text-xs hover:text-cyan transition-colors">Apple Podcasts</a>
+          <a href="https://open.spotify.com/show/7sND342duH7Buw1cUs60lP" target="_blank" rel="noopener" class="text-dim text-xs hover:text-cyan transition-colors">Spotify</a>
+          <a href="https://music.amazon.com/podcasts/920fec9b-4fae-4bd0-ae4d-eaf1459cad2f" target="_blank" rel="noopener" class="text-dim text-xs hover:text-cyan transition-colors">Amazon Music</a>
+          <a href="https://www.youtube.com/@MissionMeetsTech" target="_blank" rel="noopener" class="text-dim text-xs hover:text-cyan transition-colors">YouTube</a>
+        </div>
+      </div>
+    </div>
+    <div class="max-w-6xl mx-auto border-t border-white/5 pt-6 text-center">
+      <p class="text-dim text-xs">The views expressed on this site are the author's own and do not represent the position of any employer or organization.</p>
+      <p class="text-dim text-xs mt-2">&copy; 2026 Mission Meets Tech. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+      document.getElementById('mobile-menu').classList.toggle('active');
     });
-    </script>
+  </script>
 </body>
 </html>

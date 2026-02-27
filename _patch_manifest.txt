@@ -1,0 +1,69 @@
+Package Name: mmt_patch_2026-02-27_core-pages
+Date: 2026-02-27
+Scope: core-pages (full site rebuild)
+Mode: REBUILD PACKAGE
+
+Files Included:
+- index.html
+- about.html
+- podcast.html
+- newsletter.html
+- resources.html
+- netlify.toml
+- _patch_manifest.txt
+- _rollback_notes.txt
+
+Files Replaced In Repo:
+- index.html (full replacement)
+- about.html (full replacement)
+- podcast.html (full replacement)
+- newsletter.html (full replacement)
+- resources.html (full replacement)
+- netlify.toml (full replacement)
+
+Primary Fixes:
+- Site was returning 404 on all pages — complete rebuild from canonical files
+- All five core pages rebuilt with approved architecture
+- Tailwind CDN + inline token pattern per architecture-decisions.md
+- Flat repo structure — no src/ folder, no build.js dependency
+
+Brand Corrections:
+- All pages use --mmt-* token family
+- Colors: #00E5FA cyan, #00FF85 green, #00050F navy, #0A1628 slate, #0D1117 dark
+- Typography: Space Grotesk for display, Inter for body
+- Logo treatment: "Mission Meets <Tech>" with cyan accent
+
+Voice Corrections:
+- All copy written to mmt-actual-voice.md standard
+- Calm, measured, evidence-first tone throughout
+- No aggressive or stylized language
+- Mary identified only as "Founder, Mission Meets Tech" — no employer references
+
+Link Corrections:
+- All links sourced from verified-links.md
+- Apple Podcasts: id1870101530
+- Spotify: 7sND342duH7Buw1cUs60lP
+- Transistor share: https://share.transistor.fm/s/fed-up-where-mission-meets-reality
+- Amazon, YouTube, LinkedIn — all canonical
+
+Asset Corrections:
+- Favicon: MMT_icon_64px.png
+- Mary headshot: marywomack.jpg
+- Sara headshot: Sara zoomed.jpg
+- All from asset-manifest.md
+
+Rollback:
+- Restore from local backup created before deploy
+- Or revert using Git if committed
+
+Verification:
+- Home loads at missionmeetstech.com
+- About loads
+- Podcast loads (Transistor embed visible)
+- Newsletter loads
+- Resources loads
+- Nav/footer consistent across all 5 pages
+- All external links functional
+- Assets load (requires assets in repo root)
+- Tone matches MMT voice
+- No stale references
