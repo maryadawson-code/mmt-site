@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fed UP Podcast — Mission Meets Tech</title>
   <meta name="description" content="Fed UP: Where Mission Meets Reality. The podcast breaking down federal health IT with Mary Womack and Sara Byrd.">
-  <link rel="canonical" href="https://missionmeetstech.com/podcast.html">
+  <link rel="canonical" href="https://missionmeetstech.com/podcast">
   <meta property="og:title" content="Fed UP Podcast — Mission Meets Tech">
   <meta property="og:description" content="Fed UP: Where Mission Meets Reality. The podcast breaking down federal health IT with Mary Womack and Sara Byrd.">
-  <meta property="og:url" content="https://missionmeetstech.com/podcast.html">
+  <meta property="og:url" content="https://missionmeetstech.com/podcast">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://missionmeetstech.com/mmt-logo.png">
   <meta property="og:image:width" content="200">
@@ -52,7 +52,7 @@
     "@type": "PodcastSeries",
     "name": "Fed UP: Where Mission Meets Reality",
     "description": "The podcast where Mary Womack and Sara Byrd break down the real dynamics of federal health IT — the wins, the friction, and the path forward.",
-    "url": "https://missionmeetstech.com/podcast.html",
+    "url": "https://missionmeetstech.com/podcast",
     "webFeed": "https://feeds.transistor.fm/fed-up-where-mission-meets-reality",
     "author": [
       {
@@ -252,7 +252,7 @@
   <script>
     const toggle = document.getElementById('menuToggle');
     const menu = document.getElementById('mobileMenu');
-    toggle.addEventListener('click', () => {
+    if (toggle && menu) toggle.addEventListener('click', () => {
       menu.classList.toggle('hidden');
       document.getElementById('menuOpen').classList.toggle('hidden');
       document.getElementById('menuClose').classList.toggle('hidden');

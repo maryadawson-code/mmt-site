@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Lethality Test — Mission Meets Tech</title>
   <meta name="description" content="Upload your NatSec pitch deck and get an AI-scored assessment against the Hegseth standard. Nine criteria. One verdict.">
-  <link rel="canonical" href="https://missionmeetstech.com/lethality-test.html">
+  <link rel="canonical" href="https://missionmeetstech.com/lethality-test">
   <meta property="og:title" content="The Lethality Test — Mission Meets Tech">
   <meta property="og:description" content="Upload your NatSec pitch deck and get an AI-scored assessment against the Hegseth standard. Nine criteria. One verdict.">
-  <meta property="og:url" content="https://missionmeetstech.com/lethality-test.html">
+  <meta property="og:url" content="https://missionmeetstech.com/lethality-test">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://missionmeetstech.com/mmt-logo.png">
   <meta property="og:image:width" content="200">
@@ -834,7 +834,7 @@
   <script>
     const toggle = document.getElementById('menuToggle');
     const menu = document.getElementById('mobileMenu');
-    toggle.addEventListener('click', () => {
+    if (toggle && menu) toggle.addEventListener('click', () => {
       menu.classList.toggle('hidden');
       document.getElementById('menuOpen').classList.toggle('hidden');
       document.getElementById('menuClose').classList.toggle('hidden');

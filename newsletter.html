@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Newsletter — Mission Meets Tech</title>
   <meta name="description" content="Subscribe to Mission Meets Tech for weekly federal health IT intelligence. Browse all past issues and subscribe to get analysis delivered to your inbox.">
-  <link rel="canonical" href="https://missionmeetstech.com/newsletter.html">
+  <link rel="canonical" href="https://missionmeetstech.com/newsletter">
   <meta property="og:title" content="Newsletter — Mission Meets Tech">
   <meta property="og:description" content="Subscribe to Mission Meets Tech for weekly federal health IT intelligence. Browse all past issues and subscribe to get analysis delivered to your inbox.">
-  <meta property="og:url" content="https://missionmeetstech.com/newsletter.html">
+  <meta property="og:url" content="https://missionmeetstech.com/newsletter">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://missionmeetstech.com/mmt-logo.png">
   <meta property="og:image:width" content="200">
@@ -223,7 +223,7 @@
   <script>
     const toggle = document.getElementById('menuToggle');
     const menu = document.getElementById('mobileMenu');
-    toggle.addEventListener('click', () => {
+    if (toggle && menu) toggle.addEventListener('click', () => {
       menu.classList.toggle('hidden');
       document.getElementById('menuOpen').classList.toggle('hidden');
       document.getElementById('menuClose').classList.toggle('hidden');
