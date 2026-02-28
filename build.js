@@ -176,17 +176,45 @@ function generateTopicPages(tags) {
 }
 
 function generateNewslettersJson(articles) {
-  const data = articles.map(article => ({
-    title: article.title,
-    date: article.formattedDate,
-    description: article.description,
-    url: article.url,
-    slug: article.slug,
-    tags: article.tags || [],
-    linkedin_url: article.linkedin_url || '',
-  }));
+  // Load the full archive from root newsletters.json
+  const rootPath = path.join(__dirname, 'newsletters.json');
+  let archive = [];
+  if (fs.existsSync(rootPath)) {
+    archive = JSON.parse(fs.readFileSync(rootPath, 'utf-8'));
+  }
+
+  // Build a map of on-site article URLs by title (for merging)
+  const onSiteMap = new Map();
+  for (const article of articles) {
+    onSiteMap.set(article.title, {
+      url: article.url,
+      slug: article.slug,
+      date: article.formattedDate,
+      description: article.description,
+      tags: article.tags || [],
+      linkedin_url: article.linkedin_url || '',
+    });
+  }
+
+  // Merge: use on-site URLs where we have markdown content, otherwise keep archive data
+  const data = archive.map(entry => {
+    const onSite = onSiteMap.get(entry.title);
+    if (onSite) {
+      return {
+        title: entry.title,
+        date: onSite.date || entry.date,
+        description: onSite.description || entry.description,
+        url: onSite.url,
+        slug: onSite.slug,
+        tags: onSite.tags.length > 0 ? onSite.tags : entry.tags || [],
+        linkedin_url: onSite.linkedin_url || entry.url,
+      };
+    }
+    return entry;
+  });
+
   fs.writeFileSync(path.join(DIST_DIR, 'newsletters.json'), JSON.stringify(data, null, 2));
-  console.log('Generated newsletters.json with on-site URLs');
+  console.log(`Generated newsletters.json with ${data.length} entries (${onSiteMap.size} with on-site URLs)`);
 }
 
 function generateSitemap(articles, tags) {
