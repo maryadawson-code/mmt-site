@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Resources — Mission Meets Tech</title>
-  <meta name="description" content="Curated federal health IT resources: key programs, budget sources, policy references, and acquisition tools for defense health contractors and government leaders.">
-  <link rel="icon" href="MMT_icon_64px.png" type="image/png">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="description" content="Federal health IT resources: key agencies, programs, budget documents, and reference guides curated by Mission Meets Tech.">
+  <link rel="icon" type="image/png" href="MMT_icon_64px.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     :root {
@@ -22,195 +22,180 @@
       --mmt-white-muted: rgba(255,255,255,0.8);
       --mmt-white-dim: rgba(255,255,255,0.6);
     }
-    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--mmt-navy); color: var(--mmt-white); }
-    .font-display { font-family: 'Space Grotesk', system-ui, sans-serif; }
-    .bg-navy { background-color: var(--mmt-navy); }
-    .bg-dark { background-color: var(--mmt-dark); }
-    .bg-slate { background-color: var(--mmt-slate); }
-    .text-cyan { color: var(--mmt-cyan); }
-    .text-green { color: var(--mmt-green); }
-    .text-muted { color: var(--mmt-white-muted); }
-    .text-dim { color: var(--mmt-white-dim); }
-    .gradient-text { background: linear-gradient(135deg, var(--mmt-cyan) 0%, var(--mmt-green) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .btn-primary { background: linear-gradient(135deg, var(--mmt-cyan) 0%, var(--mmt-green) 100%); color: var(--mmt-navy); font-weight: 700; }
-    .btn-primary:hover { box-shadow: 0 0 20px rgba(0, 229, 250, 0.45); transform: translateY(-1px); }
-    .btn-secondary { border: 1px solid var(--mmt-cyan); color: var(--mmt-white); }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--mmt-navy); color: var(--mmt-white); }
+    h1, h2, h3, h4, h5 { font-family: 'Space Grotesk', system-ui, sans-serif; }
+    .gradient-text { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .btn-primary { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); color: var(--mmt-navy); font-weight: 600; transition: all 0.2s; }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 0 20px rgba(0, 229, 250, 0.35); }
+    .btn-secondary { border: 1px solid var(--mmt-cyan); color: var(--mmt-white); transition: all 0.2s; }
     .btn-secondary:hover { background: rgba(0, 229, 250, 0.1); }
-    .card { background-color: var(--mmt-slate); border: 1px solid rgba(0, 229, 250, 0.1); }
+    .card { background: var(--mmt-slate); border: 1px solid rgba(0, 229, 250, 0.1); }
+    .card:hover { border-color: rgba(0, 229, 250, 0.3); }
     .nav-glass { background: rgba(0, 5, 15, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0, 229, 250, 0.1); }
-    .nav-link { color: var(--mmt-white-muted); transition: color 0.2s; }
-    .nav-link:hover { color: var(--mmt-cyan); }
-    #mobile-menu { display: none; }
-    #mobile-menu.active { display: flex; }
+    .section-alt { background: var(--mmt-dark); }
   </style>
 </head>
-<body class="bg-navy min-h-screen">
+<body class="antialiased">
 
   <!-- Navigation -->
   <nav class="nav-glass fixed top-0 left-0 right-0 z-50">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-      <a href="index.html" class="font-display font-bold text-xl">Mission Meets <span class="text-cyan">Tech</span></a>
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2 no-underline">
+        <span class="text-xl font-bold" style="font-family:'Space Grotesk',system-ui,sans-serif; color:var(--mmt-white);">Mission Meets <span style="color:var(--mmt-cyan);">Tech</span></span>
+      </a>
       <div class="hidden md:flex items-center gap-8">
-        <a href="index.html" class="nav-link text-sm font-medium">Home</a>
-        <a href="about.html" class="nav-link text-sm font-medium">About</a>
-        <a href="podcast.html" class="nav-link text-sm font-medium">Podcast</a>
-        <a href="newsletter.html" class="nav-link text-sm font-medium">Newsletter</a>
-        <a href="resources.html" class="nav-link text-sm font-medium">Resources</a>
-        <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold transition-all">Subscribe</a>
+        <a href="index.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Home</a>
+        <a href="about.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">About</a>
+        <a href="podcast.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Podcast</a>
+        <a href="newsletter.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Newsletter</a>
+        <a href="resources.html" class="text-sm font-medium" style="color:var(--mmt-cyan);">Resources</a>
+        <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-5 py-2 rounded-lg text-sm no-underline">Subscribe</a>
       </div>
-      <button id="menu-toggle" class="md:hidden text-white" aria-label="Toggle menu">
-        <i class="fas fa-bars text-xl"></i>
+      <button id="menuToggle" class="md:hidden text-white text-xl" aria-label="Toggle menu">
+        <i class="fas fa-bars"></i>
       </button>
     </div>
-    <div id="mobile-menu" class="md:hidden flex-col px-4 pb-4 gap-3">
-      <a href="index.html" class="nav-link text-sm py-2">Home</a>
-      <a href="about.html" class="nav-link text-sm py-2">About</a>
-      <a href="podcast.html" class="nav-link text-sm py-2">Podcast</a>
-      <a href="newsletter.html" class="nav-link text-sm py-2">Newsletter</a>
-      <a href="resources.html" class="nav-link text-sm py-2">Resources</a>
-      <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold text-center mt-2 inline-block">Subscribe</a>
+    <div id="mobileMenu" class="hidden md:hidden px-6 pb-4">
+      <div class="flex flex-col gap-4 pt-2 border-t" style="border-color:rgba(0,229,250,0.1);">
+        <a href="index.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Home</a>
+        <a href="about.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">About</a>
+        <a href="podcast.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Podcast</a>
+        <a href="newsletter.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Newsletter</a>
+        <a href="resources.html" class="text-sm font-medium" style="color:var(--mmt-cyan);">Resources</a>
+        <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-5 py-2 rounded-lg text-sm text-center no-underline">Subscribe</a>
+      </div>
     </div>
   </nav>
 
   <!-- Hero -->
-  <section class="pt-32 pb-16 px-4 sm:px-6">
-    <div class="max-w-4xl mx-auto text-center">
-      <p class="text-cyan text-sm font-semibold tracking-widest uppercase mb-4">Resources</p>
-      <h1 class="font-display font-bold text-4xl sm:text-5xl mb-6">Federal Health IT Reference Desk</h1>
-      <p class="text-muted text-lg max-w-2xl mx-auto leading-relaxed">Key programs, budget sources, policy references, and acquisition tools — curated for people who work in or around defense healthcare technology.</p>
+  <section class="pt-32 pb-16 px-6">
+    <div class="max-w-4xl mx-auto">
+      <p class="text-sm font-semibold tracking-widest uppercase mb-4" style="color:var(--mmt-cyan);">Resources</p>
+      <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-6">Federal Health IT <span class="gradient-text">Resource Guide</span></h1>
+      <p class="text-lg leading-relaxed max-w-3xl" style="color:var(--mmt-white-muted);">Curated links to the agencies, programs, budget documents, and data sources that shape federal health IT. Bookmarks for practitioners.</p>
     </div>
   </section>
 
-  <!-- Key Organizations -->
-  <section class="bg-dark py-20 px-4 sm:px-6">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="font-display font-bold text-2xl sm:text-3xl mb-8">Key Organizations</h2>
-      <div class="grid md:grid-cols-2 gap-6">
+  <!-- Key Agencies -->
+  <section class="section-alt py-20 px-6">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl font-bold mb-10">Key Agencies & Programs</h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div class="card rounded-xl p-6">
-          <h3 class="font-display font-bold text-lg mb-2 text-cyan">Defense Health Agency (DHA)</h3>
-          <p class="text-dim text-sm leading-relaxed">The combat support agency responsible for MHS operations, TRICARE, and health IT modernization across the Military Health System.</p>
+          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">Defense Health Agency (DHA)</h3>
+          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">The unified medical authority for the Military Health System. Oversees healthcare delivery, IT modernization, and MHS GENESIS deployment across DoD.</p>
+          <a href="https://www.health.mil/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">health.mil <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
         </div>
         <div class="card rounded-xl p-6">
-          <h3 class="font-display font-bold text-lg mb-2 text-cyan">Veterans Affairs (VA) OIT</h3>
-          <p class="text-dim text-sm leading-relaxed">The Office of Information and Technology manages VA's health IT portfolio including EHR modernization and interoperability programs.</p>
+          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">VA Office of Information & Technology</h3>
+          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Leads IT strategy and infrastructure for the Department of Veterans Affairs, including EHR modernization and digital services.</p>
+          <a href="https://www.oit.va.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">oit.va.gov <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
         </div>
         <div class="card rounded-xl p-6">
-          <h3 class="font-display font-bold text-lg mb-2 text-cyan">Federal Electronic Health Record Modernization (FEHRM)</h3>
-          <p class="text-dim text-sm leading-relaxed">The joint program office responsible for deploying a single, shared EHR across DoD and VA.</p>
+          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">Federal Electronic Health Record Modernization (FEHRM)</h3>
+          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">The interagency program office driving a single, shared EHR across DoD and VA for seamless care transitions.</p>
+          <a href="https://www.fehrm.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">fehrm.gov <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
         </div>
         <div class="card rounded-xl p-6">
-          <h3 class="font-display font-bold text-lg mb-2 text-cyan">DoD CIO / DISA</h3>
-          <p class="text-dim text-sm leading-relaxed">Oversees defense IT policy, cybersecurity standards, and the infrastructure backbone that health systems depend on.</p>
+          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">DARPA Biological Technologies Office</h3>
+          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Advanced research programs at the intersection of biology, health, and technology for national security applications.</p>
+          <a href="https://www.darpa.mil/about/offices/bto" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">darpa.mil/bto <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
+        </div>
+        <div class="card rounded-xl p-6">
+          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">DoD Comptroller</h3>
+          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Official source for Defense budget documents, justification materials, and financial management policy.</p>
+          <a href="https://comptroller.defense.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">comptroller.defense.gov <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
+        </div>
+        <div class="card rounded-xl p-6">
+          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">GAO Health Care Reports</h3>
+          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Government Accountability Office audits, evaluations, and reports on federal healthcare programs and IT systems.</p>
+          <a href="https://www.gao.gov/topics/health-care" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">gao.gov/health-care <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Budget & Policy Sources -->
-  <section class="py-20 px-4 sm:px-6">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="font-display font-bold text-2xl sm:text-3xl mb-8">Budget &amp; Policy Sources</h2>
-      <div class="space-y-4">
+  <!-- Acquisition & Contracting -->
+  <section class="py-20 px-6">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl font-bold mb-10">Acquisition & Contracting</h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div class="card rounded-xl p-6">
-          <h3 class="font-display font-bold text-lg mb-2">DoD Comptroller Budget Documents</h3>
-          <p class="text-dim text-sm leading-relaxed">Annual defense health program budget justification materials. The primary source for understanding where health IT dollars are going.</p>
+          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">SAM.gov</h3>
+          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">System for Award Management — the official U.S. government system for entity registration, contract opportunities, and award data.</p>
+          <a href="https://sam.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">sam.gov <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
         </div>
         <div class="card rounded-xl p-6">
-          <h3 class="font-display font-bold text-lg mb-2">Congressional Research Service (CRS)</h3>
-          <p class="text-dim text-sm leading-relaxed">Non-partisan policy analysis on defense health, VA healthcare, and military personnel programs. High-quality synthesis of legislative action.</p>
+          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">USASpending.gov</h3>
+          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Track federal spending by agency, contractor, program, and geography. Essential for competitive intelligence.</p>
+          <a href="https://www.usaspending.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">usaspending.gov <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
         </div>
         <div class="card rounded-xl p-6">
-          <h3 class="font-display font-bold text-lg mb-2">Government Accountability Office (GAO)</h3>
-          <p class="text-dim text-sm leading-relaxed">Audit and evaluation reports covering IT modernization, cost overruns, program effectiveness, and acquisition oversight.</p>
-        </div>
-        <div class="card rounded-xl p-6">
-          <h3 class="font-display font-bold text-lg mb-2">National Defense Authorization Act (NDAA)</h3>
-          <p class="text-dim text-sm leading-relaxed">The annual defense policy bill that sets direction for military health programs, technology mandates, and acquisition reform.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Acquisition Tools -->
-  <section class="bg-dark py-20 px-4 sm:px-6">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="font-display font-bold text-2xl sm:text-3xl mb-8">Acquisition &amp; Contracting</h2>
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="card rounded-xl p-6">
-          <h3 class="font-display font-bold text-lg mb-2 text-cyan">SAM.gov</h3>
-          <p class="text-dim text-sm leading-relaxed">The System for Award Management — where federal opportunities are posted and contract data is published.</p>
-        </div>
-        <div class="card rounded-xl p-6">
-          <h3 class="font-display font-bold text-lg mb-2 text-cyan">FPDS.gov</h3>
-          <p class="text-dim text-sm leading-relaxed">Federal Procurement Data System — the authoritative source for historical contract award data across all federal agencies.</p>
-        </div>
-        <div class="card rounded-xl p-6">
-          <h3 class="font-display font-bold text-lg mb-2 text-cyan">USAspending.gov</h3>
-          <p class="text-dim text-sm leading-relaxed">Federal spending transparency — track agency spending, contract awards, and budget execution across health programs.</p>
-        </div>
-        <div class="card rounded-xl p-6">
-          <h3 class="font-display font-bold text-lg mb-2 text-cyan">OSDBU Resources</h3>
-          <p class="text-dim text-sm leading-relaxed">Small business contracting guidance from the Office of Small and Disadvantaged Business Utilization at DoD and VA.</p>
+          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">Congressional Research Service</h3>
+          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Nonpartisan policy research for Congress. Excellent source for defense health, VA, and appropriations analysis.</p>
+          <a href="https://crsreports.congress.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">crsreports.congress.gov <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
         </div>
       </div>
     </div>
   </section>
 
   <!-- CTA -->
-  <section class="py-16 px-4 sm:px-6">
+  <section class="section-alt py-20 px-6">
     <div class="max-w-3xl mx-auto text-center">
-      <h3 class="font-display font-bold text-xl mb-3">Stay Connected</h3>
-      <p class="text-muted text-sm mb-6">Get analysis that turns these sources into actionable intelligence.</p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-6 py-2.5 rounded-lg text-sm font-bold transition-all inline-block">Subscribe to the Newsletter</a>
-        <a href="podcast.html" class="btn-secondary px-6 py-2.5 rounded-lg text-sm font-medium transition-all inline-block">Listen to Fed UP</a>
-      </div>
+      <h2 class="text-3xl font-bold mb-4">Get the Analysis</h2>
+      <p class="text-lg mb-8" style="color:var(--mmt-white-muted);">These resources are the raw material. The Mission Meets Tech newsletter turns them into actionable intelligence every week.</p>
+      <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary inline-block px-8 py-3 rounded-lg text-base font-semibold no-underline">Subscribe to Newsletter</a>
     </div>
   </section>
 
   <!-- Footer -->
-  <footer class="bg-dark border-t border-white/5 pt-16 pb-8 px-4 sm:px-6">
-    <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+  <footer class="py-16 px-6" style="border-top:1px solid rgba(0,229,250,0.1);">
+    <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-10">
       <div>
-        <p class="font-display font-bold text-lg mb-2">Mission Meets <span class="text-cyan">Tech</span></p>
-        <p class="text-dim text-xs leading-relaxed">Federal health IT intelligence for people who build, buy, and deploy mission-critical systems.</p>
-        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="text-dim hover:text-cyan text-sm mt-3 inline-block"><i class="fab fa-linkedin"></i></a>
+        <p class="font-bold text-lg mb-3" style="font-family:'Space Grotesk',system-ui,sans-serif; color:var(--mmt-white);">Mission Meets <span style="color:var(--mmt-cyan);">Tech</span></p>
+        <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-dim);">Federal health IT intelligence. Mission first.</p>
+        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" style="color:var(--mmt-white-dim);" class="hover:opacity-80"><i class="fab fa-linkedin text-lg"></i></a>
       </div>
       <div>
-        <p class="font-display font-semibold text-sm mb-3 text-muted">Platform</p>
-        <div class="flex flex-col gap-2">
-          <a href="newsletter.html" class="text-dim text-xs hover:text-cyan transition-colors">Newsletter</a>
-          <a href="podcast.html" class="text-dim text-xs hover:text-cyan transition-colors">Podcast</a>
-          <a href="resources.html" class="text-dim text-xs hover:text-cyan transition-colors">Resources</a>
-        </div>
+        <p class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var(--mmt-cyan);">Platform</p>
+        <ul class="space-y-2 list-none p-0 m-0">
+          <li><a href="newsletter.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Newsletter</a></li>
+          <li><a href="podcast.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Podcast</a></li>
+          <li><a href="resources.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Resources</a></li>
+        </ul>
       </div>
       <div>
-        <p class="font-display font-semibold text-sm mb-3 text-muted">Company</p>
-        <div class="flex flex-col gap-2">
-          <a href="about.html" class="text-dim text-xs hover:text-cyan transition-colors">About</a>
-          <a href="mailto:mary@missionmeetstech.com" class="text-dim text-xs hover:text-cyan transition-colors">Contact</a>
-          <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="text-dim text-xs hover:text-cyan transition-colors">LinkedIn</a>
-        </div>
+        <p class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var(--mmt-cyan);">Company</p>
+        <ul class="space-y-2 list-none p-0 m-0">
+          <li><a href="about.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">About</a></li>
+          <li><a href="mailto:mary@missionmeetstech.com" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Contact</a></li>
+          <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">LinkedIn</a></li>
+        </ul>
       </div>
       <div>
-        <p class="font-display font-semibold text-sm mb-3 text-muted">Listen</p>
-        <div class="flex flex-col gap-2">
-          <a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank" rel="noopener" class="text-dim text-xs hover:text-cyan transition-colors">Apple Podcasts</a>
-          <a href="https://open.spotify.com/show/7sND342duH7Buw1cUs60lP" target="_blank" rel="noopener" class="text-dim text-xs hover:text-cyan transition-colors">Spotify</a>
-          <a href="https://music.amazon.com/podcasts/920fec9b-4fae-4bd0-ae4d-eaf1459cad2f" target="_blank" rel="noopener" class="text-dim text-xs hover:text-cyan transition-colors">Amazon Music</a>
-          <a href="https://www.youtube.com/@MissionMeetsTech" target="_blank" rel="noopener" class="text-dim text-xs hover:text-cyan transition-colors">YouTube</a>
-        </div>
+        <p class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var(--mmt-cyan);">Listen</p>
+        <ul class="space-y-2 list-none p-0 m-0">
+          <li><a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Apple Podcasts</a></li>
+          <li><a href="https://open.spotify.com/show/7sND342duH7Buw1cUs60lP" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Spotify</a></li>
+          <li><a href="https://music.amazon.com/podcasts/920fec9b-4fae-4bd0-ae4d-eaf1459cad2f" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Amazon Music</a></li>
+          <li><a href="https://www.youtube.com/@MissionMeetsTech" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">YouTube</a></li>
+        </ul>
       </div>
     </div>
-    <div class="max-w-6xl mx-auto border-t border-white/5 pt-6 text-center">
-      <p class="text-dim text-xs">The views expressed on this site are the author's own and do not represent the position of any employer or organization.</p>
-      <p class="text-dim text-xs mt-2">&copy; 2026 Mission Meets Tech. All rights reserved.</p>
+    <div class="max-w-6xl mx-auto mt-12 pt-8" style="border-top:1px solid rgba(0,229,250,0.05);">
+      <p class="text-xs text-center" style="color:var(--mmt-white-dim);">Mission Meets Tech provides independent analysis and commentary. Views expressed are those of the authors and do not represent any employer or government agency.</p>
+      <p class="text-xs text-center mt-2" style="color:var(--mmt-white-dim);">&copy; 2026 Mission Meets Tech. All rights reserved.</p>
     </div>
   </footer>
 
   <script>
-    document.getElementById('menu-toggle').addEventListener('click', function() {
-      document.getElementById('mobile-menu').classList.toggle('active');
+    const toggle = document.getElementById('menuToggle');
+    const menu = document.getElementById('mobileMenu');
+    toggle.addEventListener('click', () => {
+      menu.classList.toggle('hidden');
+      const icon = toggle.querySelector('i');
+      icon.classList.toggle('fa-bars');
+      icon.classList.toggle('fa-xmark');
     });
   </script>
 </body>
