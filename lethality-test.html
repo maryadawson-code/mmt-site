@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Lethality Test — Mission Meets Tech</title>
-  <meta name="description" content="Does your defense pitch pass the Lethality Test? Score your NatSec pitch deck against the Hegseth standard in under 5 minutes.">
+  <meta name="description" content="Upload your NatSec pitch deck and get an AI-scored assessment against the Hegseth standard. Nine criteria. One verdict.">
   <link rel="canonical" href="https://missionmeetstech.com/lethality-test.html">
   <meta property="og:title" content="The Lethality Test — Mission Meets Tech">
-  <meta property="og:description" content="Score your NatSec pitch deck against the Hegseth standard. Nine criteria. Five minutes. One question that matters.">
+  <meta property="og:description" content="Upload your NatSec pitch deck and get an AI-scored assessment against the Hegseth standard. Nine criteria. One verdict.">
   <meta property="og:url" content="https://missionmeetstech.com/lethality-test.html">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://missionmeetstech.com/mmt-logo.png">
@@ -16,7 +16,7 @@
   <meta property="og:site_name" content="Mission Meets Tech">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="The Lethality Test — Mission Meets Tech">
-  <meta name="twitter:description" content="Score your NatSec pitch deck against the Hegseth standard. Nine criteria. Five minutes. One question that matters.">
+  <meta name="twitter:description" content="Upload your NatSec pitch deck and get an AI-scored assessment against the Hegseth standard. Nine criteria. One verdict.">
   <meta name="twitter:image" content="https://missionmeetstech.com/mmt-logo.png">
   <link rel="icon" type="image/png" href="/favicon.png">
   <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
@@ -56,504 +56,570 @@
     .section-alt { background: var(--mmt-dark); }
     *:focus-visible { outline: 2px solid var(--mmt-cyan); outline-offset: 2px; }
 
-        .lt-container { max-width: 800px; margin: 0 auto; padding: 0 1.5rem; }
+    .lt-container { max-width: 800px; margin: 0 auto; padding: 0 1.5rem; }
 
-/* ===== HERO (Intro Screen) ===== */
-        .hero {
-            text-align: center;
-            padding: 4rem 0 3rem;
-        }
-        .hero-badge {
-            display: inline-block;
-            font-family: var(--font-heading);
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: var(--primary-cyan);
-            border: 1px solid rgba(0, 229, 250, 0.3);
-            padding: 0.4rem 1rem;
-            border-radius: 100px;
-            margin-bottom: 1.5rem;
-        }
-        .hero h1 {
-            font-family: var(--font-heading);
-            font-size: clamp(2rem, 5vw, 3rem);
-            font-weight: 700;
-            line-height: 1.15;
-            margin-bottom: 1rem;
-        }
-        .hero h1 span {
-            background: linear-gradient(135deg, var(--primary-cyan), var(--mint-accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero p {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto 0.75rem;
-        }
-        .hero-quote {
-            font-style: italic;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            border-left: 2px solid var(--primary-cyan);
-            padding-left: 1rem;
-            max-width: 500px;
-            margin: 1.5rem auto 2rem;
-            text-align: left;
-        }
-        .hero-quote cite {
-            display: block;
-            font-style: normal;
-            font-size: 0.8rem;
-            margin-top: 0.5rem;
-            color: var(--text-muted);
-        }
+    /* ===== HERO (Intro Screen) ===== */
+    .hero {
+      text-align: center;
+      padding: 4rem 0 3rem;
+    }
+    .hero-badge {
+      display: inline-block;
+      font-family: var(--font-heading);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--primary-cyan);
+      border: 1px solid rgba(0, 229, 250, 0.3);
+      padding: 0.4rem 1rem;
+      border-radius: 100px;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--primary-cyan), var(--mint-accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 0.75rem;
+    }
+    .hero-quote {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      border-left: 2px solid var(--primary-cyan);
+      padding-left: 1rem;
+      max-width: 500px;
+      margin: 1.5rem auto 2rem;
+      text-align: left;
+    }
+    .hero-quote cite {
+      display: block;
+      font-style: normal;
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+      color: var(--text-muted);
+    }
+    .hero-features {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      max-width: 420px;
+      margin: 0 auto 2rem;
+      text-align: left;
+    }
+    .hero-features li {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    .hero-features li svg {
+      flex-shrink: 0;
+      color: var(--grade-a);
+    }
 
-        /* ===== BUTTONS ===== */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.85rem 2rem;
-            border-radius: 8px;
-            font-family: var(--font-heading);
-            font-weight: 600;
-            font-size: 1rem;
-            text-decoration: none;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            border: none;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary-cyan), var(--neon-teal));
-            color: var(--deep-navy);
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(0, 229, 250, 0.3);
-        }
-        .btn-secondary {
-            background: transparent;
-            color: var(--primary-cyan);
-            border: 1px solid rgba(0, 229, 250, 0.4);
-        }
-        .btn-secondary:hover {
-            background: rgba(0, 229, 250, 0.08);
-        }
-        .btn-sm {
-            padding: 0.6rem 1.25rem;
-            font-size: 0.85rem;
-        }
+    /* ===== BUTTONS ===== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      border-radius: 8px;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      border: none;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary-cyan), var(--neon-teal));
+      color: var(--deep-navy);
+    }
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 229, 250, 0.3);
+    }
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--primary-cyan);
+      border: 1px solid rgba(0, 229, 250, 0.4);
+    }
+    .btn-secondary:hover {
+      background: rgba(0, 229, 250, 0.08);
+    }
+    .btn-sm {
+      padding: 0.6rem 1.25rem;
+      font-size: 0.85rem;
+    }
 
-        /* ===== PROGRESS BAR ===== */
-        .progress-container {
-            padding: 1.5rem 0 1rem;
-        }
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.75rem;
-        }
-        .progress-label {
-            font-family: var(--font-heading);
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-        }
-        .progress-step {
-            font-family: var(--font-heading);
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--primary-cyan);
-        }
-        .progress-track {
-            width: 100%;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-cyan), var(--mint-accent));
-            border-radius: 4px;
-            transition: width 0.4s ease;
-        }
+    /* ===== ERROR BANNER ===== */
+    .error-banner {
+      background: rgba(255, 59, 92, 0.1);
+      border: 1px solid rgba(255, 59, 92, 0.3);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      display: none;
+      align-items: flex-start;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+      color: var(--grade-f);
+      line-height: 1.5;
+    }
+    .error-banner.visible { display: flex; }
+    .error-banner svg { flex-shrink: 0; margin-top: 2px; }
 
-        /* ===== CONFIDENCE METER ===== */
-        .confidence-panel {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 12px;
-            padding: 1.25rem 1.5rem;
-            margin: 1.5rem 0;
-            display: flex;
-            align-items: center;
-            gap: 1.25rem;
-        }
-        .confidence-ring {
-            position: relative;
-            width: 64px;
-            height: 64px;
-            flex-shrink: 0;
-        }
-        .confidence-ring svg {
-            width: 100%;
-            height: 100%;
-            transform: rotate(-90deg);
-        }
-        .confidence-ring circle {
-            fill: none;
-            stroke-width: 5;
-        }
-        .confidence-ring .ring-bg {
-            stroke: rgba(255, 255, 255, 0.06);
-        }
-        .confidence-ring .ring-fill {
-            stroke: var(--primary-cyan);
-            stroke-linecap: round;
-            transition: stroke-dashoffset 0.6s ease, stroke 0.4s ease;
-        }
-        .confidence-score {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-family: var(--font-heading);
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-        .confidence-info h4 {
-            font-family: var(--font-heading);
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-        .confidence-info p {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
-        .confidence-level {
-            display: inline-block;
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            padding: 0.15rem 0.5rem;
-            border-radius: 4px;
-            margin-left: 0.5rem;
-        }
-        .level-high { background: rgba(0, 210, 159, 0.15); color: var(--grade-a); }
-        .level-medium { background: rgba(0, 229, 250, 0.15); color: var(--grade-b); }
-        .level-low { background: rgba(255, 184, 48, 0.15); color: var(--grade-c); }
-        .level-critical { background: rgba(255, 59, 92, 0.15); color: var(--grade-f); }
+    /* ===== FORM INPUT ===== */
+    .form-group { margin-bottom: 1.5rem; }
+    .form-label {
+      display: block;
+      font-family: var(--font-heading);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+    .form-input {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      transition: border-color 0.2s ease;
+      box-sizing: border-box;
+    }
+    .form-input::placeholder { color: var(--text-muted); }
+    .form-input:focus {
+      border-color: var(--primary-cyan);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0, 229, 250, 0.1);
+    }
 
-        /* ===== QUESTION CARD ===== */
-        .question-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 1.5rem;
-        }
-        .question-category {
-            font-family: var(--font-heading);
-            font-size: 0.7rem;
-            font-weight: 600;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: var(--primary-cyan);
-            margin-bottom: 0.75rem;
-        }
-        .question-title {
-            font-family: var(--font-heading);
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.75rem;
-            line-height: 1.25;
-        }
-        .question-desc {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            margin-bottom: 1.75rem;
-            line-height: 1.6;
-        }
-        .question-checklist {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 1.5rem;
-            padding-left: 0;
-            list-style: none;
-        }
-        .question-checklist li {
-            padding: 0.35rem 0;
-            padding-left: 1.5rem;
-            position: relative;
-        }
-        .question-checklist li::before {
-            content: '?';
-            position: absolute;
-            left: 0;
-            color: var(--primary-cyan);
-            font-size: 0.8rem;
-        }
+    /* ===== UPLOAD ZONE ===== */
+    .upload-zone {
+      border: 2px dashed rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 3rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: var(--primary-cyan);
+      background: rgba(0, 229, 250, 0.04);
+    }
+    .upload-zone svg { margin-bottom: 1rem; color: var(--text-muted); }
+    .upload-zone p {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.25rem;
+    }
+    .upload-zone .upload-hint {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
 
-        /* ===== GRADE SELECTOR ===== */
-        .grade-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-        @media (max-width: 480px) {
-            .grade-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        .grade-option {
-            position: relative;
-        }
-        .grade-option input {
-            position: absolute;
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .grade-option label {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 1rem 0.75rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            background: rgba(255, 255, 255, 0.02);
-        }
-        .grade-option label:hover {
-            border-color: rgba(0, 229, 250, 0.3);
-            background: rgba(0, 229, 250, 0.04);
-        }
-        .grade-option input:checked + label {
-            border-color: var(--primary-cyan);
-            background: rgba(0, 229, 250, 0.08);
-            box-shadow: 0 0 20px rgba(0, 229, 250, 0.1);
-        }
-        .grade-letter {
-            font-family: var(--font-heading);
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.25rem;
-        }
-        .grade-label {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            text-align: center;
-        }
-        .grade-a .grade-letter { color: var(--grade-a); }
-        .grade-b .grade-letter { color: var(--grade-b); }
-        .grade-c .grade-letter { color: var(--grade-c); }
-        .grade-d .grade-letter { color: var(--grade-d); }
-        .grade-f .grade-letter { color: var(--grade-f); }
-        .grade-option input:checked + label .grade-letter { transform: scale(1.1); }
+    /* ===== FILE PREVIEW ===== */
+    .file-preview {
+      display: none;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: rgba(0, 229, 250, 0.05);
+      border: 1px solid rgba(0, 229, 250, 0.15);
+      border-radius: 10px;
+      margin-top: 1rem;
+    }
+    .file-preview.visible { display: flex; }
+    .file-preview .file-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: rgba(0, 229, 250, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--primary-cyan);
+    }
+    .file-preview .file-info { flex: 1; min-width: 0; }
+    .file-preview .file-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .file-preview .file-size {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
+    }
+    .file-preview .file-remove {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0.25rem;
+      transition: color 0.2s;
+      flex-shrink: 0;
+    }
+    .file-preview .file-remove:hover { color: var(--grade-f); }
 
-        /* ===== NAVIGATION BUTTONS ===== */
-        .step-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 1.5rem;
-            gap: 1rem;
-        }
-        .step-nav .btn { min-width: 120px; justify-content: center; }
+    /* ===== UPLOAD CARD ===== */
+    .upload-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 2rem;
+    }
+    .upload-card h2 {
+      font-family: var(--font-heading);
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+    .upload-actions {
+      margin-top: 2rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
 
-        /* ===== RESULTS ===== */
-        .results-section { padding: 2rem 0 4rem; }
-        .results-verdict {
-            text-align: center;
-            padding: 2.5rem;
-            border-radius: 16px;
-            margin-bottom: 2rem;
-            position: relative;
-            overflow: hidden;
-        }
-        .results-verdict::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 16px;
-            padding: 1px;
-            background: linear-gradient(135deg, var(--primary-cyan), var(--mint-accent));
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-        }
-        .verdict-status {
-            font-family: var(--font-heading);
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            margin-bottom: 0.75rem;
-        }
-        .verdict-pass { color: var(--grade-a); }
-        .verdict-conditional { color: var(--grade-c); }
-        .verdict-fail { color: var(--grade-f); }
-        .verdict-grade {
-            font-family: var(--font-heading);
-            font-size: 4rem;
-            font-weight: 700;
-            line-height: 1;
-            margin-bottom: 0.5rem;
-        }
-        .verdict-title {
-            font-family: var(--font-heading);
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-        }
-        .verdict-summary {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            max-width: 500px;
-            margin: 0 auto;
-            line-height: 1.6;
-        }
+    /* ===== PROCESSING SCREEN ===== */
+    .processing-container {
+      text-align: center;
+      padding: 5rem 0;
+    }
+    .spinner {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 2rem;
+      border-radius: 50%;
+      border: 3px solid rgba(255, 255, 255, 0.08);
+      border-top-color: var(--primary-cyan);
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .processing-status {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      min-height: 1.5em;
+    }
+    .processing-note {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+    .progress-bar-indeterminate {
+      width: 240px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 3px;
+      margin: 0 auto 2rem;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-bar-indeterminate::after {
+      content: '';
+      position: absolute;
+      height: 100%;
+      width: 40%;
+      background: linear-gradient(90deg, transparent, var(--primary-cyan), transparent);
+      border-radius: 3px;
+      animation: indeterminate 1.4s ease-in-out infinite;
+    }
+    @keyframes indeterminate {
+      0% { left: -40%; }
+      100% { left: 100%; }
+    }
 
-        /* Results Scorecard */
-        .scorecard {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            overflow: hidden;
-            margin-bottom: 2rem;
-        }
-        .scorecard-header {
-            padding: 1.25rem 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            font-family: var(--font-heading);
-            font-weight: 600;
-            font-size: 1rem;
-        }
-        .scorecard-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-        }
-        .scorecard-row:last-child { border-bottom: none; }
-        .scorecard-criteria {
-            font-size: 0.9rem;
-            flex: 1;
-        }
-        .scorecard-grade {
-            font-family: var(--font-heading);
-            font-weight: 700;
-            font-size: 1.1rem;
-            width: 48px;
-            text-align: center;
-            padding: 0.25rem;
-            border-radius: 6px;
-        }
-        .scorecard-grade.sg-a { color: var(--grade-a); background: rgba(0, 210, 159, 0.1); }
-        .scorecard-grade.sg-b { color: var(--grade-b); background: rgba(0, 229, 250, 0.1); }
-        .scorecard-grade.sg-c { color: var(--grade-c); background: rgba(255, 184, 48, 0.1); }
-        .scorecard-grade.sg-d { color: var(--grade-d); background: rgba(255, 107, 53, 0.1); }
-        .scorecard-grade.sg-f { color: var(--grade-f); background: rgba(255, 59, 92, 0.1); }
+    /* ===== RESULTS ===== */
+    .results-section { padding: 2rem 0 4rem; }
+    .results-verdict {
+      text-align: center;
+      padding: 2.5rem;
+      border-radius: 16px;
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .results-verdict::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      padding: 1px;
+      background: linear-gradient(135deg, var(--primary-cyan), var(--mint-accent));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+    .verdict-status {
+      font-family: var(--font-heading);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    .verdict-pass { color: var(--grade-a); }
+    .verdict-conditional { color: var(--grade-c); }
+    .verdict-fail { color: var(--grade-f); }
+    .verdict-grade {
+      font-family: var(--font-heading);
+      font-size: 4rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    .verdict-title {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+    .verdict-summary {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      max-width: 500px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    .uses-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 100px;
+      padding: 0.3rem 0.9rem;
+      margin-top: 1rem;
+    }
 
-        /* Red Flags */
-        .red-flags {
-            background: rgba(255, 59, 92, 0.05);
-            border: 1px solid rgba(255, 59, 92, 0.15);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .red-flags h3 {
-            font-family: var(--font-heading);
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--grade-f);
-            margin-bottom: 0.75rem;
-        }
-        .red-flags ul {
-            list-style: none;
-            padding: 0;
-        }
-        .red-flags li {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            padding: 0.4rem 0;
-            padding-left: 1.5rem;
-            position: relative;
-        }
-        .red-flags li::before {
-            content: '!!';
-            position: absolute;
-            left: 0;
-            color: var(--grade-f);
-        }
+    /* Scorecard */
+    .scorecard {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+    .scorecard-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    .scorecard-row {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .scorecard-row:last-child { border-bottom: none; }
+    .scorecard-row-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .scorecard-criteria {
+      font-size: 0.9rem;
+      font-weight: 500;
+      flex: 1;
+    }
+    .scorecard-grade {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.1rem;
+      width: 48px;
+      text-align: center;
+      padding: 0.25rem;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+    .scorecard-grade.sg-a { color: var(--grade-a); background: rgba(0, 210, 159, 0.1); }
+    .scorecard-grade.sg-b { color: var(--grade-b); background: rgba(0, 229, 250, 0.1); }
+    .scorecard-grade.sg-c { color: var(--grade-c); background: rgba(255, 184, 48, 0.1); }
+    .scorecard-grade.sg-d { color: var(--grade-d); background: rgba(255, 107, 53, 0.1); }
+    .scorecard-grade.sg-f { color: var(--grade-f); background: rgba(255, 59, 92, 0.1); }
+    .scorecard-assessment {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      margin-top: 0.5rem;
+    }
 
-        /* CTA Section */
-        .results-cta {
-            text-align: center;
-            padding: 2rem;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 16px;
-        }
-        .results-cta h3 {
-            font-family: var(--font-heading);
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        .results-cta p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-bottom: 1.25rem;
-        }
-        .results-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
+    /* Top Fix */
+    .top-fix {
+      border-left: 3px solid var(--primary-cyan);
+      background: rgba(0, 229, 250, 0.04);
+      border-radius: 0 12px 12px 0;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .top-fix h3 {
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--primary-cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+    }
+    .top-fix p {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
 
-        /* ===== SCREEN MANAGEMENT ===== */
-        .screen { display: none; }
-        .screen.active { display: block; }
+    /* Red Flags */
+    .red-flags {
+      background: rgba(255, 59, 92, 0.05);
+      border: 1px solid rgba(255, 59, 92, 0.15);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .red-flags h3 {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--grade-f);
+      margin-bottom: 0.75rem;
+    }
+    .red-flags ul {
+      list-style: none;
+      padding: 0;
+    }
+    .red-flags li {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      padding: 0.4rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+    .red-flags li::before {
+      content: '!!';
+      position: absolute;
+      left: 0;
+      color: var(--grade-f);
+    }
 
-        /* ===== ANIMATIONS ===== */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(16px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .screen.active .question-card,
-        .screen.active .results-verdict,
-        .screen.active .scorecard {
-            animation: fadeInUp 0.35s ease-out;
-        }
+    /* CTA Section */
+    .results-cta {
+      text-align: center;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+    }
+    .results-cta h3 {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .results-cta p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 1.25rem;
+    }
+    .results-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
 
-        /* ===== PRINT STYLES ===== */
-        @media print {
-            nav, .step-nav, .results-cta, footer, .progress-container, .confidence-panel { display: none; }
-            body { background: white; color: black; }
-            .lt-container { max-width: 100%; }
-            .results-verdict, .scorecard, .red-flags { border-color: #ccc; }
-            .scorecard-grade { border: 1px solid #ccc; }
-        }
+    /* ===== LIMIT REACHED ===== */
+    .limit-container {
+      text-align: center;
+      padding: 5rem 0;
+    }
+    .limit-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 1.5rem;
+      border-radius: 50%;
+      background: rgba(255, 184, 48, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--grade-c);
+    }
+    .limit-container h2 {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+    .limit-container p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      max-width: 500px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+
+    /* ===== SCREEN MANAGEMENT ===== */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .screen.active .upload-card,
+    .screen.active .results-verdict,
+    .screen.active .scorecard,
+    .screen.active .processing-container,
+    .screen.active .limit-container {
+      animation: fadeInUp 0.35s ease-out;
+    }
+
+    /* ===== PRINT STYLES ===== */
+    @media print {
+      nav, .results-cta, footer, .upload-card, .processing-container, .uses-badge { display: none; }
+      body { background: white; color: black; }
+      .lt-container { max-width: 100%; }
+      .results-verdict, .scorecard, .red-flags, .top-fix { border-color: #ccc; }
+      .scorecard-grade { border: 1px solid #ccc; }
+      .results-verdict::before { display: none; }
+    }
   </style>
 </head>
 <body class="antialiased">
@@ -598,83 +664,139 @@
 
 <!-- ===== SCREEN: INTRO ===== -->
 <div id="screen-intro" class="screen active">
-    <div class="hero">
-        <div class="hero-badge">Interactive Assessment</div>
-        <h1>The <span>Lethality Test</span></h1>
-        <p>Score your NatSec pitch against the Hegseth standard. Nine criteria. Five minutes. One question that matters.</p>
+  <div class="hero">
+    <div class="hero-badge">AI-Powered Assessment</div>
+    <h1>The <span>Lethality Test</span></h1>
+    <p>Upload your NatSec pitch deck and get an AI-scored assessment against the Hegseth standard. Nine criteria. One verdict.</p>
 
-        <div class="hero-quote">
-            "If a contract doesn't make us more lethal, it's gone."
-            <cite>Secretary of War Pete Hegseth, January 16, 2026</cite>
-        </div>
-
-        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 2rem;">Rate your pitch deck across 9 dimensions. Get a clear Pass, Conditional, or Fail verdict with specific guidance on what to fix.</p>
-
-        <button class="btn btn-primary" onclick="startTest()">
-            Start the Test &#8594;
-        </button>
+    <div class="hero-quote">
+      "If a contract doesn't make us more lethal, it's gone."
+      <cite>Secretary of War Pete Hegseth, January 16, 2026</cite>
     </div>
+
+    <ul class="hero-features">
+      <li>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0-1.4A5.6 5.6 0 1 0 8 2.4a5.6 5.6 0 0 0 0 11.2zM7 9.6l3.5-3.5 1 1L7 11.6 4.5 9l1-1L7 9.6z"/></svg>
+        Supports PDF, PowerPoint, and Word files (max 4MB)
+      </li>
+      <li>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0-1.4A5.6 5.6 0 1 0 8 2.4a5.6 5.6 0 0 0 0 11.2zM7 9.6l3.5-3.5 1 1L7 11.6 4.5 9l1-1L7 9.6z"/></svg>
+        9 criteria scored with AI-generated assessments
+      </li>
+      <li>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0-1.4A5.6 5.6 0 1 0 8 2.4a5.6 5.6 0 0 0 0 11.2zM7 9.6l3.5-3.5 1 1L7 11.6 4.5 9l1-1L7 9.6z"/></svg>
+        3 free assessments per email
+      </li>
+    </ul>
+
+    <button class="btn btn-primary" onclick="showScreen('screen-upload')">
+      Score My Deck &#8594;
+    </button>
+  </div>
 </div>
 
-<!-- ===== SCREEN: QUESTIONS (Dynamically populated) ===== -->
-<div id="screen-questions" class="screen">
-    <div class="progress-container">
-        <div class="progress-header">
-            <span class="progress-label">Lethality Test</span>
-            <span class="progress-step" id="progress-step">1 of 9</span>
-        </div>
-        <div class="progress-track">
-            <div class="progress-fill" id="progress-fill" style="width: 11.1%"></div>
-        </div>
+<!-- ===== SCREEN: UPLOAD ===== -->
+<div id="screen-upload" class="screen">
+  <div style="padding: 3rem 0;">
+    <div id="upload-error" class="error-banner">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 10.5a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5zM8.75 4v4.5h-1.5V4h1.5z"/></svg>
+      <span id="upload-error-text"></span>
     </div>
 
-    <!-- Confidence Meter -->
-    <div class="confidence-panel">
-        <div class="confidence-ring">
-            <svg viewBox="0 0 72 72">
-                <circle class="ring-bg" cx="36" cy="36" r="30"></circle>
-                <circle class="ring-fill" id="confidence-ring-fill" cx="36" cy="36" r="30"
-                    stroke-dasharray="188.5"
-                    stroke-dashoffset="188.5"></circle>
+    <div class="upload-card">
+      <h2>Upload Your Pitch Deck</h2>
+
+      <div class="form-group">
+        <label for="email-input" class="form-label">Email Address</label>
+        <input type="email" id="email-input" class="form-input" placeholder="you@company.com" required autocomplete="email">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Pitch Deck File</label>
+        <div id="upload-zone" class="upload-zone" tabindex="0" role="button" aria-label="Click or drag to upload a file">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <p>Drag and drop your file here, or <strong style="color:var(--primary-cyan);">click to browse</strong></p>
+          <p class="upload-hint">PDF, PPTX, or DOCX &mdash; 4MB max</p>
+        </div>
+        <input type="file" id="file-input" accept=".pdf,.pptx,.docx,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none;">
+
+        <div id="file-preview" class="file-preview">
+          <div class="file-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
             </svg>
-            <span class="confidence-score" id="confidence-score">--</span>
+          </div>
+          <div class="file-info">
+            <div class="file-name" id="file-name"></div>
+            <div class="file-size" id="file-size"></div>
+          </div>
+          <button class="file-remove" onclick="removeFile()" aria-label="Remove file">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
         </div>
-        <div class="confidence-info">
-            <h4>Assessment Confidence <span class="confidence-level" id="confidence-level">Pending</span></h4>
-            <p id="confidence-desc">Complete each criterion to build your confidence score. More data points mean a more reliable verdict.</p>
-        </div>
-    </div>
+      </div>
 
-    <!-- Question Container -->
-    <div id="question-container"></div>
-
-    <!-- Step Navigation -->
-    <div class="step-nav">
-        <button class="btn btn-secondary btn-sm" id="btn-prev" onclick="prevStep()" style="visibility: hidden;">&#8592; Previous</button>
-        <button class="btn btn-primary btn-sm" id="btn-next" onclick="nextStep()" disabled>Next &#8594;</button>
+      <div class="upload-actions">
+        <button class="btn btn-primary" id="btn-submit" onclick="submitDeck()" disabled>Analyze My Deck &#8594;</button>
+        <button class="btn btn-secondary btn-sm" onclick="showScreen('screen-intro')">&#8592; Back</button>
+      </div>
     </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN: PROCESSING ===== -->
+<div id="screen-processing" class="screen">
+  <div class="processing-container">
+    <div class="spinner"></div>
+    <div class="processing-status" id="processing-status">Uploading deck...</div>
+    <div class="progress-bar-indeterminate"></div>
+    <p class="processing-note">Usually takes 30&ndash;60 seconds</p>
+    <button class="btn btn-secondary btn-sm" onclick="cancelSubmission()">Cancel</button>
+  </div>
 </div>
 
 <!-- ===== SCREEN: RESULTS ===== -->
 <div id="screen-results" class="screen">
-    <div class="results-section">
-        <div class="results-verdict" id="results-verdict"></div>
-        <div class="scorecard" id="results-scorecard"></div>
-        <div id="results-red-flags"></div>
+  <div class="results-section">
+    <div class="results-verdict" id="results-verdict"></div>
+    <div class="scorecard" id="results-scorecard"></div>
+    <div id="results-top-fix"></div>
+    <div id="results-red-flags"></div>
 
-        <div class="results-cta">
-            <h3>Need a full review?</h3>
-            <p>The Lethality Test gives you the score. A full pitch review gives you the fix. Get expert analysis of your NatSec positioning, language, and evidence.</p>
-            <div class="results-actions">
-                <button class="btn btn-primary btn-sm" onclick="window.print()">Print Results</button>
-                <a href="contact.html" class="btn btn-secondary btn-sm">Request Full Review</a>
-                <button class="btn btn-secondary btn-sm" onclick="resetTest()">Retake Test</button>
-            </div>
-        </div>
+    <div class="results-cta">
+      <h3>Need a full review?</h3>
+      <p>The Lethality Test gives you the score. A full pitch review gives you the fix. Get expert analysis of your NatSec positioning, language, and evidence.</p>
+      <div class="results-actions">
+        <button class="btn btn-primary btn-sm" onclick="window.print()">Print Results</button>
+        <a href="contact.html" class="btn btn-secondary btn-sm">Request Full Review</a>
+        <button class="btn btn-secondary btn-sm" onclick="resetTool()">Score Another Deck</button>
+      </div>
     </div>
+  </div>
 </div>
 
-</div><!-- /lt-container -->
+<!-- ===== SCREEN: LIMIT REACHED ===== -->
+<div id="screen-limit" class="screen">
+  <div class="limit-container">
+    <div class="limit-icon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+    </div>
+    <h2>Free Assessments Used</h2>
+    <p>You've used all 3 free Lethality Test assessments. Contact Mission Meets Tech for a full pitch deck review with personalized recommendations.</p>
+    <a href="contact.html" class="btn btn-primary">Request a Full Review</a>
+  </div>
+</div>
+
+    </div><!-- /lt-container -->
   </main>
 
   <footer class="py-16 px-6" style="border-top:1px solid rgba(0,229,250,0.1);">
@@ -727,409 +849,368 @@
   </script>
 
 <script>
-// ===== LETHALITY TEST ENGINE =====
+// ===== LETHALITY TEST — AI DECK SCORER =====
 
-const CRITERIA = [
-    {
-        id: 'problem-clarity',
-        category: 'Criterion 1 of 9',
-        title: 'Problem Clarity',
-        desc: 'Is the warfighter or mission problem stated first, specific, and urgent? Can a busy decision-maker grasp the operational gap in 10 seconds?',
-        checks: [
-            'Warfighter/mission problem appears on slide 1-3',
-            'Problem is specific (not generic "modernization")',
-            'Urgency or operational consequence is clear',
-            'Passes the "so what?" test for a GS-15 audience'
-        ]
-    },
-    {
-        id: 'natsec-relevance',
-        category: 'Criterion 2 of 9',
-        title: 'NatSec Relevance',
-        desc: 'Does the solution connect to Kill Chain functions? Is defense-specific operational context present?',
-        checks: [
-            'Maps to Kill Chain: Find, Fix, Track, Target, Engage, Assess, or Sustain',
-            'Uses defense context (BATDOK, DDIL, Role 2E, theater evac, etc.)',
-            'Problem is framed in readiness/lethality terms, not civilian healthcare',
-            'Addresses contested or austere environment operations'
-        ]
-    },
-    {
-        id: 'solution-clarity',
-        category: 'Criterion 3 of 9',
-        title: 'Solution Clarity',
-        desc: 'Is the technical approach clear, credible, and framed in mission language? Does it work where it needs to work?',
-        checks: [
-            'Technical approach is understandable in 60 seconds',
-            'Uses NatSec/defense language (not civilian healthcare speak)',
-            'Addresses offline/DDIL capability if software',
-            'Clear difference between this solution and status quo'
-        ]
-    },
-    {
-        id: 'market-sizing',
-        category: 'Criterion 4 of 9',
-        title: 'Market Sizing',
-        desc: 'Is the DoD/DHA/VA market sized separately from commercial TAM? Are government acquisition vehicles mentioned?',
-        checks: [
-            'DoD/DHA/VA breakout separate from commercial TAM',
-            'Government contract vehicles mentioned (OTAs, IDIQs, SBIR)',
-            'TAM/SAM/SOM logic is defensible',
-            'Not just a commercial pitch with a DoD slide bolted on'
-        ]
-    },
-    {
-        id: 'team-credibility',
-        category: 'Criterion 5 of 9',
-        title: 'Team & Credibility',
-        desc: 'Is veteran status, defense health experience, or NatSec credentials visible and prominent?',
-        checks: [
-            'Veteran status visible (title slide or team slide)',
-            'Defense health credentials present (DHA, TATRC, service branch)',
-            'Team has operational experience or direct DoD relationships',
-            'Credibility is front-loaded, not buried'
-        ]
-    },
-    {
-        id: 'traction',
-        category: 'Criterion 6 of 9',
-        title: 'Traction',
-        desc: 'Are pilots, customers, or deployments defense-adjacent? Is FedRAMP or IL status mentioned?',
-        checks: [
-            'Pilots/customers are defense-adjacent or government',
-            'FedRAMP or IL4/IL5 status mentioned (if software)',
-            'Government references or authorizations cited',
-            'Traction is real, not "in conversations with"'
-        ]
-    },
-    {
-        id: 'financials',
-        category: 'Criterion 7 of 9',
-        title: 'Financials',
-        desc: 'Do the numbers add up? Are projections defensible? Do the visuals match the narrative?',
-        checks: [
-            'Revenue projections are defensible (not hockey-stick fantasy)',
-            'Charts and visuals match the text',
-            'Burn rate and runway are realistic',
-            'Unit economics or contract economics are clear'
-        ]
-    },
-    {
-        id: 'competitive-position',
-        category: 'Criterion 8 of 9',
-        title: 'Competitive Position',
-        desc: 'Who else is in this space? What is the moat? Why this team over alternatives?',
-        checks: [
-            'Competitive landscape is acknowledged',
-            'Differentiation is specific (not "our AI is better")',
-            'Moat or defensible advantage is clear',
-            'Incumbent risk (Leidos, Booz, etc.) is addressed or anticipated'
-        ]
-    },
-    {
-        id: 'the-ask',
-        category: 'Criterion 9 of 9',
-        title: 'The Ask',
-        desc: 'Is the funding request clear, reasonable, and tied to specific milestones? Does use of funds make sense?',
-        checks: [
-            'Funding amount is clear and specific',
-            'Milestones are tied to defense/NatSec outcomes',
-            'Use of funds is logical (not vague "growth")',
-            'Ask is proportional to traction and stage'
-        ]
-    }
+const API_URL = '/.netlify/functions/score-deck';
+const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
+const TIMEOUT_MS = 90000; // 90 seconds
+
+const ALLOWED_EXTENSIONS = ['pdf', 'pptx', 'docx'];
+const MIME_MAP = {
+  'pdf': 'application/pdf',
+  'pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+};
+
+const STATUS_MESSAGES = [
+  'Uploading deck...',
+  'Reading document...',
+  'Running 9-criteria analysis...',
+  'Evaluating NatSec relevance...',
+  'Scoring team credibility...',
+  'Checking financials...',
+  'Generating scorecard...',
 ];
 
-const GRADES = [
-    { value: 'A',  label: 'Exceeds bar',       points: 4.0, cssClass: 'grade-a' },
-    { value: 'B+', label: 'Strong',             points: 3.5, cssClass: 'grade-b' },
-    { value: 'B',  label: 'Meets bar',          points: 3.0, cssClass: 'grade-b' },
-    { value: 'B-', label: 'Acceptable',         points: 2.5, cssClass: 'grade-b' },
-    { value: 'C+', label: 'Below bar',          points: 2.0, cssClass: 'grade-c' },
-    { value: 'C',  label: 'Weak',               points: 1.5, cssClass: 'grade-c' },
-    { value: 'D',  label: 'Flawed',             points: 1.0, cssClass: 'grade-d' },
-    { value: 'F',  label: 'Absent / Harmful',   points: 0.0, cssClass: 'grade-f' }
-];
+let selectedFile = null;
+let fileBase64 = null;
+let abortController = null;
+let statusInterval = null;
 
-// Red flag criteria (auto-detected based on low grades)
-const RED_FLAG_RULES = [
-    { criterionId: 'problem-clarity', minGrade: 'C', message: 'Civilian healthcare problem leads before warfighter problem' },
-    { criterionId: 'natsec-relevance', minGrade: 'C', message: '"Improves efficiency" without connecting to readiness or lethality' },
-    { criterionId: 'traction', minGrade: 'D', message: 'No FedRAMP/IL status for a software company' },
-    { criterionId: 'financials', minGrade: 'D', message: 'Financials don\'t match the narrative' },
-    { criterionId: 'market-sizing', minGrade: 'D', message: 'No DoD/DHA market sizing separate from commercial TAM' },
-    { criterionId: 'competitive-position', minGrade: 'D', message: 'Competitive positioning is missing entirely' },
-    { criterionId: 'solution-clarity', minGrade: 'C', message: 'Technology requires persistent connectivity with no offline story' }
-];
-
-let currentStep = 0;
-let answers = {};
+// ===== SCREEN MANAGEMENT =====
 
 function showScreen(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function startTest() {
-    currentStep = 0;
-    answers = {};
-    renderQuestion();
-    showScreen('screen-questions');
+// ===== FILE HANDLING =====
+
+const uploadZone = document.getElementById('upload-zone');
+const fileInput = document.getElementById('file-input');
+const emailInput = document.getElementById('email-input');
+const submitBtn = document.getElementById('btn-submit');
+
+uploadZone.addEventListener('click', () => fileInput.click());
+uploadZone.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
+});
+
+// Drag and drop
+uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+uploadZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadZone.classList.remove('drag-over');
+  if (e.dataTransfer.files.length > 0) handleFileSelect(e.dataTransfer.files[0]);
+});
+
+fileInput.addEventListener('change', () => {
+  if (fileInput.files.length > 0) handleFileSelect(fileInput.files[0]);
+});
+
+emailInput.addEventListener('input', updateSubmitButton);
+
+function handleFileSelect(file) {
+  hideError();
+
+  // Validate extension (fallback for mobile MIME quirks)
+  const ext = file.name.split('.').pop().toLowerCase();
+  if (!ALLOWED_EXTENSIONS.includes(ext)) {
+    showError('Unsupported file type. Please upload a PDF, PowerPoint (.pptx), or Word (.docx) file.');
+    return;
+  }
+
+  // Validate size
+  if (file.size > MAX_FILE_SIZE) {
+    const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+    showError(`File is too large (${sizeMB}MB). Maximum file size is 4MB. Try compressing your deck or exporting a lower-resolution PDF.`);
+    return;
+  }
+
+  selectedFile = file;
+
+  // Show preview
+  document.getElementById('file-name').textContent = file.name;
+  document.getElementById('file-size').textContent = formatFileSize(file.size);
+  document.getElementById('file-preview').classList.add('visible');
+  uploadZone.style.display = 'none';
+
+  // Read as base64
+  readFileAsBase64(file).then(b64 => {
+    fileBase64 = b64;
+    updateSubmitButton();
+  }).catch(() => {
+    showError('Could not read the file. Please try again.');
+    removeFile();
+  });
 }
 
-function resetTest() {
-    currentStep = 0;
-    answers = {};
-    showScreen('screen-intro');
+function removeFile() {
+  selectedFile = null;
+  fileBase64 = null;
+  fileInput.value = '';
+  document.getElementById('file-preview').classList.remove('visible');
+  uploadZone.style.display = '';
+  updateSubmitButton();
 }
 
-function renderQuestion() {
-    const q = CRITERIA[currentStep];
-    const selectedGrade = answers[q.id] || null;
+function readFileAsBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      // Strip the data:...;base64, prefix
+      const base64 = reader.result.split(',')[1];
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
-    // Update progress
-    document.getElementById('progress-step').textContent = `${currentStep + 1} of ${CRITERIA.length}`;
-    document.getElementById('progress-fill').style.width = `${((currentStep + 1) / CRITERIA.length) * 100}%`;
+function updateSubmitButton() {
+  const emailValid = emailInput.value.trim() && emailInput.checkValidity();
+  submitBtn.disabled = !(emailValid && fileBase64);
+}
 
-    // Show/hide prev button
-    document.getElementById('btn-prev').style.visibility = currentStep === 0 ? 'hidden' : 'visible';
+function formatFileSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + ' KB';
+  return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+}
 
-    // Update next button
-    const nextBtn = document.getElementById('btn-next');
-    nextBtn.disabled = !selectedGrade;
-    if (currentStep === CRITERIA.length - 1) {
-        nextBtn.textContent = 'See Results \u2192';
-    } else {
-        nextBtn.innerHTML = 'Next &#8594;';
+// ===== ERROR HANDLING =====
+
+function showError(msg) {
+  const banner = document.getElementById('upload-error');
+  document.getElementById('upload-error-text').textContent = msg;
+  banner.classList.add('visible');
+}
+
+function hideError() {
+  document.getElementById('upload-error').classList.remove('visible');
+}
+
+// ===== SUBMIT DECK =====
+
+async function submitDeck() {
+  const email = emailInput.value.trim();
+  if (!email || !fileBase64 || !selectedFile) return;
+
+  hideError();
+  showScreen('screen-processing');
+  startStatusCycling();
+
+  // Determine MIME type from extension
+  const ext = selectedFile.name.split('.').pop().toLowerCase();
+  const mimeType = MIME_MAP[ext] || selectedFile.type;
+
+  abortController = new AbortController();
+  const timeoutId = setTimeout(() => abortController.abort(), TIMEOUT_MS);
+
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email,
+        file_base64: fileBase64,
+        file_type: mimeType,
+        file_name: selectedFile.name,
+      }),
+      signal: abortController.signal,
+    });
+
+    clearTimeout(timeoutId);
+    stopStatusCycling();
+
+    if (response.ok) {
+      const data = await response.json();
+      renderResults(data);
+      return;
     }
 
-    // Build question HTML
-    let checksHtml = q.checks.map(c => `<li>${c}</li>`).join('');
-    let gradesHtml = GRADES.map(g => {
-        const checked = selectedGrade === g.value ? 'checked' : '';
-        return `
-            <div class="grade-option ${g.cssClass}">
-                <input type="radio" name="grade-${q.id}" id="grade-${q.id}-${g.value}" value="${g.value}" ${checked}
-                    onchange="selectGrade('${q.id}', '${g.value}')">
-                <label for="grade-${q.id}-${g.value}">
-                    <span class="grade-letter">${g.value}</span>
-                    <span class="grade-label">${g.label}</span>
-                </label>
-            </div>
-        `;
-    }).join('');
+    // Handle error responses
+    const errData = await response.json().catch(() => null);
 
-    document.getElementById('question-container').innerHTML = `
-        <div class="question-card">
-            <div class="question-category">${q.category}</div>
-            <h2 class="question-title">${q.title}</h2>
-            <p class="question-desc">${q.desc}</p>
-            <ul class="question-checklist">${checksHtml}</ul>
-            <div class="grade-grid">${gradesHtml}</div>
+    if (response.status === 403 && errData && errData.error === 'limit_reached') {
+      showScreen('screen-limit');
+      return;
+    }
+
+    if (response.status === 502) {
+      showScreen('screen-upload');
+      showError('AI scoring is temporarily unavailable. Please try again in a few minutes.');
+      return;
+    }
+
+    // Generic API error
+    const errMsg = (errData && errData.error) || 'Something went wrong. Please try again.';
+    showScreen('screen-upload');
+    showError(errMsg);
+
+  } catch (err) {
+    clearTimeout(timeoutId);
+    stopStatusCycling();
+
+    if (err.name === 'AbortError') {
+      showScreen('screen-upload');
+      showError('Request timed out. The analysis took too long. Please try again with a smaller file.');
+      return;
+    }
+
+    showScreen('screen-upload');
+    showError('Network error. Check your connection and try again.');
+  } finally {
+    abortController = null;
+  }
+}
+
+function cancelSubmission() {
+  if (abortController) abortController.abort();
+  stopStatusCycling();
+  showScreen('screen-upload');
+}
+
+// ===== STATUS CYCLING =====
+
+function startStatusCycling() {
+  let idx = 0;
+  const el = document.getElementById('processing-status');
+  el.textContent = STATUS_MESSAGES[0];
+  statusInterval = setInterval(() => {
+    idx = (idx + 1) % STATUS_MESSAGES.length;
+    el.textContent = STATUS_MESSAGES[idx];
+  }, 4000);
+}
+
+function stopStatusCycling() {
+  if (statusInterval) { clearInterval(statusInterval); statusInterval = null; }
+}
+
+// ===== RENDER RESULTS =====
+
+function renderResults(data) {
+  const sc = data.scorecard;
+  const scores = sc.scores || [];
+
+  // Compute overall grade from average points
+  const avgPoints = scores.length > 0
+    ? scores.reduce((sum, s) => sum + (s.points || 0), 0) / scores.length
+    : 0;
+
+  let overallGrade;
+  if (avgPoints >= 3.75) overallGrade = 'A';
+  else if (avgPoints >= 3.25) overallGrade = 'B+';
+  else if (avgPoints >= 2.75) overallGrade = 'B';
+  else if (avgPoints >= 2.25) overallGrade = 'B-';
+  else if (avgPoints >= 1.75) overallGrade = 'C+';
+  else if (avgPoints >= 1.25) overallGrade = 'C';
+  else if (avgPoints >= 0.75) overallGrade = 'D';
+  else overallGrade = 'F';
+
+  // Verdict class
+  let verdictClass = 'verdict-fail';
+  if (sc.verdict === 'PASS') verdictClass = 'verdict-pass';
+  else if (sc.verdict === 'CONDITIONAL') verdictClass = 'verdict-conditional';
+
+  // Grade color
+  let gradeColor;
+  if (overallGrade.startsWith('A')) gradeColor = 'var(--grade-a)';
+  else if (overallGrade.startsWith('B')) gradeColor = 'var(--grade-b)';
+  else if (overallGrade.startsWith('C')) gradeColor = 'var(--grade-c)';
+  else if (overallGrade === 'D') gradeColor = 'var(--grade-d)';
+  else gradeColor = 'var(--grade-f)';
+
+  // Uses remaining badge
+  const usesBadge = typeof data.uses_remaining === 'number'
+    ? `<div class="uses-badge">${data.uses_remaining} free assessment${data.uses_remaining !== 1 ? 's' : ''} remaining</div>`
+    : '';
+
+  // Verdict
+  document.getElementById('results-verdict').innerHTML = `
+    <div class="verdict-status ${verdictClass}">${esc(sc.verdict || 'SCORED')}</div>
+    <div class="verdict-grade" style="color: ${gradeColor}">${esc(overallGrade)}</div>
+    <div class="verdict-title">${esc(sc.verdict_title || '')}</div>
+    <p class="verdict-summary">${esc(sc.verdict_summary || '')}</p>
+    ${usesBadge}
+  `;
+
+  // Scorecard rows
+  const rows = scores.map(s => {
+    const cls = getGradeClass(s.grade);
+    const assessment = s.assessment ? `<div class="scorecard-assessment">${esc(s.assessment)}</div>` : '';
+    return `
+      <div class="scorecard-row">
+        <div class="scorecard-row-top">
+          <span class="scorecard-criteria">${esc(s.title)}</span>
+          <span class="scorecard-grade ${cls}">${esc(s.grade)}</span>
         </div>
+        ${assessment}
+      </div>
     `;
+  }).join('');
 
-    updateConfidence();
-}
+  document.getElementById('results-scorecard').innerHTML = `
+    <div class="scorecard-header">Full Scorecard</div>
+    ${rows}
+  `;
 
-function selectGrade(criterionId, grade) {
-    answers[criterionId] = grade;
-    document.getElementById('btn-next').disabled = false;
-    updateConfidence();
-}
-
-function updateConfidence() {
-    const answered = Object.keys(answers).length;
-    const total = CRITERIA.length;
-    const pct = Math.round((answered / total) * 100);
-
-    // Update ring
-    const circumference = 188.5;
-    const offset = circumference - (circumference * pct / 100);
-    const ring = document.getElementById('confidence-ring-fill');
-    ring.style.strokeDashoffset = offset;
-
-    // Color the ring based on completion
-    let ringColor = 'var(--grade-c)';
-    let levelText = 'Low';
-    let levelClass = 'level-low';
-    let desc = 'Keep scoring. More criteria scored means a more reliable verdict.';
-
-    if (pct === 0) {
-        ringColor = 'var(--text-muted)';
-        levelText = 'Pending';
-        levelClass = 'level-low';
-        desc = 'Complete each criterion to build your confidence score.';
-    } else if (pct <= 33) {
-        ringColor = 'var(--grade-c)';
-        levelText = 'Low';
-        levelClass = 'level-low';
-        desc = `${answered} of ${total} criteria scored. Early signal only. Keep going.`;
-    } else if (pct <= 66) {
-        ringColor = 'var(--grade-b)';
-        levelText = 'Medium';
-        levelClass = 'level-medium';
-        desc = `${answered} of ${total} criteria scored. Pattern forming. Verdict is directional.`;
-    } else if (pct < 100) {
-        ringColor = 'var(--grade-a)';
-        levelText = 'High';
-        levelClass = 'level-high';
-        desc = `${answered} of ${total} criteria scored. Nearly complete. Verdict is reliable.`;
-    } else {
-        ringColor = 'var(--grade-a)';
-        levelText = 'Full';
-        levelClass = 'level-high';
-        desc = 'All 9 criteria scored. This is a complete assessment.';
-    }
-
-    ring.style.stroke = ringColor;
-    document.getElementById('confidence-score').textContent = pct > 0 ? `${pct}%` : '--';
-    document.getElementById('confidence-level').textContent = levelText;
-    document.getElementById('confidence-level').className = `confidence-level ${levelClass}`;
-    document.getElementById('confidence-desc').textContent = desc;
-}
-
-function nextStep() {
-    if (currentStep < CRITERIA.length - 1) {
-        currentStep++;
-        renderQuestion();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-        showResults();
-    }
-}
-
-function prevStep() {
-    if (currentStep > 0) {
-        currentStep--;
-        renderQuestion();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-}
-
-function getGradePoints(gradeValue) {
-    const g = GRADES.find(g => g.value === gradeValue);
-    return g ? g.points : 0;
-}
-
-function getGradeClass(gradeValue) {
-    if (gradeValue.startsWith('A')) return 'sg-a';
-    if (gradeValue.startsWith('B')) return 'sg-b';
-    if (gradeValue.startsWith('C')) return 'sg-c';
-    if (gradeValue === 'D') return 'sg-d';
-    return 'sg-f';
-}
-
-function showResults() {
-    // Calculate scores
-    let totalPoints = 0;
-    let lowestGrade = 'A';
-    let lowestPoints = 4.0;
-    const gradeOrder = ['F', 'D', 'C', 'C+', 'B-', 'B', 'B+', 'A'];
-
-    CRITERIA.forEach(c => {
-        const grade = answers[c.id] || 'F';
-        const pts = getGradePoints(grade);
-        totalPoints += pts;
-        if (pts < lowestPoints) {
-            lowestPoints = pts;
-            lowestGrade = grade;
-        }
-    });
-
-    const avgPoints = totalPoints / CRITERIA.length;
-
-    // Determine overall grade
-    let overallGrade, overallLabel;
-    if (avgPoints >= 3.75) { overallGrade = 'A'; overallLabel = 'Exceeds Standard'; }
-    else if (avgPoints >= 3.25) { overallGrade = 'B+'; overallLabel = 'Strong'; }
-    else if (avgPoints >= 2.75) { overallGrade = 'B'; overallLabel = 'Meets Standard'; }
-    else if (avgPoints >= 2.25) { overallGrade = 'B-'; overallLabel = 'Acceptable'; }
-    else if (avgPoints >= 1.75) { overallGrade = 'C+'; overallLabel = 'Below Standard'; }
-    else if (avgPoints >= 1.25) { overallGrade = 'C'; overallLabel = 'Weak'; }
-    else if (avgPoints >= 0.75) { overallGrade = 'D'; overallLabel = 'Failing'; }
-    else { overallGrade = 'F'; overallLabel = 'Does Not Pass'; }
-
-    // Determine verdict
-    let verdict, verdictClass, verdictTitle, verdictSummary;
-    const hasAutoFail = lowestPoints <= 1.0;
-    const belowCPlus = CRITERIA.filter(c => getGradePoints(answers[c.id] || 'F') < 2.0).length;
-
-    if (avgPoints >= 3.0 && lowestPoints >= 2.0) {
-        verdict = 'PASS';
-        verdictClass = 'verdict-pass';
-        verdictTitle = 'This pitch passes the Lethality Test.';
-        verdictSummary = 'The deck demonstrates clear NatSec relevance, credible traction, and defensible positioning. A GS-15 would get the value proposition within 10 seconds.';
-    } else if (avgPoints >= 2.25 && belowCPlus <= 2) {
-        verdict = 'CONDITIONAL';
-        verdictClass = 'verdict-conditional';
-        verdictTitle = 'Conditional Pass. Revisions Required.';
-        verdictSummary = `The pitch has a viable core, but ${belowCPlus} dimension${belowCPlus > 1 ? 's' : ''} fall${belowCPlus === 1 ? 's' : ''} below the bar. Fix the gaps below and the deck is competitive.`;
-    } else {
-        verdict = 'FAIL';
-        verdictClass = 'verdict-fail';
-        verdictTitle = 'This pitch does not pass the Lethality Test.';
-        verdictSummary = hasAutoFail
-            ? 'One or more critical dimensions scored D or below. Major restructuring is needed before this deck faces a NatSec audience.'
-            : `The average score falls below the B threshold and ${belowCPlus} dimensions need significant work. Reframe around readiness and lethality before resubmitting.`;
-    }
-
-    // Build verdict HTML
-    let gradeColorVar;
-    if (overallGrade.startsWith('A')) gradeColorVar = 'var(--grade-a)';
-    else if (overallGrade.startsWith('B')) gradeColorVar = 'var(--grade-b)';
-    else if (overallGrade.startsWith('C')) gradeColorVar = 'var(--grade-c)';
-    else if (overallGrade === 'D') gradeColorVar = 'var(--grade-d)';
-    else gradeColorVar = 'var(--grade-f)';
-
-    document.getElementById('results-verdict').innerHTML = `
-        <div class="verdict-status ${verdictClass}">${verdict}</div>
-        <div class="verdict-grade" style="color: ${gradeColorVar}">${overallGrade}</div>
-        <div class="verdict-title">${verdictTitle}</div>
-        <p class="verdict-summary">${verdictSummary}</p>
+  // Top Fix
+  if (sc.top_fix) {
+    document.getElementById('results-top-fix').innerHTML = `
+      <div class="top-fix">
+        <h3>Top Fix</h3>
+        <p>${esc(sc.top_fix)}</p>
+      </div>
     `;
+  } else {
+    document.getElementById('results-top-fix').innerHTML = '';
+  }
 
-    // Build scorecard
-    let rows = CRITERIA.map(c => {
-        const grade = answers[c.id] || 'F';
-        const cls = getGradeClass(grade);
-        return `
-            <div class="scorecard-row">
-                <span class="scorecard-criteria">${c.title}</span>
-                <span class="scorecard-grade ${cls}">${grade}</span>
-            </div>
-        `;
-    }).join('');
-
-    document.getElementById('results-scorecard').innerHTML = `
-        <div class="scorecard-header">Full Scorecard</div>
-        ${rows}
+  // Red Flags
+  if (sc.red_flags && sc.red_flags.length > 0) {
+    document.getElementById('results-red-flags').innerHTML = `
+      <div class="red-flags">
+        <h3>Red Flags Detected (${sc.red_flags.length})</h3>
+        <ul>${sc.red_flags.map(f => `<li>${esc(f)}</li>`).join('')}</ul>
+      </div>
     `;
+  } else {
+    document.getElementById('results-red-flags').innerHTML = '';
+  }
 
-    // Build red flags
-    let flags = [];
-    RED_FLAG_RULES.forEach(rule => {
-        const grade = answers[rule.criterionId] || 'F';
-        const pts = getGradePoints(grade);
-        const threshold = getGradePoints(rule.minGrade);
-        if (pts <= threshold) {
-            flags.push(rule.message);
-        }
-    });
+  showScreen('screen-results');
+}
 
-    if (flags.length > 0) {
-        document.getElementById('results-red-flags').innerHTML = `
-            <div class="red-flags">
-                <h3>Red Flags Detected (${flags.length})</h3>
-                <ul>${flags.map(f => `<li>${f}</li>`).join('')}</ul>
-            </div>
-        `;
-    } else {
-        document.getElementById('results-red-flags').innerHTML = '';
-    }
+function getGradeClass(grade) {
+  if (!grade) return 'sg-f';
+  if (grade.startsWith('A')) return 'sg-a';
+  if (grade.startsWith('B')) return 'sg-b';
+  if (grade.startsWith('C')) return 'sg-c';
+  if (grade === 'D') return 'sg-d';
+  return 'sg-f';
+}
 
-    showScreen('screen-results');
+function esc(str) {
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+// ===== RESET =====
+
+function resetTool() {
+  selectedFile = null;
+  fileBase64 = null;
+  fileInput.value = '';
+  emailInput.value = '';
+  document.getElementById('file-preview').classList.remove('visible');
+  uploadZone.style.display = '';
+  submitBtn.disabled = true;
+  hideError();
+  showScreen('screen-intro');
 }
 </script>
 
