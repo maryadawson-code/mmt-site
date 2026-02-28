@@ -14,8 +14,6 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 - **Analytics:** Plausible (privacy-respecting, no cookies)
 - **Podcast embed:** Transistor.fm iframe
 - **Content:** Markdown files in `content/newsletter/` → build generates article pages
-- **Serverless:** Netlify Functions (`netlify/functions/`) — Lethality Test pWin analyzer
-- **AI:** `@anthropic-ai/sdk` — Claude Haiku for proposal analysis (env var: `ANTHROPIC_API_KEY`)
 - **Deploy:** Netlify from `main` branch, publish directory is `dist/`
 - **Domain:** missionmeetstech.com
 
@@ -49,7 +47,8 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 ├── about.html              # About / founder bio
 ├── podcast.html            # Fed UP podcast page
 ├── newsletter.html         # Newsletter subscribe + archive (dynamic, loads newsletters.json)
-├── resources.html          # Intelligence hub: Lethality Test pWin analyzer + collapsible resource links (11 categories, 79 links)
+├── resources.html          # Federal health IT resource guide (11 categories, 79 links) + Lethality Test CTA
+├── lethality-test.html     # The Lethality Test — self-assessment pitch wizard (9 criteria, A-F grading, Pass/Conditional/Fail)
 ├── contact.html            # Contact form (Netlify Forms)
 ├── topics.html             # Topics index page (6 topics, dynamic, loads from newsletters.json)
 ├── newsletters.json        # Newsletter issue data (source; build generates updated version)
@@ -57,10 +56,7 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 ├── sitemap.xml             # Static sitemap (build generates dynamic version in dist)
 ├── netlify.toml            # Netlify config (headers, redirects, forms)
 ├── build.js                # Build script: markdown → HTML, sitemap, RSS, topic pages
-├── package.json            # Dependencies: rss-parser, marked, gray-matter, sharp, @anthropic-ai/sdk; devDep: tailwindcss
-├── netlify/
-│   └── functions/
-│       └── lethality-test.js  # Serverless pWin analyzer (Claude Haiku, env: ANTHROPIC_API_KEY)
+├── package.json            # Dependencies: rss-parser, marked, gray-matter, sharp; devDep: tailwindcss
 ├── tailwind.config.js      # Tailwind content paths configuration
 ├── fonts/
 │   ├── Inter-latin.woff2        # Inter variable font (400-700, latin)
@@ -141,8 +137,6 @@ All icons are inline SVGs with `width="1em" height="1em" fill="currentColor" ari
 - **Build command:** `node build.js`
 - **Publish directory:** `dist/`
 - **Forms:** Netlify Forms enabled via `data-netlify="true"` attribute on `<form>`
-- **Functions:** Netlify Functions auto-detected from `netlify/functions/` directory
-- **Environment variables:** `ANTHROPIC_API_KEY` must be set in Netlify dashboard (Site Settings → Environment Variables)
 
 ## Content Publishing Workflow
 
@@ -210,5 +204,5 @@ To publish a new newsletter issue:
 - Tailwind CSS is built at compile time via CLI (`tailwind.config.js` + `src/input.css`), then inlined into each HTML page by `build.js`. The `<link rel="stylesheet" href="/styles/tailwind.css">` in source HTML files is replaced with `<style>` during build. There is no external CSS request at runtime.
 - All icons are inline SVGs — there is no Font Awesome or other icon CDN. When adding new icons, use inline SVG with `width="1em" height="1em" fill="currentColor" aria-hidden="true"`.
 - `*.mp4` and `*.zip` are gitignored and excluded from dist builds.
-- Lethality Test (resources.html) uses localStorage key `mmt_lt_uses` for rate limiting (5 free analyses). Calls `/.netlify/functions/lethality-test` serverless endpoint.
-- `ANTHROPIC_API_KEY` env var is required for the Lethality Test to work. Set in Netlify dashboard, not committed to repo.
+- Lethality Test (`lethality-test.html`) is a standalone self-assessment wizard (9 criteria, A-F grades, Pass/Conditional/Fail verdict). Pure client-side JS, no API calls. Uses custom CSS variables for grade colors alongside mmt-site design tokens.
+- Resources page accordion uses pure CSS (checkbox + sibling selectors) — no JavaScript for expand/collapse.

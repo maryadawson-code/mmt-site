@@ -201,6 +201,7 @@ function generateSitemap(articles, tags) {
     { loc: '/resources.html', priority: '0.7' },
     { loc: '/contact.html', priority: '0.6' },
     { loc: '/topics.html', priority: '0.7' },
+    { loc: '/lethality-test.html', priority: '0.8' },
   ];
 
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
@@ -368,6 +369,7 @@ async function generateOgImages(articles, tags) {
     { filename: 'resources.png', title: 'Federal Health IT Resources', subtitle: 'Curated links for defense and government', label: 'RESOURCES' },
     { filename: 'contact.png', title: 'Get in Touch', subtitle: 'Mission Meets Tech' },
     { filename: 'topics.png', title: 'Coverage Topics', subtitle: 'Browse all federal health IT topics', label: 'TOPICS' },
+    { filename: 'lethality-test.png', title: 'The Lethality Test', subtitle: 'Score your NatSec pitch against the Hegseth standard', label: 'ASSESSMENT' },
   ];
 
   for (const page of staticPages) {
@@ -417,7 +419,8 @@ function copyStaticFiles() {
   // Copy root HTML files (with inlined Tailwind CSS)
   const htmlFiles = [
     'index.html', 'about.html', 'podcast.html', 'newsletter.html',
-    'resources.html', 'contact.html', 'topics.html', '404.html'
+    'resources.html', 'contact.html', 'topics.html', '404.html',
+    'lethality-test.html'
   ];
   const ogMap = {
     'index.html': 'index.png',
@@ -427,6 +430,7 @@ function copyStaticFiles() {
     'resources.html': 'resources.png',
     'contact.html': 'contact.png',
     'topics.html': 'topics.png',
+    'lethality-test.html': 'lethality-test.png',
   };
   htmlFiles.forEach(file => {
     const src = path.join(__dirname, file);

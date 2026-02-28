@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Resources — Mission Meets Tech</title>
-  <meta name="description" content="Federal health IT intelligence hub — AI-powered pWin analyzer for proposals plus curated agencies, acquisition tools, policy sources, and interoperability standards.">
+  <meta name="description" content="Federal health IT intelligence hub — 79 curated resources across 11 categories plus the Lethality Test for NatSec pitch assessment.">
   <link rel="canonical" href="https://missionmeetstech.com/resources.html">
   <meta property="og:title" content="Resources — Mission Meets Tech">
-  <meta property="og:description" content="Federal health IT intelligence hub with AI-powered pWin analyzer and curated resource links.">
+  <meta property="og:description" content="Federal health IT intelligence hub with 79 curated resources and the Lethality Test pitch assessment.">
   <meta property="og:url" content="https://missionmeetstech.com/resources.html">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://missionmeetstech.com/mmt-logo.png">
@@ -16,7 +16,7 @@
   <meta property="og:site_name" content="Mission Meets Tech">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Resources — Mission Meets Tech">
-  <meta name="twitter:description" content="Federal health IT intelligence hub with AI-powered pWin analyzer and curated resource links.">
+  <meta name="twitter:description" content="Federal health IT intelligence hub with 79 curated resources and the Lethality Test pitch assessment.">
   <meta name="twitter:image" content="https://missionmeetstech.com/mmt-logo.png">
   <link rel="icon" type="image/png" href="/favicon.png">
   <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
@@ -38,7 +38,6 @@
     .gradient-text { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .btn-primary { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); color: var(--mmt-navy); font-weight: 600; transition: all 0.2s; }
     .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 0 20px rgba(0, 229, 250, 0.35); }
-    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
     .btn-secondary { border: 1px solid var(--mmt-cyan); color: var(--mmt-white); transition: all 0.2s; }
     .btn-secondary:hover { background: rgba(0, 229, 250, 0.1); }
     .card { background: var(--mmt-slate); border: 1px solid rgba(0, 229, 250, 0.1); }
@@ -46,16 +45,15 @@
     .nav-glass { background: rgba(0, 5, 15, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0, 229, 250, 0.1); }
     .section-alt { background: var(--mmt-dark); }
     *:focus-visible { outline: 2px solid var(--mmt-cyan); outline-offset: 2px; }
-    .score-bar { background: rgba(255,255,255,0.1); border-radius: 9999px; overflow: hidden; }
-    .score-bar-fill { height: 100%; border-radius: 9999px; transition: width 0.8s ease-out; }
-    .accordion-content { display: none; }
-    .accordion-content.open { display: block; }
-    .accordion-chevron { transition: transform 0.3s ease; }
-    .accordion-chevron.open { transform: rotate(180deg); }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    .fade-in { animation: fadeIn 0.4s ease-out; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .spinner { display: inline-block; width: 1em; height: 1em; border: 2px solid rgba(0,5,15,0.3); border-top-color: var(--mmt-navy); border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; }
+    .resource-link { display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 0.85rem; border-radius: 8px; font-size: 0.875rem; text-decoration: none; color: var(--mmt-white-muted); background: rgba(0,229,250,0.04); transition: background 0.15s; }
+    .resource-link:hover { background: rgba(0,229,250,0.1); }
+    .resource-link strong { color: var(--mmt-white); }
+    .cat-toggle { display: none; }
+    .cat-toggle:checked + .cat-header .cat-chevron { transform: rotate(180deg); }
+    .cat-toggle:checked ~ .cat-links { display: grid; }
+    .cat-header { cursor: pointer; }
+    .cat-chevron { transition: transform 0.2s; }
+    .cat-links { display: none; }
   </style>
 </head>
 <body class="antialiased">
@@ -95,87 +93,25 @@
     </div>
   </nav>
 
-
   <main id="main-content">
+
   <!-- Hero -->
   <section class="pt-32 pb-16 px-6">
     <div class="max-w-4xl mx-auto">
       <p class="text-sm font-semibold tracking-widest uppercase mb-4" style="color:var(--mmt-cyan);">Intelligence Hub</p>
       <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-6">Federal Health IT <span class="gradient-text">Resources</span></h1>
-      <p class="text-lg leading-relaxed max-w-3xl" style="color:var(--mmt-white-muted);">AI-powered proposal analysis and curated links to the agencies, programs, and data sources that shape federal health IT.</p>
+      <p class="text-lg leading-relaxed max-w-3xl" style="color:var(--mmt-white-muted);">The Lethality Test pitch assessment and 79 curated links to the agencies, programs, and data sources that shape federal health IT.</p>
     </div>
   </section>
 
-  <!-- Lethality Test -->
-  <section class="section-alt py-20 px-6" id="lethality-test">
+  <!-- Lethality Test CTA -->
+  <section class="section-alt py-16 px-6">
     <div class="max-w-4xl mx-auto">
-      <div class="text-center mb-10">
-        <p class="text-sm font-semibold tracking-widest uppercase mb-3" style="color:var(--mmt-green);">AI-Powered Tool</p>
+      <div class="card rounded-xl p-8 md:p-10 text-center" style="border-color:rgba(0,229,250,0.2);">
+        <p class="text-sm font-semibold tracking-widest uppercase mb-3" style="color:var(--mmt-green);">Interactive Assessment</p>
         <h2 class="text-3xl md:text-4xl font-bold mb-4">The Lethality Test</h2>
-        <p class="text-lg max-w-2xl mx-auto" style="color:var(--mmt-white-muted);">Paste your proposal excerpt or pitch and get an instant pWin analysis scored against federal health IT acquisition criteria.</p>
-      </div>
-
-      <!-- Input Panel -->
-      <div id="lt-input-panel" class="card rounded-xl p-6 md:p-8 mb-6">
-        <label for="lt-textarea" class="block text-sm font-semibold mb-3" style="color:var(--mmt-white-muted);">Proposal Excerpt or Pitch Text</label>
-        <textarea id="lt-textarea" rows="8" maxlength="10000" placeholder="Paste your proposal excerpt, executive summary, or pitch text here. Include details about your technical approach, relevant past performance, and how your solution addresses the agency's mission. The more specific you are, the better the analysis.
-
-Example: 'Our team brings 10 years of DHA health IT experience, including MHS GENESIS deployment support at 3 MTFs. Our FHIR-native integration platform enables real-time clinical data exchange between DoD and VA systems...'" class="w-full rounded-lg p-4 text-sm leading-relaxed resize-y" style="background:var(--mmt-navy); color:var(--mmt-white); border:1px solid rgba(0,229,250,0.2); min-height:160px;" aria-describedby="lt-char-count"></textarea>
-        <div class="flex items-center justify-between mt-3">
-          <p id="lt-char-count" class="text-xs" style="color:var(--mmt-white-dim);"><span id="lt-chars">0</span> / 10,000 characters</p>
-          <p id="lt-uses-counter" class="text-xs" style="color:var(--mmt-white-dim);"><span id="lt-remaining">5</span> of 5 analyses remaining</p>
-        </div>
-        <div class="mt-6 flex items-center gap-4">
-          <button id="lt-submit" class="btn-primary px-8 py-3 rounded-lg text-base font-semibold" disabled>
-            <span id="lt-submit-text">Run Lethality Test</span>
-            <span id="lt-submit-loading" class="hidden"><span class="spinner" aria-hidden="true"></span> Analyzing...</span>
-          </button>
-          <p id="lt-min-warning" class="text-xs hidden" style="color:var(--mmt-cyan);">Minimum 50 characters required</p>
-        </div>
-        <p id="lt-error" class="text-sm mt-4 hidden" style="color:#ff6b6b;"></p>
-      </div>
-
-      <!-- Locked State -->
-      <div id="lt-locked" class="card rounded-xl p-8 text-center hidden">
-        <div class="mb-4">
-          <svg class="mx-auto mb-3" width="48" height="48" viewBox="0 0 448 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg>
-        </div>
-        <h3 class="text-xl font-bold mb-3">Free Analyses Used</h3>
-        <p class="text-sm mb-6 max-w-md mx-auto" style="color:var(--mmt-white-muted);">You've used all 5 free Lethality Test analyses. Subscribe to our newsletter for ongoing federal health IT intelligence, or contact us about unlimited access.</p>
-        <div class="flex flex-col sm:flex-row gap-3 justify-center">
-          <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-6 py-3 rounded-lg text-sm no-underline">Subscribe to Newsletter</a>
-          <a href="contact.html" class="btn-secondary px-6 py-3 rounded-lg text-sm no-underline">Contact Us</a>
-        </div>
-      </div>
-
-      <!-- Results Panel -->
-      <div id="lt-results" class="hidden fade-in" aria-live="polite">
-
-        <!-- pWin Score Card -->
-        <div class="card rounded-xl p-8 mb-4 text-center">
-          <p class="text-sm font-semibold uppercase tracking-wider mb-3" style="color:var(--mmt-white-dim);">Overall pWin Score</p>
-          <p id="lt-pwin" class="text-7xl md:text-8xl font-bold gradient-text" style="line-height:1;">--</p>
-          <div class="mt-4 mb-4">
-            <span id="lt-confidence" class="inline-block px-4 py-1.5 rounded-full text-xs font-bold" style="background:rgba(0,229,250,0.15); color:var(--mmt-cyan);">--</span>
-          </div>
-          <p id="lt-summary" class="text-sm leading-relaxed max-w-2xl mx-auto" style="color:var(--mmt-white-muted);"></p>
-        </div>
-
-        <!-- Dimensions -->
-        <div class="mb-4">
-          <h3 class="text-base font-bold mb-3 px-1" style="color:var(--mmt-white-dim);">Evaluation Dimensions</h3>
-          <div id="lt-dimensions" class="grid gap-3"></div>
-        </div>
-
-        <!-- Recommendations -->
-        <div class="card rounded-xl p-6 mb-6">
-          <h3 class="text-base font-bold mb-4">Recommendations</h3>
-          <ul id="lt-recommendations"></ul>
-        </div>
-
-        <div class="text-center">
-          <button id="lt-reset" class="btn-secondary px-6 py-3 rounded-lg text-sm font-semibold">Run Another Analysis</button>
-        </div>
+        <p class="text-lg max-w-2xl mx-auto mb-6" style="color:var(--mmt-white-muted);">Score your NatSec pitch deck against the Hegseth standard. Nine criteria. Five minutes. One question that matters: does this make us more lethal?</p>
+        <a href="lethality-test.html" class="btn-primary px-8 py-3 rounded-lg text-base no-underline inline-block">Take the Lethality Test &rarr;</a>
       </div>
     </div>
   </section>
@@ -186,465 +122,236 @@ Example: 'Our team brings 10 years of DHA health IT experience, including MHS GE
       <h2 class="text-3xl font-bold mb-4">Curated Resource Links</h2>
       <p class="text-sm mb-10" style="color:var(--mmt-white-muted);">79 resources across 11 categories — the agencies, tools, data sources, and intelligence platforms that shape federal health IT.</p>
 
-<!-- 79 resources across 11 categories -->
+      <!-- 1. Key Agencies & Programs (11) -->
+      <div class="mb-4">
+        <input type="checkbox" id="cat-1" class="cat-toggle">
+        <label for="cat-1" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="text-base font-bold">Key Agencies &amp; Programs</span>
+            <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">11</span>
+          </div>
+          <svg class="cat-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
+        </label>
+        <div class="cat-links sm:grid-cols-2 gap-3 px-2 pt-3">
+          <a href="https://www.dha.mil/" target="_blank" rel="noopener" class="resource-link"><span><strong>DHA</strong> — dha.mil</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.health.mil/Military-Health-Topics/Technology/PEO-DHMS" target="_blank" rel="noopener" class="resource-link"><span><strong>PEO DHMS</strong> — health.mil</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.health.mil/Military-Health-Topics/Technology/MHS-GENESIS" target="_blank" rel="noopener" class="resource-link"><span><strong>MHS GENESIS</strong> — health.mil</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.fehrm.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>FEHRM</strong> — fehrm.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://digital.va.gov/office-of-information-and-technology/" target="_blank" rel="noopener" class="resource-link"><span><strong>VA OIT</strong> — digital.va.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://digital.va.gov/ehr-modernization/about/" target="_blank" rel="noopener" class="resource-link"><span><strong>VA EHR Modernization</strong> — digital.va.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.tricare.mil/" target="_blank" rel="noopener" class="resource-link"><span><strong>TRICARE</strong> — tricare.mil</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.health.mil/Military-Health-Topics/Technology" target="_blank" rel="noopener" class="resource-link"><span><strong>Health.mil Technology</strong> — health.mil</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.ai.mil/" target="_blank" rel="noopener" class="resource-link"><span><strong>CDAO</strong> — ai.mil</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.hive.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>HIVE</strong> — hive.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://developer.va.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>VA Lighthouse APIs</strong> — developer.va.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        </div>
+      </div>
 
-      <div class="mb-3">
-        <button class="accordion-trigger w-full flex items-center justify-between card rounded-xl px-6 py-4 text-left" aria-expanded="false">
+      <!-- 2. Acquisition & Contracting (11) -->
+      <div class="mb-4">
+        <input type="checkbox" id="cat-2" class="cat-toggle">
+        <label for="cat-2" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <span class="text-base font-bold">Key Agencies & Programs</span>
+            <span class="text-base font-bold">Acquisition &amp; Contracting</span>
             <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">11</span>
           </div>
-          <svg class="accordion-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-        </button>
-        <div class="accordion-content">
-          <div class="px-6 py-4 grid sm:grid-cols-2 gap-3">
-            <a href="https://www.dha.mil/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">DHA</strong> — dha.mil</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.health.mil/Military-Health-Topics/Technology/PEO-DHMS" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">PEO DHMS</strong> — health.mil</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.health.mil/Military-Health-Topics/Technology/MHS-GENESIS" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">MHS GENESIS</strong> — health.mil</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.fehrm.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">FEHRM</strong> — fehrm.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://digital.va.gov/office-of-information-and-technology/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">VA OIT</strong> — digital.va.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://digital.va.gov/ehr-modernization/about/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">VA EHR Modernization</strong> — digital.va.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.tricare.mil/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">TRICARE</strong> — tricare.mil</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.health.mil/Military-Health-Topics/Technology" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">Health.mil Technology</strong> — health.mil</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.ai.mil/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">CDAO</strong> — ai.mil</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.hive.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">HIVE</strong> — hive.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://developer.va.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">VA Lighthouse APIs</strong> — developer.va.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-          </div>
+          <svg class="cat-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
+        </label>
+        <div class="cat-links sm:grid-cols-2 gap-3 px-2 pt-3">
+          <a href="https://sam.gov/opportunities" target="_blank" rel="noopener" class="resource-link"><span><strong>SAM.gov Opportunities</strong> — sam.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://sam.gov/fpds" target="_blank" rel="noopener" class="resource-link"><span><strong>SAM.gov Award Data</strong> — sam.gov/fpds</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.usaspending.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>USASpending</strong> — usaspending.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.va.gov/opal/nac/t4ng/" target="_blank" rel="noopener" class="resource-link"><span><strong>T4NG (VA)</strong> — va.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://nitaac.nih.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>NITAAC / CIO-SP3</strong> — nitaac.nih.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.gsa.gov/oasis-plus" target="_blank" rel="noopener" class="resource-link"><span><strong>OASIS+ (GSA)</strong> — gsa.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/vets-2" target="_blank" rel="noopener" class="resource-link"><span><strong>VETS 2 (GSA)</strong> — gsa.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/alliant-3" target="_blank" rel="noopener" class="resource-link"><span><strong>Alliant 3 (GSA)</strong> — gsa.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://itvmo.gsa.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>ITVMO</strong> — itvmo.gsa.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.dau.edu/" target="_blank" rel="noopener" class="resource-link"><span><strong>DAU</strong> — dau.edu</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://acqnotes.com/" target="_blank" rel="noopener" class="resource-link"><span><strong>AcqNotes</strong> — acqnotes.com</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
         </div>
       </div>
-      <div class="mb-3">
-        <button class="accordion-trigger w-full flex items-center justify-between card rounded-xl px-6 py-4 text-left" aria-expanded="false">
+
+      <!-- 3. Budget & Financial (5) -->
+      <div class="mb-4">
+        <input type="checkbox" id="cat-3" class="cat-toggle">
+        <label for="cat-3" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <span class="text-base font-bold">Acquisition & Contracting</span>
-            <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">11</span>
-          </div>
-          <svg class="accordion-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-        </button>
-        <div class="accordion-content">
-          <div class="px-6 py-4 grid sm:grid-cols-2 gap-3">
-            <a href="https://sam.gov/opportunities" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">SAM.gov Opportunities</strong> — sam.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://sam.gov/fpds" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">SAM.gov Award Data</strong> — sam.gov/fpds</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.usaspending.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">USASpending</strong> — usaspending.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.va.gov/opal/nac/t4ng/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">T4NG (VA)</strong> — va.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://nitaac.nih.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">NITAAC / CIO-SP3</strong> — nitaac.nih.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.gsa.gov/oasis-plus" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">OASIS+ (GSA)</strong> — gsa.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/vets-2" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">VETS 2 (GSA)</strong> — gsa.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/alliant-3" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">Alliant 3 (GSA)</strong> — gsa.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://itvmo.gsa.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">ITVMO</strong> — itvmo.gsa.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.dau.edu/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">DAU</strong> — dau.edu</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://acqnotes.com/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">AcqNotes</strong> — acqnotes.com</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-          </div>
-        </div>
-      </div>
-      <div class="mb-3">
-        <button class="accordion-trigger w-full flex items-center justify-between card rounded-xl px-6 py-4 text-left" aria-expanded="false">
-          <div class="flex items-center gap-3">
-            <span class="text-base font-bold">Budget & Financial</span>
+            <span class="text-base font-bold">Budget &amp; Financial</span>
             <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">5</span>
           </div>
-          <svg class="accordion-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-        </button>
-        <div class="accordion-content">
-          <div class="px-6 py-4 grid sm:grid-cols-2 gap-3">
-            <a href="https://comptroller.defense.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">DoD Comptroller</strong> — comptroller.defense.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://comptroller.defense.gov/Budget-Materials/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">DHP Budget Justification</strong> — defense.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://department.va.gov/administrations-and-offices/management/budget/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">VA Budget Submission</strong> — va.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.cbo.gov/topics/defense-and-national-security/military-and-veterans-health-care" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">CBO Military Health</strong> — cbo.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://department.va.gov/about/va-plans-budget-finances-and-performance/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">VA Plans & Performance</strong> — va.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-          </div>
+          <svg class="cat-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
+        </label>
+        <div class="cat-links sm:grid-cols-2 gap-3 px-2 pt-3">
+          <a href="https://comptroller.defense.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>DoD Comptroller</strong> — comptroller.defense.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://comptroller.defense.gov/Budget-Materials/" target="_blank" rel="noopener" class="resource-link"><span><strong>DHP Budget Justification</strong> — comptroller.defense.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://department.va.gov/administrations-and-offices/management/budget/" target="_blank" rel="noopener" class="resource-link"><span><strong>VA Budget Submission</strong> — department.va.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.cbo.gov/topics/defense-and-national-security/military-and-veterans-health-care" target="_blank" rel="noopener" class="resource-link"><span><strong>CBO Military Health</strong> — cbo.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://department.va.gov/about/va-plans-budget-finances-and-performance/" target="_blank" rel="noopener" class="resource-link"><span><strong>VA Plans &amp; Performance</strong> — department.va.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
         </div>
       </div>
-      <div class="mb-3">
-        <button class="accordion-trigger w-full flex items-center justify-between card rounded-xl px-6 py-4 text-left" aria-expanded="false">
+
+      <!-- 4. Policy & Legislation (7) -->
+      <div class="mb-4">
+        <input type="checkbox" id="cat-4" class="cat-toggle">
+        <label for="cat-4" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <span class="text-base font-bold">Policy & Legislation</span>
+            <span class="text-base font-bold">Policy &amp; Legislation</span>
             <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">7</span>
           </div>
-          <svg class="accordion-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-        </button>
-        <div class="accordion-content">
-          <div class="px-6 py-4 grid sm:grid-cols-2 gap-3">
-            <a href="https://armedservices.house.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">HASC</strong> — armedservices.house.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.armed-services.senate.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">SASC</strong> — armed-services.senate.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.congress.gov/crs-products" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">CRS Reports</strong> — congress.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.federalregister.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">Federal Register</strong> — federalregister.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.regulations.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">Regulations.gov</strong> — regulations.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.cbo.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">CBO</strong> — cbo.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.healthit.gov/topic/2020-2025-federal-health-it-strategic-plan" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">ONC Strategic Plan</strong> — healthit.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-          </div>
+          <svg class="cat-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
+        </label>
+        <div class="cat-links sm:grid-cols-2 gap-3 px-2 pt-3">
+          <a href="https://armedservices.house.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>HASC</strong> — armedservices.house.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.armed-services.senate.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>SASC</strong> — armed-services.senate.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.congress.gov/crs-products" target="_blank" rel="noopener" class="resource-link"><span><strong>CRS Reports</strong> — congress.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.federalregister.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>Federal Register</strong> — federalregister.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.regulations.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>Regulations.gov</strong> — regulations.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.cbo.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>CBO</strong> — cbo.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.healthit.gov/topic/2020-2025-federal-health-it-strategic-plan" target="_blank" rel="noopener" class="resource-link"><span><strong>ONC Strategic Plan</strong> — healthit.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
         </div>
       </div>
-      <div class="mb-3">
-        <button class="accordion-trigger w-full flex items-center justify-between card rounded-xl px-6 py-4 text-left" aria-expanded="false">
+
+      <!-- 5. Market Intelligence (7) -->
+      <div class="mb-4">
+        <input type="checkbox" id="cat-5" class="cat-toggle">
+        <label for="cat-5" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
           <div class="flex items-center gap-3">
             <span class="text-base font-bold">Market Intelligence</span>
             <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">7</span>
           </div>
-          <svg class="accordion-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-        </button>
-        <div class="accordion-content">
-          <div class="px-6 py-4 grid sm:grid-cols-2 gap-3">
-            <a href="https://www.deltek.com/en/government-contracting/govwin" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">GovWin IQ (Deltek)</strong> — deltek.com</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://about.bgov.com/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">Bloomberg Government</strong> — bgov.com</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://govtribe.com/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">GovTribe</strong> — govtribe.com</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.highergov.com/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">HigherGov</strong> — highergov.com</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://g2xchange.com/services-health" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">G2Xchange Health</strong> — g2xchange.com</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://govini.com/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">Govini</strong> — govini.com</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.washingtontechnology.com/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">Washington Technology</strong> — washingtontechnology.com</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-          </div>
+          <svg class="cat-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
+        </label>
+        <div class="cat-links sm:grid-cols-2 gap-3 px-2 pt-3">
+          <a href="https://www.deltek.com/en/government-contracting/govwin" target="_blank" rel="noopener" class="resource-link"><span><strong>GovWin IQ (Deltek)</strong> — deltek.com</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://about.bgov.com/" target="_blank" rel="noopener" class="resource-link"><span><strong>Bloomberg Government</strong> — bgov.com</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://govtribe.com/" target="_blank" rel="noopener" class="resource-link"><span><strong>GovTribe</strong> — govtribe.com</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.highergov.com/" target="_blank" rel="noopener" class="resource-link"><span><strong>HigherGov</strong> — highergov.com</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://g2xchange.com/services-health" target="_blank" rel="noopener" class="resource-link"><span><strong>G2Xchange Health</strong> — g2xchange.com</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://govini.com/" target="_blank" rel="noopener" class="resource-link"><span><strong>Govini</strong> — govini.com</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.washingtontechnology.com/" target="_blank" rel="noopener" class="resource-link"><span><strong>Washington Technology</strong> — washingtontechnology.com</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
         </div>
       </div>
-      <div class="mb-3">
-        <button class="accordion-trigger w-full flex items-center justify-between card rounded-xl px-6 py-4 text-left" aria-expanded="false">
+
+      <!-- 6. Standards & Interoperability (7) -->
+      <div class="mb-4">
+        <input type="checkbox" id="cat-6" class="cat-toggle">
+        <label for="cat-6" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <span class="text-base font-bold">Standards & Interoperability</span>
+            <span class="text-base font-bold">Standards &amp; Interoperability</span>
             <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">7</span>
           </div>
-          <svg class="accordion-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-        </button>
-        <div class="accordion-content">
-          <div class="px-6 py-4 grid sm:grid-cols-2 gap-3">
-            <a href="https://www.healthit.gov/topic/certification-ehrs/about-onc-health-it-certification-program" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">ONC Certification</strong> — healthit.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://hl7.org/fhir/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">HL7 FHIR</strong> — hl7.org/fhir</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.healthit.gov/topic/interoperability/policy/trusted-exchange-framework-and-common-agreement-tefca" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">TEFCA</strong> — healthit.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://directtrust.org/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">DirectTrust</strong> — directtrust.org</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://ehealthexchange.org/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">eHealth Exchange</strong> — ehealthexchange.org</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.health.mil/Military-Health-Topics/Technology/Joint-HIE" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">Joint HIE</strong> — health.mil</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://carequality.org/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">Carequality</strong> — carequality.org</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-          </div>
+          <svg class="cat-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
+        </label>
+        <div class="cat-links sm:grid-cols-2 gap-3 px-2 pt-3">
+          <a href="https://www.healthit.gov/topic/certification-ehrs/about-onc-health-it-certification-program" target="_blank" rel="noopener" class="resource-link"><span><strong>ONC Certification</strong> — healthit.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://hl7.org/fhir/" target="_blank" rel="noopener" class="resource-link"><span><strong>HL7 FHIR</strong> — hl7.org</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.healthit.gov/topic/interoperability/policy/trusted-exchange-framework-and-common-agreement-tefca" target="_blank" rel="noopener" class="resource-link"><span><strong>TEFCA</strong> — healthit.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://directtrust.org/" target="_blank" rel="noopener" class="resource-link"><span><strong>DirectTrust</strong> — directtrust.org</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://ehealthexchange.org/" target="_blank" rel="noopener" class="resource-link"><span><strong>eHealth Exchange</strong> — ehealthexchange.org</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.health.mil/Military-Health-Topics/Technology/Joint-HIE" target="_blank" rel="noopener" class="resource-link"><span><strong>Joint HIE</strong> — health.mil</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://carequality.org/" target="_blank" rel="noopener" class="resource-link"><span><strong>Carequality</strong> — carequality.org</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
         </div>
       </div>
-      <div class="mb-3">
-        <button class="accordion-trigger w-full flex items-center justify-between card rounded-xl px-6 py-4 text-left" aria-expanded="false">
+
+      <!-- 7. Cybersecurity & Compliance (7) -->
+      <div class="mb-4">
+        <input type="checkbox" id="cat-7" class="cat-toggle">
+        <label for="cat-7" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <span class="text-base font-bold">Cybersecurity & Compliance</span>
+            <span class="text-base font-bold">Cybersecurity &amp; Compliance</span>
             <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">7</span>
           </div>
-          <svg class="accordion-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-        </button>
-        <div class="accordion-content">
-          <div class="px-6 py-4 grid sm:grid-cols-2 gap-3">
-            <a href="https://marketplace.fedramp.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">FedRAMP Marketplace</strong> — fedramp.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://dodcio.defense.gov/CMMC/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">CMMC (DoD CIO)</strong> — dodcio.defense.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://csrc.nist.gov/pubs/sp/800/171/r3/final" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">NIST SP 800-171</strong> — csrc.nist.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">NIST SP 800-53</strong> — csrc.nist.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://dodcio.defense.gov/Portals/0/Documents/Library/DoD-ZTStrategy.pdf" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">DoD Zero Trust Strategy</strong> — dodcio.defense.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.cyber.mil/stigs/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">DISA STIGs</strong> — cyber.mil</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.cyber.mil/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">Cyber.mil</strong> — cyber.mil</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-          </div>
+          <svg class="cat-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
+        </label>
+        <div class="cat-links sm:grid-cols-2 gap-3 px-2 pt-3">
+          <a href="https://marketplace.fedramp.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>FedRAMP Marketplace</strong> — marketplace.fedramp.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://dodcio.defense.gov/CMMC/" target="_blank" rel="noopener" class="resource-link"><span><strong>CMMC (DoD CIO)</strong> — dodcio.defense.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://csrc.nist.gov/pubs/sp/800/171/r3/final" target="_blank" rel="noopener" class="resource-link"><span><strong>NIST SP 800-171</strong> — csrc.nist.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final" target="_blank" rel="noopener" class="resource-link"><span><strong>NIST SP 800-53</strong> — csrc.nist.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://dodcio.defense.gov/Portals/0/Documents/Library/DoD-ZTStrategy.pdf" target="_blank" rel="noopener" class="resource-link"><span><strong>DoD Zero Trust Strategy</strong> — dodcio.defense.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.cyber.mil/stigs/" target="_blank" rel="noopener" class="resource-link"><span><strong>DISA STIGs</strong> — cyber.mil</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.cyber.mil/" target="_blank" rel="noopener" class="resource-link"><span><strong>Cyber.mil</strong> — cyber.mil</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
         </div>
       </div>
-      <div class="mb-3">
-        <button class="accordion-trigger w-full flex items-center justify-between card rounded-xl px-6 py-4 text-left" aria-expanded="false">
+
+      <!-- 8. Research & Reports (7) -->
+      <div class="mb-4">
+        <input type="checkbox" id="cat-8" class="cat-toggle">
+        <label for="cat-8" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <span class="text-base font-bold">Research & Reports</span>
+            <span class="text-base font-bold">Research &amp; Reports</span>
             <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">7</span>
           </div>
-          <svg class="accordion-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-        </button>
-        <div class="accordion-content">
-          <div class="px-6 py-4 grid sm:grid-cols-2 gap-3">
-            <a href="https://www.gao.gov/topics/defense-and-national-security/military-health-and-veterans-health-care" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">GAO Defense Health</strong> — gao.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://crsreports.congress.gov/product/details?prodcode=IF10530" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">CRS MHS Primer</strong> — crsreports.congress.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.rand.org/topics/military-health-and-health-care.html" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">RAND Military Health</strong> — rand.org</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.mitre.org/our-impact/rd-centers/health-ffrdc" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">MITRE Health FFRDC</strong> — mitre.org</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.health.mil/About-MHS/MHS-Elements/Defense-Health-Board" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">Defense Health Board</strong> — health.mil</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.everycrsreport.com/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">Every CRS Report</strong> — everycrsreport.com</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.dodig.mil/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">DoD Inspector General</strong> — dodig.mil</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-          </div>
+          <svg class="cat-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
+        </label>
+        <div class="cat-links sm:grid-cols-2 gap-3 px-2 pt-3">
+          <a href="https://www.gao.gov/topics/defense-and-national-security/military-health-and-veterans-health-care" target="_blank" rel="noopener" class="resource-link"><span><strong>GAO Defense Health</strong> — gao.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://crsreports.congress.gov/product/details?prodcode=IF10530" target="_blank" rel="noopener" class="resource-link"><span><strong>CRS MHS Primer</strong> — crsreports.congress.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.rand.org/topics/military-health-and-health-care.html" target="_blank" rel="noopener" class="resource-link"><span><strong>RAND Military Health</strong> — rand.org</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.mitre.org/our-impact/rd-centers/health-ffrdc" target="_blank" rel="noopener" class="resource-link"><span><strong>MITRE Health FFRDC</strong> — mitre.org</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.health.mil/About-MHS/MHS-Elements/Defense-Health-Board" target="_blank" rel="noopener" class="resource-link"><span><strong>Defense Health Board</strong> — health.mil</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.everycrsreport.com/" target="_blank" rel="noopener" class="resource-link"><span><strong>Every CRS Report</strong> — everycrsreport.com</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.dodig.mil/" target="_blank" rel="noopener" class="resource-link"><span><strong>DoD Inspector General</strong> — dodig.mil</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
         </div>
       </div>
-      <div class="mb-3">
-        <button class="accordion-trigger w-full flex items-center justify-between card rounded-xl px-6 py-4 text-left" aria-expanded="false">
+
+      <!-- 9. Workforce & Professional Orgs (6) -->
+      <div class="mb-4">
+        <input type="checkbox" id="cat-9" class="cat-toggle">
+        <label for="cat-9" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <span class="text-base font-bold">Workforce & Professional Orgs</span>
+            <span class="text-base font-bold">Workforce &amp; Professional Orgs</span>
             <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">6</span>
           </div>
-          <svg class="accordion-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-        </button>
-        <div class="accordion-content">
-          <div class="px-6 py-4 grid sm:grid-cols-2 gap-3">
-            <a href="https://www.himss.org/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">HIMSS</strong> — himss.org</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://amsus.org/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">AMSUS</strong> — amsus.org</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.pscouncil.org/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">PSC FedHealth</strong> — pscouncil.org</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://chimecentral.org/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">CHIME</strong> — chimecentral.org</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.clearancejobs.com/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">ClearanceJobs</strong> — clearancejobs.com</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.usajobs.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">USAJOBS</strong> — usajobs.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-          </div>
+          <svg class="cat-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
+        </label>
+        <div class="cat-links sm:grid-cols-2 gap-3 px-2 pt-3">
+          <a href="https://www.himss.org/" target="_blank" rel="noopener" class="resource-link"><span><strong>HIMSS</strong> — himss.org</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://amsus.org/" target="_blank" rel="noopener" class="resource-link"><span><strong>AMSUS</strong> — amsus.org</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.pscouncil.org/" target="_blank" rel="noopener" class="resource-link"><span><strong>PSC FedHealth</strong> — pscouncil.org</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://chimecentral.org/" target="_blank" rel="noopener" class="resource-link"><span><strong>CHIME</strong> — chimecentral.org</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.clearancejobs.com/" target="_blank" rel="noopener" class="resource-link"><span><strong>ClearanceJobs</strong> — clearancejobs.com</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.usajobs.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>USAJOBS</strong> — usajobs.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
         </div>
       </div>
-      <div class="mb-3">
-        <button class="accordion-trigger w-full flex items-center justify-between card rounded-xl px-6 py-4 text-left" aria-expanded="false">
+
+      <!-- 10. Data & Analytics (4) -->
+      <div class="mb-4">
+        <input type="checkbox" id="cat-10" class="cat-toggle">
+        <label for="cat-10" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <span class="text-base font-bold">Data & Analytics</span>
+            <span class="text-base font-bold">Data &amp; Analytics</span>
             <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">4</span>
           </div>
-          <svg class="accordion-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-        </button>
-        <div class="accordion-content">
-          <div class="px-6 py-4 grid sm:grid-cols-2 gap-3">
-            <a href="https://healthdata.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">HealthData.gov</strong> — healthdata.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.data.va.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">VA Open Data</strong> — data.va.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://dashboard.healthit.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">ONC Health IT Dashboard</strong> — dashboard.healthit.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://catalog.data.gov/dataset?publisher=Department+of+Veterans+Affairs" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">Data.gov VA Datasets</strong> — data.gov</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-          </div>
+          <svg class="cat-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
+        </label>
+        <div class="cat-links sm:grid-cols-2 gap-3 px-2 pt-3">
+          <a href="https://healthdata.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>HealthData.gov</strong> — healthdata.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.data.va.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>VA Open Data</strong> — data.va.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://dashboard.healthit.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>ONC Health IT Dashboard</strong> — dashboard.healthit.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://catalog.data.gov/dataset?publisher=Department+of+Veterans+Affairs" target="_blank" rel="noopener" class="resource-link"><span><strong>Data.gov VA Datasets</strong> — catalog.data.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
         </div>
       </div>
-      <div class="mb-3">
-        <button class="accordion-trigger w-full flex items-center justify-between card rounded-xl px-6 py-4 text-left" aria-expanded="false">
+
+      <!-- 11. News & Industry Media (7) -->
+      <div class="mb-4">
+        <input type="checkbox" id="cat-11" class="cat-toggle">
+        <label for="cat-11" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <span class="text-base font-bold">News & Industry Media</span>
+            <span class="text-base font-bold">News &amp; Industry Media</span>
             <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">7</span>
           </div>
-          <svg class="accordion-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-        </button>
-        <div class="accordion-content">
-          <div class="px-6 py-4 grid sm:grid-cols-2 gap-3">
-            <a href="https://www.fedhealthit.com/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">FedHealthIT</strong> — fedhealthit.com</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://federalnewsnetwork.com/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">Federal News Network</strong> — federalnewsnetwork.com</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://fedscoop.com/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">FedScoop</strong> — fedscoop.com</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://defensescoop.com/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">DefenseScoop</strong> — defensescoop.com</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://govciomedia.com/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">GovCIO Media</strong> — govciomedia.com</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.nextgov.com/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">Nextgov/FCW</strong> — nextgov.com</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-            <a href="https://www.govexec.com/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
-              <span><strong style="color:var(--mmt-white);">GovExec</strong> — govexec.com</span>
-              <span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-            </a>
-          </div>
+          <svg class="cat-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
+        </label>
+        <div class="cat-links sm:grid-cols-2 gap-3 px-2 pt-3">
+          <a href="https://www.fedhealthit.com/" target="_blank" rel="noopener" class="resource-link"><span><strong>FedHealthIT</strong> — fedhealthit.com</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://federalnewsnetwork.com/" target="_blank" rel="noopener" class="resource-link"><span><strong>Federal News Network</strong> — federalnewsnetwork.com</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://fedscoop.com/" target="_blank" rel="noopener" class="resource-link"><span><strong>FedScoop</strong> — fedscoop.com</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://defensescoop.com/" target="_blank" rel="noopener" class="resource-link"><span><strong>DefenseScoop</strong> — defensescoop.com</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://govciomedia.com/" target="_blank" rel="noopener" class="resource-link"><span><strong>GovCIO Media</strong> — govciomedia.com</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.nextgov.com/" target="_blank" rel="noopener" class="resource-link"><span><strong>Nextgov/FCW</strong> — nextgov.com</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.govexec.com/" target="_blank" rel="noopener" class="resource-link"><span><strong>GovExec</strong> — govexec.com</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
         </div>
       </div>
 
@@ -654,15 +361,14 @@ Example: 'Our team brings 10 years of DHA health IT experience, including MHS GE
   <!-- CTA -->
   <section class="section-alt py-20 px-6">
     <div class="max-w-3xl mx-auto text-center">
-      <h2 class="text-3xl font-bold mb-4">Get the Analysis</h2>
-      <p class="text-lg mb-8" style="color:var(--mmt-white-muted);">These resources are the raw material. The Mission Meets Tech newsletter turns them into actionable intelligence every week.</p>
-      <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary inline-block px-8 py-3 rounded-lg text-base font-semibold no-underline">Subscribe to Newsletter</a>
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">Stay Ahead of the Mission</h2>
+      <p class="text-lg mb-8 max-w-xl mx-auto" style="color:var(--mmt-white-muted);">Get weekly intelligence on federal health IT — policy shifts, contract opportunities, and strategic analysis delivered to your inbox.</p>
+      <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-8 py-3 rounded-lg text-base no-underline inline-block">Subscribe to Newsletter</a>
     </div>
   </section>
 
   </main>
 
-  <!-- Footer -->
   <footer class="py-16 px-6" style="border-top:1px solid rgba(0,229,250,0.1);">
     <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-10">
       <div>
@@ -703,7 +409,6 @@ Example: 'Our team brings 10 years of DHA health IT experience, including MHS GE
   </footer>
 
   <script>
-    // Mobile menu toggle
     const toggle = document.getElementById('menuToggle');
     const menu = document.getElementById('mobileMenu');
     toggle.addEventListener('click', () => {
@@ -711,183 +416,6 @@ Example: 'Our team brings 10 years of DHA health IT experience, including MHS GE
       document.getElementById('menuOpen').classList.toggle('hidden');
       document.getElementById('menuClose').classList.toggle('hidden');
     });
-
-    // Accordion
-    document.querySelectorAll('.accordion-trigger').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const content = btn.nextElementSibling;
-        const chevron = btn.querySelector('.accordion-chevron');
-        const isOpen = content.classList.contains('open');
-        content.classList.toggle('open');
-        chevron.classList.toggle('open');
-        btn.setAttribute('aria-expanded', !isOpen);
-      });
-    });
-
-    // Lethality Test
-    (function() {
-      const STORAGE_KEY = 'mmt_lt_uses';
-      const MAX_USES = 5;
-
-      const textarea = document.getElementById('lt-textarea');
-      const charCount = document.getElementById('lt-chars');
-      const submitBtn = document.getElementById('lt-submit');
-      const submitText = document.getElementById('lt-submit-text');
-      const submitLoading = document.getElementById('lt-submit-loading');
-      const minWarning = document.getElementById('lt-min-warning');
-      const errorEl = document.getElementById('lt-error');
-      const remainingEl = document.getElementById('lt-remaining');
-      const inputPanel = document.getElementById('lt-input-panel');
-      const lockedPanel = document.getElementById('lt-locked');
-      const resultsPanel = document.getElementById('lt-results');
-      const resetBtn = document.getElementById('lt-reset');
-
-      function getUses() {
-        return parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10);
-      }
-
-      function setUses(n) {
-        localStorage.setItem(STORAGE_KEY, String(n));
-      }
-
-      function updateUI() {
-        const uses = getUses();
-        const remaining = Math.max(0, MAX_USES - uses);
-        remainingEl.textContent = remaining;
-
-        if (uses >= MAX_USES) {
-          inputPanel.classList.add('hidden');
-          lockedPanel.classList.remove('hidden');
-          resultsPanel.classList.add('hidden');
-        }
-      }
-
-      function getScoreColor(score) {
-        if (score >= 70) return 'var(--mmt-green)';
-        if (score >= 40) return 'var(--mmt-cyan)';
-        return '#ff6b6b';
-      }
-
-      function getConfidenceStyle(confidence) {
-        if (confidence === 'High') return 'background:rgba(0,255,133,0.15); color:var(--mmt-green);';
-        if (confidence === 'Medium') return 'background:rgba(0,229,250,0.15); color:var(--mmt-cyan);';
-        return 'background:rgba(255,107,107,0.15); color:#ff6b6b;';
-      }
-
-      textarea.addEventListener('input', () => {
-        const len = textarea.value.length;
-        charCount.textContent = len.toLocaleString();
-        const valid = len >= 50 && len <= 10000;
-        submitBtn.disabled = !valid;
-        minWarning.classList.toggle('hidden', len >= 50 || len === 0);
-      });
-
-      function setLoading(on) {
-        submitBtn.disabled = on;
-        submitText.classList.toggle('hidden', on);
-        submitLoading.classList.toggle('hidden', !on);
-      }
-
-      function resetInput() {
-        setLoading(false);
-        const len = textarea.value.trim().length;
-        submitBtn.disabled = len < 50;
-      }
-
-      submitBtn.addEventListener('click', async () => {
-        const text = textarea.value.trim();
-        if (text.length < 50) return;
-
-        const uses = getUses();
-        if (uses >= MAX_USES) { updateUI(); return; }
-
-        errorEl.classList.add('hidden');
-        setLoading(true);
-
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 30000);
-
-        try {
-          const res = await fetch('/.netlify/functions/lethality-test', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: text, uses: uses }),
-            signal: controller.signal
-          });
-          clearTimeout(timeout);
-
-          const data = await res.json();
-          if (!res.ok) throw new Error(data.error || 'Analysis failed');
-
-          setUses(uses + 1);
-          const remaining = Math.max(0, MAX_USES - getUses());
-          remainingEl.textContent = remaining;
-          renderResults(data);
-        } catch (err) {
-          errorEl.textContent = err.name === 'AbortError'
-            ? 'Request timed out. Please try again.'
-            : (err.message || 'Analysis failed. Please try again.');
-          errorEl.classList.remove('hidden');
-          resetInput();
-        }
-      });
-
-      function escapeHtml(str) {
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
-      }
-
-      function renderResults(data) {
-        document.getElementById('lt-pwin').textContent = data.pwin;
-        const confEl = document.getElementById('lt-confidence');
-        confEl.textContent = data.confidence;
-        confEl.setAttribute('style', getConfidenceStyle(data.confidence));
-        document.getElementById('lt-summary').textContent = data.summary;
-
-        const dimsEl = document.getElementById('lt-dimensions');
-        dimsEl.innerHTML = data.dimensions.map(d => {
-          const color = getScoreColor(d.score);
-          return `<div style="background:var(--mmt-slate); border:1px solid rgba(0,229,250,0.1); border-radius:12px; padding:16px 20px;">
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
-              <span style="font-size:14px; font-weight:600; color:var(--mmt-white);">${escapeHtml(d.name)}</span>
-              <span style="font-size:20px; font-weight:700; color:${color};">${d.score}</span>
-            </div>
-            <div style="background:rgba(255,255,255,0.1); border-radius:9999px; height:6px; overflow:hidden; margin-bottom:10px;">
-              <div style="height:100%; width:${d.score}%; background:${color}; border-radius:9999px; transition:width 0.8s ease-out;"></div>
-            </div>
-            <p style="font-size:13px; line-height:1.5; color:var(--mmt-white-dim); margin:0;">${escapeHtml(d.assessment)}</p>
-          </div>`;
-        }).join('');
-
-        const recsEl = document.getElementById('lt-recommendations');
-        recsEl.innerHTML = data.recommendations.map((r, i) => `
-          <li style="display:flex; gap:12px; align-items:flex-start; padding:12px 0; ${i < data.recommendations.length - 1 ? 'border-bottom:1px solid rgba(0,229,250,0.05);' : ''}">
-            <span style="flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; background:rgba(0,255,133,0.1); color:var(--mmt-green); font-size:12px; font-weight:700;">${i + 1}</span>
-            <span style="font-size:14px; line-height:1.6; color:var(--mmt-white-muted);">${escapeHtml(r)}</span>
-          </li>
-        `).join('');
-
-        inputPanel.classList.add('hidden');
-        resultsPanel.classList.remove('hidden');
-      }
-
-      resetBtn.addEventListener('click', () => {
-        resultsPanel.classList.add('hidden');
-
-        if (getUses() >= MAX_USES) {
-          lockedPanel.classList.remove('hidden');
-        } else {
-          textarea.value = '';
-          charCount.textContent = '0';
-          submitBtn.disabled = true;
-          resetInput();
-          inputPanel.classList.remove('hidden');
-        }
-      });
-
-      updateUI();
-    })();
   </script>
 </body>
 </html>
