@@ -4,6 +4,7 @@ const path = require('path');
 const matter = require('gray-matter');
 const { marked } = require('marked');
 const { execSync } = require('child_process');
+const sharp = require('sharp');
 
 const RSS_FEED = 'https://feeds.transistor.fm/fed-up-where-mission-meets-reality';
 const SITE_URL = 'https://missionmeetstech.com';
@@ -128,6 +129,7 @@ function generateArticlePages(articles) {
       .replace(/\{\{NEXT_LINK\}\}/g, nextLink)
       .replace(/\{\{KEYWORDS\}\}/g, (article.tags || []).join(', '));
 
+    html = rewriteOgTags(html, `newsletter-${article.slug}.png`);
     html = inlineTailwindCss(html);
     fs.writeFileSync(path.join(outDir, 'index.html'), html);
   });
@@ -165,6 +167,7 @@ function generateTopicPages(tags) {
       .replace(/\{\{ARTICLE_COUNT\}\}/g, count.toString())
       .replace(/\{\{ARTICLE_COUNT_PLURAL\}\}/g, count === 1 ? '' : 's');
 
+    html = rewriteOgTags(html, `topic-${tag.slug}.png`);
     html = inlineTailwindCss(html);
     fs.writeFileSync(path.join(outDir, 'index.html'), html);
   });
@@ -257,6 +260,148 @@ function generateRssFeed(articles) {
   console.log(`Generated feed.xml (${articles.length} items)`);
 }
 
+// --- OG Image Generation ---
+
+function escapeHtml(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function wrapText(text, maxCharsPerLine) {
+  const words = text.split(/\s+/);
+  const lines = [];
+  let current = '';
+  for (const word of words) {
+    const test = current ? current + ' ' + word : word;
+    if (test.length > maxCharsPerLine && current) {
+      lines.push(current);
+      current = word;
+    } else {
+      current = test;
+    }
+    if (lines.length === 2) {
+      // Third line — add remaining words with ellipsis if needed
+      const remaining = words.slice(words.indexOf(word)).join(' ');
+      if (remaining.length > maxCharsPerLine) {
+        lines.push(remaining.substring(0, maxCharsPerLine - 1) + '\u2026');
+      } else {
+        lines.push(remaining);
+      }
+      return lines;
+    }
+  }
+  if (current) lines.push(current);
+  return lines;
+}
+
+function buildOgSvg({ title, subtitle, label }) {
+  const titleLines = wrapText(title, 32);
+  const titleY = 240;
+  const lineHeight = 60;
+
+  const titleElements = titleLines.map((line, i) =>
+    `<text x="60" y="${titleY + i * lineHeight}" fill="#FFFFFF" font-family="sans-serif" font-size="48" font-weight="700">${escapeHtml(line)}</text>`
+  ).join('\n    ');
+
+  const subtitleY = titleY + titleLines.length * lineHeight + 30;
+
+  const labelElement = label
+    ? `<text x="60" y="185" fill="#00E5FA" font-family="sans-serif" font-size="16" font-weight="700" letter-spacing="3">${escapeHtml(label)}</text>`
+    : '';
+
+  return `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00E5FA"/>
+      <stop offset="100%" stop-color="#00FF85"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#00050F"/>
+  <!-- Top accent line -->
+  <rect x="60" y="70" width="200" height="4" fill="url(#grad)"/>
+  <!-- Wordmark -->
+  <text x="60" y="130" font-family="sans-serif" font-size="28" font-weight="700">
+    <tspan fill="#FFFFFF">Mission Meets </tspan><tspan fill="#00E5FA">Tech</tspan>
+  </text>
+  <!-- Label -->
+  ${labelElement}
+  <!-- Title -->
+  ${titleElements}
+  <!-- Subtitle -->
+  <text x="60" y="${subtitleY}" fill="rgba(255,255,255,0.6)" font-family="sans-serif" font-size="22">${escapeHtml(subtitle || '')}</text>
+  <!-- Bottom accent line -->
+  <rect x="60" y="560" width="200" height="4" fill="url(#grad)"/>
+  <!-- Domain -->
+  <text x="1140" y="590" fill="#00E5FA" font-family="sans-serif" font-size="18" text-anchor="end">missionmeetstech.com</text>
+</svg>`;
+}
+
+function rewriteOgTags(html, ogImageFilename) {
+  const ogUrl = `${SITE_URL}/og/${ogImageFilename}`;
+  html = html.replace(
+    /<meta property="og:image" content="[^"]*">/,
+    `<meta property="og:image" content="${ogUrl}">`
+  );
+  html = html.replace(
+    /<meta property="og:image:width" content="[^"]*">/,
+    '<meta property="og:image:width" content="1200">'
+  );
+  html = html.replace(
+    /<meta property="og:image:height" content="[^"]*">/,
+    '<meta property="og:image:height" content="630">'
+  );
+  html = html.replace(
+    /<meta name="twitter:image" content="[^"]*">/,
+    `<meta name="twitter:image" content="${ogUrl}">`
+  );
+  return html;
+}
+
+async function generateOgImages(articles, tags) {
+  const ogDir = path.join(DIST_DIR, 'og');
+  ensureDir(ogDir);
+
+  // Static page images
+  const staticPages = [
+    { filename: 'index.png', title: 'Federal Health IT Intelligence', subtitle: 'Where policy meets operational reality' },
+    { filename: 'about.png', title: 'About Mission Meets Tech', subtitle: 'Independent analysis for federal health IT' },
+    { filename: 'podcast.png', title: 'Fed UP: Where Mission Meets Reality', subtitle: 'Federal health IT podcast', label: 'PODCAST' },
+    { filename: 'newsletter.png', title: 'Newsletter', subtitle: 'Federal health IT intelligence in your inbox', label: 'NEWSLETTER' },
+    { filename: 'newsletter-archive.png', title: 'Newsletter Archive', subtitle: 'Every issue of Mission Meets Tech', label: 'ARCHIVE' },
+    { filename: 'resources.png', title: 'Federal Health IT Resources', subtitle: 'Curated links for defense and government', label: 'RESOURCES' },
+    { filename: 'contact.png', title: 'Get in Touch', subtitle: 'Mission Meets Tech' },
+    { filename: 'topics.png', title: 'Coverage Topics', subtitle: 'Browse all federal health IT topics', label: 'TOPICS' },
+  ];
+
+  for (const page of staticPages) {
+    const svg = buildOgSvg(page);
+    await sharp(Buffer.from(svg)).png().toFile(path.join(ogDir, page.filename));
+  }
+  console.log(`Generated ${staticPages.length} static page OG images`);
+
+  // Article images
+  for (const article of articles) {
+    const svg = buildOgSvg({
+      title: article.title,
+      subtitle: article.formattedDate,
+      label: 'NEWSLETTER',
+    });
+    await sharp(Buffer.from(svg)).png().toFile(path.join(ogDir, `newsletter-${article.slug}.png`));
+  }
+  console.log(`Generated ${articles.length} article OG images`);
+
+  // Topic images
+  for (const tag of tags) {
+    const count = tag.articles.length;
+    const svg = buildOgSvg({
+      title: tag.name,
+      subtitle: `${count} article${count === 1 ? '' : 's'}`,
+      label: 'TOPIC',
+    });
+    await sharp(Buffer.from(svg)).png().toFile(path.join(ogDir, `topic-${tag.slug}.png`));
+  }
+  console.log(`Generated ${tags.length} topic OG images`);
+}
+
 // --- Static File Copying ---
 
 function inlineTailwindCss(html) {
@@ -277,10 +422,23 @@ function copyStaticFiles() {
     'newsletter-archive.html', 'resources.html', 'contact.html', 'topics.html',
     '404.html'
   ];
+  const ogMap = {
+    'index.html': 'index.png',
+    'about.html': 'about.png',
+    'podcast.html': 'podcast.png',
+    'newsletter.html': 'newsletter.png',
+    'newsletter-archive.html': 'newsletter-archive.png',
+    'resources.html': 'resources.png',
+    'contact.html': 'contact.png',
+    'topics.html': 'topics.png',
+  };
   htmlFiles.forEach(file => {
     const src = path.join(__dirname, file);
     if (fs.existsSync(src)) {
       let html = fs.readFileSync(src, 'utf8');
+      if (ogMap[file]) {
+        html = rewriteOgTags(html, ogMap[file]);
+      }
       html = inlineTailwindCss(html);
       fs.writeFileSync(path.join(DIST_DIR, file), html);
       console.log(`Copied ${file}`);
@@ -375,6 +533,10 @@ async function build() {
 
     // Generate RSS feed
     generateRssFeed(articles);
+
+    // Generate OG images
+    console.log('\n--- Generating OG images ---');
+    await generateOgImages(articles, tags);
   } else {
     console.log('No articles found. Generating static sitemap.');
     generateSitemap([], []);

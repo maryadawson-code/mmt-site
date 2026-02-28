@@ -56,7 +56,7 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 ├── sitemap.xml             # Static sitemap (build generates dynamic version in dist)
 ├── netlify.toml            # Netlify config (headers, redirects, forms)
 ├── build.js                # Build script: markdown → HTML, sitemap, RSS, topic pages
-├── package.json            # Dependencies: rss-parser, marked, gray-matter; devDep: tailwindcss
+├── package.json            # Dependencies: rss-parser, marked, gray-matter, sharp; devDep: tailwindcss
 ├── tailwind.config.js      # Tailwind content paths configuration
 ├── src/
 │   └── input.css           # Tailwind entry point (@tailwind directives)
@@ -72,9 +72,10 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 │   ├── sitemap.xml              # Dynamic sitemap (all pages + articles + topics)
 │   ├── styles/tailwind.css       # Minified, tree-shaken Tailwind CSS (~12KB, inlined into HTML by build)
 │   ├── feed.xml                 # RSS feed
+│   ├── og/*.png                 # Generated OG images (1200x630, ~37 files)
 │   └── newsletters.json        # Updated with on-site article URLs
 ├── CLAUDE.md               # This file
-├── mmt-logo.png            # Full logo (used for OG images)
+├── mmt-logo.png            # Full logo (fallback OG image)
 ├── mmt-logo-nav.png        # Nav logo variant
 ├── mmt-icon.png            # Icon variant
 ├── marywomack.jpg          # Mary Womack headshot
@@ -161,6 +162,7 @@ To publish a new newsletter issue:
 - `dist/topics/tag-slug/index.html` — topic landing pages
 - `dist/sitemap.xml` — dynamic sitemap with all pages, articles, and topics
 - `dist/feed.xml` — RSS 2.0 feed of all newsletter articles
+- `dist/og/*.png` — 1200x630 OG images for social sharing (8 static + per-article + per-topic)
 - `dist/newsletters.json` — updated with on-site article URLs (used by archive page)
 
 ## Brand Voice
@@ -179,8 +181,9 @@ To publish a new newsletter issue:
 4. **newsletters.json** — Updated with on-site URLs → `dist/newsletters.json`
 5. **Sitemap** — Dynamic sitemap with all pages, articles, topics → `dist/sitemap.xml`
 6. **RSS feed** — RSS 2.0 → `dist/feed.xml`
-7. **Podcast** — Fetches episodes from Transistor RSS (for optional template generation)
-8. **Static files** — Copies HTML, images, robots.txt to `dist/` (excludes `.mp4`, `.zip`)
+7. **OG images** — SVG → PNG via `sharp` (1200x630, branded with page title/subtitle) → `dist/og/`; OG meta tags rewritten in article, topic, and static HTML pages
+8. **Podcast** — Fetches episodes from Transistor RSS (for optional template generation)
+9. **Static files** — Copies HTML, images, robots.txt to `dist/` (excludes `.mp4`, `.zip`); rewrites OG tags for static pages
 
 ## Cache Headers (netlify.toml)
 
