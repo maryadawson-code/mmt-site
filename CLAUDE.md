@@ -7,9 +7,9 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 ## Stack
 
 - **Type:** Static HTML/CSS/JS with Node.js build step (`node build.js`)
-- **Styling:** Tailwind CSS via CDN + inline CSS custom properties
+- **Styling:** Tailwind CSS v3 (build-time via CLI, output at `dist/styles/tailwind.css`) + inline CSS custom properties
 - **Fonts:** Google Fonts — Space Grotesk (headings), Inter (body)
-- **Icons:** Font Awesome 6.5.1 via CDN
+- **Icons:** Inline SVGs (no external icon library)
 - **Forms:** Netlify Forms (contact page), Buttondown (email signup)
 - **Analytics:** Plausible (privacy-respecting, no cookies)
 - **Podcast embed:** Transistor.fm iframe
@@ -55,7 +55,10 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 ├── sitemap.xml             # Static sitemap (build generates dynamic version in dist)
 ├── netlify.toml            # Netlify config (headers, redirects, forms)
 ├── build.js                # Build script: markdown → HTML, sitemap, RSS, topic pages
-├── package.json            # Dependencies: rss-parser, marked, gray-matter
+├── package.json            # Dependencies: rss-parser, marked, gray-matter; devDep: tailwindcss
+├── tailwind.config.js      # Tailwind content paths configuration
+├── src/
+│   └── input.css           # Tailwind entry point (@tailwind directives)
 ├── content/
 │   └── newsletter/         # Markdown source files for newsletter articles
 │       └── YYYY-MM-DD-slug.md
@@ -66,6 +69,7 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 │   ├── newsletter/*/index.html  # Generated article pages
 │   ├── topics/*/index.html      # Generated topic pages
 │   ├── sitemap.xml              # Dynamic sitemap (all pages + articles + topics)
+│   ├── styles/tailwind.css       # Minified, tree-shaken Tailwind CSS (~12KB)
 │   ├── feed.xml                 # RSS feed
 │   └── newsletters.json        # Updated with on-site article URLs
 ├── CLAUDE.md               # This file
@@ -73,7 +77,8 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 ├── mmt-logo-nav.png        # Nav logo variant
 ├── mmt-icon.png            # Icon variant
 ├── marywomack.jpg          # Mary Womack headshot
-├── Sara zoomed.jpg         # Sara Byrd headshot
+├── sarabyrd.jpg            # Sara Byrd headshot
+├── favicon.png             # Favicon (64x64 PNG)
 ├── styles.css              # Legacy stylesheet (not used by main pages)
 └── main.js                 # Legacy JS (not used by main pages)
 ```
@@ -81,16 +86,34 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 ## Page Conventions
 
 Every page follows this structure:
-1. `<head>` with: charset, viewport, title, meta description, canonical URL, OG tags, Twitter Card tags, favicon, Plausible script, Google Fonts, Tailwind CDN, Font Awesome CDN, inline `<style>` with CSS variables and utility classes
-2. `<nav>` with glass-morphism effect, desktop links + mobile hamburger menu
-3. Hero section with `pt-32 pb-16` padding
-4. Content sections alternating between default and `section-alt` backgrounds
-5. CTA section
-6. 4-column footer (Brand, Platform, Company, Listen)
-7. Mobile menu toggle script at bottom
+1. `<head>` with: charset, viewport, title, meta description, canonical URL, OG tags, Twitter Card tags, favicon, RSS feed link, Plausible script, Google Fonts, built Tailwind CSS (`/styles/tailwind.css`), inline `<style>` with CSS variables and utility classes (including `*:focus-visible` outline)
+2. Skip-to-content link (`<a href="#main-content" class="sr-only focus:not-sr-only ...">`)
+3. `<nav>` with glass-morphism effect, desktop links + mobile hamburger menu
+4. `<main id="main-content">` wrapping all content sections
+5. Hero section with `pt-32 pb-16` padding
+6. Content sections alternating between default and `section-alt` backgrounds
+7. CTA section
+8. `</main>` closing tag
+9. 4-column footer (Brand, Platform, Company, Listen) — LinkedIn icon link has `<span class="sr-only">LinkedIn</span>`
+10. Mobile menu toggle script at bottom
 
 ### Active nav highlighting
 The current page's nav link uses `color:var(--mmt-cyan)` instead of `--mmt-white-muted`.
+
+### Mobile menu toggle
+Uses dual inline SVGs (`#menuOpen` and `#menuClose`) with `hidden` class toggling — no external icon library.
+
+### Icons
+All icons are inline SVGs with `width="1em" height="1em" fill="currentColor" aria-hidden="true"`. No Font Awesome or other icon CDN.
+
+### Accessibility
+- Skip-to-content link on every page (visible on focus)
+- `<main id="main-content">` landmark on every page
+- `*:focus-visible` outline (`2px solid var(--mmt-cyan)`) on every page
+- `<label class="sr-only">` on Buttondown email inputs
+- `aria-live="polite"` on dynamic containers (`#latest-articles`, `#archive-container`, `#topics-container`)
+- `title` attribute on Transistor iframe (`podcast.html`)
+- RSS `<link rel="alternate">` on every page
 
 ## External Links
 
@@ -148,11 +171,32 @@ To publish a new newsletter issue:
 - **Filter:** "Does this save lives or enhance readiness?"
 - **Compliance disclaimer:** "Views expressed are those of the authors and do not represent any employer or government agency." (appears in every page footer)
 
+## Build Pipeline
+
+`build.js` runs these steps in order:
+1. **Tailwind CSS** — `npx tailwindcss -i ./src/input.css -o ./dist/styles/tailwind.css --minify` (tree-shaken, ~12KB)
+2. **Newsletter articles** — Markdown in `content/newsletter/` → HTML pages in `dist/newsletter/slug/`
+3. **Topic pages** — Auto-generated from article tags → `dist/topics/tag-slug/`
+4. **newsletters.json** — Updated with on-site URLs → `dist/newsletters.json`
+5. **Sitemap** — Dynamic sitemap with all pages, articles, topics → `dist/sitemap.xml`
+6. **RSS feed** — RSS 2.0 → `dist/feed.xml`
+7. **Podcast** — Fetches episodes from Transistor RSS (for optional template generation)
+8. **Static files** — Copies HTML, images, robots.txt to `dist/` (excludes `.mp4`, `.zip`)
+
+## Cache Headers (netlify.toml)
+
+- `/styles/*.css` → `max-age=31536000, immutable`
+- `*.jpg`, `*.png`, `*.svg` → `max-age=2592000` (30 days)
+- `*.html` → `max-age=0, must-revalidate`
+- `/feed.xml` → `max-age=3600` (1 hour)
+
 ## Gotchas
 
 - `styles.css` uses different CSS variable names (`--cyan`, `--void`, etc.) — it is the legacy stylesheet and is not used by the main pages.
-- `Sara zoomed.jpg` has a space in the filename — reference it with the space in HTML `src` attributes.
-- The Tailwind CDN script is loaded from `cdn.tailwindcss.com` — this is intended for development/prototyping. For production optimization, consider migrating to a build-time Tailwind setup.
-- Newsletter archive loads data dynamically from `newsletters.json` via fetch API.
+- Sara Byrd headshot is `sarabyrd.jpg` (no spaces or underscores).
+- Newsletter archive and topics page load data dynamically from `newsletters.json` via fetch API.
 - `dist/` is gitignored — never commit build artifacts.
 - `build.js` generates `newsletters.json` in dist with on-site URLs; the root `newsletters.json` still has LinkedIn URLs as the source of truth for metadata.
+- Tailwind CSS is built at compile time via CLI (`tailwind.config.js` + `src/input.css`). There is no CDN — all styles are in `dist/styles/tailwind.css`.
+- All icons are inline SVGs — there is no Font Awesome or other icon CDN. When adding new icons, use inline SVG with `width="1em" height="1em" fill="currentColor" aria-hidden="true"`.
+- `*.mp4` and `*.zip` are gitignored and excluded from dist builds.
