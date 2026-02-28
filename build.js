@@ -119,11 +119,11 @@ function generateRelatedArticlesHtml(related) {
   if (related.length === 0) return '';
   const cards = related.map(a =>
     `<a href="${a.url}" class="card rounded-xl p-4 no-underline block transition-all">
-            <p class="text-xs mb-1" style="color:var(--mmt-text-muted);">${a.formattedDate}</p>
-            <p class="text-sm font-bold" style="color:var(--mmt-text);">${escapeHtml(a.title)}</p>
+            <p class="text-xs mb-1" style="color:var(--mmt-white-dim);">${a.formattedDate}</p>
+            <p class="text-sm font-bold" style="color:var(--mmt-white);">${escapeHtml(a.title)}</p>
           </a>`
   ).join('\n          ');
-  return `<div class="pt-8" style="border-top:1px solid var(--mmt-border);">
+  return `<div class="pt-8" style="border-top:1px solid rgba(0,229,250,0.1);">
         <h3 class="text-lg font-bold mb-4">Related Articles</h3>
         <div class="grid md:grid-cols-3 gap-4">
           ${cards}
@@ -145,7 +145,7 @@ function generateRelatedTopicsHtml(currentTag, allTags) {
     .slice(0, 4);
   if (related.length === 0) return '';
   const chips = related.map(r =>
-    `<a href="/topics/${r.tag.slug}/" class="text-sm px-4 py-2 rounded-full no-underline hover:opacity-80" style="background:var(--mmt-accent-subtle); color:var(--mmt-accent);">${escapeHtml(r.tag.name)}</a>`
+    `<a href="/topics/${r.tag.slug}/" class="text-sm px-4 py-2 rounded-full no-underline hover:opacity-80" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">${escapeHtml(r.tag.name)}</a>`
   ).join('\n        ');
   return `<h3 class="text-lg font-bold mb-4">Related Topics</h3>
       <div class="flex flex-wrap gap-3">
@@ -154,7 +154,7 @@ function generateRelatedTopicsHtml(currentTag, allTags) {
 }
 
 function generatePodcastEpisodesHtml(feed) {
-  if (!feed || !feed.items || feed.items.length === 0) return '<p style="color:var(--mmt-text-muted);">Episodes coming soon.</p>';
+  if (!feed || !feed.items || feed.items.length === 0) return '<p style="color:var(--mmt-white-dim);">Episodes coming soon.</p>';
   const episodes = feed.items.slice(0, 10);
   return episodes.map(ep => {
     const title = escapeHtml(ep.title || 'Untitled Episode');
@@ -164,9 +164,9 @@ function generatePodcastEpisodesHtml(feed) {
     return `<article class="card rounded-xl p-6">
           <div class="flex items-start justify-between gap-4">
             <div class="flex-1">
-              <h3 class="text-base font-bold mb-1" style="color:var(--mmt-text);">${title}</h3>
-              <p class="text-xs mb-2" style="color:var(--mmt-text-muted);">${date}${duration ? ` &middot; ${duration}` : ''}</p>
-              ${desc ? `<p class="text-sm leading-relaxed" style="color:var(--mmt-text-secondary);">${desc}</p>` : ''}
+              <h3 class="text-base font-bold mb-1" style="color:var(--mmt-white);">${title}</h3>
+              <p class="text-xs mb-2" style="color:var(--mmt-white-dim);">${date}${duration ? ` &middot; ${duration}` : ''}</p>
+              ${desc ? `<p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">${desc}</p>` : ''}
             </div>
           </div>
         </article>`;
@@ -188,8 +188,8 @@ function generateSearchIndex(archive) {
 const searchOverlayHtml = `
   <!-- Search Overlay -->
   <div id="searchOverlay" class="hidden fixed inset-0 z-[70]" style="background:rgba(0,0,0,0.5);">
-    <div class="max-w-xl mx-auto mt-24 p-6 rounded-xl" style="background:var(--mmt-surface); border:1px solid var(--mmt-border);">
-      <input id="searchInput" type="search" placeholder="Search articles, topics, resources..." autocomplete="off" class="w-full px-4 py-3 rounded-lg text-base" style="background:var(--mmt-bg); border:1px solid var(--mmt-border); color:var(--mmt-text); outline:none;">
+    <div class="max-w-xl mx-auto mt-24 p-6 rounded-xl" style="background:var(--mmt-slate); border:1px solid rgba(0,229,250,0.1);">
+      <input id="searchInput" type="search" placeholder="Search articles, topics, resources..." autocomplete="off" class="w-full px-4 py-3 rounded-lg text-base" style="background:var(--mmt-navy); border:1px solid rgba(0,229,250,0.1); color:var(--mmt-white); outline:none;">
       <div id="searchResults" class="mt-4 max-h-80 overflow-y-auto"></div>
     </div>
   </div>`;
@@ -216,11 +216,11 @@ const searchScript = `
         var matches = idx.filter(function(item) {
           return item.title.toLowerCase().includes(q) || item.description.toLowerCase().includes(q) || (item.tags||[]).some(function(t){return t.toLowerCase().includes(q)});
         }).slice(0, 8);
-        if (matches.length === 0) { results.innerHTML = '<p class="text-sm py-4 text-center" style="color:var(--mmt-text-muted);">No results found.</p>'; return; }
+        if (matches.length === 0) { results.innerHTML = '<p class="text-sm py-4 text-center" style="color:var(--mmt-white-dim);">No results found.</p>'; return; }
         results.innerHTML = matches.map(function(m) {
-          return '<a href="'+m.url+'" class="block p-3 rounded-lg no-underline hover:opacity-80 mb-2" style="background:var(--mmt-bg); border:1px solid var(--mmt-border);">'
-            + '<p class="text-sm font-bold" style="color:var(--mmt-text);">'+m.title+'</p>'
-            + '<p class="text-xs mt-1" style="color:var(--mmt-text-muted);">'+m.date+'</p>'
+          return '<a href="'+m.url+'" class="block p-3 rounded-lg no-underline hover:opacity-80 mb-2" style="background:var(--mmt-navy); border:1px solid rgba(0,229,250,0.1);">'
+            + '<p class="text-sm font-bold" style="color:var(--mmt-white);">'+m.title+'</p>'
+            + '<p class="text-xs mt-1" style="color:var(--mmt-white-dim);">'+m.date+'</p>'
             + '</a>';
         }).join('');
       });
@@ -247,10 +247,10 @@ function generateArticlePages(articles) {
     const prev = articles[index + 1]; // older
     const next = articles[index - 1]; // newer
     const prevLink = prev
-      ? `<a href="${prev.url}" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-accent);"><svg class="mr-2" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H109.3l105.3-105.4c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>${prev.title}</a>`
+      ? `<a href="${prev.url}" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);"><svg class="mr-2" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H109.3l105.3-105.4c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>${prev.title}</a>`
       : '<span></span>';
     const nextLink = next
-      ? `<a href="${next.url}" class="text-sm no-underline hover:opacity-80 text-right" style="color:var(--mmt-accent);">${next.title}<svg class="ml-2" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224H32c-17.7 0-32 14.3-32 32s14.3 32 32 32h306.7L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg></a>`
+      ? `<a href="${next.url}" class="text-sm no-underline hover:opacity-80 text-right" style="color:var(--mmt-cyan);">${next.title}<svg class="ml-2" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224H32c-17.7 0-32 14.3-32 32s14.3 32 32 32h306.7L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg></a>`
       : '<span></span>';
 
     // Related articles
@@ -298,9 +298,9 @@ function generateTopicPages(tags) {
 
     const articleListHtml = tag.articles.map(article => `
         <article class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2"><a href="${article.url}" class="no-underline hover:opacity-80" style="color:var(--mmt-text);">${article.title}</a></h3>
-          <p class="text-xs mb-3" style="color:var(--mmt-text-muted);"><svg class="mr-1" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H64C28.7 64 0 92.7 0 128v16 48V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192 144 128c0-35.3-28.7-64-64-64H344V24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H152V24zM48 192H400V448c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192z"/></svg>${article.formattedDate}</p>
-          <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-text-secondary);">${article.description}</p>
+          <h3 class="text-lg font-bold mb-2"><a href="${article.url}" class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${article.title}</a></h3>
+          <p class="text-xs mb-3" style="color:var(--mmt-white-dim);"><svg class="mr-1" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H64C28.7 64 0 92.7 0 128v16 48V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192 144 128c0-35.3-28.7-64-64-64H344V24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H152V24zM48 192H400V448c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192z"/></svg>${article.formattedDate}</p>
+          <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-muted);">${article.description}</p>
           <div class="flex flex-wrap gap-2">
             ${(article.tags || []).map(t => `<a href="/topics/${slugify(t)}/" class="tag no-underline">${t}</a>`).join('')}
           </div>
@@ -308,7 +308,7 @@ function generateTopicPages(tags) {
 
     // Topic description
     const desc = topicDescriptions[tag.name] || '';
-    const descHtml = desc ? `<p class="text-lg leading-relaxed mb-4" style="color:var(--mmt-text-secondary);">${escapeHtml(desc)}</p>` : '';
+    const descHtml = desc ? `<p class="text-lg leading-relaxed mb-4" style="color:var(--mmt-white-muted);">${escapeHtml(desc)}</p>` : '';
 
     // Related topics
     const relatedTopicsHtml = generateRelatedTopicsHtml(tag, tags);
@@ -496,22 +496,22 @@ function buildOgSvg({ title, subtitle, label }) {
   const subtitleY = titleY + titleLines.length * lineHeight + 30;
 
   const labelElement = label
-    ? `<text x="60" y="185" fill="#58A6FF" font-family="sans-serif" font-size="16" font-weight="700" letter-spacing="3">${escapeHtml(label)}</text>`
+    ? `<text x="60" y="185" fill="#00E5FA" font-family="sans-serif" font-size="16" font-weight="700" letter-spacing="3">${escapeHtml(label)}</text>`
     : '';
 
   return `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#58A6FF"/>
-      <stop offset="100%" stop-color="#58A6FF"/>
+      <stop offset="0%" stop-color="#00E5FA"/>
+      <stop offset="100%" stop-color="#00FF85"/>
     </linearGradient>
   </defs>
-  <rect width="1200" height="630" fill="#0D1117"/>
+  <rect width="1200" height="630" fill="#00050F"/>
   <!-- Top accent line -->
   <rect x="60" y="70" width="200" height="4" fill="url(#grad)"/>
   <!-- Wordmark -->
   <text x="60" y="130" font-family="sans-serif" font-size="28" font-weight="700">
-    <tspan fill="#FFFFFF">Mission Meets </tspan><tspan fill="#58A6FF">Tech</tspan>
+    <tspan fill="#FFFFFF">Mission Meets </tspan><tspan fill="#00E5FA">Tech</tspan>
   </text>
   <!-- Label -->
   ${labelElement}
@@ -522,7 +522,7 @@ function buildOgSvg({ title, subtitle, label }) {
   <!-- Bottom accent line -->
   <rect x="60" y="560" width="200" height="4" fill="url(#grad)"/>
   <!-- Domain -->
-  <text x="1140" y="590" fill="#58A6FF" font-family="sans-serif" font-size="18" text-anchor="end">missionmeetstech.com</text>
+  <text x="1140" y="590" fill="#00E5FA" font-family="sans-serif" font-size="18" text-anchor="end">missionmeetstech.com</text>
 </svg>`;
 }
 
@@ -602,12 +602,12 @@ function generateLeadStoryHtml(archive) {
   if (archive.length === 0) return '';
   const item = archive[0];
   const tags = (item.tags || []).map(t =>
-    `<a href="/topics/${slugify(t)}/" class="text-xs px-2 py-0.5 rounded no-underline" style="background:var(--mmt-accent-subtle); color:var(--mmt-accent);">${escapeHtml(t)}</a>`
+    `<a href="/topics/${slugify(t)}/" class="text-xs px-2 py-0.5 rounded no-underline" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">${escapeHtml(t)}</a>`
   ).join('\n            ');
-  return `<a href="${item.url}" class="card rounded-xl p-8 no-underline block transition-all" style="border-left:4px solid var(--mmt-accent);">
-        <p class="text-xs mb-3" style="color:var(--mmt-text-muted);">${calendarSvg}${escapeHtml(item.date)}</p>
-        <h2 class="text-2xl md:text-3xl font-bold mb-3 leading-snug" style="color:var(--mmt-text);">${escapeHtml(item.title)}</h2>
-        <p class="text-base leading-relaxed mb-4" style="color:var(--mmt-text-secondary);">${escapeHtml(item.description)}</p>
+  return `<a href="${item.url}" class="card rounded-xl p-8 no-underline block transition-all" style="border-left:4px solid var(--mmt-cyan);">
+        <p class="text-xs mb-3" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}</p>
+        <h2 class="text-2xl md:text-3xl font-bold mb-3 leading-snug" style="color:var(--mmt-white);">${escapeHtml(item.title)}</h2>
+        <p class="text-base leading-relaxed mb-4" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>
         <div class="flex flex-wrap gap-2">
             ${tags}
         </div>
@@ -616,15 +616,15 @@ function generateLeadStoryHtml(archive) {
 
 function generateLatestArticlesHtml(archive, count) {
   const items = archive.slice(1, 1 + count); // Skip lead story
-  if (items.length === 0) return '<p class="text-center py-10 col-span-3" style="color:var(--mmt-text-muted);">No articles yet. Check back soon!</p>';
+  if (items.length === 0) return '<p class="text-center py-10 col-span-3" style="color:var(--mmt-white-dim);">No articles yet. Check back soon!</p>';
   return items.map(item => {
     const tags = (item.tags || []).map(t =>
-      `<a href="/topics/${slugify(t)}/" class="text-xs px-2 py-0.5 rounded no-underline" style="background:var(--mmt-accent-subtle); color:var(--mmt-accent);">${escapeHtml(t)}</a>`
+      `<a href="/topics/${slugify(t)}/" class="text-xs px-2 py-0.5 rounded no-underline" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">${escapeHtml(t)}</a>`
     ).join('');
     return `<a href="${item.url}" class="card rounded-xl p-6 no-underline block transition-all">
-          <p class="text-xs mb-3" style="color:var(--mmt-text-muted);">${calendarSvg}${escapeHtml(item.date)}</p>
-          <h3 class="text-lg font-bold mb-3 leading-snug" style="color:var(--mmt-text);">${escapeHtml(item.title)}</h3>
-          <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-text-secondary);">${escapeHtml(item.description)}</p>
+          <p class="text-xs mb-3" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}</p>
+          <h3 class="text-lg font-bold mb-3 leading-snug" style="color:var(--mmt-white);">${escapeHtml(item.title)}</h3>
+          <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>
           <div class="flex flex-wrap gap-2">${tags}</div>
         </a>`;
   }).join('\n        ');
@@ -639,7 +639,7 @@ function generateTopicChipsHtml(archive) {
   });
   const sorted = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]);
   return sorted.map(([tag, count]) =>
-    `<a href="/topics/${slugify(tag)}/" class="text-sm px-4 py-2 rounded-full no-underline hover:opacity-80 transition-all" style="background:var(--mmt-accent-subtle); color:var(--mmt-accent);">${escapeHtml(tag)} <span style="color:var(--mmt-text-muted);">${count}</span></a>`
+    `<a href="/topics/${slugify(tag)}/" class="text-sm px-4 py-2 rounded-full no-underline hover:opacity-80 transition-all" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">${escapeHtml(tag)} <span style="color:var(--mmt-white-dim);">${count}</span></a>`
   ).join('\n          ');
 }
 
@@ -660,12 +660,12 @@ function generateTopicsGridHtml(archive) {
     const slug = slugify(tag);
     const desc = topicDescriptions[tag] || '';
     const previews = (tagArticles[tag] || []).map(a =>
-      `<li class="truncate"><a href="${a.url}" class="text-xs no-underline hover:opacity-80" style="color:var(--mmt-accent);">${escapeHtml(a.title)}</a></li>`
+      `<li class="truncate"><a href="${a.url}" class="text-xs no-underline hover:opacity-80" style="color:var(--mmt-cyan);">${escapeHtml(a.title)}</a></li>`
     ).join('\n              ');
     return `<a href="/topics/${slug}/" class="card rounded-xl p-6 no-underline block transition-all">
-            <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-text);">${escapeHtml(tag)}</h3>
-            ${desc ? `<p class="text-sm mb-3 leading-relaxed" style="color:var(--mmt-text-secondary);">${escapeHtml(desc)}</p>` : ''}
-            <p class="text-sm mb-3" style="color:var(--mmt-text-muted);">${count} article${count === 1 ? '' : 's'}</p>
+            <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-white);">${escapeHtml(tag)}</h3>
+            ${desc ? `<p class="text-sm mb-3 leading-relaxed" style="color:var(--mmt-white-muted);">${escapeHtml(desc)}</p>` : ''}
+            <p class="text-sm mb-3" style="color:var(--mmt-white-dim);">${count} article${count === 1 ? '' : 's'}</p>
             ${previews ? `<ul class="list-none p-0 m-0 space-y-1">${previews}</ul>` : ''}
           </a>`;
   }).join('\n        ');
@@ -673,18 +673,18 @@ function generateTopicsGridHtml(archive) {
 
 function generateLatestIssuesHtml(archive, count) {
   const items = archive.slice(0, count);
-  if (items.length === 0) return '<p class="text-center py-10 col-span-3" style="color:var(--mmt-text-muted);">No newsletters yet. Check back soon!</p>';
+  if (items.length === 0) return '<p class="text-center py-10 col-span-3" style="color:var(--mmt-white-dim);">No newsletters yet. Check back soon!</p>';
   return items.map(item =>
     `<article class="card rounded-xl p-6">
-          <p class="text-xs mb-3" style="color:var(--mmt-text-muted);">${calendarSvg}${escapeHtml(item.date)}</p>
-          <h3 class="text-lg font-bold mb-2"><a href="${item.url}" class="no-underline hover:opacity-80" style="color:var(--mmt-text);">${escapeHtml(item.title)}</a></h3>
-          <p class="text-sm leading-relaxed" style="color:var(--mmt-text-secondary);">${escapeHtml(item.description)}</p>
+          <p class="text-xs mb-3" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}</p>
+          <h3 class="text-lg font-bold mb-2"><a href="${item.url}" class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${escapeHtml(item.title)}</a></h3>
+          <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>
         </article>`
   ).join('\n        ');
 }
 
 function generateArchiveHtml(archive) {
-  if (archive.length === 0) return '<p class="text-center py-10" style="color:var(--mmt-text-muted);">No issues yet.</p>';
+  if (archive.length === 0) return '<p class="text-center py-10" style="color:var(--mmt-white-dim);">No issues yet.</p>';
   const total = archive.length;
   return archive.map((item, i) => {
     const issueNum = total - i;
@@ -694,11 +694,11 @@ function generateArchiveHtml(archive) {
     ).join('');
     return `<article class="card rounded-xl p-6" data-topics="${topicSlugs}">
           <div class="flex items-start justify-between gap-4 mb-2">
-            <h3 class="text-lg font-bold"><a href="${item.url}" class="no-underline hover:opacity-80" style="color:var(--mmt-text);">${escapeHtml(item.title)}</a></h3>
-            <span class="text-xs whitespace-nowrap px-2 py-1 rounded" style="background:var(--mmt-accent-subtle); color:var(--mmt-accent);">#${issueNum}</span>
+            <h3 class="text-lg font-bold"><a href="${item.url}" class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${escapeHtml(item.title)}</a></h3>
+            <span class="text-xs whitespace-nowrap px-2 py-1 rounded" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">#${issueNum}</span>
           </div>
-          <p class="text-xs mb-3" style="color:var(--mmt-text-muted);">${calendarSvg}${escapeHtml(item.date)}</p>
-          <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-text-secondary);">${escapeHtml(item.description)}</p>
+          <p class="text-xs mb-3" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}</p>
+          <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>
           <div class="flex flex-wrap gap-2">${tags}</div>
         </article>`;
   }).join('\n        ');
@@ -713,40 +713,40 @@ function generateTopicFilterChipsHtml(archive) {
   });
   const sorted = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]);
   return sorted.map(([tag]) =>
-    `<button data-filter-topic="${slugify(tag)}" class="text-xs px-3 py-1 rounded-full cursor-pointer" style="background:var(--mmt-accent-subtle); color:var(--mmt-accent); border:none;">${escapeHtml(tag)}</button>`
+    `<button data-filter-topic="${slugify(tag)}" class="text-xs px-3 py-1 rounded-full cursor-pointer" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan); border:none;">${escapeHtml(tag)}</button>`
   ).join('\n          ');
 }
 
 function generateLatestAllHtml(archive) {
-  if (archive.length === 0) return '<p class="text-center py-10" style="color:var(--mmt-text-muted);">No articles yet.</p>';
+  if (archive.length === 0) return '<p class="text-center py-10" style="color:var(--mmt-white-dim);">No articles yet.</p>';
   return archive.map(item => {
     const tags = (item.tags || []).map(t =>
       `<a href="/topics/${slugify(t)}/" class="tag no-underline">${escapeHtml(t)}</a>`
     ).join('');
     return `<article class="card rounded-xl p-6">
-          <p class="text-xs mb-2" style="color:var(--mmt-text-muted);">${calendarSvg}${escapeHtml(item.date)}</p>
-          <h3 class="text-lg font-bold mb-2"><a href="${item.url}" class="no-underline hover:opacity-80" style="color:var(--mmt-text);">${escapeHtml(item.title)}</a></h3>
-          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text-secondary);">${escapeHtml(item.description)}</p>
+          <p class="text-xs mb-2" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}</p>
+          <h3 class="text-lg font-bold mb-2"><a href="${item.url}" class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${escapeHtml(item.title)}</a></h3>
+          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>
           <div class="flex flex-wrap gap-2">${tags}</div>
         </article>`;
   }).join('\n        ');
 }
 
 function generateArticleCountBadge(archive) {
-  return `<span class="text-sm px-3 py-1 rounded-full" style="background:var(--mmt-accent-subtle); color:var(--mmt-accent);">${archive.length} articles</span>`;
+  return `<span class="text-sm px-3 py-1 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">${archive.length} articles</span>`;
 }
 
 function generatePodcastTeaserHtml(feed) {
   if (!feed || !feed.items || feed.items.length === 0) {
-    return '<p class="text-sm" style="color:var(--mmt-text-muted);">Podcast episodes coming soon.</p>';
+    return '<p class="text-sm" style="color:var(--mmt-white-dim);">Podcast episodes coming soon.</p>';
   }
   const ep = feed.items[0];
   const title = escapeHtml(ep.title || 'Latest Episode');
   return `<div class="card rounded-xl p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-        <div class="text-2xl" style="color:var(--mmt-accent);"><svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M256 80C149.9 80 62.4 159.4 49.6 262.9L45.2 298.2c-1.5 11.8 6.9 22.6 18.7 24.1s22.6-6.9 24.1-18.7l4.4-35.3C103 177.2 172.6 120 256 120s153 57.2 163.6 149.3l4.4 35.3c1.5 11.8 12.3 20.2 24.1 18.7s20.2-12.3 18.7-24.1l-4.4-35.3C449.6 159.4 362.1 80 256 80zm0 80c-70.7 0-129.4 52.7-138.4 121.3L113.2 314c-1.3 10.1 5.8 19.3 15.9 20.7s19.3-5.8 20.7-15.9l4.4-32.7C160.6 237.1 204.1 200 256 200s95.4 37.1 101.8 86.1l4.4 32.7c1.3 10.1 10.6 17.2 20.7 15.9s17.2-10.6 15.9-20.7l-4.4-32.7C385.4 212.7 326.7 160 256 160zm-32 296v-56.2c0-15 9.2-28.5 23.2-33.9l0 0c5.6-2.2 11.6-2.2 17.2-.3c6.5 2.2 14.2 5.1 22.3 8.8c9 4.1 16.4 8.2 21.7 11.4c2.7 1.6 4.7 3 6.1 3.9l.4 .3c8.5 6.1 20.2 4.1 26.3-4.4s4.1-20.2-4.4-26.3l-.5-.3c0 0 0 0 0 0s0 0 0 0c-1.8-1.3-4.3-2.8-7.5-4.7c-6.4-3.8-15-8.6-25.3-13.3c-10.3-4.7-20.2-8.4-28.7-11.2c-12.6-4.2-26.7-2.9-38.4 3.7C221.6 341.7 184 371.5 184 400v56.2c0 14.5 7.3 28 19.4 35.9C224.3 505.5 238.9 512 256 512s31.7-6.5 52.6-19.9c12.1-7.9 19.4-21.4 19.4-35.9V400c0-2.6-.2-5.2-.6-7.7c-2-13.3-13.8-22.8-27.2-21.3c-13.3 1.5-23.2 12.1-24.1 25.5c-.1 1.2-.2 2.4-.2 3.5v56.2c0 .8-.4 1.6-1.1 2.1C265.3 465 260 468 256 468s-9.3-3-18.8-9.7c-.7-.5-1.2-1.3-1.2-2.1z"/></svg></div>
+        <div class="text-2xl" style="color:var(--mmt-cyan);"><svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M256 80C149.9 80 62.4 159.4 49.6 262.9L45.2 298.2c-1.5 11.8 6.9 22.6 18.7 24.1s22.6-6.9 24.1-18.7l4.4-35.3C103 177.2 172.6 120 256 120s153 57.2 163.6 149.3l4.4 35.3c1.5 11.8 12.3 20.2 24.1 18.7s20.2-12.3 18.7-24.1l-4.4-35.3C449.6 159.4 362.1 80 256 80zm0 80c-70.7 0-129.4 52.7-138.4 121.3L113.2 314c-1.3 10.1 5.8 19.3 15.9 20.7s19.3-5.8 20.7-15.9l4.4-32.7C160.6 237.1 204.1 200 256 200s95.4 37.1 101.8 86.1l4.4 32.7c1.3 10.1 10.6 17.2 20.7 15.9s17.2-10.6 15.9-20.7l-4.4-32.7C385.4 212.7 326.7 160 256 160zm-32 296v-56.2c0-15 9.2-28.5 23.2-33.9l0 0c5.6-2.2 11.6-2.2 17.2-.3c6.5 2.2 14.2 5.1 22.3 8.8c9 4.1 16.4 8.2 21.7 11.4c2.7 1.6 4.7 3 6.1 3.9l.4 .3c8.5 6.1 20.2 4.1 26.3-4.4s4.1-20.2-4.4-26.3l-.5-.3c0 0 0 0 0 0s0 0 0 0c-1.8-1.3-4.3-2.8-7.5-4.7c-6.4-3.8-15-8.6-25.3-13.3c-10.3-4.7-20.2-8.4-28.7-11.2c-12.6-4.2-26.7-2.9-38.4 3.7C221.6 341.7 184 371.5 184 400v56.2c0 14.5 7.3 28 19.4 35.9C224.3 505.5 238.9 512 256 512s31.7-6.5 52.6-19.9c12.1-7.9 19.4-21.4 19.4-35.9V400c0-2.6-.2-5.2-.6-7.7c-2-13.3-13.8-22.8-27.2-21.3c-13.3 1.5-23.2 12.1-24.1 25.5c-.1 1.2-.2 2.4-.2 3.5v56.2c0 .8-.4 1.6-1.1 2.1C265.3 465 260 468 256 468s-9.3-3-18.8-9.7c-.7-.5-1.2-1.3-1.2-2.1z"/></svg></div>
         <div class="flex-1">
-          <p class="text-xs uppercase tracking-wider font-semibold mb-1" style="color:var(--mmt-accent);">Fed UP Podcast</p>
-          <p class="text-base font-bold" style="color:var(--mmt-text);">${title}</p>
+          <p class="text-xs uppercase tracking-wider font-semibold mb-1" style="color:var(--mmt-cyan);">Fed UP Podcast</p>
+          <p class="text-base font-bold" style="color:var(--mmt-white);">${title}</p>
         </div>
         <a href="podcast.html" class="btn-secondary px-4 py-2 rounded-lg text-sm no-underline whitespace-nowrap">Listen Now</a>
       </div>`;
