@@ -49,7 +49,7 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 ├── about.html              # About / founder bio
 ├── podcast.html            # Fed UP podcast page
 ├── newsletter.html         # Newsletter subscribe + archive (dynamic, loads newsletters.json)
-├── resources.html          # Intelligence hub: Lethality Test pWin analyzer + collapsible resource links (5 categories, 21 links)
+├── resources.html          # Intelligence hub: Lethality Test pWin analyzer + collapsible resource links (11 categories, 79 links)
 ├── contact.html            # Contact form (Netlify Forms)
 ├── topics.html             # Topics index page (6 topics, dynamic, loads from newsletters.json)
 ├── newsletters.json        # Newsletter issue data (source; build generates updated version)

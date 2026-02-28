@@ -462,6 +462,18 @@ function copyStaticFiles() {
   });
   console.log(`Copied ${assetCount} image/asset files`);
 
+  // Copy self-hosted fonts
+  const fontsDir = path.join(__dirname, 'fonts');
+  const distFontsDir = path.join(DIST_DIR, 'fonts');
+  if (fs.existsSync(fontsDir)) {
+    ensureDir(distFontsDir);
+    const fontFiles = fs.readdirSync(fontsDir).filter(f => f.endsWith('.woff2'));
+    fontFiles.forEach(file => {
+      fs.copyFileSync(path.join(fontsDir, file), path.join(distFontsDir, file));
+    });
+    console.log(`Copied ${fontFiles.length} font files`);
+  }
+
 }
 
 // --- Podcast (preserved from original) ---

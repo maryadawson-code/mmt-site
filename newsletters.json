@@ -1,5 +1,54 @@
 [
   {
+    "title": "The Pentagon Is Trying to Blacklist the AI It Can't Live Without",
+    "date": "February 26, 2026",
+    "description": "The Pentagon's complicated relationship with AI it simultaneously depends on and wants to restrict.",
+    "url": "https://www.linkedin.com/pulse/pentagon-trying-blacklist-ai-cant-live-without-mary-womack-9ziwe",
+    "tags": ["AI & Innovation", "Military Health System"]
+  },
+  {
+    "title": "February 28: The Day Defense Health Contracting Changes Forever",
+    "date": "February 24, 2026",
+    "description": "A pivotal date for defense health contracting and what it means for the federal health IT landscape.",
+    "url": "https://www.linkedin.com/pulse/february-28-day-defense-health-contracting-changes-forever-womack-0tx9e",
+    "tags": ["Acquisition & Contracting", "Military Health System"]
+  },
+  {
+    "title": "The CCN Next Gen Playbook: How to Build Your Bid",
+    "date": "February 17, 2026",
+    "description": "A practical guide to building competitive bids for the Community Care Network Next Generation contract by company type.",
+    "url": "https://www.linkedin.com/pulse/ccn-next-gen-playbook-how-build-your-bid-type-company-mary-womack-dkkzc",
+    "tags": ["Acquisition & Contracting", "Strategy & Leadership"]
+  },
+  {
+    "title": "The Forgotten Beneficiaries: Why the GLP-1 Coverage Gap Is a Readiness Problem",
+    "date": "February 12, 2026",
+    "description": "The GLP-1 medication coverage gap isn't just a benefits issue — it's a military readiness problem hiding in plain sight.",
+    "url": "https://www.linkedin.com/pulse/forgotten-beneficiarieswhy-glp-1-coverage-gap-readiness-mary-womack-a0qze",
+    "tags": ["Healthcare Policy", "Military Health System"]
+  },
+  {
+    "title": "The Human Weapon System Finally Gets Real",
+    "date": "February 10, 2026",
+    "description": "The 'human weapon system' concept moves from rhetoric to reality in defense health strategy.",
+    "url": "https://www.linkedin.com/pulse/human-weapon-system-finally-gets-real-mary-womack-ir9fe",
+    "tags": ["Military Health System", "Strategy & Leadership"]
+  },
+  {
+    "title": "The Elephant in the Waiting Room",
+    "date": "February 7, 2026",
+    "description": "The uncomfortable truth about military healthcare access that no one wants to address.",
+    "url": "https://www.linkedin.com/pulse/elephant-waiting-room-mary-womack-da2fe",
+    "tags": ["Healthcare Policy", "Military Health System"]
+  },
+  {
+    "title": "The $3 Trillion Pivot: What the VA's RISE Initiative Means for Federal Health Contractors",
+    "date": "February 5, 2026",
+    "description": "What the VA's RISE initiative signals for the future of federal health contracting and the $3 trillion healthcare pivot.",
+    "url": "https://www.linkedin.com/pulse/3-trillion-pivot-what-vas-rise-initiative-means-federal-mary-womack-0ugve",
+    "tags": ["Veterans Affairs", "Healthcare Policy"]
+  },
+  {
     "title": "The Largest Healthcare Contract in American History Just Hit the Street",
     "date": "February 5, 2026",
     "description": "On January 21, 2026, the VA held a landmark industry event for the largest healthcare contract ever. What contractors need to know.",
@@ -7,11 +56,39 @@
     "tags": ["Veterans Affairs", "Acquisition & Contracting", "Healthcare Policy"]
   },
   {
+    "title": "The Trillion-Dollar Pivot: Why CCN Next Gen is the MOSA-fication of Federal Health",
+    "date": "February 3, 2026",
+    "description": "CCN Next Gen represents the MOSA-fication of federal healthcare contracting — and it's a trillion-dollar pivot.",
+    "url": "https://www.linkedin.com/pulse/trillion-dollar-pivot-why-ccn-next-gen-mosa-fication-federal-womack-xalbe",
+    "tags": ["Acquisition & Contracting", "Military Health System"]
+  },
+  {
+    "title": "Introducing Mission Meets Reality",
+    "date": "January 31, 2026",
+    "description": "Introducing Fed UP: Where Mission Meets Reality — the podcast that cuts through the noise in defense health.",
+    "url": "https://www.linkedin.com/pulse/introducing-mission-meets-reality-mary-womack-coe9e",
+    "tags": ["Strategy & Leadership"]
+  },
+  {
+    "title": "Episode 1: Mission Meets Reality",
+    "date": "January 31, 2026",
+    "description": "Episode 1 of Fed UP: Where Mission Meets Reality — the first conversation about what's broken and what's next.",
+    "url": "https://www.linkedin.com/pulse/episode-1-mission-meets-reality-mary-womack-boqqe",
+    "tags": ["Strategy & Leadership"]
+  },
+  {
     "title": "The VA Is Executing the Largest Healthcare Reorganization Since the 1990s",
     "date": "January 29, 2026",
     "description": "If you're not paying attention to the VA's restructuring, you're already behind. Here's what the reorganization means for contractors.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
     "tags": ["Veterans Affairs", "Strategy & Leadership"]
+  },
+  {
+    "title": "Why VA's Quiet RFI Should Be on Every Federal Health Contractor's Radar",
+    "date": "January 27, 2026",
+    "description": "The VA quietly released an RFI that every federal health contractor should be tracking. Here's why it matters.",
+    "url": "https://www.linkedin.com/pulse/why-vas-quiet-rfi-should-every-federal-health-radar-mary-womack-3qloe",
+    "tags": ["Veterans Affairs", "Acquisition & Contracting"]
   },
   {
     "title": "VA Solicits Demos for Next-Gen Referral and Care Coordination System",
