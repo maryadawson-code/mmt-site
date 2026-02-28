@@ -142,6 +142,7 @@ function generateArticlePages(articles) {
       .replace(/\{\{NEXT_LINK\}\}/g, nextLink)
       .replace(/\{\{KEYWORDS\}\}/g, (article.tags || []).join(', '));
 
+    html = inlineTailwindCss(html);
     fs.writeFileSync(path.join(outDir, 'index.html'), html);
   });
 
@@ -178,6 +179,7 @@ function generateTopicPages(tags) {
       .replace(/\{\{ARTICLE_COUNT\}\}/g, count.toString())
       .replace(/\{\{ARTICLE_COUNT_PLURAL\}\}/g, count === 1 ? '' : 's');
 
+    html = inlineTailwindCss(html);
     fs.writeFileSync(path.join(outDir, 'index.html'), html);
   });
 
@@ -271,8 +273,19 @@ function generateRssFeed(articles) {
 
 // --- Static File Copying ---
 
+function inlineTailwindCss(html) {
+  const cssPath = path.join(DIST_DIR, 'styles', 'tailwind.css');
+  if (!fs.existsSync(cssPath)) return html;
+  const css = fs.readFileSync(cssPath, 'utf8');
+  // Replace the external stylesheet link with an inline <style> block
+  return html.replace(
+    /<link rel="stylesheet" href="\/styles\/tailwind\.css">/,
+    `<style>${css}</style>`
+  );
+}
+
 function copyStaticFiles() {
-  // Copy root HTML files
+  // Copy root HTML files (with inlined Tailwind CSS)
   const htmlFiles = [
     'index.html', 'about.html', 'podcast.html', 'newsletter.html',
     'newsletter-archive.html', 'resources.html', 'contact.html', 'topics.html'
@@ -280,7 +293,9 @@ function copyStaticFiles() {
   htmlFiles.forEach(file => {
     const src = path.join(__dirname, file);
     if (fs.existsSync(src)) {
-      fs.copyFileSync(src, path.join(DIST_DIR, file));
+      let html = fs.readFileSync(src, 'utf8');
+      html = inlineTailwindCss(html);
+      fs.writeFileSync(path.join(DIST_DIR, file), html);
       console.log(`Copied ${file}`);
     }
   });
