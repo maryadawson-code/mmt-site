@@ -78,9 +78,7 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 ├── mmt-icon.png            # Icon variant
 ├── marywomack.jpg          # Mary Womack headshot
 ├── sarabyrd.jpg            # Sara Byrd headshot
-├── favicon.png             # Favicon (64x64 PNG)
-├── styles.css              # Legacy stylesheet (not used by main pages)
-└── main.js                 # Legacy JS (not used by main pages)
+└── favicon.png             # Favicon (64x64 PNG)
 ```
 
 ## Page Conventions
@@ -192,7 +190,6 @@ To publish a new newsletter issue:
 
 ## Gotchas
 
-- `styles.css` uses different CSS variable names (`--cyan`, `--void`, etc.) — it is the legacy stylesheet and is not used by the main pages.
 - Sara Byrd headshot is `sarabyrd.jpg` (no spaces or underscores).
 - Newsletter archive and topics page load data dynamically from `newsletters.json` via fetch API.
 - `dist/` is gitignored — never commit build artifacts.

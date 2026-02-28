@@ -321,13 +321,6 @@ function copyStaticFiles() {
   });
   console.log(`Copied ${assetCount} image/asset files`);
 
-  // Copy legacy stylesheets
-  ['styles.css', 'main.js'].forEach(file => {
-    const src = path.join(__dirname, file);
-    if (fs.existsSync(src)) {
-      fs.copyFileSync(src, path.join(DIST_DIR, file));
-    }
-  });
 }
 
 // --- Podcast (preserved from original) ---
