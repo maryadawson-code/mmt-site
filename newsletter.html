@@ -5,7 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Newsletter — Mission Meets Tech</title>
   <meta name="description" content="Subscribe to Mission Meets Tech for weekly federal health IT intelligence delivered to your inbox.">
+  <link rel="canonical" href="https://missionmeetstech.com/newsletter.html">
+  <meta property="og:title" content="Newsletter — Mission Meets Tech">
+  <meta property="og:description" content="Subscribe to Mission Meets Tech for weekly federal health IT intelligence delivered to your inbox.">
+  <meta property="og:url" content="https://missionmeetstech.com/newsletter.html">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://missionmeetstech.com/mmt-logo.png">
+  <meta property="og:site_name" content="Mission Meets Tech">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Newsletter — Mission Meets Tech">
+  <meta name="twitter:description" content="Subscribe to Mission Meets Tech for weekly federal health IT intelligence delivered to your inbox.">
+  <meta name="twitter:image" content="https://missionmeetstech.com/mmt-logo.png">
   <link rel="icon" type="image/png" href="MMT_icon_64px.png">
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -108,9 +120,16 @@
   <section class="py-20 px-6">
     <div class="max-w-3xl mx-auto text-center">
       <h2 class="text-3xl font-bold mb-4">Subscribe Now</h2>
-      <p class="text-lg mb-4" style="color:var(--mmt-white-muted);">The Mission Meets Tech newsletter is published on LinkedIn. Subscribe with one click and get each issue delivered directly to your feed.</p>
+      <p class="text-lg mb-4" style="color:var(--mmt-white-muted);">Get each issue on LinkedIn or delivered straight to your inbox.</p>
       <p class="text-sm mb-8" style="color:var(--mmt-white-dim);">Free. No spam. Unsubscribe anytime.</p>
-      <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary inline-block px-10 py-4 rounded-lg text-lg font-semibold no-underline">Subscribe on LinkedIn</a>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+        <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary inline-block px-8 py-3 rounded-lg text-base font-semibold no-underline">Subscribe on LinkedIn</a>
+        <span class="text-sm" style="color:var(--mmt-white-dim);">or</span>
+      </div>
+      <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" class="flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto">
+        <input type="email" name="email" placeholder="you@example.com" required class="flex-1 px-4 py-3 rounded-lg text-sm" style="background:var(--mmt-slate); border:1px solid rgba(0,229,250,0.2); color:var(--mmt-white); outline:none;">
+        <button type="submit" class="btn-secondary px-6 py-3 rounded-lg text-sm font-semibold cursor-pointer" style="background:none;">Get it by Email</button>
+      </form>
     </div>
   </section>
 

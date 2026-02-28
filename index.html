@@ -5,7 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mission Meets Tech — Federal Health IT Intelligence</title>
   <meta name="description" content="Where federal health IT policy meets operational reality. Intelligence for defense contractors and government decision-makers.">
+  <link rel="canonical" href="https://missionmeetstech.com/">
+  <meta property="og:title" content="Mission Meets Tech — Federal Health IT Intelligence">
+  <meta property="og:description" content="Where federal health IT policy meets operational reality. Intelligence for defense contractors and government decision-makers.">
+  <meta property="og:url" content="https://missionmeetstech.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://missionmeetstech.com/mmt-logo.png">
+  <meta property="og:site_name" content="Mission Meets Tech">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Mission Meets Tech — Federal Health IT Intelligence">
+  <meta name="twitter:description" content="Where federal health IT policy meets operational reality. Intelligence for defense contractors and government decision-makers.">
+  <meta name="twitter:image" content="https://missionmeetstech.com/mmt-logo.png">
   <link rel="icon" type="image/png" href="MMT_icon_64px.png">
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -36,6 +48,30 @@
     .glow-cyan { box-shadow: 0 0 20px rgba(0, 229, 250, 0.45); }
     .section-alt { background: var(--mmt-dark); }
   </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Mission Meets Tech",
+    "url": "https://missionmeetstech.com",
+    "logo": "https://missionmeetstech.com/mmt-logo.png",
+    "description": "Independent federal health IT intelligence for defense contractors and government decision-makers.",
+    "sameAs": [
+      "https://www.linkedin.com/in/marydwomack-digitalhealth/",
+      "https://www.youtube.com/@MissionMeetsTech",
+      "https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530",
+      "https://open.spotify.com/show/7sND342duH7Buw1cUs60lP"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Mission Meets Tech",
+    "url": "https://missionmeetstech.com"
+  }
+  </script>
 </head>
 <body class="antialiased">
 
@@ -83,6 +119,24 @@
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-8 py-3 rounded-lg text-base font-semibold no-underline">Subscribe to the Newsletter</a>
         <a href="podcast.html" class="btn-secondary px-8 py-3 rounded-lg text-base font-medium no-underline">Listen to the Podcast</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Credibility -->
+  <section class="py-12 px-6" style="border-top:1px solid rgba(0,229,250,0.08); border-bottom:1px solid rgba(0,229,250,0.08);">
+    <div class="max-w-6xl mx-auto">
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="text-center md:text-left">
+          <p class="text-sm font-semibold uppercase tracking-wider mb-3" style="color:var(--mmt-cyan);">Mary Womack</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-white-muted);">15+ years in federal health IT &middot; Amwell &rarr; Leidos &rarr; MHS Health Strategy Director</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">ACCELERATE 125 &middot; IGNITE Powerful Woman in Government &middot; Acquisition Lifecycle Leadership Award</p>
+        </div>
+        <div class="text-center md:text-left">
+          <p class="text-sm font-semibold uppercase tracking-wider mb-3" style="color:var(--mmt-cyan);">Sara Byrd</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-white-muted);">Two-time FedHealthIT100 Honoree &middot; VP Pantheon Data &middot; FedTechCares Co-Founder</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Featured: Reaction Data &middot; GovTech Connects Digital Health Summit &middot; ATARC</p>
+        </div>
       </div>
     </div>
   </section>
@@ -152,7 +206,15 @@
     <div class="max-w-3xl mx-auto text-center">
       <h2 class="text-3xl font-bold mb-4" style="font-family:'Space Grotesk',system-ui,sans-serif;">Stay Informed</h2>
       <p class="text-lg mb-8" style="color:var(--mmt-white-muted);">Join the community of federal health IT professionals who rely on Mission Meets Tech for clear, evidence-based intelligence.</p>
-      <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary inline-block px-8 py-3 rounded-lg text-base font-semibold no-underline">Subscribe Now</a>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+        <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary inline-block px-8 py-3 rounded-lg text-base font-semibold no-underline">Subscribe on LinkedIn</a>
+        <span class="text-sm" style="color:var(--mmt-white-dim);">or</span>
+      </div>
+      <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" class="flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto">
+        <input type="email" name="email" placeholder="you@example.com" required class="flex-1 px-4 py-3 rounded-lg text-sm" style="background:var(--mmt-slate); border:1px solid rgba(0,229,250,0.2); color:var(--mmt-white); outline:none;">
+        <button type="submit" class="btn-secondary px-6 py-3 rounded-lg text-sm font-semibold cursor-pointer" style="background:none;">Get it by Email</button>
+      </form>
+      <p class="text-xs mt-3" style="color:var(--mmt-white-dim);">Free. No spam. Unsubscribe anytime.</p>
     </div>
   </section>
 

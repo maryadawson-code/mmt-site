@@ -1,175 +1,113 @@
-# MissionPulse — Claude Code Agent Constitution
+# Mission Meets Tech (mmt-site) — Claude Code Project File
 
 ## Identity
 
-You are Forge, the Lead DevSecOps Architect for Mission Meets Tech (MMT).
-You build MissionPulse, an ATO-ready federal proposal management platform.
-You are a deterministic build agent. Favor execution over discussion.
+This is the **Mission Meets Tech** marketing site — a static HTML site for federal health IT intelligence. It is NOT the MissionPulse application.
 
 ## Stack
 
-- **Framework:** Next.js 14 (App Router, Server Components default)
-- **Language:** TypeScript strict mode (`as any` is FORBIDDEN)
-- **Database:** Supabase PostgreSQL — 200 tables, RLS on all, pgvector active
-- **Auth:** Supabase Auth via `@supabase/ssr` (cookie sessions)
-- **RBAC:** 12 roles × 14 modules via `roles_permissions_config.json` v9.5
-- **Styling:** Tailwind CSS 3.x (dark mode, class strategy) + Shield & Pulse tokens
-- **Design tokens:** Primary Cyan `#00E5FA`, Deep Navy `#00050F`, Inter font
-- **Deploy:** Netlify (frontend), Render (API)
-- **Branch:** `v2-development` (staging) · `main` (production)
-- **Staging URL:** `v2-development--missionpulse-io.netlify.app`
+- **Type:** Static HTML/CSS/JS — no build step, no framework
+- **Styling:** Tailwind CSS via CDN + inline CSS custom properties
+- **Fonts:** Google Fonts — Space Grotesk (headings), Inter (body)
+- **Icons:** Font Awesome 6.5.1 via CDN
+- **Forms:** Netlify Forms (contact page), Buttondown (email signup)
+- **Analytics:** Plausible (privacy-respecting, no cookies)
+- **Podcast embed:** Transistor.fm iframe
+- **Deploy:** Netlify from `main` branch, publish directory is root (`.`)
+- **Domain:** missionmeetstech.com
 
-## Commands
+## Design Tokens
 
-```bash
-npm run build        # THE validation command — must pass before commit
-npx tsc --noEmit     # Type check without emitting
-npm run lint         # ESLint
-npm run dev          # Dev server at localhost:3000
-npm test             # Playwright E2E
+```css
+--mmt-cyan: #00E5FA;       /* Primary accent */
+--mmt-green: #00FF85;       /* Secondary accent / gradient endpoint */
+--mmt-navy: #00050F;        /* Page background */
+--mmt-slate: #0A1628;       /* Card / elevated surface background */
+--mmt-dark: #0D1117;        /* Alternating section background */
+--mmt-white: #FFFFFF;
+--mmt-white-muted: rgba(255,255,255,0.8);  /* Body text */
+--mmt-white-dim: rgba(255,255,255,0.6);    /* Secondary text */
 ```
 
-## Agent Loop (MANDATORY)
+### Key Patterns
+- **Gradient text:** `linear-gradient(135deg, cyan, green)` with `background-clip: text`
+- **Primary button:** Gradient background (cyan → green), navy text
+- **Secondary button:** 1px cyan border, white text, transparent bg
+- **Cards:** `--mmt-slate` bg, 1px `rgba(0,229,250,0.1)` border, 12px radius
+- **Nav:** Fixed, glass-morphism (`backdrop-filter: blur(12px)`)
+- **Section alt:** Alternating `--mmt-navy` / `--mmt-dark` backgrounds
 
-Every task follows this loop. Do not skip phases. Do not ask permission to proceed.
-
-1. **RESEARCH** — Read relevant files. Verify schema against `lib/supabase/database.types.ts`. Check RBAC against `roles_permissions_config.json`. Use grep for targeted lookups.
-2. **PLAN** — Decompose into subtasks. List files to create/modify. Flag blockers BEFORE writing code.
-3. **IMPLEMENT** — Write complete files. Run `npm run build`. If it fails: read error → trace root cause → fix → re-run. Max 3 fix cycles per subtask.
-4. **VERIFY** — `npm run build` + `npx tsc --noEmit` must pass. Confirm only expected files changed. Verify no secrets in output.
-5. **REPORT** — List files created/modified. State what was built. Note any gotchas for future sessions.
-
-## Source of Truth (Priority Order)
-
-1. `lib/supabase/database.types.ts` — DB schema authority
-2. `roles_permissions_config.json` — RBAC truth (12 roles × 14 modules)
-3. `docs/GROUND_TRUTH_v2.md` — Database audit
-4. `docs/PHASE_2_RULES.md` — Architecture decisions
-5. This file (CLAUDE.md) — Project conventions
-
-If a database column, table, RBAC role, or permission is not in a canonical file, it DOES NOT EXIST.
-
-## Circuit Breaker
-
-If any task requires data you don't have, STOP immediately:
-
-> 🚨 BLOCKED: [CATEGORY] — [What is missing]. Need [filename].
-
-Categories: MISSING_FILE, SCHEMA_CONFLICT, RBAC_UNDEFINED, AMBIGUOUS_TRUTH
-After a blocker: do NOT guess, do NOT propose workarounds, do NOT continue.
-
-## Schema Covenant
-
-### opportunities table (46 cols)
-- `title` (NOT name)
-- `ceiling` (NOT value, contract_value)
-- `pwin` (NOT win_probability)
-- `phase` (NOT shipley_phase)
-- `owner_id` (NOT created_by)
-- `status`, `contact_name`, `contact_email`
-
-### profiles table (13 cols)
-- `role` — auth pivot, all RLS functions query this
-- `company_id` — UUID FK for multi-tenant RLS
-- `company` — VARCHAR display only (NOT for RLS)
-- `preferences` — JSONB
-- `status` — default 'active'
-- ⚠️ `mfa_enabled` does NOT exist. Do not reference it.
-
-## RBAC Rules
-
-- 12 roles: executive, operations, capture_manager, proposal_manager, volume_lead, pricing_manager, contracts, hr_staffing, author, partner, subcontractor, consultant
-- 14 modules: dashboard, pipeline, proposals, pricing, strategy, blackhat, compliance, workflow_board, ai_chat, documents, analytics, admin, integrations, audit_log
-- Permission triple: `shouldRender` (DOM existence), `canView` (read), `canEdit` (write)
-- Invisible RBAC: `shouldRender=false` means component does NOT exist in DOM. No "Access Denied" screens.
-- `shouldRender=false` → `canView` and `canEdit` MUST be false
-- `canEdit=true` → `canView` MUST be true
-
-## Architecture Rules
-
-### Data Access
-- RLS is primary. User queries use JWT. Never bypass RLS.
-- Service role key (`admin.ts`) server-only. Never in client code. Never in `NEXT_PUBLIC_*`.
-- Server Actions for ALL mutations. Never API routes for form submissions.
-- Server Components for data fetching (default). Client Components only when hooks needed.
-
-### Code Quality
-- `as any` FORBIDDEN. No exceptions.
-- No `@ts-ignore` without explanatory comment.
-- No `console.log` in production — use structured logging.
-- No `localStorage` for auth — Supabase SSR uses cookies.
-- No secrets in code. `.env.local` in `.gitignore`.
-
-### Security
-- Mutations on sensitive tables → `audit_logs` (immutable via trigger, NIST AU-9)
-- User-visible actions → `activity_log` table
-- `SUPABASE_SERVICE_ROLE_KEY` only in `lib/supabase/admin.ts`, server actions, webhooks
-
-## Project Structure
+## File Structure
 
 ```
-app/
-├── (auth)/           # Login, signup, callback
-├── (dashboard)/      # Protected dashboard routes
-│   ├── layout.tsx    # Sidebar + RBAC nav filtering
-│   ├── page.tsx      # Dashboard home
-│   ├── pipeline/     # Opportunity pipeline
-│   └── ...           # One folder per module
-├── layout.tsx        # Root layout (fonts, metadata)
-└── page.tsx          # Landing/redirect
-
-lib/
-├── supabase/
-│   ├── client.ts     # Browser client (NEXT_PUBLIC_ vars only)
-│   ├── server.ts     # Server client (cookies-based)
-│   ├── admin.ts      # Service role (server-only)
-│   └── database.types.ts  # Generated — sole schema authority
-├── rbac/
-│   ├── config.ts     # Loads roles_permissions_config.json
-│   ├── hooks.ts      # useRole(), usePermissions()
-│   └── gate.tsx      # <RBACGate> component
-├── ai/               # AI gateway, agents, classification router
-└── utils/            # Shared helpers
-
-components/
-├── ui/               # shadcn/ui primitives
-├── layout/           # Sidebar, header, nav
-└── features/         # Module-specific components
-
-docs/                 # Architecture docs, roadmap, ground truth
-middleware.ts         # Session refresh + auth redirect
+.
+├── index.html              # Homepage
+├── about.html              # About / founder bio
+├── podcast.html            # Fed UP podcast page
+├── newsletter.html         # Newsletter subscribe page
+├── resources.html          # Federal health IT resource guide
+├── contact.html            # Contact form (Netlify Forms)
+├── newsletter-archive.html # Dynamic archive (loads newsletters.json)
+├── newsletters.json        # Newsletter issue data for archive
+├── robots.txt              # Crawler directives
+├── sitemap.xml             # XML sitemap for SEO
+├── netlify.toml            # Netlify config (headers, redirects, forms)
+├── CLAUDE.md               # This file
+├── mmt-logo.png            # Full logo (used for OG images)
+├── mmt-logo-nav.png        # Nav logo variant
+├── MMT_icon_64px.png       # Favicon
+├── mmt-icon.png            # Icon variant
+├── marywomack.jpg          # Mary Womack headshot
+├── Sara zoomed.jpg         # Sara Byrd headshot
+├── styles.css              # Legacy stylesheet (not used by main pages)
+├── main.js                 # Legacy JS (not used by main pages)
+└── build.js                # Legacy build script (unused)
 ```
 
-## Conventions
+## Page Conventions
 
-- Component files: PascalCase (`PipelineTable.tsx`)
-- Utility files: camelCase (`formatCurrency.ts`)
-- Server Actions: `action` prefix (`actionCreateOpportunity.ts`)
-- Error boundaries: one per route segment
-- Loading states: `loading.tsx` files per route (Suspense boundaries)
-- Commit messages: `feat: T-N.X — [ticket title]`
+Every page follows this structure:
+1. `<head>` with: charset, viewport, title, meta description, canonical URL, OG tags, Twitter Card tags, favicon, Plausible script, Google Fonts, Tailwind CDN, Font Awesome CDN, inline `<style>` with CSS variables and utility classes
+2. `<nav>` with glass-morphism effect, desktop links + mobile hamburger menu
+3. Hero section with `pt-32 pb-16` padding
+4. Content sections alternating between default and `section-alt` backgrounds
+5. CTA section
+6. 4-column footer (Brand, Platform, Company, Listen)
+7. Mobile menu toggle script at bottom
 
-## Gotchas (Compound Learning)
+### Active nav highlighting
+The current page's nav link uses `color:var(--mmt-cyan)` instead of `--mmt-white-muted`.
 
-- `handle_new_user` trigger auto-creates profiles with `role='CEO'`. Override in app logic for non-CEO signups.
-- Duplicate tables: `hubspot_field_mapping` (18 rows) vs `hubspot_field_mappings` (11 rows). Use plural.
-- `is_mfa_enabled()` references non-existent `profiles.mfa_enabled`. Will break. Add column when MFA ships.
-- pgvector installed and active (6 embeddings in `knowledge_embeddings`). RAG-ready.
+## External Links
 
-## Sprint Execution
+- **LinkedIn (Mary):** https://www.linkedin.com/in/marydwomack-digitalhealth/
+- **LinkedIn (Sara):** https://www.linkedin.com/in/saraebyrd/
+- **Newsletter subscribe:** https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920
+- **YouTube:** https://www.youtube.com/@MissionMeetsTech
+- **Apple Podcasts:** https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530
+- **Spotify:** https://open.spotify.com/show/7sND342duH7Buw1cUs60lP
+- **Amazon Music:** https://music.amazon.com/podcasts/920fec9b-4fae-4bd0-ae4d-eaf1459cad2f
+- **Transistor RSS:** https://feeds.transistor.fm/fed-up-where-mission-meets-reality
+- **Contact email:** mary@missionmeetstech.com
 
-When running a sprint via `/sprint` or `/ticket`:
-1. Read `docs/ROADMAP.md` for the ticket spec (acceptance criteria, dependencies, files)
-2. Check dependencies are met (prior tickets complete)
-3. Execute the agent loop (Research → Plan → Implement → Verify → Report)
-4. Run `npm run build` after EVERY file change
-5. Commit with message format: `feat: T-N.X — [title]`
-6. Push to `v2-development`
-7. Move to next ticket automatically unless blocked
+## Deployment
 
-## Output Rules
+- **Host:** Netlify
+- **Branch:** `main` (production)
+- **Build command:** `echo 'Static site - no build needed'`
+- **Publish directory:** `.` (root)
+- **Forms:** Netlify Forms enabled via `data-netlify="true"` attribute on `<form>`
 
-- Complete files only. Never output partial files, diffs, or "rest remains the same."
-- Every file starts with `// filepath: app/(dashboard)/page.tsx`
-- After every file: run `npm run build`
-- Zero filler. Don't explain what you're about to do. Just do it.
+## Brand Voice
+
+- **Audience:** Federal health IT professionals — defense contractors, government decision-makers, program managers, acquisition professionals
+- **Tone:** Authoritative but accessible. Evidence-based. No hype, no jargon walls.
+- **Filter:** "Does this save lives or enhance readiness?"
+- **Compliance disclaimer:** "Views expressed are those of the authors and do not represent any employer or government agency." (appears in every page footer)
+
+## Gotchas
+
+- `styles.css` uses different CSS variable names (`--cyan`, `--void`, etc.) — it is the legacy stylesheet and is not used by the main pages.
+- `Sara zoomed.jpg` has a space in the filename — reference it with the space in HTML `src` attributes.
+- The Tailwind CDN script is loaded from `cdn.tailwindcss.com` — this is intended for development/prototyping. For production optimization, consider migrating to a build-time Tailwind setup.
+- Newsletter archive loads data dynamically from `newsletters.json` via fetch API.
