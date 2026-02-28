@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Resources — Mission Meets Tech</title>
-  <meta name="description" content="Federal health IT resource guide — agencies, acquisition tools, policy sources, market intelligence, and interoperability standards curated by Mission Meets Tech.">
+  <meta name="description" content="Federal health IT intelligence hub — AI-powered pWin analyzer for proposals plus curated agencies, acquisition tools, policy sources, and interoperability standards.">
   <link rel="canonical" href="https://missionmeetstech.com/resources.html">
   <meta property="og:title" content="Resources — Mission Meets Tech">
-  <meta property="og:description" content="Federal health IT resources: key agencies, programs, budget documents, and reference guides curated by Mission Meets Tech.">
+  <meta property="og:description" content="Federal health IT intelligence hub with AI-powered pWin analyzer and curated resource links.">
   <meta property="og:url" content="https://missionmeetstech.com/resources.html">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://missionmeetstech.com/mmt-logo.png">
@@ -16,15 +16,10 @@
   <meta property="og:site_name" content="Mission Meets Tech">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Resources — Mission Meets Tech">
-  <meta name="twitter:description" content="Federal health IT resources: key agencies, programs, budget documents, and reference guides curated by Mission Meets Tech.">
+  <meta name="twitter:description" content="Federal health IT intelligence hub with AI-powered pWin analyzer and curated resource links.">
   <meta name="twitter:image" content="https://missionmeetstech.com/mmt-logo.png">
   <link rel="icon" type="image/png" href="/favicon.png">
   <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
   <link rel="alternate" type="application/rss+xml" title="Mission Meets Tech" href="/feed.xml">
   <link rel="stylesheet" href="/styles/tailwind.css">
   <style>
@@ -43,6 +38,7 @@
     .gradient-text { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .btn-primary { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); color: var(--mmt-navy); font-weight: 600; transition: all 0.2s; }
     .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 0 20px rgba(0, 229, 250, 0.35); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
     .btn-secondary { border: 1px solid var(--mmt-cyan); color: var(--mmt-white); transition: all 0.2s; }
     .btn-secondary:hover { background: rgba(0, 229, 250, 0.1); }
     .card { background: var(--mmt-slate); border: 1px solid rgba(0, 229, 250, 0.1); }
@@ -50,6 +46,16 @@
     .nav-glass { background: rgba(0, 5, 15, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0, 229, 250, 0.1); }
     .section-alt { background: var(--mmt-dark); }
     *:focus-visible { outline: 2px solid var(--mmt-cyan); outline-offset: 2px; }
+    .score-bar { background: rgba(255,255,255,0.1); border-radius: 9999px; overflow: hidden; }
+    .score-bar-fill { height: 100%; border-radius: 9999px; transition: width 0.8s ease-out; }
+    .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+    .accordion-content.open { max-height: 2000px; }
+    .accordion-chevron { transition: transform 0.3s ease; }
+    .accordion-chevron.open { transform: rotate(180deg); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.4s ease-out; }
+    @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 20px rgba(0, 229, 250, 0.2); } 50% { box-shadow: 0 0 40px rgba(0, 229, 250, 0.4); } }
+    .analyzing { animation: pulse-glow 1.5s ease-in-out infinite; }
   </style>
 </head>
 <body class="antialiased">
@@ -94,164 +100,266 @@
   <!-- Hero -->
   <section class="pt-32 pb-16 px-6">
     <div class="max-w-4xl mx-auto">
-      <p class="text-sm font-semibold tracking-widest uppercase mb-4" style="color:var(--mmt-cyan);">Resources</p>
-      <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-6">Federal Health IT <span class="gradient-text">Resource Guide</span></h1>
-      <p class="text-lg leading-relaxed max-w-3xl" style="color:var(--mmt-white-muted);">Curated links to the agencies, programs, budget documents, and data sources that shape federal health IT. Bookmarks for practitioners.</p>
+      <p class="text-sm font-semibold tracking-widest uppercase mb-4" style="color:var(--mmt-cyan);">Intelligence Hub</p>
+      <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-6">Federal Health IT <span class="gradient-text">Resources</span></h1>
+      <p class="text-lg leading-relaxed max-w-3xl" style="color:var(--mmt-white-muted);">AI-powered proposal analysis and curated links to the agencies, programs, and data sources that shape federal health IT.</p>
     </div>
   </section>
 
-  <!-- Key Agencies -->
-  <section class="section-alt py-20 px-6">
-    <div class="max-w-6xl mx-auto">
-      <h2 class="text-3xl font-bold mb-10">Key Agencies & Programs</h2>
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">Defense Health Agency (DHA)</h3>
-          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">The unified medical authority for the Military Health System. Oversees healthcare delivery, IT modernization, and MHS GENESIS deployment across DoD.</p>
-          <a href="https://www.health.mil/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">health.mil <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
+  <!-- Lethality Test -->
+  <section class="section-alt py-20 px-6" id="lethality-test">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-10">
+        <p class="text-sm font-semibold tracking-widest uppercase mb-3" style="color:var(--mmt-green);">AI-Powered Tool</p>
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">The Lethality Test</h2>
+        <p class="text-lg max-w-2xl mx-auto" style="color:var(--mmt-white-muted);">Paste your proposal excerpt or pitch and get an instant pWin analysis scored against federal health IT acquisition criteria.</p>
+      </div>
+
+      <!-- Input Panel -->
+      <div id="lt-input-panel" class="card rounded-xl p-6 md:p-8 mb-6">
+        <label for="lt-textarea" class="block text-sm font-semibold mb-3" style="color:var(--mmt-white-muted);">Proposal Excerpt or Pitch Text</label>
+        <textarea id="lt-textarea" rows="8" maxlength="10000" placeholder="Paste your proposal excerpt, executive summary, or pitch text here. Include details about your technical approach, relevant past performance, and how your solution addresses the agency's mission. The more specific you are, the better the analysis.
+
+Example: 'Our team brings 10 years of DHA health IT experience, including MHS GENESIS deployment support at 3 MTFs. Our FHIR-native integration platform enables real-time clinical data exchange between DoD and VA systems...'" class="w-full rounded-lg p-4 text-sm leading-relaxed resize-y" style="background:var(--mmt-navy); color:var(--mmt-white); border:1px solid rgba(0,229,250,0.2); min-height:160px;" aria-describedby="lt-char-count"></textarea>
+        <div class="flex items-center justify-between mt-3">
+          <p id="lt-char-count" class="text-xs" style="color:var(--mmt-white-dim);"><span id="lt-chars">0</span> / 10,000 characters</p>
+          <p id="lt-uses-counter" class="text-xs" style="color:var(--mmt-white-dim);"><span id="lt-remaining">5</span> of 5 analyses remaining</p>
         </div>
-        <div class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">VA Office of Information & Technology</h3>
-          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Leads IT strategy and infrastructure for the Department of Veterans Affairs, including EHR modernization and digital services.</p>
-          <a href="https://www.oit.va.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">oit.va.gov <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
+        <div class="mt-6 flex items-center gap-4">
+          <button id="lt-submit" class="btn-primary px-8 py-3 rounded-lg text-base font-semibold" disabled>
+            <span id="lt-submit-text">Run Lethality Test</span>
+            <span id="lt-submit-loading" class="hidden">Analyzing...</span>
+          </button>
+          <p id="lt-min-warning" class="text-xs hidden" style="color:var(--mmt-cyan);">Minimum 50 characters required</p>
         </div>
-        <div class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">Federal Electronic Health Record Modernization (FEHRM)</h3>
-          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">The interagency program office driving a single, shared EHR across DoD and VA for seamless care transitions.</p>
-          <a href="https://www.fehrm.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">fehrm.gov <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
+        <p id="lt-error" class="text-sm mt-4 hidden" style="color:#ff6b6b;"></p>
+      </div>
+
+      <!-- Locked State -->
+      <div id="lt-locked" class="card rounded-xl p-8 text-center hidden">
+        <div class="mb-4">
+          <svg class="mx-auto mb-3" width="48" height="48" viewBox="0 0 448 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg>
         </div>
-        <div class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">DARPA Biological Technologies Office</h3>
-          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Advanced research programs at the intersection of biology, health, and technology for national security applications.</p>
-          <a href="https://www.darpa.mil/about/offices/bto" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">darpa.mil/bto <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
+        <h3 class="text-xl font-bold mb-3">Free Analyses Used</h3>
+        <p class="text-sm mb-6 max-w-md mx-auto" style="color:var(--mmt-white-muted);">You've used all 5 free Lethality Test analyses. Subscribe to our newsletter for ongoing federal health IT intelligence, or contact us about unlimited access.</p>
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+          <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-6 py-3 rounded-lg text-sm no-underline">Subscribe to Newsletter</a>
+          <a href="contact.html" class="btn-secondary px-6 py-3 rounded-lg text-sm no-underline">Contact Us</a>
         </div>
-        <div class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">DoD Comptroller</h3>
-          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Official source for Defense budget documents, justification materials, and financial management policy.</p>
-          <a href="https://comptroller.defense.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">comptroller.defense.gov <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
+      </div>
+
+      <!-- Results Panel -->
+      <div id="lt-results" class="hidden fade-in" aria-live="polite">
+        <div class="card rounded-xl p-6 md:p-8 mb-6">
+          <!-- pWin Score -->
+          <div class="flex flex-col md:flex-row md:items-center gap-6 mb-8 pb-8" style="border-bottom:1px solid rgba(0,229,250,0.1);">
+            <div class="text-center md:text-left">
+              <p class="text-sm font-semibold uppercase tracking-wider mb-2" style="color:var(--mmt-white-dim);">Overall pWin Score</p>
+              <p id="lt-pwin" class="text-6xl md:text-7xl font-bold gradient-text" style="line-height:1;">--</p>
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center gap-3 mb-3">
+                <span id="lt-confidence" class="inline-block px-3 py-1 rounded-full text-xs font-bold" style="background:rgba(0,229,250,0.15); color:var(--mmt-cyan);">--</span>
+                <span class="text-sm" style="color:var(--mmt-white-dim);">Confidence</span>
+              </div>
+              <p id="lt-summary" class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);"></p>
+            </div>
+          </div>
+
+          <!-- Dimensions -->
+          <div class="mb-8">
+            <h3 class="text-lg font-bold mb-5">Evaluation Dimensions</h3>
+            <div id="lt-dimensions" class="space-y-5"></div>
+          </div>
+
+          <!-- Recommendations -->
+          <div>
+            <h3 class="text-lg font-bold mb-4">Recommendations</h3>
+            <ul id="lt-recommendations" class="space-y-3"></ul>
+          </div>
         </div>
-        <div class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">GAO Health Care Reports</h3>
-          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Government Accountability Office audits, evaluations, and reports on federal healthcare programs and IT systems.</p>
-          <a href="https://www.gao.gov/topics/health-care" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">gao.gov/health-care <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
+
+        <div class="text-center">
+          <button id="lt-reset" class="btn-secondary px-6 py-3 rounded-lg text-sm font-semibold">Run Another Analysis</button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Acquisition & Contracting -->
-  <section class="py-20 px-6">
-    <div class="max-w-6xl mx-auto">
-      <h2 class="text-3xl font-bold mb-10">Acquisition & Contracting</h2>
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">SAM.gov</h3>
-          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">System for Award Management — the official U.S. government system for entity registration, contract opportunities, and award data.</p>
-          <a href="https://sam.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">sam.gov <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
-        </div>
-        <div class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">USASpending.gov</h3>
-          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Track federal spending by agency, contractor, program, and geography. Essential for competitive intelligence.</p>
-          <a href="https://www.usaspending.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">usaspending.gov <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
-        </div>
-        <div class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">Congressional Research Service</h3>
-          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Nonpartisan policy research for Congress. Excellent source for defense health, VA, and appropriations analysis.</p>
-          <a href="https://crsreports.congress.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">crsreports.congress.gov <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
+  <!-- Curated Resource Links -->
+  <section class="py-20 px-6" id="resource-links">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl font-bold mb-4">Curated Resource Links</h2>
+      <p class="text-sm mb-10" style="color:var(--mmt-white-muted);">The agencies, tools, and data sources that shape federal health IT — organized for quick reference.</p>
+
+      <!-- Accordion: Key Agencies -->
+      <div class="mb-3">
+        <button class="accordion-trigger w-full flex items-center justify-between card rounded-xl px-6 py-4 text-left" aria-expanded="false">
+          <div class="flex items-center gap-3">
+            <svg width="1em" height="1em" viewBox="0 0 384 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M48 0C21.5 0 0 21.5 0 48V464c0 26.5 21.5 48 48 48h96V432c0-26.5 21.5-48 48-48s48 21.5 48 48v80h96c26.5 0 48-21.5 48-48V48c0-26.5-21.5-48-48-48H48zM64 240c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V240zm112-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H176c-8.8 0-16-7.2-16-16V240c0-8.8 7.2-16 16-16zm80 16c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H272c-8.8 0-16-7.2-16-16V240zM64 112c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112zM176 96h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H176c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16zm80 16c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H272c-8.8 0-16-7.2-16-16V112z"/></svg>
+            <span class="text-base font-bold">Key Agencies & Programs</span>
+            <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">6 links</span>
+          </div>
+          <svg class="accordion-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
+        </button>
+        <div class="accordion-content">
+          <div class="px-6 py-4 grid sm:grid-cols-2 gap-3">
+            <a href="https://www.health.mil/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
+              <span><strong style="color:var(--mmt-white);">DHA</strong> — health.mil</span>
+              <svg width="0.75em" height="0.75em" viewBox="0 0 512 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+            </a>
+            <a href="https://www.oit.va.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
+              <span><strong style="color:var(--mmt-white);">VA OIT</strong> — oit.va.gov</span>
+              <svg width="0.75em" height="0.75em" viewBox="0 0 512 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+            </a>
+            <a href="https://www.fehrm.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
+              <span><strong style="color:var(--mmt-white);">FEHRM</strong> — fehrm.gov</span>
+              <svg width="0.75em" height="0.75em" viewBox="0 0 512 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+            </a>
+            <a href="https://www.darpa.mil/about/offices/bto" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
+              <span><strong style="color:var(--mmt-white);">DARPA BTO</strong> — darpa.mil</span>
+              <svg width="0.75em" height="0.75em" viewBox="0 0 512 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+            </a>
+            <a href="https://comptroller.defense.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
+              <span><strong style="color:var(--mmt-white);">DoD Comptroller</strong> — defense.gov</span>
+              <svg width="0.75em" height="0.75em" viewBox="0 0 512 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+            </a>
+            <a href="https://www.gao.gov/topics/health-care" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
+              <span><strong style="color:var(--mmt-white);">GAO</strong> — gao.gov/health-care</span>
+              <svg width="0.75em" height="0.75em" viewBox="0 0 512 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+            </a>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- Policy & Legislation -->
-  <section class="section-alt py-20 px-6">
-    <div class="max-w-6xl mx-auto">
-      <h2 class="text-3xl font-bold mb-10">Policy & Legislation</h2>
-      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">Senate Armed Services Committee (SASC)</h3>
-          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Oversees defense policy, including military health system authorization and reform legislation.</p>
-          <a href="https://www.armed-services.senate.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">armed-services.senate.gov <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
-        </div>
-        <div class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">House Armed Services Committee (HASC)</h3>
-          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">House counterpart for defense authorization, including NDAA provisions affecting health IT and readiness.</p>
-          <a href="https://armedservices.house.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">armedservices.house.gov <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
-        </div>
-        <div class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">Federal Register</h3>
-          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Daily journal of the U.S. government — proposed rules, final rules, and notices affecting health IT and federal procurement.</p>
-          <a href="https://www.federalregister.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">federalregister.gov <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
-        </div>
-        <div class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">Congressional Budget Office (CBO)</h3>
-          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Nonpartisan budget analysis and cost estimates for legislation, including defense health and VA spending projections.</p>
-          <a href="https://www.cbo.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">cbo.gov <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
+      <!-- Accordion: Acquisition & Contracting -->
+      <div class="mb-3">
+        <button class="accordion-trigger w-full flex items-center justify-between card rounded-xl px-6 py-4 text-left" aria-expanded="false">
+          <div class="flex items-center gap-3">
+            <svg width="1em" height="1em" viewBox="0 0 384 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM80 64h64c8.8 0 16 7.2 16 16s-7.2 16-16 16H80c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64h64c8.8 0 16 7.2 16 16s-7.2 16-16 16H80c-8.8 0-16-7.2-16-16s7.2-16 16-16zm16 96H288c17.7 0 32 14.3 32 32v64c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V256c0-17.7 14.3-32 32-32z"/></svg>
+            <span class="text-base font-bold">Acquisition & Contracting</span>
+            <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">3 links</span>
+          </div>
+          <svg class="accordion-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
+        </button>
+        <div class="accordion-content">
+          <div class="px-6 py-4 grid sm:grid-cols-2 gap-3">
+            <a href="https://sam.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
+              <span><strong style="color:var(--mmt-white);">SAM.gov</strong> — sam.gov</span>
+              <svg width="0.75em" height="0.75em" viewBox="0 0 512 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+            </a>
+            <a href="https://www.usaspending.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
+              <span><strong style="color:var(--mmt-white);">USASpending</strong> — usaspending.gov</span>
+              <svg width="0.75em" height="0.75em" viewBox="0 0 512 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+            </a>
+            <a href="https://crsreports.congress.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
+              <span><strong style="color:var(--mmt-white);">CRS</strong> — crsreports.congress.gov</span>
+              <svg width="0.75em" height="0.75em" viewBox="0 0 512 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+            </a>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- Industry & Market Intelligence -->
-  <section class="py-20 px-6">
-    <div class="max-w-6xl mx-auto">
-      <h2 class="text-3xl font-bold mb-10">Industry & Market Intelligence</h2>
-      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">Federal Procurement Data System (FPDS)</h3>
-          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">The authoritative source for federal contract award data. Search by agency, vendor, NAICS code, and contract value.</p>
-          <a href="https://www.fpds.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">fpds.gov <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
-        </div>
-        <div class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">GovWin (Deltek)</h3>
-          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Market intelligence platform for government contractors — opportunity tracking, competitive analysis, and pipeline insights.</p>
-          <a href="https://iq.govwin.com/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">iq.govwin.com <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
-        </div>
-        <div class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">Health IT Dashboard (ONC)</h3>
-          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">National data on health IT adoption, EHR usage, interoperability metrics, and certified technology trends.</p>
-          <a href="https://dashboard.healthit.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">dashboard.healthit.gov <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
-        </div>
-        <div class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">HIMSS</h3>
-          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Global advisor and thought leader for health information and technology — conferences, research, and industry standards.</p>
-          <a href="https://www.himss.org/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">himss.org <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
+      <!-- Accordion: Policy & Legislation -->
+      <div class="mb-3">
+        <button class="accordion-trigger w-full flex items-center justify-between card rounded-xl px-6 py-4 text-left" aria-expanded="false">
+          <div class="flex items-center gap-3">
+            <svg width="1em" height="1em" viewBox="0 0 512 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M184 48H328c4.4 0 8 3.6 8 8V96H176V56c0-4.4 3.6-8 8-8zm-56 8V96H64C28.7 96 0 124.7 0 160v96H192 320 512V160c0-35.3-28.7-64-64-64H384V56c0-30.9-25.1-56-56-56H184c-30.9 0-56 25.1-56 56zM512 288H320v32c0 17.7-14.3 32-32 32H224c-17.7 0-32-14.3-32-32V288H0V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V288z"/></svg>
+            <span class="text-base font-bold">Policy & Legislation</span>
+            <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">4 links</span>
+          </div>
+          <svg class="accordion-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
+        </button>
+        <div class="accordion-content">
+          <div class="px-6 py-4 grid sm:grid-cols-2 gap-3">
+            <a href="https://www.armed-services.senate.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
+              <span><strong style="color:var(--mmt-white);">SASC</strong> — armed-services.senate.gov</span>
+              <svg width="0.75em" height="0.75em" viewBox="0 0 512 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+            </a>
+            <a href="https://armedservices.house.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
+              <span><strong style="color:var(--mmt-white);">HASC</strong> — armedservices.house.gov</span>
+              <svg width="0.75em" height="0.75em" viewBox="0 0 512 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+            </a>
+            <a href="https://www.federalregister.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
+              <span><strong style="color:var(--mmt-white);">Federal Register</strong> — federalregister.gov</span>
+              <svg width="0.75em" height="0.75em" viewBox="0 0 512 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+            </a>
+            <a href="https://www.cbo.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
+              <span><strong style="color:var(--mmt-white);">CBO</strong> — cbo.gov</span>
+              <svg width="0.75em" height="0.75em" viewBox="0 0 512 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+            </a>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- Standards & Interoperability -->
-  <section class="section-alt py-20 px-6">
-    <div class="max-w-6xl mx-auto">
-      <h2 class="text-3xl font-bold mb-10">Standards & Interoperability</h2>
-      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">HL7 FHIR</h3>
-          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Fast Healthcare Interoperability Resources — the modern standard for exchanging healthcare data electronically.</p>
-          <a href="https://hl7.org/fhir/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">hl7.org/fhir <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
+      <!-- Accordion: Industry & Market Intelligence -->
+      <div class="mb-3">
+        <button class="accordion-trigger w-full flex items-center justify-between card rounded-xl px-6 py-4 text-left" aria-expanded="false">
+          <div class="flex items-center gap-3">
+            <svg width="1em" height="1em" viewBox="0 0 512 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M32 32c17.7 0 32 14.3 32 32V400c0 8.8 7.2 16 16 16H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H80c-44.2 0-80-35.8-80-80V64C0 46.3 14.3 32 32 32zM160 224c17.7 0 32 14.3 32 32v64c0 17.7-14.3 32-32 32s-32-14.3-32-32V256c0-17.7 14.3-32 32-32zm128-64V320c0 17.7-14.3 32-32 32s-32-14.3-32-32V160c0-17.7 14.3-32 32-32s32 14.3 32 32zm64 32c17.7 0 32 14.3 32 32v96c0 17.7-14.3 32-32 32s-32-14.3-32-32V224c0-17.7 14.3-32 32-32zM480 96V320c0 17.7-14.3 32-32 32s-32-14.3-32-32V96c0-17.7 14.3-32 32-32s32 14.3 32 32z"/></svg>
+            <span class="text-base font-bold">Industry & Market Intelligence</span>
+            <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">4 links</span>
+          </div>
+          <svg class="accordion-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
+        </button>
+        <div class="accordion-content">
+          <div class="px-6 py-4 grid sm:grid-cols-2 gap-3">
+            <a href="https://www.fpds.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
+              <span><strong style="color:var(--mmt-white);">FPDS</strong> — fpds.gov</span>
+              <svg width="0.75em" height="0.75em" viewBox="0 0 512 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+            </a>
+            <a href="https://iq.govwin.com/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
+              <span><strong style="color:var(--mmt-white);">GovWin</strong> — iq.govwin.com</span>
+              <svg width="0.75em" height="0.75em" viewBox="0 0 512 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+            </a>
+            <a href="https://dashboard.healthit.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
+              <span><strong style="color:var(--mmt-white);">ONC Dashboard</strong> — dashboard.healthit.gov</span>
+              <svg width="0.75em" height="0.75em" viewBox="0 0 512 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+            </a>
+            <a href="https://www.himss.org/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
+              <span><strong style="color:var(--mmt-white);">HIMSS</strong> — himss.org</span>
+              <svg width="0.75em" height="0.75em" viewBox="0 0 512 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+            </a>
+          </div>
         </div>
-        <div class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">Office of the National Coordinator (ONC)</h3>
-          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Principal federal entity for health IT policy — certification programs, interoperability rules, and the Trusted Exchange Framework.</p>
-          <a href="https://www.healthit.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">healthit.gov <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
-        </div>
-        <div class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">health.mil Interoperability</h3>
-          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Military health technology programs, data exchange initiatives, and health information infrastructure across DoD.</p>
-          <a href="https://www.health.mil/Military-Health-Topics/Technology" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">health.mil/Technology <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
-        </div>
-        <div class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">VA Developer Portal (Lighthouse)</h3>
-          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">VA's open API platform — access to health, benefits, and facilities data for building veteran-facing applications.</p>
-          <a href="https://developer.va.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">developer.va.gov <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
+      </div>
+
+      <!-- Accordion: Standards & Interoperability -->
+      <div class="mb-3">
+        <button class="accordion-trigger w-full flex items-center justify-between card rounded-xl px-6 py-4 text-left" aria-expanded="false">
+          <div class="flex items-center gap-3">
+            <svg width="1em" height="1em" viewBox="0 0 640 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M384 96V320H64L64 96H384zM64 32C28.7 32 0 60.7 0 96V320c0 35.3 28.7 64 64 64H181.3l-10.7 32H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H352c17.7 0 32-14.3 32-32s-14.3-32-32-32H277.3l-10.7-32H384c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm464 0c-26.5 0-48 21.5-48 48V432c0 26.5 21.5 48 48 48h64c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48H528zm16 64h32c8.8 0 16 7.2 16 16s-7.2 16-16 16H544c-8.8 0-16-7.2-16-16s7.2-16 16-16zm-16 80c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16s-7.2 16-16 16H544c-8.8 0-16-7.2-16-16zm32 160a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
+            <span class="text-base font-bold">Standards & Interoperability</span>
+            <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">4 links</span>
+          </div>
+          <svg class="accordion-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
+        </button>
+        <div class="accordion-content">
+          <div class="px-6 py-4 grid sm:grid-cols-2 gap-3">
+            <a href="https://hl7.org/fhir/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
+              <span><strong style="color:var(--mmt-white);">HL7 FHIR</strong> — hl7.org/fhir</span>
+              <svg width="0.75em" height="0.75em" viewBox="0 0 512 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+            </a>
+            <a href="https://www.healthit.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
+              <span><strong style="color:var(--mmt-white);">ONC</strong> — healthit.gov</span>
+              <svg width="0.75em" height="0.75em" viewBox="0 0 512 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+            </a>
+            <a href="https://www.health.mil/Military-Health-Topics/Technology" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
+              <span><strong style="color:var(--mmt-white);">health.mil</strong> — Technology</span>
+              <svg width="0.75em" height="0.75em" viewBox="0 0 512 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+            </a>
+            <a href="https://developer.va.gov/" target="_blank" rel="noopener" class="flex items-center justify-between p-3 rounded-lg text-sm no-underline hover:opacity-80" style="background:rgba(0,229,250,0.05); color:var(--mmt-white-muted);">
+              <span><strong style="color:var(--mmt-white);">VA Lighthouse</strong> — developer.va.gov</span>
+              <svg width="0.75em" height="0.75em" viewBox="0 0 512 512" fill="var(--mmt-cyan)" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+            </a>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- CTA -->
-  <section class="py-20 px-6">
+  <section class="section-alt py-20 px-6">
     <div class="max-w-3xl mx-auto text-center">
       <h2 class="text-3xl font-bold mb-4">Get the Analysis</h2>
       <p class="text-lg mb-8" style="color:var(--mmt-white-muted);">These resources are the raw material. The Mission Meets Tech newsletter turns them into actionable intelligence every week.</p>
@@ -302,6 +410,7 @@
   </footer>
 
   <script>
+    // Mobile menu toggle
     const toggle = document.getElementById('menuToggle');
     const menu = document.getElementById('mobileMenu');
     toggle.addEventListener('click', () => {
@@ -309,6 +418,168 @@
       document.getElementById('menuOpen').classList.toggle('hidden');
       document.getElementById('menuClose').classList.toggle('hidden');
     });
+
+    // Accordion
+    document.querySelectorAll('.accordion-trigger').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const content = btn.nextElementSibling;
+        const chevron = btn.querySelector('.accordion-chevron');
+        const isOpen = content.classList.contains('open');
+        content.classList.toggle('open');
+        chevron.classList.toggle('open');
+        btn.setAttribute('aria-expanded', !isOpen);
+      });
+    });
+
+    // Lethality Test
+    (function() {
+      const STORAGE_KEY = 'mmt_lt_uses';
+      const MAX_USES = 5;
+
+      const textarea = document.getElementById('lt-textarea');
+      const charCount = document.getElementById('lt-chars');
+      const submitBtn = document.getElementById('lt-submit');
+      const submitText = document.getElementById('lt-submit-text');
+      const submitLoading = document.getElementById('lt-submit-loading');
+      const minWarning = document.getElementById('lt-min-warning');
+      const errorEl = document.getElementById('lt-error');
+      const remainingEl = document.getElementById('lt-remaining');
+      const inputPanel = document.getElementById('lt-input-panel');
+      const lockedPanel = document.getElementById('lt-locked');
+      const resultsPanel = document.getElementById('lt-results');
+      const resetBtn = document.getElementById('lt-reset');
+
+      function getUses() {
+        return parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10);
+      }
+
+      function setUses(n) {
+        localStorage.setItem(STORAGE_KEY, String(n));
+      }
+
+      function updateUI() {
+        const uses = getUses();
+        const remaining = Math.max(0, MAX_USES - uses);
+        remainingEl.textContent = remaining;
+
+        if (uses >= MAX_USES) {
+          inputPanel.classList.add('hidden');
+          lockedPanel.classList.remove('hidden');
+          resultsPanel.classList.add('hidden');
+        }
+      }
+
+      function getScoreColor(score) {
+        if (score >= 70) return 'var(--mmt-green)';
+        if (score >= 40) return 'var(--mmt-cyan)';
+        return '#ff6b6b';
+      }
+
+      function getConfidenceStyle(confidence) {
+        if (confidence === 'High') return 'background:rgba(0,255,133,0.15); color:var(--mmt-green);';
+        if (confidence === 'Medium') return 'background:rgba(0,229,250,0.15); color:var(--mmt-cyan);';
+        return 'background:rgba(255,107,107,0.15); color:#ff6b6b;';
+      }
+
+      textarea.addEventListener('input', () => {
+        const len = textarea.value.length;
+        charCount.textContent = len.toLocaleString();
+        const valid = len >= 50 && len <= 10000;
+        submitBtn.disabled = !valid;
+        minWarning.classList.toggle('hidden', len >= 50 || len === 0);
+      });
+
+      submitBtn.addEventListener('click', async () => {
+        const text = textarea.value.trim();
+        if (text.length < 50) return;
+
+        const uses = getUses();
+        if (uses >= MAX_USES) { updateUI(); return; }
+
+        errorEl.classList.add('hidden');
+        submitBtn.disabled = true;
+        submitText.classList.add('hidden');
+        submitLoading.classList.remove('hidden');
+        inputPanel.classList.add('analyzing');
+
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 30000);
+
+        try {
+          const res = await fetch('/.netlify/functions/lethality-test', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: text, uses: uses }),
+            signal: controller.signal
+          });
+          clearTimeout(timeout);
+
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || 'Analysis failed');
+
+          setUses(uses + 1);
+          renderResults(data);
+        } catch (err) {
+          errorEl.textContent = err.name === 'AbortError'
+            ? 'Request timed out. Please try again.'
+            : (err.message || 'Analysis failed. Please try again.');
+          errorEl.classList.remove('hidden');
+        } finally {
+          inputPanel.classList.remove('analyzing');
+          submitBtn.disabled = false;
+          submitText.classList.remove('hidden');
+          submitLoading.classList.add('hidden');
+          updateUI();
+        }
+      });
+
+      function renderResults(data) {
+        document.getElementById('lt-pwin').textContent = data.pwin;
+        const confEl = document.getElementById('lt-confidence');
+        confEl.textContent = data.confidence;
+        confEl.setAttribute('style', getConfidenceStyle(data.confidence));
+        document.getElementById('lt-summary').textContent = data.summary;
+
+        const dimsEl = document.getElementById('lt-dimensions');
+        dimsEl.innerHTML = data.dimensions.map(d => `
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-semibold">${d.name}</span>
+              <span class="text-sm font-bold" style="color:${getScoreColor(d.score)};">${d.score}</span>
+            </div>
+            <div class="score-bar h-2 mb-2">
+              <div class="score-bar-fill" style="width:${d.score}%; background:${getScoreColor(d.score)};"></div>
+            </div>
+            <p class="text-xs" style="color:var(--mmt-white-dim);">${d.assessment}</p>
+          </div>
+        `).join('');
+
+        const recsEl = document.getElementById('lt-recommendations');
+        recsEl.innerHTML = data.recommendations.map(r => `
+          <li class="flex gap-3 text-sm" style="color:var(--mmt-white-muted);">
+            <svg class="flex-shrink-0 mt-0.5" width="1em" height="1em" viewBox="0 0 512 512" fill="var(--mmt-green)" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>
+            <span>${r}</span>
+          </li>
+        `).join('');
+
+        inputPanel.classList.add('hidden');
+        resultsPanel.classList.remove('hidden');
+      }
+
+      resetBtn.addEventListener('click', () => {
+        resultsPanel.classList.add('hidden');
+        textarea.value = '';
+        charCount.textContent = '0';
+        submitBtn.disabled = true;
+        updateUI();
+
+        if (getUses() < MAX_USES) {
+          inputPanel.classList.remove('hidden');
+        }
+      });
+
+      updateUI();
+    })();
   </script>
 </body>
 </html>

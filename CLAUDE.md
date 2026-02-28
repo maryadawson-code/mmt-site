@@ -8,12 +8,14 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 
 - **Type:** Static HTML/CSS/JS with Node.js build step (`node build.js`)
 - **Styling:** Tailwind CSS v3 (build-time via CLI, inlined into each HTML page during build) + inline CSS custom properties
-- **Fonts:** Google Fonts — Space Grotesk (headings), Inter (body), loaded non-blocking via `media="print" onload` swap
+- **Fonts:** Self-hosted WOFF2 — Space Grotesk (headings), Inter (body), variable fonts with `font-display: swap`, served from `/fonts/`
 - **Icons:** Inline SVGs (no external icon library)
 - **Forms:** Netlify Forms (contact page), Buttondown (email signup)
 - **Analytics:** Plausible (privacy-respecting, no cookies)
 - **Podcast embed:** Transistor.fm iframe
 - **Content:** Markdown files in `content/newsletter/` → build generates article pages
+- **Serverless:** Netlify Functions (`netlify/functions/`) — Lethality Test pWin analyzer
+- **AI:** `@anthropic-ai/sdk` — Claude Haiku for proposal analysis (env var: `ANTHROPIC_API_KEY`)
 - **Deploy:** Netlify from `main` branch, publish directory is `dist/`
 - **Domain:** missionmeetstech.com
 
@@ -47,7 +49,7 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 ├── about.html              # About / founder bio
 ├── podcast.html            # Fed UP podcast page
 ├── newsletter.html         # Newsletter subscribe + archive (dynamic, loads newsletters.json)
-├── resources.html          # Federal health IT resource guide (5 categories, 21 links)
+├── resources.html          # Intelligence hub: Lethality Test pWin analyzer + collapsible resource links (5 categories, 21 links)
 ├── contact.html            # Contact form (Netlify Forms)
 ├── topics.html             # Topics index page (6 topics, dynamic, loads from newsletters.json)
 ├── newsletters.json        # Newsletter issue data (source; build generates updated version)
@@ -55,10 +57,16 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 ├── sitemap.xml             # Static sitemap (build generates dynamic version in dist)
 ├── netlify.toml            # Netlify config (headers, redirects, forms)
 ├── build.js                # Build script: markdown → HTML, sitemap, RSS, topic pages
-├── package.json            # Dependencies: rss-parser, marked, gray-matter, sharp; devDep: tailwindcss
+├── package.json            # Dependencies: rss-parser, marked, gray-matter, sharp, @anthropic-ai/sdk; devDep: tailwindcss
+├── netlify/
+│   └── functions/
+│       └── lethality-test.js  # Serverless pWin analyzer (Claude Haiku, env: ANTHROPIC_API_KEY)
 ├── tailwind.config.js      # Tailwind content paths configuration
+├── fonts/
+│   ├── Inter-latin.woff2        # Inter variable font (400-700, latin)
+│   └── SpaceGrotesk-latin.woff2 # Space Grotesk variable font (500-700, latin)
 ├── src/
-│   └── input.css           # Tailwind entry point (@tailwind directives)
+│   └── input.css           # Tailwind entry point (@font-face + @tailwind directives)
 ├── content/
 │   └── newsletter/         # Markdown source files for newsletter articles
 │       └── YYYY-MM-DD-slug.md
@@ -133,6 +141,8 @@ All icons are inline SVGs with `width="1em" height="1em" fill="currentColor" ari
 - **Build command:** `node build.js`
 - **Publish directory:** `dist/`
 - **Forms:** Netlify Forms enabled via `data-netlify="true"` attribute on `<form>`
+- **Functions:** Netlify Functions auto-detected from `netlify/functions/` directory
+- **Environment variables:** `ANTHROPIC_API_KEY` must be set in Netlify dashboard (Site Settings → Environment Variables)
 
 ## Content Publishing Workflow
 
@@ -200,3 +210,5 @@ To publish a new newsletter issue:
 - Tailwind CSS is built at compile time via CLI (`tailwind.config.js` + `src/input.css`), then inlined into each HTML page by `build.js`. The `<link rel="stylesheet" href="/styles/tailwind.css">` in source HTML files is replaced with `<style>` during build. There is no external CSS request at runtime.
 - All icons are inline SVGs — there is no Font Awesome or other icon CDN. When adding new icons, use inline SVG with `width="1em" height="1em" fill="currentColor" aria-hidden="true"`.
 - `*.mp4` and `*.zip` are gitignored and excluded from dist builds.
+- Lethality Test (resources.html) uses localStorage key `mmt_lt_uses` for rate limiting (5 free analyses). Calls `/.netlify/functions/lethality-test` serverless endpoint.
+- `ANTHROPIC_API_KEY` env var is required for the Lethality Test to work. Set in Netlify dashboard, not committed to repo.
