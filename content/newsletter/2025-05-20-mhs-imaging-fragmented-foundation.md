@@ -4,9 +4,8 @@ date: 2025-05-20
 slug: mhs-imaging-fragmented-foundation
 description: "At 2 a.m. at Camp Lejeune, a medic's tablet stalls. In Kandahar, a CT scan saves a life in minutes. The paradox of MHS enterprise imaging."
 tags:
-  - Enterprise Imaging
-  - MHS
-  - Innovation
+  - Military Health System
+  - AI & Innovation
 linkedin_url: "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/"
 ---
 

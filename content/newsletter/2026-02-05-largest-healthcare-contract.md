@@ -4,9 +4,9 @@ date: 2026-02-05
 slug: largest-healthcare-contract
 description: "On January 21, 2026, the VA held a landmark industry event for the largest healthcare contract ever. What contractors need to know."
 tags:
-  - VA
-  - Acquisition
-  - Healthcare
+  - Veterans Affairs
+  - Acquisition & Contracting
+  - Healthcare Policy
 linkedin_url: "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/"
 ---
 

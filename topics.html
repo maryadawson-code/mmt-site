@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Topics — Mission Meets Tech</title>
-  <meta name="description" content="Browse federal health IT topics covered by Mission Meets Tech. VA, DHA, MHS, AI, acquisition, and more.">
+  <meta name="description" content="Browse federal health IT coverage by topic — Military Health System, Veterans Affairs, acquisition, AI, strategy, and healthcare policy.">
   <link rel="canonical" href="https://missionmeetstech.com/topics.html">
   <meta property="og:title" content="Topics — Mission Meets Tech">
-  <meta property="og:description" content="Browse federal health IT topics covered by Mission Meets Tech. VA, DHA, MHS, AI, acquisition, and more.">
+  <meta property="og:description" content="Browse federal health IT coverage by topic — Military Health System, Veterans Affairs, acquisition, AI, strategy, and healthcare policy.">
   <meta property="og:url" content="https://missionmeetstech.com/topics.html">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://missionmeetstech.com/mmt-logo.png">
@@ -16,7 +16,7 @@
   <meta property="og:site_name" content="Mission Meets Tech">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Topics — Mission Meets Tech">
-  <meta name="twitter:description" content="Browse federal health IT topics covered by Mission Meets Tech.">
+  <meta name="twitter:description" content="Browse federal health IT coverage by topic — Military Health System, Veterans Affairs, acquisition, AI, strategy, and healthcare policy.">
   <meta name="twitter:image" content="https://missionmeetstech.com/mmt-logo.png">
   <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="alternate" type="application/rss+xml" title="Mission Meets Tech" href="/feed.xml">
@@ -170,6 +170,15 @@
       document.getElementById('menuClose').classList.toggle('hidden');
     });
 
+    const topicDescriptions = {
+      'Military Health System': 'DHA transformation, MHS GENESIS, enterprise imaging, and operational readiness.',
+      'Veterans Affairs': 'VA health IT strategy, EHR modernization, and organizational transformation.',
+      'Acquisition & Contracting': 'Procurement strategy, COTS products, RFIs, and contract vehicles.',
+      'AI & Innovation': 'Artificial intelligence, telehealth, and emerging technology in federal health.',
+      'Strategy & Leadership': 'Leadership appointments, strategic direction, and organizational change.',
+      'Healthcare Policy': 'Federal health policy, operating model shifts, and cross-agency implications.',
+    };
+
     async function loadTopics() {
       try {
         const controller = new AbortController();
@@ -197,9 +206,11 @@
 
         container.innerHTML = tags.map(([tag, count]) => {
           const slug = tag.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+          const desc = topicDescriptions[tag] || '';
           return `
             <a href="/topics/${slug}/" class="card rounded-xl p-6 no-underline block hover:border-opacity-30 transition-all">
               <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-white);">${tag}</h3>
+              ${desc ? `<p class="text-sm mb-2 leading-relaxed" style="color:var(--mmt-white-muted);">${desc}</p>` : ''}
               <p class="text-sm" style="color:var(--mmt-white-dim);">${count} article${count === 1 ? '' : 's'}</p>
             </a>`;
         }).join('');

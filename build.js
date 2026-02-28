@@ -200,7 +200,6 @@ function generateSitemap(articles, tags) {
     { loc: '/newsletter.html', priority: '0.8' },
     { loc: '/resources.html', priority: '0.7' },
     { loc: '/contact.html', priority: '0.6' },
-    { loc: '/newsletter-archive.html', priority: '0.7' },
     { loc: '/topics.html', priority: '0.7' },
   ];
 
@@ -365,8 +364,7 @@ async function generateOgImages(articles, tags) {
     { filename: 'index.png', title: 'Federal Health IT Intelligence', subtitle: 'Where policy meets operational reality' },
     { filename: 'about.png', title: 'About Mission Meets Tech', subtitle: 'Independent analysis for federal health IT' },
     { filename: 'podcast.png', title: 'Fed UP: Where Mission Meets Reality', subtitle: 'Federal health IT podcast', label: 'PODCAST' },
-    { filename: 'newsletter.png', title: 'Newsletter', subtitle: 'Federal health IT intelligence in your inbox', label: 'NEWSLETTER' },
-    { filename: 'newsletter-archive.png', title: 'Newsletter Archive', subtitle: 'Every issue of Mission Meets Tech', label: 'ARCHIVE' },
+    { filename: 'newsletter.png', title: 'Newsletter', subtitle: 'Subscribe and browse all issues', label: 'NEWSLETTER' },
     { filename: 'resources.png', title: 'Federal Health IT Resources', subtitle: 'Curated links for defense and government', label: 'RESOURCES' },
     { filename: 'contact.png', title: 'Get in Touch', subtitle: 'Mission Meets Tech' },
     { filename: 'topics.png', title: 'Coverage Topics', subtitle: 'Browse all federal health IT topics', label: 'TOPICS' },
@@ -419,15 +417,13 @@ function copyStaticFiles() {
   // Copy root HTML files (with inlined Tailwind CSS)
   const htmlFiles = [
     'index.html', 'about.html', 'podcast.html', 'newsletter.html',
-    'newsletter-archive.html', 'resources.html', 'contact.html', 'topics.html',
-    '404.html'
+    'resources.html', 'contact.html', 'topics.html', '404.html'
   ];
   const ogMap = {
     'index.html': 'index.png',
     'about.html': 'about.png',
     'podcast.html': 'podcast.png',
     'newsletter.html': 'newsletter.png',
-    'newsletter-archive.html': 'newsletter-archive.png',
     'resources.html': 'resources.png',
     'contact.html': 'contact.png',
     'topics.html': 'topics.png',

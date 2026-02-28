@@ -4,9 +4,8 @@ date: 2025-12-04
 slug: cots-products-mattress
 description: "After the Great Depression, people kept money in the mattress. Some defense health IT vendors are doing the same with their COTS products."
 tags:
-  - COTS
-  - Acquisition
-  - DHA
+  - Acquisition & Contracting
+  - Military Health System
 linkedin_url: "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/"
 ---
 

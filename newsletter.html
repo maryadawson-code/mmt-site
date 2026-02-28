@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Newsletter — Mission Meets Tech</title>
-  <meta name="description" content="Subscribe to Mission Meets Tech for weekly federal health IT intelligence delivered to your inbox.">
+  <meta name="description" content="Subscribe to Mission Meets Tech for weekly federal health IT intelligence. Browse all past issues and subscribe to get analysis delivered to your inbox.">
   <link rel="canonical" href="https://missionmeetstech.com/newsletter.html">
   <meta property="og:title" content="Newsletter — Mission Meets Tech">
-  <meta property="og:description" content="Subscribe to Mission Meets Tech for weekly federal health IT intelligence delivered to your inbox.">
+  <meta property="og:description" content="Subscribe to Mission Meets Tech for weekly federal health IT intelligence. Browse all past issues and subscribe to get analysis delivered to your inbox.">
   <meta property="og:url" content="https://missionmeetstech.com/newsletter.html">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://missionmeetstech.com/mmt-logo.png">
@@ -16,7 +16,7 @@
   <meta property="og:site_name" content="Mission Meets Tech">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Newsletter — Mission Meets Tech">
-  <meta name="twitter:description" content="Subscribe to Mission Meets Tech for weekly federal health IT intelligence delivered to your inbox.">
+  <meta name="twitter:description" content="Subscribe to Mission Meets Tech for weekly federal health IT intelligence. Browse all past issues and subscribe to get analysis delivered to your inbox.">
   <meta name="twitter:image" content="https://missionmeetstech.com/mmt-logo.png">
   <link rel="icon" type="image/png" href="/favicon.png">
   <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
@@ -50,6 +50,7 @@
     .card:hover { border-color: rgba(0, 229, 250, 0.3); }
     .nav-glass { background: rgba(0, 5, 15, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0, 229, 250, 0.1); }
     .section-alt { background: var(--mmt-dark); }
+    .tag { background: rgba(0, 229, 250, 0.1); color: var(--mmt-cyan); padding: 2px 10px; border-radius: 4px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; }
     *:focus-visible { outline: 2px solid var(--mmt-cyan); outline-offset: 2px; }
   </style>
 </head>
@@ -94,10 +95,39 @@
   <main id="main-content">
   <!-- Hero -->
   <section class="pt-32 pb-16 px-6">
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-4xl mx-auto text-center">
       <p class="text-sm font-semibold tracking-widest uppercase mb-4" style="color:var(--mmt-cyan);">Newsletter</p>
       <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-6">Mission Meets <span class="gradient-text">Tech</span> Newsletter</h1>
-      <p class="text-lg leading-relaxed max-w-3xl" style="color:var(--mmt-white-muted);">Weekly intelligence on federal health IT policy, defense technology, and the operational decisions shaping military and veteran healthcare. Written for practitioners, not pundits.</p>
+      <p class="text-lg leading-relaxed max-w-3xl mx-auto mb-8" style="color:var(--mmt-white-muted);">Weekly intelligence on federal health IT policy, defense technology, and the operational decisions shaping military and veteran healthcare. Written for practitioners, not pundits.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
+        <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary inline-block px-8 py-3 rounded-lg text-base font-semibold no-underline">Subscribe on LinkedIn</a>
+        <span class="text-sm" style="color:var(--mmt-white-dim);">or</span>
+      </div>
+      <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" class="flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto">
+        <label for="bd-email-hero" class="sr-only">Email address</label>
+        <input type="email" name="email" id="bd-email-hero" placeholder="you@example.com" required class="flex-1 px-4 py-3 rounded-lg text-sm" style="background:var(--mmt-slate); border:1px solid rgba(0,229,250,0.2); color:var(--mmt-white); outline:none;">
+        <button type="submit" class="btn-secondary px-6 py-3 rounded-lg text-sm font-semibold cursor-pointer" style="background:none;">Get it by Email</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Latest Issues -->
+  <section class="section-alt py-20 px-6">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl font-bold mb-10">Latest <span class="gradient-text">Issues</span></h2>
+      <div id="latest-issues" aria-live="polite" class="grid md:grid-cols-3 gap-6">
+        <p class="text-center py-10 col-span-3" style="color:var(--mmt-white-dim);">Loading latest issues...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- All Issues -->
+  <section id="all-issues" class="py-20 px-6">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl font-bold mb-10">All <span class="gradient-text">Issues</span></h2>
+      <div id="archive-container" aria-live="polite" class="space-y-5" style="min-height:400px;">
+        <p class="text-center py-10" style="color:var(--mmt-white-dim);">Loading newsletter archive...</p>
+      </div>
     </div>
   </section>
 
@@ -210,6 +240,52 @@
       document.getElementById('menuOpen').classList.toggle('hidden');
       document.getElementById('menuClose').classList.toggle('hidden');
     });
+
+    const tagSlug = (t) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+    async function loadNewsletters() {
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10000);
+        const response = await fetch('newsletters.json', { signal: controller.signal });
+        clearTimeout(timeout);
+        const newsletters = await response.json();
+
+        // Latest 3 issues
+        const latestContainer = document.getElementById('latest-issues');
+        if (newsletters.length === 0) {
+          latestContainer.innerHTML = '<p class="text-center py-10 col-span-3" style="color:var(--mmt-white-dim);">No newsletters yet. Check back soon!</p>';
+          return;
+        }
+
+        const latest = newsletters.slice(0, 3);
+        latestContainer.innerHTML = latest.map(item => `
+          <article class="card rounded-xl p-6">
+            <p class="text-xs mb-3" style="color:var(--mmt-white-dim);"><svg class="mr-1" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H64C28.7 64 0 92.7 0 128v16 48V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192 144 128c0-35.3-28.7-64-64-64H344V24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H152V24zM48 192H400V448c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192z"/></svg>${item.date}</p>
+            <h3 class="text-lg font-bold mb-2"><a href="${item.url}" class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${item.title}</a></h3>
+            <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">${item.description}</p>
+          </article>`).join('');
+
+        // All issues archive
+        const archiveContainer = document.getElementById('archive-container');
+        archiveContainer.innerHTML = newsletters.map(item => `
+          <article class="card rounded-xl p-6">
+            <h3 class="text-lg font-bold mb-2"><a href="${item.url}" class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${item.title}</a></h3>
+            <p class="text-xs mb-3" style="color:var(--mmt-white-dim);"><svg class="mr-1" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H64C28.7 64 0 92.7 0 128v16 48V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192 144 128c0-35.3-28.7-64-64-64H344V24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H152V24zM48 192H400V448c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192z"/></svg>${item.date}</p>
+            <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-muted);">${item.description}</p>
+            <div class="flex flex-wrap gap-2">
+              ${(item.tags || []).map(tag => `<a href="/topics/${tagSlug(tag)}/" class="tag no-underline">${tag}</a>`).join('')}
+            </div>
+          </article>`).join('');
+      } catch (error) {
+        document.getElementById('latest-issues').innerHTML =
+          '<p class="text-center py-10 col-span-3" style="color:var(--mmt-white-dim);">Unable to load articles. Please try again later.</p>';
+        document.getElementById('archive-container').innerHTML =
+          '<p class="text-center py-10" style="color:var(--mmt-white-dim);">Unable to load archive. Please try again later.</p>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadNewsletters);
   </script>
 </body>
 </html>

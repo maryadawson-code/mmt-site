@@ -4,8 +4,7 @@ date: 2025-11-01
 slug: introducing-fed-up
 description: "Sara Byrd and I have been talking about doing this for months. Fed UP: Where Mission Meets Reality is live."
 tags:
-  - Podcast
-  - Announcement
+  - Strategy & Leadership
 linkedin_url: "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/"
 ---
 

@@ -7,6 +7,11 @@
   to = "/index.html"
   status = 200
 
+[[redirects]]
+  from = "/newsletter-archive.html"
+  to = "/newsletter.html#all-issues"
+  status = 301
+
 [[headers]]
   for = "/*"
   [headers.values]

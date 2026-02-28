@@ -4,9 +4,8 @@ date: 2026-01-08
 slug: telehealth-contested-systems
 description: "A Navy corpsman is waiting on a telehealth consult that routes through systems maintained by contested infrastructure. The readiness implications are real."
 tags:
-  - Telehealth
-  - Readiness
-  - MHS
+  - Military Health System
+  - AI & Innovation
 linkedin_url: "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/"
 ---
 

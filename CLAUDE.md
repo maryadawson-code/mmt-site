@@ -46,11 +46,10 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 ├── index.html              # Homepage
 ├── about.html              # About / founder bio
 ├── podcast.html            # Fed UP podcast page
-├── newsletter.html         # Newsletter subscribe page
-├── resources.html          # Federal health IT resource guide
+├── newsletter.html         # Newsletter subscribe + archive (dynamic, loads newsletters.json)
+├── resources.html          # Federal health IT resource guide (5 categories, 21 links)
 ├── contact.html            # Contact form (Netlify Forms)
-├── newsletter-archive.html # Dynamic archive (loads newsletters.json)
-├── topics.html             # Topics index page (dynamic, loads from newsletters.json)
+├── topics.html             # Topics index page (6 topics, dynamic, loads from newsletters.json)
 ├── newsletters.json        # Newsletter issue data (source; build generates updated version)
 ├── robots.txt              # Crawler directives (copied to dist by build)
 ├── sitemap.xml             # Static sitemap (build generates dynamic version in dist)

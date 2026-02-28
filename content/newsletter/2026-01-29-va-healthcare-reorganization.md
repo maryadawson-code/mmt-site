@@ -4,9 +4,8 @@ date: 2026-01-29
 slug: va-healthcare-reorganization
 description: "If you're not paying attention to the VA's restructuring, you're already behind. Here's what the reorganization means for contractors."
 tags:
-  - VA
-  - Reorganization
-  - Strategy
+  - Veterans Affairs
+  - Strategy & Leadership
 linkedin_url: "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/"
 ---
 

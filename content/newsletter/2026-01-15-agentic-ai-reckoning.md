@@ -4,9 +4,9 @@ date: 2026-01-15
 slug: agentic-ai-reckoning
 description: "IBM's 2025 report reveals organizations mastering AI adoption are 32X more likely to reach top-tier performance. 78% of execs say a new operating model is required."
 tags:
-  - AI
-  - Strategy
-  - Healthcare
+  - AI & Innovation
+  - Strategy & Leadership
+  - Healthcare Policy
 linkedin_url: "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/"
 ---
 

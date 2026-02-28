@@ -4,9 +4,8 @@ date: 2026-01-22
 slug: va-referral-care-coordination
 description: "VA's OIT posted an RFI for a next-generation referral, authorization, utilization management, and care coordination system."
 tags:
-  - VA
-  - RFI
-  - Care Coordination
+  - Veterans Affairs
+  - Acquisition & Contracting
 linkedin_url: "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/"
 ---
 
