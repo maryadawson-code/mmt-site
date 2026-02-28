@@ -54,8 +54,8 @@
     .accordion-chevron.open { transform: rotate(180deg); }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     .fade-in { animation: fadeIn 0.4s ease-out; }
-    @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 20px rgba(0, 229, 250, 0.2); } 50% { box-shadow: 0 0 40px rgba(0, 229, 250, 0.4); } }
-    .analyzing { animation: pulse-glow 1.5s ease-in-out infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner { display: inline-block; width: 1em; height: 1em; border: 2px solid rgba(0,5,15,0.3); border-top-color: var(--mmt-navy); border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; }
   </style>
 </head>
 <body class="antialiased">
@@ -128,7 +128,7 @@ Example: 'Our team brings 10 years of DHA health IT experience, including MHS GE
         <div class="mt-6 flex items-center gap-4">
           <button id="lt-submit" class="btn-primary px-8 py-3 rounded-lg text-base font-semibold" disabled>
             <span id="lt-submit-text">Run Lethality Test</span>
-            <span id="lt-submit-loading" class="hidden">Analyzing...</span>
+            <span id="lt-submit-loading" class="hidden"><span class="spinner" aria-hidden="true"></span> Analyzing...</span>
           </button>
           <p id="lt-min-warning" class="text-xs hidden" style="color:var(--mmt-cyan);">Minimum 50 characters required</p>
         </div>
@@ -150,33 +150,27 @@ Example: 'Our team brings 10 years of DHA health IT experience, including MHS GE
 
       <!-- Results Panel -->
       <div id="lt-results" class="hidden fade-in" aria-live="polite">
-        <div class="card rounded-xl p-6 md:p-8 mb-6">
-          <!-- pWin Score -->
-          <div class="flex flex-col md:flex-row md:items-center gap-6 mb-8 pb-8" style="border-bottom:1px solid rgba(0,229,250,0.1);">
-            <div class="text-center md:text-left">
-              <p class="text-sm font-semibold uppercase tracking-wider mb-2" style="color:var(--mmt-white-dim);">Overall pWin Score</p>
-              <p id="lt-pwin" class="text-6xl md:text-7xl font-bold gradient-text" style="line-height:1;">--</p>
-            </div>
-            <div class="flex-1">
-              <div class="flex items-center gap-3 mb-3">
-                <span id="lt-confidence" class="inline-block px-3 py-1 rounded-full text-xs font-bold" style="background:rgba(0,229,250,0.15); color:var(--mmt-cyan);">--</span>
-                <span class="text-sm" style="color:var(--mmt-white-dim);">Confidence</span>
-              </div>
-              <p id="lt-summary" class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);"></p>
-            </div>
-          </div>
 
-          <!-- Dimensions -->
-          <div class="mb-8">
-            <h3 class="text-lg font-bold mb-5">Evaluation Dimensions</h3>
-            <div id="lt-dimensions" class="space-y-5"></div>
+        <!-- pWin Score Card -->
+        <div class="card rounded-xl p-8 mb-4 text-center">
+          <p class="text-sm font-semibold uppercase tracking-wider mb-3" style="color:var(--mmt-white-dim);">Overall pWin Score</p>
+          <p id="lt-pwin" class="text-7xl md:text-8xl font-bold gradient-text" style="line-height:1;">--</p>
+          <div class="mt-4 mb-4">
+            <span id="lt-confidence" class="inline-block px-4 py-1.5 rounded-full text-xs font-bold" style="background:rgba(0,229,250,0.15); color:var(--mmt-cyan);">--</span>
           </div>
+          <p id="lt-summary" class="text-sm leading-relaxed max-w-2xl mx-auto" style="color:var(--mmt-white-muted);"></p>
+        </div>
 
-          <!-- Recommendations -->
-          <div>
-            <h3 class="text-lg font-bold mb-4">Recommendations</h3>
-            <ul id="lt-recommendations" class="space-y-3"></ul>
-          </div>
+        <!-- Dimensions -->
+        <div class="mb-4">
+          <h3 class="text-base font-bold mb-3 px-1" style="color:var(--mmt-white-dim);">Evaluation Dimensions</h3>
+          <div id="lt-dimensions" class="grid gap-3"></div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="card rounded-xl p-6 mb-6">
+          <h3 class="text-base font-bold mb-4">Recommendations</h3>
+          <ul id="lt-recommendations"></ul>
         </div>
 
         <div class="text-center">
@@ -489,6 +483,18 @@ Example: 'Our team brings 10 years of DHA health IT experience, including MHS GE
         minWarning.classList.toggle('hidden', len >= 50 || len === 0);
       });
 
+      function setLoading(on) {
+        submitBtn.disabled = on;
+        submitText.classList.toggle('hidden', on);
+        submitLoading.classList.toggle('hidden', !on);
+      }
+
+      function resetInput() {
+        setLoading(false);
+        const len = textarea.value.trim().length;
+        submitBtn.disabled = len < 50;
+      }
+
       submitBtn.addEventListener('click', async () => {
         const text = textarea.value.trim();
         if (text.length < 50) return;
@@ -497,10 +503,7 @@ Example: 'Our team brings 10 years of DHA health IT experience, including MHS GE
         if (uses >= MAX_USES) { updateUI(); return; }
 
         errorEl.classList.add('hidden');
-        submitBtn.disabled = true;
-        submitText.classList.add('hidden');
-        submitLoading.classList.remove('hidden');
-        inputPanel.classList.add('analyzing');
+        setLoading(true);
 
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 30000);
@@ -518,20 +521,23 @@ Example: 'Our team brings 10 years of DHA health IT experience, including MHS GE
           if (!res.ok) throw new Error(data.error || 'Analysis failed');
 
           setUses(uses + 1);
+          const remaining = Math.max(0, MAX_USES - getUses());
+          remainingEl.textContent = remaining;
           renderResults(data);
         } catch (err) {
           errorEl.textContent = err.name === 'AbortError'
             ? 'Request timed out. Please try again.'
             : (err.message || 'Analysis failed. Please try again.');
           errorEl.classList.remove('hidden');
-        } finally {
-          inputPanel.classList.remove('analyzing');
-          submitBtn.disabled = false;
-          submitText.classList.remove('hidden');
-          submitLoading.classList.add('hidden');
-          updateUI();
+          resetInput();
         }
       });
+
+      function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+      }
 
       function renderResults(data) {
         document.getElementById('lt-pwin').textContent = data.pwin;
@@ -541,24 +547,25 @@ Example: 'Our team brings 10 years of DHA health IT experience, including MHS GE
         document.getElementById('lt-summary').textContent = data.summary;
 
         const dimsEl = document.getElementById('lt-dimensions');
-        dimsEl.innerHTML = data.dimensions.map(d => `
-          <div>
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-sm font-semibold">${d.name}</span>
-              <span class="text-sm font-bold" style="color:${getScoreColor(d.score)};">${d.score}</span>
+        dimsEl.innerHTML = data.dimensions.map(d => {
+          const color = getScoreColor(d.score);
+          return `<div style="background:var(--mmt-slate); border:1px solid rgba(0,229,250,0.1); border-radius:12px; padding:16px 20px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+              <span style="font-size:14px; font-weight:600; color:var(--mmt-white);">${escapeHtml(d.name)}</span>
+              <span style="font-size:20px; font-weight:700; color:${color};">${d.score}</span>
             </div>
-            <div class="score-bar h-2 mb-2">
-              <div class="score-bar-fill" style="width:${d.score}%; background:${getScoreColor(d.score)};"></div>
+            <div style="background:rgba(255,255,255,0.1); border-radius:9999px; height:6px; overflow:hidden; margin-bottom:10px;">
+              <div style="height:100%; width:${d.score}%; background:${color}; border-radius:9999px; transition:width 0.8s ease-out;"></div>
             </div>
-            <p class="text-xs" style="color:var(--mmt-white-dim);">${d.assessment}</p>
-          </div>
-        `).join('');
+            <p style="font-size:13px; line-height:1.5; color:var(--mmt-white-dim); margin:0;">${escapeHtml(d.assessment)}</p>
+          </div>`;
+        }).join('');
 
         const recsEl = document.getElementById('lt-recommendations');
-        recsEl.innerHTML = data.recommendations.map(r => `
-          <li class="flex gap-3 text-sm" style="color:var(--mmt-white-muted);">
-            <svg class="flex-shrink-0 mt-0.5" width="1em" height="1em" viewBox="0 0 512 512" fill="var(--mmt-green)" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>
-            <span>${r}</span>
+        recsEl.innerHTML = data.recommendations.map((r, i) => `
+          <li style="display:flex; gap:12px; align-items:flex-start; padding:12px 0; ${i < data.recommendations.length - 1 ? 'border-bottom:1px solid rgba(0,229,250,0.05);' : ''}">
+            <span style="flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; background:rgba(0,255,133,0.1); color:var(--mmt-green); font-size:12px; font-weight:700;">${i + 1}</span>
+            <span style="font-size:14px; line-height:1.6; color:var(--mmt-white-muted);">${escapeHtml(r)}</span>
           </li>
         `).join('');
 
@@ -568,12 +575,14 @@ Example: 'Our team brings 10 years of DHA health IT experience, including MHS GE
 
       resetBtn.addEventListener('click', () => {
         resultsPanel.classList.add('hidden');
-        textarea.value = '';
-        charCount.textContent = '0';
-        submitBtn.disabled = true;
-        updateUI();
 
-        if (getUses() < MAX_USES) {
+        if (getUses() >= MAX_USES) {
+          lockedPanel.classList.remove('hidden');
+        } else {
+          textarea.value = '';
+          charCount.textContent = '0';
+          submitBtn.disabled = true;
+          resetInput();
           inputPanel.classList.remove('hidden');
         }
       });
