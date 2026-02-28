@@ -87,6 +87,7 @@
         <a href="podcast.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Podcast</a>
         <a href="newsletter.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Newsletter</a>
         <a href="resources.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Resources</a>
+        <a href="topics.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Topics</a>
         <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-5 py-2 rounded-lg text-sm no-underline">Subscribe</a>
       </div>
       <button id="menuToggle" class="md:hidden text-white text-xl" aria-label="Toggle menu">
@@ -101,6 +102,7 @@
         <a href="podcast.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Podcast</a>
         <a href="newsletter.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Newsletter</a>
         <a href="resources.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Resources</a>
+        <a href="topics.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Topics</a>
         <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-5 py-2 rounded-lg text-sm text-center no-underline">Subscribe</a>
       </div>
     </div>
@@ -201,8 +203,22 @@
     </div>
   </section>
 
-  <!-- CTA -->
+  <!-- Latest Articles -->
   <section class="section-alt py-20 px-6">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl font-bold mb-4 text-center" style="font-family:'Space Grotesk',system-ui,sans-serif;">Latest <span class="gradient-text">Articles</span></h2>
+      <p class="text-center max-w-2xl mx-auto mb-12" style="color:var(--mmt-white-muted);">Recent intelligence from the Mission Meets Tech newsletter.</p>
+      <div id="latest-articles" class="grid md:grid-cols-3 gap-6">
+        <p class="text-center py-10 col-span-3" style="color:var(--mmt-white-dim);">Loading latest articles...</p>
+      </div>
+      <div class="text-center mt-10">
+        <a href="newsletter-archive.html" class="btn-secondary inline-block px-8 py-3 rounded-lg text-base font-medium no-underline">View All Issues</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-20 px-6">
     <div class="max-w-3xl mx-auto text-center">
       <h2 class="text-3xl font-bold mb-4" style="font-family:'Space Grotesk',system-ui,sans-serif;">Stay Informed</h2>
       <p class="text-lg mb-8" style="color:var(--mmt-white-muted);">Join the community of federal health IT professionals who rely on Mission Meets Tech for clear, evidence-based intelligence.</p>
@@ -271,6 +287,41 @@
       icon.classList.toggle('fa-bars');
       icon.classList.toggle('fa-xmark');
     });
+
+    async function loadLatestArticles() {
+      try {
+        const response = await fetch('newsletters.json');
+        const newsletters = await response.json();
+        const container = document.getElementById('latest-articles');
+        const latest = newsletters.slice(0, 3);
+
+        if (latest.length === 0) {
+          container.innerHTML = '<p class="text-center py-10 col-span-3" style="color:var(--mmt-white-dim);">No articles yet. Check back soon!</p>';
+          return;
+        }
+
+        container.innerHTML = latest.map(item => {
+          const tagSlug = (t) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+          const tags = (item.tags || []).map(t =>
+            `<a href="/topics/${tagSlug(t)}/" class="text-xs px-2 py-0.5 rounded no-underline" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">${t}</a>`
+          ).join('');
+          return `
+            <a href="${item.url}" class="card rounded-xl p-6 no-underline block transition-all">
+              <p class="text-xs mb-3" style="color:var(--mmt-white-dim);"><i class="far fa-calendar mr-1"></i>${item.date}</p>
+              <h3 class="text-lg font-bold mb-3 leading-snug" style="color:var(--mmt-white);">${item.title}</h3>
+              <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-muted);">${item.description}</p>
+              <div class="flex flex-wrap gap-2">${tags}</div>
+            </a>`;
+        }).join('');
+      } catch (error) {
+        const container = document.getElementById('latest-articles');
+        if (container) {
+          container.innerHTML = '<p class="text-center py-10 col-span-3" style="color:var(--mmt-white-dim);">Unable to load articles.</p>';
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadLatestArticles);
   </script>
 </body>
 </html>

@@ -6,14 +6,15 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 
 ## Stack
 
-- **Type:** Static HTML/CSS/JS — no build step, no framework
+- **Type:** Static HTML/CSS/JS with Node.js build step (`node build.js`)
 - **Styling:** Tailwind CSS via CDN + inline CSS custom properties
 - **Fonts:** Google Fonts — Space Grotesk (headings), Inter (body)
 - **Icons:** Font Awesome 6.5.1 via CDN
 - **Forms:** Netlify Forms (contact page), Buttondown (email signup)
 - **Analytics:** Plausible (privacy-respecting, no cookies)
 - **Podcast embed:** Transistor.fm iframe
-- **Deploy:** Netlify from `main` branch, publish directory is root (`.`)
+- **Content:** Markdown files in `content/newsletter/` → build generates article pages
+- **Deploy:** Netlify from `main` branch, publish directory is `dist/`
 - **Domain:** missionmeetstech.com
 
 ## Design Tokens
@@ -48,20 +49,33 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 ├── resources.html          # Federal health IT resource guide
 ├── contact.html            # Contact form (Netlify Forms)
 ├── newsletter-archive.html # Dynamic archive (loads newsletters.json)
-├── newsletters.json        # Newsletter issue data for archive
-├── robots.txt              # Crawler directives
-├── sitemap.xml             # XML sitemap for SEO
+├── topics.html             # Topics index page (dynamic, loads from newsletters.json)
+├── newsletters.json        # Newsletter issue data (source; build generates updated version)
+├── robots.txt              # Crawler directives (copied to dist by build)
+├── sitemap.xml             # Static sitemap (build generates dynamic version in dist)
 ├── netlify.toml            # Netlify config (headers, redirects, forms)
+├── build.js                # Build script: markdown → HTML, sitemap, RSS, topic pages
+├── package.json            # Dependencies: rss-parser, marked, gray-matter
+├── content/
+│   └── newsletter/         # Markdown source files for newsletter articles
+│       └── YYYY-MM-DD-slug.md
+├── templates/
+│   ├── article.html        # Template for generated article pages
+│   └── topic.html          # Template for generated topic pages
+├── dist/                   # Build output (gitignored, deployed by Netlify)
+│   ├── newsletter/*/index.html  # Generated article pages
+│   ├── topics/*/index.html      # Generated topic pages
+│   ├── sitemap.xml              # Dynamic sitemap (all pages + articles + topics)
+│   ├── feed.xml                 # RSS feed
+│   └── newsletters.json        # Updated with on-site article URLs
 ├── CLAUDE.md               # This file
 ├── mmt-logo.png            # Full logo (used for OG images)
 ├── mmt-logo-nav.png        # Nav logo variant
-├── MMT_icon_64px.png       # Favicon
 ├── mmt-icon.png            # Icon variant
 ├── marywomack.jpg          # Mary Womack headshot
 ├── Sara zoomed.jpg         # Sara Byrd headshot
 ├── styles.css              # Legacy stylesheet (not used by main pages)
-├── main.js                 # Legacy JS (not used by main pages)
-└── build.js                # Legacy build script (unused)
+└── main.js                 # Legacy JS (not used by main pages)
 ```
 
 ## Page Conventions
@@ -94,9 +108,38 @@ The current page's nav link uses `color:var(--mmt-cyan)` instead of `--mmt-white
 
 - **Host:** Netlify
 - **Branch:** `main` (production)
-- **Build command:** `echo 'Static site - no build needed'`
-- **Publish directory:** `.` (root)
+- **Build command:** `node build.js`
+- **Publish directory:** `dist/`
 - **Forms:** Netlify Forms enabled via `data-netlify="true"` attribute on `<form>`
+
+## Content Publishing Workflow
+
+To publish a new newsletter issue:
+
+1. Create `content/newsletter/YYYY-MM-DD-slug.md`
+2. Add YAML frontmatter:
+   ```yaml
+   ---
+   title: "Article Title"
+   date: YYYY-MM-DD
+   slug: url-friendly-slug
+   description: "One-sentence description for SEO and previews."
+   tags:
+     - Tag1
+     - Tag2
+   linkedin_url: "https://www.linkedin.com/..."
+   ---
+   ```
+3. Write markdown body below the frontmatter
+4. Push to `main`
+5. Netlify runs `node build.js` → generates article page at `/newsletter/slug/`, updates sitemap, RSS feed, archive, and topic pages automatically
+
+### Build artifacts (generated, not committed)
+- `dist/newsletter/slug/index.html` — individual article pages
+- `dist/topics/tag-slug/index.html` — topic landing pages
+- `dist/sitemap.xml` — dynamic sitemap with all pages, articles, and topics
+- `dist/feed.xml` — RSS 2.0 feed of all newsletter articles
+- `dist/newsletters.json` — updated with on-site article URLs (used by archive page)
 
 ## Brand Voice
 
@@ -111,3 +154,5 @@ The current page's nav link uses `color:var(--mmt-cyan)` instead of `--mmt-white
 - `Sara zoomed.jpg` has a space in the filename — reference it with the space in HTML `src` attributes.
 - The Tailwind CDN script is loaded from `cdn.tailwindcss.com` — this is intended for development/prototyping. For production optimization, consider migrating to a build-time Tailwind setup.
 - Newsletter archive loads data dynamically from `newsletters.json` via fetch API.
+- `dist/` is gitignored — never commit build artifacts.
+- `build.js` generates `newsletters.json` in dist with on-site URLs; the root `newsletters.json` still has LinkedIn URLs as the source of truth for metadata.

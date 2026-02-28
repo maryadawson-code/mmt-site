@@ -3,20 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Newsletter Archive — Mission Meets Tech</title>
-  <meta name="description" content="Browse all past issues of Mission Meets Tech newsletter. Federal health IT intelligence for defense contractors and government leaders.">
-  <link rel="canonical" href="https://missionmeetstech.com/newsletter-archive.html">
-  <meta property="og:title" content="Newsletter Archive — Mission Meets Tech">
-  <meta property="og:description" content="Browse all past issues of Mission Meets Tech newsletter. Federal health IT intelligence for defense contractors and government leaders.">
-  <meta property="og:url" content="https://missionmeetstech.com/newsletter-archive.html">
+  <title>{{TOPIC_NAME}} — Mission Meets Tech</title>
+  <meta name="description" content="Mission Meets Tech articles on {{TOPIC_NAME}}. Federal health IT intelligence for defense contractors and government decision-makers.">
+  <link rel="canonical" href="{{CANONICAL_URL}}">
+  <meta property="og:title" content="{{TOPIC_NAME}} — Mission Meets Tech">
+  <meta property="og:description" content="Mission Meets Tech articles on {{TOPIC_NAME}}. Federal health IT intelligence for defense contractors and government decision-makers.">
+  <meta property="og:url" content="{{CANONICAL_URL}}">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://missionmeetstech.com/mmt-logo.png">
   <meta property="og:site_name" content="Mission Meets Tech">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Newsletter Archive — Mission Meets Tech">
-  <meta name="twitter:description" content="Browse all past issues of Mission Meets Tech newsletter. Federal health IT intelligence for defense contractors and government leaders.">
+  <meta name="twitter:title" content="{{TOPIC_NAME}} — Mission Meets Tech">
+  <meta name="twitter:description" content="Mission Meets Tech articles on {{TOPIC_NAME}}.">
   <meta name="twitter:image" content="https://missionmeetstech.com/mmt-logo.png">
-  <link rel="icon" type="image/png" href="MMT_icon_64px.png">
+  <link rel="icon" type="image/png" href="/MMT_icon_64px.png">
+  <link rel="alternate" type="application/rss+xml" title="Mission Meets Tech" href="/feed.xml">
   <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,16 +54,16 @@
   <!-- Navigation -->
   <nav class="nav-glass fixed top-0 left-0 right-0 z-50">
     <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-2 no-underline">
+      <a href="/index.html" class="flex items-center gap-2 no-underline">
         <span class="text-xl font-bold" style="font-family:'Space Grotesk',system-ui,sans-serif; color:var(--mmt-white);">Mission Meets <span style="color:var(--mmt-cyan);">Tech</span></span>
       </a>
       <div class="hidden md:flex items-center gap-8">
-        <a href="index.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Home</a>
-        <a href="about.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">About</a>
-        <a href="podcast.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Podcast</a>
-        <a href="newsletter.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Newsletter</a>
-        <a href="resources.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Resources</a>
-        <a href="topics.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Topics</a>
+        <a href="/index.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Home</a>
+        <a href="/about.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">About</a>
+        <a href="/podcast.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Podcast</a>
+        <a href="/newsletter.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Newsletter</a>
+        <a href="/resources.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Resources</a>
+        <a href="/topics.html" class="text-sm font-medium" style="color:var(--mmt-cyan);">Topics</a>
         <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-5 py-2 rounded-lg text-sm no-underline">Subscribe</a>
       </div>
       <button id="menuToggle" class="md:hidden text-white text-xl" aria-label="Toggle menu">
@@ -71,12 +72,12 @@
     </div>
     <div id="mobileMenu" class="hidden md:hidden px-6 pb-4">
       <div class="flex flex-col gap-4 pt-2 border-t" style="border-color:rgba(0,229,250,0.1);">
-        <a href="index.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Home</a>
-        <a href="about.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">About</a>
-        <a href="podcast.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Podcast</a>
-        <a href="newsletter.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Newsletter</a>
-        <a href="resources.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Resources</a>
-        <a href="topics.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Topics</a>
+        <a href="/index.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Home</a>
+        <a href="/about.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">About</a>
+        <a href="/podcast.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Podcast</a>
+        <a href="/newsletter.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Newsletter</a>
+        <a href="/resources.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Resources</a>
+        <a href="/topics.html" class="text-sm font-medium" style="color:var(--mmt-cyan);">Topics</a>
         <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-5 py-2 rounded-lg text-sm text-center no-underline">Subscribe</a>
       </div>
     </div>
@@ -85,17 +86,20 @@
   <!-- Hero -->
   <section class="pt-32 pb-16 px-6">
     <div class="max-w-4xl mx-auto">
-      <p class="text-sm font-semibold tracking-widest uppercase mb-4" style="color:var(--mmt-cyan);">Archive</p>
-      <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-6">Newsletter <span class="gradient-text">Archive</span></h1>
-      <p class="text-lg leading-relaxed max-w-3xl" style="color:var(--mmt-white-muted);">All past issues of Mission Meets Tech. Federal health IT intelligence you can reference anytime.</p>
+      <div class="mb-6">
+        <a href="/topics.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);"><i class="fas fa-arrow-left mr-2"></i>All Topics</a>
+      </div>
+      <p class="text-sm font-semibold tracking-widest uppercase mb-4" style="color:var(--mmt-cyan);">Topic</p>
+      <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-4">{{TOPIC_NAME}}</h1>
+      <p class="text-lg" style="color:var(--mmt-white-muted);">{{ARTICLE_COUNT}} article{{ARTICLE_COUNT_PLURAL}} on this topic</p>
     </div>
   </section>
 
-  <!-- Archive Grid -->
+  <!-- Article List -->
   <section class="section-alt py-20 px-6">
     <div class="max-w-4xl mx-auto">
-      <div id="archive-container" class="space-y-5">
-        <p class="text-center py-10" style="color:var(--mmt-white-dim);">Loading newsletter archive...</p>
+      <div class="space-y-5">
+        {{ARTICLE_LIST}}
       </div>
     </div>
   </section>
@@ -103,8 +107,8 @@
   <!-- CTA -->
   <section class="py-20 px-6">
     <div class="max-w-3xl mx-auto text-center">
-      <h2 class="text-3xl font-bold mb-4">Never Miss an Issue</h2>
-      <p class="text-lg mb-8" style="color:var(--mmt-white-muted);">Subscribe to get federal health IT intelligence delivered to your inbox.</p>
+      <h2 class="text-3xl font-bold mb-4">Stay Informed</h2>
+      <p class="text-lg mb-8" style="color:var(--mmt-white-muted);">Get federal health IT intelligence delivered to your inbox.</p>
       <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary inline-block px-8 py-3 rounded-lg text-base font-semibold no-underline">Subscribe on LinkedIn</a>
     </div>
   </section>
@@ -120,15 +124,15 @@
       <div>
         <p class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var(--mmt-cyan);">Platform</p>
         <ul class="space-y-2 list-none p-0 m-0">
-          <li><a href="newsletter.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Newsletter</a></li>
-          <li><a href="podcast.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Podcast</a></li>
-          <li><a href="resources.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Resources</a></li>
+          <li><a href="/newsletter.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Newsletter</a></li>
+          <li><a href="/podcast.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Podcast</a></li>
+          <li><a href="/resources.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Resources</a></li>
         </ul>
       </div>
       <div>
         <p class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var(--mmt-cyan);">Company</p>
         <ul class="space-y-2 list-none p-0 m-0">
-          <li><a href="about.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">About</a></li>
+          <li><a href="/about.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">About</a></li>
           <li><a href="mailto:mary@missionmeetstech.com" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Contact</a></li>
           <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">LinkedIn</a></li>
         </ul>
@@ -158,37 +162,6 @@
       icon.classList.toggle('fa-bars');
       icon.classList.toggle('fa-xmark');
     });
-
-    async function loadArchive() {
-      try {
-        const response = await fetch('newsletters.json');
-        const newsletters = await response.json();
-        const container = document.getElementById('archive-container');
-
-        if (newsletters.length === 0) {
-          container.innerHTML = '<p class="text-center py-10" style="color:var(--mmt-white-dim);">No newsletters yet. Check back soon!</p>';
-          return;
-        }
-
-        container.innerHTML = newsletters.map(item => {
-          const tagSlug = (t) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-          return `
-          <article class="card rounded-xl p-6">
-            <h3 class="text-lg font-bold mb-2"><a href="${item.url}" class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${item.title}</a></h3>
-            <p class="text-xs mb-3" style="color:var(--mmt-white-dim);"><i class="far fa-calendar mr-1"></i>${item.date}</p>
-            <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-muted);">${item.description}</p>
-            <div class="flex flex-wrap gap-2">
-              ${(item.tags || []).map(tag => `<a href="/topics/${tagSlug(tag)}/" class="tag no-underline">${tag}</a>`).join('')}
-            </div>
-          </article>`;
-        }).join('');
-      } catch (error) {
-        document.getElementById('archive-container').innerHTML =
-          '<p class="text-center py-10" style="color:var(--mmt-white-dim);">Unable to load archive. Please try again later.</p>';
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', loadArchive);
   </script>
 </body>
 </html>
