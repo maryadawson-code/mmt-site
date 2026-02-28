@@ -7,8 +7,8 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 ## Stack
 
 - **Type:** Static HTML/CSS/JS with Node.js build step (`node build.js`)
-- **Styling:** Tailwind CSS v3 (build-time via CLI, output at `dist/styles/tailwind.css`) + inline CSS custom properties
-- **Fonts:** Google Fonts — Space Grotesk (headings), Inter (body)
+- **Styling:** Tailwind CSS v3 (build-time via CLI, inlined into each HTML page during build) + inline CSS custom properties
+- **Fonts:** Google Fonts — Space Grotesk (headings), Inter (body), loaded non-blocking via `media="print" onload` swap
 - **Icons:** Inline SVGs (no external icon library)
 - **Forms:** Netlify Forms (contact page), Buttondown (email signup)
 - **Analytics:** Plausible (privacy-respecting, no cookies)
@@ -69,7 +69,7 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 │   ├── newsletter/*/index.html  # Generated article pages
 │   ├── topics/*/index.html      # Generated topic pages
 │   ├── sitemap.xml              # Dynamic sitemap (all pages + articles + topics)
-│   ├── styles/tailwind.css       # Minified, tree-shaken Tailwind CSS (~12KB)
+│   ├── styles/tailwind.css       # Minified, tree-shaken Tailwind CSS (~12KB, inlined into HTML by build)
 │   ├── feed.xml                 # RSS feed
 │   └── newsletters.json        # Updated with on-site article URLs
 ├── CLAUDE.md               # This file
@@ -86,7 +86,7 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 ## Page Conventions
 
 Every page follows this structure:
-1. `<head>` with: charset, viewport, title, meta description, canonical URL, OG tags, Twitter Card tags, favicon, RSS feed link, Plausible script, Google Fonts, built Tailwind CSS (`/styles/tailwind.css`), inline `<style>` with CSS variables and utility classes (including `*:focus-visible` outline)
+1. `<head>` with: charset, viewport, title, meta description, canonical URL, OG tags, Twitter Card tags, favicon, RSS feed link, Plausible script, Google Fonts (non-blocking), inlined Tailwind CSS + inline `<style>` with CSS variables and utility classes (including `*:focus-visible` outline)
 2. Skip-to-content link (`<a href="#main-content" class="sr-only focus:not-sr-only ...">`)
 3. `<nav>` with glass-morphism effect, desktop links + mobile hamburger menu
 4. `<main id="main-content">` wrapping all content sections
@@ -174,7 +174,7 @@ To publish a new newsletter issue:
 ## Build Pipeline
 
 `build.js` runs these steps in order:
-1. **Tailwind CSS** — `npx tailwindcss -i ./src/input.css -o ./dist/styles/tailwind.css --minify` (tree-shaken, ~12KB)
+1. **Tailwind CSS** — `npx tailwindcss -i ./src/input.css -o ./dist/styles/tailwind.css --minify` (tree-shaken, ~12KB), then inlined into each HTML page's `<style>` block to eliminate render-blocking CSS request
 2. **Newsletter articles** — Markdown in `content/newsletter/` → HTML pages in `dist/newsletter/slug/`
 3. **Topic pages** — Auto-generated from article tags → `dist/topics/tag-slug/`
 4. **newsletters.json** — Updated with on-site URLs → `dist/newsletters.json`
@@ -197,6 +197,6 @@ To publish a new newsletter issue:
 - Newsletter archive and topics page load data dynamically from `newsletters.json` via fetch API.
 - `dist/` is gitignored — never commit build artifacts.
 - `build.js` generates `newsletters.json` in dist with on-site URLs; the root `newsletters.json` still has LinkedIn URLs as the source of truth for metadata.
-- Tailwind CSS is built at compile time via CLI (`tailwind.config.js` + `src/input.css`). There is no CDN — all styles are in `dist/styles/tailwind.css`.
+- Tailwind CSS is built at compile time via CLI (`tailwind.config.js` + `src/input.css`), then inlined into each HTML page by `build.js`. The `<link rel="stylesheet" href="/styles/tailwind.css">` in source HTML files is replaced with `<style>` during build. There is no external CSS request at runtime.
 - All icons are inline SVGs — there is no Font Awesome or other icon CDN. When adding new icons, use inline SVG with `width="1em" height="1em" fill="currentColor" aria-hidden="true"`.
 - `*.mp4` and `*.zip` are gitignored and excluded from dist builds.
