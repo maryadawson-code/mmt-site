@@ -3,14 +3,13 @@
 /**
  * discover-newsletters.js
  *
- * Searches Google for new Mission Meets Tech LinkedIn newsletter editions
- * and prepends any new entries to newsletters.json.
+ * Searches Google (via SerpAPI) for new Mission Meets Tech LinkedIn newsletter
+ * editions and prepends any new entries to newsletters.json.
  *
  * Environment variables:
- *   GOOGLE_API_KEY  — Google Custom Search API key
- *   GOOGLE_CSE_ID   — Programmable Search Engine ID
- *   DAYS_BACK       — Number of days to search back (default: 10)
- *   DRY_RUN         — If "true", log results but don't write file
+ *   SERPAPI_KEY  — SerpAPI API key (serpapi.com)
+ *   DAYS_BACK   — Number of days to search back (default: 10)
+ *   DRY_RUN     — If "true", log results but don't write file
  *
  * Zero npm dependencies — uses only Node.js built-ins.
  */
@@ -178,18 +177,19 @@ function formatDate(isoDate) {
 }
 
 function extractDate(item) {
-  // Try pagemap metatags first
-  if (item.pagemap && item.pagemap.metatags) {
-    for (const meta of item.pagemap.metatags) {
-      const published = meta['article:published_time'] || meta['og:updated_time'] || meta['date'];
-      if (published) {
-        const formatted = formatDate(published);
-        if (formatted) return formatted;
-      }
+  // SerpAPI provides a date field directly
+  if (item.date) {
+    const formatted = formatDate(item.date);
+    if (formatted) return formatted;
+    // Try parsing natural date like "2 days ago", "Feb 26, 2026"
+    const match = item.date.match(/\b([A-Z][a-z]{2,8})\s+(\d{1,2}),?\s+(\d{4})\b/);
+    if (match) {
+      const formatted2 = formatDate(`${match[1]} ${match[2]}, ${match[3]}`);
+      if (formatted2) return formatted2;
     }
   }
 
-  // Try snippet date patterns like "Feb 26, 2026"
+  // Try snippet date patterns
   if (item.snippet) {
     const match = item.snippet.match(/\b([A-Z][a-z]{2,8})\s+(\d{1,2}),?\s+(\d{4})\b/);
     if (match) {
@@ -212,13 +212,12 @@ function setOutput(name, value) {
 // --- Main ---
 
 async function main() {
-  const apiKey = process.env.GOOGLE_API_KEY;
-  const cseId = process.env.GOOGLE_CSE_ID;
+  const apiKey = process.env.SERPAPI_KEY;
   const daysBack = parseInt(process.env.DAYS_BACK || '10', 10);
   const dryRun = process.env.DRY_RUN === 'true';
 
-  if (!apiKey || !cseId) {
-    console.error('Missing GOOGLE_API_KEY or GOOGLE_CSE_ID environment variables');
+  if (!apiKey) {
+    console.error('Missing SERPAPI_KEY environment variable');
     process.exit(1);
   }
 
@@ -230,9 +229,10 @@ async function main() {
   console.log(`Loaded ${existing.length} existing entries`);
   console.log(`Searching last ${daysBack} days...`);
 
-  // Search Google
+  // Search Google via SerpAPI
   const query = encodeURIComponent('site:linkedin.com/pulse "mission meets tech"');
-  const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cseId}&q=${query}&dateRestrict=d${daysBack}&num=10`;
+  const tbs = encodeURIComponent(`qdr:d${daysBack}`);
+  const url = `https://serpapi.com/search.json?engine=google&q=${query}&tbs=${tbs}&num=10&api_key=${apiKey}`;
 
   let results;
   try {
@@ -240,14 +240,14 @@ async function main() {
     const data = JSON.parse(raw);
 
     if (data.error) {
-      console.error('Google API error:', data.error.message);
+      console.error('SerpAPI error:', data.error);
       process.exit(1);
     }
 
-    results = data.items || [];
-    console.log(`Google returned ${results.length} result(s)`);
+    results = data.organic_results || [];
+    console.log(`SerpAPI returned ${results.length} result(s)`);
   } catch (err) {
-    console.error('Failed to search Google:', err.message);
+    console.error('Failed to search SerpAPI:', err.message);
     process.exit(1);
   }
 

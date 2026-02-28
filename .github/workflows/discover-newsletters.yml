@@ -34,8 +34,7 @@ jobs:
       - name: Run newsletter discovery
         id: discover
         env:
-          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-          GOOGLE_CSE_ID: ${{ secrets.GOOGLE_CSE_ID }}
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
           DAYS_BACK: ${{ github.event.inputs.days_back || '10' }}
           DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
         run: node scripts/discover-newsletters.js
