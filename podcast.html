@@ -21,8 +21,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="alternate" type="application/rss+xml" title="Mission Meets Tech" href="/feed.xml">
+  <link rel="stylesheet" href="/styles/tailwind.css">
   <style>
     :root {
       --mmt-cyan: #00E5FA;
@@ -44,6 +44,7 @@
     .card { background: var(--mmt-slate); border: 1px solid rgba(0, 229, 250, 0.1); }
     .nav-glass { background: rgba(0, 5, 15, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0, 229, 250, 0.1); }
     .section-alt { background: var(--mmt-dark); }
+    *:focus-visible { outline: 2px solid var(--mmt-cyan); outline-offset: 2px; }
   </style>
   <script type="application/ld+json">
   {
@@ -76,6 +77,8 @@
 </head>
 <body class="antialiased">
 
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold" style="background:var(--mmt-cyan); color:var(--mmt-navy);">Skip to main content</a>
+
   <!-- Navigation -->
   <nav class="nav-glass fixed top-0 left-0 right-0 z-50">
     <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -92,7 +95,7 @@
         <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-5 py-2 rounded-lg text-sm no-underline">Subscribe</a>
       </div>
       <button id="menuToggle" class="md:hidden text-white text-xl" aria-label="Toggle menu">
-        <i class="fas fa-bars"></i>
+        <svg width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
       </button>
     </div>
     <div id="mobileMenu" class="hidden md:hidden px-6 pb-4">
@@ -109,7 +112,7 @@
   </nav>
 
   <!-- Hero -->
-  <section class="pt-32 pb-16 px-6">
+  <section id="main-content" class="pt-32 pb-16 px-6">
     <div class="max-w-4xl mx-auto">
       <p class="text-sm font-semibold tracking-widest uppercase mb-4" style="color:var(--mmt-cyan);">Podcast</p>
       <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-6">Fed UP: Where Mission Meets <span class="gradient-text">Reality</span></h1>
@@ -122,7 +125,7 @@
     <div class="max-w-4xl mx-auto">
       <h2 class="text-2xl font-bold mb-6">Latest Episodes</h2>
       <div class="rounded-xl overflow-hidden" style="background:var(--mmt-slate);">
-        <iframe src="https://share.transistor.fm/s/fed-up-where-mission-meets-reality" width="100%" height="480" frameborder="0" scrolling="no" seamless style="width:100%; border-radius:12px;"></iframe>
+        <iframe title="Fed UP podcast player" src="https://share.transistor.fm/s/fed-up-where-mission-meets-reality" width="100%" height="480" frameborder="0" scrolling="no" seamless style="width:100%; border-radius:12px;"></iframe>
       </div>
     </div>
   </section>
@@ -133,19 +136,19 @@
       <h2 class="text-2xl font-bold mb-8">Listen On Your Favorite Platform</h2>
       <div class="flex flex-wrap justify-center gap-4">
         <a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank" rel="noopener" class="card rounded-xl px-6 py-4 flex items-center gap-3 no-underline hover:border-opacity-30" style="border-color:rgba(0,229,250,0.2);">
-          <i class="fab fa-apple text-2xl" style="color:var(--mmt-cyan);"></i>
+          <svg class="text-2xl" style="color:var(--mmt-cyan);" width="1em" height="1em" viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-62.1 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
           <span class="font-medium text-sm" style="color:var(--mmt-white);">Apple Podcasts</span>
         </a>
         <a href="https://open.spotify.com/show/7sND342duH7Buw1cUs60lP" target="_blank" rel="noopener" class="card rounded-xl px-6 py-4 flex items-center gap-3 no-underline hover:border-opacity-30" style="border-color:rgba(0,229,250,0.2);">
-          <i class="fab fa-spotify text-2xl" style="color:var(--mmt-cyan);"></i>
+          <svg class="text-2xl" style="color:var(--mmt-cyan);" width="1em" height="1em" viewBox="0 0 496 512" fill="currentColor" aria-hidden="true"><path d="M248 8C111.1 8 0 119.1 0 256S111.1 504 248 504 496 392.9 496 256 384.9 8 248 8zm100.7 364.9c-4.2 0-6.8-1.3-10.7-3.6-62.4-37.6-135-39.2-206.7-24.5-3.9 1-9 2.6-11.9 2.6-9.7 0-15.8-7.7-15.8-15.8 0-10.3 6.1-15.2 13.6-16.8 81.9-18.1 165.6-16.5 237 26.2 6.1 3.9 9.7 7.4 9.7 16.5s-7.1 15.4-15.2 15.4zm27.8-55.6c-5.7 0-8.7-2.3-12.3-4.2-62.5-37-155.7-51.9-238.6-29.4-4.8 1.3-7.4 2.6-11.9 2.6-10.7 0-19.4-8.7-19.4-19.4s5.2-17.8 15.5-20.7c27.8-7.8 56.2-13.6 97.8-13.6 64.9 0 127.6 16.1 177 45.5 8.1 4.8 11.3 11 11.3 19.7-.1 10.8-8.5 19.5-19.4 19.5zm31.1-64.3c-5.2 0-8.7-1.3-12.9-3.9-71.2-42.5-198.5-52.7-280.9-29.7-3.6 1-8.1 2.6-12.9 2.6-13.2 0-23.3-10.3-23.3-23.6 0-13.6 8.4-21.3 17.4-23.9 35.2-10.3 74.6-15.2 117.5-15.2 73 0 149.5 15.2 205.4 47.8 7.8 4.5 12.9 10.7 12.9 22.6 0 13.6-11 23.3-23.2 23.3z"/></svg>
           <span class="font-medium text-sm" style="color:var(--mmt-white);">Spotify</span>
         </a>
         <a href="https://music.amazon.com/podcasts/920fec9b-4fae-4bd0-ae4d-eaf1459cad2f" target="_blank" rel="noopener" class="card rounded-xl px-6 py-4 flex items-center gap-3 no-underline hover:border-opacity-30" style="border-color:rgba(0,229,250,0.2);">
-          <i class="fab fa-amazon text-2xl" style="color:var(--mmt-cyan);"></i>
+          <svg class="text-2xl" style="color:var(--mmt-cyan);" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M257.2 162.7c-48.7 1.8-169.5 15.5-169.5 117.5 0 109.5 138.3 114 183.5 43.2 6.5 10.2 35.4 37.5 45.3 46.8l56.8-56S341 288.9 341 261.4V114.3C341 89 316.5 32 228.7 32 140.7 32 94 87 94 136.3l73.5 6.8c16.3-49.5 54.2-49.5 54.2-49.5 40.7-.1 35.5 29.8 35.5 69.1zm0 86.3c0 80-84.2 68-84.2 17.2 0-47.2 50.5-56.7 84.2-57.8v40.6zm136 163.5c-7.7 10-70 67-174.5 67S34.2 408.5 9.7 379c-6.8-7.7 1-11.3 5.5-8.3C88.5 415.2 203 428.5 276.7 400.2c7.5-2.8 13.2 3.8 7.5 12.3z"/></svg>
           <span class="font-medium text-sm" style="color:var(--mmt-white);">Amazon Music</span>
         </a>
         <a href="https://www.youtube.com/@MissionMeetsTech" target="_blank" rel="noopener" class="card rounded-xl px-6 py-4 flex items-center gap-3 no-underline hover:border-opacity-30" style="border-color:rgba(0,229,250,0.2);">
-          <i class="fab fa-youtube text-2xl" style="color:var(--mmt-cyan);"></i>
+          <svg class="text-2xl" style="color:var(--mmt-cyan);" width="1em" height="1em" viewBox="0 0 576 512" fill="currentColor" aria-hidden="true"><path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"/></svg>
           <span class="font-medium text-sm" style="color:var(--mmt-white);">YouTube</span>
         </a>
       </div>
@@ -159,19 +162,19 @@
       <div class="grid md:grid-cols-2 gap-8">
         <!-- Mary -->
         <div class="card rounded-xl p-8 text-center">
-          <img src="marywomack.jpg" alt="Mary Womack" class="w-28 h-28 rounded-full object-cover mx-auto mb-4" style="border:2px solid var(--mmt-cyan);">
+          <img src="marywomack.jpg" alt="Mary Womack" width="112" height="112" class="w-28 h-28 rounded-full object-cover mx-auto mb-4" style="border:2px solid var(--mmt-cyan);">
           <h3 class="text-xl font-bold mb-1">Mary Womack</h3>
           <p class="text-sm mb-3" style="color:var(--mmt-cyan);">Founder, Mission Meets Tech</p>
           <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">Federal health IT practitioner since 2007. Spanning DHA, VA, and the Military Health System with deep operational and strategic experience.</p>
-          <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="inline-block mt-4" style="color:var(--mmt-cyan);"><i class="fab fa-linkedin text-xl"></i></a>
+          <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="inline-block mt-4" style="color:var(--mmt-cyan);"><svg class="text-xl" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg></a>
         </div>
         <!-- Sara -->
         <div class="card rounded-xl p-8 text-center">
-          <img src="Sara zoomed.jpg" alt="Sara Byrd" class="w-28 h-28 rounded-full object-cover mx-auto mb-4" style="border:2px solid var(--mmt-cyan);">
+          <img src="sarabyrd.jpg" alt="Sara Byrd" width="112" height="112" class="w-28 h-28 rounded-full object-cover mx-auto mb-4" style="border:2px solid var(--mmt-cyan);">
           <h3 class="text-xl font-bold mb-1">Sara Byrd</h3>
           <p class="text-sm mb-3" style="color:var(--mmt-cyan);">Federal Health IT Strategist &amp; FedHealthIT100 Honoree</p>
           <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">VP at Pantheon Data and co-founder of FedTechCares. A leading voice in federal health technology strategy and implementation.</p>
-          <a href="https://www.linkedin.com/in/saraebyrd/" target="_blank" rel="noopener" class="inline-block mt-4" style="color:var(--mmt-cyan);"><i class="fab fa-linkedin text-xl"></i></a>
+          <a href="https://www.linkedin.com/in/saraebyrd/" target="_blank" rel="noopener" class="inline-block mt-4" style="color:var(--mmt-cyan);"><svg class="text-xl" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg></a>
         </div>
       </div>
     </div>
@@ -192,7 +195,7 @@
       <div>
         <p class="font-bold text-lg mb-3" style="font-family:'Space Grotesk',system-ui,sans-serif; color:var(--mmt-white);">Mission Meets <span style="color:var(--mmt-cyan);">Tech</span></p>
         <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-dim);">Federal health IT intelligence. Mission first.</p>
-        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" style="color:var(--mmt-white-dim);" class="hover:opacity-80"><i class="fab fa-linkedin text-lg"></i></a>
+        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" style="color:var(--mmt-white-dim);" class="hover:opacity-80"><svg class="text-lg" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg></a>
       </div>
       <div>
         <p class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var(--mmt-cyan);">Platform</p>
@@ -231,9 +234,8 @@
     const menu = document.getElementById('mobileMenu');
     toggle.addEventListener('click', () => {
       menu.classList.toggle('hidden');
-      const icon = toggle.querySelector('i');
-      icon.classList.toggle('fa-bars');
-      icon.classList.toggle('fa-xmark');
+      document.getElementById('menuOpen').classList.toggle('hidden');
+      document.getElementById('menuClose').classList.toggle('hidden');
     });
   </script>
 </body>

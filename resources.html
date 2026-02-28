@@ -21,8 +21,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="alternate" type="application/rss+xml" title="Mission Meets Tech" href="/feed.xml">
+  <link rel="stylesheet" href="/styles/tailwind.css">
   <style>
     :root {
       --mmt-cyan: #00E5FA;
@@ -45,9 +45,12 @@
     .card:hover { border-color: rgba(0, 229, 250, 0.3); }
     .nav-glass { background: rgba(0, 5, 15, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0, 229, 250, 0.1); }
     .section-alt { background: var(--mmt-dark); }
+    *:focus-visible { outline: 2px solid var(--mmt-cyan); outline-offset: 2px; }
   </style>
 </head>
 <body class="antialiased">
+
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold" style="background:var(--mmt-cyan); color:var(--mmt-navy);">Skip to main content</a>
 
   <!-- Navigation -->
   <nav class="nav-glass fixed top-0 left-0 right-0 z-50">
@@ -65,7 +68,7 @@
         <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-5 py-2 rounded-lg text-sm no-underline">Subscribe</a>
       </div>
       <button id="menuToggle" class="md:hidden text-white text-xl" aria-label="Toggle menu">
-        <i class="fas fa-bars"></i>
+        <svg width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
       </button>
     </div>
     <div id="mobileMenu" class="hidden md:hidden px-6 pb-4">
@@ -82,7 +85,7 @@
   </nav>
 
   <!-- Hero -->
-  <section class="pt-32 pb-16 px-6">
+  <section id="main-content" class="pt-32 pb-16 px-6">
     <div class="max-w-4xl mx-auto">
       <p class="text-sm font-semibold tracking-widest uppercase mb-4" style="color:var(--mmt-cyan);">Resources</p>
       <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-6">Federal Health IT <span class="gradient-text">Resource Guide</span></h1>
@@ -98,32 +101,32 @@
         <div class="card rounded-xl p-6">
           <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">Defense Health Agency (DHA)</h3>
           <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">The unified medical authority for the Military Health System. Oversees healthcare delivery, IT modernization, and MHS GENESIS deployment across DoD.</p>
-          <a href="https://www.health.mil/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">health.mil <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
+          <a href="https://www.health.mil/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">health.mil <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
         </div>
         <div class="card rounded-xl p-6">
           <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">VA Office of Information & Technology</h3>
           <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Leads IT strategy and infrastructure for the Department of Veterans Affairs, including EHR modernization and digital services.</p>
-          <a href="https://www.oit.va.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">oit.va.gov <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
+          <a href="https://www.oit.va.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">oit.va.gov <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
         </div>
         <div class="card rounded-xl p-6">
           <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">Federal Electronic Health Record Modernization (FEHRM)</h3>
           <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">The interagency program office driving a single, shared EHR across DoD and VA for seamless care transitions.</p>
-          <a href="https://www.fehrm.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">fehrm.gov <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
+          <a href="https://www.fehrm.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">fehrm.gov <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
         </div>
         <div class="card rounded-xl p-6">
           <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">DARPA Biological Technologies Office</h3>
           <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Advanced research programs at the intersection of biology, health, and technology for national security applications.</p>
-          <a href="https://www.darpa.mil/about/offices/bto" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">darpa.mil/bto <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
+          <a href="https://www.darpa.mil/about/offices/bto" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">darpa.mil/bto <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
         </div>
         <div class="card rounded-xl p-6">
           <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">DoD Comptroller</h3>
           <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Official source for Defense budget documents, justification materials, and financial management policy.</p>
-          <a href="https://comptroller.defense.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">comptroller.defense.gov <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
+          <a href="https://comptroller.defense.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">comptroller.defense.gov <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
         </div>
         <div class="card rounded-xl p-6">
           <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">GAO Health Care Reports</h3>
           <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Government Accountability Office audits, evaluations, and reports on federal healthcare programs and IT systems.</p>
-          <a href="https://www.gao.gov/topics/health-care" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">gao.gov/health-care <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
+          <a href="https://www.gao.gov/topics/health-care" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">gao.gov/health-care <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
         </div>
       </div>
     </div>
@@ -137,17 +140,17 @@
         <div class="card rounded-xl p-6">
           <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">SAM.gov</h3>
           <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">System for Award Management — the official U.S. government system for entity registration, contract opportunities, and award data.</p>
-          <a href="https://sam.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">sam.gov <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
+          <a href="https://sam.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">sam.gov <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
         </div>
         <div class="card rounded-xl p-6">
           <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">USASpending.gov</h3>
           <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Track federal spending by agency, contractor, program, and geography. Essential for competitive intelligence.</p>
-          <a href="https://www.usaspending.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">usaspending.gov <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
+          <a href="https://www.usaspending.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">usaspending.gov <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
         </div>
         <div class="card rounded-xl p-6">
           <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-cyan);">Congressional Research Service</h3>
           <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Nonpartisan policy research for Congress. Excellent source for defense health, VA, and appropriations analysis.</p>
-          <a href="https://crsreports.congress.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">crsreports.congress.gov <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
+          <a href="https://crsreports.congress.gov/" target="_blank" rel="noopener" class="text-sm font-medium no-underline" style="color:var(--mmt-cyan);">crsreports.congress.gov <svg class="text-xs ml-1" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a>
         </div>
       </div>
     </div>
@@ -168,7 +171,7 @@
       <div>
         <p class="font-bold text-lg mb-3" style="font-family:'Space Grotesk',system-ui,sans-serif; color:var(--mmt-white);">Mission Meets <span style="color:var(--mmt-cyan);">Tech</span></p>
         <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-dim);">Federal health IT intelligence. Mission first.</p>
-        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" style="color:var(--mmt-white-dim);" class="hover:opacity-80"><i class="fab fa-linkedin text-lg"></i></a>
+        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" style="color:var(--mmt-white-dim);" class="hover:opacity-80"><svg class="text-lg" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg></a>
       </div>
       <div>
         <p class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var(--mmt-cyan);">Platform</p>
@@ -207,9 +210,8 @@
     const menu = document.getElementById('mobileMenu');
     toggle.addEventListener('click', () => {
       menu.classList.toggle('hidden');
-      const icon = toggle.querySelector('i');
-      icon.classList.toggle('fa-bars');
-      icon.classList.toggle('fa-xmark');
+      document.getElementById('menuOpen').classList.toggle('hidden');
+      document.getElementById('menuClose').classList.toggle('hidden');
     });
   </script>
 </body>

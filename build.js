@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const matter = require('gray-matter');
 const { marked } = require('marked');
+const { execSync } = require('child_process');
 
 const RSS_FEED = 'https://feeds.transistor.fm/fed-up-where-mission-meets-reality';
 const SITE_URL = 'https://missionmeetstech.com';
@@ -122,10 +123,10 @@ function generateArticlePages(articles) {
     const prev = articles[index + 1]; // older
     const next = articles[index - 1]; // newer
     const prevLink = prev
-      ? `<a href="${prev.url}" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);"><i class="fas fa-arrow-left mr-2"></i>${prev.title}</a>`
+      ? `<a href="${prev.url}" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);"><svg class="mr-2" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H109.3l105.3-105.4c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>${prev.title}</a>`
       : '<span></span>';
     const nextLink = next
-      ? `<a href="${next.url}" class="text-sm no-underline hover:opacity-80 text-right" style="color:var(--mmt-cyan);">${next.title}<i class="fas fa-arrow-right ml-2"></i></a>`
+      ? `<a href="${next.url}" class="text-sm no-underline hover:opacity-80 text-right" style="color:var(--mmt-cyan);">${next.title}<svg class="ml-2" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224H32c-17.7 0-32 14.3-32 32s14.3 32 32 32h306.7L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg></a>`
       : '<span></span>';
 
     let html = template
@@ -162,7 +163,7 @@ function generateTopicPages(tags) {
     const articleListHtml = tag.articles.map(article => `
         <article class="card rounded-xl p-6">
           <h3 class="text-lg font-bold mb-2"><a href="${article.url}" class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${article.title}</a></h3>
-          <p class="text-xs mb-3" style="color:var(--mmt-white-dim);"><i class="far fa-calendar mr-1"></i>${article.formattedDate}</p>
+          <p class="text-xs mb-3" style="color:var(--mmt-white-dim);"><svg class="mr-1" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H64C28.7 64 0 92.7 0 128v16 48V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192 144 128c0-35.3-28.7-64-64-64H344V24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H152V24zM48 192H400V448c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192z"/></svg>${article.formattedDate}</p>
           <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-muted);">${article.description}</p>
           <div class="flex flex-wrap gap-2">
             ${(article.tags || []).map(t => `<a href="/topics/${slugify(t)}/" class="tag no-underline">${t}</a>`).join('')}
@@ -291,13 +292,14 @@ function copyStaticFiles() {
     console.log('Copied robots.txt');
   }
 
-  // Copy all images and assets from root
+  // Copy all images and assets from root (exclude mp4/zip)
   const assetExtensions = ['.png', '.jpg', '.jpeg', '.svg', '.ico', '.webp', '.gif'];
+  const excludeExtensions = ['.mp4', '.zip'];
   const rootFiles = fs.readdirSync(__dirname);
   let assetCount = 0;
   rootFiles.forEach(file => {
     const ext = path.extname(file).toLowerCase();
-    if (assetExtensions.includes(ext)) {
+    if (assetExtensions.includes(ext) && !excludeExtensions.includes(ext)) {
       fs.copyFileSync(path.join(__dirname, file), path.join(DIST_DIR, file));
       assetCount++;
     }
@@ -347,6 +349,15 @@ async function build() {
   console.log('=== Mission Meets Tech Build ===\n');
 
   ensureDir(DIST_DIR);
+
+  // 0. Build Tailwind CSS
+  console.log('--- Building Tailwind CSS ---');
+  ensureDir(path.join(DIST_DIR, 'styles'));
+  execSync('npx tailwindcss -i ./src/input.css -o ./dist/styles/tailwind.css --minify', {
+    cwd: __dirname,
+    stdio: 'inherit',
+  });
+  console.log('Built dist/styles/tailwind.css');
 
   // 1. Load and process newsletter articles
   console.log('--- Processing newsletter articles ---');
@@ -399,9 +410,9 @@ async function build() {
         <h3 class="episode-title">${item.title}</h3>
         <p class="episode-description">${truncatedDesc}</p>
         <div class="episode-footer">
-          ${duration ? `<span class="episode-duration"><i class="fas fa-clock"></i> ${formatDuration(duration)}</span>` : ''}
+          ${duration ? `<span class="episode-duration"><svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M256 0a256 256 0 1 1 0 512A256 256 0 1 1 256 0zM232 120V256c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2V120c0-13.3-10.7-24-24-24s-24 10.7-24 24z"/></svg> ${formatDuration(duration)}</span>` : ''}
           <a href="${item.link}" class="episode-link" target="_blank" rel="noopener">
-            Listen Now <i class="fas fa-external-link-alt"></i>
+            Listen Now <svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
           </a>
         </div>
       </div>`;

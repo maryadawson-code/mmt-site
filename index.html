@@ -21,8 +21,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="alternate" type="application/rss+xml" title="Mission Meets Tech" href="/feed.xml">
+  <link rel="stylesheet" href="/styles/tailwind.css">
   <style>
     :root {
       --mmt-cyan: #00E5FA;
@@ -47,6 +47,7 @@
     .nav-glass { background: rgba(0, 5, 15, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0, 229, 250, 0.1); }
     .glow-cyan { box-shadow: 0 0 20px rgba(0, 229, 250, 0.45); }
     .section-alt { background: var(--mmt-dark); }
+    *:focus-visible { outline: 2px solid var(--mmt-cyan); outline-offset: 2px; }
   </style>
   <script type="application/ld+json">
   {
@@ -75,6 +76,8 @@
 </head>
 <body class="antialiased">
 
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold" style="background:var(--mmt-cyan); color:var(--mmt-navy);">Skip to main content</a>
+
   <!-- Navigation -->
   <nav class="nav-glass fixed top-0 left-0 right-0 z-50">
     <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -91,7 +94,7 @@
         <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-5 py-2 rounded-lg text-sm no-underline">Subscribe</a>
       </div>
       <button id="menuToggle" class="md:hidden text-white text-xl" aria-label="Toggle menu">
-        <i class="fas fa-bars"></i>
+        <svg width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
       </button>
     </div>
     <!-- Mobile Menu -->
@@ -109,7 +112,7 @@
   </nav>
 
   <!-- Hero -->
-  <section class="pt-32 pb-20 px-6">
+  <section id="main-content" class="pt-32 pb-20 px-6">
     <div class="max-w-4xl mx-auto text-center">
       <p class="text-sm font-semibold tracking-widest uppercase mb-6" style="color:var(--mmt-cyan);">Federal Health IT Intelligence</p>
       <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-6" style="font-family:'Space Grotesk',system-ui,sans-serif;">
@@ -150,22 +153,22 @@
       <p class="text-center max-w-2xl mx-auto mb-12" style="color:var(--mmt-white-muted);">Deep analysis at the intersection of federal health policy, defense technology, and operational reality.</p>
       <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div class="card rounded-xl p-6">
-          <div class="text-2xl mb-3" style="color:var(--mmt-cyan);"><i class="fas fa-shield-halved"></i></div>
+          <div class="text-2xl mb-3" style="color:var(--mmt-cyan);"><svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2c-.5 99.2-41.3 280.7-213.6 363.2c-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.8 1 251.4 0 256 0zm0 66.8V444.8C394 378 431.1 230.1 432 141.4L256 66.8z"/></svg></div>
           <h3 class="text-lg font-bold mb-2">DHA Transformation</h3>
           <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">Defense Health Agency modernization, MHS GENESIS, and the operational shifts reshaping military healthcare delivery.</p>
         </div>
         <div class="card rounded-xl p-6">
-          <div class="text-2xl mb-3" style="color:var(--mmt-cyan);"><i class="fas fa-hospital"></i></div>
+          <div class="text-2xl mb-3" style="color:var(--mmt-cyan);"><svg width="1em" height="1em" viewBox="0 0 640 512" fill="currentColor" aria-hidden="true"><path d="M192 48c0-26.5 21.5-48 48-48H400c26.5 0 48 21.5 48 48V512H368V432c0-26.5-21.5-48-48-48s-48 21.5-48 48v80H192V48zM48 96H160V512H48c-26.5 0-48-21.5-48-48V144c0-26.5 21.5-48 48-48zM544 512H480V96h64c26.5 0 48 21.5 48 48V464c0 26.5-21.5 48-48 48zM312 64c-13.3 0-24 10.7-24 24v24H264c-13.3 0-24 10.7-24 24s10.7 24 24 24h24v24c0 13.3 10.7 24 24 24s24-10.7 24-24V160h24c13.3 0 24-10.7 24-24s-10.7-24-24-24H336V88c0-13.3-10.7-24-24-24zM264 256a40 40 0 1 0 0 80 40 40 0 1 0 0-80zm152 40a40 40 0 1 0 -80 0 40 40 0 1 0 80 0z"/></svg></div>
           <h3 class="text-lg font-bold mb-2">VA Health IT</h3>
           <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">Veterans Affairs health technology strategy, EHR modernization, and the policy decisions shaping veteran care.</p>
         </div>
         <div class="card rounded-xl p-6">
-          <div class="text-2xl mb-3" style="color:var(--mmt-cyan);"><i class="fas fa-dollar-sign"></i></div>
+          <div class="text-2xl mb-3" style="color:var(--mmt-cyan);"><svg width="1em" height="1em" viewBox="0 0 320 512" fill="currentColor" aria-hidden="true"><path d="M160 0c17.7 0 32 14.3 32 32V67.7c1.6 .2 3.1 .4 4.7 .7c.4 .1 .7 .1 1.1 .2l48 8.8c17.4 3.2 28.9 19.9 25.7 37.2s-19.9 28.9-37.2 25.7l-47.5-8.7c-31.3-4.6-58.9-1.5-78.3 6.2s-27.2 18.3-29 28.1c-2 10.7-.5 16.7 1.2 20.4c1.8 3.9 5.5 8.3 12.8 13.2c16.3 10.7 41.3 17.7 73.7 26.3l2.9 .8c28.6 7.6 63.6 16.8 89.6 33.8c14.2 9.3 27.6 21.9 35.9 39.5c8.5 17.9 10.3 37.9 6.4 59.2c-6.9 38-33.1 63.4-65.6 76.7c-13.7 5.6-28.6 9.2-44.4 11V480c0 17.7-14.3 32-32 32s-32-14.3-32-32V445.1c-.4-.1-.9-.1-1.3-.2l-.2 0 0 0c-24.4-3.8-64.5-14.3-91.5-26.3c-16.1-7.2-23.4-26.1-16.2-42.2s26.1-23.4 42.2-16.2c20.9 9.3 55.3 18.5 75.2 21.6c31.9 4.7 58.2 2 76-5.3c16.9-6.9 24.6-16.9 26.8-28.9c1.9-10.6 .4-16.7-1.3-20.4c-1.9-4-5.6-8.4-13-13.3c-16.4-10.7-41.5-17.7-74-26.3l-2.8-.7 0 0C119.4 279.3 84.4 270 58.4 253c-14.2-9.3-27.5-22-35.8-39.6c-8.4-17.9-10.1-37.9-6.1-59.2C23.7 116 52.3 91.2 84.4 78.3c14.1-5.7 29.4-9.4 43.6-11.1V32c0-17.7 14.3-32 32-32z"/></svg></div>
           <h3 class="text-lg font-bold mb-2">Defense Health Budget</h3>
           <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">Appropriations analysis, budget line tracking, and fiscal implications for the defense health ecosystem.</p>
         </div>
         <div class="card rounded-xl p-6">
-          <div class="text-2xl mb-3" style="color:var(--mmt-cyan);"><i class="fas fa-file-contract"></i></div>
+          <div class="text-2xl mb-3" style="color:var(--mmt-cyan);"><svg width="1em" height="1em" viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM80 64h64c8.8 0 16 7.2 16 16s-7.2 16-16 16H80c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64h64c8.8 0 16 7.2 16 16s-7.2 16-16 16H80c-8.8 0-16-7.2-16-16s7.2-16 16-16zm54.2 253.8c-6.1 5.3-16 3.1-18.5-4.1c-6-16.9-28.3-16.9-34.3 0c-2.5 7.2-12.4 9.4-18.5 4.1L80 408.4V352h32l40 31.8zM80 320c0-17.7 14.3-32 32-32s32 14.3 32 32H80zm0 128h64v64H80V448z"/></svg></div>
           <h3 class="text-lg font-bold mb-2">Federal Acquisition</h3>
           <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">Procurement strategy, contract vehicles, and acquisition mechanics that shape how technology enters the federal health space.</p>
         </div>
@@ -182,22 +185,22 @@
         <div class="card rounded-xl p-8">
           <div class="flex items-center gap-3 mb-4">
             <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background:rgba(0,229,250,0.15);">
-              <i class="fas fa-newspaper" style="color:var(--mmt-cyan);"></i>
+              <svg style="color:var(--mmt-cyan);" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M168 80c-13.3 0-24 10.7-24 24V408c0 8.4-1.4 16.5-4.1 24H440c13.3 0 24-10.7 24-24V104c0-13.3-10.7-24-24-24H168zM72 480c-39.8 0-72-32.2-72-72V112c0-13.3 10.7-24 24-24s24 10.7 24 24V408c0 13.3 10.7 24 24 24s24-10.7 24-24V104c0-39.8 32.2-72 72-72H440c39.8 0 72 32.2 72 72V408c0 39.8-32.2 72-72 72H72zM176 136c0-13.3 10.7-24 24-24h96c13.3 0 24 10.7 24 24v80c0 13.3-10.7 24-24 24H200c-13.3 0-24-10.7-24-24V136zm200-24h32c13.3 0 24 10.7 24 24s-10.7 24-24 24H376c-13.3 0-24-10.7-24-24s10.7-24 24-24zm0 80h32c13.3 0 24 10.7 24 24s-10.7 24-24 24H376c-13.3 0-24-10.7-24-24s10.7-24 24-24zM200 272H408c13.3 0 24 10.7 24 24s-10.7 24-24 24H200c-13.3 0-24-10.7-24-24s10.7-24 24-24zm0 80H408c13.3 0 24 10.7 24 24s-10.7 24-24 24H200c-13.3 0-24-10.7-24-24s10.7-24 24-24z"/></svg>
             </div>
             <h3 class="text-xl font-bold">Mission Meets Tech Newsletter</h3>
           </div>
           <p class="mb-6 leading-relaxed" style="color:var(--mmt-white-muted);">Weekly intelligence on federal health IT policy, defense technology, and market shifts — written for operators and decision-makers who need clarity, not hype.</p>
-          <a href="newsletter.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-cyan);">Learn More <i class="fas fa-arrow-right ml-1"></i></a>
+          <a href="newsletter.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-cyan);">Learn More <svg class="ml-1" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224H32c-17.7 0-32 14.3-32 32s14.3 32 32 32H338.7L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg></a>
         </div>
         <div class="card rounded-xl p-8">
           <div class="flex items-center gap-3 mb-4">
             <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background:rgba(0,229,250,0.15);">
-              <i class="fas fa-microphone" style="color:var(--mmt-cyan);"></i>
+              <svg style="color:var(--mmt-cyan);" width="1em" height="1em" viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M192 0C139 0 96 43 96 96V256c0 53 43 96 96 96s96-43 96-96V96c0-53-43-96-96-96zM64 216c0-13.3-10.7-24-24-24s-24 10.7-24 24v40c0 89.1 66.2 162.7 152 174.4V464H120c-13.3 0-24 10.7-24 24s10.7 24 24 24h72 72c13.3 0 24-10.7 24-24s-10.7-24-24-24H216V430.4c85.8-11.7 152-85.3 152-174.4V216c0-13.3-10.7-24-24-24s-24 10.7-24 24v40c0 70.7-57.3 128-128 128s-128-57.3-128-128V216z"/></svg>
             </div>
             <h3 class="text-xl font-bold">Fed UP: Where Mission Meets Reality</h3>
           </div>
           <p class="mb-6 leading-relaxed" style="color:var(--mmt-white-muted);">The podcast where Mary Womack and Sara Byrd break down the real dynamics of federal health IT — the wins, the friction, and the path forward.</p>
-          <a href="podcast.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-cyan);">Listen Now <i class="fas fa-arrow-right ml-1"></i></a>
+          <a href="podcast.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-cyan);">Listen Now <svg class="ml-1" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224H32c-17.7 0-32 14.3-32 32s14.3 32 32 32H338.7L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg></a>
         </div>
       </div>
     </div>
@@ -208,7 +211,7 @@
     <div class="max-w-6xl mx-auto">
       <h2 class="text-3xl font-bold mb-4 text-center" style="font-family:'Space Grotesk',system-ui,sans-serif;">Latest <span class="gradient-text">Articles</span></h2>
       <p class="text-center max-w-2xl mx-auto mb-12" style="color:var(--mmt-white-muted);">Recent intelligence from the Mission Meets Tech newsletter.</p>
-      <div id="latest-articles" class="grid md:grid-cols-3 gap-6">
+      <div id="latest-articles" aria-live="polite" class="grid md:grid-cols-3 gap-6">
         <p class="text-center py-10 col-span-3" style="color:var(--mmt-white-dim);">Loading latest articles...</p>
       </div>
       <div class="text-center mt-10">
@@ -227,7 +230,8 @@
         <span class="text-sm" style="color:var(--mmt-white-dim);">or</span>
       </div>
       <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" class="flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto">
-        <input type="email" name="email" placeholder="you@example.com" required class="flex-1 px-4 py-3 rounded-lg text-sm" style="background:var(--mmt-slate); border:1px solid rgba(0,229,250,0.2); color:var(--mmt-white); outline:none;">
+        <label for="bd-email" class="sr-only">Email address</label>
+        <input type="email" name="email" id="bd-email" placeholder="you@example.com" required class="flex-1 px-4 py-3 rounded-lg text-sm" style="background:var(--mmt-slate); border:1px solid rgba(0,229,250,0.2); color:var(--mmt-white); outline:none;">
         <button type="submit" class="btn-secondary px-6 py-3 rounded-lg text-sm font-semibold cursor-pointer" style="background:none;">Get it by Email</button>
       </form>
       <p class="text-xs mt-3" style="color:var(--mmt-white-dim);">Free. No spam. Unsubscribe anytime.</p>
@@ -241,7 +245,7 @@
       <div>
         <p class="font-bold text-lg mb-3" style="font-family:'Space Grotesk',system-ui,sans-serif; color:var(--mmt-white);">Mission Meets <span style="color:var(--mmt-cyan);">Tech</span></p>
         <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-dim);">Federal health IT intelligence. Mission first.</p>
-        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" style="color:var(--mmt-white-dim);" class="hover:opacity-80"><i class="fab fa-linkedin text-lg"></i></a>
+        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" style="color:var(--mmt-white-dim);" class="hover:opacity-80"><svg class="text-lg" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg></a>
       </div>
       <!-- Platform -->
       <div>
@@ -283,9 +287,8 @@
     const menu = document.getElementById('mobileMenu');
     toggle.addEventListener('click', () => {
       menu.classList.toggle('hidden');
-      const icon = toggle.querySelector('i');
-      icon.classList.toggle('fa-bars');
-      icon.classList.toggle('fa-xmark');
+      document.getElementById('menuOpen').classList.toggle('hidden');
+      document.getElementById('menuClose').classList.toggle('hidden');
     });
 
     async function loadLatestArticles() {
@@ -307,7 +310,7 @@
           ).join('');
           return `
             <a href="${item.url}" class="card rounded-xl p-6 no-underline block transition-all">
-              <p class="text-xs mb-3" style="color:var(--mmt-white-dim);"><i class="far fa-calendar mr-1"></i>${item.date}</p>
+              <p class="text-xs mb-3" style="color:var(--mmt-white-dim);"><svg class="mr-1" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H64C28.7 64 0 92.7 0 128v16 48V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192 144 128c0-35.3-28.7-64-64-64H344V24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H152V24zM48 192H400V448c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192z"/></svg>${item.date}</p>
               <h3 class="text-lg font-bold mb-3 leading-snug" style="color:var(--mmt-white);">${item.title}</h3>
               <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-muted);">${item.description}</p>
               <div class="flex flex-wrap gap-2">${tags}</div>

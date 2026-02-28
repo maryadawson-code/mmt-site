@@ -22,8 +22,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/styles/tailwind.css">
   <style>
     :root {
       --mmt-cyan: #00E5FA;
@@ -47,9 +46,12 @@
     .nav-glass { background: rgba(0, 5, 15, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0, 229, 250, 0.1); }
     .section-alt { background: var(--mmt-dark); }
     .tag { background: rgba(0, 229, 250, 0.1); color: var(--mmt-cyan); padding: 2px 10px; border-radius: 4px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    *:focus-visible { outline: 2px solid var(--mmt-cyan); outline-offset: 2px; }
   </style>
 </head>
 <body class="antialiased">
+
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold" style="background:var(--mmt-cyan); color:var(--mmt-navy);">Skip to main content</a>
 
   <!-- Navigation -->
   <nav class="nav-glass fixed top-0 left-0 right-0 z-50">
@@ -67,7 +69,7 @@
         <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-5 py-2 rounded-lg text-sm no-underline">Subscribe</a>
       </div>
       <button id="menuToggle" class="md:hidden text-white text-xl" aria-label="Toggle menu">
-        <i class="fas fa-bars"></i>
+        <svg width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
       </button>
     </div>
     <div id="mobileMenu" class="hidden md:hidden px-6 pb-4">
@@ -84,10 +86,10 @@
   </nav>
 
   <!-- Hero -->
-  <section class="pt-32 pb-16 px-6">
+  <section id="main-content" class="pt-32 pb-16 px-6">
     <div class="max-w-4xl mx-auto">
       <div class="mb-6">
-        <a href="/topics.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);"><i class="fas fa-arrow-left mr-2"></i>All Topics</a>
+        <a href="/topics.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);"><svg class="mr-2" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H109.3l105.3-105.4c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>All Topics</a>
       </div>
       <p class="text-sm font-semibold tracking-widest uppercase mb-4" style="color:var(--mmt-cyan);">Topic</p>
       <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-4">{{TOPIC_NAME}}</h1>
@@ -119,7 +121,7 @@
       <div>
         <p class="font-bold text-lg mb-3" style="font-family:'Space Grotesk',system-ui,sans-serif; color:var(--mmt-white);">Mission Meets <span style="color:var(--mmt-cyan);">Tech</span></p>
         <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-dim);">Federal health IT intelligence. Mission first.</p>
-        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" style="color:var(--mmt-white-dim);" class="hover:opacity-80"><i class="fab fa-linkedin text-lg"></i></a>
+        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" style="color:var(--mmt-white-dim);" class="hover:opacity-80"><svg class="text-lg" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg></a>
       </div>
       <div>
         <p class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var(--mmt-cyan);">Platform</p>
@@ -158,9 +160,8 @@
     const menu = document.getElementById('mobileMenu');
     toggle.addEventListener('click', () => {
       menu.classList.toggle('hidden');
-      const icon = toggle.querySelector('i');
-      icon.classList.toggle('fa-bars');
-      icon.classList.toggle('fa-xmark');
+      document.getElementById('menuOpen').classList.toggle('hidden');
+      document.getElementById('menuClose').classList.toggle('hidden');
     });
   </script>
 </body>
