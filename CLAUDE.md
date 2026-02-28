@@ -21,37 +21,48 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 ## Design Tokens
 
 ```css
---mmt-cyan: #00E5FA;       /* Primary accent */
---mmt-green: #00FF85;       /* Secondary accent / gradient endpoint */
---mmt-navy: #00050F;        /* Page background */
---mmt-slate: #0A1628;       /* Card / elevated surface background */
---mmt-dark: #0D1117;        /* Alternating section background */
---mmt-white: #FFFFFF;
---mmt-white-muted: rgba(255,255,255,0.8);  /* Body text */
---mmt-white-dim: rgba(255,255,255,0.6);    /* Secondary text */
+--mmt-bg: #0D1117;                    /* Page background */
+--mmt-bg-alt: #161B22;                /* Alternating section background */
+--mmt-surface: #1C2128;               /* Card / elevated surface background */
+--mmt-border: rgba(255,255,255,0.08); /* Card borders, dividers */
+--mmt-border-hover: rgba(255,255,255,0.16); /* Hover borders */
+
+--mmt-text: #E6EDF3;                  /* Primary text (warm white) */
+--mmt-text-secondary: #8B949E;        /* Descriptions, metadata */
+--mmt-text-muted: #6E7681;            /* Dates, captions */
+
+--mmt-accent: #58A6FF;                /* Primary accent — restrained steel blue */
+--mmt-accent-hover: #79C0FF;          /* Hover state */
+--mmt-accent-subtle: rgba(88,166,255,0.1); /* Tag bg, subtle highlights */
+--mmt-accent-border: rgba(88,166,255,0.2); /* Accent borders */
+
+--mmt-focus: #58A6FF;                 /* Focus ring */
+--mmt-navy: #010409;                  /* Footer bg (deep black) */
 ```
 
 ### Key Patterns
-- **Gradient text:** `linear-gradient(135deg, cyan, green)` with `background-clip: text`
-- **Primary button:** Gradient background (cyan → green), navy text
-- **Secondary button:** 1px cyan border, white text, transparent bg
-- **Cards:** `--mmt-slate` bg, 1px `rgba(0,229,250,0.1)` border, 12px radius
-- **Nav:** Fixed, glass-morphism (`backdrop-filter: blur(12px)`)
-- **Section alt:** Alternating `--mmt-navy` / `--mmt-dark` backgrounds
+- **Accent text:** Solid `color: var(--mmt-accent)` — no gradients
+- **Primary button:** Solid `background: var(--mmt-accent); color: #fff;`
+- **Secondary button:** `border: 1px solid var(--mmt-accent); color: var(--mmt-accent);`
+- **Cards:** `--mmt-surface` bg, 1px `var(--mmt-border)`, 12px radius; hover: `var(--mmt-border-hover)`
+- **Tags:** `var(--mmt-accent-subtle)` bg, `var(--mmt-accent)` text
+- **Nav:** Fixed, glass-morphism (`backdrop-filter: blur(12px)`), `border-bottom: var(--mmt-border)`
+- **Section alt:** Alternating `--mmt-bg` / `--mmt-bg-alt` backgrounds
 
 ## File Structure
 
 ```
 .
 ├── 404.html                # Custom 404 error page
-├── index.html              # Homepage
+├── index.html              # Homepage — content router with lead story, latest articles, topic chips
+├── latest.html             # All articles page (newest-first, build-time rendered)
 ├── about.html              # About / founder bio
-├── podcast.html            # Fed UP podcast page
-├── newsletter.html         # Newsletter subscribe + archive (dynamic, loads newsletters.json)
+├── podcast.html            # Fed UP podcast page + recent episodes (build-time rendered from RSS)
+├── newsletter.html         # Newsletter subscribe (Buttondown primary) + full archive (build-time rendered)
 ├── resources.html          # Federal health IT resource guide (11 categories, 79 links) + Lethality Test CTA
 ├── lethality-test.html     # The Lethality Test — AI-powered deck scorer (upload → score-deck API → scorecard)
 ├── contact.html            # Contact form (Netlify Forms)
-├── topics.html             # Topics index page (6 topics, dynamic, loads from newsletters.json)
+├── topics.html             # Topics index page (6 topics, build-time rendered with descriptions + counts)
 ├── newsletters.json        # Newsletter issue data (source; build generates updated version)
 ├── robots.txt              # Crawler directives (copied to dist by build)
 ├── sitemap.xml             # Static sitemap (build generates dynamic version in dist)
@@ -76,7 +87,8 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 │   ├── sitemap.xml              # Dynamic sitemap (all pages + articles + topics)
 │   ├── styles/tailwind.css       # Minified, tree-shaken Tailwind CSS (~12KB, inlined into HTML by build)
 │   ├── feed.xml                 # RSS feed
-│   ├── og/*.png                 # Generated OG images (1200x630, ~37 files)
+│   ├── og/*.png                 # Generated OG images (1200x630, ~26 files)
+│   ├── search-index.json       # Search index for client-side search overlay
 │   └── newsletters.json        # Updated with on-site article URLs
 ├── netlify/
 │   └── functions/
@@ -98,17 +110,18 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 Every page follows this structure:
 1. `<head>` with: charset, viewport, title, meta description, canonical URL, OG tags (with `og:image:width`/`og:image:height`), Twitter Card tags, favicon, RSS feed link, Plausible script, Google Fonts (non-blocking), inlined Tailwind CSS + inline `<style>` with CSS variables and utility classes (including `.card:hover` and `*:focus-visible` outline)
 2. Skip-to-content link (`<a href="#main-content" class="sr-only focus:not-sr-only ...">`)
-3. `<nav>` with glass-morphism effect, desktop links + mobile hamburger menu
-4. `<main id="main-content">` wrapping all content sections
-5. Hero section with `pt-32 pb-16` padding
-6. Content sections alternating between default and `section-alt` backgrounds
-7. CTA section
-8. `</main>` closing tag
-9. 4-column footer (Brand, Platform, Company, Listen) — LinkedIn icon link has `<span class="sr-only">LinkedIn</span>`
-10. Mobile menu toggle script at bottom
+3. `<nav>` with glass-morphism effect, desktop links + mobile hamburger menu. **Nav order:** Home, Latest, Topics, Newsletter, Podcast, Resources, About, [Search icon], [Subscribe]
+4. Search overlay (injected by build.js after `</nav>`)
+5. `<main id="main-content">` wrapping all content sections
+6. Hero section with `pt-32 pb-16` padding
+7. Content sections alternating between default and `section-alt` backgrounds
+8. CTA section (Buttondown form primary, LinkedIn secondary)
+9. `</main>` closing tag
+10. 4-column footer (Brand, Platform, Company, Listen) — LinkedIn icon link has `<span class="sr-only">LinkedIn</span>`
+11. Mobile menu toggle script + search script (both injected by build.js before `</body>`)
 
 ### Active nav highlighting
-The current page's nav link uses `color:var(--mmt-cyan)` instead of `--mmt-white-muted`.
+The current page's nav link uses `color:var(--mmt-accent); font-weight:600;` instead of `--mmt-text-secondary`.
 
 ### Mobile menu toggle
 Uses dual inline SVGs (`#menuOpen` and `#menuClose`) with `hidden` class toggling — no external icon library.
@@ -116,12 +129,17 @@ Uses dual inline SVGs (`#menuOpen` and `#menuClose`) with `hidden` class togglin
 ### Icons
 All icons are inline SVGs with `width="1em" height="1em" fill="currentColor" aria-hidden="true"`. No Font Awesome or other icon CDN.
 
+### Search
+- Client-side search overlay triggered by magnifying glass icon in nav or `Cmd+K` / `Ctrl+K`
+- Lazy-loads `search-index.json` on first use (73 article entries)
+- Case-insensitive substring matching on title, description, and tags
+- Close via Escape key or clicking overlay background
+
 ### Accessibility
 - Skip-to-content link on every page (visible on focus)
 - `<main id="main-content">` landmark on every page
-- `*:focus-visible` outline (`2px solid var(--mmt-cyan)`) on every page
+- `*:focus-visible` outline (`2px solid var(--mmt-focus)`) on every page
 - `<label class="sr-only">` on Buttondown email inputs
-- `aria-live="polite"` on dynamic containers (`#latest-articles`, `#archive-container`, `#topics-container`)
 - `title` attribute on Transistor iframe (`podcast.html`)
 - RSS `<link rel="alternate">` on every page
 
@@ -168,12 +186,13 @@ To publish a new newsletter issue:
 5. Netlify runs `node build.js` → generates article page at `/newsletter/slug/`, updates sitemap, RSS feed, archive, and topic pages automatically
 
 ### Build artifacts (generated, not committed)
-- `dist/newsletter/slug/index.html` — individual article pages
-- `dist/topics/tag-slug/index.html` — topic landing pages
+- `dist/newsletter/slug/index.html` — individual article pages (with related articles)
+- `dist/topics/tag-slug/index.html` — topic landing pages (with description + related topics)
 - `dist/sitemap.xml` — dynamic sitemap with all pages, articles, and topics
 - `dist/feed.xml` — RSS 2.0 feed of all newsletter articles
-- `dist/og/*.png` — 1200x630 OG images for social sharing (8 static + per-article + per-topic)
-- `dist/newsletters.json` — updated with on-site article URLs (used by archive page)
+- `dist/og/*.png` — 1200x630 OG images for social sharing (9 static + per-article + per-topic)
+- `dist/search-index.json` — search index for client-side search overlay
+- `dist/newsletters.json` — updated with on-site article URLs
 
 ## Brand Voice
 
@@ -186,14 +205,33 @@ To publish a new newsletter issue:
 
 `build.js` runs these steps in order:
 1. **Tailwind CSS** — `npx tailwindcss -i ./src/input.css -o ./dist/styles/tailwind.css --minify` (tree-shaken, ~12KB), then inlined into each HTML page's `<style>` block to eliminate render-blocking CSS request
-2. **Newsletter articles** — Markdown in `content/newsletter/` → HTML pages in `dist/newsletter/slug/`
-3. **Topic pages** — Auto-generated from article tags → `dist/topics/tag-slug/`
-4. **newsletters.json** — Updated with on-site URLs → `dist/newsletters.json`
-5. **Sitemap** — Dynamic sitemap with all pages, articles, topics → `dist/sitemap.xml`
-6. **RSS feed** — RSS 2.0 → `dist/feed.xml`
-7. **OG images** — SVG → PNG via `sharp` (1200x630, branded with page title/subtitle) → `dist/og/`; OG meta tags rewritten in article, topic, and static HTML pages
-8. **Podcast** — Fetches episodes from Transistor RSS (for optional template generation)
-9. **Static files** — Copies HTML, images, robots.txt to `dist/` (excludes `.mp4`, `.zip`); rewrites OG tags for static pages
+2. **Newsletter articles** — Markdown in `content/newsletter/` → HTML pages in `dist/newsletter/slug/` (with related articles, search overlay/script injected)
+3. **Topic pages** — Auto-generated from article tags → `dist/topics/tag-slug/` (with topic description, related topics, search overlay/script injected)
+4. **newsletters.json** — Updated with on-site URLs → `dist/newsletters.json`; returns merged archive data for build-time content injection
+5. **Search index** — Writes `dist/search-index.json` with title/description/url/date/tags for all articles
+6. **Sitemap** — Dynamic sitemap with all pages, articles, topics → `dist/sitemap.xml`
+7. **RSS feed** — RSS 2.0 → `dist/feed.xml`
+8. **OG images** — SVG → PNG via `sharp` (1200x630, branded) → `dist/og/`; OG meta tags rewritten in all pages
+9. **Podcast** — Fetches episodes from Transistor RSS feed (rendered into podcast.html + homepage teaser)
+10. **Static files** — Copies HTML, images, robots.txt to `dist/`; injects build-time content at `<!-- BUILD:* -->` markers, search overlay after `</nav>`, and search script before `</body>`
+
+### Build-Time Content Injection
+
+Static HTML files use `<!-- BUILD:PLACEHOLDER -->` markers that `copyStaticFiles()` replaces with pre-rendered HTML:
+
+| Marker | Page | Content |
+|--------|------|---------|
+| `<!-- BUILD:LEAD_STORY -->` | index.html | Most recent article as prominent card |
+| `<!-- BUILD:LATEST_ARTICLES -->` | index.html | Articles 2-4 as 3-card grid |
+| `<!-- BUILD:TOPIC_CHIPS -->` | index.html | Horizontal topic pill row |
+| `<!-- BUILD:PODCAST_TEASER -->` | index.html | Latest podcast episode compact row |
+| `<!-- BUILD:LATEST_ISSUES -->` | newsletter.html | Top 3 newsletter issues |
+| `<!-- BUILD:ALL_ISSUES -->` | newsletter.html | All 73 entries with issue numbers |
+| `<!-- BUILD:TOPIC_FILTER_CHIPS -->` | newsletter.html | Topic filter buttons |
+| `<!-- BUILD:TOPICS_GRID -->` | topics.html | 6 topic cards with descriptions |
+| `<!-- BUILD:PODCAST_EPISODES -->` | podcast.html | Up to 10 recent episodes |
+| `<!-- BUILD:ARTICLE_COUNT_BADGE -->` | latest.html | Article count badge |
+| `<!-- BUILD:LATEST_ALL -->` | latest.html | All articles newest-first |
 
 ## Cache Headers (netlify.toml)
 
@@ -205,9 +243,10 @@ To publish a new newsletter issue:
 ## Gotchas
 
 - Sara Byrd headshot is `sarabyrd.jpg` (no spaces or underscores).
-- Newsletter archive and topics page load data dynamically from `newsletters.json` via fetch API.
+- Newsletter archive, topics, and homepage content are all rendered at build time — no client-side `fetch()` for content. The only client-side fetch is lazy-loading `search-index.json` when search is used.
 - `dist/` is gitignored — never commit build artifacts.
 - `build.js` generates `newsletters.json` in dist with on-site URLs; the root `newsletters.json` still has LinkedIn URLs as the source of truth for metadata.
+- `topicDescriptions` map lives in `build.js` (not client-side) — update there when adding/renaming topics.
 - Tailwind CSS is built at compile time via CLI (`tailwind.config.js` + `src/input.css`), then inlined into each HTML page by `build.js`. The `<link rel="stylesheet" href="/styles/tailwind.css">` in source HTML files is replaced with `<style>` during build. There is no external CSS request at runtime.
 - All icons are inline SVGs — there is no Font Awesome or other icon CDN. When adding new icons, use inline SVG with `width="1em" height="1em" fill="currentColor" aria-hidden="true"`.
 - `*.mp4` and `*.zip` are gitignored and excluded from dist builds.
