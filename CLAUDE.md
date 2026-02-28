@@ -15,6 +15,7 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 - **Podcast embed:** Transistor.fm iframe
 - **Content:** Markdown files in `content/newsletter/` → build generates article pages
 - **Deploy:** Netlify from `main` branch, publish directory is `dist/`
+- **Serverless:** Netlify Functions (`netlify/functions/score-deck.js`) — AI deck scoring via Claude Sonnet + Supabase
 - **Domain:** missionmeetstech.com
 
 ## Design Tokens
@@ -48,7 +49,7 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 ├── podcast.html            # Fed UP podcast page
 ├── newsletter.html         # Newsletter subscribe + archive (dynamic, loads newsletters.json)
 ├── resources.html          # Federal health IT resource guide (11 categories, 79 links) + Lethality Test CTA
-├── lethality-test.html     # The Lethality Test — self-assessment pitch wizard (9 criteria, A-F grading, Pass/Conditional/Fail)
+├── lethality-test.html     # The Lethality Test — AI-powered deck scorer (upload → score-deck API → scorecard)
 ├── contact.html            # Contact form (Netlify Forms)
 ├── topics.html             # Topics index page (6 topics, dynamic, loads from newsletters.json)
 ├── newsletters.json        # Newsletter issue data (source; build generates updated version)
@@ -77,6 +78,12 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 │   ├── feed.xml                 # RSS feed
 │   ├── og/*.png                 # Generated OG images (1200x630, ~37 files)
 │   └── newsletters.json        # Updated with on-site article URLs
+├── netlify/
+│   └── functions/
+│       └── score-deck.js   # Netlify Function: AI deck scoring (Claude Sonnet + Supabase)
+├── lib/
+│   └── supabase/
+│       └── database.types.ts  # Generated Supabase types for MissionPulse schema
 ├── CLAUDE.md               # This file
 ├── mmt-logo.png            # Full logo (fallback OG image)
 ├── mmt-logo-nav.png        # Nav logo variant
@@ -204,5 +211,5 @@ To publish a new newsletter issue:
 - Tailwind CSS is built at compile time via CLI (`tailwind.config.js` + `src/input.css`), then inlined into each HTML page by `build.js`. The `<link rel="stylesheet" href="/styles/tailwind.css">` in source HTML files is replaced with `<style>` during build. There is no external CSS request at runtime.
 - All icons are inline SVGs — there is no Font Awesome or other icon CDN. When adding new icons, use inline SVG with `width="1em" height="1em" fill="currentColor" aria-hidden="true"`.
 - `*.mp4` and `*.zip` are gitignored and excluded from dist builds.
-- Lethality Test (`lethality-test.html`) is a standalone self-assessment wizard (9 criteria, A-F grades, Pass/Conditional/Fail verdict). Pure client-side JS, no API calls. Uses custom CSS variables for grade colors alongside mmt-site design tokens.
+- Lethality Test (`lethality-test.html`) is an AI-powered deck scorer. 5 screens: Intro → Upload (email + drag-and-drop, PDF/PPTX/DOCX, 4MB max) → Processing (spinner, 90s timeout) → Results (verdict + scorecard with AI assessments + top fix + red flags) → Limit Reached (403). Calls `/.netlify/functions/score-deck` backend. Uses custom CSS variables for grade colors alongside mmt-site design tokens.
 - Resources page accordion uses pure CSS (checkbox + sibling selectors) — no JavaScript for expand/collapse.
