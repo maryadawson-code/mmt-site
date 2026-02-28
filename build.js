@@ -13,20 +13,6 @@ const DIST_DIR = path.join(__dirname, 'dist');
 
 // --- Utility Functions ---
 
-function formatDuration(duration) {
-  if (!duration) return '';
-  if (duration.includes(':')) return duration;
-  const seconds = parseInt(duration);
-  if (isNaN(seconds)) return duration;
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const secs = seconds % 60;
-  if (hours > 0) {
-    return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  }
-  return `${minutes}:${secs.toString().padStart(2, '0')}`;
-}
-
 function slugify(text) {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 }
@@ -288,7 +274,8 @@ function copyStaticFiles() {
   // Copy root HTML files (with inlined Tailwind CSS)
   const htmlFiles = [
     'index.html', 'about.html', 'podcast.html', 'newsletter.html',
-    'newsletter-archive.html', 'resources.html', 'contact.html', 'topics.html'
+    'newsletter-archive.html', 'resources.html', 'contact.html', 'topics.html',
+    '404.html'
   ];
   htmlFiles.forEach(file => {
     const src = path.join(__dirname, file);
@@ -396,43 +383,6 @@ async function build() {
   // 2. Fetch podcast episodes (keep existing functionality)
   console.log('\n--- Fetching podcast ---');
   const feed = await fetchPodcast();
-
-  // If a podcast template exists, generate podcast.html from it
-  const podcastTemplatePath = path.join(__dirname, 'src', 'podcast.template.html');
-  if (fs.existsSync(podcastTemplatePath)) {
-    const episodeCards = feed.items.slice(0, 10).map((item, index) => {
-      const pubDate = new Date(item.pubDate);
-      const formattedDate = pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-      const duration = item.duration || '';
-      const episodeNum = item.episodeNumber ? `Episode ${item.episodeNumber}` : '';
-      const description = item.contentSnippet || item.content || '';
-      const truncatedDesc = description.length > 200 ? description.substring(0, 200) + '...' : description;
-      const isNew = index === 0 ? '<span class="new-badge">NEW</span>' : '';
-      return `
-      <div class="episode-card">
-        <div class="episode-header">
-          <span class="episode-number">${episodeNum}</span>
-          <span class="episode-date">${formattedDate}</span>
-          ${isNew}
-        </div>
-        <h3 class="episode-title">${item.title}</h3>
-        <p class="episode-description">${truncatedDesc}</p>
-        <div class="episode-footer">
-          ${duration ? `<span class="episode-duration"><svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M256 0a256 256 0 1 1 0 512A256 256 0 1 1 256 0zM232 120V256c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2V120c0-13.3-10.7-24-24-24s-24 10.7-24 24z"/></svg> ${formatDuration(duration)}</span>` : ''}
-          <a href="${item.link}" class="episode-link" target="_blank" rel="noopener">
-            Listen Now <svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
-          </a>
-        </div>
-      </div>`;
-    }).join('\n');
-
-    let template = fs.readFileSync(podcastTemplatePath, 'utf8');
-    template = template.replace('{{EPISODE_CARDS}}', episodeCards || '<p class="no-episodes">No episodes yet. Check back soon!</p>');
-    template = template.replace('{{LAST_UPDATED}}', new Date().toISOString());
-    template = template.replace('{{EPISODE_COUNT}}', feed.items.length.toString());
-    fs.writeFileSync(path.join(DIST_DIR, 'podcast.html'), template);
-    console.log('Generated podcast.html from template');
-  }
 
   // 3. Copy all static files
   console.log('\n--- Copying static files ---');

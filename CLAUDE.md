@@ -42,6 +42,7 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 
 ```
 .
+├── 404.html                # Custom 404 error page
 ├── index.html              # Homepage
 ├── about.html              # About / founder bio
 ├── podcast.html            # Fed UP podcast page
@@ -84,7 +85,7 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 ## Page Conventions
 
 Every page follows this structure:
-1. `<head>` with: charset, viewport, title, meta description, canonical URL, OG tags, Twitter Card tags, favicon, RSS feed link, Plausible script, Google Fonts (non-blocking), inlined Tailwind CSS + inline `<style>` with CSS variables and utility classes (including `*:focus-visible` outline)
+1. `<head>` with: charset, viewport, title, meta description, canonical URL, OG tags (with `og:image:width`/`og:image:height`), Twitter Card tags, favicon, RSS feed link, Plausible script, Google Fonts (non-blocking), inlined Tailwind CSS + inline `<style>` with CSS variables and utility classes (including `.card:hover` and `*:focus-visible` outline)
 2. Skip-to-content link (`<a href="#main-content" class="sr-only focus:not-sr-only ...">`)
 3. `<nav>` with glass-morphism effect, desktop links + mobile hamburger menu
 4. `<main id="main-content">` wrapping all content sections
