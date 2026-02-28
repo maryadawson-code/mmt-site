@@ -1,3 +1,7 @@
 [build]
   publish = "."
-  command = "echo done"
+
+[[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200

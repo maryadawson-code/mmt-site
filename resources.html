@@ -1,547 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resources | Mission Meets Tech</title>
-    <meta name="description" content="Federal health IT research toolkit. Direct links to DHA, CDMRP, SAM.gov, Congress.gov, CRS reports, DARPA programs, and DoD budget data.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="icon" href="MMT_icon_48px.png" type="image/png">
-    <style>
-        :root {
-            --mmt-cyan: #00E5FA;
-            --mmt-green: #00FF85;
-            --mmt-navy: #00050F;
-            --mmt-slate: #0A1628;
-            --mmt-dark: #0D1117;
-            --mmt-white: #FFFFFF;
-            --mmt-white-muted: rgba(255,255,255,0.8);
-            --mmt-white-dim: rgba(255,255,255,0.6);
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--mmt-navy);
-            color: var(--mmt-white);
-            line-height: 1.6;
-        }
-        h1, h2, h3, h4 {
-            font-family: 'Space Grotesk', system-ui, sans-serif;
-        }
-
-        /* Nav */
-        nav {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-            background: rgba(0, 5, 15, 0.85);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(0, 229, 250, 0.1);
-        }
-        .nav-container {
-            max-width: 1200px; margin: 0 auto;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0.75rem 1.5rem;
-        }
-        .nav-logo {
-            font-family: 'Space Grotesk', system-ui, sans-serif;
-            font-size: 1.25rem; font-weight: 700;
-            color: var(--mmt-white); text-decoration: none;
-        }
-        .nav-logo span { color: var(--mmt-cyan); }
-        .nav-links {
-            display: flex; align-items: center; gap: 1.5rem;
-            list-style: none;
-        }
-        .nav-links a {
-            color: var(--mmt-white-muted); text-decoration: none;
-            font-size: 0.9rem; font-weight: 500;
-            transition: color 0.2s;
-        }
-        .nav-links a:hover { color: var(--mmt-cyan); }
-        .nav-cta {
-            background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green));
-            color: var(--mmt-navy) !important;
-            padding: 0.5rem 1.25rem; border-radius: 6px;
-            font-weight: 700; font-size: 0.85rem;
-            transition: opacity 0.2s;
-        }
-        .nav-cta:hover { opacity: 0.9; }
-        .hamburger {
-            display: none; flex-direction: column; gap: 5px;
-            background: none; border: none; cursor: pointer; padding: 4px;
-        }
-        .hamburger span {
-            width: 24px; height: 2px;
-            background: var(--mmt-white); border-radius: 2px;
-            transition: all 0.3s;
-        }
-        @media (max-width: 768px) {
-            .hamburger { display: flex; }
-            .nav-links {
-                display: none; flex-direction: column;
-                position: absolute; top: 100%; left: 0; right: 0;
-                background: rgba(0, 5, 15, 0.95);
-                backdrop-filter: blur(12px);
-                padding: 1rem 1.5rem; gap: 0.75rem;
-                border-bottom: 1px solid rgba(0, 229, 250, 0.1);
-            }
-            .nav-links.active { display: flex; }
-        }
-
-        /* Sections */
-        .section-alt { background: var(--mmt-dark); }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
-
-        /* Tables */
-        .reference-table {
-            width: 100%; border-collapse: collapse;
-            background: var(--mmt-slate); border-radius: 8px;
-            overflow: hidden; margin-top: 1rem;
-        }
-        .reference-table thead {
-            background: rgba(0, 229, 250, 0.08);
-        }
-        .reference-table th {
-            text-align: left; padding: 0.75rem 1rem;
-            font-family: 'Space Grotesk', system-ui, sans-serif;
-            font-size: 0.8rem; font-weight: 700;
-            color: var(--mmt-cyan); text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border-bottom: 1px solid rgba(0, 229, 250, 0.15);
-        }
-        .reference-table td {
-            padding: 0.75rem 1rem;
-            font-size: 0.9rem;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            color: var(--mmt-white-muted);
-        }
-        .reference-table tr:last-child td { border-bottom: none; }
-        .reference-table a {
-            color: var(--mmt-cyan); text-decoration: none;
-            transition: color 0.2s;
-        }
-        .reference-table a:hover { color: var(--mmt-green); text-decoration: underline; }
-        .reference-table strong { color: var(--mmt-white); }
-
-        @media (max-width: 768px) {
-            .reference-table { font-size: 0.8rem; }
-            .reference-table th, .reference-table td { padding: 0.5rem 0.75rem; }
-        }
-
-        /* Section Cards */
-        .section-card {
-            background: var(--mmt-slate);
-            border: 1px solid rgba(0, 229, 250, 0.08);
-            border-radius: 12px; padding: 2rem;
-            margin-bottom: 2rem;
-        }
-        .section-card h3 {
-            color: var(--mmt-cyan); font-size: 1.25rem;
-            margin-bottom: 0.5rem;
-        }
-        .section-card h3 i { margin-right: 0.5rem; opacity: 0.8; }
-
-        /* Footer */
-        footer {
-            background: var(--mmt-dark);
-            border-top: 1px solid rgba(0, 229, 250, 0.08);
-            padding: 3rem 0 1.5rem;
-        }
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 2rem;
-        }
-        .footer-col h4 {
-            color: var(--mmt-cyan); font-size: 0.85rem;
-            text-transform: uppercase; letter-spacing: 0.05em;
-            margin-bottom: 0.75rem;
-        }
-        .footer-col ul { list-style: none; padding: 0; }
-        .footer-col li { margin-bottom: 0.5rem; }
-        .footer-col a {
-            color: var(--mmt-white-dim); text-decoration: none;
-            font-size: 0.85rem; transition: color 0.2s;
-        }
-        .footer-col a:hover { color: var(--mmt-cyan); }
-        .footer-brand p {
-            color: var(--mmt-white-dim); font-size: 0.85rem;
-            margin-top: 0.5rem; max-width: 280px;
-        }
-        .footer-bottom {
-            margin-top: 2rem; padding-top: 1.5rem;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            text-align: center;
-        }
-        .footer-bottom p {
-            color: var(--mmt-white-dim); font-size: 0.75rem;
-            margin-bottom: 0.25rem;
-        }
-        @media (max-width: 768px) {
-            .footer-grid { grid-template-columns: 1fr 1fr; }
-        }
-        @media (max-width: 480px) {
-            .footer-grid { grid-template-columns: 1fr; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resources — Mission Meets Tech</title>
+  <meta name="description" content="Curated federal health IT resources: key programs, budget sources, policy references, and acquisition tools for defense health contractors and government leaders.">
+  <link rel="icon" href="MMT_icon_64px.png" type="image/png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --mmt-cyan: #00E5FA;
+      --mmt-green: #00FF85;
+      --mmt-navy: #00050F;
+      --mmt-slate: #0A1628;
+      --mmt-dark: #0D1117;
+      --mmt-white: #FFFFFF;
+      --mmt-white-muted: rgba(255,255,255,0.8);
+      --mmt-white-dim: rgba(255,255,255,0.6);
+    }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--mmt-navy); color: var(--mmt-white); }
+    .font-display { font-family: 'Space Grotesk', system-ui, sans-serif; }
+    .bg-navy { background-color: var(--mmt-navy); }
+    .bg-dark { background-color: var(--mmt-dark); }
+    .bg-slate { background-color: var(--mmt-slate); }
+    .text-cyan { color: var(--mmt-cyan); }
+    .text-green { color: var(--mmt-green); }
+    .text-muted { color: var(--mmt-white-muted); }
+    .text-dim { color: var(--mmt-white-dim); }
+    .gradient-text { background: linear-gradient(135deg, var(--mmt-cyan) 0%, var(--mmt-green) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .btn-primary { background: linear-gradient(135deg, var(--mmt-cyan) 0%, var(--mmt-green) 100%); color: var(--mmt-navy); font-weight: 700; }
+    .btn-primary:hover { box-shadow: 0 0 20px rgba(0, 229, 250, 0.45); transform: translateY(-1px); }
+    .btn-secondary { border: 1px solid var(--mmt-cyan); color: var(--mmt-white); }
+    .btn-secondary:hover { background: rgba(0, 229, 250, 0.1); }
+    .card { background-color: var(--mmt-slate); border: 1px solid rgba(0, 229, 250, 0.1); }
+    .nav-glass { background: rgba(0, 5, 15, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0, 229, 250, 0.1); }
+    .nav-link { color: var(--mmt-white-muted); transition: color 0.2s; }
+    .nav-link:hover { color: var(--mmt-cyan); }
+    #mobile-menu { display: none; }
+    #mobile-menu.active { display: flex; }
+  </style>
 </head>
-<body>
+<body class="bg-navy min-h-screen">
 
-    <!-- Nav -->
-    <nav>
-        <div class="nav-container">
-            <a href="index.html" class="nav-logo">Mission Meets <span>Tech</span></a>
-            <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('active')" aria-label="Toggle navigation">
-                <span></span><span></span><span></span>
-            </button>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="podcast.html">Podcast</a></li>
-                <li><a href="newsletter.html">Newsletter</a></li>
-                <li><a href="resources.html">Resources</a></li>
-                <li><a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" class="nav-cta" target="_blank" rel="noopener">Subscribe</a></li>
-            </ul>
+  <!-- Navigation -->
+  <nav class="nav-glass fixed top-0 left-0 right-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+      <a href="index.html" class="font-display font-bold text-xl">Mission Meets <span class="text-cyan">Tech</span></a>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="index.html" class="nav-link text-sm font-medium">Home</a>
+        <a href="about.html" class="nav-link text-sm font-medium">About</a>
+        <a href="podcast.html" class="nav-link text-sm font-medium">Podcast</a>
+        <a href="newsletter.html" class="nav-link text-sm font-medium">Newsletter</a>
+        <a href="resources.html" class="nav-link text-sm font-medium">Resources</a>
+        <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold transition-all">Subscribe</a>
+      </div>
+      <button id="menu-toggle" class="md:hidden text-white" aria-label="Toggle menu">
+        <i class="fas fa-bars text-xl"></i>
+      </button>
+    </div>
+    <div id="mobile-menu" class="md:hidden flex-col px-4 pb-4 gap-3">
+      <a href="index.html" class="nav-link text-sm py-2">Home</a>
+      <a href="about.html" class="nav-link text-sm py-2">About</a>
+      <a href="podcast.html" class="nav-link text-sm py-2">Podcast</a>
+      <a href="newsletter.html" class="nav-link text-sm py-2">Newsletter</a>
+      <a href="resources.html" class="nav-link text-sm py-2">Resources</a>
+      <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold text-center mt-2 inline-block">Subscribe</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="pt-32 pb-16 px-4 sm:px-6">
+    <div class="max-w-4xl mx-auto text-center">
+      <p class="text-cyan text-sm font-semibold tracking-widest uppercase mb-4">Resources</p>
+      <h1 class="font-display font-bold text-4xl sm:text-5xl mb-6">Federal Health IT Reference Desk</h1>
+      <p class="text-muted text-lg max-w-2xl mx-auto leading-relaxed">Key programs, budget sources, policy references, and acquisition tools — curated for people who work in or around defense healthcare technology.</p>
+    </div>
+  </section>
+
+  <!-- Key Organizations -->
+  <section class="bg-dark py-20 px-4 sm:px-6">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-display font-bold text-2xl sm:text-3xl mb-8">Key Organizations</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2 text-cyan">Defense Health Agency (DHA)</h3>
+          <p class="text-dim text-sm leading-relaxed">The combat support agency responsible for MHS operations, TRICARE, and health IT modernization across the Military Health System.</p>
         </div>
-    </nav>
-
-    <!-- Hero -->
-    <section style="padding: 8rem 0 3rem;">
-        <div class="container">
-            <p style="color: var(--mmt-cyan); font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem;">Research Toolkit</p>
-            <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; line-height: 1.15;">Resources</h1>
-            <p style="color: var(--mmt-white-muted); font-size: 1.1rem; max-width: 640px;">The primary sources, databases, and reference tools used to produce Mission Meets Tech analysis. Every link goes directly to the source.</p>
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2 text-cyan">Veterans Affairs (VA) OIT</h3>
+          <p class="text-dim text-sm leading-relaxed">The Office of Information and Technology manages VA's health IT portfolio including EHR modernization and interoperability programs.</p>
         </div>
-    </section>
-
-    <!-- DHA & Related Programs -->
-    <section class="section-alt" style="padding: 4rem 0;">
-        <div class="container">
-            <div class="section-card">
-                <h3><i class="fas fa-hospital"></i> Defense Health Agency &amp; Related Programs</h3>
-                <p style="color: var(--mmt-white-dim); margin-bottom: 1rem;">Direct from DHA, the Military Health System, and associated research programs.</p>
-                <div style="overflow-x: auto;">
-                    <table class="reference-table">
-                        <thead>
-                            <tr><th>Resource</th><th>URL</th><th>Contents</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>DHA Main</strong></td>
-                                <td><a href="https://health.mil/" target="_blank" rel="noopener">health.mil</a></td>
-                                <td>News, policy, programs</td>
-                            </tr>
-                            <tr>
-                                <td><strong>DHA Contracting</strong></td>
-                                <td><a href="https://www.health.mil/About-MHS/OASDHA/Defense-Health-Agency/Contracting" target="_blank" rel="noopener">health.mil/...Contracting</a></td>
-                                <td>Procurement info</td>
-                            </tr>
-                            <tr>
-                                <td><strong>CDMRP Main</strong></td>
-                                <td><a href="https://cdmrp.health.mil/" target="_blank" rel="noopener">cdmrp.health.mil</a></td>
-                                <td>Research programs</td>
-                            </tr>
-                            <tr>
-                                <td><strong>CDMRP Funding Opportunities</strong></td>
-                                <td><a href="https://cdmrp.health.mil/funding/" target="_blank" rel="noopener">cdmrp.health.mil/funding</a></td>
-                                <td>Active solicitations</td>
-                            </tr>
-                            <tr>
-                                <td><strong>CDMRP Funding History</strong></td>
-                                <td><a href="https://cdmrp.health.mil/about/fundinghistory" target="_blank" rel="noopener">cdmrp.health.mil/about/fundinghistory</a></td>
-                                <td>Historical allocations</td>
-                            </tr>
-                            <tr>
-                                <td><strong>MHS GENESIS</strong></td>
-                                <td><a href="https://www.health.mil/Military-Health-Topics/MHS-GENESIS" target="_blank" rel="noopener">health.mil/...MHS-GENESIS</a></td>
-                                <td>EHR deployment status</td>
-                            </tr>
-                            <tr>
-                                <td><strong>DARPA Biological Technologies</strong></td>
-                                <td><a href="https://www.darpa.mil/about/offices/biological-technologies" target="_blank" rel="noopener">darpa.mil/...biological-technologies</a></td>
-                                <td>BTO program office</td>
-                            </tr>
-                            <tr>
-                                <td><strong>DARPA Defense Sciences</strong></td>
-                                <td><a href="https://www.darpa.mil/about/offices/defense-sciences" target="_blank" rel="noopener">darpa.mil/...defense-sciences</a></td>
-                                <td>DSO program office</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2 text-cyan">Federal Electronic Health Record Modernization (FEHRM)</h3>
+          <p class="text-dim text-sm leading-relaxed">The joint program office responsible for deploying a single, shared EHR across DoD and VA.</p>
         </div>
-    </section>
-
-    <!-- Procurement & Contracting -->
-    <section style="padding: 4rem 0;">
-        <div class="container">
-            <div class="section-card">
-                <h3><i class="fas fa-file-contract"></i> Procurement &amp; Contracting Intelligence</h3>
-                <p style="color: var(--mmt-white-dim); margin-bottom: 1rem;">Find opportunities, track awards, and research the competitive landscape.</p>
-                <div style="overflow-x: auto;">
-                    <table class="reference-table">
-                        <thead>
-                            <tr><th>Resource</th><th>URL</th><th>Use For</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>SAM.gov</strong></td>
-                                <td><a href="https://sam.gov" target="_blank" rel="noopener">sam.gov</a></td>
-                                <td>Entity registration, awards</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Contract Opportunities</strong></td>
-                                <td><a href="https://sam.gov/content/opportunities" target="_blank" rel="noopener">sam.gov/content/opportunities</a></td>
-                                <td>Active solicitations</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Award Data</strong></td>
-                                <td><a href="https://sam.gov/content/contract-data" target="_blank" rel="noopener">sam.gov/content/contract-data</a></td>
-                                <td>Historical awards</td>
-                            </tr>
-                            <tr>
-                                <td><strong>FPDS-NG</strong></td>
-                                <td><a href="https://www.fpds.gov/" target="_blank" rel="noopener">fpds.gov</a></td>
-                                <td>Federal procurement data</td>
-                            </tr>
-                            <tr>
-                                <td><strong>USASpending</strong></td>
-                                <td><a href="https://www.usaspending.gov/" target="_blank" rel="noopener">usaspending.gov</a></td>
-                                <td>Federal spending transparency</td>
-                            </tr>
-                            <tr>
-                                <td><strong>GovWin (Deltek)</strong></td>
-                                <td><a href="https://iq.govwin.com/" target="_blank" rel="noopener">iq.govwin.com</a></td>
-                                <td>Market intelligence (subscription)</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Bloomberg Government</strong></td>
-                                <td><a href="https://about.bgov.com/" target="_blank" rel="noopener">about.bgov.com</a></td>
-                                <td>Contract analysis (subscription)</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2 text-cyan">DoD CIO / DISA</h3>
+          <p class="text-dim text-sm leading-relaxed">Oversees defense IT policy, cybersecurity standards, and the infrastructure backbone that health systems depend on.</p>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- Legislative & Policy -->
-    <section class="section-alt" style="padding: 4rem 0;">
-        <div class="container">
-            <div class="section-card">
-                <h3><i class="fas fa-landmark"></i> Legislative &amp; Policy Sources</h3>
-                <p style="color: var(--mmt-white-dim); margin-bottom: 1rem;">Track authorization, appropriation, and policy developments that shape defense health.</p>
-                <div style="overflow-x: auto;">
-                    <table class="reference-table">
-                        <thead>
-                            <tr><th>Resource</th><th>URL</th><th>Use For</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Congress.gov</strong></td>
-                                <td><a href="https://www.congress.gov/" target="_blank" rel="noopener">congress.gov</a></td>
-                                <td>Bill text, status, hearing records</td>
-                            </tr>
-                            <tr>
-                                <td><strong>CRS Reports</strong></td>
-                                <td><a href="https://crsreports.congress.gov/" target="_blank" rel="noopener">crsreports.congress.gov</a></td>
-                                <td>Nonpartisan policy analysis</td>
-                            </tr>
-                            <tr>
-                                <td><strong>GAO Reports</strong></td>
-                                <td><a href="https://www.gao.gov/" target="_blank" rel="noopener">gao.gov</a></td>
-                                <td>Audits, evaluations, recommendations</td>
-                            </tr>
-                            <tr>
-                                <td><strong>HASC (House Armed Services)</strong></td>
-                                <td><a href="https://armedservices.house.gov/" target="_blank" rel="noopener">armedservices.house.gov</a></td>
-                                <td>NDAA markup, hearings</td>
-                            </tr>
-                            <tr>
-                                <td><strong>SASC (Senate Armed Services)</strong></td>
-                                <td><a href="https://www.armed-services.senate.gov/" target="_blank" rel="noopener">armed-services.senate.gov</a></td>
-                                <td>Authorization, policy direction</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Federal Register</strong></td>
-                                <td><a href="https://www.federalregister.gov/" target="_blank" rel="noopener">federalregister.gov</a></td>
-                                <td>Proposed rules, final rules, notices</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+  <!-- Budget & Policy Sources -->
+  <section class="py-20 px-4 sm:px-6">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-display font-bold text-2xl sm:text-3xl mb-8">Budget &amp; Policy Sources</h2>
+      <div class="space-y-4">
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2">DoD Comptroller Budget Documents</h3>
+          <p class="text-dim text-sm leading-relaxed">Annual defense health program budget justification materials. The primary source for understanding where health IT dollars are going.</p>
         </div>
-    </section>
-
-    <!-- Budget & Finance -->
-    <section style="padding: 4rem 0;">
-        <div class="container">
-            <div class="section-card">
-                <h3><i class="fas fa-chart-line"></i> Budget &amp; Financial Data</h3>
-                <p style="color: var(--mmt-white-dim); margin-bottom: 1rem;">Defense health budget justification, comptroller data, and appropriations tracking.</p>
-                <div style="overflow-x: auto;">
-                    <table class="reference-table">
-                        <thead>
-                            <tr><th>Resource</th><th>URL</th><th>Use For</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>DoD Comptroller</strong></td>
-                                <td><a href="https://comptroller.defense.gov/" target="_blank" rel="noopener">comptroller.defense.gov</a></td>
-                                <td>Budget justification documents</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Defense Health Program Budget</strong></td>
-                                <td><a href="https://comptroller.defense.gov/Budget-Materials/" target="_blank" rel="noopener">comptroller.defense.gov/Budget-Materials</a></td>
-                                <td>DHP budget exhibits</td>
-                            </tr>
-                            <tr>
-                                <td><strong>CBO Defense Analysis</strong></td>
-                                <td><a href="https://www.cbo.gov/topics/defense-and-national-security" target="_blank" rel="noopener">cbo.gov/...defense-and-national-security</a></td>
-                                <td>Cost estimates, projections</td>
-                            </tr>
-                            <tr>
-                                <td><strong>OMB Budget</strong></td>
-                                <td><a href="https://www.whitehouse.gov/omb/budget/" target="_blank" rel="noopener">whitehouse.gov/omb/budget</a></td>
-                                <td>President's budget request</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2">Congressional Research Service (CRS)</h3>
+          <p class="text-dim text-sm leading-relaxed">Non-partisan policy analysis on defense health, VA healthcare, and military personnel programs. High-quality synthesis of legislative action.</p>
         </div>
-    </section>
-
-    <!-- VA & Interagency -->
-    <section class="section-alt" style="padding: 4rem 0;">
-        <div class="container">
-            <div class="section-card">
-                <h3><i class="fas fa-shield-halved"></i> VA &amp; Interagency Health IT</h3>
-                <p style="color: var(--mmt-white-dim); margin-bottom: 1rem;">Veterans Affairs health technology, interoperability initiatives, and joint programs.</p>
-                <div style="overflow-x: auto;">
-                    <table class="reference-table">
-                        <thead>
-                            <tr><th>Resource</th><th>URL</th><th>Use For</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>VA Office of Information &amp; Technology</strong></td>
-                                <td><a href="https://www.oit.va.gov/" target="_blank" rel="noopener">oit.va.gov</a></td>
-                                <td>VA IT strategy, programs</td>
-                            </tr>
-                            <tr>
-                                <td><strong>VA EHR Modernization</strong></td>
-                                <td><a href="https://www.ehrm.va.gov/" target="_blank" rel="noopener">ehrm.va.gov</a></td>
-                                <td>Oracle Health deployment</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Federal Health IT (ONC)</strong></td>
-                                <td><a href="https://www.healthit.gov/" target="_blank" rel="noopener">healthit.gov</a></td>
-                                <td>Interoperability standards</td>
-                            </tr>
-                            <tr>
-                                <td><strong>FHIR Standard</strong></td>
-                                <td><a href="https://www.hl7.org/fhir/" target="_blank" rel="noopener">hl7.org/fhir</a></td>
-                                <td>Interoperability specification</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2">Government Accountability Office (GAO)</h3>
+          <p class="text-dim text-sm leading-relaxed">Audit and evaluation reports covering IT modernization, cost overruns, program effectiveness, and acquisition oversight.</p>
         </div>
-    </section>
-
-    <!-- Industry & Analysis -->
-    <section style="padding: 4rem 0 5rem;">
-        <div class="container">
-            <div class="section-card">
-                <h3><i class="fas fa-microscope"></i> Industry &amp; Analysis</h3>
-                <p style="color: var(--mmt-white-dim); margin-bottom: 1rem;">Market context, thought leadership, and community resources for the federal health IT ecosystem.</p>
-                <div style="overflow-x: auto;">
-                    <table class="reference-table">
-                        <thead>
-                            <tr><th>Resource</th><th>URL</th><th>Use For</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>FedHealthIT</strong></td>
-                                <td><a href="https://www.fedhealthit.com/" target="_blank" rel="noopener">fedhealthit.com</a></td>
-                                <td>Community, events, awards</td>
-                            </tr>
-                            <tr>
-                                <td><strong>FedScoop / DefenseScoop</strong></td>
-                                <td><a href="https://fedscoop.com/" target="_blank" rel="noopener">fedscoop.com</a></td>
-                                <td>Federal tech news</td>
-                            </tr>
-                            <tr>
-                                <td><strong>GovExec / Nextgov</strong></td>
-                                <td><a href="https://www.nextgov.com/" target="_blank" rel="noopener">nextgov.com</a></td>
-                                <td>Government technology coverage</td>
-                            </tr>
-                            <tr>
-                                <td><strong>SEC EDGAR</strong></td>
-                                <td><a href="https://www.sec.gov/cgi-bin/browse-edgar" target="_blank" rel="noopener">sec.gov/...browse-edgar</a></td>
-                                <td>Public company filings, 10-Ks</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- CTA -->
-            <div style="text-align: center; margin-top: 3rem;">
-                <p style="color: var(--mmt-white-muted); font-size: 1rem; margin-bottom: 1.5rem;">Get analysis that puts these sources to work for you.</p>
-                <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" style="display: inline-block; background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); color: var(--mmt-navy); padding: 0.75rem 2rem; border-radius: 8px; font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700; font-size: 1rem; text-decoration: none; transition: opacity 0.2s;">Subscribe to the Newsletter</a>
-            </div>
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2">National Defense Authorization Act (NDAA)</h3>
+          <p class="text-dim text-sm leading-relaxed">The annual defense policy bill that sets direction for military health programs, technology mandates, and acquisition reform.</p>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col footer-brand">
-                    <a href="index.html" class="nav-logo" style="display: inline-block; margin-bottom: 0.5rem; text-decoration: none;">Mission Meets <span style="color: var(--mmt-cyan);">Tech</span></a>
-                    <p>Federal health IT intelligence for defense contractors and government decision-makers.</p>
-                </div>
-                <div class="footer-col">
-                    <h4>Platform</h4>
-                    <ul>
-                        <li><a href="newsletter.html">Newsletter</a></li>
-                        <li><a href="podcast.html">Podcast</a></li>
-                        <li><a href="resources.html">Resources</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Company</h4>
-                    <ul>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="mailto:mary@missionmeetstech.com">Contact</a></li>
-                        <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener">LinkedIn</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Listen</h4>
-                    <ul>
-                        <li><a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank" rel="noopener">Apple Podcasts</a></li>
-                        <li><a href="https://open.spotify.com/show/7sND342duH7Buw1cUs60lP" target="_blank" rel="noopener">Spotify</a></li>
-                        <li><a href="https://music.amazon.com/podcasts/920fec9b-4fae-4bd0-ae4d-eaf1459cad2f" target="_blank" rel="noopener">Amazon Music</a></li>
-                        <li><a href="https://www.youtube.com/@MissionMeetsTech" target="_blank" rel="noopener">YouTube</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>The views expressed on this site are solely those of the authors and do not represent the official position of any organization. This content is for informational purposes only.</p>
-                <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
-            </div>
+  <!-- Acquisition Tools -->
+  <section class="bg-dark py-20 px-4 sm:px-6">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-display font-bold text-2xl sm:text-3xl mb-8">Acquisition &amp; Contracting</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2 text-cyan">SAM.gov</h3>
+          <p class="text-dim text-sm leading-relaxed">The System for Award Management — where federal opportunities are posted and contract data is published.</p>
         </div>
-    </footer>
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2 text-cyan">FPDS.gov</h3>
+          <p class="text-dim text-sm leading-relaxed">Federal Procurement Data System — the authoritative source for historical contract award data across all federal agencies.</p>
+        </div>
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2 text-cyan">USAspending.gov</h3>
+          <p class="text-dim text-sm leading-relaxed">Federal spending transparency — track agency spending, contract awards, and budget execution across health programs.</p>
+        </div>
+        <div class="card rounded-xl p-6">
+          <h3 class="font-display font-bold text-lg mb-2 text-cyan">OSDBU Resources</h3>
+          <p class="text-dim text-sm leading-relaxed">Small business contracting guidance from the Office of Small and Disadvantaged Business Utilization at DoD and VA.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
+  <!-- CTA -->
+  <section class="py-16 px-4 sm:px-6">
+    <div class="max-w-3xl mx-auto text-center">
+      <h3 class="font-display font-bold text-xl mb-3">Stay Connected</h3>
+      <p class="text-muted text-sm mb-6">Get analysis that turns these sources into actionable intelligence.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-6 py-2.5 rounded-lg text-sm font-bold transition-all inline-block">Subscribe to the Newsletter</a>
+        <a href="podcast.html" class="btn-secondary px-6 py-2.5 rounded-lg text-sm font-medium transition-all inline-block">Listen to Fed UP</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-dark border-t border-white/5 pt-16 pb-8 px-4 sm:px-6">
+    <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+      <div>
+        <p class="font-display font-bold text-lg mb-2">Mission Meets <span class="text-cyan">Tech</span></p>
+        <p class="text-dim text-xs leading-relaxed">Federal health IT intelligence for people who build, buy, and deploy mission-critical systems.</p>
+        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="text-dim hover:text-cyan text-sm mt-3 inline-block"><i class="fab fa-linkedin"></i></a>
+      </div>
+      <div>
+        <p class="font-display font-semibold text-sm mb-3 text-muted">Platform</p>
+        <div class="flex flex-col gap-2">
+          <a href="newsletter.html" class="text-dim text-xs hover:text-cyan transition-colors">Newsletter</a>
+          <a href="podcast.html" class="text-dim text-xs hover:text-cyan transition-colors">Podcast</a>
+          <a href="resources.html" class="text-dim text-xs hover:text-cyan transition-colors">Resources</a>
+        </div>
+      </div>
+      <div>
+        <p class="font-display font-semibold text-sm mb-3 text-muted">Company</p>
+        <div class="flex flex-col gap-2">
+          <a href="about.html" class="text-dim text-xs hover:text-cyan transition-colors">About</a>
+          <a href="mailto:mary@missionmeetstech.com" class="text-dim text-xs hover:text-cyan transition-colors">Contact</a>
+          <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="text-dim text-xs hover:text-cyan transition-colors">LinkedIn</a>
+        </div>
+      </div>
+      <div>
+        <p class="font-display font-semibold text-sm mb-3 text-muted">Listen</p>
+        <div class="flex flex-col gap-2">
+          <a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank" rel="noopener" class="text-dim text-xs hover:text-cyan transition-colors">Apple Podcasts</a>
+          <a href="https://open.spotify.com/show/7sND342duH7Buw1cUs60lP" target="_blank" rel="noopener" class="text-dim text-xs hover:text-cyan transition-colors">Spotify</a>
+          <a href="https://music.amazon.com/podcasts/920fec9b-4fae-4bd0-ae4d-eaf1459cad2f" target="_blank" rel="noopener" class="text-dim text-xs hover:text-cyan transition-colors">Amazon Music</a>
+          <a href="https://www.youtube.com/@MissionMeetsTech" target="_blank" rel="noopener" class="text-dim text-xs hover:text-cyan transition-colors">YouTube</a>
+        </div>
+      </div>
+    </div>
+    <div class="max-w-6xl mx-auto border-t border-white/5 pt-6 text-center">
+      <p class="text-dim text-xs">The views expressed on this site are the author's own and do not represent the position of any employer or organization.</p>
+      <p class="text-dim text-xs mt-2">&copy; 2026 Mission Meets Tech. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+      document.getElementById('mobile-menu').classList.toggle('active');
+    });
+  </script>
 </body>
 </html>
