@@ -21,33 +21,24 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 ## Design Tokens
 
 ```css
---mmt-bg: #0D1117;                    /* Page background */
---mmt-bg-alt: #161B22;                /* Alternating section background */
---mmt-surface: #1C2128;               /* Card / elevated surface background */
---mmt-border: rgba(255,255,255,0.08); /* Card borders, dividers */
---mmt-border-hover: rgba(255,255,255,0.16); /* Hover borders */
-
---mmt-text: #E6EDF3;                  /* Primary text (warm white) */
---mmt-text-secondary: #8B949E;        /* Descriptions, metadata */
---mmt-text-muted: #6E7681;            /* Dates, captions */
-
---mmt-accent: #58A6FF;                /* Primary accent — restrained steel blue */
---mmt-accent-hover: #79C0FF;          /* Hover state */
---mmt-accent-subtle: rgba(88,166,255,0.1); /* Tag bg, subtle highlights */
---mmt-accent-border: rgba(88,166,255,0.2); /* Accent borders */
-
---mmt-focus: #58A6FF;                 /* Focus ring */
---mmt-navy: #010409;                  /* Footer bg (deep black) */
+--mmt-cyan: #00E5FA;       /* Primary accent */
+--mmt-green: #00FF85;       /* Secondary accent / gradient endpoint */
+--mmt-navy: #00050F;        /* Page background */
+--mmt-slate: #0A1628;       /* Card / elevated surface background */
+--mmt-dark: #0D1117;        /* Alternating section background */
+--mmt-white: #FFFFFF;
+--mmt-white-muted: rgba(255,255,255,0.8);  /* Body text */
+--mmt-white-dim: rgba(255,255,255,0.6);    /* Secondary text */
 ```
 
 ### Key Patterns
-- **Accent text:** Solid `color: var(--mmt-accent)` — no gradients
-- **Primary button:** Solid `background: var(--mmt-accent); color: #fff;`
-- **Secondary button:** `border: 1px solid var(--mmt-accent); color: var(--mmt-accent);`
-- **Cards:** `--mmt-surface` bg, 1px `var(--mmt-border)`, 12px radius; hover: `var(--mmt-border-hover)`
-- **Tags:** `var(--mmt-accent-subtle)` bg, `var(--mmt-accent)` text
-- **Nav:** Fixed, glass-morphism (`backdrop-filter: blur(12px)`), `border-bottom: var(--mmt-border)`
-- **Section alt:** Alternating `--mmt-bg` / `--mmt-bg-alt` backgrounds
+- **Gradient text:** `linear-gradient(135deg, cyan, green)` with `background-clip: text`
+- **Primary button:** Gradient background (cyan → green), navy text
+- **Secondary button:** 1px cyan border, white text, transparent bg
+- **Cards:** `--mmt-slate` bg, 1px `rgba(0,229,250,0.1)` border, 12px radius; hover: `rgba(0,229,250,0.3)`
+- **Tags:** `rgba(0,229,250,0.1)` bg, `var(--mmt-cyan)` text
+- **Nav:** Fixed, glass-morphism (`backdrop-filter: blur(12px)`), `border-bottom: rgba(0,229,250,0.1)`
+- **Section alt:** Alternating `--mmt-navy` / `--mmt-dark` backgrounds
 
 ## File Structure
 
@@ -121,7 +112,7 @@ Every page follows this structure:
 11. Mobile menu toggle script + search script (both injected by build.js before `</body>`)
 
 ### Active nav highlighting
-The current page's nav link uses `color:var(--mmt-accent); font-weight:600;` instead of `--mmt-text-secondary`.
+The current page's nav link uses `color:var(--mmt-cyan); font-weight:600;` instead of `--mmt-white-muted`.
 
 ### Mobile menu toggle
 Uses dual inline SVGs (`#menuOpen` and `#menuClose`) with `hidden` class toggling — no external icon library.
@@ -138,7 +129,7 @@ All icons are inline SVGs with `width="1em" height="1em" fill="currentColor" ari
 ### Accessibility
 - Skip-to-content link on every page (visible on focus)
 - `<main id="main-content">` landmark on every page
-- `*:focus-visible` outline (`2px solid var(--mmt-focus)`) on every page
+- `*:focus-visible` outline (`2px solid var(--mmt-cyan)`) on every page
 - `<label class="sr-only">` on Buttondown email inputs
 - `title` attribute on Transistor iframe (`podcast.html`)
 - RSS `<link rel="alternate">` on every page
