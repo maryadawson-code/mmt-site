@@ -136,7 +136,11 @@ exports.handler = async (event) => {
       ],
     });
 
-    const responseText = message.content[0].text;
+    let responseText = message.content[0].text.trim();
+    // Strip markdown code fences if present
+    if (responseText.startsWith("```")) {
+      responseText = responseText.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
+    }
     const result = JSON.parse(responseText);
 
     return {
