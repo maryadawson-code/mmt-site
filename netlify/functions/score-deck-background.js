@@ -447,11 +447,20 @@ exports.handler = async (event) => {
 
       // Invoke Gold Team Review background function via internal URL
       const siteUrl = process.env.URL || "https://missionmeetstech.com";
-      await fetch(`${siteUrl}/.netlify/functions/gold-team-review-background`, {
+      const goldTeamUrl = `${siteUrl}/.netlify/functions/gold-team-review-background`;
+      console.log(`Gold Team: triggering ${goldTeamUrl}`);
+
+      const goldTeamResponse = await fetch(goldTeamUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(goldTeamPayload),
       });
+
+      console.log(`Gold Team: trigger response ${goldTeamResponse.status}`);
+      if (!goldTeamResponse.ok && goldTeamResponse.status !== 202) {
+        const errBody = await goldTeamResponse.text().catch(() => "");
+        console.error(`Gold Team: trigger failed ${goldTeamResponse.status}: ${errBody}`);
+      }
     } catch (goldTeamErr) {
       console.error("Gold Team Review trigger error:", goldTeamErr);
       // Non-fatal — user still has their scorecard
