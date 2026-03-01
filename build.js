@@ -6,7 +6,7 @@ const { marked } = require('marked');
 const { execSync } = require('child_process');
 const sharp = require('sharp');
 
-const RSS_FEED = 'https://feeds.transistor.fm/fed-up-where-mission-meets-reality';
+const RSS_FEED = 'https://api.riverside.fm/hosting/KJvFk8EM.rss';
 const SITE_URL = 'https://missionmeetstech.com';
 const CONTENT_DIR = path.join(__dirname, 'content', 'newsletter');
 const TEMPLATES_DIR = path.join(__dirname, 'templates');
