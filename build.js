@@ -161,13 +161,18 @@ function generatePodcastEpisodesHtml(feed) {
     const date = ep.pubDate ? new Date(ep.pubDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
     const duration = ep.duration || '';
     const desc = escapeHtml((ep.contentSnippet || ep.content || '').substring(0, 200));
+    const audioUrl = ep.enclosure?.url || '';
+    const audioPlayer = audioUrl
+      ? `<audio controls preload="none" style="width:100%; margin-top:0.75rem; height:36px; border-radius:8px;">
+                <source src="${escapeHtml(audioUrl)}" type="audio/mpeg">
+              </audio>`
+      : '';
     return `<article class="card rounded-xl p-6">
-          <div class="flex items-start justify-between gap-4">
-            <div class="flex-1">
-              <h3 class="text-base font-bold mb-1" style="color:var(--mmt-white);">${title}</h3>
-              <p class="text-xs mb-2" style="color:var(--mmt-white-dim);">${date}${duration ? ` &middot; ${duration}` : ''}</p>
-              ${desc ? `<p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">${desc}</p>` : ''}
-            </div>
+          <div>
+            <h3 class="text-base font-bold mb-1" style="color:var(--mmt-white);">${title}</h3>
+            <p class="text-xs mb-2" style="color:var(--mmt-white-dim);">${date}${duration ? ` &middot; ${duration}` : ''}</p>
+            ${desc ? `<p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">${desc}</p>` : ''}
+            ${audioPlayer}
           </div>
         </article>`;
   }).join('\n        ');
