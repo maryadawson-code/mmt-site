@@ -708,6 +708,81 @@
     .gold-team-status.success .gold-team-status-text { color: #22c55e; }
     .gold-team-status.error .gold-team-status-text { color: var(--text-muted); }
 
+    /* ===== FEEDBACK WIDGET ===== */
+    .feedback-widget {
+      margin-top: 1.5rem;
+      padding: 1.25rem;
+      border: 1px solid rgba(0, 229, 250, 0.15);
+      border-radius: 0.75rem;
+      background: rgba(0, 229, 250, 0.03);
+      text-align: center;
+    }
+    .feedback-label {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+    }
+    .feedback-stars {
+      display: inline-flex;
+      gap: 0.25rem;
+      cursor: pointer;
+    }
+    .feedback-star {
+      width: 28px;
+      height: 28px;
+      color: rgba(255, 255, 255, 0.15);
+      transition: color 0.15s ease;
+    }
+    .feedback-star.star-hover,
+    .feedback-star.star-active {
+      color: #FBBF24;
+    }
+    .feedback-comment-toggle {
+      display: block;
+      margin: 0.75rem auto 0;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0;
+    }
+    .feedback-comment-toggle:hover { color: var(--text-secondary); }
+    .feedback-comment-area {
+      display: none;
+      margin-top: 0.75rem;
+    }
+    .feedback-comment-area.visible { display: block; }
+    .feedback-comment-area textarea {
+      width: 100%;
+      max-width: 400px;
+      height: 60px;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid rgba(0, 229, 250, 0.2);
+      border-radius: 0.5rem;
+      background: var(--surface);
+      color: var(--text-primary);
+      font-size: 0.8rem;
+      font-family: inherit;
+      resize: vertical;
+    }
+    .feedback-comment-area textarea:focus {
+      outline: 2px solid var(--primary-cyan);
+      outline-offset: 1px;
+    }
+    .feedback-submit {
+      margin-top: 0.75rem;
+    }
+    .feedback-thanks {
+      font-size: 0.875rem;
+      color: #22c55e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
     /* ===== UPSELL BOX ===== */
     .upsell-box {
       text-align: center;
@@ -771,7 +846,7 @@
 
     /* ===== PRINT STYLES ===== */
     @media print {
-      nav, .results-cta, .upsell-box, footer, .upload-card, .processing-container, .uses-badge, .gold-team-status, .payment-success, .pipeline, .hero { display: none; }
+      nav, .results-cta, .upsell-box, footer, .upload-card, .processing-container, .uses-badge, .gold-team-status, .feedback-widget, .payment-success, .pipeline, .hero { display: none; }
       body { background: white; color: #222; }
       .lt-container { max-width: 100%; }
       .results-verdict, .scorecard, .red-flags, .top-fix { border-color: #ccc; }
@@ -1022,6 +1097,7 @@
     <div id="results-top-fix"></div>
     <div id="results-red-flags"></div>
     <div id="gold-team-status" aria-live="polite"></div>
+    <div id="feedback-container" aria-live="polite"></div>
 
     <div class="results-cta">
       <h3>What's next?</h3>
@@ -1131,6 +1207,7 @@ const BG_URL = '/.netlify/functions/score-deck-background';
 const STATUS_URL = '/.netlify/functions/score-status';
 const GOLD_TEAM_URL = '/.netlify/functions/gold-team-review-background';
 const CHECKOUT_URL = '/.netlify/functions/create-checkout';
+const FEEDBACK_URL = '/.netlify/functions/submit-feedback';
 const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
 const POLL_INTERVAL_MS = 3000;  // Poll every 3 seconds
 const POLL_TIMEOUT_MS = 300000; // 5 minute timeout
@@ -1152,6 +1229,7 @@ let userCancelled = false;
 let pollTimer = null;
 let pollTimeoutTimer = null;
 let goldTeamAbort = null;
+let currentScoringId = null;
 
 // ===== SVG ICON HELPERS =====
 
@@ -1621,6 +1699,7 @@ function cancelSubmission() {
 // ===== RENDER RESULTS =====
 
 function renderResults(data) {
+  currentScoringId = data.scoring_id || null;
   const sc = data.scorecard;
   const scores = sc.scores || [];
 
@@ -1752,6 +1831,9 @@ function renderResults(data) {
 
   // Trigger Gold Team Review from frontend
   triggerGoldTeamReview(data);
+
+  // Render feedback widget
+  renderFeedbackWidget();
 }
 
 // ===== GOLD TEAM REVIEW =====
@@ -1852,6 +1934,115 @@ async function startCheckout() {
   }
 }
 
+// ===== FEEDBACK WIDGET =====
+
+function renderFeedbackWidget() {
+  const container = document.getElementById('feedback-container');
+  const starSvg = `<svg viewBox="0 0 24 24" fill="currentColor" class="feedback-star" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+  container.innerHTML = `
+    <div class="feedback-widget">
+      <div class="feedback-label">How useful was this assessment?</div>
+      <div class="feedback-stars" id="feedback-stars" role="radiogroup" aria-label="Rating">
+        ${[1,2,3,4,5].map(n => `<button type="button" class="feedback-star-btn" data-rating="${n}" aria-label="${n} star${n > 1 ? 's' : ''}" style="background:none;border:none;padding:0;cursor:pointer;">${starSvg}</button>`).join('')}
+      </div>
+      <button type="button" class="feedback-comment-toggle" id="feedback-comment-toggle">Add a comment</button>
+      <div class="feedback-comment-area" id="feedback-comment-area">
+        <textarea id="feedback-comment" placeholder="Optional feedback (max 500 characters)" maxlength="500" aria-label="Feedback comment"></textarea>
+      </div>
+      <button class="btn btn-primary btn-sm feedback-submit" id="feedback-submit-btn" disabled onclick="submitFeedback()">Submit Feedback</button>
+    </div>
+  `;
+
+  let selectedRating = 0;
+  const starsContainer = document.getElementById('feedback-stars');
+  const submitBtn = document.getElementById('feedback-submit-btn');
+
+  function updateStars(rating, isHover) {
+    starsContainer.querySelectorAll('.feedback-star').forEach((star, i) => {
+      star.classList.remove('star-hover', 'star-active');
+      if (i < rating) {
+        star.classList.add(isHover ? 'star-hover' : 'star-active');
+      } else if (!isHover && i < selectedRating) {
+        star.classList.add('star-active');
+      }
+    });
+  }
+
+  starsContainer.querySelectorAll('.feedback-star-btn').forEach(btn => {
+    btn.addEventListener('mouseenter', function() {
+      updateStars(parseInt(this.dataset.rating), true);
+    });
+    btn.addEventListener('click', function() {
+      selectedRating = parseInt(this.dataset.rating);
+      submitBtn.disabled = false;
+      updateStars(selectedRating, false);
+    });
+  });
+
+  starsContainer.addEventListener('mouseleave', function() {
+    updateStars(selectedRating, false);
+  });
+
+  document.getElementById('feedback-comment-toggle').addEventListener('click', function() {
+    const area = document.getElementById('feedback-comment-area');
+    area.classList.toggle('visible');
+    if (area.classList.contains('visible')) {
+      area.querySelector('textarea').focus();
+      this.textContent = 'Hide comment';
+    } else {
+      this.textContent = 'Add a comment';
+    }
+  });
+
+  // Store selectedRating getter for submitFeedback
+  container._getSelectedRating = () => selectedRating;
+}
+
+async function submitFeedback() {
+  const container = document.getElementById('feedback-container');
+  const rating = container._getSelectedRating ? container._getSelectedRating() : 0;
+  if (!rating || !currentScoringId) return;
+
+  const commentEl = document.getElementById('feedback-comment');
+  const comment = commentEl ? commentEl.value.trim() : null;
+
+  const submitBtn = document.getElementById('feedback-submit-btn');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Submitting...';
+
+  try {
+    const response = await fetch(FEEDBACK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        scoring_id: currentScoringId,
+        rating: rating,
+        comment: comment || null,
+      }),
+    });
+
+    if (response.ok) {
+      container.innerHTML = `
+        <div class="feedback-widget">
+          <div class="feedback-thanks">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+            Thank you for your feedback!
+          </div>
+        </div>
+      `;
+    } else {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit Feedback';
+    }
+  } catch (err) {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Submit Feedback';
+  }
+}
+
 function getGradeClass(grade) {
   if (!grade) return 'sg-f';
   if (grade.startsWith('A')) return 'sg-a';
@@ -1892,6 +2083,8 @@ function resetTool() {
   detailsEl.removeEventListener('transitionend', detailsEl._onRevealEnd);
   detailsEl.style.height = '0';
   document.getElementById('gold-team-status').innerHTML = '';
+  document.getElementById('feedback-container').innerHTML = '';
+  currentScoringId = null;
   document.getElementById('results-upsell').innerHTML = '';
   document.getElementById('payment-success-banner').innerHTML = '';
   // Remove any stale payment success banner from upload screen

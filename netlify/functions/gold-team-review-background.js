@@ -17,12 +17,12 @@ const { createClient } = require("@supabase/supabase-js");
 const { DOCUMENT_TYPES } = require("./lib/document-types");
 const { sendEmail } = require("./lib/send-email");
 const { buildGoldTeamReviewHtml } = require("./lib/email-templates");
+const { getModelConfig } = require("./lib/model-router");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
-const MODEL = "claude-sonnet-4-5-20250929";
 const REWRITE_MAX_TOKENS = 12000;
 const REVIEW_MAX_TOKENS = 6000;
 
@@ -37,7 +37,7 @@ const CORS_HEADERS = {
 // CLAUDE API HELPER
 // ============================================================
 
-async function callClaude(systemPrompt, userPrompt, maxTokens) {
+async function callClaude(systemPrompt, userPrompt, maxTokens, model) {
   const response = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -46,7 +46,7 @@ async function callClaude(systemPrompt, userPrompt, maxTokens) {
       "anthropic-version": "2023-06-01",
     },
     body: JSON.stringify({
-      model: MODEL,
+      model,
       max_tokens: maxTokens,
       system: systemPrompt,
       messages: [{ role: "user", content: userPrompt }],
@@ -288,13 +288,15 @@ exports.handler = async (event) => {
 
     // --- Call 1: Rewrite ALL sections + pWin ---
     const scores = scorecard.scores || [];
-    console.log(`Gold Team: rewriting all ${scores.length} sections for ${normalizedEmail}`);
+
+    const rewriteModelConfig = await getModelConfig(supabase, "rewrite");
+    console.log(`Gold Team: rewriting all ${scores.length} sections for ${normalizedEmail} (model=${rewriteModelConfig.model} [${rewriteModelConfig.reason}])`);
 
     const rewritePrompt = buildRewritePrompt(documentText, scorecard, scores, config);
     let rewriteResult;
 
     try {
-      const rewriteText = await callClaude(rewritePrompt.system, rewritePrompt.user, REWRITE_MAX_TOKENS);
+      const rewriteText = await callClaude(rewritePrompt.system, rewritePrompt.user, REWRITE_MAX_TOKENS, rewriteModelConfig.model);
       rewriteResult = parseJson(rewriteText);
     } catch (err) {
       console.error("Gold Team: rewrite call failed:", err);
@@ -307,12 +309,13 @@ exports.handler = async (event) => {
     }
 
     // --- Call 2: Review + Executive Summary + Next Steps ---
-    console.log("Gold Team: reviewing rewrites...");
+    const reviewModelConfig = await getModelConfig(supabase, "review");
+    console.log(`Gold Team: reviewing rewrites (model=${reviewModelConfig.model} [${reviewModelConfig.reason}])...`);
 
     let reviewResult = null;
     try {
       const reviewPrompt = buildReviewPrompt(rewriteResult, config);
-      const reviewText = await callClaude(reviewPrompt.system, reviewPrompt.user, REVIEW_MAX_TOKENS);
+      const reviewText = await callClaude(reviewPrompt.system, reviewPrompt.user, REVIEW_MAX_TOKENS, reviewModelConfig.model);
       reviewResult = parseJson(reviewText);
     } catch (err) {
       console.error("Gold Team: review call failed (degrading gracefully):", err);
@@ -381,6 +384,33 @@ exports.handler = async (event) => {
       console.log(`Gold Team: email sent successfully (${emailResult.id})`);
     } else {
       console.error("Gold Team: email send failed:", emailResult.error);
+    }
+
+    // Update model routing metadata in scores JSONB
+    try {
+      const { data: currentRecord } = await supabase
+        .from("mp_scoring_history")
+        .select("scores")
+        .eq("id", scoring_id)
+        .single();
+
+      if (currentRecord && currentRecord.scores) {
+        const existingRouting = currentRecord.scores._model_routing || {};
+        const updatedScores = {
+          ...currentRecord.scores,
+          _model_routing: {
+            ...existingRouting,
+            rewrite: { model: rewriteModelConfig.model, reason: rewriteModelConfig.reason },
+            review: { model: reviewModelConfig.model, reason: reviewModelConfig.reason },
+          },
+        };
+        await supabase
+          .from("mp_scoring_history")
+          .update({ scores: updatedScores })
+          .eq("id", scoring_id);
+      }
+    } catch (routingErr) {
+      console.error("Gold Team: failed to update model routing metadata:", routingErr);
     }
   } catch (err) {
     console.error("Gold Team: unhandled error:", err);

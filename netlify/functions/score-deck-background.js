@@ -18,6 +18,7 @@
 
 const { createClient } = require("@supabase/supabase-js");
 const { DOCUMENT_TYPES } = require("./lib/document-types");
+const { getModelConfig } = require("./lib/model-router");
 
 // --- Environment Variables ---
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -27,7 +28,6 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 // --- Constants ---
 const MAX_OUTPUT_TOKENS = 2000;
 const MAX_TEXT_CHARS = 80000;
-const MODEL = "claude-sonnet-4-5-20250929";
 
 
 // ============================================================
@@ -290,7 +290,8 @@ exports.handler = async (event) => {
     }
 
     // --- Build prompt and call Claude API ---
-    console.log(`Calling Claude API for ${scoring_id} (${fileType}, textLen=${extractedText?.length || 0})`);
+    const scoringModelConfig = await getModelConfig(supabase, "scoring");
+    console.log(`Calling Claude API for ${scoring_id} (${fileType}, textLen=${extractedText?.length || 0}, model=${scoringModelConfig.model} [${scoringModelConfig.reason}])`);
     const systemPrompt = buildSystemPrompt(documentType, finalSowText);
     const messageContent = buildMessageContent(fileType, fileBase64, extractedText, documentType);
 
@@ -302,7 +303,7 @@ exports.handler = async (event) => {
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: MODEL,
+        model: scoringModelConfig.model,
         max_tokens: MAX_OUTPUT_TOKENS,
         system: systemPrompt,
         messages: [{ role: "user", content: messageContent }],
@@ -360,10 +361,13 @@ exports.handler = async (event) => {
       }
     }
 
-    // Store scorecard + document text (Gold Team reads _document_text from scores)
-    const scorecardWithText = {
+    // Store scorecard + document text + model routing metadata
+    const scorecardWithMeta = {
       ...scorecard,
       _document_text: documentText || null,
+      _model_routing: {
+        scoring: { model: scoringModelConfig.model, reason: scoringModelConfig.reason },
+      },
     };
 
     const { error: updateErr } = await supabase
@@ -372,10 +376,10 @@ exports.handler = async (event) => {
         verdict: scorecard.verdict || null,
         overall_grade: overallGrade,
         avg_score: avgScore ? parseFloat(avgScore.toFixed(2)) : null,
-        scores: scorecardWithText,
+        scores: scorecardWithMeta,
         red_flags: scorecard.red_flags || null,
         top_fix: scorecard.top_fix || null,
-        model_used: MODEL,
+        model_used: scoringModelConfig.model,
         tokens_input: tokenUsage.input || null,
         tokens_output: tokenUsage.output || null,
       })

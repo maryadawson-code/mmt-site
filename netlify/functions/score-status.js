@@ -112,12 +112,18 @@ exports.handler = async (event) => {
       userTier = user.tier;
     }
 
+    // Strip internal metadata fields from scorecard before returning
+    const cleanScorecard = { ...record.scores };
+    delete cleanScorecard._document_text;
+    delete cleanScorecard._model_routing;
+    delete cleanScorecard._feedback;
+
     return {
       statusCode: 200,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
       body: JSON.stringify({
         status: "complete",
-        scorecard: record.scores,
+        scorecard: cleanScorecard,
         document_type: record.document_type,
         uses_remaining: userTier === "free" ? usesRemaining : 999,
         user_tier: userTier,
