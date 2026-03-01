@@ -32,12 +32,31 @@ const CORS_HEADERS = {
 
 
 // ============================================================
-// TEXT EXTRACTION (for PDFs — PPTX/DOCX text comes from score-deck)
+// TEXT EXTRACTION (handles all file types)
 // ============================================================
 
-async function extractPdfText(base64Data) {
-  const pdfParse = require("pdf-parse");
+async function extractTextFromBase64(base64Data, fileType) {
   const buffer = Buffer.from(base64Data, "base64");
+
+  if (fileType === "application/pdf" || fileType === "pdf") {
+    const pdfParse = require("pdf-parse");
+    const data = await pdfParse(buffer);
+    return data.text;
+  }
+
+  if (fileType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || fileType === "docx") {
+    const mammoth = require("mammoth");
+    const result = await mammoth.extractRawText({ buffer });
+    return result.value;
+  }
+
+  if (fileType === "application/vnd.openxmlformats-officedocument.presentationml.presentation" || fileType === "pptx") {
+    const officeparser = require("officeparser");
+    return await officeparser.parseOfficeAsync(buffer);
+  }
+
+  // Fallback: try pdf-parse
+  const pdfParse = require("pdf-parse");
   const data = await pdfParse(buffer);
   return data.text;
 }
@@ -276,12 +295,13 @@ exports.handler = async (event) => {
 
     // --- Get document text ---
     let documentText = extractedText;
+    const fileType = body.file_type || null;
 
     if (!documentText && fileBase64) {
       try {
-        documentText = await extractPdfText(fileBase64);
-      } catch (pdfErr) {
-        console.error("Gold Team: PDF text extraction failed:", pdfErr);
+        documentText = await extractTextFromBase64(fileBase64, fileType);
+      } catch (extractErr) {
+        console.error("Gold Team: text extraction failed:", extractErr);
         return;
       }
     }

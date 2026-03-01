@@ -428,43 +428,7 @@ exports.handler = async (event) => {
       console.error("Receipt email error:", emailErr);
     }
 
-    // --- Trigger Gold Team Review server-side ---
-    try {
-      const goldTeamPayload = {
-        email: email,
-        document_type: documentType,
-        file_name: file_name || "document",
-        scorecard: scorecard,
-      };
-
-      // For PDFs (no extracted text), send file_base64 + file_type
-      if (extractedText) {
-        goldTeamPayload.extracted_text = extractedText;
-      } else {
-        goldTeamPayload.file_base64 = file_base64;
-        goldTeamPayload.file_type = file_type;
-      }
-
-      // Invoke Gold Team Review background function via internal URL
-      const siteUrl = process.env.URL || "https://missionmeetstech.com";
-      const goldTeamUrl = `${siteUrl}/.netlify/functions/gold-team-review-background`;
-      console.log(`Gold Team: triggering ${goldTeamUrl}`);
-
-      const goldTeamResponse = await fetch(goldTeamUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(goldTeamPayload),
-      });
-
-      console.log(`Gold Team: trigger response ${goldTeamResponse.status}`);
-      if (!goldTeamResponse.ok && goldTeamResponse.status !== 202) {
-        const errBody = await goldTeamResponse.text().catch(() => "");
-        console.error(`Gold Team: trigger failed ${goldTeamResponse.status}: ${errBody}`);
-      }
-    } catch (goldTeamErr) {
-      console.error("Gold Team Review trigger error:", goldTeamErr);
-      // Non-fatal — user still has their scorecard
-    }
+    // Gold Team Review is triggered by the frontend after polling completes
 
     console.log(`Scoring complete for ${scoring_id}: ${overallGrade} (${scorecard.verdict})`);
     return { statusCode: 200, body: "Scoring complete" };

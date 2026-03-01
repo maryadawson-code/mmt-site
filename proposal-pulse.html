@@ -1129,6 +1129,7 @@
 const API_URL = '/.netlify/functions/score-deck';
 const BG_URL = '/.netlify/functions/score-deck-background';
 const STATUS_URL = '/.netlify/functions/score-status';
+const GOLD_TEAM_URL = '/.netlify/functions/gold-team-review-background';
 const CHECKOUT_URL = '/.netlify/functions/create-checkout';
 const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
 const POLL_INTERVAL_MS = 3000;  // Poll every 3 seconds
@@ -1150,6 +1151,7 @@ let isSubmitting = false;
 let userCancelled = false;
 let pollTimer = null;
 let pollTimeoutTimer = null;
+let goldTeamAbort = null;
 
 // ===== SVG ICON HELPERS =====
 
@@ -1738,20 +1740,6 @@ function renderResults(data) {
     document.getElementById('results-red-flags').innerHTML = '';
   }
 
-  // Gold Team Review status — now triggered server-side by background function
-  const statusEl = document.getElementById('gold-team-status');
-  statusEl.innerHTML = `
-    <div class="gold-team-status success">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-        <polyline points="22 4 12 14.01 9 11.01"/>
-      </svg>
-      <div class="gold-team-status-text">
-        Your Gold Team Review is on the way. Check your inbox in 1&ndash;2 minutes.
-      </div>
-    </div>
-  `;
-
   // Upsell CTA (show only when no uses remaining)
   const upsellEl = document.getElementById('results-upsell');
   if (typeof data.uses_remaining === 'number' && data.uses_remaining <= 0) {
@@ -1768,6 +1756,78 @@ function renderResults(data) {
   }
 
   showScreen('screen-results');
+
+  // Trigger Gold Team Review from frontend
+  triggerGoldTeamReview(data);
+}
+
+// ===== GOLD TEAM REVIEW =====
+
+function triggerGoldTeamReview(data) {
+  const sc = data.scorecard;
+  const statusEl = document.getElementById('gold-team-status');
+
+  // Show loading state
+  statusEl.innerHTML = `
+    <div class="gold-team-status">
+      <div class="gold-team-spinner-small"></div>
+      <div class="gold-team-status-text">
+        Your Gold Team Review is being prepared and will arrive in your email in 1&ndash;2 minutes.
+      </div>
+    </div>
+  `;
+
+  // Build payload — always send file_base64 + file_type (Gold Team extracts text itself)
+  const email = emailInput.value.trim();
+  const documentType = document.getElementById('doc-type-select').value;
+  const ext = selectedFile ? selectedFile.name.split('.').pop().toLowerCase() : 'pdf';
+  const payload = {
+    email: email,
+    document_type: documentType,
+    file_name: selectedFile ? selectedFile.name : 'document',
+    scorecard: sc,
+    file_base64: fileBase64,
+    file_type: MIME_MAP[ext] || 'application/pdf',
+  };
+
+  // Fire and forget — background function returns 202 immediately
+  goldTeamAbort = new AbortController();
+  fetch(GOLD_TEAM_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+    signal: goldTeamAbort.signal,
+  })
+  .then(response => {
+    if (response.status === 202 || response.ok) {
+      statusEl.innerHTML = `
+        <div class="gold-team-status success">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+          <div class="gold-team-status-text">
+            Gold Team Review sent. Check your inbox in 1&ndash;2 minutes.
+          </div>
+        </div>
+      `;
+    } else {
+      showGoldTeamFallback(statusEl);
+    }
+  })
+  .catch(() => {
+    showGoldTeamFallback(statusEl);
+  });
+}
+
+function showGoldTeamFallback(statusEl) {
+  statusEl.innerHTML = `
+    <div class="gold-team-status error">
+      <div class="gold-team-status-text">
+        Gold Team Review unavailable. Your scorecard above is still valid.
+      </div>
+    </div>
+  `;
 }
 
 // ===== STRIPE CHECKOUT =====
@@ -1831,8 +1891,9 @@ function esc(str) {
 // ===== RESET =====
 
 function resetTool() {
-  // Stop any in-flight polling
+  // Stop any in-flight polling and requests
   stopPolling();
+  if (goldTeamAbort) { goldTeamAbort.abort(); goldTeamAbort = null; }
   pipelineTimers.forEach(t => clearTimeout(t));
   pipelineTimers = [];
   isSubmitting = false;
