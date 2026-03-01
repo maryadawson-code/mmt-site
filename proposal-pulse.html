@@ -24,6 +24,7 @@
   <link rel="stylesheet" href="/styles/tailwind.css">
   <style>
     :root {
+      color-scheme: dark;
       --mmt-cyan: #00E5FA;
       --mmt-green: #00FF85;
       --mmt-navy: #00050F;
@@ -90,7 +91,7 @@
     .hero p {
       font-size: 1.1rem;
       color: var(--text-secondary);
-      max-width: 600px;
+      max-width: 540px;
       margin: 0 auto 0.75rem;
     }
     .hero-quote {
@@ -169,13 +170,7 @@
       padding: 0.6rem 1.25rem;
       font-size: 0.85rem;
     }
-    @keyframes btnPulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(0, 229, 250, 0.4); }
-      50% { box-shadow: 0 0 0 8px rgba(0, 229, 250, 0); }
-    }
-    .btn-pulse:not(:disabled) {
-      animation: btnPulse 2s ease infinite;
-    }
+
 
     /* ===== ERROR BANNER ===== */
     .error-banner {
@@ -238,8 +233,6 @@
     .upload-zone:hover, .upload-zone.drag-over {
       border-color: var(--primary-cyan);
       background: rgba(0, 229, 250, 0.04);
-      transform: scale(1.01);
-      box-shadow: 0 0 24px rgba(0, 229, 250, 0.08);
     }
     .upload-zone svg { margin-bottom: 1rem; color: var(--text-muted); }
     .upload-zone p {
@@ -265,11 +258,6 @@
     }
     .file-preview.visible {
       display: flex;
-      animation: slideIn 0.3s ease;
-    }
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(-10px); }
-      to { opacity: 1; transform: translateX(0); }
     }
     .file-preview .file-icon {
       width: 40px;
@@ -314,12 +302,6 @@
       border-radius: 16px;
       padding: 2rem;
     }
-    .upload-card h2 {
-      font-family: var(--font-heading);
-      font-size: 1.35rem;
-      font-weight: 700;
-      margin-bottom: 1.5rem;
-    }
     .upload-actions {
       margin-top: 2rem;
       display: flex;
@@ -329,21 +311,16 @@
 
     /* ===== PROGRESSIVE DISCLOSURE ===== */
     .upload-details {
-      max-height: 0;
+      height: 0;
       overflow: hidden;
-      opacity: 0;
-      transition: max-height 0.5s ease, opacity 0.4s ease 0.1s;
-    }
-    .upload-details.revealed {
-      max-height: 800px;
-      opacity: 1;
+      transition: height 0.3s ease-out;
     }
 
     /* ===== PILL SELECTOR ===== */
     .pill-selector {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem;
+      gap: 0.625rem;
     }
     .pill {
       padding: 0.45rem 0.9rem;
@@ -352,7 +329,7 @@
       background: rgba(255,255,255,0.04);
       color: var(--text-secondary);
       font-family: var(--font-body);
-      font-size: 0.8rem;
+      font-size: 0.813rem;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -366,8 +343,6 @@
       color: var(--deep-navy);
       border-color: transparent;
       font-weight: 600;
-      transform: scale(1.05);
-      box-shadow: 0 4px 16px rgba(0,229,250,0.2);
     }
 
     /* ===== PROCESSING SCREEN ===== */
@@ -381,7 +356,7 @@
     .processing-note {
       font-size: 0.85rem;
       color: var(--text-muted);
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
     }
 
     /* ===== PIPELINE ===== */
@@ -501,8 +476,8 @@
     .grade-ring {
       display: inline-block;
       position: relative;
-      width: 120px;
-      height: 120px;
+      width: 80px;
+      height: 80px;
       margin-bottom: 1rem;
     }
     .grade-ring svg {
@@ -511,14 +486,14 @@
     .ring-track {
       fill: none;
       stroke: rgba(255,255,255,0.06);
-      stroke-width: 8;
+      stroke-width: 6;
     }
     .ring-fill {
       fill: none;
-      stroke-width: 8;
+      stroke-width: 6;
       stroke-linecap: round;
       stroke-dashoffset: var(--dash-total);
-      animation: dashDraw 1.2s ease-out forwards;
+      animation: dashDraw 0.8s ease-out forwards;
     }
     .ring-label {
       position: absolute;
@@ -527,7 +502,7 @@
       align-items: center;
       justify-content: center;
       font-family: var(--font-heading);
-      font-size: 2.5rem;
+      font-size: 1.75rem;
       font-weight: 700;
     }
     @keyframes dashDraw {
@@ -704,19 +679,12 @@
       position: relative;
     }
     .screen { display: none; }
-    .screen.active {
-      display: block;
-      animation: screenFadeIn 0.35s ease;
-    }
+    .screen.active { display: block; }
 
     /* ===== ANIMATIONS ===== */
     @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(16px); }
+      from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes screenFadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
     }
     .reveal {
       opacity: 0;
@@ -1264,7 +1232,7 @@ function handleFileSelect(file) {
   });
 
   // Reveal upload details with transition
-  document.getElementById('upload-details').classList.add('revealed');
+  revealUploadDetails();
 
   // Read as base64
   readFileAsBase64(file).then(b64 => {
@@ -1282,8 +1250,21 @@ function removeFile() {
   fileInput.value = '';
   document.getElementById('file-preview').classList.remove('visible');
   uploadZone.style.display = '';
-  document.getElementById('upload-details').classList.remove('revealed');
+  hideUploadDetails();
   updateSubmitButton();
+}
+
+function revealUploadDetails() {
+  const el = document.getElementById('upload-details');
+  el.style.height = el.scrollHeight + 'px';
+  const onEnd = () => { el.style.height = 'auto'; el.removeEventListener('transitionend', onEnd); };
+  el.addEventListener('transitionend', onEnd);
+}
+
+function hideUploadDetails() {
+  const el = document.getElementById('upload-details');
+  el.style.height = el.scrollHeight + 'px';
+  requestAnimationFrame(() => { el.style.height = '0'; });
 }
 
 function readFileAsBase64(file) {
@@ -1302,7 +1283,6 @@ function updateSubmitButton() {
   const emailValid = emailInput.value.trim() && emailInput.checkValidity();
   const isReady = emailValid && fileBase64;
   submitBtn.disabled = !isReady;
-  submitBtn.classList.toggle('btn-pulse', !!isReady);
 }
 
 function formatFileSize(bytes) {
@@ -1394,7 +1374,7 @@ function startPipeline() {
   activateStep(0);
 
   // Schedule remaining steps
-  const delays = [6000, 18000, 32000, 45000];
+  const delays = [15000, 30000, 50000, 70000];
   pipelineTimers = [];
   delays.forEach((delay, i) => {
     const timer = setTimeout(() => {
@@ -1412,6 +1392,25 @@ function completePipeline() {
     step.classList.remove('step-active');
     step.classList.add('step-done');
     step.querySelector('.step-icon').innerHTML = getCheckIcon();
+  });
+}
+
+function completePipelineAnimated() {
+  pipelineTimers.forEach(t => clearTimeout(t));
+  pipelineTimers = [];
+  const steps = document.querySelectorAll('.pipeline-step');
+  const remaining = [];
+  steps.forEach((step, i) => {
+    if (!step.classList.contains('step-done')) remaining.push(i);
+  });
+  return new Promise(resolve => {
+    if (remaining.length === 0) { setTimeout(resolve, 400); return; }
+    remaining.forEach((stepIdx, i) => {
+      setTimeout(() => {
+        completeStep(stepIdx);
+        if (i === remaining.length - 1) setTimeout(resolve, 400);
+      }, i * 150);
+    });
   });
 }
 
@@ -1468,13 +1467,15 @@ async function submitDeck() {
     });
 
     clearTimeout(timeoutId);
-    completePipeline();
 
     if (response.ok) {
+      await completePipelineAnimated();
       const data = await response.json();
       renderResults(data);
       return;
     }
+
+    completePipeline();
 
     // Handle error responses
     const errData = await response.json().catch(() => null);
@@ -1553,7 +1554,7 @@ function renderResults(data) {
   else gradeColor = 'var(--grade-f)';
 
   // Grade ring SVG
-  const radius = 48;
+  const radius = 32;
   const circumference = 2 * Math.PI * radius;
   const pct = Math.min(avgPoints / 4 * 100, 100);
   const dashTarget = circumference * (1 - pct / 100);
@@ -1567,9 +1568,9 @@ function renderResults(data) {
   document.getElementById('results-verdict').innerHTML = `
     <div class="verdict-status ${verdictClass}">${esc(sc.verdict || 'SCORED')}</div>
     <div class="grade-ring">
-      <svg width="120" height="120" viewBox="0 0 120 120">
-        <circle class="ring-track" cx="60" cy="60" r="${radius}"/>
-        <circle class="ring-fill" cx="60" cy="60" r="${radius}"
+      <svg width="80" height="80" viewBox="0 0 80 80">
+        <circle class="ring-track" cx="40" cy="40" r="${radius}"/>
+        <circle class="ring-fill" cx="40" cy="40" r="${radius}"
           stroke="${gradeColor}"
           stroke-dasharray="${circumference}"
           style="--dash-total: ${circumference}; --dash-target: ${dashTarget};"
@@ -1583,11 +1584,11 @@ function renderResults(data) {
   `;
 
   // Scorecard rows with staggered reveal
-  const ringDelay = 1200; // ms for ring animation
+  const ringDelay = 800; // ms for ring animation
   const rows = scores.map((s, i) => {
     const cls = getGradeClass(s.grade);
     const assessment = s.assessment ? `<div class="scorecard-assessment">${esc(s.assessment)}</div>` : '';
-    const delay = (i * 80) + ringDelay;
+    const delay = (i * 50) + ringDelay + 600;
     return `
       <div class="scorecard-row reveal" style="animation-delay: ${delay}ms">
         <div class="scorecard-row-top">
@@ -1605,9 +1606,9 @@ function renderResults(data) {
   `;
 
   // Calculate delays for elements after scorecard
-  const lastRowDelay = (scores.length * 80) + ringDelay;
-  const topFixDelay = lastRowDelay + 200;
-  const redFlagsDelay = topFixDelay + 200;
+  const lastRowDelay = (scores.length * 50) + ringDelay + 600;
+  const topFixDelay = lastRowDelay + 100;
+  const redFlagsDelay = topFixDelay + 100;
 
   // Top Fix
   if (sc.top_fix) {
@@ -1788,13 +1789,12 @@ function resetTool() {
     p.classList.toggle('pill-active', p.dataset.value === 'pitch_deck');
   });
   document.getElementById('file-preview').classList.remove('visible');
-  document.getElementById('upload-details').classList.remove('revealed');
+  hideUploadDetails();
   document.getElementById('gold-team-status').innerHTML = '';
   document.getElementById('results-upsell').innerHTML = '';
   document.getElementById('payment-success-banner').innerHTML = '';
   uploadZone.style.display = '';
   submitBtn.disabled = true;
-  submitBtn.classList.remove('btn-pulse');
   removeSowFile();
   if (sowDetails.open) sowDetails.open = false;
   hideError();
