@@ -15,7 +15,8 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 - **Podcast embed:** Transistor.fm iframe
 - **Content:** Markdown files in `content/newsletter/` → build generates article pages
 - **Deploy:** Netlify from `main` branch, publish directory is `dist/`
-- **Serverless:** Netlify Functions (`netlify/functions/score-deck.js`) — AI deck scoring via Claude Sonnet + Supabase
+- **Serverless:** Netlify Functions (`netlify/functions/score-deck.js`) — AI deck scoring via Claude Sonnet + Supabase; `weekly-report.js` — scheduled weekly usage digest
+- **Transactional Email:** Resend API (no SDK — simple `fetch()` POST); sends score receipts + weekly reports from `noreply@missionmeetstech.com`
 - **Domain:** missionmeetstech.com
 
 ## Design Tokens
@@ -51,7 +52,7 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 ├── podcast.html            # Fed UP podcast page + recent episodes (build-time rendered from RSS)
 ├── newsletter.html         # Newsletter subscribe (Buttondown primary) + full archive (build-time rendered)
 ├── resources.html          # Federal health IT resource guide (11 categories, 79 links) + Lethality Test CTA
-├── lethality-test.html     # The Lethality Test — AI-powered deck scorer (upload → score-deck API → scorecard)
+├── lethality-test.html     # The Lethality Test — AI-powered NatSec document scorer (6 doc types, upload → score-deck API → scorecard)
 ├── contact.html            # Contact form (Netlify Forms)
 ├── topics.html             # Topics index page (6 topics, build-time rendered with descriptions + counts)
 ├── newsletters.json        # Newsletter issue data (source; build generates updated version)
@@ -81,9 +82,15 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 │   ├── og/*.png                 # Generated OG images (1200x630, ~26 files)
 │   ├── search-index.json       # Search index for client-side search overlay
 │   └── newsletters.json        # Updated with on-site article URLs
+├── docs/
+│   └── email-setup.md      # Google Workspace + Resend setup guide (DNS records, verification steps)
 ├── netlify/
 │   └── functions/
-│       └── score-deck.js   # Netlify Function: AI deck scoring (Claude Sonnet + Supabase)
+│       ├── score-deck.js   # Netlify Function: AI document scoring (Claude Sonnet + Supabase, 6 document types)
+│       ├── weekly-report.js # Scheduled Function: weekly usage digest emailed to Mary (Mondays 9AM ET)
+│       └── lib/
+│           ├── send-email.js      # Resend API wrapper (fetch-based, no npm dependency)
+│           └── email-templates.js # HTML email templates (score receipt + weekly report)
 ├── lib/
 │   └── supabase/
 │       └── database.types.ts  # Generated Supabase types for MissionPulse schema
@@ -241,5 +248,10 @@ Static HTML files use `<!-- BUILD:PLACEHOLDER -->` markers that `copyStaticFiles
 - Tailwind CSS is built at compile time via CLI (`tailwind.config.js` + `src/input.css`), then inlined into each HTML page by `build.js`. The `<link rel="stylesheet" href="/styles/tailwind.css">` in source HTML files is replaced with `<style>` during build. There is no external CSS request at runtime.
 - All icons are inline SVGs — there is no Font Awesome or other icon CDN. When adding new icons, use inline SVG with `width="1em" height="1em" fill="currentColor" aria-hidden="true"`.
 - `*.mp4` and `*.zip` are gitignored and excluded from dist builds.
-- Lethality Test (`lethality-test.html`) is an AI-powered deck scorer. 5 screens: Intro → Upload (email + drag-and-drop, PDF/PPTX/DOCX, 4MB max) → Processing (spinner, 90s timeout) → Results (verdict + scorecard with AI assessments + top fix + red flags) → Limit Reached (403). Calls `/.netlify/functions/score-deck` backend. Uses custom CSS variables for grade colors alongside mmt-site design tokens.
+- Lethality Test (`lethality-test.html`) is an AI-powered NatSec document scorer supporting 6 document types: `pitch_deck`, `white_paper`, `rfp_response`, `capabilities_statement`, `pricing_volume`, `executive_summary`. Each type has 9 tailored scoring criteria, type-specific red flags, and contextual processing messages. 5 screens: Intro → Upload (email + document type dropdown + drag-and-drop, PDF/PPTX/DOCX, 4MB max) → Processing (spinner, 90s timeout, per-type status messages) → Results (verdict + scorecard with AI assessments + top fix + red flags + MissionPulse teaser) → Limit Reached (403). Calls `/.netlify/functions/score-deck` backend with `document_type` field (defaults to `pitch_deck` for backward compatibility). Uses custom CSS variables for grade colors alongside mmt-site design tokens.
 - Resources page accordion uses pure CSS (checkbox + sibling selectors) — no JavaScript for expand/collapse.
+- `score-deck.js` sends a branded score receipt email via Resend after each successful scoring. Email failures are caught silently — the scoring response still returns 200.
+- `weekly-report.js` is a Netlify Scheduled Function (cron: `0 14 * * 1` = Monday 9AM ET). Queries Supabase for 7-day stats and emails digest to `mary@missionmeetstech.com`.
+- Email sending requires `RESEND_API_KEY` env var in Netlify. If missing, `send-email.js` logs a warning and returns `{ success: false }` — no crash.
+- Email templates use inline CSS only (no `<style>` blocks) for email client compatibility. Dark-on-light layout (inverted from site dark theme) for readability.
+- `docs/email-setup.md` has full DNS/SPF/DKIM/DMARC setup instructions for Google Workspace + Resend.
