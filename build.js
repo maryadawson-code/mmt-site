@@ -762,10 +762,50 @@ function generateTopicFilterChipsHtml(archive) {
   ).join('\n          ');
 }
 
-function generateLatestAllHtml(archive) {
-  if (archive.length === 0) return '<p class="text-center py-10" style="color:var(--mmt-white-dim);">No articles yet.</p>';
-  return archive.map(item => {
-    const tags = (item.tags || []).map(t =>
+function generateLatestAllHtml(archive, feed) {
+  const articles = archive.map(item => ({
+    type: 'article',
+    title: item.title,
+    date: item.date,
+    sortDate: new Date(item.date),
+    description: item.description,
+    url: item.url,
+    tags: item.tags || [],
+  }));
+
+  const episodes = (feed && feed.items ? feed.items : []).map(ep => {
+    const pubDate = ep.pubDate ? new Date(ep.pubDate) : new Date();
+    return {
+      type: 'episode',
+      title: ep.title || 'Untitled Episode',
+      date: pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+      sortDate: pubDate,
+      description: (ep.contentSnippet || ep.content || '').substring(0, 200),
+      duration: ep.duration || '',
+      audioUrl: ep.enclosure?.url || '',
+    };
+  });
+
+  const merged = [...articles, ...episodes].sort((a, b) => b.sortDate - a.sortDate);
+
+  if (merged.length === 0) return '<p class="text-center py-10" style="color:var(--mmt-white-dim);">No content yet.</p>';
+
+  return merged.map(item => {
+    if (item.type === 'episode') {
+      const audioPlayer = item.audioUrl
+        ? `<audio controls preload="none" style="width:100%; margin-top:0.75rem; height:36px; border-radius:8px;">
+                <source src="${escapeHtml(item.audioUrl)}" type="audio/mpeg">
+              </audio>`
+        : '';
+      return `<article class="card rounded-xl p-6">
+          <p class="text-xs uppercase tracking-wider font-semibold mb-1" style="color:var(--mmt-cyan);">Fed UP Podcast</p>
+          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-white);">${escapeHtml(item.title)}</h3>
+          <p class="text-xs mb-2" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}${item.duration ? ` &middot; ${item.duration}` : ''}</p>
+          ${item.description ? `<p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>` : ''}
+          ${audioPlayer}
+        </article>`;
+    }
+    const tags = item.tags.map(t =>
       `<a href="/topics/${slugify(t)}/" class="tag no-underline">${escapeHtml(t)}</a>`
     ).join('');
     return `<article class="card rounded-xl p-6">
@@ -777,8 +817,9 @@ function generateLatestAllHtml(archive) {
   }).join('\n        ');
 }
 
-function generateArticleCountBadge(archive) {
-  return `<span class="text-sm px-3 py-1 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">${archive.length} articles</span>`;
+function generateArticleCountBadge(archive, feed) {
+  const episodeCount = feed && feed.items ? feed.items.length : 0;
+  return `<span class="text-sm px-3 py-1 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">${archive.length} articles &middot; ${episodeCount} episodes</span>`;
 }
 
 function generatePodcastTeaserHtml(feed) {
@@ -838,8 +879,8 @@ function copyStaticFiles({ archive, feed }) {
     '<!-- BUILD:LATEST_ISSUES -->': generateLatestIssuesHtml(archive, 3),
     '<!-- BUILD:ALL_ISSUES -->': generateArchiveHtml(archive),
     '<!-- BUILD:TOPIC_FILTER_CHIPS -->': generateTopicFilterChipsHtml(archive),
-    '<!-- BUILD:LATEST_ALL -->': generateLatestAllHtml(archive),
-    '<!-- BUILD:ARTICLE_COUNT_BADGE -->': generateArticleCountBadge(archive),
+    '<!-- BUILD:LATEST_ALL -->': generateLatestAllHtml(archive, feed),
+    '<!-- BUILD:ARTICLE_COUNT_BADGE -->': generateArticleCountBadge(archive, feed),
     '<!-- BUILD:PODCAST_TEASER -->': generatePodcastTeaserHtml(feed),
     '<!-- BUILD:PODCAST_EPISODES -->': generatePodcastEpisodesHtml(feed),
   };
