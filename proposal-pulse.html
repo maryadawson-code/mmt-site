@@ -169,6 +169,13 @@
       padding: 0.6rem 1.25rem;
       font-size: 0.85rem;
     }
+    @keyframes btnPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(0, 229, 250, 0.4); }
+      50% { box-shadow: 0 0 0 8px rgba(0, 229, 250, 0); }
+    }
+    .btn-pulse:not(:disabled) {
+      animation: btnPulse 2s ease infinite;
+    }
 
     /* ===== ERROR BANNER ===== */
     .error-banner {
@@ -212,8 +219,6 @@
       box-sizing: border-box;
     }
     .form-input::placeholder { color: var(--text-muted); }
-    select.form-input { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='rgba(255,255,255,0.6)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem; cursor: pointer; }
-    select.form-input option { background: var(--mmt-slate); color: var(--text-primary); }
     .form-input:focus {
       border-color: var(--primary-cyan);
       outline: none;
@@ -233,6 +238,8 @@
     .upload-zone:hover, .upload-zone.drag-over {
       border-color: var(--primary-cyan);
       background: rgba(0, 229, 250, 0.04);
+      transform: scale(1.01);
+      box-shadow: 0 0 24px rgba(0, 229, 250, 0.08);
     }
     .upload-zone svg { margin-bottom: 1rem; color: var(--text-muted); }
     .upload-zone p {
@@ -256,7 +263,14 @@
       border-radius: 10px;
       margin-top: 1rem;
     }
-    .file-preview.visible { display: flex; }
+    .file-preview.visible {
+      display: flex;
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-10px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
     .file-preview .file-icon {
       width: 40px;
       height: 40px;
@@ -313,56 +327,109 @@
       flex-wrap: wrap;
     }
 
+    /* ===== PROGRESSIVE DISCLOSURE ===== */
+    .upload-details {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.5s ease, opacity 0.4s ease 0.1s;
+    }
+    .upload-details.revealed {
+      max-height: 800px;
+      opacity: 1;
+    }
+
+    /* ===== PILL SELECTOR ===== */
+    .pill-selector {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .pill {
+      padding: 0.45rem 0.9rem;
+      border-radius: 100px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      color: var(--text-secondary);
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .pill:hover {
+      border-color: rgba(0,229,250,0.4);
+      background: rgba(0,229,250,0.08);
+    }
+    .pill.pill-active {
+      background: linear-gradient(135deg, var(--primary-cyan), var(--neon-teal));
+      color: var(--deep-navy);
+      border-color: transparent;
+      font-weight: 600;
+      transform: scale(1.05);
+      box-shadow: 0 4px 16px rgba(0,229,250,0.2);
+    }
+
     /* ===== PROCESSING SCREEN ===== */
     .processing-container {
       text-align: center;
       padding: 5rem 0;
     }
-    .spinner {
-      width: 56px;
-      height: 56px;
-      margin: 0 auto 2rem;
-      border-radius: 50%;
-      border: 3px solid rgba(255, 255, 255, 0.08);
-      border-top-color: var(--primary-cyan);
-      animation: spin 0.9s linear infinite;
-    }
     @keyframes spin {
       to { transform: rotate(360deg); }
-    }
-    .processing-status {
-      font-family: var(--font-heading);
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      min-height: 1.5em;
     }
     .processing-note {
       font-size: 0.85rem;
       color: var(--text-muted);
       margin-bottom: 2rem;
     }
-    .progress-bar-indeterminate {
-      width: 240px;
-      height: 3px;
-      background: rgba(255, 255, 255, 0.06);
-      border-radius: 3px;
+
+    /* ===== PIPELINE ===== */
+    .pipeline {
+      max-width: 320px;
       margin: 0 auto 2rem;
-      overflow: hidden;
-      position: relative;
+      text-align: left;
     }
-    .progress-bar-indeterminate::after {
-      content: '';
-      position: absolute;
-      height: 100%;
-      width: 40%;
-      background: linear-gradient(90deg, transparent, var(--primary-cyan), transparent);
-      border-radius: 3px;
-      animation: indeterminate 1.4s ease-in-out infinite;
+    .pipeline-step {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 0;
+      color: var(--text-muted);
+      transition: color 0.3s ease;
     }
-    @keyframes indeterminate {
-      0% { left: -40%; }
-      100% { left: 100%; }
+    .pipeline-step .step-icon {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .pipeline-step .step-label {
+      font-family: var(--font-heading);
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+    .pipeline-step.step-active {
+      color: var(--primary-cyan);
+    }
+    .pipeline-step.step-active .step-label {
+      font-weight: 600;
+    }
+    .pipeline-step.step-done {
+      color: var(--grade-a);
+    }
+    .pipeline-step.step-done .step-label {
+      color: var(--text-muted);
+    }
+    .step-spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(0, 229, 250, 0.2);
+      border-top-color: var(--primary-cyan);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
     }
 
     /* ===== RESULTS ===== */
@@ -428,6 +495,44 @@
       border-radius: 100px;
       padding: 0.3rem 0.9rem;
       margin-top: 1rem;
+    }
+
+    /* Grade Ring */
+    .grade-ring {
+      display: inline-block;
+      position: relative;
+      width: 120px;
+      height: 120px;
+      margin-bottom: 1rem;
+    }
+    .grade-ring svg {
+      transform: rotate(-90deg);
+    }
+    .ring-track {
+      fill: none;
+      stroke: rgba(255,255,255,0.06);
+      stroke-width: 8;
+    }
+    .ring-fill {
+      fill: none;
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dashoffset: var(--dash-total);
+      animation: dashDraw 1.2s ease-out forwards;
+    }
+    .ring-label {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 2.5rem;
+      font-weight: 700;
+    }
+    @keyframes dashDraw {
+      from { stroke-dashoffset: var(--dash-total); }
+      to { stroke-dashoffset: var(--dash-target); }
     }
 
     /* Scorecard */
@@ -595,20 +700,27 @@
     }
 
     /* ===== SCREEN MANAGEMENT ===== */
+    .screen-container {
+      position: relative;
+    }
     .screen { display: none; }
-    .screen.active { display: block; }
+    .screen.active {
+      display: block;
+      animation: screenFadeIn 0.35s ease;
+    }
 
     /* ===== ANIMATIONS ===== */
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(16px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .screen.active .upload-card,
-    .screen.active .results-verdict,
-    .screen.active .scorecard,
-    .screen.active .processing-container,
-    .screen.active .limit-container {
-      animation: fadeInUp 0.35s ease-out;
+    @keyframes screenFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .reveal {
+      opacity: 0;
+      animation: fadeInUp 0.3s ease forwards;
     }
 
     /* ===== GOLD TEAM REVIEW STATUS ===== */
@@ -685,12 +797,14 @@
 
     /* ===== PRINT STYLES ===== */
     @media print {
-      nav, .results-cta, .upsell-box, footer, .upload-card, .processing-container, .uses-badge, .gold-team-status, .payment-success { display: none; }
+      nav, .results-cta, .upsell-box, footer, .upload-card, .processing-container, .uses-badge, .gold-team-status, .payment-success, .pipeline { display: none; }
       body { background: white; color: black; }
       .lt-container { max-width: 100%; }
       .results-verdict, .scorecard, .red-flags, .top-fix { border-color: #ccc; }
       .scorecard-grade { border: 1px solid #ccc; }
       .results-verdict::before { display: none; }
+      .reveal { opacity: 1 !important; animation: none !important; }
+      .ring-fill { animation: none !important; stroke-dashoffset: var(--dash-target) !important; }
     }
   </style>
 </head>
@@ -771,6 +885,7 @@
 
   <main id="main-content" style="padding-top: 80px; min-height: 100vh;">
     <div class="lt-container">
+      <div class="screen-container">
 
 <!-- ===== SCREEN: UPLOAD (Hero + Form Combined) ===== -->
 <div id="screen-upload" class="screen active">
@@ -778,10 +893,6 @@
     <div class="hero-badge">AI-Powered Assessment</div>
     <h1>Proposal <span>Pulse</span></h1>
     <p>Upload any federal proposal document and get an AI-scored assessment across nine criteria tailored to your document type. Add your SOW for scoring against the actual evaluation factors.</p>
-
-    <p style="font-size:0.95rem; color:var(--text-secondary); max-width:620px; margin:0 auto 1.5rem; line-height:1.65;">Upload your pitch deck, white paper, RFP response, capabilities statement, pricing volume, or executive summary. Our AI scores it across 9 criteria calibrated to your document type &mdash; from mission relevance and solution clarity to team credibility and competitive positioning. You get a letter grade for each criterion, an overall PASS / CONDITIONAL / FAIL verdict, red flags, and a top fix recommendation.</p>
-
-    <p style="font-size:0.95rem; color:var(--text-secondary); max-width:620px; margin:0 auto 1.5rem; line-height:1.65;">Every assessment also triggers a <strong style="color:var(--text-primary);">Gold Team Review</strong> delivered to your inbox: AI-strengthened rewrites of all 9 sections, a pWin (probability of win) estimate, an executive change summary, and prioritized next steps. Three free assessments per email.</p>
   </div>
 
   <div id="upload-error" class="error-banner">
@@ -790,27 +901,8 @@
   </div>
 
   <div class="upload-card">
-    <h2>Upload Your Document</h2>
-
-    <div class="form-group">
-      <label for="email-input" class="form-label">Email Address</label>
-      <input type="email" id="email-input" class="form-input" placeholder="you@company.com" required autocomplete="email">
-    </div>
-
-    <div class="form-group">
-      <label for="doc-type-select" class="form-label">Document Type</label>
-      <select id="doc-type-select" class="form-input">
-        <option value="pitch_deck">Pitch Deck</option>
-        <option value="white_paper">White Paper / Technical Volume</option>
-        <option value="rfp_response">RFP/RFI Response</option>
-        <option value="capabilities_statement">Capabilities Statement</option>
-        <option value="pricing_volume">Pricing Volume</option>
-        <option value="executive_summary">Executive Summary</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Document File</label>
+    <!-- Drop zone (always visible) -->
+    <div class="form-group" style="margin-bottom:0;">
       <div id="upload-zone" class="upload-zone" tabindex="0" role="button" aria-label="Click or drag to upload a file">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -841,48 +933,69 @@
       </div>
     </div>
 
-    <!-- SOW/PWS Upload (Optional) -->
-    <div class="form-group">
-      <details id="sow-details" style="margin-top:0.5rem;">
-        <summary style="cursor:pointer; font-family:var(--font-heading); font-size:0.8rem; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--text-secondary); list-style:none; display:flex; align-items:center; gap:0.5rem;">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transition:transform 0.2s;" id="sow-chevron"><polyline points="6 9 12 15 18 9"/></svg>
-          Optional: Upload SOW/PWS for tailored scoring
-        </summary>
-        <div style="margin-top:0.75rem;">
-          <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem; line-height:1.5;">Without a SOW, scoring uses standard criteria for your document type. With a SOW, criteria are extracted from the solicitation's evaluation factors.</p>
-          <div id="sow-upload-zone" class="upload-zone" tabindex="0" role="button" aria-label="Click or drag to upload a SOW/PWS file" style="padding:1.5rem 1rem; border-width:1px; opacity:0.85;">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-bottom:0.5rem;">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
-            </svg>
-            <p style="font-size:0.85rem;">Drop SOW/PWS here, or <strong style="color:var(--primary-cyan);">click to browse</strong></p>
-            <p class="upload-hint">PDF, PPTX, or DOCX &mdash; 4MB max</p>
-          </div>
-          <input type="file" id="sow-file-input" accept=".pdf,.pptx,.docx,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none;">
-          <div id="sow-file-preview" class="file-preview">
-            <div class="file-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
-              </svg>
-            </div>
-            <div class="file-info">
-              <div class="file-name" id="sow-file-name"></div>
-              <div class="file-size" id="sow-file-size"></div>
-            </div>
-            <button class="file-remove" onclick="removeSowFile()" aria-label="Remove SOW file">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-              </svg>
-            </button>
-          </div>
-          <div id="sow-badge" style="display:none; margin-top:0.5rem; padding:0.4rem 0.75rem; background:rgba(0,229,250,0.08); border:1px solid rgba(0,229,250,0.2); border-radius:6px; font-size:0.75rem; color:var(--primary-cyan); font-weight:500;">
-            Scoring against SOW evaluation factors
-          </div>
-        </div>
-      </details>
-    </div>
+    <!-- Progressive disclosure: revealed after file selection -->
+    <div id="upload-details" class="upload-details">
+      <div class="form-group" style="margin-top:1.5rem;">
+        <label for="email-input" class="form-label">Email Address</label>
+        <input type="email" id="email-input" class="form-input" placeholder="you@company.com" required autocomplete="email">
+      </div>
 
-    <div class="upload-actions">
-      <button class="btn btn-primary" id="btn-submit" onclick="submitDeck()" disabled>Analyze Document &#8594;</button>
+      <div class="form-group">
+        <label class="form-label">Document Type</label>
+        <input type="hidden" id="doc-type-select" value="pitch_deck">
+        <div class="pill-selector">
+          <button type="button" class="pill pill-active" data-value="pitch_deck">Pitch Deck</button>
+          <button type="button" class="pill" data-value="white_paper">White Paper</button>
+          <button type="button" class="pill" data-value="rfp_response">RFP Response</button>
+          <button type="button" class="pill" data-value="capabilities_statement">Cap Statement</button>
+          <button type="button" class="pill" data-value="pricing_volume">Pricing</button>
+          <button type="button" class="pill" data-value="executive_summary">Exec Summary</button>
+        </div>
+      </div>
+
+      <!-- SOW/PWS Upload (Optional) -->
+      <div class="form-group">
+        <details id="sow-details" style="margin-top:0.5rem;">
+          <summary style="cursor:pointer; font-family:var(--font-heading); font-size:0.8rem; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--text-secondary); list-style:none; display:flex; align-items:center; gap:0.5rem;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transition:transform 0.2s;" id="sow-chevron"><polyline points="6 9 12 15 18 9"/></svg>
+            Optional: Upload SOW/PWS for tailored scoring
+          </summary>
+          <div style="margin-top:0.75rem;">
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem; line-height:1.5;">Without a SOW, scoring uses standard criteria for your document type. With a SOW, criteria are extracted from the solicitation's evaluation factors.</p>
+            <div id="sow-upload-zone" class="upload-zone" tabindex="0" role="button" aria-label="Click or drag to upload a SOW/PWS file" style="padding:1.5rem 1rem; border-width:1px; opacity:0.85;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-bottom:0.5rem;">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+              </svg>
+              <p style="font-size:0.85rem;">Drop SOW/PWS here, or <strong style="color:var(--primary-cyan);">click to browse</strong></p>
+              <p class="upload-hint">PDF, PPTX, or DOCX &mdash; 4MB max</p>
+            </div>
+            <input type="file" id="sow-file-input" accept=".pdf,.pptx,.docx,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none;">
+            <div id="sow-file-preview" class="file-preview">
+              <div class="file-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                </svg>
+              </div>
+              <div class="file-info">
+                <div class="file-name" id="sow-file-name"></div>
+                <div class="file-size" id="sow-file-size"></div>
+              </div>
+              <button class="file-remove" onclick="removeSowFile()" aria-label="Remove SOW file">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+            <div id="sow-badge" style="display:none; margin-top:0.5rem; padding:0.4rem 0.75rem; background:rgba(0,229,250,0.08); border:1px solid rgba(0,229,250,0.2); border-radius:6px; font-size:0.75rem; color:var(--primary-cyan); font-weight:500;">
+              Scoring against SOW evaluation factors
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="upload-actions">
+        <button class="btn btn-primary" id="btn-submit" onclick="submitDeck()" disabled>Analyze Document &#8594;</button>
+      </div>
     </div>
   </div>
 </div>
@@ -890,9 +1003,28 @@
 <!-- ===== SCREEN: PROCESSING ===== -->
 <div id="screen-processing" class="screen">
   <div class="processing-container">
-    <div class="spinner"></div>
-    <div class="processing-status" id="processing-status">Uploading document...</div>
-    <div class="progress-bar-indeterminate"></div>
+    <div class="pipeline" id="pipeline">
+      <div class="pipeline-step step-active">
+        <div class="step-icon"><div class="step-spinner"></div></div>
+        <div class="step-label">Reading document</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7" stroke="rgba(255,255,255,0.15)" stroke-width="2"/></svg></div>
+        <div class="step-label">Analyzing structure</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7" stroke="rgba(255,255,255,0.15)" stroke-width="2"/></svg></div>
+        <div class="step-label">Evaluating criteria</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7" stroke="rgba(255,255,255,0.15)" stroke-width="2"/></svg></div>
+        <div class="step-label">Identifying red flags</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7" stroke="rgba(255,255,255,0.15)" stroke-width="2"/></svg></div>
+        <div class="step-label">Building scorecard</div>
+      </div>
+    </div>
     <p class="processing-note">Usually takes 30&ndash;60 seconds</p>
     <button class="btn btn-secondary btn-sm" onclick="cancelSubmission()">Cancel</button>
   </div>
@@ -952,6 +1084,7 @@
   </div>
 </div>
 
+      </div><!-- /screen-container -->
     </div><!-- /lt-container -->
   </main>
 
@@ -1020,69 +1153,26 @@ const MIME_MAP = {
   'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 };
 
-const STATUS_MESSAGES = {
-  pitch_deck: [
-    'Uploading deck...',
-    'Reading document...',
-    'Running 9-criteria analysis...',
-    'Evaluating mission relevance...',
-    'Scoring team credibility...',
-    'Checking financials...',
-    'Generating scorecard...',
-  ],
-  white_paper: [
-    'Uploading document...',
-    'Reading technical volume...',
-    'Evaluating technical approach...',
-    'Checking compliance & standards...',
-    'Assessing past performance...',
-    'Reviewing staffing plan...',
-    'Generating scorecard...',
-  ],
-  rfp_response: [
-    'Uploading response...',
-    'Reading proposal...',
-    'Checking requirements compliance...',
-    'Evaluating technical approach...',
-    'Reviewing past performance...',
-    'Assessing management plan...',
-    'Generating scorecard...',
-  ],
-  capabilities_statement: [
-    'Uploading document...',
-    'Reading capabilities...',
-    'Evaluating mission alignment...',
-    'Checking contract vehicles...',
-    'Reviewing past performance...',
-    'Assessing differentiators...',
-    'Generating scorecard...',
-  ],
-  pricing_volume: [
-    'Uploading document...',
-    'Reading cost proposal...',
-    'Evaluating cost realism...',
-    'Checking labor categories...',
-    'Reviewing basis of estimate...',
-    'Assessing rate competitiveness...',
-    'Generating scorecard...',
-  ],
-  executive_summary: [
-    'Uploading document...',
-    'Reading executive summary...',
-    'Evaluating win themes...',
-    'Checking evidence & proof points...',
-    'Assessing competitive positioning...',
-    'Reviewing persuasiveness...',
-    'Generating scorecard...',
-  ],
-};
-
 let selectedFile = null;
 let fileBase64 = null;
 let sowFile = null;
 let sowBase64 = null;
 let abortController = null;
-let statusInterval = null;
+let pipelineTimers = [];
+
+// ===== SVG ICON HELPERS =====
+
+function getCheckIcon() {
+  return '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7" fill="rgba(0,210,159,0.15)"/><path d="M6 9.5l2 2 4-4" stroke="var(--grade-a)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+}
+
+function getSpinnerIcon() {
+  return '<div class="step-spinner"></div>';
+}
+
+function getPendingIcon() {
+  return '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7" stroke="rgba(255,255,255,0.15)" stroke-width="2"/></svg>';
+}
 
 // ===== SCREEN MANAGEMENT =====
 
@@ -1090,6 +1180,19 @@ function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ===== AUTO-DETECT DOCUMENT TYPE =====
+
+function autoDetectDocType(filename) {
+  const name = filename.toLowerCase();
+  if (/rfp|rfi|response/.test(name)) return 'rfp_response';
+  if (/pricing|cost/.test(name)) return 'pricing_volume';
+  if (/capabilit|cap.?statement/.test(name)) return 'capabilities_statement';
+  if (/exec.*summ|executive/.test(name)) return 'executive_summary';
+  if (/white.?paper|whitepaper/.test(name)) return 'white_paper';
+  if (/pitch|deck/.test(name)) return 'pitch_deck';
+  return 'pitch_deck';
 }
 
 // ===== FILE HANDLING =====
@@ -1119,10 +1222,19 @@ fileInput.addEventListener('change', () => {
 
 emailInput.addEventListener('input', updateSubmitButton);
 
+// Pill selector click handlers
+document.querySelectorAll('.pill-selector .pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.pill-selector .pill').forEach(p => p.classList.remove('pill-active'));
+    pill.classList.add('pill-active');
+    document.getElementById('doc-type-select').value = pill.dataset.value;
+  });
+});
+
 function handleFileSelect(file) {
   hideError();
 
-  // Validate extension (fallback for mobile MIME quirks)
+  // Validate extension
   const ext = file.name.split('.').pop().toLowerCase();
   if (!ALLOWED_EXTENSIONS.includes(ext)) {
     showError('Unsupported file type. Please upload a PDF, PowerPoint (.pptx), or Word (.docx) file.');
@@ -1144,6 +1256,16 @@ function handleFileSelect(file) {
   document.getElementById('file-preview').classList.add('visible');
   uploadZone.style.display = 'none';
 
+  // Auto-detect document type from filename
+  const detectedType = autoDetectDocType(file.name);
+  document.getElementById('doc-type-select').value = detectedType;
+  document.querySelectorAll('.pill-selector .pill').forEach(p => {
+    p.classList.toggle('pill-active', p.dataset.value === detectedType);
+  });
+
+  // Reveal upload details with transition
+  document.getElementById('upload-details').classList.add('revealed');
+
   // Read as base64
   readFileAsBase64(file).then(b64 => {
     fileBase64 = b64;
@@ -1160,6 +1282,7 @@ function removeFile() {
   fileInput.value = '';
   document.getElementById('file-preview').classList.remove('visible');
   uploadZone.style.display = '';
+  document.getElementById('upload-details').classList.remove('revealed');
   updateSubmitButton();
 }
 
@@ -1167,7 +1290,6 @@ function readFileAsBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
-      // Strip the data:...;base64, prefix
       const base64 = reader.result.split(',')[1];
       resolve(base64);
     };
@@ -1178,7 +1300,9 @@ function readFileAsBase64(file) {
 
 function updateSubmitButton() {
   const emailValid = emailInput.value.trim() && emailInput.checkValidity();
-  submitBtn.disabled = !(emailValid && fileBase64);
+  const isReady = emailValid && fileBase64;
+  submitBtn.disabled = !isReady;
+  submitBtn.classList.toggle('btn-pulse', !!isReady);
 }
 
 function formatFileSize(bytes) {
@@ -1257,6 +1381,57 @@ function hideError() {
   document.getElementById('upload-error').classList.remove('visible');
 }
 
+// ===== PIPELINE (Processing Steps) =====
+
+function startPipeline() {
+  const steps = document.querySelectorAll('.pipeline-step');
+  // Reset all to pending
+  steps.forEach(step => {
+    step.classList.remove('step-active', 'step-done');
+    step.querySelector('.step-icon').innerHTML = getPendingIcon();
+  });
+  // Step 1 active immediately
+  activateStep(0);
+
+  // Schedule remaining steps
+  const delays = [6000, 18000, 32000, 45000];
+  pipelineTimers = [];
+  delays.forEach((delay, i) => {
+    const timer = setTimeout(() => {
+      completeStep(i);
+      activateStep(i + 1);
+    }, delay);
+    pipelineTimers.push(timer);
+  });
+}
+
+function completePipeline() {
+  pipelineTimers.forEach(t => clearTimeout(t));
+  pipelineTimers = [];
+  document.querySelectorAll('.pipeline-step').forEach(step => {
+    step.classList.remove('step-active');
+    step.classList.add('step-done');
+    step.querySelector('.step-icon').innerHTML = getCheckIcon();
+  });
+}
+
+function activateStep(index) {
+  const steps = document.querySelectorAll('.pipeline-step');
+  if (index < steps.length) {
+    steps[index].classList.add('step-active');
+    steps[index].querySelector('.step-icon').innerHTML = getSpinnerIcon();
+  }
+}
+
+function completeStep(index) {
+  const steps = document.querySelectorAll('.pipeline-step');
+  if (index < steps.length) {
+    steps[index].classList.remove('step-active');
+    steps[index].classList.add('step-done');
+    steps[index].querySelector('.step-icon').innerHTML = getCheckIcon();
+  }
+}
+
 // ===== SUBMIT DECK =====
 
 async function submitDeck() {
@@ -1265,7 +1440,7 @@ async function submitDeck() {
 
   hideError();
   showScreen('screen-processing');
-  startStatusCycling();
+  startPipeline();
 
   // Determine MIME type from extension
   const ext = selectedFile.name.split('.').pop().toLowerCase();
@@ -1293,7 +1468,7 @@ async function submitDeck() {
     });
 
     clearTimeout(timeoutId);
-    stopStatusCycling();
+    completePipeline();
 
     if (response.ok) {
       const data = await response.json();
@@ -1322,7 +1497,7 @@ async function submitDeck() {
 
   } catch (err) {
     clearTimeout(timeoutId);
-    stopStatusCycling();
+    completePipeline();
 
     if (err.name === 'AbortError') {
       showScreen('screen-upload');
@@ -1339,26 +1514,8 @@ async function submitDeck() {
 
 function cancelSubmission() {
   if (abortController) abortController.abort();
-  stopStatusCycling();
+  completePipeline();
   showScreen('screen-upload');
-}
-
-// ===== STATUS CYCLING =====
-
-function startStatusCycling() {
-  let idx = 0;
-  const el = document.getElementById('processing-status');
-  const docType = document.getElementById('doc-type-select').value;
-  const messages = STATUS_MESSAGES[docType] || STATUS_MESSAGES.pitch_deck;
-  el.textContent = messages[0];
-  statusInterval = setInterval(() => {
-    idx = (idx + 1) % messages.length;
-    el.textContent = messages[idx];
-  }, 4000);
-}
-
-function stopStatusCycling() {
-  if (statusInterval) { clearInterval(statusInterval); statusInterval = null; }
 }
 
 // ===== RENDER RESULTS =====
@@ -1395,26 +1552,44 @@ function renderResults(data) {
   else if (overallGrade === 'D') gradeColor = 'var(--grade-d)';
   else gradeColor = 'var(--grade-f)';
 
+  // Grade ring SVG
+  const radius = 48;
+  const circumference = 2 * Math.PI * radius;
+  const pct = Math.min(avgPoints / 4 * 100, 100);
+  const dashTarget = circumference * (1 - pct / 100);
+
   // Uses remaining badge
   const usesBadge = typeof data.uses_remaining === 'number'
     ? `<div class="uses-badge">${data.uses_remaining} free assessment${data.uses_remaining !== 1 ? 's' : ''} remaining</div>`
     : '';
 
-  // Verdict
+  // Verdict with grade ring
   document.getElementById('results-verdict').innerHTML = `
     <div class="verdict-status ${verdictClass}">${esc(sc.verdict || 'SCORED')}</div>
-    <div class="verdict-grade" style="color: ${gradeColor}">${esc(overallGrade)}</div>
+    <div class="grade-ring">
+      <svg width="120" height="120" viewBox="0 0 120 120">
+        <circle class="ring-track" cx="60" cy="60" r="${radius}"/>
+        <circle class="ring-fill" cx="60" cy="60" r="${radius}"
+          stroke="${gradeColor}"
+          stroke-dasharray="${circumference}"
+          style="--dash-total: ${circumference}; --dash-target: ${dashTarget};"
+        />
+      </svg>
+      <div class="ring-label" style="color: ${gradeColor}">${esc(overallGrade)}</div>
+    </div>
     <div class="verdict-title">${esc(sc.verdict_title || '')}</div>
     <p class="verdict-summary">${esc(sc.verdict_summary || '')}</p>
     ${usesBadge}
   `;
 
-  // Scorecard rows
-  const rows = scores.map(s => {
+  // Scorecard rows with staggered reveal
+  const ringDelay = 1200; // ms for ring animation
+  const rows = scores.map((s, i) => {
     const cls = getGradeClass(s.grade);
     const assessment = s.assessment ? `<div class="scorecard-assessment">${esc(s.assessment)}</div>` : '';
+    const delay = (i * 80) + ringDelay;
     return `
-      <div class="scorecard-row">
+      <div class="scorecard-row reveal" style="animation-delay: ${delay}ms">
         <div class="scorecard-row-top">
           <span class="scorecard-criteria">${esc(s.title)}</span>
           <span class="scorecard-grade ${cls}">${esc(s.grade)}</span>
@@ -1429,10 +1604,15 @@ function renderResults(data) {
     ${rows}
   `;
 
+  // Calculate delays for elements after scorecard
+  const lastRowDelay = (scores.length * 80) + ringDelay;
+  const topFixDelay = lastRowDelay + 200;
+  const redFlagsDelay = topFixDelay + 200;
+
   // Top Fix
   if (sc.top_fix) {
     document.getElementById('results-top-fix').innerHTML = `
-      <div class="top-fix">
+      <div class="top-fix reveal" style="animation-delay: ${topFixDelay}ms">
         <h3>Top Fix</h3>
         <p>${esc(sc.top_fix)}</p>
       </div>
@@ -1444,7 +1624,7 @@ function renderResults(data) {
   // Red Flags
   if (sc.red_flags && sc.red_flags.length > 0) {
     document.getElementById('results-red-flags').innerHTML = `
-      <div class="red-flags">
+      <div class="red-flags reveal" style="animation-delay: ${redFlagsDelay}ms">
         <h3>Red Flags Detected (${sc.red_flags.length})</h3>
         <ul>${sc.red_flags.map(f => `<li>${esc(f)}</li>`).join('')}</ul>
       </div>
@@ -1603,12 +1783,18 @@ function resetTool() {
   fileInput.value = '';
   emailInput.value = '';
   document.getElementById('doc-type-select').value = 'pitch_deck';
+  // Reset pill selector
+  document.querySelectorAll('.pill-selector .pill').forEach(p => {
+    p.classList.toggle('pill-active', p.dataset.value === 'pitch_deck');
+  });
   document.getElementById('file-preview').classList.remove('visible');
+  document.getElementById('upload-details').classList.remove('revealed');
   document.getElementById('gold-team-status').innerHTML = '';
   document.getElementById('results-upsell').innerHTML = '';
   document.getElementById('payment-success-banner').innerHTML = '';
   uploadZone.style.display = '';
   submitBtn.disabled = true;
+  submitBtn.classList.remove('btn-pulse');
   removeSowFile();
   if (sowDetails.open) sowDetails.open = false;
   hideError();
