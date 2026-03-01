@@ -111,24 +111,10 @@
       margin-top: 0.5rem;
       color: var(--text-muted);
     }
-    .hero-features {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      max-width: 420px;
-      margin: 0 auto 2rem;
-      text-align: left;
-    }
-    .hero-features li {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
+    .hero-sub {
       font-size: 0.9rem;
-      color: var(--text-secondary);
-    }
-    .hero-features li svg {
-      flex-shrink: 0;
-      color: var(--grade-a);
+      color: var(--text-muted);
+      margin-top: 0;
     }
 
     /* ===== BUTTONS ===== */
@@ -205,7 +191,7 @@
       width: 100%;
       padding: 0.85rem 1rem;
       border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
       background: rgba(255, 255, 255, 0.04);
       color: var(--text-primary);
       font-family: var(--font-body);
@@ -214,9 +200,8 @@
       box-sizing: border-box;
     }
     .form-input::placeholder { color: var(--text-muted); }
-    .form-input:focus {
+    .form-input:focus-visible {
       border-color: var(--primary-cyan);
-      outline: none;
       box-shadow: 0 0 0 3px rgba(0,229,250,0.1);
     }
 
@@ -289,9 +274,10 @@
       border: none;
       color: var(--text-muted);
       cursor: pointer;
-      padding: 0.25rem;
+      padding: 0.75rem;
       transition: color 0.2s;
       flex-shrink: 0;
+      margin: -0.5rem;
     }
     .file-preview .file-remove:hover { color: var(--grade-f); }
 
@@ -325,7 +311,7 @@
     .pill {
       padding: 0.45rem 0.9rem;
       border-radius: 100px;
-      border: 1px solid rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
       background: rgba(255,255,255,0.04);
       color: var(--text-secondary);
       font-family: var(--font-body);
@@ -763,16 +749,39 @@
     }
     .payment-success svg { flex-shrink: 0; }
 
+    /* ===== SAFARI DETAILS MARKER ===== */
+    summary::-webkit-details-marker { display: none; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 640px) {
+      .hero { padding: 2.5rem 0 2rem; }
+      .upload-zone { padding: 2rem 1.25rem; }
+      .upload-card { padding: 1.5rem; }
+      .pill { padding: 0.55rem 0.9rem; }
+    }
+
+    /* ===== REDUCED MOTION ===== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
     /* ===== PRINT STYLES ===== */
     @media print {
-      nav, .results-cta, .upsell-box, footer, .upload-card, .processing-container, .uses-badge, .gold-team-status, .payment-success, .pipeline { display: none; }
-      body { background: white; color: black; }
+      nav, .results-cta, .upsell-box, footer, .upload-card, .processing-container, .uses-badge, .gold-team-status, .payment-success, .pipeline, .hero { display: none; }
+      body { background: white; color: #222; }
       .lt-container { max-width: 100%; }
       .results-verdict, .scorecard, .red-flags, .top-fix { border-color: #ccc; }
       .scorecard-grade { border: 1px solid #ccc; }
       .results-verdict::before { display: none; }
       .reveal { opacity: 1 !important; animation: none !important; }
       .ring-fill { animation: none !important; stroke-dashoffset: var(--dash-target) !important; }
+      .verdict-summary, .scorecard-assessment, .scorecard-criteria, .top-fix p, .red-flags li { color: #333 !important; }
+      .verdict-status, .top-fix h3, .red-flags h3, .scorecard-header { color: #000 !important; }
+      .ring-label { -webkit-text-fill-color: initial !important; }
     }
   </style>
 </head>
@@ -858,12 +867,13 @@
 <!-- ===== SCREEN: UPLOAD (Hero + Form Combined) ===== -->
 <div id="screen-upload" class="screen active">
   <div class="hero">
-    <div class="hero-badge">AI-Powered Assessment</div>
+    <div class="hero-badge">Federal Proposal Scoring</div>
     <h1>Proposal <span>Pulse</span></h1>
-    <p>Upload any federal proposal document and get an AI-scored assessment across nine criteria tailored to your document type. Add your SOW for scoring against the actual evaluation factors.</p>
+    <p>Upload your proposal document. Get a scored assessment across nine criteria in under 60 seconds.</p>
+    <p class="hero-sub">Supports pitch decks, white papers, RFP responses, capabilities statements, pricing volumes, and executive summaries.</p>
   </div>
 
-  <div id="upload-error" class="error-banner">
+  <div id="upload-error" class="error-banner" role="alert">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 10.5a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5zM8.75 4v4.5h-1.5V4h1.5z"/></svg>
     <span id="upload-error-text"></span>
   </div>
@@ -878,8 +888,12 @@
           <line x1="12" y1="3" x2="12" y2="15"/>
         </svg>
         <p>Drag and drop your file here, or <strong style="color:var(--primary-cyan);">click to browse</strong></p>
-        <p class="upload-hint">PDF, PPTX, or DOCX &mdash; 4MB max</p>
+        <p class="upload-hint">PDF, PPTX, or DOCX. 4MB max.</p>
       </div>
+      <p style="text-align:center; font-size:0.75rem; color:var(--text-muted); margin-top:0.75rem; display:flex; align-items:center; justify-content:center; gap:0.4rem;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Documents are analyzed in real time and never stored.
+      </p>
       <input type="file" id="file-input" accept=".pdf,.pptx,.docx,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none;">
 
       <div id="file-preview" class="file-preview">
@@ -904,7 +918,7 @@
     <!-- Progressive disclosure: revealed after file selection -->
     <div id="upload-details" class="upload-details">
       <div class="form-group" style="margin-top:1.5rem;">
-        <label for="email-input" class="form-label">Email Address</label>
+        <label for="email-input" class="form-label">Email Address <span style="font-weight:400; text-transform:none; letter-spacing:0; color:var(--text-muted);">(for your Gold Team Review)</span></label>
         <input type="email" id="email-input" class="form-input" placeholder="you@company.com" required autocomplete="email">
       </div>
 
@@ -915,9 +929,9 @@
           <button type="button" class="pill pill-active" data-value="pitch_deck">Pitch Deck</button>
           <button type="button" class="pill" data-value="white_paper">White Paper</button>
           <button type="button" class="pill" data-value="rfp_response">RFP Response</button>
-          <button type="button" class="pill" data-value="capabilities_statement">Cap Statement</button>
-          <button type="button" class="pill" data-value="pricing_volume">Pricing</button>
-          <button type="button" class="pill" data-value="executive_summary">Exec Summary</button>
+          <button type="button" class="pill" data-value="capabilities_statement">Capabilities Statement</button>
+          <button type="button" class="pill" data-value="pricing_volume">Cost/Pricing Volume</button>
+          <button type="button" class="pill" data-value="executive_summary">Executive Summary</button>
         </div>
       </div>
 
@@ -926,16 +940,16 @@
         <details id="sow-details" style="margin-top:0.5rem;">
           <summary style="cursor:pointer; font-family:var(--font-heading); font-size:0.8rem; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--text-secondary); list-style:none; display:flex; align-items:center; gap:0.5rem;">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transition:transform 0.2s;" id="sow-chevron"><polyline points="6 9 12 15 18 9"/></svg>
-            Optional: Upload SOW/PWS for tailored scoring
+            Have a SOW or PWS? Upload for scoring against actual evaluation factors
           </summary>
           <div style="margin-top:0.75rem;">
-            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem; line-height:1.5;">Without a SOW, scoring uses standard criteria for your document type. With a SOW, criteria are extracted from the solicitation's evaluation factors.</p>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem; line-height:1.5;">Without a SOW, we score against standard criteria for your document type. With a SOW, we pull the evaluation factors directly from the solicitation and score against those instead.</p>
             <div id="sow-upload-zone" class="upload-zone" tabindex="0" role="button" aria-label="Click or drag to upload a SOW/PWS file" style="padding:1.5rem 1rem; border-width:1px; opacity:0.85;">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-bottom:0.5rem;">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
               </svg>
               <p style="font-size:0.85rem;">Drop SOW/PWS here, or <strong style="color:var(--primary-cyan);">click to browse</strong></p>
-              <p class="upload-hint">PDF, PPTX, or DOCX &mdash; 4MB max</p>
+              <p class="upload-hint">PDF, PPTX, or DOCX. 4MB max.</p>
             </div>
             <input type="file" id="sow-file-input" accept=".pdf,.pptx,.docx,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none;">
             <div id="sow-file-preview" class="file-preview">
@@ -962,7 +976,7 @@
       </div>
 
       <div class="upload-actions">
-        <button class="btn btn-primary" id="btn-submit" onclick="submitDeck()" disabled>Analyze Document &#8594;</button>
+        <button class="btn btn-primary" id="btn-submit" onclick="submitDeck()" disabled>Get Your Scorecard &#8594;</button>
       </div>
     </div>
   </div>
@@ -971,7 +985,8 @@
 <!-- ===== SCREEN: PROCESSING ===== -->
 <div id="screen-processing" class="screen">
   <div class="processing-container">
-    <div class="pipeline" id="pipeline">
+    <p id="processing-filename" style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1.5rem;"></p>
+    <div class="pipeline" id="pipeline" aria-live="polite">
       <div class="pipeline-step step-active">
         <div class="step-icon"><div class="step-spinner"></div></div>
         <div class="step-label">Reading document</div>
@@ -986,7 +1001,7 @@
       </div>
       <div class="pipeline-step">
         <div class="step-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7" stroke="rgba(255,255,255,0.15)" stroke-width="2"/></svg></div>
-        <div class="step-label">Identifying red flags</div>
+        <div class="step-label">Flagging risks</div>
       </div>
       <div class="pipeline-step">
         <div class="step-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7" stroke="rgba(255,255,255,0.15)" stroke-width="2"/></svg></div>
@@ -1006,9 +1021,11 @@
     <div class="scorecard" id="results-scorecard"></div>
     <div id="results-top-fix"></div>
     <div id="results-red-flags"></div>
-    <div id="gold-team-status"></div>
+    <div id="gold-team-status" aria-live="polite"></div>
 
     <div class="results-cta">
+      <h3>What's next?</h3>
+      <p>Save your results or run another assessment.</p>
       <div class="results-actions">
         <button class="btn btn-primary btn-sm" onclick="window.print()">Print Results</button>
         <button class="btn btn-secondary btn-sm" onclick="resetTool()">Score Another Document</button>
@@ -1027,8 +1044,8 @@
         <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
       </svg>
     </div>
-    <h2>Free Assessments Used</h2>
-    <p>You've used all 3 free assessments. Each additional assessment includes the full Gold Team Review package:</p>
+    <h2>Ready for the Full Package?</h2>
+    <p>Your 3 free assessments are used up. Upgrade to get the full Gold Team Review with every assessment:</p>
     <ul style="text-align:left; max-width:420px; margin:0 auto 2rem; list-style:none; padding:0;">
       <li style="display:flex; align-items:center; gap:0.75rem; padding:0.4rem 0; font-size:0.9rem; color:var(--text-secondary);">
         <svg width="1em" height="1em" viewBox="0 0 16 16" fill="var(--grade-a)" aria-hidden="true"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0-1.4A5.6 5.6 0 1 0 8 2.4a5.6 5.6 0 0 0 0 11.2zM7 9.6l3.5-3.5 1 1L7 11.6 4.5 9l1-1L7 9.6z"/></svg>
@@ -1049,6 +1066,7 @@
     </ul>
     <button class="btn btn-primary" onclick="startCheckout()">Unlock 1 Assessment &mdash; $49 &#8594;</button>
     <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.75rem;">Secure payment via Stripe</p>
+    <button class="btn btn-secondary btn-sm" onclick="resetTool()" style="margin-top:1rem;">Start Over</button>
   </div>
 </div>
 
@@ -1127,6 +1145,9 @@ let sowFile = null;
 let sowBase64 = null;
 let abortController = null;
 let pipelineTimers = [];
+let isSubmitting = false;
+let userCancelled = false;
+let goldTeamAbort = null;
 
 // ===== SVG ICON HELPERS =====
 
@@ -1146,8 +1167,12 @@ function getPendingIcon() {
 
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  const screen = document.getElementById(id);
+  screen.classList.add('active');
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  window.scrollTo({ top: 0, behavior: prefersReduced ? 'instant' : 'smooth' });
+  screen.setAttribute('tabindex', '-1');
+  screen.focus({ preventScroll: true });
 }
 
 // ===== AUTO-DETECT DOCUMENT TYPE =====
@@ -1212,7 +1237,7 @@ function handleFileSelect(file) {
   // Validate size
   if (file.size > MAX_FILE_SIZE) {
     const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
-    showError(`File is too large (${sizeMB}MB). Maximum file size is 4MB. Try compressing your deck or exporting a lower-resolution PDF.`);
+    showError(`File is too large (${sizeMB}MB). Maximum size is 4MB. Try compressing images or exporting a lower-resolution PDF.`);
     return;
   }
 
@@ -1256,13 +1281,22 @@ function removeFile() {
 
 function revealUploadDetails() {
   const el = document.getElementById('upload-details');
+  // Remove any stale transitionend listeners
+  el.removeEventListener('transitionend', el._onRevealEnd);
   el.style.height = el.scrollHeight + 'px';
-  const onEnd = () => { el.style.height = 'auto'; el.removeEventListener('transitionend', onEnd); };
-  el.addEventListener('transitionend', onEnd);
+  el._onRevealEnd = (e) => {
+    if (e.propertyName !== 'height') return;
+    el.style.height = 'auto';
+    el.removeEventListener('transitionend', el._onRevealEnd);
+  };
+  el.addEventListener('transitionend', el._onRevealEnd);
+  setTimeout(() => emailInput.focus(), 350);
 }
 
 function hideUploadDetails() {
   const el = document.getElementById('upload-details');
+  // Remove any stale transitionend listeners
+  el.removeEventListener('transitionend', el._onRevealEnd);
   el.style.height = el.scrollHeight + 'px';
   requestAnimationFrame(() => { el.style.height = '0'; });
 }
@@ -1435,10 +1469,14 @@ function completeStep(index) {
 
 async function submitDeck() {
   const email = emailInput.value.trim();
-  if (!email || !fileBase64 || !selectedFile) return;
+  if (!email || !fileBase64 || !selectedFile || isSubmitting) return;
 
+  isSubmitting = true;
+  userCancelled = false;
+  submitBtn.disabled = true;
   hideError();
   showScreen('screen-processing');
+  document.getElementById('processing-filename').innerHTML = 'Scoring <strong style="color:var(--text-secondary);">' + esc(selectedFile.name) + '</strong>';
   startPipeline();
 
   // Determine MIME type from extension
@@ -1470,7 +1508,12 @@ async function submitDeck() {
 
     if (response.ok) {
       await completePipelineAnimated();
-      const data = await response.json();
+      let data;
+      try { data = await response.json(); } catch (e) {
+        showScreen('screen-upload');
+        showError('Received an invalid response. Please try again.');
+        return;
+      }
       renderResults(data);
       return;
     }
@@ -1501,8 +1544,10 @@ async function submitDeck() {
     completePipeline();
 
     if (err.name === 'AbortError') {
-      showScreen('screen-upload');
-      showError('Request timed out. The analysis took too long. Please try again with a smaller file.');
+      if (!userCancelled) {
+        showScreen('screen-upload');
+        showError('Request timed out. The analysis took too long. Please try again with a smaller file.');
+      }
       return;
     }
 
@@ -1510,10 +1555,12 @@ async function submitDeck() {
     showError('Network error. Check your connection and try again.');
   } finally {
     abortController = null;
+    isSubmitting = false;
   }
 }
 
 function cancelSubmission() {
+  userCancelled = true;
   if (abortController) abortController.abort();
   completePipeline();
   showScreen('screen-upload');
@@ -1691,10 +1738,12 @@ function triggerGoldTeamReview(data) {
   }
 
   // Fire and forget — background function returns 202 immediately
+  goldTeamAbort = new AbortController();
   fetch(GOLD_TEAM_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
+    signal: goldTeamAbort.signal,
   })
   .then(response => {
     if (response.status === 202 || response.ok) {
@@ -1705,7 +1754,7 @@ function triggerGoldTeamReview(data) {
             <polyline points="22 4 12 14.01 9 11.01"/>
           </svg>
           <div class="gold-team-status-text">
-            Gold Team Review is on its way! Check your email in 1&ndash;2 minutes for your complete review with pWin estimate, all 9 sections rewritten, and next steps.
+            Gold Team Review sent. Check your inbox in 1&ndash;2 minutes.
           </div>
         </div>
       `;
@@ -1730,6 +1779,7 @@ function showGoldTeamFallback(statusEl) {
 
 // ===== STRIPE CHECKOUT =====
 
+let isCheckingOut = false;
 async function startCheckout() {
   const email = emailInput.value.trim();
   if (!email) {
@@ -1737,6 +1787,8 @@ async function startCheckout() {
     showError('Please enter your email address first.');
     return;
   }
+  if (isCheckingOut) return;
+  isCheckingOut = true;
 
   try {
     const response = await fetch(CHECKOUT_URL, {
@@ -1748,16 +1800,23 @@ async function startCheckout() {
     if (!response.ok) {
       const errData = await response.json().catch(() => null);
       const msg = (errData && errData.error) || 'Could not start checkout. Please try again.';
-      alert(msg);
+      showScreen('screen-upload');
+      showError(msg);
       return;
     }
 
     const data = await response.json();
     if (data.url) {
       window.location.href = data.url;
+    } else {
+      showScreen('screen-upload');
+      showError('Could not start checkout. Please try again.');
     }
   } catch (err) {
-    alert('Network error. Please check your connection and try again.');
+    showScreen('screen-upload');
+    showError('Network error. Check your connection and try again.');
+  } finally {
+    isCheckingOut = false;
   }
 }
 
@@ -1779,6 +1838,12 @@ function esc(str) {
 // ===== RESET =====
 
 function resetTool() {
+  // Abort any in-flight requests
+  if (goldTeamAbort) { goldTeamAbort.abort(); goldTeamAbort = null; }
+  pipelineTimers.forEach(t => clearTimeout(t));
+  pipelineTimers = [];
+  isSubmitting = false;
+
   selectedFile = null;
   fileBase64 = null;
   fileInput.value = '';
@@ -1789,10 +1854,16 @@ function resetTool() {
     p.classList.toggle('pill-active', p.dataset.value === 'pitch_deck');
   });
   document.getElementById('file-preview').classList.remove('visible');
-  hideUploadDetails();
+  // Reset upload details without animation (instant)
+  const detailsEl = document.getElementById('upload-details');
+  detailsEl.removeEventListener('transitionend', detailsEl._onRevealEnd);
+  detailsEl.style.height = '0';
   document.getElementById('gold-team-status').innerHTML = '';
   document.getElementById('results-upsell').innerHTML = '';
   document.getElementById('payment-success-banner').innerHTML = '';
+  // Remove any stale payment success banner from upload screen
+  const staleSuccess = document.querySelector('#screen-upload .payment-success');
+  if (staleSuccess) staleSuccess.remove();
   uploadZone.style.display = '';
   submitBtn.disabled = true;
   removeSowFile();
@@ -1812,12 +1883,13 @@ function resetTool() {
     // Repurpose the area above upload for a success message
     const successDiv = document.createElement('div');
     successDiv.className = 'payment-success';
+    successDiv.setAttribute('role', 'status');
     successDiv.innerHTML = `
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
         <polyline points="22 4 12 14.01 9 11.01"/>
       </svg>
-      <span>Payment successful! You have 1 additional assessment ready to use.</span>
+      <span>Payment confirmed. You have 1 additional assessment ready to use.</span>
     `;
     banner.parentNode.insertBefore(successDiv, banner);
     // Clean URL
