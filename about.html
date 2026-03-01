@@ -49,19 +49,36 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "Person",
-    "name": "Mary Womack",
-    "jobTitle": "Founder",
-    "url": "https://missionmeetstech.com/about",
-    "worksFor": {
-      "@type": "Organization",
-      "name": "Mission Meets Tech",
-      "url": "https://missionmeetstech.com"
-    },
-    "sameAs": [
-      "https://www.linkedin.com/in/marydwomack-digitalhealth/"
-    ],
-    "description": "Founder of Mission Meets Tech. Federal health IT analyst covering defense health, VA modernization, and military medical technology."
+    "@graph": [
+      {
+        "@type": "Organization",
+        "name": "Mission Meets Tech",
+        "url": "https://missionmeetstech.com",
+        "description": "Independent federal health IT intelligence platform covering defense health, VA modernization, and military medical technology.",
+        "founder": { "@type": "Person", "name": "Mary Womack" },
+        "sameAs": [
+          "https://www.linkedin.com/in/marydwomack-digitalhealth/",
+          "https://www.youtube.com/@MissionMeetsTech"
+        ]
+      },
+      {
+        "@type": "Person",
+        "name": "Mary Womack",
+        "jobTitle": "Founder",
+        "url": "https://missionmeetstech.com/about",
+        "worksFor": { "@type": "Organization", "name": "Mission Meets Tech", "url": "https://missionmeetstech.com" },
+        "sameAs": ["https://www.linkedin.com/in/marydwomack-digitalhealth/"],
+        "description": "Founder of Mission Meets Tech. Independent federal health IT analyst delivering defense health intelligence to 1,100+ subscribers."
+      },
+      {
+        "@type": "Person",
+        "name": "Sara Byrd",
+        "jobTitle": "Co-Host, Fed UP Podcast",
+        "url": "https://www.linkedin.com/in/saraebyrd/",
+        "sameAs": ["https://www.linkedin.com/in/saraebyrd/"],
+        "description": "Co-host of Fed UP: Where Mission Meets Reality. Principal at Byrd Strategies. Two-time FedHealthIT100 honoree."
+      }
+    ]
   }
   </script>
 </head>
@@ -351,8 +368,21 @@
     </div>
   </section>
 
-  <!-- Suggest a Topic -->
+  <!-- Glossary Teaser -->
   <section class="py-20 px-6">
+    <div class="max-w-4xl mx-auto">
+      <div class="card rounded-xl p-8 flex flex-col sm:flex-row items-start sm:items-center gap-6" style="border-color:rgba(0,229,250,0.2);">
+        <div class="flex-1">
+          <h3 class="text-xl font-bold mb-2">New to Defense Health IT?</h3>
+          <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">ASD(HA), PEO DHMS, T4NG, JOMIS. This space speaks in acronyms. The MMT glossary translates 30+ terms into plain English, and the Leadership Map shows who controls what.</p>
+        </div>
+        <a href="resources.html#glossary" class="btn-secondary no-underline text-sm whitespace-nowrap">Browse the Glossary</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Suggest a Topic -->
+  <section class="section-alt py-20 px-6">
     <div class="max-w-4xl mx-auto">
       <div class="card rounded-xl p-8">
         <h2 class="text-2xl font-bold mb-2">What Should MMT Cover Next?</h2>
