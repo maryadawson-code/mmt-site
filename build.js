@@ -226,6 +226,33 @@ const searchScript = `
       });
     })();`;
 
+const subscribeScript = `
+    // Subscribe dropdown toggle
+    (function() {
+      var btn = document.getElementById('subscribeToggle');
+      var panel = document.getElementById('subscribePanel');
+      if (!btn || !panel) return;
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var open = !panel.classList.contains('hidden');
+        panel.classList.toggle('hidden');
+        btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+      });
+      document.addEventListener('click', function(e) {
+        if (!panel.classList.contains('hidden') && !panel.contains(e.target) && e.target !== btn) {
+          panel.classList.add('hidden');
+          btn.setAttribute('aria-expanded', 'false');
+        }
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !panel.classList.contains('hidden')) {
+          panel.classList.add('hidden');
+          btn.setAttribute('aria-expanded', 'false');
+          btn.focus();
+        }
+      });
+    })();`;
+
 function generateArticlePages(articles) {
   const templatePath = path.join(TEMPLATES_DIR, 'article.html');
   if (!fs.existsSync(templatePath)) {
@@ -274,7 +301,7 @@ function generateArticlePages(articles) {
     // Inject search overlay after </nav>
     html = html.replace('</nav>', '</nav>' + searchOverlayHtml);
     // Inject search script before </body>
-    html = html.replace('</body>', '  <script>' + searchScript + '\n  </script>\n</body>');
+    html = html.replace('</body>', '  <script>' + searchScript + subscribeScript + '\n  </script>\n</body>');
 
     html = rewriteOgTags(html, `newsletter-${article.slug}.png`);
     html = inlineTailwindCss(html);
@@ -326,7 +353,7 @@ function generateTopicPages(tags) {
     // Inject search overlay after </nav>
     html = html.replace('</nav>', '</nav>' + searchOverlayHtml);
     // Inject search script before </body>
-    html = html.replace('</body>', '  <script>' + searchScript + '\n  </script>\n</body>');
+    html = html.replace('</body>', '  <script>' + searchScript + subscribeScript + '\n  </script>\n</body>');
 
     html = rewriteOgTags(html, `topic-${tag.slug}.png`);
     html = inlineTailwindCss(html);
@@ -817,7 +844,7 @@ function copyStaticFiles({ archive, feed }) {
         html = html.replace('</nav>\n\n', '</nav>\n' + searchOverlayHtml + '\n\n');
       }
       // Inject search script before closing </body>
-      html = html.replace('</body>', '  <script>' + searchScript + '\n  </script>\n</body>');
+      html = html.replace('</body>', '  <script>' + searchScript + subscribeScript + '\n  </script>\n</body>');
       html = inlineTailwindCss(html);
       fs.writeFileSync(path.join(DIST_DIR, file), html);
       console.log(`Copied ${file}`);
