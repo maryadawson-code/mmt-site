@@ -1,5 +1,5 @@
 // ============================================================
-// model-router.js — Smart Model Routing for Proposal Pulse
+// model-router.js — Smart Model Routing for ProposalPulse
 //
 // Returns the optimal Claude model for each task type based on
 // self-learning from user feedback ratings.

@@ -122,7 +122,7 @@ For the "status" field, use "polished" for strong sections (B- or above) and "re
 ${documentText}
 ---
 
-Here is the Proposal Pulse scorecard for this document:
+Here is the ProposalPulse scorecard for this document:
 
 Verdict: ${scorecard.verdict}
 Overall assessment: ${scorecard.verdict_summary || "N/A"}

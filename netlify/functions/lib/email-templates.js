@@ -38,7 +38,7 @@ function escapeHtml(str) {
 // ============================================================
 
 /**
- * Build branded HTML email for Proposal Pulse score receipt.
+ * Build branded HTML email for ProposalPulse score receipt.
  * @param {Object} data
  * @param {Object} data.scorecard - Full scorecard from Claude (scores, verdict, red_flags, top_fix)
  * @param {string} data.documentType - Document type key (e.g. "pitch_deck")
@@ -89,13 +89,13 @@ function buildScoreReceiptHtml(data) {
     <!-- Header -->
     <div style="background-color:#00050f;padding:24px 32px;text-align:center;">
       <h1 style="margin:0;font-size:20px;font-weight:700;color:#00E5FA;letter-spacing:0.5px;">MISSION MEETS TECH</h1>
-      <p style="margin:4px 0 0;font-size:13px;color:rgba(255,255,255,0.6);">Proposal Pulse</p>
+      <p style="margin:4px 0 0;font-size:13px;color:rgba(255,255,255,0.6);">ProposalPulse</p>
     </div>
 
     <!-- Body -->
     <div style="padding:32px;">
 
-      <h2 style="font-size:22px;font-weight:700;color:#111827;margin:0 0 8px 0;">Your Proposal Pulse Results</h2>
+      <h2 style="font-size:22px;font-weight:700;color:#111827;margin:0 0 8px 0;">Your ProposalPulse Results</h2>
       <p style="font-size:14px;color:#6b7280;margin:0 0 24px 0;">
         ${escapeHtml(documentLabel)} &mdash; ${escapeHtml(fileName || "uploaded document")}
       </p>
@@ -227,7 +227,7 @@ function buildWeeklyReportHtml(stats) {
     <!-- Header -->
     <div style="background-color:#00050f;padding:24px 32px;text-align:center;">
       <h1 style="margin:0;font-size:20px;font-weight:700;color:#00E5FA;letter-spacing:0.5px;">MISSION MEETS TECH</h1>
-      <p style="margin:4px 0 0;font-size:13px;color:rgba(255,255,255,0.6);">Weekly Proposal Pulse Report</p>
+      <p style="margin:4px 0 0;font-size:13px;color:rgba(255,255,255,0.6);">Weekly ProposalPulse Report</p>
     </div>
 
     <!-- Body -->

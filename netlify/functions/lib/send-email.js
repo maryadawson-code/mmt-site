@@ -1,10 +1,10 @@
 // send-email.js — Resend API wrapper for transactional email
 //
 // Uses fetch() (no npm dependency). Requires RESEND_API_KEY env var.
-// From address: Proposal Pulse <noreply@missionmeetstech.com>
+// From address: ProposalPulse <noreply@missionmeetstech.com>
 
 const RESEND_API_URL = "https://api.resend.com/emails";
-const DEFAULT_FROM = "Proposal Pulse <noreply@missionmeetstech.com>";
+const DEFAULT_FROM = "ProposalPulse <noreply@missionmeetstech.com>";
 
 /**
  * Send an email via Resend.

@@ -100,7 +100,7 @@ exports.handler = async (event) => {
           price_data: {
             currency: "usd",
             product_data: {
-              name: "Proposal Pulse Assessment",
+              name: "ProposalPulse Assessment",
               description: "1 additional assessment with full Gold Team Review",
             },
             unit_amount: PRICE_CENTS,

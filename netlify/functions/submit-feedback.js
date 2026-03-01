@@ -1,7 +1,7 @@
 // ============================================================
 // submit-feedback.js — Netlify Function
 //
-// POST endpoint for user feedback on Proposal Pulse assessments.
+// POST endpoint for user feedback on ProposalPulse assessments.
 // Stores feedback in the scores JSONB column as _feedback.
 // ============================================================
 

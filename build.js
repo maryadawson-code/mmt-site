@@ -412,7 +412,11 @@ function generateNewslettersJson(articles) {
 }
 
 function generateSitemap(articles, tags) {
-  const today = new Date().toISOString().split('T')[0];
+  // Use the most recent article's publish date for static pages
+  // (homepage/latest/newsletter content changes when articles are published)
+  const latestArticleDate = articles.length > 0
+    ? articles[0].isoDate
+    : new Date().toISOString().split('T')[0];
 
   // Static pages
   const staticPages = [
@@ -427,12 +431,21 @@ function generateSitemap(articles, tags) {
     { loc: '/proposal-pulse.html', priority: '0.8' },
   ];
 
+  // Build a map of topic slug → most recent article date within that topic
+  const topicLastmod = {};
+  tags.forEach(tag => {
+    const topicArticles = articles.filter(a => (a.tags || []).includes(tag.name));
+    topicLastmod[tag.slug] = topicArticles.length > 0
+      ? topicArticles[0].isoDate
+      : latestArticleDate;
+  });
+
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
   xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
 
   // Static pages
   staticPages.forEach(page => {
-    xml += `  <url>\n    <loc>${SITE_URL}${page.loc}</loc>\n    <lastmod>${today}</lastmod>\n    <priority>${page.priority}</priority>\n  </url>\n`;
+    xml += `  <url>\n    <loc>${SITE_URL}${page.loc}</loc>\n    <lastmod>${latestArticleDate}</lastmod>\n    <priority>${page.priority}</priority>\n  </url>\n`;
   });
 
   // Article pages
@@ -440,9 +453,9 @@ function generateSitemap(articles, tags) {
     xml += `  <url>\n    <loc>${article.canonicalUrl}</loc>\n    <lastmod>${article.isoDate}</lastmod>\n    <priority>0.8</priority>\n  </url>\n`;
   });
 
-  // Topic pages
+  // Topic pages — use most recent article date within each topic
   tags.forEach(tag => {
-    xml += `  <url>\n    <loc>${SITE_URL}/topics/${tag.slug}/</loc>\n    <lastmod>${today}</lastmod>\n    <priority>0.5</priority>\n  </url>\n`;
+    xml += `  <url>\n    <loc>${SITE_URL}/topics/${tag.slug}/</loc>\n    <lastmod>${topicLastmod[tag.slug]}</lastmod>\n    <priority>0.5</priority>\n  </url>\n`;
   });
 
   xml += '</urlset>\n';
@@ -592,7 +605,7 @@ async function generateOgImages(articles, tags) {
     { filename: 'resources.png', title: 'Federal Health IT Resources', subtitle: 'Curated links for defense and government', label: 'RESOURCES' },
     { filename: 'contact.png', title: 'Get in Touch', subtitle: 'Mission Meets Tech' },
     { filename: 'topics.png', title: 'Coverage Topics', subtitle: 'Browse all federal health IT topics', label: 'TOPICS' },
-    { filename: 'proposal-pulse.png', title: 'Proposal Pulse', subtitle: 'AI-scored federal proposal assessment', label: 'ASSESSMENT' },
+    { filename: 'proposal-pulse.png', title: 'ProposalPulse', subtitle: 'AI-scored federal proposal assessment', label: 'ASSESSMENT' },
     { filename: 'latest.png', title: 'Latest Articles', subtitle: 'All federal health IT intelligence', label: 'ARCHIVE' },
   ];
 

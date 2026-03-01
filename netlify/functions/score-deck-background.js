@@ -1,7 +1,7 @@
 // ============================================================
 // score-deck-background.js — Netlify Background Function
 //
-// Heavy scoring logic for Proposal Pulse. Runs as a background
+// Heavy scoring logic for ProposalPulse. Runs as a background
 // function (returns 202 immediately, up to 15 min execution).
 //
 // Receives ONLY { scoring_id } in the request body.
@@ -141,7 +141,7 @@ ${SCORING_RULES}`;
 function buildMessageContent(fileType, base64Data, extractedText, documentType) {
   const config = DOCUMENT_TYPES[documentType];
   const noun = config.noun;
-  const userPrompt = `Score this ${noun} using Proposal Pulse. Return only the JSON scorecard.`;
+  const userPrompt = `Score this ${noun} using ProposalPulse. Return only the JSON scorecard.`;
 
   if (fileType === "pdf" && base64Data) {
     return [
@@ -408,7 +408,7 @@ exports.handler = async (event) => {
 
       await sendEmail({
         to: email,
-        subject: `Your Proposal Pulse Results: ${scorecard.verdict} — ${config.label}`,
+        subject: `Your ProposalPulse Results: ${scorecard.verdict} — ${config.label}`,
         html: buildScoreReceiptHtml({
           scorecard,
           documentType,

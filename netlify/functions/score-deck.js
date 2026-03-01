@@ -1,5 +1,5 @@
 // ============================================================
-// score-deck.js — Netlify Function (Proposal Pulse Gateway)
+// score-deck.js — Netlify Function (ProposalPulse Gateway)
 //
 // Synchronous gateway: validates input, manages user/usage,
 // extracts text from DOCX/PPTX, stores the scoring payload

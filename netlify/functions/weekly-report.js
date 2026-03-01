@@ -1,6 +1,6 @@
 // weekly-report.js — Netlify Scheduled Function
 //
-// Sends a weekly Proposal Pulse usage digest to mary@missionmeetstech.com
+// Sends a weekly ProposalPulse usage digest to mary@missionmeetstech.com
 // every Monday at 9:00 AM ET (14:00 UTC).
 //
 // Schedule configured in netlify.toml:
@@ -116,7 +116,7 @@ exports.handler = async (event) => {
 
     const result = await sendEmail({
       to: REPORT_RECIPIENT,
-      subject: `Proposal Pulse Weekly Report — Week of ${weekLabel}`,
+      subject: `ProposalPulse Weekly Report — Week of ${weekLabel}`,
       html,
       from: "Mission Meets Tech <noreply@missionmeetstech.com>",
     });
