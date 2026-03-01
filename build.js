@@ -889,7 +889,7 @@ function copyStaticFiles({ archive, feed }) {
 // --- Podcast (preserved from original) ---
 
 async function fetchPodcast() {
-  console.log('Fetching podcast episodes from Transistor...');
+  console.log('Fetching podcast episodes from Riverside...');
 
   const parser = new Parser({
     customFields: {

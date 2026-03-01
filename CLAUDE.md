@@ -12,7 +12,7 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 - **Icons:** Inline SVGs (no external icon library)
 - **Forms:** Netlify Forms (contact page), Buttondown (email signup)
 - **Analytics:** Plausible (privacy-respecting, no cookies)
-- **Podcast embed:** Transistor.fm iframe
+- **Podcast embed:** Riverside.fm (episodes rendered at build time from RSS)
 - **Content:** Markdown files in `content/newsletter/` → build generates article pages
 - **Deploy:** Netlify from `main` branch, publish directory is `dist/`
 - **Serverless:** Netlify Functions — Proposal Pulse uses a 3-endpoint background architecture: `score-deck.js` (synchronous gateway: validates, gates usage, inserts pending row, returns `scoring_id`), `score-deck-background.js` (background function: extracts text, calls Claude Sonnet, updates row with scorecard, sends email, triggers Gold Team), `score-status.js` (polling endpoint: returns processing/error/complete status). Frontend polls every 3s. Also: `gold-team-review-background.js` — background function for Gold Team Review (full 9-section rewrite + pWin + executive summary → email); `create-checkout.js` + `stripe-webhook.js` — Stripe payment flow for $19.99/assessment; `weekly-report.js` — scheduled weekly usage digest
@@ -145,7 +145,7 @@ All icons are inline SVGs with `width="1em" height="1em" fill="currentColor" ari
 - `<main id="main-content">` landmark on every page
 - `*:focus-visible` outline (`2px solid var(--mmt-cyan)`) on every page
 - `<label class="sr-only">` on Buttondown email inputs
-- `title` attribute on Transistor iframe (`podcast.html`)
+- Podcast episodes rendered at build time from Riverside RSS feed
 - RSS `<link rel="alternate">` on every page
 
 ## External Links
@@ -157,7 +157,7 @@ All icons are inline SVGs with `width="1em" height="1em" fill="currentColor" ari
 - **Apple Podcasts:** https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530
 - **Spotify:** https://open.spotify.com/show/7sND342duH7Buw1cUs60lP
 - **Amazon Music:** https://music.amazon.com/podcasts/920fec9b-4fae-4bd0-ae4d-eaf1459cad2f
-- **Transistor RSS:** https://feeds.transistor.fm/fed-up-where-mission-meets-reality
+- **Riverside RSS:** https://api.riverside.fm/hosting/KJvFk8EM.rss
 - **Contact email:** mary@missionmeetstech.com
 
 ## Deployment
@@ -429,7 +429,7 @@ Adapted from the 1923 ASNE Code of Ethics. Operational, not aspirational.
 6. **Sitemap** — Dynamic sitemap with all pages, articles, topics → `dist/sitemap.xml`
 7. **RSS feed** — RSS 2.0 → `dist/feed.xml`
 8. **OG images** — SVG → PNG via `sharp` (1200x630, branded) → `dist/og/`; OG meta tags rewritten in all pages
-9. **Podcast** — Fetches episodes from Transistor RSS feed (rendered into podcast.html + homepage teaser)
+9. **Podcast** — Fetches episodes from Riverside RSS feed (rendered into podcast.html + homepage teaser)
 10. **Static files** — Copies HTML, images, robots.txt to `dist/`; injects build-time content at `<!-- BUILD:* -->` markers, search overlay after `</nav>`, and search script before `</body>`
 
 ### Build-Time Content Injection
