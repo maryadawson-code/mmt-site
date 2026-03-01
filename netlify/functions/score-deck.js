@@ -21,6 +21,7 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
 // --- Constants ---
 const MAX_FILE_SIZE_BYTES = 15 * 1024 * 1024;
+const MAX_TEXT_CHARS = 80000;
 // Legacy value — existing mp_feature_usage and mp_scoring_history records use "lethality_test"
 const FEATURE_NAME = "lethality_test";
 const FREE_USES = 3;
@@ -39,6 +40,29 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "Content-Type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
+
+
+// ============================================================
+// TEXT EXTRACTION (DOCX/PPTX only — keeps background payload small)
+// ============================================================
+
+async function extractText(base64Data, resolvedType) {
+  const buffer = Buffer.from(base64Data, "base64");
+
+  if (resolvedType === "docx") {
+    const mammoth = require("mammoth");
+    const result = await mammoth.extractRawText({ buffer });
+    return result.value;
+  }
+
+  if (resolvedType === "pptx") {
+    const officeparser = require("officeparser");
+    return await officeparser.parseOfficeAsync(buffer);
+  }
+
+  // PDFs: return null — sent as native document to Claude
+  return null;
+}
 
 
 // ============================================================
@@ -196,6 +220,58 @@ exports.handler = async (event) => {
       };
     }
 
+    // --- Extract text for DOCX/PPTX (reduces background function payload) ---
+    let extractedText = null;
+    let sowExtractedText = null;
+
+    if (resolvedType === "docx" || resolvedType === "pptx") {
+      try {
+        extractedText = await extractText(file_base64, resolvedType);
+        if (!extractedText || extractedText.trim().length < 50) {
+          return {
+            statusCode: 400,
+            headers: CORS_HEADERS,
+            body: JSON.stringify({
+              error: `Could not extract enough text from this ${resolvedType === "docx" ? "Word document" : "PowerPoint"}. Try exporting as PDF.`,
+            }),
+          };
+        }
+        if (extractedText.length > MAX_TEXT_CHARS) {
+          extractedText = extractedText.substring(0, MAX_TEXT_CHARS);
+        }
+      } catch (parseErr) {
+        console.error(`${resolvedType.toUpperCase()} parse error:`, parseErr);
+        return {
+          statusCode: 400,
+          headers: CORS_HEADERS,
+          body: JSON.stringify({
+            error: `Failed to read this ${resolvedType === "docx" ? "Word document" : "PowerPoint"}. Make sure it's a valid file. Try exporting as PDF.`,
+          }),
+        };
+      }
+    }
+
+    // Extract SOW text if provided (DOCX/PPTX only; PDFs sent as base64)
+    const sowBase64 = body.sow_base64 || null;
+    const sowContentType = body.sow_content_type || null;
+    if (sowBase64 && sowContentType) {
+      const sowResolved = ALLOWED_TYPES[sowContentType] || null;
+      if (sowResolved === "docx" || sowResolved === "pptx") {
+        try {
+          sowExtractedText = await extractText(sowBase64, sowResolved);
+          if (sowExtractedText && sowExtractedText.length > MAX_TEXT_CHARS) {
+            sowExtractedText = sowExtractedText.substring(0, MAX_TEXT_CHARS);
+          }
+          if (!sowExtractedText || sowExtractedText.trim().length < 50) {
+            sowExtractedText = null;
+          }
+        } catch (sowErr) {
+          console.error("SOW extraction error (continuing without):", sowErr);
+          sowExtractedText = null;
+        }
+      }
+    }
+
     // --- MissionPulse: User & Usage ---
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
@@ -268,6 +344,7 @@ exports.handler = async (event) => {
     }
 
     // --- Return scoring_id for polling ---
+    // Include extracted_text so frontend sends it (not file_base64) to background function
     return {
       statusCode: 200,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
@@ -275,6 +352,9 @@ exports.handler = async (event) => {
         scoring_id: scoringRow.id,
         uses_remaining: user.tier === "free" ? usage.uses_remaining - 1 : 999,
         user_tier: user.tier,
+        extracted_text: extractedText,
+        sow_extracted_text: sowExtractedText,
+        file_type_resolved: resolvedType,
       }),
     };
 

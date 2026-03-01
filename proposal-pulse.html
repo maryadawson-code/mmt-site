@@ -1133,7 +1133,7 @@ const GOLD_TEAM_URL = '/.netlify/functions/gold-team-review-background';
 const CHECKOUT_URL = '/.netlify/functions/create-checkout';
 const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
 const POLL_INTERVAL_MS = 3000;  // Poll every 3 seconds
-const POLL_TIMEOUT_MS = 180000; // 3 minute timeout
+const POLL_TIMEOUT_MS = 300000; // 5 minute timeout
 
 const ALLOWED_EXTENSIONS = ['pdf', 'pptx', 'docx'];
 const MIME_MAP = {
@@ -1534,24 +1534,41 @@ async function submitDeck() {
     }
 
     // Step 2: Fire background function (returns 202 immediately)
-    const bgPayload = Object.assign({
+    // Use extracted_text from gateway when available (DOCX/PPTX) — much smaller payload
+    // For PDFs (extracted_text is null), send file_base64 for native document upload
+    const bgPayload = {
       scoring_id: scoringId,
       email: email,
-      file_base64: fileBase64,
       file_type: mimeType,
       file_name: selectedFile.name,
       document_type: documentType,
-    }, sowBase64 ? {
-      sow_base64: sowBase64,
-      sow_content_type: MIME_MAP[sowFile.name.split('.').pop().toLowerCase()] || 'application/pdf',
-    } : {});
+    };
+
+    if (gatewayData.extracted_text) {
+      bgPayload.extracted_text = gatewayData.extracted_text;
+    } else {
+      bgPayload.file_base64 = fileBase64;
+    }
+
+    // SOW: use extracted text from gateway when available
+    if (sowBase64) {
+      if (gatewayData.sow_extracted_text) {
+        bgPayload.sow_extracted_text = gatewayData.sow_extracted_text;
+      } else {
+        bgPayload.sow_base64 = sowBase64;
+        bgPayload.sow_content_type = MIME_MAP[sowFile.name.split('.').pop().toLowerCase()] || 'application/pdf';
+      }
+    }
 
     fetch(BG_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(bgPayload),
-    }).catch(() => {
-      // Background trigger failed — scoring might still complete via retry
+    }).then(function(resp) {
+      if (!resp.ok && resp.status !== 202) {
+        console.error('Background trigger returned status:', resp.status);
+      }
+    }).catch(function() {
       console.error('Background function trigger failed');
     });
 

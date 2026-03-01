@@ -216,6 +216,8 @@ const ALLOWED_TYPES = {
 // ============================================================
 
 exports.handler = async (event) => {
+  console.log("score-deck-background invoked, body length:", event.body?.length || 0);
+
   // Background functions only accept POST
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method not allowed" };
@@ -225,15 +227,25 @@ exports.handler = async (event) => {
   try {
     const body = JSON.parse(event.body);
     scoring_id = body.scoring_id;
-    const { email, file_base64, file_type, file_name } = body;
+    const { email, file_type, file_name } = body;
+    const file_base64 = body.file_base64 || null;
+    const preExtractedText = body.extracted_text || null;
     const documentType = body.document_type || "pitch_deck";
     const sowBase64 = body.sow_base64 || null;
     const sowContentType = body.sow_content_type || null;
+    const sowPreExtractedText = body.sow_extracted_text || null;
 
-    if (!scoring_id || !email || !file_base64 || !file_type) {
+    if (!scoring_id || !email || !file_type) {
       console.error("Missing required fields in background function");
       return { statusCode: 400, body: "Missing required fields" };
     }
+
+    if (!file_base64 && !preExtractedText) {
+      console.error("Missing both file_base64 and extracted_text");
+      return { statusCode: 400, body: "Missing file data" };
+    }
+
+    console.log(`Processing scoring_id=${scoring_id}, type=${file_type}, hasText=${!!preExtractedText}, hasBase64=${!!file_base64}`);
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
@@ -256,40 +268,45 @@ exports.handler = async (event) => {
 
     // --- Process file ---
     const resolvedType = ALLOWED_TYPES[file_type] || "pdf";
-    let extractedText = null;
-    const fileBuffer = Buffer.from(file_base64, "base64");
+    let extractedText = preExtractedText;
 
-    if (resolvedType === "docx") {
-      try {
-        extractedText = await extractDocxText(fileBuffer);
-        if (!extractedText || extractedText.trim().length < 50) {
-          await markError(supabase, scoring_id, "Could not extract enough text from this Word document. Try exporting as PDF.");
-          return { statusCode: 200, body: "Extraction failed" };
+    // If gateway already extracted text (DOCX/PPTX), use it directly
+    // Otherwise, extract from file_base64 (PDF case or fallback)
+    if (!extractedText && file_base64) {
+      const fileBuffer = Buffer.from(file_base64, "base64");
+
+      if (resolvedType === "docx") {
+        try {
+          extractedText = await extractDocxText(fileBuffer);
+          if (!extractedText || extractedText.trim().length < 50) {
+            await markError(supabase, scoring_id, "Could not extract enough text from this Word document. Try exporting as PDF.");
+            return { statusCode: 200, body: "Extraction failed" };
+          }
+        } catch (parseErr) {
+          console.error("DOCX parse error:", parseErr);
+          await markError(supabase, scoring_id, "Failed to read this Word document. Make sure it's a valid .docx file. Try exporting as PDF.");
+          return { statusCode: 200, body: "Parse failed" };
         }
-      } catch (parseErr) {
-        console.error("DOCX parse error:", parseErr);
-        await markError(supabase, scoring_id, "Failed to read this Word document. Make sure it's a valid .docx file. Try exporting as PDF.");
-        return { statusCode: 200, body: "Parse failed" };
       }
-    }
 
-    if (resolvedType === "pptx") {
-      try {
-        extractedText = await extractPptxText(fileBuffer);
-        if (!extractedText || extractedText.trim().length < 50) {
-          await markError(supabase, scoring_id, "Could not extract enough text from this PowerPoint. Try exporting as PDF.");
-          return { statusCode: 200, body: "Extraction failed" };
+      if (resolvedType === "pptx") {
+        try {
+          extractedText = await extractPptxText(fileBuffer);
+          if (!extractedText || extractedText.trim().length < 50) {
+            await markError(supabase, scoring_id, "Could not extract enough text from this PowerPoint. Try exporting as PDF.");
+            return { statusCode: 200, body: "Extraction failed" };
+          }
+        } catch (parseErr) {
+          console.error("PPTX parse error:", parseErr);
+          await markError(supabase, scoring_id, "Failed to read this PowerPoint file. Make sure it's a valid .pptx file. Try exporting as PDF.");
+          return { statusCode: 200, body: "Parse failed" };
         }
-      } catch (parseErr) {
-        console.error("PPTX parse error:", parseErr);
-        await markError(supabase, scoring_id, "Failed to read this PowerPoint file. Make sure it's a valid .pptx file. Try exporting as PDF.");
-        return { statusCode: 200, body: "Parse failed" };
       }
     }
 
     // --- Process SOW (optional) ---
-    let sowText = null;
-    if (sowBase64) {
+    let sowText = sowPreExtractedText || null;
+    if (!sowText && sowBase64) {
       try {
         const sowResolvedType = sowContentType ? (ALLOWED_TYPES[sowContentType] || null) : null;
         const sowBuffer = Buffer.from(sowBase64, "base64");
@@ -318,6 +335,7 @@ exports.handler = async (event) => {
     }
 
     // --- Build prompt and call Claude API ---
+    console.log(`Calling Claude API for ${scoring_id} (${resolvedType}, textLen=${extractedText?.length || 0})`);
     const systemPrompt = buildSystemPrompt(documentType, sowText);
     const messageContent = buildMessageContent(resolvedType, file_base64, extractedText, documentType);
 
