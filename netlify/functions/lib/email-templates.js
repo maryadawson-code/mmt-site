@@ -309,4 +309,215 @@ function buildWeeklyReportHtml(stats) {
 </html>`;
 }
 
-module.exports = { buildScoreReceiptHtml, buildWeeklyReportHtml };
+// ============================================================
+// STRENGTHENED DRAFT EMAIL
+// ============================================================
+
+/**
+ * Build branded HTML email for AI-strengthened document draft.
+ * @param {Object} data
+ * @param {string} data.documentLabel - Human-readable label (e.g. "Pitch Deck")
+ * @param {string} data.fileName - Original file name
+ * @param {string} data.verdict - PASS | CONDITIONAL | FAIL
+ * @param {string} data.overallGrade - Computed overall grade
+ * @param {Array} data.scores - Full scorecard scores array
+ * @param {Array} data.strengthenedSections - Merged rewrite + review sections
+ * @param {Array} data.strongSections - Sections that scored above threshold
+ * @param {number|null} data.overallConfidence - Overall confidence percentage from reviewer
+ * @param {string|null} data.reviewerNotes - Reviewer summary notes
+ * @returns {string} HTML email body
+ */
+function buildStrengthenedDraftHtml(data) {
+  const {
+    documentLabel,
+    fileName,
+    verdict,
+    overallGrade,
+    scores,
+    strengthenedSections,
+    strongSections,
+    overallConfidence,
+    reviewerNotes,
+  } = data;
+
+  const vColor = verdictColor(verdict);
+  const gColor = gradeColor(overallGrade);
+  const sectionCount = strengthenedSections.length;
+  const confText = overallConfidence !== null ? `${overallConfidence}% overall confidence` : "";
+
+  // Compact scorecard summary
+  const summaryRows = (scores || [])
+    .map((s) => {
+      const isStrengthened = strengthenedSections.some((ss) => ss.criterion_id === s.id);
+      const statusLabel = isStrengthened ? "Strengthened" : "Strong";
+      const statusColor = isStrengthened ? "#f97316" : "#16a34a";
+      return `
+      <tr>
+        <td style="padding:6px 12px;border-bottom:1px solid #e5e7eb;font-size:13px;color:#374151;">${escapeHtml(s.title)}</td>
+        <td style="padding:6px 12px;border-bottom:1px solid #e5e7eb;text-align:center;">
+          <span style="display:inline-block;padding:2px 8px;border-radius:4px;font-weight:700;font-size:12px;color:#fff;background-color:${gradeColor(s.grade)};">${escapeHtml(s.grade)}</span>
+        </td>
+        <td style="padding:6px 12px;border-bottom:1px solid #e5e7eb;text-align:center;font-size:12px;font-weight:600;color:${statusColor};">${statusLabel}</td>
+      </tr>`;
+    })
+    .join("");
+
+  // Strengthened sections detail
+  const sectionBlocks = strengthenedSections
+    .map((s) => {
+      const confBadge =
+        s.confidence_pct !== null
+          ? `<span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700;color:#fff;background-color:${s.confidence_pct >= 70 ? "#16a34a" : s.confidence_pct >= 50 ? "#eab308" : "#ef4444"};margin-left:8px;">${s.confidence_pct}% confidence</span>`
+          : "";
+
+      // Triple-check indicators
+      let tripleCheck = "";
+      if (s.accuracy_ok !== null) {
+        const check = (ok, label) =>
+          `<span style="display:inline-block;margin-right:12px;font-size:12px;color:${ok ? "#16a34a" : "#ef4444"};">${ok ? "\u2713" : "\u2717"} ${label}</span>`;
+        tripleCheck = `
+        <div style="margin-top:8px;">
+          ${check(s.accuracy_ok, "Accuracy")}
+          ${check(s.consistency_ok, "Consistency")}
+          ${check(s.improvement_ok, "Improvement")}
+        </div>`;
+      }
+
+      const reviewNotes =
+        s.review_notes && s.review_notes.length > 0
+          ? `<p style="margin:8px 0 0;font-size:12px;color:#6b7280;font-style:italic;">${escapeHtml(s.review_notes)}</p>`
+          : "";
+
+      return `
+      <div style="margin-bottom:24px;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;">
+        <!-- Section header -->
+        <div style="padding:12px 16px;background-color:#f9fafb;border-bottom:1px solid #e5e7eb;">
+          <span style="font-size:15px;font-weight:700;color:#111827;">${escapeHtml(s.criterion_title)}</span>
+          <span style="display:inline-block;padding:2px 8px;border-radius:4px;font-weight:700;font-size:12px;color:#fff;background-color:${gradeColor(s.original_grade)};margin-left:8px;">${escapeHtml(s.original_grade)}</span>
+          ${confBadge}
+        </div>
+
+        <div style="padding:16px;">
+          <!-- Original excerpt -->
+          <p style="margin:0 0 4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#9ca3af;">Original</p>
+          <div style="padding:12px 16px;background-color:#f3f4f6;border-radius:6px;margin-bottom:16px;">
+            <p style="margin:0;font-size:14px;color:#6b7280;font-style:italic;line-height:1.6;">${escapeHtml(s.original_excerpt)}</p>
+          </div>
+
+          <!-- Strengthened version -->
+          <p style="margin:0 0 4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#0369a1;">Strengthened</p>
+          <div style="padding:12px 16px;background-color:#ffffff;border:1px solid #bae6fd;border-radius:6px;margin-bottom:12px;">
+            <p style="margin:0;font-size:14px;color:#111827;line-height:1.6;">${escapeHtml(s.strengthened_text)}</p>
+          </div>
+
+          <!-- What changed -->
+          <p style="margin:0;font-size:13px;color:#6b7280;line-height:1.5;"><strong style="color:#374151;">What changed:</strong> ${escapeHtml(s.changes_made)}</p>
+
+          ${tripleCheck}
+          ${reviewNotes}
+        </div>
+      </div>`;
+    })
+    .join("");
+
+  // Strong sections grouped
+  let strongSectionsHtml = "";
+  if (strongSections && strongSections.length > 0) {
+    const strongList = strongSections
+      .map((s) => `${escapeHtml(s.title)} (${escapeHtml(s.grade)})`)
+      .join(", ");
+    strongSectionsHtml = `
+      <div style="margin-top:8px;padding:12px 16px;background-color:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;">
+        <p style="margin:0;font-size:13px;color:#166534;"><strong>These sections need no changes:</strong> ${strongList}</p>
+      </div>`;
+  }
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background-color:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <div style="max-width:600px;margin:0 auto;background-color:#ffffff;">
+
+    <!-- Header -->
+    <div style="background-color:#00050f;padding:24px 32px;text-align:center;">
+      <h1 style="margin:0;font-size:20px;font-weight:700;color:#00E5FA;letter-spacing:0.5px;">MISSION MEETS TECH</h1>
+      <p style="margin:4px 0 0;font-size:13px;color:rgba(255,255,255,0.6);">Strengthened Draft</p>
+    </div>
+
+    <!-- Body -->
+    <div style="padding:32px;">
+
+      <h2 style="font-size:20px;font-weight:700;color:#111827;margin:0 0 8px 0;">Your Strengthened Draft</h2>
+      <p style="font-size:14px;color:#6b7280;margin:0 0 16px 0;">
+        ${escapeHtml(documentLabel)} &mdash; ${escapeHtml(fileName || "uploaded document")}
+      </p>
+
+      <!-- Summary bar -->
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;"><tr>
+        <td style="padding:12px;background-color:#f9fafb;border-radius:8px;border:1px solid #e5e7eb;text-align:center;" width="33%">
+          <p style="margin:0;font-size:20px;font-weight:800;color:${vColor};">${escapeHtml(verdict || "N/A")}</p>
+          <p style="margin:2px 0 0;font-size:11px;color:#6b7280;text-transform:uppercase;">Verdict</p>
+        </td>
+        <td width="8"></td>
+        <td style="padding:12px;background-color:#f9fafb;border-radius:8px;border:1px solid #e5e7eb;text-align:center;" width="33%">
+          <p style="margin:0;font-size:20px;font-weight:800;color:${gColor};">${escapeHtml(overallGrade)}</p>
+          <p style="margin:2px 0 0;font-size:11px;color:#6b7280;text-transform:uppercase;">Grade</p>
+        </td>
+        <td width="8"></td>
+        <td style="padding:12px;background-color:#f9fafb;border-radius:8px;border:1px solid #e5e7eb;text-align:center;" width="33%">
+          <p style="margin:0;font-size:20px;font-weight:800;color:#0369a1;">${sectionCount}</p>
+          <p style="margin:2px 0 0;font-size:11px;color:#6b7280;text-transform:uppercase;">Strengthened</p>
+        </td>
+      </tr></table>
+
+      ${confText ? `<p style="font-size:13px;color:#6b7280;margin:0 0 20px;text-align:center;">${sectionCount} section${sectionCount !== 1 ? "s" : ""} strengthened &middot; ${confText}</p>` : ""}
+
+      <!-- Compact scorecard -->
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;margin-bottom:24px;">
+        <tr style="background-color:#f9fafb;">
+          <th style="padding:8px 12px;text-align:left;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #e5e7eb;">Criteria</th>
+          <th style="padding:8px 12px;text-align:center;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #e5e7eb;">Grade</th>
+          <th style="padding:8px 12px;text-align:center;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #e5e7eb;">Status</th>
+        </tr>
+        ${summaryRows}
+      </table>
+
+      <!-- Strengthened sections -->
+      <h3 style="font-size:17px;font-weight:700;color:#111827;margin:0 0 16px;">Strengthened Sections</h3>
+      ${sectionBlocks}
+
+      ${strongSectionsHtml}
+
+      <!-- Disclaimer -->
+      <div style="margin-top:24px;padding:16px;background-color:#fefce8;border:1px solid #fde68a;border-radius:8px;">
+        <p style="margin:0;font-size:13px;color:#854d0e;line-height:1.5;">
+          <strong>Important:</strong> This is an AI-generated starting point. Review all strengthened text before submission. Any <code style="background:#fef3c7;padding:1px 4px;border-radius:3px;font-size:12px;">[INSERT: ...]</code> placeholders require your specific data. Facts and figures should be verified against your actual records.
+        </p>
+      </div>
+
+      ${reviewerNotes ? `<p style="margin:16px 0 0;font-size:13px;color:#6b7280;font-style:italic;">${escapeHtml(reviewerNotes)}</p>` : ""}
+
+      <!-- CTA -->
+      <div style="margin-top:28px;text-align:center;">
+        <a href="https://missionmeetstech.com/contact.html" style="display:inline-block;padding:12px 28px;background-color:#00050f;color:#00E5FA;font-size:14px;font-weight:600;text-decoration:none;border-radius:6px;margin-right:8px;">Need Expert Help?</a>
+        <a href="https://missionmeetstech.com/lethality-test.html" style="display:inline-block;padding:12px 28px;background-color:#ffffff;color:#00050f;font-size:14px;font-weight:600;text-decoration:none;border-radius:6px;border:1px solid #d1d5db;">Score Another Document</a>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div style="padding:20px 32px;background-color:#f9fafb;border-top:1px solid #e5e7eb;text-align:center;">
+      <p style="margin:0 0 4px;font-size:13px;color:#6b7280;">
+        <a href="https://missionmeetstech.com" style="color:#0369a1;text-decoration:none;">Mission Meets Tech</a> &mdash; Federal Health IT Intelligence
+      </p>
+      <p style="margin:0;font-size:11px;color:#9ca3af;">
+        Views expressed are those of the authors and do not represent any employer or government agency.
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>`;
+}
+
+module.exports = { buildScoreReceiptHtml, buildWeeklyReportHtml, buildStrengthenedDraftHtml };

@@ -611,9 +611,40 @@
       animation: fadeInUp 0.35s ease-out;
     }
 
+    /* ===== STRENGTHEN STATUS ===== */
+    .strengthen-status {
+      margin-top: 1.5rem;
+      padding: 1rem 1.25rem;
+      border: 1px solid rgba(0, 229, 250, 0.2);
+      border-radius: 0.75rem;
+      background: rgba(0, 229, 250, 0.05);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .strengthen-spinner-small {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(0, 229, 250, 0.2);
+      border-top-color: var(--primary-cyan);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    .strengthen-status-text {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+    .strengthen-status.success {
+      border-color: rgba(34, 197, 94, 0.3);
+      background: rgba(34, 197, 94, 0.05);
+    }
+    .strengthen-status.success .strengthen-status-text { color: #22c55e; }
+    .strengthen-status.error .strengthen-status-text { color: var(--text-muted); }
+
     /* ===== PRINT STYLES ===== */
     @media print {
-      nav, .results-cta, footer, .upload-card, .processing-container, .uses-badge { display: none; }
+      nav, .results-cta, footer, .upload-card, .processing-container, .uses-badge, .strengthen-status { display: none; }
       body { background: white; color: black; }
       .lt-container { max-width: 100%; }
       .results-verdict, .scorecard, .red-flags, .top-fix { border-color: #ccc; }
@@ -789,6 +820,7 @@
     <div class="scorecard" id="results-scorecard"></div>
     <div id="results-top-fix"></div>
     <div id="results-red-flags"></div>
+    <div id="strengthen-status"></div>
 
     <div class="results-cta">
       <h3>Need a full review?</h3>
@@ -873,6 +905,7 @@
 // ===== LETHALITY TEST — AI DECK SCORER =====
 
 const API_URL = '/.netlify/functions/score-deck';
+const STRENGTHEN_URL = '/.netlify/functions/strengthen-document-background';
 const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
 const TIMEOUT_MS = 90000; // 90 seconds
 
@@ -1254,6 +1287,90 @@ function renderResults(data) {
   }
 
   showScreen('screen-results');
+
+  // --- Trigger strengthen if weak sections exist ---
+  triggerStrengthen(data);
+}
+
+// ===== STRENGTHEN DOCUMENT =====
+
+function triggerStrengthen(data) {
+  const sc = data.scorecard;
+  const scores = sc.scores || [];
+  const weakSections = scores.filter(s => (s.points || 0) <= 2.0);
+
+  const statusEl = document.getElementById('strengthen-status');
+
+  if (weakSections.length === 0) {
+    statusEl.innerHTML = '';
+    return;
+  }
+
+  // Show loading state
+  statusEl.innerHTML = `
+    <div class="strengthen-status">
+      <div class="strengthen-spinner-small"></div>
+      <div class="strengthen-status-text">
+        Your strengthened draft is being prepared and will arrive in your email in 1&ndash;2 minutes.
+      </div>
+    </div>
+  `;
+
+  // Build payload
+  const email = emailInput.value.trim();
+  const documentType = document.getElementById('doc-type-select').value;
+  const payload = {
+    email: email,
+    document_type: documentType,
+    file_name: selectedFile ? selectedFile.name : 'document',
+    scorecard: sc,
+  };
+
+  // For PDFs (extracted_text is null), send file_base64 + file_type
+  if (data.extracted_text) {
+    payload.extracted_text = data.extracted_text;
+  } else if (fileBase64) {
+    payload.file_base64 = fileBase64;
+    const ext = selectedFile ? selectedFile.name.split('.').pop().toLowerCase() : 'pdf';
+    payload.file_type = MIME_MAP[ext] || 'application/pdf';
+  }
+
+  // Fire and forget — background function returns 202 immediately
+  fetch(STRENGTHEN_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  .then(response => {
+    if (response.status === 202 || response.ok) {
+      statusEl.innerHTML = `
+        <div class="strengthen-status success">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+          <div class="strengthen-status-text">
+            Strengthened draft is on its way! Check your email in 1&ndash;2 minutes for AI-rewritten versions of ${weakSections.length} weak section${weakSections.length !== 1 ? 's' : ''}.
+          </div>
+        </div>
+      `;
+    } else {
+      showStrengthenFallback(statusEl);
+    }
+  })
+  .catch(() => {
+    showStrengthenFallback(statusEl);
+  });
+}
+
+function showStrengthenFallback(statusEl) {
+  statusEl.innerHTML = `
+    <div class="strengthen-status error">
+      <div class="strengthen-status-text">
+        Strengthened draft unavailable. Your scorecard above is still valid.
+      </div>
+    </div>
+  `;
 }
 
 function getGradeClass(grade) {
@@ -1280,6 +1397,7 @@ function resetTool() {
   emailInput.value = '';
   document.getElementById('doc-type-select').value = 'pitch_deck';
   document.getElementById('file-preview').classList.remove('visible');
+  document.getElementById('strengthen-status').innerHTML = '';
   uploadZone.style.display = '';
   submitBtn.disabled = true;
   hideError();
