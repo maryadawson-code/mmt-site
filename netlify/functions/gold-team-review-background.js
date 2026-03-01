@@ -8,7 +8,9 @@
 //
 // Background function: returns 202 immediately, runs up to 15 min.
 // Triggered by frontend after scoring completes.
-// Replaces strengthen-document-background.js.
+//
+// Receives only { scoring_id } — reads all data from the DB.
+// The scoring function stores _document_text in the scores JSONB.
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
@@ -29,37 +31,6 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "Content-Type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
-
-
-// ============================================================
-// TEXT EXTRACTION (handles all file types)
-// ============================================================
-
-async function extractTextFromBase64(base64Data, fileType) {
-  const buffer = Buffer.from(base64Data, "base64");
-
-  if (fileType === "application/pdf" || fileType === "pdf") {
-    const pdfParse = require("pdf-parse");
-    const data = await pdfParse(buffer);
-    return data.text;
-  }
-
-  if (fileType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || fileType === "docx") {
-    const mammoth = require("mammoth");
-    const result = await mammoth.extractRawText({ buffer });
-    return result.value;
-  }
-
-  if (fileType === "application/vnd.openxmlformats-officedocument.presentationml.presentation" || fileType === "pptx") {
-    const officeparser = require("officeparser");
-    return await officeparser.parseOfficeAsync(buffer);
-  }
-
-  // Fallback: try pdf-parse
-  const pdfParse = require("pdf-parse");
-  const data = await pdfParse(buffer);
-  return data.text;
-}
 
 
 // ============================================================
@@ -232,6 +203,8 @@ Triple-check each rewrite. Provide executive summary and next steps. Return only
 // ============================================================
 
 exports.handler = async (event) => {
+  console.log("Gold Team Review invoked");
+
   // CORS preflight
   if (event.httpMethod === "OPTIONS") {
     return { statusCode: 204, headers: CORS_HEADERS, body: "" };
@@ -247,15 +220,46 @@ exports.handler = async (event) => {
 
   try {
     const body = JSON.parse(event.body);
-    const { email, document_type, file_name, scorecard } = body;
-    const extractedText = body.extracted_text || null;
-    const fileBase64 = body.file_base64 || null;
+    const scoring_id = body.scoring_id;
 
-    // --- Validate inputs ---
-    if (!email || !scorecard || !document_type) {
-      console.error("Gold Team: missing required fields");
+    if (!scoring_id) {
+      console.error("Gold Team: missing scoring_id");
       return;
     }
+
+    console.log(`Gold Team: starting for scoring_id=${scoring_id}`);
+
+    // --- Read scoring record from DB ---
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+
+    const { data: record, error: lookupErr } = await supabase
+      .from("mp_scoring_history")
+      .select("id, scores, verdict, document_type, file_name, user_id, created_at")
+      .eq("id", scoring_id)
+      .single();
+
+    if (lookupErr || !record) {
+      console.error("Gold Team: scoring record not found:", scoring_id);
+      return;
+    }
+
+    // Anti-abuse: verify record is recent (within 10 minutes)
+    const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+    if (record.created_at < tenMinutesAgo) {
+      console.error("Gold Team: scoring record too old — possible abuse");
+      return;
+    }
+
+    if (!record.scores || record.scores._pending) {
+      console.error("Gold Team: scoring not yet complete for:", scoring_id);
+      return;
+    }
+
+    // Extract data from the scoring record
+    const scorecard = record.scores;
+    const documentText = scorecard._document_text || null;
+    const document_type = record.document_type || "pitch_deck";
+    const file_name = record.file_name;
 
     const config = DOCUMENT_TYPES[document_type];
     if (!config) {
@@ -263,58 +267,23 @@ exports.handler = async (event) => {
       return;
     }
 
-    // --- Anti-abuse: verify user has a recent scoring record ---
-    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
-    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
-
-    const normalizedEmail = email.toLowerCase().trim();
+    // Look up user email
     const { data: user } = await supabase
       .from("mp_users")
-      .select("id")
-      .eq("email", normalizedEmail)
+      .select("email")
+      .eq("id", record.user_id)
       .single();
 
-    if (!user) {
-      console.error("Gold Team: no user found for email");
+    if (!user || !user.email) {
+      console.error("Gold Team: no user found for scoring record");
       return;
     }
 
-    const { data: userScore } = await supabase
-      .from("mp_scoring_history")
-      .select("id")
-      .eq("user_id", user.id)
-      .eq("feature", "lethality_test")
-      .gte("created_at", fiveMinutesAgo)
-      .limit(1)
-      .maybeSingle();
-
-    if (!userScore) {
-      console.error("Gold Team: no recent scoring record found — possible abuse");
-      return;
-    }
-
-    // --- Get document text ---
-    let documentText = extractedText;
-    const fileType = body.file_type || null;
-
-    if (!documentText && fileBase64) {
-      try {
-        documentText = await extractTextFromBase64(fileBase64, fileType);
-      } catch (extractErr) {
-        console.error("Gold Team: text extraction failed:", extractErr);
-        return;
-      }
-    }
+    const normalizedEmail = user.email.toLowerCase().trim();
 
     if (!documentText || documentText.trim().length < 50) {
-      console.error("Gold Team: insufficient document text");
+      console.error("Gold Team: insufficient document text in scoring record");
       return;
-    }
-
-    // Truncate very long documents
-    const MAX_TEXT_CHARS = 80000;
-    if (documentText.length > MAX_TEXT_CHARS) {
-      documentText = documentText.substring(0, MAX_TEXT_CHARS);
     }
 
     // --- Call 1: Rewrite ALL sections + pWin ---

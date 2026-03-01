@@ -1593,6 +1593,7 @@ function startPolling(scoringId, gatewayData) {
       }
 
       if (data.status === 'complete') {
+        data.scoring_id = scoringId;
         await completePipelineAnimated();
         renderResults(data);
         isSubmitting = false;
@@ -1756,7 +1757,6 @@ function renderResults(data) {
 // ===== GOLD TEAM REVIEW =====
 
 function triggerGoldTeamReview(data) {
-  const sc = data.scorecard;
   const statusEl = document.getElementById('gold-team-status');
 
   // Show loading state
@@ -1769,25 +1769,12 @@ function triggerGoldTeamReview(data) {
     </div>
   `;
 
-  // Build payload — always send file_base64 + file_type (Gold Team extracts text itself)
-  const email = emailInput.value.trim();
-  const documentType = document.getElementById('doc-type-select').value;
-  const ext = selectedFile ? selectedFile.name.split('.').pop().toLowerCase() : 'pdf';
-  const payload = {
-    email: email,
-    document_type: documentType,
-    file_name: selectedFile ? selectedFile.name : 'document',
-    scorecard: sc,
-    file_base64: fileBase64,
-    file_type: MIME_MAP[ext] || 'application/pdf',
-  };
-
-  // Fire and forget — background function returns 202 immediately
+  // Only send scoring_id — Gold Team reads everything from the DB
   goldTeamAbort = new AbortController();
   fetch(GOLD_TEAM_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
+    body: JSON.stringify({ scoring_id: data.scoring_id }),
     signal: goldTeamAbort.signal,
   })
   .then(response => {

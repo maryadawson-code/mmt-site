@@ -342,13 +342,37 @@ exports.handler = async (event) => {
     // --- Compute grade and update row ---
     const { avgScore, overallGrade } = computeOverallGrade(scorecard);
 
+    // Extract document text for Gold Team Review (all file types)
+    // For DOCX/PPTX, extractedText is already available from the gateway.
+    // For PDFs, extract text now using pdf-parse (Gold Team needs text, not base64).
+    let documentText = extractedText;
+    if (!documentText && fileBase64 && fileType === "pdf") {
+      try {
+        const pdfParse = require("pdf-parse");
+        const pdfBuffer = Buffer.from(fileBase64, "base64");
+        const pdfData = await pdfParse(pdfBuffer);
+        documentText = pdfData.text;
+        if (documentText && documentText.length > MAX_TEXT_CHARS) {
+          documentText = documentText.substring(0, MAX_TEXT_CHARS);
+        }
+      } catch (pdfErr) {
+        console.error("PDF text extraction for Gold Team failed:", pdfErr);
+      }
+    }
+
+    // Store scorecard + document text (Gold Team reads _document_text from scores)
+    const scorecardWithText = {
+      ...scorecard,
+      _document_text: documentText || null,
+    };
+
     const { error: updateErr } = await supabase
       .from("mp_scoring_history")
       .update({
         verdict: scorecard.verdict || null,
         overall_grade: overallGrade,
         avg_score: avgScore ? parseFloat(avgScore.toFixed(2)) : null,
-        scores: scorecard,
+        scores: scorecardWithText,
         red_flags: scorecard.red_flags || null,
         top_fix: scorecard.top_fix || null,
         model_used: MODEL,
