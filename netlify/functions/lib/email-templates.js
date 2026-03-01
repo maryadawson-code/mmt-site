@@ -3,7 +3,7 @@
 // Templates use inline CSS only (email clients strip <style> blocks).
 // Dark-on-light layout for email readability (inverted from site dark theme).
 
-// --- Grade color mapping (matches lethality-test.html) ---
+// --- Grade color mapping (matches proposal-pulse.html) ---
 function gradeColor(grade) {
   const colors = {
     A: "#16a34a",
@@ -38,7 +38,7 @@ function escapeHtml(str) {
 // ============================================================
 
 /**
- * Build branded HTML email for Lethality Test score receipt.
+ * Build branded HTML email for Proposal Pulse score receipt.
  * @param {Object} data
  * @param {Object} data.scorecard - Full scorecard from Claude (scores, verdict, red_flags, top_fix)
  * @param {string} data.documentType - Document type key (e.g. "pitch_deck")
@@ -89,13 +89,13 @@ function buildScoreReceiptHtml(data) {
     <!-- Header -->
     <div style="background-color:#00050f;padding:24px 32px;text-align:center;">
       <h1 style="margin:0;font-size:20px;font-weight:700;color:#00E5FA;letter-spacing:0.5px;">MISSION MEETS TECH</h1>
-      <p style="margin:4px 0 0;font-size:13px;color:rgba(255,255,255,0.6);">The Lethality Test</p>
+      <p style="margin:4px 0 0;font-size:13px;color:rgba(255,255,255,0.6);">Proposal Pulse</p>
     </div>
 
     <!-- Body -->
     <div style="padding:32px;">
 
-      <h2 style="font-size:22px;font-weight:700;color:#111827;margin:0 0 8px 0;">Your Lethality Test Results</h2>
+      <h2 style="font-size:22px;font-weight:700;color:#111827;margin:0 0 8px 0;">Your Proposal Pulse Results</h2>
       <p style="font-size:14px;color:#6b7280;margin:0 0 24px 0;">
         ${escapeHtml(documentLabel)} &mdash; ${escapeHtml(fileName || "uploaded document")}
       </p>
@@ -227,7 +227,7 @@ function buildWeeklyReportHtml(stats) {
     <!-- Header -->
     <div style="background-color:#00050f;padding:24px 32px;text-align:center;">
       <h1 style="margin:0;font-size:20px;font-weight:700;color:#00E5FA;letter-spacing:0.5px;">MISSION MEETS TECH</h1>
-      <p style="margin:4px 0 0;font-size:13px;color:rgba(255,255,255,0.6);">Weekly Lethality Test Report</p>
+      <p style="margin:4px 0 0;font-size:13px;color:rgba(255,255,255,0.6);">Weekly Proposal Pulse Report</p>
     </div>
 
     <!-- Body -->
@@ -310,24 +310,28 @@ function buildWeeklyReportHtml(stats) {
 }
 
 // ============================================================
-// STRENGTHENED DRAFT EMAIL
+// GOLD TEAM REVIEW EMAIL
 // ============================================================
 
 /**
- * Build branded HTML email for AI-strengthened document draft.
+ * Build branded HTML email for Gold Team Review.
+ * Full document rewrite (all 9 sections) + pWin + executive summary + next steps.
  * @param {Object} data
  * @param {string} data.documentLabel - Human-readable label (e.g. "Pitch Deck")
  * @param {string} data.fileName - Original file name
  * @param {string} data.verdict - PASS | CONDITIONAL | FAIL
  * @param {string} data.overallGrade - Computed overall grade
  * @param {Array} data.scores - Full scorecard scores array
- * @param {Array} data.strengthenedSections - Merged rewrite + review sections
- * @param {Array} data.strongSections - Sections that scored above threshold
+ * @param {Array} data.strengthenedSections - Merged rewrite + review sections (all 9)
+ * @param {number|null} data.pwinEstimate - Probability of win (0-100)
+ * @param {string|null} data.pwinJustification - pWin justification text
  * @param {number|null} data.overallConfidence - Overall confidence percentage from reviewer
  * @param {string|null} data.reviewerNotes - Reviewer summary notes
+ * @param {Array|null} data.executiveSummary - 3-5 bullet points
+ * @param {Array|null} data.nextSteps - 3-5 prioritized actions
  * @returns {string} HTML email body
  */
-function buildStrengthenedDraftHtml(data) {
+function buildGoldTeamReviewHtml(data) {
   const {
     documentLabel,
     fileName,
@@ -335,9 +339,12 @@ function buildStrengthenedDraftHtml(data) {
     overallGrade,
     scores,
     strengthenedSections,
-    strongSections,
+    pwinEstimate,
+    pwinJustification,
     overallConfidence,
     reviewerNotes,
+    executiveSummary,
+    nextSteps,
   } = data;
 
   const vColor = verdictColor(verdict);
@@ -345,12 +352,48 @@ function buildStrengthenedDraftHtml(data) {
   const sectionCount = strengthenedSections.length;
   const confText = overallConfidence !== null ? `${overallConfidence}% overall confidence` : "";
 
+  // pWin color coding
+  function pwinColor(pwin) {
+    if (pwin >= 60) return "#16a34a";
+    if (pwin >= 40) return "#eab308";
+    if (pwin >= 20) return "#f97316";
+    return "#ef4444";
+  }
+
+  // pWin badge
+  let pwinHtml = "";
+  if (pwinEstimate !== null) {
+    const pColor = pwinColor(pwinEstimate);
+    pwinHtml = `
+      <div style="text-align:center;margin-bottom:24px;">
+        <div style="display:inline-block;padding:16px 32px;border-radius:12px;border:2px solid ${pColor};background-color:rgba(0,0,0,0.02);">
+          <p style="margin:0 0 4px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#6b7280;">Estimated pWin</p>
+          <p style="margin:0;font-size:36px;font-weight:800;color:${pColor};">${pwinEstimate}%</p>
+        </div>
+        ${pwinJustification ? `<p style="margin:12px auto 0;font-size:13px;color:#6b7280;max-width:450px;line-height:1.5;">${escapeHtml(pwinJustification)}</p>` : ""}
+      </div>`;
+  }
+
+  // Executive summary bullets
+  let execSummaryHtml = "";
+  if (executiveSummary && executiveSummary.length > 0) {
+    const bullets = executiveSummary
+      .map((b) => `<li style="margin-bottom:6px;font-size:14px;color:#374151;line-height:1.5;">${escapeHtml(b)}</li>`)
+      .join("");
+    execSummaryHtml = `
+      <div style="margin-bottom:24px;padding:16px 20px;border-left:4px solid #00E5FA;background-color:#f0f9ff;border-radius:0 8px 8px 0;">
+        <h3 style="margin:0 0 10px;font-size:15px;font-weight:700;color:#0369a1;text-transform:uppercase;letter-spacing:0.5px;">Executive Change Summary</h3>
+        <ul style="margin:0;padding-left:20px;">${bullets}</ul>
+      </div>`;
+  }
+
   // Compact scorecard summary
   const summaryRows = (scores || [])
     .map((s) => {
-      const isStrengthened = strengthenedSections.some((ss) => ss.criterion_id === s.id);
-      const statusLabel = isStrengthened ? "Strengthened" : "Strong";
-      const statusColor = isStrengthened ? "#f97316" : "#16a34a";
+      const section = strengthenedSections.find((ss) => ss.criterion_id === s.id);
+      const status = section ? section.status : "polished";
+      const statusLabel = status === "rewritten" ? "Rewritten" : "Polished";
+      const statusColor = status === "rewritten" ? "#f97316" : "#16a34a";
       return `
       <tr>
         <td style="padding:6px 12px;border-bottom:1px solid #e5e7eb;font-size:13px;color:#374151;">${escapeHtml(s.title)}</td>
@@ -362,13 +405,17 @@ function buildStrengthenedDraftHtml(data) {
     })
     .join("");
 
-  // Strengthened sections detail
+  // Section detail blocks (all 9)
   const sectionBlocks = strengthenedSections
     .map((s) => {
       const confBadge =
         s.confidence_pct !== null
           ? `<span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700;color:#fff;background-color:${s.confidence_pct >= 70 ? "#16a34a" : s.confidence_pct >= 50 ? "#eab308" : "#ef4444"};margin-left:8px;">${s.confidence_pct}% confidence</span>`
           : "";
+
+      const statusBadge = s.status === "rewritten"
+        ? `<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;color:#fff;background-color:#f97316;margin-left:8px;">Rewritten</span>`
+        : `<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;color:#fff;background-color:#16a34a;margin-left:8px;">Polished</span>`;
 
       // Triple-check indicators
       let tripleCheck = "";
@@ -390,27 +437,24 @@ function buildStrengthenedDraftHtml(data) {
 
       return `
       <div style="margin-bottom:24px;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;">
-        <!-- Section header -->
         <div style="padding:12px 16px;background-color:#f9fafb;border-bottom:1px solid #e5e7eb;">
           <span style="font-size:15px;font-weight:700;color:#111827;">${escapeHtml(s.criterion_title)}</span>
           <span style="display:inline-block;padding:2px 8px;border-radius:4px;font-weight:700;font-size:12px;color:#fff;background-color:${gradeColor(s.original_grade)};margin-left:8px;">${escapeHtml(s.original_grade)}</span>
+          ${statusBadge}
           ${confBadge}
         </div>
 
         <div style="padding:16px;">
-          <!-- Original excerpt -->
           <p style="margin:0 0 4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#9ca3af;">Original</p>
           <div style="padding:12px 16px;background-color:#f3f4f6;border-radius:6px;margin-bottom:16px;">
             <p style="margin:0;font-size:14px;color:#6b7280;font-style:italic;line-height:1.6;">${escapeHtml(s.original_excerpt)}</p>
           </div>
 
-          <!-- Strengthened version -->
           <p style="margin:0 0 4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#0369a1;">Strengthened</p>
           <div style="padding:12px 16px;background-color:#ffffff;border:1px solid #bae6fd;border-radius:6px;margin-bottom:12px;">
             <p style="margin:0;font-size:14px;color:#111827;line-height:1.6;">${escapeHtml(s.strengthened_text)}</p>
           </div>
 
-          <!-- What changed -->
           <p style="margin:0;font-size:13px;color:#6b7280;line-height:1.5;"><strong style="color:#374151;">What changed:</strong> ${escapeHtml(s.changes_made)}</p>
 
           ${tripleCheck}
@@ -420,15 +464,16 @@ function buildStrengthenedDraftHtml(data) {
     })
     .join("");
 
-  // Strong sections grouped
-  let strongSectionsHtml = "";
-  if (strongSections && strongSections.length > 0) {
-    const strongList = strongSections
-      .map((s) => `${escapeHtml(s.title)} (${escapeHtml(s.grade)})`)
-      .join(", ");
-    strongSectionsHtml = `
-      <div style="margin-top:8px;padding:12px 16px;background-color:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;">
-        <p style="margin:0;font-size:13px;color:#166534;"><strong>These sections need no changes:</strong> ${strongList}</p>
+  // Next steps
+  let nextStepsHtml = "";
+  if (nextSteps && nextSteps.length > 0) {
+    const items = nextSteps
+      .map((step, i) => `<li style="margin-bottom:8px;font-size:14px;color:#374151;line-height:1.5;"><strong style="color:#111827;">${i + 1}.</strong> ${escapeHtml(step)}</li>`)
+      .join("");
+    nextStepsHtml = `
+      <div style="margin-top:24px;margin-bottom:24px;">
+        <h3 style="margin:0 0 12px;font-size:15px;font-weight:700;color:#111827;">Prioritized Next Steps</h3>
+        <ol style="margin:0;padding-left:0;list-style:none;">${items}</ol>
       </div>`;
   }
 
@@ -441,16 +486,19 @@ function buildStrengthenedDraftHtml(data) {
     <!-- Header -->
     <div style="background-color:#00050f;padding:24px 32px;text-align:center;">
       <h1 style="margin:0;font-size:20px;font-weight:700;color:#00E5FA;letter-spacing:0.5px;">MISSION MEETS TECH</h1>
-      <p style="margin:4px 0 0;font-size:13px;color:rgba(255,255,255,0.6);">Strengthened Draft</p>
+      <p style="margin:4px 0 0;font-size:13px;color:rgba(255,255,255,0.6);">Gold Team Review</p>
     </div>
 
     <!-- Body -->
     <div style="padding:32px;">
 
-      <h2 style="font-size:20px;font-weight:700;color:#111827;margin:0 0 8px 0;">Your Strengthened Draft</h2>
+      <h2 style="font-size:20px;font-weight:700;color:#111827;margin:0 0 8px 0;">Your Gold Team Review</h2>
       <p style="font-size:14px;color:#6b7280;margin:0 0 16px 0;">
         ${escapeHtml(documentLabel)} &mdash; ${escapeHtml(fileName || "uploaded document")}
       </p>
+
+      <!-- pWin Badge -->
+      ${pwinHtml}
 
       <!-- Summary bar -->
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;"><tr>
@@ -466,11 +514,14 @@ function buildStrengthenedDraftHtml(data) {
         <td width="8"></td>
         <td style="padding:12px;background-color:#f9fafb;border-radius:8px;border:1px solid #e5e7eb;text-align:center;" width="33%">
           <p style="margin:0;font-size:20px;font-weight:800;color:#0369a1;">${sectionCount}</p>
-          <p style="margin:2px 0 0;font-size:11px;color:#6b7280;text-transform:uppercase;">Strengthened</p>
+          <p style="margin:2px 0 0;font-size:11px;color:#6b7280;text-transform:uppercase;">Sections</p>
         </td>
       </tr></table>
 
-      ${confText ? `<p style="font-size:13px;color:#6b7280;margin:0 0 20px;text-align:center;">${sectionCount} section${sectionCount !== 1 ? "s" : ""} strengthened &middot; ${confText}</p>` : ""}
+      ${confText ? `<p style="font-size:13px;color:#6b7280;margin:0 0 20px;text-align:center;">${sectionCount} section${sectionCount !== 1 ? "s" : ""} reviewed &middot; ${confText}</p>` : ""}
+
+      <!-- Executive Change Summary -->
+      ${execSummaryHtml}
 
       <!-- Compact scorecard -->
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;margin-bottom:24px;">
@@ -482,11 +533,12 @@ function buildStrengthenedDraftHtml(data) {
         ${summaryRows}
       </table>
 
-      <!-- Strengthened sections -->
-      <h3 style="font-size:17px;font-weight:700;color:#111827;margin:0 0 16px;">Strengthened Sections</h3>
+      <!-- All section detail blocks -->
+      <h3 style="font-size:17px;font-weight:700;color:#111827;margin:0 0 16px;">Section-by-Section Review</h3>
       ${sectionBlocks}
 
-      ${strongSectionsHtml}
+      <!-- Next Steps -->
+      ${nextStepsHtml}
 
       <!-- Disclaimer -->
       <div style="margin-top:24px;padding:16px;background-color:#fefce8;border:1px solid #fde68a;border-radius:8px;">
@@ -500,7 +552,7 @@ function buildStrengthenedDraftHtml(data) {
       <!-- CTA -->
       <div style="margin-top:28px;text-align:center;">
         <a href="https://missionmeetstech.com/contact.html" style="display:inline-block;padding:12px 28px;background-color:#00050f;color:#00E5FA;font-size:14px;font-weight:600;text-decoration:none;border-radius:6px;margin-right:8px;">Need Expert Help?</a>
-        <a href="https://missionmeetstech.com/lethality-test.html" style="display:inline-block;padding:12px 28px;background-color:#ffffff;color:#00050f;font-size:14px;font-weight:600;text-decoration:none;border-radius:6px;border:1px solid #d1d5db;">Score Another Document</a>
+        <a href="https://missionmeetstech.com/proposal-pulse.html" style="display:inline-block;padding:12px 28px;background-color:#ffffff;color:#00050f;font-size:14px;font-weight:600;text-decoration:none;border-radius:6px;border:1px solid #d1d5db;">Score Another Document</a>
       </div>
 
     </div>
@@ -520,4 +572,4 @@ function buildStrengthenedDraftHtml(data) {
 </html>`;
 }
 
-module.exports = { buildScoreReceiptHtml, buildWeeklyReportHtml, buildStrengthenedDraftHtml };
+module.exports = { buildScoreReceiptHtml, buildWeeklyReportHtml, buildGoldTeamReviewHtml };

@@ -1,6 +1,6 @@
 // weekly-report.js — Netlify Scheduled Function
 //
-// Sends a weekly Lethality Test usage digest to mary@missionmeetstech.com
+// Sends a weekly Proposal Pulse usage digest to mary@missionmeetstech.com
 // every Monday at 9:00 AM ET (14:00 UTC).
 //
 // Schedule configured in netlify.toml:
@@ -12,6 +12,7 @@ const { sendEmail } = require("./lib/send-email");
 const { buildWeeklyReportHtml } = require("./lib/email-templates");
 
 const REPORT_RECIPIENT = "mary@missionmeetstech.com";
+// Legacy value — existing Supabase records use "lethality_test"
 const FEATURE_NAME = "lethality_test";
 
 exports.handler = async (event) => {
@@ -115,7 +116,7 @@ exports.handler = async (event) => {
 
     const result = await sendEmail({
       to: REPORT_RECIPIENT,
-      subject: `Lethality Test Weekly Report — Week of ${weekLabel}`,
+      subject: `Proposal Pulse Weekly Report — Week of ${weekLabel}`,
       html,
       from: "Mission Meets Tech <noreply@missionmeetstech.com>",
     });

@@ -392,7 +392,7 @@ function generateSitemap(articles, tags) {
     { loc: '/contact.html', priority: '0.6' },
     { loc: '/topics.html', priority: '0.7' },
     { loc: '/latest.html', priority: '0.8' },
-    { loc: '/lethality-test.html', priority: '0.8' },
+    { loc: '/proposal-pulse.html', priority: '0.8' },
   ];
 
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
@@ -560,7 +560,7 @@ async function generateOgImages(articles, tags) {
     { filename: 'resources.png', title: 'Federal Health IT Resources', subtitle: 'Curated links for defense and government', label: 'RESOURCES' },
     { filename: 'contact.png', title: 'Get in Touch', subtitle: 'Mission Meets Tech' },
     { filename: 'topics.png', title: 'Coverage Topics', subtitle: 'Browse all federal health IT topics', label: 'TOPICS' },
-    { filename: 'lethality-test.png', title: 'The Lethality Test', subtitle: 'AI-scored NatSec proposal assessment', label: 'ASSESSMENT' },
+    { filename: 'proposal-pulse.png', title: 'Proposal Pulse', subtitle: 'AI-scored federal proposal assessment', label: 'ASSESSMENT' },
     { filename: 'latest.png', title: 'Latest Articles', subtitle: 'All federal health IT intelligence', label: 'ARCHIVE' },
   ];
 
@@ -770,7 +770,7 @@ function copyStaticFiles({ archive, feed }) {
   const htmlFiles = [
     'index.html', 'about.html', 'podcast.html', 'newsletter.html',
     'resources.html', 'contact.html', 'topics.html', '404.html',
-    'lethality-test.html', 'latest.html'
+    'proposal-pulse.html', 'latest.html'
   ];
   const ogMap = {
     'index.html': 'index.png',
@@ -780,7 +780,7 @@ function copyStaticFiles({ archive, feed }) {
     'resources.html': 'resources.png',
     'contact.html': 'contact.png',
     'topics.html': 'topics.png',
-    'lethality-test.html': 'lethality-test.png',
+    'proposal-pulse.html': 'proposal-pulse.png',
     'latest.html': 'latest.png',
   };
 

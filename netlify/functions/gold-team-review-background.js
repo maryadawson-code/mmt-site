@@ -1,28 +1,28 @@
 // ============================================================
-// strengthen-document-background.js — Netlify Background Function
+// gold-team-review-background.js — Netlify Background Function
 //
-// Two-phase AI document strengthening:
-//   Call 1: Rewrite weak sections (C+ or below)
-//   Call 2: Independent review with confidence scores
-//   Then: Email branded strengthened draft via Resend
+// Gold Team Review: Two-phase AI document enhancement
+//   Call 1: Rewrite ALL 9 sections + pWin estimate
+//   Call 2: Independent review + executive summary + next steps
+//   Then: Email branded Gold Team Review via Resend
 //
 // Background function: returns 202 immediately, runs up to 15 min.
 // Triggered by frontend after scoring completes.
+// Replaces strengthen-document-background.js.
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
 const { DOCUMENT_TYPES } = require("./lib/document-types");
 const { sendEmail } = require("./lib/send-email");
-const { buildStrengthenedDraftHtml } = require("./lib/email-templates");
+const { buildGoldTeamReviewHtml } = require("./lib/email-templates");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
 const MODEL = "claude-sonnet-4-5-20250929";
-const REWRITE_MAX_TOKENS = 8000;
-const REVIEW_MAX_TOKENS = 4000;
-const WEAK_THRESHOLD = 2.0; // C+ or below
+const REWRITE_MAX_TOKENS = 12000;
+const REVIEW_MAX_TOKENS = 6000;
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "https://missionmeetstech.com",
@@ -85,23 +85,27 @@ function parseJson(text) {
 // PROMPT BUILDERS
 // ============================================================
 
-function buildRewritePrompt(documentText, scorecard, weakSections, config) {
-  const weakList = weakSections
+function buildRewritePrompt(documentText, scorecard, scores, config) {
+  const sectionList = scores
     .map((s) => `- ${s.title} (Grade: ${s.grade}, ${s.points} pts): ${s.assessment}`)
     .join("\n");
 
   return {
-    system: `You are a senior defense contracting document editor for Mission Meets Tech. You specialize in strengthening NatSec proposal documents — ${config.noun}s specifically.
+    system: `You are a senior federal proposal document editor for Mission Meets Tech. You specialize in strengthening proposal documents — ${config.noun}s specifically.
 
-Your job: Rewrite the weak sections of this document to raise each score. You have the full document text and the AI scorecard. Focus ONLY on sections graded C+ (2.0 pts) or below.
+Your job: Rewrite ALL sections of this document. Strong sections (B- or above, 2.5+ pts) get concise polish to sharpen language and strengthen positioning. Weak sections (C+ or below, 2.0 pts or less) get substantial rewrites to raise each score significantly.
+
+Additionally, estimate the document's probability of winning (pWin) as a percentage (0-100%) with a brief justification.
 
 RULES:
-- Quote 2-4 sentences from the original document for each weak section (the actual text, not a paraphrase).
+- Quote 2-4 sentences from the original document for each section (the actual text, not a paraphrase).
 - Provide a strengthened version of approximately the same length (within 20% of original excerpt length).
 - Explain what you changed and why in 1-2 sentences.
+- For strong sections, focus on polish: tighter language, stronger verbs, better federal framing.
+- For weak sections, provide substantial rewrites that address the scoring weakness directly.
 - NEVER fabricate facts, credentials, contract numbers, dollar amounts, or statistics. If specific data is needed, use [INSERT: description of what to add] placeholders.
 - Match the document's existing tone — formal federal contracting language, not marketing speak.
-- Use appropriate NatSec terminology (DDIL, FedRAMP, IL levels, Kill Chain, etc.) where relevant.
+- Use appropriate federal terminology (FedRAMP, compliance standards, etc.) where relevant to the agency.
 - Return ONLY valid JSON. No markdown code fences. No text before or after the JSON.
 
 RESPONSE FORMAT:
@@ -110,37 +114,42 @@ RESPONSE FORMAT:
     {
       "criterion_id": "the-criterion-id",
       "criterion_title": "Criterion Title",
-      "original_grade": "C+",
+      "original_grade": "B+",
+      "status": "polished",
       "original_excerpt": "Exact 2-4 sentence quote from the document...",
       "strengthened_text": "Your improved version of those sentences...",
       "changes_made": "Brief explanation of what changed and why."
     }
-  ]
-}`,
+  ],
+  "pwin_estimate": 45,
+  "pwin_justification": "Brief 2-3 sentence justification for the pWin estimate."
+}
+
+For the "status" field, use "polished" for strong sections (B- or above) and "rewritten" for weak sections (C+ or below).`,
     user: `Here is the full document text for a ${config.noun}:
 
 ---
 ${documentText}
 ---
 
-Here is the Lethality Test scorecard for this document:
+Here is the Proposal Pulse scorecard for this document:
 
 Verdict: ${scorecard.verdict}
 Overall assessment: ${scorecard.verdict_summary || "N/A"}
 
-WEAK SECTIONS (C+ or below — these need rewriting):
-${weakList}
+ALL SECTIONS TO REWRITE:
+${sectionList}
 
 ${scorecard.top_fix ? `Top Fix recommended: ${scorecard.top_fix}` : ""}
 
-Rewrite each weak section. Return only the JSON.`,
+Rewrite every section (polish strong ones, substantially rewrite weak ones). Estimate pWin. Return only the JSON.`,
   };
 }
 
 function buildReviewPrompt(rewriteResult, config) {
   const sectionsForReview = rewriteResult.strengthened_sections
     .map(
-      (s) => `## ${s.criterion_title} (Original: ${s.original_grade})
+      (s) => `## ${s.criterion_title} (Original: ${s.original_grade}, Status: ${s.status})
 ORIGINAL: "${s.original_excerpt}"
 STRENGTHENED: "${s.strengthened_text}"
 CHANGES: ${s.changes_made}`
@@ -148,7 +157,7 @@ CHANGES: ${s.changes_made}`
     .join("\n\n");
 
   return {
-    system: `You are an independent quality reviewer for defense contracting documents at Mission Meets Tech. You are reviewing AI-generated rewrites of a ${config.noun}.
+    system: `You are an independent quality reviewer for federal proposal documents at Mission Meets Tech. You are reviewing AI-generated rewrites of a ${config.noun}.
 
 CRITICAL: You did NOT write these rewrites. You are an independent reviewer. Your job is to triple-check each rewrite for quality.
 
@@ -162,6 +171,10 @@ Assign a confidence percentage (0-100%) for each section:
 - 70-89%: Good rewrite, some areas need human review
 - 50-69%: Acceptable but needs significant human editing
 - Below 50%: Rewrite has issues — flag for human rewrite
+
+Additionally:
+- Write an executive change summary: 3-5 bullet points covering what improved overall and what still needs the author's input.
+- Provide 3-5 prioritized next steps the author should take after incorporating these changes.
 
 Return ONLY valid JSON. No markdown code fences. No text before or after the JSON.
 
@@ -178,13 +191,19 @@ RESPONSE FORMAT:
     }
   ],
   "overall_confidence": 82,
-  "reviewer_notes": "1-2 sentence overall assessment of the rewrites."
+  "reviewer_notes": "1-2 sentence overall assessment of the rewrites.",
+  "executive_summary": [
+    "Bullet point about what improved or needs attention"
+  ],
+  "next_steps": [
+    "Prioritized action item for the author"
+  ]
 }`,
     user: `Review these AI-generated rewrites for a ${config.noun}:
 
 ${sectionsForReview}
 
-Triple-check each rewrite. Return only the JSON.`,
+Triple-check each rewrite. Provide executive summary and next steps. Return only the JSON.`,
   };
 }
 
@@ -212,17 +231,16 @@ exports.handler = async (event) => {
     const { email, document_type, file_name, scorecard } = body;
     const extractedText = body.extracted_text || null;
     const fileBase64 = body.file_base64 || null;
-    const fileType = body.file_type || null;
 
     // --- Validate inputs ---
     if (!email || !scorecard || !document_type) {
-      console.error("Strengthen: missing required fields");
+      console.error("Gold Team: missing required fields");
       return;
     }
 
     const config = DOCUMENT_TYPES[document_type];
     if (!config) {
-      console.error(`Strengthen: unknown document type "${document_type}"`);
+      console.error(`Gold Team: unknown document type "${document_type}"`);
       return;
     }
 
@@ -230,19 +248,6 @@ exports.handler = async (event) => {
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
     const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
 
-    const { data: recentScore, error: scoreErr } = await supabase
-      .from("mp_scoring_history")
-      .select("id")
-      .eq("feature", "lethality_test")
-      .gte("created_at", fiveMinutesAgo)
-      .limit(1)
-      .maybeSingle();
-
-    if (scoreErr) {
-      console.error("Strengthen: Supabase lookup error:", scoreErr);
-    }
-
-    // Look up user by email for the scoring check
     const normalizedEmail = email.toLowerCase().trim();
     const { data: user } = await supabase
       .from("mp_users")
@@ -251,7 +256,7 @@ exports.handler = async (event) => {
       .single();
 
     if (!user) {
-      console.error("Strengthen: no user found for email");
+      console.error("Gold Team: no user found for email");
       return;
     }
 
@@ -265,17 +270,7 @@ exports.handler = async (event) => {
       .maybeSingle();
 
     if (!userScore) {
-      console.error("Strengthen: no recent scoring record found — possible abuse");
-      return;
-    }
-
-    // --- Identify weak sections ---
-    const scores = scorecard.scores || [];
-    const weakSections = scores.filter((s) => (s.points || 0) <= WEAK_THRESHOLD);
-    const strongSections = scores.filter((s) => (s.points || 0) > WEAK_THRESHOLD);
-
-    if (weakSections.length === 0) {
-      console.log("Strengthen: no weak sections, skipping");
+      console.error("Gold Team: no recent scoring record found — possible abuse");
       return;
     }
 
@@ -283,17 +278,16 @@ exports.handler = async (event) => {
     let documentText = extractedText;
 
     if (!documentText && fileBase64) {
-      // PDF — extract text
       try {
         documentText = await extractPdfText(fileBase64);
       } catch (pdfErr) {
-        console.error("Strengthen: PDF text extraction failed:", pdfErr);
+        console.error("Gold Team: PDF text extraction failed:", pdfErr);
         return;
       }
     }
 
     if (!documentText || documentText.trim().length < 50) {
-      console.error("Strengthen: insufficient document text");
+      console.error("Gold Team: insufficient document text");
       return;
     }
 
@@ -303,27 +297,28 @@ exports.handler = async (event) => {
       documentText = documentText.substring(0, MAX_TEXT_CHARS);
     }
 
-    // --- Call 1: Rewrite weak sections ---
-    console.log(`Strengthen: rewriting ${weakSections.length} weak sections for ${normalizedEmail}`);
+    // --- Call 1: Rewrite ALL sections + pWin ---
+    const scores = scorecard.scores || [];
+    console.log(`Gold Team: rewriting all ${scores.length} sections for ${normalizedEmail}`);
 
-    const rewritePrompt = buildRewritePrompt(documentText, scorecard, weakSections, config);
+    const rewritePrompt = buildRewritePrompt(documentText, scorecard, scores, config);
     let rewriteResult;
 
     try {
       const rewriteText = await callClaude(rewritePrompt.system, rewritePrompt.user, REWRITE_MAX_TOKENS);
       rewriteResult = parseJson(rewriteText);
     } catch (err) {
-      console.error("Strengthen: rewrite call failed:", err);
+      console.error("Gold Team: rewrite call failed:", err);
       return;
     }
 
     if (!rewriteResult.strengthened_sections || rewriteResult.strengthened_sections.length === 0) {
-      console.error("Strengthen: rewrite returned no sections");
+      console.error("Gold Team: rewrite returned no sections");
       return;
     }
 
-    // --- Call 2: Review rewrites ---
-    console.log("Strengthen: reviewing rewrites...");
+    // --- Call 2: Review + Executive Summary + Next Steps ---
+    console.log("Gold Team: reviewing rewrites...");
 
     let reviewResult = null;
     try {
@@ -331,7 +326,7 @@ exports.handler = async (event) => {
       const reviewText = await callClaude(reviewPrompt.system, reviewPrompt.user, REVIEW_MAX_TOKENS);
       reviewResult = parseJson(reviewText);
     } catch (err) {
-      console.error("Strengthen: review call failed (degrading gracefully):", err);
+      console.error("Gold Team: review call failed (degrading gracefully):", err);
       // Continue without review — send rewrites without confidence scores
     }
 
@@ -370,32 +365,35 @@ exports.handler = async (event) => {
     else overallGrade = "F";
 
     // --- Send email ---
-    console.log("Strengthen: sending strengthened draft email...");
+    console.log("Gold Team: sending Gold Team Review email...");
 
-    const emailHtml = buildStrengthenedDraftHtml({
+    const emailHtml = buildGoldTeamReviewHtml({
       documentLabel: config.label,
       fileName: file_name,
       verdict: scorecard.verdict,
       overallGrade,
       scores,
       strengthenedSections: mergedSections,
-      strongSections,
+      pwinEstimate: rewriteResult.pwin_estimate || null,
+      pwinJustification: rewriteResult.pwin_justification || null,
       overallConfidence: reviewResult ? reviewResult.overall_confidence : null,
       reviewerNotes: reviewResult ? reviewResult.reviewer_notes : null,
+      executiveSummary: reviewResult ? reviewResult.executive_summary : null,
+      nextSteps: reviewResult ? reviewResult.next_steps : null,
     });
 
     const emailResult = await sendEmail({
       to: normalizedEmail,
-      subject: `Strengthened Draft: ${config.label} — ${weakSections.length} Section${weakSections.length !== 1 ? "s" : ""} Improved`,
+      subject: `Gold Team Review: ${config.label} — All 9 Sections Reviewed`,
       html: emailHtml,
     });
 
     if (emailResult.success) {
-      console.log(`Strengthen: email sent successfully (${emailResult.id})`);
+      console.log(`Gold Team: email sent successfully (${emailResult.id})`);
     } else {
-      console.error("Strengthen: email send failed:", emailResult.error);
+      console.error("Gold Team: email send failed:", emailResult.error);
     }
   } catch (err) {
-    console.error("Strengthen: unhandled error:", err);
+    console.error("Gold Team: unhandled error:", err);
   }
 };

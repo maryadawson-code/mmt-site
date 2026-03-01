@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Lethality Test — Mission Meets Tech</title>
-  <meta name="description" content="Upload any NatSec proposal document and get an AI-scored assessment against the Hegseth standard. Nine criteria tailored to your document type. One verdict.">
-  <link rel="canonical" href="https://missionmeetstech.com/lethality-test">
-  <meta property="og:title" content="The Lethality Test — Mission Meets Tech">
-  <meta property="og:description" content="Upload any NatSec proposal document and get an AI-scored assessment against the Hegseth standard. Nine criteria tailored to your document type. One verdict.">
-  <meta property="og:url" content="https://missionmeetstech.com/lethality-test">
+  <title>Proposal Pulse — Mission Meets Tech</title>
+  <meta name="description" content="Upload any federal proposal document and get an AI-scored assessment across nine criteria tailored to your document type. Add your SOW for scoring against actual evaluation factors.">
+  <link rel="canonical" href="https://missionmeetstech.com/proposal-pulse">
+  <meta property="og:title" content="Proposal Pulse — Mission Meets Tech">
+  <meta property="og:description" content="Upload any federal proposal document and get an AI-scored assessment across nine criteria tailored to your document type. Add your SOW for scoring against actual evaluation factors.">
+  <meta property="og:url" content="https://missionmeetstech.com/proposal-pulse">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://missionmeetstech.com/mmt-logo.png">
   <meta property="og:image:width" content="200">
   <meta property="og:image:height" content="200">
   <meta property="og:site_name" content="Mission Meets Tech">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="The Lethality Test — Mission Meets Tech">
-  <meta name="twitter:description" content="Upload any NatSec proposal document and get an AI-scored assessment against the Hegseth standard. Nine criteria tailored to your document type. One verdict.">
+  <meta name="twitter:title" content="Proposal Pulse — Mission Meets Tech">
+  <meta name="twitter:description" content="Upload any federal proposal document and get an AI-scored assessment across nine criteria tailored to your document type. Add your SOW for scoring against actual evaluation factors.">
   <meta name="twitter:image" content="https://missionmeetstech.com/mmt-logo.png">
   <link rel="icon" type="image/png" href="/favicon.png">
   <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
@@ -611,8 +611,8 @@
       animation: fadeInUp 0.35s ease-out;
     }
 
-    /* ===== STRENGTHEN STATUS ===== */
-    .strengthen-status {
+    /* ===== GOLD TEAM REVIEW STATUS ===== */
+    .gold-team-status {
       margin-top: 1.5rem;
       padding: 1rem 1.25rem;
       border: 1px solid rgba(0, 229, 250, 0.2);
@@ -622,7 +622,7 @@
       align-items: center;
       gap: 0.75rem;
     }
-    .strengthen-spinner-small {
+    .gold-team-spinner-small {
       width: 20px;
       height: 20px;
       border: 2px solid rgba(0, 229, 250, 0.2);
@@ -630,21 +630,62 @@
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
-    .strengthen-status-text {
+    .gold-team-status-text {
       font-size: 0.875rem;
       color: var(--text-secondary);
       line-height: 1.4;
     }
-    .strengthen-status.success {
+    .gold-team-status.success {
       border-color: rgba(34, 197, 94, 0.3);
       background: rgba(34, 197, 94, 0.05);
     }
-    .strengthen-status.success .strengthen-status-text { color: #22c55e; }
-    .strengthen-status.error .strengthen-status-text { color: var(--text-muted); }
+    .gold-team-status.success .gold-team-status-text { color: #22c55e; }
+    .gold-team-status.error .gold-team-status-text { color: var(--text-muted); }
+
+    /* ===== UPSELL BOX ===== */
+    .upsell-box {
+      text-align: center;
+      padding: 2rem;
+      margin-top: 2rem;
+      background: linear-gradient(135deg, rgba(0, 229, 250, 0.05), rgba(0, 255, 133, 0.05));
+      border: 1px solid rgba(0, 229, 250, 0.2);
+      border-radius: 16px;
+    }
+    .upsell-box h3 {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .upsell-box p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    .upsell-box .stripe-note {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.75rem;
+    }
+
+    /* ===== PAYMENT SUCCESS BANNER ===== */
+    .payment-success {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: 10px;
+      font-size: 0.9rem;
+      color: #22c55e;
+    }
+    .payment-success svg { flex-shrink: 0; }
 
     /* ===== PRINT STYLES ===== */
     @media print {
-      nav, .results-cta, footer, .upload-card, .processing-container, .uses-badge, .strengthen-status { display: none; }
+      nav, .results-cta, .upsell-box, footer, .upload-card, .processing-container, .uses-badge, .gold-team-status, .payment-success { display: none; }
       body { background: white; color: black; }
       .lt-container { max-width: 100%; }
       .results-verdict, .scorecard, .red-flags, .top-fix { border-color: #ccc; }
@@ -697,107 +738,117 @@
   <main id="main-content" style="padding-top: 80px; min-height: 100vh;">
     <div class="lt-container">
 
-<!-- ===== SCREEN: INTRO ===== -->
-<div id="screen-intro" class="screen active">
+<!-- ===== SCREEN: UPLOAD (Hero + Form Combined) ===== -->
+<div id="screen-upload" class="screen active">
   <div class="hero">
     <div class="hero-badge">AI-Powered Assessment</div>
-    <h1>The <span>Lethality Test</span></h1>
-    <p>Upload any NatSec proposal document and get an AI-scored assessment against the Hegseth standard. Nine criteria tailored to your document type. One verdict.</p>
+    <h1>Proposal <span>Pulse</span></h1>
+    <p>Upload any federal proposal document and get an AI-scored assessment across nine criteria tailored to your document type. Add your SOW for scoring against the actual evaluation factors.</p>
 
-    <div class="hero-quote">
-      "If a contract doesn't make us more lethal, it's gone."
-      <cite>Secretary of War Pete Hegseth, January 16, 2026</cite>
-    </div>
+    <p style="font-size:0.95rem; color:var(--text-secondary); max-width:620px; margin:0 auto 1.5rem; line-height:1.65;">Upload your pitch deck, white paper, RFP response, capabilities statement, pricing volume, or executive summary. Our AI scores it across 9 criteria calibrated to your document type &mdash; from mission relevance and solution clarity to team credibility and competitive positioning. You get a letter grade for each criterion, an overall PASS / CONDITIONAL / FAIL verdict, red flags, and a top fix recommendation.</p>
 
-    <ul class="hero-features">
-      <li>
-        <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0-1.4A5.6 5.6 0 1 0 8 2.4a5.6 5.6 0 0 0 0 11.2zM7 9.6l3.5-3.5 1 1L7 11.6 4.5 9l1-1L7 9.6z"/></svg>
-        Pitch decks, white papers, RFP responses, and more
-      </li>
-      <li>
-        <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0-1.4A5.6 5.6 0 1 0 8 2.4a5.6 5.6 0 0 0 0 11.2zM7 9.6l3.5-3.5 1 1L7 11.6 4.5 9l1-1L7 9.6z"/></svg>
-        9 criteria tailored to your document type
-      </li>
-      <li>
-        <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0-1.4A5.6 5.6 0 1 0 8 2.4a5.6 5.6 0 0 0 0 11.2zM7 9.6l3.5-3.5 1 1L7 11.6 4.5 9l1-1L7 9.6z"/></svg>
-        PDF, PowerPoint, and Word files (max 4MB)
-      </li>
-      <li>
-        <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0-1.4A5.6 5.6 0 1 0 8 2.4a5.6 5.6 0 0 0 0 11.2zM7 9.6l3.5-3.5 1 1L7 11.6 4.5 9l1-1L7 9.6z"/></svg>
-        3 free assessments per email
-      </li>
-    </ul>
-
-    <button class="btn btn-primary" onclick="showScreen('screen-upload')">
-      Score My Document &#8594;
-    </button>
+    <p style="font-size:0.95rem; color:var(--text-secondary); max-width:620px; margin:0 auto 1.5rem; line-height:1.65;">Every assessment also triggers a <strong style="color:var(--text-primary);">Gold Team Review</strong> delivered to your inbox: AI-strengthened rewrites of all 9 sections, a pWin (probability of win) estimate, an executive change summary, and prioritized next steps. Three free assessments per email.</p>
   </div>
-</div>
 
-<!-- ===== SCREEN: UPLOAD ===== -->
-<div id="screen-upload" class="screen">
-  <div style="padding: 3rem 0;">
-    <div id="upload-error" class="error-banner">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 10.5a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5zM8.75 4v4.5h-1.5V4h1.5z"/></svg>
-      <span id="upload-error-text"></span>
+  <div id="upload-error" class="error-banner">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 10.5a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5zM8.75 4v4.5h-1.5V4h1.5z"/></svg>
+    <span id="upload-error-text"></span>
+  </div>
+
+  <div class="upload-card">
+    <h2>Upload Your Document</h2>
+
+    <div class="form-group">
+      <label for="email-input" class="form-label">Email Address</label>
+      <input type="email" id="email-input" class="form-input" placeholder="you@company.com" required autocomplete="email">
     </div>
 
-    <div class="upload-card">
-      <h2>Upload Your Document</h2>
+    <div class="form-group">
+      <label for="doc-type-select" class="form-label">Document Type</label>
+      <select id="doc-type-select" class="form-input">
+        <option value="pitch_deck">Pitch Deck</option>
+        <option value="white_paper">White Paper / Technical Volume</option>
+        <option value="rfp_response">RFP/RFI Response</option>
+        <option value="capabilities_statement">Capabilities Statement</option>
+        <option value="pricing_volume">Pricing Volume</option>
+        <option value="executive_summary">Executive Summary</option>
+      </select>
+    </div>
 
-      <div class="form-group">
-        <label for="email-input" class="form-label">Email Address</label>
-        <input type="email" id="email-input" class="form-input" placeholder="you@company.com" required autocomplete="email">
+    <div class="form-group">
+      <label class="form-label">Document File</label>
+      <div id="upload-zone" class="upload-zone" tabindex="0" role="button" aria-label="Click or drag to upload a file">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        <p>Drag and drop your file here, or <strong style="color:var(--primary-cyan);">click to browse</strong></p>
+        <p class="upload-hint">PDF, PPTX, or DOCX &mdash; 4MB max</p>
       </div>
+      <input type="file" id="file-input" accept=".pdf,.pptx,.docx,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none;">
 
-      <div class="form-group">
-        <label for="doc-type-select" class="form-label">Document Type</label>
-        <select id="doc-type-select" class="form-input">
-          <option value="pitch_deck">Pitch Deck</option>
-          <option value="white_paper">White Paper / Technical Volume</option>
-          <option value="rfp_response">RFP/RFI Response</option>
-          <option value="capabilities_statement">Capabilities Statement</option>
-          <option value="pricing_volume">Pricing Volume</option>
-          <option value="executive_summary">Executive Summary</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Document File</label>
-        <div id="upload-zone" class="upload-zone" tabindex="0" role="button" aria-label="Click or drag to upload a file">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-            <polyline points="17 8 12 3 7 8"/>
-            <line x1="12" y1="3" x2="12" y2="15"/>
+      <div id="file-preview" class="file-preview">
+        <div class="file-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
           </svg>
-          <p>Drag and drop your file here, or <strong style="color:var(--primary-cyan);">click to browse</strong></p>
-          <p class="upload-hint">PDF, PPTX, or DOCX &mdash; 4MB max</p>
         </div>
-        <input type="file" id="file-input" accept=".pdf,.pptx,.docx,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none;">
-
-        <div id="file-preview" class="file-preview">
-          <div class="file-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/>
-            </svg>
-          </div>
-          <div class="file-info">
-            <div class="file-name" id="file-name"></div>
-            <div class="file-size" id="file-size"></div>
-          </div>
-          <button class="file-remove" onclick="removeFile()" aria-label="Remove file">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
-          </button>
+        <div class="file-info">
+          <div class="file-name" id="file-name"></div>
+          <div class="file-size" id="file-size"></div>
         </div>
+        <button class="file-remove" onclick="removeFile()" aria-label="Remove file">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
       </div>
+    </div>
 
-      <div class="upload-actions">
-        <button class="btn btn-primary" id="btn-submit" onclick="submitDeck()" disabled>Analyze Document &#8594;</button>
-        <button class="btn btn-secondary btn-sm" onclick="showScreen('screen-intro')">&#8592; Back</button>
-      </div>
+    <!-- SOW/PWS Upload (Optional) -->
+    <div class="form-group">
+      <details id="sow-details" style="margin-top:0.5rem;">
+        <summary style="cursor:pointer; font-family:var(--font-heading); font-size:0.8rem; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--text-secondary); list-style:none; display:flex; align-items:center; gap:0.5rem;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transition:transform 0.2s;" id="sow-chevron"><polyline points="6 9 12 15 18 9"/></svg>
+          Optional: Upload SOW/PWS for tailored scoring
+        </summary>
+        <div style="margin-top:0.75rem;">
+          <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem; line-height:1.5;">Without a SOW, scoring uses standard criteria for your document type. With a SOW, criteria are extracted from the solicitation's evaluation factors.</p>
+          <div id="sow-upload-zone" class="upload-zone" tabindex="0" role="button" aria-label="Click or drag to upload a SOW/PWS file" style="padding:1.5rem 1rem; border-width:1px; opacity:0.85;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-bottom:0.5rem;">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
+            <p style="font-size:0.85rem;">Drop SOW/PWS here, or <strong style="color:var(--primary-cyan);">click to browse</strong></p>
+            <p class="upload-hint">PDF, PPTX, or DOCX &mdash; 4MB max</p>
+          </div>
+          <input type="file" id="sow-file-input" accept=".pdf,.pptx,.docx,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none;">
+          <div id="sow-file-preview" class="file-preview">
+            <div class="file-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+              </svg>
+            </div>
+            <div class="file-info">
+              <div class="file-name" id="sow-file-name"></div>
+              <div class="file-size" id="sow-file-size"></div>
+            </div>
+            <button class="file-remove" onclick="removeSowFile()" aria-label="Remove SOW file">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+          <div id="sow-badge" style="display:none; margin-top:0.5rem; padding:0.4rem 0.75rem; background:rgba(0,229,250,0.08); border:1px solid rgba(0,229,250,0.2); border-radius:6px; font-size:0.75rem; color:var(--primary-cyan); font-weight:500;">
+            Scoring against SOW evaluation factors
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="upload-actions">
+      <button class="btn btn-primary" id="btn-submit" onclick="submitDeck()" disabled>Analyze Document &#8594;</button>
     </div>
   </div>
 </div>
@@ -816,22 +867,21 @@
 <!-- ===== SCREEN: RESULTS ===== -->
 <div id="screen-results" class="screen">
   <div class="results-section">
+    <div id="payment-success-banner"></div>
     <div class="results-verdict" id="results-verdict"></div>
     <div class="scorecard" id="results-scorecard"></div>
     <div id="results-top-fix"></div>
     <div id="results-red-flags"></div>
-    <div id="strengthen-status"></div>
+    <div id="gold-team-status"></div>
 
     <div class="results-cta">
-      <h3>Need a full review?</h3>
-      <p>The Lethality Test gives you the score. A full document review gives you the fix. Get expert analysis of your NatSec positioning, language, and evidence.</p>
-      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1.25rem;">Unlimited assessments coming soon with <strong style="color:var(--text-secondary);">MissionPulse</strong>.</p>
       <div class="results-actions">
         <button class="btn btn-primary btn-sm" onclick="window.print()">Print Results</button>
-        <a href="contact.html" class="btn btn-secondary btn-sm">Request Full Review</a>
         <button class="btn btn-secondary btn-sm" onclick="resetTool()">Score Another Document</button>
       </div>
     </div>
+
+    <div id="results-upsell"></div>
   </div>
 </div>
 
@@ -844,8 +894,27 @@
       </svg>
     </div>
     <h2>Free Assessments Used</h2>
-    <p>You've used all 3 free Lethality Test assessments. Contact Mission Meets Tech for a full document review with personalized recommendations.</p>
-    <a href="contact.html" class="btn btn-primary">Request a Full Review</a>
+    <p>You've used all 3 free assessments. Each additional assessment includes the full Gold Team Review package:</p>
+    <ul style="text-align:left; max-width:420px; margin:0 auto 2rem; list-style:none; padding:0;">
+      <li style="display:flex; align-items:center; gap:0.75rem; padding:0.4rem 0; font-size:0.9rem; color:var(--text-secondary);">
+        <svg width="1em" height="1em" viewBox="0 0 16 16" fill="var(--grade-a)" aria-hidden="true"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0-1.4A5.6 5.6 0 1 0 8 2.4a5.6 5.6 0 0 0 0 11.2zM7 9.6l3.5-3.5 1 1L7 11.6 4.5 9l1-1L7 9.6z"/></svg>
+        Full rewrite of all 9 scored sections
+      </li>
+      <li style="display:flex; align-items:center; gap:0.75rem; padding:0.4rem 0; font-size:0.9rem; color:var(--text-secondary);">
+        <svg width="1em" height="1em" viewBox="0 0 16 16" fill="var(--grade-a)" aria-hidden="true"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0-1.4A5.6 5.6 0 1 0 8 2.4a5.6 5.6 0 0 0 0 11.2zM7 9.6l3.5-3.5 1 1L7 11.6 4.5 9l1-1L7 9.6z"/></svg>
+        pWin (probability of win) estimate
+      </li>
+      <li style="display:flex; align-items:center; gap:0.75rem; padding:0.4rem 0; font-size:0.9rem; color:var(--text-secondary);">
+        <svg width="1em" height="1em" viewBox="0 0 16 16" fill="var(--grade-a)" aria-hidden="true"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0-1.4A5.6 5.6 0 1 0 8 2.4a5.6 5.6 0 0 0 0 11.2zM7 9.6l3.5-3.5 1 1L7 11.6 4.5 9l1-1L7 9.6z"/></svg>
+        Executive change summary + prioritized next steps
+      </li>
+      <li style="display:flex; align-items:center; gap:0.75rem; padding:0.4rem 0; font-size:0.9rem; color:var(--text-secondary);">
+        <svg width="1em" height="1em" viewBox="0 0 16 16" fill="var(--grade-a)" aria-hidden="true"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0-1.4A5.6 5.6 0 1 0 8 2.4a5.6 5.6 0 0 0 0 11.2zM7 9.6l3.5-3.5 1 1L7 11.6 4.5 9l1-1L7 9.6z"/></svg>
+        Independent triple-check quality review
+      </li>
+    </ul>
+    <button class="btn btn-primary" onclick="startCheckout()">Unlock 1 Assessment &mdash; $49 &#8594;</button>
+    <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.75rem;">Secure payment via Stripe</p>
   </div>
 </div>
 
@@ -902,10 +971,11 @@
   </script>
 
 <script>
-// ===== LETHALITY TEST — AI DECK SCORER =====
+// ===== PROPOSAL PULSE — AI DOCUMENT SCORER =====
 
 const API_URL = '/.netlify/functions/score-deck';
-const STRENGTHEN_URL = '/.netlify/functions/strengthen-document-background';
+const GOLD_TEAM_URL = '/.netlify/functions/gold-team-review-background';
+const CHECKOUT_URL = '/.netlify/functions/create-checkout';
 const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
 const TIMEOUT_MS = 90000; // 90 seconds
 
@@ -921,7 +991,7 @@ const STATUS_MESSAGES = {
     'Uploading deck...',
     'Reading document...',
     'Running 9-criteria analysis...',
-    'Evaluating NatSec relevance...',
+    'Evaluating mission relevance...',
     'Scoring team credibility...',
     'Checking financials...',
     'Generating scorecard...',
@@ -975,6 +1045,8 @@ const STATUS_MESSAGES = {
 
 let selectedFile = null;
 let fileBase64 = null;
+let sowFile = null;
+let sowBase64 = null;
 let abortController = null;
 let statusInterval = null;
 
@@ -1081,6 +1153,64 @@ function formatFileSize(bytes) {
   return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
 }
 
+// ===== SOW FILE HANDLING =====
+
+const sowUploadZone = document.getElementById('sow-upload-zone');
+const sowFileInput = document.getElementById('sow-file-input');
+const sowChevron = document.getElementById('sow-chevron');
+const sowDetails = document.getElementById('sow-details');
+
+sowDetails.addEventListener('toggle', () => {
+  sowChevron.style.transform = sowDetails.open ? 'rotate(180deg)' : '';
+});
+
+sowUploadZone.addEventListener('click', () => sowFileInput.click());
+sowUploadZone.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sowFileInput.click(); }
+});
+sowUploadZone.addEventListener('dragover', (e) => { e.preventDefault(); sowUploadZone.classList.add('drag-over'); });
+sowUploadZone.addEventListener('dragleave', () => sowUploadZone.classList.remove('drag-over'));
+sowUploadZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  sowUploadZone.classList.remove('drag-over');
+  if (e.dataTransfer.files.length > 0) handleSowFileSelect(e.dataTransfer.files[0]);
+});
+sowFileInput.addEventListener('change', () => {
+  if (sowFileInput.files.length > 0) handleSowFileSelect(sowFileInput.files[0]);
+});
+
+function handleSowFileSelect(file) {
+  const ext = file.name.split('.').pop().toLowerCase();
+  if (!ALLOWED_EXTENSIONS.includes(ext)) {
+    showError('SOW file must be PDF, PowerPoint (.pptx), or Word (.docx).');
+    return;
+  }
+  if (file.size > MAX_FILE_SIZE) {
+    showError('SOW file is too large. Maximum 4MB.');
+    return;
+  }
+  sowFile = file;
+  document.getElementById('sow-file-name').textContent = file.name;
+  document.getElementById('sow-file-size').textContent = formatFileSize(file.size);
+  document.getElementById('sow-file-preview').classList.add('visible');
+  sowUploadZone.style.display = 'none';
+  document.getElementById('sow-badge').style.display = '';
+
+  readFileAsBase64(file).then(b64 => { sowBase64 = b64; }).catch(() => {
+    showError('Could not read the SOW file. Please try again.');
+    removeSowFile();
+  });
+}
+
+function removeSowFile() {
+  sowFile = null;
+  sowBase64 = null;
+  sowFileInput.value = '';
+  document.getElementById('sow-file-preview').classList.remove('visible');
+  sowUploadZone.style.display = '';
+  document.getElementById('sow-badge').style.display = 'none';
+}
+
 // ===== ERROR HANDLING =====
 
 function showError(msg) {
@@ -1115,13 +1245,16 @@ async function submitDeck() {
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+      body: JSON.stringify(Object.assign({
         email: email,
         file_base64: fileBase64,
         file_type: mimeType,
         file_name: selectedFile.name,
         document_type: documentType,
-      }),
+      }, sowBase64 ? {
+        sow_base64: sowBase64,
+        sow_content_type: MIME_MAP[sowFile.name.split('.').pop().toLowerCase()] || 'application/pdf',
+      } : {})),
       signal: abortController.signal,
     });
 
@@ -1286,32 +1419,39 @@ function renderResults(data) {
     document.getElementById('results-red-flags').innerHTML = '';
   }
 
+  // Upsell CTA (show only when no uses remaining)
+  const upsellEl = document.getElementById('results-upsell');
+  if (typeof data.uses_remaining === 'number' && data.uses_remaining <= 0) {
+    upsellEl.innerHTML = `
+      <div class="upsell-box">
+        <h3>Get Another Assessment</h3>
+        <p>Each assessment includes the full Gold Team Review: all 9 sections rewritten, pWin estimate, executive summary, and prioritized next steps.</p>
+        <button class="btn btn-primary" onclick="startCheckout()">Unlock 1 Assessment &mdash; $49 &#8594;</button>
+        <p class="stripe-note">Secure payment via Stripe</p>
+      </div>
+    `;
+  } else {
+    upsellEl.innerHTML = '';
+  }
+
   showScreen('screen-results');
 
-  // --- Trigger strengthen if weak sections exist ---
-  triggerStrengthen(data);
+  // --- Trigger Gold Team Review for ALL results ---
+  triggerGoldTeamReview(data);
 }
 
-// ===== STRENGTHEN DOCUMENT =====
+// ===== GOLD TEAM REVIEW =====
 
-function triggerStrengthen(data) {
+function triggerGoldTeamReview(data) {
   const sc = data.scorecard;
-  const scores = sc.scores || [];
-  const weakSections = scores.filter(s => (s.points || 0) <= 2.0);
-
-  const statusEl = document.getElementById('strengthen-status');
-
-  if (weakSections.length === 0) {
-    statusEl.innerHTML = '';
-    return;
-  }
+  const statusEl = document.getElementById('gold-team-status');
 
   // Show loading state
   statusEl.innerHTML = `
-    <div class="strengthen-status">
-      <div class="strengthen-spinner-small"></div>
-      <div class="strengthen-status-text">
-        Your strengthened draft is being prepared and will arrive in your email in 1&ndash;2 minutes.
+    <div class="gold-team-status">
+      <div class="gold-team-spinner-small"></div>
+      <div class="gold-team-status-text">
+        Your Gold Team Review is being prepared and will arrive in your email in 1&ndash;2 minutes.
       </div>
     </div>
   `;
@@ -1336,7 +1476,7 @@ function triggerStrengthen(data) {
   }
 
   // Fire and forget — background function returns 202 immediately
-  fetch(STRENGTHEN_URL, {
+  fetch(GOLD_TEAM_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
@@ -1344,33 +1484,66 @@ function triggerStrengthen(data) {
   .then(response => {
     if (response.status === 202 || response.ok) {
       statusEl.innerHTML = `
-        <div class="strengthen-status success">
+        <div class="gold-team-status success">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
             <polyline points="22 4 12 14.01 9 11.01"/>
           </svg>
-          <div class="strengthen-status-text">
-            Strengthened draft is on its way! Check your email in 1&ndash;2 minutes for AI-rewritten versions of ${weakSections.length} weak section${weakSections.length !== 1 ? 's' : ''}.
+          <div class="gold-team-status-text">
+            Gold Team Review is on its way! Check your email in 1&ndash;2 minutes for your complete review with pWin estimate, all 9 sections rewritten, and next steps.
           </div>
         </div>
       `;
     } else {
-      showStrengthenFallback(statusEl);
+      showGoldTeamFallback(statusEl);
     }
   })
   .catch(() => {
-    showStrengthenFallback(statusEl);
+    showGoldTeamFallback(statusEl);
   });
 }
 
-function showStrengthenFallback(statusEl) {
+function showGoldTeamFallback(statusEl) {
   statusEl.innerHTML = `
-    <div class="strengthen-status error">
-      <div class="strengthen-status-text">
-        Strengthened draft unavailable. Your scorecard above is still valid.
+    <div class="gold-team-status error">
+      <div class="gold-team-status-text">
+        Gold Team Review unavailable. Your scorecard above is still valid.
       </div>
     </div>
   `;
+}
+
+// ===== STRIPE CHECKOUT =====
+
+async function startCheckout() {
+  const email = emailInput.value.trim();
+  if (!email) {
+    showScreen('screen-upload');
+    showError('Please enter your email address first.');
+    return;
+  }
+
+  try {
+    const response = await fetch(CHECKOUT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email }),
+    });
+
+    if (!response.ok) {
+      const errData = await response.json().catch(() => null);
+      const msg = (errData && errData.error) || 'Could not start checkout. Please try again.';
+      alert(msg);
+      return;
+    }
+
+    const data = await response.json();
+    if (data.url) {
+      window.location.href = data.url;
+    }
+  } catch (err) {
+    alert('Network error. Please check your connection and try again.');
+  }
 }
 
 function getGradeClass(grade) {
@@ -1397,12 +1570,44 @@ function resetTool() {
   emailInput.value = '';
   document.getElementById('doc-type-select').value = 'pitch_deck';
   document.getElementById('file-preview').classList.remove('visible');
-  document.getElementById('strengthen-status').innerHTML = '';
+  document.getElementById('gold-team-status').innerHTML = '';
+  document.getElementById('results-upsell').innerHTML = '';
+  document.getElementById('payment-success-banner').innerHTML = '';
   uploadZone.style.display = '';
   submitBtn.disabled = true;
+  removeSowFile();
+  if (sowDetails.open) sowDetails.open = false;
   hideError();
-  showScreen('screen-intro');
+  showScreen('screen-upload');
 }
+
+// ===== PAYMENT SUCCESS DETECTION =====
+
+(function checkPaymentSuccess() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('session_id')) {
+    // Show success banner and go to upload screen
+    showScreen('screen-upload');
+    const banner = document.getElementById('upload-error');
+    // Repurpose the area above upload for a success message
+    const successDiv = document.createElement('div');
+    successDiv.className = 'payment-success';
+    successDiv.innerHTML = `
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+        <polyline points="22 4 12 14.01 9 11.01"/>
+      </svg>
+      <span>Payment successful! You have 1 additional assessment ready to use.</span>
+    `;
+    banner.parentNode.insertBefore(successDiv, banner);
+    // Clean URL
+    window.history.replaceState({}, '', window.location.pathname);
+  }
+  if (params.get('cancelled')) {
+    showScreen('screen-limit');
+    window.history.replaceState({}, '', window.location.pathname);
+  }
+})();
 </script>
 
 </body>

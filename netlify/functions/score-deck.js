@@ -1,11 +1,14 @@
 // ============================================================
-// score-deck.js — Netlify Function (MissionPulse Backend v1)
+// score-deck.js — Netlify Function (Proposal Pulse Backend)
 //
 // Shared backend for missionmeetstech.com + future MissionPulse SaaS.
 // Uses mp_users, mp_feature_usage, mp_scoring_history tables.
 //
 // Supports 6 document types: pitch_deck, white_paper, rfp_response,
 // capabilities_statement, pricing_volume, executive_summary.
+//
+// Optional SOW/PWS upload: extracts evaluation factors and uses them
+// instead of generic criteria (hybrid mode).
 //
 // PDF  → sent as native document to Claude (visual layout preserved)
 // PPTX → text extracted via officeparser → sent as text
@@ -27,6 +30,7 @@ const MAX_FILE_SIZE_BYTES = 15 * 1024 * 1024;
 const MAX_OUTPUT_TOKENS = 2000;
 const MAX_TEXT_CHARS = 80000;
 const MODEL = "claude-sonnet-4-5-20250929";
+// Legacy value — existing mp_feature_usage and mp_scoring_history records use "lethality_test"
 const FEATURE_NAME = "lethality_test";
 const FREE_USES = 3;
 
@@ -95,23 +99,58 @@ ${examples.join(",\n")}
 }`;
 }
 
-function buildSystemPrompt(documentType) {
+function buildSystemPrompt(documentType, sowText = null) {
   const config = DOCUMENT_TYPES[documentType];
+
+  let criteriaSection;
+  let redFlagsSection;
+  let responseFormat;
+
+  if (sowText) {
+    // SOW hybrid mode: extract evaluation factors from SOW and use them as criteria
+    criteriaSection = `The following is the Statement of Work (SOW) or Performance Work Statement (PWS) for this procurement. Extract the evaluation factors and scoring criteria from this document. Use THESE as your 9 scoring criteria instead of the generic ones below.
+
+If the SOW has fewer than 9 distinct evaluation factors, group related requirements into logical categories to reach 9. If it has more than 9, prioritize the ones weighted most heavily or listed as "significant" evaluation factors.
+
+SOW/PWS TEXT:
+---
+${sowText}
+---
+
+Score the uploaded document against the evaluation factors you extracted above.`;
+    redFlagsSection = `RED FLAGS — Flag any of the following:
+- Document does not address requirements stated in the SOW/PWS
+- Key evaluation factors from the SOW are ignored or inadequately addressed
+- Claims made without supporting evidence or past performance
+- Non-compliance with any mandatory requirements in the SOW`;
+    // Dynamic IDs for SOW-derived criteria
+    const sowScoreIds = Array.from({ length: 9 }, (_, i) => ({
+      id: `sow-factor-${i + 1}`,
+      title: `Evaluation Factor ${i + 1}`,
+    }));
+    responseFormat = buildResponseFormat(sowScoreIds);
+  } else {
+    criteriaSection = `SCORING CRITERIA (Grade A through F):
+
+${config.criteria}`;
+    redFlagsSection = `RED FLAGS (auto-fail triggers):
+${config.red_flags}`;
+    responseFormat = buildResponseFormat(config.score_ids);
+  }
 
   return `${config.intro}
 
 NOTE: The document may be provided as a PDF (with visual layout) or as extracted text from a PowerPoint or Word document. If provided as text, evaluate based on content quality regardless of visual formatting. If layout details are missing, note that in relevant criteria but focus on substance.
 
-SCORING CRITERIA (Grade A through F):
-
-${config.criteria}
+${criteriaSection}
 
 ${GRADING_SCALE}
 
-RED FLAGS (auto-fail triggers):
-${config.red_flags}
+${redFlagsSection}
 
-${buildResponseFormat(config.score_ids)}
+${responseFormat}
+
+IMPORTANT: For each criterion, use a descriptive "title" field that names the actual evaluation factor (e.g., "Technical Approach" not "Evaluation Factor 1").
 
 ${SCORING_RULES}`;
 }
@@ -133,7 +172,7 @@ async function extractPptxText(buffer) {
 function buildMessageContent(fileType, base64Data, extractedText, documentType) {
   const config = DOCUMENT_TYPES[documentType];
   const noun = config.noun;
-  const userPrompt = `Score this ${noun} using The Lethality Test. Return only the JSON scorecard.`;
+  const userPrompt = `Score this ${noun} using Proposal Pulse. Return only the JSON scorecard.`;
 
   if (fileType === "pdf") {
     return [
@@ -334,6 +373,8 @@ exports.handler = async (event) => {
     const body = JSON.parse(event.body);
     const { email, file_base64, file_type, file_name } = body;
     const documentType = body.document_type || "pitch_deck";
+    const sowBase64 = body.sow_base64 || null;
+    const sowContentType = body.sow_content_type || null;
 
     // --- Validate inputs ---
     if (!email || !file_base64 || !file_type) {
@@ -466,8 +507,40 @@ exports.handler = async (event) => {
       }
     }
 
+    // --- Process SOW (optional) ---
+    let sowText = null;
+    if (sowBase64) {
+      try {
+        const sowResolvedType = sowContentType ? (ALLOWED_TYPES[sowContentType] || null) : null;
+        const sowBuffer = Buffer.from(sowBase64, "base64");
+
+        if (sowResolvedType === "pdf") {
+          const pdfParse = require("pdf-parse");
+          const pdfData = await pdfParse(sowBuffer);
+          sowText = pdfData.text;
+        } else if (sowResolvedType === "docx") {
+          sowText = await extractDocxText(sowBuffer);
+        } else if (sowResolvedType === "pptx") {
+          sowText = await extractPptxText(sowBuffer);
+        }
+
+        // Truncate SOW text to same limit as main document
+        if (sowText && sowText.length > MAX_TEXT_CHARS) {
+          sowText = sowText.substring(0, MAX_TEXT_CHARS);
+        }
+
+        // Ignore SOW if extraction failed or too short
+        if (!sowText || sowText.trim().length < 50) {
+          sowText = null;
+        }
+      } catch (sowErr) {
+        console.error("SOW extraction error (proceeding without SOW):", sowErr);
+        sowText = null;
+      }
+    }
+
     // --- Build prompt and call Claude API ---
-    const systemPrompt = buildSystemPrompt(documentType);
+    const systemPrompt = buildSystemPrompt(documentType, sowText);
     const messageContent = buildMessageContent(resolvedType, file_base64, extractedText, documentType);
 
     const claudeResponse = await fetch("https://api.anthropic.com/v1/messages", {
@@ -540,7 +613,7 @@ exports.handler = async (event) => {
       const config = DOCUMENT_TYPES[documentType];
       await sendEmail({
         to: email,
-        subject: `Your Lethality Test Results: ${scorecard.verdict} — ${config.label}`,
+        subject: `Your Proposal Pulse Results: ${scorecard.verdict} — ${config.label}`,
         html: buildScoreReceiptHtml({
           scorecard,
           documentType,
@@ -567,6 +640,7 @@ exports.handler = async (event) => {
         model: MODEL,
         user_tier: user.tier,
         extracted_text: extractedText || null,
+        has_sow: !!sowText,
       }),
     };
   } catch (err) {

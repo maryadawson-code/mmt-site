@@ -15,8 +15,9 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 - **Podcast embed:** Transistor.fm iframe
 - **Content:** Markdown files in `content/newsletter/` → build generates article pages
 - **Deploy:** Netlify from `main` branch, publish directory is `dist/`
-- **Serverless:** Netlify Functions (`netlify/functions/score-deck.js`) — AI deck scoring via Claude Sonnet + Supabase; `strengthen-document-background.js` — background function for AI document strengthening (rewrite + review → email); `weekly-report.js` — scheduled weekly usage digest
-- **Transactional Email:** Resend API (no SDK — simple `fetch()` POST); sends score receipts, strengthened drafts, + weekly reports from `noreply@missionmeetstech.com`
+- **Serverless:** Netlify Functions (`netlify/functions/score-deck.js`) — AI document scoring (Proposal Pulse) via Claude Sonnet + Supabase, supports optional SOW/PWS hybrid scoring; `gold-team-review-background.js` — background function for Gold Team Review (full 9-section rewrite + pWin + executive summary → email); `create-checkout.js` + `stripe-webhook.js` — Stripe payment flow for $49/assessment; `weekly-report.js` — scheduled weekly usage digest
+- **Payments:** Stripe Checkout (single $49 payments, no subscriptions). 3 free assessments, then pay-per-use.
+- **Transactional Email:** Resend API (no SDK — simple `fetch()` POST); sends score receipts, Gold Team Reviews, + weekly reports from `noreply@missionmeetstech.com`
 - **Domain:** missionmeetstech.com
 
 ## Design Tokens
@@ -51,8 +52,8 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 ├── about.html              # About / founder bio
 ├── podcast.html            # Fed UP podcast page + recent episodes (build-time rendered from RSS)
 ├── newsletter.html         # Newsletter subscribe (Buttondown primary) + full archive (build-time rendered)
-├── resources.html          # Federal health IT resource guide (11 categories, 79 links) + Lethality Test CTA
-├── lethality-test.html     # The Lethality Test — AI-powered NatSec document scorer (6 doc types, upload → score-deck API → scorecard)
+├── resources.html          # Federal health IT resource guide (11 categories, 79 links) + Proposal Pulse CTA
+├── proposal-pulse.html     # Proposal Pulse — AI-powered federal proposal scorer (6 doc types + optional SOW, upload → score-deck API → scorecard)
 ├── contact.html            # Contact form (Netlify Forms)
 ├── topics.html             # Topics index page (6 topics, build-time rendered with descriptions + counts)
 ├── newsletters.json        # Newsletter issue data (source; build generates updated version)
@@ -86,13 +87,15 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 │   └── email-setup.md      # Google Workspace + Resend setup guide (DNS records, verification steps)
 ├── netlify/
 │   └── functions/
-│       ├── score-deck.js   # Netlify Function: AI document scoring (Claude Sonnet + Supabase, 6 document types)
-│       ├── strengthen-document-background.js # Background Function: AI rewrite + review of weak sections → emails strengthened draft
+│       ├── score-deck.js   # Netlify Function: Proposal Pulse scoring (Claude Sonnet + Supabase, 6 doc types + optional SOW hybrid)
+│       ├── gold-team-review-background.js # Background Function: Gold Team Review — full 9-section rewrite + pWin + exec summary → emails review
+│       ├── create-checkout.js  # Netlify Function: creates Stripe Checkout Session ($49/assessment)
+│       ├── stripe-webhook.js   # Netlify Function: handles Stripe checkout.session.completed → grants +1 use
 │       ├── weekly-report.js # Scheduled Function: weekly usage digest emailed to Mary (Mondays 9AM ET)
 │       └── lib/
 │           ├── document-types.js  # Shared DOCUMENT_TYPES config (used by score-deck + strengthen)
 │           ├── send-email.js      # Resend API wrapper (fetch-based, no npm dependency)
-│           └── email-templates.js # HTML email templates (score receipt + strengthened draft + weekly report)
+│           └── email-templates.js # HTML email templates (score receipt + Gold Team Review + weekly report)
 ├── lib/
 │   └── supabase/
 │       └── database.types.ts  # Generated Supabase types for MissionPulse schema
@@ -250,13 +253,17 @@ Static HTML files use `<!-- BUILD:PLACEHOLDER -->` markers that `copyStaticFiles
 - Tailwind CSS is built at compile time via CLI (`tailwind.config.js` + `src/input.css`), then inlined into each HTML page by `build.js`. The `<link rel="stylesheet" href="/styles/tailwind.css">` in source HTML files is replaced with `<style>` during build. There is no external CSS request at runtime.
 - All icons are inline SVGs — there is no Font Awesome or other icon CDN. When adding new icons, use inline SVG with `width="1em" height="1em" fill="currentColor" aria-hidden="true"`.
 - `*.mp4` and `*.zip` are gitignored and excluded from dist builds.
-- Lethality Test (`lethality-test.html`) is an AI-powered NatSec document scorer supporting 6 document types: `pitch_deck`, `white_paper`, `rfp_response`, `capabilities_statement`, `pricing_volume`, `executive_summary`. Each type has 9 tailored scoring criteria, type-specific red flags, and contextual processing messages. 5 screens: Intro → Upload (email + document type dropdown + drag-and-drop, PDF/PPTX/DOCX, 4MB max) → Processing (spinner, 90s timeout, per-type status messages) → Results (verdict + scorecard with AI assessments + top fix + red flags + MissionPulse teaser) → Limit Reached (403). Calls `/.netlify/functions/score-deck` backend with `document_type` field (defaults to `pitch_deck` for backward compatibility). Uses custom CSS variables for grade colors alongside mmt-site design tokens.
-- **Strengthen feature (two-phase flow):** After scoring completes, the frontend checks for weak sections (C+ or below, points <= 2.0). If any exist, it fires a POST to `strengthen-document-background.js` (Netlify Background Function, returns 202 immediately, runs up to 15 min). The background function makes two sequential Claude calls: (1) Rewrite weak sections with before/after excerpts, (2) Independent review with confidence percentages and triple-check (accuracy, consistency, improvement). Results are merged and emailed as a branded strengthened draft. Doesn't consume an extra "use" — strengthening is part of the same assessment. If strengthen fails, user still has their scorecard (graceful degradation). Anti-abuse: verifies user has a scoring record in `mp_scoring_history` within last 5 minutes.
-- `DOCUMENT_TYPES` config is shared between `score-deck.js` and `strengthen-document-background.js` via `lib/document-types.js`. When modifying document types, update the shared module.
-- `score-deck.js` returns `extracted_text` in its JSON response (non-null for DOCX/PPTX, null for PDFs). The frontend forwards this to the strengthen endpoint. For PDFs, the frontend sends `file_base64` instead, and the strengthen function extracts text via `pdf-parse`.
+- Proposal Pulse (`proposal-pulse.html`) is an AI-powered federal proposal scorer supporting 6 document types: `pitch_deck`, `white_paper`, `rfp_response`, `capabilities_statement`, `pricing_volume`, `executive_summary`. Each type has 9 tailored scoring criteria, type-specific red flags, and contextual processing messages. Optional SOW/PWS upload: extracts evaluation factors and uses them instead of generic criteria (hybrid mode). 5 screens: Intro → Upload (email + document type dropdown + drag-and-drop + optional SOW, PDF/PPTX/DOCX, 4MB max) → Processing (spinner, 90s timeout, per-type status messages) → Results (verdict + scorecard with AI assessments + top fix + red flags + upsell CTA) → Limit Reached (403 + Stripe upgrade). Calls `/.netlify/functions/score-deck` backend with `document_type` field (defaults to `pitch_deck` for backward compatibility). Uses custom CSS variables for grade colors alongside mmt-site design tokens. Old URL `/lethality-test.html` 301-redirects to `/proposal-pulse.html`.
+- **`FEATURE_NAME = "lethality_test"` in Supabase:** Kept unchanged for backward compatibility — existing `mp_feature_usage` and `mp_scoring_history` records use this value. Do not change this value.
+- **SOW hybrid scoring:** When `sow_base64` + `sow_content_type` are sent, `score-deck.js` extracts text from the SOW (PDF/DOCX/PPTX), injects it into the system prompt, and instructs Claude to extract evaluation factors from the SOW and score against those instead of generic criteria. Response includes `has_sow: true/false`. If SOW extraction fails, falls back to generic criteria silently.
+- **Gold Team Review (two-phase flow):** After scoring completes, the frontend fires a POST to `gold-team-review-background.js` (Netlify Background Function, returns 202 immediately, runs up to 15 min). The background function makes two sequential Claude calls: (1) Rewrite ALL 9 sections (polish strong sections B- or above, substantially rewrite weak sections C+ or below) + pWin estimate, (2) Independent review with confidence percentages, triple-check (accuracy, consistency, improvement), executive change summary (3-5 bullets), and prioritized next steps (3-5 actions). Results are merged and emailed as a branded Gold Team Review. Doesn't consume an extra "use" — the review is part of the same assessment. If the review fails, user still has their scorecard (graceful degradation). Anti-abuse: verifies user has a scoring record in `mp_scoring_history` within last 5 minutes.
+- **Stripe payment flow:** 3 free assessments per email. After that, users pay $49/assessment via Stripe Checkout. `create-checkout.js` creates a Checkout Session; Stripe redirects user to hosted payment page; `stripe-webhook.js` handles `checkout.session.completed` and grants +1 use in `mp_feature_usage`. Frontend detects `?session_id=` param on return and shows success banner. No subscriptions — single payments only.
+- `DOCUMENT_TYPES` config is shared between `score-deck.js` and `gold-team-review-background.js` via `lib/document-types.js`. When modifying document types, update the shared module. Criteria are general federal (not defense-specific).
+- `score-deck.js` returns `extracted_text` in its JSON response (non-null for DOCX/PPTX, null for PDFs). The frontend forwards this to the Gold Team Review endpoint. For PDFs, the frontend sends `file_base64` instead, and the review function extracts text via `pdf-parse`.
 - Resources page accordion uses pure CSS (checkbox + sibling selectors) — no JavaScript for expand/collapse.
 - `score-deck.js` sends a branded score receipt email via Resend after each successful scoring. Email failures are caught silently — the scoring response still returns 200.
 - `weekly-report.js` is a Netlify Scheduled Function (cron: `0 14 * * 1` = Monday 9AM ET). Queries Supabase for 7-day stats and emails digest to `mary@missionmeetstech.com`.
 - Email sending requires `RESEND_API_KEY` env var in Netlify. If missing, `send-email.js` logs a warning and returns `{ success: false }` — no crash.
+- Stripe payments require `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` env vars in Netlify. If missing, `create-checkout.js` returns 500 and `stripe-webhook.js` returns 500.
 - Email templates use inline CSS only (no `<style>` blocks) for email client compatibility. Dark-on-light layout (inverted from site dark theme) for readability.
 - `docs/email-setup.md` has full DNS/SPF/DKIM/DMARC setup instructions for Google Workspace + Resend.
