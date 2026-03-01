@@ -560,7 +560,7 @@ async function generateOgImages(articles, tags) {
     { filename: 'resources.png', title: 'Federal Health IT Resources', subtitle: 'Curated links for defense and government', label: 'RESOURCES' },
     { filename: 'contact.png', title: 'Get in Touch', subtitle: 'Mission Meets Tech' },
     { filename: 'topics.png', title: 'Coverage Topics', subtitle: 'Browse all federal health IT topics', label: 'TOPICS' },
-    { filename: 'lethality-test.png', title: 'The Lethality Test', subtitle: 'Score your NatSec pitch against the Hegseth standard', label: 'ASSESSMENT' },
+    { filename: 'lethality-test.png', title: 'The Lethality Test', subtitle: 'AI-scored NatSec proposal assessment', label: 'ASSESSMENT' },
     { filename: 'latest.png', title: 'Latest Articles', subtitle: 'All federal health IT intelligence', label: 'ARCHIVE' },
   ];
 
