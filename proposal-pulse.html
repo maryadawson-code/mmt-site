@@ -1008,7 +1008,7 @@
         <div class="step-label">Building scorecard</div>
       </div>
     </div>
-    <p class="processing-note">Usually takes 30&ndash;60 seconds</p>
+    <p class="processing-note">Usually takes 30&ndash;90 seconds</p>
     <button class="btn btn-secondary btn-sm" onclick="cancelSubmission()">Cancel</button>
   </div>
 </div>
@@ -1127,10 +1127,12 @@
 // ===== PROPOSAL PULSE — AI DOCUMENT SCORER =====
 
 const API_URL = '/.netlify/functions/score-deck';
-const GOLD_TEAM_URL = '/.netlify/functions/gold-team-review-background';
+const BG_URL = '/.netlify/functions/score-deck-background';
+const STATUS_URL = '/.netlify/functions/score-status';
 const CHECKOUT_URL = '/.netlify/functions/create-checkout';
 const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
-const TIMEOUT_MS = 90000; // 90 seconds
+const POLL_INTERVAL_MS = 3000;  // Poll every 3 seconds
+const POLL_TIMEOUT_MS = 180000; // 3 minute timeout
 
 const ALLOWED_EXTENSIONS = ['pdf', 'pptx', 'docx'];
 const MIME_MAP = {
@@ -1143,11 +1145,11 @@ let selectedFile = null;
 let fileBase64 = null;
 let sowFile = null;
 let sowBase64 = null;
-let abortController = null;
 let pipelineTimers = [];
 let isSubmitting = false;
 let userCancelled = false;
-let goldTeamAbort = null;
+let pollTimer = null;
+let pollTimeoutTimer = null;
 
 // ===== SVG ICON HELPERS =====
 
@@ -1484,85 +1486,140 @@ async function submitDeck() {
   const mimeType = MIME_MAP[ext] || selectedFile.type;
   const documentType = document.getElementById('doc-type-select').value;
 
-  abortController = new AbortController();
-  const timeoutId = setTimeout(() => abortController.abort(), TIMEOUT_MS);
-
   try {
-    const response = await fetch(API_URL, {
+    // Step 1: POST to gateway — validate, create pending row, decrement usage
+    const gatewayResponse = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(Object.assign({
+      body: JSON.stringify({
         email: email,
         file_base64: fileBase64,
         file_type: mimeType,
         file_name: selectedFile.name,
         document_type: documentType,
-      }, sowBase64 ? {
-        sow_base64: sowBase64,
-        sow_content_type: MIME_MAP[sowFile.name.split('.').pop().toLowerCase()] || 'application/pdf',
-      } : {})),
-      signal: abortController.signal,
+      }),
     });
 
-    clearTimeout(timeoutId);
+    if (!gatewayResponse.ok) {
+      completePipeline();
+      const errData = await gatewayResponse.json().catch(() => null);
 
-    if (response.ok) {
-      await completePipelineAnimated();
-      let data;
-      try { data = await response.json(); } catch (e) {
-        showScreen('screen-upload');
-        showError('Received an invalid response. Please try again.');
+      if (gatewayResponse.status === 403 && errData && errData.error === 'limit_reached') {
+        showScreen('screen-limit');
         return;
       }
-      renderResults(data);
-      return;
-    }
 
-    completePipeline();
-
-    // Handle error responses
-    const errData = await response.json().catch(() => null);
-
-    if (response.status === 403 && errData && errData.error === 'limit_reached') {
-      showScreen('screen-limit');
-      return;
-    }
-
-    if (response.status === 502) {
+      const errMsg = (errData && errData.error) || 'Something went wrong. Please try again.';
       showScreen('screen-upload');
-      showError('AI scoring is temporarily unavailable. Please try again in a few minutes.');
+      showError(errMsg);
       return;
     }
 
-    // Generic API error
-    const errMsg = (errData && errData.error) || 'Something went wrong. Please try again.';
-    showScreen('screen-upload');
-    showError(errMsg);
+    let gatewayData;
+    try { gatewayData = await gatewayResponse.json(); } catch (e) {
+      completePipeline();
+      showScreen('screen-upload');
+      showError('Received an invalid response. Please try again.');
+      return;
+    }
+
+    const scoringId = gatewayData.scoring_id;
+    if (!scoringId) {
+      completePipeline();
+      showScreen('screen-upload');
+      showError('Could not start scoring. Please try again.');
+      return;
+    }
+
+    // Step 2: Fire background function (returns 202 immediately)
+    const bgPayload = Object.assign({
+      scoring_id: scoringId,
+      email: email,
+      file_base64: fileBase64,
+      file_type: mimeType,
+      file_name: selectedFile.name,
+      document_type: documentType,
+    }, sowBase64 ? {
+      sow_base64: sowBase64,
+      sow_content_type: MIME_MAP[sowFile.name.split('.').pop().toLowerCase()] || 'application/pdf',
+    } : {});
+
+    fetch(BG_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(bgPayload),
+    }).catch(() => {
+      // Background trigger failed — scoring might still complete via retry
+      console.error('Background function trigger failed');
+    });
+
+    // Step 3: Poll for results
+    startPolling(scoringId, gatewayData);
 
   } catch (err) {
-    clearTimeout(timeoutId);
     completePipeline();
-
-    if (err.name === 'AbortError') {
-      if (!userCancelled) {
-        showScreen('screen-upload');
-        showError('Request timed out. The analysis took too long. Please try again with a smaller file.');
-      }
-      return;
-    }
-
     showScreen('screen-upload');
     showError('Network error. Check your connection and try again.');
-  } finally {
-    abortController = null;
     isSubmitting = false;
   }
 }
 
+// ===== POLLING =====
+
+function startPolling(scoringId, gatewayData) {
+  stopPolling();
+
+  // Set overall timeout
+  pollTimeoutTimer = setTimeout(() => {
+    stopPolling();
+    completePipeline();
+    showScreen('screen-upload');
+    showError('Scoring is taking longer than expected. Check your email for results, or try again with a smaller file.');
+    isSubmitting = false;
+  }, POLL_TIMEOUT_MS);
+
+  pollTimer = setInterval(async () => {
+    try {
+      const response = await fetch(STATUS_URL + '?scoring_id=' + encodeURIComponent(scoringId));
+      if (!response.ok) return; // Retry on next interval
+
+      const data = await response.json();
+
+      if (data.status === 'processing') return; // Keep polling
+
+      // Done — stop polling
+      stopPolling();
+
+      if (data.status === 'error') {
+        completePipeline();
+        showScreen('screen-upload');
+        showError(data.error || 'Scoring failed. Please try again.');
+        isSubmitting = false;
+        return;
+      }
+
+      if (data.status === 'complete') {
+        await completePipelineAnimated();
+        renderResults(data);
+        isSubmitting = false;
+        return;
+      }
+    } catch (err) {
+      // Network error on poll — just retry next interval
+    }
+  }, POLL_INTERVAL_MS);
+}
+
+function stopPolling() {
+  if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+  if (pollTimeoutTimer) { clearTimeout(pollTimeoutTimer); pollTimeoutTimer = null; }
+}
+
 function cancelSubmission() {
   userCancelled = true;
-  if (abortController) abortController.abort();
+  stopPolling();
   completePipeline();
+  isSubmitting = false;
   showScreen('screen-upload');
 }
 
@@ -1681,6 +1738,20 @@ function renderResults(data) {
     document.getElementById('results-red-flags').innerHTML = '';
   }
 
+  // Gold Team Review status — now triggered server-side by background function
+  const statusEl = document.getElementById('gold-team-status');
+  statusEl.innerHTML = `
+    <div class="gold-team-status success">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+        <polyline points="22 4 12 14.01 9 11.01"/>
+      </svg>
+      <div class="gold-team-status-text">
+        Your Gold Team Review is on the way. Check your inbox in 1&ndash;2 minutes.
+      </div>
+    </div>
+  `;
+
   // Upsell CTA (show only when no uses remaining)
   const upsellEl = document.getElementById('results-upsell');
   if (typeof data.uses_remaining === 'number' && data.uses_remaining <= 0) {
@@ -1697,84 +1768,6 @@ function renderResults(data) {
   }
 
   showScreen('screen-results');
-
-  // --- Trigger Gold Team Review for ALL results ---
-  triggerGoldTeamReview(data);
-}
-
-// ===== GOLD TEAM REVIEW =====
-
-function triggerGoldTeamReview(data) {
-  const sc = data.scorecard;
-  const statusEl = document.getElementById('gold-team-status');
-
-  // Show loading state
-  statusEl.innerHTML = `
-    <div class="gold-team-status">
-      <div class="gold-team-spinner-small"></div>
-      <div class="gold-team-status-text">
-        Your Gold Team Review is being prepared and will arrive in your email in 1&ndash;2 minutes.
-      </div>
-    </div>
-  `;
-
-  // Build payload
-  const email = emailInput.value.trim();
-  const documentType = document.getElementById('doc-type-select').value;
-  const payload = {
-    email: email,
-    document_type: documentType,
-    file_name: selectedFile ? selectedFile.name : 'document',
-    scorecard: sc,
-  };
-
-  // For PDFs (extracted_text is null), send file_base64 + file_type
-  if (data.extracted_text) {
-    payload.extracted_text = data.extracted_text;
-  } else if (fileBase64) {
-    payload.file_base64 = fileBase64;
-    const ext = selectedFile ? selectedFile.name.split('.').pop().toLowerCase() : 'pdf';
-    payload.file_type = MIME_MAP[ext] || 'application/pdf';
-  }
-
-  // Fire and forget — background function returns 202 immediately
-  goldTeamAbort = new AbortController();
-  fetch(GOLD_TEAM_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-    signal: goldTeamAbort.signal,
-  })
-  .then(response => {
-    if (response.status === 202 || response.ok) {
-      statusEl.innerHTML = `
-        <div class="gold-team-status success">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-            <polyline points="22 4 12 14.01 9 11.01"/>
-          </svg>
-          <div class="gold-team-status-text">
-            Gold Team Review sent. Check your inbox in 1&ndash;2 minutes.
-          </div>
-        </div>
-      `;
-    } else {
-      showGoldTeamFallback(statusEl);
-    }
-  })
-  .catch(() => {
-    showGoldTeamFallback(statusEl);
-  });
-}
-
-function showGoldTeamFallback(statusEl) {
-  statusEl.innerHTML = `
-    <div class="gold-team-status error">
-      <div class="gold-team-status-text">
-        Gold Team Review unavailable. Your scorecard above is still valid.
-      </div>
-    </div>
-  `;
 }
 
 // ===== STRIPE CHECKOUT =====
@@ -1838,8 +1831,8 @@ function esc(str) {
 // ===== RESET =====
 
 function resetTool() {
-  // Abort any in-flight requests
-  if (goldTeamAbort) { goldTeamAbort.abort(); goldTeamAbort = null; }
+  // Stop any in-flight polling
+  stopPolling();
   pipelineTimers.forEach(t => clearTimeout(t));
   pipelineTimers = [];
   isSubmitting = false;
