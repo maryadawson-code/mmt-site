@@ -1,13 +1,13 @@
 // ============================================================
 // score-deck.js — Netlify Function (Proposal Pulse Gateway)
 //
-// Thin synchronous gateway: validates input, manages user/usage,
-// inserts a pending row into mp_scoring_history, decrements usage,
-// and returns scoring_id for the frontend to poll.
+// Synchronous gateway: validates input, manages user/usage,
+// extracts text from DOCX/PPTX, stores the scoring payload
+// in the DB, decrements usage, and returns scoring_id.
 //
-// Heavy scoring work runs in score-deck-background.js (background
-// function, up to 15 min) which the frontend fires after receiving
-// the scoring_id.
+// The scoring payload is stored in the `scores` column as
+// { _pending: true, ... } so the background function can read
+// it without receiving any file data in its request body.
 //
 // Uses mp_users, mp_feature_usage, mp_scoring_history tables.
 // ============================================================
@@ -43,7 +43,7 @@ const CORS_HEADERS = {
 
 
 // ============================================================
-// TEXT EXTRACTION (DOCX/PPTX only — keeps background payload small)
+// TEXT EXTRACTION (DOCX/PPTX — fast, < 1s)
 // ============================================================
 
 async function extractText(base64Data, resolvedType) {
@@ -60,7 +60,6 @@ async function extractText(base64Data, resolvedType) {
     return await officeparser.parseOfficeAsync(buffer);
   }
 
-  // PDFs: return null — sent as native document to Claude
   return null;
 }
 
@@ -220,10 +219,8 @@ exports.handler = async (event) => {
       };
     }
 
-    // --- Extract text for DOCX/PPTX (reduces background function payload) ---
+    // --- Extract text for DOCX/PPTX (fast, < 1s) ---
     let extractedText = null;
-    let sowExtractedText = null;
-
     if (resolvedType === "docx" || resolvedType === "pptx") {
       try {
         extractedText = await extractText(file_base64, resolvedType);
@@ -251,23 +248,38 @@ exports.handler = async (event) => {
       }
     }
 
-    // Extract SOW text if provided (DOCX/PPTX only; PDFs sent as base64)
+    // --- Extract SOW text if provided ---
+    let sowText = null;
     const sowBase64 = body.sow_base64 || null;
     const sowContentType = body.sow_content_type || null;
     if (sowBase64 && sowContentType) {
       const sowResolved = ALLOWED_TYPES[sowContentType] || null;
       if (sowResolved === "docx" || sowResolved === "pptx") {
         try {
-          sowExtractedText = await extractText(sowBase64, sowResolved);
-          if (sowExtractedText && sowExtractedText.length > MAX_TEXT_CHARS) {
-            sowExtractedText = sowExtractedText.substring(0, MAX_TEXT_CHARS);
+          sowText = await extractText(sowBase64, sowResolved);
+          if (sowText && sowText.length > MAX_TEXT_CHARS) {
+            sowText = sowText.substring(0, MAX_TEXT_CHARS);
           }
-          if (!sowExtractedText || sowExtractedText.trim().length < 50) {
-            sowExtractedText = null;
+          if (!sowText || sowText.trim().length < 50) {
+            sowText = null;
           }
         } catch (sowErr) {
           console.error("SOW extraction error (continuing without):", sowErr);
-          sowExtractedText = null;
+        }
+      } else if (sowResolved === "pdf") {
+        try {
+          const pdfParse = require("pdf-parse");
+          const sowBuffer = Buffer.from(sowBase64, "base64");
+          const pdfData = await pdfParse(sowBuffer);
+          sowText = pdfData.text;
+          if (sowText && sowText.length > MAX_TEXT_CHARS) {
+            sowText = sowText.substring(0, MAX_TEXT_CHARS);
+          }
+          if (!sowText || sowText.trim().length < 50) {
+            sowText = null;
+          }
+        } catch (sowErr) {
+          console.error("SOW PDF extraction error (continuing without):", sowErr);
         }
       }
     }
@@ -312,7 +324,34 @@ exports.handler = async (event) => {
       };
     }
 
-    // --- Insert pending scoring row (scores: null = processing) ---
+    // --- Build scoring payload to store in DB ---
+    // Background function reads this from the `scores` column.
+    // _pending flag distinguishes from a real scorecard.
+    const pendingPayload = {
+      _pending: true,
+      email: email,
+      file_name: file_name || null,
+      document_type: documentType,
+      file_type: resolvedType,
+    };
+
+    // For DOCX/PPTX: store extracted text (small, ~200KB)
+    // For PDF: store base64 (larger, but needed for native document upload)
+    if (extractedText) {
+      pendingPayload.extracted_text = extractedText;
+    } else {
+      pendingPayload.file_base64 = file_base64;
+    }
+
+    if (sowText) {
+      pendingPayload.sow_text = sowText;
+    } else if (sowBase64 && sowContentType) {
+      // PDF SOW — store base64 for background function
+      pendingPayload.sow_base64 = sowBase64;
+      pendingPayload.sow_content_type = sowContentType;
+    }
+
+    // --- Insert pending scoring row with payload ---
     const { data: scoringRow, error: insertErr } = await supabase
       .from("mp_scoring_history")
       .insert({
@@ -321,7 +360,7 @@ exports.handler = async (event) => {
         file_name: file_name || null,
         file_type: resolvedType,
         document_type: documentType,
-        // scores, verdict, overall_grade, avg_score left null = "processing"
+        scores: pendingPayload,
       })
       .select("id")
       .single();
@@ -344,7 +383,6 @@ exports.handler = async (event) => {
     }
 
     // --- Return scoring_id for polling ---
-    // Include extracted_text so frontend sends it (not file_base64) to background function
     return {
       statusCode: 200,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
@@ -352,9 +390,6 @@ exports.handler = async (event) => {
         scoring_id: scoringRow.id,
         uses_remaining: user.tier === "free" ? usage.uses_remaining - 1 : 999,
         user_tier: user.tier,
-        extracted_text: extractedText,
-        sow_extracted_text: sowExtractedText,
-        file_type_resolved: resolvedType,
       }),
     };
 

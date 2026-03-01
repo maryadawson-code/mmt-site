@@ -57,8 +57,17 @@ exports.handler = async (event) => {
       };
     }
 
-    // Still processing: scores is null and no error verdict
+    // Still processing: scores is null, or scores has _pending payload
     if (record.scores === null && record.verdict !== "ERROR") {
+      return {
+        statusCode: 200,
+        headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "processing" }),
+      };
+    }
+
+    // Pending payload (gateway stored data, background hasn't started yet)
+    if (record.scores && record.scores._pending) {
       return {
         statusCode: 200,
         headers: { ...CORS_HEADERS, "Content-Type": "application/json" },

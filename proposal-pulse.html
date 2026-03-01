@@ -1534,36 +1534,11 @@ async function submitDeck() {
     }
 
     // Step 2: Fire background function (returns 202 immediately)
-    // Use extracted_text from gateway when available (DOCX/PPTX) — much smaller payload
-    // For PDFs (extracted_text is null), send file_base64 for native document upload
-    const bgPayload = {
-      scoring_id: scoringId,
-      email: email,
-      file_type: mimeType,
-      file_name: selectedFile.name,
-      document_type: documentType,
-    };
-
-    if (gatewayData.extracted_text) {
-      bgPayload.extracted_text = gatewayData.extracted_text;
-    } else {
-      bgPayload.file_base64 = fileBase64;
-    }
-
-    // SOW: use extracted text from gateway when available
-    if (sowBase64) {
-      if (gatewayData.sow_extracted_text) {
-        bgPayload.sow_extracted_text = gatewayData.sow_extracted_text;
-      } else {
-        bgPayload.sow_base64 = sowBase64;
-        bgPayload.sow_content_type = MIME_MAP[sowFile.name.split('.').pop().toLowerCase()] || 'application/pdf';
-      }
-    }
-
+    // Only sends scoring_id — all data is stored in the DB by the gateway
     fetch(BG_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(bgPayload),
+      body: JSON.stringify({ scoring_id: scoringId }),
     }).then(function(resp) {
       if (!resp.ok && resp.status !== 202) {
         console.error('Background trigger returned status:', resp.status);

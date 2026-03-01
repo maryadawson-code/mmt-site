@@ -4,18 +4,19 @@
 // Heavy scoring logic for Proposal Pulse. Runs as a background
 // function (returns 202 immediately, up to 15 min execution).
 //
-// Called by score-deck.js (gateway) after validation + usage gate.
-// Receives scoring_id, extracts text, calls Claude, updates
-// mp_scoring_history row, sends receipt email, triggers Gold Team.
+// Receives ONLY { scoring_id } in the request body.
+// Reads the full scoring payload from the DB (stored by the
+// gateway in the `scores` column with _pending: true).
 //
-// PDF  → sent as native document to Claude (visual layout preserved)
-// PPTX → text extracted via officeparser → sent as text
-// DOCX → text extracted via mammoth → sent as text
+// Flow:
+//   1. Read payload from scores column
+//   2. Clear scores to null (= "processing" state for polling)
+//   3. Call Claude API
+//   4. Update row with real scorecard
+//   5. Send score receipt email
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
-const mammoth = require("mammoth");
-const officeparser = require("officeparser");
 const { DOCUMENT_TYPES } = require("./lib/document-types");
 
 // --- Environment Variables ---
@@ -134,24 +135,15 @@ ${SCORING_RULES}`;
 
 
 // ============================================================
-// FILE PROCESSING
+// MESSAGE CONTENT BUILDER
 // ============================================================
-
-async function extractDocxText(buffer) {
-  const result = await mammoth.extractRawText({ buffer });
-  return result.value;
-}
-
-async function extractPptxText(buffer) {
-  return await officeparser.parseOfficeAsync(buffer);
-}
 
 function buildMessageContent(fileType, base64Data, extractedText, documentType) {
   const config = DOCUMENT_TYPES[documentType];
   const noun = config.noun;
   const userPrompt = `Score this ${noun} using Proposal Pulse. Return only the JSON scorecard.`;
 
-  if (fileType === "pdf") {
+  if (fileType === "pdf" && base64Data) {
     return [
       {
         type: "document",
@@ -199,26 +191,12 @@ function computeOverallGrade(scorecard) {
 
 
 // ============================================================
-// ALLOWED FILE TYPES
-// ============================================================
-
-const ALLOWED_TYPES = {
-  "application/pdf": "pdf",
-  "application/vnd.openxmlformats-officedocument.presentationml.presentation": "pptx",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
-  "application/vnd.ms-powerpoint": "pptx",
-  "application/msword": "docx",
-};
-
-
-// ============================================================
 // MAIN HANDLER (Background Function)
 // ============================================================
 
 exports.handler = async (event) => {
-  console.log("score-deck-background invoked, body length:", event.body?.length || 0);
+  console.log("score-deck-background invoked");
 
-  // Background functions only accept POST
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method not allowed" };
   }
@@ -227,32 +205,20 @@ exports.handler = async (event) => {
   try {
     const body = JSON.parse(event.body);
     scoring_id = body.scoring_id;
-    const { email, file_type, file_name } = body;
-    const file_base64 = body.file_base64 || null;
-    const preExtractedText = body.extracted_text || null;
-    const documentType = body.document_type || "pitch_deck";
-    const sowBase64 = body.sow_base64 || null;
-    const sowContentType = body.sow_content_type || null;
-    const sowPreExtractedText = body.sow_extracted_text || null;
 
-    if (!scoring_id || !email || !file_type) {
-      console.error("Missing required fields in background function");
-      return { statusCode: 400, body: "Missing required fields" };
+    if (!scoring_id) {
+      console.error("Missing scoring_id in background function");
+      return { statusCode: 400, body: "Missing scoring_id" };
     }
 
-    if (!file_base64 && !preExtractedText) {
-      console.error("Missing both file_base64 and extracted_text");
-      return { statusCode: 400, body: "Missing file data" };
-    }
-
-    console.log(`Processing scoring_id=${scoring_id}, type=${file_type}, hasText=${!!preExtractedText}, hasBase64=${!!file_base64}`);
+    console.log(`Background function started for scoring_id=${scoring_id}`);
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
-    // Anti-abuse: verify scoring_id exists and is still pending
+    // --- Read payload from DB ---
     const { data: record, error: lookupErr } = await supabase
       .from("mp_scoring_history")
-      .select("id, scores, verdict")
+      .select("id, scores, verdict, user_id")
       .eq("id", scoring_id)
       .single();
 
@@ -261,83 +227,72 @@ exports.handler = async (event) => {
       return { statusCode: 404, body: "Scoring record not found" };
     }
 
-    if (record.scores !== null) {
-      console.log("Scoring already completed for:", scoring_id);
-      return { statusCode: 200, body: "Already completed" };
+    // Check for pending payload
+    if (!record.scores || !record.scores._pending) {
+      console.log("No pending payload (already processed or missing):", scoring_id);
+      return { statusCode: 200, body: "Already completed or no payload" };
     }
 
-    // --- Process file ---
-    const resolvedType = ALLOWED_TYPES[file_type] || "pdf";
-    let extractedText = preExtractedText;
+    const payload = record.scores;
+    const email = payload.email;
+    const documentType = payload.document_type || "pitch_deck";
+    const fileType = payload.file_type || "pdf";
+    const fileName = payload.file_name;
+    const extractedText = payload.extracted_text || null;
+    const fileBase64 = payload.file_base64 || null;
+    const sowText = payload.sow_text || null;
+    const sowBase64 = payload.sow_base64 || null;
+    const sowContentType = payload.sow_content_type || null;
 
-    // If gateway already extracted text (DOCX/PPTX), use it directly
-    // Otherwise, extract from file_base64 (PDF case or fallback)
-    if (!extractedText && file_base64) {
-      const fileBuffer = Buffer.from(file_base64, "base64");
-
-      if (resolvedType === "docx") {
-        try {
-          extractedText = await extractDocxText(fileBuffer);
-          if (!extractedText || extractedText.trim().length < 50) {
-            await markError(supabase, scoring_id, "Could not extract enough text from this Word document. Try exporting as PDF.");
-            return { statusCode: 200, body: "Extraction failed" };
-          }
-        } catch (parseErr) {
-          console.error("DOCX parse error:", parseErr);
-          await markError(supabase, scoring_id, "Failed to read this Word document. Make sure it's a valid .docx file. Try exporting as PDF.");
-          return { statusCode: 200, body: "Parse failed" };
-        }
-      }
-
-      if (resolvedType === "pptx") {
-        try {
-          extractedText = await extractPptxText(fileBuffer);
-          if (!extractedText || extractedText.trim().length < 50) {
-            await markError(supabase, scoring_id, "Could not extract enough text from this PowerPoint. Try exporting as PDF.");
-            return { statusCode: 200, body: "Extraction failed" };
-          }
-        } catch (parseErr) {
-          console.error("PPTX parse error:", parseErr);
-          await markError(supabase, scoring_id, "Failed to read this PowerPoint file. Make sure it's a valid .pptx file. Try exporting as PDF.");
-          return { statusCode: 200, body: "Parse failed" };
-        }
-      }
+    if (!email) {
+      console.error("No email in payload for:", scoring_id);
+      await markError(supabase, scoring_id, "Missing email. Please try again.");
+      return { statusCode: 200, body: "Missing email" };
     }
 
-    // --- Process SOW (optional) ---
-    let sowText = sowPreExtractedText || null;
-    if (!sowText && sowBase64) {
+    if (!extractedText && !fileBase64) {
+      console.error("No text or file data in payload for:", scoring_id);
+      await markError(supabase, scoring_id, "Missing document data. Please try again.");
+      return { statusCode: 200, body: "Missing data" };
+    }
+
+    // --- Clear the pending payload (= "processing" state for polling) ---
+    await supabase
+      .from("mp_scoring_history")
+      .update({ scores: null })
+      .eq("id", scoring_id);
+
+    console.log(`Processing ${scoring_id}: type=${fileType}, hasText=${!!extractedText}, hasBase64=${!!fileBase64}`);
+
+    // --- Process SOW if base64 provided (PDF SOW case) ---
+    let finalSowText = sowText;
+    if (!finalSowText && sowBase64) {
       try {
-        const sowResolvedType = sowContentType ? (ALLOWED_TYPES[sowContentType] || null) : null;
-        const sowBuffer = Buffer.from(sowBase64, "base64");
-
+        const sowResolvedType = sowContentType
+          ? ({ "application/pdf": "pdf" }[sowContentType] || null)
+          : null;
         if (sowResolvedType === "pdf") {
           const pdfParse = require("pdf-parse");
+          const sowBuffer = Buffer.from(sowBase64, "base64");
           const pdfData = await pdfParse(sowBuffer);
-          sowText = pdfData.text;
-        } else if (sowResolvedType === "docx") {
-          sowText = await extractDocxText(sowBuffer);
-        } else if (sowResolvedType === "pptx") {
-          sowText = await extractPptxText(sowBuffer);
-        }
-
-        if (sowText && sowText.length > MAX_TEXT_CHARS) {
-          sowText = sowText.substring(0, MAX_TEXT_CHARS);
-        }
-
-        if (!sowText || sowText.trim().length < 50) {
-          sowText = null;
+          finalSowText = pdfData.text;
+          if (finalSowText && finalSowText.length > MAX_TEXT_CHARS) {
+            finalSowText = finalSowText.substring(0, MAX_TEXT_CHARS);
+          }
+          if (!finalSowText || finalSowText.trim().length < 50) {
+            finalSowText = null;
+          }
         }
       } catch (sowErr) {
         console.error("SOW extraction error (proceeding without SOW):", sowErr);
-        sowText = null;
+        finalSowText = null;
       }
     }
 
     // --- Build prompt and call Claude API ---
-    console.log(`Calling Claude API for ${scoring_id} (${resolvedType}, textLen=${extractedText?.length || 0})`);
-    const systemPrompt = buildSystemPrompt(documentType, sowText);
-    const messageContent = buildMessageContent(resolvedType, file_base64, extractedText, documentType);
+    console.log(`Calling Claude API for ${scoring_id} (${fileType}, textLen=${extractedText?.length || 0})`);
+    const systemPrompt = buildSystemPrompt(documentType, finalSowText);
+    const messageContent = buildMessageContent(fileType, fileBase64, extractedText, documentType);
 
     const claudeResponse = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -406,29 +361,22 @@ exports.handler = async (event) => {
       console.error("Failed to update scoring row:", updateErr);
     }
 
+    console.log(`Scoring complete for ${scoring_id}: ${overallGrade} (${scorecard.verdict})`);
+
     // --- Send score receipt email ---
     try {
       const { sendEmail } = require("./lib/send-email");
       const { buildScoreReceiptHtml } = require("./lib/email-templates");
       const config = DOCUMENT_TYPES[documentType];
 
-      // Look up uses_remaining for email
-      const { data: usageData } = await supabase
-        .from("mp_scoring_history")
-        .select("user_id")
-        .eq("id", scoring_id)
-        .single();
-
       let usesRemaining = null;
-      if (usageData) {
-        const { data: featureUsage } = await supabase
-          .from("mp_feature_usage")
-          .select("uses_remaining")
-          .eq("user_id", usageData.user_id)
-          .eq("feature", "lethality_test")
-          .single();
-        if (featureUsage) usesRemaining = featureUsage.uses_remaining;
-      }
+      const { data: featureUsage } = await supabase
+        .from("mp_feature_usage")
+        .select("uses_remaining")
+        .eq("user_id", record.user_id)
+        .eq("feature", "lethality_test")
+        .single();
+      if (featureUsage) usesRemaining = featureUsage.uses_remaining;
 
       await sendEmail({
         to: email,
@@ -439,22 +387,19 @@ exports.handler = async (event) => {
           documentLabel: config.label,
           overallGrade,
           usesRemaining: usesRemaining,
-          fileName: file_name,
+          fileName: fileName,
         }),
       });
+      console.log(`Receipt email sent for ${scoring_id}`);
     } catch (emailErr) {
       console.error("Receipt email error:", emailErr);
     }
 
-    // Gold Team Review is triggered by the frontend after polling completes
-
-    console.log(`Scoring complete for ${scoring_id}: ${overallGrade} (${scorecard.verdict})`);
     return { statusCode: 200, body: "Scoring complete" };
 
   } catch (err) {
     console.error("Unhandled error in score-deck-background:", err);
 
-    // Try to mark error in DB if we have a scoring_id
     if (scoring_id) {
       try {
         const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
@@ -471,12 +416,13 @@ exports.handler = async (event) => {
 
 /**
  * Mark a scoring record as errored.
- * Convention: verdict = 'ERROR', top_fix = error message, scores stays null.
+ * Convention: verdict = 'ERROR', top_fix = error message, scores = null.
  */
 async function markError(supabase, scoringId, errorMessage) {
   const { error } = await supabase
     .from("mp_scoring_history")
     .update({
+      scores: null,
       verdict: "ERROR",
       top_fix: errorMessage,
     })
