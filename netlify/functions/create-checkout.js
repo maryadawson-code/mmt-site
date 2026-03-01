@@ -1,7 +1,7 @@
 // ============================================================
 // create-checkout.js — Netlify Function
 //
-// Creates a Stripe Checkout Session for a single $49 assessment.
+// Creates a Stripe Checkout Session for a single $19.99 assessment.
 // POST body: { email }
 // Returns: { url } — Stripe-hosted checkout page URL
 // ============================================================
@@ -14,7 +14,7 @@ const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
 const SITE_URL = "https://missionmeetstech.com";
-const PRICE_CENTS = 4900; // $49.00
+const PRICE_CENTS = 1999; // $19.99
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": SITE_URL,

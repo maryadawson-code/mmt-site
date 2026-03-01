@@ -15,8 +15,8 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 - **Podcast embed:** Transistor.fm iframe
 - **Content:** Markdown files in `content/newsletter/` → build generates article pages
 - **Deploy:** Netlify from `main` branch, publish directory is `dist/`
-- **Serverless:** Netlify Functions (`netlify/functions/score-deck.js`) — AI document scoring (Proposal Pulse) via Claude Sonnet + Supabase, supports optional SOW/PWS hybrid scoring; `gold-team-review-background.js` — background function for Gold Team Review (full 9-section rewrite + pWin + executive summary → email); `create-checkout.js` + `stripe-webhook.js` — Stripe payment flow for $49/assessment; `weekly-report.js` — scheduled weekly usage digest
-- **Payments:** Stripe Checkout (single $49 payments, no subscriptions). 3 free assessments, then pay-per-use.
+- **Serverless:** Netlify Functions (`netlify/functions/score-deck.js`) — AI document scoring (Proposal Pulse) via Claude Sonnet + Supabase, supports optional SOW/PWS hybrid scoring; `gold-team-review-background.js` — background function for Gold Team Review (full 9-section rewrite + pWin + executive summary → email); `create-checkout.js` + `stripe-webhook.js` — Stripe payment flow for $19.99/assessment; `weekly-report.js` — scheduled weekly usage digest
+- **Payments:** Stripe Checkout (single $19.99 payments, no subscriptions). 3 free assessments, then pay-per-use.
 - **Transactional Email:** Resend API (no SDK — simple `fetch()` POST); sends score receipts, Gold Team Reviews, + weekly reports from `noreply@missionmeetstech.com`
 - **Domain:** missionmeetstech.com
 
@@ -89,7 +89,7 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 │   └── functions/
 │       ├── score-deck.js   # Netlify Function: Proposal Pulse scoring (Claude Sonnet + Supabase, 6 doc types + optional SOW hybrid)
 │       ├── gold-team-review-background.js # Background Function: Gold Team Review — full 9-section rewrite + pWin + exec summary → emails review
-│       ├── create-checkout.js  # Netlify Function: creates Stripe Checkout Session ($49/assessment)
+│       ├── create-checkout.js  # Netlify Function: creates Stripe Checkout Session ($19.99/assessment)
 │       ├── stripe-webhook.js   # Netlify Function: handles Stripe checkout.session.completed → grants +1 use
 │       ├── weekly-report.js # Scheduled Function: weekly usage digest emailed to Mary (Mondays 9AM ET)
 │       └── lib/
@@ -469,7 +469,7 @@ Static HTML files use `<!-- BUILD:PLACEHOLDER -->` markers that `copyStaticFiles
 - **`FEATURE_NAME = "lethality_test"` in Supabase:** Kept unchanged for backward compatibility — existing `mp_feature_usage` and `mp_scoring_history` records use this value. Do not change this value.
 - **SOW hybrid scoring:** When `sow_base64` + `sow_content_type` are sent, `score-deck.js` extracts text from the SOW (PDF/DOCX/PPTX), injects it into the system prompt, and instructs Claude to extract evaluation factors from the SOW and score against those instead of generic criteria. Response includes `has_sow: true/false`. If SOW extraction fails, falls back to generic criteria silently.
 - **Gold Team Review (two-phase flow):** After scoring completes, the frontend fires a POST to `gold-team-review-background.js` (Netlify Background Function, returns 202 immediately, runs up to 15 min). The background function makes two sequential Claude calls: (1) Rewrite ALL 9 sections (polish strong sections B- or above, substantially rewrite weak sections C+ or below) + pWin estimate, (2) Independent review with confidence percentages, triple-check (accuracy, consistency, improvement), executive change summary (3-5 bullets), and prioritized next steps (3-5 actions). Results are merged and emailed as a branded Gold Team Review. Doesn't consume an extra "use" — the review is part of the same assessment. If the review fails, user still has their scorecard (graceful degradation). Anti-abuse: verifies user has a scoring record in `mp_scoring_history` within last 5 minutes.
-- **Stripe payment flow:** 3 free assessments per email. After that, users pay $49/assessment via Stripe Checkout. `create-checkout.js` creates a Checkout Session; Stripe redirects user to hosted payment page; `stripe-webhook.js` handles `checkout.session.completed` and grants +1 use in `mp_feature_usage`. Frontend detects `?session_id=` param on return and shows success banner. No subscriptions — single payments only.
+- **Stripe payment flow:** 3 free assessments per email. After that, users pay $19.99/assessment via Stripe Checkout. `create-checkout.js` creates a Checkout Session; Stripe redirects user to hosted payment page; `stripe-webhook.js` handles `checkout.session.completed` and grants +1 use in `mp_feature_usage`. Frontend detects `?session_id=` param on return and shows success banner. No subscriptions — single payments only.
 - `DOCUMENT_TYPES` config is shared between `score-deck.js` and `gold-team-review-background.js` via `lib/document-types.js`. When modifying document types, update the shared module. Criteria are general federal (not defense-specific).
 - `score-deck.js` returns `extracted_text` in its JSON response (non-null for DOCX/PPTX, null for PDFs). The frontend forwards this to the Gold Team Review endpoint. For PDFs, the frontend sends `file_base64` instead, and the review function extracts text via `pdf-parse`.
 - Resources page accordion uses pure CSS (checkbox + sibling selectors) — no JavaScript for expand/collapse.
