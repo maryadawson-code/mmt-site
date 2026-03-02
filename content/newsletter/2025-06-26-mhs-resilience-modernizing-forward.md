@@ -1,11 +1,11 @@
 ---
-title: "D.C. Wants AI to Save Billions — But a Single San Diego Lawsuit Just Changed the Math"
-date: 2025-12-23
-slug: dc-ai-san-diego-lawsuit
-description: "Washington wants AI to save billions, but a San Diego lawsuit just changed the calculation for federal AI deployment."
+title: "MHS Resilience: Modernizing Forward"
+date: 2025-06-26
+slug: mhs-resilience-modernizing-forward
+description: "MHS resilience and the path to modernizing forward. How the Military Health System is building for the future."
 tags:
-  - AI & Innovation
-  - Healthcare Policy
+  - Military Health System
+  - Strategy & Leadership
 linkedin_url: "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/"
 ---
 

@@ -1,10 +1,10 @@
 ---
-title: "D.C. Wants AI to Save Billions — But a Single San Diego Lawsuit Just Changed the Math"
-date: 2025-12-23
-slug: dc-ai-san-diego-lawsuit
-description: "Washington wants AI to save billions, but a San Diego lawsuit just changed the calculation for federal AI deployment."
+title: "From Despair to Hope: A Veteran's Journey with PTSD"
+date: 2025-05-26
+slug: veteran-journey-ptsd
+description: "From despair to hope. A veteran's journey with PTSD and what it reveals about the gaps in military mental health care."
 tags:
-  - AI & Innovation
+  - Veterans Affairs
   - Healthcare Policy
 linkedin_url: "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/"
 ---

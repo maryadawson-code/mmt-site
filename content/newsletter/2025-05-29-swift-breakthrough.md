@@ -1,11 +1,11 @@
 ---
-title: "D.C. Wants AI to Save Billions — But a Single San Diego Lawsuit Just Changed the Math"
-date: 2025-12-23
-slug: dc-ai-san-diego-lawsuit
-description: "Washington wants AI to save billions, but a San Diego lawsuit just changed the calculation for federal AI deployment."
+title: "The SWIFT Breakthrough: Redefining Possibilities"
+date: 2025-05-29
+slug: swift-breakthrough
+description: "The SWIFT breakthrough is redefining what's possible in military health technology and operational readiness."
 tags:
+  - Military Health System
   - AI & Innovation
-  - Healthcare Policy
 linkedin_url: "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/"
 ---
 

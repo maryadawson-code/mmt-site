@@ -1,11 +1,11 @@
 ---
-title: "D.C. Wants AI to Save Billions — But a Single San Diego Lawsuit Just Changed the Math"
-date: 2025-12-23
-slug: dc-ai-san-diego-lawsuit
-description: "Washington wants AI to save billions, but a San Diego lawsuit just changed the calculation for federal AI deployment."
+title: "AI Enters the Ranks: Scaling Big Tech Partnerships for Health Innovation"
+date: 2025-07-17
+slug: ai-enters-ranks-big-tech
+description: "AI enters the military ranks as big tech partnerships scale for health innovation across the defense enterprise."
 tags:
   - AI & Innovation
-  - Healthcare Policy
+  - Military Health System
 linkedin_url: "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/"
 ---
 

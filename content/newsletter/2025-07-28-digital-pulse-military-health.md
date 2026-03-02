@@ -1,11 +1,11 @@
 ---
-title: "D.C. Wants AI to Save Billions — But a Single San Diego Lawsuit Just Changed the Math"
-date: 2025-12-23
-slug: dc-ai-san-diego-lawsuit
-description: "Washington wants AI to save billions, but a San Diego lawsuit just changed the calculation for federal AI deployment."
+title: "The Digital Pulse of Military Health: 2025 Milestones Revealed"
+date: 2025-07-28
+slug: digital-pulse-military-health
+description: "The digital pulse of military health in 2025. Key milestones revealed across MHS modernization."
 tags:
+  - Military Health System
   - AI & Innovation
-  - Healthcare Policy
 linkedin_url: "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/"
 ---
 

@@ -1,11 +1,11 @@
 ---
-title: "D.C. Wants AI to Save Billions — But a Single San Diego Lawsuit Just Changed the Math"
-date: 2025-12-23
-slug: dc-ai-san-diego-lawsuit
-description: "Washington wants AI to save billions, but a San Diego lawsuit just changed the calculation for federal AI deployment."
+title: "Amplify the Blueprint: How Digital First Can Turn Success into Standard"
+date: 2025-04-21
+slug: amplify-blueprint-digital-first
+description: "Amplify the blueprint. How a digital-first approach can turn isolated successes into standard operating procedure."
 tags:
+  - Strategy & Leadership
   - AI & Innovation
-  - Healthcare Policy
 linkedin_url: "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/"
 ---
 

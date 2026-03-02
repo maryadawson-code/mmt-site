@@ -1,11 +1,11 @@
 ---
-title: "D.C. Wants AI to Save Billions — But a Single San Diego Lawsuit Just Changed the Math"
-date: 2025-12-23
-slug: dc-ai-san-diego-lawsuit
-description: "Washington wants AI to save billions, but a San Diego lawsuit just changed the calculation for federal AI deployment."
+title: "Digital Health: The Unbreakable Spine of Military Readiness"
+date: 2025-05-05
+slug: digital-health-spine-readiness
+description: "Digital health is the unbreakable spine of military readiness. Why health IT infrastructure is foundational to force projection."
 tags:
+  - Military Health System
   - AI & Innovation
-  - Healthcare Policy
 linkedin_url: "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/"
 ---
 

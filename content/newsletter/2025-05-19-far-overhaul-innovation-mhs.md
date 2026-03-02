@@ -1,11 +1,11 @@
 ---
-title: "D.C. Wants AI to Save Billions — But a Single San Diego Lawsuit Just Changed the Math"
-date: 2025-12-23
-slug: dc-ai-san-diego-lawsuit
-description: "Washington wants AI to save billions, but a San Diego lawsuit just changed the calculation for federal AI deployment."
+title: "FAR Overhaul: Unlocking a New Era of Innovation for the Military Health System"
+date: 2025-05-19
+slug: far-overhaul-innovation-mhs
+description: "The FAR overhaul unlocks a new era of innovation for the Military Health System. What acquisition reform means for health IT."
 tags:
-  - AI & Innovation
-  - Healthcare Policy
+  - Acquisition & Contracting
+  - Military Health System
 linkedin_url: "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/"
 ---
 

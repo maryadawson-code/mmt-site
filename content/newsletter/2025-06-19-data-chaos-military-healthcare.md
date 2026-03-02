@@ -1,11 +1,11 @@
 ---
-title: "D.C. Wants AI to Save Billions — But a Single San Diego Lawsuit Just Changed the Math"
-date: 2025-12-23
-slug: dc-ai-san-diego-lawsuit
-description: "Washington wants AI to save billions, but a San Diego lawsuit just changed the calculation for federal AI deployment."
+title: "Data Chaos: The Hidden Threat to Military Healthcare"
+date: 2025-06-19
+slug: data-chaos-military-healthcare
+description: "Data chaos is the hidden threat to military healthcare. How fragmented data undermines readiness and patient care."
 tags:
+  - Military Health System
   - AI & Innovation
-  - Healthcare Policy
 linkedin_url: "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/"
 ---
 

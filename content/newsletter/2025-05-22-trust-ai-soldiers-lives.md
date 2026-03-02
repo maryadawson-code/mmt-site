@@ -1,11 +1,11 @@
 ---
-title: "D.C. Wants AI to Save Billions — But a Single San Diego Lawsuit Just Changed the Math"
-date: 2025-12-23
-slug: dc-ai-san-diego-lawsuit
-description: "Washington wants AI to save billions, but a San Diego lawsuit just changed the calculation for federal AI deployment."
+title: "Can We Trust AI with Soldiers' Lives?"
+date: 2025-05-22
+slug: trust-ai-soldiers-lives
+description: "Can we trust AI with soldiers' lives? The stakes, risks, and accountability gaps in military health AI."
 tags:
   - AI & Innovation
-  - Healthcare Policy
+  - Military Health System
 linkedin_url: "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/"
 ---
 

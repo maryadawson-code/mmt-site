@@ -1,11 +1,11 @@
 ---
-title: "D.C. Wants AI to Save Billions — But a Single San Diego Lawsuit Just Changed the Math"
-date: 2025-12-23
-slug: dc-ai-san-diego-lawsuit
-description: "Washington wants AI to save billions, but a San Diego lawsuit just changed the calculation for federal AI deployment."
+title: "Mission Meets Tech: AI-Powered Symptom Triage Redefining Healthcare in 2025"
+date: 2025-03-28
+slug: ai-symptom-triage-2025
+description: "AI-powered symptom triage is redefining healthcare in 2025. How intelligent triage systems are transforming military and federal health."
 tags:
   - AI & Innovation
-  - Healthcare Policy
+  - Military Health System
 linkedin_url: "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/"
 ---
 

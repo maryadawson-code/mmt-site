@@ -1,11 +1,11 @@
 ---
-title: "D.C. Wants AI to Save Billions — But a Single San Diego Lawsuit Just Changed the Math"
-date: 2025-12-23
-slug: dc-ai-san-diego-lawsuit
-description: "Washington wants AI to save billions, but a San Diego lawsuit just changed the calculation for federal AI deployment."
+title: "Lead or Lag: The Virtual Care Imperative for MHS Leadership"
+date: 2025-04-17
+slug: virtual-care-imperative-mhs
+description: "Lead or lag. The virtual care imperative facing MHS leadership and why telehealth is no longer optional."
 tags:
-  - AI & Innovation
-  - Healthcare Policy
+  - Military Health System
+  - Strategy & Leadership
 linkedin_url: "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/"
 ---
 

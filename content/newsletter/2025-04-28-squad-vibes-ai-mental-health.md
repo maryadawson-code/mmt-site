@@ -1,11 +1,11 @@
 ---
-title: "D.C. Wants AI to Save Billions — But a Single San Diego Lawsuit Just Changed the Math"
-date: 2025-12-23
-slug: dc-ai-san-diego-lawsuit
-description: "Washington wants AI to save billions, but a San Diego lawsuit just changed the calculation for federal AI deployment."
+title: "Squad Vibes and AI: Scaling Mental Health for our Heroes"
+date: 2025-04-28
+slug: squad-vibes-ai-mental-health
+description: "Squad vibes and AI. How artificial intelligence can scale mental health support for service members and veterans."
 tags:
   - AI & Innovation
-  - Healthcare Policy
+  - Military Health System
 linkedin_url: "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/"
 ---
 

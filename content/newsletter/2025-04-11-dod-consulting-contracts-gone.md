@@ -1,11 +1,11 @@
 ---
-title: "D.C. Wants AI to Save Billions — But a Single San Diego Lawsuit Just Changed the Math"
-date: 2025-12-23
-slug: dc-ai-san-diego-lawsuit
-description: "Washington wants AI to save billions, but a San Diego lawsuit just changed the calculation for federal AI deployment."
+title: "On April 10, 2025, the DoD Dropped a Bombshell — $5.1 Billion in Consulting Contracts Gone"
+date: 2025-04-11
+slug: dod-consulting-contracts-gone
+description: "The DoD dropped a bombshell. $5.1 billion in consulting contracts gone. What this means for defense health contractors."
 tags:
-  - AI & Innovation
-  - Healthcare Policy
+  - Acquisition & Contracting
+  - Strategy & Leadership
 linkedin_url: "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/"
 ---
 
