@@ -98,23 +98,19 @@ const CONTRACTS = [
 // --- System Prompt ---
 const SYSTEM_PROMPT = `You are a federal procurement intelligence analyst specializing in defense health and federal health IT contracts. You have access to web search to research contracts thoroughly.
 
-Your task: Research the given contract using web search. Make multiple searches (at least 3-5 different queries) to build a complete picture from different angles:
+Your task: Research the given contract using web search. Make 3-5 targeted searches (no more than 5) to build a focused picture:
 
-1. Current contract status, recent modifications, and any performance issues
-2. Incumbent performance, GAO reports, IG findings
-3. Upcoming recompete, option year decisions, or follow-on procurements
-4. Competitor positioning, teaming arrangements, and M&A activity
-5. Protest history and risks (GAO, COFC)
-6. Congressional interest, oversight hearings, or legislative impacts
-7. Agency strategic direction that affects this contract
-8. Recent news coverage in defense/federal trade press
+1. Current contract status and recent news
+2. Incumbent performance issues or GAO findings
+3. Upcoming recompete, option decisions, or competitor positioning
+4. Protest history and agency strategic direction
 
-Then produce a BLACK HAT competitive intelligence assessment:
+Be efficient — synthesize from your search results quickly. Do not do exhaustive research. Focus on the most important and recent developments.
+
+Then produce a brief BLACK HAT competitive intelligence assessment:
 - Where are the incumbents vulnerable?
-- What protest grounds exist or are emerging?
-- What recompete threats should competitors prepare for?
-- What are competitors doing to position?
-- What hidden risks could disrupt this contract?
+- What protest grounds exist?
+- What recompete threats and competitive moves are in play?
 
 Return a JSON object with three top-level keys: "intel", "black_hat", and "sources".
 
@@ -187,7 +183,7 @@ Search multiple sources (SAM.gov, FPDS, FedScoop, NextGov, Defense One, GovExec,
       model: MODEL,
       max_tokens: MAX_TOKENS,
       system: SYSTEM_PROMPT,
-      tools: [{ type: "web_search_20250305", name: "web_search" }],
+      tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 5 }],
       messages: [{ role: "user", content: userMessage }],
     }),
   });
@@ -198,40 +194,7 @@ Search multiple sources (SAM.gov, FPDS, FedScoop, NextGov, Defense One, GovExec,
   }
 
   const data = await response.json();
-
-  // Handle pause_turn: if the model paused (hit server-side loop limit),
-  // send the response back to continue
   let finalData = data;
-  let messages = [{ role: "user", content: userMessage }];
-
-  while (finalData.stop_reason === "pause_turn") {
-    console.log(`  [${contract.name}] Resuming paused turn...`);
-    messages.push({ role: "assistant", content: finalData.content });
-    messages.push({ role: "user", content: [{ type: "text", text: "Continue your research and return the final JSON." }] });
-
-    const continueResponse = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        max_tokens: MAX_TOKENS,
-        system: SYSTEM_PROMPT,
-        tools: [{ type: "web_search_20250305", name: "web_search" }],
-        messages,
-      }),
-    });
-
-    if (!continueResponse.ok) {
-      const errText = await continueResponse.text();
-      throw new Error(`Claude API continue error ${continueResponse.status}: ${errText}`);
-    }
-
-    finalData = await continueResponse.json();
-  }
 
   // Extract text blocks from the response
   const textBlocks = finalData.content
