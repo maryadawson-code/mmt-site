@@ -870,13 +870,33 @@ function generatePodcastTeaserHtml(feed) {
   }
   const ep = feed.items[0];
   const title = escapeHtml(ep.title || 'Latest Episode');
-  return `<div class="card rounded-xl p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-        <div class="text-2xl" style="color:var(--mmt-cyan);"><svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M256 80C149.9 80 62.4 159.4 49.6 262.9L45.2 298.2c-1.5 11.8 6.9 22.6 18.7 24.1s22.6-6.9 24.1-18.7l4.4-35.3C103 177.2 172.6 120 256 120s153 57.2 163.6 149.3l4.4 35.3c1.5 11.8 12.3 20.2 24.1 18.7s20.2-12.3 18.7-24.1l-4.4-35.3C449.6 159.4 362.1 80 256 80zm0 80c-70.7 0-129.4 52.7-138.4 121.3L113.2 314c-1.3 10.1 5.8 19.3 15.9 20.7s19.3-5.8 20.7-15.9l4.4-32.7C160.6 237.1 204.1 200 256 200s95.4 37.1 101.8 86.1l4.4 32.7c1.3 10.1 10.6 17.2 20.7 15.9s17.2-10.6 15.9-20.7l-4.4-32.7C385.4 212.7 326.7 160 256 160zm-32 296v-56.2c0-15 9.2-28.5 23.2-33.9l0 0c5.6-2.2 11.6-2.2 17.2-.3c6.5 2.2 14.2 5.1 22.3 8.8c9 4.1 16.4 8.2 21.7 11.4c2.7 1.6 4.7 3 6.1 3.9l.4 .3c8.5 6.1 20.2 4.1 26.3-4.4s4.1-20.2-4.4-26.3l-.5-.3c0 0 0 0 0 0s0 0 0 0c-1.8-1.3-4.3-2.8-7.5-4.7c-6.4-3.8-15-8.6-25.3-13.3c-10.3-4.7-20.2-8.4-28.7-11.2c-12.6-4.2-26.7-2.9-38.4 3.7C221.6 341.7 184 371.5 184 400v56.2c0 14.5 7.3 28 19.4 35.9C224.3 505.5 238.9 512 256 512s31.7-6.5 52.6-19.9c12.1-7.9 19.4-21.4 19.4-35.9V400c0-2.6-.2-5.2-.6-7.7c-2-13.3-13.8-22.8-27.2-21.3c-13.3 1.5-23.2 12.1-24.1 25.5c-.1 1.2-.2 2.4-.2 3.5v56.2c0 .8-.4 1.6-1.1 2.1C265.3 465 260 468 256 468s-9.3-3-18.8-9.7c-.7-.5-1.2-1.3-1.2-2.1z"/></svg></div>
-        <div class="flex-1">
-          <p class="text-xs uppercase tracking-wider font-semibold mb-1" style="color:var(--mmt-cyan);">Fed UP Podcast</p>
-          <p class="text-base font-bold" style="color:var(--mmt-white);">${title}</p>
+  const audioUrl = ep.enclosure?.url || '';
+  const audioPlayer = audioUrl
+    ? `<audio controls preload="none" style="width:100%; margin-top:0.75rem; height:36px; border-radius:8px;">
+                <source src="${escapeHtml(audioUrl)}" type="audio/mpeg">
+              </audio>`
+    : '';
+  const pubDate = ep.pubDate ? new Date(ep.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+  return `<div>
+        <h2 class="text-2xl font-bold mb-2">Fed UP: Where Mission Meets Reality</h2>
+        <p class="text-base leading-relaxed mb-6" style="color:var(--mmt-white-muted);">Two women who've been in the room. Unfiltered intelligence on defense health, federal IT, and the policies that shape both.</p>
+        <div class="card rounded-xl p-6 mb-6">
+          <p class="text-xs uppercase tracking-wider font-semibold mb-2" style="color:var(--mmt-cyan);">Latest Episode</p>
+          <p class="text-lg font-bold mb-1" style="color:var(--mmt-white);">${title}</p>
+          ${pubDate ? `<p class="text-xs mb-2" style="color:var(--mmt-white-dim);">${pubDate}</p>` : ''}
+          ${audioPlayer}
         </div>
-        <a href="podcast.html" class="btn-secondary px-4 py-2 rounded-lg text-sm no-underline whitespace-nowrap">Listen Now</a>
+        <div class="flex flex-wrap items-center gap-3">
+          <a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Apple Podcasts</a>
+          <span style="color:var(--mmt-white-dim);">&middot;</span>
+          <a href="https://open.spotify.com/show/7sND342duH7Buw1cUs60lP" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Spotify</a>
+          <span style="color:var(--mmt-white-dim);">&middot;</span>
+          <a href="https://www.youtube.com/@MissionMeetsTech" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">YouTube</a>
+          <span style="color:var(--mmt-white-dim);">&middot;</span>
+          <a href="https://music.amazon.com/podcasts/920fec9b-4fae-4bd0-ae4d-eaf1459cad2f" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Amazon Music</a>
+          <span class="hidden sm:inline" style="color:var(--mmt-white-dim);">&middot;</span>
+          <a href="podcast.html" class="text-sm font-semibold no-underline hover:opacity-80" style="color:var(--mmt-cyan);">All Episodes &rarr;</a>
+        </div>
       </div>`;
 }
 
@@ -1149,10 +1169,13 @@ function copyStaticFiles({ archive, feed, newsItems }) {
     'refer.html': 'refer.png',
   };
 
+  // Filter to on-site articles only for homepage (excludes LinkedIn-only entries)
+  const onsiteArchive = archive.filter(item => item.url && item.url.startsWith('/newsletter/'));
+
   // Build-time injection map
   const injections = {
-    '<!-- BUILD:LEAD_STORY -->': generateLeadStoryHtml(archive),
-    '<!-- BUILD:LATEST_ARTICLES -->': generateLatestArticlesHtml(archive, 3),
+    '<!-- BUILD:LEAD_STORY -->': generateLeadStoryHtml(onsiteArchive),
+    '<!-- BUILD:LATEST_ARTICLES -->': generateLatestArticlesHtml(onsiteArchive, 3),
     '<!-- BUILD:TOPIC_CHIPS -->': generateTopicChipsHtml(archive),
     '<!-- BUILD:TOPICS_GRID -->': generateTopicsGridHtml(archive),
     '<!-- BUILD:LATEST_ISSUES -->': generateLatestIssuesHtml(archive, 3),
