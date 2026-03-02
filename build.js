@@ -537,7 +537,7 @@ function generateRssFeed(articles) {
 // --- OG Image Generation ---
 
 function escapeHtml(str) {
-  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 function wrapText(text, maxCharsPerLine) {

@@ -200,20 +200,16 @@
   </section>
 
   <!-- BLACK HAT Competitive Intelligence -->
-  <section class="py-16 px-6">
+  <section id="blackhat-section" class="py-16 px-6 hidden">
     <div class="max-w-4xl mx-auto">
-      <div id="blackhat-container">
-        <!-- Populated by JS -->
-      </div>
+      <div id="blackhat-container"></div>
     </div>
   </section>
 
   <!-- Sources -->
-  <section class="section-alt py-12 px-6">
+  <section id="sources-section" class="section-alt py-12 px-6 hidden">
     <div class="max-w-4xl mx-auto">
-      <div id="sources-container">
-        <!-- Populated by JS -->
-      </div>
+      <div id="sources-container"></div>
     </div>
   </section>
 
@@ -436,8 +432,6 @@
           } else {
             document.getElementById('intel-container').innerHTML = '<p class="text-base" style="color:#F87171;">Failed to load intelligence data.</p>';
           }
-          document.getElementById('blackhat-container').innerHTML = '';
-          document.getElementById('sources-container').innerHTML = '';
           return;
         }
         var data = await resp.json();
@@ -453,15 +447,21 @@
         }
 
         // Intel
-        document.getElementById('intel-container').innerHTML = renderIntel(data.intel);
+        if (data.intel) {
+          document.getElementById('intel-container').innerHTML = renderIntel(data.intel);
+        } else {
+          document.getElementById('intel-container').innerHTML = '<div class="card rounded-xl p-8 text-center"><p class="text-base" style="color:var(--mmt-white-dim);">No intelligence data available yet.</p></div>';
+        }
 
         // BLACK HAT
         if (data.black_hat) {
+          document.getElementById('blackhat-section').classList.remove('hidden');
           document.getElementById('blackhat-container').innerHTML = renderBlackHat(data.black_hat);
         }
 
         // Sources
         if (data.sources && data.sources.length) {
+          document.getElementById('sources-section').classList.remove('hidden');
           document.getElementById('sources-container').innerHTML = renderSources(data.sources);
         }
       } catch(err) {
