@@ -8,6 +8,20 @@ const sharp = require('sharp');
 
 const RSS_FEED = 'https://api.riverside.fm/hosting/KJvFk8EM.rss';
 const SITE_URL = 'https://missionmeetstech.com';
+
+// News Wire RSS feeds
+const NEWS_FEEDS = [
+  { name: 'DefenseScoop', url: 'https://defensescoop.com/feed', category: 'defense' },
+  { name: 'FedScoop', url: 'https://fedscoop.com/feed/', category: 'policy' },
+  { name: 'GovExec Defense', url: 'https://govexec.com/rss/defense/', category: 'defense' },
+  { name: 'Nextgov/FCW', url: 'https://www.nextgov.com/rss/all/', category: 'policy' },
+  { name: 'MeriTalk', url: 'https://www.meritalk.com/articles/feed/meritalk-news-podcast/', category: 'policy' },
+  { name: 'Military Times', url: 'https://www.militarytimes.com/arc/outboundfeeds/rss/?outputType=xml', category: 'defense' },
+  { name: 'GAO Blog', url: 'https://www.gao.gov/blog/feed', category: 'oversight' },
+  { name: 'Health IT Buzz', url: 'https://www.healthit.gov/buzz-blog/feed', category: 'health-it' },
+  { name: 'VA.gov News', url: 'https://www.va.gov/rss/', category: 'health-it' },
+  { name: 'TRICARE', url: 'https://tricare.mil/rss/All-Feeds', category: 'health-it' },
+];
 const CONTENT_DIR = path.join(__dirname, 'content', 'newsletter');
 const TEMPLATES_DIR = path.join(__dirname, 'templates');
 const DIST_DIR = path.join(__dirname, 'dist');
@@ -429,6 +443,7 @@ function generateSitemap(articles, tags) {
     { loc: '/topics.html', priority: '0.7' },
     { loc: '/latest.html', priority: '0.8' },
     { loc: '/proposal-pulse.html', priority: '0.8' },
+    { loc: '/newswire.html', priority: '0.7' },
   ];
 
   // Build a map of topic slug → most recent article date within that topic
@@ -607,6 +622,7 @@ async function generateOgImages(articles, tags) {
     { filename: 'topics.png', title: 'Coverage Topics', subtitle: 'Browse all federal health IT topics', label: 'TOPICS' },
     { filename: 'proposal-pulse.png', title: 'ProposalPulse', subtitle: 'AI-scored federal proposal assessment', label: 'ASSESSMENT' },
     { filename: 'latest.png', title: 'Latest Articles', subtitle: 'All federal health IT intelligence', label: 'ARCHIVE' },
+    { filename: 'newswire.png', title: 'News Wire', subtitle: 'Federal health IT headlines from 10 sources', label: 'NEWS WIRE' },
   ];
 
   for (const page of staticPages) {
@@ -851,12 +867,12 @@ function inlineTailwindCss(html) {
   );
 }
 
-function copyStaticFiles({ archive, feed }) {
+function copyStaticFiles({ archive, feed, newsItems }) {
   // Copy root HTML files (with inlined Tailwind CSS + build-time injections)
   const htmlFiles = [
     'index.html', 'about.html', 'podcast.html', 'newsletter.html',
     'resources.html', 'contact.html', 'topics.html', '404.html',
-    'proposal-pulse.html', 'latest.html'
+    'proposal-pulse.html', 'latest.html', 'newswire.html'
   ];
   const ogMap = {
     'index.html': 'index.png',
@@ -868,6 +884,7 @@ function copyStaticFiles({ archive, feed }) {
     'topics.html': 'topics.png',
     'proposal-pulse.html': 'proposal-pulse.png',
     'latest.html': 'latest.png',
+    'newswire.html': 'newswire.png',
   };
 
   // Build-time injection map
@@ -883,6 +900,8 @@ function copyStaticFiles({ archive, feed }) {
     '<!-- BUILD:ARTICLE_COUNT_BADGE -->': generateArticleCountBadge(archive, feed),
     '<!-- BUILD:PODCAST_TEASER -->': generatePodcastTeaserHtml(feed),
     '<!-- BUILD:PODCAST_EPISODES -->': generatePodcastEpisodesHtml(feed),
+    '<!-- BUILD:NEWSWIRE_HEADLINES -->': generateNewswireHtml(newsItems || []),
+    '<!-- BUILD:NEWS_WIDGET -->': generateNewsWidgetHtml(newsItems || []),
   };
 
   htmlFiles.forEach(file => {
@@ -943,6 +962,154 @@ function copyStaticFiles({ archive, feed }) {
     console.log(`Copied ${fontFiles.length} font files`);
   }
 
+}
+
+// --- News Wire ---
+
+function relativeTime(date) {
+  const now = new Date();
+  const diff = now - date;
+  const mins = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days = Math.floor(diff / 86400000);
+  if (mins < 60) return mins <= 1 ? 'just now' : `${mins}m ago`;
+  if (hours < 24) return `${hours}h ago`;
+  if (days === 1) return 'yesterday';
+  if (days < 7) return `${days}d ago`;
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+function dateGroup(date) {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const yesterday = new Date(today - 86400000);
+  const weekAgo = new Date(today - 6 * 86400000);
+  if (date >= today) return 'Today';
+  if (date >= yesterday) return 'Yesterday';
+  if (date >= weekAgo) return 'This Week';
+  return 'Earlier';
+}
+
+const categoryColors = {
+  'defense': 'var(--mmt-cyan)',
+  'health-it': 'var(--mmt-green)',
+  'policy': 'var(--mmt-white-dim)',
+  'oversight': '#FBBF24',
+};
+
+async function fetchNewsFeeds() {
+  console.log('Fetching news wire feeds...');
+  const parser = new Parser({ timeout: 10000 });
+
+  const results = await Promise.allSettled(
+    NEWS_FEEDS.map(async (feed) => {
+      try {
+        const parsed = await parser.parseURL(feed.url);
+        return (parsed.items || []).map(item => ({
+          source: feed.name,
+          category: feed.category,
+          title: (item.title || '').trim(),
+          link: item.link || '',
+          date: item.pubDate ? new Date(item.pubDate) : new Date(),
+          description: ((item.contentSnippet || item.content || '').replace(/<[^>]+>/g, '').trim()).substring(0, 200),
+        }));
+      } catch (err) {
+        console.warn(`  Warning: Failed to fetch ${feed.name}: ${err.message}`);
+        return [];
+      }
+    })
+  );
+
+  let items = [];
+  let successCount = 0;
+  results.forEach((result, i) => {
+    if (result.status === 'fulfilled' && result.value.length > 0) {
+      items = items.concat(result.value);
+      successCount++;
+    } else if (result.status === 'rejected') {
+      console.warn(`  Warning: ${NEWS_FEEDS[i].name} feed rejected: ${result.reason}`);
+    }
+  });
+
+  // Deduplicate by URL
+  const seen = new Set();
+  items = items.filter(item => {
+    if (!item.link || !item.title) return false;
+    if (seen.has(item.link)) return false;
+    seen.add(item.link);
+    return true;
+  });
+
+  // Sort by date descending, cap at 100
+  items.sort((a, b) => b.date - a.date);
+  items = items.slice(0, 100);
+
+  console.log(`  Fetched ${items.length} headlines from ${successCount}/${NEWS_FEEDS.length} feeds`);
+  return items;
+}
+
+function generateNewswireHtml(newsItems) {
+  if (newsItems.length === 0) {
+    return '<p class="text-center py-10" style="color:var(--mmt-white-dim);">Headlines are loading. Check back soon.</p>';
+  }
+
+  // Group by date
+  const groups = {};
+  const groupOrder = ['Today', 'Yesterday', 'This Week', 'Earlier'];
+  newsItems.forEach(item => {
+    const group = dateGroup(item.date);
+    if (!groups[group]) groups[group] = [];
+    groups[group].push(item);
+  });
+
+  let html = '';
+  groupOrder.forEach(groupName => {
+    const items = groups[groupName];
+    if (!items || items.length === 0) return;
+
+    html += `<div class="news-date-group mb-6">
+          <h2 class="text-sm font-semibold uppercase tracking-wider mb-4" style="color:var(--mmt-white-dim);">${escapeHtml(groupName)}</h2>\n`;
+
+    items.forEach(item => {
+      const color = categoryColors[item.category] || 'var(--mmt-white-dim)';
+      const time = relativeTime(item.date);
+      html += `          <a href="${escapeHtml(item.link)}" target="_blank" rel="noopener" class="news-card card rounded-xl p-5 mb-3 no-underline block transition-all" data-category="${item.category}">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <span class="text-xs font-bold uppercase tracking-wider" style="color:${color};">${escapeHtml(item.source)}</span>
+              <span class="text-xs whitespace-nowrap" style="color:var(--mmt-white-dim);">${escapeHtml(time)}</span>
+            </div>
+            <h3 class="text-base font-bold mb-1" style="color:var(--mmt-white);">${escapeHtml(item.title)}</h3>
+            ${item.description ? `<p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>` : ''}
+          </a>\n`;
+    });
+
+    html += `        </div>\n`;
+  });
+
+  return html;
+}
+
+function generateNewsWidgetHtml(newsItems) {
+  if (newsItems.length === 0) {
+    return '<p class="text-sm" style="color:var(--mmt-white-dim);">Headlines loading. Check back soon.</p>';
+  }
+
+  const top5 = newsItems.slice(0, 5);
+  let html = `<div class="mt-4 mb-4 p-4 rounded-xl" style="background:var(--mmt-navy); border:1px solid rgba(0,229,250,0.1);">
+            <p class="text-xs font-bold uppercase tracking-wider mb-3" style="color:var(--mmt-cyan);">Latest Headlines</p>\n`;
+
+  top5.forEach(item => {
+    const time = relativeTime(item.date);
+    html += `            <a href="${escapeHtml(item.link)}" target="_blank" rel="noopener" class="flex items-baseline justify-between gap-2 py-2 no-underline hover:opacity-80" style="border-bottom:1px solid rgba(0,229,250,0.05);">
+              <span class="text-sm" style="color:var(--mmt-white-muted);"><span class="font-semibold" style="color:var(--mmt-white-dim);">${escapeHtml(item.source)}</span> &middot; ${escapeHtml(item.title.length > 60 ? item.title.substring(0, 57) + '...' : item.title)}</span>
+              <span class="text-xs whitespace-nowrap" style="color:var(--mmt-white-dim);">${escapeHtml(time)}</span>
+            </a>\n`;
+  });
+
+  html += `            <a href="/newswire" class="text-sm font-semibold no-underline hover:opacity-80 inline-block mt-3" style="color:var(--mmt-cyan);">View all on News Wire &rarr;</a>
+          </div>`;
+
+  return html;
 }
 
 // --- Podcast (preserved from original) ---
@@ -1024,15 +1191,19 @@ async function build() {
   console.log('\n--- Fetching podcast ---');
   const feed = await fetchPodcast();
 
-  // 3. Generate search index
+  // 3. Fetch news wire feeds
+  console.log('\n--- Fetching news wire ---');
+  const newsItems = await fetchNewsFeeds();
+
+  // 4. Generate search index
   if (archive.length > 0) {
     console.log('\n--- Generating search index ---');
     generateSearchIndex(archive);
   }
 
-  // 4. Copy all static files (with build-time injections)
+  // 5. Copy all static files (with build-time injections)
   console.log('\n--- Copying static files ---');
-  copyStaticFiles({ archive, feed });
+  copyStaticFiles({ archive, feed, newsItems });
 
   console.log('\n=== Build complete! ===');
 

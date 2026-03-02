@@ -8,6 +8,9 @@
 [functions."weekly-report"]
   schedule = "0 14 * * 1"
 
+[functions."rebuild-trigger"]
+  schedule = "0 */4 * * *"
+
 [[redirects]]
   from = "/"
   to = "/index.html"

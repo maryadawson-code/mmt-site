@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Latest Articles — Mission Meets Tech</title>
-  <meta name="description" content="All Mission Meets Tech articles on federal health IT. Policy analysis, defense health intelligence, and operational insights updated weekly.">
-  <link rel="canonical" href="https://missionmeetstech.com/latest">
-  <meta property="og:title" content="Latest Articles — Mission Meets Tech">
-  <meta property="og:description" content="All Mission Meets Tech articles on federal health IT. Policy analysis, defense health intelligence, and operational insights updated weekly.">
-  <meta property="og:url" content="https://missionmeetstech.com/latest">
+  <title>News Wire — Federal Health IT Headlines — Mission Meets Tech</title>
+  <meta name="description" content="Real-time federal health IT headlines aggregated from 10 trusted sources. Defense health, VA, policy, and oversight news updated every 4 hours.">
+  <link rel="canonical" href="https://missionmeetstech.com/newswire">
+  <meta property="og:title" content="News Wire — Federal Health IT Headlines — Mission Meets Tech">
+  <meta property="og:description" content="Real-time federal health IT headlines aggregated from 10 trusted sources. Defense health, VA, policy, and oversight news updated every 4 hours.">
+  <meta property="og:url" content="https://missionmeetstech.com/newswire">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://missionmeetstech.com/mmt-logo.png">
   <meta property="og:image:width" content="200">
   <meta property="og:image:height" content="200">
   <meta property="og:site_name" content="Mission Meets Tech">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Latest Articles — Mission Meets Tech">
-  <meta name="twitter:description" content="All Mission Meets Tech articles on federal health IT. Policy analysis, defense health intelligence, and operational insights updated weekly.">
+  <meta name="twitter:title" content="News Wire — Federal Health IT Headlines — Mission Meets Tech">
+  <meta name="twitter:description" content="Real-time federal health IT headlines aggregated from 10 trusted sources. Defense health, VA, policy, and oversight news updated every 4 hours.">
   <meta name="twitter:image" content="https://missionmeetstech.com/mmt-logo.png">
   <link rel="icon" type="image/png" href="/favicon.png">
   <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
@@ -44,8 +44,11 @@
     .card:hover { border-color: rgba(0,229,250,0.3); }
     .nav-glass { background: rgba(13,17,23,0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,229,250,0.1); }
     .section-alt { background: var(--mmt-dark); }
-    .tag { background: rgba(0,229,250,0.1); color: var(--mmt-cyan); padding: 2px 10px; border-radius: 4px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; }
     *:focus-visible { outline: 2px solid var(--mmt-cyan); outline-offset: 2px; }
+    .filter-pill { background: rgba(0,229,250,0.1); color: var(--mmt-cyan); border: none; cursor: pointer; transition: all 0.2s; }
+    .filter-pill:hover { background: rgba(0,229,250,0.2); }
+    .filter-pill.active { background: var(--mmt-cyan); color: var(--mmt-navy); font-weight: 600; }
+    .news-card[data-hidden="true"] { display: none; }
   </style>
 </head>
 <body class="antialiased">
@@ -60,12 +63,12 @@
       </a>
       <div class="hidden md:flex items-center gap-6">
         <a href="index.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Home</a>
-        <a href="latest.html" class="text-sm font-semibold" style="color:var(--mmt-cyan);">Latest</a>
+        <a href="latest.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Latest</a>
         <a href="topics.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Topics</a>
         <a href="newsletter.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Newsletter</a>
         <a href="podcast.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Podcast</a>
         <a href="resources.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Resources</a>
-        <a href="newswire.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">News Wire</a>
+        <a href="newswire.html" class="text-sm font-semibold" style="color:var(--mmt-cyan);">News Wire</a>
         <a href="about.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">About</a>
         <button id="searchToggle" class="text-sm hover:opacity-80" style="color:var(--mmt-white-muted);" aria-label="Search"><svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></button>
         <div style="position:relative;">
@@ -100,12 +103,12 @@
     <div id="mobileMenu" class="hidden md:hidden px-6 pb-4">
       <div class="flex flex-col gap-4 pt-2 border-t" style="border-color:rgba(0,229,250,0.1);">
         <a href="index.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Home</a>
-        <a href="latest.html" class="text-sm font-semibold" style="color:var(--mmt-cyan);">Latest</a>
+        <a href="latest.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Latest</a>
         <a href="topics.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Topics</a>
         <a href="newsletter.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Newsletter</a>
         <a href="podcast.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Podcast</a>
         <a href="resources.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Resources</a>
-        <a href="newswire.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">News Wire</a>
+        <a href="newswire.html" class="text-sm font-semibold" style="color:var(--mmt-cyan);">News Wire</a>
         <a href="about.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">About</a>
         <div class="pt-3 mt-1" style="border-top:1px solid rgba(0,229,250,0.1);">
           <p class="text-xs font-semibold mb-2" style="color:var(--mmt-white-muted);">Subscribe</p>
@@ -125,30 +128,58 @@
     </div>
   </nav>
 
-
   <main id="main-content">
+
   <!-- Hero -->
-  <section class="pt-32 pb-12 px-6">
-    <div class="max-w-4xl mx-auto">
-      <div class="flex items-center gap-4 mb-4">
-        <h1 class="text-4xl md:text-5xl font-bold">Latest</h1>
-        <!-- BUILD:ARTICLE_COUNT_BADGE -->
-      </div>
-      <p class="text-lg leading-relaxed" style="color:var(--mmt-white-muted);">Articles and podcast episodes, newest first. Federal health IT intelligence for defense contractors and government decision-makers.</p>
+  <section class="pt-32 pb-16 px-6">
+    <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-4xl md:text-5xl font-bold mb-4"><span class="gradient-text">News Wire</span></h1>
+      <p class="text-lg leading-relaxed mb-6" style="color:var(--mmt-white-muted);">Federal health IT headlines from 10 sources, updated every 4 hours.</p>
+      <p class="text-sm" style="color:var(--mmt-white-dim);">Sources: DefenseScoop, FedScoop, GovExec, Nextgov/FCW, MeriTalk, Military Times, GAO, Health IT Buzz, VA.gov, TRICARE</p>
     </div>
   </section>
 
-  <!-- All Articles -->
-  <section class="section-alt py-16 px-6">
-    <div class="max-w-4xl mx-auto space-y-5">
-      <!-- BUILD:LATEST_ALL -->
+  <!-- Filter Pills + Headlines -->
+  <section class="py-10 px-6 section-alt">
+    <div class="max-w-4xl mx-auto">
+
+      <!-- Filter Pills -->
+      <div class="flex flex-wrap gap-2 mb-8" id="filterPills">
+        <button class="filter-pill active text-sm px-4 py-2 rounded-full" data-filter="all">All</button>
+        <button class="filter-pill text-sm px-4 py-2 rounded-full" data-filter="defense">Defense</button>
+        <button class="filter-pill text-sm px-4 py-2 rounded-full" data-filter="health-it">Health IT</button>
+        <button class="filter-pill text-sm px-4 py-2 rounded-full" data-filter="policy">Policy</button>
+        <button class="filter-pill text-sm px-4 py-2 rounded-full" data-filter="oversight">Oversight</button>
+      </div>
+
+      <!-- Headlines Grid -->
+      <div class="space-y-3" id="newswireGrid">
+        <!-- BUILD:NEWSWIRE_HEADLINES -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-20 px-6">
+    <div class="max-w-2xl mx-auto text-center">
+      <h2 class="text-2xl font-bold mb-4">Get the full analysis, not just the headlines.</h2>
+      <p class="text-base leading-relaxed mb-8" style="color:var(--mmt-white-muted);">Subscribe to Mission Meets Tech for deep-dive intelligence on federal health IT.</p>
+      <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" target="_blank" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto mb-4">
+        <label for="subscribe-email-cta" class="sr-only">Email</label>
+        <input type="email" name="email" id="subscribe-email-cta" placeholder="you@example.com" required class="px-4 py-3 rounded-lg text-sm flex-1" style="background:var(--mmt-slate); border:1px solid rgba(0,229,250,0.2); color:#fff;">
+        <button type="submit" class="btn-primary px-6 py-3 rounded-lg text-sm font-semibold whitespace-nowrap" style="cursor:pointer; border:none;">Subscribe</button>
+      </form>
+      <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80 inline-flex items-center gap-1" style="color:var(--mmt-cyan);">
+        <svg width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+        Follow on LinkedIn
+      </a>
     </div>
   </section>
 
   </main>
 
-  <!-- Footer -->
-  <footer class="py-16 px-6" style="background:var(--mmt-navy); border-top:1px solid rgba(0,229,250,0.1);">
+  <footer class="py-16 px-6" style="border-top:1px solid rgba(0,229,250,0.1);">
     <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-10">
       <div>
         <p class="font-bold text-lg mb-3" style="font-family:'Space Grotesk',system-ui,sans-serif; color:#fff;">Mission Meets <span style="color:var(--mmt-cyan);">Tech</span></p>
@@ -188,13 +219,46 @@
   </footer>
 
   <script>
-    const toggle = document.getElementById('menuToggle');
-    const menu = document.getElementById('mobileMenu');
-    if (toggle && menu) toggle.addEventListener('click', () => {
-      menu.classList.toggle('hidden');
-      document.getElementById('menuOpen').classList.toggle('hidden');
-      document.getElementById('menuClose').classList.toggle('hidden');
-    });
+    // Mobile menu toggle
+    (function() {
+      var toggle = document.getElementById('menuToggle');
+      var menu = document.getElementById('mobileMenu');
+      var open = document.getElementById('menuOpen');
+      var close = document.getElementById('menuClose');
+      if (!toggle || !menu) return;
+      toggle.addEventListener('click', function() {
+        menu.classList.toggle('hidden');
+        open.classList.toggle('hidden');
+        close.classList.toggle('hidden');
+      });
+    })();
+
+    // Filter pills
+    (function() {
+      var pills = document.querySelectorAll('[data-filter]');
+      var cards = document.querySelectorAll('.news-card');
+      pills.forEach(function(pill) {
+        pill.addEventListener('click', function() {
+          pills.forEach(function(p) { p.classList.remove('active'); });
+          pill.classList.add('active');
+          var filter = pill.getAttribute('data-filter');
+          cards.forEach(function(card) {
+            if (filter === 'all' || card.getAttribute('data-category') === filter) {
+              card.setAttribute('data-hidden', 'false');
+              card.style.display = '';
+            } else {
+              card.setAttribute('data-hidden', 'true');
+              card.style.display = 'none';
+            }
+          });
+          // Update group headers visibility
+          document.querySelectorAll('.news-date-group').forEach(function(group) {
+            var visibleCards = group.querySelectorAll('.news-card:not([data-hidden="true"])');
+            group.style.display = visibleCards.length > 0 ? '' : 'none';
+          });
+        });
+      });
+    })();
   </script>
 </body>
 </html>
