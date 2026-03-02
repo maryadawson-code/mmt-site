@@ -933,10 +933,13 @@ function generateContractTrackerHtml() {
           <h2 class="text-lg font-bold mb-4 flex items-center gap-2" style="color:var(--mmt-white);"><span class="w-2 h-2 rounded-full inline-block" style="background:${color};"></span>${escapeHtml(label)}</h2>
           <div class="grid md:grid-cols-2 gap-4">\n`;
     items.forEach(c => {
-      html += `            <div class="card rounded-xl p-6">
+      html += `            <div class="card rounded-xl p-6 cursor-pointer transition-all duration-200" data-contract="${escapeHtml(c.name)}" role="button" tabindex="0" aria-expanded="false">
               <div class="flex items-start justify-between gap-3 mb-2">
                 <h3 class="text-base font-bold" style="color:var(--mmt-white);">${escapeHtml(c.name)}</h3>
-                <span class="text-xs whitespace-nowrap px-2 py-1 rounded" style="background:rgba(0,229,250,0.1); color:${color};">${escapeHtml(label)}</span>
+                <div class="flex items-center gap-2 flex-shrink-0">
+                  <span class="text-xs whitespace-nowrap px-2 py-1 rounded" style="background:rgba(0,229,250,0.1); color:${color};">${escapeHtml(label)}</span>
+                  <svg class="contract-chevron transition-transform duration-200" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--mmt-white-dim);"><path d="M4 6l4 4 4-4"/></svg>
+                </div>
               </div>
               <p class="text-xs mb-2" style="color:var(--mmt-cyan);">${escapeHtml(c.agency)}</p>
               <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">${escapeHtml(c.description)}</p>
@@ -945,6 +948,7 @@ function generateContractTrackerHtml() {
                 <span><strong style="color:var(--mmt-white-muted);">Value:</strong> ${escapeHtml(c.value)}</span>
                 ${c.naics ? `<span><strong style="color:var(--mmt-white-muted);">NAICS:</strong> ${escapeHtml(c.naics)}</span>` : ''}
               </div>
+              <div class="contract-intel-panel hidden mt-4 pt-4" style="border-top:1px solid rgba(0,229,250,0.1);"></div>
             </div>\n`;
     });
     html += `          </div>
