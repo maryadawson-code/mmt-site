@@ -80,11 +80,14 @@ function loadArticles() {
     const raw = fs.readFileSync(path.join(CONTENT_DIR, file), 'utf8');
     const { data, content } = matter(raw);
     const html = marked(content);
+    const wordCount = content.trim().split(/\s+/).length;
+    const readTime = Math.max(1, Math.ceil(wordCount / 250));
     return {
       ...data,
       slug: data.slug || slugify(data.title),
       html,
       file,
+      readTime,
       isoDate: toISODate(data.date),
       formattedDate: formatDate(data.date),
       url: `/newsletter/${data.slug || slugify(data.title)}/`,
@@ -310,6 +313,7 @@ function generateArticlePages(articles) {
       .replace(/\{\{OG_TITLE\}\}/g, escapeXml(article.title))
       .replace(/\{\{ISO_DATE\}\}/g, article.isoDate)
       .replace(/\{\{DATE\}\}/g, article.formattedDate)
+      .replace(/\{\{READ_TIME\}\}/g, article.readTime ? `${article.readTime} min read` : '')
       .replace(/\{\{TAGS\}\}/g, tagsHtml)
       .replace(/\{\{CONTENT\}\}/g, article.html)
       .replace(/\{\{PREV_LINK\}\}/g, prevLink)
@@ -345,7 +349,7 @@ function generateTopicPages(tags) {
     const articleListHtml = tag.articles.map(article => `
         <article class="card rounded-xl p-6">
           <h3 class="text-lg font-bold mb-2"><a href="${article.url}" class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${article.title}</a></h3>
-          <p class="text-xs mb-3" style="color:var(--mmt-white-dim);"><svg class="mr-1" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H64C28.7 64 0 92.7 0 128v16 48V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192 144 128c0-35.3-28.7-64-64-64H344V24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H152V24zM48 192H400V448c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192z"/></svg>${article.formattedDate}</p>
+          <p class="text-xs mb-3" style="color:var(--mmt-white-dim);"><svg class="mr-1" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H64C28.7 64 0 92.7 0 128v16 48V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192 144 128c0-35.3-28.7-64-64-64H344V24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H152V24zM48 192H400V448c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192z"/></svg>${article.formattedDate}${readTimeBadge(article.readTime)}</p>
           <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-muted);">${article.description}</p>
           <div class="flex flex-wrap gap-2">
             ${(article.tags || []).map(t => `<a href="/topics/${slugify(t)}/" class="tag no-underline">${t}</a>`).join('')}
@@ -400,6 +404,9 @@ function generateNewslettersJson(articles) {
       description: article.description,
       tags: article.tags || [],
       linkedin_url: article.linkedin_url || '',
+      readTime: article.readTime || null,
+      featured: article.featured || false,
+      series: article.series || null,
     });
   }
 
@@ -407,7 +414,7 @@ function generateNewslettersJson(articles) {
   const data = archive.map(entry => {
     const onSite = onSiteMap.get(entry.title);
     if (onSite) {
-      return {
+      const merged = {
         title: entry.title,
         date: onSite.date || entry.date,
         description: onSite.description || entry.description,
@@ -416,6 +423,10 @@ function generateNewslettersJson(articles) {
         tags: onSite.tags.length > 0 ? onSite.tags : entry.tags || [],
         linkedin_url: onSite.linkedin_url || entry.url,
       };
+      if (onSite.readTime) merged.readTime = onSite.readTime;
+      if (onSite.featured) merged.featured = true;
+      if (onSite.series) merged.series = onSite.series;
+      return merged;
     }
     return entry;
   });
@@ -444,6 +455,10 @@ function generateSitemap(articles, tags) {
     { loc: '/latest.html', priority: '0.8' },
     { loc: '/proposal-pulse.html', priority: '0.8' },
     { loc: '/newswire.html', priority: '0.7' },
+    { loc: '/contract-tracker.html', priority: '0.7' },
+    { loc: '/community.html', priority: '0.6' },
+    { loc: '/events.html', priority: '0.6' },
+    { loc: '/refer.html', priority: '0.5' },
   ];
 
   // Build a map of topic slug → most recent article date within that topic
@@ -623,6 +638,10 @@ async function generateOgImages(articles, tags) {
     { filename: 'proposal-pulse.png', title: 'ProposalPulse', subtitle: 'AI-scored federal proposal assessment', label: 'ASSESSMENT' },
     { filename: 'latest.png', title: 'Latest Articles', subtitle: 'All federal health IT intelligence', label: 'ARCHIVE' },
     { filename: 'newswire.png', title: 'News Wire', subtitle: 'Federal health IT headlines from 10 sources', label: 'NEWS WIRE' },
+    { filename: 'contract-tracker.png', title: 'Contract Tracker', subtitle: 'Federal health IT procurement intelligence', label: 'CONTRACTS' },
+    { filename: 'community.png', title: 'Community', subtitle: 'Join the Mission Meets Tech community', label: 'COMMUNITY' },
+    { filename: 'events.png', title: 'Events Calendar', subtitle: 'Federal health IT conferences and deadlines', label: 'EVENTS' },
+    { filename: 'refer.png', title: 'Share Mission Meets Tech', subtitle: 'Help grow the federal health IT community', label: 'REFER' },
   ];
 
   for (const page of staticPages) {
@@ -659,14 +678,20 @@ async function generateOgImages(articles, tags) {
 
 const calendarSvg = '<svg class="mr-1" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H64C28.7 64 0 92.7 0 128v16 48V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192 144 128c0-35.3-28.7-64-64-64H344V24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H152V24zM48 192H400V448c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192z"/></svg>';
 
+function readTimeBadge(readTime) {
+  if (!readTime) return '';
+  return ` &middot; ${readTime} min read`;
+}
+
 function generateLeadStoryHtml(archive) {
   if (archive.length === 0) return '';
-  const item = archive[0];
+  // Prioritize featured article if one exists, otherwise use most recent
+  const item = archive.find(a => a.featured) || archive[0];
   const tags = (item.tags || []).map(t =>
     `<a href="/topics/${slugify(t)}/" class="text-xs px-2 py-0.5 rounded no-underline" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">${escapeHtml(t)}</a>`
   ).join('\n            ');
   return `<a href="${item.url}" class="card rounded-xl p-8 no-underline block transition-all" style="border-left:4px solid var(--mmt-cyan);">
-        <p class="text-xs mb-3" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}</p>
+        <p class="text-xs mb-3" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
         <h2 class="text-2xl md:text-3xl font-bold mb-3 leading-snug" style="color:var(--mmt-white);">${escapeHtml(item.title)}</h2>
         <p class="text-base leading-relaxed mb-4" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>
         <div class="flex flex-wrap gap-2">
@@ -683,7 +708,7 @@ function generateLatestArticlesHtml(archive, count) {
       `<a href="/topics/${slugify(t)}/" class="text-xs px-2 py-0.5 rounded no-underline" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">${escapeHtml(t)}</a>`
     ).join('');
     return `<a href="${item.url}" class="card rounded-xl p-6 no-underline block transition-all">
-          <p class="text-xs mb-3" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}</p>
+          <p class="text-xs mb-3" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
           <h3 class="text-lg font-bold mb-3 leading-snug" style="color:var(--mmt-white);">${escapeHtml(item.title)}</h3>
           <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>
           <div class="flex flex-wrap gap-2">${tags}</div>
@@ -737,7 +762,7 @@ function generateLatestIssuesHtml(archive, count) {
   if (items.length === 0) return '<p class="text-center py-10 col-span-3" style="color:var(--mmt-white-dim);">No newsletters yet. Check back soon!</p>';
   return items.map(item =>
     `<article class="card rounded-xl p-6">
-          <p class="text-xs mb-3" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}</p>
+          <p class="text-xs mb-3" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
           <h3 class="text-lg font-bold mb-2"><a href="${item.url}" class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${escapeHtml(item.title)}</a></h3>
           <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>
         </article>`
@@ -758,7 +783,7 @@ function generateArchiveHtml(archive) {
             <h3 class="text-lg font-bold"><a href="${item.url}" class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${escapeHtml(item.title)}</a></h3>
             <span class="text-xs whitespace-nowrap px-2 py-1 rounded" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">#${issueNum}</span>
           </div>
-          <p class="text-xs mb-3" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}</p>
+          <p class="text-xs mb-3" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
           <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>
           <div class="flex flex-wrap gap-2">${tags}</div>
         </article>`;
@@ -787,6 +812,7 @@ function generateLatestAllHtml(archive, feed) {
     description: item.description,
     url: item.url,
     tags: item.tags || [],
+    readTime: item.readTime || null,
   }));
 
   const episodes = (feed && feed.items ? feed.items : []).map(ep => {
@@ -825,7 +851,7 @@ function generateLatestAllHtml(archive, feed) {
       `<a href="/topics/${slugify(t)}/" class="tag no-underline">${escapeHtml(t)}</a>`
     ).join('');
     return `<article class="card rounded-xl p-6">
-          <p class="text-xs mb-2" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}</p>
+          <p class="text-xs mb-2" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
           <h3 class="text-lg font-bold mb-2"><a href="${item.url}" class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${escapeHtml(item.title)}</a></h3>
           <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>
           <div class="flex flex-wrap gap-2">${tags}</div>
@@ -854,6 +880,237 @@ function generatePodcastTeaserHtml(feed) {
       </div>`;
 }
 
+// --- Contract Tracker ---
+
+function generateContractTrackerHtml() {
+  const contractsPath = path.join(__dirname, 'contracts.json');
+  if (!fs.existsSync(contractsPath)) return '<p class="text-center py-10" style="color:var(--mmt-white-dim);">Contract data coming soon.</p>';
+  const contracts = JSON.parse(fs.readFileSync(contractsPath, 'utf8'));
+
+  const statusColors = {
+    'active': 'var(--mmt-green)',
+    'upcoming': 'var(--mmt-cyan)',
+    'awarded': '#FBBF24',
+  };
+  const statusLabels = {
+    'active': 'Active',
+    'upcoming': 'Upcoming',
+    'awarded': 'Recently Awarded',
+  };
+
+  // Group by status
+  const groups = { active: [], upcoming: [], awarded: [] };
+  contracts.forEach(c => {
+    const key = c.status || 'active';
+    if (groups[key]) groups[key].push(c);
+    else groups.active.push(c);
+  });
+
+  let html = '';
+  ['active', 'upcoming', 'awarded'].forEach(status => {
+    const items = groups[status];
+    if (items.length === 0) return;
+    const color = statusColors[status];
+    const label = statusLabels[status];
+    html += `<div class="mb-8">
+          <h2 class="text-lg font-bold mb-4 flex items-center gap-2" style="color:var(--mmt-white);"><span class="w-2 h-2 rounded-full inline-block" style="background:${color};"></span>${escapeHtml(label)}</h2>
+          <div class="grid md:grid-cols-2 gap-4">\n`;
+    items.forEach(c => {
+      html += `            <div class="card rounded-xl p-6">
+              <div class="flex items-start justify-between gap-3 mb-2">
+                <h3 class="text-base font-bold" style="color:var(--mmt-white);">${escapeHtml(c.name)}</h3>
+                <span class="text-xs whitespace-nowrap px-2 py-1 rounded" style="background:rgba(0,229,250,0.1); color:${color};">${escapeHtml(label)}</span>
+              </div>
+              <p class="text-xs mb-2" style="color:var(--mmt-cyan);">${escapeHtml(c.agency)}</p>
+              <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">${escapeHtml(c.description)}</p>
+              <div class="flex flex-wrap gap-3 text-xs" style="color:var(--mmt-white-dim);">
+                <span><strong style="color:var(--mmt-white-muted);">Vendor:</strong> ${escapeHtml(c.vendor)}</span>
+                <span><strong style="color:var(--mmt-white-muted);">Value:</strong> ${escapeHtml(c.value)}</span>
+                ${c.naics ? `<span><strong style="color:var(--mmt-white-muted);">NAICS:</strong> ${escapeHtml(c.naics)}</span>` : ''}
+              </div>
+            </div>\n`;
+    });
+    html += `          </div>
+        </div>\n`;
+  });
+
+  return html;
+}
+
+// --- Events Calendar ---
+
+function generateEventsListHtml() {
+  const eventsPath = path.join(__dirname, 'events.json');
+  if (!fs.existsSync(eventsPath)) return '<p class="text-center py-10" style="color:var(--mmt-white-dim);">Events data coming soon.</p>';
+  const events = JSON.parse(fs.readFileSync(eventsPath, 'utf8'));
+  const now = new Date();
+
+  // Sort by date ascending
+  events.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  const typeIcons = {
+    'conference': '<svg width="1em" height="1em" viewBox="0 0 640 512" fill="currentColor" aria-hidden="true"><path d="M48 0C21.5 0 0 21.5 0 48V464c0 26.5 21.5 48 48 48h96V432c0-26.5 21.5-48 48-48s48 21.5 48 48v80h96V48c0-26.5-21.5-48-48-48H48zM64 240c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V240zm112-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H176c-8.8 0-16-7.2-16-16V240c0-8.8 7.2-16 16-16zM64 112c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112zM176 96h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H176c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16zM352 0c-17.7 0-32 14.3-32 32v480h64V368c0-26.5 21.5-48 48-48s48 21.5 48 48v144h64V32c0-17.7-14.3-32-32-32H352z"/></svg>',
+    'webinar': '<svg width="1em" height="1em" viewBox="0 0 576 512" fill="currentColor" aria-hidden="true"><path d="M0 128C0 92.7 28.7 64 64 64H320c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128zM559.1 99.8c10.4 5.6 16.9 16.4 16.9 28.2V384c0 11.8-6.5 22.6-16.9 28.2s-23 5-32.9-1.6l-96-64L416 336V176l14.2-9.5 96-64c9.8-6.5 22.4-7.2 32.9-1.6z"/></svg>',
+    'deadline': '<svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M256 0a256 256 0 1 1 0 512A256 256 0 1 1 256 0zM232 120V256c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2V120c0-13.3-10.7-24-24-24s-24 10.7-24 24z"/></svg>',
+  };
+  const typeColors = {
+    'conference': 'var(--mmt-cyan)',
+    'webinar': 'var(--mmt-green)',
+    'deadline': '#FBBF24',
+  };
+
+  // Group: upcoming vs past
+  const upcoming = events.filter(e => new Date(e.date) >= now);
+  const past = events.filter(e => new Date(e.date) < now);
+
+  let html = '';
+
+  if (upcoming.length > 0) {
+    html += `<div class="mb-8">
+          <h2 class="text-lg font-bold mb-4" style="color:var(--mmt-white);">Upcoming Events</h2>\n`;
+    upcoming.forEach(e => {
+      const eventDate = new Date(e.date);
+      const dateStr = eventDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      const endStr = e.endDate ? ' \u2013 ' + new Date(e.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
+      const icon = typeIcons[e.type] || typeIcons.conference;
+      const color = typeColors[e.type] || 'var(--mmt-cyan)';
+      html += `          <a href="${escapeHtml(e.url)}" target="_blank" rel="noopener" class="card rounded-xl p-6 mb-4 no-underline block transition-all">
+            <div class="flex items-start gap-4">
+              <div class="text-xl mt-1" style="color:${color};">${icon}</div>
+              <div class="flex-1">
+                <div class="flex items-start justify-between gap-3 mb-1">
+                  <h3 class="text-base font-bold" style="color:var(--mmt-white);">${escapeHtml(e.name)}</h3>
+                  <span class="text-xs whitespace-nowrap px-2 py-1 rounded capitalize" style="background:rgba(0,229,250,0.1); color:${color};">${escapeHtml(e.type)}</span>
+                </div>
+                <p class="text-xs mb-2" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(dateStr)}${endStr}${e.location ? ` &middot; ${escapeHtml(e.location)}` : ''}</p>
+                <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">${escapeHtml(e.description)}</p>
+              </div>
+            </div>
+          </a>\n`;
+    });
+    html += `        </div>\n`;
+  }
+
+  if (past.length > 0) {
+    html += `<div class="mb-8">
+          <h2 class="text-lg font-bold mb-4" style="color:var(--mmt-white-dim);">Past Events</h2>\n`;
+    past.forEach(e => {
+      const eventDate = new Date(e.date);
+      const dateStr = eventDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      html += `          <div class="card rounded-xl p-4 mb-3" style="opacity:0.6;">
+            <div class="flex items-center gap-3">
+              <h3 class="text-sm font-bold flex-1" style="color:var(--mmt-white-dim);">${escapeHtml(e.name)}</h3>
+              <span class="text-xs" style="color:var(--mmt-white-dim);">${escapeHtml(dateStr)}</span>
+            </div>
+          </div>\n`;
+    });
+    html += `        </div>\n`;
+  }
+
+  if (upcoming.length === 0 && past.length === 0) {
+    html = '<p class="text-center py-10" style="color:var(--mmt-white-dim);">No events listed yet. Check back soon.</p>';
+  }
+
+  return html;
+}
+
+// --- JSON-LD Generators ---
+
+function injectBreadcrumbJsonLd(html, filename) {
+  // Map filenames to breadcrumb names
+  const breadcrumbs = {
+    'about.html': 'About',
+    'podcast.html': 'Podcast',
+    'newsletter.html': 'Newsletter',
+    'resources.html': 'Resources',
+    'contact.html': 'Contact',
+    'topics.html': 'Topics',
+    'latest.html': 'Latest',
+    'proposal-pulse.html': 'ProposalPulse',
+    'newswire.html': 'News Wire',
+    'contract-tracker.html': 'Contracts',
+    'community.html': 'Community',
+    'events.html': 'Events',
+    'refer.html': 'Refer',
+  };
+  const name = breadcrumbs[filename];
+  if (!name) return html; // Skip index.html, 404.html
+  const jsonLd = `<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "${SITE_URL}/" },
+      { "@type": "ListItem", "position": 2, "name": "${name}" }
+    ]
+  }
+  </script>`;
+  return html.replace('</head>', jsonLd + '\n</head>');
+}
+
+function generateJsonLdTopics(archive) {
+  const tagCounts = {};
+  archive.forEach(item => {
+    (item.tags || []).forEach(tag => {
+      tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+    });
+  });
+  const sorted = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]);
+  const items = sorted.map(([tag], i) => ({
+    '@type': 'ListItem',
+    'position': i + 1,
+    'name': tag,
+    'url': `${SITE_URL}/topics/${slugify(tag)}/`,
+  }));
+  return `<script type="application/ld+json">
+  ${JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    'name': 'Topics — Mission Meets Tech',
+    'description': 'Browse federal health IT topics covered by Mission Meets Tech.',
+    'url': `${SITE_URL}/topics.html`,
+    'mainEntity': {
+      '@type': 'ItemList',
+      'itemListElement': items,
+    },
+  }, null, 2)}
+  </script>`;
+}
+
+function generateJsonLdLatest(archive) {
+  const items = archive.slice(0, 20).map((item, i) => ({
+    '@type': 'ListItem',
+    'position': i + 1,
+    'name': item.title,
+    'url': item.url.startsWith('http') ? item.url : `${SITE_URL}${item.url}`,
+  }));
+  return `<script type="application/ld+json">
+  ${JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    'name': 'Latest Articles — Mission Meets Tech',
+    'description': 'All federal health IT intelligence articles from Mission Meets Tech.',
+    'url': `${SITE_URL}/latest.html`,
+    'mainEntity': {
+      '@type': 'ItemList',
+      'itemListElement': items,
+    },
+  }, null, 2)}
+  </script>`;
+}
+
+function generateJsonLdNewsletter(archive) {
+  return `<script type="application/ld+json">
+  ${JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    'name': 'Newsletter — Mission Meets Tech',
+    'description': 'Subscribe to Mission Meets Tech and browse the full newsletter archive.',
+    'url': `${SITE_URL}/newsletter.html`,
+  }, null, 2)}
+  </script>`;
+}
+
 // --- Static File Copying ---
 
 function inlineTailwindCss(html) {
@@ -872,7 +1129,8 @@ function copyStaticFiles({ archive, feed, newsItems }) {
   const htmlFiles = [
     'index.html', 'about.html', 'podcast.html', 'newsletter.html',
     'resources.html', 'contact.html', 'topics.html', '404.html',
-    'proposal-pulse.html', 'latest.html', 'newswire.html'
+    'proposal-pulse.html', 'latest.html', 'newswire.html',
+    'contract-tracker.html', 'community.html', 'events.html', 'refer.html'
   ];
   const ogMap = {
     'index.html': 'index.png',
@@ -885,6 +1143,10 @@ function copyStaticFiles({ archive, feed, newsItems }) {
     'proposal-pulse.html': 'proposal-pulse.png',
     'latest.html': 'latest.png',
     'newswire.html': 'newswire.png',
+    'contract-tracker.html': 'contract-tracker.png',
+    'community.html': 'community.png',
+    'events.html': 'events.png',
+    'refer.html': 'refer.png',
   };
 
   // Build-time injection map
@@ -902,6 +1164,11 @@ function copyStaticFiles({ archive, feed, newsItems }) {
     '<!-- BUILD:PODCAST_EPISODES -->': generatePodcastEpisodesHtml(feed),
     '<!-- BUILD:NEWSWIRE_HEADLINES -->': generateNewswireHtml(newsItems || []),
     '<!-- BUILD:NEWS_WIDGET -->': generateNewsWidgetHtml(newsItems || []),
+    '<!-- BUILD:CONTRACT_TRACKER -->': generateContractTrackerHtml(),
+    '<!-- BUILD:EVENTS_LIST -->': generateEventsListHtml(),
+    '<!-- BUILD:JSONLD_TOPICS -->': generateJsonLdTopics(archive),
+    '<!-- BUILD:JSONLD_LATEST -->': generateJsonLdLatest(archive),
+    '<!-- BUILD:JSONLD_NEWSLETTER -->': generateJsonLdNewsletter(archive),
   };
 
   htmlFiles.forEach(file => {
@@ -917,6 +1184,8 @@ function copyStaticFiles({ archive, feed, newsItems }) {
           html = html.replace(marker, content);
         }
       }
+      // Inject BreadcrumbList JSON-LD
+      html = injectBreadcrumbJsonLd(html, file);
       // Inject search overlay after </nav>
       if (html.includes('</nav>')) {
         html = html.replace('</nav>\n\n', '</nav>\n' + searchOverlayHtml + '\n\n');
