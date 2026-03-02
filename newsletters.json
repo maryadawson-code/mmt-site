@@ -1,520 +1,831 @@
 [
   {
+    "title": "What It Really Takes to Build Mission-Ready Defense ...",
+    "date": "March 2, 2026",
+    "description": "It requires U.S.-based engineering teams that design the technology from the ground up. It requires controlled, certified production environments capable of ...",
+    "url": "https://www.linkedin.com/pulse/made-usa-what-really-takes-build-mission-ready-defense-x9iuc",
+    "tags": [
+      "AI & Innovation"
+    ]
+  },
+  {
+    "title": "CIA Mission Updates",
+    "date": "March 2, 2026",
+    "description": "Deputy Director Ellis further shared how the Agency is using advanced technology and partnering with the private sector at the “Creative Disruptors in the ...",
+    "url": "https://www.linkedin.com/pulse/cia-mission-updates-central-intelligence-agency-p47ye",
+    "tags": [
+      "AI & Innovation"
+    ]
+  },
+  {
+    "title": "Mission Management Systems Market Future Outlook and ...",
+    "date": "March 2, 2026",
+    "description": "The Mission Management Systems Market was valued at 9.09 billion in 2025 and is projected to grow at a CAGR of 10.58% from 2026 to 2033, ...",
+    "url": "https://www.linkedin.com/pulse/mission-management-systems-market-future-outlook-zisqc",
+    "tags": [
+      "Strategy & Leadership"
+    ]
+  },
+  {
+    "title": "Investing in Defense Tech",
+    "date": "March 2, 2026",
+    "description": "The mission. The people. The culture. All strong reasons to apply and continue your career at Lockheed Martin. But don't just take our word for it.",
+    "url": "https://www.linkedin.com/pulse/investing-defense-tech-lockheed-martin-drute",
+    "tags": [
+      "Strategy & Leadership"
+    ]
+  },
+  {
+    "title": "Constellation Scale Is Here: Muon's 2026 in Motion",
+    "date": "March 2, 2026",
+    "description": "2026 is going to be huge: 20 satellites launching over 20 months spanning defense, civil, and commercial customers. Constellation scale operations on Muon's ...",
+    "url": "https://www.linkedin.com/pulse/constellation-scale-here-muons-2026-motion-muon-space-cjb3e",
+    "tags": [
+      "Strategy & Leadership"
+    ]
+  },
+  {
+    "title": "February 2026 | Scaling Defensible AI in the Federal Sector",
+    "date": "March 2, 2026",
+    "description": "This must-attend forum for military, government, and industry professionals spotlights how the Navy is leveraging cutting-edge technologies to strengthen ...",
+    "url": "https://www.linkedin.com/pulse/february-2026-scaling-defensible-ai-federal-sector-ori-results-bpfie",
+    "tags": [
+      "AI & Innovation"
+    ]
+  },
+  {
+    "title": "Aligning Systems and Software Architectures for True ...",
+    "date": "March 2, 2026",
+    "description": "Systems engineers define mission intent, functions and interfaces. Software teams design execution logic, data flows and integration patterns. Both are ...",
+    "url": "https://www.linkedin.com/pulse/bridging-gap-aligning-systems-software-architectures-true-orq5c",
+    "tags": [
+      "Strategy & Leadership"
+    ]
+  },
+  {
+    "title": "Netic: Building for the Real World",
+    "date": "March 2, 2026",
+    "description": "We have the world's best team who will stop at nothing to bring frontier technologies to the industries that run our world. And our systems are mission-critical ...",
+    "url": "https://www.linkedin.com/pulse/netic-building-real-world-melisa-tokmak-bdvuc",
+    "tags": [
+      "Strategy & Leadership"
+    ]
+  },
+  {
+    "title": "Introducing Our Core Values: Meet The Employees Who ...",
+    "date": "March 2, 2026",
+    "description": "Our industry-leading technology combined with unparalleled expertise ensures we are the trusted source for donors, nonprofits and advisors. You can read more ...",
+    "url": "https://www.linkedin.com/pulse/introducing-our-core-values-meet-employees-who-embody-mttie",
+    "tags": [
+      "AI & Innovation"
+    ]
+  },
+  {
+    "title": "When EdTech Meets Real School Workflows: A Story of ...",
+    "date": "March 2, 2026",
+    "description": "The mission was clear but complex: simplify access for students and teachers, automate previously manual tasks, and ensure real-time synchronization of data ...",
+    "url": "https://www.linkedin.com/pulse/when-edtech-meets-real-school-workflows-story-seamless-5jssf",
+    "tags": [
+      "Strategy & Leadership"
+    ]
+  },
+  {
     "title": "The Anthropic Ban: What the Numbers Actually Say",
     "date": "February 28, 2026",
     "description": "Hard data on the Pentagon's Anthropic designation: market penetration, enterprise exposure, legal precedent, and the double standard created in a single evening.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["AI & Innovation", "Strategy & Leadership", "Acquisition & Contracting"]
+    "tags": [
+      "AI & Innovation",
+      "Strategy & Leadership",
+      "Acquisition & Contracting"
+    ]
   },
   {
     "title": "The Pentagon Is Trying to Blacklist the AI It Can't Live Without",
     "date": "February 26, 2026",
     "description": "The Pentagon's complicated relationship with AI it simultaneously depends on and wants to restrict.",
     "url": "https://www.linkedin.com/pulse/pentagon-trying-blacklist-ai-cant-live-without-mary-womack-9ziwe",
-    "tags": ["AI & Innovation", "Military Health System"]
+    "tags": [
+      "AI & Innovation",
+      "Military Health System"
+    ]
   },
   {
     "title": "February 28: The Day Defense Health Contracting Changes Forever",
     "date": "February 24, 2026",
     "description": "A pivotal date for defense health contracting and what it means for the federal health IT landscape.",
     "url": "https://www.linkedin.com/pulse/february-28-day-defense-health-contracting-changes-forever-womack-0tx9e",
-    "tags": ["Acquisition & Contracting", "Military Health System"]
+    "tags": [
+      "Acquisition & Contracting",
+      "Military Health System"
+    ]
   },
   {
     "title": "The CCN Next Gen Playbook: How to Build Your Bid (By the Type of Company You Actually Are)",
     "date": "February 21, 2026",
     "description": "A practical guide to building competitive bids for the Community Care Network Next Generation contract by company type.",
     "url": "https://www.linkedin.com/pulse/ccn-next-gen-playbook-how-build-your-bid-type-company-mary-womack-dkkzc",
-    "tags": ["Acquisition & Contracting", "Strategy & Leadership"]
+    "tags": [
+      "Acquisition & Contracting",
+      "Strategy & Leadership"
+    ]
   },
   {
     "title": "The Forgotten Beneficiaries: Why the GLP-1 Coverage Gap Is a Readiness Problem",
     "date": "February 14, 2026",
     "description": "The GLP-1 medication coverage gap isn't just a benefits issue — it's a military readiness problem hiding in plain sight.",
     "url": "https://www.linkedin.com/pulse/forgotten-beneficiarieswhy-glp-1-coverage-gap-readiness-mary-womack-a0qze",
-    "tags": ["Healthcare Policy", "Military Health System"]
+    "tags": [
+      "Healthcare Policy",
+      "Military Health System"
+    ]
   },
   {
     "title": "The Human Weapon System Finally Gets Real",
     "date": "February 12, 2026",
     "description": "The 'human weapon system' concept moves from rhetoric to reality in defense health strategy.",
     "url": "https://www.linkedin.com/pulse/human-weapon-system-finally-gets-real-mary-womack-ir9fe",
-    "tags": ["Military Health System", "Strategy & Leadership"]
+    "tags": [
+      "Military Health System",
+      "Strategy & Leadership"
+    ]
   },
   {
     "title": "The Elephant in the Waiting Room",
     "date": "February 10, 2026",
     "description": "The uncomfortable truth about military healthcare access that no one wants to address.",
     "url": "https://www.linkedin.com/pulse/elephant-waiting-room-mary-womack-da2fe",
-    "tags": ["Healthcare Policy", "Military Health System"]
+    "tags": [
+      "Healthcare Policy",
+      "Military Health System"
+    ]
   },
   {
     "title": "The $3 Trillion Pivot: What the VA's RISE Initiative Means for Federal Health Contractors",
     "date": "February 5, 2026",
     "description": "What the VA's RISE initiative signals for the future of federal health contracting and the $3 trillion healthcare pivot.",
     "url": "https://www.linkedin.com/pulse/3-trillion-pivot-what-vas-rise-initiative-means-federal-mary-womack-0ugve",
-    "tags": ["Veterans Affairs", "Healthcare Policy"]
+    "tags": [
+      "Veterans Affairs",
+      "Healthcare Policy"
+    ]
   },
   {
     "title": "The Largest Healthcare Contract in American History Just Hit the Street",
     "date": "February 5, 2026",
     "description": "On January 21, 2026, the VA held a landmark industry event for the largest healthcare contract ever. What contractors need to know.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Veterans Affairs", "Acquisition & Contracting", "Healthcare Policy"]
+    "tags": [
+      "Veterans Affairs",
+      "Acquisition & Contracting",
+      "Healthcare Policy"
+    ]
   },
   {
     "title": "The Trillion-Dollar Pivot: Why CCN Next Gen is the MOSA-fication of Federal Health",
     "date": "February 3, 2026",
     "description": "CCN Next Gen represents the MOSA-fication of federal healthcare contracting — and it's a trillion-dollar pivot.",
     "url": "https://www.linkedin.com/pulse/trillion-dollar-pivot-why-ccn-next-gen-mosa-fication-federal-womack-xalbe",
-    "tags": ["Acquisition & Contracting", "Military Health System"]
+    "tags": [
+      "Acquisition & Contracting",
+      "Military Health System"
+    ]
   },
   {
     "title": "Introducing Mission Meets Reality",
     "date": "January 31, 2026",
     "description": "Introducing Fed UP: Where Mission Meets Reality — the podcast that cuts through the noise in defense health.",
     "url": "https://www.linkedin.com/pulse/introducing-mission-meets-reality-mary-womack-coe9e",
-    "tags": ["Strategy & Leadership"]
+    "tags": [
+      "Strategy & Leadership"
+    ]
   },
   {
     "title": "Episode 1: Mission Meets Reality",
     "date": "January 31, 2026",
     "description": "Episode 1 of Fed UP: Where Mission Meets Reality — the first conversation about what's broken and what's next.",
     "url": "https://www.linkedin.com/pulse/episode-1-mission-meets-reality-mary-womack-boqqe",
-    "tags": ["Strategy & Leadership"]
+    "tags": [
+      "Strategy & Leadership"
+    ]
   },
   {
     "title": "The VA Is Executing the Largest Healthcare Reorganization Since the 1990s",
     "date": "January 29, 2026",
     "description": "If you're not paying attention to the VA's restructuring, you're already behind. Here's what the reorganization means for contractors.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Veterans Affairs", "Strategy & Leadership"]
+    "tags": [
+      "Veterans Affairs",
+      "Strategy & Leadership"
+    ]
   },
   {
     "title": "Why VA's Quiet RFI Should Be on Every Federal Health Contractor's Radar",
     "date": "January 27, 2026",
     "description": "The VA quietly released an RFI that every federal health contractor should be tracking. Here's why it matters.",
     "url": "https://www.linkedin.com/pulse/why-vas-quiet-rfi-should-every-federal-health-radar-mary-womack-3qloe",
-    "tags": ["Veterans Affairs", "Acquisition & Contracting"]
+    "tags": [
+      "Veterans Affairs",
+      "Acquisition & Contracting"
+    ]
   },
   {
     "title": "The Lethality Test: A Survival Guide for Defense Health Contractors in the Post-8(a) Era",
     "date": "January 24, 2026",
     "description": "How defense health contractors can survive and compete in the post-8(a) landscape using the Lethality Test framework.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Acquisition & Contracting", "Strategy & Leadership"]
+    "tags": [
+      "Acquisition & Contracting",
+      "Strategy & Leadership"
+    ]
   },
   {
     "title": "VA Solicits Demos for Next-Gen Referral and Care Coordination System",
     "date": "January 22, 2026",
     "description": "VA's OIT posted an RFI for a next-generation referral, authorization, utilization management, and care coordination system.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Veterans Affairs", "Acquisition & Contracting"]
+    "tags": [
+      "Veterans Affairs",
+      "Acquisition & Contracting"
+    ]
   },
   {
     "title": "The $90 Billion Squeeze: What the Triad's Budget Really Means for Your Capture Strategy",
     "date": "January 20, 2026",
     "description": "Decoding the MHS Triad's budget priorities and what they signal for defense health capture strategies.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Acquisition & Contracting", "Military Health System"]
+    "tags": [
+      "Acquisition & Contracting",
+      "Military Health System"
+    ]
   },
   {
     "title": "Healthcare's Agentic AI Reckoning: The Operating Model Shift No One Can Postpone",
     "date": "January 15, 2026",
     "description": "IBM's 2025 report reveals organizations mastering AI adoption are 32X more likely to reach top-tier performance. 78% of execs say a new operating model is required.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["AI & Innovation", "Strategy & Leadership", "Healthcare Policy"]
+    "tags": [
+      "AI & Innovation",
+      "Strategy & Leadership",
+      "Healthcare Policy"
+    ]
   },
   {
     "title": "The MHS Triad, Part 2: The Programs, The Platforms, The Playbook",
     "date": "January 13, 2026",
     "description": "Part 2 of the MHS Triad series: the programs, platforms, and playbook shaping the future of military medicine.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Military Health System", "Strategy & Leadership"]
+    "tags": [
+      "Military Health System",
+      "Strategy & Leadership"
+    ]
   },
   {
     "title": "The New Iron Triangle: Meet the Three Leaders Who Will Reshape Military Medicine",
     "date": "January 10, 2026",
     "description": "The political architect, the Silicon Valley operator, and the defense insider — meet the three leaders reshaping military medicine.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Military Health System", "Strategy & Leadership"]
+    "tags": [
+      "Military Health System",
+      "Strategy & Leadership"
+    ]
   },
   {
     "title": "Somewhere in the Pacific: When Telehealth Routes Through Contested Systems",
     "date": "January 8, 2026",
     "description": "A Navy corpsman is waiting on a telehealth consult that routes through systems maintained by contested infrastructure. The readiness implications are real.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Military Health System", "AI & Innovation"]
+    "tags": [
+      "Military Health System",
+      "AI & Innovation"
+    ]
   },
   {
     "title": "The Great Clawback: Why 2026 Marks the End of 'Paper Performance'",
     "date": "January 6, 2026",
     "description": "2026 marks the end of 'paper performance' in defense health — the great clawback is coming for contractors who can't deliver.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Acquisition & Contracting", "Strategy & Leadership"]
+    "tags": [
+      "Acquisition & Contracting",
+      "Strategy & Leadership"
+    ]
   },
   {
     "title": "The Synchronization Gap: Why We Perfect the Kill Chain But Neglect the Care Chain",
     "date": "January 3, 2026",
     "description": "The military perfects the Kill Chain but neglects the Care Chain. Why synchronizing health readiness matters for lethality.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Military Health System", "Strategy & Leadership"]
+    "tags": [
+      "Military Health System",
+      "Strategy & Leadership"
+    ]
   },
   {
     "title": "2026: The Genesis of Federal AI",
     "date": "December 30, 2025",
     "description": "2026 marks the genesis of federal AI adoption at scale. What this means for defense health and the broader federal landscape.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["AI & Innovation", "Strategy & Leadership"]
+    "tags": [
+      "AI & Innovation",
+      "Strategy & Leadership"
+    ]
   },
   {
     "title": "Unlocking the Vault: A Historic Turning Point for Veteran Healing Through Medical Cannabis",
     "date": "December 27, 2025",
     "description": "A historic turning point for veteran healing through medical cannabis — what it means for VA policy and veteran care.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Veterans Affairs", "Healthcare Policy"]
+    "tags": [
+      "Veterans Affairs",
+      "Healthcare Policy"
+    ]
   },
   {
     "title": "D.C. Wants AI to Save Billions — But a Single San Diego Lawsuit Just Changed the Math",
     "date": "December 23, 2025",
     "description": "Washington wants AI to save billions, but a San Diego lawsuit just changed the calculation for federal AI deployment.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["AI & Innovation", "Healthcare Policy"]
+    "tags": [
+      "AI & Innovation",
+      "Healthcare Policy"
+    ]
   },
   {
     "title": "The Governance Paradox: Why 'Buying the Platform' Is the Fastest Way to Fail",
     "date": "December 20, 2025",
     "description": "Why buying a platform without governance is the fastest way to fail in federal health IT modernization.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Strategy & Leadership", "AI & Innovation"]
+    "tags": [
+      "Strategy & Leadership",
+      "AI & Innovation"
+    ]
   },
   {
     "title": "The MHS Triad: What Their Appointment Actually Means",
     "date": "December 18, 2025",
     "description": "Last week we introduced the MHS Triad. This week, what Keith Bass, Emil Michael, and their appointment actually signals for defense health.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Military Health System", "Strategy & Leadership"]
+    "tags": [
+      "Military Health System",
+      "Strategy & Leadership"
+    ]
   },
   {
     "title": "The AI Civil War is the Wrong Fight: Why the Battle Over $250M Tools Misses the Architecture That Actually Wins",
     "date": "December 16, 2025",
     "description": "The battle over $250M AI tools is the wrong fight. The architecture that wins isn't about the model — it's about the mission.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["AI & Innovation", "Strategy & Leadership"]
+    "tags": [
+      "AI & Innovation",
+      "Strategy & Leadership"
+    ]
   },
   {
     "title": "The Procurement Paradox: Why the Government Discourages AI in Proposals for AI Tools",
     "date": "December 13, 2025",
     "description": "The federal government wants AI innovation but discourages AI in the very proposals meant to deliver it. The procurement paradox explained.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Acquisition & Contracting", "AI & Innovation"]
+    "tags": [
+      "Acquisition & Contracting",
+      "AI & Innovation"
+    ]
   },
   {
     "title": "Meet the MHS Triad: Keith Bass, Emil Michael, and the Silicon Valley Bet",
     "date": "December 11, 2025",
     "description": "The political architect, the Silicon Valley operator, and what their installation means for the future of military healthcare.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Military Health System", "Strategy & Leadership"]
+    "tags": [
+      "Military Health System",
+      "Strategy & Leadership"
+    ]
   },
   {
     "title": "On Keeping Your COTS Products in the Mattress",
     "date": "December 4, 2025",
     "description": "After the Great Depression, people kept money in the mattress. Some defense health IT vendors are doing the same with their COTS products.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Acquisition & Contracting", "Military Health System"]
+    "tags": [
+      "Acquisition & Contracting",
+      "Military Health System"
+    ]
   },
   {
     "title": "The Silent Crisis and the Digital Signal",
     "date": "November 28, 2025",
     "description": "The silent crisis in military health and the digital signals that point the way toward solutions.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Military Health System", "AI & Innovation"]
+    "tags": [
+      "Military Health System",
+      "AI & Innovation"
+    ]
   },
   {
     "title": "The $4.2 Trillion Ghost in the Machine: Why Data Hygiene is the New Front Line of Defense Medicine",
     "date": "November 24, 2025",
     "description": "Data hygiene is the new front line of defense medicine. A $4.2 trillion ghost in the machine demands attention.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Military Health System", "AI & Innovation"]
+    "tags": [
+      "Military Health System",
+      "AI & Innovation"
+    ]
   },
   {
     "title": "Beyond the Cloud: The 'Governor,' the 'Concierge,' and the 'Catalog'",
     "date": "November 20, 2025",
     "description": "Moving beyond cloud basics to the Governor, the Concierge, and the Catalog — the architecture patterns that actually scale in federal health.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["AI & Innovation", "Strategy & Leadership"]
+    "tags": [
+      "AI & Innovation",
+      "Strategy & Leadership"
+    ]
   },
   {
     "title": "Audacious Innovator or Forensic Auditor? The Impossible Choice Facing Every KO",
     "date": "November 17, 2025",
     "description": "Every contracting officer faces an impossible choice: audacious innovator or forensic auditor. The system demands both.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Acquisition & Contracting", "Strategy & Leadership"]
+    "tags": [
+      "Acquisition & Contracting",
+      "Strategy & Leadership"
+    ]
   },
   {
     "title": "We're Official: Introducing Fed UP",
     "date": "November 2025",
     "description": "Sara Byrd and I have been talking about doing this for months. Fed UP: Where Mission Meets Reality is live.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Strategy & Leadership"]
+    "tags": [
+      "Strategy & Leadership"
+    ]
   },
   {
     "title": "Special Issue: How Hegseth's 'Arsenal of Freedom' Speech Unlocks AI in Military Health",
     "date": "October 31, 2025",
     "description": "How Secretary Hegseth's 'Arsenal of Freedom' speech creates new pathways for AI adoption in military health.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["AI & Innovation", "Military Health System"]
+    "tags": [
+      "AI & Innovation",
+      "Military Health System"
+    ]
   },
   {
     "title": "The Real Goal for 2026: How User-Centric AI Can Transform MHS Readiness, Not Just Check a Box",
     "date": "October 27, 2025",
     "description": "User-centric AI is the real goal for 2026 MHS transformation — not checkbox compliance, but genuine readiness improvement.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["AI & Innovation", "Military Health System"]
+    "tags": [
+      "AI & Innovation",
+      "Military Health System"
+    ]
   },
   {
     "title": "Chaos or Cure? AI Agents Storm Health-Tech and Warfare, Dodging Regulatory Handcuffs",
     "date": "October 24, 2025",
     "description": "AI agents are storming health-tech and warfare while dodging regulatory handcuffs. Chaos or cure?",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["AI & Innovation", "Healthcare Policy"]
+    "tags": [
+      "AI & Innovation",
+      "Healthcare Policy"
+    ]
   },
   {
     "title": "AI in the MHS: Revolution or Expensive Paperweight?",
     "date": "October 20, 2025",
     "description": "Is AI in the Military Health System a revolution or an expensive paperweight? The answer depends on implementation.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["AI & Innovation", "Military Health System"]
+    "tags": [
+      "AI & Innovation",
+      "Military Health System"
+    ]
   },
   {
     "title": "Algorithm Warfare: DARPA's Triage Revolution and the Global AI Sprint for Survival",
     "date": "October 16, 2025",
     "description": "DARPA's triage revolution and the global AI sprint for survival — algorithm warfare comes to military medicine.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["AI & Innovation", "Military Health System"]
+    "tags": [
+      "AI & Innovation",
+      "Military Health System"
+    ]
   },
   {
     "title": "Fail Fast, Win the War: How a Leaked Memo Proves the Pentagon's New Cyber Strategy Works",
     "date": "September 29, 2025",
     "description": "A leaked Pentagon memo proves the new cyber strategy works. How 'fail fast' is winning the war on cyber threats.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Military Health System", "AI & Innovation"]
+    "tags": [
+      "Military Health System",
+      "AI & Innovation"
+    ]
   },
   {
     "title": "Shutdown Survival Guide: Transform HHS CPGs into Your MTF's Secret Weapon Against Breaches",
     "date": "September 25, 2025",
     "description": "How to transform HHS Clinical Practice Guidelines into your MTF's secret weapon against cybersecurity breaches.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Military Health System", "Healthcare Policy"]
+    "tags": [
+      "Military Health System",
+      "Healthcare Policy"
+    ]
   },
   {
     "title": "AI: The Ultimate Change Management Challenge",
     "date": "September 22, 2025",
     "description": "AI adoption isn't a technology problem — it's the ultimate change management challenge for federal health organizations.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["AI & Innovation", "Strategy & Leadership"]
+    "tags": [
+      "AI & Innovation",
+      "Strategy & Leadership"
+    ]
   },
   {
     "title": "A Unified Front: Why the DOW's Cyber Strategy is Now Mission-Critical for HIPAA Compliance",
     "date": "September 18, 2025",
     "description": "The Department of the Warrior's cyber strategy is now mission-critical for HIPAA compliance across the MHS.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Military Health System", "Healthcare Policy"]
+    "tags": [
+      "Military Health System",
+      "Healthcare Policy"
+    ]
   },
   {
     "title": "From Pitch to Enterprise: How the MHS is Cutting Years Off Health Tech Timelines",
     "date": "September 15, 2025",
     "description": "How the Military Health System is accelerating health tech adoption and cutting years off enterprise deployment timelines.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Military Health System", "AI & Innovation"]
+    "tags": [
+      "Military Health System",
+      "AI & Innovation"
+    ]
   },
   {
     "title": "Brain on the Frontlines: New AI Sensors Redefine Troop Cognitive Resilience",
     "date": "September 11, 2025",
     "description": "New AI-powered sensors are redefining cognitive resilience for warfighters on the frontlines.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["AI & Innovation", "Military Health System"]
+    "tags": [
+      "AI & Innovation",
+      "Military Health System"
+    ]
   },
   {
     "title": "Think Data Sharing is Optional? HHS Disagrees",
     "date": "August 28, 2025",
     "description": "HHS is making data sharing mandatory. What federal health organizations need to know about the new interoperability rules.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Healthcare Policy", "AI & Innovation"]
+    "tags": [
+      "Healthcare Policy",
+      "AI & Innovation"
+    ]
   },
   {
     "title": "Mission Meets Tech: The Merit Revolution",
     "date": "August 25, 2025",
     "description": "The merit revolution in federal health IT — how performance-based approaches are reshaping defense health contracting.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Strategy & Leadership", "Acquisition & Contracting"]
+    "tags": [
+      "Strategy & Leadership",
+      "Acquisition & Contracting"
+    ]
   },
   {
     "title": "The Post-DHITS Playbook: Scaling AI, EHR, and Readiness",
     "date": "August 21, 2025",
     "description": "The post-DHITS playbook for scaling AI, EHR modernization, and military readiness across the MHS.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Military Health System", "AI & Innovation"]
+    "tags": [
+      "Military Health System",
+      "AI & Innovation"
+    ]
   },
   {
     "title": "The Ripple Effect: DHA's Innovation Fellowship and the Future of Federal EHR",
     "date": "August 18, 2025",
     "description": "DHA's Innovation Fellowship is creating ripple effects across the future of federal EHR modernization.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Military Health System", "AI & Innovation"]
+    "tags": [
+      "Military Health System",
+      "AI & Innovation"
+    ]
   },
   {
     "title": "The Retrofit Trap: Why AI in Health Demands a Total Reinvention",
     "date": "August 14, 2025",
     "description": "Retrofitting AI into legacy health systems is a trap. True transformation demands total reinvention of the care model.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["AI & Innovation", "Strategy & Leadership"]
+    "tags": [
+      "AI & Innovation",
+      "Strategy & Leadership"
+    ]
   },
   {
     "title": "The Digital Pulse of Military Health: 2025 Milestones Revealed",
     "date": "July 28, 2025",
     "description": "Key milestones revealed in the digital transformation of military health throughout 2025.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Military Health System", "AI & Innovation"]
+    "tags": [
+      "Military Health System",
+      "AI & Innovation"
+    ]
   },
   {
     "title": "Mission Meets Tech: Digital Health 2.0 — Beyond the Basics",
     "date": "July 24, 2025",
     "description": "Moving beyond the basics of digital health to 2.0 — what the next generation of federal health IT looks like.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["AI & Innovation", "Strategy & Leadership"]
+    "tags": [
+      "AI & Innovation",
+      "Strategy & Leadership"
+    ]
   },
   {
     "title": "Shadow AI Risks to Game-Changing Wins: How Government Leaders Are Mastering 2025's Essential Tool",
     "date": "July 21, 2025",
     "description": "From shadow AI risks to game-changing wins — how government leaders are mastering AI as 2025's essential tool.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["AI & Innovation", "Strategy & Leadership"]
+    "tags": [
+      "AI & Innovation",
+      "Strategy & Leadership"
+    ]
   },
   {
     "title": "AI Enters the Ranks: Scaling Big Tech Partnerships for Health Innovation",
     "date": "July 17, 2025",
     "description": "AI enters the military ranks as Big Tech partnerships scale to drive health innovation across the MHS.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["AI & Innovation", "Military Health System"]
+    "tags": [
+      "AI & Innovation",
+      "Military Health System"
+    ]
   },
   {
     "title": "MHS Resilience: Modernizing Forward",
     "date": "June 26, 2025",
     "description": "MHS resilience through forward modernization — building the infrastructure for next-generation military healthcare.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Military Health System", "Strategy & Leadership"]
+    "tags": [
+      "Military Health System",
+      "Strategy & Leadership"
+    ]
   },
   {
     "title": "Data Chaos: The Hidden Threat to Military Healthcare",
     "date": "June 19, 2025",
     "description": "Data chaos is the hidden threat undermining military healthcare. Why data governance is now a readiness issue.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Military Health System", "AI & Innovation"]
+    "tags": [
+      "Military Health System",
+      "AI & Innovation"
+    ]
   },
   {
     "title": "The SWIFT Breakthrough: Redefining Possibilities",
     "date": "May 29, 2025",
     "description": "The SWIFT breakthrough is redefining what's possible in military health tech deployment and interoperability.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Military Health System", "AI & Innovation"]
+    "tags": [
+      "Military Health System",
+      "AI & Innovation"
+    ]
   },
   {
     "title": "From Silos to Synergy: Building the Future of MHS Enterprise Imaging (Part 2)",
     "date": "May 27, 2025",
     "description": "From diagnosis to action — charting the path to unify MHS imaging through DTRS, VNAs, cloud, and AI across 700+ facilities.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Military Health System", "AI & Innovation"]
+    "tags": [
+      "Military Health System",
+      "AI & Innovation"
+    ]
   },
   {
     "title": "From Despair to Hope: A Veteran's Journey with PTSD",
     "date": "May 26, 2025",
     "description": "A veteran's journey from despair to hope — how emerging treatments and digital health tools are transforming PTSD care.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Veterans Affairs", "Healthcare Policy"]
+    "tags": [
+      "Veterans Affairs",
+      "Healthcare Policy"
+    ]
   },
   {
     "title": "Can We Trust AI with Soldiers' Lives?",
     "date": "May 22, 2025",
     "description": "The critical question at the intersection of AI and military medicine: can we trust algorithms with warfighter care?",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["AI & Innovation", "Military Health System"]
+    "tags": [
+      "AI & Innovation",
+      "Military Health System"
+    ]
   },
   {
     "title": "Pixels and Promises: The Fragmented Foundation of MHS Imaging (Part 1)",
     "date": "May 20, 2025",
     "description": "At 2 a.m. at Camp Lejeune, a medic's tablet stalls. In Kandahar, a CT scan saves a life in minutes. The paradox of MHS enterprise imaging.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Military Health System", "AI & Innovation"]
+    "tags": [
+      "Military Health System",
+      "AI & Innovation"
+    ]
   },
   {
     "title": "FAR Overhaul: Unlocking a New Era of Innovation for the Military Health System",
     "date": "May 19, 2025",
     "description": "How the FAR overhaul is unlocking a new era of innovation and agile acquisition for the Military Health System.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Acquisition & Contracting", "Military Health System"]
+    "tags": [
+      "Acquisition & Contracting",
+      "Military Health System"
+    ]
   },
   {
     "title": "Digital Health: The Unbreakable Spine of Military Readiness",
     "date": "May 5, 2025",
     "description": "Digital health is the unbreakable spine of military readiness — why the MHS digital backbone matters more than ever.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Military Health System", "AI & Innovation"]
+    "tags": [
+      "Military Health System",
+      "AI & Innovation"
+    ]
   },
   {
     "title": "Squad Vibes and AI: Scaling Mental Health for our Heroes",
     "date": "April 28, 2025",
     "description": "Scaling mental health support for service members through AI-powered squad-level interventions.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["AI & Innovation", "Military Health System"]
+    "tags": [
+      "AI & Innovation",
+      "Military Health System"
+    ]
   },
   {
     "title": "Amplify the Blueprint: How Digital First Can Turn Success into Standard",
     "date": "April 21, 2025",
     "description": "How a digital-first approach can amplify proven blueprints and turn localized success into enterprise standard.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Strategy & Leadership", "AI & Innovation"]
+    "tags": [
+      "Strategy & Leadership",
+      "AI & Innovation"
+    ]
   },
   {
     "title": "Lead or Lag: The Virtual Care Imperative for MHS Leadership",
     "date": "April 17, 2025",
     "description": "The virtual care imperative facing MHS leadership — lead the transformation or lag behind the private sector.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Military Health System", "Strategy & Leadership"]
+    "tags": [
+      "Military Health System",
+      "Strategy & Leadership"
+    ]
   },
   {
     "title": "AI, Wearables, and Beyond: A New Era for Warfighter Care",
     "date": "April 14, 2025",
     "description": "AI, wearables, and emerging tech are ushering in a new era of proactive warfighter care and readiness monitoring.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["AI & Innovation", "Military Health System"]
+    "tags": [
+      "AI & Innovation",
+      "Military Health System"
+    ]
   },
   {
     "title": "On April 10, 2025, the DoD Dropped a Bombshell — $5.1 Billion in Consulting Contracts Gone",
     "date": "April 11, 2025",
     "description": "The DoD cut $5.1 billion in consulting contracts. What the bombshell means for defense health contractors and the industry.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Acquisition & Contracting", "Strategy & Leadership"]
+    "tags": [
+      "Acquisition & Contracting",
+      "Strategy & Leadership"
+    ]
   },
   {
     "title": "Mission Meets Tech: AI-Powered Symptom Triage Redefining Healthcare in 2025",
     "date": "March 28, 2025",
     "description": "AI-powered symptom triage is redefining healthcare delivery in 2025 — from emergency rooms to forward operating bases.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["AI & Innovation", "Military Health System"]
+    "tags": [
+      "AI & Innovation",
+      "Military Health System"
+    ]
   },
   {
     "title": "When Tech Lifts the Load: A Vision for Transforming Military Healthcare",
     "date": "March 24, 2025",
     "description": "A vision for how technology can lift the administrative and operational load transforming military healthcare delivery.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Military Health System", "Strategy & Leadership"]
+    "tags": [
+      "Military Health System",
+      "Strategy & Leadership"
+    ]
   },
   {
     "title": "Mission Meets Tech: March 20, 2025",
     "date": "March 20, 2025",
     "description": "The inaugural edition of Mission Meets Tech — where defense, digital health, and AI meet.",
     "url": "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/",
-    "tags": ["Strategy & Leadership"]
+    "tags": [
+      "Strategy & Leadership"
+    ]
   }
 ]
