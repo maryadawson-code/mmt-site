@@ -485,9 +485,20 @@ function generateSitemap(articles, tags) {
     xml += `  <url>\n    <loc>${SITE_URL}/topics/${tag.slug}/</loc>\n    <lastmod>${topicLastmod[tag.slug]}</lastmod>\n    <priority>0.5</priority>\n  </url>\n`;
   });
 
+  // Contract detail pages
+  const contractsPath = path.join(__dirname, 'contracts.json');
+  let contractCount = 0;
+  if (fs.existsSync(contractsPath)) {
+    const contracts = JSON.parse(fs.readFileSync(contractsPath, 'utf8'));
+    contracts.forEach(c => {
+      xml += `  <url>\n    <loc>${SITE_URL}/contracts/${slugify(c.name)}/</loc>\n    <priority>0.6</priority>\n  </url>\n`;
+    });
+    contractCount = contracts.length;
+  }
+
   xml += '</urlset>\n';
   fs.writeFileSync(path.join(DIST_DIR, 'sitemap.xml'), xml);
-  console.log(`Generated sitemap.xml (${staticPages.length + articles.length + tags.length} URLs)`);
+  console.log(`Generated sitemap.xml (${staticPages.length + articles.length + tags.length + contractCount} URLs)`);
 }
 
 function generateRssFeed(articles) {
@@ -669,6 +680,21 @@ async function generateOgImages(articles, tags) {
     await sharp(Buffer.from(svg)).png().toFile(path.join(ogDir, `topic-${tag.slug}.png`));
   }
   console.log(`Generated ${tags.length} topic OG images`);
+
+  // Contract images
+  const contractsPath = path.join(__dirname, 'contracts.json');
+  if (fs.existsSync(contractsPath)) {
+    const contracts = JSON.parse(fs.readFileSync(contractsPath, 'utf8'));
+    for (const c of contracts) {
+      const svg = buildOgSvg({
+        title: c.name,
+        subtitle: `${c.agency} · ${c.value}`,
+        label: 'CONTRACT INTEL',
+      });
+      await sharp(Buffer.from(svg)).png().toFile(path.join(ogDir, `contract-${slugify(c.name)}.png`));
+    }
+    console.log(`Generated ${contracts.length} contract OG images`);
+  }
 }
 
 // --- Build-Time HTML Generation ---
@@ -933,12 +959,13 @@ function generateContractTrackerHtml() {
           <h2 class="text-lg font-bold mb-4 flex items-center gap-2" style="color:var(--mmt-white);"><span class="w-2 h-2 rounded-full inline-block" style="background:${color};"></span>${escapeHtml(label)}</h2>
           <div class="grid md:grid-cols-2 gap-4">\n`;
     items.forEach(c => {
-      html += `            <div class="card rounded-xl p-6 cursor-pointer transition-all duration-200" data-contract="${escapeHtml(c.name)}" role="button" tabindex="0" aria-expanded="false">
+      const cSlug = slugify(c.name);
+      html += `            <a href="/contracts/${cSlug}/" class="card rounded-xl p-6 no-underline block transition-all duration-200 hover:translate-y-[-2px]">
               <div class="flex items-start justify-between gap-3 mb-2">
                 <h3 class="text-base font-bold" style="color:var(--mmt-white);">${escapeHtml(c.name)}</h3>
                 <div class="flex items-center gap-2 flex-shrink-0">
                   <span class="text-xs whitespace-nowrap px-2 py-1 rounded" style="background:rgba(0,229,250,0.1); color:${color};">${escapeHtml(label)}</span>
-                  <svg class="contract-chevron transition-transform duration-200" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--mmt-white-dim);"><path d="M4 6l4 4 4-4"/></svg>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--mmt-cyan);"><path d="M6 3l5 5-5 5"/></svg>
                 </div>
               </div>
               <p class="text-xs mb-2" style="color:var(--mmt-cyan);">${escapeHtml(c.agency)}</p>
@@ -948,8 +975,8 @@ function generateContractTrackerHtml() {
                 <span><strong style="color:var(--mmt-white-muted);">Value:</strong> ${escapeHtml(c.value)}</span>
                 ${c.naics ? `<span><strong style="color:var(--mmt-white-muted);">NAICS:</strong> ${escapeHtml(c.naics)}</span>` : ''}
               </div>
-              <div class="contract-intel-panel hidden mt-4 pt-4" style="border-top:1px solid rgba(0,229,250,0.1);"></div>
-            </div>\n`;
+              <p class="text-xs mt-3 font-semibold" style="color:var(--mmt-cyan);">View Intel &rarr;</p>
+            </a>\n`;
     });
     html += `          </div>
         </div>\n`;
@@ -969,16 +996,80 @@ function generateContractSummaryHtml() {
   top.forEach(c => {
     const statusColors = { active: 'var(--mmt-green)', upcoming: 'var(--mmt-cyan)', awarded: '#FBBF24' };
     const color = statusColors[c.status] || 'var(--mmt-cyan)';
-    html += `        <div class="card rounded-xl p-4 flex items-start justify-between gap-4">
+    const cSlug = slugify(c.name);
+    html += `        <a href="/contracts/${cSlug}/" class="card rounded-xl p-4 flex items-start justify-between gap-4 no-underline block transition-all">
           <div>
             <p class="text-sm font-bold" style="color:var(--mmt-white);">${escapeHtml(c.name)}</p>
             <p class="text-xs" style="color:var(--mmt-white-dim);">${escapeHtml(c.agency)} &middot; ${escapeHtml(c.value)}</p>
           </div>
           <span class="text-xs whitespace-nowrap px-2 py-1 rounded flex-shrink-0" style="background:rgba(0,229,250,0.1); color:${color};">${escapeHtml(c.status)}</span>
-        </div>\n`;
+        </a>\n`;
   });
   html += '      </div>';
   return html;
+}
+
+function generateContractPages() {
+  const contractsPath = path.join(__dirname, 'contracts.json');
+  if (!fs.existsSync(contractsPath)) {
+    console.log('No contracts.json found. Skipping contract page generation.');
+    return;
+  }
+  const templatePath = path.join(TEMPLATES_DIR, 'contract.html');
+  if (!fs.existsSync(templatePath)) {
+    console.log('No contract template found. Skipping contract page generation.');
+    return;
+  }
+  const contracts = JSON.parse(fs.readFileSync(contractsPath, 'utf8'));
+  const template = fs.readFileSync(templatePath, 'utf8');
+
+  const statusColors = {
+    'active': 'var(--mmt-green)',
+    'upcoming': 'var(--mmt-cyan)',
+    'awarded': '#FBBF24',
+  };
+  const statusLabels = {
+    'active': 'Active',
+    'upcoming': 'Upcoming',
+    'awarded': 'Recently Awarded',
+  };
+
+  contracts.forEach(c => {
+    const cSlug = slugify(c.name);
+    const outDir = path.join(DIST_DIR, 'contracts', cSlug);
+    ensureDir(outDir);
+
+    const statusColor = statusColors[c.status] || 'var(--mmt-cyan)';
+    const statusLabel = statusLabels[c.status] || c.status;
+    const naicsRow = c.naics
+      ? `<div class="mt-4 pt-4" style="border-top:1px solid rgba(0,229,250,0.1);"><span class="text-xs" style="color:var(--mmt-white-dim);"><strong style="color:var(--mmt-white-muted);">NAICS:</strong> ${escapeHtml(c.naics)}</span></div>`
+      : '';
+
+    let html = template
+      .replace(/\{\{CONTRACT_NAME\}\}/g, escapeHtml(c.name))
+      .replace(/\{\{CONTRACT_SLUG\}\}/g, cSlug)
+      .replace(/\{\{AGENCY\}\}/g, escapeHtml(c.agency))
+      .replace(/\{\{VENDOR\}\}/g, escapeHtml(c.vendor))
+      .replace(/\{\{VALUE\}\}/g, escapeHtml(c.value))
+      .replace(/\{\{STATUS\}\}/g, escapeHtml(statusLabel))
+      .replace(/\{\{STATUS_COLOR\}\}/g, statusColor)
+      .replace(/\{\{NAICS_ROW\}\}/g, naicsRow)
+      .replace(/\{\{DESCRIPTION\}\}/g, escapeHtml(c.description))
+      .replace(/\{\{SAM_LINK\}\}/g, escapeHtml(c.link))
+      .replace(/\{\{CONTRACT_NAME_ENCODED\}\}/g, encodeURIComponent(c.name))
+      .replace(/\{\{CANONICAL_URL\}\}/g, `${SITE_URL}/contracts/${cSlug}/`);
+
+    // Inject search overlay after </nav>
+    html = html.replace('</nav>', '</nav>' + searchOverlayHtml);
+    // Inject search script before </body>
+    html = html.replace('</body>', '  <script>' + searchScript + subscribeScript + '\n  </script>\n</body>');
+
+    html = rewriteOgTags(html, `contract-${cSlug}.png`);
+    html = inlineTailwindCss(html);
+    fs.writeFileSync(path.join(outDir, 'index.html'), html);
+  });
+
+  console.log(`Generated ${contracts.length} contract pages`);
 }
 
 // --- Events Calendar ---
@@ -1481,6 +1572,9 @@ async function build() {
     // Generate topic pages
     generateTopicPages(tags);
 
+    // Generate contract detail pages
+    generateContractPages();
+
     // Generate updated newsletters.json (returns merged archive)
     archive = generateNewslettersJson(articles);
 
@@ -1496,6 +1590,7 @@ async function build() {
   } else {
     console.log('No articles found. Generating static sitemap.');
     generateSitemap([], []);
+    generateContractPages();
   }
 
   // 2. Fetch podcast episodes (keep existing functionality)
