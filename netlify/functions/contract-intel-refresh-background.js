@@ -196,16 +196,49 @@ Search multiple sources (SAM.gov, FPDS, FedScoop, NextGov, Defense One, GovExec,
   const data = await response.json();
   let finalData = data;
 
+  // Handle pause_turn: resume if the server-side tool loop hit its limit
+  if (finalData.stop_reason === "pause_turn") {
+    console.log(`  [${contract.name}] Resuming paused turn...`);
+    const resumeResponse = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: MODEL,
+        max_tokens: MAX_TOKENS,
+        system: SYSTEM_PROMPT,
+        tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 5 }],
+        messages: [
+          { role: "user", content: userMessage },
+          { role: "assistant", content: finalData.content },
+          { role: "user", content: "Return the final JSON now." },
+        ],
+      }),
+    });
+    if (resumeResponse.ok) {
+      finalData = await resumeResponse.json();
+    }
+  }
+
+  // Collect all content blocks (from initial + any resume)
+  const allContent = finalData.content;
+
   // Extract text blocks from the response
-  const textBlocks = finalData.content
+  let textBlocks = allContent
     .filter((block) => block.type === "text")
     .map((block) => block.text)
     .join("");
 
+  // Strip <cite> tags that web_search injects into the text
+  textBlocks = textBlocks.replace(/<cite[^>]*>/g, "").replace(/<\/cite>/g, "");
+
   // Extract web search source URLs from the response
   const searchSources = [];
-  for (const block of finalData.content) {
-    if (block.type === "web_search_tool_result" && block.content) {
+  for (const block of allContent) {
+    if (block.type === "web_search_tool_result" && Array.isArray(block.content)) {
       for (const result of block.content) {
         if (result.type === "web_search_result" && result.url) {
           searchSources.push(result.url);
@@ -293,7 +326,7 @@ exports.handler = async (event) => {
         successCount++;
       }
     } catch (err) {
-      console.error(`Error researching ${contract.name}:`, err.message);
+      console.error(`Error researching ${contract.name}:`, err.message, err.stack);
       errorCount++;
     }
   }
