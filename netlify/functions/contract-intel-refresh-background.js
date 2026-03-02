@@ -421,6 +421,14 @@ exports.handler = async (event) => {
     return { statusCode: 500, body: "Missing env vars" };
   }
 
+  // Parse request body for optional force_contract parameter
+  let body = {};
+  try { body = JSON.parse(event.body || "{}"); } catch { /* ignore */ }
+  const forceContract = body.force_contract || null;
+  if (forceContract) {
+    console.log(`Force-refreshing single contract: ${forceContract}`);
+  }
+
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
   let successCount = 0;
@@ -439,10 +447,20 @@ exports.handler = async (event) => {
       .map((r) => r.contract_name)
   );
 
+  // If force_contract is set, only process that one contract
+  const contractsToProcess = forceContract
+    ? CONTRACTS.filter((c) => c.name === forceContract)
+    : CONTRACTS;
+
+  if (forceContract && contractsToProcess.length === 0) {
+    console.error(`Contract not found: ${forceContract}`);
+    return { statusCode: 404, body: JSON.stringify({ error: "Contract not found" }) };
+  }
+
   // Process contracts sequentially to avoid rate limits
-  for (const contract of CONTRACTS) {
-    // Skip contracts that already have fresh data
-    if (freshContracts.has(contract.name)) {
+  for (const contract of contractsToProcess) {
+    // Skip contracts that already have fresh data (unless force-refreshing)
+    if (!forceContract && freshContracts.has(contract.name)) {
       console.log(`Skipping (fresh): ${contract.name}`);
       successCount++;
       continue;
