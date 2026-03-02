@@ -297,8 +297,28 @@ exports.handler = async (event) => {
   let successCount = 0;
   let errorCount = 0;
 
+  // Check which contracts already have fresh data (updated within last 20 hours)
+  // This allows re-triggering to pick up where a timeout left off
+  const { data: existing } = await supabase
+    .from("contract_intel")
+    .select("contract_name, last_updated");
+
+  const freshCutoff = new Date(Date.now() - 20 * 60 * 60 * 1000).toISOString();
+  const freshContracts = new Set(
+    (existing || [])
+      .filter((r) => r.last_updated > freshCutoff)
+      .map((r) => r.contract_name)
+  );
+
   // Process contracts sequentially to avoid rate limits
   for (const contract of CONTRACTS) {
+    // Skip contracts that already have fresh data
+    if (freshContracts.has(contract.name)) {
+      console.log(`Skipping (fresh): ${contract.name}`);
+      successCount++;
+      continue;
+    }
+
     try {
       console.log(`Researching: ${contract.name}...`);
       const result = await researchContract(contract);
