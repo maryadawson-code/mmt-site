@@ -95,8 +95,8 @@ const CONTRACTS = [
   },
 ];
 
-// --- System Prompt ---
-const SYSTEM_PROMPT = `You are a federal procurement intelligence analyst specializing in defense health and federal health IT contracts. You have access to web search to research contracts thoroughly.
+// --- System Prompts ---
+const RESEARCH_PROMPT = `You are a federal procurement intelligence analyst specializing in defense health and federal health IT contracts. You have access to web search to research contracts thoroughly.
 
 Your task: Research the given contract using web search. Make 3-5 targeted searches (no more than 5) to build a focused picture:
 
@@ -112,42 +112,55 @@ Then produce a brief BLACK HAT competitive intelligence assessment:
 - What protest grounds exist?
 - What recompete threats and competitive moves are in play?
 
+CRITICAL — CONFIDENCE RATINGS:
+You MUST assign a confidence percentage (0-100) to every factual claim. Base confidence on:
+- Source quality: Government sources (SAM.gov, GAO, CRS, agency press releases) = higher confidence. Trade press (FedScoop, NextGov, Defense One) = medium. Blogs, undated articles, unnamed sources = lower confidence.
+- Corroboration: Claims confirmed by 2+ independent sources = higher. Single-source claims = lower.
+- Recency: Recent articles (within 6 months) = higher for current-state claims. Older articles = lower for anything time-sensitive.
+- Specificity: Exact dollar amounts, dates, contract numbers from official sources = high. Vague or estimated figures = lower.
+
+If you cannot find authoritative evidence for a claim, either omit it or include it with low confidence (under 50%) and explain why in verification_notes.
+
 Return a JSON object with three top-level keys: "intel", "black_hat", and "sources".
 
 The "intel" object must have this structure:
 {
+  "confidence_score": 75,
   "summary": "2-3 paragraph executive overview of current state",
   "key_developments": [
-    { "date": "YYYY-MM-DD or YYYY-MM or YYYY-QN", "headline": "Short headline", "detail": "1-2 sentence detail" }
+    { "date": "YYYY-MM-DD or YYYY-MM or YYYY-QN", "headline": "Short headline", "detail": "1-2 sentence detail", "confidence": 85, "source_type": "government|trade_press|industry|unverified" }
   ],
   "competitors": [
-    { "name": "Company Name", "role": "incumbent/challenger/teaming", "position": "1-2 sentence positioning" }
+    { "name": "Company Name", "role": "incumbent/challenger/teaming", "position": "1-2 sentence positioning", "confidence": 70 }
   ],
   "timeline": [
-    { "date": "YYYY-QN or YYYY-MM", "event": "What happens", "significance": "Why it matters" }
+    { "date": "YYYY-QN or YYYY-MM", "event": "What happens", "significance": "Why it matters", "confidence": 60 }
   ],
   "financials": "Contract value context, modifications, ceiling changes (1-2 sentences)",
+  "financials_confidence": 80,
   "risks": ["Risk 1", "Risk 2"],
-  "opportunities": ["Opportunity 1", "Opportunity 2"]
+  "opportunities": ["Opportunity 1", "Opportunity 2"],
+  "verification_notes": ["Note about unverified claims", "Note about conflicting sources"]
 }
 
 The "black_hat" object must have this structure:
 {
+  "confidence_score": 65,
   "summary": "1-paragraph competitive threat assessment",
   "incumbent_vulnerabilities": [
-    { "issue": "The vulnerability", "evidence": "Supporting evidence", "exploit_angle": "How a competitor could exploit this" }
+    { "issue": "The vulnerability", "evidence": "Supporting evidence", "exploit_angle": "How a competitor could exploit this", "confidence": 70 }
   ],
   "protest_risks": [
-    { "scenario": "What could be protested", "likelihood": "high/medium/low", "basis": "Legal or procedural basis" }
+    { "scenario": "What could be protested", "likelihood": "high/medium/low", "basis": "Legal or procedural basis", "confidence": 55 }
   ],
   "recompete_threats": [
-    { "threat": "The threat", "timeline": "When", "impact": "What it means" }
+    { "threat": "The threat", "timeline": "When", "impact": "What it means", "confidence": 60 }
   ],
   "competitive_moves": [
-    { "competitor": "Company", "action": "What they did/are doing", "implication": "What it means for the contract" }
+    { "competitor": "Company", "action": "What they did/are doing", "implication": "What it means for the contract", "confidence": 65 }
   ],
   "hidden_risks": [
-    { "risk": "The risk", "detail": "Why it matters" }
+    { "risk": "The risk", "detail": "Why it matters", "confidence": 50 }
   ],
   "bottom_line": "One sentence: what a smart competitor does right now"
 }
@@ -156,22 +169,47 @@ The "sources" array should list all URLs you consulted during research.
 
 Return ONLY valid JSON. No markdown code fences. No text before or after the JSON.`;
 
+const VERIFY_PROMPT = `You are a senior fact-checker and intelligence verification analyst. Your job is to CHALLENGE and VERIFY the research provided below. You are adversarial — assume claims may be wrong until proven right.
+
+Using web search, make 2-3 targeted searches to specifically:
+1. Verify the most important factual claims (dates, dollar amounts, contract actions, organizational roles)
+2. Look for CONTRADICTORY or MORE RECENT information that may invalidate the research
+3. Check if any claimed future events have already occurred or been cancelled
+4. Verify key names, roles, and organizational relationships
+
+For each claim you check, either:
+- CONFIRM it (raise confidence if corroborated by a new source)
+- CONTRADICT it (lower confidence and explain what you found)
+- UNABLE TO VERIFY (note that you found no additional evidence either way)
+
+Return a JSON object with these keys:
+{
+  "intel_confidence_score": 75,
+  "black_hat_confidence_score": 65,
+  "adjustments": [
+    { "field": "key_developments[0]", "original_confidence": 80, "adjusted_confidence": 90, "reason": "Confirmed by SAM.gov listing dated 2026-02-28" },
+    { "field": "competitors[1]", "original_confidence": 70, "adjusted_confidence": 45, "reason": "Company appears to have exited this market per recent press release" }
+  ],
+  "contradictions_found": [
+    { "claim": "The original claim", "contradiction": "What the evidence actually shows", "source": "URL" }
+  ],
+  "verification_notes": [
+    "Note about what was verified successfully",
+    "Note about what could not be independently verified"
+  ],
+  "sources": ["URLs consulted during verification"]
+}
+
+Be concise. Focus on the highest-impact claims. If the research looks solid, say so — do not manufacture doubt.
+
+Return ONLY valid JSON. No markdown code fences. No text before or after the JSON.`;
+
 
 // ============================================================
-// RESEARCH A SINGLE CONTRACT
+// HELPER: Call Claude API and parse JSON response
 // ============================================================
 
-async function researchContract(contract) {
-  const userMessage = `Research this federal contract thoroughly using web search:
-
-CONTRACT: ${contract.name}
-AGENCY: ${contract.agency}
-CURRENT VENDOR: ${contract.vendor}
-VALUE: ${contract.value}
-DESCRIPTION: ${contract.description}
-
-Search multiple sources (SAM.gov, FPDS, FedScoop, NextGov, Defense One, GovExec, agency websites, GAO, CRS) to build comprehensive intelligence. Return the JSON object with "intel", "black_hat", and "sources" keys.`;
-
+async function callClaude(systemPrompt, userMessage, maxSearches) {
   const response = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -182,8 +220,8 @@ Search multiple sources (SAM.gov, FPDS, FedScoop, NextGov, Defense One, GovExec,
     body: JSON.stringify({
       model: MODEL,
       max_tokens: MAX_TOKENS,
-      system: SYSTEM_PROMPT,
-      tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 5 }],
+      system: systemPrompt,
+      tools: [{ type: "web_search_20250305", name: "web_search", max_uses: maxSearches }],
       messages: [{ role: "user", content: userMessage }],
     }),
   });
@@ -193,12 +231,10 @@ Search multiple sources (SAM.gov, FPDS, FedScoop, NextGov, Defense One, GovExec,
     throw new Error(`Claude API error ${response.status}: ${errText}`);
   }
 
-  const data = await response.json();
-  let finalData = data;
+  let finalData = await response.json();
 
   // Handle pause_turn: resume if the server-side tool loop hit its limit
   if (finalData.stop_reason === "pause_turn") {
-    console.log(`  [${contract.name}] Resuming paused turn...`);
     const resumeResponse = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
@@ -209,8 +245,8 @@ Search multiple sources (SAM.gov, FPDS, FedScoop, NextGov, Defense One, GovExec,
       body: JSON.stringify({
         model: MODEL,
         max_tokens: MAX_TOKENS,
-        system: SYSTEM_PROMPT,
-        tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 5 }],
+        system: systemPrompt,
+        tools: [{ type: "web_search_20250305", name: "web_search", max_uses: maxSearches }],
         messages: [
           { role: "user", content: userMessage },
           { role: "assistant", content: finalData.content },
@@ -223,19 +259,18 @@ Search multiple sources (SAM.gov, FPDS, FedScoop, NextGov, Defense One, GovExec,
     }
   }
 
-  // Collect all content blocks (from initial + any resume)
   const allContent = finalData.content;
 
-  // Extract text blocks from the response
+  // Extract text blocks
   let textBlocks = allContent
     .filter((block) => block.type === "text")
     .map((block) => block.text)
     .join("");
 
-  // Strip <cite> tags that web_search injects into the text
+  // Strip <cite> tags that web_search injects
   textBlocks = textBlocks.replace(/<cite[^>]*>/g, "").replace(/<\/cite>/g, "");
 
-  // Extract web search source URLs from the response
+  // Extract web search source URLs
   const searchSources = [];
   for (const block of allContent) {
     if (block.type === "web_search_tool_result" && Array.isArray(block.content)) {
@@ -250,15 +285,12 @@ Search multiple sources (SAM.gov, FPDS, FedScoop, NextGov, Defense One, GovExec,
   // Parse JSON from text
   let parsed;
   try {
-    // Try direct parse first
     parsed = JSON.parse(textBlocks);
   } catch {
-    // Try extracting JSON from markdown code fences
     const jsonMatch = textBlocks.match(/```(?:json)?\s*([\s\S]*?)```/);
     if (jsonMatch) {
       parsed = JSON.parse(jsonMatch[1].trim());
     } else {
-      // Try finding JSON object in text
       const braceStart = textBlocks.indexOf("{");
       const braceEnd = textBlocks.lastIndexOf("}");
       if (braceStart >= 0 && braceEnd > braceStart) {
@@ -269,13 +301,110 @@ Search multiple sources (SAM.gov, FPDS, FedScoop, NextGov, Defense One, GovExec,
     }
   }
 
-  // Merge web search sources with any sources Claude listed
-  const allSources = [...new Set([...(parsed.sources || []), ...searchSources])];
+  return { parsed, searchSources };
+}
+
+
+// ============================================================
+// RESEARCH A SINGLE CONTRACT (Pass 1: Research + Pass 2: Verify)
+// ============================================================
+
+async function researchContract(contract) {
+  // --- Pass 1: Research ---
+  console.log(`  [${contract.name}] Pass 1: Research...`);
+  const researchMessage = `Research this federal contract thoroughly using web search:
+
+CONTRACT: ${contract.name}
+AGENCY: ${contract.agency}
+CURRENT VENDOR: ${contract.vendor}
+VALUE: ${contract.value}
+DESCRIPTION: ${contract.description}
+
+Search multiple sources (SAM.gov, FPDS, FedScoop, NextGov, Defense One, GovExec, agency websites, GAO, CRS) to build comprehensive intelligence. Include confidence percentages on every claim. Return the JSON object with "intel", "black_hat", and "sources" keys.`;
+
+  const { parsed: research, searchSources: researchSources } = await callClaude(
+    RESEARCH_PROMPT, researchMessage, 5
+  );
+
+  // Ensure confidence fields exist with defaults
+  const intel = research.intel || {};
+  const blackHat = research.black_hat || {};
+  if (!intel.confidence_score) intel.confidence_score = 50;
+  if (!intel.verification_notes) intel.verification_notes = [];
+  if (!blackHat.confidence_score) blackHat.confidence_score = 50;
+
+  // Merge research sources
+  const allSources = [...new Set([...(research.sources || []), ...researchSources])];
+
+  // --- Pass 2: Verification ---
+  console.log(`  [${contract.name}] Pass 2: Verification...`);
+  try {
+    const verifyMessage = `Verify this intelligence research on the following contract. Challenge the claims, look for contradictions, and check key facts.
+
+CONTRACT: ${contract.name}
+AGENCY: ${contract.agency}
+
+RESEARCH TO VERIFY:
+${JSON.stringify({ intel, black_hat: blackHat }, null, 2)}
+
+Use web search to spot-check the most important claims: dollar amounts, dates, contract actions, organizational roles, and any claims rated below 70% confidence. Return the verification JSON.`;
+
+    const { parsed: verification, searchSources: verifySources } = await callClaude(
+      VERIFY_PROMPT, verifyMessage, 3
+    );
+
+    // Apply verification adjustments
+    if (verification.intel_confidence_score) {
+      intel.confidence_score = verification.intel_confidence_score;
+    }
+    if (verification.black_hat_confidence_score) {
+      blackHat.confidence_score = verification.black_hat_confidence_score;
+    }
+
+    // Apply per-field confidence adjustments
+    if (verification.adjustments && Array.isArray(verification.adjustments)) {
+      for (const adj of verification.adjustments) {
+        try {
+          // Parse field paths like "key_developments[0]" or "competitors[2]"
+          const match = adj.field.match(/^(\w+)\[(\d+)\]$/);
+          if (match) {
+            const [, arrayName, idx] = match;
+            const target = intel[arrayName] || blackHat[arrayName];
+            if (target && target[parseInt(idx)]) {
+              target[parseInt(idx)].confidence = adj.adjusted_confidence;
+            }
+          }
+        } catch { /* skip malformed adjustments */ }
+      }
+    }
+
+    // Merge verification notes
+    const existingNotes = intel.verification_notes || [];
+    const verifyNotes = verification.verification_notes || [];
+    const contradictions = (verification.contradictions_found || []).map(
+      (c) => `CONTRADICTED: ${c.claim} — ${c.contradiction}`
+    );
+    intel.verification_notes = [...existingNotes, ...verifyNotes, ...contradictions];
+
+    // Add verification metadata
+    intel.verified = true;
+    blackHat.verified = true;
+
+    // Merge verification sources
+    allSources.push(...(verification.sources || []), ...verifySources);
+
+    console.log(`  [${contract.name}] Verified: intel=${intel.confidence_score}%, black_hat=${blackHat.confidence_score}%`);
+  } catch (verifyErr) {
+    console.error(`  [${contract.name}] Verification failed (using unverified research):`, verifyErr.message);
+    intel.verified = false;
+    blackHat.verified = false;
+    intel.verification_notes.push("Verification pass failed — confidence ratings are from initial research only.");
+  }
 
   return {
-    intel: parsed.intel || {},
-    black_hat: parsed.black_hat || {},
-    sources: allSources,
+    intel,
+    black_hat: blackHat,
+    sources: [...new Set(allSources)],
   };
 }
 
