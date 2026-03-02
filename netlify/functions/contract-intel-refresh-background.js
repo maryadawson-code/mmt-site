@@ -19,7 +19,7 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const NETLIFY_BUILD_HOOK_URL = process.env.NETLIFY_BUILD_HOOK_URL;
 
 const MODEL = "claude-sonnet-4-5";
-const MAX_TOKENS = 8000;
+const MAX_TOKENS = 16000;
 
 // The 10 contracts — matches contracts.json at repo root
 const CONTRACTS = [
@@ -282,23 +282,44 @@ async function callClaude(systemPrompt, userMessage, maxSearches) {
     }
   }
 
-  // Parse JSON from text
-  let parsed;
-  try {
-    parsed = JSON.parse(textBlocks);
-  } catch {
-    const jsonMatch = textBlocks.match(/```(?:json)?\s*([\s\S]*?)```/);
+  // Clean up common JSON issues from Claude responses
+  function cleanJson(str) {
+    // Remove trailing commas before } or ]
+    str = str.replace(/,\s*([\]}])/g, "$1");
+    // Remove control characters that break JSON (except newlines in strings handled by JSON.parse)
+    str = str.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, "");
+    return str;
+  }
+
+  // Extract JSON string from various formats
+  function extractJsonString(text) {
+    // Try direct parse
+    try { return JSON.parse(cleanJson(text)); } catch { /* continue */ }
+
+    // Try markdown code fences
+    const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
     if (jsonMatch) {
-      parsed = JSON.parse(jsonMatch[1].trim());
-    } else {
-      const braceStart = textBlocks.indexOf("{");
-      const braceEnd = textBlocks.lastIndexOf("}");
-      if (braceStart >= 0 && braceEnd > braceStart) {
-        parsed = JSON.parse(textBlocks.substring(braceStart, braceEnd + 1));
-      } else {
-        throw new Error("Could not parse JSON from Claude response");
-      }
+      try { return JSON.parse(cleanJson(jsonMatch[1].trim())); } catch { /* continue */ }
     }
+
+    // Try finding JSON object boundaries
+    const braceStart = text.indexOf("{");
+    const braceEnd = text.lastIndexOf("}");
+    if (braceStart >= 0 && braceEnd > braceStart) {
+      const candidate = text.substring(braceStart, braceEnd + 1);
+      try { return JSON.parse(cleanJson(candidate)); } catch { /* continue */ }
+    }
+
+    return null;
+  }
+
+  // Parse JSON from text
+  const parsed = extractJsonString(textBlocks);
+  if (!parsed) {
+    // Log a snippet for debugging
+    console.error("JSON parse failed. First 500 chars:", textBlocks.substring(0, 500));
+    console.error("Last 500 chars:", textBlocks.substring(Math.max(0, textBlocks.length - 500)));
+    throw new Error(`Could not parse JSON from Claude response (${textBlocks.length} chars)`);
   }
 
   return { parsed, searchSources };
