@@ -10,7 +10,7 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 - **Styling:** Tailwind CSS v3 (build-time via CLI, inlined into each HTML page during build) + inline CSS custom properties
 - **Fonts:** Self-hosted WOFF2 — Space Grotesk (headings), Inter (body), variable fonts with `font-display: swap`, served from `/fonts/`
 - **Icons:** Inline SVGs (no external icon library)
-- **Forms:** Netlify Forms (contact page), Buttondown (email signup)
+- **Forms:** Netlify Forms (contact form on about page), Buttondown (email signup)
 - **Analytics:** Plausible (privacy-respecting, no cookies)
 - **Podcast embed:** Riverside.fm (episodes rendered at build time from RSS)
 - **Content:** Markdown files in `content/newsletter/` → build generates article pages
@@ -49,18 +49,15 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 ├── 404.html                # Custom 404 error page
 ├── index.html              # Homepage — content router with lead story, latest articles, topic chips
 ├── latest.html             # All articles page (newest-first, build-time rendered)
-├── about.html              # About / founder bio
+├── about.html              # About / founder bio + contact form (#contact section, Netlify Forms)
 ├── podcast.html            # Fed UP podcast page + recent episodes (build-time rendered from RSS)
 ├── newsletter.html         # Newsletter subscribe (Buttondown primary) + full archive (build-time rendered)
-├── resources.html          # Federal health IT resource guide (11 categories, 79 links) + ProposalPulse CTA
+├── resources.html          # Federal health IT resource guide — news widget, contract summary, leadership map, glossary, 79 curated links
 ├── proposal-pulse.html     # ProposalPulse — AI-powered federal proposal scorer (6 doc types + optional SOW, upload → score-deck API → scorecard)
-├── contact.html            # Contact form (Netlify Forms)
 ├── topics.html             # Topics index page (6 topics, build-time rendered with descriptions + counts)
 ├── newswire.html           # News Wire — real-time federal health IT headlines (build-time from 10 RSS feeds)
 ├── contract-tracker.html   # Contract Tracker — curated federal health IT procurement intelligence (build-time from contracts.json)
-├── community.html          # Community hub — links to newsletter, podcast, LinkedIn, ProposalPulse, News Wire
 ├── events.html             # Events calendar — federal health IT conferences and deadlines (build-time from events.json)
-├── refer.html              # Referral program — share MMT with colleagues, milestone rewards
 ├── newsletters.json        # Newsletter issue data (source; build generates updated version)
 ├── contracts.json          # Curated federal health IT contract data (10 entries: MHS GENESIS, CCN Next Gen, T-5 BPA, etc.)
 ├── events.json             # Curated federal health IT events data (conferences, webinars, deadlines)
@@ -122,14 +119,14 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 Every page follows this structure:
 1. `<head>` with: charset, viewport, title, meta description, canonical URL, OG tags (with `og:image:width`/`og:image:height`), Twitter Card tags, favicon, RSS feed link, Plausible script, Google Fonts (non-blocking), inlined Tailwind CSS + inline `<style>` with CSS variables and utility classes (including `.card:hover` and `*:focus-visible` outline)
 2. Skip-to-content link (`<a href="#main-content" class="sr-only focus:not-sr-only ...">`)
-3. `<nav>` with glass-morphism effect, desktop links + mobile hamburger menu. **Nav order:** Home, Latest, Topics, Newsletter, Podcast, Resources, Contracts, News Wire, About, [Search icon], [Subscribe]
+3. `<nav>` with glass-morphism effect, desktop links + mobile hamburger menu. **Nav order:** Intelligence, Podcast, Resources, ProposalPulse, About, [Search icon], [Subscribe]
 4. Search overlay (injected by build.js after `</nav>`)
 5. `<main id="main-content">` wrapping all content sections
-6. Hero section with `pt-32 pb-16` padding
+6. Hero section with `pt-36 pb-20` padding
 7. Content sections alternating between default and `section-alt` backgrounds
 8. CTA section (Buttondown form primary, LinkedIn secondary)
 9. `</main>` closing tag
-10. 4-column footer (Brand, Platform, Company, Listen) — Platform includes Newsletter/Podcast/Resources/News Wire/Contracts; Company includes About/Contact/Community/Events/LinkedIn icon — LinkedIn icon link has `<span class="sr-only">LinkedIn</span>`
+10. 3-column footer (Brand, Explore, Connect) — Brand has logo + tagline + LinkedIn icon; Explore includes Intelligence/Podcast/Resources/ProposalPulse; Connect includes About/Contact (mailto)/Events/LinkedIn
 11. Mobile menu toggle script + search script (both injected by build.js before `</body>`)
 
 ### Active nav highlighting
@@ -450,8 +447,8 @@ Static HTML files use `<!-- BUILD:PLACEHOLDER -->` markers that `copyStaticFiles
 | `<!-- BUILD:LEAD_STORY -->` | index.html | Most recent article as prominent card |
 | `<!-- BUILD:LATEST_ARTICLES -->` | index.html | Articles 2-4 as 3-card grid |
 | `<!-- BUILD:TOPIC_CHIPS -->` | index.html | Horizontal topic pill row |
-| `<!-- BUILD:PODCAST_TEASER -->` | index.html | Latest podcast episode compact row |
-| `<!-- BUILD:LATEST_ISSUES -->` | newsletter.html | Top 3 newsletter issues |
+| `<!-- BUILD:NEWS_WIDGET -->` | resources.html | Top news headlines with "See all" link |
+| `<!-- BUILD:CONTRACT_SUMMARY -->` | resources.html | Top 5 contracts in compact cards |
 | `<!-- BUILD:ALL_ISSUES -->` | newsletter.html | All 73 entries with issue numbers |
 | `<!-- BUILD:TOPIC_FILTER_CHIPS -->` | newsletter.html | Topic filter buttons |
 | `<!-- BUILD:TOPICS_GRID -->` | topics.html | 6 topic cards with descriptions |
@@ -499,4 +496,5 @@ Static HTML files use `<!-- BUILD:PLACEHOLDER -->` markers that `copyStaticFiles
 - **Featured articles:** Set `featured: true` in frontmatter to pin an article as the homepage lead story. If no article is featured, the most recent article is used.
 - **BreadcrumbList JSON-LD** is auto-injected into all static pages by `injectBreadcrumbJsonLd()` in build.js. No manual `<script>` tags needed.
 - **contracts.json** and **events.json** are manually curated data files at the repo root. Update them to change contract tracker and events page content. Build reads them at build time.
-- Community, Events, and Refer pages are accessible from footer links and internal CTAs but are NOT in the main nav (keeps nav from getting too crowded).
+- Events page is accessible from the footer Connect column but is NOT in the main nav.
+- **Deleted pages with 301 redirects:** `community.html` → `/`, `refer.html` → `/`, `contact.html` → `/about.html`. Contact form now lives on about.html as a `#contact` section. Redirects configured in `netlify.toml` (both `.html` and bare path variants).

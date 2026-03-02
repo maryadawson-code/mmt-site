@@ -26,6 +26,36 @@
   to = "/newsletter.html#all-issues"
   status = 301
 
+[[redirects]]
+  from = "/community.html"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/community"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/refer.html"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/refer"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/contact.html"
+  to = "/about.html"
+  status = 301
+
+[[redirects]]
+  from = "/contact"
+  to = "/about.html"
+  status = 301
+
 [[headers]]
   for = "/*"
   [headers.values]

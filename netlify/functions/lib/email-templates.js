@@ -146,7 +146,7 @@ function buildScoreReceiptHtml(data) {
 
       <!-- CTA -->
       <div style="margin-top:24px;text-align:center;">
-        <a href="https://missionmeetstech.com/contact.html" style="display:inline-block;padding:12px 28px;background-color:#00050f;color:#00E5FA;font-size:14px;font-weight:600;text-decoration:none;border-radius:6px;">Need a Full Review? Contact Us</a>
+        <a href="https://missionmeetstech.com/about.html#contact" style="display:inline-block;padding:12px 28px;background-color:#00050f;color:#00E5FA;font-size:14px;font-weight:600;text-decoration:none;border-radius:6px;">Need a Full Review? Contact Us</a>
       </div>
 
     </div>
@@ -551,7 +551,7 @@ function buildGoldTeamReviewHtml(data) {
 
       <!-- CTA -->
       <div style="margin-top:28px;text-align:center;">
-        <a href="https://missionmeetstech.com/contact.html" style="display:inline-block;padding:12px 28px;background-color:#00050f;color:#00E5FA;font-size:14px;font-weight:600;text-decoration:none;border-radius:6px;margin-right:8px;">Need Expert Help?</a>
+        <a href="https://missionmeetstech.com/about.html#contact" style="display:inline-block;padding:12px 28px;background-color:#00050f;color:#00E5FA;font-size:14px;font-weight:600;text-decoration:none;border-radius:6px;margin-right:8px;">Need Expert Help?</a>
         <a href="https://missionmeetstech.com/proposal-pulse.html" style="display:inline-block;padding:12px 28px;background-color:#ffffff;color:#00050f;font-size:14px;font-weight:600;text-decoration:none;border-radius:6px;border:1px solid #d1d5db;">Score Another Document</a>
       </div>
 

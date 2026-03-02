@@ -450,15 +450,12 @@ function generateSitemap(articles, tags) {
     { loc: '/podcast.html', priority: '0.8' },
     { loc: '/newsletter.html', priority: '0.8' },
     { loc: '/resources.html', priority: '0.7' },
-    { loc: '/contact.html', priority: '0.6' },
     { loc: '/topics.html', priority: '0.7' },
     { loc: '/latest.html', priority: '0.8' },
     { loc: '/proposal-pulse.html', priority: '0.8' },
     { loc: '/newswire.html', priority: '0.7' },
     { loc: '/contract-tracker.html', priority: '0.7' },
-    { loc: '/community.html', priority: '0.6' },
     { loc: '/events.html', priority: '0.6' },
-    { loc: '/refer.html', priority: '0.5' },
   ];
 
   // Build a map of topic slug → most recent article date within that topic
@@ -957,6 +954,29 @@ function generateContractTrackerHtml() {
   return html;
 }
 
+function generateContractSummaryHtml() {
+  const contractsPath = path.join(__dirname, 'contracts.json');
+  if (!fs.existsSync(contractsPath)) return '<p class="text-sm" style="color:var(--mmt-white-dim);">Contract data coming soon.</p>';
+  const contracts = JSON.parse(fs.readFileSync(contractsPath, 'utf8'));
+
+  // Show top 5 contracts
+  const top = contracts.slice(0, 5);
+  let html = '<div class="space-y-3">\n';
+  top.forEach(c => {
+    const statusColors = { active: 'var(--mmt-green)', upcoming: 'var(--mmt-cyan)', awarded: '#FBBF24' };
+    const color = statusColors[c.status] || 'var(--mmt-cyan)';
+    html += `        <div class="card rounded-xl p-4 flex items-start justify-between gap-4">
+          <div>
+            <p class="text-sm font-bold" style="color:var(--mmt-white);">${escapeHtml(c.name)}</p>
+            <p class="text-xs" style="color:var(--mmt-white-dim);">${escapeHtml(c.agency)} &middot; ${escapeHtml(c.value)}</p>
+          </div>
+          <span class="text-xs whitespace-nowrap px-2 py-1 rounded flex-shrink-0" style="background:rgba(0,229,250,0.1); color:${color};">${escapeHtml(c.status)}</span>
+        </div>\n`;
+  });
+  html += '      </div>';
+  return html;
+}
+
 // --- Events Calendar ---
 
 function generateEventsListHtml() {
@@ -1043,15 +1063,12 @@ function injectBreadcrumbJsonLd(html, filename) {
     'podcast.html': 'Podcast',
     'newsletter.html': 'Newsletter',
     'resources.html': 'Resources',
-    'contact.html': 'Contact',
     'topics.html': 'Topics',
-    'latest.html': 'Latest',
+    'latest.html': 'Intelligence',
     'proposal-pulse.html': 'ProposalPulse',
     'newswire.html': 'News Wire',
     'contract-tracker.html': 'Contracts',
-    'community.html': 'Community',
     'events.html': 'Events',
-    'refer.html': 'Refer',
   };
   const name = breadcrumbs[filename];
   if (!name) return html; // Skip index.html, 404.html
@@ -1148,9 +1165,9 @@ function copyStaticFiles({ archive, feed, newsItems }) {
   // Copy root HTML files (with inlined Tailwind CSS + build-time injections)
   const htmlFiles = [
     'index.html', 'about.html', 'podcast.html', 'newsletter.html',
-    'resources.html', 'contact.html', 'topics.html', '404.html',
+    'resources.html', 'topics.html', '404.html',
     'proposal-pulse.html', 'latest.html', 'newswire.html',
-    'contract-tracker.html', 'community.html', 'events.html', 'refer.html'
+    'contract-tracker.html', 'events.html'
   ];
   const ogMap = {
     'index.html': 'index.png',
@@ -1158,15 +1175,12 @@ function copyStaticFiles({ archive, feed, newsItems }) {
     'podcast.html': 'podcast.png',
     'newsletter.html': 'newsletter.png',
     'resources.html': 'resources.png',
-    'contact.html': 'contact.png',
     'topics.html': 'topics.png',
     'proposal-pulse.html': 'proposal-pulse.png',
     'latest.html': 'latest.png',
     'newswire.html': 'newswire.png',
     'contract-tracker.html': 'contract-tracker.png',
-    'community.html': 'community.png',
     'events.html': 'events.png',
-    'refer.html': 'refer.png',
   };
 
   // Filter to on-site articles only for homepage (excludes LinkedIn-only entries)
@@ -1188,6 +1202,7 @@ function copyStaticFiles({ archive, feed, newsItems }) {
     '<!-- BUILD:NEWSWIRE_HEADLINES -->': generateNewswireHtml(newsItems || []),
     '<!-- BUILD:NEWS_WIDGET -->': generateNewsWidgetHtml(newsItems || []),
     '<!-- BUILD:CONTRACT_TRACKER -->': generateContractTrackerHtml(),
+    '<!-- BUILD:CONTRACT_SUMMARY -->': generateContractSummaryHtml(),
     '<!-- BUILD:EVENTS_LIST -->': generateEventsListHtml(),
     '<!-- BUILD:JSONLD_TOPICS -->': generateJsonLdTopics(archive),
     '<!-- BUILD:JSONLD_LATEST -->': generateJsonLdLatest(archive),
