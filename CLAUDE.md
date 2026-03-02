@@ -56,7 +56,14 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 ├── proposal-pulse.html     # ProposalPulse — AI-powered federal proposal scorer (6 doc types + optional SOW, upload → score-deck API → scorecard)
 ├── contact.html            # Contact form (Netlify Forms)
 ├── topics.html             # Topics index page (6 topics, build-time rendered with descriptions + counts)
+├── newswire.html           # News Wire — real-time federal health IT headlines (build-time from 10 RSS feeds)
+├── contract-tracker.html   # Contract Tracker — curated federal health IT procurement intelligence (build-time from contracts.json)
+├── community.html          # Community hub — links to newsletter, podcast, LinkedIn, ProposalPulse, News Wire
+├── events.html             # Events calendar — federal health IT conferences and deadlines (build-time from events.json)
+├── refer.html              # Referral program — share MMT with colleagues, milestone rewards
 ├── newsletters.json        # Newsletter issue data (source; build generates updated version)
+├── contracts.json          # Curated federal health IT contract data (10 entries: MHS GENESIS, CCN Next Gen, T-5 BPA, etc.)
+├── events.json             # Curated federal health IT events data (conferences, webinars, deadlines)
 ├── robots.txt              # Crawler directives (copied to dist by build)
 ├── sitemap.xml             # Static sitemap (build generates dynamic version in dist)
 ├── netlify.toml            # Netlify config (headers, redirects, forms)
@@ -80,7 +87,7 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 │   ├── sitemap.xml              # Dynamic sitemap (all pages + articles + topics)
 │   ├── styles/tailwind.css       # Minified, tree-shaken Tailwind CSS (~12KB, inlined into HTML by build)
 │   ├── feed.xml                 # RSS feed
-│   ├── og/*.png                 # Generated OG images (1200x630, ~26 files)
+│   ├── og/*.png                 # Generated OG images (1200x630, ~30 files)
 │   ├── search-index.json       # Search index for client-side search overlay
 │   └── newsletters.json        # Updated with on-site article URLs
 ├── docs/
@@ -115,14 +122,14 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 Every page follows this structure:
 1. `<head>` with: charset, viewport, title, meta description, canonical URL, OG tags (with `og:image:width`/`og:image:height`), Twitter Card tags, favicon, RSS feed link, Plausible script, Google Fonts (non-blocking), inlined Tailwind CSS + inline `<style>` with CSS variables and utility classes (including `.card:hover` and `*:focus-visible` outline)
 2. Skip-to-content link (`<a href="#main-content" class="sr-only focus:not-sr-only ...">`)
-3. `<nav>` with glass-morphism effect, desktop links + mobile hamburger menu. **Nav order:** Home, Latest, Topics, Newsletter, Podcast, Resources, About, [Search icon], [Subscribe]
+3. `<nav>` with glass-morphism effect, desktop links + mobile hamburger menu. **Nav order:** Home, Latest, Topics, Newsletter, Podcast, Resources, Contracts, News Wire, About, [Search icon], [Subscribe]
 4. Search overlay (injected by build.js after `</nav>`)
 5. `<main id="main-content">` wrapping all content sections
 6. Hero section with `pt-32 pb-16` padding
 7. Content sections alternating between default and `section-alt` backgrounds
 8. CTA section (Buttondown form primary, LinkedIn secondary)
 9. `</main>` closing tag
-10. 4-column footer (Brand, Platform, Company, Listen) — LinkedIn icon link has `<span class="sr-only">LinkedIn</span>`
+10. 4-column footer (Brand, Platform, Company, Listen) — Platform includes Newsletter/Podcast/Resources/News Wire/Contracts; Company includes About/Contact/Community/Events/LinkedIn icon — LinkedIn icon link has `<span class="sr-only">LinkedIn</span>`
 11. Mobile menu toggle script + search script (both injected by build.js before `</body>`)
 
 ### Active nav highlighting
@@ -184,6 +191,8 @@ To publish a new newsletter issue:
      - Tag1
      - Tag2
    linkedin_url: "https://www.linkedin.com/..."
+   featured: true          # Optional — pins article as homepage lead story
+   series: "Series Name"   # Optional — groups articles into a series
    ---
    ```
 3. Write markdown body below the frontmatter
@@ -195,7 +204,7 @@ To publish a new newsletter issue:
 - `dist/topics/tag-slug/index.html` — topic landing pages (with description + related topics)
 - `dist/sitemap.xml` — dynamic sitemap with all pages, articles, and topics
 - `dist/feed.xml` — RSS 2.0 feed of all newsletter articles
-- `dist/og/*.png` — 1200x630 OG images for social sharing (9 static + per-article + per-topic)
+- `dist/og/*.png` — 1200x630 OG images for social sharing (14 static + per-article + per-topic)
 - `dist/search-index.json` — search index for client-side search overlay
 - `dist/newsletters.json` — updated with on-site article URLs
 
@@ -449,6 +458,11 @@ Static HTML files use `<!-- BUILD:PLACEHOLDER -->` markers that `copyStaticFiles
 | `<!-- BUILD:PODCAST_EPISODES -->` | podcast.html | Up to 10 recent episodes |
 | `<!-- BUILD:ARTICLE_COUNT_BADGE -->` | latest.html | Article count badge |
 | `<!-- BUILD:LATEST_ALL -->` | latest.html | All articles newest-first |
+| `<!-- BUILD:CONTRACT_TRACKER -->` | contract-tracker.html | Contract cards grouped by status |
+| `<!-- BUILD:EVENTS_LIST -->` | events.html | Events list with upcoming/past grouping |
+| `<!-- BUILD:JSONLD_TOPICS -->` | topics.html | CollectionPage + ItemList JSON-LD |
+| `<!-- BUILD:JSONLD_LATEST -->` | latest.html | CollectionPage + ItemList JSON-LD |
+| `<!-- BUILD:JSONLD_NEWSLETTER -->` | newsletter.html | CollectionPage JSON-LD |
 
 ## Cache Headers (netlify.toml)
 
@@ -481,3 +495,8 @@ Static HTML files use `<!-- BUILD:PLACEHOLDER -->` markers that `copyStaticFiles
 - Stripe payments require `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` env vars in Netlify. If missing, `create-checkout.js` returns 500 and `stripe-webhook.js` returns 500.
 - Email templates use inline CSS only (no `<style>` blocks) for email client compatibility. Dark-on-light layout (inverted from site dark theme) for readability.
 - `docs/email-setup.md` has full DNS/SPF/DKIM/DMARC setup instructions for Google Workspace + Resend.
+- **Read time badges** are auto-calculated from markdown word count at 250 wpm (`Math.ceil(wordCount / 250)`). Displayed as "X min read" on article cards, archive entries, and article pages. No manual entry needed.
+- **Featured articles:** Set `featured: true` in frontmatter to pin an article as the homepage lead story. If no article is featured, the most recent article is used.
+- **BreadcrumbList JSON-LD** is auto-injected into all static pages by `injectBreadcrumbJsonLd()` in build.js. No manual `<script>` tags needed.
+- **contracts.json** and **events.json** are manually curated data files at the repo root. Update them to change contract tracker and events page content. Build reads them at build time.
+- Community, Events, and Refer pages are accessible from footer links and internal CTAs but are NOT in the main nav (keeps nav from getting too crowded).
