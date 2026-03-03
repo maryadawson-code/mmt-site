@@ -146,7 +146,7 @@
 
       <!-- Contract metadata -->
       <div class="card rounded-xl p-6 mb-4">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           <div>
             <p class="text-xs uppercase tracking-wider font-semibold mb-1" style="color:var(--mmt-white-dim);">Agency</p>
             <p class="text-sm font-medium" style="color:var(--mmt-white);">{{AGENCY}}</p>
@@ -163,6 +163,10 @@
             <p class="text-xs uppercase tracking-wider font-semibold mb-1" style="color:var(--mmt-white-dim);">Status</p>
             <span class="text-xs font-semibold px-2 py-1 rounded inline-block" style="background:rgba(0,229,250,0.1); color:{{STATUS_COLOR}};">{{STATUS}}</span>
           </div>
+          <div id="confidence-meta">
+            <p class="text-xs uppercase tracking-wider font-semibold mb-1" style="color:var(--mmt-white-dim);">Confidence</p>
+            <span id="confidence-meta-badge" class="text-sm font-semibold">--</span>
+          </div>
         </div>
         {{NAICS_ROW}}
         <div class="mt-4 pt-4 flex flex-wrap gap-3" style="border-top:1px solid rgba(0,229,250,0.1);">
@@ -173,17 +177,26 @@
         </div>
       </div>
 
-      <!-- Overall confidence badge (populated by JS) -->
-      <div id="confidence-badge" class="mb-2"></div>
+      <!-- Confidence badge is now inside the metadata card above -->
     </div>
   </section>
 
   <!-- Current Intelligence -->
   <section class="section-alt py-16 px-6">
     <div class="max-w-4xl mx-auto">
-      <div class="flex items-center justify-between mb-8 flex-wrap gap-3">
+      <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
         <h2 class="text-xl md:text-2xl font-bold" style="color:var(--mmt-white);">Current Intelligence</h2>
         <span id="last-updated" class="text-sm" style="color:var(--mmt-white-dim);"></span>
+      </div>
+      <!-- Confidence progress bar -->
+      <div id="confidence-bar" class="hidden mb-8">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="flex-1 h-2 rounded-full overflow-hidden" style="background:rgba(255,255,255,0.1);">
+            <div id="confidence-bar-fill" class="h-full rounded-full transition-all duration-500" style="width:0%;"></div>
+          </div>
+          <span id="confidence-bar-pct" class="text-sm font-semibold font-mono" style="min-width:3rem;text-align:right;"></span>
+          <span id="confidence-bar-label" class="text-xs font-semibold px-2 py-0.5 rounded"></span>
+        </div>
       </div>
       <div id="intel-container">
         <!-- Loading skeleton -->
@@ -196,6 +209,13 @@
           <div class="skeleton rounded h-4 w-3/4" style="background:rgba(0,229,250,0.08);"></div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- Small Business Opportunities -->
+  <section id="smallbiz-section" class="py-16 px-6 hidden">
+    <div class="max-w-4xl mx-auto">
+      <div id="smallbiz-container"></div>
     </div>
   </section>
 
@@ -294,16 +314,18 @@
     }
 
     function confBadge(pct) {
-      if (pct === undefined || pct === null) return '';
+      if (typeof pct !== 'number' && typeof pct !== 'string') return '';
       var n = parseInt(pct);
+      if (isNaN(n)) return '';
       var color = n >= 80 ? 'var(--mmt-green)' : n >= 60 ? '#FBBF24' : '#F87171';
       var bg = n >= 80 ? 'rgba(0,255,133,0.1)' : n >= 60 ? 'rgba(251,191,36,0.1)' : 'rgba(248,113,113,0.1)';
-      return '<span class="text-xs font-mono px-2 py-0.5 rounded ml-2" style="color:' + color + ';background:' + bg + ';" title="Confidence rating">' + n + '%</span>';
+      return '<span class="text-sm font-semibold px-2.5 py-1 rounded ml-2 inline-flex items-center gap-1" style="color:' + color + ';background:' + bg + ';" title="Confidence rating"><span class="w-1.5 h-1.5 rounded-full inline-block" style="background:' + color + ';"></span>' + n + '%</span>';
     }
 
     function overallConfBadge(pct, verified) {
-      if (pct === undefined || pct === null) return '';
+      if (typeof pct !== 'number' && typeof pct !== 'string') return '';
       var n = parseInt(pct);
+      if (isNaN(n)) return '';
       var color = n >= 80 ? 'var(--mmt-green)' : n >= 60 ? '#FBBF24' : '#F87171';
       var bg = n >= 80 ? 'rgba(0,255,133,0.15)' : n >= 60 ? 'rgba(251,191,36,0.15)' : 'rgba(248,113,113,0.15)';
       var label = n >= 80 ? 'High Confidence' : n >= 60 ? 'Medium Confidence' : 'Low Confidence';
@@ -363,11 +385,38 @@
       return html;
     }
 
+    function renderSmallBiz(sb) {
+      if (!sb) return '';
+      var html = '<div class="rounded-xl p-6 md:p-8" style="background:rgba(0,255,133,0.04);border:1px solid rgba(0,255,133,0.2);">';
+      html += '<h2 class="text-xl md:text-2xl font-bold mb-6 flex items-center gap-3" style="color:var(--mmt-green);"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M1.5 2A1.5 1.5 0 000 3.5v2A1.5 1.5 0 001.5 7h1v5.5A1.5 1.5 0 004 14h8a1.5 1.5 0 001.5-1.5V7h1A1.5 1.5 0 0016 5.5v-2A1.5 1.5 0 0014.5 2h-13zM4 7h8v5.5H4V7z"/></svg>Small Business Opportunities</h2>';
+      if (sb.set_aside_types && sb.set_aside_types.length) {
+        html += '<div class="flex flex-wrap gap-2 mb-4">';
+        var saColors = { '8(a)': '#A78BFA', 'SDVOSB': 'var(--mmt-green)', 'VOSB': 'var(--mmt-green)', 'WOSB': '#F472B6', 'HUBZone': '#FBBF24', 'SDB': '#60A5FA' };
+        sb.set_aside_types.forEach(function(t) {
+          var c = saColors[t] || 'var(--mmt-cyan)';
+          html += '<span class="text-xs font-semibold px-2.5 py-1 rounded" style="color:' + c + ';background:rgba(255,255,255,0.05);border:1px solid ' + c + ';">' + esc(t) + '</span>';
+        });
+        html += '</div>';
+      }
+      if (sb.opportunities && sb.opportunities.length) {
+        html += '<div class="space-y-3 mb-6">';
+        sb.opportunities.forEach(function(o) {
+          html += '<div class="card rounded-lg p-4" style="border-color:rgba(0,255,133,0.15);"><p class="text-base leading-relaxed" style="color:var(--mmt-white-muted);">' + esc(typeof o === 'string' ? o : o.description || o.detail || JSON.stringify(o)) + '</p></div>';
+        });
+        html += '</div>';
+      }
+      if (sb.subcontracting_note) {
+        html += '<div class="p-4 rounded-lg" style="background:rgba(0,255,133,0.06);border:1px solid rgba(0,255,133,0.1);"><p class="text-sm font-semibold mb-1" style="color:var(--mmt-green);">Subcontracting</p><p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">' + esc(sb.subcontracting_note) + '</p></div>';
+      }
+      html += '</div>';
+      return html;
+    }
+
     function renderBlackHat(bh) {
       var html = '<div class="rounded-xl p-6 md:p-8" style="background:rgba(248,113,113,0.04);border:1px solid rgba(248,113,113,0.2);">';
       html += '<div class="flex items-center justify-between mb-6 flex-wrap gap-3">';
       html += '<h2 class="text-xl md:text-2xl font-bold flex items-center gap-3" style="color:#F87171;"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 2.5a1 1 0 110 2 1 1 0 010-2zM6.5 7h3l-.5 5h-2L6.5 7z"/></svg>BLACK HAT: Competitive Intelligence</h2>';
-      if (bh.confidence_score) html += overallConfBadge(bh.confidence_score, bh.verified);
+      if (typeof bh.confidence_score === 'number') html += overallConfBadge(bh.confidence_score, bh.verified);
       html += '</div>';
       if (bh.summary) {
         html += '<p class="text-base leading-relaxed mb-6" style="color:var(--mmt-white-muted);">' + esc(bh.summary) + '</p>';
@@ -436,9 +485,30 @@
         }
         var data = await resp.json();
 
-        // Overall confidence badge
-        if (data.intel && data.intel.confidence_score) {
-          document.getElementById('confidence-badge').innerHTML = overallConfBadge(data.intel.confidence_score, data.intel.verified);
+        // Confidence: metadata badge + progress bar
+        if (data.intel && typeof data.intel.confidence_score === 'number') {
+          var cs = parseInt(data.intel.confidence_score);
+          var cColor = cs >= 80 ? 'var(--mmt-green)' : cs >= 60 ? '#FBBF24' : '#F87171';
+          var cBg = cs >= 80 ? 'rgba(0,255,133,0.1)' : cs >= 60 ? 'rgba(251,191,36,0.1)' : 'rgba(248,113,113,0.1)';
+          var cLabel = cs >= 80 ? 'High' : cs >= 60 ? 'Medium' : 'Low';
+          // Metadata card badge
+          var metaBadge = document.getElementById('confidence-meta-badge');
+          if (metaBadge) {
+            metaBadge.innerHTML = '<span class="inline-flex items-center gap-1.5 text-sm font-semibold px-2.5 py-1 rounded" style="color:' + cColor + ';background:' + cBg + ';"><span class="w-2 h-2 rounded-full" style="background:' + cColor + ';"></span>' + cs + '%</span>';
+          }
+          // Progress bar
+          var barEl = document.getElementById('confidence-bar');
+          if (barEl) {
+            barEl.classList.remove('hidden');
+            document.getElementById('confidence-bar-fill').style.width = cs + '%';
+            document.getElementById('confidence-bar-fill').style.background = cs >= 80 ? 'linear-gradient(90deg, var(--mmt-cyan), var(--mmt-green))' : cs >= 60 ? 'linear-gradient(90deg, #FBBF24, #F59E0B)' : 'linear-gradient(90deg, #F87171, #EF4444)';
+            document.getElementById('confidence-bar-pct').textContent = cs + '%';
+            document.getElementById('confidence-bar-pct').style.color = cColor;
+            var labelEl = document.getElementById('confidence-bar-label');
+            labelEl.textContent = (data.intel.verified ? 'Verified' : cLabel);
+            labelEl.style.color = cColor;
+            labelEl.style.background = cBg;
+          }
         }
 
         // Last updated
@@ -451,6 +521,15 @@
           document.getElementById('intel-container').innerHTML = renderIntel(data.intel);
         } else {
           document.getElementById('intel-container').innerHTML = '<div class="card rounded-xl p-8 text-center"><p class="text-base" style="color:var(--mmt-white-dim);">No intelligence data available yet.</p></div>';
+        }
+
+        // Small Business
+        if (data.intel && data.intel.small_business) {
+          var sb = data.intel.small_business;
+          if ((sb.opportunities && sb.opportunities.length) || (sb.set_aside_types && sb.set_aside_types.length) || sb.subcontracting_note) {
+            document.getElementById('smallbiz-section').classList.remove('hidden');
+            document.getElementById('smallbiz-container').innerHTML = renderSmallBiz(sb);
+          }
         }
 
         // BLACK HAT

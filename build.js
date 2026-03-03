@@ -968,6 +968,7 @@ function generateContractTrackerHtml(contracts) {
               <div class="flex items-start justify-between gap-3 mb-2">
                 <h3 class="text-base font-bold" style="color:var(--mmt-white);">${escapeHtml(c.name)}</h3>
                 <div class="flex items-center gap-2 flex-shrink-0">
+                  ${c.small_business_eligible ? '<span class="text-xs whitespace-nowrap px-2 py-1 rounded font-semibold" style="background:rgba(0,255,133,0.1); color:var(--mmt-green);">SB Eligible</span>' : ''}
                   <span class="text-xs whitespace-nowrap px-2 py-1 rounded" style="background:rgba(0,229,250,0.1); color:${color};">${escapeHtml(label)}</span>
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--mmt-cyan);"><path d="M6 3l5 5-5 5"/></svg>
                 </div>

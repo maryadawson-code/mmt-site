@@ -104,6 +104,7 @@ Your task: Research the given contract using web search. Make 3-5 targeted searc
 2. Incumbent performance issues or GAO findings
 3. Upcoming recompete, option decisions, or competitor positioning
 4. Protest history and agency strategic direction
+5. Small business task orders, subcontracting opportunities, and set-aside types (SDVOSB, VOSB, 8(a), WOSB, HUBZone, SDB)
 
 Be efficient — synthesize from your search results quickly. Do not do exhaustive research. Focus on the most important and recent developments.
 
@@ -140,6 +141,11 @@ The "intel" object must have this structure:
   "financials_confidence": 80,
   "risks": ["Risk 1", "Risk 2"],
   "opportunities": ["Opportunity 1", "Opportunity 2"],
+  "small_business": {
+    "opportunities": ["Description of small business opportunity 1", "Description of small business opportunity 2"],
+    "set_aside_types": ["SDVOSB", "8(a)"],
+    "subcontracting_note": "Brief note about subcontracting plans or requirements"
+  },
   "verification_notes": ["Note about unverified claims", "Note about conflicting sources"]
 }
 
@@ -350,9 +356,27 @@ Search multiple sources (SAM.gov, FPDS, FedScoop, NextGov, Defense One, GovExec,
   // Ensure confidence fields exist with defaults
   const intel = research.intel || {};
   const blackHat = research.black_hat || {};
-  if (!intel.confidence_score) intel.confidence_score = 50;
+  if (typeof intel.confidence_score !== 'number') intel.confidence_score = 50;
   if (!intel.verification_notes) intel.verification_notes = [];
-  if (!blackHat.confidence_score) blackHat.confidence_score = 50;
+  if (typeof blackHat.confidence_score !== 'number') blackHat.confidence_score = 50;
+
+  // Ensure every array item has a confidence field (default 50 if missing)
+  const ensureConfidence = (arr) => {
+    if (!Array.isArray(arr)) return;
+    arr.forEach(item => {
+      if (item && typeof item === 'object' && typeof item.confidence !== 'number') {
+        item.confidence = 50;
+      }
+    });
+  };
+  ensureConfidence(intel.key_developments);
+  ensureConfidence(intel.competitors);
+  ensureConfidence(intel.timeline);
+  ensureConfidence(blackHat.incumbent_vulnerabilities);
+  ensureConfidence(blackHat.protest_risks);
+  ensureConfidence(blackHat.recompete_threats);
+  ensureConfidence(blackHat.competitive_moves);
+  ensureConfidence(blackHat.hidden_risks);
 
   // Merge research sources
   const allSources = [...new Set([...(research.sources || []), ...researchSources])];
@@ -375,10 +399,10 @@ Use web search to spot-check the most important claims: dollar amounts, dates, c
     );
 
     // Apply verification adjustments
-    if (verification.intel_confidence_score) {
+    if (typeof verification.intel_confidence_score === 'number') {
       intel.confidence_score = verification.intel_confidence_score;
     }
-    if (verification.black_hat_confidence_score) {
+    if (typeof verification.black_hat_confidence_score === 'number') {
       blackHat.confidence_score = verification.black_hat_confidence_score;
     }
 
