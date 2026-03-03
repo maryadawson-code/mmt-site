@@ -39,7 +39,8 @@ const topicDescriptions = {
 // --- Utility Functions ---
 
 function slugify(text) {
-  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  if (!text) return 'untitled';
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'untitled';
 }
 
 function ensureDir(dir) {
@@ -436,7 +437,7 @@ function generateNewslettersJson(articles) {
   return data;
 }
 
-function generateSitemap(articles, tags) {
+function generateSitemap(articles, tags, contracts) {
   // Use the most recent article's publish date for static pages
   // (homepage/latest/newsletter content changes when articles are published)
   const latestArticleDate = articles.length > 0
@@ -486,19 +487,13 @@ function generateSitemap(articles, tags) {
   });
 
   // Contract detail pages
-  const contractsPath = path.join(__dirname, 'contracts.json');
-  let contractCount = 0;
-  if (fs.existsSync(contractsPath)) {
-    const contracts = JSON.parse(fs.readFileSync(contractsPath, 'utf8'));
-    contracts.forEach(c => {
-      xml += `  <url>\n    <loc>${SITE_URL}/contracts/${slugify(c.name)}/</loc>\n    <priority>0.6</priority>\n  </url>\n`;
-    });
-    contractCount = contracts.length;
-  }
+  contracts.forEach(c => {
+    xml += `  <url>\n    <loc>${SITE_URL}/contracts/${slugify(c.name)}/</loc>\n    <priority>0.6</priority>\n  </url>\n`;
+  });
 
   xml += '</urlset>\n';
   fs.writeFileSync(path.join(DIST_DIR, 'sitemap.xml'), xml);
-  console.log(`Generated sitemap.xml (${staticPages.length + articles.length + tags.length + contractCount} URLs)`);
+  console.log(`Generated sitemap.xml (${staticPages.length + articles.length + tags.length + contracts.length} URLs)`);
 }
 
 function generateRssFeed(articles) {
@@ -630,7 +625,7 @@ function rewriteOgTags(html, ogImageFilename) {
   return html;
 }
 
-async function generateOgImages(articles, tags) {
+async function generateOgImages(articles, tags, contracts) {
   const ogDir = path.join(DIST_DIR, 'og');
   ensureDir(ogDir);
 
@@ -682,19 +677,15 @@ async function generateOgImages(articles, tags) {
   console.log(`Generated ${tags.length} topic OG images`);
 
   // Contract images
-  const contractsPath = path.join(__dirname, 'contracts.json');
-  if (fs.existsSync(contractsPath)) {
-    const contracts = JSON.parse(fs.readFileSync(contractsPath, 'utf8'));
-    for (const c of contracts) {
-      const svg = buildOgSvg({
-        title: c.name,
-        subtitle: `${c.agency} · ${c.value}`,
-        label: 'CONTRACT INTEL',
-      });
-      await sharp(Buffer.from(svg)).png().toFile(path.join(ogDir, `contract-${slugify(c.name)}.png`));
-    }
-    console.log(`Generated ${contracts.length} contract OG images`);
+  for (const c of contracts) {
+    const svg = buildOgSvg({
+      title: c.name,
+      subtitle: `${c.agency} · ${c.value}`,
+      label: 'CONTRACT INTEL',
+    });
+    await sharp(Buffer.from(svg)).png().toFile(path.join(ogDir, `contract-${slugify(c.name)}.png`));
   }
+  if (contracts.length) console.log(`Generated ${contracts.length} contract OG images`);
 }
 
 // --- Build-Time HTML Generation ---
@@ -925,21 +916,30 @@ function generatePodcastTeaserHtml(feed) {
 
 // --- Contract Tracker ---
 
-function generateContractTrackerHtml() {
-  const contractsPath = path.join(__dirname, 'contracts.json');
-  if (!fs.existsSync(contractsPath)) return '<p class="text-center py-10" style="color:var(--mmt-white-dim);">Contract data coming soon.</p>';
-  const contracts = JSON.parse(fs.readFileSync(contractsPath, 'utf8'));
+const CONTRACT_STATUS_COLORS = {
+  'active': 'var(--mmt-green)',
+  'upcoming': 'var(--mmt-cyan)',
+  'awarded': '#FBBF24',
+};
+const CONTRACT_STATUS_LABELS = {
+  'active': 'Active',
+  'upcoming': 'Upcoming',
+  'awarded': 'Recently Awarded',
+};
 
-  const statusColors = {
-    'active': 'var(--mmt-green)',
-    'upcoming': 'var(--mmt-cyan)',
-    'awarded': '#FBBF24',
-  };
-  const statusLabels = {
-    'active': 'Active',
-    'upcoming': 'Upcoming',
-    'awarded': 'Recently Awarded',
-  };
+function loadContracts() {
+  const contractsPath = path.join(__dirname, 'contracts.json');
+  if (!fs.existsSync(contractsPath)) return [];
+  try {
+    return JSON.parse(fs.readFileSync(contractsPath, 'utf8'));
+  } catch (err) {
+    console.error('Error parsing contracts.json:', err.message);
+    return [];
+  }
+}
+
+function generateContractTrackerHtml(contracts) {
+  if (!contracts.length) return '<p class="text-center py-10" style="color:var(--mmt-white-dim);">Contract data coming soon.</p>';
 
   // Group by status
   const groups = { active: [], upcoming: [], awarded: [] };
@@ -953,8 +953,8 @@ function generateContractTrackerHtml() {
   ['active', 'upcoming', 'awarded'].forEach(status => {
     const items = groups[status];
     if (items.length === 0) return;
-    const color = statusColors[status];
-    const label = statusLabels[status];
+    const color = CONTRACT_STATUS_COLORS[status];
+    const label = CONTRACT_STATUS_LABELS[status];
     html += `<div class="mb-8">
           <h2 class="text-lg font-bold mb-4 flex items-center gap-2" style="color:var(--mmt-white);"><span class="w-2 h-2 rounded-full inline-block" style="background:${color};"></span>${escapeHtml(label)}</h2>
           <div class="grid md:grid-cols-2 gap-4">\n`;
@@ -985,17 +985,14 @@ function generateContractTrackerHtml() {
   return html;
 }
 
-function generateContractSummaryHtml() {
-  const contractsPath = path.join(__dirname, 'contracts.json');
-  if (!fs.existsSync(contractsPath)) return '<p class="text-sm" style="color:var(--mmt-white-dim);">Contract data coming soon.</p>';
-  const contracts = JSON.parse(fs.readFileSync(contractsPath, 'utf8'));
+function generateContractSummaryHtml(contracts) {
+  if (!contracts.length) return '<p class="text-sm" style="color:var(--mmt-white-dim);">Contract data coming soon.</p>';
 
   // Show top 5 contracts
   const top = contracts.slice(0, 5);
   let html = '<div class="space-y-3">\n';
   top.forEach(c => {
-    const statusColors = { active: 'var(--mmt-green)', upcoming: 'var(--mmt-cyan)', awarded: '#FBBF24' };
-    const color = statusColors[c.status] || 'var(--mmt-cyan)';
+    const color = CONTRACT_STATUS_COLORS[c.status] || 'var(--mmt-cyan)';
     const cSlug = slugify(c.name);
     html += `        <a href="/contracts/${cSlug}/" class="card rounded-xl p-4 flex items-start justify-between gap-4 no-underline block transition-all">
           <div>
@@ -1009,10 +1006,9 @@ function generateContractSummaryHtml() {
   return html;
 }
 
-function generateContractPages() {
-  const contractsPath = path.join(__dirname, 'contracts.json');
-  if (!fs.existsSync(contractsPath)) {
-    console.log('No contracts.json found. Skipping contract page generation.');
+function generateContractPages(contracts) {
+  if (!contracts.length) {
+    console.log('No contracts to generate pages for.');
     return;
   }
   const templatePath = path.join(TEMPLATES_DIR, 'contract.html');
@@ -1020,27 +1016,15 @@ function generateContractPages() {
     console.log('No contract template found. Skipping contract page generation.');
     return;
   }
-  const contracts = JSON.parse(fs.readFileSync(contractsPath, 'utf8'));
   const template = fs.readFileSync(templatePath, 'utf8');
-
-  const statusColors = {
-    'active': 'var(--mmt-green)',
-    'upcoming': 'var(--mmt-cyan)',
-    'awarded': '#FBBF24',
-  };
-  const statusLabels = {
-    'active': 'Active',
-    'upcoming': 'Upcoming',
-    'awarded': 'Recently Awarded',
-  };
 
   contracts.forEach(c => {
     const cSlug = slugify(c.name);
     const outDir = path.join(DIST_DIR, 'contracts', cSlug);
     ensureDir(outDir);
 
-    const statusColor = statusColors[c.status] || 'var(--mmt-cyan)';
-    const statusLabel = statusLabels[c.status] || c.status;
+    const statusColor = CONTRACT_STATUS_COLORS[c.status] || 'var(--mmt-cyan)';
+    const statusLabel = CONTRACT_STATUS_LABELS[c.status] || c.status;
     const naicsRow = c.naics
       ? `<div class="mt-4 pt-4" style="border-top:1px solid rgba(0,229,250,0.1);"><span class="text-xs" style="color:var(--mmt-white-dim);"><strong style="color:var(--mmt-white-muted);">NAICS:</strong> ${escapeHtml(c.naics)}</span></div>`
       : '';
@@ -1256,7 +1240,7 @@ function inlineTailwindCss(html) {
   );
 }
 
-function copyStaticFiles({ archive, feed, newsItems }) {
+function copyStaticFiles({ archive, feed, newsItems, contracts }) {
   // Copy root HTML files (with inlined Tailwind CSS + build-time injections)
   const htmlFiles = [
     'index.html', 'about.html', 'podcast.html', 'newsletter.html',
@@ -1296,8 +1280,8 @@ function copyStaticFiles({ archive, feed, newsItems }) {
     '<!-- BUILD:PODCAST_EPISODES -->': generatePodcastEpisodesHtml(feed),
     '<!-- BUILD:NEWSWIRE_HEADLINES -->': generateNewswireHtml(newsItems || []),
     '<!-- BUILD:NEWS_WIDGET -->': generateNewsWidgetHtml(newsItems || []),
-    '<!-- BUILD:CONTRACT_TRACKER -->': generateContractTrackerHtml(),
-    '<!-- BUILD:CONTRACT_SUMMARY -->': generateContractSummaryHtml(),
+    '<!-- BUILD:CONTRACT_TRACKER -->': generateContractTrackerHtml(contracts),
+    '<!-- BUILD:CONTRACT_SUMMARY -->': generateContractSummaryHtml(contracts),
     '<!-- BUILD:EVENTS_LIST -->': generateEventsListHtml(),
     '<!-- BUILD:JSONLD_TOPICS -->': generateJsonLdTopics(archive),
     '<!-- BUILD:JSONLD_LATEST -->': generateJsonLdLatest(archive),
@@ -1562,6 +1546,9 @@ async function build() {
   console.log('--- Processing newsletter articles ---');
   const articles = loadArticles();
 
+  // Load contracts once for all downstream functions
+  const contracts = loadContracts();
+
   let archive = [];
   if (articles.length > 0) {
     const tags = collectTags(articles);
@@ -1573,24 +1560,24 @@ async function build() {
     generateTopicPages(tags);
 
     // Generate contract detail pages
-    generateContractPages();
+    generateContractPages(contracts);
 
     // Generate updated newsletters.json (returns merged archive)
     archive = generateNewslettersJson(articles);
 
     // Generate sitemap
-    generateSitemap(articles, tags);
+    generateSitemap(articles, tags, contracts);
 
     // Generate RSS feed
     generateRssFeed(articles);
 
     // Generate OG images
     console.log('\n--- Generating OG images ---');
-    await generateOgImages(articles, tags);
+    await generateOgImages(articles, tags, contracts);
   } else {
     console.log('No articles found. Generating static sitemap.');
-    generateSitemap([], []);
-    generateContractPages();
+    generateSitemap([], [], contracts);
+    generateContractPages(contracts);
   }
 
   // 2. Fetch podcast episodes (keep existing functionality)
@@ -1609,7 +1596,7 @@ async function build() {
 
   // 5. Copy all static files (with build-time injections)
   console.log('\n--- Copying static files ---');
-  copyStaticFiles({ archive, feed, newsItems });
+  copyStaticFiles({ archive, feed, newsItems, contracts });
 
   console.log('\n=== Build complete! ===');
 

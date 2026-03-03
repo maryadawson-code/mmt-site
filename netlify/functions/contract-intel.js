@@ -32,11 +32,11 @@ exports.handler = async (event) => {
   }
 
   const contractName = event.queryStringParameters?.contract;
-  if (!contractName) {
+  if (!contractName || contractName.length > 200) {
     return {
       statusCode: 400,
       headers: CORS_HEADERS,
-      body: JSON.stringify({ error: "Missing contract parameter" }),
+      body: JSON.stringify({ error: "Missing or invalid contract parameter" }),
     };
   }
 
