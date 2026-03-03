@@ -3,11 +3,8 @@
 //
 // Scans for small business opportunities tied to specific
 // contract vehicles using Claude with web_search.
-// Four sequential scans:
-// 1. OASIS+, CIO-SP4 (GSA GWAC, NITAAC)
-// 2. OMNIBUS IV, DIU (DHA task orders, DIU CSOs)
-// 3. DARPA, SBIR/STTR (BAAs, BTO health, dodsbirsttr.mil)
-// 4. VA SDVOSB, 8(a) (VA set-asides, T4NG, 8(a) awards)
+// Two broad scans that search procurement news, then Claude
+// tags each result with the appropriate vehicle.
 //
 // Results upserted into Supabase `opportunity_radar` table
 // with the `contract_vehicle` column populated.
@@ -22,41 +19,48 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const MODEL = "claude-sonnet-4-5";
 const MAX_TOKENS = 16000;
 
-const NAICS_CODES = ["541512", "541511", "541519", "541611", "524292", "621999", "334510"];
+const VALID_VEHICLES = ["OASIS+", "CIO-SP4", "OMNIBUS IV", "DIU", "DARPA", "SBIR/STTR", "VA SDVOSB", "8(a)"];
 
 // ============================================================
-// System prompt for vehicle-specific scanning
+// System prompt
 // ============================================================
 
-const SCAN_PROMPT = `You are a federal procurement intelligence analyst specializing in small business opportunities tied to specific contract vehicles. You have access to web search to find NEW opportunities.
+const SCAN_PROMPT = `You are a federal procurement intelligence analyst. You have access to web search to find contract opportunities for small businesses in federal health IT.
 
-Your task: Search for new federal health IT procurement opportunities on the specified contract vehicles. Focus on opportunities relevant to health IT, health data, EHR, telehealth, medical devices, health analytics, or military/veteran healthcare systems.
+Your job: Search for recent federal health IT contract opportunities and awards, then classify each one by its contract vehicle.
 
-Relevant NAICS codes: ${NAICS_CODES.join(", ")}
+Valid contract vehicles (use EXACTLY these strings):
+- "OASIS+" — GSA OASIS+ GWAC task orders
+- "CIO-SP4" — NITAAC CIO-SP4 task orders
+- "OMNIBUS IV" — DHA OMNIBUS IV task orders
+- "DIU" — Defense Innovation Unit commercial solutions openings
+- "DARPA" — DARPA BAAs and research opportunities
+- "SBIR/STTR" — Small Business Innovation Research / Small Business Technology Transfer
+- "VA SDVOSB" — VA service-disabled veteran-owned small business set-asides
+- "8(a)" — SBA 8(a) program set-asides and sole-source awards
 
-For each opportunity found, extract:
-- title: The solicitation or opportunity title
-- solicitation_number: The official solicitation number (if available)
-- agency: The issuing agency
-- description: Brief description of the requirement (1-2 sentences)
-- value_estimate: Estimated contract value (if available)
-- response_deadline: Response deadline in ISO 8601 format (if available)
-- set_aside_type: Set-aside type if applicable (8(a), SDVOSB, VOSB, WOSB, HUBZone, SDB, or "Full & Open")
-- naics_codes: Array of applicable NAICS codes
-- source_url: URL where the opportunity was found
-- relevance_score: 0-100 score for how relevant this is to federal health IT
-- opportunity_type: One of "solicitation", "pre-solicitation", "sources_sought", "task_order", "rfi", "award_notice"
+For each opportunity found, return:
+- title: The opportunity title
+- solicitation_number: Official solicitation number (if available, otherwise null)
+- agency: Issuing agency
+- description: 1-2 sentence description
+- value_estimate: Estimated value (if known, otherwise "")
+- response_deadline: ISO 8601 date (if known, otherwise null)
+- set_aside_type: "8(a)", "SDVOSB", "VOSB", "WOSB", "HUBZone", "SDB", or "Full & Open"
+- naics_codes: Array of NAICS codes if known
+- source_url: URL where found
+- relevance_score: 0-100 health IT relevance
+- opportunity_type: "solicitation", "pre-solicitation", "sources_sought", "task_order", "rfi", or "award_notice"
 - small_business_eligible: true/false
-- ai_summary: 1-2 sentence summary of why this matters for federal health IT small businesses
-- contract_vehicle: The specific contract vehicle this opportunity is under (must be one of the vehicles specified in the search instructions)
+- ai_summary: 1-2 sentence summary for health IT small businesses
+- contract_vehicle: One of the valid vehicles listed above
 
-Note on SBIR/STTR: The SBIR/STTR authorization lapsed in October 2025. If you find SBIR/STTR opportunities, note this in the ai_summary and flag whether the opportunity was posted before or after the lapse.
+IMPORTANT: Every opportunity MUST have a contract_vehicle from the list above. If an opportunity doesn't clearly fit one of these vehicles, do not include it.
 
-Only include opportunities that are genuinely related to health IT and tied to the specified contract vehicles.
+Note: SBIR/STTR authorization lapsed October 2025. Flag this in ai_summary for any SBIR/STTR results.
 
 Return a JSON object: { "opportunities": [...] }
-
-Return ONLY valid JSON. No markdown code fences. No text before or after the JSON.`;
+Return ONLY valid JSON. No markdown. No text before or after.`;
 
 // ============================================================
 // HELPER: Call Claude API with web_search
@@ -144,17 +148,11 @@ async function callClaude(systemPrompt, userMessage, maxSearches) {
   const parsed = extractJsonString(textBlocks);
   if (!parsed) {
     console.error("JSON parse failed. First 500 chars:", textBlocks.substring(0, 500));
-    throw new Error(`Could not parse JSON from Claude response (${textBlocks.length} chars)`);
+    return { opportunities: [] };
   }
 
   return parsed;
 }
-
-// ============================================================
-// Valid contract vehicles
-// ============================================================
-
-const VALID_VEHICLES = ["OASIS+", "CIO-SP4", "OMNIBUS IV", "DIU", "DARPA", "SBIR/STTR", "VA SDVOSB", "8(a)"];
 
 // ============================================================
 // MAIN HANDLER
@@ -171,95 +169,54 @@ exports.handler = async (event) => {
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
   const allOpportunities = [];
 
-  // --- Scan 1: OASIS+, CIO-SP4 ---
+  // --- Scan 1: GWACs, task orders, and defense health vehicles ---
   try {
-    console.log("Scan 1: OASIS+, CIO-SP4...");
-    const result1 = await callClaude(SCAN_PROMPT, `Search for NEW small business health IT opportunities on the OASIS+ and CIO-SP4 contract vehicles posted in the last 14 days.
+    console.log("Scan 1: GWACs, task orders, defense health...");
+    const result1 = await callClaude(SCAN_PROMPT, `Search for recent federal health IT small business contract opportunities that use major government contract vehicles. Look for opportunities from the last 30 days.
 
-Focus your 5 web searches on:
-1. SAM.gov OASIS+ task orders for health IT (search for "OASIS+" with NAICS 541512 or 541511)
-2. GSA OASIS+ small business set-aside task orders and on-ramp announcements
-3. NITAAC CIO-SP4 health IT task orders and small business opportunities
-4. SAM.gov CIO-SP4 new awards and solicitations
-5. Recent OASIS+ or CIO-SP4 health IT contract awards or pre-solicitation notices
+Run these 6 web searches:
+1. "OASIS+ health IT task order 2026" OR "OASIS+ small business health"
+2. "CIO-SP4 health IT" OR "NITAAC health IT task order 2026"
+3. "DHA health IT contract small business 2026" OR "military health system contract award"
+4. "Defense Innovation Unit health" OR "DIU medical prototype"
+5. federal health IT contract award small business set-aside 2026
+6. "GSA health IT" task order award 2026
 
-Tag each opportunity with contract_vehicle: "OASIS+" or "CIO-SP4" as appropriate.
-Return opportunities found as JSON.`, 5);
+For each result, determine which contract vehicle it falls under: OASIS+, CIO-SP4, OMNIBUS IV, or DIU. Only include results that clearly match one of these vehicles.
+
+Return JSON with all opportunities found.`, 6);
 
     if (result1.opportunities) {
       allOpportunities.push(...result1.opportunities);
-      console.log(`  Found ${result1.opportunities.length} opportunities from OASIS+/CIO-SP4 scan`);
+      console.log(`  Scan 1 found ${result1.opportunities.length} opportunities`);
     }
   } catch (err) {
     console.error("Scan 1 failed:", err.message);
   }
 
-  // --- Scan 2: OMNIBUS IV, DIU ---
+  // --- Scan 2: SB programs, DARPA, VA, 8(a) ---
   try {
-    console.log("Scan 2: OMNIBUS IV, DIU...");
-    const result2 = await callClaude(SCAN_PROMPT, `Search for NEW small business health IT opportunities on the OMNIBUS IV and DIU contract vehicles posted in the last 14 days.
+    console.log("Scan 2: DARPA, SBIR, VA SDVOSB, 8(a)...");
+    const result2 = await callClaude(SCAN_PROMPT, `Search for recent federal health IT small business opportunities under DARPA, SBIR/STTR, VA veteran-owned small business programs, and SBA 8(a) program. Look for opportunities from the last 30 days.
 
-Focus your 4 web searches on:
-1. DHA OMNIBUS IV task orders for health IT (solicitation numbers starting with W81XWH) and small business on-ramp opportunities
-2. SAM.gov DHA health IT task orders under OMNIBUS IV
-3. DIU Commercial Solutions Openings (CSOs) related to health, medical, or military healthcare (solicitation numbers starting with HQ0845)
-4. Recent DIU health-related prototype awards or OTA opportunities for small businesses
+Run these 6 web searches:
+1. "DARPA health" OR "DARPA biomedical" OR "DARPA medical technology" 2026
+2. SBIR health IT OR "STTR medical" OR "small business innovation research health"
+3. "VA SDVOSB health IT" OR "veteran owned small business VA health" 2026
+4. "VA health IT contract award" OR "VA electronic health record small business"
+5. "8(a) health IT" OR "8a sole source health" federal contract 2026
+6. federal health IT small business set-aside award "sources sought" 2026
 
-Tag each opportunity with contract_vehicle: "OMNIBUS IV" or "DIU" as appropriate.
-Return opportunities found as JSON.`, 4);
+For each result, determine which vehicle/program it falls under: DARPA, SBIR/STTR, VA SDVOSB, or 8(a). Only include results that clearly match one of these.
+
+Return JSON with all opportunities found.`, 6);
 
     if (result2.opportunities) {
       allOpportunities.push(...result2.opportunities);
-      console.log(`  Found ${result2.opportunities.length} opportunities from OMNIBUS IV/DIU scan`);
+      console.log(`  Scan 2 found ${result2.opportunities.length} opportunities`);
     }
   } catch (err) {
     console.error("Scan 2 failed:", err.message);
-  }
-
-  // --- Scan 3: DARPA, SBIR/STTR ---
-  try {
-    console.log("Scan 3: DARPA, SBIR/STTR...");
-    const result3 = await callClaude(SCAN_PROMPT, `Search for NEW small business health IT opportunities from DARPA and the SBIR/STTR program posted in the last 14 days.
-
-Focus your 4 web searches on:
-1. DARPA Broad Agency Announcements (BAAs) related to health, biomedical, or medical technology (solicitation numbers starting with HR001)
-2. DARPA Biological Technologies Office (BTO) health-related research topics and opportunities
-3. SBIR.gov and dodsbirsttr.mil for health IT, medical device, or healthcare technology topics
-4. Recent SBIR/STTR Phase I/II health IT awards or new topic announcements
-
-Important: SBIR/STTR authorization lapsed in October 2025. Note this in ai_summary for any SBIR/STTR opportunities and clarify whether the opportunity predates the lapse.
-
-Tag each opportunity with contract_vehicle: "DARPA" or "SBIR/STTR" as appropriate.
-Return opportunities found as JSON.`, 4);
-
-    if (result3.opportunities) {
-      allOpportunities.push(...result3.opportunities);
-      console.log(`  Found ${result3.opportunities.length} opportunities from DARPA/SBIR scan`);
-    }
-  } catch (err) {
-    console.error("Scan 3 failed:", err.message);
-  }
-
-  // --- Scan 4: VA SDVOSB, 8(a) ---
-  try {
-    console.log("Scan 4: VA SDVOSB, 8(a)...");
-    const result4 = await callClaude(SCAN_PROMPT, `Search for NEW health IT opportunities specifically set aside for VA SDVOSB/VOSB and 8(a) small businesses posted in the last 14 days.
-
-Focus your 4 web searches on:
-1. VA health IT set-asides for SDVOSB and VOSB companies (SDVOSBC and VOSBC set-aside codes on SAM.gov)
-2. VA T4NG (Transformation Twenty-One Total Technology Next Generation) task orders for health IT
-3. 8(a) sole-source and competitive health IT awards and Sources Sought notices on SAM.gov
-4. Recent VA or HHS 8(a) health IT contract awards or pre-solicitation announcements
-
-Tag each opportunity with contract_vehicle: "VA SDVOSB" or "8(a)" as appropriate.
-Return opportunities found as JSON.`, 4);
-
-    if (result4.opportunities) {
-      allOpportunities.push(...result4.opportunities);
-      console.log(`  Found ${result4.opportunities.length} opportunities from VA SDVOSB/8(a) scan`);
-    }
-  } catch (err) {
-    console.error("Scan 4 failed:", err.message);
   }
 
   // --- Deduplicate and filter ---
@@ -274,6 +231,7 @@ Return opportunities found as JSON.`, 4);
     if (relevance < 40) continue;
 
     const vehicle = VALID_VEHICLES.includes(opp.contract_vehicle) ? opp.contract_vehicle : null;
+    if (!vehicle) continue;
 
     filtered.push({
       title: (opp.title || "Untitled").substring(0, 500),
