@@ -392,7 +392,11 @@ function generateNewslettersJson(articles) {
   const rootPath = path.join(__dirname, 'newsletters.json');
   let archive = [];
   if (fs.existsSync(rootPath)) {
-    archive = JSON.parse(fs.readFileSync(rootPath, 'utf-8'));
+    try {
+      archive = JSON.parse(fs.readFileSync(rootPath, 'utf-8'));
+    } catch (err) {
+      console.error('Error parsing newsletters.json:', err.message);
+    }
   }
 
   // Build a map of on-site article URLs by title (for merging)
@@ -1061,7 +1065,13 @@ function generateContractPages(contracts) {
 function generateEventsListHtml() {
   const eventsPath = path.join(__dirname, 'events.json');
   if (!fs.existsSync(eventsPath)) return '<p class="text-center py-10" style="color:var(--mmt-white-dim);">Events data coming soon.</p>';
-  const events = JSON.parse(fs.readFileSync(eventsPath, 'utf8'));
+  let events;
+  try {
+    events = JSON.parse(fs.readFileSync(eventsPath, 'utf8'));
+  } catch (err) {
+    console.error('Error parsing events.json:', err.message);
+    return '<p class="text-center py-10" style="color:var(--mmt-white-dim);">Events data coming soon.</p>';
+  }
   const now = new Date();
 
   // Sort by date ascending
@@ -1229,14 +1239,16 @@ function generateJsonLdNewsletter(archive) {
 
 // --- Static File Copying ---
 
+let _cachedTailwindCss = null;
 function inlineTailwindCss(html) {
-  const cssPath = path.join(DIST_DIR, 'styles', 'tailwind.css');
-  if (!fs.existsSync(cssPath)) return html;
-  const css = fs.readFileSync(cssPath, 'utf8');
-  // Replace the external stylesheet link with an inline <style> block
+  if (_cachedTailwindCss === null) {
+    const cssPath = path.join(DIST_DIR, 'styles', 'tailwind.css');
+    _cachedTailwindCss = fs.existsSync(cssPath) ? fs.readFileSync(cssPath, 'utf8') : '';
+  }
+  if (!_cachedTailwindCss) return html;
   return html.replace(
     /<link rel="stylesheet" href="\/styles\/tailwind\.css">/,
-    `<style>${css}</style>`
+    `<style>${_cachedTailwindCss}</style>`
   );
 }
 
