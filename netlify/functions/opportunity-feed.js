@@ -38,12 +38,14 @@ exports.handler = async (event) => {
   }
 
   const params = event.queryStringParameters || {};
-  const limit = Math.min(parseInt(params.limit) || 20, 50);
-  const days = Math.min(parseInt(params.days) || 14, 30);
+  const limit = Math.min(parseInt(params.limit) || 20, 100);
+  const days = Math.min(parseInt(params.days) || 14, 60);
   const setAside = params.set_aside || null;
   const smallBusiness = params.small_business === "true";
   const vehicle = params.vehicle || null;
   const hasVehicle = params.has_vehicle === "true";
+  const minConfidence = parseInt(params.min_confidence) || 0;
+  const sortBy = params.sort || null;
 
   try {
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
@@ -55,10 +57,14 @@ exports.handler = async (event) => {
     let query = supabase
       .from("opportunity_radar")
       .select("*")
-      .gte("scan_date", cutoff)
-      .order("scan_date", { ascending: false })
-      .order("relevance_score", { ascending: false })
-      .limit(limit);
+      .gte("scan_date", cutoff);
+
+    if (sortBy === "confidence") {
+      query = query.order("vehicle_confidence", { ascending: false, nullsFirst: false });
+    } else {
+      query = query.order("scan_date", { ascending: false });
+    }
+    query = query.order("relevance_score", { ascending: false }).limit(limit);
 
     if (setAside) {
       query = query.eq("set_aside_type", setAside);
@@ -74,6 +80,10 @@ exports.handler = async (event) => {
 
     if (hasVehicle) {
       query = query.not("contract_vehicle", "is", null);
+    }
+
+    if (minConfidence > 0) {
+      query = query.gte("vehicle_confidence", minConfidence);
     }
 
     const { data: opportunities, error: fetchErr } = await query;
@@ -97,6 +107,7 @@ exports.handler = async (event) => {
     if (smallBusiness) countQuery = countQuery.eq("small_business_eligible", true);
     if (vehicle) countQuery = countQuery.eq("contract_vehicle", vehicle);
     if (hasVehicle) countQuery = countQuery.not("contract_vehicle", "is", null);
+    if (minConfidence > 0) countQuery = countQuery.gte("vehicle_confidence", minConfidence);
 
     const { count } = await countQuery;
 

@@ -36,6 +36,18 @@
       return '<span class="text-xs font-semibold px-2 py-0.5 rounded" style="color:' + c.fg + ';background:' + c.bg + ';">' + esc(type) + '</span>';
     }
 
+    function radarConfidenceBadge(confidence) {
+      if (typeof confidence !== 'number' || confidence <= 0) return '';
+      var pct = confidence + '%';
+      if (confidence >= 80) {
+        return '<span class="text-xs font-semibold px-2 py-0.5 rounded" style="color:#22C55E;background:rgba(34,197,94,0.1);">' + pct + ' match</span>';
+      } else if (confidence >= 50) {
+        return '<span class="text-xs font-semibold px-2 py-0.5 rounded" style="color:#FBBF24;background:rgba(251,191,36,0.1);">AI Est: ' + pct + '</span>';
+      } else {
+        return '<span class="text-xs px-2 py-0.5 rounded" style="color:var(--mmt-white-dim);background:rgba(255,255,255,0.05);">AI Est: ' + pct + '</span>';
+      }
+    }
+
     function renderOpportunities(opps) {
       if (!opps || opps.length === 0) {
         return '<div class="card rounded-xl p-8 text-center"><p class="text-base" style="color:var(--mmt-white-dim);">No opportunities match the current filter.</p></div>';
@@ -43,12 +55,16 @@
       var html = '<div class="grid md:grid-cols-2 gap-4">';
       opps.forEach(function(o) {
         html += '<div class="card rounded-xl p-5 transition-all duration-200">';
-        // Header with type badge and deadline
+        // Header with type badge, confidence, and deadline
         html += '<div class="flex items-start justify-between gap-2 mb-2">';
         html += '<div class="flex flex-wrap gap-2">';
         if (o.opportunity_type) {
           html += '<span class="text-xs px-2 py-0.5 rounded" style="background:rgba(0,229,250,0.1);color:var(--mmt-cyan);">' + esc(o.opportunity_type) + '</span>';
         }
+        if (o.contract_vehicle) {
+          html += '<span class="text-xs font-bold px-2 py-0.5 rounded" style="color:#60A5FA;background:rgba(96,165,250,0.1);">' + esc(o.contract_vehicle) + '</span>';
+        }
+        html += radarConfidenceBadge(o.vehicle_confidence);
         html += setAsideBadge(o.set_aside_type);
         html += '</div>';
         html += deadlineCountdown(o.response_deadline);
@@ -59,9 +75,12 @@
         html += '<p class="text-xs mb-2" style="color:var(--mmt-cyan);">' + esc(o.agency) + '</p>';
         // Description
         if (o.ai_summary) {
-          html += '<p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">' + esc(o.ai_summary) + '</p>';
+          html += '<p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-white-muted);">' + esc(o.ai_summary) + '</p>';
         } else if (o.description) {
-          html += '<p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">' + esc(o.description) + '</p>';
+          html += '<p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-white-muted);">' + esc(o.description) + '</p>';
+        }
+        if (o.vehicle_reasoning) {
+          html += '<p class="text-xs italic mb-3" style="color:var(--mmt-white-dim);">' + esc(o.vehicle_reasoning) + '</p>';
         }
         // Meta row
         html += '<div class="flex flex-wrap gap-3 items-center text-xs" style="color:var(--mmt-white-dim);">';
@@ -149,6 +168,7 @@
 (function() {
     var vehicleData = null;
     var activeVehicle = 'all';
+    var vehicleSort = 'confidence';
 
     var vehicleColors = {
       'OASIS+': { fg: '#60A5FA', bg: 'rgba(96,165,250,0.1)', border: 'rgba(96,165,250,0.2)' },
@@ -184,6 +204,18 @@
       return '<span class="text-xs font-bold px-2 py-0.5 rounded" style="color:' + c.fg + ';background:' + c.bg + ';">' + esc(vehicle) + '</span>';
     }
 
+    function confidenceBadge(confidence) {
+      if (typeof confidence !== 'number' || confidence <= 0) return '';
+      var pct = confidence + '%';
+      if (confidence >= 80) {
+        return '<span class="text-xs font-semibold px-2 py-0.5 rounded" style="color:#22C55E;background:rgba(34,197,94,0.1);">' + pct + ' match</span>';
+      } else if (confidence >= 50) {
+        return '<span class="text-xs font-semibold px-2 py-0.5 rounded" style="color:#FBBF24;background:rgba(251,191,36,0.1);">AI Est: ' + pct + '</span>';
+      } else {
+        return '<span class="text-xs px-2 py-0.5 rounded" style="color:var(--mmt-white-dim);background:rgba(255,255,255,0.05);">AI Est: ' + pct + '</span>';
+      }
+    }
+
     function setAsideBadge(type) {
       if (!type) return '';
       var colors = {
@@ -212,6 +244,7 @@
         html += '<div class="flex items-start justify-between gap-2 mb-2">';
         html += '<div class="flex flex-wrap gap-2">';
         html += vehicleBadge(o.contract_vehicle);
+        html += confidenceBadge(o.vehicle_confidence);
         if (o.opportunity_type) {
           html += '<span class="text-xs px-2 py-0.5 rounded" style="background:rgba(0,229,250,0.1);color:var(--mmt-cyan);">' + esc(o.opportunity_type) + '</span>';
         }
@@ -222,9 +255,12 @@
         html += '<h3 class="text-sm font-bold mb-1" style="color:var(--mmt-white);">' + esc(o.title) + '</h3>';
         html += '<p class="text-xs mb-2" style="color:var(--mmt-cyan);">' + esc(o.agency) + '</p>';
         if (o.ai_summary) {
-          html += '<p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">' + esc(o.ai_summary) + '</p>';
+          html += '<p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-white-muted);">' + esc(o.ai_summary) + '</p>';
         } else if (o.description) {
-          html += '<p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">' + esc(o.description) + '</p>';
+          html += '<p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-white-muted);">' + esc(o.description) + '</p>';
+        }
+        if (o.vehicle_reasoning) {
+          html += '<p class="text-xs italic mb-3" style="color:var(--mmt-white-dim);">' + esc(o.vehicle_reasoning) + '</p>';
         }
         html += '<div class="flex flex-wrap gap-3 items-center text-xs" style="color:var(--mmt-white-dim);">';
         if (o.value_estimate) html += '<span><strong style="color:var(--mmt-white-muted);">Value:</strong> ' + esc(o.value_estimate) + '</span>';
@@ -256,7 +292,12 @@
       if (isFiltered) {
         filtered = opps.filter(function(o) { return o.contract_vehicle === activeVehicle; });
       } else {
-        filtered = opps;
+        filtered = opps.slice();
+      }
+      if (vehicleSort === 'confidence') {
+        filtered.sort(function(a, b) { return (b.vehicle_confidence || 0) - (a.vehicle_confidence || 0); });
+      } else {
+        filtered.sort(function(a, b) { return (b.scan_date || '').localeCompare(a.scan_date || ''); });
       }
       document.getElementById('vehicle-container').innerHTML = renderVehicleOpps(filtered, isFiltered);
     }
@@ -281,7 +322,25 @@
       });
     });
 
-    fetch('/.netlify/functions/opportunity-feed?has_vehicle=true&days=14&limit=30')
+    document.querySelectorAll('.vehicle-sort').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        vehicleSort = this.getAttribute('data-sort');
+        document.querySelectorAll('.vehicle-sort').forEach(function(b) {
+          if (b.getAttribute('data-sort') === vehicleSort) {
+            b.style.background = 'var(--mmt-cyan)';
+            b.style.color = 'var(--mmt-navy)';
+            b.style.borderColor = 'var(--mmt-cyan)';
+          } else {
+            b.style.background = 'transparent';
+            b.style.color = 'var(--mmt-white-dim)';
+            b.style.borderColor = 'rgba(0,229,250,0.2)';
+          }
+        });
+        applyVehicleFilter();
+      });
+    });
+
+    fetch('/.netlify/functions/opportunity-feed?min_confidence=1&days=30&limit=60&sort=confidence')
       .then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); })
       .then(function(data) {
         vehicleData = data;

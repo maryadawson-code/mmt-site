@@ -128,6 +128,15 @@
     </div>
   </section>
 
+  <!-- AI Disclaimer -->
+  <section class="px-6 pt-2 pb-0">
+    <div class="max-w-5xl mx-auto">
+      <div class="rounded-lg px-4 py-3" style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);">
+        <p class="text-xs leading-relaxed" style="color:#FBBF24;"><strong>AI-Generated Intelligence:</strong> Opportunity Radar results, vehicle assignments, confidence scores, and contract intel on this page are AI-generated estimates produced by automated daily scans. They may contain errors or outdated information. Always verify independently on <a href="https://sam.gov" target="_blank" rel="noopener" class="font-semibold hover:opacity-80" style="color:#FBBF24;text-decoration:underline;">SAM.gov</a> or the relevant agency procurement portal before making business decisions.</p>
+      </div>
+    </div>
+  </section>
+
   <!-- Contract Grid -->
   <section class="py-16 px-6 section-alt">
     <div class="max-w-5xl mx-auto">
@@ -144,7 +153,7 @@
             <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" style="color:var(--mmt-cyan);" aria-hidden="true"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zm0 14.5a6.5 6.5 0 110-13 6.5 6.5 0 010 13zM8 3a5 5 0 100 10A5 5 0 008 3zm0 8.5a3.5 3.5 0 110-7 3.5 3.5 0 010 7zM8 5.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5zM8 9a1 1 0 110-2 1 1 0 010 2z"/></svg>
             <h2 class="text-xl md:text-2xl font-bold" style="color:var(--mmt-white);">Opportunity Radar</h2>
           </div>
-          <p class="text-sm" style="color:var(--mmt-white-dim);">New federal health IT opportunities discovered daily by AI</p>
+          <p class="text-sm" style="color:var(--mmt-white-dim);">AI-scanned federal health IT opportunities with confidence estimates, updated daily</p>
         </div>
         <span id="radar-scan-date" class="text-xs" style="color:var(--mmt-white-dim);"></span>
       </div>
@@ -177,13 +186,13 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--mmt-green);" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
             <h2 class="text-xl md:text-2xl font-bold" style="color:var(--mmt-white);">Small Business Vehicle Opportunities</h2>
           </div>
-          <p class="text-sm" style="color:var(--mmt-white-dim);">Contract vehicle-specific opportunities scanned daily by AI</p>
+          <p class="text-sm" style="color:var(--mmt-white-dim);">AI-predicted vehicle assignments for federal health IT opportunities, updated daily</p>
         </div>
         <span id="vehicle-scan-date" class="text-xs" style="color:var(--mmt-white-dim);"></span>
       </div>
 
       <!-- Vehicle filter buttons -->
-      <div class="flex flex-wrap gap-2 mb-6" id="vehicle-filters">
+      <div class="flex flex-wrap gap-2 mb-4" id="vehicle-filters">
         <button class="vehicle-filter text-xs font-semibold px-3 py-1.5 rounded-full transition-all" data-vehicle="all" style="background:var(--mmt-green);color:var(--mmt-navy);">All Vehicles</button>
         <button class="vehicle-filter text-xs font-semibold px-3 py-1.5 rounded-full transition-all" data-vehicle="OASIS+" style="background:rgba(96,165,250,0.1);color:#60A5FA;border:1px solid rgba(96,165,250,0.2);">OASIS+</button>
         <button class="vehicle-filter text-xs font-semibold px-3 py-1.5 rounded-full transition-all" data-vehicle="CIO-SP4" style="background:rgba(34,211,238,0.1);color:#22D3EE;border:1px solid rgba(34,211,238,0.2);">CIO-SP4</button>
@@ -193,6 +202,13 @@
         <button class="vehicle-filter text-xs font-semibold px-3 py-1.5 rounded-full transition-all" data-vehicle="SBIR/STTR" style="background:rgba(129,140,248,0.1);color:#818CF8;border:1px solid rgba(129,140,248,0.2);">SBIR/STTR</button>
         <button class="vehicle-filter text-xs font-semibold px-3 py-1.5 rounded-full transition-all" data-vehicle="VA SDVOSB" style="background:rgba(52,211,153,0.1);color:#34D399;border:1px solid rgba(52,211,153,0.2);">VA SDVOSB</button>
         <button class="vehicle-filter text-xs font-semibold px-3 py-1.5 rounded-full transition-all" data-vehicle="8(a)" style="background:rgba(167,139,250,0.1);color:#A78BFA;border:1px solid rgba(167,139,250,0.2);">8(a)</button>
+      </div>
+
+      <!-- Sort controls -->
+      <div class="flex items-center gap-2 mb-6">
+        <span class="text-xs" style="color:var(--mmt-white-dim);">Sort by:</span>
+        <button class="vehicle-sort text-xs font-semibold px-3 py-1 rounded-full transition-all" data-sort="confidence" style="background:var(--mmt-cyan);color:var(--mmt-navy);border:1px solid var(--mmt-cyan);">Confidence</button>
+        <button class="vehicle-sort text-xs font-semibold px-3 py-1 rounded-full transition-all" data-sort="date" style="background:transparent;color:var(--mmt-white-dim);border:1px solid rgba(0,229,250,0.2);">Date</button>
       </div>
 
       <!-- Vehicle opportunity cards container -->
@@ -208,7 +224,7 @@
   <!-- Context Note -->
   <section class="py-12 px-6">
     <div class="max-w-3xl mx-auto text-center">
-      <p class="text-sm leading-relaxed" style="color:var(--mmt-white-dim);">Contract data is manually curated from public sources including SAM.gov, agency announcements, and congressional records. Opportunity Radar and Small Business Vehicle results are AI-generated from daily web scans. For the latest solicitation details, always verify directly on SAM.gov or the relevant agency procurement portal.</p>
+      <p class="text-sm leading-relaxed" style="color:var(--mmt-white-dim);">Contract data is curated from public sources including SAM.gov, agency announcements, and congressional records. <strong style="color:#FBBF24;">Opportunity Radar results, vehicle assignments, confidence scores, contract intelligence, and competitive analysis are AI-generated estimates</strong> from daily automated scans and may contain inaccuracies. Confidence percentages indicate the AI model's certainty in its prediction, not verified accuracy. Always confirm all procurement details independently on <a href="https://sam.gov" target="_blank" rel="noopener" class="font-semibold hover:opacity-80" style="color:var(--mmt-cyan);">SAM.gov</a> or the relevant agency procurement portal.</p>
     </div>
   </section>
 

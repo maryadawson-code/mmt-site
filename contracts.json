@@ -12,12 +12,12 @@
   },
   {
     "name": "Community Care Network (CCN) Next Gen",
-    "agency": "Defense Health Agency (DHA)",
+    "agency": "Department of Veterans Affairs",
     "vendor": "TBD (solicitation phase)",
-    "value": "Est. $65B+ (multi-region)",
+    "value": "Est. $65B+ (multi-region IDIQ)",
     "status": "upcoming",
     "naics": "524292",
-    "description": "Next-generation managed care support contracts replacing current TRICARE regional contracts (East/West).",
+    "description": "Next-generation VA community care IDIQ contracts replacing current CCN regional contracts (Regions 1-6) for veteran healthcare through community providers.",
     "link": "https://sam.gov",
     "small_business_eligible": false
   },
@@ -62,7 +62,7 @@
     "value": "$55B+ (combined historical)",
     "status": "active",
     "naics": "524292",
-    "description": "Current regional managed care support contracts for TRICARE beneficiaries, to be replaced by CCN Next Gen.",
+    "description": "Current regional managed care support contracts for TRICARE beneficiaries (East and West regions).",
     "link": "https://tricare.mil",
     "small_business_eligible": false
   },
