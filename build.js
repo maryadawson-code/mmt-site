@@ -1279,6 +1279,13 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
     console.log('Copied robots.txt');
   }
 
+  // Copy _headers (Netlify flat-file headers, highest precedence)
+  const headersSrc = path.join(__dirname, '_headers');
+  if (fs.existsSync(headersSrc)) {
+    fs.copyFileSync(headersSrc, path.join(DIST_DIR, '_headers'));
+    console.log('Copied _headers');
+  }
+
   // Copy all images and assets from root (exclude mp4/zip)
   const assetExtensions = ['.png', '.jpg', '.jpeg', '.svg', '.ico', '.webp', '.gif'];
   const excludeExtensions = ['.mp4', '.zip'];
