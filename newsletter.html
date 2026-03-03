@@ -183,41 +183,6 @@
     </div>
   </footer>
 
-  <script>
-    const toggle = document.getElementById('menuToggle');
-    const menu = document.getElementById('mobileMenu');
-    if (toggle && menu) toggle.addEventListener('click', () => {
-      menu.classList.toggle('hidden');
-      document.getElementById('menuOpen').classList.toggle('hidden');
-      document.getElementById('menuClose').classList.toggle('hidden');
-    });
-
-    // Topic filter (progressive enhancement — all entries visible without JS)
-    document.querySelectorAll('[data-filter-topic]').forEach(chip => {
-      chip.addEventListener('click', () => {
-        const topic = chip.getAttribute('data-filter-topic');
-        const isActive = chip.classList.contains('active');
-        // Reset all chips
-        document.querySelectorAll('[data-filter-topic]').forEach(c => {
-          c.classList.remove('active');
-          c.style.background = 'rgba(0,229,250,0.1)';
-          c.style.color = 'var(--mmt-cyan)';
-        });
-        // Show all or filter
-        const entries = document.querySelectorAll('[data-topics]');
-        if (isActive) {
-          entries.forEach(e => e.style.display = '');
-        } else {
-          chip.classList.add('active');
-          chip.style.background = 'var(--mmt-cyan)';
-          chip.style.color = '#fff';
-          entries.forEach(e => {
-            const topics = e.getAttribute('data-topics').split(',');
-            e.style.display = topics.includes(topic) ? '' : 'none';
-          });
-        }
-      });
-    });
-  </script>
+  <script src="/js/newsletter.js" defer></script>
 </body>
 </html>

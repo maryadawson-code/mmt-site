@@ -217,64 +217,8 @@ const searchOverlayHtml = `
     </div>
   </div>`;
 
-const searchScript = `
-    // Search
-    (function() {
-      var overlay = document.getElementById('searchOverlay');
-      var input = document.getElementById('searchInput');
-      var results = document.getElementById('searchResults');
-      var btn = document.getElementById('searchToggle');
-      var idx = null;
-      if (!overlay || !btn) return;
-      function openSearch() { overlay.classList.remove('hidden'); input.focus(); if (!idx) loadIdx(); }
-      function closeSearch() { overlay.classList.add('hidden'); input.value = ''; results.innerHTML = ''; }
-      btn.addEventListener('click', openSearch);
-      overlay.addEventListener('click', function(e) { if (e.target === overlay) closeSearch(); });
-      document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeSearch(); if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearch(); } });
-      function loadIdx() { fetch('/search-index.json').then(function(r){return r.json()}).then(function(d){idx=d}).catch(function(){}); }
-      input.addEventListener('input', function() {
-        if (!idx) return;
-        var q = input.value.toLowerCase().trim();
-        if (q.length < 2) { results.innerHTML = ''; return; }
-        var matches = idx.filter(function(item) {
-          return item.title.toLowerCase().includes(q) || item.description.toLowerCase().includes(q) || (item.tags||[]).some(function(t){return t.toLowerCase().includes(q)});
-        }).slice(0, 8);
-        if (matches.length === 0) { results.innerHTML = '<p class="text-sm py-4 text-center" style="color:var(--mmt-white-dim);">No results found.</p>'; return; }
-        results.innerHTML = matches.map(function(m) {
-          return '<a href="'+m.url+'" class="block p-3 rounded-lg no-underline hover:opacity-80 mb-2" style="background:var(--mmt-navy); border:1px solid rgba(0,229,250,0.1);">'
-            + '<p class="text-sm font-bold" style="color:var(--mmt-white);">'+m.title+'</p>'
-            + '<p class="text-xs mt-1" style="color:var(--mmt-white-dim);">'+m.date+'</p>'
-            + '</a>';
-        }).join('');
-      });
-    })();`;
-
-const subscribeScript = `
-    // Subscribe dropdown toggle
-    (function() {
-      var btn = document.getElementById('subscribeToggle');
-      var panel = document.getElementById('subscribePanel');
-      if (!btn || !panel) return;
-      btn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        var open = !panel.classList.contains('hidden');
-        panel.classList.toggle('hidden');
-        btn.setAttribute('aria-expanded', open ? 'false' : 'true');
-      });
-      document.addEventListener('click', function(e) {
-        if (!panel.classList.contains('hidden') && !panel.contains(e.target) && e.target !== btn) {
-          panel.classList.add('hidden');
-          btn.setAttribute('aria-expanded', 'false');
-        }
-      });
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && !panel.classList.contains('hidden')) {
-          panel.classList.add('hidden');
-          btn.setAttribute('aria-expanded', 'false');
-          btn.focus();
-        }
-      });
-    })();`;
+// External script tag injected before </body> on all pages
+const siteScriptTag = '  <script src="/js/site.js" defer></script>';
 
 function generateArticlePages(articles) {
   const templatePath = path.join(TEMPLATES_DIR, 'article.html');
@@ -325,7 +269,7 @@ function generateArticlePages(articles) {
     // Inject search overlay after </nav>
     html = html.replace('</nav>', '</nav>' + searchOverlayHtml);
     // Inject search script before </body>
-    html = html.replace('</body>', '  <script>' + searchScript + subscribeScript + '\n  </script>\n</body>');
+    html = html.replace('</body>', siteScriptTag + '\n</body>');
 
     html = rewriteOgTags(html, `newsletter-${article.slug}.png`);
     html = inlineTailwindCss(html);
@@ -377,7 +321,7 @@ function generateTopicPages(tags) {
     // Inject search overlay after </nav>
     html = html.replace('</nav>', '</nav>' + searchOverlayHtml);
     // Inject search script before </body>
-    html = html.replace('</body>', '  <script>' + searchScript + subscribeScript + '\n  </script>\n</body>');
+    html = html.replace('</body>', siteScriptTag + '\n</body>');
 
     html = rewriteOgTags(html, `topic-${tag.slug}.png`);
     html = inlineTailwindCss(html);
@@ -1051,7 +995,7 @@ function generateContractPages(contracts) {
     // Inject search overlay after </nav>
     html = html.replace('</nav>', '</nav>' + searchOverlayHtml);
     // Inject search script before </body>
-    html = html.replace('</body>', '  <script>' + searchScript + subscribeScript + '\n  </script>\n</body>');
+    html = html.replace('</body>', siteScriptTag + '\n</body>');
 
     html = rewriteOgTags(html, `contract-${cSlug}.png`);
     html = inlineTailwindCss(html);
@@ -1321,7 +1265,7 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
         html = html.replace('</nav>\n\n', '</nav>\n' + searchOverlayHtml + '\n\n');
       }
       // Inject search script before closing </body>
-      html = html.replace('</body>', '  <script>' + searchScript + subscribeScript + '\n  </script>\n</body>');
+      html = html.replace('</body>', siteScriptTag + '\n</body>');
       html = inlineTailwindCss(html);
       fs.writeFileSync(path.join(DIST_DIR, file), html);
       console.log(`Copied ${file}`);
@@ -1348,6 +1292,18 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
     }
   });
   console.log(`Copied ${assetCount} image/asset files`);
+
+  // Copy JavaScript files
+  const jsDir = path.join(__dirname, 'js');
+  const distJsDir = path.join(DIST_DIR, 'js');
+  if (fs.existsSync(jsDir)) {
+    ensureDir(distJsDir);
+    const jsFiles = fs.readdirSync(jsDir).filter(f => f.endsWith('.js'));
+    jsFiles.forEach(file => {
+      fs.copyFileSync(path.join(jsDir, file), path.join(distJsDir, file));
+    });
+    console.log(`Copied ${jsFiles.length} JS files`);
+  }
 
   // Copy self-hosted fonts
   const fontsDir = path.join(__dirname, 'fonts');

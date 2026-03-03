@@ -17,6 +17,9 @@
 [functions."opportunity-radar"]
   schedule = "0 12 * * *"
 
+[functions."sb-vehicle-radar"]
+  schedule = "0 13 * * *"
+
 [[redirects]]
   from = "/"
   to = "/index.html"
@@ -68,8 +71,8 @@
     X-Frame-Options = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; frame-src https://checkout.stripe.com; connect-src 'self' https://plausible.io https://checkout.stripe.com"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://plausible.io; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; frame-src https://checkout.stripe.com; connect-src 'self' https://plausible.io https://checkout.stripe.com; object-src 'none'; base-uri 'self'; form-action 'self' https://buttondown.com https://checkout.stripe.com"
 
 # Cache headers
 [[headers]]
@@ -99,6 +102,11 @@
 
 [[headers]]
   for = "*.woff2"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/js/*.js"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 

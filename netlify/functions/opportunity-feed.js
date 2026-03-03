@@ -42,6 +42,8 @@ exports.handler = async (event) => {
   const days = Math.min(parseInt(params.days) || 14, 30);
   const setAside = params.set_aside || null;
   const smallBusiness = params.small_business === "true";
+  const vehicle = params.vehicle || null;
+  const hasVehicle = params.has_vehicle === "true";
 
   try {
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
@@ -66,6 +68,14 @@ exports.handler = async (event) => {
       query = query.eq("small_business_eligible", true);
     }
 
+    if (vehicle) {
+      query = query.eq("contract_vehicle", vehicle);
+    }
+
+    if (hasVehicle) {
+      query = query.not("contract_vehicle", "is", null);
+    }
+
     const { data: opportunities, error: fetchErr } = await query;
 
     if (fetchErr) {
@@ -85,6 +95,8 @@ exports.handler = async (event) => {
 
     if (setAside) countQuery = countQuery.eq("set_aside_type", setAside);
     if (smallBusiness) countQuery = countQuery.eq("small_business_eligible", true);
+    if (vehicle) countQuery = countQuery.eq("contract_vehicle", vehicle);
+    if (hasVehicle) countQuery = countQuery.not("contract_vehicle", "is", null);
 
     const { count } = await countQuery;
 
