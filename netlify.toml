@@ -5,6 +5,10 @@
 [functions]
   directory = "netlify/functions"
 
+[[edge_functions]]
+  function = "security-headers"
+  path = "/*"
+
 [functions."weekly-report"]
   schedule = "0 14 * * 1"
 
