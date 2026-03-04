@@ -3,6 +3,8 @@
 // Uses fetch() (no npm dependency). Requires RESEND_API_KEY env var.
 // From address: ProposalPulse <noreply@missionmeetstech.com>
 
+const { fetchWithTimeout } = require("./fetch-with-timeout");
+
 const RESEND_API_URL = "https://api.resend.com/emails";
 const DEFAULT_FROM = "ProposalPulse <noreply@missionmeetstech.com>";
 
@@ -23,7 +25,7 @@ async function sendEmail({ to, subject, html, from }) {
   }
 
   try {
-    const response = await fetch(RESEND_API_URL, {
+    const response = await fetchWithTimeout(RESEND_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

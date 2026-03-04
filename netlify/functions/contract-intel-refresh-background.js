@@ -12,6 +12,7 @@
 
 const { createClient } = require("@supabase/supabase-js");
 const { getModelConfig } = require("./lib/model-router");
+const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
 
 // --- Constants ---
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -214,7 +215,7 @@ Return ONLY valid JSON. No markdown code fences. No text before or after the JSO
 // ============================================================
 
 async function callClaude(systemPrompt, userMessage, maxSearches, model, maxTokens) {
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
+  const response = await fetchWithTimeout("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -239,7 +240,7 @@ async function callClaude(systemPrompt, userMessage, maxSearches, model, maxToke
 
   // Handle pause_turn: resume if the server-side tool loop hit its limit
   if (finalData.stop_reason === "pause_turn") {
-    const resumeResponse = await fetch("https://api.anthropic.com/v1/messages", {
+    const resumeResponse = await fetchWithTimeout("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -555,7 +556,7 @@ exports.handler = async (event) => {
   // Trigger site rebuild if any contracts were updated
   if (successCount > 0 && NETLIFY_BUILD_HOOK_URL) {
     try {
-      await fetch(NETLIFY_BUILD_HOOK_URL, { method: "POST" });
+      await fetchWithTimeout(NETLIFY_BUILD_HOOK_URL, { method: "POST" }, 10000);
       console.log("Triggered site rebuild");
     } catch (err) {
       console.error("Failed to trigger rebuild:", err.message);

@@ -15,6 +15,7 @@
 
 const { createClient } = require("@supabase/supabase-js");
 const { getModelConfig } = require("./lib/model-router");
+const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -36,7 +37,7 @@ const AGENCIES = [
 // ============================================================
 
 async function fetchAwards(filters) {
-  const response = await fetch("https://api.usaspending.gov/api/v2/search/spending_by_award/", {
+  const response = await fetchWithTimeout("https://api.usaspending.gov/api/v2/search/spending_by_award/", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -140,7 +141,7 @@ ${summaries}`;
 async function classifyWithClaude(awards, model) {
   if (!awards.length) return [];
 
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
+  const response = await fetchWithTimeout("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

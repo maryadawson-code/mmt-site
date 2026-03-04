@@ -19,6 +19,7 @@
 const { createClient } = require("@supabase/supabase-js");
 const { DOCUMENT_TYPES } = require("./lib/document-types");
 const { getModelConfig } = require("./lib/model-router");
+const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
 
 // --- Environment Variables ---
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -295,7 +296,7 @@ exports.handler = async (event) => {
     const systemPrompt = buildSystemPrompt(documentType, finalSowText);
     const messageContent = buildMessageContent(fileType, fileBase64, extractedText, documentType);
 
-    const claudeResponse = await fetch("https://api.anthropic.com/v1/messages", {
+    const claudeResponse = await fetchWithTimeout("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

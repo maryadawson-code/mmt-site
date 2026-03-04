@@ -2,6 +2,8 @@
 // to refresh News Wire headlines from RSS feeds.
 // Requires NETLIFY_BUILD_HOOK_URL env var (create via Netlify dashboard).
 
+const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
+
 exports.handler = async function () {
   const hookUrl = process.env.NETLIFY_BUILD_HOOK_URL;
 
@@ -11,7 +13,7 @@ exports.handler = async function () {
   }
 
   try {
-    const response = await fetch(hookUrl, { method: 'POST' });
+    const response = await fetchWithTimeout(hookUrl, { method: 'POST' }, 10000);
 
     if (!response.ok) {
       console.error(`Build hook failed: ${response.status} ${response.statusText}`);
