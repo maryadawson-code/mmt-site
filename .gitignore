@@ -27,3 +27,6 @@ npm-debug.log*
 
 # Supabase CLI local state
 supabase/.temp/
+
+# Sentinel monitoring logs (local only)
+.sentinel/

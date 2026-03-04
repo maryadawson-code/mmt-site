@@ -1,0 +1,50 @@
+name: MMT Sentinel Health Check
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run health check
+        id: health
+        run: |
+          chmod +x scripts/mmt-health-check.sh
+          RESULT=$(bash scripts/mmt-health-check.sh --json 2>&1) || true
+          echo "result<<EOF" >> $GITHUB_OUTPUT
+          echo "$RESULT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          SESSION_ID=$(echo "$RESULT" | jq -r '.session_id // ""' 2>/dev/null || echo "")
+          echo "session_id=$SESSION_ID" >> $GITHUB_OUTPUT
+
+      - name: Create issue on critical failure
+        if: contains(steps.health.outputs.result, '"status":"critical"')
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const result = JSON.parse(`${{ steps.health.outputs.result }}`);
+            const title = `🚨 MMT Sentinel: ${result.status} — site health check failed`;
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              labels: 'sentinel-alert', state: 'open'
+            });
+            if (existing.data.filter(i => i.labels.some(l => l.name === 'sentinel-alert')).length >= 3) {
+              console.log('Circuit breaker: 3 sentinel issues already open. Not creating another.');
+              return;
+            }
+            if (!existing.data.find(i => i.title === title)) {
+              await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo,
+                title, labels: ['sentinel-alert', 'critical'],
+                body: `## Health Check Failed\n\n**Time:** ${result.timestamp}\n**Status:** ${result.status}\n**Passed:** ${result.total_passed}/${result.total_checks}\n\n### Results\n\`\`\`json\n${JSON.stringify(result.checks, null, 2)}\n\`\`\`\n\n### Alerts\n${result.alerts.map(a => '- ' + a).join('\n') || 'None'}\n\n**Session ID for resume:** ${result.session_id || 'not captured'}`
+              });
+            }
