@@ -47,70 +47,109 @@ for PAGE in "${PAGES[@]}"; do
   HTML=$(curl -s --max-time 15 "$SITE$PAGE")
   STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$SITE$PAGE")
 
-  # Title
-  TITLE=$(echo "$HTML" | grep -oE '<title>[^<]+</title>' | sed 's/<[^>]*>//g' | head -1)
-  TITLE=${TITLE:-""}
-  TITLE_LEN=${#TITLE}
+  # Use python3 for reliable HTML parsing (stdlib only)
+  AUDIT_DATA=$(python3 - "$HTML" "$PAGE" <<'PYAUDIT'
+import sys, re, json
 
-  # Meta description
-  DESC=$(echo "$HTML" | grep -oE 'name="description"[[:space:]]+content="[^"]*"' | sed 's/.*content="//;s/"$//' | head -1)
-  if [ -z "$DESC" ]; then
-    DESC=$(echo "$HTML" | grep -oE 'content="[^"]*"[[:space:]]+name="description"' | sed 's/content="//;s/"[[:space:]].*//' | head -1)
-  fi
-  DESC=${DESC:-""}
-  DESC_LEN=${#DESC}
+html = sys.argv[1]
+page = sys.argv[2]
 
-  # Canonical
-  CANONICAL=$(echo "$HTML" | grep -oE 'rel="canonical"[[:space:]]+href="[^"]*"' | sed 's/.*href="//;s/"$//' | head -1)
-  if [ -z "$CANONICAL" ]; then
-    CANONICAL=$(echo "$HTML" | grep -oE 'href="[^"]*"[[:space:]]+rel="canonical"' | sed 's/href="//;s/"[[:space:]].*//' | head -1)
-  fi
-  CANONICAL=${CANONICAL:-""}
+# Title
+m = re.search(r'<title>([^<]+)</title>', html)
+title = m.group(1).strip() if m else ""
 
-  # H1
-  H1_COUNT=$(echo "$HTML" | grep -c '<h1' || echo "0")
-  H1_TEXT=$(echo "$HTML" | grep -oE '<h1[^>]*>[^<]+' | sed 's/<h1[^>]*>//' | head -1)
-  H1_TEXT=${H1_TEXT:-""}
+# Meta description
+m = re.search(r'<meta\s[^>]*name="description"[^>]*content="([^"]*)"', html)
+if not m:
+    m = re.search(r'<meta\s[^>]*content="([^"]*)"[^>]*name="description"', html)
+desc = m.group(1).strip() if m else ""
 
-  # OG tags
-  OG_TITLE=$(echo "$HTML" | grep -c 'property="og:title"' || echo "0")
-  OG_DESC=$(echo "$HTML" | grep -c 'property="og:description"' || echo "0")
-  OG_URL=$(echo "$HTML" | grep -c 'property="og:url"' || echo "0")
-  OG_IMAGE=$(echo "$HTML" | grep -c 'property="og:image"' || echo "0")
-  OG_COMPLETE="false"
-  [ "$OG_TITLE" -ge 1 ] && [ "$OG_DESC" -ge 1 ] && [ "$OG_URL" -ge 1 ] && [ "$OG_IMAGE" -ge 1 ] && OG_COMPLETE="true"
+# Canonical
+m = re.search(r'<link\s[^>]*rel="canonical"[^>]*href="([^"]*)"', html)
+if not m:
+    m = re.search(r'<link\s[^>]*href="([^"]*)"[^>]*rel="canonical"', html)
+canonical = m.group(1).strip() if m else ""
 
-  # Schema (JSON-LD)
-  SCHEMA_COUNT=$(echo "$HTML" | grep -c 'application/ld+json' || echo "0")
+# H1
+h1s = re.findall(r'<h1[^>]*>(.*?)</h1>', html, re.DOTALL)
+h1_count = len(h1s)
+h1_text = re.sub(r'<[^>]+>', '', h1s[0]).strip() if h1s else ""
 
-  # Image alt text coverage
-  IMG_TOTAL=$(echo "$HTML" | grep -c '<img' || echo "0")
-  IMG_NO_ALT=$(echo "$HTML" | grep '<img' | grep -cv 'alt=' || echo "0")
-  ALT_COV=100
-  [ "$IMG_TOTAL" -gt 0 ] && ALT_COV=$(( (IMG_TOTAL - IMG_NO_ALT) * 100 / IMG_TOTAL ))
+# OG tags
+og_title = 1 if re.search(r'property="og:title"', html) else 0
+og_desc = 1 if re.search(r'property="og:description"', html) else 0
+og_url = 1 if re.search(r'property="og:url"', html) else 0
+og_image = 1 if re.search(r'property="og:image"', html) else 0
+og_complete = og_title >= 1 and og_desc >= 1 and og_url >= 1 and og_image >= 1
 
-  # Internal links out (links to other canonical pages)
-  INTERNAL_LINKS=0
-  for TARGET in "${PAGES[@]}"; do
-    [ "$TARGET" = "$PAGE" ] && continue
-    LINK_COUNT=$(echo "$HTML" | grep -cE "href=\"$TARGET(\.html)?\"" || echo "0")
-    INTERNAL_LINKS=$((INTERNAL_LINKS + LINK_COUNT))
-  done
+# Schema
+schema_count = len(re.findall(r'application/ld\+json', html))
+
+# Image alt text
+imgs = re.findall(r'<img\s[^>]*>', html)
+img_total = len(imgs)
+img_no_alt = sum(1 for img in imgs if 'alt=' not in img)
+alt_cov = int((img_total - img_no_alt) * 100 / img_total) if img_total > 0 else 100
+
+# Internal links to canonical pages
+canonical_pages = ["/", "/about", "/podcast", "/newsletter", "/resources"]
+internal_links = 0
+for target in canonical_pages:
+    if target == page:
+        continue
+    internal_links += len(re.findall(r'href="' + re.escape(target) + r'(\.html)?"', html))
+
+result = {
+    "title": title, "title_length": len(title),
+    "description": desc, "description_length": len(desc),
+    "canonical": canonical,
+    "h1_count": h1_count, "h1_text": h1_text,
+    "og_title": og_title, "og_desc": og_desc, "og_url": og_url, "og_image": og_image,
+    "og_complete": og_complete,
+    "schema_count": schema_count,
+    "img_total": img_total, "img_no_alt": img_no_alt, "alt_coverage": alt_cov,
+    "internal_links_out": internal_links
+}
+print(json.dumps(result))
+PYAUDIT
+  )
+
+  TITLE=$(echo "$AUDIT_DATA" | jq -r '.title')
+  TITLE_LEN=$(echo "$AUDIT_DATA" | jq -r '.title_length')
+  DESC=$(echo "$AUDIT_DATA" | jq -r '.description')
+  DESC_LEN=$(echo "$AUDIT_DATA" | jq -r '.description_length')
+  CANONICAL=$(echo "$AUDIT_DATA" | jq -r '.canonical')
+  H1_COUNT=$(echo "$AUDIT_DATA" | jq -r '.h1_count')
+  H1_TEXT=$(echo "$AUDIT_DATA" | jq -r '.h1_text')
+  OG_TITLE=$(echo "$AUDIT_DATA" | jq -r '.og_title')
+  OG_DESC=$(echo "$AUDIT_DATA" | jq -r '.og_desc')
+  OG_URL=$(echo "$AUDIT_DATA" | jq -r '.og_url')
+  OG_IMAGE=$(echo "$AUDIT_DATA" | jq -r '.og_image')
+  OG_COMPLETE=$(echo "$AUDIT_DATA" | jq -r '.og_complete')
+  SCHEMA_COUNT=$(echo "$AUDIT_DATA" | jq -r '.schema_count')
+  ALT_COV=$(echo "$AUDIT_DATA" | jq -r '.alt_coverage')
+  INTERNAL_LINKS=$(echo "$AUDIT_DATA" | jq -r '.internal_links_out')
 
   # In sitemap?
-  SITEMAP_HTML=$(curl -s "$SITE/sitemap.xml")
+  if [ -z "${SITEMAP_HTML:-}" ]; then
+    SITEMAP_HTML=$(curl -s "$SITE/sitemap.xml")
+  fi
   PAGE_IN_SITEMAP="false"
-  if echo "$SITEMAP_HTML" | grep -q "${PAGE}.html\|${PAGE}/\|${PAGE}<"; then
+  PAGE_BARE=$(echo "$PAGE" | sed 's/^\///')
+  if echo "$SITEMAP_HTML" | grep -qE "${PAGE_BARE}\.html|${PAGE_BARE}/"; then
     PAGE_IN_SITEMAP="true"
   fi
+  # Homepage special case
+  [ "$PAGE" = "/" ] && echo "$SITEMAP_HTML" | grep -q "missionmeetstech.com/<" 2>/dev/null && PAGE_IN_SITEMAP="true"
+  [ "$PAGE" = "/" ] && echo "$SITEMAP_HTML" | grep -q "missionmeetstech.com/</loc>" 2>/dev/null && PAGE_IN_SITEMAP="true"
 
   # Grade
   SCORE=0
-  [ -n "$TITLE" ] && [ "$TITLE_LEN" -ge 20 ] && SCORE=$((SCORE + 2))
-  [ -n "$DESC" ] && [ "$DESC_LEN" -ge 100 ] && SCORE=$((SCORE + 2))
-  [ -n "$CANONICAL" ] && SCORE=$((SCORE + 1))
+  [ -n "$TITLE" ] && [ "$TITLE" != "null" ] && [ "$TITLE_LEN" -ge 20 ] && SCORE=$((SCORE + 2))
+  [ -n "$DESC" ] && [ "$DESC" != "null" ] && [ "$DESC_LEN" -ge 100 ] && SCORE=$((SCORE + 2))
+  [ -n "$CANONICAL" ] && [ "$CANONICAL" != "null" ] && SCORE=$((SCORE + 1))
   [ "$H1_COUNT" -eq 1 ] && SCORE=$((SCORE + 1))
-  [ "$OG_COMPLETE" = "true" ] && SCORE=$((SCORE + 2))
+  ([ "$OG_COMPLETE" = "true" ] || [ "$OG_COMPLETE" = "True" ]) && SCORE=$((SCORE + 2))
   [ "$SCHEMA_COUNT" -ge 1 ] && SCORE=$((SCORE + 1))
   [ "$ALT_COV" -ge 100 ] && SCORE=$((SCORE + 1))
 
@@ -130,7 +169,10 @@ for PAGE in "${PAGES[@]}"; do
   H1_ESC=$(echo "$H1_TEXT" | sed 's/"/\\"/g' | tr -d '\n')
   CANONICAL_ESC=$(echo "$CANONICAL" | sed 's/"/\\"/g' | tr -d '\n')
 
-  AUDIT_JSON="$AUDIT_JSON{\"page\":\"$PAGE\",\"status\":$STATUS,\"grade\":\"$GRADE\",\"score\":$SCORE,\"title\":\"$TITLE_ESC\",\"title_length\":$TITLE_LEN,\"description\":\"$DESC_ESC\",\"description_length\":$DESC_LEN,\"canonical\":\"$CANONICAL_ESC\",\"h1_count\":$H1_COUNT,\"h1_text\":\"$H1_ESC\",\"og_complete\":$OG_COMPLETE,\"schema_count\":$SCHEMA_COUNT,\"alt_coverage\":$ALT_COV,\"internal_links_out\":$INTERNAL_LINKS,\"in_sitemap\":$PAGE_IN_SITEMAP}"
+  # Normalize booleans to lowercase for JSON
+  OG_COMPLETE_JSON=$(echo "$OG_COMPLETE" | tr '[:upper:]' '[:lower:]')
+
+  AUDIT_JSON="$AUDIT_JSON{\"page\":\"$PAGE\",\"status\":$STATUS,\"grade\":\"$GRADE\",\"score\":$SCORE,\"title\":\"$TITLE_ESC\",\"title_length\":$TITLE_LEN,\"description\":\"$DESC_ESC\",\"description_length\":$DESC_LEN,\"canonical\":\"$CANONICAL_ESC\",\"h1_count\":$H1_COUNT,\"h1_text\":\"$H1_ESC\",\"og_complete\":$OG_COMPLETE_JSON,\"schema_count\":$SCHEMA_COUNT,\"alt_coverage\":$ALT_COV,\"internal_links_out\":$INTERNAL_LINKS,\"in_sitemap\":$PAGE_IN_SITEMAP}"
 done
 
 AUDIT_JSON="$AUDIT_JSON]"
