@@ -19,6 +19,7 @@ const { sendEmail } = require("./lib/send-email");
 const { buildGoldTeamReviewHtml } = require("./lib/email-templates");
 const { getModelConfig } = require("./lib/model-router");
 const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
+const { withRetry } = require("./lib/retry");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -39,7 +40,7 @@ const CORS_HEADERS = {
 // ============================================================
 
 async function callClaude(systemPrompt, userPrompt, maxTokens, model) {
-  const response = await fetchWithTimeout("https://api.anthropic.com/v1/messages", {
+  const response = await withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -52,7 +53,7 @@ async function callClaude(systemPrompt, userPrompt, maxTokens, model) {
       system: systemPrompt,
       messages: [{ role: "user", content: userPrompt }],
     }),
-  }, 180000);
+  }, 180000));
 
   if (!response.ok) {
     const errText = await response.text();

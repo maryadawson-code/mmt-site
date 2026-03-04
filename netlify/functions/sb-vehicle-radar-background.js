@@ -16,6 +16,7 @@
 const { createClient } = require("@supabase/supabase-js");
 const { getModelConfig } = require("./lib/model-router");
 const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
+const { withRetry } = require("./lib/retry");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -141,7 +142,7 @@ ${summaries}`;
 async function classifyWithClaude(awards, model) {
   if (!awards.length) return [];
 
-  const response = await fetchWithTimeout("https://api.anthropic.com/v1/messages", {
+  const response = await withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -156,7 +157,7 @@ async function classifyWithClaude(awards, model) {
         content: buildClassificationPrompt(awards),
       }],
     }),
-  });
+  }));
 
   if (!response.ok) {
     console.error("Claude error:", response.status, await response.text().catch(() => ""));

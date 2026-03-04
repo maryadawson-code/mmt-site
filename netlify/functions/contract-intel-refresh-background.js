@@ -13,6 +13,7 @@
 const { createClient } = require("@supabase/supabase-js");
 const { getModelConfig } = require("./lib/model-router");
 const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
+const { withRetry } = require("./lib/retry");
 
 // --- Constants ---
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -215,7 +216,7 @@ Return ONLY valid JSON. No markdown code fences. No text before or after the JSO
 // ============================================================
 
 async function callClaude(systemPrompt, userMessage, maxSearches, model, maxTokens) {
-  const response = await fetchWithTimeout("https://api.anthropic.com/v1/messages", {
+  const response = await withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -229,7 +230,7 @@ async function callClaude(systemPrompt, userMessage, maxSearches, model, maxToke
       tools: [{ type: "web_search_20250305", name: "web_search", max_uses: maxSearches }],
       messages: [{ role: "user", content: userMessage }],
     }),
-  });
+  }));
 
   if (!response.ok) {
     const errText = await response.text();
