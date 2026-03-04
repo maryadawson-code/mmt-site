@@ -380,6 +380,7 @@ async function submitDeck() {
 
     if (!gatewayResponse.ok) {
       completePipeline();
+      isSubmitting = false;
       const errData = await gatewayResponse.json().catch(() => null);
 
       if (gatewayResponse.status === 403 && errData && errData.error === 'limit_reached') {
@@ -396,6 +397,7 @@ async function submitDeck() {
     let gatewayData;
     try { gatewayData = await gatewayResponse.json(); } catch (e) {
       completePipeline();
+      isSubmitting = false;
       showScreen('screen-upload');
       showError('Received an invalid response. Please try again.');
       return;
@@ -404,6 +406,7 @@ async function submitDeck() {
     const scoringId = gatewayData.scoring_id;
     if (!scoringId) {
       completePipeline();
+      isSubmitting = false;
       showScreen('screen-upload');
       showError('Could not start scoring. Please try again.');
       return;
@@ -617,7 +620,7 @@ function renderResults(data) {
       <div class="upsell-box">
         <h3>Get Another Assessment</h3>
         <p>Each assessment includes the full Gold Team Review: all 9 sections rewritten, pWin estimate, executive summary, and prioritized next steps.</p>
-        <button class="btn btn-primary" onclick="startCheckout()">Unlock 1 Assessment &mdash; $19.99 &#8594;</button>
+        <button class="btn btn-primary" id="btn-upsell-checkout">Unlock 1 Assessment &mdash; $19.99 &#8594;</button>
         <p class="stripe-note">Secure payment via Stripe</p>
       </div>
     `;
@@ -626,6 +629,10 @@ function renderResults(data) {
   }
 
   showScreen('screen-results');
+
+  // Bind upsell checkout button if rendered
+  const upsellBtn = document.getElementById('btn-upsell-checkout');
+  if (upsellBtn) upsellBtn.addEventListener('click', startCheckout);
 
   // Trigger Gold Team Review from frontend
   triggerGoldTeamReview(data);
@@ -747,7 +754,7 @@ function renderFeedbackWidget() {
       <div class="feedback-comment-area" id="feedback-comment-area">
         <textarea id="feedback-comment" placeholder="Optional feedback (max 500 characters)" maxlength="500" aria-label="Feedback comment"></textarea>
       </div>
-      <button class="btn btn-primary btn-sm feedback-submit" id="feedback-submit-btn" disabled onclick="submitFeedback()">Submit Feedback</button>
+      <button class="btn btn-primary btn-sm feedback-submit" id="feedback-submit-btn" disabled>Submit Feedback</button>
     </div>
   `;
 
@@ -791,6 +798,9 @@ function renderFeedbackWidget() {
       this.textContent = 'Add a comment';
     }
   });
+
+  // Bind submit feedback button
+  document.getElementById('feedback-submit-btn').addEventListener('click', submitFeedback);
 
   // Store selectedRating getter for submitFeedback
   container._getSelectedRating = () => selectedRating;
@@ -924,3 +934,14 @@ function resetTool() {
     window.history.replaceState({}, '', window.location.pathname);
   }
 })();
+
+// ===== EVENT LISTENERS (CSP-safe, no inline onclick) =====
+
+document.getElementById('btn-remove-file').addEventListener('click', removeFile);
+document.getElementById('btn-remove-sow').addEventListener('click', removeSowFile);
+document.getElementById('btn-submit').addEventListener('click', submitDeck);
+document.getElementById('btn-cancel').addEventListener('click', cancelSubmission);
+document.getElementById('btn-print').addEventListener('click', () => window.print());
+document.getElementById('btn-reset').addEventListener('click', resetTool);
+document.getElementById('btn-checkout').addEventListener('click', startCheckout);
+document.getElementById('btn-start-over').addEventListener('click', resetTool);

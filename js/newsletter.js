@@ -19,7 +19,7 @@
         chip.style.background = 'var(--mmt-cyan)';
         chip.style.color = '#fff';
         entries.forEach(function(e) {
-          var topics = e.getAttribute('data-topics').split(',');
+          var topics = (e.getAttribute('data-topics') || '').split(',');
           e.style.display = topics.includes(topic) ? '' : 'none';
         });
       }

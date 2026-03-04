@@ -978,7 +978,7 @@
           <div class="file-name" id="file-name"></div>
           <div class="file-size" id="file-size"></div>
         </div>
-        <button class="file-remove" onclick="removeFile()" aria-label="Remove file">
+        <button class="file-remove" id="btn-remove-file" aria-label="Remove file">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
           </svg>
@@ -1033,7 +1033,7 @@
                 <div class="file-name" id="sow-file-name"></div>
                 <div class="file-size" id="sow-file-size"></div>
               </div>
-              <button class="file-remove" onclick="removeSowFile()" aria-label="Remove SOW file">
+              <button class="file-remove" id="btn-remove-sow" aria-label="Remove SOW file">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
                 </svg>
@@ -1047,7 +1047,7 @@
       </div>
 
       <div class="upload-actions">
-        <button class="btn btn-primary" id="btn-submit" onclick="submitDeck()" disabled>Get Your Scorecard &#8594;</button>
+        <button class="btn btn-primary" id="btn-submit" disabled>Get Your Scorecard &#8594;</button>
       </div>
     </div>
   </div>
@@ -1080,7 +1080,7 @@
       </div>
     </div>
     <p class="processing-note">Usually takes 30&ndash;90 seconds</p>
-    <button class="btn btn-secondary btn-sm" onclick="cancelSubmission()">Cancel</button>
+    <button class="btn btn-secondary btn-sm" id="btn-cancel">Cancel</button>
   </div>
 </div>
 
@@ -1099,8 +1099,8 @@
       <h3>What's next?</h3>
       <p>Save your results or run another assessment.</p>
       <div class="results-actions">
-        <button class="btn btn-primary btn-sm" onclick="window.print()">Print Results</button>
-        <button class="btn btn-secondary btn-sm" onclick="resetTool()">Score Another Document</button>
+        <button class="btn btn-primary btn-sm" id="btn-print">Print Results</button>
+        <button class="btn btn-secondary btn-sm" id="btn-reset">Score Another Document</button>
       </div>
     </div>
 
@@ -1136,9 +1136,9 @@
         Independent triple-check quality review
       </li>
     </ul>
-    <button class="btn btn-primary" onclick="startCheckout()">Unlock 1 Assessment &mdash; $19.99 &#8594;</button>
+    <button class="btn btn-primary" id="btn-checkout">Unlock 1 Assessment &mdash; $19.99 &#8594;</button>
     <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.75rem;">Secure payment via Stripe</p>
-    <button class="btn btn-secondary btn-sm" onclick="resetTool()" style="margin-top:1rem;">Start Over</button>
+    <button class="btn btn-secondary btn-sm" id="btn-start-over" style="margin-top:1rem;">Start Over</button>
   </div>
 </div>
 
@@ -1183,6 +1183,6 @@
 
 
 
-  <script src="/js/proposal-pulse.js" defer></script>
+  <script src="/js/proposal-pulse.js?v=2" defer></script>
 </body>
 </html>

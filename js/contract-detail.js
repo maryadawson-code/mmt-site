@@ -174,7 +174,7 @@
 
     async function loadIntel() {
       try {
-        var resp = await fetch('/.netlify/functions/contract-intel?contract=' + contractName);
+        var resp = await fetch('/.netlify/functions/contract-intel?contract=' + encodeURIComponent(contractName));
         if (!resp.ok) {
           if (resp.status === 404) {
             document.getElementById('intel-container').innerHTML = '<div class="card rounded-xl p-8 text-center"><p class="text-base mb-2" style="color:var(--mmt-white-muted);">Intelligence data is being gathered for this contract.</p><p class="text-sm" style="color:var(--mmt-white-dim);">Data refreshes daily at 6 AM ET. Check back soon.</p></div>';

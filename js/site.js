@@ -68,3 +68,10 @@
     }
   });
 })();
+
+// CTA subscribe button (index.html)
+(function() {
+  var cta = document.getElementById('btn-cta-subscribe');
+  var toggle = document.getElementById('subscribeToggle');
+  if (cta && toggle) cta.addEventListener('click', function() { toggle.click(); });
+})();

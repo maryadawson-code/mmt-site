@@ -6,7 +6,7 @@ export default async (request, context) => {
   );
   response.headers.set(
     "Permissions-Policy",
-    "camera=(), microphone=(), geolocation=()"
+    "camera=(), microphone=(), geolocation=(), interest-cohort=()"
   );
   return response;
 };
