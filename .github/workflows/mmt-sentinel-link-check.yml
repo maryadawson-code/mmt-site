@@ -1,0 +1,69 @@
+name: MMT Sentinel Link Check
+on:
+  schedule:
+    - cron: '0 9 * * 1'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  link-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for broken links
+        id: links
+        run: |
+          chmod +x scripts/mmt-link-checker.sh
+          RESULT=$(bash scripts/mmt-link-checker.sh --json 2>&1) || true
+          echo "result<<EOF" >> $GITHUB_OUTPUT
+          echo "$RESULT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Check content freshness
+        id: freshness
+        run: |
+          chmod +x scripts/mmt-content-freshness.sh
+          RESULT=$(bash scripts/mmt-content-freshness.sh --json 2>&1) || true
+          echo "result<<EOF" >> $GITHUB_OUTPUT
+          echo "$RESULT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create issue for broken links
+        if: contains(steps.links.outputs.result, '"broken"')
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const result = JSON.parse(`${{ steps.links.outputs.result }}`);
+            const broken = result.broken || [];
+            if (broken.length === 0) return;
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              labels: 'broken-links', state: 'open'
+            });
+            if (existing.data.length >= 1) {
+              console.log('Broken links issue already open. Not duplicating.');
+              return;
+            }
+            await github.rest.issues.create({
+              owner: context.repo.owner, repo: context.repo.repo,
+              title: `🔗 MMT Sentinel: ${broken.length} broken link(s) found`,
+              labels: ['sentinel-alert', 'broken-links'],
+              body: `## Broken Links Found\n\n**Scan date:** ${new Date().toISOString()}\n\n| Source Page | Broken URL | Status |\n|------------|-----------|--------|\n${broken.map(b => '| ' + b.source + ' | ' + b.url + ' | ' + b.status + ' |').join('\n')}`
+            });
+
+      - name: Alert on stale content
+        if: contains(steps.freshness.outputs.result, '"stale"')
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner, repo: context.repo.repo,
+              title: `📝 Content reminder: No new article in 14+ days`,
+              labels: ['sentinel-report', 'content'],
+              body: `The last article on missionmeetstech.com was published more than 14 days ago.\n\nPublish new content to keep the newsletter and SEO fresh.`
+            });

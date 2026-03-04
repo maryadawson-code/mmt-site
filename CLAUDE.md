@@ -501,3 +501,61 @@ Static HTML files use `<!-- BUILD:PLACEHOLDER -->` markers that `copyStaticFiles
 - Events page is accessible from the footer Connect column but is NOT in the main nav.
 - **Deleted pages with 301 redirects:** `community.html` → `/`, `refer.html` → `/`, `contact.html` → `/about.html`. Contact form now lives on about.html as a `#contact` section. Redirects configured in `netlify.toml` (both `.html` and bare path variants).
 - **Contract Intel (AI-powered):** `contract-intel-refresh.js` is a Netlify Scheduled Function (cron: `0 11 * * *` = 6 AM ET daily). Uses Claude Sonnet with `web_search_20250305` tool to research each of the 10 contracts in `contracts.json`, stores structured intel + BLACK HAT competitive intelligence in Supabase `contract_intel` table. Processes contracts sequentially (~5 min total). Frontend fetches from `contract-intel.js` GET endpoint on card click; results cached in memory. Supabase table: `contract_intel` with columns `contract_name` (UNIQUE), `intel` (JSONB), `black_hat` (JSONB), `sources` (text[]), `last_updated`, `model_used`. To seed on first deploy, hit `/.netlify/functions/contract-intel-refresh` directly via curl. Requires `ANTHROPIC_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`; optionally `NETLIFY_BUILD_HOOK_URL` to trigger rebuild after refresh.
+
+---
+
+## Sentinel Agent — Monitoring Mode
+
+Full decision tree and runbook: `agent_docs/sentinel-runbook.md`
+
+### Autonomy Levels
+
+| Level | Action |
+|-------|--------|
+| L0 — Observe | Read, check, analyze. Report only. |
+| L1 — Advise | Diagnose root cause. Create GitHub issue. Do NOT fix. |
+| L2 — Limited fix | Fix obvious broken internal links, typos, copyright year. Commit to branch. |
+| L3 — Escalate | Everything else. Create issue labeled `sentinel-alert`. Never auto-fix. |
+
+### What always requires L3 escalation (never auto-fix)
+- DNS changes
+- Netlify configuration changes (`netlify.toml`, `_headers`, `_redirects`)
+- Security header changes
+- Stripe integration changes
+- Any third-party service credential or config changes
+- Anything that requires a push to main
+
+### Circuit Breakers
+- Max 3 `sentinel-alert` issues open simultaneously — halt if at limit
+- Never modify `_headers` or `_redirects` files
+- Max 10 turns per invocation (`--max-turns 10`)
+- Max $0.25 per invocation (`--max-budget-usd 0.25`)
+- If 3 consecutive health checks fail differently each time → escalate, stop diagnosing
+
+### Monitoring Scripts
+- `scripts/mmt-health-check.sh` — 24+ point health audit (availability, content, services, security, SEO)
+- `scripts/mmt-link-checker.sh` — Broken link crawler
+- `scripts/mmt-content-freshness.sh` — Content age detector
+
+### Sentinel Reporting Format
+```json
+{
+  "timestamp": "ISO-8601",
+  "site": "missionmeetstech.com",
+  "agent": "mmt-sentinel",
+  "status": "healthy|degraded|critical",
+  "response_time_ms": 184,
+  "ssl_expires_in_days": 87,
+  "checks": {
+    "availability": { "passed": 4, "total": 4 },
+    "content": { "passed": 13, "total": 13 },
+    "services": { "passed": 4, "total": 4 },
+    "security": { "passed": 4, "total": 4 },
+    "seo": { "passed": 6, "total": 6 }
+  },
+  "total_passed": 31,
+  "total_checks": 31,
+  "alerts": [],
+  "session_id": "abc123"
+}
+```
