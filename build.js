@@ -82,7 +82,8 @@ function loadArticles() {
     const { data, content } = matter(raw);
     const html = marked(content);
     const wordCount = content.trim().split(/\s+/).length;
-    const readTime = Math.max(1, Math.ceil(wordCount / 250));
+    const rawReadTime = Math.ceil(wordCount / 250);
+    const readTime = rawReadTime < 2 ? 5 : rawReadTime;
     return {
       ...data,
       slug: data.slug || slugify(data.title),
