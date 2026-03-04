@@ -75,3 +75,18 @@
   var toggle = document.getElementById('subscribeToggle');
   if (cta && toggle) cta.addEventListener('click', function() { toggle.click(); });
 })();
+
+// Plausible custom events — track newsletter subscribe clicks
+(function() {
+  if (typeof plausible === 'undefined') return;
+  document.addEventListener('click', function(e) {
+    var link = e.target.closest('a[href]');
+    if (!link) return;
+    var href = link.getAttribute('href') || '';
+    if (href.indexOf('newsletter-follow') !== -1) {
+      plausible('Subscribe: LinkedIn');
+    } else if (href.indexOf('buttondown.com') !== -1) {
+      plausible('Subscribe: Email');
+    }
+  });
+})();

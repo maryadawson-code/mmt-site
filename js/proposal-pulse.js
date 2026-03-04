@@ -90,7 +90,10 @@ uploadZone.addEventListener('drop', (e) => {
 });
 
 fileInput.addEventListener('change', () => {
-  if (fileInput.files.length > 0) handleFileSelect(fileInput.files[0]);
+  if (fileInput.files.length > 0) {
+    if (typeof plausible !== 'undefined') plausible('ProposalPulse: File Selected');
+    handleFileSelect(fileInput.files[0]);
+  }
 });
 
 emailInput.addEventListener('input', updateSubmitButton);
@@ -351,6 +354,7 @@ async function submitDeck() {
   const email = emailInput.value.trim();
   if (!email || !fileBase64 || !selectedFile || isSubmitting) return;
 
+  if (typeof plausible !== 'undefined') plausible('ProposalPulse: Submit');
   isSubmitting = true;
   userCancelled = false;
   submitBtn.disabled = true;
@@ -618,16 +622,17 @@ function renderResults(data) {
   if (typeof data.uses_remaining === 'number' && data.uses_remaining <= 0) {
     upsellEl.innerHTML = `
       <div class="upsell-box">
-        <h3>Get Another Assessment</h3>
-        <p>Each assessment includes the full Gold Team Review: all 9 sections rewritten, pWin estimate, executive summary, and prioritized next steps.</p>
+        <h3>Score another proposal</h3>
+        <p>Each assessment includes the full Gold Team Review: every section rewritten for evaluator impact, a probability-of-win estimate, executive summary, and a prioritized fix list you can act on today.</p>
         <button class="btn btn-primary" id="btn-upsell-checkout">Unlock 1 Assessment &mdash; $19.99 &#8594;</button>
-        <p class="stripe-note">Secure payment via Stripe</p>
+        <p class="stripe-note">Secure checkout via Stripe &middot; No subscription required</p>
       </div>
     `;
   } else {
     upsellEl.innerHTML = '';
   }
 
+  if (typeof plausible !== 'undefined') plausible('ProposalPulse: Score Received');
   showScreen('screen-results');
 
   // Bind upsell checkout button if rendered
@@ -700,6 +705,7 @@ function showGoldTeamFallback(statusEl) {
 
 let isCheckingOut = false;
 async function startCheckout() {
+  if (typeof plausible !== 'undefined') plausible('ProposalPulse: Checkout');
   const email = emailInput.value.trim();
   if (!email) {
     showScreen('screen-upload');
