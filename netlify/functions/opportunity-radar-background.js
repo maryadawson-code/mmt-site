@@ -11,13 +11,11 @@
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
+const { getModelConfig } = require("./lib/model-router");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
-
-const MODEL = "claude-sonnet-4-5";
-const MAX_TOKENS = 16000;
 
 // Health IT NAICS codes
 const NAICS_CODES = ["541512", "541511", "541519", "541611", "524292", "621999", "334510"];
@@ -57,7 +55,7 @@ Return ONLY valid JSON. No markdown code fences. No text before or after the JSO
 // HELPER: Call Claude API with web_search
 // ============================================================
 
-async function callClaude(systemPrompt, userMessage, maxSearches) {
+async function callClaude(systemPrompt, userMessage, maxSearches, model, maxTokens) {
   const response = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -66,8 +64,8 @@ async function callClaude(systemPrompt, userMessage, maxSearches) {
       "anthropic-version": "2023-06-01",
     },
     body: JSON.stringify({
-      model: MODEL,
-      max_tokens: MAX_TOKENS,
+      model,
+      max_tokens: maxTokens,
       system: systemPrompt,
       tools: [{ type: "web_search_20250305", name: "web_search", max_uses: maxSearches }],
       messages: [{ role: "user", content: userMessage }],
@@ -91,8 +89,8 @@ async function callClaude(systemPrompt, userMessage, maxSearches) {
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: MODEL,
-        max_tokens: MAX_TOKENS,
+        model,
+        max_tokens: maxTokens,
         system: systemPrompt,
         tools: [{ type: "web_search_20250305", name: "web_search", max_uses: maxSearches }],
         messages: [
@@ -105,6 +103,12 @@ async function callClaude(systemPrompt, userMessage, maxSearches) {
     if (resumeResponse.ok) {
       finalData = await resumeResponse.json();
     }
+  }
+
+  // Log token usage
+  if (finalData.usage) {
+    const u = finalData.usage;
+    console.log(`  AI cost: model=${model}, input=${u.input_tokens}, output=${u.output_tokens}`);
   }
 
   const allContent = finalData.content;
@@ -161,11 +165,12 @@ exports.handler = async (event) => {
   }
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+  const scanModel = await getModelConfig(null, "opportunity_scan");
   const allOpportunities = [];
 
   // --- Scan 1: SAM.gov + agency sites ---
   try {
-    console.log("Scan 1: SAM.gov + agency sites...");
+    console.log(`Scan 1: SAM.gov + agency sites (${scanModel.model})...`);
     const result1 = await callClaude(SCAN_PROMPT, `Search SAM.gov and federal agency websites for NEW federal health IT solicitations, RFPs, and task orders posted in the last 14 days.
 
 Focus your 5 web searches on:
@@ -175,7 +180,7 @@ Focus your 5 web searches on:
 4. Recent federal health IT contract awards or modifications
 5. New task orders under existing health IT vehicles (T-5 BPA, EIDS, etc.)
 
-Return opportunities found as JSON.`, 5);
+Return opportunities found as JSON.`, 5, scanModel.model, 8000);
 
     if (result1.opportunities) {
       allOpportunities.push(...result1.opportunities);
@@ -196,7 +201,7 @@ Focus your 4 web searches on:
 3. GovWin and Bloomberg Government health IT opportunities
 4. Recent federal health IT RFI or sources sought notices
 
-Return opportunities found as JSON. Do not duplicate opportunities that are well-known existing contracts (MHS GENESIS, FEHRM, VA EHRM, TRICARE MCS, CCN Next Gen, T-5 BPA, EIDS).`, 4);
+Return opportunities found as JSON. Do not duplicate opportunities that are well-known existing contracts (MHS GENESIS, FEHRM, VA EHRM, TRICARE MCS, CCN Next Gen, T-5 BPA, EIDS).`, 4, scanModel.model, 8000);
 
     if (result2.opportunities) {
       allOpportunities.push(...result2.opportunities);
@@ -216,7 +221,7 @@ Focus your 3 web searches on:
 2. VA OSDBU and DHA small business opportunities in health technology
 3. Recent small business health IT contract awards or subcontracting opportunities
 
-Return opportunities found as JSON.`, 3);
+Return opportunities found as JSON.`, 3, scanModel.model, 8000);
 
     if (result3.opportunities) {
       allOpportunities.push(...result3.opportunities);
@@ -254,7 +259,7 @@ Return opportunities found as JSON.`, 3);
       small_business_eligible: opp.small_business_eligible === true,
       ai_summary: (opp.ai_summary || "").substring(0, 500),
       scan_date: new Date().toISOString().split("T")[0],
-      model_used: MODEL,
+      model_used: scanModel.model,
     });
   }
 

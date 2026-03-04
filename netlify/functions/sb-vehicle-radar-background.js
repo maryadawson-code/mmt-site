@@ -14,12 +14,11 @@
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
+const { getModelConfig } = require("./lib/model-router");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
-
-const MODEL = "claude-sonnet-4-5";
 const VALID_VEHICLES = ["OASIS+", "CIO-SP4", "OMNIBUS IV", "DIU", "DARPA", "SBIR/STTR", "VA SDVOSB", "8(a)"];
 
 // Expanded Health IT NAICS codes
@@ -138,7 +137,7 @@ AWARDS:
 ${summaries}`;
 }
 
-async function classifyWithClaude(awards) {
+async function classifyWithClaude(awards, model) {
   if (!awards.length) return [];
 
   const response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -149,8 +148,8 @@ async function classifyWithClaude(awards) {
       "anthropic-version": "2023-06-01",
     },
     body: JSON.stringify({
-      model: MODEL,
-      max_tokens: 12000,
+      model,
+      max_tokens: 8000,
       messages: [{
         role: "user",
         content: buildClassificationPrompt(awards),
@@ -166,7 +165,7 @@ async function classifyWithClaude(awards) {
   const data = await response.json();
 
   if (data.usage) {
-    console.log(`Claude usage: ${data.usage.input_tokens} input tokens, ${data.usage.output_tokens} output tokens`);
+    console.log(`  AI cost: model=${model}, input=${data.usage.input_tokens}, output=${data.usage.output_tokens}`);
   }
 
   const text = data.content
@@ -309,14 +308,15 @@ exports.handler = async (event) => {
 
   let upsertCount = 0;
   let errorCount = 0;
+  const classifyModel = await getModelConfig(null, "sb_classify");
 
   // ============================================================
   // PHASE 1: Classify new USASpending awards
   // ============================================================
 
   if (topResults.length > 0) {
-    console.log("Phase 1: Classifying USASpending awards with Claude...");
-    const classifications = await classifyWithClaude(topResults);
+    console.log(`Phase 1: Classifying USASpending awards (${classifyModel.model})...`);
+    const classifications = await classifyWithClaude(topResults, classifyModel.model);
     console.log(`Claude classified ${classifications.length} awards`);
 
     for (const cls of classifications) {
@@ -362,7 +362,7 @@ exports.handler = async (event) => {
         vehicle_confidence: confidence,
         vehicle_reasoning: (cls.vehicle_reasoning || "").substring(0, 500),
         scan_date: new Date().toISOString().split("T")[0],
-        model_used: MODEL,
+        model_used: classifyModel.model,
       };
 
       try {
@@ -420,9 +420,9 @@ exports.handler = async (event) => {
     if (fetchErr) {
       console.error("Phase 2 fetch error:", fetchErr.message);
     } else if (unclassified && unclassified.length > 0) {
-      console.log(`Found ${unclassified.length} unclassified records, classifying...`);
+      console.log(`Found ${unclassified.length} unclassified records, classifying (${classifyModel.model})...`);
 
-      const classifications = await classifyWithClaude(unclassified);
+      const classifications = await classifyWithClaude(unclassified, classifyModel.model);
       console.log(`Phase 2: Claude classified ${classifications.length} records`);
 
       for (const cls of classifications) {

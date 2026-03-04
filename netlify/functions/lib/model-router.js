@@ -5,9 +5,13 @@
 // self-learning from user feedback ratings.
 //
 // Task types:
-//   scoring  → Sonnet (floor: Sonnet)
-//   rewrite  → Sonnet (floor: Sonnet)
-//   review   → Haiku  (escalates to Sonnet if avg rating < 3.0)
+//   scoring           → Sonnet (floor: Sonnet)
+//   rewrite           → Sonnet (floor: Sonnet)
+//   review            → Haiku  (escalates to Sonnet if avg rating < 3.0)
+//   contract_research → Sonnet (web research + complex analysis)
+//   contract_verify   → Haiku  (fact-checking / extraction)
+//   opportunity_scan  → Sonnet (web search + structured extraction)
+//   sb_classify       → Haiku  (batch classification)
 // ============================================================
 
 const MODELS = {
@@ -20,6 +24,22 @@ const MODELS = {
     floor: "claude-sonnet-4-5-20250929",
   },
   review: {
+    default: "claude-haiku-4-5-20251001",
+    floor: "claude-haiku-4-5-20251001",
+  },
+  contract_research: {
+    default: "claude-sonnet-4-5-20250929",
+    floor: "claude-sonnet-4-5-20250929",
+  },
+  contract_verify: {
+    default: "claude-haiku-4-5-20251001",
+    floor: "claude-haiku-4-5-20251001",
+  },
+  opportunity_scan: {
+    default: "claude-sonnet-4-5-20250929",
+    floor: "claude-sonnet-4-5-20250929",
+  },
+  sb_classify: {
     default: "claude-haiku-4-5-20251001",
     floor: "claude-haiku-4-5-20251001",
   },
@@ -43,8 +63,8 @@ async function getModelConfig(supabase, taskType) {
     return { model: "claude-sonnet-4-5-20250929", reason: "unknown_task" };
   }
 
-  // Scoring and rewrite never drop below Sonnet — skip the feedback query
-  if (taskType === "scoring" || taskType === "rewrite") {
+  // Only 'review' uses self-learning from user feedback — all others return defaults
+  if (taskType !== "review") {
     return { model: config.default, reason: "default" };
   }
 

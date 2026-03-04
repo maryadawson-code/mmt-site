@@ -11,15 +11,13 @@
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
+const { getModelConfig } = require("./lib/model-router");
 
 // --- Constants ---
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const NETLIFY_BUILD_HOOK_URL = process.env.NETLIFY_BUILD_HOOK_URL;
-
-const MODEL = "claude-sonnet-4-5";
-const MAX_TOKENS = 16000;
 
 // The 10 contracts — matches contracts.json at repo root
 const CONTRACTS = [
@@ -215,7 +213,7 @@ Return ONLY valid JSON. No markdown code fences. No text before or after the JSO
 // HELPER: Call Claude API and parse JSON response
 // ============================================================
 
-async function callClaude(systemPrompt, userMessage, maxSearches) {
+async function callClaude(systemPrompt, userMessage, maxSearches, model, maxTokens) {
   const response = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -224,9 +222,9 @@ async function callClaude(systemPrompt, userMessage, maxSearches) {
       "anthropic-version": "2023-06-01",
     },
     body: JSON.stringify({
-      model: MODEL,
-      max_tokens: MAX_TOKENS,
-      system: systemPrompt,
+      model,
+      max_tokens: maxTokens,
+      system: [{ type: "text", text: systemPrompt, cache_control: { type: "ephemeral" } }],
       tools: [{ type: "web_search_20250305", name: "web_search", max_uses: maxSearches }],
       messages: [{ role: "user", content: userMessage }],
     }),
@@ -249,9 +247,9 @@ async function callClaude(systemPrompt, userMessage, maxSearches) {
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: MODEL,
-        max_tokens: MAX_TOKENS,
-        system: systemPrompt,
+        model,
+        max_tokens: maxTokens,
+        system: [{ type: "text", text: systemPrompt, cache_control: { type: "ephemeral" } }],
         tools: [{ type: "web_search_20250305", name: "web_search", max_uses: maxSearches }],
         messages: [
           { role: "user", content: userMessage },
@@ -263,6 +261,12 @@ async function callClaude(systemPrompt, userMessage, maxSearches) {
     if (resumeResponse.ok) {
       finalData = await resumeResponse.json();
     }
+  }
+
+  // Log token usage (including prompt cache hits)
+  if (finalData.usage) {
+    const u = finalData.usage;
+    console.log(`  AI cost: model=${model}, input=${u.input_tokens}, output=${u.output_tokens}, cache_write=${u.cache_creation_input_tokens || 0}, cache_read=${u.cache_read_input_tokens || 0}`);
   }
 
   const allContent = finalData.content;
@@ -338,7 +342,8 @@ async function callClaude(systemPrompt, userMessage, maxSearches) {
 
 async function researchContract(contract) {
   // --- Pass 1: Research ---
-  console.log(`  [${contract.name}] Pass 1: Research...`);
+  const researchModel = await getModelConfig(null, "contract_research");
+  console.log(`  [${contract.name}] Pass 1: Research (${researchModel.model})...`);
   const researchMessage = `Research this federal contract thoroughly using web search:
 
 CONTRACT: ${contract.name}
@@ -350,7 +355,7 @@ DESCRIPTION: ${contract.description}
 Search multiple sources (SAM.gov, FPDS, FedScoop, NextGov, Defense One, GovExec, agency websites, GAO, CRS) to build comprehensive intelligence. Include confidence percentages on every claim. Return the JSON object with "intel", "black_hat", and "sources" keys.`;
 
   const { parsed: research, searchSources: researchSources } = await callClaude(
-    RESEARCH_PROMPT, researchMessage, 5
+    RESEARCH_PROMPT, researchMessage, 5, researchModel.model, 8000
   );
 
   // Ensure confidence fields exist with defaults
@@ -382,7 +387,8 @@ Search multiple sources (SAM.gov, FPDS, FedScoop, NextGov, Defense One, GovExec,
   const allSources = [...new Set([...(research.sources || []), ...researchSources])];
 
   // --- Pass 2: Verification ---
-  console.log(`  [${contract.name}] Pass 2: Verification...`);
+  const verifyModel = await getModelConfig(null, "contract_verify");
+  console.log(`  [${contract.name}] Pass 2: Verification (${verifyModel.model})...`);
   try {
     const verifyMessage = `Verify this intelligence research on the following contract. Challenge the claims, look for contradictions, and check key facts.
 
@@ -395,7 +401,7 @@ ${JSON.stringify({ intel, black_hat: blackHat }, null, 2)}
 Use web search to spot-check the most important claims: dollar amounts, dates, contract actions, organizational roles, and any claims rated below 70% confidence. Return the verification JSON.`;
 
     const { parsed: verification, searchSources: verifySources } = await callClaude(
-      VERIFY_PROMPT, verifyMessage, 3
+      VERIFY_PROMPT, verifyMessage, 3, verifyModel.model, 4000
     );
 
     // Apply verification adjustments
@@ -450,6 +456,7 @@ Use web search to spot-check the most important claims: dollar amounts, dates, c
     intel,
     black_hat: blackHat,
     sources: [...new Set(allSources)],
+    model_used: researchModel.model,
   };
 }
 
@@ -525,7 +532,7 @@ exports.handler = async (event) => {
             black_hat: result.black_hat,
             sources: result.sources,
             last_updated: new Date().toISOString(),
-            model_used: MODEL,
+            model_used: result.model_used,
           },
           { onConflict: "contract_name" }
         );
