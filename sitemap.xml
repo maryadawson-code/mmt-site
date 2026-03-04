@@ -2,37 +2,57 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://missionmeetstech.com/</loc>
-    <lastmod>2026-02-27</lastmod>
+    <lastmod>2026-03-03</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://missionmeetstech.com/about.html</loc>
-    <lastmod>2026-02-27</lastmod>
+    <lastmod>2026-03-03</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://missionmeetstech.com/podcast.html</loc>
-    <lastmod>2026-02-27</lastmod>
+    <lastmod>2026-03-03</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://missionmeetstech.com/newsletter.html</loc>
-    <lastmod>2026-02-27</lastmod>
+    <lastmod>2026-03-03</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://missionmeetstech.com/latest.html</loc>
+    <lastmod>2026-03-03</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://missionmeetstech.com/proposal-pulse.html</loc>
+    <lastmod>2026-03-03</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://missionmeetstech.com/resources.html</loc>
-    <lastmod>2026-02-27</lastmod>
+    <lastmod>2026-03-03</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://missionmeetstech.com/contact.html</loc>
-    <lastmod>2026-02-27</lastmod>
-    <priority>0.6</priority>
+    <loc>https://missionmeetstech.com/topics.html</loc>
+    <lastmod>2026-03-03</lastmod>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://missionmeetstech.com/newsletter-archive.html</loc>
-    <lastmod>2026-02-27</lastmod>
+    <loc>https://missionmeetstech.com/newswire.html</loc>
+    <lastmod>2026-03-03</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://missionmeetstech.com/contract-tracker.html</loc>
+    <lastmod>2026-03-03</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://missionmeetstech.com/events.html</loc>
+    <lastmod>2026-03-03</lastmod>
     <priority>0.6</priority>
   </url>
 </urlset>
