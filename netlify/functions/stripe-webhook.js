@@ -70,7 +70,7 @@ exports.handler = async (event) => {
 
     if (userErr || !user) {
       console.error("stripe-webhook: user not found for", normalizedEmail);
-      return { statusCode: 200, body: JSON.stringify({ received: true, warning: "user not found" }) };
+      return { statusCode: 500, body: JSON.stringify({ error: "user not found — Stripe will retry" }) };
     }
 
     // Get current usage
@@ -83,7 +83,7 @@ exports.handler = async (event) => {
 
     if (usageErr || !usage) {
       console.error("stripe-webhook: usage record not found for user", user.id);
-      return { statusCode: 200, body: JSON.stringify({ received: true, warning: "usage not found" }) };
+      return { statusCode: 500, body: JSON.stringify({ error: "usage record not found — Stripe will retry" }) };
     }
 
     // Increment uses_remaining by 1

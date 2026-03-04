@@ -189,6 +189,14 @@ exports.handler = async (event) => {
       };
     }
 
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
+      return {
+        statusCode: 400,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({ error: "Invalid email format." }),
+      };
+    }
+
     if (!DOCUMENT_TYPES[documentType]) {
       return {
         statusCode: 400,

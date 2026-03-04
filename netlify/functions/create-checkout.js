@@ -49,11 +49,11 @@ exports.handler = async (event) => {
     const body = JSON.parse(event.body);
     const email = (body.email || "").toLowerCase().trim();
 
-    if (!email) {
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
       return {
         statusCode: 400,
         headers: CORS_HEADERS,
-        body: JSON.stringify({ error: "Email is required." }),
+        body: JSON.stringify({ error: "Valid email is required." }),
       };
     }
 
