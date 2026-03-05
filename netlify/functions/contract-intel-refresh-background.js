@@ -1,9 +1,10 @@
 // ============================================================
-// contract-intel-refresh.js — Netlify Scheduled Function
+// contract-intel-refresh-background.js — Netlify Background Function
 //
 // Daily at 6 AM ET (11:00 UTC): researches each contract in
-// contracts.json using Claude API with web_search tool, then
-// stores structured intel + BLACK HAT analysis in Supabase.
+// contracts.json using Perplexity API (sonar model with built-in
+// web search), then stores structured intel + BLACK HAT analysis
+// in Supabase.
 //
 // Schedule configured in netlify.toml:
 //   [functions."contract-intel-refresh"]
@@ -16,7 +17,7 @@ const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
 const { withRetry } = require("./lib/retry");
 
 // --- Constants ---
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const NETLIFY_BUILD_HOOK_URL = process.env.NETLIFY_BUILD_HOOK_URL;
@@ -212,93 +213,55 @@ Return ONLY valid JSON. No markdown code fences. No text before or after the JSO
 
 
 // ============================================================
-// HELPER: Call Claude API and parse JSON response
+// HELPER: Call Perplexity API (OpenAI-compatible) and parse JSON
+// Perplexity sonar models have built-in web search — no tool needed.
+// Citations are returned in the response object.
 // ============================================================
 
-async function callClaude(systemPrompt, userMessage, maxSearches, model, maxTokens) {
-  const response = await withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
+async function callPerplexity(systemPrompt, userMessage, _maxSearches, model, maxTokens) {
+  const response = await withRetry(() => fetchWithTimeout("https://api.perplexity.ai/chat/completions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-api-key": ANTHROPIC_API_KEY,
-      "anthropic-version": "2023-06-01",
+      "Authorization": `Bearer ${PERPLEXITY_API_KEY}`,
     },
     body: JSON.stringify({
       model,
       max_tokens: maxTokens,
-      system: [{ type: "text", text: systemPrompt, cache_control: { type: "ephemeral" } }],
-      tools: [{ type: "web_search_20250305", name: "web_search", max_uses: maxSearches }],
-      messages: [{ role: "user", content: userMessage }],
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userMessage },
+      ],
     }),
   }));
 
   if (!response.ok) {
     const errText = await response.text();
-    throw new Error(`Claude API error ${response.status}: ${errText}`);
+    throw new Error(`Perplexity API error ${response.status}: ${errText}`);
   }
 
-  let finalData = await response.json();
+  const finalData = await response.json();
 
-  // Handle pause_turn: resume if the server-side tool loop hit its limit
-  if (finalData.stop_reason === "pause_turn") {
-    const resumeResponse = await fetchWithTimeout("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model,
-        max_tokens: maxTokens,
-        system: [{ type: "text", text: systemPrompt, cache_control: { type: "ephemeral" } }],
-        tools: [{ type: "web_search_20250305", name: "web_search", max_uses: maxSearches }],
-        messages: [
-          { role: "user", content: userMessage },
-          { role: "assistant", content: finalData.content },
-          { role: "user", content: "Return the final JSON now." },
-        ],
-      }),
-    });
-    if (resumeResponse.ok) {
-      finalData = await resumeResponse.json();
-    }
-  }
-
-  // Log token usage (including prompt cache hits)
+  // Log token usage
   if (finalData.usage) {
     const u = finalData.usage;
-    console.log(`  AI cost: model=${model}, input=${u.input_tokens}, output=${u.output_tokens}, cache_write=${u.cache_creation_input_tokens || 0}, cache_read=${u.cache_read_input_tokens || 0}`);
+    console.log(`  AI cost: model=${model}, input=${u.prompt_tokens}, output=${u.completion_tokens}`);
   }
 
-  const allContent = finalData.content;
+  // Extract text from OpenAI-compatible response
+  let textContent = finalData.choices?.[0]?.message?.content || "";
 
-  // Extract text blocks
-  let textBlocks = allContent
-    .filter((block) => block.type === "text")
-    .map((block) => block.text)
-    .join("");
+  // Extract citation URLs returned by Perplexity
+  const searchSources = Array.isArray(finalData.citations) ? finalData.citations : [];
 
-  // Strip <cite> tags that web_search injects
-  textBlocks = textBlocks.replace(/<cite[^>]*>/g, "").replace(/<\/cite>/g, "");
+  // Strip inline citation markers like [1], [2] that Perplexity injects
+  textContent = textContent.replace(/\[\d+\]/g, "");
 
-  // Extract web search source URLs
-  const searchSources = [];
-  for (const block of allContent) {
-    if (block.type === "web_search_tool_result" && Array.isArray(block.content)) {
-      for (const result of block.content) {
-        if (result.type === "web_search_result" && result.url) {
-          searchSources.push(result.url);
-        }
-      }
-    }
-  }
-
-  // Clean up common JSON issues from Claude responses
+  // Clean up common JSON issues
   function cleanJson(str) {
     // Remove trailing commas before } or ]
     str = str.replace(/,\s*([\]}])/g, "$1");
-    // Remove control characters that break JSON (except newlines in strings handled by JSON.parse)
+    // Remove control characters
     str = str.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, "");
     return str;
   }
@@ -326,12 +289,11 @@ async function callClaude(systemPrompt, userMessage, maxSearches, model, maxToke
   }
 
   // Parse JSON from text
-  const parsed = extractJsonString(textBlocks);
+  const parsed = extractJsonString(textContent);
   if (!parsed) {
-    // Log a snippet for debugging
-    console.error("JSON parse failed. First 500 chars:", textBlocks.substring(0, 500));
-    console.error("Last 500 chars:", textBlocks.substring(Math.max(0, textBlocks.length - 500)));
-    throw new Error(`Could not parse JSON from Claude response (${textBlocks.length} chars)`);
+    console.error("JSON parse failed. First 500 chars:", textContent.substring(0, 500));
+    console.error("Last 500 chars:", textContent.substring(Math.max(0, textContent.length - 500)));
+    throw new Error(`Could not parse JSON from Perplexity response (${textContent.length} chars)`);
   }
 
   return { parsed, searchSources };
@@ -356,7 +318,7 @@ DESCRIPTION: ${contract.description}
 
 Search multiple sources (SAM.gov, FPDS, FedScoop, NextGov, Defense One, GovExec, agency websites, GAO, CRS) to build comprehensive intelligence. Include confidence percentages on every claim. Return the JSON object with "intel", "black_hat", and "sources" keys.`;
 
-  const { parsed: research, searchSources: researchSources } = await callClaude(
+  const { parsed: research, searchSources: researchSources } = await callPerplexity(
     RESEARCH_PROMPT, researchMessage, 5, researchModel.model, 8000
   );
 
@@ -402,7 +364,7 @@ ${JSON.stringify({ intel, black_hat: blackHat }, null, 2)}
 
 Use web search to spot-check the most important claims: dollar amounts, dates, contract actions, organizational roles, and any claims rated below 70% confidence. Return the verification JSON.`;
 
-    const { parsed: verification, searchSources: verifySources } = await callClaude(
+    const { parsed: verification, searchSources: verifySources } = await callPerplexity(
       VERIFY_PROMPT, verifyMessage, 3, verifyModel.model, 4000
     );
 
@@ -470,8 +432,8 @@ Use web search to spot-check the most important claims: dollar amounts, dates, c
 exports.handler = async (event) => {
   console.log("Contract intel refresh triggered:", new Date().toISOString());
 
-  if (!ANTHROPIC_API_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
-    console.error("Missing required env vars (ANTHROPIC_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY)");
+  if (!PERPLEXITY_API_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+    console.error("Missing required env vars (PERPLEXITY_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY)");
     return { statusCode: 500, body: "Missing env vars" };
   }
 

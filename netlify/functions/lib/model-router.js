@@ -28,12 +28,14 @@ const MODELS = {
     floor: "claude-haiku-4-5-20251001",
   },
   contract_research: {
-    default: "claude-sonnet-4-5-20250929",
-    floor: "claude-sonnet-4-5-20250929",
+    default: "llama-3.1-sonar-large-128k-online",
+    floor: "llama-3.1-sonar-large-128k-online",
+    provider: "perplexity",
   },
   contract_verify: {
-    default: "claude-haiku-4-5-20251001",
-    floor: "claude-haiku-4-5-20251001",
+    default: "llama-3.1-sonar-large-128k-online",
+    floor: "llama-3.1-sonar-large-128k-online",
+    provider: "perplexity",
   },
   opportunity_scan: {
     default: "claude-sonnet-4-5-20250929",
@@ -54,7 +56,7 @@ const FEEDBACK_SAMPLE_SIZE = 10;
  *
  * @param {object} supabase - Supabase client instance
  * @param {string} taskType - "scoring" | "rewrite" | "review"
- * @returns {Promise<{model: string, reason: string}>}
+ * @returns {Promise<{model: string, reason: string, provider?: string}>}
  */
 async function getModelConfig(supabase, taskType) {
   const config = MODELS[taskType];
@@ -65,7 +67,7 @@ async function getModelConfig(supabase, taskType) {
 
   // Only 'review' uses self-learning from user feedback — all others return defaults
   if (taskType !== "review") {
-    return { model: config.default, reason: "default" };
+    return { model: config.default, reason: "default", provider: config.provider || "anthropic" };
   }
 
   // For review: check if self-learning should escalate the model
