@@ -990,7 +990,7 @@ function generateContractPages(contracts) {
       .replace(/\{\{NAICS_ROW\}\}/g, naicsRow)
       .replace(/\{\{DESCRIPTION\}\}/g, escapeHtml(c.description))
       .replace(/\{\{SAM_LINK\}\}/g, escapeHtml(c.link))
-      .replace(/\{\{CONTRACT_NAME_ENCODED\}\}/g, encodeURIComponent(c.name))
+      .replace(/\{\{CONTRACT_NAME_ENCODED\}\}/g, escapeHtml(c.name))
       .replace(/\{\{CANONICAL_URL\}\}/g, `${SITE_URL}/contracts/${cSlug}/`);
 
     // Inject search overlay after </nav>
