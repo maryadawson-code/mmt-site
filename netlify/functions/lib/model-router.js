@@ -28,13 +28,13 @@ const MODELS = {
     floor: "claude-haiku-4-5-20251001",
   },
   contract_research: {
-    default: "llama-3.1-sonar-large-128k-online",
-    floor: "llama-3.1-sonar-large-128k-online",
+    default: "sonar-pro",
+    floor: "sonar-pro",
     provider: "perplexity",
   },
   contract_verify: {
-    default: "llama-3.1-sonar-large-128k-online",
-    floor: "llama-3.1-sonar-large-128k-online",
+    default: "sonar-pro",
+    floor: "sonar-pro",
     provider: "perplexity",
   },
   opportunity_scan: {
