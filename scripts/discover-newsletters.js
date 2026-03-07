@@ -21,6 +21,21 @@ const path = require('path');
 const NEWSLETTERS_PATH = path.join(__dirname, '..', 'newsletters.json');
 const SIMILARITY_THRESHOLD = 0.85;
 
+// MMT LinkedIn newsletter entity URN — used to filter results
+const MMT_NEWSLETTER_URN = '7307800960485969920';
+
+// URL patterns that confirm an article belongs to MMT
+function isMmtArticle(url, title) {
+  const u = url.toLowerCase();
+  // Direct match: MMT newsletter feed URL
+  if (u.includes(MMT_NEWSLETTER_URN)) return true;
+  // Direct match: missionmeetstech.com domain
+  if (u.includes('missionmeetstech.com')) return true;
+  // LinkedIn pulse articles by Mary Womack (slug contains her name)
+  if (u.includes('linkedin.com/pulse/') && (u.includes('mary-womack') || u.includes('womack'))) return true;
+  return false;
+}
+
 // --- Topic auto-tagging rules ---
 
 const TOPIC_RULES = [
@@ -224,6 +239,7 @@ async function main() {
   // Load existing newsletters
   const existing = JSON.parse(fs.readFileSync(NEWSLETTERS_PATH, 'utf8'));
   const existingUrls = new Set(existing.map(e => normalizeUrl(e.url)));
+  const existingTitleSet = new Set(existing.map(e => e.title));
   const existingTitles = existing.map(e => e.title);
 
   console.log(`Loaded ${existing.length} existing entries`);
@@ -266,9 +282,21 @@ async function main() {
       continue;
     }
 
+    // Skip non-MMT articles (must be by Mary Womack or reference MMT newsletter URN)
+    if (!isMmtArticle(normalized, title)) {
+      console.log(`  SKIP (not MMT content): ${title}`);
+      continue;
+    }
+
     // Deduplicate by URL
     if (existingUrls.has(normalized)) {
       console.log(`  SKIP (URL match): ${title}`);
+      continue;
+    }
+
+    // Deduplicate by exact title
+    if (existingTitleSet.has(title)) {
+      console.log(`  SKIP (exact title match): ${title}`);
       continue;
     }
 
