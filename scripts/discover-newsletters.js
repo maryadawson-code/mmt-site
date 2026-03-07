@@ -256,11 +256,17 @@ async function main() {
     const data = JSON.parse(raw);
 
     if (data.error) {
-      console.error('SerpAPI error:', data.error);
-      process.exit(1);
+      // "Google hasn't returned any results" is not a real error — just no new articles
+      if (data.error.includes('hasn\'t returned any results')) {
+        console.log('No new results from Google for this time period.');
+        results = [];
+      } else {
+        console.error('SerpAPI error:', data.error);
+        process.exit(1);
+      }
+    } else {
+      results = data.organic_results || [];
     }
-
-    results = data.organic_results || [];
     console.log(`SerpAPI returned ${results.length} result(s)`);
   } catch (err) {
     console.error('Failed to search SerpAPI:', err.message);
