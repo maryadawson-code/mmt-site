@@ -412,6 +412,9 @@ function generateSitemap(articles, tags, contracts) {
     { loc: '/contract-tracker.html', priority: '0.7' },
     { loc: '/events.html', priority: '0.6' },
     { loc: '/privacy.html', priority: '0.3' },
+    { loc: '/glossary.html', priority: '0.6' },
+    { loc: '/contracting.html', priority: '0.6' },
+    { loc: '/agency-sources.html', priority: '0.5' },
     { loc: '/glossary/', priority: '0.5' },
   ];
 
@@ -1213,7 +1216,8 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
     'resources.html', 'topics.html', '404.html',
     'proposal-pulse.html', 'latest.html', 'newswire.html',
     'contract-tracker.html', 'events.html',
-    'privacy.html'
+    'privacy.html', 'glossary.html', 'contracting.html',
+    'agency-sources.html'
   ];
   const ogMap = {
     'index.html': 'index.png',
