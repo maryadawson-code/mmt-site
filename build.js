@@ -179,7 +179,12 @@ function generatePodcastEpisodesHtml(feed) {
     const title = escapeHtml(ep.title || 'Untitled Episode');
     const date = ep.pubDate ? new Date(ep.pubDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
     const duration = ep.duration || '';
-    const desc = escapeHtml((ep.contentSnippet || ep.content || '').substring(0, 200));
+    // Override bad RSS descriptions for specific episodes
+    const descOverrides = {
+      'Episode 2: The Pentagon Didn\'t Ban an App. It Banned Enterprise Infrastructure': 'The Pentagon\'s Anthropic designation didn\'t just block a chatbot. It blocked the API infrastructure underpinning dozens of enterprise health IT tools \u2014 and nobody in the building seemed to know it until after the fact.',
+    };
+    const rawDesc = descOverrides[ep.title] || (ep.contentSnippet || ep.content || '').substring(0, 200);
+    const desc = escapeHtml(rawDesc);
     const audioUrl = ep.enclosure?.url || '';
     const audioPlayer = audioUrl
       ? `<audio controls preload="none" style="width:100%; margin-top:0.75rem; height:36px; border-radius:8px;">
