@@ -406,6 +406,7 @@ function generateSitemap(articles, tags, contracts) {
     { loc: '/newswire.html', priority: '0.7' },
     { loc: '/contract-tracker.html', priority: '0.7' },
     { loc: '/events.html', priority: '0.6' },
+    { loc: '/privacy.html', priority: '0.3' },
   ];
 
   // Build a map of topic slug → most recent article date within that topic
@@ -1104,6 +1105,7 @@ function injectBreadcrumbJsonLd(html, filename) {
     'newswire.html': 'News Wire',
     'contract-tracker.html': 'Contracts',
     'events.html': 'Events',
+    'privacy.html': 'Privacy',
   };
   const name = breadcrumbs[filename];
   if (!name) return html; // Skip index.html, 404.html
@@ -1204,7 +1206,8 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
     'index.html', 'about.html', 'podcast.html', 'newsletter.html',
     'resources.html', 'topics.html', '404.html',
     'proposal-pulse.html', 'latest.html', 'newswire.html',
-    'contract-tracker.html', 'events.html'
+    'contract-tracker.html', 'events.html',
+    'privacy.html'
   ];
   const ogMap = {
     'index.html': 'index.png',
