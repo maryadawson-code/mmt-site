@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EHR — Mission Meets Tech Glossary</title>
+  <meta name="description" content="Electronic Health Record. The digital medical record system. DoD uses MHS GENESIS (Oracle Health). VA is deploying the same platform.">
+  <link rel="canonical" href="https://missionmeetstech.com/glossary/ehr.html">
+  <meta property="og:title" content="EHR — Mission Meets Tech Glossary">
+  <meta property="og:description" content="Electronic Health Record. The digital medical record system. DoD uses MHS GENESIS (Oracle Health). VA is deploying the same platform.">
+  <meta property="og:url" content="https://missionmeetstech.com/glossary/ehr.html">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://missionmeetstech.com/mmt-logo.png">
+  <meta property="og:image:width" content="200">
+  <meta property="og:image:height" content="200">
+  <meta property="og:site_name" content="Mission Meets Tech">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="EHR — Mission Meets Tech Glossary">
+  <meta name="twitter:description" content="Electronic Health Record. The digital medical record system. DoD uses MHS GENESIS (Oracle Health). VA is deploying the same platform.">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
+  <link rel="alternate" type="application/rss+xml" title="Mission Meets Tech" href="/feed.xml">
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <style>
+    :root {
+      --mmt-cyan: #00E5FA;
+      --mmt-green: #00FF85;
+      --mmt-navy: #00050F;
+      --mmt-slate: #0A1628;
+      --mmt-dark: #0D1117;
+      --mmt-white: #FFFFFF;
+      --mmt-white-muted: rgba(255,255,255,0.8);
+      --mmt-white-dim: rgba(255,255,255,0.6);
+    }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--mmt-navy); color: #fff; }
+    h1, h2, h3, h4, h5 { font-family: 'Space Grotesk', system-ui, sans-serif; }
+    .gradient-text { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .btn-primary { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); color: var(--mmt-navy); font-weight: 600; padding: 0.75rem 2rem; border-radius: 9999px; transition: all 0.3s; }
+    .btn-primary:hover { transform: translateY(-1px); opacity: 0.9; }
+    .btn-secondary { border: 1px solid var(--mmt-cyan); color: #fff; padding: 0.75rem 2rem; border-radius: 9999px; transition: all 0.3s; }
+    .btn-secondary:hover { background: rgba(0,229,250,0.1); }
+    .card { background: var(--mmt-slate); border: 1px solid rgba(0,229,250,0.1); }
+    .card:hover { border-color: rgba(0,229,250,0.3); }
+    .nav-glass { background: rgba(13,17,23,0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,229,250,0.1); }
+    .section-alt { background: var(--mmt-dark); }
+    *:focus-visible { outline: 2px solid var(--mmt-cyan); outline-offset: 2px; }
+    .pillar-tag { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; background: rgba(0,229,250,0.08); color: var(--mmt-cyan); text-decoration: none; transition: background 0.15s; }
+    .pillar-tag:hover { background: rgba(0,229,250,0.15); }
+  </style>
+</head>
+<body class="antialiased">
+
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold" style="background:var(--mmt-cyan); color:#fff;">Skip to main content</a>
+
+  <nav class="nav-glass fixed top-0 left-0 right-0 z-50">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="/index.html" class="flex items-center gap-2 no-underline">
+        <span class="text-xl font-bold" style="font-family:'Space Grotesk',system-ui,sans-serif; color:#fff;">Mission Meets <span style="color:var(--mmt-cyan);">Tech</span></span>
+      </a>
+      <div class="hidden md:flex items-center gap-6">
+        <a href="/latest.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Intelligence</a>
+        <a href="/podcast.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Podcast</a>
+        <a href="/resources.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Resources</a>
+        <a href="/proposal-pulse.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">ProposalPulse</a>
+        <a href="/about.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">About</a>
+      </div>
+      <button id="menuToggle" class="md:hidden text-white text-xl" aria-label="Toggle menu">
+        <svg id="menuOpen" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
+        <svg id="menuClose" class="hidden" width="1em" height="1em" viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+      </button>
+    </div>
+    <div id="mobileMenu" class="hidden md:hidden px-6 pb-4">
+      <div class="flex flex-col gap-4 pt-2 border-t" style="border-color:rgba(0,229,250,0.1);">
+        <a href="/latest.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Intelligence</a>
+        <a href="/podcast.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Podcast</a>
+        <a href="/resources.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Resources</a>
+        <a href="/proposal-pulse.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">ProposalPulse</a>
+        <a href="/about.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">About</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main-content">
+
+  <section class="pt-36 pb-20 px-6">
+    <div class="max-w-3xl mx-auto">
+      <nav class="text-xs mb-8" style="color:var(--mmt-white-dim);">
+        <a href="/resources.html" class="no-underline" style="color:var(--mmt-cyan);">Resources</a>
+        <span class="mx-1">/</span>
+        <a href="/glossary/" class="no-underline" style="color:var(--mmt-cyan);">Glossary</a>
+        <span class="mx-1">/</span>
+        <span>EHR</span>
+      </nav>
+
+      <div class="flex items-center gap-3 mb-4">
+        <a href="/resources.html#mhs-technology" class="pillar-tag">MHS Technology</a>
+      </div>
+
+      <h1 class="text-3xl md:text-4xl font-bold leading-tight mb-6">EHR</h1>
+      <p class="text-lg leading-relaxed mb-10" style="color:var(--mmt-white-muted);">Electronic Health Record. The digital medical record system. DoD uses MHS GENESIS (Oracle Health). VA is deploying the same platform.</p>
+
+      <div class="card rounded-xl p-6 mb-10">
+        <h2 class="text-lg font-bold mb-3" style="color:var(--mmt-cyan);">Why It Matters</h2>
+        <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">The push for a single, common EHR across DoD and VA has been the defining program of federal health IT for over a decade. The technical platform is the same (Oracle Health, formerly Cerner), but the deployment experiences have been dramatically different between DoD and VA.</p>
+      </div>
+
+      <h2 class="text-lg font-bold mb-4">Related Terms</h2>
+      <div class="flex flex-wrap gap-2 mb-10">
+        <a href="mhs-genesis.html" class="pillar-tag">MHS GENESIS</a>
+            <a href="va-ehr.html" class="pillar-tag">VA EHR (Oracle Health)</a>
+            <a href="vista.html" class="pillar-tag">VistA</a>
+            <a href="fehrm.html" class="pillar-tag">FEHRM</a>
+      </div>
+
+      <div class="pt-6" style="border-top:1px solid rgba(0,229,250,0.1);">
+        <a href="/glossary/" class="text-sm font-semibold no-underline" style="color:var(--mmt-cyan);">&larr; Back to Glossary</a>
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <footer class="py-16 px-6" style="background:var(--mmt-navy); border-top:1px solid rgba(0,229,250,0.1);">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
+      <div>
+        <p class="font-bold text-lg mb-3" style="font-family:'Space Grotesk',system-ui,sans-serif; color:#fff;">Mission Meets <span style="color:var(--mmt-cyan);">Tech</span></p>
+        <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-dim);">Federal health IT intelligence. Mission first.</p>
+      </div>
+      <div>
+        <p class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var(--mmt-cyan);">Explore</p>
+        <ul class="space-y-2 list-none p-0 m-0">
+          <li><a href="/latest.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Intelligence</a></li>
+          <li><a href="/podcast.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Podcast</a></li>
+          <li><a href="/resources.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Resources</a></li>
+          <li><a href="/proposal-pulse.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">ProposalPulse</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var(--mmt-cyan);">Connect</p>
+        <ul class="space-y-2 list-none p-0 m-0">
+          <li><a href="/about.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">About</a></li>
+          <li><a href="mailto:mary@missionmeetstech.com" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Contact</a></li>
+          <li><a href="/privacy.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Privacy Policy</a></li>
+          <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">LinkedIn</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="max-w-6xl mx-auto mt-12 pt-8" style="border-top:1px solid rgba(0,229,250,0.1);">
+      <p class="text-xs text-center" style="color:var(--mmt-white-dim);">Views expressed are those of the authors and do not represent any employer or government agency.</p>
+      <p class="text-xs text-center mt-2" style="color:var(--mmt-white-dim);">&copy; 2026 Mission Meets Tech. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

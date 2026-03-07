@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Federal Health IT Resources — Mission Meets Tech</title>
-  <meta name="description" content="Federal health IT resources: defense health leadership map, 40+ term glossary, ProposalPulse AI scorer, and 79 curated links across 11 categories.">
+  <meta name="description" content="Federal health IT resource hub: five pillar guides covering MHS technology, VA health IT, contracting, compliance, and interoperability. 50+ term glossary, leadership map, and 79 curated links.">
   <link rel="canonical" href="https://missionmeetstech.com/resources">
   <meta property="og:title" content="Federal Health IT Resources — Mission Meets Tech">
-  <meta property="og:description" content="Federal health IT resources: defense health leadership map, 40+ term glossary, ProposalPulse AI scorer, and 79 curated links across 11 categories.">
+  <meta property="og:description" content="Federal health IT resource hub: five pillar guides covering MHS technology, VA health IT, contracting, compliance, and interoperability. 50+ term glossary, leadership map, and 79 curated links.">
   <meta property="og:url" content="https://missionmeetstech.com/resources">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://missionmeetstech.com/mmt-logo.png">
@@ -16,7 +16,7 @@
   <meta property="og:site_name" content="Mission Meets Tech">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Federal Health IT Resources — Mission Meets Tech">
-  <meta name="twitter:description" content="Federal health IT resources: defense health leadership map, 40+ term glossary, ProposalPulse AI scorer, and 79 curated links across 11 categories.">
+  <meta name="twitter:description" content="Federal health IT resource hub: five pillar guides covering MHS technology, VA health IT, contracting, compliance, and interoperability. 50+ term glossary, leadership map, and 79 curated links.">
   <meta name="twitter:image" content="https://missionmeetstech.com/mmt-logo.png">
   <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="preconnect" href="https://plausible.io" crossorigin>
@@ -55,6 +55,8 @@
     .cat-header { cursor: pointer; }
     .cat-chevron { transition: transform 0.2s; }
     .cat-links { display: none; }
+    .pillar-tag { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; background: rgba(0,229,250,0.08); color: var(--mmt-cyan); text-decoration: none; transition: background 0.15s; }
+    .pillar-tag:hover { background: rgba(0,229,250,0.15); }
   </style>
 </head>
 <body class="antialiased">
@@ -133,370 +135,99 @@
   <!-- Hero -->
   <section class="pt-36 pb-20 px-6">
     <div class="max-w-4xl mx-auto">
-      <p class="text-sm font-semibold tracking-widest uppercase mb-4" style="color:var(--mmt-cyan);">Intelligence Hub</p>
+      <p class="text-sm font-semibold tracking-widest uppercase mb-4" style="color:var(--mmt-cyan);">Resource Hub</p>
       <h1 class="text-3xl md:text-4xl font-bold leading-tight mb-6">Federal Health IT Resources</h1>
-      <p class="text-lg leading-relaxed max-w-3xl" style="color:var(--mmt-white-muted);">Leadership map, glossary, live headlines, contract intel, and 79 curated links to the agencies, programs, and data sources that shape federal health IT.</p>
+      <p class="text-lg leading-relaxed max-w-3xl mb-8" style="color:var(--mmt-white-muted);">Five pillar guides, 50+ glossary terms, a leadership map, live headlines, contract intel, and 79 curated links. Everything you need to navigate defense health and VA technology.</p>
+      <div class="flex flex-wrap gap-4">
+        <a href="#getting-started" class="btn-primary no-underline text-sm">New Here? Start Here</a>
+        <a href="#pillars" class="btn-secondary no-underline text-sm">Jump to Pillars</a>
+      </div>
     </div>
   </section>
 
-  <!-- News Wire Widget -->
-  <section class="section-alt py-16 px-6" id="news-wire">
+  <!-- Five Pillar Hub -->
+  <section class="section-alt py-16 px-6" id="pillars">
     <div class="max-w-4xl mx-auto">
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-bold">Live Headlines</h2>
-        <a href="newswire.html" class="text-sm font-medium no-underline hover:opacity-80" style="color:var(--mmt-cyan);">See all &rarr;</a>
+      <h2 class="text-2xl font-bold mb-2">Five Pillars</h2>
+      <p class="text-sm mb-8" style="color:var(--mmt-white-muted);">Organized by the domains that matter most in federal health IT. Each pillar has key terms, leadership context, and curated resources.</p>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <a href="#mhs-technology" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-cyan);">MHS Technology</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">MHS GENESIS, DHA, deployed medical IT, and the systems that run military healthcare.</p>
+        </a>
+        <a href="#va-health-it" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-cyan);">VA Health IT</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Oracle Health, VistA, Connected Care, and the VA's technology modernization.</p>
+        </a>
+        <a href="#contracting" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-cyan);">Contracting &amp; Acquisition</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">FAR, IDIQs, GWACs, SAM.gov, and the mechanics of selling to the federal government.</p>
+        </a>
+        <a href="#compliance" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-cyan);">Compliance &amp; Cybersecurity</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">FedRAMP, CMMC, ATO, Zero Trust, and the security frameworks that gate market access.</p>
+        </a>
+        <a href="#interoperability" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-cyan);">Interoperability</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">FHIR, HL7, TEFCA, and the standards that connect health systems across DoD and VA.</p>
+        </a>
+        <a href="glossary/" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-green);">Full Glossary</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">50+ terms with expanded definitions, context, and cross-references.</p>
+        </a>
       </div>
-      <!-- BUILD:NEWS_WIDGET -->
     </div>
   </section>
 
-  <!-- Contract Intel -->
-  <section class="py-16 px-6" id="contract-intel">
+  <!-- Getting Started -->
+  <section class="py-20 px-6" id="getting-started">
     <div class="max-w-4xl mx-auto">
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-bold">Contract Intel</h2>
-        <a href="contract-tracker.html" class="text-sm font-medium no-underline hover:opacity-80" style="color:var(--mmt-cyan);">See all &rarr;</a>
-      </div>
-      <!-- BUILD:CONTRACT_SUMMARY -->
-    </div>
-  </section>
+      <h2 class="text-3xl font-bold mb-2">Getting Started in Federal Health IT</h2>
+      <p class="text-sm mb-8" style="color:var(--mmt-white-muted);">New to government contracting or defense health? This is your on-ramp. No acronym soup, no consultant-speak.</p>
 
-  <!-- Leadership Map -->
-  <section class="py-20 px-6" id="leadership-map">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-3xl font-bold mb-2">Defense Health Leadership Map</h2>
-      <p class="text-sm mb-8" style="color:var(--mmt-white-muted);">Key positions that shape federal health IT policy, funding, and operations. Links go to official agency pages.</p>
-
-      <!-- DoD / DHA -->
-      <h3 class="text-lg font-bold mb-4" style="color:var(--mmt-cyan);">Department of Defense &amp; DHA</h3>
-      <div class="grid md:grid-cols-2 gap-4 mb-8">
-        <a href="https://dha.mil/News/2026/01/12/17/05/US-Navy-veteran-and-VA-health-care-executive-appointed-as-Department-of-Wars-top-medical-leader" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">ASD(HA) — Keith Bass</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">Assistant Secretary of Defense for Health Affairs (sworn in Jan 2026). Sets policy and budget priorities for the entire Military Health System.</p>
-        </a>
-        <a href="https://dha.mil/About-DHA/Organizational-Structure" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">DHA Director</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">Runs the Defense Health Agency. Operational authority over MTFs, TRICARE, pharmacy, and health IT systems.</p>
-        </a>
-        <a href="https://dha.mil/Offices-and-Programs/OPMED/EIT" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">DHA Enterprise IT</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">Enterprise Information Technology under OPMED. Manages health IT infrastructure, cybersecurity, and data strategy across the MHS.</p>
-        </a>
-        <a href="https://dha.mil/Offices-and-Programs/OPMED" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">OPMED (Operational Medical Systems)</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">Formerly PEO DHMS. DoD's lead for medical development and acquisition, including MHS GENESIS and deployed medical IT.</p>
-        </a>
-        <a href="https://www.cio.gov/about/members-and-leadership/" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">DoD CIO</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">Department of Defense Chief Information Officer. Sets enterprise IT policy, cloud strategy, and cyber standards that DHA must follow.</p>
-        </a>
-        <a href="https://www.fehrm.gov/" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">FEHRM</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">Federal Electronic Health Record Modernization office. Coordinates the single, common EHR across DoD, VA, Coast Guard, and NOAA. Runs the Joint HIE.</p>
-        </a>
-      </div>
-
-      <!-- VA -->
-      <h3 class="text-lg font-bold mb-4" style="color:var(--mmt-cyan);">Veterans Affairs</h3>
-      <div class="grid md:grid-cols-2 gap-4 mb-8">
-        <a href="https://www.va.gov/health/aboutvha.asp" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">Under Secretary for Health (VHA)</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">Leads the Veterans Health Administration. Oversees 1,300+ facilities, 9M+ enrolled veterans, and the largest integrated healthcare system in the U.S.</p>
-        </a>
-        <a href="https://department.va.gov/administrations-and-offices/information-and-technology/" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">VA CIO / OIT</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">Office of Information and Technology. Manages VA's $4B IT budget, EHR modernization (Oracle Health), and enterprise integration.</p>
-        </a>
-        <a href="https://connectedcare.va.gov/" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">Office of Connected Care</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">Telehealth, remote patient monitoring, and mobile health apps for veterans. Runs VA Video Connect and the My HealtheVet patient portal.</p>
-        </a>
-        <a href="https://www.vaoig.gov/" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">VA OIG</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">Office of Inspector General. Audits and investigations. Their reports on EHR deployment problems are among the most cited sources in defense health.</p>
-        </a>
-      </div>
-
-      <!-- Congressional / Oversight -->
-      <h3 class="text-lg font-bold mb-4" style="color:var(--mmt-cyan);">Congressional Oversight</h3>
-      <div class="grid md:grid-cols-2 gap-4 mb-4">
-        <a href="https://armedservices.house.gov/" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">HASC</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">House Armed Services Committee. Authorizes defense spending including the Defense Health Program. Writes the NDAA.</p>
-        </a>
-        <a href="https://www.armed-services.senate.gov/" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">SASC</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">Senate Armed Services Committee. Senate counterpart. Their markup of the NDAA often contains health IT provisions that differ from the House version.</p>
-        </a>
-        <a href="https://veterans.house.gov/" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">HVAC</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">House Veterans' Affairs Committee. Oversees VA healthcare delivery, EHR modernization, and benefits administration.</p>
-        </a>
-        <a href="https://www.veterans.senate.gov/" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">SVAC</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">Senate Veterans' Affairs Committee. Senate counterpart. Confirmation hearings for VA leadership happen here.</p>
-        </a>
-      </div>
-      <p class="text-xs mt-2" style="color:var(--mmt-white-dim);">Positions shown, not current office holders. Leadership changes frequently. See <a href="latest.html" class="no-underline" style="color:var(--mmt-cyan);">Latest</a> for coverage of recent appointments.</p>
-    </div>
-  </section>
-
-  <!-- Glossary -->
-  <section class="section-alt py-20 px-6" id="glossary">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-3xl font-bold mb-2">Glossary</h2>
-      <p class="text-sm mb-8" style="color:var(--mmt-white-muted);">Federal health IT in plain English. The acronyms, jargon, and terms you'll encounter in defense health policy, acquisition, and technology.</p>
-
-      <div class="grid md:grid-cols-2 gap-x-8 gap-y-4">
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">ASD(HA)</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Assistant Secretary of Defense for Health Affairs. The top civilian health policy official in the Pentagon.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">ATO</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Authority to Operate. The security approval a system needs before it can go live on a government network. Getting an ATO can take months.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">BPA (Blanket Purchase Agreement)</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">A streamlined ordering mechanism set up against an existing GSA Schedule contract. BPAs reduce procurement friction for repetitive purchases by pre-negotiating terms. If an agency buys the same type of IT service regularly, they'll likely use a BPA rather than re-compete every time.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">CMMC (Cybersecurity Maturity Model Certification)</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">The DoD framework requiring contractors to meet specific cybersecurity standards before being awarded contracts. Level 1 covers basic cyber hygiene (self-assessment). Level 2 aligns with NIST SP 800-171 and requires third-party assessment by a C3PAO (Certified Third-Party Assessment Organization). Level 3 is for the most sensitive programs and requires government-led assessment. If you sell to DoD, CMMC compliance is becoming table stakes.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">CO / KO (Contracting Officer)</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">The individual with legal authority to enter into, administer, and terminate contracts on behalf of the U.S. government. "KO" (Kontract Officer) is a legacy abbreviation used interchangeably with "CO" across organizations. No one else on the government side can bind the government to a contract. If the CO didn't sign it, it doesn't count.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">COR (Contracting Officer's Representative)</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">The government employee designated to oversee day-to-day contractor performance after award. The COR monitors deliverables, approves invoices, and flags issues. They cannot modify contract terms, but they are your primary point of contact for the duration of performance.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">COTS</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Commercial Off-the-Shelf. Software or hardware bought as-is from a vendor rather than custom-built. The theory is faster, cheaper. The reality is more complicated.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">CRS</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Congressional Research Service. Nonpartisan policy research arm of Congress. Their reports are among the most reliable sources on defense health.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">DHA</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Defense Health Agency. Runs military healthcare operations, TRICARE, pharmacy, and health IT. Stood up in 2013 to unify care across the Services.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">DHP</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Defense Health Program. The $40+ billion annual budget line that funds military healthcare. When people say "defense health spending," this is what they mean.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">EHR</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Electronic Health Record. The digital medical record system. DoD uses MHS GENESIS (Oracle Health). VA is deploying the same platform.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">FAR (Federal Acquisition Regulation)</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">The primary rule book governing how the federal government buys goods and services. Every government contract traces back to the FAR. Supplements exist for DoD (DFARS), VA (VAAR), and other agencies. Understanding the FAR is the baseline for working in GovCon.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">FHIR</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Fast Healthcare Interoperability Resources (pronounced "fire"). The modern data standard for exchanging health information between systems. Mandated by the 21st Century Cures Act.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">Fixed-Price vs. Cost-Plus</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">The two fundamental contract pricing structures. Fixed-price: the contractor agrees to deliver for a set amount. The risk sits with the contractor. Cost-plus: the government reimburses actual costs plus a fee. The risk sits with the government. Most federal IT services use some variation of these two, and the choice shapes everything from proposal strategy to profit margins.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">FedRAMP</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Federal Risk and Authorization Management Program. The government's security certification for cloud services. Required before any cloud product can serve federal agencies.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">FY</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Fiscal Year. The federal fiscal year runs October 1 to September 30. FY2026 started October 1, 2025.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">GAO</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Government Accountability Office. Congress's investigative arm. Their audits of defense health IT programs carry significant weight.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">GWAC (Government-Wide Acquisition Contract)</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Multi-agency contract vehicles that any federal agency can use to buy IT products and services. The big ones: CIO-SP4 (NITAAC), SEWP (NASA), Alliant 3 (GSA). Getting on a GWAC is a major business development milestone because it opens the door to task orders from across the government.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">GovCon</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Government Contracting. The industry of selling products and services to federal agencies. Its own culture, rules, and vocabulary.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">IDIQ</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Indefinite Delivery/Indefinite Quantity. A contract vehicle that sets terms and ceiling but lets the government order as needed via task orders. The bread and butter of federal IT procurement.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">HL7 (Health Level Seven)</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">The foundational family of healthcare data exchange standards that predates FHIR. FHIR is the modern, API-first evolution of HL7. Many legacy federal health systems still run on HL7 v2.x messaging, which uses pipe-delimited text messages to exchange patient data between systems. Understanding HL7 v2 is still essential because you'll encounter it in every brownfield integration.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">JLV (Joint Longitudinal Viewer)</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">A web-based tool that gives VA and DoD providers read-only access to a consolidated view of a patient's medical history across both systems. JLV is critical for continuity of care when service members transition to veteran status or receive care at both DoD and VA facilities. It doesn't replace the EHR; it bridges the gap between them.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">JOMIS</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Joint Operational Medicine Information Systems. Medical IT for deployed and combat environments. The systems a medic uses in theater.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">MHS</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Military Health System. The entire enterprise: DHA, Service medical commands, MTFs, TRICARE, and the health IT infrastructure that connects them.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">MHS GENESIS</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">The DoD's electronic health record, built on Oracle Health (formerly Cerner). Deployed across military hospitals and clinics. The single largest health IT deployment in federal history.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">MTF</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Military Treatment Facility. A military hospital or clinic. There are roughly 700 worldwide, from Walter Reed to battalion aid stations.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">NDAA</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">National Defense Authorization Act. Annual legislation that sets defense policy and spending priorities. Health IT provisions are typically in Title VII.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">OTA</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Other Transaction Authority. A faster procurement path that bypasses traditional FAR contracting rules. Used for prototyping and innovation programs.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">PEO DHMS</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Program Executive Office, Defense Healthcare Management Systems. Manages MHS GENESIS and related health IT deployments. The office that owns EHR modernization.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">PM / DPM (Program Manager / Deputy Program Manager)</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">The government PM is responsible for overall program success: schedule, budget, and outcomes. The DPM typically manages specific workstreams or serves as the PM's operational lead. On the contractor side, the PM is usually the single point of accountability named in the proposal. If your program is struggling, the PM is the person Congress wants to hear from.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">PWS</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Performance Work Statement. Tells the contractor what outcomes to deliver (vs. SOW which tells them how). Government prefers PWS for services contracts.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">pWin</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Probability of Win. A capture management metric estimating the likelihood of winning a contract. Typically expressed as a percentage, reassessed at each gate review.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">RFI</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Request for Information. The government asking industry "what can you do?" before writing a formal solicitation. Not a contract, and not necessarily a signal that a contract is coming. The majority of RFIs do not result in a formal solicitation. Treat your RFI response as market research for the government and a relationship-building exercise, not a sales opportunity.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">RFP</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Request for Proposal. The formal solicitation. This is the government saying "submit your proposal by this date." The starting gun for capture teams.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">Role 1 / 2 / 3 (Medical Treatment Echelons)</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Military medical echelons that determine what care capability and EHR systems are deployed at each level. Role 1: point-of-injury care, battalion aid station. Role 2: forward surgical teams with limited holding capacity. Role 3: theater-level hospital with full surgical and ICU capability. Each echelon has different IT requirements and connectivity constraints. The EHR that works at Walter Reed may not function at a Role 1 aid station with a satellite uplink.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">SAM.gov</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">System for Award Management. Where federal contracts and solicitations are posted. If you're in GovCon, you live here.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">Service Components</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">The military departments (Army, Navy, Air Force) and their subordinate organizations, plus Marines, Space Force, and Coast Guard. Each retains health systems separate from but coordinated with DHA. DHA has operational authority over MTFs, but the Services still own their medical personnel, training pipelines, and operational medicine requirements. This tension between DHA centralization and Service Component autonomy is a recurring theme in defense health policy.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">Small Business Set-Asides</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Federal contracting categories that restrict competition to qualifying small businesses. The major designations: 8(a) (disadvantaged businesses in the SBA mentorship program), HUBZone (businesses in historically underutilized areas), SDVOSB (service-disabled veteran-owned), and WOSB (women-owned). Each has different eligibility rules, and agencies have annual targets for small business spending.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">SOW</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Statement of Work. The contract document that specifies exactly what the contractor must do, how, and when. Drives scoring in ProposalPulse when uploaded.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">T4NG</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Transformation Twenty-One Total Technology Next Generation. VA's primary IT services contract vehicle. $22.3B ceiling. If you sell IT to VA, you probably use T4NG.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">Task Order</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">The mechanism by which actual work is issued under IDIQ contracts, GWACs, and BPAs. The contract vehicle sets the ceiling and terms; individual task orders specify the scope, period, and funding for each piece of work. Most revenue in federal IT contracting flows through task orders, not the vehicle award itself.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">TRICARE</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">The healthcare program for military members, retirees, and families. Covers 9.6M beneficiaries. Managed by DHA through regional contractors.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">USCDI</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">United States Core Data for Interoperability. The standardized set of health data classes that systems must be able to exchange. Updated annually by ONC.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">VA EHR (Oracle Health / Cerner)</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">The VA's electronic health record modernization program, now under Oracle Health (formerly Cerner). This is the same underlying platform as DoD's MHS GENESIS, but the VA deployment has faced persistent challenges including usability issues, patient safety concerns, and repeated schedule delays. Not to be confused with VistA, the VA's legacy EHR that Oracle Health is meant to replace.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">VHA</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Veterans Health Administration. The healthcare delivery arm of the VA. Operates the hospitals, clinics, and care networks. The largest integrated health system in the country.</p>
-        </div>
-        <div class="py-3" style="border-bottom:1px solid rgba(0,229,250,0.08);">
-          <p class="text-sm font-bold" style="color:var(--mmt-white);">VistA</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Veterans Health Information Systems and Technology Architecture. VA's legacy EHR, built in-house starting in the 1970s. Being replaced by Oracle Health, but still running at most sites.</p>
-        </div>
-      </div>
-      <p class="text-xs mt-6" style="color:var(--mmt-white-dim);">Missing a term? <a href="mailto:mary@missionmeetstech.com" class="no-underline" style="color:var(--mmt-cyan);">Let me know</a> and I'll add it.</p>
-    </div>
-  </section>
-
-  <!-- How Federal Contracting Works -->
-  <section class="py-20 px-6" id="federal-contracting-basics">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-3xl font-bold mb-2">How Federal Contracting Actually Works</h2>
-      <p class="text-sm mb-8" style="color:var(--mmt-white-muted);">The plain-English version. No acronym soup, no consultant-speak. If you want to sell to the federal government, start here.</p>
-
-      <div class="space-y-6">
+      <div class="space-y-6 mb-12">
         <div class="card rounded-xl p-6">
           <h3 class="text-base font-bold mb-3" style="color:var(--mmt-cyan);">1. Get Registered</h3>
-          <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">Before any federal agency can give you money, you need a Unique Entity Identifier (UEI) and an active registration in <a href="https://sam.gov" target="_blank" rel="noopener" class="no-underline" style="color:var(--mmt-cyan);">SAM.gov</a>. You'll also get a CAGE code (Commercial and Government Entity) during registration. Allow 10+ business days for initial registration. It must be renewed annually or you're locked out of awards.</p>
+          <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">Before any federal agency can give you money, you need a Unique Entity Identifier (UEI) and an active registration in <a href="https://sam.gov" target="_blank" rel="noopener" class="no-underline" style="color:var(--mmt-cyan);">SAM.gov</a>. You'll also get a CAGE code during registration. Allow 10+ business days. It must be renewed annually or you're locked out of awards. Registration is free. If someone charges you, it's a scam.</p>
         </div>
-
         <div class="card rounded-xl p-6">
           <h3 class="text-base font-bold mb-3" style="color:var(--mmt-cyan);">2. Know Your NAICS Codes</h3>
-          <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">NAICS codes classify what you do. The government uses them to determine which size standard applies to your company and which set-aside categories you qualify for. Pick the codes that match your actual work. Common health IT codes: 541512 (Computer Systems Design), 541511 (Custom Programming), 518210 (Cloud/Data Processing).</p>
+          <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">NAICS codes classify what you do. The government uses them to determine size standards and set-aside eligibility. Common health IT codes: 541512 (Computer Systems Design), 541511 (Custom Programming), 518210 (Cloud/Data Processing).</p>
         </div>
-
         <div class="card rounded-xl p-6">
           <h3 class="text-base font-bold mb-3" style="color:var(--mmt-cyan);">3. Understand the Acquisition Lifecycle</h3>
-          <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">The basic flow: Market Research (the government figures out what's available) &#8594; Solicitation (RFI, then RFP/RFQ) &#8594; Proposal Submission &#8594; Evaluation &#8594; Award &#8594; Performance &#8594; Closeout. The whole process is governed by the FAR (Federal Acquisition Regulation). Changes during performance always flow through the Contracting Officer.</p>
+          <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">The basic flow: Market Research &#8594; Solicitation (RFI, then RFP/RFQ) &#8594; Proposal Submission &#8594; Evaluation &#8594; Award &#8594; Performance &#8594; Closeout. The whole process is governed by the <a href="glossary/far.html" class="no-underline" style="color:var(--mmt-cyan);">FAR</a>. Changes during performance always flow through the <a href="glossary/contracting-officer.html" class="no-underline" style="color:var(--mmt-cyan);">Contracting Officer</a>.</p>
         </div>
-
         <div class="card rounded-xl p-6">
           <h3 class="text-base font-bold mb-3" style="color:var(--mmt-cyan);">4. Find Opportunities</h3>
-          <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">Active solicitations post on <a href="https://sam.gov/opportunities" target="_blank" rel="noopener" class="no-underline" style="color:var(--mmt-cyan);">SAM.gov</a>. Agency forecast sites publish upcoming procurements before they hit SAM. Track contract vehicles like IDIQs, GWACs, and BPAs. And read the RFIs, even if most don't lead to a solicitation. They tell you what the government is thinking about buying.</p>
+          <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">Active solicitations post on <a href="https://sam.gov/opportunities" target="_blank" rel="noopener" class="no-underline" style="color:var(--mmt-cyan);">SAM.gov</a>. Agency forecast sites publish upcoming procurements before they hit SAM. Track contract vehicles like <a href="glossary/idiq.html" class="no-underline" style="color:var(--mmt-cyan);">IDIQs</a>, <a href="glossary/gwac.html" class="no-underline" style="color:var(--mmt-cyan);">GWACs</a>, and <a href="glossary/bpa.html" class="no-underline" style="color:var(--mmt-cyan);">BPAs</a>. Read the RFIs too. They tell you what the government is thinking about buying.</p>
         </div>
-
         <div class="card rounded-xl p-6">
           <h3 class="text-base font-bold mb-3" style="color:var(--mmt-cyan);">5. Consider Entry Paths</h3>
-          <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">A GSA Schedule gives you a pre-negotiated contract that agencies can buy from directly. The SBA's 8(a) program offers mentorship and set-aside access for disadvantaged small businesses. SBIR/STTR programs fund R&amp;D for tech companies. Subcontracting under an established prime is another way in. There's no single right answer, but there is a wrong one: trying to win a M IDIQ as your first contract.</p>
+          <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">A GSA Schedule gives you a pre-negotiated contract that agencies can buy from directly. The SBA's 8(a) program offers mentorship and set-aside access. SBIR/STTR programs fund R&amp;D. Subcontracting under an established prime is another way in. There's no single right answer, but there is a wrong one: trying to win a $1B IDIQ as your first contract.</p>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- SAM.gov Getting Started -->
-  <section class="section-alt py-20 px-6" id="sam-registration">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-3xl font-bold mb-2">Getting Registered on SAM.gov</h2>
-      <p class="text-sm mb-8" style="color:var(--mmt-white-muted);">SAM.gov (System for Award Management) is the single government database for vendor registration. No registration, no contract awards. Here's what you need to know.</p>
 
       <div class="card rounded-xl p-6">
+        <h3 class="text-base font-bold mb-4" style="color:var(--mmt-cyan);">SAM.gov Registration Checklist</h3>
         <div class="grid md:grid-cols-2 gap-6">
           <div>
-            <h3 class="text-sm font-bold mb-2" style="color:var(--mmt-cyan);">What You'll Need</h3>
+            <h4 class="text-sm font-bold mb-2" style="color:var(--mmt-white);">What You'll Need</h4>
             <ul class="text-xs space-y-2 list-none p-0 m-0" style="color:var(--mmt-white-muted);">
               <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> EIN (Employer Identification Number) or TIN</li>
-              <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> DUNS number has been replaced by UEI (assigned during SAM registration)</li>
+              <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> UEI (assigned during SAM registration)</li>
               <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> Bank account info for electronic funds transfer</li>
               <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> NAICS codes for your primary business activities</li>
               <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> Company size and ownership details</li>
             </ul>
           </div>
           <div>
-            <h3 class="text-sm font-bold mb-2" style="color:var(--mmt-cyan);">Key Facts</h3>
+            <h4 class="text-sm font-bold mb-2" style="color:var(--mmt-white);">Key Facts</h4>
             <ul class="text-xs space-y-2 list-none p-0 m-0" style="color:var(--mmt-white-muted);">
-              <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> Registration is free. If someone charges you, it's a scam.</li>
-              <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> Allow 10+ business days for initial processing</li>
-              <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> Must renew annually or your registration goes inactive</li>
-              <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> You'll receive a CAGE code automatically</li>
+              <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> Registration is free. Period.</li>
+              <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> Allow 10+ business days for processing</li>
+              <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> Must renew annually or registration goes inactive</li>
+              <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> CAGE code assigned automatically</li>
               <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> Required before any contract, grant, or cooperative agreement</li>
             </ul>
           </div>
@@ -508,40 +239,308 @@
     </div>
   </section>
 
-  <!-- Curated Resource Links -->
-  <section class="py-20 px-6" id="resource-links">
+  <!-- Pillar 1: MHS Technology -->
+  <section class="section-alt py-20 px-6" id="mhs-technology">
     <div class="max-w-4xl mx-auto">
-      <h2 class="text-3xl font-bold mb-4">Curated Resource Links</h2>
-      <p class="text-sm mb-10" style="color:var(--mmt-white-muted);">79 resources across 11 categories — the agencies, tools, data sources, and intelligence platforms that shape federal health IT.</p>
+      <p class="text-xs font-semibold tracking-widest uppercase mb-3" style="color:var(--mmt-cyan);">Pillar 1</p>
+      <h2 class="text-3xl font-bold mb-2">MHS Technology</h2>
+      <p class="text-sm mb-8" style="color:var(--mmt-white-muted);">The Military Health System serves 9.6M beneficiaries across 700+ facilities worldwide. These are the systems, programs, and organizations that run it.</p>
 
-      <!-- 1. Key Agencies & Programs (11) -->
+      <h3 class="text-lg font-bold mb-4" style="color:var(--mmt-cyan);">Key Terms</h3>
+      <div class="grid md:grid-cols-2 gap-4 mb-4">
+        <a href="glossary/mhs-genesis.html" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">MHS GENESIS</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">DoD's EHR built on Oracle Health. The single largest health IT deployment in federal history.</p>
+        </a>
+        <a href="glossary/dha.html" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">DHA</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Defense Health Agency. Runs military healthcare operations, TRICARE, pharmacy, and health IT.</p>
+        </a>
+        <a href="glossary/jomis.html" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">JOMIS</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Joint Operational Medicine Information Systems. Medical IT for deployed and combat environments.</p>
+        </a>
+        <a href="glossary/medical-echelons.html" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">Role 1 / 2 / 3</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Medical treatment echelons with different care capability and IT requirements at each level.</p>
+        </a>
+      </div>
+      <p class="text-xs mb-8" style="color:var(--mmt-white-dim);">Also: <a href="glossary/mhs.html" class="no-underline" style="color:var(--mmt-cyan);">MHS</a>, <a href="glossary/mtf.html" class="no-underline" style="color:var(--mmt-cyan);">MTF</a>, <a href="glossary/tricare.html" class="no-underline" style="color:var(--mmt-cyan);">TRICARE</a>, <a href="glossary/dhp.html" class="no-underline" style="color:var(--mmt-cyan);">DHP</a>, <a href="glossary/ehr.html" class="no-underline" style="color:var(--mmt-cyan);">EHR</a>, <a href="glossary/opmed.html" class="no-underline" style="color:var(--mmt-cyan);">OPMED</a>, <a href="glossary/ndaa.html" class="no-underline" style="color:var(--mmt-cyan);">NDAA</a>, <a href="glossary/asd-ha.html" class="no-underline" style="color:var(--mmt-cyan);">ASD(HA)</a></p>
+
+      <h3 class="text-lg font-bold mb-4" style="color:var(--mmt-cyan);">Key Leadership</h3>
+      <div class="grid md:grid-cols-2 gap-4 mb-8">
+        <a href="https://dha.mil/News/2026/01/12/17/05/US-Navy-veteran-and-VA-health-care-executive-appointed-as-Department-of-Wars-top-medical-leader" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">ASD(HA) — Keith Bass</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Sets policy and budget priorities for the entire Military Health System.</p>
+        </a>
+        <a href="https://dha.mil/About-DHA/Organizational-Structure" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">DHA Director</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Operational authority over MTFs, TRICARE, pharmacy, and health IT systems.</p>
+        </a>
+        <a href="https://dha.mil/Offices-and-Programs/OPMED" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">OPMED</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Formerly PEO DHMS. DoD's lead for medical development and acquisition.</p>
+        </a>
+        <a href="https://dha.mil/Offices-and-Programs/OPMED/EIT" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">DHA Enterprise IT</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Health IT infrastructure, cybersecurity, and data strategy across the MHS.</p>
+        </a>
+      </div>
+
+      <h3 class="text-lg font-bold mb-4" style="color:var(--mmt-cyan);">Key Resources</h3>
+      <div class="grid sm:grid-cols-2 gap-3">
+        <a href="https://www.dha.mil/" target="_blank" rel="noopener" class="resource-link"><span><strong>DHA</strong> — dha.mil</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://dha.mil/For-Beneficiaries/MHS-GENESIS" target="_blank" rel="noopener" class="resource-link"><span><strong>MHS GENESIS</strong> — dha.mil</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://dha.mil/Offices-and-Programs/OPMED" target="_blank" rel="noopener" class="resource-link"><span><strong>OPMED</strong> — dha.mil</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://www.fehrm.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>FEHRM</strong> — fehrm.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://www.tricare.mil/" target="_blank" rel="noopener" class="resource-link"><span><strong>TRICARE</strong> — tricare.mil</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://www.ai.mil/" target="_blank" rel="noopener" class="resource-link"><span><strong>CDAO</strong> — ai.mil</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pillar 2: VA Health IT -->
+  <section class="py-20 px-6" id="va-health-it">
+    <div class="max-w-4xl mx-auto">
+      <p class="text-xs font-semibold tracking-widest uppercase mb-3" style="color:var(--mmt-cyan);">Pillar 2</p>
+      <h2 class="text-3xl font-bold mb-2">VA Health IT</h2>
+      <p class="text-sm mb-8" style="color:var(--mmt-white-muted);">The VA operates the largest integrated healthcare system in the U.S. Its technology modernization is one of the most watched programs in federal IT.</p>
+
+      <h3 class="text-lg font-bold mb-4" style="color:var(--mmt-cyan);">Key Terms</h3>
+      <div class="grid md:grid-cols-2 gap-4 mb-4">
+        <a href="glossary/va-ehr.html" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">VA EHR (Oracle Health)</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">The VA's EHR modernization program. Same platform as MHS GENESIS, different deployment challenges.</p>
+        </a>
+        <a href="glossary/vista.html" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">VistA</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">VA's legacy EHR, built in-house starting in the 1970s. Being replaced, but still running at most sites.</p>
+        </a>
+        <a href="glossary/jlv.html" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">JLV</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Joint Longitudinal Viewer. Bridges DoD and VA patient records for continuity of care.</p>
+        </a>
+        <a href="glossary/vha.html" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">VHA</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Veterans Health Administration. 1,300+ facilities, 9M+ enrolled veterans.</p>
+        </a>
+      </div>
+      <p class="text-xs mb-8" style="color:var(--mmt-white-dim);">Also: <a href="glossary/t4ng.html" class="no-underline" style="color:var(--mmt-cyan);">T4NG</a>, <a href="glossary/connected-care.html" class="no-underline" style="color:var(--mmt-cyan);">Connected Care</a></p>
+
+      <h3 class="text-lg font-bold mb-4" style="color:var(--mmt-cyan);">Key Leadership</h3>
+      <div class="grid md:grid-cols-2 gap-4 mb-8">
+        <a href="https://www.va.gov/health/aboutvha.asp" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">Under Secretary for Health (VHA)</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Leads the largest integrated healthcare system in the U.S.</p>
+        </a>
+        <a href="https://department.va.gov/administrations-and-offices/information-and-technology/" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">VA CIO / OIT</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Manages VA's $4B IT budget, EHR modernization, and enterprise integration.</p>
+        </a>
+        <a href="https://connectedcare.va.gov/" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">Office of Connected Care</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Telehealth, remote monitoring, VA Video Connect, My HealtheVet.</p>
+        </a>
+        <a href="https://www.vaoig.gov/" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">VA OIG</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Inspector General. Audits and investigations, especially on EHR deployment.</p>
+        </a>
+      </div>
+
+      <h3 class="text-lg font-bold mb-4" style="color:var(--mmt-cyan);">Key Resources</h3>
+      <div class="grid sm:grid-cols-2 gap-3">
+        <a href="https://digital.va.gov/office-of-information-and-technology/" target="_blank" rel="noopener" class="resource-link"><span><strong>VA OIT</strong> — digital.va.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://digital.va.gov/ehr-modernization/about/" target="_blank" rel="noopener" class="resource-link"><span><strong>VA EHR Modernization</strong> — digital.va.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://developer.va.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>VA Lighthouse APIs</strong> — developer.va.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://connectedcare.va.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>Connected Care</strong> — connectedcare.va.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://www.data.va.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>VA Open Data</strong> — data.va.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pillar 3: Contracting & Acquisition -->
+  <section class="section-alt py-20 px-6" id="contracting">
+    <div class="max-w-4xl mx-auto">
+      <p class="text-xs font-semibold tracking-widest uppercase mb-3" style="color:var(--mmt-cyan);">Pillar 3</p>
+      <h2 class="text-3xl font-bold mb-2">Contracting &amp; Acquisition</h2>
+      <p class="text-sm mb-8" style="color:var(--mmt-white-muted);">How the federal government buys health IT. The rules, vehicles, roles, and mechanics that shape every deal.</p>
+
+      <h3 class="text-lg font-bold mb-4" style="color:var(--mmt-cyan);">Key Terms</h3>
+      <div class="grid md:grid-cols-2 gap-4 mb-4">
+        <a href="glossary/far.html" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">FAR</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Federal Acquisition Regulation. The primary rule book for government procurement.</p>
+        </a>
+        <a href="glossary/idiq.html" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">IDIQ</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Indefinite Delivery/Indefinite Quantity. The bread and butter of federal IT procurement.</p>
+        </a>
+        <a href="glossary/gwac.html" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">GWAC</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Government-Wide Acquisition Contracts. CIO-SP4, SEWP, Alliant 3. The big doors.</p>
+        </a>
+        <a href="glossary/contracting-officer.html" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">CO / KO</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">The only person who can legally bind the government to a contract.</p>
+        </a>
+      </div>
+      <p class="text-xs mb-8" style="color:var(--mmt-white-dim);">Also: <a href="glossary/bpa.html" class="no-underline" style="color:var(--mmt-cyan);">BPA</a>, <a href="glossary/task-order.html" class="no-underline" style="color:var(--mmt-cyan);">Task Order</a>, <a href="glossary/rfp.html" class="no-underline" style="color:var(--mmt-cyan);">RFP</a>, <a href="glossary/rfi.html" class="no-underline" style="color:var(--mmt-cyan);">RFI</a>, <a href="glossary/sow.html" class="no-underline" style="color:var(--mmt-cyan);">SOW</a>, <a href="glossary/pws.html" class="no-underline" style="color:var(--mmt-cyan);">PWS</a>, <a href="glossary/pwin.html" class="no-underline" style="color:var(--mmt-cyan);">pWin</a>, <a href="glossary/cor.html" class="no-underline" style="color:var(--mmt-cyan);">COR</a>, <a href="glossary/ota.html" class="no-underline" style="color:var(--mmt-cyan);">OTA</a>, <a href="glossary/contract-pricing.html" class="no-underline" style="color:var(--mmt-cyan);">Fixed-Price vs Cost-Plus</a>, <a href="glossary/small-business-set-asides.html" class="no-underline" style="color:var(--mmt-cyan);">Small Business Set-Asides</a>, <a href="glossary/sam-gov.html" class="no-underline" style="color:var(--mmt-cyan);">SAM.gov</a>, <a href="glossary/govcon.html" class="no-underline" style="color:var(--mmt-cyan);">GovCon</a></p>
+
+      <h3 class="text-lg font-bold mb-4" style="color:var(--mmt-cyan);">Congressional Oversight</h3>
+      <div class="grid md:grid-cols-2 gap-4 mb-8">
+        <a href="https://armedservices.house.gov/" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">HASC</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">House Armed Services Committee. Authorizes defense spending. Writes the NDAA.</p>
+        </a>
+        <a href="https://www.armed-services.senate.gov/" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">SASC</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Senate Armed Services Committee. Their NDAA markup often diverges from the House version.</p>
+        </a>
+        <a href="https://veterans.house.gov/" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">HVAC</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">House Veterans' Affairs Committee. Oversees VA healthcare and EHR modernization.</p>
+        </a>
+        <a href="https://www.veterans.senate.gov/" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">SVAC</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Senate Veterans' Affairs Committee. VA leadership confirmation hearings happen here.</p>
+        </a>
+      </div>
+
+      <h3 class="text-lg font-bold mb-4" style="color:var(--mmt-cyan);">Key Resources</h3>
+      <div class="grid sm:grid-cols-2 gap-3">
+        <a href="https://sam.gov/opportunities" target="_blank" rel="noopener" class="resource-link"><span><strong>SAM.gov Opportunities</strong> — sam.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://sam.gov/fpds" target="_blank" rel="noopener" class="resource-link"><span><strong>SAM.gov Award Data</strong> — sam.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://www.usaspending.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>USASpending</strong> — usaspending.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://www.va.gov/opal/tac/t4ng.asp" target="_blank" rel="noopener" class="resource-link"><span><strong>T4NG (VA)</strong> — va.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://nitaac.nih.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>NITAAC / CIO-SP3</strong> — nitaac.nih.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://www.gsa.gov/oasis-plus" target="_blank" rel="noopener" class="resource-link"><span><strong>OASIS+ (GSA)</strong> — gsa.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://www.dau.edu/" target="_blank" rel="noopener" class="resource-link"><span><strong>DAU</strong> — dau.edu</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://acqnotes.com/" target="_blank" rel="noopener" class="resource-link"><span><strong>AcqNotes</strong> — acqnotes.com</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pillar 4: Compliance & Cybersecurity -->
+  <section class="py-20 px-6" id="compliance">
+    <div class="max-w-4xl mx-auto">
+      <p class="text-xs font-semibold tracking-widest uppercase mb-3" style="color:var(--mmt-cyan);">Pillar 4</p>
+      <h2 class="text-3xl font-bold mb-2">Compliance &amp; Cybersecurity</h2>
+      <p class="text-sm mb-8" style="color:var(--mmt-white-muted);">The security frameworks, certifications, and compliance requirements that gate market access. If you can't pass these, you can't sell to the government.</p>
+
+      <h3 class="text-lg font-bold mb-4" style="color:var(--mmt-cyan);">Key Terms</h3>
+      <div class="grid md:grid-cols-2 gap-4 mb-4">
+        <a href="glossary/ato.html" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">ATO</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Authority to Operate. The security approval needed before going live on a government network.</p>
+        </a>
+        <a href="glossary/fedramp.html" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">FedRAMP</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Security certification required for any cloud product serving federal agencies.</p>
+        </a>
+        <a href="glossary/cmmc.html" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">CMMC</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Cybersecurity Maturity Model Certification. Becoming table stakes for DoD contractors.</p>
+        </a>
+        <a href="glossary/zero-trust.html" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">Zero Trust</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">DoD's mandated security architecture. Never trust, always verify.</p>
+        </a>
+      </div>
+      <p class="text-xs mb-8" style="color:var(--mmt-white-dim);">Also: <a href="glossary/nist-800-171.html" class="no-underline" style="color:var(--mmt-cyan);">NIST 800-171</a>, <a href="glossary/nist-800-53.html" class="no-underline" style="color:var(--mmt-cyan);">NIST 800-53</a>, <a href="glossary/stigs.html" class="no-underline" style="color:var(--mmt-cyan);">STIGs</a>, <a href="glossary/cots.html" class="no-underline" style="color:var(--mmt-cyan);">COTS</a></p>
+
+      <h3 class="text-lg font-bold mb-4" style="color:var(--mmt-cyan);">Key Resources</h3>
+      <div class="grid sm:grid-cols-2 gap-3">
+        <a href="https://marketplace.fedramp.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>FedRAMP Marketplace</strong> — marketplace.fedramp.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://dodcio.defense.gov/CMMC/" target="_blank" rel="noopener" class="resource-link"><span><strong>CMMC (DoD CIO)</strong> — dodcio.defense.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://csrc.nist.gov/pubs/sp/800/171/r3/final" target="_blank" rel="noopener" class="resource-link"><span><strong>NIST SP 800-171</strong> — csrc.nist.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final" target="_blank" rel="noopener" class="resource-link"><span><strong>NIST SP 800-53</strong> — csrc.nist.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://dodcio.defense.gov/Portals/0/Documents/Library/DoD-ZTStrategy.pdf" target="_blank" rel="noopener" class="resource-link"><span><strong>DoD Zero Trust Strategy</strong> — dodcio.defense.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://www.cyber.mil/stigs/" target="_blank" rel="noopener" class="resource-link"><span><strong>DISA STIGs</strong> — cyber.mil</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pillar 5: Interoperability -->
+  <section class="section-alt py-20 px-6" id="interoperability">
+    <div class="max-w-4xl mx-auto">
+      <p class="text-xs font-semibold tracking-widest uppercase mb-3" style="color:var(--mmt-cyan);">Pillar 5</p>
+      <h2 class="text-3xl font-bold mb-2">Interoperability</h2>
+      <p class="text-sm mb-8" style="color:var(--mmt-white-muted);">The standards, frameworks, and networks that connect health systems across DoD, VA, and the broader healthcare ecosystem.</p>
+
+      <h3 class="text-lg font-bold mb-4" style="color:var(--mmt-cyan);">Key Terms</h3>
+      <div class="grid md:grid-cols-2 gap-4 mb-4">
+        <a href="glossary/fhir.html" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">FHIR</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Fast Healthcare Interoperability Resources. The modern data standard mandated by the 21st Century Cures Act.</p>
+        </a>
+        <a href="glossary/hl7.html" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">HL7</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">The foundational family of healthcare data exchange standards. FHIR is its modern evolution.</p>
+        </a>
+        <a href="glossary/tefca.html" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">TEFCA</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Trusted Exchange Framework and Common Agreement. The national infrastructure for health data exchange.</p>
+        </a>
+        <a href="glossary/uscdi.html" class="card rounded-xl p-5 no-underline">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">USCDI</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">The standardized set of health data classes that systems must be able to exchange. Updated annually.</p>
+        </a>
+      </div>
+      <p class="text-xs mb-8" style="color:var(--mmt-white-dim);">Also: <a href="glossary/fehrm.html" class="no-underline" style="color:var(--mmt-cyan);">FEHRM</a>, <a href="glossary/joint-hie.html" class="no-underline" style="color:var(--mmt-cyan);">Joint HIE</a>, <a href="glossary/ehealth-exchange.html" class="no-underline" style="color:var(--mmt-cyan);">eHealth Exchange</a>, <a href="glossary/carequality.html" class="no-underline" style="color:var(--mmt-cyan);">Carequality</a>, <a href="glossary/directtrust.html" class="no-underline" style="color:var(--mmt-cyan);">DirectTrust</a></p>
+
+      <h3 class="text-lg font-bold mb-4" style="color:var(--mmt-cyan);">Key Resources</h3>
+      <div class="grid sm:grid-cols-2 gap-3">
+        <a href="https://hl7.org/fhir/" target="_blank" rel="noopener" class="resource-link"><span><strong>HL7 FHIR</strong> — hl7.org</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://www.healthit.gov/topic/interoperability/policy/trusted-exchange-framework-and-common-agreement-tefca" target="_blank" rel="noopener" class="resource-link"><span><strong>TEFCA</strong> — healthit.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://www.fehrm.gov/joint-health-information-exchange/" target="_blank" rel="noopener" class="resource-link"><span><strong>Joint HIE</strong> — fehrm.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://ehealthexchange.org/" target="_blank" rel="noopener" class="resource-link"><span><strong>eHealth Exchange</strong> — ehealthexchange.org</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://www.healthit.gov/topic/certification-ehrs/about-onc-health-it-certification-program" target="_blank" rel="noopener" class="resource-link"><span><strong>ONC Certification</strong> — healthit.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        <a href="https://carequality.org/" target="_blank" rel="noopener" class="resource-link"><span><strong>Carequality</strong> — carequality.org</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Headlines -->
+  <section class="py-16 px-6" id="news-wire">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold">Live Headlines</h2>
+        <a href="newswire.html" class="text-sm font-medium no-underline hover:opacity-80" style="color:var(--mmt-cyan);">See all &rarr;</a>
+      </div>
+      <!-- BUILD:NEWS_WIDGET -->
+    </div>
+  </section>
+
+  <!-- Contract Intel -->
+  <section class="section-alt py-16 px-6" id="contract-intel">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold">Contract Intel</h2>
+        <a href="contract-tracker.html" class="text-sm font-medium no-underline hover:opacity-80" style="color:var(--mmt-cyan);">See all &rarr;</a>
+      </div>
+      <!-- BUILD:CONTRACT_SUMMARY -->
+    </div>
+  </section>
+
+  <!-- ProposalPulse CTA -->
+  <section class="py-20 px-6" id="proposal-pulse">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl font-bold mb-4">Score Your Proposal Before You Submit</h2>
+      <p class="text-sm mb-8 max-w-2xl mx-auto" style="color:var(--mmt-white-muted);">ProposalPulse uses AI to score federal proposals against evaluation criteria. Upload your deck, get a scorecard with specific fixes. Three free assessments.</p>
+      <a href="proposal-pulse.html" class="btn-primary no-underline text-sm inline-block">Try ProposalPulse</a>
+    </div>
+  </section>
+
+  <!-- External Resources (Full Collection) -->
+  <section class="section-alt py-20 px-6" id="resource-links">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl font-bold mb-4">All External Resources</h2>
+      <p class="text-sm mb-10" style="color:var(--mmt-white-muted);">79 resources across 11 categories. The full collection of agencies, tools, data sources, and intelligence platforms.</p>
+
+      <!-- 1. News & Industry Media (7) -->
       <div class="mb-4">
         <input type="checkbox" id="cat-1" class="cat-toggle" checked>
         <label for="cat-1" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <span class="text-base font-bold">Key Agencies &amp; Programs</span>
-            <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">10</span>
-          </div>
-          <svg class="cat-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-        </label>
-        <div class="cat-links sm:grid-cols-2 gap-3 px-2 pt-3">
-          <a href="https://www.dha.mil/" target="_blank" rel="noopener" class="resource-link"><span><strong>DHA</strong> — dha.mil</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://dha.mil/Offices-and-Programs/OPMED" target="_blank" rel="noopener" class="resource-link"><span><strong>OPMED (fmr. PEO DHMS)</strong> — dha.mil</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://dha.mil/For-Beneficiaries/MHS-GENESIS" target="_blank" rel="noopener" class="resource-link"><span><strong>MHS GENESIS</strong> — dha.mil</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://www.fehrm.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>FEHRM</strong> — fehrm.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://digital.va.gov/office-of-information-and-technology/" target="_blank" rel="noopener" class="resource-link"><span><strong>VA OIT</strong> — digital.va.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://digital.va.gov/ehr-modernization/about/" target="_blank" rel="noopener" class="resource-link"><span><strong>VA EHR Modernization</strong> — digital.va.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://www.tricare.mil/" target="_blank" rel="noopener" class="resource-link"><span><strong>TRICARE</strong> — tricare.mil</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://dha.mil/Offices-and-Programs/OPMED/EIT" target="_blank" rel="noopener" class="resource-link"><span><strong>DHA Enterprise IT</strong> — dha.mil</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://www.ai.mil/" target="_blank" rel="noopener" class="resource-link"><span><strong>CDAO</strong> — ai.mil</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://developer.va.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>VA Lighthouse APIs</strong> — developer.va.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-        </div>
-      </div>
-
-      <!-- 2. News & Industry Media (7) -->
-      <div class="mb-4">
-        <input type="checkbox" id="cat-2" class="cat-toggle" checked>
-        <label for="cat-2" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
           <div class="flex items-center gap-3">
             <span class="text-base font-bold">News &amp; Industry Media</span>
             <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">7</span>
@@ -549,7 +548,6 @@
           <svg class="cat-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
         </label>
         <div class="cat-links sm:grid-cols-2 gap-3 px-2 pt-3">
-          <!-- BUILD:NEWS_WIDGET -->
           <a href="https://www.fedhealthit.com/" target="_blank" rel="noopener" class="resource-link"><span><strong>FedHealthIT</strong> — fedhealthit.com</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
           <a href="https://federalnewsnetwork.com/" target="_blank" rel="noopener" class="resource-link"><span><strong>Federal News Network</strong> — federalnewsnetwork.com</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
           <a href="https://fedscoop.com/" target="_blank" rel="noopener" class="resource-link"><span><strong>FedScoop</strong> — fedscoop.com</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
@@ -560,35 +558,10 @@
         </div>
       </div>
 
-      <!-- 3. Acquisition & Contracting (11) -->
+      <!-- 2. Budget & Financial (5) -->
       <div class="mb-4">
-        <input type="checkbox" id="cat-3" class="cat-toggle" checked>
-        <label for="cat-3" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <span class="text-base font-bold">Acquisition &amp; Contracting</span>
-            <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">11</span>
-          </div>
-          <svg class="cat-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-        </label>
-        <div class="cat-links sm:grid-cols-2 gap-3 px-2 pt-3">
-          <a href="https://sam.gov/opportunities" target="_blank" rel="noopener" class="resource-link"><span><strong>SAM.gov Opportunities</strong> — sam.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://sam.gov/fpds" target="_blank" rel="noopener" class="resource-link"><span><strong>SAM.gov Award Data</strong> — sam.gov/fpds</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://www.usaspending.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>USASpending</strong> — usaspending.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://www.va.gov/opal/tac/t4ng.asp" target="_blank" rel="noopener" class="resource-link"><span><strong>T4NG (VA)</strong> — va.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://nitaac.nih.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>NITAAC / CIO-SP3</strong> — nitaac.nih.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://www.gsa.gov/oasis-plus" target="_blank" rel="noopener" class="resource-link"><span><strong>OASIS+ (GSA)</strong> — gsa.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/vets-2" target="_blank" rel="noopener" class="resource-link"><span><strong>VETS 2 (GSA)</strong> — gsa.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/alliant-3" target="_blank" rel="noopener" class="resource-link"><span><strong>Alliant 3 (GSA)</strong> — gsa.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://itvmo.gsa.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>ITVMO</strong> — itvmo.gsa.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://www.dau.edu/" target="_blank" rel="noopener" class="resource-link"><span><strong>DAU</strong> — dau.edu</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://acqnotes.com/" target="_blank" rel="noopener" class="resource-link"><span><strong>AcqNotes</strong> — acqnotes.com</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-        </div>
-      </div>
-
-      <!-- 4. Budget & Financial (5) -->
-      <div class="mb-4">
-        <input type="checkbox" id="cat-4" class="cat-toggle" checked>
-        <label for="cat-4" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
+        <input type="checkbox" id="cat-2" class="cat-toggle">
+        <label for="cat-2" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
           <div class="flex items-center gap-3">
             <span class="text-base font-bold">Budget &amp; Financial</span>
             <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">5</span>
@@ -604,10 +577,10 @@
         </div>
       </div>
 
-      <!-- 5. Policy & Legislation (7) -->
+      <!-- 3. Policy & Legislation (7) -->
       <div class="mb-4">
-        <input type="checkbox" id="cat-5" class="cat-toggle">
-        <label for="cat-5" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
+        <input type="checkbox" id="cat-3" class="cat-toggle">
+        <label for="cat-3" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
           <div class="flex items-center gap-3">
             <span class="text-base font-bold">Policy &amp; Legislation</span>
             <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">7</span>
@@ -625,10 +598,10 @@
         </div>
       </div>
 
-      <!-- 6. Market Intelligence (7) -->
+      <!-- 4. Market Intelligence (8) -->
       <div class="mb-4">
-        <input type="checkbox" id="cat-6" class="cat-toggle">
-        <label for="cat-6" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
+        <input type="checkbox" id="cat-4" class="cat-toggle">
+        <label for="cat-4" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
           <div class="flex items-center gap-3">
             <span class="text-base font-bold">Market Intelligence</span>
             <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">8</span>
@@ -647,52 +620,10 @@
         </div>
       </div>
 
-      <!-- 7. Standards & Interoperability (7) -->
+      <!-- 5. Research & Reports (7) -->
       <div class="mb-4">
-        <input type="checkbox" id="cat-7" class="cat-toggle">
-        <label for="cat-7" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <span class="text-base font-bold">Standards &amp; Interoperability</span>
-            <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">7</span>
-          </div>
-          <svg class="cat-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-        </label>
-        <div class="cat-links sm:grid-cols-2 gap-3 px-2 pt-3">
-          <a href="https://www.healthit.gov/topic/certification-ehrs/about-onc-health-it-certification-program" target="_blank" rel="noopener" class="resource-link"><span><strong>ONC Certification</strong> — healthit.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://hl7.org/fhir/" target="_blank" rel="noopener" class="resource-link"><span><strong>HL7 FHIR</strong> — hl7.org</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://www.healthit.gov/topic/interoperability/policy/trusted-exchange-framework-and-common-agreement-tefca" target="_blank" rel="noopener" class="resource-link"><span><strong>TEFCA</strong> — healthit.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://directtrust.org/" target="_blank" rel="noopener" class="resource-link"><span><strong>DirectTrust</strong> — directtrust.org</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://ehealthexchange.org/" target="_blank" rel="noopener" class="resource-link"><span><strong>eHealth Exchange</strong> — ehealthexchange.org</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://www.fehrm.gov/joint-health-information-exchange/" target="_blank" rel="noopener" class="resource-link"><span><strong>Joint HIE</strong> — fehrm.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://carequality.org/" target="_blank" rel="noopener" class="resource-link"><span><strong>Carequality</strong> — carequality.org</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-        </div>
-      </div>
-
-      <!-- 8. Cybersecurity & Compliance (7) -->
-      <div class="mb-4">
-        <input type="checkbox" id="cat-8" class="cat-toggle">
-        <label for="cat-8" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <span class="text-base font-bold">Cybersecurity &amp; Compliance</span>
-            <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">7</span>
-          </div>
-          <svg class="cat-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-        </label>
-        <div class="cat-links sm:grid-cols-2 gap-3 px-2 pt-3">
-          <a href="https://marketplace.fedramp.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>FedRAMP Marketplace</strong> — marketplace.fedramp.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://dodcio.defense.gov/CMMC/" target="_blank" rel="noopener" class="resource-link"><span><strong>CMMC (DoD CIO)</strong> — dodcio.defense.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://csrc.nist.gov/pubs/sp/800/171/r3/final" target="_blank" rel="noopener" class="resource-link"><span><strong>NIST SP 800-171</strong> — csrc.nist.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final" target="_blank" rel="noopener" class="resource-link"><span><strong>NIST SP 800-53</strong> — csrc.nist.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://dodcio.defense.gov/Portals/0/Documents/Library/DoD-ZTStrategy.pdf" target="_blank" rel="noopener" class="resource-link"><span><strong>DoD Zero Trust Strategy</strong> — dodcio.defense.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://www.cyber.mil/stigs/" target="_blank" rel="noopener" class="resource-link"><span><strong>DISA STIGs</strong> — cyber.mil</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-          <a href="https://www.cyber.mil/" target="_blank" rel="noopener" class="resource-link"><span><strong>Cyber.mil</strong> — cyber.mil</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
-        </div>
-      </div>
-
-      <!-- 9. Research & Reports (7) -->
-      <div class="mb-4">
-        <input type="checkbox" id="cat-9" class="cat-toggle">
-        <label for="cat-9" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
+        <input type="checkbox" id="cat-5" class="cat-toggle">
+        <label for="cat-5" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
           <div class="flex items-center gap-3">
             <span class="text-base font-bold">Research &amp; Reports</span>
             <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">7</span>
@@ -710,10 +641,10 @@
         </div>
       </div>
 
-      <!-- 10. Workforce & Professional Orgs (6) -->
+      <!-- 6. Workforce & Professional Orgs (6) -->
       <div class="mb-4">
-        <input type="checkbox" id="cat-10" class="cat-toggle">
-        <label for="cat-10" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
+        <input type="checkbox" id="cat-6" class="cat-toggle">
+        <label for="cat-6" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
           <div class="flex items-center gap-3">
             <span class="text-base font-bold">Workforce &amp; Professional Orgs</span>
             <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">6</span>
@@ -730,10 +661,10 @@
         </div>
       </div>
 
-      <!-- 11. Data & Analytics (4) -->
+      <!-- 7. Data & Analytics (4) -->
       <div class="mb-4">
-        <input type="checkbox" id="cat-11" class="cat-toggle">
-        <label for="cat-11" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
+        <input type="checkbox" id="cat-7" class="cat-toggle">
+        <label for="cat-7" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
           <div class="flex items-center gap-3">
             <span class="text-base font-bold">Data &amp; Analytics</span>
             <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">4</span>
@@ -748,6 +679,37 @@
         </div>
       </div>
 
+      <!-- 8. Additional Contract Vehicles (4) -->
+      <div class="mb-4">
+        <input type="checkbox" id="cat-8" class="cat-toggle">
+        <label for="cat-8" class="cat-header card rounded-xl px-6 py-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="text-base font-bold">Additional Contract Vehicles</span>
+            <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">4</span>
+          </div>
+          <svg class="cat-chevron" width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
+        </label>
+        <div class="cat-links sm:grid-cols-2 gap-3 px-2 pt-3">
+          <a href="https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/vets-2" target="_blank" rel="noopener" class="resource-link"><span><strong>VETS 2 (GSA)</strong> — gsa.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/alliant-3" target="_blank" rel="noopener" class="resource-link"><span><strong>Alliant 3 (GSA)</strong> — gsa.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://itvmo.gsa.gov/" target="_blank" rel="noopener" class="resource-link"><span><strong>ITVMO</strong> — itvmo.gsa.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+          <a href="https://www.cio.gov/about/members-and-leadership/" target="_blank" rel="noopener" class="resource-link"><span><strong>Federal CIO Council</strong> — cio.gov</span><span style="color:var(--mmt-cyan); font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Subscribe CTA -->
+  <section class="py-20 px-6">
+    <div class="max-w-xl mx-auto text-center">
+      <h2 class="text-2xl font-bold mb-4">Get the Intelligence</h2>
+      <p class="text-sm mb-6" style="color:var(--mmt-white-muted);">Federal health IT analysis delivered to your inbox. No fluff, no vendor pitches.</p>
+      <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" target="_blank" class="flex gap-3 max-w-md mx-auto">
+        <label for="subscribe-email-cta" class="sr-only">Email</label>
+        <input type="email" name="email" id="subscribe-email-cta" placeholder="you@example.com" required class="px-4 py-3 rounded-lg text-sm flex-1" style="background:var(--mmt-slate); border:1px solid rgba(0,229,250,0.2); color:#fff;">
+        <button type="submit" class="btn-primary px-6 py-3 rounded-lg text-sm font-semibold" style="cursor:pointer;border:none;">Subscribe</button>
+      </form>
     </div>
   </section>
 

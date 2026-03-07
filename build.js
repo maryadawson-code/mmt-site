@@ -407,6 +407,7 @@ function generateSitemap(articles, tags, contracts) {
     { loc: '/contract-tracker.html', priority: '0.7' },
     { loc: '/events.html', priority: '0.6' },
     { loc: '/privacy.html', priority: '0.3' },
+    { loc: '/glossary/', priority: '0.5' },
   ];
 
   // Build a map of topic slug → most recent article date within that topic
@@ -1275,6 +1276,20 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
       console.log(`Copied ${file}`);
     }
   });
+
+  // Copy glossary pages
+  const glossarySrc = path.join(__dirname, 'glossary');
+  const glossaryDist = path.join(DIST_DIR, 'glossary');
+  if (fs.existsSync(glossarySrc)) {
+    ensureDir(glossaryDist);
+    const glossaryFiles = fs.readdirSync(glossarySrc).filter(f => f.endsWith('.html'));
+    glossaryFiles.forEach(file => {
+      let html = fs.readFileSync(path.join(glossarySrc, file), 'utf8');
+      html = inlineTailwindCss(html);
+      fs.writeFileSync(path.join(glossaryDist, file), html);
+    });
+    console.log(`Copied ${glossaryFiles.length} glossary pages`);
+  }
 
   // Copy robots.txt
   const robotsSrc = path.join(__dirname, 'robots.txt');
