@@ -751,9 +751,12 @@ function generateArchiveHtml(archive) {
     const tags = (item.tags || []).map(t =>
       `<a href="/topics/${slugify(t)}/" class="tag no-underline">${escapeHtml(t)}</a>`
     ).join('');
+    const isExternal = item.url && item.url.startsWith('http');
+    const linkAttrs = isExternal ? 'target="_blank" rel="noopener"' : '';
+    const externalIcon = isExternal ? ' <svg width="0.75em" height="0.75em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:baseline;opacity:0.5;" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>' : '';
     return `<article class="card rounded-xl p-6" data-topics="${topicSlugs}">
           <div class="flex items-start justify-between gap-4 mb-2">
-            <h3 class="text-lg font-bold"><a href="${item.url}" class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${escapeHtml(item.title)}</a></h3>
+            <h3 class="text-lg font-bold"><a href="${item.url}" ${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${escapeHtml(item.title)}${externalIcon}</a></h3>
             <span class="text-xs whitespace-nowrap px-2 py-1 rounded" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">#${issueNum}</span>
           </div>
           <p class="text-xs mb-3" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
@@ -823,9 +826,12 @@ function generateLatestAllHtml(archive, feed) {
     const tags = item.tags.map(t =>
       `<a href="/topics/${slugify(t)}/" class="tag no-underline">${escapeHtml(t)}</a>`
     ).join('');
+    const isExternal = item.url && item.url.startsWith('http');
+    const linkAttrs = isExternal ? 'target="_blank" rel="noopener"' : '';
+    const externalIcon = isExternal ? ' <svg width="0.75em" height="0.75em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:baseline;opacity:0.5;" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>' : '';
     return `<article class="card rounded-xl p-6">
           <p class="text-xs mb-2" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
-          <h3 class="text-lg font-bold mb-2"><a href="${item.url}" class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${escapeHtml(item.title)}</a></h3>
+          <h3 class="text-lg font-bold mb-2"><a href="${item.url}" ${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${escapeHtml(item.title)}${externalIcon}</a></h3>
           <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>
           <div class="flex flex-wrap gap-2">${tags}</div>
         </article>`;
@@ -1243,10 +1249,10 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
     '<!-- BUILD:TOPIC_CHIPS -->': generateTopicChipsHtml(onsiteArchive),
     '<!-- BUILD:TOPICS_GRID -->': generateTopicsGridHtml(onsiteArchive),
     '<!-- BUILD:LATEST_ISSUES -->': generateLatestIssuesHtml(onsiteArchive, 3),
-    '<!-- BUILD:ALL_ISSUES -->': generateArchiveHtml(onsiteArchive),
-    '<!-- BUILD:TOPIC_FILTER_CHIPS -->': generateTopicFilterChipsHtml(onsiteArchive),
-    '<!-- BUILD:LATEST_ALL -->': generateLatestAllHtml(onsiteArchive, feed),
-    '<!-- BUILD:ARTICLE_COUNT_BADGE -->': generateArticleCountBadge(onsiteArchive, feed),
+    '<!-- BUILD:ALL_ISSUES -->': generateArchiveHtml(archive),
+    '<!-- BUILD:TOPIC_FILTER_CHIPS -->': generateTopicFilterChipsHtml(archive),
+    '<!-- BUILD:LATEST_ALL -->': generateLatestAllHtml(archive, feed),
+    '<!-- BUILD:ARTICLE_COUNT_BADGE -->': generateArticleCountBadge(archive, feed),
     '<!-- BUILD:PODCAST_TEASER -->': generatePodcastTeaserHtml(feed),
     '<!-- BUILD:PODCAST_EPISODES -->': generatePodcastEpisodesHtml(feed),
     '<!-- BUILD:NEWSWIRE_HEADLINES -->': generateNewswireHtml(newsItems || []),
