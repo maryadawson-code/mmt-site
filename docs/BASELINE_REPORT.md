@@ -66,7 +66,7 @@ Note: HSTS is set by Netlify automatically (not in `_headers` file). The other 5
 | Plausible Analytics | Yes | 2 |
 | Buttondown | Yes | 3 |
 | Stripe Checkout | Yes (CSP frame-src) | Via CSP |
-| Transistor | Check podcast page | TBD |
+| Riverside.fm | Podcast RSS (build.js) | Active |
 
 ## robots.txt
 

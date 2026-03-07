@@ -178,9 +178,9 @@ else
   check services "buttondown_reachable" false "HTTP $BD_STATUS"
 fi
 
-# 10. Transistor/podcast embed present on /podcast
+# 10. Podcast embed present on /podcast (Riverside RSS + Spotify embed)
 PODCAST_HTML=$(curl -s "$SITE/podcast")
-if echo "$PODCAST_HTML" | grep -qiE "transistor|riverside|podcast|episode"; then
+if echo "$PODCAST_HTML" | grep -qiE "riverside|spotify|podcast|episode"; then
   check services "podcast_embed" true "Podcast content found"
 else
   check services "podcast_embed" false "No podcast content found on /podcast"
