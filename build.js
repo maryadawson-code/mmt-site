@@ -6,6 +6,22 @@ const { marked } = require('marked');
 const { execSync } = require('child_process');
 const sharp = require('sharp');
 
+// Configure marked to open external links in new tabs with safe attributes
+marked.use({
+  renderer: {
+    link({ href, title, tokens }) {
+      const text = this.parser.parseInline(tokens);
+      let out = '<a href="' + href + '"';
+      if (title) out += ' title="' + title + '"';
+      if (href && href.startsWith('http')) {
+        out += ' target="_blank" rel="noopener"';
+      }
+      out += '>' + text + '</a>';
+      return out;
+    }
+  }
+});
+
 const RSS_FEED = 'https://api.riverside.fm/hosting/KJvFk8EM.rss';
 const SITE_URL = 'https://missionmeetstech.com';
 
@@ -663,7 +679,9 @@ function generateLeadStoryHtml(archive) {
   const tags = (item.tags || []).map(t =>
     `<a href="/topics/${slugify(t)}/" class="text-xs px-2 py-0.5 rounded no-underline" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">${escapeHtml(t)}</a>`
   ).join('\n            ');
-  return `<a href="${item.url}" class="card rounded-xl p-8 no-underline block transition-all" style="border-left:4px solid var(--mmt-cyan);">
+  const isExternal = item.url && item.url.startsWith('http');
+  const linkAttrs = isExternal ? ' target="_blank" rel="noopener"' : '';
+  return `<a href="${item.url}"${linkAttrs} class="card rounded-xl p-8 no-underline block transition-all" style="border-left:4px solid var(--mmt-cyan);">
         <p class="text-xs mb-3" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
         <h2 class="text-2xl md:text-3xl font-bold mb-3 leading-snug" style="color:var(--mmt-white);">${escapeHtml(item.title)}</h2>
         <p class="text-base leading-relaxed mb-4" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>
@@ -680,7 +698,9 @@ function generateLatestArticlesHtml(archive, count) {
     const tags = (item.tags || []).map(t =>
       `<a href="/topics/${slugify(t)}/" class="text-xs px-2 py-0.5 rounded no-underline" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">${escapeHtml(t)}</a>`
     ).join('');
-    return `<a href="${item.url}" class="card rounded-xl p-6 no-underline block transition-all">
+    const isExternal = item.url && item.url.startsWith('http');
+    const linkAttrs = isExternal ? ' target="_blank" rel="noopener"' : '';
+    return `<a href="${item.url}"${linkAttrs} class="card rounded-xl p-6 no-underline block transition-all">
           <p class="text-xs mb-3" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
           <h3 class="text-lg font-bold mb-3 leading-snug" style="color:var(--mmt-white);">${escapeHtml(item.title)}</h3>
           <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>
@@ -733,13 +753,15 @@ function generateTopicsGridHtml(archive) {
 function generateLatestIssuesHtml(archive, count) {
   const items = archive.slice(0, count);
   if (items.length === 0) return '<p class="text-center py-10 col-span-3" style="color:var(--mmt-white-dim);">No newsletters yet. Check back soon!</p>';
-  return items.map(item =>
-    `<article class="card rounded-xl p-6">
+  return items.map(item => {
+    const isExternal = item.url && item.url.startsWith('http');
+    const linkAttrs = isExternal ? ' target="_blank" rel="noopener"' : '';
+    return `<article class="card rounded-xl p-6">
           <p class="text-xs mb-3" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
-          <h3 class="text-lg font-bold mb-2"><a href="${item.url}" class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${escapeHtml(item.title)}</a></h3>
+          <h3 class="text-lg font-bold mb-2"><a href="${item.url}"${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${escapeHtml(item.title)}</a></h3>
           <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>
-        </article>`
-  ).join('\n        ');
+        </article>`;
+  }).join('\n        ');
 }
 
 function generateArchiveHtml(archive) {
@@ -1244,11 +1266,11 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
 
   // Build-time injection map
   const injections = {
-    '<!-- BUILD:LEAD_STORY -->': generateLeadStoryHtml(onsiteArchive),
-    '<!-- BUILD:LATEST_ARTICLES -->': generateLatestArticlesHtml(onsiteArchive, 3),
-    '<!-- BUILD:TOPIC_CHIPS -->': generateTopicChipsHtml(onsiteArchive),
-    '<!-- BUILD:TOPICS_GRID -->': generateTopicsGridHtml(onsiteArchive),
-    '<!-- BUILD:LATEST_ISSUES -->': generateLatestIssuesHtml(onsiteArchive, 3),
+    '<!-- BUILD:LEAD_STORY -->': generateLeadStoryHtml(archive),
+    '<!-- BUILD:LATEST_ARTICLES -->': generateLatestArticlesHtml(archive, 3),
+    '<!-- BUILD:TOPIC_CHIPS -->': generateTopicChipsHtml(archive),
+    '<!-- BUILD:TOPICS_GRID -->': generateTopicsGridHtml(archive),
+    '<!-- BUILD:LATEST_ISSUES -->': generateLatestIssuesHtml(archive, 3),
     '<!-- BUILD:ALL_ISSUES -->': generateArchiveHtml(archive),
     '<!-- BUILD:TOPIC_FILTER_CHIPS -->': generateTopicFilterChipsHtml(archive),
     '<!-- BUILD:LATEST_ALL -->': generateLatestAllHtml(archive, feed),
@@ -1502,7 +1524,7 @@ function generateNewsWidgetHtml(newsItems) {
             </a>\n`;
   });
 
-  html += `            <a href="/newswire" class="text-sm font-semibold no-underline hover:opacity-80 inline-block mt-3" style="color:var(--mmt-cyan);">View all on News Wire &rarr;</a>
+  html += `            <a href="/newswire.html" class="text-sm font-semibold no-underline hover:opacity-80 inline-block mt-3" style="color:var(--mmt-cyan);">View all on News Wire &rarr;</a>
           </div>`;
 
   return html;

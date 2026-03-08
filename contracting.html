@@ -58,6 +58,13 @@
     .status-active { color: var(--mmt-green); font-weight: 600; font-size: 0.75rem; }
     .status-cancelled { color: #ff6b6b; font-weight: 600; font-size: 0.75rem; }
     .status-pre { color: #ffd93d; font-weight: 600; font-size: 0.75rem; }
+    .vehicle-row { cursor: pointer; }
+    .vehicle-row:hover { background: rgba(0,229,250,0.04); }
+    .vehicle-detail { display: none; }
+    .vehicle-detail.open { display: table-row; }
+    .vehicle-detail td { padding: 1rem 1rem 1.5rem; background: rgba(0,229,250,0.03); border-bottom: 1px solid rgba(0,229,250,0.1); }
+    .expand-icon { transition: transform 0.2s; display: inline-block; }
+    .vehicle-row.expanded .expand-icon { transform: rotate(90deg); }
   </style>
 </head>
 <body class="antialiased">
@@ -155,12 +162,14 @@
   <!-- Contract Vehicles at a Glance -->
   <section class="section-alt py-20 px-6">
     <div class="max-w-6xl mx-auto">
-      <h2 class="text-3xl font-bold mb-8">Contract Vehicles at a Glance</h2>
+      <h2 class="text-3xl font-bold mb-2">Contract Vehicles at a Glance</h2>
+      <p class="text-sm mb-8" style="color:var(--mmt-white-dim);">Click any vehicle for detailed analysis.</p>
       <div class="card rounded-xl p-1">
         <div class="table-scroll">
           <table class="contract-table">
             <thead>
               <tr>
+                <th></th>
                 <th>Vehicle</th>
                 <th>Agency</th>
                 <th>Ceiling</th>
@@ -170,7 +179,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
+              <tr class="vehicle-row" data-vehicle="cio-sp3">
+                <td><span class="expand-icon" style="color:var(--mmt-cyan);">&#9654;</span></td>
                 <td><strong style="color:#fff;">CIO-SP3</strong></td>
                 <td>NIH/NITAAC</td>
                 <td>$40B</td>
@@ -178,7 +188,20 @@
                 <td><span class="status-active">Active (extended)</span></td>
                 <td>Primary IT GWAC for DHA and VA health IT task orders</td>
               </tr>
-              <tr>
+              <tr class="vehicle-detail" id="detail-cio-sp3">
+                <td colspan="7">
+                  <div style="max-width:720px;">
+                    <h4 class="text-base font-bold mb-3" style="color:var(--mmt-cyan);">CIO-SP3 — Detailed Analysis</h4>
+                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">CIO-SP3 (Chief Information Officer-Solutions and Partners 3) is the workhorse IT GWAC managed by NITAAC at the National Institutes of Health. Originally awarded in 2012 with a $40B ceiling, it has been extended multiple times due to the CIO-SP4 cancellation.</p>
+                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);"><strong style="color:#fff;">Why it matters for health IT:</strong> DHA, VA, and HHS agencies route a significant volume of health IT task orders through CIO-SP3. If you are pursuing federal health IT work and are not on this vehicle, you are likely teaming with someone who is.</p>
+                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);"><strong style="color:#fff;">Current dynamics:</strong> With CIO-SP4 cancelled, CIO-SP3 holders have an extended runway. Agencies dependent on NITAAC GWACs have no near-term alternative at this scale. Watch NITAAC for signals on a potential rebid or bridge vehicle.</p>
+                    <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);"><strong style="color:#fff;">NAICS codes:</strong> 541512 (primary), 541511, 541519, 518210, 611420</p>
+                  </div>
+                </td>
+              </tr>
+
+              <tr class="vehicle-row" data-vehicle="cio-sp4">
+                <td><span class="expand-icon" style="color:var(--mmt-cyan);">&#9654;</span></td>
                 <td><strong style="color:#fff;">CIO-SP4</strong></td>
                 <td>NIH/NITAAC</td>
                 <td>Was $50B</td>
@@ -186,7 +209,20 @@
                 <td><span class="status-cancelled">Cancelled (Jan 2026)</span></td>
                 <td>Cancellation after years of protests reshuffled GWAC landscape</td>
               </tr>
-              <tr>
+              <tr class="vehicle-detail" id="detail-cio-sp4">
+                <td colspan="7">
+                  <div style="max-width:720px;">
+                    <h4 class="text-base font-bold mb-3" style="color:var(--mmt-cyan);">CIO-SP4 — Post-Cancellation Analysis</h4>
+                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">CIO-SP4 was supposed to be the $50B successor to CIO-SP3. After years of bid protests, legal challenges, and multiple re-evaluations, NITAAC cancelled the solicitation in January 2026.</p>
+                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);"><strong style="color:#fff;">What happened:</strong> The tiered evaluation approach drew sustained protests from firms excluded in early rounds. GAO sustained multiple protests. NITAAC attempted corrective actions but could not resolve the structural issues in the solicitation design.</p>
+                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);"><strong style="color:#fff;">Impact:</strong> Firms that invested heavily in the CIO-SP4 bid process face sunk costs with no vehicle to show for it. Agencies must redistribute task orders across CIO-SP3 (extended), OASIS+, and SEWP VI. The GWAC landscape is more fragmented as a result.</p>
+                    <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);"><strong style="color:#fff;">What to watch:</strong> Whether NITAAC attempts a streamlined rebid, or whether GSA and NASA SEWP absorb the demand permanently. This reshuffles competitive positioning across the federal IT market.</p>
+                  </div>
+                </td>
+              </tr>
+
+              <tr class="vehicle-row" data-vehicle="oasis-plus">
+                <td><span class="expand-icon" style="color:var(--mmt-cyan);">&#9654;</span></td>
                 <td><strong style="color:#fff;">OASIS+</strong></td>
                 <td>GSA</td>
                 <td>Unlimited</td>
@@ -194,7 +230,20 @@
                 <td><span class="status-active">Active</span></td>
                 <td>Professional services across all agencies, including health IT consulting</td>
               </tr>
-              <tr>
+              <tr class="vehicle-detail" id="detail-oasis-plus">
+                <td colspan="7">
+                  <div style="max-width:720px;">
+                    <h4 class="text-base font-bold mb-3" style="color:var(--mmt-cyan);">OASIS+ — Detailed Analysis</h4>
+                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">OASIS+ is GSA's next-generation professional services vehicle with an unlimited ceiling. It replaces OASIS (One Acquisition Solution for Integrated Services) and covers management consulting, scientific, engineering, logistics, and IT services.</p>
+                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);"><strong style="color:#fff;">Health IT relevance:</strong> OASIS+ is increasingly used for health IT consulting, program management, and advisory services at DHA and VA. It is not an IT product vehicle, but it is where health IT strategy, PMO support, and implementation oversight work lands.</p>
+                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);"><strong style="color:#fff;">Small business:</strong> OASIS+ has dedicated small business domains. With CIO-SP4 cancelled, more health IT-adjacent work may flow through OASIS+ small business pools.</p>
+                    <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);"><strong style="color:#fff;">Key differentiator:</strong> Unlimited ceiling and broad scope make OASIS+ the default "catch-all" for professional services. If the work is not pure IT product/infrastructure, it likely fits here.</p>
+                  </div>
+                </td>
+              </tr>
+
+              <tr class="vehicle-row" data-vehicle="t4ng">
+                <td><span class="expand-icon" style="color:var(--mmt-cyan);">&#9654;</span></td>
                 <td><strong style="color:#fff;">T4NG</strong></td>
                 <td>VA TAC</td>
                 <td>$22.3B</td>
@@ -202,7 +251,20 @@
                 <td><span class="status-active">Active</span></td>
                 <td>VA's primary vehicle for IT services including health IT modernization</td>
               </tr>
-              <tr>
+              <tr class="vehicle-detail" id="detail-t4ng">
+                <td colspan="7">
+                  <div style="max-width:720px;">
+                    <h4 class="text-base font-bold mb-3" style="color:var(--mmt-cyan);">T4NG — Detailed Analysis</h4>
+                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Transformation Twenty-One Total Technology Next Generation (T4NG) is VA's primary IT services IDIQ, managed by the VA Technology Acquisition Center (TAC). The $22.3B ceiling covers IT infrastructure, cybersecurity, software development, cloud, and health IT modernization.</p>
+                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);"><strong style="color:#fff;">Health IT relevance:</strong> T4NG is where VA's biggest health IT task orders land, including EHR-adjacent work, clinical systems integration, data analytics, and telehealth infrastructure. If you work VA health IT, T4NG is essential.</p>
+                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);"><strong style="color:#fff;">SDVOSB dynamics:</strong> VA has strong SDVOSB set-aside requirements. Many T4NG task orders are set aside for verified SDVOSBs or require significant SDVOSB subcontracting. Joint ventures between large primes and SDVOSBs are common.</p>
+                    <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);"><strong style="color:#fff;">NAICS:</strong> 541512, 541511, 541519, 518210, 541513</p>
+                  </div>
+                </td>
+              </tr>
+
+              <tr class="vehicle-row" data-vehicle="mhs-eits">
+                <td><span class="expand-icon" style="color:var(--mmt-cyan);">&#9654;</span></td>
                 <td><strong style="color:#fff;">MHS EITS</strong></td>
                 <td>DHA</td>
                 <td>Multi-billion</td>
@@ -210,7 +272,20 @@
                 <td><span class="status-active">Active</span></td>
                 <td>Enterprise IT infrastructure for the entire Military Health System</td>
               </tr>
-              <tr>
+              <tr class="vehicle-detail" id="detail-mhs-eits">
+                <td colspan="7">
+                  <div style="max-width:720px;">
+                    <h4 class="text-base font-bold mb-3" style="color:var(--mmt-cyan);">MHS EITS — Detailed Analysis</h4>
+                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Military Health System Enterprise IT Services (MHS EITS) is DHA's enterprise IT infrastructure contract. It covers network operations, end-user support, cybersecurity, data center management, and the IT backbone that all MHS clinical and administrative systems run on.</p>
+                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);"><strong style="color:#fff;">Health IT relevance:</strong> MHS EITS is the plumbing beneath MHS GENESIS. The EHR cannot function without the network, endpoint, and security infrastructure this contract provides. Performance on EITS directly affects clinical system availability at Military Treatment Facilities.</p>
+                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);"><strong style="color:#fff;">Competitive landscape:</strong> Large defense IT primes dominate. Subcontracting opportunities exist in specialized areas like clinical device integration, cybersecurity monitoring, and network optimization at MTFs.</p>
+                    <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);"><strong style="color:#fff;">Key risk:</strong> EITS performance has been scrutinized when MHS GENESIS deployment issues trace back to infrastructure readiness. Expect continued oversight pressure.</p>
+                  </div>
+                </td>
+              </tr>
+
+              <tr class="vehicle-row" data-vehicle="mqs2-ng">
+                <td><span class="expand-icon" style="color:var(--mmt-cyan);">&#9654;</span></td>
                 <td><strong style="color:#fff;">MQS2-NG</strong></td>
                 <td>DHA</td>
                 <td>TBD</td>
@@ -218,7 +293,20 @@
                 <td><span class="status-pre">Pre-solicitation</span></td>
                 <td>Medical quality systems, patient safety IT, clinical decision support</td>
               </tr>
-              <tr>
+              <tr class="vehicle-detail" id="detail-mqs2-ng">
+                <td colspan="7">
+                  <div style="max-width:720px;">
+                    <h4 class="text-base font-bold mb-3" style="color:var(--mmt-cyan);">MQS2-NG — Detailed Analysis</h4>
+                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Medical Quality Systems Support Next Generation (MQS2-NG) is the follow-on to DHA's MQS2 contract for clinical quality, patient safety IT systems, and clinical decision support. It is currently in pre-solicitation.</p>
+                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);"><strong style="color:#fff;">Health IT relevance:</strong> This vehicle covers the clinical quality layer: adverse event tracking, quality metrics dashboards, clinical decision support tools, and patient safety reporting. It sits at the intersection of IT and clinical operations.</p>
+                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);"><strong style="color:#fff;">Opportunity:</strong> Pre-solicitation status means the requirements are still being shaped. Firms with clinical quality and patient safety expertise should monitor RFI/Sources Sought notices on SAM.gov for DHA Contracting Activity (DHACA) releases.</p>
+                    <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);"><strong style="color:#fff;">What to watch:</strong> Set-aside decisions and whether DHA bundles this with other clinical support contracts or keeps it standalone.</p>
+                  </div>
+                </td>
+              </tr>
+
+              <tr class="vehicle-row" data-vehicle="vha-iht">
+                <td><span class="expand-icon" style="color:var(--mmt-cyan);">&#9654;</span></td>
                 <td><strong style="color:#fff;">VHA IHT 2.0</strong></td>
                 <td>VA</td>
                 <td>TBD</td>
@@ -226,13 +314,37 @@
                 <td><span class="status-active">Active</span></td>
                 <td>VA integrated health technologies services</td>
               </tr>
-              <tr>
+              <tr class="vehicle-detail" id="detail-vha-iht">
+                <td colspan="7">
+                  <div style="max-width:720px;">
+                    <h4 class="text-base font-bold mb-3" style="color:var(--mmt-cyan);">VHA IHT 2.0 — Detailed Analysis</h4>
+                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">VHA Integrated Health Technologies (IHT) 2.0 is VA's vehicle for health technology services including clinical systems integration, telehealth platforms, mobile health, and health data interoperability.</p>
+                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);"><strong style="color:#fff;">Health IT relevance:</strong> IHT 2.0 is specifically scoped for health technology, not general IT. Task orders cover VistA integration, connected care platforms, clinical workflow tools, and health data exchange. It is closer to the patient than T4NG's infrastructure focus.</p>
+                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);"><strong style="color:#fff;">SDVOSB focus:</strong> IHT 2.0 has significant SDVOSB set-aside requirements, creating opportunities for verified small businesses with health technology expertise.</p>
+                    <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);"><strong style="color:#fff;">Strategic note:</strong> As VA navigates its EHR modernization challenges, IHT 2.0 task orders for integration, interoperability, and connected care are likely to increase.</p>
+                  </div>
+                </td>
+              </tr>
+
+              <tr class="vehicle-row" data-vehicle="gsa-mas">
+                <td><span class="expand-icon" style="color:var(--mmt-cyan);">&#9654;</span></td>
                 <td><strong style="color:#fff;">GSA MAS Health IT</strong></td>
                 <td>GSA</td>
                 <td>Open</td>
                 <td>Multiple</td>
                 <td><span class="status-active">Active</span></td>
                 <td>GSA Schedule with Health IT Special Item Numbers</td>
+              </tr>
+              <tr class="vehicle-detail" id="detail-gsa-mas">
+                <td colspan="7">
+                  <div style="max-width:720px;">
+                    <h4 class="text-base font-bold mb-3" style="color:var(--mmt-cyan);">GSA MAS Health IT — Detailed Analysis</h4>
+                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">GSA Multiple Award Schedule (MAS) includes Health IT Special Item Numbers (SINs) that cover EHR products, health data analytics, telehealth platforms, medical device integration, and clinical IT services.</p>
+                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);"><strong style="color:#fff;">Health IT relevance:</strong> GSA MAS is the entry-level vehicle for health IT products and services. Lower barriers to entry than GWACs. Commonly used for COTS health IT products, SaaS platforms, and smaller-scale implementations.</p>
+                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);"><strong style="color:#fff;">How agencies use it:</strong> DHA and VA use GSA MAS for commercial health IT products, particularly when the requirement is well-defined and competitive pricing is available through GSA Advantage or eBuy.</p>
+                    <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);"><strong style="color:#fff;">Key SINs:</strong> 54151S (IT Professional Services), 54151HEAL (Health IT Services), 518210C (Cloud), OLM (Order-Level Materials for IT hardware/integration)</p>
+                  </div>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -368,5 +480,22 @@
     </div>
   </footer>
 
+  <script>
+    document.querySelectorAll('.vehicle-row').forEach(function(row) {
+      row.addEventListener('click', function() {
+        var vehicle = this.getAttribute('data-vehicle');
+        var detail = document.getElementById('detail-' + vehicle);
+        var isOpen = detail.classList.contains('open');
+        // Close all
+        document.querySelectorAll('.vehicle-detail').forEach(function(d) { d.classList.remove('open'); });
+        document.querySelectorAll('.vehicle-row').forEach(function(r) { r.classList.remove('expanded'); });
+        // Toggle clicked
+        if (!isOpen) {
+          detail.classList.add('open');
+          this.classList.add('expanded');
+        }
+      });
+    });
+  </script>
 </body>
 </html>
