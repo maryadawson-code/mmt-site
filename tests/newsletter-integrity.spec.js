@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-const EXPECTED_ARCHIVE_COUNT = 75;
+const EXPECTED_ARCHIVE_COUNT = 76;
 
 test.describe('Newsletter archive completeness', () => {
   test('archive page loads and shows all entries', async ({ page }) => {
@@ -24,12 +24,14 @@ test.describe('Newsletter archive completeness', () => {
     }
   });
 
-  test('archive has issue numbers from #1 to #75', async ({ page }) => {
+  test('archive has sequential issue numbers from #1 to total count', async ({ page }) => {
     await page.goto('/newsletter.html');
-    // First entry should be #75, last should be #1
-    const firstBadge = page.locator('article.card').first().locator('span:has-text("#")');
-    await expect(firstBadge).toContainText('#75');
-    const lastBadge = page.locator('article.card').last().locator('span:has-text("#")');
+    const cards = page.locator('article.card');
+    const count = await cards.count();
+    // First entry should be #(total), last should be #1
+    const firstBadge = cards.first().locator('span:has-text("#")');
+    await expect(firstBadge).toContainText(`#${count}`);
+    const lastBadge = cards.last().locator('span:has-text("#")');
     await expect(lastBadge).toContainText('#1');
   });
 });

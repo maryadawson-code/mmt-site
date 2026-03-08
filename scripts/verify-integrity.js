@@ -17,7 +17,7 @@ const HREF_RE = /href="([^"#?]*)(?:[#?][^"]*)?"/g;
 const TARGET_BLANK_RE = /<a\s[^>]*target="_blank"[^>]*>/g;
 const ANCHOR_HREF_RE = /<a\s[^>]*href="(https?:\/\/[^"]+)"[^>]*>/g;
 
-const EXPECTED_NEWSLETTER_COUNT = 75;
+const EXPECTED_NEWSLETTER_COUNT = 76;
 const LINKEDIN_URL_PATTERN = /^https:\/\/www\.linkedin\.com\//;
 
 let totalChecks = 0;

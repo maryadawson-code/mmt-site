@@ -66,13 +66,17 @@ function ensureDir(dir) {
 }
 
 function formatDate(date) {
+  // Parse as UTC to avoid timezone shift (YYYY-MM-DD strings are UTC in JS)
   const d = new Date(date);
-  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
 }
 
 function toISODate(date) {
+  // If already ISO format, return as-is
+  if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) return date;
   const d = new Date(date);
-  return d.toISOString().split('T')[0];
+  // Use UTC methods to avoid timezone shift
+  return d.getUTCFullYear() + '-' + String(d.getUTCMonth() + 1).padStart(2, '0') + '-' + String(d.getUTCDate()).padStart(2, '0');
 }
 
 function escapeXml(str) {
@@ -1261,7 +1265,10 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
     'events.html': 'events.png',
   };
 
-  // Filter to on-site articles only for homepage (excludes LinkedIn-only entries)
+  // Sort archive by date (newest first) for consistent display order
+  archive.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  // Filter to on-site articles only (excludes LinkedIn-only entries)
   const onsiteArchive = archive.filter(item => item.url && item.url.startsWith('/newsletter/'));
 
   // Build-time injection map
