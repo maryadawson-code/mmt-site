@@ -76,11 +76,13 @@
   from = "/contracting"
   to = "/resources.html#contract-vehicles"
   status = 301
+  force = true
 
 [[redirects]]
   from = "/contracting.html"
   to = "/resources.html#contract-vehicles"
   status = 301
+  force = true
 
 [[headers]]
   for = "/*"
