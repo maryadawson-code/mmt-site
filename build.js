@@ -1282,7 +1282,7 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
     'proposal-pulse.html', 'latest.html', 'newswire.html',
     'contract-tracker.html', 'events.html',
     'privacy.html', 'glossary.html',
-    'agency-sources.html'
+    'agency-sources.html', 'contracting.html'
   ];
   const ogMap = {
     'index.html': 'index.png',
