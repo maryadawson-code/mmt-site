@@ -24,6 +24,9 @@
 [functions."sb-vehicle-radar"]
   schedule = "0 13 * * *"
 
+[functions."data-retention"]
+  schedule = "0 10 * * 0"
+
 [[redirects]]
   from = "/"
   to = "/index.html"
@@ -67,6 +70,16 @@
 [[redirects]]
   from = "/contact"
   to = "/about.html"
+  status = 301
+
+[[redirects]]
+  from = "/contracting"
+  to = "/resources.html#contract-vehicles"
+  status = 301
+
+[[redirects]]
+  from = "/contracting.html"
+  to = "/resources.html#contract-vehicles"
   status = 301
 
 [[headers]]

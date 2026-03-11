@@ -1,6 +1,8 @@
 // site.js — Shared functionality for all pages
 // Mobile menu toggle, search overlay, subscribe dropdown
 
+function esc(s) { var d = document.createElement('div'); d.appendChild(document.createTextNode(s)); return d.innerHTML; }
+
 // Mobile menu toggle
 (function() {
   var toggle = document.getElementById('menuToggle');
@@ -35,9 +37,9 @@
     }).slice(0, 8);
     if (matches.length === 0) { results.innerHTML = '<p class="text-sm py-4 text-center" style="color:var(--mmt-white-dim);">No results found.</p>'; return; }
     results.innerHTML = matches.map(function(m) {
-      return '<a href="'+m.url+'" class="block p-3 rounded-lg no-underline hover:opacity-80 mb-2" style="background:var(--mmt-navy); border:1px solid rgba(0,229,250,0.1);">'
-        + '<p class="text-sm font-bold" style="color:var(--mmt-white);">'+m.title+'</p>'
-        + '<p class="text-xs mt-1" style="color:var(--mmt-white-dim);">'+m.date+'</p>'
+      return '<a href="'+esc(m.url)+'" class="block p-3 rounded-lg no-underline hover:opacity-80 mb-2" style="background:var(--mmt-navy); border:1px solid rgba(0,229,250,0.1);">'
+        + '<p class="text-sm font-bold" style="color:var(--mmt-white);">'+esc(m.title)+'</p>'
+        + '<p class="text-xs mt-1" style="color:var(--mmt-white-dim);">'+esc(m.date)+'</p>'
         + '</a>';
     }).join('');
   });

@@ -14,6 +14,7 @@
 
 const { createClient } = require("@supabase/supabase-js");
 const { DOCUMENT_TYPES } = require("./lib/document-types");
+const { checkRateLimit, rateLimitHeaders } = require("./lib/rate-limiter");
 
 // --- Environment Variables ---
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -41,6 +42,23 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
+
+// ============================================================
+// RATE LIMITING
+// ============================================================
+
+function getRateLimitedResponse(event) {
+  const ip = (event.headers["x-forwarded-for"] || "unknown").split(",")[0].trim();
+  const result = checkRateLimit(ip, { windowMs: 60_000, maxRequests: 5 });
+  if (!result.allowed) {
+    return {
+      statusCode: 429,
+      headers: { ...CORS_HEADERS, ...rateLimitHeaders(result, 5) },
+      body: JSON.stringify({ error: "Too many requests. Please try again later." }),
+    };
+  }
+  return null;
+}
 
 // ============================================================
 // TEXT EXTRACTION (DOCX/PPTX — fast, < 1s)
@@ -166,6 +184,10 @@ exports.handler = async (event) => {
   if (event.httpMethod === "OPTIONS") {
     return { statusCode: 204, headers: CORS_HEADERS, body: "" };
   }
+
+  // Rate limit
+  const rateLimited = getRateLimitedResponse(event);
+  if (rateLimited) return rateLimited;
 
   if (event.httpMethod !== "POST") {
     return {
