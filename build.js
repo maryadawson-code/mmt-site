@@ -1450,6 +1450,13 @@ function inlineTailwindCss(html) {
     );
   }
 
+  // HF-04: Ensure fade-up elements visible without JavaScript
+  if (!html.includes('noscript')) {
+    html = html.replace('</head>',
+      '  <noscript><style>.fade-up{opacity:1!important;transform:none!important;}</style></noscript>\n</head>'
+    );
+  }
+
   // S2-11: Upgrade glossary detail pages to Apple design system
   // Upgrade old :root variables to include Apple design tokens
   if (html.includes('glossary') || html.includes('Glossary')) {
