@@ -7,8 +7,7 @@
     "test": "npx playwright test",
     "test:links": "node scripts/validate-links.js",
     "test:integrity": "node scripts/verify-integrity.js",
-    "verify": "node build.js && node scripts/verify-integrity.js && npx playwright test",
-    "dev": "npx netlify dev"
+    "verify": "node build.js && node scripts/verify-integrity.js && npx playwright test"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",

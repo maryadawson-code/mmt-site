@@ -192,35 +192,6 @@ function generateRelatedTopicsHtml(currentTag, allTags) {
       </div>`;
 }
 
-// Podcast episode tag matching — maps keywords to topic tags
-const podcastTagRules = [
-  { tag: 'DHA', patterns: [/\bdha\b/i, /defense health agency/i, /defense health/i] },
-  { tag: 'MHS GENESIS', patterns: [/\bmhs genesis\b/i, /mhs\s*genesis/i, /genesis\b/i] },
-  { tag: 'VA EHR', patterns: [/\bva ehr\b/i, /\bva\b.*\behr\b/i, /veterans affairs.*electronic health/i, /\bcerner\b/i, /\boracle health\b/i] },
-  { tag: 'FHIR', patterns: [/\bfhir\b/i, /\bhl7\b/i, /interoperab/i] },
-  { tag: 'GovCon', patterns: [/\bgovcon\b/i, /government contract/i, /federal contract/i, /\bcontract(?:ing|or|s)?\b/i] },
-  { tag: 'Small Business', patterns: [/small business/i, /\bsbir\b/i, /\bsttr\b/i, /\b8\(a\)/i, /small disadvantaged/i] },
-  { tag: 'Contract Vehicles', patterns: [/contract vehicle/i, /\bidiq\b/i, /\bbpa\b/i, /\bgwac\b/i, /\bt-?5\b/i, /task order/i] },
-  { tag: 'Leadership', patterns: [/leadership/i, /\bdirector\b/i, /\bsecretary\b/i, /\bkeith bass\b/i, /confirmation/i, /nominee/i] },
-  { tag: 'Policy', patterns: [/\bpolicy\b/i, /\bndaa\b/i, /legislation/i, /\bcongress/i, /\bmandate\b/i, /regulation/i] },
-  { tag: 'Acquisition', patterns: [/acquisition/i, /procurement/i, /\brfp\b/i, /\brfi\b/i, /solicitation/i, /\bsource selection/i] },
-  { tag: 'Cybersecurity', patterns: [/cyber/i, /\bcmmc\b/i, /zero trust/i, /\bato\b/i, /security\b/i] },
-  { tag: 'Readiness', patterns: [/readiness/i, /\blethality\b/i, /warfighter/i, /combat casualty/i, /medical readiness/i, /force health/i] },
-  { tag: 'DOGE', patterns: [/\bdoge\b/i, /department of government efficiency/i, /elon\b/i, /government efficiency/i] },
-  { tag: 'Health Data', patterns: [/health data/i, /\behr\b/i, /health record/i, /clinical data/i, /health it\b/i, /health information/i] },
-];
-
-function matchPodcastTags(title, description) {
-  const text = `${title} ${description}`.toLowerCase();
-  const matched = [];
-  for (const rule of podcastTagRules) {
-    if (rule.patterns.some(p => p.test(text))) {
-      matched.push(rule.tag);
-    }
-  }
-  return matched;
-}
-
 function generatePodcastEpisodesHtml(feed) {
   if (!feed || !feed.items || feed.items.length === 0) return '<p style="color:var(--mmt-white-dim);">Episodes coming soon.</p>';
   const episodes = feed.items.slice(0, 10);
@@ -240,16 +211,15 @@ function generatePodcastEpisodesHtml(feed) {
                 <source src="${escapeHtml(audioUrl)}" type="audio/mpeg">
               </audio>`
       : '';
-    const tags = matchPodcastTags(ep.title || '', ep.contentSnippet || ep.content || '');
-    const tagPills = tags.length > 0
-      ? `<div style="margin-top:6px;">${tags.map(t => `<span class="tag-pill">${escapeHtml(t)}</span>`).join('')}</div>`
-      : '';
+    const epNum = episodes.length - episodes.indexOf(ep);
     return `<article class="card rounded-xl p-6">
           <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-xs font-semibold px-2 py-0.5 rounded" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">EP ${epNum}</span>
+              <p class="text-xs" style="color:var(--mmt-white-dim); margin:0;">${date}${duration ? ` &middot; ${duration}` : ''}</p>
+            </div>
             <h3 class="text-base font-bold mb-1" style="color:var(--mmt-white);">${title}</h3>
-            <p class="text-xs mb-2" style="color:var(--mmt-white-dim);">${date}${duration ? ` &middot; ${duration}` : ''}</p>
             ${desc ? `<p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">${desc}</p>` : ''}
-            ${tagPills}
             ${audioPlayer}
           </div>
         </article>`;
@@ -467,6 +437,7 @@ function generateSitemap(articles, tags, contracts) {
     { loc: '/events.html', priority: '0.6' },
     { loc: '/privacy.html', priority: '0.3' },
     { loc: '/glossary.html', priority: '0.6' },
+    { loc: '/contracting.html', priority: '0.6' },
     { loc: '/agency-sources.html', priority: '0.5' },
     { loc: '/glossary/', priority: '0.5' },
   ];
@@ -1281,8 +1252,8 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
     'resources.html', 'topics.html', '404.html',
     'proposal-pulse.html', 'latest.html', 'newswire.html',
     'contract-tracker.html', 'events.html',
-    'privacy.html', 'glossary.html',
-    'agency-sources.html', 'contracting.html'
+    'privacy.html', 'glossary.html', 'contracting.html',
+    'agency-sources.html'
   ];
   const ogMap = {
     'index.html': 'index.png',

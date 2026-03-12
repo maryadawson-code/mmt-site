@@ -122,6 +122,69 @@
       margin-top: 0;
     }
 
+    .criteria-explainer {
+      margin-top: 1.25rem;
+      text-align: left;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .criteria-explainer summary {
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--primary-cyan);
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      justify-content: center;
+    }
+    .criteria-explainer summary::before {
+      content: "▸";
+      transition: transform 0.2s;
+    }
+    .criteria-explainer[open] summary::before {
+      transform: rotate(90deg);
+    }
+    .criteria-explainer summary::-webkit-details-marker { display: none; }
+    .criteria-grid {
+      margin-top: 0.75rem;
+      padding: 1rem 1.25rem;
+      background: rgba(0,229,250,0.04);
+      border: 1px solid rgba(0,229,250,0.1);
+      border-radius: 10px;
+    }
+    .criteria-note {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+    .criteria-grid ol {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      counter-reset: criteria;
+    }
+    .criteria-grid li {
+      counter-increment: criteria;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      padding: 0.35rem 0;
+      line-height: 1.5;
+    }
+    .criteria-grid li::before {
+      content: counter(criteria) ".";
+      color: var(--primary-cyan);
+      font-weight: 600;
+      margin-right: 0.5rem;
+      font-size: 0.75rem;
+    }
+    .criteria-grid li strong {
+      color: #fff;
+    }
+
     /* ===== BUTTONS ===== */
     .btn {
       display: inline-flex;
@@ -948,6 +1011,23 @@
     <h1>Proposal <span>Pulse</span></h1>
     <p>Upload your proposal document. Get a scored assessment across nine criteria in under 60 seconds.</p>
     <p class="hero-sub">Supports pitch decks, white papers, RFP responses, capabilities statements, pricing volumes, and executive summaries.</p>
+    <details class="criteria-explainer">
+      <summary>What are the 9 scoring criteria?</summary>
+      <div class="criteria-grid">
+        <p class="criteria-note">Criteria adapt to your document type. Here's what we evaluate:</p>
+        <ol>
+          <li><strong>Problem Clarity</strong> — Is the agency's mission problem specific and urgent?</li>
+          <li><strong>Mission Relevance</strong> — Does the solution connect to stated mission outcomes?</li>
+          <li><strong>Solution / Technical Approach</strong> — Is the methodology clear and feasible?</li>
+          <li><strong>Market Sizing / Scope</strong> — Are contract vehicles and federal market addressed?</li>
+          <li><strong>Team & Credibility</strong> — Relevant credentials, clearances, federal experience?</li>
+          <li><strong>Traction / Past Performance</strong> — Real pilots, contracts, or references?</li>
+          <li><strong>Financials / Pricing</strong> — Numbers defensible? Unit economics clear?</li>
+          <li><strong>Competitive Position</strong> — Differentiation specific? Incumbent risk addressed?</li>
+          <li><strong>Writing Quality / The Ask</strong> — Clear, organized, and actionable?</li>
+        </ol>
+      </div>
+    </details>
   </div>
 
   <div id="upload-error" class="error-banner" role="alert">
@@ -965,11 +1045,11 @@
           <line x1="12" y1="3" x2="12" y2="15"/>
         </svg>
         <p>Drag and drop your file here, or <strong style="color:var(--primary-cyan);">click to browse</strong></p>
-        <p class="upload-hint">PDF, PPTX, or DOCX. 4MB max.</p>
+        <p class="upload-hint">PDF, PPTX, or DOCX. 4MB max. Large files? Compress your PDF or remove embedded images first.</p>
       </div>
       <p style="text-align:center; font-size:0.75rem; color:var(--text-muted); margin-top:0.75rem; display:flex; align-items:center; justify-content:center; gap:0.4rem;">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        Documents are analyzed in real time and never stored.
+        Documents are analyzed in real time and never stored. <a href="privacy.html" style="color:var(--primary-cyan); text-decoration:none;">Privacy Policy</a>
       </p>
       <input type="file" id="file-input" accept=".pdf,.pptx,.docx,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none;">
 

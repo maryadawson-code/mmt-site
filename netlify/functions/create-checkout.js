@@ -8,7 +8,6 @@
 
 const { createClient } = require("@supabase/supabase-js");
 const Stripe = require("stripe");
-const { checkRateLimit, rateLimitHeaders } = require("./lib/rate-limiter");
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -34,17 +33,6 @@ exports.handler = async (event) => {
       statusCode: 405,
       headers: CORS_HEADERS,
       body: JSON.stringify({ error: "Method not allowed" }),
-    };
-  }
-
-  // Rate limit: 5 checkout attempts per minute per IP
-  const ip = (event.headers["x-forwarded-for"] || "unknown").split(",")[0].trim();
-  const rl = checkRateLimit(ip, { windowMs: 60_000, maxRequests: 5 });
-  if (!rl.allowed) {
-    return {
-      statusCode: 429,
-      headers: { ...CORS_HEADERS, ...rateLimitHeaders(rl, 5) },
-      body: JSON.stringify({ error: "Too many requests. Please try again later." }),
     };
   }
 

@@ -6,7 +6,6 @@
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
-const { checkRateLimit, rateLimitHeaders } = require("./lib/rate-limiter");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -21,17 +20,6 @@ exports.handler = async (event) => {
   // CORS preflight
   if (event.httpMethod === "OPTIONS") {
     return { statusCode: 204, headers: CORS_HEADERS, body: "" };
-  }
-
-  // Rate limit: 10 feedback submissions per minute per IP
-  const ip = (event.headers["x-forwarded-for"] || "unknown").split(",")[0].trim();
-  const rl = checkRateLimit(ip, { windowMs: 60_000, maxRequests: 10 });
-  if (!rl.allowed) {
-    return {
-      statusCode: 429,
-      headers: { ...CORS_HEADERS, ...rateLimitHeaders(rl, 10) },
-      body: JSON.stringify({ error: "Too many requests. Please try again later." }),
-    };
   }
 
   if (event.httpMethod !== "POST") {

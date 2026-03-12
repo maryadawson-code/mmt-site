@@ -24,59 +24,33 @@ async function sendEmail({ to, subject, html, from }) {
     return { success: false, error: "RESEND_API_KEY not configured" };
   }
 
-  const MAX_RETRIES = 2;
-  let lastError = null;
+  try {
+    const response = await fetchWithTimeout(RESEND_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        from: from || DEFAULT_FROM,
+        to: [to],
+        subject,
+        html,
+      }),
+    });
 
-  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
-    try {
-      const response = await fetchWithTimeout(RESEND_API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          from: from || DEFAULT_FROM,
-          to: [to],
-          subject,
-          html,
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (attempt > 0) {
-          console.log(`Email sent on retry ${attempt}: ${data.id}`);
-        }
-        return { success: true, id: data.id };
-      }
-
+    if (!response.ok) {
       const errBody = await response.text();
-      lastError = `Resend API ${response.status}: ${errBody}`;
-
-      // Retry on 5xx or 429 (rate limited)
-      if (response.status >= 500 || response.status === 429) {
-        console.warn(`Email attempt ${attempt + 1} failed (${response.status}), retrying...`);
-        if (attempt < MAX_RETRIES) {
-          await new Promise((r) => setTimeout(r, (attempt + 1) * 2000));
-          continue;
-        }
-      }
-
       console.error("Resend API error:", response.status, errBody);
-      return { success: false, error: lastError };
-    } catch (err) {
-      lastError = err.message;
-      console.warn(`Email attempt ${attempt + 1} failed: ${err.message}`);
-      if (attempt < MAX_RETRIES) {
-        await new Promise((r) => setTimeout(r, (attempt + 1) * 2000));
-        continue;
-      }
+      return { success: false, error: `Resend API ${response.status}: ${errBody}` };
     }
-  }
 
-  console.error("Email send failed after retries:", lastError);
-  return { success: false, error: lastError }
+    const data = await response.json();
+    return { success: true, id: data.id };
+  } catch (err) {
+    console.error("Email send failed:", err.message);
+    return { success: false, error: err.message };
+  }
 }
 
 module.exports = { sendEmail };

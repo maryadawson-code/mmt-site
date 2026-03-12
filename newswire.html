@@ -50,6 +50,11 @@
     .nav-glass { background: rgba(13,17,23,0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,229,250,0.1); }
     .section-alt { background: var(--mmt-dark); }
     *:focus-visible { outline: 2px solid var(--mmt-cyan); outline-offset: 2px; }
+    @media (max-width: 767px) {
+      #mobileMenu a { min-height: 44px; display: flex; align-items: center; }
+      footer a { min-height: 44px; display: inline-flex; align-items: center; }
+      .btn-primary, .btn-secondary { min-height: 44px; }
+    }
     .filter-pill { background: rgba(0,229,250,0.1); color: var(--mmt-cyan); border: none; cursor: pointer; transition: all 0.2s; }
     .filter-pill:hover { background: rgba(0,229,250,0.2); }
     .filter-pill.active { background: var(--mmt-cyan); color: var(--mmt-navy); font-weight: 600; }

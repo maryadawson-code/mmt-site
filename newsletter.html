@@ -53,6 +53,11 @@
     .section-alt { background: var(--mmt-dark); }
     .tag { background: rgba(0,229,250,0.1); color: var(--mmt-cyan); padding: 2px 10px; border-radius: 4px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; }
     *:focus-visible { outline: 2px solid var(--mmt-cyan); outline-offset: 2px; }
+    @media (max-width: 767px) {
+      #mobileMenu a { min-height: 44px; display: flex; align-items: center; }
+      footer a { min-height: 44px; display: inline-flex; align-items: center; }
+      .btn-primary, .btn-secondary { min-height: 44px; }
+    }
   </style>
   <!-- BUILD:JSONLD_NEWSLETTER -->
 </head>

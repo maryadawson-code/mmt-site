@@ -50,6 +50,11 @@
     .nav-glass { background: rgba(13,17,23,0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,229,250,0.1); }
     .section-alt { background: var(--mmt-dark); }
     *:focus-visible { outline: 2px solid var(--mmt-cyan); outline-offset: 2px; }
+    @media (max-width: 767px) {
+      #mobileMenu a { min-height: 44px; display: flex; align-items: center; }
+      footer a { min-height: 44px; display: inline-flex; align-items: center; }
+      .btn-primary, .btn-secondary { min-height: 44px; }
+    }
   </style>
 </head>
 <body class="antialiased">

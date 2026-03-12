@@ -52,6 +52,11 @@
     .nav-glass { background: rgba(13,17,23,0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,229,250,0.1); }
     .section-alt { background: var(--mmt-dark); }
     *:focus-visible { outline: 2px solid var(--mmt-cyan); outline-offset: 2px; }
+    @media (max-width: 767px) {
+      #mobileMenu a { min-height: 44px; display: flex; align-items: center; }
+      footer a { min-height: 44px; display: inline-flex; align-items: center; }
+      .btn-primary, .btn-secondary { min-height: 44px; }
+    }
   </style>
   <script type="application/ld+json">
   {
@@ -214,11 +219,37 @@
     </div>
   </section>
 
+  <!-- Newcomer Wayfinding -->
+  <section class="py-16 px-6 section-alt">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-xl font-bold mb-2 text-center">New here? Start with what matters.</h2>
+      <p class="text-sm text-center mb-8" style="color:var(--mmt-white-muted);">Whether you're tracking contracts, catching up on policy, or looking for the podcast — we've got you.</p>
+      <div class="grid sm:grid-cols-3 gap-6">
+        <a href="latest.html" class="card rounded-xl p-6 no-underline block" style="text-decoration:none;">
+          <p class="text-xs font-semibold uppercase tracking-widest mb-2" style="color:var(--mmt-cyan);">Read</p>
+          <p class="font-bold text-sm mb-1" style="color:#fff;">Newsletter Archive</p>
+          <p class="text-xs" style="color:var(--mmt-white-muted);">Bi-weekly intelligence on DHA, VA, and federal health IT.</p>
+        </a>
+        <a href="podcast.html" class="card rounded-xl p-6 no-underline block" style="text-decoration:none;">
+          <p class="text-xs font-semibold uppercase tracking-widest mb-2" style="color:var(--mmt-cyan);">Listen</p>
+          <p class="font-bold text-sm mb-1" style="color:#fff;">Fed UP Podcast</p>
+          <p class="text-xs" style="color:var(--mmt-white-muted);">Unfiltered conversations about defense health and federal IT.</p>
+        </a>
+        <a href="resources.html" class="card rounded-xl p-6 no-underline block" style="text-decoration:none;">
+          <p class="text-xs font-semibold uppercase tracking-widest mb-2" style="color:var(--mmt-cyan);">Explore</p>
+          <p class="font-bold text-sm mb-1" style="color:#fff;">Resource Hub</p>
+          <p class="text-xs" style="color:var(--mmt-white-muted);">Leadership map, curated links, contract intel, and glossary.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
   <!-- Closing CTA -->
   <section class="py-16 px-6">
     <div class="max-w-3xl mx-auto text-center">
-      <p class="text-lg font-semibold mb-6 leading-relaxed" style="color:var(--mmt-white-muted);">Intelligence for the people who build, buy, and deploy federal health IT.</p>
-      <button id="btn-cta-subscribe" class="btn-primary px-8 py-3 rounded-lg text-sm font-semibold" style="cursor:pointer;border:none;">Subscribe</button>
+      <p class="text-lg font-semibold mb-3 leading-relaxed" style="color:var(--mmt-white-muted);">Intelligence for the people who build, buy, and deploy federal health IT.</p>
+      <p class="text-sm mb-6" style="color:var(--mmt-white-dim);">Join decision-makers across DoD, VA, and the contractor community.</p>
+      <button id="btn-cta-subscribe" class="btn-primary px-8 py-3 rounded-lg text-sm font-semibold" style="cursor:pointer;border:none;">Subscribe Free</button>
     </div>
   </section>
 
