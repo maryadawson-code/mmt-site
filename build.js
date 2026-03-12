@@ -1328,16 +1328,16 @@ function inlineTailwindCss(html) {
   // Remove old .nav-glass CSS definition from inline styles
   html = html.replace(/\.nav-glass\s*\{[^}]*\}/g, '');
 
-  // S2-02: Inject "Getting Started" nav link if missing
-  if (!html.includes('getting-started')) {
-    // Desktop nav — insert after Intelligence link
+  // S2-02: Inject "Getting Started" nav link if missing (idempotent)
+  if (!html.includes('getting-started.html')) {
+    // Desktop nav — insert after FIRST Intelligence link only (no /g flag)
     html = html.replace(
-      /(<a href="[^"]*latest\.html"[^>]*>Intelligence<\/a>)/g,
+      /(<a href="[^"]*latest\.html"[^>]*>Intelligence<\/a>)/,
       '$1\n        <a href="/getting-started.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-body);">Getting Started</a>'
     );
-    // Mobile nav — insert after Intelligence link
+    // Mobile nav — insert after second Intelligence link (mobile menu)
     html = html.replace(
-      /(<a href="[^"]*latest\.html"[^>]*>Intelligence<\/a>\s*\n)/,
+      /(<a href="[^"]*latest\.html"[^>]*>Intelligence<\/a>\s*\n)(?!.*getting-started)/,
       '$1        <a href="/getting-started.html" class="text-sm font-medium" style="color:var(--mmt-body);">Getting Started</a>\n'
     );
   }
