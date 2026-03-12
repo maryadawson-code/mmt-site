@@ -35,7 +35,7 @@
 - [x] S2-10: Newsletter page — Apple typography, borderless cards, tag pills, fade-up, updated archive cards
 - [x] S2-11: Glossary detail pages — Apple tokens via post-processor, borderless cards, tag pills, upgraded typography
 - [x] S2-12: Contract detail pages — Apple design template, borderless cards, fade-up, typography upgrade
-- [ ] S2-13: Article template — editorial reading experience
+- [x] S2-13: Article template — editorial reading experience, Apple tokens, text-hero h1, fade-up, borderless related cards, btn-primary CTA, Apple footer
 - [ ] S2-14: 404 page polish
 - [ ] S2-15: Mobile responsiveness audit
 - [ ] S2-16: Final polish & performance

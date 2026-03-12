@@ -157,13 +157,13 @@ function findRelatedArticles(article, allArticles, count = 3) {
 function generateRelatedArticlesHtml(related) {
   if (related.length === 0) return '';
   const cards = related.map(a =>
-    `<a href="${a.url}" class="card rounded-xl p-4 no-underline block transition-all">
-            <p class="text-xs mb-1" style="color:var(--mmt-white-dim);">${a.formattedDate}</p>
-            <p class="text-sm font-bold" style="color:var(--mmt-white);">${escapeHtml(a.title)}</p>
+    `<a href="${a.url}" class="card p-4 no-underline block transition-all">
+            <p class="text-xs mb-1" style="color:var(--mmt-caption);">${a.formattedDate}</p>
+            <p class="text-sm font-bold" style="color:#fff;">${escapeHtml(a.title)}</p>
           </a>`
   ).join('\n          ');
-  return `<div class="pt-8" style="border-top:1px solid rgba(0,229,250,0.1);">
-        <h3 class="text-lg font-bold mb-4">Related Articles</h3>
+  return `<div class="pt-8" style="border-top:1px solid var(--mmt-border);">
+        <p class="text-eyebrow mb-4">Related Articles</p>
         <div class="grid md:grid-cols-3 gap-4">
           ${cards}
         </div>
@@ -291,8 +291,8 @@ function generateSearchIndex(archive) {
 const searchOverlayHtml = `
   <!-- Search Overlay -->
   <div id="searchOverlay" class="hidden fixed inset-0 z-[70]" style="background:rgba(0,0,0,0.5);">
-    <div class="max-w-xl mx-auto mt-24 p-6 rounded-xl" style="background:var(--mmt-slate); border:1px solid rgba(0,229,250,0.1);">
-      <input id="searchInput" type="search" placeholder="Search articles, topics, resources..." autocomplete="off" class="w-full px-4 py-3 rounded-lg text-base" style="background:var(--mmt-navy); border:1px solid rgba(0,229,250,0.1); color:var(--mmt-white); outline:none;">
+    <div class="max-w-xl mx-auto mt-24 p-6 rounded-xl" style="background:var(--mmt-surface, #0A1628); border:1px solid var(--mmt-border, rgba(255,255,255,0.05));">
+      <input id="searchInput" type="search" placeholder="Search articles, topics, resources..." autocomplete="off" class="w-full px-4 py-3 rounded-lg text-base" style="background:var(--mmt-navy); border:1px solid var(--mmt-border, rgba(255,255,255,0.05)); color:var(--mmt-white); outline:none;">
       <div id="searchResults" class="mt-4 max-h-80 overflow-y-auto"></div>
     </div>
   </div>`;
@@ -1333,12 +1333,12 @@ function inlineTailwindCss(html) {
     // Desktop nav — insert after Intelligence link
     html = html.replace(
       /(<a href="[^"]*latest\.html"[^>]*>Intelligence<\/a>)/g,
-      '$1\n        <a href="/getting-started.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Getting Started</a>'
+      '$1\n        <a href="/getting-started.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-body);">Getting Started</a>'
     );
     // Mobile nav — insert after Intelligence link
     html = html.replace(
       /(<a href="[^"]*latest\.html"[^>]*>Intelligence<\/a>\s*\n)/,
-      '$1        <a href="/getting-started.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Getting Started</a>\n'
+      '$1        <a href="/getting-started.html" class="text-sm font-medium" style="color:var(--mmt-body);">Getting Started</a>\n'
     );
   }
 
