@@ -1379,6 +1379,84 @@ function inlineTailwindCss(html) {
     '.section-alt { background: #0A1628; }'
   );
 
+  // S2-11: Upgrade glossary detail pages to Apple design system
+  // Upgrade old :root variables to include Apple design tokens
+  if (html.includes('glossary') || html.includes('Glossary')) {
+    // Add Apple design tokens if not already present
+    if (!html.includes('--mmt-surface:') && html.includes('--mmt-slate:')) {
+      html = html.replace(
+        /--mmt-slate:\s*#0A1628;/g,
+        '--mmt-slate: #0A1628;\n      --mmt-surface: #0A1628;\n      --mmt-surface-hover: #0F1D35;\n      --mmt-body: #CBD5E1;\n      --mmt-caption: #94A3B8;\n      --mmt-border: rgba(255, 255, 255, 0.05);'
+      );
+    }
+    // Upgrade pillar-tag to Apple tag style
+    html = html.replace(
+      /\.pillar-tag\s*\{[^}]*\}/g,
+      '.pillar-tag { display: inline-block; padding: 6px 14px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; background: var(--mmt-surface, #0A1628); color: var(--mmt-body, #CBD5E1); text-decoration: none; transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1); }'
+    );
+    html = html.replace(
+      /\.pillar-tag:hover\s*\{[^}]*\}/g,
+      '.pillar-tag:hover { background: var(--mmt-surface-hover, #0F1D35); color: #fff; }'
+    );
+    // Upgrade hero section padding
+    html = html.replace(
+      /class="pt-36 pb-20 px-6">/,
+      'style="padding: clamp(100px, 12vh, 200px) 0;" class="px-6">'
+    );
+    // Upgrade h1 from old style to text-hero
+    html = html.replace(
+      /<h1 class="text-3xl md:text-4xl font-bold leading-tight mb-6">/g,
+      '<h1 class="text-hero mb-6" style="font-size:clamp(2.5rem,5vw,4.5rem);line-height:1.1;letter-spacing:-0.02em;font-weight:700;font-family:\'Space Grotesk\',system-ui,sans-serif;">'
+    );
+    // Upgrade description text
+    html = html.replace(
+      /class="text-lg leading-relaxed mb-10" style="color:var\(--mmt-white-muted\);"/g,
+      'class="text-body mb-10" style="font-size:1.125rem;line-height:1.75;color:var(--mmt-body, #CBD5E1);"'
+    );
+    // Upgrade card styling in glossary
+    html = html.replace(
+      /class="card rounded-xl p-6 mb-10" style="background:var\(--mmt-slate\);border:1px solid rgba\(0,229,250,0\.1\);"/g,
+      'class="card p-6 md:p-8 mb-10"'
+    );
+    html = html.replace(
+      /class="card rounded-xl p-6 mb-10"/g,
+      'class="card p-6 md:p-8 mb-10"'
+    );
+    // Upgrade "Why It Matters" heading
+    html = html.replace(
+      /<h2 class="text-lg font-bold mb-3" style="color:var\(--mmt-cyan\);">Official Sources<\/h2>/g,
+      '<p class="text-eyebrow mb-4" style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:600;color:var(--mmt-cyan, #00E5FA);">Official Sources</p>'
+    );
+    html = html.replace(
+      /<h2 class="text-lg font-bold mb-3" style="color:var\(--mmt-cyan\);">Why It Matters<\/h2>/g,
+      '<p class="text-eyebrow mb-4" style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:600;color:var(--mmt-cyan, #00E5FA);">Why It Matters</p>'
+    );
+    // Upgrade Related Terms heading
+    html = html.replace(
+      /<h2 class="text-lg font-bold mb-4">Related Terms<\/h2>/g,
+      '<p class="text-eyebrow mb-4" style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:600;color:var(--mmt-cyan, #00E5FA);">Related Terms</p>'
+    );
+    // Upgrade border to Apple style
+    html = html.replace(
+      /border-top:1px solid rgba\(0,229,250,0\.1\)/g,
+      'border-top:1px solid var(--mmt-border, rgba(255,255,255,0.05))'
+    );
+    // Upgrade breadcrumb text
+    html = html.replace(
+      /class="text-xs mb-8" style="color:var\(--mmt-white-dim\);"/g,
+      'class="text-caption mb-8"'
+    );
+    // Upgrade footer colors
+    html = html.replace(
+      /style="color:var\(--mmt-white-dim\);"/g,
+      'style="color:var(--mmt-caption, #94A3B8);"'
+    );
+    html = html.replace(
+      /style="color:var\(--mmt-white-muted\);"/g,
+      'style="color:var(--mmt-body, #CBD5E1);"'
+    );
+  }
+
   return html;
 }
 
@@ -1495,15 +1573,15 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
       const sources = glossarySources[slug];
       if (sources && sources.length > 0 && slug !== 'index') {
         const sourceLinks = sources.map(s =>
-          `<a href="${escapeHtml(s.url)}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-sm no-underline hover:opacity-80 py-2" style="color:var(--mmt-cyan);">
+          `<a href="${escapeHtml(s.url)}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-sm no-underline hover:opacity-80 py-2" style="color:var(--mmt-cyan, #00E5FA);">
                 <svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
                 <span>${escapeHtml(s.label)}</span>
-                <span class="text-xs" style="color:var(--mmt-white-dim);">${escapeHtml(s.domain)}</span>
+                <span class="text-xs" style="color:var(--mmt-caption, #94A3B8);">${escapeHtml(s.domain)}</span>
               </a>`
         ).join('\n              ');
         const sourcesSection = `
-      <div class="glossary-sources card rounded-xl p-6 mb-10" style="background:var(--mmt-slate);border:1px solid rgba(0,229,250,0.1);">
-        <h2 class="text-lg font-bold mb-3" style="color:var(--mmt-cyan);">Official Sources</h2>
+      <div class="glossary-sources card p-6 md:p-8 mb-10">
+        <p class="text-eyebrow mb-4" style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:600;color:var(--mmt-cyan, #00E5FA);">Official Sources</p>
         <div class="flex flex-col">
               ${sourceLinks}
         </div>

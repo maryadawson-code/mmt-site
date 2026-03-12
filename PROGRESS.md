@@ -33,7 +33,7 @@
 - [x] S2-08: About/Press — awards grid, alternating surfaces, Apple spacing
 - [x] S2-09: Podcast page — Apple typography, borderless cards, rounded-2xl hosts, tag pills, fade-up, BUG-5 fix
 - [x] S2-10: Newsletter page — Apple typography, borderless cards, tag pills, fade-up, updated archive cards
-- [ ] S2-11: Glossary detail pages — clean reference layout
+- [x] S2-11: Glossary detail pages — Apple tokens via post-processor, borderless cards, tag pills, upgraded typography
 - [ ] S2-12: Contract detail pages — fix 404 & redesign
 - [ ] S2-13: Article template — editorial reading experience
 - [ ] S2-14: 404 page polish
