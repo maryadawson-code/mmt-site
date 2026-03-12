@@ -439,6 +439,7 @@ function generateSitemap(articles, tags, contracts) {
     { loc: '/glossary.html', priority: '0.6' },
     { loc: '/contracting.html', priority: '0.6' },
     { loc: '/agency-sources.html', priority: '0.5' },
+    { loc: '/getting-started.html', priority: '0.7' },
     { loc: '/glossary/', priority: '0.5' },
   ];
 
@@ -1253,7 +1254,7 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
     'proposal-pulse.html', 'latest.html', 'newswire.html',
     'contract-tracker.html', 'events.html',
     'privacy.html', 'glossary.html', 'contracting.html',
-    'agency-sources.html'
+    'agency-sources.html', 'getting-started.html'
   ];
   const ogMap = {
     'index.html': 'index.png',
