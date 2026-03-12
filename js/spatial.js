@@ -331,6 +331,8 @@
       if (!track) return;
 
       mm.add('(min-width: 768px) and (pointer: fine)', function () {
+        // Recalculate after layout settles
+        ScrollTrigger.refresh();
         var scrollWidth = track.scrollWidth - container.offsetWidth;
         if (scrollWidth <= 0) return;
 
@@ -339,12 +341,14 @@
           ease: 'none',
           scrollTrigger: {
             trigger: container,
-            start: 'top 20%',
-            end: function () { return '+=' + scrollWidth; },
-            scrub: 0.8,
+            start: 'top top',
+            end: function () { return '+=' + (scrollWidth * 1.5); },
+            scrub: 0.6,
             pin: true,
             pinSpacing: true,
-            anticipatePin: 1
+            anticipatePin: 1,
+            onEnter: function () { container.classList.add('scrolling'); },
+            onLeave: function () { container.classList.remove('scrolling'); }
           }
         });
       });
@@ -354,19 +358,22 @@
     // S6-05: Counter Animations
     // ========================
     gsap.utils.toArray('.stat-counter').forEach(function (counter) {
-      var target = parseInt(counter.getAttribute('data-target') || counter.textContent, 10);
-      if (isNaN(target)) return;
+      var target = parseInt(counter.getAttribute('data-target'), 10);
+      if (isNaN(target) || target === 0) return;
       var suffix = counter.getAttribute('data-suffix') || '';
       var prefix = counter.getAttribute('data-prefix') || '';
+
+      // Set initial display to 0
+      counter.textContent = prefix + '0' + suffix;
 
       var obj = { val: 0 };
       gsap.to(obj, {
         val: target,
-        duration: 2,
+        duration: 2.5,
         ease: 'power2.out',
         scrollTrigger: {
-          trigger: counter,
-          start: 'top 85%',
+          trigger: counter.closest('section') || counter,
+          start: 'top 80%',
           toggleActions: 'play none none none'
         },
         onUpdate: function () {

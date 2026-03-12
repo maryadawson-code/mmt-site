@@ -332,8 +332,27 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% 50%, rgba(0, 229, 250, 0.05) 0%, transparent 70%);
+  background: radial-gradient(ellipse at 40% 40%, rgba(0, 229, 250, 0.06) 0%, transparent 50%),
+              radial-gradient(ellipse at 65% 70%, rgba(0, 255, 133, 0.04) 0%, transparent 50%);
   pointer-events: none;
+}
+.atmo-break::after {
+  content: '';
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 229, 250, 0.06) 0%, transparent 70%);
+  filter: blur(60px);
+  top: 50%;
+  left: 20%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: atmo-drift 12s ease-in-out infinite alternate;
+}
+@keyframes atmo-drift {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+  100% { transform: translate(-30%, -60%) scale(1.3); opacity: 1; }
 }
 .atmo-break-text {
   font-family: 'Space Grotesk', system-ui, sans-serif;
@@ -368,6 +387,51 @@
   min-width: 280px;
 }
 
+/* Mobile: make horizontal scroll native touch-scrollable */
+@media (max-width: 767px) {
+  [data-hscroll] {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin-left: -24px;
+    margin-right: -24px;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  [data-hscroll]::-webkit-scrollbar {
+    display: none;
+  }
+  .hscroll-track {
+    width: max-content;
+    padding-right: 24px;
+  }
+  .hscroll-card {
+    flex: 0 0 280px;
+    min-width: 260px;
+  }
+}
+
+/* Scroll hint indicator */
+[data-hscroll] {
+  position: relative;
+}
+[data-hscroll]::after {
+  content: '\2192  scroll';
+  position: absolute;
+  bottom: 8px;
+  right: 0;
+  font-size: 0.75rem;
+  color: var(--mmt-caption);
+  opacity: 0.6;
+  letter-spacing: 0.05em;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+[data-hscroll].scrolling::after {
+  opacity: 0;
+}
+
 /* Manifesto typography */
 .text-manifesto {
   font-family: 'Space Grotesk', system-ui, sans-serif;
@@ -392,18 +456,21 @@
 
 /* Glass card variant for value props */
 .card-glass {
-  background: rgba(10, 22, 40, 0.5);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(0, 229, 250, 0.08);
+  position: relative;
+  background: rgba(10, 22, 40, 0.35);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid rgba(0, 229, 250, 0.12);
   border-radius: 20px;
   padding: 32px;
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease, border-color 0.3s ease;
+  box-shadow: 0 4px 24px -8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 .card-glass:hover {
   transform: translateY(-4px);
-  box-shadow: 0 24px 64px -16px rgba(0, 229, 250, 0.12);
-  border-color: rgba(0, 229, 250, 0.18);
+  box-shadow: 0 24px 64px -16px rgba(0, 229, 250, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  border-color: rgba(0, 229, 250, 0.25);
+  background: rgba(10, 22, 40, 0.3);
 }
 
 /* Platform bar — sleek horizontal layout */
@@ -452,8 +519,9 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 30% 40%, rgba(0, 229, 250, 0.06) 0%, transparent 50%),
-              radial-gradient(ellipse at 70% 60%, rgba(0, 255, 133, 0.04) 0%, transparent 50%);
+  background: radial-gradient(ellipse at 25% 30%, rgba(0, 229, 250, 0.08) 0%, transparent 45%),
+              radial-gradient(ellipse at 75% 70%, rgba(0, 255, 133, 0.06) 0%, transparent 45%),
+              radial-gradient(ellipse at 50% 100%, rgba(0, 229, 250, 0.04) 0%, transparent 60%);
   pointer-events: none;
 }
 
@@ -565,5 +633,16 @@ body {
   /* Disable grain on mobile (invisible on small screens) */
   .ambient-grain::before {
     display: none;
+  }
+
+  /* Constrain depth orbs on mobile */
+  .depth-orb {
+    display: none;
+  }
+
+  /* Ensure buttons don't overflow */
+  .btn-primary, .btn-secondary {
+    max-width: 100%;
+    box-sizing: border-box;
   }
 }

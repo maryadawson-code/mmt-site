@@ -1488,7 +1488,7 @@ function inlineTailwindCss(html) {
   // S3-08: Inject scroll-progress bar after opening <body> tag
   if (!html.includes('scroll-progress')) {
     html = html.replace(/<body([^>]*)>/,
-      '<body$1>\n  <div id="scroll-progress" class="fixed top-0 left-0 h-[2px] z-[60] origin-left pointer-events-none" style="transform:scaleX(0);background:linear-gradient(90deg,#00E5FA,#00FF85);width:100%;" aria-hidden="true"></div>'
+      '<body$1>\n  <div id="scroll-progress" style="position:fixed;top:0;left:0;height:2px;z-index:60;transform-origin:left;pointer-events:none;transform:scaleX(0);background:linear-gradient(90deg,#00E5FA,#00FF85);width:100%;" aria-hidden="true"></div>'
     );
   }
 
