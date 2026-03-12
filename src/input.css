@@ -36,3 +36,27 @@
     max-width: 65ch;
   }
 }
+
+/* MMT-008: Mobile responsiveness */
+@media (max-width: 768px) {
+  /* Ensure touch targets meet 44px minimum */
+  .card a, .card button, nav a, nav button {
+    min-height: 44px;
+  }
+
+  /* Prevent horizontal overflow */
+  html {
+    overflow-x: hidden;
+  }
+
+  /* Contract tracker cards stack cleanly */
+  .contract-card-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* Glossary cards consistent spacing */
+  .glossary-grid {
+    gap: 0.75rem;
+  }
+}
