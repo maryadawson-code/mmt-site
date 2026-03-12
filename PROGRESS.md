@@ -38,6 +38,6 @@
 - [x] S2-13: Article template — editorial reading experience, Apple tokens, text-hero h1, fade-up, borderless related cards, btn-primary CTA, Apple footer
 - [x] S2-14: 404 page polish — Apple tokens, text-hero 404, borderless cards, text-eyebrow labels, fade-up, Apple footer
 - [x] S2-15: Mobile responsiveness audit — global overflow-x:hidden, touch targets 44px, tighter mobile spacing, responsive subscribe panel, img max-width
-- [ ] S2-16: Final polish & performance
+- [x] S2-16: Final polish & performance — global token migration (0 old usages), mmt-motion.js on all 17 pages, Apple footer headers, border/bg upgrades
 
 ## Log

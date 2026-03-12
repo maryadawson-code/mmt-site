@@ -1379,6 +1379,38 @@ function inlineTailwindCss(html) {
     '.section-alt { background: #0A1628; }'
   );
 
+  // S2-16: Global old-to-new token replacements for all pages
+  // Replace old color tokens in inline styles (not in CSS variable declarations)
+  html = html.replace(/style="([^"]*?)color:var\(--mmt-white-muted\);/g, 'style="$1color:var(--mmt-body);');
+  html = html.replace(/style="([^"]*?)color:var\(--mmt-white-dim\);/g, 'style="$1color:var(--mmt-caption);');
+  // Replace old background tokens
+  html = html.replace(/background:var\(--mmt-dark\)/g, 'background:var(--mmt-surface)');
+  html = html.replace(/background:var\(--mmt-slate\)/g, 'background:var(--mmt-surface)');
+  // Replace old border tokens
+  html = html.replace(/border[^"]*?rgba\(0,229,250,0\.1\)/g, function(match) {
+    return match.replace(/rgba\(0,229,250,0\.1\)/g, 'var(--mmt-border)');
+  });
+  // Replace old footer/section backgrounds
+  html = html.replace(/background:var\(--mmt-navy\);(\s*)border-top/g, 'background:var(--mmt-surface);$1border-top');
+  // Replace old nav subscribe panel background
+  html = html.replace(/background:var\(--mmt-slate\);border:1px solid rgba\(0,229,250,0\.15\)/g, 'background:var(--mmt-surface);border:1px solid var(--mmt-border)');
+  // Inject Apple tokens into :root if missing
+  if (!html.includes('--mmt-surface:') && html.includes('--mmt-slate:')) {
+    html = html.replace(
+      /--mmt-slate:\s*#0A1628;/,
+      '--mmt-slate: #0A1628;\n      --mmt-surface: #0A1628; --mmt-surface-hover: #0F1D35;\n      --mmt-body: #CBD5E1; --mmt-caption: #94A3B8;\n      --mmt-border: rgba(255, 255, 255, 0.05);'
+    );
+  }
+  // Replace old font-semibold cyan headings in footers with text-eyebrow
+  html = html.replace(
+    /class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var\(--mmt-cyan\);"/g,
+    'class="text-eyebrow mb-4"'
+  );
+  // Inject mmt-motion.js if not already present and page has fade-up elements
+  if (!html.includes('mmt-motion.js') && html.includes('fade-up')) {
+    html = html.replace('</body>', '  <script src="/js/mmt-motion.js" defer></script>\n</body>');
+  }
+
   // S2-11: Upgrade glossary detail pages to Apple design system
   // Upgrade old :root variables to include Apple design tokens
   if (html.includes('glossary') || html.includes('Glossary')) {
