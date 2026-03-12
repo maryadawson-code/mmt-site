@@ -1,24 +1,11 @@
-// mmt-motion.js — Apple-inspired motion layer (S2-01)
+// mmt-motion.js — Lightweight motion fallback (Sprint 2)
+// GSAP spatial.js handles animations when available; this provides
+// IntersectionObserver fallback for fade-up reveals.
 (function() {
   'use strict';
 
-  // --- Scroll Progress Bar ---
-  var bar = document.createElement('div');
-  bar.id = 'mmt-scroll-progress';
-  bar.setAttribute('aria-hidden', 'true');
-  bar.style.cssText = 'position:fixed;top:0;left:0;width:0%;height:2px;background:linear-gradient(90deg,#00E5FA 0%,#00FF85 100%);z-index:9999;pointer-events:none;transition:none;';
-  document.body.appendChild(bar);
-
-  // --- Scroll handler ---
-  function onScroll() {
-    var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-    bar.style.width = pct + '%';
-  }
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+  // Skip if GSAP spatial.js will handle animations
+  if (typeof gsap !== 'undefined') return;
 
   // --- Fade-up reveal on scroll ---
   if ('IntersectionObserver' in window) {
@@ -35,7 +22,7 @@
       observer.observe(el);
     });
 
-    // Auto-apply fade-up to main sections that don't already have it
+    // Auto-apply fade-up to main sections
     document.querySelectorAll('main > section').forEach(function(s) {
       if (!s.classList.contains('fade-up')) {
         s.classList.add('fade-up');

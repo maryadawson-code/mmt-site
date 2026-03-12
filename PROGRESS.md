@@ -40,4 +40,18 @@
 - [x] S2-15: Mobile responsiveness audit — global overflow-x:hidden, touch targets 44px, tighter mobile spacing, responsive subscribe panel, img max-width
 - [x] S2-16: Final polish & performance — global token migration (0 old usages), mmt-motion.js on all 17 pages, Apple footer headers, border/bg upgrades
 
+## Sprint 3: Immersive Spatial Layer
+- [x] S3-01: GSAP 3.13 + ScrollTrigger + ScrollToPlugin CDN, spatial.js scaffold, build injection on all 17 pages
+- [x] S3-02: GSAP scroll reveal system — handles .reveal + .fade-up, staggered groups, horizontal reveals
+- [x] S3-03: Cinematic hero — scroll-driven fade/scale, parallax depth orbs, 100vh entrance
+- [x] S3-04: Parallax depth layers — Why This Exists section, eyebrow animations, section dividers
+- [ ] S3-05: Cursor-aware micro-interactions — card tilt, magnetic buttons
+- [ ] S3-06: Cinematic section transitions — scale entry, animated dividers
+- [ ] S3-07: Typographic motion — word-by-word hero reveal
+- [ ] S3-08: Smooth scroll, momentum, scroll progress indicator
+- [ ] S3-09: Podcast page — episode reveal animation
+- [ ] S3-10: Card cascade — persona cards, newsletter articles
+- [ ] S3-11: Ambient background system — grain, vignette
+- [ ] S3-12: Performance & accessibility audit
+
 ## Log

@@ -1411,6 +1411,25 @@ function inlineTailwindCss(html) {
     html = html.replace('</body>', '  <script src="/js/mmt-motion.js" defer></script>\n</body>');
   }
 
+  // S3-01: Inject GSAP + ScrollTrigger + ScrollToPlugin + spatial.js on all pages
+  if (!html.includes('spatial.js')) {
+    html = html.replace('</body>',
+      '  <!-- GSAP + ScrollTrigger -->\n' +
+      '  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>\n' +
+      '  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>\n' +
+      '  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollToPlugin.min.js"></script>\n' +
+      '  <script src="/js/spatial.js"></script>\n' +
+      '</body>'
+    );
+  }
+
+  // S3-08: Inject scroll-progress bar after opening <body> tag
+  if (!html.includes('scroll-progress')) {
+    html = html.replace(/<body([^>]*)>/,
+      '<body$1>\n  <div id="scroll-progress" class="fixed top-0 left-0 h-[2px] z-[60] origin-left pointer-events-none" style="transform:scaleX(0);background:linear-gradient(90deg,#00E5FA,#00FF85);width:100%;" aria-hidden="true"></div>'
+    );
+  }
+
   // S2-11: Upgrade glossary detail pages to Apple design system
   // Upgrade old :root variables to include Apple design tokens
   if (html.includes('glossary') || html.includes('Glossary')) {
