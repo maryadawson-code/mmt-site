@@ -52,6 +52,8 @@
 - [x] S3-09: Podcast page — episode-card alternating slide reveals, platform-btn scale animation
 - [x] S3-10: Card cascade — persona-card rotation entrance, article-card scale animation
 - [x] S3-11: Ambient background — grain texture (1.5% opacity, disabled on mobile), viewport vignette, all 17 pages
-- [ ] S3-12: Performance & accessibility audit
+- [x] S3-12: Performance & accessibility audit — reduced-motion early exit, GPU-only animations, mobile factor reduction, grain disabled on mobile, cleanup on unload
+
+Sprint 3 complete. All 12 tickets executed. Pushed to main for Netlify auto-deploy.
 
 ## Log

@@ -378,7 +378,12 @@
     });
   }
 
-  // --- Cleanup ---
+  // --- S3-12: Performance cleanup ---
+  // Remove will-change after scroll reveals complete to free GPU memory
+  ScrollTrigger.addEventListener('matchMedia', function () {
+    ScrollTrigger.refresh();
+  });
+
   window.addEventListener('beforeunload', function () {
     ScrollTrigger.getAll().forEach(function (st) { st.kill(); });
   });
