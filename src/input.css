@@ -320,6 +320,205 @@
   transform-origin: center;
 }
 
+/* === S6-03: Sprint 6 Utility Classes === */
+
+/* Atmospheric break dividers */
+.atmo-break {
+  position: relative;
+  padding: clamp(80px, 10vh, 160px) 0;
+  overflow: hidden;
+}
+.atmo-break::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, rgba(0, 229, 250, 0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+.atmo-break-text {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--mmt-white);
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* Horizontal scroll containers */
+.hscroll-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.hscroll-container::-webkit-scrollbar {
+  display: none;
+}
+.hscroll-track {
+  display: flex;
+  gap: 24px;
+  padding: 20px 0;
+  will-change: transform;
+}
+.hscroll-card {
+  flex: 0 0 320px;
+  min-width: 280px;
+}
+
+/* Manifesto typography */
+.text-manifesto {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: clamp(1.75rem, 4vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: var(--mmt-white);
+}
+.text-manifesto-accent {
+  background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* CSS perspective for 3D card effects */
+.perspective-container {
+  perspective: 1200px;
+  perspective-origin: center;
+}
+
+/* Glass card variant for value props */
+.card-glass {
+  background: rgba(10, 22, 40, 0.5);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(0, 229, 250, 0.08);
+  border-radius: 20px;
+  padding: 32px;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease, border-color 0.3s ease;
+}
+.card-glass:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 64px -16px rgba(0, 229, 250, 0.12);
+  border-color: rgba(0, 229, 250, 0.18);
+}
+
+/* Platform bar — sleek horizontal layout */
+.platform-bar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 16px 24px;
+  background: rgba(10, 22, 40, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  border: 1px solid rgba(0, 229, 250, 0.06);
+}
+.platform-bar a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--mmt-white);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+.platform-bar a:hover {
+  background: rgba(0, 229, 250, 0.1);
+  border-color: rgba(0, 229, 250, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Podcast cinematic hero */
+.podcast-hero {
+  position: relative;
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.podcast-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 40%, rgba(0, 229, 250, 0.06) 0%, transparent 50%),
+              radial-gradient(ellipse at 70% 60%, rgba(0, 255, 133, 0.04) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Episode album card treatment */
+.episode-album {
+  position: relative;
+  background: rgba(10, 22, 40, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 229, 250, 0.08);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease;
+}
+.episode-album:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 24px 64px -12px rgba(0, 229, 250, 0.15);
+}
+.episode-album-number {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: rgba(0, 229, 250, 0.08);
+  line-height: 1;
+}
+
+/* Magazine grid layout for newsletter */
+.magazine-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.magazine-grid > :first-child {
+  grid-column: 1 / -1;
+}
+@media (max-width: 768px) {
+  .magazine-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Counter display */
+.stat-counter {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
+  color: var(--mmt-cyan);
+  line-height: 1;
+}
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--mmt-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 8px;
+}
+
+/* 3D cascade group */
+.cascade-3d-group {
+  perspective: 1200px;
+}
+
 /* GPU hints for animated elements */
 .spatial-section,
 .parallax-section,

@@ -152,34 +152,55 @@
 
   <main id="main-content">
   <!-- Hero -->
-  <section id="subscribe" style="padding: var(--space-section) 0;" class="px-6">
-    <div class="max-w-4xl mx-auto text-center" style="padding-top: 64px;">
+  <!-- S6-17: Hero + Value Proposition -->
+  <section id="subscribe" class="px-6 atmosphere" style="padding-top: calc(64px + var(--space-section)); padding-bottom: var(--space-section);">
+    <div class="max-w-4xl mx-auto text-center">
       <p class="text-eyebrow mb-6">Newsletter</p>
-      <h1 class="text-hero mb-8">Mission Meets Tech Newsletter</h1>
-      <p class="text-body max-w-3xl mx-auto mb-10">Weekly intelligence on federal health IT policy, defense technology, and the operational decisions shaping military and veteran healthcare. Written for practitioners, not pundits.</p>
-      <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-8 py-4 text-base font-semibold no-underline">Subscribe on LinkedIn</a>
+      <h1 class="text-hero text-glow mb-8">Mission Meets Tech Newsletter</h1>
+      <p class="text-body max-w-3xl mx-auto mb-10">Bi-weekly intelligence on federal health IT policy, defense technology, and the operational decisions shaping military and veteran healthcare. Written for practitioners, not pundits.</p>
+      <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-8 py-4 text-base font-semibold no-underline">Subscribe Free</a>
       <p class="text-caption mt-6">Free. No spam. Unsubscribe anytime.</p>
-      <p class="text-caption mt-2">Read by program managers, executives, and federal health IT leaders across DoD, VA, and the contractor community.</p>
+    </div>
+    <!-- Value Proposition Cards -->
+    <div class="max-w-5xl mx-auto mt-16">
+      <div class="grid sm:grid-cols-3 gap-6 cascade-3d-group">
+        <div class="card-glass text-center">
+          <p class="stat-counter mb-2" data-target="73" style="font-size:2.5rem;">0</p>
+          <p class="stat-label">Issues Published</p>
+          <p class="text-caption mt-3">Consistent, evidence-based analysis since launch.</p>
+        </div>
+        <div class="card-glass text-center">
+          <p class="text-subsection mb-2" style="color:var(--mmt-cyan);">Bi-Weekly</p>
+          <p class="stat-label">Delivery Cadence</p>
+          <p class="text-caption mt-3">DHA, VA, and federal health IT intelligence every two weeks.</p>
+        </div>
+        <div class="card-glass text-center">
+          <p class="text-subsection mb-2" style="color:var(--mmt-cyan);">CXO</p>
+          <p class="stat-label">Readership Level</p>
+          <p class="text-caption mt-3">Program managers, executives, and federal health IT leaders.</p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Recent Issues Preview -->
+  <!-- S6-18: Recent Issues — Magazine Grid -->
   <section style="padding: var(--space-block) 0; background: var(--mmt-surface);" class="px-6">
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-5xl mx-auto">
       <div class="fade-up">
         <p class="text-eyebrow mb-4">Latest</p>
         <h2 class="text-section mb-10">Recent Issues</h2>
       </div>
-      <div class="grid md:grid-cols-3 gap-6 fade-up">
-        <div class="card p-6">
-          <h3 class="text-subsection mb-3" style="font-size: 1.1rem;">CMS Just Dropped the ClaimsCore RFP</h3>
-          <p class="text-caption leading-relaxed">The last time CMS tried to replace its legacy claims systems, they spent $40 million and failed. What changed.</p>
+      <div class="magazine-grid fade-up">
+        <div class="card-glass" style="padding:40px;">
+          <p class="text-eyebrow mb-3">Featured</p>
+          <h3 class="text-subsection mb-3">CMS Just Dropped the ClaimsCore RFP</h3>
+          <p class="text-body leading-relaxed">The last time CMS tried to replace its legacy claims systems, they spent $40 million and failed. What changed.</p>
         </div>
-        <div class="card p-6" style="transition-delay: 0.08s;">
+        <div class="card-glass">
           <h3 class="text-subsection mb-3" style="font-size: 1.1rem;">The Anthropic Ban: What the Numbers Actually Say</h3>
           <p class="text-caption leading-relaxed">Hard data on the Pentagon's Anthropic designation: market penetration, enterprise exposure, and the double standard.</p>
         </div>
-        <div class="card p-6" style="transition-delay: 0.16s;">
+        <div class="card-glass">
           <h3 class="text-subsection mb-3" style="font-size: 1.1rem;">The Opening Act</h3>
           <p class="text-caption leading-relaxed">The Anthropic fight was never about one company. It was a warning about how federal AI policy gets made.</p>
         </div>

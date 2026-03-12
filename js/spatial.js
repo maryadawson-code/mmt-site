@@ -323,6 +323,116 @@
       });
     }
 
+    // ========================
+    // S6-04: Horizontal Scroll Engine
+    // ========================
+    document.querySelectorAll('[data-hscroll]').forEach(function (container) {
+      var track = container.querySelector('.hscroll-track');
+      if (!track) return;
+
+      mm.add('(min-width: 768px) and (pointer: fine)', function () {
+        var scrollWidth = track.scrollWidth - container.offsetWidth;
+        if (scrollWidth <= 0) return;
+
+        gsap.to(track, {
+          x: -scrollWidth,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: container,
+            start: 'top 20%',
+            end: function () { return '+=' + scrollWidth; },
+            scrub: 0.8,
+            pin: true,
+            pinSpacing: true,
+            anticipatePin: 1
+          }
+        });
+      });
+    });
+
+    // ========================
+    // S6-05: Counter Animations
+    // ========================
+    gsap.utils.toArray('.stat-counter').forEach(function (counter) {
+      var target = parseInt(counter.getAttribute('data-target') || counter.textContent, 10);
+      if (isNaN(target)) return;
+      var suffix = counter.getAttribute('data-suffix') || '';
+      var prefix = counter.getAttribute('data-prefix') || '';
+
+      var obj = { val: 0 };
+      gsap.to(obj, {
+        val: target,
+        duration: 2,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: counter,
+          start: 'top 85%',
+          toggleActions: 'play none none none'
+        },
+        onUpdate: function () {
+          counter.textContent = prefix + Math.round(obj.val).toLocaleString() + suffix;
+        }
+      });
+    });
+
+    // ========================
+    // S6-06: Atmospheric Section Parallax
+    // ========================
+    gsap.utils.toArray('.atmo-break').forEach(function (section) {
+      var text = section.querySelector('.atmo-break-text');
+      if (text) {
+        gsap.from(text, {
+          y: 60,
+          opacity: 0,
+          scale: 0.95,
+          duration: 1.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 75%',
+            toggleActions: 'play none none none'
+          }
+        });
+      }
+
+      // Parallax the atmospheric gradient
+      var pseudo = section;
+      gsap.to(pseudo, {
+        backgroundPositionY: '40%',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: true
+        }
+      });
+    });
+
+    // ========================
+    // S6-07: Staggered 3D Card Cascade
+    // ========================
+    gsap.utils.toArray('.cascade-3d-group').forEach(function (group) {
+      var cards = group.querySelectorAll('.card, .card-spatial, .card-glass');
+      if (!cards.length) return;
+
+      gsap.from(cards, {
+        y: 100,
+        opacity: 0,
+        rotateX: -15,
+        scale: 0.9,
+        stagger: 0.1,
+        duration: 0.9,
+        ease: 'power3.out',
+        transformPerspective: 1200,
+        scrollTrigger: {
+          trigger: group,
+          start: 'top 80%',
+          toggleActions: 'play none none none'
+        }
+      });
+    });
+
     // --- Parallax background elements ---
     gsap.utils.toArray('.parallax-bg').forEach(function (bg) {
       gsap.to(bg, {

@@ -260,10 +260,11 @@ function generatePodcastEpisodesHtml(feed) {
                 <div class="mt-3 text-sm leading-relaxed" style="color:var(--mmt-body, #CBD5E1); max-width:65ch;">${transcript.html}</div>
               </details>`
       : '';
-    return `<article class="card episode-card p-6 md:p-8" data-episode="${epNum}" data-tags="${escapeHtml(epTagSlugs)}">
+    return `<article class="episode-album episode-card p-6 md:p-8" data-episode="${epNum}" data-tags="${escapeHtml(epTagSlugs)}">
+          <span class="episode-album-number">EP${epNum}</span>
           <div>
             <div class="flex items-center gap-3 mb-2">
-              <span class="text-eyebrow" style="font-size:0.7rem;">EP ${epNum}</span>
+              <span class="text-eyebrow" style="font-size:0.7rem;">Episode ${epNum}</span>
               <span class="text-caption" style="margin:0;">${date}${duration ? ` &middot; ${duration}` : ''}</span>
             </div>
             <h3 class="text-subsection mb-2" style="font-size:clamp(1.1rem, 1.5vw, 1.35rem);">${title}</h3>
@@ -817,7 +818,7 @@ function generateTopicCardsHomeHtml(archive) {
   };
   return sorted.map(([tag, count]) => {
     const desc = topicDescShort[tag] || 'Coverage and analysis.';
-    return `<a href="/topics/${slugify(tag)}/" class="card-spatial p-6 no-underline block" style="text-decoration:none;">
+    return `<a href="/topics/${slugify(tag)}/" class="hscroll-card card-spatial p-6 no-underline block" style="text-decoration:none;">
           <p class="text-eyebrow mb-3">${count} article${count !== 1 ? 's' : ''}</p>
           <h3 class="text-subsection mb-2" style="font-size:1.2rem;">${escapeHtml(tag)}</h3>
           <p class="text-caption leading-relaxed">${escapeHtml(desc)}</p>
@@ -1731,6 +1732,13 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
   if (fs.existsSync(headersSrc)) {
     fs.copyFileSync(headersSrc, path.join(DIST_DIR, '_headers'));
     console.log('Copied _headers');
+  }
+
+  // Copy _redirects (Netlify flat-file redirects)
+  const redirectsSrc = path.join(__dirname, '_redirects');
+  if (fs.existsSync(redirectsSrc)) {
+    fs.copyFileSync(redirectsSrc, path.join(DIST_DIR, '_redirects'));
+    console.log('Copied _redirects');
   }
 
   // Copy all images and assets from root (exclude mp4/zip)
