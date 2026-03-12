@@ -1328,6 +1328,17 @@ function inlineTailwindCss(html) {
   // Remove old .nav-glass CSS definition from inline styles
   html = html.replace(/\.nav-glass\s*\{[^}]*\}/g, '');
 
+  // HF-02: Fix logo wordmark wrapping — add nowrap to nav logo text
+  html = html.replace(
+    /(<a href="[^"]*index\.html" class="flex items-center gap-2 no-underline">)/g,
+    '$1<span style="flex-shrink:0;white-space:nowrap;">'
+  );
+  // Close the nowrap wrapper after the logo span
+  html = html.replace(
+    /(Mission Meets <span style="color:var\(--mmt-cyan\);">Tech<\/span><\/span>)(\s*<\/a>)/g,
+    '$1</span>$2'
+  );
+
   // S2-02: Inject "Getting Started" nav link if missing (idempotent)
   if (!html.includes('getting-started.html')) {
     // Desktop nav — insert after FIRST Intelligence link only (no /g flag)
