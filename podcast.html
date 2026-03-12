@@ -200,8 +200,11 @@
   <!-- Recent Episodes -->
   <section class="py-16 px-6">
     <div class="max-w-4xl mx-auto">
-      <h2 class="text-2xl font-bold mb-8">Recent Episodes</h2>
-      <div class="space-y-4">
+      <h2 class="text-2xl font-bold mb-4">Recent Episodes</h2>
+      <div id="podcast-filters" class="flex flex-wrap gap-2 mb-8">
+        <!-- BUILD:PODCAST_TAG_FILTERS -->
+      </div>
+      <div id="podcast-episodes" class="space-y-4">
         <!-- BUILD:PODCAST_EPISODES -->
       </div>
     </div>
@@ -305,5 +308,27 @@
 
 
   <script src="/js/mmt-motion.js" defer></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var filters = document.querySelectorAll('.podcast-tag');
+    var episodes = document.querySelectorAll('#podcast-episodes article');
+    filters.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var filter = btn.getAttribute('data-filter');
+        filters.forEach(function(b) {
+          b.style.background = 'rgba(0,229,250,0.1)';
+          b.style.color = 'var(--mmt-cyan)';
+        });
+        btn.style.background = 'var(--mmt-cyan)';
+        btn.style.color = 'var(--mmt-navy)';
+        episodes.forEach(function(ep) {
+          if (filter === 'all') { ep.style.display = ''; return; }
+          var tags = (ep.getAttribute('data-tags') || '').split(' ');
+          ep.style.display = tags.indexOf(filter) >= 0 ? '' : 'none';
+        });
+      });
+    });
+  });
+  </script>
 </body>
 </html>
