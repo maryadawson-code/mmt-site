@@ -40,6 +40,7 @@
     }
     body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--mmt-navy); color: #fff; }
     h1, h2, h3, h4, h5 { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.02em; font-weight: 700; }
+    h1, h2, h3 { text-wrap: balance; }
     p, li { line-height: 1.75; }
     .gradient-text { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .btn-primary { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); color: var(--mmt-navy); font-weight: 600; padding: 14px 28px; border-radius: 8px; transition: all 0.3s; }
@@ -163,15 +164,14 @@
   <!-- Hero -->
   <section class="pt-36 pb-20 px-6">
     <div class="max-w-3xl mx-auto text-center">
-      <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-6" style="font-family:'Space Grotesk',system-ui,sans-serif;">Federal Health IT Intelligence</h1>
-      <p class="text-lg md:text-xl max-w-2xl mx-auto mb-4 leading-relaxed" style="color:var(--mmt-white-muted);">The military can land a plane on a carrier in 12-foot seas. It still can't move a medical record across a zip code. I cover the gap.</p>
-      <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" target="_blank" class="max-w-md mx-auto">
-        <div class="flex gap-2">
-          <label for="subscribe-email-hero" class="sr-only">Email address</label>
-          <input type="email" name="email" id="subscribe-email-hero" placeholder="you@example.com" required class="px-4 py-3 rounded-lg text-sm flex-1" style="background:var(--mmt-slate);border:1px solid rgba(0,229,250,0.2);color:#fff;">
-          <button type="submit" class="btn-primary px-6 py-3 rounded-lg text-sm font-semibold whitespace-nowrap" style="cursor:pointer;border:none;">Subscribe</button>
-        </div>
-      </form>
+      <p class="text-xs font-semibold tracking-widest uppercase mb-4" style="color:var(--mmt-cyan);">Federal Health IT Intelligence</p>
+      <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-6" style="font-family:'Space Grotesk',system-ui,sans-serif; letter-spacing:-0.02em;">Independent Analysis for Defense Health Decision-Makers</h1>
+      <p class="text-lg max-w-2xl mx-auto mb-8 leading-relaxed" style="color:var(--mmt-white-muted);">Evidence-based intelligence on DHA, VA, and federal health IT — delivered bi-weekly.</p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
+        <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-7 py-3 rounded-lg text-sm font-semibold no-underline inline-block">Subscribe Free</a>
+        <a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank" rel="noopener" class="btn-secondary px-7 py-3 rounded-lg text-sm font-semibold no-underline inline-block">Listen to the Podcast</a>
+      </div>
+      <p class="text-xs" style="color:var(--mmt-white-dim);">Defense Health Agency · VA Modernization · Federal Contracting</p>
     </div>
   </section>
 
@@ -179,6 +179,13 @@
   <section class="py-20 px-6">
     <div class="max-w-4xl mx-auto">
       <!-- BUILD:LEAD_STORY -->
+      <!-- FALLBACK: shown when BUILD:LEAD_STORY produces no content -->
+      <div id="lead-story-fallback" class="card rounded-xl p-8" style="background:var(--mmt-slate);border:1px solid rgba(0,229,250,0.3);">
+        <p class="text-xs font-semibold tracking-widest uppercase mb-3" style="color:var(--mmt-cyan);">Latest Analysis</p>
+        <h2 class="text-2xl font-bold mb-3">Stay sharp on what's moving in federal health IT.</h2>
+        <p class="text-sm leading-relaxed mb-6" style="color:var(--mmt-white-muted);">Subscribe for bi-weekly intelligence on DHA modernization, VA health IT, and federal contracting.</p>
+        <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="btn-primary px-7 py-3 rounded-lg text-sm font-semibold no-underline inline-block">Subscribe Free</a>
+      </div>
     </div>
   </section>
 
@@ -198,7 +205,8 @@
   <!-- Topics -->
   <section class="py-20 px-6">
     <div class="max-w-4xl mx-auto">
-      <h2 class="text-lg font-bold mb-4" style="color:var(--mmt-white-muted);">Browse by Topic</h2>
+      <h2 class="text-lg font-bold mb-2" style="color:var(--mmt-white-muted);">Browse by Topic</h2>
+      <p class="text-sm mb-4" style="color:var(--mmt-white-muted);">Covering DHA modernization, VA health IT, federal contracting, and interoperability.</p>
       <div class="flex flex-wrap gap-3">
         <!-- BUILD:TOPIC_CHIPS -->
       </div>

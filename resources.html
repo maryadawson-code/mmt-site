@@ -40,6 +40,7 @@
     }
     body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--mmt-navy); color: #fff; }
     h1, h2, h3, h4, h5 { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.02em; font-weight: 700; }
+    h1, h2, h3 { text-wrap: balance; }
     p, li { line-height: 1.75; }
     .gradient-text { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .btn-primary { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); color: var(--mmt-navy); font-weight: 600; padding: 14px 28px; border-radius: 8px; transition: all 0.3s; }
@@ -185,7 +186,16 @@
             <svg width="1.2em" height="1.2em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true" style="color:var(--mmt-cyan);"><path d="M96 0C43 0 0 43 0 96V416c0 53 43 96 96 96H384h32c17.7 0 32-14.3 32-32s-14.3-32-32-32V384c17.7 0 32-14.3 32-32V32c0-17.7-14.3-32-32-32H384 96zm0 384H352v64H96c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16zm16 48H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16s7.2-16 16-16z"/></svg>
           </div>
           <h3 class="text-base font-bold mb-1" style="color:#fff;">Glossary</h3>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">37 federal health IT terms explained in plain language. Searchable and filterable by category.</p>
+          <p class="text-xs mb-3" style="color:var(--mmt-white-dim);">37 federal health IT terms explained in plain language. Searchable and filterable by category.</p>
+          <div class="flex flex-wrap gap-1">
+            <a href="/glossary/mhs-genesis.html" class="inline-block px-3 py-1 rounded-full text-xs font-semibold no-underline" style="background:var(--mmt-slate);color:var(--mmt-cyan);border:1px solid rgba(0,229,250,0.3);">MHS GENESIS</a>
+            <a href="/glossary/dha.html" class="inline-block px-3 py-1 rounded-full text-xs font-semibold no-underline" style="background:var(--mmt-slate);color:var(--mmt-cyan);border:1px solid rgba(0,229,250,0.3);">DHA</a>
+            <a href="/glossary/fehrm.html" class="inline-block px-3 py-1 rounded-full text-xs font-semibold no-underline" style="background:var(--mmt-slate);color:var(--mmt-cyan);border:1px solid rgba(0,229,250,0.3);">FEHRM</a>
+            <a href="/glossary/tricare.html" class="inline-block px-3 py-1 rounded-full text-xs font-semibold no-underline" style="background:var(--mmt-slate);color:var(--mmt-cyan);border:1px solid rgba(0,229,250,0.3);">TRICARE</a>
+            <a href="/glossary/jlv.html" class="inline-block px-3 py-1 rounded-full text-xs font-semibold no-underline" style="background:var(--mmt-slate);color:var(--mmt-cyan);border:1px solid rgba(0,229,250,0.3);">JLV</a>
+            <a href="/glossary/vista.html" class="inline-block px-3 py-1 rounded-full text-xs font-semibold no-underline" style="background:var(--mmt-slate);color:var(--mmt-cyan);border:1px solid rgba(0,229,250,0.3);">VistA</a>
+            <a href="/glossary/tefca.html" class="inline-block px-3 py-1 rounded-full text-xs font-semibold no-underline" style="background:var(--mmt-slate);color:var(--mmt-cyan);border:1px solid rgba(0,229,250,0.3);">TEFCA</a>
+          </div>
         </a>
 
         <a href="events.html" class="hub-card card rounded-xl p-6 no-underline">
@@ -249,6 +259,16 @@
         <input type="email" name="email" id="subscribe-email-cta" placeholder="you@example.com" required class="px-4 py-3 rounded-lg text-sm flex-1" style="background:var(--mmt-slate); border:1px solid rgba(0,229,250,0.2); color:#fff;">
         <button type="submit" class="btn-primary px-6 py-3 rounded-lg text-sm font-semibold" style="cursor:pointer;border:none;">Subscribe</button>
       </form>
+    </div>
+  </section>
+
+  <!-- MissionPulse CTA -->
+  <section class="py-20 px-6" style="background:var(--mmt-dark);">
+    <div class="max-w-2xl mx-auto text-center">
+      <p class="text-xs uppercase tracking-widest mb-3" style="color:var(--mmt-cyan);">Built for Federal Health IT Contractors</p>
+      <h3 class="text-2xl font-bold mb-4" style="font-family:'Space Grotesk',sans-serif; letter-spacing:-0.02em;color:#fff;">Stop building proposals from scratch.</h3>
+      <p class="text-sm leading-relaxed mb-6" style="color:var(--mmt-white-muted);">MissionPulse is an AI-powered proposal tool purpose-built for small federal health IT contractors. Domain intelligence baked in.</p>
+      <a href="https://missionpulse.ai" target="_blank" rel="noopener" class="btn-primary mmt-btn-primary no-underline inline-block px-7 py-3 rounded-lg text-sm font-semibold">Explore MissionPulse</a>
     </div>
   </section>
 
