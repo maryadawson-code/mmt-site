@@ -490,6 +490,8 @@ function generateSitemap(articles, tags, contracts) {
     { loc: '/contracting.html', priority: '0.6' },
     { loc: '/agency-sources.html', priority: '0.5' },
     { loc: '/getting-started.html', priority: '0.7' },
+    { loc: '/about/team/', priority: '0.5' },
+    { loc: '/about/press/', priority: '0.5' },
     { loc: '/glossary/', priority: '0.5' },
   ];
 
@@ -826,7 +828,11 @@ function generateLatestIssuesHtml(archive, count) {
 function generateArchiveHtml(archive) {
   if (archive.length === 0) return '<p class="text-center py-10" style="color:var(--mmt-white-dim);">No issues yet.</p>';
   const total = archive.length;
-  return archive.map((item, i) => {
+  const PER_PAGE = 12;
+  const page1Items = archive.slice(0, PER_PAGE);
+  const totalPages = Math.ceil(total / PER_PAGE);
+  const pagination = totalPages > 1 ? generatePaginationHtml(1, totalPages, '/newsletter.html') : '';
+  return page1Items.map((item, i) => {
     const issueNum = total - i;
     const topicSlugs = (item.tags || []).map(t => slugify(t)).join(',');
     const tags = (item.tags || []).map(t =>
@@ -844,7 +850,7 @@ function generateArchiveHtml(archive) {
           <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>
           <div class="flex flex-wrap gap-2">${tags}</div>
         </article>`;
-  }).join('\n        ');
+  }).join('\n        ') + pagination;
 }
 
 function generateTopicFilterChipsHtml(archive) {
@@ -1377,6 +1383,22 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
     }
   });
 
+  // Copy about sub-pages to dist/about/team/ and dist/about/press/
+  const aboutSubPages = [
+    { src: 'about-team.html', dest: path.join(DIST_DIR, 'about', 'team', 'index.html') },
+    { src: 'about-press.html', dest: path.join(DIST_DIR, 'about', 'press', 'index.html') },
+  ];
+  aboutSubPages.forEach(({ src, dest }) => {
+    const srcPath = path.join(__dirname, src);
+    if (fs.existsSync(srcPath)) {
+      ensureDir(path.dirname(dest));
+      let html = fs.readFileSync(srcPath, 'utf8');
+      html = inlineTailwindCss(html);
+      fs.writeFileSync(dest, html);
+      console.log(`Copied ${src} → ${dest.replace(DIST_DIR + '/', '')}`);
+    }
+  });
+
   // Copy glossary pages (with .gov/.mil source injection)
   const glossarySrc = path.join(__dirname, 'glossary');
   const glossaryDist = path.join(DIST_DIR, 'glossary');
@@ -1623,6 +1645,75 @@ function generateNewsWidgetHtml(newsItems) {
 
 // --- Podcast (preserved from original) ---
 
+function generatePaginationHtml(currentPage, totalPages, basePath) {
+  if (totalPages <= 1) return '';
+  const links = [];
+  if (currentPage > 1) {
+    const prevUrl = currentPage === 2 ? basePath : `${basePath}page/${currentPage - 1}/`;
+    links.push(`<a href="${prevUrl}" class="btn-secondary px-4 py-2 rounded-lg text-sm no-underline">&larr; Prev</a>`);
+  }
+  for (let i = 1; i <= totalPages; i++) {
+    const url = i === 1 ? basePath : `${basePath}page/${i}/`;
+    const active = i === currentPage;
+    if (active) {
+      links.push(`<span class="btn-primary px-3 py-2 rounded-lg text-sm">${i}</span>`);
+    } else {
+      links.push(`<a href="${url}" class="btn-secondary px-3 py-2 rounded-lg text-sm no-underline">${i}</a>`);
+    }
+  }
+  if (currentPage < totalPages) {
+    links.push(`<a href="${basePath}page/${currentPage + 1}/" class="btn-secondary px-4 py-2 rounded-lg text-sm no-underline">Next &rarr;</a>`);
+  }
+  return `<div class="flex flex-wrap items-center justify-center gap-2 mt-12">${links.join('\n')}</div>`;
+}
+
+function generatePaginatedNewsletterPages(archive) {
+  const PER_PAGE = 12;
+  const totalPages = Math.ceil(archive.length / PER_PAGE);
+  if (totalPages <= 1) return;
+
+  console.log(`Generating ${totalPages - 1} paginated newsletter pages...`);
+  const templatePath = path.join(__dirname, 'newsletter.html');
+  if (!fs.existsSync(templatePath)) return;
+  const baseHtml = fs.readFileSync(templatePath, 'utf8');
+
+  for (let page = 2; page <= totalPages; page++) {
+    const start = (page - 1) * PER_PAGE;
+    const pageItems = archive.slice(start, start + PER_PAGE);
+    const total = archive.length;
+    const pageArchiveHtml = pageItems.map((item, i) => {
+      const issueNum = total - (start + i);
+      const tags = (item.tags || []).map(t =>
+        `<a href="/topics/${slugify(t)}/" class="tag no-underline">${escapeHtml(t)}</a>`
+      ).join('');
+      const isExternal = item.url && item.url.startsWith('http');
+      const linkAttrs = isExternal ? 'target="_blank" rel="noopener"' : '';
+      return `<article class="card rounded-xl p-6">
+          <div class="flex items-start justify-between gap-4 mb-2">
+            <h3 class="text-lg font-bold"><a href="${item.url}" ${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${escapeHtml(item.title)}</a></h3>
+            <span class="text-xs whitespace-nowrap px-2 py-1 rounded" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">#${issueNum}</span>
+          </div>
+          <p class="text-xs mb-3" style="color:var(--mmt-white-dim);">${escapeHtml(item.date)}</p>
+          <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>
+          <div class="flex flex-wrap gap-2">${tags}</div>
+        </article>`;
+    }).join('\n        ');
+
+    const pagination = generatePaginationHtml(page, totalPages, '/newsletter.html');
+    let html = baseHtml;
+    html = html.replace('<!-- BUILD:ALL_ISSUES -->', pageArchiveHtml + '\n' + pagination);
+    html = html.replace('<!-- BUILD:TOPIC_FILTER_CHIPS -->', '');
+    html = html.replace(/<link rel="canonical" href="[^"]*">/, `<link rel="canonical" href="${SITE_URL}/newsletter/page/${page}/">`);
+    html = inlineTailwindCss(html);
+
+    const pageDir = path.join(DIST_DIR, 'newsletter', 'page', String(page));
+    ensureDir(pageDir);
+    fs.writeFileSync(path.join(pageDir, 'index.html'), html);
+  }
+
+  console.log(`Generated ${totalPages - 1} paginated newsletter pages`);
+}
+
 async function fetchPodcast() {
   console.log('Fetching podcast episodes from Riverside...');
 
@@ -1717,7 +1808,13 @@ async function build() {
     generateSearchIndex(archive);
   }
 
-  // 5. Copy all static files (with build-time injections)
+  // 5. Generate paginated newsletter pages
+  if (archive.length > 12) {
+    console.log('\n--- Generating paginated pages ---');
+    generatePaginatedNewsletterPages(archive);
+  }
+
+  // 6. Copy all static files (with build-time injections)
   console.log('\n--- Copying static files ---');
   copyStaticFiles({ archive, feed, newsItems, contracts });
 
