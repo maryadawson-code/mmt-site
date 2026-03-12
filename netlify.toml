@@ -69,6 +69,16 @@
   to = "/about.html"
   status = 301
 
+[[redirects]]
+  from = "/contracts/mhs-genesis/"
+  to = "/contracts/mhs-genesis-electronic-health-record/"
+  status = 301
+
+[[redirects]]
+  from = "/contracts/mhs-genesis"
+  to = "/contracts/mhs-genesis-electronic-health-record/"
+  status = 301
+
 [[headers]]
   for = "/*"
   [headers.values]
@@ -76,7 +86,7 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' https://plausible.io; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; frame-src https://checkout.stripe.com https://open.spotify.com; media-src 'self' https://api.riverside.fm https://hosting-media.rs-prod.riverside.fm; connect-src 'self' https://plausible.io https://checkout.stripe.com; object-src 'none'; base-uri 'self'; form-action 'self' https://buttondown.com https://checkout.stripe.com"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://plausible.io https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; frame-src https://checkout.stripe.com https://open.spotify.com; media-src 'self' https://api.riverside.fm https://hosting-media.rs-prod.riverside.fm; connect-src 'self' https://plausible.io https://checkout.stripe.com; object-src 'none'; base-uri 'self'; form-action 'self' https://buttondown.com https://checkout.stripe.com"
 
 # Cache headers
 [[headers]]
