@@ -217,13 +217,35 @@
   }
 }
 
-/* Mobile touch targets */
+/* Prevent horizontal overflow globally */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Mobile touch targets & spacing */
 @media (max-width: 768px) {
-  .card a, .card button, nav a, nav button {
+  .card a, .card button, nav a, nav button, footer a {
     min-height: 44px;
+    display: inline-flex;
+    align-items: center;
   }
 
-  html {
-    overflow-x: hidden;
+  /* Tighten section spacing on mobile */
+  :root {
+    --space-section: clamp(64px, 10vh, 120px);
+    --space-block: clamp(32px, 5vh, 64px);
+  }
+
+  /* Ensure images don't overflow */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Subscribe panel responsive */
+  #subscribePanel {
+    right: -20px !important;
+    width: min(280px, calc(100vw - 40px)) !important;
   }
 }
