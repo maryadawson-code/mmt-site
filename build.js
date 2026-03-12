@@ -799,6 +799,32 @@ function generateTopicChipsHtml(archive) {
   ).join('\n          ');
 }
 
+function generateTopicCardsHomeHtml(archive) {
+  const tagCounts = {};
+  archive.forEach(item => {
+    (item.tags || []).forEach(tag => {
+      tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+    });
+  });
+  const sorted = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]);
+  const topicDescShort = {
+    'Military Health System': 'DHA modernization, MHS GENESIS, and the future of military medicine.',
+    'Veterans Affairs': 'VA health IT, EHR modernization, and veteran care delivery.',
+    'AI & Innovation': 'Artificial intelligence, emerging tech, and federal adoption.',
+    'Strategy & Leadership': 'Leadership changes, policy shifts, and organizational strategy.',
+    'Healthcare Policy': 'Federal health policy, legislation, and regulatory impact.',
+    'Acquisition & Contracting': 'GovCon intelligence, contract awards, and procurement strategy.'
+  };
+  return sorted.map(([tag, count]) => {
+    const desc = topicDescShort[tag] || 'Coverage and analysis.';
+    return `<a href="/topics/${slugify(tag)}/" class="card-spatial p-6 no-underline block" style="text-decoration:none;">
+          <p class="text-eyebrow mb-3">${count} article${count !== 1 ? 's' : ''}</p>
+          <h3 class="text-subsection mb-2" style="font-size:1.2rem;">${escapeHtml(tag)}</h3>
+          <p class="text-caption leading-relaxed">${escapeHtml(desc)}</p>
+        </a>`;
+  }).join('\n        ');
+}
+
 function generateTopicsGridHtml(archive) {
   const tagCounts = {};
   const tagArticles = {};
@@ -1581,6 +1607,7 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
     '<!-- BUILD:LEAD_STORY -->': generateLeadStoryHtml(archive),
     '<!-- BUILD:LATEST_ARTICLES -->': generateLatestArticlesHtml(archive, 3),
     '<!-- BUILD:TOPIC_CHIPS -->': generateTopicChipsHtml(archive),
+    '<!-- BUILD:TOPIC_CARDS_HOME -->': generateTopicCardsHomeHtml(archive),
     '<!-- BUILD:TOPICS_GRID -->': generateTopicsGridHtml(archive),
     '<!-- BUILD:LATEST_ISSUES -->': generateLatestIssuesHtml(archive, 3),
     '<!-- BUILD:ALL_ISSUES -->': generateArchiveHtml(archive),
