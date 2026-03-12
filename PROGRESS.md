@@ -24,7 +24,7 @@
 
 ## Sprint 2 (Visual): Apple Design Standards
 - [x] S2-01: Global CSS foundation — typography scale, spacing, cards, buttons, fade-up
-- [ ] S2-02: Navigation redesign — Apple-style sticky nav
+- [x] S2-02: Navigation redesign — Apple-style sticky nav + Getting Started on all pages (BUG-4 fix)
 - [ ] S2-03: Homepage hero — cinematic typography
 - [ ] S2-04: Homepage below-fold sections
 - [ ] S2-05: Getting Started page — clean persona cards

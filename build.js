@@ -1321,6 +1321,63 @@ function inlineTailwindCss(html) {
   );
   // MMT-015: Fix --mmt-white-dim contrast for WCAG AA (0.6 → 0.75)
   html = html.replace(/--mmt-white-dim:\s*rgba\(255,255,255,0\.6\)/g, '--mmt-white-dim: rgba(255,255,255,0.75)');
+
+  // S2-02: Upgrade nav-glass to nav-apple
+  html = html.replace(/class="nav-glass/g, 'class="nav-apple');
+  // Remove old .nav-glass CSS definition from inline styles
+  html = html.replace(/\.nav-glass\s*\{[^}]*\}/g, '');
+
+  // S2-02: Inject "Getting Started" nav link if missing
+  if (!html.includes('getting-started')) {
+    // Desktop nav — insert after Intelligence link
+    html = html.replace(
+      /(<a href="[^"]*latest\.html"[^>]*>Intelligence<\/a>)/g,
+      '$1\n        <a href="/getting-started.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Getting Started</a>'
+    );
+    // Mobile nav — insert after Intelligence link
+    html = html.replace(
+      /(<a href="[^"]*latest\.html"[^>]*>Intelligence<\/a>\s*\n)/,
+      '$1        <a href="/getting-started.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Getting Started</a>\n'
+    );
+  }
+
+  // S2-01: Update inline style body/card/button definitions to match Apple design system
+  // Replace old card border style
+  html = html.replace(
+    /\.card\s*\{\s*background:\s*var\(--mmt-slate\);\s*border:\s*1px solid rgba\(0,229,250,0\.1\);\s*\}/g,
+    '.card { background: var(--mmt-surface, #0A1628); border-radius: 16px; border: none; transition: background 300ms cubic-bezier(0.4, 0, 0.2, 1); }'
+  );
+  html = html.replace(
+    /\.card:hover\s*\{\s*border-color:\s*rgba\(0,229,250,0\.3\);\s*\}/g,
+    '.card:hover { background: var(--mmt-surface-hover, #0F1D35); }'
+  );
+
+  // Replace old btn-primary (gradient → solid green)
+  html = html.replace(
+    /\.btn-primary\s*\{\s*background:\s*linear-gradient\(135deg,\s*var\(--mmt-cyan\),\s*var\(--mmt-green\)\)[^}]*\}/g,
+    '.btn-primary { background: #00FF85; color: #00050F; font-weight: 600; padding: 14px 32px; border-radius: 12px; font-size: 1rem; transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1); border: none; cursor: pointer; display: inline-block; text-decoration: none; }'
+  );
+  html = html.replace(
+    /\.btn-primary:hover\s*\{\s*transform:\s*translateY\(-1px\);\s*opacity:\s*0\.9;\s*\}/g,
+    '.btn-primary:hover { background: #00CC6A; transform: translateY(-1px); }'
+  );
+
+  // Replace old btn-secondary (cyan border → slate border)
+  html = html.replace(
+    /\.btn-secondary\s*\{\s*border:\s*1px solid var\(--mmt-cyan\)[^}]*\}/g,
+    '.btn-secondary { background: transparent; color: #FFFFFF; font-weight: 500; padding: 14px 32px; border-radius: 12px; font-size: 1rem; border: 1px solid #334155; transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; display: inline-block; text-decoration: none; }'
+  );
+  html = html.replace(
+    /\.btn-secondary:hover\s*\{\s*background:\s*rgba\(0,229,250,0\.1\);\s*\}/g,
+    '.btn-secondary:hover { border-color: #CBD5E1; background: rgba(255,255,255,0.03); }'
+  );
+
+  // Replace section-alt with cleaner definition
+  html = html.replace(
+    /\.section-alt\s*\{\s*background:\s*var\(--mmt-dark\);\s*\}/g,
+    '.section-alt { background: #0A1628; }'
+  );
+
   return html;
 }
 

@@ -1,0 +1,211 @@
+{
+  "name": "MMT Newsletter Draft Writer",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8,
+              "triggerAtMinute": 0,
+              "daysOfWeek": [1, 4]
+            }
+          ]
+        }
+      },
+      "id": "trigger",
+      "name": "Mon/Thu 8am ET",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/newsletter_research",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "status", "value": "eq.ready" },
+            { "name": "order", "value": "publish_date.desc" },
+            { "name": "limit", "value": "1" }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "Prefer", "value": "return=representation" }
+          ]
+        },
+        "options": {
+          "response": { "response": { "responseFormat": "json" } },
+          "retry": { "maxTries": 2, "retryIntervalMs": 1000 }
+        }
+      },
+      "id": "fetch-research",
+      "name": "Fetch Latest Research",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [220, 0],
+      "credentials": {
+        "httpHeaderAuth": { "id": "SUPABASE_CRED_ID", "name": "Supabase API" }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "id": "check-data",
+              "leftValue": "={{ $json.research_json }}",
+              "rightValue": "",
+              "operator": { "type": "object", "operation": "exists" }
+            }
+          ]
+        }
+      },
+      "id": "has-research",
+      "name": "Has Research?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [440, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "anthropic-version", "value": "2023-06-01" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 4000, system: \"You are the editorial assistant for Mission Meets Tech, a newsletter covering federal health IT, defense health procurement, and GovCon strategy. Your voice is authoritative but accessible — think 'insider briefing from someone who has actually worked these contracts.' You write for an audience of GovCon professionals, federal health IT leaders, and small business owners navigating federal procurement.\\n\\nRules:\\n- Lead with the most consequential item, not the most recent\\n- Always include what it MEANS for readers, not just what happened\\n- Link every claim to a source\\n- Use the sections: The Big Story, Procurement Pulse, Industry Watch, Policy Corner, Tech Forward\\n- Keep each item to 2-3 sentences max in the summary\\n- Add a 'Bottom Line' one-liner for each section\\n- Close with a 'What I'm Watching' forward-looking paragraph\\n- Open with 'Friends,' and close with 'Let's roll. - Mary'\\n- Tone: direct, knowledgeable, slightly irreverent. Never corporate-speak.\\n- No em dashes. No banned words: pivotal, comprehensive, robust, transformative, delve, leverage, synergy.\", messages: [{ role: 'user', content: 'Here is the research package compiled by our intelligence system. Draft the newsletter edition for ' + $json.publish_date + '.\\n\\nRESEARCH PACKAGE:\\n' + JSON.stringify($json.research_json) + '\\n\\nDraft the full newsletter now. Include source URLs inline.' }] }) }}",
+        "options": {
+          "response": { "response": { "responseFormat": "json" } },
+          "timeout": 120000,
+          "retry": { "maxTries": 2, "retryIntervalMs": 2000 }
+        }
+      },
+      "id": "claude-draft",
+      "name": "Claude Draft",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [660, -100],
+      "credentials": {
+        "httpHeaderAuth": { "id": "ANTHROPIC_CRED_ID", "name": "Anthropic API" }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/newsletter_research",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "id", "value": "=eq.{{ $node['Fetch Latest Research'].json.id }}" }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "Prefer", "value": "return=representation" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ status: 'draft_ready', research_json: Object.assign({}, $node['Fetch Latest Research'].json.research_json, { draft: $json.content[0].text, drafted_at: new Date().toISOString() }) }) }}",
+        "options": {
+          "retry": { "maxTries": 2, "retryIntervalMs": 1000 }
+        }
+      },
+      "id": "save-draft",
+      "name": "Save Draft to Supabase",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [880, -100],
+      "credentials": {
+        "httpHeaderAuth": { "id": "SUPABASE_CRED_ID", "name": "Supabase API" }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.resend.com/emails",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ from: 'MMT Intel <noreply@missionmeetstech.com>', to: ['mary@missionmeetstech.com'], subject: 'Newsletter Draft Ready — ' + $node['Fetch Latest Research'].json.publish_date, html: '<div style=\"font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;max-width:600px;margin:0 auto;\"><div style=\"background:#00050f;padding:24px 32px;text-align:center;\"><h1 style=\"margin:0;font-size:20px;font-weight:700;color:#00E5FA;\">MISSION MEETS TECH</h1><p style=\"margin:4px 0 0;font-size:13px;color:rgba(255,255,255,0.6);\">Newsletter Draft</p></div><div style=\"padding:32px;\"><h2 style=\"font-size:20px;font-weight:700;color:#111827;\">Draft Ready for Review</h2><p style=\"font-size:14px;color:#6b7280;\">Publish date: ' + $node['Fetch Latest Research'].json.publish_date + '</p><hr style=\"border:1px solid #e5e7eb;margin:20px 0;\"><div style=\"font-size:15px;color:#374151;line-height:1.6;white-space:pre-wrap;\">' + $node['Claude Draft'].json.content[0].text.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\\n/g, '<br>') + '</div><hr style=\"border:1px solid #e5e7eb;margin:20px 0;\"><p style=\"font-size:13px;color:#9ca3af;\">Draft also saved to Supabase newsletter_research table.</p></div></div>' }) }}",
+        "options": {
+          "retry": { "maxTries": 2, "retryIntervalMs": 1000 }
+        }
+      },
+      "id": "email-draft",
+      "name": "Email Draft to Mary",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1100, -100],
+      "credentials": {
+        "httpHeaderAuth": { "id": "RESEND_CRED_ID", "name": "Resend API" }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.resend.com/emails",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ from: 'MMT Intel <noreply@missionmeetstech.com>', to: ['mary@missionmeetstech.com'], subject: 'n8n Error: Newsletter Draft Writer', html: '<p>The Newsletter Draft Writer workflow encountered an error:</p><pre>' + JSON.stringify($json, null, 2) + '</pre>' }) }}",
+        "options": {}
+      },
+      "id": "error-email",
+      "name": "Error Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [660, 200],
+      "credentials": {
+        "httpHeaderAuth": { "id": "RESEND_CRED_ID", "name": "Resend API" }
+      }
+    }
+  ],
+  "connections": {
+    "Mon/Thu 8am ET": { "main": [[{ "node": "Fetch Latest Research", "type": "main", "index": 0 }]] },
+    "Fetch Latest Research": { "main": [[{ "node": "Has Research?", "type": "main", "index": 0 }]] },
+    "Has Research?": { "main": [[{ "node": "Claude Draft", "type": "main", "index": 0 }], []] },
+    "Claude Draft": { "main": [[{ "node": "Save Draft to Supabase", "type": "main", "index": 0 }]] },
+    "Save Draft to Supabase": { "main": [[{ "node": "Email Draft to Mary", "type": "main", "index": 0 }]] }
+  },
+  "settings": {
+    "errorWorkflow": "error-email",
+    "timezone": "America/New_York",
+    "saveManualExecutions": true
+  },
+  "tags": [{ "name": "mmt-intelligence" }]
+}
