@@ -1342,6 +1342,11 @@ function inlineTailwindCss(html) {
   // HF-05: Replace "Subscribe on LinkedIn" with "Subscribe Free"
   html = html.replace(/Subscribe on LinkedIn/g, 'Subscribe Free');
 
+  // S5-02: Remove fade-up from first section in main (above-the-fold content must be visible immediately)
+  html = html.replace(/(<main[^>]*>[\s\S]*?<section[^>]*class="[^"]*)fade-up/, function(match, prefix) {
+    return prefix.replace(/\s*fade-up/, '');
+  });
+
   // S2-02: Inject "Getting Started" nav link if missing (idempotent)
   if (!html.includes('getting-started.html')) {
     // Desktop nav — insert after FIRST Intelligence link only (no /g flag)
