@@ -27,10 +27,10 @@
 - [x] S2-02: Navigation redesign — Apple-style sticky nav + Getting Started on all pages (BUG-4 fix)
 - [x] S2-03: Homepage hero — cinematic typography, blockquote pull quote, fade-up
 - [x] S2-04: Homepage below-fold — Apple spacing, borderless cards, updated footer
-- [ ] S2-05: Getting Started page — clean persona cards
-- [ ] S2-06: About page — editorial layout
-- [ ] S2-07: About/Team page — clean bio cards
-- [ ] S2-08: About/Press page — awards grid
+- [x] S2-05: Getting Started — borderless persona cards, Apple spacing, fade-up
+- [x] S2-06: About — editorial layout, pull quote, Apple typography
+- [x] S2-07: About/Team — clean bio cards, rounded-2xl photos, no cyan borders
+- [x] S2-08: About/Press — awards grid, alternating surfaces, Apple spacing
 - [ ] S2-09: Podcast page — platform links & episode list
 - [ ] S2-10: Newsletter page — article grid & pagination fix
 - [ ] S2-11: Glossary detail pages — clean reference layout
