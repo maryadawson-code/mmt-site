@@ -22,4 +22,22 @@
 - [x] MMT-015: Accessibility audit — contrast fix (--mmt-white-dim 0.75), reduced motion, focus-visible, skip-to-content, touch targets
 - [x] MMT-016: Contract pipeline — static fallback with SAM.gov search, NAICS display, build date; AI intel replaces on load
 
+## Sprint 2 (Visual): Apple Design Standards
+- [x] S2-01: Global CSS foundation — typography scale, spacing, cards, buttons, fade-up
+- [ ] S2-02: Navigation redesign — Apple-style sticky nav
+- [ ] S2-03: Homepage hero — cinematic typography
+- [ ] S2-04: Homepage below-fold sections
+- [ ] S2-05: Getting Started page — clean persona cards
+- [ ] S2-06: About page — editorial layout
+- [ ] S2-07: About/Team page — clean bio cards
+- [ ] S2-08: About/Press page — awards grid
+- [ ] S2-09: Podcast page — platform links & episode list
+- [ ] S2-10: Newsletter page — article grid & pagination fix
+- [ ] S2-11: Glossary detail pages — clean reference layout
+- [ ] S2-12: Contract detail pages — fix 404 & redesign
+- [ ] S2-13: Article template — editorial reading experience
+- [ ] S2-14: 404 page polish
+- [ ] S2-15: Mobile responsiveness audit
+- [ ] S2-16: Final polish & performance
+
 ## Log
