@@ -847,7 +847,7 @@ function generateArchiveHtml(archive) {
   const PER_PAGE = 12;
   const page1Items = archive.slice(0, PER_PAGE);
   const totalPages = Math.ceil(total / PER_PAGE);
-  const pagination = totalPages > 1 ? generatePaginationHtml(1, totalPages, '/newsletter.html') : '';
+  const pagination = totalPages > 1 ? generatePaginationHtml(1, totalPages, '/newsletter/') : '';
   return page1Items.map((item, i) => {
     const issueNum = total - i;
     const topicSlugs = (item.tags || []).map(t => slugify(t)).join(',');
@@ -1938,7 +1938,7 @@ function generatePaginatedNewsletterPages(archive) {
         </article>`;
     }).join('\n        ');
 
-    const pagination = generatePaginationHtml(page, totalPages, '/newsletter.html');
+    const pagination = generatePaginationHtml(page, totalPages, '/newsletter/');
     let html = baseHtml;
     html = html.replace('<!-- BUILD:ALL_ISSUES -->', pageArchiveHtml + '\n' + pagination);
     html = html.replace('<!-- BUILD:TOPIC_FILTER_CHIPS -->', '');
