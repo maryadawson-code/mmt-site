@@ -757,10 +757,11 @@ function generateLeadStoryHtml(archive) {
   ).join('\n            ');
   const isExternal = item.url && item.url.startsWith('http');
   const linkAttrs = isExternal ? ' target="_blank" rel="noopener"' : '';
-  return `<a href="${item.url}"${linkAttrs} class="card rounded-xl p-8 no-underline block transition-all" style="border-left:4px solid var(--mmt-cyan);">
-        <p class="text-xs mb-3" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
-        <h2 class="text-2xl md:text-3xl font-bold mb-3 leading-snug" style="color:var(--mmt-white);">${escapeHtml(item.title)}</h2>
-        <p class="text-base leading-relaxed mb-4" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>
+  return `<a href="${item.url}"${linkAttrs} class="card p-8 md:p-12 no-underline block">
+        <p class="text-eyebrow mb-4">Featured</p>
+        <p class="text-caption mb-4">${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
+        <h2 class="text-section mb-4">${escapeHtml(item.title)}</h2>
+        <p class="text-body mb-6">${escapeHtml(item.description)}</p>
         <div class="flex flex-wrap gap-2">
             ${tags}
         </div>
@@ -776,10 +777,10 @@ function generateLatestArticlesHtml(archive, count) {
     ).join('');
     const isExternal = item.url && item.url.startsWith('http');
     const linkAttrs = isExternal ? ' target="_blank" rel="noopener"' : '';
-    return `<a href="${item.url}"${linkAttrs} class="card rounded-xl p-6 no-underline block transition-all">
-          <p class="text-xs mb-3" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
-          <h3 class="text-lg font-bold mb-3 leading-snug" style="color:var(--mmt-white);">${escapeHtml(item.title)}</h3>
-          <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>
+    return `<a href="${item.url}"${linkAttrs} class="card p-8 no-underline block">
+          <p class="text-caption mb-3">${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
+          <h3 class="text-subsection mb-3">${escapeHtml(item.title)}</h3>
+          <p class="text-body mb-4" style="font-size:1rem;">${escapeHtml(item.description)}</p>
           <div class="flex flex-wrap gap-2">${tags}</div>
         </a>`;
   }).join('\n        ');
@@ -794,7 +795,7 @@ function generateTopicChipsHtml(archive) {
   });
   const sorted = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]);
   return sorted.map(([tag, count]) =>
-    `<a href="/topics/${slugify(tag)}/" class="text-sm px-4 py-2 rounded-full no-underline hover:opacity-80 transition-all" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">${escapeHtml(tag)} <span style="color:var(--mmt-white-dim);">${count}</span></a>`
+    `<a href="/topics/${slugify(tag)}/" class="tag no-underline">${escapeHtml(tag)} <span style="color:var(--mmt-caption);">${count}</span></a>`
   ).join('\n          ');
 }
 

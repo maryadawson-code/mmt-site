@@ -33,3 +33,8 @@ supabase/.temp/
 
 # SEO agent local logs (knowledge base is version-controlled — logs are not)
 .seo-agent/
+.claude/worktrees/
+test-results/
+n8n-workflows/
+migrations/
+deno.lock
