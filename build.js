@@ -203,10 +203,10 @@ function generatePodcastTagFiltersHtml(feed) {
   const allTags = new Set();
   Object.values(podcastTags).forEach(tags => tags.forEach(t => allTags.add(t)));
   if (allTags.size === 0) return '';
-  const buttons = [`<button class="podcast-tag text-xs font-semibold px-3 py-1.5 rounded-full cursor-pointer" style="background:var(--mmt-cyan); color:var(--mmt-navy); border:none;" data-filter="all">All</button>`];
+  const buttons = [`<button class="podcast-tag tag active" style="border:none;" data-filter="all">All</button>`];
   allTags.forEach(tag => {
     const tagSlug = slugify(tag);
-    buttons.push(`<button class="podcast-tag text-xs font-semibold px-3 py-1.5 rounded-full cursor-pointer" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan); border:none;" data-filter="${escapeHtml(tagSlug)}">${escapeHtml(tag)}</button>`);
+    buttons.push(`<button class="podcast-tag tag" style="border:none;" data-filter="${escapeHtml(tagSlug)}">${escapeHtml(tag)}</button>`);
   });
   return buttons.join('\n        ');
 }
@@ -251,23 +251,23 @@ function generatePodcastEpisodesHtml(feed) {
     const epTags = podcastTags[`episode-${epNum}`] || [];
     const epTagSlugs = epTags.map(t => slugify(t)).join(' ');
     const epTagHtml = epTags.length > 0
-      ? `<div class="flex flex-wrap gap-1 mt-2">${epTags.map(t => `<span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">${escapeHtml(t)}</span>`).join('')}</div>`
+      ? `<div class="flex flex-wrap gap-1.5 mt-3">${epTags.map(t => `<span class="text-xs px-3 py-1 rounded-full" style="background:var(--mmt-surface, #0A1628); color:var(--mmt-caption, #94A3B8);">${escapeHtml(t)}</span>`).join('')}</div>`
       : '';
     const transcript = transcripts[epNum];
     const transcriptSection = transcript && transcript.hasContent
-      ? `<details class="mt-3" style="border-top:1px solid rgba(0,229,250,0.1); padding-top:0.75rem;">
-                <summary class="text-sm font-semibold cursor-pointer" style="color:var(--mmt-cyan);">Show Transcript</summary>
-                <div class="mt-3 text-sm leading-relaxed" style="color:var(--mmt-white-muted); max-width:65ch;">${transcript.html}</div>
+      ? `<details class="mt-4" style="border-top:1px solid var(--mmt-border, rgba(255,255,255,0.05)); padding-top:0.75rem;">
+                <summary class="text-sm font-semibold cursor-pointer" style="color:var(--mmt-cyan, #00E5FA);">Show Transcript</summary>
+                <div class="mt-3 text-sm leading-relaxed" style="color:var(--mmt-body, #CBD5E1); max-width:65ch;">${transcript.html}</div>
               </details>`
       : '';
-    return `<article class="card rounded-xl p-6" data-episode="${epNum}" data-tags="${escapeHtml(epTagSlugs)}">
+    return `<article class="card p-6 md:p-8" data-episode="${epNum}" data-tags="${escapeHtml(epTagSlugs)}">
           <div>
-            <div class="flex items-center gap-2 mb-1">
-              <span class="text-xs font-semibold px-2 py-0.5 rounded" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">EP ${epNum}</span>
-              <p class="text-xs" style="color:var(--mmt-white-dim); margin:0;">${date}${duration ? ` &middot; ${duration}` : ''}</p>
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-eyebrow" style="font-size:0.7rem;">EP ${epNum}</span>
+              <span class="text-caption" style="margin:0;">${date}${duration ? ` &middot; ${duration}` : ''}</span>
             </div>
-            <h3 class="text-base font-bold mb-1" style="color:var(--mmt-white);">${title}</h3>
-            ${desc ? `<p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">${desc}</p>` : ''}
+            <h3 class="text-subsection mb-2" style="font-size:clamp(1.1rem, 1.5vw, 1.35rem);">${title}</h3>
+            ${desc ? `<p class="text-caption leading-relaxed">${desc}</p>` : ''}
             ${epTagHtml}
             ${audioPlayer}
             ${transcriptSection}

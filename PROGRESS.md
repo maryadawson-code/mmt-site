@@ -31,7 +31,7 @@
 - [x] S2-06: About — editorial layout, pull quote, Apple typography
 - [x] S2-07: About/Team — clean bio cards, rounded-2xl photos, no cyan borders
 - [x] S2-08: About/Press — awards grid, alternating surfaces, Apple spacing
-- [ ] S2-09: Podcast page — platform links & episode list
+- [x] S2-09: Podcast page — Apple typography, borderless cards, rounded-2xl hosts, tag pills, fade-up, BUG-5 fix
 - [ ] S2-10: Newsletter page — article grid & pagination fix
 - [ ] S2-11: Glossary detail pages — clean reference layout
 - [ ] S2-12: Contract detail pages — fix 404 & redesign
