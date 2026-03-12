@@ -1339,6 +1339,9 @@ function inlineTailwindCss(html) {
     '$1</span>$2'
   );
 
+  // HF-05: Replace "Subscribe on LinkedIn" with "Subscribe Free"
+  html = html.replace(/Subscribe on LinkedIn/g, 'Subscribe Free');
+
   // S2-02: Inject "Getting Started" nav link if missing (idempotent)
   if (!html.includes('getting-started.html')) {
     // Desktop nav — insert after FIRST Intelligence link only (no /g flag)
