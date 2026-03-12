@@ -352,6 +352,21 @@ function generateArticlePages(articles) {
     html = html.replace('</body>', siteScriptTag + '\n</body>');
 
     html = rewriteOgTags(html, `newsletter-${article.slug}.png`);
+
+    // Inject Article JSON-LD schema
+    const articleSchema = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": article.title,
+      "author": { "@type": "Person", "name": "Mary Dawson", "url": "https://www.linkedin.com/in/marydwomack-digitalhealth/" },
+      "datePublished": article.isoDate,
+      "publisher": { "@type": "Organization", "name": "Mission Meets Tech", "url": SITE_URL, "logo": { "@type": "ImageObject", "url": `${SITE_URL}/mmt-logo.png` } },
+      "image": `${SITE_URL}/og/newsletter-${article.slug}.png`,
+      "description": article.description,
+      "mainEntityOfPage": { "@type": "WebPage", "@id": article.canonicalUrl },
+    });
+    html = html.replace('</head>', `<script type="application/ld+json">${articleSchema}</script>\n</head>`);
+
     html = inlineTailwindCss(html);
     fs.writeFileSync(path.join(outDir, 'index.html'), html);
   });
@@ -1093,7 +1108,11 @@ function generateContractPages(contracts) {
       .replace(/\{\{NAICS_ROW\}\}/g, naicsRow)
       .replace(/\{\{DESCRIPTION\}\}/g, escapeHtml(c.description))
       .replace(/\{\{SAM_LINK\}\}/g, escapeHtml(c.link))
-      .replace(/\{\{CONTRACT_NAME_ENCODED\}\}/g, escapeHtml(c.name))
+      .replace(/\{\{CONTRACT_NAME_ENCODED\}\}/g, encodeURIComponent(c.name))
+      .replace(/\{\{NAICS_FALLBACK\}\}/g, c.naics
+        ? `<div><span style="color:var(--mmt-white-dim);">NAICS:</span> <span style="color:var(--mmt-white);">${escapeHtml(c.naics)}</span></div>`
+        : '')
+      .replace(/\{\{BUILD_DATE\}\}/g, new Date().toISOString().split('T')[0])
       .replace(/\{\{CANONICAL_URL\}\}/g, `${SITE_URL}/contracts/${cSlug}/`);
 
     // Inject search overlay after </nav>
@@ -1296,10 +1315,13 @@ function inlineTailwindCss(html) {
     _cachedTailwindCss = fs.existsSync(cssPath) ? fs.readFileSync(cssPath, 'utf8') : '';
   }
   if (!_cachedTailwindCss) return html;
-  return html.replace(
+  html = html.replace(
     /<link rel="stylesheet" href="\/styles\/tailwind\.css">/,
     `<style>${_cachedTailwindCss}</style>`
   );
+  // MMT-015: Fix --mmt-white-dim contrast for WCAG AA (0.6 → 0.75)
+  html = html.replace(/--mmt-white-dim:\s*rgba\(255,255,255,0\.6\)/g, '--mmt-white-dim: rgba(255,255,255,0.75)');
+  return html;
 }
 
 function copyStaticFiles({ archive, feed, newsItems, contracts }) {

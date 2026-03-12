@@ -205,14 +205,27 @@
         </div>
       </div>
       <div id="intel-container" data-contract="{{CONTRACT_NAME_ENCODED}}">
-        <!-- Loading skeleton -->
-        <div class="space-y-4">
-          <div class="skeleton rounded h-4 w-full" style="background:rgba(0,229,250,0.08);"></div>
-          <div class="skeleton rounded h-4 w-5/6" style="background:rgba(0,229,250,0.08);"></div>
-          <div class="skeleton rounded h-4 w-4/6" style="background:rgba(0,229,250,0.08);"></div>
-          <div class="skeleton rounded h-8 w-48 mt-6" style="background:rgba(0,229,250,0.08);"></div>
-          <div class="skeleton rounded h-4 w-full" style="background:rgba(0,229,250,0.08);"></div>
-          <div class="skeleton rounded h-4 w-3/4" style="background:rgba(0,229,250,0.08);"></div>
+        <!-- Static fallback content (replaced by AI intel when available) -->
+        <div id="intel-fallback">
+          <div class="card rounded-xl p-6 mb-6">
+            <h3 class="text-lg font-bold mb-3" style="color:var(--mmt-cyan);">Contract Overview</h3>
+            <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-muted);">{{DESCRIPTION}}</p>
+            <div class="grid grid-cols-2 gap-4 text-sm">
+              <div><span style="color:var(--mmt-white-dim);">Agency:</span> <span style="color:var(--mmt-white);">{{AGENCY}}</span></div>
+              <div><span style="color:var(--mmt-white-dim);">Vendor:</span> <span style="color:var(--mmt-white);">{{VENDOR}}</span></div>
+              <div><span style="color:var(--mmt-white-dim);">Value:</span> <span style="color:var(--mmt-white);">{{VALUE}}</span></div>
+              {{NAICS_FALLBACK}}
+            </div>
+          </div>
+          <div class="card rounded-xl p-6 mb-6">
+            <h3 class="text-lg font-bold mb-3" style="color:var(--mmt-cyan);">Search SAM.gov</h3>
+            <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Find active solicitations, awards, and entity information related to this contract on SAM.gov.</p>
+            <a href="https://sam.gov/search/?keywords={{CONTRACT_NAME_ENCODED}}&sort=-modifiedDate&index=opp&is_active=true&page=1" target="_blank" rel="noopener noreferrer" class="text-sm no-underline hover:opacity-80 inline-flex items-center gap-1" style="color:var(--mmt-cyan);">
+              <svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+              Search SAM.gov for {{CONTRACT_NAME}} &rarr;
+            </a>
+          </div>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Last built: {{BUILD_DATE}}</p>
         </div>
       </div>
     </div>
