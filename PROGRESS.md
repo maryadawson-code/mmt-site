@@ -56,4 +56,15 @@
 
 Sprint 3 complete. All 12 tickets executed. Pushed to main for Netlify auto-deploy.
 
+## Sprint 4: Post-Deploy Hotfix
+- [x] HF-01: Fix duplicate Getting Started in nav — removed /g flag, idempotent injection
+- [x] HF-02: Fix logo wordmark wrapping — nowrap wrapper via post-processor
+- [x] HF-03: Add /contracts/mhs-genesis/ redirect + allow GSAP CDN in CSP
+- [x] HF-04: Noscript fallback — .fade-up visible without JavaScript
+- [x] HF-05: Replace "Subscribe on LinkedIn" → "Subscribe Free" globally
+- [x] HF-06: Fix newsletter pagination URLs — /newsletter/page/N/ instead of broken concatenation
+- [x] HF-07: Podcast topic tags & transcript toggles — already implemented (tags visible, transcripts pending content)
+
+Sprint 4 complete. All hotfixes executed. Pushed to main for Netlify auto-deploy.
+
 ## Log
