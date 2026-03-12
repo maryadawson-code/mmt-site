@@ -67,4 +67,35 @@ Sprint 3 complete. All 12 tickets executed. Pushed to main for Netlify auto-depl
 
 Sprint 4 complete. All hotfixes executed. Pushed to main for Netlify auto-deploy.
 
+## Sprint 5: Immersive Spatial Overhaul
+### Phase 1: Bug Fixes
+- [x] S5-01: Duplicate Getting Started — already fixed in HF-01
+- [x] S5-02: About page invisible content — removed fade-up from hero, build.js strips fade-up from first section
+- [x] S5-03: Newsletter page invisible content — removed fade-up from hero div
+- [x] S5-04: /contracts/mhs-genesis 404 — already fixed in HF-03 (redirect)
+
+### Phase 2: Immersive Foundation
+- [x] S5-05: CSS foundation — atmosphere overlays, card-spatial glass morphism, text-glow, glow-accent
+- [x] S5-06: spatial.js v2 rewrite — pinned hero with parallax dissolve, 3D card tilt, magnetic buttons, upgraded scroll reveals, gsap.matchMedia()
+- [x] S5-07: Homepage hero atmospheric depth — radial gradient orbs, text-glow, atmosphere class
+- [x] S5-08: Topic browser upgrade — glass morphism topic cards with descriptions, 3-column grid
+- [x] S5-09: Global card glass morphism — backdrop-blur, hover lift, glow border on all .card elements
+- [x] S5-10: Scroll progress bar — already implemented in S3-08
+
+### Phase 3: About Page Overhaul
+- [x] S5-11: About hero redesign — cinematic split layout with photo card, atmospheric orbs
+- [x] S5-12: Visual storytelling — pull quote with reveal-left, numbered credential cards (01/02/03)
+- [x] S5-13: Platform showcase — newsletter full-width card, podcast+website side-by-side with card-spatial
+- [x] S5-14: Beliefs section — alternating left/right layout for visual rhythm
+- [x] S5-15: Persona cards — glass morphism with colored top borders, staggered reveals
+
+### Phase 4: Final Polish
+- [x] S5-16: Newsletter CTA — already fixed in HF-05
+- [x] S5-17: Newsletter pagination — already fixed in HF-06
+- [x] S5-18: Podcast topic tags/transcripts — already verified in HF-07
+- [x] S5-19: Performance — preconnect CDN, defer GSAP scripts
+- [x] S5-20: Build verification & push
+
+Sprint 5 complete. All 20 tickets executed. Pushed to main for Netlify auto-deploy.
+
 ## Log
