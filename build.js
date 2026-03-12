@@ -1456,14 +1456,21 @@ function inlineTailwindCss(html) {
     html = html.replace('</body>', '  <script src="/js/mmt-motion.js" defer></script>\n</body>');
   }
 
+  // S5-19: Add preconnect for GSAP CDN
+  if (!html.includes('cdnjs.cloudflare.com')) {
+    html = html.replace('</head>',
+      '  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>\n</head>'
+    );
+  }
+
   // S3-01: Inject GSAP + ScrollTrigger + ScrollToPlugin + spatial.js on all pages
   if (!html.includes('spatial.js')) {
     html = html.replace('</body>',
       '  <!-- GSAP + ScrollTrigger -->\n' +
-      '  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>\n' +
-      '  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>\n' +
-      '  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollToPlugin.min.js"></script>\n' +
-      '  <script src="/js/spatial.js"></script>\n' +
+      '  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>\n' +
+      '  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>\n' +
+      '  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollToPlugin.min.js"></script>\n' +
+      '  <script defer src="/js/spatial.js"></script>\n' +
       '</body>'
     );
   }
