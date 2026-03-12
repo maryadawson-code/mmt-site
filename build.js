@@ -260,7 +260,7 @@ function generatePodcastEpisodesHtml(feed) {
                 <div class="mt-3 text-sm leading-relaxed" style="color:var(--mmt-body, #CBD5E1); max-width:65ch;">${transcript.html}</div>
               </details>`
       : '';
-    return `<article class="card p-6 md:p-8" data-episode="${epNum}" data-tags="${escapeHtml(epTagSlugs)}">
+    return `<article class="card episode-card p-6 md:p-8" data-episode="${epNum}" data-tags="${escapeHtml(epTagSlugs)}">
           <div>
             <div class="flex items-center gap-3 mb-2">
               <span class="text-eyebrow" style="font-size:0.7rem;">EP ${epNum}</span>
@@ -777,7 +777,7 @@ function generateLatestArticlesHtml(archive, count) {
     ).join('');
     const isExternal = item.url && item.url.startsWith('http');
     const linkAttrs = isExternal ? ' target="_blank" rel="noopener"' : '';
-    return `<a href="${item.url}"${linkAttrs} class="card p-8 no-underline block">
+    return `<a href="${item.url}"${linkAttrs} class="card article-card p-8 no-underline block">
           <p class="text-caption mb-3">${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
           <h3 class="text-subsection mb-3">${escapeHtml(item.title)}</h3>
           <p class="text-body mb-4" style="font-size:1rem;">${escapeHtml(item.description)}</p>
@@ -857,7 +857,7 @@ function generateArchiveHtml(archive) {
     const isExternal = item.url && item.url.startsWith('http');
     const linkAttrs = isExternal ? 'target="_blank" rel="noopener"' : '';
     const externalIcon = isExternal ? ' <svg width="0.75em" height="0.75em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:baseline;opacity:0.5;" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>' : '';
-    return `<article class="card p-6 md:p-8" data-topics="${topicSlugs}">
+    return `<article class="card article-card p-6 md:p-8" data-topics="${topicSlugs}">
           <div class="flex items-start justify-between gap-4 mb-2">
             <h3 class="text-subsection" style="font-size:clamp(1.1rem, 1.5vw, 1.35rem);"><a href="${item.url}" ${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${escapeHtml(item.title)}${externalIcon}</a></h3>
             <span class="text-eyebrow whitespace-nowrap" style="font-size:0.7rem;">#${issueNum}</span>
@@ -1421,6 +1421,15 @@ function inlineTailwindCss(html) {
       '  <script src="/js/spatial.js"></script>\n' +
       '</body>'
     );
+  }
+
+  // S3-11: Add ambient-grain + ambient-vignette to body if not present
+  if (!html.includes('ambient-grain')) {
+    html = html.replace(/<body([^>]*class=")([^"]*)(")/, '<body$1$2 ambient-grain ambient-vignette$3');
+    // If body has no class attribute
+    if (!html.includes('ambient-grain')) {
+      html = html.replace(/<body>/, '<body class="ambient-grain ambient-vignette">');
+    }
   }
 
   // S3-08: Inject scroll-progress bar after opening <body> tag

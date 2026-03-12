@@ -45,13 +45,13 @@
 - [x] S3-02: GSAP scroll reveal system — handles .reveal + .fade-up, staggered groups, horizontal reveals
 - [x] S3-03: Cinematic hero — scroll-driven fade/scale, parallax depth orbs, 100vh entrance
 - [x] S3-04: Parallax depth layers — Why This Exists section, eyebrow animations, section dividers
-- [ ] S3-05: Cursor-aware micro-interactions — card tilt, magnetic buttons
-- [ ] S3-06: Cinematic section transitions — scale entry, animated dividers
-- [ ] S3-07: Typographic motion — word-by-word hero reveal
-- [ ] S3-08: Smooth scroll, momentum, scroll progress indicator
-- [ ] S3-09: Podcast page — episode reveal animation
-- [ ] S3-10: Card cascade — persona cards, newsletter articles
-- [ ] S3-11: Ambient background system — grain, vignette
+- [x] S3-05: Cursor-aware micro-interactions — card 3D tilt, magnetic buttons (desktop-only)
+- [x] S3-06: Cinematic section transitions — spatial-section scale entry, animated section dividers
+- [x] S3-07: Typographic motion — word-by-word hero reveal, staggered eyebrow/subline/CTA entrance
+- [x] S3-08: Smooth scroll, GSAP ScrollToPlugin, scroll-progress gradient bar on all 17 pages
+- [x] S3-09: Podcast page — episode-card alternating slide reveals, platform-btn scale animation
+- [x] S3-10: Card cascade — persona-card rotation entrance, article-card scale animation
+- [x] S3-11: Ambient background — grain texture (1.5% opacity, disabled on mobile), viewport vignette, all 17 pages
 - [ ] S3-12: Performance & accessibility audit
 
 ## Log
