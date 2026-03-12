@@ -1325,18 +1325,46 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
     }
   });
 
-  // Copy glossary pages
+  // Copy glossary pages (with .gov/.mil source injection)
   const glossarySrc = path.join(__dirname, 'glossary');
   const glossaryDist = path.join(DIST_DIR, 'glossary');
+  const glossarySourcesPath = path.join(__dirname, 'glossary-sources.json');
+  const glossarySources = fs.existsSync(glossarySourcesPath) ? JSON.parse(fs.readFileSync(glossarySourcesPath, 'utf8')) : {};
+  let glossarySourceCount = 0;
   if (fs.existsSync(glossarySrc)) {
     ensureDir(glossaryDist);
     const glossaryFiles = fs.readdirSync(glossarySrc).filter(f => f.endsWith('.html'));
     glossaryFiles.forEach(file => {
       let html = fs.readFileSync(path.join(glossarySrc, file), 'utf8');
+      // Inject Official Sources section for detail pages (not index)
+      const slug = file.replace('.html', '');
+      const sources = glossarySources[slug];
+      if (sources && sources.length > 0 && slug !== 'index') {
+        const sourceLinks = sources.map(s =>
+          `<a href="${escapeHtml(s.url)}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-sm no-underline hover:opacity-80 py-2" style="color:var(--mmt-cyan);">
+                <svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+                <span>${escapeHtml(s.label)}</span>
+                <span class="text-xs" style="color:var(--mmt-white-dim);">${escapeHtml(s.domain)}</span>
+              </a>`
+        ).join('\n              ');
+        const sourcesSection = `
+      <div class="glossary-sources card rounded-xl p-6 mb-10" style="background:var(--mmt-slate);border:1px solid rgba(0,229,250,0.1);">
+        <h2 class="text-lg font-bold mb-3" style="color:var(--mmt-cyan);">Official Sources</h2>
+        <div class="flex flex-col">
+              ${sourceLinks}
+        </div>
+      </div>`;
+        // Insert before the "Back to Glossary" link
+        html = html.replace(
+          '<div class="pt-6" style="border-top:1px solid rgba(0,229,250,0.1);">',
+          sourcesSection + '\n      <div class="pt-6" style="border-top:1px solid rgba(0,229,250,0.1);">'
+        );
+        glossarySourceCount++;
+      }
       html = inlineTailwindCss(html);
       fs.writeFileSync(path.join(glossaryDist, file), html);
     });
-    console.log(`Copied ${glossaryFiles.length} glossary pages`);
+    console.log(`Copied ${glossaryFiles.length} glossary pages (${glossarySourceCount} with Official Sources)`);
   }
 
   // Copy robots.txt
