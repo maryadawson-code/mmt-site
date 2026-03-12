@@ -18,7 +18,11 @@
   <meta name="twitter:title" content="Fed UP Podcast — Mission Meets Tech">
   <meta name="twitter:description" content="Fed UP: Where Mission Meets Reality. Mary Womack and Sara Byrd break down federal health IT policy, defense contracts, and what actually ships.">
   <meta name="twitter:image" content="https://missionmeetstech.com/mmt-logo.png">
-  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="/MMT_icon_48px.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="/MMT_icon_64px.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="/MMT_icon_128px.png">
+  <link rel="icon" type="image/png" sizes="256x256" href="/MMT_icon_256px.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="/MMT_icon_512px.png">
   <link rel="preconnect" href="https://plausible.io" crossorigin>
   <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
   <link rel="alternate" type="application/rss+xml" title="Mission Meets Tech" href="/feed.xml">
@@ -35,29 +39,18 @@
       --mmt-white-dim: rgba(255,255,255,0.6);
     }
     body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--mmt-navy); color: #fff; }
-    h1, h2, h3, h4, h5 { font-family: 'Space Grotesk', system-ui, sans-serif; }
+    h1, h2, h3, h4, h5 { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.02em; font-weight: 700; }
+    p, li { line-height: 1.75; }
     .gradient-text { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .btn-primary { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); color: var(--mmt-navy); font-weight: 600; padding: 0.75rem 2rem; border-radius: 9999px; transition: all 0.3s; }
+    .btn-primary { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); color: var(--mmt-navy); font-weight: 600; padding: 14px 28px; border-radius: 8px; transition: all 0.3s; }
     .btn-primary:hover { transform: translateY(-1px); opacity: 0.9; }
-    .btn-secondary { border: 1px solid var(--mmt-cyan); color: #fff; padding: 0.75rem 2rem; border-radius: 9999px; transition: all 0.3s; }
+    .btn-secondary { border: 1px solid var(--mmt-cyan); color: #fff; padding: 14px 28px; border-radius: 8px; transition: all 0.3s; }
     .btn-secondary:hover { background: rgba(0,229,250,0.1); }
     .card { background: var(--mmt-slate); border: 1px solid rgba(0,229,250,0.1); }
     .card:hover { border-color: rgba(0,229,250,0.3); }
     .nav-glass { background: rgba(13,17,23,0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,229,250,0.1); }
     .section-alt { background: var(--mmt-dark); }
     *:focus-visible { outline: 2px solid var(--mmt-cyan); outline-offset: 2px; }
-    .tag-pill {
-      display: inline-block;
-      padding: 2px 10px;
-      border-radius: 9999px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      background: rgba(0,229,250,0.12);
-      color: #00E5FA;
-      border: 1px solid rgba(0,229,250,0.3);
-      margin-right: 4px;
-      margin-top: 6px;
-    }
   </style>
   <script type="application/ld+json">
   {
@@ -95,7 +88,9 @@
   <!-- Navigation -->
   <nav class="nav-glass fixed top-0 left-0 right-0 z-50">
     <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-2 no-underline"><img src="MMT_logo_primary_transparent.png" alt="Mission Meets Tech" class="mmt-logo-glow" style="height:30px;width:auto;display:block;"></a>
+      <a href="index.html" class="flex items-center gap-2 no-underline">
+        <span class="text-xl font-bold" style="font-family:'Space Grotesk',system-ui,sans-serif; color:#fff;">Mission Meets <span style="color:var(--mmt-cyan);">Tech</span></span>
+      </a>
       <div class="hidden md:flex items-center gap-6">
         <a href="latest.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Intelligence</a>
         <a href="podcast.html" class="text-sm font-semibold" style="color:var(--mmt-cyan);">Podcast</a>
@@ -169,7 +164,7 @@
   </section>
 
   <!-- Full Show Player -->
-  <section class="py-12 px-6">
+  <section class="py-20 px-6">
     <div class="max-w-4xl mx-auto">
       <h2 class="text-2xl font-bold mb-6">Listen Now</h2>
       <div class="card rounded-xl p-6" style="padding:0; overflow:hidden; border:none;">
@@ -220,7 +215,7 @@
       <div class="grid md:grid-cols-2 gap-8">
         <!-- Mary -->
         <div class="card rounded-xl p-8 text-center">
-          <img src="marywomack.jpg" alt="Mary Womack" width="112" height="112" loading="lazy" decoding="async" class="w-28 h-28 rounded-full object-cover mx-auto mb-4" style="border:2px solid var(--mmt-cyan);">
+          <img src="marywomack.jpg" alt="Mary Womack" width="160" height="160" loading="lazy" decoding="async" class="mx-auto mb-4 rounded-full" style="width:160px;height:160px;border-radius:50%;object-fit:cover;object-position:center top;border:2px solid var(--mmt-cyan);">
           <h3 class="text-xl font-bold mb-1">Mary Womack</h3>
           <p class="text-sm mb-3" style="color:var(--mmt-cyan);">Founder, Mission Meets Tech</p>
           <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">Mary Womack is an analyst, strategist, and independent voice working at the intersection of federal health policy, defense acquisition, and technology delivery. With a career spanning DoD, DHA, VA, and civilian agencies, she translates the distance between policy announcements and operational outcomes into intelligence that decision-makers can actually use.</p>
@@ -228,7 +223,7 @@
         </div>
         <!-- Sara -->
         <div class="card rounded-xl p-8 text-center">
-          <img src="sarabyrd.jpg" alt="Sara Byrd" width="112" height="112" loading="lazy" decoding="async" class="w-28 h-28 rounded-full object-cover mx-auto mb-4" style="border:2px solid var(--mmt-cyan);">
+          <img src="sarabyrd.jpg" alt="Sara Byrd" width="160" height="160" loading="lazy" decoding="async" class="mx-auto mb-4 rounded-full" style="width:160px;height:160px;border-radius:50%;object-fit:cover;object-position:center top;border:2px solid var(--mmt-cyan);">
           <h3 class="text-xl font-bold mb-1">Sara Byrd</h3>
           <p class="text-sm mb-3" style="color:var(--mmt-cyan);">Co-Host, Fed UP Podcast | Federal Health IT Strategist</p>
           <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">Sara Byrd is a strategist, executive leader, and trusted advisor working at the intersection of emerging technology and real-world systems. With more than 15 years of experience across civilian, defense organizations, federal acquisition, and innovation strategy, she has helped organizations translate complex ideas into practical outcomes.</p>
@@ -239,7 +234,7 @@
   </section>
 
   <!-- Newsletter Cross-Link -->
-  <section class="py-12 px-6" style="background:var(--mmt-dark);">
+  <section class="py-20 px-6" style="background:var(--mmt-dark);">
     <div class="max-w-2xl mx-auto text-center">
       <p class="text-xs uppercase tracking-widest mb-3" style="color:var(--mmt-cyan);">The Written Analysis</p>
       <h3 class="text-xl font-bold mb-3" style="font-family:'Space Grotesk',sans-serif; color:#fff;">Go deeper on the topics we cover</h3>
@@ -285,6 +280,6 @@
   </footer>
 
 
-<script src="js/mmt-motion.js"></script>
+  <script src="/js/mmt-motion.js" defer></script>
 </body>
 </html>

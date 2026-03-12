@@ -18,7 +18,11 @@
   <meta name="twitter:title" content="Federal Health IT Resources — Mission Meets Tech">
   <meta name="twitter:description" content="The federal health IT intelligence center. Glossary, contract vehicles, agency sources, live headlines, and tools for contractors and decision-makers.">
   <meta name="twitter:image" content="https://missionmeetstech.com/mmt-logo.png">
-  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="/MMT_icon_48px.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="/MMT_icon_64px.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="/MMT_icon_128px.png">
+  <link rel="icon" type="image/png" sizes="256x256" href="/MMT_icon_256px.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="/MMT_icon_512px.png">
   <link rel="preconnect" href="https://plausible.io" crossorigin>
   <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
   <link rel="alternate" type="application/rss+xml" title="Mission Meets Tech" href="/feed.xml">
@@ -35,11 +39,12 @@
       --mmt-white-dim: rgba(255,255,255,0.6);
     }
     body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--mmt-navy); color: #fff; }
-    h1, h2, h3, h4, h5 { font-family: 'Space Grotesk', system-ui, sans-serif; }
+    h1, h2, h3, h4, h5 { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.02em; font-weight: 700; }
+    p, li { line-height: 1.75; }
     .gradient-text { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .btn-primary { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); color: var(--mmt-navy); font-weight: 600; padding: 0.75rem 2rem; border-radius: 9999px; transition: all 0.3s; }
+    .btn-primary { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); color: var(--mmt-navy); font-weight: 600; padding: 14px 28px; border-radius: 8px; transition: all 0.3s; }
     .btn-primary:hover { transform: translateY(-1px); opacity: 0.9; }
-    .btn-secondary { border: 1px solid var(--mmt-cyan); color: #fff; padding: 0.75rem 2rem; border-radius: 9999px; transition: all 0.3s; }
+    .btn-secondary { border: 1px solid var(--mmt-cyan); color: #fff; padding: 14px 28px; border-radius: 8px; transition: all 0.3s; }
     .btn-secondary:hover { background: rgba(0,229,250,0.1); }
     .card { background: var(--mmt-slate); border: 1px solid rgba(0,229,250,0.1); }
     .card:hover { border-color: rgba(0,229,250,0.3); }
@@ -48,16 +53,6 @@
     *:focus-visible { outline: 2px solid var(--mmt-cyan); outline-offset: 2px; }
     .hub-card { display: block; text-decoration: none; transition: border-color 0.2s, transform 0.2s; }
     .hub-card:hover { transform: translateY(-2px); }
-    .vh-toggle { display: none; }
-    .vh-toggle:checked + .vh-header .vh-chevron { transform: rotate(90deg); }
-    .vh-toggle:checked ~ .vh-detail { display: block; }
-    .vh-header { cursor: pointer; }
-    .vh-chevron { transition: transform 0.2s; display: inline-block; }
-    .vh-detail { display: none; }
-    .vh-row { border-bottom: 1px solid rgba(0,229,250,0.08); }
-    .vh-meta { font-size: 0.75rem; color: var(--mmt-white-dim); }
-    .vh-meta strong { color: var(--mmt-white-muted); }
-    .vh-status { font-size: 0.7rem; font-weight: 600; padding: 2px 8px; border-radius: 9999px; }
   </style>
 </head>
 <body class="antialiased">
@@ -67,7 +62,9 @@
   <!-- Navigation -->
   <nav class="nav-glass fixed top-0 left-0 right-0 z-50">
     <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-2 no-underline"><img src="MMT_logo_primary_transparent.png" alt="Mission Meets Tech" class="mmt-logo-glow" style="height:30px;width:auto;display:block;"></a>
+      <a href="index.html" class="flex items-center gap-2 no-underline">
+        <span class="text-xl font-bold" style="font-family:'Space Grotesk',system-ui,sans-serif; color:#fff;">Mission Meets <span style="color:var(--mmt-cyan);">Tech</span></span>
+      </a>
       <div class="hidden md:flex items-center gap-6">
         <a href="latest.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Intelligence</a>
         <a href="podcast.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Podcast</a>
@@ -242,272 +239,6 @@
     </div>
   </section>
 
-  <!-- Contract Vehicles -->
-  <section class="section-alt py-20 px-6" id="contract-vehicles">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-3xl font-bold mb-2">Contract Vehicles at a Glance</h2>
-      <p class="text-sm mb-8" style="color:var(--mmt-white-muted);">The vehicles, mechanics, and intelligence you need to win federal health IT work. Click any vehicle for details.</p>
-
-      <!-- CIO-SP3 -->
-      <div class="vh-row">
-        <input type="checkbox" id="vh-ciosp3" class="vh-toggle">
-        <label for="vh-ciosp3" class="vh-header flex items-center gap-3 py-4 px-2">
-          <span class="vh-chevron text-xs" style="color:var(--mmt-cyan);">&#9654;</span>
-          <span class="text-sm font-bold" style="color:var(--mmt-white);">CIO-SP3</span>
-          <span class="vh-meta hidden md:inline">NIH/NITAAC &middot; $40B</span>
-          <span class="vh-status ml-auto" style="background:rgba(0,255,133,0.1); color:var(--mmt-green);">Active (extended)</span>
-        </label>
-        <div class="vh-detail px-8 pb-5">
-          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-white-muted);">Primary IT GWAC for DHA and VA health IT task orders. Full &amp; open with small business pools. Extended after CIO-SP4 cancellation. If your health IT work runs through NITAAC, this is still the vehicle.</p>
-          <div class="flex flex-wrap gap-x-6 gap-y-1 vh-meta">
-            <span><strong>Agency:</strong> NIH/NITAAC</span>
-            <span><strong>Ceiling:</strong> $40B</span>
-            <span><strong>Set-Asides:</strong> Full &amp; open, SB pools</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- CIO-SP4 -->
-      <div class="vh-row">
-        <input type="checkbox" id="vh-ciosp4" class="vh-toggle">
-        <label for="vh-ciosp4" class="vh-header flex items-center gap-3 py-4 px-2">
-          <span class="vh-chevron text-xs" style="color:var(--mmt-cyan);">&#9654;</span>
-          <span class="text-sm font-bold" style="color:var(--mmt-white);">CIO-SP4</span>
-          <span class="vh-meta hidden md:inline">NIH/NITAAC &middot; Was $50B</span>
-          <span class="vh-status ml-auto" style="background:rgba(248,113,113,0.1); color:#F87171;">Cancelled</span>
-        </label>
-        <div class="vh-detail px-8 pb-5">
-          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-white-muted);">Cancelled in January 2026 after years of bid protests and legal challenges. The $50B GWAC was intended to replace CIO-SP3. The cancellation forces agencies to rely on existing vehicles (CIO-SP3, OASIS+, SEWP VI) and has created uncertainty for firms that invested heavily in the bid process.</p>
-          <div class="flex flex-wrap gap-x-6 gap-y-1 vh-meta">
-            <span><strong>Agency:</strong> NIH/NITAAC</span>
-            <span><strong>Ceiling:</strong> Was $50B</span>
-            <span><strong>Set-Asides:</strong> Was tiered</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- OASIS+ -->
-      <div class="vh-row">
-        <input type="checkbox" id="vh-oasis" class="vh-toggle">
-        <label for="vh-oasis" class="vh-header flex items-center gap-3 py-4 px-2">
-          <span class="vh-chevron text-xs" style="color:var(--mmt-cyan);">&#9654;</span>
-          <span class="text-sm font-bold" style="color:var(--mmt-white);">OASIS+</span>
-          <span class="vh-meta hidden md:inline">GSA &middot; Unlimited</span>
-          <span class="vh-status ml-auto" style="background:rgba(0,255,133,0.1); color:var(--mmt-green);">Active</span>
-        </label>
-        <div class="vh-detail px-8 pb-5">
-          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-white-muted);">Professional services across all agencies, including health IT consulting. Full &amp; open with small business domains. With CIO-SP4 cancelled, OASIS+ is absorbing more health IT task orders. The unlimited ceiling makes it attractive for large-scale modernization work.</p>
-          <div class="flex flex-wrap gap-x-6 gap-y-1 vh-meta">
-            <span><strong>Agency:</strong> GSA</span>
-            <span><strong>Ceiling:</strong> Unlimited</span>
-            <span><strong>Set-Asides:</strong> Full &amp; open, SB domains</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- T4NG -->
-      <div class="vh-row">
-        <input type="checkbox" id="vh-t4ng" class="vh-toggle">
-        <label for="vh-t4ng" class="vh-header flex items-center gap-3 py-4 px-2">
-          <span class="vh-chevron text-xs" style="color:var(--mmt-cyan);">&#9654;</span>
-          <span class="text-sm font-bold" style="color:var(--mmt-white);">T4NG</span>
-          <span class="vh-meta hidden md:inline">VA TAC &middot; $22.3B</span>
-          <span class="vh-status ml-auto" style="background:rgba(0,255,133,0.1); color:var(--mmt-green);">Active</span>
-        </label>
-        <div class="vh-detail px-8 pb-5">
-          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-white-muted);">VA's primary vehicle for IT services including health IT modernization. SDVOSB pools available. If you sell IT to VA, you probably use T4NG. Covers everything from EHR support to cybersecurity to cloud migration.</p>
-          <div class="flex flex-wrap gap-x-6 gap-y-1 vh-meta">
-            <span><strong>Agency:</strong> VA TAC</span>
-            <span><strong>Ceiling:</strong> $22.3B</span>
-            <span><strong>Set-Asides:</strong> SDVOSB pools</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- MHS EITS -->
-      <div class="vh-row">
-        <input type="checkbox" id="vh-eits" class="vh-toggle">
-        <label for="vh-eits" class="vh-header flex items-center gap-3 py-4 px-2">
-          <span class="vh-chevron text-xs" style="color:var(--mmt-cyan);">&#9654;</span>
-          <span class="text-sm font-bold" style="color:var(--mmt-white);">MHS EITS</span>
-          <span class="vh-meta hidden md:inline">DHA &middot; Multi-billion</span>
-          <span class="vh-status ml-auto" style="background:rgba(0,255,133,0.1); color:var(--mmt-green);">Active</span>
-        </label>
-        <div class="vh-detail px-8 pb-5">
-          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-white-muted);">Enterprise IT infrastructure for the entire Military Health System. Full &amp; open. Covers network operations, end-user services, cybersecurity, and data center management across all MTFs worldwide.</p>
-          <div class="flex flex-wrap gap-x-6 gap-y-1 vh-meta">
-            <span><strong>Agency:</strong> DHA</span>
-            <span><strong>Ceiling:</strong> Multi-billion</span>
-            <span><strong>Set-Asides:</strong> Full &amp; open</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- MQS2-NG -->
-      <div class="vh-row">
-        <input type="checkbox" id="vh-mqs2" class="vh-toggle">
-        <label for="vh-mqs2" class="vh-header flex items-center gap-3 py-4 px-2">
-          <span class="vh-chevron text-xs" style="color:var(--mmt-cyan);">&#9654;</span>
-          <span class="text-sm font-bold" style="color:var(--mmt-white);">MQS2-NG</span>
-          <span class="vh-meta hidden md:inline">DHA &middot; TBD</span>
-          <span class="vh-status ml-auto" style="background:rgba(251,191,36,0.1); color:#FBBF24;">Pre-solicitation</span>
-        </label>
-        <div class="vh-detail px-8 pb-5">
-          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-white-muted);">Medical quality systems, patient safety IT, and clinical decision support. Next generation of the MQS2 vehicle. Set-aside details TBD. Watch SAM.gov for solicitation activity.</p>
-          <div class="flex flex-wrap gap-x-6 gap-y-1 vh-meta">
-            <span><strong>Agency:</strong> DHA</span>
-            <span><strong>Ceiling:</strong> TBD</span>
-            <span><strong>Set-Asides:</strong> TBD</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- VHA IHT 2.0 -->
-      <div class="vh-row">
-        <input type="checkbox" id="vh-iht" class="vh-toggle">
-        <label for="vh-iht" class="vh-header flex items-center gap-3 py-4 px-2">
-          <span class="vh-chevron text-xs" style="color:var(--mmt-cyan);">&#9654;</span>
-          <span class="text-sm font-bold" style="color:var(--mmt-white);">VHA IHT 2.0</span>
-          <span class="vh-meta hidden md:inline">VA &middot; TBD</span>
-          <span class="vh-status ml-auto" style="background:rgba(0,255,133,0.1); color:var(--mmt-green);">Active</span>
-        </label>
-        <div class="vh-detail px-8 pb-5">
-          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-white-muted);">VA integrated health technologies services. SDVOSB set-aside. Covers clinical applications, telehealth, medical device integration, and health IT support services.</p>
-          <div class="flex flex-wrap gap-x-6 gap-y-1 vh-meta">
-            <span><strong>Agency:</strong> VA</span>
-            <span><strong>Ceiling:</strong> TBD</span>
-            <span><strong>Set-Asides:</strong> SDVOSB</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- GSA MAS Health IT -->
-      <div class="vh-row">
-        <input type="checkbox" id="vh-gsa" class="vh-toggle">
-        <label for="vh-gsa" class="vh-header flex items-center gap-3 py-4 px-2">
-          <span class="vh-chevron text-xs" style="color:var(--mmt-cyan);">&#9654;</span>
-          <span class="text-sm font-bold" style="color:var(--mmt-white);">GSA MAS Health IT</span>
-          <span class="vh-meta hidden md:inline">GSA &middot; Open</span>
-          <span class="vh-status ml-auto" style="background:rgba(0,255,133,0.1); color:var(--mmt-green);">Active</span>
-        </label>
-        <div class="vh-detail px-8 pb-5">
-          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-white-muted);">GSA Schedule with Health IT Special Item Numbers. Multiple set-aside options. The on-ramp for smaller firms selling COTS health IT products and services to federal agencies.</p>
-          <div class="flex flex-wrap gap-x-6 gap-y-1 vh-meta">
-            <span><strong>Agency:</strong> GSA</span>
-            <span><strong>Ceiling:</strong> Open</span>
-            <span><strong>Set-Asides:</strong> Multiple</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- Set-Aside Quick Reference -->
-  <section class="py-16 px-6" id="set-asides">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-2xl font-bold mb-6">Set-Aside Types</h2>
-      <div class="grid sm:grid-cols-2 gap-4">
-        <div class="card rounded-xl p-5">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-green);">SDVOSB</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Service-Disabled Veteran-Owned Small Business. Required for many VA and some DHA contracts. VA has specific SDVOSB verification through SBA.</p>
-        </div>
-        <div class="card rounded-xl p-5">
-          <p class="text-sm font-bold mb-1" style="color:#F472B6;">WOSB</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Women-Owned Small Business. Eligible for set-asides in underrepresented industries. Certification through SBA.</p>
-        </div>
-        <div class="card rounded-xl p-5">
-          <p class="text-sm font-bold mb-1" style="color:#A78BFA;">8(a)</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">SBA program for disadvantaged small businesses. Sole-source authority up to $4.5M for services.</p>
-        </div>
-        <div class="card rounded-xl p-5">
-          <p class="text-sm font-bold mb-1" style="color:#FBBF24;">HUBZone</p>
-          <p class="text-xs" style="color:var(--mmt-white-muted);">Historically Underutilized Business Zones. Price evaluation preference and sole-source authority.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Leadership Map -->
-  <section class="py-20 px-6" id="leadership-map">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-3xl font-bold mb-2">Defense Health Leadership Map</h2>
-      <p class="text-sm mb-8" style="color:var(--mmt-white-muted);">Key positions that shape federal health IT policy, funding, and operations. Links go to official agency pages.</p>
-
-      <!-- DoD / DHA -->
-      <h3 class="text-lg font-bold mb-4" style="color:var(--mmt-cyan);">Department of Defense &amp; DHA</h3>
-      <div class="grid md:grid-cols-2 gap-4 mb-8">
-        <a href="https://dha.mil/News/2026/01/12/17/05/US-Navy-veteran-and-VA-health-care-executive-appointed-as-Department-of-Wars-top-medical-leader" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">ASD(HA) — Keith Bass</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">Assistant Secretary of Defense for Health Affairs (sworn in Jan 2026). Sets policy and budget priorities for the entire Military Health System.</p>
-        </a>
-        <a href="https://dha.mil/About-DHA/Organizational-Structure" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">DHA Director</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">Runs the Defense Health Agency. Operational authority over MTFs, TRICARE, pharmacy, and health IT systems.</p>
-        </a>
-        <a href="https://dha.mil/Offices-and-Programs/OPMED/EIT" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">DHA Enterprise IT</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">Enterprise Information Technology under OPMED. Manages health IT infrastructure, cybersecurity, and data strategy across the MHS.</p>
-        </a>
-        <a href="https://dha.mil/Offices-and-Programs/OPMED" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">OPMED (Operational Medical Systems)</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">Formerly PEO DHMS. DoD's lead for medical development and acquisition, including MHS GENESIS and deployed medical IT.</p>
-        </a>
-        <a href="https://www.cio.gov/about/members-and-leadership/" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">DoD CIO</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">Department of Defense Chief Information Officer. Sets enterprise IT policy, cloud strategy, and cyber standards that DHA must follow.</p>
-        </a>
-        <a href="https://www.fehrm.gov/" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">FEHRM</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">Federal Electronic Health Record Modernization office. Coordinates the single, common EHR across DoD, VA, Coast Guard, and NOAA. Runs the Joint HIE.</p>
-        </a>
-      </div>
-
-      <!-- VA -->
-      <h3 class="text-lg font-bold mb-4" style="color:var(--mmt-cyan);">Veterans Affairs</h3>
-      <div class="grid md:grid-cols-2 gap-4 mb-8">
-        <a href="https://www.va.gov/health/aboutvha.asp" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">Under Secretary for Health (VHA)</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">Leads the Veterans Health Administration. Oversees 1,300+ facilities, 9M+ enrolled veterans, and the largest integrated healthcare system in the U.S.</p>
-        </a>
-        <a href="https://department.va.gov/administrations-and-offices/information-and-technology/" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">VA CIO / OIT</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">Office of Information and Technology. Manages VA's $4B IT budget, EHR modernization (Oracle Health), and enterprise integration.</p>
-        </a>
-        <a href="https://connectedcare.va.gov/" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">Office of Connected Care</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">Telehealth, remote patient monitoring, and mobile health apps for veterans. Runs VA Video Connect and the My HealtheVet patient portal.</p>
-        </a>
-        <a href="https://www.vaoig.gov/" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">VA OIG</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">Office of Inspector General. Audits and investigations. Their reports on EHR deployment problems are among the most cited sources in defense health.</p>
-        </a>
-      </div>
-
-      <!-- Congressional / Oversight -->
-      <h3 class="text-lg font-bold mb-4" style="color:var(--mmt-cyan);">Congressional Oversight</h3>
-      <div class="grid md:grid-cols-2 gap-4 mb-4">
-        <a href="https://armedservices.house.gov/" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">HASC</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">House Armed Services Committee. Authorizes defense spending including the Defense Health Program. Writes the NDAA.</p>
-        </a>
-        <a href="https://www.armed-services.senate.gov/" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">SASC</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">Senate Armed Services Committee. Senate counterpart. Their markup of the NDAA often contains health IT provisions that differ from the House version.</p>
-        </a>
-        <a href="https://veterans.house.gov/" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">HVAC</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">House Veterans' Affairs Committee. Oversees VA healthcare delivery, EHR modernization, and benefits administration.</p>
-        </a>
-        <a href="https://www.veterans.senate.gov/" target="_blank" rel="noopener" class="card rounded-xl p-5 no-underline">
-          <p class="text-sm font-bold mb-1" style="color:var(--mmt-white);">SVAC</p>
-          <p class="text-xs" style="color:var(--mmt-white-dim);">Senate Veterans' Affairs Committee. Senate counterpart. Confirmation hearings for VA leadership happen here.</p>
-        </a>
-      </div>
-      <p class="text-xs mt-2" style="color:var(--mmt-white-dim);">Positions shown, not current office holders. Leadership changes frequently. See <a href="latest.html" class="no-underline" style="color:var(--mmt-cyan);">Latest</a> for coverage of recent appointments.</p>
-    </div>
-  </section>
-
   <!-- Subscribe CTA -->
   <section class="section-alt py-20 px-6">
     <div class="max-w-xl mx-auto text-center">
@@ -557,6 +288,6 @@
     </div>
   </footer>
 
-<script src="js/mmt-motion.js"></script>
+  <script src="/js/mmt-motion.js" defer></script>
 </body>
 </html>

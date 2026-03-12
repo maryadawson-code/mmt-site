@@ -18,7 +18,11 @@
   <meta name="twitter:title" content="Newsletter Archive — Mission Meets Tech">
   <meta name="twitter:description" content="Free weekly federal health IT intelligence. Browse 70+ articles on defense health policy, VA modernization, AI in government, and acquisition reform.">
   <meta name="twitter:image" content="https://missionmeetstech.com/mmt-logo.png">
-  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="/MMT_icon_48px.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="/MMT_icon_64px.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="/MMT_icon_128px.png">
+  <link rel="icon" type="image/png" sizes="256x256" href="/MMT_icon_256px.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="/MMT_icon_512px.png">
   <link rel="preconnect" href="https://plausible.io" crossorigin>
   <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
   <link rel="alternate" type="application/rss+xml" title="Mission Meets Tech" href="/feed.xml">
@@ -35,11 +39,12 @@
       --mmt-white-dim: rgba(255,255,255,0.6);
     }
     body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--mmt-navy); color: #fff; }
-    h1, h2, h3, h4, h5 { font-family: 'Space Grotesk', system-ui, sans-serif; }
+    h1, h2, h3, h4, h5 { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.02em; font-weight: 700; }
+    p, li { line-height: 1.75; }
     .gradient-text { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .btn-primary { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); color: var(--mmt-navy); font-weight: 600; padding: 0.75rem 2rem; border-radius: 9999px; transition: all 0.3s; }
+    .btn-primary { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); color: var(--mmt-navy); font-weight: 600; padding: 14px 28px; border-radius: 8px; transition: all 0.3s; }
     .btn-primary:hover { transform: translateY(-1px); opacity: 0.9; }
-    .btn-secondary { border: 1px solid var(--mmt-cyan); color: #fff; padding: 0.75rem 2rem; border-radius: 9999px; transition: all 0.3s; }
+    .btn-secondary { border: 1px solid var(--mmt-cyan); color: #fff; padding: 14px 28px; border-radius: 8px; transition: all 0.3s; }
     .btn-secondary:hover { background: rgba(0,229,250,0.1); }
     .card { background: var(--mmt-slate); border: 1px solid rgba(0,229,250,0.1); }
     .card:hover { border-color: rgba(0,229,250,0.3); }
@@ -57,7 +62,9 @@
   <!-- Navigation -->
   <nav class="nav-glass fixed top-0 left-0 right-0 z-50">
     <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-2 no-underline"><img src="MMT_logo_primary_transparent.png" alt="Mission Meets Tech" class="mmt-logo-glow" style="height:30px;width:auto;display:block;"></a>
+      <a href="index.html" class="flex items-center gap-2 no-underline">
+        <span class="text-xl font-bold" style="font-family:'Space Grotesk',system-ui,sans-serif; color:#fff;">Mission Meets <span style="color:var(--mmt-cyan);">Tech</span></span>
+      </a>
       <div class="hidden md:flex items-center gap-6">
         <a href="latest.html" class="text-sm font-semibold" style="color:var(--mmt-cyan);">Intelligence</a>
         <a href="podcast.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Podcast</a>
@@ -184,6 +191,6 @@
   </footer>
 
   <script src="/js/newsletter.js" defer></script>
-<script src="js/mmt-motion.js"></script>
+  <script src="/js/mmt-motion.js" defer></script>
 </body>
 </html>

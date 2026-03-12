@@ -18,7 +18,11 @@
   <meta name="twitter:title" content="Mission Meets Tech — Federal Health IT Intelligence">
   <meta name="twitter:description" content="Independent federal health IT intelligence by Mary Womack. Policy analysis, defense health news, and operational insights for government decision-makers.">
   <meta name="twitter:image" content="https://missionmeetstech.com/mmt-logo.png">
-  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="/MMT_icon_48px.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="/MMT_icon_64px.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="/MMT_icon_128px.png">
+  <link rel="icon" type="image/png" sizes="256x256" href="/MMT_icon_256px.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="/MMT_icon_512px.png">
   <link rel="preconnect" href="https://plausible.io" crossorigin>
   <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
   <link rel="alternate" type="application/rss+xml" title="Mission Meets Tech" href="/feed.xml">
@@ -35,11 +39,12 @@
       --mmt-white-dim: rgba(255,255,255,0.6);
     }
     body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--mmt-navy); color: #fff; }
-    h1, h2, h3, h4, h5 { font-family: 'Space Grotesk', system-ui, sans-serif; }
+    h1, h2, h3, h4, h5 { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.02em; font-weight: 700; }
+    p, li { line-height: 1.75; }
     .gradient-text { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .btn-primary { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); color: var(--mmt-navy); font-weight: 600; padding: 0.75rem 2rem; border-radius: 9999px; transition: all 0.3s; }
+    .btn-primary { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); color: var(--mmt-navy); font-weight: 600; padding: 14px 28px; border-radius: 8px; transition: all 0.3s; }
     .btn-primary:hover { transform: translateY(-1px); opacity: 0.9; }
-    .btn-secondary { border: 1px solid var(--mmt-cyan); color: #fff; padding: 0.75rem 2rem; border-radius: 9999px; transition: all 0.3s; }
+    .btn-secondary { border: 1px solid var(--mmt-cyan); color: #fff; padding: 14px 28px; border-radius: 8px; transition: all 0.3s; }
     .btn-secondary:hover { background: rgba(0,229,250,0.1); }
     .card { background: var(--mmt-slate); border: 1px solid rgba(0,229,250,0.1); }
     .card:hover { border-color: rgba(0,229,250,0.3); }
@@ -89,7 +94,9 @@
   <!-- Navigation -->
   <nav class="nav-glass fixed top-0 left-0 right-0 z-50">
     <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-2 no-underline"><img src="MMT_logo_primary_transparent.png" alt="Mission Meets Tech" class="mmt-logo-glow" style="height:30px;width:auto;display:block;"></a>
+      <a href="index.html" class="flex items-center gap-2 no-underline">
+        <span class="text-xl font-bold" style="font-family:'Space Grotesk',system-ui,sans-serif; color:#fff;">Mission Meets <span style="color:var(--mmt-cyan);">Tech</span></span>
+      </a>
       <div class="hidden md:flex items-center gap-6">
         <a href="latest.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Intelligence</a>
         <a href="podcast.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Podcast</a>
@@ -169,7 +176,7 @@
   </section>
 
   <!-- Lead Story -->
-  <section class="py-12 px-6">
+  <section class="py-20 px-6">
     <div class="max-w-4xl mx-auto">
       <!-- BUILD:LEAD_STORY -->
     </div>
@@ -189,7 +196,7 @@
   </section>
 
   <!-- Topics -->
-  <section class="py-12 px-6">
+  <section class="py-20 px-6">
     <div class="max-w-4xl mx-auto">
       <h2 class="text-lg font-bold mb-4" style="color:var(--mmt-white-muted);">Browse by Topic</h2>
       <div class="flex flex-wrap gap-3">
@@ -201,8 +208,7 @@
   <!-- Closing CTA -->
   <section class="py-16 px-6">
     <div class="max-w-3xl mx-auto text-center">
-      <h2 class="text-2xl font-bold mb-4">Get the Intelligence</h2>
-      <p class="text-base leading-relaxed mb-8 max-w-2xl mx-auto" style="color:var(--mmt-white-muted);">Bi-weekly analysis on federal health IT. No press release rewrites, no vendor spin. Policy shifts, budget signals, contract intelligence, and what leadership changes actually mean for the people building and buying these systems.</p>
+      <p class="text-lg font-semibold mb-6 leading-relaxed" style="color:var(--mmt-white-muted);">Intelligence for the people who build, buy, and deploy federal health IT.</p>
       <button id="btn-cta-subscribe" class="btn-primary px-8 py-3 rounded-lg text-sm font-semibold" style="cursor:pointer;border:none;">Subscribe</button>
     </div>
   </section>
@@ -244,6 +250,6 @@
   </footer>
 
 
-<script src="js/mmt-motion.js"></script>
+  <script src="/js/mmt-motion.js" defer></script>
 </body>
 </html>
