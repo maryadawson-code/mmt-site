@@ -833,10 +833,10 @@ function generateLatestIssuesHtml(archive, count) {
   return items.map(item => {
     const isExternal = item.url && item.url.startsWith('http');
     const linkAttrs = isExternal ? ' target="_blank" rel="noopener"' : '';
-    return `<article class="card rounded-xl p-6">
-          <p class="text-xs mb-3" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
-          <h3 class="text-lg font-bold mb-2"><a href="${item.url}"${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${escapeHtml(item.title)}</a></h3>
-          <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>
+    return `<article class="card p-6 md:p-8">
+          <p class="text-caption mb-3">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
+          <h3 class="text-subsection mb-2" style="font-size:clamp(1.1rem, 1.5vw, 1.35rem);"><a href="${item.url}"${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${escapeHtml(item.title)}</a></h3>
+          <p class="text-caption leading-relaxed">${escapeHtml(item.description)}</p>
         </article>`;
   }).join('\n        ');
 }
@@ -857,13 +857,13 @@ function generateArchiveHtml(archive) {
     const isExternal = item.url && item.url.startsWith('http');
     const linkAttrs = isExternal ? 'target="_blank" rel="noopener"' : '';
     const externalIcon = isExternal ? ' <svg width="0.75em" height="0.75em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:baseline;opacity:0.5;" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>' : '';
-    return `<article class="card rounded-xl p-6" data-topics="${topicSlugs}">
+    return `<article class="card p-6 md:p-8" data-topics="${topicSlugs}">
           <div class="flex items-start justify-between gap-4 mb-2">
-            <h3 class="text-lg font-bold"><a href="${item.url}" ${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${escapeHtml(item.title)}${externalIcon}</a></h3>
-            <span class="text-xs whitespace-nowrap px-2 py-1 rounded" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">#${issueNum}</span>
+            <h3 class="text-subsection" style="font-size:clamp(1.1rem, 1.5vw, 1.35rem);"><a href="${item.url}" ${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${escapeHtml(item.title)}${externalIcon}</a></h3>
+            <span class="text-eyebrow whitespace-nowrap" style="font-size:0.7rem;">#${issueNum}</span>
           </div>
-          <p class="text-xs mb-3" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
-          <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>
+          <p class="text-caption mb-3">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
+          <p class="text-caption leading-relaxed mb-4">${escapeHtml(item.description)}</p>
           <div class="flex flex-wrap gap-2">${tags}</div>
         </article>`;
   }).join('\n        ') + pagination;
@@ -878,7 +878,7 @@ function generateTopicFilterChipsHtml(archive) {
   });
   const sorted = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]);
   return sorted.map(([tag]) =>
-    `<button data-filter-topic="${slugify(tag)}" class="text-xs px-3 py-1 rounded-full cursor-pointer" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan); border:none;">${escapeHtml(tag)}</button>`
+    `<button data-filter-topic="${slugify(tag)}" class="tag" style="border:none; cursor:pointer;">${escapeHtml(tag)}</button>`
   ).join('\n          ');
 }
 
@@ -1768,13 +1768,13 @@ function generatePaginatedNewsletterPages(archive) {
       ).join('');
       const isExternal = item.url && item.url.startsWith('http');
       const linkAttrs = isExternal ? 'target="_blank" rel="noopener"' : '';
-      return `<article class="card rounded-xl p-6">
+      return `<article class="card p-6 md:p-8">
           <div class="flex items-start justify-between gap-4 mb-2">
-            <h3 class="text-lg font-bold"><a href="${item.url}" ${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${escapeHtml(item.title)}</a></h3>
-            <span class="text-xs whitespace-nowrap px-2 py-1 rounded" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">#${issueNum}</span>
+            <h3 class="text-subsection" style="font-size:clamp(1.1rem, 1.5vw, 1.35rem);"><a href="${item.url}" ${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${escapeHtml(item.title)}</a></h3>
+            <span class="text-eyebrow whitespace-nowrap" style="font-size:0.7rem;">#${issueNum}</span>
           </div>
-          <p class="text-xs mb-3" style="color:var(--mmt-white-dim);">${escapeHtml(item.date)}</p>
-          <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>
+          <p class="text-caption mb-3">${escapeHtml(item.date)}</p>
+          <p class="text-caption leading-relaxed mb-4">${escapeHtml(item.description)}</p>
           <div class="flex flex-wrap gap-2">${tags}</div>
         </article>`;
     }).join('\n        ');
