@@ -14,7 +14,7 @@
     "gray-matter": "^4.0.3",
     "mammoth": "^1.8.0",
     "marked": "^17.0.3",
-    "officeparser": "^4.1.1",
+    "officeparser": "^6.0.4",
     "pdf-parse": "^1.1.1",
     "pdfkit": "^0.17.2",
     "rss-parser": "^3.13.0",
