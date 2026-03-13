@@ -611,7 +611,7 @@ body {
 
 /* Mobile touch targets & spacing */
 @media (max-width: 768px) {
-  .card a, .card button, nav a, nav button, footer a {
+  .card a, .card button:not(.collapse-btn), nav a, nav button, footer a {
     min-height: 44px;
     display: inline-flex;
     align-items: center;
