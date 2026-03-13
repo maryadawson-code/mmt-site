@@ -17,7 +17,7 @@ const DEFAULT_FROM = "ProposalPulse <noreply@missionmeetstech.com>";
  * @param {string} [opts.from] - From address (defaults to noreply@missionmeetstech.com)
  * @returns {Promise<{success: boolean, error?: string, id?: string}>}
  */
-async function sendEmail({ to, subject, html, from }) {
+async function sendEmail({ to, subject, html, from, attachments }) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     console.warn("RESEND_API_KEY not set — skipping email send");
@@ -36,6 +36,7 @@ async function sendEmail({ to, subject, html, from }) {
         to: [to],
         subject,
         html,
+        ...(attachments && attachments.length > 0 && { attachments }),
       }),
     });
 
