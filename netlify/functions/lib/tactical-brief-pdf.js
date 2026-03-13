@@ -44,7 +44,7 @@ async function generateTacticalBriefPdf({
       size: "letter",
       margins: { top: 60, bottom: 60, left: 60, right: 60 },
       info: {
-        Title: `Tactical Brief: ${topic.slice(0, 80)}`,
+        Title: `MarketPulse Report: ${topic.slice(0, 80)}`,
         Author: "Mission Meets Tech",
         Subject: "Federal Health IT Market Intelligence",
         Creator: "Mission Meets Tech — missionmeetstech.com",
@@ -64,7 +64,7 @@ async function generateTacticalBriefPdf({
       .font("Helvetica-Bold")
       .fontSize(28)
       .fillColor(CYAN)
-      .text("TACTICAL BRIEF", 60, 40, { width: doc.page.width - 120 });
+      .text("MARKETPULSE", 60, 40, { width: doc.page.width - 120 });
 
     doc
       .font("Helvetica")
