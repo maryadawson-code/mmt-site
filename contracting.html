@@ -55,6 +55,18 @@
     .resource-link strong { color: #fff; }
     .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .contract-table { width: 100%; border-collapse: collapse; min-width: 800px; font-size: 0.875rem; }
+    @media (max-width: 767px) {
+      .table-scroll { overflow-x: visible; }
+      .contract-table { min-width: unset; }
+      .contract-table thead { display: none; }
+      .contract-table tbody tr.vehicle-row { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; padding: 1rem; margin-bottom: 8px; border-radius: 12px; background: var(--mmt-slate); border: 1px solid rgba(0,229,250,0.1); }
+      .contract-table tbody tr.vehicle-row:hover { border-color: rgba(0,229,250,0.3); }
+      .contract-table tbody tr.vehicle-row td { padding: 4px 0; border-bottom: none; display: block; }
+      .contract-table tbody tr.vehicle-row td:first-child { grid-column: 1 / -1; font-size: 1rem; font-weight: 600; color: #fff; padding-bottom: 8px; border-bottom: 1px solid rgba(0,229,250,0.08); margin-bottom: 4px; }
+      .contract-table tbody tr.vehicle-row td:before { content: attr(data-label); display: block; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--mmt-cyan); margin-bottom: 2px; font-weight: 600; }
+      .contract-table tbody tr.vehicle-detail td { display: block; padding: 1rem; border-radius: 0 0 12px 12px; margin-top: -9px; }
+      .expand-icon { font-size: 1.25rem; }
+    }
     .contract-table thead { background: rgba(0,229,250,0.08); }
     .contract-table th { padding: 0.75rem 1rem; text-align: left; color: var(--mmt-cyan); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid rgba(0,229,250,0.15); white-space: nowrap; }
     .contract-table td { padding: 0.75rem 1rem; border-bottom: 1px solid rgba(0,229,250,0.06); color: var(--mmt-white-muted); vertical-align: top; }
@@ -188,11 +200,11 @@
               <tr class="vehicle-row" data-vehicle="cio-sp3">
                 <td><span class="expand-icon" style="color:var(--mmt-cyan);">&#9654;</span></td>
                 <td><strong style="color:#fff;">CIO-SP3</strong></td>
-                <td>NIH/NITAAC</td>
-                <td>$40B</td>
-                <td>Full &amp; open, SB pools</td>
-                <td><span class="status-active">Active (extended)</span></td>
-                <td>Primary IT GWAC for DHA and VA health IT task orders</td>
+                <td data-label="Agency">NIH/NITAAC</td>
+                <td data-label="Ceiling">$40B</td>
+                <td data-label="Competition">Full &amp; open, SB pools</td>
+                <td data-label="Status"><span class="status-active">Active (extended)</span></td>
+                <td data-label="Notes">Primary IT GWAC for DHA and VA health IT task orders</td>
               </tr>
               <tr class="vehicle-detail" id="detail-cio-sp3">
                 <td colspan="7">
@@ -209,11 +221,11 @@
               <tr class="vehicle-row" data-vehicle="cio-sp4">
                 <td><span class="expand-icon" style="color:var(--mmt-cyan);">&#9654;</span></td>
                 <td><strong style="color:#fff;">CIO-SP4</strong></td>
-                <td>NIH/NITAAC</td>
-                <td>Was $50B</td>
-                <td>Was tiered</td>
-                <td><span class="status-cancelled">Cancelled (Jan 2026)</span></td>
-                <td>Cancellation after years of protests reshuffled GWAC landscape</td>
+                <td data-label="Agency">NIH/NITAAC</td>
+                <td data-label="Ceiling">Was $50B</td>
+                <td data-label="Competition">Was tiered</td>
+                <td data-label="Status"><span class="status-cancelled">Cancelled (Jan 2026)</span></td>
+                <td data-label="Notes">Cancellation after years of protests reshuffled GWAC landscape</td>
               </tr>
               <tr class="vehicle-detail" id="detail-cio-sp4">
                 <td colspan="7">
@@ -230,11 +242,11 @@
               <tr class="vehicle-row" data-vehicle="oasis-plus">
                 <td><span class="expand-icon" style="color:var(--mmt-cyan);">&#9654;</span></td>
                 <td><strong style="color:#fff;">OASIS+</strong></td>
-                <td>GSA</td>
-                <td>Unlimited</td>
-                <td>Full &amp; open, SB domains</td>
-                <td><span class="status-active">Active</span></td>
-                <td>Professional services across all agencies, including health IT consulting</td>
+                <td data-label="Agency">GSA</td>
+                <td data-label="Ceiling">Unlimited</td>
+                <td data-label="Competition">Full &amp; open, SB domains</td>
+                <td data-label="Status"><span class="status-active">Active</span></td>
+                <td data-label="Notes">Professional services across all agencies, including health IT consulting</td>
               </tr>
               <tr class="vehicle-detail" id="detail-oasis-plus">
                 <td colspan="7">
@@ -251,11 +263,11 @@
               <tr class="vehicle-row" data-vehicle="t4ng">
                 <td><span class="expand-icon" style="color:var(--mmt-cyan);">&#9654;</span></td>
                 <td><strong style="color:#fff;">T4NG</strong></td>
-                <td>VA TAC</td>
-                <td>$22.3B</td>
-                <td>SDVOSB pools</td>
-                <td><span class="status-active">Active</span></td>
-                <td>VA's primary vehicle for IT services including health IT modernization</td>
+                <td data-label="Agency">VA TAC</td>
+                <td data-label="Ceiling">$22.3B</td>
+                <td data-label="Competition">SDVOSB pools</td>
+                <td data-label="Status"><span class="status-active">Active</span></td>
+                <td data-label="Notes">VA's primary vehicle for IT services including health IT modernization</td>
               </tr>
               <tr class="vehicle-detail" id="detail-t4ng">
                 <td colspan="7">
@@ -272,11 +284,11 @@
               <tr class="vehicle-row" data-vehicle="mhs-eits">
                 <td><span class="expand-icon" style="color:var(--mmt-cyan);">&#9654;</span></td>
                 <td><strong style="color:#fff;">MHS EITS</strong></td>
-                <td>DHA</td>
-                <td>Multi-billion</td>
-                <td>Full &amp; open</td>
-                <td><span class="status-active">Active</span></td>
-                <td>Enterprise IT infrastructure for the entire Military Health System</td>
+                <td data-label="Agency">DHA</td>
+                <td data-label="Ceiling">Multi-billion</td>
+                <td data-label="Competition">Full &amp; open</td>
+                <td data-label="Status"><span class="status-active">Active</span></td>
+                <td data-label="Notes">Enterprise IT infrastructure for the entire Military Health System</td>
               </tr>
               <tr class="vehicle-detail" id="detail-mhs-eits">
                 <td colspan="7">
@@ -293,11 +305,11 @@
               <tr class="vehicle-row" data-vehicle="mqs2-ng">
                 <td><span class="expand-icon" style="color:var(--mmt-cyan);">&#9654;</span></td>
                 <td><strong style="color:#fff;">MQS2-NG</strong></td>
-                <td>DHA</td>
-                <td>TBD</td>
-                <td>TBD</td>
-                <td><span class="status-pre">Pre-solicitation</span></td>
-                <td>Medical quality systems, patient safety IT, clinical decision support</td>
+                <td data-label="Agency">DHA</td>
+                <td data-label="Ceiling">TBD</td>
+                <td data-label="Competition">TBD</td>
+                <td data-label="Status"><span class="status-pre">Pre-solicitation</span></td>
+                <td data-label="Notes">Medical quality systems, patient safety IT, clinical decision support</td>
               </tr>
               <tr class="vehicle-detail" id="detail-mqs2-ng">
                 <td colspan="7">
@@ -314,11 +326,11 @@
               <tr class="vehicle-row" data-vehicle="vha-iht">
                 <td><span class="expand-icon" style="color:var(--mmt-cyan);">&#9654;</span></td>
                 <td><strong style="color:#fff;">VHA IHT 2.0</strong></td>
-                <td>VA</td>
-                <td>TBD</td>
-                <td>SDVOSB</td>
-                <td><span class="status-active">Active</span></td>
-                <td>VA integrated health technologies services</td>
+                <td data-label="Agency">VA</td>
+                <td data-label="Ceiling">TBD</td>
+                <td data-label="Competition">SDVOSB</td>
+                <td data-label="Status"><span class="status-active">Active</span></td>
+                <td data-label="Notes">VA integrated health technologies services</td>
               </tr>
               <tr class="vehicle-detail" id="detail-vha-iht">
                 <td colspan="7">
@@ -335,11 +347,11 @@
               <tr class="vehicle-row" data-vehicle="gsa-mas">
                 <td><span class="expand-icon" style="color:var(--mmt-cyan);">&#9654;</span></td>
                 <td><strong style="color:#fff;">GSA MAS Health IT</strong></td>
-                <td>GSA</td>
-                <td>Open</td>
-                <td>Multiple</td>
-                <td><span class="status-active">Active</span></td>
-                <td>GSA Schedule with Health IT Special Item Numbers</td>
+                <td data-label="Agency">GSA</td>
+                <td data-label="Ceiling">Open</td>
+                <td data-label="Competition">Multiple</td>
+                <td data-label="Status"><span class="status-active">Active</span></td>
+                <td data-label="Notes">GSA Schedule with Health IT Special Item Numbers</td>
               </tr>
               <tr class="vehicle-detail" id="detail-gsa-mas">
                 <td colspan="7">
