@@ -367,15 +367,18 @@
       counter.textContent = prefix + '0' + suffix;
 
       var obj = { val: 0 };
+      var counterSection = counter.closest('section') || counter;
+      var isAboveFold = counterSection.getBoundingClientRect().top < window.innerHeight;
       gsap.to(obj, {
         val: target,
         duration: 2.5,
         ease: 'power2.out',
-        scrollTrigger: {
-          trigger: counter.closest('section') || counter,
+        scrollTrigger: isAboveFold ? undefined : {
+          trigger: counterSection,
           start: 'top 80%',
           toggleActions: 'play none none none'
         },
+        delay: isAboveFold ? 0.8 : 0,
         onUpdate: function () {
           counter.textContent = prefix + Math.round(obj.val).toLocaleString() + suffix;
         }
