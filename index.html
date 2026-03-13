@@ -187,8 +187,8 @@
 
   <main id="main-content">
   <!-- Hero -->
-  <section id="hero" class="relative overflow-hidden atmosphere" style="min-height:100vh;">
-    <div id="hero-content" class="relative z-10 flex flex-col items-center justify-center text-center px-6" style="min-height:100vh;padding-top:120px;padding-bottom:0;">
+  <section id="hero" class="relative overflow-hidden atmosphere" style="min-height:85vh;">
+    <div id="hero-content" class="relative z-10 flex flex-col items-center justify-center text-center px-6" style="min-height:85vh;padding-top:100px;padding-bottom:0;">
       <p class="text-eyebrow mb-6" style="font-size:0.9375rem;">Federal Health IT Intelligence</p>
       <h1 id="hero-headline" class="text-hero text-glow mb-6 max-w-4xl mx-auto">Independent Analysis for Defense Health Decision-Makers</h1>
       <p class="text-body text-center max-w-2xl mx-auto">Evidence-based intelligence on DHA, VA, and federal health IT. Delivered bi-weekly.</p>
@@ -199,7 +199,7 @@
       </div>
     </div>
     <!-- Scroll cue -->
-      <div class="scroll-cue" style="margin-top:auto; padding-bottom:48px;">
+      <div class="scroll-cue" style="margin-top:auto; padding-bottom:24px;">
         <a href="#why-this-exists" class="flex flex-col items-center gap-2 no-underline group" style="color:rgba(255,255,255,0.4);">
           <span class="text-xs tracking-widest uppercase" style="font-size:0.65rem;">Scroll</span>
           <svg width="20" height="28" viewBox="0 0 20 28" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" class="scroll-cue-arrow">
@@ -234,22 +234,53 @@
     <div class="max-w-5xl mx-auto px-6">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
         <div class="fade-up">
-          <p class="stat-counter mb-1" data-target="78" style="font-size:clamp(1.5rem,3vw,2.25rem);font-weight:700;color:var(--mmt-cyan);">78</p>
-          <p class="text-xs font-medium uppercase tracking-wider" style="color:var(--mmt-white-muted);letter-spacing:0.08em;">Articles Published</p>
+          <p class="stat-counter mb-1" data-target="78" data-suffix="+" style="font-size:clamp(1.5rem,3vw,2.25rem);font-weight:700;color:var(--mmt-cyan);">78+</p>
+          <p class="text-xs font-medium uppercase tracking-wider" style="color:var(--mmt-white-muted);letter-spacing:0.08em;">Articles &amp; Growing</p>
         </div>
         <div class="fade-up">
           <p class="stat-counter mb-1" data-target="4" style="font-size:clamp(1.5rem,3vw,2.25rem);font-weight:700;color:var(--mmt-cyan);">4</p>
           <p class="text-xs font-medium uppercase tracking-wider" style="color:var(--mmt-white-muted);letter-spacing:0.08em;">Podcast Episodes</p>
         </div>
         <div class="fade-up">
-          <p class="stat-counter mb-1" data-target="37" style="font-size:clamp(1.5rem,3vw,2.25rem);font-weight:700;color:var(--mmt-cyan);">37</p>
+          <p class="stat-counter mb-1" data-target="37" data-suffix="+" style="font-size:clamp(1.5rem,3vw,2.25rem);font-weight:700;color:var(--mmt-cyan);">37+</p>
           <p class="text-xs font-medium uppercase tracking-wider" style="color:var(--mmt-white-muted);letter-spacing:0.08em;">Glossary Terms</p>
         </div>
         <div class="fade-up">
           <p class="stat-counter mb-1" data-target="6" style="font-size:clamp(1.5rem,3vw,2.25rem);font-weight:700;color:var(--mmt-cyan);">6</p>
-          <p class="text-xs font-medium uppercase tracking-wider" style="color:var(--mmt-white-muted);letter-spacing:0.08em;">Contract Vehicles Tracked</p>
+          <p class="text-xs font-medium uppercase tracking-wider" style="color:var(--mmt-white-muted);letter-spacing:0.08em;">Vehicles Tracked</p>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- Featured Analysis -->
+  <section class="px-6 fade-up" style="padding-top:var(--space-block);padding-bottom:var(--space-block);">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <p class="text-eyebrow mb-2">Featured Intelligence</p>
+          <h2 class="text-subsection">What Decision-Makers Are Reading</h2>
+        </div>
+        <a href="latest.html" class="text-sm font-medium no-underline hidden sm:inline-block" style="color:var(--mmt-cyan);">View all &rarr;</a>
+      </div>
+      <div class="cascade-3d-group grid grid-cols-1 md:grid-cols-3 gap-6">
+        <a href="latest.html" class="card p-6 rounded-2xl no-underline block" style="border:1px solid rgba(0,229,250,0.1);">
+          <p class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:var(--mmt-cyan);">DHA Modernization</p>
+          <p class="text-base font-semibold mb-2" style="color:#fff;">How DOGE-Era Budget Cuts Are Reshaping Defense Health IT</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Analysis of what sequestration-level cuts mean for MHS GENESIS and DHA's digital roadmap.</p>
+        </a>
+        <a href="latest.html" class="card p-6 rounded-2xl no-underline block" style="border:1px solid rgba(0,229,250,0.1);">
+          <p class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:var(--mmt-green);">VA Health IT</p>
+          <p class="text-base font-semibold mb-2" style="color:#fff;">The VA's Community Care Network Problem Nobody Talks About</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Inside the next generation of CCN contracts and what it means for the provider ecosystem.</p>
+        </a>
+        <a href="latest.html" class="card p-6 rounded-2xl no-underline block" style="border:1px solid rgba(0,229,250,0.1);">
+          <p class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:var(--mmt-cyan);">Acquisition Intel</p>
+          <p class="text-base font-semibold mb-2" style="color:#fff;">Federal Health AI: Who's Winning and What's Actually Shipping</p>
+          <p class="text-xs" style="color:var(--mmt-white-dim);">Separating vendor hype from deployed reality across DoD and VA AI programs.</p>
+        </a>
+      </div>
+      <a href="latest.html" class="text-sm font-medium no-underline sm:hidden mt-6 inline-block" style="color:var(--mmt-cyan);">View all articles &rarr;</a>
     </div>
   </section>
 
@@ -303,7 +334,7 @@
       </div>
 
       <!-- Three-column grid -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="cascade-3d-group grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="card p-8 rounded-2xl" style="border:1px solid rgba(0,229,250,0.08);">
           <p class="text-sm leading-relaxed mb-4" style="color:rgba(255,255,255,0.92);">"Great assessment of the complexity of the Medicare payment system environment and the real challenges related to modernization... You've highlighted that in your very thoughtful piece!"</p>
           <div class="flex items-center gap-3">
@@ -337,7 +368,7 @@
       </div>
 
       <!-- Second row -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+      <div class="cascade-3d-group grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
         <div class="card p-8 rounded-2xl" style="border:1px solid rgba(0,229,250,0.08);">
           <p class="text-sm leading-relaxed mb-4" style="color:rgba(255,255,255,0.92);">"I love the article you just put out on CCN &mdash; thank you!!!"</p>
           <div class="flex items-center gap-3">
