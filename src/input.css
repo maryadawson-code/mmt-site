@@ -672,3 +672,26 @@ section .text-body.text-center {
 .scroll-cue:hover .scroll-cue-arrow {
   opacity: 1;
 }
+
+/* S8-12: Podcast waveform visual */
+.waveform {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 32px;
+}
+.waveform-bar {
+  width: 3px;
+  border-radius: 2px;
+  background: linear-gradient(to top, var(--mmt-cyan), var(--mmt-green));
+  opacity: 0.25;
+  animation: waveformPulse 1.8s ease-in-out infinite;
+}
+.waveform-bar:nth-child(2n) { animation-delay: 0.15s; }
+.waveform-bar:nth-child(3n) { animation-delay: 0.3s; }
+.waveform-bar:nth-child(5n) { animation-delay: 0.45s; }
+.waveform-bar:nth-child(7n) { animation-delay: 0.6s; }
+@keyframes waveformPulse {
+  0%, 100% { height: 20%; opacity: 0.2; }
+  50% { height: 100%; opacity: 0.35; }
+}
