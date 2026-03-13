@@ -1458,6 +1458,14 @@ function inlineTailwindCss(html) {
     html = html.replace('</body>', '  <script src="/js/mmt-motion.js" defer></script>\n</body>');
   }
 
+  // S11-07: Add font preload hints for self-hosted WOFF2 fonts
+  if (!html.includes('fonts/Inter-latin.woff2')) {
+    html = html.replace('</head>',
+      '  <link rel="preload" href="/fonts/Inter-latin.woff2" as="font" type="font/woff2" crossorigin>\n' +
+      '  <link rel="preload" href="/fonts/SpaceGrotesk-latin.woff2" as="font" type="font/woff2" crossorigin>\n</head>'
+    );
+  }
+
   // S5-19: Add preconnect for GSAP CDN
   if (!html.includes('cdnjs.cloudflare.com')) {
     html = html.replace('</head>',
