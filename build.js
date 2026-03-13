@@ -1789,6 +1789,18 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
     console.log(`Copied ${fontFiles.length} font files`);
   }
 
+  // Copy sample PDFs
+  const samplesDir = path.join(__dirname, 'samples');
+  const distSamplesDir = path.join(DIST_DIR, 'samples');
+  if (fs.existsSync(samplesDir)) {
+    ensureDir(distSamplesDir);
+    const sampleFiles = fs.readdirSync(samplesDir).filter(f => f.endsWith('.pdf'));
+    sampleFiles.forEach(file => {
+      fs.copyFileSync(path.join(samplesDir, file), path.join(distSamplesDir, file));
+    });
+    console.log(`Copied ${sampleFiles.length} sample PDF files`);
+  }
+
 }
 
 // --- News Wire ---
