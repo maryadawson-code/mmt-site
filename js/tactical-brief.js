@@ -1,5 +1,6 @@
-// tactical-brief.js — Client-side form handler for Tactical Brief intake
-// Posts form data to create-tactical-brief-checkout endpoint, redirects to Stripe
+// tactical-brief.js — Client-side form handler for MarketPulse
+// First report: submits directly to gateway (free)
+// Subsequent reports: redirects to Stripe checkout ($50)
 
 (function() {
   'use strict';
@@ -15,33 +16,29 @@
     form.addEventListener('submit', function(e) {
       e.preventDefault();
 
-      // Gather form values
       var name = document.getElementById('tb-name').value.trim();
       var email = document.getElementById('tb-email').value.trim();
       var company = document.getElementById('tb-company').value.trim();
       var topic = document.getElementById('tb-topic').value.trim();
       var audience = document.getElementById('tb-audience').value.trim();
 
-      // Validate required fields
       if (!name || !email || !topic) {
         showError('Please fill in all required fields (name, email, and research topic).');
         return;
       }
 
-      // Basic email validation
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         showError('Please enter a valid email address.');
         return;
       }
 
-      // Disable form and show loading
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Redirecting to checkout...';
+      submitBtn.textContent = 'Submitting...';
       hideError();
       loadingDiv.style.display = 'block';
 
-      // POST to checkout endpoint
-      fetch('/.netlify/functions/create-tactical-brief-checkout', {
+      // POST to gateway — it decides free vs paid
+      fetch('/.netlify/functions/marketpulse-gateway', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -53,24 +50,27 @@
         })
       })
       .then(function(res) {
-        if (!res.ok) {
-          return res.json().then(function(data) {
-            throw new Error(data.error || 'Something went wrong. Please try again.');
-          });
-        }
-        return res.json();
+        return res.json().then(function(data) {
+          if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+          return data;
+        });
       })
       .then(function(data) {
-        if (data.url) {
+        if (data.action === 'checkout') {
+          // Paid report — redirect to Stripe
+          submitBtn.textContent = 'Redirecting to checkout...';
           window.location.href = data.url;
-        } else {
-          throw new Error('No checkout URL returned. Please try again.');
+        } else if (data.action === 'free') {
+          // Free report — redirect to confirmation
+          window.location.href = '/tactical-brief-confirmed.html?free=true';
+        } else if (data.url) {
+          window.location.href = data.url;
         }
       })
       .catch(function(err) {
         showError(err.message);
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Get Your MarketPulse Report — $50';
+        submitBtn.textContent = 'Get Your Free MarketPulse Report';
         loadingDiv.style.display = 'none';
       });
     });
