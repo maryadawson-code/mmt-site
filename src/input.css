@@ -119,9 +119,9 @@
   }
 
   .card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 60px -12px rgba(0, 229, 250, 0.1);
-    border-color: rgba(0, 229, 250, 0.15);
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 20px 60px -12px rgba(0, 229, 250, 0.12), 0 0 0 1px rgba(0, 229, 250, 0.08);
+    border-color: rgba(0, 229, 250, 0.2);
   }
 
   /* Buttons — Apple-inspired */
@@ -257,9 +257,9 @@
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease, border-color 0.3s ease;
 }
 .card-spatial:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 60px -12px rgba(0, 229, 250, 0.12);
-  border-color: rgba(0, 229, 250, 0.15);
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 20px 60px -12px rgba(0, 229, 250, 0.15), 0 0 20px rgba(0, 229, 250, 0.06);
+  border-color: rgba(0, 229, 250, 0.2);
 }
 
 /* Text gradient glow for hero headlines */
@@ -472,10 +472,10 @@
   box-shadow: 0 4px 24px -8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 .card-glass:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 24px 64px -16px rgba(0, 229, 250, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  border-color: rgba(0, 229, 250, 0.25);
-  background: rgba(10, 22, 40, 0.3);
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 24px 64px -16px rgba(0, 229, 250, 0.18), 0 0 24px rgba(0, 229, 250, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  border-color: rgba(0, 229, 250, 0.3);
+  background: rgba(10, 22, 40, 0.28);
 }
 
 /* Platform bar — sleek horizontal layout */
