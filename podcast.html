@@ -78,6 +78,11 @@
       footer a { min-height: 44px; display: inline-flex; align-items: center; }
       .btn-primary, .btn-secondary { min-height: 44px; }
     }
+    /* S16-06: Mobile polish — podcast filters */
+    @media (max-width: 480px) {
+      #podcast-filters { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; }
+      #podcast-filters > * { flex-shrink: 0; }
+    }
   </style>
   <script type="application/ld+json">
   {

@@ -64,6 +64,13 @@
       50% { opacity: 1; transform: translateY(4px); }
     }
     .scroll-cue { animation: scrollPulse 2s ease-in-out infinite; }
+    /* S16-06: Mobile polish — 375px viewport */
+    @media (max-width: 480px) {
+      .text-hero, .text-4xl { font-size: clamp(1.75rem, 7vw, 2.5rem) !important; }
+      .text-3xl { font-size: clamp(1.5rem, 6vw, 2rem) !important; }
+      .grid-cols-2 { grid-template-columns: 1fr !important; }
+      .stat-counter { font-size: clamp(1.25rem, 5vw, 1.75rem) !important; }
+    }
   </style>
   <script type="application/ld+json">
   {
