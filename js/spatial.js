@@ -92,7 +92,7 @@
       }
 
       // --- 3D Card Tilt on Hover ---
-      document.querySelectorAll('.card, .card-spatial').forEach(function (card) {
+      document.querySelectorAll('.card:not(.persona-card), .card-spatial').forEach(function (card) {
         card.style.transformStyle = 'preserve-3d';
 
         card.addEventListener('mousemove', function (e) {
@@ -175,6 +175,7 @@
     // --- Scroll Reveal System ---
     gsap.utils.toArray('.reveal, .fade-up').forEach(function (el) {
       if (el.closest('#hero')) return;
+      if (el.classList.contains('persona-card')) return;
 
       el.style.transition = 'none';
       el.classList.add('visible');
@@ -250,6 +251,7 @@
         rotation: i % 2 === 0 ? -2 : 2,
         duration: 0.8,
         ease: 'power3.out',
+        clearProps: 'transform,opacity',
         scrollTrigger: {
           trigger: card,
           start: 'top 85%',
