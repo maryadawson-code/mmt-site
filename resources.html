@@ -150,15 +150,15 @@
     </div>
   </section>
 
-  <!-- Quick Links -->
-  <section class="pb-12 px-6">
-    <div class="max-w-4xl mx-auto flex flex-wrap justify-center gap-3">
-      <a href="#leadership-map" class="hub-card card rounded-lg px-5 py-3 no-underline text-sm font-medium" style="color:var(--mmt-cyan);">Leadership Map</a>
-      <a href="#news-wire" class="hub-card card rounded-lg px-5 py-3 no-underline text-sm font-medium" style="color:var(--mmt-cyan);">Live Headlines</a>
-      <a href="#contract-intel" class="hub-card card rounded-lg px-5 py-3 no-underline text-sm font-medium" style="color:var(--mmt-cyan);">Contract Intel</a>
-      <a href="#resource-links" class="hub-card card rounded-lg px-5 py-3 no-underline text-sm font-medium" style="color:var(--mmt-cyan);">79 Curated Links</a>
-      <a href="glossary.html" class="hub-card card rounded-lg px-5 py-3 no-underline text-sm font-medium" style="color:var(--mmt-cyan);">Glossary</a>
-      <a href="contract-tracker.html" class="hub-card card rounded-lg px-5 py-3 no-underline text-sm font-medium" style="color:var(--mmt-cyan);">Contract Tracker</a>
+  <!-- Quick Links — Sticky Nav -->
+  <section id="resource-nav" class="pb-12 px-6" style="position:sticky;top:60px;z-index:40;background:var(--mmt-navy);padding-top:12px;padding-bottom:12px;border-bottom:1px solid rgba(0,229,250,0.06);transition:box-shadow 0.3s;">
+    <div class="max-w-4xl mx-auto flex flex-wrap justify-center gap-3" style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+      <a href="#leadership-map" class="resource-tab hub-card card rounded-lg px-5 py-3 no-underline text-sm font-medium" style="color:var(--mmt-cyan);white-space:nowrap;transition:all 0.2s;">Leadership Map</a>
+      <a href="#news-wire" class="resource-tab hub-card card rounded-lg px-5 py-3 no-underline text-sm font-medium" style="color:var(--mmt-cyan);white-space:nowrap;transition:all 0.2s;">Live Headlines</a>
+      <a href="#contract-intel" class="resource-tab hub-card card rounded-lg px-5 py-3 no-underline text-sm font-medium" style="color:var(--mmt-cyan);white-space:nowrap;transition:all 0.2s;">Contract Intel</a>
+      <a href="#resource-links" class="resource-tab hub-card card rounded-lg px-5 py-3 no-underline text-sm font-medium" style="color:var(--mmt-cyan);white-space:nowrap;transition:all 0.2s;">79 Curated Links</a>
+      <a href="glossary.html" class="hub-card card rounded-lg px-5 py-3 no-underline text-sm font-medium" style="color:var(--mmt-cyan);white-space:nowrap;transition:all 0.2s;">Glossary</a>
+      <a href="contract-tracker.html" class="hub-card card rounded-lg px-5 py-3 no-underline text-sm font-medium" style="color:var(--mmt-cyan);white-space:nowrap;transition:all 0.2s;">Contract Tracker</a>
     </div>
   </section>
 
@@ -590,6 +590,38 @@
       else{b.style.opacity='0';b.style.pointerEvents='none';}
     },{passive:true});
     b.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+  })();
+  </script>
+  <!-- S16-02: Resource nav active state on scroll -->
+  <script>
+  (function(){
+    var tabs = document.querySelectorAll('.resource-tab');
+    if(!tabs.length) return;
+    var sections = [];
+    tabs.forEach(function(t){
+      var href = t.getAttribute('href');
+      if(href && href.startsWith('#')){
+        var el = document.getElementById(href.slice(1));
+        if(el) sections.push({tab:t, el:el});
+      }
+    });
+    function update(){
+      var scrollY = window.scrollY + 140;
+      var active = null;
+      sections.forEach(function(s){
+        if(s.el.offsetTop <= scrollY) active = s;
+      });
+      tabs.forEach(function(t){
+        t.style.background = 'transparent';
+        t.style.borderColor = 'rgba(0,229,250,0.1)';
+      });
+      if(active){
+        active.tab.style.background = 'rgba(0,229,250,0.12)';
+        active.tab.style.borderColor = 'rgba(0,229,250,0.4)';
+      }
+    }
+    window.addEventListener('scroll', update, {passive:true});
+    update();
   })();
   </script>
 </body>
