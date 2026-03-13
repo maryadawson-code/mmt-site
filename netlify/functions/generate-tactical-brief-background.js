@@ -136,7 +136,7 @@ exports.handler = async (event) => {
     const deliveryHtml = buildDeliveryEmail({ name, topic });
     const deliveryResult = await sendEmail({
       to: email,
-      subject: `Your Tactical Brief: ${topic.slice(0, 60)}${topic.length > 60 ? "..." : ""}`,
+      subject: `Your MarketPulse Report: ${topic.slice(0, 60)}${topic.length > 60 ? "..." : ""}`,
       html: deliveryHtml,
       from: "Mission Meets Tech <noreply@missionmeetstech.com>",
       attachments: [
@@ -155,7 +155,7 @@ exports.handler = async (event) => {
     const notifyHtml = buildNotificationEmail({ name, email, company, topic, audience, session_id });
     await sendEmail({
       to: "mary@missionmeetstech.com",
-      subject: `[Tactical Brief] New order from ${name}`,
+      subject: `[MarketPulse] New order from ${name}`,
       html: notifyHtml,
       from: "Mission Meets Tech <noreply@missionmeetstech.com>",
     });
@@ -171,8 +171,8 @@ exports.handler = async (event) => {
     try {
       await sendEmail({
         to: "mary@missionmeetstech.com",
-        subject: `[Tactical Brief] FAILED — ${name} (${email})`,
-        html: `<p>Tactical Brief generation failed for:</p><p><strong>Name:</strong> ${name}<br><strong>Email:</strong> ${email}<br><strong>Topic:</strong> ${topic}<br><strong>Error:</strong> ${err.message}</p><p>Session ID: ${session_id}</p>`,
+        subject: `[MarketPulse] FAILED — ${name} (${email})`,
+        html: `<p>MarketPulse generation failed for:</p><p><strong>Name:</strong> ${name}<br><strong>Email:</strong> ${email}<br><strong>Topic:</strong> ${topic}<br><strong>Error:</strong> ${err.message}</p><p>Session ID: ${session_id}</p>`,
         from: "Mission Meets Tech <noreply@missionmeetstech.com>",
       });
     } catch (notifyErr) {
