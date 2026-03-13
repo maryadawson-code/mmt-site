@@ -22,14 +22,14 @@ function buildDeliveryEmail({ name, topic }) {
 
         <!-- Header -->
         <tr><td style="background:#00050F;padding:32px 40px;">
-          <p style="margin:0;font-size:22px;font-weight:700;color:#00E5FA;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">TACTICAL BRIEF</p>
+          <p style="margin:0;font-size:22px;font-weight:700;color:#00E5FA;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">MARKETPULSE</p>
           <p style="margin:4px 0 0;font-size:12px;color:rgba(255,255,255,0.6);">Mission Meets Tech — Federal Health IT Intelligence</p>
         </td></tr>
 
         <!-- Body -->
         <tr><td style="padding:40px;">
           <p style="margin:0 0 16px;font-size:16px;color:#1a1a1a;line-height:1.6;">Hi ${firstName},</p>
-          <p style="margin:0 0 16px;font-size:15px;color:#333;line-height:1.6;">Your Tactical Brief is ready. The PDF is attached to this email.</p>
+          <p style="margin:0 0 16px;font-size:15px;color:#333;line-height:1.6;">Your MarketPulse report is ready. The PDF is attached to this email.</p>
 
           <div style="background:#f8f9fa;border-left:4px solid #00E5FA;padding:16px 20px;border-radius:0 8px 8px 0;margin:24px 0;">
             <p style="margin:0;font-size:12px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:0.05em;">Research Topic</p>
@@ -66,7 +66,7 @@ function buildNotificationEmail({ name, email, company, topic, audience, session
 <head><meta charset="utf-8"></head>
 <body style="margin:0;padding:20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f4f4f4;">
   <div style="max-width:600px;margin:0 auto;background:#fff;border-radius:12px;padding:32px;border:1px solid #e0e0e0;">
-    <h2 style="margin:0 0 16px;color:#00050F;font-size:18px;">New Tactical Brief Order</h2>
+    <h2 style="margin:0 0 16px;color:#00050F;font-size:18px;">New MarketPulse Order</h2>
 
     <table style="width:100%;border-collapse:collapse;font-size:14px;">
       <tr><td style="padding:8px 12px;font-weight:600;color:#666;width:120px;vertical-align:top;">Name</td><td style="padding:8px 12px;color:#1a1a1a;">${escapeHtml(name)}</td></tr>
