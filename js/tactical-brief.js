@@ -70,7 +70,7 @@
       .catch(function(err) {
         showError(err.message);
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Get Your Tactical Brief — $50';
+        submitBtn.textContent = 'Get Your MarketPulse Report — $50';
         loadingDiv.style.display = 'none';
       });
     });
