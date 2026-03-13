@@ -190,5 +190,21 @@
   </footer>
 
 
+  <!-- S15-05: Back to top -->
+  <button id="btt" aria-label="Back to top" style="position:fixed;bottom:2rem;right:2rem;width:44px;height:44px;border-radius:50%;background:var(--mmt-slate);border:1px solid rgba(0,229,250,0.15);color:var(--mmt-cyan);cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s,transform 0.3s;z-index:90;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onmouseover="this.style.borderColor='rgba(0,229,250,0.3)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(0,229,250,0.15)';this.style.transform='none'">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
+  <script>
+  (function(){
+    var b=document.getElementById('btt');
+    if(!b)return;
+    var t=window.innerHeight;
+    window.addEventListener('scroll',function(){
+      if(window.scrollY>t){b.style.opacity='1';b.style.pointerEvents='auto';}
+      else{b.style.opacity='0';b.style.pointerEvents='none';}
+    },{passive:true});
+    b.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+  })();
+  </script>
 </body>
 </html>
