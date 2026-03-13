@@ -83,6 +83,7 @@
     font-size: 1.125rem;
     line-height: 1.75;
     color: var(--mmt-body);
+    max-width: 65ch;
   }
 
   .text-caption {
@@ -645,6 +646,12 @@ body {
     max-width: 100%;
     box-sizing: border-box;
   }
+}
+
+/* S8-03: Centered body text */
+section .text-body.text-center {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* S8-02: Scroll cue */
