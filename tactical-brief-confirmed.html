@@ -232,5 +232,20 @@
   </footer>
 
   <script src="/js/mmt-motion.js" defer></script>
+  <script>
+  (function() {
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('free') === 'true') {
+      var heading = document.querySelector('h1');
+      if (heading) heading.textContent = 'Your Free MarketPulse Report Is Being Prepared';
+      var eyebrows = document.querySelectorAll('p');
+      eyebrows.forEach(function(p) {
+        if (p.textContent.trim() === 'Payment Confirmed') {
+          p.textContent = 'Request Received';
+        }
+      });
+    }
+  })();
+  </script>
 </body>
 </html>
