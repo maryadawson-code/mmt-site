@@ -57,10 +57,81 @@
       footer a { min-height: 44px; display: inline-flex; align-items: center; }
       .btn-primary, .btn-secondary { min-height: 44px; }
     }
+    /* S16B-04: Guided journey expansion */
+    .persona-card { cursor: pointer; transition: all 0.3s ease; position: relative; }
+    .persona-card:not(.expanded):hover { transform: translateY(-4px); }
+    .persona-card.expanded {
+      grid-column: 1 / -1;
+      cursor: default;
+      border-color: rgba(0,229,250,0.3);
+    }
+    .journey-content { display: none; }
+    .persona-card.expanded .journey-content { display: block; }
+    .persona-card.expanded .journey-preview { display: none; }
+    .journey-step {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(0,229,250,0.06);
+    }
+    .journey-step:last-child { border-bottom: none; }
+    .step-number {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(0,229,250,0.1);
+      border: 1px solid rgba(0,229,250,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--mmt-cyan);
+      flex-shrink: 0;
+    }
+    .step-number.step-green {
+      background: rgba(0,255,133,0.1);
+      border-color: rgba(0,255,133,0.2);
+      color: var(--mmt-green);
+    }
+    .step-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .step-action-link {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(0,229,250,0.06);
+      border: 1px solid rgba(0,229,250,0.1);
+      color: var(--mmt-cyan);
+      text-decoration: none;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .step-action-link:hover { background: rgba(0,229,250,0.12); border-color: rgba(0,229,250,0.25); }
+    .collapse-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(0,229,250,0.08);
+      border: 1px solid rgba(0,229,250,0.15);
+      color: var(--mmt-cyan);
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    .persona-card.expanded .collapse-btn { display: flex; }
+    .collapse-btn:hover { background: rgba(0,229,250,0.15); }
     /* S16-06: Mobile polish — getting-started cards */
     @media (max-width: 480px) {
       .persona-card { padding: 1.5rem !important; }
       .persona-card .text-subsection { font-size: 1.125rem; }
+      .persona-card.expanded { padding: 1.25rem !important; }
+      .journey-step { flex-direction: column; gap: 0.5rem; }
     }
   </style>
 </head>
@@ -154,68 +225,254 @@
     <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
 
       <!-- New to GovCon -->
-      <div class="card persona-card p-8 fade-up">
-        <div style="width:40px;height:40px;border-radius:10px;background:rgba(0,229,250,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mmt-cyan)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+      <div class="card persona-card p-8 fade-up" onclick="toggleJourney(this)" role="button" tabindex="0" aria-expanded="false">
+        <button class="collapse-btn" onclick="event.stopPropagation();collapseJourney(this.parentElement)" aria-label="Collapse">&times;</button>
+        <div class="journey-preview">
+          <div style="width:40px;height:40px;border-radius:10px;background:rgba(0,229,250,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mmt-cyan)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+          </div>
+          <p class="text-eyebrow mb-4">I'm New to GovCon</p>
+          <h2 class="text-subsection mb-3">Learn the Landscape</h2>
+          <p class="text-body" style="font-size:1rem;">Start with the basics of federal contracting: who the players are, how procurements work, and what the acronyms mean.</p>
         </div>
-        <p class="text-eyebrow mb-4">I'm New to GovCon</p>
-        <h2 class="text-subsection mb-3">Learn the Landscape</h2>
-        <p class="text-body mb-6" style="font-size:1rem;">Start with the basics of federal contracting: who the players are, how procurements work, and what the acronyms mean.</p>
-        <ul class="space-y-3 list-none p-0 m-0">
-          <li><a href="/glossary/govcon.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">What is GovCon? &rarr;</a></li>
-          <li><a href="/glossary/sam-gov.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">SAM.gov Registration Guide &rarr;</a></li>
-          <li><a href="/glossary/far.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">Federal Acquisition Regulation (FAR) &rarr;</a></li>
-          <li><a href="/glossary/" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">Full Glossary (57 terms) &rarr;</a></li>
-          <li><a href="/contracting.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">Federal Contracting Overview &rarr;</a></li>
-        </ul>
+        <div class="journey-content">
+          <div style="width:40px;height:40px;border-radius:10px;background:rgba(0,229,250,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mmt-cyan)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+          </div>
+          <p class="text-eyebrow mb-2">I'm New to GovCon</p>
+          <h2 class="text-subsection mb-1">Your Learning Path</h2>
+          <p class="text-body mb-6" style="font-size:0.875rem;color:var(--mmt-white-dim);">Follow these steps to build your federal contracting foundation.</p>
+          <div class="journey-step">
+            <div class="step-number">1</div>
+            <div>
+              <p style="font-size:0.875rem;font-weight:600;color:#fff;margin:0 0 4px;">Learn the language</p>
+              <p style="font-size:0.8125rem;color:var(--mmt-white-dim);margin:0;">Understand the acronyms and frameworks that govern federal procurement.</p>
+              <div class="step-actions">
+                <a href="/glossary/govcon.html" class="step-action-link">What is GovCon?</a>
+                <a href="/glossary/far.html" class="step-action-link">FAR Basics</a>
+                <a href="/glossary/" class="step-action-link">Full Glossary</a>
+              </div>
+            </div>
+          </div>
+          <div class="journey-step">
+            <div class="step-number">2</div>
+            <div>
+              <p style="font-size:0.875rem;font-weight:600;color:#fff;margin:0 0 4px;">Get registered</p>
+              <p style="font-size:0.8125rem;color:var(--mmt-white-dim);margin:0;">SAM.gov registration is the gateway to federal contracting eligibility.</p>
+              <div class="step-actions">
+                <a href="/glossary/sam-gov.html" class="step-action-link">SAM.gov Guide</a>
+              </div>
+            </div>
+          </div>
+          <div class="journey-step">
+            <div class="step-number">3</div>
+            <div>
+              <p style="font-size:0.875rem;font-weight:600;color:#fff;margin:0 0 4px;">Understand the vehicles</p>
+              <p style="font-size:0.8125rem;color:var(--mmt-white-dim);margin:0;">Learn how federal contracts are structured and which vehicles matter for health IT.</p>
+              <div class="step-actions">
+                <a href="/contracting.html" class="step-action-link">Contracting Overview</a>
+                <a href="/contract-tracker.html" class="step-action-link">Contract Tracker</a>
+              </div>
+            </div>
+          </div>
+          <div class="journey-step">
+            <div class="step-number step-green">4</div>
+            <div>
+              <p style="font-size:0.875rem;font-weight:600;color:#fff;margin:0 0 4px;">Stay current</p>
+              <p style="font-size:0.8125rem;color:var(--mmt-white-dim);margin:0;">Subscribe for bi-weekly federal health IT intelligence delivered to your inbox.</p>
+              <div class="step-actions">
+                <a href="/newsletter.html" class="step-action-link">Subscribe</a>
+                <a href="/latest.html" class="step-action-link">Latest Intel</a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Tracking Opportunities -->
-      <div class="card persona-card p-8 fade-up" style="transition-delay:0.08s;">
-        <div style="width:40px;height:40px;border-radius:10px;background:rgba(0,255,133,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mmt-green)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      <div class="card persona-card p-8 fade-up" style="transition-delay:0.08s;" onclick="toggleJourney(this)" role="button" tabindex="0" aria-expanded="false">
+        <button class="collapse-btn" onclick="event.stopPropagation();collapseJourney(this.parentElement)" aria-label="Collapse">&times;</button>
+        <div class="journey-preview">
+          <div style="width:40px;height:40px;border-radius:10px;background:rgba(0,255,133,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mmt-green)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          </div>
+          <p class="text-eyebrow mb-4">I'm Tracking Opportunities</p>
+          <h2 class="text-subsection mb-3">Find and Win Work</h2>
+          <p class="text-body" style="font-size:1rem;">You know the basics. Now track active contracts, score your proposals, and stay ahead of acquisition decisions.</p>
         </div>
-        <p class="text-eyebrow mb-4">I'm Tracking Opportunities</p>
-        <h2 class="text-subsection mb-3">Find and Win Work</h2>
-        <p class="text-body mb-6" style="font-size:1rem;">You know the basics. Now track active contracts, score your proposals, and stay ahead of acquisition decisions.</p>
-        <ul class="space-y-3 list-none p-0 m-0">
-          <li><a href="/contract-tracker.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">Contract Tracker &rarr;</a></li>
-          <li><a href="/proposal-pulse.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">ProposalPulse (AI Scorer) &rarr;</a></li>
-          <li><a href="/latest.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">Latest Intelligence &rarr;</a></li>
-          <li><a href="/newswire.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">Federal Health IT News Wire &rarr;</a></li>
-        </ul>
+        <div class="journey-content">
+          <div style="width:40px;height:40px;border-radius:10px;background:rgba(0,255,133,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mmt-green)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          </div>
+          <p class="text-eyebrow mb-2">I'm Tracking Opportunities</p>
+          <h2 class="text-subsection mb-1">Your Winning Path</h2>
+          <p class="text-body mb-6" style="font-size:0.875rem;color:var(--mmt-white-dim);">From tracking to winning: tools and intel to sharpen your competitive edge.</p>
+          <div class="journey-step">
+            <div class="step-number">1</div>
+            <div>
+              <p style="font-size:0.875rem;font-weight:600;color:#fff;margin:0 0 4px;">Track active contracts</p>
+              <p style="font-size:0.8125rem;color:var(--mmt-white-dim);margin:0;">Monitor federal health IT procurements with AI-powered competitive intelligence.</p>
+              <div class="step-actions">
+                <a href="/contract-tracker.html" class="step-action-link">Contract Tracker</a>
+              </div>
+            </div>
+          </div>
+          <div class="journey-step">
+            <div class="step-number">2</div>
+            <div>
+              <p style="font-size:0.875rem;font-weight:600;color:#fff;margin:0 0 4px;">Score your proposal</p>
+              <p style="font-size:0.8125rem;color:var(--mmt-white-dim);margin:0;">Upload your draft and get an AI-powered scorecard with actionable feedback.</p>
+              <div class="step-actions">
+                <a href="/proposal-pulse.html" class="step-action-link">ProposalPulse</a>
+              </div>
+            </div>
+          </div>
+          <div class="journey-step">
+            <div class="step-number">3</div>
+            <div>
+              <p style="font-size:0.875rem;font-weight:600;color:#fff;margin:0 0 4px;">Read the analysis</p>
+              <p style="font-size:0.8125rem;color:var(--mmt-white-dim);margin:0;">Stay ahead with deep-dive intelligence on acquisition decisions and market shifts.</p>
+              <div class="step-actions">
+                <a href="/latest.html" class="step-action-link">Latest Intel</a>
+                <a href="/newswire.html" class="step-action-link">News Wire</a>
+              </div>
+            </div>
+          </div>
+          <div class="journey-step">
+            <div class="step-number step-green">4</div>
+            <div>
+              <p style="font-size:0.875rem;font-weight:600;color:#fff;margin:0 0 4px;">Get market intelligence</p>
+              <p style="font-size:0.8125rem;color:var(--mmt-white-dim);margin:0;">On-demand federal health IT market briefs tailored to your pursuit.</p>
+              <div class="step-actions">
+                <a href="/tactical-brief.html" class="step-action-link">MarketPulse</a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Program Office Buyer -->
-      <div class="card persona-card p-8 fade-up" style="transition-delay:0.16s;">
-        <div style="width:40px;height:40px;border-radius:10px;background:rgba(0,229,250,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mmt-cyan)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M6 7l6-4 6 4"/><path d="M3 17h6v4H3z"/><path d="M15 17h6v4h-6z"/></svg>
+      <div class="card persona-card p-8 fade-up" style="transition-delay:0.16s;" onclick="toggleJourney(this)" role="button" tabindex="0" aria-expanded="false">
+        <button class="collapse-btn" onclick="event.stopPropagation();collapseJourney(this.parentElement)" aria-label="Collapse">&times;</button>
+        <div class="journey-preview">
+          <div style="width:40px;height:40px;border-radius:10px;background:rgba(0,229,250,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mmt-cyan)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M6 7l6-4 6 4"/><path d="M3 17h6v4H3z"/><path d="M15 17h6v4h-6z"/></svg>
+          </div>
+          <p class="text-eyebrow mb-4">I'm a Program Office Buyer</p>
+          <h2 class="text-subsection mb-3">Acquisition Intelligence</h2>
+          <p class="text-body" style="font-size:1rem;">You're making procurement decisions. Get the analysis on contract vehicles, vendor landscapes, and technology choices that matter.</p>
         </div>
-        <p class="text-eyebrow mb-4">I'm a Program Office Buyer</p>
-        <h2 class="text-subsection mb-3">Acquisition Intelligence</h2>
-        <p class="text-body mb-6" style="font-size:1rem;">You're making procurement decisions. Get the analysis on contract vehicles, vendor landscapes, and technology choices that matter.</p>
-        <ul class="space-y-3 list-none p-0 m-0">
-          <li><a href="/resources.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">Resource Hub &rarr;</a></li>
-          <li><a href="/agency-sources.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">Agency Source Directory &rarr;</a></li>
-          <li><a href="/topics/acquisition-contracting/" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">Acquisition & Contracting Analysis &rarr;</a></li>
-          <li><a href="/podcast.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">Fed UP Podcast &rarr;</a></li>
-        </ul>
+        <div class="journey-content">
+          <div style="width:40px;height:40px;border-radius:10px;background:rgba(0,229,250,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mmt-cyan)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M6 7l6-4 6 4"/><path d="M3 17h6v4H3z"/><path d="M15 17h6v4h-6z"/></svg>
+          </div>
+          <p class="text-eyebrow mb-2">I'm a Program Office Buyer</p>
+          <h2 class="text-subsection mb-1">Your Decision Path</h2>
+          <p class="text-body mb-6" style="font-size:0.875rem;color:var(--mmt-white-dim);">Intelligence and tools to support smarter acquisition decisions.</p>
+          <div class="journey-step">
+            <div class="step-number">1</div>
+            <div>
+              <p style="font-size:0.875rem;font-weight:600;color:#fff;margin:0 0 4px;">Explore the resource hub</p>
+              <p style="font-size:0.8125rem;color:var(--mmt-white-dim);margin:0;">Curated federal health IT resources: news, contracts, leadership, and 79+ links.</p>
+              <div class="step-actions">
+                <a href="/resources.html" class="step-action-link">Resource Hub</a>
+              </div>
+            </div>
+          </div>
+          <div class="journey-step">
+            <div class="step-number">2</div>
+            <div>
+              <p style="font-size:0.875rem;font-weight:600;color:#fff;margin:0 0 4px;">Know the agencies</p>
+              <p style="font-size:0.8125rem;color:var(--mmt-white-dim);margin:0;">Directory of key federal health IT agencies, their missions, and procurement contacts.</p>
+              <div class="step-actions">
+                <a href="/agency-sources.html" class="step-action-link">Agency Directory</a>
+              </div>
+            </div>
+          </div>
+          <div class="journey-step">
+            <div class="step-number">3</div>
+            <div>
+              <p style="font-size:0.875rem;font-weight:600;color:#fff;margin:0 0 4px;">Read acquisition analysis</p>
+              <p style="font-size:0.8125rem;color:var(--mmt-white-dim);margin:0;">Deep-dive analysis on contract vehicles, vendor landscapes, and acquisition strategy.</p>
+              <div class="step-actions">
+                <a href="/topics/acquisition-contracting/" class="step-action-link">Acquisition Analysis</a>
+                <a href="/latest.html" class="step-action-link">Latest Intel</a>
+              </div>
+            </div>
+          </div>
+          <div class="journey-step">
+            <div class="step-number step-green">4</div>
+            <div>
+              <p style="font-size:0.875rem;font-weight:600;color:#fff;margin:0 0 4px;">Hear from the operators</p>
+              <p style="font-size:0.8125rem;color:var(--mmt-white-dim);margin:0;">Fed UP podcast: unfiltered conversations on what's actually happening in federal health IT.</p>
+              <div class="step-actions">
+                <a href="/podcast.html" class="step-action-link">Fed UP Podcast</a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Health IT Executive -->
-      <div class="card persona-card p-8 fade-up" style="transition-delay:0.24s;">
-        <div style="width:40px;height:40px;border-radius:10px;background:rgba(0,255,133,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mmt-green)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <div class="card persona-card p-8 fade-up" style="transition-delay:0.24s;" onclick="toggleJourney(this)" role="button" tabindex="0" aria-expanded="false">
+        <button class="collapse-btn" onclick="event.stopPropagation();collapseJourney(this.parentElement)" aria-label="Collapse">&times;</button>
+        <div class="journey-preview">
+          <div style="width:40px;height:40px;border-radius:10px;background:rgba(0,255,133,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mmt-green)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <p class="text-eyebrow mb-4">I'm a Health IT Executive</p>
+          <h2 class="text-subsection mb-3">Strategic Intelligence</h2>
+          <p class="text-body" style="font-size:1rem;">You're evaluating federal health IT market opportunities, partnerships, or technology strategy. Get the analysis that separates signal from noise.</p>
         </div>
-        <p class="text-eyebrow mb-4">I'm a Health IT Executive</p>
-        <h2 class="text-subsection mb-3">Strategic Intelligence</h2>
-        <p class="text-body mb-6" style="font-size:1rem;">You're evaluating federal health IT market opportunities, partnerships, or technology strategy. Get the analysis that separates signal from noise.</p>
-        <ul class="space-y-3 list-none p-0 m-0">
-          <li><a href="/newsletter/agentic-ai-reckoning/" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">Healthcare's AI Reckoning &rarr;</a></li>
-          <li><a href="/newsletter/anthropic-ban-what-numbers-say/" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">The Anthropic Ban: Numbers &rarr;</a></li>
-          <li><a href="/podcast.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">Fed UP Podcast &rarr;</a></li>
-          <li><a href="/about.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">About MMT &rarr;</a></li>
-        </ul>
+        <div class="journey-content">
+          <div style="width:40px;height:40px;border-radius:10px;background:rgba(0,255,133,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mmt-green)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <p class="text-eyebrow mb-2">I'm a Health IT Executive</p>
+          <h2 class="text-subsection mb-1">Your Strategy Path</h2>
+          <p class="text-body mb-6" style="font-size:0.875rem;color:var(--mmt-white-dim);">Signal over noise: strategic intelligence for health IT decision-makers.</p>
+          <div class="journey-step">
+            <div class="step-number">1</div>
+            <div>
+              <p style="font-size:0.875rem;font-weight:600;color:#fff;margin:0 0 4px;">Read the deep analysis</p>
+              <p style="font-size:0.8125rem;color:var(--mmt-white-dim);margin:0;">Long-form intelligence on AI, policy shifts, and market dynamics in federal health IT.</p>
+              <div class="step-actions">
+                <a href="/newsletter/agentic-ai-reckoning/" class="step-action-link">AI Reckoning</a>
+                <a href="/newsletter/anthropic-ban-what-numbers-say/" class="step-action-link">Anthropic Ban</a>
+              </div>
+            </div>
+          </div>
+          <div class="journey-step">
+            <div class="step-number">2</div>
+            <div>
+              <p style="font-size:0.875rem;font-weight:600;color:#fff;margin:0 0 4px;">Listen to the podcast</p>
+              <p style="font-size:0.8125rem;color:var(--mmt-white-dim);margin:0;">Fed UP: unfiltered conversations on what's really happening behind the talking points.</p>
+              <div class="step-actions">
+                <a href="/podcast.html" class="step-action-link">Fed UP Podcast</a>
+              </div>
+            </div>
+          </div>
+          <div class="journey-step">
+            <div class="step-number">3</div>
+            <div>
+              <p style="font-size:0.875rem;font-weight:600;color:#fff;margin:0 0 4px;">Get market intelligence</p>
+              <p style="font-size:0.8125rem;color:var(--mmt-white-dim);margin:0;">On-demand briefs on competitive landscapes, contract vehicles, and market positioning.</p>
+              <div class="step-actions">
+                <a href="/tactical-brief.html" class="step-action-link">MarketPulse</a>
+              </div>
+            </div>
+          </div>
+          <div class="journey-step">
+            <div class="step-number step-green">4</div>
+            <div>
+              <p style="font-size:0.875rem;font-weight:600;color:#fff;margin:0 0 4px;">Know the team</p>
+              <p style="font-size:0.8125rem;color:var(--mmt-white-dim);margin:0;">Who's behind Mission Meets Tech and why this platform exists.</p>
+              <div class="step-actions">
+                <a href="/about.html" class="step-action-link">About MMT</a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -271,6 +528,31 @@
   <button id="btt" aria-label="Back to top" style="position:fixed;bottom:2rem;right:2rem;width:44px;height:44px;border-radius:50%;background:var(--mmt-slate);border:1px solid rgba(0,229,250,0.15);color:var(--mmt-cyan);cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s,transform 0.3s;z-index:90;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onmouseover="this.style.borderColor='rgba(0,229,250,0.3)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(0,229,250,0.15)';this.style.transform='none'">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
   </button>
+  <script>
+  function toggleJourney(card){
+    if(card.classList.contains('expanded'))return;
+    document.querySelectorAll('.persona-card.expanded').forEach(function(c){collapseJourney(c);});
+    card.classList.add('expanded');
+    card.setAttribute('aria-expanded','true');
+    card.style.cursor='default';
+    card.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+  function collapseJourney(card){
+    card.classList.remove('expanded');
+    card.setAttribute('aria-expanded','false');
+    card.style.cursor='pointer';
+  }
+  document.querySelectorAll('.persona-card').forEach(function(card){
+    card.addEventListener('keydown',function(e){
+      if((e.key==='Enter'||e.key===' ')&&!card.classList.contains('expanded')){
+        e.preventDefault();toggleJourney(card);
+      }
+      if(e.key==='Escape'&&card.classList.contains('expanded')){
+        collapseJourney(card);card.focus();
+      }
+    });
+  });
+  </script>
   <script>
   (function(){
     var b=document.getElementById('btt');
