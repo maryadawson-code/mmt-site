@@ -81,6 +81,9 @@
     .vehicle-detail td { padding: 1rem 1rem 1.5rem; background: rgba(0,229,250,0.03); border-bottom: 1px solid rgba(0,229,250,0.1); }
     .expand-icon { transition: transform 0.2s; display: inline-block; }
     .vehicle-row.expanded .expand-icon { transform: rotate(90deg); }
+    @media (max-width: 767px) {
+      .vehicle-row td:last-child { min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; }
+    }
   </style>
 </head>
 <body class="antialiased">
