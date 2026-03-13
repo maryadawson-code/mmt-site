@@ -79,7 +79,7 @@ exports.handler = async (event) => {
           price_data: {
             currency: "usd",
             product_data: {
-              name: "Tactical Brief",
+              name: "MarketPulse Report",
               description: "Custom federal health IT market intelligence report",
             },
             unit_amount: PRICE_CENTS,
