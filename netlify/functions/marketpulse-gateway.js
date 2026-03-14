@@ -16,6 +16,7 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const SITE_URL = "https://missionmeetstech.com";
 const PRICE_CENTS = 5000; // $50.00
 const FREE_REPORTS = 1;
+const ADMIN_EMAILS = ['maryadawson@gmail.com', 'mary@missionmeetstech.com'];
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": SITE_URL,
@@ -94,7 +95,9 @@ exports.handler = async (event) => {
       throw new Error("Could not check usage.");
     }
 
-    const hasFreeReport = usage.reports_used < FREE_REPORTS;
+    // Admin bypass — unlimited reports for owner accounts
+    const isAdmin = ADMIN_EMAILS.includes(email);
+    const hasFreeReport = isAdmin || usage.reports_used < FREE_REPORTS;
 
     if (hasFreeReport) {
       // FREE PATH — increment usage and trigger generation directly
