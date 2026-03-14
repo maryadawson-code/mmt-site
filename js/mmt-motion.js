@@ -30,8 +30,9 @@
       }
     });
 
-    // Stagger grid children
+    // Stagger grid children (skip cascade-3d-group — handled by spatial.js S6-07)
     document.querySelectorAll('main .grid').forEach(function(grid) {
+      if (grid.classList.contains('cascade-3d-group')) return;
       var children = grid.children;
       for (var i = 0; i < children.length; i++) {
         var child = children[i];

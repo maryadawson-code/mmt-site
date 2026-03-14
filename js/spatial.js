@@ -176,6 +176,8 @@
     gsap.utils.toArray('.reveal, .fade-up').forEach(function (el) {
       if (el.closest('#hero')) return;
       if (el.classList.contains('persona-card')) return;
+      // Skip elements inside cascade-3d-group — handled by S6-07 cascade animation
+      if (el.closest('.cascade-3d-group')) return;
 
       el.style.transition = 'none';
       el.classList.add('visible');
