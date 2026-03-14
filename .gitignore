@@ -36,6 +36,5 @@ supabase/.temp/
 .claude/worktrees/
 test-results/
 n8n-workflows/
-migrations/
 deno.lock
 styles
