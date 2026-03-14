@@ -57,34 +57,31 @@
       var hero = document.getElementById('hero');
       var heroContent = document.getElementById('hero-content');
       if (hero && heroContent) {
-        gsap.timeline({
+        // Parallax fade — no pin, hero scrolls naturally
+        gsap.to(heroContent, {
+          opacity: 0,
+          y: -60,
+          scale: 0.97,
+          ease: 'none',
           scrollTrigger: {
             trigger: hero,
             start: 'top top',
-            end: '+=25vh',
-            scrub: 0.5,
-            pin: true,
-            pinSpacing: true
+            end: 'bottom 40%',
+            scrub: 0.3
           }
-        })
-        .to(heroContent, {
-          opacity: 0,
-          y: -80,
-          scale: 0.95,
-          ease: 'none'
         });
 
         // Depth orbs parallax
         gsap.utils.toArray('.depth-orb').forEach(function (orb, i) {
           gsap.to(orb, {
-            y: -(100 + i * 50),
-            x: i % 2 === 0 ? 40 : -30,
-            scale: 1.15 + i * 0.08,
+            y: -(80 + i * 40),
+            x: i % 2 === 0 ? 30 : -20,
+            scale: 1.1 + i * 0.06,
             ease: 'none',
             scrollTrigger: {
               trigger: hero,
               start: 'top top',
-              end: '+=25vh',
+              end: 'bottom 40%',
               scrub: 1 + i * 0.3
             }
           });
