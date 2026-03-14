@@ -61,8 +61,8 @@
           scrollTrigger: {
             trigger: hero,
             start: 'top top',
-            end: '+=40vh',
-            scrub: 0.6,
+            end: '+=25vh',
+            scrub: 0.5,
             pin: true,
             pinSpacing: true
           }
@@ -84,7 +84,7 @@
             scrollTrigger: {
               trigger: hero,
               start: 'top top',
-              end: '+=40vh',
+              end: '+=25vh',
               scrub: 1 + i * 0.3
             }
           });
