@@ -102,7 +102,7 @@ ${pass1Content}
 Analysis from Pass 2 (strategic analysis):
 ${pass2Content}
 
-Write the final intelligence brief. Be comprehensive — this brief must justify $50. Minimum 8-10 pages of content.
+Write the final intelligence brief. This is a $50 premium product — it must deliver maximum value. Write at least 1500 words of substantive content. Every section must be fully developed with specific facts, names, dollar values, and dates. Do not summarize when you can analyze. Do not list when you can explain.
 
 EXECUTIVE SUMMARY: 5-6 bullet points starting with "- ". Each bullet names specific programs, dollar values, dates, or companies.
 
@@ -129,7 +129,7 @@ METHODOLOGY: 2-3 sentences on research approach.`;
     },
     body: JSON.stringify({
       model: CLAUDE_MODEL,
-      max_tokens: 4000,
+      max_tokens: 8000,
       system: systemPrompt,
       messages: [{ role: "user", content: userPrompt }],
     }),

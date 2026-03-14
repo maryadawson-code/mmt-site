@@ -472,15 +472,21 @@ async function generateTacticalBriefPdf({
       // Skip footer on cover page
       if (pageNum === 1) continue;
 
+      // Override bottom margin to prevent PDFKit from adding blank pages
+      const origBottom = doc.page.margins.bottom;
+      doc.page.margins.bottom = 0;
+
       doc.moveTo(L, PAGE_H - 36).lineTo(PAGE_W - R_MARGIN, PAGE_H - 36)
          .strokeColor(RULE).lineWidth(0.3).stroke();
 
       doc.font("Helvetica").fontSize(7).fillColor(MUTED)
          .text("Mission Meets Tech  |  missionmeetstech.com  |  Confidential",
-               L, PAGE_H - 26, { width: CONTENT_W - 40 });
+               L, PAGE_H - 26, { width: CONTENT_W - 40, lineBreak: false });
 
       doc.font("Helvetica-Bold").fontSize(7).fillColor(MUTED)
-         .text(`${pageNum}`, PAGE_W - R_MARGIN - 20, PAGE_H - 26, { width: 20, align: "right" });
+         .text(`${pageNum}`, PAGE_W - R_MARGIN - 20, PAGE_H - 26, { width: 20, align: "right", lineBreak: false });
+
+      doc.page.margins.bottom = origBottom;
     }
 
     doc.end();
