@@ -42,6 +42,7 @@ async function generateTacticalBriefPdf({
     const chunks = [];
     const doc = new PDFDocument({
       size: "letter",
+      bufferPages: true,
       margins: { top: 60, bottom: 60, left: 60, right: 60 },
       info: {
         Title: `MarketPulse Report: ${topic.slice(0, 80)}`,
@@ -280,9 +281,9 @@ async function generateTacticalBriefPdf({
     }
 
     // --- Footer on each page ---
-    const pageCount = doc.bufferedPageRange();
-    for (let i = 0; i < pageCount.count; i++) {
-      doc.switchToPage(i);
+    const range = doc.bufferedPageRange();
+    for (let i = 0; i < range.count; i++) {
+      doc.switchToPage(range.start + i);
       doc
         .font("Helvetica")
         .fontSize(7)
