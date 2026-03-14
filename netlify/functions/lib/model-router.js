@@ -16,12 +16,12 @@
 
 const MODELS = {
   scoring: {
-    default: "claude-sonnet-4-5-20250929",
-    floor: "claude-sonnet-4-5-20250929",
+    default: "claude-sonnet-4-6",
+    floor: "claude-sonnet-4-6",
   },
   rewrite: {
-    default: "claude-sonnet-4-5-20250929",
-    floor: "claude-sonnet-4-5-20250929",
+    default: "claude-sonnet-4-6",
+    floor: "claude-sonnet-4-6",
   },
   review: {
     default: "claude-haiku-4-5-20251001",
@@ -38,8 +38,8 @@ const MODELS = {
     provider: "perplexity",
   },
   opportunity_scan: {
-    default: "claude-sonnet-4-5-20250929",
-    floor: "claude-sonnet-4-5-20250929",
+    default: "claude-sonnet-4-6",
+    floor: "claude-sonnet-4-6",
   },
   sb_classify: {
     default: "claude-haiku-4-5-20251001",
@@ -48,7 +48,7 @@ const MODELS = {
 };
 
 const ESCALATION_THRESHOLD = 3.0;
-const ESCALATION_MODEL = "claude-sonnet-4-5-20250929";
+const ESCALATION_MODEL = "claude-sonnet-4-6";
 const FEEDBACK_SAMPLE_SIZE = 10;
 
 /**
@@ -62,7 +62,7 @@ async function getModelConfig(supabase, taskType) {
   const config = MODELS[taskType];
   if (!config) {
     console.warn(`model-router: unknown task type "${taskType}", using Sonnet`);
-    return { model: "claude-sonnet-4-5-20250929", reason: "unknown_task" };
+    return { model: "claude-sonnet-4-6", reason: "unknown_task" };
   }
 
   // Only 'review' uses self-learning from user feedback — all others return defaults
