@@ -1,6 +1,5 @@
--- Migration 002: MissionPulse / ProposalPulse Tables
--- Run in Supabase SQL Editor: Settings > SQL Editor
--- Run BEFORE migrations/003
+-- Migration: MissionPulse / ProposalPulse Tables
+-- Fixes ProposalPulse "Account error" and "Usage check failed" errors
 
 CREATE TABLE IF NOT EXISTS mp_users (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,

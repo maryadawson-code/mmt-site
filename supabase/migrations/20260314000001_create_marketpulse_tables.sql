@@ -1,6 +1,5 @@
--- Migration 003: MarketPulse Tables
--- Run in Supabase SQL Editor: Settings > SQL Editor
--- Run AFTER migrations/002
+-- Migration: MarketPulse Tables
+-- Fixes MarketPulse "Could not check usage" error
 
 CREATE TABLE IF NOT EXISTS marketpulse_usage (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
