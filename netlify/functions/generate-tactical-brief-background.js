@@ -15,6 +15,11 @@ const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 const PERPLEXITY_MODEL = "sonar-pro";
 const PERPLEXITY_URL = "https://api.perplexity.ai/chat/completions";
 
+// Claude API for Pass 3 synthesis (Perplexity cannot follow formatting rules)
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+const CLAUDE_MODEL = "claude-sonnet-4-6";
+const CLAUDE_URL = "https://api.anthropic.com/v1/messages";
+
 // --- Perplexity API call ---
 async function callPerplexity(systemPrompt, userPrompt) {
   const response = await fetch(PERPLEXITY_URL, {
@@ -46,31 +51,125 @@ async function callPerplexity(systemPrompt, userPrompt) {
   };
 }
 
+// --- Federal acronym expansion for Perplexity search disambiguation ---
+function expandFederalAcronyms(topic) {
+  const expansions = [
+    [/\bDHA\b/g, 'Defense Health Agency (DHA)'],
+    [/\bVHA\b/g, 'Veterans Health Administration (VHA)'],
+    [/\bVA\b(?!\s*[A-Z]{2,})/g, 'Department of Veterans Affairs (VA)'],
+    [/\bMHS\b/g, 'Military Health System (MHS)'],
+    [/\bPEO-DHMS\b/gi, 'Program Executive Office Defense Healthcare Management Systems (PEO-DHMS)'],
+    [/\bFEHRM\b/g, 'Federal Electronic Health Record Modernization (FEHRM)'],
+    [/\bCMS\b(?!\s*[a-z])/g, 'Centers for Medicare and Medicaid Services (CMS)'],
+    [/\bNIH\b/g, 'National Institutes of Health (NIH)'],
+    [/\bHHS\b/g, 'Department of Health and Human Services (HHS)'],
+    [/\bONC\b/g, 'Office of the National Coordinator for Health IT (ONC)'],
+  ];
+  let expanded = topic;
+  for (const [pattern, replacement] of expansions) {
+    expanded = expanded.replace(pattern, replacement);
+  }
+  return expanded;
+}
+
+// --- Claude synthesis (Pass 3) ---
+async function synthesizeWithClaude(topic, pass1Content, pass2Content, audienceContext, companyContext) {
+  const systemPrompt = `You are a senior intelligence analyst at a federal health IT research firm. You are writing a premium briefing report that costs $50. It will be rendered into a polished PDF. ${audienceContext} ${companyContext}
+
+CRITICAL FORMATTING RULES — violation makes the PDF unusable:
+1. NO citation brackets. Do not write [1] or [2] or [1,3] anywhere. Ever.
+2. NO markdown. No **bold**, no *italic*, no # headers, no pipe tables (|---|).
+3. Use ONLY these exact section headers on their own line in ALL CAPS:
+   EXECUTIVE SUMMARY
+   SITUATION OVERVIEW
+   KEY FINDINGS
+   COMPETITIVE LANDSCAPE
+   RISKS AND WATCH ITEMS
+   OPPORTUNITIES AND RECOMMENDATIONS
+   TIMELINE AND MILESTONES
+   METHODOLOGY
+4. Confidence ratings: write (Confidence: High), (Confidence: Medium), or (Confidence: Low) inline.
+5. Write numbered lists as: 1. text on its own line, 2. text on its own line
+6. Write bullets as: - text on its own line
+7. Competitor entries: start with COMPETITOR NAME: then prose description
+8. Timeline entries: Month Year — description of event`;
+
+  const userPrompt = `Topic: ${topic}
+
+Research findings from Pass 1 (landscape scan):
+${pass1Content}
+
+Analysis from Pass 2 (strategic analysis):
+${pass2Content}
+
+Write the final intelligence brief. Be comprehensive — this brief must justify $50. Minimum 8-10 pages of content.
+
+EXECUTIVE SUMMARY: 5-6 bullet points starting with "- ". Each bullet names specific programs, dollar values, dates, or companies.
+
+SITUATION OVERVIEW: 3-4 paragraphs on current state, why it matters now, and near-term trajectory.
+
+KEY FINDINGS: 7-9 numbered findings. Each: number and title in caps on one line, then 2-3 sentences, then confidence rating.
+
+COMPETITIVE LANDSCAPE: 4-6 competitor entries. Each: COMPANY NAME: then 3-4 sentences.
+
+RISKS AND WATCH ITEMS: 5-7 numbered risks. Each: number and risk title, then 2-3 sentences.
+
+OPPORTUNITIES AND RECOMMENDATIONS: 2-paragraph strategic overview, then 5-7 numbered actions.
+
+TIMELINE AND MILESTONES: 8-12 entries. Format: Month Year — what happens and why.
+
+METHODOLOGY: 2-3 sentences on research approach.`;
+
+  const response = await fetch(CLAUDE_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": ANTHROPIC_API_KEY,
+      "anthropic-version": "2023-06-01",
+    },
+    body: JSON.stringify({
+      model: CLAUDE_MODEL,
+      max_tokens: 4000,
+      system: systemPrompt,
+      messages: [{ role: "user", content: userPrompt }],
+    }),
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Claude synthesis API ${response.status}: ${errText}`);
+  }
+
+  const data = await response.json();
+  return data.content.filter(b => b.type === "text").map(b => b.text).join("");
+}
+
 // --- 3-Pass Research Pipeline ---
 async function runResearchPipeline(topic, audience, company) {
   const audienceContext = audience ? `The audience for this brief is: ${audience}.` : "";
   const companyContext = company ? `The requesting organization is: ${company}.` : "";
+  const searchTopic = expandFederalAcronyms(topic);
+  console.log("Original topic:", topic);
+  console.log("Search topic (expanded):", searchTopic);
 
   // Pass 1: Landscape scan
   console.log("Pass 1: Landscape scan...");
   const pass1 = await callPerplexity(
     `You are a federal health IT market intelligence analyst specializing in defense health, VA, DHA, and CMS programs. ${audienceContext} ${companyContext} Provide a comprehensive landscape scan with current facts, key players, recent developments, and relevant contract/program details. Use specific dates, dollar amounts, contract numbers, and agency names. Cite your sources.`,
-    `Research topic: ${topic}\n\nProvide a thorough landscape scan covering:\n1. Current state and recent developments (last 6 months)\n2. Key agencies, programs, and stakeholders involved\n3. Relevant contracts, solicitations, or procurement activity\n4. Budget context and funding status\n5. Policy or regulatory factors\n\nBe specific with names, dates, and numbers. This will be used as input for deeper analysis.`
+    `Research topic: ${searchTopic}\n\nIMPORTANT: This is a federal government procurement and market intelligence request. Focus exclusively on US federal government programs, contracts, agencies, and vendors — NOT commercial markets, supplements, chemicals, or consumer products.\n\nProvide a thorough landscape scan covering:\n1. Current state and recent developments (last 6 months)\n2. Key agencies, programs, and stakeholders involved\n3. Relevant contracts, solicitations, or procurement activity\n4. Budget context and funding status\n5. Policy or regulatory factors\n\nBe specific with names, dates, and numbers. This will be used as input for deeper analysis.`
   );
 
   // Pass 2: Deep analysis using Pass 1 findings
   console.log("Pass 2: Deep analysis...");
   const pass2 = await callPerplexity(
     `You are a senior federal health IT strategy advisor. ${audienceContext} ${companyContext} You have been given a landscape scan on a topic. Now provide deep strategic analysis: implications, competitive dynamics, risks, opportunities, and actionable recommendations. Cross-reference and verify claims from the landscape scan. Add any missing context. Cite your sources.`,
-    `Topic: ${topic}\n\nLandscape scan findings:\n${pass1.content}\n\nNow provide:\n1. Strategic implications and what this means for stakeholders\n2. Competitive landscape and key vendor positions\n3. Risks and potential obstacles\n4. Opportunities for action\n5. Timeline of upcoming milestones or decision points\n6. Specific, actionable recommendations\n\nVerify and cross-reference the landscape scan. Flag any claims that cannot be confirmed.`
+    `Topic: ${searchTopic}\n\nLandscape scan findings:\n${pass1.content}\n\nIMPORTANT: This is a federal government procurement and market intelligence request. Focus exclusively on US federal programs, contracts, and agencies.\n\nNow provide:\n1. Strategic implications and what this means for stakeholders\n2. Competitive landscape and key vendor positions\n3. Risks and potential obstacles\n4. Opportunities for action\n5. Timeline of upcoming milestones or decision points\n6. Specific, actionable recommendations\n\nVerify and cross-reference the landscape scan. Flag any claims that cannot be confirmed.`
   );
 
-  // Pass 3: Fact-check and synthesis
-  console.log("Pass 3: Fact-check and synthesis...");
-  const pass3 = await callPerplexity(
-    `You are a senior editor at a federal health IT intelligence firm producing a premium research brief for a paying client. ${audienceContext} ${companyContext}\n\nYour output will be rendered directly into a professional PDF report. Follow these formatting rules WITHOUT EXCEPTION:\n\n1. NEVER use inline citation brackets like [1] or [2][3] anywhere in the text. Sources are listed separately at the end.\n2. NEVER use markdown syntax: no **bold**, no *italic*, no pipe tables (|---|), no # headers.\n3. Write in clean, flowing professional prose. Every section should read like a polished intelligence report, not research notes.\n4. Use the EXACT section headers shown below, on their own line, in ALL CAPS.\n5. For the COMPETITIVE LANDSCAPE section, describe competitors in structured labeled paragraphs, not tables.\n6. Confidence ratings go in parentheses at the end of a sentence: (Confidence: High)\n7. Be specific and authoritative. Name companies, dollar values, contract numbers, dates. No vague language.\n\nREQUIRED OUTPUT STRUCTURE — use exactly these section headers:\n\nEXECUTIVE SUMMARY\nSITUATION OVERVIEW\nKEY FINDINGS\nCOMPETITIVE LANDSCAPE\nRISKS AND WATCH ITEMS\nOPPORTUNITIES AND RECOMMENDATIONS\nTIMELINE AND MILESTONES\nMETHODOLOGY`,
-    `Topic: ${topic}\n\nLandscape scan findings:\n${pass1.content}\n\nDeep analysis:\n${pass2.content}\n\nNow write the final intelligence brief using the exact structure required. Each section should be substantive — minimum 3-4 paragraphs for major sections. The brief should be comprehensive enough to guide real business decisions.\n\nEXECUTIVE SUMMARY: Write 4-6 concise bullet points (each starting with a dash) covering the most critical findings and what they mean for the client. Be direct and specific.\n\nSITUATION OVERVIEW: 2-3 paragraphs giving context on the current state of this topic. What is happening, why it matters, what the trajectory looks like.\n\nKEY FINDINGS: Number each finding (1. 2. 3. etc). Each finding gets a title line in caps, then 2-3 sentences of explanation, then a confidence rating in parentheses. Minimum 6 findings.\n\nCOMPETITIVE LANDSCAPE: For each major player or category, write a labeled paragraph: start with the organization name followed by a colon, then 3-4 sentences on their position, strengths, and vulnerabilities. Cover at least 4-6 players or tiers.\n\nRISKS AND WATCH ITEMS: Number each risk. One sentence title, then 2-3 sentences explaining the risk and its implications.\n\nOPPORTUNITIES AND RECOMMENDATIONS: Start with a 2-paragraph strategic overview, then list specific recommended actions numbered 1-5+. Each action should be concrete and immediately executable.\n\nTIMELINE AND MILESTONES: List key dates and events in chronological order. Format each as: Date — Event description (one sentence of context).\n\nMETHODOLOGY: 2-3 sentences on how this brief was researched and what sources were prioritized.`
-  );
+  // Pass 3: Synthesis via Claude (not Perplexity — Perplexity cannot follow formatting rules)
+  console.log("Pass 3: Claude synthesis...");
+  const pass3Content = await synthesizeWithClaude(topic, pass1.content, pass2.content, audienceContext, companyContext);
+  const pass3 = { content: pass3Content, citations: [] };
 
   // Merge all citations
   const allCitations = [...new Set([...pass1.citations, ...pass2.citations, ...pass3.citations])];
