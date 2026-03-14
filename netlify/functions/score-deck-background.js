@@ -217,6 +217,23 @@ exports.handler = async (event) => {
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
+    // --- Validate required env vars ---
+    if (!ANTHROPIC_API_KEY) {
+      console.error("ANTHROPIC_API_KEY is not configured in Netlify environment variables");
+      if (scoring_id) {
+        try {
+          await supabase.from("mp_scoring_history").update({
+            scores: { verdict: "ERROR", top_fix: "Server configuration error: ANTHROPIC_API_KEY not set. Contact support." }
+          }).eq("id", scoring_id);
+        } catch(e) {}
+      }
+      return { statusCode: 500, body: "ANTHROPIC_API_KEY not configured" };
+    }
+    if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+      console.error("Supabase env vars missing");
+      return { statusCode: 500, body: "Database not configured" };
+    }
+
     // --- Read payload from DB ---
     const { data: record, error: lookupErr } = await supabase
       .from("mp_scoring_history")
@@ -316,8 +333,24 @@ exports.handler = async (event) => {
     if (!claudeResponse.ok) {
       const errText = await claudeResponse.text();
       console.error("Claude API error:", claudeResponse.status, errText);
-      await markError(supabase, scoring_id, "AI scoring service error. Please try again.");
-      return { statusCode: 200, body: "Claude API error" };
+      let claudeErrMsg = "AI scoring service error. Please try again.";
+      try {
+        const errJson = JSON.parse(errText);
+        const apiMsg = errJson?.error?.message || "";
+        if (claudeResponse.status === 401) {
+          claudeErrMsg = "Authentication error: ANTHROPIC_API_KEY is invalid or not set in Netlify.";
+        } else if (claudeResponse.status === 400) {
+          claudeErrMsg = `Bad request to AI service: ${apiMsg.slice(0, 120)}`;
+        } else if (claudeResponse.status === 529) {
+          claudeErrMsg = "AI service temporarily overloaded. Please try again in a few minutes.";
+        } else {
+          claudeErrMsg = `AI service error (${claudeResponse.status}): ${apiMsg.slice(0, 120) || "Please try again."}`;
+        }
+      } catch(e) {
+        claudeErrMsg = `AI service error (${claudeResponse.status}). Please try again.`;
+      }
+      await markError(supabase, scoring_id, claudeErrMsg);
+      return { statusCode: 200, body: `Claude API error: ${claudeResponse.status}` };
     }
 
     const claudeData = await claudeResponse.json();
