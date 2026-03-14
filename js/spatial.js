@@ -61,7 +61,7 @@
           scrollTrigger: {
             trigger: hero,
             start: 'top top',
-            end: 'bottom top',
+            end: '+=40vh',
             scrub: 0.6,
             pin: true,
             pinSpacing: true
@@ -69,23 +69,23 @@
         })
         .to(heroContent, {
           opacity: 0,
-          y: -120,
-          scale: 0.9,
+          y: -80,
+          scale: 0.95,
           ease: 'none'
         });
 
         // Depth orbs parallax
         gsap.utils.toArray('.depth-orb').forEach(function (orb, i) {
           gsap.to(orb, {
-            y: -(150 + i * 80),
-            x: i % 2 === 0 ? 60 : -40,
-            scale: 1.2 + i * 0.1,
+            y: -(100 + i * 50),
+            x: i % 2 === 0 ? 40 : -30,
+            scale: 1.15 + i * 0.08,
             ease: 'none',
             scrollTrigger: {
               trigger: hero,
               start: 'top top',
-              end: 'bottom top',
-              scrub: 1.2 + i * 0.4
+              end: '+=40vh',
+              scrub: 1 + i * 0.3
             }
           });
         });
