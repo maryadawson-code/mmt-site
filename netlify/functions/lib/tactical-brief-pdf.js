@@ -358,10 +358,13 @@ async function generateTacticalBriefPdf({
         // Numbered finding or bullet point
         if (/^\d+\.\s/.test(line) || /^[-•]\s/.test(line)) {
           flushPara();
-          y = checkPage(doc, y, 120, sectionCtx);
           const isNumbered = /^\d+\./.test(line);
           const bulletChar = isNumbered ? line.match(/^(\d+\.)/)[1] : "•";
           const bulletText = clean.replace(/^\d+\.\s*/, "").replace(/^[-•]\s*/, "");
+          // Measure bullet text height before rendering
+          const bulletH = doc.heightOfString(bulletText, { width: isNumbered ? CONTENT_W - 26 : CONTENT_W - 18, lineGap: 2 });
+          const bulletNeeded = Math.max(120, 24 + bulletH + 12);
+          y = checkPage(doc, y, bulletNeeded, sectionCtx);
 
           if (isNumbered) {
             doc.rect(L, y, 20, 16).fill(SLATE);
@@ -395,13 +398,16 @@ async function generateTacticalBriefPdf({
         // Date-format timeline entry
         if (/^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|Q[1-4]|20\d\d)/i.test(line)) {
           flushPara();
-          y = checkPage(doc, y, 80, sectionCtx);
           const dashIdx = clean.indexOf("—");
           const colonIdx = clean.indexOf(":");
           const splitAt = dashIdx > 0 ? dashIdx : colonIdx > 0 ? colonIdx : -1;
           if (splitAt > 0) {
             const datePart = clean.slice(0, splitAt).trim();
             const eventPart = clean.slice(splitAt + 1).trim();
+            // Measure event text height before rendering to prevent PDFKit mid-block overflow
+            const eventH = doc.heightOfString(eventPart, { width: CONTENT_W - 98, lineGap: 2 });
+            const totalNeeded = 22 + eventH + 12; // date box + text + padding
+            y = checkPage(doc, y, totalNeeded, sectionCtx);
             doc.rect(L, y, 90, 16).fill("#F0F4F8");
             doc.font("Helvetica-Bold").fontSize(8.5).fillColor(SLATE)
                .text(datePart, L + 4, y + 2, { width: 82 });
