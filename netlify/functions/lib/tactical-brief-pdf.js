@@ -40,9 +40,19 @@ function cleanText(text) {
     .trim();
 }
 
-function checkPage(doc, y, needed = 60) {
+function checkPage(doc, y, needed = 60, sectionCtx = null) {
   if (y > PAGE_H - needed) {
     doc.addPage();
+    doc.rect(0, 0, PAGE_W, PAGE_H).fill(WHITE);
+    // Slim continuation banner
+    if (sectionCtx) {
+      doc.rect(0, 0, PAGE_W, 24).fill(NAVY);
+      doc.font("Helvetica").fontSize(7.5).fillColor(MUTED)
+         .text(sectionCtx + "  (continued)", L, 8, { width: CONTENT_W - 40, lineBreak: false });
+      doc.font("Helvetica").fontSize(7.5).fillColor(MUTED)
+         .text("missionmeetstech.com", PAGE_W - R_MARGIN - 120, 8, { width: 120, align: "right", lineBreak: false });
+      return 36;
+    }
     return L_MARGIN_TOP;
   }
   return y;
@@ -219,11 +229,13 @@ async function generateTacticalBriefPdf({
     doc.font("Helvetica").fontSize(10).fillColor(MUTED)
        .text("Federal Health IT Intelligence", L, coverY);
 
-    // Bottom tagline
+    // Bottom tagline — override margin to prevent phantom page
+    doc.page.margins.bottom = 0;
     doc.font("Helvetica").fontSize(8).fillColor(MUTED)
-       .text("Federal health IT intelligence. Mission first.", L, PAGE_H - 50, { width: CONTENT_W });
+       .text("Federal health IT intelligence. Mission first.", L, PAGE_H - 50, { width: CONTENT_W, lineBreak: false });
     doc.moveTo(L, PAGE_H - 36).lineTo(L + 80, PAGE_H - 36)
        .strokeColor(CYAN).lineWidth(1).stroke();
+    doc.page.margins.bottom = 56;
 
     // ── PAGE 2: TABLE OF CONTENTS ─────────────────────────────
 
@@ -321,6 +333,7 @@ async function generateTacticalBriefPdf({
          .text(topicShort, PAGE_W - R_MARGIN - 200, 42, { width: 200, align: "right" });
 
       let y = 76;
+      const sectionCtx = section.title; // for continuation headers
       const lines = rawContent.split("\n");
       let paraBuffer = [];
 
@@ -328,7 +341,7 @@ async function generateTacticalBriefPdf({
         if (paraBuffer.length === 0) return;
         const text = cleanText(paraBuffer.join(" ")).trim();
         if (!text) { paraBuffer = []; return; }
-        y = checkPage(doc, y, 40);
+        y = checkPage(doc, y, 40, sectionCtx);
         doc.font("Helvetica").fontSize(9.5).fillColor(TEXT)
            .text(text, L, y, { width: CONTENT_W, lineGap: 2.5 });
         y = doc.y + 10;
@@ -345,7 +358,7 @@ async function generateTacticalBriefPdf({
         // Numbered finding or bullet point
         if (/^\d+\.\s/.test(line) || /^[-•]\s/.test(line)) {
           flushPara();
-          y = checkPage(doc, y, 36);
+          y = checkPage(doc, y, 36, sectionCtx);
           const isNumbered = /^\d+\./.test(line);
           const bulletChar = isNumbered ? line.match(/^(\d+\.)/)[1] : "•";
           const bulletText = clean.replace(/^\d+\.\s*/, "").replace(/^[-•]\s*/, "");
@@ -369,7 +382,7 @@ async function generateTacticalBriefPdf({
         // ALL CAPS sub-header (like competitor names, finding titles)
         if (/^[A-Z][A-Z\s,()&\/\-:]+$/.test(line) && line.length > 3 && line.length < 80) {
           flushPara();
-          y = checkPage(doc, y, 30);
+          y = checkPage(doc, y, 30, sectionCtx);
           y += 4;
           doc.font("Helvetica-Bold").fontSize(9.5).fillColor(BODY)
              .text(clean, L, y, { width: CONTENT_W });
@@ -382,7 +395,7 @@ async function generateTacticalBriefPdf({
         // Date-format timeline entry
         if (/^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|Q[1-4]|20\d\d)/i.test(line)) {
           flushPara();
-          y = checkPage(doc, y, 24);
+          y = checkPage(doc, y, 24, sectionCtx);
           const dashIdx = clean.indexOf("—");
           const colonIdx = clean.indexOf(":");
           const splitAt = dashIdx > 0 ? dashIdx : colonIdx > 0 ? colonIdx : -1;
@@ -404,7 +417,7 @@ async function generateTacticalBriefPdf({
         // Confidence rating line
         if (/\(Confidence:\s*(High|Medium|Low)\)/i.test(line)) {
           flushPara();
-          y = checkPage(doc, y, 24);
+          y = checkPage(doc, y, 24, sectionCtx);
           const confMatch = line.match(/\(Confidence:\s*(High|Medium|Low)\)/i);
           const confLevel = confMatch[1];
           const confColor = confLevel === "High" ? "#00AA44" : confLevel === "Medium" ? "#CC8800" : "#CC4400";
