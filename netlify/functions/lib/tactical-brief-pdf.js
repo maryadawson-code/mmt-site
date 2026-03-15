@@ -284,7 +284,7 @@ async function generateTacticalBriefPdf({
     }
 
     // About this report box
-    const boxY = PAGE_H - 130;
+    const boxY = PAGE_H - 150;
     doc.rect(L, boxY, CONTENT_W, 90).fill("#EEF2F7");
     doc.rect(L, boxY, 3, 90).fill(CYAN);
     doc.font("Helvetica-Bold").fontSize(8).fillColor(BODY)
@@ -341,7 +341,7 @@ async function generateTacticalBriefPdf({
         if (paraBuffer.length === 0) return;
         const text = cleanText(paraBuffer.join(" ")).trim();
         if (!text) { paraBuffer = []; return; }
-        y = checkPage(doc, y, 40, sectionCtx);
+        y = checkPage(doc, y, 80, sectionCtx);
         doc.font("Helvetica").fontSize(9.5).fillColor(TEXT)
            .text(text, L, y, { width: CONTENT_W, lineGap: 2.5 });
         y = doc.y + 10;
@@ -358,7 +358,7 @@ async function generateTacticalBriefPdf({
         // Numbered finding or bullet point
         if (/^\d+\.\s/.test(line) || /^[-•]\s/.test(line)) {
           flushPara();
-          y = checkPage(doc, y, 36, sectionCtx);
+          y = checkPage(doc, y, 72, sectionCtx);
           const isNumbered = /^\d+\./.test(line);
           const bulletChar = isNumbered ? line.match(/^(\d+\.)/)[1] : "•";
           const bulletText = clean.replace(/^\d+\.\s*/, "").replace(/^[-•]\s*/, "");
@@ -382,7 +382,7 @@ async function generateTacticalBriefPdf({
         // ALL CAPS sub-header (like competitor names, finding titles)
         if (/^[A-Z][A-Z\s,()&\/\-:]+$/.test(line) && line.length > 3 && line.length < 80) {
           flushPara();
-          y = checkPage(doc, y, 30, sectionCtx);
+          y = checkPage(doc, y, 60, sectionCtx);
           y += 4;
           doc.font("Helvetica-Bold").fontSize(9.5).fillColor(BODY)
              .text(clean, L, y, { width: CONTENT_W });
@@ -395,7 +395,7 @@ async function generateTacticalBriefPdf({
         // Date-format timeline entry
         if (/^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|Q[1-4]|20\d\d)/i.test(line)) {
           flushPara();
-          y = checkPage(doc, y, 24, sectionCtx);
+          y = checkPage(doc, y, 60, sectionCtx);
           const dashIdx = clean.indexOf("—");
           const colonIdx = clean.indexOf(":");
           const splitAt = dashIdx > 0 ? dashIdx : colonIdx > 0 ? colonIdx : -1;
@@ -417,7 +417,7 @@ async function generateTacticalBriefPdf({
         // Confidence rating line
         if (/\(Confidence:\s*(High|Medium|Low)\)/i.test(line)) {
           flushPara();
-          y = checkPage(doc, y, 24, sectionCtx);
+          y = checkPage(doc, y, 60, sectionCtx);
           const confMatch = line.match(/\(Confidence:\s*(High|Medium|Low)\)/i);
           const confLevel = confMatch[1];
           const confColor = confLevel === "High" ? "#00AA44" : confLevel === "Medium" ? "#CC8800" : "#CC4400";
