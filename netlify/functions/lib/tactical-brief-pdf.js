@@ -341,7 +341,7 @@ async function generateTacticalBriefPdf({
         if (paraBuffer.length === 0) return;
         const text = cleanText(paraBuffer.join(" ")).trim();
         if (!text) { paraBuffer = []; return; }
-        y = checkPage(doc, y, 80, sectionCtx);
+        y = checkPage(doc, y, 100, sectionCtx);
         doc.font("Helvetica").fontSize(9.5).fillColor(TEXT)
            .text(text, L, y, { width: CONTENT_W, lineGap: 2.5 });
         y = doc.y + 10;
@@ -358,7 +358,7 @@ async function generateTacticalBriefPdf({
         // Numbered finding or bullet point
         if (/^\d+\.\s/.test(line) || /^[-•]\s/.test(line)) {
           flushPara();
-          y = checkPage(doc, y, 72, sectionCtx);
+          y = checkPage(doc, y, 120, sectionCtx);
           const isNumbered = /^\d+\./.test(line);
           const bulletChar = isNumbered ? line.match(/^(\d+\.)/)[1] : "•";
           const bulletText = clean.replace(/^\d+\.\s*/, "").replace(/^[-•]\s*/, "");
@@ -382,7 +382,7 @@ async function generateTacticalBriefPdf({
         // ALL CAPS sub-header (like competitor names, finding titles)
         if (/^[A-Z][A-Z\s,()&\/\-:]+$/.test(line) && line.length > 3 && line.length < 80) {
           flushPara();
-          y = checkPage(doc, y, 60, sectionCtx);
+          y = checkPage(doc, y, 80, sectionCtx);
           y += 4;
           doc.font("Helvetica-Bold").fontSize(9.5).fillColor(BODY)
              .text(clean, L, y, { width: CONTENT_W });
@@ -395,7 +395,7 @@ async function generateTacticalBriefPdf({
         // Date-format timeline entry
         if (/^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|Q[1-4]|20\d\d)/i.test(line)) {
           flushPara();
-          y = checkPage(doc, y, 60, sectionCtx);
+          y = checkPage(doc, y, 80, sectionCtx);
           const dashIdx = clean.indexOf("—");
           const colonIdx = clean.indexOf(":");
           const splitAt = dashIdx > 0 ? dashIdx : colonIdx > 0 ? colonIdx : -1;
