@@ -336,6 +336,7 @@ async function generateTacticalBriefPdf({
       const sectionCtx = section.title; // for continuation headers
       const lines = rawContent.split("\n");
       let paraBuffer = [];
+      let pendingConf = null; // deferred confidence badge
 
       const flushPara = () => {
         if (paraBuffer.length === 0) return;
@@ -344,7 +345,19 @@ async function generateTacticalBriefPdf({
         y = checkPage(doc, y, 100, sectionCtx);
         doc.font("Helvetica").fontSize(9.5).fillColor(TEXT)
            .text(text, L, y, { width: CONTENT_W, lineGap: 2.5 });
-        y = doc.y + 10;
+        y = doc.y + 6;
+        // Render any deferred confidence badge after the full paragraph
+        if (pendingConf) {
+          const confColor = pendingConf === "High" ? "#00AA44" : pendingConf === "Medium" ? "#CC8800" : "#CC4400";
+          const badgeX = L + CONTENT_W - 72;
+          doc.rect(badgeX, y, 68, 14).fill(confColor + "22").strokeColor(confColor).stroke();
+          doc.font("Helvetica-Bold").fontSize(7).fillColor(confColor)
+             .text(`CONFIDENCE: ${pendingConf.toUpperCase()}`, badgeX + 4, y + 3, { width: 60 });
+          y += 20;
+          pendingConf = null;
+        } else {
+          y += 4;
+        }
         paraBuffer = [];
       };
 
@@ -420,21 +433,12 @@ async function generateTacticalBriefPdf({
           continue;
         }
 
-        // Confidence rating line
+        // Confidence rating line — strip marker, buffer remaining text, defer badge
         if (/\(Confidence:\s*(High|Medium|Low)\)/i.test(line)) {
-          flushPara();
-          y = checkPage(doc, y, 60, sectionCtx);
           const confMatch = line.match(/\(Confidence:\s*(High|Medium|Low)\)/i);
-          const confLevel = confMatch[1];
-          const confColor = confLevel === "High" ? "#00AA44" : confLevel === "Medium" ? "#CC8800" : "#CC4400";
-          const textPart = cleanText(line.replace(/\(Confidence:.*?\)/gi, "")).trim();
-          doc.font("Helvetica").fontSize(9.5).fillColor(TEXT)
-             .text(textPart, L, y, { width: CONTENT_W - 80, lineGap: 2 });
-          const textRight = L + CONTENT_W - 72;
-          doc.rect(textRight, y, 68, 14).fill(confColor + "22").strokeColor(confColor).stroke();
-          doc.font("Helvetica-Bold").fontSize(7).fillColor(confColor)
-             .text(`CONFIDENCE: ${confLevel.toUpperCase()}`, textRight + 4, y + 3, { width: 60 });
-          y = doc.y + 8;
+          pendingConf = confMatch[1];
+          const remaining = cleanText(line.replace(/\(Confidence:.*?\)/gi, "")).trim();
+          if (remaining) paraBuffer.push(remaining);
           continue;
         }
 
