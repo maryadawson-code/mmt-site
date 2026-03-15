@@ -390,6 +390,20 @@ exports.handler = async (event) => {
       // Non-fatal — scoring row is already created
     }
 
+    // --- Trigger background function ---
+    const bgUrl = `${process.env.URL || "https://missionmeetstech.com"}/.netlify/functions/score-deck-background`;
+    try {
+      await fetch(bgUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ scoring_id: scoringRow.id }),
+      });
+      console.log("Background function triggered for:", scoringRow.id);
+    } catch (bgErr) {
+      console.error("Failed to trigger background function:", bgErr);
+      // Non-fatal — the row exists, user can retry
+    }
+
     // --- Return scoring_id for polling ---
     return {
       statusCode: 200,
