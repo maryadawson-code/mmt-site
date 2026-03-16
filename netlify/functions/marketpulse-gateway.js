@@ -1,3 +1,4 @@
+require("./lib/sentry");
 // ============================================================
 // marketpulse-gateway.js — Netlify Function
 //
@@ -108,8 +109,28 @@ exports.handler = async (event) => {
 
       // Trigger background generation
       const https = require("https");
+      const freeSessionId = `free_${Date.now()}_${email.replace(/[^a-z0-9]/g, "")}`;
+
+      // Track order in Supabase
+      try {
+        await supabase
+          .from("marketpulse_orders")
+          .insert({
+            session_id: freeSessionId,
+            email,
+            name,
+            company: company || null,
+            topic,
+            audience: audience || null,
+            amount_paid: 0,
+            status: "pending",
+          });
+      } catch (orderErr) {
+        console.error("marketpulse-gateway: order tracking insert failed:", orderErr.message);
+      }
+
       const payload = JSON.stringify({
-        session_id: `free_${Date.now()}_${email.replace(/[^a-z0-9]/g, "")}`,
+        session_id: freeSessionId,
         name,
         email,
         company,

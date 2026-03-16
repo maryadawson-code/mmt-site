@@ -43,12 +43,24 @@ exports.handler = async (event) => {
       .select("*", { count: "exact", head: true })
       .gte("created_at", weekStart);
 
-    // --- Query: Assessments this week ---
+    // --- Query: Assessments this week (completed only) ---
     const { data: weekScores } = await supabase
       .from("mp_scoring_history")
       .select("document_type, verdict, avg_score")
       .eq("feature", FEATURE_NAME)
+      .gte("created_at", weekStart)
+      .not("verdict", "is", null)
+      .neq("verdict", "ERROR");
+
+    // --- Query: All records this week (including errors/pending) for visibility ---
+    const { data: weekAllRecords } = await supabase
+      .from("mp_scoring_history")
+      .select("verdict")
+      .eq("feature", FEATURE_NAME)
       .gte("created_at", weekStart);
+
+    const errorCount = weekAllRecords ? weekAllRecords.filter(r => r.verdict === "ERROR").length : 0;
+    const pendingCount = weekAllRecords ? weekAllRecords.filter(r => r.verdict === null).length : 0;
 
     const totalAssessments = weekScores ? weekScores.length : 0;
 
@@ -95,7 +107,9 @@ exports.handler = async (event) => {
     const { count: allTimeAssessments } = await supabase
       .from("mp_scoring_history")
       .select("*", { count: "exact", head: true })
-      .eq("feature", FEATURE_NAME);
+      .eq("feature", FEATURE_NAME)
+      .not("verdict", "is", null)
+      .neq("verdict", "ERROR");
 
     // --- Build and send report ---
     const stats = {
@@ -105,6 +119,8 @@ exports.handler = async (event) => {
       byVerdict,
       avgScore,
       limitHits: limitHits || 0,
+      errorCount,
+      pendingCount,
       allTimeUsers: allTimeUsers || 0,
       allTimeAssessments: allTimeAssessments || 0,
       weekStart,

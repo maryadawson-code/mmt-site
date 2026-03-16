@@ -1,3 +1,4 @@
+require("./lib/sentry");
 // ============================================================
 // generate-tactical-brief-background.js — Netlify Background Function
 //
@@ -7,10 +8,14 @@
 // POST body: { session_id, name, email, company, topic, audience, amount_paid }
 // ============================================================
 
+const { Sentry } = require("./lib/sentry");
 const { generateTacticalBriefPdf } = require("./lib/tactical-brief-pdf");
 const { buildDeliveryEmail, buildNotificationEmail } = require("./lib/tactical-brief-email");
 const { sendEmail } = require("./lib/send-email");
+const { createClient } = require("@supabase/supabase-js");
 
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 const PERPLEXITY_MODEL = "sonar-pro";
 const PERPLEXITY_URL = "https://api.perplexity.ai/chat/completions";
@@ -210,6 +215,23 @@ exports.handler = async (event) => {
   console.log(`generate-tactical-brief-background: starting for ${email} (session ${session_id})`);
   const startTime = Date.now();
 
+  // Initialize Supabase for order tracking
+  const supabase = (SUPABASE_URL && SUPABASE_SERVICE_KEY)
+    ? createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+    : null;
+
+  // Mark order as processing
+  if (supabase && session_id) {
+    try {
+      await supabase
+        .from("marketpulse_orders")
+        .update({ status: "processing" })
+        .eq("session_id", session_id);
+    } catch (trackErr) {
+      console.error("marketpulse order tracking (processing) failed:", trackErr.message);
+    }
+  }
+
   try {
     // Run 3-pass research pipeline
     const research = await runResearchPipeline(topic, audience, company);
@@ -262,9 +284,28 @@ exports.handler = async (event) => {
     const totalTime = Math.round((Date.now() - startTime) / 1000);
     console.log(`generate-tactical-brief-background: completed in ${totalTime}s for ${email}`);
 
+    // Mark order as delivered
+    if (supabase && session_id) {
+      try {
+        await supabase
+          .from("marketpulse_orders")
+          .update({
+            status: "delivered",
+            pdf_size_kb: Math.round(pdfBuffer.length / 1024),
+            duration_seconds: totalTime,
+            completed_at: new Date().toISOString(),
+          })
+          .eq("session_id", session_id);
+      } catch (trackErr) {
+        console.error("marketpulse order tracking (delivered) failed:", trackErr.message);
+      }
+    }
+
     return { statusCode: 200, body: JSON.stringify({ success: true, duration_seconds: totalTime }) };
   } catch (err) {
     console.error("generate-tactical-brief-background: pipeline error:", err);
+    Sentry.captureException(err, { extra: { session_id, email, topic } });
+    await Sentry.flush(2000);
 
     // Notify Mary of failure
     try {
@@ -276,6 +317,24 @@ exports.handler = async (event) => {
       });
     } catch (notifyErr) {
       console.error("Failed to send failure notification:", notifyErr.message);
+    }
+
+    // Mark order as failed
+    if (supabase && session_id) {
+      try {
+        const failTime = Math.round((Date.now() - startTime) / 1000);
+        await supabase
+          .from("marketpulse_orders")
+          .update({
+            status: "failed",
+            error_message: err.message,
+            duration_seconds: failTime,
+            completed_at: new Date().toISOString(),
+          })
+          .eq("session_id", session_id);
+      } catch (trackErr) {
+        console.error("marketpulse order tracking (failed) failed:", trackErr.message);
+      }
     }
 
     return { statusCode: 500, body: JSON.stringify({ error: err.message }) };

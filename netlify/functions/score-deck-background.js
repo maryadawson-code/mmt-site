@@ -1,3 +1,4 @@
+require("./lib/sentry");
 // ============================================================
 // score-deck-background.js — Netlify Background Function
 //
@@ -16,6 +17,7 @@
 //   5. Send score receipt email
 // ============================================================
 
+const { Sentry } = require("./lib/sentry");
 const { createClient } = require("@supabase/supabase-js");
 const { DOCUMENT_TYPES } = require("./lib/document-types");
 const { getModelConfig } = require("./lib/model-router");
@@ -427,6 +429,38 @@ exports.handler = async (event) => {
 
     console.log(`Scoring complete for ${scoring_id}: ${overallGrade} (${scorecard.verdict})`);
 
+    // --- Decrement usage (only on success) ---
+    try {
+      const { data: currentUsage } = await supabase
+        .from("mp_feature_usage")
+        .select("uses_remaining, uses_total")
+        .eq("user_id", record.user_id)
+        .eq("feature", "lethality_test")
+        .single();
+
+      if (currentUsage) {
+        const now = new Date().toISOString();
+        await supabase
+          .from("mp_feature_usage")
+          .update({
+            uses_remaining: currentUsage.uses_remaining - 1,
+            uses_total: (currentUsage.uses_total || 0) + 1,
+            last_used_at: now,
+          })
+          .eq("user_id", record.user_id)
+          .eq("feature", "lethality_test");
+
+        await supabase
+          .from("mp_users")
+          .update({ last_active_at: now })
+          .eq("id", record.user_id);
+
+        console.log(`Usage decremented for user ${record.user_id}: ${currentUsage.uses_remaining} → ${currentUsage.uses_remaining - 1}`);
+      }
+    } catch (usageErr) {
+      console.error("Usage decrement error (non-fatal):", usageErr.message);
+    }
+
     // --- Send score receipt email ---
     try {
       const { sendEmail } = require("./lib/send-email");
@@ -463,6 +497,8 @@ exports.handler = async (event) => {
 
   } catch (err) {
     console.error("Unhandled error in score-deck-background:", err);
+    Sentry.captureException(err, { extra: { scoring_id } });
+    await Sentry.flush(2000);
 
     if (scoring_id) {
       try {

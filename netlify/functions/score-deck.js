@@ -1,3 +1,4 @@
+require("./lib/sentry");
 // ============================================================
 // score-deck.js — Netlify Function (ProposalPulse Gateway)
 //
@@ -332,6 +333,27 @@ exports.handler = async (event) => {
       };
     }
 
+    // Check for in-flight scoring (prevent free-tier abuse)
+    const { count: pendingCount } = await supabase
+      .from("mp_scoring_history")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("feature", FEATURE_NAME)
+      .is("verdict", null);
+
+    const effectiveRemaining = usage.uses_remaining - (pendingCount || 0);
+    if (user.tier === "free" && effectiveRemaining <= 0) {
+      return {
+        statusCode: 403,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({
+          error: "limit_reached",
+          message: "You have an assessment in progress. Please wait for it to complete before submitting another.",
+          uses_remaining: 0,
+        }),
+      };
+    }
+
     // --- Build scoring payload to store in DB ---
     // Background function reads this from the `scores` column.
     // _pending flag distinguishes from a real scorecard.
@@ -382,28 +404,38 @@ exports.handler = async (event) => {
       };
     }
 
-    // --- Decrement usage ---
-    try {
-      await recordUsage(supabase, user.id, usage);
-    } catch (err) {
-      console.error("Usage decrement error:", err);
-      // Non-fatal — scoring row is already created
+    // Usage is decremented in score-deck-background.js AFTER successful scoring
+
+    // --- Trigger background function with retry ---
+    const bgUrl = "https://missionmeetstech.com/.netlify/functions/score-deck-background";
+    const bgPayload = JSON.stringify({ scoring_id: scoringRow.id });
+    let bgTriggered = false;
+
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const bgRes = await fetch(bgUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: bgPayload,
+        });
+        // Netlify background functions return 202 immediately
+        if (bgRes.status === 202 || bgRes.ok) {
+          console.log(`Background function triggered for ${scoringRow.id} (attempt ${attempt + 1})`);
+          bgTriggered = true;
+          break;
+        }
+        console.warn(`Background trigger returned ${bgRes.status}, attempt ${attempt + 1}/3`);
+      } catch (bgErr) {
+        console.error(`Background trigger attempt ${attempt + 1}/3 failed:`, bgErr.message);
+      }
+      // Wait before retry (1s, 2s)
+      if (attempt < 2) await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
     }
 
-    // --- Trigger background function (fire-and-forget) ---
-    // Must use the public URL — Netlify function-to-function calls via
-    // internal routing don't work reliably. Background function returns
-    // 202 immediately and runs async for up to 15 minutes.
-    const bgUrl = "https://missionmeetstech.com/.netlify/functions/score-deck-background";
-    fetch(bgUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ scoring_id: scoringRow.id }),
-    }).then(() => {
-      console.log("Background function triggered for:", scoringRow.id);
-    }).catch((bgErr) => {
-      console.error("Failed to trigger background function:", bgErr);
-    });
+    if (!bgTriggered) {
+      console.error(`CRITICAL: All 3 background trigger attempts failed for ${scoringRow.id}. Record is stuck pending.`);
+      // Don't fail the user request — the stale-pending cleanup will catch this
+    }
 
     // --- Return scoring_id for polling ---
     return {
@@ -411,7 +443,7 @@ exports.handler = async (event) => {
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
       body: JSON.stringify({
         scoring_id: scoringRow.id,
-        uses_remaining: user.tier === "free" ? usage.uses_remaining - 1 : 999,
+        uses_remaining: user.tier === "free" ? effectiveRemaining - 1 : 999,
         user_tier: user.tier,
       }),
     };

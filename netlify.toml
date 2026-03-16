@@ -24,6 +24,12 @@
 [functions."sb-vehicle-radar"]
   schedule = "0 13 * * *"
 
+[functions."score-cleanup"]
+  schedule = "*/10 * * * *"
+
+[functions."health-check"]
+  schedule = "0 */6 * * *"
+
 [[redirects]]
   from = "/"
   to = "/index.html"
