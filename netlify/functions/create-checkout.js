@@ -8,6 +8,7 @@
 
 const { createClient } = require("@supabase/supabase-js");
 const Stripe = require("stripe");
+const Sentry = require("./lib/sentry");
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -123,6 +124,7 @@ exports.handler = async (event) => {
     };
   } catch (err) {
     console.error("create-checkout error:", err);
+    Sentry.captureException(err);
     return {
       statusCode: 500,
       headers: CORS_HEADERS,

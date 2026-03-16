@@ -14,6 +14,7 @@
 
 const { createClient } = require("@supabase/supabase-js");
 const { DOCUMENT_TYPES } = require("./lib/document-types");
+const Sentry = require("./lib/sentry");
 
 // --- Environment Variables ---
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -418,6 +419,7 @@ exports.handler = async (event) => {
 
   } catch (err) {
     console.error("Unhandled error:", err);
+    Sentry.captureException(err);
     return {
       statusCode: 500,
       headers: CORS_HEADERS,

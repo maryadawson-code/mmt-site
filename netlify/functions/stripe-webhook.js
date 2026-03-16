@@ -9,6 +9,7 @@
 
 const { createClient } = require("@supabase/supabase-js");
 const Stripe = require("stripe");
+const Sentry = require("./lib/sentry");
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
@@ -105,6 +106,7 @@ exports.handler = async (event) => {
     };
   } catch (err) {
     console.error("stripe-webhook: unhandled error:", err);
+    Sentry.captureException(err);
     return { statusCode: 500, body: JSON.stringify({ error: "Internal error" }) };
   }
 };

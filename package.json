@@ -10,6 +10,7 @@
     "verify": "node build.js && node scripts/verify-integrity.js && npx playwright test"
   },
   "dependencies": {
+    "@sentry/node": "^10.43.0",
     "@supabase/supabase-js": "^2.39.0",
     "gray-matter": "^4.0.3",
     "mammoth": "^1.8.0",
