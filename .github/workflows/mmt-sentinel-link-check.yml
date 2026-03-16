@@ -19,7 +19,7 @@ jobs:
         id: links
         run: |
           chmod +x scripts/mmt-link-checker.sh
-          RESULT=$(bash scripts/mmt-link-checker.sh --json 2>&1) || true
+          RESULT=$(bash scripts/mmt-link-checker.sh --json) || true
           echo "result<<EOF" >> $GITHUB_OUTPUT
           echo "$RESULT" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
@@ -28,7 +28,7 @@ jobs:
         id: freshness
         run: |
           chmod +x scripts/mmt-content-freshness.sh
-          RESULT=$(bash scripts/mmt-content-freshness.sh --json 2>&1) || true
+          RESULT=$(bash scripts/mmt-content-freshness.sh --json) || true
           echo "result<<EOF" >> $GITHUB_OUTPUT
           echo "$RESULT" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
