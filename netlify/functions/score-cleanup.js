@@ -16,6 +16,7 @@
 
 const { createClient } = require("@supabase/supabase-js");
 const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
+const { purgeRateLimits } = require("./lib/rate-limiter");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -134,6 +135,9 @@ exports.handler = async () => {
         .eq("id", record.id);
       markedFailed++;
     }
+
+    // Purge expired rate limit records (older than 1 hour)
+    await purgeRateLimits(supabase, 3600000);
 
     console.log(`score-cleanup: done — retriggered=${retriggered}, markedFailed=${markedFailed}`);
     return {

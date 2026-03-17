@@ -337,6 +337,24 @@ exports.handler = async (event) => {
       }
     }
 
+    // Auto-refund: if this was a paid order, refund via Stripe
+    if (session_id && process.env.STRIPE_SECRET_KEY) {
+      try {
+        const Stripe = require("stripe");
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+        const session = await stripe.checkout.sessions.retrieve(session_id);
+        if (session.payment_intent) {
+          await stripe.refunds.create({
+            payment_intent: session.payment_intent,
+            reason: "product_not_delivered",
+          });
+          console.log(`Auto-refund issued for session ${session_id}`);
+        }
+      } catch (refundErr) {
+        console.error("Auto-refund failed (manual refund needed):", refundErr.message);
+      }
+    }
+
     return { statusCode: 500, body: JSON.stringify({ error: err.message }) };
   }
 };

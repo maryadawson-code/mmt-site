@@ -10,6 +10,7 @@ require("./lib/sentry");
 
 const Stripe = require("stripe");
 const { createClient } = require("@supabase/supabase-js");
+const { checkRateLimit } = require("./lib/rate-limiter");
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -70,6 +71,17 @@ exports.handler = async (event) => {
 
     // Check usage in Supabase
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+
+    // Rate limit: 5 requests per 15 min per email, 15 per IP
+    const emailRate = await checkRateLimit(supabase, `mp:${email}`, 5, 15);
+    if (!emailRate.allowed) {
+      return { statusCode: 429, headers: CORS_HEADERS, body: JSON.stringify({ error: "Too many requests. Please wait a few minutes." }) };
+    }
+    const ip = event.headers["x-forwarded-for"]?.split(",")[0]?.trim() || "unknown";
+    const ipRate = await checkRateLimit(supabase, `mpip:${ip}`, 15, 15);
+    if (!ipRate.allowed) {
+      return { statusCode: 429, headers: CORS_HEADERS, body: JSON.stringify({ error: "Too many requests from your network." }) };
+    }
 
     // Get or create usage record for this email
     let { data: usage, error: usageErr } = await supabase

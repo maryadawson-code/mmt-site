@@ -236,6 +236,33 @@ exports.handler = async (event) => {
       return { statusCode: 500, body: "Database not configured" };
     }
 
+    // --- Quick API health check before expensive operation ---
+    try {
+      const healthRes = await fetchWithTimeout("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": ANTHROPIC_API_KEY,
+          "anthropic-version": "2023-06-01",
+        },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-6",
+          max_tokens: 1,
+          messages: [{ role: "user", content: "OK" }],
+        }),
+      }, 10000);
+
+      if (healthRes.status === 401 || healthRes.status === 403) {
+        console.error("Anthropic API key is invalid (health check returned", healthRes.status, ")");
+        await markScoringFailed(supabase, scoring_id, "API key is invalid. The team has been notified.");
+        return { statusCode: 200, body: "API key invalid — fail fast" };
+      }
+    } catch (healthErr) {
+      // Network error — API might be temporarily down. Proceed anyway,
+      // the retry logic in the actual scoring call will handle transient failures.
+      console.warn("API health check failed (proceeding anyway):", healthErr.message);
+    }
+
     // --- Read payload from DB ---
     const { data: record, error: lookupErr } = await supabase
       .from("mp_scoring_history")
