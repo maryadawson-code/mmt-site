@@ -13,6 +13,7 @@ try {
   Sentry = {
     init: () => {},
     captureException: (err) => console.error("[Sentry stub] Exception:", err.message),
+    addBreadcrumb: () => {},
     flush: () => Promise.resolve(),
   };
   console.warn("@sentry/node not installed — using no-op stub");

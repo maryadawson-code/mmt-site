@@ -14,6 +14,7 @@ const { buildDeliveryEmail, buildNotificationEmail } = require("./lib/tactical-b
 const { sendEmail } = require("./lib/send-email");
 const { createClient } = require("@supabase/supabase-js");
 const { logOpsEvent } = require("./lib/ops-ledger");
+const { checkCircuit, recordSuccess, recordFailure } = require("./lib/circuit-breaker");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -214,6 +215,7 @@ exports.handler = async (event) => {
   }
 
   console.log(`generate-tactical-brief-background: starting for ${email} (session ${session_id})`);
+  Sentry.addBreadcrumb({ category: "brief", message: "brief_started", level: "info", data: { email, topic } });
   const startTime = Date.now();
 
   // Initialize Supabase for order tracking
@@ -234,12 +236,26 @@ exports.handler = async (event) => {
   }
 
   try {
+    // Circuit breaker check before expensive API calls
+    const perplexityCircuit = await checkCircuit(supabase, "perplexity");
+    const anthropicCircuit = await checkCircuit(supabase, "anthropic");
+    if (!perplexityCircuit.allowed || !anthropicCircuit.allowed) {
+      const blocked = !perplexityCircuit.allowed ? "perplexity" : "anthropic";
+      console.warn(`Circuit open for ${blocked} — deferring brief generation`);
+      await logOpsEvent(supabase, { event_type: "circuit_open_skip", source_function: "generate-tactical-brief-background", order_id: session_id, severity: "warning", details: { blocked_provider: blocked } });
+      return { statusCode: 200, body: "Circuit open — deferred" };
+    }
+
+    Sentry.addBreadcrumb({ category: "brief", message: "research_pipeline_started", level: "info" });
     // Run 3-pass research pipeline
     const research = await runResearchPipeline(topic, audience, company);
     const researchTime = Math.round((Date.now() - startTime) / 1000);
     console.log(`Research pipeline completed in ${researchTime}s`);
+    await recordSuccess(supabase, "perplexity");
+    await recordSuccess(supabase, "anthropic");
 
     // Generate PDF
+    Sentry.addBreadcrumb({ category: "brief", message: "pdf_generation_started", level: "info" });
     console.log("Generating PDF...");
     const pdfBuffer = await generateTacticalBriefPdf({
       name,
@@ -271,6 +287,8 @@ exports.handler = async (event) => {
 
     if (!deliveryResult.success) {
       console.error("Delivery email failed:", deliveryResult.error);
+    } else {
+      Sentry.addBreadcrumb({ category: "brief", message: "email_sent", level: "info", data: { email } });
     }
 
     // Send notification email to Mary

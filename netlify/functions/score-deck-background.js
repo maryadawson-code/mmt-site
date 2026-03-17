@@ -219,6 +219,7 @@ exports.handler = async (event) => {
     }
 
     console.log(`Background function started for scoring_id=${scoring_id}`);
+    Sentry.addBreadcrumb({ category: "scoring", message: "scoring_started", level: "info", data: { scoring_id } });
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
@@ -342,13 +343,14 @@ exports.handler = async (event) => {
 
     // --- Build prompt and call Claude API ---
     const scoringModelConfig = await getModelConfig(supabase, "scoring");
+    Sentry.addBreadcrumb({ category: "scoring", message: "anthropic_api_called", level: "info", data: { scoring_id } });
     console.log(`Calling Claude API for ${scoring_id} (${fileType}, textLen=${extractedText?.length || 0}, model=${scoringModelConfig.model} [${scoringModelConfig.reason}])`);
     const systemPrompt = buildSystemPrompt(documentType, finalSowText);
     const messageContent = buildMessageContent(fileType, fileBase64, extractedText, documentType);
 
     // Circuit breaker: fail fast if Anthropic is known-down
     const circuitState = await checkCircuit(supabase, "anthropic");
-    if (circuitState.open) {
+    if (!circuitState.allowed) {
       console.warn("Circuit OPEN for Anthropic — marking for retry");
       await logOpsEvent(supabase, { event_type: "circuit_open_skip", source_function: "score-deck-background", scoring_id, severity: "warning" });
       // Mark for retry via graceful degradation path
@@ -481,6 +483,7 @@ exports.handler = async (event) => {
       console.error("Failed to update scoring row:", updateErr);
     }
 
+    Sentry.addBreadcrumb({ category: "scoring", message: "scoring_complete", level: "info", data: { scoring_id, overallGrade } });
     console.log(`Scoring complete for ${scoring_id}: ${overallGrade} (${scorecard.verdict})`);
 
     // --- Decrement usage (only on success) ---
@@ -542,6 +545,7 @@ exports.handler = async (event) => {
           fileName: fileName,
         }),
       });
+      Sentry.addBreadcrumb({ category: "scoring", message: "email_sent", level: "info", data: { scoring_id } });
       console.log(`Receipt email sent for ${scoring_id}`);
     } catch (emailErr) {
       console.error("Receipt email error:", emailErr);
