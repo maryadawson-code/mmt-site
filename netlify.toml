@@ -1,0 +1,136 @@
+[build]
+  publish = "dist"
+  command = "node build.js"
+
+[functions]
+  directory = "netlify/functions"
+
+[[edge_functions]]
+  function = "security-headers"
+  path = "/*"
+
+[functions."weekly-report"]
+  schedule = "0 14 * * 1"
+
+[functions."rebuild-trigger"]
+  schedule = "0 */4 * * *"
+
+[functions."contract-intel-refresh"]
+  schedule = "0 11 * * *"
+
+[functions."opportunity-radar"]
+  schedule = "0 12 * * *"
+
+[functions."sb-vehicle-radar"]
+  schedule = "0 13 * * *"
+
+[functions."score-cleanup"]
+  schedule = "*/10 * * * *"
+
+[functions."health-check"]
+  schedule = "0 */6 * * *"
+
+[[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/lethality-test*"
+  to = "/proposal-pulse.html"
+  status = 301
+
+[[redirects]]
+  from = "/newsletter-archive.html"
+  to = "/newsletter.html#all-issues"
+  status = 301
+
+[[redirects]]
+  from = "/community.html"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/community"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/refer.html"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/refer"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/contact.html"
+  to = "/about.html"
+  status = 301
+
+[[redirects]]
+  from = "/contact"
+  to = "/about.html"
+  status = 301
+
+[[redirects]]
+  from = "/contracts/mhs-genesis/"
+  to = "/contracts/mhs-genesis-electronic-health-record/"
+  status = 301
+
+[[redirects]]
+  from = "/contracts/mhs-genesis"
+  to = "/contracts/mhs-genesis-electronic-health-record/"
+  status = 301
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; frame-src https://checkout.stripe.com https://open.spotify.com; media-src 'self' https://api.riverside.fm https://hosting-media.rs-prod.riverside.fm; connect-src 'self' https://plausible.io https://checkout.stripe.com https://api.stripe.com; object-src 'none'; base-uri 'self'; form-action 'self' https://buttondown.com https://checkout.stripe.com"
+
+# Cache headers
+[[headers]]
+  for = "/styles/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+  for = "*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+  for = "*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+  for = "*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "*.woff2"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/js/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+
+[[headers]]
+  for = "/feed.xml"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
