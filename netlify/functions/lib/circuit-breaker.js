@@ -1,107 +1,118 @@
 // Circuit breaker backed by ops_events in Supabase.
-// Opens after 3 failures within 10 minutes. Half-opens after 5 minutes.
-// State is derived from ops_events queries, not in-memory counters.
-// This survives serverless cold starts.
+// Zero in-memory state — all reads/writes go through ops_events.
+// Survives serverless cold starts.
 
 const { logOpsEvent } = require("./ops-ledger");
 
-const FAILURE_THRESHOLD = 3;
-const FAILURE_WINDOW_MS = 10 * 60 * 1000;
-const RECOVERY_MS = 5 * 60 * 1000;
+const CIRCUIT_CONFIG = {
+  anthropic:  { failureThreshold: 5, cooldownMinutes: 10, windowMinutes: 15 },
+  perplexity: { failureThreshold: 5, cooldownMinutes: 10, windowMinutes: 15 },
+  resend:     { failureThreshold: 3, cooldownMinutes: 5,  windowMinutes: 10 },
+};
 
-async function checkCircuit(supabase, service) {
-  if (!supabase) return { open: false, halfOpen: false };
+const DEFAULT_CONFIG = { failureThreshold: 5, cooldownMinutes: 10, windowMinutes: 15 };
+
+async function countRecentBySignature(supabase, signature, windowMinutes) {
+  const since = new Date(Date.now() - windowMinutes * 60000).toISOString();
+  const { count, error } = await supabase
+    .from("ops_events")
+    .select("*", { count: "exact", head: true })
+    .eq("error_signature", signature)
+    .gte("created_at", since);
+  if (error) { console.error("circuit-breaker count error:", error.message); return 0; }
+  return count || 0;
+}
+
+async function checkCircuit(supabase, provider) {
+  if (!supabase) return { allowed: true, reason: "no_db" };
+
+  const config = CIRCUIT_CONFIG[provider] || DEFAULT_CONFIG;
 
   try {
-    // Check for recent circuit_opened event
-    const openedSince = new Date(Date.now() - RECOVERY_MS - FAILURE_WINDOW_MS).toISOString();
-    const { data: openEvents } = await supabase
-      .from("ops_events")
-      .select("created_at")
-      .eq("event_type", "circuit_opened")
-      .eq("details->>service", service)
-      .gte("created_at", openedSince)
-      .order("created_at", { ascending: false })
-      .limit(1);
+    // Count failures in window
+    const failureSignatures = [
+      `${provider}_rate_limit`, `${provider}_overloaded`,
+      `${provider}_timeout`, `${provider}_server_error`, `${provider}_failure`,
+    ];
 
-    if (!openEvents || openEvents.length === 0) return { open: false, halfOpen: false };
-
-    const openedAt = new Date(openEvents[0].created_at).getTime();
-
-    // Check if it was closed after being opened
-    const { data: closeEvents } = await supabase
-      .from("ops_events")
-      .select("created_at")
-      .eq("event_type", "circuit_closed")
-      .eq("details->>service", service)
-      .gte("created_at", openEvents[0].created_at)
-      .limit(1);
-
-    if (closeEvents && closeEvents.length > 0) return { open: false, halfOpen: false };
-
-    // Circuit was opened and not closed — check if recovery period passed
-    if (Date.now() - openedAt > RECOVERY_MS) {
-      return { open: false, halfOpen: true };
+    let totalFailures = 0;
+    for (const sig of failureSignatures) {
+      totalFailures += await countRecentBySignature(supabase, sig, config.windowMinutes);
     }
 
-    return { open: true, halfOpen: false };
+    if (totalFailures < config.failureThreshold) {
+      return { allowed: true, reason: "closed", failures: totalFailures };
+    }
+
+    // Threshold exceeded — check if cooldown expired
+    const recentOpens = await countRecentBySignature(supabase, `circuit_open_${provider}`, config.cooldownMinutes);
+
+    if (recentOpens === 0) {
+      // Cooldown expired → half-open, allow one test request
+      return { allowed: true, reason: "half_open", failures: totalFailures };
+    }
+
+    // Still in cooldown
+    return { allowed: false, reason: "circuit_open", failures: totalFailures, cooldownMinutes: config.cooldownMinutes };
   } catch (err) {
-    console.error("circuit-breaker: check failed:", err.message);
-    return { open: false, halfOpen: false }; // Fail open
+    console.error("circuit-breaker: checkCircuit failed:", err.message);
+    return { allowed: true, reason: "check_error" }; // Fail open
   }
 }
 
-async function recordSuccess(supabase, service) {
-  if (!supabase) return;
-  // Check if circuit was open/half-open, then close it
-  const state = await checkCircuit(supabase, service);
-  if (state.open || state.halfOpen) {
-    await logOpsEvent(supabase, {
-      event_type: "circuit_closed",
-      source_function: "circuit-breaker",
-      severity: "info",
-      details: { service },
-    });
-  }
-}
-
-async function recordFailure(supabase, service, error) {
+async function recordFailure(supabase, provider, error) {
   if (!supabase) return;
 
-  // Log the failure
+  const config = CIRCUIT_CONFIG[provider] || DEFAULT_CONFIG;
+  const errMsg = error?.message || String(error);
+  const status = error?.status || error?.statusCode || 0;
+
+  // Compute signature
+  let signature = `${provider}_failure`;
+  if (status === 429) signature = `${provider}_rate_limit`;
+  else if (status === 529) signature = `${provider}_overloaded`;
+  else if (errMsg.includes("timeout") || errMsg.includes("ETIMEDOUT")) signature = `${provider}_timeout`;
+  else if (status >= 500) signature = `${provider}_server_error`;
+
   await logOpsEvent(supabase, {
     event_type: "api_failure",
     source_function: "circuit-breaker",
     severity: "warning",
-    details: { service, error: error?.message || String(error) },
-    error_signature: `${service}_failure`,
+    details: { provider, error: errMsg, status },
+    error_signature: signature,
   });
 
-  // Count recent failures
+  // Check if threshold now exceeded
   try {
-    const windowStart = new Date(Date.now() - FAILURE_WINDOW_MS).toISOString();
-    const { count } = await supabase
-      .from("ops_events")
-      .select("*", { count: "exact", head: true })
-      .eq("event_type", "api_failure")
-      .eq("details->>service", service)
-      .gte("created_at", windowStart);
-
-    if (count >= FAILURE_THRESHOLD) {
-      // Check if already open
-      const state = await checkCircuit(supabase, service);
-      if (!state.open) {
+    const failCount = await countRecentBySignature(supabase, signature, config.windowMinutes);
+    if (failCount >= config.failureThreshold) {
+      const existingOpen = await countRecentBySignature(supabase, `circuit_open_${provider}`, config.cooldownMinutes);
+      if (existingOpen === 0) {
         await logOpsEvent(supabase, {
           event_type: "circuit_opened",
           source_function: "circuit-breaker",
           severity: "error",
-          details: { service, failures: count, error: error?.message },
+          details: { provider, failures: failCount, trigger: signature },
+          error_signature: `circuit_open_${provider}`,
         });
       }
     }
   } catch (err) {
-    console.error("circuit-breaker: recordFailure query failed:", err.message);
+    console.error("circuit-breaker: recordFailure threshold check failed:", err.message);
   }
 }
 
-module.exports = { checkCircuit, recordSuccess, recordFailure };
+async function recordSuccess(supabase, provider) {
+  if (!supabase) return;
+
+  await logOpsEvent(supabase, {
+    event_type: "circuit_closed",
+    source_function: "circuit-breaker",
+    severity: "info",
+    details: { provider },
+    error_signature: `circuit_closed_${provider}`,
+    auto_resolved: true,
+  });
+}
+
+module.exports = { checkCircuit, recordFailure, recordSuccess };
