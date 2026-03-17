@@ -33,6 +33,12 @@
 [functions."daily-stats-rollup"]
   schedule = "0 0 * * *"
 
+[functions."tactical-brief-cleanup"]
+  schedule = "*/15 * * * *"
+
+[functions."ops-pattern-detector"]
+  schedule = "0 13 * * *"
+
 [[redirects]]
   from = "/"
   to = "/index.html"
