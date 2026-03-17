@@ -18,6 +18,7 @@ const { createClient } = require("@supabase/supabase-js");
 const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
 const { purgeRateLimits } = require("./lib/rate-limiter");
 const { logOpsEvent } = require("./lib/ops-ledger");
+const { checkCircuit } = require("./lib/circuit-breaker");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -96,6 +97,14 @@ exports.handler = async () => {
           .eq("id", record.id);
         markedFailed++;
         await logOpsEvent(supabase, { event_type: "cleanup_error_marked", source_function: "score-cleanup", scoring_id: record.id, severity: "warning", details: { retrigger_count: retriggerCount } });
+        continue;
+      }
+
+      // Circuit breaker check before retrigger
+      const circuit = await checkCircuit(supabase, "anthropic");
+      if (!circuit.allowed) {
+        console.log(`score-cleanup: circuit open, skipping retrigger of ${record.id}`);
+        await logOpsEvent(supabase, { event_type: "retry_skipped", source_function: "score-cleanup", scoring_id: record.id, severity: "warning", details: { reason: "circuit_open" } });
         continue;
       }
 
