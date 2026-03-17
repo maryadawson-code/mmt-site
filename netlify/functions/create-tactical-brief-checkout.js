@@ -1,20 +1,16 @@
 // ============================================================
-// create-checkout.js — Netlify Function
+// create-tactical-brief-checkout.js — Netlify Function
 //
-// Creates a Stripe Checkout Session for a single $19.99 assessment.
-// POST body: { email }
+// Creates a Stripe Checkout Session for a $50 Tactical Brief.
+// POST body: { name, email, company, topic, audience }
 // Returns: { url } — Stripe-hosted checkout page URL
 // ============================================================
 
-const { createClient } = require("@supabase/supabase-js");
 const Stripe = require("stripe");
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
-
 const SITE_URL = "https://missionmeetstech.com";
-const PRICE_CENTS = 1999; // $19.99
+const PRICE_CENTS = 5000; // $50.00
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": SITE_URL,
@@ -37,7 +33,7 @@ exports.handler = async (event) => {
   }
 
   if (!STRIPE_SECRET_KEY) {
-    console.error("create-checkout: STRIPE_SECRET_KEY not configured");
+    console.error("create-tactical-brief-checkout: STRIPE_SECRET_KEY not configured");
     return {
       statusCode: 500,
       headers: CORS_HEADERS,
@@ -47,9 +43,22 @@ exports.handler = async (event) => {
 
   try {
     const body = JSON.parse(event.body);
+    const name = (body.name || "").trim();
     const email = (body.email || "").toLowerCase().trim();
+    const company = (body.company || "").trim();
+    const topic = (body.topic || "").trim();
+    const audience = (body.audience || "").trim();
 
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
+    // Validate required fields
+    if (!name || !email || !topic) {
+      return {
+        statusCode: 400,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({ error: "Name, email, and research topic are required." }),
+      };
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
       return {
         statusCode: 400,
         headers: CORS_HEADERS,
@@ -57,51 +66,21 @@ exports.handler = async (event) => {
       };
     }
 
-    // --- Look up user in Supabase (must exist — they already scored) ---
-    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
-    const { data: user, error: userErr } = await supabase
-      .from("mp_users")
-      .select("id, stripe_customer_id")
-      .eq("email", email)
-      .single();
+    // Stripe metadata values max 500 chars each
+    const truncate = (s, max) => (s.length > max ? s.slice(0, max) : s);
 
-    if (userErr || !user) {
-      return {
-        statusCode: 400,
-        headers: CORS_HEADERS,
-        body: JSON.stringify({ error: "No account found for this email. Please score a document first." }),
-      };
-    }
-
-    // --- Find or create Stripe customer ---
     const stripe = new Stripe(STRIPE_SECRET_KEY);
-    let customerId = user.stripe_customer_id;
 
-    if (!customerId) {
-      const customer = await stripe.customers.create({
-        email: email,
-        metadata: { mp_user_id: user.id },
-      });
-      customerId = customer.id;
-
-      // Store Stripe customer ID
-      await supabase
-        .from("mp_users")
-        .update({ stripe_customer_id: customerId })
-        .eq("id", user.id);
-    }
-
-    // --- Create Checkout Session ---
     const session = await stripe.checkout.sessions.create({
-      customer: customerId,
+      customer_email: email,
       mode: "payment",
       line_items: [
         {
           price_data: {
             currency: "usd",
             product_data: {
-              name: "ProposalPulse Assessment",
-              description: "1 additional assessment with full Gold Team Review",
+              name: "MarketPulse Report",
+              description: "Custom federal health IT market intelligence report",
             },
             unit_amount: PRICE_CENTS,
           },
@@ -109,11 +88,15 @@ exports.handler = async (event) => {
         },
       ],
       metadata: {
-        user_email: email,
-        mp_user_id: user.id,
+        product: "tactical_brief",
+        customer_name: truncate(name, 500),
+        customer_email: email,
+        company: truncate(company, 500),
+        topic: truncate(topic, 500),
+        audience: truncate(audience, 500),
       },
-      success_url: `${SITE_URL}/proposal-pulse.html?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${SITE_URL}/proposal-pulse.html?cancelled=true`,
+      success_url: `${SITE_URL}/tactical-brief-confirmed.html?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${SITE_URL}/tactical-brief.html?cancelled=true`,
     });
 
     return {
@@ -122,7 +105,7 @@ exports.handler = async (event) => {
       body: JSON.stringify({ url: session.url }),
     };
   } catch (err) {
-    console.error("create-checkout error:", err);
+    console.error("create-tactical-brief-checkout error:", err);
     return {
       statusCode: 500,
       headers: CORS_HEADERS,

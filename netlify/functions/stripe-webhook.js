@@ -11,7 +11,6 @@
 
 const { createClient } = require("@supabase/supabase-js");
 const Stripe = require("stripe");
-const Sentry = require("./lib/sentry");
 const https = require("https");
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
@@ -203,7 +202,6 @@ async function handleProposalPulse(session, meta) {
     };
   } catch (err) {
     console.error("stripe-webhook [proposalpulse]: unhandled error:", err);
-    Sentry.captureException(err);
     return { statusCode: 500, body: JSON.stringify({ error: "Internal error" }) };
   }
 }
