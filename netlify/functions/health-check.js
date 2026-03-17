@@ -13,20 +13,7 @@ const { sendEmail } = require("./lib/send-email");
 
 const ALERT_EMAIL = "mary@missionmeetstech.com";
 
-exports.handler = async (event) => {
-  // HTTP GET callers (uptime monitors, Perplexity crons) get a lightweight 200
-  if (event && event.httpMethod === "GET") {
-    return {
-      statusCode: 200,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        status: "UP",
-        timestamp: new Date().toISOString(),
-        note: "Full health check runs on schedule every 6 hours",
-      }),
-    };
-  }
-
+exports.handler = async () => {
   // Scheduled invocation — run full checks
   console.log("Health check started:", new Date().toISOString());
   const failures = [];
