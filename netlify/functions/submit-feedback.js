@@ -6,6 +6,7 @@
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
+const { logOpsEvent } = require("./lib/ops-ledger");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -125,6 +126,36 @@ exports.handler = async (event) => {
     }
 
     console.log(`Feedback saved for ${scoring_id}: ${ratingNum} stars`);
+
+    // Log feedback to ops_events
+    await logOpsEvent(supabase, {
+      event_type: "feedback_received",
+      source_function: "submit-feedback",
+      scoring_id,
+      severity: ratingNum <= 2 ? "warning" : "info",
+      details: { rating: ratingNum, comment: sanitizedComment },
+      error_signature: ratingNum <= 2 ? "low_rating" : null,
+    });
+
+    // Quality drift detection: 3+ low ratings in 7 days
+    if (ratingNum <= 2) {
+      try {
+        const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+        const { count } = await supabase
+          .from("ops_events")
+          .select("*", { count: "exact", head: true })
+          .eq("error_signature", "low_rating")
+          .gte("created_at", weekAgo);
+        if (count >= 3) {
+          await logOpsEvent(supabase, {
+            event_type: "quality_alert",
+            source_function: "submit-feedback",
+            severity: "error",
+            details: { low_ratings_this_week: count },
+          });
+        }
+      } catch {}
+    }
 
     // Trigger background analysis for negative feedback
     if (ratingNum < 3) {
