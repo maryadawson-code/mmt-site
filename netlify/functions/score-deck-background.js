@@ -23,6 +23,9 @@ const { DOCUMENT_TYPES } = require("./lib/document-types");
 const { getModelConfig } = require("./lib/model-router");
 const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
 const { withRetry } = require("./lib/retry");
+const { withGracefulDegradation } = require("./lib/graceful-degrade");
+const { logOpsEvent } = require("./lib/ops-ledger");
+const { checkCircuit, recordSuccess, recordFailure } = require("./lib/circuit-breaker");
 
 // --- Environment Variables ---
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -343,25 +346,46 @@ exports.handler = async (event) => {
     const systemPrompt = buildSystemPrompt(documentType, finalSowText);
     const messageContent = buildMessageContent(fileType, fileBase64, extractedText, documentType);
 
-    const claudeResponse = await withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
-        "anthropic-beta": "pdfs-2024-09-25",
-      },
-      body: JSON.stringify({
-        model: scoringModelConfig.model,
-        max_tokens: MAX_OUTPUT_TOKENS,
-        system: systemPrompt,
-        messages: [{ role: "user", content: messageContent }],
-      }),
-    }));
+    // Circuit breaker: fail fast if Anthropic is known-down
+    const circuitState = await checkCircuit(supabase, "anthropic");
+    if (circuitState.open) {
+      console.warn("Circuit OPEN for Anthropic — marking for retry");
+      await logOpsEvent(supabase, { event_type: "circuit_open_skip", source_function: "score-deck-background", scoring_id, severity: "warning" });
+      // Mark for retry via graceful degradation path
+      await supabase.from("mp_scoring_history").update({ verdict: null, scores: { _pending: true, _degraded: true } }).eq("id", scoring_id);
+      return { statusCode: 200, body: "Circuit open — deferred" };
+    }
+
+    const claudeResponse = await withGracefulDegradation(
+      () => withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": ANTHROPIC_API_KEY,
+          "anthropic-version": "2023-06-01",
+          "anthropic-beta": "pdfs-2024-09-25",
+        },
+        body: JSON.stringify({
+          model: scoringModelConfig.model,
+          max_tokens: MAX_OUTPUT_TOKENS,
+          system: systemPrompt,
+          messages: [{ role: "user", content: messageContent }],
+        }),
+      })),
+      { supabase, recordId: scoring_id, table: "mp_scoring_history", userEmail: email, productName: "ProposalPulse assessment" }
+    );
+
+    // If graceful degradation handled a transient failure
+    if (claudeResponse?.degraded) {
+      await recordFailure(supabase, "anthropic", { message: claudeResponse.error });
+      await logOpsEvent(supabase, { event_type: "scoring_degraded", source_function: "score-deck-background", scoring_id, user_email: email, severity: "warning", details: { error: claudeResponse.error } });
+      return { statusCode: 200, body: "Degraded — will retry" };
+    }
 
     if (!claudeResponse.ok) {
       const errText = await claudeResponse.text();
       console.error("Claude API error:", claudeResponse.status, errText);
+      await recordFailure(supabase, "anthropic", { message: errText, status: claudeResponse.status });
       let claudeErrMsg = "AI scoring service error. Please try again.";
       try {
         const errJson = JSON.parse(errText);
@@ -378,9 +402,12 @@ exports.handler = async (event) => {
       } catch(e) {
         claudeErrMsg = `AI service error (${claudeResponse.status}). Please try again.`;
       }
+      await logOpsEvent(supabase, { event_type: "scoring_failed", source_function: "score-deck-background", scoring_id, user_email: email, severity: "error", details: { status: claudeResponse.status }, error_signature: `anthropic_${claudeResponse.status}` });
       await markError(supabase, scoring_id, claudeErrMsg);
       return { statusCode: 200, body: `Claude API error: ${claudeResponse.status}` };
     }
+
+    await recordSuccess(supabase, "anthropic");
 
     const claudeData = await claudeResponse.json();
 
@@ -520,6 +547,7 @@ exports.handler = async (event) => {
       console.error("Receipt email error:", emailErr);
     }
 
+    await logOpsEvent(supabase, { event_type: "scoring_complete", source_function: "score-deck-background", scoring_id, user_email: email, severity: "info", details: { verdict: scorecard.verdict, grade: overallGrade, model: scoringModelConfig.model } });
     return { statusCode: 200, body: "Scoring complete" };
 
   } catch (err) {
@@ -531,6 +559,7 @@ exports.handler = async (event) => {
       try {
         const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
         await markError(supabase, scoring_id, "Internal server error. Please try again.");
+        await logOpsEvent(supabase, { event_type: "scoring_failed", source_function: "score-deck-background", scoring_id, severity: "error", details: { error: err.message }, error_signature: `unhandled_${err.name || "Error"}` });
       } catch (dbErr) {
         console.error("Failed to mark error in DB:", dbErr);
       }

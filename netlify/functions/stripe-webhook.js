@@ -14,6 +14,7 @@ const { createClient } = require("@supabase/supabase-js");
 const Stripe = require("stripe");
 const Sentry = require("./lib/sentry");
 const https = require("https");
+const { logOpsEvent } = require("./lib/ops-ledger");
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
@@ -63,6 +64,9 @@ exports.handler = async (event) => {
   await supabase
     .from("mp_processed_events")
     .insert({ event_id: stripeEvent.id, event_type: stripeEvent.type });
+
+  // Log payment received
+  await logOpsEvent(supabase, { event_type: "payment_received", source_function: "stripe-webhook", severity: "info", details: { stripe_event_type: stripeEvent.type, event_id: stripeEvent.id } });
 
   // ── Route by event type ─────────────────────────────────────
   try {

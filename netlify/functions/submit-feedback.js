@@ -126,6 +126,18 @@ exports.handler = async (event) => {
 
     console.log(`Feedback saved for ${scoring_id}: ${ratingNum} stars`);
 
+    // Trigger background analysis for negative feedback
+    if (ratingNum < 3) {
+      try {
+        const bgUrl = `${process.env.URL || "https://missionmeetstech.com"}/.netlify/functions/collect-feedback-background`;
+        fetch(bgUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ scoring_id, email: record.scores?._email || null, rating: ratingNum, comment: sanitizedComment }),
+        }).catch(() => {}); // Fire and forget
+      } catch {}
+    }
+
     return {
       statusCode: 200,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },

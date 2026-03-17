@@ -13,6 +13,7 @@ const { generateTacticalBriefPdf } = require("./lib/tactical-brief-pdf");
 const { buildDeliveryEmail, buildNotificationEmail } = require("./lib/tactical-brief-email");
 const { sendEmail } = require("./lib/send-email");
 const { createClient } = require("@supabase/supabase-js");
+const { logOpsEvent } = require("./lib/ops-ledger");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -301,6 +302,7 @@ exports.handler = async (event) => {
       }
     }
 
+    await logOpsEvent(supabase, { event_type: "brief_complete", source_function: "generate-tactical-brief-background", order_id: session_id, user_email: email, severity: "info", details: { topic, duration_seconds: totalTime } });
     return { statusCode: 200, body: JSON.stringify({ success: true, duration_seconds: totalTime }) };
   } catch (err) {
     console.error("generate-tactical-brief-background: pipeline error:", err);
@@ -336,6 +338,8 @@ exports.handler = async (event) => {
         console.error("marketpulse order tracking (failed) failed:", trackErr.message);
       }
     }
+
+    await logOpsEvent(supabase, { event_type: "brief_failed", source_function: "generate-tactical-brief-background", order_id: session_id, user_email: email, severity: "error", details: { error: err.message, topic }, error_signature: `brief_${err.name || "Error"}` });
 
     // Auto-refund: if this was a paid order, refund via Stripe
     if (session_id && process.env.STRIPE_SECRET_KEY) {

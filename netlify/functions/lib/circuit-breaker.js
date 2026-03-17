@@ -1,72 +1,106 @@
-// Circuit breaker for external API calls.
-// Tracks failures per service in ops_events. Opens after 3 consecutive
-// failures within 10 minutes. Half-opens after 5 minutes.
-// When open: returns { open: true } so callers can degrade gracefully.
+// Circuit breaker backed by ops_events in Supabase.
+// Opens after 3 failures within 10 minutes. Half-opens after 5 minutes.
+// State is derived from ops_events queries, not in-memory counters.
+// This survives serverless cold starts.
 
 const { logOpsEvent } = require("./ops-ledger");
 
-// In-memory state (resets on cold start — acceptable for serverless)
-const circuits = {};
-
 const FAILURE_THRESHOLD = 3;
-const FAILURE_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
-const RECOVERY_MS = 5 * 60 * 1000; // 5 minutes half-open wait
+const FAILURE_WINDOW_MS = 10 * 60 * 1000;
+const RECOVERY_MS = 5 * 60 * 1000;
 
-function getCircuit(service) {
-  if (!circuits[service]) {
-    circuits[service] = { failures: [], state: "closed", openedAt: null };
-  }
-  return circuits[service];
-}
+async function checkCircuit(supabase, service) {
+  if (!supabase) return { open: false, halfOpen: false };
 
-function checkCircuit(service) {
-  const circuit = getCircuit(service);
-  const now = Date.now();
+  try {
+    // Check for recent circuit_opened event
+    const openedSince = new Date(Date.now() - RECOVERY_MS - FAILURE_WINDOW_MS).toISOString();
+    const { data: openEvents } = await supabase
+      .from("ops_events")
+      .select("created_at")
+      .eq("event_type", "circuit_opened")
+      .eq("details->>service", service)
+      .gte("created_at", openedSince)
+      .order("created_at", { ascending: false })
+      .limit(1);
 
-  if (circuit.state === "open") {
-    if (now - circuit.openedAt > RECOVERY_MS) {
-      circuit.state = "half-open";
+    if (!openEvents || openEvents.length === 0) return { open: false, halfOpen: false };
+
+    const openedAt = new Date(openEvents[0].created_at).getTime();
+
+    // Check if it was closed after being opened
+    const { data: closeEvents } = await supabase
+      .from("ops_events")
+      .select("created_at")
+      .eq("event_type", "circuit_closed")
+      .eq("details->>service", service)
+      .gte("created_at", openEvents[0].created_at)
+      .limit(1);
+
+    if (closeEvents && closeEvents.length > 0) return { open: false, halfOpen: false };
+
+    // Circuit was opened and not closed — check if recovery period passed
+    if (Date.now() - openedAt > RECOVERY_MS) {
       return { open: false, halfOpen: true };
     }
-    return { open: true, halfOpen: false };
-  }
 
-  return { open: false, halfOpen: circuit.state === "half-open" };
+    return { open: true, halfOpen: false };
+  } catch (err) {
+    console.error("circuit-breaker: check failed:", err.message);
+    return { open: false, halfOpen: false }; // Fail open
+  }
 }
 
 async function recordSuccess(supabase, service) {
-  const circuit = getCircuit(service);
-  if (circuit.state === "half-open" || circuit.state === "open") {
+  if (!supabase) return;
+  // Check if circuit was open/half-open, then close it
+  const state = await checkCircuit(supabase, service);
+  if (state.open || state.halfOpen) {
     await logOpsEvent(supabase, {
       event_type: "circuit_closed",
       source_function: "circuit-breaker",
       severity: "info",
-      details: { service, previous_state: circuit.state },
+      details: { service },
     });
   }
-  circuit.failures = [];
-  circuit.state = "closed";
-  circuit.openedAt = null;
 }
 
 async function recordFailure(supabase, service, error) {
-  const circuit = getCircuit(service);
-  const now = Date.now();
+  if (!supabase) return;
 
-  // Prune old failures outside the window
-  circuit.failures = circuit.failures.filter((t) => now - t < FAILURE_WINDOW_MS);
-  circuit.failures.push(now);
+  // Log the failure
+  await logOpsEvent(supabase, {
+    event_type: "api_failure",
+    source_function: "circuit-breaker",
+    severity: "warning",
+    details: { service, error: error?.message || String(error) },
+    error_signature: `${service}_failure`,
+  });
 
-  if (circuit.failures.length >= FAILURE_THRESHOLD && circuit.state !== "open") {
-    circuit.state = "open";
-    circuit.openedAt = now;
+  // Count recent failures
+  try {
+    const windowStart = new Date(Date.now() - FAILURE_WINDOW_MS).toISOString();
+    const { count } = await supabase
+      .from("ops_events")
+      .select("*", { count: "exact", head: true })
+      .eq("event_type", "api_failure")
+      .eq("details->>service", service)
+      .gte("created_at", windowStart);
 
-    await logOpsEvent(supabase, {
-      event_type: "circuit_opened",
-      source_function: "circuit-breaker",
-      severity: "error",
-      details: { service, failures: circuit.failures.length, error: error?.message },
-    });
+    if (count >= FAILURE_THRESHOLD) {
+      // Check if already open
+      const state = await checkCircuit(supabase, service);
+      if (!state.open) {
+        await logOpsEvent(supabase, {
+          event_type: "circuit_opened",
+          source_function: "circuit-breaker",
+          severity: "error",
+          details: { service, failures: count, error: error?.message },
+        });
+      }
+    }
+  } catch (err) {
+    console.error("circuit-breaker: recordFailure query failed:", err.message);
   }
 }
 

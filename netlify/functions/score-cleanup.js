@@ -17,6 +17,7 @@
 const { createClient } = require("@supabase/supabase-js");
 const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
 const { purgeRateLimits } = require("./lib/rate-limiter");
+const { logOpsEvent } = require("./lib/ops-ledger");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -94,6 +95,7 @@ exports.handler = async () => {
           })
           .eq("id", record.id);
         markedFailed++;
+        await logOpsEvent(supabase, { event_type: "cleanup_error_marked", source_function: "score-cleanup", scoring_id: record.id, severity: "warning", details: { retrigger_count: retriggerCount } });
         continue;
       }
 
@@ -115,6 +117,7 @@ exports.handler = async () => {
         if (res.status === 202 || res.ok) {
           console.log(`score-cleanup: retriggered ${record.id} (attempt ${retriggerCount + 1})`);
           retriggered++;
+          await logOpsEvent(supabase, { event_type: "cleanup_retriggered", source_function: "score-cleanup", scoring_id: record.id, severity: "info", details: { attempt: retriggerCount + 1 } });
         } else {
           console.warn(`score-cleanup: retrigger returned ${res.status} for ${record.id}`);
         }
