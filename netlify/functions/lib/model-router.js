@@ -65,12 +65,14 @@ async function getModelConfig(supabase, taskType) {
     return { model: "claude-sonnet-4-6", reason: "unknown_task" };
   }
 
-  // Only 'review' uses self-learning from user feedback — all others return defaults
-  if (taskType !== "review") {
+  // Skip self-learning for tasks where default === floor (no escalation possible)
+  // and for non-Anthropic providers (Perplexity manages its own routing)
+  const canEscalate = config.default !== ESCALATION_MODEL && !config.provider;
+  if (!canEscalate) {
     return { model: config.default, reason: "default", provider: config.provider || "anthropic" };
   }
 
-  // For review: check if self-learning should escalate the model
+  // Self-learning: check user feedback to decide if model should escalate
   try {
     const { data: rows, error } = await supabase
       .from("mp_scoring_history")
@@ -99,6 +101,25 @@ async function getModelConfig(supabase, taskType) {
     console.log(
       `model-router: ${taskType} avg rating = ${avgRating.toFixed(2)} (${ratings.length} samples)`
     );
+
+    // Quality trend detection: compare recent vs older ratings
+    const recentRatings = ratings.slice(0, 5);
+    const olderRatings = ratings.slice(5);
+    if (recentRatings.length >= 3 && olderRatings.length >= 3) {
+      const recentAvg = recentRatings.reduce((s, r) => s + r, 0) / recentRatings.length;
+      const olderAvg = olderRatings.reduce((s, r) => s + r, 0) / olderRatings.length;
+      if (recentAvg < olderAvg - 0.5) {
+        try {
+          const { logOpsEvent } = require("./ops-ledger");
+          await logOpsEvent(supabase, {
+            event_type: "quality_drift",
+            source_function: "model-router",
+            severity: "warning",
+            details: { task_type: taskType, recent_avg: recentAvg.toFixed(2), older_avg: olderAvg.toFixed(2) },
+          });
+        } catch {}
+      }
+    }
 
     if (avgRating < ESCALATION_THRESHOLD) {
       console.log(

@@ -182,6 +182,7 @@ exports.handler = async (event) => {
     const body = JSON.parse(event.body);
     const { email, file_base64, file_type, file_name } = body;
     const documentType = body.document_type || "pitch_deck";
+    const referrer = body.referrer || body.utm_source || null;
 
     // --- Validate inputs ---
     if (!email || !file_base64 || !file_type) {
@@ -417,6 +418,7 @@ exports.handler = async (event) => {
       file_name: file_name || null,
       document_type: documentType,
       file_type: resolvedType,
+      _referrer: referrer,
     };
 
     // For DOCX/PPTX: store extracted text (small, ~200KB)
