@@ -15,6 +15,8 @@ require("./lib/sentry");
 
 const { createClient } = require("@supabase/supabase-js");
 const { DOCUMENT_TYPES } = require("./lib/document-types");
+const { checkRateLimit } = require("./lib/rate-limiter");
+const { getPlanLimits, isWithinLimit } = require("./lib/plan-limits");
 
 // --- Environment Variables ---
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -296,6 +298,30 @@ exports.handler = async (event) => {
     // --- MissionPulse: User & Usage ---
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
+    // --- Rate limiting ---
+    const emailKey = `score:${email.toLowerCase().trim()}`;
+    const emailRate = await checkRateLimit(supabase, emailKey, 10, 15);
+    if (!emailRate.allowed) {
+      return {
+        statusCode: 429,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({
+          error: "Too many submissions. Please wait a few minutes.",
+          retry_after: emailRate.reset * 60,
+        }),
+      };
+    }
+
+    const ip = event.headers["x-forwarded-for"]?.split(",")[0]?.trim() || "unknown";
+    const ipRate = await checkRateLimit(supabase, `ip:${ip}`, 30, 15);
+    if (!ipRate.allowed) {
+      return {
+        statusCode: 429,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({ error: "Too many requests from your network. Please try again later." }),
+      };
+    }
+
     let user;
     try {
       user = await getOrCreateUser(supabase, email);
@@ -320,17 +346,45 @@ exports.handler = async (event) => {
       };
     }
 
-    // Check remaining uses (free tier gate)
-    if (user.tier === "free" && usage.uses_remaining <= 0) {
-      return {
-        statusCode: 403,
-        headers: CORS_HEADERS,
-        body: JSON.stringify({
-          error: "limit_reached",
-          message: "You've used all 3 free assessments. Contact Mission Meets Tech for a full review.",
-          uses_remaining: 0,
-        }),
-      };
+    // Check remaining uses — plan-aware gate
+    if (user.tier === "free") {
+      // Free tier: existing lifetime 3-use limit
+      if (usage.uses_remaining <= 0) {
+        return {
+          statusCode: 403,
+          headers: CORS_HEADERS,
+          body: JSON.stringify({
+            error: "limit_reached",
+            message: "You've used all 3 free assessments. Contact Mission Meets Tech for a full review.",
+            uses_remaining: 0,
+          }),
+        };
+      }
+    } else {
+      // Paid tier: monthly rolling limit from plan config
+      const limits = getPlanLimits(user.tier);
+      const monthStart = new Date();
+      monthStart.setDate(1);
+      monthStart.setHours(0, 0, 0, 0);
+
+      const { count: monthlyUsage } = await supabase
+        .from("mp_scoring_history")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .gte("created_at", monthStart.toISOString())
+        .neq("verdict", "ERROR");
+
+      if (!isWithinLimit(monthlyUsage || 0, limits.assessments_per_month)) {
+        return {
+          statusCode: 403,
+          headers: CORS_HEADERS,
+          body: JSON.stringify({
+            error: "limit_reached",
+            message: `You've reached your ${user.tier} plan limit for this month.`,
+            uses_remaining: 0,
+          }),
+        };
+      }
     }
 
     // Check for in-flight scoring (prevent free-tier abuse)
