@@ -30,6 +30,9 @@
 [functions."health-check"]
   schedule = "0 */6 * * *"
 
+[functions."daily-stats-rollup"]
+  schedule = "0 0 * * *"
+
 [[redirects]]
   from = "/"
   to = "/index.html"
