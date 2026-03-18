@@ -33,7 +33,7 @@ const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
 // --- Constants ---
-const MAX_OUTPUT_TOKENS = 2000;
+const MAX_OUTPUT_TOKENS = 8192;
 const MAX_TEXT_CHARS = 80000;
 
 
