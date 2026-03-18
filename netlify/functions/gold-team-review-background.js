@@ -106,6 +106,7 @@ RULES:
 - For strong sections, focus on polish: tighter language, stronger verbs, better federal framing.
 - For weak sections, provide substantial rewrites that address the scoring weakness directly.
 - NEVER fabricate facts, credentials, contract numbers, dollar amounts, or statistics. If specific data is needed, use [INSERT: description of what to add] placeholders.
+- If a section requires 3 or more [INSERT: ...] placeholders because the source material is too thin to rewrite, prepend that section's strengthened_text with the label: 'SECTION ARCHITECTURE — Author Must Complete' and explain what original content is needed. Set the status to "skeleton" instead of "rewritten".
 - Match the document's existing tone — formal federal contracting language, not marketing speak.
 - Use appropriate federal terminology (FedRAMP, compliance standards, etc.) where relevant to the agency.
 - Return ONLY valid JSON. No markdown code fences. No text before or after the JSON.
@@ -443,11 +444,15 @@ exports.handler = async (event) => {
       reviewerNotes: reviewResult ? reviewResult.reviewer_notes : null,
       executiveSummary: reviewResult ? reviewResult.executive_summary : null,
       nextSteps: reviewResult ? reviewResult.next_steps : null,
+      tieredNextSteps: scorecard.next_steps || null,
+      pwinFactors: scorecard.pWin_factors || null,
+      competitivePositioning: scorecard.competitive_positioning || null,
+      complianceMatrix: scorecard.compliance_matrix || null,
     });
 
     const emailResult = await sendEmail({
       to: normalizedEmail,
-      subject: `Gold Team Review: ${config.label} — All 9 Sections Reviewed`,
+      subject: `Red Team Review: ${config.label} — All 9 Sections Reviewed`,
       html: emailHtml,
     });
 

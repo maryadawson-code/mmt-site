@@ -82,7 +82,20 @@ ${examples.join(",\n")}
   "verdict": "PASS | CONDITIONAL | FAIL",
   "verdict_title": "One sentence verdict headline",
   "verdict_summary": "2-3 sentence summary of the overall assessment. Be specific to this document.",
-  "top_fix": "The single most impactful change the author should make before the next submission."
+  "top_fix": "The single most impactful change the author should make before the next submission.",
+  "next_steps": {
+    "stop_ship": ["Items that will result in non-responsiveness or elimination during initial screening"],
+    "high": ["Significant scoring weaknesses that will cost evaluation points"],
+    "polish": ["Improvements that strengthen but are not make-or-break"]
+  },
+  "pWin_factors": [
+    { "factor": "Base rate (document type)", "value": "+15%" },
+    { "factor": "Technical Approach (score/10)", "value": "+5%" }
+  ],
+  "competitive_positioning": {
+    "differentiation": "strong|moderate|weak|absent",
+    "reasoning": "Specific observation about what makes this proposal stand out or fail to"
+  }
 }`;
 }
 
@@ -163,6 +176,46 @@ EXAMPLE (abbreviated — show this level of specificity):
   "verdict_summary": "The proposal demonstrates solid technical understanding and mission relevance but has a critical gap in the pricing volume. No evaluator will score this favorably without a complete cost model.",
   "top_fix": "Build a complete basis of estimate with labor categories, rates, and indirect rate disclosure before resubmission."
 }
+
+PRIORITIZED NEXT STEPS — Provide next steps in THREE tiers:
+
+STOP-SHIP (items that will result in non-responsiveness or elimination during initial screening):
+- Missing mandatory sections
+- Non-responsive to stated requirements
+- Missing mandatory certifications/representations
+- Missing cost/pricing data when required
+
+HIGH (significant scoring weaknesses that will cost evaluation points):
+- Weak past performance evidence
+- Vague technical approach
+- Missing key personnel qualifications
+- Unsupported cost estimates
+
+POLISH (improvements that strengthen but are not make-or-break):
+- Tone consistency
+- Formatting alignment with Section L
+- Stronger action verbs
+- Executive summary tightening
+
+For each item, state the specific fix needed in one sentence.
+
+pWin ESTIMATE — Calculate a probability of win percentage range using this methodology:
+Base rates by document type: RFP response 15%, White paper 25%, Capabilities statement 30%, Pitch deck 20%, Pricing volume 15%, Executive summary 25%.
+Adjustments: Each section scoring B+ or above: +5 percentage points. Each section scoring D or below: -10 points. Strong SOW/PWS alignment: +10 points. Past performance section A: +10 points. Multiple red flags in pricing: -15 points.
+Bounds: minimum 5%, maximum 85%. Report as a range (e.g., "25-35%"), not a single number.
+Include a pWin_factors array in your output showing each scoring input that contributed to the estimate, e.g.:
+[{ "factor": "Base rate (RFP response)", "value": "+15%" }, { "factor": "Technical Approach (8/10)", "value": "+5%" }]
+This table is shown to the user so they understand what drives their pWin and what to fix to improve it.
+
+COMPETITIVE POSITIONING ASSESSMENT:
+Even without knowing the specific competitive field, evaluate:
+- Does this proposal describe what makes the offeror DIFFERENT from a typical incumbent or competitor?
+- Are differentiators specific (named tools, quantified improvements, unique methodologies) or generic ('innovative approach', 'experienced team')?
+- Would an evaluator reading 10 similar proposals remember what makes this one stand out?
+Include a competitive_positioning field in the scorecard:
+{ "differentiation": "strong|moderate|weak|absent", "reasoning": "...specific observation..." }
+
+${sowText ? `COMPLIANCE CHECK: Compare the document's section structure against the SOW/PWS requirements. For each L/M instruction, note whether the document addresses it (RESPONSIVE), partially addresses it (PARTIALLY RESPONSIVE), or doesn't address it (NON-RESPONSIVE). Include a compliance_matrix in your output as an array of objects: [{ "requirement": "...", "status": "RESPONSIVE|PARTIALLY RESPONSIVE|NON-RESPONSIVE", "note": "..." }].` : ""}
 
 ${SCORING_RULES}`;
 }
@@ -558,6 +611,7 @@ exports.handler = async (event) => {
         fileName: fileName,
         scoringId: scoring_id,
         consensus,
+        hasSow: !!finalSowText,
       });
 
       if (shouldHoldEmail()) {

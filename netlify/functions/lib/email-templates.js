@@ -50,7 +50,7 @@ function escapeHtml(str) {
  * @returns {string} HTML email body
  */
 function buildScoreReceiptHtml(data) {
-  const { scorecard, documentLabel, overallGrade, usesRemaining, fileName, scoringId, consensus } = data;
+  const { scorecard, documentLabel, overallGrade, usesRemaining, fileName, scoringId, consensus, hasSow } = data;
   const verdict = scorecard.verdict || "N/A";
   const vColor = verdictColor(verdict);
   const gColor = gradeColor(overallGrade);
@@ -148,6 +148,85 @@ function buildScoreReceiptHtml(data) {
       }
 
       ${redFlagsHtml}
+
+      <!-- Tiered Next Steps -->
+      ${scorecard.next_steps ? (() => {
+        const tierConfig = [
+          { key: "stop_ship", label: "STOP-SHIP", bg: "#fef2f2", border: "#fecaca", labelColor: "#991b1b" },
+          { key: "high", label: "HIGH", bg: "#fffbeb", border: "#fde68a", labelColor: "#92400e" },
+          { key: "polish", label: "POLISH", bg: "#f0f4f8", border: "#cbd5e1", labelColor: "#475569" },
+        ];
+        return tierConfig.map(({ key, label, bg, border, labelColor }) => {
+          const items = scorecard.next_steps[key];
+          if (!items || items.length === 0) return "";
+          const listItems = items.map((item) => `<li style="margin-bottom:4px;font-size:14px;color:#374151;">${escapeHtml(item)}</li>`).join("");
+          return `
+      <div style="margin-top:16px;padding:12px 16px;background-color:${bg};border:1px solid ${border};border-radius:8px;">
+        <p style="margin:0 0 8px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:${labelColor};">${label}</p>
+        <ul style="margin:0;padding-left:20px;">${listItems}</ul>
+      </div>`;
+        }).join("");
+      })() : ""}
+
+      <!-- pWin Factors -->
+      ${scorecard.pWin_factors && scorecard.pWin_factors.length > 0 ? `
+      <div style="margin-top:24px;">
+        <h3 style="font-size:16px;font-weight:700;color:#111827;margin:0 0 8px 0;">pWin Breakdown</h3>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;">
+          <tr style="background-color:#f9fafb;">
+            <th style="padding:8px 12px;text-align:left;font-size:13px;font-weight:600;color:#6b7280;border-bottom:1px solid #e5e7eb;">Factor</th>
+            <th style="padding:8px 12px;text-align:right;font-size:13px;font-weight:600;color:#6b7280;border-bottom:1px solid #e5e7eb;">Impact</th>
+          </tr>
+          ${scorecard.pWin_factors.map((f) => `
+          <tr>
+            <td style="padding:6px 12px;border-bottom:1px solid #e5e7eb;font-size:14px;color:#374151;">${escapeHtml(f.factor)}</td>
+            <td style="padding:6px 12px;border-bottom:1px solid #e5e7eb;text-align:right;font-size:14px;font-weight:600;color:${String(f.value).includes("-") ? "#ef4444" : "#16a34a"};">${escapeHtml(f.value)}</td>
+          </tr>`).join("")}
+        </table>
+        ${scorecard.pwin_estimate ? `<p style="margin:8px 0 0;font-size:15px;font-weight:700;color:#0369a1;text-align:center;">Estimated pWin: ${escapeHtml(scorecard.pwin_estimate)}</p>` : ""}
+        ${scorecard.pwin_justification ? `<p style="margin:4px 0 0;font-size:13px;color:#6b7280;text-align:center;">${escapeHtml(scorecard.pwin_justification)}</p>` : ""}
+      </div>` : ""}
+
+      <!-- Competitive Positioning -->
+      ${scorecard.competitive_positioning ? (() => {
+        const cp = scorecard.competitive_positioning;
+        const diffColors = { strong: "#16a34a", moderate: "#eab308", weak: "#f97316", absent: "#ef4444" };
+        const diffColor = diffColors[cp.differentiation] || "#6b7280";
+        return `
+      <div style="margin-top:24px;padding:16px 20px;border-left:4px solid ${diffColor};background-color:#f9fafb;border-radius:0 8px 8px 0;">
+        <p style="margin:0 0 4px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6b7280;">Competitive Positioning</p>
+        <p style="margin:0 0 4px;font-size:18px;font-weight:800;color:${diffColor};">${escapeHtml((cp.differentiation || "").toUpperCase())}</p>
+        ${cp.reasoning ? `<p style="margin:0;font-size:14px;color:#374151;line-height:1.5;">${escapeHtml(cp.reasoning)}</p>` : ""}
+      </div>`;
+      })() : ""}
+
+      <!-- Compliance Matrix -->
+      ${scorecard.compliance_matrix && scorecard.compliance_matrix.length > 0 ? `
+      <div style="margin-top:24px;">
+        <h3 style="font-size:16px;font-weight:700;color:#111827;margin:0 0 8px 0;">Compliance Matrix</h3>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;">
+          <tr style="background-color:#f9fafb;">
+            <th style="padding:8px 12px;text-align:left;font-size:13px;font-weight:600;color:#6b7280;border-bottom:1px solid #e5e7eb;">Requirement</th>
+            <th style="padding:8px 12px;text-align:center;font-size:13px;font-weight:600;color:#6b7280;border-bottom:1px solid #e5e7eb;">Status</th>
+          </tr>
+          ${scorecard.compliance_matrix.map((c) => {
+            const statusColor = c.status === "RESPONSIVE" ? "#16a34a" : c.status === "PARTIALLY RESPONSIVE" ? "#eab308" : "#ef4444";
+            return `
+          <tr>
+            <td style="padding:6px 12px;border-bottom:1px solid #e5e7eb;font-size:13px;color:#374151;">${escapeHtml(c.requirement)}${c.note ? `<br><span style="font-size:12px;color:#6b7280;">${escapeHtml(c.note)}</span>` : ""}</td>
+            <td style="padding:6px 12px;border-bottom:1px solid #e5e7eb;text-align:center;font-size:12px;font-weight:700;color:${statusColor};">${escapeHtml(c.status)}</td>
+          </tr>`;
+          }).join("")}
+        </table>
+      </div>` : ""}
+
+      <!-- Compliance Disclaimer (no SOW) -->
+      ${!hasSow ? `
+      <div style="margin-top:24px;padding:16px 20px;border:1px solid #fde68a;background-color:#fefce8;border-radius:8px;">
+        <p style="margin:0;font-size:13px;color:#854d0e;line-height:1.5;">
+          &#9888;&#65039; <strong>Compliance Note:</strong> This evaluation scores against standard federal proposal criteria for ${escapeHtml(documentLabel)}. Compliance matrix verification against Section L/M instructions was not performed because no solicitation document was provided. For the most accurate evaluation, upload your SOW/PWS alongside your proposal.
+        </p>
+      </div>` : ""}
 
       <!-- Uses remaining -->
       <p style="margin:32px 0 0;font-size:13px;color:#9ca3af;text-align:center;">
@@ -331,11 +410,11 @@ function buildWeeklyReportHtml(stats) {
 }
 
 // ============================================================
-// GOLD TEAM REVIEW EMAIL
+// RED TEAM REVIEW EMAIL
 // ============================================================
 
 /**
- * Build branded HTML email for Gold Team Review.
+ * Build branded HTML email for Red Team Review.
  * Full document rewrite (all 9 sections) + pWin + executive summary + next steps.
  * @param {Object} data
  * @param {string} data.documentLabel - Human-readable label (e.g. "Pitch Deck")
@@ -366,6 +445,10 @@ function buildGoldTeamReviewHtml(data) {
     reviewerNotes,
     executiveSummary,
     nextSteps,
+    tieredNextSteps,
+    pwinFactors,
+    competitivePositioning,
+    complianceMatrix,
   } = data;
 
   const vColor = verdictColor(verdict);
@@ -413,8 +496,8 @@ function buildGoldTeamReviewHtml(data) {
     .map((s) => {
       const section = strengthenedSections.find((ss) => ss.criterion_id === s.id);
       const status = section ? section.status : "polished";
-      const statusLabel = status === "rewritten" ? "Rewritten" : "Polished";
-      const statusColor = status === "rewritten" ? "#f97316" : "#16a34a";
+      const statusLabel = status === "skeleton" ? "Architecture" : status === "rewritten" ? "Rewritten" : "Polished";
+      const statusColor = status === "skeleton" ? "#dc2626" : status === "rewritten" ? "#f97316" : "#16a34a";
       return `
       <tr>
         <td style="padding:6px 12px;border-bottom:1px solid #e5e7eb;font-size:13px;color:#374151;">${escapeHtml(s.title)}</td>
@@ -434,7 +517,9 @@ function buildGoldTeamReviewHtml(data) {
           ? `<span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700;color:#fff;background-color:${s.confidence_pct >= 70 ? "#16a34a" : s.confidence_pct >= 50 ? "#eab308" : "#ef4444"};margin-left:8px;">${s.confidence_pct}% confidence</span>`
           : "";
 
-      const statusBadge = s.status === "rewritten"
+      const statusBadge = s.status === "skeleton"
+        ? `<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;color:#fff;background-color:#dc2626;margin-left:8px;">Section Architecture</span>`
+        : s.status === "rewritten"
         ? `<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;color:#fff;background-color:#f97316;margin-left:8px;">Rewritten</span>`
         : `<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;color:#fff;background-color:#16a34a;margin-left:8px;">Polished</span>`;
 
@@ -472,6 +557,9 @@ function buildGoldTeamReviewHtml(data) {
           </div>
 
           <p style="margin:0 0 4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#0369a1;">Strengthened</p>
+          ${s.status === "skeleton" ? `<div style="padding:8px 12px;background-color:#fef2f2;border:1px solid #fecaca;border-radius:6px;margin-bottom:8px;">
+            <p style="margin:0;font-size:12px;color:#991b1b;font-weight:700;">&#9888;&#65039; SECTION ARCHITECTURE — This section requires significant original content from the author. The structure below provides the framework; bracketed items [INSERT: ...] must be completed with your organization's specific data.</p>
+          </div>` : ""}
           <div style="padding:12px 16px;background-color:#ffffff;border:1px solid #bae6fd;border-radius:6px;margin-bottom:12px;">
             <p style="margin:0;font-size:14px;color:#111827;line-height:1.6;">${escapeHtml(s.strengthened_text)}</p>
           </div>
@@ -507,13 +595,13 @@ function buildGoldTeamReviewHtml(data) {
     <!-- Header -->
     <div style="background-color:#00050f;padding:24px 32px;text-align:center;">
       <h1 style="margin:0;font-size:20px;font-weight:700;color:#00E5FA;letter-spacing:0.5px;">MISSION MEETS TECH</h1>
-      <p style="margin:4px 0 0;font-size:13px;color:rgba(255,255,255,0.6);">Gold Team Review</p>
+      <p style="margin:4px 0 0;font-size:13px;color:rgba(255,255,255,0.6);">Red Team Review</p>
     </div>
 
     <!-- Body -->
     <div style="padding:32px;">
 
-      <h2 style="font-size:20px;font-weight:700;color:#111827;margin:0 0 8px 0;">Your Gold Team Review</h2>
+      <h2 style="font-size:20px;font-weight:700;color:#111827;margin:0 0 8px 0;">Your Red Team Review</h2>
       <p style="font-size:14px;color:#6b7280;margin:0 0 16px 0;">
         ${escapeHtml(documentLabel)} &mdash; ${escapeHtml(fileName || "uploaded document")}
       </p>
@@ -558,8 +646,79 @@ function buildGoldTeamReviewHtml(data) {
       <h3 style="font-size:17px;font-weight:700;color:#111827;margin:0 0 16px;">Section-by-Section Review</h3>
       ${sectionBlocks}
 
-      <!-- Next Steps -->
+      <!-- Next Steps (flat list from reviewer) -->
       ${nextStepsHtml}
+
+      <!-- Tiered Next Steps (from scoring) -->
+      ${tieredNextSteps ? (() => {
+        const tierConfig = [
+          { key: "stop_ship", label: "STOP-SHIP", bg: "#fef2f2", border: "#fecaca", labelColor: "#991b1b" },
+          { key: "high", label: "HIGH", bg: "#fffbeb", border: "#fde68a", labelColor: "#92400e" },
+          { key: "polish", label: "POLISH", bg: "#f0f4f8", border: "#cbd5e1", labelColor: "#475569" },
+        ];
+        return `<div style="margin-top:24px;">
+        <h3 style="font-size:15px;font-weight:700;color:#111827;margin:0 0 12px;">Prioritized Fixes by Risk Tier</h3>` +
+        tierConfig.map(({ key, label, bg, border, labelColor }) => {
+          const items = tieredNextSteps[key];
+          if (!items || items.length === 0) return "";
+          const listItems = items.map((item) => `<li style="margin-bottom:4px;font-size:14px;color:#374151;">${escapeHtml(item)}</li>`).join("");
+          return `
+        <div style="margin-bottom:12px;padding:12px 16px;background-color:${bg};border:1px solid ${border};border-radius:8px;">
+          <p style="margin:0 0 8px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:${labelColor};">${label}</p>
+          <ul style="margin:0;padding-left:20px;">${listItems}</ul>
+        </div>`;
+        }).join("") + `</div>`;
+      })() : ""}
+
+      <!-- pWin Factors Table -->
+      ${pwinFactors && pwinFactors.length > 0 ? `
+      <div style="margin-top:24px;">
+        <h3 style="font-size:15px;font-weight:700;color:#111827;margin:0 0 8px 0;">pWin Scoring Inputs</h3>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;">
+          <tr style="background-color:#f9fafb;">
+            <th style="padding:8px 12px;text-align:left;font-size:13px;font-weight:600;color:#6b7280;border-bottom:1px solid #e5e7eb;">Factor</th>
+            <th style="padding:8px 12px;text-align:right;font-size:13px;font-weight:600;color:#6b7280;border-bottom:1px solid #e5e7eb;">Impact</th>
+          </tr>
+          ${pwinFactors.map((f) => `
+          <tr>
+            <td style="padding:6px 12px;border-bottom:1px solid #e5e7eb;font-size:14px;color:#374151;">${escapeHtml(f.factor)}</td>
+            <td style="padding:6px 12px;border-bottom:1px solid #e5e7eb;text-align:right;font-size:14px;font-weight:600;color:${String(f.value).includes("-") ? "#ef4444" : "#16a34a"};">${escapeHtml(f.value)}</td>
+          </tr>`).join("")}
+        </table>
+      </div>` : ""}
+
+      <!-- Competitive Positioning -->
+      ${competitivePositioning ? (() => {
+        const cp = competitivePositioning;
+        const diffColors = { strong: "#16a34a", moderate: "#eab308", weak: "#f97316", absent: "#ef4444" };
+        const diffColor = diffColors[cp.differentiation] || "#6b7280";
+        return `
+      <div style="margin-top:24px;padding:16px 20px;border-left:4px solid ${diffColor};background-color:#f9fafb;border-radius:0 8px 8px 0;">
+        <p style="margin:0 0 4px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6b7280;">Competitive Positioning</p>
+        <p style="margin:0 0 4px;font-size:18px;font-weight:800;color:${diffColor};">${escapeHtml((cp.differentiation || "").toUpperCase())}</p>
+        ${cp.reasoning ? `<p style="margin:0;font-size:14px;color:#374151;line-height:1.5;">${escapeHtml(cp.reasoning)}</p>` : ""}
+      </div>`;
+      })() : ""}
+
+      <!-- Compliance Matrix -->
+      ${complianceMatrix && complianceMatrix.length > 0 ? `
+      <div style="margin-top:24px;">
+        <h3 style="font-size:15px;font-weight:700;color:#111827;margin:0 0 8px 0;">Compliance Matrix</h3>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;">
+          <tr style="background-color:#f9fafb;">
+            <th style="padding:8px 12px;text-align:left;font-size:13px;font-weight:600;color:#6b7280;border-bottom:1px solid #e5e7eb;">Requirement</th>
+            <th style="padding:8px 12px;text-align:center;font-size:13px;font-weight:600;color:#6b7280;border-bottom:1px solid #e5e7eb;">Status</th>
+          </tr>
+          ${complianceMatrix.map((c) => {
+            const statusColor = c.status === "RESPONSIVE" ? "#16a34a" : c.status === "PARTIALLY RESPONSIVE" ? "#eab308" : "#ef4444";
+            return `
+          <tr>
+            <td style="padding:6px 12px;border-bottom:1px solid #e5e7eb;font-size:13px;color:#374151;">${escapeHtml(c.requirement)}${c.note ? `<br><span style="font-size:12px;color:#6b7280;">${escapeHtml(c.note)}</span>` : ""}</td>
+            <td style="padding:6px 12px;border-bottom:1px solid #e5e7eb;text-align:center;font-size:12px;font-weight:700;color:${statusColor};">${escapeHtml(c.status)}</td>
+          </tr>`;
+          }).join("")}
+        </table>
+      </div>` : ""}
 
       <!-- Disclaimer -->
       <div style="margin-top:24px;padding:16px;background-color:#fefce8;border:1px solid #fde68a;border-radius:8px;">
