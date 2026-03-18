@@ -443,13 +443,31 @@ exports.handler = async (event) => {
         console.log(`Receipt email sent for ${scoring_id}`);
       }
 
-      // --- State: email_sent → delivered ---
+      // --- State: email_sent ---
       try { await transitionState(supabase, "mp_scoring_history", scoring_id, "email_sent"); } catch (e) { console.error("State transition error:", e.message); }
-      try { await transitionState(supabase, "mp_scoring_history", scoring_id, "delivered"); } catch (e) { console.error("State transition error:", e.message); }
     } catch (emailErr) {
       console.error("Receipt email error:", emailErr);
       try { await transitionState(supabase, "mp_scoring_history", scoring_id, "email_failed"); } catch (e) { console.error("State transition error:", e.message); }
     }
+
+    // --- Trigger Gold Team Review (fire-and-forget) ---
+    try {
+      const siteUrl = process.env.URL || "https://missionmeetstech.com";
+      const gtrPayload = JSON.stringify({ scoring_id });
+      const gtrUrl = `${siteUrl}/.netlify/functions/gold-team-review-background`;
+      await fetchWithTimeout(gtrUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: gtrPayload,
+      });
+      console.log(`Gold Team Review triggered for ${scoring_id}`);
+    } catch (gtErr) {
+      // Gold Team failure must never block delivery
+      console.error(`Gold Team Review trigger failed for ${scoring_id}: ${gtErr.message}`);
+    }
+
+    // --- State: delivered ---
+    try { await transitionState(supabase, "mp_scoring_history", scoring_id, "delivered"); } catch (e) { console.error("State transition error:", e.message); }
 
     return { statusCode: 200, body: "Scoring complete" };
 

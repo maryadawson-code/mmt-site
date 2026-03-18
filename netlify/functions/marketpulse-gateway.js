@@ -69,6 +69,64 @@ exports.handler = async (event) => {
     // Check usage in Supabase
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
+    // Check if user is admin/paid — skip payment entirely
+    const { data: mpUser } = await supabase
+      .from("mp_users")
+      .select("tier")
+      .eq("email", email)
+      .single();
+
+    const isAdmin = mpUser && (mpUser.tier === "admin" || mpUser.tier === "paid");
+
+    if (isAdmin) {
+      console.log(`marketpulse-gateway: admin bypass for ${email}`);
+
+      // Trigger background generation directly — no payment, no usage tracking
+      const https = require("https");
+      const payload = JSON.stringify({
+        session_id: `admin_${Date.now()}_${email.replace(/[^a-z0-9]/g, "")}`,
+        name,
+        email,
+        company,
+        topic,
+        audience,
+        amount_paid: 0,
+      });
+
+      const bgUrl = `${SITE_URL}/.netlify/functions/generate-tactical-brief-background`;
+      try {
+        await new Promise((resolve, reject) => {
+          const url = new URL(bgUrl);
+          const req = https.request(
+            {
+              hostname: url.hostname,
+              port: url.port || 443,
+              path: url.pathname,
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Content-Length": Buffer.byteLength(payload),
+              },
+              timeout: 5000,
+            },
+            (res) => resolve(res.statusCode)
+          );
+          req.on("error", reject);
+          req.on("timeout", () => { req.destroy(); resolve("timeout-ok"); });
+          req.write(payload);
+          req.end();
+        });
+      } catch (bgErr) {
+        console.error("marketpulse-gateway: admin background trigger error:", bgErr.message);
+      }
+
+      return {
+        statusCode: 200,
+        headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "free" }),
+      };
+    }
+
     // Get or create usage record for this email
     let { data: usage, error: usageErr } = await supabase
       .from("marketpulse_usage")
