@@ -18,6 +18,9 @@ const { getModelConfig } = require("./lib/model-router");
 const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
 const { withRetry } = require("./lib/retry");
 
+const { validateVehicle } = require("./lib/contract-validator");
+const { ACTIVE_VEHICLES, CANCELLED_VEHICLES } = require("./lib/contract-facts");
+
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -135,6 +138,11 @@ For each award, return:
   "relevance_score": <0-100>,
   "opportunity_type": "award_notice"
 }
+
+CRITICAL GUARDRAILS:
+- CIO-SP4 was cancelled February 2026. Use CIO-SP3 instead.
+- NEVER assign cancelled vehicles.
+- Only use vehicles from the list above.
 
 Return JSON: { "classifications": [...] }
 Return ONLY valid JSON. No markdown.
@@ -332,6 +340,19 @@ exports.handler = async (event) => {
       const award = topResults[idx];
       const isValidVehicle = VALID_VEHICLES.includes(cls.contract_vehicle);
       const vehicle = isValidVehicle ? cls.contract_vehicle : "OASIS+";
+
+      // Sprint 2: Reject cancelled vehicles
+      if (CANCELLED_VEHICLES.includes(cls.contract_vehicle)) {
+        console.warn(`Vehicle rejected (cancelled): ${cls.contract_vehicle}`);
+        continue;
+      }
+
+      // Sprint 2: Validate vehicle assignment
+      const vValidation = validateVehicle({ name: vehicle, status: "Active" });
+      if (!vValidation.valid) {
+        console.warn(`Vehicle validation failed: ${vehicle}`, vValidation.errors);
+        continue;
+      }
 
       if (!isValidVehicle) {
         console.warn(`Vehicle fallback: Claude returned "${cls.contract_vehicle}", defaulting to OASIS+ at confidence 15`);

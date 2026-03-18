@@ -15,6 +15,10 @@ const { createClient } = require("@supabase/supabase-js");
 const { getModelConfig } = require("./lib/model-router");
 const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
 const { withRetry } = require("./lib/retry");
+const { validateContract, checkStalePatterns } = require("./lib/contract-validator");
+const { KNOWN_FACTS } = require("./lib/contract-facts");
+const { routeToReviewQueue } = require("./lib/confidence-engine");
+const { logOpsEvent } = require("./lib/ops-ledger");
 
 // --- Constants ---
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
@@ -174,6 +178,15 @@ The "black_hat" object must have this structure:
 
 The "sources" array should list all URLs you consulted during research.
 
+CRITICAL GUARDRAILS:
+- NEVER use "T-5 BPA" — correct name is T4NG / T4NG2.
+- TRICARE West vendor is TriWest Healthcare Alliance, NOT Health Net Federal.
+- CIO-SP4 was cancelled February 2026 — do not list as active.
+- VA EHRM is resuming April 2026, NOT paused.
+- Always include source URL for every data point.
+- If confidence < 70%, set needs_verification: true.
+- If zero results for a known contract, return stale_since flag, NOT deletion.
+
 Return ONLY valid JSON. No markdown code fences. No text before or after the JSON.`;
 
 const VERIFY_PROMPT = `You are a senior fact-checker and intelligence verification analyst. Your job is to CHALLENGE and VERIFY the research provided below. You are adversarial — assume claims may be wrong until proven right.
@@ -316,7 +329,7 @@ CURRENT VENDOR: ${contract.vendor}
 VALUE: ${contract.value}
 DESCRIPTION: ${contract.description}
 
-Search multiple sources (SAM.gov, FPDS, FedScoop, NextGov, Defense One, GovExec, agency websites, GAO, CRS) to build comprehensive intelligence. Include confidence percentages on every claim. Return the JSON object with "intel", "black_hat", and "sources" keys.`;
+Search multiple sources (SAM.gov, FedScoop, NextGov, Defense One, GovExec, agency websites, GAO, CRS) to build comprehensive intelligence. NOTE: FPDS ATOM feed retiring summer 2026 — use SAM.gov API as canonical source. Include confidence percentages on every claim. Return the JSON object with "intel", "black_hat", and "sources" keys.`;
 
   const { parsed: research, searchSources: researchSources } = await callPerplexity(
     RESEARCH_PROMPT, researchMessage, 5, researchModel.model, 8000
@@ -486,6 +499,73 @@ exports.handler = async (event) => {
       console.log(`Researching: ${contract.name}...`);
       const result = await researchContract(contract);
 
+      // --- Sprint 2: Validation layer ---
+      const contractData = { name: contract.name, agency: contract.agency, status: "Active", ...result.intel };
+      const staleCheck = checkStalePatterns(JSON.stringify(result));
+      if (staleCheck.stale) {
+        console.warn(`  [${contract.name}] Stale patterns detected:`, staleCheck.corrections);
+      }
+
+      const validation = validateContract(contractData);
+      if (!validation.valid) {
+        console.warn(`  [${contract.name}] Validation errors:`, validation.errors);
+      }
+      if (validation.warnings.length > 0) {
+        console.warn(`  [${contract.name}] Warnings:`, validation.warnings);
+      }
+
+      // Gate 1: Check value change >20% against known facts
+      const knownFactKey = Object.keys(KNOWN_FACTS).find(
+        (k) => KNOWN_FACTS[k].name === contract.name
+      );
+      if (knownFactKey && result.intel?.financials) {
+        const known = KNOWN_FACTS[knownFactKey];
+        if (known.value && result.intel.financials !== known.value) {
+          await routeToReviewQueue(supabase, {
+            contract_id: contract.name,
+            field_name: "financials",
+            proposed: result.intel.financials,
+            current: known.value,
+            confidence: "LOW",
+            reason: "Value change detected vs known facts",
+          });
+        }
+      }
+
+      // Gate 5: Null result on known contract — preserve last data
+      if (!result.intel?.summary && knownFactKey) {
+        console.warn(`  [${contract.name}] Null result on known contract — preserving last data`);
+        result.intel = result.intel || {};
+        result.intel.stale_since = new Date().toISOString();
+      }
+
+      // --- Change detection: diff against current Supabase data ---
+      try {
+        const { data: currentData } = await supabase
+          .from("contract_intel")
+          .select("intel")
+          .eq("contract_name", contract.name)
+          .single();
+
+        if (currentData?.intel) {
+          const fieldsToTrack = ["summary", "financials", "risks"];
+          for (const field of fieldsToTrack) {
+            const oldVal = JSON.stringify(currentData.intel[field] || "");
+            const newVal = JSON.stringify(result.intel?.[field] || "");
+            if (oldVal !== newVal && oldVal !== '""') {
+              await supabase.from("contract_events").insert({
+                contract_id: contract.name,
+                field_changed: field,
+                old_value: (currentData.intel[field] || "").toString().substring(0, 500),
+                new_value: (result.intel?.[field] || "").toString().substring(0, 500),
+                source: "contract-intel-refresh",
+                confidence: String(result.intel?.confidence_score || 50),
+              });
+            }
+          }
+        }
+      } catch { /* change detection is best-effort */ }
+
       // Upsert into contract_intel table
       const { error: upsertErr } = await supabase
         .from("contract_intel")
@@ -515,6 +595,14 @@ exports.handler = async (event) => {
   }
 
   console.log(`Contract intel refresh complete: ${successCount} updated, ${errorCount} errors`);
+
+  // Log to ops_events
+  await logOpsEvent(supabase, {
+    event_type: "contract_data_refresh",
+    source_function: "contract-intel-refresh",
+    severity: errorCount > 0 ? "warn" : "info",
+    details: { validated: successCount, rejected: errorCount, total: contractsToProcess.length },
+  });
 
   // Trigger site rebuild if any contracts were updated
   if (successCount > 0 && NETLIFY_BUILD_HOOK_URL) {

@@ -298,8 +298,8 @@ const searchOverlayHtml = `
     </div>
   </div>`;
 
-// External script tag injected before </body> on all pages
-const siteScriptTag = '  <script src="/js/site.js" defer></script>';
+// External script tags injected before </body> on all pages
+const siteScriptTag = '  <script src="/js/site.js" defer></script>\n  <script src="/js/nav-active.js" defer></script>';
 
 function generateArticlePages(articles) {
   const templatePath = path.join(TEMPLATES_DIR, 'article.html');
@@ -1074,7 +1074,14 @@ function generateContractTrackerHtml(contracts) {
                 <span><strong style="color:var(--mmt-white-muted);">Value:</strong> ${escapeHtml(c.value)}</span>
                 ${c.naics ? `<span><strong style="color:var(--mmt-white-muted);">NAICS:</strong> ${escapeHtml(c.naics)}</span>` : ''}
               </div>
-              ${c.last_verified ? `<span class="text-xs block mt-2" style="color:var(--mmt-white-dim);" data-last-verified="${escapeHtml(c.last_verified)}">Last verified: ${escapeHtml(c.last_verified)}</span>` : ''}
+              ${c.last_verified ? (() => {
+                const d = new Date(c.last_verified);
+                const days = Math.floor((Date.now() - d.getTime()) / 86400000);
+                const color = days < 7 ? '#22C55E' : days < 30 ? '#FBBF24' : days < 90 ? '#FB923C' : '#F87171';
+                const icon = days < 7 ? '✓' : '⚠';
+                const fmt = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                return `<span class="text-xs block mt-2" style="color:${color};" data-last-verified="${escapeHtml(c.last_verified)}">${icon} Verified ${fmt}</span>`;
+              })() : ''}
               ${c.source ? `<a href="${escapeHtml(c.source)}" target="_blank" rel="noopener" class="text-xs mt-1 inline-block hover:opacity-80" style="color:var(--mmt-cyan);">Source</a>` : ''}
               <p class="text-xs mt-2 font-semibold" style="color:var(--mmt-cyan);">View Intel &rarr;</p>
             </a>\n`;

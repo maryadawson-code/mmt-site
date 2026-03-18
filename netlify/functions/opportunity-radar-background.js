@@ -14,6 +14,8 @@ const { createClient } = require("@supabase/supabase-js");
 const { getModelConfig } = require("./lib/model-router");
 const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
 const { withRetry } = require("./lib/retry");
+const { validateOpportunity } = require("./lib/contract-validator");
+const { CANCELLED_VEHICLES } = require("./lib/contract-facts");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -50,6 +52,13 @@ For each opportunity found, extract:
 Only include opportunities that are genuinely related to health IT, health data, EHR, telehealth, medical devices, health analytics, or military/veteran healthcare systems.
 
 Return a JSON object: { "opportunities": [...] }
+
+CRITICAL GUARDRAILS:
+- NEVER use "T-5 BPA" — correct name is T4NG / T4NG2.
+- TRICARE West vendor is TriWest Healthcare Alliance, NOT Health Net Federal.
+- CIO-SP4 was cancelled February 2026 — do not include as an active vehicle.
+- VA EHRM is resuming April 2026, NOT paused.
+- Always include source URL for every opportunity.
 
 Return ONLY valid JSON. No markdown code fences. No text before or after the JSON.`;
 
@@ -245,6 +254,11 @@ Return opportunities found as JSON.`, 3, scanModel.model, 8000);
     // Filter by relevance
     const relevance = typeof opp.relevance_score === "number" ? opp.relevance_score : 50;
     if (relevance < 40) continue;
+
+    // Sprint 2: Validate opportunity and filter cancelled vehicles
+    const oppValidation = validateOpportunity(opp);
+    if (!oppValidation.valid) continue;
+    if (opp.contract_vehicle && CANCELLED_VEHICLES.includes(opp.contract_vehicle)) continue;
 
     filtered.push({
       title: (opp.title || "Untitled").substring(0, 500),

@@ -1,0 +1,49 @@
+name: Discover New Newsletter Editions
+
+on:
+  schedule:
+    # Every Monday at 10:00 AM UTC (5 AM ET)
+    - cron: '0 10 * * 1'
+  workflow_dispatch:
+    inputs:
+      days_back:
+        description: 'Number of days to search back'
+        required: false
+        default: '10'
+      dry_run:
+        description: 'Dry run (no commit)'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run newsletter discovery
+        id: discover
+        env:
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+          DAYS_BACK: ${{ github.event.inputs.days_back || '10' }}
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+        run: node scripts/discover-newsletters.js
+
+      - name: Commit and push new entries
+        if: steps.discover.outputs.new_count > 0 && github.event.inputs.dry_run != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add newsletters.json
+          git commit -m "chore: auto-discover ${{ steps.discover.outputs.new_count }} new newsletter edition(s)"
+          git push
