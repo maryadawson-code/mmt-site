@@ -161,6 +161,83 @@ function disambiguate(searchTerm) {
   };
 }
 
+// ============================================================
+// Current Events Triggers — override normal disambiguation
+// when the user's topic matches current federal contracting events
+// (e.g., DOGE terminations, executive orders, contract disruptions)
+// ============================================================
+const CURRENT_EVENTS_TRIGGERS = {
+  patterns: [
+    /cancel[l]?ation|terminat|doge|executive order|administration.*cut/i,
+    /contract.*cut|defund|de-obligat|rescind|rescission/i,
+    /recompete.*cancel|cancel.*recompete/i,
+    /workforce reduction|rif|reduction in force/i,
+    /freeze|hiring.*freeze|spending.*freeze|procurement.*freeze/i,
+  ],
+  override: {
+    search_terms: [
+      "DOGE contract terminations federal 2025 2026",
+      "federal contract cancellations recompete opportunities",
+      "terminated federal contracts small business",
+      "de-obligated federal contracts by agency",
+      "executive order federal contracting changes 2025",
+    ],
+    context:
+      "The user is asking about federal contract disruptions related to the " +
+      "current administration's policies, including DOGE terminations, " +
+      "executive orders, and agency reviews. Search across ALL federal " +
+      "agencies, not just one. Over 33,000 termination actions occurred " +
+      "in FY2025 affecting $2.51B in de-obligated funds. 26,484 small " +
+      "business contracts were closed. Focus on which terminated contracts " +
+      "create pipeline opportunities for the user.",
+  },
+};
+
+// ============================================================
+// Socioeconomic Filters — these are FILTERS on results,
+// not entities to disambiguate to. "SDVOSB" means "filter for
+// SDVOSB set-aside opportunities", NOT "research the SDVOSB
+// program at SBA".
+// ============================================================
+const SOCIOECONOMIC_FILTERS = {
+  sdvosb: /sdvosb|service.disabled.*veteran|svdosb/i,
+  vosb: /vosb|veteran.owned/i,
+  wosb: /wosb|women.owned/i,
+  hubzone: /hubzone/i,
+  eight_a: /8\(a\)|8a\b/i,
+  small_business: /small.business|\bsb\b/i,
+};
+
+/**
+ * Check if a topic matches current-events triggers.
+ * If so, returns override search terms and context.
+ * @param {string} topic
+ * @returns {{ matched: boolean, override?: Object, socioFilters?: string[] }}
+ */
+function checkCurrentEvents(topic) {
+  if (!topic) return { matched: false };
+
+  const matched = CURRENT_EVENTS_TRIGGERS.patterns.some((p) => p.test(topic));
+
+  // Detect socioeconomic filters
+  const socioFilters = [];
+  for (const [key, pattern] of Object.entries(SOCIOECONOMIC_FILTERS)) {
+    if (pattern.test(topic)) {
+      socioFilters.push(key);
+    }
+  }
+
+  if (!matched) {
+    return { matched: false, socioFilters: socioFilters.length > 0 ? socioFilters : undefined };
+  }
+
+  return {
+    matched: true,
+    override: CURRENT_EVENTS_TRIGGERS.override,
+    socioFilters: socioFilters.length > 0 ? socioFilters : undefined,
+  };
+}
+
 const NULL_RESULT_PROTOCOL = {
   minQueryVariants: 3,
   escalateToParentOrg: true,
@@ -169,4 +246,11 @@ const NULL_RESULT_PROTOCOL = {
     `No results found across ${variantCount} query variants. Recommend manual verification.`,
 };
 
-module.exports = { KNOWN_ENTITIES, disambiguate, NULL_RESULT_PROTOCOL };
+module.exports = {
+  KNOWN_ENTITIES,
+  disambiguate,
+  NULL_RESULT_PROTOCOL,
+  CURRENT_EVENTS_TRIGGERS,
+  SOCIOECONOMIC_FILTERS,
+  checkCurrentEvents,
+};

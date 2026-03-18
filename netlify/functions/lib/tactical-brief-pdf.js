@@ -192,12 +192,13 @@ function renderCoverPage(doc, { name, company, topic, audience, generatedAt, log
     .lineWidth(2)
     .stroke();
 
-  // Classification banner
+  // Confidentiality banner
+  const preparedForName = company ? `${name}, ${company}` : name;
   doc
     .font("Helvetica-Bold")
     .fontSize(9)
     .fillColor("#94a3b8")
-    .text("UNCLASSIFIED // FOR OFFICIAL USE ONLY", 60, 185, {
+    .text(`CONFIDENTIAL — Prepared for ${preparedForName || "Client"}`, 60, 185, {
       width: doc.page.width - 120,
       align: "center",
     });
@@ -308,6 +309,90 @@ function renderTocPage(doc, tocEntries) {
 }
 
 // ============================================================
+// TABLE RENDERER — renders markdown pipe tables as formatted PDFKit tables
+// ============================================================
+function renderTable(doc, lines, x, y) {
+  const rows = lines.map((line) =>
+    line
+      .split("|")
+      .filter((c) => c.trim())
+      .map((c) => c.trim())
+  );
+  // Skip separator rows (|---|---|)
+  const dataRows = rows.filter((r) => !r[0].match(/^[-:]+$/));
+  if (dataRows.length < 2) return y; // not a real table
+
+  const header = dataRows[0];
+  const body = dataRows.slice(1);
+  const colCount = header.length;
+  const tableWidth = doc.page.width - 120;
+  const colWidth = tableWidth / colCount;
+  const rowHeight = 22;
+
+  // Check page break
+  const totalHeight = (body.length + 1) * rowHeight + 10;
+  if (y + totalHeight > doc.page.height - 80) {
+    doc.addPage();
+    y = 60;
+  }
+
+  // Header row
+  doc.rect(x, y, tableWidth, rowHeight).fill("#f1f5f9");
+  for (let i = 0; i < colCount; i++) {
+    doc
+      .font("Helvetica-Bold")
+      .fontSize(9)
+      .fillColor("#334155")
+      .text(header[i], x + i * colWidth + 4, y + 5, {
+        width: colWidth - 8,
+        lineBreak: false,
+      });
+  }
+  y += rowHeight;
+
+  // Data rows
+  for (let r = 0; r < body.length; r++) {
+    // Check page break for each row
+    if (y + rowHeight > doc.page.height - 60) {
+      doc.addPage();
+      y = 60;
+    }
+
+    if (r % 2 === 0) {
+      doc.rect(x, y, tableWidth, rowHeight).fill("#f8fafc");
+    }
+    // Bottom border
+    doc
+      .moveTo(x, y + rowHeight)
+      .lineTo(x + tableWidth, y + rowHeight)
+      .strokeColor("#e2e8f0")
+      .lineWidth(0.5)
+      .stroke();
+
+    for (let i = 0; i < colCount && i < body[r].length; i++) {
+      doc
+        .font("Helvetica")
+        .fontSize(9)
+        .fillColor("#1e293b")
+        .text(body[r][i], x + i * colWidth + 4, y + 5, {
+          width: colWidth - 8,
+          lineBreak: false,
+        });
+    }
+    y += rowHeight;
+  }
+
+  return y + 8;
+}
+
+/**
+ * Check if a line is part of a markdown pipe table.
+ */
+function isTableLine(line) {
+  return /^\|.*\|$/.test(line.trim());
+}
+
+// ============================================================
 // MAIN CONTENT RENDERER
 // ============================================================
 function renderContent(doc, synthesis, tocEntries) {
@@ -317,9 +402,10 @@ function renderContent(doc, synthesis, tocEntries) {
   const lines = synthesis.split("\n");
   let currentSectionCharCount = 0;
   let sectionTruncated = false;
+  let isInSectionHeader = false;
 
-  for (const line of lines) {
-    const trimmed = line.trim();
+  for (let li = 0; li < lines.length; li++) {
+    const trimmed = lines[li].trim();
 
     y = checkPageBreak(doc, y);
 
@@ -328,8 +414,27 @@ function renderContent(doc, synthesis, tocEntries) {
       continue;
     }
 
+    // Detect and render markdown pipe tables
+    if (isTableLine(trimmed)) {
+      const tableLines = [];
+      while (li < lines.length && isTableLine(lines[li].trim())) {
+        tableLines.push(lines[li].trim());
+        li++;
+      }
+      li--; // Back up one since the for loop will increment
+      y = renderTable(doc, tableLines, 60, y);
+      continue;
+    }
+
+    // Skip methodology appendix debug output (pipeline timing, disambiguation log)
+    if (/^METHODOLOGY APPENDIX \(Auto-Generated\)$/i.test(trimmed)) {
+      // Render the methodology header but skip debug-like content
+      isInSectionHeader = false;
+    }
+
     // Section headers (## or ALL CAPS)
     if (/^#{1,3}\s/.test(trimmed)) {
+      isInSectionHeader = true;
       const headerText = trimmed.replace(/^#+\s*/, "");
       currentSectionCharCount = 0;
       sectionTruncated = false;
@@ -342,7 +447,7 @@ function renderContent(doc, synthesis, tocEntries) {
       const currentPage = range.start + range.count; // 1-indexed page
       tocEntries.push({ title: headerText.toUpperCase(), pageNum: currentPage });
 
-      // Check for confidence badge in header
+      // Only render confidence badge on section headers
       const badge = renderConfidenceBadge(doc, headerText, doc.page.width - 140, y + 2);
 
       doc
@@ -364,6 +469,7 @@ function renderContent(doc, synthesis, tocEntries) {
       y += 12;
     } else if (/^[A-Z][A-Z &\/\-]+$/.test(trimmed) && trimmed.length > 3 && trimmed.length < 80) {
       // ALL CAPS section header
+      isInSectionHeader = true;
       currentSectionCharCount = 0;
       sectionTruncated = false;
 
@@ -374,11 +480,14 @@ function renderContent(doc, synthesis, tocEntries) {
       const currentPage = range.start + range.count;
       tocEntries.push({ title: trimmed, pageNum: currentPage });
 
+      // Only render confidence badge on section headers
+      const badge = renderConfidenceBadge(doc, trimmed, doc.page.width - 140, y + 2);
+
       doc
         .font("Helvetica-Bold")
         .fontSize(13)
         .fillColor(NAVY)
-        .text(trimmed, 60, y, { width: doc.page.width - 120 });
+        .text(badge ? badge.cleanText : trimmed, 60, y, { width: doc.page.width - (badge ? 180 : 120) });
       y = doc.y + 8;
 
       doc
@@ -389,6 +498,8 @@ function renderContent(doc, synthesis, tocEntries) {
         .stroke();
       y += 12;
     } else {
+      isInSectionHeader = false;
+
       // Track section length for truncation
       currentSectionCharCount += trimmed.length;
       if (currentSectionCharCount > MAX_SECTION_CHARS && !sectionTruncated) {
@@ -405,13 +516,13 @@ function renderContent(doc, synthesis, tocEntries) {
       }
       if (sectionTruncated) continue;
 
-      if (/^\d+\.\s/.test(trimmed) || /^[-•]\s/.test(trimmed)) {
-        // Numbered or bulleted list item
-        const bulletText = trimmed.replace(/^[-•]\s*/, "").replace(/^\d+\.\s*/, "");
-        const bullet = /^\d+\./.test(trimmed) ? trimmed.match(/^\d+\./)[0] : "\u2022";
+      // Strip confidence badges from non-header content (don't render them)
+      let cleanText = trimmed.replace(/\s*\[(HIGH|MEDIUM|LOW|UNVERIFIED)\]\s*/gi, " ").trim();
 
-        // Check for confidence badge
-        const badge = renderConfidenceBadge(doc, bulletText, doc.page.width - 140, y + 1);
+      if (/^\d+\.\s/.test(cleanText) || /^[-•]\s/.test(cleanText)) {
+        // Numbered or bulleted list item
+        const bulletText = cleanText.replace(/^[-•]\s*/, "").replace(/^\d+\.\s*/, "");
+        const bullet = /^\d+\./.test(cleanText) ? cleanText.match(/^\d+\./)[0] : "\u2022";
 
         doc
           .font("Helvetica-Bold")
@@ -423,23 +534,21 @@ function renderContent(doc, synthesis, tocEntries) {
           .font("Helvetica")
           .fontSize(10)
           .fillColor("#1a1a1a")
-          .text(badge ? badge.cleanText : bulletText, 90, y, {
-            width: doc.page.width - (badge ? 200 : 150),
+          .text(bulletText, 90, y, {
+            width: doc.page.width - 150,
           });
         y = doc.y + 6;
-      } else if (trimmed.startsWith("**") && trimmed.endsWith("**")) {
+      } else if (cleanText.startsWith("**") && cleanText.endsWith("**")) {
         // Bold line
         doc
           .font("Helvetica-Bold")
           .fontSize(10)
           .fillColor("#1a1a1a")
-          .text(trimmed.replace(/\*\*/g, ""), 60, y, { width: doc.page.width - 120 });
+          .text(cleanText.replace(/\*\*/g, ""), 60, y, { width: doc.page.width - 120 });
         y = doc.y + 6;
       } else {
-        // Regular paragraph — check for inline confidence badges
-        let renderText = trimmed.replace(/\*\*/g, "");
-        const badge = renderConfidenceBadge(doc, renderText, doc.page.width - 140, y + 1);
-        if (badge) renderText = badge.cleanText;
+        // Regular paragraph — no confidence badges on body text
+        let renderText = cleanText.replace(/\*\*/g, "");
 
         doc
           .font("Helvetica")

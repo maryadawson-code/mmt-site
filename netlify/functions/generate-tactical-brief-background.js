@@ -26,8 +26,10 @@ const { checkKillSwitch, shouldHoldEmail, holdEmail } = require("./lib/kill-swit
 const { transitionState } = require("./lib/workflow-state");
 const { withRetry } = require("./lib/retry");
 const { KNOWN_FACTS } = require("./lib/contract-facts");
-const { disambiguate } = require("./lib/entity-disambiguator");
+const { disambiguate, checkCurrentEvents } = require("./lib/entity-disambiguator");
 const { extractIntelSignals } = require("./lib/signal-extractor");
+const { filterSources, countYoutubeSources } = require("./lib/source-filter");
+const { createReportQuality, analyzePassResult, checkReportQuality, buildQualityDisclaimer } = require("./lib/report-quality-gate");
 
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 const PERPLEXITY_MODEL = "sonar-pro";
@@ -310,22 +312,55 @@ Do NOT silently override verified data.
 
 CHAIN OF THOUGHT: For each user claim being verified, state what you found, whether it confirms or contradicts, and your confidence in the determination.
 
-OUTPUT STRUCTURE:
-Produce a structured executive brief with these exact sections:
-- EXECUTIVE SUMMARY (3-5 bullet points)
-- KEY FINDINGS (numbered, each with: finding text, confidence level, source URL, reasoning for confidence level)
-- ORGANIZATIONAL OVERVIEW (verified structure, leadership with directory sources, staff size with budget doc source)
-- COMPETITIVE LANDSCAPE (verified awardees ONLY in main section; assumed competitors clearly separated)
-- RISKS & WATCH ITEMS
-- OPPORTUNITIES & RECOMMENDATIONS
-- TIMELINE & MILESTONES
-- METHODOLOGY (CHANGE 8 — honest reporting):
-  - Entity searched (after disambiguation) with org code
-  - Each source queried and specific search terms used
-  - Number of results returned per source (including zero)
-  - Contradictions between sources and how resolved
-  - What was NOT found and why the null may/may not be meaningful
-  - What requires manual verification and the specific method`,
+OUTPUT STRUCTURE — You are producing a federal contracting intelligence brief.
+Your reader is a GovCon professional who PAYS for this analysis.
+They already know basic program information. They need ACTIONABLE INTELLIGENCE they can't easily find themselves.
+
+REQUIRED SECTIONS (use these exact headers):
+
+## EXECUTIVE SUMMARY
+3-5 bullet points. Each must contain: a specific fact, its source, and why it matters to the reader's business. NO null findings. If research found limited results, explain what WAS found and what to monitor.
+
+## MARKET CONTEXT
+Current state of this market segment. Recent policy/regulatory changes. Budget trends with actual dollar figures from .gov sources. Maximum 1 page worth of content.
+
+## PIPELINE INTELLIGENCE
+THIS IS THE CORE SECTION. Specific contracts, solicitations, or recompete opportunities. For each:
+- Contract number or solicitation ID
+- Agency
+- NAICS code
+- Incumbent (if known)
+- Estimated value
+- Timeline/deadline
+- Set-aside status
+- Source with URL
+If you found fewer than 3 specific opportunities, state that clearly and explain what adjacent opportunities exist.
+
+## COMPETITIVE LANDSCAPE
+Named incumbents on relevant contracts. Recent wins/losses. Teaming opportunities with specific companies. NOT generic program descriptions. Verified awardees ONLY in main section; assumed competitors clearly separated.
+
+## RISK ASSESSMENT
+Specific risks with evidence. Policy/budget risks. NOT generic compliance checklists.
+
+## RECOMMENDATIONS
+Capture strategy tied to specific opportunities from Pipeline Intelligence. Timeline with specific dates. Teaming suggestions with named partners/vehicles.
+
+## METHODOLOGY
+Brief: what was searched, what was found, limitations.
+- Entity searched (after disambiguation) with org code
+- Each source queried and specific search terms used
+- Number of results returned per source (including zero)
+- Contradictions between sources and how resolved
+- What was NOT found and why the null may/may not be meaningful
+- What requires manual verification and the specific method
+
+RULES:
+- Every claim must have a source. Prefer .gov over commercial.
+- NO YouTube sources. NO generic blog posts as primary data.
+- NO program descriptions the reader already knows (what SDVOSB is, how VetCert works, what Mentor-Protege is).
+- NO sections with "None identified" or "No results found." If a section would be empty, merge it into another or explain what to monitor.
+- Data density: every paragraph must contain at least one specific fact (number, date, name, contract ID).
+- Maximum 4 pages of content. Quality over quantity.`,
 
     `Topic: ${topic}\n\nLandscape scan:\n${landscapeContent}\n\nDeep analysis:\n${analysisContent}\n\nSynthesize into a final executive brief.\n\nFor the METHODOLOGY section, you must honestly report:\n- What entity was researched (after disambiguation)\n- What sources were queried with what search terms\n- What was found vs. what returned zero results\n- What contradicted other sources\n- What requires manual verification\n\nApply the confidence scoring rules strictly. No HIGH confidence on null results or inferred personnel status.`,
     6000
@@ -540,25 +575,90 @@ exports.handler = async (event) => {
       }
     } catch { /* non-blocking */ }
 
+    // Pre-check: Current events override (prevents SBA routing failure mode)
+    const currentEventsCheck = checkCurrentEvents(topic);
+    if (currentEventsCheck.matched) {
+      console.log(`[CURRENT EVENTS] Topic matches current-events triggers. Overriding disambiguation.`);
+      if (currentEventsCheck.socioFilters) {
+        console.log(`[SOCIO FILTER] Detected filters: ${currentEventsCheck.socioFilters.join(", ")}`);
+      }
+    } else if (currentEventsCheck.socioFilters) {
+      console.log(`[SOCIO FILTER] Detected filters: ${currentEventsCheck.socioFilters.join(", ")} (treating as result filter, not entity)`);
+    }
+
+    // Initialize quality tracking
+    const reportQuality = createReportQuality();
+    let nullPassCount = 0;
+    const NULL_PASS_THRESHOLD = 2;
+
     // Pass 0: Entity disambiguation (CHANGE 1) — uses optimized prompt
+    // If current-events override matched, we still run disambiguation but
+    // inject the override context into all subsequent passes
     const pass0Start = Date.now();
     const disambiguation = await disambiguateEntity(optimizedTopic);
     passTimings["Pass 0 — Entity disambiguation"] = Math.round((Date.now() - pass0Start) / 1000);
+
+    // Inject current-events override into disambiguation if matched
+    if (currentEventsCheck.matched) {
+      disambiguation._currentEventsOverride = currentEventsCheck.override;
+      disambiguation._socioFilters = currentEventsCheck.socioFilters;
+      // Augment search terms with override terms
+      if (disambiguation.selected_entity && disambiguation.selected_entity.search_terms) {
+        disambiguation.selected_entity.search_terms.keywords = [
+          ...(disambiguation.selected_entity.search_terms.keywords || []),
+          ...currentEventsCheck.override.search_terms,
+        ];
+      }
+      console.log(`[CURRENT EVENTS] Injected ${currentEventsCheck.override.search_terms.length} override search terms`);
+    }
+    if (currentEventsCheck.socioFilters) {
+      disambiguation._socioFilters = currentEventsCheck.socioFilters;
+    }
 
     // Pass 1: Landscape scan with query expansion (CHANGES 2, 5)
     const pass1Start = Date.now();
     const pass1 = await runLandscapeScan(optimizedTopic, audience, company, disambiguation);
     passTimings["Pass 1 — Landscape scan"] = Math.round((Date.now() - pass1Start) / 1000);
+    analyzePassResult(reportQuality, pass1.content, pass1.citations);
+    if (!pass1.content || pass1.content.trim().length < 200) nullPassCount++;
+
+    // Null result pivot check after Pass 1
+    if (nullPassCount >= NULL_PASS_THRESHOLD) {
+      console.log(`[NULL PROTOCOL] ${nullPassCount} passes returned empty after Pass 1. Pivoting search strategy.`);
+    }
 
     // Pass 2: Deep analysis + evidence-based competitive landscape (CHANGES 4, 5)
     const pass2Start = Date.now();
     const pass2 = await runDeepAnalysis(optimizedTopic, audience, company, disambiguation, pass1.content);
     passTimings["Pass 2 — Deep analysis"] = Math.round((Date.now() - pass2Start) / 1000);
+    analyzePassResult(reportQuality, pass2.content, pass2.citations);
+    if (!pass2.content || pass2.content.trim().length < 200) nullPassCount++;
+
+    // Null result pivot check after Pass 2
+    if (nullPassCount >= NULL_PASS_THRESHOLD) {
+      console.log(`[NULL PROTOCOL] ${nullPassCount} passes returned empty. Broadening search.`);
+      // Run a broadened pivot search pass
+      const pivotStart = Date.now();
+      const topicWords = topic.split(" ").slice(0, 5).join(" ");
+      const pivotResult = await callPerplexity(
+        `You are a federal contracting intelligence analyst. The previous research queries returned limited results. Broaden your search significantly. Search ALL federal agencies, not just one. Look for recent news, policy changes, and procurement activity.`,
+        `Broadened search for: ${topic}\n\nSearch these expanded queries:\n1. "${topicWords}" federal contracts 2025 2026\n2. "${topicWords}" government spending changes\n3. federal contracting news ${topicWords}\n4. SAM.gov opportunities ${topicWords}\n5. USASpending recent awards ${topicWords}\n\nReport whatever you find, even tangentially related. This is a pivot search after ${nullPassCount} null results.`,
+        4000
+      );
+      passTimings["Pass 2.5 — Pivot search"] = Math.round((Date.now() - pivotStart) / 1000);
+      analyzePassResult(reportQuality, pivotResult.content, pivotResult.citations);
+      // Append pivot results to pass2 content for synthesis
+      if (pivotResult.content) {
+        pass2.content += "\n\n--- BROADENED SEARCH RESULTS ---\n" + pivotResult.content;
+        pass2.citations = [...(pass2.citations || []), ...(pivotResult.citations || [])];
+      }
+    }
 
     // Pass 3: Fact-check, synthesis, confidence scoring (CHANGES 3, 6, 8)
     const pass3Start = Date.now();
     const pass3 = await runSynthesis(optimizedTopic, audience, company, disambiguation, pass1.content, pass2.content);
     passTimings["Pass 3 — Synthesis"] = Math.round((Date.now() - pass3Start) / 1000);
+    analyzePassResult(reportQuality, pass3.content, pass3.citations);
 
     // Pass 4: Cross-validation gate (CHANGE 7)
     const pass4Start = Date.now();
@@ -571,6 +671,23 @@ exports.handler = async (event) => {
       const pass5Start = Date.now();
       finalSynthesis = await applyCorrections(optimizedTopic, pass3.content, validation);
       passTimings["Pass 5 — Corrections"] = Math.round((Date.now() - pass5Start) / 1000);
+    }
+
+    // Track YouTube sources in quality metrics
+    reportQuality.youtubeSourceCount = countYoutubeSources([
+      ...(pass1.citations || []),
+      ...(pass2.citations || []),
+      ...(pass3.citations || []),
+    ]);
+
+    // === QUALITY GATE ===
+    const qualityResult = checkReportQuality(reportQuality, finalSynthesis);
+    console.log(`[QUALITY GATE] Grade: ${qualityResult.grade} | Failures: ${qualityResult.failures.length} | Metrics: contracts=${reportQuality.specificContracts}, dollars=${reportQuality.dollarValues}, entities=${reportQuality.namedEntities}, nullPasses=${reportQuality.nullPasses}/${reportQuality.totalPasses}`);
+
+    if (qualityResult.grade === "MARGINAL") {
+      // Add disclaimer to synthesis
+      finalSynthesis = buildQualityDisclaimer(qualityResult.failures) + "\n\n" + finalSynthesis;
+      console.log(`[QUALITY GATE] MARGINAL — disclaimer prepended to report`);
     }
 
     // Append methodology appendix
@@ -600,13 +717,19 @@ exports.handler = async (event) => {
       ...(validation._citations || []),
     ];
     const seen = new Set();
-    const allCitations = [];
+    const dedupedCitations = [];
     for (const url of rawCitations) {
       const normalized = normalizeCitationUrl(url);
       if (!seen.has(normalized)) {
         seen.add(normalized);
-        allCitations.push(url);
+        dedupedCitations.push(url);
       }
+    }
+
+    // Filter sources: remove YouTube/social, rank .gov first
+    const { filtered: allCitations, removed: removedSources } = filterSources(dedupedCitations);
+    if (removedSources.length > 0) {
+      console.log(`[SOURCE FILTER] Removed ${removedSources.length} low-quality sources: ${removedSources.map(r => r.reason).join("; ")}`);
     }
 
     // C3: Emit intelligence signals from research
@@ -629,8 +752,81 @@ exports.handler = async (event) => {
       console.error("Signal emission failed:", sigErr.message);
     }
 
-    // State: research_completed → pdf_started
+    // State: research_completed
     await _transition("research_completed");
+
+    // === QUALITY GATE: FAIL — do not generate PDF ===
+    if (qualityResult.grade === "FAIL") {
+      console.log(`[QUALITY GATE] FAIL — blocking PDF generation. Failures: ${qualityResult.failures.join("; ")}`);
+
+      // Log failure to ops_events
+      if (_supabase) {
+        try {
+          await _supabase.from("ops_events").insert({
+            event_type: "marketpulse_quality_fail",
+            details: {
+              email,
+              topic,
+              quality_grade: qualityResult.grade,
+              failures: qualityResult.failures,
+              metrics: reportQuality,
+              session_id,
+            },
+          });
+        } catch (opsErr) {
+          console.error("Failed to log quality failure to ops_events:", opsErr.message);
+        }
+
+        // Queue for manual review
+        try {
+          await _supabase.from("marketpulse_review_queue").insert({
+            session_id,
+            email,
+            name,
+            company,
+            topic,
+            audience,
+            quality_grade: qualityResult.grade,
+            quality_failures: qualityResult.failures,
+            quality_metrics: reportQuality,
+            synthesis_preview: (finalSynthesis || "").substring(0, 2000),
+            status: "pending_review",
+          });
+        } catch (queueErr) {
+          console.error("Failed to queue for manual review:", queueErr.message);
+        }
+      }
+
+      // Send alternative email to customer
+      const failEmailHtml = buildDeliveryEmail({ name, topic, orderId: _orderId, qualityFail: true });
+      const failSubject = `Your MarketPulse Request: ${topic.slice(0, 60)}${topic.length > 60 ? "..." : ""}`;
+
+      if (!shouldHoldEmail()) {
+        await sendEmail({
+          to: email,
+          subject: failSubject,
+          html: failEmailHtml,
+          from: "Mission Meets Tech <noreply@missionmeetstech.com>",
+        });
+      }
+
+      // Notify Mary
+      await sendEmail({
+        to: "mary@missionmeetstech.com",
+        subject: `[MarketPulse] QUALITY FAIL — ${name} (${email})`,
+        html: `<p><strong>Quality gate blocked PDF delivery.</strong></p>
+          <p><strong>Topic:</strong> ${topic}</p>
+          <p><strong>Grade:</strong> ${qualityResult.grade}</p>
+          <p><strong>Failures:</strong></p><ul>${qualityResult.failures.map(f => `<li>${f}</li>`).join("")}</ul>
+          <p><strong>Metrics:</strong> contracts=${reportQuality.specificContracts}, dollars=${reportQuality.dollarValues}, nullPasses=${reportQuality.nullPasses}/${reportQuality.totalPasses}</p>
+          <p>Queued for manual review. Session: ${session_id}</p>`,
+        from: "Mission Meets Tech <noreply@missionmeetstech.com>",
+      });
+
+      await _transition("quality_fail");
+      return { statusCode: 200, body: JSON.stringify({ success: true, quality_gate: "FAIL", duration_seconds: Math.round((Date.now() - startTime) / 1000) }) };
+    }
+
     await _transition("pdf_started");
 
     // Generate PDF
@@ -653,7 +849,7 @@ exports.handler = async (event) => {
 
     // Send delivery email with PDF attachment (with degraded mode hold)
     console.log("Sending delivery email...");
-    const deliveryHtml = buildDeliveryEmail({ name, topic, orderId: _orderId });
+    const deliveryHtml = buildDeliveryEmail({ name, topic, orderId: _orderId, qualityGrade: qualityResult.grade, qualityFailures: qualityResult.failures });
     const deliverySubject = `Your MarketPulse Report: ${topic.slice(0, 60)}${topic.length > 60 ? "..." : ""}`;
 
     if (shouldHoldEmail()) {

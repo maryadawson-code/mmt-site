@@ -9,8 +9,74 @@
  * Build the delivery email HTML sent to the customer.
  * The PDF is attached separately — this is just the email body.
  */
-function buildDeliveryEmail({ name, topic, orderId }) {
+function buildDeliveryEmail({ name, topic, orderId, qualityFail, qualityGrade, qualityFailures, executiveSummary, opportunityCount, agencyCount }) {
   const firstName = (name || "").split(" ")[0] || "there";
+
+  // Quality fail path — report not delivered, queued for manual review
+  if (qualityFail) {
+    return `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#f4f4f4;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f4;padding:32px 16px;">
+    <tr><td align="center">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:600px;width:100%;">
+        <tr><td style="background:#00050F;padding:32px 40px;">
+          <p style="margin:0;font-size:22px;font-weight:700;color:#00E5FA;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">MARKETPULSE</p>
+          <p style="margin:4px 0 0;font-size:12px;color:rgba(255,255,255,0.6);">Mission Meets Tech — Federal Health IT Intelligence</p>
+        </td></tr>
+        <tr><td style="padding:40px;">
+          <p style="margin:0 0 16px;font-size:16px;color:#1a1a1a;line-height:1.6;">Hi ${firstName},</p>
+          <p style="margin:0 0 16px;font-size:15px;color:#333;line-height:1.6;">Your research request requires additional analysis to meet our quality standards. Our team has been notified and will deliver an enhanced report within 24 hours.</p>
+          <div style="background:#f8f9fa;border-left:4px solid #00E5FA;padding:16px 20px;border-radius:0 8px 8px 0;margin:24px 0;">
+            <p style="margin:0;font-size:12px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:0.05em;">Research Topic</p>
+            <p style="margin:6px 0 0;font-size:14px;color:#1a1a1a;line-height:1.5;">${escapeHtml(topic)}</p>
+          </div>
+          <p style="margin:0 0 8px;font-size:15px;color:#333;line-height:1.6;">We want to make sure you get the intelligence you're paying for. Our analyst will review the initial findings and supplement with targeted research to ensure your brief includes specific, actionable data.</p>
+          <p style="margin:16px 0 0;font-size:15px;color:#333;line-height:1.6;">Questions? Reach out at <a href="mailto:mary@missionmeetstech.com" style="color:#00E5FA;">mary@missionmeetstech.com</a>.</p>
+          <hr style="border:none;border-top:1px solid #eee;margin:32px 0;">
+          <p style="margin:0;font-size:13px;color:#999;line-height:1.5;">Mission Meets Tech provides independent analysis and commentary. Views expressed are those of the authors and do not represent any employer or government agency.</p>
+        </td></tr>
+        <tr><td style="background:#f8f9fa;padding:24px 40px;border-top:1px solid #eee;">
+          <p style="margin:0;font-size:12px;color:#999;">Mission Meets Tech | <a href="https://missionmeetstech.com" style="color:#00E5FA;text-decoration:none;">missionmeetstech.com</a></p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+  }
+
+  // Build summary snippet for the email
+  let summaryHtml = "";
+  if (executiveSummary && executiveSummary.length > 0) {
+    const bullets = executiveSummary.slice(0, 5).map(b =>
+      `<li style="margin-bottom:6px;font-size:14px;color:#374151;line-height:1.5;">${escapeHtml(b)}</li>`
+    ).join("");
+    summaryHtml = `
+          <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:16px 20px;margin:24px 0;">
+            <p style="margin:0 0 8px;font-size:12px;font-weight:600;color:#0369a1;text-transform:uppercase;letter-spacing:0.05em;">Key Findings</p>
+            <ul style="margin:0;padding-left:20px;">${bullets}</ul>
+          </div>`;
+  }
+
+  // Opportunity count line
+  let countLine = "";
+  if (opportunityCount || agencyCount) {
+    const parts = [];
+    if (opportunityCount) parts.push(`${opportunityCount} pipeline opportunit${opportunityCount === 1 ? "y" : "ies"}`);
+    if (agencyCount) parts.push(`${agencyCount} agenc${agencyCount === 1 ? "y" : "ies"}`);
+    countLine = `<p style="margin:0 0 16px;font-size:14px;color:#0369a1;font-weight:600;">This brief covers ${parts.join(" across ")}.</p>`;
+  }
+
+  // Quality note for MARGINAL reports
+  let qualityNote = "";
+  if (qualityGrade === "MARGINAL" && qualityFailures && qualityFailures.length > 0) {
+    qualityNote = `
+          <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:12px 16px;margin:16px 0;">
+            <p style="margin:0;font-size:13px;color:#854d0e;">This report contains limited specific intelligence for some areas of your query. We recommend supplementing with direct searches on SAM.gov and USASpending.gov.</p>
+          </div>`;
+  }
 
   return `<!DOCTYPE html>
 <html>
@@ -36,7 +102,11 @@ function buildDeliveryEmail({ name, topic, orderId }) {
             <p style="margin:6px 0 0;font-size:14px;color:#1a1a1a;line-height:1.5;">${escapeHtml(topic)}</p>
           </div>
 
-          <p style="margin:24px 0 16px;font-size:15px;color:#333;line-height:1.6;">This brief was generated using a 3-pass live research pipeline sourcing current data from federal databases, contract records, and policy documents. All findings include confidence ratings.</p>
+          ${countLine}
+          ${summaryHtml}
+          ${qualityNote}
+
+          <p style="margin:24px 0 16px;font-size:15px;color:#333;line-height:1.6;">This brief was generated using a multi-pass live research pipeline sourcing current data from federal databases, contract records, and policy documents. All findings include confidence ratings and source citations.</p>
 
           <p style="margin:0 0 8px;font-size:15px;color:#333;line-height:1.6;">If you have questions about this brief or want to discuss the findings, reply to this email or reach out at <a href="mailto:mary@missionmeetstech.com" style="color:#00E5FA;">mary@missionmeetstech.com</a>.</p>
 
