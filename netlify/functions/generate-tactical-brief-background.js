@@ -21,6 +21,7 @@
 const { generateTacticalBriefPdf } = require("./lib/tactical-brief-pdf");
 const { buildDeliveryEmail, buildNotificationEmail } = require("./lib/tactical-brief-email");
 const { sendEmail } = require("./lib/send-email");
+const { optimizeMarketPrompt } = require("./lib/prompt-optimizer");
 
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 const PERPLEXITY_MODEL = "sonar-pro";
@@ -484,36 +485,43 @@ exports.handler = async (event) => {
   const passTimings = {};
 
   try {
-    // Pass 0: Entity disambiguation (CHANGE 1)
+    // Pre-pass: Prompt optimization — enrich raw topic into structured GovCon research prompt
+    const originalTopic = topic;
+    const optimizedTopic = optimizeMarketPrompt({ topic, company, segment: null, audience, additional_context: null });
+    if (optimizedTopic !== topic) {
+      console.log(`Prompt optimizer: enriched topic (${topic.length} chars → ${optimizedTopic.length} chars)`);
+    }
+
+    // Pass 0: Entity disambiguation (CHANGE 1) — uses optimized prompt
     const pass0Start = Date.now();
-    const disambiguation = await disambiguateEntity(topic);
+    const disambiguation = await disambiguateEntity(optimizedTopic);
     passTimings["Pass 0 — Entity disambiguation"] = Math.round((Date.now() - pass0Start) / 1000);
 
     // Pass 1: Landscape scan with query expansion (CHANGES 2, 5)
     const pass1Start = Date.now();
-    const pass1 = await runLandscapeScan(topic, audience, company, disambiguation);
+    const pass1 = await runLandscapeScan(optimizedTopic, audience, company, disambiguation);
     passTimings["Pass 1 — Landscape scan"] = Math.round((Date.now() - pass1Start) / 1000);
 
     // Pass 2: Deep analysis + evidence-based competitive landscape (CHANGES 4, 5)
     const pass2Start = Date.now();
-    const pass2 = await runDeepAnalysis(topic, audience, company, disambiguation, pass1.content);
+    const pass2 = await runDeepAnalysis(optimizedTopic, audience, company, disambiguation, pass1.content);
     passTimings["Pass 2 — Deep analysis"] = Math.round((Date.now() - pass2Start) / 1000);
 
     // Pass 3: Fact-check, synthesis, confidence scoring (CHANGES 3, 6, 8)
     const pass3Start = Date.now();
-    const pass3 = await runSynthesis(topic, audience, company, disambiguation, pass1.content, pass2.content);
+    const pass3 = await runSynthesis(optimizedTopic, audience, company, disambiguation, pass1.content, pass2.content);
     passTimings["Pass 3 — Synthesis"] = Math.round((Date.now() - pass3Start) / 1000);
 
     // Pass 4: Cross-validation gate (CHANGE 7)
     const pass4Start = Date.now();
-    const validation = await runCrossValidation(topic, disambiguation, pass3.content);
+    const validation = await runCrossValidation(optimizedTopic, disambiguation, pass3.content);
     passTimings["Pass 4 — Cross-validation"] = Math.round((Date.now() - pass4Start) / 1000);
 
     // Pass 5: Apply corrections if needed
     let finalSynthesis = pass3.content;
     if (!validation.overall_passed || (validation.corrections_needed || []).length > 0) {
       const pass5Start = Date.now();
-      finalSynthesis = await applyCorrections(topic, pass3.content, validation);
+      finalSynthesis = await applyCorrections(optimizedTopic, pass3.content, validation);
       passTimings["Pass 5 — Corrections"] = Math.round((Date.now() - pass5Start) / 1000);
     }
 
