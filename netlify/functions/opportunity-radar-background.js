@@ -180,7 +180,7 @@ Focus your 5 web searches on:
 2. DHA and VA new procurement actions for health IT systems
 3. HHS/CMS new technology solicitations
 4. Recent federal health IT contract awards or modifications
-5. New task orders under existing health IT vehicles (T-5 BPA, EIDS, etc.)
+5. New task orders under existing health IT vehicles (T4NG/T4NG2, EIDS, etc.)
 
 Return opportunities found as JSON.`, 5, scanModel.model, 8000);
 
@@ -203,7 +203,7 @@ Focus your 4 web searches on:
 3. GovWin and Bloomberg Government health IT opportunities
 4. Recent federal health IT RFI or sources sought notices
 
-Return opportunities found as JSON. Do not duplicate opportunities that are well-known existing contracts (MHS GENESIS, FEHRM, VA EHRM, TRICARE MCS, CCN Next Gen, T-5 BPA, EIDS).`, 4, scanModel.model, 8000);
+Return opportunities found as JSON. Do not duplicate opportunities that are well-known existing contracts (MHS GENESIS, FEHRM, VA EHRM, TRICARE MCS, CCN Next Gen, T4NG/T4NG2, EIDS).`, 4, scanModel.model, 8000);
 
     if (result2.opportunities) {
       allOpportunities.push(...result2.opportunities);

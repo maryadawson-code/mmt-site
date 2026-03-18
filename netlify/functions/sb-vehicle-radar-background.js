@@ -21,7 +21,7 @@ const { withRetry } = require("./lib/retry");
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
-const VALID_VEHICLES = ["OASIS+", "CIO-SP4", "OMNIBUS IV", "DIU", "DARPA", "SBIR/STTR", "VA SDVOSB", "8(a)"];
+const VALID_VEHICLES = ["OASIS+", "CIO-SP3", "Alliant 3", "T4NG2", "OMNIBUS IV", "DIU", "DARPA", "SBIR/STTR", "VA SDVOSB", "8(a)"];
 
 // Expanded Health IT NAICS codes
 const NAICS_CODES = ["541512", "541511", "541519", "541611", "621999", "334510", "518210", "511210", "541715"];
@@ -90,7 +90,9 @@ function buildClassificationPrompt(awards) {
 Below are ${awards.length} recent federal health IT contract awards/opportunities. Classify EVERY SINGLE ONE under ONE of these contract vehicles — never skip an award:
 
 - "OASIS+" — GSA OASIS+ task orders (professional/IT services via GSA GWAC)
-- "CIO-SP4" — NITAAC CIO-SP4 (health IT through NIH/NITAAC)
+- "CIO-SP3" — NITAAC CIO-SP3 (health IT through NIH/NITAAC, extended through April 2027; CIO-SP4 was cancelled)
+- "Alliant 3" — GSA Alliant 3 GWAC (43 awardees, awarded Feb 2026)
+- "T4NG2" — VA T4NG2 IT services ($60.7B ceiling, task orders began March 2026)
 - "OMNIBUS IV" — DHA OMNIBUS IV (Defense Health Agency medical/health IT)
 - "DIU" — Defense Innovation Unit (commercial prototypes for DoD)
 - "DARPA" — DARPA research awards (advanced health/bio research)
@@ -101,7 +103,9 @@ Below are ${awards.length} recent federal health IT contract awards/opportunitie
 Classification rules:
 - VA awards → "VA SDVOSB" (VA frequently uses SDVOSB set-asides)
 - DHA/military health/DoD health → "OMNIBUS IV"
-- HHS/NIH/CMS health IT → "CIO-SP4" (NITAAC is the primary health IT GWAC)
+- HHS/NIH/CMS health IT → "CIO-SP3" (NITAAC is the primary health IT GWAC)
+- VA IT services → "T4NG2" (VA's primary IT services vehicle)
+- GSA IT services multi-agency → "Alliant 3" or "OASIS+"
 - GSA IT services → "OASIS+"
 - DARPA awards → "DARPA"
 - SBIR/STTR referenced in description → "SBIR/STTR"

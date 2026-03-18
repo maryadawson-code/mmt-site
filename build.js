@@ -1074,7 +1074,9 @@ function generateContractTrackerHtml(contracts) {
                 <span><strong style="color:var(--mmt-white-muted);">Value:</strong> ${escapeHtml(c.value)}</span>
                 ${c.naics ? `<span><strong style="color:var(--mmt-white-muted);">NAICS:</strong> ${escapeHtml(c.naics)}</span>` : ''}
               </div>
-              <p class="text-xs mt-3 font-semibold" style="color:var(--mmt-cyan);">View Intel &rarr;</p>
+              ${c.last_verified ? `<span class="text-xs block mt-2" style="color:var(--mmt-white-dim);" data-last-verified="${escapeHtml(c.last_verified)}">Last verified: ${escapeHtml(c.last_verified)}</span>` : ''}
+              ${c.source ? `<a href="${escapeHtml(c.source)}" target="_blank" rel="noopener" class="text-xs mt-1 inline-block hover:opacity-80" style="color:var(--mmt-cyan);">Source</a>` : ''}
+              <p class="text-xs mt-2 font-semibold" style="color:var(--mmt-cyan);">View Intel &rarr;</p>
             </a>\n`;
     });
     html += `          </div>
