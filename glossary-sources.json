@@ -1,0 +1,244 @@
+{
+  "asd-ha": [
+    {"url": "https://health.mil/About-MHS/OASDHA", "label": "Office of the ASD(HA) — Health.mil", "domain": "health.mil"},
+    {"url": "https://policy.defense.gov/ousdp-offices/asd-ha/", "label": "ASD(HA) — Defense Policy", "domain": "policy.defense.gov"}
+  ],
+  "ato": [
+    {"url": "https://www.fedramp.gov/faqs/", "label": "FedRAMP Authorization (ATO) FAQ", "domain": "fedramp.gov"},
+    {"url": "https://csrc.nist.gov/glossary/term/authorization_to_operate", "label": "Authorization to Operate — NIST Glossary", "domain": "nist.gov"},
+    {"url": "https://www.nist.gov/publications/risk-management-framework-information-systems-and-organizations", "label": "Risk Management Framework — NIST SP 800-37", "domain": "nist.gov"}
+  ],
+  "bpa": [
+    {"url": "https://www.acquisition.gov/far/subpart-13.3", "label": "FAR Subpart 13.3 — Blanket Purchase Agreements", "domain": "acquisition.gov"},
+    {"url": "https://www.gsa.gov/buy-through-us/purchasing-programs/gsa-schedules/schedule-buyers/blanket-purchase-agreements", "label": "Blanket Purchase Agreements — GSA", "domain": "gsa.gov"}
+  ],
+  "carequality": [
+    {"url": "https://www.healthit.gov/topic/interoperability/trusted-exchange-framework-and-common-agreement-tefca", "label": "Interoperability & Exchange Frameworks — HealthIT.gov", "domain": "healthit.gov"},
+    {"url": "https://www.healthit.gov/buzz-blog/interoperability/the-sequoia-project-and-carequality", "label": "Carequality Health Data Exchange — HealthIT.gov", "domain": "healthit.gov"}
+  ],
+  "cmmc": [
+    {"url": "https://dodcio.defense.gov/CMMC/", "label": "CMMC — DoD CIO", "domain": "dodcio.defense.gov"},
+    {"url": "https://www.acq.osd.mil/cmmc/", "label": "CMMC — DoD Acquisition", "domain": "acq.osd.mil"},
+    {"url": "https://www.nist.gov/cyberframework", "label": "Cybersecurity Framework — NIST", "domain": "nist.gov"}
+  ],
+  "connected-care": [
+    {"url": "https://connectedcare.va.gov/", "label": "VA Connected Care / Telehealth", "domain": "connectedcare.va.gov"},
+    {"url": "https://www.va.gov/health/connected-care/", "label": "Connected Care — VA.gov", "domain": "va.gov"}
+  ],
+  "contract-pricing": [
+    {"url": "https://www.acquisition.gov/far/part-16", "label": "FAR Part 16 — Types of Contracts", "domain": "acquisition.gov"},
+    {"url": "https://www.acquisition.gov/far/part-15", "label": "FAR Part 15 — Contracting by Negotiation", "domain": "acquisition.gov"}
+  ],
+  "contracting-officer": [
+    {"url": "https://www.acquisition.gov/far/1.602-1", "label": "FAR 1.602-1 — Authority of Contracting Officers", "domain": "acquisition.gov"},
+    {"url": "https://www.acquisition.gov/far/part-1", "label": "FAR Part 1 — Federal Acquisition Regulations System", "domain": "acquisition.gov"}
+  ],
+  "cor": [
+    {"url": "https://www.acquisition.gov/far/1.602-2", "label": "FAR 1.602-2 — Contracting Officer's Representative", "domain": "acquisition.gov"},
+    {"url": "https://www.acquisition.gov/far/part-46", "label": "FAR Part 46 — Quality Assurance", "domain": "acquisition.gov"}
+  ],
+  "cots": [
+    {"url": "https://www.acquisition.gov/far/part-12", "label": "FAR Part 12 — Acquisition of Commercial Products", "domain": "acquisition.gov"},
+    {"url": "https://www.acquisition.gov/far/2.101", "label": "FAR 2.101 — Definitions (Commercial Item)", "domain": "acquisition.gov"}
+  ],
+  "crs": [
+    {"url": "https://crsreports.congress.gov/", "label": "Congressional Research Service Reports", "domain": "crsreports.congress.gov"},
+    {"url": "https://www.loc.gov/crsinfo/", "label": "About CRS — Library of Congress", "domain": "loc.gov"}
+  ],
+  "dha": [
+    {"url": "https://www.health.mil/About-MHS/DHA", "label": "Defense Health Agency — Health.mil", "domain": "health.mil"},
+    {"url": "https://health.mil/Military-Health-Topics/Health-Readiness/AHLTA", "label": "DHA Health Readiness — Health.mil", "domain": "health.mil"}
+  ],
+  "dhp": [
+    {"url": "https://comptroller.defense.gov/Budget-Materials/", "label": "Defense Health Program Budget — DoD Comptroller", "domain": "comptroller.defense.gov"},
+    {"url": "https://www.health.mil/About-MHS", "label": "About the Military Health System — Health.mil", "domain": "health.mil"}
+  ],
+  "directtrust": [
+    {"url": "https://www.healthit.gov/topic/health-it-health-care-settings/direct-project", "label": "Direct Project — HealthIT.gov", "domain": "healthit.gov"},
+    {"url": "https://www.healthit.gov/faq/what-direct-secure-messaging", "label": "Direct Secure Messaging — HealthIT.gov", "domain": "healthit.gov"}
+  ],
+  "ehealth-exchange": [
+    {"url": "https://www.healthit.gov/topic/interoperability/health-information-exchange", "label": "Health Information Exchange — HealthIT.gov", "domain": "healthit.gov"},
+    {"url": "https://www.va.gov/health/hie/", "label": "VA Health Information Exchange", "domain": "va.gov"}
+  ],
+  "ehr": [
+    {"url": "https://www.healthit.gov/faq/what-electronic-health-record-ehr", "label": "What Is an EHR? — HealthIT.gov", "domain": "healthit.gov"},
+    {"url": "https://www.va.gov/health-care/get-medical-records/", "label": "VA Health Records", "domain": "va.gov"},
+    {"url": "https://www.cms.gov/priorities/key-initiatives/e-health/records", "label": "Electronic Health Records — CMS.gov", "domain": "cms.gov"}
+  ],
+  "far": [
+    {"url": "https://www.acquisition.gov/browse/index/far", "label": "Federal Acquisition Regulation — Acquisition.gov", "domain": "acquisition.gov"},
+    {"url": "https://www.acquisition.gov/far", "label": "FAR Full Text — Acquisition.gov", "domain": "acquisition.gov"}
+  ],
+  "fedramp": [
+    {"url": "https://www.fedramp.gov/", "label": "FedRAMP — Official Site", "domain": "fedramp.gov"},
+    {"url": "https://www.fedramp.gov/program-basics/", "label": "FedRAMP Program Basics", "domain": "fedramp.gov"},
+    {"url": "https://marketplace.fedramp.gov/", "label": "FedRAMP Marketplace", "domain": "fedramp.gov"}
+  ],
+  "fehrm": [
+    {"url": "https://www.fehrm.gov/", "label": "Federal Electronic Health Record Modernization — FEHRM.gov", "domain": "fehrm.gov"},
+    {"url": "https://www.fehrm.gov/about/", "label": "About FEHRM — FEHRM.gov", "domain": "fehrm.gov"}
+  ],
+  "fhir": [
+    {"url": "https://www.healthit.gov/sites/default/files/page/2021-04/FHIR-Fact-Sheet.pdf", "label": "FHIR Fact Sheet — HealthIT.gov", "domain": "healthit.gov"},
+    {"url": "https://www.healthit.gov/topic/standards-technology/standards", "label": "Health IT Standards — HealthIT.gov", "domain": "healthit.gov"}
+  ],
+  "fiscal-year": [
+    {"url": "https://www.gao.gov/federal-budget-glossary", "label": "Federal Budget Glossary — GAO", "domain": "gao.gov"},
+    {"url": "https://www.senate.gov/reference/glossary_term/fiscal_year.htm", "label": "Fiscal Year — U.S. Senate Reference", "domain": "senate.gov"}
+  ],
+  "gao": [
+    {"url": "https://www.gao.gov/about", "label": "About GAO — Government Accountability Office", "domain": "gao.gov"},
+    {"url": "https://www.gao.gov/", "label": "GAO — Official Site", "domain": "gao.gov"}
+  ],
+  "govcon": [
+    {"url": "https://sam.gov/content/home", "label": "SAM.gov — Government Contracting Portal", "domain": "sam.gov"},
+    {"url": "https://www.sba.gov/federal-contracting", "label": "Federal Contracting — SBA.gov", "domain": "sba.gov"},
+    {"url": "https://www.acquisition.gov/", "label": "Acquisition.gov — Federal Acquisition Gateway", "domain": "acquisition.gov"}
+  ],
+  "gwac": [
+    {"url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/governmentwide-acquisition-contracts", "label": "Government-Wide Acquisition Contracts — GSA", "domain": "gsa.gov"},
+    {"url": "https://www.acquisition.gov/far/part-16#FAR_Subpart_16_5", "label": "FAR Subpart 16.5 — Indefinite-Delivery Contracts", "domain": "acquisition.gov"}
+  ],
+  "hl7": [
+    {"url": "https://www.healthit.gov/topic/standards-technology/standards", "label": "Health IT Standards (HL7) — HealthIT.gov", "domain": "healthit.gov"},
+    {"url": "https://www.cms.gov/priorities/key-initiatives/burden-reduction/interoperability", "label": "Interoperability & HL7 Standards — CMS.gov", "domain": "cms.gov"}
+  ],
+  "idiq": [
+    {"url": "https://www.acquisition.gov/far/subpart-16.5", "label": "FAR Subpart 16.5 — Indefinite-Delivery Contracts", "domain": "acquisition.gov"},
+    {"url": "https://www.gsa.gov/buy-through-us/purchasing-programs", "label": "IDIQ Purchasing Programs — GSA", "domain": "gsa.gov"}
+  ],
+  "jlv": [
+    {"url": "https://www.fehrm.gov/jlv/", "label": "Joint Longitudinal Viewer — FEHRM.gov", "domain": "fehrm.gov"},
+    {"url": "https://www.va.gov/health-care/get-medical-records/", "label": "VA Medical Records Access", "domain": "va.gov"}
+  ],
+  "joint-hie": [
+    {"url": "https://www.fehrm.gov/joint-hie/", "label": "Joint Health Information Exchange — FEHRM.gov", "domain": "fehrm.gov"},
+    {"url": "https://www.healthit.gov/topic/interoperability/health-information-exchange", "label": "Health Information Exchange — HealthIT.gov", "domain": "healthit.gov"}
+  ],
+  "jomis": [
+    {"url": "https://health.mil/Military-Health-Topics/Health-Readiness", "label": "Health Readiness & Operational Medicine — Health.mil", "domain": "health.mil"},
+    {"url": "https://www.health.mil/About-MHS/DHA", "label": "Defense Health Agency — Health.mil", "domain": "health.mil"}
+  ],
+  "medical-echelons": [
+    {"url": "https://health.mil/Military-Health-Topics/Health-Readiness", "label": "Military Health Readiness & Roles of Care — Health.mil", "domain": "health.mil"},
+    {"url": "https://www.tricare.mil/Plans", "label": "TRICARE Plans & Coverage — Tricare.mil", "domain": "tricare.mil"}
+  ],
+  "mhs": [
+    {"url": "https://www.health.mil/", "label": "Military Health System — Health.mil", "domain": "health.mil"},
+    {"url": "https://www.health.mil/About-MHS", "label": "About the Military Health System", "domain": "health.mil"}
+  ],
+  "mhs-genesis": [
+    {"url": "https://www.health.mil/Military-Health-Topics/MHS-GENESIS", "label": "MHS GENESIS — Health.mil", "domain": "health.mil"},
+    {"url": "https://www.health.mil/Military-Health-Topics/MHS-GENESIS/MHS-GENESIS-FAQ", "label": "MHS GENESIS FAQ — Health.mil", "domain": "health.mil"},
+    {"url": "https://www.fehrm.gov/", "label": "Federal EHR Modernization — FEHRM.gov", "domain": "fehrm.gov"}
+  ],
+  "mtf": [
+    {"url": "https://www.health.mil/Military-Health-Topics/Access-Cost-Quality-and-Safety", "label": "Military Treatment Facilities — Health.mil", "domain": "health.mil"},
+    {"url": "https://www.tricare.mil/Military-Hospitals-and-Clinics", "label": "Military Hospitals and Clinics — Tricare.mil", "domain": "tricare.mil"}
+  ],
+  "ndaa": [
+    {"url": "https://www.congress.gov/bill/118th-congress/house-bill/2670", "label": "National Defense Authorization Act — Congress.gov", "domain": "congress.gov"},
+    {"url": "https://www.armed-services.senate.gov/", "label": "Senate Armed Services Committee", "domain": "armed-services.senate.gov"}
+  ],
+  "nist-800-171": [
+    {"url": "https://csrc.nist.gov/publications/detail/sp/800-171/rev-2/final", "label": "NIST SP 800-171 — Protecting CUI", "domain": "nist.gov"},
+    {"url": "https://www.nist.gov/blogs/manufacturing-innovation-blog/what-nist-sp-800-171", "label": "What Is NIST SP 800-171? — NIST", "domain": "nist.gov"}
+  ],
+  "nist-800-53": [
+    {"url": "https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final", "label": "NIST SP 800-53 Rev. 5 — Security and Privacy Controls", "domain": "nist.gov"},
+    {"url": "https://csrc.nist.gov/projects/risk-management/sp800-53-controls", "label": "SP 800-53 Controls Catalog — NIST", "domain": "nist.gov"}
+  ],
+  "opmed": [
+    {"url": "https://health.mil/Military-Health-Topics/Health-Readiness", "label": "Operational Medicine — Health.mil", "domain": "health.mil"},
+    {"url": "https://www.health.mil/About-MHS/DHA", "label": "DHA & Operational Medicine — Health.mil", "domain": "health.mil"}
+  ],
+  "ota": [
+    {"url": "https://www.acquisition.gov/far/part-35", "label": "FAR Part 35 — Research and Development Contracting", "domain": "acquisition.gov"},
+    {"url": "https://aaf.dau.edu/aaf/ota/", "label": "Other Transactions — Defense Acquisition University", "domain": "aaf.dau.edu"},
+    {"url": "https://www.defense.gov/", "label": "Department of Defense — Defense.gov", "domain": "defense.gov"}
+  ],
+  "program-manager": [
+    {"url": "https://www.acquisition.gov/far/part-7", "label": "FAR Part 7 — Acquisition Planning", "domain": "acquisition.gov"},
+    {"url": "https://aaf.dau.edu/aaf/", "label": "Adaptive Acquisition Framework — DAU", "domain": "aaf.dau.edu"},
+    {"url": "https://www.defense.gov/About/", "label": "DoD Program Management — Defense.gov", "domain": "defense.gov"}
+  ],
+  "pwin": [
+    {"url": "https://www.acquisition.gov/far/part-15", "label": "FAR Part 15 — Contracting by Negotiation", "domain": "acquisition.gov"},
+    {"url": "https://www.sba.gov/federal-contracting/contracting-guide", "label": "Federal Contracting Guide — SBA.gov", "domain": "sba.gov"}
+  ],
+  "pws": [
+    {"url": "https://www.acquisition.gov/far/subpart-37.6", "label": "FAR Subpart 37.6 — Performance-Based Acquisition", "domain": "acquisition.gov"},
+    {"url": "https://www.acquisition.gov/far/part-37", "label": "FAR Part 37 — Service Contracting", "domain": "acquisition.gov"}
+  ],
+  "rfi": [
+    {"url": "https://sam.gov/content/opportunities", "label": "Contract Opportunities (RFI) — SAM.gov", "domain": "sam.gov"},
+    {"url": "https://www.acquisition.gov/far/part-10", "label": "FAR Part 10 — Market Research", "domain": "acquisition.gov"}
+  ],
+  "rfp": [
+    {"url": "https://sam.gov/content/opportunities", "label": "Contract Opportunities (RFP) — SAM.gov", "domain": "sam.gov"},
+    {"url": "https://www.acquisition.gov/far/part-15", "label": "FAR Part 15 — Contracting by Negotiation", "domain": "acquisition.gov"}
+  ],
+  "sam-gov": [
+    {"url": "https://sam.gov/content/home", "label": "SAM.gov — System for Award Management", "domain": "sam.gov"},
+    {"url": "https://sam.gov/content/entity-registration", "label": "Entity Registration — SAM.gov", "domain": "sam.gov"},
+    {"url": "https://www.gsa.gov/about-us/organization/federal-acquisition-service/technology-transformation-services/integrated-award-environment-iae/sam-gov", "label": "About SAM.gov — GSA", "domain": "gsa.gov"}
+  ],
+  "service-components": [
+    {"url": "https://health.mil/About-MHS/DHA/Service-Components", "label": "Military Service Health Components — Health.mil", "domain": "health.mil"},
+    {"url": "https://www.health.mil/About-MHS", "label": "About the Military Health System — Health.mil", "domain": "health.mil"}
+  ],
+  "small-business-set-asides": [
+    {"url": "https://www.sba.gov/federal-contracting/contracting-assistance-programs", "label": "Contracting Assistance Programs — SBA.gov", "domain": "sba.gov"},
+    {"url": "https://www.sba.gov/federal-contracting/contracting-guide/types-contracts", "label": "Types of Set-Aside Contracts — SBA.gov", "domain": "sba.gov"},
+    {"url": "https://www.acquisition.gov/far/part-19", "label": "FAR Part 19 — Small Business Programs", "domain": "acquisition.gov"}
+  ],
+  "sow": [
+    {"url": "https://www.acquisition.gov/far/part-37", "label": "FAR Part 37 — Service Contracting", "domain": "acquisition.gov"},
+    {"url": "https://www.acquisition.gov/far/subpart-37.6", "label": "FAR Subpart 37.6 — Performance-Based Acquisition", "domain": "acquisition.gov"}
+  ],
+  "stigs": [
+    {"url": "https://public.cyber.mil/stigs/", "label": "Security Technical Implementation Guides — DoD Cyber Exchange", "domain": "public.cyber.mil"},
+    {"url": "https://public.cyber.mil/stigs/downloads/", "label": "STIG Downloads — DoD Cyber Exchange", "domain": "public.cyber.mil"},
+    {"url": "https://nist.gov/cyberframework", "label": "Cybersecurity Framework — NIST", "domain": "nist.gov"}
+  ],
+  "t4ng": [
+    {"url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs", "label": "IT Contract Vehicles (T4NG) — GSA", "domain": "gsa.gov"},
+    {"url": "https://www.va.gov/opal/nac/t4ng/", "label": "T4NG Contract — VA.gov", "domain": "va.gov"}
+  ],
+  "task-order": [
+    {"url": "https://www.acquisition.gov/far/subpart-16.5", "label": "FAR Subpart 16.5 — Task-Order Contracts", "domain": "acquisition.gov"},
+    {"url": "https://www.acquisition.gov/far/part-16", "label": "FAR Part 16 — Types of Contracts", "domain": "acquisition.gov"}
+  ],
+  "tefca": [
+    {"url": "https://www.healthit.gov/topic/interoperability/policy/trusted-exchange-framework-and-common-agreement-tefca", "label": "TEFCA — HealthIT.gov", "domain": "healthit.gov"},
+    {"url": "https://www.healthit.gov/sites/default/files/page/2022-01/Common_Agreement_for_Nationwide_Health_Information_Interoperability_Version_1.pdf", "label": "TEFCA Common Agreement — HealthIT.gov", "domain": "healthit.gov"}
+  ],
+  "tricare": [
+    {"url": "https://www.tricare.mil/", "label": "TRICARE — Official Site", "domain": "tricare.mil"},
+    {"url": "https://www.tricare.mil/Plans", "label": "TRICARE Plans — Tricare.mil", "domain": "tricare.mil"},
+    {"url": "https://www.health.mil/About-MHS", "label": "Military Health System (TRICARE) — Health.mil", "domain": "health.mil"}
+  ],
+  "uscdi": [
+    {"url": "https://www.healthit.gov/isa/united-states-core-data-interoperability-uscdi", "label": "USCDI — HealthIT.gov", "domain": "healthit.gov"},
+    {"url": "https://www.healthit.gov/topic/interoperability/uscdi-plus", "label": "USCDI+ — HealthIT.gov", "domain": "healthit.gov"}
+  ],
+  "va-ehr": [
+    {"url": "https://www.va.gov/health-care/health-records/", "label": "VA Health Records & EHR Modernization", "domain": "va.gov"},
+    {"url": "https://www.fehrm.gov/", "label": "Federal EHR Modernization — FEHRM.gov", "domain": "fehrm.gov"},
+    {"url": "https://www.va.gov/oehrm/", "label": "VA Office of EHR Modernization", "domain": "va.gov"}
+  ],
+  "vha": [
+    {"url": "https://www.va.gov/health/", "label": "Veterans Health Administration — VA.gov", "domain": "va.gov"},
+    {"url": "https://www.va.gov/health-care/", "label": "VA Health Care — VA.gov", "domain": "va.gov"}
+  ],
+  "vista": [
+    {"url": "https://www.va.gov/health-care/health-records/", "label": "VA Health Information Systems (VistA)", "domain": "va.gov"},
+    {"url": "https://www.oit.va.gov/Services/vista.asp", "label": "VistA — VA Office of Information & Technology", "domain": "oit.va.gov"}
+  ],
+  "zero-trust": [
+    {"url": "https://www.cisa.gov/zero-trust-maturity-model", "label": "Zero Trust Maturity Model — CISA", "domain": "cisa.gov"},
+    {"url": "https://dodcio.defense.gov/Portals/0/Documents/Library/DoD-ZTStrategy.pdf", "label": "DoD Zero Trust Strategy — DoD CIO", "domain": "dodcio.defense.gov"},
+    {"url": "https://www.nist.gov/publications/zero-trust-architecture", "label": "Zero Trust Architecture — NIST SP 800-207", "domain": "nist.gov"}
+  ]
+}

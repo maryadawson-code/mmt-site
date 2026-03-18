@@ -13,7 +13,6 @@
 // The scoring function stores _document_text in the scores JSONB.
 // ============================================================
 
-const { Sentry } = require("./lib/sentry");
 const { createClient } = require("@supabase/supabase-js");
 const { DOCUMENT_TYPES } = require("./lib/document-types");
 const { sendEmail } = require("./lib/send-email");
@@ -224,7 +223,6 @@ exports.handler = async (event) => {
   try {
     const body = JSON.parse(event.body);
     const scoring_id = body.scoring_id;
-    Sentry.addBreadcrumb({ category: "gold-team", message: "review_started", level: "info", data: { scoring_id } });
 
     if (!scoring_id) {
       console.error("Gold Team: missing scoring_id");
@@ -291,7 +289,6 @@ exports.handler = async (event) => {
     }
 
     // --- Call 1: Rewrite ALL sections + pWin ---
-    Sentry.addBreadcrumb({ category: "gold-team", message: "anthropic_call_1_rewrite", level: "info" });
     const scores = scorecard.scores || [];
 
     const rewriteModelConfig = await getModelConfig(supabase, "rewrite");
@@ -304,7 +301,6 @@ exports.handler = async (event) => {
       const rewriteText = await callClaude(rewritePrompt.system, rewritePrompt.user, REWRITE_MAX_TOKENS, rewriteModelConfig.model);
       rewriteResult = parseJson(rewriteText);
     } catch (err) {
-      Sentry.captureException(err);
       console.error("Gold Team: rewrite call failed:", err);
       return;
     }
@@ -315,7 +311,6 @@ exports.handler = async (event) => {
     }
 
     // --- Call 2: Review + Executive Summary + Next Steps ---
-    Sentry.addBreadcrumb({ category: "gold-team", message: "anthropic_call_2_review", level: "info" });
     const reviewModelConfig = await getModelConfig(supabase, "review");
     console.log(`Gold Team: reviewing rewrites (model=${reviewModelConfig.model} [${reviewModelConfig.reason}])...`);
 
@@ -325,7 +320,6 @@ exports.handler = async (event) => {
       const reviewText = await callClaude(reviewPrompt.system, reviewPrompt.user, REVIEW_MAX_TOKENS, reviewModelConfig.model);
       reviewResult = parseJson(reviewText);
     } catch (err) {
-      Sentry.captureException(err);
       console.error("Gold Team: review call failed (degrading gracefully):", err);
       // Continue without review — send rewrites without confidence scores
     }
@@ -382,7 +376,6 @@ exports.handler = async (event) => {
       nextSteps: reviewResult ? reviewResult.next_steps : null,
     });
 
-    Sentry.addBreadcrumb({ category: "gold-team", message: "review_complete", level: "info", data: { scoring_id } });
     const emailResult = await sendEmail({
       to: normalizedEmail,
       subject: `Gold Team Review: ${config.label} — All 9 Sections Reviewed`,
@@ -422,7 +415,6 @@ exports.handler = async (event) => {
       console.error("Gold Team: failed to update model routing metadata:", routingErr);
     }
   } catch (err) {
-    Sentry.captureException(err);
     console.error("Gold Team: unhandled error:", err);
   }
 };

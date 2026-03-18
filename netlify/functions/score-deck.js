@@ -1,4 +1,3 @@
-require("./lib/sentry");
 // ============================================================
 // score-deck.js — Netlify Function (ProposalPulse Gateway)
 //
@@ -14,13 +13,23 @@ require("./lib/sentry");
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
+const crypto = require("crypto");
 const { DOCUMENT_TYPES } = require("./lib/document-types");
-const { checkRateLimit } = require("./lib/rate-limiter");
-const { getPlanLimits, isWithinLimit } = require("./lib/plan-limits");
 
 // --- Environment Variables ---
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
+
+// --- Access Token Generation ---
+// HMAC token prevents unauthorized access to scoring results.
+// Token = HMAC-SHA256(scoring_id, SUPABASE_SERVICE_KEY), truncated to 32 hex chars.
+function generateAccessToken(scoringId) {
+  return crypto
+    .createHmac("sha256", SUPABASE_SERVICE_KEY)
+    .update(scoringId)
+    .digest("hex")
+    .substring(0, 32);
+}
 
 // --- Constants ---
 const MAX_FILE_SIZE_BYTES = 15 * 1024 * 1024;
@@ -182,7 +191,6 @@ exports.handler = async (event) => {
     const body = JSON.parse(event.body);
     const { email, file_base64, file_type, file_name } = body;
     const documentType = body.document_type || "pitch_deck";
-    const referrer = body.referrer || body.utm_source || null;
 
     // --- Validate inputs ---
     if (!email || !file_base64 || !file_type) {
@@ -299,30 +307,6 @@ exports.handler = async (event) => {
     // --- MissionPulse: User & Usage ---
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
-    // --- Rate limiting ---
-    const emailKey = `score:${email.toLowerCase().trim()}`;
-    const emailRate = await checkRateLimit(supabase, emailKey, 10, 15);
-    if (!emailRate.allowed) {
-      return {
-        statusCode: 429,
-        headers: CORS_HEADERS,
-        body: JSON.stringify({
-          error: "Too many submissions. Please wait a few minutes.",
-          retry_after: emailRate.reset * 60,
-        }),
-      };
-    }
-
-    const ip = event.headers["x-forwarded-for"]?.split(",")[0]?.trim() || "unknown";
-    const ipRate = await checkRateLimit(supabase, `ip:${ip}`, 30, 15);
-    if (!ipRate.allowed) {
-      return {
-        statusCode: 429,
-        headers: CORS_HEADERS,
-        body: JSON.stringify({ error: "Too many requests from your network. Please try again later." }),
-      };
-    }
-
     let user;
     try {
       user = await getOrCreateUser(supabase, email);
@@ -347,63 +331,14 @@ exports.handler = async (event) => {
       };
     }
 
-    // Check remaining uses — plan-aware gate
-    if (user.tier === "free") {
-      // Free tier: existing lifetime 3-use limit
-      if (usage.uses_remaining <= 0) {
-        return {
-          statusCode: 403,
-          headers: CORS_HEADERS,
-          body: JSON.stringify({
-            error: "limit_reached",
-            message: "You've used all 3 free assessments. Contact Mission Meets Tech for a full review.",
-            uses_remaining: 0,
-          }),
-        };
-      }
-    } else {
-      // Paid tier: monthly rolling limit from plan config
-      const limits = getPlanLimits(user.tier);
-      const monthStart = new Date();
-      monthStart.setDate(1);
-      monthStart.setHours(0, 0, 0, 0);
-
-      const { count: monthlyUsage } = await supabase
-        .from("mp_scoring_history")
-        .select("*", { count: "exact", head: true })
-        .eq("user_id", user.id)
-        .gte("created_at", monthStart.toISOString())
-        .neq("verdict", "ERROR");
-
-      if (!isWithinLimit(monthlyUsage || 0, limits.assessments_per_month)) {
-        return {
-          statusCode: 403,
-          headers: CORS_HEADERS,
-          body: JSON.stringify({
-            error: "limit_reached",
-            message: `You've reached your ${user.tier} plan limit for this month.`,
-            uses_remaining: 0,
-          }),
-        };
-      }
-    }
-
-    // Check for in-flight scoring (prevent free-tier abuse)
-    const { count: pendingCount } = await supabase
-      .from("mp_scoring_history")
-      .select("*", { count: "exact", head: true })
-      .eq("user_id", user.id)
-      .eq("feature", FEATURE_NAME)
-      .is("verdict", null);
-
-    const effectiveRemaining = usage.uses_remaining - (pendingCount || 0);
-    if (user.tier === "free" && effectiveRemaining <= 0) {
+    // Check remaining uses (free tier gate)
+    if (user.tier === "free" && usage.uses_remaining <= 0) {
       return {
         statusCode: 403,
         headers: CORS_HEADERS,
         body: JSON.stringify({
           error: "limit_reached",
-          message: "You have an assessment in progress. Please wait for it to complete before submitting another.",
+          message: "You've used all 3 free assessments. Contact Mission Meets Tech for a full review.",
           uses_remaining: 0,
         }),
       };
@@ -418,7 +353,6 @@ exports.handler = async (event) => {
       file_name: file_name || null,
       document_type: documentType,
       file_type: resolvedType,
-      _referrer: referrer,
     };
 
     // For DOCX/PPTX: store extracted text (small, ~200KB)
@@ -460,37 +394,12 @@ exports.handler = async (event) => {
       };
     }
 
-    // Usage is decremented in score-deck-background.js AFTER successful scoring
-
-    // --- Trigger background function with retry ---
-    const bgUrl = "https://missionmeetstech.com/.netlify/functions/score-deck-background";
-    const bgPayload = JSON.stringify({ scoring_id: scoringRow.id });
-    let bgTriggered = false;
-
-    for (let attempt = 0; attempt < 3; attempt++) {
-      try {
-        const bgRes = await fetch(bgUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: bgPayload,
-        });
-        // Netlify background functions return 202 immediately
-        if (bgRes.status === 202 || bgRes.ok) {
-          console.log(`Background function triggered for ${scoringRow.id} (attempt ${attempt + 1})`);
-          bgTriggered = true;
-          break;
-        }
-        console.warn(`Background trigger returned ${bgRes.status}, attempt ${attempt + 1}/3`);
-      } catch (bgErr) {
-        console.error(`Background trigger attempt ${attempt + 1}/3 failed:`, bgErr.message);
-      }
-      // Wait before retry (1s, 2s)
-      if (attempt < 2) await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
-    }
-
-    if (!bgTriggered) {
-      console.error(`CRITICAL: All 3 background trigger attempts failed for ${scoringRow.id}. Record is stuck pending.`);
-      // Don't fail the user request — the stale-pending cleanup will catch this
+    // --- Decrement usage ---
+    try {
+      await recordUsage(supabase, user.id, usage);
+    } catch (err) {
+      console.error("Usage decrement error:", err);
+      // Non-fatal — scoring row is already created
     }
 
     // --- Return scoring_id for polling ---
@@ -499,7 +408,8 @@ exports.handler = async (event) => {
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
       body: JSON.stringify({
         scoring_id: scoringRow.id,
-        uses_remaining: user.tier === "free" ? effectiveRemaining - 1 : 999,
+        access_token: generateAccessToken(scoringRow.id),
+        uses_remaining: user.tier === "free" ? usage.uses_remaining - 1 : 999,
         user_tier: user.tier,
       }),
     };

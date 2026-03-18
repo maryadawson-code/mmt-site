@@ -1,4 +1,3 @@
-require("./lib/sentry");
 // ============================================================
 // marketpulse-gateway.js — Netlify Function
 //
@@ -10,7 +9,6 @@ require("./lib/sentry");
 
 const Stripe = require("stripe");
 const { createClient } = require("@supabase/supabase-js");
-const { checkRateLimit } = require("./lib/rate-limiter");
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -18,7 +16,6 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const SITE_URL = "https://missionmeetstech.com";
 const PRICE_CENTS = 5000; // $50.00
 const FREE_REPORTS = 1;
-const ADMIN_EMAILS = ['maryadawson@gmail.com', 'mary@missionmeetstech.com'];
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": SITE_URL,
@@ -72,17 +69,6 @@ exports.handler = async (event) => {
     // Check usage in Supabase
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
-    // Rate limit: 5 requests per 15 min per email, 15 per IP
-    const emailRate = await checkRateLimit(supabase, `mp:${email}`, 5, 15);
-    if (!emailRate.allowed) {
-      return { statusCode: 429, headers: CORS_HEADERS, body: JSON.stringify({ error: "Too many requests. Please wait a few minutes." }) };
-    }
-    const ip = event.headers["x-forwarded-for"]?.split(",")[0]?.trim() || "unknown";
-    const ipRate = await checkRateLimit(supabase, `mpip:${ip}`, 15, 15);
-    if (!ipRate.allowed) {
-      return { statusCode: 429, headers: CORS_HEADERS, body: JSON.stringify({ error: "Too many requests from your network." }) };
-    }
-
     // Get or create usage record for this email
     let { data: usage, error: usageErr } = await supabase
       .from("marketpulse_usage")
@@ -108,9 +94,7 @@ exports.handler = async (event) => {
       throw new Error("Could not check usage.");
     }
 
-    // Admin bypass — unlimited reports for owner accounts
-    const isAdmin = ADMIN_EMAILS.includes(email);
-    const hasFreeReport = isAdmin || usage.reports_used < FREE_REPORTS;
+    const hasFreeReport = usage.reports_used < FREE_REPORTS;
 
     if (hasFreeReport) {
       // FREE PATH — increment usage and trigger generation directly
@@ -121,28 +105,8 @@ exports.handler = async (event) => {
 
       // Trigger background generation
       const https = require("https");
-      const freeSessionId = `free_${Date.now()}_${email.replace(/[^a-z0-9]/g, "")}`;
-
-      // Track order in Supabase
-      try {
-        await supabase
-          .from("marketpulse_orders")
-          .insert({
-            session_id: freeSessionId,
-            email,
-            name,
-            company: company || null,
-            topic,
-            audience: audience || null,
-            amount_paid: 0,
-            status: "pending",
-          });
-      } catch (orderErr) {
-        console.error("marketpulse-gateway: order tracking insert failed:", orderErr.message);
-      }
-
       const payload = JSON.stringify({
-        session_id: freeSessionId,
+        session_id: `free_${Date.now()}_${email.replace(/[^a-z0-9]/g, "")}`,
         name,
         email,
         company,

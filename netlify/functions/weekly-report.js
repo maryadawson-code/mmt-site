@@ -43,24 +43,12 @@ exports.handler = async (event) => {
       .select("*", { count: "exact", head: true })
       .gte("created_at", weekStart);
 
-    // --- Query: Assessments this week (completed only) ---
+    // --- Query: Assessments this week ---
     const { data: weekScores } = await supabase
       .from("mp_scoring_history")
       .select("document_type, verdict, avg_score")
       .eq("feature", FEATURE_NAME)
-      .gte("created_at", weekStart)
-      .not("verdict", "is", null)
-      .neq("verdict", "ERROR");
-
-    // --- Query: All records this week (including errors/pending) for visibility ---
-    const { data: weekAllRecords } = await supabase
-      .from("mp_scoring_history")
-      .select("verdict")
-      .eq("feature", FEATURE_NAME)
       .gte("created_at", weekStart);
-
-    const errorCount = weekAllRecords ? weekAllRecords.filter(r => r.verdict === "ERROR").length : 0;
-    const pendingCount = weekAllRecords ? weekAllRecords.filter(r => r.verdict === null).length : 0;
 
     const totalAssessments = weekScores ? weekScores.length : 0;
 
@@ -107,22 +95,7 @@ exports.handler = async (event) => {
     const { count: allTimeAssessments } = await supabase
       .from("mp_scoring_history")
       .select("*", { count: "exact", head: true })
-      .eq("feature", FEATURE_NAME)
-      .not("verdict", "is", null)
-      .neq("verdict", "ERROR");
-
-    // --- Query: Content referrer sources ---
-    const { data: referrerData } = await supabase
-      .from("mp_scoring_history")
-      .select("scores")
-      .not("scores->_referrer", "is", null)
-      .gte("created_at", weekStart);
-
-    const referrerCounts = {};
-    for (const r of referrerData || []) {
-      const ref = r.scores?._referrer;
-      if (ref) referrerCounts[ref] = (referrerCounts[ref] || 0) + 1;
-    }
+      .eq("feature", FEATURE_NAME);
 
     // --- Build and send report ---
     const stats = {
@@ -132,23 +105,13 @@ exports.handler = async (event) => {
       byVerdict,
       avgScore,
       limitHits: limitHits || 0,
-      errorCount,
-      pendingCount,
       allTimeUsers: allTimeUsers || 0,
       allTimeAssessments: allTimeAssessments || 0,
       weekStart,
       weekEnd,
     };
 
-    let html = buildWeeklyReportHtml(stats);
-
-    // Append referrer section
-    const refEntries = Object.entries(referrerCounts).sort((a, b) => b[1] - a[1]);
-    if (refEntries.length > 0) {
-      const refList = refEntries.map(([src, count]) => `${src} (${count})`).join(", ");
-      html += `<div style="margin-top:16px;padding:12px;background:#f9fafb;border-radius:8px"><h3 style="margin:0 0 8px">Content Sources</h3><p style="margin:0">${refList}</p></div>`;
-    }
-
+    const html = buildWeeklyReportHtml(stats);
     const weekLabel = new Date(weekStart).toLocaleDateString("en-US", { month: "short", day: "numeric" });
 
     const result = await sendEmail({

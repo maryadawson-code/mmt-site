@@ -17,30 +17,11 @@ const DEFAULT_FROM = "ProposalPulse <noreply@missionmeetstech.com>";
  * @param {string} [opts.from] - From address (defaults to noreply@missionmeetstech.com)
  * @returns {Promise<{success: boolean, error?: string, id?: string}>}
  */
-async function sendEmail({ to, subject, html, from, attachments, _skipBounceCheck }) {
+async function sendEmail({ to, subject, html, from, attachments }) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     console.warn("RESEND_API_KEY not set — skipping email send");
     return { success: false, error: "RESEND_API_KEY not configured" };
-  }
-
-  // Bounce suppression: skip sending to known-bounced addresses
-  if (!_skipBounceCheck && process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
-    try {
-      const { createClient } = require("@supabase/supabase-js");
-      const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
-      const { data: bounced } = await supabase
-        .from("bounce_suppression")
-        .select("email")
-        .eq("email", to.toLowerCase().trim())
-        .single();
-      if (bounced) {
-        console.warn(`send-email: skipping ${to} — on bounce suppression list`);
-        return { success: false, error: "recipient on bounce suppression list", suppressed: true };
-      }
-    } catch {
-      // Table may not exist yet — continue sending
-    }
   }
 
   try {

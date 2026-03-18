@@ -2,10 +2,13 @@
 // score-status.js — Netlify Function (Polling Endpoint)
 //
 // Frontend polls this endpoint every 3s to check scoring status.
-// GET ?scoring_id=XXX → returns processing/error/complete status.
+// GET ?scoring_id=XXX&token=YYY → returns processing/error/complete.
+// Token is an HMAC that proves the caller received the scoring_id
+// from the gateway — prevents unauthorized enumeration.
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
+const crypto = require("crypto");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -15,6 +18,19 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "Content-Type",
   "Access-Control-Allow-Methods": "GET, OPTIONS",
 };
+
+// Verify HMAC access token
+function verifyAccessToken(scoringId, token) {
+  const expected = crypto
+    .createHmac("sha256", SUPABASE_SERVICE_KEY)
+    .update(scoringId)
+    .digest("hex")
+    .substring(0, 32);
+  return crypto.timingSafeEqual(
+    Buffer.from(expected, "utf8"),
+    Buffer.from(token, "utf8")
+  );
+}
 
 exports.handler = async (event) => {
   // CORS preflight
@@ -31,11 +47,39 @@ exports.handler = async (event) => {
   }
 
   const scoring_id = event.queryStringParameters?.scoring_id;
+  const token = event.queryStringParameters?.token;
+
   if (!scoring_id) {
     return {
       statusCode: 400,
       headers: CORS_HEADERS,
       body: JSON.stringify({ error: "Missing scoring_id parameter" }),
+    };
+  }
+
+  // Require access token
+  if (!token || token.length !== 32) {
+    return {
+      statusCode: 403,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({ error: "Missing or invalid access token" }),
+    };
+  }
+
+  // Verify token before any DB query
+  try {
+    if (!verifyAccessToken(scoring_id, token)) {
+      return {
+        statusCode: 403,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({ error: "Invalid access token" }),
+      };
+    }
+  } catch {
+    return {
+      statusCode: 403,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({ error: "Invalid access token" }),
     };
   }
 

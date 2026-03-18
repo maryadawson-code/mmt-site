@@ -2,11 +2,12 @@
 // submit-feedback.js — Netlify Function
 //
 // POST endpoint for user feedback on ProposalPulse assessments.
+// Requires access_token (HMAC) to verify caller owns the scoring_id.
 // Stores feedback in the scores JSONB column as _feedback.
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
-const { logOpsEvent } = require("./lib/ops-ledger");
+const crypto = require("crypto");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -16,6 +17,24 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "Content-Type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
+
+// Verify HMAC access token
+function verifyAccessToken(scoringId, token) {
+  if (!token || token.length !== 32) return false;
+  const expected = crypto
+    .createHmac("sha256", SUPABASE_SERVICE_KEY)
+    .update(scoringId)
+    .digest("hex")
+    .substring(0, 32);
+  try {
+    return crypto.timingSafeEqual(
+      Buffer.from(expected, "utf8"),
+      Buffer.from(token, "utf8")
+    );
+  } catch {
+    return false;
+  }
+}
 
 exports.handler = async (event) => {
   // CORS preflight
@@ -33,7 +52,7 @@ exports.handler = async (event) => {
 
   try {
     const body = JSON.parse(event.body);
-    const { scoring_id, rating, comment } = body;
+    const { scoring_id, rating, comment, access_token } = body;
 
     // Validate scoring_id
     if (!scoring_id || typeof scoring_id !== "string") {
@@ -41,6 +60,15 @@ exports.handler = async (event) => {
         statusCode: 400,
         headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
         body: JSON.stringify({ error: "Missing or invalid scoring_id" }),
+      };
+    }
+
+    // Verify access token
+    if (!verifyAccessToken(scoring_id, access_token)) {
+      return {
+        statusCode: 403,
+        headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+        body: JSON.stringify({ error: "Invalid or missing access token" }),
       };
     }
 
@@ -126,48 +154,6 @@ exports.handler = async (event) => {
     }
 
     console.log(`Feedback saved for ${scoring_id}: ${ratingNum} stars`);
-
-    // Log feedback to ops_events
-    await logOpsEvent(supabase, {
-      event_type: "feedback_received",
-      source_function: "submit-feedback",
-      scoring_id,
-      severity: ratingNum <= 2 ? "warning" : "info",
-      details: { rating: ratingNum, comment: sanitizedComment },
-      error_signature: ratingNum <= 2 ? "low_rating" : null,
-    });
-
-    // Quality drift detection: 3+ low ratings in 7 days
-    if (ratingNum <= 2) {
-      try {
-        const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
-        const { count } = await supabase
-          .from("ops_events")
-          .select("*", { count: "exact", head: true })
-          .eq("error_signature", "low_rating")
-          .gte("created_at", weekAgo);
-        if (count >= 3) {
-          await logOpsEvent(supabase, {
-            event_type: "quality_alert",
-            source_function: "submit-feedback",
-            severity: "error",
-            details: { low_ratings_this_week: count },
-          });
-        }
-      } catch {}
-    }
-
-    // Trigger background analysis for negative feedback
-    if (ratingNum < 3) {
-      try {
-        const bgUrl = `${process.env.URL || "https://missionmeetstech.com"}/.netlify/functions/collect-feedback-background`;
-        fetch(bgUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ scoring_id, email: record.scores?._email || null, rating: ratingNum, comment: sanitizedComment }),
-        }).catch(() => {}); // Fire and forget
-      } catch {}
-    }
 
     return {
       statusCode: 200,

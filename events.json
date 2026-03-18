@@ -1,0 +1,45 @@
+[
+  {
+    "name": "HIMSS 2026 Global Health Conference",
+    "date": "2026-03-10",
+    "endDate": "2026-03-14",
+    "location": "Las Vegas, NV",
+    "url": "https://www.himss.org/global-conference",
+    "type": "conference",
+    "description": "Largest health IT conference featuring federal health tracks, interoperability sessions, and vendor showcases."
+  },
+  {
+    "name": "FedHealthIT 100 Awards",
+    "date": "2026-04-15",
+    "location": "Washington, DC",
+    "url": "https://www.fedhealthit.com",
+    "type": "conference",
+    "description": "Annual recognition of the top 100 leaders driving federal health IT transformation."
+  },
+  {
+    "name": "AMSUS Federal Health Conference",
+    "date": "2026-11-30",
+    "endDate": "2026-12-04",
+    "location": "Washington, DC",
+    "url": "https://www.amsus.org",
+    "type": "conference",
+    "description": "Society of Federal Health Professionals annual meeting covering military medicine, VA health, and public health."
+  },
+  {
+    "name": "DHA Industry Day",
+    "date": "2026-05-20",
+    "location": "Falls Church, VA",
+    "url": "https://www.health.mil",
+    "type": "conference",
+    "description": "Defense Health Agency engagement with industry partners on upcoming acquisition priorities."
+  },
+  {
+    "name": "AFCEA TechNet Cyber",
+    "date": "2026-06-24",
+    "endDate": "2026-06-26",
+    "location": "Baltimore, MD",
+    "url": "https://www.afcea.org",
+    "type": "conference",
+    "description": "Cybersecurity conference with federal health IT security tracks covering HIPAA, zero trust, and health data protection."
+  }
+]

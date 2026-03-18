@@ -24,21 +24,6 @@
 [functions."sb-vehicle-radar"]
   schedule = "0 13 * * *"
 
-[functions."score-cleanup"]
-  schedule = "*/10 * * * *"
-
-[functions."health-check"]
-  schedule = "0 */6 * * *"
-
-[functions."daily-stats-rollup"]
-  schedule = "0 0 * * *"
-
-[functions."tactical-brief-cleanup"]
-  schedule = "*/15 * * * *"
-
-[functions."ops-pattern-detector"]
-  schedule = "0 13 * * *"
-
 [[redirects]]
   from = "/"
   to = "/index.html"
@@ -101,7 +86,7 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; frame-src https://checkout.stripe.com https://open.spotify.com; media-src 'self' https://api.riverside.fm https://hosting-media.rs-prod.riverside.fm; connect-src 'self' https://plausible.io https://*.stripe.com; object-src 'none'; base-uri 'self'; form-action 'self' https://buttondown.com https://checkout.stripe.com"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://plausible.io https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; frame-src https://checkout.stripe.com https://open.spotify.com; media-src 'self' https://api.riverside.fm https://hosting-media.rs-prod.riverside.fm; connect-src 'self' https://plausible.io https://checkout.stripe.com https://api.stripe.com; object-src 'none'; base-uri 'self'; form-action 'self' https://buttondown.com https://checkout.stripe.com"
 
 # Cache headers
 [[headers]]

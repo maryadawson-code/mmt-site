@@ -18,14 +18,14 @@ Thumbs.db
 *.mp4
 *.zip
 
-# Logs
-*.log
-npm-debug.log*
-
 # Environment files
 .env
 .env.local
 .env.*.local
+
+# Logs
+*.log
+npm-debug.log*
 
 # Local Netlify folder
 .netlify
@@ -41,5 +41,5 @@ supabase/.temp/
 .claude/worktrees/
 test-results/
 n8n-workflows/
+migrations/
 deno.lock
-styles

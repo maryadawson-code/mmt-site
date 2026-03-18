@@ -1,26 +1,19 @@
 // ============================================================
 // stripe-webhook.js — Netlify Function
 //
-// Unified Stripe webhook handler for all MMT products.
-// Routes events by type:
-//   - checkout.session.completed → ProposalPulse or Tactical Brief
-//   - customer.subscription.* → subscription lifecycle
-//   - invoice.payment_failed → past_due handling
+// Handles Stripe checkout.session.completed webhook.
+// Grants +1 assessment use in Supabase mp_feature_usage.
 //
-// Includes idempotency (mp_processed_events), Sentry error capture.
+// Verifies webhook signature using STRIPE_WEBHOOK_SECRET.
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
 const Stripe = require("stripe");
-const Sentry = require("./lib/sentry");
-const https = require("https");
-const { logOpsEvent } = require("./lib/ops-ledger");
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
-const SITE_URL = process.env.URL || "https://missionmeetstech.com";
 
 // Legacy value — existing Supabase records use "lethality_test"
 const FEATURE_NAME = "lethality_test";
@@ -40,285 +33,114 @@ exports.handler = async (event) => {
 
   let stripeEvent;
   try {
+    // Netlify provides raw body as event.body (string)
     stripeEvent = stripe.webhooks.constructEvent(event.body, sig, STRIPE_WEBHOOK_SECRET);
   } catch (err) {
     console.error("stripe-webhook: signature verification failed:", err.message);
     return { statusCode: 400, body: `Webhook signature verification failed: ${err.message}` };
   }
 
-  // ── Idempotency: skip duplicate events ──────────────────────
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
-  const { data: existing } = await supabase
-    .from("mp_processed_events")
-    .select("event_id")
-    .eq("event_id", stripeEvent.id)
-    .single();
+  switch (stripeEvent.type) {
+    case "checkout.session.completed": {
+      const session = stripeEvent.data.object;
+      const email = (session.metadata && session.metadata.user_email) ||
+        (session.customer_details && session.customer_details.email) ||
+        null;
 
-  if (existing) {
-    console.log(`stripe-webhook: skipping duplicate event ${stripeEvent.id}`);
-    return { statusCode: 200, body: JSON.stringify({ received: true, duplicate: true }) };
-  }
-
-  // Mark as processed before handling (prevents race conditions on retry)
-  await supabase
-    .from("mp_processed_events")
-    .insert({ event_id: stripeEvent.id, event_type: stripeEvent.type });
-
-  // Log payment received
-  await logOpsEvent(supabase, { event_type: "payment_received", source_function: "stripe-webhook", severity: "info", details: { stripe_event_type: stripeEvent.type, event_id: stripeEvent.id } });
-
-  // ── Route by event type ─────────────────────────────────────
-  try {
-    switch (stripeEvent.type) {
-      case "checkout.session.completed": {
-        const session = stripeEvent.data.object;
-        const meta = session.metadata || {};
-        if (meta.product === "tactical_brief") {
-          return await handleTacticalBrief(supabase, session, meta);
-        } else {
-          return await handleProposalPulse(supabase, session, meta);
-        }
+      if (!email) {
+        console.error("stripe-webhook: no email found in session", session.id);
+        return { statusCode: 200, body: JSON.stringify({ received: true, warning: "no email found" }) };
       }
 
-      case "customer.subscription.created":
-      case "customer.subscription.updated":
-        return await handleSubscriptionUpdate(supabase, stripeEvent.data.object);
+      const normalizedEmail = email.toLowerCase().trim();
+      console.log(`stripe-webhook: granting +1 use for ${normalizedEmail} (session ${session.id})`);
 
-      case "customer.subscription.deleted":
-        return await handleSubscriptionCanceled(supabase, stripeEvent.data.object);
+      try {
+        // Look up user
+        const { data: user, error: userErr } = await supabase
+          .from("mp_users")
+          .select("id")
+          .eq("email", normalizedEmail)
+          .single();
 
-      case "invoice.payment_failed":
-        return await handlePaymentFailed(supabase, stripeEvent.data.object);
+        if (userErr || !user) {
+          console.error("stripe-webhook: user not found for", normalizedEmail);
+          return { statusCode: 500, body: JSON.stringify({ error: "user not found — Stripe will retry" }) };
+        }
 
-      default:
-        return { statusCode: 200, body: JSON.stringify({ received: true, type: stripeEvent.type }) };
+        // Get current usage
+        const { data: usage, error: usageErr } = await supabase
+          .from("mp_feature_usage")
+          .select("uses_remaining")
+          .eq("user_id", user.id)
+          .eq("feature", FEATURE_NAME)
+          .single();
+
+        if (usageErr || !usage) {
+          console.error("stripe-webhook: usage record not found for user", user.id);
+          return { statusCode: 500, body: JSON.stringify({ error: "usage record not found — Stripe will retry" }) };
+        }
+
+        // Increment uses_remaining by 1
+        const { error: updateErr } = await supabase
+          .from("mp_feature_usage")
+          .update({ uses_remaining: usage.uses_remaining + 1 })
+          .eq("user_id", user.id)
+          .eq("feature", FEATURE_NAME);
+
+        if (updateErr) {
+          console.error("stripe-webhook: failed to increment usage:", updateErr);
+          return { statusCode: 500, body: JSON.stringify({ error: "Failed to grant use" }) };
+        }
+
+        console.log(`stripe-webhook: granted +1 use for ${normalizedEmail} (now ${usage.uses_remaining + 1})`);
+        return {
+          statusCode: 200,
+          body: JSON.stringify({ received: true, uses_remaining: usage.uses_remaining + 1 }),
+        };
+      } catch (err) {
+        console.error("stripe-webhook: unhandled error:", err);
+        return { statusCode: 500, body: JSON.stringify({ error: "Internal error" }) };
+      }
     }
-  } catch (err) {
-    console.error("stripe-webhook: unhandled error:", err);
-    Sentry.captureException(err);
-    return { statusCode: 500, body: JSON.stringify({ error: "Internal error" }) };
+
+    case "customer.subscription.created":
+    case "customer.subscription.updated": {
+      const sub = stripeEvent.data.object;
+      console.log(`stripe-webhook: subscription ${stripeEvent.type} — ${sub.id} (status: ${sub.status})`);
+      await supabase.from("ops_events").insert({
+        event_type: "stripe_subscription",
+        severity: "info",
+        payload: { type: stripeEvent.type, subscription_id: sub.id, status: sub.status, customer: sub.customer },
+      });
+      return { statusCode: 200, body: JSON.stringify({ received: true, type: stripeEvent.type }) };
+    }
+
+    case "customer.subscription.deleted": {
+      const sub = stripeEvent.data.object;
+      console.log(`stripe-webhook: subscription deleted — ${sub.id}`);
+      await supabase.from("ops_events").insert({
+        event_type: "stripe_subscription",
+        severity: "warning",
+        payload: { type: stripeEvent.type, subscription_id: sub.id, status: sub.status, customer: sub.customer },
+      });
+      return { statusCode: 200, body: JSON.stringify({ received: true, type: stripeEvent.type }) };
+    }
+
+    case "invoice.payment_failed": {
+      const invoice = stripeEvent.data.object;
+      console.log(`stripe-webhook: payment failed — invoice ${invoice.id} (customer: ${invoice.customer})`);
+      await supabase.from("ops_events").insert({
+        event_type: "stripe_payment_failed",
+        severity: "error",
+        payload: { type: stripeEvent.type, invoice_id: invoice.id, customer: invoice.customer, amount_due: invoice.amount_due },
+      });
+      return { statusCode: 200, body: JSON.stringify({ received: true, type: stripeEvent.type }) };
+    }
+
+    default:
+      return { statusCode: 200, body: JSON.stringify({ received: true, type: stripeEvent.type }) };
   }
 };
-
-
-// ── MarketPulse (Tactical Brief) Handler ─────────────────────
-async function handleTacticalBrief(supabase, session, meta) {
-  const payload = {
-    session_id: session.id,
-    name: meta.customer_name || "",
-    email: meta.customer_email || session.customer_details?.email || "",
-    company: meta.company || "",
-    topic: meta.topic || "",
-    audience: meta.audience || "",
-    amount_paid: session.amount_total,
-  };
-
-  if (!payload.email || !payload.topic) {
-    console.error("stripe-webhook [tactical_brief]: missing email or topic in metadata", session.id);
-    return { statusCode: 200, body: JSON.stringify({ received: true, warning: "missing required metadata" }) };
-  }
-
-  console.log(`stripe-webhook [tactical_brief]: triggering generation for ${payload.email} (session ${session.id})`);
-
-  // Track order in Supabase
-  try {
-    await supabase.from("marketpulse_orders").insert({
-      session_id: session.id,
-      email: payload.email,
-      name: payload.name,
-      company: payload.company,
-      topic: payload.topic,
-      audience: payload.audience,
-      amount_paid: payload.amount_paid,
-      status: "pending",
-    });
-  } catch (orderErr) {
-    console.error("stripe-webhook [tactical_brief]: order tracking insert failed:", orderErr.message);
-  }
-
-  // Trigger background generation
-  try {
-    const bgUrl = `${SITE_URL}/.netlify/functions/generate-tactical-brief-background`;
-    const postData = JSON.stringify(payload);
-
-    await new Promise((resolve, reject) => {
-      const url = new URL(bgUrl);
-      const req = https.request(
-        {
-          hostname: url.hostname,
-          port: url.port || 443,
-          path: url.pathname,
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Content-Length": Buffer.byteLength(postData),
-          },
-          timeout: 5000,
-        },
-        (res) => resolve(res.statusCode)
-      );
-      req.on("error", reject);
-      req.on("timeout", () => {
-        req.destroy();
-        resolve("timeout-ok");
-      });
-      req.write(postData);
-      req.end();
-    });
-
-    console.log(`stripe-webhook [tactical_brief]: background function triggered for ${payload.email}`);
-  } catch (err) {
-    console.error("stripe-webhook [tactical_brief]: failed to trigger background function:", err.message);
-  }
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ received: true, product: "tactical_brief", triggered: true }),
-  };
-}
-
-
-// ── ProposalPulse Handler ────────────────────────────────────
-async function handleProposalPulse(supabase, session, meta) {
-  const email = meta.user_email ||
-    (session.customer_details && session.customer_details.email) ||
-    null;
-
-  if (!email) {
-    console.error("stripe-webhook [proposalpulse]: no email found in session", session.id);
-    return { statusCode: 200, body: JSON.stringify({ received: true, warning: "no email found" }) };
-  }
-
-  const normalizedEmail = email.toLowerCase().trim();
-  console.log(`stripe-webhook [proposalpulse]: granting +1 use for ${normalizedEmail} (session ${session.id})`);
-
-  const { data: user, error: userErr } = await supabase
-    .from("mp_users")
-    .select("id")
-    .eq("email", normalizedEmail)
-    .single();
-
-  if (userErr || !user) {
-    console.error("stripe-webhook [proposalpulse]: user not found for", normalizedEmail);
-    return { statusCode: 500, body: JSON.stringify({ error: "user not found — Stripe will retry" }) };
-  }
-
-  const { data: usage, error: usageErr } = await supabase
-    .from("mp_feature_usage")
-    .select("uses_remaining")
-    .eq("user_id", user.id)
-    .eq("feature", FEATURE_NAME)
-    .single();
-
-  if (usageErr || !usage) {
-    console.error("stripe-webhook [proposalpulse]: usage record not found for user", user.id);
-    return { statusCode: 500, body: JSON.stringify({ error: "usage record not found — Stripe will retry" }) };
-  }
-
-  const { error: updateErr } = await supabase
-    .from("mp_feature_usage")
-    .update({ uses_remaining: usage.uses_remaining + 1 })
-    .eq("user_id", user.id)
-    .eq("feature", FEATURE_NAME);
-
-  if (updateErr) {
-    console.error("stripe-webhook [proposalpulse]: failed to increment usage:", updateErr);
-    return { statusCode: 500, body: JSON.stringify({ error: "Failed to grant use" }) };
-  }
-
-  console.log(`stripe-webhook [proposalpulse]: granted +1 use for ${normalizedEmail} (now ${usage.uses_remaining + 1})`);
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ received: true, product: "proposalpulse", uses_remaining: usage.uses_remaining + 1 }),
-  };
-}
-
-
-// ── Subscription Created/Updated ─────────────────────────────
-async function handleSubscriptionUpdate(supabase, subscription) {
-  const planMap = {
-    // Mary: replace these with actual Stripe Price IDs after creating them
-    "price_starter": "starter",
-    "price_professional": "professional",
-    "price_enterprise": "enterprise",
-  };
-
-  const priceId = subscription.items?.data?.[0]?.price?.id;
-  const plan = planMap[priceId] || "starter";
-  const stripeCustomerId = subscription.customer;
-
-  // Find user by stripe_customer_id
-  const { data: user } = await supabase
-    .from("mp_users")
-    .select("id")
-    .eq("stripe_customer_id", stripeCustomerId)
-    .single();
-
-  if (!user) {
-    console.error("stripe-webhook [subscription]: no user found for customer", stripeCustomerId);
-    return { statusCode: 200, body: JSON.stringify({ received: true, warning: "user not found for customer" }) };
-  }
-
-  // Upsert subscription record
-  await supabase.from("mp_subscriptions").upsert({
-    user_id: user.id,
-    stripe_subscription_id: subscription.id,
-    stripe_customer_id: stripeCustomerId,
-    plan,
-    status: subscription.status,
-    current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
-    current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
-    cancel_at_period_end: subscription.cancel_at_period_end || false,
-    updated_at: new Date().toISOString(),
-  }, { onConflict: "stripe_subscription_id" });
-
-  // Sync user tier
-  const newTier = subscription.status === "active" ? plan : "free";
-  await supabase
-    .from("mp_users")
-    .update({ tier: newTier })
-    .eq("id", user.id);
-
-  console.log(`stripe-webhook [subscription]: user ${user.id} → tier=${newTier}, plan=${plan}, status=${subscription.status}`);
-  return { statusCode: 200, body: JSON.stringify({ received: true, tier: newTier }) };
-}
-
-
-// ── Subscription Canceled ────────────────────────────────────
-async function handleSubscriptionCanceled(supabase, subscription) {
-  await supabase
-    .from("mp_subscriptions")
-    .update({ status: "canceled", updated_at: new Date().toISOString() })
-    .eq("stripe_subscription_id", subscription.id);
-
-  // Downgrade user to free
-  const stripeCustomerId = subscription.customer;
-  const { data: user } = await supabase
-    .from("mp_users")
-    .select("id")
-    .eq("stripe_customer_id", stripeCustomerId)
-    .single();
-
-  if (user) {
-    await supabase.from("mp_users").update({ tier: "free" }).eq("id", user.id);
-    console.log(`stripe-webhook [subscription]: user ${user.id} downgraded to free (subscription canceled)`);
-  }
-
-  return { statusCode: 200, body: JSON.stringify({ received: true, canceled: true }) };
-}
-
-
-// ── Invoice Payment Failed ───────────────────────────────────
-async function handlePaymentFailed(supabase, invoice) {
-  const subscriptionId = invoice.subscription;
-  if (!subscriptionId) return { statusCode: 200, body: JSON.stringify({ received: true }) };
-
-  await supabase
-    .from("mp_subscriptions")
-    .update({ status: "past_due", updated_at: new Date().toISOString() })
-    .eq("stripe_subscription_id", subscriptionId);
-
-  console.error(`stripe-webhook [invoice]: payment failed for subscription ${subscriptionId}`);
-  return { statusCode: 200, body: JSON.stringify({ received: true, past_due: true }) };
-}

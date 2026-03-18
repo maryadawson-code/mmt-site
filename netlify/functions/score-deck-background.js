@@ -1,4 +1,3 @@
-require("./lib/sentry");
 // ============================================================
 // score-deck-background.js — Netlify Background Function
 //
@@ -17,15 +16,11 @@ require("./lib/sentry");
 //   5. Send score receipt email
 // ============================================================
 
-const { Sentry } = require("./lib/sentry");
 const { createClient } = require("@supabase/supabase-js");
 const { DOCUMENT_TYPES } = require("./lib/document-types");
 const { getModelConfig } = require("./lib/model-router");
 const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
 const { withRetry } = require("./lib/retry");
-const { withGracefulDegradation } = require("./lib/graceful-degrade");
-const { logOpsEvent } = require("./lib/ops-ledger");
-const { checkCircuit, recordSuccess, recordFailure } = require("./lib/circuit-breaker");
 
 // --- Environment Variables ---
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -219,53 +214,8 @@ exports.handler = async (event) => {
     }
 
     console.log(`Background function started for scoring_id=${scoring_id}`);
-    Sentry.addBreadcrumb({ category: "scoring", message: "scoring_started", level: "info", data: { scoring_id } });
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
-
-    // --- Validate required env vars ---
-    if (!ANTHROPIC_API_KEY) {
-      console.error("ANTHROPIC_API_KEY is not configured in Netlify environment variables");
-      if (scoring_id) {
-        try {
-          await supabase.from("mp_scoring_history").update({
-            scores: { verdict: "ERROR", top_fix: "Server configuration error: ANTHROPIC_API_KEY not set. Contact support." }
-          }).eq("id", scoring_id);
-        } catch(e) {}
-      }
-      return { statusCode: 500, body: "ANTHROPIC_API_KEY not configured" };
-    }
-    if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
-      console.error("Supabase env vars missing");
-      return { statusCode: 500, body: "Database not configured" };
-    }
-
-    // --- Quick API health check before expensive operation ---
-    try {
-      const healthRes = await fetchWithTimeout("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": ANTHROPIC_API_KEY,
-          "anthropic-version": "2023-06-01",
-        },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-6",
-          max_tokens: 1,
-          messages: [{ role: "user", content: "OK" }],
-        }),
-      }, 10000);
-
-      if (healthRes.status === 401 || healthRes.status === 403) {
-        console.error("Anthropic API key is invalid (health check returned", healthRes.status, ")");
-        await markScoringFailed(supabase, scoring_id, "API key is invalid. The team has been notified.");
-        return { statusCode: 200, body: "API key invalid — fail fast" };
-      }
-    } catch (healthErr) {
-      // Network error — API might be temporarily down. Proceed anyway,
-      // the retry logic in the actual scoring call will handle transient failures.
-      console.warn("API health check failed (proceeding anyway):", healthErr.message);
-    }
 
     // --- Read payload from DB ---
     const { data: record, error: lookupErr } = await supabase
@@ -343,73 +293,31 @@ exports.handler = async (event) => {
 
     // --- Build prompt and call Claude API ---
     const scoringModelConfig = await getModelConfig(supabase, "scoring");
-    Sentry.addBreadcrumb({ category: "scoring", message: "anthropic_api_called", level: "info", data: { scoring_id } });
     console.log(`Calling Claude API for ${scoring_id} (${fileType}, textLen=${extractedText?.length || 0}, model=${scoringModelConfig.model} [${scoringModelConfig.reason}])`);
     const systemPrompt = buildSystemPrompt(documentType, finalSowText);
     const messageContent = buildMessageContent(fileType, fileBase64, extractedText, documentType);
 
-    // Circuit breaker: fail fast if Anthropic is known-down
-    const circuitState = await checkCircuit(supabase, "anthropic");
-    if (!circuitState.allowed) {
-      console.warn("Circuit OPEN for Anthropic — marking for retry");
-      await logOpsEvent(supabase, { event_type: "circuit_open_skip", source_function: "score-deck-background", scoring_id, severity: "warning" });
-      // Mark for retry via graceful degradation path
-      await supabase.from("mp_scoring_history").update({ verdict: null, scores: { _pending: true, _degraded: true } }).eq("id", scoring_id);
-      return { statusCode: 200, body: "Circuit open — deferred" };
-    }
-
-    const claudeResponse = await withGracefulDegradation(
-      () => withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": ANTHROPIC_API_KEY,
-          "anthropic-version": "2023-06-01",
-          "anthropic-beta": "pdfs-2024-09-25",
-        },
-        body: JSON.stringify({
-          model: scoringModelConfig.model,
-          max_tokens: MAX_OUTPUT_TOKENS,
-          system: systemPrompt,
-          messages: [{ role: "user", content: messageContent }],
-        }),
-      })),
-      { supabase, recordId: scoring_id, table: "mp_scoring_history", userEmail: email, productName: "ProposalPulse assessment" }
-    );
-
-    // If graceful degradation handled a transient failure
-    if (claudeResponse?.degraded) {
-      await recordFailure(supabase, "anthropic", { message: claudeResponse.error });
-      await logOpsEvent(supabase, { event_type: "scoring_degraded", source_function: "score-deck-background", scoring_id, user_email: email, severity: "warning", details: { error: claudeResponse.error } });
-      return { statusCode: 200, body: "Degraded — will retry" };
-    }
+    const claudeResponse = await withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: scoringModelConfig.model,
+        max_tokens: MAX_OUTPUT_TOKENS,
+        system: systemPrompt,
+        messages: [{ role: "user", content: messageContent }],
+      }),
+    }));
 
     if (!claudeResponse.ok) {
       const errText = await claudeResponse.text();
       console.error("Claude API error:", claudeResponse.status, errText);
-      await recordFailure(supabase, "anthropic", { message: errText, status: claudeResponse.status });
-      let claudeErrMsg = "AI scoring service error. Please try again.";
-      try {
-        const errJson = JSON.parse(errText);
-        const apiMsg = errJson?.error?.message || "";
-        if (claudeResponse.status === 401) {
-          claudeErrMsg = "Authentication error: ANTHROPIC_API_KEY is invalid or not set in Netlify.";
-        } else if (claudeResponse.status === 400) {
-          claudeErrMsg = `Bad request to AI service: ${apiMsg.slice(0, 120)}`;
-        } else if (claudeResponse.status === 529) {
-          claudeErrMsg = "AI service temporarily overloaded. Please try again in a few minutes.";
-        } else {
-          claudeErrMsg = `AI service error (${claudeResponse.status}): ${apiMsg.slice(0, 120) || "Please try again."}`;
-        }
-      } catch(e) {
-        claudeErrMsg = `AI service error (${claudeResponse.status}). Please try again.`;
-      }
-      await logOpsEvent(supabase, { event_type: "scoring_failed", source_function: "score-deck-background", scoring_id, user_email: email, severity: "error", details: { status: claudeResponse.status }, error_signature: `anthropic_${claudeResponse.status}` });
-      await markError(supabase, scoring_id, claudeErrMsg);
-      return { statusCode: 200, body: `Claude API error: ${claudeResponse.status}` };
+      await markError(supabase, scoring_id, "AI scoring service error. Please try again.");
+      return { statusCode: 200, body: "Claude API error" };
     }
-
-    await recordSuccess(supabase, "anthropic");
 
     const claudeData = await claudeResponse.json();
 
@@ -483,40 +391,7 @@ exports.handler = async (event) => {
       console.error("Failed to update scoring row:", updateErr);
     }
 
-    Sentry.addBreadcrumb({ category: "scoring", message: "scoring_complete", level: "info", data: { scoring_id, overallGrade } });
     console.log(`Scoring complete for ${scoring_id}: ${overallGrade} (${scorecard.verdict})`);
-
-    // --- Decrement usage (only on success) ---
-    try {
-      const { data: currentUsage } = await supabase
-        .from("mp_feature_usage")
-        .select("uses_remaining, uses_total")
-        .eq("user_id", record.user_id)
-        .eq("feature", "lethality_test")
-        .single();
-
-      if (currentUsage) {
-        const now = new Date().toISOString();
-        await supabase
-          .from("mp_feature_usage")
-          .update({
-            uses_remaining: currentUsage.uses_remaining - 1,
-            uses_total: (currentUsage.uses_total || 0) + 1,
-            last_used_at: now,
-          })
-          .eq("user_id", record.user_id)
-          .eq("feature", "lethality_test");
-
-        await supabase
-          .from("mp_users")
-          .update({ last_active_at: now })
-          .eq("id", record.user_id);
-
-        console.log(`Usage decremented for user ${record.user_id}: ${currentUsage.uses_remaining} → ${currentUsage.uses_remaining - 1}`);
-      }
-    } catch (usageErr) {
-      console.error("Usage decrement error (non-fatal):", usageErr.message);
-    }
 
     // --- Send score receipt email ---
     try {
@@ -545,25 +420,20 @@ exports.handler = async (event) => {
           fileName: fileName,
         }),
       });
-      Sentry.addBreadcrumb({ category: "scoring", message: "email_sent", level: "info", data: { scoring_id } });
       console.log(`Receipt email sent for ${scoring_id}`);
     } catch (emailErr) {
       console.error("Receipt email error:", emailErr);
     }
 
-    await logOpsEvent(supabase, { event_type: "scoring_complete", source_function: "score-deck-background", scoring_id, user_email: email, severity: "info", details: { verdict: scorecard.verdict, grade: overallGrade, model: scoringModelConfig.model } });
     return { statusCode: 200, body: "Scoring complete" };
 
   } catch (err) {
     console.error("Unhandled error in score-deck-background:", err);
-    Sentry.captureException(err, { extra: { scoring_id } });
-    await Sentry.flush(2000);
 
     if (scoring_id) {
       try {
         const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
         await markError(supabase, scoring_id, "Internal server error. Please try again.");
-        await logOpsEvent(supabase, { event_type: "scoring_failed", source_function: "score-deck-background", scoring_id, severity: "error", details: { error: err.message }, error_signature: `unhandled_${err.name || "Error"}` });
       } catch (dbErr) {
         console.error("Failed to mark error in DB:", dbErr);
       }

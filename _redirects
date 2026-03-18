@@ -1,0 +1,3 @@
+# MHS GENESIS shortcut redirect
+/contracts/mhs-genesis/ /contracts/mhs-genesis-electronic-health-record/ 301
+/contracts/mhs-genesis /contracts/mhs-genesis-electronic-health-record/ 301

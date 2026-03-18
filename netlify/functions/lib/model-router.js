@@ -16,12 +16,12 @@
 
 const MODELS = {
   scoring: {
-    default: "claude-sonnet-4-6",
-    floor: "claude-sonnet-4-6",
+    default: "claude-sonnet-4-5-20250929",
+    floor: "claude-sonnet-4-5-20250929",
   },
   rewrite: {
-    default: "claude-sonnet-4-6",
-    floor: "claude-sonnet-4-6",
+    default: "claude-sonnet-4-5-20250929",
+    floor: "claude-sonnet-4-5-20250929",
   },
   review: {
     default: "claude-haiku-4-5-20251001",
@@ -38,8 +38,8 @@ const MODELS = {
     provider: "perplexity",
   },
   opportunity_scan: {
-    default: "claude-sonnet-4-6",
-    floor: "claude-sonnet-4-6",
+    default: "claude-sonnet-4-5-20250929",
+    floor: "claude-sonnet-4-5-20250929",
   },
   sb_classify: {
     default: "claude-haiku-4-5-20251001",
@@ -48,7 +48,7 @@ const MODELS = {
 };
 
 const ESCALATION_THRESHOLD = 3.0;
-const ESCALATION_MODEL = "claude-sonnet-4-6";
+const ESCALATION_MODEL = "claude-sonnet-4-5-20250929";
 const FEEDBACK_SAMPLE_SIZE = 10;
 
 /**
@@ -62,17 +62,15 @@ async function getModelConfig(supabase, taskType) {
   const config = MODELS[taskType];
   if (!config) {
     console.warn(`model-router: unknown task type "${taskType}", using Sonnet`);
-    return { model: "claude-sonnet-4-6", reason: "unknown_task" };
+    return { model: "claude-sonnet-4-5-20250929", reason: "unknown_task" };
   }
 
-  // Skip self-learning for tasks where default === floor (no escalation possible)
-  // and for non-Anthropic providers (Perplexity manages its own routing)
-  const canEscalate = config.default !== ESCALATION_MODEL && !config.provider;
-  if (!canEscalate) {
+  // Only 'review' uses self-learning from user feedback — all others return defaults
+  if (taskType !== "review") {
     return { model: config.default, reason: "default", provider: config.provider || "anthropic" };
   }
 
-  // Self-learning: check user feedback to decide if model should escalate
+  // For review: check if self-learning should escalate the model
   try {
     const { data: rows, error } = await supabase
       .from("mp_scoring_history")
@@ -101,25 +99,6 @@ async function getModelConfig(supabase, taskType) {
     console.log(
       `model-router: ${taskType} avg rating = ${avgRating.toFixed(2)} (${ratings.length} samples)`
     );
-
-    // Quality trend detection: compare recent vs older ratings
-    const recentRatings = ratings.slice(0, 5);
-    const olderRatings = ratings.slice(5);
-    if (recentRatings.length >= 3 && olderRatings.length >= 3) {
-      const recentAvg = recentRatings.reduce((s, r) => s + r, 0) / recentRatings.length;
-      const olderAvg = olderRatings.reduce((s, r) => s + r, 0) / olderRatings.length;
-      if (recentAvg < olderAvg - 0.5) {
-        try {
-          const { logOpsEvent } = require("./ops-ledger");
-          await logOpsEvent(supabase, {
-            event_type: "quality_drift",
-            source_function: "model-router",
-            severity: "warning",
-            details: { task_type: taskType, recent_avg: recentAvg.toFixed(2), older_avg: olderAvg.toFixed(2) },
-          });
-        } catch {}
-      }
-    }
 
     if (avgRating < ESCALATION_THRESHOLD) {
       console.log(

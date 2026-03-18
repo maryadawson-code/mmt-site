@@ -1,0 +1,21 @@
+ROLLBACK NOTES
+==============
+Package: mmt_rebuild_2026-02-27_core-pages
+
+If this deployment causes issues:
+
+Option 1 - Local Backup Restore:
+  cd /d C:\Users\MaryWomack\mmt-site_backup_*
+  xcopy /E /I /Y * C:\Users\MaryWomack\mmt-site
+
+Option 2 - Git Revert:
+  cd /d C:\Users\MaryWomack\mmt-site
+  git log --oneline -5
+  git revert HEAD
+
+Option 3 - Git Reset (destructive):
+  cd /d C:\Users\MaryWomack\mmt-site
+  git reset --hard HEAD~1
+  git push --force
+
+Note: Option 3 is destructive. Use only if the pre-patch state is the desired recovery target.

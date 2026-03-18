@@ -502,6 +502,8 @@ function generateSitemap(articles, tags, contracts) {
     { loc: '/contract-tracker.html', priority: '0.7' },
     { loc: '/events.html', priority: '0.6' },
     { loc: '/privacy.html', priority: '0.3' },
+    { loc: '/terms.html', priority: '0.3' },
+    { loc: '/security.html', priority: '0.5' },
     { loc: '/glossary.html', priority: '0.6' },
     { loc: '/contracting.html', priority: '0.6' },
     { loc: '/agency-sources.html', priority: '0.5' },
@@ -1256,6 +1258,8 @@ function injectBreadcrumbJsonLd(html, filename) {
     'contract-tracker.html': 'Contracts',
     'events.html': 'Events',
     'privacy.html': 'Privacy',
+    'terms.html': 'Terms',
+    'security.html': 'Data Security',
   };
   const name = breadcrumbs[filename];
   if (!name) return html; // Skip index.html, 404.html
@@ -1596,7 +1600,7 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
     'resources.html', 'topics.html', '404.html',
     'proposal-pulse.html', 'latest.html', 'newswire.html',
     'contract-tracker.html', 'events.html',
-    'privacy.html', 'glossary.html', 'contracting.html',
+    'privacy.html', 'terms.html', 'security.html', 'glossary.html', 'contracting.html',
     'agency-sources.html', 'getting-started.html',
     'tactical-brief.html', 'tactical-brief-confirmed.html',
     'about-team.html', 'about-press.html'
@@ -2059,7 +2063,7 @@ async function build() {
   // 0. Build Tailwind CSS
   console.log('--- Building Tailwind CSS ---');
   ensureDir(path.join(DIST_DIR, 'styles'));
-  execSync('npx tailwindcss -i ./src/input.css -o ./dist/styles/tailwind.css --minify', {
+  execSync('./node_modules/.bin/tailwindcss -i ./src/input.css -o ./dist/styles/tailwind.css --minify', {
     cwd: __dirname,
     stdio: 'inherit',
   });
