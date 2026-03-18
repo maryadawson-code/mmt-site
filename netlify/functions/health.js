@@ -6,9 +6,14 @@
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
+const { getMode } = require("./lib/kill-switch");
+const { checkStuckOrders } = require("./lib/workflow-state");
 
 exports.handler = async () => {
   let contractData = "unknown";
+  let stuckScoring = 0;
+  let stuckOrders = 0;
+  let heldEmails = 0;
 
   // Check contract data freshness via most recent ops_event
   const sbUrl = process.env.SUPABASE_URL;
@@ -30,6 +35,20 @@ exports.handler = async () => {
         else if (hoursAgo > 48) contractData = "stale";
         else contractData = "fresh";
       }
+
+      // Stuck orders
+      const scoring = await checkStuckOrders(supabase, "mp_scoring_history", 30);
+      stuckScoring = scoring.stuck?.length || 0;
+
+      const orders = await checkStuckOrders(supabase, "marketpulse_orders", 30);
+      stuckOrders = orders.stuck?.length || 0;
+
+      // Held emails
+      const { count } = await supabase
+        .from("held_emails")
+        .select("id", { count: "exact", head: true })
+        .eq("released", false);
+      heldEmails = count || 0;
     } catch { /* health check should never crash */ }
   }
 
@@ -40,6 +59,10 @@ exports.handler = async () => {
       status: "UP",
       timestamp: new Date().toISOString(),
       contractData,
+      ai_operations_mode: getMode(),
+      stuck_scoring: stuckScoring,
+      stuck_orders: stuckOrders,
+      held_emails: heldEmails,
     }),
   };
 };

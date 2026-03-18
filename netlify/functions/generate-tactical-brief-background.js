@@ -22,6 +22,8 @@ const { generateTacticalBriefPdf } = require("./lib/tactical-brief-pdf");
 const { buildDeliveryEmail, buildNotificationEmail } = require("./lib/tactical-brief-email");
 const { sendEmail } = require("./lib/send-email");
 const { optimizeMarketPrompt } = require("./lib/prompt-optimizer");
+const { checkKillSwitch, shouldHoldEmail, holdEmail } = require("./lib/kill-switch");
+const { transitionState } = require("./lib/workflow-state");
 
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 const PERPLEXITY_MODEL = "sonar-pro";
@@ -457,6 +459,10 @@ function buildMethodologyAppendix(disambiguation, passTimings) {
 
 // --- Main handler ---
 exports.handler = async (event) => {
+  // Kill switch
+  const killCheck = checkKillSwitch("generate-tactical-brief-background");
+  if (killCheck.blocked) return killCheck.response;
+
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method not allowed" };
   }
@@ -484,7 +490,28 @@ exports.handler = async (event) => {
   const startTime = Date.now();
   const passTimings = {};
 
+  // Note: MarketPulse state machine uses marketpulse_orders table, keyed by session_id.
+  // We attempt transitions but don't block on failure — state tracking is observability, not control flow.
+  const { createClient } = require("@supabase/supabase-js");
+  let _supabase = null;
+  let _orderId = null;
+  if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
+    _supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+    // Look up order by session_id
+    try {
+      const { data: order } = await _supabase.from("marketpulse_orders").select("id").eq("session_id", session_id).single();
+      if (order) _orderId = order.id;
+    } catch (e) { /* no order record yet — OK for free path */ }
+  }
+  async function _transition(state, details) {
+    if (!_supabase || !_orderId) return;
+    try { await transitionState(_supabase, "marketpulse_orders", _orderId, state, details); } catch (e) { console.error("State transition error:", e.message); }
+  }
+
   try {
+    // State: research_started
+    await _transition("research_started");
+
     // Pre-pass: Prompt optimization — enrich raw topic into structured GovCon research prompt
     const originalTopic = topic;
     const optimizedTopic = optimizeMarketPrompt({ topic, company, segment: null, audience, additional_context: null });
@@ -540,6 +567,10 @@ exports.handler = async (event) => {
       ...(validation._citations || []),
     ])];
 
+    // State: research_completed → pdf_started
+    await _transition("research_completed");
+    await _transition("pdf_started");
+
     // Generate PDF
     console.log("Generating PDF...");
     const pdfBuffer = await generateTacticalBriefPdf({
@@ -554,24 +585,42 @@ exports.handler = async (event) => {
     });
     console.log(`PDF generated: ${Math.round(pdfBuffer.length / 1024)}KB`);
 
-    // Send delivery email with PDF attachment
+    // State: pdf_completed → email_queued
+    await _transition("pdf_completed");
+    await _transition("email_queued");
+
+    // Send delivery email with PDF attachment (with degraded mode hold)
     console.log("Sending delivery email...");
     const deliveryHtml = buildDeliveryEmail({ name, topic });
-    const deliveryResult = await sendEmail({
-      to: email,
-      subject: `Your MarketPulse Report: ${topic.slice(0, 60)}${topic.length > 60 ? "..." : ""}`,
-      html: deliveryHtml,
-      from: "Mission Meets Tech <noreply@missionmeetstech.com>",
-      attachments: [
-        {
-          filename: "tactical-brief.pdf",
-          content: pdfBuffer.toString("base64"),
-        },
-      ],
-    });
+    const deliverySubject = `Your MarketPulse Report: ${topic.slice(0, 60)}${topic.length > 60 ? "..." : ""}`;
 
-    if (!deliveryResult.success) {
-      console.error("Delivery email failed:", deliveryResult.error);
+    if (shouldHoldEmail()) {
+      if (_supabase) {
+        await holdEmail(_supabase, email, deliverySubject, deliveryHtml, {
+          product: "marketpulse",
+          record_id: _orderId,
+          has_attachment: true,
+          attachment_size_kb: Math.round(pdfBuffer.length / 1024),
+        });
+      }
+      console.log(`[degraded] Delivery email held for ${email}`);
+    } else {
+      const deliveryResult = await sendEmail({
+        to: email,
+        subject: deliverySubject,
+        html: deliveryHtml,
+        from: "Mission Meets Tech <noreply@missionmeetstech.com>",
+        attachments: [
+          {
+            filename: "tactical-brief.pdf",
+            content: pdfBuffer.toString("base64"),
+          },
+        ],
+      });
+
+      if (!deliveryResult.success) {
+        console.error("Delivery email failed:", deliveryResult.error);
+      }
     }
 
     // Send notification email to Mary (include disambiguation info)
@@ -589,6 +638,10 @@ exports.handler = async (event) => {
       html: notifyHtml + `<p style="color:#888;font-size:12px;">${disambigNote}${validationNote}<br>Pipeline: ${researchTime}s, ${Object.keys(passTimings).length} passes, ${allCitations.length} sources</p>`,
       from: "Mission Meets Tech <noreply@missionmeetstech.com>",
     });
+
+    // State: email_sent → delivered
+    await _transition("email_sent");
+    await _transition("delivered");
 
     const totalTime = Math.round((Date.now() - startTime) / 1000);
     console.log(`generate-tactical-brief-background: completed in ${totalTime}s for ${email}`);

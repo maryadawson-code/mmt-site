@@ -11,11 +11,15 @@
 
 const { createClient } = require("@supabase/supabase-js");
 const { logOpsEvent } = require("./lib/ops-ledger");
+const { checkKillSwitch } = require("./lib/kill-switch");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
 exports.handler = async (event) => {
+  const killCheck = checkKillSwitch("collect-feedback-background");
+  if (killCheck.blocked) return killCheck.response;
+
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method not allowed" };
   }

@@ -16,6 +16,7 @@ const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
 const { withRetry } = require("./lib/retry");
 const { validateOpportunity } = require("./lib/contract-validator");
 const { CANCELLED_VEHICLES } = require("./lib/contract-facts");
+const { checkKillSwitch } = require("./lib/kill-switch");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -168,6 +169,9 @@ async function callClaude(systemPrompt, userMessage, maxSearches, model, maxToke
 // ============================================================
 
 exports.handler = async (event) => {
+  const killCheck = checkKillSwitch("opportunity-radar-background");
+  if (killCheck.blocked) return killCheck.response;
+
   console.log("Opportunity radar scan started:", new Date().toISOString());
 
   if (!ANTHROPIC_API_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_KEY) {

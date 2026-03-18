@@ -1612,7 +1612,8 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
     'privacy.html', 'terms.html', 'security.html', 'glossary.html', 'contracting.html',
     'agency-sources.html', 'getting-started.html',
     'tactical-brief.html', 'tactical-brief-confirmed.html',
-    'about-team.html', 'about-press.html'
+    'about-team.html', 'about-press.html',
+    'ops.html'
   ];
   const ogMap = {
     'index.html': 'index.png',

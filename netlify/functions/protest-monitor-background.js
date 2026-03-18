@@ -15,6 +15,7 @@ const { getModelConfig } = require("./lib/model-router");
 const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
 const { withRetry } = require("./lib/retry");
 const { sendEmail } = require("./lib/send-email");
+const { checkKillSwitch } = require("./lib/kill-switch");
 
 // --- Constants ---
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
@@ -213,6 +214,9 @@ function buildProtestAlertHtml(caseData, result) {
 // ============================================================
 
 exports.handler = async (event) => {
+  const killCheck = checkKillSwitch("protest-monitor-background");
+  if (killCheck.blocked) return killCheck.response;
+
   console.log("Protest monitor triggered:", new Date().toISOString());
 
   if (!PERPLEXITY_API_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_KEY) {

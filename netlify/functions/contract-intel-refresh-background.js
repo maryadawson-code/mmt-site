@@ -19,6 +19,7 @@ const { validateContract, checkStalePatterns } = require("./lib/contract-validat
 const { KNOWN_FACTS } = require("./lib/contract-facts");
 const { routeToReviewQueue } = require("./lib/confidence-engine");
 const { logOpsEvent } = require("./lib/ops-ledger");
+const { checkKillSwitch } = require("./lib/kill-switch");
 
 // --- Constants ---
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
@@ -443,6 +444,9 @@ Use web search to spot-check the most important claims: dollar amounts, dates, c
 // ============================================================
 
 exports.handler = async (event) => {
+  const killCheck = checkKillSwitch("contract-intel-refresh-background");
+  if (killCheck.blocked) return killCheck.response;
+
   console.log("Contract intel refresh triggered:", new Date().toISOString());
 
   if (!PERPLEXITY_API_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_KEY) {

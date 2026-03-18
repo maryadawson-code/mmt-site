@@ -20,6 +20,7 @@ const { buildGoldTeamReviewHtml } = require("./lib/email-templates");
 const { getModelConfig } = require("./lib/model-router");
 const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
 const { withRetry } = require("./lib/retry");
+const { checkKillSwitch } = require("./lib/kill-switch");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -205,6 +206,9 @@ Triple-check each rewrite. Provide executive summary and next steps. Return only
 // ============================================================
 
 exports.handler = async (event) => {
+  const killCheck = checkKillSwitch("gold-team-review-background");
+  if (killCheck.blocked) return killCheck.response;
+
   console.log("Gold Team Review invoked");
 
   // CORS preflight

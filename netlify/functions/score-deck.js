@@ -15,6 +15,7 @@
 const { createClient } = require("@supabase/supabase-js");
 const crypto = require("crypto");
 const { DOCUMENT_TYPES } = require("./lib/document-types");
+const { checkKillSwitch } = require("./lib/kill-switch");
 
 // --- Environment Variables ---
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -184,6 +185,16 @@ exports.handler = async (event) => {
       statusCode: 405,
       headers: CORS_HEADERS,
       body: JSON.stringify({ error: "Method not allowed" }),
+    };
+  }
+
+  // Kill switch — block new submissions in readonly/emergency mode
+  const killCheck = checkKillSwitch("score-deck");
+  if (killCheck.blocked) {
+    return {
+      statusCode: 503,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({ error: "ProposalPulse is temporarily in maintenance mode. Please try again shortly." }),
     };
   }
 

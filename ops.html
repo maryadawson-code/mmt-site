@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>MMT Ops Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0a0f1a; color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 1rem; }
+    h1 { font-size: 1.25rem; font-weight: 700; }
+    h2 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; background: #111827; border-bottom: 1px solid #1e293b; }
+    .header-left { display: flex; align-items: center; gap: 0.75rem; }
+    .status-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .status-dot.up { background: #22c55e; }
+    .status-dot.down { background: #ef4444; }
+    .badge { padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .badge-normal { background: #166534; color: #bbf7d0; }
+    .badge-degraded { background: #854d0e; color: #fef08a; }
+    .badge-readonly { background: #9a3412; color: #fed7aa; }
+    .badge-emergency { background: #991b1b; color: #fecaca; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+    @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+    .card { background: #111827; border: 1px solid #1e293b; border-radius: 8px; padding: 1rem; }
+    .card-full { grid-column: 1 / -1; }
+    .stat { font-size: 2rem; font-weight: 700; color: #00e5fa; }
+    .stat-label { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; }
+    .mini-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
+    .event-row { padding: 0.4rem 0; border-bottom: 1px solid #1e293b; display: flex; gap: 0.5rem; align-items: baseline; font-size: 12px; }
+    .event-row:last-child { border-bottom: none; }
+    .sev-info { color: #94a3b8; } .sev-warning { color: #eab308; } .sev-error { color: #ef4444; } .sev-critical { color: #ef4444; font-weight: 700; }
+    .stuck-item { color: #ef4444; font-size: 12px; padding: 0.25rem 0; }
+    .events-scroll { max-height: 300px; overflow-y: auto; }
+    .actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.5rem; }
+    .actions a, .actions button { padding: 6px 12px; border-radius: 6px; font-size: 12px; text-decoration: none; border: 1px solid #1e293b; color: #94a3b8; background: transparent; cursor: pointer; }
+    .actions a:hover, .actions button:hover { border-color: #00e5fa; color: #00e5fa; }
+    .login-box { max-width: 400px; margin: 4rem auto; text-align: center; }
+    .login-box input { width: 100%; padding: 0.75rem; border-radius: 6px; border: 1px solid #1e293b; background: #111827; color: #f1f5f9; font-size: 14px; margin: 1rem 0; }
+    .login-box button { padding: 0.5rem 1.5rem; border-radius: 6px; border: none; background: #00e5fa; color: #0a0f1a; font-weight: 600; cursor: pointer; }
+    .updated { font-size: 11px; color: #64748b; }
+    .state-tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 11px; margin: 1px; }
+    .state-delivered { background: #166534; color: #bbf7d0; }
+    .state-failed { background: #991b1b; color: #fecaca; }
+    .state-pending { background: #854d0e; color: #fef08a; }
+    .state-other { background: #1e293b; color: #94a3b8; }
+    #loading { text-align: center; padding: 3rem; color: #64748b; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="login-screen" class="login-box" style="display:none;">
+      <h1 style="margin-bottom:0.5rem;">MMT Ops Dashboard</h1>
+      <p style="color:#94a3b8;">Enter your ops token to continue.</p>
+      <input type="password" id="token-input" placeholder="Ops token" autofocus>
+      <button onclick="doLogin()">Enter</button>
+    </div>
+    <div id="dashboard" style="display:none;">
+      <div class="header">
+        <div class="header-left">
+          <div class="status-dot" id="status-dot"></div>
+          <h1>MMT Ops</h1>
+          <span class="badge" id="mode-badge"></span>
+        </div>
+        <span class="updated" id="last-updated"></span>
+      </div>
+      <div class="container">
+        <div class="grid">
+          <div class="card"><h2>ProposalPulse (24h)</h2><div class="stat" id="pp-count">—</div><div id="pp-states"></div><div id="pp-stuck"></div></div>
+          <div class="card"><h2>MarketPulse (24h)</h2><div class="stat" id="mp-count">—</div><div id="mp-states"></div><div id="mp-stuck"></div></div>
+          <div class="card mini-grid card-full">
+            <div><div class="stat" id="stat-mode">—</div><div class="stat-label">AI Mode</div></div>
+            <div><div class="stat" id="stat-held">—</div><div class="stat-label">Held Emails</div></div>
+            <div><div class="stat" id="stat-stuck">—</div><div class="stat-label">Stuck Total</div></div>
+            <div><div class="stat" id="stat-events">—</div><div class="stat-label">Events 24h</div></div>
+          </div>
+          <div class="card card-full">
+            <h2>Ops Events (last 24h)</h2>
+            <div class="events-scroll" id="events-list"><div id="loading">Loading...</div></div>
+          </div>
+          <div class="card card-full">
+            <h2>Quick Actions</h2>
+            <div class="actions">
+              <button onclick="runHealthCheck()">Health Check</button>
+              <a href="https://app.netlify.com/sites/curious-pony-0dec76/logs/functions" target="_blank">Netlify Logs</a>
+              <a href="https://supabase.com/dashboard" target="_blank">Supabase</a>
+              <a href="https://dashboard.stripe.com" target="_blank">Stripe</a>
+              <button onclick="releaseEmails()">Release Held Emails</button>
+            </div>
+            <div id="action-result" style="margin-top:0.5rem;font-size:12px;color:#94a3b8;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    let KEY = new URLSearchParams(location.search).get('key') || '';
+    const BASE = '/.netlify/functions';
+
+    if (!KEY) {
+      document.getElementById('login-screen').style.display = 'block';
+    } else {
+      init();
+    }
+
+    function doLogin() {
+      KEY = document.getElementById('token-input').value.trim();
+      if (KEY) { history.replaceState(null, '', '?key=' + encodeURIComponent(KEY)); init(); }
+    }
+    document.getElementById('token-input')?.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+    function init() {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      fetchDashboard();
+      setInterval(fetchDashboard, 60000);
+    }
+
+    async function fetchDashboard() {
+      try {
+        const res = await fetch(BASE + '/ops-dashboard', { headers: { 'X-Ops-Token': KEY } });
+        if (res.status === 401) { alert('Invalid token'); return; }
+        const d = await res.json();
+        render(d);
+      } catch (e) { console.error('Dashboard fetch failed:', e); }
+    }
+
+    function render(d) {
+      const dot = document.getElementById('status-dot');
+      dot.className = 'status-dot up';
+
+      const mode = d.kill_switch?.mode || 'normal';
+      const badge = document.getElementById('mode-badge');
+      badge.textContent = mode;
+      badge.className = 'badge badge-' + mode;
+
+      document.getElementById('last-updated').textContent = 'Updated: ' + new Date().toLocaleTimeString();
+
+      // Stats
+      document.getElementById('pp-count').textContent = d.proposal_pulse?.last_24h || 0;
+      document.getElementById('mp-count').textContent = d.marketpulse?.last_24h || 0;
+      document.getElementById('stat-mode').textContent = mode;
+      document.getElementById('stat-held').textContent = d.kill_switch?.held_emails || 0;
+      const totalStuck = (d.proposal_pulse?.stuck?.length || 0) + (d.marketpulse?.stuck?.length || 0);
+      document.getElementById('stat-stuck').textContent = totalStuck;
+      document.getElementById('stat-events').textContent = d.ops_events?.last_24h || 0;
+
+      // State breakdowns
+      renderStates('pp-states', d.proposal_pulse?.by_state);
+      renderStates('mp-states', d.marketpulse?.by_state);
+
+      // Stuck
+      renderStuck('pp-stuck', d.proposal_pulse?.stuck);
+      renderStuck('mp-stuck', d.marketpulse?.stuck);
+
+      // Events
+      const el = document.getElementById('events-list');
+      const events = d.ops_events?.recent || [];
+      if (events.length === 0) { el.innerHTML = '<div style="color:#64748b;padding:1rem;">No events in last 24h</div>'; return; }
+      el.innerHTML = events.map(e => {
+        const sev = 'sev-' + (e.severity || 'info');
+        const time = new Date(e.created_at).toLocaleTimeString();
+        return '<div class="event-row"><span class="' + sev + '">[' + (e.severity || 'info').toUpperCase() + ']</span><span style="color:#64748b;">' + time + '</span><span>' + (e.event_type || '') + '</span><span style="color:#64748b;">' + (e.source_function || '') + '</span></div>';
+      }).join('');
+    }
+
+    function renderStates(id, states) {
+      const el = document.getElementById(id);
+      if (!states || Object.keys(states).length === 0) { el.innerHTML = ''; return; }
+      el.innerHTML = Object.entries(states).map(([s, c]) => {
+        let cls = 'state-other';
+        if (s === 'delivered') cls = 'state-delivered';
+        else if (s.includes('failed')) cls = 'state-failed';
+        else if (s.includes('pending') || s.includes('queued')) cls = 'state-pending';
+        return '<span class="state-tag ' + cls + '">' + s + ': ' + c + '</span>';
+      }).join(' ');
+    }
+
+    function renderStuck(id, stuck) {
+      const el = document.getElementById(id);
+      if (!stuck || stuck.length === 0) { el.innerHTML = ''; return; }
+      el.innerHTML = stuck.map(s => {
+        const mins = Math.round((Date.now() - new Date(s.state_updated_at).getTime()) / 60000);
+        return '<div class="stuck-item">⚠ ' + s.id.slice(0, 8) + '... stuck in ' + s.workflow_state + ' (' + mins + ' min ago)</div>';
+      }).join('');
+    }
+
+    async function runHealthCheck() {
+      const el = document.getElementById('action-result');
+      el.textContent = 'Checking...';
+      try {
+        const res = await fetch(BASE + '/health');
+        const d = await res.json();
+        el.textContent = 'Health: ' + d.status + ' | Mode: ' + d.ai_operations_mode + ' | Stuck: ' + (d.stuck_scoring + d.stuck_orders) + ' | Held: ' + d.held_emails;
+      } catch (e) { el.textContent = 'Health check failed: ' + e.message; }
+    }
+
+    async function releaseEmails() {
+      const el = document.getElementById('action-result');
+      el.textContent = 'Releasing...';
+      try {
+        const res = await fetch(BASE + '/release-held-emails', { method: 'POST', headers: { 'X-Ops-Token': KEY } });
+        const d = await res.json();
+        el.textContent = 'Released: ' + d.released + ' | Failed: ' + d.failed + ' | Total: ' + d.total;
+        fetchDashboard();
+      } catch (e) { el.textContent = 'Release failed: ' + e.message; }
+    }
+  </script>
+</body>
+</html>

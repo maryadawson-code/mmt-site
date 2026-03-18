@@ -21,6 +21,8 @@ const { DOCUMENT_TYPES } = require("./lib/document-types");
 const { getModelConfig } = require("./lib/model-router");
 const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
 const { withRetry } = require("./lib/retry");
+const { checkKillSwitch, shouldHoldEmail, holdEmail } = require("./lib/kill-switch");
+const { transitionState } = require("./lib/workflow-state");
 
 // --- Environment Variables ---
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -199,6 +201,10 @@ function computeOverallGrade(scorecard) {
 exports.handler = async (event) => {
   console.log("score-deck-background invoked");
 
+  // Kill switch
+  const killCheck = checkKillSwitch("score-deck-background");
+  if (killCheck.blocked) return killCheck.response;
+
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method not allowed" };
   }
@@ -258,6 +264,9 @@ exports.handler = async (event) => {
       return { statusCode: 200, body: "Missing data" };
     }
 
+    // --- State: extract_started ---
+    try { await transitionState(supabase, "mp_scoring_history", scoring_id, "extract_started"); } catch (e) { console.error("State transition error:", e.message); }
+
     // --- Clear the pending payload (= "processing" state for polling) ---
     await supabase
       .from("mp_scoring_history")
@@ -290,6 +299,10 @@ exports.handler = async (event) => {
         finalSowText = null;
       }
     }
+
+    // --- State: extract_completed → score_started ---
+    try { await transitionState(supabase, "mp_scoring_history", scoring_id, "extract_completed"); } catch (e) { console.error("State transition error:", e.message); }
+    try { await transitionState(supabase, "mp_scoring_history", scoring_id, "score_started"); } catch (e) { console.error("State transition error:", e.message); }
 
     // --- Build prompt and call Claude API ---
     const scoringModelConfig = await getModelConfig(supabase, "scoring");
@@ -393,7 +406,11 @@ exports.handler = async (event) => {
 
     console.log(`Scoring complete for ${scoring_id}: ${overallGrade} (${scorecard.verdict})`);
 
-    // --- Send score receipt email ---
+    // --- State: score_completed → email_queued ---
+    try { await transitionState(supabase, "mp_scoring_history", scoring_id, "score_completed"); } catch (e) { console.error("State transition error:", e.message); }
+    try { await transitionState(supabase, "mp_scoring_history", scoring_id, "email_queued"); } catch (e) { console.error("State transition error:", e.message); }
+
+    // --- Send score receipt email (with degraded mode hold) ---
     try {
       const { sendEmail } = require("./lib/send-email");
       const { buildScoreReceiptHtml } = require("./lib/email-templates");
@@ -408,21 +425,30 @@ exports.handler = async (event) => {
         .single();
       if (featureUsage) usesRemaining = featureUsage.uses_remaining;
 
-      await sendEmail({
-        to: email,
-        subject: `Your ProposalPulse Results: ${scorecard.verdict} — ${config.label}`,
-        html: buildScoreReceiptHtml({
-          scorecard,
-          documentType,
-          documentLabel: config.label,
-          overallGrade,
-          usesRemaining: usesRemaining,
-          fileName: fileName,
-        }),
+      const emailSubject = `Your ProposalPulse Results: ${scorecard.verdict} — ${config.label}`;
+      const emailHtml = buildScoreReceiptHtml({
+        scorecard,
+        documentType,
+        documentLabel: config.label,
+        overallGrade,
+        usesRemaining: usesRemaining,
+        fileName: fileName,
       });
-      console.log(`Receipt email sent for ${scoring_id}`);
+
+      if (shouldHoldEmail()) {
+        await holdEmail(supabase, email, emailSubject, emailHtml, { product: "proposalpulse", record_id: scoring_id });
+        console.log(`[degraded] Email held for ${scoring_id}`);
+      } else {
+        await sendEmail({ to: email, subject: emailSubject, html: emailHtml });
+        console.log(`Receipt email sent for ${scoring_id}`);
+      }
+
+      // --- State: email_sent → delivered ---
+      try { await transitionState(supabase, "mp_scoring_history", scoring_id, "email_sent"); } catch (e) { console.error("State transition error:", e.message); }
+      try { await transitionState(supabase, "mp_scoring_history", scoring_id, "delivered"); } catch (e) { console.error("State transition error:", e.message); }
     } catch (emailErr) {
       console.error("Receipt email error:", emailErr);
+      try { await transitionState(supabase, "mp_scoring_history", scoring_id, "email_failed"); } catch (e) { console.error("State transition error:", e.message); }
     }
 
     return { statusCode: 200, body: "Scoring complete" };

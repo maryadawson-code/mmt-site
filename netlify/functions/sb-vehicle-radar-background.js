@@ -20,6 +20,7 @@ const { withRetry } = require("./lib/retry");
 
 const { validateVehicle } = require("./lib/contract-validator");
 const { ACTIVE_VEHICLES, CANCELLED_VEHICLES } = require("./lib/contract-facts");
+const { checkKillSwitch } = require("./lib/kill-switch");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -209,6 +210,9 @@ async function classifyWithClaude(awards, model) {
 // ============================================================
 
 exports.handler = async (event) => {
+  const killCheck = checkKillSwitch("sb-vehicle-radar-background");
+  if (killCheck.blocked) return killCheck.response;
+
   console.log("SB vehicle radar scan started:", new Date().toISOString());
 
   if (!ANTHROPIC_API_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
