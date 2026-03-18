@@ -15,6 +15,7 @@ async function logOpsEvent(supabase, event) {
     resolution = null,
     details = {},
     error_signature = null,
+    failure_class = null,
   } = event;
 
   try {
@@ -29,6 +30,7 @@ async function logOpsEvent(supabase, event) {
       resolution,
       details,
       error_signature,
+      failure_class,
     });
   } catch (err) {
     // Never crash the caller — log and continue

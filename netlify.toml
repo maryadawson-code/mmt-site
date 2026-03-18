@@ -40,6 +40,9 @@
 [functions."ops-pattern-detector"]
   schedule = "0 13 * * *"
 
+[functions."quality-drift-check-background"]
+  schedule = "0 12 * * 1"
+
 [[redirects]]
   from = "/"
   to = "/index.html"

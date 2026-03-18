@@ -247,24 +247,29 @@ function generatePodcastEpisodesHtml(feed) {
                 <source src="${escapeHtml(audioUrl)}" type="audio/mpeg">
               </audio>`
       : '';
-    const epNum = episodes.length - episodes.indexOf(ep);
-    const epTags = podcastTags[`episode-${epNum}`] || [];
+    // Skip Trailer/Intro from episode numbering — only count real episodes
+    const isExtra = /^(Trailer|Introducing)/i.test(ep.title || '');
+    const realEpisodes = episodes.filter(e => !/^(Trailer|Introducing)/i.test(e.title || ''));
+    const epNum = isExtra ? null : realEpisodes.length - realEpisodes.indexOf(ep);
+    const epLabel = epNum ? `EP${epNum}` : '';
+    const epLine = epNum ? `Episode ${epNum}` : (ep.title || '').split(':')[0];
+    const epTags = epNum ? (podcastTags[`episode-${epNum}`] || []) : [];
     const epTagSlugs = epTags.map(t => slugify(t)).join(' ');
     const epTagHtml = epTags.length > 0
       ? `<div class="flex flex-wrap gap-1.5 mt-3">${epTags.map(t => `<span class="text-xs px-3 py-1 rounded-full" style="background:var(--mmt-surface, #0A1628); color:var(--mmt-caption, #94A3B8);">${escapeHtml(t)}</span>`).join('')}</div>`
       : '';
-    const transcript = transcripts[epNum];
+    const transcript = epNum ? transcripts[epNum] : null;
     const transcriptSection = transcript && transcript.hasContent
       ? `<details class="mt-4" style="border-top:1px solid var(--mmt-border, rgba(255,255,255,0.05)); padding-top:0.75rem;">
                 <summary class="text-sm font-semibold cursor-pointer" style="color:var(--mmt-cyan, #00E5FA);">Show Transcript</summary>
                 <div class="mt-3 text-sm leading-relaxed" style="color:var(--mmt-body, #CBD5E1); max-width:65ch;">${transcript.html}</div>
               </details>`
       : '';
-    return `<article class="episode-album episode-card p-6 md:p-8" data-episode="${epNum}" data-tags="${escapeHtml(epTagSlugs)}">
-          <span class="episode-album-number">EP${epNum}</span>
+    return `<article class="episode-album episode-card p-6 md:p-8" data-episode="${epNum || 0}" data-tags="${escapeHtml(epTagSlugs)}">
+          ${epLabel ? `<span class="episode-album-number">${epLabel}</span>` : ''}
           <div>
             <div class="flex items-center gap-3 mb-2">
-              <span class="text-eyebrow" style="font-size:0.7rem;">Episode ${epNum}</span>
+              <span class="text-eyebrow" style="font-size:0.7rem;">${escapeHtml(epLine)}</span>
               <span class="text-caption" style="margin:0;">${date}${duration ? ` &middot; ${duration}` : ''}</span>
             </div>
             <h3 class="text-subsection mb-2" style="font-size:clamp(1.1rem, 1.5vw, 1.35rem);">${title}</h3>

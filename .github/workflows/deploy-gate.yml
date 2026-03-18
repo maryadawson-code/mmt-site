@@ -1,0 +1,73 @@
+name: Deploy Gate
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - run: npm run build 2>&1 | tee build.log
+      - name: Check for build errors
+        run: |
+          if grep -iE "^error|fatal|ENOENT|Cannot find" build.log; then
+            echo "::error::Build has errors"
+            exit 1
+          fi
+      - name: Verify critical HTML files
+        run: |
+          EXPECTED=(
+            "dist/index.html"
+            "dist/about.html"
+            "dist/proposal-pulse.html"
+            "dist/tactical-brief.html"
+            "dist/contract-tracker.html"
+            "dist/newsletter.html"
+            "dist/security.html"
+            "dist/terms.html"
+            "dist/privacy.html"
+            "dist/getting-started.html"
+          )
+          MISSING=0
+          for f in "${EXPECTED[@]}"; do
+            if [ ! -f "$f" ]; then
+              echo "::error::MISSING: $f"
+              MISSING=$((MISSING+1))
+            fi
+          done
+          if [ $MISSING -gt 0 ]; then exit 1; fi
+          echo "All critical files present"
+
+  post-deploy-smoke:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build-check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Netlify
+        run: sleep 300
+      - name: Health check
+        run: |
+          HEALTH=$(curl -sf https://missionmeetstech.com/.netlify/functions/health)
+          echo "$HEALTH" | jq .
+          STATUS=$(echo "$HEALTH" | jq -r '.status')
+          if [ "$STATUS" != "UP" ]; then
+            echo "::error::Health check failed"
+            exit 1
+          fi
+      - name: Critical page check
+        run: |
+          for p in "" "proposal-pulse.html" "tactical-brief.html" "about.html" "contract-tracker.html"; do
+            CODE=$(curl -so /dev/null -w "%{http_code}" "https://missionmeetstech.com/$p")
+            if [ "$CODE" != "200" ]; then
+              echo "::error::/$p returned $CODE"
+              exit 1
+            fi
+          done
+          echo "All critical pages OK"
