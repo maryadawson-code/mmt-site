@@ -17,9 +17,11 @@ const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
 const { withRetry } = require("./lib/retry");
 const { validateContract, checkStalePatterns } = require("./lib/contract-validator");
 const { KNOWN_FACTS } = require("./lib/contract-facts");
-const { routeToReviewQueue } = require("./lib/confidence-engine");
+const { routeToReviewQueue, logAccuracy, updateSourceReliability, adjustThreshold } = require("./lib/confidence-engine");
 const { logOpsEvent } = require("./lib/ops-ledger");
 const { checkKillSwitch } = require("./lib/kill-switch");
+const { checkFreshness } = require("./lib/stale-detector");
+const { disambiguate } = require("./lib/entity-disambiguator");
 
 // --- Constants ---
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
@@ -126,6 +128,8 @@ You MUST assign a confidence percentage (0-100) to every factual claim. Base con
 - Recency: Recent articles (within 6 months) = higher for current-state claims. Older articles = lower for anything time-sensitive.
 - Specificity: Exact dollar amounts, dates, contract numbers from official sources = high. Vague or estimated figures = lower.
 
+CHAIN OF THOUGHT: For each data point, explain your reasoning in the verification_notes: what source said what, how recent the source is, and why you assigned that confidence level.
+
 If you cannot find authoritative evidence for a claim, either omit it or include it with low confidence (under 50%) and explain why in verification_notes.
 
 Return a JSON object with three top-level keys: "intel", "black_hat", and "sources".
@@ -221,6 +225,8 @@ Return a JSON object with these keys:
   "sources": ["URLs consulted during verification"]
 }
 
+CHAIN OF THOUGHT: For each field you verify, state whether the research pass got it right, what evidence supports or contradicts it, and your adjusted confidence.
+
 Be concise. Focus on the highest-impact claims. If the research looks solid, say so — do not manufacture doubt.
 
 Return ONLY valid JSON. No markdown code fences. No text before or after the JSON.`;
@@ -242,6 +248,7 @@ async function callPerplexity(systemPrompt, userMessage, _maxSearches, model, ma
     body: JSON.stringify({
       model,
       max_tokens: maxTokens,
+      temperature: 0.3,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userMessage },
@@ -570,6 +577,44 @@ exports.handler = async (event) => {
         }
       } catch { /* change detection is best-effort */ }
 
+      // --- B2/B5: Accuracy logging + source reliability ---
+      try {
+        const knownFactKey = Object.keys(KNOWN_FACTS).find(
+          (k) => KNOWN_FACTS[k].name === contract.name
+        );
+        if (knownFactKey && result.intel) {
+          const known = KNOWN_FACTS[knownFactKey];
+          // Log accuracy for value field
+          if (known.value && result.intel.financials) {
+            const valuesMatch = result.intel.financials.includes(known.value) || known.value.includes(result.intel.financials);
+            await logAccuracy(supabase, {
+              contract_id: contract.name,
+              field_name: "financials",
+              predicted: result.intel.financials,
+              actual: known.value,
+              wasCorrect: valuesMatch,
+              confidence: String(result.intel.financials_confidence || result.intel.confidence_score || 50),
+              source: "contract-intel-refresh",
+            });
+          }
+          // Update source reliability for each cited domain
+          for (const url of (result.sources || []).slice(0, 5)) {
+            try {
+              const domain = new URL(url).hostname;
+              const isGov = domain.endsWith(".gov");
+              await updateSourceReliability(supabase, domain, isGov || result.intel.confidence_score >= 70);
+            } catch { /* skip invalid URLs */ }
+          }
+        }
+        // Freshness check for logging
+        const freshness = checkFreshness(result.intel?.last_verified || new Date().toISOString());
+        if (freshness.status !== "fresh") {
+          console.log(`  [${contract.name}] Freshness: ${freshness.status} (${freshness.days} days)`);
+        }
+      } catch (accuracyErr) {
+        console.error(`  [${contract.name}] Accuracy logging failed (non-blocking):`, accuracyErr.message);
+      }
+
       // Upsert into contract_intel table
       const { error: upsertErr } = await supabase
         .from("contract_intel")
@@ -600,12 +645,30 @@ exports.handler = async (event) => {
 
   console.log(`Contract intel refresh complete: ${successCount} updated, ${errorCount} errors`);
 
-  // Log to ops_events
+  // B2/B5: Adjust auto-publish threshold from accumulated accuracy data
+  try {
+    const falsePositiveRate = errorCount / (contractsToProcess.length || 1);
+    await adjustThreshold(supabase, falsePositiveRate);
+  } catch (threshErr) {
+    console.error("Threshold adjustment failed (non-blocking):", threshErr.message);
+  }
+
+  // Log to ops_events with cost estimate
+  // Perplexity sonar-pro: ~$5/1000 requests. 2 calls per contract (research + verify).
+  const totalCalls = successCount * 2;
+  const costEstimate = totalCalls * 0.005;
+
   await logOpsEvent(supabase, {
     event_type: "contract_data_refresh",
     source_function: "contract-intel-refresh",
     severity: errorCount > 0 ? "warn" : "info",
-    details: { validated: successCount, rejected: errorCount, total: contractsToProcess.length },
+    details: {
+      validated: successCount,
+      rejected: errorCount,
+      total: contractsToProcess.length,
+      cost_estimate: costEstimate,
+      api_calls: totalCalls,
+    },
   });
 
   // Trigger site rebuild if any contracts were updated

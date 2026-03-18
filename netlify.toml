@@ -43,6 +43,12 @@
 [functions."quality-drift-check-background"]
   schedule = "0 12 * * 1"
 
+[functions."review-queue-digest-background"]
+  schedule = "0 11 * * *"
+
+[functions."predictive-signals-background"]
+  schedule = "0 10 * * 3"
+
 [[redirects]]
   from = "/"
   to = "/index.html"

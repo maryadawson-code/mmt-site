@@ -21,6 +21,7 @@ const { getModelConfig } = require("./lib/model-router");
 const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
 const { withRetry } = require("./lib/retry");
 const { checkKillSwitch } = require("./lib/kill-switch");
+const { extractIntelSignals } = require("./lib/signal-extractor");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -40,7 +41,7 @@ const CORS_HEADERS = {
 // CLAUDE API HELPER
 // ============================================================
 
-async function callClaude(systemPrompt, userPrompt, maxTokens, model) {
+async function callClaude(systemPrompt, userPrompt, maxTokens, model, temperature = 0.3) {
   const response = await withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -51,6 +52,7 @@ async function callClaude(systemPrompt, userPrompt, maxTokens, model) {
     body: JSON.stringify({
       model,
       max_tokens: maxTokens,
+      temperature,
       system: systemPrompt,
       messages: [{ role: "user", content: userPrompt }],
     }),
@@ -88,7 +90,14 @@ function buildRewritePrompt(documentText, scorecard, scores, config) {
 
 Your job: Rewrite ALL sections of this document. Strong sections (B- or above, 2.5+ pts) get concise polish to sharpen language and strengthen positioning. Weak sections (C+ or below, 2.0 pts or less) get substantial rewrites to raise each score significantly.
 
-Additionally, estimate the document's probability of winning (pWin) as a percentage (0-100%) with a brief justification.
+Additionally, estimate the document's probability of winning (pWin) as a percentage range.
+
+pWin METHODOLOGY (use this formula):
+Base rates by document type: RFP response 15%, White paper 25%, Capabilities statement 30%, Pitch deck 20%, Pricing volume 15%, Executive summary 25%.
+Adjustments: Each section scoring B+ or above: +5 percentage points. Each section scoring D or below: -10 points. Strong SOW/PWS alignment: +10 points. Past performance section A: +10 points. Multiple red flags in pricing: -15 points.
+Bounds: minimum 5%, maximum 85%. Report as a range (e.g., "25-35%"), not a single number.
+
+CHAIN OF THOUGHT: Before rewriting each section, identify the 2-3 specific weaknesses that most need addressing. Then rewrite with those targeted fixes. Your reasoning should appear in the "changes_made" field.
 
 RULES:
 - Quote 2-4 sentences from the original document for each section (the actual text, not a paraphrase).
@@ -114,8 +123,8 @@ RESPONSE FORMAT:
       "changes_made": "Brief explanation of what changed and why."
     }
   ],
-  "pwin_estimate": 45,
-  "pwin_justification": "Brief 2-3 sentence justification for the pWin estimate."
+  "pwin_estimate": "25-35%",
+  "pwin_justification": "Brief 2-3 sentence justification showing base rate + adjustments applied."
 }
 
 For the "status" field, use "polished" for strong sections (B- or above) and "rewritten" for weak sections (C+ or below).`,
@@ -168,6 +177,8 @@ Assign a confidence percentage (0-100%) for each section:
 Additionally:
 - Write an executive change summary: 3-5 bullet points covering what improved overall and what still needs the author's input.
 - Provide 3-5 prioritized next steps the author should take after incorporating these changes.
+
+CHAIN OF THOUGHT: For each section, state what the rewrite improved and what it missed before assigning your scores. Your reasoning should appear in the "notes" field.
 
 Return ONLY valid JSON. No markdown code fences. No text before or after the JSON.
 
@@ -292,6 +303,56 @@ exports.handler = async (event) => {
       return;
     }
 
+    // --- C7: Query competitive context from platform intelligence ---
+    let competitiveContext = "";
+    try {
+      const signals = extractIntelSignals(documentText, {});
+      const vehicles = signals.filter((s) => s.type === "vehicle_interest").map((s) => s.key);
+      const agencies = signals.filter((s) => s.type === "agency_interest").map((s) => s.key);
+
+      if (vehicles.length > 0 || agencies.length > 0) {
+        const searchTerms = [...vehicles, ...agencies].slice(0, 5);
+        const orFilter = searchTerms.map((t) => `contract_name.ilike.%${t}%`).join(",");
+
+        const { data: contracts } = await supabase
+          .from("contract_intel")
+          .select("contract_name, intel, black_hat")
+          .or(orFilter)
+          .order("last_updated", { ascending: false })
+          .limit(5);
+
+        const oppOrFilter = searchTerms.map((t) => `title.ilike.%${t}%`).join(",");
+        const { data: opportunities } = await supabase
+          .from("opportunity_radar")
+          .select("title, agency, response_deadline, set_aside_type")
+          .or(oppOrFilter)
+          .order("scan_date", { ascending: false })
+          .limit(5);
+
+        if (contracts?.length || opportunities?.length) {
+          competitiveContext = "\n\nCOMPETITIVE INTELLIGENCE (from MMT platform data — use to strengthen positioning):\n";
+          if (contracts?.length) {
+            competitiveContext += "\nRecent contract intel on detected vehicles/agencies:\n";
+            contracts.forEach((c) => {
+              const summary = c.intel?.summary ? c.intel.summary.substring(0, 200) : "No summary";
+              competitiveContext += `- ${c.contract_name}: ${summary}\n`;
+            });
+          }
+          if (opportunities?.length) {
+            competitiveContext += "\nActive opportunities on detected vehicles:\n";
+            opportunities.forEach((o) => {
+              competitiveContext += `- ${o.title} (${o.agency}): deadline ${o.response_deadline || "TBD"}, set-aside: ${o.set_aside_type || "none"}\n`;
+            });
+          }
+        }
+        if (competitiveContext) {
+          console.log(`Gold Team: injecting competitive context (${contracts?.length || 0} contracts, ${opportunities?.length || 0} opportunities)`);
+        }
+      }
+    } catch (ctxErr) {
+      console.error("Gold Team: competitive context query failed:", ctxErr.message);
+    }
+
     // --- Call 1: Rewrite ALL sections + pWin ---
     const scores = scorecard.scores || [];
 
@@ -299,10 +360,14 @@ exports.handler = async (event) => {
     console.log(`Gold Team: rewriting all ${scores.length} sections for ${normalizedEmail} (model=${rewriteModelConfig.model} [${rewriteModelConfig.reason}])`);
 
     const rewritePrompt = buildRewritePrompt(documentText, scorecard, scores, config);
+    // Inject competitive context if available
+    if (competitiveContext) {
+      rewritePrompt.user += competitiveContext;
+    }
     let rewriteResult;
 
     try {
-      const rewriteText = await callClaude(rewritePrompt.system, rewritePrompt.user, REWRITE_MAX_TOKENS, rewriteModelConfig.model);
+      const rewriteText = await callClaude(rewritePrompt.system, rewritePrompt.user, REWRITE_MAX_TOKENS, rewriteModelConfig.model, 0.4);
       rewriteResult = parseJson(rewriteText);
     } catch (err) {
       console.error("Gold Team: rewrite call failed:", err);
@@ -321,7 +386,7 @@ exports.handler = async (event) => {
     let reviewResult = null;
     try {
       const reviewPrompt = buildReviewPrompt(rewriteResult, config);
-      const reviewText = await callClaude(reviewPrompt.system, reviewPrompt.user, REVIEW_MAX_TOKENS, reviewModelConfig.model);
+      const reviewText = await callClaude(reviewPrompt.system, reviewPrompt.user, REVIEW_MAX_TOKENS, reviewModelConfig.model, 0.2);
       reviewResult = parseJson(reviewText);
     } catch (err) {
       console.error("Gold Team: review call failed (degrading gracefully):", err);

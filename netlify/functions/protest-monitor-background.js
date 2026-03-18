@@ -34,6 +34,7 @@ async function callPerplexity(systemPrompt, userMessage, model, maxTokens) {
     body: JSON.stringify({
       model,
       max_tokens: maxTokens,
+      temperature: 0.3,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userMessage },

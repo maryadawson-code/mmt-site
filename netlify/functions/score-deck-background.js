@@ -23,6 +23,9 @@ const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
 const { withRetry } = require("./lib/retry");
 const { checkKillSwitch, shouldHoldEmail, holdEmail } = require("./lib/kill-switch");
 const { transitionState } = require("./lib/workflow-state");
+const { validateScorecard } = require("./lib/scorecard-validator");
+const { logOpsEvent } = require("./lib/ops-ledger");
+const { extractIntelSignals } = require("./lib/signal-extractor");
 
 // --- Environment Variables ---
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -133,6 +136,33 @@ ${redFlagsSection}
 ${responseFormat}
 
 IMPORTANT: For each criterion, use a descriptive "title" field that names the actual evaluation factor (e.g., "Technical Approach" not "Evaluation Factor 1").
+
+CHAIN OF THOUGHT: Before scoring each criterion, briefly reason through what you observe in the document for that criterion. State your evidence, then assign the grade. Your reasoning should appear in the "assessment" field.
+
+EXAMPLE (abbreviated — show this level of specificity):
+{
+  "scores": [
+    {
+      "id": "problem-clarity",
+      "title": "Problem Clarity",
+      "grade": "B+",
+      "points": 3.5,
+      "assessment": "Document opens with a specific reference to DHA's EHR interoperability gap affecting 3,200+ MTFs. Cites GAO-24-106155 for context. The problem is concrete and mission-linked, though it could strengthen the 'so what' by quantifying patient impact. Strong for a B+."
+    },
+    {
+      "id": "financials",
+      "title": "Financials & Pricing",
+      "grade": "D",
+      "points": 1.0,
+      "assessment": "No cost model presented. The pricing section contains only a placeholder table with TBD values. No basis of estimate, no rate justification, no indirect rate disclosure. This is a red flag for any evaluator."
+    }
+  ],
+  "red_flags": ["No basis of estimate in pricing section"],
+  "verdict": "CONDITIONAL",
+  "verdict_title": "Strong technical approach undermined by absent pricing",
+  "verdict_summary": "The proposal demonstrates solid technical understanding and mission relevance but has a critical gap in the pricing volume. No evaluator will score this favorably without a complete cost model.",
+  "top_fix": "Build a complete basis of estimate with labor categories, rates, and indirect rate disclosure before resubmission."
+}
 
 ${SCORING_RULES}`;
 }
@@ -310,7 +340,26 @@ exports.handler = async (event) => {
     const systemPrompt = buildSystemPrompt(documentType, finalSowText);
     const messageContent = buildMessageContent(fileType, fileBase64, extractedText, documentType);
 
-    const claudeResponse = await withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
+    // --- C5: Dual-model scoring (primary + shadow in parallel) ---
+    const apiCallBody = {
+      model: scoringModelConfig.model,
+      max_tokens: MAX_OUTPUT_TOKENS,
+      temperature: 0.3,
+      system: systemPrompt,
+      messages: [{ role: "user", content: messageContent }],
+    };
+
+    const primaryPromise = withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify(apiCallBody),
+    }));
+
+    const shadowPromise = withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -318,12 +367,16 @@ exports.handler = async (event) => {
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: scoringModelConfig.model,
+        ...apiCallBody,
+        model: "claude-haiku-4-5-20251001",
         max_tokens: MAX_OUTPUT_TOKENS,
-        system: systemPrompt,
-        messages: [{ role: "user", content: messageContent }],
       }),
-    }));
+    })).catch((err) => {
+      console.error("Shadow scoring failed:", err.message);
+      return null;
+    });
+
+    const [claudeResponse, shadowResponse] = await Promise.all([primaryPromise, shadowPromise]);
 
     if (!claudeResponse.ok) {
       const errText = await claudeResponse.text();
@@ -344,7 +397,7 @@ exports.handler = async (event) => {
       .map((block) => block.text)
       .join("");
 
-    // Parse JSON
+    // Parse primary scorecard
     let scorecard;
     try {
       const cleaned = responseText.replace(/```json\s?/g, "").replace(/```/g, "").trim();
@@ -353,6 +406,73 @@ exports.handler = async (event) => {
       console.error("JSON parse error:", parseError, "Raw:", responseText.substring(0, 500));
       await markError(supabase, scoring_id, "AI returned invalid scoring format. Please try again.");
       return { statusCode: 200, body: "JSON parse error" };
+    }
+
+    // Parse shadow scorecard (best-effort)
+    let shadowScorecard = null;
+    let consensus = null;
+    if (shadowResponse && shadowResponse.ok) {
+      try {
+        const shadowData = await shadowResponse.json();
+        const shadowText = shadowData.content
+          .filter((block) => block.type === "text")
+          .map((block) => block.text)
+          .join("");
+        const shadowCleaned = shadowText.replace(/```json\s?/g, "").replace(/```/g, "").trim();
+        shadowScorecard = JSON.parse(shadowCleaned);
+
+        // Build consensus analysis
+        if (shadowScorecard.scores && scorecard.scores) {
+          const divergent = [];
+          let agreed = 0;
+          const len = Math.min(scorecard.scores.length, shadowScorecard.scores.length);
+          for (let i = 0; i < len; i++) {
+            const pPts = scorecard.scores[i]?.points || 0;
+            const sPts = shadowScorecard.scores[i]?.points || 0;
+            const diff = Math.abs(pPts - sPts);
+            if (diff >= 1.5) {
+              divergent.push({
+                name: scorecard.scores[i]?.title || `Section ${i + 1}`,
+                primary_grade: scorecard.scores[i]?.grade,
+                shadow_grade: shadowScorecard.scores[i]?.grade,
+                diff: diff.toFixed(1),
+              });
+            } else {
+              agreed++;
+            }
+          }
+          consensus = {
+            method: "dual_model",
+            primary_model: scoringModelConfig.model,
+            shadow_model: "claude-haiku-4-5-20251001",
+            agreement_rate: `${agreed}/${len}`,
+            divergent_sections: divergent,
+            confidence: divergent.length === 0 ? "high" : divergent.length <= 2 ? "moderate" : "mixed",
+          };
+          console.log(`Shadow scoring: ${agreed}/${len} consensus, ${divergent.length} divergent`);
+        }
+      } catch (shadowErr) {
+        console.error("Shadow scorecard parse failed:", shadowErr.message);
+      }
+    }
+
+    // --- Validate scorecard structure ---
+    const validation = validateScorecard(scorecard);
+    if (!validation.valid) {
+      console.warn(`Scorecard validation warnings for ${scoring_id}:`, validation.errors);
+      try {
+        await logOpsEvent(supabase, {
+          event_type: "scorecard_validation_warning",
+          source_function: "score-deck-background",
+          scoring_id,
+          severity: "warning",
+          details: { errors: validation.errors },
+        });
+      } catch { /* non-blocking */ }
+    }
+    // Use cleaned version with defaults applied
+    if (validation.cleaned) {
+      Object.assign(scorecard, validation.cleaned);
     }
 
     // --- Compute grade and update row ---
@@ -397,6 +517,9 @@ exports.handler = async (event) => {
         model_used: scoringModelConfig.model,
         tokens_input: tokenUsage.input || null,
         tokens_output: tokenUsage.output || null,
+        shadow_scorecard: shadowScorecard || null,
+        consensus: consensus || null,
+        shadow_model: shadowScorecard ? "claude-haiku-4-5-20251001" : null,
       })
       .eq("id", scoring_id);
 
@@ -433,6 +556,8 @@ exports.handler = async (event) => {
         overallGrade,
         usesRemaining: usesRemaining,
         fileName: fileName,
+        scoringId: scoring_id,
+        consensus,
       });
 
       if (shouldHoldEmail()) {
@@ -450,6 +575,31 @@ exports.handler = async (event) => {
       try { await transitionState(supabase, "mp_scoring_history", scoring_id, "email_failed"); } catch (e) { console.error("State transition error:", e.message); }
     }
 
+    // --- C3: Emit intelligence signals ---
+    try {
+      const docText = documentText || extractedText || "";
+      if (docText.length > 50) {
+        const signals = extractIntelSignals(docText, {
+          document_type: documentType,
+          verdict: scorecard.verdict,
+          overall_score: avgScore,
+        });
+        if (signals.length > 0) {
+          await supabase.from("intelligence_signals").insert(
+            signals.map((sig) => ({
+              signal_type: sig.type,
+              signal_key: sig.key,
+              signal_value: sig.value,
+              source_product: "proposalpulse",
+            }))
+          );
+          console.log(`Emitted ${signals.length} intelligence signals`);
+        }
+      }
+    } catch (sigErr) {
+      console.error("Signal emission failed:", sigErr.message);
+    }
+
     // --- Trigger Gold Team Review (fire-and-forget) ---
     try {
       const siteUrl = process.env.URL || "https://missionmeetstech.com";
@@ -465,6 +615,27 @@ exports.handler = async (event) => {
       // Gold Team failure must never block delivery
       console.error(`Gold Team Review trigger failed for ${scoring_id}: ${gtErr.message}`);
     }
+
+    // --- B9: Log completion with cost estimate ---
+    try {
+      const inputTokens = tokenUsage.input || 0;
+      const outputTokens = tokenUsage.output || 0;
+      // Sonnet 4.5: $3/M input, $15/M output
+      const costEstimate = (inputTokens * 3 + outputTokens * 15) / 1_000_000;
+      await logOpsEvent(supabase, {
+        event_type: "function_completed",
+        source_function: "score-deck-background",
+        scoring_id,
+        severity: "info",
+        details: {
+          tokens_input: inputTokens,
+          tokens_output: outputTokens,
+          cost_estimate: Math.round(costEstimate * 10000) / 10000,
+          model: scoringModelConfig.model,
+          document_type: documentType,
+        },
+      });
+    } catch { /* non-blocking */ }
 
     // --- State: delivered ---
     try { await transitionState(supabase, "mp_scoring_history", scoring_id, "delivered"); } catch (e) { console.error("State transition error:", e.message); }

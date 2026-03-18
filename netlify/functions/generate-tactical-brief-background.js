@@ -24,6 +24,10 @@ const { sendEmail } = require("./lib/send-email");
 const { optimizeMarketPrompt } = require("./lib/prompt-optimizer");
 const { checkKillSwitch, shouldHoldEmail, holdEmail } = require("./lib/kill-switch");
 const { transitionState } = require("./lib/workflow-state");
+const { withRetry } = require("./lib/retry");
+const { KNOWN_FACTS } = require("./lib/contract-facts");
+const { disambiguate } = require("./lib/entity-disambiguator");
+const { extractIntelSignals } = require("./lib/signal-extractor");
 
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 const PERPLEXITY_MODEL = "sonar-pro";
@@ -31,7 +35,7 @@ const PERPLEXITY_URL = "https://api.perplexity.ai/chat/completions";
 
 // --- Perplexity API call ---
 async function callPerplexity(systemPrompt, userPrompt, maxTokens = 4000) {
-  const response = await fetch(PERPLEXITY_URL, {
+  const response = await withRetry(() => fetch(PERPLEXITY_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -46,7 +50,7 @@ async function callPerplexity(systemPrompt, userPrompt, maxTokens = 4000) {
       temperature: 0.1,
       max_tokens: maxTokens,
     }),
-  });
+  }), { maxRetries: 2, baseDelayMs: 3000 });
 
   if (!response.ok) {
     const errText = await response.text();
@@ -198,6 +202,8 @@ If still null, report: "No results found across [N] queries. This null is [UNUSU
 DEFENSIVE INPUT HANDLING:
 ${claimsToVerify.length > 0 ? `The user made these claims that MUST BE VERIFIED against primary sources before incorporating:\n${claimsToVerify.map((c, i) => `${i + 1}. ${c}`).join("\n")}\nDo NOT parrot these as findings. Verify each one.` : "No specific user claims flagged for verification."}
 
+CHAIN OF THOUGHT: For each finding, trace the evidence chain: source → claim → confidence level. If evidence is indirect, say so explicitly.
+
 CRITICAL RULES:
 - NEVER report "zero contracts exist" — say "zero contracts found in [sources searched]"
 - NEVER assign HIGH confidence to a null result
@@ -296,6 +302,13 @@ NULL RESULT RULES:
 - NEVER assign HIGH confidence to a null result.
 
 ${claimsToVerify.length > 0 ? `USER CLAIMS THAT MUST BE VERIFIED:\n${claimsToVerify.map((c, i) => `${i + 1}. "${c}" — verify against primary sources. If unverified, label as UNVERIFIED.`).join("\n")}` : ""}
+
+VERIFIED GROUND TRUTH (do not override without explicit contradicting evidence):
+${JSON.stringify(Object.values(KNOWN_FACTS).map(f => ({ name: f.name, agency: f.agency, value: f.value, status: f.status, vendor: f.vendor })), null, 2)}
+If your research contradicts any verified fact above, flag it as: "GROUND TRUTH CONFLICT: [fact] vs [your finding] — [your source]"
+Do NOT silently override verified data.
+
+CHAIN OF THOUGHT: For each user claim being verified, state what you found, whether it confirms or contradicts, and your confidence in the determination.
 
 OUTPUT STRUCTURE:
 Produce a structured executive brief with these exact sections:
@@ -519,6 +532,14 @@ exports.handler = async (event) => {
       console.log(`Prompt optimizer: enriched topic (${topic.length} chars → ${optimizedTopic.length} chars)`);
     }
 
+    // Pre-check: Local entity disambiguation (prevents VHA OEM failure mode)
+    try {
+      const localDisambig = disambiguate(topic);
+      if (localDisambig.canonical !== topic) {
+        console.log(`Local entity disambiguation: "${topic}" → "${localDisambig.canonical}"`);
+      }
+    } catch { /* non-blocking */ }
+
     // Pass 0: Entity disambiguation (CHANGE 1) — uses optimized prompt
     const pass0Start = Date.now();
     const disambiguation = await disambiguateEntity(optimizedTopic);
@@ -558,14 +579,55 @@ exports.handler = async (event) => {
     const researchTime = Math.round((Date.now() - startTime) / 1000);
     console.log(`Research pipeline completed in ${researchTime}s (${Object.keys(passTimings).length} passes)`);
 
-    // Merge all citations
-    const allCitations = [...new Set([
+    // Normalize citation URLs before dedup
+    function normalizeCitationUrl(url) {
+      try {
+        const u = new URL(url);
+        const filtered = [...u.searchParams.entries()]
+          .filter(([k]) => !k.startsWith("utm_"))
+          .sort(([a], [b]) => a.localeCompare(b));
+        u.search = filtered.length ? "?" + filtered.map(([k, v]) => `${k}=${v}`).join("&") : "";
+        return u.toString().replace(/\/+$/, "");
+      } catch { return url; }
+    }
+
+    // Merge all citations with normalization
+    const rawCitations = [
       ...(pass1.citations || []),
       ...(pass2.citations || []),
       ...(pass3.citations || []),
       ...(disambiguation._citations || []),
       ...(validation._citations || []),
-    ])];
+    ];
+    const seen = new Set();
+    const allCitations = [];
+    for (const url of rawCitations) {
+      const normalized = normalizeCitationUrl(url);
+      if (!seen.has(normalized)) {
+        seen.add(normalized);
+        allCitations.push(url);
+      }
+    }
+
+    // C3: Emit intelligence signals from research
+    try {
+      if (_supabase && finalSynthesis.length > 100) {
+        const signals = extractIntelSignals(finalSynthesis, { topic: originalTopic });
+        if (signals.length > 0) {
+          await _supabase.from("intelligence_signals").insert(
+            signals.map((sig) => ({
+              signal_type: sig.type,
+              signal_key: sig.key,
+              signal_value: sig.value,
+              source_product: "marketpulse",
+            }))
+          );
+          console.log(`Emitted ${signals.length} intelligence signals from MarketPulse`);
+        }
+      }
+    } catch (sigErr) {
+      console.error("Signal emission failed:", sigErr.message);
+    }
 
     // State: research_completed → pdf_started
     await _transition("research_completed");
@@ -591,7 +653,7 @@ exports.handler = async (event) => {
 
     // Send delivery email with PDF attachment (with degraded mode hold)
     console.log("Sending delivery email...");
-    const deliveryHtml = buildDeliveryEmail({ name, topic });
+    const deliveryHtml = buildDeliveryEmail({ name, topic, orderId: _orderId });
     const deliverySubject = `Your MarketPulse Report: ${topic.slice(0, 60)}${topic.length > 60 ? "..." : ""}`;
 
     if (shouldHoldEmail()) {

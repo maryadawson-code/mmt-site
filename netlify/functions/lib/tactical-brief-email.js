@@ -9,7 +9,7 @@
  * Build the delivery email HTML sent to the customer.
  * The PDF is attached separately — this is just the email body.
  */
-function buildDeliveryEmail({ name, topic }) {
+function buildDeliveryEmail({ name, topic, orderId }) {
   const firstName = (name || "").split(" ")[0] || "there";
 
   return `<!DOCTYPE html>
@@ -39,6 +39,16 @@ function buildDeliveryEmail({ name, topic }) {
           <p style="margin:24px 0 16px;font-size:15px;color:#333;line-height:1.6;">This brief was generated using a 3-pass live research pipeline sourcing current data from federal databases, contract records, and policy documents. All findings include confidence ratings.</p>
 
           <p style="margin:0 0 8px;font-size:15px;color:#333;line-height:1.6;">If you have questions about this brief or want to discuss the findings, reply to this email or reach out at <a href="mailto:mary@missionmeetstech.com" style="color:#00E5FA;">mary@missionmeetstech.com</a>.</p>
+
+          ${orderId ? `<div style="margin:32px 0 0;padding-top:24px;border-top:1px solid #eee;text-align:center;">
+            <p style="color:#94a3b8;font-size:14px;margin:0 0 12px;">How useful was this brief?</p>
+            <a href="https://missionmeetstech.com/.netlify/functions/feedback-click?product=marketpulse&id=${escapeHtml(orderId)}&rating=5"
+               style="display:inline-block;padding:8px 20px;margin:0 6px;background:#0f766e;color:white;border-radius:6px;text-decoration:none;font-size:13px;">Very Useful</a>
+            <a href="https://missionmeetstech.com/.netlify/functions/feedback-click?product=marketpulse&id=${escapeHtml(orderId)}&rating=3"
+               style="display:inline-block;padding:8px 20px;margin:0 6px;background:#334155;color:white;border-radius:6px;text-decoration:none;font-size:13px;">Somewhat</a>
+            <a href="https://missionmeetstech.com/.netlify/functions/feedback-click?product=marketpulse&id=${escapeHtml(orderId)}&rating=1"
+               style="display:inline-block;padding:8px 20px;margin:0 6px;background:#7f1d1d;color:white;border-radius:6px;text-decoration:none;font-size:13px;">Not Useful</a>
+          </div>` : ""}
 
           <hr style="border:none;border-top:1px solid #eee;margin:32px 0;">
 

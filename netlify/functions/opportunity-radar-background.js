@@ -52,6 +52,29 @@ For each opportunity found, extract:
 
 Only include opportunities that are genuinely related to health IT, health data, EHR, telehealth, medical devices, health analytics, or military/veteran healthcare systems.
 
+CHAIN OF THOUGHT: For each opportunity, explain in ai_summary why you scored its relevance at the level you did. What specific factors connect it to federal health IT?
+
+EXAMPLE (abbreviated):
+{
+  "opportunities": [
+    {
+      "title": "VA Enterprise Telehealth Platform Modernization",
+      "solicitation_number": "36C10X25R0042",
+      "agency": "Department of Veterans Affairs",
+      "description": "Modernization of VA telehealth infrastructure to support 50K+ daily virtual visits.",
+      "value_estimate": "$45M",
+      "response_deadline": "2026-04-15T17:00:00Z",
+      "set_aside_type": "SDVOSB",
+      "naics_codes": ["541512"],
+      "source_url": "https://sam.gov/opp/abc123",
+      "relevance_score": 95,
+      "opportunity_type": "solicitation",
+      "small_business_eligible": true,
+      "ai_summary": "Directly targets VA telehealth modernization — core federal health IT. SDVOSB set-aside makes this accessible to veteran-owned firms. High relevance (95) because it intersects EHR, telehealth, and VA digital transformation."
+    }
+  ]
+}
+
 Return a JSON object: { "opportunities": [...] }
 
 CRITICAL GUARDRAILS:
@@ -78,6 +101,7 @@ async function callClaude(systemPrompt, userMessage, maxSearches, model, maxToke
     body: JSON.stringify({
       model,
       max_tokens: maxTokens,
+      temperature: 0.3,
       system: systemPrompt,
       tools: [{ type: "web_search_20250305", name: "web_search", max_uses: maxSearches }],
       messages: [{ role: "user", content: userMessage }],
@@ -183,10 +207,38 @@ exports.handler = async (event) => {
   const scanModel = await getModelConfig(null, "opportunity_scan");
   const allOpportunities = [];
 
+  // C4: Consume intelligence signals for priority search terms
+  let priorityTerms = [];
+  try {
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+    const { data: signals } = await supabase
+      .from("intelligence_signals")
+      .select("signal_key, signal_type")
+      .gte("created_at", thirtyDaysAgo)
+      .order("created_at", { ascending: false })
+      .limit(50);
+
+    if (signals && signals.length > 0) {
+      const freq = {};
+      signals.forEach((s) => { freq[s.signal_key] = (freq[s.signal_key] || 0) + 1; });
+      priorityTerms = Object.entries(freq)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, 10)
+        .map(([key]) => key);
+      console.log("Priority search terms from flywheel:", priorityTerms.join(", "));
+    }
+  } catch (err) {
+    console.error("Signal consumption failed:", err.message);
+  }
+
+  const priorityContext = priorityTerms.length > 0
+    ? `\n\nPRIORITY TOPICS (recent user interest on the MMT platform — give extra weight to opportunities related to): ${priorityTerms.join(", ")}`
+    : "";
+
   // --- Scan 1: SAM.gov + agency sites ---
   try {
     console.log(`Scan 1: SAM.gov + agency sites (${scanModel.model})...`);
-    const result1 = await callClaude(SCAN_PROMPT, `Search SAM.gov and federal agency websites for NEW federal health IT solicitations, RFPs, and task orders posted in the last 14 days.
+    const result1 = await callClaude(SCAN_PROMPT, `Search SAM.gov and federal agency websites for NEW federal health IT solicitations, RFPs, and task orders posted in the last 14 days.${priorityContext}
 
 Focus your 5 web searches on:
 1. SAM.gov new solicitations for health IT (NAICS 541512, 541511)

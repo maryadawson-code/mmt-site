@@ -1,7 +1,13 @@
-// Rate limiter using Supabase mp_rate_limits table.
-// Each request records a timestamped entry; count in window determines limit.
+/**
+ * rate-limiter.js — Token bucket rate limiting backed by Supabase.
+ *
+ * Each request records a timestamped entry; count in window determines limit.
+ * Supports fail-open (default) and fail-closed modes.
+ *
+ * Used by: score-deck.js, marketpulse-gateway.js, fact-check.js
+ */
 
-async function checkRateLimit(supabase, key, maxRequests, windowMinutes) {
+async function checkRateLimit(supabase, key, maxRequests, windowMinutes, { failMode = "open" } = {}) {
   const windowStart = new Date(Date.now() - windowMinutes * 60000).toISOString();
 
   const { count, error: countErr } = await supabase
@@ -12,7 +18,9 @@ async function checkRateLimit(supabase, key, maxRequests, windowMinutes) {
 
   if (countErr) {
     console.error("Rate limit check failed:", countErr.message);
-    // Fail open — don't block users if rate limit table is broken
+    if (failMode === "closed") {
+      return { allowed: false, remaining: 0, reason: "Rate limit service unavailable" };
+    }
     return { allowed: true, remaining: maxRequests };
   }
 

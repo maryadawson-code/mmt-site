@@ -14,7 +14,7 @@ async function withRetry(fn, { maxRetries = 2, baseDelayMs = 2000 } = {}) {
       // If it's a Response with a retryable status, retry
       if (result && typeof result.status === "number" && RETRYABLE_STATUSES.has(result.status)) {
         if (attempt < maxRetries) {
-          const delay = baseDelayMs * Math.pow(2, attempt);
+          const delay = Math.round(baseDelayMs * Math.pow(2, attempt) * (0.5 + Math.random() * 0.5));
           console.log(`Retryable status ${result.status}, attempt ${attempt + 1}/${maxRetries}, waiting ${delay}ms`);
           await new Promise((r) => setTimeout(r, delay));
           continue;
@@ -24,7 +24,7 @@ async function withRetry(fn, { maxRetries = 2, baseDelayMs = 2000 } = {}) {
     } catch (err) {
       lastError = err;
       if (attempt < maxRetries) {
-        const delay = baseDelayMs * Math.pow(2, attempt);
+        const delay = Math.round(baseDelayMs * Math.pow(2, attempt) * (0.5 + Math.random() * 0.5));
         console.log(`Fetch error (${err.message}), attempt ${attempt + 1}/${maxRetries}, waiting ${delay}ms`);
         await new Promise((r) => setTimeout(r, delay));
       }

@@ -145,6 +145,21 @@ CRITICAL GUARDRAILS:
 - NEVER assign cancelled vehicles.
 - Only use vehicles from the list above.
 
+EXAMPLE (abbreviated):
+{
+  "classifications": [
+    {
+      "index": 0,
+      "contract_vehicle": "VA SDVOSB",
+      "vehicle_confidence": 85,
+      "vehicle_reasoning": "VA awarding agency + health IT NAICS 541512 + SDVOSB recipient = high confidence VA SDVOSB vehicle.",
+      "ai_summary": "VA awards $2.1M to veteran-owned firm for telehealth platform support, aligning with VA Health Connect expansion.",
+      "relevance_score": 90,
+      "opportunity_type": "award_notice"
+    }
+  ]
+}
+
 Return JSON: { "classifications": [...] }
 Return ONLY valid JSON. No markdown.
 
@@ -165,6 +180,7 @@ async function classifyWithClaude(awards, model) {
     body: JSON.stringify({
       model,
       max_tokens: 8000,
+      temperature: 0.1,
       messages: [{
         role: "user",
         content: buildClassificationPrompt(awards),

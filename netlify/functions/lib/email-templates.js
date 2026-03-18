@@ -46,10 +46,11 @@ function escapeHtml(str) {
  * @param {string} data.overallGrade - Computed overall grade (A, B+, etc.)
  * @param {number} data.usesRemaining - Free uses remaining after this assessment
  * @param {string} data.fileName - Original file name
+ * @param {string} [data.scoringId] - Scoring record ID for feedback links
  * @returns {string} HTML email body
  */
 function buildScoreReceiptHtml(data) {
-  const { scorecard, documentLabel, overallGrade, usesRemaining, fileName } = data;
+  const { scorecard, documentLabel, overallGrade, usesRemaining, fileName, scoringId, consensus } = data;
   const verdict = scorecard.verdict || "N/A";
   const vColor = verdictColor(verdict);
   const gColor = gradeColor(overallGrade);
@@ -126,6 +127,15 @@ function buildScoreReceiptHtml(data) {
         ${scoreRows}
       </table>
 
+      <!-- Consensus Badge -->
+      ${consensus ? `
+      <div style="margin-top:16px;padding:12px 16px;background-color:${consensus.confidence === "high" ? "#f0fdf4" : consensus.confidence === "moderate" ? "#fffbeb" : "#fef2f2"};border-radius:8px;border:1px solid ${consensus.confidence === "high" ? "#bbf7d0" : consensus.confidence === "moderate" ? "#fde68a" : "#fecaca"};">
+        <p style="margin:0;font-size:13px;color:#374151;">
+          <strong>Scoring Confidence: ${consensus.confidence.toUpperCase()}</strong> — ${consensus.confidence === "high" ? `Both AI reviewers agreed on all criteria.` : `AI reviewers agreed on ${consensus.agreement_rate} criteria.${consensus.divergent_sections.length > 0 ? ` ${consensus.divergent_sections.length} section${consensus.divergent_sections.length > 1 ? "s" : ""} diverged — review carefully.` : ""}`}
+        </p>
+      </div>` : `
+      <p style="margin-top:16px;font-size:12px;color:#9ca3af;">Scoring method: Single-model evaluation</p>`}
+
       <!-- Top Fix -->
       ${
         scorecard.top_fix
@@ -150,6 +160,17 @@ function buildScoreReceiptHtml(data) {
       </div>
 
     </div>
+
+    ${scoringId ? `<!-- Feedback Section -->
+    <div style="padding:24px 32px;background-color:#fafafa;border-top:1px solid #e5e7eb;text-align:center;">
+      <p style="margin:0 0 12px;font-size:14px;color:#6b7280;">Was this scoring helpful?</p>
+      <a href="https://missionmeetstech.com/.netlify/functions/feedback-click?product=proposalpulse&id=${escapeHtml(scoringId)}&rating=5"
+         style="display:inline-block;padding:8px 20px;margin:0 6px;background:#0f766e;color:white;border-radius:6px;text-decoration:none;font-size:13px;">Very Helpful</a>
+      <a href="https://missionmeetstech.com/.netlify/functions/feedback-click?product=proposalpulse&id=${escapeHtml(scoringId)}&rating=3"
+         style="display:inline-block;padding:8px 20px;margin:0 6px;background:#334155;color:white;border-radius:6px;text-decoration:none;font-size:13px;">Somewhat</a>
+      <a href="https://missionmeetstech.com/.netlify/functions/feedback-click?product=proposalpulse&id=${escapeHtml(scoringId)}&rating=1"
+         style="display:inline-block;padding:8px 20px;margin:0 6px;background:#7f1d1d;color:white;border-radius:6px;text-decoration:none;font-size:13px;">Not Helpful</a>
+    </div>` : ""}
 
     <!-- Footer -->
     <div style="padding:20px 32px;background-color:#f9fafb;border-top:1px solid #e5e7eb;text-align:center;">
