@@ -246,9 +246,39 @@ const NULL_RESULT_PROTOCOL = {
     `No results found across ${variantCount} query variants. Recommend manual verification.`,
 };
 
+/**
+ * Scope-aware disambiguation — respects intent classifier's scope.
+ * For government-wide queries (no target_entity), returns multi-agency search config.
+ * For single-entity queries, delegates to existing disambiguate().
+ * @param {string} topic - Raw user topic
+ * @param {Object} scope - Scope object from intent classifier
+ * @returns {Object} Disambiguation result with search terms
+ */
+function disambiguateWithScope(topic, scope) {
+  if (!scope || !scope.target_entity) {
+    // Government-wide query — multi-agency search config
+    return {
+      entity_type: "government-wide",
+      search_scope: "all_agencies",
+      search_terms: {
+        keywords: scope && scope.event_trigger
+          ? CURRENT_EVENTS_TRIGGERS.override.search_terms
+          : [topic],
+        agencies: ["DoD", "VA", "HHS", "GSA", "DHS", "USAID"],
+        set_aside: (scope && scope.set_aside_filter) || "sdvosb",
+        naics: (scope && scope.naics_focus) || ["541512"],
+      },
+      selected_entity: null,
+    };
+  }
+  // Single entity — use existing disambiguate() logic
+  return disambiguate(scope.target_entity);
+}
+
 module.exports = {
   KNOWN_ENTITIES,
   disambiguate,
+  disambiguateWithScope,
   NULL_RESULT_PROTOCOL,
   CURRENT_EVENTS_TRIGGERS,
   SOCIOECONOMIC_FILTERS,

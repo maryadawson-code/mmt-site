@@ -4,6 +4,15 @@
 // Prevents delivery of low-intelligence reports to paying customers.
 // Runs AFTER all research passes but BEFORE PDF generation.
 //
+// 7 individual gates (Sprint E):
+//   1. Pipeline Density    — structured entry count >= 3
+//   2. Data Integrity      — dollar figures + contract refs exist
+//   3. Source Quality      — >= 30% .gov citations
+//   4. Confidence Integrity — no HIGH on null, tags <= 10
+//   5. Claim Consistency   — no contradictions
+//   6. Customer Value      — content length + data density
+//   7. Query Fulfillment   — topic terms present in synthesis
+//
 // Returns: { pass: boolean, failures: string[], grade: "PASS"|"MARGINAL"|"FAIL" }
 // ============================================================
 
@@ -36,8 +45,6 @@ function analyzePassResult(quality, content, citations) {
     quality.nullPasses++;
     return;
   }
-
-  const lower = content.toLowerCase();
 
   // Check for null-result indicators
   if (
@@ -100,46 +107,159 @@ function analyzePassResult(quality, content, citations) {
   }
 }
 
+// ============================================================
+// 7 QUALITY GATES
+// ============================================================
+
 /**
- * Run the quality gate on the final synthesis.
+ * Gate 1: Pipeline Density — count structured pipeline entries.
+ */
+function gatePipelineDensity(synthesis) {
+  const entryCount = (synthesis.match(/CONTRACT\/OPPORTUNITY:/g) || []).length;
+  if (entryCount >= 3) return null;
+  return `Fewer than 3 pipeline opportunities identified (found: ${entryCount})`;
+}
+
+/**
+ * Gate 2: Data Integrity — dollar figures + contract/solicitation refs.
+ */
+function gateDataIntegrity(synthesis) {
+  const hasDollar = /\$[\d,.]+[BMK]?\b/i.test(synthesis);
+  const hasContract = /[A-Z0-9]{2,6}[-_]?[A-Z0-9]{4,}/i.test(synthesis);
+  if (hasDollar && hasContract) return null;
+  return "No verifiable contract numbers or dollar figures found";
+}
+
+/**
+ * Gate 3: Source Quality — .gov citation percentage.
+ */
+function gateSourceQuality(synthesis, citations) {
+  if (!citations || citations.length === 0) {
+    return "No citations provided";
+  }
+  // YouTube/social check
+  const youtubeCount = citations.filter((u) => /youtube\.com|youtu\.be/i.test(u || "")).length;
+  if (youtubeCount > 0) {
+    return `${youtubeCount} YouTube source${youtubeCount > 1 ? "s" : ""} found in citations`;
+  }
+  const govCount = citations.filter((u) => /\.gov\b/i.test(u || "")).length;
+  const govPercent = Math.round((govCount / citations.length) * 100);
+  if (govPercent < 30) {
+    return `Source quality: only ${govPercent}% .gov sources (minimum 30%)`;
+  }
+  return null;
+}
+
+/**
+ * Gate 4: Confidence Integrity — no HIGH on null, total tags <= 10.
+ */
+function gateConfidenceIntegrity(synthesis) {
+  const failures = [];
+  // Check for HIGH near null indicators
+  const lines = synthesis.split("\n");
+  for (const line of lines) {
+    if (/\[HIGH\]/i.test(line) && /\b(null|none|not found|no contracts|no results|zero)\b/i.test(line)) {
+      failures.push("HIGH confidence assigned to null result");
+      break;
+    }
+  }
+  // Count total confidence tags
+  const tagCount = (synthesis.match(/\[(HIGH|MEDIUM|LOW|UNVERIFIED)\]/gi) || []).length;
+  if (tagCount > 10) {
+    failures.push(`Too many confidence tags (${tagCount})`);
+  }
+  return failures.length > 0 ? failures.join("; ") : null;
+}
+
+/**
+ * Gate 5: Claim Consistency — contradictions.
+ */
+function gateClaimConsistency(synthesis) {
+  const lower = synthesis.toLowerCase();
+  // "zero contracts" or "no contracts found" coexisting with named vendors
+  const hasZeroContracts = /(?:zero|no) contracts?\b/.test(lower);
+  const hasVendorNames = /\b(?:inc\.|llc|corp\.|solutions|technologies|systems)\b/i.test(synthesis);
+  if (hasZeroContracts && hasVendorNames) {
+    return 'Contradiction: "zero contracts" stated but vendor names present';
+  }
+  return null;
+}
+
+/**
+ * Gate 6: Customer Value — content length + data density.
+ */
+function gateCustomerValue(quality, synthesis) {
+  if (!synthesis) return "Report is empty";
+  const charCount = synthesis.length;
+  if (charCount < 2000) return `Report too short (${charCount} chars)`;
+  if (charCount > 30000) return `Report too long (${charCount} chars)`;
+  // Data density: at least 1 contract per 5000 chars
+  const expectedContracts = Math.floor(charCount / 5000);
+  if (expectedContracts > 0 && quality.specificContracts < expectedContracts) {
+    return `Low data density (${quality.specificContracts} contracts in ${charCount} chars)`;
+  }
+  // Generic padding check
+  const lines = synthesis.split("\n").filter((l) => l.trim());
+  const genericPhrases = lines.filter((l) =>
+    /program overview|what is\s|how to apply|certification process|eligibility requirements?|mentor[\s-]prot|program description|was established in|is designed to/i.test(l)
+  );
+  if (lines.length > 0 && genericPhrases.length > lines.length * 0.3) {
+    return `Report is ${Math.round((genericPhrases.length / lines.length) * 100)}% generic program descriptions`;
+  }
+  return null;
+}
+
+/**
+ * Gate 7: Query Fulfillment — topic terms in synthesis.
+ */
+function gateQueryFulfillment(synthesis, topic) {
+  if (!topic) return null;
+  // Extract meaningful words (>3 chars, not stop words)
+  const stopWords = new Set(["the", "and", "for", "with", "that", "this", "from", "have", "will", "been", "about", "what", "which", "their", "also", "more", "than", "would", "could", "should", "into", "they", "them", "being", "some", "when", "where", "there", "here", "these", "those", "other", "each", "every", "most", "like", "over", "such", "after", "before", "between", "through"]);
+  const topicWords = topic
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter((w) => w.length > 3 && !stopWords.has(w));
+  if (topicWords.length === 0) return null;
+  const lower = synthesis.toLowerCase();
+  const matched = topicWords.filter((w) => lower.includes(w));
+  const matchPercent = Math.round((matched.length / topicWords.length) * 100);
+  if (matchPercent < 60) {
+    return `Report may not address the original query (matched ${matchPercent}% of topic terms)`;
+  }
+  return null;
+}
+
+/**
+ * Run all 7 quality gates on the final synthesis.
  * @param {Object} quality - The reportQuality metrics object
  * @param {string} synthesis - Final synthesized report text
+ * @param {Object} [opts] - Optional: { citations, topic }
  * @returns {{ pass: boolean, failures: string[], grade: "PASS"|"MARGINAL"|"FAIL" }}
  */
-function checkReportQuality(quality, synthesis) {
+function checkReportQuality(quality, synthesis, opts) {
+  const { citations, topic } = opts || {};
   const failures = [];
 
-  // Must have specific intelligence
-  if (quality.specificContracts < 1 && quality.dollarValues < 3) {
-    failures.push(
-      `No specific contracts or dollar values found (contracts: ${quality.specificContracts}, dollar values: ${quality.dollarValues})`
-    );
+  const gates = [
+    gatePipelineDensity(synthesis || ""),
+    gateDataIntegrity(synthesis || ""),
+    gateSourceQuality(synthesis || "", citations),
+    gateConfidenceIntegrity(synthesis || ""),
+    gateClaimConsistency(synthesis || ""),
+    gateCustomerValue(quality, synthesis || ""),
+    gateQueryFulfillment(synthesis || "", topic),
+  ];
+
+  for (const result of gates) {
+    if (result) failures.push(result);
   }
 
-  // Must not be mostly null
+  // Must not be mostly null passes
   if (quality.totalPasses > 0 && quality.nullPasses > quality.totalPasses * 0.6) {
     failures.push(
       `${quality.nullPasses}/${quality.totalPasses} passes returned empty or near-empty`
-    );
-  }
-
-  // Check synthesis for generic padding
-  if (synthesis) {
-    const lines = synthesis.split("\n").filter((l) => l.trim());
-    const genericPhrases = lines.filter((l) =>
-      /program overview|what is\s|how to apply|certification process|eligibility requirements?|mentor[\s-]prot|program description|was established in|is designed to/i.test(l)
-    );
-    if (lines.length > 0 && genericPhrases.length > lines.length * 0.3) {
-      failures.push(
-        `Report is ${Math.round((genericPhrases.length / lines.length) * 100)}% generic program descriptions (${genericPhrases.length}/${lines.length} lines)`
-      );
-    }
-  }
-
-  // YouTube source check
-  if (quality.youtubeSourceCount > 0) {
-    failures.push(
-      `${quality.youtubeSourceCount} YouTube source${quality.youtubeSourceCount > 1 ? "s" : ""} found in citations`
     );
   }
 
@@ -175,9 +295,108 @@ function buildQualityDisclaimer(failures) {
   );
 }
 
+// ============================================================
+// AUTO-SCORING (Spec section 11.1)
+// ============================================================
+
+/**
+ * Score the final report across 6 dimensions.
+ * @param {string} synthesis - Final synthesized report text
+ * @param {string[]} citations - Source URLs
+ * @param {Object} [classification] - Intent classification result
+ * @returns {Object} Score breakdown with overall weighted average
+ */
+function scoreReport(synthesis, citations, classification) {
+  const text = synthesis || "";
+  const cites = citations || [];
+
+  // 1. Pipeline opportunities (30% weight)
+  const pipelineCount = (text.match(/CONTRACT\/OPPORTUNITY:/g) || []).length;
+  const pipelineScore = Math.min(100, Math.round((pipelineCount / 3) * 100));
+
+  // 2. Source quality (20% weight)
+  const govCount = cites.filter((u) => /\.gov\b/i.test(u || "")).length;
+  const govPercent = cites.length > 0 ? Math.round((govCount / cites.length) * 100) : 0;
+  const sourceScore = Math.min(100, Math.round((govPercent / 60) * 100));
+
+  // 3. Confidence accuracy (20% weight)
+  const lines = text.split("\n");
+  let overRated = 0;
+  for (const line of lines) {
+    if (/\[HIGH\]/i.test(line) && /\b(null|none|not found|no contracts|no results|zero)\b/i.test(line)) {
+      overRated++;
+    }
+  }
+  const confidenceScore = overRated === 0 ? 100 : Math.max(0, 100 - overRated * 25);
+
+  // 4. Content pages (10% weight)
+  const chars = text.length;
+  const estPages = Math.round(chars / 3000); // ~3000 chars per PDF page
+  let pageScore;
+  if (estPages >= 4 && estPages <= 8) {
+    pageScore = 100;
+  } else if (estPages >= 3 && estPages <= 10) {
+    pageScore = 70;
+  } else if (estPages >= 2) {
+    pageScore = 40;
+  } else {
+    pageScore = 10;
+  }
+
+  // 5. Data density (10% weight)
+  const contracts = (text.match(/[A-Z0-9]{2,6}[-_]?[A-Z0-9]{4,}/g) || []).length;
+  const dollars = (text.match(/\$[\d,.]+[BMK]?\b/gi) || []).length;
+  const dataItems = contracts + dollars;
+  const itemsPerPage = estPages > 0 ? dataItems / estPages : 0;
+  const densityScore = Math.min(100, Math.round(itemsPerPage * 50));
+
+  // 6. Query fulfillment (10% weight)
+  let fulfillmentScore = 50; // default if no classification
+  if (classification && classification.intents) {
+    // Check if primary intent sections are present
+    const intentSectionMap = {
+      pipeline_scan: /PIPELINE INTELLIGENCE/i,
+      market_event_analysis: /MARKET CONTEXT|MARKET EVENT/i,
+      competitive_intelligence: /COMPETITIVE LANDSCAPE/i,
+      entity_intelligence: /EXECUTIVE SUMMARY/i,
+      landscape_overview: /MARKET CONTEXT/i,
+    };
+    let matched = 0;
+    for (const intent of classification.intents) {
+      if (intentSectionMap[intent] && intentSectionMap[intent].test(text)) {
+        matched++;
+      }
+    }
+    fulfillmentScore = classification.intents.length > 0
+      ? Math.round((matched / classification.intents.length) * 100)
+      : 50;
+  }
+
+  // Weighted average
+  const overall = Math.round(
+    pipelineScore * 0.3 +
+    sourceScore * 0.2 +
+    confidenceScore * 0.2 +
+    pageScore * 0.1 +
+    densityScore * 0.1 +
+    fulfillmentScore * 0.1
+  );
+
+  return {
+    pipeline_opportunities: { count: pipelineCount, target: 3, score: pipelineScore },
+    source_quality: { gov_percent: govPercent, target: 60, score: sourceScore },
+    confidence_accuracy: { over_rated: overRated, score: confidenceScore },
+    content_pages: { chars, est_pages: estPages, target_range: [4, 8], score: pageScore },
+    data_density: { items_per_page: Math.round(itemsPerPage * 10) / 10, target: 1, score: densityScore },
+    query_fulfillment: { match_percent: fulfillmentScore, score: fulfillmentScore },
+    overall,
+  };
+}
+
 module.exports = {
   createReportQuality,
   analyzePassResult,
   checkReportQuality,
   buildQualityDisclaimer,
+  scoreReport,
 };

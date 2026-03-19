@@ -26,10 +26,13 @@ const { checkKillSwitch, shouldHoldEmail, holdEmail } = require("./lib/kill-swit
 const { transitionState } = require("./lib/workflow-state");
 const { withRetry } = require("./lib/retry");
 const { KNOWN_FACTS } = require("./lib/contract-facts");
-const { disambiguate, checkCurrentEvents } = require("./lib/entity-disambiguator");
+const { disambiguate, disambiguateWithScope, checkCurrentEvents } = require("./lib/entity-disambiguator");
+const { classifyIntent } = require("./lib/intent-classifier");
+const { APPENDIX_C, getRelevantContext, buildContextPrimingPrompt } = require("./lib/context-primer");
+const { validateClaim, classifyClaim } = require("./lib/cross-validator");
 const { extractIntelSignals } = require("./lib/signal-extractor");
 const { filterSources, countYoutubeSources } = require("./lib/source-filter");
-const { createReportQuality, analyzePassResult, checkReportQuality, buildQualityDisclaimer } = require("./lib/report-quality-gate");
+const { createReportQuality, analyzePassResult, checkReportQuality, buildQualityDisclaimer, scoreReport } = require("./lib/report-quality-gate");
 
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 const PERPLEXITY_MODEL = "sonar-pro";
@@ -164,15 +167,17 @@ OUTPUT FORMAT (respond ONLY in this JSON structure, no markdown fences):
 // ============================================================
 // PASS 1: Landscape Scan with Query Expansion (CHANGES 2, 5, 6)
 // ============================================================
-async function runLandscapeScan(topic, audience, company, disambiguation) {
+async function runLandscapeScan(topic, audience, company, disambiguation, { primedContext, classification } = {}) {
   console.log("Pass 1: Landscape scan with query expansion...");
 
   const entity = disambiguation.selected_entity || {};
   const searchTerms = entity.search_terms || {};
   const claimsToVerify = disambiguation.user_claims_to_verify || [];
+  const naicsFocus = (classification && classification.scope && classification.scope.naics_focus) || [];
 
   const audienceContext = audience ? `The audience for this brief is: ${audience}.` : "";
   const companyContext = company ? `The requesting organization is: ${company}.` : "";
+  const contextBlock = primedContext ? `\n\nCURRENT CONTEXT (verified facts — use as grounding):\n${primedContext}` : "";
 
   const result = await callPerplexity(
     `You are a federal health IT market intelligence analyst. ${audienceContext} ${companyContext}
@@ -194,10 +199,10 @@ MANDATORY SOURCE HIERARCHY (search ALL before drafting):
 6. Trade press — Federal News Network, GovExec, NextGov
 
 QUERY EXPANSION PROTOCOL (for every data-gathering search):
-Use at least 3 query variants per source:
-- Variant A: Exact entity name + org code
-- Variant B: Mission keywords + NAICS codes
-- Variant C: Adjacent terms from the keywords list above
+Use AT LEAST 3 query variants per source:
+- Variant A: Exact terms + set-aside filter
+- Variant B: Mission keywords + NAICS codes (${naicsFocus.join(", ") || "541512, 541511"})
+- Variant C: Adjacent terms, broader scope
 If all 3 return null, search one org level UP (parent agency) and one DOWN (sub-offices).
 If still null, report: "No results found across [N] queries. This null is [UNUSUAL/EXPECTED] because [reasoning]. Confidence: LOW."
 
@@ -210,7 +215,7 @@ CRITICAL RULES:
 - NEVER report "zero contracts exist" — say "zero contracts found in [sources searched]"
 - NEVER assign HIGH confidence to a null result
 - For personnel: check the official staff directory. If someone is listed → they're active. If NOT listed → status is UNVERIFIED (not "departed").
-- If research contradicts the user's framing, flag the contradiction explicitly.`,
+- If research contradicts the user's framing, flag the contradiction explicitly.${contextBlock}`,
 
     `Research topic: ${topic}\n\nUsing the entity disambiguation above, provide a comprehensive landscape scan:\n1. Current state and recent developments (last 6 months) — search .gov sites first\n2. Organizational structure and leadership — check official staff directories\n3. Relevant contracts, solicitations, or procurement activity — search SAM.gov, USASpending.gov with multiple query variants\n4. Budget context and funding status — check Congressional Budget Justification docs\n5. Policy or regulatory factors — check GAO/IG reports\n\nFor each finding, note:\n- The specific source URL\n- Which query/search found it\n- Confidence level (HIGH only if .gov primary source + verifiable)\n\nIf any user claims from the disambiguation cannot be verified, say so explicitly.`,
     5000
@@ -222,14 +227,26 @@ CRITICAL RULES:
 // ============================================================
 // PASS 2: Deep Analysis with Evidence-Based Competitive Landscape (CHANGES 4, 5)
 // ============================================================
-async function runDeepAnalysis(topic, audience, company, disambiguation, landscapeContent) {
+async function runDeepAnalysis(topic, audience, company, disambiguation, landscapeContent, { primedContext, classification } = {}) {
   console.log("Pass 2: Deep analysis + evidence-based competitive landscape...");
 
   const entity = disambiguation.selected_entity || {};
   const searchTerms = entity.search_terms || {};
+  const intents = (classification && classification.intents) || [];
 
   const audienceContext = audience ? `The audience for this brief is: ${audience}.` : "";
   const companyContext = company ? `The requesting organization is: ${company}.` : "";
+  const contextBlock = primedContext ? `\n\nCURRENT CONTEXT (verified facts — use as grounding):\n${primedContext}` : "";
+
+  // Market Event Protocol (Spec section 3.3) — injected when market_event_analysis intent detected
+  const marketEventBlock = intents.includes("market_event_analysis")
+    ? `\n\nMARKET EVENT PROTOCOL:
+Step 1: Establish the event (what, when, scale)
+Step 2: Quantify impact (contracts, dollars, agencies)
+Step 3: Map to ${(classification && classification.scope && classification.scope.set_aside_filter) || "sdvosb"} set-aside
+Step 4: Identify recompete pipeline
+Step 5: Package as structured entries`
+    : "";
 
   const result = await callPerplexity(
     `You are a senior federal health IT strategy advisor and competitive intelligence analyst. ${audienceContext} ${companyContext}
@@ -247,7 +264,7 @@ COMPETITIVE LANDSCAPE METHODOLOGY (CHANGE 4 — evidence-based only):
 CRITICAL RULES:
 - Do NOT list Booz Allen, Leidos, GDIT, etc. as competitors unless you find actual contracts with this specific office.
 - Verified incumbents and assumed competitors must be in SEPARATE sections.
-- Every vendor name must have a source (contract number, USASpending URL, etc.)`,
+- Every vendor name must have a source (contract number, USASpending URL, etc.)${marketEventBlock}${contextBlock}`,
 
     `Topic: ${topic}\n\nLandscape scan findings:\n${landscapeContent}\n\nProvide:\n1. Strategic implications and what this means for stakeholders\n2. EVIDENCE-BASED competitive landscape:\n   a. Verified awardees (with contract numbers, amounts, vehicles)\n   b. Actual market tier (small business vs. mid-tier vs. large prime)\n   c. Set-aside patterns (SDVOSB, 8(a), HUBZone, full-and-open)\n   d. Only then: potential future competitors from the broader agency (clearly labeled)\n3. Risks and potential obstacles\n4. Opportunities for action\n5. Timeline of upcoming milestones\n6. Actionable recommendations\n\nVerify and cross-reference the landscape scan. Flag any claims that cannot be confirmed.`,
     5000
@@ -259,7 +276,7 @@ CRITICAL RULES:
 // ============================================================
 // PASS 3: Fact-Check, Synthesis, and Confidence Scoring (CHANGES 3, 6, 8)
 // ============================================================
-async function runSynthesis(topic, audience, company, disambiguation, landscapeContent, analysisContent) {
+async function runSynthesis(topic, audience, company, disambiguation, landscapeContent, analysisContent, { primedContext, classification } = {}) {
   console.log("Pass 3: Fact-check, synthesis, and confidence scoring...");
 
   const entity = disambiguation.selected_entity || {};
@@ -267,31 +284,19 @@ async function runSynthesis(topic, audience, company, disambiguation, landscapeC
 
   const audienceContext = audience ? `The audience for this brief is: ${audience}.` : "";
   const companyContext = company ? `The requesting organization is: ${company}.` : "";
+  const contextBlock = primedContext ? `\n\nCURRENT CONTEXT (verified facts — use as grounding):\n${primedContext}` : "";
 
   const result = await callPerplexity(
     `You are a fact-checker and editor for a federal health IT intelligence publication. ${audienceContext} ${companyContext}
 
 TARGET ENTITY: ${entity.name || topic} (${entity.acronym || ""})
 
-CONFIDENCE SCORING RULES (HARD CONSTRAINTS — CHANGE 3):
-
-HIGH confidence requires ALL of:
-- Primary source URL (.gov, FPDS, official database) with direct quote or data point
-- Claim verified across 2+ independent sources
-- PROHIBITED for: any null-result claim, inferred timelines, personnel status without directory URL
-
-MEDIUM confidence requires:
-- One credible source (trade press, aggregator, .gov secondary page)
-- Claim is plausible but single-sourced
-- PROHIBITED when: source is inference, absence, or pattern-matching
-
-LOW confidence:
-- Inference, pattern-matching, single indirect source
-- Any claim where evidence is "we didn't find X, therefore Y"
-
-UNVERIFIED:
-- No source found. The claim is a hypothesis only.
-- MUST include: "Requires manual verification via [specific method]."
+CONFIDENCE RULES (HARD):
+HIGH: .gov source + cross-verified by 2+. NEVER for null results or single-aggregator.
+MEDIUM: One credible source. NEVER for inference.
+LOW: Single indirect source or inference.
+UNVERIFIED: No source. MUST include "Requires verification via [method]."
+Tags on KEY FINDINGS ONLY (5-7 max), not every sentence.
 
 PERSONNEL RULES:
 - "X is the director" → HIGH only if official staff directory URL provided
@@ -325,15 +330,20 @@ REQUIRED SECTIONS (use these exact headers):
 Current state of this market segment. Recent policy/regulatory changes. Budget trends with actual dollar figures from .gov sources. Maximum 1 page worth of content.
 
 ## PIPELINE INTELLIGENCE
-THIS IS THE CORE SECTION. Specific contracts, solicitations, or recompete opportunities. For each:
-- Contract number or solicitation ID
-- Agency
-- NAICS code
-- Incumbent (if known)
-- Estimated value
-- Timeline/deadline
-- Set-aside status
-- Source with URL
+THIS IS THE CORE SECTION. For EACH opportunity, use EXACT format:
+
+CONTRACT/OPPORTUNITY: [Name]
+Agency: [Contracting agency]
+Contract #: [If known]
+NAICS: [Code + description]
+Set-Aside: [Type]
+Estimated Value: [$ or range]
+Incumbent: [Company if known]
+Status: [Active / Expected recompete / Terminated-pending-recompete]
+Timeline: [Key dates]
+Source: [URL]
+SDVOSB Relevance: [Why this matters]
+
 If you found fewer than 3 specific opportunities, state that clearly and explain what adjacent opportunities exist.
 
 ## COMPETITIVE LANDSCAPE
@@ -360,7 +370,7 @@ RULES:
 - NO program descriptions the reader already knows (what SDVOSB is, how VetCert works, what Mentor-Protege is).
 - NO sections with "None identified" or "No results found." If a section would be empty, merge it into another or explain what to monitor.
 - Data density: every paragraph must contain at least one specific fact (number, date, name, contract ID).
-- Maximum 4 pages of content. Quality over quantity.`,
+- Maximum 4 pages of content. Quality over quantity.${contextBlock}`,
 
     `Topic: ${topic}\n\nLandscape scan:\n${landscapeContent}\n\nDeep analysis:\n${analysisContent}\n\nSynthesize into a final executive brief.\n\nFor the METHODOLOGY section, you must honestly report:\n- What entity was researched (after disambiguation)\n- What sources were queried with what search terms\n- What was found vs. what returned zero results\n- What contradicted other sources\n- What requires manual verification\n\nApply the confidence scoring rules strictly. No HIGH confidence on null results or inferred personnel status.`,
     6000
@@ -591,6 +601,33 @@ exports.handler = async (event) => {
     let nullPassCount = 0;
     const NULL_PASS_THRESHOLD = 2;
 
+    // === SPRINT D: Intent Classification (Spec 2.1 + 2.2) ===
+    const classification = classifyIntent(originalTopic, company, audience, null);
+    console.log(`[INTENT] Types: ${classification.intents.join(", ")} | Entity: ${classification.scope.target_entity || "government-wide"} | Event: ${classification.scope.event_trigger || "none"}`);
+
+    // === SPRINT D: Context Priming (Spec 2.3 + Appendix C) ===
+    const contextData = getRelevantContext(classification.scope.event_trigger, originalTopic);
+    let primedContext = "";
+    if (contextData.length > 0) {
+      primedContext = contextData.map((e) => e.summary).join("\n");
+      console.log(`[CONTEXT] ${contextData.length} Appendix C events matched`);
+    }
+    // Live priming if event detected but not in Appendix C
+    if (classification.context_priming_needed && !contextData.length) {
+      const primingResult = await callPerplexity(
+        "You are a federal procurement current-events analyst. Provide a brief factual summary: what happened, when, scale, which agencies affected. Be specific.",
+        buildContextPrimingPrompt(classification.scope.event_trigger, classification.scope),
+        2000
+      );
+      primedContext = primingResult.content || "";
+    }
+
+    // === SPRINT D: Scope-Aware Disambiguation ===
+    const scopeDisambig = disambiguateWithScope(originalTopic, classification.scope);
+    if (scopeDisambig.entity_type === "government-wide") {
+      console.log(`[SCOPE] Government-wide query. Agencies: ${scopeDisambig.search_terms.agencies.join(", ")}`);
+    }
+
     // Pass 0: Entity disambiguation (CHANGE 1) — uses optimized prompt
     // If current-events override matched, we still run disambiguation but
     // inject the override context into all subsequent passes
@@ -617,7 +654,7 @@ exports.handler = async (event) => {
 
     // Pass 1: Landscape scan with query expansion (CHANGES 2, 5)
     const pass1Start = Date.now();
-    const pass1 = await runLandscapeScan(optimizedTopic, audience, company, disambiguation);
+    const pass1 = await runLandscapeScan(optimizedTopic, audience, company, disambiguation, { primedContext, classification });
     passTimings["Pass 1 — Landscape scan"] = Math.round((Date.now() - pass1Start) / 1000);
     analyzePassResult(reportQuality, pass1.content, pass1.citations);
     if (!pass1.content || pass1.content.trim().length < 200) nullPassCount++;
@@ -629,7 +666,7 @@ exports.handler = async (event) => {
 
     // Pass 2: Deep analysis + evidence-based competitive landscape (CHANGES 4, 5)
     const pass2Start = Date.now();
-    const pass2 = await runDeepAnalysis(optimizedTopic, audience, company, disambiguation, pass1.content);
+    const pass2 = await runDeepAnalysis(optimizedTopic, audience, company, disambiguation, pass1.content, { primedContext, classification });
     passTimings["Pass 2 — Deep analysis"] = Math.round((Date.now() - pass2Start) / 1000);
     analyzePassResult(reportQuality, pass2.content, pass2.citations);
     if (!pass2.content || pass2.content.trim().length < 200) nullPassCount++;
@@ -656,7 +693,7 @@ exports.handler = async (event) => {
 
     // Pass 3: Fact-check, synthesis, confidence scoring (CHANGES 3, 6, 8)
     const pass3Start = Date.now();
-    const pass3 = await runSynthesis(optimizedTopic, audience, company, disambiguation, pass1.content, pass2.content);
+    const pass3 = await runSynthesis(optimizedTopic, audience, company, disambiguation, pass1.content, pass2.content, { primedContext, classification });
     passTimings["Pass 3 — Synthesis"] = Math.round((Date.now() - pass3Start) / 1000);
     analyzePassResult(reportQuality, pass3.content, pass3.citations);
 
@@ -750,6 +787,25 @@ exports.handler = async (event) => {
       }
     } catch (sigErr) {
       console.error("Signal emission failed:", sigErr.message);
+    }
+
+    // === SPRINT E: Report Auto-Scoring (Spec 11.1) ===
+    const reportScore = scoreReport(finalSynthesis, allCitations, classification);
+    console.log(`[REPORT SCORE] Overall: ${reportScore.overall}/100 | Pipeline: ${reportScore.pipeline_opportunities.count} | Sources: ${reportScore.source_quality.gov_percent}% .gov`);
+
+    // Log score to ops_events
+    if (_supabase) {
+      try {
+        await _supabase.from("ops_events").insert({
+          event_type: "marketpulse_report_score",
+          details: {
+            session_id, email,
+            topic: topic.substring(0, 200),
+            score: reportScore,
+            quality_grade: qualityResult.grade,
+          },
+        });
+      } catch (e) { console.error("Score logging failed:", e.message); }
     }
 
     // State: research_completed
