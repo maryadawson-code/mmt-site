@@ -35,6 +35,7 @@ const { extractIntelSignals } = require("./lib/signal-extractor");
 const { filterSources, countYoutubeSources } = require("./lib/source-filter");
 const { createReportQuality, analyzePassResult, checkReportQuality, buildQualityDisclaimer, scoreReport } = require("./lib/report-quality-gate");
 const { sanitizeSynthesis } = require("./lib/synthesis-sanitizer");
+const { logOpsEvent } = require("./lib/ops-ledger");
 
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 const PERPLEXITY_MODEL = "sonar-pro";
@@ -61,7 +62,9 @@ async function callPerplexity(systemPrompt, userPrompt, maxTokens = 4000) {
 
   if (!response.ok) {
     const errText = await response.text();
-    throw new Error(`Perplexity API ${response.status}: ${errText}`);
+    const err = new Error(`Perplexity API ${response.status}: ${errText}`);
+    err.status = response.status;
+    throw err;
   }
 
   const data = await response.json();
@@ -926,6 +929,7 @@ exports.handler = async (event) => {
     // === QUALITY GATE: FAIL — do not generate PDF ===
     if (qualityResult.grade === "FAIL") {
       console.log(`[QUALITY GATE] FAIL — blocking PDF generation. Failures: ${qualityResult.failures.join("; ")}`);
+      await logOpsEvent(_supabase, { event_type: "QUALITY_FAILURE", source_function: "generate-tactical-brief-background", severity: "error", signature: "quality_gate_fail", affected_entity: session_id, details: { email, topic: topic.substring(0, 200), grade: qualityResult.grade, failures: qualityResult.failures } });
 
       // Log failure to ops_events
       if (_supabase) {
@@ -1043,6 +1047,7 @@ exports.handler = async (event) => {
 
       if (!deliveryResult.success) {
         console.error("Delivery email failed:", deliveryResult.error);
+        await logOpsEvent(_supabase, { event_type: "DELIVERY_FAILURE", source_function: "generate-tactical-brief-background", severity: "error", signature: "email_send_failure", affected_entity: session_id, details: { email, error: deliveryResult.error } });
       }
     }
 
@@ -1072,6 +1077,8 @@ exports.handler = async (event) => {
     return { statusCode: 200, body: JSON.stringify({ success: true, duration_seconds: totalTime, passes: Object.keys(passTimings).length }) };
   } catch (err) {
     console.error("generate-tactical-brief-background: pipeline error:", err);
+    const errType = err.message && err.message.includes("Perplexity API") ? "MODEL_FAILURE" : "HARNESS_FAILURE";
+    await logOpsEvent(_supabase, { event_type: errType, source_function: "generate-tactical-brief-background", severity: "critical", signature: errType === "MODEL_FAILURE" ? `perplexity_${err.status || "unknown"}` : "unhandled_error", affected_entity: session_id, details: { email, topic: topic.substring(0, 200), error: err.message } });
 
     // Notify Mary of failure
     try {

@@ -22,6 +22,7 @@ const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
 const { withRetry } = require("./lib/retry");
 const { checkKillSwitch } = require("./lib/kill-switch");
 const { extractIntelSignals } = require("./lib/signal-extractor");
+const { logOpsEvent } = require("./lib/ops-ledger");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -372,6 +373,7 @@ exports.handler = async (event) => {
       rewriteResult = parseJson(rewriteText);
     } catch (err) {
       console.error("Gold Team: rewrite call failed:", err);
+      await logOpsEvent(supabase, { event_type: "MODEL_FAILURE", source_function: "gold-team-review-background", severity: "error", signature: "anthropic_rewrite_failure", affected_entity: scoring_id, details: { error: err.message } });
       return;
     }
 
@@ -486,6 +488,7 @@ exports.handler = async (event) => {
       console.log(`Gold Team: email sent successfully (${emailResult.id})`);
     } else {
       console.error("Gold Team: email send failed:", emailResult.error);
+      await logOpsEvent(supabase, { event_type: "DELIVERY_FAILURE", source_function: "gold-team-review-background", severity: "error", signature: "email_send_failure", affected_entity: scoring_id, details: { error: emailResult.error, email: normalizedEmail } });
     }
 
     // Update model routing metadata in scores JSONB
@@ -516,5 +519,9 @@ exports.handler = async (event) => {
     }
   } catch (err) {
     console.error("Gold Team: unhandled error:", err);
+    try {
+      const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+      await logOpsEvent(sb, { event_type: "HARNESS_FAILURE", source_function: "gold-team-review-background", severity: "critical", signature: "unhandled_error", details: { error: err.message, stack: (err.stack || "").substring(0, 500) } });
+    } catch { /* best effort */ }
   }
 };

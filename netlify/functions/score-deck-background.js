@@ -460,6 +460,7 @@ exports.handler = async (event) => {
     if (!claudeResponse.ok) {
       const errText = await claudeResponse.text();
       console.error("Claude API error:", claudeResponse.status, errText);
+      await logOpsEvent(supabase, { event_type: "MODEL_FAILURE", source_function: "score-deck-background", severity: "error", signature: `anthropic_${claudeResponse.status}`, affected_entity: scoring_id, details: { status: claudeResponse.status, error: errText.substring(0, 500) } });
       await markError(supabase, scoring_id, "AI scoring service error. Please try again.");
       return { statusCode: 200, body: "Claude API error" };
     }
@@ -483,6 +484,7 @@ exports.handler = async (event) => {
       scorecard = JSON.parse(cleaned);
     } catch (parseError) {
       console.error("JSON parse error:", parseError, "Raw:", responseText.substring(0, 500));
+      await logOpsEvent(supabase, { event_type: "MODEL_FAILURE", source_function: "score-deck-background", severity: "error", signature: "scorecard_parse_failure", affected_entity: scoring_id, details: { error: parseError.message, raw_preview: responseText.substring(0, 200) } });
       await markError(supabase, scoring_id, "AI returned invalid scoring format. Please try again.");
       return { statusCode: 200, body: "JSON parse error" };
     }
@@ -541,10 +543,11 @@ exports.handler = async (event) => {
       console.warn(`Scorecard validation warnings for ${scoring_id}:`, validation.errors);
       try {
         await logOpsEvent(supabase, {
-          event_type: "scorecard_validation_warning",
+          event_type: "QUALITY_FAILURE",
           source_function: "score-deck-background",
-          scoring_id,
-          severity: "warning",
+          severity: "warn",
+          signature: "scorecard_validation_warning",
+          affected_entity: scoring_id,
           details: { errors: validation.errors },
         });
       } catch { /* non-blocking */ }
@@ -718,6 +721,7 @@ exports.handler = async (event) => {
       try { await transitionState(supabase, "mp_scoring_history", scoring_id, "email_sent"); } catch (e) { console.error("State transition error:", e.message); }
     } catch (emailErr) {
       console.error("Receipt email error:", emailErr);
+      await logOpsEvent(supabase, { event_type: "DELIVERY_FAILURE", source_function: "score-deck-background", severity: "error", signature: "email_send_failure", affected_entity: scoring_id, details: { error: emailErr.message, email } });
       try { await transitionState(supabase, "mp_scoring_history", scoring_id, "email_failed"); } catch (e) { console.error("State transition error:", e.message); }
     }
 
@@ -794,6 +798,7 @@ exports.handler = async (event) => {
     if (scoring_id) {
       try {
         const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+        await logOpsEvent(supabase, { event_type: "HARNESS_FAILURE", source_function: "score-deck-background", severity: "critical", signature: "unhandled_error", affected_entity: scoring_id, details: { error: err.message, stack: (err.stack || "").substring(0, 500) } });
         await markError(supabase, scoring_id, "Internal server error. Please try again.");
       } catch (dbErr) {
         console.error("Failed to mark error in DB:", dbErr);
