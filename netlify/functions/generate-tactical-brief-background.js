@@ -218,7 +218,25 @@ async function runLandscapeScan(topic, audience, company, disambiguation, { prim
   const contextBlock = primedContext ? `\n\nCURRENT CONTEXT (verified facts — use as grounding):\n${primedContext}` : "";
 
   const result = await callPerplexity(
-    `You are a federal health IT market intelligence analyst. ${audienceContext} ${companyCtx}
+    `You are a federal health IT market intelligence analyst for Mission Meets Tech, a federal health IT intelligence platform. ${audienceContext} ${companyCtx}
+
+BRAND POSITIONING — FEDERAL HEALTH IT LENS:
+Every report MUST be filtered through the federal health IT lens, even when the user's query is broad.
+- If query is about a set-aside type (e.g. "SDVOSB pipeline") → filter to health IT opportunities first (DHA, VA, CMS, IHS, HHS), then general
+- If query is about policy changes (e.g. "DOGE cancellations") → lead with health agency impacts, then general
+- If query is about AI/technology → lead with clinical AI, EHR integration, health data
+- If query is general GovCon → include a "Federal Health IT Implications" section
+- If query has ZERO health IT connection, note that transparently rather than forcing it
+
+AGENCY PRIORITY ORDER (for health IT relevance):
+1. DHA (Defense Health Agency) — MHS GENESIS, MTF operations, TRICARE
+2. VA (Veterans Affairs) — EHR modernization, connected care, VBA
+3. CMS (Centers for Medicare & Medicaid) — claims systems, interoperability mandates
+4. IHS (Indian Health Service) — EHR, telehealth, resource constraints
+5. HHS (broader) — ONC/ASTP, FDA health tech, NIH research IT
+6. DoD (non-DHA) — CDAO health AI, deployed medical IT
+
+When relevant, break Pipeline Intelligence into agency subsections (e.g., "VA Opportunities", "DHA Opportunities") to help users who specialize in one agency find their lane quickly.
 
 CRITICAL: The customer ordering this report is NOT necessarily the subject of the research. Mission Meets Tech LLC is a media/intelligence platform, NOT a contracting firm. If the customer provides a company name, research THAT company's market position. If they say "I'm at a SDVOSB" without naming the company, note "Company identity not provided — recommendations are generic." NEVER research Mission Meets Tech LLC as a contractor.
 
@@ -289,7 +307,9 @@ Step 5: Package as structured entries`
     : "";
 
   const result = await callPerplexity(
-    `You are a senior federal health IT strategy advisor and competitive intelligence analyst. ${audienceContext} ${companyContext}
+    `You are a senior federal health IT strategy advisor and competitive intelligence analyst for Mission Meets Tech. ${audienceContext} ${companyContext}
+
+FEDERAL HEALTH IT LENS: Prioritize health agencies (DHA, VA, CMS, IHS, HHS) in analysis. When the target entity is not a health agency, include a "Health IT Implications" subsection connecting findings to health IT market effects.
 
 TARGET ENTITY: ${entity.name || topic}
 SEARCH TERMS: ${JSON.stringify(searchTerms)}
@@ -344,7 +364,9 @@ async function runSynthesis(topic, audience, company, disambiguation, landscapeC
   }
 
   const result = await callPerplexity(
-    `You are a fact-checker and editor for a federal health IT intelligence publication. ${audienceContext} ${companyLine}
+    `You are a fact-checker and editor for Mission Meets Tech, a federal health IT intelligence publication. ${audienceContext} ${companyLine}
+
+FEDERAL HEALTH IT LENS: When organizing Pipeline Intelligence, group opportunities by agency subsections where applicable (VA Opportunities, DHA Opportunities, CMS Opportunities, Other). Always lead with health IT-relevant findings.
 
 TARGET ENTITY: ${entity.name || topic} (${entity.acronym || ""})
 
@@ -430,6 +452,21 @@ Capture strategy tied to specific opportunities from Pipeline Intelligence. Time
 ${companyGuard}
 Before recommending certifications (SDVOSB, 8(a), WOSB, HUBZone): verify whether the customer's company already holds them. Before recommending contract vehicles: check if the company already has access. Recommending certifications or vehicles a company already holds destroys credibility. If company identity is unknown, explicitly state recommendations are generic.
 
+## FORWARD VIEW (6-MONTH OUTLOOK)
+What's coming in the next 6 months that the reader should prepare for:
+- Upcoming recompetes and new-start opportunities with estimated dates
+- Budget cycle milestones (FYDP, CR status, appropriations)
+- Policy/regulatory changes taking effect
+- Industry days, pre-solicitation conferences, draft RFP releases
+Maximum 5 bullet points. Each must have a specific date or date range.
+
+## THIS WEEK'S ACTIONS
+3-5 specific, concrete actions the reader can take THIS WEEK based on the findings:
+- Each action must be completable within 5 business days
+- Each must reference a specific finding, opportunity, or contact from the report
+- Format: "[Action verb] [specific task] [because finding X]"
+- Examples: "Register on SAM.gov for NAICS 541512 under DHA", "Email OSDBU at VA to request small business liaison meeting", "Download RFP W81K04-26-R-0001 from SAM.gov and begin compliance matrix"
+
 ## METHODOLOGY
 Brief: what was searched, what was found, limitations.
 - Entity searched (after disambiguation) with org code
@@ -445,7 +482,8 @@ RULES:
 - NO program descriptions the reader already knows (what SDVOSB is, how VetCert works, what Mentor-Protege is).
 - NO sections with "None identified" or "No results found." If a section would be empty, merge it into another or explain what to monitor.
 - Data density: every paragraph must contain at least one specific fact (number, date, name, contract ID).
-- Maximum 4 pages of content. Quality over quantity.
+- Maximum 4 pages of content (~12,000 characters). Quality over quantity. If you're exceeding this, cut generic context — not pipeline data.
+- An honest 3-page report with 5 specific pipeline opportunities is worth more than an 18-page report of generic program descriptions.
 - Do NOT repeat full source names after first use. First mention: "per SAM.gov, FPDS, and USASpending.gov." Subsequent: cite the specific source only (e.g., "per SAM.gov" or "per FPDS").
 - Do NOT include any "Classification:" header or classification markings in the output.
 
