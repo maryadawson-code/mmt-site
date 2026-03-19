@@ -128,29 +128,34 @@
           <div id="intel-signals"></div>
         </div>
 
-        <!-- AGENT DISPATCH -->
+        <!-- AGENT MAP -->
         <div class="card full">
-          <h2>Agent Dispatch</h2>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
-            <div style="background:rgba(0,229,250,0.05);border:1px solid rgba(0,229,250,0.2);border-radius:8px;padding:16px;">
-              <div style="font-weight:700;color:#00e5fa;margin-bottom:4px;">Editorial</div>
-              <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);margin-bottom:8px;" id="agent-editorial-status">—</div>
-              <textarea id="task-editorial" rows="3" placeholder="Draft article about..." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:8px;border-radius:4px;font-size:0.82rem;resize:vertical;"></textarea>
-              <div style="display:flex;gap:8px;margin-top:8px;"><button class="btn btn-cyan" onclick="dispatchTask('editorial')" style="flex:1;">Send to Editorial</button></div>
-            </div>
-            <div style="background:rgba(168,85,247,0.05);border:1px solid rgba(168,85,247,0.2);border-radius:8px;padding:16px;">
-              <div style="font-weight:700;color:#a855f7;margin-bottom:4px;">Code</div>
-              <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);margin-bottom:8px;" id="agent-code-status">—</div>
-              <textarea id="task-code" rows="3" placeholder="Fix bug in..." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:8px;border-radius:4px;font-size:0.82rem;resize:vertical;"></textarea>
-              <div style="display:flex;gap:8px;margin-top:8px;"><button class="btn" style="flex:1;background:#a855f7;color:#fff;" onclick="dispatchTask('code')">Copy Prompt</button></div>
-            </div>
-            <div style="background:rgba(34,197,94,0.05);border:1px solid rgba(34,197,94,0.2);border-radius:8px;padding:16px;">
-              <div style="font-weight:700;color:#22c55e;margin-bottom:4px;">Research</div>
-              <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);margin-bottom:8px;" id="agent-research-status">—</div>
-              <textarea id="task-research" rows="3" placeholder="Research current status of..." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:8px;border-radius:4px;font-size:0.82rem;resize:vertical;"></textarea>
-              <div style="display:flex;gap:8px;margin-top:8px;"><button class="btn" style="flex:1;background:#22c55e;color:#0a0e17;" onclick="dispatchTask('research')">Copy Prompt</button></div>
-            </div>
+          <h2>Agent Map</h2>
+          <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;" id="domain-filters">
+            <button class="btn btn-sm active-filter" onclick="filterAgents('all',this)" style="font-size:0.75rem;padding:4px 12px;background:#00e5fa;color:#0a0e17;">All (19)</button>
+            <button class="btn btn-sm" onclick="filterAgents('mmt_platform',this)" style="font-size:0.75rem;padding:4px 12px;background:rgba(0,229,250,0.2);color:#00e5fa;">MMT Platform</button>
+            <button class="btn btn-sm" onclick="filterAgents('rockitdata',this)" style="font-size:0.75rem;padding:4px 12px;background:rgba(168,85,247,0.2);color:#a855f7;">rockITdata</button>
+            <button class="btn btn-sm" onclick="filterAgents('active_captures',this)" style="font-size:0.75rem;padding:4px 12px;background:rgba(239,68,68,0.2);color:#ef4444;">Active Captures</button>
+            <button class="btn btn-sm" onclick="filterAgents('content_personal',this)" style="font-size:0.75rem;padding:4px 12px;background:rgba(34,197,94,0.2);color:#22c55e;">Content & Personal</button>
+            <button class="btn btn-sm" onclick="filterAgents('operations',this)" style="font-size:0.75rem;padding:4px 12px;background:rgba(234,179,8,0.2);color:#eab308;">Operations</button>
           </div>
+          <div id="agent-map" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;"></div>
+
+          <!-- Dispatch Panel -->
+          <div id="dispatch-panel" style="display:none;margin-top:16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:16px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <h3 id="dispatch-agent-name" style="font-size:1rem;margin:0;"></h3>
+              <button class="btn" onclick="closeDispatch()" style="background:none;color:rgba(255,255,255,0.4);font-size:1.2rem;padding:0 8px;">&times;</button>
+            </div>
+            <p id="dispatch-agent-desc" style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin:0 0 12px;"></p>
+            <textarea id="dispatch-input" rows="4" placeholder="What do you need this agent to do?" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:10px;border-radius:4px;font-size:0.85rem;resize:vertical;"></textarea>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <button id="dispatch-btn-primary" class="btn btn-cyan" onclick="executeDispatch()">Send</button>
+              <button class="btn" onclick="executeDispatch('clipboard')" style="background:rgba(255,255,255,0.1);color:#e2e8f0;">Copy Prompt</button>
+            </div>
+            <div id="dispatch-result" style="margin-top:8px;font-size:0.8rem;"></div>
+          </div>
+
           <h3 style="font-size:0.85rem;color:rgba(255,255,255,0.6);margin:16px 0 8px;">Task Queue</h3>
           <div id="task-queue"></div>
         </div>
@@ -246,7 +251,7 @@
       renderPipeline(data.pipeline);
       renderSignals(data.signals);
       renderTaskQueue(data.tasks);
-      renderAgentStatus(data.agents);
+      renderAgentMap(data.agents);
       renderRevenue(data.revenue);
 
       // Hide seed button if pipeline has data
@@ -321,19 +326,12 @@
       const el = document.getElementById('task-queue');
       if (!tasks || !tasks.length) { el.innerHTML = '<p style="color:rgba(255,255,255,0.3)">No active tasks</p>'; return; }
       const sc = { pending:'yellow', in_progress:'blue', completed:'green', failed:'red', cancelled:'gray' };
-      const ac = { editorial:'cyan', code:'purple', research:'green' };
-      el.innerHTML = '<table><tr><th>Agent</th><th>Task</th><th>Priority</th><th>Status</th><th>Time</th><th></th></tr>' + tasks.map(t => '<tr><td><span class="badge badge-'+(ac[t.agent]||'gray')+'">'+t.agent+'</span></td><td style="font-size:0.75rem" class="trunc">'+esc(t.task)+'</td><td><span class="badge badge-'+(t.priority==='urgent'?'red':t.priority==='high'?'orange':'gray')+'">'+t.priority+'</span></td><td><span class="badge badge-'+(sc[t.status]||'gray')+'">'+t.status+'</span></td><td style="font-size:0.75rem;color:rgba(255,255,255,0.4)">'+timeSince(t.created_at)+'</td><td>'+(t.status==='pending'||t.status==='in_progress'?'<button class="btn btn-sm btn-red" onclick="killTask(\''+t.id+'\')">Cancel</button>':'')+'</td></tr>').join('') + '</table>';
-    }
-
-    function renderAgentStatus(agents) {
-      if (!agents) return;
-      for (const a of agents) {
-        const el = document.getElementById('agent-' + a.agent + '-status');
-        if (el) {
-          const ago = timeSince(a.last_seen);
-          el.textContent = a.status + ' | last seen: ' + ago + (a.current_task ? ' | ' + a.current_task.substring(0, 40) : '');
-        }
-      }
+      el.innerHTML = '<table><tr><th>Agent</th><th>Task</th><th>Priority</th><th>Status</th><th>Time</th><th></th></tr>' + tasks.map(t => {
+        const agentInfo = allAgents.find(a => a.id === t.agent) || {};
+        const agentColor = agentInfo.color || '#9ca3af';
+        const agentName = agentInfo.name || t.agent;
+        return '<tr><td><span style="color:'+agentColor+';font-size:0.75rem;font-weight:600;">'+(agentInfo.icon||'')+' '+esc(agentName)+'</span></td><td style="font-size:0.75rem" class="trunc">'+esc(t.task)+'</td><td><span class="badge badge-'+(t.priority==='urgent'?'red':t.priority==='high'?'orange':'gray')+'">'+t.priority+'</span></td><td><span class="badge badge-'+(sc[t.status]||'gray')+'">'+t.status+'</span></td><td style="font-size:0.75rem;color:rgba(255,255,255,0.4)">'+timeSince(t.created_at)+'</td><td>'+(t.status==='pending'||t.status==='in_progress'?'<button class="btn btn-sm btn-red" onclick="killTask(\''+t.id+'\')">Cancel</button>':'')+'</td></tr>';
+      }).join('') + '</table>';
     }
 
     function renderRevenue(rev) {
@@ -367,27 +365,86 @@
     async function killTask(id) { await apiPost({ action: 'kill_task', id }); toast('Task cancelled.'); loadDashboard(); }
     async function killSignal(id) { await apiPost({ action: 'kill_signal', id }); toast('Signal killed.'); loadDashboard(); }
 
-    async function dispatchTask(agent) {
-      const textarea = document.getElementById('task-' + agent);
-      const task = textarea.value.trim();
-      if (!task) { toast('Enter a task first.'); return; }
+    // --- AGENT MAP V3 ---
+    let allAgents = [];
+    let selectedAgent = null;
+    let currentFilter = 'all';
 
-      // Always log to task queue
-      await apiPost({ action: 'add_task', task, agent, priority: 'normal' });
+    function renderAgentMap(agents) {
+      allAgents = agents || [];
+      const container = document.getElementById('agent-map');
+      const filtered = currentFilter === 'all' ? allAgents : allAgents.filter(a => a.domain === currentFilter);
+      container.innerHTML = filtered.map(agent => {
+        const statusDot = agent.status === 'active' ? '#22c55e' : agent.status === 'busy' ? '#eab308' : 'rgba(255,255,255,0.2)';
+        const isLive = ['openclaw','claude_code','perplexity'].includes(agent.platform);
+        const sel = selectedAgent === agent.id;
+        return '<div onclick="selectAgent(\''+agent.id+'\')" style="background:'+(sel?agent.color+'11':'rgba(255,255,255,0.03)')+';border:1px solid '+(sel?agent.color:agent.color+'33')+';border-radius:8px;padding:14px;cursor:pointer;transition:border-color 0.2s;"><div style="display:flex;justify-content:space-between;align-items:start;"><div style="font-size:1.4rem;">'+(agent.icon||'')+'</div><div style="display:flex;align-items:center;gap:4px;">'+(isLive?'<span style="font-size:0.6rem;color:'+agent.color+';font-weight:700;">LIVE</span>':'')+'<div style="width:8px;height:8px;border-radius:50%;background:'+statusDot+';"></div></div></div><div style="font-weight:700;color:'+agent.color+';font-size:0.85rem;margin:8px 0 2px;">'+esc(agent.name)+'</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);line-height:1.3;">'+esc((agent.description||'').substring(0,80))+'</div>'+(agent.current_task?'<div style="font-size:0.7rem;color:'+agent.color+';margin-top:6px;font-style:italic;">'+esc(agent.current_task.substring(0,50))+'</div>':'')+(agent.last_active?'<div style="font-size:0.65rem;color:rgba(255,255,255,0.2);margin-top:4px;">'+timeSince(agent.last_active)+'</div>':'')+'</div>';
+      }).join('');
+    }
 
-      if (agent === 'editorial') {
-        toast('Task sent to editorial queue.');
-      } else if (agent === 'code') {
-        const prompt = 'TASK: ' + task + '\n\nIMPORTANT: cd to /Users/marywomack/Projects/mmt-site first. Verify pwd does not contain /private/tmp/claude-.\n\n' + task + '\n\nVerify all changes. Do NOT deploy without review.';
-        await navigator.clipboard.writeText(prompt);
-        toast('Code prompt copied to clipboard.');
-      } else if (agent === 'research') {
-        const prompt = 'Research the following for Mission Meets Tech newsletter coverage. Provide specific data points, contract numbers, dollar values, and source URLs.\n\nTopic: ' + task + '\n\nFocus on: federal health IT, defense contracting, VA/DHA systems, GovCon procurement implications.';
-        await navigator.clipboard.writeText(prompt);
-        toast('Research prompt copied to clipboard.');
+    function filterAgents(domain, btn) {
+      currentFilter = domain;
+      renderAgentMap(allAgents);
+      document.querySelectorAll('#domain-filters button').forEach(b => b.style.opacity = '0.5');
+      if (btn) btn.style.opacity = '1';
+    }
+
+    function selectAgent(agentId) {
+      const agent = allAgents.find(a => a.id === agentId);
+      if (!agent) return;
+      selectedAgent = agentId;
+      const panel = document.getElementById('dispatch-panel');
+      panel.style.display = 'block';
+      panel.style.borderColor = agent.color + '44';
+      document.getElementById('dispatch-agent-name').innerHTML = (agent.icon||'') + ' ' + esc(agent.name);
+      document.getElementById('dispatch-agent-name').style.color = agent.color;
+      document.getElementById('dispatch-agent-desc').textContent = agent.description || '';
+      document.getElementById('dispatch-input').placeholder = getPlaceholder(agent);
+      document.getElementById('dispatch-input').focus();
+      const btn = document.getElementById('dispatch-btn-primary');
+      btn.style.background = agent.color;
+      btn.style.color = ['#eab308','#22c55e','#00e5fa'].includes(agent.color) ? '#0a0e17' : '#fff';
+      btn.textContent = agent.platform === 'openclaw' ? 'Send to Agent' : 'Copy & Open';
+      renderAgentMap(allAgents);
+    }
+
+    function closeDispatch() { selectedAgent = null; document.getElementById('dispatch-panel').style.display = 'none'; renderAgentMap(allAgents); }
+
+    function getPlaceholder(a) {
+      const p = { 'mmt-newsletter':'Draft article about..., Score this topic...', 'mmt-website':'Fix page..., Add section to...', 'mmt-missionpulse':'Add feature..., Fix bug in...', 'mmt-business':'Analyze opportunity for...', 'mmt-dafe':'Extract appropriations for...', 'rid-capture':'Start capture for..., Draft section...', 'rid-marketing':'Draft LinkedIn post about...', 'rid-contracts':'Check status of..., Find vehicles for...', 'cap-oasis':'Review section..., Compliance check...', 'cap-ccn':'Draft response to...', 'cap-iht2':'Draft RFI section...', 'cap-gtm':'Evaluate partner..., Market analysis...', 'personal-bio':'Update section on...', 'personal-babydev':'Create content about...', 'personal-resume':'Align skills for...', 'personal-podcast':'Prep talking points for...', 'ops-editorial':'Draft newsletter..., Score topic...', 'ops-code':'Fix bug in..., Add feature...', 'ops-research':'Research status of..., Fact-check...' };
+      return p[a.id] || 'Describe what you need...';
+    }
+
+    function executeDispatch(mode) {
+      const agent = allAgents.find(a => a.id === selectedAgent);
+      if (!agent) return;
+      const input = document.getElementById('dispatch-input').value.trim();
+      if (!input) { document.getElementById('dispatch-result').innerHTML = '<span style="color:#ef4444;">Enter a task first.</span>'; return; }
+      const resultEl = document.getElementById('dispatch-result');
+      let prompt = '';
+      if (agent.platform === 'claude_code') {
+        prompt = 'TASK: ' + input + '\n\nIMPORTANT: cd to /Users/marywomack/Projects/mmt-site first. Verify pwd does not contain /private/tmp/claude-.\n\n' + input + '\n\nVerify all changes. Do NOT deploy without review.';
+      } else if (agent.platform === 'perplexity') {
+        prompt = 'Research the following for Mission Meets Tech. Provide specific data points, contract numbers, dollar values, and source URLs.\n\nTopic: ' + input + '\n\nFocus on: federal health IT, defense contracting, VA/DHA systems, GovCon procurement.';
+      } else if (agent.platform === 'openclaw') {
+        apiPost({ action: 'add_task', task: input, agent: agent.id, priority: 'normal' }).then(() => {
+          resultEl.innerHTML = '<span style="color:#22c55e;">Task queued for Editorial agent.</span>';
+          document.getElementById('dispatch-input').value = '';
+          loadDashboard();
+        });
+        return;
+      } else {
+        const ctx = { mmt_platform:'Context: This is for Mission Meets Tech (missionmeetstech.com), a federal health IT intelligence platform.', rockitdata:'Context: This is for rockITdata, a small SDVOSB/WOSB defense contractor. Do NOT reference Mission Meets Tech.', active_captures:'Context: This is an active federal contract capture/proposal effort. Compliance and win strategy are paramount.', content_personal:'Context: Personal/content project for Mary Womack.' };
+        prompt = input + '\n\n' + (ctx[agent.domain] || '');
       }
-      textarea.value = '';
-      loadDashboard();
+      if (mode === 'clipboard' || agent.platform !== 'openclaw') {
+        navigator.clipboard.writeText(prompt).then(() => {
+          const dest = agent.platform === 'claude_code' ? 'Claude Code' : agent.platform === 'perplexity' ? 'Perplexity' : 'Claude.ai → ' + agent.name;
+          resultEl.innerHTML = '<span style="color:#22c55e;">Copied. Paste into ' + dest + '</span>';
+        });
+        apiPost({ action: 'add_task', task: input, agent: agent.id, priority: 'normal' });
+        document.getElementById('dispatch-input').value = '';
+      }
     }
 
     async function updatePipeline(id, status) { await apiPost({ action: 'update_pipeline', id, status }); loadDashboard(); }

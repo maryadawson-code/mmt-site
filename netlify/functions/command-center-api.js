@@ -1,5 +1,5 @@
 // ============================================================
-// command-center-api.js — API backend for ops command center V2
+// command-center-api.js — API backend for ops command center V3
 //
 // GET: Returns all dashboard data in one JSON response
 // POST: Executes ops actions (set mode, release email, dispatch tasks, etc.)
@@ -156,10 +156,12 @@ exports.handler = async (event) => {
         .then(r => r.data || [])
         .catch(() => []),
 
-      // V2: Agent heartbeats
+      // V3: Agent registry (replaces agent_heartbeats)
       supabase
-        .from("agent_heartbeats")
+        .from("agent_registry")
         .select("*")
+        .eq("archived", false)
+        .order("sort_order", { ascending: true })
         .then(r => r.data || [])
         .catch(() => []),
 
@@ -345,6 +347,15 @@ exports.handler = async (event) => {
       const { error: updateErr } = await supabase.from("intel_signals").update({ status: "killed" }).eq("id", body.id);
       if (updateErr) return err(500, updateErr.message);
       return ok({ killed: true });
+    }
+
+    if (action === "update_agent" && body.agent_id) {
+      const updates = { last_active: new Date().toISOString() };
+      if (body.status) updates.status = body.status;
+      if (body.current_task !== undefined) updates.current_task = body.current_task;
+      const { error: updateErr } = await supabase.from("agent_registry").update(updates).eq("id", body.agent_id);
+      if (updateErr) return err(500, updateErr.message);
+      return ok({ updated: true });
     }
 
     if (action === "seed_pipeline") {
