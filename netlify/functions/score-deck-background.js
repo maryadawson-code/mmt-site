@@ -469,22 +469,28 @@ exports.handler = async (event) => {
       body: JSON.stringify(apiCallBody),
     }));
 
-    const shadowPromise = withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        ...apiCallBody,
-        model: "claude-haiku-4-5-20251001",
-        max_tokens: MAX_OUTPUT_TOKENS,
-      }),
-    })).catch((err) => {
-      console.error("Shadow scoring failed:", err.message);
-      return null;
-    });
+    const ADMIN_EMAILS = ["maryadawson@gmail.com", "mary@missionmeetstech.com"];
+    const isAdmin = ADMIN_EMAILS.includes((email || "").toLowerCase());
+    const shadowPromise = isAdmin
+      ? Promise.resolve(null)
+      : withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": ANTHROPIC_API_KEY,
+            "anthropic-version": "2023-06-01",
+          },
+          body: JSON.stringify({
+            ...apiCallBody,
+            model: "claude-haiku-4-5-20251001",
+            max_tokens: MAX_OUTPUT_TOKENS,
+          }),
+        })).catch((err) => {
+          console.error("Shadow scoring failed:", err.message);
+          return null;
+        });
+
+    if (isAdmin) console.log("[SHADOW] Skipped shadow scoring for admin email");
 
     const [claudeResponse, shadowResponse] = await Promise.all([primaryPromise, shadowPromise]);
 
