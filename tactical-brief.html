@@ -293,10 +293,20 @@
             </div>
           </div>
         </details>
-        <div id="tb-error" style="display:none;color:#ef4444;font-size:0.875rem;padding:0.75rem;background:rgba(239,68,68,0.1);border-radius:8px;" role="alert"></div>
+        <div id="tb-error" style="display:none;color:#ef4444;font-size:0.875rem;padding:1rem;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:8px;" role="alert">
+          <p id="tb-error-text" style="margin:0 0 0.5rem;"></p>
+          <p style="margin:0;font-size:0.8125rem;color:rgba(239,68,68,0.8);">If this persists, email <a href="mailto:mary@missionmeetstech.com" style="color:#ef4444;">mary@missionmeetstech.com</a> with your topic and we'll generate your report manually.</p>
+        </div>
         <div id="tb-loading" style="display:none;text-align:center;padding:1rem;color:var(--mmt-white-dim);font-size:0.875rem;">Processing...</div>
         <button type="submit" id="tb-submit-btn" class="btn-primary w-full text-center rounded-lg text-sm font-semibold" style="cursor:pointer;border:none;display:block;">Get Your Free MarketPulse Report</button>
       </form>
+      <div id="tb-success" style="display:none;padding:2rem;background:var(--mmt-slate);border:1px solid rgba(0,229,250,0.15);border-radius:12px;text-align:center;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--mmt-green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 1rem;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <h3 style="color:#fff;font-family:'Space Grotesk',system-ui,sans-serif;font-size:1.25rem;margin-bottom:0.75rem;">Your MarketPulse Brief is on its way.</h3>
+        <p style="color:rgba(255,255,255,0.8);font-size:0.9375rem;margin-bottom:0.5rem;">Topic: <strong id="tb-confirm-topic" style="color:#fff;"></strong></p>
+        <p style="color:rgba(255,255,255,0.8);font-size:0.9375rem;margin-bottom:1rem;">Delivery to: <strong id="tb-confirm-email" style="color:#fff;"></strong></p>
+        <p style="color:rgba(255,255,255,0.6);font-size:0.875rem;margin-bottom:0;">Expected delivery: within 24 hours. Don't see it? Check spam or email <a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-cyan);text-decoration:none;">mary@missionmeetstech.com</a></p>
+      </div>
     </div>
   </section>
 

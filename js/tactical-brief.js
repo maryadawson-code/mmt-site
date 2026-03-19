@@ -9,7 +9,9 @@
     var form = document.getElementById('tactical-brief-form');
     var submitBtn = document.getElementById('tb-submit-btn');
     var errorDiv = document.getElementById('tb-error');
+    var errorText = document.getElementById('tb-error-text');
     var loadingDiv = document.getElementById('tb-loading');
+    var successDiv = document.getElementById('tb-success');
 
     if (!form || !submitBtn) return;
 
@@ -70,14 +72,14 @@
           submitBtn.textContent = 'Redirecting to checkout...';
           window.location.href = data.url;
         } else if (data.action === 'free') {
-          // Free report — redirect to confirmation
-          window.location.href = '/tactical-brief-confirmed.html?free=true';
+          // Free report — show inline confirmation
+          showSuccess(topic, email);
         } else if (data.url) {
           window.location.href = data.url;
         }
       })
       .catch(function(err) {
-        showError(err.message);
+        showError(err.message || 'Something went wrong submitting your request. Please try again.');
         submitBtn.disabled = false;
         submitBtn.textContent = 'Get Your Free MarketPulse Report';
         loadingDiv.style.display = 'none';
@@ -85,12 +87,31 @@
     });
 
     function showError(msg) {
-      errorDiv.textContent = msg;
+      if (errorText) {
+        errorText.textContent = msg;
+      } else {
+        errorDiv.textContent = msg;
+      }
       errorDiv.style.display = 'block';
     }
 
     function hideError() {
       errorDiv.style.display = 'none';
+    }
+
+    function showSuccess(topic, email) {
+      loadingDiv.style.display = 'none';
+      form.style.display = 'none';
+      if (successDiv) {
+        var topicEl = document.getElementById('tb-confirm-topic');
+        var emailEl = document.getElementById('tb-confirm-email');
+        if (topicEl) topicEl.textContent = topic;
+        if (emailEl) emailEl.textContent = email;
+        successDiv.style.display = 'block';
+      } else {
+        // Fallback to redirect if success div missing
+        window.location.href = '/tactical-brief-confirmed.html?free=true';
+      }
     }
   });
 })();
