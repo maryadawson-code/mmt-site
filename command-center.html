@@ -160,6 +160,65 @@
           <div id="task-queue"></div>
         </div>
 
+        <!-- IMAGE STUDIO -->
+        <div class="card full">
+          <h2>Image Studio</h2>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div>
+              <textarea id="image-prompt" rows="3" placeholder="Newsletter header: dark background, cyber-themed circuit board pattern with a glowing blue pulse..." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:10px;border-radius:4px;font-size:0.85rem;resize:vertical;"></textarea>
+              <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+                <select id="image-provider" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:6px 10px;border-radius:4px;font-size:0.8rem;">
+                  <option value="dalle3">DALL-E 3</option>
+                  <option value="gpt_image">GPT Image (best)</option>
+                  <option value="imagen3">Imagen 3</option>
+                </select>
+                <select id="image-size" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:6px 10px;border-radius:4px;font-size:0.8rem;">
+                  <option value="1024x1024">Square</option>
+                  <option value="1792x1024">Landscape</option>
+                  <option value="1024x1792">Portrait</option>
+                </select>
+                <select id="image-style" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:6px 10px;border-radius:4px;font-size:0.8rem;">
+                  <option value="natural">Natural</option>
+                  <option value="vivid">Vivid</option>
+                </select>
+                <button class="btn btn-cyan" onclick="generateImage()">Generate</button>
+              </div>
+              <div id="image-status" style="margin-top:8px;font-size:0.8rem;color:rgba(255,255,255,0.4);"></div>
+            </div>
+            <div id="image-preview" style="min-height:200px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+              <span style="color:rgba(255,255,255,0.2);font-size:0.8rem;">Image will appear here</span>
+            </div>
+          </div>
+          <div style="margin-top:12px;">
+            <h3 style="font-size:0.85rem;color:rgba(255,255,255,0.6);margin-bottom:8px;">Recent Images</h3>
+            <div id="image-history" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;"></div>
+          </div>
+        </div>
+
+        <!-- RESEARCH HUB -->
+        <div class="card full">
+          <h2>Research Hub</h2>
+          <div style="display:flex;gap:8px;margin-bottom:12px;">
+            <input type="text" id="research-query" placeholder="What is the current status of VA T4NG2 task orders?" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:10px;border-radius:4px;font-size:0.85rem;">
+            <button class="btn btn-cyan" onclick="runResearch()">Research All</button>
+          </div>
+          <div style="display:flex;gap:8px;margin-bottom:16px;">
+            <label style="font-size:0.75rem;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:4px;"><input type="checkbox" id="research-perplexity" checked> Perplexity</label>
+            <label style="font-size:0.75rem;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:4px;"><input type="checkbox" id="research-chatgpt" checked> ChatGPT</label>
+            <label style="font-size:0.75rem;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:4px;"><input type="checkbox" id="research-gemini" checked> Gemini</label>
+          </div>
+          <div id="research-results" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+            <div id="result-perplexity" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px;min-height:150px;"><div style="font-weight:700;font-size:0.8rem;color:#00e5fa;margin-bottom:8px;">Perplexity</div><div class="r-content" style="font-size:0.8rem;color:rgba(255,255,255,0.3);">Waiting for query...</div></div>
+            <div id="result-chatgpt" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px;min-height:150px;"><div style="font-weight:700;font-size:0.8rem;color:#74aa9c;margin-bottom:8px;">ChatGPT</div><div class="r-content" style="font-size:0.8rem;color:rgba(255,255,255,0.3);">Waiting for query...</div></div>
+            <div id="result-gemini" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px;min-height:150px;"><div style="font-weight:700;font-size:0.8rem;color:#4285f4;margin-bottom:8px;">Gemini</div><div class="r-content" style="font-size:0.8rem;color:rgba(255,255,255,0.3);">Waiting for query...</div></div>
+          </div>
+          <div id="research-actions" style="display:none;margin-top:12px;">
+            <button class="btn btn-cyan btn-sm" onclick="pushToSignal()">Push to Intel Signals</button>
+            <button class="btn btn-sm" onclick="copyResearch()" style="background:rgba(255,255,255,0.1);color:#e2e8f0;">Copy All Results</button>
+            <span id="research-push-status"></span>
+          </div>
+        </div>
+
         <!-- REVENUE -->
         <div class="card"><h2>Revenue</h2><div id="revenue-display"></div></div>
 
@@ -252,6 +311,7 @@
       renderSignals(data.signals);
       renderTaskQueue(data.tasks);
       renderAgentMap(data.agents);
+      renderImageHistory(data.recent_images);
       renderRevenue(data.revenue);
 
       // Hide seed button if pipeline has data
@@ -486,6 +546,79 @@
       await apiPost({ action: 'score_signal', id, relevance_score: parseInt(score, 10), notes: notes || null });
       toast('Signal scored.');
       loadDashboard();
+    }
+
+    // --- IMAGE STUDIO ---
+    async function generateImage() {
+      const prompt = document.getElementById('image-prompt').value.trim();
+      if (!prompt) return;
+      const provider = document.getElementById('image-provider').value;
+      const size = document.getElementById('image-size').value;
+      const style = document.getElementById('image-style').value;
+      document.getElementById('image-status').innerHTML = '<span style="color:#eab308;">Generating... (10-30s)</span>';
+      document.getElementById('image-preview').innerHTML = '<div style="color:rgba(255,255,255,0.3);">Generating...</div>';
+      try {
+        const resp = await fetch('/.netlify/functions/ai-image?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ provider, prompt, size, style }) });
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        const src = data.base64 ? 'data:' + (data.mimeType || 'image/png') + ';base64,' + data.base64 : data.url;
+        document.getElementById('image-preview').innerHTML = '<img src="' + src + '" style="max-width:100%;max-height:400px;border-radius:4px;cursor:pointer;" onclick="window.open(this.src)">';
+        document.getElementById('image-status').innerHTML = '<span style="color:#22c55e;">Generated via ' + provider + '</span>' + (data.revised_prompt ? '<br><span style="font-size:0.7rem;color:rgba(255,255,255,0.3);">Revised: ' + esc(data.revised_prompt.substring(0, 120)) + '</span>' : '');
+      } catch (e) {
+        document.getElementById('image-status').innerHTML = '<span style="color:#ef4444;">Error: ' + esc(e.message) + '</span>';
+        document.getElementById('image-preview').innerHTML = '<span style="color:rgba(255,255,255,0.2);">Generation failed</span>';
+      }
+    }
+
+    function renderImageHistory(images) {
+      const el = document.getElementById('image-history');
+      if (!images || !images.length) { el.innerHTML = '<p style="color:rgba(255,255,255,0.2);font-size:0.75rem;">No images yet</p>'; return; }
+      el.innerHTML = images.map(img => '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:6px;overflow:hidden;cursor:pointer;" title="' + esc(img.prompt.substring(0, 80)) + '">' + (img.image_url ? '<img src="' + img.image_url + '" style="width:100%;height:80px;object-fit:cover;">' : '<div style="width:100%;height:80px;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:rgba(255,255,255,0.3);">' + img.provider + '</div>') + '<div style="padding:4px 6px;font-size:0.65rem;color:rgba(255,255,255,0.4);">' + fmtDate(img.created_at) + ' · ' + img.provider + '</div></div>').join('');
+    }
+
+    // --- RESEARCH HUB ---
+    let _lastResearch = null;
+    async function runResearch() {
+      const query = document.getElementById('research-query').value.trim();
+      if (!query) return;
+      const providers = [];
+      if (document.getElementById('research-perplexity').checked) providers.push('perplexity');
+      if (document.getElementById('research-chatgpt').checked) providers.push('chatgpt');
+      if (document.getElementById('research-gemini').checked) providers.push('gemini');
+      providers.forEach(p => { const el = document.getElementById('result-' + p); if (el) el.querySelector('.r-content').innerHTML = '<span style="color:#eab308;">Researching...</span>'; });
+      try {
+        const resp = await fetch('/.netlify/functions/ai-research?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query, providers }) });
+        const data = await resp.json();
+        for (const [prov, result] of Object.entries(data.results)) {
+          const el = document.getElementById('result-' + prov);
+          if (!el) continue;
+          const contentEl = el.querySelector('.r-content');
+          if (result.error) {
+            contentEl.innerHTML = '<span style="color:#ef4444;">' + esc(result.error) + '</span>';
+          } else {
+            const html = esc(result.answer).replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+            contentEl.innerHTML = '<div style="font-size:0.8rem;line-height:1.5;color:#e2e8f0;max-height:300px;overflow-y:auto;">' + html + '</div>' + (result.citations && result.citations.length ? '<div style="margin-top:6px;font-size:0.7rem;color:rgba(255,255,255,0.3);">' + result.citations.length + ' sources</div>' : '');
+          }
+        }
+        document.getElementById('research-actions').style.display = 'flex';
+        _lastResearch = data;
+      } catch (e) {
+        providers.forEach(p => { const el = document.getElementById('result-' + p); if (el) el.querySelector('.r-content').innerHTML = '<span style="color:#ef4444;">' + esc(e.message) + '</span>'; });
+      }
+    }
+
+    async function pushToSignal() {
+      if (!_lastResearch) return;
+      const combined = Object.entries(_lastResearch.results).filter(([k, v]) => v.answer).map(([k, v]) => '[' + k + ']: ' + v.answer).join('\n\n---\n\n');
+      await apiPost({ action: 'add_signal', title: _lastResearch.query.substring(0, 120), signal_type: 'industry_news', summary: combined.substring(0, 2000), urls: (_lastResearch.results.perplexity?.citations || []).slice(0, 5) });
+      document.getElementById('research-push-status').innerHTML = ' <span style="color:#22c55e;">Pushed to Intel Signals</span>';
+      loadDashboard();
+    }
+
+    function copyResearch() {
+      if (!_lastResearch) return;
+      const text = Object.entries(_lastResearch.results).filter(([k, v]) => v.answer).map(([k, v]) => '=== ' + k.toUpperCase() + ' ===\n' + v.answer).join('\n\n');
+      navigator.clipboard.writeText(text).then(() => toast('Research copied to clipboard.'));
     }
 
     // --- ENGAGEMENT INTEL ---

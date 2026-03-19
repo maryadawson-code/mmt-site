@@ -77,6 +77,7 @@ exports.handler = async (event) => {
       tasksResult,
       agentsResult,
       signalsResult,
+      recentImagesResult,
     ] = await Promise.all([
       queryOpsEvents(supabase, { hours: 24, limit: 200 }),
 
@@ -174,6 +175,15 @@ exports.handler = async (event) => {
         .limit(10)
         .then(r => r.data || [])
         .catch(() => []),
+
+      // V4: Recent generated images
+      supabase
+        .from("generated_images")
+        .select("id, created_at, prompt, provider, image_url, size")
+        .order("created_at", { ascending: false })
+        .limit(12)
+        .then(r => r.data || [])
+        .catch(() => []),
     ]);
 
     // Quality summaries
@@ -228,6 +238,7 @@ exports.handler = async (event) => {
       agents: agentsResult,
       revenue,
       signals: signalsResult,
+      recent_images: recentImagesResult,
     };
 
     return ok(dashboard);
