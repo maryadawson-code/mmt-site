@@ -1,0 +1,197 @@
+// ============================================================
+// ops-health-check.js — Scheduled function (every 15 min)
+//
+// Detects stuck jobs, unresolved critical events, and stale
+// held emails. Logs findings to ops_ledger and attempts recovery
+// for jobs stuck >30 minutes.
+// ============================================================
+
+const { createClient } = require("@supabase/supabase-js");
+const { logOpsEvent, queryOpsEvents } = require("./lib/ops-ledger");
+
+exports.handler = async () => {
+  const SUPABASE_URL = process.env.SUPABASE_URL;
+  const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
+
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+    console.error("ops-health-check: missing Supabase credentials");
+    return { statusCode: 500, body: "Not configured" };
+  }
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+  const findings = [];
+  const now = Date.now();
+
+  // --- 1. ProposalPulse scorecards stuck >10 minutes ---
+  try {
+    const tenMinAgo = new Date(now - 10 * 60 * 1000).toISOString();
+    const { data: stuckScores } = await supabase
+      .from("mp_scoring_history")
+      .select("id, created_at, workflow_state")
+      .not("workflow_state", "in", '("delivered","email_sent","email_failed")')
+      .neq("verdict", "ERROR")
+      .lt("created_at", tenMinAgo)
+      .is("scores", null)
+      .limit(20);
+
+    if (stuckScores && stuckScores.length > 0) {
+      for (const job of stuckScores) {
+        const ageMs = now - new Date(job.created_at).getTime();
+        const ageMin = Math.round(ageMs / 60000);
+        findings.push({ type: "stuck_scorecard", id: job.id, age_minutes: ageMin, state: job.workflow_state });
+
+        await logOpsEvent(supabase, {
+          event_type: "HARNESS_FAILURE",
+          source_function: "ops-health-check",
+          severity: ageMin > 30 ? "critical" : "warn",
+          signature: "stuck_job",
+          affected_entity: job.id,
+          details: { product: "proposalpulse", age_minutes: ageMin, state: job.workflow_state },
+        });
+
+        // Auto-recover jobs stuck >30 minutes
+        if (ageMin > 30) {
+          try {
+            await supabase
+              .from("mp_scoring_history")
+              .update({ verdict: "ERROR", top_fix: "Job timed out after 30+ minutes. Please try again." })
+              .eq("id", job.id);
+
+            await logOpsEvent(supabase, {
+              event_type: "HARNESS_FAILURE",
+              source_function: "ops-health-check",
+              severity: "warn",
+              signature: "stuck_job_recovered",
+              affected_entity: job.id,
+              details: { product: "proposalpulse", age_minutes: ageMin, action: "marked_error" },
+              resolution: "Auto-transitioned to ERROR state after 30+ min timeout",
+            });
+          } catch (recoverErr) {
+            console.error("Failed to recover stuck scorecard:", job.id, recoverErr.message);
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.error("ops-health-check: scorecard check failed:", err.message);
+  }
+
+  // --- 2. MarketPulse orders stuck >15 minutes ---
+  try {
+    const fifteenMinAgo = new Date(now - 15 * 60 * 1000).toISOString();
+    const { data: stuckOrders } = await supabase
+      .from("marketpulse_orders")
+      .select("id, session_id, created_at, workflow_state")
+      .not("workflow_state", "in", '("delivered","email_sent","quality_fail")')
+      .lt("created_at", fifteenMinAgo)
+      .limit(20);
+
+    if (stuckOrders && stuckOrders.length > 0) {
+      for (const order of stuckOrders) {
+        const ageMs = now - new Date(order.created_at).getTime();
+        const ageMin = Math.round(ageMs / 60000);
+        findings.push({ type: "stuck_marketpulse", id: order.id, session_id: order.session_id, age_minutes: ageMin, state: order.workflow_state });
+
+        await logOpsEvent(supabase, {
+          event_type: "HARNESS_FAILURE",
+          source_function: "ops-health-check",
+          severity: ageMin > 30 ? "critical" : "warn",
+          signature: "stuck_job",
+          affected_entity: order.session_id,
+          details: { product: "marketpulse", age_minutes: ageMin, state: order.workflow_state },
+        });
+
+        if (ageMin > 30) {
+          try {
+            await supabase
+              .from("marketpulse_orders")
+              .update({ workflow_state: "error" })
+              .eq("id", order.id);
+
+            await logOpsEvent(supabase, {
+              event_type: "HARNESS_FAILURE",
+              source_function: "ops-health-check",
+              severity: "warn",
+              signature: "stuck_job_recovered",
+              affected_entity: order.session_id,
+              details: { product: "marketpulse", age_minutes: ageMin, action: "marked_error" },
+              resolution: "Auto-transitioned to error state after 30+ min timeout",
+            });
+          } catch (recoverErr) {
+            console.error("Failed to recover stuck MarketPulse order:", order.id, recoverErr.message);
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.error("ops-health-check: MarketPulse check failed:", err.message);
+  }
+
+  // --- 3. Held emails older than 2 hours ---
+  try {
+    const twoHoursAgo = new Date(now - 2 * 3600000).toISOString();
+    const { data: staleHeld } = await supabase
+      .from("held_emails")
+      .select("id, recipient, subject, created_at")
+      .eq("status", "held")
+      .lt("created_at", twoHoursAgo)
+      .limit(20);
+
+    if (staleHeld && staleHeld.length > 0) {
+      findings.push({ type: "stale_held_emails", count: staleHeld.length, oldest: staleHeld[0].created_at });
+
+      await logOpsEvent(supabase, {
+        event_type: "OPERATOR_FAILURE",
+        source_function: "ops-health-check",
+        severity: "warn",
+        signature: "stale_held_emails",
+        details: { count: staleHeld.length, oldest: staleHeld[0].created_at, recipients: staleHeld.map(e => e.recipient) },
+      });
+    }
+  } catch (err) {
+    console.error("ops-health-check: held emails check failed:", err.message);
+  }
+
+  // --- 4. Unresolved critical events in last hour ---
+  try {
+    const criticalEvents = await queryOpsEvents(supabase, { hours: 1, severity: "critical", limit: 20 });
+    const unresolved = criticalEvents.filter(e => !e.resolution);
+
+    if (unresolved.length > 0) {
+      findings.push({ type: "unresolved_critical", count: unresolved.length, events: unresolved.map(e => ({ id: e.id, type: e.event_type, source: e.source_function })) });
+    }
+  } catch (err) {
+    console.error("ops-health-check: critical events check failed:", err.message);
+  }
+
+  // --- 5. Quality drift check (delegated to quality-tracker if available) ---
+  try {
+    const { detectDrift } = require("./lib/quality-tracker");
+    for (const product of ["proposalpulse", "marketpulse"]) {
+      const drift = await detectDrift(supabase, { product });
+      if (drift && drift.drifting) {
+        findings.push({ type: "quality_drift", product, ...drift });
+
+        await logOpsEvent(supabase, {
+          event_type: "QUALITY_FAILURE",
+          source_function: "ops-health-check",
+          severity: "warn",
+          signature: `quality_drift_${product}`,
+          details: drift,
+        });
+      }
+    }
+  } catch {
+    // quality-tracker may not exist yet — skip
+  }
+
+  console.log(`ops-health-check: ${findings.length} findings`);
+  if (findings.length > 0) {
+    console.log("Findings:", JSON.stringify(findings, null, 2));
+  }
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ checked_at: new Date().toISOString(), findings }),
+  };
+};

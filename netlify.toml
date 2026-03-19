@@ -49,6 +49,9 @@
 [functions."predictive-signals-background"]
   schedule = "0 10 * * 3"
 
+[functions."ops-health-check"]
+  schedule = "*/15 * * * *"
+
 [[redirects]]
   from = "/"
   to = "/index.html"
