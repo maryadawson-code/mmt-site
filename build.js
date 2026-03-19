@@ -1618,7 +1618,7 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
     'agency-sources.html', 'getting-started.html',
     'tactical-brief.html', 'tactical-brief-confirmed.html',
     'about-team.html', 'about-press.html',
-    'ops.html'
+    'ops.html', 'command-center.html'
   ];
   const ogMap = {
     'index.html': 'index.png',
