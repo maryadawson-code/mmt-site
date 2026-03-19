@@ -1,4 +1,14 @@
+# ProposalPulse redirects
+/proposalpulse /proposal-pulse.html 301
+/proposalpulse.html /proposal-pulse.html 301
+/ProposalPulse /proposal-pulse.html 301
+/ProposalPulse.html /proposal-pulse.html 301
+/proposal-pulse /proposal-pulse.html 301
+
 # MarketPulse redirects
+/MarketPulse /tactical-brief.html 301
+/MarketPulse.html /tactical-brief.html 301
+/tactical-brief /tactical-brief.html 301
 /marketpulse /tactical-brief.html 301
 /marketpulse.html /tactical-brief.html 301
 /market-pulse /tactical-brief.html 301
