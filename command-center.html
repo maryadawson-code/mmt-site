@@ -464,7 +464,7 @@
       const btn = document.getElementById('dispatch-btn-primary');
       btn.style.background = agent.color;
       btn.style.color = ['#eab308','#22c55e','#00e5fa'].includes(agent.color) ? '#0a0e17' : '#fff';
-      btn.textContent = agent.platform === 'openclaw' ? 'Send to Agent' : 'Copy & Open';
+      btn.textContent = agent.platform === 'openclaw' ? 'Dispatch Task' : 'Send + Copy';
       renderAgentMap(allAgents);
     }
 
@@ -481,29 +481,40 @@
       const input = document.getElementById('dispatch-input').value.trim();
       if (!input) { document.getElementById('dispatch-result').innerHTML = '<span style="color:#ef4444;">Enter a task first.</span>'; return; }
       const resultEl = document.getElementById('dispatch-result');
+
+      // Always queue the task in the command center
+      apiPost({ action: 'add_task', task: input, agent: agent.id, priority: 'normal' }).then(() => {
+        loadDashboard();
+      });
+
+      // Build context-enriched prompt for clipboard (non-OpenClaw agents)
       let prompt = '';
       if (agent.platform === 'claude_code') {
         prompt = 'TASK: ' + input + '\n\nIMPORTANT: cd to /Users/marywomack/Projects/mmt-site first. Verify pwd does not contain /private/tmp/claude-.\n\n' + input + '\n\nVerify all changes. Do NOT deploy without review.';
       } else if (agent.platform === 'perplexity') {
         prompt = 'Research the following for Mission Meets Tech. Provide specific data points, contract numbers, dollar values, and source URLs.\n\nTopic: ' + input + '\n\nFocus on: federal health IT, defense contracting, VA/DHA systems, GovCon procurement.';
-      } else if (agent.platform === 'openclaw') {
-        apiPost({ action: 'add_task', task: input, agent: agent.id, priority: 'normal' }).then(() => {
-          resultEl.innerHTML = '<span style="color:#22c55e;">Task queued for Editorial agent.</span>';
-          document.getElementById('dispatch-input').value = '';
-          loadDashboard();
-        });
-        return;
       } else {
         const ctx = { mmt_platform:'Context: This is for Mission Meets Tech (missionmeetstech.com), a federal health IT intelligence platform.', rockitdata:'Context: This is for rockITdata, a small SDVOSB/WOSB defense contractor. Do NOT reference Mission Meets Tech.', active_captures:'Context: This is an active federal contract capture/proposal effort. Compliance and win strategy are paramount.', content_personal:'Context: Personal/content project for Mary Womack.' };
         prompt = input + '\n\n' + (ctx[agent.domain] || '');
       }
-      if (mode === 'clipboard' || agent.platform !== 'openclaw') {
+
+      document.getElementById('dispatch-input').value = '';
+
+      if (agent.platform === 'openclaw') {
+        // OpenClaw agents pick up tasks from the queue — no clipboard needed
+        resultEl.innerHTML = '<span style="color:#22c55e;">&#10003; Task dispatched to ' + agent.name + '. It will pick this up on next heartbeat.</span>';
+      } else if (mode === 'clipboard') {
+        // Explicit "Copy Prompt" click
         navigator.clipboard.writeText(prompt).then(() => {
-          const dest = agent.platform === 'claude_code' ? 'Claude Code' : agent.platform === 'perplexity' ? 'Perplexity' : 'Claude.ai → ' + agent.name;
-          resultEl.innerHTML = '<span style="color:#22c55e;">Copied. Paste into ' + dest + '</span>';
+          const dest = agent.platform === 'claude_code' ? 'Claude Code' : agent.platform === 'perplexity' ? 'Perplexity' : agent.name;
+          resultEl.innerHTML = '<span style="color:#22c55e;">&#10003; Copied to clipboard. Paste into ' + dest + '.</span>';
         });
-        apiPost({ action: 'add_task', task: input, agent: agent.id, priority: 'normal' });
-        document.getElementById('dispatch-input').value = '';
+      } else {
+        // Primary "Send" button for non-OpenClaw agents: queue + copy
+        navigator.clipboard.writeText(prompt).then(() => {
+          const dest = agent.platform === 'claude_code' ? 'Claude Code' : agent.platform === 'perplexity' ? 'Perplexity' : agent.name;
+          resultEl.innerHTML = '<span style="color:#22c55e;">&#10003; Task queued + prompt copied. Paste into ' + dest + ' to execute.</span>';
+        });
       }
     }
 
