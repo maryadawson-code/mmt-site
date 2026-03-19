@@ -88,14 +88,9 @@
   status = 301
 
 [[redirects]]
-  from = "/contact.html"
-  to = "/about.html"
-  status = 301
-
-[[redirects]]
   from = "/contact"
-  to = "/about.html"
-  status = 301
+  to = "/contact.html"
+  status = 200
 
 [[redirects]]
   from = "/contracts/mhs-genesis/"
@@ -114,22 +109,22 @@
 
 [[redirects]]
   from = "/market-pulse.html"
-  to = "/tactical-brief.html"
+  to = "/marketpulse.html"
   status = 301
 
 [[redirects]]
   from = "/market-pulse"
-  to = "/tactical-brief.html"
+  to = "/marketpulse.html"
   status = 301
 
 [[redirects]]
   from = "/marketpulse.html"
-  to = "/tactical-brief.html"
+  to = "/marketpulse.html"
   status = 301
 
 [[redirects]]
   from = "/marketpulse"
-  to = "/tactical-brief.html"
+  to = "/marketpulse.html"
   status = 301
 
 [[headers]]

@@ -270,7 +270,7 @@ async function createCheckoutSession({ name, email, company, topic, audience, ad
       additional_context: truncate(additional_context || "", 500),
     },
     success_url: `${SITE_URL}/tactical-brief-confirmed.html?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${SITE_URL}/tactical-brief.html?cancelled=true`,
+    cancel_url: `${SITE_URL}/marketpulse.html?cancelled=true`,
   });
 
   return {

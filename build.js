@@ -50,6 +50,8 @@ const topicDescriptions = {
   'AI & Innovation': 'Artificial intelligence, telehealth, and emerging technology in federal health.',
   'Strategy & Leadership': 'Leadership appointments, strategic direction, and organizational change.',
   'Healthcare Policy': 'Federal health policy, operating model shifts, and cross-agency implications.',
+  'Cybersecurity': 'FedRAMP, CMMC, ATO processes, zero trust, and cybersecurity compliance in federal health IT.',
+  'Interoperability': 'FHIR, TEFCA, health information exchange, and cross-agency data sharing.',
 };
 
 // --- Utility Functions ---
@@ -513,7 +515,7 @@ function generateSitemap(articles, tags, contracts) {
     { loc: '/contracting.html', priority: '0.6' },
     { loc: '/agency-sources.html', priority: '0.5' },
     { loc: '/getting-started.html', priority: '0.7' },
-    { loc: '/tactical-brief.html', priority: '0.8' },
+    { loc: '/marketpulse.html', priority: '0.8' },
     { loc: '/about/team/', priority: '0.5' },
     { loc: '/about/press/', priority: '0.5' },
     { loc: '/glossary/', priority: '0.5' },
@@ -1616,7 +1618,7 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
     'contract-tracker.html', 'events.html',
     'privacy.html', 'terms.html', 'security.html', 'glossary.html', 'contracting.html',
     'agency-sources.html', 'getting-started.html',
-    'tactical-brief.html', 'tactical-brief-confirmed.html',
+    'marketpulse.html', 'tactical-brief-confirmed.html',
     'about-team.html', 'about-press.html',
     'ops.html', 'command-center.html'
   ];

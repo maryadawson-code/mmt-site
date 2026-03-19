@@ -8,7 +8,8 @@ const CHECKOUT_URL = '/.netlify/functions/create-checkout';
 const FEEDBACK_URL = '/.netlify/functions/submit-feedback';
 const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
 const POLL_INTERVAL_MS = 3000;  // Poll every 3 seconds
-const POLL_TIMEOUT_MS = 300000; // 5 minute timeout
+const POLL_SOFT_TIMEOUT_MS = 180000; // 3 minute soft timeout
+const POLL_HARD_TIMEOUT_MS = 600000; // 10 minute hard timeout
 
 const ALLOWED_EXTENSIONS = ['pdf', 'pptx', 'docx'];
 const MIME_MAP = {
@@ -26,6 +27,7 @@ let isSubmitting = false;
 let userCancelled = false;
 let pollTimer = null;
 let pollTimeoutTimer = null;
+let pollSoftTimeoutTimer = null;
 let goldTeamAbort = null;
 let currentScoringId = null;
 let currentAccessToken = null;
@@ -445,20 +447,61 @@ async function submitDeck() {
 
 // ===== POLLING =====
 
+function showTimeoutMessage(type) {
+  const emailEl = document.getElementById('email');
+  const email = emailEl ? emailEl.value : 'your email';
+  const container = document.getElementById('screen-processing');
+  if (!container) return;
+
+  // Hide pipeline animation
+  const pipeline = container.querySelector('.pipeline-steps, .pipeline-container, [class*="pipeline"]');
+  if (pipeline) pipeline.style.display = 'none';
+
+  let msgDiv = document.getElementById('timeout-message');
+  if (!msgDiv) {
+    msgDiv = document.createElement('div');
+    msgDiv.id = 'timeout-message';
+    msgDiv.style.cssText = 'max-width:560px;margin:2rem auto;padding:2rem;background:var(--mmt-slate,#0A1628);border:1px solid rgba(0,229,250,0.15);border-radius:12px;text-align:center;';
+    container.appendChild(msgDiv);
+  }
+
+  if (type === 'soft') {
+    msgDiv.innerHTML = '<h3 style="color:#fff;font-family:\'Space Grotesk\',system-ui,sans-serif;font-size:1.25rem;margin-bottom:1rem;">Taking longer than usual</h3>' +
+      '<p style="color:rgba(255,255,255,0.8);line-height:1.75;margin-bottom:1rem;">Your assessment is still processing. You\'ll receive results at <strong style="color:#fff;">' + email + '</strong> when ready.</p>' +
+      '<p style="color:rgba(255,255,255,0.6);font-size:0.875rem;margin-bottom:1.5rem;">You can safely close this page.</p>' +
+      '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">' +
+      '<button onclick="location.reload()" class="btn-secondary" style="padding:10px 24px;border-radius:8px;font-size:0.875rem;cursor:pointer;">Try Again</button>' +
+      '<a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-cyan,#00E5FA);font-size:0.875rem;text-decoration:none;display:inline-flex;align-items:center;">Questions? mary@missionmeetstech.com</a>' +
+      '</div>';
+  } else {
+    msgDiv.innerHTML = '<h3 style="color:#fff;font-family:\'Space Grotesk\',system-ui,sans-serif;font-size:1.25rem;margin-bottom:1rem;">We hit a snag</h3>' +
+      '<p style="color:rgba(255,255,255,0.8);line-height:1.75;margin-bottom:1rem;">We\'ve been notified and will email your results to <strong style="color:#fff;">' + email + '</strong> within 2 hours.</p>' +
+      '<p style="color:rgba(255,255,255,0.6);font-size:0.875rem;margin-bottom:1.5rem;">If you don\'t hear from us, email mary@missionmeetstech.com and reference your submission time.</p>' +
+      '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">' +
+      '<button onclick="location.reload()" class="btn-secondary" style="padding:10px 24px;border-radius:8px;font-size:0.875rem;cursor:pointer;">Start Over</button>' +
+      '<a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-cyan,#00E5FA);font-size:0.875rem;text-decoration:none;display:inline-flex;align-items:center;">mary@missionmeetstech.com</a>' +
+      '</div>';
+  }
+}
+
 function startPolling(scoringId, gatewayData, accessToken) {
   stopPolling();
 
   // Store access token for feedback submission later
   currentAccessToken = accessToken || null;
 
-  // Set overall timeout
+  // Soft timeout at 3 minutes — show "still processing" message but keep polling
+  pollSoftTimeoutTimer = setTimeout(() => {
+    showTimeoutMessage('soft');
+  }, POLL_SOFT_TIMEOUT_MS);
+
+  // Hard timeout at 10 minutes — stop polling entirely
   pollTimeoutTimer = setTimeout(() => {
     stopPolling();
     completePipeline();
-    showScreen('screen-upload');
-    showError('Scoring is taking longer than expected. Check your email for results, or try again with a smaller file.');
+    showTimeoutMessage('hard');
     isSubmitting = false;
-  }, POLL_TIMEOUT_MS);
+  }, POLL_HARD_TIMEOUT_MS);
 
   pollTimer = setInterval(async () => {
     try {
@@ -471,6 +514,10 @@ function startPolling(scoringId, gatewayData, accessToken) {
 
       // Done — stop polling
       stopPolling();
+
+      // Clear timeout message if results came through
+      const msgDiv = document.getElementById('timeout-message');
+      if (msgDiv) msgDiv.remove();
 
       if (data.status === 'error') {
         completePipeline();
@@ -496,6 +543,7 @@ function startPolling(scoringId, gatewayData, accessToken) {
 function stopPolling() {
   if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
   if (pollTimeoutTimer) { clearTimeout(pollTimeoutTimer); pollTimeoutTimer = null; }
+  if (pollSoftTimeoutTimer) { clearTimeout(pollSoftTimeoutTimer); pollSoftTimeoutTimer = null; }
 }
 
 function cancelSubmission() {
