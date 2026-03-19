@@ -93,6 +93,22 @@
 
     /* Coming soon overlay */
     .coming-soon { display: flex; align-items: center; justify-content: center; min-height: 300px; color: rgba(255,255,255,0.3); font-size: 1.2rem; font-weight: 600; }
+
+    .diff-add { background: #e6ffec; color: #1a1a1a; }
+    .diff-remove { background: #ffebe9; color: #1a1a1a; }
+    .diff-block { font-family: monospace; font-size: 13px; white-space: pre-wrap; border: 1px solid #d0d7de; border-radius: 6px; overflow-x: auto; padding: 12px; max-height: 400px; }
+    .kanban { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+    @media (max-width: 768px) { .kanban { grid-template-columns: 1fr; } }
+    .kanban-col { background: rgba(255,255,255,0.03); border-radius: 6px; padding: 8px; min-height: 100px; }
+    .kanban-col h4 { font-size: 0.7rem; color: rgba(255,255,255,0.4); text-transform: uppercase; margin-bottom: 8px; }
+    .kanban-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 4px; padding: 8px; margin-bottom: 6px; font-size: 0.78rem; }
+    .health-bar { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.1); overflow: hidden; }
+    .health-fill { height: 100%; border-radius: 3px; }
+    .svc-urgent { border-left: 3px solid #ef4444; }
+    .svc-evaluate { border-left: 3px solid #eab308; }
+    .issue-tabs { display: flex; gap: 4px; margin-bottom: 12px; }
+    .issue-tabs button { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; }
+    .issue-tabs button.active { background: rgba(0,229,250,0.15); color: #00e5fa; }
   </style>
 </head>
 <body>
@@ -141,6 +157,12 @@
       <div id="detail-content" class="detail-view"></div>
       <div id="detail-roadmap" class="detail-view"></div>
       <div id="detail-costs" class="detail-view"></div>
+      <div id="detail-finance" class="detail-view"></div>
+      <div id="detail-services" class="detail-view"></div>
+      <div id="detail-customers" class="detail-view"></div>
+      <div id="detail-projects" class="detail-view"></div>
+      <div id="detail-qa" class="detail-view"></div>
+      <div id="detail-issues" class="detail-view"></div>
     </div>
   </div>
 
@@ -157,6 +179,12 @@
     let currentFilter = 'all';
     let _lastResearch = null;
     let _costData = null;
+    let _financeData = null;
+    let _servicesData = null;
+    let _customerData = null;
+    let _projectData = null;
+    let _qaData = null;
+    let _issueData = null;
 
     function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
     function timeSince(d) { const m = Math.floor((Date.now() - new Date(d).getTime()) / 60000); if (m < 60) return m + 'm ago'; const h = Math.floor(m / 60); if (h < 24) return h + 'h ago'; return Math.floor(h/24) + 'd ago'; }
@@ -174,6 +202,16 @@
         allAgents = data.agents || [];
         // Fetch cost data in parallel (non-blocking)
         fetch('/.netlify/functions/cost-api?key=' + apiKey + '&view=summary').then(r => r.ok ? r.json() : null).then(c => { if (c) { _costData = c; renderTiles(dashData); } }).catch(() => {});
+        Promise.all([
+          fetch('/.netlify/functions/finance-api?key=' + apiKey + '&view=services-summary').then(r => r.ok ? r.json() : null),
+          fetch('/.netlify/functions/customer-api?key=' + apiKey + '&view=summary').then(r => r.ok ? r.json() : null),
+          fetch('/.netlify/functions/projects-api?key=' + apiKey + '&view=dashboard').then(r => r.ok ? r.json() : null),
+          fetch('/.netlify/functions/qa-api?key=' + apiKey + '&view=summary').then(r => r.ok ? r.json() : null),
+          fetch('/.netlify/functions/issues-api?key=' + apiKey + '&view=stats').then(r => r.ok ? r.json() : null),
+        ]).then(([svc, cust, proj, qa, iss]) => {
+          _servicesData = svc; _customerData = cust; _projectData = proj; _qaData = qa; _issueData = iss;
+          renderTiles(dashData);
+        }).catch(() => {});
         renderMode(data);
         renderAlerts(data);
         renderTiles(data);
@@ -250,6 +288,12 @@
       return [
         { id: 'roadmap', icon: '\ud83d\udccb', title: 'Roadmap', m1: '2', m1l: 'Platforms', m2: highDebt, m2l: 'High debt', badge: highDebt },
         { id: 'costs', icon: '\ud83d\udcb0', title: 'Cost Intelligence', m1: _costData ? '$' + (_costData.today.totalCents / 100).toFixed(2) : '--', m1l: 'Today', m2: _costData ? _costData.today.calls : '--', m2l: 'API Calls', badge: _costData ? _costData.alerts.filter(a => a.severity === 'critical').length : 0 },
+        { id: 'finance', icon: '💰', title: 'Cost Intelligence', m1: _costData ? '$' + (_costData.today.totalCents / 100).toFixed(2) : '--', m1l: 'Today', m2: _costData ? _costData.today.calls : '--', m2l: 'API Calls', badge: _costData ? _costData.alerts.filter(a => a.severity === 'critical').length : 0 },
+        { id: 'services', icon: '💳', title: 'Services', m1: _servicesData ? '$' + (_servicesData.totalMonthlyCents / 100).toFixed(0) : '--', m1l: 'Monthly burn', m2: _servicesData ? _servicesData.pendingDecisions : '--', m2l: 'Decisions', badge: _servicesData ? _servicesData.upcomingDeadlines?.length || 0 : 0 },
+        { id: 'customers', icon: '👥', title: 'Customers', m1: _customerData ? _customerData.total : '--', m1l: 'Total', m2: _customerData ? _customerData.avgHealth : '--', m2l: 'Avg Health', badge: _customerData ? _customerData.atRisk : 0 },
+        { id: 'projects', icon: '📋', title: 'Projects', m1: _projectData ? _projectData.openTasks : '--', m1l: 'Open tasks', m2: _projectData ? _projectData.blockedTasks : '--', m2l: 'Blocked', badge: _projectData ? _projectData.blockedTasks : 0 },
+        { id: 'qa', icon: '🧪', title: 'QA', m1: _qaData ? _qaData.totalRegressions : '--', m1l: 'Regressions', m2: '--', m2l: 'Pass rate', badge: _qaData ? _qaData.totalRegressions : 0 },
+        { id: 'issues', icon: '🔧', title: 'Issues', m1: _issueData ? _issueData.total : '--', m1l: 'Open', m2: _issueData ? _issueData.critical : '--', m2l: 'Critical', badge: _issueData ? _issueData.critical : 0 },
         { id: 'newsletter', icon: '\ud83d\udcf0', title: 'Newsletter', m1: daysToPublish !== null ? daysToPublish : '--', m1l: 'Days to pub', m2: nextStatus || '--', m2l: 'Status', badge: nearPipeline.length || 0 },
         { id: 'products', icon: '\ud83d\udce6', title: 'Products', m1: activeOrders.length, m1l: 'Active orders', m2: deliveredToday.length, m2l: 'Delivered', badge: errorOrders.length },
         { id: 'engineering', icon: '\ud83d\udd27', title: 'Engineering', m1: pendingTasks.length, m1l: 'Pending tasks', m2: null, m2l: null, badge: pendingTasks.length },
@@ -308,6 +352,12 @@
       const fn = {
         roadmap: renderDetailRoadmap,
         costs: renderDetailCosts,
+        finance: renderDetailFinance,
+        services: renderDetailServices,
+        customers: renderDetailCustomers,
+        projects: renderDetailProjects,
+        qa: renderDetailQA,
+        issues: renderDetailIssues,
         newsletter: renderDetailNewsletter,
         products: renderDetailProducts,
         engineering: renderDetailEngineering,
@@ -1253,6 +1303,457 @@
         el.innerHTML = h || '<p style="color:rgba(255,255,255,0.3);font-size:0.82rem;">No results.</p>';
       } catch (e) { el.innerHTML = '<p style="color:#ef4444;font-size:0.82rem;">Failed: ' + e.message + '</p>'; }
     }
+
+    // ============ DETAIL: FINANCE ============
+async function renderDetailFinance() {
+  const el = document.getElementById('detail-finance');
+  let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
+  h += '<div class="detail-title">💰 Cost Intelligence</div>';
+
+  if (!_costData) { el.innerHTML = h + '<p style="color:rgba(255,255,255,0.3)">Loading...</p>'; return; }
+
+  // Big numbers
+  h += '<div class="detail-card" style="display:flex;gap:32px;flex-wrap:wrap;">';
+  h += '<div><div class="revenue-big">$' + (_costData.today.totalCents / 100).toFixed(2) + '</div><div class="revenue-label">Today\'s spend</div></div>';
+  h += '<div><div class="tile-metric">' + _costData.today.calls + '</div><div class="revenue-label">API calls</div></div>';
+  h += '<div><div class="tile-metric">$' + (_costData.today.calls > 0 ? (_costData.today.totalCents / _costData.today.calls / 100).toFixed(3) : '0') + '</div><div class="revenue-label">Avg per call</div></div>';
+  h += '</div>';
+
+  // Spend by provider
+  h += '<div class="detail-card"><h3>Spend by Provider</h3>';
+  const providers = _costData.byProvider || {};
+  Object.entries(providers).sort((a,b) => b[1]-a[1]).forEach(([p, cents]) => {
+    const pct = _costData.today.totalCents > 0 ? (cents / _costData.today.totalCents * 100) : 0;
+    h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><div style="width:100px;font-size:0.82rem;">' + esc(p) + '</div><div style="flex:1;height:16px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;"><div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#00e5fa,#00ff85);border-radius:3px;"></div></div><div style="font-size:0.82rem;font-weight:600;width:60px;text-align:right;">$' + (cents/100).toFixed(2) + '</div></div>';
+  });
+  h += '</div>';
+
+  // 7-day trend sparkline
+  const trend = _costData.trend || {};
+  const trendDays = Object.entries(trend).sort((a,b) => a[0].localeCompare(b[0])).slice(-7);
+  if (trendDays.length > 1) {
+    h += '<div class="detail-card"><h3>7-Day Trend</h3>';
+    const maxVal = Math.max(...trendDays.map(d => d[1]), 1);
+    h += '<div style="display:flex;align-items:end;gap:4px;height:60px;">';
+    trendDays.forEach(([date, cents]) => {
+      const pct = (cents / maxVal * 100);
+      h += '<div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div style="width:100%;height:' + pct + '%;min-height:2px;background:linear-gradient(180deg,#00e5fa,#00ff85);border-radius:2px;"></div><div style="font-size:0.6rem;color:rgba(255,255,255,0.3);margin-top:4px;">' + date.slice(5) + '</div></div>';
+    });
+    h += '</div></div>';
+  }
+
+  // Alerts
+  const alerts = _costData.alerts || [];
+  if (alerts.length > 0) {
+    h += '<div class="detail-card"><h3>Active Alerts</h3>';
+    alerts.forEach(a => {
+      const sc = a.severity === 'critical' ? 'red' : 'yellow';
+      h += '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><div><span class="badge badge-' + sc + '">' + a.severity + '</span> <span style="font-size:0.82rem;">' + esc(a.title) + '</span></div><button class="btn btn-sm" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);" onclick="resolveFinanceAlert(\'' + a.id + '\')">Resolve</button></div>';
+    });
+    h += '</div>';
+  }
+
+  // Rate card (collapsible)
+  try {
+    const rateRes = await fetch('/.netlify/functions/finance-api?key=' + apiKey + '&view=rate-card');
+    const rateData = await rateRes.json();
+    if (rateData.rateCard?.length) {
+      h += '<div class="detail-card"><h3 style="cursor:pointer;" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'block\':\'none\'">Rate Card ▸</h3><div style="display:none;">';
+      h += '<table><tr><th>Provider</th><th>Model</th><th>Input/1K</th><th>Output/1K</th><th>Per Call</th></tr>';
+      rateData.rateCard.forEach(r => {
+        h += '<tr><td>' + esc(r.provider) + '</td><td style="font-size:0.75rem">' + esc(r.model) + '</td><td>' + (r.input_cost_per_1k_cents || '--') + '¢</td><td>' + (r.output_cost_per_1k_cents || '--') + '¢</td><td>' + (r.per_call_cost_cents || '--') + '¢</td></tr>';
+      });
+      h += '</table></div></div>';
+    }
+  } catch {}
+
+  el.innerHTML = h;
+}
+
+async function resolveFinanceAlert(id) {
+  await fetch('/.netlify/functions/finance-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'resolve_alert', alertId: id }) });
+  toast('Alert resolved');
+  loadDashboard();
+}
+
+// ============ DETAIL: SERVICES ============
+async function renderDetailServices() {
+  const el = document.getElementById('detail-services');
+  let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
+  h += '<div class="detail-title">💳 Services</div>';
+
+  try {
+    const [summaryRes, listRes] = await Promise.all([
+      fetch('/.netlify/functions/finance-api?key=' + apiKey + '&view=services-summary').then(r => r.json()),
+      fetch('/.netlify/functions/finance-api?key=' + apiKey + '&view=services').then(r => r.json()),
+    ]);
+    const s = summaryRes;
+    const services = listRes.services || [];
+
+    // Burn summary
+    h += '<div class="detail-card" style="display:flex;gap:32px;flex-wrap:wrap;">';
+    h += '<div><div class="revenue-big">$' + (s.totalMonthlyCents / 100).toFixed(0) + '</div><div class="revenue-label">Monthly total</div></div>';
+    h += '<div><div class="tile-metric">$' + (s.businessMonthlyCents / 100).toFixed(0) + '</div><div class="revenue-label">Business</div></div>';
+    h += '<div><div class="tile-metric">$' + (s.personalMonthlyCents / 100).toFixed(0) + '</div><div class="revenue-label">Personal</div></div>';
+    h += '<div><div class="tile-metric">$' + (s.taxDeductibleMonthlyCents / 100).toFixed(0) + '</div><div class="revenue-label">Tax deductible</div></div>';
+    h += '<div><div class="tile-metric">$' + (s.annualProjectedCents / 100).toFixed(0) + '</div><div class="revenue-label">Annual projected</div></div>';
+    h += '</div>';
+
+    // Urgent actions
+    const urgent = services.filter(sv => ['verify-urgent','cancel','decide'].includes(sv.priority));
+    if (urgent.length > 0) {
+      h += '<div class="detail-card"><h3 style="color:#ef4444">⚠ Urgent Actions</h3>';
+      urgent.forEach(sv => {
+        h += '<div class="svc-urgent" style="padding:8px 12px;margin-bottom:6px;background:rgba(239,68,68,0.05);border-radius:4px;"><div style="font-weight:600;font-size:0.85rem;">' + esc(sv.service_name) + ' <span class="badge badge-red">' + sv.priority + '</span></div><div style="font-size:0.78rem;color:rgba(255,255,255,0.6);">' + esc(sv.action_required || '') + '</div>' + (sv.action_deadline ? '<div style="font-size:0.72rem;color:#ef4444;">Deadline: ' + sv.action_deadline + '</div>' : '') + '</div>';
+      });
+      h += '</div>';
+    }
+
+    // Evaluate
+    const evaluate = services.filter(sv => sv.priority === 'evaluate');
+    if (evaluate.length > 0) {
+      h += '<div class="detail-card"><h3 style="color:#eab308">Evaluate</h3>';
+      evaluate.forEach(sv => {
+        h += '<div class="svc-evaluate" style="padding:8px 12px;margin-bottom:6px;background:rgba(234,179,8,0.05);border-radius:4px;"><div style="font-weight:600;font-size:0.85rem;">' + esc(sv.service_name) + ' <span style="color:rgba(255,255,255,0.4);font-weight:400;">$' + (sv.monthly_cost_cents/100).toFixed(2) + '/mo</span></div><div style="font-size:0.78rem;color:rgba(255,255,255,0.6);">' + esc(sv.action_required || sv.notes || '') + '</div></div>';
+      });
+      h += '</div>';
+    }
+
+    // Services by category (collapsible)
+    const cats = {};
+    services.forEach(sv => { if (!cats[sv.category]) cats[sv.category] = []; cats[sv.category].push(sv); });
+    Object.entries(cats).forEach(([cat, svcs]) => {
+      const catTotal = svcs.reduce((s, sv) => s + (sv.monthly_cost_cents || 0), 0);
+      h += '<div class="detail-card"><h3 style="cursor:pointer;" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'block\':\'none\'">' + cat.charAt(0).toUpperCase() + cat.slice(1) + ' ($' + (catTotal/100).toFixed(0) + '/mo) ▸</h3><div style="display:none;">';
+      h += '<table><tr><th>Service</th><th>Cost</th><th>Cycle</th><th>Status</th><th>Priority</th></tr>';
+      svcs.forEach(sv => {
+        const pc = sv.priority === 'keep' ? 'green' : sv.priority === 'monitor' ? 'blue' : sv.priority === 'evaluate' ? 'yellow' : sv.priority === 'cancel' ? 'red' : 'gray';
+        h += '<tr><td style="font-weight:500;">' + esc(sv.service_name) + '</td><td>$' + (sv.monthly_cost_cents/100).toFixed(2) + '</td><td style="font-size:0.75rem;">' + (sv.billing_cycle || '--') + '</td><td><span class="badge badge-' + (sv.status === 'active' ? 'green' : 'gray') + '">' + sv.status + '</span></td><td><span class="badge badge-' + pc + '">' + sv.priority + '</span></td></tr>';
+      });
+      h += '</table></div></div>';
+    });
+
+  } catch (e) { h += '<p style="color:#ef4444">Failed to load: ' + e.message + '</p>'; }
+
+  el.innerHTML = h;
+}
+
+// ============ DETAIL: CUSTOMERS ============
+async function renderDetailCustomers() {
+  const el = document.getElementById('detail-customers');
+  let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
+  h += '<div class="detail-title">👥 Customers</div>';
+
+  try {
+    const [summaryRes, listRes] = await Promise.all([
+      fetch('/.netlify/functions/customer-api?key=' + apiKey + '&view=summary').then(r => r.json()),
+      fetch('/.netlify/functions/customer-api?key=' + apiKey + '&view=list').then(r => r.json()),
+    ]);
+    const s = summaryRes;
+    const customers = listRes.customers || [];
+
+    // Summary cards
+    h += '<div class="detail-card" style="display:flex;gap:32px;flex-wrap:wrap;">';
+    h += '<div><div class="revenue-big">' + s.total + '</div><div class="revenue-label">Total customers</div></div>';
+    h += '<div><div class="tile-metric">$' + ((s.totalRevenueCents || 0) / 100).toFixed(0) + '</div><div class="revenue-label">Total revenue</div></div>';
+    h += '<div><div class="tile-metric">' + s.avgHealth + '</div><div class="revenue-label">Avg health</div></div>';
+    h += '<div><div class="tile-metric" style="color:#ef4444">' + s.atRisk + '</div><div class="revenue-label">At risk</div></div>';
+    h += '</div>';
+
+    // At-risk customers
+    const atRisk = customers.filter(c => c.churn_risk === 'high');
+    if (atRisk.length > 0) {
+      h += '<div class="detail-card"><h3 style="color:#ef4444">At Risk</h3>';
+      atRisk.forEach(c => {
+        const hc = c.health_score < 30 ? '#ef4444' : c.health_score < 60 ? '#eab308' : '#22c55e';
+        h += '<div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><div style="flex:1;"><div style="font-weight:600;font-size:0.85rem;">' + esc(c.name || c.email) + '</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">' + esc(c.company || '') + '</div></div><div style="width:60px;text-align:center;"><div style="font-size:1.2rem;font-weight:700;color:' + hc + ';">' + c.health_score + '</div><div class="health-bar"><div class="health-fill" style="width:' + c.health_score + '%;background:' + hc + ';"></div></div></div></div>';
+      });
+      h += '</div>';
+    }
+
+    // Full customer list
+    h += '<div class="detail-card"><h3>All Customers</h3>';
+    h += '<table><tr><th>Name</th><th>Email</th><th>Revenue</th><th>PP</th><th>MP</th><th>Health</th><th>Risk</th><th>Stage</th></tr>';
+    customers.forEach(c => {
+      const hc = c.health_score < 30 ? 'red' : c.health_score < 60 ? 'yellow' : 'green';
+      const rc = c.churn_risk === 'high' ? 'red' : c.churn_risk === 'medium' ? 'yellow' : 'green';
+      h += '<tr><td style="font-weight:500;">' + esc(c.name || '--') + '</td><td style="font-size:0.75rem;">' + esc(c.email) + '</td><td>$' + ((c.total_revenue_cents||0)/100).toFixed(0) + '</td><td>' + (c.proposalpulse_count||0) + '</td><td>' + (c.marketpulse_count||0) + '</td><td><span class="badge badge-' + hc + '">' + c.health_score + '</span></td><td><span class="badge badge-' + rc + '">' + (c.churn_risk||'--') + '</span></td><td><span class="badge badge-gray">' + (c.lifecycle_stage||'--') + '</span></td></tr>';
+    });
+    h += '</table></div>';
+
+  } catch (e) { h += '<p style="color:#ef4444">Failed: ' + e.message + '</p>'; }
+
+  el.innerHTML = h;
+}
+
+// ============ DETAIL: PROJECTS ============
+async function renderDetailProjects() {
+  const el = document.getElementById('detail-projects');
+  let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
+  h += '<div class="detail-title">📋 Projects</div>';
+
+  try {
+    const [dashRes, backlogRes] = await Promise.all([
+      fetch('/.netlify/functions/projects-api?key=' + apiKey + '&view=dashboard').then(r => r.json()),
+      fetch('/.netlify/functions/projects-api?key=' + apiKey + '&view=backlog').then(r => r.json()),
+    ]);
+    const projects = dashRes.projects || [];
+    const tasks = backlogRes.tasks || [];
+
+    // Project cards
+    h += '<div class="detail-card"><h3>Active Projects</h3>';
+    projects.forEach(p => {
+      const pc = p.priority === 'critical' ? 'red' : p.priority === 'high' ? 'yellow' : 'blue';
+      h += '<div style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><div style="display:flex;justify-content:space-between;"><div style="font-weight:600;">' + esc(p.name) + '</div><span class="badge badge-' + pc + '">' + p.priority + '</span></div><div style="font-size:0.78rem;color:rgba(255,255,255,0.5);">' + esc(p.description || '') + '</div></div>';
+    });
+    h += '</div>';
+
+    // Kanban
+    const statuses = ['backlog', 'ready', 'in_progress', 'review', 'done'];
+    const statusLabels = { backlog: 'Backlog', ready: 'Ready', in_progress: 'In Progress', review: 'Review', done: 'Done' };
+    h += '<div class="detail-card"><h3>Task Board</h3>';
+    h += '<div class="kanban">';
+    statuses.forEach(status => {
+      const col = tasks.filter(t => t.status === status);
+      h += '<div class="kanban-col"><h4>' + statusLabels[status] + ' (' + col.length + ')</h4>';
+      col.slice(0, 10).forEach(t => {
+        const pc = t.priority === 'critical' ? 'red' : t.priority === 'high' ? 'yellow' : 'gray';
+        h += '<div class="kanban-card"><div style="font-weight:500;">' + esc(t.title) + '</div><div style="display:flex;gap:6px;margin-top:4px;"><span class="badge badge-' + pc + '" style="font-size:0.65rem;">' + t.priority + '</span>' + (t.assignee ? '<span style="font-size:0.65rem;color:rgba(255,255,255,0.4);">' + esc(t.assignee) + '</span>' : '') + '</div></div>';
+      });
+      h += '</div>';
+    });
+    h += '</div></div>';
+
+    // Create task form
+    h += '<div class="detail-card"><h3>Quick Add Task</h3>';
+    h += '<div style="display:flex;gap:8px;flex-wrap:wrap;">';
+    h += '<input id="new-task-title" placeholder="Task title" style="flex:1;min-width:200px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:6px 10px;border-radius:4px;font-size:0.82rem;">';
+    h += '<select id="new-task-priority" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:6px;border-radius:4px;font-size:0.82rem;"><option value="normal">Normal</option><option value="high">High</option><option value="critical">Critical</option></select>';
+    h += '<button class="btn btn-cyan btn-sm" onclick="createTask()">Add</button>';
+    h += '</div></div>';
+
+  } catch (e) { h += '<p style="color:#ef4444">Failed: ' + e.message + '</p>'; }
+
+  el.innerHTML = h;
+}
+
+async function createTask() {
+  const title = document.getElementById('new-task-title').value;
+  const priority = document.getElementById('new-task-priority').value;
+  if (!title) return;
+  await fetch('/.netlify/functions/projects-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'create_task', title, priority }) });
+  document.getElementById('new-task-title').value = '';
+  toast('Task created');
+  renderDetailView('projects');
+}
+
+// ============ DETAIL: QA ============
+async function renderDetailQA() {
+  const el = document.getElementById('detail-qa');
+  let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
+  h += '<div class="detail-title">🧪 QA</div>';
+
+  try {
+    const res = await fetch('/.netlify/functions/qa-api?key=' + apiKey + '&view=summary');
+    const data = await res.json();
+    const products = data.products || [];
+
+    // Product health cards
+    h += '<div class="detail-card" style="display:flex;gap:16px;flex-wrap:wrap;">';
+    products.forEach(p => {
+      const grade = p.lastRun?.result_grade || '--';
+      const gc = ['A++','A+','A'].includes(grade) ? 'green' : ['B+','B','B-'].includes(grade) ? 'yellow' : grade === '--' ? 'gray' : 'red';
+      h += '<div style="flex:1;min-width:150px;text-align:center;padding:12px;background:rgba(255,255,255,0.03);border-radius:6px;"><div style="font-size:0.75rem;color:rgba(255,255,255,0.4);text-transform:uppercase;">' + p.product + '</div><div style="font-size:2rem;font-weight:700;" class="badge badge-' + gc + '" style="font-size:1.5rem;">' + grade + '</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.3);">Regressions: ' + p.regressionsLast7d + '</div></div>';
+    });
+    h += '</div>';
+
+    // SLA dashboard
+    h += '<div class="detail-card"><h3>SLA Status</h3>';
+    products.forEach(p => {
+      if (!p.sla) return;
+      const pct = p.sla.orders_total > 0 ? Math.round(p.sla.sla_met_count / p.sla.orders_total * 100) : 100;
+      const sc = pct >= 95 ? '#22c55e' : pct >= 80 ? '#eab308' : '#ef4444';
+      h += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;"><div style="width:100px;font-size:0.82rem;">' + p.product + '</div><div style="flex:1;"><div class="health-bar"><div class="health-fill" style="width:' + pct + '%;background:' + sc + ';"></div></div></div><div style="font-size:0.82rem;font-weight:600;color:' + sc + ';">' + pct + '%</div></div>';
+    });
+    h += '</div>';
+
+    // Regressions
+    if (data.totalRegressions > 0) {
+      const regRes = await fetch('/.netlify/functions/qa-api?key=' + apiKey + '&view=regressions');
+      const regData = await regRes.json();
+      h += '<div class="detail-card"><h3 style="color:#ef4444">Regressions</h3>';
+      (regData.regressions || []).forEach(r => {
+        h += '<div style="padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><span class="badge badge-red">' + r.product + '</span> <span style="font-size:0.82rem;">' + esc(r.regression_details || r.result_summary || '') + '</span> <span style="font-size:0.72rem;color:rgba(255,255,255,0.3);">' + timeSince(r.created_at) + '</span></div>';
+      });
+      h += '</div>';
+    }
+
+  } catch (e) { h += '<p style="color:#ef4444">Failed: ' + e.message + '</p>'; }
+
+  el.innerHTML = h;
+}
+
+// ============ DETAIL: ISSUES ============
+let issuesTab = 'needs-attention';
+async function renderDetailIssues() {
+  const el = document.getElementById('detail-issues');
+  let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
+  h += '<div class="detail-title">🔧 Issues</div>';
+
+  try {
+    const [openRes, sentryRes, deployRes] = await Promise.all([
+      fetch('/.netlify/functions/issues-api?key=' + apiKey + '&view=open').then(r => r.json()),
+      fetch('/.netlify/functions/issues-api?key=' + apiKey + '&view=sentry').then(r => r.json()),
+      fetch('/.netlify/functions/issues-api?key=' + apiKey + '&view=deployments').then(r => r.json()),
+    ]);
+    const issues = openRes.issues || [];
+    const sentryErrors = sentryRes.errors || [];
+    const deployments = deployRes.deployments || [];
+
+    // Tab bar
+    h += '<div class="issue-tabs">';
+    ['needs-attention', 'all', 'sentry', 'deployments'].forEach(tab => {
+      const labels = { 'needs-attention': 'Needs Attention', all: 'All Open', sentry: 'Sentry', deployments: 'Deploys' };
+      h += '<button class="' + (issuesTab === tab ? 'active' : '') + '" onclick="issuesTab=\'' + tab + '\';renderDetailView(\'issues\')">' + labels[tab] + '</button>';
+    });
+    h += '</div>';
+
+    if (issuesTab === 'needs-attention') {
+      const needsAttn = issues.filter(i => i.status === 'detected' || i.status === 'fix-proposed' || !i.assigned_agent);
+      h += '<div class="detail-card"><h3>Needs Attention (' + needsAttn.length + ')</h3>';
+      if (!needsAttn.length) h += '<p style="color:rgba(255,255,255,0.3)">All clear</p>';
+      needsAttn.forEach(i => {
+        const sc = i.severity === 'critical' ? 'red' : i.severity === 'high' ? 'yellow' : 'blue';
+        h += '<div style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer;" onclick="showIssueDetail(\'' + i.id + '\')">';
+        h += '<div style="display:flex;justify-content:space-between;"><div style="font-weight:600;font-size:0.85rem;">' + esc(i.title) + '</div><span class="badge badge-' + sc + '">' + i.severity + '</span></div>';
+        h += '<div style="font-size:0.75rem;color:rgba(255,255,255,0.4);margin-top:2px;"><span class="badge badge-gray">' + i.status + '</span> ' + (i.product || '') + ' · ' + timeSince(i.created_at) + '</div>';
+        h += '</div>';
+      });
+      h += '</div>';
+    }
+
+    if (issuesTab === 'all') {
+      h += '<div class="detail-card"><h3>All Open Issues (' + issues.length + ')</h3>';
+      h += '<table><tr><th>Title</th><th>Severity</th><th>Status</th><th>Product</th><th>Assigned</th><th>Age</th></tr>';
+      issues.forEach(i => {
+        const sc = i.severity === 'critical' ? 'red' : i.severity === 'high' ? 'yellow' : 'blue';
+        h += '<tr style="cursor:pointer;" onclick="showIssueDetail(\'' + i.id + '\')"><td style="font-weight:500;">' + esc(i.title) + '</td><td><span class="badge badge-' + sc + '">' + i.severity + '</span></td><td><span class="badge badge-gray">' + i.status + '</span></td><td>' + (i.product || '--') + '</td><td style="font-size:0.75rem;">' + (i.assigned_agent || i.assigned_human || '--') + '</td><td style="font-size:0.75rem;color:rgba(255,255,255,0.4);">' + timeSince(i.created_at) + '</td></tr>';
+      });
+      h += '</table></div>';
+    }
+
+    if (issuesTab === 'sentry') {
+      h += '<div class="detail-card"><h3>Sentry Errors (' + sentryErrors.length + ')</h3>';
+      if (!sentryErrors.length) h += '<p style="color:rgba(255,255,255,0.3)">No unresolved errors</p>';
+      else {
+        h += '<table><tr><th>Title</th><th>Level</th><th>Events</th><th>Last Seen</th></tr>';
+        sentryErrors.forEach(e => {
+          h += '<tr><td style="font-size:0.82rem;">' + esc(e.title) + '</td><td><span class="badge badge-' + (e.level === 'error' ? 'red' : 'yellow') + '">' + (e.level || '--') + '</span></td><td>' + (e.event_count || 1) + '</td><td style="font-size:0.75rem;color:rgba(255,255,255,0.4);">' + (e.last_seen ? timeSince(e.last_seen) : '--') + '</td></tr>';
+        });
+        h += '</table>';
+      }
+      h += '</div>';
+    }
+
+    if (issuesTab === 'deployments') {
+      h += '<div class="detail-card"><h3>Recent Deployments</h3>';
+      if (!deployments.length) h += '<p style="color:rgba(255,255,255,0.3)">No deployments logged</p>';
+      else {
+        h += '<table><tr><th>Branch</th><th>Status</th><th>Message</th><th>By</th><th>Time</th></tr>';
+        deployments.forEach(d => {
+          const sc = d.status === 'success' ? 'green' : d.status === 'failed' ? 'red' : 'yellow';
+          h += '<tr><td style="font-family:monospace;font-size:0.75rem;">' + esc(d.branch) + '</td><td><span class="badge badge-' + sc + '">' + d.status + '</span></td><td class="trunc" style="font-size:0.75rem;">' + esc(d.commit_message || '--') + '</td><td style="font-size:0.75rem;">' + esc(d.triggered_by || '--') + '</td><td style="font-size:0.75rem;color:rgba(255,255,255,0.4);">' + timeSince(d.created_at) + '</td></tr>';
+        });
+        h += '</table>';
+      }
+      h += '</div>';
+    }
+
+  } catch (e) { h += '<p style="color:#ef4444">Failed: ' + e.message + '</p>'; }
+
+  el.innerHTML = h;
+}
+
+async function showIssueDetail(id) {
+  const el = document.getElementById('detail-issues');
+  try {
+    const res = await fetch('/.netlify/functions/issues-api?key=' + apiKey + '&view=detail&id=' + id);
+    const data = await res.json();
+    const i = data.issue;
+    const comments = data.comments || [];
+
+    let h = '<button class="back-btn" onclick="renderDetailView(\'issues\')">&#8592; Back to Issues</button>';
+    h += '<div class="detail-title">' + esc(i.title) + '</div>';
+
+    // Context card
+    h += '<div class="detail-card"><h3>Context</h3>';
+    h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;font-size:0.82rem;">';
+    h += '<div><span style="color:rgba(255,255,255,0.4)">Severity:</span> <span class="badge badge-' + (i.severity === 'critical' ? 'red' : i.severity === 'high' ? 'yellow' : 'blue') + '">' + i.severity + '</span></div>';
+    h += '<div><span style="color:rgba(255,255,255,0.4)">Status:</span> <span class="badge badge-gray">' + i.status + '</span></div>';
+    h += '<div><span style="color:rgba(255,255,255,0.4)">Product:</span> ' + (i.product || '--') + '</div>';
+    h += '<div><span style="color:rgba(255,255,255,0.4)">Agent:</span> ' + (i.assigned_agent || '--') + '</div>';
+    h += '</div>';
+    if (i.root_cause) h += '<div style="margin-top:8px;font-size:0.82rem;"><span style="color:rgba(255,255,255,0.4)">Root cause:</span> ' + esc(i.root_cause) + '</div>';
+    if (i.suggested_fix) h += '<div style="margin-top:4px;font-size:0.82rem;"><span style="color:rgba(255,255,255,0.4)">Suggested fix:</span> ' + esc(i.suggested_fix) + '</div>';
+    if (i.error_logs) h += '<div style="margin-top:8px;font-family:monospace;font-size:0.75rem;background:rgba(255,255,255,0.03);padding:8px;border-radius:4px;white-space:pre-wrap;max-height:200px;overflow-y:auto;">' + esc(i.error_logs) + '</div>';
+    h += '</div>';
+
+    // Fix diff
+    if (i.fix_diff) {
+      h += '<div class="detail-card"><h3>Proposed Fix</h3>';
+      h += '<div class="diff-block">';
+      i.fix_diff.split('\n').forEach(line => {
+        if (line.startsWith('+')) h += '<div class="diff-add">' + esc(line) + '</div>';
+        else if (line.startsWith('-')) h += '<div class="diff-remove">' + esc(line) + '</div>';
+        else h += '<div>' + esc(line) + '</div>';
+      });
+      h += '</div></div>';
+    }
+
+    // Conversation
+    h += '<div class="detail-card"><h3>Conversation</h3>';
+    if (comments.length === 0) h += '<p style="color:rgba(255,255,255,0.3)">No comments yet</p>';
+    comments.forEach(c => {
+      const isHuman = c.author_type === 'human';
+      h += '<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><div style="display:flex;justify-content:space-between;"><span style="font-weight:600;font-size:0.82rem;color:' + (isHuman ? '#00e5fa' : '#a855f7') + ';">' + esc(c.author) + '</span><span style="font-size:0.7rem;color:rgba(255,255,255,0.3);">' + timeSince(c.created_at) + '</span></div><div style="font-size:0.82rem;margin-top:4px;">' + esc(c.content) + '</div>';
+      if (c.code_diff) { h += '<div class="diff-block" style="margin-top:6px;">'; c.code_diff.split('\n').forEach(line => { if (line.startsWith('+')) h += '<div class="diff-add">' + esc(line) + '</div>'; else if (line.startsWith('-')) h += '<div class="diff-remove">' + esc(line) + '</div>'; else h += '<div>' + esc(line) + '</div>'; }); h += '</div>'; }
+      h += '</div>';
+    });
+
+    // Comment input
+    h += '<div style="margin-top:12px;display:flex;gap:8px;">';
+    h += '<input id="issue-comment-input" placeholder="Add comment..." style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:8px;border-radius:4px;font-size:0.82rem;">';
+    h += '<button class="btn btn-cyan btn-sm" onclick="postIssueComment(\'' + i.id + '\')">Send</button>';
+    h += '</div></div>';
+
+    // Status actions
+    h += '<div class="detail-card"><h3>Actions</h3><div class="actions">';
+    const statusActions = { detected: ['diagnosing'], diagnosing: ['diagnosed'], diagnosed: ['fix-proposed'], 'fix-proposed': ['fix-approved', 'diagnosed'], 'fix-approved': ['deploying'], deploying: ['deployed'], deployed: ['verified'], verified: ['closed'] };
+    const nextStatuses = statusActions[i.status] || ['closed'];
+    nextStatuses.forEach(ns => {
+      h += '<button class="btn btn-sm btn-cyan" onclick="updateIssueStatus(\'' + i.id + '\',\'' + ns + '\')">' + ns + '</button>';
+    });
+    h += '<button class="btn btn-sm btn-red" onclick="updateIssueStatus(\'' + i.id + '\',\'wont-fix\')">Won\'t Fix</button>';
+    h += '</div></div>';
+
+    el.innerHTML = h;
+  } catch (e) { el.innerHTML = '<p style="color:#ef4444">Failed: ' + e.message + '</p>'; }
+}
+
+async function postIssueComment(issueId) {
+  const input = document.getElementById('issue-comment-input');
+  const content = input.value.trim();
+  if (!content) return;
+  await fetch('/.netlify/functions/issues-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'comment', issueId, author: 'coo', authorType: 'human', content }) });
+  input.value = '';
+  showIssueDetail(issueId);
+}
+
+async function updateIssueStatus(id, status) {
+  await fetch('/.netlify/functions/issues-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'update_status', id, status }) });
+  toast('Status → ' + status);
+  showIssueDetail(id);
+}
 
     // Apply initial route after first load
     const _origLoadDashboard = loadDashboard;
