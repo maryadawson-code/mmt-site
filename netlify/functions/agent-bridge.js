@@ -45,24 +45,24 @@ exports.handler = async (event) => {
     const result = {};
 
     if (section === "all" || section === "agents") {
-      const { data } = await supabase.from("agent_heartbeats").select("*").order("last_seen", { ascending: false });
+      const { data } = await supabase.from("agent_heartbeats").select("agent, status, last_seen, current_task").order("last_seen", { ascending: false });
       result.agents = data || [];
     }
     if (section === "all" || section === "tasks") {
-      const { data } = await supabase.from("task_queue").select("*").in("status", ["pending", "in_progress"]).order("created_at", { ascending: false }).limit(50);
+      const { data } = await supabase.from("task_queue").select("id, task, agent, status, priority, created_at, completed_at, result").in("status", ["pending", "in_progress"]).order("created_at", { ascending: false }).limit(50);
       result.tasks = data || [];
     }
     if (section === "all" || section === "signals") {
-      const { data } = await supabase.from("intel_signals").select("*").neq("status", "killed").order("created_at", { ascending: false }).limit(50);
+      const { data } = await supabase.from("intel_signals").select("id, title, signal_type, summary, status, source, created_at").neq("status", "killed").order("created_at", { ascending: false }).limit(50);
       result.signals = data || [];
     }
     if (section === "all" || section === "pipeline") {
-      const { data } = await supabase.from("newsletter_pipeline").select("*").order("publish_date", { ascending: false }).limit(20);
+      const { data } = await supabase.from("newsletter_pipeline").select("id, publish_date, day_slot, lead_topic, lead_score, status, notes, linkedin_drafted, podcast_points_drafted").order("publish_date", { ascending: false }).limit(20);
       result.pipeline = data || [];
     }
     if (section === "all" || section === "orders") {
-      const { data: mp } = await supabase.from("marketpulse_orders").select("*").order("created_at", { ascending: false }).limit(20);
-      const { data: pp } = await supabase.from("mp_scoring_history").select("*").order("created_at", { ascending: false }).limit(20);
+      const { data: mp } = await supabase.from("marketpulse_orders").select("id, session_id, created_at, email, topic, workflow_state, status").order("created_at", { ascending: false }).limit(20);
+      const { data: pp } = await supabase.from("mp_scoring_history").select("id, created_at, email, file_name, verdict, overall_grade, avg_score, workflow_state, document_type").order("created_at", { ascending: false }).limit(20);
       result.orders = { marketpulse: mp || [], proposalpulse: pp || [] };
     }
 

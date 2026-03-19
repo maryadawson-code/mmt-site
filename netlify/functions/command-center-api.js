@@ -140,7 +140,7 @@ exports.handler = async (event) => {
       // V2: Newsletter pipeline
       supabase
         .from("newsletter_pipeline")
-        .select("*")
+        .select("id, publish_date, day_slot, lead_topic, lead_score, status, notes, linkedin_drafted, podcast_points_drafted")
         .gte("publish_date", today)
         .lte("publish_date", fourWeeksOut)
         .order("publish_date", { ascending: true })
@@ -150,7 +150,7 @@ exports.handler = async (event) => {
       // V2: Task queue
       supabase
         .from("task_queue")
-        .select("*")
+        .select("id, task, agent, status, priority, created_at, completed_at, result")
         .or(`status.eq.pending,status.eq.in_progress,and(status.eq.completed,completed_at.gte.${oneDayAgo})`)
         .order("created_at", { ascending: false })
         .limit(20)
@@ -160,7 +160,7 @@ exports.handler = async (event) => {
       // V3: Agent registry (replaces agent_heartbeats)
       supabase
         .from("agent_registry")
-        .select("*")
+        .select("id, name, role, status, current_task, last_active, sort_order")
         .eq("archived", false)
         .order("sort_order", { ascending: true })
         .then(r => r.data || [])
@@ -169,7 +169,7 @@ exports.handler = async (event) => {
       // V2: Intel signals
       supabase
         .from("intel_signals")
-        .select("*")
+        .select("id, title, signal_type, summary, status, source, relevance_score, created_at")
         .in("status", ["new", "scored", "assigned"])
         .order("created_at", { ascending: false })
         .limit(10)
