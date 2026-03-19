@@ -52,6 +52,9 @@
 [functions."ops-health-check"]
   schedule = "*/30 * * * *"
 
+[functions."cost-rollup"]
+  schedule = "0 7 * * *"
+
 [[redirects]]
   from = "/"
   to = "/index.html"
