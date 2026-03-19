@@ -33,7 +33,7 @@ exports.handler = async () => {
       .order("created_at", { ascending: false });
 
     if (ppRecent && ppRecent.length > 0) {
-      const stuck = ppRecent.filter(r => r.workflow_state && !["delivered", "failed_terminal"].includes(r.workflow_state));
+      const stuck = ppRecent.filter(r => r.workflow_state && !["delivered", "failed_terminal", "failed", "error", "quality_fail", "email_sent", "email_failed"].includes(r.workflow_state));
       if (stuck.length > 0) {
         alerts.push("ProposalPulse: " + stuck.length + " stuck orders this week");
       }
@@ -47,7 +47,7 @@ exports.handler = async () => {
       .order("created_at", { ascending: false });
 
     if (mpRecent && mpRecent.length > 0) {
-      const stuck = mpRecent.filter(r => r.workflow_state && !["delivered", "failed_terminal"].includes(r.workflow_state));
+      const stuck = mpRecent.filter(r => r.workflow_state && !["delivered", "failed_terminal", "failed", "error", "quality_fail", "email_sent", "email_failed"].includes(r.workflow_state));
       if (stuck.length > 0) {
         alerts.push("MarketPulse: " + stuck.length + " stuck orders this week");
       }

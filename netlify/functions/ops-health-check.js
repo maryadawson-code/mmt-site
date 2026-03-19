@@ -22,13 +22,25 @@ exports.handler = async () => {
   const findings = [];
   const now = Date.now();
 
+  // Dedup: fetch recent stuck_job events to avoid re-logging the same orders
+  let recentStuckIds = new Set();
+  try {
+    const oneHourAgo = new Date(now - 60 * 60 * 1000).toISOString();
+    const recentEvents = await queryOpsEvents(supabase, { hours: 1, limit: 100 });
+    for (const evt of recentEvents) {
+      if (evt.signature === "stuck_job" && evt.affected_entity) {
+        recentStuckIds.add(evt.affected_entity);
+      }
+    }
+  } catch { /* non-blocking */ }
+
   // --- 1. ProposalPulse scorecards stuck >10 minutes ---
   try {
     const tenMinAgo = new Date(now - 10 * 60 * 1000).toISOString();
     const { data: stuckScores } = await supabase
       .from("mp_scoring_history")
       .select("id, created_at, workflow_state")
-      .not("workflow_state", "in", '("delivered","email_sent","email_failed")')
+      .not("workflow_state", "in", '("delivered","email_sent","email_failed","failed","error","quality_fail")')
       .neq("verdict", "ERROR")
       .lt("created_at", tenMinAgo)
       .is("scores", null)
@@ -40,21 +52,24 @@ exports.handler = async () => {
         const ageMin = Math.round(ageMs / 60000);
         findings.push({ type: "stuck_scorecard", id: job.id, age_minutes: ageMin, state: job.workflow_state });
 
-        await logOpsEvent(supabase, {
-          event_type: "HARNESS_FAILURE",
-          source_function: "ops-health-check",
-          severity: ageMin > 30 ? "critical" : "warn",
-          signature: "stuck_job",
-          affected_entity: job.id,
-          details: { product: "proposalpulse", age_minutes: ageMin, state: job.workflow_state },
-        });
+        // Only log if not already flagged in the last hour
+        if (!recentStuckIds.has(job.id)) {
+          await logOpsEvent(supabase, {
+            event_type: "HARNESS_FAILURE",
+            source_function: "ops-health-check",
+            severity: ageMin > 30 ? "critical" : "warn",
+            signature: "stuck_job",
+            affected_entity: job.id,
+            details: { product: "proposalpulse", age_minutes: ageMin, state: job.workflow_state },
+          });
+        }
 
         // Auto-recover jobs stuck >30 minutes
         if (ageMin > 30) {
           try {
             await supabase
               .from("mp_scoring_history")
-              .update({ verdict: "ERROR", top_fix: "Job timed out after 30+ minutes. Please try again." })
+              .update({ verdict: "ERROR", workflow_state: "failed", top_fix: "Job timed out after 30+ minutes. Please try again." })
               .eq("id", job.id);
 
             await logOpsEvent(supabase, {
@@ -63,8 +78,8 @@ exports.handler = async () => {
               severity: "warn",
               signature: "stuck_job_recovered",
               affected_entity: job.id,
-              details: { product: "proposalpulse", age_minutes: ageMin, action: "marked_error" },
-              resolution: "Auto-transitioned to ERROR state after 30+ min timeout",
+              details: { product: "proposalpulse", age_minutes: ageMin, action: "marked_failed" },
+              resolution: "Auto-transitioned to failed state after 30+ min timeout",
             });
           } catch (recoverErr) {
             console.error("Failed to recover stuck scorecard:", job.id, recoverErr.message);
@@ -82,7 +97,7 @@ exports.handler = async () => {
     const { data: stuckOrders } = await supabase
       .from("marketpulse_orders")
       .select("id, session_id, created_at, workflow_state")
-      .not("workflow_state", "in", '("delivered","email_sent","quality_fail")')
+      .not("workflow_state", "in", '("delivered","email_sent","quality_fail","failed","error")')
       .lt("created_at", fifteenMinAgo)
       .limit(20);
 
@@ -92,20 +107,22 @@ exports.handler = async () => {
         const ageMin = Math.round(ageMs / 60000);
         findings.push({ type: "stuck_marketpulse", id: order.id, session_id: order.session_id, age_minutes: ageMin, state: order.workflow_state });
 
-        await logOpsEvent(supabase, {
-          event_type: "HARNESS_FAILURE",
-          source_function: "ops-health-check",
-          severity: ageMin > 30 ? "critical" : "warn",
-          signature: "stuck_job",
-          affected_entity: order.session_id,
-          details: { product: "marketpulse", age_minutes: ageMin, state: order.workflow_state },
-        });
+        if (!recentStuckIds.has(order.session_id)) {
+          await logOpsEvent(supabase, {
+            event_type: "HARNESS_FAILURE",
+            source_function: "ops-health-check",
+            severity: ageMin > 30 ? "critical" : "warn",
+            signature: "stuck_job",
+            affected_entity: order.session_id,
+            details: { product: "marketpulse", age_minutes: ageMin, state: order.workflow_state },
+          });
+        }
 
         if (ageMin > 30) {
           try {
             await supabase
               .from("marketpulse_orders")
-              .update({ workflow_state: "error" })
+              .update({ workflow_state: "failed", status: "failed" })
               .eq("id", order.id);
 
             await logOpsEvent(supabase, {
@@ -114,8 +131,8 @@ exports.handler = async () => {
               severity: "warn",
               signature: "stuck_job_recovered",
               affected_entity: order.session_id,
-              details: { product: "marketpulse", age_minutes: ageMin, action: "marked_error" },
-              resolution: "Auto-transitioned to error state after 30+ min timeout",
+              details: { product: "marketpulse", age_minutes: ageMin, action: "marked_failed" },
+              resolution: "Auto-transitioned to failed state after 30+ min timeout",
             });
           } catch (recoverErr) {
             console.error("Failed to recover stuck MarketPulse order:", order.id, recoverErr.message);
