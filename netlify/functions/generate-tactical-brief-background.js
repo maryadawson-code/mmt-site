@@ -587,6 +587,10 @@ function extractCompanyContext(company, additionalContext, topic) {
     { pattern: /\bGSA\s*(?:MAS|Schedule)\b/i, vehicle: "GSA MAS" },
     { pattern: /\bALLIANT\b/i, vehicle: "Alliant" },
     { pattern: /\bOASIS\b/i, vehicle: "OASIS+" },
+    { pattern: /\bSeaPort[\s-]*NxG\b/i, vehicle: "SeaPort-NxG" },
+    { pattern: /\bIHT\s*2\.?0?\b/i, vehicle: "IHT 2.0" },
+    { pattern: /\bVETS\s*2\b/i, vehicle: "VETS 2" },
+    { pattern: /\bA4V\b|\bAgile\s*4\s*Vets?\b/i, vehicle: "A4V JV" },
   ];
   const knownVehicles = vehiclePatterns
     .filter(({ pattern }) => pattern.test(combined))
