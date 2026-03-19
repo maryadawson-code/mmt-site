@@ -164,13 +164,20 @@ exports.handler = async () => {
     console.error("ops-health-check: critical events check failed:", err.message);
   }
 
-  // --- 5. Quality drift check (delegated to quality-tracker if available) ---
-  try {
-    const { detectDrift } = require("./lib/quality-tracker");
-    for (const product of ["proposalpulse", "marketpulse"]) {
+  // --- 5. Quality drift check ---
+  const { detectDrift } = require("./lib/quality-tracker");
+  for (const product of ["proposalpulse", "marketpulse"]) {
+    try {
       const drift = await detectDrift(supabase, { product });
       if (drift && drift.drifting) {
-        findings.push({ type: "quality_drift", product, ...drift });
+        findings.push({
+          type: "quality_drift",
+          severity: "warn",
+          product,
+          message: drift.reason,
+          recent_avg: drift.trend?.avg_7d,
+          baseline_avg: drift.trend?.avg_30d,
+        });
 
         await logOpsEvent(supabase, {
           event_type: "QUALITY_FAILURE",
@@ -180,9 +187,7 @@ exports.handler = async () => {
           details: drift,
         });
       }
-    }
-  } catch {
-    // quality-tracker may not exist yet — skip
+    } catch { /* non-blocking */ }
   }
 
   console.log(`ops-health-check: ${findings.length} findings`);

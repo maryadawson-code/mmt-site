@@ -700,22 +700,35 @@ exports.handler = async (event) => {
       let scoreReportAttachment = null;
       try {
         const pdfRenderer = getFlag("FEATURE_PDF_RENDERER");
-        const { renderProposalPulseHTML } = pdfRenderer === "pdfkit" ? require("./lib/proposalpulse-pdf") : require("./lib/report-html-renderer");
-        const reportHtml = renderProposalPulseHTML({
+        const reportArgs = {
           scorecard, overallGrade, documentType, documentLabel: config.label,
           fileName, hasSow: !!finalSowText,
           nextSteps: scorecard.next_steps || null,
           competitivePositioning: scorecard.competitive_positioning || null,
           complianceNote: !finalSowText ? `Scored against standard criteria for ${config.label}. Upload SOW for compliance mapping.` : null,
-        });
-        scoreReportAttachment = {
-          filename: `ProposalPulse-ScoreReport-${scoring_id.slice(0, 8)}.html`,
-          content: Buffer.from(reportHtml).toString("base64"),
-          content_type: "text/html",
         };
-        console.log(`Score report HTML generated: ${Math.round(reportHtml.length / 1024)}KB`);
+
+        if (pdfRenderer === "pdfkit") {
+          const { generateScoreReportPdf } = require("./lib/proposalpulse-pdf");
+          const pdfBuffer = await generateScoreReportPdf({ ...reportArgs, pwinFactors: scorecard.pWin_factors || null, scoringId: scoring_id });
+          scoreReportAttachment = {
+            filename: `ProposalPulse-ScoreReport-${scoring_id.slice(0, 8)}.pdf`,
+            content: pdfBuffer.toString("base64"),
+            content_type: "application/pdf",
+          };
+          console.log(`Score report PDF generated: ${Math.round(pdfBuffer.length / 1024)}KB`);
+        } else {
+          const { renderProposalPulseHTML } = require("./lib/report-html-renderer");
+          const reportHtml = renderProposalPulseHTML(reportArgs);
+          scoreReportAttachment = {
+            filename: `ProposalPulse-ScoreReport-${scoring_id.slice(0, 8)}.html`,
+            content: Buffer.from(reportHtml).toString("base64"),
+            content_type: "text/html",
+          };
+          console.log(`Score report HTML generated: ${Math.round(reportHtml.length / 1024)}KB`);
+        }
       } catch (htmlErr) {
-        console.error("Score report HTML generation failed (sending email without attachment):", htmlErr.message);
+        console.error("Score report generation failed (sending email without attachment):", htmlErr.message);
       }
 
       if (shouldHoldEmail()) {

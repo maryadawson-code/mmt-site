@@ -118,6 +118,16 @@
           <div id="held-emails"></div>
         </div>
 
+        <!-- ENGAGEMENT INTEL -->
+        <div class="card full">
+          <h2>Engagement Intel</h2>
+          <div class="actions" style="margin-bottom:12px;">
+            <button class="btn btn-cyan" onclick="generateEngagement()">Generate Brief</button>
+            <button class="btn btn-yellow" onclick="generateEngagement(true)">Email Me This Brief</button>
+          </div>
+          <div id="engagement-intel"><p style="color:rgba(255,255,255,0.3)">Click "Generate Brief" to fetch engagement opportunities.</p></div>
+        </div>
+
         <!-- QUICK ACTIONS -->
         <div class="card full">
           <h2>Quick Actions</h2>
@@ -302,6 +312,43 @@
       });
       const data = await res.json();
       document.getElementById('action-result').textContent = 'Health check triggered.';
+    }
+
+    async function generateEngagement(deliver) {
+      const el = document.getElementById('engagement-intel');
+      el.innerHTML = '<p style="color:rgba(255,255,255,0.5)">Generating engagement brief... (this takes 30-60 seconds)</p>';
+      try {
+        const url = `/.netlify/functions/engagement-brief?key=${apiKey}${deliver ? '&deliver=true' : ''}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.error) { el.innerHTML = `<p style="color:#ef4444;">${data.error}</p>`; return; }
+
+        let html = '';
+        if (data.high_priority && data.high_priority.length > 0) {
+          html += '<h3 style="font-size:0.85rem;margin-bottom:8px;color:rgba(255,255,255,0.6)">High Priority</h3>';
+          html += '<table><tr><th>Who</th><th>Context</th><th>Suggested Comment</th></tr>';
+          html += data.high_priority.map(item => `<tr><td style="font-size:0.82rem;">${item.person_or_source||'—'}</td><td style="font-size:0.75rem;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${item.title_or_context||'—'}${item.url ? '<br><a href="'+item.url+'" target="_blank" style="color:#00e5fa;font-size:0.7rem;">Link</a>' : ''}</td><td style="font-size:0.75rem;font-style:italic;color:rgba(255,255,255,0.7)">${item.suggested_comment||'—'}</td></tr>`).join('');
+          html += '</table>';
+        } else {
+          html += '<p style="color:rgba(255,255,255,0.3)">No high-priority opportunities found.</p>';
+        }
+
+        if (data.trending_topics && data.trending_topics.length > 0) {
+          html += '<h3 style="font-size:0.85rem;margin:16px 0 8px;color:rgba(255,255,255,0.6)">Trending Topics</h3>';
+          html += '<table><tr><th>Topic</th><th>Source</th><th>MMT Angle</th></tr>';
+          html += data.trending_topics.map(item => {
+            const urgColor = item.urgency === 'high' ? 'red' : item.urgency === 'medium' ? 'yellow' : 'green';
+            return `<tr><td style="font-size:0.82rem;">${item.topic||'—'} <span class="badge badge-${urgColor}">${item.urgency||'—'}</span></td><td style="font-size:0.75rem">${item.source||'—'}${item.url ? '<br><a href="'+item.url+'" target="_blank" style="color:#00e5fa;font-size:0.7rem;">Link</a>' : ''}</td><td style="font-size:0.75rem;color:rgba(255,255,255,0.7)">${item.mmt_angle||'—'}</td></tr>`;
+          }).join('');
+          html += '</table>';
+        }
+
+        if (data._delivered) { html += '<p style="color:#22c55e;font-size:0.82rem;margin-top:8px;">Brief emailed to Mary.</p>'; }
+        html += `<p style="color:rgba(255,255,255,0.3);font-size:0.7rem;margin-top:8px;">Generated: ${data.generated_at}</p>`;
+        el.innerHTML = html;
+      } catch (err) {
+        el.innerHTML = `<p style="color:#ef4444;">Failed: ${err.message}</p>`;
+      }
     }
 
     function timeSince(dateStr) {
