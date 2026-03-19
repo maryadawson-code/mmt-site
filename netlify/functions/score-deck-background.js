@@ -89,8 +89,12 @@ ${examples.join(",\n")}
     "polish": ["Improvements that strengthen but are not make-or-break"]
   },
   "pWin_factors": [
-    { "factor": "Base rate (document type)", "value": "+15%" },
-    { "factor": "Technical Approach (score/10)", "value": "+5%" }
+    { "factor": "Technical Approach", "value": 75, "note": "Strong methodology" },
+    { "factor": "Past Performance", "value": 60, "note": "Limited DoD health refs" },
+    { "factor": "Staffing / Key Personnel", "value": 40, "note": "No named PM" },
+    { "factor": "Price / Cost", "value": 50, "note": "No cost model" },
+    { "factor": "Compliance", "value": 70, "note": "Good coverage" },
+    { "factor": "Competitive Position", "value": 65, "note": "Some differentiators" }
   ],
   "competitive_positioning": {
     "differentiation": "strong|moderate|weak|absent",
@@ -199,13 +203,16 @@ POLISH (improvements that strengthen but are not make-or-break):
 
 For each item, state the specific fix needed in one sentence.
 
-pWin ESTIMATE — Calculate a probability of win percentage range using this methodology:
-Base rates by document type: RFP response 15%, White paper 25%, Capabilities statement 30%, Pitch deck 20%, Pricing volume 15%, Executive summary 25%.
-Adjustments: Each section scoring B+ or above: +5 percentage points. Each section scoring D or below: -10 points. Strong SOW/PWS alignment: +10 points. Past performance section A: +10 points. Multiple red flags in pricing: -15 points.
-Bounds: minimum 5%, maximum 85%. Report as a range (e.g., "25-35%"), not a single number.
-Include a pWin_factors array in your output showing each scoring input that contributed to the estimate, e.g.:
-[{ "factor": "Base rate (RFP response)", "value": "+15%" }, { "factor": "Technical Approach (8/10)", "value": "+5%" }]
-This table is shown to the user so they understand what drives their pWin and what to fix to improve it.
+pWin FACTORS — Score these 6 factors from 0 to 100 based on your assessment of the document. The server will compute the weighted pWin from these scores. Include a pWin_factors array:
+[
+  { "factor": "Technical Approach", "value": 75, "note": "Brief justification" },
+  { "factor": "Past Performance", "value": 60, "note": "Brief justification" },
+  { "factor": "Staffing / Key Personnel", "value": 40, "note": "Brief justification" },
+  { "factor": "Price / Cost", "value": 50, "note": "Brief justification" },
+  { "factor": "Compliance", "value": 70, "note": "Brief justification" },
+  { "factor": "Competitive Position", "value": 65, "note": "Brief justification" }
+]
+Score each factor 0-100 based on what you observe in the document. If the document does not address a factor, score it 25 or below. The "note" field should be one sentence explaining the score.
 
 COMPETITIVE POSITIONING ASSESSMENT:
 Even without knowing the specific competitive field, evaluate:
@@ -528,8 +535,24 @@ exports.handler = async (event) => {
       Object.assign(scorecard, validation.cleaned);
     }
 
-    // --- Compute grade and update row ---
+    // --- Compute grade and weighted pWin ---
     const { avgScore, overallGrade } = computeOverallGrade(scorecard);
+
+    // Server-side weighted pWin calculation (replaces Claude's additive model)
+    const { calculatePwin } = require("./lib/pwin-calculator");
+    const pwinResult = calculatePwin(scorecard, { hasSow: !!finalSowText, documentType });
+    // Inject computed pWin back into scorecard for downstream consumers
+    scorecard.pWin_factors = pwinResult.pWin_factors;
+    scorecard.pwin_estimate = pwinResult.pwin_estimate;
+    scorecard.pwin_justification = pwinResult.pwin_justification;
+    scorecard._pwin_details = {
+      pwin: pwinResult.pwin,
+      pwin_range: pwinResult.pwin_range,
+      factor_table: pwinResult.factor_table,
+      penalties: pwinResult.penalties,
+      kill_conditions: pwinResult.kill_conditions,
+    };
+    console.log(`[pWin] ${pwinResult.pwin_range} | Penalties: ${pwinResult.penalties.length} | Kill conditions: ${pwinResult.kill_conditions.length}`);
 
     // Extract document text for Gold Team Review (all file types)
     // For DOCX/PPTX, extractedText is already available from the gateway.

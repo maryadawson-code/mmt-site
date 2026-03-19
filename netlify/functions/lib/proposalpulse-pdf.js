@@ -213,22 +213,57 @@ async function generateScoreReportPdf(data) {
     doc.moveTo(60, doc.y + 4).lineTo(180, doc.y + 4).strokeColor(CYAN).lineWidth(1.5).stroke();
     y = doc.y + 16;
 
-    // pWin factors table
+    // Kill conditions (shown prominently above pWin)
+    const killConds = (scorecard._pwin_details && scorecard._pwin_details.kill_conditions) || [];
+    if (killConds.length > 0) {
+      for (const kc of killConds) {
+        y = checkBreak(doc, y, 20);
+        doc.rect(60, y, doc.page.width - 120, 18).fillAndStroke("#fef2f2", "#fecaca");
+        doc.font("Helvetica-Bold").fontSize(8).fillColor("#991b1b")
+          .text(safe(kc), 68, y + 4, { width: doc.page.width - 140, lineBreak: false });
+        y += 22;
+      }
+      y += 4;
+    }
+
+    // pWin factors table with scores
     const pwf = pwinFactors || scorecard.pWin_factors || [];
     if (pwf.length > 0) {
+      const tW = doc.page.width - 120;
+      // Header
+      doc.rect(60, y, tW, 18).fill("#f1f5f9");
+      doc.font("Helvetica-Bold").fontSize(7).fillColor("#6b7280");
+      doc.text("FACTOR", 64, y + 4, { width: tW * 0.55, lineBreak: false });
+      doc.text("SCORE", 64 + tW * 0.55, y + 4, { width: tW * 0.45, align: "right", lineBreak: false });
+      y += 18;
       for (const f of pwf) {
-        y = checkBreak(doc, y, 18);
-        const isNeg = String(f.value || f.impact || "").includes("-");
-        doc.font("Helvetica").fontSize(9).fillColor("#374151").text(safe(f.factor), 68, y, { width: 300, lineBreak: false });
-        doc.font("Helvetica-Bold").fontSize(9).fillColor(isNeg ? "#ef4444" : "#16a34a")
-          .text(safe(f.value || f.impact), doc.page.width - 140, y, { width: 80, align: "right", lineBreak: false });
+        y = checkBreak(doc, y, 16);
+        doc.moveTo(60, y + 15).lineTo(60 + tW, y + 15).strokeColor("#e5e7eb").lineWidth(0.5).stroke();
+        doc.font("Helvetica").fontSize(8).fillColor("#374151").text(safe(f.factor), 64, y + 3, { width: tW * 0.55, lineBreak: false });
+        const scoreVal = typeof f.value === "number" ? f.value : parseInt(String(f.value)) || 0;
+        const scoreColor = scoreVal >= 70 ? "#16a34a" : scoreVal >= 50 ? "#eab308" : "#ef4444";
+        doc.font("Helvetica-Bold").fontSize(8).fillColor(scoreColor)
+          .text(safe(String(f.value)), 64 + tW * 0.55, y + 3, { width: tW * 0.45 - 4, align: "right", lineBreak: false });
         y += 16;
       }
       y += 8;
     }
 
+    // Penalties
+    const penalties = (scorecard._pwin_details && scorecard._pwin_details.penalties) || [];
+    if (penalties.length > 0) {
+      doc.rect(60, y, doc.page.width - 120, penalties.length * 14 + 16).fillAndStroke("#fffbeb", "#fde68a");
+      doc.font("Helvetica-Bold").fontSize(7).fillColor("#92400e").text("INTERDEPENDENCY PENALTIES", 68, y + 4);
+      let py = y + 16;
+      for (const p of penalties) {
+        doc.font("Helvetica").fontSize(7).fillColor("#92400e").text("• " + safe(p.description), 72, py, { width: doc.page.width - 160 });
+        py = doc.y + 2;
+      }
+      y = py + 8;
+    }
+
     if (scorecard.pwin_estimate) {
-      doc.font("Helvetica-Bold").fontSize(12).fillColor("#0369a1")
+      doc.font("Helvetica-Bold").fontSize(14).fillColor("#0369a1")
         .text(`Estimated pWin: ${scorecard.pwin_estimate}`, 60, y, { width: doc.page.width - 120, align: "center" });
       y = doc.y + 16;
     }

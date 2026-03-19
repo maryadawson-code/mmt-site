@@ -168,6 +168,13 @@ function buildScoreReceiptHtml(data) {
         }).join("");
       })() : ""}
 
+      <!-- Kill Conditions (shown prominently above pWin) -->
+      ${scorecard._pwin_details && scorecard._pwin_details.kill_conditions && scorecard._pwin_details.kill_conditions.length > 0 ? `
+      <div style="margin-top:24px;padding:16px 20px;background-color:#fef2f2;border:2px solid #fecaca;border-radius:8px;">
+        ${scorecard._pwin_details.kill_conditions.map((kc) => `
+        <p style="margin:0 0 6px;font-size:14px;font-weight:700;color:#991b1b;">&bull; ${escapeHtml(kc)}</p>`).join("")}
+      </div>` : ""}
+
       <!-- pWin Factors -->
       ${scorecard.pWin_factors && scorecard.pWin_factors.length > 0 ? `
       <div style="margin-top:24px;">
@@ -175,16 +182,24 @@ function buildScoreReceiptHtml(data) {
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;">
           <tr style="background-color:#f9fafb;">
             <th style="padding:8px 12px;text-align:left;font-size:13px;font-weight:600;color:#6b7280;border-bottom:1px solid #e5e7eb;">Factor</th>
-            <th style="padding:8px 12px;text-align:right;font-size:13px;font-weight:600;color:#6b7280;border-bottom:1px solid #e5e7eb;">Impact</th>
+            <th style="padding:8px 12px;text-align:right;font-size:13px;font-weight:600;color:#6b7280;border-bottom:1px solid #e5e7eb;">Score</th>
           </tr>
-          ${scorecard.pWin_factors.map((f) => `
+          ${scorecard.pWin_factors.map((f) => {
+            const score = typeof f.value === "number" ? f.value : parseInt(String(f.value)) || 0;
+            const scoreColor = score >= 70 ? "#16a34a" : score >= 50 ? "#eab308" : "#ef4444";
+            return `
           <tr>
             <td style="padding:6px 12px;border-bottom:1px solid #e5e7eb;font-size:14px;color:#374151;">${escapeHtml(f.factor)}</td>
-            <td style="padding:6px 12px;border-bottom:1px solid #e5e7eb;text-align:right;font-size:14px;font-weight:600;color:${String(f.value).includes("-") ? "#ef4444" : "#16a34a"};">${escapeHtml(f.value)}</td>
-          </tr>`).join("")}
+            <td style="padding:6px 12px;border-bottom:1px solid #e5e7eb;text-align:right;font-size:14px;font-weight:600;color:${scoreColor};">${escapeHtml(String(f.value))}</td>
+          </tr>`;
+          }).join("")}
         </table>
-        ${scorecard.pwin_estimate ? `<p style="margin:8px 0 0;font-size:15px;font-weight:700;color:#0369a1;text-align:center;">Estimated pWin: ${escapeHtml(scorecard.pwin_estimate)}</p>` : ""}
-        ${scorecard.pwin_justification ? `<p style="margin:4px 0 0;font-size:13px;color:#6b7280;text-align:center;">${escapeHtml(scorecard.pwin_justification)}</p>` : ""}
+        ${scorecard._pwin_details && scorecard._pwin_details.penalties && scorecard._pwin_details.penalties.length > 0 ? `
+        <div style="margin-top:8px;padding:8px 12px;background-color:#fffbeb;border:1px solid #fde68a;border-radius:6px;">
+          <p style="margin:0;font-size:12px;font-weight:600;color:#92400e;">Interdependency Penalties Applied:</p>
+          ${scorecard._pwin_details.penalties.map((p) => `<p style="margin:2px 0 0;font-size:12px;color:#92400e;">&bull; ${escapeHtml(p.description)}</p>`).join("")}
+        </div>` : ""}
+        ${scorecard.pwin_estimate ? `<p style="margin:12px 0 0;font-size:18px;font-weight:700;color:#0369a1;text-align:center;">Estimated pWin: ${escapeHtml(scorecard.pwin_estimate)}</p>` : ""}
       </div>` : ""}
 
       <!-- Competitive Positioning -->
