@@ -36,6 +36,7 @@ const { filterSources, countYoutubeSources } = require("./lib/source-filter");
 const { createReportQuality, analyzePassResult, checkReportQuality, buildQualityDisclaimer, scoreReport } = require("./lib/report-quality-gate");
 const { sanitizeSynthesis } = require("./lib/synthesis-sanitizer");
 const { logOpsEvent } = require("./lib/ops-ledger");
+const { trackQuality } = require("./lib/quality-tracker");
 
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 const PERPLEXITY_MODEL = "sonar-pro";
@@ -925,6 +926,11 @@ exports.handler = async (event) => {
 
     // State: research_completed
     await _transition("research_completed");
+
+    // Track quality metrics
+    try {
+      await trackQuality(_supabase, { product: "marketpulse", orderId: _orderId || session_id, grade: qualityResult.grade, score: reportScore.overall, factors: { pipeline_count: reportScore.pipeline_opportunities.count, gov_percent: reportScore.source_quality.gov_percent, quality_failures: qualityResult.failures } });
+    } catch { /* non-blocking */ }
 
     // === QUALITY GATE: FAIL — do not generate PDF ===
     if (qualityResult.grade === "FAIL") {

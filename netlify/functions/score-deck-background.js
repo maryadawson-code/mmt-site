@@ -26,6 +26,7 @@ const { transitionState } = require("./lib/workflow-state");
 const { validateScorecard } = require("./lib/scorecard-validator");
 const { logOpsEvent } = require("./lib/ops-ledger");
 const { extractIntelSignals } = require("./lib/signal-extractor");
+const { trackQuality } = require("./lib/quality-tracker");
 
 // --- Environment Variables ---
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -602,6 +603,11 @@ exports.handler = async (event) => {
       kill_conditions: pwinResult.kill_conditions,
     };
     console.log(`[pWin] ${pwinResult.pwin_range} | Penalties: ${pwinResult.penalties.length} | Kill conditions: ${pwinResult.kill_conditions.length}`);
+
+    // Track quality metrics
+    try {
+      await trackQuality(supabase, { product: "proposalpulse", orderId: scoring_id, grade: overallGrade, score: avgScore ? parseFloat(avgScore.toFixed(2)) : null, factors: { verdict: scorecard.verdict, pwin: pwinResult.pwin, document_type: documentType } });
+    } catch { /* non-blocking */ }
 
     // Extract document text for Gold Team Review (all file types)
     // For DOCX/PPTX, extractedText is already available from the gateway.
