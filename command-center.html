@@ -139,6 +139,7 @@
       <div id="detail-health" class="detail-view"></div>
       <div id="detail-agents" class="detail-view"></div>
       <div id="detail-content" class="detail-view"></div>
+      <div id="detail-roadmap" class="detail-view"></div>
     </div>
   </div>
 
@@ -241,7 +242,9 @@
       const rev = data.revenue;
       const revTotal = rev && !rev.error ? (rev.total_revenue_cents / 100) : null;
 
+      const highDebt = ROADMAP.techDebt.filter(d => d.severity === 'HIGH').length;
       return [
+        { id: 'roadmap', icon: '\ud83d\udccb', title: 'Roadmap', m1: '2', m1l: 'Platforms', m2: highDebt, m2l: 'High debt', badge: highDebt },
         { id: 'newsletter', icon: '\ud83d\udcf0', title: 'Newsletter', m1: daysToPublish !== null ? daysToPublish : '--', m1l: 'Days to pub', m2: nextStatus || '--', m2l: 'Status', badge: nearPipeline.length || 0 },
         { id: 'products', icon: '\ud83d\udce6', title: 'Products', m1: activeOrders.length, m1l: 'Active orders', m2: deliveredToday.length, m2l: 'Delivered', badge: errorOrders.length },
         { id: 'engineering', icon: '\ud83d\udd27', title: 'Engineering', m1: pendingTasks.length, m1l: 'Pending tasks', m2: null, m2l: null, badge: pendingTasks.length },
@@ -298,6 +301,7 @@
 
     function renderDetailView(view) {
       const fn = {
+        roadmap: renderDetailRoadmap,
         newsletter: renderDetailNewsletter,
         products: renderDetailProducts,
         engineering: renderDetailEngineering,
@@ -738,6 +742,238 @@
       h += '</div>';
 
       el.innerHTML = h;
+    }
+
+    // ============ ROADMAP DATA — update manually when features ship. Last verified: 2026-03-19 ============
+    const ROADMAP = {
+      platforms: [
+        { name: 'missionmeetstech.com', pct: 92, quality: 'B+', revenue: 'Live', launched: 'Mar 19, 2026', status: 'LIVE', color: '#22c55e' },
+        { name: 'missionpulse.ai', pct: null, quality: 'TBD', revenue: '$0', launched: 'v1.0 shipped, v1.1 in dev', status: '4 GTM blockers', color: '#eab308' }
+      ],
+      mmtProducts: [
+        { group: 'ProposalPulse', pct: 94, quality: 'B+', features: [
+          { name:'Document upload', status:'shipped', pct:100, q:'B+', note:'pdf-parse + mammoth, 4MB max' },
+          { name:'AI scoring (Sonnet)', status:'shipped', pct:100, q:'A-', note:'9-dimension, structured JSON' },
+          { name:'Shadow scoring (Haiku)', status:'shipped', pct:95, q:'B', note:'Dual-model, admin bypass' },
+          { name:'pWin estimation', status:'shipped', pct:100, q:'B+', note:'Weighted factor, ranges' },
+          { name:'Entity disambiguation', status:'shipped', pct:90, q:'B', note:'Added 3/19, needs validation' },
+          { name:'N/A section handling', status:'shipped', pct:90, q:'B', note:'Scores N/A when absent' },
+          { name:'SOW hybrid scoring', status:'shipped', pct:85, q:'B', note:'Auto-detect eval factors' },
+          { name:'Compliance disclaimer', status:'shipped', pct:100, q:'A', note:'Legal disclaimer' },
+          { name:'Tiered next steps', status:'shipped', pct:90, q:'B+', note:'Grade-dependent actions' },
+          { name:'PDF generation', status:'shipped', pct:95, q:'B', note:'PDFKit, table edge cases' },
+          { name:'Email delivery', status:'shipped', pct:95, q:'A-', note:'Resend' },
+          { name:'Red Team review', status:'shipped', pct:95, q:'B+', note:'Adversarial critique' },
+          { name:'Gold Team template', status:'shipped', pct:90, q:'B', note:'pWin range fixed 3/19' },
+          { name:'Stripe checkout', status:'shipped', pct:100, q:'A', note:'$19.99/assessment' },
+          { name:'Free tier', status:'shipped', pct:100, q:'A', note:'3 free via mp_users' },
+          { name:'Rewrite confidence', status:'shipped', pct:85, q:'B', note:'Flags AI-gen proposals' }
+        ]},
+        { group: 'MarketPulse', pct: 91, quality: 'B+', features: [
+          { name:'Topic intake form', status:'shipped', pct:100, q:'A', note:'Company context fields' },
+          { name:'Entity disambiguation', status:'shipped', pct:90, q:'B', note:'Pre-research classification' },
+          { name:'Company context', status:'shipped', pct:85, q:'B', note:'Certs, NAICS, vehicles' },
+          { name:'Health IT lens', status:'shipped', pct:85, q:'B', note:'Federal health framing' },
+          { name:'Perplexity research', status:'shipped', pct:90, q:'B', note:'Multi-source, 12-call cap' },
+          { name:'AI synthesis', status:'shipped', pct:90, q:'B+', note:'Forward View + Weekly Actions' },
+          { name:'Quality gate (8)', status:'shipped', pct:95, q:'A-', note:'FAIL blocks delivery' },
+          { name:'PDF generation', status:'shipped', pct:85, q:'B', note:'Table rendering improved' },
+          { name:'Email delivery', status:'shipped', pct:90, q:'B+', note:'Error email added 3/19' },
+          { name:'Report viewer', status:'shipped', pct:85, q:'B', note:'Secure URL' },
+          { name:'Stripe checkout', status:'shipped', pct:100, q:'A', note:'$50/brief' },
+          { name:'Free tier', status:'shipped', pct:100, q:'A', note:'1 free brief' },
+          { name:'FOUO stripping', status:'shipped', pct:100, q:'A', note:'Classification stripped' }
+        ]},
+        { group: 'Content Platform', pct: 92, quality: 'A-', features: [
+          { name:'Homepage', status:'shipped', pct:100, q:'A', note:'Lighthouse 85/97/100/100' },
+          { name:'Newsletter archive', status:'shipped', pct:95, q:'A-', note:'76 articles, topic tags' },
+          { name:'Podcast', status:'shipped', pct:90, q:'B+', note:'4 episodes' },
+          { name:'Glossary', status:'shipped', pct:90, q:'A', note:'58 terms, A-Z nav' },
+          { name:'Contract Tracker', status:'shipped', pct:90, q:'B+', note:'10 contracts, daily refresh' },
+          { name:'Topics', status:'shipped', pct:75, q:'B', note:'Build-time rendered' },
+          { name:'Events', status:'shipped', pct:75, q:'B', note:'5 events + community note' },
+          { name:'Newswire', status:'shipped', pct:85, q:'B+', note:'10 RSS feeds, 100 headlines' },
+          { name:'Contact', status:'shipped', pct:100, q:'A', note:'Added 3/19' },
+          { name:'Security', status:'shipped', pct:100, q:'A', note:'Both products covered' },
+          { name:'SEO', status:'shipped', pct:95, q:'A', note:'Sitemap, OG, JSON-LD' }
+        ]},
+        { group: 'Infrastructure', pct: 91, quality: 'B+', features: [
+          { name:'Command Center', status:'shipped', pct:90, q:'B+', note:'This dashboard' },
+          { name:'Agent bridge API', status:'shipped', pct:95, q:'A-', note:'7 actions, auth' },
+          { name:'Health check', status:'shipped', pct:90, q:'B+', note:'30m interval, dedup' },
+          { name:'Contract intel', status:'shipped', pct:90, q:'B+', note:'Daily 6AM, 10 contracts' },
+          { name:'Agent fleet', status:'shipped', pct:85, q:'B+', note:'6 agents heartbeating' },
+          { name:'Supabase schema', status:'shipped', pct:100, q:'A', note:'30/30 tables' }
+        ]}
+      ],
+      mpModules: [
+        { name:'Dashboard', files:6, lines:245, touched:'2026-03-08', q:'B' },
+        { name:'Pipeline', files:63, lines:2555, touched:'2026-03-08', q:'A-' },
+        { name:'War Room', files:22, lines:1222, touched:'2026-03-07', q:'B+' },
+        { name:'Proposals', files:12, lines:680, touched:'2026-03-08', q:'B' },
+        { name:'Swimlane', files:8, lines:427, touched:'2026-03-01', q:'B' },
+        { name:'Shredder', files:14, lines:786, touched:'2026-03-07', q:'B+' },
+        { name:'Contract Scanner', files:5, lines:263, touched:'2026-03-07', q:'B' },
+        { name:'Iron Dome', files:9, lines:482, touched:'2026-03-07', q:'B' },
+        { name:'Black Hat', files:9, lines:345, touched:'2026-03-01', q:'B-' },
+        { name:'Pricing', files:10, lines:540, touched:'2026-03-07', q:'B' },
+        { name:'HITL', files:4, lines:218, touched:'2026-03-01', q:'C+' },
+        { name:'Orals', files:2, lines:137, touched:'2026-03-01', q:'C' },
+        { name:'Playbook', files:5, lines:210, touched:'2026-03-01', q:'C+' },
+        { name:'Frenemy', files:3, lines:150, touched:'2026-03-01', q:'C' },
+        { name:'Analytics', files:4, lines:370, touched:'2026-03-08', q:'B' },
+        { name:'Admin', files:34, lines:447, touched:'2026-03-08', q:'B+' },
+        { name:'AI Chat', files:6, lines:291, touched:'2026-03-01', q:'B' },
+        { name:'Settings', files:7, lines:380, touched:'2026-03-08', q:'B' },
+        { name:'Notifications', files:4, lines:210, touched:'2026-03-08', q:'B-' },
+        { name:'Documents', files:6, lines:320, touched:'2026-03-08', q:'B' },
+        { name:'Onboarding', files:8, lines:445, touched:'2026-03-08', q:'B+' }
+      ],
+      mpBlockers: [
+        { ticket:'T-GTM-1.1', name:'AI provider abstraction layer', status:'Not started', code:'Types file only' },
+        { ticket:'T-GTM-2.1', name:'Stripe billing + token metering', status:'Not started', code:'Checkout scaffold' },
+        { ticket:'T-GTM-2.3', name:'Company onboarding wizard', status:'Not started', code:'Wizard code exists, not wired' },
+        { ticket:'T-GTM-3.1', name:'Public pricing page + /8a-toolkit', status:'Not started', code:'No page' }
+      ],
+      techDebt: [
+        { item:'No automated tests (zero coverage)', platform:'MMT', severity:'HIGH' },
+        { item:'No automated tests', platform:'MissionPulse', severity:'HIGH' },
+        { item:'is_mfa_enabled() breaks if called', platform:'MissionPulse', severity:'HIGH' },
+        { item:'No customer dashboard', platform:'MMT', severity:'MEDIUM' },
+        { item:'No MarketPulse delivery retry', platform:'MMT', severity:'MEDIUM' },
+        { item:'hubspot_field_mapping duplicate table', platform:'MissionPulse', severity:'MEDIUM' },
+        { item:'login.html sbClient fragile pattern', platform:'MissionPulse', severity:'MEDIUM' },
+        { item:'216 tables, 179 empty', platform:'MissionPulse', severity:'MEDIUM' },
+        { item:'Product Spec v1.0 stale pricing + personnel', platform:'MissionPulse', severity:'MEDIUM' },
+        { item:'Topics page sparse', platform:'MMT', severity:'LOW' },
+        { item:'Events page basic', platform:'MMT', severity:'LOW' },
+        { item:'Demo JSX shows missionpulse.io', platform:'MissionPulse', severity:'LOW' }
+      ],
+      roadmapItems: [
+        { p:'P0', name:'AI provider abstraction (T-GTM-1.1)', platform:'MissionPulse', target:'Before launch', status:'Not started' },
+        { p:'P0', name:'Stripe billing + metering (T-GTM-2.1)', platform:'MissionPulse', target:'Before launch', status:'Not started' },
+        { p:'P0', name:'Company onboarding (T-GTM-2.3)', platform:'MissionPulse', target:'Before launch', status:'Not started' },
+        { p:'P0', name:'Public pricing page (T-GTM-3.1)', platform:'MissionPulse', target:'Before launch', status:'Not started' },
+        { p:'P1', name:'Customer dashboard', platform:'MMT', target:'April 2026', status:'Planned' },
+        { p:'P1', name:'Batch upload (ProposalPulse)', platform:'MMT', target:'April 2026', status:'Planned' },
+        { p:'P1', name:'E2E test suite', platform:'Both', target:'April 2026', status:'Planned' },
+        { p:'P2', name:'SOW auto-detection', platform:'MMT', target:'April 2026', status:'Planned' },
+        { p:'P2', name:'MP delivery retry', platform:'MMT', target:'April 2026', status:'Planned' },
+        { p:'P2', name:'API rate limiting', platform:'MMT', target:'April 2026', status:'Planned' },
+        { p:'P3', name:'MFA implementation', platform:'MissionPulse', target:'TBD', status:'Planned' },
+        { p:'P3', name:'Source quality scoring', platform:'MMT', target:'May 2026', status:'Planned' }
+      ]
+    };
+
+    function gradeColor(q) {
+      if (!q) return 'rgba(255,255,255,0.4)';
+      if (q.startsWith('A')) return '#22c55e';
+      if (q === 'B+' || q === 'B') return '#60a5fa';
+      if (q === 'B-' || q === 'C+') return '#eab308';
+      return '#f97316';
+    }
+
+    function renderDetailRoadmap() {
+      const el = document.getElementById('detail-roadmap');
+      let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
+      h += '<div class="detail-title">\ud83d\udccb Roadmap</div>';
+
+      // Section 1: Platform Overview
+      h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">';
+      ROADMAP.platforms.forEach(p => {
+        h += '<div class="detail-card" style="border-left:3px solid ' + p.color + ';">';
+        h += '<h3 style="color:#fff;">' + p.name + '</h3>';
+        if (p.pct !== null) {
+          h += '<div style="background:rgba(255,255,255,0.1);border-radius:4px;height:8px;margin:8px 0;"><div style="background:' + (p.pct>80?'#22c55e':p.pct>50?'#eab308':'#ef4444') + ';width:' + p.pct + '%;height:100%;border-radius:4px;"></div></div>';
+          h += '<div style="display:flex;justify-content:space-between;font-size:0.8rem;"><span style="color:rgba(255,255,255,0.5);">' + p.pct + '% complete</span><span style="color:' + gradeColor(p.quality) + ';font-weight:600;">Quality: ' + p.quality + '</span></div>';
+        } else {
+          h += '<div style="font-style:italic;color:rgba(255,255,255,0.4);font-size:0.8rem;margin:8px 0;">Completion TBD — pending codebase verification</div>';
+          h += '<div style="font-size:0.8rem;color:rgba(255,255,255,0.5);">Quality: ' + p.quality + '</div>';
+        }
+        h += '<div style="margin-top:8px;font-size:0.78rem;color:rgba(255,255,255,0.4);">Revenue: ' + p.revenue + ' &middot; ' + p.launched + '</div>';
+        h += '<span class="badge badge-' + (p.status==='LIVE'?'green':'yellow') + '" style="margin-top:6px;">' + p.status + '</span>';
+        h += '</div>';
+      });
+      h += '</div>';
+
+      // Section 2: Feature Inventory (tabs)
+      h += '<div class="detail-card">';
+      h += '<div class="tab-bar" id="roadmap-tabs"><button class="active" onclick="switchRoadmapTab(\'mmt\',this)">missionmeetstech.com</button><button onclick="switchRoadmapTab(\'mp\',this)">missionpulse.ai</button></div>';
+
+      // MMT tab
+      h += '<div id="roadmap-tab-mmt">';
+      ROADMAP.mmtProducts.forEach((g, gi) => {
+        h += '<div style="margin-bottom:12px;">';
+        h += '<div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'block\':\'none\';this.querySelector(\'.chevron\').textContent=this.nextElementSibling.style.display===\'none\'?\'\u25b6\':\'\u25bc\'" style="cursor:pointer;padding:8px 0;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,0.08);">';
+        h += '<span class="chevron" style="font-size:0.7rem;color:rgba(255,255,255,0.4);">\u25b6</span>';
+        h += '<strong style="color:#e2e8f0;">' + g.group + '</strong>';
+        h += '<span style="color:rgba(255,255,255,0.5);font-size:0.8rem;">' + g.pct + '%</span>';
+        h += '<span style="color:' + gradeColor(g.quality) + ';font-size:0.8rem;font-weight:600;">' + g.quality + '</span>';
+        h += '</div>';
+        h += '<div style="display:none;"><table><tr><th>Feature</th><th>Complete</th><th>Quality</th><th>Notes</th></tr>';
+        g.features.forEach(f => {
+          h += '<tr><td>\u2705 ' + f.name + '</td><td>' + f.pct + '%</td><td style="color:' + gradeColor(f.q) + ';font-weight:600;">' + f.q + '</td><td style="color:rgba(255,255,255,0.4);">' + f.note + '</td></tr>';
+        });
+        h += '</table></div></div>';
+      });
+      h += '</div>';
+
+      // MissionPulse tab (hidden by default)
+      h += '<div id="roadmap-tab-mp" style="display:none;">';
+      h += '<div style="background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.3);border-radius:6px;padding:12px;margin-bottom:16px;font-size:0.82rem;color:#eab308;">\u26a0\ufe0f Module statuses are from directory scan (file counts, line counts, git dates). Quality grades are ESTIMATES. End-to-end functionality has not been verified for most modules.</div>';
+
+      // Revenue Blockers
+      h += '<div style="border-left:3px solid #ef4444;padding-left:12px;margin-bottom:16px;">';
+      h += '<h4 style="color:#ef4444;margin-bottom:8px;">\u26a0\ufe0f Revenue = $0 until these ship</h4>';
+      h += '<table><tr><th>Ticket</th><th>Feature</th><th>Status</th><th>Code Exists?</th></tr>';
+      ROADMAP.mpBlockers.forEach(b => {
+        h += '<tr><td style="font-family:monospace;font-size:0.75rem;">' + b.ticket + '</td><td>' + b.name + '</td><td><span class="badge badge-red">' + b.status + '</span></td><td style="color:rgba(255,255,255,0.4);font-size:0.78rem;">' + b.code + '</td></tr>';
+      });
+      h += '</table></div>';
+
+      // Module table
+      h += '<table><tr><th>Module</th><th>Files</th><th>Lines</th><th>Last Touched</th><th>Quality (est.)</th></tr>';
+      ROADMAP.mpModules.forEach(m => {
+        h += '<tr><td>' + m.name + '</td><td>' + m.files + '</td><td>' + m.lines.toLocaleString() + '</td><td>' + m.touched + '</td><td><span style="color:' + gradeColor(m.q) + ';font-weight:600;">' + m.q + '</span> <span style="font-size:0.65rem;color:rgba(255,255,255,0.3);">(est.)</span></td></tr>';
+      });
+      h += '</table>';
+
+      // System Info (collapsible)
+      h += '<details style="margin-top:16px;"><summary style="cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.82rem;">System Info</summary><div style="margin-top:8px;font-size:0.78rem;color:rgba(255,255,255,0.4);">';
+      h += 'Database: 216 tables (37 with data) &middot; Auth: Supabase email/password (no MFA) &middot; RBAC: 12 roles, 14 modules, v9.5<br>';
+      h += 'AI: AskSage (FedRAMP High/IL5/CUI), Claude fallback &middot; Pricing: Starter $149, Pro $499, Enterprise $2,500<br>';
+      h += 'Repo: missionpulse-frontend, branch v2-development &middot; Prod: main (d2b5e13) &middot; Hosting: Netlify + Render';
+      h += '</div></details>';
+      h += '</div>';
+      h += '</div>';
+
+      // Section 3: Tech Debt
+      h += '<div class="detail-card"><h3>Tech Debt</h3><table><tr><th>#</th><th>Item</th><th>Platform</th><th>Severity</th></tr>';
+      ROADMAP.techDebt.forEach((d, i) => {
+        const sColor = d.severity==='HIGH'?'red':d.severity==='MEDIUM'?'yellow':'green';
+        const bg = d.severity==='HIGH'?'background:rgba(239,68,68,0.05);':'';
+        h += '<tr style="' + bg + '"><td>' + (i+1) + '</td><td>' + d.item + '</td><td style="color:rgba(255,255,255,0.5);">' + d.platform + '</td><td><span class="badge badge-' + sColor + '">' + d.severity + '</span></td></tr>';
+      });
+      h += '</table></div>';
+
+      // Section 4: Priority Roadmap
+      h += '<div class="detail-card"><h3>Priority Roadmap</h3><table><tr><th>Priority</th><th>Feature</th><th>Platform</th><th>Target</th><th>Status</th></tr>';
+      ROADMAP.roadmapItems.forEach(r => {
+        const pColor = r.p==='P0'?'red':r.p==='P1'?'yellow':r.p==='P2'?'blue':'gray';
+        const sColor = r.status==='Not started'?'red':'gray';
+        h += '<tr><td><span class="badge badge-' + pColor + '">' + r.p + '</span></td><td>' + r.name + '</td><td style="color:rgba(255,255,255,0.5);">' + r.platform + '</td><td>' + r.target + '</td><td><span class="badge badge-' + sColor + '">' + r.status + '</span></td></tr>';
+      });
+      h += '</table></div>';
+
+      h += '<div style="text-align:center;font-size:0.7rem;color:rgba(255,255,255,0.2);margin-top:8px;">Last updated: 2026-03-19</div>';
+      el.innerHTML = h;
+    }
+
+    function switchRoadmapTab(tab, btn) {
+      document.getElementById('roadmap-tab-mmt').style.display = tab === 'mmt' ? 'block' : 'none';
+      document.getElementById('roadmap-tab-mp').style.display = tab === 'mp' ? 'block' : 'none';
+      document.querySelectorAll('#roadmap-tabs button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
     }
 
     // ============ ALL EXISTING ACTION FUNCTIONS ============
