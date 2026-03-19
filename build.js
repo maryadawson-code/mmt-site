@@ -50,6 +50,8 @@ const topicDescriptions = {
   'AI & Innovation': 'Artificial intelligence, telehealth, and emerging technology in federal health.',
   'Strategy & Leadership': 'Leadership appointments, strategic direction, and organizational change.',
   'Healthcare Policy': 'Federal health policy, operating model shifts, and cross-agency implications.',
+  'Cybersecurity': 'FedRAMP, CMMC, ATO processes, zero trust, and cybersecurity compliance in federal health IT.',
+  'Interoperability': 'FHIR, TEFCA, health information exchange, and cross-agency data sharing.',
 };
 
 // --- Utility Functions ---
