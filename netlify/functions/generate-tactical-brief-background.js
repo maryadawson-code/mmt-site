@@ -19,7 +19,8 @@
 // ============================================================
 
 // const { generateTacticalBriefPdf } = require("./lib/tactical-brief-pdf"); // replaced by HTML renderer
-const { renderMarketPulseHTML, renderMarketPulseEmailHTML } = require("./lib/report-html-renderer");
+const { renderMarketPulseHTML } = require("./lib/report-html-renderer");
+const { generateReportUrl } = require("./lib/report-url");
 const { buildDeliveryEmail, buildNotificationEmail } = require("./lib/tactical-brief-email");
 const { sendEmail } = require("./lib/send-email");
 const { optimizeMarketPrompt } = require("./lib/prompt-optimizer");
@@ -1010,30 +1011,59 @@ exports.handler = async (event) => {
 
     await _transition("pdf_started");
 
-    // Generate report HTML (two versions: standalone attachment + email-safe inline)
+    // Generate report HTML
     console.log("Generating report HTML...");
     const generatedAt = new Date().toISOString();
-    const reportData = { name, company, topic, audience, generatedAt, synthesis: finalSynthesis, citations: allCitations };
-    const reportHtmlContent = renderMarketPulseHTML(reportData);
-    const reportEmailHtml = renderMarketPulseEmailHTML(reportData);
-    const reportBuffer = Buffer.from(reportHtmlContent);
-    console.log(`Report HTML generated: ${Math.round(reportBuffer.length / 1024)}KB (attachment) + ${Math.round(reportEmailHtml.length / 1024)}KB (email body)`);
+    const reportHtmlContent = renderMarketPulseHTML({ name, company, topic, audience, generatedAt, synthesis: finalSynthesis, citations: allCitations });
+    console.log(`Report HTML generated: ${Math.round(reportHtmlContent.length / 1024)}KB`);
+
+    // Store report HTML in Supabase and generate viewer URL
+    let reportUrl = null;
+    if (_supabase && _orderId) {
+      try {
+        const { url } = generateReportUrl(_orderId, "marketpulse");
+        reportUrl = url;
+        await _supabase.from("marketpulse_orders").update({ report_html: reportHtmlContent, report_url: url }).eq("id", _orderId);
+        console.log(`Report stored and URL generated for order ${_orderId}`);
+      } catch (e) { console.error("Report storage failed:", e.message); }
+    }
 
     // State: pdf_completed → email_queued
     await _transition("pdf_completed");
     await _transition("email_queued");
 
-    // Send delivery email with inline report + standalone HTML attachment
+    // Send delivery email with link to hosted report
     console.log("Sending delivery email...");
+    const firstName = (name || "").split(" ")[0] || "there";
     const deliverySubject = `Your MarketPulse Report: ${topic.slice(0, 60)}${topic.length > 60 ? "..." : ""}`;
+    const deliveryHtml = `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;">
+  <div style="background:#0a0e17;padding:32px 40px;text-align:center;">
+    <div style="font-size:24px;font-weight:700;color:#00e5fa;letter-spacing:0.5px;">MARKETPULSE</div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-top:4px;">Federal Health IT Market Intelligence</div>
+  </div>
+  <div style="padding:32px 40px;">
+    <p style="font-size:16px;color:#1e293b;margin:0 0 16px;">Hi ${firstName},</p>
+    <p style="font-size:16px;color:#1e293b;margin:0 0 24px;">Your MarketPulse report is ready.</p>
+    <p style="font-size:14px;color:#475569;margin:0 0 8px;font-weight:600;">Topic</p>
+    <p style="font-size:16px;color:#1e293b;margin:0 0 24px;">${topic.replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]))}</p>
+    <div style="text-align:center;margin:32px 0;">
+      <a href="${reportUrl || '#'}" style="display:inline-block;background:#00e5fa;color:#0a0e17;font-weight:700;font-size:16px;padding:14px 40px;text-decoration:none;border-radius:6px;">View Your Report</a>
+    </div>
+    <p style="font-size:12px;color:#9ca3af;margin:24px 0 0;text-align:center;">This link expires in 90 days. Right-click and "Save As" to keep a permanent copy.</p>
+  </div>
+  <div style="padding:20px 40px;background:#f9fafb;border-top:1px solid #e2e8f0;text-align:center;font-size:12px;color:#9ca3af;">
+    Mission Meets Tech LLC &middot; <a href="https://missionmeetstech.com" style="color:#0369a1;">missionmeetstech.com</a><br>
+    AI-assisted research. Verify all claims independently.
+  </div>
+</div>`;
 
     if (shouldHoldEmail()) {
       if (_supabase) {
-        await holdEmail(_supabase, email, deliverySubject, reportEmailHtml, {
+        await holdEmail(_supabase, email, deliverySubject, deliveryHtml, {
           product: "marketpulse",
           record_id: _orderId,
-          has_attachment: true,
-          attachment_size_kb: Math.round(reportBuffer.length / 1024),
+          has_attachment: false,
+          attachment_size_kb: 0,
         });
       }
       console.log(`[degraded] Delivery email held for ${email}`);
@@ -1041,15 +1071,8 @@ exports.handler = async (event) => {
       const deliveryResult = await sendEmail({
         to: email,
         subject: deliverySubject,
-        html: reportEmailHtml,
+        html: deliveryHtml,
         from: "Mission Meets Tech <noreply@missionmeetstech.com>",
-        attachments: [
-          {
-            filename: "tactical-brief.html",
-            content: reportBuffer.toString("base64"),
-            content_type: "text/html",
-          },
-        ],
       });
 
       if (!deliveryResult.success) {

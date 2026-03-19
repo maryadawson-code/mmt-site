@@ -409,42 +409,4 @@ function renderInlineBold(text) {
   return esc(text).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
 }
 
-/**
- * Render MarketPulse report as email-safe HTML (all inline styles).
- * Takes the output of renderMarketPulseHTML and converts <style>+classes to inline styles.
- */
-function renderMarketPulseEmailHTML(data) {
-  // Generate the standard report HTML first
-  let html = renderMarketPulseHTML(data);
-
-  // Strip the <style> block (Gmail removes it anyway)
-  html = html.replace(/<style>[\s\S]*?<\/style>/, "");
-
-  // Inline the critical styles by replacing class-based elements with style attributes
-  // Container
-  html = html.replace(/class="container"/g, 'style="max-width:800px;margin:0 auto;background:#fff;"');
-  // Header
-  html = html.replace(/class="header"/g, 'style="background:#0a0e17;color:#f8fafc;padding:32px 40px;"');
-  html = html.replace(/class="header-title"/g, 'style="font-size:24px;font-weight:700;color:#00e5fa;letter-spacing:0.5px;"');
-  html = html.replace(/class="header-sub"/g, 'style="font-size:13px;color:rgba(255,255,255,0.6);margin-top:4px;"');
-  // Content
-  html = html.replace(/class="content"/g, 'style="padding:32px 40px;"');
-  // Footer
-  html = html.replace(/class="footer"/g, 'style="padding:20px 40px;background:#f9fafb;border-top:1px solid #e2e8f0;text-align:center;font-size:12px;color:#9ca3af;"');
-  // Meta
-  html = html.replace(/class="meta"/g, 'style="font-size:12px;color:#6b7280;"');
-  // Pipeline cards
-  html = html.replace(/class="pipeline-card"/g, 'style="border-left:4px solid #00e5fa;background:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid #00e5fa;border-radius:0 8px 8px 0;padding:12px 16px;margin:10px 0;"');
-  html = html.replace(/class="pipeline-label"/g, 'style="font-size:11px;font-weight:700;color:#475569;"');
-  html = html.replace(/class="pipeline-value"/g, 'style="font-size:13px;color:#1e293b;"');
-
-  // Wrap in email-safe table layout
-  html = html.replace(
-    '<body>',
-    '<body style="margin:0;padding:0;background:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,sans-serif;color:#1e293b;line-height:1.6;">'
-  );
-
-  return html;
-}
-
-module.exports = { renderProposalPulseHTML, renderMarketPulseHTML, renderMarketPulseEmailHTML };
+module.exports = { renderProposalPulseHTML, renderMarketPulseHTML };

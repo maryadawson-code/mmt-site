@@ -23,6 +23,7 @@ const { withRetry } = require("./lib/retry");
 const { checkKillSwitch } = require("./lib/kill-switch");
 const { extractIntelSignals } = require("./lib/signal-extractor");
 const { logOpsEvent } = require("./lib/ops-ledger");
+const { generateReportUrl } = require("./lib/report-url");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -452,12 +453,11 @@ exports.handler = async (event) => {
       complianceMatrix: scorecard.compliance_matrix || null,
     });
 
-    // Generate Red Team Review attachment (HTML or legacy PDF based on feature flag)
-    const { getFlag } = require("./lib/feature-flags");
-    let reviewAttachment = null;
+    // Generate Red Team Review HTML and store in Supabase
+    let reportUrl = null;
     try {
-      const pdfRenderer = getFlag("FEATURE_PDF_RENDERER");
-      const reviewArgs = {
+      const { renderProposalPulseHTML } = require("./lib/report-html-renderer");
+      const reviewHtml = renderProposalPulseHTML({
         scorecard, overallGrade, documentLabel: config.label, fileName: file_name,
         hasSow: !!scorecard._document_text,
         nextSteps: scorecard.next_steps || null,
@@ -467,47 +467,41 @@ exports.handler = async (event) => {
         redTeamSections: mergedSections,
         redTeamExecutiveSummary: reviewResult ? reviewResult.executive_summary : null,
         redTeamNextSteps: reviewResult ? reviewResult.next_steps : null,
-      };
+      });
+      console.log(`Red Team review HTML generated: ${Math.round(reviewHtml.length / 1024)}KB`);
 
-      if (pdfRenderer === "pdfkit") {
-        const { generateRedTeamPdf } = require("./lib/redteam-pdf");
-        const pdfBuffer = await generateRedTeamPdf({
-          scorecard, overallGrade, documentLabel: config.label, fileName: file_name,
-          sections: mergedSections,
-          executiveSummary: reviewResult ? reviewResult.executive_summary : null,
-          prioritizedSteps: reviewResult ? reviewResult.next_steps : null,
-          nextSteps: scorecard.next_steps || null,
-          pwinEstimate: rewriteResult.pwin_estimate || null,
-          pwinJustification: rewriteResult.pwin_justification || null,
-          competitivePositioning: scorecard.competitive_positioning || null,
-          pwinFactors: scorecard.pWin_factors || null,
-          complianceMatrix: scorecard.compliance_matrix || null,
-        });
-        reviewAttachment = {
-          filename: `RedTeamReview-${scoring_id.slice(0, 8)}.pdf`,
-          content: pdfBuffer.toString("base64"),
-          content_type: "application/pdf",
-        };
-        console.log(`Red Team review PDF generated: ${Math.round(pdfBuffer.length / 1024)}KB`);
-      } else {
-        const { renderProposalPulseHTML } = require("./lib/report-html-renderer");
-        const reviewHtml = renderProposalPulseHTML(reviewArgs);
-        reviewAttachment = {
-          filename: `RedTeamReview-${scoring_id.slice(0, 8)}.html`,
-          content: Buffer.from(reviewHtml).toString("base64"),
-          content_type: "text/html",
-        };
-        console.log(`Red Team review HTML generated: ${Math.round(reviewHtml.length / 1024)}KB`);
-      }
+      const { url } = generateReportUrl(scoring_id, "redteam");
+      reportUrl = url;
+      await supabase.from("proposal_scorecards").update({ redteam_report_html: reviewHtml, redteam_report_url: url }).eq("id", scoring_id);
+      console.log(`Red Team report stored and URL generated for ${scoring_id}`);
     } catch (htmlErr) {
-      console.error("Red Team review generation failed (sending email without attachment):", htmlErr.message);
+      console.error("Red Team review generation/storage failed:", htmlErr.message);
     }
+
+    // Send email with link to hosted Red Team report
+    const redTeamEmailHtml = `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;">
+  <div style="background:#0a0e17;padding:32px 40px;text-align:center;">
+    <div style="font-size:24px;font-weight:700;color:#ef4444;letter-spacing:0.5px;">RED TEAM REVIEW</div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-top:4px;">ProposalPulse Deep Analysis</div>
+  </div>
+  <div style="padding:32px 40px;">
+    <p style="font-size:16px;color:#1e293b;margin:0 0 16px;">Your Red Team Review is ready.</p>
+    <p style="font-size:14px;color:#475569;margin:0 0 4px;font-weight:600;">Document</p>
+    <p style="font-size:16px;color:#1e293b;margin:0 0 24px;">${(file_name || "uploaded document").replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]))}</p>
+    <div style="text-align:center;margin:32px 0;">
+      <a href="${reportUrl || '#'}" style="display:inline-block;background:#ef4444;color:#ffffff;font-weight:700;font-size:16px;padding:14px 40px;text-decoration:none;border-radius:6px;">View Red Team Review</a>
+    </div>
+    <p style="font-size:12px;color:#9ca3af;margin:24px 0 0;text-align:center;">This link expires in 90 days.</p>
+  </div>
+  <div style="padding:20px 40px;background:#f9fafb;border-top:1px solid #e2e8f0;text-align:center;font-size:12px;color:#9ca3af;">
+    Mission Meets Tech LLC &middot; <a href="https://missionmeetstech.com" style="color:#0369a1;">missionmeetstech.com</a>
+  </div>
+</div>`;
 
     const emailResult = await sendEmail({
       to: normalizedEmail,
       subject: `Red Team Review: ${config.label} — All 9 Sections Reviewed`,
-      html: emailHtml,
-      ...(reviewAttachment && { attachments: [reviewAttachment] }),
+      html: redTeamEmailHtml,
     });
 
     if (emailResult.success) {

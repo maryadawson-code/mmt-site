@@ -28,6 +28,7 @@ const { logOpsEvent } = require("./lib/ops-ledger");
 const { extractIntelSignals } = require("./lib/signal-extractor");
 const { trackQuality } = require("./lib/quality-tracker");
 const { getFlag } = require("./lib/feature-flags");
+const { generateReportUrl } = require("./lib/report-url");
 
 // --- Environment Variables ---
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -696,50 +697,65 @@ exports.handler = async (event) => {
         hasSow: !!finalSowText,
       });
 
-      // Generate Score Report attachment (HTML or legacy PDF based on feature flag)
-      let scoreReportAttachment = null;
+      // Generate Score Report HTML and store in Supabase
+      let reportUrl = null;
       try {
-        const pdfRenderer = getFlag("FEATURE_PDF_RENDERER");
-        const reportArgs = {
+        const { renderProposalPulseHTML } = require("./lib/report-html-renderer");
+        const reportHtml = renderProposalPulseHTML({
           scorecard, overallGrade, documentType, documentLabel: config.label,
           fileName, hasSow: !!finalSowText,
           nextSteps: scorecard.next_steps || null,
           competitivePositioning: scorecard.competitive_positioning || null,
           complianceNote: !finalSowText ? `Scored against standard criteria for ${config.label}. Upload SOW for compliance mapping.` : null,
-        };
+        });
+        console.log(`Score report HTML generated: ${Math.round(reportHtml.length / 1024)}KB`);
 
-        if (pdfRenderer === "pdfkit") {
-          const { generateScoreReportPdf } = require("./lib/proposalpulse-pdf");
-          const pdfBuffer = await generateScoreReportPdf({ ...reportArgs, pwinFactors: scorecard.pWin_factors || null, scoringId: scoring_id });
-          scoreReportAttachment = {
-            filename: `ProposalPulse-ScoreReport-${scoring_id.slice(0, 8)}.pdf`,
-            content: pdfBuffer.toString("base64"),
-            content_type: "application/pdf",
-          };
-          console.log(`Score report PDF generated: ${Math.round(pdfBuffer.length / 1024)}KB`);
-        } else {
-          const { renderProposalPulseHTML } = require("./lib/report-html-renderer");
-          const reportHtml = renderProposalPulseHTML(reportArgs);
-          scoreReportAttachment = {
-            filename: `ProposalPulse-ScoreReport-${scoring_id.slice(0, 8)}.html`,
-            content: Buffer.from(reportHtml).toString("base64"),
-            content_type: "text/html",
-          };
-          console.log(`Score report HTML generated: ${Math.round(reportHtml.length / 1024)}KB`);
-        }
+        const { url } = generateReportUrl(scoring_id, "proposalpulse");
+        reportUrl = url;
+        await supabase.from("proposal_scorecards").update({ report_html: reportHtml, report_url: url }).eq("id", scoring_id);
+        console.log(`Score report stored and URL generated for ${scoring_id}`);
       } catch (htmlErr) {
-        console.error("Score report generation failed (sending email without attachment):", htmlErr.message);
+        console.error("Score report generation/storage failed:", htmlErr.message);
       }
 
+      // Grade color for email
+      const gradeColorMap = (g) => {
+        if (/^A/.test(g)) return "#22c55e";
+        if (/^B/.test(g)) return "#3b82f6";
+        if (/^C/.test(g)) return "#eab308";
+        return "#ef4444";
+      };
+
+      // Build email with link to hosted report
+      const linkEmailHtml = `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;">
+  <div style="background:#0a0e17;padding:32px 40px;text-align:center;">
+    <div style="font-size:24px;font-weight:700;color:#00e5fa;letter-spacing:0.5px;">PROPOSALPULSE</div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-top:4px;">AI-Powered Proposal Intelligence</div>
+  </div>
+  <div style="padding:32px 40px;">
+    <p style="font-size:16px;color:#1e293b;margin:0 0 16px;">Your proposal has been scored.</p>
+    <p style="font-size:14px;color:#475569;margin:0 0 4px;font-weight:600;">Document</p>
+    <p style="font-size:16px;color:#1e293b;margin:0 0 8px;">${(fileName || "uploaded document").replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]))}</p>
+    <p style="font-size:14px;color:#475569;margin:0 0 4px;font-weight:600;">Overall Grade</p>
+    <p style="font-size:28px;font-weight:700;color:${gradeColorMap(overallGrade)};margin:0 0 24px;">${overallGrade || "N/A"}</p>
+    <div style="text-align:center;margin:32px 0;">
+      <a href="${reportUrl || '#'}" style="display:inline-block;background:#00e5fa;color:#0a0e17;font-weight:700;font-size:16px;padding:14px 40px;text-decoration:none;border-radius:6px;">View Score Report</a>
+    </div>
+    <p style="font-size:12px;color:#9ca3af;margin:24px 0 0;text-align:center;">This link expires in 90 days.</p>
+  </div>
+  <div style="padding:20px 40px;background:#f9fafb;border-top:1px solid #e2e8f0;text-align:center;font-size:12px;color:#9ca3af;">
+    Mission Meets Tech LLC &middot; <a href="https://missionmeetstech.com" style="color:#0369a1;">missionmeetstech.com</a>
+  </div>
+</div>`;
+
       if (shouldHoldEmail()) {
-        await holdEmail(supabase, email, emailSubject, emailHtml, { product: "proposalpulse", record_id: scoring_id });
+        await holdEmail(supabase, email, emailSubject, linkEmailHtml, { product: "proposalpulse", record_id: scoring_id });
         console.log(`[degraded] Email held for ${scoring_id}`);
       } else {
         await sendEmail({
-          to: email, subject: emailSubject, html: emailHtml,
-          ...(scoreReportAttachment && { attachments: [scoreReportAttachment] }),
+          to: email, subject: emailSubject, html: linkEmailHtml,
         });
-        console.log(`Receipt email sent for ${scoring_id}${scoreReportAttachment ? " (with report)" : ""}`);
+        console.log(`Receipt email sent for ${scoring_id} (with report link)`);
       }
 
       // --- State: email_sent ---
