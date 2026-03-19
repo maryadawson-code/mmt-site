@@ -150,6 +150,23 @@ exports.handler = async () => {
     }
   }
 
+  // 6. Check service inventory deadlines within 7 days
+  try {
+    const sevenDaysFromNow = new Date(Date.now() + 7 * 86400000).toISOString().split("T")[0];
+    const today = new Date().toISOString().split("T")[0];
+    const { data: deadlines } = await supabase.from("service_inventory").select("service_name, action_required, action_deadline, priority").eq("status", "active").not("action_deadline", "is", null).lte("action_deadline", sevenDaysFromNow).gte("action_deadline", today);
+    for (const svc of (deadlines || [])) {
+      const daysLeft = Math.ceil((new Date(svc.action_deadline) - Date.now()) / 86400000);
+      const severity = daysLeft <= 2 ? "critical" : "warn";
+      await supabase.from("finance_alerts").insert({
+        alert_type: "service_deadline", severity, source: "cost_intelligence",
+        title: `${svc.service_name}: deadline in ${daysLeft}d`,
+        description: `${svc.action_required || "Action needed"} — deadline ${svc.action_deadline}`,
+        recommended_action: svc.action_required, metadata: { service: svc.service_name, deadline: svc.action_deadline },
+      });
+    }
+  } catch (err) { console.error("[cost-rollup] Service deadline check failed:", err.message); }
+
   console.log(`[cost-rollup] Done. ${Object.keys(groups).length} groups, $${totalDayDollars.toFixed(2)} total, ${events.length} events`);
   return { statusCode: 200, body: JSON.stringify({ date: dateStr, events: events.length, groups: Object.keys(groups).length, totalCents: totalDayCents }) };
 };

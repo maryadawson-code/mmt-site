@@ -55,6 +55,12 @@
 [functions."cost-rollup"]
   schedule = "0 7 * * *"
 
+[functions."customer-health-rollup"]
+  schedule = "0 12 * * *"
+
+[functions."sentry-sync"]
+  schedule = "*/30 * * * *"
+
 [[redirects]]
   from = "/"
   to = "/index.html"

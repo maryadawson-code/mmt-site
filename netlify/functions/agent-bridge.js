@@ -200,6 +200,126 @@ exports.handler = async (event) => {
       return ok({ updated: true });
     }
 
+    // === FINANCE ===
+    if (action === "finance_summary") {
+      const todayStart = new Date().toISOString().split("T")[0] + "T00:00:00Z";
+      const [eventsRes, svcRes, alertsRes] = await Promise.all([
+        supabase.from("cost_events").select("provider, cost_cents, status").gte("created_at", todayStart),
+        supabase.from("service_inventory").select("service_name, monthly_cost_cents, priority, action_deadline").eq("status", "active"),
+        supabase.from("finance_alerts").select("id, alert_type, severity, title").is("resolved_at", null).limit(10),
+      ]);
+      const events = eventsRes.data || [];
+      const totalCents = events.reduce((s, e) => s + (e.cost_cents || 0), 0);
+      const services = svcRes.data || [];
+      const monthlyBurn = services.reduce((s, svc) => s + (svc.monthly_cost_cents || 0), 0);
+      return ok({ todaySpendCents: totalCents, todayCalls: events.length, monthlyBurnCents: monthlyBurn, pendingDecisions: services.filter(s => ["decide", "evaluate", "verify-urgent"].includes(s.priority)).length, alerts: alertsRes.data || [] });
+    }
+
+    if (action === "finance_alerts") {
+      const { data } = await supabase.from("finance_alerts").select("*").is("resolved_at", null).order("created_at", { ascending: false }).limit(20);
+      return ok({ alerts: data || [] });
+    }
+
+    if (action === "finance_services") {
+      const { data } = await supabase.from("service_inventory").select("*").order("category").order("service_name");
+      return ok({ services: data || [] });
+    }
+
+    // === CUSTOMERS ===
+    if (action === "customer_summary") {
+      const { data } = await supabase.from("customer_profiles").select("health_score, total_revenue_cents, churn_risk, lifecycle_stage");
+      const all = data || [];
+      return ok({ total: all.length, active: all.filter(c => c.lifecycle_stage === "active").length, totalRevenueCents: all.reduce((s, c) => s + (c.total_revenue_cents || 0), 0), avgHealth: all.length > 0 ? Math.round(all.reduce((s, c) => s + (c.health_score || 0), 0) / all.length) : 0, atRisk: all.filter(c => c.churn_risk === "high").length });
+    }
+
+    if (action === "customer_at_risk") {
+      const { data } = await supabase.from("customer_profiles").select("*").eq("churn_risk", "high").order("health_score");
+      return ok({ customers: data || [] });
+    }
+
+    // === PROJECTS ===
+    if (action === "project_dashboard") {
+      const [projectsRes, tasksRes] = await Promise.all([
+        supabase.from("projects").select("*").eq("status", "active"),
+        supabase.from("project_tasks").select("id, status, priority").not("status", "in", '("done","cancelled")'),
+      ]);
+      const tasks = tasksRes.data || [];
+      return ok({ projects: projectsRes.data || [], openTasks: tasks.length, blocked: tasks.filter(t => t.status === "blocked").length });
+    }
+
+    if (action === "project_backlog") {
+      const { data } = await supabase.from("project_tasks").select("*").not("status", "in", '("done","cancelled")').order("priority").limit(50);
+      return ok({ tasks: data || [] });
+    }
+
+    if (action === "project_create_task") {
+      const { title, description, priority, assignee, type, platform } = body;
+      if (!title) return err(400, "title required");
+      const { data, error: insertErr } = await supabase.from("project_tasks").insert({ title, description, priority: priority || "normal", assignee, type: type || "task", platform }).select("id").single();
+      if (insertErr) return err(500, insertErr.message);
+      return ok({ taskId: data.id });
+    }
+
+    // === QA ===
+    if (action === "qa_summary") {
+      const products = ["proposalpulse", "marketpulse", "site"];
+      const summaries = [];
+      for (const p of products) {
+        const { data: latest } = await supabase.from("qa_test_runs").select("result_grade, is_regression, created_at").eq("product", p).order("created_at", { ascending: false }).limit(1);
+        summaries.push({ product: p, lastRun: latest?.[0] || null });
+      }
+      const { data: regressions } = await supabase.from("qa_test_runs").select("id").eq("is_regression", true).gte("created_at", new Date(Date.now() - 7 * 86400000).toISOString());
+      return ok({ products: summaries, totalRegressions: regressions?.length || 0 });
+    }
+
+    // === ISSUES ===
+    if (action === "issue_list") {
+      const { data } = await supabase.from("issues").select("*").not("status", "in", '("closed","wont-fix")').order("severity").order("created_at", { ascending: false }).limit(50);
+      return ok({ issues: data || [] });
+    }
+
+    if (action === "issue_detail") {
+      const { id } = body;
+      if (!id) return err(400, "id required");
+      const { data: issue } = await supabase.from("issues").select("*").eq("id", id).single();
+      const { data: comments } = await supabase.from("issue_comments").select("*").eq("issue_id", id).order("created_at");
+      return ok({ issue, comments: comments || [] });
+    }
+
+    if (action === "issue_create") {
+      const { title, category, source, product, severity, errorLogs, rootCause, suggestedFix, affectedFiles, assignAgent } = body;
+      if (!title) return err(400, "title required");
+      const { data, error: insertErr } = await supabase.from("issues").insert({
+        title, category: category || "bug", source: source || "agent", product,
+        severity: severity || "medium", error_logs: errorLogs, root_cause: rootCause,
+        suggested_fix: suggestedFix, affected_files: affectedFiles, assigned_agent: assignAgent || "ops-code",
+      }).select("id").single();
+      if (insertErr) return err(500, insertErr.message);
+      return ok({ issueId: data.id });
+    }
+
+    if (action === "issue_comment") {
+      const { issueId, author, authorType, content, codeDiff, codeFile } = body;
+      if (!issueId || !content) return err(400, "issueId and content required");
+      const { data, error: insertErr } = await supabase.from("issue_comments").insert({
+        issue_id: issueId, author: author || "agent", author_type: authorType || "agent", content, code_diff: codeDiff, code_file: codeFile,
+      }).select("id").single();
+      if (insertErr) return err(500, insertErr.message);
+      return ok({ commentId: data.id });
+    }
+
+    if (action === "deployment_log") {
+      const { branch, commitSha, commitMessage, deployType, triggeredBy, netlifyDeployId, status, homepageStatus, homepageSize, fixesIssues } = body;
+      if (!branch) return err(400, "branch required");
+      const { data, error: insertErr } = await supabase.from("deployments").insert({
+        branch, commit_sha: commitSha, commit_message: commitMessage, deploy_type: deployType || "production",
+        triggered_by: triggeredBy, netlify_deploy_id: netlifyDeployId, status: status || "success",
+        homepage_status: homepageStatus, homepage_size: homepageSize, fixes_issues: fixesIssues || [],
+      }).select("id").single();
+      if (insertErr) return err(500, insertErr.message);
+      return ok({ deploymentId: data.id });
+    }
+
     return err(404, "Unknown action: " + action);
   }
 
