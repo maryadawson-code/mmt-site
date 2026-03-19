@@ -33,6 +33,7 @@ const { validateClaim, classifyClaim } = require("./lib/cross-validator");
 const { extractIntelSignals } = require("./lib/signal-extractor");
 const { filterSources, countYoutubeSources } = require("./lib/source-filter");
 const { createReportQuality, analyzePassResult, checkReportQuality, buildQualityDisclaimer, scoreReport } = require("./lib/report-quality-gate");
+const { sanitizeSynthesis } = require("./lib/synthesis-sanitizer");
 
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 const PERPLEXITY_MODEL = "sonar-pro";
@@ -317,6 +318,14 @@ Do NOT silently override verified data.
 
 CHAIN OF THOUGHT: For each user claim being verified, state what you found, whether it confirms or contradicts, and your confidence in the determination.
 
+ANTI-FABRICATION RULES (HARD CONSTRAINTS):
+1. EVERY dollar figure MUST have a specific source URL. If you cannot cite a .gov URL or verified aggregator, write "Not available from public sources" instead.
+2. EVERY competitive landscape entry MUST include a verifiable contract number from FPDS, SAM.gov, or USASpending. If you cannot cite a specific contract number for a company, do NOT include that company as a verified awardee. An empty competitive landscape with an honest explanation is better than a fabricated one.
+3. EVERY percentage or ratio MUST have a source. If you calculated it, show the math. If from a source, cite it. If neither, do NOT include it.
+4. Pipeline entry fields: If a value cannot be verified, use "Not confirmed — [reason]" instead of inventing a value.
+5. NEVER aggregate individual estimates into a headline total and present it as a sourced figure. If you sum estimates, say "Sum of N estimated opportunities: ~$X (not a single-source figure)."
+6. If research returned limited results, say so honestly in METHODOLOGY. Do NOT pad with fabricated data.
+
 OUTPUT STRUCTURE — You are producing a federal contracting intelligence brief.
 Your reader is a GovCon professional who PAYS for this analysis.
 They already know basic program information. They need ACTIONABLE INTELLIGENCE they can't easily find themselves.
@@ -334,20 +343,28 @@ THIS IS THE CORE SECTION. For EACH opportunity, use EXACT format:
 
 CONTRACT/OPPORTUNITY: [Name]
 Agency: [Contracting agency]
-Contract #: [If known]
+Contract #: [If known, or "Not confirmed"]
 NAICS: [Code + description]
 Set-Aside: [Type]
-Estimated Value: [$ or range]
-Incumbent: [Company if known]
+Estimated Value: [$ or range, or "Not confirmed — no public ceiling posted"]
+Incumbent: [Company if known, or "Not confirmed — new requirement"]
 Status: [Active / Expected recompete / Terminated-pending-recompete]
-Timeline: [Key dates]
+Timeline: [Key dates, or "Not confirmed — no RFP date published"]
 Source: [URL]
 SDVOSB Relevance: [Why this matters]
 
 If you found fewer than 3 specific opportunities, state that clearly and explain what adjacent opportunities exist.
 
 ## COMPETITIVE LANDSCAPE
-Named incumbents on relevant contracts. Recent wins/losses. Teaming opportunities with specific companies. NOT generic program descriptions. Verified awardees ONLY in main section; assumed competitors clearly separated.
+TWO sub-sections required:
+
+### VERIFIED AWARDEES
+Companies with confirmed contract numbers, amounts, and vehicles from .gov sources. EVERY entry MUST have a contract number.
+
+### MARKET PARTICIPANTS
+Companies known to operate in this space but WITHOUT confirmed contracts to the target entity. Clearly label each: "No confirmed contracts found for [company] with [target entity]."
+
+NEVER present market participants as verified awardees.
 
 ## RISK ASSESSMENT
 Specific risks with evidence. Policy/budget risks. NOT generic compliance checklists.
@@ -725,8 +742,23 @@ exports.handler = async (event) => {
       ...(pass3.citations || []),
     ]);
 
+    // === SPRINT: Post-synthesis sanitizer (anti-hallucination) ===
+    const allPassCitations = [
+      ...(pass1.citations || []),
+      ...(pass2.citations || []),
+      ...(pass3.citations || []),
+    ];
+    const { sanitized: sanitizedSynthesis, flagCount } = sanitizeSynthesis(finalSynthesis, allPassCitations);
+    if (flagCount > 0) {
+      console.log(`[SANITIZER] Flagged ${flagCount} unverified claims`);
+    }
+    if (flagCount > 5) {
+      console.warn(`[SANITIZER] WARNING: ${flagCount} unverified claims — report may contain fabricated data`);
+    }
+    finalSynthesis = sanitizedSynthesis;
+
     // === QUALITY GATE ===
-    const qualityResult = checkReportQuality(reportQuality, finalSynthesis);
+    const qualityResult = checkReportQuality(reportQuality, finalSynthesis, { citations: allPassCitations, topic });
     console.log(`[QUALITY GATE] Grade: ${qualityResult.grade} | Failures: ${qualityResult.failures.length} | Metrics: contracts=${reportQuality.specificContracts}, dollars=${reportQuality.dollarValues}, entities=${reportQuality.namedEntities}, nullPasses=${reportQuality.nullPasses}/${reportQuality.totalPasses}`);
 
     if (qualityResult.grade === "MARGINAL") {

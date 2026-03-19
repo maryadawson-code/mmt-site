@@ -232,7 +232,37 @@ function gateQueryFulfillment(synthesis, topic) {
 }
 
 /**
- * Run all 7 quality gates on the final synthesis.
+ * Gate 8: Competitive Data Verification — entries must have contract numbers.
+ */
+function gateCompetitiveData(synthesis) {
+  // Extract competitive landscape section
+  const compMatch = synthesis.match(/## COMPETITIVE LANDSCAPE[\s\S]*?(?=## |$)/i);
+  if (!compMatch) return null; // No section = no issue
+
+  const compText = compMatch[0];
+  // Count company entries (lines mentioning LLC, Inc, Corp, etc.)
+  const companyLines = compText.split("\n").filter((l) =>
+    /\b(LLC|Inc\.?|Corp\.?|Solutions|Technologies|Systems|Strategies|Group|Partners|Hamilton|International)\b/i.test(l) &&
+    l.trim().length > 10
+  );
+  if (companyLines.length < 3) return null; // Too few entries to flag
+
+  // Count entries with contract numbers
+  const withContract = companyLines.filter((l) =>
+    /[A-Z0-9]{2,6}[-_][A-Z0-9]{2,}[-_][A-Z0-9]/i.test(l) ||
+    /contract\s*#/i.test(l) ||
+    /GS-\d|FA\d|W\d{2}|36C\d|47Q/i.test(l) ||
+    /market participant|potential|assumed|no confirmed/i.test(l)
+  );
+
+  if (withContract.length === 0) {
+    return "Competitive landscape contains entries without verifiable contract numbers";
+  }
+  return null;
+}
+
+/**
+ * Run all 8 quality gates on the final synthesis.
  * @param {Object} quality - The reportQuality metrics object
  * @param {string} synthesis - Final synthesized report text
  * @param {Object} [opts] - Optional: { citations, topic }
@@ -250,6 +280,7 @@ function checkReportQuality(quality, synthesis, opts) {
     gateClaimConsistency(synthesis || ""),
     gateCustomerValue(quality, synthesis || ""),
     gateQueryFulfillment(synthesis || "", topic),
+    gateCompetitiveData(synthesis || ""),
   ];
 
   for (const result of gates) {
