@@ -5,9 +5,9 @@
 // - Dispatch tasks to any agent
 // - Add intel signals
 // - Update newsletter pipeline
-// - Update agent status
+// - Update agent status (heartbeats)
 // - Read dashboard state
-// - Complete tasks
+// - Complete/fail tasks
 //
 // Auth: Bearer token via AGENT_BRIDGE_KEY env var
 // ============================================================
@@ -45,24 +45,24 @@ exports.handler = async (event) => {
     const result = {};
 
     if (section === "all" || section === "agents") {
-      const { data } = await supabase.from("agent_registry").select("*").eq("archived", false).order("sort_order");
+      const { data } = await supabase.from("agent_heartbeats").select("*").order("last_seen", { ascending: false });
       result.agents = data || [];
     }
     if (section === "all" || section === "tasks") {
-      const { data } = await supabase.from("task_queue").select("*").in("status", ["pending", "in_progress"]).order("created_at", { ascending: false }).limit(20);
+      const { data } = await supabase.from("task_queue").select("*").in("status", ["pending", "in_progress"]).order("created_at", { ascending: false }).limit(50);
       result.tasks = data || [];
     }
     if (section === "all" || section === "signals") {
-      const { data } = await supabase.from("intel_signals").select("*").in("status", ["new", "scored", "assigned"]).order("created_at", { ascending: false }).limit(20);
+      const { data } = await supabase.from("intel_signals").select("*").neq("status", "killed").order("created_at", { ascending: false }).limit(50);
       result.signals = data || [];
     }
     if (section === "all" || section === "pipeline") {
-      const { data } = await supabase.from("newsletter_pipeline").select("*").not("status", "in", '("published","killed")').order("publish_date", { ascending: true }).limit(20);
+      const { data } = await supabase.from("newsletter_pipeline").select("*").order("publish_date", { ascending: false }).limit(20);
       result.pipeline = data || [];
     }
     if (section === "all" || section === "orders") {
-      const { data: mp } = await supabase.from("marketpulse_orders").select("id, created_at, email, topic, workflow_state, report_url").order("created_at", { ascending: false }).limit(10);
-      const { data: pp } = await supabase.from("mp_scoring_history").select("id, created_at, file_name, workflow_state, overall_grade, report_url").order("created_at", { ascending: false }).limit(10);
+      const { data: mp } = await supabase.from("marketpulse_orders").select("*").order("created_at", { ascending: false }).limit(20);
+      const { data: pp } = await supabase.from("mp_scoring_history").select("*").order("created_at", { ascending: false }).limit(20);
       result.orders = { marketpulse: mp || [], proposalpulse: pp || [] };
     }
 
@@ -77,20 +77,31 @@ exports.handler = async (event) => {
 
     // DISPATCH TASK
     if (action === "dispatch_task") {
-      const { task, agent, priority, context } = body;
+      const { task, agent, priority } = body;
       if (!task || !agent) return err(400, "task and agent required");
       const { data, error: insertErr } = await supabase
         .from("task_queue")
-        .insert({ task, agent, priority: priority || "normal", created_by: "editorial_agent", result: context || null })
+        .insert({ task, agent, priority: priority || "normal" })
         .select("id")
         .single();
       if (insertErr) return err(500, insertErr.message);
-      return ok({ dispatched: true, task_id: data.id, agent, task: task.substring(0, 100) });
+      return ok({ task_id: data.id });
+    }
+
+    // COMPLETE TASK
+    if (action === "complete_task") {
+      const { task_id, result } = body;
+      if (!task_id) return err(400, "task_id required");
+      const { error: updateErr } = await supabase.from("task_queue")
+        .update({ status: "completed", result: result || null, completed_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+        .eq("id", task_id);
+      if (updateErr) return err(500, updateErr.message);
+      return ok({ completed: true });
     }
 
     // ADD SIGNAL
     if (action === "add_signal") {
-      const { title, signal_type, summary, urls, relevance_score } = body;
+      const { title, signal_type, summary, urls, severity } = body;
       if (!title) return err(400, "title required");
       const { data, error: insertErr } = await supabase
         .from("intel_signals")
@@ -99,13 +110,12 @@ exports.handler = async (event) => {
           signal_type: signal_type || null,
           summary: summary || null,
           urls: urls || [],
-          relevance_score: relevance_score || null,
           source: "editorial_agent",
         })
         .select("id")
         .single();
       if (insertErr) return err(500, insertErr.message);
-      return ok({ added: true, signal_id: data.id });
+      return ok({ signal_id: data.id });
     }
 
     // UPDATE PIPELINE
@@ -134,30 +144,23 @@ exports.handler = async (event) => {
         .select("id")
         .single();
       if (insertErr) return err(500, insertErr.message);
-      return ok({ added: true, pipeline_id: data.id });
+      return ok({ pipeline_id: data.id });
     }
 
-    // UPDATE AGENT STATUS
+    // UPDATE AGENT STATUS (upsert heartbeat)
     if (action === "update_agent") {
       const { agent_id, status, current_task } = body;
       if (!agent_id) return err(400, "agent_id required");
-      const updates = { last_active: new Date().toISOString() };
-      if (status) updates.status = status;
-      if (current_task !== undefined) updates.current_task = current_task;
-      const { error: updateErr } = await supabase.from("agent_registry").update(updates).eq("id", agent_id);
-      if (updateErr) return err(500, updateErr.message);
+      const { error: upsertErr } = await supabase
+        .from("agent_heartbeats")
+        .upsert({
+          agent: agent_id,
+          status: status || "idle",
+          current_task: current_task || null,
+          last_seen: new Date().toISOString(),
+        }, { onConflict: "agent" });
+      if (upsertErr) return err(500, upsertErr.message);
       return ok({ updated: true });
-    }
-
-    // COMPLETE TASK
-    if (action === "complete_task") {
-      const { task_id, result } = body;
-      if (!task_id) return err(400, "task_id required");
-      const { error: updateErr } = await supabase.from("task_queue")
-        .update({ status: "completed", result: result || null, completed_at: new Date().toISOString(), updated_at: new Date().toISOString() })
-        .eq("id", task_id);
-      if (updateErr) return err(500, updateErr.message);
-      return ok({ completed: true });
     }
 
     // FAIL TASK
@@ -171,7 +174,7 @@ exports.handler = async (event) => {
       return ok({ failed: true });
     }
 
-    return err(400, "Unknown action: " + action);
+    return err(404, "Unknown action: " + action);
   }
 
   return err(405, "Method not allowed");
