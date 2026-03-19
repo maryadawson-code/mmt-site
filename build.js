@@ -516,6 +516,7 @@ function generateSitemap(articles, tags, contracts) {
     { loc: '/agency-sources.html', priority: '0.5' },
     { loc: '/getting-started.html', priority: '0.7' },
     { loc: '/marketpulse.html', priority: '0.8' },
+    { loc: '/contact.html', priority: '0.5' },
     { loc: '/about/team/', priority: '0.5' },
     { loc: '/about/press/', priority: '0.5' },
     { loc: '/glossary/', priority: '0.5' },
@@ -1620,7 +1621,8 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
     'agency-sources.html', 'getting-started.html',
     'marketpulse.html', 'tactical-brief-confirmed.html',
     'about-team.html', 'about-press.html',
-    'ops.html', 'command-center.html'
+    'ops.html', 'command-center.html',
+    'contact.html'
   ];
   const ogMap = {
     'index.html': 'index.png',

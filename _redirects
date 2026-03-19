@@ -6,8 +6,8 @@
 /proposal-pulse /proposal-pulse.html 301
 
 # MarketPulse redirects (canonical URL is now /marketpulse.html)
-/tactical-brief.html /marketpulse.html 301
-/tactical-brief /marketpulse.html 301
+/tactical-brief.html /marketpulse.html 301!
+/tactical-brief /marketpulse.html 301!
 /MarketPulse /marketpulse.html 301
 /MarketPulse.html /marketpulse.html 301
 /marketpulse /marketpulse.html 301
