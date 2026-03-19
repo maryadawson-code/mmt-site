@@ -140,6 +140,7 @@
       <div id="detail-agents" class="detail-view"></div>
       <div id="detail-content" class="detail-view"></div>
       <div id="detail-roadmap" class="detail-view"></div>
+      <div id="detail-costs" class="detail-view"></div>
     </div>
   </div>
 
@@ -155,6 +156,7 @@
     let selectedAgent = null;
     let currentFilter = 'all';
     let _lastResearch = null;
+    let _costData = null;
 
     function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
     function timeSince(d) { const m = Math.floor((Date.now() - new Date(d).getTime()) / 60000); if (m < 60) return m + 'm ago'; const h = Math.floor(m / 60); if (h < 24) return h + 'h ago'; return Math.floor(h/24) + 'd ago'; }
@@ -170,6 +172,8 @@
         dashData = data;
         allOpsEvents = data.ops_events_24h || [];
         allAgents = data.agents || [];
+        // Fetch cost data in parallel (non-blocking)
+        fetch('/.netlify/functions/cost-api?key=' + apiKey + '&view=summary').then(r => r.ok ? r.json() : null).then(c => { if (c) { _costData = c; renderTiles(dashData); } }).catch(() => {});
         renderMode(data);
         renderAlerts(data);
         renderTiles(data);
@@ -245,6 +249,7 @@
       const highDebt = ROADMAP.techDebt.filter(d => d.severity === 'HIGH').length;
       return [
         { id: 'roadmap', icon: '\ud83d\udccb', title: 'Roadmap', m1: '2', m1l: 'Platforms', m2: highDebt, m2l: 'High debt', badge: highDebt },
+        { id: 'costs', icon: '\ud83d\udcb0', title: 'Cost Intelligence', m1: _costData ? '$' + (_costData.today.totalCents / 100).toFixed(2) : '--', m1l: 'Today', m2: _costData ? _costData.today.calls : '--', m2l: 'API Calls', badge: _costData ? _costData.alerts.filter(a => a.severity === 'critical').length : 0 },
         { id: 'newsletter', icon: '\ud83d\udcf0', title: 'Newsletter', m1: daysToPublish !== null ? daysToPublish : '--', m1l: 'Days to pub', m2: nextStatus || '--', m2l: 'Status', badge: nearPipeline.length || 0 },
         { id: 'products', icon: '\ud83d\udce6', title: 'Products', m1: activeOrders.length, m1l: 'Active orders', m2: deliveredToday.length, m2l: 'Delivered', badge: errorOrders.length },
         { id: 'engineering', icon: '\ud83d\udd27', title: 'Engineering', m1: pendingTasks.length, m1l: 'Pending tasks', m2: null, m2l: null, badge: pendingTasks.length },
@@ -302,6 +307,7 @@
     function renderDetailView(view) {
       const fn = {
         roadmap: renderDetailRoadmap,
+        costs: renderDetailCosts,
         newsletter: renderDetailNewsletter,
         products: renderDetailProducts,
         engineering: renderDetailEngineering,
@@ -742,6 +748,104 @@
       h += '</div>';
 
       el.innerHTML = h;
+    }
+
+    // ============ COST INTELLIGENCE DETAIL VIEW ============
+
+    function renderDetailCosts() {
+      const el = document.getElementById('detail-costs');
+      const c = _costData;
+      let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
+      h += '<div class="detail-title">\ud83d\udcb0 Cost Intelligence</div>';
+
+      if (!c) {
+        h += '<div class="detail-card"><p style="color:rgba(255,255,255,0.4);">Cost data loading... First data appears after the next API call.</p></div>';
+        el.innerHTML = h;
+        return;
+      }
+
+      // Section 1: Big numbers
+      const totalDollars = (c.today.totalCents / 100).toFixed(2);
+      const avgPerCall = c.today.avgCentsPerCall ? (c.today.avgCentsPerCall / 100).toFixed(3) : '0.000';
+      h += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;">';
+      h += '<div class="detail-card" style="text-align:center;"><div class="revenue-big">$' + totalDollars + '</div><div class="revenue-label">Today</div></div>';
+      h += '<div class="detail-card" style="text-align:center;"><div style="font-size:2rem;font-weight:700;color:#60a5fa;">' + c.today.calls + '</div><div class="revenue-label">API Calls</div></div>';
+      h += '<div class="detail-card" style="text-align:center;"><div style="font-size:2rem;font-weight:700;color:#e2e8f0;">$' + avgPerCall + '</div><div class="revenue-label">Per Call</div></div>';
+      h += '<div class="detail-card" style="text-align:center;"><div style="font-size:2rem;font-weight:700;color:' + (c.today.successRate >= 95 ? '#22c55e' : c.today.successRate >= 80 ? '#eab308' : '#ef4444') + ';">' + c.today.successRate + '%</div><div class="revenue-label">Success</div></div>';
+      h += '</div>';
+
+      // Section 2: Spend by provider (horizontal bars)
+      h += '<div class="detail-card"><h3>Spend by Provider</h3>';
+      const providerTotal = Object.values(c.byProvider).reduce((s, v) => s + v, 0) || 1;
+      const provColors = { anthropic: '#f97316', perplexity: '#a855f7', resend: '#22c55e', openai: '#60a5fa', google: '#eab308' };
+      const sortedProviders = Object.entries(c.byProvider).sort((a, b) => b[1] - a[1]);
+      for (const [prov, cents] of sortedProviders) {
+        const pct = Math.round(cents / providerTotal * 100);
+        const dollars = (cents / 100).toFixed(2);
+        const color = provColors[prov] || '#9ca3af';
+        h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">';
+        h += '<span style="width:80px;font-size:0.78rem;color:rgba(255,255,255,0.6);text-transform:capitalize;">' + prov + '</span>';
+        h += '<div style="flex:1;background:rgba(255,255,255,0.05);border-radius:3px;height:16px;overflow:hidden;"><div style="background:' + color + ';width:' + pct + '%;height:100%;border-radius:3px;transition:width 0.3s;"></div></div>';
+        h += '<span style="width:70px;text-align:right;font-size:0.78rem;color:rgba(255,255,255,0.5);">$' + dollars + ' (' + pct + '%)</span>';
+        h += '</div>';
+      }
+      h += '</div>';
+
+      // Section 3: Spend by product
+      h += '<div class="detail-card"><h3>Spend by Product</h3>';
+      h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;">';
+      for (const [prod, cents] of Object.entries(c.byProduct).sort((a, b) => b[1] - a[1])) {
+        h += '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px;">';
+        h += '<div style="font-size:0.82rem;font-weight:600;color:#e2e8f0;text-transform:capitalize;">' + prod.replace(/-/g, ' ') + '</div>';
+        h += '<div style="font-size:1.4rem;font-weight:700;color:#22c55e;margin:4px 0;">$' + (cents / 100).toFixed(2) + '</div>';
+        h += '</div>';
+      }
+      h += '</div></div>';
+
+      // Section 4: 7-day trend
+      if (c.trend && Object.keys(c.trend).length > 0) {
+        h += '<div class="detail-card"><h3>7-Day Trend</h3>';
+        const trendDays = Object.entries(c.trend).sort((a, b) => a[0].localeCompare(b[0])).slice(-7);
+        const maxCents = Math.max(...trendDays.map(d => d[1]), 1);
+        h += '<div style="display:flex;align-items:flex-end;gap:4px;height:120px;padding-top:8px;">';
+        for (const [date, cents] of trendDays) {
+          const pct = Math.round(cents / maxCents * 100);
+          const day = new Date(date + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'short' });
+          h += '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">';
+          h += '<span style="font-size:0.65rem;color:rgba(255,255,255,0.4);">$' + (cents / 100).toFixed(2) + '</span>';
+          h += '<div style="width:100%;background:rgba(0,229,250,0.3);border-radius:3px 3px 0 0;height:' + Math.max(pct, 4) + '%;"></div>';
+          h += '<span style="font-size:0.65rem;color:rgba(255,255,255,0.3);">' + day + '</span>';
+          h += '</div>';
+        }
+        h += '</div></div>';
+      }
+
+      // Section 5: Alerts
+      if (c.alerts && c.alerts.length > 0) {
+        h += '<div class="detail-card"><h3>Unresolved Alerts (' + c.alerts.length + ')</h3>';
+        for (const a of c.alerts) {
+          const sColor = a.severity === 'critical' ? '#ef4444' : a.severity === 'warn' ? '#eab308' : '#60a5fa';
+          h += '<div style="border-left:3px solid ' + sColor + ';padding:8px 12px;margin-bottom:8px;background:rgba(255,255,255,0.02);border-radius:0 6px 6px 0;">';
+          h += '<div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:600;color:#e2e8f0;">' + esc(a.title) + '</span><span class="badge badge-' + (a.severity === 'critical' ? 'red' : a.severity === 'warn' ? 'yellow' : 'blue') + '">' + a.severity + '</span></div>';
+          h += '<div style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-top:4px;">' + timeSince(a.created_at) + '</div>';
+          h += '<div style="margin-top:8px;"><button class="btn btn-sm btn-cyan" onclick="resolveCostAlert(\'' + a.id + '\',\'approved\')">Approve</button> <button class="btn btn-sm" style="background:rgba(255,255,255,0.1);color:#e2e8f0;" onclick="resolveCostAlert(\'' + a.id + '\',\'dismissed\')">Dismiss</button></div>';
+          h += '</div>';
+        }
+        h += '</div>';
+      } else {
+        h += '<div class="detail-card"><h3>Alerts</h3><p style="color:rgba(255,255,255,0.3);font-size:0.82rem;">No unresolved alerts.</p></div>';
+      }
+
+      h += '<div style="text-align:center;font-size:0.7rem;color:rgba(255,255,255,0.2);margin-top:8px;">Data refreshes every 30 seconds</div>';
+      el.innerHTML = h;
+    }
+
+    async function resolveCostAlert(alertId, decision) {
+      try {
+        await fetch('/.netlify/functions/cost-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'resolve_alert', alertId, decision }) });
+        toast('Alert ' + decision);
+        loadDashboard();
+      } catch (e) { toast('Failed: ' + e.message); }
     }
 
     // ============ ROADMAP DATA — update manually when features ship. Last verified: 2026-03-19 ============
