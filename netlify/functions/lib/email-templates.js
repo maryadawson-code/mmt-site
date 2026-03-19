@@ -55,14 +55,14 @@ function buildScoreReceiptHtml(data) {
   const vColor = verdictColor(verdict);
   const gColor = gradeColor(overallGrade);
 
-  // Build scorecard rows
+  // Build scorecard rows (N/A sections render with muted styling)
   const scoreRows = (scorecard.scores || [])
     .map(
       (s) => `
-      <tr>
+      <tr${s.grade === "N/A" ? ' style="opacity:0.6;"' : ""}>
         <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;font-size:14px;color:#374151;">${escapeHtml(s.title)}</td>
         <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;text-align:center;">
-          <span style="display:inline-block;padding:2px 10px;border-radius:4px;font-weight:700;font-size:14px;color:#fff;background-color:${gradeColor(s.grade)};">${escapeHtml(s.grade)}</span>
+          <span style="display:inline-block;padding:2px 10px;border-radius:4px;font-weight:700;font-size:14px;color:${s.grade === "N/A" ? "#6b7280" : "#fff"};background-color:${s.grade === "N/A" ? "#e5e7eb" : gradeColor(s.grade)};">${escapeHtml(s.grade)}</span>
         </td>
       </tr>`
     )
@@ -100,6 +100,14 @@ function buildScoreReceiptHtml(data) {
       <p style="font-size:14px;color:#6b7280;margin:0 0 24px 0;">
         ${escapeHtml(documentLabel)} &mdash; ${escapeHtml(fileName || "uploaded document")}
       </p>
+
+      <!-- No-SOW Compliance Disclaimer (prominent, top of results) -->
+      ${!hasSow ? `
+      <div style="border:2px solid #d97706;background-color:#fffbeb;padding:16px;margin-bottom:24px;border-radius:8px;">
+        <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#92400e;">&#9888;&#65039; No Solicitation Document Provided</p>
+        <p style="margin:0 0 8px;font-size:14px;color:#854d0e;line-height:1.5;">This evaluation scores against standard federal proposal criteria only. Compliance matrix verification against Section L/M evaluation instructions was NOT performed. Do not use these scores for go/no-go decisions without solicitation-specific review.</p>
+        <p style="margin:0;font-size:13px;color:#92400e;font-style:italic;">Upload your RFP/SOW for full compliance mapping.</p>
+      </div>` : ""}
 
       <!-- Verdict + Grade -->
       <div style="display:flex;margin-bottom:24px;">
@@ -149,7 +157,26 @@ function buildScoreReceiptHtml(data) {
 
       ${redFlagsHtml}
 
-      <!-- Tiered Next Steps -->
+      <!-- Tiered Next Steps Summary Counts -->
+      ${scorecard.next_steps ? (() => {
+        const stopCount = (scorecard.next_steps.stop_ship || []).length;
+        const highCount = (scorecard.next_steps.high || []).length;
+        const polishCount = (scorecard.next_steps.polish || []).length;
+        if (stopCount + highCount + polishCount > 0) {
+          return `<div style="margin-top:24px;padding:12px 16px;background-color:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;text-align:center;">
+            <p style="margin:0;font-size:15px;font-weight:700;color:#374151;">
+              ${stopCount > 0 ? `<span style="color:#991b1b;">&#128308; ${stopCount} STOP-SHIP</span>` : ""}
+              ${stopCount > 0 && highCount > 0 ? " &nbsp;|&nbsp; " : ""}
+              ${highCount > 0 ? `<span style="color:#92400e;">&#128993; ${highCount} HIGH</span>` : ""}
+              ${(stopCount > 0 || highCount > 0) && polishCount > 0 ? " &nbsp;|&nbsp; " : ""}
+              ${polishCount > 0 ? `<span style="color:#475569;">&#128994; ${polishCount} POLISH</span>` : ""}
+            </p>
+          </div>`;
+        }
+        return "";
+      })() : ""}
+
+      <!-- Tiered Next Steps Detail -->
       ${scorecard.next_steps ? (() => {
         const tierConfig = [
           { key: "stop_ship", label: "STOP-SHIP", bg: "#fef2f2", border: "#fecaca", labelColor: "#991b1b" },
@@ -245,13 +272,7 @@ function buildScoreReceiptHtml(data) {
         </table>
       </div>` : ""}
 
-      <!-- Compliance Disclaimer (no SOW) -->
-      ${!hasSow ? `
-      <div style="margin-top:24px;padding:16px 20px;border:1px solid #fde68a;background-color:#fefce8;border-radius:8px;">
-        <p style="margin:0;font-size:13px;color:#854d0e;line-height:1.5;">
-          &#9888;&#65039; <strong>Compliance Note:</strong> This evaluation scores against standard federal proposal criteria for ${escapeHtml(documentLabel)}. Compliance matrix verification against Section L/M instructions was not performed because no solicitation document was provided. For the most accurate evaluation, upload your SOW/PWS alongside your proposal.
-        </p>
-      </div>` : ""}
+      <!-- Compliance note moved to top of email as prominent banner (FIX 3a) -->
 
       <!-- Uses remaining -->
       <p style="margin:32px 0 0;font-size:13px;color:#9ca3af;text-align:center;">
@@ -542,6 +563,18 @@ function buildGoldTeamReviewHtml(data) {
           ? `<span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700;color:#fff;background-color:${s.confidence_pct >= 70 ? "#16a34a" : s.confidence_pct >= 50 ? "#eab308" : "#ef4444"};margin-left:8px;">${s.confidence_pct}% confidence</span>`
           : "";
 
+      // Rewrite confidence badge (FIX 5)
+      const rewriteConfBadge = s.rewrite_confidence != null
+        ? `<span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700;color:#fff;background-color:${s.rewrite_confidence >= 70 ? "#16a34a" : s.rewrite_confidence >= 50 ? "#eab308" : "#ef4444"};margin-left:8px;">${s.rewrite_confidence}% source fidelity</span>`
+        : "";
+
+      // Entity warning banner (FIX 1)
+      const entityWarningHtml = s._entity_warning
+        ? `<div style="padding:8px 12px;background-color:#fef2f2;border:1px solid #fecaca;border-radius:6px;margin-bottom:8px;">
+            <p style="margin:0;font-size:12px;color:#991b1b;font-weight:700;">&#9888;&#65039; Entity name was auto-corrected in this section. Verify your organization name is correct.</p>
+          </div>`
+        : "";
+
       const statusBadge = s.status === "skeleton"
         ? `<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;color:#fff;background-color:#dc2626;margin-left:8px;">Section Architecture</span>`
         : s.status === "rewritten"
@@ -573,9 +606,16 @@ function buildGoldTeamReviewHtml(data) {
           <span style="display:inline-block;padding:2px 8px;border-radius:4px;font-weight:700;font-size:12px;color:#fff;background-color:${gradeColor(s.original_grade)};margin-left:8px;">${escapeHtml(s.original_grade)}</span>
           ${statusBadge}
           ${confBadge}
+          ${rewriteConfBadge}
         </div>
 
         <div style="padding:16px;">
+          ${entityWarningHtml}
+          ${s.rewrite_confidence != null && s.rewrite_confidence < 50 ? `<div style="padding:8px 12px;background-color:#fef2f2;border:1px solid #fecaca;border-radius:6px;margin-bottom:8px;">
+            <p style="margin:0;font-size:12px;color:#991b1b;font-weight:700;">&#128308; Low source fidelity (${s.rewrite_confidence}%): This rewrite includes significant assumptions. Review carefully before submission.</p>
+          </div>` : s.rewrite_confidence != null && s.rewrite_confidence < 70 ? `<div style="padding:8px 12px;background-color:#fffbeb;border:1px solid #fde68a;border-radius:6px;margin-bottom:8px;">
+            <p style="margin:0;font-size:12px;color:#92400e;">&#9888;&#65039; This rewrite includes inferred claims not verified against source documents. Review before submission.</p>
+          </div>` : ""}
           <p style="margin:0 0 4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#9ca3af;">Original</p>
           <div style="padding:12px 16px;background-color:#f3f4f6;border-radius:6px;margin-bottom:16px;">
             <p style="margin:0;font-size:14px;color:#6b7280;font-style:italic;line-height:1.6;">${escapeHtml(s.original_excerpt)}</p>
@@ -630,6 +670,14 @@ function buildGoldTeamReviewHtml(data) {
       <p style="font-size:14px;color:#6b7280;margin:0 0 16px 0;">
         ${escapeHtml(documentLabel)} &mdash; ${escapeHtml(fileName || "uploaded document")}
       </p>
+
+      <!-- No-SOW Compliance Disclaimer (prominent, top of review) -->
+      ${!complianceMatrix || complianceMatrix.length === 0 ? `
+      <div style="border:2px solid #d97706;background-color:#fffbeb;padding:16px;margin-bottom:24px;border-radius:8px;">
+        <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#92400e;">&#9888;&#65039; No Solicitation Document Provided</p>
+        <p style="margin:0 0 8px;font-size:14px;color:#854d0e;line-height:1.5;">This evaluation scores against standard federal proposal criteria only. Compliance matrix verification against Section L/M evaluation instructions was NOT performed. Do not use these scores for go/no-go decisions without solicitation-specific review.</p>
+        <p style="margin:0;font-size:13px;color:#92400e;font-style:italic;">Upload your RFP/SOW for full compliance mapping.</p>
+      </div>` : ""}
 
       <!-- pWin Badge -->
       ${pwinHtml}
