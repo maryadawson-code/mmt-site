@@ -56,7 +56,7 @@ F = Absent or counterproductive (0.0 pts)`;
 
 const SCORING_RULES = `RULES:
 - Score what is in the document. Do not infer what might be said verbally or in other volumes.
-- If a criterion cannot be evaluated (e.g., missing section), grade it D with a note.
+- UNSCORABLE SECTIONS: If a section has NO relevant content in the uploaded document, assign grade "N/A" and points null. Set assessment to "No [section topic] data was provided in the uploaded document. This section cannot be scored." Do NOT assign a numeric score to sections with no content. Common unscorable sections: Price/Cost (if only a technical volume was uploaded), Past Performance (if no PP volume or references), Key Personnel (if no resumes or staffing plan), Management Approach (if not included).
 - Be direct. "This section is weak because..." not "This could perhaps be strengthened by..."
 - The assessment field should be specific to this document, not generic advice.
 - Return ONLY valid JSON. No markdown code fences. No text before or after the JSON.`;
@@ -288,12 +288,19 @@ function buildMessageContent(fileType, base64Data, extractedText, documentType) 
 // ============================================================
 
 function computeOverallGrade(scorecard) {
-  const avgScore = scorecard.scores
-    ? scorecard.scores.reduce((sum, s) => sum + (s.points || 0), 0) / scorecard.scores.length
+  // Exclude N/A sections from aggregate calculations
+  const scorable = scorecard.scores
+    ? scorecard.scores.filter((s) => s.grade !== "N/A" && s.points !== null && s.points !== undefined)
+    : [];
+  const excludedCount = (scorecard.scores || []).length - scorable.length;
+
+  const avgScore = scorable.length > 0
+    ? scorable.reduce((sum, s) => sum + (s.points || 0), 0) / scorable.length
     : null;
 
   let grade;
-  if (avgScore >= 3.75) grade = "A";
+  if (avgScore === null) grade = "N/A";
+  else if (avgScore >= 3.75) grade = "A";
   else if (avgScore >= 3.25) grade = "B+";
   else if (avgScore >= 2.75) grade = "B";
   else if (avgScore >= 2.25) grade = "B-";
@@ -302,7 +309,7 @@ function computeOverallGrade(scorecard) {
   else if (avgScore >= 0.75) grade = "D";
   else grade = "F";
 
-  return { avgScore, overallGrade: grade };
+  return { avgScore, overallGrade: grade, excludedCount };
 }
 
 
@@ -409,6 +416,27 @@ exports.handler = async (event) => {
       } catch (sowErr) {
         console.error("SOW extraction error (proceeding without SOW):", sowErr);
         finalSowText = null;
+      }
+    }
+
+    // FIX 3b: Detect if the uploaded document itself contains SOW/RFP content
+    // (Section L, Section M, evaluation criteria headers)
+    let detectedSowInDocument = false;
+    if (!finalSowText) {
+      const textToScan = (extractedText || "").substring(0, 10000).toLowerCase();
+      const sowIndicators = [
+        /section\s+l[\s.:]/i,
+        /section\s+m[\s.:]/i,
+        /evaluation\s+criteria/i,
+        /evaluation\s+factors/i,
+        /instructions\s+to\s+offerors/i,
+        /performance\s+work\s+statement/i,
+        /statement\s+of\s+work/i,
+      ];
+      const matchCount = sowIndicators.filter((p) => p.test(textToScan)).length;
+      if (matchCount >= 2) {
+        detectedSowInDocument = true;
+        console.log(`[SOW-DETECT] Document appears to contain RFP/SOW content (${matchCount} indicators found)`);
       }
     }
 
@@ -561,7 +589,7 @@ exports.handler = async (event) => {
     }
 
     // --- Compute grade and weighted pWin ---
-    const { avgScore, overallGrade } = computeOverallGrade(scorecard);
+    const { avgScore, overallGrade, excludedCount } = computeOverallGrade(scorecard);
 
     // Compute compliance score from matrix (if SOW was provided)
     let complianceScore = null;
@@ -595,7 +623,7 @@ exports.handler = async (event) => {
     const pwinModel = getFlag("FEATURE_PWIN_MODEL");
     const pwinResult = pwinModel === "additive"
       ? { pWin_factors: scorecard.pWin_factors || [], pwin_estimate: scorecard.pwin_estimate || "N/A", pwin_justification: "Using Claude raw pWin (additive model)", pwin: null, pwin_range: "N/A", factor_table: [], penalties: [], kill_conditions: [] }
-      : calculatePwin(scorecard, { hasSow: !!finalSowText, documentType, complianceScore });
+      : calculatePwin(scorecard, { hasSow: !!finalSowText, documentType, complianceScore, excludedCount });
     // Inject computed pWin back into scorecard for downstream consumers
     scorecard.pWin_factors = pwinResult.pWin_factors;
     scorecard.pwin_estimate = pwinResult.pwin_estimate;
@@ -603,6 +631,8 @@ exports.handler = async (event) => {
     scorecard._pwin_details = {
       pwin: pwinResult.pwin,
       pwin_range: pwinResult.pwin_range,
+      confidence_band: pwinResult.confidence_band || null,
+      excluded_factors: pwinResult.excluded_factors || [],
       factor_table: pwinResult.factor_table,
       penalties: pwinResult.penalties,
       kill_conditions: pwinResult.kill_conditions,
@@ -639,6 +669,7 @@ exports.handler = async (event) => {
       _model_routing: {
         scoring: { model: scoringModelConfig.model, reason: scoringModelConfig.reason },
       },
+      _sow_detected_in_document: detectedSowInDocument,
     };
 
     const { error: updateErr } = await supabase

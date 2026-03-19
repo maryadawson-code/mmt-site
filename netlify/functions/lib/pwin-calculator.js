@@ -61,7 +61,7 @@ function mapScoreToFactor(title) {
  * @returns {Object} Enhanced pWin data
  */
 function calculatePwin(scorecard, opts) {
-  const { hasSow, documentType, complianceScore } = opts || {};
+  const { hasSow, documentType, complianceScore, excludedCount } = opts || {};
   const scores = scorecard.scores || [];
 
   // Map each criterion to a factor and compute raw scores
@@ -73,6 +73,8 @@ function calculatePwin(scorecard, opts) {
   }
 
   for (const s of scores) {
+    // Skip N/A sections entirely — they should not contribute to any factor
+    if (s.grade === "N/A" || s.points === null || s.points === undefined) continue;
     const factorKey = mapScoreToFactor(s.title);
     if (factorKey && factorScores[factorKey]) {
       factorScores[factorKey].push(gradeToScore(s.grade));
@@ -80,13 +82,17 @@ function calculatePwin(scorecard, opts) {
     }
   }
 
-  // Compute raw average per factor (default 50 if no criteria mapped)
+  // Compute raw average per factor; track which factors have no data (excluded)
   const rawScores = {};
-  for (const key of Object.keys(FACTOR_WEIGHTS)) {
+  const excludedFactors = [];
+  for (const [key, { label }] of Object.entries(FACTOR_WEIGHTS)) {
     const arr = factorScores[key];
-    rawScores[key] = arr.length > 0
-      ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length)
-      : 50;
+    if (arr.length > 0) {
+      rawScores[key] = Math.round(arr.reduce((a, b) => a + b, 0) / arr.length);
+    } else {
+      rawScores[key] = null; // No data for this factor
+      excludedFactors.push(key);
+    }
   }
 
   // Override compliance factor with actual compliance matrix score when available
@@ -95,12 +101,16 @@ function calculatePwin(scorecard, opts) {
     factorSources.compliance = ["L/M compliance matrix"];
   }
 
+  // Calculate total weight of scored factors for redistribution
+  const scoredFactorKeys = Object.keys(FACTOR_WEIGHTS).filter((k) => rawScores[k] !== null);
+  const totalScoredWeight = scoredFactorKeys.reduce((sum, k) => sum + FACTOR_WEIGHTS[k].weight, 0);
+
   // Apply interdependency penalties
   const adjustedScores = { ...rawScores };
   const penalties = [];
 
   // Staffing < 50 → Technical gets 0.85 multiplier
-  if (rawScores.staffing < 50) {
+  if (rawScores.staffing !== null && rawScores.staffing < 50 && adjustedScores.technical_approach !== null) {
     const before = adjustedScores.technical_approach;
     adjustedScores.technical_approach = Math.round(before * 0.85);
     penalties.push({
@@ -110,15 +120,17 @@ function calculatePwin(scorecard, opts) {
     });
   }
 
-  // Compute weighted sum
+  // Compute weighted sum — redistribute weights proportionally across scored factors only
   let weightedSum = 0;
   for (const [key, { weight }] of Object.entries(FACTOR_WEIGHTS)) {
-    weightedSum += adjustedScores[key] * weight;
+    if (adjustedScores[key] === null) continue; // Skip excluded factors
+    const normalizedWeight = totalScoredWeight > 0 ? weight / totalScoredWeight : 0;
+    weightedSum += adjustedScores[key] * normalizedWeight;
   }
   let pwin = Math.round(weightedSum);
 
   // Overall multipliers
-  if (rawScores.compliance < 50) {
+  if (rawScores.compliance !== null && rawScores.compliance < 50) {
     const before = pwin;
     pwin = Math.round(pwin * 0.70);
     penalties.push({
@@ -127,7 +139,7 @@ function calculatePwin(scorecard, opts) {
       applied: `pWin ${before} → ${pwin} (×0.70)`,
     });
   }
-  if (rawScores.past_performance < 40) {
+  if (rawScores.past_performance !== null && rawScores.past_performance < 40) {
     const before = pwin;
     pwin = Math.round(pwin * 0.90);
     penalties.push({
@@ -140,50 +152,64 @@ function calculatePwin(scorecard, opts) {
   // Bounds
   pwin = Math.max(5, Math.min(85, pwin));
 
-  // Kill conditions
+  // Kill conditions (only for scored factors)
   const killConditions = [];
   for (const [key, { label }] of Object.entries(FACTOR_WEIGHTS)) {
-    if (rawScores[key] < 30) {
+    if (rawScores[key] !== null && rawScores[key] < 30) {
       killConditions.push(`FATAL FLAW: ${label} scores ${rawScores[key]}/100 — consider no-bid`);
     }
   }
-  if (rawScores.compliance < 40 && !hasSow) {
+  if (rawScores.compliance !== null && rawScores.compliance < 40 && !hasSow) {
     killConditions.push("Cannot assess responsiveness without solicitation document");
   }
-  const belowFifty = Object.values(rawScores).filter((s) => s < 50).length;
+  const belowFifty = Object.values(rawScores).filter((s) => s !== null && s < 50).length;
   if (belowFifty >= 3) {
     killConditions.push(`${belowFifty} factors below 50 — below competitive threshold, major rewrite needed`);
   }
 
-  // Build factor table for display (backward-compatible with pWin_factors)
-  const factorTable = Object.entries(FACTOR_WEIGHTS).map(([key, { label, weight }]) => ({
-    factor: label,
-    weight: `${Math.round(weight * 100)}%`,
-    raw_score: rawScores[key],
-    adjusted_score: adjustedScores[key],
-    value: adjustedScores[key] !== rawScores[key]
-      ? `${rawScores[key]} → ${adjustedScores[key]}`
-      : `${rawScores[key]}`,
-    sources: factorSources[key] || [],
-  }));
+  // Confidence band based on excluded sections
+  const effExcluded = excludedCount || excludedFactors.length;
+  const confidenceBand = effExcluded === 0 ? 5 : effExcluded === 1 ? 10 : 15;
 
-  // Range: +/- 5 points
-  const low = Math.max(5, pwin - 5);
-  const high = Math.min(85, pwin + 5);
+  // Build factor table for display (backward-compatible with pWin_factors)
+  const factorTable = Object.entries(FACTOR_WEIGHTS).map(([key, { label, weight }]) => {
+    const isExcluded = rawScores[key] === null;
+    const originalWeight = `${Math.round(weight * 100)}%`;
+    const normalizedWeight = isExcluded ? "excluded" : (totalScoredWeight > 0 ? `${Math.round((weight / totalScoredWeight) * 100)}%` : "0%");
+    return {
+      factor: label,
+      weight: originalWeight,
+      normalized_weight: normalizedWeight,
+      raw_score: rawScores[key],
+      adjusted_score: adjustedScores[key],
+      excluded: isExcluded,
+      value: isExcluded ? "N/A" : (adjustedScores[key] !== rawScores[key]
+        ? `${rawScores[key]} → ${adjustedScores[key]}`
+        : `${rawScores[key]}`),
+      sources: factorSources[key] || [],
+    };
+  });
+
+  // Range: +/- confidence band
+  const low = Math.max(5, pwin - confidenceBand);
+  const high = Math.min(85, pwin + confidenceBand);
 
   return {
     pwin,
     pwin_range: `${low}-${high}%`,
+    confidence_band: `±${confidenceBand}%`,
+    excluded_factors: excludedFactors.map((k) => FACTOR_WEIGHTS[k].label),
     factor_table: factorTable,
     penalties,
     kill_conditions: killConditions,
     // Backward-compatible pWin_factors array
     pWin_factors: factorTable.map((f) => ({
-      factor: `${f.factor} (${f.weight})`,
-      value: f.adjusted_score !== f.raw_score ? `${f.raw_score} → ${f.adjusted_score}` : `${f.raw_score}/100`,
+      factor: `${f.factor} (${f.excluded ? "excluded" : f.normalized_weight})`,
+      value: f.excluded ? "N/A — excluded" : (f.adjusted_score !== f.raw_score ? `${f.raw_score} → ${f.adjusted_score}` : `${f.raw_score}/100`),
+      note: f.excluded ? "No data in document" : "",
     })),
     pwin_estimate: `${low}-${high}%`,
-    pwin_justification: `Weighted model: ${factorTable.map((f) => `${f.factor} ${f.adjusted_score}`).join(", ")}. ${penalties.length > 0 ? `Penalties: ${penalties.map((p) => p.description).join("; ")}.` : "No interdependency penalties."}${killConditions.length > 0 ? ` Kill conditions: ${killConditions.join("; ")}` : ""}`,
+    pwin_justification: `Weighted model (${excludedFactors.length > 0 ? `${excludedFactors.length} factor${excludedFactors.length > 1 ? "s" : ""} excluded — weights redistributed` : "all 6 factors scored"}): ${factorTable.filter((f) => !f.excluded).map((f) => `${f.factor} ${f.adjusted_score}`).join(", ")}. ${penalties.length > 0 ? `Penalties: ${penalties.map((p) => p.description).join("; ")}.` : "No interdependency penalties."}${killConditions.length > 0 ? ` Kill conditions: ${killConditions.join("; ")}` : ""} Confidence: ${low}-${high}% (±${confidenceBand}%).`,
   };
 }
 

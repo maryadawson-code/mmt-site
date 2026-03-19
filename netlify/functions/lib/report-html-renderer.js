@@ -137,12 +137,22 @@ function renderProposalPulseHTML(data) {
     <div style="text-align:center;"><p class="meta">OVERALL GRADE</p><div class="big-number" style="color:${gradeColor(overallGrade)}">${esc(overallGrade || "N/A")}</div></div>
   </div>`;
 
+  // No-SOW Compliance Disclaimer (FIX 3a — prominent, before scores)
+  if (!hasSow && compMatrix.length === 0) {
+    body += `<div class="alert" style="border:2px solid #d97706;background:#fffbeb;color:#92400e;margin:16px 0 24px;">
+      <strong>&#9888; No Solicitation Document Provided</strong><br>
+      This evaluation scores against standard federal proposal criteria only. Compliance matrix verification against Section L/M evaluation instructions was NOT performed. Do not use these scores for go/no-go decisions without solicitation-specific review.<br>
+      <em>Upload your RFP/SOW for full compliance mapping.</em>
+    </div>`;
+  }
+
   if (sc.verdict_summary) body += `<p>${esc(sc.verdict_summary)}</p>`;
 
   // Scorecard table
   body += `<h2>Scoring Breakdown</h2><table><tr><th>Criteria</th><th>Grade</th><th>Assessment</th></tr>`;
   for (const s of scores) {
-    body += `<tr><td>${esc(s.title)}</td><td><span class="badge" style="background:${gradeColor(s.grade)}">${esc(s.grade)}</span></td><td>${esc(s.assessment)}</td></tr>`;
+    const isNA = s.grade === "N/A";
+    body += `<tr${isNA ? ' style="opacity:0.6"' : ""}><td>${esc(s.title)}</td><td><span class="badge" style="background:${isNA ? "#d1d5db;color:#6b7280" : gradeColor(s.grade)}">${esc(s.grade)}</span></td><td>${esc(s.assessment)}</td></tr>`;
   }
   body += `</table>`;
 
@@ -159,8 +169,9 @@ function renderProposalPulseHTML(data) {
     body += `<h2>pWin Analysis</h2>`;
     body += `<table><tr><th>Factor</th><th style="text-align:right">Score</th><th>Note</th></tr>`;
     for (const f of pwf) {
-      const sv = typeof f.value === "number" ? f.value : parseInt(String(f.value)) || 0;
-      body += `<tr><td>${esc(f.factor)}</td><td style="text-align:right;font-weight:700;color:${scoreColor(sv)}">${esc(String(f.value))}</td><td class="meta">${esc(f.note || "")}</td></tr>`;
+      const isExcluded = String(f.value).includes("N/A") || f.excluded;
+      const sv = isExcluded ? 0 : (typeof f.value === "number" ? f.value : parseInt(String(f.value)) || 0);
+      body += `<tr${isExcluded ? ' style="opacity:0.5"' : ""}><td>${esc(f.factor)}</td><td style="text-align:right;font-weight:700;color:${isExcluded ? "#9ca3af" : scoreColor(sv)}">${esc(String(f.value))}</td><td class="meta">${esc(f.note || "")}</td></tr>`;
     }
     body += `</table>`;
     if (penalties.length > 0) {
@@ -169,7 +180,12 @@ function renderProposalPulseHTML(data) {
       body += `</ul></div>`;
     }
     const pe = sc.pwin_estimate || pwinEstimate;
-    if (pe) body += `<div class="big-number" style="color:#0369a1;margin:16px 0;">Estimated pWin: ${esc(pe)}</div>`;
+    if (pe) {
+      body += `<div class="big-number" style="color:#0369a1;margin:16px 0;">Estimated pWin: ${esc(pe)}</div>`;
+      if (pwinDetails.confidence_band) {
+        body += `<p class="meta" style="text-align:center;">Confidence: ${esc(pwinDetails.confidence_band)}${pwinDetails.excluded_factors && pwinDetails.excluded_factors.length > 0 ? ` — ${pwinDetails.excluded_factors.length} factor${pwinDetails.excluded_factors.length > 1 ? "s" : ""} excluded (${esc(pwinDetails.excluded_factors.join(", "))})` : ""}</p>`;
+      }
+    }
   }
 
   // Tiered next steps
@@ -213,9 +229,8 @@ function renderProposalPulseHTML(data) {
       body += `<tr><td>${esc(c.requirement)}${c.notes ? `<br><span class="meta">${esc(c.notes)}</span>` : ""}</td><td class="meta">${esc(c.lm_reference || "")}</td><td><span class="badge badge-sm" style="background:${statusColors[c.status] || "#6b7280"}">${esc(c.status)}</span></td><td class="meta">${esc(c.proposal_section || "")}</td></tr>`;
     }
     body += `</table>`;
-  } else if (complianceNote) {
-    body += `<div class="alert alert-amber">${esc(complianceNote)}</div>`;
   }
+  // Compliance note moved to top of report (FIX 3a)
 
   // Competitive positioning
   const cp = competitivePositioning || sc.competitive_positioning;
@@ -239,7 +254,13 @@ function renderProposalPulseHTML(data) {
       const statusBg = s.status === "rewritten" ? "#f97316" : s.status === "skeleton" ? "#dc2626" : "#16a34a";
       body += ` <span class="badge badge-sm" style="background:${statusBg}">${esc(s.status === "skeleton" ? "Architecture" : s.status === "rewritten" ? "Rewritten" : "Polished")}</span>`;
       if (s.confidence_pct != null) body += ` <span class="meta">${s.confidence_pct}% confidence</span>`;
+      if (s.rewrite_confidence != null) body += ` <span class="badge badge-sm" style="background:${s.rewrite_confidence >= 70 ? "#16a34a" : s.rewrite_confidence >= 50 ? "#eab308" : "#ef4444"}">${s.rewrite_confidence}% source fidelity</span>`;
       body += `</div><div class="card-body">`;
+      // Entity warning (FIX 1)
+      if (s._entity_warning) body += `<div class="alert alert-red" style="font-size:12px;">&#9888; Entity name was auto-corrected in this section. Verify your organization name is correct.</div>`;
+      // Low confidence warning (FIX 5)
+      if (s.rewrite_confidence != null && s.rewrite_confidence < 50) body += `<div class="alert alert-red" style="font-size:12px;">Low source fidelity (${s.rewrite_confidence}%): This rewrite includes significant assumptions. Review carefully.</div>`;
+      else if (s.rewrite_confidence != null && s.rewrite_confidence < 70) body += `<div class="alert alert-amber" style="font-size:12px;">This rewrite includes inferred claims not verified against source documents. Review before submission.</div>`;
       body += `<p class="meta" style="margin-bottom:4px;">ORIGINAL</p><div class="original-box">${esc(s.original_excerpt)}</div>`;
       body += `<p class="meta" style="margin-bottom:4px;">STRENGTHENED</p><div class="strengthened-box">${esc(s.strengthened_text)}</div>`;
       if (s.changes_made) body += `<p><em style="color:#475569;">What changed: ${esc(s.changes_made)}</em></p>`;

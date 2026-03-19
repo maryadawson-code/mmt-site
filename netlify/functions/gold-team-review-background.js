@@ -79,6 +79,39 @@ function parseJson(text) {
 
 
 // ============================================================
+// ENTITY VALIDATION (Post-processing)
+// ============================================================
+
+const ENTITY_BLOCKLIST = [
+  /mission\s*meets?\s*tech/i,
+  /\bMMT\b/,
+];
+
+function validateEntityIntegrity(rewriteResult, documentText) {
+  const warnings = [];
+  if (!rewriteResult || !rewriteResult.strengthened_sections) return { warnings, clean: true };
+
+  for (const section of rewriteResult.strengthened_sections) {
+    const text = section.strengthened_text || "";
+    for (const pattern of ENTITY_BLOCKLIST) {
+      if (pattern.test(text)) {
+        warnings.push({
+          section: section.criterion_title,
+          issue: `Contains blocked entity name matching: ${pattern}`,
+          severity: "critical",
+        });
+        // Scrub the offending text and flag it
+        section.strengthened_text = text.replace(pattern, "[ENTITY NAME REMOVED — verify your organization name]");
+        section._entity_warning = true;
+      }
+    }
+  }
+
+  return { warnings, clean: warnings.length === 0 };
+}
+
+
+// ============================================================
 // PROMPT BUILDERS
 // ============================================================
 
@@ -88,11 +121,24 @@ function buildRewritePrompt(documentText, scorecard, scores, config) {
     .join("\n");
 
   return {
-    system: `You are a senior federal proposal document editor for Mission Meets Tech. You specialize in strengthening proposal documents — ${config.noun}s specifically.
+    system: `You are a senior federal proposal document editor. You specialize in strengthening proposal documents — ${config.noun}s specifically.
 
 Your job: Rewrite ALL sections of this document. Strong sections (B- or above, 2.5+ pts) get concise polish to sharpen language and strengthen positioning. Weak sections (C+ or below, 2.0 pts or less) get substantial rewrites to raise each score significantly.
 
 Additionally, estimate the document's probability of winning (pWin) as a percentage range.
+
+ENTITY EXTRACTION (MANDATORY — DO THIS FIRST):
+Before rewriting any section, identify all organizational entities mentioned in the uploaded document.
+Classify each as: prime_contractor, subcontractor, teaming_partner, government_client, incumbent, or other.
+Store these in your working context as document_entities.
+
+ENTITY PRESERVATION RULES:
+- PRESERVE all original entity names exactly as they appear in the source document.
+- NEVER substitute "Mission Meets Tech", "MMT", or any MMT brand name into proposal text.
+- NEVER insert any company name that does not appear in the original document.
+- The customer's organization name must remain unchanged in all rewrites.
+- If you cannot determine which entity the customer represents, insert: [HUMAN DECISION REQUIRED: Confirm your organization name for this section]
+- If the document references an acronym (e.g., "LPDH"), preserve the acronym and its expansion exactly.
 
 pWin METHODOLOGY (use this formula):
 Base rates by document type: RFP response 15%, White paper 25%, Capabilities statement 30%, Pitch deck 20%, Pricing volume 15%, Executive summary 25%.
@@ -113,6 +159,14 @@ RULES:
 - Use appropriate federal terminology (FedRAMP, compliance standards, etc.) where relevant to the agency.
 - Return ONLY valid JSON. No markdown code fences. No text before or after the JSON.
 
+REWRITE CONFIDENCE SCORING:
+After rewriting each section, assign a confidence score (0-100%) with a one-sentence rationale.
+Scoring criteria:
+- 90-100%: Rewrite uses only claims and data present in the original document
+- 70-89%: Rewrite infers some claims based on context but all are reasonable
+- 50-69%: Rewrite includes inferred claims not directly supported by the document
+- Below 50%: Rewrite includes significant assumptions or fabricated specifics
+
 RESPONSE FORMAT:
 {
   "strengthened_sections": [
@@ -123,7 +177,9 @@ RESPONSE FORMAT:
       "status": "polished",
       "original_excerpt": "Exact 2-4 sentence quote from the document...",
       "strengthened_text": "Your improved version of those sentences...",
-      "changes_made": "Brief explanation of what changed and why."
+      "changes_made": "Brief explanation of what changed and why.",
+      "rewrite_confidence": 85,
+      "confidence_rationale": "One sentence explaining confidence level."
     }
   ],
   "pwin_estimate": "25-35%",
@@ -162,7 +218,7 @@ CHANGES: ${s.changes_made}`
     .join("\n\n");
 
   return {
-    system: `You are an independent quality reviewer for federal proposal documents at Mission Meets Tech. You are reviewing AI-generated rewrites of a ${config.noun}.
+    system: `You are an independent quality reviewer for federal proposal documents. You are reviewing AI-generated rewrites of a ${config.noun}.
 
 CRITICAL: You did NOT write these rewrites. You are an independent reviewer. Your job is to triple-check each rewrite for quality.
 
@@ -383,6 +439,20 @@ exports.handler = async (event) => {
       return;
     }
 
+    // Post-processing: validate entity integrity
+    const entityCheck = validateEntityIntegrity(rewriteResult, documentText);
+    if (!entityCheck.clean) {
+      console.warn(`Gold Team: entity validation found ${entityCheck.warnings.length} issues — scrubbed`);
+      await logOpsEvent(supabase, {
+        event_type: "QUALITY_FAILURE",
+        source_function: "gold-team-review-background",
+        severity: "warn",
+        signature: "entity_substitution_detected",
+        affected_entity: scoring_id,
+        details: { warnings: entityCheck.warnings },
+      });
+    }
+
     // --- Call 2: Review + Executive Summary + Next Steps ---
     const reviewModelConfig = await getModelConfig(supabase, "review");
     console.log(`Gold Team: reviewing rewrites (model=${reviewModelConfig.model} [${reviewModelConfig.reason}])...`);
@@ -414,6 +484,9 @@ exports.handler = async (event) => {
         consistency_ok: review ? review.consistency_ok : null,
         improvement_ok: review ? review.improvement_ok : null,
         review_notes: review ? review.notes : null,
+        rewrite_confidence: section.rewrite_confidence || null,
+        confidence_rationale: section.confidence_rationale || null,
+        _entity_warning: section._entity_warning || false,
       };
     });
 
@@ -434,6 +507,13 @@ exports.handler = async (event) => {
     // --- Send email ---
     console.log("Gold Team: sending Gold Team Review email...");
 
+    // FIX 2b: Single source of truth for pWin — use the server-calculated pWin
+    // from the scoring engine (stored in scorecard._pwin_details), NOT the
+    // AI-generated pWin from the rewrite call. This prevents contradictory numbers.
+    const canonicalPwin = scorecard._pwin_details || {};
+    const canonicalPwinEstimate = canonicalPwin.pwin_range || scorecard.pwin_estimate || rewriteResult.pwin_estimate || null;
+    const canonicalPwinJustification = scorecard.pwin_justification || rewriteResult.pwin_justification || null;
+
     const emailHtml = buildGoldTeamReviewHtml({
       documentLabel: config.label,
       fileName: file_name,
@@ -441,8 +521,8 @@ exports.handler = async (event) => {
       overallGrade,
       scores,
       strengthenedSections: mergedSections,
-      pwinEstimate: rewriteResult.pwin_estimate || null,
-      pwinJustification: rewriteResult.pwin_justification || null,
+      pwinEstimate: canonicalPwinEstimate,
+      pwinJustification: canonicalPwinJustification,
       overallConfidence: reviewResult ? reviewResult.overall_confidence : null,
       reviewerNotes: reviewResult ? reviewResult.reviewer_notes : null,
       executiveSummary: reviewResult ? reviewResult.executive_summary : null,

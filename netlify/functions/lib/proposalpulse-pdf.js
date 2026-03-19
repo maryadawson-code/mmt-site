@@ -98,6 +98,18 @@ async function generateScoreReportPdf(data) {
     // === PAGE 2: EXECUTIVE SUMMARY ===
     doc.addPage();
     y = 60;
+
+    // No-SOW Compliance Disclaimer (FIX 3a — top of Executive Summary, before scores)
+    if (complianceNote) {
+      doc.rect(60, y, doc.page.width - 120, 56).fillAndStroke("#fffbeb", "#d97706");
+      doc.rect(60, y, doc.page.width - 120, 4).fill("#d97706");
+      doc.font("Helvetica-Bold").fontSize(10).fillColor("#92400e")
+        .text("⚠ No Solicitation Document Provided", 72, y + 10, { width: doc.page.width - 152 });
+      doc.font("Helvetica").fontSize(8).fillColor("#854d0e")
+        .text("This evaluation scores against standard federal proposal criteria only. Compliance matrix verification against Section L/M was NOT performed. Do not use these scores for go/no-go decisions without solicitation-specific review.", 72, y + 24, { width: doc.page.width - 152 });
+      y += 64;
+    }
+
     doc.font("Helvetica-Bold").fontSize(16).fillColor(NAVY).text("EXECUTIVE SUMMARY", 60, y);
     y = doc.y + 16;
 
@@ -136,11 +148,12 @@ async function generateScoreReportPdf(data) {
       y = checkBreak(doc, y, 30);
       const rowH = 22;
       doc.moveTo(60, y + rowH).lineTo(60 + tW, y + rowH).strokeColor("#e5e7eb").lineWidth(0.5).stroke();
-      doc.font("Helvetica").fontSize(8).fillColor("#374151").text(safe(s.title), 64, y + 5, { width: col1W - 8, lineBreak: false });
+      const isNA = s.grade === "N/A";
+      doc.font("Helvetica").fontSize(8).fillColor(isNA ? "#9ca3af" : "#374151").text(safe(s.title), 64, y + 5, { width: col1W - 8, lineBreak: false });
       // Grade badge
-      const gc = gradeColor(s.grade);
+      const gc = isNA ? "#d1d5db" : gradeColor(s.grade);
       doc.roundedRect(64 + col1W + (col2W - 28) / 2, y + 3, 28, 14, 3).fill(gc);
-      doc.font("Helvetica-Bold").fontSize(8).fillColor("#ffffff").text(safe(s.grade), 64 + col1W, y + 5, { width: col2W, align: "center", lineBreak: false });
+      doc.font("Helvetica-Bold").fontSize(8).fillColor(isNA ? "#6b7280" : "#ffffff").text(safe(s.grade), 64 + col1W, y + 5, { width: col2W, align: "center", lineBreak: false });
       // Assessment (truncated)
       const assess = safe(s.assessment).substring(0, 80) + (safe(s.assessment).length > 80 ? "..." : "");
       doc.font("Helvetica").fontSize(7).fillColor("#6b7280").text(assess, 64 + col1W + col2W, y + 5, { width: col3W - 8, lineBreak: false });
@@ -321,7 +334,15 @@ async function generateScoreReportPdf(data) {
     if (scorecard.pwin_estimate) {
       doc.font("Helvetica-Bold").fontSize(14).fillColor("#0369a1")
         .text(`Estimated pWin: ${scorecard.pwin_estimate}`, 60, y, { width: doc.page.width - 120, align: "center" });
-      y = doc.y + 16;
+      y = doc.y + 4;
+      // Show confidence band and excluded factors
+      const pwinDet = scorecard._pwin_details || {};
+      if (pwinDet.confidence_band) {
+        doc.font("Helvetica").fontSize(8).fillColor("#6b7280")
+          .text(`Confidence: ${pwinDet.confidence_band}${pwinDet.excluded_factors && pwinDet.excluded_factors.length > 0 ? ` — ${pwinDet.excluded_factors.length} factor${pwinDet.excluded_factors.length > 1 ? "s" : ""} excluded (${pwinDet.excluded_factors.join(", ")})` : ""}`, 60, y, { width: doc.page.width - 120, align: "center" });
+        y = doc.y + 4;
+      }
+      y += 12;
     }
 
     // Competitive positioning
@@ -342,14 +363,7 @@ async function generateScoreReportPdf(data) {
       y = doc.y + 12;
     }
 
-    // Compliance note
-    if (complianceNote) {
-      y = checkBreak(doc, y, 40);
-      doc.rect(60, y, doc.page.width - 120, 30).fillAndStroke("#fefce8", "#fde68a");
-      doc.font("Helvetica").fontSize(8).fillColor("#854d0e")
-        .text(safe(complianceNote), 68, y + 8, { width: doc.page.width - 140 });
-      y = doc.y + 12;
-    }
+    // Compliance note moved to top of Executive Summary page (FIX 3a)
 
     // Red flags
     const rf = scorecard.red_flags || [];
