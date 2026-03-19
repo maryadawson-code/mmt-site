@@ -44,8 +44,16 @@ const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 const PERPLEXITY_MODEL = "sonar-pro";
 const PERPLEXITY_URL = "https://api.perplexity.ai/chat/completions";
 
-// --- Perplexity API call ---
+// --- Perplexity API call (with per-order cap) ---
+const PERPLEXITY_CAP = 12;
+let _perplexityCallCount = 0;
+
 async function callPerplexity(systemPrompt, userPrompt, maxTokens = 4000) {
+  _perplexityCallCount++;
+  if (_perplexityCallCount > PERPLEXITY_CAP) {
+    console.warn(`[PERPLEXITY CAP] Call ${_perplexityCallCount} exceeds cap of ${PERPLEXITY_CAP} — returning empty result`);
+    return { content: "", citations: [], capped: true };
+  }
   const response = await withRetry(() => fetch(PERPLEXITY_URL, {
     method: "POST",
     headers: {
@@ -684,6 +692,9 @@ function extractCompanyContext(company, additionalContext, topic) {
 
 // --- Main handler ---
 exports.handler = async (event) => {
+  // Reset per-order Perplexity counter
+  _perplexityCallCount = 0;
+
   // Kill switch
   const killCheck = checkKillSwitch("generate-tactical-brief-background");
   if (killCheck.blocked) return killCheck.response;
@@ -1195,7 +1206,7 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
     await _transition("delivered");
 
     const totalTime = Math.round((Date.now() - startTime) / 1000);
-    console.log(`generate-tactical-brief-background: completed in ${totalTime}s for ${email}`);
+    console.log(`generate-tactical-brief-background: completed in ${totalTime}s for ${email} (${_perplexityCallCount} Perplexity calls)`);
 
     return { statusCode: 200, body: JSON.stringify({ success: true, duration_seconds: totalTime, passes: Object.keys(passTimings).length }) };
   } catch (err) {
