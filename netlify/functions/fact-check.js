@@ -12,6 +12,7 @@ const { createClient } = require("@supabase/supabase-js");
 const { getModelConfig } = require("./lib/model-router");
 const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
 const { withRetry } = require("./lib/retry");
+const { trackPerplexity } = require("./lib/cost-tracker");
 
 // --- Constants ---
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
@@ -29,7 +30,8 @@ const CORS_HEADERS = {
 
 // --- Perplexity API call (reused pattern from contract-intel-refresh) ---
 
-async function callPerplexity(systemPrompt, userMessage, model, maxTokens) {
+async function callPerplexity(systemPrompt, userMessage, model, maxTokens, _supabase) {
+  const _t = Date.now();
   const response = await withRetry(() => fetchWithTimeout("https://api.perplexity.ai/chat/completions", {
     method: "POST",
     headers: {
@@ -57,6 +59,13 @@ async function callPerplexity(systemPrompt, userMessage, model, maxTokens) {
   if (finalData.usage) {
     const u = finalData.usage;
     console.log(`  AI cost: model=${model}, input=${u.prompt_tokens}, output=${u.completion_tokens}`);
+  }
+
+  // Cost tracking
+  if (_supabase) {
+    try {
+      await trackPerplexity(_supabase, { functionName: 'fact-check', product: 'mmt-intel', model, usage: { input_tokens: finalData.usage?.prompt_tokens, output_tokens: finalData.usage?.completion_tokens }, latencyMs: Date.now() - _t });
+    } catch (_costErr) { /* never break parent */ }
   }
 
   let textContent = finalData.choices?.[0]?.message?.content || "";
@@ -212,7 +221,7 @@ Return ONLY valid JSON. Prioritize government primary sources over trade press.`
     const userMessage = `Fact-check the following content${context ? ` (context: ${context})` : ""}:\n\n${content}`;
 
     console.log("Calling Perplexity for fact-check...");
-    const result = await callPerplexity(systemPrompt, userMessage, modelConfig.model, 6000);
+    const result = await callPerplexity(systemPrompt, userMessage, modelConfig.model, 6000, supabase);
 
     // Store in Supabase
     const { error: insertErr } = await supabase

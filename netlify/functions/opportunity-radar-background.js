@@ -17,6 +17,7 @@ const { withRetry } = require("./lib/retry");
 const { validateOpportunity } = require("./lib/contract-validator");
 const { CANCELLED_VEHICLES } = require("./lib/contract-facts");
 const { checkKillSwitch } = require("./lib/kill-switch");
+const { trackAnthropic } = require("./lib/cost-tracker");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -90,7 +91,8 @@ Return ONLY valid JSON. No markdown code fences. No text before or after the JSO
 // HELPER: Call Claude API with web_search
 // ============================================================
 
-async function callClaude(systemPrompt, userMessage, maxSearches, model, maxTokens) {
+async function callClaude(systemPrompt, userMessage, maxSearches, model, maxTokens, _supabase) {
+  const _t = Date.now();
   const response = await withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -145,6 +147,13 @@ async function callClaude(systemPrompt, userMessage, maxSearches, model, maxToke
   if (finalData.usage) {
     const u = finalData.usage;
     console.log(`  AI cost: model=${model}, input=${u.input_tokens}, output=${u.output_tokens}`);
+  }
+
+  // Cost tracking
+  if (_supabase) {
+    try {
+      await trackAnthropic(_supabase, { functionName: 'opportunity-radar-background', product: 'mmt-intel', model, usage: finalData.usage, latencyMs: Date.now() - _t });
+    } catch (_costErr) { /* never break parent */ }
   }
 
   const allContent = finalData.content;
@@ -247,7 +256,7 @@ Focus your 5 web searches on:
 4. Recent federal health IT contract awards or modifications
 5. New task orders under existing health IT vehicles (T4NG/T4NG2, EIDS, etc.)
 
-Return opportunities found as JSON.`, 5, scanModel.model, 8000);
+Return opportunities found as JSON.`, 5, scanModel.model, 8000, supabase);
 
     if (result1.opportunities) {
       allOpportunities.push(...result1.opportunities);
@@ -268,7 +277,7 @@ Focus your 4 web searches on:
 3. GovWin and Bloomberg Government health IT opportunities
 4. Recent federal health IT RFI or sources sought notices
 
-Return opportunities found as JSON. Do not duplicate opportunities that are well-known existing contracts (MHS GENESIS, FEHRM, VA EHRM, TRICARE MCS, CCN Next Gen, T4NG/T4NG2, EIDS).`, 4, scanModel.model, 8000);
+Return opportunities found as JSON. Do not duplicate opportunities that are well-known existing contracts (MHS GENESIS, FEHRM, VA EHRM, TRICARE MCS, CCN Next Gen, T4NG/T4NG2, EIDS).`, 4, scanModel.model, 8000, supabase);
 
     if (result2.opportunities) {
       allOpportunities.push(...result2.opportunities);
@@ -288,7 +297,7 @@ Focus your 3 web searches on:
 2. VA OSDBU and DHA small business opportunities in health technology
 3. Recent small business health IT contract awards or subcontracting opportunities
 
-Return opportunities found as JSON.`, 3, scanModel.model, 8000);
+Return opportunities found as JSON.`, 3, scanModel.model, 8000, supabase);
 
     if (result3.opportunities) {
       allOpportunities.push(...result3.opportunities);

@@ -5,10 +5,13 @@
 // high-value engagement opportunities for MMT on LinkedIn.
 // ============================================================
 
+const { trackPerplexity } = require("./cost-tracker");
+
 const PERPLEXITY_URL = "https://api.perplexity.ai/chat/completions";
 const PERPLEXITY_MODEL = "sonar";
 
-async function callPerplexitySonar(apiKey, systemPrompt, userPrompt, maxTokens = 2000) {
+async function callPerplexitySonar(apiKey, systemPrompt, userPrompt, maxTokens = 2000, _supabase) {
+  const _t = Date.now();
   const response = await fetch(PERPLEXITY_URL, {
     method: "POST",
     headers: {
@@ -32,6 +35,14 @@ async function callPerplexitySonar(apiKey, systemPrompt, userPrompt, maxTokens =
   }
 
   const data = await response.json();
+
+  // Cost tracking
+  if (_supabase) {
+    try {
+      await trackPerplexity(_supabase, { functionName: 'engagement-brief', product: 'mmt-intel', model: PERPLEXITY_MODEL, usage: data.usage, latencyMs: Date.now() - _t });
+    } catch (_costErr) { /* never break parent */ }
+  }
+
   return {
     content: data.choices[0].message.content,
     citations: data.citations || [],
@@ -83,7 +94,8 @@ COMMENT RULES:
 - MAX 2 sentences
 - Sound like a practitioner, not a commenter`,
         `Find recent LinkedIn discussions or posts about: ${topic}\n\nSearch for federal health IT leaders, DHA officials, VA health tech leaders, or GovCon executives posting about this. Return up to 2 high-value engagement opportunities.`,
-        1500
+        1500,
+        supabase
       );
 
       try {
@@ -123,7 +135,8 @@ OUTPUT FORMAT — respond ONLY in this JSON structure, no markdown fences:
   ]
 }`,
         `What are the most important federal contracting or federal health IT news and discussions this week about: ${topic}?\n\nReturn up to 2 trending topics with specific sources.`,
-        1200
+        1200,
+        supabase
       );
 
       try {

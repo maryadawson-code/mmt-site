@@ -9,6 +9,7 @@
 
 const { createClient } = require("@supabase/supabase-js");
 const Stripe = require("stripe");
+const { upsertCustomer, logCustomerEvent } = require("./lib/customer-sync");
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
@@ -96,6 +97,13 @@ exports.handler = async (event) => {
         }
 
         console.log(`stripe-webhook: granted +1 use for ${normalizedEmail} (now ${usage.uses_remaining + 1})`);
+
+        // Customer sync
+        try {
+          await upsertCustomer(supabase, { email: normalizedEmail, stripeCustomerId: session.customer, product: 'proposalpulse', amountCents: 1999 });
+          await logCustomerEvent(supabase, { email: normalizedEmail, eventType: 'purchase', product: 'proposalpulse', amountCents: 1999 });
+        } catch (_syncErr) { console.error("stripe-webhook: customer sync failed:", _syncErr.message); }
+
         return {
           statusCode: 200,
           body: JSON.stringify({ received: true, uses_remaining: usage.uses_remaining + 1 }),

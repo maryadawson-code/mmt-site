@@ -16,6 +16,7 @@ const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
 const { withRetry } = require("./lib/retry");
 const { sendEmail } = require("./lib/send-email");
 const { checkKillSwitch } = require("./lib/kill-switch");
+const { trackPerplexity } = require("./lib/cost-tracker");
 
 // --- Constants ---
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
@@ -24,7 +25,8 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
 // --- Perplexity API call (reused pattern from contract-intel-refresh) ---
 
-async function callPerplexity(systemPrompt, userMessage, model, maxTokens) {
+async function callPerplexity(systemPrompt, userMessage, model, maxTokens, _supabase) {
+  const _t = Date.now();
   const response = await withRetry(() => fetchWithTimeout("https://api.perplexity.ai/chat/completions", {
     method: "POST",
     headers: {
@@ -52,6 +54,13 @@ async function callPerplexity(systemPrompt, userMessage, model, maxTokens) {
   if (finalData.usage) {
     const u = finalData.usage;
     console.log(`  AI cost: model=${model}, input=${u.prompt_tokens}, output=${u.completion_tokens}`);
+  }
+
+  // Cost tracking
+  if (_supabase) {
+    try {
+      await trackPerplexity(_supabase, { functionName: 'newsletter-research-background', product: 'mmt-intel', model, usage: { input_tokens: finalData.usage?.prompt_tokens, output_tokens: finalData.usage?.completion_tokens }, latencyMs: Date.now() - _t });
+    } catch (_costErr) { /* never break parent */ }
   }
 
   let textContent = finalData.choices?.[0]?.message?.content || "";
@@ -282,7 +291,7 @@ Return ONLY valid JSON. Every item must include a source_url.`;
 
   try {
     console.log(`Calling Perplexity (${modelConfig.model}) for newsletter research...`);
-    const research = await callPerplexity(systemPrompt, userMessage, modelConfig.model, 8000);
+    const research = await callPerplexity(systemPrompt, userMessage, modelConfig.model, 8000, supabase);
 
     // Ensure required fields
     research.compiled_date = research.compiled_date || now.toISOString().split("T")[0];

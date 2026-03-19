@@ -21,6 +21,7 @@ const { withRetry } = require("./lib/retry");
 const { validateVehicle } = require("./lib/contract-validator");
 const { ACTIVE_VEHICLES, CANCELLED_VEHICLES } = require("./lib/contract-facts");
 const { checkKillSwitch } = require("./lib/kill-switch");
+const { trackAnthropic } = require("./lib/cost-tracker");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -167,9 +168,10 @@ AWARDS:
 ${summaries}`;
 }
 
-async function classifyWithClaude(awards, model) {
+async function classifyWithClaude(awards, model, _supabase) {
   if (!awards.length) return [];
 
+  const _t = Date.now();
   const response = await withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -197,6 +199,13 @@ async function classifyWithClaude(awards, model) {
 
   if (data.usage) {
     console.log(`  AI cost: model=${model}, input=${data.usage.input_tokens}, output=${data.usage.output_tokens}`);
+  }
+
+  // Cost tracking
+  if (_supabase) {
+    try {
+      await trackAnthropic(_supabase, { functionName: 'sb-vehicle-radar-background', product: 'mmt-intel', model, usage: data.usage, latencyMs: Date.now() - _t });
+    } catch (_costErr) { /* never break parent */ }
   }
 
   const text = data.content
@@ -350,7 +359,7 @@ exports.handler = async (event) => {
 
   if (topResults.length > 0) {
     console.log(`Phase 1: Classifying USASpending awards (${classifyModel.model})...`);
-    const classifications = await classifyWithClaude(topResults, classifyModel.model);
+    const classifications = await classifyWithClaude(topResults, classifyModel.model, supabase);
     console.log(`Claude classified ${classifications.length} awards`);
 
     for (const cls of classifications) {
@@ -469,7 +478,7 @@ exports.handler = async (event) => {
     } else if (unclassified && unclassified.length > 0) {
       console.log(`Found ${unclassified.length} unclassified records, classifying (${classifyModel.model})...`);
 
-      const classifications = await classifyWithClaude(unclassified, classifyModel.model);
+      const classifications = await classifyWithClaude(unclassified, classifyModel.model, supabase);
       console.log(`Phase 2: Claude classified ${classifications.length} records`);
 
       for (const cls of classifications) {

@@ -7,6 +7,7 @@
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
+const { trackPerplexity, trackOpenAI, trackGoogle } = require("./lib/cost-tracker");
 
 const HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -31,9 +32,11 @@ exports.handler = async (event) => {
   const { query, providers = ["perplexity", "chatgpt", "gemini"] } = body;
   const results = {};
   const tasks = [];
+  const supabase = (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) ? createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY) : null;
 
   if (providers.includes("perplexity") && process.env.PERPLEXITY_API_KEY) {
     tasks.push((async () => {
+      const _t = Date.now();
       try {
         const resp = await fetch("https://api.perplexity.ai/chat/completions", {
           method: "POST",
@@ -46,6 +49,7 @@ exports.handler = async (event) => {
         if (!resp.ok) throw new Error(`Perplexity ${resp.status}`);
         const data = await resp.json();
         results.perplexity = { answer: data.choices[0].message.content, citations: data.citations || [], model: "sonar" };
+        if (supabase) { try { await trackPerplexity(supabase, { functionName: 'ai-research', product: 'mmt-intel', model: 'sonar', usage: data.usage, latencyMs: Date.now() - _t }); } catch (_e) { /* never break parent */ } }
       } catch (e) { results.perplexity = { error: e.message }; }
     })());
   } else if (providers.includes("perplexity")) {
@@ -54,6 +58,7 @@ exports.handler = async (event) => {
 
   if (providers.includes("chatgpt") && process.env.OPENAI_API_KEY) {
     tasks.push((async () => {
+      const _t = Date.now();
       try {
         const resp = await fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",
@@ -67,6 +72,7 @@ exports.handler = async (event) => {
         if (!resp.ok) throw new Error(`OpenAI ${resp.status}`);
         const data = await resp.json();
         results.chatgpt = { answer: data.choices[0].message.content, model: "gpt-4o", tokens: data.usage };
+        if (supabase) { try { await trackOpenAI(supabase, { functionName: 'ai-research', product: 'mmt-intel', model: 'gpt-4o', usage: data.usage, latencyMs: Date.now() - _t }); } catch (_e) { /* never break parent */ } }
       } catch (e) { results.chatgpt = { error: e.message }; }
     })());
   } else if (providers.includes("chatgpt")) {
@@ -75,6 +81,7 @@ exports.handler = async (event) => {
 
   if (providers.includes("gemini") && process.env.GOOGLE_AI_API_KEY) {
     tasks.push((async () => {
+      const _t = Date.now();
       try {
         const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${process.env.GOOGLE_AI_API_KEY}`, {
           method: "POST",
@@ -87,6 +94,7 @@ exports.handler = async (event) => {
         if (!resp.ok) throw new Error(`Gemini ${resp.status}`);
         const data = await resp.json();
         results.gemini = { answer: data.candidates[0].content.parts[0].text, model: "gemini-2.5-pro" };
+        if (supabase) { try { await trackGoogle(supabase, { functionName: 'ai-research', product: 'mmt-intel', model: 'gemini-2.5-pro', latencyMs: Date.now() - _t }); } catch (_e) { /* never break parent */ } }
       } catch (e) { results.gemini = { error: e.message }; }
     })());
   } else if (providers.includes("gemini")) {
@@ -97,8 +105,7 @@ exports.handler = async (event) => {
 
   // Log to database
   try {
-    const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
-    await supabase.from("research_queries").insert({ query, providers, results });
+    if (supabase) await supabase.from("research_queries").insert({ query, providers, results });
   } catch { /* non-blocking */ }
 
   return { statusCode: 200, headers: HEADERS, body: JSON.stringify({ query, results }) };

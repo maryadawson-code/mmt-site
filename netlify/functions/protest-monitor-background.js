@@ -16,6 +16,7 @@ const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
 const { withRetry } = require("./lib/retry");
 const { sendEmail } = require("./lib/send-email");
 const { checkKillSwitch } = require("./lib/kill-switch");
+const { trackPerplexity } = require("./lib/cost-tracker");
 
 // --- Constants ---
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
@@ -24,7 +25,8 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
 // --- Perplexity API call (reused pattern from contract-intel-refresh) ---
 
-async function callPerplexity(systemPrompt, userMessage, model, maxTokens) {
+async function callPerplexity(systemPrompt, userMessage, model, maxTokens, _supabase) {
+  const _t = Date.now();
   const response = await withRetry(() => fetchWithTimeout("https://api.perplexity.ai/chat/completions", {
     method: "POST",
     headers: {
@@ -52,6 +54,13 @@ async function callPerplexity(systemPrompt, userMessage, model, maxTokens) {
   if (finalData.usage) {
     const u = finalData.usage;
     console.log(`  AI cost: model=${model}, input=${u.prompt_tokens}, output=${u.completion_tokens}`);
+  }
+
+  // Cost tracking
+  if (_supabase) {
+    try {
+      await trackPerplexity(_supabase, { functionName: 'protest-monitor-background', product: 'mmt-intel', model, usage: { input_tokens: finalData.usage?.prompt_tokens, output_tokens: finalData.usage?.completion_tokens }, latencyMs: Date.now() - _t });
+    } catch (_costErr) { /* never break parent */ }
   }
 
   let textContent = finalData.choices?.[0]?.message?.content || "";
@@ -277,7 +286,7 @@ Return ONLY valid JSON.`;
 
       const userMessage = `Check the current status of GAO protest case ${caseRow.case_number} filed by ${caseRow.protester} against ${caseRow.agency} regarding solicitation ${caseRow.solicitation_number}. The case was filed on ${caseRow.filed_date} with a due date of ${caseRow.due_date}. Last known status: ${caseRow.status}.`;
 
-      const result = await callPerplexity(systemPrompt, userMessage, modelConfig.model, 4000);
+      const result = await callPerplexity(systemPrompt, userMessage, modelConfig.model, 4000, supabase);
 
       // Compare status
       const statusChanged = result.current_status && result.current_status !== caseRow.last_status;
