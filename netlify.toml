@@ -26,7 +26,7 @@
   schedule = "0 13 * * *"
 
 [functions."score-cleanup"]
-  schedule = "*/10 * * * *"
+  schedule = "*/30 * * * *"
 
 [functions."health-check"]
   schedule = "0 */6 * * *"
@@ -35,7 +35,7 @@
   schedule = "0 0 * * *"
 
 [functions."tactical-brief-cleanup"]
-  schedule = "*/15 * * * *"
+  schedule = "*/30 * * * *"
 
 [functions."ops-pattern-detector"]
   schedule = "0 13 * * *"
@@ -50,7 +50,7 @@
   schedule = "0 10 * * 3"
 
 [functions."ops-health-check"]
-  schedule = "*/15 * * * *"
+  schedule = "*/30 * * * *"
 
 [[redirects]]
   from = "/"
