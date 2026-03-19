@@ -18,7 +18,8 @@
 // POST body: { session_id, name, email, company, topic, audience, amount_paid }
 // ============================================================
 
-const { generateTacticalBriefPdf } = require("./lib/tactical-brief-pdf");
+// const { generateTacticalBriefPdf } = require("./lib/tactical-brief-pdf"); // replaced by HTML renderer
+const { renderMarketPulseHTML } = require("./lib/report-html-renderer");
 const { buildDeliveryEmail, buildNotificationEmail } = require("./lib/tactical-brief-email");
 const { sendEmail } = require("./lib/send-email");
 const { optimizeMarketPrompt } = require("./lib/prompt-optimizer");
@@ -177,11 +178,13 @@ async function runLandscapeScan(topic, audience, company, disambiguation, { prim
   const naicsFocus = (classification && classification.scope && classification.scope.naics_focus) || [];
 
   const audienceContext = audience ? `The audience for this brief is: ${audience}.` : "";
-  const companyContext = company ? `The requesting organization is: ${company}.` : "";
+  const companyCtx = company ? `The requesting organization is: ${company}.` : "";
   const contextBlock = primedContext ? `\n\nCURRENT CONTEXT (verified facts — use as grounding):\n${primedContext}` : "";
 
   const result = await callPerplexity(
-    `You are a federal health IT market intelligence analyst. ${audienceContext} ${companyContext}
+    `You are a federal health IT market intelligence analyst. ${audienceContext} ${companyCtx}
+
+CRITICAL: The customer ordering this report is NOT necessarily the subject of the research. Mission Meets Tech LLC is a media/intelligence platform, NOT a contracting firm. If the customer provides a company name, research THAT company's market position. If they say "I'm at a SDVOSB" without naming the company, note "Company identity not provided — recommendations are generic." NEVER research Mission Meets Tech LLC as a contractor.
 
 ENTITY CONTEXT (from disambiguation):
 - Target entity: ${entity.name || topic}
@@ -277,18 +280,35 @@ CRITICAL RULES:
 // ============================================================
 // PASS 3: Fact-Check, Synthesis, and Confidence Scoring (CHANGES 3, 6, 8)
 // ============================================================
-async function runSynthesis(topic, audience, company, disambiguation, landscapeContent, analysisContent, { primedContext, classification } = {}) {
+async function runSynthesis(topic, audience, company, disambiguation, landscapeContent, analysisContent, { primedContext, classification, companyContext: compCtx } = {}) {
   console.log("Pass 3: Fact-check, synthesis, and confidence scoring...");
 
   const entity = disambiguation.selected_entity || {};
   const claimsToVerify = disambiguation.user_claims_to_verify || [];
 
   const audienceContext = audience ? `The audience for this brief is: ${audience}.` : "";
-  const companyContext = company ? `The requesting organization is: ${company}.` : "";
+  const companyLine = company ? `The requesting organization is: ${company}.` : "";
   const contextBlock = primedContext ? `\n\nCURRENT CONTEXT (verified facts — use as grounding):\n${primedContext}` : "";
 
+  // Build company context block for recommendations
+  let companyGuard = "";
+  if (compCtx) {
+    if (compCtx.isMmtPlatform) {
+      companyGuard = "\nCRITICAL: The ordering company 'Mission Meets Tech' is the PLATFORM, not a contractor. Do NOT research MMT as a contracting firm. Recommendations should be generic unless additional_context names the actual company.";
+    }
+    if (compCtx.knownCerts.length > 0) {
+      companyGuard += `\nCOMPANY ALREADY HOLDS THESE CERTIFICATIONS: ${compCtx.knownCerts.join(", ")}. Do NOT recommend obtaining certifications they already have.`;
+    }
+    if (compCtx.knownVehicles.length > 0) {
+      companyGuard += `\nCOMPANY ALREADY ON THESE VEHICLES: ${compCtx.knownVehicles.join(", ")}. Do NOT recommend registering for vehicles they already hold.`;
+    }
+    if (!compCtx.hasIdentity) {
+      companyGuard += "\nCompany identity not confirmed — recommendations must be labeled as generic, not tailored to a specific firm's existing capabilities.";
+    }
+  }
+
   const result = await callPerplexity(
-    `You are a fact-checker and editor for a federal health IT intelligence publication. ${audienceContext} ${companyContext}
+    `You are a fact-checker and editor for a federal health IT intelligence publication. ${audienceContext} ${companyLine}
 
 TARGET ENTITY: ${entity.name || topic} (${entity.acronym || ""})
 
@@ -371,6 +391,8 @@ Specific risks with evidence. Policy/budget risks. NOT generic compliance checkl
 
 ## RECOMMENDATIONS
 Capture strategy tied to specific opportunities from Pipeline Intelligence. Timeline with specific dates. Teaming suggestions with named partners/vehicles.
+${companyGuard}
+Before recommending certifications (SDVOSB, 8(a), WOSB, HUBZone): verify whether the customer's company already holds them. Before recommending contract vehicles: check if the company already has access. Recommending certifications or vehicles a company already holds destroys credibility. If company identity is unknown, explicitly state recommendations are generic.
 
 ## METHODOLOGY
 Brief: what was searched, what was found, limitations.
@@ -540,6 +562,48 @@ function buildMethodologyAppendix(disambiguation, passTimings) {
   return methodology;
 }
 
+// --- Company Context Extraction ---
+function extractCompanyContext(company, additionalContext, topic) {
+  const combined = [company, additionalContext, topic].filter(Boolean).join(" ");
+
+  // Known certifications
+  const certPatterns = [
+    { pattern: /\bSDVOSB\b/i, cert: "SDVOSB" },
+    { pattern: /\bVOSB\b/i, cert: "VOSB" },
+    { pattern: /\bWOSB\b/i, cert: "WOSB" },
+    { pattern: /\b8\(a\)\b|\b8a\b/i, cert: "8(a)" },
+    { pattern: /\bHUBZone\b/i, cert: "HUBZone" },
+    { pattern: /\bsmall business\b/i, cert: "Small Business" },
+  ];
+  const knownCerts = certPatterns
+    .filter(({ pattern }) => pattern.test(combined))
+    .map(({ cert }) => cert);
+
+  // Known vehicles
+  const vehiclePatterns = [
+    { pattern: /\bT4NG2?\b/i, vehicle: "T4NG/T4NG2" },
+    { pattern: /\bSEWP\b/i, vehicle: "SEWP" },
+    { pattern: /\bCIO-SP[34]\b/i, vehicle: "CIO-SP3/CIO-SP4" },
+    { pattern: /\bGSA\s*(?:MAS|Schedule)\b/i, vehicle: "GSA MAS" },
+    { pattern: /\bALLIANT\b/i, vehicle: "Alliant" },
+    { pattern: /\bOASIS\b/i, vehicle: "OASIS+" },
+  ];
+  const knownVehicles = vehiclePatterns
+    .filter(({ pattern }) => pattern.test(combined))
+    .map(({ vehicle }) => vehicle);
+
+  // Detect if company is the platform (not a contractor)
+  const isMmtPlatform = /mission\s*meets?\s*tech/i.test(company || "");
+
+  return {
+    company: company || null,
+    isMmtPlatform,
+    knownCerts,
+    knownVehicles,
+    hasIdentity: !!(company && !isMmtPlatform),
+  };
+}
+
 // --- Main handler ---
 exports.handler = async (event) => {
   // Kill switch
@@ -562,14 +626,18 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: "Invalid JSON" };
   }
 
-  const { session_id, name, email, company, topic, audience } = payload;
+  const { session_id, name, email, company, topic, audience, additional_context } = payload;
 
   if (!email || !topic) {
     console.error("generate-tactical-brief-background: missing email or topic");
     return { statusCode: 400, body: "Email and topic are required" };
   }
 
+  // Extract structured company context from additional_context
+  const companyContext = extractCompanyContext(company, additional_context, topic);
+
   console.log(`generate-tactical-brief-background: starting for ${email} (session ${session_id})`);
+  console.log(`[COMPANY] ${companyContext.hasIdentity ? companyContext.company : "No company identified"} | MMT platform: ${companyContext.isMmtPlatform} | Certs: ${companyContext.knownCerts.join(",") || "none"} | Vehicles: ${companyContext.knownVehicles.join(",") || "none"}`);
   const startTime = Date.now();
   const passTimings = {};
 
@@ -718,7 +786,7 @@ exports.handler = async (event) => {
 
     // Pass 3: Fact-check, synthesis, confidence scoring (CHANGES 3, 6, 8)
     const pass3Start = Date.now();
-    const pass3 = await runSynthesis(optimizedTopic, audience, company, disambiguation, pass1.content, pass2.content, { primedContext, classification });
+    const pass3 = await runSynthesis(optimizedTopic, audience, company, disambiguation, pass1.content, pass2.content, { primedContext, classification, companyContext });
     passTimings["Pass 3 — Synthesis"] = Math.round((Date.now() - pass3Start) / 1000);
     analyzePassResult(reportQuality, pass3.content, pass3.citations);
 
@@ -925,25 +993,22 @@ exports.handler = async (event) => {
 
     await _transition("pdf_started");
 
-    // Generate PDF
-    console.log("Generating PDF...");
-    const pdfBuffer = await generateTacticalBriefPdf({
-      name,
-      email,
-      company,
-      topic,
-      audience,
+    // Generate report HTML
+    console.log("Generating report HTML...");
+    const generatedAt = new Date().toISOString();
+    const reportHtmlContent = renderMarketPulseHTML({
+      name, company, topic, audience, generatedAt,
       synthesis: finalSynthesis,
       citations: allCitations,
-      generatedAt: new Date().toISOString(),
     });
-    console.log(`PDF generated: ${Math.round(pdfBuffer.length / 1024)}KB`);
+    const reportBuffer = Buffer.from(reportHtmlContent);
+    console.log(`Report HTML generated: ${Math.round(reportBuffer.length / 1024)}KB`);
 
     // State: pdf_completed → email_queued
     await _transition("pdf_completed");
     await _transition("email_queued");
 
-    // Send delivery email with PDF attachment (with degraded mode hold)
+    // Send delivery email with HTML report attachment (with degraded mode hold)
     console.log("Sending delivery email...");
     const deliveryHtml = buildDeliveryEmail({ name, topic, orderId: _orderId, qualityGrade: qualityResult.grade, qualityFailures: qualityResult.failures });
     const deliverySubject = `Your MarketPulse Report: ${topic.slice(0, 60)}${topic.length > 60 ? "..." : ""}`;
@@ -954,7 +1019,7 @@ exports.handler = async (event) => {
           product: "marketpulse",
           record_id: _orderId,
           has_attachment: true,
-          attachment_size_kb: Math.round(pdfBuffer.length / 1024),
+          attachment_size_kb: Math.round(reportBuffer.length / 1024),
         });
       }
       console.log(`[degraded] Delivery email held for ${email}`);
@@ -966,8 +1031,8 @@ exports.handler = async (event) => {
         from: "Mission Meets Tech <noreply@missionmeetstech.com>",
         attachments: [
           {
-            filename: "tactical-brief.pdf",
-            content: pdfBuffer.toString("base64"),
+            filename: "tactical-brief.html",
+            content: reportBuffer.toString("base64"),
           },
         ],
       });

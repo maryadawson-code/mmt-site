@@ -450,34 +450,36 @@ exports.handler = async (event) => {
       complianceMatrix: scorecard.compliance_matrix || null,
     });
 
-    // Generate Red Team Review PDF
-    let reviewPdfAttachment = null;
+    // Generate Red Team Review HTML attachment (includes score report + review sections)
+    let reviewAttachment = null;
     try {
-      const { generateRedTeamPdf } = require("./lib/redteam-pdf");
-      const reviewPdf = await generateRedTeamPdf({
+      const { renderProposalPulseHTML } = require("./lib/report-html-renderer");
+      const reviewHtml = renderProposalPulseHTML({
         scorecard, overallGrade, documentLabel: config.label, fileName: file_name,
-        sections: mergedSections,
-        executiveSummary: reviewResult ? reviewResult.executive_summary : null,
-        prioritizedSteps: reviewResult ? reviewResult.next_steps : null,
+        hasSow: !!scorecard._document_text,
+        nextSteps: scorecard.next_steps || null,
+        competitivePositioning: scorecard.competitive_positioning || null,
         pwinEstimate: rewriteResult.pwin_estimate || null,
         pwinJustification: rewriteResult.pwin_justification || null,
-        pwinFactors: scorecard.pWin_factors || null,
-        competitivePositioning: scorecard.competitive_positioning || null,
+        // Red Team sections included in the same report
+        redTeamSections: mergedSections,
+        redTeamExecutiveSummary: reviewResult ? reviewResult.executive_summary : null,
+        redTeamNextSteps: reviewResult ? reviewResult.next_steps : null,
       });
-      reviewPdfAttachment = {
-        filename: `RedTeamReview-${scoring_id.slice(0, 8)}.pdf`,
-        content: reviewPdf.toString("base64"),
+      reviewAttachment = {
+        filename: `RedTeamReview-${scoring_id.slice(0, 8)}.html`,
+        content: Buffer.from(reviewHtml).toString("base64"),
       };
-      console.log(`Red Team PDF generated: ${Math.round(reviewPdf.length / 1024)}KB`);
-    } catch (pdfErr) {
-      console.error("Red Team PDF generation failed (sending email without attachment):", pdfErr.message);
+      console.log(`Red Team review HTML generated: ${Math.round(reviewHtml.length / 1024)}KB`);
+    } catch (htmlErr) {
+      console.error("Red Team review HTML generation failed (sending email without attachment):", htmlErr.message);
     }
 
     const emailResult = await sendEmail({
       to: normalizedEmail,
       subject: `Red Team Review: ${config.label} — All 9 Sections Reviewed`,
       html: emailHtml,
-      ...(reviewPdfAttachment && { attachments: [reviewPdfAttachment] }),
+      ...(reviewAttachment && { attachments: [reviewAttachment] }),
     });
 
     if (emailResult.success) {

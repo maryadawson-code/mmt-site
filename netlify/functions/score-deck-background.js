@@ -683,26 +683,24 @@ exports.handler = async (event) => {
         hasSow: !!finalSowText,
       });
 
-      // Generate Score Report PDF
-      let scorePdfAttachment = null;
+      // Generate Score Report HTML attachment
+      let scoreReportAttachment = null;
       try {
-        const { generateScoreReportPdf } = require("./lib/proposalpulse-pdf");
-        const scorePdf = await generateScoreReportPdf({
+        const { renderProposalPulseHTML } = require("./lib/report-html-renderer");
+        const reportHtml = renderProposalPulseHTML({
           scorecard, overallGrade, documentType, documentLabel: config.label,
-          fileName, email,
+          fileName, hasSow: !!finalSowText,
           nextSteps: scorecard.next_steps || null,
           competitivePositioning: scorecard.competitive_positioning || null,
-          pwinFactors: scorecard.pWin_factors || null,
           complianceNote: !finalSowText ? `Scored against standard criteria for ${config.label}. Upload SOW for compliance mapping.` : null,
-          scoringId: scoring_id,
         });
-        scorePdfAttachment = {
-          filename: `ProposalPulse-ScoreReport-${scoring_id.slice(0, 8)}.pdf`,
-          content: scorePdf.toString("base64"),
+        scoreReportAttachment = {
+          filename: `ProposalPulse-ScoreReport-${scoring_id.slice(0, 8)}.html`,
+          content: Buffer.from(reportHtml).toString("base64"),
         };
-        console.log(`Score PDF generated: ${Math.round(scorePdf.length / 1024)}KB`);
-      } catch (pdfErr) {
-        console.error("Score PDF generation failed (sending email without attachment):", pdfErr.message);
+        console.log(`Score report HTML generated: ${Math.round(reportHtml.length / 1024)}KB`);
+      } catch (htmlErr) {
+        console.error("Score report HTML generation failed (sending email without attachment):", htmlErr.message);
       }
 
       if (shouldHoldEmail()) {
@@ -711,9 +709,9 @@ exports.handler = async (event) => {
       } else {
         await sendEmail({
           to: email, subject: emailSubject, html: emailHtml,
-          ...(scorePdfAttachment && { attachments: [scorePdfAttachment] }),
+          ...(scoreReportAttachment && { attachments: [scoreReportAttachment] }),
         });
-        console.log(`Receipt email sent for ${scoring_id}${scorePdfAttachment ? " (with PDF)" : ""}`);
+        console.log(`Receipt email sent for ${scoring_id}${scoreReportAttachment ? " (with report)" : ""}`);
       }
 
       // --- State: email_sent ---
