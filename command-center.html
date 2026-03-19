@@ -197,8 +197,8 @@
       const pp = data.orders_24h?.proposalpulse || [];
       const mp = data.orders_24h?.marketpulse || [];
       const tenMinAgo = Date.now() - 600000;
-      pp.forEach(o => { const t = ['delivered','email_sent','email_failed','ERROR']; if (!t.includes(o.workflow_state) && !t.includes(o.verdict) && new Date(o.created_at).getTime() < tenMinAgo) alerts.push('PP stuck: ' + (o.id||'').slice(0,8)); });
-      mp.forEach(o => { const t = ['delivered','email_sent','error','quality_fail']; if (!t.includes(o.workflow_state) && new Date(o.created_at).getTime() < tenMinAgo) alerts.push('MP stuck: ' + (o.session_id||o.id||'').slice(0,8)); });
+      pp.forEach(o => { const t = ['delivered','email_sent','email_failed','failed','error','quality_fail','ERROR']; if (!t.includes(o.workflow_state) && !t.includes(o.verdict) && new Date(o.created_at).getTime() < tenMinAgo) alerts.push('PP stuck: ' + (o.id||'').slice(0,8)); });
+      mp.forEach(o => { const t = ['delivered','email_sent','failed','error','quality_fail']; if (!t.includes(o.workflow_state) && new Date(o.created_at).getTime() < tenMinAgo) alerts.push('MP stuck: ' + (o.session_id||o.id||'').slice(0,8)); });
       const crit = (data.ops_events_24h||[]).filter(e => e.severity === 'critical' && !e.resolution);
       if (crit.length > 0) alerts.push(crit.length + ' unresolved critical event' + (crit.length>1?'s':''));
       if (alerts.length > 0) { banner.style.display = 'block'; banner.textContent = alerts.join(' | '); }
