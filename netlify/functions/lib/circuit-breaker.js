@@ -1,118 +1,118 @@
-// Circuit breaker backed by ops_events in Supabase.
-// Zero in-memory state — all reads/writes go through ops_events.
-// Survives serverless cold starts.
+// ============================================================
+// circuit-breaker.js — In-memory circuit breaker for serverless
+//
+// States: CLOSED (normal), OPEN (failing), HALF_OPEN (testing)
+// State persists within a function invocation; resets on cold start.
+// State transitions are logged to ops-ledger.
+// ============================================================
 
 const { logOpsEvent } = require("./ops-ledger");
 
-const CIRCUIT_CONFIG = {
-  anthropic:  { failureThreshold: 5, cooldownMinutes: 10, windowMinutes: 15 },
-  perplexity: { failureThreshold: 5, cooldownMinutes: 10, windowMinutes: 15 },
-  resend:     { failureThreshold: 3, cooldownMinutes: 5,  windowMinutes: 10 },
-};
+const STATES = { CLOSED: "CLOSED", OPEN: "OPEN", HALF_OPEN: "HALF_OPEN" };
 
-const DEFAULT_CONFIG = { failureThreshold: 5, cooldownMinutes: 10, windowMinutes: 15 };
-
-async function countRecentBySignature(supabase, signature, windowMinutes) {
-  const since = new Date(Date.now() - windowMinutes * 60000).toISOString();
-  const { count, error } = await supabase
-    .from("ops_events")
-    .select("*", { count: "exact", head: true })
-    .eq("error_signature", signature)
-    .gte("created_at", since);
-  if (error) { console.error("circuit-breaker count error:", error.message); return 0; }
-  return count || 0;
-}
-
-async function checkCircuit(supabase, provider) {
-  if (!supabase) return { allowed: true, reason: "no_db" };
-
-  const config = CIRCUIT_CONFIG[provider] || DEFAULT_CONFIG;
-
-  try {
-    // Count failures in window
-    const failureSignatures = [
-      `${provider}_rate_limit`, `${provider}_overloaded`,
-      `${provider}_timeout`, `${provider}_server_error`, `${provider}_failure`,
-    ];
-
-    let totalFailures = 0;
-    for (const sig of failureSignatures) {
-      totalFailures += await countRecentBySignature(supabase, sig, config.windowMinutes);
-    }
-
-    if (totalFailures < config.failureThreshold) {
-      return { allowed: true, reason: "closed", failures: totalFailures };
-    }
-
-    // Threshold exceeded — check if cooldown expired
-    const recentOpens = await countRecentBySignature(supabase, `circuit_open_${provider}`, config.cooldownMinutes);
-
-    if (recentOpens === 0) {
-      // Cooldown expired → half-open, allow one test request
-      return { allowed: true, reason: "half_open", failures: totalFailures };
-    }
-
-    // Still in cooldown
-    return { allowed: false, reason: "circuit_open", failures: totalFailures, cooldownMinutes: config.cooldownMinutes };
-  } catch (err) {
-    console.error("circuit-breaker: checkCircuit failed:", err.message);
-    return { allowed: true, reason: "check_error" }; // Fail open
+class CircuitOpenError extends Error {
+  constructor(name, nextRetry) {
+    super(`Circuit "${name}" is OPEN — rejecting call. Retry after ${new Date(nextRetry).toISOString()}`);
+    this.name = "CircuitOpenError";
+    this.circuitName = name;
+    this.nextRetry = nextRetry;
   }
 }
 
-async function recordFailure(supabase, provider, error) {
-  if (!supabase) return;
+class CircuitBreaker {
+  constructor(name, options = {}) {
+    this.name = name;
+    this.failureThreshold = options.failureThreshold || 3;
+    this.resetTimeoutMs = options.resetTimeoutMs || 60000;
+    this.halfOpenMax = options.halfOpenMax || 1;
 
-  const config = CIRCUIT_CONFIG[provider] || DEFAULT_CONFIG;
-  const errMsg = error?.message || String(error);
-  const status = error?.status || error?.statusCode || 0;
+    this.state = STATES.CLOSED;
+    this.failures = 0;
+    this.lastFailure = null;
+    this.halfOpenAttempts = 0;
+    this._supabase = null;
+  }
 
-  // Compute signature
-  let signature = `${provider}_failure`;
-  if (status === 429) signature = `${provider}_rate_limit`;
-  else if (status === 529) signature = `${provider}_overloaded`;
-  else if (errMsg.includes("timeout") || errMsg.includes("ETIMEDOUT")) signature = `${provider}_timeout`;
-  else if (status >= 500) signature = `${provider}_server_error`;
+  setSupabase(supabase) {
+    this._supabase = supabase;
+  }
 
-  await logOpsEvent(supabase, {
-    event_type: "api_failure",
-    source_function: "circuit-breaker",
-    severity: "warning",
-    details: { provider, error: errMsg, status },
-    error_signature: signature,
-  });
-
-  // Check if threshold now exceeded
-  try {
-    const failCount = await countRecentBySignature(supabase, signature, config.windowMinutes);
-    if (failCount >= config.failureThreshold) {
-      const existingOpen = await countRecentBySignature(supabase, `circuit_open_${provider}`, config.cooldownMinutes);
-      if (existingOpen === 0) {
-        await logOpsEvent(supabase, {
-          event_type: "circuit_opened",
-          source_function: "circuit-breaker",
-          severity: "error",
-          details: { provider, failures: failCount, trigger: signature },
-          error_signature: `circuit_open_${provider}`,
-        });
+  async execute(fn) {
+    if (this.state === STATES.OPEN) {
+      const nextRetry = (this.lastFailure || 0) + this.resetTimeoutMs;
+      if (Date.now() >= nextRetry) {
+        this.state = STATES.HALF_OPEN;
+        this.halfOpenAttempts = 0;
+        await this._logTransition("HALF_OPEN", "Reset timeout expired");
+      } else {
+        throw new CircuitOpenError(this.name, nextRetry);
       }
     }
-  } catch (err) {
-    console.error("circuit-breaker: recordFailure threshold check failed:", err.message);
+
+    if (this.state === STATES.HALF_OPEN && this.halfOpenAttempts >= this.halfOpenMax) {
+      const nextRetry = (this.lastFailure || 0) + this.resetTimeoutMs;
+      throw new CircuitOpenError(this.name, nextRetry);
+    }
+
+    try {
+      if (this.state === STATES.HALF_OPEN) this.halfOpenAttempts++;
+      const result = await fn();
+      await this.recordSuccess();
+      return result;
+    } catch (err) {
+      await this.recordFailure(err);
+      throw err;
+    }
+  }
+
+  async recordFailure(error) {
+    this.failures++;
+    this.lastFailure = Date.now();
+
+    if (this.state === STATES.HALF_OPEN) {
+      this.state = STATES.OPEN;
+      await this._logTransition("OPEN", `Half-open test failed: ${error?.message || "unknown"}`);
+    } else if (this.failures >= this.failureThreshold) {
+      this.state = STATES.OPEN;
+      await this._logTransition("OPEN", `Failure threshold reached (${this.failures}/${this.failureThreshold})`);
+    }
+  }
+
+  async recordSuccess() {
+    if (this.state === STATES.HALF_OPEN) {
+      await this._logTransition("CLOSED", "Half-open test succeeded");
+    }
+    this.failures = 0;
+    this.state = STATES.CLOSED;
+    this.halfOpenAttempts = 0;
+  }
+
+  getState() {
+    return {
+      name: this.name,
+      state: this.state,
+      failures: this.failures,
+      lastFailure: this.lastFailure ? new Date(this.lastFailure).toISOString() : null,
+      nextRetry: this.state === STATES.OPEN && this.lastFailure
+        ? new Date(this.lastFailure + this.resetTimeoutMs).toISOString()
+        : null,
+    };
+  }
+
+  async _logTransition(newState, reason) {
+    const severity = newState === STATES.OPEN ? "error" : "info";
+    try {
+      await logOpsEvent(this._supabase, {
+        event_type: newState === STATES.OPEN ? "INFRA_FAILURE" : "circuit_state_change",
+        source_function: "circuit-breaker",
+        severity,
+        signature: `circuit_${this.name}_${newState.toLowerCase()}`,
+        details: { circuit: this.name, state: newState, failures: this.failures, reason },
+      });
+    } catch {
+      // Never crash
+    }
   }
 }
 
-async function recordSuccess(supabase, provider) {
-  if (!supabase) return;
-
-  await logOpsEvent(supabase, {
-    event_type: "circuit_closed",
-    source_function: "circuit-breaker",
-    severity: "info",
-    details: { provider },
-    error_signature: `circuit_closed_${provider}`,
-    auto_resolved: true,
-  });
-}
-
-module.exports = { checkCircuit, recordFailure, recordSuccess };
+module.exports = { CircuitBreaker, CircuitOpenError, STATES };

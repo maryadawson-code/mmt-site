@@ -2,8 +2,13 @@
 //
 // Uses fetch() (no npm dependency). Requires RESEND_API_KEY env var.
 // From address: ProposalPulse <noreply@missionmeetstech.com>
+// Circuit breaker: resend (threshold 2, 60s reset)
 
 const { fetchWithTimeout } = require("./fetch-with-timeout");
+const { getCircuit } = require("./circuit-registry");
+const { CircuitOpenError } = require("./circuit-breaker");
+const { logOpsEvent } = require("./ops-ledger");
+const { getFlag } = require("./feature-flags");
 
 const RESEND_API_URL = "https://api.resend.com/emails";
 const DEFAULT_FROM = "ProposalPulse <noreply@missionmeetstech.com>";
@@ -24,7 +29,10 @@ async function sendEmail({ to, subject, html, from, attachments }) {
     return { success: false, error: "RESEND_API_KEY not configured" };
   }
 
-  try {
+  const circuit = getCircuit("resend");
+  const useCircuit = circuit && getFlag("FEATURE_CIRCUIT_BREAKERS") !== "off";
+
+  const doSend = async () => {
     const response = await fetchWithTimeout(RESEND_API_URL, {
       method: "POST",
       headers: {
@@ -42,13 +50,29 @@ async function sendEmail({ to, subject, html, from, attachments }) {
 
     if (!response.ok) {
       const errBody = await response.text();
-      console.error("Resend API error:", response.status, errBody);
-      return { success: false, error: `Resend API ${response.status}: ${errBody}` };
+      const err = new Error(`Resend API ${response.status}: ${errBody}`);
+      err.status = response.status;
+      throw err;
     }
 
     const data = await response.json();
-    return { success: true, id: data.id };
+    return data;
+  };
+
+  try {
+    if (useCircuit) {
+      const data = await circuit.execute(doSend);
+      return { success: true, id: data.id };
+    } else {
+      const data = await doSend();
+      return { success: true, id: data.id };
+    }
   } catch (err) {
+    if (err instanceof CircuitOpenError) {
+      console.error("Resend circuit OPEN — email not sent:", to);
+      await logOpsEvent(null, { event_type: "DELIVERY_FAILURE", source_function: "send-email", severity: "error", signature: "circuit_open_resend", affected_entity: to, details: { subject, nextRetry: err.nextRetry } });
+      return { success: false, error: "Email service temporarily unavailable (circuit open)" };
+    }
     console.error("Email send failed:", err.message);
     return { success: false, error: err.message };
   }
