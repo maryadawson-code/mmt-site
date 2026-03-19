@@ -25,20 +25,18 @@
     .card.full { grid-column: 1 / -1; }
     table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
     th { text-align: left; padding: 6px 8px; color: rgba(255,255,255,0.5); border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 500; }
-    td { padding: 6px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    td { padding: 6px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
     .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 0.75rem; font-weight: 600; }
     .badge-green { background: rgba(22,163,74,0.2); color: #22c55e; }
     .badge-yellow { background: rgba(234,179,8,0.2); color: #eab308; }
     .badge-red { background: rgba(239,68,68,0.2); color: #ef4444; }
     .badge-blue { background: rgba(59,130,246,0.2); color: #60a5fa; }
     .badge-gray { background: rgba(107,114,128,0.2); color: #9ca3af; }
-    .stat { text-align: center; padding: 12px; }
-    .stat .value { font-size: 1.8rem; font-weight: 700; color: #00e5fa; }
-    .stat .label { font-size: 0.75rem; color: rgba(255,255,255,0.5); text-transform: uppercase; }
-    .stats-row { display: flex; gap: 16px; margin-bottom: 16px; }
+    .badge-purple { background: rgba(168,85,247,0.2); color: #a855f7; }
+    .badge-orange { background: rgba(249,115,22,0.2); color: #f97316; }
+    .badge-cyan { background: rgba(0,229,250,0.15); color: #00e5fa; }
     .flag-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
     .flag-name { font-family: monospace; font-size: 0.82rem; color: rgba(255,255,255,0.7); }
-    .flag-value { font-family: monospace; font-size: 0.82rem; }
     .circuit-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
     .circuit-name { font-weight: 600; }
     .btn { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
@@ -52,12 +50,15 @@
     .severity-filter button.active { background: rgba(0,229,250,0.15); color: #00e5fa; border-color: rgba(0,229,250,0.3); }
     .refresh-info { font-size: 0.75rem; color: rgba(255,255,255,0.3); }
     #loading { text-align: center; padding: 60px; color: rgba(255,255,255,0.4); }
+    .revenue-big { font-size: 2.2rem; font-weight: 700; color: #22c55e; }
+    .revenue-label { font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase; }
+    .toast { position: fixed; bottom: 24px; right: 24px; background: #22c55e; color: #0a0e17; padding: 10px 20px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; z-index: 9999; display: none; }
+    .trunc { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   </style>
 </head>
 <body>
-  <div id="auth-gate" class="auth-gate">
-    <h1>Unauthorized</h1>
-  </div>
+  <div id="auth-gate" class="auth-gate"><h1>Unauthorized</h1></div>
+  <div id="toast" class="toast"></div>
 
   <div id="dashboard" class="dashboard">
     <header>
@@ -68,36 +69,20 @@
       </div>
     </header>
 
+    <!-- ALERT BANNER -->
+    <div id="alert-banner" style="display:none;background:#ef4444;color:#fff;padding:12px 24px;font-weight:600;font-size:14px;text-align:center;border-radius:6px;margin-bottom:16px;"></div>
+
     <div id="loading">Loading dashboard data...</div>
 
     <div id="content" style="display:none;">
-      <!-- SYSTEM STATUS -->
       <div class="grid">
-        <div class="card">
-          <h2>System Status</h2>
-          <div id="system-status"></div>
-        </div>
-
-        <div class="card">
-          <h2>Circuit Breakers</h2>
-          <div id="circuits"></div>
-        </div>
-
-        <div class="card">
-          <h2>Feature Flags</h2>
-          <div id="flags"></div>
-        </div>
-
-        <div class="card">
-          <h2>Quality Metrics</h2>
-          <div id="quality"></div>
-        </div>
+        <div class="card"><h2>System Status</h2><div id="system-status"></div></div>
+        <div class="card"><h2>Circuit Breakers</h2><div id="circuits"></div></div>
+        <div class="card"><h2>Feature Flags</h2><div id="flags"></div></div>
+        <div class="card"><h2>Quality Metrics</h2><div id="quality"></div></div>
 
         <!-- LIVE ORDERS -->
-        <div class="card full">
-          <h2>Live Orders (24h)</h2>
-          <div id="orders"></div>
-        </div>
+        <div class="card full"><h2>Live Orders (24h)</h2><div id="orders"></div></div>
 
         <!-- OPS EVENTS -->
         <div class="card full">
@@ -113,19 +98,74 @@
         </div>
 
         <!-- HELD EMAILS -->
+        <div class="card full"><h2>Held Emails</h2><div id="held-emails"></div></div>
+
+        <!-- REPORT HISTORY -->
         <div class="card full">
-          <h2>Held Emails</h2>
-          <div id="held-emails"></div>
+          <h2>Report History</h2>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;" id="report-history">
+            <div><h3 style="font-size:0.85rem;color:rgba(255,255,255,0.6);margin-bottom:8px;">MarketPulse</h3><div id="mp-reports"></div></div>
+            <div><h3 style="font-size:0.85rem;color:rgba(255,255,255,0.6);margin-bottom:8px;">ProposalPulse</h3><div id="pp-reports"></div></div>
+          </div>
         </div>
 
-        <!-- ENGAGEMENT INTEL -->
+        <!-- NEWSLETTER PIPELINE -->
         <div class="card full">
-          <h2>Engagement Intel</h2>
-          <div class="actions" style="margin-bottom:12px;">
-            <button class="btn btn-cyan" onclick="generateEngagement()">Generate Brief</button>
-            <button class="btn btn-yellow" onclick="generateEngagement(true)">Email Me This Brief</button>
+          <h2>Newsletter Pipeline</h2>
+          <div class="actions" style="margin-bottom:12px;margin-top:0;">
+            <button class="btn btn-cyan" onclick="addPipelineSlot()">+ Add Issue</button>
+            <button class="btn btn-sm" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);" onclick="seedPipeline()" id="seed-btn">Seed Next 4 Dates</button>
           </div>
-          <div id="engagement-intel"><p style="color:rgba(255,255,255,0.3)">Click "Generate Brief" to fetch engagement opportunities.</p></div>
+          <div id="newsletter-pipeline"></div>
+        </div>
+
+        <!-- INTEL SIGNALS -->
+        <div class="card full">
+          <h2>Intel Signals</h2>
+          <div class="actions" style="margin-bottom:12px;margin-top:0;">
+            <button class="btn btn-cyan" onclick="showAddSignal()">+ Add Signal</button>
+          </div>
+          <div id="intel-signals"></div>
+        </div>
+
+        <!-- AGENT DISPATCH -->
+        <div class="card full">
+          <h2>Agent Dispatch</h2>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+            <div style="background:rgba(0,229,250,0.05);border:1px solid rgba(0,229,250,0.2);border-radius:8px;padding:16px;">
+              <div style="font-weight:700;color:#00e5fa;margin-bottom:4px;">Editorial</div>
+              <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);margin-bottom:8px;" id="agent-editorial-status">—</div>
+              <textarea id="task-editorial" rows="3" placeholder="Draft article about..." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:8px;border-radius:4px;font-size:0.82rem;resize:vertical;"></textarea>
+              <div style="display:flex;gap:8px;margin-top:8px;"><button class="btn btn-cyan" onclick="dispatchTask('editorial')" style="flex:1;">Send to Editorial</button></div>
+            </div>
+            <div style="background:rgba(168,85,247,0.05);border:1px solid rgba(168,85,247,0.2);border-radius:8px;padding:16px;">
+              <div style="font-weight:700;color:#a855f7;margin-bottom:4px;">Code</div>
+              <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);margin-bottom:8px;" id="agent-code-status">—</div>
+              <textarea id="task-code" rows="3" placeholder="Fix bug in..." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:8px;border-radius:4px;font-size:0.82rem;resize:vertical;"></textarea>
+              <div style="display:flex;gap:8px;margin-top:8px;"><button class="btn" style="flex:1;background:#a855f7;color:#fff;" onclick="dispatchTask('code')">Copy Prompt</button></div>
+            </div>
+            <div style="background:rgba(34,197,94,0.05);border:1px solid rgba(34,197,94,0.2);border-radius:8px;padding:16px;">
+              <div style="font-weight:700;color:#22c55e;margin-bottom:4px;">Research</div>
+              <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);margin-bottom:8px;" id="agent-research-status">—</div>
+              <textarea id="task-research" rows="3" placeholder="Research current status of..." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:8px;border-radius:4px;font-size:0.82rem;resize:vertical;"></textarea>
+              <div style="display:flex;gap:8px;margin-top:8px;"><button class="btn" style="flex:1;background:#22c55e;color:#0a0e17;" onclick="dispatchTask('research')">Copy Prompt</button></div>
+            </div>
+          </div>
+          <h3 style="font-size:0.85rem;color:rgba(255,255,255,0.6);margin:16px 0 8px;">Task Queue</h3>
+          <div id="task-queue"></div>
+        </div>
+
+        <!-- REVENUE -->
+        <div class="card"><h2>Revenue</h2><div id="revenue-display"></div></div>
+
+        <!-- ENGAGEMENT INTEL -->
+        <div class="card">
+          <h2>Engagement Intel</h2>
+          <div class="actions" style="margin-bottom:12px;margin-top:0;">
+            <button class="btn btn-cyan btn-sm" onclick="generateEngagement()">Generate Brief</button>
+            <button class="btn btn-yellow btn-sm" onclick="generateEngagement(true)">Email Brief</button>
+          </div>
+          <div id="engagement-intel"><p style="color:rgba(255,255,255,0.3);font-size:0.82rem;">Click Generate to fetch.</p></div>
         </div>
 
         <!-- QUICK ACTIONS -->
@@ -146,218 +186,267 @@
   <script>
     const params = new URLSearchParams(window.location.search);
     const apiKey = params.get('key');
-
-    if (!apiKey) {
-      document.getElementById('auth-gate').style.display = 'flex';
-    } else {
-      document.getElementById('auth-gate').style.display = 'none';
-      document.getElementById('dashboard').style.display = 'block';
-      loadDashboard();
-      setInterval(loadDashboard, 30000);
-    }
+    if (!apiKey) { document.getElementById('auth-gate').style.display = 'flex'; }
+    else { document.getElementById('auth-gate').style.display = 'none'; document.getElementById('dashboard').style.display = 'block'; loadDashboard(); setInterval(loadDashboard, 30000); }
 
     let allOpsEvents = [];
 
+    function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
+    function timeSince(d) { const m = Math.floor((Date.now() - new Date(d).getTime()) / 60000); if (m < 60) return m + 'm ago'; const h = Math.floor(m / 60); if (h < 24) return h + 'h ago'; return Math.floor(h/24) + 'd ago'; }
+    function fmtDate(d) { return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
+    function esc(s) { return (s||'').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])); }
+    async function apiPost(body) { return fetch('/.netlify/functions/command-center-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(r => r.json()); }
+
     async function loadDashboard() {
       try {
-        const res = await fetch(`/.netlify/functions/command-center-api?key=${apiKey}`);
-        if (!res.ok) {
-          if (res.status === 401) { document.getElementById('auth-gate').style.display = 'flex'; document.getElementById('dashboard').style.display = 'none'; return; }
-          throw new Error(`API error: ${res.status}`);
-        }
+        const res = await fetch('/.netlify/functions/command-center-api?key=' + apiKey);
+        if (!res.ok) { if (res.status === 401) { document.getElementById('auth-gate').style.display = 'flex'; document.getElementById('dashboard').style.display = 'none'; } throw new Error('API ' + res.status); }
         const data = await res.json();
         render(data);
         document.getElementById('loading').style.display = 'none';
         document.getElementById('content').style.display = 'block';
-        document.getElementById('last-refresh').textContent = `Updated ${new Date().toLocaleTimeString()}`;
-      } catch (err) {
-        console.error('Dashboard load failed:', err);
-        document.getElementById('loading').textContent = 'Failed to load: ' + err.message;
-      }
+        document.getElementById('last-refresh').textContent = 'Updated ' + new Date().toLocaleTimeString();
+      } catch (e) { console.error('Load failed:', e); document.getElementById('loading').textContent = 'Failed: ' + e.message; }
     }
 
     function render(data) {
-      // Mode badge
       const mode = data.health?.mode || 'normal';
       const badge = document.getElementById('mode-badge');
       badge.textContent = mode.toUpperCase();
-      badge.className = `mode mode-${mode}`;
+      badge.className = 'mode mode-' + mode;
+
+      // Alert banner
+      renderAlerts(data);
 
       // System status
-      document.getElementById('system-status').innerHTML = `
-        <div class="flag-row"><span>Operations Mode</span><span class="badge badge-${mode === 'normal' ? 'green' : mode === 'degraded' ? 'yellow' : 'red'}">${mode.toUpperCase()}</span></div>
-        <div class="flag-row"><span>Timestamp</span><span style="font-size:0.82rem;color:rgba(255,255,255,0.5)">${new Date(data.health?.timestamp).toLocaleString()}</span></div>
-      `;
+      document.getElementById('system-status').innerHTML = '<div class="flag-row"><span>Mode</span><span class="badge badge-' + (mode==='normal'?'green':mode==='degraded'?'yellow':'red') + '">' + mode.toUpperCase() + '</span></div><div class="flag-row"><span>Time</span><span style="font-size:0.82rem;color:rgba(255,255,255,0.5)">' + new Date(data.health?.timestamp).toLocaleString() + '</span></div>';
 
       // Circuits
-      const circuits = data.circuits || {};
-      document.getElementById('circuits').innerHTML = Object.entries(circuits).map(([name, c]) => {
-        const color = c.state === 'CLOSED' ? 'green' : c.state === 'OPEN' ? 'red' : 'yellow';
-        return `<div class="circuit-row"><span class="circuit-name">${name}</span><span class="badge badge-${color}">${c.state}</span><span style="font-size:0.75rem;color:rgba(255,255,255,0.4)">failures: ${c.failures}</span></div>`;
-      }).join('');
+      document.getElementById('circuits').innerHTML = Object.entries(data.circuits||{}).map(([n,c]) => '<div class="circuit-row"><span class="circuit-name">' + n + '</span><span class="badge badge-' + (c.state==='CLOSED'?'green':c.state==='OPEN'?'red':'yellow') + '">' + c.state + '</span><span style="font-size:0.75rem;color:rgba(255,255,255,0.4)">fail:' + c.failures + '</span></div>').join('');
 
       // Flags
-      const flags = data.flags || {};
-      document.getElementById('flags').innerHTML = Object.entries(flags).map(([name, val]) => {
-        return `<div class="flag-row"><span class="flag-name">${name}</span><span class="flag-value badge badge-blue">${val}</span></div>`;
-      }).join('');
+      document.getElementById('flags').innerHTML = Object.entries(data.flags||{}).map(([n,v]) => '<div class="flag-row"><span class="flag-name">' + n + '</span><span class="badge badge-blue">' + v + '</span></div>').join('');
 
       // Quality
       const q = data.quality || {};
-      document.getElementById('quality').innerHTML = `
-        <table><tr><th></th><th>7-day avg</th><th>30-day avg</th><th>7d count</th></tr>
-        <tr><td>ProposalPulse</td><td>${q.proposalpulse?.['7d']?.avg ?? '—'}</td><td>${q.proposalpulse?.['30d']?.avg ?? '—'}</td><td>${q.proposalpulse?.['7d']?.count ?? 0}</td></tr>
-        <tr><td>MarketPulse</td><td>${q.marketpulse?.['7d']?.avg ?? '—'}</td><td>${q.marketpulse?.['30d']?.avg ?? '—'}</td><td>${q.marketpulse?.['7d']?.count ?? 0}</td></tr>
-        </table>`;
+      document.getElementById('quality').innerHTML = '<table><tr><th></th><th>7d</th><th>30d</th><th>7d #</th></tr><tr><td>PP</td><td>' + (q.proposalpulse?.['7d']?.avg??'—') + '</td><td>' + (q.proposalpulse?.['30d']?.avg??'—') + '</td><td>' + (q.proposalpulse?.['7d']?.count??0) + '</td></tr><tr><td>MP</td><td>' + (q.marketpulse?.['7d']?.avg??'—') + '</td><td>' + (q.marketpulse?.['30d']?.avg??'—') + '</td><td>' + (q.marketpulse?.['7d']?.count??0) + '</td></tr></table>';
 
       // Orders
-      const pp = (data.orders_24h?.proposalpulse || []);
-      const mp = (data.orders_24h?.marketpulse || []);
-      let ordersHtml = '<h3 style="font-size:0.85rem;margin-bottom:8px;color:rgba(255,255,255,0.6)">ProposalPulse</h3>';
-      if (pp.length === 0) { ordersHtml += '<p style="color:rgba(255,255,255,0.3)">No orders in last 24h</p>'; }
-      else {
-        ordersHtml += '<table><tr><th>ID</th><th>Status</th><th>Grade</th><th>Score</th><th>Time</th></tr>';
-        ordersHtml += pp.map(o => {
-          const s = o.workflow_state || o.verdict || '—';
-          const color = s === 'delivered' || s === 'email_sent' ? 'green' : s === 'ERROR' ? 'red' : 'yellow';
-          const ago = timeSince(o.created_at);
-          return `<tr><td style="font-family:monospace;font-size:0.75rem">${(o.id||'').slice(0,8)}</td><td><span class="badge badge-${color}">${s}</span></td><td>${o.overall_grade||'—'}</td><td>${o.avg_score||'—'}</td><td style="color:rgba(255,255,255,0.4)">${ago}</td></tr>`;
-        }).join('');
-        ordersHtml += '</table>';
-      }
-      ordersHtml += '<h3 style="font-size:0.85rem;margin:16px 0 8px;color:rgba(255,255,255,0.6)">MarketPulse</h3>';
-      if (mp.length === 0) { ordersHtml += '<p style="color:rgba(255,255,255,0.3)">No orders in last 24h</p>'; }
-      else {
-        ordersHtml += '<table><tr><th>ID</th><th>Email</th><th>Topic</th><th>Status</th><th>Time</th></tr>';
-        ordersHtml += mp.map(o => {
-          const s = o.workflow_state || '—';
-          const color = s === 'delivered' || s === 'email_sent' ? 'green' : s === 'error' || s === 'quality_fail' ? 'red' : 'yellow';
-          const ago = timeSince(o.created_at);
-          return `<tr><td style="font-family:monospace;font-size:0.75rem">${(o.session_id||o.id||'').slice(0,8)}</td><td style="font-size:0.75rem">${o.email||'—'}</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${o.topic||'—'}</td><td><span class="badge badge-${color}">${s}</span></td><td style="color:rgba(255,255,255,0.4)">${ago}</td></tr>`;
-        }).join('');
-        ordersHtml += '</table>';
-      }
-      document.getElementById('orders').innerHTML = ordersHtml;
+      renderOrders(data.orders_24h);
 
       // Ops Events
       allOpsEvents = data.ops_events_24h || [];
       renderOpsEvents('all');
 
       // Held Emails
-      const held = data.held_emails || [];
-      if (held.length === 0) {
-        document.getElementById('held-emails').innerHTML = '<p style="color:rgba(255,255,255,0.3)">No held emails</p>';
-      } else {
-        let heldHtml = '<table><tr><th>Recipient</th><th>Subject</th><th>Held Since</th><th>Action</th></tr>';
-        heldHtml += held.map(e => {
-          const ago = timeSince(e.created_at);
-          return `<tr><td>${e.recipient}</td><td style="max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.subject}</td><td style="color:rgba(255,255,255,0.4)">${ago}</td><td><button class="btn btn-cyan btn-sm" onclick="releaseEmail('${e.id}')">Release</button></td></tr>`;
-        }).join('');
-        heldHtml += '</table>';
-        document.getElementById('held-emails').innerHTML = heldHtml;
+      renderHeldEmails(data.held_emails);
+
+      // V2 sections
+      renderReportHistory(data.report_history);
+      renderPipeline(data.pipeline);
+      renderSignals(data.signals);
+      renderTaskQueue(data.tasks);
+      renderAgentStatus(data.agents);
+      renderRevenue(data.revenue);
+
+      // Hide seed button if pipeline has data
+      if (data.pipeline && data.pipeline.length > 0) document.getElementById('seed-btn').style.display = 'none';
+    }
+
+    function renderAlerts(data) {
+      const banner = document.getElementById('alert-banner');
+      const alerts = [];
+      // Check for stuck orders
+      const pp = data.orders_24h?.proposalpulse || [];
+      const mp = data.orders_24h?.marketpulse || [];
+      const tenMinAgo = Date.now() - 600000;
+      pp.forEach(o => { const t = ['delivered','email_sent','email_failed','ERROR']; if (!t.includes(o.workflow_state) && !t.includes(o.verdict) && new Date(o.created_at).getTime() < tenMinAgo) alerts.push('PP stuck: ' + (o.id||'').slice(0,8)); });
+      mp.forEach(o => { const t = ['delivered','email_sent','error','quality_fail']; if (!t.includes(o.workflow_state) && new Date(o.created_at).getTime() < tenMinAgo) alerts.push('MP stuck: ' + (o.session_id||o.id||'').slice(0,8)); });
+      // Check critical events
+      const crit = (data.ops_events_24h||[]).filter(e => e.severity === 'critical' && !e.resolution);
+      if (crit.length > 0) alerts.push(crit.length + ' unresolved critical event' + (crit.length>1?'s':''));
+      if (alerts.length > 0) { banner.style.display = 'block'; banner.textContent = alerts.join(' | '); }
+      else { banner.style.display = 'none'; }
+    }
+
+    function renderOrders(o) {
+      const pp = o?.proposalpulse || [], mp = o?.marketpulse || [];
+      let h = '<h3 style="font-size:0.85rem;margin-bottom:8px;color:rgba(255,255,255,0.6)">ProposalPulse</h3>';
+      if (!pp.length) h += '<p style="color:rgba(255,255,255,0.3)">No orders in 24h</p>';
+      else { h += '<table><tr><th>ID</th><th>Status</th><th>Grade</th><th>Score</th><th>Time</th></tr>' + pp.map(o => { const s=o.workflow_state||o.verdict||'—'; const c=s==='delivered'||s==='email_sent'?'green':s==='ERROR'?'red':'yellow'; return '<tr><td style="font-family:monospace;font-size:0.75rem">'+(o.id||'').slice(0,8)+'</td><td><span class="badge badge-'+c+'">'+s+'</span></td><td>'+(o.overall_grade||'—')+'</td><td>'+(o.avg_score||'—')+'</td><td style="color:rgba(255,255,255,0.4)">'+timeSince(o.created_at)+'</td></tr>'; }).join('') + '</table>'; }
+      h += '<h3 style="font-size:0.85rem;margin:16px 0 8px;color:rgba(255,255,255,0.6)">MarketPulse</h3>';
+      if (!mp.length) h += '<p style="color:rgba(255,255,255,0.3)">No orders in 24h</p>';
+      else { h += '<table><tr><th>ID</th><th>Email</th><th>Topic</th><th>Status</th><th>Time</th></tr>' + mp.map(o => { const s=o.workflow_state||'—'; const c=s==='delivered'||s==='email_sent'?'green':s==='error'||s==='quality_fail'?'red':'yellow'; return '<tr><td style="font-family:monospace;font-size:0.75rem">'+(o.session_id||o.id||'').slice(0,8)+'</td><td style="font-size:0.75rem">'+(o.email||'—')+'</td><td class="trunc">'+(o.topic||'—')+'</td><td><span class="badge badge-'+c+'">'+s+'</span></td><td style="color:rgba(255,255,255,0.4)">'+timeSince(o.created_at)+'</td></tr>'; }).join('') + '</table>'; }
+      document.getElementById('orders').innerHTML = h;
+    }
+
+    function renderHeldEmails(held) {
+      if (!held || !held.length) { document.getElementById('held-emails').innerHTML = '<p style="color:rgba(255,255,255,0.3)">No held emails</p>'; return; }
+      document.getElementById('held-emails').innerHTML = '<table><tr><th>To</th><th>Subject</th><th>Since</th><th></th></tr>' + held.map(e => '<tr><td>'+e.recipient+'</td><td class="trunc">'+e.subject+'</td><td style="color:rgba(255,255,255,0.4)">'+timeSince(e.created_at)+'</td><td><button class="btn btn-cyan btn-sm" onclick="releaseEmail(\''+e.id+'\')">Release</button></td></tr>').join('') + '</table>';
+    }
+
+    function renderReportHistory(rh) {
+      if (!rh) return;
+      const mp = rh.marketpulse || [], pp = rh.proposalpulse || [];
+      if (!mp.length) document.getElementById('mp-reports').innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:0.82rem;">No reports yet</p>';
+      else document.getElementById('mp-reports').innerHTML = '<table><tr><th>Date</th><th>Email</th><th>Topic</th><th>Status</th><th></th></tr>' + mp.map(r => '<tr><td style="font-size:0.75rem">'+fmtDate(r.created_at)+'</td><td style="font-size:0.75rem" class="trunc">'+(r.email||'—')+'</td><td style="font-size:0.75rem" class="trunc">'+(r.topic||'—')+'</td><td><span class="badge badge-'+(r.workflow_state==='delivered'?'green':r.workflow_state==='error'||r.workflow_state==='quality_fail'?'red':'yellow')+'">'+(r.workflow_state||'—')+'</span></td><td>'+(r.report_url?'<a href="'+r.report_url+'" target="_blank" style="color:#00e5fa;font-size:0.75rem;">View</a>':'')+'</td></tr>').join('') + '</table>';
+      if (!pp.length) document.getElementById('pp-reports').innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:0.82rem;">No reports yet</p>';
+      else document.getElementById('pp-reports').innerHTML = '<table><tr><th>Date</th><th>File</th><th>Grade</th><th></th></tr>' + pp.map(r => '<tr><td style="font-size:0.75rem">'+fmtDate(r.created_at)+'</td><td style="font-size:0.75rem" class="trunc">'+(r.file_name||'—')+'</td><td>'+(r.overall_grade?'<span class="badge badge-'+(r.overall_grade.startsWith('A')?'green':r.overall_grade.startsWith('B')?'blue':r.overall_grade.startsWith('C')?'yellow':'red')+'">'+r.overall_grade+'</span>':'—')+'</td><td>'+(r.report_url?'<a href="'+r.report_url+'" target="_blank" style="color:#00e5fa;font-size:0.75rem;">Score</a> ':'')+(r.redteam_report_url?'<a href="'+r.redteam_report_url+'" target="_blank" style="color:#ef4444;font-size:0.75rem;">Red Team</a>':'')+'</td></tr>').join('') + '</table>';
+    }
+
+    function renderPipeline(pl) {
+      const el = document.getElementById('newsletter-pipeline');
+      if (!pl || !pl.length) { el.innerHTML = '<p style="color:rgba(255,255,255,0.3)">No upcoming issues. Click "Seed Next 4 Dates" to populate.</p>'; return; }
+      const statusColors = { planning:'gray', researching:'blue', drafting:'yellow', editing:'orange', ready:'green', published:'cyan', killed:'red' };
+      const statuses = ['planning','researching','drafting','editing','ready','published','killed'];
+      el.innerHTML = '<table><tr><th>Date</th><th>Day</th><th>Status</th><th>Lead Topic</th><th>Score</th><th>LI</th><th>Pod</th><th></th></tr>' + pl.map(p => {
+        const sc = statusColors[p.status] || 'gray';
+        const sel = '<select onchange="updatePipeline(\''+p.id+'\',this.value)" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:2px 4px;border-radius:3px;font-size:0.75rem;">' + statuses.map(s => '<option value="'+s+'"'+(s===p.status?' selected':'')+'>'+s+'</option>').join('') + '</select>';
+        return '<tr><td style="font-size:0.82rem;font-weight:600;">'+fmtDate(p.publish_date)+'</td><td><span class="badge badge-'+sc+'">'+p.day_slot+'</span></td><td>'+sel+'</td><td style="font-size:0.75rem" class="trunc">'+(p.lead_topic||'<span style="color:rgba(255,255,255,0.3)">—</span>')+'</td><td>'+(p.lead_score||'—')+'</td><td>'+(p.linkedin_drafted?'<span style="color:#22c55e">Y</span>':'—')+'</td><td>'+(p.podcast_points_drafted?'<span style="color:#22c55e">Y</span>':'—')+'</td><td><button class="btn btn-sm" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);" onclick="editPipelineTopic(\''+p.id+'\')">Edit</button></td></tr>';
+      }).join('') + '</table>';
+    }
+
+    function renderSignals(sigs) {
+      const el = document.getElementById('intel-signals');
+      if (!sigs || !sigs.length) { el.innerHTML = '<p style="color:rgba(255,255,255,0.3)">No active signals</p>'; return; }
+      const typeColors = { contract_award:'green', solicitation:'blue', policy_change:'yellow', personnel_move:'purple', competitor_intel:'red', industry_news:'gray', breaking:'red' };
+      el.innerHTML = '<table><tr><th>Date</th><th>Type</th><th>Title</th><th>Summary</th><th>Score</th><th>Status</th><th></th></tr>' + sigs.map(s => {
+        const tc = typeColors[s.signal_type] || 'gray';
+        const sc = s.relevance_score >= 20 ? 'green' : s.relevance_score >= 15 ? 'yellow' : s.relevance_score > 0 ? 'red' : 'gray';
+        return '<tr><td style="font-size:0.75rem">'+fmtDate(s.created_at)+'</td><td><span class="badge badge-'+tc+'">'+(s.signal_type||'—')+'</span></td><td style="font-size:0.82rem;font-weight:500;">'+esc(s.title)+'</td><td style="font-size:0.75rem" class="trunc">'+esc(s.summary||'')+'</td><td><span class="badge badge-'+sc+'">'+(s.relevance_score||'—')+'</span></td><td><span class="badge badge-gray">'+s.status+'</span></td><td><button class="btn btn-sm btn-cyan" onclick="scoreSignal(\''+s.id+'\')">Score</button> <button class="btn btn-sm btn-red" onclick="killSignal(\''+s.id+'\')">Kill</button></td></tr>';
+      }).join('') + '</table>';
+    }
+
+    function renderTaskQueue(tasks) {
+      const el = document.getElementById('task-queue');
+      if (!tasks || !tasks.length) { el.innerHTML = '<p style="color:rgba(255,255,255,0.3)">No active tasks</p>'; return; }
+      const sc = { pending:'yellow', in_progress:'blue', completed:'green', failed:'red', cancelled:'gray' };
+      const ac = { editorial:'cyan', code:'purple', research:'green' };
+      el.innerHTML = '<table><tr><th>Agent</th><th>Task</th><th>Priority</th><th>Status</th><th>Time</th><th></th></tr>' + tasks.map(t => '<tr><td><span class="badge badge-'+(ac[t.agent]||'gray')+'">'+t.agent+'</span></td><td style="font-size:0.75rem" class="trunc">'+esc(t.task)+'</td><td><span class="badge badge-'+(t.priority==='urgent'?'red':t.priority==='high'?'orange':'gray')+'">'+t.priority+'</span></td><td><span class="badge badge-'+(sc[t.status]||'gray')+'">'+t.status+'</span></td><td style="font-size:0.75rem;color:rgba(255,255,255,0.4)">'+timeSince(t.created_at)+'</td><td>'+(t.status==='pending'||t.status==='in_progress'?'<button class="btn btn-sm btn-red" onclick="killTask(\''+t.id+'\')">Cancel</button>':'')+'</td></tr>').join('') + '</table>';
+    }
+
+    function renderAgentStatus(agents) {
+      if (!agents) return;
+      for (const a of agents) {
+        const el = document.getElementById('agent-' + a.agent + '-status');
+        if (el) {
+          const ago = timeSince(a.last_seen);
+          el.textContent = a.status + ' | last seen: ' + ago + (a.current_task ? ' | ' + a.current_task.substring(0, 40) : '');
+        }
       }
     }
 
+    function renderRevenue(rev) {
+      const el = document.getElementById('revenue-display');
+      if (!rev) { el.innerHTML = '<p style="color:rgba(255,255,255,0.3)">Stripe not configured</p>'; return; }
+      if (rev.error) { el.innerHTML = '<p style="color:#ef4444;font-size:0.82rem;">'+esc(rev.error)+'</p>'; return; }
+      const total = (rev.total_revenue_cents / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+      let h = '<div class="revenue-label">' + esc(rev.month) + '</div><div class="revenue-big">' + total + '</div><div style="font-size:0.82rem;color:rgba(255,255,255,0.5);margin-top:4px;">' + rev.total_charges + ' charge' + (rev.total_charges !== 1 ? 's' : '') + '</div>';
+      if (rev.by_product && Object.keys(rev.by_product).length > 0) {
+        h += '<div style="margin-top:12px;">';
+        for (const [p, d] of Object.entries(rev.by_product)) {
+          h += '<div class="flag-row"><span style="font-size:0.82rem">' + esc(p) + '</span><span style="font-size:0.82rem;color:#22c55e;">' + (d.cents / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD' }) + ' (' + d.count + ')</span></div>';
+        }
+        h += '</div>';
+      }
+      el.innerHTML = h;
+    }
+
+    // --- OPS EVENTS ---
     function renderOpsEvents(filter) {
       const events = filter === 'all' ? allOpsEvents : allOpsEvents.filter(e => e.severity === filter);
-      if (events.length === 0) {
-        document.getElementById('ops-events').innerHTML = '<p style="color:rgba(255,255,255,0.3)">No events</p>';
-        return;
-      }
-      let html = '<table><tr><th>Time</th><th>Type</th><th>Severity</th><th>Source</th><th>Entity</th><th>Signature</th></tr>';
-      html += events.slice(0, 100).map(e => {
-        const color = e.severity === 'critical' ? 'red' : e.severity === 'error' ? 'red' : e.severity === 'warn' ? 'yellow' : 'gray';
-        const time = new Date(e.created_at).toLocaleTimeString();
-        const unresolved = !e.resolution ? ' *' : '';
-        return `<tr style="${e.severity === 'critical' || e.severity === 'error' ? 'background:rgba(239,68,68,0.05)' : ''}"><td style="font-size:0.75rem;color:rgba(255,255,255,0.5)">${time}</td><td style="font-size:0.75rem">${e.event_type}</td><td><span class="badge badge-${color}">${e.severity}${unresolved}</span></td><td style="font-size:0.75rem">${e.source_function||'—'}</td><td style="font-family:monospace;font-size:0.7rem">${(e.affected_entity||'').slice(0,12)}</td><td style="font-size:0.75rem;color:rgba(255,255,255,0.5)">${e.signature||'—'}</td></tr>`;
-      }).join('');
-      html += '</table>';
-      document.getElementById('ops-events').innerHTML = html;
+      if (!events.length) { document.getElementById('ops-events').innerHTML = '<p style="color:rgba(255,255,255,0.3)">No events</p>'; return; }
+      document.getElementById('ops-events').innerHTML = '<table><tr><th>Time</th><th>Type</th><th>Sev</th><th>Source</th><th>Entity</th><th>Sig</th></tr>' + events.slice(0,100).map(e => { const c=e.severity==='critical'||e.severity==='error'?'red':e.severity==='warn'?'yellow':'gray'; return '<tr style="'+(e.severity==='critical'||e.severity==='error'?'background:rgba(239,68,68,0.05)':'')+'"><td style="font-size:0.75rem;color:rgba(255,255,255,0.5)">'+new Date(e.created_at).toLocaleTimeString()+'</td><td style="font-size:0.75rem">'+e.event_type+'</td><td><span class="badge badge-'+c+'">'+e.severity+(e.resolution?'':' *')+'</span></td><td style="font-size:0.75rem">'+(e.source_function||'—')+'</td><td style="font-family:monospace;font-size:0.7rem">'+(e.affected_entity||'').slice(0,12)+'</td><td style="font-size:0.75rem;color:rgba(255,255,255,0.5)">'+(e.signature||'—')+'</td></tr>'; }).join('') + '</table>';
     }
+    document.getElementById('severity-filter').addEventListener('click', e => { if (e.target.tagName !== 'BUTTON') return; document.querySelectorAll('#severity-filter button').forEach(b => b.classList.remove('active')); e.target.classList.add('active'); renderOpsEvents(e.target.dataset.filter); });
 
-    // Severity filter buttons
-    document.getElementById('severity-filter').addEventListener('click', (e) => {
-      if (e.target.tagName !== 'BUTTON') return;
-      document.querySelectorAll('#severity-filter button').forEach(b => b.classList.remove('active'));
-      e.target.classList.add('active');
-      renderOpsEvents(e.target.dataset.filter);
-    });
+    // --- ACTIONS ---
+    async function releaseEmail(id) { const d = await apiPost({ action: 'release_email', id }); toast(d.released ? 'Email released.' : 'Failed: ' + d.error); loadDashboard(); }
+    async function setMode(m) { const d = await apiPost({ action: 'set_mode', value: m }); document.getElementById('action-result').textContent = d.note || JSON.stringify(d); }
+    async function triggerHealthCheck() { await apiPost({ action: 'trigger_health_check' }); toast('Health check triggered.'); }
+    async function killTask(id) { await apiPost({ action: 'kill_task', id }); toast('Task cancelled.'); loadDashboard(); }
+    async function killSignal(id) { await apiPost({ action: 'kill_signal', id }); toast('Signal killed.'); loadDashboard(); }
 
-    async function releaseEmail(id) {
-      const res = await fetch(`/.netlify/functions/command-center-api?key=${apiKey}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'release_email', id }),
-      });
-      const data = await res.json();
-      document.getElementById('action-result').textContent = data.released ? 'Email released.' : 'Failed: ' + data.error;
+    async function dispatchTask(agent) {
+      const textarea = document.getElementById('task-' + agent);
+      const task = textarea.value.trim();
+      if (!task) { toast('Enter a task first.'); return; }
+
+      // Always log to task queue
+      await apiPost({ action: 'add_task', task, agent, priority: 'normal' });
+
+      if (agent === 'editorial') {
+        toast('Task sent to editorial queue.');
+      } else if (agent === 'code') {
+        const prompt = 'TASK: ' + task + '\n\nIMPORTANT: cd to /Users/marywomack/Projects/mmt-site first. Verify pwd does not contain /private/tmp/claude-.\n\n' + task + '\n\nVerify all changes. Do NOT deploy without review.';
+        await navigator.clipboard.writeText(prompt);
+        toast('Code prompt copied to clipboard.');
+      } else if (agent === 'research') {
+        const prompt = 'Research the following for Mission Meets Tech newsletter coverage. Provide specific data points, contract numbers, dollar values, and source URLs.\n\nTopic: ' + task + '\n\nFocus on: federal health IT, defense contracting, VA/DHA systems, GovCon procurement implications.';
+        await navigator.clipboard.writeText(prompt);
+        toast('Research prompt copied to clipboard.');
+      }
+      textarea.value = '';
       loadDashboard();
     }
 
-    async function setMode(mode) {
-      const res = await fetch(`/.netlify/functions/command-center-api?key=${apiKey}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'set_mode', value: mode }),
-      });
-      const data = await res.json();
-      document.getElementById('action-result').textContent = data.note || JSON.stringify(data);
+    async function updatePipeline(id, status) { await apiPost({ action: 'update_pipeline', id, status }); loadDashboard(); }
+
+    async function editPipelineTopic(id) {
+      const topic = prompt('Lead topic:');
+      if (topic === null) return;
+      const score = prompt('Lead score (0-25):');
+      const updates = { action: 'update_pipeline', id, lead_topic: topic };
+      if (score) updates.lead_score = parseInt(score, 10);
+      await apiPost(updates);
+      loadDashboard();
     }
 
-    async function triggerHealthCheck() {
-      const res = await fetch(`/.netlify/functions/command-center-api?key=${apiKey}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'trigger_health_check' }),
-      });
-      const data = await res.json();
-      document.getElementById('action-result').textContent = 'Health check triggered.';
+    function addPipelineSlot() {
+      const date = prompt('Publish date (YYYY-MM-DD):');
+      if (!date) return;
+      const dow = new Date(date + 'T12:00:00').getDay();
+      const slot = dow === 2 ? 'tuesday' : dow === 5 ? 'friday' : prompt('Day slot (tuesday/friday/breaking):');
+      if (!slot) return;
+      const topic = prompt('Lead topic (optional):');
+      apiPost({ action: 'add_pipeline', publish_date: date, day_slot: slot, lead_topic: topic || null }).then(() => { toast('Issue added.'); loadDashboard(); });
     }
 
+    async function seedPipeline() { const d = await apiPost({ action: 'seed_pipeline' }); toast('Seeded ' + (d.count||0) + ' dates.'); loadDashboard(); }
+
+    function showAddSignal() {
+      const title = prompt('Signal title:');
+      if (!title) return;
+      const type = prompt('Type (contract_award/solicitation/policy_change/personnel_move/competitor_intel/industry_news/breaking):');
+      const summary = prompt('Summary (optional):');
+      apiPost({ action: 'add_signal', title, signal_type: type || null, summary: summary || null }).then(() => { toast('Signal added.'); loadDashboard(); });
+    }
+
+    async function scoreSignal(id) {
+      const score = prompt('Relevance score (0-25):');
+      if (score === null) return;
+      const notes = prompt('Notes (optional):');
+      await apiPost({ action: 'score_signal', id, relevance_score: parseInt(score, 10), notes: notes || null });
+      toast('Signal scored.');
+      loadDashboard();
+    }
+
+    // --- ENGAGEMENT INTEL ---
     async function generateEngagement(deliver) {
       const el = document.getElementById('engagement-intel');
-      el.innerHTML = '<p style="color:rgba(255,255,255,0.5)">Generating engagement brief... (this takes 30-60 seconds)</p>';
+      el.innerHTML = '<p style="color:rgba(255,255,255,0.5);font-size:0.82rem;">Generating... (30-60s)</p>';
       try {
-        const url = `/.netlify/functions/engagement-brief?key=${apiKey}${deliver ? '&deliver=true' : ''}`;
-        const res = await fetch(url);
+        const res = await fetch('/.netlify/functions/engagement-brief?key=' + apiKey + (deliver ? '&deliver=true' : ''));
         const data = await res.json();
-        if (data.error) { el.innerHTML = `<p style="color:#ef4444;">${data.error}</p>`; return; }
-
-        let html = '';
-        if (data.high_priority && data.high_priority.length > 0) {
-          html += '<h3 style="font-size:0.85rem;margin-bottom:8px;color:rgba(255,255,255,0.6)">High Priority</h3>';
-          html += '<table><tr><th>Who</th><th>Context</th><th>Suggested Comment</th></tr>';
-          html += data.high_priority.map(item => `<tr><td style="font-size:0.82rem;">${item.person_or_source||'—'}</td><td style="font-size:0.75rem;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${item.title_or_context||'—'}${item.url ? '<br><a href="'+item.url+'" target="_blank" style="color:#00e5fa;font-size:0.7rem;">Link</a>' : ''}</td><td style="font-size:0.75rem;font-style:italic;color:rgba(255,255,255,0.7)">${item.suggested_comment||'—'}</td></tr>`).join('');
-          html += '</table>';
-        } else {
-          html += '<p style="color:rgba(255,255,255,0.3)">No high-priority opportunities found.</p>';
+        if (data.error) { el.innerHTML = '<p style="color:#ef4444;font-size:0.82rem;">' + data.error + '</p>'; return; }
+        let h = '';
+        if (data.high_priority?.length) {
+          h += '<div style="font-size:0.75rem;color:rgba(255,255,255,0.5);margin-bottom:4px;">Top Engagements</div>';
+          data.high_priority.forEach(i => { h += '<div style="padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><div style="font-size:0.82rem;font-weight:500;">' + esc(i.person_or_source) + '</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.5)">' + esc(i.title_or_context) + '</div>' + (i.url ? '<a href="' + i.url + '" target="_blank" style="color:#00e5fa;font-size:0.7rem;">Link</a> ' : '') + '<div style="font-size:0.75rem;font-style:italic;color:rgba(255,255,255,0.6);margin-top:2px;">' + esc(i.suggested_comment) + '</div></div>'; });
         }
-
-        if (data.trending_topics && data.trending_topics.length > 0) {
-          html += '<h3 style="font-size:0.85rem;margin:16px 0 8px;color:rgba(255,255,255,0.6)">Trending Topics</h3>';
-          html += '<table><tr><th>Topic</th><th>Source</th><th>MMT Angle</th></tr>';
-          html += data.trending_topics.map(item => {
-            const urgColor = item.urgency === 'high' ? 'red' : item.urgency === 'medium' ? 'yellow' : 'green';
-            return `<tr><td style="font-size:0.82rem;">${item.topic||'—'} <span class="badge badge-${urgColor}">${item.urgency||'—'}</span></td><td style="font-size:0.75rem">${item.source||'—'}${item.url ? '<br><a href="'+item.url+'" target="_blank" style="color:#00e5fa;font-size:0.7rem;">Link</a>' : ''}</td><td style="font-size:0.75rem;color:rgba(255,255,255,0.7)">${item.mmt_angle||'—'}</td></tr>`;
-          }).join('');
-          html += '</table>';
-        }
-
-        if (data._delivered) { html += '<p style="color:#22c55e;font-size:0.82rem;margin-top:8px;">Brief emailed to Mary.</p>'; }
-        html += `<p style="color:rgba(255,255,255,0.3);font-size:0.7rem;margin-top:8px;">Generated: ${data.generated_at}</p>`;
-        el.innerHTML = html;
-      } catch (err) {
-        el.innerHTML = `<p style="color:#ef4444;">Failed: ${err.message}</p>`;
-      }
-    }
-
-    function timeSince(dateStr) {
-      const diff = Date.now() - new Date(dateStr).getTime();
-      const mins = Math.floor(diff / 60000);
-      if (mins < 60) return `${mins}m ago`;
-      const hrs = Math.floor(mins / 60);
-      if (hrs < 24) return `${hrs}h ago`;
-      return `${Math.floor(hrs/24)}d ago`;
+        if (data._delivered) h += '<p style="color:#22c55e;font-size:0.75rem;margin-top:6px;">Emailed to Mary.</p>';
+        el.innerHTML = h || '<p style="color:rgba(255,255,255,0.3);font-size:0.82rem;">No results.</p>';
+      } catch (e) { el.innerHTML = '<p style="color:#ef4444;font-size:0.82rem;">Failed: ' + e.message + '</p>'; }
     }
   </script>
 </body>
