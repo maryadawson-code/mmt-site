@@ -1203,6 +1203,31 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
     const errType = err.message && err.message.includes("Perplexity API") ? "MODEL_FAILURE" : "HARNESS_FAILURE";
     await logOpsEvent(_supabase, { event_type: errType, source_function: "generate-tactical-brief-background", severity: "critical", signature: errType === "MODEL_FAILURE" ? `perplexity_${err.status || "unknown"}` : "unhandled_error", affected_entity: session_id, details: { email, topic: topic.substring(0, 200), error: err.message } });
 
+    // Notify customer of failure
+    try {
+      await sendEmail({
+        to: email,
+        subject: `Issue with your MarketPulse Brief — ${(topic || "").substring(0, 50)}`,
+        html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#333;">
+          <p>Hi ${name || "there"},</p>
+          <p>We hit a technical issue generating your Tactical Brief on "${topic}." This is on us, not you.</p>
+          <p><strong>What happens next:</strong></p>
+          <ul>
+            <li>Our team has been notified and is working on it</li>
+            <li>We'll deliver your report within 24 hours</li>
+            <li>If we can't resolve it, you'll receive a full refund</li>
+          </ul>
+          <p>You don't need to do anything. We'll follow up.</p>
+          <p>Questions? Reply to this email or contact <a href="mailto:mary@missionmeetstech.com">mary@missionmeetstech.com</a>.</p>
+          <p style="margin-top:24px;">— Mission Meets Tech</p>
+        </div>`,
+        from: "Mission Meets Tech <noreply@missionmeetstech.com>",
+      });
+      console.log(`[ERROR EMAIL] Sent technical failure notification to ${email}`);
+    } catch (custErr) {
+      console.error("Failed to send customer error notification:", custErr.message);
+    }
+
     // Notify Mary of failure
     try {
       await sendEmail({
@@ -1214,6 +1239,20 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
     } catch (notifyErr) {
       console.error("Failed to send failure notification:", notifyErr.message);
     }
+
+    // Log customer notification to ops_events
+    try {
+      if (_supabase) {
+        await _supabase.from("ops_events").insert({
+          event_type: "CUSTOMER_ERROR_EMAIL",
+          severity: "warn",
+          source: "generate-tactical-brief-background",
+          entity_id: _orderId || session_id,
+          signature: "error_email_technical",
+          details: { email, topic: (topic || "").substring(0, 200), error_type: "technical_error" },
+        });
+      }
+    } catch { /* non-blocking */ }
 
     return { statusCode: 500, body: JSON.stringify({ error: err.message }) };
   }
