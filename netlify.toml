@@ -109,22 +109,22 @@
 
 [[redirects]]
   from = "/market-pulse.html"
-  to = "/tactical-brief.html"
+  to = "/marketpulse.html"
   status = 301
 
 [[redirects]]
   from = "/market-pulse"
-  to = "/tactical-brief.html"
+  to = "/marketpulse.html"
   status = 301
 
 [[redirects]]
   from = "/marketpulse.html"
-  to = "/tactical-brief.html"
+  to = "/marketpulse.html"
   status = 301
 
 [[redirects]]
   from = "/marketpulse"
-  to = "/tactical-brief.html"
+  to = "/marketpulse.html"
   status = 301
 
 [[headers]]
