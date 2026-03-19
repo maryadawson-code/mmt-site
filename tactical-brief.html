@@ -269,6 +269,28 @@
           <label for="tb-audience" class="block text-sm font-medium mb-2" style="color:var(--mmt-white-muted);">Intended Audience (optional)</label>
           <textarea id="tb-audience" name="audience" rows="2" placeholder="e.g., my leadership team, a BD pursuit, internal strategy session" class="w-full px-4 py-3 rounded-lg text-sm resize-y" style="background:var(--mmt-slate);border:1px solid rgba(0,229,250,0.2);color:#fff;"></textarea>
         </div>
+        <!-- Optional company context fields — improves report quality -->
+        <details style="border:1px solid rgba(0,229,250,0.1);border-radius:8px;padding:0;">
+          <summary class="text-sm font-medium px-4 py-3" style="color:var(--mmt-cyan);cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 1v10M1 6h10"/></svg>
+            Add company details for a tailored report (optional)
+          </summary>
+          <div style="padding:0 16px 16px;display:flex;flex-direction:column;gap:16px;">
+            <p class="text-xs" style="color:var(--mmt-white-dim);margin:8px 0 0;">Providing these details helps us tailor recommendations to your firm's actual position instead of giving generic advice.</p>
+            <div>
+              <label for="tb-certifications" class="block text-sm font-medium mb-2" style="color:var(--mmt-white-muted);">Certifications Held</label>
+              <input type="text" id="tb-certifications" name="certifications" placeholder="e.g., SDVOSB, 8(a), HUBZone, WOSB" class="w-full px-4 py-3 rounded-lg text-sm" style="background:var(--mmt-slate);border:1px solid rgba(0,229,250,0.2);color:#fff;">
+            </div>
+            <div>
+              <label for="tb-naics" class="block text-sm font-medium mb-2" style="color:var(--mmt-white-muted);">Primary NAICS Codes</label>
+              <input type="text" id="tb-naics" name="naics_codes" placeholder="e.g., 541512, 541519, 541611" class="w-full px-4 py-3 rounded-lg text-sm" style="background:var(--mmt-slate);border:1px solid rgba(0,229,250,0.2);color:#fff;">
+            </div>
+            <div>
+              <label for="tb-vehicles" class="block text-sm font-medium mb-2" style="color:var(--mmt-white-muted);">Existing Contract Vehicles</label>
+              <input type="text" id="tb-vehicles" name="existing_vehicles" placeholder="e.g., GSA MAS, SEWP, CIO-SP3, T4NG2" class="w-full px-4 py-3 rounded-lg text-sm" style="background:var(--mmt-slate);border:1px solid rgba(0,229,250,0.2);color:#fff;">
+            </div>
+          </div>
+        </details>
         <div id="tb-error" style="display:none;color:#ef4444;font-size:0.875rem;padding:0.75rem;background:rgba(239,68,68,0.1);border-radius:8px;" role="alert"></div>
         <div id="tb-loading" style="display:none;text-align:center;padding:1rem;color:var(--mmt-white-dim);font-size:0.875rem;">Processing...</div>
         <button type="submit" id="tb-submit-btn" class="btn-primary w-full text-center rounded-lg text-sm font-semibold" style="cursor:pointer;border:none;display:block;">Get Your Free MarketPulse Report</button>
