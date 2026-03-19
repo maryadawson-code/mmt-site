@@ -419,6 +419,27 @@ exports.handler = async (event) => {
       }
     }
 
+    // FIX 3b: Detect if the uploaded document itself contains SOW/RFP content
+    // (Section L, Section M, evaluation criteria headers)
+    let detectedSowInDocument = false;
+    if (!finalSowText) {
+      const textToScan = (extractedText || "").substring(0, 10000).toLowerCase();
+      const sowIndicators = [
+        /section\s+l[\s.:]/i,
+        /section\s+m[\s.:]/i,
+        /evaluation\s+criteria/i,
+        /evaluation\s+factors/i,
+        /instructions\s+to\s+offerors/i,
+        /performance\s+work\s+statement/i,
+        /statement\s+of\s+work/i,
+      ];
+      const matchCount = sowIndicators.filter((p) => p.test(textToScan)).length;
+      if (matchCount >= 2) {
+        detectedSowInDocument = true;
+        console.log(`[SOW-DETECT] Document appears to contain RFP/SOW content (${matchCount} indicators found)`);
+      }
+    }
+
     // --- State: extract_completed → score_started ---
     try { await transitionState(supabase, "mp_scoring_history", scoring_id, "extract_completed"); } catch (e) { console.error("State transition error:", e.message); }
     try { await transitionState(supabase, "mp_scoring_history", scoring_id, "score_started"); } catch (e) { console.error("State transition error:", e.message); }
@@ -648,6 +669,7 @@ exports.handler = async (event) => {
       _model_routing: {
         scoring: { model: scoringModelConfig.model, reason: scoringModelConfig.reason },
       },
+      _sow_detected_in_document: detectedSowInDocument,
     };
 
     const { error: updateErr } = await supabase
