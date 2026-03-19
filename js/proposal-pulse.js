@@ -628,7 +628,7 @@ function renderResults(data) {
     upsellEl.innerHTML = `
       <div class="upsell-box">
         <h3>Score another proposal</h3>
-        <p>Each assessment includes the full Gold Team Review: every section rewritten for evaluator impact, a probability-of-win estimate, executive summary, and a prioritized fix list you can act on today.</p>
+        <p>Each assessment includes the full Red Team Review: every section rewritten for evaluator impact, a probability-of-win estimate, executive summary, and a prioritized fix list you can act on today.</p>
         <button class="btn btn-primary" id="btn-upsell-checkout">Unlock 1 Assessment &mdash; $19.99 &#8594;</button>
         <p class="stripe-note">Secure checkout via Stripe &middot; No subscription required</p>
       </div>
@@ -644,14 +644,14 @@ function renderResults(data) {
   const upsellBtn = document.getElementById('btn-upsell-checkout');
   if (upsellBtn) upsellBtn.addEventListener('click', startCheckout);
 
-  // Trigger Gold Team Review from frontend
+  // Trigger Red Team Review from frontend
   triggerGoldTeamReview(data);
 
   // Render feedback widget
   renderFeedbackWidget();
 }
 
-// ===== GOLD TEAM REVIEW =====
+// ===== RED TEAM REVIEW =====
 
 function triggerGoldTeamReview(data) {
   const statusEl = document.getElementById('gold-team-status');
@@ -661,7 +661,7 @@ function triggerGoldTeamReview(data) {
     <div class="gold-team-status">
       <div class="gold-team-spinner-small"></div>
       <div class="gold-team-status-text">
-        Your Gold Team Review is being prepared and will arrive in your email in 1&ndash;2 minutes.
+        Your Red Team Review is being prepared and will arrive in your email in 1&ndash;2 minutes.
       </div>
     </div>
   `;
@@ -683,7 +683,7 @@ function triggerGoldTeamReview(data) {
             <polyline points="22 4 12 14.01 9 11.01"/>
           </svg>
           <div class="gold-team-status-text">
-            Gold Team Review sent. Check your inbox in 1&ndash;2 minutes.
+            Red Team Review sent. Check your inbox in 1&ndash;2 minutes.
           </div>
         </div>
       `;
@@ -700,7 +700,7 @@ function showGoldTeamFallback(statusEl) {
   statusEl.innerHTML = `
     <div class="gold-team-status error">
       <div class="gold-team-status-text">
-        Gold Team Review unavailable. Your scorecard above is still valid.
+        Red Team Review unavailable. Your scorecard above is still valid.
       </div>
     </div>
   `;
