@@ -471,6 +471,7 @@ exports.handler = async (event) => {
       reviewAttachment = {
         filename: `RedTeamReview-${scoring_id.slice(0, 8)}.html`,
         content: Buffer.from(reviewHtml).toString("base64"),
+        content_type: "text/html",
       };
       console.log(`Red Team review HTML generated: ${Math.round(reviewHtml.length / 1024)}KB`);
     } catch (htmlErr) {

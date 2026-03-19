@@ -700,6 +700,7 @@ exports.handler = async (event) => {
         scoreReportAttachment = {
           filename: `ProposalPulse-ScoreReport-${scoring_id.slice(0, 8)}.html`,
           content: Buffer.from(reportHtml).toString("base64"),
+          content_type: "text/html",
         };
         console.log(`Score report HTML generated: ${Math.round(reportHtml.length / 1024)}KB`);
       } catch (htmlErr) {

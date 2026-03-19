@@ -1041,6 +1041,7 @@ exports.handler = async (event) => {
           {
             filename: "tactical-brief.html",
             content: reportBuffer.toString("base64"),
+            content_type: "text/html",
           },
         ],
       });
