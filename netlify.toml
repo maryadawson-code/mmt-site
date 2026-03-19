@@ -88,14 +88,9 @@
   status = 301
 
 [[redirects]]
-  from = "/contact.html"
-  to = "/about.html"
-  status = 301
-
-[[redirects]]
   from = "/contact"
-  to = "/about.html"
-  status = 301
+  to = "/contact.html"
+  status = 200
 
 [[redirects]]
   from = "/contracts/mhs-genesis/"
