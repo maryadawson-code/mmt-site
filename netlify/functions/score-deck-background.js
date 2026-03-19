@@ -222,7 +222,26 @@ Even without knowing the specific competitive field, evaluate:
 Include a competitive_positioning field in the scorecard:
 { "differentiation": "strong|moderate|weak|absent", "reasoning": "...specific observation..." }
 
-${sowText ? `COMPLIANCE CHECK: Compare the document's section structure against the SOW/PWS requirements. For each L/M instruction, note whether the document addresses it (RESPONSIVE), partially addresses it (PARTIALLY RESPONSIVE), or doesn't address it (NON-RESPONSIVE). Include a compliance_matrix in your output as an array of objects: [{ "requirement": "...", "status": "RESPONSIVE|PARTIALLY RESPONSIVE|NON-RESPONSIVE", "note": "..." }].` : ""}
+${sowText ? `SECTION L/M COMPLIANCE MAPPING (MANDATORY when SOW/PWS is provided):
+Extract EVERY requirement from Section L (Instructions to Offerors) and Section M (Evaluation Criteria) in the SOW/PWS.
+For each requirement, search the proposal document for where it is addressed.
+
+Include a compliance_matrix in your output as an array of objects:
+[{
+  "requirement": "The specific requirement text or summary",
+  "lm_reference": "Section L.4.2" or "Section M.1(a)" or "PWS 3.1",
+  "proposal_section": "Section 3 — Technical Approach, paragraph 2" or "NOT FOUND",
+  "status": "COMPLIANT|PARTIAL|MISSING|N/A",
+  "notes": "Brief explanation of what was found or what's missing"
+}]
+
+Status definitions:
+- COMPLIANT: Requirement is clearly and fully addressed in the proposal
+- PARTIAL: Requirement is mentioned but response is incomplete or vague
+- MISSING: Requirement is not addressed anywhere in the proposal
+- N/A: Requirement does not apply to this document type
+
+Be thorough — evaluators use Section L/M as a checklist. Missing a single mandatory requirement can result in non-responsiveness.` : ""}
 
 ${SCORING_RULES}`;
 }
@@ -538,9 +557,36 @@ exports.handler = async (event) => {
     // --- Compute grade and weighted pWin ---
     const { avgScore, overallGrade } = computeOverallGrade(scorecard);
 
+    // Compute compliance score from matrix (if SOW was provided)
+    let complianceScore = null;
+    if (scorecard.compliance_matrix && scorecard.compliance_matrix.length > 0) {
+      const applicable = scorecard.compliance_matrix.filter((c) => c.status !== "N/A");
+      const compliant = applicable.filter((c) => c.status === "COMPLIANT").length;
+      const partial = applicable.filter((c) => c.status === "PARTIAL").length;
+      complianceScore = applicable.length > 0
+        ? Math.round(((compliant + partial * 0.5) / applicable.length) * 100)
+        : null;
+      scorecard._compliance_score = complianceScore;
+      scorecard._compliance_summary = {
+        total: scorecard.compliance_matrix.length,
+        compliant,
+        partial,
+        missing: applicable.filter((c) => c.status === "MISSING").length,
+        na: scorecard.compliance_matrix.length - applicable.length,
+        score: complianceScore,
+      };
+      // Compliance threshold flags
+      if (complianceScore < 60) {
+        scorecard._compliance_flags = ["STOP-SHIP: Proposal likely non-responsive as submitted"];
+      } else if (complianceScore < 80) {
+        scorecard._compliance_flags = ["Significant compliance gaps — non-responsive risk"];
+      }
+      console.log(`[COMPLIANCE] Score: ${complianceScore}% (${compliant}/${applicable.length} compliant, ${partial} partial)`);
+    }
+
     // Server-side weighted pWin calculation (replaces Claude's additive model)
     const { calculatePwin } = require("./lib/pwin-calculator");
-    const pwinResult = calculatePwin(scorecard, { hasSow: !!finalSowText, documentType });
+    const pwinResult = calculatePwin(scorecard, { hasSow: !!finalSowText, documentType, complianceScore });
     // Inject computed pWin back into scorecard for downstream consumers
     scorecard.pWin_factors = pwinResult.pWin_factors;
     scorecard.pwin_estimate = pwinResult.pwin_estimate;

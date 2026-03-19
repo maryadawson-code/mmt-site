@@ -148,7 +148,63 @@ async function generateScoreReportPdf(data) {
     }
     y += 12;
 
-    // === PAGE 3: DETAILED ASSESSMENTS ===
+    // === COMPLIANCE MATRIX (if SOW was provided — shown before assessments) ===
+    const compMatrix = scorecard.compliance_matrix || [];
+    if (compMatrix.length > 0) {
+      doc.addPage();
+      y = 60;
+      doc.font("Helvetica-Bold").fontSize(14).fillColor(NAVY).text("COMPLIANCE MATRIX", 60, y);
+      doc.moveTo(60, doc.y + 4).lineTo(210, doc.y + 4).strokeColor(CYAN).lineWidth(1.5).stroke();
+      y = doc.y + 12;
+
+      // Compliance score summary
+      const compSummary = scorecard._compliance_summary;
+      if (compSummary) {
+        const csColor = compSummary.score >= 80 ? "#16a34a" : compSummary.score >= 60 ? "#eab308" : "#dc2626";
+        doc.font("Helvetica-Bold").fontSize(18).fillColor(csColor)
+          .text(`${compSummary.score}% Compliant`, 60, y, { width: doc.page.width - 120, align: "center" });
+        y = doc.y + 4;
+        doc.font("Helvetica").fontSize(8).fillColor("#6b7280")
+          .text(`${compSummary.compliant} compliant, ${compSummary.partial} partial, ${compSummary.missing} missing, ${compSummary.na} N/A`, 60, y, { width: doc.page.width - 120, align: "center" });
+        y = doc.y + 12;
+      }
+
+      // Compliance flags
+      const compFlags = scorecard._compliance_flags || [];
+      for (const flag of compFlags) {
+        doc.rect(60, y, doc.page.width - 120, 18).fillAndStroke("#fef2f2", "#fecaca");
+        doc.font("Helvetica-Bold").fontSize(8).fillColor("#991b1b")
+          .text(safe(flag), 68, y + 4, { width: doc.page.width - 140, lineBreak: false });
+        y += 22;
+      }
+
+      // Matrix table
+      const tW = doc.page.width - 120;
+      doc.rect(60, y, tW, 18).fill("#f1f5f9");
+      doc.font("Helvetica-Bold").fontSize(7).fillColor("#6b7280");
+      doc.text("REQUIREMENT", 64, y + 4, { width: tW * 0.45, lineBreak: false });
+      doc.text("REF", 64 + tW * 0.45, y + 4, { width: tW * 0.15, lineBreak: false });
+      doc.text("STATUS", 64 + tW * 0.6, y + 4, { width: tW * 0.15, align: "center", lineBreak: false });
+      doc.text("LOCATION", 64 + tW * 0.75, y + 4, { width: tW * 0.25, lineBreak: false });
+      y += 18;
+
+      const statusColors = { COMPLIANT: "#16a34a", PARTIAL: "#eab308", MISSING: "#dc2626", "N/A": "#6b7280" };
+      for (const c of compMatrix) {
+        y = checkBreak(doc, y, 18);
+        doc.moveTo(60, y + 17).lineTo(60 + tW, y + 17).strokeColor("#e5e7eb").lineWidth(0.5).stroke();
+        const req = safe(c.requirement).substring(0, 50) + (safe(c.requirement).length > 50 ? "..." : "");
+        doc.font("Helvetica").fontSize(7).fillColor("#374151").text(req, 64, y + 3, { width: tW * 0.45 - 4, lineBreak: false });
+        doc.font("Helvetica").fontSize(7).fillColor("#6b7280").text(safe(c.lm_reference || ""), 64 + tW * 0.45, y + 3, { width: tW * 0.15 - 4, lineBreak: false });
+        doc.font("Helvetica-Bold").fontSize(7).fillColor(statusColors[c.status] || "#6b7280")
+          .text(safe(c.status), 64 + tW * 0.6, y + 3, { width: tW * 0.15, align: "center", lineBreak: false });
+        const loc = safe(c.proposal_section || "").substring(0, 30) + (safe(c.proposal_section || "").length > 30 ? "..." : "");
+        doc.font("Helvetica").fontSize(6).fillColor("#6b7280").text(loc, 64 + tW * 0.75, y + 3, { width: tW * 0.25 - 4, lineBreak: false });
+        y += 18;
+      }
+      y += 12;
+    }
+
+    // === PAGE 3+: DETAILED ASSESSMENTS ===
     doc.addPage();
     y = 60;
     doc.font("Helvetica-Bold").fontSize(14).fillColor(NAVY).text("DETAILED ASSESSMENTS", 60, y);

@@ -160,6 +160,34 @@ async function generateRedTeamPdf(data) {
     }
     y += 12;
 
+    // === COMPLIANCE MATRIX (if available — before section review) ===
+    const compMatrix = (scorecard && scorecard.compliance_matrix) || [];
+    if (compMatrix.length > 0) {
+      y = checkBreak(doc, y, 100);
+      if (y > 100) { doc.addPage(); y = 60; }
+      doc.font("Helvetica-Bold").fontSize(12).fillColor(NAVY).text("COMPLIANCE MATRIX", 60, y);
+      doc.moveTo(60, doc.y + 4).lineTo(210, doc.y + 4).strokeColor(CYAN).lineWidth(1.5).stroke();
+      y = doc.y + 10;
+
+      const compSummary = scorecard._compliance_summary;
+      if (compSummary) {
+        const csColor = compSummary.score >= 80 ? "#16a34a" : compSummary.score >= 60 ? "#eab308" : "#dc2626";
+        doc.font("Helvetica-Bold").fontSize(14).fillColor(csColor)
+          .text(`${compSummary.score}% Compliant`, 60, y, { width: doc.page.width - 120, align: "center" });
+        y = doc.y + 10;
+      }
+
+      const statusColors2 = { COMPLIANT: "#16a34a", PARTIAL: "#eab308", MISSING: "#dc2626", "N/A": "#6b7280" };
+      for (const c of compMatrix) {
+        y = checkBreak(doc, y, 16);
+        const sc = statusColors2[c.status] || "#6b7280";
+        doc.font("Helvetica-Bold").fontSize(7).fillColor(sc).text(safe(c.status), 64, y, { continued: true, width: 60 });
+        doc.font("Helvetica").fontSize(7).fillColor("#374151").text("  " + safe(c.requirement).substring(0, 70), { width: doc.page.width - 160 });
+        y = doc.y + 2;
+      }
+      y += 12;
+    }
+
     // === PAGES 3+: SECTION-BY-SECTION REVIEW ===
     for (const s of mergedSections) {
       y = checkBreak(doc, y, 180);

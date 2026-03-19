@@ -61,7 +61,7 @@ function mapScoreToFactor(title) {
  * @returns {Object} Enhanced pWin data
  */
 function calculatePwin(scorecard, opts) {
-  const { hasSow, documentType } = opts || {};
+  const { hasSow, documentType, complianceScore } = opts || {};
   const scores = scorecard.scores || [];
 
   // Map each criterion to a factor and compute raw scores
@@ -87,6 +87,12 @@ function calculatePwin(scorecard, opts) {
     rawScores[key] = arr.length > 0
       ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length)
       : 50;
+  }
+
+  // Override compliance factor with actual compliance matrix score when available
+  if (typeof complianceScore === "number") {
+    rawScores.compliance = complianceScore;
+    factorSources.compliance = ["L/M compliance matrix"];
   }
 
   // Apply interdependency penalties

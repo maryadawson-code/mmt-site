@@ -219,6 +219,16 @@ function buildScoreReceiptHtml(data) {
       ${scorecard.compliance_matrix && scorecard.compliance_matrix.length > 0 ? `
       <div style="margin-top:24px;">
         <h3 style="font-size:16px;font-weight:700;color:#111827;margin:0 0 8px 0;">Compliance Matrix</h3>
+        ${scorecard._compliance_summary ? `
+        <div style="text-align:center;margin-bottom:12px;">
+          <span style="font-size:24px;font-weight:800;color:${scorecard._compliance_summary.score >= 80 ? "#16a34a" : scorecard._compliance_summary.score >= 60 ? "#eab308" : "#dc2626"};">${scorecard._compliance_summary.score}%</span>
+          <span style="font-size:14px;color:#6b7280;"> Compliant</span>
+          <p style="margin:4px 0 0;font-size:12px;color:#6b7280;">${scorecard._compliance_summary.compliant} compliant, ${scorecard._compliance_summary.partial} partial, ${scorecard._compliance_summary.missing} missing</p>
+        </div>` : ""}
+        ${scorecard._compliance_flags && scorecard._compliance_flags.length > 0 ? scorecard._compliance_flags.map((f) => `
+        <div style="margin-bottom:8px;padding:10px 16px;background-color:#fef2f2;border:2px solid #fecaca;border-radius:8px;">
+          <p style="margin:0;font-size:14px;font-weight:700;color:#991b1b;">${escapeHtml(f)}</p>
+        </div>`).join("") : ""}
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;">
           <tr style="background-color:#f9fafb;">
             <th style="padding:8px 12px;text-align:left;font-size:13px;font-weight:600;color:#6b7280;border-bottom:1px solid #e5e7eb;">Requirement</th>
