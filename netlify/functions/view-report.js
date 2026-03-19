@@ -81,14 +81,14 @@ exports.handler = async (event) => {
       reportHtml = data?.report_html;
     } else if (type === "proposalpulse") {
       const { data } = await supabase
-        .from("proposal_scorecards")
+        .from("mp_scoring_history")
         .select("report_html")
         .eq("id", id)
         .single();
       reportHtml = data?.report_html;
     } else if (type === "redteam") {
       const { data } = await supabase
-        .from("proposal_scorecards")
+        .from("mp_scoring_history")
         .select("redteam_report_html")
         .eq("id", id)
         .single();

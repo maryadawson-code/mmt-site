@@ -712,7 +712,7 @@ exports.handler = async (event) => {
 
         const { url } = generateReportUrl(scoring_id, "proposalpulse");
         reportUrl = url;
-        await supabase.from("proposal_scorecards").update({ report_html: reportHtml, report_url: url }).eq("id", scoring_id);
+        await supabase.from("mp_scoring_history").update({ report_html: reportHtml, report_url: url }).eq("id", scoring_id);
         console.log(`Score report stored and URL generated for ${scoring_id}`);
       } catch (htmlErr) {
         console.error("Score report generation/storage failed:", htmlErr.message);

@@ -472,7 +472,7 @@ exports.handler = async (event) => {
 
       const { url } = generateReportUrl(scoring_id, "redteam");
       reportUrl = url;
-      await supabase.from("proposal_scorecards").update({ redteam_report_html: reviewHtml, redteam_report_url: url }).eq("id", scoring_id);
+      await supabase.from("mp_scoring_history").update({ redteam_report_html: reviewHtml, redteam_report_url: url }).eq("id", scoring_id);
       console.log(`Red Team report stored and URL generated for ${scoring_id}`);
     } catch (htmlErr) {
       console.error("Red Team review generation/storage failed:", htmlErr.message);
