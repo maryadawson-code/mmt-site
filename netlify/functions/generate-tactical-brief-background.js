@@ -84,13 +84,33 @@ async function disambiguateEntity(topic) {
   console.log("Pass 0: Entity disambiguation...");
 
   const result = await callPerplexity(
-    `You are a federal government organizational structure expert. Your ONLY job is to identify the exact federal entity the user is asking about.
+    `You are a federal government organizational structure expert. Your ONLY job is to identify the exact federal entity the user is asking about and classify every term as either a SUBJECT to research or a FILTER to apply.
 
 CRITICAL RULES:
 - Users often conflate agencies, offices, or acronyms. You MUST check if the user's description maps to ONE entity or MULTIPLE distinct entities.
 - Search the parent agency's official website (.gov), org charts, staff directories, and "about" pages.
 - If an acronym could refer to multiple offices (even within the same agency), list ALL matches.
 - If the user says "X, also referred to as Y" — verify whether X and Y are actually the same entity or different entities.
+
+SET-ASIDE / SOCIOECONOMIC FILTER RULES:
+When a query mentions a set-aside type (SDVOSB, 8(a), HUBZone, WOSB, VOSB):
+- This is a FILTER on contract actions, NOT a direction to research the certifying program.
+- "SDVOSB contracts" = contracts with SDVOSB set-aside across all agencies.
+- "SDVOSB contracts" ≠ SBA's SDVOSB certification program.
+- Do NOT disambiguate to SBA when the user mentions a set-aside type. SBA is the certifying body, not the subject.
+
+CURRENT ADMINISTRATION ACTIONS RULES:
+When a query mentions "current administration" actions (cancellations, terminations, cuts, freezes, DOGE):
+- Map to: DOGE termination actions, executive orders, agency workforce reductions, contract de-obligations.
+- Search terms should include: "DOGE contract terminations," "federal contract cancellations 2025-2026," "de-obligated contracts."
+- Do NOT search for a specific agency's cancellation policy.
+
+AMBIGUOUS ACRONYM RULES:
+When a query mentions a government office by acronym:
+- Verify the acronym resolves to the correct organizational level.
+- Example: "VHA OEM" = Veterans Health Administration Office of Emergency Management (19OEM, Martinsburg WV).
+- Example: "OEMR" = completely different VA staff office.
+- When ambiguous, search for BOTH interpretations, then select the one with contract activity.
 
 OUTPUT FORMAT (respond ONLY in this JSON structure, no markdown fences):
 {
@@ -121,9 +141,12 @@ OUTPUT FORMAT (respond ONLY in this JSON structure, no markdown fences):
       "do_not_use": ["terms that refer to different entities"]
     }
   },
-  "user_claims_to_verify": ["list every factual claim the user made that needs verification"]
+  "user_claims_to_verify": ["list every factual claim the user made that needs verification"],
+  "term_classifications": [
+    { "term": "example", "type": "subject|filter|context", "explanation": "Why this term is a subject to research, a filter to apply, or background context" }
+  ]
 }`,
-    `Identify and disambiguate the federal entity in this request:\n\n${topic}\n\nSearch official .gov sources. If the request conflates multiple entities, identify all of them and select the best match.`,
+    `Identify and disambiguate the federal entity in this request:\n\n${topic}\n\nSearch official .gov sources. If the request conflates multiple entities, identify all of them and select the best match. Classify every term as subject (to research), filter (to apply to results), or context (background framing).`,
     3000
   );
 
@@ -169,6 +192,13 @@ OUTPUT FORMAT (respond ONLY in this JSON structure, no markdown fences):
     console.log(`User claims to verify: ${disambiguation.user_claims_to_verify.length}`);
   }
 
+  // Log entity resolution for observability
+  if (disambiguation.term_classifications?.length) {
+    for (const tc of disambiguation.term_classifications) {
+      console.log(`[ENTITY RESOLUTION] "${tc.term}" → Type: ${tc.type} | ${tc.explanation || ""}`);
+    }
+  }
+
   return disambiguation;
 }
 
@@ -188,7 +218,25 @@ async function runLandscapeScan(topic, audience, company, disambiguation, { prim
   const contextBlock = primedContext ? `\n\nCURRENT CONTEXT (verified facts — use as grounding):\n${primedContext}` : "";
 
   const result = await callPerplexity(
-    `You are a federal health IT market intelligence analyst. ${audienceContext} ${companyCtx}
+    `You are a federal health IT market intelligence analyst for Mission Meets Tech, a federal health IT intelligence platform. ${audienceContext} ${companyCtx}
+
+BRAND POSITIONING — FEDERAL HEALTH IT LENS:
+Every report MUST be filtered through the federal health IT lens, even when the user's query is broad.
+- If query is about a set-aside type (e.g. "SDVOSB pipeline") → filter to health IT opportunities first (DHA, VA, CMS, IHS, HHS), then general
+- If query is about policy changes (e.g. "DOGE cancellations") → lead with health agency impacts, then general
+- If query is about AI/technology → lead with clinical AI, EHR integration, health data
+- If query is general GovCon → include a "Federal Health IT Implications" section
+- If query has ZERO health IT connection, note that transparently rather than forcing it
+
+AGENCY PRIORITY ORDER (for health IT relevance):
+1. DHA (Defense Health Agency) — MHS GENESIS, MTF operations, TRICARE
+2. VA (Veterans Affairs) — EHR modernization, connected care, VBA
+3. CMS (Centers for Medicare & Medicaid) — claims systems, interoperability mandates
+4. IHS (Indian Health Service) — EHR, telehealth, resource constraints
+5. HHS (broader) — ONC/ASTP, FDA health tech, NIH research IT
+6. DoD (non-DHA) — CDAO health AI, deployed medical IT
+
+When relevant, break Pipeline Intelligence into agency subsections (e.g., "VA Opportunities", "DHA Opportunities") to help users who specialize in one agency find their lane quickly.
 
 CRITICAL: The customer ordering this report is NOT necessarily the subject of the research. Mission Meets Tech LLC is a media/intelligence platform, NOT a contracting firm. If the customer provides a company name, research THAT company's market position. If they say "I'm at a SDVOSB" without naming the company, note "Company identity not provided — recommendations are generic." NEVER research Mission Meets Tech LLC as a contractor.
 
@@ -259,7 +307,9 @@ Step 5: Package as structured entries`
     : "";
 
   const result = await callPerplexity(
-    `You are a senior federal health IT strategy advisor and competitive intelligence analyst. ${audienceContext} ${companyContext}
+    `You are a senior federal health IT strategy advisor and competitive intelligence analyst for Mission Meets Tech. ${audienceContext} ${companyContext}
+
+FEDERAL HEALTH IT LENS: Prioritize health agencies (DHA, VA, CMS, IHS, HHS) in analysis. When the target entity is not a health agency, include a "Health IT Implications" subsection connecting findings to health IT market effects.
 
 TARGET ENTITY: ${entity.name || topic}
 SEARCH TERMS: ${JSON.stringify(searchTerms)}
@@ -314,7 +364,9 @@ async function runSynthesis(topic, audience, company, disambiguation, landscapeC
   }
 
   const result = await callPerplexity(
-    `You are a fact-checker and editor for a federal health IT intelligence publication. ${audienceContext} ${companyLine}
+    `You are a fact-checker and editor for Mission Meets Tech, a federal health IT intelligence publication. ${audienceContext} ${companyLine}
+
+FEDERAL HEALTH IT LENS: When organizing Pipeline Intelligence, group opportunities by agency subsections where applicable (VA Opportunities, DHA Opportunities, CMS Opportunities, Other). Always lead with health IT-relevant findings.
 
 TARGET ENTITY: ${entity.name || topic} (${entity.acronym || ""})
 
@@ -400,6 +452,21 @@ Capture strategy tied to specific opportunities from Pipeline Intelligence. Time
 ${companyGuard}
 Before recommending certifications (SDVOSB, 8(a), WOSB, HUBZone): verify whether the customer's company already holds them. Before recommending contract vehicles: check if the company already has access. Recommending certifications or vehicles a company already holds destroys credibility. If company identity is unknown, explicitly state recommendations are generic.
 
+## FORWARD VIEW (6-MONTH OUTLOOK)
+What's coming in the next 6 months that the reader should prepare for:
+- Upcoming recompetes and new-start opportunities with estimated dates
+- Budget cycle milestones (FYDP, CR status, appropriations)
+- Policy/regulatory changes taking effect
+- Industry days, pre-solicitation conferences, draft RFP releases
+Maximum 5 bullet points. Each must have a specific date or date range.
+
+## THIS WEEK'S ACTIONS
+3-5 specific, concrete actions the reader can take THIS WEEK based on the findings:
+- Each action must be completable within 5 business days
+- Each must reference a specific finding, opportunity, or contact from the report
+- Format: "[Action verb] [specific task] [because finding X]"
+- Examples: "Register on SAM.gov for NAICS 541512 under DHA", "Email OSDBU at VA to request small business liaison meeting", "Download RFP W81K04-26-R-0001 from SAM.gov and begin compliance matrix"
+
 ## METHODOLOGY
 Brief: what was searched, what was found, limitations.
 - Entity searched (after disambiguation) with org code
@@ -415,7 +482,8 @@ RULES:
 - NO program descriptions the reader already knows (what SDVOSB is, how VetCert works, what Mentor-Protege is).
 - NO sections with "None identified" or "No results found." If a section would be empty, merge it into another or explain what to monitor.
 - Data density: every paragraph must contain at least one specific fact (number, date, name, contract ID).
-- Maximum 4 pages of content. Quality over quantity.
+- Maximum 4 pages of content (~12,000 characters). Quality over quantity. If you're exceeding this, cut generic context — not pipeline data.
+- An honest 3-page report with 5 specific pipeline opportunities is worth more than an 18-page report of generic program descriptions.
 - Do NOT repeat full source names after first use. First mention: "per SAM.gov, FPDS, and USASpending.gov." Subsequent: cite the specific source only (e.g., "per SAM.gov" or "per FPDS").
 - Do NOT include any "Classification:" header or classification markings in the output.
 
@@ -790,15 +858,26 @@ exports.handler = async (event) => {
     analyzePassResult(reportQuality, pass2.content, pass2.citations);
     if (!pass2.content || pass2.content.trim().length < 200) nullPassCount++;
 
-    // Null result pivot check after Pass 2
+    // Null result pivot check after Pass 2 (NULL RESULT PROTOCOL)
     if (nullPassCount >= NULL_PASS_THRESHOLD) {
-      console.log(`[NULL PROTOCOL] ${nullPassCount} passes returned empty. Broadening search.`);
-      // Run a broadened pivot search pass
+      console.log(`[NULL PROTOCOL] ${nullPassCount} passes returned empty. STOP — reassessing search strategy.`);
+      // The search strategy is wrong, not the data. Reassess what we're actually looking for.
       const pivotStart = Date.now();
       const topicWords = topic.split(" ").slice(0, 5).join(" ");
+      const entity = disambiguation.selected_entity || {};
       const pivotResult = await callPerplexity(
-        `You are a federal contracting intelligence analyst. The previous research queries returned limited results. Broaden your search significantly. Search ALL federal agencies, not just one. Look for recent news, policy changes, and procurement activity.`,
-        `Broadened search for: ${topic}\n\nSearch these expanded queries:\n1. "${topicWords}" federal contracts 2025 2026\n2. "${topicWords}" government spending changes\n3. federal contracting news ${topicWords}\n4. SAM.gov opportunities ${topicWords}\n5. USASpending recent awards ${topicWords}\n\nReport whatever you find, even tangentially related. This is a pivot search after ${nullPassCount} null results.`,
+        `You are a federal contracting intelligence analyst. IMPORTANT: Previous research queries for "${entity.name || topic}" returned limited results across ${nullPassCount} passes. The search strategy was wrong, not the data.
+
+NULL RESULT PROTOCOL — MANDATORY:
+1. STOP searching the same way. The previous queries failed.
+2. REASSESS: What is the user actually looking for? What would a HUMAN analyst with 20 years of federal contracting experience search for?
+3. Try COMPLETELY DIFFERENT search terms, different data sources, different framing.
+4. Search ALL federal agencies, not just one.
+5. If still null after reassessment: report the null HONESTLY with explanation of what was searched and why it returned empty, plus where to monitor for this data to appear.
+6. NEVER pad a null finding with generic program descriptions to fill pages.
+
+CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 pages of generic program descriptions the customer already knows.`,
+        `Broadened search for: ${topic}\n\nPrevious searches returned empty. Try completely different angles:\n1. "${topicWords}" federal contracts 2025 2026\n2. "${topicWords}" government spending changes\n3. federal contracting news ${topicWords}\n4. SAM.gov opportunities ${topicWords}\n5. USASpending recent awards ${topicWords}\n6. Agency budget justification ${topicWords}\n7. GAO reports related to ${topicWords}\n\nReport whatever you find. If STILL nothing, explain what you searched and where to monitor.`,
         4000
       );
       passTimings["Pass 2.5 — Pivot search"] = Math.round((Date.now() - pivotStart) / 1000);

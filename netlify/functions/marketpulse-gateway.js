@@ -43,6 +43,15 @@ exports.handler = async (event) => {
     const company = (body.company || "").trim();
     const topic = (body.topic || "").trim();
     const audience = (body.audience || "").trim();
+    const certifications = (body.certifications || "").trim();
+    const naics_codes = (body.naics_codes || "").trim();
+    const existing_vehicles = (body.existing_vehicles || "").trim();
+    // Build additional_context from optional fields
+    const additional_context_parts = [];
+    if (certifications) additional_context_parts.push(`Certifications held: ${certifications}`);
+    if (naics_codes) additional_context_parts.push(`Primary NAICS: ${naics_codes}`);
+    if (existing_vehicles) additional_context_parts.push(`Existing vehicles: ${existing_vehicles}`);
+    const additional_context = additional_context_parts.join(". ") || undefined;
 
     if (!name || !email || !topic) {
       return {
@@ -63,7 +72,7 @@ exports.handler = async (event) => {
     // If Supabase not configured, fall back to checkout flow
     if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
       console.warn("marketpulse-gateway: Supabase not configured, defaulting to checkout flow");
-      return createCheckoutSession({ name, email, company, topic, audience });
+      return createCheckoutSession({ name, email, company, topic, audience, additional_context });
     }
 
     // Check usage in Supabase
@@ -90,6 +99,7 @@ exports.handler = async (event) => {
         company,
         topic,
         audience,
+        additional_context,
         amount_paid: 0,
       });
 
@@ -170,6 +180,7 @@ exports.handler = async (event) => {
         company,
         topic,
         audience,
+        additional_context,
         amount_paid: 0,
       });
 
@@ -208,7 +219,7 @@ exports.handler = async (event) => {
 
     } else {
       // PAID PATH
-      return createCheckoutSession({ name, email, company, topic, audience });
+      return createCheckoutSession({ name, email, company, topic, audience, additional_context });
     }
 
   } catch (err) {
@@ -221,7 +232,7 @@ exports.handler = async (event) => {
   }
 };
 
-async function createCheckoutSession({ name, email, company, topic, audience }) {
+async function createCheckoutSession({ name, email, company, topic, audience, additional_context }) {
   if (!STRIPE_SECRET_KEY) {
     return {
       statusCode: 500,
@@ -256,6 +267,7 @@ async function createCheckoutSession({ name, email, company, topic, audience }) 
       company: truncate(company, 500),
       topic: truncate(topic, 500),
       audience: truncate(audience, 500),
+      additional_context: truncate(additional_context || "", 500),
     },
     success_url: `${SITE_URL}/tactical-brief-confirmed.html?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${SITE_URL}/tactical-brief.html?cancelled=true`,

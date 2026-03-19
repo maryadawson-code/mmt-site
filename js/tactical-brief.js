@@ -21,6 +21,12 @@
       var company = document.getElementById('tb-company').value.trim();
       var topic = document.getElementById('tb-topic').value.trim();
       var audience = document.getElementById('tb-audience').value.trim();
+      var certEl = document.getElementById('tb-certifications');
+      var naicsEl = document.getElementById('tb-naics');
+      var vehiclesEl = document.getElementById('tb-vehicles');
+      var certifications = certEl ? certEl.value.trim() : '';
+      var naics_codes = naicsEl ? naicsEl.value.trim() : '';
+      var existing_vehicles = vehiclesEl ? vehiclesEl.value.trim() : '';
 
       if (!name || !email || !topic) {
         showError('Please fill in all required fields (name, email, and research topic).');
@@ -46,7 +52,10 @@
           email: email,
           company: company,
           topic: topic,
-          audience: audience
+          audience: audience,
+          certifications: certifications || undefined,
+          naics_codes: naics_codes || undefined,
+          existing_vehicles: existing_vehicles || undefined
         })
       })
       .then(function(res) {

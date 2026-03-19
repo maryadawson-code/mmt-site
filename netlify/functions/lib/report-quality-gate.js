@@ -194,7 +194,7 @@ function gateCustomerValue(quality, synthesis) {
   if (!synthesis) return "Report is empty";
   const charCount = synthesis.length;
   if (charCount < 2000) return `Report too short (${charCount} chars)`;
-  if (charCount > 30000) return `Report too long (${charCount} chars)`;
+  if (charCount > 18000) return `Report too long (${charCount} chars, ~${Math.round(charCount/3000)} pages — max 4 pages / ~12,000 chars)`;
   // Data density: skip if structured pipeline entries exist (counted separately)
   const pipelineEntries = (synthesis.match(/CONTRACT\/OPPORTUNITY:/g) || []).length;
   if (pipelineEntries >= 3) { /* density OK — pipeline entries carry the data */ }
@@ -397,6 +397,8 @@ function scoreReport(synthesis, citations, classification) {
       competitive_intelligence: /COMPETITIVE LANDSCAPE/i,
       entity_intelligence: /EXECUTIVE SUMMARY/i,
       landscape_overview: /MARKET CONTEXT/i,
+      forward_view: /FORWARD VIEW/i,
+      weekly_actions: /THIS WEEK|WEEKLY ACTIONS/i,
     };
     let matched = 0;
     for (const intent of classification.intents) {
