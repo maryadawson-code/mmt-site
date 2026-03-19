@@ -507,6 +507,13 @@ exports.handler = async (event) => {
     // --- Send email ---
     console.log("Gold Team: sending Gold Team Review email...");
 
+    // FIX 2b: Single source of truth for pWin — use the server-calculated pWin
+    // from the scoring engine (stored in scorecard._pwin_details), NOT the
+    // AI-generated pWin from the rewrite call. This prevents contradictory numbers.
+    const canonicalPwin = scorecard._pwin_details || {};
+    const canonicalPwinEstimate = canonicalPwin.pwin_range || scorecard.pwin_estimate || rewriteResult.pwin_estimate || null;
+    const canonicalPwinJustification = scorecard.pwin_justification || rewriteResult.pwin_justification || null;
+
     const emailHtml = buildGoldTeamReviewHtml({
       documentLabel: config.label,
       fileName: file_name,
@@ -514,8 +521,8 @@ exports.handler = async (event) => {
       overallGrade,
       scores,
       strengthenedSections: mergedSections,
-      pwinEstimate: rewriteResult.pwin_estimate || null,
-      pwinJustification: rewriteResult.pwin_justification || null,
+      pwinEstimate: canonicalPwinEstimate,
+      pwinJustification: canonicalPwinJustification,
       overallConfidence: reviewResult ? reviewResult.overall_confidence : null,
       reviewerNotes: reviewResult ? reviewResult.reviewer_notes : null,
       executiveSummary: reviewResult ? reviewResult.executive_summary : null,

@@ -510,15 +510,21 @@ function buildGoldTeamReviewHtml(data) {
     return "#ef4444";
   }
 
-  // pWin badge
+  // pWin badge — handles both numeric (legacy) and range string (e.g. "40-50%")
   let pwinHtml = "";
   if (pwinEstimate !== null) {
-    const pColor = pwinColor(pwinEstimate);
+    // Extract numeric value for color coding
+    let pwinNum = typeof pwinEstimate === "number" ? pwinEstimate : parseInt(String(pwinEstimate).replace(/[^0-9]/g, "")) || 0;
+    // For ranges like "40-50%", use the midpoint
+    const rangeMatch = String(pwinEstimate).match(/(\d+)\s*-\s*(\d+)/);
+    if (rangeMatch) pwinNum = Math.round((parseInt(rangeMatch[1]) + parseInt(rangeMatch[2])) / 2);
+    const pColor = pwinColor(pwinNum);
+    const displayValue = typeof pwinEstimate === "number" ? `${pwinEstimate}%` : escapeHtml(String(pwinEstimate));
     pwinHtml = `
       <div style="text-align:center;margin-bottom:24px;">
         <div style="display:inline-block;padding:16px 32px;border-radius:12px;border:2px solid ${pColor};background-color:rgba(0,0,0,0.02);">
           <p style="margin:0 0 4px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#6b7280;">Estimated pWin</p>
-          <p style="margin:0;font-size:36px;font-weight:800;color:${pColor};">${pwinEstimate}%</p>
+          <p style="margin:0;font-size:36px;font-weight:800;color:${pColor};">${displayValue}</p>
         </div>
         ${pwinJustification ? `<p style="margin:12px auto 0;font-size:13px;color:#6b7280;max-width:450px;line-height:1.5;">${escapeHtml(pwinJustification)}</p>` : ""}
       </div>`;

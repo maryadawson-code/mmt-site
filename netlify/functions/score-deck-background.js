@@ -610,6 +610,8 @@ exports.handler = async (event) => {
     scorecard._pwin_details = {
       pwin: pwinResult.pwin,
       pwin_range: pwinResult.pwin_range,
+      confidence_band: pwinResult.confidence_band || null,
+      excluded_factors: pwinResult.excluded_factors || [],
       factor_table: pwinResult.factor_table,
       penalties: pwinResult.penalties,
       kill_conditions: pwinResult.kill_conditions,
