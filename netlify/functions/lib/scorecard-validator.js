@@ -6,7 +6,7 @@
 // ============================================================
 
 const VALID_VERDICTS = ["PASS", "CONDITIONAL", "FAIL", "REVISE"];
-const VALID_GRADES = ["A", "B+", "B", "B-", "C+", "C", "D", "F"];
+const VALID_GRADES = ["A", "B+", "B", "B-", "C+", "C", "D", "F", "N/A"];
 const VALID_CONFIDENCE = ["HIGH", "MEDIUM", "LOW", "UNVERIFIED"];
 
 function validateScorecard(parsed) {
@@ -31,8 +31,16 @@ function validateScorecard(parsed) {
       if (!s.title && !s.id) {
         errors.push(`scores[${i}] missing title/id`);
       }
-      if (typeof s.points !== "number" || s.points < 0 || s.points > 4) {
-        errors.push(`scores[${i}] points out of range: ${s.points}`);
+      // N/A sections have null points — skip numeric validation for them
+      if (s.grade === "N/A") {
+        // N/A is valid — points should be null
+        if (s.points !== null && s.points !== undefined) {
+          errors.push(`scores[${i}] N/A grade should have null points, got ${s.points}`);
+        }
+      } else {
+        if (typeof s.points !== "number" || s.points < 0 || s.points > 4) {
+          errors.push(`scores[${i}] points out of range: ${s.points}`);
+        }
       }
       if (!s.grade || !VALID_GRADES.includes(s.grade)) {
         errors.push(`scores[${i}] invalid grade: ${s.grade}`);
@@ -58,9 +66,10 @@ function validateScorecard(parsed) {
     errors.push("Missing top_fix");
   }
 
-  // Verdict-vs-grade consistency check
-  if (Array.isArray(parsed.scores) && parsed.scores.length > 0 && parsed.verdict) {
-    const avgScore = parsed.scores.reduce((sum, s) => sum + (s.points || 0), 0) / parsed.scores.length;
+  // Verdict-vs-grade consistency check (exclude N/A sections)
+  const scorableSections = Array.isArray(parsed.scores) ? parsed.scores.filter((s) => s.grade !== "N/A") : [];
+  if (scorableSections.length > 0 && parsed.verdict) {
+    const avgScore = scorableSections.reduce((sum, s) => sum + (s.points || 0), 0) / scorableSections.length;
     if (avgScore >= 3.0 && parsed.verdict === "FAIL") {
       errors.push(`Inconsistency: avg score ${avgScore.toFixed(1)} (B or above) but verdict is FAIL`);
     }
