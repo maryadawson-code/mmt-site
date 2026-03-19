@@ -11,21 +11,13 @@
     .auth-gate { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
     .auth-gate h1 { color: #ef4444; font-size: 1.5rem; }
     .dashboard { max-width: 1400px; margin: 0 auto; padding: 20px; display: none; }
-    header { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid rgba(0,229,250,0.15); margin-bottom: 24px; }
+    header { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid rgba(0,229,250,0.15); margin-bottom: 16px; }
     header h1 { font-size: 1.4rem; color: #00e5fa; font-weight: 700; }
     header .mode { padding: 4px 12px; border-radius: 4px; font-weight: 600; font-size: 0.85rem; }
     .mode-normal { background: rgba(22,163,74,0.2); color: #22c55e; }
     .mode-degraded { background: rgba(234,179,8,0.2); color: #eab308; }
     .mode-readonly { background: rgba(249,115,22,0.2); color: #f97316; }
     .mode-emergency { background: rgba(239,68,68,0.2); color: #ef4444; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
-    .card { background: #111827; border: 1px solid rgba(0,229,250,0.1); border-radius: 8px; padding: 16px; }
-    .card h2 { font-size: 1rem; color: #00e5fa; margin-bottom: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
-    .card.full { grid-column: 1 / -1; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
-    th { text-align: left; padding: 6px 8px; color: rgba(255,255,255,0.5); border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 500; }
-    td { padding: 6px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
     .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 0.75rem; font-weight: 600; }
     .badge-green { background: rgba(22,163,74,0.2); color: #22c55e; }
     .badge-yellow { background: rgba(234,179,8,0.2); color: #eab308; }
@@ -35,25 +27,72 @@
     .badge-purple { background: rgba(168,85,247,0.2); color: #a855f7; }
     .badge-orange { background: rgba(249,115,22,0.2); color: #f97316; }
     .badge-cyan { background: rgba(0,229,250,0.15); color: #00e5fa; }
-    .flag-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-    .flag-name { font-family: monospace; font-size: 0.82rem; color: rgba(255,255,255,0.7); }
-    .circuit-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-    .circuit-name { font-weight: 600; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    th { text-align: left; padding: 6px 8px; color: rgba(255,255,255,0.5); border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 500; }
+    td { padding: 6px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
     .btn { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
     .btn-cyan { background: #00e5fa; color: #0a0e17; }
     .btn-red { background: #ef4444; color: white; }
     .btn-yellow { background: #eab308; color: #0a0e17; }
     .btn-sm { padding: 4px 10px; font-size: 0.75rem; }
     .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .refresh-info { font-size: 0.75rem; color: rgba(255,255,255,0.3); }
+    #loading { text-align: center; padding: 60px; color: rgba(255,255,255,0.4); }
+    .toast { position: fixed; bottom: 24px; right: 24px; background: #22c55e; color: #0a0e17; padding: 10px 20px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; z-index: 9999; display: none; }
+    .trunc { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .flag-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .revenue-big { font-size: 2.2rem; font-weight: 700; color: #22c55e; }
+    .revenue-label { font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase; }
+
+    /* Org filter bar */
+    .org-filter { display: flex; gap: 8px; margin-bottom: 16px; }
+    .org-filter button { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: all 0.2s; }
+    .org-filter button.active { background: rgba(0,229,250,0.15); color: #00e5fa; border-color: rgba(0,229,250,0.3); }
+
+    /* Tile grid */
+    .tile-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    @media (min-width: 640px) { .tile-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 1024px) { .tile-grid { grid-template-columns: repeat(4, 1fr); } }
+    .tile { background: #111827; border: 1px solid rgba(0,229,250,0.1); border-radius: 12px; padding: 20px; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; position: relative; }
+    .tile:hover { transform: scale(1.02); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+    .tile-icon { font-size: 2rem; margin-bottom: 8px; }
+    .tile-title { font-size: 0.95rem; color: #00e5fa; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .tile-metrics { display: flex; gap: 16px; flex-wrap: wrap; }
+    .tile-metric { font-size: 1.6rem; font-weight: 700; color: #e2e8f0; line-height: 1; }
+    .tile-metric-label { font-size: 0.65rem; color: rgba(255,255,255,0.4); text-transform: uppercase; margin-top: 2px; }
+    .tile-badge { position: absolute; top: 12px; right: 12px; background: #ef4444; color: #fff; font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; min-width: 20px; text-align: center; }
+
+    /* Detail view */
+    .detail-view { display: none; }
+    .detail-view.active { display: block; }
+    .back-btn { display: inline-flex; align-items: center; gap: 6px; color: #00e5fa; background: none; border: none; cursor: pointer; font-size: 0.9rem; font-weight: 600; margin-bottom: 16px; padding: 0; }
+    .back-btn:hover { text-decoration: underline; }
+    .detail-title { font-size: 1.3rem; color: #00e5fa; font-weight: 700; margin-bottom: 16px; }
+    .detail-card { background: #111827; border: 1px solid rgba(0,229,250,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .detail-card h3 { font-size: 0.9rem; color: #00e5fa; margin-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+
+    /* Tab bar */
+    .tab-bar { display: flex; gap: 4px; margin-bottom: 16px; }
+    .tab-bar button { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); padding: 6px 14px; border-radius: 6px 6px 0 0; cursor: pointer; font-size: 0.8rem; font-weight: 600; }
+    .tab-bar button.active { background: #111827; color: #00e5fa; border-bottom-color: #111827; }
+
+    /* Pipeline calendar card */
+    .pipeline-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 14px; }
+    .pipeline-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+
+    /* Severity filter */
     .severity-filter { display: flex; gap: 6px; margin-bottom: 10px; }
     .severity-filter button { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); padding: 3px 10px; border-radius: 3px; cursor: pointer; font-size: 0.75rem; }
     .severity-filter button.active { background: rgba(0,229,250,0.15); color: #00e5fa; border-color: rgba(0,229,250,0.3); }
-    .refresh-info { font-size: 0.75rem; color: rgba(255,255,255,0.3); }
-    #loading { text-align: center; padding: 60px; color: rgba(255,255,255,0.4); }
-    .revenue-big { font-size: 2.2rem; font-weight: 700; color: #22c55e; }
-    .revenue-label { font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase; }
-    .toast { position: fixed; bottom: 24px; right: 24px; background: #22c55e; color: #0a0e17; padding: 10px 20px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; z-index: 9999; display: none; }
-    .trunc { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* Status banner */
+    .status-banner { padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; margin-bottom: 16px; text-align: center; }
+    .status-green { background: rgba(22,163,74,0.15); color: #22c55e; border: 1px solid rgba(22,163,74,0.3); }
+    .status-yellow { background: rgba(234,179,8,0.15); color: #eab308; border: 1px solid rgba(234,179,8,0.3); }
+    .status-red { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+
+    /* Coming soon overlay */
+    .coming-soon { display: flex; align-items: center; justify-content: center; min-height: 300px; color: rgba(255,255,255,0.3); font-size: 1.2rem; font-weight: 600; }
   </style>
 </head>
 <body>
@@ -69,181 +108,37 @@
       </div>
     </header>
 
-    <!-- ALERT BANNER -->
     <div id="alert-banner" style="display:none;background:#ef4444;color:#fff;padding:12px 24px;font-weight:600;font-size:14px;text-align:center;border-radius:6px;margin-bottom:16px;"></div>
+
+    <!-- Org Filter -->
+    <div class="org-filter" id="org-filter">
+      <button class="active" data-org="all">All</button>
+      <button data-org="mmt">missionmeetstech.com</button>
+      <button data-org="mp">missionpulse.ai</button>
+    </div>
 
     <div id="loading">Loading dashboard data...</div>
 
     <div id="content" style="display:none;">
-      <div class="grid">
-        <div class="card"><h2>System Status</h2><div id="system-status"></div></div>
-        <div class="card"><h2>Circuit Breakers</h2><div id="circuits"></div></div>
-        <div class="card"><h2>Feature Flags</h2><div id="flags"></div></div>
-        <div class="card"><h2>Quality Metrics</h2><div id="quality"></div></div>
-
-        <!-- LIVE ORDERS -->
-        <div class="card full"><h2>Live Orders (24h)</h2><div id="orders"></div></div>
-
-        <!-- OPS EVENTS -->
-        <div class="card full">
-          <h2>Ops Events (24h)</h2>
-          <div class="severity-filter" id="severity-filter">
-            <button class="active" data-filter="all">All</button>
-            <button data-filter="critical">Critical</button>
-            <button data-filter="error">Error</button>
-            <button data-filter="warn">Warn</button>
-            <button data-filter="info">Info</button>
-          </div>
-          <div id="ops-events"></div>
-        </div>
-
-        <!-- HELD EMAILS -->
-        <div class="card full"><h2>Held Emails</h2><div id="held-emails"></div></div>
-
-        <!-- REPORT HISTORY -->
-        <div class="card full">
-          <h2>Report History</h2>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;" id="report-history">
-            <div><h3 style="font-size:0.85rem;color:rgba(255,255,255,0.6);margin-bottom:8px;">MarketPulse</h3><div id="mp-reports"></div></div>
-            <div><h3 style="font-size:0.85rem;color:rgba(255,255,255,0.6);margin-bottom:8px;">ProposalPulse</h3><div id="pp-reports"></div></div>
-          </div>
-        </div>
-
-        <!-- NEWSLETTER PIPELINE -->
-        <div class="card full">
-          <h2>Newsletter Pipeline</h2>
-          <div class="actions" style="margin-bottom:12px;margin-top:0;">
-            <button class="btn btn-cyan" onclick="addPipelineSlot()">+ Add Issue</button>
-            <button class="btn btn-sm" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);" onclick="seedPipeline()" id="seed-btn">Seed Next 4 Dates</button>
-          </div>
-          <div id="newsletter-pipeline"></div>
-        </div>
-
-        <!-- INTEL SIGNALS -->
-        <div class="card full">
-          <h2>Intel Signals</h2>
-          <div class="actions" style="margin-bottom:12px;margin-top:0;">
-            <button class="btn btn-cyan" onclick="showAddSignal()">+ Add Signal</button>
-          </div>
-          <div id="intel-signals"></div>
-        </div>
-
-        <!-- AGENT MAP -->
-        <div class="card full">
-          <h2>Agent Map</h2>
-          <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;" id="domain-filters">
-            <button class="btn btn-sm active-filter" onclick="filterAgents('all',this)" style="font-size:0.75rem;padding:4px 12px;background:#00e5fa;color:#0a0e17;">All (19)</button>
-            <button class="btn btn-sm" onclick="filterAgents('mmt_platform',this)" style="font-size:0.75rem;padding:4px 12px;background:rgba(0,229,250,0.2);color:#00e5fa;">MMT Platform</button>
-            <button class="btn btn-sm" onclick="filterAgents('rockitdata',this)" style="font-size:0.75rem;padding:4px 12px;background:rgba(168,85,247,0.2);color:#a855f7;">rockITdata</button>
-            <button class="btn btn-sm" onclick="filterAgents('active_captures',this)" style="font-size:0.75rem;padding:4px 12px;background:rgba(239,68,68,0.2);color:#ef4444;">Active Captures</button>
-            <button class="btn btn-sm" onclick="filterAgents('content_personal',this)" style="font-size:0.75rem;padding:4px 12px;background:rgba(34,197,94,0.2);color:#22c55e;">Content & Personal</button>
-            <button class="btn btn-sm" onclick="filterAgents('operations',this)" style="font-size:0.75rem;padding:4px 12px;background:rgba(234,179,8,0.2);color:#eab308;">Operations</button>
-          </div>
-          <div id="agent-map" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;"></div>
-
-          <!-- Dispatch Panel -->
-          <div id="dispatch-panel" style="display:none;margin-top:16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:16px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-              <h3 id="dispatch-agent-name" style="font-size:1rem;margin:0;"></h3>
-              <button class="btn" onclick="closeDispatch()" style="background:none;color:rgba(255,255,255,0.4);font-size:1.2rem;padding:0 8px;">&times;</button>
-            </div>
-            <p id="dispatch-agent-desc" style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin:0 0 12px;"></p>
-            <textarea id="dispatch-input" rows="4" placeholder="What do you need this agent to do?" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:10px;border-radius:4px;font-size:0.85rem;resize:vertical;"></textarea>
-            <div style="display:flex;gap:8px;margin-top:8px;">
-              <button id="dispatch-btn-primary" class="btn btn-cyan" onclick="executeDispatch()">Send</button>
-              <button class="btn" onclick="executeDispatch('clipboard')" style="background:rgba(255,255,255,0.1);color:#e2e8f0;">Copy Prompt</button>
-            </div>
-            <div id="dispatch-result" style="margin-top:8px;font-size:0.8rem;"></div>
-          </div>
-
-          <h3 style="font-size:0.85rem;color:rgba(255,255,255,0.6);margin:16px 0 8px;">Task Queue</h3>
-          <div id="task-queue"></div>
-        </div>
-
-        <!-- IMAGE STUDIO -->
-        <div class="card full">
-          <h2>Image Studio</h2>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-            <div>
-              <textarea id="image-prompt" rows="3" placeholder="Newsletter header: dark background, cyber-themed circuit board pattern with a glowing blue pulse..." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:10px;border-radius:4px;font-size:0.85rem;resize:vertical;"></textarea>
-              <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
-                <select id="image-provider" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:6px 10px;border-radius:4px;font-size:0.8rem;">
-                  <option value="dalle3">DALL-E 3</option>
-                  <option value="gpt_image">GPT Image (best)</option>
-                  <option value="imagen3">Imagen 3</option>
-                </select>
-                <select id="image-size" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:6px 10px;border-radius:4px;font-size:0.8rem;">
-                  <option value="1024x1024">Square</option>
-                  <option value="1792x1024">Landscape</option>
-                  <option value="1024x1792">Portrait</option>
-                </select>
-                <select id="image-style" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:6px 10px;border-radius:4px;font-size:0.8rem;">
-                  <option value="natural">Natural</option>
-                  <option value="vivid">Vivid</option>
-                </select>
-                <button class="btn btn-cyan" onclick="generateImage()">Generate</button>
-              </div>
-              <div id="image-status" style="margin-top:8px;font-size:0.8rem;color:rgba(255,255,255,0.4);"></div>
-            </div>
-            <div id="image-preview" style="min-height:200px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-              <span style="color:rgba(255,255,255,0.2);font-size:0.8rem;">Image will appear here</span>
-            </div>
-          </div>
-          <div style="margin-top:12px;">
-            <h3 style="font-size:0.85rem;color:rgba(255,255,255,0.6);margin-bottom:8px;">Recent Images</h3>
-            <div id="image-history" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;"></div>
-          </div>
-        </div>
-
-        <!-- RESEARCH HUB -->
-        <div class="card full">
-          <h2>Research Hub</h2>
-          <div style="display:flex;gap:8px;margin-bottom:12px;">
-            <input type="text" id="research-query" placeholder="What is the current status of VA T4NG2 task orders?" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:10px;border-radius:4px;font-size:0.85rem;">
-            <button class="btn btn-cyan" onclick="runResearch()">Research All</button>
-          </div>
-          <div style="display:flex;gap:8px;margin-bottom:16px;">
-            <label style="font-size:0.75rem;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:4px;"><input type="checkbox" id="research-perplexity" checked> Perplexity</label>
-            <label style="font-size:0.75rem;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:4px;"><input type="checkbox" id="research-chatgpt" checked> ChatGPT</label>
-            <label style="font-size:0.75rem;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:4px;"><input type="checkbox" id="research-gemini" checked> Gemini</label>
-          </div>
-          <div id="research-results" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
-            <div id="result-perplexity" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px;min-height:150px;"><div style="font-weight:700;font-size:0.8rem;color:#00e5fa;margin-bottom:8px;">Perplexity</div><div class="r-content" style="font-size:0.8rem;color:rgba(255,255,255,0.3);">Waiting for query...</div></div>
-            <div id="result-chatgpt" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px;min-height:150px;"><div style="font-weight:700;font-size:0.8rem;color:#74aa9c;margin-bottom:8px;">ChatGPT</div><div class="r-content" style="font-size:0.8rem;color:rgba(255,255,255,0.3);">Waiting for query...</div></div>
-            <div id="result-gemini" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px;min-height:150px;"><div style="font-weight:700;font-size:0.8rem;color:#4285f4;margin-bottom:8px;">Gemini</div><div class="r-content" style="font-size:0.8rem;color:rgba(255,255,255,0.3);">Waiting for query...</div></div>
-          </div>
-          <div id="research-actions" style="display:none;margin-top:12px;">
-            <button class="btn btn-cyan btn-sm" onclick="pushToSignal()">Push to Intel Signals</button>
-            <button class="btn btn-sm" onclick="copyResearch()" style="background:rgba(255,255,255,0.1);color:#e2e8f0;">Copy All Results</button>
-            <span id="research-push-status"></span>
-          </div>
-        </div>
-
-        <!-- REVENUE -->
-        <div class="card"><h2>Revenue</h2><div id="revenue-display"></div></div>
-
-        <!-- ENGAGEMENT INTEL -->
-        <div class="card">
-          <h2>Engagement Intel</h2>
-          <div class="actions" style="margin-bottom:12px;margin-top:0;">
-            <button class="btn btn-cyan btn-sm" onclick="generateEngagement()">Generate Brief</button>
-            <button class="btn btn-yellow btn-sm" onclick="generateEngagement(true)">Email Brief</button>
-          </div>
-          <div id="engagement-intel"><p style="color:rgba(255,255,255,0.3);font-size:0.82rem;">Click Generate to fetch.</p></div>
-        </div>
-
-        <!-- QUICK ACTIONS -->
-        <div class="card full">
-          <h2>Quick Actions</h2>
-          <div class="actions" id="actions">
-            <button class="btn btn-yellow" onclick="setMode('degraded')">Set Degraded Mode</button>
-            <button class="btn btn-cyan" onclick="setMode('normal')">Set Normal Mode</button>
-            <button class="btn btn-cyan" onclick="triggerHealthCheck()">Trigger Health Check</button>
-            <a href="https://app.netlify.com" target="_blank" class="btn btn-cyan" style="text-decoration:none;">Netlify Dashboard</a>
-          </div>
-          <div id="action-result" style="margin-top:10px;font-size:0.82rem;color:rgba(255,255,255,0.6);"></div>
-        </div>
+      <!-- TILE HOME VIEW -->
+      <div id="tile-home">
+        <div class="tile-grid" id="tile-grid"></div>
       </div>
+
+      <!-- MissionPulse placeholder -->
+      <div id="mp-placeholder" style="display:none;">
+        <button class="back-btn" onclick="showHome()">&#8592; Back</button>
+        <div class="coming-soon">MissionPulse.ai dashboard coming soon</div>
+      </div>
+
+      <!-- DETAIL VIEWS -->
+      <div id="detail-newsletter" class="detail-view"></div>
+      <div id="detail-products" class="detail-view"></div>
+      <div id="detail-engineering" class="detail-view"></div>
+      <div id="detail-business" class="detail-view"></div>
+      <div id="detail-health" class="detail-view"></div>
+      <div id="detail-agents" class="detail-view"></div>
+      <div id="detail-content" class="detail-view"></div>
     </div>
   </div>
 
@@ -253,7 +148,12 @@
     if (!apiKey) { document.getElementById('auth-gate').style.display = 'flex'; }
     else { document.getElementById('auth-gate').style.display = 'none'; document.getElementById('dashboard').style.display = 'block'; loadDashboard(); setInterval(loadDashboard, 30000); }
 
+    let dashData = {};
     let allOpsEvents = [];
+    let allAgents = [];
+    let selectedAgent = null;
+    let currentFilter = 'all';
+    let _lastResearch = null;
 
     function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
     function timeSince(d) { const m = Math.floor((Date.now() - new Date(d).getTime()) / 60000); if (m < 60) return m + 'm ago'; const h = Math.floor(m / 60); if (h < 24) return h + 'h ago'; return Math.floor(h/24) + 'd ago'; }
@@ -266,257 +166,587 @@
         const res = await fetch('/.netlify/functions/command-center-api?key=' + apiKey);
         if (!res.ok) { if (res.status === 401) { document.getElementById('auth-gate').style.display = 'flex'; document.getElementById('dashboard').style.display = 'none'; } throw new Error('API ' + res.status); }
         const data = await res.json();
-        render(data);
+        dashData = data;
+        allOpsEvents = data.ops_events_24h || [];
+        allAgents = data.agents || [];
+        renderMode(data);
+        renderAlerts(data);
+        renderTiles(data);
+        // Re-render active detail view if one is open
+        const activeDetail = document.querySelector('.detail-view.active');
+        if (activeDetail) {
+          const view = activeDetail.id.replace('detail-', '');
+          renderDetailView(view);
+        }
         document.getElementById('loading').style.display = 'none';
         document.getElementById('content').style.display = 'block';
         document.getElementById('last-refresh').textContent = 'Updated ' + new Date().toLocaleTimeString();
       } catch (e) { console.error('Load failed:', e); document.getElementById('loading').textContent = 'Failed: ' + e.message; }
     }
 
-    function render(data) {
+    function renderMode(data) {
       const mode = data.health?.mode || 'normal';
       const badge = document.getElementById('mode-badge');
       badge.textContent = mode.toUpperCase();
       badge.className = 'mode mode-' + mode;
-
-      // Alert banner
-      renderAlerts(data);
-
-      // System status
-      document.getElementById('system-status').innerHTML = '<div class="flag-row"><span>Mode</span><span class="badge badge-' + (mode==='normal'?'green':mode==='degraded'?'yellow':'red') + '">' + mode.toUpperCase() + '</span></div><div class="flag-row"><span>Time</span><span style="font-size:0.82rem;color:rgba(255,255,255,0.5)">' + new Date(data.health?.timestamp).toLocaleString() + '</span></div>';
-
-      // Circuits
-      document.getElementById('circuits').innerHTML = Object.entries(data.circuits||{}).map(([n,c]) => '<div class="circuit-row"><span class="circuit-name">' + n + '</span><span class="badge badge-' + (c.state==='CLOSED'?'green':c.state==='OPEN'?'red':'yellow') + '">' + c.state + '</span><span style="font-size:0.75rem;color:rgba(255,255,255,0.4)">fail:' + c.failures + '</span></div>').join('');
-
-      // Flags
-      document.getElementById('flags').innerHTML = Object.entries(data.flags||{}).map(([n,v]) => '<div class="flag-row"><span class="flag-name">' + n + '</span><span class="badge badge-blue">' + v + '</span></div>').join('');
-
-      // Quality
-      const q = data.quality || {};
-      document.getElementById('quality').innerHTML = '<table><tr><th></th><th>7d</th><th>30d</th><th>7d #</th></tr><tr><td>PP</td><td>' + (q.proposalpulse?.['7d']?.avg??'—') + '</td><td>' + (q.proposalpulse?.['30d']?.avg??'—') + '</td><td>' + (q.proposalpulse?.['7d']?.count??0) + '</td></tr><tr><td>MP</td><td>' + (q.marketpulse?.['7d']?.avg??'—') + '</td><td>' + (q.marketpulse?.['30d']?.avg??'—') + '</td><td>' + (q.marketpulse?.['7d']?.count??0) + '</td></tr></table>';
-
-      // Orders
-      renderOrders(data.orders_24h);
-
-      // Ops Events
-      allOpsEvents = data.ops_events_24h || [];
-      renderOpsEvents('all');
-
-      // Held Emails
-      renderHeldEmails(data.held_emails);
-
-      // V2 sections
-      renderReportHistory(data.report_history);
-      renderPipeline(data.pipeline);
-      renderSignals(data.signals);
-      renderTaskQueue(data.tasks);
-      renderAgentMap(data.agents);
-      renderImageHistory(data.recent_images);
-      renderRevenue(data.revenue);
-
-      // Hide seed button if pipeline has data
-      if (data.pipeline && data.pipeline.length > 0) document.getElementById('seed-btn').style.display = 'none';
     }
 
     function renderAlerts(data) {
       const banner = document.getElementById('alert-banner');
       const alerts = [];
-      // Check for stuck orders
       const pp = data.orders_24h?.proposalpulse || [];
       const mp = data.orders_24h?.marketpulse || [];
       const tenMinAgo = Date.now() - 600000;
       pp.forEach(o => { const t = ['delivered','email_sent','email_failed','ERROR']; if (!t.includes(o.workflow_state) && !t.includes(o.verdict) && new Date(o.created_at).getTime() < tenMinAgo) alerts.push('PP stuck: ' + (o.id||'').slice(0,8)); });
       mp.forEach(o => { const t = ['delivered','email_sent','error','quality_fail']; if (!t.includes(o.workflow_state) && new Date(o.created_at).getTime() < tenMinAgo) alerts.push('MP stuck: ' + (o.session_id||o.id||'').slice(0,8)); });
-      // Check critical events
       const crit = (data.ops_events_24h||[]).filter(e => e.severity === 'critical' && !e.resolution);
       if (crit.length > 0) alerts.push(crit.length + ' unresolved critical event' + (crit.length>1?'s':''));
       if (alerts.length > 0) { banner.style.display = 'block'; banner.textContent = alerts.join(' | '); }
       else { banner.style.display = 'none'; }
     }
 
-    function renderOrders(o) {
-      const pp = o?.proposalpulse || [], mp = o?.marketpulse || [];
-      let h = '<h3 style="font-size:0.85rem;margin-bottom:8px;color:rgba(255,255,255,0.6)">ProposalPulse</h3>';
-      if (!pp.length) h += '<p style="color:rgba(255,255,255,0.3)">No orders in 24h</p>';
-      else { h += '<table><tr><th>ID</th><th>Status</th><th>Grade</th><th>Score</th><th>Time</th></tr>' + pp.map(o => { const s=o.workflow_state||o.verdict||'—'; const c=s==='delivered'||s==='email_sent'?'green':s==='ERROR'?'red':'yellow'; return '<tr><td style="font-family:monospace;font-size:0.75rem">'+(o.id||'').slice(0,8)+'</td><td><span class="badge badge-'+c+'">'+s+'</span></td><td>'+(o.overall_grade||'—')+'</td><td>'+(o.avg_score||'—')+'</td><td style="color:rgba(255,255,255,0.4)">'+timeSince(o.created_at)+'</td></tr>'; }).join('') + '</table>'; }
-      h += '<h3 style="font-size:0.85rem;margin:16px 0 8px;color:rgba(255,255,255,0.6)">MarketPulse</h3>';
-      if (!mp.length) h += '<p style="color:rgba(255,255,255,0.3)">No orders in 24h</p>';
-      else { h += '<table><tr><th>ID</th><th>Email</th><th>Topic</th><th>Status</th><th>Time</th></tr>' + mp.map(o => { const s=o.workflow_state||'—'; const c=s==='delivered'||s==='email_sent'?'green':s==='error'||s==='quality_fail'?'red':'yellow'; return '<tr><td style="font-family:monospace;font-size:0.75rem">'+(o.session_id||o.id||'').slice(0,8)+'</td><td style="font-size:0.75rem">'+(o.email||'—')+'</td><td class="trunc">'+(o.topic||'—')+'</td><td><span class="badge badge-'+c+'">'+s+'</span></td><td style="color:rgba(255,255,255,0.4)">'+timeSince(o.created_at)+'</td></tr>'; }).join('') + '</table>'; }
-      document.getElementById('orders').innerHTML = h;
+    // ============ TILE METRICS COMPUTATION ============
+
+    function getTileData(data) {
+      const pp = data.orders_24h?.proposalpulse || [];
+      const mp = data.orders_24h?.marketpulse || [];
+      const allOrders = [...pp, ...mp];
+      const activeOrders = allOrders.filter(o => !['delivered','email_sent','email_failed','ERROR','error','quality_fail'].includes(o.workflow_state) && !['delivered','email_sent','email_failed','ERROR'].includes(o.verdict));
+      const deliveredToday = allOrders.filter(o => ['delivered','email_sent'].includes(o.workflow_state) || ['delivered','email_sent'].includes(o.verdict));
+      const errorOrders = allOrders.filter(o => ['ERROR','error','quality_fail','email_failed'].includes(o.workflow_state) || o.verdict === 'ERROR');
+
+      const pipeline = data.pipeline || [];
+      const now = new Date();
+      const threeDaysMs = 3 * 24 * 60 * 60 * 1000;
+      const nearPipeline = pipeline.filter(p => p.status === 'planning' && new Date(p.publish_date) - now < threeDaysMs && new Date(p.publish_date) > now);
+      const nextIssue = pipeline.filter(p => new Date(p.publish_date) >= now).sort((a,b) => new Date(a.publish_date) - new Date(b.publish_date))[0];
+      const daysToPublish = nextIssue ? Math.ceil((new Date(nextIssue.publish_date) - now) / 86400000) : null;
+      const nextStatus = nextIssue ? nextIssue.status : null;
+
+      const tasks = data.tasks || [];
+      const pendingTasks = tasks.filter(t => t.status === 'pending' || t.status === 'in_progress');
+
+      const events = data.ops_events_24h || [];
+      const errorEvents = events.filter(e => e.severity === 'critical' || e.severity === 'error');
+      const critEvents = events.filter(e => e.severity === 'critical' && !e.resolution);
+
+      const agents = data.agents || [];
+      const onlineAgents = agents.filter(a => a.status === 'active' || a.status === 'busy');
+      const thirtyMinAgo = Date.now() - 1800000;
+      const staleAgents = agents.filter(a => a.last_active && new Date(a.last_active).getTime() < thirtyMinAgo && (a.status === 'active' || a.status === 'busy'));
+
+      const images = data.recent_images || [];
+      const signals = data.signals || [];
+
+      const rev = data.revenue;
+      const revTotal = rev && !rev.error ? (rev.total_revenue_cents / 100) : null;
+
+      return [
+        { id: 'newsletter', icon: '\ud83d\udcf0', title: 'Newsletter', m1: daysToPublish !== null ? daysToPublish : '--', m1l: 'Days to pub', m2: nextStatus || '--', m2l: 'Status', badge: nearPipeline.length || 0 },
+        { id: 'products', icon: '\ud83d\udce6', title: 'Products', m1: activeOrders.length, m1l: 'Active orders', m2: deliveredToday.length, m2l: 'Delivered', badge: errorOrders.length },
+        { id: 'engineering', icon: '\ud83d\udd27', title: 'Engineering', m1: pendingTasks.length, m1l: 'Pending tasks', m2: null, m2l: null, badge: pendingTasks.length },
+        { id: 'business', icon: '\ud83d\udcca', title: 'Business', m1: revTotal !== null ? '$' + revTotal.toLocaleString() : '--', m1l: rev?.month || 'Revenue', m2: null, m2l: null, badge: 0 },
+        { id: 'health', icon: '\ud83d\udee1\ufe0f', title: 'Site Health', m1: errorEvents.length, m1l: 'Errors (24h)', m2: null, m2l: null, badge: critEvents.length },
+        { id: 'agents', icon: '\ud83e\udd16', title: 'Agent Fleet', m1: onlineAgents.length + '/' + agents.length, m1l: 'Online', m2: null, m2l: null, badge: staleAgents.length },
+        { id: 'content', icon: '\ud83c\udfa8', title: 'Content Studio', m1: images.length, m1l: 'Images', m2: signals.length, m2l: 'Signals', badge: 0 }
+      ];
     }
 
-    function renderHeldEmails(held) {
-      if (!held || !held.length) { document.getElementById('held-emails').innerHTML = '<p style="color:rgba(255,255,255,0.3)">No held emails</p>'; return; }
-      document.getElementById('held-emails').innerHTML = '<table><tr><th>To</th><th>Subject</th><th>Since</th><th></th></tr>' + held.map(e => '<tr><td>'+e.recipient+'</td><td class="trunc">'+e.subject+'</td><td style="color:rgba(255,255,255,0.4)">'+timeSince(e.created_at)+'</td><td><button class="btn btn-cyan btn-sm" onclick="releaseEmail(\''+e.id+'\')">Release</button></td></tr>').join('') + '</table>';
-    }
-
-    function renderReportHistory(rh) {
-      if (!rh) return;
-      const mp = rh.marketpulse || [], pp = rh.proposalpulse || [];
-      if (!mp.length) document.getElementById('mp-reports').innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:0.82rem;">No reports yet</p>';
-      else document.getElementById('mp-reports').innerHTML = '<table><tr><th>Date</th><th>Email</th><th>Topic</th><th>Status</th><th></th></tr>' + mp.map(r => '<tr><td style="font-size:0.75rem">'+fmtDate(r.created_at)+'</td><td style="font-size:0.75rem" class="trunc">'+(r.email||'—')+'</td><td style="font-size:0.75rem" class="trunc">'+(r.topic||'—')+'</td><td><span class="badge badge-'+(r.workflow_state==='delivered'?'green':r.workflow_state==='error'||r.workflow_state==='quality_fail'?'red':'yellow')+'">'+(r.workflow_state||'—')+'</span></td><td>'+(r.report_url?'<a href="'+r.report_url+'" target="_blank" style="color:#00e5fa;font-size:0.75rem;">View</a>':'')+'</td></tr>').join('') + '</table>';
-      if (!pp.length) document.getElementById('pp-reports').innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:0.82rem;">No reports yet</p>';
-      else document.getElementById('pp-reports').innerHTML = '<table><tr><th>Date</th><th>File</th><th>Grade</th><th></th></tr>' + pp.map(r => '<tr><td style="font-size:0.75rem">'+fmtDate(r.created_at)+'</td><td style="font-size:0.75rem" class="trunc">'+(r.file_name||'—')+'</td><td>'+(r.overall_grade?'<span class="badge badge-'+(r.overall_grade.startsWith('A')?'green':r.overall_grade.startsWith('B')?'blue':r.overall_grade.startsWith('C')?'yellow':'red')+'">'+r.overall_grade+'</span>':'—')+'</td><td>'+(r.report_url?'<a href="'+r.report_url+'" target="_blank" style="color:#00e5fa;font-size:0.75rem;">Score</a> ':'')+(r.redteam_report_url?'<a href="'+r.redteam_report_url+'" target="_blank" style="color:#ef4444;font-size:0.75rem;">Red Team</a>':'')+'</td></tr>').join('') + '</table>';
-    }
-
-    function renderPipeline(pl) {
-      const el = document.getElementById('newsletter-pipeline');
-      if (!pl || !pl.length) { el.innerHTML = '<p style="color:rgba(255,255,255,0.3)">No upcoming issues. Click "Seed Next 4 Dates" to populate.</p>'; return; }
-      const statusColors = { planning:'gray', researching:'blue', drafting:'yellow', editing:'orange', ready:'green', published:'cyan', killed:'red' };
-      const statuses = ['planning','researching','drafting','editing','ready','published','killed'];
-      el.innerHTML = '<table><tr><th>Date</th><th>Day</th><th>Status</th><th>Lead Topic</th><th>Score</th><th>LI</th><th>Pod</th><th></th></tr>' + pl.map(p => {
-        const sc = statusColors[p.status] || 'gray';
-        const sel = '<select onchange="updatePipeline(\''+p.id+'\',this.value)" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:2px 4px;border-radius:3px;font-size:0.75rem;">' + statuses.map(s => '<option value="'+s+'"'+(s===p.status?' selected':'')+'>'+s+'</option>').join('') + '</select>';
-        return '<tr><td style="font-size:0.82rem;font-weight:600;">'+fmtDate(p.publish_date)+'</td><td><span class="badge badge-'+sc+'">'+p.day_slot+'</span></td><td>'+sel+'</td><td style="font-size:0.75rem" class="trunc">'+(p.lead_topic||'<span style="color:rgba(255,255,255,0.3)">—</span>')+'</td><td>'+(p.lead_score||'—')+'</td><td>'+(p.linkedin_drafted?'<span style="color:#22c55e">Y</span>':'—')+'</td><td>'+(p.podcast_points_drafted?'<span style="color:#22c55e">Y</span>':'—')+'</td><td><button class="btn btn-sm" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);" onclick="editPipelineTopic(\''+p.id+'\')">Edit</button></td></tr>';
-      }).join('') + '</table>';
-    }
-
-    function renderSignals(sigs) {
-      const el = document.getElementById('intel-signals');
-      if (!sigs || !sigs.length) { el.innerHTML = '<p style="color:rgba(255,255,255,0.3)">No active signals</p>'; return; }
-      const typeColors = { contract_award:'green', solicitation:'blue', policy_change:'yellow', personnel_move:'purple', competitor_intel:'red', industry_news:'gray', breaking:'red' };
-      el.innerHTML = '<table><tr><th>Date</th><th>Type</th><th>Title</th><th>Summary</th><th>Score</th><th>Status</th><th></th></tr>' + sigs.map(s => {
-        const tc = typeColors[s.signal_type] || 'gray';
-        const sc = s.relevance_score >= 20 ? 'green' : s.relevance_score >= 15 ? 'yellow' : s.relevance_score > 0 ? 'red' : 'gray';
-        return '<tr><td style="font-size:0.75rem">'+fmtDate(s.created_at)+'</td><td><span class="badge badge-'+tc+'">'+(s.signal_type||'—')+'</span></td><td style="font-size:0.82rem;font-weight:500;">'+esc(s.title)+'</td><td style="font-size:0.75rem" class="trunc">'+esc(s.summary||'')+'</td><td><span class="badge badge-'+sc+'">'+(s.relevance_score||'—')+'</span></td><td><span class="badge badge-gray">'+s.status+'</span></td><td><button class="btn btn-sm btn-cyan" onclick="scoreSignal(\''+s.id+'\')">Score</button> <button class="btn btn-sm btn-red" onclick="killSignal(\''+s.id+'\')">Kill</button></td></tr>';
-      }).join('') + '</table>';
-    }
-
-    function renderTaskQueue(tasks) {
-      const el = document.getElementById('task-queue');
-      if (!tasks || !tasks.length) { el.innerHTML = '<p style="color:rgba(255,255,255,0.3)">No active tasks</p>'; return; }
-      const sc = { pending:'yellow', in_progress:'blue', completed:'green', failed:'red', cancelled:'gray' };
-      el.innerHTML = '<table><tr><th>Agent</th><th>Task</th><th>Priority</th><th>Status</th><th>Time</th><th></th></tr>' + tasks.map(t => {
-        const agentInfo = allAgents.find(a => a.id === t.agent) || {};
-        const agentColor = agentInfo.color || '#9ca3af';
-        const agentName = agentInfo.name || t.agent;
-        return '<tr><td><span style="color:'+agentColor+';font-size:0.75rem;font-weight:600;">'+(agentInfo.icon||'')+' '+esc(agentName)+'</span></td><td style="font-size:0.75rem" class="trunc">'+esc(t.task)+'</td><td><span class="badge badge-'+(t.priority==='urgent'?'red':t.priority==='high'?'orange':'gray')+'">'+t.priority+'</span></td><td><span class="badge badge-'+(sc[t.status]||'gray')+'">'+t.status+'</span></td><td style="font-size:0.75rem;color:rgba(255,255,255,0.4)">'+timeSince(t.created_at)+'</td><td>'+(t.status==='pending'||t.status==='in_progress'?'<button class="btn btn-sm btn-red" onclick="killTask(\''+t.id+'\')">Cancel</button>':'')+'</td></tr>';
-      }).join('') + '</table>';
-    }
-
-    function renderRevenue(rev) {
-      const el = document.getElementById('revenue-display');
-      if (!rev) { el.innerHTML = '<p style="color:rgba(255,255,255,0.3)">Stripe not configured</p>'; return; }
-      if (rev.error) { el.innerHTML = '<p style="color:#ef4444;font-size:0.82rem;">'+esc(rev.error)+'</p>'; return; }
-      const total = (rev.total_revenue_cents / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-      let h = '<div class="revenue-label">' + esc(rev.month) + '</div><div class="revenue-big">' + total + '</div><div style="font-size:0.82rem;color:rgba(255,255,255,0.5);margin-top:4px;">' + rev.total_charges + ' charge' + (rev.total_charges !== 1 ? 's' : '') + '</div>';
-      if (rev.by_product && Object.keys(rev.by_product).length > 0) {
-        h += '<div style="margin-top:12px;">';
-        for (const [p, d] of Object.entries(rev.by_product)) {
-          h += '<div class="flag-row"><span style="font-size:0.82rem">' + esc(p) + '</span><span style="font-size:0.82rem;color:#22c55e;">' + (d.cents / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD' }) + ' (' + d.count + ')</span></div>';
-        }
-        h += '</div>';
-      }
-      el.innerHTML = h;
-    }
-
-    // --- OPS EVENTS ---
-    function renderOpsEvents(filter) {
-      const events = filter === 'all' ? allOpsEvents : allOpsEvents.filter(e => e.severity === filter);
-      if (!events.length) { document.getElementById('ops-events').innerHTML = '<p style="color:rgba(255,255,255,0.3)">No events</p>'; return; }
-      document.getElementById('ops-events').innerHTML = '<table><tr><th>Time</th><th>Type</th><th>Sev</th><th>Source</th><th>Entity</th><th>Sig</th></tr>' + events.slice(0,100).map(e => { const c=e.severity==='critical'||e.severity==='error'?'red':e.severity==='warn'?'yellow':'gray'; return '<tr style="'+(e.severity==='critical'||e.severity==='error'?'background:rgba(239,68,68,0.05)':'')+'"><td style="font-size:0.75rem;color:rgba(255,255,255,0.5)">'+new Date(e.created_at).toLocaleTimeString()+'</td><td style="font-size:0.75rem">'+e.event_type+'</td><td><span class="badge badge-'+c+'">'+e.severity+(e.resolution?'':' *')+'</span></td><td style="font-size:0.75rem">'+(e.source_function||'—')+'</td><td style="font-family:monospace;font-size:0.7rem">'+(e.affected_entity||'').slice(0,12)+'</td><td style="font-size:0.75rem;color:rgba(255,255,255,0.5)">'+(e.signature||'—')+'</td></tr>'; }).join('') + '</table>';
-    }
-    document.getElementById('severity-filter').addEventListener('click', e => { if (e.target.tagName !== 'BUTTON') return; document.querySelectorAll('#severity-filter button').forEach(b => b.classList.remove('active')); e.target.classList.add('active'); renderOpsEvents(e.target.dataset.filter); });
-
-    // --- ACTIONS ---
-    async function releaseEmail(id) { const d = await apiPost({ action: 'release_email', id }); toast(d.released ? 'Email released.' : 'Failed: ' + d.error); loadDashboard(); }
-    async function setMode(m) { const d = await apiPost({ action: 'set_mode', value: m }); document.getElementById('action-result').textContent = d.note || JSON.stringify(d); }
-    async function triggerHealthCheck() { await apiPost({ action: 'trigger_health_check' }); toast('Health check triggered.'); }
-    async function killTask(id) { await apiPost({ action: 'kill_task', id }); toast('Task cancelled.'); loadDashboard(); }
-    async function killSignal(id) { await apiPost({ action: 'kill_signal', id }); toast('Signal killed.'); loadDashboard(); }
-
-    // --- AGENT MAP V3 ---
-    let allAgents = [];
-    let selectedAgent = null;
-    let currentFilter = 'all';
-
-    function renderAgentMap(agents) {
-      allAgents = agents || [];
-      const container = document.getElementById('agent-map');
-      const filtered = currentFilter === 'all' ? allAgents : allAgents.filter(a => a.domain === currentFilter);
-      container.innerHTML = filtered.map(agent => {
-        const statusDot = agent.status === 'active' ? '#22c55e' : agent.status === 'busy' ? '#eab308' : 'rgba(255,255,255,0.2)';
-        const isLive = ['openclaw','claude_code','perplexity'].includes(agent.platform);
-        const sel = selectedAgent === agent.id;
-        return '<div onclick="selectAgent(\''+agent.id+'\')" style="background:'+(sel?agent.color+'11':'rgba(255,255,255,0.03)')+';border:1px solid '+(sel?agent.color:agent.color+'33')+';border-radius:8px;padding:14px;cursor:pointer;transition:border-color 0.2s;"><div style="display:flex;justify-content:space-between;align-items:start;"><div style="font-size:1.4rem;">'+(agent.icon||'')+'</div><div style="display:flex;align-items:center;gap:4px;">'+(isLive?'<span style="font-size:0.6rem;color:'+agent.color+';font-weight:700;">LIVE</span>':'')+'<div style="width:8px;height:8px;border-radius:50%;background:'+statusDot+';"></div></div></div><div style="font-weight:700;color:'+agent.color+';font-size:0.85rem;margin:8px 0 2px;">'+esc(agent.name)+'</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);line-height:1.3;">'+esc((agent.description||'').substring(0,80))+'</div>'+(agent.current_task?'<div style="font-size:0.7rem;color:'+agent.color+';margin-top:6px;font-style:italic;">'+esc(agent.current_task.substring(0,50))+'</div>':'')+(agent.last_active?'<div style="font-size:0.65rem;color:rgba(255,255,255,0.2);margin-top:4px;">'+timeSince(agent.last_active)+'</div>':'')+'</div>';
+    function renderTiles(data) {
+      const tiles = getTileData(data);
+      const grid = document.getElementById('tile-grid');
+      grid.innerHTML = tiles.map(t => {
+        const badgeHtml = t.badge > 0 ? '<div class="tile-badge">' + t.badge + '</div>' : '';
+        let metricsHtml = '<div class="tile-metrics"><div><div class="tile-metric">' + t.m1 + '</div><div class="tile-metric-label">' + t.m1l + '</div></div>';
+        if (t.m2 !== null) metricsHtml += '<div><div class="tile-metric" style="font-size:1.1rem;">' + t.m2 + '</div><div class="tile-metric-label">' + (t.m2l||'') + '</div></div>';
+        metricsHtml += '</div>';
+        return '<div class="tile" onclick="navigate(\'' + t.id + '\')">' + badgeHtml + '<div class="tile-icon">' + t.icon + '</div><div class="tile-title">' + t.title + '</div>' + metricsHtml + '</div>';
       }).join('');
     }
 
-    function filterAgents(domain, btn) {
-      currentFilter = domain;
-      renderAgentMap(allAgents);
-      document.querySelectorAll('#domain-filters button').forEach(b => b.style.opacity = '0.5');
-      if (btn) btn.style.opacity = '1';
+    // ============ NAVIGATION ============
+
+    function navigate(view) {
+      window.location.hash = view;
     }
 
-    function selectAgent(agentId) {
-      const agent = allAgents.find(a => a.id === agentId);
-      if (!agent) return;
-      selectedAgent = agentId;
-      const panel = document.getElementById('dispatch-panel');
-      panel.style.display = 'block';
-      panel.style.borderColor = agent.color + '44';
-      document.getElementById('dispatch-agent-name').innerHTML = (agent.icon||'') + ' ' + esc(agent.name);
-      document.getElementById('dispatch-agent-name').style.color = agent.color;
-      document.getElementById('dispatch-agent-desc').textContent = agent.description || '';
-      document.getElementById('dispatch-input').placeholder = getPlaceholder(agent);
-      document.getElementById('dispatch-input').focus();
-      const btn = document.getElementById('dispatch-btn-primary');
-      btn.style.background = agent.color;
-      btn.style.color = ['#eab308','#22c55e','#00e5fa'].includes(agent.color) ? '#0a0e17' : '#fff';
-      btn.textContent = agent.platform === 'openclaw' ? 'Dispatch Task' : 'Send + Copy';
-      renderAgentMap(allAgents);
+    function showHome() {
+      window.location.hash = '';
     }
 
-    function closeDispatch() { selectedAgent = null; document.getElementById('dispatch-panel').style.display = 'none'; renderAgentMap(allAgents); }
+    function applyRoute() {
+      const hash = window.location.hash.replace('#', '');
+      const home = document.getElementById('tile-home');
+      const placeholder = document.getElementById('mp-placeholder');
+      document.querySelectorAll('.detail-view').forEach(d => d.classList.remove('active'));
+      placeholder.style.display = 'none';
 
-    function getPlaceholder(a) {
-      const p = { 'mmt-newsletter':'Draft article about..., Score this topic...', 'mmt-website':'Fix page..., Add section to...', 'mmt-missionpulse':'Add feature..., Fix bug in...', 'mmt-business':'Analyze opportunity for...', 'mmt-dafe':'Extract appropriations for...', 'rid-capture':'Start capture for..., Draft section...', 'rid-marketing':'Draft LinkedIn post about...', 'rid-contracts':'Check status of..., Find vehicles for...', 'cap-oasis':'Review section..., Compliance check...', 'cap-ccn':'Draft response to...', 'cap-iht2':'Draft RFI section...', 'cap-gtm':'Evaluate partner..., Market analysis...', 'personal-bio':'Update section on...', 'personal-babydev':'Create content about...', 'personal-resume':'Align skills for...', 'personal-podcast':'Prep talking points for...', 'ops-editorial':'Draft newsletter..., Score topic...', 'ops-code':'Fix bug in..., Add feature...', 'ops-research':'Research status of..., Fact-check...' };
-      return p[a.id] || 'Describe what you need...';
+      if (!hash) {
+        home.style.display = 'block';
+        return;
+      }
+      home.style.display = 'none';
+      const detail = document.getElementById('detail-' + hash);
+      if (detail) {
+        detail.classList.add('active');
+        renderDetailView(hash);
+      }
     }
 
-    function executeDispatch(mode) {
-      const agent = allAgents.find(a => a.id === selectedAgent);
-      if (!agent) return;
-      const input = document.getElementById('dispatch-input').value.trim();
-      if (!input) { document.getElementById('dispatch-result').innerHTML = '<span style="color:#ef4444;">Enter a task first.</span>'; return; }
-      const resultEl = document.getElementById('dispatch-result');
+    window.addEventListener('hashchange', applyRoute);
+    // Initial route on load handled after first data fetch
 
-      // Always queue the task in the command center
-      apiPost({ action: 'add_task', task: input, agent: agent.id, priority: 'normal' }).then(() => {
-        loadDashboard();
+    function renderDetailView(view) {
+      const fn = {
+        newsletter: renderDetailNewsletter,
+        products: renderDetailProducts,
+        engineering: renderDetailEngineering,
+        business: renderDetailBusiness,
+        health: renderDetailHealth,
+        agents: renderDetailAgents,
+        content: renderDetailContent
+      }[view];
+      if (fn) fn(dashData);
+    }
+
+    // ============ ORG FILTER ============
+
+    document.getElementById('org-filter').addEventListener('click', e => {
+      if (e.target.tagName !== 'BUTTON') return;
+      document.querySelectorAll('#org-filter button').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      const org = e.target.dataset.org;
+      const placeholder = document.getElementById('mp-placeholder');
+      const home = document.getElementById('tile-home');
+      document.querySelectorAll('.detail-view').forEach(d => d.classList.remove('active'));
+      if (org === 'mp') {
+        home.style.display = 'none';
+        placeholder.style.display = 'block';
+        window.location.hash = '';
+      } else {
+        placeholder.style.display = 'none';
+        home.style.display = 'block';
+        window.location.hash = '';
+      }
+    });
+
+    // ============ DETAIL: NEWSLETTER ============
+
+    function renderDetailNewsletter(data) {
+      const el = document.getElementById('detail-newsletter');
+      const pipeline = data.pipeline || [];
+      const signals = data.signals || [];
+      const statusColors = { planning:'gray', researching:'blue', drafting:'yellow', editing:'orange', ready:'green', published:'cyan', killed:'red' };
+      const statuses = ['planning','researching','drafting','editing','ready','published','killed'];
+
+      let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
+      h += '<div class="detail-title">\ud83d\udcf0 Newsletter</div>';
+
+      // Pipeline calendar cards
+      h += '<div class="detail-card"><h3>Pipeline</h3>';
+      h += '<div class="actions" style="margin-bottom:12px;margin-top:0;"><button class="btn btn-cyan btn-sm" onclick="addPipelineSlot()">+ Add Issue</button>';
+      if (!pipeline.length) h += '<button class="btn btn-sm" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);" onclick="seedPipeline()" id="seed-btn">Seed Next 4 Dates</button>';
+      h += '</div>';
+      if (!pipeline.length) {
+        h += '<p style="color:rgba(255,255,255,0.3)">No upcoming issues. Click "Seed Next 4 Dates" to populate.</p>';
+      } else {
+        h += '<div class="pipeline-grid">';
+        pipeline.forEach(p => {
+          const sc = statusColors[p.status] || 'gray';
+          const sel = '<select onchange="updatePipeline(\'' + p.id + '\',this.value)" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:2px 6px;border-radius:3px;font-size:0.75rem;margin-top:6px;">' + statuses.map(s => '<option value="' + s + '"' + (s===p.status?' selected':'') + '>' + s + '</option>').join('') + '</select>';
+          h += '<div class="pipeline-card"><div style="display:flex;justify-content:space-between;align-items:start;"><div style="font-size:1.1rem;font-weight:700;">' + fmtDate(p.publish_date) + '</div><span class="badge badge-' + sc + '">' + p.day_slot + '</span></div>';
+          h += '<div style="font-size:0.8rem;color:rgba(255,255,255,0.6);margin-top:6px;">' + esc(p.lead_topic || 'No topic set') + '</div>';
+          h += '<div style="display:flex;gap:12px;margin-top:6px;font-size:0.75rem;color:rgba(255,255,255,0.4);"><span>Score: ' + (p.lead_score || '--') + '</span><span>LI: ' + (p.linkedin_drafted ? 'Y' : '--') + '</span><span>Pod: ' + (p.podcast_points_drafted ? 'Y' : '--') + '</span></div>';
+          h += sel;
+          h += ' <button class="btn btn-sm" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);margin-top:6px;" onclick="editPipelineTopic(\'' + p.id + '\')">Edit</button>';
+          h += '</div>';
+        });
+        h += '</div>';
+      }
+      h += '</div>';
+
+      // Signal inbox table
+      h += '<div class="detail-card"><h3>Signal Inbox</h3>';
+      h += '<div class="actions" style="margin-bottom:12px;margin-top:0;"><button class="btn btn-cyan btn-sm" onclick="showAddSignal()">+ Add Signal</button></div>';
+      if (!signals.length) {
+        h += '<p style="color:rgba(255,255,255,0.3)">No active signals</p>';
+      } else {
+        const typeColors = { contract_award:'green', solicitation:'blue', policy_change:'yellow', personnel_move:'purple', competitor_intel:'red', industry_news:'gray', breaking:'red' };
+        h += '<table><tr><th>Date</th><th>Type</th><th>Title</th><th>Summary</th><th>Score</th><th>Status</th><th></th></tr>';
+        signals.forEach(s => {
+          const tc = typeColors[s.signal_type] || 'gray';
+          const scc = s.relevance_score >= 20 ? 'green' : s.relevance_score >= 15 ? 'yellow' : s.relevance_score > 0 ? 'red' : 'gray';
+          h += '<tr><td style="font-size:0.75rem">' + fmtDate(s.created_at) + '</td><td><span class="badge badge-' + tc + '">' + (s.signal_type||'--') + '</span></td><td style="font-size:0.82rem;font-weight:500;">' + esc(s.title) + '</td><td style="font-size:0.75rem" class="trunc">' + esc(s.summary||'') + '</td><td><span class="badge badge-' + scc + '">' + (s.relevance_score||'--') + '</span></td><td><span class="badge badge-gray">' + s.status + '</span></td><td><button class="btn btn-sm btn-cyan" onclick="scoreSignal(\'' + s.id + '\')">Score</button> <button class="btn btn-sm btn-red" onclick="killSignal(\'' + s.id + '\')">Kill</button></td></tr>';
+        });
+        h += '</table>';
+      }
+      h += '</div>';
+
+      el.innerHTML = h;
+    }
+
+    // ============ DETAIL: PRODUCTS ============
+
+    let productsTab = 'pp';
+    function renderDetailProducts(data) {
+      const el = document.getElementById('detail-products');
+      const pp = data.orders_24h?.proposalpulse || [];
+      const mp = data.orders_24h?.marketpulse || [];
+
+      let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
+      h += '<div class="detail-title">\ud83d\udce6 Products</div>';
+
+      // Tab bar
+      h += '<div class="tab-bar"><button class="' + (productsTab==='pp'?'active':'') + '" onclick="productsTab=\'pp\';renderDetailView(\'products\')">ProposalPulse</button><button class="' + (productsTab==='mp'?'active':'') + '" onclick="productsTab=\'mp\';renderDetailView(\'products\')">MarketPulse</button></div>';
+
+      if (productsTab === 'pp') {
+        h += '<div class="detail-card"><h3>Active Orders</h3>';
+        const active = pp.filter(o => !['delivered','email_sent','email_failed','ERROR'].includes(o.workflow_state) && !['delivered','email_sent','email_failed','ERROR'].includes(o.verdict));
+        if (!active.length) h += '<p style="color:rgba(255,255,255,0.3)">No active orders</p>';
+        else {
+          h += '<table><tr><th>ID</th><th>Status</th><th>Grade</th><th>Score</th><th>Time</th></tr>';
+          active.forEach(o => { const s=o.workflow_state||o.verdict||'--'; h += '<tr><td style="font-family:monospace;font-size:0.75rem">'+(o.id||'').slice(0,8)+'</td><td><span class="badge badge-yellow">'+s+'</span></td><td>'+(o.overall_grade||'--')+'</td><td>'+(o.avg_score||'--')+'</td><td style="color:rgba(255,255,255,0.4)">'+timeSince(o.created_at)+'</td></tr>'; });
+          h += '</table>';
+        }
+        h += '</div>';
+
+        h += '<div class="detail-card"><h3>Recent Deliveries</h3>';
+        const delivered = pp.filter(o => ['delivered','email_sent'].includes(o.workflow_state) || ['delivered','email_sent'].includes(o.verdict));
+        if (!delivered.length) h += '<p style="color:rgba(255,255,255,0.3)">No deliveries</p>';
+        else {
+          h += '<table><tr><th>ID</th><th>Status</th><th>Grade</th><th>Score</th><th>Time</th></tr>';
+          delivered.forEach(o => { const s=o.workflow_state||o.verdict||'--'; h += '<tr><td style="font-family:monospace;font-size:0.75rem">'+(o.id||'').slice(0,8)+'</td><td><span class="badge badge-green">'+s+'</span></td><td>'+(o.overall_grade||'--')+'</td><td>'+(o.avg_score||'--')+'</td><td style="color:rgba(255,255,255,0.4)">'+timeSince(o.created_at)+'</td></tr>'; });
+          h += '</table>';
+        }
+        h += '</div>';
+
+        h += '<div class="detail-card"><h3>Errors</h3>';
+        const errors = pp.filter(o => o.verdict === 'ERROR' || o.workflow_state === 'ERROR');
+        if (!errors.length) h += '<p style="color:rgba(255,255,255,0.3)">No errors</p>';
+        else {
+          h += '<table><tr><th>ID</th><th>Status</th><th>Error</th><th>Time</th></tr>';
+          errors.forEach(o => { h += '<tr><td style="font-family:monospace;font-size:0.75rem">'+(o.id||'').slice(0,8)+'</td><td><span class="badge badge-red">ERROR</span></td><td style="font-size:0.75rem;color:#ef4444;">'+esc(o.error_message||'Unknown')+'</td><td style="color:rgba(255,255,255,0.4)">'+timeSince(o.created_at)+'</td></tr>'; });
+          h += '</table>';
+        }
+        h += '</div>';
+      } else {
+        h += '<div class="detail-card"><h3>Active Orders</h3>';
+        const active = mp.filter(o => !['delivered','email_sent','error','quality_fail'].includes(o.workflow_state));
+        if (!active.length) h += '<p style="color:rgba(255,255,255,0.3)">No active orders</p>';
+        else {
+          h += '<table><tr><th>ID</th><th>Email</th><th>Topic</th><th>Status</th><th>Time</th></tr>';
+          active.forEach(o => { h += '<tr><td style="font-family:monospace;font-size:0.75rem">'+(o.session_id||o.id||'').slice(0,8)+'</td><td style="font-size:0.75rem">'+(o.email||'--')+'</td><td class="trunc">'+(o.topic||'--')+'</td><td><span class="badge badge-yellow">'+(o.workflow_state||'--')+'</span></td><td style="color:rgba(255,255,255,0.4)">'+timeSince(o.created_at)+'</td></tr>'; });
+          h += '</table>';
+        }
+        h += '</div>';
+
+        h += '<div class="detail-card"><h3>Recent Deliveries</h3>';
+        const delivered = mp.filter(o => ['delivered','email_sent'].includes(o.workflow_state));
+        if (!delivered.length) h += '<p style="color:rgba(255,255,255,0.3)">No deliveries</p>';
+        else {
+          h += '<table><tr><th>ID</th><th>Email</th><th>Topic</th><th>Status</th><th>Time</th></tr>';
+          delivered.forEach(o => { h += '<tr><td style="font-family:monospace;font-size:0.75rem">'+(o.session_id||o.id||'').slice(0,8)+'</td><td style="font-size:0.75rem">'+(o.email||'--')+'</td><td class="trunc">'+(o.topic||'--')+'</td><td><span class="badge badge-green">'+(o.workflow_state||'--')+'</span></td><td style="color:rgba(255,255,255,0.4)">'+timeSince(o.created_at)+'</td></tr>'; });
+          h += '</table>';
+        }
+        h += '</div>';
+
+        h += '<div class="detail-card"><h3>Errors</h3>';
+        const errors = mp.filter(o => ['error','quality_fail'].includes(o.workflow_state));
+        if (!errors.length) h += '<p style="color:rgba(255,255,255,0.3)">No errors</p>';
+        else {
+          h += '<table><tr><th>ID</th><th>Email</th><th>Error</th><th>Time</th></tr>';
+          errors.forEach(o => { h += '<tr><td style="font-family:monospace;font-size:0.75rem">'+(o.session_id||o.id||'').slice(0,8)+'</td><td style="font-size:0.75rem">'+(o.email||'--')+'</td><td style="font-size:0.75rem;color:#ef4444;">'+esc(o.error_message||o.workflow_state)+'</td><td style="color:rgba(255,255,255,0.4)">'+timeSince(o.created_at)+'</td></tr>'; });
+          h += '</table>';
+        }
+        h += '</div>';
+      }
+
+      el.innerHTML = h;
+    }
+
+    // ============ DETAIL: ENGINEERING ============
+
+    function renderDetailEngineering(data) {
+      const el = document.getElementById('detail-engineering');
+      const tasks = data.tasks || [];
+      const sc = { pending:'yellow', in_progress:'blue', completed:'green', failed:'red', cancelled:'gray' };
+
+      let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
+      h += '<div class="detail-title">\ud83d\udd27 Engineering</div>';
+
+      h += '<div class="detail-card"><h3>Task Queue</h3>';
+      if (!tasks.length) {
+        h += '<p style="color:rgba(255,255,255,0.3)">No active tasks</p>';
+      } else {
+        h += '<table><tr><th>Agent</th><th>Task</th><th>Priority</th><th>Status</th><th>Time</th><th></th></tr>';
+        tasks.forEach(t => {
+          const agentInfo = allAgents.find(a => a.id === t.agent) || {};
+          const agentColor = agentInfo.color || '#9ca3af';
+          const agentName = agentInfo.name || t.agent;
+          h += '<tr><td><span style="color:'+agentColor+';font-size:0.75rem;font-weight:600;">'+(agentInfo.icon||'')+' '+esc(agentName)+'</span></td><td style="font-size:0.75rem" class="trunc">'+esc(t.task)+'</td><td><span class="badge badge-'+(t.priority==='urgent'?'red':t.priority==='high'?'orange':'gray')+'">'+t.priority+'</span></td><td><span class="badge badge-'+(sc[t.status]||'gray')+'">'+t.status+'</span></td><td style="font-size:0.75rem;color:rgba(255,255,255,0.4)">'+timeSince(t.created_at)+'</td><td>'+(t.status==='pending'||t.status==='in_progress'?'<button class="btn btn-sm btn-red" onclick="killTask(\''+t.id+'\')">Cancel</button>':'')+'</td></tr>';
+        });
+        h += '</table>';
+      }
+      h += '</div>';
+
+      h += '<div class="detail-card"><h3>Tech Debt Tracker</h3>';
+      h += '<table><tr><th>Item</th><th>Priority</th><th>Area</th></tr>';
+      const techDebt = [
+        { item: 'Migrate inline CSS to Tailwind classes in command-center.html', priority: 'low', area: 'Frontend' },
+        { item: 'Add rate limiting to AI endpoints', priority: 'high', area: 'API' },
+        { item: 'Add error boundary to ProposalPulse upload flow', priority: 'medium', area: 'Frontend' },
+        { item: 'Consolidate duplicate email template HTML', priority: 'low', area: 'Functions' },
+        { item: 'Add monitoring/alerting for background function timeouts', priority: 'high', area: 'Ops' },
+        { item: 'Supabase RLS policies audit', priority: 'high', area: 'Security' }
+      ];
+      techDebt.forEach(d => {
+        const pc = d.priority==='high'?'red':d.priority==='medium'?'yellow':'gray';
+        h += '<tr><td style="font-size:0.82rem;">'+d.item+'</td><td><span class="badge badge-'+pc+'">'+d.priority+'</span></td><td style="font-size:0.75rem;color:rgba(255,255,255,0.4)">'+d.area+'</td></tr>';
       });
+      h += '</table></div>';
 
-      // Build context-enriched prompt for clipboard (non-OpenClaw agents)
-      let prompt = '';
-      if (agent.platform === 'claude_code') {
-        prompt = 'TASK: ' + input + '\n\nIMPORTANT: cd to /Users/marywomack/Projects/mmt-site first. Verify pwd does not contain /private/tmp/claude-.\n\n' + input + '\n\nVerify all changes. Do NOT deploy without review.';
-      } else if (agent.platform === 'perplexity') {
-        prompt = 'Research the following for Mission Meets Tech. Provide specific data points, contract numbers, dollar values, and source URLs.\n\nTopic: ' + input + '\n\nFocus on: federal health IT, defense contracting, VA/DHA systems, GovCon procurement.';
-      } else {
-        const ctx = { mmt_platform:'Context: This is for Mission Meets Tech (missionmeetstech.com), a federal health IT intelligence platform.', rockitdata:'Context: This is for rockITdata, a small SDVOSB/WOSB defense contractor. Do NOT reference Mission Meets Tech.', active_captures:'Context: This is an active federal contract capture/proposal effort. Compliance and win strategy are paramount.', content_personal:'Context: Personal/content project for Mary Womack.' };
-        prompt = input + '\n\n' + (ctx[agent.domain] || '');
-      }
+      // Quick actions
+      h += '<div class="detail-card"><h3>Quick Actions</h3>';
+      h += '<div class="actions"><button class="btn btn-yellow btn-sm" onclick="setMode(\'degraded\')">Set Degraded Mode</button><button class="btn btn-cyan btn-sm" onclick="setMode(\'normal\')">Set Normal Mode</button><button class="btn btn-cyan btn-sm" onclick="triggerHealthCheck()">Trigger Health Check</button><a href="https://app.netlify.com" target="_blank" class="btn btn-cyan btn-sm" style="text-decoration:none;">Netlify Dashboard</a></div>';
+      h += '<div id="action-result" style="margin-top:10px;font-size:0.82rem;color:rgba(255,255,255,0.6);"></div></div>';
 
-      document.getElementById('dispatch-input').value = '';
-
-      if (agent.platform === 'openclaw') {
-        // OpenClaw agents pick up tasks from the queue — no clipboard needed
-        resultEl.innerHTML = '<span style="color:#22c55e;">&#10003; Task dispatched to ' + agent.name + '. It will pick this up on next heartbeat.</span>';
-      } else if (mode === 'clipboard') {
-        // Explicit "Copy Prompt" click
-        navigator.clipboard.writeText(prompt).then(() => {
-          const dest = agent.platform === 'claude_code' ? 'Claude Code' : agent.platform === 'perplexity' ? 'Perplexity' : agent.name;
-          resultEl.innerHTML = '<span style="color:#22c55e;">&#10003; Copied to clipboard. Paste into ' + dest + '.</span>';
-        });
-      } else {
-        // Primary "Send" button for non-OpenClaw agents: queue + copy
-        navigator.clipboard.writeText(prompt).then(() => {
-          const dest = agent.platform === 'claude_code' ? 'Claude Code' : agent.platform === 'perplexity' ? 'Perplexity' : agent.name;
-          resultEl.innerHTML = '<span style="color:#22c55e;">&#10003; Task queued + prompt copied. Paste into ' + dest + ' to execute.</span>';
-        });
-      }
+      el.innerHTML = h;
     }
+
+    // ============ DETAIL: BUSINESS ============
+
+    function renderDetailBusiness(data) {
+      const el = document.getElementById('detail-business');
+      const rev = data.revenue;
+      const pp = data.orders_24h?.proposalpulse || [];
+      const mp = data.orders_24h?.marketpulse || [];
+      const allEmails = new Set();
+      pp.forEach(o => { if (o.email) allEmails.add(o.email); });
+      mp.forEach(o => { if (o.email) allEmails.add(o.email); });
+
+      let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
+      h += '<div class="detail-title">\ud83d\udcca Business</div>';
+
+      h += '<div class="detail-card"><h3>Revenue</h3>';
+      if (!rev || rev.error) {
+        h += '<p style="color:rgba(255,255,255,0.3)">' + (rev?.error ? esc(rev.error) : 'Stripe not configured') + '</p>';
+      } else {
+        const total = (rev.total_revenue_cents / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+        h += '<div class="revenue-label">' + esc(rev.month) + '</div><div class="revenue-big">' + total + '</div>';
+        h += '<div style="font-size:0.82rem;color:rgba(255,255,255,0.5);margin-top:4px;">' + rev.total_charges + ' charge' + (rev.total_charges !== 1 ? 's' : '') + '</div>';
+        if (rev.by_product && Object.keys(rev.by_product).length > 0) {
+          h += '<div style="margin-top:12px;">';
+          for (const [p, d] of Object.entries(rev.by_product)) {
+            h += '<div class="flag-row"><span style="font-size:0.82rem">' + esc(p) + '</span><span style="font-size:0.82rem;color:#22c55e;">' + (d.cents / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD' }) + ' (' + d.count + ')</span></div>';
+          }
+          h += '</div>';
+        }
+      }
+      h += '</div>';
+
+      h += '<div class="detail-card"><h3>Customer Activity (24h)</h3>';
+      h += '<div style="display:flex;gap:32px;margin-bottom:12px;"><div><div class="tile-metric">' + allEmails.size + '</div><div class="tile-metric-label">Unique customers</div></div><div><div class="tile-metric">' + (pp.length + mp.length) + '</div><div class="tile-metric-label">Total orders</div></div></div>';
+      h += '</div>';
+
+      // Engagement
+      h += '<div class="detail-card"><h3>Engagement Intel</h3>';
+      h += '<div class="actions" style="margin-bottom:12px;margin-top:0;"><button class="btn btn-cyan btn-sm" onclick="generateEngagement()">Generate Brief</button><button class="btn btn-yellow btn-sm" onclick="generateEngagement(true)">Email Brief</button></div>';
+      h += '<div id="engagement-intel"><p style="color:rgba(255,255,255,0.3);font-size:0.82rem;">Click Generate to fetch.</p></div></div>';
+
+      el.innerHTML = h;
+    }
+
+    // ============ DETAIL: SITE HEALTH ============
+
+    let healthSevFilter = 'all';
+    function renderDetailHealth(data) {
+      const el = document.getElementById('detail-health');
+      const mode = data.health?.mode || 'normal';
+      const events = data.ops_events_24h || [];
+      const circuits = data.circuits || {};
+      const critCount = events.filter(e => (e.severity === 'critical' || e.severity === 'error') && !e.resolution).length;
+      const bannerClass = critCount > 0 ? 'status-red' : mode !== 'normal' ? 'status-yellow' : 'status-green';
+      const bannerText = critCount > 0 ? critCount + ' unresolved critical/error events' : mode !== 'normal' ? 'System mode: ' + mode.toUpperCase() : 'All systems operational';
+
+      let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
+      h += '<div class="detail-title">\ud83d\udee1\ufe0f Site Health</div>';
+      h += '<div class="status-banner ' + bannerClass + '">' + bannerText + '</div>';
+
+      // Circuit breakers
+      h += '<div class="detail-card"><h3>Circuit Breakers</h3>';
+      const circuitEntries = Object.entries(circuits);
+      if (!circuitEntries.length) h += '<p style="color:rgba(255,255,255,0.3)">No circuits configured</p>';
+      else {
+        circuitEntries.forEach(([n, c]) => {
+          h += '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="font-weight:600;">' + n + '</span><span><span class="badge badge-' + (c.state==='CLOSED'?'green':c.state==='OPEN'?'red':'yellow') + '">' + c.state + '</span> <span style="font-size:0.75rem;color:rgba(255,255,255,0.4)">fail:' + c.failures + '</span></span></div>';
+        });
+      }
+      h += '</div>';
+
+      // Ops events table
+      h += '<div class="detail-card"><h3>Ops Events (24h)</h3>';
+      h += '<div class="severity-filter" id="sev-filter-health">';
+      ['all','critical','error','warn','info'].forEach(f => {
+        h += '<button class="' + (healthSevFilter===f?'active':'') + '" onclick="healthSevFilter=\'' + f + '\';renderDetailView(\'health\')">' + (f.charAt(0).toUpperCase()+f.slice(1)) + '</button>';
+      });
+      h += '</div>';
+      const filtered = healthSevFilter === 'all' ? events : events.filter(e => e.severity === healthSevFilter);
+      if (!filtered.length) h += '<p style="color:rgba(255,255,255,0.3)">No events</p>';
+      else {
+        h += '<table><tr><th>Time</th><th>Type</th><th>Sev</th><th>Source</th><th>Entity</th><th>Sig</th></tr>';
+        filtered.slice(0,100).forEach(e => {
+          const c = e.severity==='critical'||e.severity==='error'?'red':e.severity==='warn'?'yellow':'gray';
+          h += '<tr style="' + (e.severity==='critical'||e.severity==='error'?'background:rgba(239,68,68,0.05)':'') + '"><td style="font-size:0.75rem;color:rgba(255,255,255,0.5)">' + new Date(e.created_at).toLocaleTimeString() + '</td><td style="font-size:0.75rem">' + e.event_type + '</td><td><span class="badge badge-' + c + '">' + e.severity + (e.resolution?'':' *') + '</span></td><td style="font-size:0.75rem">' + (e.source_function||'--') + '</td><td style="font-family:monospace;font-size:0.7rem">' + (e.affected_entity||'').slice(0,12) + '</td><td style="font-size:0.75rem;color:rgba(255,255,255,0.5)">' + (e.signature||'--') + '</td></tr>';
+        });
+        h += '</table>';
+      }
+      h += '</div>';
+
+      // Feature flags
+      h += '<div class="detail-card"><h3>Feature Flags</h3>';
+      const flags = Object.entries(data.flags || {});
+      if (!flags.length) h += '<p style="color:rgba(255,255,255,0.3)">No flags</p>';
+      else flags.forEach(([n,v]) => { h += '<div class="flag-row"><span style="font-family:monospace;font-size:0.82rem;color:rgba(255,255,255,0.7);">' + n + '</span><span class="badge badge-blue">' + v + '</span></div>'; });
+      h += '</div>';
+
+      // Held emails
+      h += '<div class="detail-card"><h3>Held Emails</h3>';
+      const held = data.held_emails || [];
+      if (!held.length) h += '<p style="color:rgba(255,255,255,0.3)">No held emails</p>';
+      else {
+        h += '<table><tr><th>To</th><th>Subject</th><th>Since</th><th></th></tr>';
+        held.forEach(e => { h += '<tr><td>' + e.recipient + '</td><td class="trunc">' + e.subject + '</td><td style="color:rgba(255,255,255,0.4)">' + timeSince(e.created_at) + '</td><td><button class="btn btn-cyan btn-sm" onclick="releaseEmail(\'' + e.id + '\')">Release</button></td></tr>'; });
+        h += '</table>';
+      }
+      h += '</div>';
+
+      el.innerHTML = h;
+    }
+
+    // ============ DETAIL: AGENTS ============
+
+    function renderDetailAgents(data) {
+      const el = document.getElementById('detail-agents');
+      const agents = data.agents || [];
+      const tasks = data.tasks || [];
+
+      let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
+      h += '<div class="detail-title">\ud83e\udd16 Agent Fleet</div>';
+
+      // Agent cards grid
+      h += '<div class="detail-card"><h3>Agents</h3>';
+      h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;" id="agent-grid-detail">';
+      agents.forEach(agent => {
+        const statusDot = agent.status === 'active' ? '#22c55e' : agent.status === 'busy' ? '#eab308' : 'rgba(255,255,255,0.2)';
+        const isLive = ['openclaw','claude_code','perplexity'].includes(agent.platform);
+        const thirtyMinAgo = Date.now() - 1800000;
+        const isStale = agent.last_active && new Date(agent.last_active).getTime() < thirtyMinAgo && (agent.status === 'active' || agent.status === 'busy');
+        const heartbeatColor = isStale ? '#ef4444' : agent.status === 'active' ? '#22c55e' : agent.status === 'busy' ? '#eab308' : 'rgba(255,255,255,0.2)';
+        const sel = selectedAgent === agent.id;
+        h += '<div onclick="selectAgentDetail(\'' + agent.id + '\')" style="background:' + (sel ? agent.color+'11' : 'rgba(255,255,255,0.03)') + ';border:1px solid ' + (sel ? agent.color : agent.color+'33') + ';border-radius:8px;padding:14px;cursor:pointer;transition:border-color 0.2s;">';
+        h += '<div style="display:flex;justify-content:space-between;align-items:start;"><div style="font-size:1.4rem;">' + (agent.icon||'') + '</div><div style="display:flex;align-items:center;gap:4px;">' + (isLive ? '<span style="font-size:0.6rem;color:'+agent.color+';font-weight:700;">LIVE</span>' : '') + '<div style="width:10px;height:10px;border-radius:50%;background:' + heartbeatColor + ';' + (isStale?'animation:pulse 1s infinite;':'') + '"></div></div></div>';
+        h += '<div style="font-weight:700;color:' + agent.color + ';font-size:0.85rem;margin:8px 0 2px;">' + esc(agent.name) + '</div>';
+        h += '<div style="font-size:0.7rem;color:rgba(255,255,255,0.4);line-height:1.3;">' + esc((agent.description||'').substring(0,80)) + '</div>';
+        if (agent.last_active) h += '<div style="font-size:0.65rem;color:rgba(255,255,255,0.2);margin-top:4px;">Last seen: ' + timeSince(agent.last_active) + '</div>';
+        h += '</div>';
+      });
+      h += '</div></div>';
+
+      // Dispatch form
+      h += '<div class="detail-card" id="dispatch-panel-detail" style="display:' + (selectedAgent?'block':'none') + ';">';
+      if (selectedAgent) {
+        const agent = agents.find(a => a.id === selectedAgent);
+        if (agent) {
+          h += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;"><h3 style="color:' + agent.color + ';margin:0;">' + (agent.icon||'') + ' ' + esc(agent.name) + '</h3><button class="btn" onclick="selectedAgent=null;renderDetailView(\'agents\')" style="background:none;color:rgba(255,255,255,0.4);font-size:1.2rem;padding:0 8px;">&times;</button></div>';
+          h += '<p style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin:0 0 12px;">' + esc(agent.description||'') + '</p>';
+          h += '<textarea id="dispatch-input" rows="4" placeholder="' + esc(getPlaceholder(agent)) + '" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:10px;border-radius:4px;font-size:0.85rem;resize:vertical;"></textarea>';
+          h += '<div style="display:flex;gap:8px;margin-top:8px;"><button class="btn btn-cyan" onclick="executeDispatch()" style="background:' + agent.color + ';">' + (agent.platform==='openclaw'?'Dispatch Task':'Send + Copy') + '</button><button class="btn" onclick="executeDispatch(\'clipboard\')" style="background:rgba(255,255,255,0.1);color:#e2e8f0;">Copy Prompt</button></div>';
+          h += '<div id="dispatch-result" style="margin-top:8px;font-size:0.8rem;"></div>';
+        }
+      }
+      h += '</div>';
+
+      // Task history
+      h += '<div class="detail-card"><h3>Task History</h3>';
+      const sc = { pending:'yellow', in_progress:'blue', completed:'green', failed:'red', cancelled:'gray' };
+      if (!tasks.length) h += '<p style="color:rgba(255,255,255,0.3)">No tasks</p>';
+      else {
+        h += '<table><tr><th>Agent</th><th>Task</th><th>Priority</th><th>Status</th><th>Time</th><th></th></tr>';
+        tasks.forEach(t => {
+          const agentInfo = agents.find(a => a.id === t.agent) || {};
+          h += '<tr><td><span style="color:' + (agentInfo.color||'#9ca3af') + ';font-size:0.75rem;font-weight:600;">' + (agentInfo.icon||'') + ' ' + esc(agentInfo.name||t.agent) + '</span></td><td style="font-size:0.75rem" class="trunc">' + esc(t.task) + '</td><td><span class="badge badge-' + (t.priority==='urgent'?'red':t.priority==='high'?'orange':'gray') + '">' + t.priority + '</span></td><td><span class="badge badge-' + (sc[t.status]||'gray') + '">' + t.status + '</span></td><td style="font-size:0.75rem;color:rgba(255,255,255,0.4)">' + timeSince(t.created_at) + '</td><td>' + (t.status==='pending'||t.status==='in_progress'?'<button class="btn btn-sm btn-red" onclick="killTask(\''+t.id+'\')">Cancel</button>':'') + '</td></tr>';
+        });
+        h += '</table>';
+      }
+      h += '</div>';
+
+      el.innerHTML = h;
+    }
+
+    function selectAgentDetail(agentId) {
+      selectedAgent = agentId;
+      renderDetailView('agents');
+    }
+
+    // ============ DETAIL: CONTENT STUDIO ============
+
+    function renderDetailContent(data) {
+      const el = document.getElementById('detail-content');
+      const images = data.recent_images || [];
+
+      let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
+      h += '<div class="detail-title">\ud83c\udfa8 Content Studio</div>';
+
+      // Image generation form
+      h += '<div class="detail-card"><h3>Image Generation</h3>';
+      h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">';
+      h += '<div><textarea id="image-prompt" rows="3" placeholder="Newsletter header: dark background, cyber-themed circuit board pattern with a glowing blue pulse..." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:10px;border-radius:4px;font-size:0.85rem;resize:vertical;"></textarea>';
+      h += '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">';
+      h += '<select id="image-provider" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:6px 10px;border-radius:4px;font-size:0.8rem;"><option value="dalle3">DALL-E 3</option><option value="gpt_image">GPT Image (best)</option><option value="imagen3">Imagen 3</option></select>';
+      h += '<select id="image-size" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:6px 10px;border-radius:4px;font-size:0.8rem;"><option value="1024x1024">Square</option><option value="1792x1024">Landscape</option><option value="1024x1792">Portrait</option></select>';
+      h += '<select id="image-style" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:6px 10px;border-radius:4px;font-size:0.8rem;"><option value="natural">Natural</option><option value="vivid">Vivid</option></select>';
+      h += '<button class="btn btn-cyan" onclick="generateImage()">Generate</button></div>';
+      h += '<div id="image-status" style="margin-top:8px;font-size:0.8rem;color:rgba(255,255,255,0.4);"></div></div>';
+      h += '<div id="image-preview" style="min-height:200px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;"><span style="color:rgba(255,255,255,0.2);font-size:0.8rem;">Image will appear here</span></div>';
+      h += '</div></div>';
+
+      // Recent images gallery
+      h += '<div class="detail-card"><h3>Recent Images</h3>';
+      h += '<div id="image-history" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;">';
+      if (!images.length) h += '<p style="color:rgba(255,255,255,0.2);font-size:0.75rem;">No images yet</p>';
+      else images.forEach(img => {
+        h += '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:6px;overflow:hidden;cursor:pointer;" title="' + esc(img.prompt.substring(0, 80)) + '">';
+        h += img.image_url ? '<img src="' + img.image_url + '" style="width:100%;height:80px;object-fit:cover;">' : '<div style="width:100%;height:80px;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:rgba(255,255,255,0.3);">' + img.provider + '</div>';
+        h += '<div style="padding:4px 6px;font-size:0.65rem;color:rgba(255,255,255,0.4);">' + fmtDate(img.created_at) + ' · ' + img.provider + '</div></div>';
+      });
+      h += '</div></div>';
+
+      // Research hub
+      h += '<div class="detail-card"><h3>Research Hub</h3>';
+      h += '<div style="display:flex;gap:8px;margin-bottom:12px;"><input type="text" id="research-query" placeholder="What is the current status of VA T4NG2 task orders?" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:10px;border-radius:4px;font-size:0.85rem;"><button class="btn btn-cyan" onclick="runResearch()">Research All</button></div>';
+      h += '<div style="display:flex;gap:8px;margin-bottom:16px;">';
+      h += '<label style="font-size:0.75rem;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:4px;"><input type="checkbox" id="research-perplexity" checked> Perplexity</label>';
+      h += '<label style="font-size:0.75rem;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:4px;"><input type="checkbox" id="research-chatgpt" checked> ChatGPT</label>';
+      h += '<label style="font-size:0.75rem;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:4px;"><input type="checkbox" id="research-gemini" checked> Gemini</label>';
+      h += '</div>';
+      h += '<div id="research-results" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">';
+      h += '<div id="result-perplexity" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px;min-height:150px;"><div style="font-weight:700;font-size:0.8rem;color:#00e5fa;margin-bottom:8px;">Perplexity</div><div class="r-content" style="font-size:0.8rem;color:rgba(255,255,255,0.3);">Waiting for query...</div></div>';
+      h += '<div id="result-chatgpt" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px;min-height:150px;"><div style="font-weight:700;font-size:0.8rem;color:#74aa9c;margin-bottom:8px;">ChatGPT</div><div class="r-content" style="font-size:0.8rem;color:rgba(255,255,255,0.3);">Waiting for query...</div></div>';
+      h += '<div id="result-gemini" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px;min-height:150px;"><div style="font-weight:700;font-size:0.8rem;color:#4285f4;margin-bottom:8px;">Gemini</div><div class="r-content" style="font-size:0.8rem;color:rgba(255,255,255,0.3);">Waiting for query...</div></div>';
+      h += '</div>';
+      h += '<div id="research-actions" style="display:none;margin-top:12px;"><button class="btn btn-cyan btn-sm" onclick="pushToSignal()">Push to Intel Signals</button> <button class="btn btn-sm" onclick="copyResearch()" style="background:rgba(255,255,255,0.1);color:#e2e8f0;">Copy All Results</button> <span id="research-push-status"></span></div>';
+      h += '</div>';
+
+      el.innerHTML = h;
+    }
+
+    // ============ ALL EXISTING ACTION FUNCTIONS ============
+
+    async function releaseEmail(id) { const d = await apiPost({ action: 'release_email', id }); toast(d.released ? 'Email released.' : 'Failed: ' + d.error); loadDashboard(); }
+    async function setMode(m) { const d = await apiPost({ action: 'set_mode', value: m }); const r = document.getElementById('action-result'); if (r) r.textContent = d.note || JSON.stringify(d); }
+    async function triggerHealthCheck() { await apiPost({ action: 'trigger_health_check' }); toast('Health check triggered.'); }
+    async function killTask(id) { await apiPost({ action: 'kill_task', id }); toast('Task cancelled.'); loadDashboard(); }
+    async function killSignal(id) { await apiPost({ action: 'kill_signal', id }); toast('Signal killed.'); loadDashboard(); }
 
     async function updatePipeline(id, status) { await apiPost({ action: 'update_pipeline', id, status }); loadDashboard(); }
 
@@ -559,6 +789,47 @@
       loadDashboard();
     }
 
+    function getPlaceholder(a) {
+      const p = { 'mmt-newsletter':'Draft article about..., Score this topic...', 'mmt-website':'Fix page..., Add section to...', 'mmt-missionpulse':'Add feature..., Fix bug in...', 'mmt-business':'Analyze opportunity for...', 'mmt-dafe':'Extract appropriations for...', 'rid-capture':'Start capture for..., Draft section...', 'rid-marketing':'Draft LinkedIn post about...', 'rid-contracts':'Check status of..., Find vehicles for...', 'cap-oasis':'Review section..., Compliance check...', 'cap-ccn':'Draft response to...', 'cap-iht2':'Draft RFI section...', 'cap-gtm':'Evaluate partner..., Market analysis...', 'personal-bio':'Update section on...', 'personal-babydev':'Create content about...', 'personal-resume':'Align skills for...', 'personal-podcast':'Prep talking points for...', 'ops-editorial':'Draft newsletter..., Score topic...', 'ops-code':'Fix bug in..., Add feature...', 'ops-research':'Research status of..., Fact-check...' };
+      return p[a.id] || 'Describe what you need...';
+    }
+
+    function executeDispatch(mode) {
+      const agent = allAgents.find(a => a.id === selectedAgent);
+      if (!agent) return;
+      const input = document.getElementById('dispatch-input').value.trim();
+      if (!input) { document.getElementById('dispatch-result').innerHTML = '<span style="color:#ef4444;">Enter a task first.</span>'; return; }
+      const resultEl = document.getElementById('dispatch-result');
+
+      apiPost({ action: 'add_task', task: input, agent: agent.id, priority: 'normal' }).then(() => { loadDashboard(); });
+
+      let prompt = '';
+      if (agent.platform === 'claude_code') {
+        prompt = 'TASK: ' + input + '\n\nIMPORTANT: cd to /Users/marywomack/Projects/mmt-site first. Verify pwd does not contain /private/tmp/claude-.\n\n' + input + '\n\nVerify all changes. Do NOT deploy without review.';
+      } else if (agent.platform === 'perplexity') {
+        prompt = 'Research the following for Mission Meets Tech. Provide specific data points, contract numbers, dollar values, and source URLs.\n\nTopic: ' + input + '\n\nFocus on: federal health IT, defense contracting, VA/DHA systems, GovCon procurement.';
+      } else {
+        const ctx = { mmt_platform:'Context: This is for Mission Meets Tech (missionmeetstech.com), a federal health IT intelligence platform.', rockitdata:'Context: This is for rockITdata, a small SDVOSB/WOSB defense contractor. Do NOT reference Mission Meets Tech.', active_captures:'Context: This is an active federal contract capture/proposal effort. Compliance and win strategy are paramount.', content_personal:'Context: Personal/content project for Mary Womack.' };
+        prompt = input + '\n\n' + (ctx[agent.domain] || '');
+      }
+
+      document.getElementById('dispatch-input').value = '';
+
+      if (agent.platform === 'openclaw') {
+        resultEl.innerHTML = '<span style="color:#22c55e;">&#10003; Task dispatched to ' + agent.name + '. It will pick this up on next heartbeat.</span>';
+      } else if (mode === 'clipboard') {
+        navigator.clipboard.writeText(prompt).then(() => {
+          const dest = agent.platform === 'claude_code' ? 'Claude Code' : agent.platform === 'perplexity' ? 'Perplexity' : agent.name;
+          resultEl.innerHTML = '<span style="color:#22c55e;">&#10003; Copied to clipboard. Paste into ' + dest + '.</span>';
+        });
+      } else {
+        navigator.clipboard.writeText(prompt).then(() => {
+          const dest = agent.platform === 'claude_code' ? 'Claude Code' : agent.platform === 'perplexity' ? 'Perplexity' : agent.name;
+          resultEl.innerHTML = '<span style="color:#22c55e;">&#10003; Task queued + prompt copied. Paste into ' + dest + ' to execute.</span>';
+        });
+      }
+    }
+
     // --- IMAGE STUDIO ---
     async function generateImage() {
       const prompt = document.getElementById('image-prompt').value.trim();
@@ -581,14 +852,7 @@
       }
     }
 
-    function renderImageHistory(images) {
-      const el = document.getElementById('image-history');
-      if (!images || !images.length) { el.innerHTML = '<p style="color:rgba(255,255,255,0.2);font-size:0.75rem;">No images yet</p>'; return; }
-      el.innerHTML = images.map(img => '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:6px;overflow:hidden;cursor:pointer;" title="' + esc(img.prompt.substring(0, 80)) + '">' + (img.image_url ? '<img src="' + img.image_url + '" style="width:100%;height:80px;object-fit:cover;">' : '<div style="width:100%;height:80px;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:rgba(255,255,255,0.3);">' + img.provider + '</div>') + '<div style="padding:4px 6px;font-size:0.65rem;color:rgba(255,255,255,0.4);">' + fmtDate(img.created_at) + ' · ' + img.provider + '</div></div>').join('');
-    }
-
     // --- RESEARCH HUB ---
-    let _lastResearch = null;
     async function runResearch() {
       const query = document.getElementById('research-query').value.trim();
       if (!query) return;
@@ -649,6 +913,20 @@
         el.innerHTML = h || '<p style="color:rgba(255,255,255,0.3);font-size:0.82rem;">No results.</p>';
       } catch (e) { el.innerHTML = '<p style="color:#ef4444;font-size:0.82rem;">Failed: ' + e.message + '</p>'; }
     }
+
+    // Apply initial route after first load
+    const _origLoadDashboard = loadDashboard;
+    let _firstLoad = true;
+    // We handle route on hashchange and after initial load via the render cycle
+    // The applyRoute is called after content becomes visible
+    const _observer = new MutationObserver(() => {
+      if (document.getElementById('content').style.display === 'block' && _firstLoad) {
+        _firstLoad = false;
+        applyRoute();
+        _observer.disconnect();
+      }
+    });
+    _observer.observe(document.getElementById('content'), { attributes: true, attributeFilter: ['style'] });
   </script>
 </body>
 </html>
