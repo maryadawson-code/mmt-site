@@ -27,6 +27,7 @@ const { validateScorecard } = require("./lib/scorecard-validator");
 const { logOpsEvent } = require("./lib/ops-ledger");
 const { extractIntelSignals } = require("./lib/signal-extractor");
 const { trackQuality } = require("./lib/quality-tracker");
+const { getFlag } = require("./lib/feature-flags");
 
 // --- Environment Variables ---
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -588,9 +589,12 @@ exports.handler = async (event) => {
       console.log(`[COMPLIANCE] Score: ${complianceScore}% (${compliant}/${applicable.length} compliant, ${partial} partial)`);
     }
 
-    // Server-side weighted pWin calculation (replaces Claude's additive model)
+    // Server-side pWin calculation (weighted model by default; additive = use Claude's raw pWin)
     const { calculatePwin } = require("./lib/pwin-calculator");
-    const pwinResult = calculatePwin(scorecard, { hasSow: !!finalSowText, documentType, complianceScore });
+    const pwinModel = getFlag("FEATURE_PWIN_MODEL");
+    const pwinResult = pwinModel === "additive"
+      ? { pWin_factors: scorecard.pWin_factors || [], pwin_estimate: scorecard.pwin_estimate || "N/A", pwin_justification: "Using Claude raw pWin (additive model)", pwin: null, pwin_range: "N/A", factor_table: [], penalties: [], kill_conditions: [] }
+      : calculatePwin(scorecard, { hasSow: !!finalSowText, documentType, complianceScore });
     // Inject computed pWin back into scorecard for downstream consumers
     scorecard.pWin_factors = pwinResult.pWin_factors;
     scorecard.pwin_estimate = pwinResult.pwin_estimate;
@@ -692,10 +696,11 @@ exports.handler = async (event) => {
         hasSow: !!finalSowText,
       });
 
-      // Generate Score Report HTML attachment
+      // Generate Score Report attachment (HTML or legacy PDF based on feature flag)
       let scoreReportAttachment = null;
       try {
-        const { renderProposalPulseHTML } = require("./lib/report-html-renderer");
+        const pdfRenderer = getFlag("FEATURE_PDF_RENDERER");
+        const { renderProposalPulseHTML } = pdfRenderer === "pdfkit" ? require("./lib/proposalpulse-pdf") : require("./lib/report-html-renderer");
         const reportHtml = renderProposalPulseHTML({
           scorecard, overallGrade, documentType, documentLabel: config.label,
           fileName, hasSow: !!finalSowText,

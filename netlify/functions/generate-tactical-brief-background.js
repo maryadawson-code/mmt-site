@@ -37,6 +37,7 @@ const { createReportQuality, analyzePassResult, checkReportQuality, buildQuality
 const { sanitizeSynthesis } = require("./lib/synthesis-sanitizer");
 const { logOpsEvent } = require("./lib/ops-ledger");
 const { trackQuality } = require("./lib/quality-tracker");
+const { getFlag } = require("./lib/feature-flags");
 
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 const PERPLEXITY_MODEL = "sonar-pro";
@@ -641,8 +642,10 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: "Email and topic are required" };
   }
 
-  // Extract structured company context from additional_context
-  const companyContext = extractCompanyContext(company, additional_context, topic);
+  // Extract structured company context from additional_context (skippable via feature flag)
+  const companyContext = getFlag("FEATURE_ENTITY_GUARD") === "off"
+    ? { company: company || null, isMmtPlatform: false, knownCerts: [], knownVehicles: [], hasIdentity: !!company }
+    : extractCompanyContext(company, additional_context, topic);
 
   console.log(`generate-tactical-brief-background: starting for ${email} (session ${session_id})`);
   console.log(`[COMPANY] ${companyContext.hasIdentity ? companyContext.company : "No company identified"} | MMT platform: ${companyContext.isMmtPlatform} | Certs: ${companyContext.knownCerts.join(",") || "none"} | Vehicles: ${companyContext.knownVehicles.join(",") || "none"}`);
