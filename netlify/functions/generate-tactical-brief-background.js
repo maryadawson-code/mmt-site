@@ -19,7 +19,7 @@
 // ============================================================
 
 // const { generateTacticalBriefPdf } = require("./lib/tactical-brief-pdf"); // replaced by HTML renderer
-const { renderMarketPulseHTML } = require("./lib/report-html-renderer");
+const { renderMarketPulseHTML, renderMarketPulseEmailHTML } = require("./lib/report-html-renderer");
 const { buildDeliveryEmail, buildNotificationEmail } = require("./lib/tactical-brief-email");
 const { sendEmail } = require("./lib/send-email");
 const { optimizeMarketPrompt } = require("./lib/prompt-optimizer");
@@ -1010,29 +1010,26 @@ exports.handler = async (event) => {
 
     await _transition("pdf_started");
 
-    // Generate report HTML
+    // Generate report HTML (two versions: standalone attachment + email-safe inline)
     console.log("Generating report HTML...");
     const generatedAt = new Date().toISOString();
-    const reportHtmlContent = renderMarketPulseHTML({
-      name, company, topic, audience, generatedAt,
-      synthesis: finalSynthesis,
-      citations: allCitations,
-    });
+    const reportData = { name, company, topic, audience, generatedAt, synthesis: finalSynthesis, citations: allCitations };
+    const reportHtmlContent = renderMarketPulseHTML(reportData);
+    const reportEmailHtml = renderMarketPulseEmailHTML(reportData);
     const reportBuffer = Buffer.from(reportHtmlContent);
-    console.log(`Report HTML generated: ${Math.round(reportBuffer.length / 1024)}KB`);
+    console.log(`Report HTML generated: ${Math.round(reportBuffer.length / 1024)}KB (attachment) + ${Math.round(reportEmailHtml.length / 1024)}KB (email body)`);
 
     // State: pdf_completed → email_queued
     await _transition("pdf_completed");
     await _transition("email_queued");
 
-    // Send delivery email with HTML report attachment (with degraded mode hold)
+    // Send delivery email with inline report + standalone HTML attachment
     console.log("Sending delivery email...");
-    const deliveryHtml = buildDeliveryEmail({ name, topic, orderId: _orderId, qualityGrade: qualityResult.grade, qualityFailures: qualityResult.failures });
     const deliverySubject = `Your MarketPulse Report: ${topic.slice(0, 60)}${topic.length > 60 ? "..." : ""}`;
 
     if (shouldHoldEmail()) {
       if (_supabase) {
-        await holdEmail(_supabase, email, deliverySubject, deliveryHtml, {
+        await holdEmail(_supabase, email, deliverySubject, reportEmailHtml, {
           product: "marketpulse",
           record_id: _orderId,
           has_attachment: true,
@@ -1044,7 +1041,7 @@ exports.handler = async (event) => {
       const deliveryResult = await sendEmail({
         to: email,
         subject: deliverySubject,
-        html: deliveryHtml,
+        html: reportEmailHtml,
         from: "Mission Meets Tech <noreply@missionmeetstech.com>",
         attachments: [
           {
