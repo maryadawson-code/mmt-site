@@ -24,6 +24,7 @@ const { checkKillSwitch } = require("./lib/kill-switch");
 const { extractIntelSignals } = require("./lib/signal-extractor");
 const { logOpsEvent } = require("./lib/ops-ledger");
 const { generateReportUrl } = require("./lib/report-url");
+const { trackAnthropic } = require("./lib/cost-tracker");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -42,6 +43,8 @@ const CORS_HEADERS = {
 // ============================================================
 // CLAUDE API HELPER
 // ============================================================
+
+let _lastClaudeUsage = null;
 
 async function callClaude(systemPrompt, userPrompt, maxTokens, model, temperature = 0.3) {
   const response = await withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
@@ -66,6 +69,7 @@ async function callClaude(systemPrompt, userPrompt, maxTokens, model, temperatur
   }
 
   const data = await response.json();
+  _lastClaudeUsage = data.usage || null;
   return data.content
     .filter((block) => block.type === "text")
     .map((block) => block.text)
@@ -425,9 +429,22 @@ exports.handler = async (event) => {
     }
     let rewriteResult;
 
+    const _costStartRewrite = Date.now();
     try {
       const rewriteText = await callClaude(rewritePrompt.system, rewritePrompt.user, REWRITE_MAX_TOKENS, rewriteModelConfig.model, 0.4);
       rewriteResult = parseJson(rewriteText);
+      // Cost tracking: rewrite call
+      try {
+        await trackAnthropic(supabase, {
+          functionName: 'gold-team-review-background',
+          product: 'proposalpulse',
+          orderId: scoring_id,
+          model: rewriteModelConfig.model,
+          usage: _lastClaudeUsage,
+          latencyMs: Date.now() - _costStartRewrite,
+          metadata: { role: 'rewrite' },
+        });
+      } catch (_costErr) { /* never break gold team */ }
     } catch (err) {
       console.error("Gold Team: rewrite call failed:", err);
       await logOpsEvent(supabase, { event_type: "MODEL_FAILURE", source_function: "gold-team-review-background", severity: "error", signature: "anthropic_rewrite_failure", affected_entity: scoring_id, details: { error: err.message } });
@@ -458,10 +475,23 @@ exports.handler = async (event) => {
     console.log(`Gold Team: reviewing rewrites (model=${reviewModelConfig.model} [${reviewModelConfig.reason}])...`);
 
     let reviewResult = null;
+    const _costStartReview = Date.now();
     try {
       const reviewPrompt = buildReviewPrompt(rewriteResult, config);
       const reviewText = await callClaude(reviewPrompt.system, reviewPrompt.user, REVIEW_MAX_TOKENS, reviewModelConfig.model, 0.2);
       reviewResult = parseJson(reviewText);
+      // Cost tracking: review call
+      try {
+        await trackAnthropic(supabase, {
+          functionName: 'gold-team-review-background',
+          product: 'proposalpulse',
+          orderId: scoring_id,
+          model: reviewModelConfig.model,
+          usage: _lastClaudeUsage,
+          latencyMs: Date.now() - _costStartReview,
+          metadata: { role: 'review' },
+        });
+      } catch (_costErr) { /* never break gold team */ }
     } catch (err) {
       console.error("Gold Team: review call failed (degrading gracefully):", err);
       // Continue without review — send rewrites without confidence scores

@@ -22,6 +22,10 @@ const { logOpsEvent } = require("./lib/ops-ledger");
 const { checkKillSwitch } = require("./lib/kill-switch");
 const { checkFreshness } = require("./lib/stale-detector");
 const { disambiguate } = require("./lib/entity-disambiguator");
+const { trackPerplexity } = require("./lib/cost-tracker");
+
+// --- Module-scoped state for cost tracking ---
+let _supabaseRef = null;
 
 // --- Constants ---
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
@@ -239,6 +243,7 @@ Return ONLY valid JSON. No markdown code fences. No text before or after the JSO
 // ============================================================
 
 async function callPerplexity(systemPrompt, userMessage, _maxSearches, model, maxTokens) {
+  const _costStart = Date.now();
   const response = await withRetry(() => fetchWithTimeout("https://api.perplexity.ai/chat/completions", {
     method: "POST",
     headers: {
@@ -268,6 +273,19 @@ async function callPerplexity(systemPrompt, userMessage, _maxSearches, model, ma
     const u = finalData.usage;
     console.log(`  AI cost: model=${model}, input=${u.prompt_tokens}, output=${u.completion_tokens}`);
   }
+
+  // Cost tracking: Perplexity call
+  try {
+    if (_supabaseRef) {
+      await trackPerplexity(_supabaseRef, {
+        functionName: 'contract-intel-refresh-background',
+        product: 'contract-intel',
+        model: model,
+        usage: finalData.usage ? { input_tokens: finalData.usage.prompt_tokens || 0, output_tokens: finalData.usage.completion_tokens || 0 } : null,
+        latencyMs: Date.now() - _costStart,
+      });
+    }
+  } catch (_costErr) { /* never break contract refresh */ }
 
   // Extract text from OpenAI-compatible response
   let textContent = finalData.choices?.[0]?.message?.content || "";
@@ -470,6 +488,7 @@ exports.handler = async (event) => {
   }
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+  _supabaseRef = supabase;
 
   let successCount = 0;
   let errorCount = 0;

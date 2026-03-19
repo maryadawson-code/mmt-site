@@ -174,6 +174,32 @@ exports.handler = async (event) => {
       return ok({ failed: true });
     }
 
+    // COST SUMMARY
+    if (action === "cost_summary") {
+      const todayStart = new Date().toISOString().split("T")[0] + "T00:00:00Z";
+      const [eventsRes, alertsRes] = await Promise.all([
+        supabase.from("cost_events").select("provider, product, cost_cents, status").gte("created_at", todayStart),
+        supabase.from("cost_alerts").select("id, alert_type, severity, title").is("resolved_at", null).limit(10),
+      ]);
+      const events = eventsRes.data || [];
+      const totalCents = events.reduce((s, e) => s + (e.cost_cents || 0), 0);
+      return ok({ totalCents, calls: events.length, alerts: alertsRes.data || [] });
+    }
+
+    // COST RESOLVE ALERT
+    if (action === "cost_resolve_alert" && body.alertId) {
+      await supabase.from("cost_alerts").update({ resolved_at: new Date().toISOString(), human_decision: body.decision || "acknowledged", human_notes: body.notes || null }).eq("id", body.alertId);
+      return ok({ resolved: true });
+    }
+
+    // COST UPDATE THRESHOLD
+    if (action === "cost_update_threshold") {
+      const { product, provider, functionName, multiplier } = body;
+      if (!product || !provider || !functionName) return err(400, "product, provider, functionName required");
+      await supabase.from("cost_baselines").update({ alert_threshold_multiplier: multiplier, human_override: true, updated_at: new Date().toISOString() }).eq("product", product).eq("provider", provider).eq("function_name", functionName);
+      return ok({ updated: true });
+    }
+
     return err(404, "Unknown action: " + action);
   }
 

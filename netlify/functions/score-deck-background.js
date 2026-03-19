@@ -29,6 +29,7 @@ const { extractIntelSignals } = require("./lib/signal-extractor");
 const { trackQuality } = require("./lib/quality-tracker");
 const { getFlag } = require("./lib/feature-flags");
 const { generateReportUrl } = require("./lib/report-url");
+const { trackAnthropic } = require("./lib/cost-tracker");
 
 // --- Environment Variables ---
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -459,6 +460,8 @@ exports.handler = async (event) => {
       messages: [{ role: "user", content: messageContent }],
     };
 
+    const _costStart = Date.now();
+
     const primaryPromise = withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
@@ -504,6 +507,18 @@ exports.handler = async (event) => {
 
     const claudeData = await claudeResponse.json();
 
+    // Cost tracking: primary scoring call
+    try {
+      await trackAnthropic(supabase, {
+        functionName: 'score-deck-background',
+        product: 'proposalpulse',
+        orderId: scoring_id,
+        model: scoringModelConfig.model,
+        usage: claudeData.usage,
+        latencyMs: Date.now() - _costStart,
+      });
+    } catch (_costErr) { /* never break scoring */ }
+
     const tokenUsage = {
       input: claudeData.usage?.input_tokens || null,
       output: claudeData.usage?.output_tokens || null,
@@ -538,6 +553,19 @@ exports.handler = async (event) => {
           .join("");
         const shadowCleaned = shadowText.replace(/```json\s?/g, "").replace(/```/g, "").trim();
         shadowScorecard = JSON.parse(shadowCleaned);
+
+        // Cost tracking: shadow scoring call
+        try {
+          await trackAnthropic(supabase, {
+            functionName: 'score-deck-background',
+            product: 'proposalpulse',
+            orderId: scoring_id,
+            model: 'claude-haiku-4-5-20251001',
+            usage: shadowData.usage,
+            latencyMs: Date.now() - _costStart,
+            metadata: { role: 'shadow' },
+          });
+        } catch (_costErr) { /* never break scoring */ }
 
         // Build consensus analysis
         if (shadowScorecard.scores && scorecard.scores) {

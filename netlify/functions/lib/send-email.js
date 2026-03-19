@@ -9,6 +9,18 @@ const { getCircuit } = require("./circuit-registry");
 const { CircuitOpenError } = require("./circuit-breaker");
 const { logOpsEvent } = require("./ops-ledger");
 const { getFlag } = require("./feature-flags");
+const { trackResend } = require("./cost-tracker");
+
+// Lazy Supabase client for cost tracking (created once on first use)
+let _costSupabase = null;
+function _getCostSupabase() {
+  if (_costSupabase) return _costSupabase;
+  if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
+    const { createClient } = require("@supabase/supabase-js");
+    _costSupabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+  }
+  return _costSupabase;
+}
 
 const RESEND_API_URL = "https://api.resend.com/emails";
 const DEFAULT_FROM = "ProposalPulse <noreply@missionmeetstech.com>";
@@ -59,12 +71,35 @@ async function sendEmail({ to, subject, html, from, attachments }) {
     return data;
   };
 
+  const _costStart = Date.now();
   try {
     if (useCircuit) {
       const data = await circuit.execute(doSend);
+      // Cost tracking: Resend email
+      try {
+        const sb = _getCostSupabase();
+        if (sb) {
+          await trackResend(sb, {
+            functionName: 'send-email',
+            product: 'platform',
+            latencyMs: Date.now() - _costStart,
+          });
+        }
+      } catch (_costErr) { /* never break email send */ }
       return { success: true, id: data.id };
     } else {
       const data = await doSend();
+      // Cost tracking: Resend email
+      try {
+        const sb = _getCostSupabase();
+        if (sb) {
+          await trackResend(sb, {
+            functionName: 'send-email',
+            product: 'platform',
+            latencyMs: Date.now() - _costStart,
+          });
+        }
+      } catch (_costErr) { /* never break email send */ }
       return { success: true, id: data.id };
     }
   } catch (err) {

@@ -39,6 +39,7 @@ const { sanitizeSynthesis } = require("./lib/synthesis-sanitizer");
 const { logOpsEvent } = require("./lib/ops-ledger");
 const { trackQuality } = require("./lib/quality-tracker");
 const { getFlag } = require("./lib/feature-flags");
+const { trackPerplexity } = require("./lib/cost-tracker");
 
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 const PERPLEXITY_MODEL = "sonar-pro";
@@ -47,6 +48,8 @@ const PERPLEXITY_URL = "https://api.perplexity.ai/chat/completions";
 // --- Perplexity API call (with per-order cap) ---
 const PERPLEXITY_CAP = 12;
 let _perplexityCallCount = 0;
+let _supabase = null;
+let _orderId = null;
 
 async function callPerplexity(systemPrompt, userPrompt, maxTokens = 4000) {
   _perplexityCallCount++;
@@ -54,6 +57,7 @@ async function callPerplexity(systemPrompt, userPrompt, maxTokens = 4000) {
     console.warn(`[PERPLEXITY CAP] Call ${_perplexityCallCount} exceeds cap of ${PERPLEXITY_CAP} — returning empty result`);
     return { content: "", citations: [], capped: true };
   }
+  const _costStart = Date.now();
   const response = await withRetry(() => fetch(PERPLEXITY_URL, {
     method: "POST",
     headers: {
@@ -79,6 +83,21 @@ async function callPerplexity(systemPrompt, userPrompt, maxTokens = 4000) {
   }
 
   const data = await response.json();
+
+  // Cost tracking: Perplexity call
+  try {
+    if (_supabase) {
+      await trackPerplexity(_supabase, {
+        functionName: 'generate-tactical-brief-background',
+        product: 'marketpulse',
+        orderId: _orderId,
+        model: PERPLEXITY_MODEL,
+        usage: data.usage ? { input_tokens: data.usage.prompt_tokens || 0, output_tokens: data.usage.completion_tokens || 0 } : null,
+        latencyMs: Date.now() - _costStart,
+      });
+    }
+  } catch (_costErr) { /* never break research pipeline */ }
+
   return {
     content: data.choices[0].message.content,
     citations: data.citations || [],
@@ -735,8 +754,8 @@ exports.handler = async (event) => {
   // Note: MarketPulse state machine uses marketpulse_orders table, keyed by session_id.
   // We attempt transitions but don't block on failure — state tracking is observability, not control flow.
   const { createClient } = require("@supabase/supabase-js");
-  let _supabase = null;
-  let _orderId = null;
+  _supabase = null;
+  _orderId = null;
   if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
     _supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
     // Look up order by session_id, or create one (admin/free path skips gateway insert)
