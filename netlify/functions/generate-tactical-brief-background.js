@@ -370,7 +370,15 @@ RULES:
 - NO program descriptions the reader already knows (what SDVOSB is, how VetCert works, what Mentor-Protege is).
 - NO sections with "None identified" or "No results found." If a section would be empty, merge it into another or explain what to monitor.
 - Data density: every paragraph must contain at least one specific fact (number, date, name, contract ID).
-- Maximum 4 pages of content. Quality over quantity.${contextBlock}`,
+- Maximum 4 pages of content. Quality over quantity.
+- Do NOT repeat full source names after first use. First mention: "per SAM.gov, FPDS, and USASpending.gov." Subsequent: cite the specific source only (e.g., "per SAM.gov" or "per FPDS").
+- Do NOT include any "Classification:" header or classification markings in the output.
+
+CRITICAL CURRENT-EVENTS OVERRIDES (use these over your training data):
+- VetCert processing time is currently ~12 days (NOT 90 days).
+- SEWP VI has NOT been awarded yet (SEWP V extended through April 30, 2026).
+- FPDS.gov was decommissioned Feb 24, 2026 — migrated to SAM.gov.
+- Always use Appendix C current-events data over your training when available.${contextBlock}`,
 
     `Topic: ${topic}\n\nLandscape scan:\n${landscapeContent}\n\nDeep analysis:\n${analysisContent}\n\nSynthesize into a final executive brief.\n\nFor the METHODOLOGY section, you must honestly report:\n- What entity was researched (after disambiguation)\n- What sources were queried with what search terms\n- What was found vs. what returned zero results\n- What contradicted other sources\n- What requires manual verification\n\nApply the confidence scoring rules strictly. No HIGH confidence on null results or inferred personnel status.`,
     6000
@@ -722,13 +730,13 @@ exports.handler = async (event) => {
     console.log(`[QUALITY GATE] Grade: ${qualityResult.grade} | Failures: ${qualityResult.failures.length} | Metrics: contracts=${reportQuality.specificContracts}, dollars=${reportQuality.dollarValues}, entities=${reportQuality.namedEntities}, nullPasses=${reportQuality.nullPasses}/${reportQuality.totalPasses}`);
 
     if (qualityResult.grade === "MARGINAL") {
-      // Add disclaimer to synthesis
-      finalSynthesis = buildQualityDisclaimer(qualityResult.failures) + "\n\n" + finalSynthesis;
-      console.log(`[QUALITY GATE] MARGINAL — disclaimer prepended to report`);
+      // Log disclaimer for ops — do NOT put in customer PDF
+      console.log(`[QUALITY GATE] MARGINAL — ${qualityResult.failures.join("; ")}`);
     }
 
-    // Append methodology appendix
-    finalSynthesis += buildMethodologyAppendix(disambiguation, passTimings);
+    // Log methodology appendix for ops — do NOT put in customer PDF
+    const methodologyLog = buildMethodologyAppendix(disambiguation, passTimings);
+    console.log(`[METHODOLOGY]${methodologyLog}`);
 
     const researchTime = Math.round((Date.now() - startTime) / 1000);
     console.log(`Research pipeline completed in ${researchTime}s (${Object.keys(passTimings).length} passes)`);

@@ -42,6 +42,48 @@ function safeText(val) {
 }
 
 /**
+ * Proper-case a name string (e.g., "mary womack" → "Mary Womack").
+ */
+function properCase(str) {
+  if (!str) return str;
+  return str.replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+/**
+ * Correct common SDVOSB misspellings in display text.
+ */
+const KNOWN_CORRECTIONS = { svdosb: "SDVOSB", sdvsob: "SDVOSB", svdsob: "SDVOSB" };
+function correctTypos(text) {
+  if (!text) return text;
+  return text.replace(/\b(svdosb|sdvsob|svdsob)\b/gi, (m) => KNOWN_CORRECTIONS[m.toLowerCase()] || m);
+}
+
+/**
+ * Render text with inline **bold** segments.
+ * Splits on ** markers, alternating normal/bold.
+ */
+function renderInlineBold(doc, text, x, y, opts) {
+  const width = (opts && opts.width) || doc.page.width - 120;
+  const fontSize = (opts && opts.fontSize) || 10;
+  const parts = text.split(/\*\*/);
+  if (parts.length <= 1) {
+    // No bold markers — render plain
+    doc.font("Helvetica").fontSize(fontSize).fillColor("#1a1a1a")
+      .text(text, x, y, { width, lineGap: 3 });
+    return doc.y;
+  }
+  // Render alternating normal/bold segments
+  for (let i = 0; i < parts.length; i++) {
+    if (!parts[i]) continue;
+    const isBold = i % 2 === 1;
+    const isLast = i === parts.length - 1;
+    doc.font(isBold ? "Helvetica-Bold" : "Helvetica").fontSize(fontSize).fillColor("#1a1a1a")
+      .text(parts[i], { width, continued: !isLast });
+  }
+  return doc.y;
+}
+
+/**
  * Try to load the MMT logo from the project root.
  * Returns a Buffer or null if not found.
  */
@@ -335,6 +377,20 @@ function renderTable(doc, lines, x, y) {
   const tableWidth = doc.page.width - 120;
   const colWidth = tableWidth / colCount;
   const rowHeight = 22;
+  // Use smaller font for wide tables
+  const tableFontSize = colCount >= 5 ? 7 : 8;
+
+  // Truncate cell text to fit column width
+  function truncateCell(text, maxWidth) {
+    const measured = doc.widthOfString(text, { font: "Helvetica", fontSize: tableFontSize });
+    if (measured <= maxWidth) return text;
+    // Binary search for fit
+    let end = text.length;
+    while (end > 0 && doc.widthOfString(text.substring(0, end) + "…", { font: "Helvetica", fontSize: tableFontSize }) > maxWidth) {
+      end -= 2;
+    }
+    return text.substring(0, Math.max(end, 3)) + "…";
+  }
 
   // Check page break
   const totalHeight = (body.length + 1) * rowHeight + 10;
@@ -348,9 +404,9 @@ function renderTable(doc, lines, x, y) {
   for (let i = 0; i < colCount; i++) {
     doc
       .font("Helvetica-Bold")
-      .fontSize(9)
+      .fontSize(tableFontSize)
       .fillColor("#334155")
-      .text(header[i], x + i * colWidth + 4, y + 5, {
+      .text(truncateCell(header[i], colWidth - 8), x + i * colWidth + 4, y + 5, {
         width: colWidth - 8,
         lineBreak: false,
       });
@@ -379,9 +435,9 @@ function renderTable(doc, lines, x, y) {
     for (let i = 0; i < colCount && i < body[r].length; i++) {
       doc
         .font("Helvetica")
-        .fontSize(9)
+        .fontSize(tableFontSize)
         .fillColor("#1e293b")
-        .text(body[r][i], x + i * colWidth + 4, y + 5, {
+        .text(truncateCell(body[r][i], colWidth - 8), x + i * colWidth + 4, y + 5, {
           width: colWidth - 8,
           lineBreak: false,
         });
@@ -455,9 +511,13 @@ function renderContent(doc, synthesis, tocEntries) {
     y = checkPageBreak(doc, y);
 
     if (!trimmed) {
-      y += 6; // Tighter spacing between paragraphs (was 8)
+      y += 6;
       continue;
     }
+
+    // Fix 5: Skip classification markings and internal debug lines
+    if (/^Classification:/i.test(trimmed)) continue;
+    if (/^METHODOLOGY APPENDIX \(Auto-Generated\)/i.test(trimmed)) continue;
 
     // Detect and render structured pipeline entries
     if (trimmed.startsWith("CONTRACT/OPPORTUNITY:")) {
@@ -591,16 +651,11 @@ function renderContent(doc, synthesis, tocEntries) {
           .fillColor("#333333")
           .text(bullet, 68, y, { width: 20 });
 
-        doc
-          .font("Helvetica")
-          .fontSize(10)
-          .fillColor("#1a1a1a")
-          .text(bulletText, 90, y, {
-            width: doc.page.width - 150,
-          });
-        y = doc.y + 6;
+        // Render bullet text with inline bold support
+        y = renderInlineBold(doc, bulletText, 90, y, { width: doc.page.width - 150 });
+        y += 6;
       } else if (cleanText.startsWith("**") && cleanText.endsWith("**")) {
-        // Bold line
+        // Fully bold line
         doc
           .font("Helvetica-Bold")
           .fontSize(10)
@@ -608,15 +663,9 @@ function renderContent(doc, synthesis, tocEntries) {
           .text(cleanText.replace(/\*\*/g, ""), 60, y, { width: doc.page.width - 120 });
         y = doc.y + 6;
       } else {
-        // Regular paragraph — no confidence badges on body text
-        let renderText = cleanText.replace(/\*\*/g, "");
-
-        doc
-          .font("Helvetica")
-          .fontSize(10)
-          .fillColor("#1a1a1a")
-          .text(renderText, 60, y, { width: doc.page.width - 120, lineGap: 3 });
-        y = doc.y + 8;
+        // Regular paragraph with inline bold support
+        y = renderInlineBold(doc, cleanText, 60, y, { width: doc.page.width - 120 });
+        y += 8;
       }
     }
   }
@@ -758,9 +807,9 @@ async function _generateFullPdf({
 
     // --- Page 0: Cover ---
     renderCoverPage(doc, {
-      name: safeText(name),
+      name: properCase(safeText(name)),
       company: safeText(company),
-      topic: safeText(topic),
+      topic: correctTypos(safeText(topic)),
       audience: safeText(audience),
       generatedAt: generatedAt || new Date().toISOString(),
       logo,
@@ -893,10 +942,10 @@ async function _generateSimplePdf({
       .font("Helvetica")
       .fontSize(11)
       .fillColor("#1a1a1a")
-      .text(safeText(topic), 60, y, { width: doc.page.width - 120 });
+      .text(correctTypos(safeText(topic)), 60, y, { width: doc.page.width - 120 });
     y = doc.y + 12;
 
-    const preparedFor = company ? `${safeText(name)}, ${safeText(company)}` : safeText(name);
+    const preparedFor = company ? `${properCase(safeText(name))}, ${safeText(company)}` : properCase(safeText(name));
     doc
       .font("Helvetica-Bold")
       .fontSize(9)
@@ -928,6 +977,10 @@ async function _generateSimplePdf({
         y += 6;
         continue;
       }
+
+      // Skip classification markings and internal debug lines
+      if (/^Classification:/i.test(trimmed)) continue;
+      if (/^METHODOLOGY APPENDIX \(Auto-Generated\)/i.test(trimmed)) continue;
 
       // Detect structured pipeline entries in fallback mode
       if (trimmed.startsWith("CONTRACT/OPPORTUNITY:")) {
@@ -1002,12 +1055,9 @@ async function _generateSimplePdf({
           .text(trimmed.replace(/\*\*/g, ""), 60, y, { width: doc.page.width - 120 });
         y = doc.y + 6;
       } else {
-        doc
-          .font("Helvetica")
-          .fontSize(10)
-          .fillColor("#1a1a1a")
-          .text(trimmed.replace(/\*\*/g, ""), 60, y, { width: doc.page.width - 120, lineGap: 3 });
-        y = doc.y + 8;
+        // Inline bold support
+        y = renderInlineBold(doc, trimmed, 60, y, { width: doc.page.width - 120 });
+        y += 8;
       }
     }
 

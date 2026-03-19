@@ -450,10 +450,34 @@ exports.handler = async (event) => {
       complianceMatrix: scorecard.compliance_matrix || null,
     });
 
+    // Generate Red Team Review PDF
+    let reviewPdfAttachment = null;
+    try {
+      const { generateRedTeamPdf } = require("./lib/redteam-pdf");
+      const reviewPdf = await generateRedTeamPdf({
+        scorecard, overallGrade, documentLabel: config.label, fileName: file_name,
+        sections: mergedSections,
+        executiveSummary: reviewResult ? reviewResult.executive_summary : null,
+        prioritizedSteps: reviewResult ? reviewResult.next_steps : null,
+        pwinEstimate: rewriteResult.pwin_estimate || null,
+        pwinJustification: rewriteResult.pwin_justification || null,
+        pwinFactors: scorecard.pWin_factors || null,
+        competitivePositioning: scorecard.competitive_positioning || null,
+      });
+      reviewPdfAttachment = {
+        filename: `RedTeamReview-${scoring_id.slice(0, 8)}.pdf`,
+        content: reviewPdf.toString("base64"),
+      };
+      console.log(`Red Team PDF generated: ${Math.round(reviewPdf.length / 1024)}KB`);
+    } catch (pdfErr) {
+      console.error("Red Team PDF generation failed (sending email without attachment):", pdfErr.message);
+    }
+
     const emailResult = await sendEmail({
       to: normalizedEmail,
       subject: `Red Team Review: ${config.label} — All 9 Sections Reviewed`,
       html: emailHtml,
+      ...(reviewPdfAttachment && { attachments: [reviewPdfAttachment] }),
     });
 
     if (emailResult.success) {
