@@ -1033,18 +1033,13 @@ exports.handler = async (event) => {
 
     // Store report HTML in Supabase and generate viewer URL
     let reportUrl = null;
-    console.log(`[REPORT URL DEBUG] _supabase: ${!!_supabase}, _orderId: ${_orderId}, REPORT_VIEWER_SECRET set: ${!!process.env.REPORT_VIEWER_SECRET}`);
     if (_supabase && _orderId) {
       try {
         const { url } = generateReportUrl(_orderId, "marketpulse");
         reportUrl = url;
-        console.log(`[REPORT URL DEBUG] Generated URL: ${url.substring(0, 80)}...`);
-        const { error: updateErr } = await _supabase.from("marketpulse_orders").update({ report_html: reportHtmlContent, report_url: url }).eq("id", _orderId);
-        if (updateErr) console.error(`[REPORT URL DEBUG] Supabase update error:`, updateErr);
-        else console.log(`Report stored and URL generated for order ${_orderId}`);
-      } catch (e) { console.error("Report storage failed:", e.message, e.stack); }
-    } else {
-      console.error(`[REPORT URL DEBUG] SKIPPED — _supabase=${!!_supabase}, _orderId=${_orderId}`);
+        await _supabase.from("marketpulse_orders").update({ report_html: reportHtmlContent, report_url: url }).eq("id", _orderId);
+        console.log(`Report stored and URL generated for order ${_orderId}`);
+      } catch (e) { console.error("Report storage failed:", e.message); }
     }
 
     // State: pdf_completed → email_queued
