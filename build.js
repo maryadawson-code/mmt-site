@@ -1156,7 +1156,7 @@ function generateContractPages(contracts) {
       .replace(/\{\{NAICS_ROW\}\}/g, naicsRow)
       .replace(/\{\{DESCRIPTION\}\}/g, escapeHtml(c.description))
       .replace(/\{\{SAM_LINK\}\}/g, escapeHtml(c.link))
-      .replace(/\{\{CONTRACT_NAME_ENCODED\}\}/g, encodeURIComponent(c.name))
+      .replace(/\{\{CONTRACT_NAME_ENCODED\}\}/g, escapeHtml(c.name))
       .replace(/\{\{NAICS_FALLBACK\}\}/g, c.naics
         ? `<div><span style="color:var(--mmt-white-dim);">NAICS:</span> <span style="color:var(--mmt-white);">${escapeHtml(c.naics)}</span></div>`
         : '')
