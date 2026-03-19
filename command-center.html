@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MMT Command Center</title>
+  <meta name="robots" content="noindex, nofollow">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0a0e17; color: #e2e8f0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 14px; line-height: 1.5; }
+    .auth-gate { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    .auth-gate h1 { color: #ef4444; font-size: 1.5rem; }
+    .dashboard { max-width: 1400px; margin: 0 auto; padding: 20px; display: none; }
+    header { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid rgba(0,229,250,0.15); margin-bottom: 24px; }
+    header h1 { font-size: 1.4rem; color: #00e5fa; font-weight: 700; }
+    header .mode { padding: 4px 12px; border-radius: 4px; font-weight: 600; font-size: 0.85rem; }
+    .mode-normal { background: rgba(22,163,74,0.2); color: #22c55e; }
+    .mode-degraded { background: rgba(234,179,8,0.2); color: #eab308; }
+    .mode-readonly { background: rgba(249,115,22,0.2); color: #f97316; }
+    .mode-emergency { background: rgba(239,68,68,0.2); color: #ef4444; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+    .card { background: #111827; border: 1px solid rgba(0,229,250,0.1); border-radius: 8px; padding: 16px; }
+    .card h2 { font-size: 1rem; color: #00e5fa; margin-bottom: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+    .card.full { grid-column: 1 / -1; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    th { text-align: left; padding: 6px 8px; color: rgba(255,255,255,0.5); border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 500; }
+    td { padding: 6px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 0.75rem; font-weight: 600; }
+    .badge-green { background: rgba(22,163,74,0.2); color: #22c55e; }
+    .badge-yellow { background: rgba(234,179,8,0.2); color: #eab308; }
+    .badge-red { background: rgba(239,68,68,0.2); color: #ef4444; }
+    .badge-blue { background: rgba(59,130,246,0.2); color: #60a5fa; }
+    .badge-gray { background: rgba(107,114,128,0.2); color: #9ca3af; }
+    .stat { text-align: center; padding: 12px; }
+    .stat .value { font-size: 1.8rem; font-weight: 700; color: #00e5fa; }
+    .stat .label { font-size: 0.75rem; color: rgba(255,255,255,0.5); text-transform: uppercase; }
+    .stats-row { display: flex; gap: 16px; margin-bottom: 16px; }
+    .flag-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .flag-name { font-family: monospace; font-size: 0.82rem; color: rgba(255,255,255,0.7); }
+    .flag-value { font-family: monospace; font-size: 0.82rem; }
+    .circuit-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .circuit-name { font-weight: 600; }
+    .btn { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
+    .btn-cyan { background: #00e5fa; color: #0a0e17; }
+    .btn-red { background: #ef4444; color: white; }
+    .btn-yellow { background: #eab308; color: #0a0e17; }
+    .btn-sm { padding: 4px 10px; font-size: 0.75rem; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .severity-filter { display: flex; gap: 6px; margin-bottom: 10px; }
+    .severity-filter button { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); padding: 3px 10px; border-radius: 3px; cursor: pointer; font-size: 0.75rem; }
+    .severity-filter button.active { background: rgba(0,229,250,0.15); color: #00e5fa; border-color: rgba(0,229,250,0.3); }
+    .refresh-info { font-size: 0.75rem; color: rgba(255,255,255,0.3); }
+    #loading { text-align: center; padding: 60px; color: rgba(255,255,255,0.4); }
+  </style>
+</head>
+<body>
+  <div id="auth-gate" class="auth-gate">
+    <h1>Unauthorized</h1>
+  </div>
+
+  <div id="dashboard" class="dashboard">
+    <header>
+      <h1>MMT Command Center</h1>
+      <div>
+        <span id="mode-badge" class="mode mode-normal">NORMAL</span>
+        <span class="refresh-info" id="last-refresh"></span>
+      </div>
+    </header>
+
+    <div id="loading">Loading dashboard data...</div>
+
+    <div id="content" style="display:none;">
+      <!-- SYSTEM STATUS -->
+      <div class="grid">
+        <div class="card">
+          <h2>System Status</h2>
+          <div id="system-status"></div>
+        </div>
+
+        <div class="card">
+          <h2>Circuit Breakers</h2>
+          <div id="circuits"></div>
+        </div>
+
+        <div class="card">
+          <h2>Feature Flags</h2>
+          <div id="flags"></div>
+        </div>
+
+        <div class="card">
+          <h2>Quality Metrics</h2>
+          <div id="quality"></div>
+        </div>
+
+        <!-- LIVE ORDERS -->
+        <div class="card full">
+          <h2>Live Orders (24h)</h2>
+          <div id="orders"></div>
+        </div>
+
+        <!-- OPS EVENTS -->
+        <div class="card full">
+          <h2>Ops Events (24h)</h2>
+          <div class="severity-filter" id="severity-filter">
+            <button class="active" data-filter="all">All</button>
+            <button data-filter="critical">Critical</button>
+            <button data-filter="error">Error</button>
+            <button data-filter="warn">Warn</button>
+            <button data-filter="info">Info</button>
+          </div>
+          <div id="ops-events"></div>
+        </div>
+
+        <!-- HELD EMAILS -->
+        <div class="card full">
+          <h2>Held Emails</h2>
+          <div id="held-emails"></div>
+        </div>
+
+        <!-- QUICK ACTIONS -->
+        <div class="card full">
+          <h2>Quick Actions</h2>
+          <div class="actions" id="actions">
+            <button class="btn btn-yellow" onclick="setMode('degraded')">Set Degraded Mode</button>
+            <button class="btn btn-cyan" onclick="setMode('normal')">Set Normal Mode</button>
+            <button class="btn btn-cyan" onclick="triggerHealthCheck()">Trigger Health Check</button>
+            <a href="https://app.netlify.com" target="_blank" class="btn btn-cyan" style="text-decoration:none;">Netlify Dashboard</a>
+          </div>
+          <div id="action-result" style="margin-top:10px;font-size:0.82rem;color:rgba(255,255,255,0.6);"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const apiKey = params.get('key');
+
+    if (!apiKey) {
+      document.getElementById('auth-gate').style.display = 'flex';
+    } else {
+      document.getElementById('auth-gate').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      loadDashboard();
+      setInterval(loadDashboard, 30000);
+    }
+
+    let allOpsEvents = [];
+
+    async function loadDashboard() {
+      try {
+        const res = await fetch(`/.netlify/functions/command-center-api?key=${apiKey}`);
+        if (!res.ok) {
+          if (res.status === 401) { document.getElementById('auth-gate').style.display = 'flex'; document.getElementById('dashboard').style.display = 'none'; return; }
+          throw new Error(`API error: ${res.status}`);
+        }
+        const data = await res.json();
+        render(data);
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+        document.getElementById('last-refresh').textContent = `Updated ${new Date().toLocaleTimeString()}`;
+      } catch (err) {
+        console.error('Dashboard load failed:', err);
+        document.getElementById('loading').textContent = 'Failed to load: ' + err.message;
+      }
+    }
+
+    function render(data) {
+      // Mode badge
+      const mode = data.health?.mode || 'normal';
+      const badge = document.getElementById('mode-badge');
+      badge.textContent = mode.toUpperCase();
+      badge.className = `mode mode-${mode}`;
+
+      // System status
+      document.getElementById('system-status').innerHTML = `
+        <div class="flag-row"><span>Operations Mode</span><span class="badge badge-${mode === 'normal' ? 'green' : mode === 'degraded' ? 'yellow' : 'red'}">${mode.toUpperCase()}</span></div>
+        <div class="flag-row"><span>Timestamp</span><span style="font-size:0.82rem;color:rgba(255,255,255,0.5)">${new Date(data.health?.timestamp).toLocaleString()}</span></div>
+      `;
+
+      // Circuits
+      const circuits = data.circuits || {};
+      document.getElementById('circuits').innerHTML = Object.entries(circuits).map(([name, c]) => {
+        const color = c.state === 'CLOSED' ? 'green' : c.state === 'OPEN' ? 'red' : 'yellow';
+        return `<div class="circuit-row"><span class="circuit-name">${name}</span><span class="badge badge-${color}">${c.state}</span><span style="font-size:0.75rem;color:rgba(255,255,255,0.4)">failures: ${c.failures}</span></div>`;
+      }).join('');
+
+      // Flags
+      const flags = data.flags || {};
+      document.getElementById('flags').innerHTML = Object.entries(flags).map(([name, val]) => {
+        return `<div class="flag-row"><span class="flag-name">${name}</span><span class="flag-value badge badge-blue">${val}</span></div>`;
+      }).join('');
+
+      // Quality
+      const q = data.quality || {};
+      document.getElementById('quality').innerHTML = `
+        <table><tr><th></th><th>7-day avg</th><th>30-day avg</th><th>7d count</th></tr>
+        <tr><td>ProposalPulse</td><td>${q.proposalpulse?.['7d']?.avg ?? '—'}</td><td>${q.proposalpulse?.['30d']?.avg ?? '—'}</td><td>${q.proposalpulse?.['7d']?.count ?? 0}</td></tr>
+        <tr><td>MarketPulse</td><td>${q.marketpulse?.['7d']?.avg ?? '—'}</td><td>${q.marketpulse?.['30d']?.avg ?? '—'}</td><td>${q.marketpulse?.['7d']?.count ?? 0}</td></tr>
+        </table>`;
+
+      // Orders
+      const pp = (data.orders_24h?.proposalpulse || []);
+      const mp = (data.orders_24h?.marketpulse || []);
+      let ordersHtml = '<h3 style="font-size:0.85rem;margin-bottom:8px;color:rgba(255,255,255,0.6)">ProposalPulse</h3>';
+      if (pp.length === 0) { ordersHtml += '<p style="color:rgba(255,255,255,0.3)">No orders in last 24h</p>'; }
+      else {
+        ordersHtml += '<table><tr><th>ID</th><th>Status</th><th>Grade</th><th>Score</th><th>Time</th></tr>';
+        ordersHtml += pp.map(o => {
+          const s = o.workflow_state || o.verdict || '—';
+          const color = s === 'delivered' || s === 'email_sent' ? 'green' : s === 'ERROR' ? 'red' : 'yellow';
+          const ago = timeSince(o.created_at);
+          return `<tr><td style="font-family:monospace;font-size:0.75rem">${(o.id||'').slice(0,8)}</td><td><span class="badge badge-${color}">${s}</span></td><td>${o.overall_grade||'—'}</td><td>${o.avg_score||'—'}</td><td style="color:rgba(255,255,255,0.4)">${ago}</td></tr>`;
+        }).join('');
+        ordersHtml += '</table>';
+      }
+      ordersHtml += '<h3 style="font-size:0.85rem;margin:16px 0 8px;color:rgba(255,255,255,0.6)">MarketPulse</h3>';
+      if (mp.length === 0) { ordersHtml += '<p style="color:rgba(255,255,255,0.3)">No orders in last 24h</p>'; }
+      else {
+        ordersHtml += '<table><tr><th>ID</th><th>Email</th><th>Topic</th><th>Status</th><th>Time</th></tr>';
+        ordersHtml += mp.map(o => {
+          const s = o.workflow_state || '—';
+          const color = s === 'delivered' || s === 'email_sent' ? 'green' : s === 'error' || s === 'quality_fail' ? 'red' : 'yellow';
+          const ago = timeSince(o.created_at);
+          return `<tr><td style="font-family:monospace;font-size:0.75rem">${(o.session_id||o.id||'').slice(0,8)}</td><td style="font-size:0.75rem">${o.email||'—'}</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${o.topic||'—'}</td><td><span class="badge badge-${color}">${s}</span></td><td style="color:rgba(255,255,255,0.4)">${ago}</td></tr>`;
+        }).join('');
+        ordersHtml += '</table>';
+      }
+      document.getElementById('orders').innerHTML = ordersHtml;
+
+      // Ops Events
+      allOpsEvents = data.ops_events_24h || [];
+      renderOpsEvents('all');
+
+      // Held Emails
+      const held = data.held_emails || [];
+      if (held.length === 0) {
+        document.getElementById('held-emails').innerHTML = '<p style="color:rgba(255,255,255,0.3)">No held emails</p>';
+      } else {
+        let heldHtml = '<table><tr><th>Recipient</th><th>Subject</th><th>Held Since</th><th>Action</th></tr>';
+        heldHtml += held.map(e => {
+          const ago = timeSince(e.created_at);
+          return `<tr><td>${e.recipient}</td><td style="max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.subject}</td><td style="color:rgba(255,255,255,0.4)">${ago}</td><td><button class="btn btn-cyan btn-sm" onclick="releaseEmail('${e.id}')">Release</button></td></tr>`;
+        }).join('');
+        heldHtml += '</table>';
+        document.getElementById('held-emails').innerHTML = heldHtml;
+      }
+    }
+
+    function renderOpsEvents(filter) {
+      const events = filter === 'all' ? allOpsEvents : allOpsEvents.filter(e => e.severity === filter);
+      if (events.length === 0) {
+        document.getElementById('ops-events').innerHTML = '<p style="color:rgba(255,255,255,0.3)">No events</p>';
+        return;
+      }
+      let html = '<table><tr><th>Time</th><th>Type</th><th>Severity</th><th>Source</th><th>Entity</th><th>Signature</th></tr>';
+      html += events.slice(0, 100).map(e => {
+        const color = e.severity === 'critical' ? 'red' : e.severity === 'error' ? 'red' : e.severity === 'warn' ? 'yellow' : 'gray';
+        const time = new Date(e.created_at).toLocaleTimeString();
+        const unresolved = !e.resolution ? ' *' : '';
+        return `<tr style="${e.severity === 'critical' || e.severity === 'error' ? 'background:rgba(239,68,68,0.05)' : ''}"><td style="font-size:0.75rem;color:rgba(255,255,255,0.5)">${time}</td><td style="font-size:0.75rem">${e.event_type}</td><td><span class="badge badge-${color}">${e.severity}${unresolved}</span></td><td style="font-size:0.75rem">${e.source_function||'—'}</td><td style="font-family:monospace;font-size:0.7rem">${(e.affected_entity||'').slice(0,12)}</td><td style="font-size:0.75rem;color:rgba(255,255,255,0.5)">${e.signature||'—'}</td></tr>`;
+      }).join('');
+      html += '</table>';
+      document.getElementById('ops-events').innerHTML = html;
+    }
+
+    // Severity filter buttons
+    document.getElementById('severity-filter').addEventListener('click', (e) => {
+      if (e.target.tagName !== 'BUTTON') return;
+      document.querySelectorAll('#severity-filter button').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      renderOpsEvents(e.target.dataset.filter);
+    });
+
+    async function releaseEmail(id) {
+      const res = await fetch(`/.netlify/functions/command-center-api?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'release_email', id }),
+      });
+      const data = await res.json();
+      document.getElementById('action-result').textContent = data.released ? 'Email released.' : 'Failed: ' + data.error;
+      loadDashboard();
+    }
+
+    async function setMode(mode) {
+      const res = await fetch(`/.netlify/functions/command-center-api?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'set_mode', value: mode }),
+      });
+      const data = await res.json();
+      document.getElementById('action-result').textContent = data.note || JSON.stringify(data);
+    }
+
+    async function triggerHealthCheck() {
+      const res = await fetch(`/.netlify/functions/command-center-api?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'trigger_health_check' }),
+      });
+      const data = await res.json();
+      document.getElementById('action-result').textContent = 'Health check triggered.';
+    }
+
+    function timeSince(dateStr) {
+      const diff = Date.now() - new Date(dateStr).getTime();
+      const mins = Math.floor(diff / 60000);
+      if (mins < 60) return `${mins}m ago`;
+      const hrs = Math.floor(mins / 60);
+      if (hrs < 24) return `${hrs}h ago`;
+      return `${Math.floor(hrs/24)}d ago`;
+    }
+  </script>
+</body>
+</html>

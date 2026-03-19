@@ -4,6 +4,9 @@
 /market-pulse /tactical-brief.html 301
 /market-pulse.html /tactical-brief.html 301
 
+# Command Center (ops dashboard — not in public nav)
+/command-center /command-center.html 200
+
 # MHS GENESIS shortcut redirect
 /contracts/mhs-genesis/ /contracts/mhs-genesis-electronic-health-record/ 301
 /contracts/mhs-genesis /contracts/mhs-genesis-electronic-health-record/ 301
