@@ -660,11 +660,25 @@ exports.handler = async (event) => {
   let _orderId = null;
   if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
     _supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
-    // Look up order by session_id
+    // Look up order by session_id, or create one (admin/free path skips gateway insert)
     try {
       const { data: order } = await _supabase.from("marketpulse_orders").select("id").eq("session_id", session_id).single();
-      if (order) _orderId = order.id;
-    } catch (e) { /* no order record yet — OK for free path */ }
+      if (order) {
+        _orderId = order.id;
+      } else {
+        const { data: newOrder, error: insertErr } = await _supabase.from("marketpulse_orders").insert({
+          session_id,
+          email,
+          name,
+          company: company || null,
+          topic,
+          audience: audience || null,
+          status: "processing",
+        }).select("id").single();
+        if (newOrder) _orderId = newOrder.id;
+        if (insertErr) console.error("Order insert failed:", insertErr.message || insertErr);
+      }
+    } catch (e) { console.error("Order lookup/create failed:", e.message); }
   }
   async function _transition(state, details) {
     if (!_supabase || !_orderId) return;
