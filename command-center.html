@@ -208,6 +208,8 @@
       <div id="detail-issues" class="detail-view"></div>
       <div id="detail-coo" class="detail-view"></div>
       <div id="detail-editorial" class="detail-view"></div>
+      <div id="detail-competitive" class="detail-view"></div>
+      <div id="detail-learnings" class="detail-view"></div>
     </div>
   </div>
 
@@ -355,7 +357,9 @@
         { id: 'business', icon: '\ud83d\udcca', title: 'Business', m1: revTotal !== null ? '$' + revTotal.toLocaleString() : '--', m1l: rev?.month || 'Revenue', m2: null, m2l: null, badge: 0 },
         { id: 'health', icon: '\ud83d\udee1\ufe0f', title: 'Site Health', m1: errorEvents.length, m1l: 'Errors (24h)', m2: null, m2l: null, badge: critEvents.length },
         { id: 'agents', icon: '\ud83e\udd16', title: 'Agent Fleet', m1: onlineAgents.length + '/' + agents.length, m1l: 'Online', m2: null, m2l: null, badge: staleAgents.length },
-        { id: 'content', icon: '\ud83c\udfa8', title: 'Content Studio', m1: images.length, m1l: 'Images', m2: signals.length, m2l: 'Signals', badge: 0 }
+        { id: 'content', icon: '\ud83c\udfa8', title: 'Content Studio', m1: images.length, m1l: 'Images', m2: signals.length, m2l: 'Signals', badge: 0 },
+        { id: 'competitive', icon: '\ud83c\udfaf', title: 'Competitive Intel', m1: '--', m1l: 'Competitors', m2: '--', m2l: 'Unreviewed', badge: 0 },
+        { id: 'learnings', icon: '\ud83e\udde0', title: 'Agent Memory', m1: '--', m1l: 'Active rules', m2: '--', m2l: 'Applied', badge: 0 }
       ];
     }
 
@@ -421,7 +425,9 @@
         agents: renderDetailAgents,
         content: renderDetailContent,
         coo: renderDetailCOO,
-        editorial: renderDetailEditorial
+        editorial: renderDetailEditorial,
+        competitive: renderDetailCompetitive,
+        learnings: renderDetailLearnings
       }[view];
       if (fn) fn(dashData);
     }
@@ -2246,6 +2252,63 @@ async function updateIssueStatus(id, status) {
     }
 
     // Apply initial route after first load
+    async function renderDetailCompetitive() {
+      var el = document.getElementById('detail-competitive');
+      var h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
+      h += '<div class="detail-title">\ud83c\udfaf Competitive Intel</div>';
+      try {
+        var res = await fetch('/.netlify/functions/approval-api?key=' + apiKey + '&view=summary');
+        h += '<div class="detail-card"><h3>Competitor Landscape</h3>';
+        h += '<p style="color:rgba(255,255,255,0.5);">Competitive intelligence is gathered weekly via the competitive-scan scheduled function. Review alerts in the approval queue.</p>';
+        h += '</div>';
+      } catch (e) {
+        h += '<div class="detail-card"><p style="color:rgba(255,255,255,0.3);">Failed to load competitive data.</p></div>';
+      }
+      el.innerHTML = h;
+    }
+
+    async function renderDetailLearnings() {
+      var el = document.getElementById('detail-learnings');
+      var h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
+      h += '<div class="detail-title">\ud83e\udde0 Agent Memory</div>';
+      try {
+        var res = await fetch('/.netlify/functions/learning-api?view=active&agent=all', { headers: { 'Authorization': 'Bearer ' + apiKey } });
+        var data = res.ok ? await res.json() : {};
+        var learnings = data.learnings || [];
+        h += '<div class="detail-card"><h3>Active Learning Rules (' + learnings.length + ')</h3>';
+        if (!learnings.length) {
+          h += '<p style="color:rgba(255,255,255,0.3);">No active learnings yet. Agents accumulate rules over time.</p>';
+        } else {
+          learnings.slice(0, 20).forEach(function(l) {
+            h += '<div style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);">';
+            h += '<div style="font-weight:600;font-size:0.9rem;">' + esc(l.rule || '') + '</div>';
+            h += '<div style="font-size:0.75rem;color:rgba(255,255,255,0.4);margin-top:4px;">';
+            h += '<span class="badge badge-cyan">' + esc(l.agent || '') + '</span> ';
+            h += '<span>' + esc(l.category || '') + '</span> ';
+            h += '<span>Confidence: ' + ((l.confidence || 0) * 100).toFixed(0) + '%</span>';
+            h += '</div></div>';
+          });
+        }
+        h += '</div>';
+        var effRes = await fetch('/.netlify/functions/learning-api?view=effective', { headers: { 'Authorization': 'Bearer ' + apiKey } });
+        var effData = effRes.ok ? await effRes.json() : {};
+        var effective = effData.learnings || [];
+        if (effective.length) {
+          h += '<div class="detail-card"><h3>Most Effective Rules</h3>';
+          effective.slice(0, 10).forEach(function(l) {
+            h += '<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);">';
+            h += '<div style="font-weight:600;font-size:0.85rem;">' + esc(l.rule || '') + '</div>';
+            h += '<div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">Applied: ' + (l.times_applied || 0) + ' | Prevented errors: ' + (l.prevented_errors || 0) + '</div>';
+            h += '</div>';
+          });
+          h += '</div>';
+        }
+      } catch (e) {
+        h += '<div class="detail-card"><p style="color:rgba(255,255,255,0.3);">Failed to load learning data.</p></div>';
+      }
+      el.innerHTML = h;
+    }
+
     const _origLoadDashboard = loadDashboard;
     let _firstLoad = true;
     // We handle route on hashchange and after initial load via the render cycle
