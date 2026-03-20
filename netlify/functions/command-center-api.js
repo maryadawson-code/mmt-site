@@ -33,6 +33,25 @@ function err(status, msg) {
   return { statusCode: status, headers: CORS_HEADERS, body: JSON.stringify({ error: msg }) };
 }
 
+// Strip heavy HTML/text fields from list responses to save bandwidth
+function stripHeavyFields(rows) {
+  if (!Array.isArray(rows)) return rows;
+  return rows.map(row => {
+    const clean = { ...row };
+    delete clean.report_html;
+    delete clean.redteam_report_html;
+    if (clean.scores && typeof clean.scores === "object") {
+      clean.scores = { ...clean.scores };
+      delete clean.scores._document_text;
+    }
+    if (clean.shadow_scorecard && typeof clean.shadow_scorecard === "object") {
+      clean.shadow_scorecard = { ...clean.shadow_scorecard };
+      delete clean.shadow_scorecard._document_text;
+    }
+    return clean;
+  });
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod === "OPTIONS") {
     return { statusCode: 204, headers: CORS_HEADERS, body: "" };
@@ -251,7 +270,7 @@ exports.handler = async (event) => {
       health: { mode: getMode(), timestamp: now.toISOString() },
       flags: getAllFlags(),
       circuits: getAllCircuitStates(),
-      orders_24h: { proposalpulse: scoringResult, marketpulse: marketpulseResult },
+      orders_24h: { proposalpulse: stripHeavyFields(scoringResult), marketpulse: stripHeavyFields(marketpulseResult) },
       quality: {
         proposalpulse: { "7d": qualitySummary(qualityPPResult, 7), "30d": qualitySummary(qualityPPResult, 30) },
         marketpulse: { "7d": qualitySummary(qualityMPResult, 7), "30d": qualitySummary(qualityMPResult, 30) },
@@ -259,7 +278,7 @@ exports.handler = async (event) => {
       ops_events_24h: opsEventsResult,
       held_emails: heldEmailsResult,
       // V2
-      report_history: { marketpulse: mpReportsResult, proposalpulse: ppReportsResult },
+      report_history: { marketpulse: stripHeavyFields(mpReportsResult), proposalpulse: stripHeavyFields(ppReportsResult) },
       pipeline: pipelineResult,
       tasks: tasksResult,
       agents: agentsResult,

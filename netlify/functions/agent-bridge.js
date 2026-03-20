@@ -24,6 +24,25 @@ const HEADERS = {
 function ok(data) { return { statusCode: 200, headers: HEADERS, body: JSON.stringify(data) }; }
 function err(status, msg) { return { statusCode: status, headers: HEADERS, body: JSON.stringify({ error: msg }) }; }
 
+// Strip heavy HTML/text fields from list responses to save bandwidth (~200K tokens per call)
+function stripHeavyFields(rows) {
+  if (!Array.isArray(rows)) return rows;
+  return rows.map(row => {
+    const clean = { ...row };
+    delete clean.report_html;
+    delete clean.redteam_report_html;
+    if (clean.scores && typeof clean.scores === "object") {
+      clean.scores = { ...clean.scores };
+      delete clean.scores._document_text;
+    }
+    if (clean.shadow_scorecard && typeof clean.shadow_scorecard === "object") {
+      clean.shadow_scorecard = { ...clean.shadow_scorecard };
+      delete clean.shadow_scorecard._document_text;
+    }
+    return clean;
+  });
+}
+
 exports.handler = async (event) => {
   const log = createLogger("agent-bridge");
   if (event.httpMethod === "OPTIONS") return { statusCode: 204, headers: HEADERS, body: "" };
@@ -67,7 +86,7 @@ exports.handler = async (event) => {
     if (section === "all" || section === "orders") {
       const { data: mp } = await supabase.from("marketpulse_orders").select("id, session_id, created_at, email, topic, workflow_state, status").order("created_at", { ascending: false }).limit(20);
       const { data: pp } = await supabase.from("mp_scoring_history").select("id, created_at, email, file_name, verdict, overall_grade, avg_score, workflow_state, document_type").order("created_at", { ascending: false }).limit(20);
-      result.orders = { marketpulse: mp || [], proposalpulse: pp || [] };
+      result.orders = { marketpulse: stripHeavyFields(mp || []), proposalpulse: stripHeavyFields(pp || []) };
     }
 
     return ok(result);
