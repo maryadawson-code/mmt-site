@@ -14,6 +14,7 @@
 
 const { createClient } = require("@supabase/supabase-js");
 const { createLogger } = require("./lib/logger");
+const { Sentry, wrapHandler } = require("./lib/sentry");
 
 const HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -43,7 +44,7 @@ function stripHeavyFields(rows) {
   });
 }
 
-exports.handler = async (event) => {
+exports.handler = wrapHandler(async (event) => {
   const log = createLogger("agent-bridge");
   if (event.httpMethod === "OPTIONS") return { statusCode: 204, headers: HEADERS, body: "" };
 
@@ -1075,4 +1076,4 @@ exports.handler = async (event) => {
   }
 
   return err(405, "Method not allowed");
-};
+});

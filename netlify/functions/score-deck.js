@@ -19,6 +19,7 @@ const { checkKillSwitch } = require("./lib/kill-switch");
 const { stripHtml, validateFile } = require("./lib/sanitize");
 const { checkRateLimit } = require("./lib/rate-limiter");
 const { createLogger } = require("./lib/logger");
+const { Sentry, wrapHandler } = require("./lib/sentry");
 
 // --- Environment Variables ---
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -177,7 +178,7 @@ async function recordUsage(supabase, userId, usage) {
 // MAIN HANDLER
 // ============================================================
 
-exports.handler = async (event) => {
+exports.handler = wrapHandler(async (event) => {
   // CORS preflight
   if (event.httpMethod === "OPTIONS") {
     return { statusCode: 204, headers: CORS_HEADERS, body: "" };
@@ -483,4 +484,4 @@ exports.handler = async (event) => {
       body: JSON.stringify({ error: "Internal server error" }),
     };
   }
-};
+});

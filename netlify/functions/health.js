@@ -7,12 +7,24 @@
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
+const { Sentry } = require("./lib/sentry");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const STALE_THRESHOLD_MIN = 30;
 
-exports.handler = async () => {
+exports.handler = async (event) => {
+  // Trigger a Sentry test event via ?sentry_test=1
+  const params = event.queryStringParameters || {};
+  if (params.sentry_test === "1") {
+    Sentry.captureMessage("Sentry integration verified");
+    await Sentry.flush(2000);
+    return {
+      statusCode: 200,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sentry_test: "sent" }),
+    };
+  }
   const checks = {};
   let overallStatus = "healthy";
 
