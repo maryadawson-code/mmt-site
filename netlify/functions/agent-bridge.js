@@ -1013,6 +1013,45 @@ exports.handler = async (event) => {
       return ok({ summarized: true, id: data.id, total_cost_usd: totalCost, total_tokens: totalTokens });
     }
 
+    // === ROADMAP ===
+    if (action === "roadmap_read") {
+      let query = supabase.from("product_roadmap").select("id, product, feature_name, status, health, priority, owner, deploy_date, last_verified, notes").order("product").order("feature_name");
+      if (body.product) query = query.eq("product", body.product);
+      if (body.status) query = query.eq("status", body.status);
+      query = query.limit(100);
+      const { data } = await query;
+      return ok({ features: data || [] });
+    }
+
+    if (action === "roadmap_update") {
+      const { id, health, notes, status } = body;
+      if (!id) return err(400, "id required");
+      const updates = { updated_at: new Date().toISOString() };
+      // Agents can only update health, notes, and status (limited transitions)
+      if (health) updates.health = health;
+      if (notes !== undefined) updates.notes = notes;
+      if (status && (status === "in_progress" || status === "deployed")) updates.status = status;
+      if (health) updates.last_verified = new Date().toISOString();
+
+      const { data: current } = await supabase.from("product_roadmap").select("feature_name, health, status").eq("id", id).single();
+      if (!current) return err(404, "Feature not found");
+
+      const { error: updateErr } = await supabase.from("product_roadmap").update(updates).eq("id", id);
+      if (updateErr) return err(500, updateErr.message);
+
+      // Log changes
+      const agentId = body.agent_id || "agent";
+      if (health && health !== current.health) {
+        await supabase.from("product_roadmap_log").insert({ roadmap_item_id: id, changed_by: agentId, change_type: "health_change", field_changed: "health", old_value: current.health, new_value: health });
+        await supabase.from("activity_feed").insert({ source: "agent", event_type: "health_change", feature_id: id, agent_id: agentId, summary: current.feature_name + ": health " + current.health + " → " + health });
+      }
+      if (status && status !== current.status) {
+        await supabase.from("product_roadmap_log").insert({ roadmap_item_id: id, changed_by: agentId, change_type: "status_change", field_changed: "status", old_value: current.status, new_value: status });
+        await supabase.from("activity_feed").insert({ source: "agent", event_type: "status_change", feature_id: id, agent_id: agentId, summary: current.feature_name + ": status " + current.status + " → " + status });
+      }
+      return ok({ updated: true });
+    }
+
     return err(404, "Unknown action: " + action);
   }
 
