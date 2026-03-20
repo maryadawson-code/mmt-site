@@ -15,6 +15,32 @@
 
     if (!form || !submitBtn) return;
 
+    // Blur validation for required fields
+    function validateField(id, message) {
+      var input = document.getElementById(id);
+      var errEl = document.getElementById(id + '-error');
+      if (!input || !errEl) return;
+      input.addEventListener('blur', function() {
+        var val = input.value.trim();
+        if (!val) {
+          errEl.textContent = message;
+          errEl.style.display = 'block';
+          input.setAttribute('aria-describedby', id + '-error');
+        } else if (id === 'tb-email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+          errEl.textContent = 'Please enter a valid email address';
+          errEl.style.display = 'block';
+          input.setAttribute('aria-describedby', id + '-error');
+        } else {
+          errEl.textContent = '';
+          errEl.style.display = 'none';
+          input.removeAttribute('aria-describedby');
+        }
+      });
+    }
+    validateField('tb-name', 'Name is required');
+    validateField('tb-email', 'Email is required');
+    validateField('tb-topic', 'Research topic is required');
+
     form.addEventListener('submit', function(e) {
       e.preventDefault();
 

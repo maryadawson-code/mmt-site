@@ -101,6 +101,19 @@ fileInput.addEventListener('change', () => {
 
 emailInput.addEventListener('input', updateSubmitButton);
 
+// Validate email on blur
+emailInput.addEventListener('blur', function() {
+  const val = emailInput.value.trim();
+  const errEl = document.getElementById('email-validation-error');
+  if (!val) {
+    if (errEl) { errEl.textContent = 'Email is required'; errEl.style.display = 'block'; emailInput.setAttribute('aria-describedby', 'email-validation-error'); }
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+    if (errEl) { errEl.textContent = 'Please enter a valid email address'; errEl.style.display = 'block'; emailInput.setAttribute('aria-describedby', 'email-validation-error'); }
+  } else {
+    if (errEl) { errEl.textContent = ''; errEl.style.display = 'none'; emailInput.removeAttribute('aria-describedby'); }
+  }
+});
+
 // Pill selector click handlers
 document.querySelectorAll('.pill-selector .pill').forEach(pill => {
   pill.addEventListener('click', () => {

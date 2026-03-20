@@ -1094,7 +1094,10 @@
 
   <div id="upload-error" class="error-banner" role="alert">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 10.5a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5zM8.75 4v4.5h-1.5V4h1.5z"/></svg>
-    <span id="upload-error-text"></span>
+    <div>
+      <span id="upload-error-text"></span>
+      <div style="margin-top:8px;font-size:13px;color:rgba(255,255,255,0.5);">If the problem persists, contact <a href="mailto:support@missionmeetstech.com" style="color:var(--primary-cyan);">support@missionmeetstech.com</a></div>
+    </div>
   </div>
 
   <div class="upload-card">
@@ -1139,6 +1142,7 @@
       <div class="form-group" style="margin-top:1.5rem;">
         <label for="email-input" class="form-label">Email Address <span style="font-weight:400; text-transform:none; letter-spacing:0; color:var(--text-muted);">(for your Red Team Review)</span></label>
         <input type="email" id="email-input" class="form-input" placeholder="you@company.com" required autocomplete="email">
+        <p id="email-validation-error" style="display:none;color:#ef4444;font-size:0.8125rem;margin:4px 0 0;" role="alert"></p>
       </div>
 
       <div class="form-group">
