@@ -151,6 +151,26 @@ exports.handler = async () => {
     console.error("[finance-rollup] learning decay:", err.message);
   }
 
+  // 5. Dashboard auth cleanup — expire sessions, delete old magic links and audit logs
+  try {
+    const now = new Date().toISOString();
+    const { data: expired } = await sb.from("dashboard_sessions")
+      .update({ is_valid: false, revoked_reason: "expired" })
+      .lt("expires_at", now)
+      .eq("is_valid", true)
+      .select("id");
+
+    const oneDayAgo = new Date(Date.now() - 24 * 3600000).toISOString();
+    await sb.from("dashboard_magic_links").delete().lt("created_at", oneDayAgo);
+
+    const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 3600000).toISOString();
+    await sb.from("dashboard_audit_log").delete().lt("created_at", ninetyDaysAgo);
+
+    results.authCleanup = expired?.length || 0;
+  } catch (err) {
+    console.error("[finance-rollup] auth cleanup:", err.message);
+  }
+
   console.log("[finance-rollup]", JSON.stringify(results));
   return { statusCode: 200, body: JSON.stringify(results) };
 };
