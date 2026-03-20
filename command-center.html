@@ -593,6 +593,8 @@
 
       const images = data.recent_images || [];
       const signals = data.signals || [];
+      const ph = data.product_health || { proposalpulse: { total_orders: 0, stale_orders: 0 }, marketpulse: { total_orders: 0, stale_orders: 0 } };
+      const totalStale = (ph.proposalpulse.stale_orders || 0) + (ph.marketpulse.stale_orders || 0);
 
       const rev = data.revenue;
       const revTotal = rev && !rev.error ? (rev.total_revenue_cents / 100) : null;
@@ -613,7 +615,7 @@
         { id: 'qa', icon: '🧪', title: 'QA', m1: _qaData ? _qaData.totalRegressions : '--', m1l: 'Regressions', m2: '--', m2l: 'Pass rate', badge: _qaData ? _qaData.totalRegressions : 0 },
         { id: 'issues', icon: '🔧', title: 'Issues', m1: _issueData ? _issueData.total : '--', m1l: 'Open', m2: _issueData ? (_issueData.byStatus?.['fix-proposed'] || 0) : '--', m2l: 'Awaiting approval', badge: _issueData ? (_issueData.critical + (_issueData.byStatus?.['fix-proposed'] || 0)) : 0 },
         { id: 'newsletter', icon: '\ud83d\udcf0', title: 'Newsletter', m1: daysToPublish !== null ? daysToPublish : '--', m1l: 'Days to pub', m2: nextStatus || '--', m2l: 'Status', badge: nearPipeline.length || 0 },
-        { id: 'products', icon: '\ud83d\udce6', title: 'Products', m1: activeOrders.length, m1l: 'Active orders', m2: deliveredToday.length, m2l: 'Delivered', badge: errorOrders.length },
+        { id: 'products', icon: '\ud83d\udce6', title: 'Products', m1: (ph.proposalpulse.total_orders + ph.marketpulse.total_orders), m1l: 'Total orders', m2: deliveredToday.length || activeOrders.length || '--', m2l: deliveredToday.length ? 'Delivered today' : activeOrders.length ? 'Active' : '24h', badge: errorOrders.length + totalStale, staleWarning: totalStale > 0 ? totalStale + ' stale order' + (totalStale > 1 ? 's' : '') : null },
         { id: 'engineering', icon: '\ud83d\udd27', title: 'Engineering', m1: pendingTasks.length, m1l: 'Pending tasks', m2: null, m2l: null, badge: pendingTasks.length },
         { id: 'business', icon: '\ud83d\udcca', title: 'Business', m1: revTotal !== null ? '$' + revTotal.toLocaleString() : '--', m1l: rev?.month || 'Revenue', m2: null, m2l: null, badge: 0 },
         { id: 'health', icon: '\ud83d\udee1\ufe0f', title: 'Site Health', m1: errorEvents.length, m1l: 'Errors (24h)', m2: null, m2l: null, badge: critEvents.length },
@@ -634,7 +636,9 @@
         let metricsHtml = '<div class="tile-metrics"><div><div class="tile-metric">' + t.m1 + '</div><div class="tile-metric-label">' + t.m1l + '</div></div>';
         if (t.m2 !== null) metricsHtml += '<div><div class="tile-metric" style="font-size:1.1rem;">' + t.m2 + '</div><div class="tile-metric-label">' + (t.m2l||'') + '</div></div>';
         metricsHtml += '</div>';
-        return '<div class="tile" onclick="navigate(\'' + t.id + '\')">' + badgeHtml + '<div class="tile-icon">' + t.icon + '</div><div class="tile-title">' + t.title + '</div>' + metricsHtml + '</div>';
+        const warnStyle = t.id === 'products' && t.badge > 0 ? ' style="border-color:rgba(234,179,8,0.5);"' : '';
+        const staleHtml = t.staleWarning ? '<div style="font-size:0.7rem;color:#eab308;margin-top:6px;">⚠️ ' + t.staleWarning + '</div>' : '';
+        return '<div class="tile"' + warnStyle + ' onclick="navigate(\'' + t.id + '\')">' + badgeHtml + '<div class="tile-icon">' + t.icon + '</div><div class="tile-title">' + t.title + '</div>' + metricsHtml + staleHtml + '</div>';
       }).join('');
     }
 
@@ -784,6 +788,21 @@
 
       let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
       h += '<div class="detail-title">\ud83d\udce6 Products</div>';
+
+      // Product health summary
+      const ph = data.product_health || {};
+      const ppH = ph.proposalpulse || {};
+      const mpH = ph.marketpulse || {};
+      const totalStale = (ppH.stale_orders || 0) + (mpH.stale_orders || 0);
+      h += '<div class="detail-card" style="display:flex;gap:24px;flex-wrap:wrap;">';
+      h += '<div><div class="tile-metric">' + (ppH.total_orders || 0) + '</div><div class="tile-metric-label">PP Total</div></div>';
+      h += '<div><div class="tile-metric">' + (mpH.total_orders || 0) + '</div><div class="tile-metric-label">MP Total</div></div>';
+      h += '<div><div class="tile-metric">' + pp.length + '</div><div class="tile-metric-label">PP 24h</div></div>';
+      h += '<div><div class="tile-metric">' + mp.length + '</div><div class="tile-metric-label">MP 24h</div></div>';
+      if (totalStale > 0) {
+        h += '<div><div class="tile-metric" style="color:#eab308;">⚠️ ' + totalStale + '</div><div class="tile-metric-label">Stale orders</div></div>';
+      }
+      h += '</div>';
 
       // Tab bar
       h += '<div class="tab-bar"><button class="' + (productsTab==='pp'?'active':'') + '" onclick="productsTab=\'pp\';renderDetailView(\'products\')">ProposalPulse</button><button class="' + (productsTab==='mp'?'active':'') + '" onclick="productsTab=\'mp\';renderDetailView(\'products\')">MarketPulse</button></div>';

@@ -71,6 +71,10 @@ exports.handler = async (event) => {
       agentsResult,
       signalsResult,
       recentImagesResult,
+      ppTotalResult,
+      mpTotalResult,
+      ppStaleResult,
+      mpStaleResult,
     ] = await Promise.all([
       queryOpsEvents(supabase, { hours: 24, limit: 200 }),
 
@@ -177,6 +181,36 @@ exports.handler = async (event) => {
         .limit(12)
         .then(r => r.data || [])
         .catch(() => []),
+
+      // V5: Product health — total counts
+      supabase
+        .from("mp_scoring_history")
+        .select("id", { count: "exact", head: true })
+        .then(r => r.count || 0)
+        .catch(() => 0),
+
+      supabase
+        .from("marketpulse_orders")
+        .select("id", { count: "exact", head: true })
+        .then(r => r.count || 0)
+        .catch(() => 0),
+
+      // V5: Stale orders (>30 min in processing)
+      supabase
+        .from("mp_scoring_history")
+        .select("id, created_at")
+        .eq("workflow_state", "processing")
+        .lt("created_at", new Date(now - 30 * 60000).toISOString())
+        .then(r => r.data || [])
+        .catch(() => []),
+
+      supabase
+        .from("marketpulse_orders")
+        .select("id, created_at")
+        .eq("workflow_state", "processing")
+        .lt("created_at", new Date(now - 30 * 60000).toISOString())
+        .then(r => r.data || [])
+        .catch(() => []),
     ]);
 
     // Quality summaries
@@ -232,6 +266,21 @@ exports.handler = async (event) => {
       revenue,
       signals: signalsResult,
       recent_images: recentImagesResult,
+      // V5: Product health totals + stale orders
+      product_health: {
+        proposalpulse: {
+          total_orders: ppTotalResult,
+          orders_today: scoringResult.length,
+          stale_orders: ppStaleResult.length,
+          stale_ids: ppStaleResult.map(o => o.id),
+        },
+        marketpulse: {
+          total_orders: mpTotalResult,
+          orders_today: marketpulseResult.length,
+          stale_orders: mpStaleResult.length,
+          stale_ids: mpStaleResult.map(o => o.id),
+        },
+      },
     };
 
     return ok(dashboard);
