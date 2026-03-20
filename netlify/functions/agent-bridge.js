@@ -174,6 +174,107 @@ exports.handler = async (event) => {
       return ok({ failed: true });
     }
 
+    // UPDATE TASK STATUS (agents call during execution)
+    if (action === "update_task_status") {
+      const { task_id, status, status_detail } = body;
+      if (!task_id || !status) return err(400, "task_id and status required");
+      const validStatuses = ["pending", "acknowledged", "in_progress", "awaiting_approval", "completed", "failed"];
+      if (!validStatuses.includes(status)) return err(400, "Invalid status: " + status);
+      const updates = { status, updated_at: new Date().toISOString() };
+      if (status_detail !== undefined) updates.status_detail = status_detail;
+      if (status === "acknowledged") updates.acknowledged_at = new Date().toISOString();
+      if (status === "in_progress") updates.started_at = new Date().toISOString();
+      if (status === "completed") updates.completed_at = new Date().toISOString();
+      if (status === "failed") updates.completed_at = new Date().toISOString();
+      const { error: updateErr } = await supabase.from("task_queue").update(updates).eq("id", task_id);
+      if (updateErr) return err(500, updateErr.message);
+      return ok({ updated: true });
+    }
+
+    // REQUEST APPROVAL (agents call this)
+    if (action === "request_approval") {
+      const { agent_id, action_summary, action_detail, risk_level, task_id } = body;
+      if (!agent_id || !action_summary) return err(400, "agent_id and action_summary required");
+      const { data, error: insertErr } = await supabase
+        .from("agent_approvals")
+        .insert({
+          agent_id,
+          action_summary,
+          action_detail: action_detail || null,
+          risk_level: risk_level || "medium",
+          task_id: task_id || null,
+          context: body.context || null,
+        })
+        .select("id")
+        .single();
+      if (insertErr) return err(500, insertErr.message);
+      return ok({ approval_id: data.id });
+    }
+
+    // DECIDE APPROVAL (dashboard calls this)
+    if (action === "decide_approval") {
+      const { approval_id, decision, decided_by } = body;
+      if (!approval_id || !decision) return err(400, "approval_id and decision required");
+      if (!["approved", "denied"].includes(decision)) return err(400, "decision must be approved or denied");
+      const { error: updateErr } = await supabase
+        .from("agent_approvals")
+        .update({
+          status: decision,
+          decided_at: new Date().toISOString(),
+          decided_by: decided_by || "operator",
+        })
+        .eq("id", approval_id);
+      if (updateErr) return err(500, updateErr.message);
+      return ok({ decided: true });
+    }
+
+    // LIST APPROVALS (dashboard polls this)
+    if (action === "list_approvals") {
+      const statusFilter = body.status || "pending";
+      // Auto-expire pending items past expires_at
+      const now = new Date().toISOString();
+      await supabase
+        .from("agent_approvals")
+        .update({ status: "expired" })
+        .eq("status", "pending")
+        .lt("expires_at", now);
+      const query = supabase.from("agent_approvals").select("*").order("requested_at", { ascending: false });
+      if (statusFilter === "pending") {
+        query.eq("status", "pending");
+      } else if (statusFilter === "recent") {
+        query.in("status", ["approved", "denied", "expired"]).limit(10);
+      } else {
+        query.eq("status", statusFilter);
+      }
+      const { data } = await query.limit(50);
+      return ok({ approvals: data || [] });
+    }
+
+    // TRIAGE SIGNAL (dashboard calls this)
+    if (action === "triage_signal") {
+      const { signal_id, triage_status } = body;
+      if (!signal_id || !triage_status) return err(400, "signal_id and triage_status required");
+      const validStatuses = ["new", "newsletter", "dismissed", "pinned"];
+      if (!validStatuses.includes(triage_status)) return err(400, "Invalid triage_status");
+      const { error: updateErr } = await supabase
+        .from("intel_signals")
+        .update({ triage_status, triaged_at: new Date().toISOString() })
+        .eq("id", signal_id);
+      if (updateErr) return err(500, updateErr.message);
+      // If sending to newsletter, dispatch task to ops-editorial
+      if (triage_status === "newsletter") {
+        const { data: signal } = await supabase.from("intel_signals").select("title, summary").eq("id", signal_id).single();
+        if (signal) {
+          await supabase.from("task_queue").insert({
+            task: "Evaluate this signal for newsletter inclusion: " + signal.title + " — " + (signal.summary || ""),
+            agent: "ops-editorial",
+            priority: "high",
+          });
+        }
+      }
+      return ok({ triaged: true });
+    }
+
     // COST SUMMARY
     if (action === "cost_summary") {
       const todayStart = new Date().toISOString().split("T")[0] + "T00:00:00Z";
@@ -524,6 +625,162 @@ exports.handler = async (event) => {
     if (action === "competitive_alerts") {
       const { data } = await supabase.from("competitive_alerts").select("*").eq("reviewed", false).order("created_at", { ascending: false }).limit(20);
       return ok({ alerts: data || [] });
+    }
+
+    // === CISO AGENT ===
+
+    // Run security scan
+    if (action === "ciso_scan") {
+      const { scan_type } = body;
+      if (!scan_type) return err(400, "scan_type required");
+      const validTypes = ["secrets", "dependencies", "headers", "rls", "access_audit", "data_handling", "full_compliance"];
+      if (!validTypes.includes(scan_type)) return err(400, "Invalid scan_type. Valid: " + validTypes.join(", "));
+      const scans = require("./lib/ciso-scans");
+      const scanFns = {
+        secrets: scans.scanSecrets,
+        dependencies: scans.scanDependencies,
+        headers: scans.scanHeaders,
+        rls: scans.scanRLS,
+        access_audit: scans.scanAccessInventory,
+        data_handling: scans.scanDataHandling,
+        full_compliance: scans.scanFullCompliance,
+      };
+      try {
+        const result = await scanFns[scan_type](supabase);
+        return ok(result);
+      } catch (e) {
+        return err(500, "Scan failed: " + e.message);
+      }
+    }
+
+    // Get security posture
+    if (action === "ciso_posture") {
+      const [practicesRes, findingsRes, lastScanRes, rotationRes, incidentsRes] = await Promise.all([
+        supabase.from("ciso_cmmc_practices").select("implementation_status"),
+        supabase.from("ciso_findings").select("severity").eq("status", "open"),
+        supabase.from("ciso_scan_log").select("scan_type, completed_at, findings_count").eq("status", "completed").order("completed_at", { ascending: false }).limit(1),
+        supabase.from("ciso_access_inventory").select("credential_name, next_rotation_due").not("next_rotation_due", "is", null).order("next_rotation_due").limit(5),
+        supabase.from("ciso_incidents").select("id").not("status", "in", '("recovered","closed")'),
+      ]);
+
+      const practices = practicesRes.data || [];
+      const cmmc = { met: 0, partially_met: 0, not_met: 0, not_applicable: 0 };
+      for (const p of practices) cmmc[p.implementation_status]++;
+      cmmc.percent_met = practices.length > 0 ? Math.round((cmmc.met / practices.length) * 100) : 0;
+
+      const openFindings = { critical: 0, high: 0, medium: 0, low: 0 };
+      for (const f of (findingsRes.data || [])) openFindings[f.severity]++;
+
+      const lastScan = (lastScanRes.data || [])[0] || null;
+      const rotations = (rotationRes.data || []).map(r => ({ credential: r.credential_name, due: r.next_rotation_due }));
+
+      return ok({
+        cmmc_score: cmmc,
+        open_findings: openFindings,
+        last_scan: lastScan,
+        next_rotation_due: rotations,
+        incidents_active: (incidentsRes.data || []).length,
+      });
+    }
+
+    // List findings
+    if (action === "ciso_findings") {
+      const statusFilter = body.status || "open";
+      const severityFilter = body.severity ? body.severity.split(",") : null;
+      let query = supabase.from("ciso_findings")
+        .select("id, finding_type, severity, title, affected_component, cmmc_practice_id, status, discovered_at")
+        .order("discovered_at", { ascending: false })
+        .limit(body.limit || 50);
+      if (statusFilter !== "all") query = query.eq("status", statusFilter);
+      if (severityFilter) query = query.in("severity", severityFilter);
+      const { data } = await query;
+      return ok({ findings: data || [] });
+    }
+
+    // Get single finding detail
+    if (action === "ciso_finding_detail") {
+      const { finding_id } = body;
+      if (!finding_id) return err(400, "finding_id required");
+      const { data } = await supabase.from("ciso_findings").select("*").eq("id", finding_id).single();
+      return ok({ finding: data });
+    }
+
+    // Update finding
+    if (action === "ciso_update_finding") {
+      const { finding_id, status, evidence, remediation_plan } = body;
+      if (!finding_id) return err(400, "finding_id required");
+      const updates = { updated_at: new Date().toISOString() };
+      if (status) updates.status = status;
+      if (evidence) updates.evidence = evidence;
+      if (remediation_plan) updates.remediation_plan = remediation_plan;
+      if (status === "remediated") {
+        updates.remediated_at = new Date().toISOString();
+        updates.remediated_by = body.remediated_by || "ciso-agent";
+      }
+      const { error: updateErr } = await supabase.from("ciso_findings").update(updates).eq("id", finding_id);
+      if (updateErr) return err(500, updateErr.message);
+      return ok({ updated: true });
+    }
+
+    // Get CMMC tracker
+    if (action === "ciso_cmmc_tracker") {
+      let query = supabase.from("ciso_cmmc_practices")
+        .select("practice_id, family, family_name, title, implementation_status, mmt_component, last_assessed, evidence_location")
+        .order("practice_id");
+      if (body.family) query = query.eq("family", body.family);
+      if (body.status) query = query.eq("implementation_status", body.status);
+      const { data } = await query;
+      return ok({ practices: data || [] });
+    }
+
+    // Update practice status
+    if (action === "ciso_update_practice") {
+      const { practice_id, implementation_status, implementation_notes, evidence_location } = body;
+      if (!practice_id) return err(400, "practice_id required");
+      const updates = { updated_at: new Date().toISOString(), last_assessed: new Date().toISOString(), last_assessed_by: body.assessed_by || "ciso-agent" };
+      if (implementation_status) updates.implementation_status = implementation_status;
+      if (implementation_notes !== undefined) updates.implementation_notes = implementation_notes;
+      if (evidence_location !== undefined) updates.evidence_location = evidence_location;
+      const { error: updateErr } = await supabase.from("ciso_cmmc_practices").update(updates).eq("practice_id", practice_id);
+      if (updateErr) return err(500, updateErr.message);
+      return ok({ updated: true });
+    }
+
+    // Log incident
+    if (action === "ciso_log_incident") {
+      const { incident_type, severity, title, description, affected_systems } = body;
+      if (!incident_type || !severity || !title || !description) return err(400, "incident_type, severity, title, description required");
+      const { data, error: insertErr } = await supabase.from("ciso_incidents").insert({
+        incident_type,
+        severity,
+        title,
+        description,
+        affected_systems: affected_systems || [],
+        timeline: [{ timestamp: new Date().toISOString(), action: "Incident detected", actor: body.detected_by || "ciso-agent" }],
+      }).select("id").single();
+      if (insertErr) return err(500, insertErr.message);
+      return ok({ incident_id: data.id });
+    }
+
+    // Update incident
+    if (action === "ciso_update_incident") {
+      const { incident_id, status, action_text, actor } = body;
+      if (!incident_id) return err(400, "incident_id required");
+      const { data: existing } = await supabase.from("ciso_incidents").select("timeline, status").eq("id", incident_id).single();
+      if (!existing) return err(404, "Incident not found");
+      const updates = {};
+      if (status) updates.status = status;
+      if (body.root_cause) updates.root_cause = body.root_cause;
+      if (body.corrective_actions) updates.corrective_actions = body.corrective_actions;
+      if (status === "recovered" || status === "closed") updates.resolved_at = new Date().toISOString();
+      if (action_text) {
+        const timeline = existing.timeline || [];
+        timeline.push({ timestamp: new Date().toISOString(), action: action_text, actor: actor || "ciso-agent" });
+        updates.timeline = timeline;
+      }
+      const { error: updateErr } = await supabase.from("ciso_incidents").update(updates).eq("id", incident_id);
+      if (updateErr) return err(500, updateErr.message);
+      return ok({ updated: true });
     }
 
     return err(404, "Unknown action: " + action);

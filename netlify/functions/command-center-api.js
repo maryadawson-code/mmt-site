@@ -140,32 +140,32 @@ exports.handler = async (event) => {
         .then(r => r.data || [])
         .catch(() => []),
 
-      // V2: Task queue
+      // V2: Task queue (expanded for ops console)
       supabase
         .from("task_queue")
-        .select("id, task, agent, status, priority, created_at, completed_at, result")
-        .or(`status.eq.pending,status.eq.in_progress,and(status.eq.completed,completed_at.gte.${oneDayAgo})`)
+        .select("id, task, agent, status, priority, created_at, completed_at, result, acknowledged_at, started_at, status_detail")
+        .or(`status.eq.pending,status.eq.acknowledged,status.eq.in_progress,status.eq.awaiting_approval,and(status.in.(completed,failed),completed_at.gte.${oneDayAgo})`)
         .order("created_at", { ascending: false })
-        .limit(20)
+        .limit(50)
         .then(r => r.data || [])
         .catch(() => []),
 
       // V3: Agent registry (replaces agent_heartbeats)
       supabase
         .from("agent_registry")
-        .select("id, name, role, status, current_task, last_active, sort_order")
+        .select("id, name, role, status, current_task, last_active, sort_order, icon, color, platform, description, domain")
         .eq("archived", false)
         .order("sort_order", { ascending: true })
         .then(r => r.data || [])
         .catch(() => []),
 
-      // V2: Intel signals
+      // V2: Intel signals (expanded for ops console triage)
       supabase
         .from("intel_signals")
-        .select("id, title, signal_type, summary, status, source, relevance_score, created_at")
+        .select("id, title, signal_type, summary, status, source, relevance_score, created_at, triage_status, triaged_at")
         .in("status", ["new", "scored", "assigned"])
         .order("created_at", { ascending: false })
-        .limit(10)
+        .limit(30)
         .then(r => r.data || [])
         .catch(() => []),
 
@@ -362,6 +362,59 @@ exports.handler = async (event) => {
       return ok({ updated: true });
     }
 
+    // === OPS CONSOLE: APPROVALS ===
+    if (action === "list_approvals") {
+      const statusFilter = body.status || "pending";
+      const now = new Date().toISOString();
+      // Auto-expire
+      await supabase.from("agent_approvals").update({ status: "expired" }).eq("status", "pending").lt("expires_at", now);
+      const query = supabase.from("agent_approvals").select("*").order("requested_at", { ascending: false });
+      if (statusFilter === "pending") query.eq("status", "pending");
+      else if (statusFilter === "recent") query.in("status", ["approved", "denied", "expired"]).limit(10);
+      else query.eq("status", statusFilter);
+      const { data } = await query.limit(50);
+      return ok({ approvals: data || [] });
+    }
+
+    if (action === "decide_approval") {
+      const { approval_id, decision, decided_by } = body;
+      if (!approval_id || !decision) return err(400, "approval_id and decision required");
+      const { error: updateErr } = await supabase.from("agent_approvals").update({
+        status: decision, decided_at: new Date().toISOString(), decided_by: decided_by || auth.user?.name || "operator",
+      }).eq("id", approval_id);
+      if (updateErr) return err(500, updateErr.message);
+      return ok({ decided: true });
+    }
+
+    // === OPS CONSOLE: TASK STATUS ===
+    if (action === "cancel_task" && body.task_id) {
+      const { error: updateErr } = await supabase.from("task_queue").update({
+        status: "failed", result: "Cancelled by operator", completed_at: new Date().toISOString(), updated_at: new Date().toISOString(),
+      }).eq("id", body.task_id);
+      if (updateErr) return err(500, updateErr.message);
+      return ok({ cancelled: true });
+    }
+
+    // === OPS CONSOLE: SIGNAL TRIAGE ===
+    if (action === "triage_signal") {
+      const { signal_id, triage_status } = body;
+      if (!signal_id || !triage_status) return err(400, "signal_id and triage_status required");
+      const { error: updateErr } = await supabase.from("intel_signals").update({
+        triage_status, triaged_at: new Date().toISOString(),
+      }).eq("id", signal_id);
+      if (updateErr) return err(500, updateErr.message);
+      if (triage_status === "newsletter") {
+        const { data: signal } = await supabase.from("intel_signals").select("title, summary").eq("id", signal_id).single();
+        if (signal) {
+          await supabase.from("task_queue").insert({
+            task: "Evaluate this signal for newsletter inclusion: " + signal.title + " — " + (signal.summary || ""),
+            agent: "ops-editorial", priority: "high",
+          });
+        }
+      }
+      return ok({ triaged: true });
+    }
+
     if (action === "seed_pipeline") {
       // Seed next 4 publish dates if pipeline is empty
       const slots = [];
@@ -376,6 +429,76 @@ exports.handler = async (event) => {
       const { error: insertErr } = await supabase.from("newsletter_pipeline").insert(slots);
       if (insertErr) return err(500, insertErr.message);
       return ok({ seeded: true, count: slots.length, dates: slots.map(s => s.publish_date) });
+    }
+
+    // === CISO SECURITY ===
+
+    if (action === "ciso_posture") {
+      const [practicesRes, findingsRes, lastScanRes, rotationRes, incidentsRes] = await Promise.all([
+        supabase.from("ciso_cmmc_practices").select("implementation_status"),
+        supabase.from("ciso_findings").select("severity").eq("status", "open"),
+        supabase.from("ciso_scan_log").select("scan_type, completed_at, findings_count").eq("status", "completed").order("completed_at", { ascending: false }).limit(1),
+        supabase.from("ciso_access_inventory").select("credential_name, next_rotation_due").not("next_rotation_due", "is", null).order("next_rotation_due").limit(5),
+        supabase.from("ciso_incidents").select("id").not("status", "in", '("recovered","closed")'),
+      ]);
+      const practices = practicesRes.data || [];
+      const cmmc = { met: 0, partially_met: 0, not_met: 0, not_applicable: 0 };
+      for (const p of practices) cmmc[p.implementation_status]++;
+      cmmc.percent_met = practices.length > 0 ? Math.round((cmmc.met / practices.length) * 100) : 0;
+      const openFindings = { critical: 0, high: 0, medium: 0, low: 0 };
+      for (const f of (findingsRes.data || [])) openFindings[f.severity]++;
+      return ok({
+        cmmc_score: cmmc,
+        open_findings: openFindings,
+        last_scan: (lastScanRes.data || [])[0] || null,
+        next_rotation_due: (rotationRes.data || []).map(r => ({ credential: r.credential_name, due: r.next_rotation_due })),
+        incidents_active: (incidentsRes.data || []).length,
+      });
+    }
+
+    if (action === "ciso_findings") {
+      const statusFilter = body.status || "open";
+      const severityFilter = body.severity ? body.severity.split(",") : null;
+      let query = supabase.from("ciso_findings")
+        .select("id, finding_type, severity, title, affected_component, cmmc_practice_id, status, discovered_at")
+        .order("discovered_at", { ascending: false }).limit(body.limit || 50);
+      if (statusFilter !== "all") query = query.eq("status", statusFilter);
+      if (severityFilter) query = query.in("severity", severityFilter);
+      const { data } = await query;
+      return ok({ findings: data || [] });
+    }
+
+    if (action === "ciso_update_finding") {
+      const { finding_id, status: fStatus, evidence } = body;
+      if (!finding_id) return err(400, "finding_id required");
+      const updates = { updated_at: new Date().toISOString() };
+      if (fStatus) updates.status = fStatus;
+      if (evidence) updates.evidence = evidence;
+      if (fStatus === "remediated") { updates.remediated_at = new Date().toISOString(); updates.remediated_by = "operator"; }
+      await supabase.from("ciso_findings").update(updates).eq("id", finding_id);
+      return ok({ updated: true });
+    }
+
+    if (action === "ciso_cmmc_tracker") {
+      let query = supabase.from("ciso_cmmc_practices")
+        .select("practice_id, family, family_name, title, implementation_status, mmt_component, last_assessed, evidence_location")
+        .order("practice_id");
+      if (body.family) query = query.eq("family", body.family);
+      const { data } = await query;
+      return ok({ practices: data || [] });
+    }
+
+    if (action === "ciso_scan") {
+      const { scan_type } = body;
+      if (!scan_type) return err(400, "scan_type required");
+      const validTypes = ["secrets", "dependencies", "headers", "rls", "access_audit", "data_handling", "full_compliance"];
+      if (!validTypes.includes(scan_type)) return err(400, "Invalid scan_type");
+      const scans = require("./lib/ciso-scans");
+      const scanFns = { secrets: scans.scanSecrets, dependencies: scans.scanDependencies, headers: scans.scanHeaders, rls: scans.scanRLS, access_audit: scans.scanAccessInventory, data_handling: scans.scanDataHandling, full_compliance: scans.scanFullCompliance };
+      try {
+        const result = await scanFns[scan_type](supabase);
+        return ok(result);
+      } catch (e) { return err(500, "Scan failed: " + e.message); }
     }
 
     return err(400, "Unknown action: " + action);

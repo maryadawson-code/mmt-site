@@ -108,6 +108,92 @@
     .issue-tabs { display: flex; gap: 4px; margin-bottom: 12px; }
     .issue-tabs button { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; }
     .issue-tabs button.active { background: rgba(0,229,250,0.15); color: #00e5fa; }
+    /* === OPS CONSOLE STYLES === */
+    .cmd-bar { display: flex; gap: 8px; align-items: center; background: #111827; border: 1px solid rgba(0,229,250,0.2); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; flex-wrap: wrap; }
+    .cmd-bar input[type="text"] { flex: 1; min-width: 200px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; padding: 10px 14px; border-radius: 6px; font-size: 0.9rem; outline: none; }
+    .cmd-bar input[type="text"]:focus { border-color: #00e5fa; }
+    .cmd-bar select { background: #1f2937; border: 1px solid rgba(255,255,255,0.15); color: #e2e8f0; padding: 10px 12px; border-radius: 6px; font-size: 0.82rem; cursor: pointer; }
+    .cmd-bar .cmd-send { background: #00e5fa; color: #0a0e17; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 700; font-size: 0.9rem; cursor: pointer; min-width: 44px; min-height: 44px; }
+    .cmd-bar .cmd-send:hover { background: #00d4e8; }
+    .cmd-bar .cmd-send:disabled { opacity: 0.5; cursor: not-allowed; }
+    .cmd-history-btn { background: none; border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); padding: 8px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; min-width: 44px; min-height: 44px; }
+    .cmd-history-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: #1f2937; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; max-height: 300px; overflow-y: auto; z-index: 100; display: none; }
+    .cmd-history-dropdown.show { display: block; }
+    .cmd-history-item { padding: 8px 12px; cursor: pointer; font-size: 0.8rem; color: rgba(255,255,255,0.6); border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .cmd-history-item:hover { background: rgba(0,229,250,0.1); color: #e2e8f0; }
+    .cmd-flash { position: fixed; bottom: 24px; right: 24px; padding: 12px 24px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; z-index: 9999; animation: flashIn 0.3s ease; }
+    .cmd-flash-success { background: #22c55e; color: #0a0e17; }
+    .cmd-flash-error { background: #ef4444; color: #fff; }
+    @keyframes flashIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    .agent-panel { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
+    .agent-chip { background: #111827; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 10px 14px; min-width: 140px; cursor: pointer; transition: border-color 0.2s, background 0.2s; flex-shrink: 0; min-height: 44px; }
+    .agent-chip:hover { border-color: rgba(0,229,250,0.3); }
+    .agent-chip.active { border-color: #00e5fa; background: rgba(0,229,250,0.05); }
+    .agent-chip .agent-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+    .agent-chip .agent-name { font-size: 0.8rem; font-weight: 600; color: #e2e8f0; }
+    .agent-chip .agent-task { font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
+    .agent-chip .agent-heartbeat { font-size: 0.6rem; color: rgba(255,255,255,0.2); margin-top: 2px; }
+
+    .ops-section { background: #111827; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .ops-section-title { font-size: 0.85rem; font-weight: 700; color: #00e5fa; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .ops-count-badge { background: #ef4444; color: #fff; font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; min-width: 20px; text-align: center; }
+
+    .approval-card-ops { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 14px; margin-bottom: 10px; }
+    .approval-card-ops.critical { border-color: rgba(239,68,68,0.4); animation: criticalPulse 2s infinite; }
+    @keyframes criticalPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } 50% { box-shadow: 0 0 12px 2px rgba(239,68,68,0.2); } }
+    .risk-badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+    .risk-low { background: rgba(22,163,74,0.2); color: #22c55e; }
+    .risk-medium { background: rgba(234,179,8,0.2); color: #eab308; }
+    .risk-high { background: rgba(249,115,22,0.2); color: #f97316; }
+    .risk-critical { background: rgba(239,68,68,0.2); color: #ef4444; }
+
+    .task-pipeline-vis { display: flex; align-items: center; gap: 4px; margin: 8px 0; }
+    .task-stage { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.15); }
+    .task-stage.done { background: #22c55e; }
+    .task-stage.active { background: #eab308; animation: stagePulse 1.5s infinite; }
+    .task-stage.awaiting { background: #f97316; animation: stagePulse 1.5s infinite; }
+    .task-stage-line { width: 16px; height: 2px; background: rgba(255,255,255,0.1); }
+    .task-stage-line.done { background: #22c55e; }
+    @keyframes stagePulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    .task-stage-label { font-size: 0.6rem; color: rgba(255,255,255,0.3); }
+
+    .task-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 12px; margin-bottom: 8px; }
+    .task-card.failed { border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.03); }
+    .task-card.completed { opacity: 0.7; }
+
+    .filter-bar { display: flex; gap: 4px; margin-bottom: 12px; align-items: center; }
+    .filter-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: 500; min-height: 32px; }
+    .filter-btn.active { background: rgba(0,229,250,0.15); color: #00e5fa; border-color: rgba(0,229,250,0.3); }
+
+    .ops-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 768px) { .ops-two-col { grid-template-columns: 1fr; } }
+
+    .signal-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 12px; margin-bottom: 8px; }
+    .signal-actions { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+    .signal-actions button { min-width: 44px; min-height: 36px; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: 600; }
+
+    .pipe-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 12px; margin-bottom: 8px; }
+    .pipe-item.warning { border-color: rgba(234,179,8,0.3); background: rgba(234,179,8,0.03); }
+    .pipe-inline-edit { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #e2e8f0; padding: 4px 8px; border-radius: 4px; font-size: 0.82rem; width: 100%; }
+    .pipe-inline-edit:focus { border-color: #00e5fa; outline: none; }
+
+    .last-updated-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .last-updated-bar .refresh-btn { background: none; border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; min-width: 44px; min-height: 32px; }
+    .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%); background-size: 200% 100%; animation: skeleton-loading 1.5s infinite; border-radius: 4px; }
+    @keyframes skeleton-loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .empty-state { text-align: center; padding: 24px; color: rgba(255,255,255,0.3); }
+    .empty-state-icon { font-size: 2rem; margin-bottom: 8px; }
+
+    @media (max-width: 640px) {
+      .cmd-bar { flex-direction: column; }
+      .cmd-bar input[type="text"] { min-width: 100%; }
+      .cmd-bar select { width: 100%; }
+      .cmd-bar .cmd-send { width: 100%; }
+      .agent-panel { gap: 6px; }
+      .agent-chip { min-width: 120px; padding: 8px 10px; }
+    }
+
     .approval-banner { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
     .approval-banner h3 { color: #ef4444; margin: 0 0 12px 0; font-size: 0.95rem; }
     .approval-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 14px; margin-bottom: 10px; }
@@ -261,7 +347,87 @@
     <div id="content" style="display:none;">
       <!-- TILE HOME VIEW -->
       <div id="tile-home">
-        <div class="tile-grid" id="tile-grid"></div>
+        <!-- OPS CONSOLE: Command Bar -->
+        <div class="cmd-bar" id="cmd-bar" style="position: relative;">
+          <input type="text" id="cmd-input" placeholder="Send a command to any agent..." autocomplete="off" aria-label="Command input">
+          <select id="cmd-agent" aria-label="Select agent"></select>
+          <select id="cmd-priority" aria-label="Priority">
+            <option value="urgent">Urgent</option>
+            <option value="high" selected>High</option>
+            <option value="normal">Normal</option>
+            <option value="low">Low</option>
+          </select>
+          <button class="cmd-send" id="cmd-send-btn" onclick="cmdSend()" aria-label="Send command">Send</button>
+          <button class="cmd-history-btn" onclick="cmdToggleHistory()" aria-label="Command history" title="Recent commands">&#x2191;</button>
+          <div class="cmd-history-dropdown" id="cmd-history-dd"></div>
+        </div>
+
+        <!-- OPS CONSOLE: Agent Status Panel -->
+        <div class="agent-panel" id="agent-panel" role="toolbar" aria-label="Agent status"></div>
+
+        <!-- OPS CONSOLE: Approval Queue -->
+        <div class="ops-section" id="approval-section" style="display:none;">
+          <div class="ops-section-title">
+            <span>AWAITING YOUR APPROVAL</span>
+            <span class="ops-count-badge" id="approval-count">0</span>
+          </div>
+          <div id="approval-list"></div>
+          <div id="recent-decisions" style="display:none;">
+            <button onclick="toggleRecentDecisions()" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:0.75rem;cursor:pointer;padding:4px 0;">Recent Decisions &#9660;</button>
+            <div id="recent-decisions-list" style="display:none;"></div>
+          </div>
+        </div>
+
+        <!-- OPS CONSOLE: Live Task Feed -->
+        <div class="ops-section" id="task-feed-section">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+            <div class="ops-section-title" style="margin-bottom:0;">LIVE TASKS</div>
+            <div class="last-updated-bar">
+              <span class="refresh-info" id="task-last-updated" style="font-size:0.7rem;color:rgba(255,255,255,0.3);"></span>
+              <button class="refresh-btn" onclick="refreshOpsConsole()" aria-label="Refresh" style="background:none;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);padding:4px 10px;border-radius:4px;cursor:pointer;font-size:0.75rem;min-width:44px;min-height:32px;">&#8635;</button>
+            </div>
+          </div>
+          <div class="filter-bar" id="task-filter-bar">
+            <button class="filter-btn active" data-filter="all" onclick="setTaskFilter('all',this)">All</button>
+            <button class="filter-btn" data-filter="active" onclick="setTaskFilter('active',this)">Active</button>
+            <button class="filter-btn" data-filter="completed" onclick="setTaskFilter('completed',this)">Completed</button>
+            <button class="filter-btn" data-filter="failed" onclick="setTaskFilter('failed',this)">Failed</button>
+          </div>
+          <div id="task-feed"></div>
+        </div>
+
+        <!-- OPS CONSOLE: Signals + Pipeline side by side -->
+        <div class="ops-two-col">
+          <!-- Signal Inbox -->
+          <div class="ops-section" id="signal-section">
+            <div class="ops-section-title">
+              <span>INTEL SIGNALS</span>
+              <span class="ops-count-badge" id="signal-count" style="display:none;">0</span>
+            </div>
+            <div class="filter-bar" id="signal-filter-bar">
+              <button class="filter-btn active" data-filter="all" onclick="setSignalFilter('all',this)">All</button>
+              <button class="filter-btn" data-filter="critical" onclick="setSignalFilter('critical',this)">Critical</button>
+              <button class="filter-btn" data-filter="high" onclick="setSignalFilter('high',this)">High</button>
+              <button class="filter-btn" data-filter="new" onclick="setSignalFilter('new',this)">New</button>
+            </div>
+            <div id="signal-feed"></div>
+          </div>
+
+          <!-- Pipeline Quick-Edit -->
+          <div class="ops-section" id="pipeline-section">
+            <div class="ops-section-title">
+              <span>NEWSLETTER PIPELINE</span>
+              <button onclick="addPipelineSlot()" style="background:rgba(0,229,250,0.1);border:1px solid rgba(0,229,250,0.2);color:#00e5fa;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:0.7rem;font-weight:600;margin-left:auto;">+ Add Issue</button>
+            </div>
+            <div id="pipeline-feed"></div>
+          </div>
+        </div>
+
+        <!-- Original tile grid (still available) -->
+        <details style="margin-top:16px;">
+          <summary style="color:rgba(255,255,255,0.4);font-size:0.8rem;cursor:pointer;padding:8px 0;">Full Dashboard Tiles</summary>
+          <div class="tile-grid" id="tile-grid" style="margin-top:12px;"></div>
+        </details>
       </div>
 
       <!-- MissionPulse placeholder -->
@@ -291,6 +457,7 @@
       <div id="detail-editorial" class="detail-view"></div>
       <div id="detail-competitive" class="detail-view"></div>
       <div id="detail-learnings" class="detail-view"></div>
+      <div id="detail-security" class="detail-view"></div>
     </div>
   </div>
 
@@ -319,6 +486,7 @@
     let _issueData = null;
     let _approvalBadges = null;
     let _approvalData = {};
+    let _cisoData = null;
     let _roleFilter = 'all';
 
     function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
@@ -338,6 +506,7 @@
         // Fetch cost data in parallel (non-blocking)
         fetch('/.netlify/functions/cost-api?key=' + apiKey + '&view=summary').then(r => r.ok ? r.json() : null).then(c => { if (c) { _costData = c; renderTiles(dashData); } }).catch(() => {});
         fetch('/.netlify/functions/billing-api?key=' + apiKey + '&view=summary').then(r => r.ok ? r.json() : null).then(b => { if (b) { _billingData = b; renderTiles(dashData); } }).catch(() => {});
+        apiPost({ action: 'ciso_posture' }).then(c => { if (c && !c.error) { _cisoData = c; renderTiles(dashData); } }).catch(() => {});
         Promise.all([
           fetch('/.netlify/functions/finance-api?key=' + apiKey + '&view=services-summary').then(r => r.ok ? r.json() : null),
           fetch('/.netlify/functions/customer-api?key=' + apiKey + '&view=summary').then(r => r.ok ? r.json() : null),
@@ -363,6 +532,8 @@
         document.getElementById('loading').style.display = 'none';
         document.getElementById('content').style.display = 'block';
         document.getElementById('last-refresh').textContent = 'Updated ' + new Date().toLocaleTimeString();
+        // Ops console render
+        if (typeof renderOpsConsole === 'function') { renderOpsConsole(); loadApprovals(); if (!_opsPollTimer) startOpsPolling(); }
       } catch (e) { console.error('Load failed:', e); document.getElementById('loading').textContent = 'Failed: ' + e.message; }
     }
 
@@ -446,7 +617,8 @@
         { id: 'agents', icon: '\ud83e\udd16', title: 'Agent Fleet', m1: onlineAgents.length + '/' + agents.length, m1l: 'Online', m2: null, m2l: null, badge: staleAgents.length },
         { id: 'content', icon: '\ud83c\udfa8', title: 'Content Studio', m1: images.length, m1l: 'Images', m2: signals.length, m2l: 'Signals', badge: 0 },
         { id: 'competitive', icon: '\ud83c\udfaf', title: 'Competitive Intel', m1: '--', m1l: 'Competitors', m2: '--', m2l: 'Unreviewed', badge: 0 },
-        { id: 'learnings', icon: '\ud83e\udde0', title: 'Agent Memory', m1: '--', m1l: 'Active rules', m2: '--', m2l: 'Applied', badge: 0 }
+        { id: 'learnings', icon: '\ud83e\udde0', title: 'Agent Memory', m1: '--', m1l: 'Active rules', m2: '--', m2l: 'Applied', badge: 0 },
+        { id: 'security', icon: '\ud83d\udee1\ufe0f', title: 'Security Posture', m1: _cisoData ? _cisoData.cmmc_score.percent_met + '%' : '--', m1l: 'CMMC L2', m2: _cisoData ? (_cisoData.open_findings.critical + _cisoData.open_findings.high) : '--', m2l: 'Crit+High', badge: _cisoData ? _cisoData.open_findings.critical : 0 }
       ];
     }
 
@@ -515,7 +687,8 @@
         coo: renderDetailCOO,
         editorial: renderDetailEditorial,
         competitive: renderDetailCompetitive,
-        learnings: renderDetailLearnings
+        learnings: renderDetailLearnings,
+        security: renderDetailSecurity
       }[view];
       if (fn) fn(dashData);
     }
@@ -2585,6 +2758,683 @@ async function updateIssueStatus(id, status) {
       }
     });
     _observer.observe(document.getElementById('content'), { attributes: true, attributeFilter: ['style'] });
+
+    // ============ OPS CONSOLE ENGINE ============
+
+    let _opsTaskFilter = 'all';
+    let _opsSignalFilter = 'all';
+    let _opsAgentFilter = null;
+    let _opsLastUpdate = null;
+    let _opsPollTimer = null;
+    let _opsApprovals = [];
+    let _opsRecentDecisions = [];
+
+    // --- Command Bar ---
+    const CMD_HISTORY_KEY = 'mmt_cmd_history';
+    function getCmdHistory() { try { return JSON.parse(localStorage.getItem(CMD_HISTORY_KEY) || '[]'); } catch { return []; } }
+    function saveCmdHistory(cmd) {
+      let h = getCmdHistory();
+      h = h.filter(c => c.text !== cmd.text);
+      h.unshift(cmd);
+      if (h.length > 20) h = h.slice(0, 20);
+      localStorage.setItem(CMD_HISTORY_KEY, JSON.stringify(h));
+    }
+
+    function initCmdBar() {
+      const sel = document.getElementById('cmd-agent');
+      if (!sel) return;
+      const agents = allAgents || [];
+      const opsAgents = agents.filter(a => a.id && (a.id.startsWith('ops-') || a.role === 'ops'));
+      const allForDropdown = opsAgents.length > 0 ? opsAgents : agents;
+      sel.innerHTML = allForDropdown.map(a => '<option value="' + esc(a.id) + '">' + (a.icon || '') + ' ' + esc(a.name || a.id) + '</option>').join('');
+      if (!sel.options.length) sel.innerHTML = '<option value="ops-code">ops-code</option><option value="ops-editorial">ops-editorial</option><option value="ops-research">ops-research</option><option value="ops-monitor">ops-monitor</option><option value="ops-newsletter">ops-newsletter</option><option value="ops-social">ops-social</option>';
+    }
+
+    document.getElementById('cmd-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') cmdSend();
+      if (e.key === 'ArrowUp') { e.preventDefault(); cmdFillFromHistory(); }
+    });
+
+    function cmdFillFromHistory() {
+      const h = getCmdHistory();
+      if (h.length > 0) {
+        document.getElementById('cmd-input').value = h[0].text;
+        if (h[0].agent) { const sel = document.getElementById('cmd-agent'); for (let i = 0; i < sel.options.length; i++) { if (sel.options[i].value === h[0].agent) { sel.selectedIndex = i; break; } } }
+      }
+    }
+
+    function cmdToggleHistory() {
+      const dd = document.getElementById('cmd-history-dd');
+      const h = getCmdHistory();
+      if (dd.classList.contains('show')) { dd.classList.remove('show'); return; }
+      dd.innerHTML = h.length === 0 ? '<div class="cmd-history-item" style="color:rgba(255,255,255,0.3);">No recent commands</div>' :
+        h.map((c, i) => '<div class="cmd-history-item" onclick="cmdSelectHistory(' + i + ')">' + esc(c.text.substring(0, 60)) + ' <span style="color:rgba(255,255,255,0.2);font-size:0.7rem;">→ ' + esc(c.agent) + '</span></div>').join('');
+      dd.classList.add('show');
+    }
+
+    function cmdSelectHistory(idx) {
+      const h = getCmdHistory();
+      if (h[idx]) {
+        document.getElementById('cmd-input').value = h[idx].text;
+        if (h[idx].agent) { const sel = document.getElementById('cmd-agent'); for (let i = 0; i < sel.options.length; i++) { if (sel.options[i].value === h[idx].agent) { sel.selectedIndex = i; break; } } }
+        if (h[idx].priority) { const sel = document.getElementById('cmd-priority'); for (let i = 0; i < sel.options.length; i++) { if (sel.options[i].value === h[idx].priority) { sel.selectedIndex = i; break; } } }
+      }
+      document.getElementById('cmd-history-dd').classList.remove('show');
+    }
+
+    // Close history dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.cmd-bar')) document.getElementById('cmd-history-dd').classList.remove('show');
+    });
+
+    async function cmdSend() {
+      const input = document.getElementById('cmd-input');
+      const text = input.value.trim();
+      if (!text) return;
+      const agent = document.getElementById('cmd-agent').value;
+      const priority = document.getElementById('cmd-priority').value;
+      const btn = document.getElementById('cmd-send-btn');
+      btn.disabled = true;
+      btn.textContent = '...';
+      try {
+        const resp = await apiPost({ action: 'add_task', task: text, agent: agent, priority: priority });
+        if (resp.error) throw new Error(resp.error);
+        saveCmdHistory({ text, agent, priority, ts: Date.now() });
+        input.value = '';
+        cmdFlash('success', 'Command dispatched' + (resp.id ? ' — ' + resp.id.slice(0, 8) : ''));
+        setTimeout(() => refreshOpsConsole(), 1000);
+      } catch (e) {
+        cmdFlash('error', 'Failed: ' + e.message);
+      }
+      btn.disabled = false;
+      btn.textContent = 'Send';
+    }
+
+    // ============ DETAIL: SECURITY POSTURE ============
+
+    async function renderDetailSecurity() {
+      const el = document.getElementById('detail-security');
+      el.innerHTML = '<button class="back-btn" onclick="showHome()">&#8592; Back</button><div class="detail-title">Security Posture</div><div id="security-loading" style="text-align:center;padding:40px;color:rgba(255,255,255,0.4)">Loading security data...</div>';
+
+      // Fetch posture + findings + tracker in parallel
+      const [posture, findingsRes, trackerRes] = await Promise.all([
+        apiPost({ action: 'ciso_posture' }),
+        apiPost({ action: 'ciso_findings', status: 'open', severity: 'critical,high' }),
+        apiPost({ action: 'ciso_cmmc_tracker' }),
+      ]);
+
+      _cisoData = posture;
+      const findings = findingsRes?.findings || [];
+      const practices = trackerRes?.practices || [];
+
+      // CMMC family summary
+      const families = {};
+      for (const p of practices) {
+        if (!families[p.family]) families[p.family] = { name: p.family_name, met: 0, partial: 0, not_met: 0, na: 0 };
+        if (p.implementation_status === 'met') families[p.family].met++;
+        else if (p.implementation_status === 'partially_met') families[p.family].partial++;
+        else if (p.implementation_status === 'not_applicable') families[p.family].na++;
+        else families[p.family].not_met++;
+      }
+
+      const cmmc = posture?.cmmc_score || { met: 0, partially_met: 0, not_met: 0, not_applicable: 0, percent_met: 0 };
+      const of_ = posture?.open_findings || { critical: 0, high: 0, medium: 0, low: 0 };
+      const lastScan = posture?.last_scan;
+      const rotations = posture?.next_rotation_due || [];
+
+      let html = '<button class="back-btn" onclick="showHome()">&#8592; Back</button>';
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><div class="detail-title" style="margin:0">Security Posture</div>';
+      html += '<div style="display:flex;gap:8px">';
+      html += '<select id="ciso-scan-type" style="background:#1f2937;color:#e2e8f0;border:1px solid rgba(0,229,250,0.2);border-radius:4px;padding:4px 8px;font-size:0.8rem"><option value="full_compliance">Full Compliance</option><option value="secrets">Secrets</option><option value="dependencies">Dependencies</option><option value="headers">Headers</option><option value="rls">RLS Audit</option><option value="access_audit">Access Audit</option><option value="data_handling">Data Handling</option></select>';
+      html += '<button class="btn btn-cyan btn-sm" onclick="runCisoScan()">Run Scan</button>';
+      html += '</div></div>';
+
+      // Overview cards
+      html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px">';
+
+      // CMMC Score
+      const pct = cmmc.percent_met;
+      const barColor = pct >= 70 ? '#22c55e' : pct >= 40 ? '#eab308' : '#ef4444';
+      html += '<div class="detail-card"><h3>CMMC L2 Compliance</h3>';
+      html += '<div style="font-size:2.2rem;font-weight:700;color:' + barColor + '">' + pct + '%</div>';
+      html += '<div style="background:rgba(255,255,255,0.1);border-radius:4px;height:8px;margin:8px 0"><div style="background:' + barColor + ';height:100%;border-radius:4px;width:' + pct + '%"></div></div>';
+      html += '<div style="font-size:0.75rem;color:rgba(255,255,255,0.5)">' + cmmc.met + ' met, ' + cmmc.partially_met + ' partial, ' + cmmc.not_met + ' not met, ' + cmmc.not_applicable + ' N/A</div></div>';
+
+      // Findings
+      html += '<div class="detail-card"><h3>Open Findings</h3>';
+      html += '<div style="display:flex;gap:16px;margin-top:8px">';
+      html += '<div><div style="font-size:1.6rem;font-weight:700;color:#ef4444">' + of_.critical + '</div><div style="font-size:0.65rem;color:rgba(255,255,255,0.4)">CRITICAL</div></div>';
+      html += '<div><div style="font-size:1.6rem;font-weight:700;color:#f97316">' + of_.high + '</div><div style="font-size:0.65rem;color:rgba(255,255,255,0.4)">HIGH</div></div>';
+      html += '<div><div style="font-size:1.6rem;font-weight:700;color:#eab308">' + of_.medium + '</div><div style="font-size:0.65rem;color:rgba(255,255,255,0.4)">MEDIUM</div></div>';
+      html += '<div><div style="font-size:1.6rem;font-weight:700;color:#60a5fa">' + of_.low + '</div><div style="font-size:0.65rem;color:rgba(255,255,255,0.4)">LOW</div></div>';
+      html += '</div></div>';
+
+      // Last Scan
+      html += '<div class="detail-card"><h3>Last Scan</h3>';
+      if (lastScan) {
+        html += '<div style="font-size:0.9rem;color:#e2e8f0;font-weight:600">' + esc(lastScan.scan_type) + '</div>';
+        html += '<div style="font-size:0.75rem;color:rgba(255,255,255,0.5);margin-top:4px">' + timeSince(lastScan.completed_at) + ' &mdash; ' + lastScan.findings_count + ' findings</div>';
+      } else {
+        html += '<div style="color:rgba(255,255,255,0.4)">No scans yet</div>';
+      }
+      html += '</div></div>';
+
+      // Critical/High Findings List
+      if (findings.length > 0) {
+        html += '<div class="detail-card"><h3>Open Critical / High Findings</h3>';
+        for (const f of findings) {
+          const sevColor = f.severity === 'critical' ? '#ef4444' : '#f97316';
+          const sevIcon = f.severity === 'critical' ? '\ud83d\udd34' : '\ud83d\udfe0';
+          html += '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px;margin-bottom:8px">';
+          html += '<div style="display:flex;justify-content:space-between;align-items:flex-start">';
+          html += '<div><span style="color:' + sevColor + ';font-weight:700;font-size:0.8rem;text-transform:uppercase">' + sevIcon + ' ' + f.severity + '</span>';
+          html += '<div style="font-weight:600;margin-top:4px">' + esc(f.title) + '</div>';
+          html += '<div style="font-size:0.75rem;color:rgba(255,255,255,0.5);margin-top:2px">Component: ' + esc(f.affected_component) + (f.cmmc_practice_id ? ' | Practice: ' + f.cmmc_practice_id : '') + '</div></div>';
+          html += '<div style="display:flex;gap:6px">';
+          html += '<button class="btn btn-sm btn-cyan" onclick="cisoAcceptRisk(\'' + f.id + '\')">Accept Risk</button>';
+          html += '</div></div></div>';
+        }
+        html += '</div>';
+      }
+
+      // CMMC Family Breakdown
+      html += '<div class="detail-card"><h3>CMMC Family Breakdown</h3>';
+      html += '<div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">';
+      html += '<button class="btn btn-sm" style="background:rgba(0,229,250,0.15);color:#00e5fa" onclick="cisoShowTracker()">View Full Tracker</button>';
+      html += '<button class="btn btn-sm" style="background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.6)" onclick="cisoExportCSV()">Export CSV</button>';
+      html += '</div>';
+      html += '<table><tr><th>Family</th><th>Met</th><th>Partial</th><th>Not Met</th><th>N/A</th><th>Progress</th></tr>';
+      for (const [code, fam] of Object.entries(families).sort((a,b) => a[0].localeCompare(b[0]))) {
+        const total = fam.met + fam.partial + fam.not_met + fam.na;
+        const famPct = total > 0 ? Math.round((fam.met / total) * 100) : 0;
+        const famBar = famPct >= 70 ? '#22c55e' : famPct >= 40 ? '#eab308' : '#ef4444';
+        html += '<tr><td><strong>' + code + '</strong> ' + esc(fam.name) + '</td><td>' + fam.met + '</td><td>' + fam.partial + '</td><td>' + fam.not_met + '</td><td>' + fam.na + '</td>';
+        html += '<td><div style="display:flex;align-items:center;gap:8px"><div style="background:rgba(255,255,255,0.1);border-radius:4px;height:6px;width:80px;flex-shrink:0"><div style="background:' + famBar + ';height:100%;border-radius:4px;width:' + famPct + '%"></div></div><span style="font-size:0.75rem;color:rgba(255,255,255,0.5)">' + famPct + '%</span></div></td></tr>';
+      }
+      html += '</table></div>';
+
+      // Key Rotation
+      html += '<div class="detail-card"><h3>Key Rotation Schedule</h3>';
+      if (rotations.length > 0) {
+        html += '<table><tr><th>Credential</th><th>Next Due</th><th>Status</th></tr>';
+        for (const r of rotations) {
+          const due = new Date(r.due);
+          const daysLeft = Math.ceil((due - Date.now()) / 86400000);
+          const rotStatus = daysLeft < 0 ? '<span class="badge badge-red">OVERDUE</span>' : daysLeft < 14 ? '<span class="badge badge-yellow">' + daysLeft + ' days</span>' : '<span class="badge badge-green">' + daysLeft + ' days</span>';
+          html += '<tr><td>' + esc(r.credential) + '</td><td>' + fmtDate(r.due) + '</td><td>' + rotStatus + '</td></tr>';
+        }
+        html += '</table>';
+      } else {
+        html += '<div style="color:rgba(255,255,255,0.4);font-size:0.85rem">No rotation schedules configured yet</div>';
+      }
+      html += '</div>';
+
+      el.innerHTML = html;
+    }
+
+    // CISO helper functions
+
+    async function runCisoScan() {
+      const scanType = document.getElementById('ciso-scan-type').value;
+      toast('Starting ' + scanType + ' scan...');
+      try {
+        const res = await fetch('/.netlify/functions/command-center-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'ciso_scan', scan_type: scanType }) });
+        const data = await res.json();
+        if (res.ok) {
+          toast('Scan complete: ' + (data.findings || 0) + ' findings');
+          renderDetailSecurity();
+        } else {
+          toast('Scan failed: ' + (data.error || 'unknown'));
+        }
+      } catch (e) {
+        toast('Scan error: ' + e.message);
+      }
+    }
+
+    async function cisoAcceptRisk(findingId) {
+      if (!confirm('Accept risk on this finding? This will be documented in the CMMC tracker.')) return;
+      try {
+        await apiPost({ action: 'ciso_update_finding', finding_id: findingId, status: 'accepted_risk' });
+        toast('Finding marked as accepted risk');
+        renderDetailSecurity();
+      } catch (e) { toast('Error: ' + e.message); }
+    }
+
+    async function cisoShowTracker() {
+      const res = await apiPost({ action: 'ciso_cmmc_tracker' });
+      const practices = res?.practices || [];
+      const el = document.getElementById('detail-security');
+      let html = '<button class="back-btn" onclick="renderDetailSecurity()">&#8592; Back to Posture</button>';
+      html += '<div class="detail-title">CMMC L2 Full Tracker (' + practices.length + ' practices)</div>';
+
+      // Filters
+      html += '<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">';
+      html += '<select id="cmmc-family-filter" onchange="cisoFilterTracker()" style="background:#1f2937;color:#e2e8f0;border:1px solid rgba(0,229,250,0.2);border-radius:4px;padding:4px 8px;font-size:0.8rem"><option value="">All Families</option>';
+      const famSet = new Set(practices.map(p => p.family));
+      for (const f of [...famSet].sort()) html += '<option value="' + f + '">' + f + ' - ' + (practices.find(p => p.family === f)?.family_name || '') + '</option>';
+      html += '</select>';
+      html += '<select id="cmmc-status-filter" onchange="cisoFilterTracker()" style="background:#1f2937;color:#e2e8f0;border:1px solid rgba(0,229,250,0.2);border-radius:4px;padding:4px 8px;font-size:0.8rem"><option value="">All Statuses</option><option value="met">Met</option><option value="partially_met">Partially Met</option><option value="not_met">Not Met</option><option value="not_applicable">N/A</option></select>';
+      html += '</div>';
+
+      html += '<div id="cmmc-tracker-table">';
+      html += cisoRenderTrackerTable(practices);
+      html += '</div>';
+      el.innerHTML = html;
+      window._cmmcPractices = practices;
+    }
+
+    function cisoRenderTrackerTable(practices) {
+      const statusBadge = (s) => ({ met: '<span class="badge badge-green">Met</span>', partially_met: '<span class="badge badge-yellow">Partial</span>', not_met: '<span class="badge badge-red">Not Met</span>', not_applicable: '<span class="badge badge-gray">N/A</span>' }[s] || s);
+      let html = '<table><tr><th>Practice</th><th>Title</th><th>Status</th><th>Component</th><th>Assessed</th></tr>';
+      for (const p of practices) {
+        html += '<tr><td style="white-space:nowrap;font-weight:600;color:#00e5fa">' + p.practice_id + '</td><td>' + esc(p.title) + '</td><td>' + statusBadge(p.implementation_status) + '</td><td>' + esc(p.mmt_component || '--') + '</td><td style="font-size:0.75rem">' + (p.last_assessed ? timeSince(p.last_assessed) : '--') + '</td></tr>';
+      }
+      html += '</table>';
+      return html;
+    }
+
+    function cisoFilterTracker() {
+      const fam = document.getElementById('cmmc-family-filter').value;
+      const status = document.getElementById('cmmc-status-filter').value;
+      let filtered = window._cmmcPractices || [];
+      if (fam) filtered = filtered.filter(p => p.family === fam);
+      if (status) filtered = filtered.filter(p => p.implementation_status === status);
+      document.getElementById('cmmc-tracker-table').innerHTML = cisoRenderTrackerTable(filtered);
+    }
+
+    function cisoExportCSV() {
+      apiPost({ action: 'ciso_cmmc_tracker' }).then(res => {
+        const practices = res?.practices || [];
+        let csv = 'Practice ID,Family,Title,Status,Component,Last Assessed,Evidence\n';
+        for (const p of practices) {
+          csv += '"' + p.practice_id + '","' + p.family + '","' + (p.title||'').replace(/"/g,'""') + '","' + p.implementation_status + '","' + (p.mmt_component||'') + '","' + (p.last_assessed||'') + '","' + (p.evidence_location||'').replace(/"/g,'""') + '"\n';
+        }
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'cmmc-tracker-' + new Date().toISOString().split('T')[0] + '.csv';
+        a.click();
+        toast('CSV exported');
+      });
+    }
+
+    function cmdFlash(type, msg) {
+      const el = document.createElement('div');
+      el.className = 'cmd-flash cmd-flash-' + type;
+      el.textContent = msg;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 3000);
+    }
+
+    // --- Agent Status Panel ---
+    function renderAgentPanel() {
+      const panel = document.getElementById('agent-panel');
+      if (!panel) return;
+      const agents = allAgents || [];
+      if (!agents.length) { panel.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:0.8rem;padding:8px;">No agents registered</div>'; return; }
+      panel.innerHTML = agents.map(a => {
+        const dotColor = a.status === 'active' ? '#22c55e' : a.status === 'busy' ? '#eab308' : a.status === 'error' ? '#ef4444' : 'rgba(255,255,255,0.2)';
+        const isActive = _opsAgentFilter === a.id;
+        const thirtyMinAgo = Date.now() - 1800000;
+        const isStale = a.last_active && new Date(a.last_active).getTime() < thirtyMinAgo && (a.status === 'active' || a.status === 'busy');
+        return '<div class="agent-chip' + (isActive ? ' active' : '') + '" onclick="toggleAgentFilter(\'' + a.id + '\')" title="' + esc(a.name || a.id) + '">' +
+          '<div><span class="agent-dot" style="background:' + dotColor + ';' + (isStale ? 'animation:stagePulse 1s infinite;' : '') + '"></span><span class="agent-name">' + (a.icon || '') + ' ' + esc(a.name || a.id) + '</span></div>' +
+          '<div class="agent-task">' + esc(a.current_task || 'idle') + '</div>' +
+          '<div class="agent-heartbeat">' + (a.last_active ? timeSince(a.last_active) : 'never') + '</div>' +
+          '</div>';
+      }).join('');
+    }
+
+    function toggleAgentFilter(agentId) {
+      _opsAgentFilter = _opsAgentFilter === agentId ? null : agentId;
+      renderAgentPanel();
+      renderTaskFeed();
+    }
+
+    // --- Approval Queue ---
+    async function loadApprovals() {
+      try {
+        const [pendingResp, recentResp] = await Promise.all([
+          apiPost({ action: 'list_approvals', status: 'pending' }),
+          apiPost({ action: 'list_approvals', status: 'recent' }),
+        ]);
+        _opsApprovals = pendingResp.approvals || [];
+        _opsRecentDecisions = recentResp.approvals || [];
+        renderApprovals();
+      } catch (e) { console.error('Approval load failed:', e); }
+    }
+
+    function renderApprovals() {
+      const section = document.getElementById('approval-section');
+      const list = document.getElementById('approval-list');
+      const countBadge = document.getElementById('approval-count');
+      const pending = _opsApprovals;
+
+      countBadge.textContent = pending.length;
+      if (pending.length === 0 && _opsRecentDecisions.length === 0) {
+        section.style.display = 'none';
+        return;
+      }
+      section.style.display = 'block';
+
+      if (pending.length === 0) {
+        list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">&#10004;</div><div>No pending approvals</div></div>';
+      } else {
+        const sorted = [...pending].sort((a, b) => {
+          const riskOrder = { critical: 0, high: 1, medium: 2, low: 3 };
+          const rA = riskOrder[a.risk_level] ?? 2;
+          const rB = riskOrder[b.risk_level] ?? 2;
+          if (rA !== rB) return rA - rB;
+          return new Date(a.requested_at) - new Date(b.requested_at);
+        });
+        list.innerHTML = sorted.map(a => {
+          const isCrit = a.risk_level === 'critical';
+          const agentInfo = (allAgents || []).find(ag => ag.id === a.agent_id);
+          return '<div class="approval-card-ops' + (isCrit ? ' critical' : '') + '">' +
+            '<div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:8px;">' +
+            '<div><span style="color:' + (agentInfo?.color || '#9ca3af') + ';font-weight:600;font-size:0.85rem;">' + (agentInfo?.icon || '') + ' ' + esc(a.agent_id) + '</span></div>' +
+            '<div style="display:flex;gap:6px;align-items:center;"><span class="risk-badge risk-' + (a.risk_level || 'medium') + '">' + (a.risk_level || 'medium') + '</span><span style="font-size:0.7rem;color:rgba(255,255,255,0.3);">' + timeSince(a.requested_at) + '</span></div>' +
+            '</div>' +
+            '<div style="font-weight:600;font-size:0.9rem;margin:8px 0 4px;">' + esc(a.action_summary) + '</div>' +
+            (a.action_detail ? '<details style="margin-bottom:8px;"><summary style="font-size:0.75rem;color:rgba(255,255,255,0.4);cursor:pointer;">Details</summary><div style="font-size:0.78rem;color:rgba(255,255,255,0.5);margin-top:4px;padding:8px;background:rgba(255,255,255,0.02);border-radius:4px;">' + esc(a.action_detail) + '</div></details>' : '') +
+            '<div style="display:flex;gap:8px;"><button class="btn btn-sm btn-green" onclick="decideApproval(\'' + a.id + '\',\'approved\')" style="min-width:100px;min-height:44px;">&#10004; APPROVE</button><button class="btn btn-sm btn-red" onclick="decideApproval(\'' + a.id + '\',\'denied\')" style="min-width:100px;min-height:44px;">&#10008; DENY</button></div>' +
+            '</div>';
+        }).join('');
+      }
+
+      // Recent decisions
+      const recentDiv = document.getElementById('recent-decisions');
+      if (_opsRecentDecisions.length > 0) {
+        recentDiv.style.display = 'block';
+      } else {
+        recentDiv.style.display = 'none';
+      }
+    }
+
+    async function decideApproval(approvalId, decision) {
+      try {
+        await apiPost({ action: 'decide_approval', approval_id: approvalId, decision: decision, decided_by: currentUser?.name || 'operator' });
+        cmdFlash('success', 'Approval ' + decision);
+        loadApprovals();
+      } catch (e) { cmdFlash('error', 'Failed: ' + e.message); }
+    }
+
+    function toggleRecentDecisions() {
+      const list = document.getElementById('recent-decisions-list');
+      if (list.style.display === 'none') {
+        list.style.display = 'block';
+        list.innerHTML = _opsRecentDecisions.map(a => {
+          const sc = a.status === 'approved' ? 'green' : a.status === 'denied' ? 'red' : 'gray';
+          return '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);opacity:' + (a.status === 'expired' ? '0.4' : '0.7') + ';"><div style="font-size:0.78rem;">' + esc(a.agent_id) + ': ' + esc(a.action_summary) + '</div><span class="badge badge-' + sc + '">' + a.status + '</span></div>';
+        }).join('');
+      } else {
+        list.style.display = 'none';
+      }
+    }
+
+    // --- Live Task Feed ---
+    function setTaskFilter(filter, btn) {
+      _opsTaskFilter = filter;
+      document.querySelectorAll('#task-filter-bar .filter-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderTaskFeed();
+    }
+
+    function renderTaskFeed() {
+      const feed = document.getElementById('task-feed');
+      if (!feed) return;
+      let tasks = dashData.tasks || [];
+
+      // Agent filter
+      if (_opsAgentFilter) tasks = tasks.filter(t => t.agent === _opsAgentFilter);
+
+      // Status filter
+      if (_opsTaskFilter === 'active') tasks = tasks.filter(t => ['pending', 'acknowledged', 'in_progress', 'awaiting_approval'].includes(t.status));
+      else if (_opsTaskFilter === 'completed') tasks = tasks.filter(t => t.status === 'completed');
+      else if (_opsTaskFilter === 'failed') tasks = tasks.filter(t => t.status === 'failed');
+
+      // Sort: active first by priority, then completed by recency
+      const prioOrder = { urgent: 0, high: 1, normal: 2, low: 3 };
+      const activeStatuses = ['pending', 'acknowledged', 'in_progress', 'awaiting_approval'];
+      tasks.sort((a, b) => {
+        const aActive = activeStatuses.includes(a.status);
+        const bActive = activeStatuses.includes(b.status);
+        if (aActive && !bActive) return -1;
+        if (!aActive && bActive) return 1;
+        if (aActive && bActive) return (prioOrder[a.priority] || 2) - (prioOrder[b.priority] || 2);
+        return new Date(b.completed_at || b.created_at) - new Date(a.completed_at || a.created_at);
+      });
+
+      if (!tasks.length) {
+        feed.innerHTML = '<div class="empty-state"><div class="empty-state-icon">&#128203;</div><div>No tasks' + (_opsAgentFilter ? ' for this agent' : '') + '</div></div>';
+        return;
+      }
+
+      feed.innerHTML = tasks.slice(0, 30).map(t => {
+        const agentInfo = (allAgents || []).find(a => a.id === t.agent);
+        const stages = ['pending', 'acknowledged', 'in_progress', 'completed'];
+        const statusIdx = stages.indexOf(t.status === 'awaiting_approval' ? 'in_progress' : t.status === 'failed' ? 'completed' : t.status);
+        const prioBadge = t.priority === 'urgent' ? 'red' : t.priority === 'high' ? 'orange' : t.priority === 'low' ? 'blue' : 'gray';
+
+        let pipelineHtml = '<div class="task-pipeline-vis">';
+        const stageLabels = ['Dispatched', 'Ack', 'Working', 'Done'];
+        for (let i = 0; i < stages.length; i++) {
+          const cls = i < statusIdx ? 'done' : i === statusIdx ? (t.status === 'awaiting_approval' ? 'awaiting' : 'active') : '';
+          const icon = i < statusIdx ? '&#10003;' : (i === statusIdx ? '&#9679;' : '&#9675;');
+          pipelineHtml += '<div style="display:flex;flex-direction:column;align-items:center;"><div class="task-stage ' + cls + '" title="' + stageLabels[i] + '"></div><div class="task-stage-label">' + stageLabels[i] + '</div></div>';
+          if (i < stages.length - 1) pipelineHtml += '<div class="task-stage-line' + (i < statusIdx ? ' done' : '') + '"></div>';
+        }
+        pipelineHtml += '</div>';
+
+        const isFailed = t.status === 'failed';
+        const isComplete = t.status === 'completed';
+        const isActive = ['pending', 'acknowledged', 'in_progress', 'awaiting_approval'].includes(t.status);
+
+        return '<div class="task-card' + (isFailed ? ' failed' : '') + (isComplete ? ' completed' : '') + '">' +
+          '<div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:6px;">' +
+          '<div style="display:flex;align-items:center;gap:8px;">' +
+          '<span style="color:' + (agentInfo?.color || '#9ca3af') + ';font-weight:600;font-size:0.8rem;">' + (agentInfo?.icon || '') + ' ' + esc(agentInfo?.name || t.agent) + '</span>' +
+          '<span class="badge badge-' + prioBadge + '">' + t.priority + '</span>' +
+          '</div>' +
+          '<span style="font-size:0.7rem;color:rgba(255,255,255,0.3);">' + timeSince(t.created_at) + '</span>' +
+          '</div>' +
+          '<div style="font-size:0.85rem;margin:6px 0;">' + esc(t.task) + '</div>' +
+          pipelineHtml +
+          (t.status_detail ? '<div style="font-size:0.75rem;color:rgba(255,255,255,0.5);font-style:italic;margin-top:4px;">' + esc(t.status_detail) + '</div>' : '') +
+          (isFailed && t.result ? '<div style="font-size:0.78rem;color:#ef4444;background:rgba(239,68,68,0.05);padding:6px 8px;border-radius:4px;margin-top:6px;">' + esc(t.result) + '</div>' : '') +
+          (isComplete && t.result ? '<details style="margin-top:6px;"><summary style="font-size:0.75rem;color:rgba(255,255,255,0.4);cursor:pointer;">Result</summary><div style="font-size:0.78rem;color:rgba(255,255,255,0.5);margin-top:4px;padding:6px;background:rgba(255,255,255,0.02);border-radius:4px;">' + esc(t.result) + '</div></details>' : '') +
+          (isActive ? '<button class="btn btn-sm btn-red" style="margin-top:8px;min-height:36px;" onclick="cancelOpsTask(\'' + t.id + '\')">Cancel</button>' : '') +
+          '</div>';
+      }).join('');
+    }
+
+    async function cancelOpsTask(taskId) {
+      try {
+        await apiPost({ action: 'cancel_task', task_id: taskId });
+        cmdFlash('success', 'Task cancelled');
+        refreshOpsConsole();
+      } catch (e) { cmdFlash('error', 'Failed: ' + e.message); }
+    }
+
+    // --- Signal Inbox ---
+    function setSignalFilter(filter, btn) {
+      _opsSignalFilter = filter;
+      document.querySelectorAll('#signal-filter-bar .filter-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderSignalFeed();
+    }
+
+    function renderSignalFeed() {
+      const feed = document.getElementById('signal-feed');
+      const countBadge = document.getElementById('signal-count');
+      if (!feed) return;
+      let signals = dashData.signals || [];
+
+      const untriaged = signals.filter(s => !s.triage_status || s.triage_status === 'new');
+      countBadge.textContent = untriaged.length;
+      countBadge.style.display = untriaged.length > 0 ? 'inline-block' : 'none';
+
+      // Filter
+      if (_opsSignalFilter === 'critical') signals = signals.filter(s => s.relevance_score >= 20);
+      else if (_opsSignalFilter === 'high') signals = signals.filter(s => s.relevance_score >= 15);
+      else if (_opsSignalFilter === 'new') signals = signals.filter(s => !s.triage_status || s.triage_status === 'new');
+
+      // Sort: pinned first, then by recency
+      signals.sort((a, b) => {
+        if (a.triage_status === 'pinned' && b.triage_status !== 'pinned') return -1;
+        if (b.triage_status === 'pinned' && a.triage_status !== 'pinned') return 1;
+        return new Date(b.created_at) - new Date(a.created_at);
+      });
+
+      // Hide dismissed
+      signals = signals.filter(s => s.triage_status !== 'dismissed');
+
+      if (!signals.length) {
+        const section = document.getElementById('signal-section');
+        if (_opsSignalFilter === 'all') {
+          feed.innerHTML = '<div class="empty-state"><div class="empty-state-icon">&#128225;</div><div>No active signals</div></div>';
+        } else {
+          feed.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:0.8rem;padding:12px;">No matching signals</div>';
+        }
+        return;
+      }
+
+      const typeColors = { contract_award: 'green', solicitation: 'blue', policy_change: 'yellow', personnel_move: 'purple', competitor_intel: 'red', industry_news: 'gray', breaking: 'red' };
+      feed.innerHTML = signals.slice(0, 15).map(s => {
+        const tc = typeColors[s.signal_type] || 'gray';
+        const isPinned = s.triage_status === 'pinned';
+        const isNewsletter = s.triage_status === 'newsletter';
+        return '<div class="signal-card" style="' + (isPinned ? 'border-color:rgba(0,229,250,0.3);' : '') + '">' +
+          '<div style="display:flex;justify-content:space-between;align-items:start;gap:8px;">' +
+          '<div><span class="badge badge-' + tc + '" style="margin-right:6px;">' + (s.signal_type || 'intel') + '</span>' +
+          (isPinned ? '<span style="color:#00e5fa;font-size:0.7rem;">&#128204;</span> ' : '') +
+          (isNewsletter ? '<span style="color:#22c55e;font-size:0.7rem;">&#128240;</span> ' : '') +
+          '</div>' +
+          '<span style="font-size:0.65rem;color:rgba(255,255,255,0.3);">' + timeSince(s.created_at) + '</span>' +
+          '</div>' +
+          '<div style="font-weight:600;font-size:0.85rem;margin:6px 0;">' + esc(s.title) + '</div>' +
+          (s.summary ? '<div style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-bottom:6px;">' + esc(s.summary.substring(0, 150)) + '</div>' : '') +
+          '<div class="signal-actions">' +
+          '<button onclick="triageSignal(\'' + s.id + '\',\'newsletter\')" style="background:rgba(22,163,74,0.2);color:#22c55e;" title="Send to newsletter">&#128240; Newsletter</button>' +
+          '<button onclick="triageSignal(\'' + s.id + '\',\'dismissed\')" style="background:rgba(107,114,128,0.2);color:#9ca3af;" title="Dismiss">&#128465; Dismiss</button>' +
+          '<button onclick="triageSignal(\'' + s.id + '\',\'' + (isPinned ? 'new' : 'pinned') + '\')" style="background:rgba(0,229,250,0.1);color:#00e5fa;" title="' + (isPinned ? 'Unpin' : 'Pin') + '">&#128204; ' + (isPinned ? 'Unpin' : 'Pin') + '</button>' +
+          '</div></div>';
+      }).join('');
+    }
+
+    async function triageSignal(signalId, triageStatus) {
+      try {
+        await apiPost({ action: 'triage_signal', signal_id: signalId, triage_status: triageStatus });
+        cmdFlash('success', triageStatus === 'newsletter' ? 'Sent to editorial' : triageStatus === 'dismissed' ? 'Dismissed' : triageStatus === 'pinned' ? 'Pinned' : 'Updated');
+        refreshOpsConsole();
+      } catch (e) { cmdFlash('error', 'Failed: ' + e.message); }
+    }
+
+    // --- Pipeline Quick-Edit ---
+    function renderPipelineFeed() {
+      const feed = document.getElementById('pipeline-feed');
+      if (!feed) return;
+      const pipeline = dashData.pipeline || [];
+
+      if (!pipeline.length) {
+        feed.innerHTML = '<div class="empty-state"><div class="empty-state-icon">&#128197;</div><div>No upcoming issues</div></div>';
+        return;
+      }
+
+      const now = new Date();
+      const threeDaysMs = 3 * 86400000;
+      const statuses = ['planning', 'researching', 'drafting', 'editing', 'ready', 'published', 'killed'];
+      const statusColors = { planning: 'gray', researching: 'blue', drafting: 'yellow', editing: 'orange', ready: 'green', published: 'cyan', killed: 'red' };
+
+      feed.innerHTML = pipeline.map(p => {
+        const pubDate = new Date(p.publish_date);
+        const isWarning = p.status === 'planning' && (pubDate - now) < threeDaysMs && pubDate > now;
+        const sc = statusColors[p.status] || 'gray';
+
+        return '<div class="pipe-item' + (isWarning ? ' warning' : '') + '" data-pipe-id="' + p.id + '">' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
+          '<div style="font-weight:700;font-size:0.9rem;">' + fmtDate(p.publish_date) + ' <span class="badge badge-' + sc + '" style="margin-left:4px;">' + (p.day_slot || '') + '</span></div>' +
+          '<select onchange="pipeUpdateStatus(\'' + p.id + '\',this.value)" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:4px 8px;border-radius:4px;font-size:0.75rem;" aria-label="Status">' +
+          statuses.map(s => '<option value="' + s + '"' + (s === p.status ? ' selected' : '') + '>' + s + '</option>').join('') +
+          '</select>' +
+          '</div>' +
+          '<div style="margin-bottom:4px;"><input type="text" class="pipe-inline-edit" value="' + esc(p.lead_topic || '') + '" placeholder="Lead topic..." onblur="pipeUpdateTopic(\'' + p.id + '\',this.value)" aria-label="Lead topic"></div>' +
+          '<div style="display:flex;gap:12px;font-size:0.75rem;color:rgba(255,255,255,0.4);">' +
+          '<span>Score: ' + (p.lead_score || '--') + '</span>' +
+          '<span>LI: ' + (p.linkedin_drafted ? 'Y' : '--') + '</span>' +
+          '<span>Pod: ' + (p.podcast_points_drafted ? 'Y' : '--') + '</span>' +
+          '</div>' +
+          '<textarea class="pipe-inline-edit" rows="1" placeholder="Notes..." onblur="pipeUpdateNotes(\'' + p.id + '\',this.value)" style="margin-top:6px;resize:vertical;" aria-label="Notes">' + esc(p.notes || '') + '</textarea>' +
+          (isWarning ? '<div style="font-size:0.7rem;color:#eab308;margin-top:4px;">&#9888; Publish date approaching — still in planning</div>' : '') +
+          '</div>';
+      }).join('');
+    }
+
+    async function pipeUpdateStatus(id, status) {
+      await apiPost({ action: 'update_pipeline', id, status });
+      cmdFlash('success', 'Pipeline updated');
+    }
+
+    async function pipeUpdateTopic(id, topic) {
+      await apiPost({ action: 'update_pipeline', id, lead_topic: topic });
+    }
+
+    async function pipeUpdateNotes(id, notes) {
+      await apiPost({ action: 'update_pipeline', id, notes });
+    }
+
+    // --- Ops Console Polling ---
+    function startOpsPolling() {
+      stopOpsPolling();
+      _opsPollTimer = setInterval(() => {
+        if (document.hidden) return;
+        refreshOpsConsole();
+      }, 15000);
+    }
+
+    function stopOpsPolling() {
+      if (_opsPollTimer) { clearInterval(_opsPollTimer); _opsPollTimer = null; }
+    }
+
+    document.addEventListener('visibilitychange', function() {
+      if (document.hidden) {
+        stopOpsPolling();
+      } else {
+        refreshOpsConsole();
+        startOpsPolling();
+      }
+    });
+
+    async function refreshOpsConsole() {
+      try {
+        await loadDashboard();
+        renderOpsConsole();
+        loadApprovals();
+      } catch (e) { console.error('Ops refresh failed:', e); }
+    }
+
+    function renderOpsConsole() {
+      _opsLastUpdate = new Date();
+      const el = document.getElementById('task-last-updated');
+      if (el) el.textContent = 'Updated ' + _opsLastUpdate.toLocaleTimeString();
+      initCmdBar();
+      renderAgentPanel();
+      renderTaskFeed();
+      renderSignalFeed();
+      renderPipelineFeed();
+    }
+
+    // Update the "Xs ago" counter
+    setInterval(() => {
+      if (!_opsLastUpdate) return;
+      const el = document.getElementById('task-last-updated');
+      if (el) {
+        const secs = Math.floor((Date.now() - _opsLastUpdate.getTime()) / 1000);
+        el.textContent = 'Updated ' + secs + 's ago';
+      }
+    }, 5000);
+
+    // No override needed — renderOpsConsole is called from loadDashboard post-render hook below
 
     // ─── AUTH: Login / Logout / Session Management ───
     const AUTH_API = '/.netlify/functions/dashboard-auth';
