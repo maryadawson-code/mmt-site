@@ -17,6 +17,11 @@
 # Command Center (ops dashboard — not in public nav)
 /command-center /command-center.html 200
 
+# Customer Portal
+/my-reports /my-reports.html 200
+/portal /my-reports.html 301
+/dashboard /my-reports.html 301
+
 # MHS GENESIS shortcut redirect
 /contracts/mhs-genesis/ /contracts/mhs-genesis-electronic-health-record/ 301
 /contracts/mhs-genesis /contracts/mhs-genesis-electronic-health-record/ 301
