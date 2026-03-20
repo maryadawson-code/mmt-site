@@ -458,6 +458,7 @@
       <div id="detail-competitive" class="detail-view"></div>
       <div id="detail-learnings" class="detail-view"></div>
       <div id="detail-security" class="detail-view"></div>
+      <div id="detail-penny" class="detail-view"></div>
     </div>
   </div>
 
@@ -487,6 +488,7 @@
     let _approvalBadges = null;
     let _approvalData = {};
     let _cisoData = null;
+    let _pennyData = null;
     let _roleFilter = 'all';
 
     function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
@@ -507,6 +509,7 @@
         fetch('/.netlify/functions/cost-api?key=' + apiKey + '&view=summary').then(r => r.ok ? r.json() : null).then(c => { if (c) { _costData = c; renderTiles(dashData); } }).catch(() => {});
         fetch('/.netlify/functions/billing-api?key=' + apiKey + '&view=summary').then(r => r.ok ? r.json() : null).then(b => { if (b) { _billingData = b; renderTiles(dashData); } }).catch(() => {});
         apiPost({ action: 'ciso_posture' }).then(c => { if (c && !c.error) { _cisoData = c; renderTiles(dashData); } }).catch(() => {});
+        apiPost({ action: 'penny_dashboard' }).then(p => { if (p && !p.error) { _pennyData = p; renderTiles(dashData); } }).catch(() => {});
         Promise.all([
           fetch('/.netlify/functions/finance-api?key=' + apiKey + '&view=services-summary').then(r => r.ok ? r.json() : null),
           fetch('/.netlify/functions/customer-api?key=' + apiKey + '&view=summary').then(r => r.ok ? r.json() : null),
@@ -618,7 +621,8 @@
         { id: 'content', icon: '\ud83c\udfa8', title: 'Content Studio', m1: images.length, m1l: 'Images', m2: signals.length, m2l: 'Signals', badge: 0 },
         { id: 'competitive', icon: '\ud83c\udfaf', title: 'Competitive Intel', m1: '--', m1l: 'Competitors', m2: '--', m2l: 'Unreviewed', badge: 0 },
         { id: 'learnings', icon: '\ud83e\udde0', title: 'Agent Memory', m1: '--', m1l: 'Active rules', m2: '--', m2l: 'Applied', badge: 0 },
-        { id: 'security', icon: '\ud83d\udee1\ufe0f', title: 'Security Posture', m1: _cisoData ? _cisoData.cmmc_score.percent_met + '%' : '--', m1l: 'CMMC L2', m2: _cisoData ? (_cisoData.open_findings.critical + _cisoData.open_findings.high) : '--', m2l: 'Crit+High', badge: _cisoData ? _cisoData.open_findings.critical : 0 }
+        { id: 'security', icon: '\ud83d\udee1\ufe0f', title: 'Security Posture', m1: _cisoData ? _cisoData.cmmc_score.percent_met + '%' : '--', m1l: 'CMMC L2', m2: _cisoData ? (_cisoData.open_findings.critical + _cisoData.open_findings.high) : '--', m2l: 'Crit+High', badge: _cisoData ? _cisoData.open_findings.critical : 0 },
+        { id: 'penny', icon: '\ud83d\udcb0', title: 'Cost Control', m1: _pennyData ? '$' + _pennyData.today.total_cost_usd.toFixed(2) : '--', m1l: 'Today', m2: _pennyData ? Math.round(_pennyData.today.heartbeat_waste_ratio * 100) + '%' : '--', m2l: 'Waste', badge: _pennyData ? (_pennyData.open_findings.high || 0) : 0 }
       ];
     }
 
@@ -688,7 +692,8 @@
         editorial: renderDetailEditorial,
         competitive: renderDetailCompetitive,
         learnings: renderDetailLearnings,
-        security: renderDetailSecurity
+        security: renderDetailSecurity,
+        penny: renderDetailPenny
       }[view];
       if (fn) fn(dashData);
     }
@@ -3056,6 +3061,177 @@ async function updateIssueStatus(id, status) {
         a.click();
         toast('CSV exported');
       });
+    }
+
+    // ============ PENNY PINCHER (Cost Control) DETAIL VIEW ============
+
+    function renderDetailPenny() {
+      const el = document.getElementById('detail-penny');
+      const p = _pennyData;
+      let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
+      h += '<div class="detail-title">\ud83d\udcb0 Cost Control <span style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-weight:400;margin-left:8px;">Penny Pincher Agent</span></div>';
+
+      if (!p) {
+        h += '<div class="detail-card"><p style="color:rgba(255,255,255,0.4);">Cost control data loading... Data appears once agents begin reporting token usage.</p></div>';
+        el.innerHTML = h;
+        return;
+      }
+
+      // Big numbers row
+      const todayCost = p.today.total_cost_usd.toFixed(2);
+      const weekCost = p.week.total_cost_usd.toFixed(2);
+      const projected = p.month_projected.toFixed(2);
+      const wasteRatio = Math.round(p.today.heartbeat_waste_ratio * 100);
+      const target = 75;
+      const projColor = p.month_projected > 100 ? '#ef4444' : p.month_projected > target ? '#eab308' : '#22c55e';
+
+      h += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;">';
+      h += '<div class="detail-card" style="text-align:center;"><div class="revenue-big">$' + todayCost + '</div><div class="revenue-label">Today</div></div>';
+      h += '<div class="detail-card" style="text-align:center;"><div style="font-size:2rem;font-weight:700;color:#60a5fa;">$' + weekCost + '</div><div class="revenue-label">This Week</div></div>';
+      h += '<div class="detail-card" style="text-align:center;"><div style="font-size:2rem;font-weight:700;color:' + projColor + ';">$' + projected + '</div><div class="revenue-label">Projected Monthly</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);margin-top:2px;">Target: &lt;$' + target + '</div></div>';
+      h += '<div class="detail-card" style="text-align:center;"><div style="font-size:2rem;font-weight:700;color:' + (wasteRatio > 50 ? '#ef4444' : wasteRatio > 30 ? '#eab308' : '#22c55e') + ';">' + wasteRatio + '%</div><div class="revenue-label">Waste Ratio</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);margin-top:2px;">' + p.today.productive_vs_idle + '</div></div>';
+      h += '</div>';
+
+      // Cost by Agent (horizontal bars)
+      h += '<div class="detail-card"><h3>Cost by Agent (today)</h3>';
+      const agentTotal = p.today.total_cost_usd || 1;
+      const agentColors = { 'ops-editorial': '#f97316', 'ops-code': '#60a5fa', 'ops-monitor': '#22c55e', 'ops-research': '#a855f7', 'ops-ciso': '#ef4444', 'ops-penny': '#eab308', 'ops-newsletter': '#9ca3af', 'ops-social': '#9ca3af' };
+      const sortedAgents = Object.entries(p.today.by_agent).sort((a, b) => b[1] - a[1]);
+      if (sortedAgents.length === 0) {
+        h += '<div style="color:rgba(255,255,255,0.4);font-size:0.82rem;">No agent activity today</div>';
+      }
+      for (const [agent, cost] of sortedAgents) {
+        const pct = Math.round(cost / agentTotal * 100);
+        const color = agentColors[agent] || '#9ca3af';
+        h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">';
+        h += '<span style="width:100px;font-size:0.78rem;color:rgba(255,255,255,0.6);">' + agent + '</span>';
+        h += '<div style="flex:1;background:rgba(255,255,255,0.05);border-radius:3px;height:16px;overflow:hidden;"><div style="background:' + color + ';width:' + Math.max(pct, 2) + '%;height:100%;border-radius:3px;transition:width 0.3s;"></div></div>';
+        h += '<span style="width:90px;text-align:right;font-size:0.78rem;color:rgba(255,255,255,0.5);">$' + cost.toFixed(4) + ' (' + pct + '%)</span>';
+        h += '</div>';
+      }
+      h += '</div>';
+
+      // Two-column: Model breakdown + Task type breakdown
+      h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">';
+
+      // Model breakdown
+      h += '<div class="detail-card"><h3>Cost by Model</h3>';
+      h += '<div style="display:grid;grid-template-columns:1fr;gap:8px;">';
+      const modelColors = { 'claude-opus-4': '#ef4444', 'claude-sonnet-4': '#f97316', 'claude-haiku-3.5': '#22c55e', 'sonar': '#a855f7', 'sonar-pro': '#60a5fa' };
+      for (const [model, cost] of Object.entries(p.today.by_model || {}).sort((a, b) => b[1] - a[1])) {
+        const color = modelColors[model] || '#9ca3af';
+        h += '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:10px;">';
+        h += '<div style="display:flex;justify-content:space-between;align-items:center;">';
+        h += '<span style="font-size:0.82rem;font-weight:600;color:' + color + ';">' + model + '</span>';
+        h += '<span style="font-size:1.1rem;font-weight:700;color:#e2e8f0;">$' + cost.toFixed(4) + '</span>';
+        h += '</div></div>';
+      }
+      h += '</div></div>';
+
+      // Task type breakdown
+      h += '<div class="detail-card"><h3>Cost by Task Type</h3>';
+      h += '<div style="display:grid;grid-template-columns:1fr;gap:8px;">';
+      for (const [type, cost] of Object.entries(p.today.by_type || {}).sort((a, b) => b[1] - a[1])) {
+        const isWaste = type === 'heartbeat';
+        h += '<div style="background:rgba(255,255,255,0.03);border:1px solid ' + (isWaste ? 'rgba(239,68,68,0.2)' : 'rgba(255,255,255,0.08)') + ';border-radius:8px;padding:10px;">';
+        h += '<div style="display:flex;justify-content:space-between;align-items:center;">';
+        h += '<span style="font-size:0.82rem;color:' + (isWaste ? '#ef4444' : 'rgba(255,255,255,0.6)') + ';">' + type + (isWaste ? ' \u26a0\ufe0f' : '') + '</span>';
+        h += '<span style="font-size:1.1rem;font-weight:700;color:#e2e8f0;">$' + cost.toFixed(4) + '</span>';
+        h += '</div></div>';
+      }
+      h += '</div></div></div>';
+
+      // Savings Opportunities
+      const findings = p.findings || [];
+      if (findings.length > 0) {
+        h += '<div class="detail-card"><h3>Savings Opportunities (' + findings.length + ' open)</h3>';
+        for (const f of findings) {
+          const sevColor = f.severity === 'high' ? '#ef4444' : f.severity === 'medium' ? '#eab308' : '#60a5fa';
+          const sevIcon = f.severity === 'high' ? '\ud83d\udfe0' : f.severity === 'medium' ? '\ud83d\udfe1' : '\ud83d\udfe2';
+          h += '<div style="border-left:3px solid ' + sevColor + ';padding:10px 14px;margin-bottom:10px;background:rgba(255,255,255,0.02);border-radius:0 8px 8px 0;">';
+          h += '<div style="display:flex;justify-content:space-between;align-items:flex-start;">';
+          h += '<div>';
+          h += '<span style="font-size:0.75rem;font-weight:700;color:' + sevColor + ';text-transform:uppercase;">' + sevIcon + ' ' + f.severity + '</span>';
+          h += '<div style="font-weight:600;margin-top:4px;color:#e2e8f0;">' + esc(f.title) + '</div>';
+          h += '<div style="font-size:0.78rem;color:rgba(255,255,255,0.5);margin-top:4px;">Recommendation: ' + esc(f.recommendation) + '</div>';
+          if (f.estimated_monthly_waste_usd) {
+            h += '<div style="font-size:0.78rem;color:#22c55e;margin-top:2px;">Saves ~$' + parseFloat(f.estimated_monthly_waste_usd).toFixed(2) + '/month</div>';
+          }
+          h += '</div>';
+          h += '<div style="display:flex;gap:6px;flex-shrink:0;margin-left:12px;">';
+          if (f.auto_fixable) {
+            h += '<button class="btn btn-sm btn-cyan" onclick="pennyApproveFix(\'' + f.id + '\')">Auto-Fix</button>';
+          } else {
+            h += '<button class="btn btn-sm btn-cyan" onclick="pennyApproveFix(\'' + f.id + '\')">Approve</button>';
+          }
+          h += '<button class="btn btn-sm" style="background:rgba(255,255,255,0.1);color:#e2e8f0;" onclick="pennyDeferFinding(\'' + f.id + '\')">Defer</button>';
+          h += '</div></div></div>';
+        }
+        h += '</div>';
+      } else {
+        h += '<div class="detail-card"><h3>Savings Opportunities</h3><p style="color:rgba(255,255,255,0.3);font-size:0.82rem;">No open findings. Running clean.</p></div>';
+      }
+
+      // Model Routing Compliance
+      const violations = p.routing_violations || {};
+      h += '<div class="detail-card"><h3>Model Routing Compliance</h3>';
+      const agents = ['ops-editorial', 'ops-code', 'ops-research', 'ops-monitor', 'ops-ciso', 'ops-penny', 'ops-newsletter', 'ops-social'];
+      h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;">';
+      for (const a of agents) {
+        const v = violations[a] || 0;
+        const icon = v > 0 ? '\u26a0\ufe0f' : '\u2705';
+        const label = v > 0 ? v + ' violation' + (v > 1 ? 's' : '') : 'compliant';
+        const labelColor = v > 0 ? '#eab308' : '#22c55e';
+        h += '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:10px;display:flex;justify-content:space-between;align-items:center;">';
+        h += '<span style="font-size:0.82rem;color:rgba(255,255,255,0.6);">' + a + '</span>';
+        h += '<span style="font-size:0.78rem;color:' + labelColor + ';">' + icon + ' ' + label + '</span>';
+        h += '</div>';
+      }
+      h += '</div></div>';
+
+      // 7-Day Cost Trend
+      const trend = p.daily_trend || [];
+      if (trend.length > 0) {
+        h += '<div class="detail-card"><h3>7-Day Cost Trend</h3>';
+        const maxCost = Math.max(...trend.map(d => parseFloat(d.total_cost_usd) || 0), 1);
+        h += '<div style="display:flex;align-items:flex-end;gap:4px;height:120px;padding-top:8px;">';
+        for (const d of trend.slice().reverse()) {
+          const cost = parseFloat(d.total_cost_usd) || 0;
+          const pct = Math.round(cost / maxCost * 100);
+          const day = new Date(d.summary_date + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'short' });
+          h += '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">';
+          h += '<span style="font-size:0.65rem;color:rgba(255,255,255,0.4);">$' + cost.toFixed(2) + '</span>';
+          h += '<div style="width:100%;background:rgba(0,229,250,0.3);border-radius:3px 3px 0 0;height:' + Math.max(pct, 4) + '%;"></div>';
+          h += '<span style="font-size:0.65rem;color:rgba(255,255,255,0.3);">' + day + '</span>';
+          h += '</div>';
+        }
+        h += '</div>';
+        const weekSavings = trend.reduce((s, d) => s + (parseFloat(d.savings_implemented_usd) || 0), 0);
+        if (weekSavings > 0) {
+          h += '<div style="text-align:center;font-size:0.8rem;color:#22c55e;margin-top:8px;">Savings this week: $' + weekSavings.toFixed(2) + ' implemented</div>';
+        }
+        h += '</div>';
+      }
+
+      h += '<div style="text-align:center;font-size:0.7rem;color:rgba(255,255,255,0.2);margin-top:8px;">Data refreshes every 60 seconds</div>';
+      el.innerHTML = h;
+    }
+
+    async function pennyApproveFix(findingId) {
+      try {
+        await apiPost({ action: 'penny_update_finding', finding_id: findingId, status: 'approved' });
+        toast('Finding approved for implementation');
+        // Refresh penny data
+        apiPost({ action: 'penny_dashboard' }).then(p => { if (p && !p.error) { _pennyData = p; renderDetailPenny(); } });
+      } catch (e) { toast('Error: ' + e.message); }
+    }
+
+    async function pennyDeferFinding(findingId) {
+      try {
+        await apiPost({ action: 'penny_update_finding', finding_id: findingId, status: 'deferred' });
+        toast('Finding deferred');
+        apiPost({ action: 'penny_dashboard' }).then(p => { if (p && !p.error) { _pennyData = p; renderDetailPenny(); } });
+      } catch (e) { toast('Error: ' + e.message); }
     }
 
     function cmdFlash(type, msg) {

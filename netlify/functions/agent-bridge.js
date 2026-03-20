@@ -783,6 +783,232 @@ exports.handler = async (event) => {
       return ok({ updated: true });
     }
 
+    // === PENNY PINCHER ===
+
+    // Record token usage (all agents call this after every interaction)
+    if (action === "penny_record") {
+      const { agent_id, model, input_tokens, output_tokens, cached_tokens, task_type, trigger, quality_required, session_key, task_id } = body;
+      if (!agent_id || !model) return err(400, "agent_id and model required");
+
+      // Calculate estimated cost from pricing table
+      const { data: pricing } = await supabase.from("penny_model_pricing").select("input_per_mtok, output_per_mtok, cached_per_mtok").eq("model", model).single();
+      let estimatedCost = 0;
+      if (pricing) {
+        estimatedCost = ((input_tokens || 0) / 1000000 * pricing.input_per_mtok)
+          + ((output_tokens || 0) / 1000000 * pricing.output_per_mtok)
+          + ((cached_tokens || 0) / 1000000 * pricing.cached_per_mtok);
+      }
+
+      const { data, error: insertErr } = await supabase.from("penny_token_usage").insert({
+        agent_id, model,
+        input_tokens: input_tokens || 0,
+        output_tokens: output_tokens || 0,
+        cached_tokens: cached_tokens || 0,
+        estimated_cost_usd: estimatedCost,
+        task_type: task_type || null,
+        task_id: task_id || null,
+        trigger: trigger || null,
+        quality_required: quality_required || "medium",
+        session_key: session_key || null,
+      }).select("id").single();
+      if (insertErr) return err(500, insertErr.message);
+
+      // Auto-check routing compliance
+      const { data: rule } = await supabase.from("penny_routing_rules").select("required_model, override_allowed").eq("agent_id", agent_id).eq("task_type", task_type || "").single();
+      let compliant = true;
+      if (rule && rule.required_model !== model) {
+        compliant = false;
+        // Calculate overspend
+        const { data: reqPricing } = await supabase.from("penny_model_pricing").select("input_per_mtok, output_per_mtok").eq("model", rule.required_model).single();
+        let correctCost = 0;
+        if (reqPricing) {
+          correctCost = ((input_tokens || 0) / 1000000 * reqPricing.input_per_mtok) + ((output_tokens || 0) / 1000000 * reqPricing.output_per_mtok);
+        }
+        const overspend = estimatedCost - correctCost;
+        if (overspend > 0) {
+          await supabase.from("penny_findings").insert({
+            finding_type: "model_overuse",
+            severity: overspend > 0.50 ? "high" : overspend > 0.10 ? "medium" : "low",
+            title: agent_id + " used " + model + " for " + (task_type || "unknown") + " (should be " + rule.required_model + ")",
+            description: "Agent " + agent_id + " used " + model + " for task type '" + (task_type || "unknown") + "' but routing rules require " + rule.required_model + ". Overspend: $" + overspend.toFixed(4),
+            affected_agent: agent_id,
+            estimated_daily_waste_usd: overspend * 48,
+            estimated_monthly_waste_usd: overspend * 48 * 30,
+            recommendation: "Switch " + agent_id + " " + (task_type || "unknown") + " tasks to " + rule.required_model,
+            auto_fixable: false,
+          });
+        }
+      }
+
+      return ok({ recorded: true, id: data.id, compliant, estimated_cost_usd: estimatedCost });
+    }
+
+    // Cost dashboard
+    if (action === "penny_dashboard") {
+      const todayStart = new Date().toISOString().split("T")[0] + "T00:00:00Z";
+      const weekStart = new Date(Date.now() - 7 * 86400000).toISOString();
+
+      const [todayRes, weekRes, findingsRes, summariesRes] = await Promise.all([
+        supabase.from("penny_token_usage").select("agent_id, model, task_type, estimated_cost_usd, trigger, input_tokens, output_tokens").gte("recorded_at", todayStart),
+        supabase.from("penny_token_usage").select("estimated_cost_usd").gte("recorded_at", weekStart),
+        supabase.from("penny_findings").select("id, severity, title, recommendation, estimated_monthly_waste_usd, status, finding_type, auto_fixable, affected_agent").eq("status", "open").order("estimated_monthly_waste_usd", { ascending: false }).limit(10),
+        supabase.from("penny_daily_summary").select("summary_date, total_cost_usd, waste_ratio, savings_implemented_usd").order("summary_date", { ascending: false }).limit(7),
+      ]);
+
+      const todayEvents = todayRes.data || [];
+      const weekEvents = weekRes.data || [];
+
+      // Today breakdown
+      const byAgent = {};
+      const byType = {};
+      const byModel = {};
+      let totalCost = 0;
+      let heartbeatCycles = 0;
+      let productiveCycles = 0;
+      for (const e of todayEvents) {
+        const cost = parseFloat(e.estimated_cost_usd) || 0;
+        totalCost += cost;
+        byAgent[e.agent_id] = (byAgent[e.agent_id] || 0) + cost;
+        byType[e.task_type || "unknown"] = (byType[e.task_type || "unknown"] || 0) + cost;
+        byModel[e.model] = (byModel[e.model] || 0) + cost;
+        if (e.trigger === "heartbeat" || e.task_type === "heartbeat") {
+          heartbeatCycles++;
+          if (cost > 0.02) productiveCycles++;
+        }
+      }
+
+      const weekTotal = weekEvents.reduce((s, e) => s + (parseFloat(e.estimated_cost_usd) || 0), 0);
+      const daysInWeek = Math.max(1, Math.min(7, Math.ceil((Date.now() - new Date(weekStart).getTime()) / 86400000)));
+      const monthProjected = (weekTotal / daysInWeek) * 30;
+
+      const heartbeatCost = (byType["heartbeat"] || 0);
+      const wasteRatio = totalCost > 0 ? heartbeatCost / totalCost : 0;
+
+      const findings = findingsRes.data || [];
+      const openCounts = { high: 0, medium: 0, low: 0 };
+      for (const f of findings) openCounts[f.severity]++;
+
+      const topSaving = findings.length > 0 ? { title: findings[0].title, estimated_monthly_usd: findings[0].estimated_monthly_waste_usd } : null;
+
+      // Weekly trend from daily summaries
+      const dailySummaries = summariesRes.data || [];
+      const weekSavings = dailySummaries.reduce((s, d) => s + (parseFloat(d.savings_implemented_usd) || 0), 0);
+
+      return ok({
+        today: {
+          total_cost_usd: parseFloat(totalCost.toFixed(4)),
+          by_agent: Object.fromEntries(Object.entries(byAgent).map(([k, v]) => [k, parseFloat(v.toFixed(4))])),
+          by_type: Object.fromEntries(Object.entries(byType).map(([k, v]) => [k, parseFloat(v.toFixed(4))])),
+          by_model: Object.fromEntries(Object.entries(byModel).map(([k, v]) => [k, parseFloat(v.toFixed(4))])),
+          heartbeat_waste_ratio: parseFloat(wasteRatio.toFixed(4)),
+          productive_vs_idle: productiveCycles + " productive / " + (heartbeatCycles - productiveCycles) + " idle cycles",
+          total_calls: todayEvents.length,
+        },
+        week: { total_cost_usd: parseFloat(weekTotal.toFixed(4)), trend: weekTotal < (monthProjected / 4) ? "decreasing" : "increasing", savings_implemented: parseFloat(weekSavings.toFixed(4)) },
+        month_projected: parseFloat(monthProjected.toFixed(2)),
+        open_findings: openCounts,
+        top_savings_opportunity: topSaving,
+        findings: findings,
+        daily_trend: dailySummaries,
+      });
+    }
+
+    // Get routing rules for an agent
+    if (action === "penny_routing") {
+      const { agent_id } = body;
+      let query = supabase.from("penny_routing_rules").select("*").order("task_type");
+      if (agent_id) query = query.eq("agent_id", agent_id);
+      const { data } = await query;
+      return ok({ rules: data || [] });
+    }
+
+    // Check routing compliance
+    if (action === "penny_check_routing") {
+      const { agent_id, model, task_type } = body;
+      if (!agent_id || !model || !task_type) return err(400, "agent_id, model, task_type required");
+      const { data: rule } = await supabase.from("penny_routing_rules").select("required_model, override_allowed").eq("agent_id", agent_id).eq("task_type", task_type).single();
+      if (!rule) return ok({ compliant: true, note: "No routing rule for this agent/task combination" });
+      const compliant = rule.required_model === model;
+      return ok({ compliant, required_model: rule.required_model, override_allowed: rule.override_allowed });
+    }
+
+    // List findings
+    if (action === "penny_findings") {
+      const statusFilter = body.status || "open";
+      let query = supabase.from("penny_findings").select("*").order("discovered_at", { ascending: false }).limit(body.limit || 50);
+      if (statusFilter !== "all") query = query.eq("status", statusFilter);
+      const { data } = await query;
+      return ok({ findings: data || [] });
+    }
+
+    // Update finding status
+    if (action === "penny_update_finding") {
+      const { finding_id, status } = body;
+      if (!finding_id || !status) return err(400, "finding_id and status required");
+      const updates = { status, updated_at: new Date().toISOString() };
+      if (status === "implemented") updates.implemented_at = new Date().toISOString();
+      if (body.savings_verified_usd !== undefined) updates.savings_verified_usd = body.savings_verified_usd;
+      const { error: updateErr } = await supabase.from("penny_findings").update(updates).eq("id", finding_id);
+      if (updateErr) return err(500, updateErr.message);
+      return ok({ updated: true });
+    }
+
+    // Generate daily summary
+    if (action === "penny_summarize") {
+      const date = body.date || new Date().toISOString().split("T")[0];
+      const dayStart = date + "T00:00:00Z";
+      const dayEnd = date + "T23:59:59Z";
+
+      const { data: usageData } = await supabase.from("penny_token_usage")
+        .select("agent_id, model, task_type, trigger, estimated_cost_usd, input_tokens, output_tokens")
+        .gte("recorded_at", dayStart).lte("recorded_at", dayEnd);
+
+      const events = usageData || [];
+      const byAgent = {};
+      const byType = {};
+      const byModel = {};
+      let totalTokens = 0;
+      let totalCost = 0;
+      let heartbeats = 0;
+      let productive = 0;
+
+      for (const e of events) {
+        const cost = parseFloat(e.estimated_cost_usd) || 0;
+        totalCost += cost;
+        totalTokens += (e.input_tokens || 0) + (e.output_tokens || 0);
+        byAgent[e.agent_id] = (byAgent[e.agent_id] || 0) + cost;
+        byType[e.task_type || "unknown"] = (byType[e.task_type || "unknown"] || 0) + cost;
+        byModel[e.model] = (byModel[e.model] || 0) + cost;
+        if (e.trigger === "heartbeat" || e.task_type === "heartbeat") {
+          heartbeats++;
+          if (cost > 0.02) productive++;
+        }
+      }
+
+      const heartbeatCost = byType["heartbeat"] || 0;
+      const wasteRatio = totalCost > 0 ? heartbeatCost / totalCost : 0;
+
+      const { data: findingsOpened } = await supabase.from("penny_findings").select("id").gte("discovered_at", dayStart).lte("discovered_at", dayEnd);
+      const { data: savingsImpl } = await supabase.from("penny_findings").select("savings_verified_usd").eq("status", "implemented").gte("implemented_at", dayStart).lte("implemented_at", dayEnd);
+      const totalSavings = (savingsImpl || []).reduce((s, f) => s + (parseFloat(f.savings_verified_usd) || 0), 0);
+
+      const { data, error: upsertErr } = await supabase.from("penny_daily_summary").upsert({
+        summary_date: date,
+        total_tokens: totalTokens,
+        total_cost_usd: totalCost,
+        cost_by_agent: byAgent,
+        cost_by_task_type: byType,
+        cost_by_model: byModel,
+        heartbeat_cycles: heartbeats,
+        productive_cycles: productive,
+        waste_ratio: wasteRatio,
+        findings_opened: (findingsOpened || []).length,
+        savings_implemented_usd: totalSavings,
+      }, { onConflict: "summary_date" }).select("id").single();
+      if (upsertErr) return err(500, upsertErr.message);
+      return ok({ summarized: true, id: data.id, total_cost_usd: totalCost, total_tokens: totalTokens });
+    }
+
     return err(404, "Unknown action: " + action);
   }
 

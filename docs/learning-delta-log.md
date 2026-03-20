@@ -35,3 +35,13 @@ Captures debugging sessions and operational lessons learned. Each entry records 
 - **Fix strategy used:** Added leading `/` to all 5 affected path patterns. Security headers (on `/*` wildcard) were already correct and untouched.
 - **Why this was the fastest clean path:** One-character fix per line. No restructuring needed — syntax was otherwise correct.
 - **Standing rule to add or reinforce:** Every path pattern in `_headers` must start with `/`. After editing `_headers`, verify the corrected file lands in `dist/_headers` and spot-check that path lines start with `/` before committing. Also: build.js uses a dynamic glob for asset copying (not a hardcoded list), so new image files added to repo root are automatically copied to dist — no build.js change needed for new assets.
+
+### 2026-03-20 - Ops Console build: stale deploy from wrong publish directory
+
+- **What broke:** First deploy served a 2KB command-center.html instead of the 233KB version in `dist/`. All 6 ops console features (command bar, approval queue, task feed, agent panel, signal inbox, pipeline quick-edit) were missing.
+- **Root cause pattern:** `netlify deploy --prod` without `--dir=dist` deployed from the repo root instead of the build output directory. The root `command-center.html` is the source file (small); the built version with inlined Tailwind CSS and all JS lives in `dist/command-center.html`. Netlify CLI defaults to the current directory if `--dir` is not specified, overriding `netlify.toml`'s `publish = "dist/"` setting.
+- **Fix strategy used:** Re-deployed with explicit `--dir=dist` flag. Verified with curl that the live file matched the expected 233KB size.
+- **Why this was the fastest clean path:** Single re-deploy command. No code changes needed.
+- **What canonical file should be updated:** CLAUDE.md already documents `dist/` as the publish directory. No update needed.
+- **Standing rule to add or reinforce:** Always use `netlify deploy --prod --dir=dist` when deploying via CLI. Never omit `--dir=dist` — the CLI does not reliably inherit from `netlify.toml`. After every deploy, curl-check the largest changed file to confirm the correct version is served (compare byte count to local `dist/` file).
+- **What to do faster next time:** Add a deploy script or alias that hardcodes `--dir=dist` so it cannot be forgotten. Alternatively, rely solely on git-push-triggered deploys which use `netlify.toml` correctly.

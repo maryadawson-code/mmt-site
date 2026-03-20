@@ -501,6 +501,103 @@ exports.handler = async (event) => {
       } catch (e) { return err(500, "Scan failed: " + e.message); }
     }
 
+    // === PENNY PINCHER (Cost Control) ===
+
+    if (action === "penny_dashboard") {
+      const todayStart = new Date().toISOString().split("T")[0] + "T00:00:00Z";
+      const weekStart = new Date(Date.now() - 7 * 86400000).toISOString();
+
+      const [todayRes, weekRes, findingsRes, summariesRes, rulesRes] = await Promise.all([
+        supabase.from("penny_token_usage").select("agent_id, model, task_type, estimated_cost_usd, trigger, input_tokens, output_tokens").gte("recorded_at", todayStart),
+        supabase.from("penny_token_usage").select("estimated_cost_usd").gte("recorded_at", weekStart),
+        supabase.from("penny_findings").select("id, severity, title, recommendation, estimated_monthly_waste_usd, status, finding_type, auto_fixable, affected_agent").eq("status", "open").order("estimated_monthly_waste_usd", { ascending: false }).limit(10),
+        supabase.from("penny_daily_summary").select("summary_date, total_cost_usd, waste_ratio, savings_implemented_usd").order("summary_date", { ascending: false }).limit(7),
+        supabase.from("penny_routing_rules").select("agent_id, task_type, required_model"),
+      ]);
+
+      const todayEvents = todayRes.data || [];
+      const weekEvents = weekRes.data || [];
+      const rules = rulesRes.data || [];
+
+      const byAgent = {};
+      const byType = {};
+      const byModel = {};
+      let totalCost = 0;
+      let heartbeatCycles = 0;
+      let productiveCycles = 0;
+      for (const e of todayEvents) {
+        const cost = parseFloat(e.estimated_cost_usd) || 0;
+        totalCost += cost;
+        byAgent[e.agent_id] = (byAgent[e.agent_id] || 0) + cost;
+        byType[e.task_type || "unknown"] = (byType[e.task_type || "unknown"] || 0) + cost;
+        byModel[e.model] = (byModel[e.model] || 0) + cost;
+        if (e.trigger === "heartbeat" || e.task_type === "heartbeat") {
+          heartbeatCycles++;
+          if (cost > 0.02) productiveCycles++;
+        }
+      }
+
+      const weekTotal = weekEvents.reduce((s, e) => s + (parseFloat(e.estimated_cost_usd) || 0), 0);
+      const daysInWeek = Math.max(1, Math.min(7, Math.ceil((Date.now() - new Date(weekStart).getTime()) / 86400000)));
+      const monthProjected = (weekTotal / daysInWeek) * 30;
+      const heartbeatCost = byType["heartbeat"] || 0;
+      const wasteRatio = totalCost > 0 ? heartbeatCost / totalCost : 0;
+
+      const findings = findingsRes.data || [];
+      const openCounts = { high: 0, medium: 0, low: 0 };
+      for (const f of findings) openCounts[f.severity]++;
+
+      // Check routing compliance for today's usage
+      const ruleMap = {};
+      for (const r of rules) ruleMap[r.agent_id + "|" + r.task_type] = r.required_model;
+      const violations = {};
+      for (const e of todayEvents) {
+        const key = e.agent_id + "|" + (e.task_type || "");
+        if (ruleMap[key] && ruleMap[key] !== e.model) {
+          if (!violations[e.agent_id]) violations[e.agent_id] = 0;
+          violations[e.agent_id]++;
+        }
+      }
+
+      return ok({
+        today: {
+          total_cost_usd: parseFloat(totalCost.toFixed(4)),
+          by_agent: Object.fromEntries(Object.entries(byAgent).map(([k, v]) => [k, parseFloat(v.toFixed(4))])),
+          by_type: Object.fromEntries(Object.entries(byType).map(([k, v]) => [k, parseFloat(v.toFixed(4))])),
+          by_model: Object.fromEntries(Object.entries(byModel).map(([k, v]) => [k, parseFloat(v.toFixed(4))])),
+          heartbeat_waste_ratio: parseFloat(wasteRatio.toFixed(4)),
+          productive_vs_idle: productiveCycles + " productive / " + (heartbeatCycles - productiveCycles) + " idle cycles",
+          total_calls: todayEvents.length,
+        },
+        week: { total_cost_usd: parseFloat(weekTotal.toFixed(4)), savings_implemented: 0 },
+        month_projected: parseFloat(monthProjected.toFixed(2)),
+        open_findings: openCounts,
+        top_savings_opportunity: findings.length > 0 ? { title: findings[0].title, estimated_monthly_usd: findings[0].estimated_monthly_waste_usd } : null,
+        findings: findings,
+        daily_trend: summariesRes.data || [],
+        routing_violations: violations,
+      });
+    }
+
+    if (action === "penny_update_finding") {
+      const { finding_id, status: fStatus } = body;
+      if (!finding_id || !fStatus) return err(400, "finding_id and status required");
+      const updates = { status: fStatus, updated_at: new Date().toISOString() };
+      if (fStatus === "implemented") updates.implemented_at = new Date().toISOString();
+      if (body.savings_verified_usd !== undefined) updates.savings_verified_usd = body.savings_verified_usd;
+      const { error: updateErr } = await supabase.from("penny_findings").update(updates).eq("id", finding_id);
+      if (updateErr) return err(500, updateErr.message);
+      return ok({ updated: true });
+    }
+
+    if (action === "penny_findings") {
+      const statusFilter = body.status || "open";
+      let query = supabase.from("penny_findings").select("*").order("discovered_at", { ascending: false }).limit(50);
+      if (statusFilter !== "all") query = query.eq("status", statusFilter);
+      const { data } = await query;
+      return ok({ findings: data || [] });
+    }
+
     return err(400, "Unknown action: " + action);
   }
 
