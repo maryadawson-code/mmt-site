@@ -13,6 +13,7 @@
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
+const { createLogger } = require("./lib/logger");
 
 const HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -24,14 +25,17 @@ function ok(data) { return { statusCode: 200, headers: HEADERS, body: JSON.strin
 function err(status, msg) { return { statusCode: status, headers: HEADERS, body: JSON.stringify({ error: msg }) }; }
 
 exports.handler = async (event) => {
+  const log = createLogger("agent-bridge");
   if (event.httpMethod === "OPTIONS") return { statusCode: 204, headers: HEADERS, body: "" };
 
   // Auth via Bearer token
   const authHeader = event.headers.authorization || event.headers.Authorization || "";
   const token = authHeader.replace(/^Bearer\s+/i, "");
   if (!token || token !== process.env.AGENT_BRIDGE_KEY) {
+    log.warn("Unauthorized request");
     return err(401, "Unauthorized");
   }
+  log.info("Authenticated request", { method: event.httpMethod });
 
   const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;

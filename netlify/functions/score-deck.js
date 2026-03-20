@@ -16,6 +16,9 @@ const { createClient } = require("@supabase/supabase-js");
 const crypto = require("crypto");
 const { DOCUMENT_TYPES } = require("./lib/document-types");
 const { checkKillSwitch } = require("./lib/kill-switch");
+const { stripHtml, validateFile } = require("./lib/sanitize");
+const { checkRateLimit } = require("./lib/rate-limiter");
+const { createLogger } = require("./lib/logger");
 
 // --- Environment Variables ---
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -198,10 +201,29 @@ exports.handler = async (event) => {
     };
   }
 
+  const log = createLogger("score-deck");
+  log.info("Function entry");
+
   try {
     const body = JSON.parse(event.body);
-    const { email, file_base64, file_type, file_name } = body;
+    const rawEmail = body.email;
+    const { file_base64, file_type } = body;
+    const file_name = body.file_name ? stripHtml(body.file_name, { fieldName: "file_name", logger: log }) : undefined;
+    const email = rawEmail;
     const documentType = body.document_type || "pitch_deck";
+
+    // --- Validate file name vs MIME type ---
+    if (file_name && file_type) {
+      const fileCheck = validateFile(file_name, file_type);
+      if (!fileCheck.valid) {
+        log.warn("File validation failed", { reason: fileCheck.reason, file_name, file_type });
+        return {
+          statusCode: 400,
+          headers: CORS_HEADERS,
+          body: JSON.stringify({ error: fileCheck.reason }),
+        };
+      }
+    }
 
     // --- Validate inputs ---
     if (!email || !file_base64 || !file_type) {
@@ -318,6 +340,33 @@ exports.handler = async (event) => {
     // --- MissionPulse: User & Usage ---
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
+    // --- Rate limiting (IP-based: 10/min, email-based: 5/hour) ---
+    const ADMIN_EMAILS = ["maryadawson@gmail.com", "mary@missionmeetstech.com", "jackyang2326@gmail.com"];
+    const clientIp = (event.headers["x-forwarded-for"] || event.headers["client-ip"] || "unknown").split(",")[0].trim();
+    const isAdminEmail = ADMIN_EMAILS.includes(email.toLowerCase().trim());
+
+    if (!isAdminEmail) {
+      const ipLimit = await checkRateLimit(supabase, `ip:score-deck:${clientIp}`, 10, 1);
+      if (!ipLimit.allowed) {
+        log.warn("IP rate limit hit", { ip: clientIp, user_email: email });
+        return {
+          statusCode: 429,
+          headers: { ...CORS_HEADERS, "Retry-After": "60" },
+          body: JSON.stringify({ error: "Too many requests. Please try again in a minute." }),
+        };
+      }
+
+      const emailLimit = await checkRateLimit(supabase, `email:score-deck:${email.toLowerCase().trim()}`, 5, 60);
+      if (!emailLimit.allowed) {
+        log.warn("Email rate limit hit", { user_email: email });
+        return {
+          statusCode: 429,
+          headers: { ...CORS_HEADERS, "Retry-After": "3600" },
+          body: JSON.stringify({ error: "Too many assessments. Please try again later." }),
+        };
+      }
+    }
+
     let user;
     try {
       user = await getOrCreateUser(supabase, email);
@@ -414,6 +463,7 @@ exports.handler = async (event) => {
     }
 
     // --- Return scoring_id for polling ---
+    log.done({ order_id: scoringRow.id, user_email: email, tier: user.tier });
     return {
       statusCode: 200,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
@@ -426,7 +476,7 @@ exports.handler = async (event) => {
     };
 
   } catch (err) {
-    console.error("Unhandled error:", err);
+    log.fail(err);
     return {
       statusCode: 500,
       headers: CORS_HEADERS,

@@ -9,6 +9,9 @@
 
 const Stripe = require("stripe");
 const { createClient } = require("@supabase/supabase-js");
+const { stripHtml } = require("./lib/sanitize");
+const { checkRateLimit } = require("./lib/rate-limiter");
+const { createLogger } = require("./lib/logger");
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -36,16 +39,19 @@ exports.handler = async (event) => {
     };
   }
 
+  const log = createLogger("marketpulse-gateway");
+  log.info("Function entry");
+
   try {
     const body = JSON.parse(event.body);
-    const name = (body.name || "").trim();
+    const name = stripHtml((body.name || "").trim(), { fieldName: "name", logger: log });
     const email = (body.email || "").toLowerCase().trim();
-    const company = (body.company || "").trim();
-    const topic = (body.topic || "").trim();
-    const audience = (body.audience || "").trim();
-    const certifications = (body.certifications || "").trim();
-    const naics_codes = (body.naics_codes || "").trim();
-    const existing_vehicles = (body.existing_vehicles || "").trim();
+    const company = stripHtml((body.company || "").trim(), { fieldName: "company", logger: log });
+    const topic = stripHtml((body.topic || "").trim(), { fieldName: "topic", logger: log });
+    const audience = stripHtml((body.audience || "").trim(), { fieldName: "audience", logger: log });
+    const certifications = stripHtml((body.certifications || "").trim(), { fieldName: "certifications", logger: log });
+    const naics_codes = stripHtml((body.naics_codes || "").trim(), { fieldName: "naics_codes", logger: log });
+    const existing_vehicles = stripHtml((body.existing_vehicles || "").trim(), { fieldName: "existing_vehicles", logger: log });
     // Build additional_context from optional fields
     const additional_context_parts = [];
     if (certifications) additional_context_parts.push(`Certifications held: ${certifications}`);
@@ -67,6 +73,30 @@ exports.handler = async (event) => {
         headers: CORS_HEADERS,
         body: JSON.stringify({ error: "Valid email is required." }),
       };
+    }
+
+    // --- Rate limiting ---
+    if (SUPABASE_URL && SUPABASE_SERVICE_KEY) {
+      const supabaseForRL = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+      const clientIp = (event.headers["x-forwarded-for"] || event.headers["client-ip"] || "unknown").split(",")[0].trim();
+      const ipLimit = await checkRateLimit(supabaseForRL, `ip:marketpulse:${clientIp}`, 10, 1);
+      if (!ipLimit.allowed) {
+        log.warn("IP rate limit hit", { ip: clientIp, user_email: email });
+        return {
+          statusCode: 429,
+          headers: { ...CORS_HEADERS, "Retry-After": "60" },
+          body: JSON.stringify({ error: "Too many requests. Please try again in a minute." }),
+        };
+      }
+      const emailLimit = await checkRateLimit(supabaseForRL, `email:marketpulse:${email}`, 5, 60);
+      if (!emailLimit.allowed) {
+        log.warn("Email rate limit hit", { user_email: email });
+        return {
+          statusCode: 429,
+          headers: { ...CORS_HEADERS, "Retry-After": "3600" },
+          body: JSON.stringify({ error: "Too many requests. Please try again later." }),
+        };
+      }
     }
 
     // If Supabase not configured, fall back to checkout flow
@@ -223,7 +253,7 @@ exports.handler = async (event) => {
     }
 
   } catch (err) {
-    console.error("marketpulse-gateway error:", err);
+    log.fail(err, { user_email: email });
     return {
       statusCode: 500,
       headers: CORS_HEADERS,

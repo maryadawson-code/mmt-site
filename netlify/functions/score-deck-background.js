@@ -30,6 +30,7 @@ const { trackQuality } = require("./lib/quality-tracker");
 const { getFlag } = require("./lib/feature-flags");
 const { generateReportUrl } = require("./lib/report-url");
 const { trackAnthropic } = require("./lib/cost-tracker");
+const { createLogger } = require("./lib/logger");
 
 // --- Environment Variables ---
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -120,9 +121,9 @@ function buildSystemPrompt(documentType, sowText = null) {
 If the SOW has fewer than 9 distinct evaluation factors, group related requirements into logical categories to reach 9. If it has more than 9, prioritize the ones weighted most heavily or listed as "significant" evaluation factors.
 
 SOW/PWS TEXT:
----
+<user_input>
 ${sowText}
----
+</user_input>
 
 Score the uploaded document against the evaluation factors you extracted above.`;
     redFlagsSection = `RED FLAGS — Flag any of the following:
@@ -278,7 +279,7 @@ function buildMessageContent(fileType, base64Data, extractedText, documentType) 
   return [
     {
       type: "text",
-      text: `The following is the full text content extracted from a ${formatLabel} ${noun}. Evaluate it as you would a visual document, but note that formatting and visual layout are not available for this file type.\n\n---\n\n${textContent}\n\n---\n\n${userPrompt}`,
+      text: `The following is the full text content extracted from a ${formatLabel} ${noun}. Evaluate it as you would a visual document, but note that formatting and visual layout are not available for this file type.\n\n<user_input>\n${textContent}\n</user_input>\n\n${userPrompt}`,
     },
   ];
 }
@@ -319,7 +320,8 @@ function computeOverallGrade(scorecard) {
 // ============================================================
 
 exports.handler = async (event) => {
-  console.log("score-deck-background invoked");
+  const log = createLogger("score-deck-background");
+  log.info("Function entry");
 
   // Kill switch
   const killCheck = checkKillSwitch("score-deck-background");
