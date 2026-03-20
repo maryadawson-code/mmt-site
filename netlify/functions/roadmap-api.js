@@ -159,7 +159,7 @@ exports.handler = async (event) => {
 
     // SUMMARY — counts for dashboard tile
     if (view === "summary") {
-      const { data, error: qErr } = await sb.from("product_roadmap").select("id, product, status, health");
+      const { data, error: qErr } = await sb.from("product_roadmap").select("id, product, feature_name, status, health, priority");
       if (qErr) return err(500, qErr.message);
       const features = data || [];
       const total = features.length;
@@ -168,15 +168,31 @@ exports.handler = async (event) => {
       const untested = features.filter(f => f.health === "untested").length;
       const broken = features.filter(f => f.health === "broken").length;
       const degraded = features.filter(f => f.health === "degraded").length;
-      const byProduct = {};
       const byStatus = {};
       const byHealth = {};
       for (const f of features) {
-        byProduct[f.product] = (byProduct[f.product] || 0) + 1;
         byStatus[f.status] = (byStatus[f.status] || 0) + 1;
         byHealth[f.health] = (byHealth[f.health] || 0) + 1;
       }
-      return ok({ total, deployed, needs_fix, untested, broken, degraded, byProduct, byStatus, byHealth });
+      // Per-product breakdown with needs_attention counts
+      const products = ["proposalpulse", "marketpulse", "mmt_site", "command_center", "agent_network"];
+      const by_product = {};
+      for (const p of products) {
+        const pf = features.filter(f => f.product === p);
+        by_product[p] = {
+          total: pf.length,
+          deployed: pf.filter(f => f.status === "deployed").length,
+          needs_attention: pf.filter(f => f.status === "needs_fix" || f.health === "degraded" || f.health === "broken").length,
+        };
+      }
+      // Top 5 attention items (needs_fix or degraded/broken), ordered by priority
+      const priorityOrder = { p0_critical: 0, p1_high: 1, p2_medium: 2, p3_low: 3 };
+      const attention_items = features
+        .filter(f => f.status === "needs_fix" || f.health === "degraded" || f.health === "broken")
+        .sort((a, b) => (priorityOrder[a.priority] || 9) - (priorityOrder[b.priority] || 9))
+        .slice(0, 5)
+        .map(f => ({ id: f.id, feature_name: f.feature_name, product: f.product, status: f.status, health: f.health }));
+      return ok({ total, deployed, needs_fix, untested, broken, degraded, by_product, by_status: byStatus, by_health: byHealth, attention_items });
     }
 
     // ACTIVITY — filtered activity feed

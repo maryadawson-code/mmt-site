@@ -617,6 +617,76 @@
 
     // ============ TILE METRICS COMPUTATION ============
 
+    function buildRoadmapTile() {
+      const r = _roadmapLive;
+      if (!r) return { id: 'roadmap', icon: '\ud83d\udccb', title: 'Product Roadmap', m1: '--', m1l: 'Features', m2: '--', m2l: 'Attention', badge: 0 };
+      const total = r.total || 0;
+      const deployed = r.deployed || 0;
+      const inProgress = (r.by_status || {}).in_progress || 0;
+      const planned = (r.by_status || {}).planned || 0;
+      const needsFix = r.needs_fix || 0;
+      const healthy = (r.by_health || {}).healthy || 0;
+      const degradedN = r.degraded || 0;
+      const brokenN = r.broken || 0;
+      const untestedN = r.untested || 0;
+      const totalAttention = needsFix + degradedN + brokenN;
+      const pLabels = { proposalpulse: 'ProposalPulse', marketpulse: 'MarketPulse', mmt_site: 'Platform', command_center: 'Command Center', agent_network: 'Agent Network' };
+      // Status bar
+      const barParts = [
+        { count: deployed, color: '#22c55e', label: 'deployed' },
+        { count: inProgress, color: '#3b82f6', label: 'in progress' },
+        { count: planned, color: '#64748b', label: 'planned' },
+        { count: needsFix, color: '#ef4444', label: 'needs fix' },
+      ].filter(p => p.count > 0);
+      let barHtml = '<div style="display:flex;height:6px;border-radius:3px;overflow:hidden;margin:10px 0 8px;" title="' + barParts.map(p => p.count + ' ' + p.label).join(', ') + '">';
+      for (const p of barParts) {
+        barHtml += '<div style="flex:' + p.count + ';background:' + p.color + ';"></div>';
+      }
+      barHtml += '</div>';
+      // Health dots
+      const untestedPulse = untestedN > 10 ? 'animation:pulse 2s infinite;' : '';
+      let healthHtml = '<div style="display:flex;gap:10px;flex-wrap:wrap;font-size:0.7rem;color:rgba(255,255,255,0.6);margin-bottom:8px;">';
+      healthHtml += '<span>\ud83d\udfe2 ' + healthy + '</span>';
+      healthHtml += '<span>\ud83d\udfe1 ' + degradedN + '</span>';
+      healthHtml += '<span>\ud83d\udd34 ' + brokenN + '</span>';
+      healthHtml += '<span style="' + untestedPulse + '">\u26aa ' + untestedN + '</span>';
+      healthHtml += '</div>';
+      // Per-product rows
+      const bp = r.by_product || {};
+      let prodHtml = '<div style="font-size:0.72rem;margin-bottom:8px;">';
+      for (const [key, label] of Object.entries(pLabels)) {
+        const p = bp[key];
+        if (!p) continue;
+        const attn = p.needs_attention || 0;
+        prodHtml += '<div style="display:flex;justify-content:space-between;padding:2px 0;color:rgba(255,255,255,0.7);">';
+        prodHtml += '<span>' + label + '</span>';
+        prodHtml += '<span>' + p.deployed + '/' + p.total;
+        if (attn > 0) prodHtml += ' <span style="background:rgba(239,68,68,0.2);color:#f87171;padding:0 5px;border-radius:8px;font-size:0.65rem;">' + attn + '</span>';
+        prodHtml += '</span></div>';
+      }
+      prodHtml += '</div>';
+      // Attention items
+      let attnHtml = '';
+      const items = r.attention_items || [];
+      if (items.length > 0) {
+        attnHtml += '<div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:6px;margin-bottom:6px;">';
+        for (const it of items.slice(0, 3)) {
+          const sBadge = it.status === 'needs_fix' ? '<span style="color:#f87171;font-size:0.6rem;font-weight:700;">NEEDS FIX</span>' : '';
+          const hBadge = it.health === 'broken' ? '<span style="color:#ef4444;font-size:0.6rem;font-weight:700;">BROKEN</span>' : it.health === 'degraded' ? '<span style="color:#eab308;font-size:0.6rem;font-weight:700;">DEGRADED</span>' : '';
+          attnHtml += '<div style="font-size:0.7rem;color:rgba(255,255,255,0.7);padding:2px 0;">';
+          attnHtml += '<span style="color:#fff;">' + esc(it.feature_name) + '</span> ';
+          attnHtml += '<span style="color:#00e5fa;font-size:0.6rem;">' + (pLabels[it.product] || it.product) + '</span> ';
+          attnHtml += sBadge + ' ' + hBadge;
+          attnHtml += '</div>';
+        }
+        attnHtml += '</div>';
+      }
+      // Footer link
+      const footerHtml = '<div style="text-align:right;margin-top:4px;"><a href="https://missionpulse.ai/roadmap" target="_blank" rel="noopener" style="color:#00e5fa;font-size:0.7rem;text-decoration:none;" onclick="event.stopPropagation();">View Full Roadmap \u2192</a></div>';
+      const customHtml = barHtml + healthHtml + prodHtml + attnHtml + footerHtml;
+      return { id: 'roadmap', icon: '\ud83d\udccb', title: 'Product Roadmap', m1: total, m1l: 'Features', m2: null, m2l: null, badge: totalAttention, customHtml: customHtml };
+    }
+
     function getTileData(data) {
       const pp = data.orders_24h?.proposalpulse || [];
       const mp = data.orders_24h?.marketpulse || [];
@@ -658,7 +728,7 @@
       return [
         { id: 'coo', icon: '🎯', title: 'COO Console', m1: cooBadge || '--', m1l: 'Pending', m2: _servicesData ? '$' + (_servicesData.totalMonthlyCents / 100).toFixed(0) : '--', m2l: 'Mo. Burn', badge: cooBadge, roles: ['coo', 'all'] },
         { id: 'editorial', icon: '✏️', title: 'Editorial', m1: editorBadge || '--', m1l: 'Drafts', m2: null, m2l: null, badge: editorBadge, roles: ['editor', 'all'] },
-        { id: 'roadmap', icon: '\ud83d\udccb', title: 'Roadmap', m1: _roadmapLive ? _roadmapLive.deployed + '/' + _roadmapLive.total : '--', m1l: 'Deployed', m2: _roadmapLive ? (_roadmapLive.needs_fix + _roadmapLive.untested) : '--', m2l: 'Needs attention', badge: _roadmapLive ? _roadmapLive.needs_fix : 0 },
+        buildRoadmapTile(),
         { id: 'costs', icon: '\ud83d\udcb0', title: 'Cost Intelligence', m1: _costData ? '$' + (_costData.today.totalCents / 100).toFixed(2) : '--', m1l: 'Today', m2: _costData ? _costData.today.calls : '--', m2l: 'API Calls', badge: _costData ? _costData.alerts.filter(a => a.severity === 'critical').length : 0 },
         { id: 'finance', icon: '💰', title: 'Cost Intelligence', m1: _costData ? '$' + (_costData.today.totalCents / 100).toFixed(2) : '--', m1l: 'Today', m2: _costData ? _costData.today.calls : '--', m2l: 'API Calls', badge: _costData ? _costData.alerts.filter(a => a.severity === 'critical').length : 0 },
         { id: 'billing', icon: '🧾', title: 'Billing Tracker', m1: _billingData ? '$' + ((_billingData.summary?.total_cents || 0) / 100).toFixed(0) : '--', m1l: 'This month', m2: _billingData ? (_billingData.needsReview?.length || 0) : '--', m2l: 'Needs review', badge: _billingData ? (_billingData.needsReview?.length || 0) : 0 },
@@ -691,7 +761,8 @@
         metricsHtml += '</div>';
         const warnStyle = t.id === 'products' && t.badge > 0 ? ' style="border-color:rgba(234,179,8,0.5);"' : '';
         const staleHtml = t.staleWarning ? '<div style="font-size:0.7rem;color:#eab308;margin-top:6px;">⚠️ ' + t.staleWarning + '</div>' : '';
-        return '<div class="tile"' + warnStyle + ' onclick="navigate(\'' + t.id + '\')">' + badgeHtml + '<div class="tile-icon">' + t.icon + '</div><div class="tile-title">' + t.title + '</div>' + metricsHtml + staleHtml + '</div>';
+        const extraHtml = t.customHtml || '';
+        return '<div class="tile"' + warnStyle + ' onclick="navigate(\'' + t.id + '\')">' + badgeHtml + '<div class="tile-icon">' + t.icon + '</div><div class="tile-title">' + t.title + '</div>' + metricsHtml + staleHtml + extraHtml + '</div>';
       }).join('');
     }
 
