@@ -1685,6 +1685,13 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
       }
       // Inject BreadcrumbList JSON-LD
       html = injectBreadcrumbJsonLd(html, file);
+      // Inject PWA manifest + meta tags
+      html = html.replace('</head>',
+        '  <link rel="manifest" href="/manifest.json">\n' +
+        '  <meta name="apple-mobile-web-app-capable" content="yes">\n' +
+        '  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\n' +
+        '  <meta name="apple-mobile-web-app-title" content="MMT">\n</head>'
+      );
       // Inject search overlay after </nav>
       if (html.includes('</nav>')) {
         html = html.replace('</nav>\n\n', '</nav>\n' + searchOverlayHtml + '\n\n');
@@ -1760,6 +1767,13 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
   if (fs.existsSync(robotsSrc)) {
     fs.copyFileSync(robotsSrc, path.join(DIST_DIR, 'robots.txt'));
     console.log('Copied robots.txt');
+  }
+
+  // Copy PWA manifest
+  const manifestSrc = path.join(__dirname, 'manifest.json');
+  if (fs.existsSync(manifestSrc)) {
+    fs.copyFileSync(manifestSrc, path.join(DIST_DIR, 'manifest.json'));
+    console.log('Copied manifest.json');
   }
 
   // Copy _headers (Netlify flat-file headers, highest precedence)
