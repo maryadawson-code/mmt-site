@@ -159,6 +159,23 @@
       <button data-org="mp">missionpulse.ai</button>
     </div>
 
+    <!-- Approval notification bar -->
+    <div id="approval-notification-bar" style="display:none;background:rgba(0,229,250,0.08);border:1px solid rgba(0,229,250,0.2);border-radius:8px;padding:12px 20px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;font-size:0.9rem;">
+      <span id="approval-bar-text" style="color:#00e5fa;font-weight:600;"></span>
+      <button class="btn btn-cyan btn-sm" onclick="scrollToConsole()" id="approval-bar-btn">Review Now</button>
+    </div>
+
+    <!-- Role selector -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+      <span style="font-size:0.75rem;color:rgba(255,255,255,0.4);text-transform:uppercase;">View as:</span>
+      <select id="role-selector" onchange="applyRoleFilter(this.value)" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:4px 10px;border-radius:4px;font-size:0.8rem;">
+        <option value="all">All Roles</option>
+        <option value="cto">CTO</option>
+        <option value="coo">COO</option>
+        <option value="editor">Editor</option>
+      </select>
+    </div>
+
     <div id="loading">Loading dashboard data...</div>
 
     <div id="content" style="display:none;">
@@ -189,6 +206,8 @@
       <div id="detail-projects" class="detail-view"></div>
       <div id="detail-qa" class="detail-view"></div>
       <div id="detail-issues" class="detail-view"></div>
+      <div id="detail-coo" class="detail-view"></div>
+      <div id="detail-editorial" class="detail-view"></div>
     </div>
   </div>
 
@@ -211,6 +230,9 @@
     let _projectData = null;
     let _qaData = null;
     let _issueData = null;
+    let _approvalBadges = null;
+    let _approvalData = {};
+    let _roleFilter = 'all';
 
     function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
     function timeSince(d) { const m = Math.floor((Date.now() - new Date(d).getTime()) / 60000); if (m < 60) return m + 'm ago'; const h = Math.floor(m / 60); if (h < 24) return h + 'h ago'; return Math.floor(h/24) + 'd ago'; }
@@ -234,9 +256,12 @@
           fetch('/.netlify/functions/projects-api?key=' + apiKey + '&view=dashboard').then(r => r.ok ? r.json() : null),
           fetch('/.netlify/functions/qa-api?key=' + apiKey + '&view=summary').then(r => r.ok ? r.json() : null),
           fetch('/.netlify/functions/issues-api?key=' + apiKey + '&view=stats').then(r => r.ok ? r.json() : null),
-        ]).then(([svc, cust, proj, qa, iss]) => {
+          fetch('/.netlify/functions/approval-api?key=' + apiKey + '&view=badge-counts').then(r => r.ok ? r.json() : null),
+        ]).then(([svc, cust, proj, qa, iss, badges]) => {
           _servicesData = svc; _customerData = cust; _projectData = proj; _qaData = qa; _issueData = iss;
+          _approvalBadges = badges;
           renderTiles(dashData);
+          renderApprovalBar(badges);
         }).catch(() => {});
         renderMode(data);
         renderAlerts(data);
@@ -311,7 +336,11 @@
       const revTotal = rev && !rev.error ? (rev.total_revenue_cents / 100) : null;
 
       const highDebt = ROADMAP.techDebt.filter(d => d.severity === 'HIGH').length;
+      const cooBadge = _approvalBadges ? _approvalBadges.coo : 0;
+      const editorBadge = _approvalBadges ? _approvalBadges.editor : 0;
       return [
+        { id: 'coo', icon: '🎯', title: 'COO Console', m1: cooBadge || '--', m1l: 'Pending', m2: _servicesData ? '$' + (_servicesData.totalMonthlyCents / 100).toFixed(0) : '--', m2l: 'Mo. Burn', badge: cooBadge, roles: ['coo', 'all'] },
+        { id: 'editorial', icon: '✏️', title: 'Editorial', m1: editorBadge || '--', m1l: 'Drafts', m2: null, m2l: null, badge: editorBadge, roles: ['editor', 'all'] },
         { id: 'roadmap', icon: '\ud83d\udccb', title: 'Roadmap', m1: '2', m1l: 'Platforms', m2: highDebt, m2l: 'High debt', badge: highDebt },
         { id: 'costs', icon: '\ud83d\udcb0', title: 'Cost Intelligence', m1: _costData ? '$' + (_costData.today.totalCents / 100).toFixed(2) : '--', m1l: 'Today', m2: _costData ? _costData.today.calls : '--', m2l: 'API Calls', badge: _costData ? _costData.alerts.filter(a => a.severity === 'critical').length : 0 },
         { id: 'finance', icon: '💰', title: 'Cost Intelligence', m1: _costData ? '$' + (_costData.today.totalCents / 100).toFixed(2) : '--', m1l: 'Today', m2: _costData ? _costData.today.calls : '--', m2l: 'API Calls', badge: _costData ? _costData.alerts.filter(a => a.severity === 'critical').length : 0 },
@@ -390,7 +419,9 @@
         business: renderDetailBusiness,
         health: renderDetailHealth,
         agents: renderDetailAgents,
-        content: renderDetailContent
+        content: renderDetailContent,
+        coo: renderDetailCOO,
+        editorial: renderDetailEditorial
       }[view];
       if (fn) fn(dashData);
     }
@@ -1959,6 +1990,260 @@ async function updateIssueStatus(id, status) {
   toast('Status → ' + status);
   showIssueDetail(id);
 }
+
+    // ============ ROLE FILTER ============
+    function applyRoleFilter(role) {
+      _roleFilter = role;
+      renderTiles(dashData);
+    }
+
+    function scrollToConsole() {
+      var role = _roleFilter === 'all' ? 'coo' : _roleFilter;
+      navigate(role === 'editor' ? 'editorial' : role);
+    }
+
+    function renderApprovalBar(badges) {
+      var bar = document.getElementById('approval-notification-bar');
+      if (!badges) { bar.style.display = 'none'; return; }
+      var total = (badges.cto || 0) + (badges.coo || 0) + (badges.editor || 0);
+      if (total === 0) { bar.style.display = 'none'; return; }
+      var parts = [];
+      if (badges.cto) parts.push(badges.cto + ' deploy');
+      if (badges.coo) parts.push(badges.coo + ' ops');
+      if (badges.editor) parts.push(badges.editor + ' editorial');
+      document.getElementById('approval-bar-text').textContent = '🔔 You have ' + total + ' items awaiting decision: ' + parts.join(', ') + '.';
+      bar.style.display = 'flex';
+    }
+
+    // ============ DETAIL: COO CONSOLE ============
+
+    async function renderDetailCOO() {
+      var el = document.getElementById('detail-coo');
+      var h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
+      h += '<div class="detail-title">🎯 COO Console</div>';
+
+      // Fetch pending approvals for COO
+      try {
+        var res = await fetch('/.netlify/functions/approval-api?key=' + apiKey + '&view=pending&role=coo');
+        var pending = res.ok ? (await res.json()).approvals || [] : [];
+
+        // Operations dashboard quick-glance
+        h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:20px;">';
+        h += '<div class="detail-card" style="text-align:center;margin:0;"><div style="font-size:1.8rem;font-weight:700;color:#e2e8f0;">' + (_servicesData ? '$' + (_servicesData.totalMonthlyCents / 100).toFixed(0) : '--') + '</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;">Mo. Burn</div></div>';
+        h += '<div class="detail-card" style="text-align:center;margin:0;"><div style="font-size:1.8rem;font-weight:700;color:#e2e8f0;">' + (_customerData ? _customerData.total : '--') + '</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;">Customers</div></div>';
+        h += '<div class="detail-card" style="text-align:center;margin:0;"><div style="font-size:1.8rem;font-weight:700;color:#e2e8f0;">' + (_projectData ? _projectData.openTasks : '--') + '</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;">Open Tasks</div></div>';
+        h += '<div class="detail-card" style="text-align:center;margin:0;"><div style="font-size:1.8rem;font-weight:700;color:#e2e8f0;">' + (_projectData ? _projectData.blockedTasks : '0') + '</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;">Blocked</div></div>';
+        h += '<div class="detail-card" style="text-align:center;margin:0;"><div style="font-size:1.8rem;font-weight:700;color:#22c55e;">' + pending.length + '</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;">Pending</div></div>';
+        h += '</div>';
+
+        // Decisions needed
+        h += '<div class="detail-card"><h3>Decisions Needed</h3>';
+        if (!pending.length) {
+          h += '<p style="color:rgba(255,255,255,0.3)">No pending decisions. All clear.</p>';
+        } else {
+          // Sort by urgency (expiry time)
+          pending.sort(function(a, b) { return new Date(a.expires_at) - new Date(b.expires_at); });
+          pending.forEach(function(item) {
+            var hoursLeft = Math.max(0, Math.round((new Date(item.expires_at) - Date.now()) / 3600000));
+            var urgency = hoursLeft < 24 ? 'red' : hoursLeft < 48 ? 'yellow' : 'blue';
+            var catIcon = { 'spend-approval':'💰', 'service-change':'🔄', 'customer-outreach':'📧', 'sprint-change':'📋', 'hire-contract':'🤝', 'process-change':'⚙️' }[item.category] || '📝';
+
+            h += '<div class="approval-card" style="border-left:3px solid ' + (urgency==='red'?'#ef4444':urgency==='yellow'?'#eab308':'#60a5fa') + ';">';
+            h += '<div style="display:flex;justify-content:space-between;align-items:start;">';
+            h += '<div style="font-weight:600;font-size:0.95rem;">' + catIcon + ' ' + esc(item.title) + '</div>';
+            h += '<span class="badge badge-' + urgency + '" style="flex-shrink:0;">⏰ ' + hoursLeft + 'h</span>';
+            h += '</div>';
+            h += '<div style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-top:4px;">Submitted by: ' + esc(item.submitted_by) + ' | ' + timeSince(item.created_at) + '</div>';
+
+            // Show payload context
+            if (item.payload) {
+              h += '<div style="margin-top:10px;font-size:0.85rem;color:var(--mmt-white-muted);">';
+              if (item.payload.reasoning) h += '<div style="margin-bottom:4px;"><strong>Reasoning:</strong> ' + esc(item.payload.reasoning) + '</div>';
+              if (item.payload.service) h += '<div>Service: ' + esc(item.payload.service) + '</div>';
+              if (item.payload.currentCost) h += '<div>Current cost: $' + (item.payload.currentCost / 100).toFixed(2) + '/mo</div>';
+              if (item.context?.annualSavings) h += '<div style="color:#22c55e;">Annual savings: $' + (item.context.annualSavings / 100).toFixed(2) + '</div>';
+              if (item.context?.alternativesCovered) h += '<div>Covered by: ' + item.context.alternativesCovered.join(', ') + '</div>';
+              h += '</div>';
+            }
+
+            h += '<div class="approval-actions">';
+            h += '<button class="btn btn-sm btn-green" onclick="approveApproval(\'' + item.id + '\')">✅ Approve</button>';
+            h += '<button class="btn btn-sm btn-red" onclick="rejectApproval(\'' + item.id + '\')">❌ Reject</button>';
+            h += '<button class="btn btn-sm" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);" onclick="commentOnApproval(\'' + item.id + '\')">💬 Ask Agent</button>';
+            h += '</div></div>';
+          });
+        }
+        h += '</div>';
+
+        // Decision History
+        var histRes = await fetch('/.netlify/functions/approval-api?key=' + apiKey + '&view=history&role=coo&days=14');
+        var history = histRes.ok ? (await histRes.json()).history || [] : [];
+        h += '<div class="detail-card"><h3>Decision History</h3>';
+        if (history.length) {
+          h += '<table><tr><th>Date</th><th>Decision</th><th>Category</th><th>Status</th><th>By</th></tr>';
+          history.slice(0, 20).forEach(function(d) {
+            var sc = d.status === 'approved' ? 'green' : d.status === 'rejected' ? 'red' : d.status === 'auto-approved' ? 'cyan' : 'yellow';
+            h += '<tr><td style="font-size:0.75rem">' + fmtDate(d.decision_at || d.updated_at) + '</td><td style="font-size:0.82rem;">' + esc(d.title) + '</td><td><span class="badge badge-blue">' + esc(d.category) + '</span></td><td><span class="badge badge-' + sc + '">' + esc(d.status) + '</span></td><td style="font-size:0.75rem">' + esc(d.decision_by || '--') + '</td></tr>';
+          });
+          h += '</table>';
+        } else { h += '<p style="color:rgba(255,255,255,0.3)">No decisions in the last 14 days.</p>'; }
+        h += '</div>';
+
+      } catch (e) { h += '<p style="color:#ef4444;">Failed to load: ' + e.message + '</p>'; }
+      el.innerHTML = h;
+    }
+
+    // ============ DETAIL: EDITORIAL CONSOLE ============
+
+    async function renderDetailEditorial() {
+      var el = document.getElementById('detail-editorial');
+      var h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
+      h += '<div class="detail-title">✏️ Editorial Console</div>';
+
+      try {
+        var res = await fetch('/.netlify/functions/approval-api?key=' + apiKey + '&view=pending&role=editor');
+        var pending = res.ok ? (await res.json()).approvals || [] : [];
+        var pipeline = dashData.pipeline || [];
+
+        // Content awaiting review
+        h += '<div class="detail-card"><h3>Content Awaiting Review</h3>';
+        if (!pending.length) {
+          h += '<p style="color:rgba(255,255,255,0.3)">No content pending review. Queue is clear.</p>';
+        } else {
+          pending.forEach(function(item) {
+            var hoursLeft = Math.max(0, Math.round((new Date(item.expires_at) - Date.now()) / 3600000));
+            var catIcon = { 'newsletter-draft':'📰', 'linkedin-post':'💼', 'research-brief':'🔍', 'topic-pitch':'💡', 'editorial-correction':'⚠️', 'glossary-entry':'📖' }[item.category] || '📝';
+            var catLabel = { 'newsletter-draft':'Newsletter Draft', 'linkedin-post':'LinkedIn Post', 'research-brief':'Research Brief', 'topic-pitch':'Topic Pitch', 'editorial-correction':'Editorial Correction', 'glossary-entry':'Glossary Entry' }[item.category] || item.category;
+
+            h += '<div class="approval-card" style="border-left:3px solid #00e5fa;">';
+            h += '<div style="display:flex;justify-content:space-between;align-items:start;">';
+            h += '<div><span class="badge badge-cyan">' + catLabel + '</span></div>';
+            h += '<span class="badge badge-' + (hoursLeft < 12 ? 'red' : 'yellow') + '">⏰ ' + hoursLeft + 'h</span>';
+            h += '</div>';
+            h += '<div style="font-weight:600;font-size:1rem;margin-top:8px;">' + catIcon + ' ' + esc(item.title) + '</div>';
+            h += '<div style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-top:4px;">Submitted by: ' + esc(item.submitted_by) + ' | ' + timeSince(item.created_at) + '</div>';
+
+            // Context
+            if (item.context) {
+              h += '<div style="margin-top:8px;display:flex;gap:12px;flex-wrap:wrap;font-size:0.78rem;color:rgba(255,255,255,0.5);">';
+              if (item.context.leadScore) h += '<span>Score: <strong style="color:#e2e8f0;">' + item.context.leadScore + '</strong></span>';
+              if (item.context.wordCount) h += '<span>' + item.context.wordCount + ' words</span>';
+              if (item.context.sourceCount) h += '<span>' + item.context.sourceCount + ' sources</span>';
+              h += '</div>';
+            }
+
+            // For topic pitches, show reasoning
+            if (item.category === 'topic-pitch' && item.payload) {
+              h += '<div style="margin-top:10px;font-size:0.85rem;color:var(--mmt-white-muted);">';
+              if (item.payload.angle) h += '<div style="margin-bottom:4px;"><strong>Angle:</strong> ' + esc(item.payload.angle) + '</div>';
+              if (item.payload.format) h += '<div><strong>Format:</strong> ' + esc(item.payload.format) + '</div>';
+              if (item.payload.targetDate) h += '<div><strong>Target:</strong> ' + esc(item.payload.targetDate) + '</div>';
+              h += '</div>';
+            }
+
+            // Preview (if available)
+            if (item.preview_html) {
+              h += '<details style="margin-top:12px;"><summary style="cursor:pointer;color:#00e5fa;font-size:0.85rem;font-weight:600;">Preview</summary>';
+              h += '<div style="margin-top:8px;background:#fff;color:#1a1a2e;padding:20px;border-radius:8px;max-height:400px;overflow-y:auto;font-size:14px;line-height:1.6;">' + item.preview_html + '</div>';
+              h += '</details>';
+            }
+
+            h += '<div class="approval-actions">';
+            if (item.category === 'newsletter-draft' || item.category === 'linkedin-post') {
+              h += '<button class="btn btn-sm btn-green" onclick="approveApproval(\'' + item.id + '\')">✅ Approve & Schedule</button>';
+              h += '<button class="btn btn-sm btn-orange" onclick="modifyApproval(\'' + item.id + '\')">✏️ Edit & Approve</button>';
+            } else if (item.category === 'topic-pitch') {
+              h += '<button class="btn btn-sm btn-green" onclick="approveApproval(\'' + item.id + '\')">✅ Approve for Research</button>';
+            } else {
+              h += '<button class="btn btn-sm btn-green" onclick="approveApproval(\'' + item.id + '\')">✅ Approve</button>';
+            }
+            h += '<button class="btn btn-sm btn-red" onclick="rejectApproval(\'' + item.id + '\')">❌ Reject</button>';
+            h += '<button class="btn btn-sm" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);" onclick="commentOnApproval(\'' + item.id + '\')">💬 Comment</button>';
+            h += '</div></div>';
+          });
+        }
+        h += '</div>';
+
+        // Pipeline Calendar
+        h += '<div class="detail-card"><h3>Pipeline Calendar</h3>';
+        var now = new Date();
+        var upcoming = pipeline.filter(function(p) { return new Date(p.publish_date) >= new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7); }).sort(function(a,b) { return new Date(a.publish_date) - new Date(b.publish_date); });
+        if (upcoming.length) {
+          h += '<div class="pipeline-grid">';
+          upcoming.forEach(function(p) {
+            var isPast = new Date(p.publish_date) < now;
+            var statusColors = { planning:'gray', researching:'blue', drafting:'yellow', editing:'orange', ready:'green', published:'cyan', killed:'red' };
+            var sc = statusColors[p.status] || 'gray';
+            h += '<div class="pipeline-card" style="' + (isPast ? 'opacity:0.5;' : '') + '">';
+            h += '<div style="display:flex;justify-content:space-between;"><strong>' + fmtDate(p.publish_date) + '</strong><span class="badge badge-' + sc + '">' + esc(p.status) + '</span></div>';
+            h += '<div style="font-size:0.82rem;margin-top:6px;color:rgba(255,255,255,0.7);">' + esc(p.lead_topic || 'No topic') + '</div>';
+            if (p.lead_score) h += '<div style="font-size:0.75rem;margin-top:4px;color:rgba(255,255,255,0.4);">Score: ' + p.lead_score + '</div>';
+            h += '</div>';
+          });
+          h += '</div>';
+        } else { h += '<p style="color:rgba(255,255,255,0.3)">No pipeline items.</p>'; }
+        h += '</div>';
+
+        // Decision History
+        var histRes = await fetch('/.netlify/functions/approval-api?key=' + apiKey + '&view=history&role=editor&days=14');
+        var history = histRes.ok ? (await histRes.json()).history || [] : [];
+        h += '<div class="detail-card"><h3>Recent Decisions</h3>';
+        if (history.length) {
+          h += '<table><tr><th>Date</th><th>Item</th><th>Category</th><th>Status</th></tr>';
+          history.slice(0, 15).forEach(function(d) {
+            var sc = d.status === 'approved' || d.status === 'modified' ? 'green' : d.status === 'rejected' ? 'red' : 'cyan';
+            h += '<tr><td style="font-size:0.75rem">' + fmtDate(d.decision_at || d.updated_at) + '</td><td style="font-size:0.82rem;">' + esc(d.title) + '</td><td><span class="badge badge-cyan">' + esc(d.category) + '</span></td><td><span class="badge badge-' + sc + '">' + esc(d.status) + '</span></td></tr>';
+          });
+          h += '</table>';
+        } else { h += '<p style="color:rgba(255,255,255,0.3)">No decisions yet.</p>'; }
+        h += '</div>';
+
+        // Content Performance placeholder
+        h += '<div class="detail-card"><h3>Content Performance</h3>';
+        h += '<div class="coming-soon" style="min-height:100px;">Analytics integration coming soon</div>';
+        h += '</div>';
+
+      } catch (e) { h += '<p style="color:#ef4444;">Failed to load: ' + e.message + '</p>'; }
+      el.innerHTML = h;
+    }
+
+    // ============ APPROVAL ACTIONS (shared) ============
+
+    async function approveApproval(id) {
+      if (!confirm('Approve this item?')) return;
+      await fetch('/.netlify/functions/approval-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'approve', approvalId: id, by: 'human' }) });
+      toast('Approved');
+      var active = document.querySelector('.detail-view.active');
+      if (active) renderDetailView(active.id.replace('detail-', ''));
+      loadDashboard();
+    }
+
+    async function rejectApproval(id) {
+      var reason = prompt('Reason for rejection?');
+      if (reason === null) return;
+      await fetch('/.netlify/functions/approval-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'reject', approvalId: id, by: 'human', notes: reason }) });
+      toast('Rejected');
+      var active = document.querySelector('.detail-view.active');
+      if (active) renderDetailView(active.id.replace('detail-', ''));
+      loadDashboard();
+    }
+
+    async function modifyApproval(id) {
+      var notes = prompt('Enter your edits/notes (the modified version will be approved):');
+      if (!notes) return;
+      await fetch('/.netlify/functions/approval-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'modify', approvalId: id, by: 'human', modifications: { notes: notes }, notes: notes }) });
+      toast('Approved with edits');
+      var active = document.querySelector('.detail-view.active');
+      if (active) renderDetailView(active.id.replace('detail-', ''));
+      loadDashboard();
+    }
+
+    async function commentOnApproval(id) {
+      var msg = prompt('Your message to the agent:');
+      if (!msg) return;
+      await fetch('/.netlify/functions/approval-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'comment', approvalId: id, author: 'human', authorType: 'human', content: msg }) });
+      toast('Comment sent');
+    }
 
     // Apply initial route after first load
     const _origLoadDashboard = loadDashboard;
