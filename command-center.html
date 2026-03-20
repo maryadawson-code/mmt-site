@@ -290,6 +290,7 @@
       <div id="detail-editorial" class="detail-view"></div>
       <div id="detail-competitive" class="detail-view"></div>
       <div id="detail-learnings" class="detail-view"></div>
+      <div id="detail-dev-workflow" class="detail-view"></div>
     </div>
   </div>
 
@@ -317,6 +318,7 @@
     let _issueData = null;
     let _approvalBadges = null;
     let _approvalData = {};
+    let _devWorkflowData = null;
     let _roleFilter = 'all';
 
     function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
@@ -342,9 +344,10 @@
           fetch('/.netlify/functions/qa-api?key=' + apiKey + '&view=summary').then(r => r.ok ? r.json() : null),
           fetch('/.netlify/functions/issues-api?key=' + apiKey + '&view=stats').then(r => r.ok ? r.json() : null),
           fetch('/.netlify/functions/approval-api?key=' + apiKey + '&view=badge-counts').then(r => r.ok ? r.json() : null),
-        ]).then(([svc, cust, proj, qa, iss, badges]) => {
+          fetch('/.netlify/functions/dev-workflow-api?key=' + apiKey + '&view=summary').then(r => r.ok ? r.json() : null),
+        ]).then(([svc, cust, proj, qa, iss, badges, devWf]) => {
           _servicesData = svc; _customerData = cust; _projectData = proj; _qaData = qa; _issueData = iss;
-          _approvalBadges = badges;
+          _approvalBadges = badges; _devWorkflowData = devWf;
           renderTiles(dashData);
           renderApprovalBar(badges);
         }).catch(() => {});
@@ -426,6 +429,7 @@
       return [
         { id: 'coo', icon: '🎯', title: 'COO Console', m1: cooBadge || '--', m1l: 'Pending', m2: _servicesData ? '$' + (_servicesData.totalMonthlyCents / 100).toFixed(0) : '--', m2l: 'Mo. Burn', badge: cooBadge, roles: ['coo', 'all'] },
         { id: 'editorial', icon: '✏️', title: 'Editorial', m1: editorBadge || '--', m1l: 'Drafts', m2: null, m2l: null, badge: editorBadge, roles: ['editor', 'all'] },
+        { id: 'dev-workflow', icon: '\ud83d\udd00', title: 'Dev Workflow', m1: _devWorkflowData ? _devWorkflowData.activeSessions : '--', m1l: 'Active', m2: _devWorkflowData ? _devWorkflowData.unresolvedConflicts : '--', m2l: 'Conflicts', badge: _devWorkflowData ? _devWorkflowData.unresolvedConflicts : 0 },
         { id: 'roadmap', icon: '\ud83d\udccb', title: 'Roadmap', m1: '2', m1l: 'Platforms', m2: highDebt, m2l: 'High debt', badge: highDebt },
         { id: 'costs', icon: '\ud83d\udcb0', title: 'Cost Intelligence', m1: _costData ? '$' + (_costData.today.totalCents / 100).toFixed(2) : '--', m1l: 'Today', m2: _costData ? _costData.today.calls : '--', m2l: 'API Calls', badge: _costData ? _costData.alerts.filter(a => a.severity === 'critical').length : 0 },
         { id: 'finance', icon: '💰', title: 'Cost Intelligence', m1: _costData ? '$' + (_costData.today.totalCents / 100).toFixed(2) : '--', m1l: 'Today', m2: _costData ? _costData.today.calls : '--', m2l: 'API Calls', badge: _costData ? _costData.alerts.filter(a => a.severity === 'critical').length : 0 },
@@ -510,7 +514,8 @@
         coo: renderDetailCOO,
         editorial: renderDetailEditorial,
         competitive: renderDetailCompetitive,
-        learnings: renderDetailLearnings
+        learnings: renderDetailLearnings,
+        'dev-workflow': renderDetailDevWorkflow
       }[view];
       if (fn) fn(dashData);
     }
@@ -2390,6 +2395,213 @@ async function updateIssueStatus(id, status) {
         h += '<div class="detail-card"><p style="color:rgba(255,255,255,0.3);">Failed to load learning data.</p></div>';
       }
       el.innerHTML = h;
+    }
+
+    // ============ DEV WORKFLOW ============
+    let _devWfPollTimer = null;
+
+    async function renderDetailDevWorkflow() {
+      var el = document.getElementById('detail-dev-workflow');
+      var h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
+      h += '<div class="detail-title">\ud83d\udd00 Dev Workflow</div>';
+
+      try {
+        var [statusRes, queueRes, protectedRes] = await Promise.all([
+          fetch('/.netlify/functions/dev-workflow-api?key=' + apiKey + '&view=status').then(r => r.ok ? r.json() : {}),
+          fetch('/.netlify/functions/dev-workflow-api?key=' + apiKey + '&view=deploy-queue').then(r => r.ok ? r.json() : {}),
+          fetch('/.netlify/functions/dev-workflow-api?key=' + apiKey + '&view=protected-files').then(r => r.ok ? r.json() : {}),
+        ]);
+
+        var sessions = statusRes.sessions || [];
+        var deployQueue = statusRes.deployQueue || [];
+        var fileLocks = statusRes.fileLocks || [];
+        var conflicts = statusRes.conflicts || [];
+        var allDeploys = (queueRes.queue || []);
+        var protectedFiles = protectedRes.protectedFiles || [];
+
+        // Section 1: Active Sessions
+        h += '<div class="detail-card"><h3>Who\'s Working Right Now (' + sessions.length + ')</h3>';
+        if (!sessions.length) {
+          h += '<p style="color:rgba(255,255,255,0.3);">No active sessions.</p>';
+        } else {
+          sessions.forEach(function(s) {
+            var color = s.user_type === 'human' ? '#22c55e' : (s.status === 'deploying' ? '#ef4444' : '#eab308');
+            var staleMs = Date.now() - new Date(s.last_heartbeat_at).getTime();
+            if (staleMs > 600000) color = '#1f2937';
+            var statusIcon = s.status === 'deploying' ? '\ud83d\udd34' : (s.user_type === 'human' ? '\ud83d\udfe2' : '\ud83d\udfe1');
+            h += '<div style="padding:12px;border:1px solid rgba(255,255,255,0.08);border-radius:8px;margin-bottom:8px;border-left:3px solid ' + color + ';">';
+            h += '<div style="display:flex;justify-content:space-between;align-items:center;">';
+            h += '<div><span style="font-size:1.1rem;">' + statusIcon + '</span> <strong>' + esc(s.user_name) + '</strong>';
+            h += ' <span style="color:rgba(255,255,255,0.4);font-size:0.8rem;">(' + esc(s.user_type) + ')</span></div>';
+            h += '<span class="badge badge-cyan">' + esc(s.repo) + '</span></div>';
+            if (s.branch) h += '<div style="color:rgba(255,255,255,0.6);font-size:0.85rem;margin-top:4px;">Branch: <code>' + esc(s.branch) + '</code></div>';
+            if (s.description) h += '<div style="color:rgba(255,255,255,0.5);font-size:0.8rem;margin-top:2px;">' + esc(s.description) + '</div>';
+            var files = s.files_touched || [];
+            if (files.length) h += '<div style="color:rgba(255,255,255,0.4);font-size:0.75rem;margin-top:4px;">Files: ' + files.map(function(f){return '<code>' + esc(f) + '</code>';}).join(', ') + '</div>';
+            h += '<div style="color:rgba(255,255,255,0.3);font-size:0.7rem;margin-top:4px;">Started: ' + timeSince(s.started_at) + ' | Last active: ' + timeSince(s.last_heartbeat_at) + '</div>';
+            h += '<div style="margin-top:6px;">';
+            h += '<button onclick="endDevSession(\'' + s.id + '\')" style="font-size:0.7rem;padding:2px 8px;background:#ef4444;color:#fff;border:none;border-radius:4px;cursor:pointer;">End Session</button>';
+            h += '</div></div>';
+          });
+        }
+        h += '</div>';
+
+        // Section 2: Deploy Queue
+        h += '<div class="detail-card"><h3>Deploy Queue</h3>';
+        var activeDeploy = deployQueue.find(function(d) { return d.status === 'deploying' || d.status === 'post-check'; });
+        var queued = deployQueue.filter(function(d) { return d.status === 'queued' || d.status === 'pre-check'; });
+        var recentDeploys = allDeploys.filter(function(d) { return d.status === 'success' || d.status === 'failed' || d.status === 'rolled-back'; }).slice(0, 5);
+
+        if (activeDeploy) {
+          h += '<div style="padding:12px;border:1px solid #ef4444;border-radius:8px;margin-bottom:8px;background:rgba(239,68,68,0.1);">';
+          h += '<div style="font-weight:700;color:#ef4444;">\ud83d\udd34 DEPLOYING: ' + esc(activeDeploy.branch) + ' by ' + esc(activeDeploy.requested_by) + '</div>';
+          var preChecks = activeDeploy.pre_checks || {};
+          h += '<div style="font-size:0.8rem;margin-top:4px;">';
+          Object.keys(preChecks).forEach(function(k) { h += (preChecks[k] === 'pass' ? '\u2705' : '\u274c') + ' ' + k + ' '; });
+          h += '</div>';
+          h += '<div style="font-size:0.75rem;color:rgba(255,255,255,0.4);margin-top:4px;">Started: ' + (activeDeploy.started_at ? timeSince(activeDeploy.started_at) : 'pending') + '</div>';
+          h += '</div>';
+        } else {
+          h += '<div style="color:#22c55e;font-weight:600;margin-bottom:8px;">Current: None (queue clear)</div>';
+        }
+
+        if (queued.length) {
+          h += '<div style="font-size:0.85rem;font-weight:600;margin-bottom:6px;">Queued (' + queued.length + '):</div>';
+          queued.forEach(function(d, i) {
+            h += '<div style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-bottom:4px;">#' + (i+1) + ' ' + esc(d.branch) + ' by ' + esc(d.requested_by) + '</div>';
+          });
+        }
+
+        if (recentDeploys.length) {
+          h += '<div style="font-size:0.85rem;font-weight:600;margin:12px 0 6px;">Recent:</div>';
+          recentDeploys.forEach(function(d) {
+            var icon = d.status === 'success' ? '\u2705' : (d.status === 'rolled-back' ? '\u21a9\ufe0f' : '\u274c');
+            h += '<div style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-bottom:4px;">';
+            h += icon + ' ' + esc(d.branch) + ' by ' + esc(d.requested_by);
+            if (d.completed_at) h += ' \u2014 ' + timeSince(d.completed_at);
+            if (d.homepage_size) h += ' (' + Math.round(d.homepage_size / 1024) + 'KB)';
+            h += '</div>';
+          });
+        }
+        h += '</div>';
+
+        // Section 3: Conflicts
+        h += '<div class="detail-card"><h3>Active Conflicts (' + conflicts.length + ')</h3>';
+        if (!conflicts.length) {
+          h += '<p style="color:rgba(255,255,255,0.3);">No active conflicts.</p>';
+        } else {
+          conflicts.forEach(function(c) {
+            var sevColor = c.severity === 'critical' ? '#ef4444' : '#eab308';
+            h += '<div style="padding:10px;border:1px solid ' + sevColor + ';border-radius:8px;margin-bottom:8px;background:rgba(' + (c.severity === 'critical' ? '239,68,68' : '234,179,8') + ',0.05);">';
+            h += '<div style="font-weight:600;font-size:0.9rem;"><code>' + esc(c.file_path) + '</code></div>';
+            h += '<div style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-top:4px;">' + esc(c.user_a) + ' vs ' + esc(c.user_b) + ' | ' + timeSince(c.created_at) + '</div>';
+            h += '<div style="margin-top:6px;">';
+            h += '<button onclick="resolveConflict(\'' + c.id + '\',\'' + esc(c.user_a) + '\')" style="font-size:0.7rem;padding:2px 8px;background:#111827;border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:4px;cursor:pointer;margin-right:4px;">' + esc(c.user_a) + ' wins</button>';
+            h += '<button onclick="resolveConflict(\'' + c.id + '\',\'' + esc(c.user_b) + '\')" style="font-size:0.7rem;padding:2px 8px;background:#111827;border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:4px;cursor:pointer;margin-right:4px;">' + esc(c.user_b) + ' wins</button>';
+            h += '<button onclick="resolveConflict(\'' + c.id + '\',\'merged\')" style="font-size:0.7rem;padding:2px 8px;background:#111827;border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:4px;cursor:pointer;">Merged</button>';
+            h += '</div></div>';
+          });
+        }
+        h += '</div>';
+
+        // Section 4: File Locks
+        if (fileLocks.length) {
+          h += '<div class="detail-card"><h3>Active File Locks (' + fileLocks.length + ')</h3>';
+          fileLocks.forEach(function(l) {
+            h += '<div style="padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.85rem;">';
+            h += '<code>' + esc(l.file_path) + '</code> \u2014 locked by <strong>' + esc(l.locked_by) + '</strong>';
+            if (l.lock_type === 'exclusive') h += ' <span style="color:#ef4444;">(exclusive)</span>';
+            if (l.reason) h += ' <span style="color:rgba(255,255,255,0.4);">\u2014 ' + esc(l.reason) + '</span>';
+            h += '</div>';
+          });
+          h += '</div>';
+        }
+
+        // Section 5: Protected Files
+        h += '<div class="detail-card" style="cursor:pointer;" onclick="this.querySelector(\'.pf-body\').style.display=this.querySelector(\'.pf-body\').style.display===\'none\'?\'block\':\'none\';">';
+        h += '<h3>Protected Files (' + protectedFiles.length + ') <span style="font-size:0.7rem;color:rgba(255,255,255,0.3);">click to expand</span></h3>';
+        h += '<div class="pf-body" style="display:none;">';
+        protectedFiles.forEach(function(p) {
+          var levelColor = p.protection_level === 'admin-only' ? '#ef4444' : (p.protection_level === 'frozen' ? '#6366f1' : '#eab308');
+          h += '<div style="padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.8rem;">';
+          h += '<code>' + esc(p.file_pattern) + '</code> ';
+          h += '<span style="color:' + levelColor + ';font-weight:600;">' + esc(p.protection_level) + '</span>';
+          if (p.reason) h += ' <span style="color:rgba(255,255,255,0.3);">\u2014 ' + esc(p.reason) + '</span>';
+          h += '</div>';
+        });
+        h += '</div></div>';
+
+        // Section 6: Start Session (manual)
+        h += '<div class="detail-card"><h3>Start Session (Manual)</h3>';
+        h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">';
+        h += '<input id="wf-user" placeholder="Your name" style="padding:6px 10px;background:#0a1628;border:1px solid rgba(255,255,255,0.15);border-radius:4px;color:#fff;font-size:0.85rem;">';
+        h += '<select id="wf-repo" style="padding:6px 10px;background:#0a1628;border:1px solid rgba(255,255,255,0.15);border-radius:4px;color:#fff;font-size:0.85rem;"><option value="mmt-site">mmt-site</option><option value="mmt-ops-exec">mmt-ops-exec</option><option value="missionpulse-frontend">missionpulse-frontend</option></select>';
+        h += '</div>';
+        h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">';
+        h += '<input id="wf-branch" placeholder="Branch name" style="padding:6px 10px;background:#0a1628;border:1px solid rgba(255,255,255,0.15);border-radius:4px;color:#fff;font-size:0.85rem;">';
+        h += '<select id="wf-lock" style="padding:6px 10px;background:#0a1628;border:1px solid rgba(255,255,255,0.15);border-radius:4px;color:#fff;font-size:0.85rem;"><option value="warn">Warn</option><option value="none">None</option><option value="lock">Lock</option><option value="deploy-lock">Deploy Lock</option></select>';
+        h += '</div>';
+        h += '<input id="wf-desc" placeholder="Description" style="width:100%;padding:6px 10px;background:#0a1628;border:1px solid rgba(255,255,255,0.15);border-radius:4px;color:#fff;font-size:0.85rem;margin-bottom:8px;box-sizing:border-box;">';
+        h += '<textarea id="wf-files" placeholder="Files (one per line)" rows="3" style="width:100%;padding:6px 10px;background:#0a1628;border:1px solid rgba(255,255,255,0.15);border-radius:4px;color:#fff;font-size:0.85rem;margin-bottom:8px;resize:vertical;box-sizing:border-box;"></textarea>';
+        h += '<button onclick="startManualSession()" style="padding:6px 16px;background:linear-gradient(135deg,#00e5fa,#00ff85);color:#00050f;border:none;border-radius:4px;font-weight:700;cursor:pointer;">Start Session</button>';
+        h += '</div>';
+
+      } catch (e) {
+        h += '<div class="detail-card"><p style="color:rgba(255,255,255,0.3);">Failed to load dev workflow data: ' + esc(e.message) + '</p></div>';
+      }
+
+      el.innerHTML = h;
+
+      // Start polling
+      if (_devWfPollTimer) clearInterval(_devWfPollTimer);
+      _devWfPollTimer = setInterval(function() {
+        if (window.location.hash === '#dev-workflow') renderDetailDevWorkflow();
+        else { clearInterval(_devWfPollTimer); _devWfPollTimer = null; }
+      }, 10000);
+    }
+
+    async function endDevSession(sessionId) {
+      if (!confirm('End this session?')) return;
+      await fetch('/.netlify/functions/dev-workflow-api?key=' + apiKey, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'end_session', sessionId: sessionId, status: 'completed' })
+      });
+      toast('Session ended');
+      renderDetailDevWorkflow();
+    }
+
+    async function resolveConflict(conflictId, resolution) {
+      await fetch('/.netlify/functions/dev-workflow-api?key=' + apiKey, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'resolve_conflict', conflictId: conflictId, resolvedBy: 'dashboard', resolution: resolution })
+      });
+      toast('Conflict resolved');
+      renderDetailDevWorkflow();
+    }
+
+    async function startManualSession() {
+      var user = document.getElementById('wf-user').value.trim();
+      var repo = document.getElementById('wf-repo').value;
+      var branch = document.getElementById('wf-branch').value.trim();
+      var desc = document.getElementById('wf-desc').value.trim();
+      var filesRaw = document.getElementById('wf-files').value.trim();
+      var files = filesRaw ? filesRaw.split('\n').map(function(f) { return f.trim(); }).filter(Boolean) : [];
+      var lockLevel = document.getElementById('wf-lock').value;
+
+      if (!user) { toast('Name required'); return; }
+
+      var res = await fetch('/.netlify/functions/dev-workflow-api?key=' + apiKey, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'start_session', user: user, userType: 'human', repo: repo, branch: branch || null, description: desc || null, files: files, lockLevel: lockLevel })
+      });
+      var data = await res.json();
+      if (data.error) { toast('Error: ' + data.error); return; }
+      toast('Session started');
+      document.getElementById('wf-user').value = '';
+      document.getElementById('wf-branch').value = '';
+      document.getElementById('wf-desc').value = '';
+      document.getElementById('wf-files').value = '';
+      renderDetailDevWorkflow();
     }
 
     const _origLoadDashboard = loadDashboard;
