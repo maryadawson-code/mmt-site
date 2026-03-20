@@ -281,6 +281,7 @@
       <div id="detail-roadmap" class="detail-view"></div>
       <div id="detail-costs" class="detail-view"></div>
       <div id="detail-finance" class="detail-view"></div>
+      <div id="detail-billing" class="detail-view"></div>
       <div id="detail-services" class="detail-view"></div>
       <div id="detail-customers" class="detail-view"></div>
       <div id="detail-projects" class="detail-view"></div>
@@ -310,6 +311,7 @@
     let _lastResearch = null;
     let _costData = null;
     let _financeData = null;
+    let _billingData = null;
     let _servicesData = null;
     let _customerData = null;
     let _projectData = null;
@@ -335,6 +337,7 @@
         allAgents = data.agents || [];
         // Fetch cost data in parallel (non-blocking)
         fetch('/.netlify/functions/cost-api?key=' + apiKey + '&view=summary').then(r => r.ok ? r.json() : null).then(c => { if (c) { _costData = c; renderTiles(dashData); } }).catch(() => {});
+        fetch('/.netlify/functions/billing-api?key=' + apiKey + '&view=summary').then(r => r.ok ? r.json() : null).then(b => { if (b) { _billingData = b; renderTiles(dashData); } }).catch(() => {});
         Promise.all([
           fetch('/.netlify/functions/finance-api?key=' + apiKey + '&view=services-summary').then(r => r.ok ? r.json() : null),
           fetch('/.netlify/functions/customer-api?key=' + apiKey + '&view=summary').then(r => r.ok ? r.json() : null),
@@ -429,6 +432,7 @@
         { id: 'roadmap', icon: '\ud83d\udccb', title: 'Roadmap', m1: '2', m1l: 'Platforms', m2: highDebt, m2l: 'High debt', badge: highDebt },
         { id: 'costs', icon: '\ud83d\udcb0', title: 'Cost Intelligence', m1: _costData ? '$' + (_costData.today.totalCents / 100).toFixed(2) : '--', m1l: 'Today', m2: _costData ? _costData.today.calls : '--', m2l: 'API Calls', badge: _costData ? _costData.alerts.filter(a => a.severity === 'critical').length : 0 },
         { id: 'finance', icon: '💰', title: 'Cost Intelligence', m1: _costData ? '$' + (_costData.today.totalCents / 100).toFixed(2) : '--', m1l: 'Today', m2: _costData ? _costData.today.calls : '--', m2l: 'API Calls', badge: _costData ? _costData.alerts.filter(a => a.severity === 'critical').length : 0 },
+        { id: 'billing', icon: '🧾', title: 'Billing Tracker', m1: _billingData ? '$' + ((_billingData.summary?.total_cents || 0) / 100).toFixed(0) : '--', m1l: 'This month', m2: _billingData ? (_billingData.needsReview?.length || 0) : '--', m2l: 'Needs review', badge: _billingData ? (_billingData.needsReview?.length || 0) : 0 },
         { id: 'services', icon: '💳', title: 'Services', m1: _servicesData ? '$' + (_servicesData.totalMonthlyCents / 100).toFixed(0) : '--', m1l: 'Monthly burn', m2: _servicesData ? _servicesData.pendingDecisions : '--', m2l: 'Decisions', badge: _servicesData ? _servicesData.upcomingDeadlines?.length || 0 : 0 },
         { id: 'customers', icon: '👥', title: 'Customers', m1: _customerData ? _customerData.total : '--', m1l: 'Total', m2: _customerData ? _customerData.avgHealth : '--', m2l: 'Avg Health', badge: _customerData ? _customerData.atRisk : 0 },
         { id: 'projects', icon: '📋', title: 'Projects', m1: _projectData ? _projectData.openTasks : '--', m1l: 'Open tasks', m2: _projectData ? _projectData.blockedTasks : '--', m2l: 'Blocked', badge: _projectData ? _projectData.blockedTasks : 0 },
@@ -495,6 +499,7 @@
         roadmap: renderDetailRoadmap,
         costs: renderDetailCosts,
         finance: renderDetailFinance,
+        billing: renderDetailBilling,
         services: renderDetailServices,
         customers: renderDetailCustomers,
         projects: renderDetailProjects,
@@ -1520,6 +1525,182 @@ async function resolveFinanceAlert(id) {
   await fetch('/.netlify/functions/finance-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'resolve_alert', alertId: id }) });
   toast('Alert resolved');
   loadDashboard();
+}
+
+// ============ DETAIL: BILLING TRACKER ============
+async function renderDetailBilling() {
+  const el = document.getElementById('detail-billing');
+  let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
+  h += '<div class="detail-title">🧾 Billing Tracker</div>';
+
+  try {
+    const [summaryRes, trendRes, syncRes] = await Promise.all([
+      fetch('/.netlify/functions/billing-api?key=' + apiKey + '&view=summary').then(r => r.json()),
+      fetch('/.netlify/functions/billing-api?key=' + apiKey + '&view=monthly-trend').then(r => r.json()),
+      fetch('/.netlify/functions/billing-api?key=' + apiKey + '&view=sync-status').then(r => r.json()),
+    ]);
+
+    const s = summaryRes.summary || {};
+    const review = summaryRes.needsReview || [];
+    const gmail = summaryRes.gmail || {};
+    const trend = trendRes.trend || [];
+    const sources = syncRes.sources || [];
+
+    // Big numbers
+    h += '<div class="detail-card" style="display:flex;gap:32px;flex-wrap:wrap;">';
+    h += '<div><div class="revenue-big">$' + ((s.total_cents || 0) / 100).toFixed(2) + '</div><div class="revenue-label">Total this month</div></div>';
+    h += '<div><div class="tile-metric">$' + ((s.business_cents || 0) / 100).toFixed(0) + '</div><div class="revenue-label">Business</div></div>';
+    h += '<div><div class="tile-metric">$' + ((s.personal_cents || 0) / 100).toFixed(0) + '</div><div class="revenue-label">Personal</div></div>';
+    h += '<div><div class="tile-metric">$' + ((s.tax_deductible_cents || 0) / 100).toFixed(0) + '</div><div class="revenue-label">Tax deductible</div></div>';
+    h += '<div><div class="tile-metric">' + (s.records_count || 0) + '</div><div class="revenue-label">Records</div></div>';
+    h += '</div>';
+
+    // Coverage bar
+    const enabledCount = sources.filter(s => s.is_enabled).length;
+    const pct = Math.round(enabledCount / Math.max(sources.length, 1) * 100);
+    h += '<div class="detail-card"><div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:0.82rem;"><span>' + pct + '% tracked (' + enabledCount + '/' + sources.length + ' sources)</span><span style="color:rgba(255,255,255,0.4);">' + (s.needs_review_count || 0) + ' need review</span></div>';
+    h += '<div style="height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;"><div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#00e5fa,#00ff85);border-radius:4px;"></div></div></div>';
+
+    // Category breakdown
+    h += '<div class="detail-card"><h3>Breakdown by Category</h3>';
+    const cats = [
+      { label: 'Infrastructure', cents: s.infrastructure_cents || 0 },
+      { label: 'AI Tools', cents: s.ai_tools_cents || 0 },
+      { label: 'Productivity', cents: s.productivity_cents || 0 },
+      { label: 'Personal', cents: s.personal_subs_cents || 0 },
+      { label: 'Family', cents: s.family_cents || 0 },
+      { label: 'Domains', cents: s.domains_cents || 0 },
+    ].filter(c => c.cents > 0).sort((a, b) => b.cents - a.cents);
+    const maxCat = Math.max(...cats.map(c => c.cents), 1);
+    cats.forEach(c => {
+      const barPct = (c.cents / maxCat * 100);
+      h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><div style="width:100px;font-size:0.82rem;">' + c.label + '</div><div style="flex:1;height:16px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;"><div style="height:100%;width:' + barPct + '%;background:linear-gradient(90deg,#00e5fa,#00ff85);border-radius:3px;"></div></div><div style="font-size:0.82rem;font-weight:600;width:60px;text-align:right;">$' + (c.cents / 100).toFixed(0) + '</div></div>';
+    });
+    h += '</div>';
+
+    // Gmail status
+    h += '<div class="detail-card"><h3>Gmail Connection</h3>';
+    if (gmail.connected) {
+      h += '<div style="font-size:0.85rem;">Status: <span class="badge badge-green">Connected</span> (' + esc(gmail.email) + ')</div>';
+      h += '<div style="margin-top:8px;"><a href="/.netlify/functions/google-oauth?action=disconnect" class="btn btn-sm" style="background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.3);">Disconnect</a></div>';
+    } else {
+      h += '<div style="font-size:0.85rem;">Status: <span class="badge badge-yellow">Not Connected</span></div>';
+      h += '<div style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-top:4px;">Read-only access to scan receipts from billing emails</div>';
+      h += '<div style="margin-top:8px;"><a href="/.netlify/functions/google-oauth?action=connect" class="btn btn-sm" style="background:linear-gradient(135deg,#00e5fa,#00ff85);color:#00050f;font-weight:600;">Connect Gmail</a></div>';
+    }
+    h += '</div>';
+
+    // Needs review
+    if (review.length > 0) {
+      h += '<div class="detail-card"><h3 style="color:#eab308">Needs Review (' + review.length + ')</h3>';
+      review.forEach(r => {
+        h += '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><div><span style="font-size:0.78rem;color:rgba(255,255,255,0.4);">' + (r.charge_date || '') + '</span> <span style="font-size:0.85rem;font-weight:600;">$' + ((r.amount_cents || 0) / 100).toFixed(2) + '</span> <span style="font-size:0.82rem;">' + esc(r.service_name) + '</span> <span class="badge badge-' + (r.confidence === 'high' ? 'green' : r.confidence === 'medium' ? 'yellow' : 'red') + '">' + (r.confidence || '') + '</span></div><div style="display:flex;gap:4px;"><button class="btn btn-sm" style="background:rgba(34,197,94,0.1);color:#22c55e;" onclick="reviewBillingRecord(\'' + r.id + '\', true)">✓</button><button class="btn btn-sm" style="background:rgba(239,68,68,0.1);color:#ef4444;" onclick="reviewBillingRecord(\'' + r.id + '\', false)">✗</button></div></div>';
+      });
+      h += '</div>';
+    }
+
+    // Sync status
+    h += '<div class="detail-card"><h3>Sync Status</h3>';
+    h += '<div style="display:flex;gap:8px;margin-bottom:12px;"><button class="btn btn-sm" onclick="triggerBillingSync()" style="background:linear-gradient(135deg,#00e5fa,#00ff85);color:#00050f;font-weight:600;">Sync Now</button></div>';
+    sources.forEach(src => {
+      const icon = src.is_enabled ? (src.last_success_at ? '✅' : '⚠️') : '⬚';
+      const lastSync = src.last_sync_at ? timeSince(src.last_sync_at) : 'Never synced';
+      h += '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.03);font-size:0.82rem;"><div>' + icon + ' ' + esc(src.source) + '</div><div style="color:rgba(255,255,255,0.4);">' + lastSync + ' | ' + (src.records_synced || 0) + ' records</div><div><button class="btn btn-sm" style="background:rgba(255,255,255,0.05);font-size:0.7rem;" onclick="toggleBillingSource(\'' + src.source + '\', ' + !src.is_enabled + ')">' + (src.is_enabled ? 'Disable' : 'Enable') + '</button></div></div>';
+    });
+    h += '</div>';
+
+    // Monthly trend
+    if (trend.length > 1) {
+      h += '<div class="detail-card"><h3>Monthly Trend</h3>';
+      const maxMonth = Math.max(...trend.map(t => t.total_cents || 0), 1);
+      trend.slice(0, 6).reverse().forEach(t => {
+        const barW = ((t.total_cents || 0) / maxMonth * 100);
+        const monthLabel = t.month ? t.month.slice(0, 7) : '';
+        h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><div style="width:60px;font-size:0.78rem;">' + monthLabel + '</div><div style="flex:1;height:16px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;"><div style="height:100%;width:' + barW + '%;background:linear-gradient(90deg,#00e5fa,#00ff85);border-radius:3px;"></div></div><div style="font-size:0.82rem;font-weight:600;width:60px;text-align:right;">$' + ((t.total_cents || 0) / 100).toFixed(0) + '</div></div>';
+      });
+      h += '</div>';
+    }
+
+    // Tax summary + export
+    h += '<div class="detail-card"><h3>Tax Summary (YTD)</h3>';
+    h += '<div style="font-size:0.85rem;">Tax deductible: <strong>$' + ((s.tax_deductible_cents || 0) / 100).toFixed(2) + '</strong></div>';
+    h += '<div style="margin-top:8px;display:flex;gap:8px;">';
+    h += '<button class="btn btn-sm" onclick="exportBillingCSV(false)" style="background:rgba(255,255,255,0.1);">Export All (CSV)</button>';
+    h += '<button class="btn btn-sm" onclick="exportBillingCSV(true)" style="background:rgba(255,255,255,0.1);">Export Tax Only (CSV)</button>';
+    h += '</div></div>';
+
+    // Manual entry form
+    h += '<div class="detail-card"><h3 style="cursor:pointer;" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'block\':\'none\'">+ Add Manual Entry ▸</h3><div style="display:none;">';
+    h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">';
+    h += '<input id="manual-service" placeholder="Service name" style="padding:6px 8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:4px;color:white;font-size:0.82rem;">';
+    h += '<input id="manual-date" type="date" style="padding:6px 8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:4px;color:white;font-size:0.82rem;">';
+    h += '<input id="manual-amount" placeholder="Amount ($)" type="number" step="0.01" style="padding:6px 8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:4px;color:white;font-size:0.82rem;">';
+    h += '<select id="manual-category" style="padding:6px 8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:4px;color:white;font-size:0.82rem;"><option value="infrastructure">Infrastructure</option><option value="ai-tools">AI Tools</option><option value="productivity">Productivity</option><option value="personal">Personal</option><option value="family">Family</option><option value="domains">Domains</option></select>';
+    h += '</div>';
+    h += '<button class="btn btn-sm" onclick="addManualBilling()" style="background:linear-gradient(135deg,#00e5fa,#00ff85);color:#00050f;font-weight:600;">Add Entry</button>';
+    h += '</div></div>';
+
+    // Apple CSV import
+    h += '<div class="detail-card"><h3 style="cursor:pointer;" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'block\':\'none\'">Upload Apple Purchases ▸</h3><div style="display:none;">';
+    h += '<div style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-bottom:8px;">Paste CSV: date, description, amount (one per line)</div>';
+    h += '<textarea id="apple-csv" rows="5" style="width:100%;padding:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:4px;color:white;font-size:0.78rem;font-family:monospace;" placeholder="2026-03-01, LinkedIn Premium, 69.99&#10;2026-03-05, YouTube Premium, 18.99"></textarea>';
+    h += '<button class="btn btn-sm" onclick="importAppleCSV()" style="margin-top:8px;background:linear-gradient(135deg,#00e5fa,#00ff85);color:#00050f;font-weight:600;">Import</button>';
+    h += '</div></div>';
+
+  } catch (e) {
+    h += '<p style="color:rgba(255,255,255,0.3)">Error loading billing data: ' + esc(e.message) + '</p>';
+  }
+
+  el.innerHTML = h;
+}
+
+async function reviewBillingRecord(id, approved) {
+  await fetch('/.netlify/functions/billing-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'review_record', record_id: id, approved }) });
+  toast(approved ? 'Record approved' : 'Record rejected');
+  renderDetailBilling();
+}
+
+async function triggerBillingSync() {
+  toast('Triggering billing sync...');
+  const res = await fetch('/.netlify/functions/billing-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'trigger_sync' }) });
+  const data = await res.json();
+  toast(data.error ? 'Sync failed: ' + data.error : 'Sync triggered');
+  setTimeout(() => renderDetailBilling(), 3000);
+}
+
+async function toggleBillingSource(source, enabled) {
+  await fetch('/.netlify/functions/billing-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'toggle_source', source, enabled }) });
+  toast(source + ' ' + (enabled ? 'enabled' : 'disabled'));
+  renderDetailBilling();
+}
+
+async function addManualBilling() {
+  const service = document.getElementById('manual-service').value;
+  const date = document.getElementById('manual-date').value;
+  const amount = parseFloat(document.getElementById('manual-amount').value);
+  const category = document.getElementById('manual-category').value;
+  if (!service || !date || !amount) { toast('Fill all fields'); return; }
+  await fetch('/.netlify/functions/billing-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'add_manual', service_name: service, charge_date: date, amount_cents: Math.round(amount * 100), category, is_business: true }) });
+  toast('Entry added');
+  renderDetailBilling();
+}
+
+async function importAppleCSV() {
+  const csv = document.getElementById('apple-csv').value;
+  if (!csv.trim()) { toast('Paste CSV data first'); return; }
+  const res = await fetch('/.netlify/functions/billing-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'import_apple', csv }) });
+  const data = await res.json();
+  toast('Imported ' + (data.imported || 0) + ' of ' + (data.total || 0) + ' records');
+  renderDetailBilling();
+}
+
+async function exportBillingCSV(taxOnly) {
+  const month = new Date().toISOString().slice(0, 7);
+  const res = await fetch('/.netlify/functions/billing-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'export_csv', month, tax_only: taxOnly }) });
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'billing-' + month + (taxOnly ? '-tax' : '') + '.csv'; a.click();
+  URL.revokeObjectURL(url);
 }
 
 // ============ DETAIL: SERVICES ============

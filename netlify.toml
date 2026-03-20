@@ -70,6 +70,9 @@
 [functions."competitive-scan"]
   schedule = "0 14 * * 1"
 
+[functions."billing-sync"]
+  schedule = "0 8 * * *"
+
 [context.staging]
   command = "node build.js"
 
