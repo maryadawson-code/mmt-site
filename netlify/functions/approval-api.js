@@ -5,6 +5,7 @@
 
 const { createClient } = require("@supabase/supabase-js");
 const { notifyApprovalTarget } = require("./lib/notification-engine");
+const { learnFromRejection, learnFromModification } = require("./lib/learning-engine");
 
 const HEADERS = { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "Content-Type, Authorization", "Access-Control-Allow-Methods": "GET, POST, OPTIONS" };
 function ok(d) { return { statusCode: 200, headers: HEADERS, body: JSON.stringify(d) }; }
@@ -154,6 +155,11 @@ exports.handler = async (event) => {
         decision_notes: notes || null, updated_at: new Date().toISOString(),
       }).eq("id", approvalId).eq("status", "pending");
       if (updateErr) return err(500, updateErr.message);
+      // Learn from rejection (fire-and-forget)
+      const { data: rejectedApproval } = await sb.from("approval_queue").select("title, category, submitted_by").eq("id", approvalId).single();
+      if (rejectedApproval) {
+        learnFromRejection(sb, { agent: rejectedApproval.submitted_by, approval: { id: approvalId, title: rejectedApproval.title, category: rejectedApproval.category }, notes: notes || "" }).catch(() => {});
+      }
       return ok({ rejected: true });
     }
 
@@ -166,6 +172,11 @@ exports.handler = async (event) => {
         updated_at: new Date().toISOString(),
       }).eq("id", approvalId).eq("status", "pending");
       if (updateErr) return err(500, updateErr.message);
+      // Learn from modification (fire-and-forget)
+      const { data: modifiedApproval } = await sb.from("approval_queue").select("title, category, submitted_by").eq("id", approvalId).single();
+      if (modifiedApproval) {
+        learnFromModification(sb, { agent: modifiedApproval.submitted_by, approval: { id: approvalId, title: modifiedApproval.title, category: modifiedApproval.category }, modifications: modifications || {} }).catch(() => {});
+      }
       return ok({ modified: true });
     }
 
