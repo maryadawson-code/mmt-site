@@ -1,0 +1,38 @@
+name: CI
+on:
+  push:
+    branches: [main, staging]
+  pull_request:
+    branches: [main, staging]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+      - run: npm test
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+      - name: Syntax check functions
+        run: |
+          ERRORS=0
+          for f in netlify/functions/*.js; do
+            node -c "$f" 2>&1 || { echo "SYNTAX ERROR: $f"; ERRORS=$((ERRORS + 1)); }
+          done
+          exit $ERRORS
+      - name: Verify critical files
+        run: |
+          for f in index.html proposal-pulse.html marketpulse.html about.html command-center.html my-reports.html; do
+            test -f "$f" || { echo "MISSING: $f"; exit 1; }
+          done

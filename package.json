@@ -4,7 +4,8 @@
   "description": "Mission Meets Tech website with auto-updating podcast episodes",
   "scripts": {
     "build": "node build.js",
-    "test": "npx playwright test",
+    "test": "vitest run",
+    "test:e2e": "npx playwright test",
     "test:links": "node scripts/validate-links.js",
     "test:integrity": "node scripts/verify-integrity.js",
     "verify": "node build.js && node scripts/verify-integrity.js && npx playwright test"
@@ -24,6 +25,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
-    "tailwindcss": "~3.4.19"
+    "tailwindcss": "~3.4.19",
+    "vitest": "^4.1.0"
   }
 }
