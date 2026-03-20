@@ -387,6 +387,69 @@ exports.handler = async (event) => {
       return ok({ verified: true });
     }
 
+    // === APPROVAL QUEUE ===
+
+    if (action === "approval_submit") {
+      const { title, description, category, targetRole, targetEmail, submittedBy, payloadType, payload, context: ctx, previewHtml } = body;
+      if (!title || !category || !targetRole || !submittedBy || !payloadType) return err(400, "title, category, targetRole, submittedBy, payloadType required");
+
+      // Look up category config for expiry
+      const { data: cat } = await supabase.from("approval_categories").select("expiry_hours, auto_approve_rules").eq("category", category).single();
+      const expiresAt = cat
+        ? new Date(Date.now() + (cat.expiry_hours || 72) * 3600000).toISOString()
+        : new Date(Date.now() + 72 * 3600000).toISOString();
+
+      // Check auto-approve rules
+      let autoApproved = false;
+      if (cat?.auto_approve_rules && Object.keys(cat.auto_approve_rules).length > 0) {
+        if (cat.auto_approve_rules.alwaysAutoApprove) autoApproved = true;
+        if (cat.auto_approve_rules.minScore && ctx?.leadScore >= cat.auto_approve_rules.minScore) autoApproved = true;
+      }
+
+      const { data, error: insertErr } = await supabase.from("approval_queue").insert({
+        title, description, category,
+        target_role: targetRole, target_email: targetEmail || null,
+        submitted_by: submittedBy, submitted_by_type: "agent",
+        payload_type: payloadType, payload: payload || {}, context: ctx || {},
+        preview_html: previewHtml || null,
+        status: autoApproved ? "auto-approved" : "pending",
+        decision_by: autoApproved ? "system" : null,
+        decision_at: autoApproved ? new Date().toISOString() : null,
+        expires_at: expiresAt,
+      }).select("id, status").single();
+      if (insertErr) return err(500, insertErr.message);
+      return ok(data);
+    }
+
+    if (action === "approval_pending") {
+      const { submittedBy: agent, category: cat } = body;
+      const q = supabase.from("approval_queue").select("id, title, category, status, decision_by, decision_notes, decision_at").order("created_at", { ascending: false }).limit(20);
+      if (agent) q.eq("submitted_by", agent);
+      if (cat) q.eq("category", cat);
+      const { data } = await q;
+      return ok({ approvals: data || [] });
+    }
+
+    if (action === "approval_comment") {
+      const { approvalId, content: commentContent, author: commentAuthor } = body;
+      if (!approvalId || !commentContent) return err(400, "approvalId and content required");
+      const { data, error: insertErr } = await supabase.from("approval_comments").insert({
+        approval_id: approvalId, author: commentAuthor || "agent", author_type: "agent", content: commentContent,
+      }).select("id").single();
+      if (insertErr) return err(500, insertErr.message);
+      return ok({ commentId: data.id });
+    }
+
+    if (action === "approval_execute") {
+      const { approvalId, result: execResult } = body;
+      if (!approvalId) return err(400, "approvalId required");
+      await supabase.from("approval_queue").update({
+        executed: true, executed_at: new Date().toISOString(),
+        execution_result: execResult || "completed", updated_at: new Date().toISOString(),
+      }).eq("id", approvalId);
+      return ok({ executed: true });
+    }
+
     return err(404, "Unknown action: " + action);
   }
 
