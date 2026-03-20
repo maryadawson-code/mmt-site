@@ -526,6 +526,40 @@ exports.handler = async (event) => {
       return ok({ alerts: data || [] });
     }
 
+    // === DEV WORKFLOW (proxy to dev-workflow-api) ===
+    const devWorkflowActions = {
+      dev_status: { method: "GET", view: "status" },
+      dev_can_i_work: { method: "GET", view: "can-i-work" },
+      dev_start_session: { method: "POST", fwd: "start_session" },
+      dev_heartbeat: { method: "POST", fwd: "heartbeat_session" },
+      dev_end_session: { method: "POST", fwd: "end_session" },
+      dev_request_deploy: { method: "POST", fwd: "request_deploy" },
+      dev_complete_deploy: { method: "POST", fwd: "complete_deploy" },
+    };
+
+    if (devWorkflowActions[action]) {
+      const cfg = devWorkflowActions[action];
+      if (cfg.method === "GET") {
+        const qs = new URLSearchParams({ view: cfg.view, key: process.env.COMMAND_CENTER_KEY || "" });
+        if (body.repo) qs.set("repo", body.repo);
+        if (body.user) qs.set("user", body.user);
+        if (body.files) qs.set("files", Array.isArray(body.files) ? body.files.join(",") : body.files);
+        if (body.branch) qs.set("branch", body.branch);
+        const res = await fetch(`${process.env.URL || "https://missionmeetstech.com"}/.netlify/functions/dev-workflow-api?${qs}`);
+        const data = await res.json();
+        return ok(data);
+      } else {
+        const fwdBody = { ...body, action: cfg.fwd };
+        const res = await fetch(`${process.env.URL || "https://missionmeetstech.com"}/.netlify/functions/dev-workflow-api?key=${process.env.COMMAND_CENTER_KEY || ""}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(fwdBody),
+        });
+        const data = await res.json();
+        return ok(data);
+      }
+    }
+
     return err(404, "Unknown action: " + action);
   }
 
