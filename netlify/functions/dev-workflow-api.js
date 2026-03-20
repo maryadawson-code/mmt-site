@@ -156,22 +156,24 @@ async function notifyConflict(supabase, conflict) {
     });
   } catch (e) { console.error("[dev-workflow] notify error:", e.message); }
 
-  // Email for critical conflicts
-  if (conflict.severity === "critical") {
+  // Email for critical conflicts (via Resend API fetch, no SDK)
+  if (conflict.severity === "critical" && process.env.RESEND_API_KEY) {
     try {
-      const { Resend } = require("resend");
-      const resend = new Resend(process.env.RESEND_API_KEY);
       const { data: users } = await supabase.from("dashboard_users")
         .select("email, name")
         .in("name", [conflict.user_a, conflict.user_b]);
 
       for (const user of (users || [])) {
         if (!user.email) continue;
-        await resend.emails.send({
-          from: "MMT Ops <ops@missionmeetstech.com>",
-          to: user.email,
-          subject: `File Conflict: ${conflict.file_path}`,
-          html: `<p><strong>${conflict.user_a}</strong> and <strong>${conflict.user_b}</strong> are both editing <code>${conflict.file_path}</code>.</p><p>Coordinate before merging to avoid conflicts.</p><p><a href="https://missionmeetstech.com/command-center.html#dev-workflow">View in Command Center</a></p>`
+        await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${process.env.RESEND_API_KEY}` },
+          body: JSON.stringify({
+            from: "MMT Ops <ops@missionmeetstech.com>",
+            to: [user.email],
+            subject: `File Conflict: ${conflict.file_path}`,
+            html: `<p><strong>${conflict.user_a}</strong> and <strong>${conflict.user_b}</strong> are both editing <code>${conflict.file_path}</code>.</p><p>Coordinate before merging to avoid conflicts.</p><p><a href="https://missionmeetstech.com/command-center.html#dev-workflow">View in Command Center</a></p>`
+          })
         });
       }
     } catch (e) { console.error("[dev-workflow] email error:", e.message); }
