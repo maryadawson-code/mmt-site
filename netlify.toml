@@ -61,6 +61,21 @@
 [functions."sentry-sync"]
   schedule = "*/30 * * * *"
 
+[functions."finance-rollup"]
+  schedule = "0 7 * * *"
+
+[functions."backup-db"]
+  schedule = "0 7 * * *"
+
+[functions."competitive-scan"]
+  schedule = "0 14 * * 1"
+
+[context.staging]
+  command = "node build.js"
+
+[context.branch-deploy]
+  command = "node build.js"
+
 [[redirects]]
   from = "/"
   to = "/index.html"
