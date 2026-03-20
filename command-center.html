@@ -109,6 +109,32 @@
     .issue-tabs { display: flex; gap: 4px; margin-bottom: 12px; }
     .issue-tabs button { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; }
     .issue-tabs button.active { background: rgba(0,229,250,0.15); color: #00e5fa; }
+    .approval-banner { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .approval-banner h3 { color: #ef4444; margin: 0 0 12px 0; font-size: 0.95rem; }
+    .approval-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 14px; margin-bottom: 10px; }
+    .approval-card:last-child { margin-bottom: 0; }
+    .approval-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    .btn-green { background: #22c55e; color: #0a1628; font-weight: 600; }
+    .btn-green:hover { background: #16a34a; }
+    .btn-orange { background: #f59e0b; color: #0a1628; font-weight: 600; }
+    .btn-orange:hover { background: #d97706; }
+    .btn-purple { background: #a855f7; color: white; }
+    .btn-purple:hover { background: #9333ea; }
+    .chat-panel { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 12px; margin-top: 12px; max-height: 400px; overflow-y: auto; }
+    .chat-msg { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .chat-msg:last-child { border-bottom: none; }
+    .chat-msg .author { font-weight: 600; font-size: 0.82rem; }
+    .chat-msg .author.agent { color: #a855f7; }
+    .chat-msg .author.human { color: #00e5fa; }
+    .chat-msg .author.system { color: rgba(255,255,255,0.4); }
+    .chat-msg .time { font-size: 0.7rem; color: rgba(255,255,255,0.3); }
+    .chat-msg .body { font-size: 0.82rem; margin-top: 3px; }
+    .timeline-step { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; }
+    .timeline-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+    .timeline-dot.active { background: #00e5fa; }
+    .timeline-dot.done { background: #22c55e; }
+    .timeline-dot.pending { background: rgba(255,255,255,0.2); }
+    .diff-header { background: rgba(0,229,250,0.08); padding: 4px 8px; font-size: 0.75rem; color: #00e5fa; border-bottom: 1px solid rgba(255,255,255,0.08); }
   </style>
 </head>
 <body>
@@ -293,7 +319,7 @@
         { id: 'customers', icon: '👥', title: 'Customers', m1: _customerData ? _customerData.total : '--', m1l: 'Total', m2: _customerData ? _customerData.avgHealth : '--', m2l: 'Avg Health', badge: _customerData ? _customerData.atRisk : 0 },
         { id: 'projects', icon: '📋', title: 'Projects', m1: _projectData ? _projectData.openTasks : '--', m1l: 'Open tasks', m2: _projectData ? _projectData.blockedTasks : '--', m2l: 'Blocked', badge: _projectData ? _projectData.blockedTasks : 0 },
         { id: 'qa', icon: '🧪', title: 'QA', m1: _qaData ? _qaData.totalRegressions : '--', m1l: 'Regressions', m2: '--', m2l: 'Pass rate', badge: _qaData ? _qaData.totalRegressions : 0 },
-        { id: 'issues', icon: '🔧', title: 'Issues', m1: _issueData ? _issueData.total : '--', m1l: 'Open', m2: _issueData ? _issueData.critical : '--', m2l: 'Critical', badge: _issueData ? _issueData.critical : 0 },
+        { id: 'issues', icon: '🔧', title: 'Issues', m1: _issueData ? _issueData.total : '--', m1l: 'Open', m2: _issueData ? (_issueData.byStatus?.['fix-proposed'] || 0) : '--', m2l: 'Awaiting approval', badge: _issueData ? (_issueData.critical + (_issueData.byStatus?.['fix-proposed'] || 0)) : 0 },
         { id: 'newsletter', icon: '\ud83d\udcf0', title: 'Newsletter', m1: daysToPublish !== null ? daysToPublish : '--', m1l: 'Days to pub', m2: nextStatus || '--', m2l: 'Status', badge: nearPipeline.length || 0 },
         { id: 'products', icon: '\ud83d\udce6', title: 'Products', m1: activeOrders.length, m1l: 'Active orders', m2: deliveredToday.length, m2l: 'Delivered', badge: errorOrders.length },
         { id: 'engineering', icon: '\ud83d\udd27', title: 'Engineering', m1: pendingTasks.length, m1l: 'Pending tasks', m2: null, m2l: null, badge: pendingTasks.length },
@@ -1593,43 +1619,121 @@ async function renderDetailQA() {
   el.innerHTML = h;
 }
 
-// ============ DETAIL: ISSUES ============
+// ============ DETAIL: ISSUES — Resolution Console ============
 let issuesTab = 'needs-attention';
+let _chatPollInterval = null;
+let _openIssueId = null;
+
+function renderDiffBlock(diffText) {
+  if (!diffText) return '';
+  let h = '<div class="diff-block">';
+  diffText.split('\n').forEach(line => {
+    if (line.startsWith('@@')) h += '<div class="diff-header">' + esc(line) + '</div>';
+    else if (line.startsWith('+')) h += '<div class="diff-add">' + esc(line) + '</div>';
+    else if (line.startsWith('-')) h += '<div class="diff-remove">' + esc(line) + '</div>';
+    else h += '<div>' + esc(line) + '</div>';
+  });
+  h += '</div>';
+  return h;
+}
+
+function renderComments(comments) {
+  let h = '';
+  if (!comments.length) return '<p style="color:rgba(255,255,255,0.3)">No comments yet</p>';
+  comments.forEach(c => {
+    const authorClass = c.author_type === 'human' ? 'human' : c.author_type === 'system' ? 'system' : 'agent';
+    h += '<div class="chat-msg">';
+    h += '<div style="display:flex;justify-content:space-between;"><span class="author ' + authorClass + '">' + esc(c.author) + (c.action ? ' <span class="badge badge-gray" style="font-size:0.65rem;">' + c.action + '</span>' : '') + '</span><span class="time">' + timeSince(c.created_at) + '</span></div>';
+    h += '<div class="body">' + esc(c.content) + '</div>';
+    if (c.code_diff) h += renderDiffBlock(c.code_diff);
+    h += '</div>';
+  });
+  return h;
+}
+
+function renderTimeline(issue) {
+  const statuses = ['detected', 'diagnosing', 'diagnosed', 'fix-proposed', 'fix-approved', 'deploying', 'deployed', 'verified', 'closed'];
+  const history = issue.status_history || [];
+  const currentIdx = statuses.indexOf(issue.status);
+  let h = '';
+  statuses.forEach((s, idx) => {
+    const entry = history.find(e => e.to === s);
+    const isDone = idx < currentIdx || issue.status === 'closed';
+    const isCurrent = s === issue.status;
+    const dotClass = isDone ? 'done' : isCurrent ? 'active' : 'pending';
+    h += '<div class="timeline-step">';
+    h += '<div class="timeline-dot ' + dotClass + '"></div>';
+    h += '<div><div style="font-size:0.82rem;font-weight:' + (isCurrent ? '600' : '400') + ';color:' + (isCurrent ? '#00e5fa' : isDone ? '#22c55e' : 'rgba(255,255,255,0.3)') + ';">' + s + '</div>';
+    if (entry) h += '<div style="font-size:0.7rem;color:rgba(255,255,255,0.3);">' + timeSince(entry.at) + (entry.by ? ' by ' + entry.by : '') + '</div>';
+    h += '</div></div>';
+  });
+  return h;
+}
+
 async function renderDetailIssues() {
   const el = document.getElementById('detail-issues');
   let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
-  h += '<div class="detail-title">🔧 Issues</div>';
+  h += '<div class="detail-title">🔧 Issue Resolution Console</div>';
 
   try {
-    const [openRes, sentryRes, deployRes] = await Promise.all([
+    const [openRes, approvalRes, sentryRes, deployRes] = await Promise.all([
       fetch('/.netlify/functions/issues-api?key=' + apiKey + '&view=open').then(r => r.json()),
+      fetch('/.netlify/functions/issues-api?key=' + apiKey + '&view=needs-approval').then(r => r.json()),
       fetch('/.netlify/functions/issues-api?key=' + apiKey + '&view=sentry').then(r => r.json()),
       fetch('/.netlify/functions/issues-api?key=' + apiKey + '&view=deployments').then(r => r.json()),
     ]);
     const issues = openRes.issues || [];
+    const approvals = approvalRes.issues || [];
     const sentryErrors = sentryRes.errors || [];
     const deployments = deployRes.deployments || [];
 
     // Tab bar
+    const tabCounts = { 'needs-attention': approvals.length + issues.filter(i => i.status === 'detected' && i.severity === 'critical').length, all: issues.length, sentry: sentryErrors.length, deployments: deployments.length };
     h += '<div class="issue-tabs">';
     ['needs-attention', 'all', 'sentry', 'deployments'].forEach(tab => {
       const labels = { 'needs-attention': 'Needs Attention', all: 'All Open', sentry: 'Sentry', deployments: 'Deploys' };
-      h += '<button class="' + (issuesTab === tab ? 'active' : '') + '" onclick="issuesTab=\'' + tab + '\';renderDetailView(\'issues\')">' + labels[tab] + '</button>';
+      const count = tabCounts[tab] || 0;
+      h += '<button class="' + (issuesTab === tab ? 'active' : '') + '" onclick="issuesTab=\'' + tab + '\';renderDetailView(\'issues\')">' + labels[tab] + (count ? ' (' + count + ')' : '') + '</button>';
     });
     h += '</div>';
 
     if (issuesTab === 'needs-attention') {
-      const needsAttn = issues.filter(i => i.status === 'detected' || i.status === 'fix-proposed' || !i.assigned_agent);
-      h += '<div class="detail-card"><h3>Needs Attention (' + needsAttn.length + ')</h3>';
-      if (!needsAttn.length) h += '<p style="color:rgba(255,255,255,0.3)">All clear</p>';
-      needsAttn.forEach(i => {
-        const sc = i.severity === 'critical' ? 'red' : i.severity === 'high' ? 'yellow' : 'blue';
-        h += '<div style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer;" onclick="showIssueDetail(\'' + i.id + '\')">';
-        h += '<div style="display:flex;justify-content:space-between;"><div style="font-weight:600;font-size:0.85rem;">' + esc(i.title) + '</div><span class="badge badge-' + sc + '">' + i.severity + '</span></div>';
-        h += '<div style="font-size:0.75rem;color:rgba(255,255,255,0.4);margin-top:2px;"><span class="badge badge-gray">' + i.status + '</span> ' + (i.product || '') + ' · ' + timeSince(i.created_at) + '</div>';
+      // Approval banner
+      if (approvals.length > 0) {
+        h += '<div class="approval-banner"><h3>Needs Your Approval (' + approvals.length + ')</h3>';
+        approvals.forEach(i => {
+          const sc = i.severity === 'critical' ? 'red' : i.severity === 'high' ? 'yellow' : 'blue';
+          h += '<div class="approval-card">';
+          h += '<div style="display:flex;justify-content:space-between;align-items:center;"><div style="font-weight:600;font-size:0.9rem;">' + esc(i.title) + '</div><span class="badge badge-' + sc + '">' + i.severity + '</span></div>';
+          h += '<div style="font-size:0.75rem;color:rgba(255,255,255,0.4);margin-top:4px;">Product: ' + (i.product || '--') + ' | Agent: ' + (i.assigned_agent || '--') + ' | Complexity: ' + (i.fix_complexity || '--') + (i.estimated_minutes ? ' | Est: ' + i.estimated_minutes + ' min' : '') + '</div>';
+          if (i.root_cause) h += '<div style="margin-top:8px;font-size:0.82rem;"><span style="color:rgba(255,255,255,0.5)">Root Cause:</span> ' + esc(i.root_cause) + '</div>';
+          if (i.suggested_fix) h += '<div style="margin-top:4px;font-size:0.82rem;"><span style="color:rgba(255,255,255,0.5)">Suggested Fix:</span> ' + esc(i.suggested_fix) + '</div>';
+          if (i.affected_files && i.affected_files.length) h += '<div style="margin-top:4px;font-size:0.75rem;color:rgba(255,255,255,0.4);">Files: ' + i.affected_files.map(f => '<code style="background:rgba(255,255,255,0.05);padding:1px 4px;border-radius:2px;">' + esc(f) + '</code>').join(', ') + '</div>';
+          if (i.fix_diff) h += '<div style="margin-top:8px;">' + renderDiffBlock(i.fix_diff) + '</div>';
+          h += '<div class="approval-actions">';
+          h += '<button class="btn btn-sm btn-green" onclick="approveIssueFix(\'' + i.id + '\')">Approve &amp; Deploy</button>';
+          h += '<button class="btn btn-sm btn-red" onclick="rejectIssueFix(\'' + i.id + '\')">Reject + Comment</button>';
+          h += '<button class="btn btn-sm btn-purple" onclick="showIssueDetail(\'' + i.id + '\')">View Details</button>';
+          h += '</div></div>';
+        });
         h += '</div>';
-      });
-      h += '</div>';
+      }
+
+      // Other items needing attention
+      const needsAttn = issues.filter(i => i.status !== 'fix-proposed' && (i.status === 'detected' || !i.assigned_agent));
+      if (needsAttn.length > 0) {
+        h += '<div class="detail-card"><h3>Open Issues (' + needsAttn.length + ')</h3>';
+        needsAttn.forEach(i => {
+          const sc = i.severity === 'critical' ? 'red' : i.severity === 'high' ? 'yellow' : 'blue';
+          h += '<div style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer;" onclick="showIssueDetail(\'' + i.id + '\')">';
+          h += '<div style="display:flex;justify-content:space-between;"><div style="font-weight:600;font-size:0.85rem;">' + esc(i.title) + '</div><span class="badge badge-' + sc + '">' + i.severity + '</span></div>';
+          h += '<div style="font-size:0.75rem;color:rgba(255,255,255,0.4);margin-top:2px;"><span class="badge badge-gray">' + i.status + '</span> ' + (i.product || '') + ' · ' + (i.assigned_agent || 'unassigned') + ' · ' + timeSince(i.created_at) + '</div>';
+          h += '</div>';
+        });
+        h += '</div>';
+      }
+
+      if (!approvals.length && !needsAttn.length) h += '<div class="detail-card"><p style="color:rgba(255,255,255,0.3)">All clear — no issues need attention.</p></div>';
     }
 
     if (issuesTab === 'all') {
@@ -1646,9 +1750,9 @@ async function renderDetailIssues() {
       h += '<div class="detail-card"><h3>Sentry Errors (' + sentryErrors.length + ')</h3>';
       if (!sentryErrors.length) h += '<p style="color:rgba(255,255,255,0.3)">No unresolved errors</p>';
       else {
-        h += '<table><tr><th>Title</th><th>Level</th><th>Events</th><th>Last Seen</th></tr>';
+        h += '<table><tr><th>Title</th><th>Level</th><th>Events</th><th>Last Seen</th><th>Linked</th></tr>';
         sentryErrors.forEach(e => {
-          h += '<tr><td style="font-size:0.82rem;">' + esc(e.title) + '</td><td><span class="badge badge-' + (e.level === 'error' ? 'red' : 'yellow') + '">' + (e.level || '--') + '</span></td><td>' + (e.event_count || 1) + '</td><td style="font-size:0.75rem;color:rgba(255,255,255,0.4);">' + (e.last_seen ? timeSince(e.last_seen) : '--') + '</td></tr>';
+          h += '<tr><td style="font-size:0.82rem;">' + esc(e.title) + '</td><td><span class="badge badge-' + (e.level === 'error' ? 'red' : 'yellow') + '">' + (e.level || '--') + '</span></td><td>' + (e.event_count || 1) + '</td><td style="font-size:0.75rem;color:rgba(255,255,255,0.4);">' + (e.last_seen ? timeSince(e.last_seen) : '--') + '</td><td>' + (e.linked_issue_id ? '<span class="badge badge-green">linked</span>' : '<button class="btn btn-sm btn-cyan" onclick="createIssueFromSentry(\'' + e.sentry_id + '\',\'' + esc(e.title).replace(/'/g, "\\'") + '\')">Create Issue</button>') + '</td></tr>';
         });
         h += '</table>';
       }
@@ -1659,12 +1763,16 @@ async function renderDetailIssues() {
       h += '<div class="detail-card"><h3>Recent Deployments</h3>';
       if (!deployments.length) h += '<p style="color:rgba(255,255,255,0.3)">No deployments logged</p>';
       else {
-        h += '<table><tr><th>Branch</th><th>Status</th><th>Message</th><th>By</th><th>Time</th></tr>';
         deployments.forEach(d => {
-          const sc = d.status === 'success' ? 'green' : d.status === 'failed' ? 'red' : 'yellow';
-          h += '<tr><td style="font-family:monospace;font-size:0.75rem;">' + esc(d.branch) + '</td><td><span class="badge badge-' + sc + '">' + d.status + '</span></td><td class="trunc" style="font-size:0.75rem;">' + esc(d.commit_message || '--') + '</td><td style="font-size:0.75rem;">' + esc(d.triggered_by || '--') + '</td><td style="font-size:0.75rem;color:rgba(255,255,255,0.4);">' + timeSince(d.created_at) + '</td></tr>';
+          const icon = d.status === 'success' ? '&#9989;' : d.status === 'failed' ? '&#10060;' : '&#9888;&#65039;';
+          h += '<div style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;gap:10px;">';
+          h += '<div style="font-size:1.2rem;">' + icon + '</div>';
+          h += '<div style="flex:1;"><div style="font-size:0.82rem;font-weight:500;">' + esc(d.commit_message || d.branch) + '</div>';
+          h += '<div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">' + timeSince(d.created_at) + ' by ' + esc(d.triggered_by || '--') + ' · <code style="font-size:0.7rem;">' + esc(d.branch) + '</code>';
+          if (d.homepage_status) h += ' · Homepage: ' + d.homepage_status + ' OK';
+          if (d.homepage_size) h += ', ' + (d.homepage_size / 1024).toFixed(0) + 'KB';
+          h += '</div></div></div>';
         });
-        h += '</table>';
       }
       h += '</div>';
     }
@@ -1674,7 +1782,10 @@ async function renderDetailIssues() {
   el.innerHTML = h;
 }
 
+let _issueDetailTab = 'context';
 async function showIssueDetail(id) {
+  stopChatPoll();
+  _openIssueId = id;
   const el = document.getElementById('detail-issues');
   try {
     const res = await fetch('/.netlify/functions/issues-api?key=' + apiKey + '&view=detail&id=' + id);
@@ -1682,52 +1793,102 @@ async function showIssueDetail(id) {
     const i = data.issue;
     const comments = data.comments || [];
 
-    let h = '<button class="back-btn" onclick="renderDetailView(\'issues\')">&#8592; Back to Issues</button>';
-    h += '<div class="detail-title">' + esc(i.title) + '</div>';
-
-    // Context card
-    h += '<div class="detail-card"><h3>Context</h3>';
-    h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;font-size:0.82rem;">';
-    h += '<div><span style="color:rgba(255,255,255,0.4)">Severity:</span> <span class="badge badge-' + (i.severity === 'critical' ? 'red' : i.severity === 'high' ? 'yellow' : 'blue') + '">' + i.severity + '</span></div>';
-    h += '<div><span style="color:rgba(255,255,255,0.4)">Status:</span> <span class="badge badge-gray">' + i.status + '</span></div>';
-    h += '<div><span style="color:rgba(255,255,255,0.4)">Product:</span> ' + (i.product || '--') + '</div>';
-    h += '<div><span style="color:rgba(255,255,255,0.4)">Agent:</span> ' + (i.assigned_agent || '--') + '</div>';
-    h += '</div>';
-    if (i.root_cause) h += '<div style="margin-top:8px;font-size:0.82rem;"><span style="color:rgba(255,255,255,0.4)">Root cause:</span> ' + esc(i.root_cause) + '</div>';
-    if (i.suggested_fix) h += '<div style="margin-top:4px;font-size:0.82rem;"><span style="color:rgba(255,255,255,0.4)">Suggested fix:</span> ' + esc(i.suggested_fix) + '</div>';
-    if (i.error_logs) h += '<div style="margin-top:8px;font-family:monospace;font-size:0.75rem;background:rgba(255,255,255,0.03);padding:8px;border-radius:4px;white-space:pre-wrap;max-height:200px;overflow-y:auto;">' + esc(i.error_logs) + '</div>';
+    let h = '<button class="back-btn" onclick="stopChatPoll();renderDetailView(\'issues\')">&#8592; Back to Issues</button>';
+    h += '<div class="detail-title" style="display:flex;align-items:center;gap:10px;">';
+    const sc = i.severity === 'critical' ? 'red' : i.severity === 'high' ? 'yellow' : 'blue';
+    h += '<span class="badge badge-' + sc + '">' + i.severity + '</span> ' + esc(i.title);
+    h += ' <span class="badge badge-gray">' + i.status + '</span>';
     h += '</div>';
 
-    // Fix diff
-    if (i.fix_diff) {
-      h += '<div class="detail-card"><h3>Proposed Fix</h3>';
-      h += '<div class="diff-block">';
-      i.fix_diff.split('\n').forEach(line => {
-        if (line.startsWith('+')) h += '<div class="diff-add">' + esc(line) + '</div>';
-        else if (line.startsWith('-')) h += '<div class="diff-remove">' + esc(line) + '</div>';
-        else h += '<div>' + esc(line) + '</div>';
-      });
+    // Quick info bar
+    h += '<div style="display:flex;gap:16px;font-size:0.78rem;color:rgba(255,255,255,0.5);margin-bottom:14px;flex-wrap:wrap;">';
+    h += '<span>Product: <b>' + (i.product || '--') + '</b></span>';
+    h += '<span>Agent: <b>' + (i.assigned_agent || '--') + '</b></span>';
+    h += '<span>Category: <b>' + (i.category || '--') + '</b></span>';
+    h += '<span>Source: <b>' + (i.source || '--') + '</b></span>';
+    if (i.fix_complexity) h += '<span>Complexity: <b>' + i.fix_complexity + '</b></span>';
+    if (i.estimated_minutes) h += '<span>Est: <b>' + i.estimated_minutes + ' min</b></span>';
+    h += '<span>Age: <b>' + timeSince(i.created_at) + '</b></span>';
+    h += '</div>';
+
+    // Approval bar for fix-proposed issues
+    if (i.status === 'fix-proposed') {
+      h += '<div class="approval-banner" style="margin-bottom:14px;">';
+      h += '<div style="font-weight:600;color:#ef4444;margin-bottom:8px;">This issue has a proposed fix awaiting your review</div>';
+      h += '<div class="approval-actions">';
+      h += '<button class="btn btn-sm btn-green" onclick="approveIssueFix(\'' + i.id + '\')">Approve &amp; Deploy</button>';
+      h += '<button class="btn btn-sm btn-red" onclick="rejectIssueFix(\'' + i.id + '\')">Reject + Comment</button>';
+      h += '<button class="btn btn-sm btn-purple" onclick="askAgent(\'' + i.id + '\')">Ask Agent</button>';
       h += '</div></div>';
     }
 
-    // Conversation
-    h += '<div class="detail-card"><h3>Conversation</h3>';
-    if (comments.length === 0) h += '<p style="color:rgba(255,255,255,0.3)">No comments yet</p>';
-    comments.forEach(c => {
-      const isHuman = c.author_type === 'human';
-      h += '<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><div style="display:flex;justify-content:space-between;"><span style="font-weight:600;font-size:0.82rem;color:' + (isHuman ? '#00e5fa' : '#a855f7') + ';">' + esc(c.author) + '</span><span style="font-size:0.7rem;color:rgba(255,255,255,0.3);">' + timeSince(c.created_at) + '</span></div><div style="font-size:0.82rem;margin-top:4px;">' + esc(c.content) + '</div>';
-      if (c.code_diff) { h += '<div class="diff-block" style="margin-top:6px;">'; c.code_diff.split('\n').forEach(line => { if (line.startsWith('+')) h += '<div class="diff-add">' + esc(line) + '</div>'; else if (line.startsWith('-')) h += '<div class="diff-remove">' + esc(line) + '</div>'; else h += '<div>' + esc(line) + '</div>'; }); h += '</div>'; }
-      h += '</div>';
+    // Tabs: Context | Conversation | Fix | Timeline
+    h += '<div class="issue-tabs">';
+    ['context', 'conversation', 'fix', 'timeline'].forEach(tab => {
+      const labels = { context: 'Context', conversation: 'Conversation (' + comments.length + ')', fix: 'Fix', timeline: 'Timeline' };
+      h += '<button class="' + (_issueDetailTab === tab ? 'active' : '') + '" onclick="_issueDetailTab=\'' + tab + '\';showIssueDetail(\'' + i.id + '\')">' + labels[tab] + '</button>';
     });
+    h += '</div>';
 
-    // Comment input
-    h += '<div style="margin-top:12px;display:flex;gap:8px;">';
-    h += '<input id="issue-comment-input" placeholder="Add comment..." style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:8px;border-radius:4px;font-size:0.82rem;">';
-    h += '<button class="btn btn-cyan btn-sm" onclick="postIssueComment(\'' + i.id + '\')">Send</button>';
-    h += '</div></div>';
+    // Tab content
+    if (_issueDetailTab === 'context') {
+      h += '<div class="detail-card">';
+      if (i.root_cause) h += '<div style="margin-bottom:10px;"><span style="color:rgba(255,255,255,0.5);font-size:0.78rem;">ROOT CAUSE</span><div style="font-size:0.85rem;margin-top:4px;">' + esc(i.root_cause) + '</div></div>';
+      if (i.suggested_fix) h += '<div style="margin-bottom:10px;"><span style="color:rgba(255,255,255,0.5);font-size:0.78rem;">SUGGESTED FIX</span><div style="font-size:0.85rem;margin-top:4px;">' + esc(i.suggested_fix) + '</div></div>';
+      if (i.affected_files && i.affected_files.length) {
+        h += '<div style="margin-bottom:10px;"><span style="color:rgba(255,255,255,0.5);font-size:0.78rem;">AFFECTED FILES</span><div style="margin-top:4px;">';
+        i.affected_files.forEach(f => { h += '<div style="font-family:monospace;font-size:0.78rem;padding:2px 0;">' + esc(f) + '</div>'; });
+        h += '</div></div>';
+      }
+      if (i.error_logs) {
+        h += '<div><span style="color:rgba(255,255,255,0.5);font-size:0.78rem;">ERROR LOGS / STACK TRACE</span>';
+        h += '<div style="margin-top:4px;font-family:monospace;font-size:0.72rem;background:rgba(255,255,255,0.03);padding:10px;border-radius:6px;white-space:pre-wrap;max-height:250px;overflow-y:auto;border:1px solid rgba(255,255,255,0.06);">' + esc(i.error_logs) + '</div></div>';
+      }
+      if (i.sentry_url) h += '<div style="margin-top:8px;font-size:0.78rem;"><a href="' + esc(i.sentry_url) + '" target="_blank" style="color:#00e5fa;">View in Sentry &#x2197;</a></div>';
+      if (!i.root_cause && !i.suggested_fix && !i.error_logs) h += '<p style="color:rgba(255,255,255,0.3)">No diagnostic context yet. Click "Ask Agent" to start diagnosis.</p>';
+      h += '</div>';
+    }
 
-    // Status actions
-    h += '<div class="detail-card"><h3>Actions</h3><div class="actions">';
+    if (_issueDetailTab === 'conversation') {
+      h += '<div class="detail-card"><div class="chat-panel" id="issue-chat-panel">';
+      h += renderComments(comments);
+      h += '</div>';
+      // Comment input
+      h += '<div style="margin-top:10px;display:flex;gap:6px;">';
+      h += '<input id="issue-comment-input" placeholder="Type a message or question for the agent..." style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:8px 10px;border-radius:4px;font-size:0.82rem;" onkeydown="if(event.key===\'Enter\')postIssueComment(\'' + i.id + '\')">';
+      h += '<button class="btn btn-sm btn-cyan" onclick="postIssueComment(\'' + i.id + '\')">Send</button>';
+      h += '<button class="btn btn-sm btn-purple" onclick="askAgent(\'' + i.id + '\')">Ask Agent</button>';
+      h += '</div></div>';
+      startChatPoll(i.id);
+    }
+
+    if (_issueDetailTab === 'fix') {
+      h += '<div class="detail-card">';
+      if (i.fix_branch) h += '<div style="font-size:0.82rem;margin-bottom:6px;">Branch: <code style="background:rgba(255,255,255,0.05);padding:2px 6px;border-radius:3px;">' + esc(i.fix_branch) + '</code></div>';
+      if (i.fix_commit) h += '<div style="font-size:0.82rem;margin-bottom:6px;">Commit: <code style="background:rgba(255,255,255,0.05);padding:2px 6px;border-radius:3px;">' + esc(i.fix_commit) + '</code></div>';
+      if (i.fix_pr_url) h += '<div style="font-size:0.82rem;margin-bottom:6px;"><a href="' + esc(i.fix_pr_url) + '" target="_blank" style="color:#00e5fa;">View Pull Request &#x2197;</a></div>';
+      if (i.fix_diff) {
+        h += '<div style="margin-top:8px;">' + renderDiffBlock(i.fix_diff) + '</div>';
+        if (i.status === 'fix-proposed') {
+          h += '<div class="approval-actions" style="margin-top:10px;">';
+          h += '<button class="btn btn-sm btn-green" onclick="approveIssueFix(\'' + i.id + '\')">Approve &amp; Deploy</button>';
+          h += '<button class="btn btn-sm btn-red" onclick="rejectIssueFix(\'' + i.id + '\')">Reject</button>';
+          h += '</div>';
+        }
+      } else {
+        h += '<p style="color:rgba(255,255,255,0.3)">No fix proposed yet.</p>';
+      }
+      h += '</div>';
+    }
+
+    if (_issueDetailTab === 'timeline') {
+      h += '<div class="detail-card">';
+      h += renderTimeline(i);
+      h += '</div>';
+    }
+
+    // Status actions bar
+    h += '<div class="detail-card" style="margin-top:10px;"><h3 style="font-size:0.82rem;">Status Actions</h3><div class="actions" style="display:flex;flex-wrap:wrap;gap:6px;">';
     const statusActions = { detected: ['diagnosing'], diagnosing: ['diagnosed'], diagnosed: ['fix-proposed'], 'fix-proposed': ['fix-approved', 'diagnosed'], 'fix-approved': ['deploying'], deploying: ['deployed'], deployed: ['verified'], verified: ['closed'] };
     const nextStatuses = statusActions[i.status] || ['closed'];
     nextStatuses.forEach(ns => {
@@ -1740,13 +1901,57 @@ async function showIssueDetail(id) {
   } catch (e) { el.innerHTML = '<p style="color:#ef4444">Failed: ' + e.message + '</p>'; }
 }
 
+// Chat polling
+function startChatPoll(issueId) {
+  stopChatPoll();
+  _chatPollInterval = setInterval(async () => {
+    try {
+      const res = await fetch('/.netlify/functions/issues-api?key=' + apiKey + '&view=detail&id=' + issueId);
+      const data = await res.json();
+      const panel = document.getElementById('issue-chat-panel');
+      if (panel) panel.innerHTML = renderComments(data.comments || []);
+    } catch {}
+  }, 10000);
+}
+function stopChatPoll() { if (_chatPollInterval) { clearInterval(_chatPollInterval); _chatPollInterval = null; } }
+
 async function postIssueComment(issueId) {
   const input = document.getElementById('issue-comment-input');
   const content = input.value.trim();
   if (!content) return;
-  await fetch('/.netlify/functions/issues-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'comment', issueId, author: 'coo', authorType: 'human', content }) });
+  await fetch('/.netlify/functions/issues-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'comment', issueId, author: 'cto', authorType: 'human', content }) });
   input.value = '';
   showIssueDetail(issueId);
+}
+
+async function askAgent(issueId) {
+  const msg = prompt('What do you want to ask the agent about this issue?');
+  if (!msg) return;
+  await fetch('/.netlify/functions/issues-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'comment', issueId, author: 'cto', authorType: 'human', content: msg, commentAction: 'diagnose' }) });
+  toast('Question sent to agent');
+  _issueDetailTab = 'conversation';
+  showIssueDetail(issueId);
+}
+
+async function approveIssueFix(id) {
+  if (!confirm('Approve this fix and dispatch deploy?')) return;
+  await fetch('/.netlify/functions/issues-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'approve_fix', id, by: 'cto' }) });
+  toast('Fix approved — deploy dispatched');
+  showIssueDetail(id);
+}
+
+async function rejectIssueFix(id) {
+  const reason = prompt('Why are you rejecting this fix?');
+  if (!reason) return;
+  await fetch('/.netlify/functions/issues-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'reject_fix', id, by: 'cto', notes: reason }) });
+  toast('Fix rejected — sent back to agent');
+  showIssueDetail(id);
+}
+
+async function createIssueFromSentry(sentryId, title) {
+  await fetch('/.netlify/functions/issues-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'create', title: 'Sentry: ' + title, category: 'bug', source: 'sentry', severity: 'high', product: 'site' }) });
+  toast('Issue created from Sentry error');
+  renderDetailView('issues');
 }
 
 async function updateIssueStatus(id, status) {
