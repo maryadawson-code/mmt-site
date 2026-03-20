@@ -80,6 +80,11 @@
   command = "node build.js"
 
 [[redirects]]
+  from = "/health"
+  to = "/.netlify/functions/health"
+  status = 200
+
+[[redirects]]
   from = "/"
   to = "/index.html"
   status = 200

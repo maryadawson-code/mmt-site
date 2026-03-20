@@ -1,68 +1,139 @@
 // ============================================================
-// health.js — Lightweight HTTP health endpoint
+// health.js — Netlify Function (Health Check Endpoint)
 //
-// Returns 200 JSON for uptime monitors and deploy verification.
-// Separate from health-check.js (scheduled, can't serve HTTP).
+// GET /.netlify/functions/health
+// Returns system health: Supabase connectivity, Stripe webhook
+// config, Sentry DSN, Resend, AI provider, stale orders.
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
-const { getMode } = require("./lib/kill-switch");
-const { checkStuckOrders } = require("./lib/workflow-state");
+
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
+const STALE_THRESHOLD_MIN = 30;
 
 exports.handler = async () => {
-  let contractData = "unknown";
-  let stuckScoring = 0;
-  let stuckOrders = 0;
-  let heldEmails = 0;
+  const checks = {};
+  let overallStatus = "healthy";
 
-  // Check contract data freshness via most recent ops_event
-  const sbUrl = process.env.SUPABASE_URL;
-  const sbKey = process.env.SUPABASE_SERVICE_KEY;
-  if (sbUrl && sbKey) {
-    try {
-      const supabase = createClient(sbUrl, sbKey);
-      const { data } = await supabase
-        .from("ops_events")
-        .select("created_at")
-        .eq("event_type", "contract_data_refresh")
-        .order("created_at", { ascending: false })
-        .limit(1);
-
-      if (data && data.length > 0) {
-        const lastRefresh = new Date(data[0].created_at);
-        const hoursAgo = (Date.now() - lastRefresh.getTime()) / (1000 * 60 * 60);
-        if (hoursAgo > 168) contractData = "critical";
-        else if (hoursAgo > 48) contractData = "stale";
-        else contractData = "fresh";
-      }
-
-      // Stuck orders
-      const scoring = await checkStuckOrders(supabase, "mp_scoring_history", 30);
-      stuckScoring = scoring.stuck?.length || 0;
-
-      const orders = await checkStuckOrders(supabase, "marketpulse_orders", 30);
-      stuckOrders = orders.stuck?.length || 0;
-
-      // Held emails
-      const { count } = await supabase
-        .from("held_emails")
-        .select("id", { count: "exact", head: true })
-        .eq("released", false);
-      heldEmails = count || 0;
-    } catch { /* health check should never crash */ }
+  let supabase;
+  if (SUPABASE_URL && SUPABASE_SERVICE_KEY) {
+    supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
   }
 
+  // --- Supabase connectivity ---
+  try {
+    if (!supabase) {
+      checks.database = { status: "unhealthy", error: "Missing env vars" };
+      overallStatus = "unhealthy";
+    } else {
+      const start = Date.now();
+      const { error } = await supabase
+        .from("mp_users")
+        .select("id", { count: "exact", head: true });
+      const latency_ms = Date.now() - start;
+
+      if (error) {
+        checks.database = { status: "unhealthy", error: error.message, latency_ms };
+        overallStatus = "unhealthy";
+      } else {
+        checks.database = { status: "healthy", latency_ms };
+      }
+    }
+  } catch (err) {
+    checks.database = { status: "unhealthy", error: err.message };
+    overallStatus = "unhealthy";
+  }
+
+  // --- Stripe webhook config ---
+  checks.stripe_webhook = {
+    status: process.env.STRIPE_WEBHOOK_SECRET ? "configured" : "missing",
+  };
+
+  // --- Stripe API key ---
+  checks.payments = {
+    status: process.env.STRIPE_SECRET_KEY ? "configured" : "missing",
+  };
+
+  // --- AI provider ---
+  checks.ai = {
+    status: process.env.ANTHROPIC_API_KEY ? "configured" : "missing",
+  };
+
+  // --- Email (Resend) ---
+  checks.email = {
+    status: process.env.RESEND_API_KEY ? "configured" : "missing",
+  };
+
+  // --- Sentry ---
+  checks.sentry = {
+    status: process.env.SENTRY_DSN ? "configured" : "missing",
+  };
+
+  // --- Perplexity (contract intel) ---
+  checks.perplexity = {
+    status: process.env.PERPLEXITY_API_KEY ? "configured" : "missing",
+  };
+
+  // --- Edge functions list ---
+  checks.edge_functions = [
+    "score-deck",
+    "score-deck-background",
+    "score-status",
+    "gold-team-review-background",
+    "create-checkout",
+    "stripe-webhook",
+    "weekly-report",
+    "contract-intel-refresh",
+    "contract-intel",
+    "opportunity-radar",
+    "sb-vehicle-radar",
+    "health",
+  ];
+
+  // --- Stale orders (scoring stuck in processing >30 min) ---
+  if (supabase) {
+    try {
+      const cutoff = new Date(Date.now() - STALE_THRESHOLD_MIN * 60 * 1000).toISOString();
+      const { data, error } = await supabase
+        .from("mp_scoring_history")
+        .select("id, created_at")
+        .is("scores->_pending", true)
+        .lt("created_at", cutoff);
+
+      if (!error && data) {
+        checks.stale_orders = {
+          count: data.length,
+          threshold_min: STALE_THRESHOLD_MIN,
+          ...(data.length > 0 && {
+            status: "warning",
+            oldest: data[0]?.created_at,
+          }),
+          ...(data.length === 0 && { status: "ok" }),
+        };
+        if (data.length > 0 && overallStatus === "healthy") {
+          overallStatus = "degraded";
+        }
+      }
+    } catch (_) {
+      // Non-critical — don't fail health check for stale order query
+    }
+  }
+
+  const statusCode = overallStatus === "healthy" ? 200 : overallStatus === "degraded" ? 200 : 503;
+
   return {
-    statusCode: 200,
-    headers: { "Content-Type": "application/json" },
+    statusCode,
+    headers: {
+      "Content-Type": "application/json",
+      "Cache-Control": "no-store",
+      ...(statusCode === 503 ? { "Retry-After": "30" } : {}),
+    },
     body: JSON.stringify({
-      status: "UP",
+      status: overallStatus,
       timestamp: new Date().toISOString(),
-      contractData,
-      ai_operations_mode: getMode(),
-      stuck_scoring: stuckScoring,
-      stuck_orders: stuckOrders,
-      held_emails: heldEmails,
+      version: process.env.COMMIT_REF || "local",
+      checks,
     }),
   };
 };
