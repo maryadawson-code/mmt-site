@@ -4,6 +4,7 @@
 // Auth: COMMAND_CENTER_KEY (query param) or AGENT_BRIDGE_KEY (Bearer token)
 
 const { createClient } = require("@supabase/supabase-js");
+const { notifyApprovalTarget } = require("./lib/notification-engine");
 
 const HEADERS = { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "Content-Type, Authorization", "Access-Control-Allow-Methods": "GET, POST, OPTIONS" };
 function ok(d) { return { statusCode: 200, headers: HEADERS, body: JSON.stringify(d) }; }
@@ -129,6 +130,8 @@ exports.handler = async (event) => {
         expires_at: computedExpiry,
       }).select("id, status").single();
       if (insertErr) return err(500, insertErr.message);
+      // Notify target (non-blocking)
+      notifyApprovalTarget(sb, { target_role: targetRole, target_email: targetEmail, title, category, payload }).catch(() => {});
       return ok(data);
     }
 
