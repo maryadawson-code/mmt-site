@@ -1224,6 +1224,21 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
     await _transition("email_sent");
     await _transition("delivered");
 
+    // Submit to customer approval queue for portal visibility
+    try {
+      const { submitForApproval } = require("./lib/approval-hooks");
+      await submitForApproval(_supabase, {
+        title: `Your MarketPulse Report: ${(topic || "").substring(0, 60)}`,
+        category: "report-review",
+        targetRole: "customer",
+        targetEmail: email,
+        submittedBy: "system",
+        payloadType: "report",
+        payload: { orderId: session_id, qualityGrade: qualityResult?.grade || null, pageCount: null },
+        context: { topic, sourceCount: allCitations.length, generatedAt: new Date().toISOString() },
+      });
+    } catch (_approvalErr) { console.error("approval-hooks:", _approvalErr.message); }
+
     const totalTime = Math.round((Date.now() - startTime) / 1000);
     console.log(`generate-tactical-brief-background: completed in ${totalTime}s for ${email} (${_perplexityCallCount} Perplexity calls)`);
 

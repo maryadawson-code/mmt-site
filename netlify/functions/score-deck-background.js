@@ -825,6 +825,21 @@ exports.handler = async (event) => {
 
       // --- State: email_sent ---
       try { await transitionState(supabase, "mp_scoring_history", scoring_id, "email_sent"); } catch (e) { console.error("State transition error:", e.message); }
+
+      // Submit to customer approval queue for portal visibility
+      try {
+        const { submitForApproval } = require("./lib/approval-hooks");
+        await submitForApproval(supabase, {
+          title: `Your ProposalPulse Score: ${scorecard?.verdict || "Complete"}`,
+          category: "report-review",
+          targetRole: "customer",
+          targetEmail: email,
+          submittedBy: "system",
+          payloadType: "report",
+          payload: { jobId: scoring_id, grade: scorecard?.verdict, reportUrl: null },
+          context: { documentName: file_name || documentType, generatedAt: new Date().toISOString() },
+        });
+      } catch (_approvalErr) { console.error("approval-hooks:", _approvalErr.message); }
     } catch (emailErr) {
       console.error("Receipt email error:", emailErr);
       await logOpsEvent(supabase, { event_type: "DELIVERY_FAILURE", source_function: "score-deck-background", severity: "error", signature: "email_send_failure", affected_entity: scoring_id, details: { error: emailErr.message, email } });
