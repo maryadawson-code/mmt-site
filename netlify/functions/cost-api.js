@@ -2,28 +2,21 @@
 // Auth: same key as command-center-api
 
 const { createClient } = require("@supabase/supabase-js");
+const { validateAuth } = require("./lib/auth");
 
 const HEADERS = { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "Content-Type, Authorization", "Access-Control-Allow-Methods": "GET, POST, OPTIONS" };
 function ok(d) { return { statusCode: 200, headers: HEADERS, body: JSON.stringify(d) }; }
 function err(s, m) { return { statusCode: s, headers: HEADERS, body: JSON.stringify({ error: m }) }; }
 
-function checkAuth(event) {
-  const key = process.env.COMMAND_CENTER_KEY;
-  if (!key) return false;
-  const params = event.queryStringParameters || {};
-  if (params.key === key) return true;
-  const auth = event.headers.authorization || event.headers.Authorization || "";
-  return auth.replace(/^Bearer\s+/i, "") === process.env.AGENT_BRIDGE_KEY;
-}
-
 exports.handler = async (event) => {
   if (event.httpMethod === "OPTIONS") return { statusCode: 204, headers: HEADERS, body: "" };
-  if (!checkAuth(event)) return err(401, "Unauthorized");
 
   const SB_URL = process.env.SUPABASE_URL;
   const SB_KEY = process.env.SUPABASE_SERVICE_KEY;
   if (!SB_URL || !SB_KEY) return err(500, "Not configured");
   const sb = createClient(SB_URL, SB_KEY);
+  const auth = await validateAuth(event, sb);
+  if (!auth.authenticated) return err(401, "Unauthorized");
 
   const params = event.queryStringParameters || {};
 

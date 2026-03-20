@@ -6,10 +6,11 @@
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
+const { validateAuth } = require("./lib/auth");
 
 const HEADERS = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
   "Content-Type": "application/json",
 };
 
@@ -17,8 +18,9 @@ exports.handler = async (event) => {
   if (event.httpMethod === "OPTIONS") return { statusCode: 204, headers: HEADERS, body: "" };
   if (event.httpMethod !== "POST") return { statusCode: 405, headers: HEADERS, body: '{"error":"Method not allowed"}' };
 
-  const params = event.queryStringParameters || {};
-  if (params.key !== process.env.COMMAND_CENTER_KEY) {
+  const _sb = (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) ? createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY) : null;
+  const authResult = await validateAuth(event, _sb);
+  if (!authResult.authenticated) {
     return { statusCode: 401, headers: HEADERS, body: '{"error":"Unauthorized"}' };
   }
 

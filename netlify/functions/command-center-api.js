@@ -12,23 +12,17 @@ const { getAllCircuitStates } = require("./lib/circuit-registry");
 const { getAllFlags } = require("./lib/feature-flags");
 const { getMode } = require("./lib/kill-switch");
 const { logOpsEvent } = require("./lib/ops-ledger");
+const { validateAuth } = require("./lib/auth");
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
   "Content-Type": "application/json",
 };
 
 function unauthorized() {
   return { statusCode: 401, headers: CORS_HEADERS, body: JSON.stringify({ error: "Unauthorized" }) };
-}
-
-function checkAuth(event) {
-  const key = process.env.COMMAND_CENTER_KEY;
-  if (!key) return false;
-  const params = event.queryStringParameters || {};
-  return params.key === key;
 }
 
 function ok(data) {
@@ -44,16 +38,15 @@ exports.handler = async (event) => {
     return { statusCode: 204, headers: CORS_HEADERS, body: "" };
   }
 
-  if (!checkAuth(event)) return unauthorized();
-
   const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
-
   if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
     return err(500, "Not configured");
   }
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+  const auth = await validateAuth(event, supabase);
+  if (!auth.authenticated) return unauthorized();
 
   // === GET: Dashboard data ===
   if (event.httpMethod === "GET") {

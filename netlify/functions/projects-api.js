@@ -1,23 +1,18 @@
 // projects-api.js — Projects, sprints, and task management API
 
 const { createClient } = require("@supabase/supabase-js");
+const { validateAuth } = require("./lib/auth");
 
 const HEADERS = { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "Content-Type, Authorization", "Access-Control-Allow-Methods": "GET, POST, OPTIONS" };
 function ok(d) { return { statusCode: 200, headers: HEADERS, body: JSON.stringify(d) }; }
 function err(s, m) { return { statusCode: s, headers: HEADERS, body: JSON.stringify({ error: m }) }; }
 
-function checkAuth(event) {
-  const params = event.queryStringParameters || {};
-  if (params.key === process.env.COMMAND_CENTER_KEY) return true;
-  const auth = event.headers.authorization || event.headers.Authorization || "";
-  return auth.replace(/^Bearer\s+/i, "") === process.env.AGENT_BRIDGE_KEY;
-}
-
 exports.handler = async (event) => {
   if (event.httpMethod === "OPTIONS") return { statusCode: 204, headers: HEADERS, body: "" };
-  if (!checkAuth(event)) return err(401, "Unauthorized");
 
   const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+  const auth = await validateAuth(event, sb);
+  if (!auth.authenticated) return err(401, "Unauthorized");
   const params = event.queryStringParameters || {};
 
   if (event.httpMethod === "GET") {

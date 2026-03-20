@@ -9,10 +9,11 @@
 const { createClient } = require("@supabase/supabase-js");
 const { generateEngagementBrief } = require("./lib/engagement-intel");
 const { sendEmail } = require("./lib/send-email");
+const { validateAuth } = require("./lib/auth");
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
   "Content-Type": "application/json",
 };
 
@@ -21,17 +22,17 @@ exports.handler = async (event) => {
     return { statusCode: 405, headers: CORS_HEADERS, body: '{"error":"Method not allowed"}' };
   }
 
-  const params = event.queryStringParameters || {};
-  const key = process.env.COMMAND_CENTER_KEY;
-  if (!key || params.key !== key) {
-    return { statusCode: 401, headers: CORS_HEADERS, body: '{"error":"Unauthorized"}' };
-  }
-
-  const perplexityApiKey = process.env.PERPLEXITY_API_KEY;
   let supabase = null;
   if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
     supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
   }
+
+  const authResult = await validateAuth(event, supabase);
+  if (!authResult.authenticated) {
+    return { statusCode: 401, headers: CORS_HEADERS, body: '{"error":"Unauthorized"}' };
+  }
+
+  const perplexityApiKey = process.env.PERPLEXITY_API_KEY;
 
   const topics = [
     "MHS GENESIS",
