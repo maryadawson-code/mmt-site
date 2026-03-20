@@ -341,7 +341,7 @@ exports.handler = async (event) => {
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
     // --- Rate limiting (IP-based: 10/min, email-based: 5/hour) ---
-    const ADMIN_EMAILS = ["maryadawson@gmail.com", "mary@missionmeetstech.com", "jackyang2326@gmail.com"];
+    const ADMIN_EMAILS = ["maryadawson@gmail.com", "mary@missionmeetstech.com", "jackyang2326@gmail.com", "amchicu@gmail.com"];
     const clientIp = (event.headers["x-forwarded-for"] || event.headers["client-ip"] || "unknown").split(",")[0].trim();
     const isAdminEmail = ADMIN_EMAILS.includes(email.toLowerCase().trim());
 
