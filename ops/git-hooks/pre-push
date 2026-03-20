@@ -1,0 +1,39 @@
+#!/bin/bash
+# MMT Pre-Push Hook — checks dev workflow system before allowing push
+
+REPO="mmt-site"
+API="https://missionmeetstech.com/.netlify/functions/dev-workflow-api"
+
+# Get current branch
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+# Block direct pushes to main
+if [ "$BRANCH" = "main" ]; then
+  echo "Direct push to main is blocked."
+  echo "   Create a feature branch and PR instead."
+  echo "   git checkout -b fix/your-fix"
+  exit 1
+fi
+
+# Check for active deploys (warning only)
+echo "Checking dev workflow status..."
+STATUS=$(curl -s "${API}?view=status&key=${COMMAND_CENTER_KEY:-local}" 2>/dev/null)
+
+if echo "$STATUS" | grep -q '"deploying"'; then
+  echo "WARNING: A deploy is currently in progress."
+  echo "   Your push will succeed, but wait before deploying."
+fi
+
+# Check for conflicts on files we're pushing
+CHANGED=$(git diff --name-only HEAD @{upstream} 2>/dev/null || git diff --name-only HEAD~1)
+if [ -n "$CHANGED" ]; then
+  CONFLICT_CHECK=$(curl -s "${API}?view=can-i-work&repo=${REPO}&user=$(whoami)&files=$(echo $CHANGED | tr ' ' ',')" -H "Authorization: Bearer ${COMMAND_CENTER_KEY:-local}" 2>/dev/null)
+
+  if echo "$CONFLICT_CHECK" | grep -q '"blockers":\[.\+\]'; then
+    echo "WARNING: File conflicts detected with active sessions."
+    echo "   Review conflicts in the Command Center before merging."
+  fi
+fi
+
+echo "Pre-push checks passed. Pushing to $BRANCH..."
+exit 0
