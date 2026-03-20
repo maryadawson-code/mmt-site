@@ -846,6 +846,12 @@ exports.handler = async (event) => {
       try { await transitionState(supabase, "mp_scoring_history", scoring_id, "email_failed"); } catch (e) { console.error("State transition error:", e.message); }
     }
 
+    // --- Customer event logging ---
+    try {
+      const { logCustomerEvent } = require("./lib/customer-sync");
+      await logCustomerEvent(supabase, { email, eventType: "delivery", product: "proposalpulse", metadata: { grade: scorecard?.verdict, scoringId: scoring_id } });
+    } catch (_custErr) { console.error("customer-sync:", _custErr.message); }
+
     // --- C3: Emit intelligence signals ---
     try {
       const docText = documentText || extractedText || "";

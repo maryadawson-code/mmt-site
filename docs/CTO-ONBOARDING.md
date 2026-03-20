@@ -57,7 +57,7 @@ npm test             # Run unit tests
 npx netlify dev      # Local dev server with functions
 ```
 
-## Deploy
+## How to Deploy
 
 ```bash
 # Production (main branch auto-deploys via Netlify)

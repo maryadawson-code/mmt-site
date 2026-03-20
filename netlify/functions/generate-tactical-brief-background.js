@@ -1239,6 +1239,12 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
       });
     } catch (_approvalErr) { console.error("approval-hooks:", _approvalErr.message); }
 
+    // Customer event logging
+    try {
+      const { logCustomerEvent } = require("./lib/customer-sync");
+      await logCustomerEvent(_supabase, { email, eventType: "delivery", product: "marketpulse", metadata: { topic: (topic || "").substring(0, 100), orderId: session_id } });
+    } catch (_custErr) { console.error("customer-sync:", _custErr.message); }
+
     const totalTime = Math.round((Date.now() - startTime) / 1000);
     console.log(`generate-tactical-brief-background: completed in ${totalTime}s for ${email} (${_perplexityCallCount} Perplexity calls)`);
 

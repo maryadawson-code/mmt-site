@@ -225,6 +225,14 @@ exports.handler = async (event) => {
       return ok({ services: data || [] });
     }
 
+    if (action === "finance_update_service") {
+      const { serviceName, fields } = body;
+      if (!serviceName || !fields) return err(400, "serviceName and fields required");
+      const { error: updateErr } = await supabase.from("service_inventory").update({ ...fields, updated_at: new Date().toISOString() }).eq("service_name", serviceName);
+      if (updateErr) return err(500, updateErr.message);
+      return ok({ updated: true });
+    }
+
     // === CUSTOMERS ===
     if (action === "customer_summary") {
       const { data } = await supabase.from("customer_profiles").select("health_score, total_revenue_cents, churn_risk, lifecycle_stage");
@@ -235,6 +243,14 @@ exports.handler = async (event) => {
     if (action === "customer_at_risk") {
       const { data } = await supabase.from("customer_profiles").select("*").eq("churn_risk", "high").order("health_score");
       return ok({ customers: data || [] });
+    }
+
+    if (action === "customer_update") {
+      const { email, fields } = body;
+      if (!email || !fields) return err(400, "email and fields required");
+      const { error: updateErr } = await supabase.from("customer_profiles").update({ ...fields, updated_at: new Date().toISOString() }).eq("email", email);
+      if (updateErr) return err(500, updateErr.message);
+      return ok({ updated: true });
     }
 
     // === PROJECTS ===
@@ -260,6 +276,14 @@ exports.handler = async (event) => {
       return ok({ taskId: data.id });
     }
 
+    if (action === "project_move_task") {
+      const { taskId, status } = body;
+      if (!taskId || !status) return err(400, "taskId and status required");
+      const { error: updateErr } = await supabase.from("project_tasks").update({ status, updated_at: new Date().toISOString() }).eq("id", taskId);
+      if (updateErr) return err(500, updateErr.message);
+      return ok({ moved: true });
+    }
+
     // === QA ===
     if (action === "qa_summary") {
       const products = ["proposalpulse", "marketpulse", "site"];
@@ -270,6 +294,11 @@ exports.handler = async (event) => {
       }
       const { data: regressions } = await supabase.from("qa_test_runs").select("id").eq("is_regression", true).gte("created_at", new Date(Date.now() - 7 * 86400000).toISOString());
       return ok({ products: summaries, totalRegressions: regressions?.length || 0 });
+    }
+
+    if (action === "qa_regressions") {
+      const { data } = await supabase.from("qa_test_runs").select("*").eq("is_regression", true).order("created_at", { ascending: false }).limit(20);
+      return ok({ regressions: data || [] });
     }
 
     // === ISSUES ===
