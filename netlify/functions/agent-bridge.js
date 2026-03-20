@@ -308,6 +308,52 @@ exports.handler = async (event) => {
       return ok({ commentId: data.id });
     }
 
+    if (action === "issue_diagnose") {
+      const { id, rootCause, affectedFiles, suggestedFix, fixComplexity, estimatedMinutes } = body;
+      if (!id) return err(400, "id required");
+      const updates = { updated_at: new Date().toISOString() };
+      if (rootCause) updates.root_cause = rootCause;
+      if (affectedFiles) updates.affected_files = affectedFiles;
+      if (suggestedFix) updates.suggested_fix = suggestedFix;
+      if (fixComplexity) updates.fix_complexity = fixComplexity;
+      if (estimatedMinutes) updates.estimated_minutes = estimatedMinutes;
+      const { data: issue } = await supabase.from("issues").select("status, status_history").eq("id", id).single();
+      if (issue && (issue.status === "detected" || issue.status === "diagnosing")) {
+        updates.status = "diagnosed";
+        const history = issue.status_history || [];
+        history.push({ from: issue.status, to: "diagnosed", at: new Date().toISOString(), by: body.agent || "ops-code" });
+        updates.status_history = history;
+      }
+      await supabase.from("issues").update(updates).eq("id", id);
+      if (rootCause) {
+        await supabase.from("issue_comments").insert({ issue_id: id, author: body.agent || "ops-code", author_type: "agent", content: "Diagnosis: " + rootCause, action: "diagnose" });
+      }
+      return ok({ diagnosed: true });
+    }
+
+    if (action === "issue_propose_fix") {
+      const { id, fixDiff, fixBranch, fixCommit, fixPrUrl, fixComplexity } = body;
+      if (!id) return err(400, "id required");
+      const updates = { updated_at: new Date().toISOString() };
+      if (fixDiff) updates.fix_diff = fixDiff;
+      if (fixBranch) updates.fix_branch = fixBranch;
+      if (fixCommit) updates.fix_commit = fixCommit;
+      if (fixPrUrl) updates.fix_pr_url = fixPrUrl;
+      if (fixComplexity) updates.fix_complexity = fixComplexity;
+      const { data: issue } = await supabase.from("issues").select("status, status_history").eq("id", id).single();
+      if (issue && (issue.status === "diagnosed" || issue.status === "diagnosing")) {
+        updates.status = "fix-proposed";
+        const history = issue.status_history || [];
+        history.push({ from: issue.status, to: "fix-proposed", at: new Date().toISOString(), by: body.agent || "ops-code" });
+        updates.status_history = history;
+      }
+      await supabase.from("issues").update(updates).eq("id", id);
+      if (fixDiff) {
+        await supabase.from("issue_comments").insert({ issue_id: id, author: body.agent || "ops-code", author_type: "agent", content: "Fix proposed" + (fixBranch ? " on branch " + fixBranch : ""), code_diff: fixDiff, action: "propose-fix" });
+      }
+      return ok({ proposed: true });
+    }
+
     if (action === "deployment_log") {
       const { branch, commitSha, commitMessage, deployType, triggeredBy, netlifyDeployId, status, homepageStatus, homepageSize, fixesIssues } = body;
       if (!branch) return err(400, "branch required");
@@ -318,6 +364,27 @@ exports.handler = async (event) => {
       }).select("id").single();
       if (insertErr) return err(500, insertErr.message);
       return ok({ deploymentId: data.id });
+    }
+
+    if (action === "deployment_verify") {
+      const { deploymentId, status, homepageStatus, homepageSize, verificationNotes, fixesIssues } = body;
+      if (!deploymentId) return err(400, "deploymentId required");
+      const updates = { status: status || "success", verification_notes: verificationNotes };
+      if (homepageStatus) updates.homepage_status = homepageStatus;
+      if (homepageSize) updates.homepage_size = homepageSize;
+      await supabase.from("deployments").update(updates).eq("id", deploymentId);
+      if (fixesIssues && fixesIssues.length > 0) {
+        for (const issueId of fixesIssues) {
+          const { data: issue } = await supabase.from("issues").select("status, status_history").eq("id", issueId).single();
+          if (issue) {
+            const newStatus = status === "success" ? "verified" : "deployed";
+            const history = issue.status_history || [];
+            history.push({ from: issue.status, to: newStatus, at: new Date().toISOString(), by: "deployment-verify" });
+            await supabase.from("issues").update({ status: newStatus, status_history: history, verification_result: status === "success" ? "passed" : "failed", updated_at: new Date().toISOString() }).eq("id", issueId);
+          }
+        }
+      }
+      return ok({ verified: true });
     }
 
     return err(404, "Unknown action: " + action);

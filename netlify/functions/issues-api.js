@@ -54,6 +54,11 @@ exports.handler = async (event) => {
       return ok({ issues: data || [] });
     }
 
+    if (view === "needs-approval") {
+      const { data } = await sb.from("issues").select("*").eq("status", "fix-proposed").order("severity").order("created_at", { ascending: false });
+      return ok({ issues: data || [] });
+    }
+
     if (view === "stats") {
       const { data: open } = await sb.from("issues").select("severity, status, category").not("status", "in", '("closed","wont-fix")');
       const all = open || [];
@@ -144,6 +149,32 @@ exports.handler = async (event) => {
         updated_at: new Date().toISOString(),
       }).eq("id", id);
       return ok({ closed: true });
+    }
+
+    if (body.action === "approve_fix") {
+      const { id, by, notes } = body;
+      if (!id) return err(400, "id required");
+      const { data: issue } = await sb.from("issues").select("status, status_history").eq("id", id).single();
+      if (!issue) return err(404, "Issue not found");
+      if (issue.status !== "fix-proposed") return err(400, "Issue must be in fix-proposed status to approve");
+      const history = issue.status_history || [];
+      history.push({ from: "fix-proposed", to: "fix-approved", at: new Date().toISOString(), by: by || "cto", notes });
+      await sb.from("issues").update({ status: "fix-approved", status_history: history, assigned_human: by || "cto", updated_at: new Date().toISOString() }).eq("id", id);
+      await sb.from("issue_comments").insert({ issue_id: id, author: by || "cto", author_type: "human", content: "Fix approved." + (notes ? " " + notes : ""), action: "approve" });
+      return ok({ approved: true });
+    }
+
+    if (body.action === "reject_fix") {
+      const { id, by, notes } = body;
+      if (!id) return err(400, "id required");
+      const { data: issue } = await sb.from("issues").select("status, status_history").eq("id", id).single();
+      if (!issue) return err(404, "Issue not found");
+      if (issue.status !== "fix-proposed") return err(400, "Issue must be in fix-proposed status to reject");
+      const history = issue.status_history || [];
+      history.push({ from: "fix-proposed", to: "diagnosing", at: new Date().toISOString(), by: by || "cto", notes });
+      await sb.from("issues").update({ status: "diagnosing", status_history: history, fix_diff: null, fix_branch: null, fix_commit: null, updated_at: new Date().toISOString() }).eq("id", id);
+      await sb.from("issue_comments").insert({ issue_id: id, author: by || "cto", author_type: "human", content: "Fix rejected." + (notes ? " " + notes : ""), action: "reject" });
+      return ok({ rejected: true });
     }
 
     if (body.action === "link_sentry") {

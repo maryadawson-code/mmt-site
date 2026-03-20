@@ -8,6 +8,7 @@
 
 const { createClient } = require("@supabase/supabase-js");
 const { logOpsEvent, queryOpsEvents } = require("./lib/ops-ledger");
+const { autoCreateIssue } = require("./lib/issue-hooks");
 
 exports.handler = async () => {
   const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -81,6 +82,13 @@ exports.handler = async () => {
               details: { product: "proposalpulse", age_minutes: ageMin, action: "marked_failed" },
               resolution: "Auto-transitioned to failed state after 30+ min timeout",
             });
+
+            await autoCreateIssue(supabase, {
+              title: `Stuck ProposalPulse scorecard: ${job.id} (${ageMin}min)`,
+              category: "bug", source: "health-check", product: "proposalpulse",
+              severity: "high", errorLogs: JSON.stringify({ id: job.id, age_minutes: ageMin, state: job.workflow_state }),
+              assignAgent: "ops-code",
+            });
           } catch (recoverErr) {
             console.error("Failed to recover stuck scorecard:", job.id, recoverErr.message);
           }
@@ -133,6 +141,13 @@ exports.handler = async () => {
               affected_entity: order.session_id,
               details: { product: "marketpulse", age_minutes: ageMin, action: "marked_failed" },
               resolution: "Auto-transitioned to failed state after 30+ min timeout",
+            });
+
+            await autoCreateIssue(supabase, {
+              title: `Stuck MarketPulse order: ${order.session_id} (${ageMin}min)`,
+              category: "bug", source: "health-check", product: "marketpulse",
+              severity: "high", errorLogs: JSON.stringify({ id: order.id, session_id: order.session_id, age_minutes: ageMin, state: order.workflow_state }),
+              assignAgent: "ops-code",
             });
           } catch (recoverErr) {
             console.error("Failed to recover stuck MarketPulse order:", order.id, recoverErr.message);
