@@ -450,6 +450,53 @@ exports.handler = async (event) => {
       return ok({ executed: true });
     }
 
+    // === LEARNINGS ===
+    if (action === "learning_read") {
+      const { agent: agentId, domain } = body;
+      let query = supabase.from("agent_learnings").select("id, rule, category, domain, confidence, times_applied").eq("is_active", true).order("confidence", { ascending: false }).limit(body.limit || 50);
+      if (agentId) query = query.eq("agent", agentId);
+      if (domain) query = query.eq("domain", domain);
+      const { data } = await query;
+      return ok({ learnings: data || [] });
+    }
+
+    if (action === "learning_write") {
+      const { agent: agentId, category: cat, domain, rule, context: ctx, source: src, sourceApprovalId, sourceIssueId, confidence } = body;
+      if (!agentId || !cat || !rule) return err(400, "agent, category, rule required");
+      const { data, error: insertErr } = await supabase.from("agent_learnings").insert({
+        agent: agentId, category: cat, domain, rule, context: ctx,
+        source: src || "self", source_approval_id: sourceApprovalId || null,
+        source_issue_id: sourceIssueId || null, confidence: confidence || 0.8,
+      }).select("id").single();
+      if (insertErr) return err(500, insertErr.message);
+      return ok({ learningId: data.id });
+    }
+
+    if (action === "learning_feedback") {
+      const { learningId, agent: agentId, eventType, context: ctx, outcome } = body;
+      if (!learningId || !eventType) return err(400, "learningId, eventType required");
+      await supabase.from("learning_feedback").insert({
+        learning_id: learningId, agent: agentId || "unknown", event_type: eventType, context: ctx, outcome,
+      });
+      if (eventType === "prevented_error") {
+        const { data: l } = await supabase.from("agent_learnings").select("prevented_errors, confidence").eq("id", learningId).single();
+        if (l) await supabase.from("agent_learnings").update({ prevented_errors: (l.prevented_errors || 0) + 1, confidence: Math.min(1.0, (parseFloat(l.confidence) || 0.8) + 0.02) }).eq("id", learningId);
+      }
+      return ok({ recorded: true });
+    }
+
+    // === COMPETITIVE INTEL ===
+    if (action === "competitive_summary") {
+      const { data: comps } = await supabase.from("competitors").select("name, overlap_score, last_researched_at").order("overlap_score", { ascending: false });
+      const { data: alerts } = await supabase.from("competitive_alerts").select("id").eq("reviewed", false);
+      return ok({ competitors: comps || [], unreviewedAlerts: (alerts || []).length });
+    }
+
+    if (action === "competitive_alerts") {
+      const { data } = await supabase.from("competitive_alerts").select("*").eq("reviewed", false).order("created_at", { ascending: false }).limit(20);
+      return ok({ alerts: data || [] });
+    }
+
     return err(404, "Unknown action: " + action);
   }
 
