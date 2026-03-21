@@ -733,6 +733,24 @@
       // If on home view, stay. If on a detail view, stay there too.
     }
 
+    // Mobile hamburger nav open/close
+    function openMobileNav() {
+      document.getElementById('mobile-nav-overlay').classList.add('open');
+      document.getElementById('mobile-nav-panel').classList.add('open');
+    }
+    function closeMobileNav() {
+      document.getElementById('mobile-nav-overlay').classList.remove('open');
+      document.getElementById('mobile-nav-panel').classList.remove('open');
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+      var toggle = document.getElementById('mobile-nav-toggle');
+      var close = document.getElementById('mobile-nav-close');
+      var overlay = document.getElementById('mobile-nav-overlay');
+      if (toggle) toggle.addEventListener('click', openMobileNav);
+      if (close) close.addEventListener('click', closeMobileNav);
+      if (overlay) overlay.addEventListener('click', closeMobileNav);
+    });
+
     function updateMobileNav(ws) {
       var groups = document.getElementById('mobile-nav-ws-groups');
       if (!groups) return;
@@ -4775,6 +4793,7 @@ async function updateIssueStatus(id, status) {
         { icon: '📰', label: 'Newsletter', action: function() { wsNavigate('newsletter'); } },
         { icon: '📦', label: 'Products', action: function() { wsNavigate('products'); } },
         { icon: '🤖', label: 'Agent Fleet', action: function() { wsNavigate('agents'); } },
+        { icon: '🔧', label: 'Engineering', action: function() { wsNavigate('engineering'); } },
         { icon: '🎨', label: 'Content Studio', action: function() { wsNavigate('content'); } },
         { icon: '🛡️', label: 'Security Posture', action: function() { wsNavigate('security'); } },
         { icon: '💰', label: 'Cost Control (Penny)', action: function() { wsNavigate('penny'); } },
