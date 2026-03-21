@@ -81,6 +81,7 @@
   [plugins.inputs]
     sentryOrg = "mmt"
     sentryProject = "mmt-site"
+    setCommits = false
 
 [context.staging]
   command = "node build.js"
