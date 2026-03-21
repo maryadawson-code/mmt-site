@@ -41,5 +41,14 @@
     "url": "https://www.afcea.org",
     "type": "conference",
     "description": "Cybersecurity conference with federal health IT security tracks covering HIPAA, zero trust, and health data protection."
+  },
+  {
+    "name": "Military Health System Research Symposium",
+    "date": "2026-08-24",
+    "endDate": "2026-08-27",
+    "location": "Kissimmee, FL",
+    "url": "https://www.health.mil",
+    "type": "conference",
+    "description": "Premier scientific meeting for military and federal health research, combat casualty care, and operational medicine."
   }
 ]
