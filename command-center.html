@@ -652,6 +652,8 @@
     let selectedAgent = null;
     let currentFilter = 'all';
     let _lastResearch = null;
+    let _creativeData = null;
+    let _creativeProject = null;
     let _costData = null;
     let _billingData = null;
     let _servicesData = null;
@@ -694,6 +696,7 @@
         apiPost({ action: 'ciso_posture' }).then(c => { if (c && !c.error) { _cisoData = c; renderTiles(dashData); } }).catch(() => {});
         apiPost({ action: 'penny_dashboard' }).then(p => { if (p && !p.error) { _pennyData = p; renderTiles(dashData); } }).catch(() => {});
         fetch('/.netlify/functions/roadmap-api?key=' + apiKey + '&view=summary').then(r => r.ok ? r.json() : null).then(d => { if (d) { _roadmapLive = d; renderTiles(dashData); } }).catch(() => {});
+        fetch('/.netlify/functions/creative-api?key=' + apiKey).then(r => r.ok ? r.json() : null).then(d => { if (d) { _creativeData = d; renderTiles(dashData); } }).catch(() => {});
         Promise.all([
           fetch('/.netlify/functions/finance-api?key=' + apiKey + '&view=services-summary').then(r => r.ok ? r.json() : null),
           fetch('/.netlify/functions/customer-api?key=' + apiKey + '&view=summary').then(r => r.ok ? r.json() : null),
@@ -873,7 +876,7 @@
         { id: 'business', icon: '\ud83d\udcca', title: 'Business', m1: revTotal !== null ? '$' + revTotal.toLocaleString() : '--', m1l: rev?.month || 'Revenue', m2: null, m2l: null, badge: 0, roles: ['coo', 'all'] },
         { id: 'health', icon: '\ud83d\udee1\ufe0f', title: 'Site Health', m1: errorEvents.length, m1l: 'Errors (24h)', m2: null, m2l: null, badge: critEvents.length, roles: ['cto', 'all'] },
         { id: 'agents', icon: '\ud83e\udd16', title: 'Agent Fleet', m1: onlineAgents.length + '/' + agents.length, m1l: 'Online', m2: null, m2l: null, badge: staleAgents.length, roles: ['cto', 'all'] },
-        { id: 'content', icon: '\ud83c\udfa8', title: 'Content Studio', m1: images.length, m1l: 'Images', m2: signals.length, m2l: 'Signals', badge: 0, roles: ['coo', 'editor', 'all'] },
+        { id: 'content', icon: '\ud83c\udfa8', title: 'Content Studio', m1: _creativeData ? _creativeData.projects.length : images.length, m1l: _creativeData ? 'Projects' : 'Images', m2: _creativeData ? _creativeData.recent_images.length : signals.length, m2l: _creativeData ? 'Images' : 'Signals', badge: _creativeData ? _creativeData.projects.filter(p => p.status === 'generating').length : 0, roles: ['coo', 'editor', 'all'] },
         { id: 'competitive', icon: '\ud83c\udfaf', title: 'Competitive Intel', m1: '--', m1l: 'Competitors', m2: '--', m2l: 'Unreviewed', badge: 0, roles: ['coo', 'all'] },
         { id: 'learnings', icon: '\ud83e\udde0', title: 'Agent Memory', m1: '--', m1l: 'Active rules', m2: '--', m2l: 'Applied', badge: 0, roles: ['cto', 'editor', 'all'] },
         { id: 'security', icon: '\ud83d\udee1\ufe0f', title: 'Security Posture', m1: _cisoData ? _cisoData.cmmc_score.percent_met + '%' : '--', m1l: 'CMMC L2', m2: _cisoData ? (_cisoData.open_findings.critical + _cisoData.open_findings.high) : '--', m2l: 'Crit+High', badge: _cisoData ? _cisoData.open_findings.critical : 0, roles: ['cto', 'all'] },
@@ -1377,12 +1380,79 @@
     function renderDetailContent(data) {
       const el = document.getElementById('detail-content');
       const images = data.recent_images || [];
+      const projects = _creativeData ? _creativeData.projects : [];
+      const creativeImages = _creativeData ? _creativeData.recent_images : [];
+      const pipeline = data.pipeline || [];
 
       let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
       h += '<div class="detail-title">\ud83c\udfa8 Content Studio</div>';
 
-      // Image generation form
-      h += '<div class="detail-card"><h3>Image Generation</h3>';
+      // === CREATIVE STUDIO: Projects ===
+      h += '<div class="detail-card"><h3>Creative Projects</h3>';
+      h += '<div style="display:flex;gap:8px;margin-bottom:12px;align-items:center;">';
+      h += '<input type="text" id="creative-title" placeholder="Article title..." style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:8px 10px;border-radius:4px;font-size:0.85rem;">';
+      h += '<select id="creative-pipeline" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:8px 10px;border-radius:4px;font-size:0.8rem;"><option value="">Link to pipeline...</option>';
+      pipeline.forEach(p => { h += '<option value="' + p.id + '">' + esc((p.lead_topic || 'Untitled').substring(0, 40)) + ' (' + p.publish_date + ')</option>'; });
+      h += '</select>';
+      h += '<button class="btn btn-cyan" onclick="createCreativeProject()">+ New Project</button></div>';
+
+      // Project list
+      if (!projects.length) {
+        h += '<p style="color:rgba(255,255,255,0.3);font-size:0.8rem;">No creative projects yet. Create one above.</p>';
+      } else {
+        const statusColors = { drafting: '#60a5fa', generating: '#eab308', selecting: '#a855f7', complete: '#22c55e' };
+        h += '<div style="display:grid;gap:8px;">';
+        projects.forEach(p => {
+          const color = statusColors[p.status] || '#9ca3af';
+          const promptCount = p.creative_prompts ? p.creative_prompts[0]?.count || 0 : 0;
+          const imageCount = p.creative_images ? p.creative_images[0]?.count || 0 : 0;
+          h += '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px;cursor:pointer;display:flex;align-items:center;gap:12px;" onclick="openCreativeProject(\'' + p.id + '\')">';
+          h += '<div style="width:8px;height:8px;border-radius:50%;background:' + color + ';flex-shrink:0;" title="' + p.status + '"></div>';
+          h += '<div style="flex:1;min-width:0;"><div style="font-size:0.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + esc(p.article_title) + '</div>';
+          h += '<div style="font-size:0.7rem;color:rgba(255,255,255,0.4);margin-top:2px;">' + promptCount + ' prompts · ' + imageCount + ' images · ' + timeSince(p.updated_at) + '</div></div>';
+          h += '<span style="font-size:0.7rem;color:' + color + ';text-transform:uppercase;font-weight:600;">' + p.status + '</span>';
+          if (p.pipeline_id) h += '<span style="font-size:0.65rem;color:#00e5fa;" title="Linked to pipeline">📰</span>';
+          h += '<button class="btn btn-sm" style="background:rgba(239,68,68,0.15);color:#ef4444;font-size:0.7rem;padding:2px 8px;" onclick="event.stopPropagation();deleteCreativeProject(\'' + p.id + '\')">×</button>';
+          h += '</div>';
+        });
+        h += '</div>';
+      }
+      h += '</div>';
+
+      // === CREATIVE STUDIO: Project Detail (shown when a project is selected) ===
+      h += '<div id="creative-project-detail" style="display:none;"></div>';
+
+      // === CREATIVE STUDIO: Image Gallery ===
+      h += '<div class="detail-card"><h3>Image Gallery</h3>';
+      h += '<div id="creative-gallery" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;">';
+      const allImages = creativeImages.length ? creativeImages : images;
+      if (!allImages.length) {
+        h += '<p style="color:rgba(255,255,255,0.2);font-size:0.75rem;">No images yet</p>';
+      } else {
+        allImages.forEach(img => {
+          const isCreative = !!img.model_used;
+          const stars = img.rating ? '★'.repeat(img.rating) + '☆'.repeat(5 - img.rating) : '';
+          h += '<div style="background:rgba(255,255,255,0.03);border:1px solid ' + (img.selected ? 'rgba(34,197,94,0.5)' : 'rgba(255,255,255,0.08)') + ';border-radius:8px;overflow:hidden;position:relative;">';
+          h += img.image_url ? '<img src="' + img.image_url + '" style="width:100%;height:100px;object-fit:cover;cursor:pointer;" onclick="window.open(this.src)">' : '<div style="width:100%;height:100px;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:rgba(255,255,255,0.3);">' + (img.model_used || img.provider || '') + '</div>';
+          if (img.selected) h += '<div style="position:absolute;top:4px;right:4px;background:#22c55e;color:#000;font-size:0.6rem;padding:1px 5px;border-radius:3px;font-weight:700;">SELECTED</div>';
+          h += '<div style="padding:6px 8px;">';
+          h += '<div style="font-size:0.65rem;color:rgba(255,255,255,0.4);">' + fmtDate(img.created_at) + ' · ' + (img.model_used || img.provider || '') + '</div>';
+          if (stars) h += '<div style="font-size:0.7rem;color:#eab308;margin-top:2px;">' + stars + '</div>';
+          if (isCreative) {
+            h += '<div style="display:flex;gap:3px;margin-top:4px;">';
+            for (let s = 1; s <= 5; s++) {
+              h += '<button style="background:none;border:none;color:' + (s <= (img.rating||0) ? '#eab308' : 'rgba(255,255,255,0.15)') + ';cursor:pointer;font-size:0.75rem;padding:0;" onclick="rateCreativeImage(\'' + img.id + '\',' + s + ',\'' + (img.project_id||'') + '\')">' + (s <= (img.rating||0) ? '★' : '☆') + '</button>';
+            }
+            h += ' <button class="btn btn-sm" style="background:rgba(34,197,94,0.15);color:#22c55e;font-size:0.6rem;padding:1px 6px;margin-left:auto;" onclick="selectCreativeImage(\'' + img.id + '\',\'' + (img.project_id||'') + '\')">Select</button>';
+            h += '</div>';
+          }
+          h += '</div></div>';
+        });
+      }
+      h += '</div></div>';
+
+      // Image generation form (existing)
+      h += '<div class="detail-card"><h3>Quick Image Generation</h3>';
       h += '<div class="content-studio-form" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">';
       h += '<div><textarea id="image-prompt" rows="3" placeholder="Newsletter header: dark background, cyber-themed circuit board pattern with a glowing blue pulse..." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:10px;border-radius:4px;font-size:0.85rem;resize:vertical;"></textarea>';
       h += '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">';
@@ -1394,18 +1464,7 @@
       h += '<div id="image-preview" style="min-height:200px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;"><span style="color:rgba(255,255,255,0.2);font-size:0.8rem;">Image will appear here</span></div>';
       h += '</div></div>';
 
-      // Recent images gallery
-      h += '<div class="detail-card"><h3>Recent Images</h3>';
-      h += '<div id="image-history" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;">';
-      if (!images.length) h += '<p style="color:rgba(255,255,255,0.2);font-size:0.75rem;">No images yet</p>';
-      else images.forEach(img => {
-        h += '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:6px;overflow:hidden;cursor:pointer;" title="' + esc(img.prompt.substring(0, 80)) + '">';
-        h += img.image_url ? '<img src="' + img.image_url + '" style="width:100%;height:80px;object-fit:cover;">' : '<div style="width:100%;height:80px;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:rgba(255,255,255,0.3);">' + img.provider + '</div>';
-        h += '<div style="padding:4px 6px;font-size:0.65rem;color:rgba(255,255,255,0.4);">' + fmtDate(img.created_at) + ' · ' + img.provider + '</div></div>';
-      });
-      h += '</div></div>';
-
-      // Research hub
+      // Research hub (existing)
       h += '<div class="detail-card"><h3>Research Hub</h3>';
       h += '<div style="display:flex;gap:8px;margin-bottom:12px;"><input type="text" id="research-query" placeholder="What is the current status of VA T4NG2 task orders?" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:10px;border-radius:4px;font-size:0.85rem;"><button class="btn btn-cyan" onclick="runResearch()">Research All</button></div>';
       h += '<div style="display:flex;gap:8px;margin-bottom:16px;">';
@@ -2038,6 +2097,165 @@
       if (!_lastResearch) return;
       const text = Object.entries(_lastResearch.results).filter(([k, v]) => v.answer).map(([k, v]) => '=== ' + k.toUpperCase() + ' ===\n' + v.answer).join('\n\n');
       navigator.clipboard.writeText(text).then(() => toast('Research copied to clipboard.'));
+    }
+
+    // --- CREATIVE STUDIO ---
+    async function creativePost(body) {
+      return fetch('/.netlify/functions/creative-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(r => r.json());
+    }
+
+    async function createCreativeProject() {
+      const title = document.getElementById('creative-title').value.trim();
+      if (!title) return;
+      const pipelineId = document.getElementById('creative-pipeline').value || null;
+      const d = await creativePost({ action: 'create_project', article_title: title, pipeline_id: pipelineId });
+      if (d.created) { document.getElementById('creative-title').value = ''; toast('Project created.'); await refreshCreative(); }
+      else toast('Error: ' + (d.error || 'Unknown'));
+    }
+
+    async function deleteCreativeProject(id) {
+      if (!confirm('Delete this project and all its prompts/images?')) return;
+      await creativePost({ action: 'delete_project', id });
+      toast('Project deleted.'); await refreshCreative();
+    }
+
+    async function openCreativeProject(id) {
+      const d = await creativePost({ action: 'get_project', id });
+      if (!d.project) { toast('Project not found.'); return; }
+      _creativeProject = d;
+      renderCreativeProjectDetail(d);
+    }
+
+    function renderCreativeProjectDetail(d) {
+      const el = document.getElementById('creative-project-detail');
+      const proj = d.project;
+      const prompts = d.prompts || [];
+      const imgs = d.images || [];
+      const research = d.research || [];
+      const statusColors = { drafting: '#60a5fa', generating: '#eab308', selecting: '#a855f7', complete: '#22c55e' };
+
+      let h = '<div class="detail-card" style="border:1px solid rgba(0,229,250,0.2);">';
+      h += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">';
+      h += '<h3 style="margin:0;">' + esc(proj.article_title) + '</h3>';
+      h += '<div style="display:flex;gap:8px;align-items:center;">';
+      h += '<span style="font-size:0.75rem;color:' + (statusColors[proj.status] || '#9ca3af') + ';text-transform:uppercase;font-weight:600;">' + proj.status + '</span>';
+      h += '<button class="btn btn-sm" style="background:rgba(255,255,255,0.1);color:#e2e8f0;font-size:0.75rem;" onclick="document.getElementById(\'creative-project-detail\').style.display=\'none\'">Close</button>';
+      h += '</div></div>';
+      if (proj.article_url) h += '<div style="font-size:0.75rem;margin-bottom:8px;"><a href="' + proj.article_url + '" target="_blank" style="color:#00e5fa;">View article →</a></div>';
+
+      // Prompt builder
+      h += '<div style="margin-bottom:16px;">';
+      h += '<div style="font-weight:600;font-size:0.8rem;margin-bottom:8px;color:rgba(255,255,255,0.6);">Prompts</div>';
+      h += '<div style="display:flex;gap:8px;margin-bottom:8px;">';
+      h += '<textarea id="creative-prompt-text" rows="2" placeholder="Describe the image you want to generate..." style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:8px;border-radius:4px;font-size:0.82rem;resize:vertical;"></textarea>';
+      h += '<div style="display:flex;flex-direction:column;gap:4px;">';
+      h += '<input type="text" id="creative-style-tags" placeholder="Style tags (comma-separated)" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:6px 8px;border-radius:4px;font-size:0.75rem;">';
+      h += '<button class="btn btn-cyan btn-sm" onclick="createCreativePrompt(\'' + proj.id + '\')">Add Prompt</button>';
+      h += '</div></div>';
+
+      // Existing prompts
+      if (prompts.length) {
+        prompts.forEach(p => {
+          h += '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;padding:8px 10px;margin-bottom:6px;">';
+          h += '<div style="font-size:0.8rem;color:#e2e8f0;">v' + p.version + ': ' + esc(p.prompt_text.substring(0, 150)) + (p.prompt_text.length > 150 ? '...' : '') + '</div>';
+          if (p.style_tags && p.style_tags.length) h += '<div style="margin-top:4px;">' + p.style_tags.map(t => '<span style="background:rgba(0,229,250,0.1);color:#00e5fa;font-size:0.65rem;padding:1px 6px;border-radius:3px;margin-right:4px;">' + esc(t) + '</span>').join('') + '</div>';
+          h += '<div style="margin-top:4px;"><button class="btn btn-sm" style="background:rgba(0,229,250,0.15);color:#00e5fa;font-size:0.7rem;padding:2px 8px;" onclick="generateCreativeImage(\'' + proj.id + '\',\'' + p.id + '\',\'' + esc(p.prompt_text.replace(/'/g, "\\'")) + '\')">Generate Image</button>';
+          h += ' <button class="btn btn-sm" style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);font-size:0.7rem;padding:2px 8px;" onclick="document.getElementById(\'creative-prompt-text\').value=\'' + esc(p.prompt_text.replace(/'/g, "\\'").replace(/\n/g, ' ')) + '\';document.getElementById(\'creative-style-tags\').value=\'' + (p.style_tags||[]).join(', ') + '\'">Refine</button></div>';
+          h += '</div>';
+        });
+      }
+      h += '</div>';
+
+      // Project images
+      h += '<div style="margin-bottom:16px;">';
+      h += '<div style="font-weight:600;font-size:0.8rem;margin-bottom:8px;color:rgba(255,255,255,0.6);">Generated Images (' + imgs.length + ')</div>';
+      h += '<div id="creative-project-images" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;">';
+      if (!imgs.length) h += '<p style="color:rgba(255,255,255,0.2);font-size:0.75rem;">No images generated yet</p>';
+      imgs.forEach(img => {
+        const stars = img.rating ? '★'.repeat(img.rating) + '☆'.repeat(5 - img.rating) : '☆☆☆☆☆';
+        h += '<div style="background:rgba(255,255,255,0.03);border:1px solid ' + (img.selected ? 'rgba(34,197,94,0.5)' : 'rgba(255,255,255,0.08)') + ';border-radius:6px;overflow:hidden;">';
+        h += '<img src="' + img.image_url + '" style="width:100%;height:90px;object-fit:cover;cursor:pointer;" onclick="window.open(this.src)">';
+        if (img.selected) h += '<div style="text-align:center;background:#22c55e;color:#000;font-size:0.6rem;font-weight:700;padding:1px;">SELECTED</div>';
+        h += '<div style="padding:4px 6px;font-size:0.65rem;color:rgba(255,255,255,0.4);">' + (img.model_used || '') + ' · ' + fmtDate(img.created_at) + '</div>';
+        h += '<div style="padding:0 6px 4px;display:flex;align-items:center;gap:2px;">';
+        for (let s = 1; s <= 5; s++) {
+          h += '<button style="background:none;border:none;color:' + (s <= (img.rating||0) ? '#eab308' : 'rgba(255,255,255,0.15)') + ';cursor:pointer;font-size:0.7rem;padding:0;" onclick="rateCreativeImage(\'' + img.id + '\',' + s + ',\'' + proj.id + '\')">' + (s <= (img.rating||0) ? '★' : '☆') + '</button>';
+        }
+        if (!img.selected) h += '<button class="btn btn-sm" style="background:rgba(34,197,94,0.15);color:#22c55e;font-size:0.6rem;padding:1px 5px;margin-left:auto;" onclick="selectCreativeImage(\'' + img.id + '\',\'' + proj.id + '\')">✓</button>';
+        h += '</div></div>';
+      });
+      h += '</div></div>';
+
+      // Research for this project
+      h += '<div>';
+      h += '<div style="font-weight:600;font-size:0.8rem;margin-bottom:8px;color:rgba(255,255,255,0.6);">Research (' + research.length + ')</div>';
+      h += '<div style="display:flex;gap:8px;margin-bottom:8px;">';
+      h += '<select id="creative-research-type" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:6px 8px;border-radius:4px;font-size:0.75rem;"><option value="reference_image">Reference Image</option><option value="style_guide">Style Guide</option><option value="color_palette">Color Palette</option><option value="mood">Mood</option><option value="competitor_example">Competitor</option></select>';
+      h += '<input type="text" id="creative-research-content" placeholder="URL or description..." style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:6px 8px;border-radius:4px;font-size:0.75rem;">';
+      h += '<button class="btn btn-cyan btn-sm" onclick="addCreativeResearch(\'' + proj.id + '\')">Add</button></div>';
+      if (research.length) {
+        research.forEach(r => {
+          h += '<div style="display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.75rem;">';
+          h += '<span style="background:rgba(0,229,250,0.1);color:#00e5fa;padding:1px 6px;border-radius:3px;font-size:0.65rem;">' + r.type.replace(/_/g, ' ') + '</span>';
+          h += '<span style="color:rgba(255,255,255,0.5);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(r.content.substring(0, 100)) + '</span>';
+          h += '</div>';
+        });
+      }
+      h += '</div>';
+
+      h += '<div id="creative-gen-status" style="margin-top:8px;font-size:0.8rem;"></div>';
+      h += '</div>';
+      el.style.display = 'block';
+      el.innerHTML = h;
+    }
+
+    async function createCreativePrompt(projectId) {
+      const text = document.getElementById('creative-prompt-text').value.trim();
+      if (!text) return;
+      const tagsRaw = document.getElementById('creative-style-tags').value.trim();
+      const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
+      const d = await creativePost({ action: 'create_prompt', project_id: projectId, prompt_text: text, style_tags: tags });
+      if (d.created) { toast('Prompt added.'); openCreativeProject(projectId); }
+      else toast('Error: ' + (d.error || 'Unknown'));
+    }
+
+    async function generateCreativeImage(projectId, promptId, promptText) {
+      const statusEl = document.getElementById('creative-gen-status');
+      if (statusEl) statusEl.innerHTML = '<span style="color:#eab308;">Generating image... (10-30s)</span>';
+      const provider = document.getElementById('image-provider')?.value || 'gpt_image';
+      const size = document.getElementById('image-size')?.value || '1024x1024';
+      const style = document.getElementById('image-style')?.value || 'natural';
+      const d = await creativePost({ action: 'generate_image', project_id: projectId, prompt_id: promptId, prompt_text: promptText, provider, size, style });
+      if (d.created) { toast('Image generated.'); if (statusEl) statusEl.innerHTML = '<span style="color:#22c55e;">Done</span>'; openCreativeProject(projectId); await refreshCreative(); }
+      else { toast('Error: ' + (d.error || 'Unknown')); if (statusEl) statusEl.innerHTML = '<span style="color:#ef4444;">Failed: ' + esc(d.error || '') + '</span>'; }
+    }
+
+    async function rateCreativeImage(id, rating, projectId) {
+      await creativePost({ action: 'rate_image', id, rating, project_id: projectId });
+      if (_creativeProject && projectId) openCreativeProject(projectId);
+      else await refreshCreative();
+    }
+
+    async function selectCreativeImage(id, projectId) {
+      await creativePost({ action: 'rate_image', id, selected: true, project_id: projectId });
+      toast('Image selected.'); if (projectId) openCreativeProject(projectId);
+      await refreshCreative();
+    }
+
+    async function addCreativeResearch(projectId) {
+      const type = document.getElementById('creative-research-type').value;
+      const content = document.getElementById('creative-research-content').value.trim();
+      if (!content) return;
+      const d = await creativePost({ action: 'add_research', project_id: projectId, type, content });
+      if (d.created) { toast('Research added.'); openCreativeProject(projectId); }
+      else toast('Error: ' + (d.error || 'Unknown'));
+    }
+
+    async function refreshCreative() {
+      try {
+        const r = await fetch('/.netlify/functions/creative-api?key=' + apiKey);
+        if (r.ok) { _creativeData = await r.json(); renderTiles(dashData); }
+      } catch (e) {}
     }
 
     // --- ENGAGEMENT INTEL ---
