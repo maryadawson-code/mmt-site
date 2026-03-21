@@ -1,0 +1,44 @@
+🧪 E2E Tests: Command Center API
+   Base: https://missionmeetstech.com
+   Time: Sat Mar 21 18:50:13 EDT 2026
+
+--- Auth Tests ---
+--- Dashboard Views ---
+--- POST Actions (views) ---
+--- Auxiliary APIs ---
+--- Input Validation ---
+--- Write Action Lifecycle ---
+--- Health ---
+
+============================================
+  E2E Test Results
+============================================
+  ✅ PASS: Auth: reject missing key
+  ✅ PASS: Auth: reject wrong key
+  ✅ PASS: Auth: accept valid key
+  ✅ PASS: Dashboard: main view
+  ❌ FAIL: Action: list_tasks — HTTP 400
+  ❌ FAIL: Action: list_agents — HTTP 400
+  ❌ FAIL: Action: agent_status — HTTP 400
+  ❌ FAIL: Action: ciso_posture — Missing key 'score' in response
+  ❌ FAIL: Action: penny_dashboard — Missing key 'summary' in response
+  ❌ FAIL: Cost API: summary — Missing key 'total_cost' in response
+  ❌ FAIL: Billing API: summary — Missing key 'revenue' in response
+  ❌ FAIL: Finance API: services-summary — Missing key 'services' in response
+  ✅ PASS: Customer API: summary
+  ✅ PASS: Projects API: dashboard
+  ❌ FAIL: QA API: summary — Missing key 'total' in response
+  ✅ PASS: Issues API: stats
+  ❌ FAIL: Approval API: badge-counts — Missing key 'pending' in response
+  ✅ PASS: Roadmap API: summary
+  ✅ PASS: Roadmap API: list
+  ✅ PASS: Validation: reject missing action
+  ✅ PASS: Validation: reject unknown action
+  ✅ PASS: Validation: dispatch_task requires fields
+  ❌ FAIL: Write: dispatch_task returns task_id — No task_id in response: {"error":"Unknown action: dispatch_task"}
+  ✅ PASS: Health: endpoint returns 200
+
+  PASSED: 13
+  FAILED: 11
+  TOTAL:  24
+============================================
