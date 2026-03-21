@@ -43,10 +43,7 @@
     .revenue-big { font-size: 2.2rem; font-weight: 700; color: #22c55e; }
     .revenue-label { font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase; }
 
-    /* Org filter bar */
-    .org-filter { display: flex; gap: 8px; margin-bottom: 16px; }
-    .org-filter button { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: all 0.2s; }
-    .org-filter button.active { background: rgba(0,229,250,0.15); color: #00e5fa; border-color: rgba(0,229,250,0.3); }
+    /* (org filter removed — replaced by workspace bar) */
 
     /* Tile grid */
     .tile-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
@@ -493,11 +490,6 @@
       <span style="margin-left:auto;color:rgba(255,255,255,0.25);">⌘K to search</span>
     </div>
 
-    <!-- Org Filter -->
-    <div class="org-filter" id="org-filter">
-      <button class="active" data-org="all">All</button>
-      <button data-org="mp">missionpulse.ai</button>
-    </div>
 
     <!-- Approval notification bar -->
     <div id="approval-notification-bar" style="display:none;background:rgba(0,229,250,0.08);border:1px solid rgba(0,229,250,0.2);border-radius:8px;padding:12px 20px;margin-bottom:16px;align-items:center;justify-content:space-between;font-size:0.9rem;">
@@ -603,11 +595,6 @@
         </div>
       </div>
 
-      <!-- MissionPulse placeholder -->
-      <div id="mp-placeholder" style="display:none;">
-        <button class="back-btn" onclick="showHome()">&#8592; Back</button>
-        <div class="coming-soon">MissionPulse.ai dashboard coming soon</div>
-      </div>
 
       <!-- DETAIL VIEWS -->
       <div id="detail-newsletter" class="detail-view"></div>
@@ -1003,9 +990,7 @@
     function applyRoute() {
       const hash = window.location.hash.replace('#', '');
       const home = document.getElementById('tile-home');
-      const placeholder = document.getElementById('mp-placeholder');
       document.querySelectorAll('.detail-view').forEach(d => d.classList.remove('active'));
-      placeholder.style.display = 'none';
 
       if (!hash) {
         home.style.display = 'block';
@@ -1050,26 +1035,6 @@
       if (fn) fn(dashData);
     }
 
-    // ============ ORG FILTER ============
-
-    document.getElementById('org-filter').addEventListener('click', e => {
-      if (e.target.tagName !== 'BUTTON') return;
-      document.querySelectorAll('#org-filter button').forEach(b => b.classList.remove('active'));
-      e.target.classList.add('active');
-      const org = e.target.dataset.org;
-      const placeholder = document.getElementById('mp-placeholder');
-      const home = document.getElementById('tile-home');
-      document.querySelectorAll('.detail-view').forEach(d => d.classList.remove('active'));
-      if (org === 'mp') {
-        home.style.display = 'none';
-        placeholder.style.display = 'block';
-        window.location.hash = '';
-      } else {
-        placeholder.style.display = 'none';
-        home.style.display = 'block';
-        window.location.hash = '';
-      }
-    });
 
     // ============ DETAIL: NEWSLETTER ============
 
