@@ -22,7 +22,7 @@
     .badge-yellow { background: rgba(234,179,8,0.2); color: #eab308; }
     .badge-red { background: rgba(239,68,68,0.2); color: #ef4444; }
     .badge-blue { background: rgba(59,130,246,0.2); color: #60a5fa; }
-    .badge-gray { background: rgba(107,114,128,0.2); color: #9ca3af; }
+    .badge-gray { background: rgba(107,114,128,0.2); color: #d1d5db; }
     .badge-purple { background: rgba(168,85,247,0.2); color: #a855f7; }
     .badge-orange { background: rgba(249,115,22,0.2); color: #f97316; }
     .badge-cyan { background: rgba(0,229,250,0.15); color: #00e5fa; }
@@ -95,6 +95,7 @@
     .diff-block { font-family: monospace; font-size: 13px; white-space: pre-wrap; border: 1px solid #d0d7de; border-radius: 6px; overflow-x: auto; padding: 12px; max-height: 400px; }
     .kanban { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
     @media (max-width: 768px) { .kanban { grid-template-columns: 1fr; } }
+    @media (max-width: 480px) { .detail-card { overflow-x: auto; } .detail-card table { min-width: 500px; } }
     .kanban-col { background: rgba(255,255,255,0.03); border-radius: 6px; padding: 8px; min-height: 100px; }
     .kanban-col h4 { font-size: 0.7rem; color: rgba(255,255,255,0.4); text-transform: uppercase; margin-bottom: 8px; }
     .kanban-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 4px; padding: 8px; margin-bottom: 6px; font-size: 0.78rem; }
@@ -481,7 +482,7 @@
       </div>
     </header>
 
-    <div id="alert-banner" style="display:none;background:#ef4444;color:#fff;padding:12px 24px;font-weight:600;font-size:14px;text-align:center;border-radius:6px;margin-bottom:16px;"></div>
+    <div id="alert-banner" role="alert" aria-live="assertive" style="display:none;background:#ef4444;color:#fff;padding:12px 24px;font-weight:600;font-size:14px;text-align:center;border-radius:6px;margin-bottom:16px;"></div>
 
     <!-- Compact status bar -->
     <div id="compact-status">
@@ -500,7 +501,7 @@
     <!-- Role selector -->
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
       <span style="font-size:0.75rem;color:rgba(255,255,255,0.4);text-transform:uppercase;">View as:</span>
-      <select id="role-selector" onchange="applyRoleFilter(this.value)" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:4px 10px;border-radius:4px;font-size:0.8rem;">
+      <select id="role-selector" aria-label="Select dashboard role" onchange="applyRoleFilter(this.value)" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:4px 10px;border-radius:4px;font-size:0.8rem;">
         <option value="all">All Roles</option>
         <option value="cto">CTO</option>
         <option value="coo">COO</option>
@@ -766,6 +767,28 @@
 
     function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
     function timeSince(d) { const m = Math.floor((Date.now() - new Date(d).getTime()) / 60000); if (m < 60) return m + 'm ago'; const h = Math.floor(m / 60); if (h < 24) return h + 'h ago'; return Math.floor(h/24) + 'd ago'; }
+    function copyViewAsMarkdown(view) {
+      var el = document.getElementById('detail-' + view);
+      if (!el) return;
+      var md = '';
+      var tables = el.querySelectorAll('table');
+      tables.forEach(function(t) {
+        var rows = t.querySelectorAll('tr');
+        rows.forEach(function(r, i) {
+          var cells = r.querySelectorAll('th, td');
+          var line = '| ' + Array.from(cells).map(function(c) { return c.textContent.trim(); }).join(' | ') + ' |';
+          md += line + '\n';
+          if (i === 0) { md += '| ' + Array.from(cells).map(function() { return '---'; }).join(' | ') + ' |\n'; }
+        });
+        md += '\n';
+      });
+      if (!md) {
+        var cards = el.querySelectorAll('.detail-card');
+        cards.forEach(function(c) { md += '### ' + (c.querySelector('h3') || {textContent:''}).textContent + '\n' + c.textContent.trim() + '\n\n'; });
+      }
+      md = '# ' + view.toUpperCase() + ' Console — ' + new Date().toLocaleString() + '\n\n' + md;
+      navigator.clipboard.writeText(md).then(function() { showToast('Copied to clipboard'); });
+    }
     function fmtDate(d) { return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
     function esc(s) { return (s||'').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])); }
     async function apiPost(body) { return fetch('/.netlify/functions/command-center-api?key=' + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(r => r.json()); }
@@ -814,7 +837,7 @@
         switchWorkspace(_activeWorkspace);
         // Ops console render
         if (typeof renderOpsConsole === 'function') { renderOpsConsole(); loadApprovals(); if (!_opsPollTimer) startOpsPolling(); }
-      } catch (e) { console.error('Load failed:', e); document.getElementById('loading').textContent = 'Failed: ' + e.message; }
+      } catch (e) { console.error('Load failed:', e); document.getElementById('loading').innerHTML = 'Failed: ' + esc(e.message) + '<br><button onclick="loadDashboard()" style="margin-top:12px;padding:8px 20px;background:var(--accent);color:#000;border:none;border-radius:6px;cursor:pointer;font-weight:600;">Retry</button>'; }
     }
 
     function renderMode(data) {
@@ -1263,6 +1286,7 @@
       h += '<div class="detail-card"><h3>Quick Actions</h3>';
       h += '<div class="actions"><button class="btn btn-yellow btn-sm" onclick="setMode(\'degraded\')">Set Degraded Mode</button><button class="btn btn-cyan btn-sm" onclick="setMode(\'normal\')">Set Normal Mode</button><button class="btn btn-cyan btn-sm" onclick="triggerHealthCheck()">Trigger Health Check</button><a href="https://app.netlify.com" target="_blank" class="btn btn-cyan btn-sm" style="text-decoration:none;">Netlify Dashboard</a></div>';
       h += '<div id="action-result" style="margin-top:10px;font-size:0.82rem;color:rgba(255,255,255,0.6);"></div></div>';
+      h += '<div style="margin-top:16px;text-align:right;"><button onclick="copyViewAsMarkdown(\'engineering\')" style="padding:6px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#e2e8f0;border-radius:4px;cursor:pointer;font-size:0.8rem;" title="Copy this view as markdown">📋 Copy as Markdown</button></div>';
 
       el.innerHTML = h;
 
@@ -3398,6 +3422,7 @@ async function updateIssueStatus(id, status) {
         h += '</div>';
 
       } catch (e) { h += '<p style="color:#ef4444;">Failed to load: ' + e.message + '</p>'; }
+      h += '<div style="margin-top:16px;text-align:right;"><button onclick="copyViewAsMarkdown(\'coo\')" style="padding:6px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#e2e8f0;border-radius:4px;cursor:pointer;font-size:0.8rem;" title="Copy this view as markdown">📋 Copy as Markdown</button></div>';
       el.innerHTML = h;
     }
 
@@ -4655,6 +4680,24 @@ async function updateIssueStatus(id, status) {
 
       loadDashboard();
       setInterval(loadDashboard, 120000);
+      // Live stale data indicator
+      var _lastRefreshTime = Date.now();
+      var _origLoadDashboard = loadDashboard;
+      loadDashboard = async function() { await _origLoadDashboard(); _lastRefreshTime = Date.now(); };
+      setInterval(function() {
+        var age = Math.round((Date.now() - _lastRefreshTime) / 1000);
+        var el = document.getElementById('last-refresh');
+        if (!el) return;
+        var mins = Math.floor(age / 60), secs = age % 60;
+        var txt = mins > 0 ? mins + 'm ' + secs + 's ago' : secs + 's ago';
+        if (age > 300) {
+          el.textContent = '⚠️ Data is ' + txt + ' old';
+          el.style.color = '#eab308';
+        } else {
+          el.textContent = 'Updated ' + txt;
+          el.style.color = '';
+        }
+      }, 5000);
     }
 
     async function requestLogin() {
