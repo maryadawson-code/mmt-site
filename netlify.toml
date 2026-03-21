@@ -94,6 +94,26 @@
   status = 200
 
 [[redirects]]
+  from = "/latest"
+  to = "/latest.html"
+  status = 200
+
+[[redirects]]
+  from = "/podcast"
+  to = "/podcast.html"
+  status = 200
+
+[[redirects]]
+  from = "/newsletter"
+  to = "/newsletter.html"
+  status = 200
+
+[[redirects]]
+  from = "/resources"
+  to = "/resources.html"
+  status = 200
+
+[[redirects]]
   from = "/lethality-test*"
   to = "/proposal-pulse.html"
   status = 301

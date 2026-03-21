@@ -173,6 +173,63 @@
 1. **Health endpoint:** Added `force = true` to /health redirect in netlify.toml
 2. **E2E smoke test:** Created scripts/e2e-smoke.sh with 36 checks
 
+## Dead Links
+
+| Link | Location | Issue | Fix |
+|------|----------|-------|-----|
+| `/latest` | about.html | Bare path, no redirect | FIXED — added redirect in netlify.toml |
+| `/podcast` | about.html | Bare path, no redirect | FIXED — added redirect in netlify.toml |
+| `/newsletter` | about.html | Bare path, no redirect | FIXED — added redirect in netlify.toml |
+| `/resources` | about.html | Bare path, no redirect | FIXED — added redirect in netlify.toml |
+
+All image references verified — 0 missing.
+
+## Missing Migrations
+
+71 Supabase tables are referenced in code but have no migration files. These tables were created
+ad-hoc in production before migration discipline was established. Core tables (mp_users,
+mp_scoring_history, marketpulse_orders, dashboard_users, etc.) all exist in production but
+are not version-controlled.
+
+**Recommendation:** Generate a baseline migration capturing all 86 tables currently in production
+(extract schemas via `information_schema`), then enforce migration discipline for all future changes.
+
+**Pending migration:** `migrations/007_stripe_events_idempotency.sql` — must be run manually in Supabase.
+
+## Product E2E Deep Verification
+
+### ProposalPulse — 14 Checkpoints Verified
+- Input validation: file type, size (15MB max), email, document type (6 types) ✅
+- Free tier: 3 free uses, mp_feature_usage tracking ✅
+- Paid tier: $19.99 Stripe Checkout, single payment ✅
+- Document parsing: PDF (pdf-parse), DOCX (mammoth), PPTX (officeparser) ✅
+- Claude API: Primary (Sonnet) + shadow (Haiku) dual-model scoring ✅
+- Consensus analysis: Flags sections with >1.5pt divergence ✅
+- Results storage: mp_scoring_history with full workflow state machine ✅
+- pWin calculation: Server-side weighted model ✅
+- Email delivery: Resend with circuit breaker (threshold 2, 60s reset) ✅
+- Report HTML: Stored in Supabase, URL-accessible with HMAC token ✅
+- Gold Team Review: Fire-and-forget, 2 sequential Claude calls ✅
+- Admin bypass: 4 hardcoded emails (Mary x2, Jack, amchicu) ✅
+- Rate limiting: IP (10/min) + email (5/hr), admins exempt ✅
+- Kill switch: Checked before processing ✅
+
+### MarketPulse — 9 Checkpoints Verified
+- Input validation: name/email/topic required, HTML stripped ✅
+- Free tier: 1 free report per email ✅
+- Paid tier: $50 Stripe Checkout ✅
+- Entity disambiguation: Acronym resolution, set-aside filters, DOGE actions ✅
+- Research: Multi-pass Perplexity (12-call cap), fact-checking, citation filtering ✅
+- Quality gates: Claim validation, synthesis sanitization, report scoring ✅
+- PDF generation: HTML rendering, Supabase storage, 90-day URLs ✅
+- Email delivery: Resend with circuit breaker ✅
+- Workflow state machine: Full transitions via lib/workflow-state.js ✅
+
+### Non-Blocking Risks Noted
+- Admin email list hardcoded in 2 places (score-deck.js + score-deck-background.js)
+- Perplexity cap (12 calls) could silently limit report depth
+- Shadow scoring failures are silent (by design — best-effort)
+
 ## Recommendations — Top 5 Before Monday
 
 1. **Run migration 007** (stripe_events idempotency table) — prevents duplicate Stripe webhook processing. Takes 10 seconds in Supabase SQL editor.
