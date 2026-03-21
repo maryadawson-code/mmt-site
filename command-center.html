@@ -283,6 +283,16 @@
       .ops-two-col { grid-template-columns: 1fr !important; }
     }
 
+    /* Workspace bar */
+    #workspace-bar { position: sticky; top: 0; z-index: 9500; display: flex; gap: 4px; padding: 8px 20px; background: #0d1117; border-bottom: 1px solid rgba(0,229,250,0.15); overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .ws-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); padding: 6px 20px; border-radius: 20px; cursor: pointer; font-size: 0.82rem; font-weight: 600; white-space: nowrap; transition: all 0.15s; }
+    .ws-btn:hover { color: #e2e8f0; border-color: rgba(255,255,255,0.2); }
+    .ws-btn.active { background: rgba(0,229,250,0.15); color: #00e5fa; border-color: rgba(0,229,250,0.4); }
+
+    /* Compact status bar */
+    #compact-status { display: flex; align-items: center; gap: 12px; padding: 6px 0; margin-bottom: 12px; font-size: 0.75rem; color: rgba(255,255,255,0.4); flex-wrap: wrap; }
+    #compact-status .refresh-info { color: rgba(255,255,255,0.3); }
+
     /* Roadmap styles */
     .roadmap-filter-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 16px; }
     .roadmap-filter-bar select, .roadmap-filter-bar input { background: #111827; color: #e2e8f0; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; padding: 6px 10px; font-size: 0.82rem; }
@@ -410,10 +420,10 @@
   <div id="toast" class="toast"></div>
 
   <!-- Command Palette (Cmd+K) -->
-  <div class="cmd-palette-overlay" id="cmd-palette-overlay">
+  <div class="cmd-palette-overlay" id="cmd-palette-overlay" onclick="if(event.target===this)closePalette()">
     <div class="cmd-palette">
-      <input class="cmd-palette-input" id="cmd-palette-input" type="text" placeholder="Search tiles, actions..." autocomplete="off">
-      <div class="cmd-palette-list" id="cmd-palette-list"></div>
+      <input class="cmd-palette-input" id="cmd-palette-input" type="text" placeholder="Search tiles, actions... (Cmd+K)" oninput="renderPaletteResults(this.value)" autocomplete="off">
+      <div class="cmd-palette-results" id="cmd-palette-results"></div>
       <div class="cmd-palette-hint"><span>↑↓ Navigate</span><span>↵ Select</span><span>Esc Close</span></div>
     </div>
   </div>
@@ -429,36 +439,13 @@
       <div class="mobile-nav-link" onclick="closeMobileNav();showHome();">Home</div>
     </div>
     <div class="mobile-nav-group">
-      <div class="mobile-nav-group-label">Ops</div>
-      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('engineering')">Engineering</div>
-      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('agents')">Agent Fleet</div>
-      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('health')">Site Health</div>
-      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('security')">Security</div>
-      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('qa')">QA</div>
-      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('issues')">Issues</div>
+      <div class="mobile-nav-group-label">Workspaces</div>
+      <div class="mobile-nav-link" onclick="closeMobileNav();switchWorkspace('dev');showHome();">Development</div>
+      <div class="mobile-nav-link" onclick="closeMobileNav();switchWorkspace('ops');showHome();">Operations</div>
+      <div class="mobile-nav-link" onclick="closeMobileNav();switchWorkspace('editorial');showHome();">Editorial</div>
     </div>
-    <div class="mobile-nav-group">
-      <div class="mobile-nav-group-label">Products</div>
-      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('products')">Products</div>
-      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('customers')">Customers</div>
-      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('projects')">Projects</div>
-      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('roadmap')">Roadmap</div>
-    </div>
-    <div class="mobile-nav-group">
-      <div class="mobile-nav-group-label">Intelligence</div>
-      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('content')">Content Studio</div>
-      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('editorial')">Editorial</div>
-      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('newsletter')">Newsletter</div>
-      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('competitive')">Competitive Intel</div>
-      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('learnings')">Agent Memory</div>
-    </div>
-    <div class="mobile-nav-group">
-      <div class="mobile-nav-group-label">Finance</div>
-      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('costs')">Cost Intelligence</div>
-      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('finance')">Finance</div>
-      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('billing')">Billing</div>
-      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('services')">Services</div>
-      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('penny')">Cost Control</div>
+    <div class="mobile-nav-group" id="mobile-nav-ws-groups">
+      <!-- Dynamically populated by updateMobileNav() -->
     </div>
     <div class="mobile-nav-footer">
       <div id="mobile-nav-user" style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-bottom:8px;"></div>
@@ -467,6 +454,13 @@
   </div>
 
   <div id="dashboard" class="dashboard">
+    <!-- WORKSPACE BAR -->
+    <div id="workspace-bar">
+      <button class="ws-btn" data-ws="dev" onclick="switchWorkspace('dev')">Development</button>
+      <button class="ws-btn" data-ws="ops" onclick="switchWorkspace('ops')">Operations</button>
+      <button class="ws-btn" data-ws="editorial" onclick="switchWorkspace('editorial')">Editorial</button>
+    </div>
+
     <!-- USER BAR -->
     <div id="user-bar" style="display: none; padding: 8px 0; margin-bottom: 8px; border-bottom: 1px solid #1f2937; justify-content: space-between; align-items: center;">
       <div style="color: #6b7280; font-size: 13px;">
@@ -486,13 +480,18 @@
     <header>
       <h1>MMT Command Center</h1>
       <div style="display:flex;align-items:center;gap:8px;">
-        <span id="mode-badge" class="mode mode-normal">NORMAL</span>
-        <span class="refresh-info" id="last-refresh"></span>
         <button class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Open menu">&#9776;</button>
       </div>
     </header>
 
     <div id="alert-banner" style="display:none;background:#ef4444;color:#fff;padding:12px 24px;font-weight:600;font-size:14px;text-align:center;border-radius:6px;margin-bottom:16px;"></div>
+
+    <!-- Compact status bar -->
+    <div id="compact-status">
+      <span id="mode-badge" class="mode mode-normal">NORMAL</span>
+      <span class="refresh-info" id="last-refresh"></span>
+      <span style="margin-left:auto;color:rgba(255,255,255,0.25);">⌘K to search</span>
+    </div>
 
     <!-- Org Filter -->
     <div class="org-filter" id="org-filter">
@@ -522,8 +521,13 @@
     <div id="content" style="display:none;">
       <!-- TILE HOME VIEW -->
       <div id="tile-home">
-        <!-- OPS CONSOLE: Command Bar -->
-        <div class="cmd-bar" id="cmd-bar" style="position: relative;">
+        <!-- Tile grid (primary view, filtered by workspace) -->
+        <div class="tile-grid" id="tile-grid"></div>
+
+        <!-- Panels: shown/hidden by workspace via JS (display:none toggling) -->
+
+        <!-- Command Bar (all workspaces, agent pre-fill varies) -->
+        <div class="cmd-bar" id="cmd-bar" data-ws-panel="dev ops editorial" style="position: relative; margin-top: 16px;">
           <input type="text" id="cmd-input" placeholder="Send a command to any agent..." autocomplete="off" aria-label="Command input">
           <select id="cmd-agent" aria-label="Select agent"></select>
           <select id="cmd-priority" aria-label="Priority">
@@ -537,11 +541,11 @@
           <div class="cmd-history-dropdown" id="cmd-history-dd"></div>
         </div>
 
-        <!-- OPS CONSOLE: Agent Status Panel -->
-        <div class="agent-panel" id="agent-panel" role="toolbar" aria-label="Agent status"></div>
+        <!-- Agent Status Panel -->
+        <div class="agent-panel" id="agent-panel" data-ws-panel="dev ops" role="toolbar" aria-label="Agent status"></div>
 
-        <!-- OPS CONSOLE: Approval Queue -->
-        <div class="ops-section" id="approval-section" style="display:none;">
+        <!-- Approval Queue -->
+        <div class="ops-section" id="approval-section" data-ws-panel="ops" style="display:none;">
           <div class="ops-section-title">
             <span>AWAITING YOUR APPROVAL</span>
             <span class="ops-count-badge" id="approval-count">0</span>
@@ -553,8 +557,8 @@
           </div>
         </div>
 
-        <!-- OPS CONSOLE: Live Task Feed -->
-        <div class="ops-section" id="task-feed-section">
+        <!-- Live Task Feed -->
+        <div class="ops-section" id="task-feed-section" data-ws-panel="dev ops">
           <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
             <div class="ops-section-title" style="margin-bottom:0;">LIVE TASKS</div>
             <div class="last-updated-bar">
@@ -571,8 +575,8 @@
           <div id="task-feed"></div>
         </div>
 
-        <!-- OPS CONSOLE: Signals + Pipeline side by side -->
-        <div class="ops-two-col">
+        <!-- Signals + Pipeline (editorial + ops) -->
+        <div class="ops-two-col" id="signals-pipeline-section" data-ws-panel="editorial ops">
           <!-- Signal Inbox -->
           <div class="ops-section" id="signal-section">
             <div class="ops-section-title">
@@ -597,12 +601,6 @@
             <div id="pipeline-feed"></div>
           </div>
         </div>
-
-        <!-- Original tile grid (still available) -->
-        <details style="margin-top:16px;">
-          <summary style="color:rgba(255,255,255,0.4);font-size:0.8rem;cursor:pointer;padding:8px 0;">Full Dashboard Tiles</summary>
-          <div class="tile-grid" id="tile-grid" style="margin-top:12px;"></div>
-        </details>
       </div>
 
       <!-- MissionPulse placeholder -->
@@ -672,6 +670,91 @@
     let _roadmapExpandedId = null;
     let _roadmapCharts = {};
     let _roleFilter = 'all';
+    let _activeWorkspace = localStorage.getItem('mmt-workspace') || 'ops';
+
+    // Workspace → tile mapping
+    var TILE_WORKSPACE = {
+      engineering: 'dev', roadmap: 'dev', projects: 'dev', issues: 'dev', qa: 'dev',
+      agents: 'dev', health: 'dev', security: 'dev', costs: 'dev',
+      coo: 'ops', products: 'ops', customers: 'ops', billing: 'ops', services: 'ops',
+      finance: 'ops', business: 'ops', penny: 'ops',
+      editorial: 'editorial', newsletter: 'editorial', content: 'editorial',
+      competitive: 'editorial', learnings: 'editorial'
+    };
+
+    // Sidebar definitions per workspace
+    var WORKSPACE_SIDEBAR = {
+      dev: [
+        { icon: '🔧', id: 'engineering', label: 'Engineering' },
+        { icon: '📋', id: 'roadmap', label: 'Roadmap' },
+        { icon: '📋', id: 'projects', label: 'Projects' },
+        { icon: '🔧', id: 'issues', label: 'Issues' },
+        { icon: '🧪', id: 'qa', label: 'QA' },
+        { icon: '🤖', id: 'agents', label: 'Agent Fleet' },
+        { icon: '🛡️', id: 'health', label: 'Site Health' },
+        { icon: '🛡️', id: 'security', label: 'Security' },
+        { icon: '💰', id: 'costs', label: 'Cost Intelligence' }
+      ],
+      ops: [
+        { icon: '🎯', id: 'coo', label: 'COO Console' },
+        { icon: '📦', id: 'products', label: 'Products' },
+        { icon: '👥', id: 'customers', label: 'Customers' },
+        { icon: '🧾', id: 'billing', label: 'Billing' },
+        { icon: '💳', id: 'services', label: 'Services' },
+        { icon: '💰', id: 'finance', label: 'Finance' },
+        { icon: '📊', id: 'business', label: 'Business' },
+        { icon: '💰', id: 'penny', label: 'Cost Control' }
+      ],
+      editorial: [
+        { icon: '✏️', id: 'editorial', label: 'Editorial' },
+        { icon: '📰', id: 'newsletter', label: 'Newsletter' },
+        { icon: '🎨', id: 'content', label: 'Content Studio' },
+        { icon: '🎯', id: 'competitive', label: 'Competitive Intel' },
+        { icon: '🧠', id: 'learnings', label: 'Agent Memory' }
+      ]
+    };
+
+    function switchWorkspace(ws) {
+      _activeWorkspace = ws;
+      localStorage.setItem('mmt-workspace', ws);
+      // Update workspace bar buttons
+      document.querySelectorAll('#workspace-bar .ws-btn').forEach(function(btn) {
+        btn.classList.toggle('active', btn.getAttribute('data-ws') === ws);
+      });
+      // Re-render tiles
+      if (dashData) renderTiles(dashData);
+      // Toggle panels by data-ws-panel attribute
+      document.querySelectorAll('[data-ws-panel]').forEach(function(el) {
+        var panels = el.getAttribute('data-ws-panel').split(' ');
+        el.style.display = panels.indexOf(ws) !== -1 ? '' : 'none';
+      });
+      // Pre-fill agent dropdown based on workspace
+      var agentSel = document.getElementById('cmd-agent');
+      if (agentSel) {
+        if (ws === 'dev') {
+          for (var i = 0; i < agentSel.options.length; i++) {
+            if (agentSel.options[i].value === 'ops-code') { agentSel.selectedIndex = i; break; }
+          }
+        } else if (ws === 'editorial') {
+          for (var i = 0; i < agentSel.options.length; i++) {
+            if (agentSel.options[i].value === 'ops-editorial') { agentSel.selectedIndex = i; break; }
+          }
+        }
+      }
+      // Update mobile nav sidebar
+      updateMobileNav(ws);
+      // If on home view, stay. If on a detail view, stay there too.
+    }
+
+    function updateMobileNav(ws) {
+      var groups = document.getElementById('mobile-nav-ws-groups');
+      if (!groups) return;
+      var items = WORKSPACE_SIDEBAR[ws] || [];
+      groups.innerHTML = items.map(function(item) {
+        return '<div class="mobile-nav-link" onclick="closeMobileNav();navigate(\'' + item.id + '\')">' + item.icon + ' ' + item.label + '</div>';
+      }).join('');
+    }
+
     // Init mermaid when loaded
     if (typeof mermaid !== 'undefined') { mermaid.initialize({ startOnLoad: false, theme: 'dark' }); }
     window.addEventListener('load', () => { if (typeof mermaid !== 'undefined') mermaid.initialize({ startOnLoad: false, theme: 'dark' }); });
@@ -722,6 +805,8 @@
         document.getElementById('loading').style.display = 'none';
         document.getElementById('content').style.display = 'block';
         document.getElementById('last-refresh').textContent = 'Updated ' + new Date().toLocaleTimeString();
+        // Init workspace (sets active button, filters panels, pre-fills agent)
+        switchWorkspace(_activeWorkspace);
         // Ops console render
         if (typeof renderOpsConsole === 'function') { renderOpsConsole(); loadApprovals(); if (!_opsPollTimer) startOpsPolling(); }
       } catch (e) { console.error('Load failed:', e); document.getElementById('loading').textContent = 'Failed: ' + e.message; }
@@ -886,6 +971,11 @@
 
     function renderTiles(data) {
       let tiles = getTileData(data);
+      // Add ws property from mapping
+      tiles.forEach(function(t) { t.ws = TILE_WORKSPACE[t.id] || 'ops'; });
+      // Filter by active workspace
+      tiles = tiles.filter(t => t.ws === _activeWorkspace);
+      // Then apply role filter as secondary
       if (_roleFilter !== 'all') tiles = tiles.filter(t => !t.roles || t.roles.includes(_roleFilter));
       const grid = document.getElementById('tile-grid');
       grid.innerHTML = tiles.map(t => {
@@ -4520,14 +4610,7 @@ async function updateIssueStatus(id, status) {
       showUserManagement();
     }
 
-    // Cmd+K / Ctrl+K → focus command bar
-    document.addEventListener('keydown', function(e) {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        var input = document.getElementById('cmd-input');
-        if (input) { input.focus(); input.select(); }
-      }
-    });
+    // Cmd+K / Ctrl+K handled by command palette below
 
     // Enter key on email input
     document.getElementById('login-email').addEventListener('keydown', function(e) { if (e.key === 'Enter') requestLogin(); });
@@ -4538,26 +4621,35 @@ async function updateIssueStatus(id, status) {
     var _paletteItems = [];
     var _palettePrevFocus = null;
 
+    // Navigate to a tile, switching workspace if needed
+    function wsNavigate(tileId) {
+      var targetWs = TILE_WORKSPACE[tileId];
+      if (targetWs && targetWs !== _activeWorkspace) {
+        switchWorkspace(targetWs);
+      }
+      navigate(tileId);
+    }
+
     function getPaletteItems(query) {
       var allItems = [
-        { icon: '🎯', label: 'COO Console', action: function() { navigate('coo'); } },
-        { icon: '✏️', label: 'Editorial', action: function() { navigate('editorial'); } },
-        { icon: '📋', label: 'Product Roadmap', action: function() { navigate('roadmap'); } },
-        { icon: '💰', label: 'Cost Intelligence', action: function() { navigate('costs'); } },
-        { icon: '🧾', label: 'Billing Tracker', action: function() { navigate('billing'); } },
-        { icon: '💳', label: 'Services', action: function() { navigate('services'); } },
-        { icon: '👥', label: 'Customers', action: function() { navigate('customers'); } },
-        { icon: '📋', label: 'Projects', action: function() { navigate('projects'); } },
-        { icon: '🧪', label: 'QA', action: function() { navigate('qa'); } },
-        { icon: '🔧', label: 'Issues', action: function() { navigate('issues'); } },
-        { icon: '📰', label: 'Newsletter', action: function() { navigate('newsletter'); } },
-        { icon: '📦', label: 'Products', action: function() { navigate('products'); } },
-        { icon: '🤖', label: 'Agent Fleet', action: function() { navigate('agents'); } },
-        { icon: '🎨', label: 'Content Studio', action: function() { navigate('content'); } },
-        { icon: '🛡️', label: 'Security Posture', action: function() { navigate('security'); } },
-        { icon: '💰', label: 'Cost Control (Penny)', action: function() { navigate('penny'); } },
-        { icon: '🧠', label: 'Agent Memory', action: function() { navigate('learnings'); } },
-        { icon: '🎯', label: 'Competitive Intel', action: function() { navigate('competitive'); } },
+        { icon: '🎯', label: 'COO Console', action: function() { wsNavigate('coo'); } },
+        { icon: '✏️', label: 'Editorial', action: function() { wsNavigate('editorial'); } },
+        { icon: '📋', label: 'Product Roadmap', action: function() { wsNavigate('roadmap'); } },
+        { icon: '💰', label: 'Cost Intelligence', action: function() { wsNavigate('costs'); } },
+        { icon: '🧾', label: 'Billing Tracker', action: function() { wsNavigate('billing'); } },
+        { icon: '💳', label: 'Services', action: function() { wsNavigate('services'); } },
+        { icon: '👥', label: 'Customers', action: function() { wsNavigate('customers'); } },
+        { icon: '📋', label: 'Projects', action: function() { wsNavigate('projects'); } },
+        { icon: '🧪', label: 'QA', action: function() { wsNavigate('qa'); } },
+        { icon: '🔧', label: 'Issues', action: function() { wsNavigate('issues'); } },
+        { icon: '📰', label: 'Newsletter', action: function() { wsNavigate('newsletter'); } },
+        { icon: '📦', label: 'Products', action: function() { wsNavigate('products'); } },
+        { icon: '🤖', label: 'Agent Fleet', action: function() { wsNavigate('agents'); } },
+        { icon: '🎨', label: 'Content Studio', action: function() { wsNavigate('content'); } },
+        { icon: '🛡️', label: 'Security Posture', action: function() { wsNavigate('security'); } },
+        { icon: '💰', label: 'Cost Control (Penny)', action: function() { wsNavigate('penny'); } },
+        { icon: '🧠', label: 'Agent Memory', action: function() { wsNavigate('learnings'); } },
+        { icon: '🎯', label: 'Competitive Intel', action: function() { wsNavigate('competitive'); } },
         { icon: '🏠', label: 'Dashboard Home', action: function() { showHome(); } },
         { icon: '🔄', label: 'Refresh Dashboard', action: function() { loadDashboard(); } },
         { icon: '🚪', label: 'Log Out', action: function() { logout(); } },
@@ -4639,14 +4731,6 @@ async function updateIssueStatus(id, status) {
     // Start auth flow
     initAuth();
   </script>
-
-  <!-- Cmd+K Palette -->
-  <div id="cmd-palette-overlay" class="cmd-palette-overlay" onclick="if(event.target===this)closePalette()">
-    <div class="cmd-palette">
-      <input id="cmd-palette-input" type="text" placeholder="Search sections... (Cmd+K)" oninput="renderPaletteResults(this.value)" autocomplete="off">
-      <div id="cmd-palette-results" class="cmd-palette-results"></div>
-    </div>
-  </div>
 
   <!-- Mobile Bottom Nav -->
   <div class="mobile-nav" id="mobile-bottom-nav">
