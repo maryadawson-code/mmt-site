@@ -15,6 +15,7 @@
 const { createClient } = require("@supabase/supabase-js");
 const { createLogger } = require("./lib/logger");
 const { Sentry, wrapHandler } = require("./lib/sentry");
+const { checkRateLimit } = require("./lib/rate-limiter");
 
 const HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -61,6 +62,15 @@ exports.handler = wrapHandler(async (event) => {
   const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
   if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) return err(500, "Not configured");
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+
+  // Rate limit: 60 requests/min per auth token
+  const clientIp = (event.headers["x-forwarded-for"] || event.headers["client-ip"] || "unknown").split(",")[0].trim();
+  const rateKey = `agent-bridge:${clientIp}`;
+  const rl = await checkRateLimit(supabase, rateKey, 60, 1);
+  if (!rl.allowed) {
+    log.warn("Rate limited", { ip: clientIp });
+    return { statusCode: 429, headers: HEADERS, body: JSON.stringify({ error: "Too many requests", reset_minutes: rl.reset }) };
+  }
 
   // === GET — read dashboard state ===
   if (event.httpMethod === "GET") {

@@ -11,6 +11,8 @@
     "test:links": "node scripts/validate-links.js",
     "test:integrity": "node scripts/verify-integrity.js",
     "verify": "node build.js && node scripts/verify-integrity.js && npx vitest run tests/unit && npx playwright test",
+    "lighthouse": "npx @lhci/cli autorun",
+    "smoke": "bash scripts/smoke-test.sh",
     "dev": "npx netlify dev"
   },
   "dependencies": {

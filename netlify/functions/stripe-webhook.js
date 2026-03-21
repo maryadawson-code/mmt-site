@@ -43,6 +43,26 @@ exports.handler = async (event) => {
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
+  // Idempotency check: skip already-processed events
+  const { data: existing } = await supabase
+    .from("stripe_events")
+    .select("id")
+    .eq("event_id", stripeEvent.id)
+    .maybeSingle();
+
+  if (existing) {
+    console.log(`stripe-webhook: duplicate event ${stripeEvent.id} — skipping`);
+    return { statusCode: 200, body: JSON.stringify({ received: true, duplicate: true }) };
+  }
+
+  // Record event before processing
+  await supabase.from("stripe_events").insert({
+    event_id: stripeEvent.id,
+    event_type: stripeEvent.type,
+    processed_at: new Date().toISOString(),
+    payload: stripeEvent.data.object,
+  });
+
   switch (stripeEvent.type) {
     case "checkout.session.completed": {
       const session = stripeEvent.data.object;
