@@ -19,6 +19,7 @@ const { checkKillSwitch } = require("./lib/kill-switch");
 const { stripHtml, validateFile } = require("./lib/sanitize");
 const { checkRateLimit } = require("./lib/rate-limiter");
 const { createLogger } = require("./lib/logger");
+const { Sentry, wrapHandler } = require("./lib/sentry");
 
 // --- Environment Variables ---
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -177,7 +178,7 @@ async function recordUsage(supabase, userId, usage) {
 // MAIN HANDLER
 // ============================================================
 
-exports.handler = async (event) => {
+exports.handler = wrapHandler(async (event) => {
   // CORS preflight
   if (event.httpMethod === "OPTIONS") {
     return { statusCode: 204, headers: CORS_HEADERS, body: "" };
@@ -341,7 +342,7 @@ exports.handler = async (event) => {
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
     // --- Rate limiting (IP-based: 10/min, email-based: 5/hour) ---
-    const ADMIN_EMAILS = ["maryadawson@gmail.com", "mary@missionmeetstech.com", "jackyang2326@gmail.com"];
+    const ADMIN_EMAILS = ["maryadawson@gmail.com", "mary@missionmeetstech.com", "jackyang2326@gmail.com", "amchicu@gmail.com"];
     const clientIp = (event.headers["x-forwarded-for"] || event.headers["client-ip"] || "unknown").split(",")[0].trim();
     const isAdminEmail = ADMIN_EMAILS.includes(email.toLowerCase().trim());
 
@@ -483,4 +484,4 @@ exports.handler = async (event) => {
       body: JSON.stringify({ error: "Internal server error" }),
     };
   }
-};
+});

@@ -23,6 +23,7 @@ const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
 const { withRetry } = require("./lib/retry");
 const { checkKillSwitch, shouldHoldEmail, holdEmail } = require("./lib/kill-switch");
 const { transitionState } = require("./lib/workflow-state");
+const { Sentry, wrapHandler } = require("./lib/sentry");
 const { validateScorecard } = require("./lib/scorecard-validator");
 const { logOpsEvent } = require("./lib/ops-ledger");
 const { extractIntelSignals } = require("./lib/signal-extractor");
@@ -319,7 +320,7 @@ function computeOverallGrade(scorecard) {
 // MAIN HANDLER (Background Function)
 // ============================================================
 
-exports.handler = async (event) => {
+exports.handler = wrapHandler(async (event) => {
   const log = createLogger("score-deck-background");
   log.info("Function entry");
 
@@ -474,7 +475,7 @@ exports.handler = async (event) => {
       body: JSON.stringify(apiCallBody),
     }));
 
-    const ADMIN_EMAILS = ["maryadawson@gmail.com", "mary@missionmeetstech.com", "jackyang2326@gmail.com"];
+    const ADMIN_EMAILS = ["maryadawson@gmail.com", "mary@missionmeetstech.com", "jackyang2326@gmail.com", "amchicu@gmail.com"];
     const isAdmin = ADMIN_EMAILS.includes((email || "").toLowerCase());
     const shadowPromise = isAdmin
       ? Promise.resolve(null)
@@ -936,7 +937,7 @@ exports.handler = async (event) => {
 
     return { statusCode: 200, body: "Error handled" };
   }
-};
+});
 
 
 /**

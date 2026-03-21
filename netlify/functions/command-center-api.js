@@ -33,6 +33,25 @@ function err(status, msg) {
   return { statusCode: status, headers: CORS_HEADERS, body: JSON.stringify({ error: msg }) };
 }
 
+// Strip heavy HTML/text fields from list responses to save bandwidth
+function stripHeavyFields(rows) {
+  if (!Array.isArray(rows)) return rows;
+  return rows.map(row => {
+    const clean = { ...row };
+    delete clean.report_html;
+    delete clean.redteam_report_html;
+    if (clean.scores && typeof clean.scores === "object") {
+      clean.scores = { ...clean.scores };
+      delete clean.scores._document_text;
+    }
+    if (clean.shadow_scorecard && typeof clean.shadow_scorecard === "object") {
+      clean.shadow_scorecard = { ...clean.shadow_scorecard };
+      delete clean.shadow_scorecard._document_text;
+    }
+    return clean;
+  });
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod === "OPTIONS") {
     return { statusCode: 204, headers: CORS_HEADERS, body: "" };
@@ -71,6 +90,10 @@ exports.handler = async (event) => {
       agentsResult,
       signalsResult,
       recentImagesResult,
+      ppTotalResult,
+      mpTotalResult,
+      ppStaleResult,
+      mpStaleResult,
     ] = await Promise.all([
       queryOpsEvents(supabase, { hours: 24, limit: 200 }),
 
@@ -177,6 +200,36 @@ exports.handler = async (event) => {
         .limit(12)
         .then(r => r.data || [])
         .catch(() => []),
+
+      // V5: Product health — total counts
+      supabase
+        .from("mp_scoring_history")
+        .select("id", { count: "exact", head: true })
+        .then(r => r.count || 0)
+        .catch(() => 0),
+
+      supabase
+        .from("marketpulse_orders")
+        .select("id", { count: "exact", head: true })
+        .then(r => r.count || 0)
+        .catch(() => 0),
+
+      // V5: Stale orders (>30 min in processing)
+      supabase
+        .from("mp_scoring_history")
+        .select("id, created_at")
+        .eq("workflow_state", "processing")
+        .lt("created_at", new Date(now - 30 * 60000).toISOString())
+        .then(r => r.data || [])
+        .catch(() => []),
+
+      supabase
+        .from("marketpulse_orders")
+        .select("id, created_at")
+        .eq("workflow_state", "processing")
+        .lt("created_at", new Date(now - 30 * 60000).toISOString())
+        .then(r => r.data || [])
+        .catch(() => []),
     ]);
 
     // Quality summaries
@@ -217,7 +270,7 @@ exports.handler = async (event) => {
       health: { mode: getMode(), timestamp: now.toISOString() },
       flags: getAllFlags(),
       circuits: getAllCircuitStates(),
-      orders_24h: { proposalpulse: scoringResult, marketpulse: marketpulseResult },
+      orders_24h: { proposalpulse: stripHeavyFields(scoringResult), marketpulse: stripHeavyFields(marketpulseResult) },
       quality: {
         proposalpulse: { "7d": qualitySummary(qualityPPResult, 7), "30d": qualitySummary(qualityPPResult, 30) },
         marketpulse: { "7d": qualitySummary(qualityMPResult, 7), "30d": qualitySummary(qualityMPResult, 30) },
@@ -225,13 +278,28 @@ exports.handler = async (event) => {
       ops_events_24h: opsEventsResult,
       held_emails: heldEmailsResult,
       // V2
-      report_history: { marketpulse: mpReportsResult, proposalpulse: ppReportsResult },
+      report_history: { marketpulse: stripHeavyFields(mpReportsResult), proposalpulse: stripHeavyFields(ppReportsResult) },
       pipeline: pipelineResult,
       tasks: tasksResult,
       agents: agentsResult,
       revenue,
       signals: signalsResult,
       recent_images: recentImagesResult,
+      // V5: Product health totals + stale orders
+      product_health: {
+        proposalpulse: {
+          total_orders: ppTotalResult,
+          orders_today: scoringResult.length,
+          stale_orders: ppStaleResult.length,
+          stale_ids: ppStaleResult.map(o => o.id),
+        },
+        marketpulse: {
+          total_orders: mpTotalResult,
+          orders_today: marketpulseResult.length,
+          stale_orders: mpStaleResult.length,
+          stale_ids: mpStaleResult.map(o => o.id),
+        },
+      },
     };
 
     return ok(dashboard);
