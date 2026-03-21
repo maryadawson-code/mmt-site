@@ -321,12 +321,11 @@
     <!-- Org Filter -->
     <div class="org-filter" id="org-filter">
       <button class="active" data-org="all">All</button>
-      <button data-org="mmt">missionmeetstech.com</button>
       <button data-org="mp">missionpulse.ai</button>
     </div>
 
     <!-- Approval notification bar -->
-    <div id="approval-notification-bar" style="display:none;background:rgba(0,229,250,0.08);border:1px solid rgba(0,229,250,0.2);border-radius:8px;padding:12px 20px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;font-size:0.9rem;">
+    <div id="approval-notification-bar" style="display:none;background:rgba(0,229,250,0.08);border:1px solid rgba(0,229,250,0.2);border-radius:8px;padding:12px 20px;margin-bottom:16px;align-items:center;justify-content:space-between;font-size:0.9rem;">
       <span id="approval-bar-text" style="color:#00e5fa;font-weight:600;"></span>
       <button class="btn btn-cyan btn-sm" onclick="scrollToConsole()" id="approval-bar-btn">Review Now</button>
     </div>
@@ -478,7 +477,6 @@
     let currentFilter = 'all';
     let _lastResearch = null;
     let _costData = null;
-    let _financeData = null;
     let _billingData = null;
     let _servicesData = null;
     let _customerData = null;
@@ -603,31 +601,32 @@
       return [
         { id: 'coo', icon: '🎯', title: 'COO Console', m1: cooBadge || '--', m1l: 'Pending', m2: _servicesData ? '$' + (_servicesData.totalMonthlyCents / 100).toFixed(0) : '--', m2l: 'Mo. Burn', badge: cooBadge, roles: ['coo', 'all'] },
         { id: 'editorial', icon: '✏️', title: 'Editorial', m1: editorBadge || '--', m1l: 'Drafts', m2: null, m2l: null, badge: editorBadge, roles: ['editor', 'all'] },
-        { id: 'roadmap', icon: '\ud83d\udccb', title: 'Roadmap', m1: '2', m1l: 'Platforms', m2: highDebt, m2l: 'High debt', badge: highDebt },
-        { id: 'costs', icon: '\ud83d\udcb0', title: 'Cost Intelligence', m1: _costData ? '$' + (_costData.today.totalCents / 100).toFixed(2) : '--', m1l: 'Today', m2: _costData ? _costData.today.calls : '--', m2l: 'API Calls', badge: _costData ? _costData.alerts.filter(a => a.severity === 'critical').length : 0 },
-        { id: 'finance', icon: '💰', title: 'Cost Intelligence', m1: _costData ? '$' + (_costData.today.totalCents / 100).toFixed(2) : '--', m1l: 'Today', m2: _costData ? _costData.today.calls : '--', m2l: 'API Calls', badge: _costData ? _costData.alerts.filter(a => a.severity === 'critical').length : 0 },
-        { id: 'billing', icon: '🧾', title: 'Billing Tracker', m1: _billingData ? '$' + ((_billingData.summary?.total_cents || 0) / 100).toFixed(0) : '--', m1l: 'This month', m2: _billingData ? (_billingData.needsReview?.length || 0) : '--', m2l: 'Needs review', badge: _billingData ? (_billingData.needsReview?.length || 0) : 0 },
-        { id: 'services', icon: '💳', title: 'Services', m1: _servicesData ? '$' + (_servicesData.totalMonthlyCents / 100).toFixed(0) : '--', m1l: 'Monthly burn', m2: _servicesData ? _servicesData.pendingDecisions : '--', m2l: 'Decisions', badge: _servicesData ? _servicesData.upcomingDeadlines?.length || 0 : 0 },
-        { id: 'customers', icon: '👥', title: 'Customers', m1: _customerData ? _customerData.total : '--', m1l: 'Total', m2: _customerData ? _customerData.avgHealth : '--', m2l: 'Avg Health', badge: _customerData ? _customerData.atRisk : 0 },
-        { id: 'projects', icon: '📋', title: 'Projects', m1: _projectData ? _projectData.openTasks : '--', m1l: 'Open tasks', m2: _projectData ? _projectData.blockedTasks : '--', m2l: 'Blocked', badge: _projectData ? _projectData.blockedTasks : 0 },
-        { id: 'qa', icon: '🧪', title: 'QA', m1: _qaData ? _qaData.totalRegressions : '--', m1l: 'Regressions', m2: '--', m2l: 'Pass rate', badge: _qaData ? _qaData.totalRegressions : 0 },
-        { id: 'issues', icon: '🔧', title: 'Issues', m1: _issueData ? _issueData.total : '--', m1l: 'Open', m2: _issueData ? (_issueData.byStatus?.['fix-proposed'] || 0) : '--', m2l: 'Awaiting approval', badge: _issueData ? (_issueData.critical + (_issueData.byStatus?.['fix-proposed'] || 0)) : 0 },
-        { id: 'newsletter', icon: '\ud83d\udcf0', title: 'Newsletter', m1: daysToPublish !== null ? daysToPublish : '--', m1l: 'Days to pub', m2: nextStatus || '--', m2l: 'Status', badge: nearPipeline.length || 0 },
-        { id: 'products', icon: '\ud83d\udce6', title: 'Products', m1: activeOrders.length, m1l: 'Active orders', m2: deliveredToday.length, m2l: 'Delivered', badge: errorOrders.length },
-        { id: 'engineering', icon: '\ud83d\udd27', title: 'Engineering', m1: pendingTasks.length, m1l: 'Pending tasks', m2: null, m2l: null, badge: pendingTasks.length },
-        { id: 'business', icon: '\ud83d\udcca', title: 'Business', m1: revTotal !== null ? '$' + revTotal.toLocaleString() : '--', m1l: rev?.month || 'Revenue', m2: null, m2l: null, badge: 0 },
-        { id: 'health', icon: '\ud83d\udee1\ufe0f', title: 'Site Health', m1: errorEvents.length, m1l: 'Errors (24h)', m2: null, m2l: null, badge: critEvents.length },
-        { id: 'agents', icon: '\ud83e\udd16', title: 'Agent Fleet', m1: onlineAgents.length + '/' + agents.length, m1l: 'Online', m2: null, m2l: null, badge: staleAgents.length },
-        { id: 'content', icon: '\ud83c\udfa8', title: 'Content Studio', m1: images.length, m1l: 'Images', m2: signals.length, m2l: 'Signals', badge: 0 },
-        { id: 'competitive', icon: '\ud83c\udfaf', title: 'Competitive Intel', m1: '--', m1l: 'Competitors', m2: '--', m2l: 'Unreviewed', badge: 0 },
-        { id: 'learnings', icon: '\ud83e\udde0', title: 'Agent Memory', m1: '--', m1l: 'Active rules', m2: '--', m2l: 'Applied', badge: 0 },
-        { id: 'security', icon: '\ud83d\udee1\ufe0f', title: 'Security Posture', m1: _cisoData ? _cisoData.cmmc_score.percent_met + '%' : '--', m1l: 'CMMC L2', m2: _cisoData ? (_cisoData.open_findings.critical + _cisoData.open_findings.high) : '--', m2l: 'Crit+High', badge: _cisoData ? _cisoData.open_findings.critical : 0 },
-        { id: 'penny', icon: '\ud83d\udcb0', title: 'Cost Control', m1: _pennyData ? '$' + _pennyData.today.total_cost_usd.toFixed(2) : '--', m1l: 'Today', m2: _pennyData ? Math.round(_pennyData.today.heartbeat_waste_ratio * 100) + '%' : '--', m2l: 'Waste', badge: _pennyData ? (_pennyData.open_findings.high || 0) : 0 }
+        { id: 'roadmap', icon: '\ud83d\udccb', title: 'Roadmap', m1: '2', m1l: 'Platforms', m2: highDebt, m2l: 'High debt', badge: highDebt, roles: ['cto', 'all'] },
+        { id: 'costs', icon: '\ud83d\udcb0', title: 'Cost Intelligence', m1: _costData ? '$' + (_costData.today.totalCents / 100).toFixed(2) : '--', m1l: 'Today', m2: _costData ? _costData.today.calls : '--', m2l: 'API Calls', badge: _costData ? _costData.alerts.filter(a => a.severity === 'critical').length : 0, roles: ['cto', 'all'] },
+        { id: 'finance', icon: '💰', title: 'Finance Overview', m1: _servicesData ? '$' + (_servicesData.totalMonthlyCents / 100).toFixed(0) : '--', m1l: 'Mo. Burn', m2: _servicesData ? _servicesData.pendingDecisions : '--', m2l: 'Decisions', badge: _costData ? _costData.alerts.filter(a => a.severity === 'critical').length : 0, roles: ['coo', 'all'] },
+        { id: 'billing', icon: '🧾', title: 'Billing Tracker', m1: _billingData ? '$' + ((_billingData.summary?.total_cents || 0) / 100).toFixed(0) : '--', m1l: 'This month', m2: _billingData ? (_billingData.needsReview?.length || 0) : '--', m2l: 'Needs review', badge: _billingData ? (_billingData.needsReview?.length || 0) : 0, roles: ['coo', 'all'] },
+        { id: 'services', icon: '💳', title: 'Services', m1: _servicesData ? '$' + (_servicesData.totalMonthlyCents / 100).toFixed(0) : '--', m1l: 'Monthly burn', m2: _servicesData ? _servicesData.pendingDecisions : '--', m2l: 'Decisions', badge: _servicesData ? _servicesData.upcomingDeadlines?.length || 0 : 0, roles: ['coo', 'all'] },
+        { id: 'customers', icon: '👥', title: 'Customers', m1: _customerData ? _customerData.total : '--', m1l: 'Total', m2: _customerData ? _customerData.avgHealth : '--', m2l: 'Avg Health', badge: _customerData ? _customerData.atRisk : 0, roles: ['coo', 'all'] },
+        { id: 'projects', icon: '📋', title: 'Projects', m1: _projectData ? _projectData.openTasks : '--', m1l: 'Open tasks', m2: _projectData ? _projectData.blockedTasks : '--', m2l: 'Blocked', badge: _projectData ? _projectData.blockedTasks : 0, roles: ['cto', 'all'] },
+        { id: 'qa', icon: '🧪', title: 'QA', m1: _qaData ? _qaData.totalRegressions : '--', m1l: 'Regressions', m2: '--', m2l: 'Pass rate', badge: _qaData ? _qaData.totalRegressions : 0, roles: ['cto', 'all'] },
+        { id: 'issues', icon: '🔧', title: 'Issues', m1: _issueData ? _issueData.total : '--', m1l: 'Open', m2: _issueData ? (_issueData.byStatus?.['fix-proposed'] || 0) : '--', m2l: 'Awaiting approval', badge: _issueData ? (_issueData.critical + (_issueData.byStatus?.['fix-proposed'] || 0)) : 0, roles: ['cto', 'all'] },
+        { id: 'newsletter', icon: '\ud83d\udcf0', title: 'Newsletter', m1: daysToPublish !== null ? daysToPublish : '--', m1l: 'Days to pub', m2: nextStatus || '--', m2l: 'Status', badge: nearPipeline.length || 0, roles: ['coo', 'editor', 'all'] },
+        { id: 'products', icon: '\ud83d\udce6', title: 'Products', m1: activeOrders.length, m1l: 'Active orders', m2: deliveredToday.length, m2l: 'Delivered', badge: errorOrders.length, roles: ['coo', 'all'] },
+        { id: 'engineering', icon: '\ud83d\udd27', title: 'Engineering', m1: pendingTasks.length, m1l: 'Pending tasks', m2: null, m2l: null, badge: pendingTasks.length, roles: ['cto', 'all'] },
+        { id: 'business', icon: '\ud83d\udcca', title: 'Business', m1: revTotal !== null ? '$' + revTotal.toLocaleString() : '--', m1l: rev?.month || 'Revenue', m2: null, m2l: null, badge: 0, roles: ['coo', 'all'] },
+        { id: 'health', icon: '\ud83d\udee1\ufe0f', title: 'Site Health', m1: errorEvents.length, m1l: 'Errors (24h)', m2: null, m2l: null, badge: critEvents.length, roles: ['cto', 'all'] },
+        { id: 'agents', icon: '\ud83e\udd16', title: 'Agent Fleet', m1: onlineAgents.length + '/' + agents.length, m1l: 'Online', m2: null, m2l: null, badge: staleAgents.length, roles: ['cto', 'all'] },
+        { id: 'content', icon: '\ud83c\udfa8', title: 'Content Studio', m1: images.length, m1l: 'Images', m2: signals.length, m2l: 'Signals', badge: 0, roles: ['coo', 'editor', 'all'] },
+        { id: 'competitive', icon: '\ud83c\udfaf', title: 'Competitive Intel', m1: 'Soon', m1l: 'Coming', m2: 'Soon', m2l: 'Coming', badge: 0, roles: ['all'] },
+        { id: 'learnings', icon: '\ud83e\udde0', title: 'Agent Memory', m1: '--', m1l: 'Active rules', m2: '--', m2l: 'Applied', badge: 0, roles: ['editor', 'all'] },
+        { id: 'security', icon: '\ud83d\udee1\ufe0f', title: 'Security Posture', m1: _cisoData ? _cisoData.cmmc_score.percent_met + '%' : '--', m1l: 'CMMC L2', m2: _cisoData ? (_cisoData.open_findings.critical + _cisoData.open_findings.high) : '--', m2l: 'Crit+High', badge: _cisoData ? _cisoData.open_findings.critical : 0, roles: ['cto', 'all'] },
+        { id: 'penny', icon: '\ud83d\udcb0', title: 'Cost Control', m1: _pennyData ? '$' + _pennyData.today.total_cost_usd.toFixed(2) : '--', m1l: 'Today', m2: _pennyData ? Math.round(_pennyData.today.heartbeat_waste_ratio * 100) + '%' : '--', m2l: 'Waste', badge: _pennyData ? (_pennyData.open_findings.high || 0) : 0, roles: ['cto', 'all'] }
       ];
     }
 
     function renderTiles(data) {
-      const tiles = getTileData(data);
+      let tiles = getTileData(data);
+      if (_roleFilter !== 'all') tiles = tiles.filter(t => !t.roles || t.roles.includes(_roleFilter));
       const grid = document.getElementById('tile-grid');
       grid.innerHTML = tiles.map(t => {
         const badgeHtml = t.badge > 0 ? '<div class="tile-badge">' + t.badge + '</div>' : '';
@@ -845,6 +844,29 @@
         else {
           h += '<table><tr><th>ID</th><th>Email</th><th>Error</th><th>Time</th></tr>';
           errors.forEach(o => { h += '<tr><td style="font-family:monospace;font-size:0.75rem">'+(o.session_id||o.id||'').slice(0,8)+'</td><td style="font-size:0.75rem">'+(o.email||'--')+'</td><td style="font-size:0.75rem;color:#ef4444;">'+esc(o.error_message||o.workflow_state)+'</td><td style="color:rgba(255,255,255,0.4)">'+timeSince(o.created_at)+'</td></tr>'; });
+          h += '</table>';
+        }
+        h += '</div>';
+      }
+
+      // Recent Reports (from report_history)
+      if (productsTab === 'pp') {
+        const ppReports = (data.report_history?.proposalpulse || []).slice(0, 10);
+        h += '<div class="detail-card"><h3>Recent Reports</h3>';
+        if (!ppReports.length) h += '<p style="color:rgba(255,255,255,0.3)">No reports yet</p>';
+        else {
+          h += '<table><tr><th>Time</th><th>File</th><th>Status</th><th>Grade</th></tr>';
+          ppReports.forEach(r => { h += '<tr><td style="color:rgba(255,255,255,0.4)">'+timeSince(r.created_at)+'</td><td class="trunc" style="max-width:180px;font-size:0.75rem">'+esc(r.file_name||'--')+'</td><td><span class="badge badge-'+(r.workflow_state==='delivered'||r.workflow_state==='email_sent'?'green':'yellow')+'">'+(r.workflow_state||'--')+'</span></td><td>'+(r.overall_grade||'--')+'</td></tr>'; });
+          h += '</table>';
+        }
+        h += '</div>';
+      } else {
+        const mpReports = (data.report_history?.marketpulse || []).slice(0, 10);
+        h += '<div class="detail-card"><h3>Recent Reports</h3>';
+        if (!mpReports.length) h += '<p style="color:rgba(255,255,255,0.3)">No reports yet</p>';
+        else {
+          h += '<table><tr><th>Time</th><th>Email</th><th>Status</th><th>Topic</th></tr>';
+          mpReports.forEach(r => { h += '<tr><td style="color:rgba(255,255,255,0.4)">'+timeSince(r.created_at)+'</td><td style="font-size:0.75rem">'+esc(r.email||'--')+'</td><td><span class="badge badge-'+(r.workflow_state==='delivered'||r.workflow_state==='email_sent'?'green':'yellow')+'">'+(r.workflow_state||'--')+'</span></td><td class="trunc">'+(r.topic||'--')+'</td></tr>'; });
           h += '</table>';
         }
         h += '</div>';
@@ -2714,7 +2736,7 @@ async function updateIssueStatus(id, status) {
       var h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
       h += '<div class="detail-title">\ud83e\udde0 Agent Memory</div>';
       try {
-        var res = await fetch('/.netlify/functions/learning-api?view=active&agent=all', { headers: { 'Authorization': 'Bearer ' + apiKey } });
+        var res = await fetch('/.netlify/functions/learning-api?view=active&agent=all&key=' + apiKey);
         var data = res.ok ? await res.json() : {};
         var learnings = data.learnings || [];
         h += '<div class="detail-card"><h3>Active Learning Rules (' + learnings.length + ')</h3>';
@@ -2732,7 +2754,7 @@ async function updateIssueStatus(id, status) {
           });
         }
         h += '</div>';
-        var effRes = await fetch('/.netlify/functions/learning-api?view=effective', { headers: { 'Authorization': 'Bearer ' + apiKey } });
+        var effRes = await fetch('/.netlify/functions/learning-api?view=effective&key=' + apiKey);
         var effData = effRes.ok ? await effRes.json() : {};
         var effective = effData.learnings || [];
         if (effective.length) {
@@ -3584,8 +3606,6 @@ async function updateIssueStatus(id, status) {
     async function refreshOpsConsole() {
       try {
         await loadDashboard();
-        renderOpsConsole();
-        loadApprovals();
       } catch (e) { console.error('Ops refresh failed:', e); }
     }
 
@@ -3799,6 +3819,15 @@ async function updateIssueStatus(id, status) {
       document.getElementById('new-user-name').value = '';
       showUserManagement();
     }
+
+    // Cmd+K / Ctrl+K → focus command bar
+    document.addEventListener('keydown', function(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        var input = document.getElementById('cmd-input');
+        if (input) { input.focus(); input.select(); }
+      }
+    });
 
     // Enter key on email input
     document.getElementById('login-email').addEventListener('keydown', function(e) { if (e.key === 'Enter') requestLogin(); });
