@@ -1055,6 +1055,31 @@ exports.handler = wrapHandler(async (event) => {
       return ok({ updated: true });
     }
 
+    // SEND STEERING COMMAND (pause/resume/cancel/escalate)
+    if (action === "send_command") {
+      const { agent_id, command } = body;
+      if (!agent_id || !command) return err(400, "agent_id and command required");
+      const validCommands = ["pause", "resume", "cancel", "escalate"];
+      if (!validCommands.includes(command)) return err(400, "Invalid command: " + command + ". Valid: " + validCommands.join(", "));
+      // Update agent status based on command
+      const statusMap = { pause: "idle", resume: "active", cancel: "idle", escalate: "busy" };
+      const newStatus = statusMap[command] || "idle";
+      await supabase.from("agent_registry").update({
+        status: command === "cancel" ? "idle" : newStatus,
+        current_task: command === "cancel" ? null : undefined,
+        last_active: new Date().toISOString(),
+      }).eq("id", agent_id);
+      // Log as ops event
+      await supabase.from("ops_events").insert({
+        event_type: "agent_command",
+        severity: command === "escalate" ? "warn" : "info",
+        source_function: "agent-bridge",
+        affected_entity: agent_id,
+        details: { command, agent_id, issued_by: "command_center" },
+      }).catch(() => {});
+      return ok({ sent: true, command, agent_id, new_status: newStatus });
+    }
+
     return err(404, "Unknown action: " + action);
   }
 

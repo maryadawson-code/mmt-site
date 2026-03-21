@@ -837,7 +837,7 @@
 
     function buildRoadmapTile() {
       const r = _roadmapLive;
-      if (!r) return { id: 'roadmap', icon: '\ud83d\udccb', title: 'Product Roadmap', m1: '--', m1l: 'Features', m2: '--', m2l: 'Attention', badge: 0 };
+      if (!r) return { id: 'roadmap', icon: '\ud83d\udccb', title: 'Product Roadmap', m1: '--', m1l: 'Features', m2: '--', m2l: 'Attention', badge: 0, roles: ['cto', 'all'] };
       const total = r.total || 0;
       const deployed = r.deployed || 0;
       const inProgress = (r.by_status || {}).in_progress || 0;
@@ -902,7 +902,7 @@
       // Footer link
       const footerHtml = '<div style="text-align:right;margin-top:4px;"><a href="https://missionpulse.ai/roadmap" target="_blank" rel="noopener" style="color:#00e5fa;font-size:0.7rem;text-decoration:none;" onclick="event.stopPropagation();">View Full Roadmap \u2192</a></div>';
       const customHtml = barHtml + healthHtml + prodHtml + attnHtml + footerHtml;
-      return { id: 'roadmap', icon: '\ud83d\udccb', title: 'Product Roadmap', m1: total, m1l: 'Features', m2: null, m2l: null, badge: totalAttention, customHtml: customHtml };
+      return { id: 'roadmap', icon: '\ud83d\udccb', title: 'Product Roadmap', m1: total, m1l: 'Features', m2: null, m2l: null, badge: totalAttention, customHtml: customHtml, roles: ['cto', 'all'] };
     }
 
     function getTileData(data) {
@@ -1439,26 +1439,59 @@
       let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
       h += '<div class="detail-title">\ud83e\udd16 Agent Fleet</div>';
 
-      // Agent cards grid
+      // Quick dispatch form at top
+      h += '<div class="detail-card"><h3>Quick Dispatch</h3>';
+      h += '<div class="cmd-bar" style="margin-bottom:0;border:none;padding:0;background:none;">';
+      h += '<input type="text" id="agent-fleet-task-input" placeholder="Describe the task..." style="flex:1;min-width:200px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:10px 14px;border-radius:6px;font-size:0.9rem;">';
+      h += '<select id="agent-fleet-agent-select" style="background:#1f2937;border:1px solid rgba(255,255,255,0.15);color:#e2e8f0;padding:10px 12px;border-radius:6px;font-size:0.82rem;">';
+      agents.forEach(a => { h += '<option value="' + esc(a.id) + '">' + (a.icon||'') + ' ' + esc(a.name||a.id) + '</option>'; });
+      h += '</select>';
+      h += '<select id="agent-fleet-priority" style="background:#1f2937;border:1px solid rgba(255,255,255,0.15);color:#e2e8f0;padding:10px 12px;border-radius:6px;font-size:0.82rem;"><option value="urgent">Urgent</option><option value="high" selected>High</option><option value="normal">Normal</option><option value="low">Low</option></select>';
+      h += '<button class="btn btn-cyan" onclick="agentFleetDispatch()">Send</button>';
+      h += '</div></div>';
+
+      // Agent cards grid with steering + per-agent tasks
       h += '<div class="detail-card"><h3>Agents</h3>';
-      h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;" id="agent-grid-detail">';
+      h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;" id="agent-grid-detail">';
       agents.forEach(agent => {
-        const statusDot = agent.status === 'active' ? '#22c55e' : agent.status === 'busy' ? '#eab308' : 'rgba(255,255,255,0.2)';
         const isLive = ['openclaw','claude_code','perplexity'].includes(agent.platform);
         const thirtyMinAgo = Date.now() - 1800000;
         const isStale = agent.last_active && new Date(agent.last_active).getTime() < thirtyMinAgo && (agent.status === 'active' || agent.status === 'busy');
         const heartbeatColor = isStale ? '#ef4444' : agent.status === 'active' ? '#22c55e' : agent.status === 'busy' ? '#eab308' : 'rgba(255,255,255,0.2)';
         const sel = selectedAgent === agent.id;
-        h += '<div onclick="selectAgentDetail(\'' + agent.id + '\')" style="background:' + (sel ? agent.color+'11' : 'rgba(255,255,255,0.03)') + ';border:1px solid ' + (sel ? agent.color : agent.color+'33') + ';border-radius:8px;padding:14px;cursor:pointer;transition:border-color 0.2s;">';
-        h += '<div style="display:flex;justify-content:space-between;align-items:start;"><div style="font-size:1.4rem;">' + (agent.icon||'') + '</div><div style="display:flex;align-items:center;gap:4px;">' + (isLive ? '<span style="font-size:0.6rem;color:'+agent.color+';font-weight:700;">LIVE</span>' : '') + '<div style="width:10px;height:10px;border-radius:50%;background:' + heartbeatColor + ';' + (isStale?'animation:pulse 1s infinite;':'') + '"></div></div></div>';
-        h += '<div style="font-weight:700;color:' + agent.color + ';font-size:0.85rem;margin:8px 0 2px;">' + esc(agent.name) + '</div>';
-        h += '<div style="font-size:0.7rem;color:rgba(255,255,255,0.4);line-height:1.3;">' + esc((agent.description||'').substring(0,80)) + '</div>';
-        if (agent.last_active) h += '<div style="font-size:0.65rem;color:rgba(255,255,255,0.2);margin-top:4px;">Last seen: ' + timeSince(agent.last_active) + '</div>';
+        const agentTasks = tasks.filter(t => t.agent === agent.id).slice(0, 5);
+        const sc = { pending:'yellow', in_progress:'blue', completed:'green', failed:'red', cancelled:'gray' };
+
+        h += '<div style="background:' + (sel ? agent.color+'11' : 'rgba(255,255,255,0.03)') + ';border:1px solid ' + (sel ? agent.color : agent.color+'33') + ';border-radius:8px;padding:14px;transition:border-color 0.2s;">';
+        // Header
+        h += '<div style="display:flex;justify-content:space-between;align-items:start;">';
+        h += '<div style="display:flex;align-items:center;gap:8px;"><span style="font-size:1.4rem;">' + (agent.icon||'') + '</span><div><div style="font-weight:700;color:' + agent.color + ';font-size:0.85rem;">' + esc(agent.name) + '</div><div style="font-size:0.65rem;color:rgba(255,255,255,0.3);">' + esc(agent.platform||'') + '</div></div></div>';
+        h += '<div style="display:flex;align-items:center;gap:4px;">' + (isLive ? '<span style="font-size:0.6rem;color:'+agent.color+';font-weight:700;">LIVE</span>' : '') + '<div style="width:10px;height:10px;border-radius:50%;background:' + heartbeatColor + ';' + (isStale?'animation:pulse 1s infinite;':'') + '"></div></div>';
+        h += '</div>';
+        // Description
+        h += '<div style="font-size:0.7rem;color:rgba(255,255,255,0.4);line-height:1.3;margin:6px 0;">' + esc((agent.description||'').substring(0,80)) + '</div>';
+        if (agent.last_active) h += '<div style="font-size:0.65rem;color:rgba(255,255,255,0.2);">Last seen: ' + timeSince(agent.last_active) + '</div>';
+        // Steering buttons
+        h += '<div style="display:flex;gap:4px;margin-top:8px;flex-wrap:wrap;">';
+        h += '<button class="btn btn-sm" onclick="agentCommand(\'' + agent.id + '\',\'pause\')" style="background:rgba(234,179,8,0.2);color:#eab308;">Pause</button>';
+        h += '<button class="btn btn-sm" onclick="agentCommand(\'' + agent.id + '\',\'resume\')" style="background:rgba(22,163,74,0.2);color:#22c55e;">Resume</button>';
+        h += '<button class="btn btn-sm" onclick="agentCommand(\'' + agent.id + '\',\'cancel\')" style="background:rgba(239,68,68,0.2);color:#ef4444;">Cancel</button>';
+        h += '<button class="btn btn-sm" onclick="agentCommand(\'' + agent.id + '\',\'escalate\')" style="background:rgba(168,85,247,0.2);color:#a855f7;">Escalate</button>';
+        h += '</div>';
+        // Per-agent task stream
+        if (agentTasks.length > 0) {
+          h += '<div style="margin-top:10px;border-top:1px solid rgba(255,255,255,0.05);padding-top:8px;">';
+          h += '<div style="font-size:0.7rem;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:4px;">Recent Tasks</div>';
+          agentTasks.forEach(t => {
+            h += '<div style="display:flex;justify-content:space-between;align-items:center;padding:3px 0;font-size:0.75rem;"><span class="trunc" style="flex:1;color:rgba(255,255,255,0.6);">' + esc(t.task) + '</span><span class="badge badge-' + (sc[t.status]||'gray') + '" style="margin-left:6px;">' + t.status + '</span></div>';
+          });
+          h += '</div>';
+        }
         h += '</div>';
       });
       h += '</div></div>';
 
-      // Dispatch form
+      // Dispatch form (expanded when agent selected)
       h += '<div class="detail-card" id="dispatch-panel-detail" style="display:' + (selectedAgent?'block':'none') + ';">';
       if (selectedAgent) {
         const agent = agents.find(a => a.id === selectedAgent);
@@ -1472,15 +1505,15 @@
       }
       h += '</div>';
 
-      // Task history
-      h += '<div class="detail-card"><h3>Task History</h3>';
-      const sc = { pending:'yellow', in_progress:'blue', completed:'green', failed:'red', cancelled:'gray' };
+      // Full task history
+      h += '<div class="detail-card"><h3>All Task History</h3>';
+      const allSc = { pending:'yellow', in_progress:'blue', completed:'green', failed:'red', cancelled:'gray' };
       if (!tasks.length) h += '<p style="color:rgba(255,255,255,0.3)">No tasks</p>';
       else {
         h += '<table><tr><th>Agent</th><th>Task</th><th>Priority</th><th>Status</th><th>Time</th><th></th></tr>';
         tasks.forEach(t => {
           const agentInfo = agents.find(a => a.id === t.agent) || {};
-          h += '<tr><td><span style="color:' + (agentInfo.color||'#9ca3af') + ';font-size:0.75rem;font-weight:600;">' + (agentInfo.icon||'') + ' ' + esc(agentInfo.name||t.agent) + '</span></td><td style="font-size:0.75rem" class="trunc">' + esc(t.task) + '</td><td><span class="badge badge-' + (t.priority==='urgent'?'red':t.priority==='high'?'orange':'gray') + '">' + t.priority + '</span></td><td><span class="badge badge-' + (sc[t.status]||'gray') + '">' + t.status + '</span></td><td style="font-size:0.75rem;color:rgba(255,255,255,0.4)">' + timeSince(t.created_at) + '</td><td>' + (t.status==='pending'||t.status==='in_progress'?'<button class="btn btn-sm btn-red" onclick="killTask(\''+t.id+'\')">Cancel</button>':'') + '</td></tr>';
+          h += '<tr><td><span style="color:' + (agentInfo.color||'#9ca3af') + ';font-size:0.75rem;font-weight:600;">' + (agentInfo.icon||'') + ' ' + esc(agentInfo.name||t.agent) + '</span></td><td style="font-size:0.75rem" class="trunc">' + esc(t.task) + '</td><td><span class="badge badge-' + (t.priority==='urgent'?'red':t.priority==='high'?'orange':'gray') + '">' + t.priority + '</span></td><td><span class="badge badge-' + (allSc[t.status]||'gray') + '">' + t.status + '</span></td><td style="font-size:0.75rem;color:rgba(255,255,255,0.4)">' + timeSince(t.created_at) + '</td><td>' + (t.status==='pending'||t.status==='in_progress'?'<button class="btn btn-sm btn-red" onclick="killTask(\''+t.id+'\')">Cancel</button>':'') + '</td></tr>';
         });
         h += '</table>';
       }
@@ -1492,6 +1525,30 @@
     function selectAgentDetail(agentId) {
       selectedAgent = agentId;
       renderDetailView('agents');
+    }
+
+    // Agent Fleet steering command
+    async function agentCommand(agentId, command) {
+      try {
+        const res = await fetch('/.netlify/functions/agent-bridge?key=' + apiKey, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'send_command', agent_id: agentId, command: command }) });
+        const d = await res.json();
+        if (d.sent) { toast(command + ' sent to ' + agentId); renderDetailView('agents'); }
+        else { toast('Failed: ' + (d.error || 'Unknown error')); }
+      } catch (e) { toast('Error: ' + e.message); }
+    }
+
+    // Agent Fleet quick dispatch
+    async function agentFleetDispatch() {
+      const taskInput = document.getElementById('agent-fleet-task-input');
+      const agentSelect = document.getElementById('agent-fleet-agent-select');
+      const prioritySelect = document.getElementById('agent-fleet-priority');
+      if (!taskInput || !taskInput.value.trim()) { toast('Enter a task description'); return; }
+      try {
+        const res = await fetch('/.netlify/functions/agent-bridge?key=' + apiKey, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'dispatch_task', task: taskInput.value.trim(), agent: agentSelect.value, priority: prioritySelect.value }) });
+        const d = await res.json();
+        if (d.task_id) { toast('Task dispatched to ' + agentSelect.value); taskInput.value = ''; renderDetailView('agents'); }
+        else { toast('Failed: ' + (d.error || 'Unknown error')); }
+      } catch (e) { toast('Error: ' + e.message); }
     }
 
     // ============ DETAIL: CONTENT STUDIO ============
