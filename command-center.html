@@ -4634,6 +4634,15 @@ async function updateIssueStatus(id, status) {
       document.getElementById('dashboard').style.display = 'none';
     }
 
+    // Map user roles to default workspace and role filter
+    var ROLE_DEFAULTS = {
+      cto: { workspace: 'dev', roleFilter: 'cto' },
+      admin: { workspace: 'ops', roleFilter: 'all' },
+      coo: { workspace: 'ops', roleFilter: 'coo' },
+      editor: { workspace: 'editorial', roleFilter: 'editor' },
+      viewer: { workspace: 'ops', roleFilter: 'all' },
+    };
+
     function showDashboard(user) {
       currentUser = user;
       document.getElementById('login-screen').style.display = 'none';
@@ -4647,6 +4656,18 @@ async function updateIssueStatus(id, status) {
         badge.textContent = user.role || 'admin';
         badge.style.background = (roleColors[user.role] || '#6b7280') + '22';
         badge.style.color = roleColors[user.role] || '#6b7280';
+      }
+
+      // Set defaults on first login (if no saved workspace)
+      if (user && user.role && !localStorage.getItem('mmt-workspace')) {
+        var defaults = ROLE_DEFAULTS[user.role];
+        if (defaults) {
+          _activeWorkspace = defaults.workspace;
+          localStorage.setItem('mmt-workspace', defaults.workspace);
+          _roleFilter = defaults.roleFilter;
+          var roleSel = document.getElementById('role-selector');
+          if (roleSel) roleSel.value = defaults.roleFilter;
+        }
       }
 
       loadDashboard();
