@@ -133,7 +133,7 @@ exports.handler = async (event) => {
 
     // LIST — filtered features
     if (view === "list") {
-      let query = sb.from("product_roadmap").select("id, product, feature_name, description, category, status, health, priority, owner, deploy_date, last_verified, depends_on, file_map, health_endpoint, created_at, updated_at");
+      let query = sb.from("product_roadmap").select("id, product, feature_name, description, category, status, health, priority, owner, deploy_date, last_verified, notes, created_at, updated_at");
       if (params.product) query = query.eq("product", params.product);
       if (params.status) query = query.eq("status", params.status);
       if (params.health) query = query.eq("health", params.health);
