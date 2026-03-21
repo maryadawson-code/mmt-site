@@ -13,6 +13,7 @@ try {
   Sentry = {
     init: () => {},
     captureException: (err) => console.error("[Sentry stub] Exception:", err.message),
+    captureMessage: (msg) => console.log("[Sentry stub] Message:", msg),
     addBreadcrumb: () => {},
     flush: () => Promise.resolve(),
   };
