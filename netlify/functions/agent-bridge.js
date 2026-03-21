@@ -49,7 +49,7 @@ exports.handler = async (event) => {
     const result = {};
 
     if (section === "all" || section === "agents") {
-      const { data } = await supabase.from("agent_heartbeats").select("agent, status, last_seen, current_task").order("last_seen", { ascending: false });
+      const { data } = await supabase.from("agent_registry").select("id, name, role, status, current_task, last_active, sort_order, icon, color, platform, description, domain").eq("archived", false).order("sort_order", { ascending: true });
       result.agents = data || [];
     }
     if (section === "all" || section === "tasks") {
@@ -151,19 +151,18 @@ exports.handler = async (event) => {
       return ok({ pipeline_id: data.id });
     }
 
-    // UPDATE AGENT STATUS (upsert heartbeat)
+    // UPDATE AGENT STATUS (update agent_registry)
     if (action === "update_agent") {
       const { agent_id, status, current_task } = body;
       if (!agent_id) return err(400, "agent_id required");
-      const { error: upsertErr } = await supabase
-        .from("agent_heartbeats")
-        .upsert({
-          agent: agent_id,
-          status: status || "idle",
-          current_task: current_task || null,
-          last_seen: new Date().toISOString(),
-        }, { onConflict: "agent" });
-      if (upsertErr) return err(500, upsertErr.message);
+      const updates = { last_active: new Date().toISOString() };
+      if (status) updates.status = status;
+      if (current_task !== undefined) updates.current_task = current_task;
+      const { error: updateErr } = await supabase
+        .from("agent_registry")
+        .update(updates)
+        .eq("id", agent_id);
+      if (updateErr) return err(500, updateErr.message);
       return ok({ updated: true });
     }
 
