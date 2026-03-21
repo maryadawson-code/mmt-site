@@ -15,6 +15,8 @@
 const { createClient } = require("@supabase/supabase-js");
 const { createLogger } = require("./lib/logger");
 const { listApprovals, decideApproval, triageSignal } = require("./lib/approvals");
+const { Sentry, wrapHandler } = require("./lib/sentry");
+const { checkRateLimit } = require("./lib/rate-limiter");
 
 const HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -25,7 +27,26 @@ const HEADERS = {
 function ok(data) { return { statusCode: 200, headers: HEADERS, body: JSON.stringify(data) }; }
 function err(status, msg) { return { statusCode: status, headers: HEADERS, body: JSON.stringify({ error: msg }) }; }
 
-exports.handler = async (event) => {
+// Strip heavy HTML/text fields from list responses to save bandwidth (~200K tokens per call)
+function stripHeavyFields(rows) {
+  if (!Array.isArray(rows)) return rows;
+  return rows.map(row => {
+    const clean = { ...row };
+    delete clean.report_html;
+    delete clean.redteam_report_html;
+    if (clean.scores && typeof clean.scores === "object") {
+      clean.scores = { ...clean.scores };
+      delete clean.scores._document_text;
+    }
+    if (clean.shadow_scorecard && typeof clean.shadow_scorecard === "object") {
+      clean.shadow_scorecard = { ...clean.shadow_scorecard };
+      delete clean.shadow_scorecard._document_text;
+    }
+    return clean;
+  });
+}
+
+exports.handler = wrapHandler(async (event) => {
   const log = createLogger("agent-bridge");
   if (event.httpMethod === "OPTIONS") return { statusCode: 204, headers: HEADERS, body: "" };
 
@@ -43,6 +64,15 @@ exports.handler = async (event) => {
   if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) return err(500, "Not configured");
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
+  // Rate limit: 60 requests/min per auth token
+  const clientIp = (event.headers["x-forwarded-for"] || event.headers["client-ip"] || "unknown").split(",")[0].trim();
+  const rateKey = `agent-bridge:${clientIp}`;
+  const rl = await checkRateLimit(supabase, rateKey, 60, 1);
+  if (!rl.allowed) {
+    log.warn("Rate limited", { ip: clientIp });
+    return { statusCode: 429, headers: HEADERS, body: JSON.stringify({ error: "Too many requests", reset_minutes: rl.reset }) };
+  }
+
   // === GET — read dashboard state ===
   if (event.httpMethod === "GET") {
     const params = event.queryStringParameters || {};
@@ -50,7 +80,7 @@ exports.handler = async (event) => {
     const result = {};
 
     if (section === "all" || section === "agents") {
-      const { data } = await supabase.from("agent_heartbeats").select("agent, status, last_seen, current_task").order("last_seen", { ascending: false });
+      const { data } = await supabase.from("agent_registry").select("id, name, role, status, current_task, last_active, sort_order, icon, color, platform, description, domain").eq("archived", false).order("sort_order", { ascending: true });
       result.agents = data || [];
     }
     if (section === "all" || section === "tasks") {
@@ -68,7 +98,7 @@ exports.handler = async (event) => {
     if (section === "all" || section === "orders") {
       const { data: mp } = await supabase.from("marketpulse_orders").select("id, session_id, created_at, email, topic, workflow_state, status").order("created_at", { ascending: false }).limit(20);
       const { data: pp } = await supabase.from("mp_scoring_history").select("id, created_at, email, file_name, verdict, overall_grade, avg_score, workflow_state, document_type").order("created_at", { ascending: false }).limit(20);
-      result.orders = { marketpulse: mp || [], proposalpulse: pp || [] };
+      result.orders = { marketpulse: stripHeavyFields(mp || []), proposalpulse: stripHeavyFields(pp || []) };
     }
 
     return ok(result);
@@ -152,19 +182,18 @@ exports.handler = async (event) => {
       return ok({ pipeline_id: data.id });
     }
 
-    // UPDATE AGENT STATUS (upsert heartbeat)
+    // UPDATE AGENT STATUS (update agent_registry)
     if (action === "update_agent") {
       const { agent_id, status, current_task } = body;
       if (!agent_id) return err(400, "agent_id required");
-      const { error: upsertErr } = await supabase
-        .from("agent_heartbeats")
-        .upsert({
-          agent: agent_id,
-          status: status || "idle",
-          current_task: current_task || null,
-          last_seen: new Date().toISOString(),
-        }, { onConflict: "agent" });
-      if (upsertErr) return err(500, upsertErr.message);
+      const updates = { last_active: new Date().toISOString() };
+      if (status) updates.status = status;
+      if (current_task !== undefined) updates.current_task = current_task;
+      const { error: updateErr } = await supabase
+        .from("agent_registry")
+        .update(updates)
+        .eq("id", agent_id);
+      if (updateErr) return err(500, updateErr.message);
       return ok({ updated: true });
     }
 
@@ -548,22 +577,35 @@ exports.handler = async (event) => {
     // === LEARNINGS ===
     if (action === "learning_read") {
       const { agent: agentId, domain } = body;
-      let query = supabase.from("agent_learnings").select("id, rule, category, domain, confidence, times_applied").eq("is_active", true).order("confidence", { ascending: false }).limit(body.limit || 50);
-      if (agentId) query = query.eq("agent", agentId);
+      let query = supabase.from("agent_learnings").select("id, rule, category, domain, confidence, times_applied, source_agent, applies_to, verified, supersedes").eq("is_active", true).order("confidence", { ascending: false }).limit(body.limit || 50);
+      // Cross-agent filtering: return learnings that apply to this agent OR to "all"
+      if (agentId) {
+        query = query.or(`applies_to.cs.{${agentId}},applies_to.cs.{all}`);
+      }
       if (domain) query = query.eq("domain", domain);
       const { data } = await query;
-      return ok({ learnings: data || [] });
+      // Filter out superseded learnings: if a learning has been superseded by another active one, exclude it
+      const supersededIds = new Set((data || []).filter(l => l.supersedes).map(l => l.supersedes));
+      const filtered = (data || []).filter(l => !supersededIds.has(l.id));
+      return ok({ learnings: filtered });
     }
 
     if (action === "learning_write") {
-      const { agent: agentId, category: cat, domain, rule, context: ctx, source: src, sourceApprovalId, sourceIssueId, confidence } = body;
+      const { agent: agentId, category: cat, domain, rule, context: ctx, source: src, sourceApprovalId, sourceIssueId, confidence, applies_to: appliesTo, supersedes: supersedesId } = body;
       if (!agentId || !cat || !rule) return err(400, "agent, category, rule required");
       const { data, error: insertErr } = await supabase.from("agent_learnings").insert({
         agent: agentId, category: cat, domain, rule, context: ctx,
-        source: src || "self", source_approval_id: sourceApprovalId || null,
+        source: src || "self", source_agent: agentId,
+        source_approval_id: sourceApprovalId || null,
         source_issue_id: sourceIssueId || null, confidence: confidence || 0.8,
+        applies_to: appliesTo || ["all"],
+        supersedes: supersedesId || null,
       }).select("id").single();
       if (insertErr) return err(500, insertErr.message);
+      // If this supersedes another learning, mark the old one for reference
+      if (supersedesId) {
+        await supabase.from("agent_learnings").update({ is_active: false }).eq("id", supersedesId);
+      }
       return ok({ learningId: data.id });
     }
 
@@ -974,8 +1016,47 @@ exports.handler = async (event) => {
       return ok({ summarized: true, id: data.id, total_cost_usd: totalCost, total_tokens: totalTokens });
     }
 
+    // === ROADMAP ===
+    if (action === "roadmap_read") {
+      let query = supabase.from("product_roadmap").select("id, product, feature_name, status, health, priority, owner, deploy_date, last_verified, notes").order("product").order("feature_name");
+      if (body.product) query = query.eq("product", body.product);
+      if (body.status) query = query.eq("status", body.status);
+      query = query.limit(100);
+      const { data } = await query;
+      return ok({ features: data || [] });
+    }
+
+    if (action === "roadmap_update") {
+      const { id, health, notes, status } = body;
+      if (!id) return err(400, "id required");
+      const updates = { updated_at: new Date().toISOString() };
+      // Agents can only update health, notes, and status (limited transitions)
+      if (health) updates.health = health;
+      if (notes !== undefined) updates.notes = notes;
+      if (status && (status === "in_progress" || status === "deployed")) updates.status = status;
+      if (health) updates.last_verified = new Date().toISOString();
+
+      const { data: current } = await supabase.from("product_roadmap").select("feature_name, health, status").eq("id", id).single();
+      if (!current) return err(404, "Feature not found");
+
+      const { error: updateErr } = await supabase.from("product_roadmap").update(updates).eq("id", id);
+      if (updateErr) return err(500, updateErr.message);
+
+      // Log changes
+      const agentId = body.agent_id || "agent";
+      if (health && health !== current.health) {
+        await supabase.from("product_roadmap_log").insert({ roadmap_item_id: id, changed_by: agentId, change_type: "health_change", field_changed: "health", old_value: current.health, new_value: health });
+        await supabase.from("activity_feed").insert({ source: "agent", event_type: "health_change", feature_id: id, agent_id: agentId, summary: current.feature_name + ": health " + current.health + " → " + health });
+      }
+      if (status && status !== current.status) {
+        await supabase.from("product_roadmap_log").insert({ roadmap_item_id: id, changed_by: agentId, change_type: "status_change", field_changed: "status", old_value: current.status, new_value: status });
+        await supabase.from("activity_feed").insert({ source: "agent", event_type: "status_change", feature_id: id, agent_id: agentId, summary: current.feature_name + ": status " + current.status + " → " + status });
+      }
+      return ok({ updated: true });
+    }
+
     return err(404, "Unknown action: " + action);
   }
 
   return err(405, "Method not allowed");
-};
+});

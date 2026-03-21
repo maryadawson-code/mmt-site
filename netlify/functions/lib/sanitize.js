@@ -77,4 +77,56 @@ function validateFile(fileName, mimeType) {
   return { valid: true };
 }
 
-module.exports = { stripHtml, sanitizeFields, wrapUserContent, validateFile };
+/**
+ * Truncate a string to a maximum length.
+ * Logs a warning if truncation occurred.
+ */
+function truncate(input, maxLength, { fieldName = "input", logger = console } = {}) {
+  if (typeof input !== "string") return input;
+  if (input.length <= maxLength) return input;
+  logger.warn(`[sanitize] Truncated ${fieldName} from ${input.length} to ${maxLength} chars`);
+  return input.slice(0, maxLength);
+}
+
+/**
+ * Detect obvious prompt injection patterns in user input.
+ * Returns { safe: true } or { safe: false, reason }.
+ */
+const INJECTION_PATTERNS = [
+  /ignore\s+(all\s+)?previous\s+instructions/i,
+  /ignore\s+(all\s+)?above\s+instructions/i,
+  /disregard\s+(all\s+)?(previous|above|prior)\s+instructions/i,
+  /you\s+are\s+now\s+(a|an|in)\s/i,
+  /system\s*:\s*you\s+are/i,
+  /\bdo\s+not\s+follow\s+(the\s+)?(previous|above|prior|system)\b/i,
+  /\boverride\s+(all\s+)?(previous|system|safety)\b/i,
+];
+
+function checkPromptInjection(input) {
+  if (typeof input !== "string") return { safe: true };
+  for (const pattern of INJECTION_PATTERNS) {
+    if (pattern.test(input)) {
+      return { safe: false, reason: `Blocked pattern: ${pattern.source}` };
+    }
+  }
+  return { safe: true };
+}
+
+/**
+ * Full sanitization pipeline for user text input before LLM calls.
+ * Strips HTML, truncates to maxLength, checks for prompt injection.
+ * Returns { text, blocked, reason }.
+ */
+function sanitizeUserInput(input, { maxLength = 10000, fieldName = "input", logger = console } = {}) {
+  if (typeof input !== "string") return { text: "", blocked: false };
+  let text = stripHtml(input, { fieldName, logger });
+  text = truncate(text, maxLength, { fieldName, logger });
+  const injection = checkPromptInjection(text);
+  if (!injection.safe) {
+    logger.warn(`[sanitize] Prompt injection detected in ${fieldName}: ${injection.reason}`);
+    return { text, blocked: true, reason: injection.reason };
+  }
+  return { text, blocked: false };
+}
+
+module.exports = { stripHtml, sanitizeFields, wrapUserContent, validateFile, truncate, checkPromptInjection, sanitizeUserInput };

@@ -185,6 +185,33 @@
     .empty-state { text-align: center; padding: 24px; color: rgba(255,255,255,0.3); }
     .empty-state-icon { font-size: 2rem; margin-bottom: 8px; }
 
+    /* Mobile bottom nav */
+    .mobile-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #111827; border-top: 1px solid rgba(0,229,250,0.15); z-index: 9000; padding: 4px 0 max(4px, env(safe-area-inset-bottom)); }
+    .mobile-nav-inner { display: flex; justify-content: space-around; }
+    .mobile-nav-item { display: flex; flex-direction: column; align-items: center; padding: 6px 4px; color: rgba(255,255,255,0.4); font-size: 0.6rem; cursor: pointer; border: none; background: none; min-width: 56px; }
+    .mobile-nav-item.active { color: #00e5fa; }
+    .mobile-nav-item span:first-child { font-size: 1.2rem; margin-bottom: 2px; }
+    .mobile-nav-more { display: none; position: fixed; bottom: 56px; left: 0; right: 0; background: #1f2937; border-top: 1px solid rgba(0,229,250,0.15); z-index: 8999; max-height: 50vh; overflow-y: auto; padding: 8px; }
+    .mobile-nav-more.show { display: block; }
+    .mobile-nav-more-item { display: flex; align-items: center; gap: 10px; padding: 12px; color: #e2e8f0; font-size: 0.85rem; cursor: pointer; border-radius: 6px; }
+    .mobile-nav-more-item:hover { background: rgba(0,229,250,0.1); }
+    @media (max-width: 768px) { .mobile-nav { display: block; } .dashboard { padding-bottom: 72px; } }
+    @media (min-width: 769px) { .mobile-nav { display: none !important; } .mobile-nav-more { display: none !important; } }
+
+    /* Cmd+K palette */
+    .cmd-palette-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000; align-items: flex-start; justify-content: center; padding-top: 20vh; }
+    .cmd-palette-overlay.show { display: flex; }
+    .cmd-palette { background: #1f2937; border: 1px solid rgba(0,229,250,0.3); border-radius: 12px; width: 90%; max-width: 520px; overflow: hidden; box-shadow: 0 24px 48px rgba(0,0,0,0.5); }
+    .cmd-palette input { width: 100%; padding: 16px 20px; background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.1); color: #f9fafb; font-size: 1rem; outline: none; }
+    .cmd-palette-results { max-height: 320px; overflow-y: auto; padding: 4px 0; }
+    .cmd-palette-item { padding: 10px 20px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: #e2e8f0; }
+    .cmd-palette-item.selected { background: rgba(0,229,250,0.15); color: #00e5fa; }
+    .cmd-palette-item:hover { background: rgba(0,229,250,0.1); }
+    .cmd-palette-item .shortcut { margin-left: auto; color: rgba(255,255,255,0.3); font-size: 0.75rem; }
+
+    /* Content Studio responsive */
+    @media (max-width: 1024px) { .research-grid-3col { grid-template-columns: 1fr !important; } .content-studio-form { grid-template-columns: 1fr !important; } }
+
     @media (max-width: 640px) {
       .cmd-bar { flex-direction: column; }
       .cmd-bar input[type="text"] { min-width: 100%; }
@@ -255,11 +282,67 @@
       .tile-grid { grid-template-columns: 1fr !important; }
       .ops-two-col { grid-template-columns: 1fr !important; }
     }
+
+    /* Roadmap styles */
+    .roadmap-filter-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 16px; }
+    .roadmap-filter-bar select, .roadmap-filter-bar input { background: #111827; color: #e2e8f0; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; padding: 6px 10px; font-size: 0.82rem; }
+    .roadmap-filter-bar button { background: rgba(0,229,250,0.15); color: #00e5fa; border: 1px solid rgba(0,229,250,0.3); border-radius: 4px; padding: 6px 14px; font-size: 0.82rem; cursor: pointer; font-weight: 600; }
+    .roadmap-filter-bar button.active { background: #00e5fa; color: #0a0e17; }
+    .roadmap-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+    @media (min-width: 768px) { .roadmap-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 1200px) { .roadmap-grid { grid-template-columns: repeat(4, 1fr); } }
+    .roadmap-card { background: #111827; border: 1px solid rgba(0,229,250,0.15); border-radius: 8px; padding: 14px; cursor: pointer; transition: border-color 0.2s, transform 0.1s; }
+    .roadmap-card:hover { border-color: rgba(0,229,250,0.4); transform: translateY(-1px); }
+    .roadmap-card .card-title { font-weight: 700; color: #fff; font-size: 0.9rem; margin-bottom: 6px; }
+    .roadmap-card .card-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 0.75rem; }
+    .roadmap-detail-panel { background: #0d1117; border: 1px solid rgba(0,229,250,0.2); border-radius: 8px; padding: 16px; margin-top: 8px; margin-bottom: 16px; }
+    .roadmap-tab-bar { display: flex; gap: 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 16px; overflow-x: auto; }
+    .roadmap-tab-bar button { background: none; border: none; color: rgba(255,255,255,0.5); padding: 8px 16px; font-size: 0.82rem; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
+    .roadmap-tab-bar button.active { color: #00e5fa; border-bottom-color: #00e5fa; }
+    .roadmap-tab-bar button:hover { color: #e2e8f0; }
+    .health-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; vertical-align: middle; }
+    .health-dot-healthy { background: #22c55e; }
+    .health-dot-degraded { background: #eab308; }
+    .health-dot-broken { background: #ef4444; }
+    .health-dot-untested { background: #6b7280; }
+    .status-badge-deployed { background: rgba(22,163,74,0.2); color: #22c55e; }
+    .status-badge-in_progress { background: rgba(59,130,246,0.2); color: #60a5fa; }
+    .status-badge-planned { background: rgba(107,114,128,0.2); color: #9ca3af; }
+    .status-badge-needs_fix { background: rgba(239,68,68,0.2); color: #ef4444; }
+    .status-badge-deprecated { background: rgba(107,114,128,0.2); color: #6b7280; }
+    .activity-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.82rem; }
+    .activity-item:last-child { border-bottom: none; }
+    .preflight-check { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; font-size: 0.85rem; }
+    .preflight-pass { background: rgba(22,163,74,0.1); }
+    .preflight-fail { background: rgba(239,68,68,0.1); }
+    .preflight-manual { background: rgba(107,114,128,0.1); }
+    .template-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+    .template-modal-content { background: #111827; border: 1px solid rgba(0,229,250,0.3); border-radius: 12px; padding: 24px; width: 90%; max-width: 700px; max-height: 80vh; overflow-y: auto; }
+    .template-modal-content h3 { color: #00e5fa; margin-bottom: 16px; }
+    .template-modal-content label { display: block; color: rgba(255,255,255,0.6); font-size: 0.82rem; margin-bottom: 4px; margin-top: 12px; }
+    .template-modal-content input, .template-modal-content select, .template-modal-content textarea { width: 100%; background: #0a0e17; color: #e2e8f0; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; padding: 8px; font-size: 0.85rem; }
+    .template-modal-content textarea { min-height: 80px; resize: vertical; }
+    .template-btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+    .template-btn { background: rgba(0,229,250,0.1); color: #00e5fa; border: 1px solid rgba(0,229,250,0.3); border-radius: 6px; padding: 8px 14px; cursor: pointer; font-size: 0.82rem; }
+    .template-btn.active { background: #00e5fa; color: #0a0e17; }
+    .scaffold-preview { background: #0a0e17; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 12px; font-family: monospace; font-size: 0.78rem; white-space: pre-wrap; max-height: 300px; overflow-y: auto; margin-top: 12px; color: #a5f3fc; }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js" defer></script>
+  <script src="https://browser.sentry-cdn.com/9.1.0/bundle.tracing.min.js" crossorigin="anonymous"></script>
+  <script>
+    if (window.Sentry) {
+      Sentry.init({
+        dsn: "https://7244f94c03622abd9d397f5cbd6aa04e@o4511055001812992.ingest.us.sentry.io/4511055019245568",
+        environment: "production",
+        tracesSampleRate: 0.1,
+      });
+    }
+  </script>
 </head>
 <body>
   <!-- LOGIN SCREEN -->
-  <div id="login-screen" style="display:none;">
+  <div id="login-screen" style="display:block;">
     <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #0a0e17;">
       <div style="background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 48px 40px; max-width: 420px; width: 100%;">
         <div style="text-align: center; margin-bottom: 32px;">
@@ -414,12 +497,11 @@
     <!-- Org Filter -->
     <div class="org-filter" id="org-filter">
       <button class="active" data-org="all">All</button>
-      <button data-org="mmt">missionmeetstech.com</button>
       <button data-org="mp">missionpulse.ai</button>
     </div>
 
     <!-- Approval notification bar -->
-    <div id="approval-notification-bar" style="display:none;background:rgba(0,229,250,0.08);border:1px solid rgba(0,229,250,0.2);border-radius:8px;padding:12px 20px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;font-size:0.9rem;">
+    <div id="approval-notification-bar" style="display:none;background:rgba(0,229,250,0.08);border:1px solid rgba(0,229,250,0.2);border-radius:8px;padding:12px 20px;margin-bottom:16px;align-items:center;justify-content:space-between;font-size:0.9rem;">
       <span id="approval-bar-text" style="color:#00e5fa;font-weight:600;"></span>
       <button class="btn btn-cyan btn-sm" onclick="scrollToConsole()" id="approval-bar-btn">Review Now</button>
     </div>
@@ -571,7 +653,6 @@
     let currentFilter = 'all';
     let _lastResearch = null;
     let _costData = null;
-    let _financeData = null;
     let _billingData = null;
     let _servicesData = null;
     let _customerData = null;
@@ -582,7 +663,16 @@
     let _approvalData = {};
     let _cisoData = null;
     let _pennyData = null;
+    let _roadmapLive = null;
+    let _roadmapFeatures = null;
+    let _roadmapActiveTab = 'overview';
+    let _roadmapProductFilter = '';
+    let _roadmapExpandedId = null;
+    let _roadmapCharts = {};
     let _roleFilter = 'all';
+    // Init mermaid when loaded
+    if (typeof mermaid !== 'undefined') { mermaid.initialize({ startOnLoad: false, theme: 'dark' }); }
+    window.addEventListener('load', () => { if (typeof mermaid !== 'undefined') mermaid.initialize({ startOnLoad: false, theme: 'dark' }); });
 
     function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
     function timeSince(d) { const m = Math.floor((Date.now() - new Date(d).getTime()) / 60000); if (m < 60) return m + 'm ago'; const h = Math.floor(m / 60); if (h < 24) return h + 'h ago'; return Math.floor(h/24) + 'd ago'; }
@@ -603,6 +693,7 @@
         fetch('/.netlify/functions/billing-api?key=' + apiKey + '&view=summary').then(r => r.ok ? r.json() : null).then(b => { if (b) { _billingData = b; renderTiles(dashData); } }).catch(() => {});
         apiPost({ action: 'ciso_posture' }).then(c => { if (c && !c.error) { _cisoData = c; renderTiles(dashData); } }).catch(() => {});
         apiPost({ action: 'penny_dashboard' }).then(p => { if (p && !p.error) { _pennyData = p; renderTiles(dashData); } }).catch(() => {});
+        fetch('/.netlify/functions/roadmap-api?key=' + apiKey + '&view=summary').then(r => r.ok ? r.json() : null).then(d => { if (d) { _roadmapLive = d; renderTiles(dashData); } }).catch(() => {});
         Promise.all([
           fetch('/.netlify/functions/finance-api?key=' + apiKey + '&view=services-summary').then(r => r.ok ? r.json() : null),
           fetch('/.netlify/functions/customer-api?key=' + apiKey + '&view=summary').then(r => r.ok ? r.json() : null),
@@ -656,6 +747,76 @@
 
     // ============ TILE METRICS COMPUTATION ============
 
+    function buildRoadmapTile() {
+      const r = _roadmapLive;
+      if (!r) return { id: 'roadmap', icon: '\ud83d\udccb', title: 'Product Roadmap', m1: '--', m1l: 'Features', m2: '--', m2l: 'Attention', badge: 0 };
+      const total = r.total || 0;
+      const deployed = r.deployed || 0;
+      const inProgress = (r.by_status || {}).in_progress || 0;
+      const planned = (r.by_status || {}).planned || 0;
+      const needsFix = r.needs_fix || 0;
+      const healthy = (r.by_health || {}).healthy || 0;
+      const degradedN = r.degraded || 0;
+      const brokenN = r.broken || 0;
+      const untestedN = r.untested || 0;
+      const totalAttention = needsFix + degradedN + brokenN;
+      const pLabels = { proposalpulse: 'ProposalPulse', marketpulse: 'MarketPulse', mmt_site: 'Platform', command_center: 'Command Center', agent_network: 'Agent Network' };
+      // Status bar
+      const barParts = [
+        { count: deployed, color: '#22c55e', label: 'deployed' },
+        { count: inProgress, color: '#3b82f6', label: 'in progress' },
+        { count: planned, color: '#64748b', label: 'planned' },
+        { count: needsFix, color: '#ef4444', label: 'needs fix' },
+      ].filter(p => p.count > 0);
+      let barHtml = '<div style="display:flex;height:6px;border-radius:3px;overflow:hidden;margin:10px 0 8px;" title="' + barParts.map(p => p.count + ' ' + p.label).join(', ') + '">';
+      for (const p of barParts) {
+        barHtml += '<div style="flex:' + p.count + ';background:' + p.color + ';"></div>';
+      }
+      barHtml += '</div>';
+      // Health dots
+      const untestedPulse = untestedN > 10 ? 'animation:pulse 2s infinite;' : '';
+      let healthHtml = '<div style="display:flex;gap:10px;flex-wrap:wrap;font-size:0.7rem;color:rgba(255,255,255,0.6);margin-bottom:8px;">';
+      healthHtml += '<span>\ud83d\udfe2 ' + healthy + '</span>';
+      healthHtml += '<span>\ud83d\udfe1 ' + degradedN + '</span>';
+      healthHtml += '<span>\ud83d\udd34 ' + brokenN + '</span>';
+      healthHtml += '<span style="' + untestedPulse + '">\u26aa ' + untestedN + '</span>';
+      healthHtml += '</div>';
+      // Per-product rows
+      const bp = r.by_product || {};
+      let prodHtml = '<div style="font-size:0.72rem;margin-bottom:8px;">';
+      for (const [key, label] of Object.entries(pLabels)) {
+        const p = bp[key];
+        if (!p) continue;
+        const attn = p.needs_attention || 0;
+        prodHtml += '<div style="display:flex;justify-content:space-between;padding:2px 0;color:rgba(255,255,255,0.7);">';
+        prodHtml += '<span>' + label + '</span>';
+        prodHtml += '<span>' + p.deployed + '/' + p.total;
+        if (attn > 0) prodHtml += ' <span style="background:rgba(239,68,68,0.2);color:#f87171;padding:0 5px;border-radius:8px;font-size:0.65rem;">' + attn + '</span>';
+        prodHtml += '</span></div>';
+      }
+      prodHtml += '</div>';
+      // Attention items
+      let attnHtml = '';
+      const items = r.attention_items || [];
+      if (items.length > 0) {
+        attnHtml += '<div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:6px;margin-bottom:6px;">';
+        for (const it of items.slice(0, 3)) {
+          const sBadge = it.status === 'needs_fix' ? '<span style="color:#f87171;font-size:0.6rem;font-weight:700;">NEEDS FIX</span>' : '';
+          const hBadge = it.health === 'broken' ? '<span style="color:#ef4444;font-size:0.6rem;font-weight:700;">BROKEN</span>' : it.health === 'degraded' ? '<span style="color:#eab308;font-size:0.6rem;font-weight:700;">DEGRADED</span>' : '';
+          attnHtml += '<div style="font-size:0.7rem;color:rgba(255,255,255,0.7);padding:2px 0;">';
+          attnHtml += '<span style="color:#fff;">' + esc(it.feature_name) + '</span> ';
+          attnHtml += '<span style="color:#00e5fa;font-size:0.6rem;">' + (pLabels[it.product] || it.product) + '</span> ';
+          attnHtml += sBadge + ' ' + hBadge;
+          attnHtml += '</div>';
+        }
+        attnHtml += '</div>';
+      }
+      // Footer link
+      const footerHtml = '<div style="text-align:right;margin-top:4px;"><a href="https://missionpulse.ai/roadmap" target="_blank" rel="noopener" style="color:#00e5fa;font-size:0.7rem;text-decoration:none;" onclick="event.stopPropagation();">View Full Roadmap \u2192</a></div>';
+      const customHtml = barHtml + healthHtml + prodHtml + attnHtml + footerHtml;
+      return { id: 'roadmap', icon: '\ud83d\udccb', title: 'Product Roadmap', m1: total, m1l: 'Features', m2: null, m2l: null, badge: totalAttention, customHtml: customHtml };
+    }
+
     function getTileData(data) {
       const pp = data.orders_24h?.proposalpulse || [];
       const mp = data.orders_24h?.marketpulse || [];
@@ -686,19 +847,20 @@
 
       const images = data.recent_images || [];
       const signals = data.signals || [];
+      const ph = data.product_health || { proposalpulse: { total_orders: 0, stale_orders: 0 }, marketpulse: { total_orders: 0, stale_orders: 0 } };
+      const totalStale = (ph.proposalpulse.stale_orders || 0) + (ph.marketpulse.stale_orders || 0);
 
       const rev = data.revenue;
       const revTotal = rev && !rev.error ? (rev.total_revenue_cents / 100) : null;
 
-      const highDebt = ROADMAP.techDebt.filter(d => d.severity === 'HIGH').length;
       const cooBadge = _approvalBadges ? _approvalBadges.coo : 0;
       const editorBadge = _approvalBadges ? _approvalBadges.editor : 0;
       return [
         { id: 'coo', icon: '🎯', title: 'COO Console', m1: cooBadge || '--', m1l: 'Pending', m2: _servicesData ? '$' + (_servicesData.totalMonthlyCents / 100).toFixed(0) : '--', m2l: 'Mo. Burn', badge: cooBadge, roles: ['coo', 'all'] },
         { id: 'editorial', icon: '✏️', title: 'Editorial', m1: editorBadge || '--', m1l: 'Drafts', m2: null, m2l: null, badge: editorBadge, roles: ['editor', 'all'] },
-        { id: 'roadmap', icon: '\ud83d\udccb', title: 'Roadmap', m1: '2', m1l: 'Platforms', m2: highDebt, m2l: 'High debt', badge: highDebt, roles: ['cto', 'all'] },
+        buildRoadmapTile(),
         { id: 'costs', icon: '\ud83d\udcb0', title: 'Cost Intelligence', m1: _costData ? '$' + (_costData.today.totalCents / 100).toFixed(2) : '--', m1l: 'Today', m2: _costData ? _costData.today.calls : '--', m2l: 'API Calls', badge: _costData ? _costData.alerts.filter(a => a.severity === 'critical').length : 0, roles: ['cto', 'all'] },
-        { id: 'finance', icon: '💰', title: 'Finance', m1: _costData ? '$' + (_costData.today.totalCents / 100).toFixed(2) : '--', m1l: 'Today', m2: _costData ? _costData.today.calls : '--', m2l: 'API Calls', badge: _costData ? _costData.alerts.filter(a => a.severity === 'critical').length : 0, roles: ['coo', 'all'] },
+        { id: 'finance', icon: '💰', title: 'Finance Overview', m1: _servicesData ? '$' + (_servicesData.totalMonthlyCents / 100).toFixed(0) : '--', m1l: 'Mo. Burn', m2: _servicesData ? _servicesData.pendingDecisions : '--', m2l: 'Decisions', badge: _costData ? _costData.alerts.filter(a => a.severity === 'critical').length : 0, roles: ['coo', 'all'] },
         { id: 'billing', icon: '🧾', title: 'Billing Tracker', m1: _billingData ? '$' + ((_billingData.summary?.total_cents || 0) / 100).toFixed(0) : '--', m1l: 'This month', m2: _billingData ? (_billingData.needsReview?.length || 0) : '--', m2l: 'Needs review', badge: _billingData ? (_billingData.needsReview?.length || 0) : 0, roles: ['coo', 'all'] },
         { id: 'services', icon: '💳', title: 'Services', m1: _servicesData ? '$' + (_servicesData.totalMonthlyCents / 100).toFixed(0) : '--', m1l: 'Monthly burn', m2: _servicesData ? _servicesData.pendingDecisions : '--', m2l: 'Decisions', badge: _servicesData ? _servicesData.upcomingDeadlines?.length || 0 : 0, roles: ['coo', 'all'] },
         { id: 'customers', icon: '👥', title: 'Customers', m1: _customerData ? _customerData.total : '--', m1l: 'Total', m2: _customerData ? _customerData.avgHealth : '--', m2l: 'Avg Health', badge: _customerData ? _customerData.atRisk : 0, roles: ['coo', 'all'] },
@@ -706,7 +868,7 @@
         { id: 'qa', icon: '🧪', title: 'QA', m1: _qaData ? _qaData.totalRegressions : '--', m1l: 'Regressions', m2: '--', m2l: 'Pass rate', badge: _qaData ? _qaData.totalRegressions : 0, roles: ['cto', 'all'] },
         { id: 'issues', icon: '🔧', title: 'Issues', m1: _issueData ? _issueData.total : '--', m1l: 'Open', m2: _issueData ? (_issueData.byStatus?.['fix-proposed'] || 0) : '--', m2l: 'Awaiting approval', badge: _issueData ? (_issueData.critical + (_issueData.byStatus?.['fix-proposed'] || 0)) : 0, roles: ['cto', 'all'] },
         { id: 'newsletter', icon: '\ud83d\udcf0', title: 'Newsletter', m1: daysToPublish !== null ? daysToPublish : '--', m1l: 'Days to pub', m2: nextStatus || '--', m2l: 'Status', badge: nearPipeline.length || 0, roles: ['coo', 'editor', 'all'] },
-        { id: 'products', icon: '\ud83d\udce6', title: 'Products', m1: activeOrders.length, m1l: 'Active orders', m2: deliveredToday.length, m2l: 'Delivered', badge: errorOrders.length, roles: ['coo', 'all'] },
+        { id: 'products', icon: '\ud83d\udce6', title: 'Products', m1: (ph.proposalpulse.total_orders + ph.marketpulse.total_orders), m1l: 'Total orders', m2: deliveredToday.length || activeOrders.length || '--', m2l: deliveredToday.length ? 'Delivered today' : activeOrders.length ? 'Active' : '24h', badge: errorOrders.length + totalStale, staleWarning: totalStale > 0 ? totalStale + ' stale order' + (totalStale > 1 ? 's' : '') : null, roles: ['coo', 'all'] },
         { id: 'engineering', icon: '\ud83d\udd27', title: 'Engineering', m1: pendingTasks.length, m1l: 'Pending tasks', m2: null, m2l: null, badge: pendingTasks.length, roles: ['cto', 'all'] },
         { id: 'business', icon: '\ud83d\udcca', title: 'Business', m1: revTotal !== null ? '$' + revTotal.toLocaleString() : '--', m1l: rev?.month || 'Revenue', m2: null, m2l: null, badge: 0, roles: ['coo', 'all'] },
         { id: 'health', icon: '\ud83d\udee1\ufe0f', title: 'Site Health', m1: errorEvents.length, m1l: 'Errors (24h)', m2: null, m2l: null, badge: critEvents.length, roles: ['cto', 'all'] },
@@ -720,15 +882,18 @@
     }
 
     function renderTiles(data) {
-      const tiles = getTileData(data);
-      const filtered = _roleFilter === 'all' ? tiles : tiles.filter(t => t.roles && t.roles.includes(_roleFilter));
+      let tiles = getTileData(data);
+      if (_roleFilter !== 'all') tiles = tiles.filter(t => !t.roles || t.roles.includes(_roleFilter));
       const grid = document.getElementById('tile-grid');
-      grid.innerHTML = filtered.map(t => {
+      grid.innerHTML = tiles.map(t => {
         const badgeHtml = t.badge > 0 ? '<div class="tile-badge">' + t.badge + '</div>' : '';
         let metricsHtml = '<div class="tile-metrics"><div><div class="tile-metric">' + t.m1 + '</div><div class="tile-metric-label">' + t.m1l + '</div></div>';
         if (t.m2 !== null) metricsHtml += '<div><div class="tile-metric" style="font-size:1.1rem;">' + t.m2 + '</div><div class="tile-metric-label">' + (t.m2l||'') + '</div></div>';
         metricsHtml += '</div>';
-        return '<div class="tile" onclick="navigate(\'' + t.id + '\')">' + badgeHtml + '<div class="tile-icon">' + t.icon + '</div><div class="tile-title">' + t.title + '</div>' + metricsHtml + '</div>';
+        const warnStyle = t.id === 'products' && t.badge > 0 ? ' style="border-color:rgba(234,179,8,0.5);"' : '';
+        const staleHtml = t.staleWarning ? '<div style="font-size:0.7rem;color:#eab308;margin-top:6px;">⚠️ ' + t.staleWarning + '</div>' : '';
+        const extraHtml = t.customHtml || '';
+        return '<div class="tile"' + warnStyle + ' onclick="navigate(\'' + t.id + '\')">' + badgeHtml + '<div class="tile-icon">' + t.icon + '</div><div class="tile-title">' + t.title + '</div>' + metricsHtml + staleHtml + extraHtml + '</div>';
       }).join('');
     }
 
@@ -878,6 +1043,21 @@
 
       let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
       h += '<div class="detail-title">\ud83d\udce6 Products</div>';
+
+      // Product health summary
+      const ph = data.product_health || {};
+      const ppH = ph.proposalpulse || {};
+      const mpH = ph.marketpulse || {};
+      const totalStale = (ppH.stale_orders || 0) + (mpH.stale_orders || 0);
+      h += '<div class="detail-card" style="display:flex;gap:24px;flex-wrap:wrap;">';
+      h += '<div><div class="tile-metric">' + (ppH.total_orders || 0) + '</div><div class="tile-metric-label">PP Total</div></div>';
+      h += '<div><div class="tile-metric">' + (mpH.total_orders || 0) + '</div><div class="tile-metric-label">MP Total</div></div>';
+      h += '<div><div class="tile-metric">' + pp.length + '</div><div class="tile-metric-label">PP 24h</div></div>';
+      h += '<div><div class="tile-metric">' + mp.length + '</div><div class="tile-metric-label">MP 24h</div></div>';
+      if (totalStale > 0) {
+        h += '<div><div class="tile-metric" style="color:#eab308;">⚠️ ' + totalStale + '</div><div class="tile-metric-label">Stale orders</div></div>';
+      }
+      h += '</div>';
 
       // Tab bar
       h += '<div class="tab-bar"><button class="' + (productsTab==='pp'?'active':'') + '" onclick="productsTab=\'pp\';renderDetailView(\'products\')">ProposalPulse</button><button class="' + (productsTab==='mp'?'active':'') + '" onclick="productsTab=\'mp\';renderDetailView(\'products\')">MarketPulse</button></div>';
@@ -1203,7 +1383,7 @@
 
       // Image generation form
       h += '<div class="detail-card"><h3>Image Generation</h3>';
-      h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">';
+      h += '<div class="content-studio-form" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">';
       h += '<div><textarea id="image-prompt" rows="3" placeholder="Newsletter header: dark background, cyber-themed circuit board pattern with a glowing blue pulse..." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:10px;border-radius:4px;font-size:0.85rem;resize:vertical;"></textarea>';
       h += '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">';
       h += '<select id="image-provider" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;padding:6px 10px;border-radius:4px;font-size:0.8rem;"><option value="dalle3">DALL-E 3</option><option value="gpt_image">GPT Image (best)</option><option value="imagen3">Imagen 3</option></select>';
@@ -1233,7 +1413,7 @@
       h += '<label style="font-size:0.75rem;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:4px;"><input type="checkbox" id="research-chatgpt" checked> ChatGPT</label>';
       h += '<label style="font-size:0.75rem;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:4px;"><input type="checkbox" id="research-gemini" checked> Gemini</label>';
       h += '</div>';
-      h += '<div id="research-results" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">';
+      h += '<div id="research-results" class="research-grid-3col" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">';
       h += '<div id="result-perplexity" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px;min-height:150px;"><div style="font-weight:700;font-size:0.8rem;color:#00e5fa;margin-bottom:8px;">Perplexity</div><div class="r-content" style="font-size:0.8rem;color:rgba(255,255,255,0.3);">Waiting for query...</div></div>';
       h += '<div id="result-chatgpt" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px;min-height:150px;"><div style="font-weight:700;font-size:0.8rem;color:#74aa9c;margin-bottom:8px;">ChatGPT</div><div class="r-content" style="font-size:0.8rem;color:rgba(255,255,255,0.3);">Waiting for query...</div></div>';
       h += '<div id="result-gemini" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px;min-height:150px;"><div style="font-weight:700;font-size:0.8rem;color:#4285f4;margin-bottom:8px;">Gemini</div><div class="r-content" style="font-size:0.8rem;color:rgba(255,255,255,0.3);">Waiting for query...</div></div>';
@@ -1342,236 +1522,366 @@
       } catch (e) { toast('Failed: ' + e.message); }
     }
 
-    // ============ ROADMAP DATA — update manually when features ship. Last verified: 2026-03-19 ============
-    const ROADMAP = {
-      platforms: [
-        { name: 'missionmeetstech.com', pct: 92, quality: 'B+', revenue: 'Live', launched: 'Mar 19, 2026', status: 'LIVE', color: '#22c55e' },
-        { name: 'missionpulse.ai', pct: null, quality: 'TBD', revenue: '$0', launched: 'v1.0 shipped, v1.1 in dev', status: '4 GTM blockers', color: '#eab308' }
-      ],
-      mmtProducts: [
-        { group: 'ProposalPulse', pct: 94, quality: 'B+', features: [
-          { name:'Document upload', status:'shipped', pct:100, q:'B+', note:'pdf-parse + mammoth, 4MB max' },
-          { name:'AI scoring (Sonnet)', status:'shipped', pct:100, q:'A-', note:'9-dimension, structured JSON' },
-          { name:'Shadow scoring (Haiku)', status:'shipped', pct:95, q:'B', note:'Dual-model, admin bypass' },
-          { name:'pWin estimation', status:'shipped', pct:100, q:'B+', note:'Weighted factor, ranges' },
-          { name:'Entity disambiguation', status:'shipped', pct:90, q:'B', note:'Added 3/19, needs validation' },
-          { name:'N/A section handling', status:'shipped', pct:90, q:'B', note:'Scores N/A when absent' },
-          { name:'SOW hybrid scoring', status:'shipped', pct:85, q:'B', note:'Auto-detect eval factors' },
-          { name:'Compliance disclaimer', status:'shipped', pct:100, q:'A', note:'Legal disclaimer' },
-          { name:'Tiered next steps', status:'shipped', pct:90, q:'B+', note:'Grade-dependent actions' },
-          { name:'PDF generation', status:'shipped', pct:95, q:'B', note:'PDFKit, table edge cases' },
-          { name:'Email delivery', status:'shipped', pct:95, q:'A-', note:'Resend' },
-          { name:'Red Team review', status:'shipped', pct:95, q:'B+', note:'Adversarial critique' },
-          { name:'Gold Team template', status:'shipped', pct:90, q:'B', note:'pWin range fixed 3/19' },
-          { name:'Stripe checkout', status:'shipped', pct:100, q:'A', note:'$19.99/assessment' },
-          { name:'Free tier', status:'shipped', pct:100, q:'A', note:'3 free via mp_users' },
-          { name:'Rewrite confidence', status:'shipped', pct:85, q:'B', note:'Flags AI-gen proposals' }
-        ]},
-        { group: 'MarketPulse', pct: 91, quality: 'B+', features: [
-          { name:'Topic intake form', status:'shipped', pct:100, q:'A', note:'Company context fields' },
-          { name:'Entity disambiguation', status:'shipped', pct:90, q:'B', note:'Pre-research classification' },
-          { name:'Company context', status:'shipped', pct:85, q:'B', note:'Certs, NAICS, vehicles' },
-          { name:'Health IT lens', status:'shipped', pct:85, q:'B', note:'Federal health framing' },
-          { name:'Perplexity research', status:'shipped', pct:90, q:'B', note:'Multi-source, 12-call cap' },
-          { name:'AI synthesis', status:'shipped', pct:90, q:'B+', note:'Forward View + Weekly Actions' },
-          { name:'Quality gate (8)', status:'shipped', pct:95, q:'A-', note:'FAIL blocks delivery' },
-          { name:'PDF generation', status:'shipped', pct:85, q:'B', note:'Table rendering improved' },
-          { name:'Email delivery', status:'shipped', pct:90, q:'B+', note:'Error email added 3/19' },
-          { name:'Report viewer', status:'shipped', pct:85, q:'B', note:'Secure URL' },
-          { name:'Stripe checkout', status:'shipped', pct:100, q:'A', note:'$50/brief' },
-          { name:'Free tier', status:'shipped', pct:100, q:'A', note:'1 free brief' },
-          { name:'FOUO stripping', status:'shipped', pct:100, q:'A', note:'Classification stripped' }
-        ]},
-        { group: 'Content Platform', pct: 92, quality: 'A-', features: [
-          { name:'Homepage', status:'shipped', pct:100, q:'A', note:'Lighthouse 85/97/100/100' },
-          { name:'Newsletter archive', status:'shipped', pct:95, q:'A-', note:'76 articles, topic tags' },
-          { name:'Podcast', status:'shipped', pct:90, q:'B+', note:'4 episodes' },
-          { name:'Glossary', status:'shipped', pct:90, q:'A', note:'58 terms, A-Z nav' },
-          { name:'Contract Tracker', status:'shipped', pct:90, q:'B+', note:'10 contracts, daily refresh' },
-          { name:'Topics', status:'shipped', pct:75, q:'B', note:'Build-time rendered' },
-          { name:'Events', status:'shipped', pct:75, q:'B', note:'5 events + community note' },
-          { name:'Newswire', status:'shipped', pct:85, q:'B+', note:'10 RSS feeds, 100 headlines' },
-          { name:'Contact', status:'shipped', pct:100, q:'A', note:'Added 3/19' },
-          { name:'Security', status:'shipped', pct:100, q:'A', note:'Both products covered' },
-          { name:'SEO', status:'shipped', pct:95, q:'A', note:'Sitemap, OG, JSON-LD' }
-        ]},
-        { group: 'Infrastructure', pct: 91, quality: 'B+', features: [
-          { name:'Command Center', status:'shipped', pct:90, q:'B+', note:'This dashboard' },
-          { name:'Agent bridge API', status:'shipped', pct:95, q:'A-', note:'7 actions, auth' },
-          { name:'Health check', status:'shipped', pct:90, q:'B+', note:'30m interval, dedup' },
-          { name:'Contract intel', status:'shipped', pct:90, q:'B+', note:'Daily 6AM, 10 contracts' },
-          { name:'Agent fleet', status:'shipped', pct:85, q:'B+', note:'6 agents heartbeating' },
-          { name:'Supabase schema', status:'shipped', pct:100, q:'A', note:'30/30 tables' }
-        ]}
-      ],
-      mpModules: [
-        { name:'Dashboard', files:6, lines:245, touched:'2026-03-08', q:'B' },
-        { name:'Pipeline', files:63, lines:2555, touched:'2026-03-08', q:'A-' },
-        { name:'War Room', files:22, lines:1222, touched:'2026-03-07', q:'B+' },
-        { name:'Proposals', files:12, lines:680, touched:'2026-03-08', q:'B' },
-        { name:'Swimlane', files:8, lines:427, touched:'2026-03-01', q:'B' },
-        { name:'Shredder', files:14, lines:786, touched:'2026-03-07', q:'B+' },
-        { name:'Contract Scanner', files:5, lines:263, touched:'2026-03-07', q:'B' },
-        { name:'Iron Dome', files:9, lines:482, touched:'2026-03-07', q:'B' },
-        { name:'Black Hat', files:9, lines:345, touched:'2026-03-01', q:'B-' },
-        { name:'Pricing', files:10, lines:540, touched:'2026-03-07', q:'B' },
-        { name:'HITL', files:4, lines:218, touched:'2026-03-01', q:'C+' },
-        { name:'Orals', files:2, lines:137, touched:'2026-03-01', q:'C' },
-        { name:'Playbook', files:5, lines:210, touched:'2026-03-01', q:'C+' },
-        { name:'Frenemy', files:3, lines:150, touched:'2026-03-01', q:'C' },
-        { name:'Analytics', files:4, lines:370, touched:'2026-03-08', q:'B' },
-        { name:'Admin', files:34, lines:447, touched:'2026-03-08', q:'B+' },
-        { name:'AI Chat', files:6, lines:291, touched:'2026-03-01', q:'B' },
-        { name:'Settings', files:7, lines:380, touched:'2026-03-08', q:'B' },
-        { name:'Notifications', files:4, lines:210, touched:'2026-03-08', q:'B-' },
-        { name:'Documents', files:6, lines:320, touched:'2026-03-08', q:'B' },
-        { name:'Onboarding', files:8, lines:445, touched:'2026-03-08', q:'B+' }
-      ],
-      mpBlockers: [
-        { ticket:'T-GTM-1.1', name:'AI provider abstraction layer', status:'Not started', code:'Types file only' },
-        { ticket:'T-GTM-2.1', name:'Stripe billing + token metering', status:'Not started', code:'Checkout scaffold' },
-        { ticket:'T-GTM-2.3', name:'Company onboarding wizard', status:'Not started', code:'Wizard code exists, not wired' },
-        { ticket:'T-GTM-3.1', name:'Public pricing page + /8a-toolkit', status:'Not started', code:'No page' }
-      ],
-      techDebt: [
-        { item:'No automated tests (zero coverage)', platform:'MMT', severity:'HIGH' },
-        { item:'No automated tests', platform:'MissionPulse', severity:'HIGH' },
-        { item:'is_mfa_enabled() breaks if called', platform:'MissionPulse', severity:'HIGH' },
-        { item:'No customer dashboard', platform:'MMT', severity:'MEDIUM' },
-        { item:'No MarketPulse delivery retry', platform:'MMT', severity:'MEDIUM' },
-        { item:'hubspot_field_mapping duplicate table', platform:'MissionPulse', severity:'MEDIUM' },
-        { item:'login.html sbClient fragile pattern', platform:'MissionPulse', severity:'MEDIUM' },
-        { item:'216 tables, 179 empty', platform:'MissionPulse', severity:'MEDIUM' },
-        { item:'Product Spec v1.0 stale pricing + personnel', platform:'MissionPulse', severity:'MEDIUM' },
-        { item:'Topics page sparse', platform:'MMT', severity:'LOW' },
-        { item:'Events page basic', platform:'MMT', severity:'LOW' },
-        { item:'Demo JSX shows missionpulse.io', platform:'MissionPulse', severity:'LOW' }
-      ],
-      roadmapItems: [
-        { p:'P0', name:'AI provider abstraction (T-GTM-1.1)', platform:'MissionPulse', target:'Before launch', status:'Not started' },
-        { p:'P0', name:'Stripe billing + metering (T-GTM-2.1)', platform:'MissionPulse', target:'Before launch', status:'Not started' },
-        { p:'P0', name:'Company onboarding (T-GTM-2.3)', platform:'MissionPulse', target:'Before launch', status:'Not started' },
-        { p:'P0', name:'Public pricing page (T-GTM-3.1)', platform:'MissionPulse', target:'Before launch', status:'Not started' },
-        { p:'P1', name:'Customer dashboard', platform:'MMT', target:'April 2026', status:'Planned' },
-        { p:'P1', name:'Batch upload (ProposalPulse)', platform:'MMT', target:'April 2026', status:'Planned' },
-        { p:'P1', name:'E2E test suite', platform:'Both', target:'April 2026', status:'Planned' },
-        { p:'P2', name:'SOW auto-detection', platform:'MMT', target:'April 2026', status:'Planned' },
-        { p:'P2', name:'MP delivery retry', platform:'MMT', target:'April 2026', status:'Planned' },
-        { p:'P2', name:'API rate limiting', platform:'MMT', target:'April 2026', status:'Planned' },
-        { p:'P3', name:'MFA implementation', platform:'MissionPulse', target:'TBD', status:'Planned' },
-        { p:'P3', name:'Source quality scoring', platform:'MMT', target:'May 2026', status:'Planned' }
-      ]
-    };
+    // ============ ROADMAP — Live database-backed product roadmap ============
 
-    function gradeColor(q) {
-      if (!q) return 'rgba(255,255,255,0.4)';
-      if (q.startsWith('A')) return '#22c55e';
-      if (q === 'B+' || q === 'B') return '#60a5fa';
-      if (q === 'B-' || q === 'C+') return '#eab308';
-      return '#f97316';
+    const PRODUCT_COLORS = { proposalpulse: '#a855f7', marketpulse: '#3b82f6', mmt_site: '#22c55e', command_center: '#00e5fa', agent_network: '#f97316' };
+    const PRODUCT_LABELS = { proposalpulse: 'ProposalPulse', marketpulse: 'MarketPulse', mmt_site: 'MMT Site', command_center: 'Command Center', agent_network: 'Agent Network' };
+    const STATUS_COLORS = { deployed: 'green', in_progress: 'blue', planned: 'gray', needs_fix: 'red', deprecated: 'gray' };
+    const PRIORITY_LABELS = { p0_critical: 'P0', p1_high: 'P1', p2_medium: 'P2', p3_low: 'P3' };
+    const PRIORITY_COLORS = { p0_critical: 'red', p1_high: 'yellow', p2_medium: 'blue', p3_low: 'gray' };
+
+    async function loadRoadmapFeatures() {
+      let url = '/.netlify/functions/roadmap-api?key=' + apiKey + '&view=list';
+      if (_roadmapProductFilter) url += '&product=' + _roadmapProductFilter;
+      const statusSel = document.getElementById('rm-status-filter');
+      const healthSel = document.getElementById('rm-health-filter');
+      const searchInp = document.getElementById('rm-search');
+      if (statusSel && statusSel.value) url += '&status=' + statusSel.value;
+      if (healthSel && healthSel.value) url += '&health=' + healthSel.value;
+      if (searchInp && searchInp.value) url += '&search=' + encodeURIComponent(searchInp.value);
+      try {
+        const r = await fetch(url);
+        if (!r.ok) throw new Error(r.status);
+        const d = await r.json();
+        _roadmapFeatures = d.features || [];
+      } catch (e) { _roadmapFeatures = []; }
     }
 
-    function renderDetailRoadmap() {
-      const el = document.getElementById('detail-roadmap');
-      let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
-      h += '<div class="detail-title">\ud83d\udccb Roadmap</div>';
+    function renderRoadmapCards() {
+      const container = document.getElementById('rm-card-grid');
+      if (!container) return;
+      const features = _roadmapFeatures || [];
+      if (features.length === 0) { container.innerHTML = '<div style="color:rgba(255,255,255,0.4);padding:20px;text-align:center;">No features found. Try adjusting filters or check API connection.</div>'; return; }
+      container.innerHTML = features.map(f => {
+        const pc = PRODUCT_COLORS[f.product] || '#6b7280';
+        return '<div class="roadmap-card" onclick="toggleRoadmapDetail(\'' + f.id + '\')" id="rm-card-' + f.id + '">' +
+          '<div class="card-title">' + esc(f.feature_name) + '</div>' +
+          '<div class="card-meta">' +
+            '<span class="badge" style="background:' + pc + '22;color:' + pc + ';">' + (PRODUCT_LABELS[f.product] || f.product) + '</span>' +
+            '<span class="badge status-badge-' + f.status + '">' + f.status.replace('_', ' ') + '</span>' +
+            '<span class="health-dot health-dot-' + f.health + '" title="' + f.health + '"></span>' +
+            '<span class="badge badge-' + (PRIORITY_COLORS[f.priority] || 'gray') + '">' + (PRIORITY_LABELS[f.priority] || f.priority) + '</span>' +
+            (f.owner !== 'unassigned' ? '<span style="color:rgba(255,255,255,0.4);font-size:0.72rem;">' + f.owner + '</span>' : '') +
+          '</div>' +
+          (f.last_verified ? '<div style="font-size:0.7rem;color:rgba(255,255,255,0.3);margin-top:4px;">Verified ' + timeSince(f.last_verified) + '</div>' : '') +
+        '</div>';
+      }).join('');
+    }
 
-      // Section 1: Platform Overview
-      h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">';
-      ROADMAP.platforms.forEach(p => {
-        h += '<div class="detail-card" style="border-left:3px solid ' + p.color + ';">';
-        h += '<h3 style="color:#fff;">' + p.name + '</h3>';
-        if (p.pct !== null) {
-          h += '<div style="background:rgba(255,255,255,0.1);border-radius:4px;height:8px;margin:8px 0;"><div style="background:' + (p.pct>80?'#22c55e':p.pct>50?'#eab308':'#ef4444') + ';width:' + p.pct + '%;height:100%;border-radius:4px;"></div></div>';
-          h += '<div style="display:flex;justify-content:space-between;font-size:0.8rem;"><span style="color:rgba(255,255,255,0.5);">' + p.pct + '% complete</span><span style="color:' + gradeColor(p.quality) + ';font-weight:600;">Quality: ' + p.quality + '</span></div>';
-        } else {
-          h += '<div style="font-style:italic;color:rgba(255,255,255,0.4);font-size:0.8rem;margin:8px 0;">Completion TBD — pending codebase verification</div>';
-          h += '<div style="font-size:0.8rem;color:rgba(255,255,255,0.5);">Quality: ' + p.quality + '</div>';
-        }
-        h += '<div style="margin-top:8px;font-size:0.78rem;color:rgba(255,255,255,0.4);">Revenue: ' + p.revenue + ' &middot; ' + p.launched + '</div>';
-        h += '<span class="badge badge-' + (p.status==='LIVE'?'green':'yellow') + '" style="margin-top:6px;">' + p.status + '</span>';
-        h += '</div>';
-      });
+    async function toggleRoadmapDetail(id) {
+      const existing = document.getElementById('rm-detail-panel');
+      if (existing) { if (_roadmapExpandedId === id) { existing.remove(); _roadmapExpandedId = null; return; } existing.remove(); }
+      _roadmapExpandedId = id;
+      const card = document.getElementById('rm-card-' + id);
+      if (!card) return;
+      // Fetch detail
+      let feature, logEntries = [];
+      try {
+        const r = await fetch('/.netlify/functions/roadmap-api?key=' + apiKey + '&view=detail&id=' + id);
+        const d = await r.json();
+        feature = d.feature; logEntries = d.log || [];
+      } catch { return; }
+      if (!feature) return;
+      let h = '<div class="roadmap-detail-panel" id="rm-detail-panel">';
+      h += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">';
+      h += '<h3 style="color:#fff;">' + esc(feature.feature_name) + '</h3>';
+      h += '<button class="btn" style="font-size:0.75rem;" onclick="document.getElementById(\'rm-detail-panel\').remove();_roadmapExpandedId=null;">Close</button>';
       h += '</div>';
-
-      // Section 2: Feature Inventory (tabs)
-      h += '<div class="detail-card">';
-      h += '<div class="tab-bar" id="roadmap-tabs"><button class="active" onclick="switchRoadmapTab(\'mmt\',this)">missionmeetstech.com</button><button onclick="switchRoadmapTab(\'mp\',this)">missionpulse.ai</button></div>';
-
-      // MMT tab
-      h += '<div id="roadmap-tab-mmt">';
-      ROADMAP.mmtProducts.forEach((g, gi) => {
-        h += '<div style="margin-bottom:12px;">';
-        h += '<div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'block\':\'none\';this.querySelector(\'.chevron\').textContent=this.nextElementSibling.style.display===\'none\'?\'\u25b6\':\'\u25bc\'" style="cursor:pointer;padding:8px 0;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,0.08);">';
-        h += '<span class="chevron" style="font-size:0.7rem;color:rgba(255,255,255,0.4);">\u25b6</span>';
-        h += '<strong style="color:#e2e8f0;">' + g.group + '</strong>';
-        h += '<span style="color:rgba(255,255,255,0.5);font-size:0.8rem;">' + g.pct + '%</span>';
-        h += '<span style="color:' + gradeColor(g.quality) + ';font-size:0.8rem;font-weight:600;">' + g.quality + '</span>';
-        h += '</div>';
-        h += '<div style="display:none;"><table><tr><th>Feature</th><th>Complete</th><th>Quality</th><th>Notes</th></tr>';
-        g.features.forEach(f => {
-          h += '<tr><td>\u2705 ' + f.name + '</td><td>' + f.pct + '%</td><td style="color:' + gradeColor(f.q) + ';font-weight:600;">' + f.q + '</td><td style="color:rgba(255,255,255,0.4);">' + f.note + '</td></tr>';
+      // Fields
+      h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.82rem;margin-bottom:12px;">';
+      h += '<div><strong style="color:rgba(255,255,255,0.5);">Product:</strong> ' + (PRODUCT_LABELS[feature.product] || feature.product) + '</div>';
+      h += '<div><strong style="color:rgba(255,255,255,0.5);">Category:</strong> ' + (feature.category || 'N/A') + '</div>';
+      h += '<div><strong style="color:rgba(255,255,255,0.5);">Status:</strong> <span class="badge status-badge-' + feature.status + '">' + feature.status.replace('_',' ') + '</span></div>';
+      h += '<div><strong style="color:rgba(255,255,255,0.5);">Health:</strong> <span class="health-dot health-dot-' + feature.health + '"></span> ' + feature.health + '</div>';
+      h += '<div><strong style="color:rgba(255,255,255,0.5);">Priority:</strong> <span class="badge badge-' + (PRIORITY_COLORS[feature.priority]||'gray') + '">' + (PRIORITY_LABELS[feature.priority]||feature.priority) + '</span></div>';
+      h += '<div><strong style="color:rgba(255,255,255,0.5);">Owner:</strong> ' + feature.owner + '</div>';
+      h += '<div><strong style="color:rgba(255,255,255,0.5);">Deploy date:</strong> ' + (feature.deploy_date || 'N/A') + '</div>';
+      h += '<div><strong style="color:rgba(255,255,255,0.5);">Last verified:</strong> ' + (feature.last_verified ? timeSince(feature.last_verified) : 'Never') + '</div>';
+      h += '</div>';
+      if (feature.description) h += '<div style="font-size:0.82rem;color:rgba(255,255,255,0.7);margin-bottom:8px;">' + esc(feature.description) + '</div>';
+      if (feature.notes) h += '<div style="font-size:0.82rem;color:rgba(255,255,255,0.5);margin-bottom:8px;">Notes: ' + esc(feature.notes) + '</div>';
+      // Actions
+      h += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;">';
+      h += '<button class="btn" onclick="roadmapVerifyHealth(\'' + id + '\')">Verify Health</button>';
+      h += '<button class="btn" onclick="roadmapPreflight(\'' + id + '\')">Pre-flight Check</button>';
+      h += '<button class="btn" onclick="roadmapAddComment(\'' + id + '\')">Add Comment</button>';
+      h += '<button class="btn btn-orange" onclick="roadmapEdit(\'' + id + '\')">Edit</button>';
+      h += '</div>';
+      // Preflight results container
+      h += '<div id="rm-preflight-' + id + '"></div>';
+      // Change log timeline
+      if (logEntries.length > 0) {
+        h += '<details open style="margin-top:12px;"><summary style="cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.82rem;">Change History (' + logEntries.length + ')</summary>';
+        h += '<div style="margin-top:8px;">';
+        logEntries.slice(0, 20).forEach(l => {
+          const icon = l.change_type === 'status_change' ? '\u{1f504}' : l.change_type === 'health_change' ? '\u{1f3e5}' : l.change_type === 'comment' ? '\u{1f4ac}' : l.change_type === 'pre_flight' ? '\u2708\ufe0f' : '\u{1f4dd}';
+          h += '<div class="activity-item"><span>' + icon + '</span><div><span style="color:#00e5fa;">' + esc(l.changed_by || 'system') + '</span> ';
+          if (l.field_changed) h += '<span style="color:rgba(255,255,255,0.5);">' + l.field_changed + ':</span> ' + esc(l.old_value || '') + ' → <strong>' + esc(l.new_value || '') + '</strong>';
+          else if (l.message) h += esc(l.message);
+          else h += l.change_type;
+          h += '<div style="font-size:0.7rem;color:rgba(255,255,255,0.3);">' + timeSince(l.changed_at) + '</div></div></div>';
         });
-        h += '</table></div></div>';
-      });
+        h += '</div></details>';
+      }
       h += '</div>';
-
-      // MissionPulse tab (hidden by default)
-      h += '<div id="roadmap-tab-mp" style="display:none;">';
-      h += '<div style="background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.3);border-radius:6px;padding:12px;margin-bottom:16px;font-size:0.82rem;color:#eab308;">\u26a0\ufe0f Module statuses are from directory scan (file counts, line counts, git dates). Quality grades are ESTIMATES. End-to-end functionality has not been verified for most modules.</div>';
-
-      // Revenue Blockers
-      h += '<div style="border-left:3px solid #ef4444;padding-left:12px;margin-bottom:16px;">';
-      h += '<h4 style="color:#ef4444;margin-bottom:8px;">\u26a0\ufe0f Revenue = $0 until these ship</h4>';
-      h += '<table><tr><th>Ticket</th><th>Feature</th><th>Status</th><th>Code Exists?</th></tr>';
-      ROADMAP.mpBlockers.forEach(b => {
-        h += '<tr><td style="font-family:monospace;font-size:0.75rem;">' + b.ticket + '</td><td>' + b.name + '</td><td><span class="badge badge-red">' + b.status + '</span></td><td style="color:rgba(255,255,255,0.4);font-size:0.78rem;">' + b.code + '</td></tr>';
-      });
-      h += '</table></div>';
-
-      // Module table
-      h += '<table><tr><th>Module</th><th>Files</th><th>Lines</th><th>Last Touched</th><th>Quality (est.)</th></tr>';
-      ROADMAP.mpModules.forEach(m => {
-        h += '<tr><td>' + m.name + '</td><td>' + m.files + '</td><td>' + m.lines.toLocaleString() + '</td><td>' + m.touched + '</td><td><span style="color:' + gradeColor(m.q) + ';font-weight:600;">' + m.q + '</span> <span style="font-size:0.65rem;color:rgba(255,255,255,0.3);">(est.)</span></td></tr>';
-      });
-      h += '</table>';
-
-      // System Info (collapsible)
-      h += '<details style="margin-top:16px;"><summary style="cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.82rem;">System Info</summary><div style="margin-top:8px;font-size:0.78rem;color:rgba(255,255,255,0.4);">';
-      h += 'Database: 216 tables (37 with data) &middot; Auth: Supabase email/password (no MFA) &middot; RBAC: 12 roles, 14 modules, v9.5<br>';
-      h += 'AI: AskSage (FedRAMP High/IL5/CUI), Claude fallback &middot; Pricing: Starter $149, Pro $499, Enterprise $2,500<br>';
-      h += 'Repo: missionpulse-frontend, branch v2-development &middot; Prod: main (d2b5e13) &middot; Hosting: Netlify + Render';
-      h += '</div></details>';
-      h += '</div>';
-      h += '</div>';
-
-      // Section 3: Tech Debt
-      h += '<div class="detail-card"><h3>Tech Debt</h3><table><tr><th>#</th><th>Item</th><th>Platform</th><th>Severity</th></tr>';
-      ROADMAP.techDebt.forEach((d, i) => {
-        const sColor = d.severity==='HIGH'?'red':d.severity==='MEDIUM'?'yellow':'green';
-        const bg = d.severity==='HIGH'?'background:rgba(239,68,68,0.05);':'';
-        h += '<tr style="' + bg + '"><td>' + (i+1) + '</td><td>' + d.item + '</td><td style="color:rgba(255,255,255,0.5);">' + d.platform + '</td><td><span class="badge badge-' + sColor + '">' + d.severity + '</span></td></tr>';
-      });
-      h += '</table></div>';
-
-      // Section 4: Priority Roadmap
-      h += '<div class="detail-card"><h3>Priority Roadmap</h3><table><tr><th>Priority</th><th>Feature</th><th>Platform</th><th>Target</th><th>Status</th></tr>';
-      ROADMAP.roadmapItems.forEach(r => {
-        const pColor = r.p==='P0'?'red':r.p==='P1'?'yellow':r.p==='P2'?'blue':'gray';
-        const sColor = r.status==='Not started'?'red':'gray';
-        h += '<tr><td><span class="badge badge-' + pColor + '">' + r.p + '</span></td><td>' + r.name + '</td><td style="color:rgba(255,255,255,0.5);">' + r.platform + '</td><td>' + r.target + '</td><td><span class="badge badge-' + sColor + '">' + r.status + '</span></td></tr>';
-      });
-      h += '</table></div>';
-
-      h += '<div style="text-align:center;font-size:0.7rem;color:rgba(255,255,255,0.2);margin-top:8px;">Last updated: 2026-03-19</div>';
-      el.innerHTML = h;
+      card.insertAdjacentHTML('afterend', h);
     }
 
-    function switchRoadmapTab(tab, btn) {
-      document.getElementById('roadmap-tab-mmt').style.display = tab === 'mmt' ? 'block' : 'none';
-      document.getElementById('roadmap-tab-mp').style.display = tab === 'mp' ? 'block' : 'none';
-      document.querySelectorAll('#roadmap-tabs button').forEach(b => b.classList.remove('active'));
+    async function roadmapVerifyHealth(id) {
+      const health = prompt('Set health to:', 'healthy');
+      if (!health || !['healthy','degraded','broken','untested'].includes(health)) return;
+      await fetch('/.netlify/functions/roadmap-api?key=' + apiKey, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'verify_health', id, health }) });
+      toast('Health updated to ' + health);
+      renderDetailRoadmap();
+    }
+
+    async function roadmapPreflight(id) {
+      const container = document.getElementById('rm-preflight-' + id);
+      if (!container) return;
+      container.innerHTML = '<div style="color:rgba(255,255,255,0.4);">Running pre-flight checks...</div>';
+      try {
+        const r = await fetch('/.netlify/functions/roadmap-api?key=' + apiKey, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'preflight_check', id }) });
+        const d = await r.json();
+        if (d.error) { container.innerHTML = '<div style="color:#ef4444;">Error: ' + esc(d.error) + '</div>'; return; }
+        let h = '<div style="margin-top:8px;">';
+        (d.gates || []).forEach(g => {
+          const cls = g.manual ? 'preflight-manual' : (g.passed ? 'preflight-pass' : 'preflight-fail');
+          const icon = g.manual ? '\u2b1c' : (g.passed ? '\u2705' : '\u274c');
+          h += '<div class="preflight-check ' + cls + '">' + icon + ' <strong>' + esc(g.name) + '</strong> — ' + esc(g.detail) + (g.manual ? ' <span style="color:#6b7280;">(verify manually)</span>' : '') + '</div>';
+        });
+        const passed = (d.gates || []).filter(g => g.passed || g.manual).length;
+        const total = (d.gates || []).length;
+        h += '<div style="margin-top:8px;font-size:0.85rem;font-weight:600;color:' + (passed === total ? '#22c55e' : '#eab308') + ';">Pre-flight: ' + passed + '/' + total + ' passed</div>';
+        h += '</div>';
+        container.innerHTML = h;
+      } catch (e) { container.innerHTML = '<div style="color:#ef4444;">Failed: ' + e.message + '</div>'; }
+    }
+
+    async function roadmapAddComment(id) {
+      const msg = prompt('Comment:');
+      if (!msg) return;
+      await fetch('/.netlify/functions/roadmap-api?key=' + apiKey, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'add_comment', id, message: msg }) });
+      toast('Comment added');
+      toggleRoadmapDetail(id); toggleRoadmapDetail(id); // re-open
+    }
+
+    async function roadmapEdit(id) {
+      const field = prompt('Field to edit (status, health, priority, owner, notes):');
+      if (!field) return;
+      const value = prompt('New value for ' + field + ':');
+      if (value === null) return;
+      await fetch('/.netlify/functions/roadmap-api?key=' + apiKey, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'update_feature', id, [field]: value }) });
+      toast(field + ' updated');
+      renderDetailRoadmap();
+    }
+
+    function openNewFeatureModal() {
+      let h = '<div class="template-modal" id="rm-new-modal" onclick="if(event.target===this)this.remove()">';
+      h += '<div class="template-modal-content">';
+      h += '<h3>+ New Feature</h3>';
+      h += '<label>Template</label>';
+      h += '<div class="template-btn-row" id="rm-template-btns">';
+      ['netlify_function', 'frontend_page', 'supabase_table', 'integration', 'full_stack'].forEach(t => {
+        h += '<button class="template-btn" onclick="selectTemplate(\'' + t + '\',this)">' + t.replace(/_/g,' ') + '</button>';
+      });
+      h += '</div>';
+      h += '<label>Feature Name</label><input id="rm-new-name" placeholder="e.g. user-notifications">';
+      h += '<label>Product</label><select id="rm-new-product"><option value="proposalpulse">ProposalPulse</option><option value="marketpulse">MarketPulse</option><option value="mmt_site">MMT Site</option><option value="command_center" selected>Command Center</option><option value="agent_network">Agent Network</option></select>';
+      h += '<label>Description</label><textarea id="rm-new-desc" placeholder="Brief description..."></textarea>';
+      h += '<label>Category</label><select id="rm-new-cat"><option value="core">Core</option><option value="security">Security</option><option value="ux">UX</option><option value="integration">Integration</option><option value="infrastructure">Infrastructure</option><option value="content">Content</option></select>';
+      h += '<div style="margin-top:16px;display:flex;gap:8px;">';
+      h += '<button class="btn" style="background:#22c55e;color:#0a1628;" onclick="submitNewFeature()">Create</button>';
+      h += '<button class="btn" onclick="document.getElementById(\'rm-new-modal\').remove()">Cancel</button>';
+      h += '</div>';
+      h += '<div id="rm-scaffold-preview"></div>';
+      h += '</div></div>';
+      document.body.insertAdjacentHTML('beforeend', h);
+    }
+    let _selectedTemplate = 'netlify_function';
+    function selectTemplate(t, btn) {
+      _selectedTemplate = t;
+      document.querySelectorAll('#rm-template-btns .template-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+    }
+    async function submitNewFeature() {
+      const name = document.getElementById('rm-new-name').value.trim();
+      const product = document.getElementById('rm-new-product').value;
+      const desc = document.getElementById('rm-new-desc').value.trim();
+      const cat = document.getElementById('rm-new-cat').value;
+      if (!name) { toast('Feature name required'); return; }
+      try {
+        const r = await fetch('/.netlify/functions/roadmap-api?key=' + apiKey, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'scaffold_feature', template: _selectedTemplate, feature_name: name, product, description: desc, category: cat }) });
+        const d = await r.json();
+        if (d.error) { toast('Error: ' + d.error); return; }
+        const preview = document.getElementById('rm-scaffold-preview');
+        if (preview && d.scaffold) { preview.innerHTML = '<div class="scaffold-preview">' + esc(d.scaffold) + '</div>'; }
+        toast('Feature created!');
+        renderDetailRoadmap();
+      } catch (e) { toast('Failed: ' + e.message); }
+    }
+
+    // Dependency graph rendering
+    async function renderDependencyGraph() {
+      const container = document.getElementById('rm-dep-graph');
+      if (!container) return;
+      const product = _roadmapProductFilter || '';
+      try {
+        const r = await fetch('/.netlify/functions/roadmap-api?key=' + apiKey + '&view=dependencies' + (product ? '&product=' + product : ''));
+        const d = await r.json();
+        const features = d.features || [];
+        if (features.length === 0) { container.innerHTML = '<div style="color:rgba(255,255,255,0.4);">No features to graph.</div>'; return; }
+        // Build Mermaid graph
+        const idMap = {};
+        features.forEach((f, i) => { idMap[f.id] = 'N' + i; });
+        let graph = 'graph TD\n';
+        features.forEach((f, i) => {
+          const nodeId = 'N' + i;
+          const healthColor = f.health === 'healthy' ? '#22c55e' : f.health === 'degraded' ? '#eab308' : f.health === 'broken' ? '#ef4444' : '#6b7280';
+          graph += '  ' + nodeId + '["' + f.feature_name.replace(/"/g, "'") + '"]:::' + f.health + '\n';
+          if (f.depends_on) {
+            f.depends_on.forEach(depId => {
+              if (idMap[depId]) graph += '  ' + idMap[depId] + ' --> ' + nodeId + '\n';
+            });
+          }
+        });
+        graph += '  classDef healthy fill:#22c55e,stroke:#16a34a,color:#000\n';
+        graph += '  classDef degraded fill:#eab308,stroke:#ca8a04,color:#000\n';
+        graph += '  classDef broken fill:#ef4444,stroke:#dc2626,color:#fff\n';
+        graph += '  classDef untested fill:#6b7280,stroke:#4b5563,color:#fff\n';
+        if (typeof mermaid !== 'undefined') {
+          const { svg } = await mermaid.render('rm-mermaid-' + Date.now(), graph);
+          container.innerHTML = svg;
+        } else {
+          container.innerHTML = '<pre style="font-size:0.75rem;color:rgba(255,255,255,0.5);">' + esc(graph) + '</pre>';
+        }
+      } catch (e) { container.innerHTML = '<div style="color:#ef4444;">Graph error: ' + e.message + '</div>'; }
+    }
+
+    // Activity feed rendering
+    async function renderActivityFeed(containerId, featureId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      let url = '/.netlify/functions/roadmap-api?key=' + apiKey + '&view=activity&limit=50';
+      if (featureId) url += '&feature_id=' + featureId;
+      try {
+        const r = await fetch(url);
+        const d = await r.json();
+        const items = d.activity || [];
+        if (items.length === 0) { container.innerHTML = '<div style="color:rgba(255,255,255,0.4);padding:10px;">No activity yet.</div>'; return; }
+        container.innerHTML = items.map(a => {
+          const icon = a.event_type === 'status_change' ? '\u{1f504}' : a.event_type === 'health_change' ? '\u{1f3e5}' : a.event_type === 'comment' ? '\u{1f4ac}' : a.event_type === 'pre_flight' ? '\u2708\ufe0f' : a.event_type === 'deploy' ? '\u{1f680}' : '\u{1f4dd}';
+          return '<div class="activity-item"><span>' + icon + '</span><div><span style="color:rgba(255,255,255,0.7);">' + esc(a.summary) + '</span>' +
+            (a.agent_id ? ' <span style="color:#a855f7;font-size:0.75rem;">[' + esc(a.agent_id) + ']</span>' : '') +
+            '<div style="font-size:0.7rem;color:rgba(255,255,255,0.3);">' + (a.source || '') + ' \u00b7 ' + timeSince(a.created_at) + '</div></div></div>';
+        }).join('');
+      } catch (e) { container.innerHTML = '<div style="color:#ef4444;">Failed to load activity</div>'; }
+    }
+
+    // Metrics tab rendering
+    async function renderMetricsTab() {
+      const container = document.getElementById('rm-metrics-content');
+      if (!container) return;
+      container.innerHTML = '<div style="color:rgba(255,255,255,0.4);">Loading metrics...</div>';
+      let url = '/.netlify/functions/roadmap-api?key=' + apiKey + '&view=metrics';
+      if (_roadmapProductFilter) url += '&product=' + _roadmapProductFilter;
+      try {
+        const r = await fetch(url);
+        const d = await r.json();
+        let h = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px;">';
+        h += '<div class="detail-card"><div class="tile-metric">' + (d.deploys || 0) + '</div><div class="tile-metric-label">Total Deploys</div></div>';
+        h += '<div class="detail-card"><div class="tile-metric">' + (d.statusChanges || 0) + '</div><div class="tile-metric-label">Status Changes</div></div>';
+        h += '<div class="detail-card"><div class="tile-metric">' + (d.avgMttrMinutes !== null ? d.avgMttrMinutes + 'm' : 'N/A') + '</div><div class="tile-metric-label">Avg MTTR</div></div>';
+        h += '<div class="detail-card"><div class="tile-metric">' + (d.recentErrors || 0) + '</div><div class="tile-metric-label">Errors (30d)</div></div>';
+        h += '</div>';
+        // Health changes timeline
+        if (d.healthChanges && d.healthChanges.length > 0) {
+          h += '<div class="detail-card"><h4 style="margin-bottom:8px;">Recent Health Changes</h4>';
+          d.healthChanges.forEach(c => {
+            h += '<div class="activity-item"><span>\u{1f3e5}</span><div>' + esc(c.old_value || '?') + ' \u2192 ' + esc(c.new_value || '?') + '<div style="font-size:0.7rem;color:rgba(255,255,255,0.3);">' + timeSince(c.changed_at) + '</div></div></div>';
+          });
+          h += '</div>';
+        }
+        // Chart.js deploy frequency (if data available)
+        h += '<div class="detail-card"><h4 style="margin-bottom:8px;">Deploy Frequency</h4><canvas id="rm-deploy-chart" height="200"></canvas></div>';
+        container.innerHTML = h;
+        // Render chart
+        const canvas = document.getElementById('rm-deploy-chart');
+        if (canvas && typeof Chart !== 'undefined') {
+          if (_roadmapCharts.deploy) _roadmapCharts.deploy.destroy();
+          _roadmapCharts.deploy = new Chart(canvas, {
+            type: 'bar',
+            data: { labels: ['8w ago','7w','6w','5w','4w','3w','2w','This week'], datasets: [{ label: 'Deploys', data: [0,0,0,0,0,0,0, d.deploys || 0], backgroundColor: '#00e5fa44', borderColor: '#00e5fa', borderWidth: 1 }] },
+            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: '#6b7280' } }, x: { ticks: { color: '#6b7280' } } } }
+          });
+        }
+      } catch (e) { container.innerHTML = '<div style="color:#ef4444;">Failed to load metrics: ' + e.message + '</div>'; }
+    }
+
+    function switchRoadmapWorkspaceTab(tab, btn) {
+      _roadmapActiveTab = tab;
+      document.querySelectorAll('#rm-workspace-tabs button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.rm-tab-content').forEach(d => d.style.display = 'none');
+      const target = document.getElementById('rm-tab-' + tab);
+      if (target) target.style.display = 'block';
+      // Lazy-load tab content
+      if (tab === 'dependencies') renderDependencyGraph();
+      if (tab === 'activity') renderActivityFeed('rm-activity-feed');
+      if (tab === 'metrics') renderMetricsTab();
+    }
+
+    function setRoadmapProductFilter(product, btn) {
+      _roadmapProductFilter = product;
+      document.querySelectorAll('#rm-product-tabs button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      loadRoadmapFeatures().then(() => renderRoadmapCards());
+    }
+
+    async function renderDetailRoadmap() {
+      const el = document.getElementById('detail-roadmap');
+      if (!el) return;
+      let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
+      h += '<div class="detail-title">\ud83d\udccb Product Roadmap</div>';
+
+      // Filter bar
+      h += '<div class="roadmap-filter-bar">';
+      h += '<div id="rm-product-tabs" style="display:flex;gap:4px;">';
+      h += '<button class="' + (!_roadmapProductFilter ? 'active' : '') + '" onclick="setRoadmapProductFilter(\'\',this)">All</button>';
+      Object.keys(PRODUCT_LABELS).forEach(p => {
+        h += '<button class="' + (_roadmapProductFilter === p ? 'active' : '') + '" onclick="setRoadmapProductFilter(\'' + p + '\',this)">' + PRODUCT_LABELS[p] + '</button>';
+      });
+      h += '</div>';
+      h += '<select id="rm-status-filter" onchange="loadRoadmapFeatures().then(()=>renderRoadmapCards())"><option value="">All Status</option><option value="planned">Planned</option><option value="in_progress">In Progress</option><option value="deployed">Deployed</option><option value="needs_fix">Needs Fix</option><option value="deprecated">Deprecated</option></select>';
+      h += '<select id="rm-health-filter" onchange="loadRoadmapFeatures().then(()=>renderRoadmapCards())"><option value="">All Health</option><option value="healthy">Healthy</option><option value="degraded">Degraded</option><option value="broken">Broken</option><option value="untested">Untested</option></select>';
+      h += '<input id="rm-search" type="text" placeholder="Search..." oninput="clearTimeout(this._t);this._t=setTimeout(()=>{loadRoadmapFeatures().then(()=>renderRoadmapCards())},300)">';
+      h += '<button onclick="openNewFeatureModal()" style="background:#22c55e;color:#0a1628;border-color:#22c55e;">+ Add Feature</button>';
+      h += '</div>';
+
+      // Workspace tabs
+      h += '<div class="roadmap-tab-bar" id="rm-workspace-tabs">';
+      ['overview','dependencies','deploy','docs','metrics','activity'].forEach((t, i) => {
+        h += '<button class="' + (t === _roadmapActiveTab ? 'active' : '') + '" onclick="switchRoadmapWorkspaceTab(\'' + t + '\',this)">' + t.charAt(0).toUpperCase() + t.slice(1) + '</button>';
+      });
+      h += '</div>';
+
+      // Tab contents
+      h += '<div class="rm-tab-content" id="rm-tab-overview" style="display:' + (_roadmapActiveTab === 'overview' ? 'block' : 'none') + ';"><div class="roadmap-grid" id="rm-card-grid"><div style="color:rgba(255,255,255,0.4);">Loading features...</div></div></div>';
+      h += '<div class="rm-tab-content" id="rm-tab-dependencies" style="display:' + (_roadmapActiveTab === 'dependencies' ? 'block' : 'none') + ';"><div class="detail-card" id="rm-dep-graph"><div style="color:rgba(255,255,255,0.4);">Select a product and switch to this tab to view dependency graph.</div></div></div>';
+      h += '<div class="rm-tab-content" id="rm-tab-deploy" style="display:' + (_roadmapActiveTab === 'deploy' ? 'block' : 'none') + ';"><div class="detail-card"><p style="color:rgba(255,255,255,0.5);">Click a feature card in Overview, then use "Pre-flight Check" to run deployment gates.</p></div></div>';
+      h += '<div class="rm-tab-content" id="rm-tab-docs" style="display:' + (_roadmapActiveTab === 'docs' ? 'block' : 'none') + ';"><div class="detail-card"><p style="color:rgba(255,255,255,0.5);">Select a feature to view associated documentation, file maps, and notes. Use "Add Comment" to annotate features with documentation links.</p></div></div>';
+      h += '<div class="rm-tab-content" id="rm-tab-metrics" style="display:' + (_roadmapActiveTab === 'metrics' ? 'block' : 'none') + ';"><div id="rm-metrics-content"><div style="color:rgba(255,255,255,0.4);">Loading metrics...</div></div></div>';
+      h += '<div class="rm-tab-content" id="rm-tab-activity" style="display:' + (_roadmapActiveTab === 'activity' ? 'block' : 'none') + ';"><div id="rm-activity-feed"><div style="color:rgba(255,255,255,0.4);">Loading activity...</div></div></div>';
+
+      el.innerHTML = h;
+
+      // Load and render feature cards
+      await loadRoadmapFeatures();
+      renderRoadmapCards();
+
+      // Lazy-load active tab
+      if (_roadmapActiveTab === 'dependencies') renderDependencyGraph();
+      if (_roadmapActiveTab === 'activity') renderActivityFeed('rm-activity-feed');
+      if (_roadmapActiveTab === 'metrics') renderMetricsTab();
     }
 
     // ============ ALL EXISTING ACTION FUNCTIONS ============
@@ -2908,7 +3218,7 @@ async function updateIssueStatus(id, status) {
       var h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
       h += '<div class="detail-title">\ud83e\udde0 Agent Memory</div>';
       try {
-        var res = await fetch('/.netlify/functions/learning-api?view=active&agent=all', { headers: { 'Authorization': 'Bearer ' + apiKey } });
+        var res = await fetch('/.netlify/functions/learning-api?view=active&agent=all&key=' + apiKey);
         var data = res.ok ? await res.json() : {};
         var learnings = data.learnings || [];
         h += '<div class="detail-card"><h3>Active Learning Rules (' + learnings.length + ')</h3>';
@@ -2926,7 +3236,7 @@ async function updateIssueStatus(id, status) {
           });
         }
         h += '</div>';
-        var effRes = await fetch('/.netlify/functions/learning-api?view=effective', { headers: { 'Authorization': 'Bearer ' + apiKey } });
+        var effRes = await fetch('/.netlify/functions/learning-api?view=effective&key=' + apiKey);
         var effData = effRes.ok ? await effRes.json() : {};
         var effective = effData.learnings || [];
         if (effective.length) {
@@ -3888,7 +4198,7 @@ async function updateIssueStatus(id, status) {
       }
 
       loadDashboard();
-      setInterval(loadDashboard, 30000);
+      setInterval(loadDashboard, 120000);
     }
 
     async function requestLogin() {
@@ -3992,150 +4302,162 @@ async function updateIssueStatus(id, status) {
       showUserManagement();
     }
 
+    // Cmd+K / Ctrl+K → focus command bar
+    document.addEventListener('keydown', function(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        var input = document.getElementById('cmd-input');
+        if (input) { input.focus(); input.select(); }
+      }
+    });
+
     // Enter key on email input
     document.getElementById('login-email').addEventListener('keydown', function(e) { if (e.key === 'Enter') requestLogin(); });
 
-    // ============ COMMAND PALETTE (Cmd+K) ============
+    // === Cmd+K Command Palette ===
+    var _paletteOpen = false;
+    var _paletteIdx = 0;
+    var _paletteItems = [];
+    var _palettePrevFocus = null;
 
-    var _cpSelectedIdx = 0;
-
-    function getCpItems() {
-      var tiles = [
-        { icon: '🎯', label: 'COO Console', cat: 'Ops', id: 'coo' },
-        { icon: '✏️', label: 'Editorial', cat: 'Intelligence', id: 'editorial' },
-        { icon: '📋', label: 'Roadmap', cat: 'Products', id: 'roadmap' },
-        { icon: '💰', label: 'Cost Intelligence', cat: 'Finance', id: 'costs' },
-        { icon: '💰', label: 'Finance', cat: 'Finance', id: 'finance' },
-        { icon: '🧾', label: 'Billing Tracker', cat: 'Finance', id: 'billing' },
-        { icon: '💳', label: 'Services', cat: 'Finance', id: 'services' },
-        { icon: '👥', label: 'Customers', cat: 'Products', id: 'customers' },
-        { icon: '📋', label: 'Projects', cat: 'Products', id: 'projects' },
-        { icon: '🧪', label: 'QA', cat: 'Ops', id: 'qa' },
-        { icon: '🔧', label: 'Issues', cat: 'Ops', id: 'issues' },
-        { icon: '📰', label: 'Newsletter', cat: 'Intelligence', id: 'newsletter' },
-        { icon: '📦', label: 'Products', cat: 'Products', id: 'products' },
-        { icon: '🔧', label: 'Engineering', cat: 'Ops', id: 'engineering' },
-        { icon: '📊', label: 'Business', cat: 'Products', id: 'business' },
-        { icon: '🛡️', label: 'Site Health', cat: 'Ops', id: 'health' },
-        { icon: '🤖', label: 'Agent Fleet', cat: 'Ops', id: 'agents' },
-        { icon: '🎨', label: 'Content Studio', cat: 'Intelligence', id: 'content' },
-        { icon: '🎯', label: 'Competitive Intel', cat: 'Intelligence', id: 'competitive' },
-        { icon: '🧠', label: 'Agent Memory', cat: 'Intelligence', id: 'learnings' },
-        { icon: '🛡️', label: 'Security Posture', cat: 'Ops', id: 'security' },
-        { icon: '💰', label: 'Cost Control (Penny)', cat: 'Finance', id: 'penny' },
+    function getPaletteItems(query) {
+      var allItems = [
+        { icon: '🎯', label: 'COO Console', action: function() { navigate('coo'); } },
+        { icon: '✏️', label: 'Editorial', action: function() { navigate('editorial'); } },
+        { icon: '📋', label: 'Product Roadmap', action: function() { navigate('roadmap'); } },
+        { icon: '💰', label: 'Cost Intelligence', action: function() { navigate('costs'); } },
+        { icon: '🧾', label: 'Billing Tracker', action: function() { navigate('billing'); } },
+        { icon: '💳', label: 'Services', action: function() { navigate('services'); } },
+        { icon: '👥', label: 'Customers', action: function() { navigate('customers'); } },
+        { icon: '📋', label: 'Projects', action: function() { navigate('projects'); } },
+        { icon: '🧪', label: 'QA', action: function() { navigate('qa'); } },
+        { icon: '🔧', label: 'Issues', action: function() { navigate('issues'); } },
+        { icon: '📰', label: 'Newsletter', action: function() { navigate('newsletter'); } },
+        { icon: '📦', label: 'Products', action: function() { navigate('products'); } },
+        { icon: '🤖', label: 'Agent Fleet', action: function() { navigate('agents'); } },
+        { icon: '🎨', label: 'Content Studio', action: function() { navigate('content'); } },
+        { icon: '🛡️', label: 'Security Posture', action: function() { navigate('security'); } },
+        { icon: '💰', label: 'Cost Control (Penny)', action: function() { navigate('penny'); } },
+        { icon: '🧠', label: 'Agent Memory', action: function() { navigate('learnings'); } },
+        { icon: '🎯', label: 'Competitive Intel', action: function() { navigate('competitive'); } },
+        { icon: '🏠', label: 'Dashboard Home', action: function() { showHome(); } },
+        { icon: '🔄', label: 'Refresh Dashboard', action: function() { loadDashboard(); } },
+        { icon: '🚪', label: 'Log Out', action: function() { logout(); } },
       ];
-      var actions = [
-        { icon: '🏠', label: 'Go Home', cat: 'Action', action: function() { showHome(); } },
-        { icon: '🔄', label: 'Refresh Dashboard', cat: 'Action', action: function() { loadDashboard(); } },
-        { icon: '🚪', label: 'Log Out', cat: 'Action', action: function() { logout(); } },
-      ];
-      return tiles.concat(actions);
+      if (!query) return allItems;
+      var q = query.toLowerCase();
+      return allItems.filter(function(i) { return i.label.toLowerCase().indexOf(q) !== -1; });
     }
 
-    function openCmdPalette() {
+    function openPalette() {
+      _palettePrevFocus = document.activeElement;
+      _paletteOpen = true;
+      _paletteIdx = 0;
       var overlay = document.getElementById('cmd-palette-overlay');
+      overlay.classList.add('show');
       var input = document.getElementById('cmd-palette-input');
-      overlay.classList.add('open');
       input.value = '';
-      _cpSelectedIdx = 0;
-      renderCpList('');
-      setTimeout(function() { input.focus(); }, 50);
+      input.focus();
+      renderPaletteResults('');
     }
 
-    function closeCmdPalette() {
-      document.getElementById('cmd-palette-overlay').classList.remove('open');
+    function closePalette() {
+      _paletteOpen = false;
+      document.getElementById('cmd-palette-overlay').classList.remove('show');
+      if (_palettePrevFocus) { _palettePrevFocus.focus(); _palettePrevFocus = null; }
     }
 
-    function renderCpList(query) {
-      var items = getCpItems();
-      var q = query.toLowerCase().trim();
-      var filtered = q ? items.filter(function(it) { return it.label.toLowerCase().includes(q) || it.cat.toLowerCase().includes(q); }) : items;
-      var list = document.getElementById('cmd-palette-list');
-      if (!filtered.length) {
-        list.innerHTML = '<div class="cmd-palette-empty">No results for &ldquo;' + esc(query) + '&rdquo;</div>';
-        return;
-      }
-      _cpSelectedIdx = Math.min(_cpSelectedIdx, filtered.length - 1);
-      list.innerHTML = filtered.map(function(it, idx) {
-        return '<div class="cmd-palette-item' + (idx === _cpSelectedIdx ? ' selected' : '') + '" data-idx="' + idx + '">' +
-          '<span class="cp-icon">' + it.icon + '</span>' +
-          '<span class="cp-label">' + esc(it.label) + '</span>' +
-          '<span class="cp-cat">' + esc(it.cat) + '</span></div>';
+    function renderPaletteResults(query) {
+      _paletteItems = getPaletteItems(query);
+      _paletteIdx = Math.min(_paletteIdx, Math.max(0, _paletteItems.length - 1));
+      var container = document.getElementById('cmd-palette-results');
+      container.innerHTML = _paletteItems.map(function(item, idx) {
+        return '<div class="cmd-palette-item' + (idx === _paletteIdx ? ' selected' : '') + '" data-idx="' + idx + '" onmouseenter="paletteHover(' + idx + ')" onclick="paletteSelect(' + idx + ')">' +
+          '<span>' + item.icon + '</span> ' + item.label + '</div>';
       }).join('');
-      list.querySelectorAll('.cmd-palette-item').forEach(function(el) {
-        el.addEventListener('click', function() { executeCpItem(filtered[parseInt(el.dataset.idx)]); });
-      });
-    }
-
-    function executeCpItem(item) {
-      closeCmdPalette();
-      if (item.action) { item.action(); }
-      else if (item.id) { navigate(item.id); }
-    }
-
-    document.getElementById('cmd-palette-input').addEventListener('input', function(e) {
-      _cpSelectedIdx = 0;
-      renderCpList(e.target.value);
-    });
-
-    document.getElementById('cmd-palette-input').addEventListener('keydown', function(e) {
-      var items = document.querySelectorAll('#cmd-palette-list .cmd-palette-item');
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        _cpSelectedIdx = Math.min(_cpSelectedIdx + 1, items.length - 1);
-        renderCpList(this.value);
-        var sel = document.querySelector('#cmd-palette-list .cmd-palette-item.selected');
-        if (sel) sel.scrollIntoView({ block: 'nearest' });
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        _cpSelectedIdx = Math.max(_cpSelectedIdx - 1, 0);
-        renderCpList(this.value);
-        var sel = document.querySelector('#cmd-palette-list .cmd-palette-item.selected');
-        if (sel) sel.scrollIntoView({ block: 'nearest' });
-      } else if (e.key === 'Enter') {
-        e.preventDefault();
-        var allItems = getCpItems();
-        var q = this.value.toLowerCase().trim();
-        var filtered = q ? allItems.filter(function(it) { return it.label.toLowerCase().includes(q) || it.cat.toLowerCase().includes(q); }) : allItems;
-        if (filtered[_cpSelectedIdx]) executeCpItem(filtered[_cpSelectedIdx]);
-      } else if (e.key === 'Escape') {
-        closeCmdPalette();
+      if (!_paletteItems.length) {
+        container.innerHTML = '<div style="padding:20px;text-align:center;color:rgba(255,255,255,0.3);">No results</div>';
       }
-    });
+    }
 
-    document.getElementById('cmd-palette-overlay').addEventListener('click', function(e) {
-      if (e.target === this) closeCmdPalette();
-    });
+    function paletteHover(idx) { _paletteIdx = idx; renderPaletteResults(document.getElementById('cmd-palette-input').value); }
+
+    function paletteSelect(idx) {
+      if (_paletteItems[idx]) { closePalette(); _paletteItems[idx].action(); }
+    }
 
     document.addEventListener('keydown', function(e) {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
-        var overlay = document.getElementById('cmd-palette-overlay');
-        if (overlay.classList.contains('open')) closeCmdPalette();
-        else openCmdPalette();
+        if (_paletteOpen) closePalette(); else openPalette();
       }
+      if (!_paletteOpen) return;
+      if (e.key === 'Escape') { e.preventDefault(); closePalette(); }
+      if (e.key === 'ArrowDown') { e.preventDefault(); _paletteIdx = Math.min(_paletteIdx + 1, _paletteItems.length - 1); renderPaletteResults(document.getElementById('cmd-palette-input').value); }
+      if (e.key === 'ArrowUp') { e.preventDefault(); _paletteIdx = Math.max(_paletteIdx - 1, 0); renderPaletteResults(document.getElementById('cmd-palette-input').value); }
+      if (e.key === 'Enter') { e.preventDefault(); paletteSelect(_paletteIdx); }
     });
 
-    // ============ MOBILE NAV ============
+    // === Mobile Bottom Nav ===
+    var _mobileMoreOpen = false;
 
-    function openMobileNav() {
-      document.getElementById('mobile-nav-overlay').classList.add('open');
-      document.getElementById('mobile-nav-panel').classList.add('open');
-      var userEl = document.getElementById('mobile-nav-user');
-      if (currentUser) userEl.textContent = currentUser.name + ' (' + currentUser.role + ')';
+    function mobileNav(section) {
+      closeMobileMore();
+      if (section === 'home') showHome();
+      else navigate(section);
     }
 
-    function closeMobileNav() {
-      document.getElementById('mobile-nav-overlay').classList.remove('open');
-      document.getElementById('mobile-nav-panel').classList.remove('open');
+    function toggleMobileMore() {
+      _mobileMoreOpen = !_mobileMoreOpen;
+      document.getElementById('mobile-more-menu').classList.toggle('show', _mobileMoreOpen);
     }
 
-    document.getElementById('mobile-nav-toggle').addEventListener('click', openMobileNav);
-    document.getElementById('mobile-nav-close').addEventListener('click', closeMobileNav);
-    document.getElementById('mobile-nav-overlay').addEventListener('click', closeMobileNav);
+    function closeMobileMore() {
+      _mobileMoreOpen = false;
+      var el = document.getElementById('mobile-more-menu');
+      if (el) el.classList.remove('show');
+    }
 
     // Start auth flow
     initAuth();
   </script>
+
+  <!-- Cmd+K Palette -->
+  <div id="cmd-palette-overlay" class="cmd-palette-overlay" onclick="if(event.target===this)closePalette()">
+    <div class="cmd-palette">
+      <input id="cmd-palette-input" type="text" placeholder="Search sections... (Cmd+K)" oninput="renderPaletteResults(this.value)" autocomplete="off">
+      <div id="cmd-palette-results" class="cmd-palette-results"></div>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Nav -->
+  <div class="mobile-nav" id="mobile-bottom-nav">
+    <div class="mobile-nav-inner">
+      <button class="mobile-nav-item" onclick="mobileNav('home')"><span>🏠</span>Home</button>
+      <button class="mobile-nav-item" onclick="mobileNav('products')"><span>📦</span>Products</button>
+      <button class="mobile-nav-item" onclick="mobileNav('agents')"><span>🤖</span>Agents</button>
+      <button class="mobile-nav-item" onclick="mobileNav('costs')"><span>💰</span>Costs</button>
+      <button class="mobile-nav-item" onclick="toggleMobileMore()"><span>☰</span>More</button>
+    </div>
+  </div>
+
+  <!-- Mobile More Menu -->
+  <div id="mobile-more-menu" class="mobile-nav-more">
+    <div class="mobile-nav-more-item" onclick="mobileNav('coo')">🎯 COO Console</div>
+    <div class="mobile-nav-more-item" onclick="mobileNav('editorial')">✏️ Editorial</div>
+    <div class="mobile-nav-more-item" onclick="mobileNav('roadmap')">📋 Roadmap</div>
+    <div class="mobile-nav-more-item" onclick="mobileNav('billing')">🧾 Billing</div>
+    <div class="mobile-nav-more-item" onclick="mobileNav('services')">💳 Services</div>
+    <div class="mobile-nav-more-item" onclick="mobileNav('customers')">👥 Customers</div>
+    <div class="mobile-nav-more-item" onclick="mobileNav('projects')">📋 Projects</div>
+    <div class="mobile-nav-more-item" onclick="mobileNav('qa')">🧪 QA</div>
+    <div class="mobile-nav-more-item" onclick="mobileNav('issues')">🔧 Issues</div>
+    <div class="mobile-nav-more-item" onclick="mobileNav('newsletter')">📰 Newsletter</div>
+    <div class="mobile-nav-more-item" onclick="mobileNav('content')">🎨 Content Studio</div>
+    <div class="mobile-nav-more-item" onclick="mobileNav('security')">🛡️ Security</div>
+    <div class="mobile-nav-more-item" onclick="mobileNav('penny')">💰 Cost Control</div>
+    <div class="mobile-nav-more-item" onclick="mobileNav('learnings')">🧠 Agent Memory</div>
+    <div class="mobile-nav-more-item" onclick="mobileNav('competitive')">🎯 Competitive Intel</div>
+  </div>
 </body>
 </html>

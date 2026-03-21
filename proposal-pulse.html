@@ -930,6 +930,16 @@
       .ring-label { -webkit-text-fill-color: initial !important; }
     }
   </style>
+  <script src="https://browser.sentry-cdn.com/9.1.0/bundle.tracing.min.js" crossorigin="anonymous"></script>
+  <script>
+    if (window.Sentry) {
+      Sentry.init({
+        dsn: "https://7244f94c03622abd9d397f5cbd6aa04e@o4511055001812992.ingest.us.sentry.io/4511055019245568",
+        environment: "production",
+        tracesSampleRate: 0.1,
+      });
+    }
+  </script>
 </head>
 <body class="antialiased">
 

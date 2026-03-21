@@ -12,6 +12,7 @@ const { createClient } = require("@supabase/supabase-js");
 const { stripHtml } = require("./lib/sanitize");
 const { checkRateLimit } = require("./lib/rate-limiter");
 const { createLogger } = require("./lib/logger");
+const { Sentry, wrapHandler } = require("./lib/sentry");
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -26,7 +27,7 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-exports.handler = async (event) => {
+exports.handler = wrapHandler(async (event) => {
   if (event.httpMethod === "OPTIONS") {
     return { statusCode: 204, headers: CORS_HEADERS, body: "" };
   }
@@ -260,7 +261,7 @@ exports.handler = async (event) => {
       body: JSON.stringify({ error: err.message || "Something went wrong. Please try again." }),
     };
   }
-};
+});
 
 async function createCheckoutSession({ name, email, company, topic, audience, additional_context }) {
   if (!STRIPE_SECRET_KEY) {
