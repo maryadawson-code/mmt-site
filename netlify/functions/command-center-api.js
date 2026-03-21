@@ -13,6 +13,7 @@ const { getAllFlags } = require("./lib/feature-flags");
 const { getMode } = require("./lib/kill-switch");
 const { logOpsEvent } = require("./lib/ops-ledger");
 const { validateAuth } = require("./lib/auth");
+const { listApprovals, decideApproval, triageSignal } = require("./lib/approvals");
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -362,28 +363,19 @@ exports.handler = async (event) => {
       return ok({ updated: true });
     }
 
-    // === OPS CONSOLE: APPROVALS ===
+    // === OPS CONSOLE: APPROVALS (shared lib) ===
     if (action === "list_approvals") {
-      const statusFilter = body.status || "pending";
-      const now = new Date().toISOString();
-      // Auto-expire
-      await supabase.from("agent_approvals").update({ status: "expired" }).eq("status", "pending").lt("expires_at", now);
-      const query = supabase.from("agent_approvals").select("*").order("requested_at", { ascending: false });
-      if (statusFilter === "pending") query.eq("status", "pending");
-      else if (statusFilter === "recent") query.in("status", ["approved", "denied", "expired"]).limit(10);
-      else query.eq("status", statusFilter);
-      const { data } = await query.limit(50);
-      return ok({ approvals: data || [] });
+      try {
+        const result = await listApprovals(supabase, { status: body.status });
+        return ok(result);
+      } catch (e) { return err(500, e.message); }
     }
 
     if (action === "decide_approval") {
-      const { approval_id, decision, decided_by } = body;
-      if (!approval_id || !decision) return err(400, "approval_id and decision required");
-      const { error: updateErr } = await supabase.from("agent_approvals").update({
-        status: decision, decided_at: new Date().toISOString(), decided_by: decided_by || auth.user?.name || "operator",
-      }).eq("id", approval_id);
-      if (updateErr) return err(500, updateErr.message);
-      return ok({ decided: true });
+      try {
+        const result = await decideApproval(supabase, { approval_id: body.approval_id, decision: body.decision, decided_by: body.decided_by || auth.user?.name || "operator" });
+        return ok(result);
+      } catch (e) { return err(e.message.includes("required") ? 400 : 500, e.message); }
     }
 
     // === OPS CONSOLE: TASK STATUS ===
@@ -395,24 +387,12 @@ exports.handler = async (event) => {
       return ok({ cancelled: true });
     }
 
-    // === OPS CONSOLE: SIGNAL TRIAGE ===
+    // === OPS CONSOLE: SIGNAL TRIAGE (shared lib) ===
     if (action === "triage_signal") {
-      const { signal_id, triage_status } = body;
-      if (!signal_id || !triage_status) return err(400, "signal_id and triage_status required");
-      const { error: updateErr } = await supabase.from("intel_signals").update({
-        triage_status, triaged_at: new Date().toISOString(),
-      }).eq("id", signal_id);
-      if (updateErr) return err(500, updateErr.message);
-      if (triage_status === "newsletter") {
-        const { data: signal } = await supabase.from("intel_signals").select("title, summary").eq("id", signal_id).single();
-        if (signal) {
-          await supabase.from("task_queue").insert({
-            task: "Evaluate this signal for newsletter inclusion: " + signal.title + " — " + (signal.summary || ""),
-            agent: "ops-editorial", priority: "high",
-          });
-        }
-      }
-      return ok({ triaged: true });
+      try {
+        const result = await triageSignal(supabase, { signal_id: body.signal_id, triage_status: body.triage_status });
+        return ok(result);
+      } catch (e) { return err(e.message.includes("required") || e.message.includes("Invalid") ? 400 : 500, e.message); }
     }
 
     if (action === "seed_pipeline") {
@@ -596,6 +576,25 @@ exports.handler = async (event) => {
       if (statusFilter !== "all") query = query.eq("status", statusFilter);
       const { data } = await query;
       return ok({ findings: data || [] });
+    }
+
+    // === COMPETITIVE INTEL ===
+    if (action === "competitive_summary") {
+      const { data: comps } = await supabase.from("competitors").select("name, category, overlap_score, threat_level, last_researched_at").order("overlap_score", { ascending: false });
+      const { data: alerts } = await supabase.from("competitive_alerts").select("id").eq("reviewed", false);
+      return ok({ competitors: comps || [], unreviewedAlerts: (alerts || []).length });
+    }
+
+    if (action === "competitive_alerts") {
+      const { data } = await supabase.from("competitive_alerts").select("id, competitor_name, alert_type, title, summary, severity, reviewed, created_at").eq("reviewed", false).order("created_at", { ascending: false }).limit(20);
+      return ok({ alerts: data || [] });
+    }
+
+    if (action === "competitive_review_alert") {
+      const { alert_id } = body;
+      if (!alert_id) return err(400, "alert_id required");
+      await supabase.from("competitive_alerts").update({ reviewed: true, reviewed_at: new Date().toISOString() }).eq("id", alert_id);
+      return ok({ reviewed: true });
     }
 
     return err(400, "Unknown action: " + action);

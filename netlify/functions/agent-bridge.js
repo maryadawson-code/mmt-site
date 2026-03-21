@@ -14,6 +14,7 @@
 
 const { createClient } = require("@supabase/supabase-js");
 const { createLogger } = require("./lib/logger");
+const { listApprovals, decideApproval, triageSignal } = require("./lib/approvals");
 
 const HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -215,68 +216,28 @@ exports.handler = async (event) => {
       return ok({ approval_id: data.id });
     }
 
-    // DECIDE APPROVAL (dashboard calls this)
+    // DECIDE APPROVAL (shared lib)
     if (action === "decide_approval") {
-      const { approval_id, decision, decided_by } = body;
-      if (!approval_id || !decision) return err(400, "approval_id and decision required");
-      if (!["approved", "denied"].includes(decision)) return err(400, "decision must be approved or denied");
-      const { error: updateErr } = await supabase
-        .from("agent_approvals")
-        .update({
-          status: decision,
-          decided_at: new Date().toISOString(),
-          decided_by: decided_by || "operator",
-        })
-        .eq("id", approval_id);
-      if (updateErr) return err(500, updateErr.message);
-      return ok({ decided: true });
+      try {
+        const result = await decideApproval(supabase, { approval_id: body.approval_id, decision: body.decision, decided_by: body.decided_by });
+        return ok(result);
+      } catch (e) { return err(e.message.includes("required") ? 400 : 500, e.message); }
     }
 
-    // LIST APPROVALS (dashboard polls this)
+    // LIST APPROVALS (shared lib)
     if (action === "list_approvals") {
-      const statusFilter = body.status || "pending";
-      // Auto-expire pending items past expires_at
-      const now = new Date().toISOString();
-      await supabase
-        .from("agent_approvals")
-        .update({ status: "expired" })
-        .eq("status", "pending")
-        .lt("expires_at", now);
-      const query = supabase.from("agent_approvals").select("*").order("requested_at", { ascending: false });
-      if (statusFilter === "pending") {
-        query.eq("status", "pending");
-      } else if (statusFilter === "recent") {
-        query.in("status", ["approved", "denied", "expired"]).limit(10);
-      } else {
-        query.eq("status", statusFilter);
-      }
-      const { data } = await query.limit(50);
-      return ok({ approvals: data || [] });
+      try {
+        const result = await listApprovals(supabase, { status: body.status });
+        return ok(result);
+      } catch (e) { return err(500, e.message); }
     }
 
-    // TRIAGE SIGNAL (dashboard calls this)
+    // TRIAGE SIGNAL (shared lib)
     if (action === "triage_signal") {
-      const { signal_id, triage_status } = body;
-      if (!signal_id || !triage_status) return err(400, "signal_id and triage_status required");
-      const validStatuses = ["new", "newsletter", "dismissed", "pinned"];
-      if (!validStatuses.includes(triage_status)) return err(400, "Invalid triage_status");
-      const { error: updateErr } = await supabase
-        .from("intel_signals")
-        .update({ triage_status, triaged_at: new Date().toISOString() })
-        .eq("id", signal_id);
-      if (updateErr) return err(500, updateErr.message);
-      // If sending to newsletter, dispatch task to ops-editorial
-      if (triage_status === "newsletter") {
-        const { data: signal } = await supabase.from("intel_signals").select("title, summary").eq("id", signal_id).single();
-        if (signal) {
-          await supabase.from("task_queue").insert({
-            task: "Evaluate this signal for newsletter inclusion: " + signal.title + " — " + (signal.summary || ""),
-            agent: "ops-editorial",
-            priority: "high",
-          });
-        }
-      }
-      return ok({ triaged: true });
+      try {
+        const result = await triageSignal(supabase, { signal_id: body.signal_id, triage_status: body.triage_status });
+        return ok(result);
+      } catch (e) { return err(e.message.includes("required") || e.message.includes("Invalid") ? 400 : 500, e.message); }
     }
 
     // COST SUMMARY

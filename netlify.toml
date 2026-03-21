@@ -73,6 +73,12 @@
 [functions."billing-sync"]
   schedule = "0 8 * * *"
 
+[[plugins]]
+  package = "@sentry/netlify-build-plugin"
+  [plugins.inputs]
+    sentryOrg = "mmt"
+    sentryProject = "mmt-site"
+
 [context.staging]
   command = "node build.js"
 

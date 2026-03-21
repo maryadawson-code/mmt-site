@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
+    "@sentry/netlify-build-plugin": "^1.1.1",
     "tailwindcss": "~3.4.19",
     "vitest": "^4.1.0"
   }

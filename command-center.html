@@ -220,6 +220,41 @@
     .timeline-dot.done { background: #22c55e; }
     .timeline-dot.pending { background: rgba(255,255,255,0.2); }
     .diff-header { background: rgba(0,229,250,0.08); padding: 4px 8px; font-size: 0.75rem; color: #00e5fa; border-bottom: 1px solid rgba(255,255,255,0.08); }
+
+    /* Command palette */
+    .cmd-palette-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000; display: none; align-items: flex-start; justify-content: center; padding-top: 15vh; }
+    .cmd-palette-overlay.open { display: flex; }
+    .cmd-palette { background: #111827; border: 1px solid rgba(0,229,250,0.25); border-radius: 12px; width: 90%; max-width: 520px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); overflow: hidden; }
+    .cmd-palette-input { width: 100%; padding: 14px 18px; background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; font-size: 1rem; outline: none; box-sizing: border-box; }
+    .cmd-palette-input::placeholder { color: rgba(255,255,255,0.3); }
+    .cmd-palette-list { max-height: 340px; overflow-y: auto; padding: 6px 0; }
+    .cmd-palette-item { display: flex; align-items: center; gap: 10px; padding: 10px 18px; cursor: pointer; font-size: 0.88rem; color: rgba(255,255,255,0.7); transition: background 0.1s; }
+    .cmd-palette-item:hover, .cmd-palette-item.selected { background: rgba(0,229,250,0.1); color: #e2e8f0; }
+    .cmd-palette-item .cp-icon { font-size: 1.1rem; width: 24px; text-align: center; flex-shrink: 0; }
+    .cmd-palette-item .cp-label { flex: 1; }
+    .cmd-palette-item .cp-cat { font-size: 0.7rem; color: rgba(255,255,255,0.3); text-transform: uppercase; }
+    .cmd-palette-empty { padding: 24px; text-align: center; color: rgba(255,255,255,0.3); font-size: 0.85rem; }
+    .cmd-palette-hint { padding: 8px 18px; font-size: 0.7rem; color: rgba(255,255,255,0.25); border-top: 1px solid rgba(255,255,255,0.05); display: flex; gap: 16px; }
+
+    /* Mobile hamburger nav */
+    .mobile-nav-toggle { display: none; background: none; border: 1px solid rgba(255,255,255,0.15); color: #e2e8f0; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 1.2rem; min-width: 44px; min-height: 44px; }
+    .mobile-nav-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 9990; display: none; }
+    .mobile-nav-overlay.open { display: block; }
+    .mobile-nav-panel { position: fixed; top: 0; right: 0; bottom: 0; width: 280px; background: #111827; z-index: 9991; transform: translateX(100%); transition: transform 0.25s ease; overflow-y: auto; }
+    .mobile-nav-panel.open { transform: translateX(0); }
+    .mobile-nav-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .mobile-nav-header h2 { font-size: 1rem; color: #00e5fa; margin: 0; }
+    .mobile-nav-close { background: none; border: none; color: rgba(255,255,255,0.5); font-size: 1.4rem; cursor: pointer; padding: 4px; }
+    .mobile-nav-group { padding: 12px 20px 4px; }
+    .mobile-nav-group-label { font-size: 0.65rem; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+    .mobile-nav-link { display: block; padding: 10px 0; color: rgba(255,255,255,0.7); font-size: 0.9rem; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .mobile-nav-link:hover, .mobile-nav-link:active { color: #00e5fa; }
+    .mobile-nav-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 12px; }
+    @media (max-width: 768px) {
+      .mobile-nav-toggle { display: inline-flex; align-items: center; justify-content: center; }
+      .tile-grid { grid-template-columns: 1fr !important; }
+      .ops-two-col { grid-template-columns: 1fr !important; }
+    }
   </style>
 </head>
 <body>
@@ -291,6 +326,63 @@
 
   <div id="toast" class="toast"></div>
 
+  <!-- Command Palette (Cmd+K) -->
+  <div class="cmd-palette-overlay" id="cmd-palette-overlay">
+    <div class="cmd-palette">
+      <input class="cmd-palette-input" id="cmd-palette-input" type="text" placeholder="Search tiles, actions..." autocomplete="off">
+      <div class="cmd-palette-list" id="cmd-palette-list"></div>
+      <div class="cmd-palette-hint"><span>↑↓ Navigate</span><span>↵ Select</span><span>Esc Close</span></div>
+    </div>
+  </div>
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+  <div class="mobile-nav-panel" id="mobile-nav-panel">
+    <div class="mobile-nav-header">
+      <h2>MMT Command Center</h2>
+      <button class="mobile-nav-close" id="mobile-nav-close">&times;</button>
+    </div>
+    <div class="mobile-nav-group">
+      <div class="mobile-nav-link" onclick="closeMobileNav();showHome();">Home</div>
+    </div>
+    <div class="mobile-nav-group">
+      <div class="mobile-nav-group-label">Ops</div>
+      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('engineering')">Engineering</div>
+      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('agents')">Agent Fleet</div>
+      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('health')">Site Health</div>
+      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('security')">Security</div>
+      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('qa')">QA</div>
+      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('issues')">Issues</div>
+    </div>
+    <div class="mobile-nav-group">
+      <div class="mobile-nav-group-label">Products</div>
+      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('products')">Products</div>
+      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('customers')">Customers</div>
+      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('projects')">Projects</div>
+      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('roadmap')">Roadmap</div>
+    </div>
+    <div class="mobile-nav-group">
+      <div class="mobile-nav-group-label">Intelligence</div>
+      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('content')">Content Studio</div>
+      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('editorial')">Editorial</div>
+      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('newsletter')">Newsletter</div>
+      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('competitive')">Competitive Intel</div>
+      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('learnings')">Agent Memory</div>
+    </div>
+    <div class="mobile-nav-group">
+      <div class="mobile-nav-group-label">Finance</div>
+      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('costs')">Cost Intelligence</div>
+      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('finance')">Finance</div>
+      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('billing')">Billing</div>
+      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('services')">Services</div>
+      <div class="mobile-nav-link" onclick="closeMobileNav();navigate('penny')">Cost Control</div>
+    </div>
+    <div class="mobile-nav-footer">
+      <div id="mobile-nav-user" style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-bottom:8px;"></div>
+      <div class="mobile-nav-link" onclick="closeMobileNav();logout();" style="color:#ef4444;">Log Out</div>
+    </div>
+  </div>
+
   <div id="dashboard" class="dashboard">
     <!-- USER BAR -->
     <div id="user-bar" style="display: none; padding: 8px 0; margin-bottom: 8px; border-bottom: 1px solid #1f2937; justify-content: space-between; align-items: center;">
@@ -310,9 +402,10 @@
 
     <header>
       <h1>MMT Command Center</h1>
-      <div>
+      <div style="display:flex;align-items:center;gap:8px;">
         <span id="mode-badge" class="mode mode-normal">NORMAL</span>
         <span class="refresh-info" id="last-refresh"></span>
+        <button class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Open menu">&#9776;</button>
       </div>
     </header>
 
@@ -603,33 +696,34 @@
       return [
         { id: 'coo', icon: '🎯', title: 'COO Console', m1: cooBadge || '--', m1l: 'Pending', m2: _servicesData ? '$' + (_servicesData.totalMonthlyCents / 100).toFixed(0) : '--', m2l: 'Mo. Burn', badge: cooBadge, roles: ['coo', 'all'] },
         { id: 'editorial', icon: '✏️', title: 'Editorial', m1: editorBadge || '--', m1l: 'Drafts', m2: null, m2l: null, badge: editorBadge, roles: ['editor', 'all'] },
-        { id: 'roadmap', icon: '\ud83d\udccb', title: 'Roadmap', m1: '2', m1l: 'Platforms', m2: highDebt, m2l: 'High debt', badge: highDebt },
-        { id: 'costs', icon: '\ud83d\udcb0', title: 'Cost Intelligence', m1: _costData ? '$' + (_costData.today.totalCents / 100).toFixed(2) : '--', m1l: 'Today', m2: _costData ? _costData.today.calls : '--', m2l: 'API Calls', badge: _costData ? _costData.alerts.filter(a => a.severity === 'critical').length : 0 },
-        { id: 'finance', icon: '💰', title: 'Cost Intelligence', m1: _costData ? '$' + (_costData.today.totalCents / 100).toFixed(2) : '--', m1l: 'Today', m2: _costData ? _costData.today.calls : '--', m2l: 'API Calls', badge: _costData ? _costData.alerts.filter(a => a.severity === 'critical').length : 0 },
-        { id: 'billing', icon: '🧾', title: 'Billing Tracker', m1: _billingData ? '$' + ((_billingData.summary?.total_cents || 0) / 100).toFixed(0) : '--', m1l: 'This month', m2: _billingData ? (_billingData.needsReview?.length || 0) : '--', m2l: 'Needs review', badge: _billingData ? (_billingData.needsReview?.length || 0) : 0 },
-        { id: 'services', icon: '💳', title: 'Services', m1: _servicesData ? '$' + (_servicesData.totalMonthlyCents / 100).toFixed(0) : '--', m1l: 'Monthly burn', m2: _servicesData ? _servicesData.pendingDecisions : '--', m2l: 'Decisions', badge: _servicesData ? _servicesData.upcomingDeadlines?.length || 0 : 0 },
-        { id: 'customers', icon: '👥', title: 'Customers', m1: _customerData ? _customerData.total : '--', m1l: 'Total', m2: _customerData ? _customerData.avgHealth : '--', m2l: 'Avg Health', badge: _customerData ? _customerData.atRisk : 0 },
-        { id: 'projects', icon: '📋', title: 'Projects', m1: _projectData ? _projectData.openTasks : '--', m1l: 'Open tasks', m2: _projectData ? _projectData.blockedTasks : '--', m2l: 'Blocked', badge: _projectData ? _projectData.blockedTasks : 0 },
-        { id: 'qa', icon: '🧪', title: 'QA', m1: _qaData ? _qaData.totalRegressions : '--', m1l: 'Regressions', m2: '--', m2l: 'Pass rate', badge: _qaData ? _qaData.totalRegressions : 0 },
-        { id: 'issues', icon: '🔧', title: 'Issues', m1: _issueData ? _issueData.total : '--', m1l: 'Open', m2: _issueData ? (_issueData.byStatus?.['fix-proposed'] || 0) : '--', m2l: 'Awaiting approval', badge: _issueData ? (_issueData.critical + (_issueData.byStatus?.['fix-proposed'] || 0)) : 0 },
-        { id: 'newsletter', icon: '\ud83d\udcf0', title: 'Newsletter', m1: daysToPublish !== null ? daysToPublish : '--', m1l: 'Days to pub', m2: nextStatus || '--', m2l: 'Status', badge: nearPipeline.length || 0 },
-        { id: 'products', icon: '\ud83d\udce6', title: 'Products', m1: activeOrders.length, m1l: 'Active orders', m2: deliveredToday.length, m2l: 'Delivered', badge: errorOrders.length },
-        { id: 'engineering', icon: '\ud83d\udd27', title: 'Engineering', m1: pendingTasks.length, m1l: 'Pending tasks', m2: null, m2l: null, badge: pendingTasks.length },
-        { id: 'business', icon: '\ud83d\udcca', title: 'Business', m1: revTotal !== null ? '$' + revTotal.toLocaleString() : '--', m1l: rev?.month || 'Revenue', m2: null, m2l: null, badge: 0 },
-        { id: 'health', icon: '\ud83d\udee1\ufe0f', title: 'Site Health', m1: errorEvents.length, m1l: 'Errors (24h)', m2: null, m2l: null, badge: critEvents.length },
-        { id: 'agents', icon: '\ud83e\udd16', title: 'Agent Fleet', m1: onlineAgents.length + '/' + agents.length, m1l: 'Online', m2: null, m2l: null, badge: staleAgents.length },
-        { id: 'content', icon: '\ud83c\udfa8', title: 'Content Studio', m1: images.length, m1l: 'Images', m2: signals.length, m2l: 'Signals', badge: 0 },
-        { id: 'competitive', icon: '\ud83c\udfaf', title: 'Competitive Intel', m1: '--', m1l: 'Competitors', m2: '--', m2l: 'Unreviewed', badge: 0 },
-        { id: 'learnings', icon: '\ud83e\udde0', title: 'Agent Memory', m1: '--', m1l: 'Active rules', m2: '--', m2l: 'Applied', badge: 0 },
-        { id: 'security', icon: '\ud83d\udee1\ufe0f', title: 'Security Posture', m1: _cisoData ? _cisoData.cmmc_score.percent_met + '%' : '--', m1l: 'CMMC L2', m2: _cisoData ? (_cisoData.open_findings.critical + _cisoData.open_findings.high) : '--', m2l: 'Crit+High', badge: _cisoData ? _cisoData.open_findings.critical : 0 },
-        { id: 'penny', icon: '\ud83d\udcb0', title: 'Cost Control', m1: _pennyData ? '$' + _pennyData.today.total_cost_usd.toFixed(2) : '--', m1l: 'Today', m2: _pennyData ? Math.round(_pennyData.today.heartbeat_waste_ratio * 100) + '%' : '--', m2l: 'Waste', badge: _pennyData ? (_pennyData.open_findings.high || 0) : 0 }
+        { id: 'roadmap', icon: '\ud83d\udccb', title: 'Roadmap', m1: '2', m1l: 'Platforms', m2: highDebt, m2l: 'High debt', badge: highDebt, roles: ['cto', 'all'] },
+        { id: 'costs', icon: '\ud83d\udcb0', title: 'Cost Intelligence', m1: _costData ? '$' + (_costData.today.totalCents / 100).toFixed(2) : '--', m1l: 'Today', m2: _costData ? _costData.today.calls : '--', m2l: 'API Calls', badge: _costData ? _costData.alerts.filter(a => a.severity === 'critical').length : 0, roles: ['cto', 'all'] },
+        { id: 'finance', icon: '💰', title: 'Finance', m1: _costData ? '$' + (_costData.today.totalCents / 100).toFixed(2) : '--', m1l: 'Today', m2: _costData ? _costData.today.calls : '--', m2l: 'API Calls', badge: _costData ? _costData.alerts.filter(a => a.severity === 'critical').length : 0, roles: ['coo', 'all'] },
+        { id: 'billing', icon: '🧾', title: 'Billing Tracker', m1: _billingData ? '$' + ((_billingData.summary?.total_cents || 0) / 100).toFixed(0) : '--', m1l: 'This month', m2: _billingData ? (_billingData.needsReview?.length || 0) : '--', m2l: 'Needs review', badge: _billingData ? (_billingData.needsReview?.length || 0) : 0, roles: ['coo', 'all'] },
+        { id: 'services', icon: '💳', title: 'Services', m1: _servicesData ? '$' + (_servicesData.totalMonthlyCents / 100).toFixed(0) : '--', m1l: 'Monthly burn', m2: _servicesData ? _servicesData.pendingDecisions : '--', m2l: 'Decisions', badge: _servicesData ? _servicesData.upcomingDeadlines?.length || 0 : 0, roles: ['coo', 'all'] },
+        { id: 'customers', icon: '👥', title: 'Customers', m1: _customerData ? _customerData.total : '--', m1l: 'Total', m2: _customerData ? _customerData.avgHealth : '--', m2l: 'Avg Health', badge: _customerData ? _customerData.atRisk : 0, roles: ['coo', 'all'] },
+        { id: 'projects', icon: '📋', title: 'Projects', m1: _projectData ? _projectData.openTasks : '--', m1l: 'Open tasks', m2: _projectData ? _projectData.blockedTasks : '--', m2l: 'Blocked', badge: _projectData ? _projectData.blockedTasks : 0, roles: ['cto', 'all'] },
+        { id: 'qa', icon: '🧪', title: 'QA', m1: _qaData ? _qaData.totalRegressions : '--', m1l: 'Regressions', m2: '--', m2l: 'Pass rate', badge: _qaData ? _qaData.totalRegressions : 0, roles: ['cto', 'all'] },
+        { id: 'issues', icon: '🔧', title: 'Issues', m1: _issueData ? _issueData.total : '--', m1l: 'Open', m2: _issueData ? (_issueData.byStatus?.['fix-proposed'] || 0) : '--', m2l: 'Awaiting approval', badge: _issueData ? (_issueData.critical + (_issueData.byStatus?.['fix-proposed'] || 0)) : 0, roles: ['cto', 'all'] },
+        { id: 'newsletter', icon: '\ud83d\udcf0', title: 'Newsletter', m1: daysToPublish !== null ? daysToPublish : '--', m1l: 'Days to pub', m2: nextStatus || '--', m2l: 'Status', badge: nearPipeline.length || 0, roles: ['coo', 'editor', 'all'] },
+        { id: 'products', icon: '\ud83d\udce6', title: 'Products', m1: activeOrders.length, m1l: 'Active orders', m2: deliveredToday.length, m2l: 'Delivered', badge: errorOrders.length, roles: ['coo', 'all'] },
+        { id: 'engineering', icon: '\ud83d\udd27', title: 'Engineering', m1: pendingTasks.length, m1l: 'Pending tasks', m2: null, m2l: null, badge: pendingTasks.length, roles: ['cto', 'all'] },
+        { id: 'business', icon: '\ud83d\udcca', title: 'Business', m1: revTotal !== null ? '$' + revTotal.toLocaleString() : '--', m1l: rev?.month || 'Revenue', m2: null, m2l: null, badge: 0, roles: ['coo', 'all'] },
+        { id: 'health', icon: '\ud83d\udee1\ufe0f', title: 'Site Health', m1: errorEvents.length, m1l: 'Errors (24h)', m2: null, m2l: null, badge: critEvents.length, roles: ['cto', 'all'] },
+        { id: 'agents', icon: '\ud83e\udd16', title: 'Agent Fleet', m1: onlineAgents.length + '/' + agents.length, m1l: 'Online', m2: null, m2l: null, badge: staleAgents.length, roles: ['cto', 'all'] },
+        { id: 'content', icon: '\ud83c\udfa8', title: 'Content Studio', m1: images.length, m1l: 'Images', m2: signals.length, m2l: 'Signals', badge: 0, roles: ['coo', 'editor', 'all'] },
+        { id: 'competitive', icon: '\ud83c\udfaf', title: 'Competitive Intel', m1: '--', m1l: 'Competitors', m2: '--', m2l: 'Unreviewed', badge: 0, roles: ['coo', 'all'] },
+        { id: 'learnings', icon: '\ud83e\udde0', title: 'Agent Memory', m1: '--', m1l: 'Active rules', m2: '--', m2l: 'Applied', badge: 0, roles: ['cto', 'editor', 'all'] },
+        { id: 'security', icon: '\ud83d\udee1\ufe0f', title: 'Security Posture', m1: _cisoData ? _cisoData.cmmc_score.percent_met + '%' : '--', m1l: 'CMMC L2', m2: _cisoData ? (_cisoData.open_findings.critical + _cisoData.open_findings.high) : '--', m2l: 'Crit+High', badge: _cisoData ? _cisoData.open_findings.critical : 0, roles: ['cto', 'all'] },
+        { id: 'penny', icon: '\ud83d\udcb0', title: 'Cost Control', m1: _pennyData ? '$' + _pennyData.today.total_cost_usd.toFixed(2) : '--', m1l: 'Today', m2: _pennyData ? Math.round(_pennyData.today.heartbeat_waste_ratio * 100) + '%' : '--', m2l: 'Waste', badge: _pennyData ? (_pennyData.open_findings.high || 0) : 0, roles: ['cto', 'all'] }
       ];
     }
 
     function renderTiles(data) {
       const tiles = getTileData(data);
+      const filtered = _roleFilter === 'all' ? tiles : tiles.filter(t => t.roles && t.roles.includes(_roleFilter));
       const grid = document.getElementById('tile-grid');
-      grid.innerHTML = tiles.map(t => {
+      grid.innerHTML = filtered.map(t => {
         const badgeHtml = t.badge > 0 ? '<div class="tile-badge">' + t.badge + '</div>' : '';
         let metricsHtml = '<div class="tile-metrics"><div><div class="tile-metric">' + t.m1 + '</div><div class="tile-metric-label">' + t.m1l + '</div></div>';
         if (t.m2 !== null) metricsHtml += '<div><div class="tile-metric" style="font-size:1.1rem;">' + t.m2 + '</div><div class="tile-metric-label">' + (t.m2l||'') + '</div></div>';
@@ -849,6 +943,27 @@
         }
         h += '</div>';
       }
+
+      // Recent Reports (from report_history)
+      var rh = productsTab === 'pp' ? (data.report_history?.proposalpulse || []) : (data.report_history?.marketpulse || []);
+      h += '<div class="detail-card"><h3>Recent Reports</h3>';
+      if (!rh.length) {
+        h += '<p style="color:rgba(255,255,255,0.3)">No recent reports</p>';
+      } else {
+        if (productsTab === 'pp') {
+          h += '<table><tr><th>Time</th><th>File</th><th>Status</th><th>Grade</th><th></th></tr>';
+          rh.slice(0, 10).forEach(function(r) {
+            h += '<tr><td style="font-size:0.75rem;color:rgba(255,255,255,0.4)">' + fmtDate(r.created_at) + '</td><td style="font-size:0.82rem;" class="trunc">' + esc(r.file_name || '--') + '</td><td><span class="badge badge-' + (r.workflow_state === 'email_sent' || r.workflow_state === 'delivered' ? 'green' : 'yellow') + '">' + esc(r.workflow_state || '--') + '</span></td><td>' + esc(r.overall_grade || '--') + '</td><td>' + (r.report_url ? '<a href="' + r.report_url + '" target="_blank" style="color:#00e5fa;font-size:0.75rem;">View</a>' : '') + '</td></tr>';
+          });
+        } else {
+          h += '<table><tr><th>Time</th><th>Email</th><th>Topic</th><th>Status</th></tr>';
+          rh.slice(0, 10).forEach(function(r) {
+            h += '<tr><td style="font-size:0.75rem;color:rgba(255,255,255,0.4)">' + fmtDate(r.created_at) + '</td><td style="font-size:0.82rem;">' + esc(r.email || '--') + '</td><td class="trunc">' + esc(r.topic || '--') + '</td><td><span class="badge badge-' + (r.workflow_state === 'email_sent' || r.workflow_state === 'delivered' ? 'green' : 'yellow') + '">' + esc(r.workflow_state || '--') + '</span></td></tr>';
+          });
+        }
+        h += '</table>';
+      }
+      h += '</div>';
 
       el.innerHTML = h;
     }
@@ -2646,9 +2761,41 @@ async function updateIssueStatus(id, status) {
         } else { h += '<p style="color:rgba(255,255,255,0.3)">No decisions yet.</p>'; }
         h += '</div>';
 
-        // Content Performance placeholder
+        // Content Performance
         h += '<div class="detail-card"><h3>Content Performance</h3>';
-        h += '<div class="coming-soon" style="min-height:100px;">Analytics integration coming soon</div>';
+        var allPipeline = dashData.pipeline || [];
+        var publishedItems = allPipeline.filter(function(p) { return p.status === 'published'; });
+        var statusDist = {};
+        allPipeline.forEach(function(p) { statusDist[p.status] = (statusDist[p.status] || 0) + 1; });
+        var topicDist = {};
+        allPipeline.forEach(function(p) { if (p.lead_topic) topicDist[p.lead_topic] = (topicDist[p.lead_topic] || 0) + 1; });
+
+        // Signals converted to newsletter
+        var allSignals = dashData.signals || [];
+        var totalSignals = allSignals.length;
+        var newsletterSignals = allSignals.filter(function(s) { return s.triage_status === 'newsletter'; }).length;
+        var conversionRate = totalSignals > 0 ? Math.round((newsletterSignals / totalSignals) * 100) : 0;
+
+        h += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;">';
+        h += '<div style="text-align:center;"><div style="font-size:1.8rem;font-weight:700;color:#22c55e;">' + publishedItems.length + '</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;">Published</div></div>';
+        h += '<div style="text-align:center;"><div style="font-size:1.8rem;font-weight:700;color:#60a5fa;">' + allPipeline.length + '</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;">Pipeline Total</div></div>';
+        h += '<div style="text-align:center;"><div style="font-size:1.8rem;font-weight:700;color:#a855f7;">' + newsletterSignals + '</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;">Signals → NL</div></div>';
+        h += '<div style="text-align:center;"><div style="font-size:1.8rem;font-weight:700;color:#eab308;">' + conversionRate + '%</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;">Signal Conv.</div></div>';
+        h += '</div>';
+
+        // Topic distribution
+        var sortedTopics = Object.entries(topicDist).sort(function(a,b) { return b[1] - a[1]; });
+        if (sortedTopics.length) {
+          h += '<div style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-bottom:6px;font-weight:600;">Topic Distribution</div>';
+          sortedTopics.slice(0, 8).forEach(function(t) {
+            var pct = Math.round((t[1] / allPipeline.length) * 100);
+            h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">';
+            h += '<span style="width:120px;font-size:0.75rem;color:rgba(255,255,255,0.6);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(t[0]) + '</span>';
+            h += '<div style="flex:1;background:rgba(255,255,255,0.05);border-radius:3px;height:12px;overflow:hidden;"><div style="background:#00e5fa;width:' + pct + '%;height:100%;border-radius:3px;"></div></div>';
+            h += '<span style="width:40px;text-align:right;font-size:0.7rem;color:rgba(255,255,255,0.4);">' + t[1] + '</span>';
+            h += '</div>';
+          });
+        }
         h += '</div>';
 
       } catch (e) { h += '<p style="color:#ef4444;">Failed to load: ' + e.message + '</p>'; }
@@ -2699,14 +2846,61 @@ async function updateIssueStatus(id, status) {
       var h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
       h += '<div class="detail-title">\ud83c\udfaf Competitive Intel</div>';
       try {
-        var res = await fetch('/.netlify/functions/approval-api?key=' + apiKey + '&view=summary');
-        h += '<div class="detail-card"><h3>Competitor Landscape</h3>';
-        h += '<p style="color:rgba(255,255,255,0.5);">Competitive intelligence is gathered weekly via the competitive-scan scheduled function. Review alerts in the approval queue.</p>';
+        var summaryRes = await apiPost({ action: 'competitive_summary' });
+        var comps = summaryRes.competitors || [];
+        var unreviewedCount = summaryRes.unreviewedAlerts || 0;
+
+        // Competitor Profiles
+        h += '<div class="detail-card"><h3>Competitor Profiles (' + comps.length + ')</h3>';
+        if (!comps.length) {
+          h += '<p style="color:rgba(255,255,255,0.3);">No competitors tracked yet. The competitive-scan function runs weekly.</p>';
+        } else {
+          h += '<table><tr><th>Name</th><th>Category</th><th>Overlap</th><th>Threat</th><th>Last Researched</th></tr>';
+          comps.forEach(function(c) {
+            var threatColor = c.threat_level === 'high' ? 'red' : c.threat_level === 'medium' ? 'yellow' : 'green';
+            h += '<tr><td style="font-weight:600;">' + esc(c.name) + '</td>';
+            h += '<td><span class="badge badge-gray">' + esc(c.category || '--') + '</span></td>';
+            h += '<td>' + (c.overlap_score != null ? c.overlap_score + '%' : '--') + '</td>';
+            h += '<td><span class="badge badge-' + threatColor + '">' + esc(c.threat_level || '--') + '</span></td>';
+            h += '<td style="font-size:0.75rem;color:rgba(255,255,255,0.4);">' + (c.last_researched_at ? fmtDate(c.last_researched_at) : 'Never') + '</td></tr>';
+          });
+          h += '</table>';
+        }
+        h += '</div>';
+
+        // Recent Alerts
+        h += '<div class="detail-card"><h3>Unreviewed Alerts (' + unreviewedCount + ')</h3>';
+        if (unreviewedCount > 0) {
+          var alertsRes = await apiPost({ action: 'competitive_alerts' });
+          var alerts = alertsRes.alerts || [];
+          if (alerts.length) {
+            alerts.forEach(function(a) {
+              var sevColor = a.severity === 'critical' ? 'red' : a.severity === 'high' ? 'orange' : a.severity === 'medium' ? 'yellow' : 'gray';
+              h += '<div class="signal-card">';
+              h += '<div style="display:flex;justify-content:space-between;align-items:start;">';
+              h += '<div><span class="badge badge-' + sevColor + '">' + esc(a.alert_type || a.severity || '--') + '</span> <span style="font-size:0.75rem;color:rgba(255,255,255,0.4);">' + esc(a.competitor_name || '') + '</span></div>';
+              h += '<span style="font-size:0.7rem;color:rgba(255,255,255,0.3);">' + (a.created_at ? fmtDate(a.created_at) : '') + '</span>';
+              h += '</div>';
+              h += '<div style="font-weight:600;font-size:0.9rem;margin-top:6px;">' + esc(a.title || '') + '</div>';
+              h += '<div style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-top:4px;">' + esc(a.summary || '') + '</div>';
+              h += '<div class="signal-actions"><button class="btn btn-sm btn-cyan" onclick="reviewCompAlert(\'' + a.id + '\')">Mark Reviewed</button></div>';
+              h += '</div>';
+            });
+          }
+        } else {
+          h += '<p style="color:rgba(255,255,255,0.3);">All alerts reviewed.</p>';
+        }
         h += '</div>';
       } catch (e) {
-        h += '<div class="detail-card"><p style="color:rgba(255,255,255,0.3);">Failed to load competitive data.</p></div>';
+        h += '<div class="detail-card"><p style="color:rgba(255,255,255,0.3);">Failed to load competitive data: ' + e.message + '</p></div>';
       }
       el.innerHTML = h;
+    }
+
+    async function reviewCompAlert(id) {
+      await apiPost({ action: 'competitive_review_alert', alert_id: id });
+      toast('Alert reviewed');
+      renderDetailCompetitive();
     }
 
     async function renderDetailLearnings() {
@@ -3584,8 +3778,6 @@ async function updateIssueStatus(id, status) {
     async function refreshOpsConsole() {
       try {
         await loadDashboard();
-        renderOpsConsole();
-        loadApprovals();
       } catch (e) { console.error('Ops refresh failed:', e); }
     }
 
@@ -3802,6 +3994,145 @@ async function updateIssueStatus(id, status) {
 
     // Enter key on email input
     document.getElementById('login-email').addEventListener('keydown', function(e) { if (e.key === 'Enter') requestLogin(); });
+
+    // ============ COMMAND PALETTE (Cmd+K) ============
+
+    var _cpSelectedIdx = 0;
+
+    function getCpItems() {
+      var tiles = [
+        { icon: '🎯', label: 'COO Console', cat: 'Ops', id: 'coo' },
+        { icon: '✏️', label: 'Editorial', cat: 'Intelligence', id: 'editorial' },
+        { icon: '📋', label: 'Roadmap', cat: 'Products', id: 'roadmap' },
+        { icon: '💰', label: 'Cost Intelligence', cat: 'Finance', id: 'costs' },
+        { icon: '💰', label: 'Finance', cat: 'Finance', id: 'finance' },
+        { icon: '🧾', label: 'Billing Tracker', cat: 'Finance', id: 'billing' },
+        { icon: '💳', label: 'Services', cat: 'Finance', id: 'services' },
+        { icon: '👥', label: 'Customers', cat: 'Products', id: 'customers' },
+        { icon: '📋', label: 'Projects', cat: 'Products', id: 'projects' },
+        { icon: '🧪', label: 'QA', cat: 'Ops', id: 'qa' },
+        { icon: '🔧', label: 'Issues', cat: 'Ops', id: 'issues' },
+        { icon: '📰', label: 'Newsletter', cat: 'Intelligence', id: 'newsletter' },
+        { icon: '📦', label: 'Products', cat: 'Products', id: 'products' },
+        { icon: '🔧', label: 'Engineering', cat: 'Ops', id: 'engineering' },
+        { icon: '📊', label: 'Business', cat: 'Products', id: 'business' },
+        { icon: '🛡️', label: 'Site Health', cat: 'Ops', id: 'health' },
+        { icon: '🤖', label: 'Agent Fleet', cat: 'Ops', id: 'agents' },
+        { icon: '🎨', label: 'Content Studio', cat: 'Intelligence', id: 'content' },
+        { icon: '🎯', label: 'Competitive Intel', cat: 'Intelligence', id: 'competitive' },
+        { icon: '🧠', label: 'Agent Memory', cat: 'Intelligence', id: 'learnings' },
+        { icon: '🛡️', label: 'Security Posture', cat: 'Ops', id: 'security' },
+        { icon: '💰', label: 'Cost Control (Penny)', cat: 'Finance', id: 'penny' },
+      ];
+      var actions = [
+        { icon: '🏠', label: 'Go Home', cat: 'Action', action: function() { showHome(); } },
+        { icon: '🔄', label: 'Refresh Dashboard', cat: 'Action', action: function() { loadDashboard(); } },
+        { icon: '🚪', label: 'Log Out', cat: 'Action', action: function() { logout(); } },
+      ];
+      return tiles.concat(actions);
+    }
+
+    function openCmdPalette() {
+      var overlay = document.getElementById('cmd-palette-overlay');
+      var input = document.getElementById('cmd-palette-input');
+      overlay.classList.add('open');
+      input.value = '';
+      _cpSelectedIdx = 0;
+      renderCpList('');
+      setTimeout(function() { input.focus(); }, 50);
+    }
+
+    function closeCmdPalette() {
+      document.getElementById('cmd-palette-overlay').classList.remove('open');
+    }
+
+    function renderCpList(query) {
+      var items = getCpItems();
+      var q = query.toLowerCase().trim();
+      var filtered = q ? items.filter(function(it) { return it.label.toLowerCase().includes(q) || it.cat.toLowerCase().includes(q); }) : items;
+      var list = document.getElementById('cmd-palette-list');
+      if (!filtered.length) {
+        list.innerHTML = '<div class="cmd-palette-empty">No results for &ldquo;' + esc(query) + '&rdquo;</div>';
+        return;
+      }
+      _cpSelectedIdx = Math.min(_cpSelectedIdx, filtered.length - 1);
+      list.innerHTML = filtered.map(function(it, idx) {
+        return '<div class="cmd-palette-item' + (idx === _cpSelectedIdx ? ' selected' : '') + '" data-idx="' + idx + '">' +
+          '<span class="cp-icon">' + it.icon + '</span>' +
+          '<span class="cp-label">' + esc(it.label) + '</span>' +
+          '<span class="cp-cat">' + esc(it.cat) + '</span></div>';
+      }).join('');
+      list.querySelectorAll('.cmd-palette-item').forEach(function(el) {
+        el.addEventListener('click', function() { executeCpItem(filtered[parseInt(el.dataset.idx)]); });
+      });
+    }
+
+    function executeCpItem(item) {
+      closeCmdPalette();
+      if (item.action) { item.action(); }
+      else if (item.id) { navigate(item.id); }
+    }
+
+    document.getElementById('cmd-palette-input').addEventListener('input', function(e) {
+      _cpSelectedIdx = 0;
+      renderCpList(e.target.value);
+    });
+
+    document.getElementById('cmd-palette-input').addEventListener('keydown', function(e) {
+      var items = document.querySelectorAll('#cmd-palette-list .cmd-palette-item');
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        _cpSelectedIdx = Math.min(_cpSelectedIdx + 1, items.length - 1);
+        renderCpList(this.value);
+        var sel = document.querySelector('#cmd-palette-list .cmd-palette-item.selected');
+        if (sel) sel.scrollIntoView({ block: 'nearest' });
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        _cpSelectedIdx = Math.max(_cpSelectedIdx - 1, 0);
+        renderCpList(this.value);
+        var sel = document.querySelector('#cmd-palette-list .cmd-palette-item.selected');
+        if (sel) sel.scrollIntoView({ block: 'nearest' });
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        var allItems = getCpItems();
+        var q = this.value.toLowerCase().trim();
+        var filtered = q ? allItems.filter(function(it) { return it.label.toLowerCase().includes(q) || it.cat.toLowerCase().includes(q); }) : allItems;
+        if (filtered[_cpSelectedIdx]) executeCpItem(filtered[_cpSelectedIdx]);
+      } else if (e.key === 'Escape') {
+        closeCmdPalette();
+      }
+    });
+
+    document.getElementById('cmd-palette-overlay').addEventListener('click', function(e) {
+      if (e.target === this) closeCmdPalette();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        var overlay = document.getElementById('cmd-palette-overlay');
+        if (overlay.classList.contains('open')) closeCmdPalette();
+        else openCmdPalette();
+      }
+    });
+
+    // ============ MOBILE NAV ============
+
+    function openMobileNav() {
+      document.getElementById('mobile-nav-overlay').classList.add('open');
+      document.getElementById('mobile-nav-panel').classList.add('open');
+      var userEl = document.getElementById('mobile-nav-user');
+      if (currentUser) userEl.textContent = currentUser.name + ' (' + currentUser.role + ')';
+    }
+
+    function closeMobileNav() {
+      document.getElementById('mobile-nav-overlay').classList.remove('open');
+      document.getElementById('mobile-nav-panel').classList.remove('open');
+    }
+
+    document.getElementById('mobile-nav-toggle').addEventListener('click', openMobileNav);
+    document.getElementById('mobile-nav-close').addEventListener('click', closeMobileNav);
+    document.getElementById('mobile-nav-overlay').addEventListener('click', closeMobileNav);
 
     // Start auth flow
     initAuth();
