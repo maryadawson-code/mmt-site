@@ -1243,7 +1243,7 @@
 
     // ============ DETAIL: ENGINEERING ============
 
-    function renderDetailEngineering(data) {
+    async function renderDetailEngineering(data) {
       const el = document.getElementById('detail-engineering');
       const tasks = data.tasks || [];
       const sc = { pending:'yellow', in_progress:'blue', completed:'green', failed:'red', cancelled:'gray' };
@@ -1251,6 +1251,7 @@
       let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
       h += '<div class="detail-title">\ud83d\udd27 Engineering</div>';
 
+      // Task Queue
       h += '<div class="detail-card"><h3>Task Queue</h3>';
       if (!tasks.length) {
         h += '<p style="color:rgba(255,255,255,0.3)">No active tasks</p>';
@@ -1266,21 +1267,14 @@
       }
       h += '</div>';
 
-      h += '<div class="detail-card"><h3>Tech Debt Tracker</h3>';
-      h += '<table><tr><th>Item</th><th>Priority</th><th>Area</th></tr>';
-      const techDebt = [
-        { item: 'Migrate inline CSS to Tailwind classes in command-center.html', priority: 'low', area: 'Frontend' },
-        { item: 'Add rate limiting to AI endpoints', priority: 'high', area: 'API' },
-        { item: 'Add error boundary to ProposalPulse upload flow', priority: 'medium', area: 'Frontend' },
-        { item: 'Consolidate duplicate email template HTML', priority: 'low', area: 'Functions' },
-        { item: 'Add monitoring/alerting for background function timeouts', priority: 'high', area: 'Ops' },
-        { item: 'Supabase RLS policies audit', priority: 'high', area: 'Security' }
-      ];
-      techDebt.forEach(d => {
-        const pc = d.priority==='high'?'red':d.priority==='medium'?'yellow':'gray';
-        h += '<tr><td style="font-size:0.82rem;">'+d.item+'</td><td><span class="badge badge-'+pc+'">'+d.priority+'</span></td><td style="font-size:0.75rem;color:rgba(255,255,255,0.4)">'+d.area+'</td></tr>';
-      });
-      h += '</table></div>';
+      // Recent Deploys (async fetch)
+      h += '<div class="detail-card"><h3>Recent Deploys</h3><div id="eng-deploys"><p style="color:rgba(255,255,255,0.3)">Loading...</p></div></div>';
+
+      // Open PRs (async fetch)
+      h += '<div class="detail-card"><h3>Open Pull Requests</h3><div id="eng-prs"><p style="color:rgba(255,255,255,0.3)">Loading...</p></div></div>';
+
+      // Tech Debt (async fetch from roadmap)
+      h += '<div class="detail-card"><h3>Tech Debt Tracker</h3><div id="eng-tech-debt"><p style="color:rgba(255,255,255,0.3)">Loading...</p></div></div>';
 
       // Quick actions
       h += '<div class="detail-card"><h3>Quick Actions</h3>';
@@ -1288,6 +1282,41 @@
       h += '<div id="action-result" style="margin-top:10px;font-size:0.82rem;color:rgba(255,255,255,0.6);"></div></div>';
 
       el.innerHTML = h;
+
+      // Fetch deploys
+      apiPost({ action: 'get_deploys' }).then(d => {
+        const container = document.getElementById('eng-deploys');
+        if (!container) return;
+        const deploys = d.deploys || [];
+        if (d.error) { container.innerHTML = '<p style="color:rgba(255,255,255,0.3)">' + esc(d.error) + '</p>'; return; }
+        if (!deploys.length) { container.innerHTML = '<p style="color:rgba(255,255,255,0.3)">No recent deploys</p>'; return; }
+        const dc = { ready:'green', building:'yellow', error:'red', enqueued:'gray' };
+        container.innerHTML = '<table><tr><th>Site</th><th>Branch</th><th>Commit</th><th>Status</th><th>Duration</th><th>Time</th></tr>' +
+          deploys.map(d => '<tr><td style="font-size:0.75rem;font-weight:600;">' + esc(d.site) + '</td><td style="font-size:0.75rem;">' + esc(d.branch || '--') + '</td><td style="font-family:monospace;font-size:0.72rem;">' + (d.commit_ref || '--') + '</td><td><span class="badge badge-' + (dc[d.state]||'gray') + '">' + d.state + '</span></td><td style="font-size:0.75rem;color:rgba(255,255,255,0.4);">' + (d.deploy_time ? d.deploy_time + 's' : '--') + '</td><td style="font-size:0.75rem;color:rgba(255,255,255,0.4);">' + timeSince(d.created_at) + '</td></tr>').join('') +
+          '</table>';
+      }).catch(() => {});
+
+      // Fetch PRs
+      apiPost({ action: 'get_prs' }).then(d => {
+        const container = document.getElementById('eng-prs');
+        if (!container) return;
+        const prs = d.prs || [];
+        if (d.error) { container.innerHTML = '<p style="color:rgba(255,255,255,0.3)">' + esc(d.error) + '</p>'; return; }
+        if (!prs.length) { container.innerHTML = '<p style="color:rgba(255,255,255,0.3)">No open PRs</p>'; return; }
+        container.innerHTML = prs.map(pr => '<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center;"><div><a href="' + esc(pr.url) + '" target="_blank" style="color:#00e5fa;font-size:0.85rem;text-decoration:none;">#' + pr.number + ' ' + esc(pr.title) + '</a><div style="font-size:0.72rem;color:rgba(255,255,255,0.4);">' + esc(pr.repo) + ' · ' + esc(pr.author) + ' · ' + timeSince(pr.created_at) + '</div></div><div>' + (pr.draft ? '<span class="badge badge-gray">Draft</span>' : '') + pr.labels.map(l => '<span class="badge badge-purple" style="margin-left:4px;">' + esc(l) + '</span>').join('') + '</div></div>').join('');
+      }).catch(() => {});
+
+      // Fetch tech debt from roadmap
+      apiPost({ action: 'get_tech_debt' }).then(d => {
+        const container = document.getElementById('eng-tech-debt');
+        if (!container) return;
+        const items = d.items || [];
+        if (!items.length) { container.innerHTML = '<p style="color:rgba(255,255,255,0.3)">No tech debt items tracked. Add items to the roadmap with category "tech-debt".</p>'; return; }
+        const pc = { P0:'red', P1:'red', P2:'orange', P3:'yellow', P4:'gray' };
+        container.innerHTML = '<table><tr><th>Item</th><th>Priority</th><th>Status</th><th>Owner</th></tr>' +
+          items.map(i => '<tr style="cursor:pointer;" onclick="wsNavigate(\'roadmap\')"><td style="font-size:0.82rem;">' + esc(i.feature_name) + (i.notes ? '<div style="font-size:0.7rem;color:rgba(255,255,255,0.3);">' + esc(i.notes).slice(0,60) + '</div>' : '') + '</td><td><span class="badge badge-' + (pc[i.priority]||'gray') + '">' + (i.priority||'--') + '</span></td><td><span class="badge badge-gray">' + (i.status||'--').replace('_',' ') + '</span></td><td style="font-size:0.75rem;color:rgba(255,255,255,0.4);">' + (i.owner||'--') + '</td></tr>').join('') +
+          '</table>';
+      }).catch(() => {});
     }
 
     // ============ DETAIL: BUSINESS ============
@@ -2791,6 +2820,12 @@ async function renderDetailQA() {
   let h = '<button class="back-btn" onclick="showHome()">&#8592; Back to Dashboard</button>';
   h += '<div class="detail-title">🧪 QA</div>';
 
+  // Actions bar
+  h += '<div class="detail-card"><h3>Actions</h3><div class="actions">';
+  h += '<button class="btn btn-cyan btn-sm" onclick="triggerQARun(\'missionpulse-frontend\')">Run Tests (MP)</button>';
+  h += '<button class="btn btn-cyan btn-sm" onclick="triggerQARun(\'mmt-site\')">Run Tests (MMT)</button>';
+  h += '</div><div id="qa-action-result" style="margin-top:8px;font-size:0.82rem;color:rgba(255,255,255,0.5);"></div></div>';
+
   try {
     const res = await fetch('/.netlify/functions/qa-api?key=' + apiKey + '&view=summary');
     const data = await res.json();
@@ -2815,20 +2850,72 @@ async function renderDetailQA() {
     });
     h += '</div>';
 
-    // Regressions
+    // Regressions (with action buttons)
     if (data.totalRegressions > 0) {
       const regRes = await fetch('/.netlify/functions/qa-api?key=' + apiKey + '&view=regressions');
       const regData = await regRes.json();
-      h += '<div class="detail-card"><h3 style="color:#ef4444">Regressions</h3>';
+      h += '<div class="detail-card"><h3 style="color:#ef4444">Active Regressions</h3>';
       (regData.regressions || []).forEach(r => {
-        h += '<div style="padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><span class="badge badge-red">' + r.product + '</span> <span style="font-size:0.82rem;">' + esc(r.regression_details || r.result_summary || '') + '</span> <span style="font-size:0.72rem;color:rgba(255,255,255,0.3);">' + timeSince(r.created_at) + '</span></div>';
+        const rid = r.id;
+        h += '<div style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05;">';
+        h += '<div style="display:flex;justify-content:space-between;align-items:flex-start;">';
+        h += '<div><span class="badge badge-red">' + r.product + '</span> <span style="font-size:0.82rem;">' + esc(r.regression_details || r.result_summary || '') + '</span><div style="font-size:0.72rem;color:rgba(255,255,255,0.3);margin-top:2px;">' + timeSince(r.created_at);
+        if (r.metadata?.fix_pr) h += ' · <a href="' + esc(r.metadata.fix_pr) + '" target="_blank" style="color:#00e5fa;">Fix PR</a>';
+        h += '</div></div>';
+        h += '<div style="display:flex;gap:4px;flex-shrink:0;">';
+        h += '<button class="btn btn-sm btn-cyan" onclick="qaCreateIssue(\'' + rid + '\',\'' + esc(r.product) + '\',\'' + esc((r.regression_details||r.result_summary||'').replace(/'/g,'')) + '\')">File Issue</button>';
+        h += '<button class="btn btn-sm btn-purple" onclick="qaLinkPR(\'' + rid + '\')">Link PR</button>';
+        h += '<button class="btn btn-sm btn-green" onclick="qaResolve(\'' + rid + '\')">Resolve</button>';
+        h += '</div></div></div>';
       });
       h += '</div>';
+    } else {
+      h += '<div class="detail-card"><p style="color:rgba(255,255,255,0.3)">No active regressions</p></div>';
     }
 
   } catch (e) { h += '<p style="color:#ef4444">Failed: ' + e.message + '</p>'; }
 
   el.innerHTML = h;
+}
+
+// QA action handlers
+async function triggerQARun(repo) {
+  const resultEl = document.getElementById('qa-action-result');
+  if (resultEl) resultEl.textContent = 'Triggering tests...';
+  try {
+    const res = await fetch('/.netlify/functions/qa-api?key=' + apiKey, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'trigger_qa_run', repo: repo }) });
+    const d = await res.json();
+    if (d.triggered) { toast('Tests triggered for ' + repo); if (resultEl) resultEl.textContent = 'Tests triggered for ' + repo; }
+    else { if (resultEl) resultEl.textContent = d.error || 'Failed to trigger'; }
+  } catch (e) { if (resultEl) resultEl.textContent = 'Error: ' + e.message; }
+}
+
+async function qaCreateIssue(regressionId, product, details) {
+  try {
+    const res = await fetch('/.netlify/functions/qa-api?key=' + apiKey, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'create_regression_issue', regression_id: regressionId, product: product, regression_details: details, title: details }) });
+    const d = await res.json();
+    if (d.created) { toast('Issue #' + d.issue_number + ' created'); renderDetailQA(); }
+    else { toast(d.error || 'Failed to create issue'); }
+  } catch (e) { toast('Error: ' + e.message); }
+}
+
+async function qaLinkPR(regressionId) {
+  const prUrl = prompt('Paste PR URL:');
+  if (!prUrl) return;
+  try {
+    await fetch('/.netlify/functions/qa-api?key=' + apiKey, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'link_fix_pr', regression_id: regressionId, pr_url: prUrl }) });
+    toast('PR linked');
+    renderDetailQA();
+  } catch (e) { toast('Error: ' + e.message); }
+}
+
+async function qaResolve(regressionId) {
+  if (!confirm('Mark this regression as resolved?')) return;
+  try {
+    await fetch('/.netlify/functions/qa-api?key=' + apiKey, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'resolve_regression', regression_id: regressionId }) });
+    toast('Regression resolved');
+    renderDetailQA();
+  } catch (e) { toast('Error: ' + e.message); }
 }
 
 // ============ DETAIL: ISSUES — Resolution Console ============

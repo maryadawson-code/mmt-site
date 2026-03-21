@@ -665,6 +665,88 @@ exports.handler = async (event) => {
       return ok({ reviewed: true });
     }
 
+    // === ENGINEERING: DEPLOY HISTORY ===
+    // Requires: NETLIFY_TOKEN, NETLIFY_SITE_ID_MMT, NETLIFY_SITE_ID_MP (env vars)
+    if (action === "get_deploys") {
+      const token = process.env.NETLIFY_TOKEN;
+      if (!token) return ok({ deploys: [], error: "NETLIFY_TOKEN not configured" });
+      const sites = [
+        { id: process.env.NETLIFY_SITE_ID_MMT, label: "mmt-site" },
+        { id: process.env.NETLIFY_SITE_ID_MP, label: "missionpulse" },
+      ].filter(s => s.id);
+      if (!sites.length) return ok({ deploys: [], error: "No NETLIFY_SITE_ID configured" });
+      const allDeploys = [];
+      for (const site of sites) {
+        try {
+          const res = await fetch(`https://api.netlify.com/api/v1/sites/${site.id}/deploys?per_page=10`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (res.ok) {
+            const data = await res.json();
+            data.forEach(d => allDeploys.push({
+              id: d.id,
+              site: site.label,
+              state: d.state,
+              branch: d.branch,
+              commit_ref: d.commit_ref ? d.commit_ref.slice(0, 7) : null,
+              commit_message: d.title || null,
+              created_at: d.created_at,
+              deploy_time: d.deploy_time,
+              deploy_url: d.deploy_ssl_url || d.deploy_url || null,
+              admin_url: d.admin_url || null,
+              error_message: d.error_message || null,
+            }));
+          }
+        } catch {}
+      }
+      allDeploys.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      return ok({ deploys: allDeploys.slice(0, 20) });
+    }
+
+    // === ENGINEERING: OPEN PRS ===
+    // Requires: GITHUB_TOKEN (env var)
+    if (action === "get_prs") {
+      const ghToken = process.env.GITHUB_TOKEN;
+      if (!ghToken) return ok({ prs: [], error: "GITHUB_TOKEN not configured" });
+      const repos = [
+        { owner: "maryadawson-code", repo: "mmt-site" },
+        { owner: "maryadawson-code", repo: "missionpulse-frontend" },
+      ];
+      const allPRs = [];
+      for (const r of repos) {
+        try {
+          const res = await fetch(`https://api.github.com/repos/${r.owner}/${r.repo}/pulls?state=open&per_page=10`, {
+            headers: { Authorization: `token ${ghToken}`, Accept: "application/vnd.github.v3+json" },
+          });
+          if (res.ok) {
+            const data = await res.json();
+            data.forEach(pr => allPRs.push({
+              number: pr.number,
+              repo: r.repo,
+              title: pr.title,
+              author: pr.user?.login || "unknown",
+              created_at: pr.created_at,
+              url: pr.html_url,
+              draft: pr.draft,
+              labels: (pr.labels || []).map(l => l.name),
+            }));
+          }
+        } catch {}
+      }
+      allPRs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      return ok({ prs: allPRs });
+    }
+
+    // === ENGINEERING: TECH DEBT FROM ROADMAP ===
+    if (action === "get_tech_debt") {
+      const { data: items } = await supabase.from("product_roadmap")
+        .select("id, feature_name, priority, category, status, health, owner, notes")
+        .or("category.eq.tech-debt,category.eq.infrastructure,notes.ilike.%tech debt%")
+        .order("priority", { ascending: true })
+        .limit(30);
+      return ok({ items: items || [] });
+    }
+
     return err(400, "Unknown action: " + action);
   }
 

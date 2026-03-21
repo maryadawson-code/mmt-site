@@ -94,6 +94,81 @@ exports.handler = async (event) => {
       return ok({ updated: true });
     }
 
+    // === REGRESSION MANAGEMENT ===
+
+    if (body.action === "resolve_regression") {
+      const { regression_id } = body;
+      if (!regression_id) return err(400, "regression_id required");
+      const { error: upErr } = await sb.from("qa_test_runs").update({
+        is_regression: false,
+        regression_resolved_at: new Date().toISOString(),
+        result_summary: sb.raw ? undefined : body.resolution_note || null,
+      }).eq("id", regression_id);
+      if (upErr) return err(500, upErr.message);
+      return ok({ resolved: true });
+    }
+
+    if (body.action === "link_fix_pr") {
+      const { regression_id, pr_url } = body;
+      if (!regression_id || !pr_url) return err(400, "regression_id and pr_url required");
+      const { error: upErr } = await sb.from("qa_test_runs").update({
+        metadata: sb.raw ? undefined : { fix_pr: pr_url },
+      }).eq("id", regression_id);
+      // Fallback: use RPC or direct jsonb update
+      if (upErr) {
+        await sb.rpc("jsonb_set_key", { table_name: "qa_test_runs", row_id: regression_id, key: "fix_pr", value: pr_url }).catch(() => {});
+      }
+      return ok({ linked: true });
+    }
+
+    if (body.action === "trigger_qa_run") {
+      const ghToken = process.env.GITHUB_TOKEN;
+      if (!ghToken) return ok({ triggered: false, error: "GITHUB_TOKEN not configured — set it in Netlify dashboard" });
+      const { repo, workflow_id } = body;
+      const owner = "maryadawson-code";
+      const repoName = repo || "missionpulse-frontend";
+      const wfId = workflow_id || "qa.yml";
+      try {
+        const res = await fetch(`https://api.github.com/repos/${owner}/${repoName}/actions/workflows/${wfId}/dispatches`, {
+          method: "POST",
+          headers: { Authorization: `token ${ghToken}`, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+          body: JSON.stringify({ ref: "v2-development" }),
+        });
+        if (res.status === 204 || res.status === 200) return ok({ triggered: true });
+        const errBody = await res.text();
+        return ok({ triggered: false, error: `GitHub ${res.status}: ${errBody}` });
+      } catch (e) {
+        return ok({ triggered: false, error: e.message });
+      }
+    }
+
+    if (body.action === "create_regression_issue") {
+      const ghToken = process.env.GITHUB_TOKEN;
+      if (!ghToken) return ok({ created: false, error: "GITHUB_TOKEN not configured" });
+      const { title, product, regression_details, regression_id } = body;
+      const owner = "maryadawson-code";
+      const repo = product === "site" || product === "mmt-site" ? "mmt-site" : "missionpulse-frontend";
+      try {
+        const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/issues`, {
+          method: "POST",
+          headers: { Authorization: `token ${ghToken}`, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: `[Regression] ${title || product}`,
+            body: `## QA Regression\n\n**Product:** ${product}\n**Details:** ${regression_details || "N/A"}\n**Regression ID:** ${regression_id || "N/A"}\n\nDetected by MMT Command Center QA dashboard.`,
+            labels: ["regression", "qa"],
+          }),
+        });
+        if (res.ok) {
+          const issue = await res.json();
+          return ok({ created: true, issue_url: issue.html_url, issue_number: issue.number });
+        }
+        const errBody = await res.text();
+        return ok({ created: false, error: `GitHub ${res.status}: ${errBody}` });
+      } catch (e) {
+        return ok({ created: false, error: e.message });
+      }
+    }
+
     return err(400, "Unknown action");
   }
 
