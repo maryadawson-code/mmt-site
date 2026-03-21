@@ -517,7 +517,6 @@ function generateSitemap(articles, tags, contracts) {
     { loc: '/getting-started.html', priority: '0.7' },
     { loc: '/marketpulse.html', priority: '0.8' },
     { loc: '/my-reports.html', priority: '0.5' },
-    { loc: '/contact.html', priority: '0.5' },
     { loc: '/about/team/', priority: '0.5' },
     { loc: '/about/press/', priority: '0.5' },
     { loc: '/glossary/', priority: '0.5' },
@@ -1622,8 +1621,7 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
     'agency-sources.html', 'getting-started.html',
     'marketpulse.html', 'my-reports.html', 'tactical-brief-confirmed.html',
     'about-team.html', 'about-press.html',
-    'ops.html', 'command-center.html',
-    'contact.html'
+    'ops.html', 'command-center.html'
   ];
   const ogMap = {
     'index.html': 'index.png',
@@ -1714,6 +1712,17 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
     if (fs.existsSync(srcPath)) {
       ensureDir(path.dirname(dest));
       let html = fs.readFileSync(srcPath, 'utf8');
+      html = injectBreadcrumbJsonLd(html, src);
+      html = html.replace('</head>',
+        '  <link rel="manifest" href="/manifest.json">\n' +
+        '  <meta name="apple-mobile-web-app-capable" content="yes">\n' +
+        '  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\n' +
+        '  <meta name="apple-mobile-web-app-title" content="MMT">\n</head>'
+      );
+      if (html.includes('</nav>')) {
+        html = html.replace('</nav>\n\n', '</nav>\n' + searchOverlayHtml + '\n\n');
+      }
+      html = html.replace('</body>', siteScriptTag + '\n</body>');
       html = inlineTailwindCss(html);
       fs.writeFileSync(dest, html);
       console.log(`Copied ${src} → ${dest.replace(DIST_DIR + '/', '')}`);

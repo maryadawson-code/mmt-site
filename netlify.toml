@@ -144,9 +144,14 @@
   status = 301
 
 [[redirects]]
+  from = "/contact.html"
+  to = "/about.html#contact"
+  status = 301
+
+[[redirects]]
   from = "/contact"
-  to = "/contact.html"
-  status = 200
+  to = "/about.html#contact"
+  status = 301
 
 [[redirects]]
   from = "/contracts/mhs-genesis/"
@@ -170,11 +175,6 @@
 
 [[redirects]]
   from = "/market-pulse"
-  to = "/marketpulse.html"
-  status = 301
-
-[[redirects]]
-  from = "/marketpulse.html"
   to = "/marketpulse.html"
   status = 301
 
