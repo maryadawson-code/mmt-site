@@ -617,22 +617,35 @@ exports.handler = wrapHandler(async (event) => {
     // === LEARNINGS ===
     if (action === "learning_read") {
       const { agent: agentId, domain } = body;
-      let query = supabase.from("agent_learnings").select("id, rule, category, domain, confidence, times_applied").eq("is_active", true).order("confidence", { ascending: false }).limit(body.limit || 50);
-      if (agentId) query = query.eq("agent", agentId);
+      let query = supabase.from("agent_learnings").select("id, rule, category, domain, confidence, times_applied, source_agent, applies_to, verified, supersedes").eq("is_active", true).order("confidence", { ascending: false }).limit(body.limit || 50);
+      // Cross-agent filtering: return learnings that apply to this agent OR to "all"
+      if (agentId) {
+        query = query.or(`applies_to.cs.{${agentId}},applies_to.cs.{all}`);
+      }
       if (domain) query = query.eq("domain", domain);
       const { data } = await query;
-      return ok({ learnings: data || [] });
+      // Filter out superseded learnings: if a learning has been superseded by another active one, exclude it
+      const supersededIds = new Set((data || []).filter(l => l.supersedes).map(l => l.supersedes));
+      const filtered = (data || []).filter(l => !supersededIds.has(l.id));
+      return ok({ learnings: filtered });
     }
 
     if (action === "learning_write") {
-      const { agent: agentId, category: cat, domain, rule, context: ctx, source: src, sourceApprovalId, sourceIssueId, confidence } = body;
+      const { agent: agentId, category: cat, domain, rule, context: ctx, source: src, sourceApprovalId, sourceIssueId, confidence, applies_to: appliesTo, supersedes: supersedesId } = body;
       if (!agentId || !cat || !rule) return err(400, "agent, category, rule required");
       const { data, error: insertErr } = await supabase.from("agent_learnings").insert({
         agent: agentId, category: cat, domain, rule, context: ctx,
-        source: src || "self", source_approval_id: sourceApprovalId || null,
+        source: src || "self", source_agent: agentId,
+        source_approval_id: sourceApprovalId || null,
         source_issue_id: sourceIssueId || null, confidence: confidence || 0.8,
+        applies_to: appliesTo || ["all"],
+        supersedes: supersedesId || null,
       }).select("id").single();
       if (insertErr) return err(500, insertErr.message);
+      // If this supersedes another learning, mark the old one for reference
+      if (supersedesId) {
+        await supabase.from("agent_learnings").update({ is_active: false }).eq("id", supersedesId);
+      }
       return ok({ learningId: data.id });
     }
 
