@@ -559,3 +559,6 @@ Full decision tree and runbook: `agent_docs/sentinel-runbook.md`
   "session_id": "abc123"
 }
 ```
+
+## Sentry Plugin
+The Netlify Sentry plugin input is `skipSetCommits = true` (not `setCommits`). Do not change this — squash merges break commit association and the build will fail without it.
