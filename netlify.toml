@@ -86,6 +86,7 @@
   from = "/health"
   to = "/.netlify/functions/health"
   status = 200
+  force = true
 
 [[redirects]]
   from = "/"
