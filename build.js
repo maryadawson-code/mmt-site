@@ -1291,6 +1291,7 @@ function generateEventsListHtml() {
       html += `          <div class="card rounded-xl p-4 mb-3" style="opacity:0.6;">
             <div class="flex items-center gap-3">
               <h3 class="text-sm font-bold flex-1" style="color:var(--mmt-white-dim);">${escapeHtml(e.name)}</h3>
+              <span class="text-xs font-semibold px-2 py-0.5 rounded mr-2" style="background:rgba(255,255,255,0.08); color:var(--mmt-white-dim);">Past</span>
               <span class="text-xs" style="color:var(--mmt-white-dim);">${escapeHtml(dateStr)}</span>
             </div>
           </div>\n`;
