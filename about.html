@@ -574,6 +574,167 @@
 
     .belief-body { font-size: 0.92rem; line-height: 1.72; color: var(--mmt-white-dim); }
 
+    /* ── THREE PROPERTIES ── */
+    .properties { padding: 8rem 8vw; background: var(--mmt-dark); }
+    .properties-inner { max-width: 1100px; margin: 0 auto; }
+    .properties-header { margin-bottom: 3rem; max-width: 560px; }
+    .properties-headline {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.12;
+      color: var(--mmt-white);
+      margin-top: 1rem;
+    }
+    .properties-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .property-card {
+      background: var(--mmt-slate);
+      border-radius: 16px;
+      padding: 2rem;
+      border: 1px solid rgba(0,229,250,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: border-color 0.3s, transform 0.3s var(--ease-out);
+    }
+    .property-card:hover { border-color: rgba(0,229,250,0.3); transform: translateY(-4px); }
+    .property-card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--mmt-white);
+    }
+    .property-card-body { font-size: 0.92rem; line-height: 1.72; color: var(--mmt-white-dim); flex: 1; }
+    .property-card-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--mmt-cyan);
+      text-decoration: none;
+      transition: gap 0.2s var(--spring), opacity 0.2s;
+    }
+    .property-card-cta:hover { gap: 0.7rem; opacity: 0.8; }
+
+    /* ── SARA BIO ── */
+    .sara-bio-section { padding: 8rem 8vw; }
+    .sara-bio-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+    .sara-photo-wrap { position: sticky; top: 88px; }
+
+    /* ── FRAMEWORKS ── */
+    .frameworks { padding: 8rem 8vw; background: var(--mmt-dark); }
+    .frameworks-inner { max-width: 1100px; margin: 0 auto; }
+    .frameworks-header { margin-bottom: 3rem; max-width: 560px; }
+    .frameworks-headline {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.12;
+      color: var(--mmt-white);
+      margin-top: 1rem;
+    }
+    .frameworks-list { display: flex; flex-direction: column; gap: 1.5rem; }
+    .framework-card {
+      background: var(--mmt-slate);
+      border-radius: 16px;
+      padding: 2rem;
+      border: 1px solid rgba(0,229,250,0.1);
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1.5rem;
+      align-items: start;
+      transition: border-color 0.3s;
+    }
+    .framework-card:hover { border-color: rgba(0,229,250,0.3); }
+    .framework-number {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--mmt-cyan);
+      opacity: 0.5;
+      padding-top: 0.15rem;
+    }
+    .framework-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--mmt-white);
+      margin-bottom: 0.5rem;
+    }
+    .framework-body { font-size: 0.92rem; line-height: 1.72; color: var(--mmt-white-dim); }
+
+    /* ── EDITORIAL INDEPENDENCE ── */
+    .editorial { padding: 6rem 8vw; }
+    .editorial-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .editorial-headline {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.5rem, 2.5vw, 2rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+      color: var(--mmt-white);
+      margin-top: 1rem;
+      margin-bottom: 2rem;
+    }
+    .editorial-body { font-size: 1rem; line-height: 1.8; color: var(--mmt-white-muted); margin-bottom: 1.25rem; }
+
+    /* ── START HERE ── */
+    .start-here { padding: 6rem 8vw; background: var(--mmt-dark); }
+    .start-here-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .start-here-headline {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.5rem, 2.5vw, 2rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+      color: var(--mmt-white);
+      margin-top: 1rem;
+      margin-bottom: 2rem;
+    }
+    .start-here-links { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+    .start-here-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.9rem 1.8rem;
+      border-radius: 100px;
+      border: 1px solid var(--mmt-border-bright);
+      color: var(--mmt-cyan);
+      font-size: 0.88rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      transition: border-color 0.25s, background 0.25s, transform 0.25s var(--spring);
+    }
+    .start-here-link:hover {
+      border-color: rgba(0,229,250,0.5);
+      background: rgba(0,229,250,0.06);
+      transform: translateY(-3px);
+    }
+
     /* ── CTA ── */
     .cta-section {
       padding: 8rem 8vw;
@@ -780,6 +941,10 @@
       .bio-inner { grid-template-columns: 1fr; gap: 2.5rem; }
       .bio-photo-wrap { position: static; display: grid; grid-template-columns: 160px 1fr; gap: 1.5rem; align-items: start; }
       .bio-photo-frame { aspect-ratio: 4/5; }
+      .properties-grid { grid-template-columns: 1fr; }
+      .sara-bio-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .sara-photo-wrap { position: static; display: grid; grid-template-columns: 160px 1fr; gap: 1.5rem; align-items: start; }
+      .framework-card { grid-template-columns: 1fr; gap: 0.75rem; }
       .footer-inner { grid-template-columns: 1fr 1fr; }
       .nav-links { display: none; }
       .hero-logo-accent { bottom: 1.5rem; right: 1.5rem; }
@@ -788,6 +953,8 @@
 
     @media (max-width: 600px) {
       .bio-photo-wrap { grid-template-columns: 1fr; }
+      .sara-photo-wrap { grid-template-columns: 1fr; }
+      .start-here-links { flex-direction: column; align-items: center; }
       .footer-inner { grid-template-columns: 1fr; }
       .cta-buttons { flex-direction: column; align-items: center; }
     }
@@ -854,6 +1021,33 @@
   </div>
 </section>
 
+<!-- ── THREE CONNECTED PROPERTIES ── -->
+<section class="properties">
+  <div class="properties-inner">
+    <div class="properties-header reveal">
+      <p class="section-label">Three Connected Properties</p>
+      <h2 class="properties-headline">One platform. Multiple ways in.</h2>
+    </div>
+    <div class="properties-grid stagger">
+      <div class="property-card">
+        <h3 class="property-card-title">Bi-Weekly Intelligence Brief</h3>
+        <p class="property-card-body">Each issue translates policy shifts, budget moves, leadership changes, and contract signals into what they actually mean for operators and executives.</p>
+        <a href="/newsletter" class="property-card-cta">Read the Archive <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg></a>
+      </div>
+      <div class="property-card">
+        <h3 class="property-card-title">Fed UP</h3>
+        <p class="property-card-body">Co-hosted with Sara Byrd. Honest, unscripted conversations about what's working and what's broken in defense health.</p>
+        <a href="/podcast" class="property-card-cta">Listen now <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg></a>
+      </div>
+      <div class="property-card">
+        <h3 class="property-card-title">missionmeetstech.com</h3>
+        <p class="property-card-body">Newsletter archives, quick-reference resources, contract tracker, glossary, and the intelligence that doesn't fit a LinkedIn post.</p>
+        <a href="/resources" class="property-card-cta">Explore resources <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ── PULLQUOTE ── -->
 <section class="pullquote-section">
   <div class="pullquote reveal">
@@ -907,6 +1101,45 @@
   </div>
 </section>
 
+<!-- ── SARA BYRD BIO ── -->
+<section class="sara-bio-section">
+  <div class="sara-bio-inner">
+    <div class="sara-photo-wrap">
+      <div style="position:relative;">
+        <div class="bio-photo-frame">
+          <picture><source srcset="sarabyrd.webp" type="image/webp"><img src="sarabyrd.jpg" alt="Sara Byrd" loading="lazy"></picture>
+        </div>
+        <div class="bio-glow"></div>
+      </div>
+      <div class="bio-name">Sara Byrd</div>
+      <div class="bio-title">Co-Host, Fed UP Podcast</div>
+      <div class="bio-badges">
+        <span class="badge">Three-time FedHealthIT100 Honoree</span>
+      </div>
+      <a href="https://www.linkedin.com/in/saraebyrd/" class="bio-linkedin" target="_blank" rel="noopener">
+        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        Connect on LinkedIn
+      </a>
+    </div>
+
+    <div class="bio-content reveal">
+      <p class="section-label">Meet the Co-Host</p>
+      <h2 class="bio-headline">Where technical innovation meets institutional reality.</h2>
+      <div class="bio-paragraphs">
+        <p>15+ years steering business development, capture, and IT initiatives across Defense, Intelligence, and Federal Health. Sara bridges technical innovation with institutional reality.</p>
+        <p>Three-time FedHealthIT100 honoree. Her work focuses on the relationship between human judgment and intelligent systems: how AI can amplify human capability while maintaining credibility and trust.</p>
+      </div>
+      <div class="bio-domains">
+        <span class="domain-tag">Business Development</span>
+        <span class="domain-tag">Federal Health</span>
+        <span class="domain-tag">Defense & Intelligence</span>
+        <span class="domain-tag">AI & Human Judgment</span>
+        <span class="domain-tag">Capture Management</span>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ── BELIEFS ── -->
 <section class="beliefs">
   <div class="beliefs-inner">
@@ -935,6 +1168,75 @@
         <h3 class="belief-title">Mission First</h3>
         <p class="belief-body">Everything passes through one question: does this help save lives or enhance readiness? If not, we don't cover it.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FRAMEWORKS ── -->
+<section class="frameworks">
+  <div class="frameworks-inner">
+    <div class="frameworks-header reveal">
+      <p class="section-label">How I Analyze</p>
+      <h2 class="frameworks-headline">Five analytical frameworks behind every piece.</h2>
+    </div>
+    <div class="frameworks-list stagger">
+      <div class="framework-card">
+        <span class="framework-number">01</span>
+        <div>
+          <h3 class="framework-title">Readiness Test</h3>
+          <p class="framework-body">Does this increase readiness or operational capability? Every dollar, contract, and policy decision gets measured against whether it makes the force more capable and ready.</p>
+        </div>
+      </div>
+      <div class="framework-card">
+        <span class="framework-number">02</span>
+        <div>
+          <h3 class="framework-title">Governance Paradox</h3>
+          <p class="framework-body">Where is bureaucracy blocking progress vs. protecting safety? Is a governance structure a legitimate safeguard or a mission-killing bottleneck?</p>
+        </div>
+      </div>
+      <div class="framework-card">
+        <span class="framework-number">03</span>
+        <div>
+          <h3 class="framework-title">Third Way Architecture</h3>
+          <p class="framework-body">What realistic bridge exists between legacy constraints and modern delivery? The answer lives within existing infrastructure, authorities, and workforce realities.</p>
+        </div>
+      </div>
+      <div class="framework-card">
+        <span class="framework-number">04</span>
+        <div>
+          <h3 class="framework-title">Human Cost</h3>
+          <p class="framework-body">Who pays when this fails? Policy connects to people. The stakes are always concrete: a medic waiting on a system, a veteran navigating a broken process.</p>
+        </div>
+      </div>
+      <div class="framework-card">
+        <span class="framework-number">05</span>
+        <div>
+          <h3 class="framework-title">Market Signal</h3>
+          <p class="framework-body">What does this tell us about where the money and attention are flowing? Contract awards, budget moves, and personnel changes are leading indicators.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── EDITORIAL INDEPENDENCE ── -->
+<section class="editorial">
+  <div class="editorial-inner reveal">
+    <p class="section-label" style="justify-content:center;">Editorial Independence</p>
+    <h2 class="editorial-headline">Independence is the product.</h2>
+    <p class="editorial-body">Mission Meets Tech is not sponsored, not vendor-affiliated, and not shaped by employer relationships. My analysis is independent. That independence is the product.</p>
+    <p class="editorial-body">Content is never influenced by advertising, sponsorship, or access politics. All views are my own and do not represent any employer or government agency.</p>
+  </div>
+</section>
+
+<!-- ── START HERE ── -->
+<section class="start-here">
+  <div class="start-here-inner reveal">
+    <p class="section-label" style="justify-content:center;">New Here? Start Here</p>
+    <h2 class="start-here-headline">Two ways to get oriented.</h2>
+    <div class="start-here-links">
+      <a href="/getting-started" class="start-here-link">Getting Started Guide <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg></a>
+      <a href="/latest" class="start-here-link">Read the Latest <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg></a>
     </div>
   </div>
 </section>
