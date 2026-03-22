@@ -232,16 +232,36 @@ function generatePodcastEpisodesHtml(feed) {
   if (!feed || !feed.items || feed.items.length === 0) return '<p style="color:var(--mmt-white-dim);">Episodes coming soon.</p>';
   const transcripts = loadTranscripts();
   const podcastTags = loadPodcastTags();
-  const episodes = feed.items.slice(0, 10);
+  // Deduplicate trailer entries (keep "Trailer" over "Introducing MMR/MMT" if both exist)
+  const hasTrailer = feed.items.some(ep => /^trailer\b/i.test(ep.title || ''));
+  const deduped = feed.items.filter(ep => {
+    // If we have a "Trailer" entry, remove any "Introducing*" duplicate
+    if (hasTrailer && /^introducing\b/i.test(ep.title || '')) return false;
+    return true;
+  });
+  const episodes = deduped.slice(0, 10);
+
+  // Override RSS titles for episodes with missing or incorrect titles
+  const titleOverrides = {
+    'Episode 1': 'Episode 1: The Mission Behind the Mission', // <!-- TODO: confirm episode 1 title -->
+    'Trailer': 'Introducing Fed UP (originally announced as Mission Meets Reality)',
+  };
+
   return episodes.map(ep => {
-    const title = escapeHtml(ep.title || 'Untitled Episode');
+    const rawTitle = ep.title || 'Untitled Episode';
+    const overriddenTitle = titleOverrides[rawTitle] || rawTitle;
+    // Fix trailer name consistency: "Introducing MMR" → "Introducing Fed UP"
+    const finalTitle = /^Introducing\b/i.test(overriddenTitle)
+      ? 'Introducing Fed UP (originally announced as Mission Meets Reality)'
+      : overriddenTitle;
+    const title = escapeHtml(finalTitle);
     const date = ep.pubDate ? new Date(ep.pubDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
     const duration = ep.duration || '';
     // Override bad RSS descriptions for specific episodes
     const descOverrides = {
       'Episode 2: The Pentagon Didn\'t Ban an App. It Banned Enterprise Infrastructure': 'The Pentagon\'s Anthropic designation didn\'t just block a chatbot. It blocked the API infrastructure underpinning dozens of enterprise health IT tools \u2014 and nobody in the building seemed to know it until after the fact.',
     };
-    const rawDesc = descOverrides[ep.title] || (ep.contentSnippet || ep.content || '').substring(0, 200);
+    const rawDesc = descOverrides[rawTitle] || descOverrides[overriddenTitle] || (ep.contentSnippet || ep.content || '').substring(0, 200);
     const desc = escapeHtml(rawDesc);
     const audioUrl = ep.enclosure?.url || '';
     const audioPlayer = audioUrl
@@ -250,11 +270,11 @@ function generatePodcastEpisodesHtml(feed) {
               </audio>`
       : '';
     // Skip Trailer/Intro from episode numbering — only count real episodes
-    const isExtra = /^(Trailer|Introducing)/i.test(ep.title || '');
+    const isExtra = /^(Trailer|Introducing)/i.test(rawTitle);
     const realEpisodes = episodes.filter(e => !/^(Trailer|Introducing)/i.test(e.title || ''));
     const epNum = isExtra ? null : realEpisodes.length - realEpisodes.indexOf(ep);
     const epLabel = epNum ? `EP${epNum}` : '';
-    const epLine = epNum ? `Episode ${epNum}` : (ep.title || '').split(':')[0];
+    const epLine = epNum ? `Episode ${epNum}` : finalTitle.split(':')[0];
     const epTags = epNum ? (podcastTags[`episode-${epNum}`] || []) : [];
     const epTagSlugs = epTags.map(t => slugify(t)).join(' ');
     const epTagHtml = epTags.length > 0
@@ -886,6 +906,12 @@ function generateArchiveHtml(archive) {
   const page1Items = archive.slice(0, PER_PAGE);
   const totalPages = Math.ceil(total / PER_PAGE);
   const pagination = totalPages > 1 ? generatePaginationHtml(1, totalPages, '/newsletter/') : '';
+  // Inline subscribe CTA inserted after the 3rd article
+  const subscribeCta = `<div class="subscribe-inline" style="background:rgba(0,229,250,0.08); border:1px solid rgba(0,229,250,0.2); border-radius:12px; padding:24px; margin:0; text-align:center;">
+          <p style="font-size:1.1rem; margin-bottom:12px; color:#fff; font-family:'Space Grotesk',system-ui,sans-serif; font-weight:600;">Get this in your inbox every Tuesday and Friday.</p>
+          <a href="https://buttondown.com/missionmeetstech" target="_blank" rel="noopener" style="display:inline-block; background:linear-gradient(135deg,#00E5FA,#00FF85); color:#00050F; padding:10px 24px; border-radius:6px; text-decoration:none; font-weight:600; font-size:0.9rem;">Subscribe Free</a>
+        </div>`;
+
   return page1Items.map((item, i) => {
     const issueNum = total - i;
     const topicSlugs = (item.tags || []).map(t => slugify(t)).join(',');
@@ -895,7 +921,7 @@ function generateArchiveHtml(archive) {
     const isExternal = item.url && item.url.startsWith('http');
     const linkAttrs = isExternal ? 'target="_blank" rel="noopener"' : '';
     const externalIcon = isExternal ? ' <svg width="0.75em" height="0.75em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:baseline;opacity:0.5;" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>' : '';
-    return `<article class="card article-card p-6 md:p-8" data-topics="${topicSlugs}">
+    const card = `<article class="card article-card p-6 md:p-8" data-topics="${topicSlugs}">
           <div class="flex items-start justify-between gap-4 mb-2">
             <h3 class="text-subsection" style="font-size:clamp(1.1rem, 1.5vw, 1.35rem);"><a href="${item.url}" ${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${escapeHtml(item.title)}${externalIcon}</a></h3>
             <span class="text-eyebrow whitespace-nowrap" style="font-size:0.7rem;">#${issueNum}</span>
@@ -904,6 +930,8 @@ function generateArchiveHtml(archive) {
           <p class="text-caption leading-relaxed mb-4">${escapeHtml(item.description)}</p>
           <div class="flex flex-wrap gap-2">${tags}</div>
         </article>`;
+    // Insert subscribe CTA after 3rd article
+    return i === 2 ? card + '\n        ' + subscribeCta : card;
   }).join('\n        ') + pagination;
 }
 
@@ -932,11 +960,29 @@ function generateLatestAllHtml(archive, feed) {
     readTime: item.readTime || null,
   }));
 
-  const episodes = (feed && feed.items ? feed.items : []).map(ep => {
+  // Deduplicate trailer entries (same logic as podcast page)
+  const rawEpisodes = feed && feed.items ? feed.items : [];
+  const hasTrailer = rawEpisodes.some(ep => /^trailer\b/i.test(ep.title || ''));
+  const dedupedEpisodes = rawEpisodes.filter(ep => {
+    if (hasTrailer && /^introducing\b/i.test(ep.title || '')) return false;
+    return true;
+  });
+
+  const titleOverrides = {
+    'Episode 1': 'Episode 1: The Mission Behind the Mission',
+    'Trailer': 'Introducing Fed UP (originally announced as Mission Meets Reality)',
+  };
+
+  const episodes = dedupedEpisodes.map(ep => {
+    const rawTitle = ep.title || 'Untitled Episode';
+    const overriddenTitle = titleOverrides[rawTitle] || rawTitle;
+    const finalTitle = /^Introducing\b/i.test(overriddenTitle)
+      ? 'Introducing Fed UP (originally announced as Mission Meets Reality)'
+      : overriddenTitle;
     const pubDate = ep.pubDate ? new Date(ep.pubDate) : new Date();
     return {
       type: 'episode',
-      title: ep.title || 'Untitled Episode',
+      title: finalTitle,
       date: pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
       sortDate: pubDate,
       description: (ep.contentSnippet || ep.content || '').substring(0, 200),
