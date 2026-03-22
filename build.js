@@ -1817,6 +1817,19 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
   const glossaryDist = path.join(DIST_DIR, 'glossary');
   const glossarySourcesPath = path.join(__dirname, 'glossary-sources.json');
   const glossarySources = fs.existsSync(glossarySourcesPath) ? JSON.parse(fs.readFileSync(glossarySourcesPath, 'utf8')) : {};
+  // Cross-link relationships for top glossary terms
+  const glossaryRelated = {
+    'dha': { terms: ['mhs', 'mhs-genesis', 'tricare', 'opmed'], contracts: ['MHS GENESIS'] },
+    'mhs-genesis': { terms: ['dha', 'fehrm', 'va-ehr'], contracts: ['MHS GENESIS'] },
+    'fehrm': { terms: ['dha', 'va-ehr', 'mhs-genesis'], contracts: [] },
+    'tricare': { terms: ['dha', 'mtf'], contracts: ['TRICARE T-5 BPA'] },
+    'fedramp': { terms: ['ato', 'nist-800-53'], contracts: [] },
+    'tefca': { terms: ['fhir', 'hl7', 'carequality'], contracts: [] },
+    'mhs': { terms: ['dha', 'mhs-genesis', 'tricare', 'mtf'], contracts: [] },
+    'va-ehr': { terms: ['mhs-genesis', 'fehrm', 'dha'], contracts: [] },
+    'far': { terms: ['contracting-officer', 'rfp', 'idiq'], contracts: [] },
+    'idiq': { terms: ['gwac', 'bpa', 'task-order'], contracts: ['CIO-SP3'] },
+  };
   let glossarySourceCount = 0;
   if (fs.existsSync(glossarySrc)) {
     ensureDir(glossaryDist);
@@ -1847,6 +1860,30 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
           sourcesSection + '\n      <div class="pt-6" style="border-top:1px solid rgba(0,229,250,0.1);">'
         );
         glossarySourceCount++;
+      }
+      // Inject related terms cross-links
+      const related = glossaryRelated[slug];
+      if (related && slug !== 'index') {
+        const termLinks = (related.terms || []).map(t => {
+          const label = t.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+          return `<a href="/glossary/${t}/" class="text-xs font-medium px-3 py-1.5 rounded-full no-underline" style="border:1px solid rgba(0,229,250,0.2); color:var(--mmt-cyan, #00E5FA);">${escapeHtml(label)}</a>`;
+        }).join('\n                ');
+        const contractLinks = (related.contracts || []).map(c => {
+          const cSlug = c.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+          return `<a href="/contract-tracker#${cSlug}" class="text-xs font-medium no-underline" style="color:var(--mmt-cyan, #00E5FA);">${escapeHtml(c)} Contract &rarr;</a>`;
+        }).join('\n                ');
+        const relatedSection = `
+      <div class="related-section mb-8">
+        <p class="text-eyebrow mb-3" style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:600;color:var(--mmt-cyan, #00E5FA);">Related</p>
+        <div class="flex flex-wrap gap-2 mb-3">
+                ${termLinks}
+        </div>
+        ${contractLinks ? `<div class="flex flex-wrap gap-3">\n                ${contractLinks}\n        </div>` : ''}
+      </div>`;
+        html = html.replace(
+          '<div class="pt-6" style="border-top:1px solid rgba(0,229,250,0.1);">',
+          relatedSection + '\n      <div class="pt-6" style="border-top:1px solid rgba(0,229,250,0.1);">'
+        );
       }
       html = inlineTailwindCss(html);
       fs.writeFileSync(path.join(glossaryDist, file), html);
