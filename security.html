@@ -131,10 +131,10 @@
       <div>
         <h2 class="text-xl font-bold mb-3">What Happens When You Upload a Proposal</h2>
         <ol class="text-sm space-y-2 list-none p-0 m-0" style="color:var(--mmt-white-muted); counter-reset:steps;">
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">1.</span> Document travels over TLS 1.2+ to Netlify's SOC 2 infrastructure.</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">1.</span> Document travels over TLS 1.2+ to our hosting provider's SOC 2 infrastructure.</li>
           <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">2.</span> We extract text. Original file is not stored.</li>
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">3.</span> Text sent to Anthropic Claude API. Their policy: inputs never used to train models (default for all API customers).</li>
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">4.</span> Scorecard stored in Supabase on AWS, AES-256 encrypted at rest.</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">3.</span> Text sent to our AI analysis provider. Their policy: inputs never used to train models.</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">4.</span> Scorecard stored in our database provider on cloud infrastructure, AES-256 encrypted at rest.</li>
           <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">5.</span> After 90 days, document text permanently purged. Scorecards retained.</li>
         </ol>
       </div>
@@ -159,11 +159,11 @@
           </div>
           <div class="p-4 rounded-lg" style="background:rgba(0,229,250,0.05); border:1px solid rgba(0,229,250,0.15);">
             <p class="text-sm font-semibold mb-1" style="color:var(--mmt-cyan);">At Rest</p>
-            <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">AES-256 encryption on all database storage (Supabase on AWS).</p>
+            <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">AES-256 encryption on all database storage (cloud infrastructure).</p>
           </div>
           <div class="p-4 rounded-lg" style="background:rgba(0,229,250,0.05); border:1px solid rgba(0,229,250,0.15);">
             <p class="text-sm font-semibold mb-1" style="color:var(--mmt-cyan);">Payment</p>
-            <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">Stripe handles all payment processing. We never see or store card numbers.</p>
+            <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">Our payment processor handles all payment processing. We never see or store card numbers.</p>
           </div>
         </div>
       </div>
@@ -177,27 +177,27 @@
         <h2 class="text-xl font-bold mb-3">Third-Party Services</h2>
         <div class="space-y-2">
           <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(0,229,250,0.03); border:1px solid rgba(0,229,250,0.08);">
-            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Anthropic</span>
+            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">AI Analysis</span>
             <span class="text-sm" style="color:var(--mmt-white-muted);">Proposal analysis &mdash; No training on API inputs</span>
           </div>
           <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(0,229,250,0.03); border:1px solid rgba(0,229,250,0.08);">
-            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Perplexity</span>
+            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Research Intel</span>
             <span class="text-sm" style="color:var(--mmt-white-muted);">MarketPulse research &mdash; No training on API inputs</span>
           </div>
           <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(0,229,250,0.03); border:1px solid rgba(0,229,250,0.08);">
-            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Supabase</span>
-            <span class="text-sm" style="color:var(--mmt-white-muted);">Database (AWS) &mdash; SOC 2, encrypted</span>
+            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Database</span>
+            <span class="text-sm" style="color:var(--mmt-white-muted);">Cloud infrastructure &mdash; SOC 2, encrypted</span>
           </div>
           <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(0,229,250,0.03); border:1px solid rgba(0,229,250,0.08);">
-            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Netlify</span>
+            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Hosting</span>
             <span class="text-sm" style="color:var(--mmt-white-muted);">Hosting / functions &mdash; SOC 2</span>
           </div>
           <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(0,229,250,0.03); border:1px solid rgba(0,229,250,0.08);">
-            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Stripe</span>
-            <span class="text-sm" style="color:var(--mmt-white-muted);">Payments &mdash; PCI DSS Level 1</span>
+            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Payments</span>
+            <span class="text-sm" style="color:var(--mmt-white-muted);">Payment processing &mdash; PCI DSS Level 1</span>
           </div>
           <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(0,229,250,0.03); border:1px solid rgba(0,229,250,0.08);">
-            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Resend</span>
+            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Email</span>
             <span class="text-sm" style="color:var(--mmt-white-muted);">Email delivery &mdash; SOC 2</span>
           </div>
         </div>
@@ -215,10 +215,10 @@
       <div>
         <h2 class="text-xl font-bold mb-3">What Happens When You Request a MarketPulse Brief</h2>
         <ol class="text-sm space-y-2 list-none p-0 m-0" style="color:var(--mmt-white-muted);">
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">1.</span> Your research question travels over TLS 1.2+ to Netlify's SOC 2 infrastructure.</li>
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">2.</span> Query sent to Anthropic Claude API and Perplexity API for research. Neither trains on API inputs.</li>
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">3.</span> Generated report stored in Supabase on AWS, AES-256 encrypted at rest.</li>
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">4.</span> Report PDF delivered to your email via Resend (SOC 2).</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">1.</span> Your research question travels over TLS 1.2+ to our hosting provider's SOC 2 infrastructure.</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">2.</span> Query sent to our AI analysis provider and our research intelligence provider. Neither trains on API inputs.</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">3.</span> Generated report stored in our database provider on cloud infrastructure, AES-256 encrypted at rest.</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">4.</span> Report PDF delivered to your email via our email delivery provider (SOC 2).</li>
           <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">5.</span> Query text retained for quality assurance. Reports retained while account active.</li>
         </ol>
       </div>
