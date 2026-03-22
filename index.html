@@ -153,34 +153,39 @@
 
 
   <main id="main-content">
-  <!-- Hero -->
-  <section class="pt-36 pb-20 px-6">
+  <!-- Section 1: Hero -->
+  <section class="pt-36 pb-16 px-6">
     <div class="max-w-3xl mx-auto text-center">
-      <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-6" style="font-family:'Space Grotesk',system-ui,sans-serif;">Federal Health IT Intelligence</h1>
-      <p class="text-lg md:text-xl max-w-2xl mx-auto mb-4 leading-relaxed" style="color:var(--mmt-white-muted);">The military can land a plane on a carrier in 12-foot seas. It still can't move a medical record across a zip code. I cover the gap.</p>
-      <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" target="_blank" class="max-w-md mx-auto">
-        <div class="flex gap-2">
-          <label for="subscribe-email-hero" class="sr-only">Email address</label>
-          <input type="email" name="email" id="subscribe-email-hero" placeholder="you@example.com" required class="px-4 py-3 rounded-lg text-sm flex-1" style="background:var(--mmt-slate);border:1px solid rgba(0,229,250,0.2);color:#fff;">
-          <button type="submit" class="btn-primary px-6 py-3 rounded-lg text-sm font-semibold whitespace-nowrap" style="cursor:pointer;border:none;">Subscribe</button>
-        </div>
-      </form>
+      <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-6" style="font-family:'Space Grotesk',system-ui,sans-serif;">Mission Meets <span class="gradient-text">Tech</span></h1>
+      <p class="text-lg md:text-xl max-w-2xl mx-auto mb-6 leading-relaxed" style="color:var(--mmt-white-muted);">Federal Health IT Intelligence for Defense Contractors and Government Decision-Makers</p>
+      <!-- Stats Bar -->
+      <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-8">
+        <span class="text-sm font-medium" style="color:var(--mmt-white-dim);">76 articles</span>
+        <span class="hidden sm:inline text-sm" style="color:rgba(0,229,250,0.3);">&middot;</span>
+        <span class="text-sm font-medium" style="color:var(--mmt-white-dim);">10 contracts tracked</span>
+        <span class="hidden sm:inline text-sm" style="color:rgba(0,229,250,0.3);">&middot;</span>
+        <span class="text-sm font-medium" style="color:var(--mmt-white-dim);">37 terms defined</span>
+        <span class="hidden sm:inline text-sm" style="color:rgba(0,229,250,0.3);">&middot;</span>
+        <span class="text-sm font-medium" style="color:var(--mmt-white-dim);">4 podcast episodes</span>
+      </div>
+      <!-- Dual CTAs -->
+      <div class="flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="https://buttondown.com/missionmeetstech" target="_blank" rel="noopener" class="btn-primary px-8 py-3 rounded-lg text-sm font-semibold no-underline text-center" style="border:none;">Subscribe Free</a>
+        <a href="newsletter.html" class="btn-secondary px-8 py-3 rounded-lg text-sm font-semibold no-underline text-center">Read Latest Issue &rarr;</a>
+      </div>
     </div>
   </section>
 
-  <!-- Lead Story -->
-  <section class="py-12 px-6">
-    <div class="max-w-4xl mx-auto">
-      <!-- BUILD:LEAD_STORY -->
-    </div>
-  </section>
-
-  <!-- Latest Articles -->
-  <section class="py-16 px-6">
+  <!-- Section 2: Latest Intelligence -->
+  <section class="py-16 px-6 section-alt">
     <div class="max-w-6xl mx-auto">
       <div class="flex items-center justify-between mb-10">
-        <h2 class="text-2xl font-bold">Latest Articles</h2>
+        <h2 class="text-2xl font-bold">Latest Intelligence</h2>
         <a href="latest.html" class="text-sm font-medium no-underline hover:opacity-80" style="color:var(--mmt-cyan);">View all &rarr;</a>
+      </div>
+      <!-- Lead Story -->
+      <div class="mb-8">
+        <!-- BUILD:LEAD_STORY -->
       </div>
       <div class="grid md:grid-cols-3 gap-8">
         <!-- BUILD:LATEST_ARTICLES -->
@@ -188,22 +193,64 @@
     </div>
   </section>
 
-  <!-- Topics -->
-  <section class="py-12 px-6">
+  <!-- Section 3: What We Cover -->
+  <section class="py-16 px-6">
     <div class="max-w-4xl mx-auto">
-      <h2 class="text-lg font-bold mb-4" style="color:var(--mmt-white-muted);">Browse by Topic</h2>
-      <div class="flex flex-wrap gap-3">
+      <h2 class="text-2xl font-bold mb-8 text-center">What We Cover</h2>
+      <div class="flex flex-wrap gap-3 justify-center">
         <!-- BUILD:TOPIC_CHIPS -->
       </div>
     </div>
   </section>
 
-  <!-- Closing CTA -->
+  <!-- Section 4: Tools & Intelligence -->
+  <section class="py-16 px-6 section-alt">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-2xl font-bold mb-10 text-center">Your Intelligence Center</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <a href="proposal-pulse.html" class="card rounded-xl p-6 no-underline block transition-all" style="border-radius:12px;">
+          <p class="text-2xl mb-3" aria-hidden="true">&#9889;</p>
+          <h3 class="text-lg font-bold mb-2" style="color:#fff;">ProposalPulse</h3>
+          <p class="text-sm leading-relaxed" style="color:var(--mmt-white-dim);">Score your federal proposal before you submit. AI-powered, 9 criteria, 60 seconds.</p>
+        </a>
+        <a href="contract-tracker.html" class="card rounded-xl p-6 no-underline block transition-all" style="border-radius:12px;">
+          <p class="text-2xl mb-3" aria-hidden="true">&#128202;</p>
+          <h3 class="text-lg font-bold mb-2" style="color:#fff;">Contract Tracker</h3>
+          <p class="text-sm leading-relaxed" style="color:var(--mmt-white-dim);">10 major federal health IT contracts. Status, competitors, intel.</p>
+        </a>
+        <a href="newswire.html" class="card rounded-xl p-6 no-underline block transition-all" style="border-radius:12px;">
+          <p class="text-2xl mb-3" aria-hidden="true">&#128240;</p>
+          <h3 class="text-lg font-bold mb-2" style="color:#fff;">Newswire</h3>
+          <p class="text-sm leading-relaxed" style="color:var(--mmt-white-dim);">Federal health IT headlines from 10 sources, updated every 4 hours.</p>
+        </a>
+        <a href="glossary.html" class="card rounded-xl p-6 no-underline block transition-all" style="border-radius:12px;">
+          <p class="text-2xl mb-3" aria-hidden="true">&#128218;</p>
+          <h3 class="text-lg font-bold mb-2" style="color:#fff;">Glossary</h3>
+          <p class="text-sm leading-relaxed" style="color:var(--mmt-white-dim);">37 federal health IT terms in plain language.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: Podcast Teaser -->
   <section class="py-16 px-6">
+    <div class="max-w-4xl mx-auto">
+      <!-- BUILD:PODCAST_TEASER -->
+    </div>
+  </section>
+
+  <!-- Section 6: About + Subscribe CTA -->
+  <section class="py-16 px-6 section-alt">
     <div class="max-w-3xl mx-auto text-center">
-      <h2 class="text-2xl font-bold mb-4">Get the Intelligence</h2>
-      <p class="text-base leading-relaxed mb-8 max-w-2xl mx-auto" style="color:var(--mmt-white-muted);">Bi-weekly analysis on federal health IT. No press release rewrites, no vendor spin. Policy shifts, budget signals, contract intelligence, and what leadership changes actually mean for the people building and buying these systems.</p>
-      <button id="btn-cta-subscribe" class="btn-primary px-8 py-3 rounded-lg text-sm font-semibold" style="cursor:pointer;border:none;">Subscribe</button>
+      <div class="flex justify-center mb-6">
+        <picture><source srcset="marywomack.webp" type="image/webp"><img src="marywomack.jpg" alt="Mary Womack" loading="lazy" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:2px solid rgba(0,229,250,0.2);"></picture>
+      </div>
+      <h2 class="text-2xl font-bold mb-4">Built by Mary Womack</h2>
+      <p class="text-base leading-relaxed mb-8 max-w-2xl mx-auto" style="color:var(--mmt-white-muted);">Independent federal health IT intelligence. No vendor spin. No press release rewrites. Policy shifts, budget signals, contract intelligence, and what leadership changes actually mean.</p>
+      <div class="flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="https://buttondown.com/missionmeetstech" target="_blank" rel="noopener" class="btn-primary px-8 py-3 rounded-lg text-sm font-semibold no-underline text-center" style="border:none;">Subscribe &mdash; it's free</a>
+        <a href="about.html" class="btn-secondary px-8 py-3 rounded-lg text-sm font-semibold no-underline text-center">About Mission Meets Tech &rarr;</a>
+      </div>
     </div>
   </section>
 
