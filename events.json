@@ -13,6 +13,7 @@
     "date": "2026-04-15",
     "location": "Washington, DC",
     "url": "https://www.fedhealthit.com",
+    "registrationUrl": "https://www.fedhealthit.com",
     "type": "awards",
     "description": "Annual recognition of the top 100 leaders driving federal health IT transformation."
   },
@@ -21,6 +22,7 @@
     "date": "2026-05-20",
     "location": "Falls Church, VA",
     "url": "https://www.health.mil",
+    "registrationNote": "Check SAM.gov for registration details",
     "type": "conference",
     "description": "Defense Health Agency engagement with industry partners on upcoming acquisition priorities."
   },
@@ -29,6 +31,7 @@
     "date": "2026-05-21",
     "location": "Bethesda North Marriott Hotel & Conference Center, Rockville, MD",
     "url": "https://fedhealth.pscouncil.org/",
+    "registrationUrl": "https://fedhealth.pscouncil.org/",
     "type": "conference",
     "description": "Senior executives from industry and government discuss critical policy and acquisition priorities in civilian and military health, with speakers from HHS, VA, and DoD."
   },
@@ -38,6 +41,7 @@
     "endDate": "2026-06-04",
     "location": "Baltimore Convention Center, Baltimore, MD",
     "url": "https://events.afcea.org/afceacyber26/Public/enter.aspx",
+    "registrationUrl": "https://events.afcea.org/afceacyber26/Public/enter.aspx",
     "type": "conference",
     "description": "Cybersecurity conference with federal health IT security tracks covering HIPAA, zero trust, and health data protection."
   },
@@ -47,6 +51,7 @@
     "endDate": "2026-08-27",
     "location": "Kissimmee, FL",
     "url": "https://www.health.mil",
+    "registrationNote": "Registration typically opens May 2026",
     "type": "conference",
     "description": "Premier scientific meeting for military and federal health research, combat casualty care, and operational medicine."
   },
@@ -56,6 +61,7 @@
     "endDate": "2026-12-04",
     "location": "Washington, DC",
     "url": "https://www.amsus.org",
+    "registrationNote": "Registration typically opens summer 2026",
     "type": "conference",
     "description": "Society of Federal Health Professionals annual meeting covering military medicine, VA health, and public health."
   }
