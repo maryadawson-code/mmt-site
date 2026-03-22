@@ -1,12 +1,12 @@
 [
   {
     "name": "HIMSS 2026 Global Health Conference",
-    "date": "2026-03-10",
-    "endDate": "2026-03-14",
+    "date": "2026-03-09",
+    "endDate": "2026-03-12",
     "location": "Las Vegas, NV",
-    "url": "https://www.himss.org/global-conference",
+    "url": "https://www.himssconference.com/",
     "type": "conference",
-    "description": "Largest health IT conference featuring federal health tracks, interoperability sessions, and vendor showcases."
+    "description": "Largest health IT conference featuring 600+ sessions on AI, cybersecurity, interoperability, and digital health innovation at the Venetian Expo & Convention Center."
   },
   {
     "name": "FedHealthIT 100 Awards",
@@ -15,6 +15,14 @@
     "url": "https://www.fedhealthit.com",
     "type": "conference",
     "description": "Annual recognition of the top 100 leaders driving federal health IT transformation."
+  },
+  {
+    "name": "PSC FedHealth Conference",
+    "date": "2026-05-21",
+    "location": "Bethesda North Marriott Hotel & Conference Center, Rockville, MD",
+    "url": "https://fedhealth.pscouncil.org/",
+    "type": "conference",
+    "description": "Senior executives from industry and government discuss critical policy and acquisition priorities in civilian and military health, with speakers from HHS, VA, and DoD."
   },
   {
     "name": "AMSUS Federal Health Conference",
@@ -35,10 +43,10 @@
   },
   {
     "name": "AFCEA TechNet Cyber",
-    "date": "2026-06-24",
-    "endDate": "2026-06-26",
-    "location": "Baltimore, MD",
-    "url": "https://www.afcea.org",
+    "date": "2026-06-02",
+    "endDate": "2026-06-04",
+    "location": "Baltimore Convention Center, Baltimore, MD",
+    "url": "https://events.afcea.org/afceacyber26/Public/enter.aspx",
     "type": "conference",
     "description": "Cybersecurity conference with federal health IT security tracks covering HIPAA, zero trust, and health data protection."
   },
