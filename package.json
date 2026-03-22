@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "description": "Mission Meets Tech website with auto-updating podcast episodes",
   "scripts": {
-    "build": "node scripts/sync-newsletters.js; node build.js",
-    "sync-newsletters": "node scripts/sync-newsletters.js",
+    "build": "node build.js",
     "test": "npx vitest run",
     "test:unit": "npx vitest run tests/unit",
     "test:smoke": "npx vitest run tests/smoke",

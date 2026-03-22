@@ -66,7 +66,7 @@
 </head>
 <body class="antialiased">
 
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold" style="background:var(--mmt-cyan); color:#fff;">Skip to main content</a>
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold" style="background:var(--mmt-cyan); color:#fff;">Skip to main content</a>
 
   <!-- Navigation -->
   <nav class="nav-apple">
@@ -75,9 +75,9 @@
         <span class="text-xl font-bold" style="font-family:'Space Grotesk',system-ui,sans-serif; color:#fff;">Mission Meets <span style="color:var(--mmt-cyan);">Tech</span></span>
       </a>
       <div class="hidden md:flex items-center gap-6">
-        <a href="latest.html" class="text-sm font-semibold" style="color:var(--mmt-cyan);">Intelligence</a>
+        <a href="latest.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Intelligence</a>
         <a href="podcast.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Podcast</a>
-        <a href="resources.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Resources</a>
+        <a href="resources.html" class="text-sm font-semibold" style="color:var(--mmt-cyan);">Resources</a>
         <a href="proposal-pulse.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">ProposalPulse</a>
         <a href="marketpulse.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">MarketPulse</a>
         <a href="about.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">About</a>
@@ -113,9 +113,9 @@
     <!-- Mobile Menu -->
     <div id="mobileMenu" class="hidden md:hidden px-6 pb-4">
       <div class="flex flex-col gap-4 pt-2 border-t" style="border-color:rgba(0,229,250,0.1);">
-        <a href="latest.html" class="text-sm font-semibold" style="color:var(--mmt-cyan);">Intelligence</a>
+        <a href="latest.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Intelligence</a>
         <a href="podcast.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Podcast</a>
-        <a href="resources.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Resources</a>
+        <a href="resources.html" class="text-sm font-semibold" style="color:var(--mmt-cyan);">Resources</a>
         <a href="proposal-pulse.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">ProposalPulse</a>
         <a href="marketpulse.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">MarketPulse</a>
         <a href="about.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">About</a>
@@ -161,24 +161,7 @@
         <button class="filter-pill text-sm px-4 py-2 rounded-full" data-filter="oversight">Oversight</button>
       </div>
 
-      <noscript>
-        <p class="text-sm mb-4" style="color:var(--mmt-white-dim);">Enable JavaScript to use the category filters above.</p>
-        <div class="space-y-3" style="margin-top:1.5rem;">
-          <p class="text-sm font-semibold mb-3" style="color:var(--mmt-white-muted);">Browse our sources directly:</p>
-          <ul class="space-y-2 list-none p-0 m-0">
-            <li><a href="https://defensescoop.com" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">DefenseScoop</a></li>
-            <li><a href="https://fedscoop.com" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">FedScoop</a></li>
-            <li><a href="https://govexec.com" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">GovExec</a></li>
-            <li><a href="https://nextgov.com" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">Nextgov/FCW</a></li>
-            <li><a href="https://meritalk.com" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">MeriTalk</a></li>
-            <li><a href="https://militarytimes.com" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">Military Times</a></li>
-            <li><a href="https://www.gao.gov" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">GAO</a></li>
-            <li><a href="https://www.healthit.gov/buzz-blog" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">Health IT Buzz</a></li>
-            <li><a href="https://www.va.gov/opa/pressrel/" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">VA.gov</a></li>
-            <li><a href="https://newsroom.tricare.mil" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);">TRICARE</a></li>
-          </ul>
-        </div>
-      </noscript>
+      <noscript><p class="text-sm mb-4" style="color:var(--mmt-white-dim);">Enable JavaScript to use the category filters above.</p></noscript>
 
       <!-- Headlines Grid -->
       <div class="space-y-3" id="newswireGrid">
@@ -206,6 +189,7 @@
   </section>
 
   </main>
+
   <!-- Footer -->
   <footer class="py-16 px-6" style="background:var(--mmt-navy); border-top:1px solid rgba(0,229,250,0.1);">
     <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">

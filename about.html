@@ -798,76 +798,20 @@
 <div id="progress"></div>
 
 <!-- ── NAV ── -->
-  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold" style="background:var(--mmt-cyan); color:#fff;">Skip to main content</a>
-
-  <!-- Navigation -->
-  <nav class="nav-apple">
-    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-2 no-underline">
-        <span class="text-xl font-bold" style="font-family:'Space Grotesk',system-ui,sans-serif; color:#fff;">Mission Meets <span style="color:var(--mmt-cyan);">Tech</span></span>
-      </a>
-      <div class="hidden md:flex items-center gap-6">
-        <a href="latest.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Intelligence</a>
-        <a href="podcast.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Podcast</a>
-        <a href="resources.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Resources</a>
-        <a href="proposal-pulse.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">ProposalPulse</a>
-        <a href="marketpulse.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">MarketPulse</a>
-        <a href="about.html" class="text-sm font-semibold" style="color:var(--mmt-cyan);">About</a>
-        <button id="searchToggle" class="text-sm hover:opacity-80" style="color:var(--mmt-white-muted);" aria-label="Search"><svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></button>
-        <div style="position:relative;">
-          <button id="subscribeToggle" class="btn-primary px-5 py-2 rounded-lg text-sm" style="cursor:pointer;border:none;" aria-expanded="false" aria-haspopup="true">Subscribe</button>
-          <div id="subscribePanel" class="hidden" style="position:absolute;right:0;top:calc(100% + 8px);width:280px;padding:16px;background:var(--mmt-slate);border:1px solid rgba(0,229,250,0.15);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.4);z-index:100;">
-            <p class="text-xs font-semibold mb-2" style="color:var(--mmt-white-muted);">Get the Intelligence</p>
-            <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" target="_blank">
-              <div class="flex gap-2">
-                <label for="subscribe-email-nav" class="sr-only">Email</label>
-                <input type="email" name="email" id="subscribe-email-nav" placeholder="you@example.com" required class="px-3 py-2 rounded-lg text-sm flex-1" style="background:var(--mmt-navy);border:1px solid rgba(0,229,250,0.2);color:#fff;">
-                <button type="submit" class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap" style="cursor:pointer;border:none;">Join</button>
-              </div>
-            </form>
-            <div class="flex items-center gap-2 my-2">
-              <div style="flex:1;height:1px;background:rgba(0,229,250,0.1);"></div>
-              <span class="text-xs" style="color:var(--mmt-white-dim);">or</span>
-              <div style="flex:1;height:1px;background:rgba(0,229,250,0.1);"></div>
-            </div>
-            <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="text-xs font-medium hover:opacity-80 no-underline flex items-center gap-1" style="color:var(--mmt-cyan);">
-              <svg width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
-              Subscribe on LinkedIn
-            </a>
-          </div>
-        </div>
-      </div>
-      <button id="menuToggle" class="md:hidden text-white text-xl" aria-label="Toggle menu">
-        <svg id="menuOpen" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
-        <svg id="menuClose" class="hidden" width="1em" height="1em" viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
-      </button>
-    </div>
-    <!-- Mobile Menu -->
-    <div id="mobileMenu" class="hidden md:hidden px-6 pb-4">
-      <div class="flex flex-col gap-4 pt-2 border-t" style="border-color:rgba(0,229,250,0.1);">
-        <a href="latest.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Intelligence</a>
-        <a href="podcast.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Podcast</a>
-        <a href="resources.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Resources</a>
-        <a href="proposal-pulse.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">ProposalPulse</a>
-        <a href="marketpulse.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">MarketPulse</a>
-        <a href="about.html" class="text-sm font-semibold" style="color:var(--mmt-cyan);">About</a>
-        <div class="pt-3 mt-1" style="border-top:1px solid rgba(0,229,250,0.1);">
-          <p class="text-xs font-semibold mb-2" style="color:var(--mmt-white-muted);">Subscribe</p>
-          <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" target="_blank" class="mb-3">
-            <div class="flex gap-2">
-              <label for="subscribe-email-mobile" class="sr-only">Email</label>
-              <input type="email" name="email" id="subscribe-email-mobile" placeholder="you@example.com" required class="px-3 py-2 rounded-lg text-sm flex-1" style="background:var(--mmt-navy);border:1px solid rgba(0,229,250,0.2);color:#fff;">
-              <button type="submit" class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold" style="cursor:pointer;border:none;">Join</button>
-            </div>
-          </form>
-          <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="text-xs font-medium hover:opacity-80 no-underline flex items-center gap-1" style="color:var(--mmt-cyan);">
-            <svg width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
-            Subscribe on LinkedIn
-          </a>
-        </div>
-      </div>
-    </div>
-  </nav>
+<nav id="nav">
+  <a href="/" class="nav-logo">
+    <picture><source srcset="MMT_logo_primary_transparent.webp" type="image/webp"><img src="MMT_logo_primary_transparent.png" alt="Mission Meets Tech" class="nav-logo-img"></picture>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/latest">Intelligence</a></li>
+    <li><a href="/podcast">Podcast</a></li>
+    <li><a href="/newsletter">Newsletter</a></li>
+    <li><a href="/resources">Resources</a></li>
+    <li><a href="/proposal-pulse">ProposalPulse</a></li>
+    <li><a href="/about" class="active">About</a></li>
+  </ul>
+  <a href="https://buttondown.com/missionmeetstech" class="nav-cta">Subscribe</a>
+</nav>
 
 <!-- ── HERO ── -->
 <section class="hero" aria-label="About hero">
@@ -933,8 +877,8 @@
       <div class="bio-name">Mary Womack</div>
       <div class="bio-title">Founder, Mission Meets Tech</div>
       <div class="bio-badges">
-        <span class="badge" title="AFWERX defense innovation program">ACCELERATE 125 (AFWERX defense innovation program)</span>
-        <span class="badge" title="Bunker Labs veteran entrepreneur program">IGNITE Founding Member (Bunker Labs veteran entrepreneur program)</span>
+        <span class="badge">ACCELERATE 125</span>
+        <span class="badge">IGNITE Founding Member</span>
       </div>
       <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" class="bio-linkedin" target="_blank" rel="noopener">
         <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
@@ -957,60 +901,6 @@
         <span class="domain-tag">AI in Federal Health</span>
         <span class="domain-tag">Defense Acquisition</span>
         <span class="domain-tag">Interoperability</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── WHAT WE'VE BUILT ── -->
-<section style="padding:6rem 8vw; background:var(--mmt-navy);">
-  <div style="max-width:1100px; margin:0 auto;">
-    <div class="reveal">
-      <p class="section-label">What We've Built</p>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:2rem;">
-        <div style="background:var(--mmt-slate); border-radius:16px; padding:2rem; border:1px solid var(--mmt-border);">
-          <h3 style="font-family:'Space Grotesk',system-ui,sans-serif; font-size:1.15rem; font-weight:600; margin-bottom:0.75rem; color:#fff;">ProposalPulse</h3>
-          <p style="color:var(--mmt-white-dim); font-size:0.95rem; line-height:1.6;">AI-powered federal proposal scoring. Upload your deck, get a 9-criteria scorecard in 60 seconds.</p>
-          <a href="/proposal-pulse" style="display:inline-block; margin-top:1rem; font-size:0.85rem; color:var(--mmt-cyan); text-decoration:none;">Try ProposalPulse &rarr;</a>
-        </div>
-        <div style="background:var(--mmt-slate); border-radius:16px; padding:2rem; border:1px solid var(--mmt-border);">
-          <h3 style="font-family:'Space Grotesk',system-ui,sans-serif; font-size:1.15rem; font-weight:600; margin-bottom:0.75rem; color:#fff;">Contract Tracker</h3>
-          <p style="color:var(--mmt-white-dim); font-size:0.95rem; line-height:1.6;">10 major federal health IT contracts with status, vendors, and procurement intelligence. Updated weekly.</p>
-          <a href="/contract-tracker" style="display:inline-block; margin-top:1rem; font-size:0.85rem; color:var(--mmt-cyan); text-decoration:none;">View Contracts &rarr;</a>
-        </div>
-        <div style="background:var(--mmt-slate); border-radius:16px; padding:2rem; border:1px solid var(--mmt-border);">
-          <h3 style="font-family:'Space Grotesk',system-ui,sans-serif; font-size:1.15rem; font-weight:600; margin-bottom:0.75rem; color:#fff;">Fed UP Podcast</h3>
-          <p style="color:var(--mmt-white-dim); font-size:0.95rem; line-height:1.6;">Honest conversations about the systems, policies, and people shaping military and veteran healthcare.</p>
-          <a href="/podcast" style="display:inline-block; margin-top:1rem; font-size:0.85rem; color:var(--mmt-cyan); text-decoration:none;">Listen Now &rarr;</a>
-        </div>
-        <div style="background:var(--mmt-slate); border-radius:16px; padding:2rem; border:1px solid var(--mmt-border);">
-          <h3 style="font-family:'Space Grotesk',system-ui,sans-serif; font-size:1.15rem; font-weight:600; margin-bottom:0.75rem; color:#fff;">Newsletter</h3>
-          <p style="color:var(--mmt-white-dim); font-size:0.95rem; line-height:1.6;">76 issues of federal health IT intelligence. Twice weekly. Free.</p>
-          <a href="/newsletter" style="display:inline-block; margin-top:1rem; font-size:0.85rem; color:var(--mmt-cyan); text-decoration:none;">Read the Archive &rarr;</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── SARA BYRD ── -->
-<section style="padding:6rem 8vw; background:var(--mmt-dark);">
-  <div style="max-width:900px; margin:0 auto;">
-    <div class="reveal" style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:2rem;">
-      <p class="section-label" style="width:100%;">The Team</p>
-      <div style="display:flex; flex-wrap:wrap; gap:3rem; justify-content:center; width:100%;">
-        <div style="flex:1; min-width:280px; max-width:400px; text-align:center;">
-          <div style="width:120px; height:120px; border-radius:50%; overflow:hidden; margin:0 auto 1rem; border:2px solid rgba(0,229,250,0.2);">
-            <picture><source srcset="sarabyrd.webp" type="image/webp"><img src="sarabyrd.jpg" alt="Sara Byrd" loading="lazy" style="width:100%; height:100%; object-fit:cover;"></picture>
-          </div>
-          <h3 style="font-family:'Space Grotesk',system-ui,sans-serif; font-size:1.25rem; font-weight:600; margin-bottom:0.25rem; color:#fff;">Sara Byrd</h3>
-          <p style="font-size:0.85rem; color:var(--mmt-cyan); margin-bottom:1rem;">Co-Host, Fed UP Podcast | Federal Health IT Strategist</p>
-          <p style="color:var(--mmt-white-dim); font-size:0.95rem; line-height:1.6; text-align:left;">Sara is a strategist, executive leader, and trusted advisor working at the intersection of emerging technology and real-world systems. With more than 15 years of experience across civilian and defense organizations, federal acquisition, and innovation strategy.</p>
-          <a href="https://www.linkedin.com/in/saraebyrd/" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:0.5rem; margin-top:1rem; font-size:0.85rem; color:var(--mmt-cyan); text-decoration:none;">
-            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-            Connect on LinkedIn
-          </a>
-        </div>
       </div>
     </div>
   </div>
@@ -1063,44 +953,47 @@
 </section>
 
 <!-- ── FOOTER ── -->
-
-  <!-- Footer -->
-  <footer class="py-16 px-6" style="background:var(--mmt-navy); border-top:1px solid rgba(0,229,250,0.1);">
-    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
-      <div>
-        <div class="flex items-center gap-3 mb-3"><img src="/mmt-logo-footer.png" alt="Mission Meets Tech" width="44" height="44" style="width:44px;height:44px;border-radius:8px;"><p class="font-bold text-lg" style="font-family:'Space Grotesk',system-ui,sans-serif; color:#fff;">Mission Meets <span style="color:var(--mmt-cyan);">Tech</span></p></div>
-        <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-dim);">Federal health IT intelligence. Mission first.</p>
-        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" style="color:var(--mmt-white-dim);" class="hover:opacity-80"><span class="sr-only">LinkedIn</span><svg class="text-lg" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg></a>
-      </div>
-      <div>
-        <p class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var(--mmt-cyan);">Explore</p>
-        <ul class="space-y-2 list-none p-0 m-0">
-          <li><a href="latest.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Intelligence</a></li>
-          <li><a href="podcast.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Podcast</a></li>
-          <li><a href="resources.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Resources</a></li>
-          <li><a href="proposal-pulse.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">ProposalPulse</a></li>
-          <li><a href="marketpulse.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">MarketPulse</a></li>
-          <li><a href="my-reports.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">My Reports</a></li>
-        </ul>
-      </div>
-      <div>
-        <p class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var(--mmt-cyan);">Connect</p>
-        <ul class="space-y-2 list-none p-0 m-0">
-          <li><a href="about.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">About</a></li>
-          <li><a href="mailto:mary@missionmeetstech.com" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Contact</a></li>
-          <li><a href="events.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Events</a></li>
-          <li><a href="privacy.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Privacy Policy</a></li>
-          <li><a href="terms.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Terms of Service</a></li>
-          <li><a href="security.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Data Security</a></li>
-          <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">LinkedIn</a></li>
-        </ul>
-      </div>
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="/" class="footer-brand-logo">
+        <picture><source srcset="MMT_logo_primary_transparent.webp" type="image/webp"><img src="MMT_logo_primary_transparent.png" alt="Mission Meets Tech" loading="lazy"></picture>
+      </a>
+      <p class="footer-mission">Federal health IT intelligence. Mission first.</p>
     </div>
-    <div class="max-w-6xl mx-auto mt-12 pt-8" style="border-top:1px solid rgba(0,229,250,0.1);">
-      <p class="text-xs text-center" style="color:var(--mmt-white-dim);">Mission Meets Tech provides independent analysis and commentary. Views expressed are those of the authors and do not represent any employer or government agency.</p>
-      <p class="text-xs text-center mt-2" style="color:var(--mmt-white-dim);">&copy; 2026 Mission Meets Tech. All rights reserved.</p>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <ul>
+        <li><a href="/latest">Intelligence</a></li>
+        <li><a href="/newsletter">Newsletter</a></li>
+        <li><a href="/podcast">Podcast</a></li>
+        <li><a href="/resources">Resources</a></li>
+        <li><a href="/proposal-pulse">ProposalPulse</a></li>
+      </ul>
     </div>
-  </footer>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="/about">About</a></li>
+        <li><a href="mailto:mary@missionmeetstech.com">Contact</a></li>
+        <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener">LinkedIn</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Listen</h4>
+      <ul>
+        <li><a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank" rel="noopener">Apple Podcasts</a></li>
+        <li><a href="https://open.spotify.com/show/7sND342duH7Buw1cUs60lP" target="_blank" rel="noopener">Spotify</a></li>
+        <li><a href="https://music.amazon.com/podcasts/920fec9b-4fae-4bd0-ae4d-eaf1459cad2f" target="_blank" rel="noopener">Amazon Music</a></li>
+        <li><a href="https://www.youtube.com/@MissionMeetsTech" target="_blank" rel="noopener">YouTube</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-disclaimer">Mission Meets Tech provides independent analysis and commentary. Views expressed are those of the authors and do not represent any employer or government agency.</p>
+    <p class="footer-copy">© 2026 Mission Meets Tech. All rights reserved.</p>
+  </div>
+</footer>
 
 <script>
   // ── Scroll progress bar

@@ -1,7 +1,6 @@
 [build]
   publish = "dist"
-  # Newsletter sync runs before build; set BUTTONDOWN_API_KEY env var for richer data
-  command = "node scripts/sync-newsletters.js; node build.js"
+  command = "node build.js"
 
 [functions]
   directory = "netlify/functions"
