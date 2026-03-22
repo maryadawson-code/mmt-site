@@ -960,11 +960,29 @@ function generateLatestAllHtml(archive, feed) {
     readTime: item.readTime || null,
   }));
 
-  const episodes = (feed && feed.items ? feed.items : []).map(ep => {
+  // Deduplicate trailer entries (same logic as podcast page)
+  const rawEpisodes = feed && feed.items ? feed.items : [];
+  const hasTrailer = rawEpisodes.some(ep => /^trailer\b/i.test(ep.title || ''));
+  const dedupedEpisodes = rawEpisodes.filter(ep => {
+    if (hasTrailer && /^introducing\b/i.test(ep.title || '')) return false;
+    return true;
+  });
+
+  const titleOverrides = {
+    'Episode 1': 'Episode 1: The Mission Behind the Mission',
+    'Trailer': 'Introducing Fed UP (originally announced as Mission Meets Reality)',
+  };
+
+  const episodes = dedupedEpisodes.map(ep => {
+    const rawTitle = ep.title || 'Untitled Episode';
+    const overriddenTitle = titleOverrides[rawTitle] || rawTitle;
+    const finalTitle = /^Introducing\b/i.test(overriddenTitle)
+      ? 'Introducing Fed UP (originally announced as Mission Meets Reality)'
+      : overriddenTitle;
     const pubDate = ep.pubDate ? new Date(ep.pubDate) : new Date();
     return {
       type: 'episode',
-      title: ep.title || 'Untitled Episode',
+      title: finalTitle,
       date: pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
       sortDate: pubDate,
       description: (ep.contentSnippet || ep.content || '').substring(0, 200),

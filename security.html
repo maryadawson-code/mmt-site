@@ -56,7 +56,7 @@
 </head>
 <body class="antialiased">
 
-  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold" style="background:var(--mmt-cyan); color:#fff;">Skip to main content</a>
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold" style="background:var(--mmt-cyan); color:#fff;">Skip to main content</a>
 
   <!-- Navigation -->
   <nav class="nav-apple">
@@ -109,6 +109,20 @@
         <a href="proposal-pulse.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">ProposalPulse</a>
         <a href="marketpulse.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">MarketPulse</a>
         <a href="about.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">About</a>
+        <div class="pt-3 mt-1" style="border-top:1px solid rgba(0,229,250,0.1);">
+          <p class="text-xs font-semibold mb-2" style="color:var(--mmt-white-muted);">Subscribe</p>
+          <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" target="_blank" class="mb-3">
+            <div class="flex gap-2">
+              <label for="subscribe-email-mobile" class="sr-only">Email</label>
+              <input type="email" name="email" id="subscribe-email-mobile" placeholder="you@example.com" required class="px-3 py-2 rounded-lg text-sm flex-1" style="background:var(--mmt-navy);border:1px solid rgba(0,229,250,0.2);color:#fff;">
+              <button type="submit" class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold" style="cursor:pointer;border:none;">Join</button>
+            </div>
+          </form>
+          <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="text-xs font-medium hover:opacity-80 no-underline flex items-center gap-1" style="color:var(--mmt-cyan);">
+            <svg width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+            Subscribe on LinkedIn
+          </a>
+        </div>
       </div>
     </div>
   </nav>
@@ -131,10 +145,10 @@
       <div>
         <h2 class="text-xl font-bold mb-3">What Happens When You Upload a Proposal</h2>
         <ol class="text-sm space-y-2 list-none p-0 m-0" style="color:var(--mmt-white-muted); counter-reset:steps;">
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">1.</span> Document travels over TLS 1.2+ to Netlify's SOC 2 infrastructure.</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">1.</span> Document travels over TLS 1.2+ to our hosting provider's SOC 2 infrastructure.</li>
           <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">2.</span> We extract text. Original file is not stored.</li>
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">3.</span> Text sent to Anthropic Claude API. Their policy: inputs never used to train models (default for all API customers).</li>
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">4.</span> Scorecard stored in Supabase on AWS, AES-256 encrypted at rest.</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">3.</span> Text sent to our AI analysis provider. Their policy: inputs never used to train models.</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">4.</span> Scorecard stored in our database provider on cloud infrastructure, AES-256 encrypted at rest.</li>
           <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">5.</span> After 90 days, document text permanently purged. Scorecards retained.</li>
         </ol>
       </div>
@@ -159,11 +173,11 @@
           </div>
           <div class="p-4 rounded-lg" style="background:rgba(0,229,250,0.05); border:1px solid rgba(0,229,250,0.15);">
             <p class="text-sm font-semibold mb-1" style="color:var(--mmt-cyan);">At Rest</p>
-            <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">AES-256 encryption on all database storage (Supabase on AWS).</p>
+            <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">AES-256 encryption on all database storage (cloud infrastructure).</p>
           </div>
           <div class="p-4 rounded-lg" style="background:rgba(0,229,250,0.05); border:1px solid rgba(0,229,250,0.15);">
             <p class="text-sm font-semibold mb-1" style="color:var(--mmt-cyan);">Payment</p>
-            <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">Stripe handles all payment processing. We never see or store card numbers.</p>
+            <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">Our payment processor handles all payment processing. We never see or store card numbers.</p>
           </div>
         </div>
       </div>
@@ -177,27 +191,27 @@
         <h2 class="text-xl font-bold mb-3">Third-Party Services</h2>
         <div class="space-y-2">
           <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(0,229,250,0.03); border:1px solid rgba(0,229,250,0.08);">
-            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Anthropic</span>
+            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">AI Analysis</span>
             <span class="text-sm" style="color:var(--mmt-white-muted);">Proposal analysis &mdash; No training on API inputs</span>
           </div>
           <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(0,229,250,0.03); border:1px solid rgba(0,229,250,0.08);">
-            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Perplexity</span>
+            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Research Intel</span>
             <span class="text-sm" style="color:var(--mmt-white-muted);">MarketPulse research &mdash; No training on API inputs</span>
           </div>
           <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(0,229,250,0.03); border:1px solid rgba(0,229,250,0.08);">
-            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Supabase</span>
-            <span class="text-sm" style="color:var(--mmt-white-muted);">Database (AWS) &mdash; SOC 2, encrypted</span>
+            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Database</span>
+            <span class="text-sm" style="color:var(--mmt-white-muted);">Cloud infrastructure &mdash; SOC 2, encrypted</span>
           </div>
           <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(0,229,250,0.03); border:1px solid rgba(0,229,250,0.08);">
-            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Netlify</span>
+            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Hosting</span>
             <span class="text-sm" style="color:var(--mmt-white-muted);">Hosting / functions &mdash; SOC 2</span>
           </div>
           <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(0,229,250,0.03); border:1px solid rgba(0,229,250,0.08);">
-            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Stripe</span>
-            <span class="text-sm" style="color:var(--mmt-white-muted);">Payments &mdash; PCI DSS Level 1</span>
+            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Payments</span>
+            <span class="text-sm" style="color:var(--mmt-white-muted);">Payment processing &mdash; PCI DSS Level 1</span>
           </div>
           <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(0,229,250,0.03); border:1px solid rgba(0,229,250,0.08);">
-            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Resend</span>
+            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Email</span>
             <span class="text-sm" style="color:var(--mmt-white-muted);">Email delivery &mdash; SOC 2</span>
           </div>
         </div>
@@ -215,10 +229,10 @@
       <div>
         <h2 class="text-xl font-bold mb-3">What Happens When You Request a MarketPulse Brief</h2>
         <ol class="text-sm space-y-2 list-none p-0 m-0" style="color:var(--mmt-white-muted);">
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">1.</span> Your research question travels over TLS 1.2+ to Netlify's SOC 2 infrastructure.</li>
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">2.</span> Query sent to Anthropic Claude API and Perplexity API for research. Neither trains on API inputs.</li>
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">3.</span> Generated report stored in Supabase on AWS, AES-256 encrypted at rest.</li>
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">4.</span> Report PDF delivered to your email via Resend (SOC 2).</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">1.</span> Your research question travels over TLS 1.2+ to our hosting provider's SOC 2 infrastructure.</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">2.</span> Query sent to our AI analysis provider and our research intelligence provider for research. Neither trains on API inputs.</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">3.</span> Generated report stored in our database provider on cloud infrastructure, AES-256 encrypted at rest.</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">4.</span> Report PDF delivered to your email via our email delivery provider (SOC 2).</li>
           <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">5.</span> Query text retained for quality assurance. Reports retained while account active.</li>
         </ol>
       </div>
@@ -246,7 +260,6 @@
   </section>
 
   </main>
-
   <!-- Footer -->
   <footer class="py-16 px-6" style="background:var(--mmt-navy); border-top:1px solid rgba(0,229,250,0.1);">
     <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -281,7 +294,7 @@
     </div>
     <div class="max-w-6xl mx-auto mt-12 pt-8" style="border-top:1px solid rgba(0,229,250,0.1);">
       <p class="text-xs text-center" style="color:var(--mmt-white-dim);">Mission Meets Tech provides independent analysis and commentary. Views expressed are those of the authors and do not represent any employer or government agency.</p>
-      <p class="text-xs text-center mt-2" style="color:var(--mmt-white-dim);">&copy; 2026 Mission Meets Tech LLC. All rights reserved.</p>
+      <p class="text-xs text-center mt-2" style="color:var(--mmt-white-dim);">&copy; 2026 Mission Meets Tech. All rights reserved.</p>
     </div>
   </footer>
 
