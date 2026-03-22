@@ -1297,7 +1297,11 @@ function generateEventsListHtml() {
                 </div>
                 <p class="text-xs mb-2" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(dateStr)}${endStr}${e.location ? ` &middot; ${escapeHtml(e.location)}` : ''}</p>
                 <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-white-muted);">${escapeHtml(e.description)}</p>
-                <span class="text-xs font-medium no-underline" style="color:var(--mmt-cyan);" onclick="event.preventDefault();event.stopPropagation();window.open('${calendarLink(e)}','_blank');">Add to Calendar</span>
+                <span class="flex flex-wrap gap-3 items-center">
+                  <span class="text-xs font-medium no-underline" style="color:var(--mmt-cyan); cursor:pointer;" onclick="event.preventDefault();event.stopPropagation();window.open('${calendarLink(e)}','_blank');">Add to Calendar</span>
+                  ${e.registrationUrl ? `<span class="text-xs font-medium no-underline" style="color:var(--mmt-green, #00FF85); cursor:pointer;" onclick="event.preventDefault();event.stopPropagation();window.open('${escapeHtml(e.registrationUrl)}','_blank');">Register &rarr;</span>` : ''}
+                  ${e.registrationNote ? `<span class="text-xs" style="color:var(--mmt-white-dim);">${escapeHtml(e.registrationNote)}</span>` : ''}
+                </span>
               </div>
             </div>
           </a>\n`;
