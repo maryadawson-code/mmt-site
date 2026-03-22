@@ -728,6 +728,14 @@ async function generateOgImages(articles, tags, contracts) {
     { filename: 'community.png', title: 'Community', subtitle: 'Join the Mission Meets Tech community', label: 'COMMUNITY' },
     { filename: 'events.png', title: 'Events Calendar', subtitle: 'Federal health IT conferences and deadlines', label: 'EVENTS' },
     { filename: 'refer.png', title: 'Share Mission Meets Tech', subtitle: 'Help grow the federal health IT community', label: 'REFER' },
+    { filename: 'marketpulse.png', title: 'MarketPulse', subtitle: 'On-demand federal health IT market intelligence', label: 'INTELLIGENCE' },
+    { filename: 'security.png', title: 'Data Security', subtitle: 'How we protect your proposal and research data', label: 'SECURITY' },
+    { filename: 'glossary.png', title: 'Federal Health IT Glossary', subtitle: '37 terms explained in plain language', label: 'GLOSSARY' },
+    { filename: 'contracting.png', title: 'Contracting Hub', subtitle: 'Federal health IT contract vehicles compared', label: 'CONTRACTING' },
+    { filename: 'getting-started.png', title: 'Getting Started', subtitle: 'New to federal health IT? Start here.', label: 'GUIDE' },
+    { filename: 'privacy.png', title: 'Privacy Policy', subtitle: 'How Mission Meets Tech handles your data', label: 'PRIVACY' },
+    { filename: 'terms.png', title: 'Terms of Service', subtitle: 'Mission Meets Tech usage terms', label: 'TERMS' },
+    { filename: 'agency-sources.png', title: 'Agency Sources', subtitle: 'Primary federal health IT data sources', label: 'SOURCES' },
   ];
 
   for (const page of staticPages) {
@@ -1681,6 +1689,14 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
     'newswire.html': 'newswire.png',
     'contract-tracker.html': 'contract-tracker.png',
     'events.html': 'events.png',
+    'marketpulse.html': 'marketpulse.png',
+    'security.html': 'security.png',
+    'glossary.html': 'glossary.png',
+    'contracting.html': 'contracting.png',
+    'getting-started.html': 'getting-started.png',
+    'privacy.html': 'privacy.png',
+    'terms.html': 'terms.png',
+    'agency-sources.html': 'agency-sources.png',
   };
 
   // Sort archive by date (newest first) for consistent display order
