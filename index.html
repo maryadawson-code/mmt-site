@@ -176,11 +176,13 @@
         <span class="flex items-center gap-1.5 text-xs" style="color:var(--mmt-white-dim);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Read by DoD &amp; VA Decision-Makers</span>
         <span class="flex items-center gap-1.5 text-xs" style="color:var(--mmt-white-dim);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Independent &amp; Unsponsored</span>
       </div>
-      <!-- Dual CTAs -->
-      <div class="flex flex-col sm:flex-row gap-3 justify-center">
-        <a href="https://buttondown.com/missionmeetstech" target="_blank" rel="noopener" class="btn-primary px-8 py-3 rounded-lg text-sm font-semibold no-underline text-center" style="border:none;">Subscribe Free</a>
-        <a href="newsletter.html" class="btn-secondary px-8 py-3 rounded-lg text-sm font-semibold no-underline text-center">Read Latest Issue &rarr;</a>
-      </div>
+      <!-- Subscribe Form -->
+      <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" target="_blank" class="flex gap-2 max-w-md mx-auto mb-4">
+        <label for="subscribe-email-hero" class="sr-only">Email address</label>
+        <input type="email" name="email" id="subscribe-email-hero" placeholder="you@example.com" required class="px-4 py-3 rounded-lg text-sm flex-1" style="background:var(--mmt-slate);border:1px solid rgba(0,229,250,0.2);color:#fff;">
+        <button type="submit" class="btn-primary px-6 py-3 rounded-lg text-sm font-semibold whitespace-nowrap" style="cursor:pointer;border:none;">Subscribe</button>
+      </form>
+      <a href="newsletter.html" class="text-sm font-medium no-underline hover:opacity-80" style="color:var(--mmt-cyan);">Read Latest Issue &rarr;</a>
     </div>
   </section>
 
