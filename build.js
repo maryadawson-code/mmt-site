@@ -1726,6 +1726,11 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
     '<!-- BUILD:CONTRACT_TRACKER -->': generateContractTrackerHtml(contracts),
     '<!-- BUILD:CONTRACT_SUMMARY -->': generateContractSummaryHtml(contracts),
     '<!-- BUILD:EVENTS_LIST -->': generateEventsListHtml(),
+    // Dynamic stats
+    '<!-- BUILD:STAT_ARTICLES -->': String(archive.length),
+    '<!-- BUILD:STAT_CONTRACTS -->': String(contracts.length),
+    '<!-- BUILD:STAT_TERMS -->': String(fs.existsSync(path.join(__dirname, 'glossary')) ? fs.readdirSync(path.join(__dirname, 'glossary')).filter(f => f.endsWith('.html') && f !== 'index.html').length : 0),
+    '<!-- BUILD:STAT_EPISODES -->': String(feed && feed.items ? feed.items.filter(ep => !/^(Trailer|Introducing)/i.test(ep.title || '')).length : 0),
     '<!-- BUILD:JSONLD_TOPICS -->': generateJsonLdTopics(archive),
     '<!-- BUILD:JSONLD_LATEST -->': generateJsonLdLatest(archive),
     '<!-- BUILD:JSONLD_NEWSLETTER -->': generateJsonLdNewsletter(archive),
