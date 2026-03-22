@@ -89,7 +89,9 @@
   <!-- Navigation -->
   <nav class="nav-glass fixed top-0 left-0 right-0 z-50">
     <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-2 no-underline"><picture><source srcset="MMT_logo_primary_transparent.webp" type="image/webp"><img src="MMT_logo_primary_transparent.png" alt="Mission Meets Tech" class="mmt-logo-glow" width="30" height="30" style="height:30px;width:auto;display:block;"></picture></a>
+      <a href="index.html" class="flex items-center gap-2 no-underline">
+        <span class="text-xl font-bold" style="font-family:'Space Grotesk',system-ui,sans-serif; color:#fff;">Mission Meets <span style="color:var(--mmt-cyan);">Tech</span></span>
+      </a>
       <div class="hidden md:flex items-center gap-6">
         <a href="latest.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Intelligence</a>
         <a href="podcast.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Podcast</a>
@@ -162,13 +164,13 @@
       <p class="text-lg md:text-xl max-w-2xl mx-auto mb-6 leading-relaxed" style="color:var(--mmt-white-muted);">Federal Health IT Intelligence for Defense Contractors and Government Decision-Makers</p>
       <!-- Stats Bar -->
       <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-8">
-        <span class="text-sm font-medium" style="color:var(--mmt-white-dim);">76 articles</span>
+        <span class="text-sm font-medium" style="color:var(--mmt-white-dim);"><!-- BUILD:STAT_ARTICLES --> articles</span>
         <span class="hidden sm:inline text-sm" style="color:rgba(0,229,250,0.3);">&middot;</span>
-        <span class="text-sm font-medium" style="color:var(--mmt-white-dim);">10 contracts tracked</span>
+        <span class="text-sm font-medium" style="color:var(--mmt-white-dim);"><!-- BUILD:STAT_CONTRACTS --> contracts tracked</span>
         <span class="hidden sm:inline text-sm" style="color:rgba(0,229,250,0.3);">&middot;</span>
-        <span class="text-sm font-medium" style="color:var(--mmt-white-dim);">37 terms defined</span>
+        <span class="text-sm font-medium" style="color:var(--mmt-white-dim);"><!-- BUILD:STAT_TERMS --> terms defined</span>
         <span class="hidden sm:inline text-sm" style="color:rgba(0,229,250,0.3);">&middot;</span>
-        <span class="text-sm font-medium" style="color:var(--mmt-white-dim);">4 podcast episodes</span>
+        <span class="text-sm font-medium" style="color:var(--mmt-white-dim);"><!-- BUILD:STAT_EPISODES --> podcast episodes</span>
       </div>
       <!-- Trust Badges -->
       <div class="flex flex-wrap justify-center gap-4 mb-8">
@@ -379,7 +381,7 @@
   <section class="py-16 px-6">
     <div class="max-w-3xl mx-auto text-center">
       <div class="flex justify-center mb-6">
-        <picture><source srcset="marywomack.webp" type="image/webp"><img src="marywomack.jpg" alt="Mary Womack" width="80" height="80" loading="lazy" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:2px solid rgba(0,229,250,0.2);"></picture>
+        <picture><source srcset="marywomack.webp" type="image/webp"><img src="marywomack.jpg" alt="Mary Womack" loading="lazy" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:2px solid rgba(0,229,250,0.2);"></picture>
       </div>
       <h2 class="text-2xl font-bold mb-4">Built by Mary Womack</h2>
       <p class="text-base leading-relaxed mb-8 max-w-2xl mx-auto" style="color:var(--mmt-white-muted);">Independent federal health IT intelligence. No vendor spin. No press release rewrites. Policy shifts, budget signals, contract intelligence, and what leadership changes actually mean.</p>
@@ -407,7 +409,6 @@
           <li><a href="podcast.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Podcast</a></li>
           <li><a href="resources.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Resources</a></li>
           <li><a href="proposal-pulse.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">ProposalPulse</a></li>
-          <li><a href="marketpulse.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">MarketPulse</a></li>
         </ul>
       </div>
       <div>
