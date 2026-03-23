@@ -88,7 +88,7 @@ exports.handler = wrapHandler(async (event) => {
       result.tasks = data || [];
     }
     if (section === "all" || section === "signals") {
-      const { data } = await supabase.from("intel_signals").select("id, title, signal_type, summary, status, source, created_at").neq("status", "killed").order("created_at", { ascending: false }).limit(50);
+      const { data } = await supabase.from("intel_signals").select("id, title, signal_type, summary, status, severity, source, notes, score, triage_status, created_at").neq("status", "killed").order("created_at", { ascending: false }).limit(50);
       result.signals = data || [];
     }
     if (section === "all" || section === "pipeline") {
@@ -267,6 +267,20 @@ exports.handler = wrapHandler(async (event) => {
         const result = await triageSignal(supabase, { signal_id: body.signal_id, triage_status: body.triage_status });
         return ok(result);
       } catch (e) { return err(e.message.includes("required") || e.message.includes("Invalid") ? 400 : 500, e.message); }
+    }
+
+    // UPDATE SIGNAL (status, notes, score)
+    if (action === "update_signal") {
+      const { signal_id, status, notes, score, severity } = body;
+      if (!signal_id) return err(400, "signal_id required");
+      const updates = { updated_at: new Date().toISOString() };
+      if (status !== undefined) updates.status = status;
+      if (notes !== undefined) updates.notes = notes;
+      if (score !== undefined) updates.score = score;
+      if (severity !== undefined) updates.severity = severity;
+      const { error: updateErr } = await supabase.from("intel_signals").update(updates).eq("id", signal_id);
+      if (updateErr) return err(500, updateErr.message);
+      return ok({ updated: true });
     }
 
     // COST SUMMARY
