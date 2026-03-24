@@ -58,7 +58,7 @@ async function callClaude(systemPrompt, userPrompt, maxTokens, model, temperatur
       model,
       max_tokens: maxTokens,
       temperature,
-      system: systemPrompt,
+      system: [{ type: "text", text: systemPrompt, cache_control: { type: "ephemeral" } }],
       messages: [{ role: "user", content: userPrompt }],
     }),
   }, 180000));

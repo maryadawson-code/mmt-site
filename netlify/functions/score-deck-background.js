@@ -459,7 +459,8 @@ exports.handler = wrapHandler(async (event) => {
       model: scoringModelConfig.model,
       max_tokens: MAX_OUTPUT_TOKENS,
       temperature: 0.3,
-      system: systemPrompt,
+      // Prompt caching: system prompt is repeated across calls, cache it for 90% input cost savings
+      system: [{ type: "text", text: systemPrompt, cache_control: { type: "ephemeral" } }],
       messages: [{ role: "user", content: messageContent }],
     };
 
