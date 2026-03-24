@@ -1,5 +1,55 @@
 [
   {
+    "title": "Clinical AI Can Be Jailbroken in Three Prompts. VA Just Contracted to Scale This Tool Category to 130 Facilities.",
+    "date": "March 24, 2026",
+    "description": "The VA signed a contract to deploy clinical AI tools across 130 facilities. The same category of tools has been shown to be jailbreakable in three prompts. What could go wrong?",
+    "url": "https://www.linkedin.com/pulse/clinical-ai-can-jailbroken-three-prompts-va-just-mary-womack",
+    "tags": [
+      "AI & Innovation",
+      "Veterans Affairs"
+    ]
+  },
+  {
+    "title": "I Don't Use AI. I Deploy It.",
+    "date": "March 19, 2026",
+    "description": "The difference between using AI and deploying it is the difference between a demo and a production system. Here's what that looks like in federal health IT.",
+    "url": "https://www.linkedin.com/pulse/i-dont-use-ai-deploy-mary-womack",
+    "tags": [
+      "AI & Innovation",
+      "Strategy & Leadership"
+    ]
+  },
+  {
+    "title": "We Launched a Data Strategy While Landstuhl Was Full",
+    "date": "March 17, 2026",
+    "description": "While DHA drafted data strategy documents, military treatment facilities were managing real patient load. The gap between strategy and operations is the gap that kills readiness.",
+    "url": "https://www.linkedin.com/pulse/we-launched-data-strategy-while-landstuhl-was-full-mary-womack",
+    "tags": [
+      "Military Health System",
+      "Strategy & Leadership"
+    ]
+  },
+  {
+    "title": "The SOAP Note They Won't Check",
+    "date": "March 14, 2026",
+    "description": "SOAP notes in military health are the atomic unit of clinical documentation. But the system that produces them is the system nobody audits.",
+    "url": "https://www.linkedin.com/pulse/soap-note-they-wont-check-mary-womack",
+    "tags": [
+      "Military Health System",
+      "Healthcare Policy"
+    ]
+  },
+  {
+    "title": "HIPAA Was Written in 1996. The Hole Is Not a Bug.",
+    "date": "March 10, 2026",
+    "description": "HIPAA's security framework predates the modern threat landscape by decades. The gaps aren't oversights — they're architectural limitations baked into a law written before broadband existed.",
+    "url": "https://www.linkedin.com/pulse/hipaa-was-written-1996-hole-not-bug-mary-womack",
+    "tags": [
+      "Healthcare Policy",
+      "Cybersecurity"
+    ]
+  },
+  {
     "title": "CMS Just Dropped the ClaimsCore RFP. The Last Time They Tried This, They Spent $40 Million and Failed.",
     "date": "March 7, 2026",
     "description": "CMS released an RFP to replace four decades-old legacy claims processing systems with a single commercial platform. This procurement learned from previous federal failures, emphasizing competition, prototypes, and COTS over custom development.",
