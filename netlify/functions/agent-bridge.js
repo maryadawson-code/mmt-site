@@ -88,7 +88,8 @@ exports.handler = wrapHandler(async (event) => {
       result.tasks = data || [];
     }
     if (section === "all" || section === "signals") {
-      const { data: rawSignals } = await supabase.from("intel_signals").select("id, title, signal_type, summary, status, severity, source, notes, score, triage_status, created_at").order("created_at", { ascending: false }).limit(100);
+      const { data: rawSignals, error: sigErr } = await supabase.from("intel_signals").select("id, title, signal_type, summary, status, source, notes, relevance_score, triage_status, created_at").order("created_at", { ascending: false }).limit(100);
+      if (sigErr) { log.error("Signals query error", { error: sigErr.message }); }
       const data = (rawSignals || []).filter(s => s.status !== "killed").slice(0, 50);
       result.signals = data || [];
     }
@@ -146,7 +147,6 @@ exports.handler = wrapHandler(async (event) => {
           signal_type: signal_type || null,
           summary: summary || null,
           urls: urls || [],
-          severity: severity || "info",
           status: "new",
           source: "editorial_agent",
         })
