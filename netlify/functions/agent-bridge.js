@@ -88,7 +88,7 @@ exports.handler = wrapHandler(async (event) => {
       result.tasks = data || [];
     }
     if (section === "all" || section === "signals") {
-      const { data } = await supabase.from("intel_signals").select("id, title, signal_type, summary, status, severity, source, notes, score, triage_status, created_at").neq("status", "killed").order("created_at", { ascending: false }).limit(50);
+      const { data } = await supabase.from("intel_signals").select("id, title, signal_type, summary, status, severity, source, notes, score, triage_status, created_at").or("status.neq.killed,status.is.null").order("created_at", { ascending: false }).limit(50);
       result.signals = data || [];
     }
     if (section === "all" || section === "pipeline") {
@@ -145,6 +145,8 @@ exports.handler = wrapHandler(async (event) => {
           signal_type: signal_type || null,
           summary: summary || null,
           urls: urls || [],
+          severity: severity || "info",
+          status: "new",
           source: "editorial_agent",
         })
         .select("id")
