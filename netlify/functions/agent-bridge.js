@@ -184,11 +184,12 @@ exports.handler = wrapHandler(async (event) => {
 
     // UPDATE AGENT STATUS (update agent_registry)
     if (action === "update_agent") {
-      const { agent_id, status, current_task } = body;
+      const { agent_id, status, current_task, platform } = body;
       if (!agent_id) return err(400, "agent_id required");
       const updates = { last_active: new Date().toISOString() };
       if (status) updates.status = status;
       if (current_task !== undefined) updates.current_task = current_task;
+      if (platform) updates.platform = platform;
       const { error: updateErr } = await supabase
         .from("agent_registry")
         .update(updates)
