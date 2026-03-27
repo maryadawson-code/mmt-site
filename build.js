@@ -789,13 +789,15 @@ function generateLeadStoryHtml(archive) {
   ).join('\n            ');
   const isExternal = item.url && item.url.startsWith('http');
   const linkAttrs = isExternal ? ' target="_blank" rel="noopener"' : '';
-  return `<a href="${item.url}"${linkAttrs} class="card p-8 md:p-12 no-underline block">
-        <p class="text-eyebrow mb-4">Featured</p>
-        <p class="text-caption mb-4">${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
-        <h2 class="text-section mb-4">${escapeHtml(item.title)}</h2>
-        <p class="text-body mb-6">${escapeHtml(item.description)}</p>
-        <div class="flex flex-wrap gap-2">
-            ${tags}
+  return `<a href="${item.url}"${linkAttrs} class="article-card featured no-underline" style="padding:28px;">
+        <div>
+          <div class="kicker">Featured analysis</div>
+          <h3 style="margin:10px 0;">${escapeHtml(item.title)}</h3>
+          <p>${escapeHtml(item.description)}</p>
+        </div>
+        <div class="meta">
+          <span>${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</span>
+          <span>${(item.tags || []).map(t => escapeHtml(t)).join(' / ')}</span>
         </div>
       </a>`;
 }
@@ -809,11 +811,15 @@ function generateLatestArticlesHtml(archive, count) {
     ).join('');
     const isExternal = item.url && item.url.startsWith('http');
     const linkAttrs = isExternal ? ' target="_blank" rel="noopener"' : '';
-    return `<a href="${item.url}"${linkAttrs} class="card article-card p-6 no-underline block">
-          <p class="text-caption mb-3">${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
-          <h3 class="text-subsection mb-3">${escapeHtml(item.title)}</h3>
-          <p class="text-body mb-4" style="font-size:0.9375rem;">${escapeHtml(item.description)}</p>
-          <div class="flex flex-wrap gap-2">${tags}</div>
+    return `<a href="${item.url}"${linkAttrs} class="article-card no-underline">
+          <div>
+            <div class="kicker">${(item.tags || [])[0] || 'Analysis'}</div>
+            <h3 style="margin:10px 0;font-size:18px;">${escapeHtml(item.title)}</h3>
+            <p>${escapeHtml(item.description)}</p>
+          </div>
+          <div class="meta">
+            <span>${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</span>
+          </div>
         </a>`;
   }).join('\n        ');
 }
@@ -849,10 +855,11 @@ function generateTopicCardsHomeHtml(archive) {
   };
   return sorted.map(([tag, count]) => {
     const desc = topicDescShort[tag] || 'Coverage and analysis.';
-    return `<a href="/topics/${slugify(tag)}/" class="hscroll-card card p-6 no-underline block" style="text-decoration:none;">
-          <p class="text-eyebrow mb-3">${count} article${count !== 1 ? 's' : ''}</p>
-          <h3 class="text-subsection mb-2" style="font-size:1.1rem;">${escapeHtml(tag)}</h3>
-          <p class="text-caption leading-relaxed">${escapeHtml(desc)}</p>
+    return `<a href="/topics/${slugify(tag)}/" class="hscroll-card resource-card no-underline block" style="text-decoration:none;">
+          <div class="resource-index">${String(sorted.indexOf([tag, count]) + 1).padStart(2, '0')}</div>
+          <h3 style="font-size:18px;margin-bottom:8px;">${escapeHtml(tag)}</h3>
+          <p>${escapeHtml(desc)}</p>
+          <div class="meta"><span>${count} article${count !== 1 ? 's' : ''}</span></div>
         </a>`;
   }).join('\n        ');
 }
