@@ -4,8 +4,8 @@
   "description": "Federal health IT intelligence platform — ProposalPulse, MarketPulse, and more.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#00050F",
-  "theme_color": "#00E5FA",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0A192F",
   "orientation": "any",
   "icons": [
     {

@@ -1686,32 +1686,26 @@ function inlineTailwindCss(html) {
     html = html.replace('</body>', '  <script src="/js/mmt-motion.js" defer></script>\n</body>');
   }
 
-  // S11-07: Add font preload hints for self-hosted WOFF2 fonts
+  // Font preload: Inter only (Space Grotesk no longer used in editorial theme)
   if (!html.includes('fonts/Inter-latin.woff2')) {
     html = html.replace('</head>',
-      '  <link rel="preload" href="/fonts/Inter-latin.woff2" as="font" type="font/woff2" crossorigin>\n' +
-      '  <link rel="preload" href="/fonts/SpaceGrotesk-latin.woff2" as="font" type="font/woff2" crossorigin>\n</head>'
+      '  <link rel="preload" href="/fonts/Inter-latin.woff2" as="font" type="font/woff2" crossorigin>\n</head>'
     );
   }
+  // Remove any existing SpaceGrotesk preload
+  html = html.replace(/<link[^>]*SpaceGrotesk[^>]*>/g, '');
 
-  // S5-19: Add preconnect for GSAP CDN
-  if (!html.includes('cdnjs.cloudflare.com')) {
-    html = html.replace('</head>',
-      '  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>\n</head>'
-    );
-  }
+  // GSAP CDN preconnect removed — no longer needed for editorial theme
 
-  // S3-01: Inject GSAP + ScrollTrigger + ScrollToPlugin + spatial.js on all pages
-  if (!html.includes('spatial.js')) {
-    html = html.replace('</body>',
-      '  <!-- GSAP + ScrollTrigger -->\n' +
-      '  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>\n' +
-      '  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>\n' +
-      '  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollToPlugin.min.js"></script>\n' +
-      '  <script defer src="/js/spatial.js"></script>\n' +
-      '</body>'
-    );
-  }
+  // Editorial: GSAP/spatial.js disabled — mmt-motion.js handles fade-up animations
+  // GSAP was used for the dark-theme 3D spatial effects; the light editorial theme
+  // uses simpler IntersectionObserver reveals only (mmt-motion.js).
+  // Remove any existing GSAP/spatial.js references from pages
+  html = html.replace(/\s*<script[^>]*gsap[^>]*><\/script>/gi, '');
+  html = html.replace(/\s*<script[^>]*ScrollTrigger[^>]*><\/script>/gi, '');
+  html = html.replace(/\s*<script[^>]*ScrollToPlugin[^>]*><\/script>/gi, '');
+  html = html.replace(/\s*<script[^>]*spatial\.js[^>]*><\/script>/gi, '');
+  html = html.replace(/\s*<!-- GSAP \+ ScrollTrigger -->/gi, '');
 
   // Editorial: Replace entire old nav block with new editorial nav
   // Match nav blocks that use nav-glass, nav-apple, or nav-editorial but have old content
