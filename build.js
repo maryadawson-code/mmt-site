@@ -1524,6 +1524,20 @@ function inlineTailwindCss(html) {
     /body\s*\{([^}]*?)color:\s*var\(--mmt-white\)/g,
     'body {$1color: var(--mmt-text, #102033)'
   );
+  // Replace "color: var(--mmt-white)" with navy text in page-specific <style> blocks
+  // Preserve section-navy/podcast-card white text (they have dark backgrounds)
+  // Strategy: replace globally, then restore the Tailwind CSS section-navy rules
+  html = html.replace(/color:\s*var\(--mmt-white\)/g, 'color: var(--mmt-navy)');
+  // Immediately restore section-navy and podcast-card white text
+  html = html.replace(
+    /\.section-navy,\.section-navy h1,\.section-navy h2,\.section-navy h3\{color:\s*var\(--mmt-navy\)\}/g,
+    '.section-navy,.section-navy h1,.section-navy h2,.section-navy h3{color:var(--mmt-white)}'
+  );
+  html = html.replace(
+    /\.section-navy p\{color:\s*var\(--mmt-navy\)\}/g,
+    '.section-navy p{color:hsla(0,0%,100%,.78)}'
+  );
+  // Podcast-card restoration moved to end of migration pipeline (after #fff replacement)
   // Replace old heading font-family
   html = html.replace(
     /h1,\s*h2,\s*h3,\s*h4,\s*h5\s*\{[^}]*font-family:\s*'Space Grotesk'[^}]*\}/g,
@@ -1686,6 +1700,31 @@ function inlineTailwindCss(html) {
     /class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var\(--mmt-teal\);"/g,
     'class="text-eyebrow mb-4"'
   );
+  // === FINAL: Restore dark-background component text colors ===
+  // These must run AFTER all color replacements (#fff → navy, white → navy)
+  // Podcast-card has dark gradient background → needs white text
+  html = html.split('.podcast-card{').map((part, i) => {
+    if (i === 0) return part;
+    return part.replace(/color:var\(--mmt-navy\)/, 'color:white');
+  }).join('.podcast-card{');
+  html = html.split('.podcast-card h3{').map((part, i) => {
+    if (i === 0) return part;
+    return part.replace(/color:var\(--mmt-navy\)/, 'color:white');
+  }).join('.podcast-card h3{');
+  // Hero-panel has dark background → needs white text
+  html = html.split('.hero-panel{').map((part, i) => {
+    if (i === 0) return part;
+    return part.replace(/color:var\(--mmt-navy\)/, 'color:white');
+  }).join('.hero-panel{');
+  html = html.split('.hero-panel h3{').map((part, i) => {
+    if (i === 0) return part;
+    return part.replace(/color:var\(--mmt-navy\)/, 'color:white');
+  }).join('.hero-panel h3{');
+  html = html.split('.hero-panel p{').map((part, i) => {
+    if (i === 0) return part;
+    return part.replace(/color:var\(--mmt-navy\)/, 'color:rgba(255,255,255,.8)');
+  }).join('.hero-panel p{');
+
   // Inject mmt-motion.js if not already present and page has fade-up elements
   if (!html.includes('mmt-motion.js') && html.includes('fade-up')) {
     html = html.replace('</body>', '  <script src="/js/mmt-motion.js" defer></script>\n</body>');
