@@ -516,30 +516,27 @@ function generateSitemap(articles, tags, contracts) {
     : new Date().toISOString().split('T')[0];
 
   // Static pages
+  // Canonical sitemap pages — hidden pages excluded (preserved in source, not indexed)
+  // Hidden-preserved: about-team, about-press, agency-sources, contracting, contact,
+  //   my-reports, command-center, ops, tactical-brief-confirmed
   const staticPages = [
     { loc: '/', priority: '1.0' },
     { loc: '/about.html', priority: '0.8' },
+    { loc: '/latest.html', priority: '0.8' },
     { loc: '/podcast.html', priority: '0.8' },
     { loc: '/newsletter.html', priority: '0.8' },
-    { loc: '/resources.html', priority: '0.7' },
-    { loc: '/topics.html', priority: '0.7' },
-    { loc: '/latest.html', priority: '0.8' },
     { loc: '/proposal-pulse.html', priority: '0.8' },
-    { loc: '/newswire.html', priority: '0.7' },
+    { loc: '/marketpulse.html', priority: '0.8' },
+    { loc: '/resources.html', priority: '0.7' },
     { loc: '/contract-tracker.html', priority: '0.7' },
+    { loc: '/glossary.html', priority: '0.6' },
+    { loc: '/getting-started.html', priority: '0.7' },
+    { loc: '/topics.html', priority: '0.7' },
+    { loc: '/newswire.html', priority: '0.7' },
     { loc: '/events.html', priority: '0.6' },
     { loc: '/privacy.html', priority: '0.3' },
     { loc: '/terms.html', priority: '0.3' },
     { loc: '/security.html', priority: '0.5' },
-    { loc: '/glossary.html', priority: '0.6' },
-    { loc: '/contracting.html', priority: '0.6' },
-    { loc: '/agency-sources.html', priority: '0.5' },
-    { loc: '/getting-started.html', priority: '0.7' },
-    { loc: '/marketpulse.html', priority: '0.8' },
-    { loc: '/my-reports.html', priority: '0.5' },
-    { loc: '/about/team/', priority: '0.5' },
-    { loc: '/about/press/', priority: '0.5' },
-    { loc: '/glossary/', priority: '0.5' },
   ];
 
   // Build a map of topic slug → most recent article date within that topic
@@ -2040,6 +2037,13 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
         '  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\n' +
         '  <meta name="apple-mobile-web-app-title" content="MMT">\n</head>'
       );
+      // Hidden-preserved pages: add noindex (not in public nav, not in sitemap)
+      const hiddenPages = ['about-team.html', 'about-press.html', 'agency-sources.html',
+        'contracting.html', 'contact.html', 'my-reports.html'];
+      if (hiddenPages.includes(file) && !html.includes('noindex')) {
+        html = html.replace('<head>', '<head>\n  <meta name="robots" content="noindex, nofollow">');
+      }
+
       // Inject search overlay after </nav>
       if (html.includes('</nav>')) {
         html = html.replace('</nav>\n\n', '</nav>\n' + searchOverlayHtml + '\n\n');
