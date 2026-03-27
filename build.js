@@ -853,10 +853,10 @@ function generateTopicCardsHomeHtml(archive) {
     'Healthcare Policy': 'Federal health policy, legislation, and regulatory impact.',
     'Acquisition & Contracting': 'GovCon intelligence, contract awards, and procurement strategy.'
   };
-  return sorted.map(([tag, count]) => {
+  return sorted.map(([tag, count], idx) => {
     const desc = topicDescShort[tag] || 'Coverage and analysis.';
     return `<a href="/topics/${slugify(tag)}/" class="hscroll-card resource-card no-underline block" style="text-decoration:none;">
-          <div class="resource-index">${String(sorted.indexOf([tag, count]) + 1).padStart(2, '0')}</div>
+          <div class="resource-index">${String(idx + 1).padStart(2, '0')}</div>
           <h3 style="font-size:18px;margin-bottom:8px;">${escapeHtml(tag)}</h3>
           <p>${escapeHtml(desc)}</p>
           <div class="meta"><span>${count} article${count !== 1 ? 's' : ''}</span></div>
@@ -1772,8 +1772,11 @@ function inlineTailwindCss(html) {
       </a>
       <div class="hidden md:flex items-center gap-5">
         <a href="/latest.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Intelligence</a>
-        <a href="/resources.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Resources</a>
+        <a href="/getting-started.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Getting Started</a>
         <a href="/podcast.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Podcast</a>
+        <a href="/resources.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Resources</a>
+        <a href="/proposal-pulse.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">ProposalPulse</a>
+        <a href="/marketpulse.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">MarketPulse</a>
         <a href="/about.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">About</a>
         <button id="searchToggle" class="hover:opacity-70" style="color:var(--mmt-text-secondary);background:none;border:none;cursor:pointer;" aria-label="Search"><svg width="16" height="16" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></button>
       </div>
@@ -1788,8 +1791,11 @@ function inlineTailwindCss(html) {
     <div id="mobileMenu" class="hidden md:hidden px-6 pb-4" style="background:var(--mmt-white);border-bottom:1px solid var(--mmt-border);">
       <div class="flex flex-col gap-4 pt-2" style="border-top:1px solid var(--mmt-border);">
         <a href="/latest.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Intelligence</a>
-        <a href="/resources.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Resources</a>
+        <a href="/getting-started.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Getting Started</a>
         <a href="/podcast.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Podcast</a>
+        <a href="/resources.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Resources</a>
+        <a href="/proposal-pulse.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">ProposalPulse</a>
+        <a href="/marketpulse.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">MarketPulse</a>
         <a href="/about.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">About</a>
         <div class="pt-3 mt-1" style="border-top:1px solid var(--mmt-border);">
           <a href="/newsletter.html" class="btn-primary no-underline">Subscribe</a>
