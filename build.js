@@ -1486,27 +1486,34 @@ function inlineTailwindCss(html) {
 
   // Editorial Design Migration: Convert old dark-theme tokens to light editorial theme
 
-  // Replace old :root CSS variable blocks with new editorial tokens
+  // NUCLEAR: Replace the entire old :root block if it contains dark-theme tokens
   html = html.replace(
-    /--mmt-cyan:\s*#00E5FA;/g,
-    '--mmt-teal: #457B9D;'
+    /:root\s*\{[^}]*--mmt-cyan:\s*#00E5FA[^}]*\}/g,
+    `:root {
+      --mmt-navy: #0A192F; --mmt-navy-2: #10243D; --mmt-teal: #457B9D;
+      --mmt-teal-soft: rgba(69,123,157,0.12); --mmt-ink: #102033; --mmt-text: #102033;
+      --mmt-text-secondary: #5C6B7A; --mmt-white: #FFFFFF; --mmt-soft: #F3F4F6;
+      --mmt-border: #D8E0E8; --mmt-border-light: #E8EDF2; --mmt-red: #E63946;
+      --radius: 24px; --radius-sm: 18px; --radius-pill: 999px;
+      --shadow: 0 18px 50px rgba(10, 25, 47, 0.08);
+      --shadow-soft: 0 12px 28px rgba(10, 25, 47, 0.06);
+      --transition: 180ms ease;
+    }`
   );
-  html = html.replace(
-    /--mmt-green:\s*#00FF85;/g,
-    '--mmt-ink: #102033;'
-  );
-  html = html.replace(
-    /--mmt-navy:\s*#00050F;/g,
-    '--mmt-navy: #0A192F;'
-  );
-  html = html.replace(
-    /--mmt-slate:\s*#0A1628;/g,
-    '--mmt-soft: #F3F4F6;'
-  );
-  html = html.replace(
-    /--mmt-dark:\s*#0D1117;/g,
-    '--mmt-white: #FFFFFF;'
-  );
+  // Catch any remaining individual old token definitions (declarations)
+  html = html.replace(/--mmt-cyan:[^;]*;/g, '--mmt-teal: #457B9D;');
+  html = html.replace(/--mmt-green:[^;]*;/g, '--mmt-ink: #102033;');
+  html = html.replace(/--mmt-navy:\s*#00050F;/g, '--mmt-navy: #0A192F;');
+  html = html.replace(/--mmt-slate:[^;]*;/g, '--mmt-soft: #F3F4F6;');
+  html = html.replace(/--mmt-dark:[^;]*;/g, '--mmt-white: #FFFFFF;');
+  html = html.replace(/--mmt-white-muted:[^;]*;/g, '--mmt-text: #102033;');
+  html = html.replace(/--mmt-white-dim:[^;]*;/g, '--mmt-text-secondary: #5C6B7A;');
+  html = html.replace(/--mmt-warm:[^;]*;/g, '');
+  html = html.replace(/--mmt-warm-dim:[^;]*;/g, '');
+  html = html.replace(/--mmt-body:[^;]*;/g, '--mmt-text-secondary: #5C6B7A;');
+  html = html.replace(/--mmt-caption:[^;]*;/g, '--mmt-text-secondary: #5C6B7A;');
+  html = html.replace(/--mmt-surface:[^;]*;/g, '--mmt-soft: #F3F4F6;');
+  html = html.replace(/--mmt-surface-hover:[^;]*;/g, '');
   // Replace old body styling
   html = html.replace(
     /body\s*\{\s*font-family:[^}]*background:\s*var\(--mmt-navy\)[^}]*\}/g,
@@ -1613,16 +1620,24 @@ function inlineTailwindCss(html) {
     'style="color:var(--mmt-navy, #0A192F);">Mission Meets Tech'
   );
 
-  // Replace old color tokens in inline styles
-  html = html.replace(/style="([^"]*?)color:var\(--mmt-white-muted\);/g, 'style="$1color:var(--mmt-text);');
-  html = html.replace(/style="([^"]*?)color:var\(--mmt-white-dim\);/g, 'style="$1color:var(--mmt-text-secondary);');
+  // Replace old color tokens EVERYWHERE (inline styles + <style> blocks)
+  html = html.replace(/var\(--mmt-white-muted\)/g, 'var(--mmt-text)');
+  html = html.replace(/var\(--mmt-white-dim\)/g, 'var(--mmt-text-secondary)');
   html = html.replace(/var\(--mmt-cyan\)/g, 'var(--mmt-teal)');
   html = html.replace(/var\(--mmt-green\)/g, 'var(--mmt-teal)');
-  html = html.replace(/style="([^"]*?)color:var\(--mmt-body\);/g, 'style="$1color:var(--mmt-text-secondary);');
-  html = html.replace(/style="([^"]*?)color:var\(--mmt-caption\);/g, 'style="$1color:var(--mmt-text-secondary);');
-  // Replace old background tokens
-  html = html.replace(/background:var\(--mmt-dark\)/g, 'background:var(--mmt-soft)');
-  html = html.replace(/background:var\(--mmt-slate\)/g, 'background:var(--mmt-soft)');
+  html = html.replace(/var\(--mmt-body\)/g, 'var(--mmt-text-secondary)');
+  html = html.replace(/var\(--mmt-caption\)/g, 'var(--mmt-text-secondary)');
+  html = html.replace(/var\(--mmt-surface\)/g, 'var(--mmt-soft)');
+  html = html.replace(/var\(--mmt-surface-hover\)/g, 'var(--mmt-soft)');
+  // Replace old background tokens (including those with fallbacks)
+  html = html.replace(/background:\s*var\(--mmt-dark[^)]*\)/g, 'background:var(--mmt-soft)');
+  html = html.replace(/background:\s*var\(--mmt-slate[^)]*\)/g, 'background:var(--mmt-soft)');
+  html = html.replace(/background:\s*var\(--mmt-navy[^)]*\)/g, 'background:var(--mmt-white)');
+  // Replace Space Grotesk font references (both in <style> blocks and inline styles)
+  html = html.replace(/font-family:\s*'Space Grotesk'[^;'"]*[;'"]/g, function(match) {
+    var end = match[match.length - 1];
+    return "font-family:'Inter',ui-sans-serif,system-ui,sans-serif" + end;
+  });
   html = html.replace(/background:#0D1117/g, 'background:var(--mmt-soft)');
   html = html.replace(/background:#0A1628/g, 'background:var(--mmt-soft)');
   // Replace old border tokens
@@ -1632,8 +1647,29 @@ function inlineTailwindCss(html) {
   html = html.replace(/rgba\(0,229,250,0\.15\)/g, 'var(--mmt-border)');
   html = html.replace(/rgba\(255,255,255,0\.05\)/g, 'var(--mmt-border)');
   html = html.replace(/rgba\(255,255,255,0\.03\)/g, 'var(--mmt-border)');
-  // Replace white text to navy where it appears as primary text color in cards
+  // Replace white text to navy in inline styles
   html = html.replace(/style="color:#fff;"/g, 'style="color:var(--mmt-navy);"');
+  html = html.replace(/color:\s*#fff(?=[;"])/g, 'color:var(--mmt-navy)');
+  html = html.replace(/color:\s*#ffffff(?=[;"])/gi, 'color:var(--mmt-navy)');
+  // Replace old dark-theme background colors in inline styles
+  html = html.replace(/background:\s*#00050F/g, 'background:var(--mmt-white)');
+  html = html.replace(/background:\s*var\(--mmt-navy\)/g, 'background:var(--mmt-white)');
+  // Replace remaining old rgba color patterns
+  html = html.replace(/rgba\(0,229,250,[\d.]+\)/g, 'var(--mmt-border)');
+  html = html.replace(/rgba\(0,255,133,[\d.]+\)/g, 'var(--mmt-border)');
+  html = html.replace(/rgba\(255,255,255,0\.\d+\)/g, 'var(--mmt-text-secondary)');
+  // Replace old nav-glass class
+  html = html.replace(/class="nav-glass/g, 'class="nav-editorial');
+  html = html.replace(/\.nav-glass\s*\{[^}]*\}/g, '');
+  // Replace old body class attributes (remove ambient-grain, ambient-vignette)
+  html = html.replace(/\s*ambient-grain\s*/g, ' ');
+  html = html.replace(/\s*ambient-vignette\s*/g, ' ');
+  // Replace old skip-link background
+  html = html.replace(/background:var\(--mmt-cyan\)/g, 'background:var(--mmt-navy)');
+  // Replace literal old hex color values
+  html = html.replace(/#00E5FA/gi, '#457B9D');
+  html = html.replace(/#00FF85/gi, '#457B9D');
+  html = html.replace(/#00050F/gi, '#0A192F');
   // Replace old eyebrow references
   html = html.replace(
     /class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var\(--mmt-teal\);"/g,
