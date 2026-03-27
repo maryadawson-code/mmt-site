@@ -1514,10 +1514,15 @@ function inlineTailwindCss(html) {
   html = html.replace(/--mmt-caption:[^;]*;/g, '--mmt-text-secondary: #5C6B7A;');
   html = html.replace(/--mmt-surface:[^;]*;/g, '--mmt-soft: #F3F4F6;');
   html = html.replace(/--mmt-surface-hover:[^;]*;/g, '');
-  // Replace old body styling
+  // Replace old body styling (multiple patterns — about.html has background before font-family)
   html = html.replace(
-    /body\s*\{\s*font-family:[^}]*background:\s*var\(--mmt-navy\)[^}]*\}/g,
-    'body { font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--mmt-white, #FFFFFF); color: var(--mmt-text, #102033); }'
+    /body\s*\{[^}]*background:\s*var\(--mmt-navy[^)]*\)[^}]*\}/g,
+    'body { font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--mmt-white, #FFFFFF); color: var(--mmt-text, #102033); -webkit-font-smoothing: antialiased; overflow-x: hidden; }'
+  );
+  // Also catch body rules where color is still --mmt-white (white text on white bg)
+  html = html.replace(
+    /body\s*\{([^}]*?)color:\s*var\(--mmt-white\)/g,
+    'body {$1color: var(--mmt-text, #102033)'
   );
   // Replace old heading font-family
   html = html.replace(
@@ -1685,6 +1690,14 @@ function inlineTailwindCss(html) {
   if (!html.includes('mmt-motion.js') && html.includes('fade-up')) {
     html = html.replace('</body>', '  <script src="/js/mmt-motion.js" defer></script>\n</body>');
   }
+
+  // Remove Google Fonts CDN imports (we use self-hosted Inter only)
+  html = html.replace(/<link[^>]*fonts\.googleapis\.com[^>]*>/g, '');
+  html = html.replace(/<link[^>]*fonts\.gstatic\.com[^>]*>/g, '');
+
+  // Replace old gradient variable usage with teal
+  html = html.replace(/var\(--gradient\)/g, 'var(--mmt-teal)');
+  html = html.replace(/--gradient:[^;]*;/g, '--mmt-teal-accent: #457B9D;');
 
   // Font preload: Inter only (Space Grotesk no longer used in editorial theme)
   if (!html.includes('fonts/Inter-latin.woff2')) {
