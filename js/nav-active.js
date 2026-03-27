@@ -29,19 +29,19 @@
       if (!href) return;
       href = href.split('/').pop() || 'index.html';
       if (href === target) {
-        link.style.color = 'var(--mmt-cyan)';
+        link.style.color = 'var(--mmt-teal, #457B9D)';
         link.classList.remove('font-medium');
         link.classList.add('font-semibold');
         // Add subtle active indicator
         if (selector.includes('md\\:flex')) {
           link.style.position = 'relative';
           var dot = document.createElement('span');
-          dot.style.cssText = 'position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--mmt-cyan);';
+          dot.style.cssText = 'position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--mmt-teal, #457B9D);';
           dot.setAttribute('aria-hidden', 'true');
           link.appendChild(dot);
         }
       } else {
-        link.style.color = 'var(--mmt-white-muted)';
+        link.style.color = 'var(--mmt-text-secondary, #5C6B7A)';
         link.classList.remove('font-semibold');
         link.classList.add('font-medium');
       }

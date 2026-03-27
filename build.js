@@ -160,8 +160,8 @@ function generateRelatedArticlesHtml(related) {
   if (related.length === 0) return '';
   const cards = related.map(a =>
     `<a href="${a.url}" class="card p-4 no-underline block transition-all">
-            <p class="text-xs mb-1" style="color:var(--mmt-caption);">${a.formattedDate}</p>
-            <p class="text-sm font-bold" style="color:#fff;">${escapeHtml(a.title)}</p>
+            <p class="text-xs mb-1" style="color:var(--mmt-text-secondary);">${a.formattedDate}</p>
+            <p class="text-sm font-bold" style="color:var(--mmt-navy);">${escapeHtml(a.title)}</p>
           </a>`
   ).join('\n          ');
   return `<div class="pt-8" style="border-top:1px solid var(--mmt-border);">
@@ -186,7 +186,7 @@ function generateRelatedTopicsHtml(currentTag, allTags) {
     .slice(0, 4);
   if (related.length === 0) return '';
   const chips = related.map(r =>
-    `<a href="/topics/${r.tag.slug}/" class="text-sm px-4 py-2 rounded-full no-underline hover:opacity-80" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">${escapeHtml(r.tag.name)}</a>`
+    `<a href="/topics/${r.tag.slug}/" class="text-sm px-4 py-2 rounded-full no-underline hover:opacity-80" style="background:var(--mmt-soft); color:var(--mmt-teal);">${escapeHtml(r.tag.name)}</a>`
   ).join('\n        ');
   return `<h3 class="text-lg font-bold mb-4">Related Topics</h3>
       <div class="flex flex-wrap gap-3">
@@ -229,7 +229,7 @@ function loadTranscripts() {
 }
 
 function generatePodcastEpisodesHtml(feed) {
-  if (!feed || !feed.items || feed.items.length === 0) return '<p style="color:var(--mmt-white-dim);">Episodes coming soon.</p>';
+  if (!feed || !feed.items || feed.items.length === 0) return '<p style="color:var(--mmt-text-secondary);">Episodes coming soon.</p>';
   const transcripts = loadTranscripts();
   const podcastTags = loadPodcastTags();
   // Deduplicate trailer entries (keep "Trailer" over "Introducing MMR/MMT" if both exist)
@@ -318,9 +318,9 @@ function generateSearchIndex(archive) {
 
 const searchOverlayHtml = `
   <!-- Search Overlay -->
-  <div id="searchOverlay" class="hidden fixed inset-0 z-[70]" style="background:rgba(0,0,0,0.5);">
-    <div class="max-w-xl mx-auto mt-24 p-6 rounded-xl" style="background:var(--mmt-surface, #0A1628); border:1px solid var(--mmt-border, rgba(255,255,255,0.05));">
-      <input id="searchInput" type="search" placeholder="Search articles, topics, resources..." autocomplete="off" class="w-full px-4 py-3 rounded-lg text-base" style="background:var(--mmt-navy); border:1px solid var(--mmt-border, rgba(255,255,255,0.05)); color:var(--mmt-white); outline:none;">
+  <div id="searchOverlay" class="hidden fixed inset-0 z-[70]" style="background:rgba(0,0,0,0.3);">
+    <div class="max-w-xl mx-auto mt-24 p-6 rounded-2xl" style="background:var(--mmt-white, #fff); border:1px solid var(--mmt-border, #D8E0E8); box-shadow:0 8px 32px rgba(10,25,47,0.12);">
+      <input id="searchInput" type="search" placeholder="Search articles, topics, resources..." autocomplete="off" class="w-full px-4 py-3 rounded-xl text-base" style="background:var(--mmt-soft, #F3F4F6); border:1px solid var(--mmt-border, #D8E0E8); color:var(--mmt-text, #102033); outline:none;">
       <div id="searchResults" class="mt-4 max-h-80 overflow-y-auto"></div>
     </div>
   </div>`;
@@ -349,10 +349,10 @@ function generateArticlePages(articles) {
     const prev = articles[index + 1]; // older
     const next = articles[index - 1]; // newer
     const prevLink = prev
-      ? `<a href="${prev.url}" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-cyan);"><svg class="mr-2" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H109.3l105.3-105.4c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>${prev.title}</a>`
+      ? `<a href="${prev.url}" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-teal);"><svg class="mr-2" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H109.3l105.3-105.4c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>${prev.title}</a>`
       : '<span></span>';
     const nextLink = next
-      ? `<a href="${next.url}" class="text-sm no-underline hover:opacity-80 text-right" style="color:var(--mmt-cyan);">${next.title}<svg class="ml-2" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224H32c-17.7 0-32 14.3-32 32s14.3 32 32 32h306.7L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg></a>`
+      ? `<a href="${next.url}" class="text-sm no-underline hover:opacity-80 text-right" style="color:var(--mmt-teal);">${next.title}<svg class="ml-2" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224H32c-17.7 0-32 14.3-32 32s14.3 32 32 32h306.7L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg></a>`
       : '<span></span>';
 
     // Related articles
@@ -416,9 +416,9 @@ function generateTopicPages(tags) {
 
     const articleListHtml = tag.articles.map(article => `
         <article class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2"><a href="${article.url}" class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${article.title}</a></h3>
-          <p class="text-xs mb-3" style="color:var(--mmt-white-dim);"><svg class="mr-1" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H64C28.7 64 0 92.7 0 128v16 48V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192 144 128c0-35.3-28.7-64-64-64H344V24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H152V24zM48 192H400V448c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192z"/></svg>${article.formattedDate}${readTimeBadge(article.readTime)}</p>
-          <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-muted);">${article.description}</p>
+          <h3 class="text-lg font-bold mb-2"><a href="${article.url}" class="no-underline hover:opacity-80" style="color:var(--mmt-navy);">${article.title}</a></h3>
+          <p class="text-xs mb-3" style="color:var(--mmt-text-secondary);"><svg class="mr-1" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H64C28.7 64 0 92.7 0 128v16 48V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192 144 128c0-35.3-28.7-64-64-64H344V24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H152V24zM48 192H400V448c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192z"/></svg>${article.formattedDate}${readTimeBadge(article.readTime)}</p>
+          <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-text);">${article.description}</p>
           <div class="flex flex-wrap gap-2">
             ${(article.tags || []).map(t => `<a href="/topics/${slugify(t)}/" class="tag no-underline">${t}</a>`).join('')}
           </div>
@@ -426,7 +426,7 @@ function generateTopicPages(tags) {
 
     // Topic description
     const desc = topicDescriptions[tag.name] || '';
-    const descHtml = desc ? `<p class="text-lg leading-relaxed mb-4" style="color:var(--mmt-white-muted);">${escapeHtml(desc)}</p>` : '';
+    const descHtml = desc ? `<p class="text-lg leading-relaxed mb-4" style="color:var(--mmt-text);">${escapeHtml(desc)}</p>` : '';
 
     // Related topics
     const relatedTopicsHtml = generateRelatedTopicsHtml(tag, tags);
@@ -657,23 +657,15 @@ function buildOgSvg({ title, subtitle, label }) {
   const subtitleY = titleY + titleLines.length * lineHeight + 30;
 
   const labelElement = label
-    ? `<text x="60" y="185" fill="#00E5FA" font-family="sans-serif" font-size="16" font-weight="700" letter-spacing="3">${escapeHtml(label)}</text>`
+    ? `<text x="60" y="185" fill="#457B9D" font-family="sans-serif" font-size="16" font-weight="700" letter-spacing="3">${escapeHtml(label)}</text>`
     : '';
 
   return `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#00E5FA"/>
-      <stop offset="100%" stop-color="#00FF85"/>
-    </linearGradient>
-  </defs>
-  <rect width="1200" height="630" fill="#00050F"/>
+  <rect width="1200" height="630" fill="#0A192F"/>
   <!-- Top accent line -->
-  <rect x="60" y="70" width="200" height="4" fill="url(#grad)"/>
+  <rect x="60" y="70" width="200" height="4" fill="#457B9D"/>
   <!-- Wordmark -->
-  <text x="60" y="130" font-family="sans-serif" font-size="28" font-weight="700">
-    <tspan fill="#FFFFFF">Mission Meets </tspan><tspan fill="#00E5FA">Tech</tspan>
-  </text>
+  <text x="60" y="130" font-family="sans-serif" font-size="28" font-weight="700" fill="#FFFFFF">Mission Meets Tech</text>
   <!-- Label -->
   ${labelElement}
   <!-- Title -->
@@ -681,9 +673,9 @@ function buildOgSvg({ title, subtitle, label }) {
   <!-- Subtitle -->
   <text x="60" y="${subtitleY}" fill="rgba(255,255,255,0.6)" font-family="sans-serif" font-size="22">${escapeHtml(subtitle || '')}</text>
   <!-- Bottom accent line -->
-  <rect x="60" y="560" width="200" height="4" fill="url(#grad)"/>
+  <rect x="60" y="560" width="200" height="4" fill="#457B9D"/>
   <!-- Domain -->
-  <text x="1140" y="590" fill="#00E5FA" font-family="sans-serif" font-size="18" text-anchor="end">missionmeetstech.com</text>
+  <text x="1140" y="590" fill="#457B9D" font-family="sans-serif" font-size="18" text-anchor="end">missionmeetstech.com</text>
 </svg>`;
 }
 
@@ -793,7 +785,7 @@ function generateLeadStoryHtml(archive) {
   // Prioritize featured article if one exists, otherwise use most recent
   const item = archive.find(a => a.featured) || archive[0];
   const tags = (item.tags || []).map(t =>
-    `<a href="/topics/${slugify(t)}/" class="text-xs px-2 py-0.5 rounded no-underline" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">${escapeHtml(t)}</a>`
+    `<a href="/topics/${slugify(t)}/" class="text-xs px-2 py-0.5 rounded no-underline" style="background:var(--mmt-soft); color:var(--mmt-teal);">${escapeHtml(t)}</a>`
   ).join('\n            ');
   const isExternal = item.url && item.url.startsWith('http');
   const linkAttrs = isExternal ? ' target="_blank" rel="noopener"' : '';
@@ -810,17 +802,17 @@ function generateLeadStoryHtml(archive) {
 
 function generateLatestArticlesHtml(archive, count) {
   const items = archive.slice(1, 1 + count); // Skip lead story
-  if (items.length === 0) return '<p class="text-center py-10 col-span-3" style="color:var(--mmt-white-dim);">No articles yet. Check back soon!</p>';
+  if (items.length === 0) return '<p class="text-center py-10 col-span-3" style="color:var(--mmt-text-secondary);">No articles yet. Check back soon!</p>';
   return items.map(item => {
     const tags = (item.tags || []).map(t =>
-      `<a href="/topics/${slugify(t)}/" class="text-xs px-2 py-0.5 rounded no-underline" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">${escapeHtml(t)}</a>`
+      `<a href="/topics/${slugify(t)}/" class="text-xs px-2 py-0.5 rounded no-underline" style="background:var(--mmt-soft); color:var(--mmt-teal);">${escapeHtml(t)}</a>`
     ).join('');
     const isExternal = item.url && item.url.startsWith('http');
     const linkAttrs = isExternal ? ' target="_blank" rel="noopener"' : '';
-    return `<a href="${item.url}"${linkAttrs} class="card article-card p-8 no-underline block">
+    return `<a href="${item.url}"${linkAttrs} class="card article-card p-6 no-underline block">
           <p class="text-caption mb-3">${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
           <h3 class="text-subsection mb-3">${escapeHtml(item.title)}</h3>
-          <p class="text-body mb-4" style="font-size:1rem;">${escapeHtml(item.description)}</p>
+          <p class="text-body mb-4" style="font-size:0.9375rem;">${escapeHtml(item.description)}</p>
           <div class="flex flex-wrap gap-2">${tags}</div>
         </a>`;
   }).join('\n        ');
@@ -835,7 +827,7 @@ function generateTopicChipsHtml(archive) {
   });
   const sorted = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]);
   return sorted.map(([tag, count]) =>
-    `<a href="/topics/${slugify(tag)}/" class="tag no-underline">${escapeHtml(tag)} <span style="color:var(--mmt-caption);">${count}</span></a>`
+    `<a href="/topics/${slugify(tag)}/" class="tag no-underline">${escapeHtml(tag)} <span style="color:var(--mmt-text-secondary);">${count}</span></a>`
   ).join('\n          ');
 }
 
@@ -857,9 +849,9 @@ function generateTopicCardsHomeHtml(archive) {
   };
   return sorted.map(([tag, count]) => {
     const desc = topicDescShort[tag] || 'Coverage and analysis.';
-    return `<a href="/topics/${slugify(tag)}/" class="hscroll-card card-spatial p-6 no-underline block" style="text-decoration:none;">
+    return `<a href="/topics/${slugify(tag)}/" class="hscroll-card card p-6 no-underline block" style="text-decoration:none;">
           <p class="text-eyebrow mb-3">${count} article${count !== 1 ? 's' : ''}</p>
-          <h3 class="text-subsection mb-2" style="font-size:1.2rem;">${escapeHtml(tag)}</h3>
+          <h3 class="text-subsection mb-2" style="font-size:1.1rem;">${escapeHtml(tag)}</h3>
           <p class="text-caption leading-relaxed">${escapeHtml(desc)}</p>
         </a>`;
   }).join('\n        ');
@@ -882,12 +874,12 @@ function generateTopicsGridHtml(archive) {
     const slug = slugify(tag);
     const desc = topicDescriptions[tag] || '';
     const previews = (tagArticles[tag] || []).map(a =>
-      `<li class="truncate"><a href="${a.url}" class="text-xs no-underline hover:opacity-80" style="color:var(--mmt-cyan);">${escapeHtml(a.title)}</a></li>`
+      `<li class="truncate"><a href="${a.url}" class="text-xs no-underline hover:opacity-80" style="color:var(--mmt-teal);">${escapeHtml(a.title)}</a></li>`
     ).join('\n              ');
     return `<a href="/topics/${slug}/" class="card rounded-xl p-6 no-underline block transition-all">
-            <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-white);">${escapeHtml(tag)}</h3>
-            ${desc ? `<p class="text-sm mb-3 leading-relaxed" style="color:var(--mmt-white-muted);">${escapeHtml(desc)}</p>` : ''}
-            <p class="text-sm mb-3" style="color:var(--mmt-white-dim);">${count} article${count === 1 ? '' : 's'}</p>
+            <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-navy);">${escapeHtml(tag)}</h3>
+            ${desc ? `<p class="text-sm mb-3 leading-relaxed" style="color:var(--mmt-text-secondary);">${escapeHtml(desc)}</p>` : ''}
+            <p class="text-sm mb-3" style="color:var(--mmt-text-secondary);">${count} article${count === 1 ? '' : 's'}</p>
             ${previews ? `<ul class="list-none p-0 m-0 space-y-1">${previews}</ul>` : ''}
           </a>`;
   }).join('\n        ');
@@ -895,20 +887,20 @@ function generateTopicsGridHtml(archive) {
 
 function generateLatestIssuesHtml(archive, count) {
   const items = archive.slice(0, count);
-  if (items.length === 0) return '<p class="text-center py-10 col-span-3" style="color:var(--mmt-white-dim);">No newsletters yet. Check back soon!</p>';
+  if (items.length === 0) return '<p class="text-center py-10 col-span-3" style="color:var(--mmt-text-secondary);">No newsletters yet. Check back soon!</p>';
   return items.map(item => {
     const isExternal = item.url && item.url.startsWith('http');
     const linkAttrs = isExternal ? ' target="_blank" rel="noopener"' : '';
     return `<article class="card p-6 md:p-8">
           <p class="text-caption mb-3">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
-          <h3 class="text-subsection mb-2" style="font-size:clamp(1.1rem, 1.5vw, 1.35rem);"><a href="${item.url}"${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${escapeHtml(item.title)}</a></h3>
+          <h3 class="text-subsection mb-2" style="font-size:clamp(1.1rem, 1.5vw, 1.35rem);"><a href="${item.url}"${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-navy);">${escapeHtml(item.title)}</a></h3>
           <p class="text-caption leading-relaxed">${escapeHtml(item.description)}</p>
         </article>`;
   }).join('\n        ');
 }
 
 function generateArchiveHtml(archive) {
-  if (archive.length === 0) return '<p class="text-center py-10" style="color:var(--mmt-white-dim);">No issues yet.</p>';
+  if (archive.length === 0) return '<p class="text-center py-10" style="color:var(--mmt-text-secondary);">No issues yet.</p>';
   const total = archive.length;
   const PER_PAGE = 12;
   const page1Items = archive.slice(0, PER_PAGE);
@@ -931,7 +923,7 @@ function generateArchiveHtml(archive) {
     const externalIcon = isExternal ? ' <svg width="0.75em" height="0.75em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:baseline;opacity:0.5;" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>' : '';
     const card = `<article class="card article-card p-6 md:p-8" data-topics="${topicSlugs}">
           <div class="flex items-start justify-between gap-4 mb-2">
-            <h3 class="text-subsection" style="font-size:clamp(1.1rem, 1.5vw, 1.35rem);"><a href="${item.url}" ${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${escapeHtml(item.title)}${externalIcon}</a></h3>
+            <h3 class="text-subsection" style="font-size:clamp(1.1rem, 1.5vw, 1.35rem);"><a href="${item.url}" ${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-navy);">${escapeHtml(item.title)}${externalIcon}</a></h3>
             <span class="text-eyebrow whitespace-nowrap" style="font-size:0.7rem;">#${issueNum}</span>
           </div>
           <p class="text-caption mb-3">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
@@ -1001,7 +993,7 @@ function generateLatestAllHtml(archive, feed) {
 
   const merged = [...articles, ...episodes].sort((a, b) => b.sortDate - a.sortDate);
 
-  if (merged.length === 0) return '<p class="text-center py-10" style="color:var(--mmt-white-dim);">No content yet.</p>';
+  if (merged.length === 0) return '<p class="text-center py-10" style="color:var(--mmt-text-secondary);">No content yet.</p>';
 
   return merged.map(item => {
     if (item.type === 'episode') {
@@ -1011,10 +1003,10 @@ function generateLatestAllHtml(archive, feed) {
               </audio>`
         : '';
       return `<article class="card rounded-xl p-6">
-          <p class="text-xs uppercase tracking-wider font-semibold mb-1" style="color:var(--mmt-cyan);">Fed UP Podcast</p>
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-white);">${escapeHtml(item.title)}</h3>
-          <p class="text-xs mb-2" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}${item.duration ? ` &middot; ${item.duration}` : ''}</p>
-          ${item.description ? `<p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>` : ''}
+          <p class="text-xs uppercase tracking-wider font-semibold mb-1" style="color:var(--mmt-teal);">Fed UP Podcast</p>
+          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-navy);">${escapeHtml(item.title)}</h3>
+          <p class="text-xs mb-2" style="color:var(--mmt-text-secondary);">${calendarSvg}${escapeHtml(item.date)}${item.duration ? ` &middot; ${item.duration}` : ''}</p>
+          ${item.description ? `<p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);">${escapeHtml(item.description)}</p>` : ''}
           ${audioPlayer}
         </article>`;
     }
@@ -1025,9 +1017,9 @@ function generateLatestAllHtml(archive, feed) {
     const linkAttrs = isExternal ? 'target="_blank" rel="noopener"' : '';
     const externalIcon = isExternal ? ' <svg width="0.75em" height="0.75em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:baseline;opacity:0.5;" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>' : '';
     return `<article class="card rounded-xl p-6">
-          <p class="text-xs mb-2" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
-          <h3 class="text-lg font-bold mb-2"><a href="${item.url}" ${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${escapeHtml(item.title)}${externalIcon}</a></h3>
-          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>
+          <p class="text-xs mb-2" style="color:var(--mmt-text-secondary);">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
+          <h3 class="text-lg font-bold mb-2"><a href="${item.url}" ${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-navy);">${escapeHtml(item.title)}${externalIcon}</a></h3>
+          <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);">${escapeHtml(item.description)}</p>
           <div class="flex flex-wrap gap-2">${tags}</div>
         </article>`;
   }).join('\n        ');
@@ -1035,12 +1027,12 @@ function generateLatestAllHtml(archive, feed) {
 
 function generateArticleCountBadge(archive, feed) {
   const episodeCount = feed && feed.items ? feed.items.length : 0;
-  return `<span class="text-sm px-3 py-1 rounded-full" style="background:rgba(0,229,250,0.1); color:var(--mmt-cyan);">${archive.length} articles &middot; ${episodeCount} episodes</span>`;
+  return `<span class="text-sm px-3 py-1 rounded-full" style="background:var(--mmt-soft); color:var(--mmt-teal);">${archive.length} articles &middot; ${episodeCount} episodes</span>`;
 }
 
 function generatePodcastTeaserHtml(feed) {
   if (!feed || !feed.items || feed.items.length === 0) {
-    return '<p class="text-sm" style="color:var(--mmt-white-dim);">Podcast episodes coming soon.</p>';
+    return '<p class="text-sm" style="color:var(--mmt-text-secondary);">Podcast episodes coming soon.</p>';
   }
   const ep = feed.items[0];
   const title = escapeHtml(ep.title || 'Latest Episode');
@@ -1053,23 +1045,23 @@ function generatePodcastTeaserHtml(feed) {
   const pubDate = ep.pubDate ? new Date(ep.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
   return `<div>
         <h2 class="text-2xl font-bold mb-2">Fed UP: Where Mission Meets Reality</h2>
-        <p class="text-base leading-relaxed mb-6" style="color:var(--mmt-white-muted);">Two women who've been in the room. Unfiltered intelligence on defense health, federal IT, and the policies that shape both.</p>
+        <p class="text-base leading-relaxed mb-6" style="color:var(--mmt-text);">Two women who've been in the room. Unfiltered intelligence on defense health, federal IT, and the policies that shape both.</p>
         <div class="card rounded-xl p-6 mb-6">
-          <p class="text-xs uppercase tracking-wider font-semibold mb-2" style="color:var(--mmt-cyan);">Latest Episode</p>
-          <p class="text-lg font-bold mb-1" style="color:var(--mmt-white);">${title}</p>
-          ${pubDate ? `<p class="text-xs mb-2" style="color:var(--mmt-white-dim);">${pubDate}</p>` : ''}
+          <p class="text-xs uppercase tracking-wider font-semibold mb-2" style="color:var(--mmt-teal);">Latest Episode</p>
+          <p class="text-lg font-bold mb-1" style="color:var(--mmt-navy);">${title}</p>
+          ${pubDate ? `<p class="text-xs mb-2" style="color:var(--mmt-text-secondary);">${pubDate}</p>` : ''}
           ${audioPlayer}
         </div>
         <div class="flex flex-wrap items-center gap-3">
-          <a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Apple Podcasts</a>
-          <span style="color:var(--mmt-white-dim);">&middot;</span>
-          <a href="https://open.spotify.com/show/7sND342duH7Buw1cUs60lP" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Spotify</a>
-          <span style="color:var(--mmt-white-dim);">&middot;</span>
-          <a href="https://www.youtube.com/@MissionMeetsTech" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">YouTube</a>
-          <span style="color:var(--mmt-white-dim);">&middot;</span>
-          <a href="https://music.amazon.com/podcasts/920fec9b-4fae-4bd0-ae4d-eaf1459cad2f" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Amazon Music</a>
-          <span class="hidden sm:inline" style="color:var(--mmt-white-dim);">&middot;</span>
-          <a href="podcast.html" class="text-sm font-semibold no-underline hover:opacity-80" style="color:var(--mmt-cyan);">All Episodes &rarr;</a>
+          <a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Apple Podcasts</a>
+          <span style="color:var(--mmt-text-secondary);">&middot;</span>
+          <a href="https://open.spotify.com/show/7sND342duH7Buw1cUs60lP" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Spotify</a>
+          <span style="color:var(--mmt-text-secondary);">&middot;</span>
+          <a href="https://www.youtube.com/@MissionMeetsTech" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">YouTube</a>
+          <span style="color:var(--mmt-text-secondary);">&middot;</span>
+          <a href="https://music.amazon.com/podcasts/920fec9b-4fae-4bd0-ae4d-eaf1459cad2f" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Amazon Music</a>
+          <span class="hidden sm:inline" style="color:var(--mmt-text-secondary);">&middot;</span>
+          <a href="podcast.html" class="text-sm font-semibold no-underline hover:opacity-80" style="color:var(--mmt-teal);">All Episodes &rarr;</a>
         </div>
       </div>`;
 }
@@ -1077,8 +1069,8 @@ function generatePodcastTeaserHtml(feed) {
 // --- Contract Tracker ---
 
 const CONTRACT_STATUS_COLORS = {
-  'active': 'var(--mmt-green)',
-  'upcoming': 'var(--mmt-cyan)',
+  'active': 'var(--mmt-teal)',
+  'upcoming': 'var(--mmt-teal)',
   'awarded': '#FBBF24',
 };
 const CONTRACT_STATUS_LABELS = {
@@ -1099,7 +1091,7 @@ function loadContracts() {
 }
 
 function generateContractTrackerHtml(contracts) {
-  if (!contracts.length) return '<p class="text-center py-10" style="color:var(--mmt-white-dim);">Contract data coming soon.</p>';
+  if (!contracts.length) return '<p class="text-center py-10" style="color:var(--mmt-text-secondary);">Contract data coming soon.</p>';
 
   // Group by status
   const groups = { active: [], upcoming: [], awarded: [] };
@@ -1116,25 +1108,25 @@ function generateContractTrackerHtml(contracts) {
     const color = CONTRACT_STATUS_COLORS[status];
     const label = CONTRACT_STATUS_LABELS[status];
     html += `<div class="mb-8">
-          <h2 class="text-lg font-bold mb-4 flex items-center gap-2" style="color:var(--mmt-white);"><span class="w-2 h-2 rounded-full inline-block" style="background:${color};"></span>${escapeHtml(label)}</h2>
+          <h2 class="text-lg font-bold mb-4 flex items-center gap-2" style="color:var(--mmt-navy);"><span class="w-2 h-2 rounded-full inline-block" style="background:${color};"></span>${escapeHtml(label)}</h2>
           <div class="grid md:grid-cols-2 gap-4">\n`;
     items.forEach(c => {
       const cSlug = slugify(c.name);
       html += `            <a href="/contracts/${cSlug}/" class="card rounded-xl p-6 no-underline block transition-all duration-200 hover:translate-y-[-2px]">
               <div class="flex items-start justify-between gap-3 mb-2">
-                <h3 class="text-base font-bold" style="color:var(--mmt-white);">${escapeHtml(c.name)}</h3>
+                <h3 class="text-base font-bold" style="color:var(--mmt-navy);">${escapeHtml(c.name)}</h3>
                 <div class="flex items-center gap-2 flex-shrink-0">
-                  ${c.small_business_eligible ? '<span class="text-xs whitespace-nowrap px-2 py-1 rounded font-semibold" style="background:rgba(0,255,133,0.1); color:var(--mmt-green);">SB Eligible</span>' : ''}
-                  <span class="text-xs whitespace-nowrap px-2 py-1 rounded" style="background:rgba(0,229,250,0.1); color:${color};">${escapeHtml(label)}</span>
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--mmt-cyan);"><path d="M6 3l5 5-5 5"/></svg>
+                  ${c.small_business_eligible ? '<span class="text-xs whitespace-nowrap px-2 py-1 rounded font-semibold" style="background:var(--mmt-soft); color:var(--mmt-teal);">SB Eligible</span>' : ''}
+                  <span class="text-xs whitespace-nowrap px-2 py-1 rounded" style="background:var(--mmt-soft); color:${color};">${escapeHtml(label)}</span>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--mmt-teal);"><path d="M6 3l5 5-5 5"/></svg>
                 </div>
               </div>
-              <p class="text-xs mb-2" style="color:var(--mmt-cyan);">${escapeHtml(c.agency)}</p>
-              <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">${escapeHtml(c.description)}</p>
-              <div class="flex flex-wrap gap-3 text-xs" style="color:var(--mmt-white-dim);">
-                <span><strong style="color:var(--mmt-white-muted);">Vendor:</strong> ${escapeHtml(c.vendor)}</span>
-                <span><strong style="color:var(--mmt-white-muted);">Value:</strong> ${escapeHtml(c.value)}</span>
-                ${c.naics ? `<span><strong style="color:var(--mmt-white-muted);">NAICS:</strong> ${escapeHtml(c.naics)}</span>` : ''}
+              <p class="text-xs mb-2" style="color:var(--mmt-teal);">${escapeHtml(c.agency)}</p>
+              <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);">${escapeHtml(c.description)}</p>
+              <div class="flex flex-wrap gap-3 text-xs" style="color:var(--mmt-text-secondary);">
+                <span><strong style="color:var(--mmt-text);">Vendor:</strong> ${escapeHtml(c.vendor)}</span>
+                <span><strong style="color:var(--mmt-text);">Value:</strong> ${escapeHtml(c.value)}</span>
+                ${c.naics ? `<span><strong style="color:var(--mmt-text);">NAICS:</strong> ${escapeHtml(c.naics)}</span>` : ''}
               </div>
               ${c.last_verified ? (() => {
                 const d = new Date(c.last_verified);
@@ -1144,8 +1136,8 @@ function generateContractTrackerHtml(contracts) {
                 const fmt = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                 return `<span class="text-xs block mt-2" style="color:${color};" data-last-verified="${escapeHtml(c.last_verified)}">${icon} Verified ${fmt}</span>`;
               })() : ''}
-              ${c.source ? `<a href="${escapeHtml(c.source)}" target="_blank" rel="noopener" class="text-xs mt-1 inline-block hover:opacity-80" style="color:var(--mmt-cyan);">Source</a>` : ''}
-              <p class="text-xs mt-2 font-semibold" style="color:var(--mmt-cyan);">View Intel &rarr;</p>
+              ${c.source ? `<a href="${escapeHtml(c.source)}" target="_blank" rel="noopener" class="text-xs mt-1 inline-block hover:opacity-80" style="color:var(--mmt-teal);">Source</a>` : ''}
+              <p class="text-xs mt-2 font-semibold" style="color:var(--mmt-teal);">View Intel &rarr;</p>
             </a>\n`;
     });
     html += `          </div>
@@ -1156,20 +1148,20 @@ function generateContractTrackerHtml(contracts) {
 }
 
 function generateContractSummaryHtml(contracts) {
-  if (!contracts.length) return '<p class="text-sm" style="color:var(--mmt-white-dim);">Contract data coming soon.</p>';
+  if (!contracts.length) return '<p class="text-sm" style="color:var(--mmt-text-secondary);">Contract data coming soon.</p>';
 
   // Show top 5 contracts
   const top = contracts.slice(0, 5);
   let html = '<div class="space-y-3">\n';
   top.forEach(c => {
-    const color = CONTRACT_STATUS_COLORS[c.status] || 'var(--mmt-cyan)';
+    const color = CONTRACT_STATUS_COLORS[c.status] || 'var(--mmt-teal)';
     const cSlug = slugify(c.name);
     html += `        <a href="/contracts/${cSlug}/" class="card rounded-xl p-4 flex items-start justify-between gap-4 no-underline block transition-all">
           <div>
-            <p class="text-sm font-bold" style="color:var(--mmt-white);">${escapeHtml(c.name)}</p>
-            <p class="text-xs" style="color:var(--mmt-white-dim);">${escapeHtml(c.agency)} &middot; ${escapeHtml(c.value)}</p>
+            <p class="text-sm font-bold" style="color:var(--mmt-navy);">${escapeHtml(c.name)}</p>
+            <p class="text-xs" style="color:var(--mmt-text-secondary);">${escapeHtml(c.agency)} &middot; ${escapeHtml(c.value)}</p>
           </div>
-          <span class="text-xs whitespace-nowrap px-2 py-1 rounded flex-shrink-0" style="background:rgba(0,229,250,0.1); color:${color};">${escapeHtml(c.status)}</span>
+          <span class="text-xs whitespace-nowrap px-2 py-1 rounded flex-shrink-0" style="background:var(--mmt-soft); color:${color};">${escapeHtml(c.status)}</span>
         </a>\n`;
   });
   html += '      </div>';
@@ -1193,10 +1185,10 @@ function generateContractPages(contracts) {
     const outDir = path.join(DIST_DIR, 'contracts', cSlug);
     ensureDir(outDir);
 
-    const statusColor = CONTRACT_STATUS_COLORS[c.status] || 'var(--mmt-cyan)';
+    const statusColor = CONTRACT_STATUS_COLORS[c.status] || 'var(--mmt-teal)';
     const statusLabel = CONTRACT_STATUS_LABELS[c.status] || c.status;
     const naicsRow = c.naics
-      ? `<div class="mt-4 pt-4" style="border-top:1px solid rgba(0,229,250,0.1);"><span class="text-xs" style="color:var(--mmt-white-dim);"><strong style="color:var(--mmt-white-muted);">NAICS:</strong> ${escapeHtml(c.naics)}</span></div>`
+      ? `<div class="mt-4 pt-4" style="border-top:1px solid var(--mmt-soft);"><span class="text-xs" style="color:var(--mmt-text-secondary);"><strong style="color:var(--mmt-text);">NAICS:</strong> ${escapeHtml(c.naics)}</span></div>`
       : '';
 
     let html = template
@@ -1212,7 +1204,7 @@ function generateContractPages(contracts) {
       .replace(/\{\{SAM_LINK\}\}/g, escapeHtml(c.link))
       .replace(/\{\{CONTRACT_NAME_ENCODED\}\}/g, escapeHtml(c.name))
       .replace(/\{\{NAICS_FALLBACK\}\}/g, c.naics
-        ? `<div><span style="color:var(--mmt-white-dim);">NAICS:</span> <span style="color:var(--mmt-white);">${escapeHtml(c.naics)}</span></div>`
+        ? `<div><span style="color:var(--mmt-text-secondary);">NAICS:</span> <span style="color:var(--mmt-navy);">${escapeHtml(c.naics)}</span></div>`
         : '')
       .replace(/\{\{BUILD_DATE\}\}/g, new Date().toISOString().split('T')[0])
       .replace(/\{\{CANONICAL_URL\}\}/g, `${SITE_URL}/contracts/${cSlug}/`);
@@ -1234,13 +1226,13 @@ function generateContractPages(contracts) {
 
 function generateEventsListHtml() {
   const eventsPath = path.join(__dirname, 'events.json');
-  if (!fs.existsSync(eventsPath)) return '<p class="text-center py-10" style="color:var(--mmt-white-dim);">Events data coming soon.</p>';
+  if (!fs.existsSync(eventsPath)) return '<p class="text-center py-10" style="color:var(--mmt-text-secondary);">Events data coming soon.</p>';
   let events;
   try {
     events = JSON.parse(fs.readFileSync(eventsPath, 'utf8'));
   } catch (err) {
     console.error('Error parsing events.json:', err.message);
-    return '<p class="text-center py-10" style="color:var(--mmt-white-dim);">Events data coming soon.</p>';
+    return '<p class="text-center py-10" style="color:var(--mmt-text-secondary);">Events data coming soon.</p>';
   }
   const now = new Date();
 
@@ -1255,8 +1247,8 @@ function generateEventsListHtml() {
     'industry-day': '<svg width="1em" height="1em" viewBox="0 0 640 512" fill="currentColor" aria-hidden="true"><path d="M48 0C21.5 0 0 21.5 0 48V464c0 26.5 21.5 48 48 48h96V432c0-26.5 21.5-48 48-48s48 21.5 48 48v80h96V48c0-26.5-21.5-48-48-48H48zM64 240c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V240zm112-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H176c-8.8 0-16-7.2-16-16V240c0-8.8 7.2-16 16-16zM64 112c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112zM176 96h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H176c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16zM352 0c-17.7 0-32 14.3-32 32v480h64V368c0-26.5 21.5-48 48-48s48 21.5 48 48v144h64V32c0-17.7-14.3-32-32-32H352z"/></svg>',
   };
   const typeColors = {
-    'conference': 'var(--mmt-cyan)',
-    'webinar': 'var(--mmt-green)',
+    'conference': 'var(--mmt-teal)',
+    'webinar': 'var(--mmt-teal)',
     'deadline': '#FBBF24',
     'awards': '#FBBF24',
     'industry-day': 'var(--mmt-green)',
@@ -1280,27 +1272,27 @@ function generateEventsListHtml() {
 
   if (upcoming.length > 0) {
     html += `<div class="mb-8">
-          <h2 class="text-lg font-bold mb-4" style="color:var(--mmt-white);">Upcoming Events</h2>\n`;
+          <h2 class="text-lg font-bold mb-4" style="color:var(--mmt-navy);">Upcoming Events</h2>\n`;
     upcoming.forEach(e => {
       const eventDate = new Date(e.date);
       const dateStr = eventDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
       const endStr = e.endDate ? ' \u2013 ' + new Date(e.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
       const icon = typeIcons[e.type] || typeIcons.conference;
-      const color = typeColors[e.type] || 'var(--mmt-cyan)';
+      const color = typeColors[e.type] || 'var(--mmt-teal)';
       html += `          <a href="${escapeHtml(e.url)}" target="_blank" rel="noopener" class="card rounded-xl p-6 mb-4 no-underline block transition-all">
             <div class="flex items-start gap-4">
               <div class="text-xl mt-1" style="color:${color};">${icon}</div>
               <div class="flex-1">
                 <div class="flex items-start justify-between gap-3 mb-1">
-                  <h3 class="text-base font-bold" style="color:var(--mmt-white);">${escapeHtml(e.name)}</h3>
-                  <span class="text-xs whitespace-nowrap px-2 py-1 rounded capitalize" style="background:rgba(0,229,250,0.1); color:${color};">${escapeHtml(e.type)}</span>
+                  <h3 class="text-base font-bold" style="color:var(--mmt-navy);">${escapeHtml(e.name)}</h3>
+                  <span class="text-xs whitespace-nowrap px-2 py-1 rounded capitalize" style="background:var(--mmt-soft); color:${color};">${escapeHtml(e.type)}</span>
                 </div>
-                <p class="text-xs mb-2" style="color:var(--mmt-white-dim);">${calendarSvg}${escapeHtml(dateStr)}${endStr}${e.location ? ` &middot; ${escapeHtml(e.location)}` : ''}</p>
-                <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-white-muted);">${escapeHtml(e.description)}</p>
+                <p class="text-xs mb-2" style="color:var(--mmt-text-secondary);">${calendarSvg}${escapeHtml(dateStr)}${endStr}${e.location ? ` &middot; ${escapeHtml(e.location)}` : ''}</p>
+                <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">${escapeHtml(e.description)}</p>
                 <span class="flex flex-wrap gap-3 items-center">
-                  <span class="text-xs font-medium no-underline" style="color:var(--mmt-cyan); cursor:pointer;" onclick="event.preventDefault();event.stopPropagation();window.open('${calendarLink(e)}','_blank');">Add to Calendar</span>
-                  ${e.registrationUrl ? `<span class="text-xs font-medium no-underline" style="color:var(--mmt-green, #00FF85); cursor:pointer;" onclick="event.preventDefault();event.stopPropagation();window.open('${escapeHtml(e.registrationUrl)}','_blank');">Register &rarr;</span>` : ''}
-                  ${e.registrationNote ? `<span class="text-xs" style="color:var(--mmt-white-dim);">${escapeHtml(e.registrationNote)}</span>` : ''}
+                  <span class="text-xs font-medium no-underline" style="color:var(--mmt-teal); cursor:pointer;" onclick="event.preventDefault();event.stopPropagation();window.open('${calendarLink(e)}','_blank');">Add to Calendar</span>
+                  ${e.registrationUrl ? `<span class="text-xs font-medium no-underline" style="color:var(--mmt-teal); cursor:pointer;" onclick="event.preventDefault();event.stopPropagation();window.open('${escapeHtml(e.registrationUrl)}','_blank');">Register &rarr;</span>` : ''}
+                  ${e.registrationNote ? `<span class="text-xs" style="color:var(--mmt-text-secondary);">${escapeHtml(e.registrationNote)}</span>` : ''}
                 </span>
               </div>
             </div>
@@ -1311,15 +1303,15 @@ function generateEventsListHtml() {
 
   if (past.length > 0) {
     html += `<div class="mb-8">
-          <h2 class="text-lg font-bold mb-4" style="color:var(--mmt-white-dim);">Past Events</h2>\n`;
+          <h2 class="text-lg font-bold mb-4" style="color:var(--mmt-text-secondary);">Past Events</h2>\n`;
     past.forEach(e => {
       const eventDate = new Date(e.date);
       const dateStr = eventDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
       html += `          <div class="card rounded-xl p-4 mb-3" style="opacity:0.6;">
             <div class="flex items-center gap-3">
-              <h3 class="text-sm font-bold flex-1" style="color:var(--mmt-white-dim);">${escapeHtml(e.name)}</h3>
-              <span class="text-xs font-semibold px-2 py-0.5 rounded mr-2" style="background:rgba(255,255,255,0.08); color:var(--mmt-white-dim);">Past</span>
-              <span class="text-xs" style="color:var(--mmt-white-dim);">${escapeHtml(dateStr)}</span>
+              <h3 class="text-sm font-bold flex-1" style="color:var(--mmt-text-secondary);">${escapeHtml(e.name)}</h3>
+              <span class="text-xs font-semibold px-2 py-0.5 rounded mr-2" style="background:var(--mmt-soft); color:var(--mmt-text-secondary);">Past</span>
+              <span class="text-xs" style="color:var(--mmt-text-secondary);">${escapeHtml(dateStr)}</span>
             </div>
           </div>\n`;
     });
@@ -1327,7 +1319,7 @@ function generateEventsListHtml() {
   }
 
   if (upcoming.length === 0 && past.length === 0) {
-    html = '<p class="text-center py-10" style="color:var(--mmt-white-dim);">No events listed yet. Check back soon.</p>';
+    html = '<p class="text-center py-10" style="color:var(--mmt-text-secondary);">No events listed yet. Check back soon.</p>';
   }
 
   return html;
@@ -1446,10 +1438,11 @@ function inlineTailwindCss(html) {
   // MMT-015: Fix --mmt-white-dim contrast for WCAG AA (0.6 → 0.75)
   html = html.replace(/--mmt-white-dim:\s*rgba\(255,255,255,0\.6\)/g, '--mmt-white-dim: rgba(255,255,255,0.75)');
 
-  // S2-02: Upgrade nav-glass to nav-apple
-  html = html.replace(/class="nav-glass/g, 'class="nav-apple');
-  // Remove old .nav-glass CSS definition from inline styles
+  // Editorial: Upgrade nav classes
+  html = html.replace(/class="nav-glass/g, 'class="nav-editorial');
+  html = html.replace(/class="nav-apple/g, 'class="nav-editorial');
   html = html.replace(/\.nav-glass\s*\{[^}]*\}/g, '');
+  html = html.replace(/\.nav-apple\s*\{[^}]*\}/g, '');
 
   // HF-02: Fix logo wordmark wrapping — add nowrap to nav logo text
   html = html.replace(
@@ -1475,77 +1468,168 @@ function inlineTailwindCss(html) {
     // Desktop nav — insert after FIRST Intelligence link only (no /g flag)
     html = html.replace(
       /(<a href="[^"]*latest\.html"[^>]*>Intelligence<\/a>)/,
-      '$1\n        <a href="/getting-started.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-body);">Getting Started</a>'
+      '$1\n        <a href="/getting-started.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text-secondary);">Getting Started</a>'
     );
     // Mobile nav — insert after second Intelligence link (mobile menu)
     html = html.replace(
       /(<a href="[^"]*latest\.html"[^>]*>Intelligence<\/a>\s*\n)(?!.*getting-started)/,
-      '$1        <a href="/getting-started.html" class="text-sm font-medium" style="color:var(--mmt-body);">Getting Started</a>\n'
+      '$1        <a href="/getting-started.html" class="text-sm font-medium" style="color:var(--mmt-text-secondary);">Getting Started</a>\n'
     );
   }
 
-  // S2-01: Update inline style body/card/button definitions to match Apple design system
-  // Replace old card border style
+  // Editorial Design Migration: Convert old dark-theme tokens to light editorial theme
+
+  // Replace old :root CSS variable blocks with new editorial tokens
   html = html.replace(
-    /\.card\s*\{\s*background:\s*var\(--mmt-slate\);\s*border:\s*1px solid rgba\(0,229,250,0\.1\);\s*\}/g,
-    '.card { background: var(--mmt-surface, #0A1628); border-radius: 16px; border: none; transition: background 300ms cubic-bezier(0.4, 0, 0.2, 1); }'
+    /--mmt-cyan:\s*#00E5FA;/g,
+    '--mmt-teal: #457B9D;'
   );
   html = html.replace(
-    /\.card:hover\s*\{\s*border-color:\s*rgba\(0,229,250,0\.3\);\s*\}/g,
-    '.card:hover { background: var(--mmt-surface-hover, #0F1D35); }'
+    /--mmt-green:\s*#00FF85;/g,
+    '--mmt-ink: #102033;'
+  );
+  html = html.replace(
+    /--mmt-navy:\s*#00050F;/g,
+    '--mmt-navy: #0A192F;'
+  );
+  html = html.replace(
+    /--mmt-slate:\s*#0A1628;/g,
+    '--mmt-soft: #F3F4F6;'
+  );
+  html = html.replace(
+    /--mmt-dark:\s*#0D1117;/g,
+    '--mmt-white: #FFFFFF;'
+  );
+  // Replace old body styling
+  html = html.replace(
+    /body\s*\{\s*font-family:[^}]*background:\s*var\(--mmt-navy\)[^}]*\}/g,
+    'body { font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--mmt-white, #FFFFFF); color: var(--mmt-text, #102033); }'
+  );
+  // Replace old heading font-family
+  html = html.replace(
+    /h1,\s*h2,\s*h3,\s*h4,\s*h5\s*\{[^}]*font-family:\s*'Space Grotesk'[^}]*\}/g,
+    'h1, h2, h3, h4, h5 { font-family: "Inter", ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.02em; font-weight: 700; color: var(--mmt-navy, #0A192F); }'
+  );
+  // Replace old nav class and styling
+  html = html.replace(
+    /\.nav-apple\s*\{[^}]*\}/g,
+    ''
+  );
+  // Replace gradient-text class
+  html = html.replace(
+    /\.gradient-text\s*\{[^}]*\}/g,
+    '.gradient-text { color: var(--mmt-teal, #457B9D); }'
+  );
+  // Replace old card definitions in inline styles
+  html = html.replace(
+    /\.card\s*\{[^}]*background:\s*var\(--mmt-slate\)[^}]*\}/g,
+    '.card { background: var(--mmt-white, #FFFFFF); border: 1px solid var(--mmt-border, #D8E0E8); border-radius: 18px; box-shadow: 0 1px 3px rgba(10,25,47,0.06); transition: box-shadow 200ms ease, transform 200ms ease; }'
+  );
+  html = html.replace(
+    /\.card:hover\s*\{[^}]*\}/g,
+    '.card:hover { box-shadow: 0 4px 12px rgba(10,25,47,0.08); transform: translateY(-2px); }'
+  );
+  // Replace old btn-primary in inline styles
+  html = html.replace(
+    /\.btn-primary\s*\{[^}]*background:\s*(?:linear-gradient|var\(--mmt-green\)|#00FF85)[^}]*\}/g,
+    '.btn-primary { background: var(--mmt-navy, #0A192F); color: var(--mmt-white, #FFFFFF); font-weight: 700; padding: 12px 24px; border-radius: 9999px; font-size: 0.9375rem; transition: all 200ms ease; border: none; cursor: pointer; display: inline-block; text-decoration: none; }'
+  );
+  html = html.replace(
+    /\.btn-primary:hover\s*\{[^}]*\}/g,
+    '.btn-primary:hover { background: #0D2240; transform: translateY(-1px); }'
+  );
+  // Replace old btn-secondary
+  html = html.replace(
+    /\.btn-secondary\s*\{[^}]*border:\s*1px solid\s*(?:var\(--mmt-cyan\)|var\(--mmt-teal\)|#334155)[^}]*\}/g,
+    '.btn-secondary { background: var(--mmt-white, #FFFFFF); color: var(--mmt-navy, #0A192F); font-weight: 700; padding: 12px 24px; border-radius: 9999px; font-size: 0.9375rem; border: 1px solid var(--mmt-border, #D8E0E8); transition: all 200ms ease; cursor: pointer; display: inline-block; text-decoration: none; }'
+  );
+  html = html.replace(
+    /\.btn-secondary:hover\s*\{[^}]*\}/g,
+    '.btn-secondary:hover { border-color: var(--mmt-navy, #0A192F); background: var(--mmt-soft, #F3F4F6); }'
+  );
+  // Replace old text-eyebrow
+  html = html.replace(
+    /\.text-eyebrow\s*\{[^}]*color:\s*var\(--mmt-cyan\)[^}]*\}/g,
+    '.text-eyebrow { font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600; color: var(--mmt-teal, #457B9D); }'
+  );
+  // Replace old focus-visible
+  html = html.replace(
+    /\*:focus-visible\s*\{[^}]*outline:\s*2px solid var\(--mmt-cyan\)[^}]*\}/g,
+    '*:focus-visible { outline: 2px solid var(--mmt-teal, #457B9D); outline-offset: 2px; }'
+  );
+  // Replace old form focus
+  html = html.replace(
+    /\.form-input:focus\s*\{[^}]*border-color:\s*var\(--mmt-cyan\)[^}]*\}/g,
+    '.form-input:focus { border-color: var(--mmt-teal, #457B9D); }'
+  );
+  // Replace old text-hero/section/subsection color
+  html = html.replace(
+    /\.text-hero\s*\{([^}]*)color:\s*var\(--mmt-white\)/g,
+    '.text-hero {$1color: var(--mmt-navy, #0A192F)'
+  );
+  html = html.replace(
+    /\.text-section\s*\{([^}]*)color:\s*var\(--mmt-white\)/g,
+    '.text-section {$1color: var(--mmt-navy, #0A192F)'
+  );
+  html = html.replace(
+    /\.text-subsection\s*\{([^}]*)color:\s*var\(--mmt-white\)/g,
+    '.text-subsection {$1color: var(--mmt-navy, #0A192F)'
+  );
+  // Replace old section-alt
+  html = html.replace(
+    /\.section-alt\s*\{[^}]*\}/g,
+    '.section-alt { background: var(--mmt-soft, #F3F4F6); }'
   );
 
-  // Replace old btn-primary (gradient → solid green)
+  // Replace nav logos (shield PNG → SVG logo)
+  html = html.replace(/\/mmt-shield-nav-2x\.png/g, '/mmt-logo.svg');
+  html = html.replace(/\/mmt-shield-nav\.png/g, '/mmt-logo.svg');
+  html = html.replace(/\/mmt-shield-footer-2x\.png/g, '/mmt-logo.svg');
+  html = html.replace(/\/mmt-shield-footer\.png/g, '/mmt-logo.svg');
+
+  // Replace old nav wordmark with new style
   html = html.replace(
-    /\.btn-primary\s*\{\s*background:\s*linear-gradient\(135deg,\s*var\(--mmt-cyan\),\s*var\(--mmt-green\)\)[^}]*\}/g,
-    '.btn-primary { background: #00FF85; color: #00050F; font-weight: 600; padding: 14px 32px; border-radius: 12px; font-size: 1rem; transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1); border: none; cursor: pointer; display: inline-block; text-decoration: none; }'
+    /style="font-family:'Space Grotesk',system-ui,sans-serif;\s*color:#fff;">Mission Meets <span style="color:var\(--mmt-cyan\);">Tech<\/span>/g,
+    'style="color:var(--mmt-navy, #0A192F);">Mission Meets Tech'
   );
   html = html.replace(
-    /\.btn-primary:hover\s*\{\s*transform:\s*translateY\(-1px\);\s*opacity:\s*0\.9;\s*\}/g,
-    '.btn-primary:hover { background: #00CC6A; transform: translateY(-1px); }'
+    /style="font-family:'Space Grotesk',system-ui,sans-serif;\s*color:#fff;">Mission Meets <span style="color:var\(--mmt-teal\);">Tech<\/span>/g,
+    'style="color:var(--mmt-navy, #0A192F);">Mission Meets Tech'
+  );
+  // Fix footer wordmark
+  html = html.replace(
+    /style="font-family:\\'Space Grotesk\\',system-ui,sans-serif;\s*color:#fff;">Mission Meets <span style="color:var\(--mmt-cyan\);">Tech<\/span>/g,
+    'style="color:var(--mmt-navy, #0A192F);">Mission Meets Tech'
+  );
+  html = html.replace(
+    /style="font-family:\\'Space Grotesk\\',system-ui,sans-serif;\s*color:#fff;">Mission Meets <span style="color:var\(--mmt-teal\);">Tech<\/span>/g,
+    'style="color:var(--mmt-navy, #0A192F);">Mission Meets Tech'
   );
 
-  // Replace old btn-secondary (cyan border → slate border)
-  html = html.replace(
-    /\.btn-secondary\s*\{\s*border:\s*1px solid var\(--mmt-cyan\)[^}]*\}/g,
-    '.btn-secondary { background: transparent; color: #FFFFFF; font-weight: 500; padding: 14px 32px; border-radius: 12px; font-size: 1rem; border: 1px solid #334155; transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; display: inline-block; text-decoration: none; }'
-  );
-  html = html.replace(
-    /\.btn-secondary:hover\s*\{\s*background:\s*rgba\(0,229,250,0\.1\);\s*\}/g,
-    '.btn-secondary:hover { border-color: #CBD5E1; background: rgba(255,255,255,0.03); }'
-  );
-
-  // Replace section-alt with cleaner definition
-  html = html.replace(
-    /\.section-alt\s*\{\s*background:\s*var\(--mmt-dark\);\s*\}/g,
-    '.section-alt { background: #0A1628; }'
-  );
-
-  // S2-16: Global old-to-new token replacements for all pages
-  // Replace old color tokens in inline styles (not in CSS variable declarations)
-  html = html.replace(/style="([^"]*?)color:var\(--mmt-white-muted\);/g, 'style="$1color:var(--mmt-body);');
-  html = html.replace(/style="([^"]*?)color:var\(--mmt-white-dim\);/g, 'style="$1color:var(--mmt-caption);');
+  // Replace old color tokens in inline styles
+  html = html.replace(/style="([^"]*?)color:var\(--mmt-white-muted\);/g, 'style="$1color:var(--mmt-text);');
+  html = html.replace(/style="([^"]*?)color:var\(--mmt-white-dim\);/g, 'style="$1color:var(--mmt-text-secondary);');
+  html = html.replace(/var\(--mmt-cyan\)/g, 'var(--mmt-teal)');
+  html = html.replace(/var\(--mmt-green\)/g, 'var(--mmt-teal)');
+  html = html.replace(/style="([^"]*?)color:var\(--mmt-body\);/g, 'style="$1color:var(--mmt-text-secondary);');
+  html = html.replace(/style="([^"]*?)color:var\(--mmt-caption\);/g, 'style="$1color:var(--mmt-text-secondary);');
   // Replace old background tokens
-  html = html.replace(/background:var\(--mmt-dark\)/g, 'background:var(--mmt-surface)');
-  html = html.replace(/background:var\(--mmt-slate\)/g, 'background:var(--mmt-surface)');
+  html = html.replace(/background:var\(--mmt-dark\)/g, 'background:var(--mmt-soft)');
+  html = html.replace(/background:var\(--mmt-slate\)/g, 'background:var(--mmt-soft)');
+  html = html.replace(/background:#0D1117/g, 'background:var(--mmt-soft)');
+  html = html.replace(/background:#0A1628/g, 'background:var(--mmt-soft)');
   // Replace old border tokens
-  html = html.replace(/border[^"]*?rgba\(0,229,250,0\.1\)/g, function(match) {
-    return match.replace(/rgba\(0,229,250,0\.1\)/g, 'var(--mmt-border)');
-  });
-  // Replace old footer/section backgrounds
-  html = html.replace(/background:var\(--mmt-navy\);(\s*)border-top/g, 'background:var(--mmt-surface);$1border-top');
-  // Replace old nav subscribe panel background
-  html = html.replace(/background:var\(--mmt-slate\);border:1px solid rgba\(0,229,250,0\.15\)/g, 'background:var(--mmt-surface);border:1px solid var(--mmt-border)');
-  // Inject Apple tokens into :root if missing
-  if (!html.includes('--mmt-surface:') && html.includes('--mmt-slate:')) {
-    html = html.replace(
-      /--mmt-slate:\s*#0A1628;/,
-      '--mmt-slate: #0A1628;\n      --mmt-surface: #0A1628; --mmt-surface-hover: #0F1D35;\n      --mmt-body: #CBD5E1; --mmt-caption: #94A3B8;\n      --mmt-border: rgba(255, 255, 255, 0.05);'
-    );
-  }
-  // Replace old font-semibold cyan headings in footers with text-eyebrow
+  html = html.replace(/rgba\(0,229,250,0\.1\)/g, 'var(--mmt-border)');
+  html = html.replace(/rgba\(0,229,250,0\.06\)/g, 'var(--mmt-border)');
+  html = html.replace(/rgba\(0,229,250,0\.08\)/g, 'var(--mmt-border)');
+  html = html.replace(/rgba\(0,229,250,0\.15\)/g, 'var(--mmt-border)');
+  html = html.replace(/rgba\(255,255,255,0\.05\)/g, 'var(--mmt-border)');
+  html = html.replace(/rgba\(255,255,255,0\.03\)/g, 'var(--mmt-border)');
+  // Replace white text to navy where it appears as primary text color in cards
+  html = html.replace(/style="color:#fff;"/g, 'style="color:var(--mmt-navy);"');
+  // Replace old eyebrow references
   html = html.replace(
-    /class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var\(--mmt-cyan\);"/g,
+    /class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var\(--mmt-teal\);"/g,
     'class="text-eyebrow mb-4"'
   );
   // Inject mmt-motion.js if not already present and page has fade-up elements
@@ -1580,21 +1664,16 @@ function inlineTailwindCss(html) {
     );
   }
 
-  // S3-11: Add ambient-grain + ambient-vignette to body if not present
-  if (!html.includes('ambient-grain')) {
-    html = html.replace(/<body([^>]*class=")([^"]*)(")/, '<body$1$2 ambient-grain ambient-vignette$3');
-    // If body has no class attribute
-    if (!html.includes('ambient-grain')) {
-      html = html.replace(/<body>/, '<body class="ambient-grain ambient-vignette">');
-    }
-  }
-
-  // S3-08: Inject scroll-progress bar after opening <body> tag
+  // Editorial: Scroll-progress bar (teal)
   if (!html.includes('scroll-progress')) {
     html = html.replace(/<body([^>]*)>/,
-      '<body$1>\n  <div id="scroll-progress" style="position:fixed;top:0;left:0;height:2px;z-index:60;transform-origin:left;pointer-events:none;transform:scaleX(0);background:linear-gradient(90deg,#00E5FA,#00FF85);width:100%;" aria-hidden="true"></div>'
+      '<body$1>\n  <div id="scroll-progress" style="position:fixed;top:0;left:0;height:2px;z-index:60;transform-origin:left;pointer-events:none;transform:scaleX(0);background:#457B9D;width:100%;" aria-hidden="true"></div>'
     );
   }
+
+  // Remove old ambient-grain/vignette classes from body (no longer used in light theme)
+  html = html.replace(/\s*ambient-grain\s*/g, ' ');
+  html = html.replace(/\s*ambient-vignette\s*/g, ' ');
 
   // HF-04: Ensure fade-up elements visible without JavaScript
   if (!html.includes('noscript')) {
@@ -1603,20 +1682,12 @@ function inlineTailwindCss(html) {
     );
   }
 
-  // S2-11: Upgrade glossary detail pages to Apple design system
-  // Upgrade old :root variables to include Apple design tokens
+  // Editorial: Upgrade glossary and legacy pages to editorial tokens
   if (html.includes('glossary') || html.includes('Glossary')) {
-    // Add Apple design tokens if not already present
-    if (!html.includes('--mmt-surface:') && html.includes('--mmt-slate:')) {
-      html = html.replace(
-        /--mmt-slate:\s*#0A1628;/g,
-        '--mmt-slate: #0A1628;\n      --mmt-surface: #0A1628;\n      --mmt-surface-hover: #0F1D35;\n      --mmt-body: #CBD5E1;\n      --mmt-caption: #94A3B8;\n      --mmt-border: rgba(255, 255, 255, 0.05);'
-      );
-    }
-    // Upgrade pillar-tag to Apple tag style
+    // Upgrade pillar-tag to editorial tag style
     html = html.replace(
       /\.pillar-tag\s*\{[^}]*\}/g,
-      '.pillar-tag { display: inline-block; padding: 6px 14px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; background: var(--mmt-surface, #0A1628); color: var(--mmt-body, #CBD5E1); text-decoration: none; transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1); }'
+      '.pillar-tag { display: inline-block; padding: 6px 14px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; background: var(--mmt-soft, #F3F4F6); color: var(--mmt-text-secondary, #5C6B7A); text-decoration: none; transition: all 200ms ease; }'
     );
     html = html.replace(
       /\.pillar-tag:hover\s*\{[^}]*\}/g,
@@ -1860,8 +1931,8 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
       </div>`;
         // Insert before the "Back to Glossary" link
         html = html.replace(
-          '<div class="pt-6" style="border-top:1px solid rgba(0,229,250,0.1);">',
-          sourcesSection + '\n      <div class="pt-6" style="border-top:1px solid rgba(0,229,250,0.1);">'
+          '<div class="pt-6" style="border-top:1px solid var(--mmt-soft);">',
+          sourcesSection + '\n      <div class="pt-6" style="border-top:1px solid var(--mmt-soft);">'
         );
         glossarySourceCount++;
       }
@@ -2002,9 +2073,9 @@ function dateGroup(date) {
 }
 
 const categoryColors = {
-  'defense': 'var(--mmt-cyan)',
-  'health-it': 'var(--mmt-green)',
-  'policy': 'var(--mmt-white-dim)',
+  'defense': 'var(--mmt-teal)',
+  'health-it': 'var(--mmt-teal)',
+  'policy': 'var(--mmt-text-secondary)',
   'oversight': '#FBBF24',
 };
 
@@ -2061,7 +2132,7 @@ async function fetchNewsFeeds() {
 
 function generateNewswireHtml(newsItems) {
   if (newsItems.length === 0) {
-    return '<p class="text-center py-10" style="color:var(--mmt-white-dim);">Headlines are loading. Check back soon.</p>';
+    return '<p class="text-center py-10" style="color:var(--mmt-text-secondary);">Headlines are loading. Check back soon.</p>';
   }
 
   // Group by date
@@ -2079,18 +2150,18 @@ function generateNewswireHtml(newsItems) {
     if (!items || items.length === 0) return;
 
     html += `<div class="news-date-group mb-6">
-          <h2 class="text-sm font-semibold uppercase tracking-wider mb-4" style="color:var(--mmt-white-dim);">${escapeHtml(groupName)}</h2>\n`;
+          <h2 class="text-sm font-semibold uppercase tracking-wider mb-4" style="color:var(--mmt-text-secondary);">${escapeHtml(groupName)}</h2>\n`;
 
     items.forEach(item => {
-      const color = categoryColors[item.category] || 'var(--mmt-white-dim)';
+      const color = categoryColors[item.category] || 'var(--mmt-text-secondary)';
       const time = relativeTime(item.date);
       html += `          <a href="${escapeHtml(item.link)}" target="_blank" rel="noopener" class="news-card card rounded-xl p-5 mb-3 no-underline block transition-all" data-category="${item.category}">
             <div class="flex items-start justify-between gap-3 mb-2">
               <span class="text-xs font-bold uppercase tracking-wider" style="color:${color};">${escapeHtml(item.source)}</span>
-              <span class="text-xs whitespace-nowrap" style="color:var(--mmt-white-dim);">${escapeHtml(time)}</span>
+              <span class="text-xs whitespace-nowrap" style="color:var(--mmt-text-secondary);">${escapeHtml(time)}</span>
             </div>
-            <h3 class="text-base font-bold mb-1" style="color:var(--mmt-white);">${escapeHtml(item.title)}</h3>
-            ${item.description ? `<p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">${escapeHtml(item.description)}</p>` : ''}
+            <h3 class="text-base font-bold mb-1" style="color:var(--mmt-navy);">${escapeHtml(item.title)}</h3>
+            ${item.description ? `<p class="text-sm leading-relaxed" style="color:var(--mmt-text);">${escapeHtml(item.description)}</p>` : ''}
           </a>\n`;
     });
 
@@ -2102,22 +2173,22 @@ function generateNewswireHtml(newsItems) {
 
 function generateNewsWidgetHtml(newsItems) {
   if (newsItems.length === 0) {
-    return '<p class="text-sm" style="color:var(--mmt-white-dim);">Headlines loading. Check back soon.</p>';
+    return '<p class="text-sm" style="color:var(--mmt-text-secondary);">Headlines loading. Check back soon.</p>';
   }
 
   const top5 = newsItems.slice(0, 5);
-  let html = `<div class="mt-4 mb-4 p-4 rounded-xl" style="background:var(--mmt-navy); border:1px solid rgba(0,229,250,0.1);">
-            <p class="text-xs font-bold uppercase tracking-wider mb-3" style="color:var(--mmt-cyan);">Latest Headlines</p>\n`;
+  let html = `<div class="mt-4 mb-4 p-4 rounded-xl" style="background:var(--mmt-navy); border:1px solid var(--mmt-soft);">
+            <p class="text-xs font-bold uppercase tracking-wider mb-3" style="color:var(--mmt-teal);">Latest Headlines</p>\n`;
 
   top5.forEach(item => {
     const time = relativeTime(item.date);
     html += `            <a href="${escapeHtml(item.link)}" target="_blank" rel="noopener" class="flex items-baseline justify-between gap-2 py-2 no-underline hover:opacity-80" style="border-bottom:1px solid rgba(0,229,250,0.05);">
-              <span class="text-sm" style="color:var(--mmt-white-muted);"><span class="font-semibold" style="color:var(--mmt-white-dim);">${escapeHtml(item.source)}</span> &middot; ${escapeHtml(item.title.length > 60 ? item.title.substring(0, 57) + '...' : item.title)}</span>
-              <span class="text-xs whitespace-nowrap" style="color:var(--mmt-white-dim);">${escapeHtml(time)}</span>
+              <span class="text-sm" style="color:var(--mmt-text);"><span class="font-semibold" style="color:var(--mmt-text-secondary);">${escapeHtml(item.source)}</span> &middot; ${escapeHtml(item.title.length > 60 ? item.title.substring(0, 57) + '...' : item.title)}</span>
+              <span class="text-xs whitespace-nowrap" style="color:var(--mmt-text-secondary);">${escapeHtml(time)}</span>
             </a>\n`;
   });
 
-  html += `            <a href="/newswire.html" class="text-sm font-semibold no-underline hover:opacity-80 inline-block mt-3" style="color:var(--mmt-cyan);">View all on News Wire &rarr;</a>
+  html += `            <a href="/newswire.html" class="text-sm font-semibold no-underline hover:opacity-80 inline-block mt-3" style="color:var(--mmt-teal);">View all on News Wire &rarr;</a>
           </div>`;
 
   return html;
@@ -2170,7 +2241,7 @@ function generatePaginatedNewsletterPages(archive) {
       const linkAttrs = isExternal ? 'target="_blank" rel="noopener"' : '';
       return `<article class="card p-6 md:p-8">
           <div class="flex items-start justify-between gap-4 mb-2">
-            <h3 class="text-subsection" style="font-size:clamp(1.1rem, 1.5vw, 1.35rem);"><a href="${item.url}" ${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-white);">${escapeHtml(item.title)}</a></h3>
+            <h3 class="text-subsection" style="font-size:clamp(1.1rem, 1.5vw, 1.35rem);"><a href="${item.url}" ${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-navy);">${escapeHtml(item.title)}</a></h3>
             <span class="text-eyebrow whitespace-nowrap" style="font-size:0.7rem;">#${issueNum}</span>
           </div>
           <p class="text-caption mb-3">${escapeHtml(item.date)}</p>

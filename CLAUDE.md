@@ -8,7 +8,7 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 
 - **Type:** Static HTML/CSS/JS with Node.js build step (`node build.js`)
 - **Styling:** Tailwind CSS v3 (build-time via CLI, inlined into each HTML page during build) + inline CSS custom properties
-- **Fonts:** Self-hosted WOFF2 — Space Grotesk (headings), Inter (body), variable fonts with `font-display: swap`, served from `/fonts/`
+- **Fonts:** Self-hosted WOFF2 — Inter (all text, 400-800), variable font with `font-display: swap`, served from `/fonts/`
 - **Icons:** Inline SVGs (no external icon library)
 - **Forms:** Netlify Forms (contact form on about page), Buttondown (email signup)
 - **Analytics:** Plausible (privacy-respecting, no cookies)
@@ -20,27 +20,29 @@ This is the **Mission Meets Tech** marketing site — a static HTML site for fed
 - **Transactional Email:** Resend API (no SDK — simple `fetch()` POST); sends score receipts, Gold Team Reviews, + weekly reports from `noreply@missionmeetstech.com`
 - **Domain:** missionmeetstech.com
 
-## Design Tokens
+## Design Tokens (Editorial Light Theme)
 
 ```css
---mmt-cyan: #00E5FA;       /* Primary accent */
---mmt-green: #00FF85;       /* Secondary accent / gradient endpoint */
---mmt-navy: #00050F;        /* Page background */
---mmt-slate: #0A1628;       /* Card / elevated surface background */
---mmt-dark: #0D1117;        /* Alternating section background */
---mmt-white: #FFFFFF;
---mmt-white-muted: rgba(255,255,255,0.8);  /* Body text */
---mmt-white-dim: rgba(255,255,255,0.6);    /* Secondary text */
+--mmt-navy: #0A192F;           /* Primary brand / heading color */
+--mmt-ink: #102033;            /* Body text */
+--mmt-teal: #457B9D;           /* Secondary accent / links / eyebrows */
+--mmt-white: #FFFFFF;          /* Page background */
+--mmt-soft: #F3F4F6;           /* Soft background / alternating sections */
+--mmt-border: #D8E0E8;         /* Border / divider color */
+--mmt-text: #102033;           /* Primary text */
+--mmt-text-secondary: #5C6B7A; /* Secondary / caption text */
+--mmt-red: #E63946;            /* Alert / risk only */
 ```
 
 ### Key Patterns
-- **Gradient text:** `linear-gradient(135deg, cyan, green)` with `background-clip: text`
-- **Primary button:** Gradient background (cyan → green), navy text
-- **Secondary button:** 1px cyan border, white text, transparent bg
-- **Cards:** `--mmt-slate` bg, 1px `rgba(0,229,250,0.1)` border, 12px radius; hover: `rgba(0,229,250,0.3)`
-- **Tags:** `rgba(0,229,250,0.1)` bg, `var(--mmt-cyan)` text
-- **Nav:** Fixed, glass-morphism (`backdrop-filter: blur(12px)`), `border-bottom: rgba(0,229,250,0.1)`
-- **Section alt:** Alternating `--mmt-navy` / `--mmt-dark` backgrounds
+- **Primary button:** Navy bg (`--mmt-navy`), white text, pill shape (`border-radius: 9999px`)
+- **Secondary button:** White bg, navy text, `--mmt-border` border, pill shape
+- **Cards:** White bg, `--mmt-border` border, `18px` radius, subtle shadow; hover: slight lift
+- **Tags:** `--mmt-soft` bg, `--mmt-text-secondary` text, pill shape
+- **Eyebrow labels:** Uppercase, `0.75rem`, `--mmt-teal` color, tracked
+- **Nav:** Fixed, white bg with `backdrop-filter: blur(12px)`, subtle border
+- **Section backgrounds:** Alternating white and `--mmt-soft`
+- **Navy sections:** `section-navy` class for dark hero/CTA blocks
 
 ## File Structure
 
