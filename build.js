@@ -1753,6 +1753,14 @@ function inlineTailwindCss(html) {
   html = html.replace(/border:1px solid rgba\(0,229,250,0\.12\)/g, 'border:1px solid var(--mmt-border, #D8E0E8)');
   html = html.replace(/border:1px solid rgba\(0,229,250,0\.3\)/g, 'border:1px solid var(--mmt-teal, #457B9D)');
 
+  // Fix Resources page accordion/vehicle styles
+  html = html.replace(/\.vh-row\s*\{[^}]*border-bottom:[^}]*\}/g,
+    '.vh-row { border-bottom: 1px solid var(--mmt-border-light, #E8EDF2); }');
+  html = html.replace(/\.vh-meta\s*\{[^}]*color:[^}]*\}/g,
+    '.vh-meta { font-size: 0.75rem; color: var(--mmt-text-secondary, #5C6B7A); }');
+  html = html.replace(/\.vh-meta strong\s*\{[^}]*\}/g,
+    '.vh-meta strong { color: var(--mmt-navy, #0A192F); }');
+
   // Fix hover inline JS event handlers that reference old colors
   html = html.replace(/borderColor='rgba\(0,229,250,0\.3\)'/g, "borderColor='var(--mmt-teal)'");
   html = html.replace(/borderColor='rgba\(0,229,250,0\.15\)'/g, "borderColor='var(--mmt-border)'");
