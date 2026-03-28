@@ -1722,6 +1722,17 @@ function inlineTailwindCss(html) {
     return part.replace(/color:var\(--mmt-navy\)/, 'color:rgba(255,255,255,.8)');
   }).join('.hero-panel p{');
 
+  // btn-primary has navy background → needs white text
+  html = html.split('.btn-primary{').map((part, i) => {
+    if (i === 0) return part;
+    return part.replace(/color:\s*var\(--mmt-navy\)/, 'color:var(--mmt-white)');
+  }).join('.btn-primary{');
+  // section-navy headings → needs white text (restore after global replacement)
+  html = html.replace(
+    /\.section-navy,\.section-navy h1,\.section-navy h2,\.section-navy h3\{color:var\(--mmt-navy\)\}/g,
+    '.section-navy,.section-navy h1,.section-navy h2,.section-navy h3{color:var(--mmt-white)}'
+  );
+
   // Inject mmt-motion.js if not already present and page has fade-up elements
   if (!html.includes('mmt-motion.js') && html.includes('fade-up')) {
     html = html.replace('</body>', '  <script src="/js/mmt-motion.js" defer></script>\n</body>');
