@@ -928,10 +928,8 @@
   h1, .text-hero { max-width: 12ch; }
 
   .nav-editorial .nav-inner {
-    flex-direction: column;
-    align-items: flex-start;
-    min-height: auto;
-    padding: 12px 0;
+    min-height: 60px;
+    padding: 0;
   }
 }
 

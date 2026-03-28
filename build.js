@@ -1654,7 +1654,9 @@ function inlineTailwindCss(html) {
   // Replace old background tokens (including those with fallbacks)
   html = html.replace(/background:\s*var\(--mmt-dark[^)]*\)/g, 'background:var(--mmt-soft)');
   html = html.replace(/background:\s*var\(--mmt-slate[^)]*\)/g, 'background:var(--mmt-soft)');
-  html = html.replace(/background:\s*var\(--mmt-navy[^)]*\)/g, 'background:var(--mmt-white)');
+  // NOTE: Do NOT replace background:var(--mmt-navy) globally — navy is a valid
+  // background for btn-primary, section-navy, hero-panel, and podcast-card.
+  // Only the OLD --mmt-navy (#00050F) needed replacement, handled by :root swap.
   // Replace Space Grotesk font references (both in <style> blocks and inline styles)
   html = html.replace(/font-family:\s*'Space Grotesk'[^;'"]*[;'"]/g, function(match) {
     var end = match[match.length - 1];
@@ -1675,7 +1677,8 @@ function inlineTailwindCss(html) {
   html = html.replace(/color:\s*#ffffff(?=[;"])/gi, 'color:var(--mmt-navy)');
   // Replace old dark-theme background colors in inline styles
   html = html.replace(/background:\s*#00050F/g, 'background:var(--mmt-white)');
-  html = html.replace(/background:\s*var\(--mmt-navy\)/g, 'background:var(--mmt-white)');
+  // NOTE: Do NOT replace background:var(--mmt-navy) — it's valid for
+  // btn-primary, section-navy, hero-panel, podcast-card in the new system.
   // Replace remaining old rgba color patterns
   html = html.replace(/rgba\(0,229,250,[\d.]+\)/g, 'var(--mmt-border)');
   html = html.replace(/rgba\(0,255,133,[\d.]+\)/g, 'var(--mmt-border)');
