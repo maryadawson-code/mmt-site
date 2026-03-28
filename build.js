@@ -1822,8 +1822,13 @@ function inlineTailwindCss(html) {
     </div>
   </footer>`;
 
-  // Replace old nav (any nav block that contains old patterns)
-  if (html.includes('nav-glass') || html.includes('nav-apple') || html.includes('mmt-shield-nav') || html.includes('nav-logo') || html.includes('nav-links')) {
+  // Replace old nav (any nav block with old content patterns)
+  // Check for old subscribe dropdown, old logo patterns, or missing brand-mark
+  const hasOldNavContent = html.includes('subscribeToggle') || html.includes('subscribePanel') ||
+    html.includes('nav-glass') || html.includes('nav-apple') ||
+    html.includes('mmt-shield-nav') || html.includes('nav-logo') || html.includes('nav-links') ||
+    html.includes('nav-cta') || (html.includes('<nav') && !html.includes('brand-mark'));
+  if (hasOldNavContent) {
     html = html.replace(/<nav[\s\S]*?<\/nav>/i, editorialNav);
   }
 
