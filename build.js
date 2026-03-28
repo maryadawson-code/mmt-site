@@ -1682,7 +1682,10 @@ function inlineTailwindCss(html) {
   // Replace remaining old rgba color patterns
   html = html.replace(/rgba\(0,229,250,[\d.]+\)/g, 'var(--mmt-border)');
   html = html.replace(/rgba\(0,255,133,[\d.]+\)/g, 'var(--mmt-border)');
-  html = html.replace(/rgba\(255,255,255,0\.\d+\)/g, 'var(--mmt-text-secondary)');
+  // NOTE: Removed global rgba(255,255,255,0.x) replacement — it was
+  // destroying podcast button backgrounds, translucent overlays, and
+  // other legitimate white-alpha values. Old text colors are already
+  // handled by var(--mmt-white-muted/dim) token replacements above.
   // Replace old nav-glass class
   html = html.replace(/class="nav-glass/g, 'class="nav-editorial');
   html = html.replace(/\.nav-glass\s*\{[^}]*\}/g, '');
@@ -1996,7 +1999,7 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
   // Build-time injection map
   const injections = {
     '<!-- BUILD:LEAD_STORY -->': generateLeadStoryHtml(archive),
-    '<!-- BUILD:LATEST_ARTICLES -->': generateLatestArticlesHtml(archive, 3),
+    '<!-- BUILD:LATEST_ARTICLES -->': generateLatestArticlesHtml(archive, 2),
     '<!-- BUILD:TOPIC_CHIPS -->': generateTopicChipsHtml(archive),
     '<!-- BUILD:TOPIC_CARDS_HOME -->': generateTopicCardsHomeHtml(archive),
     '<!-- BUILD:TOPICS_GRID -->': generateTopicsGridHtml(archive),
