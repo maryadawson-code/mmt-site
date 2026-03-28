@@ -1722,6 +1722,43 @@ function inlineTailwindCss(html) {
     return part.replace(/color:var\(--mmt-navy\)/, 'color:rgba(255,255,255,.8)');
   }).join('.hero-panel p{');
 
+  // Fix trust/security strips on ProposalPulse and MarketPulse
+  // Old: green-on-dark (#95d5b2 text, rgba(45,106,79,0.15) bg, #d8f3dc text, #2d6a4f border)
+  // New: teal-on-light (editorial system colors)
+  html = html.replace(
+    /background:rgba\(45,106,79,0\.15\);border:1px solid #2d6a4f;border-radius:8px;padding:16px 20px;[^"]*color:#d8f3dc;/g,
+    'background:var(--mmt-teal-soft, rgba(69,123,157,0.12));border:1px solid var(--mmt-border, #D8E0E8);border-radius:var(--radius-sm, 18px);padding:16px 20px;margin-bottom:24px;font-size:14px;line-height:1.5;color:var(--mmt-text, #102033);'
+  );
+  html = html.replace(/color:#95d5b2;/g, 'color:var(--mmt-teal, #457B9D);');
+  html = html.replace(/color:#d8f3dc;/g, 'color:var(--mmt-text, #102033);');
+
+  // Fix old dark-theme inline card styles on utility pages
+  // Old: background:var(--mmt-slate) with cyan/green borders
+  html = html.replace(/background:var\(--mmt-slate\);border:1px solid rgba\(0,229,250,0\.15\)/g,
+    'background:var(--mmt-white, #FFFFFF);border:1px solid var(--mmt-border, #D8E0E8)');
+  html = html.replace(/background:var\(--mmt-slate\);border:1px solid rgba\(0,255,133,0\.15\)/g,
+    'background:var(--mmt-white, #FFFFFF);border:1px solid var(--mmt-border, #D8E0E8)');
+
+  // Fix old inline text colors on utility pages
+  html = html.replace(/color:var\(--text-primary\)/g, 'color:var(--mmt-navy, #0A192F)');
+  html = html.replace(/color:var\(--text-secondary\)/g, 'color:var(--mmt-text-secondary, #5C6B7A)');
+  html = html.replace(/color:var\(--text-muted\)/g, 'color:var(--mmt-text-secondary, #5C6B7A)');
+  html = html.replace(/color:var\(--primary-cyan\)/g, 'color:var(--mmt-teal, #457B9D)');
+
+  // Fix upload zone and form element inline styles
+  html = html.replace(/border:2px dashed rgba\(0,229,250,0\.3\)/g, 'border:2px dashed var(--mmt-border, #D8E0E8)');
+  html = html.replace(/border:2px dashed rgba\(0,255,133,0\.3\)/g, 'border:2px dashed var(--mmt-border, #D8E0E8)');
+
+  // Fix remaining dark-theme inline card borders
+  html = html.replace(/border:1px solid rgba\(0,229,250,0\.12\)/g, 'border:1px solid var(--mmt-border, #D8E0E8)');
+  html = html.replace(/border:1px solid rgba\(0,229,250,0\.3\)/g, 'border:1px solid var(--mmt-teal, #457B9D)');
+
+  // Fix hover inline JS event handlers that reference old colors
+  html = html.replace(/borderColor='rgba\(0,229,250,0\.3\)'/g, "borderColor='var(--mmt-teal)'");
+  html = html.replace(/borderColor='rgba\(0,229,250,0\.15\)'/g, "borderColor='var(--mmt-border)'");
+  html = html.replace(/borderColor='rgba\(0,255,133,0\.3\)'/g, "borderColor='var(--mmt-teal)'");
+  html = html.replace(/borderColor='rgba\(0,255,133,0\.15\)'/g, "borderColor='var(--mmt-border)'");
+
   // btn-primary has navy background → needs white text
   html = html.split('.btn-primary{').map((part, i) => {
     if (i === 0) return part;
