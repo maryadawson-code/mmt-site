@@ -45,6 +45,7 @@
   btn.addEventListener('click', openSearch);
   overlay.addEventListener('click', function(e) { if (e.target === overlay) closeSearch(); });
   document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeSearch(); if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearch(); } });
+  function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
   function loadIdx() { fetch('/search-index.json').then(function(r){return r.json()}).then(function(d){idx=d}).catch(function(){}); }
   input.addEventListener('input', function() {
     if (!idx) return;
@@ -55,9 +56,9 @@
     }).slice(0, 8);
     if (matches.length === 0) { results.innerHTML = '<p class="text-sm py-4 text-center" style="color:var(--mmt-text-secondary);">No results found.</p>'; return; }
     results.innerHTML = matches.map(function(m) {
-      return '<a href="'+m.url+'" class="block p-3 rounded-lg no-underline hover:opacity-80 mb-2" style="background:var(--mmt-soft); border:1px solid var(--mmt-border);">'
-        + '<p class="text-sm font-bold" style="color:var(--mmt-navy);">'+m.title+'</p>'
-        + '<p class="text-xs mt-1" style="color:var(--mmt-text-secondary);">'+m.date+'</p>'
+      return '<a href="'+esc(m.url)+'" class="block p-3 rounded-lg no-underline hover:opacity-80 mb-2" style="background:var(--mmt-soft); border:1px solid var(--mmt-border);">'
+        + '<p class="text-sm font-bold" style="color:var(--mmt-navy);">'+esc(m.title)+'</p>'
+        + '<p class="text-xs mt-1" style="color:var(--mmt-text-secondary);">'+esc(m.date)+'</p>'
         + '</a>';
     }).join('');
   });

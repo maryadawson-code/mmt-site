@@ -74,7 +74,7 @@ async function extractText(base64Data, resolvedType) {
 
   if (resolvedType === "pptx") {
     const officeparser = require("officeparser");
-    return await officeparser.parseOfficeAsync(buffer);
+    return await officeparser.parseOffice(buffer);
   }
 
   return null;

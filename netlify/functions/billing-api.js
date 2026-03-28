@@ -7,7 +7,7 @@ const { validateAuth } = require("./lib/auth");
 
 const HEADERS = {
   "Content-Type": "application/json",
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": "https://missionmeetstech.com",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 };
