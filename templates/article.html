@@ -32,17 +32,18 @@
   <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
   <link rel="stylesheet" href="/styles/tailwind.css">
   <style>
-    .article-content { line-height: 1.9; max-width: 65ch; font-size: 17px; color: #314155; }
-    .article-content h2 { font-size: 30px; font-weight: 800; margin: 34px 0 14px; color: var(--mmt-navy, #0A192F); letter-spacing: -0.03em; }
-    .article-content h3 { font-size: 22px; font-weight: 800; margin: 28px 0 10px; color: var(--mmt-navy, #0A192F); letter-spacing: -0.02em; }
-    .article-content p { margin-bottom: 22px; }
-    .article-content ul, .article-content ol { margin-bottom: 22px; padding-left: 1.5rem; }
-    .article-content li { margin-bottom: 8px; }
-    .article-content blockquote { margin: 28px 0; padding: 18px 22px; border-left: 4px solid var(--mmt-teal, #457B9D); background: rgba(69,123,157,0.08); border-radius: 0 18px 18px 0; color: var(--mmt-navy, #0A192F); font-size: 22px; line-height: 1.45; letter-spacing: -0.02em; font-weight: 600; }
-    .article-content a { color: var(--mmt-teal, #457B9D); text-decoration: underline; }
+    .article-content { line-height: 1.9; font-size: 17px; color: #314155; }
+    .article-content h2 { font-size: 30px; font-weight: 800; margin: 40px 0 16px; color: var(--mmt-navy, #0A192F); letter-spacing: -0.03em; }
+    .article-content h3 { font-size: 22px; font-weight: 800; margin: 32px 0 12px; color: var(--mmt-navy, #0A192F); letter-spacing: -0.02em; }
+    .article-content p { margin-bottom: 24px; max-width: 65ch; }
+    .article-content ul, .article-content ol { margin-bottom: 24px; padding-left: 1.5rem; max-width: 65ch; }
+    .article-content li { margin-bottom: 10px; }
+    .article-content blockquote { margin: 32px 0; padding: 20px 24px; border-left: 4px solid var(--mmt-teal, #457B9D); background: rgba(69,123,157,0.06); border-radius: 0 var(--radius-sm, 18px) var(--radius-sm, 18px) 0; color: var(--mmt-navy, #0A192F); font-size: 20px; line-height: 1.5; letter-spacing: -0.02em; font-weight: 600; max-width: 65ch; }
+    .article-content a { color: var(--mmt-teal, #457B9D); text-decoration: underline; text-underline-offset: 3px; }
     .article-content a:hover { opacity: 0.7; }
     .article-content strong { color: var(--mmt-navy, #0A192F); font-weight: 600; }
-    .article-content img { border-radius: 18px; margin: 22px 0; }
+    .article-content img { border-radius: var(--radius-sm, 18px); margin: 28px 0; }
+    .article-content hr { border: none; border-top: 1px solid var(--mmt-border, #D8E0E8); margin: 36px 0; }
   </style>
   <script type="application/ld+json">
   {
@@ -64,7 +65,7 @@
     "@type": "BreadcrumbList",
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://missionmeetstech.com/" },
-      { "@type": "ListItem", "position": 2, "name": "Newsletter", "item": "https://missionmeetstech.com/newsletter.html" },
+      { "@type": "ListItem", "position": 2, "name": "Intelligence", "item": "https://missionmeetstech.com/latest.html" },
       { "@type": "ListItem", "position": 3, "name": "{{TITLE}}" }
     ]
   }
@@ -74,7 +75,7 @@
 
   <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold" style="background:var(--mmt-navy); color:var(--mmt-white);">Skip to main content</a>
 
-  <!-- Navigation -->
+  <!-- Navigation (replaced by build.js with canonical editorial nav) -->
   <nav class="nav-editorial">
     <div class="wrap nav-inner">
       <a href="/" class="brand no-underline" aria-label="Mission Meets Tech">
@@ -120,26 +121,16 @@
 
   <main id="main-content" class="wrap">
 
-  <!-- Article Header -->
-  <section style="padding:44px 0 18px;">
+  <!-- Article Hero -->
+  <section style="padding:48px 0 24px;">
     <div style="max-width:980px;">
-      <div class="mb-4">
-        <a href="/newsletter.html#all-issues" class="text-sm no-underline hover:opacity-70 inline-flex items-center" style="color:var(--mmt-teal);"><svg class="mr-2" width="14" height="14" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H109.3l105.3-105.4c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>All Issues</a>
-      </div>
       <div class="kicker mb-3">{{TAGS}}</div>
-      <h1 class="text-hero mb-4" style="max-width:14ch;">{{TITLE}}</h1>
-      <p style="font-size:19px;line-height:1.58;color:var(--mmt-ink);max-width:70ch;">{{DESCRIPTION}}</p>
-      <div class="meta mt-4" style="justify-content:flex-start;gap:14px;">
+      <h1 style="font-size:clamp(34px, 4.4vw, 62px);line-height:0.96;letter-spacing:-0.045em;max-width:18ch;margin-bottom:18px;">{{TITLE}}</h1>
+      <p style="font-size:19px;line-height:1.58;color:var(--mmt-ink);max-width:70ch;margin-bottom:18px;">{{DESCRIPTION}}</p>
+      <div class="meta" style="justify-content:flex-start;gap:14px;margin-top:0;">
         <span>By Mary Womack</span>
         <span>{{READ_TIME}}</span>
         <span>{{DATE}}</span>
-      </div>
-    </div>
-
-    <div class="insight-bar mt-5">
-      <div><div class="pill">Analysis</div></div>
-      <div class="flex gap-3">
-        <a href="/newsletter.html" class="btn-primary no-underline">Subscribe for More</a>
       </div>
     </div>
   </section>
@@ -151,21 +142,29 @@
         <div class="article-content">
           {{CONTENT}}
         </div>
+
+        <!-- Prev/Next (inside article shell, below content) -->
+        <div style="border-top:1px solid var(--mmt-border-light, #E8EDF2);padding-top:18px;margin-top:36px;">
+          <div class="flex justify-between items-center">
+            {{PREV_LINK}}
+            {{NEXT_LINK}}
+          </div>
+        </div>
       </article>
 
       <aside class="article-rail">
         <div class="rail-box">
           <h4>Related resources</h4>
-          <div class="rail-list" style="display:grid;gap:12px;">
+          <div style="display:grid;gap:12px;">
             <div class="rail-item"><b><a href="/proposal-pulse.html" class="no-underline hover:opacity-70" style="color:var(--mmt-navy);">ProposalPulse</a></b><span>AI-powered proposal diagnostics.</span></div>
-            <div class="rail-item"><b><a href="/glossary.html" class="no-underline hover:opacity-70" style="color:var(--mmt-navy);">Glossary</a></b><span>Key terms for non-specialists.</span></div>
+            <div class="rail-item"><b><a href="/glossary.html" class="no-underline hover:opacity-70" style="color:var(--mmt-navy);">Glossary</a></b><span>Key federal health IT terms defined.</span></div>
             <div class="rail-item"><b><a href="/contract-tracker.html" class="no-underline hover:opacity-70" style="color:var(--mmt-navy);">Contract Tracker</a></b><span>Procurement intelligence.</span></div>
           </div>
         </div>
         <div class="rail-box">
           <h4>Subscribe</h4>
-          <p style="font-size:14px;">Get the next briefing in your inbox. Bi-weekly intelligence for defense health decision-makers.</p>
-          <div style="margin-top:12px;">
+          <p style="font-size:14px;line-height:1.55;">Get the next briefing in your inbox. Bi-weekly intelligence for defense health decision-makers.</p>
+          <div style="margin-top:14px;">
             <a href="/newsletter.html" class="btn-primary no-underline">Subscribe Free</a>
           </div>
         </div>
@@ -173,29 +172,35 @@
     </div>
   </section>
 
-  <!-- Prev/Next -->
-  <section style="padding-bottom:18px;">
-    <div style="max-width:780px;">
-      <div class="flex justify-between items-center pt-4" style="border-top:1px solid var(--mmt-border);">
-        {{PREV_LINK}}
-        {{NEXT_LINK}}
+  <!-- Below-Article Continuation: 3 modules -->
+  <section class="section">
+    <div class="grid-3">
+      <!-- 1. Continue the topic (related articles) -->
+      <div class="resource-card" style="display:grid;gap:12px;align-content:start;">
+        <h3 style="font-size:18px;">Continue the topic</h3>
+        <p>Thesis-adjacent analysis from the same coverage areas.</p>
+        {{RELATED_ARTICLES}}
       </div>
-    </div>
-  </section>
 
-  <!-- Related Articles -->
-  <section class="section">
-    <div style="max-width:780px;">
-      {{RELATED_ARTICLES}}
-    </div>
-  </section>
+      <!-- 2. Use a tool -->
+      <div class="resource-card" style="display:grid;gap:12px;align-content:start;">
+        <h3 style="font-size:18px;">Use a tool</h3>
+        <p>Extend the analysis with structured intelligence.</p>
+        <div style="display:grid;gap:10px;margin-top:8px;">
+          <a href="/proposal-pulse.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-teal);">ProposalPulse &rarr;</a>
+          <a href="/contract-tracker.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-teal);">Contract Tracker &rarr;</a>
+          <a href="/glossary.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-teal);">Glossary &rarr;</a>
+        </div>
+      </div>
 
-  <!-- Subscribe CTA -->
-  <section class="section">
-    <div class="card section-navy" style="padding:28px;text-align:center;">
-      <h3 style="color:var(--mmt-white);margin-bottom:10px;">Get the next briefing delivered.</h3>
-      <p style="color:rgba(255,255,255,0.7);max-width:50ch;margin:0 auto 18px;">Federal health IT intelligence, bi-weekly.</p>
-      <a href="/newsletter.html" class="btn-primary no-underline" style="background:var(--mmt-white);color:var(--mmt-navy);box-shadow:none;">Subscribe Free</a>
+      <!-- 3. Subscribe with context -->
+      <div class="resource-card" style="display:grid;gap:12px;align-content:start;">
+        <h3 style="font-size:18px;">Subscribe</h3>
+        <p>Bi-weekly federal health IT intelligence. Written for the people who actually have to act on this information.</p>
+        <div style="margin-top:8px;">
+          <a href="/newsletter.html" class="btn-primary no-underline">Subscribe Free</a>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -206,15 +211,19 @@
     <div style="border-top:1px solid var(--mmt-border);padding-top:20px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;color:var(--mmt-text-secondary);font-size:13px;">
       <div>
         <p style="margin-bottom:6px;"><strong style="color:var(--mmt-navy);">Mission Meets Tech</strong></p>
-        <p>Views expressed are those of the authors and do not represent any employer or government agency.</p>
+        <p>Federal health IT intelligence. Mission first.</p>
+        <p style="margin-top:10px;">Views expressed are those of the authors and do not represent any employer or government agency.</p>
         <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
       </div>
       <div class="flex flex-wrap gap-5" style="font-size:13px;">
         <a href="/latest.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Intelligence</a>
         <a href="/podcast.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Podcast</a>
+        <a href="/resources.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Resources</a>
+        <a href="/proposal-pulse.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">ProposalPulse</a>
         <a href="/about.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">About</a>
         <a href="/newsletter.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Subscribe</a>
         <a href="/privacy.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Privacy</a>
+        <a href="mailto:mary@missionmeetstech.com" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Contact</a>
       </div>
     </div>
   </footer>

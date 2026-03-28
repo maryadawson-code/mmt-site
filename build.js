@@ -158,18 +158,12 @@ function findRelatedArticles(article, allArticles, count = 3) {
 
 function generateRelatedArticlesHtml(related) {
   if (related.length === 0) return '';
-  const cards = related.map(a =>
-    `<a href="${a.url}" class="card p-4 no-underline block transition-all">
-            <p class="text-xs mb-1" style="color:var(--mmt-text-secondary);">${a.formattedDate}</p>
-            <p class="text-sm font-bold" style="color:var(--mmt-navy);">${escapeHtml(a.title)}</p>
-          </a>`
+  return related.map(a =>
+    `<a href="${a.url}" class="no-underline block" style="padding:10px 0;border-bottom:1px solid var(--mmt-border-light, #E8EDF2);">
+              <p class="text-sm font-bold" style="color:var(--mmt-navy);line-height:1.35;margin-bottom:4px;">${escapeHtml(a.title)}</p>
+              <p style="font-size:12px;color:var(--mmt-text-secondary);">${a.formattedDate}</p>
+            </a>`
   ).join('\n          ');
-  return `<div class="pt-8" style="border-top:1px solid var(--mmt-border);">
-        <p class="text-eyebrow mb-4">Related Articles</p>
-        <div class="grid md:grid-cols-3 gap-4">
-          ${cards}
-        </div>
-      </div>`;
 }
 
 function generateRelatedTopicsHtml(currentTag, allTags) {
