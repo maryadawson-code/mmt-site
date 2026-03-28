@@ -77,14 +77,12 @@
 [functions."roadmap-health-check"]
   schedule = "0 10 * * *"
 
-[[plugins]]
-  package = "@sentry/netlify-build-plugin"
-  [plugins.inputs]
-    sentryOrg = "mmt"
-    sentryProject = "mmt-site"
-    skipSetCommits = true
-    # Graceful degradation: do not fail deploy if Sentry API times out
-    failBuild = false
+# Sentry Netlify build plugin REMOVED — archived package was failing deploys
+# during onPostBuild (API timeout). Runtime @sentry/node monitoring in Netlify
+# Functions is unaffected. To restore release tracking later, use sentry-cli
+# in a custom non-blocking post-build script.
+# [[plugins]]
+#   package = "@sentry/netlify-build-plugin"
 
 [context.staging]
   command = "node build.js"
