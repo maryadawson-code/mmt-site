@@ -191,6 +191,16 @@
   to = "/marketpulse.html"
   status = 301
 
+[[redirects]]
+  from = "/about"
+  to = "/about.html"
+  status = 200
+
+[[redirects]]
+  from = "/getting-started"
+  to = "/getting-started.html"
+  status = 200
+
 [[headers]]
   for = "/*"
   [headers.values]
