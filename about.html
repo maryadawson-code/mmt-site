@@ -27,6 +27,7 @@
   <link rel="icon" type="image/png" sizes="512x512" href="/MMT_icon_512px.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="/js/site.js" defer></script>
   <style>
     :root {
       --mmt-cyan: #00E5FA;
@@ -1071,13 +1072,16 @@
     progress.style.width = pct + '%';
   }, { passive: true });
 
-  // ── Nav background on scroll
-  const nav = document.getElementById('nav');
-  window.addEventListener('scroll', () => {
-    nav.style.background = window.scrollY > 50
-      ? 'rgba(0,5,15,0.94)'
-      : 'rgba(0,5,15,0.72)';
-  }, { passive: true });
+  // ── Nav background on scroll (nav-editorial uses white bg by default;
+  //    on the dark about page, add a subtle shadow on scroll for depth)
+  const nav = document.querySelector('.nav-editorial');
+  if (nav) {
+    window.addEventListener('scroll', () => {
+      nav.style.boxShadow = window.scrollY > 50
+        ? '0 1px 8px rgba(0,0,0,0.08)'
+        : 'none';
+    }, { passive: true });
+  }
 
   // ── Scroll reveal + stagger
   const observer = new IntersectionObserver(
