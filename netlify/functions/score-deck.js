@@ -303,6 +303,9 @@ exports.handler = wrapHandler(async (event) => {
     }
 
     // --- Extract SOW text if provided ---
+    // For DOCX/PPTX SOW: extract text here (mammoth/officeparser are lightweight).
+    // For PDF SOW: store base64 — background function handles extraction
+    // (pdf-parse is 34MB and would push this function over Lambda's 50MB zip limit).
     let sowText = null;
     const sowBase64 = body.sow_base64 || null;
     const sowContentType = body.sow_content_type || null;
@@ -320,22 +323,8 @@ exports.handler = wrapHandler(async (event) => {
         } catch (sowErr) {
           console.error("SOW extraction error (continuing without):", sowErr);
         }
-      } else if (sowResolved === "pdf") {
-        try {
-          const pdfParse = require("pdf-parse");
-          const sowBuffer = Buffer.from(sowBase64, "base64");
-          const pdfData = await pdfParse(sowBuffer);
-          sowText = pdfData.text;
-          if (sowText && sowText.length > MAX_TEXT_CHARS) {
-            sowText = sowText.substring(0, MAX_TEXT_CHARS);
-          }
-          if (!sowText || sowText.trim().length < 50) {
-            sowText = null;
-          }
-        } catch (sowErr) {
-          console.error("SOW PDF extraction error (continuing without):", sowErr);
-        }
       }
+      // PDF SOW: pass through as base64 — background function extracts text
     }
 
     // --- MissionPulse: User & Usage ---
