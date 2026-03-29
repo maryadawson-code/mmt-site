@@ -10,8 +10,8 @@
     body { background: #0a0e17; color: #e2e8f0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 14px; line-height: 1.5; }
     .auth-gate { display: none; }
     .dashboard { max-width: 1400px; margin: 0 auto; padding: 20px; display: none; }
-    header { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid rgba(0,229,250,0.15); margin-bottom: 16px; }
-    header h1 { font-size: 1.4rem; color: #00e5fa; font-weight: 700; }
+    header { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid rgba(69,123,157,0.15); margin-bottom: 16px; }
+    header h1 { font-size: 1.4rem; color: #457B9D; font-weight: 700; }
     header .mode { padding: 4px 12px; border-radius: 4px; font-weight: 600; font-size: 0.85rem; }
     .mode-normal { background: rgba(22,163,74,0.2); color: #22c55e; }
     .mode-degraded { background: rgba(234,179,8,0.2); color: #eab308; }
@@ -25,12 +25,12 @@
     .badge-gray { background: rgba(107,114,128,0.2); color: #d1d5db; }
     .badge-purple { background: rgba(168,85,247,0.2); color: #a855f7; }
     .badge-orange { background: rgba(249,115,22,0.2); color: #f97316; }
-    .badge-cyan { background: rgba(0,229,250,0.15); color: #00e5fa; }
+    .badge-cyan { background: rgba(69,123,157,0.15); color: #457B9D; }
     table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
     th { text-align: left; padding: 6px 8px; color: rgba(255,255,255,0.5); border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 500; }
     td { padding: 6px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
     .btn { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
-    .btn-cyan { background: #00e5fa; color: #0a0e17; }
+    .btn-cyan { background: #457B9D; color: #0a0e17; }
     .btn-red { background: #ef4444; color: white; }
     .btn-yellow { background: #eab308; color: #0a0e17; }
     .btn-sm { padding: 4px 10px; font-size: 0.75rem; }
@@ -49,28 +49,28 @@
     .tile-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
     @media (min-width: 640px) { .tile-grid { grid-template-columns: repeat(3, 1fr); } }
     @media (min-width: 1024px) { .tile-grid { grid-template-columns: repeat(4, 1fr); } }
-    .tile { background: #111827; border: 1px solid rgba(0,229,250,0.1); border-radius: 12px; padding: 20px; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; position: relative; }
+    .tile { background: #111827; border: 1px solid rgba(69,123,157,0.1); border-radius: 12px; padding: 20px; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; position: relative; }
     .tile:hover { transform: scale(1.02); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
     .tile-icon { font-size: 2rem; margin-bottom: 8px; }
-    .tile-title { font-size: 0.95rem; color: #00e5fa; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .tile-title { font-size: 0.95rem; color: #457B9D; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.04em; }
     .tile-metrics { display: flex; gap: 16px; flex-wrap: wrap; }
     .tile-metric { font-size: 1.6rem; font-weight: 700; color: #e2e8f0; line-height: 1; }
     .tile-metric-label { font-size: 0.65rem; color: rgba(255,255,255,0.4); text-transform: uppercase; margin-top: 2px; }
-    .tile-badge { position: absolute; top: 12px; right: 12px; background: #ef4444; color: #fff; font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; min-width: 20px; text-align: center; }
+    .tile-badge { position: absolute; top: 12px; right: 12px; background: #ef4444; color: var(--mmt-navy); font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; min-width: 20px; text-align: center; }
 
     /* Detail view */
     .detail-view { display: none; }
     .detail-view.active { display: block; }
-    .back-btn { display: inline-flex; align-items: center; gap: 6px; color: #00e5fa; background: none; border: none; cursor: pointer; font-size: 0.9rem; font-weight: 600; margin-bottom: 16px; padding: 0; }
+    .back-btn { display: inline-flex; align-items: center; gap: 6px; color: #457B9D; background: none; border: none; cursor: pointer; font-size: 0.9rem; font-weight: 600; margin-bottom: 16px; padding: 0; }
     .back-btn:hover { text-decoration: underline; }
-    .detail-title { font-size: 1.3rem; color: #00e5fa; font-weight: 700; margin-bottom: 16px; }
-    .detail-card { background: #111827; border: 1px solid rgba(0,229,250,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
-    .detail-card h3 { font-size: 0.9rem; color: #00e5fa; margin-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+    .detail-title { font-size: 1.3rem; color: #457B9D; font-weight: 700; margin-bottom: 16px; }
+    .detail-card { background: #111827; border: 1px solid rgba(69,123,157,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .detail-card h3 { font-size: 0.9rem; color: #457B9D; margin-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
 
     /* Tab bar */
     .tab-bar { display: flex; gap: 4px; margin-bottom: 16px; }
     .tab-bar button { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); padding: 6px 14px; border-radius: 6px 6px 0 0; cursor: pointer; font-size: 0.8rem; font-weight: 600; }
-    .tab-bar button.active { background: #111827; color: #00e5fa; border-bottom-color: #111827; }
+    .tab-bar button.active { background: #111827; color: #457B9D; border-bottom-color: #111827; }
 
     /* Pipeline calendar card */
     .pipeline-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 14px; }
@@ -79,7 +79,7 @@
     /* Severity filter */
     .severity-filter { display: flex; gap: 6px; margin-bottom: 10px; }
     .severity-filter button { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); padding: 3px 10px; border-radius: 3px; cursor: pointer; font-size: 0.75rem; }
-    .severity-filter button.active { background: rgba(0,229,250,0.15); color: #00e5fa; border-color: rgba(0,229,250,0.3); }
+    .severity-filter button.active { background: rgba(69,123,157,0.15); color: #457B9D; border-color: rgba(69,123,157,0.3); }
 
     /* Status banner */
     .status-banner { padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; margin-bottom: 16px; text-align: center; }
@@ -105,37 +105,37 @@
     .svc-evaluate { border-left: 3px solid #eab308; }
     .issue-tabs { display: flex; gap: 4px; margin-bottom: 12px; }
     .issue-tabs button { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; }
-    .issue-tabs button.active { background: rgba(0,229,250,0.15); color: #00e5fa; }
+    .issue-tabs button.active { background: rgba(69,123,157,0.15); color: #457B9D; }
     /* === OPS CONSOLE STYLES === */
-    .cmd-bar { display: flex; gap: 8px; align-items: center; background: #111827; border: 1px solid rgba(0,229,250,0.2); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; flex-wrap: wrap; }
+    .cmd-bar { display: flex; gap: 8px; align-items: center; background: #111827; border: 1px solid var(--mmt-border); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; flex-wrap: wrap; }
     .cmd-bar input[type="text"] { flex: 1; min-width: 200px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; padding: 10px 14px; border-radius: 6px; font-size: 0.9rem; outline: none; }
-    .cmd-bar input[type="text"]:focus { border-color: #00e5fa; }
+    .cmd-bar input[type="text"]:focus { border-color: #457B9D; }
     .cmd-bar select { background: #1f2937; border: 1px solid rgba(255,255,255,0.15); color: #e2e8f0; padding: 10px 12px; border-radius: 6px; font-size: 0.82rem; cursor: pointer; }
-    .cmd-bar .cmd-send { background: #00e5fa; color: #0a0e17; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 700; font-size: 0.9rem; cursor: pointer; min-width: 44px; min-height: 44px; }
+    .cmd-bar .cmd-send { background: #457B9D; color: #0a0e17; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 700; font-size: 0.9rem; cursor: pointer; min-width: 44px; min-height: 44px; }
     .cmd-bar .cmd-send:hover { background: #00d4e8; }
     .cmd-bar .cmd-send:disabled { opacity: 0.5; cursor: not-allowed; }
     .cmd-history-btn { background: none; border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); padding: 8px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; min-width: 44px; min-height: 44px; }
     .cmd-history-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: #1f2937; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; max-height: 300px; overflow-y: auto; z-index: 100; display: none; }
     .cmd-history-dropdown.show { display: block; }
     .cmd-history-item { padding: 8px 12px; cursor: pointer; font-size: 0.8rem; color: rgba(255,255,255,0.6); border-bottom: 1px solid rgba(255,255,255,0.05); }
-    .cmd-history-item:hover { background: rgba(0,229,250,0.1); color: #e2e8f0; }
+    .cmd-history-item:hover { background: rgba(69,123,157,0.1); color: #e2e8f0; }
     .cmd-flash { position: fixed; bottom: 24px; right: 24px; padding: 12px 24px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; z-index: 9999; animation: flashIn 0.3s ease; }
     .cmd-flash-success { background: #22c55e; color: #0a0e17; }
-    .cmd-flash-error { background: #ef4444; color: #fff; }
+    .cmd-flash-error { background: #ef4444; color: var(--mmt-navy); }
     @keyframes flashIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
     .agent-panel { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
     .agent-chip { background: #111827; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 10px 14px; min-width: 140px; cursor: pointer; transition: border-color 0.2s, background 0.2s; flex-shrink: 0; min-height: 44px; }
-    .agent-chip:hover { border-color: rgba(0,229,250,0.3); }
-    .agent-chip.active { border-color: #00e5fa; background: rgba(0,229,250,0.05); }
+    .agent-chip:hover { border-color: rgba(69,123,157,0.3); }
+    .agent-chip.active { border-color: #457B9D; background: rgba(69,123,157,0.05); }
     .agent-chip .agent-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
     .agent-chip .agent-name { font-size: 0.8rem; font-weight: 600; color: #e2e8f0; }
     .agent-chip .agent-task { font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
     .agent-chip .agent-heartbeat { font-size: 0.6rem; color: rgba(255,255,255,0.2); margin-top: 2px; }
 
     .ops-section { background: #111827; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
-    .ops-section-title { font-size: 0.85rem; font-weight: 700; color: #00e5fa; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-    .ops-count-badge { background: #ef4444; color: #fff; font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; min-width: 20px; text-align: center; }
+    .ops-section-title { font-size: 0.85rem; font-weight: 700; color: #457B9D; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .ops-count-badge { background: #ef4444; color: var(--mmt-navy); font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; min-width: 20px; text-align: center; }
 
     .approval-card-ops { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 14px; margin-bottom: 10px; }
     .approval-card-ops.critical { border-color: rgba(239,68,68,0.4); animation: criticalPulse 2s infinite; }
@@ -162,7 +162,7 @@
 
     .filter-bar { display: flex; gap: 4px; margin-bottom: 12px; align-items: center; }
     .filter-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: 500; min-height: 32px; }
-    .filter-btn.active { background: rgba(0,229,250,0.15); color: #00e5fa; border-color: rgba(0,229,250,0.3); }
+    .filter-btn.active { background: rgba(69,123,157,0.15); color: #457B9D; border-color: rgba(69,123,157,0.3); }
 
     .ops-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     @media (max-width: 768px) { .ops-two-col { grid-template-columns: 1fr; } }
@@ -174,7 +174,7 @@
     .pipe-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 12px; margin-bottom: 8px; }
     .pipe-item.warning { border-color: rgba(234,179,8,0.3); background: rgba(234,179,8,0.03); }
     .pipe-inline-edit { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #e2e8f0; padding: 4px 8px; border-radius: 4px; font-size: 0.82rem; width: 100%; }
-    .pipe-inline-edit:focus { border-color: #00e5fa; outline: none; }
+    .pipe-inline-edit:focus { border-color: #457B9D; outline: none; }
 
     .last-updated-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
     .last-updated-bar .refresh-btn { background: none; border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; min-width: 44px; min-height: 32px; }
@@ -184,27 +184,27 @@
     .empty-state-icon { font-size: 2rem; margin-bottom: 8px; }
 
     /* Mobile bottom nav */
-    .mobile-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #111827; border-top: 1px solid rgba(0,229,250,0.15); z-index: 9000; padding: 4px 0 max(4px, env(safe-area-inset-bottom)); }
+    .mobile-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #111827; border-top: 1px solid rgba(69,123,157,0.15); z-index: 9000; padding: 4px 0 max(4px, env(safe-area-inset-bottom)); }
     .mobile-nav-inner { display: flex; justify-content: space-around; }
     .mobile-nav-item { display: flex; flex-direction: column; align-items: center; padding: 6px 4px; color: rgba(255,255,255,0.4); font-size: 0.6rem; cursor: pointer; border: none; background: none; min-width: 56px; }
-    .mobile-nav-item.active { color: #00e5fa; }
+    .mobile-nav-item.active { color: #457B9D; }
     .mobile-nav-item span:first-child { font-size: 1.2rem; margin-bottom: 2px; }
-    .mobile-nav-more { display: none; position: fixed; bottom: 56px; left: 0; right: 0; background: #1f2937; border-top: 1px solid rgba(0,229,250,0.15); z-index: 8999; max-height: 50vh; overflow-y: auto; padding: 8px; }
+    .mobile-nav-more { display: none; position: fixed; bottom: 56px; left: 0; right: 0; background: #1f2937; border-top: 1px solid rgba(69,123,157,0.15); z-index: 8999; max-height: 50vh; overflow-y: auto; padding: 8px; }
     .mobile-nav-more.show { display: block; }
     .mobile-nav-more-item { display: flex; align-items: center; gap: 10px; padding: 12px; color: #e2e8f0; font-size: 0.85rem; cursor: pointer; border-radius: 6px; }
-    .mobile-nav-more-item:hover { background: rgba(0,229,250,0.1); }
+    .mobile-nav-more-item:hover { background: rgba(69,123,157,0.1); }
     @media (max-width: 768px) { .mobile-nav { display: block; } .dashboard { padding-bottom: 72px; } }
     @media (min-width: 769px) { .mobile-nav { display: none !important; } .mobile-nav-more { display: none !important; } }
 
     /* Cmd+K palette */
     .cmd-palette-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000; align-items: flex-start; justify-content: center; padding-top: 20vh; }
     .cmd-palette-overlay.show { display: flex; }
-    .cmd-palette { background: #1f2937; border: 1px solid rgba(0,229,250,0.3); border-radius: 12px; width: 90%; max-width: 520px; overflow: hidden; box-shadow: 0 24px 48px rgba(0,0,0,0.5); }
+    .cmd-palette { background: #1f2937; border: 1px solid rgba(69,123,157,0.3); border-radius: 12px; width: 90%; max-width: 520px; overflow: hidden; box-shadow: 0 24px 48px rgba(0,0,0,0.5); }
     .cmd-palette input { width: 100%; padding: 16px 20px; background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.1); color: #f9fafb; font-size: 1rem; outline: none; }
     .cmd-palette-results { max-height: 320px; overflow-y: auto; padding: 4px 0; }
     .cmd-palette-item { padding: 10px 20px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: #e2e8f0; }
-    .cmd-palette-item.selected { background: rgba(0,229,250,0.15); color: #00e5fa; }
-    .cmd-palette-item:hover { background: rgba(0,229,250,0.1); }
+    .cmd-palette-item.selected { background: rgba(69,123,157,0.15); color: #457B9D; }
+    .cmd-palette-item:hover { background: rgba(69,123,157,0.1); }
     .cmd-palette-item .shortcut { margin-left: auto; color: rgba(255,255,255,0.3); font-size: 0.75rem; }
 
     /* Content Studio responsive */
@@ -224,9 +224,9 @@
     .approval-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 14px; margin-bottom: 10px; }
     .approval-card:last-child { margin-bottom: 0; }
     .approval-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-    .btn-green { background: #22c55e; color: #0a1628; font-weight: 600; }
+    .btn-green { background: #22c55e; color: #F3F4F6; font-weight: 600; }
     .btn-green:hover { background: #16a34a; }
-    .btn-orange { background: #f59e0b; color: #0a1628; font-weight: 600; }
+    .btn-orange { background: #f59e0b; color: #F3F4F6; font-weight: 600; }
     .btn-orange:hover { background: #d97706; }
     .btn-purple { background: #a855f7; color: white; }
     .btn-purple:hover { background: #9333ea; }
@@ -235,26 +235,26 @@
     .chat-msg:last-child { border-bottom: none; }
     .chat-msg .author { font-weight: 600; font-size: 0.82rem; }
     .chat-msg .author.agent { color: #a855f7; }
-    .chat-msg .author.human { color: #00e5fa; }
+    .chat-msg .author.human { color: #457B9D; }
     .chat-msg .author.system { color: rgba(255,255,255,0.4); }
     .chat-msg .time { font-size: 0.7rem; color: rgba(255,255,255,0.3); }
     .chat-msg .body { font-size: 0.82rem; margin-top: 3px; }
     .timeline-step { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; }
     .timeline-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
-    .timeline-dot.active { background: #00e5fa; }
+    .timeline-dot.active { background: #457B9D; }
     .timeline-dot.done { background: #22c55e; }
     .timeline-dot.pending { background: rgba(255,255,255,0.2); }
-    .diff-header { background: rgba(0,229,250,0.08); padding: 4px 8px; font-size: 0.75rem; color: #00e5fa; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .diff-header { background: rgba(69,123,157,0.08); padding: 4px 8px; font-size: 0.75rem; color: #457B9D; border-bottom: 1px solid rgba(255,255,255,0.08); }
 
     /* Command palette */
     .cmd-palette-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000; display: none; align-items: flex-start; justify-content: center; padding-top: 15vh; }
     .cmd-palette-overlay.open { display: flex; }
-    .cmd-palette { background: #111827; border: 1px solid rgba(0,229,250,0.25); border-radius: 12px; width: 90%; max-width: 520px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); overflow: hidden; }
+    .cmd-palette { background: #111827; border: 1px solid rgba(69,123,157,0.25); border-radius: 12px; width: 90%; max-width: 520px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); overflow: hidden; }
     .cmd-palette-input { width: 100%; padding: 14px 18px; background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; font-size: 1rem; outline: none; box-sizing: border-box; }
     .cmd-palette-input::placeholder { color: rgba(255,255,255,0.3); }
     .cmd-palette-list { max-height: 340px; overflow-y: auto; padding: 6px 0; }
     .cmd-palette-item { display: flex; align-items: center; gap: 10px; padding: 10px 18px; cursor: pointer; font-size: 0.88rem; color: rgba(255,255,255,0.7); transition: background 0.1s; }
-    .cmd-palette-item:hover, .cmd-palette-item.selected { background: rgba(0,229,250,0.1); color: #e2e8f0; }
+    .cmd-palette-item:hover, .cmd-palette-item.selected { background: rgba(69,123,157,0.1); color: #e2e8f0; }
     .cmd-palette-item .cp-icon { font-size: 1.1rem; width: 24px; text-align: center; flex-shrink: 0; }
     .cmd-palette-item .cp-label { flex: 1; }
     .cmd-palette-item .cp-cat { font-size: 0.7rem; color: rgba(255,255,255,0.3); text-transform: uppercase; }
@@ -268,12 +268,12 @@
     .mobile-nav-panel { position: fixed; top: 0; right: 0; bottom: 0; width: 280px; background: #111827; z-index: 9991; transform: translateX(100%); transition: transform 0.25s ease; overflow-y: auto; }
     .mobile-nav-panel.open { transform: translateX(0); }
     .mobile-nav-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .mobile-nav-header h2 { font-size: 1rem; color: #00e5fa; margin: 0; }
+    .mobile-nav-header h2 { font-size: 1rem; color: #457B9D; margin: 0; }
     .mobile-nav-close { background: none; border: none; color: rgba(255,255,255,0.5); font-size: 1.4rem; cursor: pointer; padding: 4px; }
     .mobile-nav-group { padding: 12px 20px 4px; }
     .mobile-nav-group-label { font-size: 0.65rem; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
     .mobile-nav-link { display: block; padding: 10px 0; color: rgba(255,255,255,0.7); font-size: 0.9rem; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); }
-    .mobile-nav-link:hover, .mobile-nav-link:active { color: #00e5fa; }
+    .mobile-nav-link:hover, .mobile-nav-link:active { color: #457B9D; }
     .mobile-nav-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 12px; }
     @media (max-width: 768px) {
       .mobile-nav-toggle { display: inline-flex; align-items: center; justify-content: center; }
@@ -282,10 +282,10 @@
     }
 
     /* Workspace bar */
-    #workspace-bar { position: sticky; top: 0; z-index: 9500; display: flex; gap: 4px; padding: 8px 20px; background: #0d1117; border-bottom: 1px solid rgba(0,229,250,0.15); overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    #workspace-bar { position: sticky; top: 0; z-index: 9500; display: flex; gap: 4px; padding: 8px 20px; background: #FFFFFF; border-bottom: 1px solid rgba(69,123,157,0.15); overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .ws-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); padding: 6px 20px; border-radius: 20px; cursor: pointer; font-size: 0.82rem; font-weight: 600; white-space: nowrap; transition: all 0.15s; }
     .ws-btn:hover { color: #e2e8f0; border-color: rgba(255,255,255,0.2); }
-    .ws-btn.active { background: rgba(0,229,250,0.15); color: #00e5fa; border-color: rgba(0,229,250,0.4); }
+    .ws-btn.active { background: rgba(69,123,157,0.15); color: #457B9D; border-color: rgba(69,123,157,0.4); }
 
     /* Compact status bar */
     #compact-status { display: flex; align-items: center; gap: 12px; padding: 6px 0; margin-bottom: 12px; font-size: 0.75rem; color: rgba(255,255,255,0.4); flex-wrap: wrap; }
@@ -294,19 +294,19 @@
     /* Roadmap styles */
     .roadmap-filter-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 16px; }
     .roadmap-filter-bar select, .roadmap-filter-bar input { background: #111827; color: #e2e8f0; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; padding: 6px 10px; font-size: 0.82rem; }
-    .roadmap-filter-bar button { background: rgba(0,229,250,0.15); color: #00e5fa; border: 1px solid rgba(0,229,250,0.3); border-radius: 4px; padding: 6px 14px; font-size: 0.82rem; cursor: pointer; font-weight: 600; }
-    .roadmap-filter-bar button.active { background: #00e5fa; color: #0a0e17; }
+    .roadmap-filter-bar button { background: rgba(69,123,157,0.15); color: #457B9D; border: 1px solid rgba(69,123,157,0.3); border-radius: 4px; padding: 6px 14px; font-size: 0.82rem; cursor: pointer; font-weight: 600; }
+    .roadmap-filter-bar button.active { background: #457B9D; color: #0a0e17; }
     .roadmap-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
     @media (min-width: 768px) { .roadmap-grid { grid-template-columns: repeat(3, 1fr); } }
     @media (min-width: 1200px) { .roadmap-grid { grid-template-columns: repeat(4, 1fr); } }
-    .roadmap-card { background: #111827; border: 1px solid rgba(0,229,250,0.15); border-radius: 8px; padding: 14px; cursor: pointer; transition: border-color 0.2s, transform 0.1s; }
-    .roadmap-card:hover { border-color: rgba(0,229,250,0.4); transform: translateY(-1px); }
-    .roadmap-card .card-title { font-weight: 700; color: #fff; font-size: 0.9rem; margin-bottom: 6px; }
+    .roadmap-card { background: #111827; border: 1px solid rgba(69,123,157,0.15); border-radius: 8px; padding: 14px; cursor: pointer; transition: border-color 0.2s, transform 0.1s; }
+    .roadmap-card:hover { border-color: rgba(69,123,157,0.4); transform: translateY(-1px); }
+    .roadmap-card .card-title { font-weight: 700; color: var(--mmt-navy); font-size: 0.9rem; margin-bottom: 6px; }
     .roadmap-card .card-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 0.75rem; }
-    .roadmap-detail-panel { background: #0d1117; border: 1px solid rgba(0,229,250,0.2); border-radius: 8px; padding: 16px; margin-top: 8px; margin-bottom: 16px; }
+    .roadmap-detail-panel { background: #FFFFFF; border: 1px solid var(--mmt-border); border-radius: 8px; padding: 16px; margin-top: 8px; margin-bottom: 16px; }
     .roadmap-tab-bar { display: flex; gap: 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 16px; overflow-x: auto; }
     .roadmap-tab-bar button { background: none; border: none; color: rgba(255,255,255,0.5); padding: 8px 16px; font-size: 0.82rem; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
-    .roadmap-tab-bar button.active { color: #00e5fa; border-bottom-color: #00e5fa; }
+    .roadmap-tab-bar button.active { color: #457B9D; border-bottom-color: #457B9D; }
     .roadmap-tab-bar button:hover { color: #e2e8f0; }
     .health-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; vertical-align: middle; }
     .health-dot-healthy { background: #22c55e; }
@@ -325,14 +325,14 @@
     .preflight-fail { background: rgba(239,68,68,0.1); }
     .preflight-manual { background: rgba(107,114,128,0.1); }
     .template-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-    .template-modal-content { background: #111827; border: 1px solid rgba(0,229,250,0.3); border-radius: 12px; padding: 24px; width: 90%; max-width: 700px; max-height: 80vh; overflow-y: auto; }
-    .template-modal-content h3 { color: #00e5fa; margin-bottom: 16px; }
+    .template-modal-content { background: #111827; border: 1px solid rgba(69,123,157,0.3); border-radius: 12px; padding: 24px; width: 90%; max-width: 700px; max-height: 80vh; overflow-y: auto; }
+    .template-modal-content h3 { color: #457B9D; margin-bottom: 16px; }
     .template-modal-content label { display: block; color: rgba(255,255,255,0.6); font-size: 0.82rem; margin-bottom: 4px; margin-top: 12px; }
     .template-modal-content input, .template-modal-content select, .template-modal-content textarea { width: 100%; background: #0a0e17; color: #e2e8f0; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; padding: 8px; font-size: 0.85rem; }
     .template-modal-content textarea { min-height: 80px; resize: vertical; }
     .template-btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
-    .template-btn { background: rgba(0,229,250,0.1); color: #00e5fa; border: 1px solid rgba(0,229,250,0.3); border-radius: 6px; padding: 8px 14px; cursor: pointer; font-size: 0.82rem; }
-    .template-btn.active { background: #00e5fa; color: #0a0e17; }
+    .template-btn { background: rgba(69,123,157,0.1); color: #457B9D; border: 1px solid rgba(69,123,157,0.3); border-radius: 6px; padding: 8px 14px; cursor: pointer; font-size: 0.82rem; }
+    .template-btn.active { background: #457B9D; color: #0a0e17; }
     .scaffold-preview { background: #0a0e17; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 12px; font-family: monospace; font-size: 0.78rem; white-space: pre-wrap; max-height: 300px; overflow-y: auto; margin-top: 12px; color: #a5f3fc; }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js" defer></script>
@@ -349,23 +349,23 @@
   </script>
 </head>
 <body>
-  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold" style="background:var(--mmt-cyan); color:#fff;">Skip to main content</a>
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold" style="background:var(--mmt-teal); color: var(--mmt-navy);">Skip to main content</a>
   <!-- LOGIN SCREEN -->
   <div id="login-screen" style="display:block;">
     <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #0a0e17;">
       <div style="background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 48px 40px; max-width: 420px; width: 100%;">
         <div style="text-align: center; margin-bottom: 32px;">
           <div style="font-size: 32px; margin-bottom: 12px;">&#9889;</div>
-          <h1 style="margin: 0; color: #00e5fa; font-size: 20px; font-weight: 700; letter-spacing: 0.5px;">Command Center</h1>
+          <h1 style="margin: 0; color: #457B9D; font-size: 20px; font-weight: 700; letter-spacing: 0.5px;">Command Center</h1>
           <p style="margin: 8px 0 0; color: #6b7280; font-size: 13px;">Mission Meets Tech Operations</p>
         </div>
         <div id="login-form">
           <label style="display: block; margin-bottom: 6px; color: #9ca3af; font-size: 13px; font-weight: 500;">Email</label>
           <input type="email" id="login-email" placeholder="you@company.com"
             style="width: 100%; padding: 10px 14px; background: #1f2937; border: 1px solid #374151; border-radius: 8px; color: #f9fafb; font-size: 14px; outline: none; box-sizing: border-box;"
-            onfocus="this.style.borderColor='#00e5fa'" onblur="this.style.borderColor='#374151'">
+            onfocus="this.style.borderColor='#457B9D'" onblur="this.style.borderColor='#374151'">
           <button id="login-btn" onclick="requestLogin()"
-            style="width: 100%; margin-top: 16px; padding: 12px; background: #00e5fa; color: #0a0e17; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">
+            style="width: 100%; margin-top: 16px; padding: 12px; background: #457B9D; color: #0a0e17; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">
             Send Login Link
           </button>
           <div id="login-message" style="margin-top: 16px; text-align: center; font-size: 13px; color: #6b7280; display: none;"></div>
@@ -374,7 +374,7 @@
           <div style="font-size: 32px; margin-bottom: 12px;">&#128231;</div>
           <p style="color: #f9fafb; font-size: 15px; margin: 0 0 8px;">Check your email</p>
           <p style="color: #6b7280; font-size: 13px; margin: 0 0 20px; line-height: 1.5;">
-            We sent a login link to <strong id="sent-email" style="color: #00e5fa;"></strong>.<br>
+            We sent a login link to <strong id="sent-email" style="color: #457B9D;"></strong>.<br>
             It expires in 15 minutes.
           </p>
           <button onclick="showLoginForm()" style="background: transparent; border: 1px solid #374151; color: #9ca3af; padding: 8px 16px; border-radius: 6px; font-size: 13px; cursor: pointer;">
@@ -384,7 +384,7 @@
         <div id="login-error" style="display: none; text-align: center;">
           <div style="font-size: 32px; margin-bottom: 12px;">&#9888;&#65039;</div>
           <p style="color: #f87171; font-size: 15px; margin: 0 0 8px;" id="login-error-text">Link expired</p>
-          <button onclick="showLoginForm()" style="background: #00e5fa; color: #0a0e17; border: none; padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">
+          <button onclick="showLoginForm()" style="background: #457B9D; color: #0a0e17; border: none; padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">
             Request New Link
           </button>
         </div>
@@ -409,7 +409,7 @@
             <option value="editor">Editor</option>
             <option value="viewer">Viewer</option>
           </select>
-          <button onclick="addUser()" style="padding: 8px 16px; background: #00e5fa; color: #0a0e17; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap;">Add</button>
+          <button onclick="addUser()" style="padding: 8px 16px; background: #457B9D; color: #0a0e17; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap;">Add</button>
         </div>
       </div>
       <button onclick="closeUserMgmt()" style="margin-top: 20px; width: 100%; padding: 10px; background: transparent; border: 1px solid #374151; color: #9ca3af; border-radius: 6px; cursor: pointer;">Close</button>
@@ -484,7 +484,7 @@
       </div>
     </header>
 
-    <div id="alert-banner" role="alert" aria-live="assertive" style="display:none;background:#ef4444;color:#fff;padding:12px 24px;font-weight:600;font-size:14px;text-align:center;border-radius:6px;margin-bottom:16px;"></div>
+    <div id="alert-banner" role="alert" aria-live="assertive" style="display:none;background:#ef4444;color: var(--mmt-navy);padding:12px 24px;font-weight:600;font-size:14px;text-align:center;border-radius:6px;margin-bottom:16px;"></div>
 
     <!-- Compact status bar -->
     <div id="compact-status">
@@ -495,8 +495,8 @@
 
 
     <!-- Approval notification bar -->
-    <div id="approval-notification-bar" style="display:none;background:rgba(0,229,250,0.08);border:1px solid rgba(0,229,250,0.2);border-radius:8px;padding:12px 20px;margin-bottom:16px;align-items:center;justify-content:space-between;font-size:0.9rem;">
-      <span id="approval-bar-text" style="color:#00e5fa;font-weight:600;"></span>
+    <div id="approval-notification-bar" style="display:none;background:rgba(69,123,157,0.08);border:1px solid var(--mmt-border);border-radius:8px;padding:12px 20px;margin-bottom:16px;align-items:center;justify-content:space-between;font-size:0.9rem;">
+      <span id="approval-bar-text" style="color:#457B9D;font-weight:600;"></span>
       <button class="btn btn-cyan btn-sm" onclick="scrollToConsole()" id="approval-bar-btn">Review Now</button>
     </div>
 
@@ -591,7 +591,7 @@
           <div class="ops-section" id="pipeline-section">
             <div class="ops-section-title">
               <span>NEWSLETTER PIPELINE</span>
-              <button onclick="addPipelineSlot()" style="background:rgba(0,229,250,0.1);border:1px solid rgba(0,229,250,0.2);color:#00e5fa;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:0.7rem;font-weight:600;margin-left:auto;">+ Add Issue</button>
+              <button onclick="addPipelineSlot()" style="background:rgba(69,123,157,0.1);border:1px solid var(--mmt-border);color:#457B9D;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:0.7rem;font-weight:600;margin-left:auto;">+ Add Issue</button>
             </div>
             <div id="pipeline-feed"></div>
           </div>
@@ -922,15 +922,15 @@
           const sBadge = it.status === 'needs_fix' ? '<span style="color:#f87171;font-size:0.6rem;font-weight:700;">NEEDS FIX</span>' : '';
           const hBadge = it.health === 'broken' ? '<span style="color:#ef4444;font-size:0.6rem;font-weight:700;">BROKEN</span>' : it.health === 'degraded' ? '<span style="color:#eab308;font-size:0.6rem;font-weight:700;">DEGRADED</span>' : '';
           attnHtml += '<div style="font-size:0.7rem;color:rgba(255,255,255,0.7);padding:2px 0;">';
-          attnHtml += '<span style="color:#fff;">' + esc(it.feature_name) + '</span> ';
-          attnHtml += '<span style="color:#00e5fa;font-size:0.6rem;">' + (pLabels[it.product] || it.product) + '</span> ';
+          attnHtml += '<span style="color: var(--mmt-navy);">' + esc(it.feature_name) + '</span> ';
+          attnHtml += '<span style="color:#457B9D;font-size:0.6rem;">' + (pLabels[it.product] || it.product) + '</span> ';
           attnHtml += sBadge + ' ' + hBadge;
           attnHtml += '</div>';
         }
         attnHtml += '</div>';
       }
       // Footer link
-      const footerHtml = '<div style="text-align:right;margin-top:4px;"><a href="https://missionpulse.ai/roadmap" target="_blank" rel="noopener" style="color:#00e5fa;font-size:0.7rem;text-decoration:none;" onclick="event.stopPropagation();">View Full Roadmap \u2192</a></div>';
+      const footerHtml = '<div style="text-align:right;margin-top:4px;"><a href="https://missionpulse.ai/roadmap" target="_blank" rel="noopener" style="color:#457B9D;font-size:0.7rem;text-decoration:none;" onclick="event.stopPropagation();">View Full Roadmap \u2192</a></div>';
       const customHtml = barHtml + healthHtml + prodHtml + attnHtml + footerHtml;
       return { id: 'roadmap', icon: '\ud83d\udccb', title: 'Product Roadmap', m1: total, m1l: 'Features', m2: null, m2l: null, badge: totalAttention, customHtml: customHtml, roles: ['cto', 'all'] };
     }
@@ -1234,7 +1234,7 @@
         if (productsTab === 'pp') {
           h += '<table><tr><th>Time</th><th>File</th><th>Status</th><th>Grade</th><th></th></tr>';
           rh.slice(0, 10).forEach(function(r) {
-            h += '<tr><td style="font-size:0.75rem;color:rgba(255,255,255,0.4)">' + fmtDate(r.created_at) + '</td><td style="font-size:0.82rem;" class="trunc">' + esc(r.file_name || '--') + '</td><td><span class="badge badge-' + (r.workflow_state === 'email_sent' || r.workflow_state === 'delivered' ? 'green' : 'yellow') + '">' + esc(r.workflow_state || '--') + '</span></td><td>' + esc(r.overall_grade || '--') + '</td><td>' + (r.report_url ? '<a href="' + r.report_url + '" target="_blank" style="color:#00e5fa;font-size:0.75rem;">View</a>' : '') + '</td></tr>';
+            h += '<tr><td style="font-size:0.75rem;color:rgba(255,255,255,0.4)">' + fmtDate(r.created_at) + '</td><td style="font-size:0.82rem;" class="trunc">' + esc(r.file_name || '--') + '</td><td><span class="badge badge-' + (r.workflow_state === 'email_sent' || r.workflow_state === 'delivered' ? 'green' : 'yellow') + '">' + esc(r.workflow_state || '--') + '</span></td><td>' + esc(r.overall_grade || '--') + '</td><td>' + (r.report_url ? '<a href="' + r.report_url + '" target="_blank" style="color:#457B9D;font-size:0.75rem;">View</a>' : '') + '</td></tr>';
           });
         } else {
           h += '<table><tr><th>Time</th><th>Email</th><th>Topic</th><th>Status</th></tr>';
@@ -1312,7 +1312,7 @@
         const prs = d.prs || [];
         if (d.error) { container.innerHTML = '<p style="color:rgba(255,255,255,0.3)">' + esc(d.error) + '</p>'; return; }
         if (!prs.length) { container.innerHTML = '<p style="color:rgba(255,255,255,0.3)">No open PRs</p>'; return; }
-        container.innerHTML = prs.map(pr => '<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center;"><div><a href="' + esc(pr.url) + '" target="_blank" style="color:#00e5fa;font-size:0.85rem;text-decoration:none;">#' + pr.number + ' ' + esc(pr.title) + '</a><div style="font-size:0.72rem;color:rgba(255,255,255,0.4);">' + esc(pr.repo) + ' · ' + esc(pr.author) + ' · ' + timeSince(pr.created_at) + '</div></div><div>' + (pr.draft ? '<span class="badge badge-gray">Draft</span>' : '') + pr.labels.map(l => '<span class="badge badge-purple" style="margin-left:4px;">' + esc(l) + '</span>').join('') + '</div></div>').join('');
+        container.innerHTML = prs.map(pr => '<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center;"><div><a href="' + esc(pr.url) + '" target="_blank" style="color:#457B9D;font-size:0.85rem;text-decoration:none;">#' + pr.number + ' ' + esc(pr.title) + '</a><div style="font-size:0.72rem;color:rgba(255,255,255,0.4);">' + esc(pr.repo) + ' · ' + esc(pr.author) + ' · ' + timeSince(pr.created_at) + '</div></div><div>' + (pr.draft ? '<span class="badge badge-gray">Draft</span>' : '') + pr.labels.map(l => '<span class="badge badge-purple" style="margin-left:4px;">' + esc(l) + '</span>').join('') + '</div></div>').join('');
       }).catch(() => {});
 
       // Fetch tech debt from roadmap
@@ -1596,7 +1596,7 @@
           h += '<div style="flex:1;min-width:0;"><div style="font-size:0.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + esc(p.article_title) + '</div>';
           h += '<div style="font-size:0.7rem;color:rgba(255,255,255,0.4);margin-top:2px;">' + promptCount + ' prompts · ' + imageCount + ' images · ' + timeSince(p.updated_at) + '</div></div>';
           h += '<span style="font-size:0.7rem;color:' + color + ';text-transform:uppercase;font-weight:600;">' + p.status + '</span>';
-          if (p.pipeline_id) h += '<span style="font-size:0.65rem;color:#00e5fa;" title="Linked to pipeline">📰</span>';
+          if (p.pipeline_id) h += '<span style="font-size:0.65rem;color:#457B9D;" title="Linked to pipeline">📰</span>';
           h += '<button class="btn btn-sm" style="background:rgba(239,68,68,0.15);color:#ef4444;font-size:0.7rem;padding:2px 8px;" onclick="event.stopPropagation();deleteCreativeProject(\'' + p.id + '\')">×</button>';
           h += '</div>';
         });
@@ -1658,7 +1658,7 @@
       h += '<label style="font-size:0.75rem;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:4px;"><input type="checkbox" id="research-gemini" checked> Gemini</label>';
       h += '</div>';
       h += '<div id="research-results" class="research-grid-3col" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">';
-      h += '<div id="result-perplexity" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px;min-height:150px;"><div style="font-weight:700;font-size:0.8rem;color:#00e5fa;margin-bottom:8px;">Perplexity</div><div class="r-content" style="font-size:0.8rem;color:rgba(255,255,255,0.3);">Waiting for query...</div></div>';
+      h += '<div id="result-perplexity" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px;min-height:150px;"><div style="font-weight:700;font-size:0.8rem;color:#457B9D;margin-bottom:8px;">Perplexity</div><div class="r-content" style="font-size:0.8rem;color:rgba(255,255,255,0.3);">Waiting for query...</div></div>';
       h += '<div id="result-chatgpt" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px;min-height:150px;"><div style="font-weight:700;font-size:0.8rem;color:#74aa9c;margin-bottom:8px;">ChatGPT</div><div class="r-content" style="font-size:0.8rem;color:rgba(255,255,255,0.3);">Waiting for query...</div></div>';
       h += '<div id="result-gemini" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px;min-height:150px;"><div style="font-weight:700;font-size:0.8rem;color:#4285f4;margin-bottom:8px;">Gemini</div><div class="r-content" style="font-size:0.8rem;color:rgba(255,255,255,0.3);">Waiting for query...</div></div>';
       h += '</div>';
@@ -1731,7 +1731,7 @@
           const day = new Date(date + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'short' });
           h += '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">';
           h += '<span style="font-size:0.65rem;color:rgba(255,255,255,0.4);">$' + (cents / 100).toFixed(2) + '</span>';
-          h += '<div style="width:100%;background:rgba(0,229,250,0.3);border-radius:3px 3px 0 0;height:' + Math.max(pct, 4) + '%;"></div>';
+          h += '<div style="width:100%;background:rgba(69,123,157,0.3);border-radius:3px 3px 0 0;height:' + Math.max(pct, 4) + '%;"></div>';
           h += '<span style="font-size:0.65rem;color:rgba(255,255,255,0.3);">' + day + '</span>';
           h += '</div>';
         }
@@ -1768,7 +1768,7 @@
 
     // ============ ROADMAP — Live database-backed product roadmap ============
 
-    const PRODUCT_COLORS = { proposalpulse: '#a855f7', marketpulse: '#3b82f6', mmt_site: '#22c55e', command_center: '#00e5fa', agent_network: '#f97316' };
+    const PRODUCT_COLORS = { proposalpulse: '#a855f7', marketpulse: '#3b82f6', mmt_site: '#22c55e', command_center: '#457B9D', agent_network: '#f97316' };
     const PRODUCT_LABELS = { proposalpulse: 'ProposalPulse', marketpulse: 'MarketPulse', mmt_site: 'MMT Site', command_center: 'Command Center', agent_network: 'Agent Network' };
     const STATUS_COLORS = { deployed: 'green', in_progress: 'blue', planned: 'gray', needs_fix: 'red', deprecated: 'gray' };
     const PRIORITY_LABELS = { p0_critical: 'P0', p1_high: 'P1', p2_medium: 'P2', p3_low: 'P3' };
@@ -1828,7 +1828,7 @@
       if (!feature) return;
       let h = '<div class="roadmap-detail-panel" id="rm-detail-panel">';
       h += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">';
-      h += '<h3 style="color:#fff;">' + esc(feature.feature_name) + '</h3>';
+      h += '<h3 style="color: var(--mmt-navy);">' + esc(feature.feature_name) + '</h3>';
       h += '<button class="btn" style="font-size:0.75rem;" onclick="document.getElementById(\'rm-detail-panel\').remove();_roadmapExpandedId=null;">Close</button>';
       h += '</div>';
       // Fields
@@ -1859,7 +1859,7 @@
         h += '<div style="margin-top:8px;">';
         logEntries.slice(0, 20).forEach(l => {
           const icon = l.change_type === 'status_change' ? '\u{1f504}' : l.change_type === 'health_change' ? '\u{1f3e5}' : l.change_type === 'comment' ? '\u{1f4ac}' : l.change_type === 'pre_flight' ? '\u2708\ufe0f' : '\u{1f4dd}';
-          h += '<div class="activity-item"><span>' + icon + '</span><div><span style="color:#00e5fa;">' + esc(l.changed_by || 'system') + '</span> ';
+          h += '<div class="activity-item"><span>' + icon + '</span><div><span style="color:#457B9D;">' + esc(l.changed_by || 'system') + '</span> ';
           if (l.field_changed) h += '<span style="color:rgba(255,255,255,0.5);">' + l.field_changed + ':</span> ' + esc(l.old_value || '') + ' → <strong>' + esc(l.new_value || '') + '</strong>';
           else if (l.message) h += esc(l.message);
           else h += l.change_type;
@@ -1934,7 +1934,7 @@
       h += '<label>Description</label><textarea id="rm-new-desc" placeholder="Brief description..."></textarea>';
       h += '<label>Category</label><select id="rm-new-cat"><option value="core">Core</option><option value="security">Security</option><option value="ux">UX</option><option value="integration">Integration</option><option value="infrastructure">Infrastructure</option><option value="content">Content</option></select>';
       h += '<div style="margin-top:16px;display:flex;gap:8px;">';
-      h += '<button class="btn" style="background:#22c55e;color:#0a1628;" onclick="submitNewFeature()">Create</button>';
+      h += '<button class="btn" style="background:#22c55e;color:#F3F4F6;" onclick="submitNewFeature()">Create</button>';
       h += '<button class="btn" onclick="document.getElementById(\'rm-new-modal\').remove()">Cancel</button>';
       h += '</div>';
       h += '<div id="rm-scaffold-preview"></div>';
@@ -1990,8 +1990,8 @@
         });
         graph += '  classDef healthy fill:#22c55e,stroke:#16a34a,color:#000\n';
         graph += '  classDef degraded fill:#eab308,stroke:#ca8a04,color:#000\n';
-        graph += '  classDef broken fill:#ef4444,stroke:#dc2626,color:#fff\n';
-        graph += '  classDef untested fill:#6b7280,stroke:#4b5563,color:#fff\n';
+        graph += '  classDef broken fill:#ef4444,stroke:#dc2626,color: var(--mmt-navy)\n';
+        graph += '  classDef untested fill:#6b7280,stroke:#4b5563,color: var(--mmt-navy)\n';
         if (typeof mermaid !== 'undefined') {
           const { svg } = await mermaid.render('rm-mermaid-' + Date.now(), graph);
           container.innerHTML = svg;
@@ -2054,7 +2054,7 @@
           if (_roadmapCharts.deploy) _roadmapCharts.deploy.destroy();
           _roadmapCharts.deploy = new Chart(canvas, {
             type: 'bar',
-            data: { labels: ['8w ago','7w','6w','5w','4w','3w','2w','This week'], datasets: [{ label: 'Deploys', data: [0,0,0,0,0,0,0, d.deploys || 0], backgroundColor: '#00e5fa44', borderColor: '#00e5fa', borderWidth: 1 }] },
+            data: { labels: ['8w ago','7w','6w','5w','4w','3w','2w','This week'], datasets: [{ label: 'Deploys', data: [0,0,0,0,0,0,0, d.deploys || 0], backgroundColor: '#457B9D44', borderColor: '#457B9D', borderWidth: 1 }] },
             options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: '#6b7280' } }, x: { ticks: { color: '#6b7280' } } } }
           });
         }
@@ -2098,7 +2098,7 @@
       h += '<select id="rm-status-filter" onchange="loadRoadmapFeatures().then(()=>renderRoadmapCards())"><option value="">All Status</option><option value="planned">Planned</option><option value="in_progress">In Progress</option><option value="deployed">Deployed</option><option value="needs_fix">Needs Fix</option><option value="deprecated">Deprecated</option></select>';
       h += '<select id="rm-health-filter" onchange="loadRoadmapFeatures().then(()=>renderRoadmapCards())"><option value="">All Health</option><option value="healthy">Healthy</option><option value="degraded">Degraded</option><option value="broken">Broken</option><option value="untested">Untested</option></select>';
       h += '<input id="rm-search" type="text" placeholder="Search..." oninput="clearTimeout(this._t);this._t=setTimeout(()=>{loadRoadmapFeatures().then(()=>renderRoadmapCards())},300)">';
-      h += '<button onclick="openNewFeatureModal()" style="background:#22c55e;color:#0a1628;border-color:#22c55e;">+ Add Feature</button>';
+      h += '<button onclick="openNewFeatureModal()" style="background:#22c55e;color:#F3F4F6;border-color:#22c55e;">+ Add Feature</button>';
       h += '</div>';
 
       // Workspace tabs
@@ -2319,14 +2319,14 @@
       const research = d.research || [];
       const statusColors = { drafting: '#60a5fa', generating: '#eab308', selecting: '#a855f7', complete: '#22c55e' };
 
-      let h = '<div class="detail-card" style="border:1px solid rgba(0,229,250,0.2);">';
+      let h = '<div class="detail-card" style="border:1px solid var(--mmt-border);">';
       h += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">';
       h += '<h3 style="margin:0;">' + esc(proj.article_title) + '</h3>';
       h += '<div style="display:flex;gap:8px;align-items:center;">';
       h += '<span style="font-size:0.75rem;color:' + (statusColors[proj.status] || '#9ca3af') + ';text-transform:uppercase;font-weight:600;">' + proj.status + '</span>';
       h += '<button class="btn btn-sm" style="background:rgba(255,255,255,0.1);color:#e2e8f0;font-size:0.75rem;" onclick="document.getElementById(\'creative-project-detail\').style.display=\'none\'">Close</button>';
       h += '</div></div>';
-      if (proj.article_url) h += '<div style="font-size:0.75rem;margin-bottom:8px;"><a href="' + proj.article_url + '" target="_blank" style="color:#00e5fa;">View article →</a></div>';
+      if (proj.article_url) h += '<div style="font-size:0.75rem;margin-bottom:8px;"><a href="' + proj.article_url + '" target="_blank" style="color:#457B9D;">View article →</a></div>';
 
       // Prompt builder
       h += '<div style="margin-bottom:16px;">';
@@ -2343,8 +2343,8 @@
         prompts.forEach(p => {
           h += '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;padding:8px 10px;margin-bottom:6px;">';
           h += '<div style="font-size:0.8rem;color:#e2e8f0;">v' + p.version + ': ' + esc(p.prompt_text.substring(0, 150)) + (p.prompt_text.length > 150 ? '...' : '') + '</div>';
-          if (p.style_tags && p.style_tags.length) h += '<div style="margin-top:4px;">' + p.style_tags.map(t => '<span style="background:rgba(0,229,250,0.1);color:#00e5fa;font-size:0.65rem;padding:1px 6px;border-radius:3px;margin-right:4px;">' + esc(t) + '</span>').join('') + '</div>';
-          h += '<div style="margin-top:4px;"><button class="btn btn-sm" style="background:rgba(0,229,250,0.15);color:#00e5fa;font-size:0.7rem;padding:2px 8px;" onclick="generateCreativeImage(\'' + proj.id + '\',\'' + p.id + '\',\'' + esc(p.prompt_text.replace(/'/g, "\\'")) + '\')">Generate Image</button>';
+          if (p.style_tags && p.style_tags.length) h += '<div style="margin-top:4px;">' + p.style_tags.map(t => '<span style="background:rgba(69,123,157,0.1);color:#457B9D;font-size:0.65rem;padding:1px 6px;border-radius:3px;margin-right:4px;">' + esc(t) + '</span>').join('') + '</div>';
+          h += '<div style="margin-top:4px;"><button class="btn btn-sm" style="background:rgba(69,123,157,0.15);color:#457B9D;font-size:0.7rem;padding:2px 8px;" onclick="generateCreativeImage(\'' + proj.id + '\',\'' + p.id + '\',\'' + esc(p.prompt_text.replace(/'/g, "\\'")) + '\')">Generate Image</button>';
           h += ' <button class="btn btn-sm" style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);font-size:0.7rem;padding:2px 8px;" onclick="document.getElementById(\'creative-prompt-text\').value=\'' + esc(p.prompt_text.replace(/'/g, "\\'").replace(/\n/g, ' ')) + '\';document.getElementById(\'creative-style-tags\').value=\'' + (p.style_tags||[]).join(', ') + '\'">Refine</button></div>';
           h += '</div>';
         });
@@ -2381,7 +2381,7 @@
       if (research.length) {
         research.forEach(r => {
           h += '<div style="display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.75rem;">';
-          h += '<span style="background:rgba(0,229,250,0.1);color:#00e5fa;padding:1px 6px;border-radius:3px;font-size:0.65rem;">' + r.type.replace(/_/g, ' ') + '</span>';
+          h += '<span style="background:rgba(69,123,157,0.1);color:#457B9D;padding:1px 6px;border-radius:3px;font-size:0.65rem;">' + r.type.replace(/_/g, ' ') + '</span>';
           h += '<span style="color:rgba(255,255,255,0.5);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(r.content.substring(0, 100)) + '</span>';
           h += '</div>';
         });
@@ -2454,7 +2454,7 @@
         let h = '';
         if (data.high_priority?.length) {
           h += '<div style="font-size:0.75rem;color:rgba(255,255,255,0.5);margin-bottom:4px;">Top Engagements</div>';
-          data.high_priority.forEach(i => { h += '<div style="padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><div style="font-size:0.82rem;font-weight:500;">' + esc(i.person_or_source) + '</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.5)">' + esc(i.title_or_context) + '</div>' + (i.url ? '<a href="' + i.url + '" target="_blank" style="color:#00e5fa;font-size:0.7rem;">Link</a> ' : '') + '<div style="font-size:0.75rem;font-style:italic;color:rgba(255,255,255,0.6);margin-top:2px;">' + esc(i.suggested_comment) + '</div></div>'; });
+          data.high_priority.forEach(i => { h += '<div style="padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><div style="font-size:0.82rem;font-weight:500;">' + esc(i.person_or_source) + '</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.5)">' + esc(i.title_or_context) + '</div>' + (i.url ? '<a href="' + i.url + '" target="_blank" style="color:#457B9D;font-size:0.7rem;">Link</a> ' : '') + '<div style="font-size:0.75rem;font-style:italic;color:rgba(255,255,255,0.6);margin-top:2px;">' + esc(i.suggested_comment) + '</div></div>'; });
         }
         if (data._delivered) h += '<p style="color:#22c55e;font-size:0.75rem;margin-top:6px;">Emailed to Mary.</p>';
         el.innerHTML = h || '<p style="color:rgba(255,255,255,0.3);font-size:0.82rem;">No results.</p>';
@@ -2481,7 +2481,7 @@ async function renderDetailFinance() {
   const providers = _costData.byProvider || {};
   Object.entries(providers).sort((a,b) => b[1]-a[1]).forEach(([p, cents]) => {
     const pct = _costData.today.totalCents > 0 ? (cents / _costData.today.totalCents * 100) : 0;
-    h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><div style="width:100px;font-size:0.82rem;">' + esc(p) + '</div><div style="flex:1;height:16px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;"><div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#00e5fa,#00ff85);border-radius:3px;"></div></div><div style="font-size:0.82rem;font-weight:600;width:60px;text-align:right;">$' + (cents/100).toFixed(2) + '</div></div>';
+    h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><div style="width:100px;font-size:0.82rem;">' + esc(p) + '</div><div style="flex:1;height:16px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;"><div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#457B9D,#457B9D);border-radius:3px;"></div></div><div style="font-size:0.82rem;font-weight:600;width:60px;text-align:right;">$' + (cents/100).toFixed(2) + '</div></div>';
   });
   h += '</div>';
 
@@ -2494,7 +2494,7 @@ async function renderDetailFinance() {
     h += '<div style="display:flex;align-items:end;gap:4px;height:60px;">';
     trendDays.forEach(([date, cents]) => {
       const pct = (cents / maxVal * 100);
-      h += '<div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div style="width:100%;height:' + pct + '%;min-height:2px;background:linear-gradient(180deg,#00e5fa,#00ff85);border-radius:2px;"></div><div style="font-size:0.6rem;color:rgba(255,255,255,0.3);margin-top:4px;">' + date.slice(5) + '</div></div>';
+      h += '<div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div style="width:100%;height:' + pct + '%;min-height:2px;background:linear-gradient(180deg,#457B9D,#457B9D);border-radius:2px;"></div><div style="font-size:0.6rem;color:rgba(255,255,255,0.3);margin-top:4px;">' + date.slice(5) + '</div></div>';
     });
     h += '</div></div>';
   }
@@ -2565,7 +2565,7 @@ async function renderDetailBilling() {
     const enabledCount = sources.filter(s => s.is_enabled).length;
     const pct = Math.round(enabledCount / Math.max(sources.length, 1) * 100);
     h += '<div class="detail-card"><div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:0.82rem;"><span>' + pct + '% tracked (' + enabledCount + '/' + sources.length + ' sources)</span><span style="color:rgba(255,255,255,0.4);">' + (s.needs_review_count || 0) + ' need review</span></div>';
-    h += '<div style="height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;"><div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#00e5fa,#00ff85);border-radius:4px;"></div></div></div>';
+    h += '<div style="height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;"><div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#457B9D,#457B9D);border-radius:4px;"></div></div></div>';
 
     // Category breakdown
     h += '<div class="detail-card"><h3>Breakdown by Category</h3>';
@@ -2580,7 +2580,7 @@ async function renderDetailBilling() {
     const maxCat = Math.max(...cats.map(c => c.cents), 1);
     cats.forEach(c => {
       const barPct = (c.cents / maxCat * 100);
-      h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><div style="width:100px;font-size:0.82rem;">' + c.label + '</div><div style="flex:1;height:16px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;"><div style="height:100%;width:' + barPct + '%;background:linear-gradient(90deg,#00e5fa,#00ff85);border-radius:3px;"></div></div><div style="font-size:0.82rem;font-weight:600;width:60px;text-align:right;">$' + (c.cents / 100).toFixed(0) + '</div></div>';
+      h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><div style="width:100px;font-size:0.82rem;">' + c.label + '</div><div style="flex:1;height:16px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;"><div style="height:100%;width:' + barPct + '%;background:linear-gradient(90deg,#457B9D,#457B9D);border-radius:3px;"></div></div><div style="font-size:0.82rem;font-weight:600;width:60px;text-align:right;">$' + (c.cents / 100).toFixed(0) + '</div></div>';
     });
     h += '</div>';
 
@@ -2592,7 +2592,7 @@ async function renderDetailBilling() {
     } else {
       h += '<div style="font-size:0.85rem;">Status: <span class="badge badge-yellow">Not Connected</span></div>';
       h += '<div style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-top:4px;">Read-only access to scan receipts from billing emails</div>';
-      h += '<div style="margin-top:8px;"><a href="/.netlify/functions/google-oauth?action=connect" class="btn btn-sm" style="background:linear-gradient(135deg,#00e5fa,#00ff85);color:#00050f;font-weight:600;">Connect Gmail</a></div>';
+      h += '<div style="margin-top:8px;"><a href="/.netlify/functions/google-oauth?action=connect" class="btn btn-sm" style="background:linear-gradient(135deg,#457B9D,#457B9D);color:#0A192F;font-weight:600;">Connect Gmail</a></div>';
     }
     h += '</div>';
 
@@ -2607,7 +2607,7 @@ async function renderDetailBilling() {
 
     // Sync status
     h += '<div class="detail-card"><h3>Sync Status</h3>';
-    h += '<div style="display:flex;gap:8px;margin-bottom:12px;"><button class="btn btn-sm" onclick="triggerBillingSync()" style="background:linear-gradient(135deg,#00e5fa,#00ff85);color:#00050f;font-weight:600;">Sync Now</button></div>';
+    h += '<div style="display:flex;gap:8px;margin-bottom:12px;"><button class="btn btn-sm" onclick="triggerBillingSync()" style="background:linear-gradient(135deg,#457B9D,#457B9D);color:#0A192F;font-weight:600;">Sync Now</button></div>';
     sources.forEach(src => {
       const icon = src.is_enabled ? (src.last_success_at ? '✅' : '⚠️') : '⬚';
       const lastSync = src.last_sync_at ? timeSince(src.last_sync_at) : 'Never synced';
@@ -2622,7 +2622,7 @@ async function renderDetailBilling() {
       trend.slice(0, 6).reverse().forEach(t => {
         const barW = ((t.total_cents || 0) / maxMonth * 100);
         const monthLabel = t.month ? t.month.slice(0, 7) : '';
-        h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><div style="width:60px;font-size:0.78rem;">' + monthLabel + '</div><div style="flex:1;height:16px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;"><div style="height:100%;width:' + barW + '%;background:linear-gradient(90deg,#00e5fa,#00ff85);border-radius:3px;"></div></div><div style="font-size:0.82rem;font-weight:600;width:60px;text-align:right;">$' + ((t.total_cents || 0) / 100).toFixed(0) + '</div></div>';
+        h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><div style="width:60px;font-size:0.78rem;">' + monthLabel + '</div><div style="flex:1;height:16px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;"><div style="height:100%;width:' + barW + '%;background:linear-gradient(90deg,#457B9D,#457B9D);border-radius:3px;"></div></div><div style="font-size:0.82rem;font-weight:600;width:60px;text-align:right;">$' + ((t.total_cents || 0) / 100).toFixed(0) + '</div></div>';
       });
       h += '</div>';
     }
@@ -2643,14 +2643,14 @@ async function renderDetailBilling() {
     h += '<input id="manual-amount" placeholder="Amount ($)" type="number" step="0.01" style="padding:6px 8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:4px;color:white;font-size:0.82rem;">';
     h += '<select id="manual-category" style="padding:6px 8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:4px;color:white;font-size:0.82rem;"><option value="infrastructure">Infrastructure</option><option value="ai-tools">AI Tools</option><option value="productivity">Productivity</option><option value="personal">Personal</option><option value="family">Family</option><option value="domains">Domains</option></select>';
     h += '</div>';
-    h += '<button class="btn btn-sm" onclick="addManualBilling()" style="background:linear-gradient(135deg,#00e5fa,#00ff85);color:#00050f;font-weight:600;">Add Entry</button>';
+    h += '<button class="btn btn-sm" onclick="addManualBilling()" style="background:linear-gradient(135deg,#457B9D,#457B9D);color:#0A192F;font-weight:600;">Add Entry</button>';
     h += '</div></div>';
 
     // Apple CSV import
     h += '<div class="detail-card"><h3 style="cursor:pointer;" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'block\':\'none\'">Upload Apple Purchases ▸</h3><div style="display:none;">';
     h += '<div style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-bottom:8px;">Paste CSV: date, description, amount (one per line)</div>';
     h += '<textarea id="apple-csv" rows="5" style="width:100%;padding:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:4px;color:white;font-size:0.78rem;font-family:monospace;" placeholder="2026-03-01, LinkedIn Premium, 69.99&#10;2026-03-05, YouTube Premium, 18.99"></textarea>';
-    h += '<button class="btn btn-sm" onclick="importAppleCSV()" style="margin-top:8px;background:linear-gradient(135deg,#00e5fa,#00ff85);color:#00050f;font-weight:600;">Import</button>';
+    h += '<button class="btn btn-sm" onclick="importAppleCSV()" style="margin-top:8px;background:linear-gradient(135deg,#457B9D,#457B9D);color:#0A192F;font-weight:600;">Import</button>';
     h += '</div></div>';
 
   } catch (e) {
@@ -2926,7 +2926,7 @@ async function renderDetailQA() {
         h += '<div style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05;">';
         h += '<div style="display:flex;justify-content:space-between;align-items:flex-start;">';
         h += '<div><span class="badge badge-red">' + r.product + '</span> <span style="font-size:0.82rem;">' + esc(r.regression_details || r.result_summary || '') + '</span><div style="font-size:0.72rem;color:rgba(255,255,255,0.3);margin-top:2px;">' + timeSince(r.created_at);
-        if (r.metadata?.fix_pr) h += ' · <a href="' + esc(r.metadata.fix_pr) + '" target="_blank" style="color:#00e5fa;">Fix PR</a>';
+        if (r.metadata?.fix_pr) h += ' · <a href="' + esc(r.metadata.fix_pr) + '" target="_blank" style="color:#457B9D;">Fix PR</a>';
         h += '</div></div>';
         h += '<div style="display:flex;gap:4px;flex-shrink:0;">';
         h += '<button class="btn btn-sm btn-cyan" onclick="qaCreateIssue(\'' + rid + '\',\'' + esc(r.product) + '\',\'' + esc((r.regression_details||r.result_summary||'').replace(/'/g,'')) + '\')">File Issue</button>';
@@ -3028,7 +3028,7 @@ function renderTimeline(issue) {
     const dotClass = isDone ? 'done' : isCurrent ? 'active' : 'pending';
     h += '<div class="timeline-step">';
     h += '<div class="timeline-dot ' + dotClass + '"></div>';
-    h += '<div><div style="font-size:0.82rem;font-weight:' + (isCurrent ? '600' : '400') + ';color:' + (isCurrent ? '#00e5fa' : isDone ? '#22c55e' : 'rgba(255,255,255,0.3)') + ';">' + s + '</div>';
+    h += '<div><div style="font-size:0.82rem;font-weight:' + (isCurrent ? '600' : '400') + ';color:' + (isCurrent ? '#457B9D' : isDone ? '#22c55e' : 'rgba(255,255,255,0.3)') + ';">' + s + '</div>';
     if (entry) h += '<div style="font-size:0.7rem;color:rgba(255,255,255,0.3);">' + timeSince(entry.at) + (entry.by ? ' by ' + entry.by : '') + '</div>';
     h += '</div></div>';
   });
@@ -3209,7 +3209,7 @@ async function showIssueDetail(id) {
         h += '<div><span style="color:rgba(255,255,255,0.5);font-size:0.78rem;">ERROR LOGS / STACK TRACE</span>';
         h += '<div style="margin-top:4px;font-family:monospace;font-size:0.72rem;background:rgba(255,255,255,0.03);padding:10px;border-radius:6px;white-space:pre-wrap;max-height:250px;overflow-y:auto;border:1px solid rgba(255,255,255,0.06);">' + esc(i.error_logs) + '</div></div>';
       }
-      if (i.sentry_url) h += '<div style="margin-top:8px;font-size:0.78rem;"><a href="' + esc(i.sentry_url) + '" target="_blank" style="color:#00e5fa;">View in Sentry &#x2197;</a></div>';
+      if (i.sentry_url) h += '<div style="margin-top:8px;font-size:0.78rem;"><a href="' + esc(i.sentry_url) + '" target="_blank" style="color:#457B9D;">View in Sentry &#x2197;</a></div>';
       if (!i.root_cause && !i.suggested_fix && !i.error_logs) h += '<p style="color:rgba(255,255,255,0.3)">No diagnostic context yet. Click "Ask Agent" to start diagnosis.</p>';
       h += '</div>';
     }
@@ -3231,7 +3231,7 @@ async function showIssueDetail(id) {
       h += '<div class="detail-card">';
       if (i.fix_branch) h += '<div style="font-size:0.82rem;margin-bottom:6px;">Branch: <code style="background:rgba(255,255,255,0.05);padding:2px 6px;border-radius:3px;">' + esc(i.fix_branch) + '</code></div>';
       if (i.fix_commit) h += '<div style="font-size:0.82rem;margin-bottom:6px;">Commit: <code style="background:rgba(255,255,255,0.05);padding:2px 6px;border-radius:3px;">' + esc(i.fix_commit) + '</code></div>';
-      if (i.fix_pr_url) h += '<div style="font-size:0.82rem;margin-bottom:6px;"><a href="' + esc(i.fix_pr_url) + '" target="_blank" style="color:#00e5fa;">View Pull Request &#x2197;</a></div>';
+      if (i.fix_pr_url) h += '<div style="font-size:0.82rem;margin-bottom:6px;"><a href="' + esc(i.fix_pr_url) + '" target="_blank" style="color:#457B9D;">View Pull Request &#x2197;</a></div>';
       if (i.fix_diff) {
         h += '<div style="margin-top:8px;">' + renderDiffBlock(i.fix_diff) + '</div>';
         if (i.status === 'fix-proposed') {
@@ -3391,7 +3391,7 @@ async function updateIssueStatus(id, status) {
 
             // Show payload context
             if (item.payload) {
-              h += '<div style="margin-top:10px;font-size:0.85rem;color:var(--mmt-white-muted);">';
+              h += '<div style="margin-top:10px;font-size:0.85rem;color:var(--mmt-text);">';
               if (item.payload.reasoning) h += '<div style="margin-bottom:4px;"><strong>Reasoning:</strong> ' + esc(item.payload.reasoning) + '</div>';
               if (item.payload.service) h += '<div>Service: ' + esc(item.payload.service) + '</div>';
               if (item.payload.currentCost) h += '<div>Current cost: $' + (item.payload.currentCost / 100).toFixed(2) + '/mo</div>';
@@ -3450,7 +3450,7 @@ async function updateIssueStatus(id, status) {
             var catIcon = { 'newsletter-draft':'📰', 'linkedin-post':'💼', 'research-brief':'🔍', 'topic-pitch':'💡', 'editorial-correction':'⚠️', 'glossary-entry':'📖' }[item.category] || '📝';
             var catLabel = { 'newsletter-draft':'Newsletter Draft', 'linkedin-post':'LinkedIn Post', 'research-brief':'Research Brief', 'topic-pitch':'Topic Pitch', 'editorial-correction':'Editorial Correction', 'glossary-entry':'Glossary Entry' }[item.category] || item.category;
 
-            h += '<div class="approval-card" style="border-left:3px solid #00e5fa;">';
+            h += '<div class="approval-card" style="border-left:3px solid #457B9D;">';
             h += '<div style="display:flex;justify-content:space-between;align-items:start;">';
             h += '<div><span class="badge badge-cyan">' + catLabel + '</span></div>';
             h += '<span class="badge badge-' + (hoursLeft < 12 ? 'red' : 'yellow') + '">⏰ ' + hoursLeft + 'h</span>';
@@ -3469,7 +3469,7 @@ async function updateIssueStatus(id, status) {
 
             // For topic pitches, show reasoning
             if (item.category === 'topic-pitch' && item.payload) {
-              h += '<div style="margin-top:10px;font-size:0.85rem;color:var(--mmt-white-muted);">';
+              h += '<div style="margin-top:10px;font-size:0.85rem;color:var(--mmt-text);">';
               if (item.payload.angle) h += '<div style="margin-bottom:4px;"><strong>Angle:</strong> ' + esc(item.payload.angle) + '</div>';
               if (item.payload.format) h += '<div><strong>Format:</strong> ' + esc(item.payload.format) + '</div>';
               if (item.payload.targetDate) h += '<div><strong>Target:</strong> ' + esc(item.payload.targetDate) + '</div>';
@@ -3478,7 +3478,7 @@ async function updateIssueStatus(id, status) {
 
             // Preview (if available)
             if (item.preview_html) {
-              h += '<details style="margin-top:12px;"><summary style="cursor:pointer;color:#00e5fa;font-size:0.85rem;font-weight:600;">Preview</summary>';
+              h += '<details style="margin-top:12px;"><summary style="cursor:pointer;color:#457B9D;font-size:0.85rem;font-weight:600;">Preview</summary>';
               h += '<div style="margin-top:8px;background:#fff;color:#1a1a2e;padding:20px;border-radius:8px;max-height:400px;overflow-y:auto;font-size:14px;line-height:1.6;">' + item.preview_html + '</div>';
               h += '</details>';
             }
@@ -3563,7 +3563,7 @@ async function updateIssueStatus(id, status) {
             var pct = Math.round((t[1] / allPipeline.length) * 100);
             h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">';
             h += '<span style="width:120px;font-size:0.75rem;color:rgba(255,255,255,0.6);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(t[0]) + '</span>';
-            h += '<div style="flex:1;background:rgba(255,255,255,0.05);border-radius:3px;height:12px;overflow:hidden;"><div style="background:#00e5fa;width:' + pct + '%;height:100%;border-radius:3px;"></div></div>';
+            h += '<div style="flex:1;background:rgba(255,255,255,0.05);border-radius:3px;height:12px;overflow:hidden;"><div style="background:#457B9D;width:' + pct + '%;height:100%;border-radius:3px;"></div></div>';
             h += '<span style="width:40px;text-align:right;font-size:0.7rem;color:rgba(255,255,255,0.4);">' + t[1] + '</span>';
             h += '</div>';
           });
@@ -3856,7 +3856,7 @@ async function updateIssueStatus(id, status) {
       let html = '<button class="back-btn" onclick="showHome()">&#8592; Back</button>';
       html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><div class="detail-title" style="margin:0">Security Posture</div>';
       html += '<div style="display:flex;gap:8px">';
-      html += '<select id="ciso-scan-type" style="background:#1f2937;color:#e2e8f0;border:1px solid rgba(0,229,250,0.2);border-radius:4px;padding:4px 8px;font-size:0.8rem"><option value="full_compliance">Full Compliance</option><option value="secrets">Secrets</option><option value="dependencies">Dependencies</option><option value="headers">Headers</option><option value="rls">RLS Audit</option><option value="access_audit">Access Audit</option><option value="data_handling">Data Handling</option></select>';
+      html += '<select id="ciso-scan-type" style="background:#1f2937;color:#e2e8f0;border:1px solid var(--mmt-border);border-radius:4px;padding:4px 8px;font-size:0.8rem"><option value="full_compliance">Full Compliance</option><option value="secrets">Secrets</option><option value="dependencies">Dependencies</option><option value="headers">Headers</option><option value="rls">RLS Audit</option><option value="access_audit">Access Audit</option><option value="data_handling">Data Handling</option></select>';
       html += '<button class="btn btn-cyan btn-sm" onclick="runCisoScan()">Run Scan</button>';
       html += '</div></div>';
 
@@ -3911,7 +3911,7 @@ async function updateIssueStatus(id, status) {
       // CMMC Family Breakdown
       html += '<div class="detail-card"><h3>CMMC Family Breakdown</h3>';
       html += '<div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">';
-      html += '<button class="btn btn-sm" style="background:rgba(0,229,250,0.15);color:#00e5fa" onclick="cisoShowTracker()">View Full Tracker</button>';
+      html += '<button class="btn btn-sm" style="background:rgba(69,123,157,0.15);color:#457B9D" onclick="cisoShowTracker()">View Full Tracker</button>';
       html += '<button class="btn btn-sm" style="background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.6)" onclick="cisoExportCSV()">Export CSV</button>';
       html += '</div>';
       html += '<table><tr><th>Family</th><th>Met</th><th>Partial</th><th>Not Met</th><th>N/A</th><th>Progress</th></tr>';
@@ -3980,11 +3980,11 @@ async function updateIssueStatus(id, status) {
 
       // Filters
       html += '<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">';
-      html += '<select id="cmmc-family-filter" onchange="cisoFilterTracker()" style="background:#1f2937;color:#e2e8f0;border:1px solid rgba(0,229,250,0.2);border-radius:4px;padding:4px 8px;font-size:0.8rem"><option value="">All Families</option>';
+      html += '<select id="cmmc-family-filter" onchange="cisoFilterTracker()" style="background:#1f2937;color:#e2e8f0;border:1px solid var(--mmt-border);border-radius:4px;padding:4px 8px;font-size:0.8rem"><option value="">All Families</option>';
       const famSet = new Set(practices.map(p => p.family));
       for (const f of [...famSet].sort()) html += '<option value="' + f + '">' + f + ' - ' + (practices.find(p => p.family === f)?.family_name || '') + '</option>';
       html += '</select>';
-      html += '<select id="cmmc-status-filter" onchange="cisoFilterTracker()" style="background:#1f2937;color:#e2e8f0;border:1px solid rgba(0,229,250,0.2);border-radius:4px;padding:4px 8px;font-size:0.8rem"><option value="">All Statuses</option><option value="met">Met</option><option value="partially_met">Partially Met</option><option value="not_met">Not Met</option><option value="not_applicable">N/A</option></select>';
+      html += '<select id="cmmc-status-filter" onchange="cisoFilterTracker()" style="background:#1f2937;color:#e2e8f0;border:1px solid var(--mmt-border);border-radius:4px;padding:4px 8px;font-size:0.8rem"><option value="">All Statuses</option><option value="met">Met</option><option value="partially_met">Partially Met</option><option value="not_met">Not Met</option><option value="not_applicable">N/A</option></select>';
       html += '</div>';
 
       html += '<div id="cmmc-tracker-table">';
@@ -3998,7 +3998,7 @@ async function updateIssueStatus(id, status) {
       const statusBadge = (s) => ({ met: '<span class="badge badge-green">Met</span>', partially_met: '<span class="badge badge-yellow">Partial</span>', not_met: '<span class="badge badge-red">Not Met</span>', not_applicable: '<span class="badge badge-gray">N/A</span>' }[s] || s);
       let html = '<table><tr><th>Practice</th><th>Title</th><th>Status</th><th>Component</th><th>Assessed</th></tr>';
       for (const p of practices) {
-        html += '<tr><td style="white-space:nowrap;font-weight:600;color:#00e5fa">' + p.practice_id + '</td><td>' + esc(p.title) + '</td><td>' + statusBadge(p.implementation_status) + '</td><td>' + esc(p.mmt_component || '--') + '</td><td style="font-size:0.75rem">' + (p.last_assessed ? timeSince(p.last_assessed) : '--') + '</td></tr>';
+        html += '<tr><td style="white-space:nowrap;font-weight:600;color:#457B9D">' + p.practice_id + '</td><td>' + esc(p.title) + '</td><td>' + statusBadge(p.implementation_status) + '</td><td>' + esc(p.mmt_component || '--') + '</td><td style="font-size:0.75rem">' + (p.last_assessed ? timeSince(p.last_assessed) : '--') + '</td></tr>';
       }
       html += '</table>';
       return html;
@@ -4167,7 +4167,7 @@ async function updateIssueStatus(id, status) {
           const day = new Date(d.summary_date + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'short' });
           h += '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">';
           h += '<span style="font-size:0.65rem;color:rgba(255,255,255,0.4);">$' + cost.toFixed(2) + '</span>';
-          h += '<div style="width:100%;background:rgba(0,229,250,0.3);border-radius:3px 3px 0 0;height:' + Math.max(pct, 4) + '%;"></div>';
+          h += '<div style="width:100%;background:rgba(69,123,157,0.3);border-radius:3px 3px 0 0;height:' + Math.max(pct, 4) + '%;"></div>';
           h += '<span style="font-size:0.65rem;color:rgba(255,255,255,0.3);">' + day + '</span>';
           h += '</div>';
         }
@@ -4446,10 +4446,10 @@ async function updateIssueStatus(id, status) {
         const tc = typeColors[s.signal_type] || 'gray';
         const isPinned = s.triage_status === 'pinned';
         const isNewsletter = s.triage_status === 'newsletter';
-        return '<div class="signal-card" style="' + (isPinned ? 'border-color:rgba(0,229,250,0.3);' : '') + '">' +
+        return '<div class="signal-card" style="' + (isPinned ? 'border-color:rgba(69,123,157,0.3);' : '') + '">' +
           '<div style="display:flex;justify-content:space-between;align-items:start;gap:8px;">' +
           '<div><span class="badge badge-' + tc + '" style="margin-right:6px;">' + (s.signal_type || 'intel') + '</span>' +
-          (isPinned ? '<span style="color:#00e5fa;font-size:0.7rem;">&#128204;</span> ' : '') +
+          (isPinned ? '<span style="color:#457B9D;font-size:0.7rem;">&#128204;</span> ' : '') +
           (isNewsletter ? '<span style="color:#22c55e;font-size:0.7rem;">&#128240;</span> ' : '') +
           '</div>' +
           '<span style="font-size:0.65rem;color:rgba(255,255,255,0.3);">' + timeSince(s.created_at) + '</span>' +
@@ -4459,7 +4459,7 @@ async function updateIssueStatus(id, status) {
           '<div class="signal-actions">' +
           '<button onclick="triageSignal(\'' + s.id + '\',\'newsletter\')" style="background:rgba(22,163,74,0.2);color:#22c55e;" title="Send to newsletter">&#128240; Newsletter</button>' +
           '<button onclick="triageSignal(\'' + s.id + '\',\'dismissed\')" style="background:rgba(107,114,128,0.2);color:#9ca3af;" title="Dismiss">&#128465; Dismiss</button>' +
-          '<button onclick="triageSignal(\'' + s.id + '\',\'' + (isPinned ? 'new' : 'pinned') + '\')" style="background:rgba(0,229,250,0.1);color:#00e5fa;" title="' + (isPinned ? 'Unpin' : 'Pin') + '">&#128204; ' + (isPinned ? 'Unpin' : 'Pin') + '</button>' +
+          '<button onclick="triageSignal(\'' + s.id + '\',\'' + (isPinned ? 'new' : 'pinned') + '\')" style="background:rgba(69,123,157,0.1);color:#457B9D;" title="' + (isPinned ? 'Unpin' : 'Pin') + '">&#128204; ' + (isPinned ? 'Unpin' : 'Pin') + '</button>' +
           '</div></div>';
       }).join('');
     }

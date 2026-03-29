@@ -31,67 +31,67 @@
   <link rel="stylesheet" href="/styles/tailwind.css">
   <style>
     :root {
-      --mmt-cyan: #00E5FA;
-      --mmt-green: #00FF85;
-      --mmt-navy: #00050F;
-      --mmt-slate: #0A1628;
-      --mmt-dark: #0D1117;
+      --mmt-teal: #457B9D;
+      
+      --mmt-navy: #0A192F;
+      --mmt-soft: #F3F4F6;
       --mmt-white: #FFFFFF;
-      --mmt-white-muted: rgba(255,255,255,0.8);
-      --mmt-white-dim: rgba(255,255,255,0.6);
+      --mmt-white: #FFFFFF;
+      --mmt-text: #102033;
+      --mmt-text-secondary: #5C6B7A;
     }
-    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--mmt-navy); color: #fff; margin: 0; }
-    h1, h2, h3 { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.02em; font-weight: 700; }
-    .gradient-text { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .nav-glass { background: rgba(13,17,23,0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,229,250,0.1); }
-    *:focus-visible { outline: 2px solid var(--mmt-cyan); outline-offset: 2px; }
-    .portal-card { background: var(--mmt-slate); border: 1px solid rgba(0,229,250,0.1); border-radius: 12px; padding: 24px; margin-bottom: 16px; }
-    .portal-card:hover { border-color: rgba(0,229,250,0.25); }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--mmt-white); color: var(--mmt-navy); margin: 0; }
+    h1, h2, h3 { font-family: 'Inter', system-ui, sans-serif; letter-spacing: -0.02em; font-weight: 700; }
+    .gradient-text { color: var(--mmt-teal); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    
+    *:focus-visible { outline: 2px solid var(--mmt-teal); outline-offset: 2px; }
+    .portal-card { background: var(--mmt-soft); border: 1px solid rgba(69,123,157,0.1); border-radius: 12px; padding: 24px; margin-bottom: 16px; }
+    .portal-card:hover { border-color: rgba(69,123,157,0.25); }
     .btn-portal { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; }
-    .btn-portal-primary { background: var(--mmt-cyan); color: var(--mmt-navy); }
+    .btn-portal-primary { background: var(--mmt-teal); color: var(--mmt-navy); }
     .btn-portal-primary:hover { opacity: 0.9; }
-    .btn-portal-secondary { background: rgba(255,255,255,0.08); color: var(--mmt-white-muted); border: 1px solid rgba(255,255,255,0.1); }
+    .btn-portal-secondary { background: rgba(255,255,255,0.08); color: var(--mmt-text); border: 1px solid rgba(255,255,255,0.1); }
     .btn-portal-secondary:hover { background: rgba(255,255,255,0.12); }
     .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 0.75rem; font-weight: 600; }
     .badge-green { background: rgba(22,163,74,0.2); color: #22c55e; }
     .badge-yellow { background: rgba(234,179,8,0.2); color: #eab308; }
     .badge-blue { background: rgba(59,130,246,0.2); color: #60a5fa; }
-    .badge-cyan { background: rgba(0,229,250,0.15); color: #00e5fa; }
+    .badge-cyan { background: rgba(69,123,157,0.15); color: #457B9D; }
     .badge-red { background: rgba(239,68,68,0.2); color: #ef4444; }
     .stars { display: flex; gap: 4px; }
     .star { width: 28px; height: 28px; cursor: pointer; color: rgba(255,255,255,0.2); transition: color 0.15s; }
     .star.active { color: #eab308; }
     .star:hover { color: #eab308; }
     .preview-frame { background: #fff; color: #1a1a2e; border-radius: 8px; padding: 24px; max-height: 500px; overflow-y: auto; font-size: 14px; line-height: 1.6; }
-    .login-box { max-width: 420px; margin: 120px auto; padding: 40px; background: var(--mmt-slate); border-radius: 16px; border: 1px solid rgba(0,229,250,0.15); text-align: center; }
-    .login-input { width: 100%; padding: 12px 16px; background: var(--mmt-navy); border: 1px solid rgba(0,229,250,0.2); border-radius: 8px; color: #fff; font-size: 15px; outline: none; box-sizing: border-box; }
-    .login-input:focus { border-color: var(--mmt-cyan); }
-    .login-input::placeholder { color: var(--mmt-white-dim); }
+    .login-box { max-width: 420px; margin: 120px auto; padding: 40px; background: var(--mmt-soft); border-radius: 16px; border: 1px solid rgba(69,123,157,0.15); text-align: center; }
+    .login-input { width: 100%; padding: 12px 16px; background: var(--mmt-navy); border: 1px solid var(--mmt-border); border-radius: 8px; color: var(--mmt-navy); font-size: 15px; outline: none; box-sizing: border-box; }
+    .login-input:focus { border-color: var(--mmt-teal); }
+    .login-input::placeholder { color: var(--mmt-text-secondary); }
     .toast { position: fixed; bottom: 24px; right: 24px; background: #22c55e; color: var(--mmt-navy); padding: 10px 20px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; z-index: 9999; display: none; }
-    .section-title { font-size: 1.1rem; color: var(--mmt-cyan); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 16px; }
-    .empty-state { text-align: center; padding: 48px 24px; color: var(--mmt-white-dim); }
+    .section-title { font-size: 1.1rem; color: var(--mmt-teal); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 16px; }
+    .empty-state { text-align: center; padding: 48px 24px; color: var(--mmt-text-secondary); }
     .empty-state p { margin: 8px 0; }
     table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-    th { text-align: left; padding: 8px; color: var(--mmt-white-dim); border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 500; font-size: 0.78rem; }
+    th { text-align: left; padding: 8px; color: var(--mmt-text-secondary); border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 500; font-size: 0.78rem; }
     td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); }
   </style>
 </head>
 <body>
   <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:bg-white focus:text-black focus:px-4 focus:py-2 focus:rounded">Skip to content</a>
 
-  <nav class="nav-glass" style="position:fixed;top:0;left:0;right:0;z-index:50;">
+  <nav class="nav-editorial" style="position:fixed;top:0;left:0;right:0;z-index:50;">
     <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
       <a href="index.html" class="flex items-center gap-2 no-underline">
-        <span class="text-xl font-bold" style="font-family:'Space Grotesk',system-ui,sans-serif; color:#fff;">Mission Meets <span style="color:var(--mmt-cyan);">Tech</span></span>
+        <span class="text-xl font-bold" style="font-family:'Inter',system-ui,sans-serif; color: var(--mmt-navy);">Mission Meets <span style="color:var(--mmt-teal);">Tech</span></span>
       </a>
       <div class="hidden md:flex items-center gap-6">
-        <a href="latest.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Intelligence</a>
-        <a href="podcast.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Podcast</a>
-        <a href="resources.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Resources</a>
-        <a href="proposal-pulse.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">ProposalPulse</a>
-        <a href="marketpulse.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">MarketPulse</a>
-        <a href="my-reports.html" class="text-sm font-semibold" style="color:var(--mmt-cyan);">My Reports</a>
-        <a href="about.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">About</a>
+        <a href="latest.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text);">Intelligence</a>
+        <a href="podcast.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text);">Podcast</a>
+        <a href="resources.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text);">Resources</a>
+        <a href="proposal-pulse.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text);">ProposalPulse</a>
+        <a href="marketpulse.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text);">MarketPulse</a>
+        <a href="my-reports.html" class="text-sm font-semibold" style="color:var(--mmt-teal);">My Reports</a>
+        <a href="about.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text);">About</a>
       </div>
       <button id="menuToggle" class="md:hidden text-white text-xl" aria-label="Toggle menu">
         <svg id="menuOpen" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
@@ -99,14 +99,14 @@
       </button>
     </div>
     <div id="mobileMenu" class="hidden md:hidden px-6 pb-4">
-      <div class="flex flex-col gap-4 pt-2 border-t" style="border-color:rgba(0,229,250,0.1);">
-        <a href="latest.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Intelligence</a>
-        <a href="podcast.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Podcast</a>
-        <a href="resources.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Resources</a>
-        <a href="proposal-pulse.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">ProposalPulse</a>
-        <a href="marketpulse.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">MarketPulse</a>
-        <a href="my-reports.html" class="text-sm font-semibold" style="color:var(--mmt-cyan);">My Reports</a>
-        <a href="about.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">About</a>
+      <div class="flex flex-col gap-4 pt-2 border-t" style="border-color:rgba(69,123,157,0.1);">
+        <a href="latest.html" class="text-sm font-medium" style="color:var(--mmt-text);">Intelligence</a>
+        <a href="podcast.html" class="text-sm font-medium" style="color:var(--mmt-text);">Podcast</a>
+        <a href="resources.html" class="text-sm font-medium" style="color:var(--mmt-text);">Resources</a>
+        <a href="proposal-pulse.html" class="text-sm font-medium" style="color:var(--mmt-text);">ProposalPulse</a>
+        <a href="marketpulse.html" class="text-sm font-medium" style="color:var(--mmt-text);">MarketPulse</a>
+        <a href="my-reports.html" class="text-sm font-semibold" style="color:var(--mmt-teal);">My Reports</a>
+        <a href="about.html" class="text-sm font-medium" style="color:var(--mmt-text);">About</a>
       </div>
     </div>
   </nav>
@@ -119,17 +119,17 @@
       <div class="login-box">
         <div style="font-size:2.5rem; margin-bottom:16px;">📊</div>
         <h1 style="font-size:1.5rem; margin:0 0 8px;">My Reports</h1>
-        <p style="color:var(--mmt-white-dim); font-size:0.95rem; margin:0 0 24px;">Enter your email to access your reports and order history.</p>
+        <p style="color:var(--mmt-text-secondary); font-size:0.95rem; margin:0 0 24px;">Enter your email to access your reports and order history.</p>
         <div id="login-form">
           <input type="email" id="login-email" class="login-input" placeholder="you@company.com" autocomplete="email">
           <button onclick="requestMagicLink()" class="btn-portal btn-portal-primary" style="width:100%; justify-content:center; margin-top:12px; padding:12px;">Send Login Link</button>
         </div>
         <div id="login-sent" style="display:none;">
           <div style="font-size:2rem; margin-bottom:12px;">📧</div>
-          <p style="color:var(--mmt-white-muted); font-size:0.95rem;">Check your email for a secure login link. It expires in 7 days.</p>
+          <p style="color:var(--mmt-text); font-size:0.95rem;">Check your email for a secure login link. It expires in 7 days.</p>
         </div>
         <div id="login-error" style="display:none; color:#ef4444; font-size:0.85rem; margin-top:12px;"></div>
-        <p style="color:var(--mmt-white-dim); font-size:0.75rem; margin-top:20px;">We'll send a secure login link to your email. No password needed.</p>
+        <p style="color:var(--mmt-text-secondary); font-size:0.75rem; margin-top:20px;">We'll send a secure login link to your email. No password needed.</p>
       </div>
     </div>
 
@@ -138,7 +138,7 @@
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px;">
         <h1 style="font-size:1.5rem; margin:0;"><span class="gradient-text">My Reports</span></h1>
         <div style="display:flex; align-items:center; gap:12px;">
-          <span id="user-email" style="color:var(--mmt-white-dim); font-size:0.85rem;"></span>
+          <span id="user-email" style="color:var(--mmt-text-secondary); font-size:0.85rem;"></span>
           <button onclick="logout()" class="btn-portal btn-portal-secondary" style="padding:4px 12px; font-size:0.78rem;">Sign Out</button>
         </div>
       </div>
@@ -166,12 +166,12 @@
       <div id="account-section" class="portal-card">
         <div style="display:flex; gap:24px; flex-wrap:wrap;">
           <div>
-            <div style="font-size:0.78rem; color:var(--mmt-white-dim); text-transform:uppercase; margin-bottom:4px;">Email</div>
+            <div style="font-size:0.78rem; color:var(--mmt-text-secondary); text-transform:uppercase; margin-bottom:4px;">Email</div>
             <div id="account-email" style="font-weight:600;"></div>
           </div>
         </div>
         <div style="margin-top:20px;">
-          <div style="font-size:0.78rem; color:var(--mmt-white-dim); text-transform:uppercase; margin-bottom:8px;">Notification Preferences</div>
+          <div style="font-size:0.78rem; color:var(--mmt-text-secondary); text-transform:uppercase; margin-bottom:8px;">Notification Preferences</div>
           <label style="display:flex; align-items:center; gap:8px; margin-bottom:8px; cursor:pointer; font-size:0.9rem;">
             <input type="checkbox" id="pref-report-ready" checked onchange="savePreferences()"> Notify me when reports are ready
           </label>
@@ -186,35 +186,35 @@
     </div>
   </main>
 
-  <footer class="py-16 px-6" style="background:var(--mmt-navy); border-top:1px solid rgba(0,229,250,0.1);">
+  <footer class="py-16 px-6" style="background:var(--mmt-navy); border-top:1px solid rgba(69,123,157,0.1);">
     <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
       <div>
-        <div class="flex items-center gap-3 mb-3"><p class="font-bold text-lg" style="font-family:'Space Grotesk',system-ui,sans-serif; color:#fff;">Mission Meets <span style="color:var(--mmt-cyan);">Tech</span></p></div>
-        <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-dim);">Federal health IT intelligence. Mission first.</p>
+        <div class="flex items-center gap-3 mb-3"><p class="font-bold text-lg" style="font-family:'Inter',system-ui,sans-serif; color: var(--mmt-navy);">Mission Meets <span style="color:var(--mmt-teal);">Tech</span></p></div>
+        <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-text-secondary);">Federal health IT intelligence. Mission first.</p>
       </div>
       <div>
-        <p class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var(--mmt-cyan);">Explore</p>
+        <p class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var(--mmt-teal);">Explore</p>
         <ul class="space-y-2 list-none p-0 m-0">
-          <li><a href="latest.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Intelligence</a></li>
-          <li><a href="podcast.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Podcast</a></li>
-          <li><a href="resources.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Resources</a></li>
-          <li><a href="proposal-pulse.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">ProposalPulse</a></li>
-          <li><a href="marketpulse.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">MarketPulse</a></li>
+          <li><a href="latest.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Intelligence</a></li>
+          <li><a href="podcast.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Podcast</a></li>
+          <li><a href="resources.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Resources</a></li>
+          <li><a href="proposal-pulse.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">ProposalPulse</a></li>
+          <li><a href="marketpulse.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">MarketPulse</a></li>
         </ul>
       </div>
       <div>
-        <p class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var(--mmt-cyan);">Connect</p>
+        <p class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var(--mmt-teal);">Connect</p>
         <ul class="space-y-2 list-none p-0 m-0">
-          <li><a href="about.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">About</a></li>
-          <li><a href="mailto:mary@missionmeetstech.com" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Contact</a></li>
-          <li><a href="privacy.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Privacy Policy</a></li>
-          <li><a href="terms.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Terms of Service</a></li>
+          <li><a href="about.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">About</a></li>
+          <li><a href="mailto:mary@missionmeetstech.com" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Contact</a></li>
+          <li><a href="privacy.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Privacy Policy</a></li>
+          <li><a href="terms.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Terms of Service</a></li>
         </ul>
       </div>
     </div>
-    <div class="max-w-6xl mx-auto mt-12 pt-8" style="border-top:1px solid rgba(0,229,250,0.1);">
-      <p class="text-xs text-center" style="color:var(--mmt-white-dim);">Mission Meets Tech provides independent analysis and commentary. Views expressed are those of the authors and do not represent any employer or government agency.</p>
-      <p class="text-xs text-center mt-2" style="color:var(--mmt-white-dim);">&copy; 2026 Mission Meets Tech. All rights reserved.</p>
+    <div class="max-w-6xl mx-auto mt-12 pt-8" style="border-top:1px solid rgba(69,123,157,0.1);">
+      <p class="text-xs text-center" style="color:var(--mmt-text-secondary);">Mission Meets Tech provides independent analysis and commentary. Views expressed are those of the authors and do not represent any employer or government agency.</p>
+      <p class="text-xs text-center mt-2" style="color:var(--mmt-text-secondary);">&copy; 2026 Mission Meets Tech. All rights reserved.</p>
     </div>
   </footer>
 
@@ -329,7 +329,7 @@
       all.sort(function(a, b) { return new Date(b.created_at) - new Date(a.created_at); });
 
       if (!all.length) {
-        el.innerHTML = '<div class="empty-state"><p style="font-size:1.5rem;">📋</p><p>No reports yet.</p><p style="font-size:0.85rem;">Order a <a href="/proposal-pulse.html" style="color:var(--mmt-cyan);">ProposalPulse</a> or <a href="/marketpulse.html" style="color:var(--mmt-cyan);">MarketPulse</a> report to get started.</p></div>';
+        el.innerHTML = '<div class="empty-state"><p style="font-size:1.5rem;">📋</p><p>No reports yet.</p><p style="font-size:0.85rem;">Order a <a href="/proposal-pulse.html" style="color:var(--mmt-teal);">ProposalPulse</a> or <a href="/marketpulse.html" style="color:var(--mmt-teal);">MarketPulse</a> report to get started.</p></div>';
         return;
       }
 
@@ -346,7 +346,7 @@
         h += '<div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:8px;">';
         h += '<div><h3 style="margin:0 0 4px;font-size:1rem;">' + esc(title) + '</h3>';
         h += '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">' + productBadge;
-        h += ' <span style="font-size:0.78rem;color:var(--mmt-white-dim);">' + fmtDate(o.created_at) + '</span>';
+        h += ' <span style="font-size:0.78rem;color:var(--mmt-text-secondary);">' + fmtDate(o.created_at) + '</span>';
         if (grade) h += ' <span class="badge badge-' + gradeColor + '">Grade: ' + esc(grade) + '</span>';
         h += '</div></div></div>';
 
@@ -359,13 +359,13 @@
 
         // Feedback widget (hidden by default)
         h += '<div id="feedback-' + id + '" style="display:none;margin-top:16px;padding:16px;background:rgba(255,255,255,0.03);border-radius:8px;">';
-        h += '<div style="font-size:0.85rem;color:var(--mmt-white-muted);margin-bottom:8px;">How useful was this report?</div>';
+        h += '<div style="font-size:0.85rem;color:var(--mmt-text);margin-bottom:8px;">How useful was this report?</div>';
         h += '<div class="stars" id="stars-' + id + '">';
         for (var s = 1; s <= 5; s++) {
           h += '<svg class="star" data-rating="' + s + '" onclick="setRating(\'' + id + '\',' + s + ')" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
         }
         h += '</div>';
-        h += '<textarea id="feedback-comment-' + id + '" placeholder="Optional comment..." style="width:100%;margin-top:8px;padding:8px;background:var(--mmt-navy);border:1px solid rgba(0,229,250,0.2);border-radius:6px;color:#fff;font-size:0.85rem;resize:vertical;min-height:60px;box-sizing:border-box;"></textarea>';
+        h += '<textarea id="feedback-comment-' + id + '" placeholder="Optional comment..." style="width:100%;margin-top:8px;padding:8px;background:var(--mmt-navy);border:1px solid var(--mmt-border);border-radius:6px;color: var(--mmt-navy);font-size:0.85rem;resize:vertical;min-height:60px;box-sizing:border-box;"></textarea>';
         h += '<button onclick="submitFeedback(\'' + id + '\',\'' + o.product + '\')" class="btn-portal btn-portal-primary" style="margin-top:8px;">Submit Feedback</button>';
         h += '</div>';
 
@@ -381,7 +381,7 @@
       (data.proposalpulse || []).forEach(function(o) { all.push(Object.assign({}, o, { product: 'ProposalPulse' })); });
       all.sort(function(a, b) { return new Date(b.created_at) - new Date(a.created_at); });
 
-      if (!all.length) { el.innerHTML = '<p style="color:var(--mmt-white-dim);text-align:center;padding:16px;">No orders yet.</p>'; return; }
+      if (!all.length) { el.innerHTML = '<p style="color:var(--mmt-text-secondary);text-align:center;padding:16px;">No orders yet.</p>'; return; }
 
       var h = '<table><tr><th>Date</th><th>Product</th><th>Topic</th><th>Status</th><th>Grade</th></tr>';
       all.forEach(function(o) {
@@ -402,9 +402,9 @@
           document.getElementById('pending-section').style.display = 'block';
           var h = '';
           data.approvals.forEach(function(a) {
-            h += '<div class="portal-card" style="border-left:3px solid var(--mmt-cyan);">';
+            h += '<div class="portal-card" style="border-left:3px solid var(--mmt-teal);">';
             h += '<h3 style="margin:0 0 8px;font-size:0.95rem;">' + esc(a.title) + '</h3>';
-            if (a.description) h += '<p style="margin:0 0 12px;font-size:0.85rem;color:var(--mmt-white-dim);">' + esc(a.description) + '</p>';
+            if (a.description) h += '<p style="margin:0 0 12px;font-size:0.85rem;color:var(--mmt-text-secondary);">' + esc(a.description) + '</p>';
             h += '<div style="display:flex;gap:8px;">';
             h += '<button onclick="approveItem(\'' + a.id + '\')" class="btn-portal btn-portal-primary">Yes, proceed</button>';
             h += '<button onclick="rejectItem(\'' + a.id + '\')" class="btn-portal btn-portal-secondary">No thanks</button>';

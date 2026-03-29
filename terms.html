@@ -32,50 +32,50 @@
   <link rel="stylesheet" href="/styles/tailwind.css">
   <style>
     :root {
-      --mmt-cyan: #00E5FA;
-      --mmt-green: #00FF85;
-      --mmt-navy: #00050F;
-      --mmt-slate: #0A1628;
-      --mmt-dark: #0D1117;
+      --mmt-teal: #457B9D;
+      
+      --mmt-navy: #0A192F;
+      --mmt-soft: #F3F4F6;
       --mmt-white: #FFFFFF;
-      --mmt-white-muted: rgba(255,255,255,0.8);
-      --mmt-white-dim: rgba(255,255,255,0.6);
+      --mmt-white: #FFFFFF;
+      --mmt-text: #102033;
+      --mmt-text-secondary: #5C6B7A;
     }
-    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--mmt-navy); color: #fff; }
-    h1, h2, h3, h4, h5 { font-family: 'Space Grotesk', system-ui, sans-serif; }
-    .gradient-text { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .btn-primary { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); color: var(--mmt-navy); font-weight: 600; padding: 0.75rem 2rem; border-radius: 9999px; transition: all 0.3s; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--mmt-white); color: var(--mmt-navy); }
+    h1, h2, h3, h4, h5 { font-family: 'Inter', system-ui, sans-serif; }
+    .gradient-text { color: var(--mmt-teal); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .btn-primary { color: var(--mmt-teal); color: var(--mmt-navy); font-weight: 600; padding: 0.75rem 2rem; border-radius: 9999px; transition: all 0.3s; }
     .btn-primary:hover { transform: translateY(-1px); opacity: 0.9; }
-    .section-alt { background: var(--mmt-dark); }
-    *:focus-visible { outline: 2px solid var(--mmt-cyan); outline-offset: 2px; }
+    .section-alt { background: var(--mmt-white); }
+    *:focus-visible { outline: 2px solid var(--mmt-teal); outline-offset: 2px; }
   </style>
 </head>
 <body class="antialiased">
 
-  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold" style="background:var(--mmt-cyan); color:#fff;">Skip to main content</a>
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold" style="background:var(--mmt-teal); color: var(--mmt-navy);">Skip to main content</a>
 
   <!-- Navigation -->
-  <nav class="nav-apple">
+  <nav class="nav-editorial">
     <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
       <a href="index.html" class="flex items-center gap-2 no-underline">
-        <span class="text-xl font-bold" style="font-family:'Space Grotesk',system-ui,sans-serif; color:#fff;">Mission Meets <span style="color:var(--mmt-cyan);">Tech</span></span>
+        <span class="text-xl font-bold" style="font-family:'Inter',system-ui,sans-serif; color: var(--mmt-navy);">Mission Meets <span style="color:var(--mmt-teal);">Tech</span></span>
       </a>
       <div class="hidden md:flex items-center gap-6">
-        <a href="latest.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Intelligence</a>
-        <a href="podcast.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Podcast</a>
-        <a href="resources.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Resources</a>
-        <a href="proposal-pulse.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">ProposalPulse</a>
-        <a href="marketpulse.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">MarketPulse</a>
-        <a href="about.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">About</a>
-        <button id="searchToggle" class="text-sm hover:opacity-80" style="color:var(--mmt-white-muted);" aria-label="Search"><svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></button>
+        <a href="latest.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text);">Intelligence</a>
+        <a href="podcast.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text);">Podcast</a>
+        <a href="resources.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text);">Resources</a>
+        <a href="proposal-pulse.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text);">ProposalPulse</a>
+        <a href="marketpulse.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text);">MarketPulse</a>
+        <a href="about.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text);">About</a>
+        <button id="searchToggle" class="text-sm hover:opacity-80" style="color:var(--mmt-text);" aria-label="Search"><svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></button>
         <div style="position:relative;">
           <button id="subscribeToggle" class="btn-primary px-5 py-2 rounded-lg text-sm" style="cursor:pointer;border:none;" aria-expanded="false" aria-haspopup="true">Subscribe</button>
-          <div id="subscribePanel" class="hidden" style="position:absolute;right:0;top:calc(100% + 8px);width:280px;padding:16px;background:var(--mmt-slate);border:1px solid rgba(0,229,250,0.15);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.4);z-index:100;">
-            <p class="text-xs font-semibold mb-2" style="color:var(--mmt-white-muted);">Get the Intelligence</p>
+          <div id="subscribePanel" class="hidden" style="position:absolute;right:0;top:calc(100% + 8px);width:280px;padding:16px;background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.15);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.4);z-index:100;">
+            <p class="text-xs font-semibold mb-2" style="color:var(--mmt-text);">Get the Intelligence</p>
             <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" target="_blank">
               <div class="flex gap-2">
                 <label for="subscribe-email-nav" class="sr-only">Email</label>
-                <input type="email" name="email" id="subscribe-email-nav" placeholder="you@example.com" required class="px-3 py-2 rounded-lg text-sm flex-1" style="background:var(--mmt-navy);border:1px solid rgba(0,229,250,0.2);color:#fff;">
+                <input type="email" name="email" id="subscribe-email-nav" placeholder="you@example.com" required class="px-3 py-2 rounded-lg text-sm flex-1" style="background:var(--mmt-navy);border:1px solid var(--mmt-border);color: var(--mmt-navy);">
                 <button type="submit" class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap" style="cursor:pointer;border:none;">Join</button>
               </div>
             </form>
@@ -88,13 +88,13 @@
       </button>
     </div>
     <div id="mobileMenu" class="hidden md:hidden px-6 pb-4">
-      <div class="flex flex-col gap-4 pt-2 border-t" style="border-color:rgba(0,229,250,0.1);">
-        <a href="latest.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Intelligence</a>
-        <a href="podcast.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Podcast</a>
-        <a href="resources.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Resources</a>
-        <a href="proposal-pulse.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">ProposalPulse</a>
-        <a href="marketpulse.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">MarketPulse</a>
-        <a href="about.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">About</a>
+      <div class="flex flex-col gap-4 pt-2 border-t" style="border-color:rgba(69,123,157,0.1);">
+        <a href="latest.html" class="text-sm font-medium" style="color:var(--mmt-text);">Intelligence</a>
+        <a href="podcast.html" class="text-sm font-medium" style="color:var(--mmt-text);">Podcast</a>
+        <a href="resources.html" class="text-sm font-medium" style="color:var(--mmt-text);">Resources</a>
+        <a href="proposal-pulse.html" class="text-sm font-medium" style="color:var(--mmt-text);">ProposalPulse</a>
+        <a href="marketpulse.html" class="text-sm font-medium" style="color:var(--mmt-text);">MarketPulse</a>
+        <a href="about.html" class="text-sm font-medium" style="color:var(--mmt-text);">About</a>
       </div>
     </div>
   </nav>
@@ -104,10 +104,10 @@
   <!-- Hero -->
   <section class="pt-36 pb-20 px-6">
     <div class="max-w-3xl mx-auto">
-      <p class="text-sm font-semibold tracking-widest uppercase mb-4" style="color:var(--mmt-cyan);">Legal</p>
+      <p class="text-sm font-semibold tracking-widest uppercase mb-4" style="color:var(--mmt-teal);">Legal</p>
       <h1 class="text-3xl md:text-4xl font-bold leading-tight mb-6">Terms of Service</h1>
-      <p class="text-lg leading-relaxed" style="color:var(--mmt-white-muted);">The rules of the road for using Mission Meets Tech and MissionPulse.</p>
-      <p class="text-sm mt-4" style="color:var(--mmt-white-dim);">Effective March 17, 2026 &middot; Mission Meets Tech LLC &middot; North Carolina</p>
+      <p class="text-lg leading-relaxed" style="color:var(--mmt-text);">The rules of the road for using Mission Meets Tech and MissionPulse.</p>
+      <p class="text-sm mt-4" style="color:var(--mmt-text-secondary);">Effective March 17, 2026 &middot; Mission Meets Tech LLC &middot; North Carolina</p>
     </div>
   </section>
 
@@ -116,92 +116,92 @@
 
       <div>
         <h2 class="text-xl font-bold mb-3">1. Agreement</h2>
-        <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">By using missionmeetstech.com or any MissionPulse service (ProposalPulse, MarketPulse, or any future product), you agree to these terms. If you don't agree, don't use the services. "MMT," "we," and "us" refer to Mission Meets Tech LLC, a North Carolina limited liability company.</p>
+        <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">By using missionmeetstech.com or any MissionPulse service (ProposalPulse, MarketPulse, or any future product), you agree to these terms. If you don't agree, don't use the services. "MMT," "we," and "us" refer to Mission Meets Tech LLC, a North Carolina limited liability company.</p>
       </div>
 
       <div>
         <h2 class="text-xl font-bold mb-3">2. Services Offered</h2>
-        <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">MMT provides:</p>
-        <ul class="text-sm space-y-2 list-none p-0 m-0" style="color:var(--mmt-white-muted);">
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> <strong>Mission Meets Tech newsletter</strong> &mdash; federal health IT analysis and commentary</li>
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> <strong>Mission Meets Reality podcast</strong> &mdash; interviews and analysis</li>
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> <strong>ProposalPulse</strong> &mdash; AI-powered proposal document analysis and scoring</li>
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> <strong>MarketPulse</strong> &mdash; AI-generated tactical intelligence briefs for federal opportunities</li>
+        <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);">MMT provides:</p>
+        <ul class="text-sm space-y-2 list-none p-0 m-0" style="color:var(--mmt-text);">
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> <strong>Mission Meets Tech newsletter</strong> &mdash; federal health IT analysis and commentary</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> <strong>Mission Meets Reality podcast</strong> &mdash; interviews and analysis</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> <strong>ProposalPulse</strong> &mdash; AI-powered proposal document analysis and scoring</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> <strong>MarketPulse</strong> &mdash; AI-generated tactical intelligence briefs for federal opportunities</li>
         </ul>
       </div>
 
       <div>
         <h2 class="text-xl font-bold mb-3">3. AI-Generated Content Disclaimer</h2>
-        <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">ProposalPulse scorecards, Red Team Reviews, and MarketPulse tactical briefs are generated by AI (Anthropic's Claude). While we design our prompts and systems carefully:</p>
-        <ul class="text-sm mt-3 space-y-2 list-none p-0 m-0" style="color:var(--mmt-white-muted);">
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> AI output is <strong>advisory, not definitive</strong>. It should inform your decisions, not replace professional judgment.</li>
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> Scores, ratings, and probability-of-win estimates are <strong>analytical opinions</strong>, not guarantees of contract award outcomes.</li>
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> We do not guarantee the accuracy, completeness, or suitability of any AI-generated analysis.</li>
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> You are responsible for verifying any information before relying on it in a proposal submission.</li>
+        <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">ProposalPulse scorecards, Red Team Reviews, and MarketPulse tactical briefs are generated by AI (Anthropic's Claude). While we design our prompts and systems carefully:</p>
+        <ul class="text-sm mt-3 space-y-2 list-none p-0 m-0" style="color:var(--mmt-text);">
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> AI output is <strong>advisory, not definitive</strong>. It should inform your decisions, not replace professional judgment.</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> Scores, ratings, and probability-of-win estimates are <strong>analytical opinions</strong>, not guarantees of contract award outcomes.</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> We do not guarantee the accuracy, completeness, or suitability of any AI-generated analysis.</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> You are responsible for verifying any information before relying on it in a proposal submission.</li>
         </ul>
       </div>
 
       <div>
         <h2 class="text-xl font-bold mb-3">4. Acceptable Use</h2>
-        <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">You agree not to:</p>
-        <ul class="text-sm space-y-2 list-none p-0 m-0" style="color:var(--mmt-white-muted);">
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> Submit classified, export-controlled (ITAR/EAR), or government-restricted documents to any MMT service</li>
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> Use automated tools to scrape, crawl, or bulk-access our services</li>
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> Attempt to circumvent usage limits, payment requirements, or access controls</li>
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> Resell, redistribute, or white-label MMT analysis without written permission</li>
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> Use our services for any unlawful purpose</li>
+        <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);">You agree not to:</p>
+        <ul class="text-sm space-y-2 list-none p-0 m-0" style="color:var(--mmt-text);">
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> Submit classified, export-controlled (ITAR/EAR), or government-restricted documents to any MMT service</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> Use automated tools to scrape, crawl, or bulk-access our services</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> Attempt to circumvent usage limits, payment requirements, or access controls</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> Resell, redistribute, or white-label MMT analysis without written permission</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> Use our services for any unlawful purpose</li>
         </ul>
       </div>
 
       <div>
         <h2 class="text-xl font-bold mb-3">5. Your Content</h2>
-        <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">Documents you upload to ProposalPulse remain your property. You grant MMT a limited license to process your content solely for the purpose of delivering the requested analysis. We do not claim ownership of your documents, and we do not use your content for any purpose beyond providing our services. See our <a href="privacy.html" class="no-underline" style="color:var(--mmt-cyan);">Privacy Policy</a> for data handling details.</p>
+        <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">Documents you upload to ProposalPulse remain your property. You grant MMT a limited license to process your content solely for the purpose of delivering the requested analysis. We do not claim ownership of your documents, and we do not use your content for any purpose beyond providing our services. See our <a href="privacy.html" class="no-underline" style="color:var(--mmt-teal);">Privacy Policy</a> for data handling details.</p>
       </div>
 
       <div>
         <h2 class="text-xl font-bold mb-3">6. Payments &amp; Refunds</h2>
-        <ul class="text-sm space-y-2 list-none p-0 m-0" style="color:var(--mmt-white-muted);">
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> Paid services are billed through <a href="https://stripe.com" target="_blank" rel="noopener" class="no-underline" style="color:var(--mmt-cyan);">Stripe</a>.</li>
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> ProposalPulse includes 3 free assessments per email address. Additional assessments require purchase.</li>
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> Subscription plans (Starter, Professional, Enterprise) are billed monthly. You may cancel at any time; access continues through the end of your billing period.</li>
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> If an analysis fails to generate due to a system error, we will re-credit your usage or issue a refund within 7 business days.</li>
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> We do not offer refunds for completed analyses that you disagree with, since AI output is advisory by nature.</li>
+        <ul class="text-sm space-y-2 list-none p-0 m-0" style="color:var(--mmt-text);">
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> Paid services are billed through <a href="https://stripe.com" target="_blank" rel="noopener" class="no-underline" style="color:var(--mmt-teal);">Stripe</a>.</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> ProposalPulse includes 3 free assessments per email address. Additional assessments require purchase.</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> Subscription plans (Starter, Professional, Enterprise) are billed monthly. You may cancel at any time; access continues through the end of your billing period.</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> If an analysis fails to generate due to a system error, we will re-credit your usage or issue a refund within 7 business days.</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> We do not offer refunds for completed analyses that you disagree with, since AI output is advisory by nature.</li>
         </ul>
       </div>
 
       <div>
         <h2 class="text-xl font-bold mb-3">7. Service Availability</h2>
-        <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">We strive for high availability but do not guarantee uninterrupted service. Our services depend on third-party infrastructure (Netlify, Supabase, Anthropic, Stripe) that may experience outages beyond our control. We will communicate scheduled maintenance and known outages when possible.</p>
+        <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">We strive for high availability but do not guarantee uninterrupted service. Our services depend on third-party infrastructure (Netlify, Supabase, Anthropic, Stripe) that may experience outages beyond our control. We will communicate scheduled maintenance and known outages when possible.</p>
       </div>
 
       <div>
         <h2 class="text-xl font-bold mb-3">8. Limitation of Liability</h2>
-        <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">To the maximum extent permitted by law, MMT's total liability for any claim arising from use of our services is limited to the amount you paid us in the 12 months preceding the claim. We are not liable for indirect, incidental, consequential, or punitive damages, including lost profits or lost contract awards.</p>
+        <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">To the maximum extent permitted by law, MMT's total liability for any claim arising from use of our services is limited to the amount you paid us in the 12 months preceding the claim. We are not liable for indirect, incidental, consequential, or punitive damages, including lost profits or lost contract awards.</p>
       </div>
 
       <div>
         <h2 class="text-xl font-bold mb-3">9. Intellectual Property</h2>
-        <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">The Mission Meets Tech name, logo, MissionPulse, ProposalPulse, and MarketPulse brands, website design, newsletter content, podcast episodes, and analysis frameworks are the property of Mission Meets Tech LLC. You may share links to our content. You may not reproduce, republish, or redistribute our content without written permission.</p>
+        <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">The Mission Meets Tech name, logo, MissionPulse, ProposalPulse, and MarketPulse brands, website design, newsletter content, podcast episodes, and analysis frameworks are the property of Mission Meets Tech LLC. You may share links to our content. You may not reproduce, republish, or redistribute our content without written permission.</p>
       </div>
 
       <div>
         <h2 class="text-xl font-bold mb-3">10. Account Termination</h2>
-        <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">We may suspend or terminate access to our services if you violate these terms, particularly the acceptable use and classified information provisions. If we terminate your account for cause, no refund is owed. You may delete your account at any time by emailing <a href="mailto:mary@missionmeetstech.com" class="no-underline" style="color:var(--mmt-cyan);">mary@missionmeetstech.com</a>.</p>
+        <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">We may suspend or terminate access to our services if you violate these terms, particularly the acceptable use and classified information provisions. If we terminate your account for cause, no refund is owed. You may delete your account at any time by emailing <a href="mailto:mary@missionmeetstech.com" class="no-underline" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a>.</p>
       </div>
 
       <div>
         <h2 class="text-xl font-bold mb-3">11. Governing Law</h2>
-        <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">These terms are governed by the laws of the State of North Carolina. Any disputes will be resolved in the state or federal courts located in North Carolina.</p>
+        <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">These terms are governed by the laws of the State of North Carolina. Any disputes will be resolved in the state or federal courts located in North Carolina.</p>
       </div>
 
       <div>
         <h2 class="text-xl font-bold mb-3">12. Changes</h2>
-        <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">We may update these terms as our services evolve. Material changes will be noted with a new effective date. Continued use after changes constitutes acceptance.</p>
+        <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">We may update these terms as our services evolve. Material changes will be noted with a new effective date. Continued use after changes constitutes acceptance.</p>
       </div>
 
       <div>
         <h2 class="text-xl font-bold mb-3">13. Contact</h2>
-        <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">Questions about these terms? Email <a href="mailto:mary@missionmeetstech.com" class="no-underline" style="color:var(--mmt-cyan);">mary@missionmeetstech.com</a>.</p>
+        <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">Questions about these terms? Email <a href="mailto:mary@missionmeetstech.com" class="no-underline" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a>.</p>
       </div>
 
     </div>
@@ -210,44 +210,44 @@
   </main>
 
   <!-- Footer -->
-  <footer class="py-16 px-6" style="background:var(--mmt-navy); border-top:1px solid rgba(0,229,250,0.1);">
+  <footer class="py-16 px-6" style="background:var(--mmt-navy); border-top:1px solid rgba(69,123,157,0.1);">
     <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
       <div>
-        <div class="flex items-center gap-3 mb-3"><p class="font-bold text-lg" style="font-family:'Space Grotesk',system-ui,sans-serif; color:#fff;">Mission Meets <span style="color:var(--mmt-cyan);">Tech</span></p></div>
-        <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-dim);">Federal health IT intelligence. Mission first.</p>
-        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" style="color:var(--mmt-white-dim);" class="hover:opacity-80"><span class="sr-only">LinkedIn</span><svg class="text-lg" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg></a>
+        <div class="flex items-center gap-3 mb-3"><p class="font-bold text-lg" style="font-family:'Inter',system-ui,sans-serif; color: var(--mmt-navy);">Mission Meets <span style="color:var(--mmt-teal);">Tech</span></p></div>
+        <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-text-secondary);">Federal health IT intelligence. Mission first.</p>
+        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" style="color:var(--mmt-text-secondary);" class="hover:opacity-80"><span class="sr-only">LinkedIn</span><svg class="text-lg" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg></a>
       </div>
       <div>
-        <p class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var(--mmt-cyan);">Explore</p>
+        <p class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var(--mmt-teal);">Explore</p>
         <ul class="space-y-2 list-none p-0 m-0">
-          <li><a href="latest.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Intelligence</a></li>
-          <li><a href="podcast.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Podcast</a></li>
-          <li><a href="resources.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Resources</a></li>
-          <li><a href="proposal-pulse.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">ProposalPulse</a></li>
-          <li><a href="marketpulse.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">MarketPulse</a></li>
-          <li><a href="my-reports.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">My Reports</a></li>
+          <li><a href="latest.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Intelligence</a></li>
+          <li><a href="podcast.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Podcast</a></li>
+          <li><a href="resources.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Resources</a></li>
+          <li><a href="proposal-pulse.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">ProposalPulse</a></li>
+          <li><a href="marketpulse.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">MarketPulse</a></li>
+          <li><a href="my-reports.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">My Reports</a></li>
         </ul>
       </div>
       <div>
-        <p class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var(--mmt-cyan);">Connect</p>
+        <p class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var(--mmt-teal);">Connect</p>
         <ul class="space-y-2 list-none p-0 m-0">
-          <li><a href="about.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">About</a></li>
-          <li><a href="mailto:mary@missionmeetstech.com" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Contact</a></li>
-          <li><a href="events.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Events</a></li>
-          <li><a href="privacy.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Privacy Policy</a></li>
-          <li><a href="terms.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Terms of Service</a></li>
-          <li><a href="security.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Data Security</a></li>
-          <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">LinkedIn</a></li>
+          <li><a href="about.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">About</a></li>
+          <li><a href="mailto:mary@missionmeetstech.com" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Contact</a></li>
+          <li><a href="events.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Events</a></li>
+          <li><a href="privacy.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Privacy Policy</a></li>
+          <li><a href="terms.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Terms of Service</a></li>
+          <li><a href="security.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Data Security</a></li>
+          <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">LinkedIn</a></li>
         </ul>
       </div>
     </div>
-    <div class="max-w-6xl mx-auto mt-12 pt-8" style="border-top:1px solid rgba(0,229,250,0.1);">
-      <p class="text-xs text-center" style="color:var(--mmt-white-dim);">Mission Meets Tech provides independent analysis and commentary. Views expressed are those of the authors and do not represent any employer or government agency.</p>
-      <p class="text-xs text-center mt-2" style="color:var(--mmt-white-dim);">&copy; 2026 Mission Meets Tech LLC. All rights reserved.</p>
+    <div class="max-w-6xl mx-auto mt-12 pt-8" style="border-top:1px solid rgba(69,123,157,0.1);">
+      <p class="text-xs text-center" style="color:var(--mmt-text-secondary);">Mission Meets Tech provides independent analysis and commentary. Views expressed are those of the authors and do not represent any employer or government agency.</p>
+      <p class="text-xs text-center mt-2" style="color:var(--mmt-text-secondary);">&copy; 2026 Mission Meets Tech LLC. All rights reserved.</p>
     </div>
   </footer>
 
-  <button id="btt" aria-label="Back to top" style="position:fixed;bottom:2rem;right:2rem;width:44px;height:44px;border-radius:50%;background:var(--mmt-slate);border:1px solid rgba(0,229,250,0.15);color:var(--mmt-cyan);cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s,transform 0.3s;z-index:90;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onmouseover="this.style.borderColor='rgba(0,229,250,0.3)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(0,229,250,0.15)';this.style.transform='none'">
+  <button id="btt" aria-label="Back to top" style="position:fixed;bottom:2rem;right:2rem;width:44px;height:44px;border-radius:50%;background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.15);color:var(--mmt-teal);cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s,transform 0.3s;z-index:90;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onmouseover="this.style.borderColor='rgba(69,123,157,0.3)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(69,123,157,0.15)';this.style.transform='none'">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
   </button>
   <script>

@@ -32,63 +32,63 @@
   <link rel="stylesheet" href="/styles/tailwind.css">
   <style>
     :root {
-      --mmt-cyan: #00E5FA;
-      --mmt-green: #00FF85;
-      --mmt-navy: #00050F;
-      --mmt-slate: #0A1628;
-      --mmt-dark: #0D1117;
+      --mmt-teal: #457B9D;
+      
+      --mmt-navy: #0A192F;
+      --mmt-soft: #F3F4F6;
       --mmt-white: #FFFFFF;
-      --mmt-white-muted: rgba(255,255,255,0.8);
-      --mmt-white-dim: rgba(255,255,255,0.6);
+      --mmt-white: #FFFFFF;
+      --mmt-text: #102033;
+      --mmt-text-secondary: #5C6B7A;
     }
-    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--mmt-navy); color: #fff; }
-    h1, h2, h3, h4, h5 { font-family: 'Space Grotesk', system-ui, sans-serif; }
-    .gradient-text { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .btn-primary { background: linear-gradient(135deg, var(--mmt-cyan), var(--mmt-green)); color: var(--mmt-navy); font-weight: 600; padding: 0.75rem 2rem; border-radius: 9999px; transition: all 0.3s; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--mmt-white); color: var(--mmt-navy); }
+    h1, h2, h3, h4, h5 { font-family: 'Inter', system-ui, sans-serif; }
+    .gradient-text { color: var(--mmt-teal); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .btn-primary { color: var(--mmt-teal); color: var(--mmt-navy); font-weight: 600; padding: 0.75rem 2rem; border-radius: 9999px; transition: all 0.3s; }
     .btn-primary:hover { transform: translateY(-1px); opacity: 0.9; }
-    .btn-secondary { border: 1px solid var(--mmt-cyan); color: #fff; padding: 0.75rem 2rem; border-radius: 9999px; transition: all 0.3s; }
-    .btn-secondary:hover { background: rgba(0,229,250,0.1); }
-    .card { background: var(--mmt-slate); border: 1px solid rgba(0,229,250,0.1); }
-    .card:hover { border-color: rgba(0,229,250,0.3); }
-    .section-alt { background: var(--mmt-dark); }
-    *:focus-visible { outline: 2px solid var(--mmt-cyan); outline-offset: 2px; }
+    .btn-secondary { border: 1px solid var(--mmt-teal); color: var(--mmt-navy); padding: 0.75rem 2rem; border-radius: 9999px; transition: all 0.3s; }
+    .btn-secondary:hover { background: rgba(69,123,157,0.1); }
+    .card { background: var(--mmt-soft); border: 1px solid rgba(69,123,157,0.1); }
+    .card:hover { border-color: rgba(69,123,157,0.3); }
+    .section-alt { background: var(--mmt-white); }
+    *:focus-visible { outline: 2px solid var(--mmt-teal); outline-offset: 2px; }
   </style>
 </head>
 <body class="antialiased">
 
-  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold" style="background:var(--mmt-cyan); color:#fff;">Skip to main content</a>
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold" style="background:var(--mmt-teal); color: var(--mmt-navy);">Skip to main content</a>
 
   <!-- Navigation -->
-  <nav class="nav-apple">
+  <nav class="nav-editorial">
     <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
       <a href="index.html" class="flex items-center gap-2 no-underline">
-        <span class="text-xl font-bold" style="font-family:'Space Grotesk',system-ui,sans-serif; color:#fff;">Mission Meets <span style="color:var(--mmt-cyan);">Tech</span></span>
+        <span class="text-xl font-bold" style="font-family:'Inter',system-ui,sans-serif; color: var(--mmt-navy);">Mission Meets <span style="color:var(--mmt-teal);">Tech</span></span>
       </a>
       <div class="hidden md:flex items-center gap-6">
-        <a href="latest.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Intelligence</a>
-        <a href="podcast.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Podcast</a>
-        <a href="resources.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">Resources</a>
-        <a href="proposal-pulse.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">ProposalPulse</a>
-        <a href="marketpulse.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">MarketPulse</a>
-        <a href="about.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-white-muted);">About</a>
-        <button id="searchToggle" class="text-sm hover:opacity-80" style="color:var(--mmt-white-muted);" aria-label="Search"><svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></button>
+        <a href="latest.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text);">Intelligence</a>
+        <a href="podcast.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text);">Podcast</a>
+        <a href="resources.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text);">Resources</a>
+        <a href="proposal-pulse.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text);">ProposalPulse</a>
+        <a href="marketpulse.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text);">MarketPulse</a>
+        <a href="about.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text);">About</a>
+        <button id="searchToggle" class="text-sm hover:opacity-80" style="color:var(--mmt-text);" aria-label="Search"><svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></button>
         <div style="position:relative;">
           <button id="subscribeToggle" class="btn-primary px-5 py-2 rounded-lg text-sm" style="cursor:pointer;border:none;" aria-expanded="false" aria-haspopup="true">Subscribe</button>
-          <div id="subscribePanel" class="hidden" style="position:absolute;right:0;top:calc(100% + 8px);width:280px;padding:16px;background:var(--mmt-slate);border:1px solid rgba(0,229,250,0.15);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.4);z-index:100;">
-            <p class="text-xs font-semibold mb-2" style="color:var(--mmt-white-muted);">Get the Intelligence</p>
+          <div id="subscribePanel" class="hidden" style="position:absolute;right:0;top:calc(100% + 8px);width:280px;padding:16px;background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.15);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.4);z-index:100;">
+            <p class="text-xs font-semibold mb-2" style="color:var(--mmt-text);">Get the Intelligence</p>
             <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" target="_blank">
               <div class="flex gap-2">
                 <label for="subscribe-email-nav" class="sr-only">Email</label>
-                <input type="email" name="email" id="subscribe-email-nav" placeholder="you@example.com" required class="px-3 py-2 rounded-lg text-sm flex-1" style="background:var(--mmt-navy);border:1px solid rgba(0,229,250,0.2);color:#fff;">
+                <input type="email" name="email" id="subscribe-email-nav" placeholder="you@example.com" required class="px-3 py-2 rounded-lg text-sm flex-1" style="background:var(--mmt-navy);border:1px solid var(--mmt-border);color: var(--mmt-navy);">
                 <button type="submit" class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap" style="cursor:pointer;border:none;">Join</button>
               </div>
             </form>
             <div class="flex items-center gap-2 my-2">
-              <div style="flex:1;height:1px;background:rgba(0,229,250,0.1);"></div>
-              <span class="text-xs" style="color:var(--mmt-white-dim);">or</span>
-              <div style="flex:1;height:1px;background:rgba(0,229,250,0.1);"></div>
+              <div style="flex:1;height:1px;background:rgba(69,123,157,0.1);"></div>
+              <span class="text-xs" style="color:var(--mmt-text-secondary);">or</span>
+              <div style="flex:1;height:1px;background:rgba(69,123,157,0.1);"></div>
             </div>
-            <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="text-xs font-medium hover:opacity-80 no-underline flex items-center gap-1" style="color:var(--mmt-cyan);">
+            <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="text-xs font-medium hover:opacity-80 no-underline flex items-center gap-1" style="color:var(--mmt-teal);">
               <svg width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
               Subscribe on LinkedIn
             </a>
@@ -102,13 +102,13 @@
     </div>
     <!-- Mobile Menu -->
     <div id="mobileMenu" class="hidden md:hidden px-6 pb-4">
-      <div class="flex flex-col gap-4 pt-2 border-t" style="border-color:rgba(0,229,250,0.1);">
-        <a href="latest.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Intelligence</a>
-        <a href="podcast.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Podcast</a>
-        <a href="resources.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">Resources</a>
-        <a href="proposal-pulse.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">ProposalPulse</a>
-        <a href="marketpulse.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">MarketPulse</a>
-        <a href="about.html" class="text-sm font-medium" style="color:var(--mmt-white-muted);">About</a>
+      <div class="flex flex-col gap-4 pt-2 border-t" style="border-color:rgba(69,123,157,0.1);">
+        <a href="latest.html" class="text-sm font-medium" style="color:var(--mmt-text);">Intelligence</a>
+        <a href="podcast.html" class="text-sm font-medium" style="color:var(--mmt-text);">Podcast</a>
+        <a href="resources.html" class="text-sm font-medium" style="color:var(--mmt-text);">Resources</a>
+        <a href="proposal-pulse.html" class="text-sm font-medium" style="color:var(--mmt-text);">ProposalPulse</a>
+        <a href="marketpulse.html" class="text-sm font-medium" style="color:var(--mmt-text);">MarketPulse</a>
+        <a href="about.html" class="text-sm font-medium" style="color:var(--mmt-text);">About</a>
       </div>
     </div>
   </nav>
@@ -118,10 +118,10 @@
   <!-- Hero -->
   <section class="pt-36 pb-20 px-6">
     <div class="max-w-3xl mx-auto">
-      <p class="text-sm font-semibold tracking-widest uppercase mb-4" style="color:var(--mmt-cyan);">Security</p>
+      <p class="text-sm font-semibold tracking-widest uppercase mb-4" style="color:var(--mmt-teal);">Security</p>
       <h1 class="text-3xl md:text-4xl font-bold leading-tight mb-6">Your Data. Your Intelligence. Our Commitment.</h1>
-      <p class="text-lg leading-relaxed" style="color:var(--mmt-white-muted);">How ProposalPulse and MarketPulse protect your most sensitive work.</p>
-      <p class="text-sm mt-4" style="color:var(--mmt-white-dim);">Effective March 17, 2026 &middot; Mission Meets Tech LLC &middot; North Carolina</p>
+      <p class="text-lg leading-relaxed" style="color:var(--mmt-text);">How ProposalPulse and MarketPulse protect your most sensitive work.</p>
+      <p class="text-sm mt-4" style="color:var(--mmt-text-secondary);">Effective March 17, 2026 &middot; Mission Meets Tech LLC &middot; North Carolina</p>
     </div>
   </section>
 
@@ -130,115 +130,115 @@
 
       <div>
         <h2 class="text-xl font-bold mb-3">What Happens When You Upload a Proposal</h2>
-        <ol class="text-sm space-y-2 list-none p-0 m-0" style="color:var(--mmt-white-muted); counter-reset:steps;">
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">1.</span> Document travels over TLS 1.2+ to our hosting provider's SOC 2 infrastructure.</li>
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">2.</span> We extract text. Original file is not stored.</li>
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">3.</span> Text sent to our AI analysis provider. Their policy: inputs never used to train models.</li>
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">4.</span> Scorecard stored in our database provider on cloud infrastructure, AES-256 encrypted at rest.</li>
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">5.</span> After 90 days, document text permanently purged. Scorecards retained.</li>
+        <ol class="text-sm space-y-2 list-none p-0 m-0" style="color:var(--mmt-text); counter-reset:steps;">
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-teal);">1.</span> Document travels over TLS 1.2+ to our hosting provider's SOC 2 infrastructure.</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-teal);">2.</span> We extract text. Original file is not stored.</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-teal);">3.</span> Text sent to our AI analysis provider. Their policy: inputs never used to train models.</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-teal);">4.</span> Scorecard stored in our database provider on cloud infrastructure, AES-256 encrypted at rest.</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-teal);">5.</span> After 90 days, document text permanently purged. Scorecards retained.</li>
         </ol>
       </div>
 
       <div>
         <h2 class="text-xl font-bold mb-3">What We Do NOT Do</h2>
-        <ul class="text-sm space-y-2 list-none p-0 m-0" style="color:var(--mmt-white-muted);">
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> Don't sell, share, or license your data</li>
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> Don't use proposals to train any AI model</li>
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> Don't store original uploaded files</li>
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> Don't allow cross-user data access (email-scoped)</li>
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> Don't process classified, ITAR, or export-restricted material</li>
+        <ul class="text-sm space-y-2 list-none p-0 m-0" style="color:var(--mmt-text);">
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> Don't sell, share, or license your data</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> Don't use proposals to train any AI model</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> Don't store original uploaded files</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> Don't allow cross-user data access (email-scoped)</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> Don't process classified, ITAR, or export-restricted material</li>
         </ul>
       </div>
 
       <div>
         <h2 class="text-xl font-bold mb-3">Encryption</h2>
         <div class="space-y-3">
-          <div class="p-4 rounded-lg" style="background:rgba(0,229,250,0.05); border:1px solid rgba(0,229,250,0.15);">
-            <p class="text-sm font-semibold mb-1" style="color:var(--mmt-cyan);">In Transit</p>
-            <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">TLS 1.2+ on all connections between your browser, our servers, and third-party APIs.</p>
+          <div class="p-4 rounded-lg" style="background:rgba(69,123,157,0.05); border:1px solid rgba(69,123,157,0.15);">
+            <p class="text-sm font-semibold mb-1" style="color:var(--mmt-teal);">In Transit</p>
+            <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">TLS 1.2+ on all connections between your browser, our servers, and third-party APIs.</p>
           </div>
-          <div class="p-4 rounded-lg" style="background:rgba(0,229,250,0.05); border:1px solid rgba(0,229,250,0.15);">
-            <p class="text-sm font-semibold mb-1" style="color:var(--mmt-cyan);">At Rest</p>
-            <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">AES-256 encryption on all database storage (cloud infrastructure).</p>
+          <div class="p-4 rounded-lg" style="background:rgba(69,123,157,0.05); border:1px solid rgba(69,123,157,0.15);">
+            <p class="text-sm font-semibold mb-1" style="color:var(--mmt-teal);">At Rest</p>
+            <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">AES-256 encryption on all database storage (cloud infrastructure).</p>
           </div>
-          <div class="p-4 rounded-lg" style="background:rgba(0,229,250,0.05); border:1px solid rgba(0,229,250,0.15);">
-            <p class="text-sm font-semibold mb-1" style="color:var(--mmt-cyan);">Payment</p>
-            <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">Our payment processor handles all payment processing. We never see or store card numbers.</p>
+          <div class="p-4 rounded-lg" style="background:rgba(69,123,157,0.05); border:1px solid rgba(69,123,157,0.15);">
+            <p class="text-sm font-semibold mb-1" style="color:var(--mmt-teal);">Payment</p>
+            <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">Our payment processor handles all payment processing. We never see or store card numbers.</p>
           </div>
         </div>
       </div>
 
       <div>
         <h2 class="text-xl font-bold mb-3">Access Controls</h2>
-        <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">Cryptographic HMAC token per scoring request. No guessable URLs. Server-side functions only &mdash; no client-side database access.</p>
+        <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">Cryptographic HMAC token per scoring request. No guessable URLs. Server-side functions only &mdash; no client-side database access.</p>
       </div>
 
       <div>
         <h2 class="text-xl font-bold mb-3">Third-Party Services</h2>
         <div class="space-y-2">
-          <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(0,229,250,0.03); border:1px solid rgba(0,229,250,0.08);">
-            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">AI Analysis</span>
-            <span class="text-sm" style="color:var(--mmt-white-muted);">Proposal analysis &mdash; No training on API inputs</span>
+          <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(69,123,157,0.03); border:1px solid rgba(69,123,157,0.08);">
+            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-teal); min-width:80px;">AI Analysis</span>
+            <span class="text-sm" style="color:var(--mmt-text);">Proposal analysis &mdash; No training on API inputs</span>
           </div>
-          <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(0,229,250,0.03); border:1px solid rgba(0,229,250,0.08);">
-            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Research Intel</span>
-            <span class="text-sm" style="color:var(--mmt-white-muted);">MarketPulse research &mdash; No training on API inputs</span>
+          <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(69,123,157,0.03); border:1px solid rgba(69,123,157,0.08);">
+            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-teal); min-width:80px;">Research Intel</span>
+            <span class="text-sm" style="color:var(--mmt-text);">MarketPulse research &mdash; No training on API inputs</span>
           </div>
-          <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(0,229,250,0.03); border:1px solid rgba(0,229,250,0.08);">
-            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Database</span>
-            <span class="text-sm" style="color:var(--mmt-white-muted);">Cloud infrastructure &mdash; SOC 2, encrypted</span>
+          <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(69,123,157,0.03); border:1px solid rgba(69,123,157,0.08);">
+            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-teal); min-width:80px;">Database</span>
+            <span class="text-sm" style="color:var(--mmt-text);">Cloud infrastructure &mdash; SOC 2, encrypted</span>
           </div>
-          <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(0,229,250,0.03); border:1px solid rgba(0,229,250,0.08);">
-            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Hosting</span>
-            <span class="text-sm" style="color:var(--mmt-white-muted);">Hosting / functions &mdash; SOC 2</span>
+          <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(69,123,157,0.03); border:1px solid rgba(69,123,157,0.08);">
+            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-teal); min-width:80px;">Hosting</span>
+            <span class="text-sm" style="color:var(--mmt-text);">Hosting / functions &mdash; SOC 2</span>
           </div>
-          <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(0,229,250,0.03); border:1px solid rgba(0,229,250,0.08);">
-            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Payments</span>
-            <span class="text-sm" style="color:var(--mmt-white-muted);">Payment processing &mdash; PCI DSS Level 1</span>
+          <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(69,123,157,0.03); border:1px solid rgba(69,123,157,0.08);">
+            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-teal); min-width:80px;">Payments</span>
+            <span class="text-sm" style="color:var(--mmt-text);">Payment processing &mdash; PCI DSS Level 1</span>
           </div>
-          <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(0,229,250,0.03); border:1px solid rgba(0,229,250,0.08);">
-            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-cyan); min-width:80px;">Email</span>
-            <span class="text-sm" style="color:var(--mmt-white-muted);">Email delivery &mdash; SOC 2</span>
+          <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(69,123,157,0.03); border:1px solid rgba(69,123,157,0.08);">
+            <span class="text-sm font-semibold shrink-0" style="color:var(--mmt-teal); min-width:80px;">Email</span>
+            <span class="text-sm" style="color:var(--mmt-text);">Email delivery &mdash; SOC 2</span>
           </div>
         </div>
       </div>
 
       <div>
         <h2 class="text-xl font-bold mb-3">Your Rights</h2>
-        <ul class="text-sm space-y-2 list-none p-0 m-0" style="color:var(--mmt-white-muted);">
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> <strong>Delete your data:</strong> email <a href="mailto:mary@missionmeetstech.com" class="no-underline" style="color:var(--mmt-cyan);">mary@missionmeetstech.com</a> and we'll remove everything within 30 days</li>
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> <strong>Export your scorecards:</strong> request a copy of all your assessment results</li>
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> <strong>Ask anything:</strong> questions about how we handle your data are always welcome</li>
+        <ul class="text-sm space-y-2 list-none p-0 m-0" style="color:var(--mmt-text);">
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> <strong>Delete your data:</strong> email <a href="mailto:mary@missionmeetstech.com" class="no-underline" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a> and we'll remove everything within 30 days</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> <strong>Export your scorecards:</strong> request a copy of all your assessment results</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> <strong>Ask anything:</strong> questions about how we handle your data are always welcome</li>
         </ul>
       </div>
 
       <div>
         <h2 class="text-xl font-bold mb-3">What Happens When You Request a MarketPulse Brief</h2>
-        <ol class="text-sm space-y-2 list-none p-0 m-0" style="color:var(--mmt-white-muted);">
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">1.</span> Your research question travels over TLS 1.2+ to our hosting provider's SOC 2 infrastructure.</li>
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">2.</span> Query sent to our AI analysis provider and our research intelligence provider. Neither trains on API inputs.</li>
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">3.</span> Generated report stored in our database provider on cloud infrastructure, AES-256 encrypted at rest.</li>
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">4.</span> Report PDF delivered to your email via our email delivery provider (SOC 2).</li>
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-cyan);">5.</span> Query text retained for quality assurance. Reports retained while account active.</li>
+        <ol class="text-sm space-y-2 list-none p-0 m-0" style="color:var(--mmt-text);">
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-teal);">1.</span> Your research question travels over TLS 1.2+ to our hosting provider's SOC 2 infrastructure.</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-teal);">2.</span> Query sent to our AI analysis provider and our research intelligence provider. Neither trains on API inputs.</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-teal);">3.</span> Generated report stored in our database provider on cloud infrastructure, AES-256 encrypted at rest.</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-teal);">4.</span> Report PDF delivered to your email via our email delivery provider (SOC 2).</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-teal);">5.</span> Query text retained for quality assurance. Reports retained while account active.</li>
         </ol>
       </div>
 
       <div>
         <h2 class="text-xl font-bold mb-3">What We Do NOT Do with MarketPulse Data</h2>
-        <ul class="text-sm space-y-2 list-none p-0 m-0" style="color:var(--mmt-white-muted);">
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> Don't share your research questions with other customers</li>
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> Don't use your queries to train any AI model</li>
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-cyan);" aria-hidden="true">&#8227;</span> Don't sell or license your data</li>
+        <ul class="text-sm space-y-2 list-none p-0 m-0" style="color:var(--mmt-text);">
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> Don't share your research questions with other customers</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> Don't use your queries to train any AI model</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#8227;</span> Don't sell or license your data</li>
         </ul>
       </div>
 
       <div>
         <h2 class="text-xl font-bold mb-3">Who We Are</h2>
-        <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-white-muted);">Mission Meets Tech LLC, a North Carolina LLC, founder-led. Built for federal contractors who can't afford to get data security wrong.</p>
-        <p class="text-sm leading-relaxed" style="color:var(--mmt-white-muted);">
-          <a href="privacy.html" class="no-underline" style="color:var(--mmt-cyan);">Privacy Policy</a> &middot;
-          <a href="terms.html" class="no-underline" style="color:var(--mmt-cyan);">Terms of Service</a> &middot;
-          <a href="mailto:mary@missionmeetstech.com" class="no-underline" style="color:var(--mmt-cyan);">mary@missionmeetstech.com</a>
+        <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);">Mission Meets Tech LLC, a North Carolina LLC, founder-led. Built for federal contractors who can't afford to get data security wrong.</p>
+        <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">
+          <a href="privacy.html" class="no-underline" style="color:var(--mmt-teal);">Privacy Policy</a> &middot;
+          <a href="terms.html" class="no-underline" style="color:var(--mmt-teal);">Terms of Service</a> &middot;
+          <a href="mailto:mary@missionmeetstech.com" class="no-underline" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a>
         </p>
       </div>
 
@@ -248,44 +248,44 @@
   </main>
 
   <!-- Footer -->
-  <footer class="py-16 px-6" style="background:var(--mmt-navy); border-top:1px solid rgba(0,229,250,0.1);">
+  <footer class="py-16 px-6" style="background:var(--mmt-navy); border-top:1px solid rgba(69,123,157,0.1);">
     <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
       <div>
-        <div class="flex items-center gap-3 mb-3"><p class="font-bold text-lg" style="font-family:'Space Grotesk',system-ui,sans-serif; color:#fff;">Mission Meets <span style="color:var(--mmt-cyan);">Tech</span></p></div>
-        <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-white-dim);">Federal health IT intelligence. Mission first.</p>
-        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" style="color:var(--mmt-white-dim);" class="hover:opacity-80"><span class="sr-only">LinkedIn</span><svg class="text-lg" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg></a>
+        <div class="flex items-center gap-3 mb-3"><p class="font-bold text-lg" style="font-family:'Inter',system-ui,sans-serif; color: var(--mmt-navy);">Mission Meets <span style="color:var(--mmt-teal);">Tech</span></p></div>
+        <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-text-secondary);">Federal health IT intelligence. Mission first.</p>
+        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" style="color:var(--mmt-text-secondary);" class="hover:opacity-80"><span class="sr-only">LinkedIn</span><svg class="text-lg" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg></a>
       </div>
       <div>
-        <p class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var(--mmt-cyan);">Explore</p>
+        <p class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var(--mmt-teal);">Explore</p>
         <ul class="space-y-2 list-none p-0 m-0">
-          <li><a href="latest.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Intelligence</a></li>
-          <li><a href="podcast.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Podcast</a></li>
-          <li><a href="resources.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Resources</a></li>
-          <li><a href="proposal-pulse.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">ProposalPulse</a></li>
-          <li><a href="marketpulse.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">MarketPulse</a></li>
-          <li><a href="my-reports.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">My Reports</a></li>
+          <li><a href="latest.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Intelligence</a></li>
+          <li><a href="podcast.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Podcast</a></li>
+          <li><a href="resources.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Resources</a></li>
+          <li><a href="proposal-pulse.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">ProposalPulse</a></li>
+          <li><a href="marketpulse.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">MarketPulse</a></li>
+          <li><a href="my-reports.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">My Reports</a></li>
         </ul>
       </div>
       <div>
-        <p class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var(--mmt-cyan);">Connect</p>
+        <p class="font-semibold text-sm uppercase tracking-wider mb-4" style="color:var(--mmt-teal);">Connect</p>
         <ul class="space-y-2 list-none p-0 m-0">
-          <li><a href="about.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">About</a></li>
-          <li><a href="mailto:mary@missionmeetstech.com" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Contact</a></li>
-          <li><a href="events.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Events</a></li>
-          <li><a href="privacy.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Privacy Policy</a></li>
-          <li><a href="terms.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Terms of Service</a></li>
-          <li><a href="security.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">Data Security</a></li>
-          <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-white-muted);">LinkedIn</a></li>
+          <li><a href="about.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">About</a></li>
+          <li><a href="mailto:mary@missionmeetstech.com" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Contact</a></li>
+          <li><a href="events.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Events</a></li>
+          <li><a href="privacy.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Privacy Policy</a></li>
+          <li><a href="terms.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Terms of Service</a></li>
+          <li><a href="security.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Data Security</a></li>
+          <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">LinkedIn</a></li>
         </ul>
       </div>
     </div>
-    <div class="max-w-6xl mx-auto mt-12 pt-8" style="border-top:1px solid rgba(0,229,250,0.1);">
-      <p class="text-xs text-center" style="color:var(--mmt-white-dim);">Mission Meets Tech provides independent analysis and commentary. Views expressed are those of the authors and do not represent any employer or government agency.</p>
-      <p class="text-xs text-center mt-2" style="color:var(--mmt-white-dim);">&copy; 2026 Mission Meets Tech LLC. All rights reserved.</p>
+    <div class="max-w-6xl mx-auto mt-12 pt-8" style="border-top:1px solid rgba(69,123,157,0.1);">
+      <p class="text-xs text-center" style="color:var(--mmt-text-secondary);">Mission Meets Tech provides independent analysis and commentary. Views expressed are those of the authors and do not represent any employer or government agency.</p>
+      <p class="text-xs text-center mt-2" style="color:var(--mmt-text-secondary);">&copy; 2026 Mission Meets Tech LLC. All rights reserved.</p>
     </div>
   </footer>
 
-  <button id="btt" aria-label="Back to top" style="position:fixed;bottom:2rem;right:2rem;width:44px;height:44px;border-radius:50%;background:var(--mmt-slate);border:1px solid rgba(0,229,250,0.15);color:var(--mmt-cyan);cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s,transform 0.3s;z-index:90;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onmouseover="this.style.borderColor='rgba(0,229,250,0.3)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(0,229,250,0.15)';this.style.transform='none'">
+  <button id="btt" aria-label="Back to top" style="position:fixed;bottom:2rem;right:2rem;width:44px;height:44px;border-radius:50%;background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.15);color:var(--mmt-teal);cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s,transform 0.3s;z-index:90;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onmouseover="this.style.borderColor='rgba(69,123,157,0.3)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(69,123,157,0.15)';this.style.transform='none'">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
   </button>
   <script>

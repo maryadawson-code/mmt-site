@@ -26,7 +26,7 @@
     @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } .mini-grid { grid-template-columns: repeat(2, 1fr); } }
     .card { background: #111827; border: 1px solid #1e293b; border-radius: 8px; padding: 1rem; }
     .card-full { grid-column: 1 / -1; }
-    .stat { font-size: 2rem; font-weight: 700; color: #00e5fa; }
+    .stat { font-size: 2rem; font-weight: 700; color: #457B9D; }
     .stat-label { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; }
     .mini-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
     .event-row { padding: 0.4rem 0; border-bottom: 1px solid #1e293b; display: flex; gap: 0.5rem; align-items: baseline; font-size: 12px; }
@@ -36,10 +36,10 @@
     .events-scroll { max-height: 300px; overflow-y: auto; }
     .actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.5rem; }
     .actions a, .actions button { padding: 6px 12px; border-radius: 6px; font-size: 12px; text-decoration: none; border: 1px solid #1e293b; color: #94a3b8; background: transparent; cursor: pointer; }
-    .actions a:hover, .actions button:hover { border-color: #00e5fa; color: #00e5fa; }
+    .actions a:hover, .actions button:hover { border-color: #457B9D; color: #457B9D; }
     .login-box { max-width: 400px; margin: 4rem auto; text-align: center; }
     .login-box input { width: 100%; padding: 0.75rem; border-radius: 6px; border: 1px solid #1e293b; background: #111827; color: #f1f5f9; font-size: 14px; margin: 1rem 0; }
-    .login-box button { padding: 0.5rem 1.5rem; border-radius: 6px; border: none; background: #00e5fa; color: #0a0f1a; font-weight: 600; cursor: pointer; }
+    .login-box button { padding: 0.5rem 1.5rem; border-radius: 6px; border: none; background: #457B9D; color: #0a0f1a; font-weight: 600; cursor: pointer; }
     .updated { font-size: 11px; color: #64748b; }
     .state-tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 11px; margin: 1px; }
     .state-delivered { background: #166534; color: #bbf7d0; }
@@ -50,7 +50,7 @@
   </style>
 </head>
 <body>
-  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold" style="background:var(--mmt-cyan); color:#fff;">Skip to main content</a>
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold" style="background:var(--mmt-teal); color: var(--mmt-navy);">Skip to main content</a>
   <div id="app">
     <div id="login-screen" class="login-box" style="display:none;">
       <h1 style="margin-bottom:0.5rem;">MMT Ops Dashboard</h1>
