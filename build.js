@@ -272,12 +272,12 @@ function generatePodcastEpisodesHtml(feed) {
     const epTags = epNum ? (podcastTags[`episode-${epNum}`] || []) : [];
     const epTagSlugs = epTags.map(t => slugify(t)).join(' ');
     const epTagHtml = epTags.length > 0
-      ? `<div class="flex flex-wrap gap-1.5 mt-3">${epTags.map(t => `<span class="text-xs px-3 py-1 rounded-full" style="background:var(--mmt-surface, #0A1628); color:var(--mmt-caption, #94A3B8);">${escapeHtml(t)}</span>`).join('')}</div>`
+      ? `<div class="flex flex-wrap gap-1.5 mt-3">${epTags.map(t => `<span class="text-xs px-3 py-1 rounded-full" style="background:var(--mmt-soft, #F3F4F6); color:var(--mmt-text-secondary, #5C6B7A);">${escapeHtml(t)}</span>`).join('')}</div>`
       : '';
     const transcript = epNum ? transcripts[epNum] : null;
     const transcriptSection = transcript && transcript.hasContent
       ? `<details class="mt-4" style="border-top:1px solid var(--mmt-border, rgba(255,255,255,0.05)); padding-top:0.75rem;">
-                <summary class="text-sm font-semibold cursor-pointer" style="color:var(--mmt-cyan, #00E5FA);">Show Transcript</summary>
+                <summary class="text-sm font-semibold cursor-pointer" style="color:var(--mmt-teal, #457B9D);">Show Transcript</summary>
                 <div class="mt-3 text-sm leading-relaxed" style="color:var(--mmt-body, #CBD5E1); max-width:65ch;">${transcript.html}</div>
               </details>`
       : '';
@@ -905,9 +905,9 @@ function generateArchiveHtml(archive) {
   const totalPages = Math.ceil(total / PER_PAGE);
   const pagination = totalPages > 1 ? generatePaginationHtml(1, totalPages, '/newsletter/') : '';
   // Inline subscribe CTA inserted after the 3rd article
-  const subscribeCta = `<div class="subscribe-inline" style="background:rgba(0,229,250,0.08); border:1px solid rgba(0,229,250,0.2); border-radius:12px; padding:24px; margin:0; text-align:center;">
-          <p style="font-size:1.1rem; margin-bottom:12px; color:#fff; font-family:'Space Grotesk',system-ui,sans-serif; font-weight:600;">Get this in your inbox every Tuesday and Friday.</p>
-          <a href="https://buttondown.com/missionmeetstech" target="_blank" rel="noopener" style="display:inline-block; background:linear-gradient(135deg,#00E5FA,#00FF85); color:#00050F; padding:10px 24px; border-radius:6px; text-decoration:none; font-weight:600; font-size:0.9rem;">Subscribe Free</a>
+  const subscribeCta = `<div class="subscribe-inline" style="background:var(--mmt-soft); border:1px solid var(--mmt-border); border-radius:12px; padding:24px; margin:0; text-align:center;">
+          <p style="font-size:1.1rem; margin-bottom:12px; color:var(--mmt-navy); font-family:'Inter',system-ui,sans-serif; font-weight:600;">Get this in your inbox every Tuesday and Friday.</p>
+          <a href="https://buttondown.com/missionmeetstech" target="_blank" rel="noopener" class="btn-primary no-underline" style="display:inline-block; padding:10px 24px; font-size:0.9rem;">Subscribe Free</a>
         </div>`;
 
   return page1Items.map((item, i) => {
@@ -1473,6 +1473,7 @@ function inlineTailwindCss(html) {
       --mmt-teal-soft: rgba(69,123,157,0.12); --mmt-ink: #102033; --mmt-text: #102033;
       --mmt-text-secondary: #5C6B7A; --mmt-white: #FFFFFF; --mmt-soft: #F3F4F6;
       --mmt-border: #D8E0E8; --mmt-border-light: #E8EDF2; --mmt-red: #E63946;
+      --grade-a: #0A8C5E; --grade-b: #2563EB; --grade-c: #B45309; --grade-d: #C2410C; --grade-f: #DC2626;
       --radius: 24px; --radius-sm: 18px; --radius-pill: 999px;
       --shadow: 0 18px 50px rgba(10, 25, 47, 0.08);
       --shadow-soft: 0 12px 28px rgba(10, 25, 47, 0.06);
@@ -1942,7 +1943,7 @@ function inlineTailwindCss(html) {
     );
     html = html.replace(
       /\.pillar-tag:hover\s*\{[^}]*\}/g,
-      '.pillar-tag:hover { background: var(--mmt-surface-hover, #0F1D35); color: #fff; }'
+      '.pillar-tag:hover { background: var(--mmt-navy); color: #fff; }'
     );
     // Upgrade hero section padding
     html = html.replace(
@@ -1971,16 +1972,16 @@ function inlineTailwindCss(html) {
     // Upgrade "Why It Matters" heading
     html = html.replace(
       /<h2 class="text-lg font-bold mb-3" style="color:var\(--mmt-cyan\);">Official Sources<\/h2>/g,
-      '<p class="text-eyebrow mb-4" style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:600;color:var(--mmt-cyan, #00E5FA);">Official Sources</p>'
+      '<p class="text-eyebrow mb-4" style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:600;color:var(--mmt-teal, #457B9D);">Official Sources</p>'
     );
     html = html.replace(
       /<h2 class="text-lg font-bold mb-3" style="color:var\(--mmt-cyan\);">Why It Matters<\/h2>/g,
-      '<p class="text-eyebrow mb-4" style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:600;color:var(--mmt-cyan, #00E5FA);">Why It Matters</p>'
+      '<p class="text-eyebrow mb-4" style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:600;color:var(--mmt-teal, #457B9D);">Why It Matters</p>'
     );
     // Upgrade Related Terms heading
     html = html.replace(
       /<h2 class="text-lg font-bold mb-4">Related Terms<\/h2>/g,
-      '<p class="text-eyebrow mb-4" style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:600;color:var(--mmt-cyan, #00E5FA);">Related Terms</p>'
+      '<p class="text-eyebrow mb-4" style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:600;color:var(--mmt-teal, #457B9D);">Related Terms</p>'
     );
     // Upgrade border to Apple style
     html = html.replace(
@@ -2175,7 +2176,7 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
       const sources = glossarySources[slug];
       if (sources && sources.length > 0 && slug !== 'index') {
         const sourceLinks = sources.map(s =>
-          `<a href="${escapeHtml(s.url)}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-sm no-underline hover:opacity-80 py-2" style="color:var(--mmt-cyan, #00E5FA);">
+          `<a href="${escapeHtml(s.url)}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-sm no-underline hover:opacity-80 py-2" style="color:var(--mmt-teal, #457B9D);">
                 <svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
                 <span>${escapeHtml(s.label)}</span>
                 <span class="text-xs" style="color:var(--mmt-caption, #94A3B8);">${escapeHtml(s.domain)}</span>
@@ -2183,7 +2184,7 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
         ).join('\n              ');
         const sourcesSection = `
       <div class="glossary-sources card p-6 md:p-8 mb-10">
-        <p class="text-eyebrow mb-4" style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:600;color:var(--mmt-cyan, #00E5FA);">Official Sources</p>
+        <p class="text-eyebrow mb-4" style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:600;color:var(--mmt-teal, #457B9D);">Official Sources</p>
         <div class="flex flex-col">
               ${sourceLinks}
         </div>
@@ -2200,15 +2201,15 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
       if (related && slug !== 'index') {
         const termLinks = (related.terms || []).map(t => {
           const label = t.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-          return `<a href="/glossary/${t}/" class="text-xs font-medium px-3 py-1.5 rounded-full no-underline" style="border:1px solid rgba(0,229,250,0.2); color:var(--mmt-cyan, #00E5FA);">${escapeHtml(label)}</a>`;
+          return `<a href="/glossary/${t}/" class="text-xs font-medium px-3 py-1.5 rounded-full no-underline" style="border:1px solid var(--mmt-border); color:var(--mmt-teal, #457B9D);">${escapeHtml(label)}</a>`;
         }).join('\n                ');
         const contractLinks = (related.contracts || []).map(c => {
           const cSlug = c.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-          return `<a href="/contract-tracker#${cSlug}" class="text-xs font-medium no-underline" style="color:var(--mmt-cyan, #00E5FA);">${escapeHtml(c)} Contract &rarr;</a>`;
+          return `<a href="/contract-tracker#${cSlug}" class="text-xs font-medium no-underline" style="color:var(--mmt-teal, #457B9D);">${escapeHtml(c)} Contract &rarr;</a>`;
         }).join('\n                ');
         const relatedSection = `
       <div class="related-section mb-8">
-        <p class="text-eyebrow mb-3" style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:600;color:var(--mmt-cyan, #00E5FA);">Related</p>
+        <p class="text-eyebrow mb-3" style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:600;color:var(--mmt-teal, #457B9D);">Related</p>
         <div class="flex flex-wrap gap-2 mb-3">
                 ${termLinks}
         </div>
