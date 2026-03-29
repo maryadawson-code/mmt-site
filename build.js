@@ -1857,7 +1857,6 @@ function inlineTailwindCss(html) {
         <a href="/latest.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Intelligence</a>
         <a href="/podcast.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Podcast</a>
         <a href="/resources.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Resources</a>
-        <a href="/getting-started.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Getting Started</a>
         <a href="/about.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">About</a>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;">
@@ -1888,8 +1887,10 @@ function inlineTailwindCss(html) {
 
   // Replace old footer (any footer block — match all <footer>...</footer>)
   if (html.match(/<footer[\s\S]*?<\/footer>/i)) {
-    // Only replace if it doesn't already have the new editorial footer pattern
-    if (!html.includes('class="wrap"') || html.includes('md:grid-cols-3 gap-10') || html.includes('py-16 px-6')) {
+    // Replace unless footer already matches canonical editorial pattern (3-col grid with Explore/Connect)
+    const footerMatch = html.match(/<footer[\s\S]*?<\/footer>/i);
+    const hasCanonicalFooter = footerMatch && footerMatch[0].includes('grid-template-columns:1fr auto auto') && footerMatch[0].includes('Explore') && footerMatch[0].includes('Connect');
+    if (!hasCanonicalFooter) {
       html = html.replace(/<footer[\s\S]*?<\/footer>/i, editorialFooter);
     }
   }

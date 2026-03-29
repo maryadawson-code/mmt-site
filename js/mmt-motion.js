@@ -22,8 +22,10 @@
       observer.observe(el);
     });
 
-    // Auto-apply fade-up to main sections
-    document.querySelectorAll('main > section').forEach(function(s) {
+    // Auto-apply fade-up to main sections (skip first — above-the-fold must be visible immediately)
+    var mainSections = document.querySelectorAll('main > section');
+    mainSections.forEach(function(s, i) {
+      if (i === 0) return;
       if (!s.classList.contains('fade-up')) {
         s.classList.add('fade-up');
         observer.observe(s);

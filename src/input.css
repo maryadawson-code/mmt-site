@@ -931,6 +931,12 @@
     min-height: 60px;
     padding: 0;
   }
+
+  /* Footer: stack 3-col grid to single column on mobile */
+  footer.wrap > div:first-child {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
 }
 
 /* ---- Mobile touch targets ---- */
