@@ -1938,8 +1938,49 @@ function inlineTailwindCss(html) {
     );
   }
 
-  // Editorial: Upgrade glossary and legacy pages to editorial tokens
+  // Editorial: Strip dark mode root variables from glossary pages and replace with light theme
   if (html.includes('glossary') || html.includes('Glossary')) {
+    // Replace dark CSS root variables with light theme
+    html = html.replace(
+      /:root\s*\{[^}]*--mmt-cyan[^}]*\}/s,
+      `:root {
+      --mmt-navy: #0A192F;
+      --mmt-teal: #457B9D;
+      --mmt-soft: #F3F4F6;
+      --mmt-white: #FFFFFF;
+      --mmt-text: #102033;
+      --mmt-text-secondary: #5C6B7A;
+      --mmt-border: #D8E0E8;
+      --mmt-body: #5C6B7A;
+      --mmt-caption: #94A3B8;
+    }`
+    );
+    // Fix body from dark to light
+    html = html.replace(
+      /body\s*\{[^}]*background:\s*var\(--mmt-navy\);?\s*color:\s*#fff;?\s*\}/,
+      'body { font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif; background: #fff; color: var(--mmt-text, #102033); }'
+    );
+    // Fix headings from Space Grotesk to Inter
+    html = html.replace(
+      /h1,\s*h2,\s*h3,\s*h4,\s*h5\s*\{[^}]*Space Grotesk[^}]*\}/,
+      'h1, h2, h3, h4, h5 { font-family: "Inter", system-ui, sans-serif; color: var(--mmt-navy, #0A192F); font-weight: 800; }'
+    );
+    // Fix nav-glass dark background
+    html = html.replace(/\.nav-glass\s*\{[^}]*\}/g, '.nav-glass { position: sticky; top: 0; z-index: 100; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); background: rgba(255,255,255,0.82); border-bottom: 1px solid rgba(216,224,232,0.8); }');
+    // Fix dark card backgrounds
+    html = html.replace(/background:\s*var\(--mmt-slate\)/g, 'background: var(--mmt-soft, #F3F4F6)');
+    html = html.replace(/background:\s*var\(--mmt-dark\)/g, 'background: #fff');
+    html = html.replace(/background:\s*rgba\(10,22,40,0\.6\)/g, 'background: rgba(255,255,255,0.86)');
+    // Fix cyan accent to teal
+    html = html.replace(/color:\s*var\(--mmt-cyan\)/g, 'color: var(--mmt-teal, #457B9D)');
+    html = html.replace(/#00E5FA/g, '#457B9D');
+    html = html.replace(/#00FF85/g, '#10B981');
+    // Fix white text to dark
+    html = html.replace(/color:\s*#fff(?!f)/g, 'color: var(--mmt-text, #102033)');
+    html = html.replace(/color:\s*var\(--mmt-white\)/g, 'color: var(--mmt-text, #102033)');
+    // Fix borders
+    html = html.replace(/rgba\(0,229,250,0\.1\)/g, 'rgba(216,224,232,0.8)');
+    html = html.replace(/rgba\(0,229,250,0\.15\)/g, 'rgba(216,224,232,0.96)');
     // Upgrade pillar-tag to editorial tag style
     html = html.replace(
       /\.pillar-tag\s*\{[^}]*\}/g,
@@ -1957,7 +1998,7 @@ function inlineTailwindCss(html) {
     // Upgrade h1 from old style to text-hero
     html = html.replace(
       /<h1 class="text-3xl md:text-4xl font-bold leading-tight mb-6">/g,
-      '<h1 class="text-hero mb-6" style="font-size:clamp(2.5rem,5vw,4.5rem);line-height:1.1;letter-spacing:-0.02em;font-weight:700;font-family:\'Space Grotesk\',system-ui,sans-serif;">'
+      '<h1 class="text-hero mb-6" style="font-size:clamp(2.5rem,5vw,4.5rem);line-height:1.1;letter-spacing:-0.02em;font-weight:800;">'
     );
     // Upgrade description text
     html = html.replace(
@@ -2007,6 +2048,24 @@ function inlineTailwindCss(html) {
       'style="color:var(--mmt-body, #CBD5E1);"'
     );
   }
+
+  // ── Global fixes applied to ALL pages ──────────────────────
+
+  // Fix glassmorphism dark cards across all pages
+  html = html.replace(/background:\s*rgba\(10,22,40,0\.6\);\s*backdrop-filter:\s*blur\(16px\)/g,
+    'background: rgba(255,255,255,0.86); border: 1px solid rgba(216,224,232,0.96); box-shadow: 0 18px 50px rgba(10,25,47,0.08)');
+
+  // Fix cadence claims: "weekly" → "bi-weekly" (but not "bi-weekly" itself)
+  html = html.replace(/updated weekly/gi, 'updated bi-weekly');
+  html = html.replace(/Subscribe for weekly/gi, 'Subscribe for bi-weekly');
+  html = html.replace(/Weekly intelligence/gi, 'Bi-weekly intelligence');
+  html = html.replace(/weekly updates/gi, 'bi-weekly updates');
+  html = html.replace(/weekly analysis/gi, 'bi-weekly analysis');
+
+  // Fix banned phrase "at the intersection of" (replace with concrete language)
+  html = html.replace(/at the intersection of policy, technology, and operational reality/gi,
+    'where policy meets technology in federal healthcare');
+  html = html.replace(/at the intersection of/gi, 'where');
 
   return html;
 }
