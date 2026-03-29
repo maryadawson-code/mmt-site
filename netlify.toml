@@ -180,7 +180,7 @@
 
 [[redirects]]
   from = "/favicon.ico"
-  to = "/favicon.png"
+  to = "/favicon-v2.png"
   status = 200
 
 [[redirects]]
