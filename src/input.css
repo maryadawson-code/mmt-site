@@ -176,9 +176,9 @@
 
   /* ---- Typography ---- */
   .text-hero {
-    font-size: clamp(38px, 5vw, 72px);
-    line-height: 0.94;
-    letter-spacing: -0.045em;
+    font-size: clamp(28px, 3.5vw, 48px);
+    line-height: 1.05;
+    letter-spacing: -0.035em;
     font-weight: 800;
     color: var(--mmt-navy);
     max-width: 10ch;
@@ -281,7 +281,7 @@
     gap: 8px;
     cursor: pointer;
     background: var(--mmt-navy);
-    color: var(--mmt-white);
+    color: #FFFFFF !important;
     box-shadow: var(--shadow-btn);
     text-decoration: none;
   }

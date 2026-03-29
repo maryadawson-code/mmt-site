@@ -1975,9 +1975,9 @@ function inlineTailwindCss(html) {
     html = html.replace(/color:\s*var\(--mmt-cyan\)/g, 'color: var(--mmt-teal, #457B9D)');
     html = html.replace(/#00E5FA/g, '#457B9D');
     html = html.replace(/#00FF85/g, '#10B981');
-    // Fix white text to dark
-    html = html.replace(/color:\s*#fff(?!f)/g, 'color: var(--mmt-text, #102033)');
-    html = html.replace(/color:\s*var\(--mmt-white\)/g, 'color: var(--mmt-text, #102033)');
+    // Fix white text to dark (only in inline style attributes, not in compiled CSS)
+    html = html.replace(/style="([^"]*?)color:\s*#fff(?!f)([^"]*?)"/g, 'style="$1color: var(--mmt-text, #102033)$2"');
+    html = html.replace(/style="([^"]*?)color:\s*var\(--mmt-white\)([^"]*?)"/g, 'style="$1color: var(--mmt-text, #102033)$2"');
     // Fix borders
     html = html.replace(/rgba\(0,229,250,0\.1\)/g, 'rgba(216,224,232,0.8)');
     html = html.replace(/rgba\(0,229,250,0\.15\)/g, 'rgba(216,224,232,0.96)');

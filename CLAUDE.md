@@ -128,7 +128,12 @@ Before declaring work complete, verify:
 
 ---
 
-## 📋 Known Cross-Repo Issues (DO NOT fix in this repo)
-- Newswire RSS feeds not populating (external feed issue)
-- Newsletter archive missing 5 articles (content pipeline)
-- About page logo removal needed (design asset)
+## Status (as of 2026-03-29)
+All previously known issues are RESOLVED:
+- Newswire: 100K+ content, 100+ headlines from 10 RSS sources
+- Newsletter: 81 articles, 7 pagination pages, all live
+- About page: Black background logo removed, only headshots remain
+- All 15 pages return 200 OK
+- Zero dark mode regressions
+- ProposalPulse + MarketPulse visible (4 mentions each on homepage)
+- No broken internal links on homepage
