@@ -23,7 +23,7 @@
     .badge-emergency { background: #991b1b; color: #fecaca; animation: pulse 1.5s infinite; }
     @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
-    @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } .mini-grid { grid-template-columns: repeat(2, 1fr); } }
     .card { background: #111827; border: 1px solid #1e293b; border-radius: 8px; padding: 1rem; }
     .card-full { grid-column: 1 / -1; }
     .stat { font-size: 2rem; font-weight: 700; color: #00e5fa; }
