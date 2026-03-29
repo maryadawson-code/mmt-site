@@ -11,6 +11,12 @@
   function = "security-headers"
   path = "/*"
 
+[functions."score-deck"]
+  external_node_modules = ["file-type"]
+
+[functions."score-deck-background"]
+  external_node_modules = ["file-type"]
+
 [functions."weekly-report"]
   schedule = "0 14 * * 1"
 
