@@ -1806,6 +1806,10 @@ function inlineTailwindCss(html) {
   html = html.replace(/\s*<script[^>]*spatial\.js[^>]*><\/script>/gi, '');
   html = html.replace(/\s*<!-- GSAP \+ ScrollTrigger -->/gi, '');
 
+  // Strip inline onmouseover/onmouseout handlers (replaced by CSS :hover)
+  html = html.replace(/\s*onmouseover="[^"]*"/gi, '');
+  html = html.replace(/\s*onmouseout="[^"]*"/gi, '');
+
   // Editorial: Replace entire old nav block with new editorial nav
   // Match nav blocks that use nav-glass, nav-apple, or nav-editorial but have old content
   const editorialNav = `<nav class="nav-editorial">

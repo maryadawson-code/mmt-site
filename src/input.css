@@ -980,6 +980,9 @@
   .hscroll-card { flex: 0 0 260px; min-width: 240px; }
 }
 
+/* Back-to-top button hover */
+#btt:hover { transform: translateY(-2px); }
+
 /* Centered body text */
 section .text-body.text-center {
   margin-left: auto;
