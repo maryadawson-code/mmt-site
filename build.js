@@ -2055,12 +2055,16 @@ function inlineTailwindCss(html) {
   html = html.replace(/background:\s*rgba\(10,22,40,0\.6\);\s*backdrop-filter:\s*blur\(16px\)/g,
     'background: rgba(255,255,255,0.86); border: 1px solid rgba(216,224,232,0.96); box-shadow: 0 18px 50px rgba(10,25,47,0.08)');
 
-  // Fix cadence claims: "weekly" → "bi-weekly" (but not "bi-weekly" itself)
-  html = html.replace(/updated weekly/gi, 'updated bi-weekly');
-  html = html.replace(/Subscribe for weekly/gi, 'Subscribe for bi-weekly');
-  html = html.replace(/Weekly intelligence/gi, 'Bi-weekly intelligence');
-  html = html.replace(/weekly updates/gi, 'bi-weekly updates');
-  html = html.replace(/weekly analysis/gi, 'bi-weekly analysis');
+  // Fix cadence claims: "weekly" → "twice-weekly" (but not "bi-weekly" itself)
+  // Use negative lookbehind to avoid matching "bi-weekly" → "bi-twice-weekly"
+  html = html.replace(/(?<!bi-)updated weekly/gi, 'updated twice-weekly');
+  html = html.replace(/(?<!bi-)Subscribe for weekly/gi, 'Subscribe for twice-weekly');
+  html = html.replace(/(?<!bi-)Weekly intelligence/gi, 'Twice-weekly intelligence');
+  html = html.replace(/(?<!bi-)weekly updates/gi, 'twice-weekly updates');
+  html = html.replace(/(?<!bi-)weekly analysis/gi, 'twice-weekly analysis');
+  // Fix any existing double-bi from previous builds
+  html = html.replace(/bi-bi-weekly/gi, 'twice-weekly');
+  html = html.replace(/bi-weekly/gi, 'twice-weekly');
 
   // Fix banned phrase "at the intersection of" (replace with concrete language)
   html = html.replace(/at the intersection of policy, technology, and operational reality/gi,
