@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProposalPulse Assessment — Sample Report</title>
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; background: #F8FAFC; color: #102033; margin: 0; }
+    .report { max-width: 800px; margin: 0 auto; padding: 40px 24px; }
+    .header { text-align: center; padding: 32px 0 24px; border-bottom: 2px solid #0A192F; margin-bottom: 32px; }
+    .header h1 { font-size: 28px; font-weight: 800; color: #0A192F; margin: 0 0 4px; }
+    .header h1 span { color: #457B9D; }
+    .header .subtitle { font-size: 14px; color: #5C6B7A; margin: 8px 0 0; }
+    .meta-row { display: flex; justify-content: space-between; font-size: 12px; color: #5C6B7A; margin-bottom: 32px; padding: 12px 16px; background: #F3F4F6; border-radius: 8px; }
+    .overall { text-align: center; padding: 24px; background: #fff; border: 1px solid #D8E0E8; border-radius: 16px; margin-bottom: 32px; }
+    .overall .grade { font-size: 64px; font-weight: 800; line-height: 1; }
+    .overall .grade.a { color: #10B981; } .overall .grade.b { color: #457B9D; } .overall .grade.c { color: #F59E0B; }
+    .overall .label { font-size: 14px; color: #5C6B7A; margin-top: 8px; }
+    .criteria { margin-bottom: 24px; background: #fff; border: 1px solid #D8E0E8; border-radius: 12px; overflow: hidden; }
+    .criteria-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #E8EDF2; }
+    .criteria-header h3 { font-size: 15px; font-weight: 700; margin: 0; }
+    .criteria-grade { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 8px; font-weight: 800; font-size: 16px; color: #fff; }
+    .criteria-grade.a { background: #10B981; } .criteria-grade.b { background: #457B9D; } .criteria-grade.c { background: #F59E0B; } .criteria-grade.d { background: #F97316; } .criteria-grade.f { background: #EF4444; }
+    .criteria-body { padding: 16px 20px; font-size: 14px; line-height: 1.7; color: #314155; }
+    .criteria-body .finding { margin-bottom: 12px; }
+    .criteria-body .fix { background: #F0FDF4; border-left: 3px solid #10B981; padding: 10px 14px; border-radius: 0 8px 8px 0; margin-top: 8px; font-size: 13px; }
+    .criteria-body .flag { background: #FEF2F2; border-left: 3px solid #EF4444; padding: 10px 14px; border-radius: 0 8px 8px 0; margin-top: 8px; font-size: 13px; }
+    .summary { background: #0A192F; color: #fff; padding: 24px; border-radius: 16px; margin-top: 32px; }
+    .summary h2 { font-size: 18px; margin: 0 0 12px; color: #fff; }
+    .summary p { font-size: 14px; line-height: 1.7; color: rgba(255,255,255,0.8); margin: 0 0 8px; }
+    .summary .action { color: #457B9D; font-weight: 600; }
+    .watermark { text-align: center; font-size: 11px; color: #94A3B8; margin-top: 32px; padding-top: 16px; border-top: 1px solid #E8EDF2; }
+  </style>
+</head>
+<body>
+  <div class="report">
+    <div class="header">
+      <h1>Proposal<span>Pulse</span></h1>
+      <p class="subtitle">Scored Assessment Report</p>
+    </div>
+
+    <div class="meta-row">
+      <span>Document: VA Health IT Modernization Capabilities Statement</span>
+      <span>Assessed: March 15, 2026</span>
+      <span>7 pages, 3,200 words</span>
+    </div>
+
+    <div class="overall">
+      <div class="grade b">B+</div>
+      <div class="label">Overall Score: 81/100 — Strong foundation with fixable gaps</div>
+    </div>
+
+    <div class="criteria">
+      <div class="criteria-header">
+        <h3>1. Problem Clarity</h3>
+        <span class="criteria-grade a">A</span>
+      </div>
+      <div class="criteria-body">
+        <div class="finding">Opens with a specific, quantified problem: "VA clinicians spend 47 minutes per patient navigating three disconnected systems." This is evaluator-ready language.</div>
+        <div class="fix">Top fix: Add the source citation (OIG report number) to make this bulletproof.</div>
+      </div>
+    </div>
+
+    <div class="criteria">
+      <div class="criteria-header">
+        <h3>2. Mission Relevance</h3>
+        <span class="criteria-grade a">A</span>
+      </div>
+      <div class="criteria-body">
+        <div class="finding">Directly ties to VA's 2026 Strategic Plan Goal 2 (modernize IT infrastructure). Uses the agency's own language.</div>
+      </div>
+    </div>
+
+    <div class="criteria">
+      <div class="criteria-header">
+        <h3>3. Technical Approach</h3>
+        <span class="criteria-grade b">B</span>
+      </div>
+      <div class="criteria-body">
+        <div class="finding">Clear methodology section with phased rollout. However, the API integration approach is described at a high level without specifics.</div>
+        <div class="flag">Red flag: "Seamless integration" appears twice without explaining HOW integration works with VistA/CPRS.</div>
+        <div class="fix">Top fix: Replace "seamless integration" with 2-3 sentences on the specific API layer, data mapping, and VistA HL7 interface approach.</div>
+      </div>
+    </div>
+
+    <div class="criteria">
+      <div class="criteria-header">
+        <h3>4. Market Sizing / Scope</h3>
+        <span class="criteria-grade b">B</span>
+      </div>
+      <div class="criteria-body">
+        <div class="finding">References the T4NG vehicle correctly. Missing: NAICS code, set-aside applicability, and ceiling value context.</div>
+        <div class="fix">Top fix: Add "under NAICS 541512, small business set-aside" and reference the $35.7B T4NG ceiling.</div>
+      </div>
+    </div>
+
+    <div class="criteria">
+      <div class="criteria-header">
+        <h3>5. Team & Credibility</h3>
+        <span class="criteria-grade c">C+</span>
+      </div>
+      <div class="criteria-body">
+        <div class="finding">Lists team members but lacks specifics. No clearance levels mentioned. Key personnel section reads like a resume dump.</div>
+        <div class="flag">Red flag: No mention of facility clearance level or individual clearances. VA evaluators check this.</div>
+        <div class="fix">Top fix: Add clearance levels (Public Trust minimum), years of VA-specific experience for each key person, and at least one named reference.</div>
+      </div>
+    </div>
+
+    <div class="criteria">
+      <div class="criteria-header">
+        <h3>6. Past Performance</h3>
+        <span class="criteria-grade b">B+</span>
+      </div>
+      <div class="criteria-body">
+        <div class="finding">Three relevant contracts cited with values and CPARS ratings. Strong. One contract is from 2019 — evaluators may question currency.</div>
+        <div class="fix">Top fix: Replace the 2019 contract with something from 2023+ or add a sentence explaining the program's continuation.</div>
+      </div>
+    </div>
+
+    <div class="criteria">
+      <div class="criteria-header">
+        <h3>7. Pricing / Financials</h3>
+        <span class="criteria-grade b">B</span>
+      </div>
+      <div class="criteria-body">
+        <div class="finding">Labor categories and rates are present. Wrap rate not explained. No price-to-win analysis evident.</div>
+        <div class="fix">Top fix: Add a 1-paragraph wrap rate justification and benchmark your rates against GSA Schedule 70 published rates.</div>
+      </div>
+    </div>
+
+    <div class="criteria">
+      <div class="criteria-header">
+        <h3>8. Competitive Position</h3>
+        <span class="criteria-grade c">C</span>
+      </div>
+      <div class="criteria-body">
+        <div class="finding">No competitive analysis. No mention of incumbent. No differentiation strategy beyond "our team has experience."</div>
+        <div class="flag">Red flag: Without knowing who you're competing against, you can't position your strengths effectively.</div>
+        <div class="fix">Top fix: Add a competitive matrix or at minimum 3 bullet points on what makes your approach different from the likely incumbent (check USAspending for current awardee).</div>
+      </div>
+    </div>
+
+    <div class="criteria">
+      <div class="criteria-header">
+        <h3>9. Writing Quality</h3>
+        <span class="criteria-grade a">A-</span>
+      </div>
+      <div class="criteria-body">
+        <div class="finding">Clean, well-organized. Executive summary is strong. Minor issues: two instances of passive voice in the technical approach, and the conclusion repeats the intro verbatim.</div>
+        <div class="fix">Top fix: Rewrite the conclusion to summarize the THREE specific value propositions instead of restating the problem.</div>
+      </div>
+    </div>
+
+    <div class="summary">
+      <h2>Top 3 Actions Before Submission</h2>
+      <p><span class="action">1.</span> Add competitive positioning — you're flying blind without it. Check USAspending for the incumbent and build 3 differentiators.</p>
+      <p><span class="action">2.</span> Fix the team section — add clearance levels, VA-specific years, and named references. This is table stakes.</p>
+      <p><span class="action">3.</span> Replace "seamless integration" with actual technical specifics on the VistA/CPRS interface approach.</p>
+    </div>
+
+    <div class="watermark">
+      ProposalPulse by Mission Meets Tech — AI-generated assessment, requires human review<br>
+      This is a sample report. Your assessment will reflect your actual document.
+    </div>
+  </div>
+</body>
+</html>

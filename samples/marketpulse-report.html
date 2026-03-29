@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MarketPulse Report — Sample</title>
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; background: #F8FAFC; color: #102033; margin: 0; }
+    .report { max-width: 800px; margin: 0 auto; padding: 40px 24px; }
+    .header { text-align: center; padding: 32px 0 24px; border-bottom: 2px solid #0A192F; margin-bottom: 32px; }
+    .header h1 { font-size: 28px; font-weight: 800; color: #0A192F; margin: 0; }
+    .header h1 span { color: #457B9D; }
+    .header .subtitle { font-size: 14px; color: #5C6B7A; margin: 8px 0 0; }
+    .meta-row { display: flex; justify-content: space-between; font-size: 12px; color: #5C6B7A; margin-bottom: 32px; padding: 12px 16px; background: #F3F4F6; border-radius: 8px; flex-wrap: wrap; gap: 8px; }
+    .section { margin-bottom: 28px; }
+    .section h2 { font-size: 18px; font-weight: 800; color: #0A192F; margin: 0 0 12px; padding-bottom: 8px; border-bottom: 1px solid #E8EDF2; }
+    .section p { font-size: 14px; line-height: 1.8; color: #314155; margin: 0 0 12px; }
+    .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+    .card { background: #fff; border: 1px solid #D8E0E8; border-radius: 12px; padding: 16px; }
+    .card .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #5C6B7A; font-weight: 600; }
+    .card .value { font-size: 20px; font-weight: 800; color: #0A192F; margin-top: 4px; }
+    .card .detail { font-size: 12px; color: #5C6B7A; margin-top: 4px; }
+    .source-list { list-style: none; padding: 0; margin: 0; }
+    .source-list li { padding: 8px 0; border-bottom: 1px solid #F3F4F6; font-size: 13px; color: #314155; }
+    .source-list li:last-child { border-bottom: none; }
+    .source-list .tag { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 99px; background: #F3F4F6; color: #5C6B7A; font-weight: 600; margin-right: 6px; }
+    .highlight { background: #FFFBEB; border-left: 3px solid #F59E0B; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; }
+    .pipeline-item { display: flex; justify-content: space-between; align-items: start; padding: 12px 0; border-bottom: 1px solid #F3F4F6; }
+    .pipeline-item:last-child { border-bottom: none; }
+    .pipeline-item .title { font-size: 14px; font-weight: 600; }
+    .pipeline-item .meta { font-size: 12px; color: #5C6B7A; }
+    .pipeline-item .value { font-size: 14px; font-weight: 700; color: #0A192F; text-align: right; }
+    .methodology { background: #F3F4F6; border-radius: 12px; padding: 20px; margin-top: 28px; }
+    .methodology h3 { font-size: 14px; font-weight: 700; margin: 0 0 8px; }
+    .methodology p { font-size: 13px; line-height: 1.7; color: #5C6B7A; margin: 0; }
+    .watermark { text-align: center; font-size: 11px; color: #94A3B8; margin-top: 32px; padding-top: 16px; border-top: 1px solid #E8EDF2; }
+  </style>
+</head>
+<body>
+  <div class="report">
+    <div class="header">
+      <h1>Market<span>Pulse</span></h1>
+      <p class="subtitle">Federal Health IT Market Intelligence Report</p>
+    </div>
+
+    <div class="meta-row">
+      <span>Query: "VA ambient AI scribe procurement landscape"</span>
+      <span>Delivered: March 28, 2026</span>
+      <span>7 sources verified</span>
+    </div>
+
+    <div class="section">
+      <h2>Executive Summary</h2>
+      <p>The VA's ambient AI scribe program expanded from a 10-site pilot (October 2025) to a nationwide rollout contract awarded to Rise8 and Thoughtworks in March 2026. The contract covers 130+ VA medical centers with a structured multi-vendor onboarding process. Total addressable market for ambient clinical documentation at VA is estimated at $180-240M over 5 years.</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="label">Contract Vehicle</div>
+        <div class="value">VA T4NG</div>
+        <div class="detail">Task Order under NAICS 541512</div>
+      </div>
+      <div class="card">
+        <div class="label">Estimated Ceiling</div>
+        <div class="value">$47M</div>
+        <div class="detail">Base + 4 option years</div>
+      </div>
+      <div class="card">
+        <div class="label">Pilot Sites</div>
+        <div class="value">10</div>
+        <div class="detail">Expanded Oct 2025</div>
+      </div>
+      <div class="card">
+        <div class="label">Target Scale</div>
+        <div class="value">130+</div>
+        <div class="detail">VA medical centers nationwide</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Pipeline Intelligence</h2>
+      <div class="highlight">The current contract explicitly includes a structured vendor onboarding process — this is NOT a sole-source lock. Additional vendors will be evaluated and added as the rollout expands.</div>
+
+      <div class="pipeline-item">
+        <div>
+          <div class="title">Rise8 / Thoughtworks</div>
+          <div class="meta">Current prime — nationwide rollout</div>
+        </div>
+        <div class="value">Awarded</div>
+      </div>
+      <div class="pipeline-item">
+        <div>
+          <div class="title">Nuance (Microsoft)</div>
+          <div class="meta">DAX Copilot — existing DoD/MHS presence</div>
+        </div>
+        <div class="value">Likely competitor</div>
+      </div>
+      <div class="pipeline-item">
+        <div>
+          <div class="title">Abridge</div>
+          <div class="meta">Used in VA Innovation pilot (SPARK)</div>
+        </div>
+        <div class="value">Emerging</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Competitive Landscape</h2>
+      <p>Three primary competitors have established positions in the ambient clinical documentation space for federal health. Nuance/Microsoft holds the commercial market lead but faces procurement complexity at VA. Abridge has innovation center relationships but limited scale credentials. Rise8/Thoughtworks won on agile delivery methodology alignment with VA's DevSecOps mandate.</p>
+    </div>
+
+    <div class="section">
+      <h2>Risk Assessment</h2>
+      <p><strong>Congressional scrutiny:</strong> Thoughtworks' corporate history (former CEO's China business unit sale, IGNITE community concerns) may attract oversight attention. Recommend monitoring House VA Committee hearings Q2 2026.</p>
+      <p><strong>Technical risk:</strong> Ambient AI scribes require deep EHR integration. VA's VistA/CPRS environment is uniquely complex. Vendors without VistA experience will face significant integration barriers.</p>
+    </div>
+
+    <div class="section">
+      <h2>Recommendations</h2>
+      <p><strong>If you're a potential vendor:</strong> The multi-vendor onboarding clause is your entry point. Prepare a technical demo focused on VistA HL7 integration and clinician workflow preservation. Target the Q3 2026 vendor evaluation window.</p>
+      <p><strong>If you're tracking this for capture:</strong> This contract signals VA's commitment to AI-first clinical workflows. Adjacent opportunities in clinical decision support, quality reporting, and referral coordination will follow.</p>
+    </div>
+
+    <div class="section">
+      <h2>Sources</h2>
+      <ul class="source-list">
+        <li><span class="tag">SAM.gov</span> VA Ambient AI Scribe Nationwide Rollout — Solicitation 36C10X26R0047</li>
+        <li><span class="tag">USAspending</span> Rise8 Inc — Contract Award Details, March 2026</li>
+        <li><span class="tag">.gov</span> VA Office of Information and Technology — AI Strategy FY2026</li>
+        <li><span class="tag">FPDS</span> Historical ambient documentation contracts at VHA, 2023-2026</li>
+        <li><span class="tag">Press</span> FedScoop — "VA expands ambient AI scribe to 130 medical centers"</li>
+        <li><span class="tag">Press</span> Nextgov — "Rise8, Thoughtworks win VA AI documentation contract"</li>
+        <li><span class="tag">.gov</span> House VA Committee — Hearing transcript, March 2026</li>
+      </ul>
+    </div>
+
+    <div class="methodology">
+      <h3>Methodology</h3>
+      <p>This report was produced using MarketPulse's 7-pass research pipeline: entity disambiguation, landscape scan, deep analysis, fact-check and synthesis, competitive landscape, cross-validation, and source verification. All claims are traced to primary sources. Confidence ratings are based on source authority (SAM.gov > USAspending > .gov > press).</p>
+    </div>
+
+    <div class="watermark">
+      MarketPulse by Mission Meets Tech — Live research, fact-checked, source-cited<br>
+      This is a sample report. Your report will reflect your actual query.
+    </div>
+  </div>
+</body>
+</html>
