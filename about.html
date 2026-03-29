@@ -29,6 +29,13 @@
   <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
   <link rel="alternate" type="application/rss+xml" title="Mission Meets Tech" href="/feed.xml">
   <link rel="stylesheet" href="/styles/tailwind.css">
+  <style>
+    @media (max-width: 767px) {
+      .about-two-col { grid-template-columns: 1fr !important; }
+      .about-lens-row { flex-direction: column !important; gap: 4px !important; }
+      .about-lens-row dt { min-width: auto !important; }
+    }
+  </style>
 </head>
 <body class="antialiased">
 
@@ -89,7 +96,7 @@
         <h2>The gap isn't technical. It's translational.</h2>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;max-width:900px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;max-width:900px;" class="about-two-col">
       <p style="color:var(--mmt-text-secondary);line-height:1.8;">Federal health IT sits at the intersection of national security, healthcare delivery, and technology modernization. The decisions made inside DHA, VA, and Congress ripple through an ecosystem of contractors, clinicians, and service members who depend on these systems working.</p>
       <p style="color:var(--mmt-text-secondary);line-height:1.8;">Most coverage of this space is either too shallow to be useful or too dense to be actionable. Mission Meets Tech bridges that gap — delivering clear, evidence-based analysis that helps operators, executives, and policy professionals understand what's actually happening and what it means for their work.</p>
     </div>
@@ -206,46 +213,48 @@
     </div>
   </section>
 
-  <!-- 6. AREAS OF FOCUS -->
+  <!-- 6. ANALYTICAL LENSES (compact) -->
   <section class="section">
     <div class="section-head">
       <div>
         <div class="section-label">How we analyze</div>
-        <h2>Five frameworks shape every analysis.</h2>
+        <h2>Five lenses shape every analysis.</h2>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));gap:16px;">
-      <div class="card" style="padding:20px;">
-        <strong style="color:var(--mmt-navy);font-size:0.95rem;">Readiness Test</strong>
-        <p style="font-size:0.85rem;color:var(--mmt-text-secondary);line-height:1.6;margin-top:6px;">Does this increase readiness or operational capability? Every dollar, contract, and policy decision gets measured against whether it makes the force more capable.</p>
-      </div>
-      <div class="card" style="padding:20px;">
-        <strong style="color:var(--mmt-navy);font-size:0.95rem;">Governance Paradox</strong>
-        <p style="font-size:0.85rem;color:var(--mmt-text-secondary);line-height:1.6;margin-top:6px;">Where is bureaucracy blocking progress vs. protecting safety? Is a governance structure a legitimate safeguard or a mission-killing bottleneck?</p>
-      </div>
-      <div class="card" style="padding:20px;">
-        <strong style="color:var(--mmt-navy);font-size:0.95rem;">Third Way Architecture</strong>
-        <p style="font-size:0.85rem;color:var(--mmt-text-secondary);line-height:1.6;margin-top:6px;">What realistic bridge exists between legacy constraints and modern delivery? The answer lives within existing infrastructure, authorities, and workforce realities.</p>
-      </div>
-      <div class="card" style="padding:20px;">
-        <strong style="color:var(--mmt-navy);font-size:0.95rem;">Human Cost</strong>
-        <p style="font-size:0.85rem;color:var(--mmt-text-secondary);line-height:1.6;margin-top:6px;">Who pays when this fails? Policy connects to people. The stakes are always concrete: a medic waiting on a system, a veteran navigating a broken process.</p>
-      </div>
-      <div class="card" style="padding:20px;">
-        <strong style="color:var(--mmt-navy);font-size:0.95rem;">Market Signal</strong>
-        <p style="font-size:0.85rem;color:var(--mmt-text-secondary);line-height:1.6;margin-top:6px;">What does this tell us about where the money and attention are flowing? Contract awards, budget moves, and personnel changes are leading indicators.</p>
-      </div>
+    <div style="max-width:700px;">
+      <dl style="display:flex;flex-direction:column;gap:16px;">
+        <div class="about-lens-row" style="display:flex;gap:16px;align-items:baseline;">
+          <dt style="flex-shrink:0;font-weight:700;color:var(--mmt-navy);font-size:0.9rem;min-width:160px;">Readiness Test</dt>
+          <dd style="font-size:0.88rem;color:var(--mmt-text-secondary);line-height:1.6;">Does this make the force more capable? Every dollar, contract, and policy decision gets measured here first.</dd>
+        </div>
+        <div class="about-lens-row" style="display:flex;gap:16px;align-items:baseline;">
+          <dt style="flex-shrink:0;font-weight:700;color:var(--mmt-navy);font-size:0.9rem;min-width:160px;">Governance Paradox</dt>
+          <dd style="font-size:0.88rem;color:var(--mmt-text-secondary);line-height:1.6;">Is a governance structure a legitimate safeguard or a mission-killing bottleneck?</dd>
+        </div>
+        <div class="about-lens-row" style="display:flex;gap:16px;align-items:baseline;">
+          <dt style="flex-shrink:0;font-weight:700;color:var(--mmt-navy);font-size:0.9rem;min-width:160px;">Third Way</dt>
+          <dd style="font-size:0.88rem;color:var(--mmt-text-secondary);line-height:1.6;">What realistic bridge exists between legacy constraints and modern delivery?</dd>
+        </div>
+        <div class="about-lens-row" style="display:flex;gap:16px;align-items:baseline;">
+          <dt style="flex-shrink:0;font-weight:700;color:var(--mmt-navy);font-size:0.9rem;min-width:160px;">Human Cost</dt>
+          <dd style="font-size:0.88rem;color:var(--mmt-text-secondary);line-height:1.6;">Who pays when this fails? The stakes are always concrete: a medic, a veteran, a broken process.</dd>
+        </div>
+        <div class="about-lens-row" style="display:flex;gap:16px;align-items:baseline;">
+          <dt style="flex-shrink:0;font-weight:700;color:var(--mmt-navy);font-size:0.9rem;min-width:160px;">Market Signal</dt>
+          <dd style="font-size:0.88rem;color:var(--mmt-text-secondary);line-height:1.6;">Where are the money and attention flowing? Contract awards, budget moves, and personnel changes are leading indicators.</dd>
+        </div>
+      </dl>
     </div>
   </section>
 
   <!-- 7. CTA -->
   <section class="section" style="padding-bottom:48px;">
     <div style="text-align:center;">
-      <h2 style="margin-bottom:12px;">Start reading.</h2>
-      <p style="color:var(--mmt-text-secondary);margin-bottom:20px;">Explore the latest intelligence or subscribe to get it delivered.</p>
+      <h2 style="margin-bottom:12px;">See the work.</h2>
+      <p style="color:var(--mmt-text-secondary);margin-bottom:20px;">Read the latest analysis or subscribe to get it delivered bi-weekly.</p>
       <div class="flex flex-wrap gap-3" style="justify-content:center;">
-        <a href="latest.html" class="btn-primary no-underline">Browse Intelligence</a>
-        <a href="newsletter.html" class="btn-secondary no-underline">Subscribe</a>
+        <a href="latest.html" class="btn-primary no-underline">Latest Intelligence</a>
+        <a href="newsletter.html" class="btn-secondary no-underline">Subscribe Free</a>
       </div>
     </div>
   </section>
