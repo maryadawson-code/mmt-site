@@ -2051,6 +2051,12 @@ function inlineTailwindCss(html) {
 
   // ── Global fixes applied to ALL pages ──────────────────────
 
+  // Standardize non-canonical nav: remove ProposalPulse/MarketPulse/Getting Started from nav links
+  // These should only appear in homepage services grid + footer, per CLAUDE.md
+  html = html.replace(/<a href="proposal-pulse\.html"[^>]*>ProposalPulse<\/a>\s*/g, '');
+  html = html.replace(/<a href="marketpulse\.html"[^>]*>MarketPulse<\/a>\s*/g, '');
+  html = html.replace(/<a href="getting-started\.html"[^>]*>Getting Started<\/a>\s*/g, '');
+
   // Fix glassmorphism dark cards across all pages
   html = html.replace(/background:\s*rgba\(10,22,40,0\.6\);\s*backdrop-filter:\s*blur\(16px\)/g,
     'background: rgba(255,255,255,0.86); border: 1px solid rgba(216,224,232,0.96); box-shadow: 0 18px 50px rgba(10,25,47,0.08)');
@@ -2364,11 +2370,11 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
   const distSamplesDir = path.join(DIST_DIR, 'samples');
   if (fs.existsSync(samplesDir)) {
     ensureDir(distSamplesDir);
-    const sampleFiles = fs.readdirSync(samplesDir).filter(f => f.endsWith('.pdf'));
+    const sampleFiles = fs.readdirSync(samplesDir).filter(f => f.endsWith('.pdf') || f.endsWith('.html'));
     sampleFiles.forEach(file => {
       fs.copyFileSync(path.join(samplesDir, file), path.join(distSamplesDir, file));
     });
-    console.log(`Copied ${sampleFiles.length} sample PDF files`);
+    console.log(`Copied ${sampleFiles.length} sample files`);
   }
 
 }
