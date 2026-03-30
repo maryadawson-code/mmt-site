@@ -38,7 +38,7 @@ const NETLIFY_BUILD_HOOK_URL = process.env.NETLIFY_BUILD_HOOK_URL;
 // Synced from contracts.json (March 30, 2026 research brief update).
 const CONTRACTS = [
   {
-    name: "HCDS — Health Care Delivery Solutions (MHS GENESIS Follow-On)",
+    name: "HCDS - Health Care Delivery Solutions (MHS GENESIS Follow-On)",
     agency: "Defense Health Agency (DHA) / PEO DHMS",
     vendor: "TBD — Leidos holds $1.4B+ sole-source bridge through ~2028",
     value: "TBD (predecessor DHMSM: $5.5B; bridge: $1.4B+)",
