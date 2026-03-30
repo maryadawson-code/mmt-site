@@ -25,18 +25,23 @@ marked.use({
 const RSS_FEED = 'https://api.riverside.fm/hosting/KJvFk8EM.rss';
 const SITE_URL = 'https://missionmeetstech.com';
 
-// News Wire RSS feeds
+// News Wire RSS feeds — focused on federal health IT, not generic defense
 const NEWS_FEEDS = [
-  { name: 'DefenseScoop', url: 'https://defensescoop.com/feed', category: 'defense' },
+  // Federal health IT trade press (highest signal)
   { name: 'FedScoop', url: 'https://fedscoop.com/feed/', category: 'policy' },
-  { name: 'GovExec Defense', url: 'https://govexec.com/rss/defense/', category: 'defense' },
   { name: 'Nextgov/FCW', url: 'https://www.nextgov.com/rss/all/', category: 'policy' },
   { name: 'MeriTalk', url: 'https://www.meritalk.com/articles/feed/meritalk-news-podcast/', category: 'policy' },
-  { name: 'Military Times', url: 'https://www.militarytimes.com/arc/outboundfeeds/rss/?outputType=xml', category: 'defense' },
-  { name: 'GAO Blog', url: 'https://www.gao.gov/blog/feed', category: 'oversight' },
+  { name: 'Healthcare IT News', url: 'https://www.healthcareitnews.com/feed', category: 'health-it' },
+  { name: 'Healthcare Dive', url: 'https://www.healthcaredive.com/feeds/news/', category: 'health-it' },
+  // Government direct sources
   { name: 'Health IT Buzz', url: 'https://www.healthit.gov/buzz-blog/feed', category: 'health-it' },
   { name: 'VA.gov News', url: 'https://www.va.gov/rss/', category: 'health-it' },
+  { name: 'GAO Reports', url: 'https://www.gao.gov/reports-testimonies/api/feed', category: 'oversight' },
+  // Defense health (targeted, not broad defense)
+  { name: 'DefenseScoop', url: 'https://defensescoop.com/feed', category: 'defense' },
+  { name: 'Military Times', url: 'https://www.militarytimes.com/arc/outboundfeeds/rss/?outputType=xml', category: 'defense' },
   { name: 'TRICARE', url: 'https://tricare.mil/rss/All-Feeds', category: 'health-it' },
+  { name: 'Federal News Network', url: 'https://federalnewsnetwork.com/category/defense-news/feed/', category: 'policy' },
 ];
 const CONTENT_DIR = path.join(__dirname, 'content', 'newsletter');
 const TEMPLATES_DIR = path.join(__dirname, 'templates');

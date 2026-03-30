@@ -33,90 +33,111 @@ const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const NETLIFY_BUILD_HOOK_URL = process.env.NETLIFY_BUILD_HOOK_URL;
 
-// The 10 contracts — matches contracts.json at repo root
+// Contracts for daily research — enriched with verified domain context
+// to produce specific, useful intel instead of generic summaries.
+// Synced from contracts.json (March 30, 2026 research brief update).
 const CONTRACTS = [
   {
-    name: "MHS GENESIS (Electronic Health Record)",
-    agency: "Defense Health Agency (DHA)",
-    vendor: "Leidos / Oracle Health (Cerner)",
-    value: "~$5.5B (expanded 2018) + $1.4B sole-source extension through 2028",
-    description: "DoD enterprise EHR deployment replacing AHLTA/CHCS across all Military Treatment Facilities worldwide. Fully deployed at 3,200+ locations.",
+    name: "HCDS — Health Care Delivery Solutions (MHS GENESIS Follow-On)",
+    agency: "Defense Health Agency (DHA) / PEO DHMS",
+    vendor: "TBD — Leidos holds $1.4B+ sole-source bridge through ~2028",
+    value: "TBD (predecessor DHMSM: $5.5B; bridge: $1.4B+)",
+    description: "Competitive follow-on to DHMSM. Dec 2025 draft MOSA contract strategy splits into 3 vehicles: (1) PMO/SI, (2) Product/Software (likely Oracle direct), (3) Service/OCM/Analytics. RFI close Aug 30, 2026. PAE restructuring moves HCDS under Phase 2 Software portfolio. Industry feedback under extended review since Jan 9, 2026.",
+    research_focus: "Check SAM.gov HT003826X0000 for any government updates after Feb 20, 2026. Look for PAE Phase 2 establishment. Track Leidos bridge task order activity on USASpending. Check if draft RFP has been released. Look for small business set-aside signals on Vehicle 3.",
   },
   {
-    name: "Community Care Network (CCN) Next Gen",
+    name: "VA EHRM (Electronic Health Record Modernization)",
     agency: "Department of Veterans Affairs",
-    vendor: "TBD — solicitation active, proposals due April 3, 2026",
+    vendor: "Oracle Health (Cerner)",
+    value: "$37.2B lifecycle estimate",
+    description: "6 of 164 VA medical centers live. April 2026: 4 Michigan sites (Detroit, Saginaw, Ann Arbor, Battle Creek). 826 major incidents since first go-live. 13% staff believe system efficient (GAO). Budzinski bill proposes 2-year Oracle restriction clock. 30% of $3.4B FY2026 funding withheld until July 1. Oracle facing 20-30% layoffs.",
+    research_focus: "Track April 2026 Michigan go-live outcomes (success or failure). Check Budzinski bill committee progress. Look for GAO or VA IG reports on EHRM. Track Oracle Health layoff confirmations. Check if July 1 funding withhold conditions are being met. Look for new SDVOSB task orders for OCM or IV&V support.",
+  },
+  {
+    name: "Community Care Network Next Gen (CCN NG)",
+    agency: "Department of Veterans Affairs",
+    vendor: "TBD — proposals due April 3, 2026",
     value: "Est. $65B+ (multi-region IDIQ)",
-    description: "Next-generation VA community care IDIQ contracts replacing current CCN regional contracts (Regions 1-6).",
+    description: "Solicitation 36C10G26R0003. Multiple-Award IDIQ replacing CCN regional contracts. Binary past performance gate: multi-state coverage. Connected to Bi-Directional Imaging (36C10B26Q0076).",
+    research_focus: "Check SAM.gov for amendment or deadline extension past April 3. Track award announcements. Look for protest filings after award. Check if Bi-Directional Imaging solicitation has been released.",
   },
   {
-    name: "T4NG / T4NG2 (VA IT Services)",
-    agency: "Department of Veterans Affairs",
-    vendor: "Multiple award (T4NG2 awardees)",
-    value: "$60.7B ceiling (T4NG2)",
-    description: "VA's primary enterprise IT services vehicle. T4NG2 ($60.7B ceiling) superseding T4NG. Task orders began March 2026.",
-  },
-  {
-    name: "Federal Electronic Health Record Modernization (FEHRM)",
-    agency: "DoD / VA Joint Program",
-    vendor: "Oracle Health (Cerner)",
-    value: "$37B–$50B lifecycle estimate (combined DoD/VA)",
-    description: "Joint DoD-VA effort to deploy a single, common federal EHR for seamless health data sharing between departments.",
-  },
-  {
-    name: "VA EHR Modernization (EHRM)",
-    agency: "Department of Veterans Affairs",
-    vendor: "Oracle Health (Cerner)",
-    value: "~$37B lifecycle estimate",
-    description: "VA's enterprise EHR modernization. Multi-year pause ending with deployments restarting April 2026 at Michigan VA Medical Centers.",
-  },
-  {
-    name: "TRICARE Managed Care Support — T-5 (MCS)",
-    agency: "Defense Health Agency (DHA)",
-    vendor: "Humana Military (East), TriWest Healthcare Alliance (West)",
-    value: "Humana East $7.34B (CY2026 option)",
-    description: "T-5 generation went live January 1, 2025. Current regional managed care support for 9.6M+ TRICARE beneficiaries.",
+    name: "T4NG2 (VA IT Services)",
+    agency: "Department of Veterans Affairs / VA TAC",
+    vendor: "30+ awardees (21 SDVOSBs; Booz Allen, SAIC, Leidos, GovCIO, Cognosante MVH)",
+    value: "$60.7B ceiling (10-year)",
+    description: "VA's primary IT vehicle. 31 protests, 3 prevailed (Taurian, Technatomy, Peregrin). Task orders began March 2026. Booz Allen captured ~$4B of T4NG. SDVOSB eligibility must be maintained through award date (GAO ruling).",
+    research_focus: "Track first T4NG2 task order awards and values. Check for new SDVOSB-specific task orders. Monitor remaining protest resolution. Look for EHRM-adjacent or AI/analytics task orders flowing through T4NG2.",
   },
   {
     name: "Enterprise Intelligence & Data Solutions (EIDS)",
-    agency: "Defense Health Agency (DHA)",
-    vendor: "SpinSys-Diné (PMO COOP), Koniag IT Systems",
+    agency: "Defense Health Agency (DHA) / PEO DHMS",
+    vendor: "SpinSys-Diné (PMO, 8(a) tribal), Koniag IT Systems ($94.4M AWS, 8(a))",
     value: "$650M ceiling",
-    description: "DHA analytics and data solutions contract for health surveillance, population health, and operational intelligence.",
+    description: "DHA enterprise data/analytics PMO. MHS Information Platform (MIP) on AWS GovCloud serves 20,000+ users. Operation Helios migrated 1PB (MDR + M2). AOI 4 canceled (McKinsey dispute) but requirement active. Chris Nichols leads — favors open, API-led architectures over proprietary platforms.",
+    research_focus: "Check for AOI 4 re-issue signals on SAM.gov (HT003826 prefix). Track MIP platform updates or new EIDS task orders. Look for AI-on-MIP initiatives. Check if SpinSys-Diné or Koniag have new awards. Monitor for NAII AI solicitations.",
   },
   {
-    name: "Defense Health Agency Telehealth Programs",
+    name: "PEO DHMS CSO (Competitive Solutions Opening)",
+    agency: "Defense Health Agency (DHA) / PEO DHMS",
+    vendor: "Open competition (rolling)",
+    value: "Multiple awards",
+    description: "OTA pathway under 10 U.S.C. § 4022. AOI 1b (AI/ML/NLP) open through June 2026. AOI 3 (Ambient Listening/DAX Copilot) established CSO-to-IDIQ production pathway precedent. DFARS 212.7001 innovation threshold is binary gate.",
+    research_focus: "Check for new AOI announcements. Track AOI 3 award status (DAX Copilot). Look for CSO-to-production task order transitions. Check if AOI 1b deadline has been extended. Monitor for new CSO notices under HCDS framework.",
+  },
+  {
+    name: "DHA Enterprise Generative AI",
     agency: "Defense Health Agency (DHA)",
-    vendor: "Amwell + Leidos (Digital First, $180M task order)",
-    value: "$180M (primary)",
-    description: "Telehealth expansion across the Military Health System. Amwell Converge platform replacing MHS Video Connect.",
+    vendor: "Ask Sage, Inc.",
+    value: "Undisclosed",
+    description: "First IL5 GenAI platform for PHI in MHS. Awarded Dec 2025. DHA restricted Anthropic models — AWS Nova preferred. White House National AI Policy Framework (March 24, 2026) creates unified federal AI standard.",
+    research_focus: "Track Ask Sage deployment progress and user adoption numbers. Check for competing IL5 GenAI platforms. Monitor DHA AI policy updates. Look for new AI-related CSO notices. Track White House AI policy implementation guidance.",
   },
   {
     name: "VA Health Connect / IHT 2.0",
-    agency: "Department of Veterans Affairs",
-    vendor: "Tribility, Titan-Auxo, Rios Partners, and others",
-    value: "$14B / 10-year (IHT 2.0 IDIQ)",
-    description: "VA's 24/7 virtual care, clinical triage, and tele-emergency program. IHT 2.0 SDVOSB set-aside IDIQ.",
+    agency: "Department of Veterans Affairs / VHA",
+    vendor: "8 IDIQ holders: Tribility, Titan-Auxo, Rios Partners, Reefpoint, Prometheus, Blue Water Thinking, Arrow ARC, Agile4Vets",
+    value: "$14B / 10-year",
+    description: "100% SDVOSB set-aside IDIQ. VA's 24/7 virtual care and clinical triage. Arrow ARC captured 91% of IHT 1.0 spending. OIP task order in active procurement — final RFP expected April 7-14, 2026.",
+    research_focus: "Track OIP task order RFP release and award. Check for new IHT 2.0 task order announcements. Monitor Arrow ARC/Aptive positioning. Look for VA Health Connect expansion or new service requirements.",
   },
   {
-    name: "Military Health System Enterprise Imaging",
+    name: "VA Enterprise Imaging (NEIS + Multi-VISN PACS + Bi-Directional)",
+    agency: "Department of Veterans Affairs",
+    vendor: "TBD — multiple solicitations",
+    value: "$365–620M combined estimate",
+    description: "Three connected procurements: NEIS (36C10X25Q0015, $300-500M, FY2027), Multi-VISN PACS (36C10X24Q0024, $50-90M, Q3 2026), Bi-Directional Imaging (36C10B26Q0076, $15-30M, Q2 2026 — most imminent). COs: Cole/Luna (SAC-F) for NEIS/PACS, Truex (TAC) for Bi-Directional.",
+    research_focus: "Check SAM.gov for Bi-Directional Imaging solicitation release (most urgent). Track Multi-VISN PACS timeline. Look for NEIS draft RFP. Monitor Philips Healthcare positioning. Check for set-aside determinations.",
+  },
+  {
+    name: "DHA Telehealth Programs",
     agency: "Defense Health Agency (DHA)",
-    vendor: "Multiple vendors",
-    value: "Various",
-    description: "Enterprise-wide medical imaging modernization including PACS, VNA, and AI-assisted diagnostic imaging.",
+    vendor: "Amwell + Leidos ($180M); Nurse Advice Line bridge HT001124C0011 ($24.6M)",
+    value: "$204.6M combined",
+    description: "Amwell Converge replacing MHS Video Connect. MHS Global Nurse Advice Line ($24.6M bridge) indicates upcoming recompete — similar to VA Health Connect. OMEIS Sources Sought (HT003824R0005) for operational tele-radiology closed June 2024, no RFP yet.",
+    research_focus: "Check for OMEIS RFP release on SAM.gov. Track Nurse Advice Line recompete signals. Monitor Amwell Converge adoption metrics. Look for new DHA telehealth task orders or set-asides.",
   },
 ];
 
 // --- System Prompts ---
-const RESEARCH_PROMPT = `You are a federal procurement intelligence analyst specializing in defense health and federal health IT contracts. You have access to web search to research contracts thoroughly.
+const RESEARCH_PROMPT = `You are a federal procurement intelligence analyst who covers DHA, VA, CMS, and federal health IT contracts for an audience of defense contractors, program managers, and capture professionals. They need SPECIFIC, ACTIONABLE intelligence — not generic summaries they could get from a Google search.
 
-Your task: Research the given contract using web search. Make 3-5 targeted searches (no more than 5) to build a focused picture:
+Your task: Research the given contract using web search. The contract description includes a "research_focus" field with SPECIFIC things to look for. PRIORITIZE those searches.
 
-1. Current contract status and recent news
-2. Incumbent performance issues or GAO findings
-3. Upcoming recompete, option decisions, or competitor positioning
-4. Protest history and agency strategic direction
-5. Small business task orders, subcontracting opportunities, and set-aside types (SDVOSB, VOSB, 8(a), WOSB, HUBZone, SDB)
+Make 3-5 targeted searches. For each search:
+- Use specific solicitation numbers, contract numbers, or SAM.gov notice IDs when provided
+- Search for the exact agency + program name + year (e.g., "DHA HCDS 2026" not just "defense health IT")
+- Check SAM.gov, USASpending.gov, GAO, Congressional testimony, and trade press (FedScoop, Nextgov/FCW, MeriTalk, Healthcare IT News, GovExec)
+
+What makes intel USEFUL vs GENERIC:
+- USEFUL: "GAO-26-107 published March 15 found Oracle missed 4 of 7 SLA metrics at Spokane VA. VA IG investigation ongoing."
+- GENERIC: "The program faces performance challenges according to reports."
+- USEFUL: "SAM.gov HT003826X0000 updated Feb 20, 2026 with revised Vehicle 3 scope — now explicitly includes AI analytics as a standalone CLIN."
+- GENERIC: "The government is planning a competitive follow-on."
+- USEFUL: "T4NG2 task order HT0038-26-F-0012 awarded to GovCIO ($14.2M, SDVOSB set-aside) for EHRM helpdesk modernization."
+- GENERIC: "Task orders are beginning to flow."
+
+Always include: exact dates, dollar amounts, solicitation/contract numbers, named people (COs, program managers), and source URLs. If you can't find specifics, say so — don't fill the gap with vague language.
 
 Be efficient — synthesize from your search results quickly. Do not do exhaustive research. Focus on the most important and recent developments.
 
@@ -347,15 +368,16 @@ async function researchContract(contract) {
   // --- Pass 1: Research ---
   const researchModel = await getModelConfig(null, "contract_research");
   console.log(`  [${contract.name}] Pass 1: Research (${researchModel.model})...`);
-  const researchMessage = `Research this federal contract thoroughly using web search:
+  const researchMessage = `Research this federal contract using web search. Focus on the SPECIFIC research priorities listed below.
 
 CONTRACT: ${contract.name}
 AGENCY: ${contract.agency}
 CURRENT VENDOR: ${contract.vendor}
 VALUE: ${contract.value}
 DESCRIPTION: ${contract.description}
+${contract.research_focus ? `\nRESEARCH PRIORITIES (search for these FIRST):\n${contract.research_focus}` : ''}
 
-Search multiple sources (SAM.gov, FedScoop, NextGov, Defense One, GovExec, agency websites, GAO, CRS) to build comprehensive intelligence. NOTE: FPDS ATOM feed retiring summer 2026 — use SAM.gov API as canonical source. Include confidence percentages on every claim. Return the JSON object with "intel", "black_hat", and "sources" keys.`;
+Search SAM.gov, USASpending.gov, FedScoop, Nextgov/FCW, MeriTalk, Healthcare IT News, GAO, CRS, and agency sites. NOTE: FPDS ATOM feed retiring summer 2026 — use SAM.gov API as canonical source. Include confidence percentages on every claim. Return JSON with "intel", "black_hat", and "sources" keys.`;
 
   const { parsed: research, searchSources: researchSources } = await callPerplexity(
     RESEARCH_PROMPT, researchMessage, 5, researchModel.model, 8000
