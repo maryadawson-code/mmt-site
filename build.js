@@ -1600,11 +1600,11 @@ function inlineTailwindCss(html) {
     '.section-alt { background: var(--mmt-soft, #F3F4F6); }'
   );
 
-  // Replace nav logos (shield PNG → SVG logo)
-  html = html.replace(/\/mmt-shield-nav-2x\.png/g, '/mmt-logo.svg');
-  html = html.replace(/\/mmt-shield-nav\.png/g, '/mmt-logo.svg');
-  html = html.replace(/\/mmt-shield-footer-2x\.png/g, '/mmt-logo.svg');
-  html = html.replace(/\/mmt-shield-footer\.png/g, '/mmt-logo.svg');
+  // Replace old nav logos with new brand shield
+  html = html.replace(/\/mmt-shield-nav-2x\.png/g, '/mmt-shield-nav.png');
+  html = html.replace(/\/mmt-logo\.svg/g, '/mmt-shield-nav.png');
+  html = html.replace(/\/mmt-shield-footer-2x\.png/g, '/mmt-shield-nav.png');
+  html = html.replace(/\/mmt-shield-footer\.png/g, '/mmt-shield-nav.png');
 
   // Replace old nav wordmark with new style
   html = html.replace(
@@ -1815,7 +1815,7 @@ function inlineTailwindCss(html) {
   const editorialNav = `<nav class="nav-editorial">
     <div class="wrap nav-inner">
       <a href="/" class="brand no-underline" aria-label="Mission Meets Tech">
-        <div class="brand-mark"></div>
+        <div class="brand-mark"><img src="/mmt-shield-nav.png" alt="" width="44" height="44"></div>
         <div>
           <small>Federal Health IT Intelligence</small>
           <span>Mission Meets Tech</span>
@@ -1887,7 +1887,7 @@ function inlineTailwindCss(html) {
   const hasOldNavContent = html.includes('subscribeToggle') || html.includes('subscribePanel') ||
     html.includes('nav-glass') || html.includes('nav-apple') ||
     html.includes('mmt-shield-nav') || html.includes('nav-logo') || html.includes('nav-links') ||
-    html.includes('nav-cta') || (html.includes('<nav') && !html.includes('brand-mark'));
+    html.includes('nav-cta') || (html.includes('<nav') && !html.includes('brand-mark') && !html.includes('mmt-shield-nav'));
   if (hasOldNavContent) {
     html = html.replace(/<nav[\s\S]*?<\/nav>/i, editorialNav);
   }

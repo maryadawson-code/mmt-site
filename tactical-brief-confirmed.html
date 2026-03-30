@@ -20,12 +20,12 @@
   <meta name="twitter:image" content="https://missionmeetstech.com/mmt-logo.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
-  <link rel="icon" type="image/png" sizes="48x48" href="/MMT_icon_48px.png">
-  <link rel="icon" type="image/png" sizes="64x64" href="/MMT_icon_64px.png">
-  <link rel="icon" type="image/png" sizes="128x128" href="/MMT_icon_128px.png">
-  <link rel="icon" type="image/png" sizes="256x256" href="/MMT_icon_256px.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="/MMT_icon_512px.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-v3-48.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon-v3-64.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="/favicon-v3-128.png">
+  <link rel="icon" type="image/png" sizes="256x256" href="/favicon-v3-256.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-v3.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/favicon-v3-512.png">
   <link rel="preconnect" href="https://plausible.io" crossorigin>
   <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
   <link rel="alternate" type="application/rss+xml" title="Mission Meets Tech" href="/feed.xml">
@@ -68,73 +68,37 @@
 
   <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold" style="background:var(--mmt-teal); color: var(--mmt-navy);">Skip to main content</a>
 
-  <!-- Navigation -->
+    <!-- Navigation -->
   <nav class="nav-editorial">
-    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-2 no-underline">
-        <span class="text-xl font-bold" style="font-family:'Inter',system-ui,sans-serif; color: var(--mmt-navy);">Mission Meets <span style="color:var(--mmt-teal);">Tech</span></span>
-      </a>
-      <div class="hidden md:flex items-center gap-6">
-        <a href="latest.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text);">Intelligence</a>
-        <a href="getting-started.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text);">Getting Started</a>
-        <a href="podcast.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text);">Podcast</a>
-        <a href="resources.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text);">Resources</a>
-        <a href="proposal-pulse.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text);">ProposalPulse</a>
-        <a href="marketpulse.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text);">MarketPulse</a>
-        <a href="about.html" class="text-sm font-medium hover:opacity-80" style="color:var(--mmt-text);">About</a>
-        <button id="searchToggle" class="text-sm hover:opacity-80" style="color:var(--mmt-text);" aria-label="Search"><svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></button>
-        <div style="position:relative;">
-          <button id="subscribeToggle" class="btn-primary px-5 py-2 rounded-lg text-sm" style="cursor:pointer;border:none;" aria-expanded="false" aria-haspopup="true">Subscribe</button>
-          <div id="subscribePanel" class="hidden" style="position:absolute;right:0;top:calc(100% + 8px);width:280px;padding:16px;background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.15);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.4);z-index:100;">
-            <p class="text-xs font-semibold mb-1" style="color:var(--mmt-text);">Get the Intelligence</p>
-            <p class="text-xs mb-2" style="color:var(--mmt-text-secondary);">Bi-weekly DHA/VA contract analysis and acquisition intel.</p>
-            <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" target="_blank">
-              <div class="flex gap-2">
-                <label for="subscribe-email-nav" class="sr-only">Email</label>
-                <input type="email" name="email" id="subscribe-email-nav" placeholder="you@example.com" required class="px-3 py-2 rounded-lg text-sm flex-1" style="background:var(--mmt-navy);border:1px solid var(--mmt-border);color: var(--mmt-navy);">
-                <button type="submit" class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap" style="cursor:pointer;border:none;">Join</button>
-              </div>
-            </form>
-            <div class="flex items-center gap-2 my-2">
-              <div style="flex:1;height:1px;background:rgba(69,123,157,0.1);"></div>
-              <span class="text-xs" style="color:var(--mmt-text-secondary);">or</span>
-              <div style="flex:1;height:1px;background:rgba(69,123,157,0.1);"></div>
-            </div>
-            <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="text-xs font-medium hover:opacity-80 no-underline flex items-center gap-1" style="color:var(--mmt-teal);">
-              <svg width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
-              Subscribe on LinkedIn
-            </a>
-          </div>
+    <div class="wrap nav-inner">
+      <a href="/" class="brand no-underline" aria-label="Mission Meets Tech">
+        <div class="brand-mark"><img src="/mmt-shield-nav.png" alt="" width="44" height="44"></div>
+        <div>
+          <small>Federal Health IT Intelligence</small>
+          <span>Mission Meets Tech</span>
         </div>
+      </a>
+      <div class="hidden md:flex items-center gap-5">
+        <a href="latest.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Intelligence</a>
+        <a href="podcast.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Podcast</a>
+        <a href="resources.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Resources</a>
+        <a href="about.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">About</a>
+        <button id="searchToggle" class="hover:opacity-70" style="color:var(--mmt-text-secondary);background:none;border:none;cursor:pointer;" aria-label="Search"><svg width="16" height="16" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></button>
+        <a href="newsletter.html" class="btn-primary no-underline" style="margin-left:8px;">Subscribe</a>
       </div>
-      <button id="menuToggle" class="md:hidden text-white text-xl" aria-label="Toggle menu">
-        <svg id="menuOpen" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
-        <svg id="menuClose" class="hidden" width="1em" height="1em" viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+      <button id="menuToggle" class="md:hidden" style="color:var(--mmt-navy);background:none;border:none;cursor:pointer;" aria-label="Toggle menu">
+        <svg id="menuOpen" width="24" height="24" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
+        <svg id="menuClose" class="hidden" width="24" height="24" viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
       </button>
     </div>
-    <!-- Mobile Menu -->
-    <div id="mobileMenu" class="hidden md:hidden px-6 pb-4">
-      <div class="flex flex-col gap-4 pt-2 border-t" style="border-color:rgba(69,123,157,0.1);">
-        <a href="latest.html" class="text-sm font-medium" style="color:var(--mmt-text);">Intelligence</a>
-        <a href="getting-started.html" class="text-sm font-medium" style="color:var(--mmt-text);">Getting Started</a>
-        <a href="podcast.html" class="text-sm font-medium" style="color:var(--mmt-text);">Podcast</a>
-        <a href="resources.html" class="text-sm font-medium" style="color:var(--mmt-text);">Resources</a>
-        <a href="proposal-pulse.html" class="text-sm font-medium" style="color:var(--mmt-text);">ProposalPulse</a>
-        <a href="marketpulse.html" class="text-sm font-medium" style="color:var(--mmt-text);">MarketPulse</a>
-        <a href="about.html" class="text-sm font-medium" style="color:var(--mmt-text);">About</a>
-        <div class="pt-3 mt-1" style="border-top:1px solid rgba(69,123,157,0.1);">
-          <p class="text-xs font-semibold mb-2" style="color:var(--mmt-text);">Subscribe</p>
-          <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" target="_blank" class="mb-3">
-            <div class="flex gap-2">
-              <label for="subscribe-email-mobile" class="sr-only">Email</label>
-              <input type="email" name="email" id="subscribe-email-mobile" placeholder="you@example.com" required class="px-3 py-2 rounded-lg text-sm flex-1" style="background:var(--mmt-navy);border:1px solid var(--mmt-border);color: var(--mmt-navy);">
-              <button type="submit" class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold" style="cursor:pointer;border:none;">Join</button>
-            </div>
-          </form>
-          <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="text-xs font-medium hover:opacity-80 no-underline flex items-center gap-1" style="color:var(--mmt-teal);">
-            <svg width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
-            Subscribe on LinkedIn
-          </a>
+    <div id="mobileMenu" class="hidden md:hidden px-6 pb-4" style="background:var(--mmt-white);border-bottom:1px solid var(--mmt-border);">
+      <div class="flex flex-col gap-4 pt-2" style="border-top:1px solid var(--mmt-border);">
+        <a href="latest.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Intelligence</a>
+        <a href="podcast.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Podcast</a>
+        <a href="resources.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Resources</a>
+        <a href="about.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">About</a>
+        <div class="pt-3 mt-1" style="border-top:1px solid var(--mmt-border);">
+          <a href="newsletter.html" class="btn-primary no-underline">Subscribe</a>
         </div>
       </div>
     </div>
@@ -196,43 +160,36 @@
   </main>
 
   <!-- Footer -->
-  <footer class="py-16 px-6" style="border-top:1px solid rgba(69,123,157,0.08);">
-    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
+    <footer class="wrap" style="padding:28px 0 58px;">
+    <div style="border-top:1px solid var(--mmt-border);padding-top:24px;display:grid;grid-template-columns:1fr auto auto;gap:40px;color:var(--mmt-text-secondary);font-size:13px;">
       <div>
-        <div class="flex items-center gap-3 mb-4">
-          
-          <p class="font-bold text-lg" style="font-family:'Inter',system-ui,sans-serif;color: var(--mmt-navy);">Mission Meets <span style="color:var(--mmt-teal);">Tech</span></p>
-        </div>
-        <p class="text-caption mb-4">Federal health IT intelligence. Mission first.</p>
-        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="hover:opacity-80" style="color:var(--mmt-text-secondary);"><span class="sr-only">LinkedIn</span><svg class="text-lg" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg></a>
+        <p style="margin-bottom:6px;"><strong style="color:var(--mmt-navy);">Mission Meets Tech</strong></p>
+        <p>Federal health IT intelligence. Mission first.</p>
+        <p style="margin-top:10px;">Views expressed are those of the authors and do not represent any employer or government agency.</p>
+        <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
       </div>
-      <div>
-        <p class="text-eyebrow mb-5">Explore</p>
-        <ul class="space-y-3 list-none p-0 m-0">
-          <li><a href="latest.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Intelligence</a></li>
-          <li><a href="podcast.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Podcast</a></li>
-          <li><a href="resources.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Resources</a></li>
-          <li><a href="proposal-pulse.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">ProposalPulse</a></li>
-          <li><a href="marketpulse.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">MarketPulse</a></li>
-          <li><a href="my-reports.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">My Reports</a></li>
-        </ul>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Explore</strong>
+        <a href="latest.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Intelligence</a>
+        <a href="podcast.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Podcast</a>
+        <a href="resources.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Resources</a>
+        <a href="proposal-pulse.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">ProposalPulse</a>
+        <a href="marketpulse.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">MarketPulse</a>
+        <a href="about.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">About</a>
       </div>
-      <div>
-        <p class="text-eyebrow mb-5">Connect</p>
-        <ul class="space-y-3 list-none p-0 m-0">
-          <li><a href="about.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">About</a></li>
-          <li><a href="mailto:mary@missionmeetstech.com" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Contact</a></li>
-          <li><a href="events.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Events</a></li>
-          <li><a href="privacy.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Privacy Policy</a></li>
-          <li><a href="terms.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Terms of Service</a></li>
-          <li><a href="security.html" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Data Security</a></li>
-          <li><a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">LinkedIn</a></li>
-        </ul>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Connect</strong>
+        <a href="newsletter.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Subscribe</a>
+        <a href="mailto:mary@missionmeetstech.com" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Contact</a>
+        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">LinkedIn</a>
+        <a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank" rel="noopener" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Apple Podcasts</a>
+        <a href="https://open.spotify.com/show/7sND342duH7Buw1cUs60lP" target="_blank" rel="noopener" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Spotify</a>
       </div>
     </div>
-    <div class="max-w-6xl mx-auto mt-16 pt-8" style="border-top:1px solid rgba(255,255,255,0.05);">
-      <p class="text-xs text-center" style="color:var(--mmt-text-secondary);">Mission Meets Tech provides independent analysis and commentary. Views expressed are those of the authors and do not represent any employer or government agency.</p>
-      <p class="text-xs text-center mt-2" style="color:var(--mmt-text-secondary);">&copy; 2026 Mission Meets Tech. All rights reserved.</p>
+    <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--mmt-border);display:flex;gap:16px;font-size:12px;color:var(--mmt-text-secondary);">
+      <a href="privacy.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Privacy</a>
+      <a href="terms.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Terms</a>
+      <a href="security.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Security</a>
     </div>
   </footer>
 

@@ -143,20 +143,13 @@
   .brand-mark {
     width: 44px;
     height: 44px;
-    border-radius: 14px;
-    border: 2px solid var(--mmt-navy);
-    position: relative;
-    overflow: hidden;
-    background: linear-gradient(135deg, rgba(69,123,157,0.14), rgba(10,25,47,0.02));
     flex-shrink: 0;
   }
 
-  .brand-mark::before {
-    content: "";
-    position: absolute;
-    inset: 8px;
-    border: 1.5px solid var(--mmt-teal);
-    clip-path: polygon(50% 0%, 100% 18%, 100% 65%, 50% 100%, 0 65%, 0 18%);
+  .brand-mark img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
 
   .brand small {
