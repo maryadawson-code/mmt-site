@@ -1756,10 +1756,14 @@ function inlineTailwindCss(html) {
   html = html.replace(/borderColor='rgba\(0,255,133,0\.3\)'/g, "borderColor='var(--mmt-teal)'");
   html = html.replace(/borderColor='rgba\(0,255,133,0\.15\)'/g, "borderColor='var(--mmt-border)'");
 
-  // Fix ProposalPulse H1: remove gradient span splitting so name renders as one unit
-  html = html.replace(/<h1>Proposal<span>Pulse<\/span><\/h1>/g, '<h1>ProposalPulse</h1>');
-  // Fix MarketPulse H1: same treatment
-  html = html.replace(/<h1[^>]*>Market<span[^>]*>Pulse<\/span><\/h1>/g, '<h1>MarketPulse</h1>');
+  // Fix ProposalPulse/MarketPulse H1: preserve teal "Pulse" accent
+  html = html.replace(/<h1>Proposal<span>Pulse<\/span><\/h1>/g,
+    '<h1 style="color:var(--mmt-navy);">Proposal<span style="color:var(--mmt-teal);">Pulse</span></h1>');
+  html = html.replace(/<h1[^>]*>Market<span[^>]*>Pulse<\/span><\/h1>/g,
+    '<h1 style="color:var(--mmt-navy);">Market<span style="color:var(--mmt-teal);">Pulse</span></h1>');
+  // Catch already-flattened MarketPulse H1 (no span)
+  html = html.replace(/<h1>MarketPulse<\/h1>/g,
+    '<h1 style="color:var(--mmt-navy);">Market<span style="color:var(--mmt-teal);">Pulse</span></h1>');
 
   // btn-primary has navy background → needs white text
   html = html.split('.btn-primary{').map((part, i) => {
