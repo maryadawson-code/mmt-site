@@ -2510,13 +2510,13 @@ function generateNewsWidgetHtml(newsItems) {
   }
 
   const top5 = newsItems.slice(0, 5);
-  let html = `<div class="mt-4 mb-4 p-4 rounded-xl" style="background:var(--mmt-navy); border:1px solid var(--mmt-soft);">
+  let html = `<div class="mt-4 mb-4 p-4 rounded-xl" style="background:var(--mmt-soft); border:1px solid var(--mmt-border);">
             <p class="text-xs font-bold uppercase tracking-wider mb-3" style="color:var(--mmt-teal);">Latest Headlines</p>\n`;
 
   top5.forEach(item => {
     const time = relativeTime(item.date);
-    html += `            <a href="${escapeHtml(item.link)}" target="_blank" rel="noopener" class="flex items-baseline justify-between gap-2 py-2 no-underline hover:opacity-80" style="border-bottom:1px solid rgba(0,229,250,0.05);">
-              <span class="text-sm" style="color:var(--mmt-text);"><span class="font-semibold" style="color:var(--mmt-text-secondary);">${escapeHtml(item.source)}</span> &middot; ${escapeHtml(item.title.length > 60 ? item.title.substring(0, 57) + '...' : item.title)}</span>
+    html += `            <a href="${escapeHtml(item.link)}" target="_blank" rel="noopener" class="flex items-baseline justify-between gap-2 py-2 no-underline hover:opacity-80" style="border-bottom:1px solid var(--mmt-border);">
+              <span class="text-sm" style="color:var(--mmt-ink);"><span class="font-semibold" style="color:var(--mmt-navy);">${escapeHtml(item.source)}</span> &middot; ${escapeHtml(item.title.length > 60 ? item.title.substring(0, 57) + '...' : item.title)}</span>
               <span class="text-xs whitespace-nowrap" style="color:var(--mmt-text-secondary);">${escapeHtml(time)}</span>
             </a>\n`;
   });
