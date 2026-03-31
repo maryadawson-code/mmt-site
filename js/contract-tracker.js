@@ -16,7 +16,7 @@
       var now = new Date();
       var diff = Math.ceil((deadline - now) / (1000 * 60 * 60 * 24));
       if (diff < 0) return '<span class="text-xs" style="color:var(--mmt-text-secondary);">Closed</span>';
-      var color = diff <= 7 ? '#F87171' : diff <= 30 ? '#FBBF24' : 'var(--mmt-white-dim)';
+      var color = diff <= 7 ? 'var(--mmt-red, #E63946)' : diff <= 30 ? '#D97706' : 'var(--mmt-text-secondary)';
       var label = diff === 0 ? 'Due today' : diff === 1 ? '1 day left' : diff + ' days left';
       return '<span class="text-xs font-semibold" style="color:' + color + ';">' + label + '</span>';
     }
@@ -24,15 +24,15 @@
     function setAsideBadge(type) {
       if (!type) return '';
       var colors = {
-        '8(a)': { fg: '#A78BFA', bg: 'rgba(69,123,157,0.08)' },
-        'SDVOSB': { fg: 'var(--mmt-green)', bg: 'rgba(69,123,157,0.08)' },
-        'VOSB': { fg: 'var(--mmt-green)', bg: 'rgba(69,123,157,0.08)' },
-        'WOSB': { fg: '#F472B6', bg: 'rgba(69,123,157,0.08)' },
-        'HUBZone': { fg: '#FBBF24', bg: 'rgba(217,119,6,0.08)' },
-        'SDB': { fg: '#60A5FA', bg: 'rgba(69,123,157,0.08)' },
-        'Full & Open': { fg: 'var(--mmt-cyan)', bg: 'rgba(69,123,157,0.08)' }
+        '8(a)': { fg: 'var(--mmt-teal)', bg: 'rgba(69,123,157,0.08)' },
+        'SDVOSB': { fg: 'var(--mmt-teal)', bg: 'rgba(69,123,157,0.08)' },
+        'VOSB': { fg: 'var(--mmt-teal)', bg: 'rgba(69,123,157,0.08)' },
+        'WOSB': { fg: 'var(--mmt-teal)', bg: 'rgba(69,123,157,0.08)' },
+        'HUBZone': { fg: '#D97706', bg: 'rgba(217,119,6,0.08)' },
+        'SDB': { fg: 'var(--mmt-teal)', bg: 'rgba(69,123,157,0.08)' },
+        'Full & Open': { fg: 'var(--mmt-teal)', bg: 'rgba(69,123,157,0.08)' }
       };
-      var c = colors[type] || { fg: 'var(--mmt-cyan)', bg: 'rgba(69,123,157,0.08)' };
+      var c = colors[type] || { fg: 'var(--mmt-teal)', bg: 'rgba(69,123,157,0.08)' };
       return '<span class="text-xs font-semibold px-2 py-0.5 rounded" style="color:' + c.fg + ';background:' + c.bg + ';">' + esc(type) + '</span>';
     }
 
@@ -127,17 +127,17 @@
         // Update button styles
         document.querySelectorAll('.radar-filter').forEach(function(b) {
           if (b.getAttribute('data-filter') === activeFilter) {
-            b.style.background = 'var(--mmt-cyan)';
+            b.style.background = 'var(--mmt-teal)';
             b.style.color = 'var(--mmt-navy)';
             b.style.border = 'none';
           } else {
             var f = b.getAttribute('data-filter');
             var colors = {
-              'all': { bg: 'rgba(69,123,157,0.08)', fg: 'var(--mmt-cyan)', border: 'rgba(0,229,250,0.2)' },
-              'small_business': { bg: 'rgba(69,123,157,0.08)', fg: 'var(--mmt-green)', border: 'rgba(0,255,133,0.2)' },
-              '8(a)': { bg: 'rgba(69,123,157,0.08)', fg: '#A78BFA', border: 'rgba(167,139,250,0.2)' },
-              'SDVOSB': { bg: 'rgba(69,123,157,0.08)', fg: 'var(--mmt-green)', border: 'rgba(0,255,133,0.2)' },
-              'WOSB': { bg: 'rgba(69,123,157,0.08)', fg: '#F472B6', border: 'rgba(244,114,182,0.2)' }
+              'all': { bg: 'rgba(69,123,157,0.08)', fg: 'var(--mmt-teal)', border: 'rgba(69,123,157,0.2)' },
+              'small_business': { bg: 'rgba(69,123,157,0.08)', fg: 'var(--mmt-teal)', border: 'rgba(69,123,157,0.2)' },
+              '8(a)': { bg: 'rgba(69,123,157,0.08)', fg: 'var(--mmt-teal)', border: 'rgba(167,139,250,0.2)' },
+              'SDVOSB': { bg: 'rgba(69,123,157,0.08)', fg: 'var(--mmt-teal)', border: 'rgba(69,123,157,0.2)' },
+              'WOSB': { bg: 'rgba(69,123,157,0.08)', fg: 'var(--mmt-teal)', border: 'rgba(244,114,182,0.2)' }
             };
             var c = colors[f] || colors['all'];
             b.style.background = c.bg;
@@ -171,16 +171,16 @@
     var vehicleSort = 'confidence';
 
     var vehicleColors = {
-      'OASIS+': { fg: '#60A5FA', bg: 'rgba(69,123,157,0.08)', border: 'rgba(96,165,250,0.2)' },
+      'OASIS+': { fg: 'var(--mmt-teal)', bg: 'rgba(69,123,157,0.08)', border: 'rgba(96,165,250,0.2)' },
       'CIO-SP3': { fg: '#22D3EE', bg: 'rgba(34,211,238,0.1)', border: 'rgba(34,211,238,0.2)' },
       'Alliant 3': { fg: '#C084FC', bg: 'rgba(192,132,252,0.1)', border: 'rgba(192,132,252,0.2)' },
       'T4NG2': { fg: '#4ADE80', bg: 'rgba(74,222,128,0.1)', border: 'rgba(74,222,128,0.2)' },
       'OMNIBUS IV': { fg: '#FB923C', bg: 'rgba(251,146,60,0.1)', border: 'rgba(251,146,60,0.2)' },
-      'DIU': { fg: '#FBBF24', bg: 'rgba(217,119,6,0.08)', border: 'rgba(251,191,36,0.2)' },
-      'DARPA': { fg: '#F87171', bg: 'rgba(248,113,113,0.1)', border: 'rgba(248,113,113,0.2)' },
+      'DIU': { fg: '#D97706', bg: 'rgba(217,119,6,0.08)', border: 'rgba(251,191,36,0.2)' },
+      'DARPA': { fg: 'var(--mmt-red, #E63946)', bg: 'rgba(248,113,113,0.1)', border: 'rgba(248,113,113,0.2)' },
       'SBIR/STTR': { fg: '#818CF8', bg: 'rgba(129,140,248,0.1)', border: 'rgba(129,140,248,0.2)' },
       'VA SDVOSB': { fg: '#34D399', bg: 'rgba(52,211,153,0.1)', border: 'rgba(52,211,153,0.2)' },
-      '8(a)': { fg: '#A78BFA', bg: 'rgba(69,123,157,0.08)', border: 'rgba(167,139,250,0.2)' }
+      '8(a)': { fg: 'var(--mmt-teal)', bg: 'rgba(69,123,157,0.08)', border: 'rgba(167,139,250,0.2)' }
     };
 
     function esc(s) {
@@ -195,14 +195,14 @@
       var now = new Date();
       var diff = Math.ceil((deadline - now) / (1000 * 60 * 60 * 24));
       if (diff < 0) return '<span class="text-xs" style="color:var(--mmt-text-secondary);">Closed</span>';
-      var color = diff <= 7 ? '#F87171' : diff <= 30 ? '#FBBF24' : 'var(--mmt-white-dim)';
+      var color = diff <= 7 ? 'var(--mmt-red, #E63946)' : diff <= 30 ? '#D97706' : 'var(--mmt-text-secondary)';
       var label = diff === 0 ? 'Due today' : diff === 1 ? '1 day left' : diff + ' days left';
       return '<span class="text-xs font-semibold" style="color:' + color + ';">' + label + '</span>';
     }
 
     function vehicleBadge(vehicle) {
       if (!vehicle) return '';
-      var c = vehicleColors[vehicle] || { fg: 'var(--mmt-cyan)', bg: 'rgba(69,123,157,0.08)' };
+      var c = vehicleColors[vehicle] || { fg: 'var(--mmt-teal)', bg: 'rgba(69,123,157,0.08)' };
       return '<span class="text-xs font-bold px-2 py-0.5 rounded" style="color:' + c.fg + ';background:' + c.bg + ';">' + esc(vehicle) + '</span>';
     }
 
@@ -221,15 +221,15 @@
     function setAsideBadge(type) {
       if (!type) return '';
       var colors = {
-        '8(a)': { fg: '#A78BFA', bg: 'rgba(69,123,157,0.08)' },
-        'SDVOSB': { fg: 'var(--mmt-green)', bg: 'rgba(69,123,157,0.08)' },
-        'VOSB': { fg: 'var(--mmt-green)', bg: 'rgba(69,123,157,0.08)' },
-        'WOSB': { fg: '#F472B6', bg: 'rgba(69,123,157,0.08)' },
-        'HUBZone': { fg: '#FBBF24', bg: 'rgba(217,119,6,0.08)' },
-        'SDB': { fg: '#60A5FA', bg: 'rgba(69,123,157,0.08)' },
-        'Full & Open': { fg: 'var(--mmt-cyan)', bg: 'rgba(69,123,157,0.08)' }
+        '8(a)': { fg: 'var(--mmt-teal)', bg: 'rgba(69,123,157,0.08)' },
+        'SDVOSB': { fg: 'var(--mmt-teal)', bg: 'rgba(69,123,157,0.08)' },
+        'VOSB': { fg: 'var(--mmt-teal)', bg: 'rgba(69,123,157,0.08)' },
+        'WOSB': { fg: 'var(--mmt-teal)', bg: 'rgba(69,123,157,0.08)' },
+        'HUBZone': { fg: '#D97706', bg: 'rgba(217,119,6,0.08)' },
+        'SDB': { fg: 'var(--mmt-teal)', bg: 'rgba(69,123,157,0.08)' },
+        'Full & Open': { fg: 'var(--mmt-teal)', bg: 'rgba(69,123,157,0.08)' }
       };
-      var c = colors[type] || { fg: 'var(--mmt-cyan)', bg: 'rgba(69,123,157,0.08)' };
+      var c = colors[type] || { fg: 'var(--mmt-teal)', bg: 'rgba(69,123,157,0.08)' };
       return '<span class="text-xs font-semibold px-2 py-0.5 rounded" style="color:' + c.fg + ';background:' + c.bg + ';">' + esc(type) + '</span>';
     }
 
@@ -309,12 +309,12 @@
         activeVehicle = this.getAttribute('data-vehicle');
         document.querySelectorAll('.vehicle-filter').forEach(function(b) {
           if (b.getAttribute('data-vehicle') === activeVehicle) {
-            b.style.background = 'var(--mmt-green)';
+            b.style.background = 'var(--mmt-teal)';
             b.style.color = 'var(--mmt-navy)';
             b.style.border = 'none';
           } else {
             var v = b.getAttribute('data-vehicle');
-            var c = vehicleColors[v] || { bg: 'rgba(69,123,157,0.08)', fg: 'var(--mmt-green)', border: 'rgba(0,255,133,0.2)' };
+            var c = vehicleColors[v] || { bg: 'rgba(69,123,157,0.08)', fg: 'var(--mmt-teal)', border: 'rgba(69,123,157,0.2)' };
             b.style.background = c.bg;
             b.style.color = c.fg;
             b.style.border = '1px solid ' + c.border;
@@ -329,13 +329,13 @@
         vehicleSort = this.getAttribute('data-sort');
         document.querySelectorAll('.vehicle-sort').forEach(function(b) {
           if (b.getAttribute('data-sort') === vehicleSort) {
-            b.style.background = 'var(--mmt-cyan)';
+            b.style.background = 'var(--mmt-teal)';
             b.style.color = 'var(--mmt-navy)';
-            b.style.borderColor = 'var(--mmt-cyan)';
+            b.style.borderColor = 'var(--mmt-teal)';
           } else {
             b.style.background = 'transparent';
-            b.style.color = 'var(--mmt-white-dim)';
-            b.style.borderColor = 'rgba(0,229,250,0.2)';
+            b.style.color = 'var(--mmt-text-secondary)';
+            b.style.borderColor = 'rgba(69,123,157,0.2)';
           }
         });
         applyVehicleFilter();

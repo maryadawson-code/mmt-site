@@ -484,7 +484,7 @@ function showTimeoutMessage(type) {
       '<p style="color:rgba(255,255,255,0.6);font-size:0.875rem;margin-bottom:1.5rem;">You can safely close this page.</p>' +
       '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">' +
       '<button onclick="location.reload()" class="btn-secondary" style="padding:10px 24px;border-radius:8px;font-size:0.875rem;cursor:pointer;">Try Again</button>' +
-      '<a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-cyan,#00E5FA);font-size:0.875rem;text-decoration:none;display:inline-flex;align-items:center;">Questions? mary@missionmeetstech.com</a>' +
+      '<a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);font-size:0.875rem;text-decoration:none;display:inline-flex;align-items:center;">Questions? mary@missionmeetstech.com</a>' +
       '</div>';
   } else {
     msgDiv.innerHTML = '<h3 style="color:#fff;font-family:\'Space Grotesk\',system-ui,sans-serif;font-size:1.25rem;margin-bottom:1rem;">We hit a snag</h3>' +
@@ -492,7 +492,7 @@ function showTimeoutMessage(type) {
       '<p style="color:rgba(255,255,255,0.6);font-size:0.875rem;margin-bottom:1.5rem;">If you don\'t hear from us, email mary@missionmeetstech.com and reference your submission time.</p>' +
       '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">' +
       '<button onclick="location.reload()" class="btn-secondary" style="padding:10px 24px;border-radius:8px;font-size:0.875rem;cursor:pointer;">Start Over</button>' +
-      '<a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-cyan,#00E5FA);font-size:0.875rem;text-decoration:none;display:inline-flex;align-items:center;">mary@missionmeetstech.com</a>' +
+      '<a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);font-size:0.875rem;text-decoration:none;display:inline-flex;align-items:center;">mary@missionmeetstech.com</a>' +
       '</div>';
   }
 }

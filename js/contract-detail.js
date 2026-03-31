@@ -17,7 +17,7 @@
       if (typeof pct !== 'number' && typeof pct !== 'string') return '';
       var n = parseInt(pct);
       if (isNaN(n)) return '';
-      var color = n >= 80 ? 'var(--mmt-green)' : n >= 60 ? '#FBBF24' : '#F87171';
+      var color = n >= 80 ? 'var(--mmt-teal)' : n >= 60 ? '#D97706' : 'var(--mmt-red, #E63946)';
       var bg = n >= 80 ? 'rgba(69,123,157,0.08)' : n >= 60 ? 'rgba(217,119,6,0.08)' : 'rgba(230,57,70,0.08)';
       return '<span class="text-sm font-semibold px-2.5 py-1 rounded ml-2 inline-flex items-center gap-1" style="color:' + color + ';background:' + bg + ';" title="Confidence rating"><span class="w-1.5 h-1.5 rounded-full inline-block" style="background:' + color + ';"></span>' + n + '%</span>';
     }
@@ -26,7 +26,7 @@
       if (typeof pct !== 'number' && typeof pct !== 'string') return '';
       var n = parseInt(pct);
       if (isNaN(n)) return '';
-      var color = n >= 80 ? 'var(--mmt-green)' : n >= 60 ? '#FBBF24' : '#F87171';
+      var color = n >= 80 ? 'var(--mmt-teal)' : n >= 60 ? '#D97706' : 'var(--mmt-red, #E63946)';
       var bg = n >= 80 ? 'rgba(69,123,157,0.12)' : n >= 60 ? 'rgba(217,119,6,0.1)' : 'rgba(248,113,113,0.15)';
       var label = n >= 80 ? 'High Confidence' : n >= 60 ? 'Medium Confidence' : 'Low Confidence';
       var vIcon = verified ? '<svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" style="display:inline;vertical-align:middle;margin-right:3px;"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/></svg>' : '';
@@ -77,7 +77,7 @@
         html += '<h3 class="text-sm font-bold uppercase tracking-wider mb-3 flex items-center gap-2" style="color:#D97706;"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm-.75 3.75a.75.75 0 011.5 0v4a.75.75 0 01-1.5 0v-4zm.75 7a.75.75 0 100-1.5.75.75 0 000 1.5z"/></svg>Verification Notes</h3>';
         html += intel.verification_notes.map(function(n) {
           var isContradiction = n.indexOf('CONTRADICTED:') === 0;
-          var noteColor = isContradiction ? '#F87171' : 'var(--mmt-white-dim)';
+          var noteColor = isContradiction ? 'var(--mmt-red, #E63946)' : 'var(--mmt-text-secondary)';
           return '<p class="text-sm mb-2 leading-relaxed" style="color:' + noteColor + ';">' + esc(n) + '</p>';
         }).join('');
         html += '</div>';
@@ -91,9 +91,9 @@
       html += '<h2 class="text-xl md:text-2xl font-bold mb-6 flex items-center gap-3" style="color:var(--mmt-teal);"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M1.5 2A1.5 1.5 0 000 3.5v2A1.5 1.5 0 001.5 7h1v5.5A1.5 1.5 0 004 14h8a1.5 1.5 0 001.5-1.5V7h1A1.5 1.5 0 0016 5.5v-2A1.5 1.5 0 0014.5 2h-13zM4 7h8v5.5H4V7z"/></svg>Small Business Opportunities</h2>';
       if (sb.set_aside_types && sb.set_aside_types.length) {
         html += '<div class="flex flex-wrap gap-2 mb-4">';
-        var saColors = { '8(a)': '#A78BFA', 'SDVOSB': 'var(--mmt-green)', 'VOSB': 'var(--mmt-green)', 'WOSB': '#F472B6', 'HUBZone': '#FBBF24', 'SDB': '#60A5FA' };
+        var saColors = { '8(a)': 'var(--mmt-teal)', 'SDVOSB': 'var(--mmt-teal)', 'VOSB': 'var(--mmt-teal)', 'WOSB': 'var(--mmt-teal)', 'HUBZone': '#D97706', 'SDB': 'var(--mmt-teal)' };
         sb.set_aside_types.forEach(function(t) {
-          var c = saColors[t] || 'var(--mmt-cyan)';
+          var c = saColors[t] || 'var(--mmt-teal)';
           html += '<span class="text-xs font-semibold px-2.5 py-1 rounded" style="color:' + c + ';background:rgba(69,123,157,0.06);border:1px solid ' + c + ';">' + esc(t) + '</span>';
         });
         html += '</div>';
@@ -130,7 +130,7 @@
       if (bh.protest_risks && bh.protest_risks.length) {
         html += '<h3 class="text-lg font-bold mb-4" style="color:#D97706;">Protest Risks</h3>';
         html += '<div class="space-y-4 mb-6">' + bh.protest_risks.map(function(p) {
-          var lColor = p.likelihood === 'high' ? '#F87171' : p.likelihood === 'medium' ? '#FBBF24' : 'var(--mmt-white-dim)';
+          var lColor = p.likelihood === 'high' ? 'var(--mmt-red, #E63946)' : p.likelihood === 'medium' ? '#D97706' : 'var(--mmt-text-secondary)';
           return '<div class="card rounded-lg p-4" style="border-color:rgba(248,113,113,0.15);"><div class="flex items-center gap-2 mb-2"><p class="text-base font-semibold" style="color:var(--mmt-navy);">' + esc(p.scenario) + '</p><span class="text-xs px-2 py-0.5 rounded font-semibold" style="color:' + lColor + ';background:rgba(0,0,0,0.3);">' + esc(p.likelihood) + '</span>' + confBadge(p.confidence) + '</div><p class="text-sm" style="color:var(--mmt-text-secondary);">' + esc(p.basis) + '</p></div>';
         }).join('') + '</div>';
       }
@@ -188,7 +188,7 @@
         // Confidence: metadata badge + progress bar
         if (data.intel && typeof data.intel.confidence_score === 'number') {
           var cs = parseInt(data.intel.confidence_score);
-          var cColor = cs >= 80 ? 'var(--mmt-green)' : cs >= 60 ? '#FBBF24' : '#F87171';
+          var cColor = cs >= 80 ? 'var(--mmt-teal)' : cs >= 60 ? '#D97706' : 'var(--mmt-red, #E63946)';
           var cBg = cs >= 80 ? 'rgba(69,123,157,0.08)' : cs >= 60 ? 'rgba(217,119,6,0.08)' : 'rgba(230,57,70,0.08)';
           var cLabel = cs >= 80 ? 'High' : cs >= 60 ? 'Medium' : 'Low';
           // Metadata card badge
@@ -201,7 +201,7 @@
           if (barEl) {
             barEl.classList.remove('hidden');
             document.getElementById('confidence-bar-fill').style.width = cs + '%';
-            document.getElementById('confidence-bar-fill').style.background = cs >= 80 ? 'linear-gradient(90deg, var(--mmt-cyan), var(--mmt-green))' : cs >= 60 ? 'linear-gradient(90deg, #FBBF24, #F59E0B)' : 'linear-gradient(90deg, #F87171, #EF4444)';
+            document.getElementById('confidence-bar-fill').style.background = cs >= 80 ? 'linear-gradient(90deg, var(--mmt-teal), var(--mmt-teal))' : cs >= 60 ? 'linear-gradient(90deg, #D97706, #D97706)' : 'linear-gradient(90deg, var(--mmt-red, #E63946), var(--mmt-red, #E63946))';
             document.getElementById('confidence-bar-pct').textContent = cs + '%';
             document.getElementById('confidence-bar-pct').style.color = cColor;
             var labelEl = document.getElementById('confidence-bar-label');

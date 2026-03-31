@@ -8,7 +8,7 @@
       document.querySelectorAll('[data-filter-topic]').forEach(function(c) {
         c.classList.remove('active');
         c.style.background = 'rgba(0,229,250,0.1)';
-        c.style.color = 'var(--mmt-cyan)';
+        c.style.color = 'var(--mmt-teal)';
       });
       // Show all or filter
       var entries = document.querySelectorAll('[data-topics]');
@@ -16,7 +16,7 @@
         entries.forEach(function(e) { e.style.display = ''; });
       } else {
         chip.classList.add('active');
-        chip.style.background = 'var(--mmt-cyan)';
+        chip.style.background = 'var(--mmt-teal)';
         chip.style.color = '#fff';
         entries.forEach(function(e) {
           var topics = (e.getAttribute('data-topics') || '').split(',');
