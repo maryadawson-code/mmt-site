@@ -6,7 +6,7 @@
     "value": "TBD (predecessor DHMSM: $5.5B; bridge: $1.4B+; Oct 2025 task: $570M)",
     "status": "upcoming",
     "naics": "541512",
-    "description": "The competitive follow-on to DHMSM — the $5.5B program that delivered MHS GENESIS to 3,200+ locations serving 9.5M beneficiaries. DHA released a draft MOSA contract strategy Dec 22, 2025 splitting the program into separate vehicles: (1) PMO/Systems Integration, (2) Product/Software Support (likely Oracle direct), and (3) Service/OCM/Analytics. Industry feedback closed Jan 9, 2026. Government review ongoing — Feb 6 update noted 'a lot of great feedback' requiring extended review. RFI close date: Aug 30, 2026. No draft RFP yet. The Hegseth PAE restructuring (Nov 2025) moves HCDS under a Phase 2 Software and Business Systems Portfolio — signing authority still in transition. Leidos's Oct 2025 $570M enterprise services task demonstrates the bridge is actively funded while HCDS planning proceeds.",
+    "description": "The competitive follow-on to DHMSM — the $5.5B program that delivered MHS GENESIS to 3,200+ locations serving 9.5M beneficiaries. DHA released a draft MOSA contract strategy Dec 22, 2025 splitting the program into separate vehicles: (1) PMO/Systems Integration, (2) Product/Software Support (likely Oracle direct), and (3) Service/OCM/Analytics. Industry feedback closed Jan 9, 2026. Government review ongoing — Feb 6 update noted 'a lot of great feedback' requiring extended review (promised update by Feb 20 but no confirmed public post since). RFI close date: Aug 30, 2026. No draft RFP yet. The Hegseth PAE restructuring (Nov 2025) moves HCDS under a Phase 2 Software and Business Systems Portfolio — signing authority still in transition. Leidos's Oct 2025 $570M enterprise services task demonstrates the bridge is actively funded while HCDS planning proceeds.",
     "link": "https://sam.gov/opp/hcds",
     "small_business_eligible": true,
     "sb_note": "Vehicle 3 (Service/OCM/Analytics) likely to include small business set-aside carve-outs based on DHA pattern",
@@ -33,7 +33,7 @@
     "value": "Multiple awards, various",
     "status": "active",
     "naics": "541512",
-    "description": "DHA's non-traditional acquisition pathway under OTA authority (10 U.S.C. § 4022). Active AOIs: 1b (AI/ML/NLP, rolling through June 2026), 4 (Data Applications — canceled due to McKinsey task order dispute, but requirement remains valid). AOI 3 (Ambient Listening/DAX Copilot) established a critical precedent: successful CSO prototypes can transition directly to production task orders under the DHMSM/HCDS IDIQ without a new competitive recompete. This 'CSO-to-IDIQ' pathway is being closely watched as a model for closing the valley of death between prototype and production. Innovation threshold (DFARS 212.7001) is a binary gate — must demonstrate a 'new application' of technology, not merely commercial technology at its intended use.",
+    "description": "DHA's non-traditional acquisition pathway under OTA authority (10 U.S.C. § 4022). Active AOIs: 1b (AI/ML/NLP, proposals due July 1, 2026), 4 (Data Applications — canceled due to McKinsey task order dispute, but requirement remains valid). AOI 3 (Ambient Listening/DAX Copilot) established a critical precedent: successful CSO prototypes can transition directly to production task orders under the DHMSM/HCDS IDIQ without a new competitive recompete. This 'CSO-to-IDIQ' pathway is being closely watched as a model for closing the valley of death between prototype and production. Innovation threshold (DFARS 212.7001) is a binary gate — must demonstrate a 'new application' of technology, not merely commercial technology at its intended use.",
     "link": "https://sam.gov",
     "small_business_eligible": true,
     "sb_note": "Open to small businesses and non-traditional contractors under OTA",
@@ -162,6 +162,20 @@
     "sb_note": "OMEIS likely to be competed; set-aside TBD",
     "source": "https://www.health.mil/Reference-Center/Reports/2026/02/20/DHMS-FY2025-Year-in-Review",
     "last_verified": "2026-03-30"
+  },
+  {
+    "name": "PEO DHMS Deployment Solutions (New IDIQ)",
+    "agency": "Defense Health Agency (DHA) / PEO DHMS",
+    "vendor": "TBD — draft RFP feedback due March 11, 2026",
+    "value": "Multiple-Award IDIQ (value TBD)",
+    "status": "upcoming",
+    "naics": "541512",
+    "description": "Solicitation HT003826RE001 — new Multiple-Award IDIQ for on-demand deployment of health IT solutions. Scope: site preparation, training, user adoption, and post-installation support for MHS GENESIS and OpMed product deployments. Evaluation includes two challenge scenarios (Federal EHR deployment and OpMed product deployment). Small business participation goal: 30% total. CO: Joyce Elaine Pace-Reed (DHMS-CD). Draft RFP feedback due March 11, 2026 — formal solicitation expected to follow.",
+    "link": "https://sam.gov",
+    "small_business_eligible": true,
+    "sb_note": "30% small business participation goal with sub-goals for SDVOSB, WOSB, HUBZone, SDB",
+    "source": "https://console.sweetspotgov.com/opportunity/federal-contract/5f3e744d-1775-5a24-bd91-886c8bd2f634",
+    "last_verified": "2026-03-31"
   },
   {
     "name": "DHA Telehealth Programs",
@@ -325,17 +339,18 @@
     "last_verified": "2026-03-30"
   },
   {
-    "name": "DHA Enterprise Data Catalog",
+    "name": "DHA Data Governance (WOSB Set-Aside)",
     "agency": "Defense Health Agency (DHA)",
-    "vendor": "TBD",
+    "vendor": "TBD — proposals due Jan 9, 2026",
     "value": "$34M",
     "status": "upcoming",
     "naics": "541512",
-    "description": "ML-powered enterprise data catalog for MHS. Automated metadata discovery, data lineage tracking, and quality scoring across DHA data assets. Connects to the EIDS/MIP data fabric infrastructure.",
+    "description": "Solicitation HT001126RE011 — WOSB set-aside for enterprise data governance using a VAULTIS-Guided Framework. Scope: comprehensive baseline data inventory, centralized metadata repository, Analysis of Alternatives for enterprise data catalog, and automated metadata harvesting tools. Performance period Jan 30, 2026 to Jan 29, 2027 with 12-month options. Connects to the EIDS/MIP data fabric infrastructure. CO: contact via SAM.gov listing.",
     "link": "https://sam.gov",
-    "small_business_eligible": false,
+    "small_business_eligible": true,
+    "sb_note": "WOSB (Women-Owned Small Business) set-aside",
     "source": "https://console.sweetspotgov.com/federal-contracts/5118e94c-ff29-559a-8d57-37ba5c40da36",
-    "last_verified": "2026-03-30"
+    "last_verified": "2026-03-31"
   },
   {
     "name": "CDC DCIPHER (Disease Surveillance)",

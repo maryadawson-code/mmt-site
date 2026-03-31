@@ -82,7 +82,7 @@ const CONTRACTS = [
     agency: "Defense Health Agency (DHA) / PEO DHMS",
     vendor: "Open competition (rolling)",
     value: "Multiple awards",
-    description: "OTA pathway under 10 U.S.C. § 4022. AOI 1b (AI/ML/NLP) open through June 2026. AOI 3 (Ambient Listening/DAX Copilot) established CSO-to-IDIQ production pathway precedent. DFARS 212.7001 innovation threshold is binary gate.",
+    description: "OTA pathway under 10 U.S.C. § 4022. AOI 1b (AI/ML/NLP) proposals due July 1, 2026. AOI 3 (Ambient Listening/DAX Copilot) established CSO-to-IDIQ production pathway precedent. DFARS 212.7001 innovation threshold is binary gate.",
     research_focus: "Check for new AOI announcements. Track AOI 3 award status (DAX Copilot). Look for CSO-to-production task order transitions. Check if AOI 1b deadline has been extended. Monitor for new CSO notices under HCDS framework.",
   },
   {
