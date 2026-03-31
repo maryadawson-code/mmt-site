@@ -36,6 +36,8 @@ exports.handler = async (event) => {
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
   try {
+    const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
     const [
       proposalStuck,
       marketpulseStuck,
@@ -44,6 +46,9 @@ exports.handler = async (event) => {
       marketpulseStats,
       circuit,
       heldEmails,
+      openclawUsers,
+      openclawEvents,
+      openclawGrowthConfig,
     ] = await Promise.all([
       // Stuck orders
       checkStuckOrders(supabase, "mp_scoring_history", 30),
@@ -53,7 +58,7 @@ exports.handler = async (event) => {
       supabase
         .from("ops_events")
         .select("event_type, source_function, severity, created_at, details")
-        .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+        .gte("created_at", since24h)
         .order("created_at", { ascending: false })
         .limit(20),
 
@@ -61,14 +66,14 @@ exports.handler = async (event) => {
       supabase
         .from("mp_scoring_history")
         .select("id, workflow_state, status, created_at")
-        .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+        .gte("created_at", since24h)
         .order("created_at", { ascending: false }),
 
       // MarketPulse stats (last 24h)
       supabase
         .from("marketpulse_orders")
         .select("id, workflow_state, status, created_at")
-        .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+        .gte("created_at", since24h)
         .order("created_at", { ascending: false }),
 
       // Circuit breaker
@@ -79,6 +84,23 @@ exports.handler = async (event) => {
         .from("held_emails")
         .select("id", { count: "exact", head: true })
         .eq("released", false),
+
+      // OpenClaw: users and usage
+      supabase
+        .from("users")
+        .select("tier, monthly_usage_count")
+        .order("monthly_usage_count", { ascending: false }),
+
+      // OpenClaw: growth events (last 24h)
+      supabase
+        .from("growth_analytics")
+        .select("event, channel, variant")
+        .gte("created_at", since24h),
+
+      // OpenClaw: current growth config
+      supabase
+        .from("growth_config")
+        .select("key, value"),
     ]);
 
     // Aggregate scoring stats by state
@@ -100,6 +122,28 @@ exports.handler = async (event) => {
       if (severityCounts[e.severity] !== undefined) severityCounts[e.severity]++;
     });
 
+    // OpenClaw aggregations
+    const openclawUserData = openclawUsers.data || [];
+    const tierCounts = {};
+    let totalOps = 0;
+    openclawUserData.forEach((u) => {
+      tierCounts[u.tier] = (tierCounts[u.tier] || 0) + 1;
+      totalOps += u.monthly_usage_count || 0;
+    });
+
+    const openclawEventData = openclawEvents.data || [];
+    const eventCounts = {};
+    const channelCounts = {};
+    openclawEventData.forEach((e) => {
+      eventCounts[e.event] = (eventCounts[e.event] || 0) + 1;
+      if (e.channel) channelCounts[e.channel] = (channelCounts[e.channel] || 0) + 1;
+    });
+
+    const growthConfigMap = {};
+    (openclawGrowthConfig.data || []).forEach((c) => {
+      growthConfigMap[c.key] = c.value;
+    });
+
     const dashboard = {
       timestamp: new Date().toISOString(),
       kill_switch: {
@@ -118,6 +162,16 @@ exports.handler = async (event) => {
         last_24h: marketpulseStats.data?.length || 0,
         by_state: marketByState,
         stuck: marketpulseStuck.stuck,
+      },
+      openclaw: {
+        total_users: openclawUserData.length,
+        by_tier: tierCounts,
+        total_ops_this_month: totalOps,
+        events_24h: openclawEventData.length,
+        by_event: eventCounts,
+        by_channel: channelCounts,
+        best_channel: growthConfigMap.best_channel || null,
+        ab_test: growthConfigMap.hero_variants || null,
       },
       ops_events: {
         last_24h: recentOps.data?.length || 0,
