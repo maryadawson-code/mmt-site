@@ -4,8 +4,8 @@
 - All structural and UX work MUST follow `ARCHITECTURE_SPEC.md`.
 - This is the final word on site architecture and wireframes.
 
-## 🛡️ Infrastructure (OpenClaw Integrity Suite)
-- **Authority**: Fortress Worker (https://openclaw-fortress.marywomack.workers.dev)
+## 🛡️ Infrastructure (IntegrityPulse Integrity Suite)
+- **Authority**: Fortress Worker (https://integritypulse-fortress.marywomack.workers.dev)
 - **Audit Tool**: `integrity-audit.js`
 - **Verification**: You are FORBIDDEN from reporting a task as 'Done' until `node integrity-audit.js` returns 'SUCCESS/SYNCED'.
 

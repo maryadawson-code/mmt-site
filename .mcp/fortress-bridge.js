@@ -1,5 +1,5 @@
 const https = require('https');
-const url = 'https://openclaw-fortress.marywomack.workers.dev/mcp';
+const url = 'https://integritypulse-fortress.marywomack.workers.dev/mcp';
 const key = 'op_live_305ebf777bfc29250dce93f0f43590bb';
 
 process.stdin.on('data', (chunk) => {

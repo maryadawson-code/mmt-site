@@ -85,19 +85,19 @@ exports.handler = async (event) => {
         .select("id", { count: "exact", head: true })
         .eq("released", false),
 
-      // OpenClaw: users and usage
+      // IntegrityPulse: users and usage
       supabase
         .from("users")
         .select("tier, monthly_usage_count")
         .order("monthly_usage_count", { ascending: false }),
 
-      // OpenClaw: growth events (last 24h)
+      // IntegrityPulse: growth events (last 24h)
       supabase
         .from("growth_analytics")
         .select("event, channel, variant")
         .gte("created_at", since24h),
 
-      // OpenClaw: current growth config
+      // IntegrityPulse: current growth config
       supabase
         .from("growth_config")
         .select("key, value"),
@@ -122,7 +122,7 @@ exports.handler = async (event) => {
       if (severityCounts[e.severity] !== undefined) severityCounts[e.severity]++;
     });
 
-    // OpenClaw aggregations
+    // IntegrityPulse aggregations
     const openclawUserData = openclawUsers.data || [];
     const tierCounts = {};
     let totalOps = 0;

@@ -1,5 +1,5 @@
 // ============================================================
-// agent-bridge.js — Bridge for OpenClaw agents to command center
+// agent-bridge.js — Bridge for IntegrityPulse agents to command center
 //
 // Allows the editorial agent (and future agents) to:
 // - Dispatch tasks to any agent

@@ -5,7 +5,7 @@ const fs = require('fs');
 const API_KEY = fs.readFileSync('.env.production', 'utf8').split('=')[1].trim();
 
 const config = {
-  url: 'https://openclaw-fortress.marywomack.workers.dev/mcp',
+  url: 'https://integritypulse-fortress.marywomack.workers.dev/mcp',
   routes: [
     { path: '/', file: 'index.html' },
     { path: '/about', file: 'about.html' },
