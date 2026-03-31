@@ -43,15 +43,15 @@
   {
     "name": "Enterprise Intelligence & Data Solutions (EIDS)",
     "agency": "Defense Health Agency (DHA) / PEO DHMS",
-    "vendor": "SpinSys-Diné (PMO, 8(a) tribal), Koniag IT Systems ($94.4M AWS cloud, 8(a))",
-    "value": "$650M ceiling",
+    "vendor": "SpinSys-Diné ($35M PMO support, 8(a) tribal); Koniag Government Services (AWS cloud, 8(a))",
+    "value": "Multiple vehicles (PMO: $35M; AWS cloud and analytics: values vary)",
     "status": "active",
     "naics": "541611",
-    "description": "DHA's enterprise data and analytics program — not a single contract but a PMO administering multiple vehicles. Key accomplishment: Operation Helios migrated 1 petabyte of data (MDR + M2 legacy warehouses) into the MHS Information Platform (MIP) on AWS GovCloud — the largest data migration in DHA's 10-year history. MIP now serves 20,000+ users across 100+ MTFs globally. SpinSys-Diné (Navajo Nation-owned) holds PMO support under 8(a) sole-source. Koniag IT Systems holds $94.4M AWS GovCloud infrastructure (8(a)). Key leader: Chris Nichols, who led Operation Helios and favors open, API-led architectures over proprietary platforms. AOI 4 (Data Applications) was canceled due to the McKinsey dispute but the underlying AI-on-MIP requirement remains active.",
+    "description": "DHA's enterprise data and analytics program — not a single contract but a PMO administering multiple vehicles. Key accomplishment: Operation Helios migrated 1 petabyte of data (MDR + M2 legacy warehouses) into the MHS Information Platform (MIP) on AWS GovCloud — the largest data migration in DHA's 10-year history. MIP now serves 20,000+ users across 100+ MTFs. SpinSys-Diné (Navajo Nation / Diné Development Corporation) holds $35M PMO support under 8(a) sole-source (awarded Sept 2024). Koniag Government Services provides AWS GovCloud infrastructure under 8(a). Key leader: Chris Nichols, who led Operation Helios and favors open, API-led architectures over proprietary platforms. AOI 4 (Data Applications) was canceled but the underlying AI-on-MIP requirement remains active.",
     "link": "https://sam.gov",
     "small_business_eligible": true,
     "sb_note": "8(a) tribal sole-source lanes for PMO and cloud infrastructure; analytics lanes may be competed",
-    "source": "https://orangeslices.ai/koniag-subsidiary-scores-94m-dha-eids-pmo-aws-idiq/",
+    "source": "https://www.dvidshub.net/news/459188/data-solutions-team-completes-largest-data-standardization-and-migration-operation-defense-health-agency-history",
     "last_verified": "2026-03-30"
   },
   {
@@ -124,11 +124,11 @@
   {
     "name": "VA Health Connect / IHT 2.0",
     "agency": "Department of Veterans Affairs / VHA",
-    "vendor": "8 IDIQ holders: Tribility, Titan-Auxo, Rios Partners, Reefpoint Group, Prometheus Federal Services, Blue Water Thinking, Arrow ARC, Agile4Vets",
+    "vendor": "9 IDIQ holders: Agile4Vets, Arrow ARC, Blue Water Thinking, Greenside Solutions, Prometheus Federal Services, Reefpoint Group, Rios Partners, Titan-Auxo, Tribility",
     "value": "$14B / 10-year",
     "status": "active",
     "naics": "621999",
-    "description": "VA's 24/7 virtual care, clinical triage, and tele-emergency program for veterans. IHT 2.0 is the underlying 100% SDVOSB set-aside IDIQ, awarded late 2025. VA Health Connect functions include nurse triage hotline, telehealth coordination, clinical triage and escalation, and tele-emergency for veterans unable to reach VA facilities. Key competitive dynamic: Arrow ARC (JV with Aptive Resources) captured 91% of all IHT 1.0 spending — the dominant incumbent. Task orders compete among the 8 IDIQ holders. OIP (Office of Information and Provider Programs) task order is in active procurement, with draft RFP in hand and final RFP expected April 7-14, 2026.",
+    "description": "VA's 24/7 virtual care, clinical triage, and tele-emergency program for veterans. IHT 2.0 is the underlying 100% SDVOSB set-aside IDIQ, awarded late 2025. VA Health Connect functions include nurse triage hotline, telehealth coordination, clinical triage and escalation, and tele-emergency for veterans unable to reach VA facilities. Key competitive dynamic: Arrow ARC (JV with Aptive Resources) captured 91% of all IHT 1.0 spending — the dominant incumbent. Task orders compete among the 9 IDIQ holders. OIP (Office of Information and Provider Programs) task order is in active procurement, with draft RFP in hand and final RFP expected April 7-14, 2026.",
     "link": "https://www.va.gov",
     "small_business_eligible": true,
     "sb_note": "100% SDVOSB set-aside IDIQ — all work flows through veteran-owned firms",

@@ -72,8 +72,8 @@ const CONTRACTS = [
   {
     name: "Enterprise Intelligence & Data Solutions (EIDS)",
     agency: "Defense Health Agency (DHA) / PEO DHMS",
-    vendor: "SpinSys-Diné (PMO, 8(a) tribal), Koniag IT Systems ($94.4M AWS, 8(a))",
-    value: "$650M ceiling",
+    vendor: "SpinSys-Diné ($35M PMO, 8(a) tribal), Koniag Government Services (AWS cloud, 8(a))",
+    value: "Multiple vehicles (PMO: $35M; AWS cloud: values vary)",
     description: "DHA enterprise data/analytics PMO. MHS Information Platform (MIP) on AWS GovCloud serves 20,000+ users. Operation Helios migrated 1PB (MDR + M2). AOI 4 canceled (McKinsey dispute) but requirement active. Chris Nichols leads — favors open, API-led architectures over proprietary platforms.",
     research_focus: "Check for AOI 4 re-issue signals on SAM.gov (HT003826 prefix). Track MIP platform updates or new EIDS task orders. Look for AI-on-MIP initiatives. Check if SpinSys-Diné or Koniag have new awards. Monitor for NAII AI solicitations.",
   },
@@ -96,7 +96,7 @@ const CONTRACTS = [
   {
     name: "VA Health Connect / IHT 2.0",
     agency: "Department of Veterans Affairs / VHA",
-    vendor: "8 IDIQ holders: Tribility, Titan-Auxo, Rios Partners, Reefpoint, Prometheus, Blue Water Thinking, Arrow ARC, Agile4Vets",
+    vendor: "9 IDIQ holders: Agile4Vets, Arrow ARC, Blue Water Thinking, Greenside Solutions, Prometheus, Reefpoint, Rios Partners, Titan-Auxo, Tribility",
     value: "$14B / 10-year",
     description: "100% SDVOSB set-aside IDIQ. VA's 24/7 virtual care and clinical triage. Arrow ARC captured 91% of IHT 1.0 spending. OIP task order in active procurement — final RFP expected April 7-14, 2026.",
     research_focus: "Track OIP task order RFP release and award. Check for new IHT 2.0 task order announcements. Monitor Arrow ARC/Aptive positioning. Look for VA Health Connect expansion or new service requirements.",
