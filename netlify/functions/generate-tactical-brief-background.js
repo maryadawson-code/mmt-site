@@ -42,8 +42,39 @@ const { getFlag } = require("./lib/feature-flags");
 const { trackPerplexity } = require("./lib/cost-tracker");
 
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const PERPLEXITY_MODEL = "sonar-pro";
+const CLAUDE_ANALYSIS_MODEL = "claude-haiku-4-5-20251001"; // synthesis/validation — no live search
 const PERPLEXITY_URL = "https://api.perplexity.ai/chat/completions";
+const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
+
+// --- Claude call (Pass 4 + Pass 5: cross-validation and corrections — no live search needed) ---
+async function callClaude(systemPrompt, userPrompt, maxTokens = 4000) {
+  const response = await withRetry(() => fetch(ANTHROPIC_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": ANTHROPIC_API_KEY,
+      "anthropic-version": "2023-06-01",
+    },
+    body: JSON.stringify({
+      model: CLAUDE_ANALYSIS_MODEL,
+      max_tokens: maxTokens,
+      system: systemPrompt,
+      messages: [{ role: "user", content: userPrompt }],
+      temperature: 0.1,
+    }),
+  }), { maxRetries: 2, baseDelayMs: 3000 });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Anthropic API ${response.status}: ${errText}`);
+  }
+
+  const data = await response.json();
+  const content = data.content?.find(b => b.type === "text")?.text || "";
+  return { content, citations: [] };
+}
 
 // --- Perplexity API call (with per-order cap) ---
 const PERPLEXITY_CAP = 12;
@@ -535,7 +566,7 @@ async function runCrossValidation(topic, disambiguation, synthesisContent) {
 
   const entity = disambiguation.selected_entity || {};
 
-  const result = await callPerplexity(
+  const result = await callClaude(
     `You are a quality assurance reviewer for a federal intelligence brief. Your job is to find and fix internal contradictions, unsupported claims, and confidence rating errors.
 
 TARGET ENTITY: ${entity.name || topic} (${entity.acronym || ""})
@@ -607,7 +638,7 @@ async function applyCorrections(topic, synthesisContent, validation) {
   const overratedClaims = validation.confidence_audit?.overrated_claims || [];
   const personnelIssues = validation.personnel_audit?.issues || [];
 
-  const result = await callPerplexity(
+  const result = await callClaude(
     `You are an editor. Apply the corrections below to the intelligence brief. Preserve all correct content. Only change what is flagged.
 
 CORRECTIONS TO APPLY:

@@ -286,6 +286,9 @@ Return ONLY valid JSON.`;
 
       const userMessage = `Check the current status of GAO protest case ${caseRow.case_number} filed by ${caseRow.protester} against ${caseRow.agency} regarding solicitation ${caseRow.solicitation_number}. The case was filed on ${caseRow.filed_date} with a due date of ${caseRow.due_date}. Last known status: ${caseRow.status}.`;
 
+      if (modelConfig.provider !== "perplexity" || !PERPLEXITY_API_KEY) {
+        throw new Error(`protest_monitor requires Perplexity (provider=${modelConfig.provider}). Ensure PERPLEXITY_API_KEY is set.`);
+      }
       const result = await callPerplexity(systemPrompt, userMessage, modelConfig.model, 4000, supabase);
 
       // Compare status

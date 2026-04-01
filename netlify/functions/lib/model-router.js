@@ -5,13 +5,16 @@
 // self-learning from user feedback ratings.
 //
 // Task types:
-//   scoring           → Sonnet (floor: Sonnet)
-//   rewrite           → Sonnet (floor: Sonnet)
-//   review            → Haiku  (escalates to Sonnet if avg rating < 3.0)
-//   contract_research → Sonnet (web research + complex analysis)
-//   contract_verify   → Haiku  (fact-checking / extraction)
-//   opportunity_scan  → Sonnet (web search + structured extraction)
-//   sb_classify       → Haiku  (batch classification)
+//   scoring              → Sonnet (floor: Sonnet)
+//   rewrite              → Sonnet (floor: Sonnet)
+//   review               → Haiku  (escalates to Sonnet if avg rating < 3.0)
+//   contract_research    → sonar-pro/perplexity (live SAM/FPDS web search)
+//   contract_verify      → sonar-pro/perplexity (live source verification)
+//   opportunity_scan     → Sonnet (web search + structured extraction)
+//   sb_classify          → Haiku  (batch classification)
+//   newsletter_research  → sonar-pro/perplexity (live web for topic research)
+//   fact_check           → Sonnet/anthropic (web_search tool, cheaper+better)
+//   protest_monitor      → sonar-pro/perplexity (live GAO/COFC data)
 // ============================================================
 
 const MODELS = {
@@ -44,6 +47,21 @@ const MODELS = {
   sb_classify: {
     default: "claude-haiku-4-5-20251001",
     floor: "claude-haiku-4-5-20251001",
+  },
+  newsletter_research: {
+    default: "sonar-pro",
+    floor: "sonar-pro",
+    provider: "perplexity",
+  },
+  fact_check: {
+    default: "claude-sonnet-4-6",
+    floor: "claude-sonnet-4-6",
+    provider: "anthropic",
+  },
+  protest_monitor: {
+    default: "sonar-pro",
+    floor: "sonar-pro",
+    provider: "perplexity",
   },
 };
 

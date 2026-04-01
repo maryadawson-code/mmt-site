@@ -3,7 +3,11 @@
 //
 // POST /.netlify/functions/fact-check
 // Accepts text content, verifies factual claims against
-// authoritative government sources using Perplexity Sonar Pro.
+// authoritative government sources.
+//
+// Engine routing (via model-router):
+//   fact_check → claude-sonnet-4-6/anthropic (web_search tool, cheaper + better)
+//   Perplexity fallback used only if PERPLEXITY_API_KEY set and provider overridden.
 //
 // Rate limited: max 10 requests per hour.
 // ============================================================
@@ -16,6 +20,7 @@ const { trackPerplexity } = require("./lib/cost-tracker");
 
 // --- Constants ---
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
@@ -28,7 +33,77 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-// --- Perplexity API call (reused pattern from contract-intel-refresh) ---
+// --- Anthropic web_search call (primary for fact-check: cheaper + better JSON) ---
+
+async function callAnthropicWebSearch(systemPrompt, userMessage, model, maxTokens, _supabase) {
+  const _t = Date.now();
+  const response = await withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": ANTHROPIC_API_KEY,
+      "anthropic-version": "2023-06-01",
+    },
+    body: JSON.stringify({
+      model,
+      max_tokens: maxTokens,
+      system: systemPrompt,
+      tools: [{ type: "web_search_20250305", name: "web_search" }],
+      messages: [{ role: "user", content: userMessage }],
+    }),
+  }));
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Anthropic API error ${response.status}: ${errText}`);
+  }
+
+  const finalData = await response.json();
+
+  if (finalData.usage) {
+    const u = finalData.usage;
+    console.log(`  AI cost (anthropic): model=${model}, input=${u.input_tokens}, output=${u.output_tokens}`);
+  }
+
+  let textContent = "";
+  for (const block of finalData.content || []) {
+    if (block.type === "text") textContent += block.text;
+  }
+
+  // Strip inline citation markers
+  textContent = textContent.replace(/\[\d+\]/g, "");
+
+  function cleanJson(str) {
+    str = str.replace(/,\s*([\]}])/g, "$1");
+    str = str.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, "");
+    return str;
+  }
+
+  function extractJsonString(text) {
+    try { return JSON.parse(cleanJson(text)); } catch { /* continue */ }
+    const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+    if (jsonMatch) {
+      try { return JSON.parse(cleanJson(jsonMatch[1].trim())); } catch { /* continue */ }
+    }
+    const braceStart = text.indexOf("{");
+    const braceEnd = text.lastIndexOf("}");
+    if (braceStart >= 0 && braceEnd > braceStart) {
+      const candidate = text.substring(braceStart, braceEnd + 1);
+      try { return JSON.parse(cleanJson(candidate)); } catch { /* continue */ }
+    }
+    return null;
+  }
+
+  const parsed = extractJsonString(textContent);
+  if (!parsed) {
+    console.error("JSON parse failed (anthropic). First 500 chars:", textContent.substring(0, 500));
+    throw new Error(`Could not parse JSON from Anthropic response (${textContent.length} chars)`);
+  }
+
+  return parsed;
+}
+
+// --- Perplexity API call (fallback / future override) ---
 
 async function callPerplexity(systemPrompt, userMessage, model, maxTokens, _supabase) {
   const _t = Date.now();
@@ -220,8 +295,11 @@ Return ONLY valid JSON. Prioritize government primary sources over trade press.`
 
     const userMessage = `Fact-check the following content${context ? ` (context: ${context})` : ""}:\n\n${content}`;
 
-    console.log("Calling Perplexity for fact-check...");
-    const result = await callPerplexity(systemPrompt, userMessage, modelConfig.model, 6000, supabase);
+    const isPerplexity = modelConfig.provider === "perplexity" && PERPLEXITY_API_KEY;
+    console.log(`Calling ${isPerplexity ? "Perplexity" : "Anthropic"} for fact-check (model=${modelConfig.model})...`);
+    const result = isPerplexity
+      ? await callPerplexity(systemPrompt, userMessage, modelConfig.model, 6000, supabase)
+      : await callAnthropicWebSearch(systemPrompt, userMessage, modelConfig.model, 6000, supabase);
 
     // Store in Supabase
     const { error: insertErr } = await supabase

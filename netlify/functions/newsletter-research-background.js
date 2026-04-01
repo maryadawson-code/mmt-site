@@ -290,6 +290,9 @@ Return ONLY valid JSON. Every item must include a source_url.`;
   const userMessage = `Compile the research package for the Mission Meets Tech newsletter targeting publish date ${publishDateStr}. Today is ${now.toISOString().split("T")[0]}. Search for federal health IT developments from the past 3-4 days across all five categories.`;
 
   try {
+    if (modelConfig.provider !== "perplexity" || !PERPLEXITY_API_KEY) {
+      throw new Error(`newsletter_research requires Perplexity (provider=${modelConfig.provider}). Ensure PERPLEXITY_API_KEY is set.`);
+    }
     console.log(`Calling Perplexity (${modelConfig.model}) for newsletter research...`);
     const research = await callPerplexity(systemPrompt, userMessage, modelConfig.model, 8000, supabase);
 
