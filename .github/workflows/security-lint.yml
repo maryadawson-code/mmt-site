@@ -1,0 +1,152 @@
+name: Security Lint
+
+on:
+  pull_request:
+    branches: [main, staging]
+  push:
+    branches: [main, staging]
+
+concurrency:
+  group: security-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  secret-scan:
+    name: Privileged Secret Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Scan for privileged secrets in source
+        run: |
+          echo "=== Scanning for privileged secrets ==="
+          FAIL=0
+
+          # Patterns that must NEVER appear in committed source
+          CRITICAL_PATTERNS="SUPABASE_SERVICE_ROLE_KEY|SERVICE_ROLE|SUPABASE_SECRET|BEGIN PRIVATE KEY|BEGIN RSA PRIVATE KEY"
+          KEY_PATTERNS="sk-ant-|sk-proj-|sk_live_|pk_live_|ghp_|xoxb-|xoxp-|op_live_|AIzaSy|GOCSPX-"
+
+          # Scan all source (exclude node_modules, .git, dist)
+          HITS=$(grep -rPn "$CRITICAL_PATTERNS" \
+            --include='*.js' --include='*.html' --include='*.css' --include='*.json' \
+            netlify/ lib/ public/ scripts/ *.html 2>/dev/null | \
+            grep -v 'node_modules' | grep -v 'process\.env\.' | grep -v 'ciso-scan' | \
+            grep -v 'runbook\.md' || true)
+
+          if [ -n "$HITS" ]; then
+            echo "::error::CRITICAL: Privileged secret pattern found in source:"
+            echo "$HITS"
+            FAIL=1
+          fi
+
+          # Scan for hardcoded API keys
+          KEY_HITS=$(grep -rPn "$KEY_PATTERNS" \
+            --include='*.js' --include='*.html' --include='*.json' \
+            netlify/ lib/ public/ scripts/ *.html .mcp/ 2>/dev/null | \
+            grep -v 'node_modules' | grep -v 'test' | grep -v 'mock' | \
+            grep -v '\.env\.example' | grep -v 'regex\|pattern\|ciso' || true)
+
+          if [ -n "$KEY_HITS" ]; then
+            echo "::error::CRITICAL: Hardcoded API key found in source:"
+            echo "$KEY_HITS"
+            FAIL=1
+          fi
+
+          # Check that .env files are not tracked
+          TRACKED_ENV=$(git ls-files '.env' '.env.local' '.env.production' '.env.staging' 2>/dev/null || true)
+          if [ -n "$TRACKED_ENV" ]; then
+            echo "::error::CRITICAL: Environment files tracked in git: $TRACKED_ENV"
+            FAIL=1
+          fi
+
+          if [ $FAIL -eq 1 ]; then
+            echo "::error::Secret scan FAILED."
+            exit 1
+          fi
+
+          echo "Secret scan passed."
+
+  migration-safety:
+    name: Migration Safety Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check migrations for unsafe patterns
+        run: |
+          echo "=== Checking migrations for safety ==="
+          FAIL=0
+
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE="${{ github.event.pull_request.base.sha }}"
+          else
+            BASE="HEAD~1"
+          fi
+
+          CHANGED_SQL=$(git diff --name-only "$BASE" HEAD -- 'supabase/migrations/*.sql' 2>/dev/null || true)
+
+          if [ -z "$CHANGED_SQL" ]; then
+            echo "No migration changes. Skipping."
+            exit 0
+          fi
+
+          for file in $CHANGED_SQL; do
+            if [ ! -f "$file" ]; then continue; fi
+
+            # New table without RLS
+            NEW_TABLES=$(grep -i 'CREATE TABLE' "$file" || true)
+            if [ -n "$NEW_TABLES" ]; then
+              HAS_RLS=$(grep -i 'ENABLE ROW LEVEL SECURITY' "$file" || true)
+              if [ -z "$HAS_RLS" ]; then
+                echo "::error file=$file::New table without ENABLE ROW LEVEL SECURITY"
+                FAIL=1
+              fi
+            fi
+
+            # Disabling RLS
+            if grep -qi 'DISABLE ROW LEVEL SECURITY' "$file"; then
+              echo "::error file=$file::Migration DISABLES Row Level Security"
+              FAIL=1
+            fi
+
+            # user_metadata in policies
+            if grep -qi 'user_metadata' "$file"; then
+              echo "::error file=$file::Policy references user_metadata — forbidden"
+              FAIL=1
+            fi
+          done
+
+          if [ $FAIL -eq 1 ]; then exit 1; fi
+          echo "Migration safety check passed."
+
+  function-safety:
+    name: Netlify Function Safety
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify no service role keys in client-side code
+        run: |
+          echo "=== Checking for service role leakage in client-side files ==="
+          FAIL=0
+
+          # HTML files should never reference service role keys
+          HITS=$(grep -rn 'SUPABASE_SERVICE\|service.role\|service_role' \
+            *.html public/ 2>/dev/null | \
+            grep -v 'node_modules' || true)
+
+          if [ -n "$HITS" ]; then
+            echo "::error::Service role reference found in client-side files:"
+            echo "$HITS"
+            FAIL=1
+          fi
+
+          if [ $FAIL -eq 1 ]; then exit 1; fi
+          echo "Function safety check passed."
