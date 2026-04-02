@@ -6,6 +6,10 @@ description: "The VA signed a contract to deploy clinical AI tools across 130 fa
 tags:
   - AI & Innovation
   - Veterans Affairs
+agencies:
+  - "VA"
+  - "Department of Veterans Affairs"
+related_contracts: true
 linkedin_url: "https://www.linkedin.com/pulse/clinical-ai-can-jailbroken-three-prompts-va-just-mary-womack"
 ---
 

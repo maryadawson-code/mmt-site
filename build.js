@@ -327,7 +327,7 @@ const searchOverlayHtml = `
 // External script tags injected before </body> on all pages
 const siteScriptTag = '  <script src="/js/site.js" defer></script>\n  <script src="/js/nav-active.js" defer></script>';
 
-function generateArticlePages(articles) {
+function generateArticlePages(articles, glossaryTerms) {
   const templatePath = path.join(TEMPLATES_DIR, 'article.html');
   if (!fs.existsSync(templatePath)) {
     console.log('No article template found. Skipping article page generation.');
@@ -364,6 +364,12 @@ function generateArticlePages(articles) {
       ? `<div class="wtm-box"><h2>What this means</h2><ul>${wtmBullets.map(b => `<li>${escapeHtml(b)}</li>`).join('')}</ul></div>`
       : '';
 
+    // Glossary auto-linking (controlled by frontmatter glossary_link, default true)
+    let articleContent = article.html;
+    if (article.glossary_link !== false && glossaryTerms && glossaryTerms.length > 0) {
+      articleContent = autoLinkGlossaryTerms(articleContent, glossaryTerms);
+    }
+
     let html = template
       .replace(/\{\{TITLE\}\}/g, article.title)
       .replace(/\{\{DESCRIPTION\}\}/g, escapeXml(article.description))
@@ -374,7 +380,7 @@ function generateArticlePages(articles) {
       .replace(/\{\{READ_TIME\}\}/g, article.readTime ? `${article.readTime} min read` : '')
       .replace(/\{\{TAGS\}\}/g, tagsHtml)
       .replace(/\{\{WHAT_THIS_MEANS\}\}/g, wtmHtml)
-      .replace(/\{\{CONTENT\}\}/g, article.html)
+      .replace(/\{\{CONTENT\}\}/g, articleContent)
       .replace(/\{\{PREV_LINK\}\}/g, prevLink)
       .replace(/\{\{NEXT_LINK\}\}/g, nextLink)
       .replace(/\{\{KEYWORDS\}\}/g, (article.tags || []).join(', '))
@@ -1121,8 +1127,10 @@ function loadContracts() {
   }
 }
 
-function generateContractTrackerHtml(contracts) {
+function generateContractTrackerHtml(contracts, contractArticleMap) {
   if (!contracts.length) return '<p class="text-center py-10" style="color:var(--mmt-text-secondary);">Contract data coming soon.</p>';
+
+  const articleMap = contractArticleMap || {};
 
   // Group by status
   const groups = { active: [], upcoming: [], awarded: [] };
@@ -1143,7 +1151,13 @@ function generateContractTrackerHtml(contracts) {
           <div class="grid md:grid-cols-2 gap-4">\n`;
     items.forEach(c => {
       const cSlug = slugify(c.name);
-      html += `            <a href="/contracts/${cSlug}/" class="card rounded-xl p-6 no-underline block transition-all duration-200 hover:translate-y-[-2px]">
+      const relatedAnalysis = generateContractRelatedAnalysisHtml(c.name, articleMap);
+      const linkedArticles = articleMap[c.name] || [];
+      const lastCovered = linkedArticles.length > 0
+        ? `<span class="text-xs block mt-1" style="color:var(--mmt-text-secondary);">Last covered: ${linkedArticles[0].formattedDate}</span>`
+        : '';
+      html += `            <div class="card rounded-xl p-6 transition-all duration-200 hover:translate-y-[-2px]">
+              <a href="/contracts/${cSlug}/" class="no-underline block">
               <div class="flex items-start justify-between gap-3 mb-2">
                 <h3 class="text-base font-bold" style="color:var(--mmt-navy);">${escapeHtml(c.name)}</h3>
                 <div class="flex items-center gap-2 flex-shrink-0">
@@ -1167,9 +1181,11 @@ function generateContractTrackerHtml(contracts) {
                 const fmt = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                 return `<span class="text-xs block mt-2" style="color:${color};" data-last-verified="${escapeHtml(c.last_verified)}">${icon} Verified ${fmt}</span>`;
               })() : ''}
-              ${c.source ? `<a href="${escapeHtml(c.source)}" target="_blank" rel="noopener" class="text-xs mt-1 inline-block hover:opacity-80" style="color:var(--mmt-teal);">Source</a>` : ''}
+              ${c.source ? `<span class="text-xs mt-1 inline-block" style="color:var(--mmt-teal);">Source</span>` : ''}
+              ${lastCovered}
               <p class="text-xs mt-2 font-semibold" style="color:var(--mmt-teal);">View Intel &rarr;</p>
-            </a>\n`;
+              </a>${relatedAnalysis}
+            </div>\n`;
     });
     html += `          </div>
         </div>\n`;
@@ -2117,7 +2133,7 @@ function inlineTailwindCss(html) {
   return html;
 }
 
-function copyStaticFiles({ archive, feed, newsItems, contracts }) {
+function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleMap, agencyArticleMap, articles }) {
   // Copy root HTML files (with inlined Tailwind CSS + build-time injections)
   const htmlFiles = [
     'index.html', 'about.html', 'podcast.html', 'newsletter.html',
@@ -2177,9 +2193,10 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
     '<!-- BUILD:PODCAST_TAG_FILTERS -->': generatePodcastTagFiltersHtml(feed),
     '<!-- BUILD:NEWSWIRE_HEADLINES -->': generateNewswireHtml(newsItems || []),
     '<!-- BUILD:NEWS_WIDGET -->': generateNewsWidgetHtml(newsItems || []),
-    '<!-- BUILD:CONTRACT_TRACKER -->': generateContractTrackerHtml(contracts),
+    '<!-- BUILD:CONTRACT_TRACKER -->': generateContractTrackerHtml(contracts, contractArticleMap || {}),
     '<!-- BUILD:CONTRACT_SUMMARY -->': generateContractSummaryHtml(contracts),
     '<!-- BUILD:EVENTS_LIST -->': generateEventsListHtml(),
+    '<!-- BUILD:LATEST_ANALYSIS -->': generateLatestAnalysisHtml(articles || []),
     // Dynamic stats
     '<!-- BUILD:STAT_ARTICLES -->': String(archive.length),
     '<!-- BUILD:STAT_CONTRACTS -->': String(contracts.length),
@@ -2218,6 +2235,21 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
         'ops.html', 'tactical-brief.html', 'tactical-brief-confirmed.html'];
       if (hiddenPages.includes(file) && !html.includes('noindex')) {
         html = html.replace('<head>', '<head>\n  <meta name="robots" content="noindex, nofollow">');
+      }
+
+      // Inject agency coverage into agency-sources.html
+      if (file === 'agency-sources.html' && agencyArticleMap) {
+        const coverageMap = generateAgencyCoverageMap(agencyArticleMap);
+        Object.entries(coverageMap).forEach(([category, coverageHtml]) => {
+          if (coverageHtml) {
+            // Inject coverage before the closing </div></section> of each data-category section
+            const sectionRegex = new RegExp(
+              `(data-category="${category}"[\\s\\S]*?<\\/div>\\s*<\\/div>)(\\s*<\\/section>)`,
+              'i'
+            );
+            html = html.replace(sectionRegex, `$1${coverageHtml}\n    $2`);
+          }
+        });
       }
 
       // Inject search overlay after </nav>
@@ -2578,6 +2610,292 @@ function generateNewsWidgetHtml(newsItems) {
   return html;
 }
 
+// --- Cross-Linking Intelligence System ---
+
+/**
+ * Build a map of contract name → articles that reference it.
+ * Checks both explicit frontmatter `contracts` array and auto-matching via `related_contracts: true`.
+ */
+function buildContractArticleMap(articles, contracts) {
+  const map = {}; // contractName → [{ title, url, formattedDate, isoDate }]
+  contracts.forEach(c => { map[c.name] = []; });
+
+  articles.forEach(article => {
+    // Explicit contract links from frontmatter
+    const explicitContracts = article.contracts || [];
+    explicitContracts.forEach(cName => {
+      if (map[cName]) {
+        map[cName].push({
+          title: article.title,
+          url: article.url,
+          formattedDate: article.formattedDate,
+          isoDate: article.isoDate,
+        });
+      }
+    });
+
+    // Auto-match: if related_contracts is true (or not explicitly false), scan title + description
+    if (article.related_contracts !== false) {
+      const searchText = (article.title + ' ' + (article.description || '')).toLowerCase();
+      contracts.forEach(c => {
+        // Skip if already explicitly linked
+        if (explicitContracts.includes(c.name)) return;
+        // Match contract name (case-insensitive) — use key terms, not the full name
+        const nameLower = c.name.toLowerCase();
+        // Try matching the full name or significant substrings
+        const nameWords = nameLower.split(/[\s\-\/()]+/).filter(w => w.length > 3);
+        // For multi-word contract names, check if the title/desc contains them
+        if (searchText.includes(nameLower) ||
+            (nameWords.length >= 2 && nameWords.every(w => searchText.includes(w)))) {
+          map[c.name].push({
+            title: article.title,
+            url: article.url,
+            formattedDate: article.formattedDate,
+            isoDate: article.isoDate,
+          });
+        }
+      });
+    }
+  });
+
+  // Sort each contract's articles by date (newest first) and deduplicate
+  Object.keys(map).forEach(cName => {
+    const seen = new Set();
+    map[cName] = map[cName]
+      .filter(a => {
+        if (seen.has(a.url)) return false;
+        seen.add(a.url);
+        return true;
+      })
+      .sort((a, b) => new Date(b.isoDate) - new Date(a.isoDate));
+  });
+
+  return map;
+}
+
+/**
+ * Build a map of agency name → articles that reference it.
+ * Uses explicit frontmatter `agencies` array.
+ */
+function buildAgencyArticleMap(articles) {
+  const map = {}; // agencyKey → [{ title, url, formattedDate, isoDate }]
+
+  articles.forEach(article => {
+    const agencies = article.agencies || [];
+    agencies.forEach(agency => {
+      if (!map[agency]) map[agency] = [];
+      map[agency].push({
+        title: article.title,
+        url: article.url,
+        formattedDate: article.formattedDate,
+        isoDate: article.isoDate,
+      });
+    });
+  });
+
+  // Sort each agency's articles by date (newest first)
+  Object.keys(map).forEach(agency => {
+    map[agency].sort((a, b) => new Date(b.isoDate) - new Date(a.isoDate));
+  });
+
+  return map;
+}
+
+/**
+ * Load glossary terms from glossary.html for auto-linking in articles.
+ * Returns array of { term, acronym, slug, definition }
+ */
+function loadGlossaryTerms() {
+  const glossaryPath = path.join(__dirname, 'glossary.html');
+  if (!fs.existsSync(glossaryPath)) return [];
+
+  const html = fs.readFileSync(glossaryPath, 'utf8');
+  const terms = [];
+
+  // Parse term entries: <div class="term-entry" id="term-SLUG" data-term="...">
+  // Then find the term name and acronym expansion
+  const termRegex = /<div class="term-entry" id="term-([^"]+)" data-term="([^"]*)"[^>]*>[\s\S]*?<p class="text-lg font-bold[^"]*"[^>]*>.*?>([\s\S]*?)<\/a><\/p>[\s\S]*?(?:<p class="text-sm font-medium[^"]*"[^>]*>([\s\S]*?)<\/p>)?[\s\S]*?<p class="text-sm leading-relaxed[^"]*"[^>]*>([\s\S]*?)<\/p>/g;
+
+  let match;
+  while ((match = termRegex.exec(html)) !== null) {
+    const slug = match[1];
+    const termName = match[3].trim().replace(/<[^>]+>/g, '');
+    const expansion = match[4] ? match[4].trim().replace(/<[^>]+>/g, '') : '';
+    const definition = match[5] ? match[5].trim().replace(/<[^>]+>/g, '').substring(0, 120) : '';
+
+    terms.push({ term: termName, expansion, slug, definition });
+    // Also add the expansion as a matchable term if it exists
+    if (expansion && expansion !== termName) {
+      terms.push({ term: expansion, expansion: termName, slug, definition });
+    }
+  }
+
+  // Sort by term length descending so longer terms are matched first
+  terms.sort((a, b) => b.term.length - a.term.length);
+  return terms;
+}
+
+/**
+ * Auto-link glossary terms in article HTML.
+ * Only links the FIRST occurrence of each term per article.
+ * Skips content inside <a>, <h1>-<h6>, <code>, <pre> tags.
+ */
+function autoLinkGlossaryTerms(articleHtml, glossaryTerms) {
+  if (!glossaryTerms || glossaryTerms.length === 0) return articleHtml;
+
+  const linkedSlugs = new Set();
+
+  for (const entry of glossaryTerms) {
+    // Skip if we already linked this glossary slug
+    if (linkedSlugs.has(entry.slug)) continue;
+
+    const termEscaped = entry.term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    // Word boundary match, case insensitive
+    const termRegex = new RegExp(`\\b(${termEscaped})\\b`, 'i');
+
+    // Split HTML into segments: tags vs text content
+    // We need to only replace in text nodes, not inside tags or certain elements
+    const parts = articleHtml.split(/(<[^>]+>)/);
+    let insideSkipTag = 0;
+    const skipOpenRegex = /^<(a|h[1-6]|code|pre|script|style)[\s>]/i;
+    const skipCloseRegex = /^<\/(a|h[1-6]|code|pre|script|style)>/i;
+    let replaced = false;
+
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+
+      // Check if this is a tag
+      if (part.startsWith('<')) {
+        if (skipOpenRegex.test(part)) insideSkipTag++;
+        else if (skipCloseRegex.test(part)) insideSkipTag = Math.max(0, insideSkipTag - 1);
+        continue;
+      }
+
+      // Text node — only replace if not inside a skip tag
+      if (insideSkipTag > 0) continue;
+
+      const matchResult = termRegex.exec(part);
+      if (matchResult) {
+        const tooltip = entry.definition ? escapeHtml(entry.definition) : escapeHtml(entry.expansion || entry.term);
+        const link = `<a href="/glossary.html#term-${entry.slug}" class="glossary-link" title="${tooltip}" style="color:var(--mmt-teal, #457B9D);text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;">${matchResult[0]}</a>`;
+        parts[i] = part.substring(0, matchResult.index) + link + part.substring(matchResult.index + matchResult[0].length);
+        linkedSlugs.add(entry.slug);
+        replaced = true;
+        break;
+      }
+    }
+
+    if (replaced) {
+      articleHtml = parts.join('');
+    }
+  }
+
+  return articleHtml;
+}
+
+/**
+ * Generate "Related Analysis" HTML for a contract card.
+ */
+function generateContractRelatedAnalysisHtml(contractName, contractArticleMap) {
+  const articles = contractArticleMap[contractName] || [];
+  if (articles.length === 0) return '';
+
+  const items = articles.slice(0, 3).map(a =>
+    `<a href="${a.url}" class="block text-xs no-underline hover:opacity-80 py-1" style="color:var(--mmt-teal);">${escapeHtml(a.title)} <span style="color:var(--mmt-text-secondary);">${a.formattedDate}</span></a>`
+  ).join('\n                  ');
+
+  return `
+              <div class="mt-3 pt-3" style="border-top:1px solid rgba(69,123,157,0.1);">
+                <p class="text-xs font-semibold mb-1" style="color:var(--mmt-navy);">Related Analysis</p>
+                <div>${items}</div>
+              </div>`;
+}
+
+/**
+ * Generate "Latest Analysis" preview for resources.html
+ */
+function generateLatestAnalysisHtml(articles) {
+  if (!articles || articles.length === 0) {
+    return '<p class="text-sm" style="color:var(--mmt-text-secondary);">Analysis coming soon.</p>';
+  }
+
+  const recent = articles.filter(a => a.url && a.url.startsWith('/newsletter/')).slice(0, 5);
+  if (recent.length === 0) {
+    return '<p class="text-sm" style="color:var(--mmt-text-secondary);">Analysis coming soon.</p>';
+  }
+
+  let html = `<div class="mt-4 mb-4 p-4 rounded-xl" style="background:var(--mmt-soft); border:1px solid var(--mmt-border);">
+            <p class="text-xs font-bold uppercase tracking-wider mb-3" style="color:var(--mmt-teal);">Latest Analysis</p>\n`;
+
+  recent.forEach(a => {
+    html += `            <a href="${a.url}" class="flex items-baseline justify-between gap-2 py-2 no-underline hover:opacity-80" style="border-bottom:1px solid var(--mmt-border);">
+              <span class="text-sm" style="color:var(--mmt-ink);"><span class="font-semibold" style="color:var(--mmt-navy);">${escapeHtml((a.tags || [])[0] || 'Analysis')}</span> &middot; ${escapeHtml(a.title.length > 55 ? a.title.substring(0, 52) + '...' : a.title)}</span>
+              <span class="text-xs whitespace-nowrap" style="color:var(--mmt-text-secondary);">${a.formattedDate || a.date || ''}</span>
+            </a>\n`;
+  });
+
+  html += `            <a href="/latest.html" class="text-sm font-semibold no-underline hover:opacity-80 inline-block mt-3" style="color:var(--mmt-teal);">View all analysis &rarr;</a>
+          </div>`;
+
+  return html;
+}
+
+/**
+ * Generate agency coverage HTML for agency-sources.html sections.
+ * Returns a map of data-category → HTML snippet.
+ */
+function generateAgencyCoverageMap(agencyArticleMap) {
+  // Map data-category values to agency names used in frontmatter
+  const categoryToAgencies = {
+    'defense': ['DHA', 'Defense Health Agency', 'PEO DHMS', 'FEHRM', 'MHS'],
+    'va': ['VA', 'Department of Veterans Affairs', 'Veterans Affairs'],
+    'interop': ['ONC', 'ASTP', 'FEHRM'],
+    'acquisition': ['SAM.gov', 'GSA', 'OASIS'],
+    'budget': ['OMB', 'CBO'],
+    'oversight': ['GAO', 'VA OIG', 'DoD OIG'],
+    'cyber': ['CISA', 'NIST'],
+  };
+
+  const result = {};
+
+  Object.entries(categoryToAgencies).forEach(([category, agencyNames]) => {
+    const allArticles = [];
+    const seen = new Set();
+
+    agencyNames.forEach(name => {
+      const articles = agencyArticleMap[name] || [];
+      articles.forEach(a => {
+        if (!seen.has(a.url)) {
+          seen.add(a.url);
+          allArticles.push(a);
+        }
+      });
+    });
+
+    // Sort by date and take 3 most recent
+    allArticles.sort((a, b) => new Date(b.isoDate) - new Date(a.isoDate));
+    const recent = allArticles.slice(0, 3);
+
+    if (recent.length === 0) {
+      result[category] = '';
+      return;
+    }
+
+    const items = recent.map(a =>
+      `<a href="${a.url}" class="block text-sm no-underline hover:opacity-80 py-2" style="color:var(--mmt-teal); border-bottom:1px solid rgba(69,123,157,0.08);">${escapeHtml(a.title)} <span class="text-xs" style="color:var(--mmt-text-secondary);">${a.formattedDate}</span></a>`
+    ).join('\n            ');
+
+    result[category] = `
+        <div class="mt-8 p-4 rounded-xl" style="background:rgba(69,123,157,0.04); border:1px solid rgba(69,123,157,0.1);">
+          <p class="text-xs font-bold uppercase tracking-wider mb-3" style="color:var(--mmt-teal);">Recent MMT Coverage</p>
+          <div>${items}</div>
+          <a href="/latest.html" class="text-xs font-semibold no-underline hover:opacity-80 inline-block mt-2" style="color:var(--mmt-teal);">More analysis &rarr;</a>
+        </div>`;
+  });
+
+  return result;
+}
+
 // --- Podcast (preserved from original) ---
 
 function generatePaginationHtml(currentPage, totalPages, basePath) {
@@ -2698,12 +3016,21 @@ async function build() {
   // Load contracts once for all downstream functions
   const contracts = loadContracts();
 
+  // Build cross-linking intelligence maps
+  console.log('--- Building cross-linking maps ---');
+  const contractArticleMap = buildContractArticleMap(articles, contracts);
+  const agencyArticleMap = buildAgencyArticleMap(articles);
+  const glossaryTerms = loadGlossaryTerms();
+  const linkedContracts = Object.entries(contractArticleMap).filter(([, arts]) => arts.length > 0);
+  const linkedAgencies = Object.entries(agencyArticleMap);
+  console.log(`Cross-links: ${linkedContracts.length} contracts with articles, ${linkedAgencies.length} agency mappings, ${glossaryTerms.length} glossary terms loaded`);
+
   let archive = [];
   if (articles.length > 0) {
     const tags = collectTags(articles);
 
-    // Generate article pages
-    generateArticlePages(articles);
+    // Generate article pages (with glossary auto-linking)
+    generateArticlePages(articles, glossaryTerms);
 
     // Generate topic pages
     generateTopicPages(tags);
@@ -2751,7 +3078,7 @@ async function build() {
 
   // 6. Copy all static files (with build-time injections)
   console.log('\n--- Copying static files ---');
-  copyStaticFiles({ archive, feed, newsItems, contracts });
+  copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleMap, agencyArticleMap, articles });
 
   console.log('\n=== Build complete! ===');
 

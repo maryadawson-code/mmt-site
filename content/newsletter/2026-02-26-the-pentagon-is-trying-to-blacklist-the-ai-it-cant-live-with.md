@@ -6,6 +6,12 @@ description: "The Pentagon's complicated relationship with AI it simultaneously 
 tags:
   - AI & Innovation
   - Military Health System
+contracts:
+  - "DHA Enterprise Generative AI"
+agencies:
+  - "DHA"
+  - "Defense Health Agency"
+related_contracts: true
 linkedin_url: "https://www.linkedin.com/pulse/pentagon-trying-blacklist-ai-cant-live-without-mary-womack-9ziwe"
 ---
 

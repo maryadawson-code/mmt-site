@@ -6,6 +6,12 @@ description: "The conformed TOPRs settled who owns the risk. VA's own OIG, GAO, 
 tags:
   - Veterans Affairs
   - Contracting & Procurement
+contracts:
+  - "Community Care Network Next Gen (CCN NG)"
+agencies:
+  - "VA"
+  - "Department of Veterans Affairs"
+related_contracts: true
 linkedin_url: "https://www.linkedin.com/pulse/april-3-hard-deadline-ccn-next-gen-follow-up-mary-womack-1zlne"
 ---
 

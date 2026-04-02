@@ -1468,7 +1468,61 @@ Long-form editorial pages should feel exceptionally fast.
 
 ---
 
-## 36. Final Creative Direction Statement
+## 36. Cross-Linking Intelligence System
+
+### Core principle
+Every article published on Mission Meets Tech must automatically strengthen the rest of the platform. When an article mentions a contract, agency, vendor, vehicle, or topic — the Intelligence Center, Contract Tracker, and reference pages should reflect that new intelligence without manual curation.
+
+### How it works
+
+#### Article → Contract Tracker
+When an article's frontmatter includes `contracts` (an array of contract names matching entries in `contracts.json`), the build system must:
+- Add the article to that contract's "Related Analysis" section on the contract detail page
+- Update the contract's `last_covered` date
+- Surface the article link in the Contract Tracker card for that contract
+
+#### Article → Intelligence Center / Resources
+When an article is published, the build system must:
+- Update the "Latest Headlines" live module on the Intelligence Center (`resources.html`) with the newest articles
+- Ensure topic pages reflect the new article in their article counts and listings
+- Update the "Featured Analysis" section on the homepage if the article has `featured: true` in frontmatter
+
+#### Article → Glossary Cross-Links
+When an article's body text contains glossary terms (matched against terms in `glossary.html`), the build system should:
+- Auto-link the first occurrence of each glossary term to its glossary anchor
+- Add the article to a "Referenced In" list on the glossary term's detail page (if individual term pages exist)
+
+#### Article → Agency Sources
+When an article's frontmatter includes `agencies` (e.g., `["VA", "DHA", "HHS"]`), the build system should:
+- Add the article to relevant agency sections on `agency-sources.html` as "Recent MMT Coverage"
+
+### Frontmatter schema additions
+Articles should support these optional frontmatter fields to power cross-linking:
+```yaml
+contracts:
+  - "VA Ambient AI Phase 2"
+  - "MHS GENESIS Follow-On"
+agencies:
+  - VA
+  - DHA
+related_contracts: true  # auto-match by keyword if contracts not specified
+glossary_link: true       # auto-link glossary terms in body (default: true)
+```
+
+### Build-time implementation
+All cross-linking happens at build time in `build.js`. No runtime lookups. The system reads article frontmatter, matches against `contracts.json` entries and glossary terms, and generates the cross-reference HTML during the build pass.
+
+### Why this matters
+This turns every article into a platform-strengthening event. A single piece of analysis about a VA contract recompete simultaneously:
+- Updates the Contract Tracker with fresh coverage
+- Adds depth to the VA topic page
+- Enriches the glossary with real-world context
+- Gives the Intelligence Center a new "latest" entry
+- Creates internal links that improve SEO and session depth
+
+---
+
+## 37. Final Creative Direction Statement
 
 Mission Meets Tech should not chase trendiness.
 
