@@ -1,0 +1,963 @@
+{
+  "date": "2026-04-02",
+  "repo": "mmt-site",
+  "spec": "S3-01 OpenClaw Agent Hardening — Complexity Baseline",
+  "summary": {
+    "total_files_scanned": 138,
+    "total_functions_analyzed": 493,
+    "average_complexity": 10.68,
+    "functions_rated_A": 299,
+    "functions_rated_B": 77,
+    "functions_rated_C": 36,
+    "functions_rated_D": 26,
+    "functions_rated_E": 10,
+    "functions_rated_F": 45,
+    "halt_conditions": 55
+  },
+  "rating_thresholds": {
+    "A": "1-5 (excellent)",
+    "B": "6-10 (acceptable)",
+    "C": "11-15 (refactor target)",
+    "D": "16-20 (mandatory refactor, no-append zone)",
+    "E": "21-25 (HALT condition)",
+    "F": ">25 (IMMEDIATE HALT)"
+  },
+  "critical_functions": [
+    {
+      "file": "netlify/functions/agent-bridge.js",
+      "function": "handler (line 49)",
+      "complexity": 476,
+      "rating": "F",
+      "lines": 1057,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/command-center-api.js",
+      "function": "handler (line 56)",
+      "complexity": 202,
+      "rating": "F",
+      "lines": 699,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/roadmap-api.js",
+      "function": "handler (line 57)",
+      "complexity": 116,
+      "rating": "F",
+      "lines": 351,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "js/contract-detail.js",
+      "function": "function (line 1)",
+      "complexity": 98,
+      "rating": "F",
+      "lines": 252,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/gold-team-review-background.js",
+      "function": "handler (line 151)",
+      "complexity": 96,
+      "rating": "F",
+      "lines": 359,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/approval-api.js",
+      "function": "handler (line 15)",
+      "complexity": 95,
+      "rating": "F",
+      "lines": 199,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/creative-api.js",
+      "function": "handler (line 30)",
+      "complexity": 84,
+      "rating": "F",
+      "lines": 272,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/issues-api.js",
+      "function": "handler (line 22)",
+      "complexity": 73,
+      "rating": "F",
+      "lines": 166,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/lib/proposalpulse-pdf.js",
+      "function": "generateScoreReportPdf (line 50)",
+      "complexity": 73,
+      "rating": "F",
+      "lines": 338,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/sb-vehicle-radar-background.js",
+      "function": "handler (line 155)",
+      "complexity": 71,
+      "rating": "F",
+      "lines": 302,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/qa-api.js",
+      "function": "handler (line 10)",
+      "complexity": 69,
+      "rating": "F",
+      "lines": 167,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/dashboard-auth.js",
+      "function": "handler (line 26)",
+      "complexity": 64,
+      "rating": "F",
+      "lines": 286,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/contract-intel-refresh-background.js",
+      "function": "handler (line 312)",
+      "complexity": 63,
+      "rating": "F",
+      "lines": 237,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/learning-api.js",
+      "function": "handler (line 11)",
+      "complexity": 60,
+      "rating": "F",
+      "lines": 155,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "js/contract-tracker.js",
+      "function": "function (line 168)",
+      "complexity": 51,
+      "rating": "F",
+      "lines": 191,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/cost-api.js",
+      "function": "handler (line 11)",
+      "complexity": 51,
+      "rating": "F",
+      "lines": 105,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/lib/redteam-pdf.js",
+      "function": "generateRedTeamPdf (line 48)",
+      "complexity": 51,
+      "rating": "F",
+      "lines": 242,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/projects-api.js",
+      "function": "handler (line 10)",
+      "complexity": 51,
+      "rating": "F",
+      "lines": 125,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/customer-auth.js",
+      "function": "handler (line 19)",
+      "complexity": 48,
+      "rating": "F",
+      "lines": 216,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/cost-rollup.js",
+      "function": "handler (line 6)",
+      "complexity": 45,
+      "rating": "F",
+      "lines": 167,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/finance-api.js",
+      "function": "handler (line 11)",
+      "complexity": 45,
+      "rating": "F",
+      "lines": 120,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/opportunity-radar-background.js",
+      "function": "handler (line 149)",
+      "complexity": 45,
+      "rating": "F",
+      "lines": 169,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/lib/pwin-calculator.js",
+      "function": "calculatePwin (line 35)",
+      "complexity": 44,
+      "rating": "F",
+      "lines": 152,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/marketpulse-gateway.js",
+      "function": "handler (line 30)",
+      "complexity": 44,
+      "rating": "F",
+      "lines": 235,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "js/contract-tracker.js",
+      "function": "function (line 3)",
+      "complexity": 43,
+      "rating": "F",
+      "lines": 164,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "js/proposal-pulse.js",
+      "function": "renderResults (line 572)",
+      "complexity": 40,
+      "rating": "F",
+      "lines": 98,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/lib/scorecard-validator.js",
+      "function": "validateScorecard (line 12)",
+      "complexity": 40,
+      "rating": "F",
+      "lines": 77,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "js/marketpulse.js",
+      "function": "function (line 5)",
+      "complexity": 35,
+      "rating": "F",
+      "lines": 139,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "js/marketpulse.js",
+      "function": "addEventListener (line 8)",
+      "complexity": 35,
+      "rating": "F",
+      "lines": 135,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/customer-api.js",
+      "function": "handler (line 37)",
+      "complexity": 35,
+      "rating": "F",
+      "lines": 89,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/ops-dashboard.js",
+      "function": "handler (line 12)",
+      "complexity": 35,
+      "rating": "F",
+      "lines": 175,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/predictive-signals-background.js",
+      "function": "handler (line 12)",
+      "complexity": 35,
+      "rating": "F",
+      "lines": 188,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/ai-research.js",
+      "function": "handler (line 21)",
+      "complexity": 34,
+      "rating": "F",
+      "lines": 94,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "js/spatial.js",
+      "function": "function (line 3)",
+      "complexity": 33,
+      "rating": "F",
+      "lines": 467,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/ops-health-check.js",
+      "function": "handler (line 13)",
+      "complexity": 33,
+      "rating": "F",
+      "lines": 222,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "js/contract-detail.js",
+      "function": "loadIntel (line 175)",
+      "complexity": 31,
+      "rating": "F",
+      "lines": 75,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "js/spatial.js",
+      "function": "addEventListener (line 13)",
+      "complexity": 31,
+      "rating": "F",
+      "lines": 456,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/health.js",
+      "function": "handler (line 16)",
+      "complexity": 29,
+      "rating": "F",
+      "lines": 136,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/lib/report-quality-gate.js",
+      "function": "scoreReport (line 306)",
+      "complexity": 29,
+      "rating": "F",
+      "lines": 88,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/opportunity-feed.js",
+      "function": "handler (line 19)",
+      "complexity": 29,
+      "rating": "F",
+      "lines": 120,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "js/tactical-brief.js",
+      "function": "function (line 5)",
+      "complexity": 28,
+      "rating": "F",
+      "lines": 113,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "js/tactical-brief.js",
+      "function": "addEventListener (line 8)",
+      "complexity": 28,
+      "rating": "F",
+      "lines": 109,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/health-check.js",
+      "function": "handler (line 16)",
+      "complexity": 28,
+      "rating": "F",
+      "lines": 113,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/resend-webhook.js",
+      "function": "handler (line 23)",
+      "complexity": 28,
+      "rating": "F",
+      "lines": 77,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/ai-image.js",
+      "function": "handler (line 17)",
+      "complexity": 27,
+      "rating": "F",
+      "lines": 80,
+      "action": "IMMEDIATE_HALT"
+    },
+    {
+      "file": "netlify/functions/contract-intel-refresh-background.js",
+      "function": "researchContract (line 203)",
+      "complexity": 25,
+      "rating": "E",
+      "lines": 103,
+      "action": "HALT"
+    },
+    {
+      "file": "netlify/functions/stripe-webhook.js",
+      "function": "handler (line 22)",
+      "complexity": 24,
+      "rating": "E",
+      "lines": 153,
+      "action": "HALT"
+    },
+    {
+      "file": "netlify/functions/lib/ops-ledger.js",
+      "function": "logOpsEvent (line 35)",
+      "complexity": 23,
+      "rating": "E",
+      "lines": 75,
+      "action": "HALT"
+    },
+    {
+      "file": "netlify/functions/score-deck.js",
+      "function": "handler (line 181)",
+      "complexity": 23,
+      "rating": "E",
+      "lines": 130,
+      "action": "HALT"
+    },
+    {
+      "file": "netlify/functions/weekly-report.js",
+      "function": "handler (line 18)",
+      "complexity": 22,
+      "rating": "E",
+      "lines": 118,
+      "action": "HALT"
+    },
+    {
+      "file": "netlify/functions/contract-intel.js",
+      "function": "handler (line 20)",
+      "complexity": 21,
+      "rating": "E",
+      "lines": 116,
+      "action": "HALT"
+    },
+    {
+      "file": "netlify/functions/lib/auth.js",
+      "function": "validateAuth (line 14)",
+      "complexity": 21,
+      "rating": "E",
+      "lines": 73,
+      "action": "HALT"
+    },
+    {
+      "file": "netlify/functions/lib/contract-validator.js",
+      "function": "validateContract (line 23)",
+      "complexity": 21,
+      "rating": "E",
+      "lines": 53,
+      "action": "HALT"
+    },
+    {
+      "file": "netlify/functions/score-status.js",
+      "function": "handler (line 35)",
+      "complexity": 21,
+      "rating": "E",
+      "lines": 152,
+      "action": "HALT"
+    },
+    {
+      "file": "netlify/functions/view-report.js",
+      "function": "handler (line 15)",
+      "complexity": 21,
+      "rating": "E",
+      "lines": 101,
+      "action": "HALT"
+    },
+    {
+      "file": "js/contract-detail.js",
+      "function": "renderIntel (line 36)",
+      "complexity": 20,
+      "rating": "D",
+      "lines": 51,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "js/marketpulse.js",
+      "function": "addEventListener (line 44)",
+      "complexity": 20,
+      "rating": "D",
+      "lines": 70,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "js/proposal-pulse.js",
+      "function": "submitDeck (line 369)",
+      "complexity": 20,
+      "rating": "D",
+      "lines": 91,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "js/tactical-brief.js",
+      "function": "addEventListener (line 18)",
+      "complexity": 20,
+      "rating": "D",
+      "lines": 70,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "netlify/functions/billing-sync.js",
+      "function": "parseReceiptEmail (line 586)",
+      "complexity": 20,
+      "rating": "D",
+      "lines": 145,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "netlify/functions/fact-check.js",
+      "function": "handler (line 190)",
+      "complexity": 20,
+      "rating": "D",
+      "lines": 118,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "netlify/functions/submit-feedback.js",
+      "function": "handler (line 39)",
+      "complexity": 20,
+      "rating": "D",
+      "lines": 133,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "netlify/functions/tactical-brief-cleanup.js",
+      "function": "handler (line 26)",
+      "complexity": 20,
+      "rating": "D",
+      "lines": 152,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "netlify/functions/lib/graceful-degrade.js",
+      "function": "withGracefulDegradation (line 8)",
+      "complexity": 19,
+      "rating": "D",
+      "lines": 50,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "netlify/functions/quality-drift-check-background.js",
+      "function": "handler (line 8)",
+      "complexity": 19,
+      "rating": "D",
+      "lines": 98,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "netlify/functions/score-cleanup.js",
+      "function": "handler (line 32)",
+      "complexity": 19,
+      "rating": "D",
+      "lines": 133,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "netlify/functions/tactical-brief-webhook.js",
+      "function": "handler (line 15)",
+      "complexity": 19,
+      "rating": "D",
+      "lines": 95,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "netlify/functions/billing-sync.js",
+      "function": "collectNetlify (line 196)",
+      "complexity": 18,
+      "rating": "D",
+      "lines": 126,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "netlify/functions/customer-api.js",
+      "function": "calculateHealthScore (line 10)",
+      "complexity": 18,
+      "rating": "D",
+      "lines": 20,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "netlify/functions/customer-health-rollup.js",
+      "function": "calculateHealthScore (line 6)",
+      "complexity": 18,
+      "rating": "D",
+      "lines": 20,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "netlify/functions/lib/report-quality-gate.js",
+      "function": "checkReportQuality (line 247)",
+      "complexity": 18,
+      "rating": "D",
+      "lines": 42,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "netlify/functions/review-action.js",
+      "function": "handler (line 9)",
+      "complexity": 18,
+      "rating": "D",
+      "lines": 84,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "netlify/functions/feedback-click.js",
+      "function": "handler (line 9)",
+      "complexity": 17,
+      "rating": "D",
+      "lines": 58,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "netlify/functions/lib/source-filter.js",
+      "function": "filterSources (line 45)",
+      "complexity": 17,
+      "rating": "D",
+      "lines": 36,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "netlify/functions/sentry-sync.js",
+      "function": "handler (line 6)",
+      "complexity": 17,
+      "rating": "D",
+      "lines": 79,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "js/contract-detail.js",
+      "function": "renderBlackHat (line 115)",
+      "complexity": 16,
+      "rating": "D",
+      "lines": 46,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "js/contract-tracker.js",
+      "function": "renderOpportunities (line 51)",
+      "complexity": 16,
+      "rating": "D",
+      "lines": 57,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "js/contract-tracker.js",
+      "function": "renderVehicleOpps (line 236)",
+      "complexity": 16,
+      "rating": "D",
+      "lines": 52,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "js/site.js",
+      "function": "function (line 36)",
+      "complexity": 16,
+      "rating": "D",
+      "lines": 30,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "netlify/functions/create-tactical-brief-checkout.js",
+      "function": "handler (line 21)",
+      "complexity": 16,
+      "rating": "D",
+      "lines": 95,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "netlify/functions/lib/report-quality-gate.js",
+      "function": "analyzePassResult (line 33)",
+      "complexity": 16,
+      "rating": "D",
+      "lines": 68,
+      "action": "mandatory_refactor"
+    },
+    {
+      "file": "netlify/functions/finance-rollup.js",
+      "function": "handler (line 8)",
+      "complexity": 15,
+      "rating": "C",
+      "lines": 64,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/google-oauth.js",
+      "function": "handler (line 13)",
+      "complexity": 15,
+      "rating": "C",
+      "lines": 145,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/roadmap-health-check.js",
+      "function": "handler (line 11)",
+      "complexity": 15,
+      "rating": "C",
+      "lines": 91,
+      "action": "refactor_target"
+    },
+    {
+      "file": "js/contract-tracker.js",
+      "function": "forEach (line 56)",
+      "complexity": 14,
+      "rating": "C",
+      "lines": 49,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/backup-db.js",
+      "function": "handler (line 35)",
+      "complexity": 14,
+      "rating": "C",
+      "lines": 49,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/billing-sync.js",
+      "function": "collectGmail (line 474)",
+      "complexity": 14,
+      "rating": "C",
+      "lines": 107,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/create-subscription-checkout.js",
+      "function": "handler (line 36)",
+      "complexity": 14,
+      "rating": "C",
+      "lines": 82,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/generate-tactical-brief-background.js",
+      "function": "disambiguateEntity (line 141)",
+      "complexity": 14,
+      "rating": "C",
+      "lines": 60,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/lib/cost-tracker.js",
+      "function": "trackCost (line 32)",
+      "complexity": 14,
+      "rating": "C",
+      "lines": 23,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/ops-pattern-detector.js",
+      "function": "handler (line 18)",
+      "complexity": 14,
+      "rating": "C",
+      "lines": 73,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/release-held-emails.js",
+      "function": "handler (line 10)",
+      "complexity": 14,
+      "rating": "C",
+      "lines": 74,
+      "action": "refactor_target"
+    },
+    {
+      "file": "js/contract-tracker.js",
+      "function": "forEach (line 244)",
+      "complexity": 13,
+      "rating": "C",
+      "lines": 41,
+      "action": "refactor_target"
+    },
+    {
+      "file": "js/hero-mesh.js",
+      "function": "function (line 2)",
+      "complexity": 13,
+      "rating": "C",
+      "lines": 71,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/billing-sync.js",
+      "function": "handler (line 7)",
+      "complexity": 13,
+      "rating": "C",
+      "lines": 63,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/billing-sync.js",
+      "function": "getEmailBody (line 842)",
+      "complexity": 13,
+      "rating": "C",
+      "lines": 17,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/collect-feedback-background.js",
+      "function": "handler (line 19)",
+      "complexity": 13,
+      "rating": "C",
+      "lines": 65,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/contract-intel-refresh-background.js",
+      "function": "callPerplexity (line 102)",
+      "complexity": 13,
+      "rating": "C",
+      "lines": 62,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/lib/model-router.js",
+      "function": "getModelConfig (line 73)",
+      "complexity": 13,
+      "rating": "C",
+      "lines": 55,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/lib/tactical-brief-pdf.js",
+      "function": "renderTable (line 311)",
+      "complexity": 13,
+      "rating": "C",
+      "lines": 87,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/newsletter-sync.js",
+      "function": "handler (line 201)",
+      "complexity": 13,
+      "rating": "C",
+      "lines": 90,
+      "action": "refactor_target"
+    },
+    {
+      "file": "js/contract-detail.js",
+      "function": "overallConfBadge (line 25)",
+      "complexity": 12,
+      "rating": "C",
+      "lines": 10,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/create-checkout.js",
+      "function": "handler (line 25)",
+      "complexity": 12,
+      "rating": "C",
+      "lines": 108,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/lib/intent-classifier.js",
+      "function": "extractScope (line 100)",
+      "complexity": 12,
+      "rating": "C",
+      "lines": 58,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/lib/report-quality-gate.js",
+      "function": "gateCustomerValue (line 173)",
+      "complexity": 12,
+      "rating": "C",
+      "lines": 24,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/lib/report-quality-gate.js",
+      "function": "gateCompetitiveData (line 219)",
+      "complexity": 12,
+      "rating": "C",
+      "lines": 26,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/review-queue-digest-background.js",
+      "function": "handler (line 11)",
+      "complexity": 12,
+      "rating": "C",
+      "lines": 66,
+      "action": "refactor_target"
+    },
+    {
+      "file": "js/contract-detail.js",
+      "function": "renderSmallBiz (line 88)",
+      "complexity": 11,
+      "rating": "C",
+      "lines": 26,
+      "action": "refactor_target"
+    },
+    {
+      "file": "js/contract-tracker.js",
+      "function": "applyVehicleFilter (line 289)",
+      "complexity": 11,
+      "rating": "C",
+      "lines": 17,
+      "action": "refactor_target"
+    },
+    {
+      "file": "js/mmt-motion.js",
+      "function": "function (line 4)",
+      "complexity": 11,
+      "rating": "C",
+      "lines": 59,
+      "action": "refactor_target"
+    },
+    {
+      "file": "js/nav-active.js",
+      "function": "function (line 2)",
+      "complexity": 11,
+      "rating": "C",
+      "lines": 62,
+      "action": "refactor_target"
+    },
+    {
+      "file": "js/proposal-pulse.js",
+      "function": "startCheckout (line 706)",
+      "complexity": 11,
+      "rating": "C",
+      "lines": 40,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/billing-sync.js",
+      "function": "collectAnthropic (line 134)",
+      "complexity": 11,
+      "rating": "C",
+      "lines": 57,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/billing-sync.js",
+      "function": "parseAmount (line 732)",
+      "complexity": 11,
+      "rating": "C",
+      "lines": 22,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/fact-check.js",
+      "function": "callPerplexity (line 108)",
+      "complexity": 11,
+      "rating": "C",
+      "lines": 49,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/newsletter-research-background.js",
+      "function": "callPerplexity (line 28)",
+      "complexity": 11,
+      "rating": "C",
+      "lines": 49,
+      "action": "refactor_target"
+    },
+    {
+      "file": "netlify/functions/protest-monitor-background.js",
+      "function": "callPerplexity (line 28)",
+      "complexity": 11,
+      "rating": "C",
+      "lines": 49,
+      "action": "refactor_target"
+    }
+  ]
+}
