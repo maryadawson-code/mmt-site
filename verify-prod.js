@@ -2,7 +2,7 @@ const https = require('https');
 
 const config = {
   url: 'https://integritypulse-fortress.marywomack.workers.dev/mcp',
-  key: 'op_live_305ebf777bfc29250dce93f0f43590bb',
+  key: process.env.OPENCLAW_API_KEY,
   target: 'https://missionmeetstech.com/about'
 };
 

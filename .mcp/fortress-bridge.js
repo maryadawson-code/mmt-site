@@ -1,6 +1,6 @@
 const https = require('https');
 const url = 'https://integritypulse-fortress.marywomack.workers.dev/mcp';
-const key = 'op_live_305ebf777bfc29250dce93f0f43590bb';
+const key = process.env.OPENCLAW_API_KEY;
 
 process.stdin.on('data', (chunk) => {
   const options = {
