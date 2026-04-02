@@ -1,0 +1,159 @@
+=== DUPLICATION REPORT ===
+Date: 2026-04-02
+Repo: mmt-site
+Tool: jscpd v4.0.8 (min-lines 5, min-tokens 50)
+
+Total duplications flagged: 109
+Duplicated lines: 1,569 of 26,667 (5.88%)
+Files analyzed: 162
+
+=== TOP DUPLICATED PATTERNS ===
+
+1. Pattern: Netlify function boilerplate (CORS headers + OPTIONS + POST-only + STRIPE_SECRET_KEY check)
+   Files:
+     - netlify/functions/create-checkout.js
+     - netlify/functions/create-tactical-brief-checkout.js
+     - netlify/functions/create-subscription-checkout.js
+     - netlify/functions/marketpulse-gateway.js
+   Lines duplicated: ~80 (21-line block x4 functions)
+   Recommended extraction: netlify/functions/lib/checkout-base.js
+     with createCheckoutHandler(config) factory wrapping CORS, auth, Stripe init
+
+2. Pattern: API function boilerplate (HEADERS constant + ok/err helpers + OPTIONS + Supabase init + auth)
+   Files:
+     - netlify/functions/cost-api.js
+     - netlify/functions/qa-api.js
+     - netlify/functions/approval-api.js
+     - netlify/functions/billing-api.js
+     - netlify/functions/roadmap-api.js
+     - netlify/functions/finance-api.js
+     - netlify/functions/learning-api.js
+     - netlify/functions/projects-api.js
+     - netlify/functions/command-center-api.js
+     - netlify/functions/creative-api.js
+     - netlify/functions/issues-api.js
+     - netlify/functions/customer-api.js
+   Lines duplicated: ~240 (10-20 line boilerplate x12 functions)
+   Recommended extraction: netlify/functions/lib/api-base.js
+     with createApiHandler({ requireAuth, allowedMethods }) that provides
+     HEADERS, ok(), err(), OPTIONS handling, Supabase client, auth validation
+
+3. Pattern: AI provider initialization (CORS + API key check + request parsing)
+   Files:
+     - netlify/functions/ai-image.js
+     - netlify/functions/ai-research.js
+   Lines duplicated: ~30 (15-line block x2)
+   Recommended extraction: netlify/functions/lib/ai-base.js with shared init
+
+4. Pattern: Background job envelope (Supabase init + try/catch + status logging)
+   Files:
+     - netlify/functions/contract-intel-refresh-background.js
+     - netlify/functions/protest-monitor-background.js
+     - netlify/functions/contract-intel-refresh.js
+     - netlify/functions/sb-vehicle-radar.js
+   Lines duplicated: ~75 (25-line block + 10-line block across 4 files)
+   Recommended extraction: netlify/functions/lib/background-job.js
+     with createBackgroundJob(name, handler) wrapper
+
+5. Pattern: Command center / creative API shared auth + response structure
+   Files:
+     - netlify/functions/command-center-api.js
+     - netlify/functions/creative-api.js
+   Lines duplicated: ~39 (21 + 18 line blocks)
+   Recommended extraction: Merge common preamble into shared handler
+
+6. Pattern: Contract intel / opportunity feed shared structure
+   Files:
+     - netlify/functions/contract-intel.js
+     - netlify/functions/opportunity-feed.js
+     - netlify/functions/score-status.js
+   Lines duplicated: ~42 (14-line blocks x3)
+   Recommended extraction: netlify/functions/lib/intel-query.js
+     with shared Supabase query patterns
+
+7. Pattern: Frontend JS checkout form handling (DOMContentLoaded + form validation + fetch)
+   Files:
+     - js/marketpulse.js
+     - js/tactical-brief.js
+   Lines duplicated: ~118 (17 + 101 lines of near-identical form logic)
+   Recommended extraction: js/checkout-form.js shared module
+     with createCheckoutForm(config) function
+
+8. Pattern: Contract tracker self-duplication (repeated render + filter blocks)
+   Files:
+     - js/contract-tracker.js (6 internal clones)
+   Lines duplicated: ~78
+   Recommended extraction: Extract renderRow() and filterContracts() helpers
+     within the same file to remove internal repetition
+
+9. Pattern: Cost/finance API shared rollup query patterns
+   Files:
+     - netlify/functions/cost-api.js
+     - netlify/functions/finance-api.js
+   Lines duplicated: ~24 (5-line + 19-line blocks)
+   Recommended extraction: netlify/functions/lib/cost-queries.js
+
+10. Pattern: Approval/QA API shared auth + Supabase boilerplate
+    Files:
+      - netlify/functions/approval-api.js
+      - netlify/functions/qa-api.js
+    Lines duplicated: ~34 (17-line near-identical init block)
+    Recommended extraction: Already covered by pattern #2 (api-base.js)
+
+=== FILES WITH MOST DUPLICATION ===
+
+netlify/functions/:
+1.  netlify/functions/contract-intel-refresh-background.js -- 4 clone blocks
+2.  netlify/functions/cost-api.js -- 5 clone blocks
+3.  netlify/functions/command-center-api.js -- 3 clone blocks
+4.  netlify/functions/create-tactical-brief-checkout.js -- 3 clone blocks
+5.  netlify/functions/approval-api.js -- 3 clone blocks
+6.  netlify/functions/marketpulse-gateway.js -- 3 clone blocks
+7.  netlify/functions/protest-monitor-background.js -- 2 clone blocks
+8.  netlify/functions/qa-api.js -- 2 clone blocks
+9.  netlify/functions/creative-api.js -- 2 clone blocks
+10. netlify/functions/billing-api.js -- 2 clone blocks
+
+js/:
+1.  js/contract-tracker.js -- 6 internal clone blocks
+2.  js/marketpulse.js -- 2 clone blocks
+3.  js/tactical-brief.js -- 2 clone blocks
+
+scripts/:
+1.  scripts/validate-links.js -- 1 clone block
+2.  scripts/verify-integrity.js -- 1 clone block
+
+=== RECOMMENDED EXTRACTION TARGETS ===
+
+1. createApiHandler(config) -- appears 12+ times across 12 API functions
+   Extract to: netlify/functions/lib/api-base.js
+   Impact: ~240 lines removed
+
+2. createCheckoutHandler(config) -- appears 4 times across checkout functions
+   Extract to: netlify/functions/lib/checkout-base.js
+   Impact: ~80 lines removed
+
+3. createBackgroundJob(name, handler) -- appears 4 times across background functions
+   Extract to: netlify/functions/lib/background-job.js
+   Impact: ~75 lines removed
+
+4. createCheckoutForm(config) -- appears 2 times across frontend JS
+   Extract to: js/checkout-form.js
+   Impact: ~118 lines removed
+
+5. Refactor contract-tracker.js internals -- 6 internal clones
+   Extract to: in-file helpers (renderRow, filterContracts)
+   Impact: ~78 lines removed
+
+6. createIntelQuery(table, filters) -- appears 3 times across intel functions
+   Extract to: netlify/functions/lib/intel-query.js
+   Impact: ~42 lines removed
+
+7. Shared cost/finance query helpers -- appears 2 times
+   Extract to: netlify/functions/lib/cost-queries.js
+   Impact: ~24 lines removed
+
+=== SUMMARY ===
+Total estimated reducible duplication: ~657 lines
+Priority: Item 1 (api-base.js) alone eliminates nearly half of all duplication.
+  Items 1+2+3 together would reduce function-level duplication by ~60%.
