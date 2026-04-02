@@ -6,6 +6,10 @@ description: "A vision for how technology can lift the administrative and operat
 tags:
   - Military Health System
   - Strategy & Leadership
+what_this_means:
+  - "Military healthcare providers spend more time on admin than on patients. Technology can reverse that ratio."
+  - "The DHA has pilot programs that prove AI-assisted triage and automated referrals work at scale."
+  - "If you work in MHS IT, acquisition, or clinical ops, this is your roadmap for the next 3 years."
 linkedin_url: "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/"
 ---
 

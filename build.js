@@ -358,6 +358,12 @@ function generateArticlePages(articles) {
     const related = findRelatedArticles(article, articles, 3);
     const relatedHtml = generateRelatedArticlesHtml(related);
 
+    // "What this means" summary box from frontmatter
+    const wtmBullets = article.what_this_means || [];
+    const wtmHtml = wtmBullets.length > 0
+      ? `<div class="wtm-box"><h2>What this means</h2><ul>${wtmBullets.map(b => `<li>${escapeHtml(b)}</li>`).join('')}</ul></div>`
+      : '';
+
     let html = template
       .replace(/\{\{TITLE\}\}/g, article.title)
       .replace(/\{\{DESCRIPTION\}\}/g, escapeXml(article.description))
@@ -367,6 +373,7 @@ function generateArticlePages(articles) {
       .replace(/\{\{DATE\}\}/g, article.formattedDate)
       .replace(/\{\{READ_TIME\}\}/g, article.readTime ? `${article.readTime} min read` : '')
       .replace(/\{\{TAGS\}\}/g, tagsHtml)
+      .replace(/\{\{WHAT_THIS_MEANS\}\}/g, wtmHtml)
       .replace(/\{\{CONTENT\}\}/g, article.html)
       .replace(/\{\{PREV_LINK\}\}/g, prevLink)
       .replace(/\{\{NEXT_LINK\}\}/g, nextLink)
@@ -1005,7 +1012,7 @@ function generateLatestAllHtml(archive, feed) {
                 <source src="${escapeHtml(item.audioUrl)}" type="audio/mpeg">
               </audio>`
         : '';
-      return `<article class="card rounded-xl p-6">
+      return `<article class="card rounded-xl p-6 archive-item" data-content-type="episode">
           <p class="text-xs uppercase tracking-wider font-semibold mb-1" style="color:var(--mmt-teal);">Fed UP Podcast</p>
           <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-navy);">${escapeHtml(item.title)}</h3>
           <p class="text-xs mb-2" style="color:var(--mmt-text-secondary);">${calendarSvg}${escapeHtml(item.date)}${item.duration ? ` &middot; ${item.duration}` : ''}</p>
@@ -1013,19 +1020,40 @@ function generateLatestAllHtml(archive, feed) {
           ${audioPlayer}
         </article>`;
     }
+    const topicSlugs = item.tags.map(t => slugify(t)).join(',');
     const tags = item.tags.map(t =>
       `<a href="/topics/${slugify(t)}/" class="tag no-underline">${escapeHtml(t)}</a>`
     ).join('');
     const isExternal = item.url && item.url.startsWith('http');
     const linkAttrs = isExternal ? 'target="_blank" rel="noopener"' : '';
     const externalIcon = isExternal ? ' <svg width="0.75em" height="0.75em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:baseline;opacity:0.5;" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>' : '';
-    return `<article class="card rounded-xl p-6">
-          <p class="text-xs mb-2" style="color:var(--mmt-text-secondary);">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
+    return `<article class="card rounded-xl p-6 archive-item" data-content-type="article" data-topics="${topicSlugs}">
+          <div class="flex flex-wrap gap-2 mb-2">${tags}</div>
           <h3 class="text-lg font-bold mb-2"><a href="${item.url}" ${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-navy);">${escapeHtml(item.title)}${externalIcon}</a></h3>
           <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);">${escapeHtml(item.description)}</p>
-          <div class="flex flex-wrap gap-2">${tags}</div>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
         </article>`;
   }).join('\n        ');
+}
+
+function generateEditorsPicksHtml(archive) {
+  // Pick up to 3: prioritize featured, then most recent
+  const featured = archive.filter(a => a.featured);
+  const picks = featured.length >= 3 ? featured.slice(0, 3) : [...featured, ...archive.filter(a => !a.featured)].slice(0, 3);
+  if (picks.length === 0) return '';
+  return picks.map(item => {
+    const topicTag = (item.tags && item.tags.length > 0)
+      ? `<span class="text-xs uppercase tracking-wider font-semibold" style="color:var(--mmt-teal);">${escapeHtml(item.tags[0])}</span>`
+      : '';
+    const isExternal = item.url && item.url.startsWith('http');
+    const linkAttrs = isExternal ? ' target="_blank" rel="noopener"' : '';
+    return `<a href="${item.url}"${linkAttrs} class="card rounded-xl p-6 no-underline block" style="transition:transform 0.2s;">
+        ${topicTag}
+        <h3 class="text-base font-bold mt-2 mb-2" style="color:var(--mmt-navy);">${escapeHtml(item.title)}</h3>
+        <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">${escapeHtml(item.description || '')}</p>
+        <p class="text-xs mt-3" style="color:var(--mmt-text-secondary);">${escapeHtml(item.date || '')}${readTimeBadge(item.readTime)}</p>
+      </a>`;
+  }).join('\n      ');
 }
 
 function generateArticleCountBadge(archive, feed) {
@@ -2142,6 +2170,8 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
     '<!-- BUILD:TOPIC_FILTER_CHIPS -->': generateTopicFilterChipsHtml(archive),
     '<!-- BUILD:LATEST_ALL -->': generateLatestAllHtml(archive, feed),
     '<!-- BUILD:ARTICLE_COUNT_BADGE -->': generateArticleCountBadge(archive, feed),
+    '<!-- BUILD:EDITORS_PICKS -->': generateEditorsPicksHtml(archive),
+    '<!-- BUILD:ANALYSIS_TOPIC_CHIPS -->': generateTopicFilterChipsHtml(archive),
     '<!-- BUILD:PODCAST_TEASER -->': generatePodcastTeaserHtml(feed),
     '<!-- BUILD:PODCAST_EPISODES -->': generatePodcastEpisodesHtml(feed),
     '<!-- BUILD:PODCAST_TAG_FILTERS -->': generatePodcastTagFiltersHtml(feed),
@@ -2334,6 +2364,18 @@ function copyStaticFiles({ archive, feed, newsItems, contracts }) {
   if (fs.existsSync(redirectsSrc)) {
     fs.copyFileSync(redirectsSrc, path.join(DIST_DIR, '_redirects'));
     console.log('Copied _redirects');
+  }
+
+  // Copy demos
+  const demosDir = path.join(__dirname, 'demos');
+  if (fs.existsSync(demosDir)) {
+    const distDemos = path.join(DIST_DIR, 'demos');
+    if (!fs.existsSync(distDemos)) fs.mkdirSync(distDemos, { recursive: true });
+    const demoFiles = fs.readdirSync(demosDir).filter(f => f.endsWith('.html'));
+    for (const f of demoFiles) {
+      fs.copyFileSync(path.join(demosDir, f), path.join(distDemos, f));
+    }
+    console.log(`Copied ${demoFiles.length} demo files`);
   }
 
   // Copy all images and assets from root (exclude mp4/zip)

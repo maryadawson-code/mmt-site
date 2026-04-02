@@ -956,9 +956,9 @@
         </div>
       </a>
       <div class="hidden md:flex items-center gap-5">
-        <a href="latest.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Intelligence</a>
+        <a href="latest.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Analysis</a>
         <a href="podcast.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Podcast</a>
-        <a href="resources.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Resources</a>
+        <a href="resources.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Intelligence Center</a>
         <a href="about.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">About</a>
         <button id="searchToggle" class="hover:opacity-70" style="color:var(--mmt-text-secondary);background:none;border:none;cursor:pointer;" aria-label="Search"><svg width="16" height="16" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></button>
         <a href="newsletter.html" class="btn-primary no-underline" style="margin-left:8px;">Subscribe</a>
@@ -970,9 +970,9 @@
     </div>
     <div id="mobileMenu" class="hidden md:hidden px-6 pb-4" style="background:var(--mmt-white);border-bottom:1px solid var(--mmt-border);">
       <div class="flex flex-col gap-4 pt-2" style="border-top:1px solid var(--mmt-border);">
-        <a href="latest.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Intelligence</a>
+        <a href="latest.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Analysis</a>
         <a href="podcast.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Podcast</a>
-        <a href="resources.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Resources</a>
+        <a href="resources.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Intelligence Center</a>
         <a href="about.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">About</a>
         <div class="pt-3 mt-1" style="border-top:1px solid var(--mmt-border);">
           <a href="newsletter.html" class="btn-primary no-underline">Subscribe</a>
@@ -987,88 +987,108 @@
 
 <!-- ===== SCREEN: UPLOAD (Hero + Form Combined) ===== -->
 <div id="screen-upload" class="screen active">
-  <div class="hero">
-    <div class="hero-badge">Federal Proposal Scoring</div>
-    <h1 style="font-family:'Inter',system-ui,sans-serif;font-size:clamp(2rem,5vw,3rem);font-weight:700;line-height:1.15;margin-bottom:1rem;color:var(--mmt-navy);">Proposal<span style="color: var(--mmt-teal, #457B9D);">Pulse</span></h1>
-    <p>Upload your proposal document. Get a scored assessment across nine criteria in under 60 seconds.</p>
-    <p class="hero-sub">Supports pitch decks, white papers, RFP responses, capabilities statements, pricing volumes, and executive summaries.</p>
-    <details class="criteria-explainer">
-      <summary>What are the 9 scoring criteria?</summary>
-      <div class="criteria-grid">
-        <p class="criteria-note">Criteria adapt to your document type. Here's what we evaluate:</p>
-        <ol>
-          <li><strong>Problem Clarity</strong> — Is the agency's mission problem specific and urgent?</li>
-          <li><strong>Mission Relevance</strong> — Does the solution connect to stated mission outcomes?</li>
-          <li><strong>Solution / Technical Approach</strong> — Is the methodology clear and feasible?</li>
-          <li><strong>Market Sizing / Scope</strong> — Are contract vehicles and federal market addressed?</li>
-          <li><strong>Team & Credibility</strong> — Relevant credentials, clearances, federal experience?</li>
-          <li><strong>Traction / Past Performance</strong> — Real pilots, contracts, or references?</li>
-          <li><strong>Financials / Pricing</strong> — Numbers defensible? Unit economics clear?</li>
-          <li><strong>Competitive Position</strong> — Differentiation specific? Incumbent risk addressed?</li>
-          <li><strong>Writing Quality / The Ask</strong> — Clear, organized, and easy to act on?</li>
-        </ol>
-      </div>
-    </details>
-
-    <div style="background:rgba(45,106,79,0.08);border:1px solid rgba(45,106,79,0.2);border-radius:12px;padding:16px 20px;margin:24px auto;max-width:640px;font-size:14px;line-height:1.5;color:var(--mmt-text, #102033);">
-      <strong style="color:#2d6a4f;">&#128274; Your proposal is protected.</strong>
-      Your data is never used to train AI models. Document text purged after 90 days.
-      <a href="/security.html" style="color:#2d6a4f;font-weight:600;text-decoration:underline;">Full security details &rarr;</a>
+  <div class="hero" style="text-align:left;max-width:100%;">
+    <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:var(--mmt-teal);margin-bottom:16px;">Evaluator-style scoring, before you submit</div>
+    <h1 style="font-family:'Inter',system-ui,sans-serif;font-size:clamp(32px,5vw,52px);font-weight:900;line-height:1.08;letter-spacing:-0.03em;margin-bottom:16px;color:var(--mmt-navy);max-width:700px;">Upload the draft. See what could cost the bid.</h1>
+    <p style="font-size:clamp(16px,1.4vw,19px);color:var(--mmt-text-secondary);max-width:640px;margin-bottom:24px;line-height:1.6;">ProposalPulse turns an uploaded proposal into an evaluator-style scorecard, shows the highest-impact fix, and follows with a strengthened Gold Team Review by email.</p>
+    <div style="display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--mmt-text-secondary);margin-bottom:16px;">
+      <span><strong style="color:var(--mmt-navy);font-weight:800;">3</strong> free uses</span>
+      <span><strong style="color:var(--mmt-navy);font-weight:800;">~90s</strong> to scorecard</span>
+      <span><strong style="color:var(--mmt-navy);font-weight:800;">Gold Team</strong> follow-up by email</span>
     </div>
-
-    <!-- Sample Output — Two-File Model -->
-    <div style="text-align:center;padding:2rem 0;">
-      <p class="text-sm font-semibold" style="color:var(--text-primary);margin-bottom:0.75rem;">Two deliverables per assessment</p>
-      <div style="display:flex;flex-direction:column;gap:12px;max-width:480px;margin:0 auto;">
-        <!-- Assessment Report -->
-        <a href="/samples/proposalpulse-assessment.html" target="_blank" rel="noopener" class="inline-flex items-center gap-3 no-underline" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.15);border-radius:12px;padding:12px 20px;transition:all 0.3s;" onmouseover="this.style.borderColor='rgba(69,123,157,0.3)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(69,123,157,0.15)';this.style.transform='none'">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary-cyan)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>
-          <div style="text-align:left;flex:1;">
-            <p style="font-size:0.875rem;font-weight:600;color:var(--text-primary);margin:0;">1. Scored Assessment Report</p>
-            <p style="font-size:0.75rem;color:var(--text-secondary);margin:2px 0 0;">9-criteria scorecard with grades, red flags &amp; top fixes — HTML scorecard, 9 criteria</p>
-          </div>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        </a>
-        <!-- Polished Final Version -->
-        <a href="/samples/proposalpulse-assessment.html" target="_blank" rel="noopener" class="inline-flex items-center gap-3 no-underline" style="background:var(--mmt-soft);border:1px solid rgba(0,255,133,0.15);border-radius:12px;padding:12px 20px;transition:all 0.3s;" onmouseover="this.style.borderColor='rgba(0,255,133,0.3)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(0,255,133,0.15)';this.style.transform='none'">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--mmt-teal)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/><path d="M9 15l3-3 3 3"/></svg>
-          <div style="text-align:left;flex:1;">
-            <p style="font-size:0.875rem;font-weight:600;color:var(--text-primary);margin:0;">2. Polished Final Version</p>
-            <p style="font-size:0.75rem;color:var(--text-secondary);margin:2px 0 0;">Your document rewritten with improvements highlighted &amp; confidence scores — HTML report with tracked improvements</p>
-          </div>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        </a>
-      </div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;padding-top:14px;border-top:1px solid rgba(69,123,157,0.12);margin-bottom:20px;">
+      <span style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--mmt-text-secondary);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--mmt-teal)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Not used as training data</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--mmt-text-secondary);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--mmt-teal)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg> Private by default</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--mmt-text-secondary);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--mmt-teal)" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Built for sensitive proposals</span>
     </div>
   </div>
 
-    <!-- S15-06: How It Works -->
-    <div style="padding:2.5rem 0 2rem;max-width:600px;margin:0 auto;">
-      <p class="text-sm font-semibold text-center" style="color:var(--text-primary);margin-bottom:1.5rem;">How it works</p>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;text-align:center;">
-        <div>
-          <div style="width:40px;height:40px;border-radius:50%;background:rgba(69,123,157,0.1);border:1px solid var(--mmt-border);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
-            <span style="font-size:0.875rem;font-weight:700;color:var(--mmt-teal);">1</span>
-          </div>
-          <p style="font-size:0.8125rem;font-weight:600;color:var(--text-primary);margin:0 0 4px;">Upload</p>
-          <p style="font-size:0.75rem;color:var(--text-secondary);margin:0;line-height:1.4;">PDF, PPTX, or DOCX — proposals, white papers, pitch decks</p>
-        </div>
-        <div>
-          <div style="width:40px;height:40px;border-radius:50%;background:rgba(69,123,157,0.1);border:1px solid var(--mmt-border);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
-            <span style="font-size:0.875rem;font-weight:700;color:var(--mmt-teal);">2</span>
-          </div>
-          <p style="font-size:0.8125rem;font-weight:600;color:var(--text-primary);margin:0 0 4px;">Score</p>
-          <p style="font-size:0.75rem;color:var(--text-secondary);margin:0;line-height:1.4;">AI evaluates against 9 federal proposal criteria</p>
-        </div>
-        <div>
-          <div style="width:40px;height:40px;border-radius:50%;background:rgba(0,255,133,0.1);border:1px solid rgba(0,255,133,0.2);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
-            <span style="font-size:0.875rem;font-weight:700;color:var(--mmt-teal);">3</span>
-          </div>
-          <p style="font-size:0.8125rem;font-weight:600;color:var(--text-primary);margin:0 0 4px;">Two Outputs</p>
-          <p style="font-size:0.75rem;color:var(--text-secondary);margin:0;line-height:1.4;">Scored assessment report + polished final version with improvements highlighted</p>
-        </div>
+  <!-- Demo Walkthrough -->
+  <div style="margin:0 -20px 32px;padding:32px 20px;background:var(--mmt-soft);border-radius:16px;">
+    <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:var(--mmt-teal);margin-bottom:10px;text-align:center;">See the full workflow</div>
+    <p style="text-align:center;font-size:clamp(20px,2.5vw,28px);font-weight:800;letter-spacing:-0.02em;margin-bottom:24px;color:var(--mmt-navy);">From upload to scorecard to Gold Team Review</p>
+    <div style="border-radius:18px;overflow:hidden;box-shadow:0 24px 80px rgba(10,25,47,0.10),0 2px 12px rgba(10,25,47,0.06);border:1px solid rgba(69,123,157,0.08);">
+      <iframe src="/demos/proposalpulse-demo.html" style="width:100%;height:1200px;border:none;display:block;" title="ProposalPulse product demo" loading="lazy"></iframe>
+    </div>
+  </div>
+
+  <!-- The 9 Criteria -->
+  <section style="margin:0 -20px 32px;padding:40px 20px;background:var(--mmt-soft);border-radius:16px;">
+    <div style="text-align:center;margin-bottom:32px;">
+      <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:var(--mmt-teal);margin-bottom:10px;">What we score</div>
+      <h2 style="font-family:'Inter',system-ui,sans-serif;font-size:clamp(22px,2.5vw,30px);font-weight:800;letter-spacing:-0.02em;color:var(--mmt-navy);margin-bottom:8px;">9 criteria an evaluator actually cares about</h2>
+      <p style="font-size:15px;color:var(--text-secondary);max-width:560px;margin:0 auto;">Each criterion is graded A through F with specific evidence from your document. No vague feedback. No filler.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;">
+      <div style="padding:16px 18px;background:rgba(255,255,255,0.7);border:1px solid rgba(69,123,157,0.1);border-radius:10px;">
+        <h3 style="font-size:14px;font-weight:700;color:var(--mmt-navy);margin-bottom:4px;">1. Problem Clarity</h3>
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.55;margin:0;">Is the agency's mission problem stated first and specific enough to pass the "so what" test? Evaluators eliminate proposals that open with company history instead of the agency's pain.</p>
+      </div>
+      <div style="padding:16px 18px;background:rgba(255,255,255,0.7);border:1px solid rgba(69,123,157,0.1);border-radius:10px;">
+        <h3 style="font-size:14px;font-weight:700;color:var(--mmt-navy);margin-bottom:4px;">2. Mission Relevance</h3>
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.55;margin:0;">Does your solution connect to the agency's stated mission? A technically great product that ignores mission language gets downgraded fast.</p>
+      </div>
+      <div style="padding:16px 18px;background:rgba(255,255,255,0.7);border:1px solid rgba(69,123,157,0.1);border-radius:10px;">
+        <h3 style="font-size:14px;font-weight:700;color:var(--mmt-navy);margin-bottom:4px;">3. Solution Clarity</h3>
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.55;margin:0;">Is the technical approach clear, feasible, and described in language the target agency uses? Vague architectures lose points every time.</p>
+      </div>
+      <div style="padding:16px 18px;background:rgba(255,255,255,0.7);border:1px solid rgba(69,123,157,0.1);border-radius:10px;">
+        <h3 style="font-size:14px;font-weight:700;color:var(--mmt-navy);margin-bottom:4px;">4. Market Sizing</h3>
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.55;margin:0;">Is the federal market sized appropriately with real contract vehicles (OTAs, IDIQs, GSA MAS)? Commercial TAM numbers mean nothing here.</p>
+      </div>
+      <div style="padding:16px 18px;background:rgba(255,255,255,0.7);border:1px solid rgba(69,123,157,0.1);border-radius:10px;">
+        <h3 style="font-size:14px;font-weight:700;color:var(--mmt-navy);margin-bottom:4px;">5. Team and Credibility</h3>
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.55;margin:0;">Are federal credentials, clearances, and relevant experience front-loaded? Evaluators look for this in the first 30 seconds.</p>
+      </div>
+      <div style="padding:16px 18px;background:rgba(255,255,255,0.7);border:1px solid rgba(69,123,157,0.1);border-radius:10px;">
+        <h3 style="font-size:14px;font-weight:700;color:var(--mmt-navy);margin-bottom:4px;">6. Traction</h3>
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.55;margin:0;">Real pilots, contracts, or FedRAMP status? Or just "in conversations with"? Evaluators can tell the difference immediately.</p>
+      </div>
+      <div style="padding:16px 18px;background:rgba(255,255,255,0.7);border:1px solid rgba(69,123,157,0.1);border-radius:10px;">
+        <h3 style="font-size:14px;font-weight:700;color:var(--mmt-navy);margin-bottom:4px;">7. Financials</h3>
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.55;margin:0;">Do the numbers add up? Do charts match text? Are projections defensible? Inconsistent financials are the fastest way to lose credibility.</p>
+      </div>
+      <div style="padding:16px 18px;background:rgba(255,255,255,0.7);border:1px solid rgba(69,123,157,0.1);border-radius:10px;">
+        <h3 style="font-size:14px;font-weight:700;color:var(--mmt-navy);margin-bottom:4px;">8. Competitive Position</h3>
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.55;margin:0;">Is the competitive landscape acknowledged? Is your differentiation specific? Ignoring incumbents tells the evaluator you have not done your homework.</p>
+      </div>
+      <div style="padding:16px 18px;background:rgba(255,255,255,0.7);border:1px solid rgba(69,123,157,0.1);border-radius:10px;">
+        <h3 style="font-size:14px;font-weight:700;color:var(--mmt-navy);margin-bottom:4px;">9. The Ask</h3>
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.55;margin:0;">Is the funding amount clear? Are milestones tied to mission outcomes? A vague ask signals a vague plan.</p>
       </div>
     </div>
+    <p style="text-align:center;font-size:13px;color:var(--text-secondary);margin-top:20px;">Criteria adapt to your document type. Upload an RFP response and you get RFP-specific factors. Upload a capability statement and you get cap-statement factors.</p>
+  </section>
+
+  <!-- Who It's For -->
+  <section style="margin:0 -20px 32px;padding:40px 20px;">
+    <div style="text-align:center;margin-bottom:28px;">
+      <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:var(--mmt-teal);margin-bottom:10px;">Right tool, right document</div>
+      <h2 style="font-family:'Inter',system-ui,sans-serif;font-size:clamp(22px,2.5vw,30px);font-weight:800;letter-spacing:-0.02em;color:var(--mmt-navy);">Is ProposalPulse right for your document?</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:680px;margin:0 auto;">
+      <div style="padding:20px 22px;background:rgba(69,123,157,0.04);border:1px solid rgba(69,123,157,0.12);border-radius:12px;">
+        <h3 style="font-size:14px;font-weight:700;color:var(--mmt-teal);margin-bottom:12px;display:flex;align-items:center;gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--mmt-teal)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Works great for</h3>
+        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+          <li style="font-size:13px;color:var(--text-secondary);padding-left:18px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;color:var(--mmt-teal);">-</span>Pitch decks</li>
+          <li style="font-size:13px;color:var(--text-secondary);padding-left:18px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;color:var(--mmt-teal);">-</span>White papers and technical volumes</li>
+          <li style="font-size:13px;color:var(--text-secondary);padding-left:18px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;color:var(--mmt-teal);">-</span>Capability statements</li>
+          <li style="font-size:13px;color:var(--text-secondary);padding-left:18px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;color:var(--mmt-teal);">-</span>RFP responses</li>
+          <li style="font-size:13px;color:var(--text-secondary);padding-left:18px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;color:var(--mmt-teal);">-</span>Cost and pricing volumes</li>
+          <li style="font-size:13px;color:var(--text-secondary);padding-left:18px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;color:var(--mmt-teal);">-</span>Executive summaries</li>
+        </ul>
+      </div>
+      <div style="padding:20px 22px;background:rgba(230,57,70,0.03);border:1px solid rgba(230,57,70,0.12);border-radius:12px;">
+        <h3 style="font-size:14px;font-weight:700;color:#E63946;margin-bottom:12px;display:flex;align-items:center;gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E63946" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Not ideal for</h3>
+        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+          <li style="font-size:13px;color:var(--text-secondary);padding-left:18px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;color:#E63946;">-</span>Incomplete or partial scans</li>
+          <li style="font-size:13px;color:var(--text-secondary);padding-left:18px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;color:#E63946;">-</span>Giant appendices without a main document</li>
+          <li style="font-size:13px;color:var(--text-secondary);padding-left:18px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;color:#E63946;">-</span>Image-only files (no extractable text)</li>
+          <li style="font-size:13px;color:var(--text-secondary);padding-left:18px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;color:#E63946;">-</span>Final legal review (we score content, not compliance)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
 
   <div id="upload-error" class="error-banner" role="alert">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 10.5a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5zM8.75 4v4.5h-1.5V4h1.5z"/></svg>
@@ -1283,6 +1303,39 @@
       </div><!-- /screen-container -->
     </div><!-- /lt-container -->
 
+  <!-- FAQ -->
+  <section class="px-6" style="padding:48px 0 40px;">
+    <div style="max-width:680px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:28px;">
+        <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:var(--mmt-teal);margin-bottom:10px;">Common questions</div>
+        <h2 style="font-family:'Inter',system-ui,sans-serif;font-size:clamp(22px,2.5vw,30px);font-weight:800;letter-spacing:-0.02em;color:var(--mmt-navy);">Before you upload</h2>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <details style="border:1px solid rgba(69,123,157,0.12);border-radius:10px;padding:0;">
+          <summary style="padding:16px 20px;font-size:15px;font-weight:600;color:var(--mmt-navy);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;">Is my proposal stored?<span style="color:var(--mmt-teal);font-size:18px;transition:transform 0.2s;">+</span></summary>
+          <div style="padding:0 20px 16px;font-size:14px;color:var(--text-secondary);line-height:1.65;">No. Your document is processed in real time to generate the scorecard and then discarded. It is not saved to any database, not written to disk, and not retained after your session ends. We keep your scores for 90 days so you can reference them, but the original file is gone.</div>
+        </details>
+        <details style="border:1px solid rgba(69,123,157,0.12);border-radius:10px;padding:0;">
+          <summary style="padding:16px 20px;font-size:15px;font-weight:600;color:var(--mmt-navy);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;">Who can see my document?<span style="color:var(--mmt-teal);font-size:18px;transition:transform 0.2s;">+</span></summary>
+          <div style="padding:0 20px 16px;font-size:14px;color:var(--text-secondary);line-height:1.65;">Nobody. Your upload is private by default. It is sent directly to our analysis provider for scoring and is not shared with any third party. It is not used as training data. Only you see the results.</div>
+        </details>
+        <details style="border:1px solid rgba(69,123,157,0.12);border-radius:10px;padding:0;">
+          <summary style="padding:16px 20px;font-size:15px;font-weight:600;color:var(--mmt-navy);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;">What kinds of documents work best?<span style="color:var(--mmt-teal);font-size:18px;transition:transform 0.2s;">+</span></summary>
+          <div style="padding:0 20px 16px;font-size:14px;color:var(--text-secondary);line-height:1.65;">Documents with extractable text: PDF, DOCX, or PPTX under 4MB. The scorer reads your content and evaluates the writing, structure, and substance. It works best on near-final drafts where the content is complete. Scanned images without OCR text or files that are mostly appendix tables will not get useful results.</div>
+        </details>
+        <details style="border:1px solid rgba(69,123,157,0.12);border-radius:10px;padding:0;">
+          <summary style="padding:16px 20px;font-size:15px;font-weight:600;color:var(--mmt-navy);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;">How accurate is the scoring?<span style="color:var(--mmt-teal);font-size:18px;transition:transform 0.2s;">+</span></summary>
+          <div style="padding:0 20px 16px;font-size:14px;color:var(--text-secondary);line-height:1.65;">The scoring framework is modeled on how federal evaluators actually grade proposals: structure, compliance, evidence, and specificity. It catches the same gaps a human reviewer would flag. That said, this is a draft review tool, not a substitute for a full capture review with your team. Think of it as a second set of eyes that never gets tired and never forgets what the RFP asked for.</div>
+        </details>
+        <details style="border:1px solid rgba(69,123,157,0.12);border-radius:10px;padding:0;">
+          <summary style="padding:16px 20px;font-size:15px;font-weight:600;color:var(--mmt-navy);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;">Is this a replacement for capture review?<span style="color:var(--mmt-teal);font-size:18px;transition:transform 0.2s;">+</span></summary>
+          <div style="padding:0 20px 16px;font-size:14px;color:var(--text-secondary);line-height:1.65;">No. ProposalPulse is designed for the draft stage -- the moment when you want to know if your document is on track before you send it to your review team. It helps you fix the obvious gaps early so your capture review can focus on strategy instead of structure. Use it before the red team, not instead of one.</div>
+        </details>
+      </div>
+      <p style="text-align:center;font-size:13px;color:var(--text-secondary);margin-top:20px;">Payment is handled entirely by Stripe. We never see your card number. Questions? <a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);text-decoration:none;">mary@missionmeetstech.com</a></p>
+    </div>
+  </section>
+
   <!-- Cross-sell: MarketPulse -->
   <section class="px-6" style="padding:48px 0;">
     <div class="max-w-3xl mx-auto">
@@ -1301,7 +1354,7 @@
 
   <!-- Footer -->
     <footer class="wrap" style="padding:28px 0 58px;">
-    <div style="border-top:1px solid var(--mmt-border);padding-top:24px;display:grid;grid-template-columns:1fr auto auto;gap:40px;color:var(--mmt-text-secondary);font-size:13px;">
+    <div style="border-top:1px solid var(--mmt-border);padding-top:24px;display:grid;grid-template-columns:1fr auto auto auto auto;gap:32px;color:var(--mmt-text-secondary);font-size:13px;">
       <div>
         <p style="margin-bottom:6px;"><strong style="color:var(--mmt-navy);">Mission Meets Tech</strong></p>
         <p>Federal health IT intelligence. Mission first.</p>
@@ -1309,27 +1362,33 @@
         <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;">
-        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Explore</strong>
-        <a href="latest.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Intelligence</a>
+        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Read</strong>
+        <a href="latest.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Latest Analysis</a>
+        <a href="topics.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Topics</a>
         <a href="podcast.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Podcast</a>
-        <a href="resources.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Resources</a>
-        <a href="proposal-pulse.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">ProposalPulse</a>
-        <a href="marketpulse.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">MarketPulse</a>
-        <a href="about.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">About</a>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;">
-        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Connect</strong>
-        <a href="newsletter.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Subscribe</a>
-        <a href="mailto:mary@missionmeetstech.com" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Contact</a>
-        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">LinkedIn</a>
-        <a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank" rel="noopener" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Apple Podcasts</a>
-        <a href="https://open.spotify.com/show/7sND342duH7Buw1cUs60lP" target="_blank" rel="noopener" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Spotify</a>
+        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Tools</strong>
+        <a href="proposal-pulse.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">ProposalPulse</a>
+        <a href="marketpulse.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">MarketPulse</a>
+        <a href="contract-tracker.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Contract Tracker</a>
       </div>
-    </div>
-    <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--mmt-border);display:flex;gap:16px;font-size:12px;color:var(--mmt-text-secondary);">
-      <a href="privacy.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Privacy</a>
-      <a href="terms.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Terms</a>
-      <a href="security.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Security</a>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Reference</strong>
+        <a href="glossary.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Glossary</a>
+        <a href="contracting.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Contracting Hub</a>
+        <a href="agency-sources.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Agency Sources</a>
+        <a href="events.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Events</a>
+        <a href="newswire.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">News Wire</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Trust</strong>
+        <a href="about.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">About</a>
+        <a href="security.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Security</a>
+        <a href="privacy.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Privacy</a>
+        <a href="terms.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Terms</a>
+        <a href="mailto:mary@missionmeetstech.com" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Contact</a>
+      </div>
     </div>
   </footer>
 

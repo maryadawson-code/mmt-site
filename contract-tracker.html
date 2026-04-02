@@ -102,21 +102,11 @@
 
   <main id="main-content">
   <!-- Hero -->
-  <section class="pt-36 pb-20 px-6">
-    <div class="max-w-4xl mx-auto text-center">
+  <section class="pt-36 pb-16 px-6">
+    <div class="max-w-4xl mx-auto">
       <p class="text-xs uppercase tracking-widest font-semibold mb-4" style="color:var(--mmt-teal);">Procurement Intelligence</p>
       <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-4" style="font-family:'Inter',system-ui,sans-serif;">Contract Tracker</h1>
-      <p class="text-lg max-w-2xl mx-auto leading-relaxed" style="color:var(--mmt-text);">Major federal health IT contracts across DHA, VA, and federal health agencies. Active programs, upcoming recompetes, and what you need to know before you bid.</p>
-    </div>
-  </section>
-
-  <!-- AI Disclaimer -->
-  <section class="px-6 pt-2 pb-0">
-    <div class="max-w-5xl mx-auto">
-      <div class="rounded-lg px-4 py-3" style="background:rgba(69,123,157,0.08);border:1px solid rgba(69,123,157,0.2);">
-        <p class="text-xs leading-relaxed mb-2" style="color:var(--mmt-teal);"><strong>Data Sources &amp; Accuracy:</strong> Curated contract data is sourced from SAM.gov, USASpending, agency announcements, and congressional records. Opportunity Radar and Vehicle Radar results are AI-generated estimates produced by automated daily scans. Confidence scores indicate model certainty, not verified accuracy. "Last verified" dates are shown per contract entry. Always verify independently on <a href="https://sam.gov" target="_blank" rel="noopener" class="font-semibold hover:opacity-80" style="color:var(--mmt-teal);text-decoration:underline;">SAM.gov</a> or the relevant agency procurement portal before making business decisions.</p>
-        <p class="text-xs" style="color:var(--mmt-text-secondary);">Curated data last verified: March 17, 2026</p>
-      </div>
+      <p class="text-lg max-w-2xl leading-relaxed" style="color:var(--mmt-text);">The federal health IT contracts worth watching, with sourcing, timing signals, and practical implications.</p>
     </div>
   </section>
 
@@ -206,10 +196,29 @@
     </div>
   </section>
 
-  <!-- Context Note -->
+  <!-- Method Note (spec S15 section 6) -->
   <section class="py-12 px-6">
-    <div class="max-w-3xl mx-auto text-center">
-      <p class="text-sm leading-relaxed" style="color:var(--mmt-text-secondary);"><strong style="color:var(--mmt-teal);">AI-Generated Intelligence:</strong> Data on this page is refreshed every 4 hours from SAM.gov, USASpending.gov, and federal agency sources. Each data point is checked against multiple sources before publication. Items marked <span style="color:var(--mmt-teal);">[Unverified]</span> have single-source confirmation only. Always verify independently on <a href="https://sam.gov" target="_blank" rel="noopener" class="font-semibold hover:opacity-80" style="color:var(--mmt-teal);">SAM.gov</a> for procurement decisions.</p>
+    <div class="max-w-3xl mx-auto">
+      <div class="rounded-lg p-6" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.15);">
+        <h2 class="text-lg font-bold mb-4" style="color:var(--mmt-navy);">How we source this data</h2>
+        <div class="space-y-3">
+          <div class="flex items-start gap-3">
+            <span class="text-xs font-bold px-2 py-0.5 rounded shrink-0" style="background:rgba(69,123,157,0.15);color:var(--mmt-teal);">Verified</span>
+            <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">Contract names, agencies, award dates, and ceiling values confirmed against SAM.gov, USASpending.gov, agency announcements, or congressional records. Each entry shows a "last verified" date.</p>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-xs font-bold px-2 py-0.5 rounded shrink-0" style="background:rgba(255,184,48,0.15);color:#B8860B;">Estimated</span>
+            <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">Recompete timelines, contract ceilings without public disclosure, and opportunity confidence scores are estimates based on historical patterns and available signals. These are labeled as estimates wherever they appear.</p>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-xs font-bold px-2 py-0.5 rounded shrink-0" style="background:rgba(92,107,122,0.15);color:var(--mmt-text-secondary);">Inferred</span>
+            <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">Strategic implications, likely vehicle assignments, and competitive positioning are editorial analysis based on procurement patterns. These represent informed judgment, not confirmed facts.</p>
+          </div>
+        </div>
+        <div class="mt-4 pt-4" style="border-top:1px solid rgba(69,123,157,0.1);">
+          <p class="text-xs leading-relaxed" style="color:var(--mmt-text-secondary);">Curated contract data is reviewed and updated regularly. Opportunity Radar and Vehicle Radar run automated daily scans. Always verify independently on <a href="https://sam.gov" target="_blank" rel="noopener" class="font-semibold hover:opacity-80" style="color:var(--mmt-teal);">SAM.gov</a> or the relevant agency procurement portal before making business decisions.</p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -276,6 +285,23 @@
         </table>
       </div>
       <p class="text-xs mt-4" style="color:var(--mmt-text-secondary);">Vehicle activity based on SAM.gov task order postings and MMT contract tracker data. Not a predictive model.</p>
+    </div>
+  </section>
+
+  <!-- MarketPulse Bridge (spec S15 section 7) -->
+  <section class="py-16 px-6 section-alt">
+    <div class="max-w-3xl mx-auto">
+      <div class="rounded-lg p-6 md:p-8" style="border:1px solid rgba(69,123,157,0.2);background:rgba(69,123,157,0.03);">
+        <div class="flex flex-col md:flex-row md:items-center gap-6">
+          <div class="flex-1">
+            <h2 class="text-xl font-bold mb-2" style="color:var(--mmt-navy);">Need deeper research on a specific opportunity?</h2>
+            <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">MarketPulse generates custom tactical briefs on any federal health IT contract or opportunity. Competitive landscape, incumbent analysis, and bid/no-bid signals -- delivered to your inbox.</p>
+          </div>
+          <div class="shrink-0">
+            <a href="marketpulse.html" class="btn-primary no-underline inline-block px-6 py-3 rounded-lg text-sm font-semibold" style="border:none;">Request a Brief</a>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 

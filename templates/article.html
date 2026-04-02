@@ -31,18 +31,54 @@
   <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
   <link rel="stylesheet" href="/styles/tailwind.css">
   <style>
+    /* Article typography — premium editorial reading */
     .article-content { line-height: 1.9; font-size: 17px; color: #314155; }
-    .article-content h2 { font-size: 30px; font-weight: 800; margin: 40px 0 16px; color: var(--mmt-navy, #0A192F); letter-spacing: -0.03em; }
-    .article-content h3 { font-size: 22px; font-weight: 800; margin: 32px 0 12px; color: var(--mmt-navy, #0A192F); letter-spacing: -0.02em; }
+    .article-content h2 { font-size: 28px; font-weight: 800; margin: 48px 0 16px; color: var(--mmt-navy, #0A192F); letter-spacing: -0.03em; line-height: 1.15; }
+    .article-content h3 { font-size: 22px; font-weight: 800; margin: 36px 0 12px; color: var(--mmt-navy, #0A192F); letter-spacing: -0.02em; line-height: 1.2; }
     .article-content p { margin-bottom: 24px; max-width: 65ch; }
     .article-content ul, .article-content ol { margin-bottom: 24px; padding-left: 1.5rem; max-width: 65ch; }
     .article-content li { margin-bottom: 10px; }
-    .article-content blockquote { margin: 32px 0; padding: 20px 24px; border-left: 4px solid var(--mmt-teal, #457B9D); background: rgba(69,123,157,0.06); border-radius: 0 var(--radius-sm, 18px) var(--radius-sm, 18px) 0; color: var(--mmt-navy, #0A192F); font-size: 20px; line-height: 1.5; letter-spacing: -0.02em; font-weight: 600; max-width: 65ch; }
+    .article-content blockquote { margin: 32px 0; padding: 20px 24px; border-left: 4px solid var(--mmt-teal, #457B9D); background: rgba(69,123,157,0.06); border-radius: 0 8px 8px 0; color: var(--mmt-navy, #0A192F); font-size: 20px; line-height: 1.5; letter-spacing: -0.02em; font-weight: 600; max-width: 65ch; }
     .article-content a { color: var(--mmt-teal, #457B9D); text-decoration: underline; text-underline-offset: 3px; }
     .article-content a:hover { opacity: 0.7; }
     .article-content strong { color: var(--mmt-navy, #0A192F); font-weight: 600; }
-    .article-content img { border-radius: var(--radius-sm, 18px); margin: 28px 0; }
+    .article-content img { border-radius: 8px; margin: 28px 0; }
     .article-content hr { border: none; border-top: 1px solid var(--mmt-border, #D8E0E8); margin: 36px 0; }
+
+    /* "What this means" summary box */
+    .wtm-box { background: var(--mmt-soft, #F3F4F6); border: 1px solid var(--mmt-border, #D8E0E8); border-radius: 8px; padding: 24px 28px; margin-bottom: 40px; }
+    .wtm-box h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--mmt-teal, #457B9D); margin: 0 0 14px; }
+    .wtm-box ul { list-style: none; padding: 0; margin: 0; }
+    .wtm-box li { position: relative; padding-left: 20px; margin-bottom: 10px; font-size: 15px; line-height: 1.6; color: var(--mmt-ink, #102033); }
+    .wtm-box li::before { content: ''; position: absolute; left: 0; top: 9px; width: 6px; height: 6px; border-radius: 50%; background: var(--mmt-teal, #457B9D); }
+    .wtm-box li:last-child { margin-bottom: 0; }
+
+    /* Share actions */
+    .share-actions { display: flex; align-items: center; gap: 12px; }
+    .share-btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; color: var(--mmt-text-secondary, #5C6B7A); background: var(--mmt-soft, #F3F4F6); border: 1px solid var(--mmt-border, #D8E0E8); text-decoration: none; cursor: pointer; transition: background 0.15s; }
+    .share-btn:hover { background: var(--mmt-border, #D8E0E8); }
+
+    /* Inline subscribe block */
+    .inline-subscribe { background: var(--mmt-soft, #F3F4F6); border: 1px solid var(--mmt-border, #D8E0E8); border-radius: 8px; padding: 28px 32px; margin: 40px 0; max-width: 65ch; }
+    .inline-subscribe h3 { font-size: 18px; font-weight: 800; color: var(--mmt-navy, #0A192F); margin: 0 0 8px; }
+    .inline-subscribe p { font-size: 14px; color: var(--mmt-text-secondary, #5C6B7A); margin: 0 0 16px; line-height: 1.55; }
+    .inline-subscribe form { display: flex; gap: 8px; flex-wrap: wrap; }
+    .inline-subscribe input[type="email"] { flex: 1; min-width: 200px; padding: 10px 14px; border-radius: 6px; border: 1px solid var(--mmt-border, #D8E0E8); font-size: 14px; background: var(--mmt-white, #FFFFFF); color: var(--mmt-ink, #102033); outline: none; }
+    .inline-subscribe input[type="email"]:focus { border-color: var(--mmt-teal, #457B9D); }
+
+    /* Author card */
+    .author-card { display: flex; gap: 16px; align-items: flex-start; padding: 24px; border-radius: 8px; background: var(--mmt-soft, #F3F4F6); border: 1px solid var(--mmt-border, #D8E0E8); }
+    .author-card img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+    .author-card .author-info { font-size: 14px; line-height: 1.55; color: var(--mmt-text-secondary, #5C6B7A); }
+    .author-card .author-name { font-size: 16px; font-weight: 700; color: var(--mmt-navy, #0A192F); margin-bottom: 4px; }
+
+    /* Continue reading cards */
+    .continue-card { padding: 16px 0; border-bottom: 1px solid var(--mmt-border-light, #E8EDF2); }
+    .continue-card:last-child { border-bottom: none; }
+    .continue-card a { text-decoration: none; }
+    .continue-card .continue-title { font-size: 15px; font-weight: 700; color: var(--mmt-navy, #0A192F); line-height: 1.35; margin-bottom: 4px; }
+    .continue-card .continue-title:hover { opacity: 0.7; }
+    .continue-card .continue-meta { font-size: 12px; color: var(--mmt-text-secondary, #5C6B7A); }
   </style>
   <script type="application/ld+json">
   {
@@ -111,31 +147,74 @@
     </div>
   </nav>
 
-  <main id="main-content" class="wrap">
+  <main id="main-content">
 
-  <!-- Article Hero -->
-  <section style="padding:48px 0 24px;">
-    <div style="max-width:980px;">
+  <!-- Section 1: Article Header -->
+  <section class="wrap" style="padding:48px 0 0;">
+    <div style="max-width:740px;">
+      <!-- Breadcrumbs -->
+      <nav aria-label="Breadcrumb" style="margin-bottom:20px;">
+        <ol style="list-style:none;padding:0;margin:0;display:flex;align-items:center;gap:6px;font-size:13px;">
+          <li><a href="/" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Home</a></li>
+          <li style="color:var(--mmt-text-secondary);">/</li>
+          <li><a href="/latest.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Intelligence</a></li>
+        </ol>
+      </nav>
+
+      <!-- Topic tags -->
       <div class="kicker mb-3">{{TAGS}}</div>
-      <h1 style="font-size:clamp(34px, 4.4vw, 62px);line-height:0.96;letter-spacing:-0.045em;max-width:18ch;margin-bottom:18px;">{{TITLE}}</h1>
-      <p style="font-size:19px;line-height:1.58;color:var(--mmt-ink);max-width:70ch;margin-bottom:18px;">{{DESCRIPTION}}</p>
-      <div class="meta" style="justify-content:flex-start;gap:14px;margin-top:0;">
-        <span>By Mary Womack</span>
-        <span>{{READ_TIME}}</span>
-        <span>{{DATE}}</span>
+
+      <!-- H1 -->
+      <h1 style="font-size:clamp(30px, 4vw, 48px);line-height:1.08;letter-spacing:-0.035em;max-width:22ch;margin-bottom:16px;color:var(--mmt-navy, #0A192F);">{{TITLE}}</h1>
+
+      <!-- Dek / subtitle -->
+      <p style="font-size:19px;line-height:1.55;color:var(--mmt-text-secondary, #5C6B7A);max-width:60ch;margin-bottom:20px;">{{DESCRIPTION}}</p>
+
+      <!-- Byline + meta row -->
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding-bottom:20px;border-bottom:1px solid var(--mmt-border, #D8E0E8);margin-bottom:32px;">
+        <span style="font-size:14px;font-weight:700;color:var(--mmt-navy, #0A192F);">Mary Womack</span>
+        <span style="font-size:13px;color:var(--mmt-text-secondary, #5C6B7A);">{{DATE}}</span>
+        <span style="font-size:13px;color:var(--mmt-text-secondary, #5C6B7A);">{{READ_TIME}}</span>
+
+        <!-- Share actions -->
+        <div class="share-actions" style="margin-left:auto;">
+          <a href="https://www.linkedin.com/sharing/share-offsite/?url={{CANONICAL_URL}}" target="_blank" rel="noopener" class="share-btn no-underline" aria-label="Share on LinkedIn">
+            <svg width="14" height="14" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M100.28 448H7.4V148.9h92.88zm-46.44-340C24.13 108 0 83.87 0 54.28A53.88 53.88 0 0154.28 0c29.59 0 53.72 24.13 53.72 53.72A53.64 53.64 0 0153.84 108zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.83-48.3 93.97 0 111.32 61.9 111.32 142.3V448z"/></svg>
+            Share
+          </a>
+          <button onclick="navigator.clipboard.writeText(window.location.href).then(function(){this.textContent='Copied!'}.bind(this))" class="share-btn" aria-label="Copy link">
+            <svg width="14" height="14" viewBox="0 0 640 512" fill="currentColor" aria-hidden="true"><path d="M579.8 267.7c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0L579.8 267.7zM60.2 244.3c-56.5 56.5-56.5 148 0 204.5c50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C74 372.1 74 321.1 105.5 289.5L217.7 177.2c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.8l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132c-56.5-56.5-148-56.5-204.5 0L60.2 244.3z"/></svg>
+            Copy link
+          </button>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- Article Body + Rail -->
-  <section class="section">
+  <section class="wrap" style="padding:0 0 48px;">
     <div class="article-layout">
-      <article class="article-shell">
+      <article class="article-shell" style="max-width:740px;">
+
+        <!-- Section 2: What This Means (summary box) -->
+        {{WHAT_THIS_MEANS}}
+
+        <!-- Section 3: Main article body -->
         <div class="article-content">
           {{CONTENT}}
         </div>
 
-        <!-- Prev/Next (inside article shell, below content) -->
+        <!-- Section 4: Inline conversion block -->
+        <div class="inline-subscribe">
+          <h3>Get the next briefing in your inbox</h3>
+          <p>Bi-weekly federal health IT intelligence, written for the people who actually have to act on it.</p>
+          <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" target="_blank">
+            <input type="email" name="email" placeholder="you@agency.gov" required aria-label="Email address">
+            <button type="submit" class="btn-primary" style="padding:10px 18px;font-size:13px;">Subscribe</button>
+          </form>
+        </div>
+
+        <!-- Prev/Next navigation -->
         <div style="border-top:1px solid var(--mmt-border-light, #E8EDF2);padding-top:18px;margin-top:36px;">
           <div class="flex justify-between items-center">
             {{PREV_LINK}}
@@ -144,6 +223,7 @@
         </div>
       </article>
 
+      <!-- Section 5: Related context rail -->
       <aside class="article-rail">
         <div class="rail-box">
           <h4>Related resources</h4>
@@ -155,7 +235,7 @@
         </div>
         <div class="rail-box">
           <h4>Subscribe</h4>
-          <p style="font-size:14px;line-height:1.55;">Get the next briefing in your inbox. Bi-weekly intelligence for defense health decision-makers.</p>
+          <p style="font-size:14px;line-height:1.55;">Bi-weekly federal health IT intelligence for defense health decision-makers.</p>
           <div style="margin-top:14px;">
             <a href="/newsletter.html" class="btn-primary no-underline">Subscribe Free</a>
           </div>
@@ -164,40 +244,32 @@
     </div>
   </section>
 
-  <!-- Below-Article Continuation: 3 modules -->
-  <section class="section">
-    <div class="grid-3">
-      <!-- 1. Continue the topic (related articles) -->
-      <div class="resource-card" style="display:grid;gap:12px;align-content:start;">
-        <h3 style="font-size:18px;">Continue the topic</h3>
-        <p>Thesis-adjacent analysis from the same coverage areas.</p>
+  <!-- Section 6: Continue reading -->
+  <section class="wrap" style="padding:0 0 48px;">
+    <div style="max-width:740px;">
+      <h2 style="font-size:20px;font-weight:800;color:var(--mmt-navy, #0A192F);margin-bottom:16px;letter-spacing:-0.02em;">Continue reading</h2>
+      <div>
         {{RELATED_ARTICLES}}
       </div>
+    </div>
+  </section>
 
-      <!-- 2. Use a tool -->
-      <div class="resource-card" style="display:grid;gap:12px;align-content:start;">
-        <h3 style="font-size:18px;">Use a tool</h3>
-        <p>Extend the analysis with structured intelligence.</p>
-        <div style="display:grid;gap:10px;margin-top:8px;">
-          <a href="/proposal-pulse.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-teal);">ProposalPulse &rarr;</a>
-          <a href="/contract-tracker.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-teal);">Contract Tracker &rarr;</a>
-          <a href="/glossary.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-teal);">Glossary &rarr;</a>
-        </div>
-      </div>
-
-      <!-- 3. Subscribe with context -->
-      <div class="resource-card" style="display:grid;gap:12px;align-content:start;">
-        <h3 style="font-size:18px;">Subscribe</h3>
-        <p>Bi-weekly federal health IT intelligence. Written for the people who actually have to act on this information.</p>
-        <div style="margin-top:8px;">
-          <a href="/newsletter.html" class="btn-primary no-underline">Subscribe Free</a>
+  <!-- Section 7: Author credibility footer -->
+  <section class="wrap" style="padding:0 0 48px;">
+    <div style="max-width:740px;">
+      <div class="author-card">
+        <img src="/marywomack.jpg" alt="Mary Womack" width="56" height="56">
+        <div class="author-info">
+          <div class="author-name">Mary Womack</div>
+          <p style="margin:0 0 8px;">Veteran, federal health IT professional, and founder of Mission Meets Tech. I write about what policy, procurement, and platform decisions actually mean for the people doing the work.</p>
+          <a href="/about.html" class="no-underline hover:opacity-70" style="font-size:13px;font-weight:600;color:var(--mmt-teal, #457B9D);">About Mary &rarr;</a>
         </div>
       </div>
     </div>
   </section>
 
   <!-- MMT Tools -->
-  <section class="wrap" style="padding:48px 0 24px;">
+  <section class="wrap" style="padding:0 0 24px;">
     <p class="text-xs font-bold uppercase tracking-wider mb-4" style="color:var(--mmt-teal);">MMT Tools</p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
       <a href="/proposal-pulse.html" class="card rounded-xl p-6 no-underline block" style="transition:transform 0.2s;text-decoration:none;">

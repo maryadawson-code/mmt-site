@@ -33,10 +33,8 @@
   <style>
     :root {
       --mmt-teal: #457B9D;
-      
       --mmt-navy: #0A192F;
       --mmt-soft: #F3F4F6;
-      --mmt-white: #FFFFFF;
       --mmt-white: #FFFFFF;
       --mmt-text: #102033;
       --mmt-text-secondary: #5C6B7A;
@@ -48,19 +46,45 @@
     .btn-primary:hover { transform: translateY(-1px); opacity: 0.9; }
     .card { background: var(--mmt-soft); border: 1px solid rgba(69,123,157,0.1); }
     .card:hover { border-color: rgba(69,123,157,0.3); }
-    
     .section-alt { background: var(--mmt-white); }
     *:focus-visible { outline: 2px solid var(--mmt-teal); outline-offset: 2px; }
     .tag { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 600; }
-    /* S16-06: Mobile polish — glossary filters */
+
+    /* A-Z jump nav */
+    .az-nav { display: flex; gap: 4px; flex-wrap: wrap; }
+    .az-nav a, .az-nav span {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; border-radius: 6px; font-size: 0.8rem; font-weight: 600;
+      text-decoration: none; transition: background 0.15s, color 0.15s;
+    }
+    .az-nav a { color: var(--mmt-teal); background: rgba(69,123,157,0.06); }
+    .az-nav a:hover { background: rgba(69,123,157,0.15); }
+    .az-nav span { color: var(--mmt-text-secondary); opacity: 0.35; cursor: default; }
+
+    /* Sticky A-Z bar */
+    .az-sticky { position: sticky; top: 64px; z-index: 30; background: var(--mmt-white); border-bottom: 1px solid rgba(69,123,157,0.08); }
+
+    /* Term entries */
+    .term-entry { border-bottom: 1px solid rgba(69,123,157,0.08); padding: 1.25rem 0; }
+    .term-entry:last-child { border-bottom: none; }
+
+    /* Letter group headers */
+    .letter-header { font-size: 1.5rem; font-weight: 800; color: var(--mmt-teal); padding: 1.5rem 0 0.75rem; border-bottom: 2px solid rgba(69,123,157,0.15); margin-bottom: 0; scroll-margin-top: 140px; }
+
+    /* Category chips */
+    .filter-btn { font-size: 0.75rem; padding: 6px 14px; border-radius: 9999px; border: 1px solid; cursor: pointer; transition: all 0.15s; background: transparent; }
     @media (max-width: 480px) {
       .filter-btn { font-size: 0.65rem; padding: 4px 8px; }
+      .az-nav a, .az-nav span { width: 28px; height: 28px; font-size: 0.7rem; }
     }
+
+    /* Search highlight */
+    .term-entry.search-hidden { display: none; }
   </style>
 </head>
 <body>
 
-  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold" style="background:var(--mmt-teal); color: var(--mmt-navy);">Skip to main content</a>
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold" style="background:var(--mmt-teal); color:var(--mmt-navy);">Skip to main content</a>
 
     <!-- Navigation -->
   <nav class="nav-editorial">
@@ -100,352 +124,437 @@
 
   <main id="main-content">
 
+    <!-- Breadcrumb -->
     <div class="pt-28 pb-2 px-6">
-      <div class="max-w-6xl mx-auto">
+      <div class="max-w-4xl mx-auto">
         <p class="text-xs" style="color:var(--mmt-text-secondary);"><a href="resources.html" class="no-underline hover:opacity-80" style="color:var(--mmt-teal);">Resources</a> / Glossary</p>
       </div>
     </div>
 
-    <section class="pt-4 pb-16 px-6">
-      <div class="max-w-6xl mx-auto">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4 gradient-text">Federal Health IT Glossary</h1>
-        <p class="text-sm mb-6 max-w-2xl" style="color:var(--mmt-text);">Plain-language definitions for the acronyms, frameworks, and programs that define the federal health IT market.</p>
-        <div style="position:relative;display:inline-block;width:100%;max-width:28rem;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--mmt-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none;" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="glossary-search" placeholder="Search terms..." class="w-full px-4 py-3 rounded-lg text-sm" style="background:var(--mmt-soft); border:1px solid var(--mmt-border); color: var(--mmt-navy); padding-left:40px;">
+    <!-- Section 1: Hero -->
+    <section class="pt-4 pb-10 px-6">
+      <div class="max-w-4xl mx-auto">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4" style="color:var(--mmt-navy);">Federal Health IT Glossary</h1>
+        <p class="text-base mb-8 max-w-2xl" style="color:var(--mmt-text);">Plain-language definitions for the acronyms, frameworks, and programs that run the federal health IT market. Written for contractors, PMs, and anyone tired of guessing what the abbreviation means.</p>
+
+        <!-- Prominent search -->
+        <div style="position:relative;display:inline-block;width:100%;max-width:32rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--mmt-teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none;" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="glossary-search" placeholder="Search terms, acronyms, or keywords..." class="w-full px-4 py-3.5 rounded-xl text-sm" style="background:var(--mmt-soft); border:1px solid rgba(69,123,157,0.15); color:var(--mmt-navy); padding-left:44px; font-size:0.925rem;">
         </div>
-        <div class="flex flex-wrap gap-2 mt-4">
-          <button class="filter-btn text-xs px-3 py-1.5 rounded-full" data-filter="all" style="border:1px solid var(--mmt-teal); background:rgba(69,123,157,0.15); color:var(--mmt-teal);">All</button>
-          <button class="filter-btn text-xs px-3 py-1.5 rounded-full" data-filter="defense-health" style="border:1px solid var(--mmt-border); background:transparent; color:var(--mmt-text);">Defense Health</button>
-          <button class="filter-btn text-xs px-3 py-1.5 rounded-full" data-filter="va" style="border:1px solid var(--mmt-border); background:transparent; color:var(--mmt-text);">VA</button>
-          <button class="filter-btn text-xs px-3 py-1.5 rounded-full" data-filter="contracting" style="border:1px solid var(--mmt-border); background:transparent; color:var(--mmt-text);">Contracting</button>
-          <button class="filter-btn text-xs px-3 py-1.5 rounded-full" data-filter="cybersecurity" style="border:1px solid var(--mmt-border); background:transparent; color:var(--mmt-text);">Cybersecurity</button>
-          <button class="filter-btn text-xs px-3 py-1.5 rounded-full" data-filter="interoperability" style="border:1px solid var(--mmt-border); background:transparent; color:var(--mmt-text);">Interoperability</button>
+
+        <!-- Category chips -->
+        <div class="flex flex-wrap gap-2 mt-5">
+          <button class="filter-btn" data-filter="all" style="border-color:var(--mmt-teal); background:rgba(69,123,157,0.12); color:var(--mmt-teal);">All</button>
+          <button class="filter-btn" data-filter="defense-health" style="border-color:rgba(69,123,157,0.2); color:var(--mmt-text);">Defense Health</button>
+          <button class="filter-btn" data-filter="va" style="border-color:rgba(69,123,157,0.2); color:var(--mmt-text);">VA</button>
+          <button class="filter-btn" data-filter="contracting" style="border-color:rgba(69,123,157,0.2); color:var(--mmt-text);">Contracting</button>
+          <button class="filter-btn" data-filter="cybersecurity" style="border-color:rgba(69,123,157,0.2); color:var(--mmt-text);">Cybersecurity</button>
+          <button class="filter-btn" data-filter="interoperability" style="border-color:rgba(69,123,157,0.2); color:var(--mmt-text);">Interoperability</button>
         </div>
         <p id="term-count" class="text-xs mt-4" style="color:var(--mmt-text-secondary);">Showing 37 terms</p>
       </div>
     </section>
 
+    <!-- Section 2: A-Z Jump Nav (sticky) -->
+    <div class="az-sticky py-3 px-6">
+      <div class="max-w-4xl mx-auto overflow-x-auto">
+        <nav class="az-nav" aria-label="Jump to letter">
+          <a href="#letter-A">A</a>
+          <span>B</span>
+          <a href="#letter-C">C</a>
+          <a href="#letter-D">D</a>
+          <a href="#letter-E">E</a>
+          <a href="#letter-F">F</a>
+          <a href="#letter-G">G</a>
+          <a href="#letter-H">H</a>
+          <a href="#letter-I">I</a>
+          <a href="#letter-J">J</a>
+          <span>K</span>
+          <span>L</span>
+          <a href="#letter-M">M</a>
+          <a href="#letter-N">N</a>
+          <a href="#letter-O">O</a>
+          <a href="#letter-P">P</a>
+          <span>Q</span>
+          <a href="#letter-R">R</a>
+          <a href="#letter-S">S</a>
+          <a href="#letter-T">T</a>
+          <a href="#letter-U">U</a>
+          <a href="#letter-V">V</a>
+          <span>W</span>
+          <span>X</span>
+          <span>Y</span>
+          <a href="#letter-Z">Z</a>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Section 3: Term List (open, scannable, anchored) -->
     <section class="pb-16 px-6">
-      <div class="max-w-6xl mx-auto">
-        <div id="terms-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div id="terms-list" class="max-w-4xl mx-auto">
 
-          <!-- Defense Health (10) -->
+        <!-- === A === -->
+        <h2 id="letter-A" class="letter-header">A</h2>
 
-          <div class="card rounded-xl p-5 term-card" data-term="dha defense health agency" data-tags="defense-health">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">DHA</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Defense Health Agency</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">Runs military healthcare operations, TRICARE, pharmacy, and health IT for 9.6M beneficiaries.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: Your buyer for most DoD health IT work. DHA issues the task orders.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Defense Health</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="mhs military health system" data-tags="defense-health">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">MHS</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Military Health System</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">The entire DoD healthcare enterprise: MTFs, TRICARE, dental, pharmacy, and all supporting IT systems.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: Understanding MHS structure tells you where money flows and who has authority.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Defense Health</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="mhs genesis dod electronic health record ehr" data-tags="defense-health">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">MHS GENESIS</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">DoD Electronic Health Record</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">The single largest health IT deployment in federal history. Built on Oracle Health (Cerner), now live at 130+ facilities.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: Integration, training, and sustainment opportunities surround this platform.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Defense Health</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="peo-dhms opmed program executive office defense healthcare management systems" data-tags="defense-health">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">PEO-DHMS / OPMED</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Program Executive Office, Defense Healthcare Management Systems</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">Now called OPMED. DoD's lead office for medical IT development and acquisition.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: This is the acquisition authority for major health IT programs.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Defense Health</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="dhaca dha contracting activity" data-tags="defense-health">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">DHACA</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">DHA Contracting Activity</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">The contracting arm of DHA. Issues and manages health IT contract vehicles.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: DHACA is where your proposals go. Know their evaluation preferences.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Defense Health</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="tricare military health insurance" data-tags="defense-health">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">TRICARE</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Military Health Insurance</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">Health insurance for 9.6M service members, retirees, and families. Managed by DHA.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: TRICARE IT systems (claims, enrollment, referrals) are major contract areas.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Defense Health</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="mtf military treatment facility" data-tags="defense-health">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">MTF</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Military Treatment Facility</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">Hospitals and clinics on military installations. Each runs MHS GENESIS.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: MTFs are where your technology gets deployed and tested.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Defense Health</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="fehrm federal electronic health record modernization" data-tags="defense-health">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">FEHRM</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Federal Electronic Health Record Modernization</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">Joint office coordinating EHR interoperability between DoD and VA.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: FEHRM sets interoperability standards that both DoD and VA contracts must follow.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Defense Health</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="jlv joint longitudinal viewer" data-tags="defense-health">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">JLV</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Joint Longitudinal Viewer</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">Read-only viewer that bridges DoD and VA patient records for continuity of care.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: JLV integration is a common requirement in health IT RFPs.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Defense Health</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="defense health networks regional healthcare delivery" data-tags="defense-health">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">Defense Health Networks</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Regional Healthcare Delivery</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">DHA's regional management structure replacing individual Service medical commands.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: Your regional POCs for implementation and sustainment contracts.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Defense Health</span>
-          </div>
-
-          <!-- VA (4) -->
-
-          <div class="card rounded-xl p-5 term-card" data-term="va ehrm ehr modernization" data-tags="va">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">VA EHRM</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">VA EHR Modernization</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">The VA's program to replace VistA with Oracle Health (same platform as MHS GENESIS). Paused, under review.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: Status changes here shift billions in contract opportunities.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">VA</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="vista veterans health information systems and technology architecture" data-tags="va">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">VistA</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Veterans Health Information Systems and Technology Architecture</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">VA's legacy EHR built in-house since the 1970s. Still running at most VA facilities.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: VistA sustainment, migration, and modernization are active contract areas.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">VA</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="ehrm-io ehr modernization integration office" data-tags="va">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">EHRM-IO</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">EHR Modernization Integration Office</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">VA office managing the Oracle Health EHR deployment.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: EHRM-IO runs the deployment program; know their priorities and pain points.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">VA</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="oracle health federal ehr commercial ehr platform cerner millennium" data-tags="va">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">Oracle Health Federal EHR</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Commercial EHR Platform</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">The commercial platform (formerly Cerner Millennium) underlying both MHS GENESIS and VA EHRM.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: Oracle Health sets the platform constraints your solutions must integrate with.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">VA</span>
-          </div>
-
-          <!-- Contracting (6) -->
-
-          <div class="card rounded-xl p-5 term-card" data-term="cio-sp3 chief information officer solutions and partners 3 gwac nitaac" data-tags="contracting">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">CIO-SP3</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Chief Information Officer – Solutions and Partners 3</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">NITAAC's primary IT GWAC. $40B ceiling. Extended through April 2027 after CIO-SP4 was cancelled February 2026.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: If you hold a CIO-SP3 seat, protect it. It's one of the few active large GWACs.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Contracting</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="cio-sp4 chief information officer solutions and partners 4 gwac nitaac" data-tags="contracting">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">CIO-SP4</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Chief Information Officer – Solutions and Partners 4</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">NITAAC's planned successor to CIO-SP3. Cancelled February 2026 after years of protests.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: The cancellation reshuffled the GWAC landscape. Watch for rebid announcements.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Contracting</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="oasis+ one acquisition solution for integrated services plus gsa" data-tags="contracting">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">OASIS+</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">One Acquisition Solution for Integrated Services Plus</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">GSA's multi-agency professional services contract. Covers IT, management consulting, and more.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: OASIS+ is the primary path for large professional services work across agencies.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Contracting</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="t4ng transformation twenty-one total technology next generation va idiq" data-tags="contracting">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">T4NG</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Transformation Twenty-One Total Technology Next Generation</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">VA's primary IT services IDIQ. $22.3B ceiling. Managed by VA TAC.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: T4NG is how VA buys most of its IT services. Critical vehicle for VA health IT work.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Contracting</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="mhs eits enterprise it services dha" data-tags="contracting">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">MHS EITS</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">MHS Enterprise IT Services</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">DHA's umbrella contract for enterprise IT infrastructure and managed services.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: MHS EITS covers network, compute, and cloud for the entire Military Health System.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Contracting</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="mqs2-ng medical quality systems services next generation dha" data-tags="contracting">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">MQS2-NG</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Medical Quality Systems Services Next Generation</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">DHA contract vehicle for medical quality, patient safety, and clinical decision support IT.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: Niche but well-funded. Medical quality IT is a growing area.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Contracting</span>
-          </div>
-
-          <!-- Cybersecurity (7) -->
-
-          <div class="card rounded-xl p-5 term-card" data-term="ato authority to operate" data-tags="cybersecurity">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">ATO</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Authority to Operate</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">The security approval required before deploying any system on a government network.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: No ATO means no deployment. Plan 6-18 months for the process.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Cybersecurity</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="fedramp federal risk and authorization management program cloud" data-tags="cybersecurity">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">FedRAMP</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Federal Risk and Authorization Management Program</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">Security certification required for any cloud product serving federal agencies.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: FedRAMP authorization is table stakes for selling cloud to the government.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Cybersecurity</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="rmf risk management framework nist" data-tags="cybersecurity">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">RMF</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Risk Management Framework</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">NIST's structured approach to security assessment (categorize, select, implement, assess, authorize, monitor).</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: RMF is the process that gets you to ATO. Know the six steps cold.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Cybersecurity</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="dod impact levels cloud security classification il2 il4 il5 il6" data-tags="cybersecurity">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">DoD Impact Levels</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Cloud Security Classification</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">IL2 through IL6 classify what data DoD cloud systems can handle. IL4+ requires dedicated infrastructure.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: Know your IL. It determines which cloud environments you can use and what data you can process.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Cybersecurity</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="cmmc cybersecurity maturity model certification dod" data-tags="cybersecurity">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">CMMC</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Cybersecurity Maturity Model Certification</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">Third-party cybersecurity certification becoming mandatory for DoD contractors.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: CMMC Level 2 is becoming table stakes. Get certified before the deadlines hit.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Cybersecurity</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="nist sp 800-171 protecting controlled unclassified information cui" data-tags="cybersecurity">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">NIST SP 800-171</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Protecting Controlled Unclassified Information</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">110 security controls required for handling CUI in non-federal systems. CMMC is built on this.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: If you handle CUI (most health IT does), you must implement these controls.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Cybersecurity</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="zero trust architecture security model dod" data-tags="cybersecurity">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">Zero Trust Architecture</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Security Model</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">DoD's mandated security architecture. Never trust, always verify. Continuous authentication and authorization.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: Every new DoD IT system must implement zero trust principles. Build it in from day one.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Cybersecurity</span>
-          </div>
-
-          <!-- Interoperability (6) -->
-
-          <div class="card rounded-xl p-5 term-card" data-term="fhir r4 fast healthcare interoperability resources" data-tags="interoperability">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">FHIR R4</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Fast Healthcare Interoperability Resources</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">The modern healthcare data exchange standard mandated by the 21st Century Cures Act. RESTful APIs.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: FHIR R4 support is a requirement in most federal health IT RFPs.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Interoperability</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="tefca trusted exchange framework and common agreement" data-tags="interoperability">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">TEFCA</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Trusted Exchange Framework and Common Agreement</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">The national infrastructure for health data exchange. Connects all major health networks.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: TEFCA compliance is increasingly required. Understand the Qualified Health Information Networks.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Interoperability</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="hl7 v2 health level seven version 2" data-tags="interoperability">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">HL7 v2</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Health Level Seven Version 2</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">The legacy healthcare messaging standard. Still dominant in hospital interfaces despite FHIR.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: Most existing systems speak HL7 v2. Your integration layer needs both HL7 v2 and FHIR.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Interoperability</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="uscdi united states core data for interoperability onc" data-tags="interoperability">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">USCDI</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">United States Core Data for Interoperability</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">The standardized set of health data classes systems must exchange. Updated annually by ONC.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: USCDI defines the minimum data your system must handle. Check the latest version.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Interoperability</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="smart on fhir substitutable medical applications reusable technologies" data-tags="interoperability">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">SMART on FHIR</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Substitutable Medical Applications, Reusable Technologies</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">App launch and authorization framework built on FHIR. Enables third-party apps on EHR platforms.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: SMART on FHIR is how you build apps that plug into MHS GENESIS and VA systems.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Interoperability</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="information blocking 21st century cures act" data-tags="interoperability">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">Information Blocking</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">21st Century Cures Act Provision</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">Federal prohibition on practices that unreasonably limit health information exchange. Applies to health IT developers.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: Your software cannot restrict data sharing without qualifying for an exception. Violations carry penalties.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Interoperability</span>
-          </div>
-
-          <!-- Cross-cutting (4) -->
-
-          <div class="card rounded-xl p-5 term-card" data-term="far federal acquisition regulation" data-tags="contracting">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">FAR</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Federal Acquisition Regulation</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">The primary rule book for government procurement. Applies to all federal contracts.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: FAR knowledge is non-negotiable. Focus on Parts 8, 12, 15, and 16 for IT services.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Contracting</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="idiq indefinite delivery indefinite quantity" data-tags="contracting">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">IDIQ</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Indefinite Delivery/Indefinite Quantity</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">Contract type with no guaranteed minimum. Government orders work via task orders over the contract period.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: Most federal health IT is bought through IDIQs. Win the vehicle first, then compete for task orders.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Contracting</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="gwac government-wide acquisition contract" data-tags="contracting">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">GWAC</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">Government-Wide Acquisition Contract</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">IT-specific contract vehicles that any federal agency can use. CIO-SP3, SEWP, Alliant 3 are the big ones.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: GWAC access opens doors across all agencies, not just one. Worth the investment to get on one.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Contracting</span>
-          </div>
-
-          <div class="card rounded-xl p-5 term-card" data-term="sam.gov system for award management" data-tags="contracting">
-            <p class="text-sm font-bold mb-1" style="color:var(--mmt-teal);">SAM.gov</p>
-            <p class="text-xs font-medium mb-2" style="color:var(--mmt-navy);">System for Award Management</p>
-            <p class="text-xs leading-relaxed mb-3" style="color:var(--mmt-text);">The federal government's official system for entity registration, contract opportunities, and award data.</p>
-            <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractors: You cannot win a federal contract without SAM registration. Keep it current.</p>
-            <span class="tag mt-3" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">Contracting</span>
-          </div>
-
+        <div class="term-entry" id="term-ato" data-term="ato authority to operate" data-tags="cybersecurity">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-ato" class="no-underline" style="color:var(--mmt-navy);">ATO</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Authority to Operate</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">The security approval required before deploying any system on a government network. No ATO, no deployment.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: Plan 6-18 months for the process. Start early or your timeline is fiction.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Cybersecurity</span>
         </div>
 
-        <div class="text-center mt-12">
-          <p class="text-sm" style="color:var(--mmt-text-secondary);">Missing a term? <a href="mailto:mary@missionmeetstech.com?subject=Glossary%20Term%20Suggestion" class="no-underline font-medium" style="color:var(--mmt-teal);">Suggest one</a>.</p>
+        <!-- === C === -->
+        <h2 id="letter-C" class="letter-header">C</h2>
+
+        <div class="term-entry" id="term-cio-sp3" data-term="cio-sp3 chief information officer solutions and partners 3 gwac nitaac" data-tags="contracting">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-cio-sp3" class="no-underline" style="color:var(--mmt-navy);">CIO-SP3</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Chief Information Officer -- Solutions and Partners 3</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">NITAAC's primary IT GWAC. $40B ceiling. Extended through April 2027 after CIO-SP4 was cancelled February 2026.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: If you hold a CIO-SP3 seat, protect it. It is one of the few active large GWACs.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Contracting</span>
         </div>
+
+        <div class="term-entry" id="term-cio-sp4" data-term="cio-sp4 chief information officer solutions and partners 4 gwac nitaac" data-tags="contracting">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-cio-sp4" class="no-underline" style="color:var(--mmt-navy);">CIO-SP4</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Chief Information Officer -- Solutions and Partners 4</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">NITAAC's planned successor to CIO-SP3. Cancelled February 2026 after years of protests. The cancellation reshuffled the GWAC landscape.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: Watch for rebid announcements. Firms that invested in this bid process face sunk costs with no vehicle.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Contracting</span>
+        </div>
+
+        <div class="term-entry" id="term-cmmc" data-term="cmmc cybersecurity maturity model certification dod" data-tags="cybersecurity">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-cmmc" class="no-underline" style="color:var(--mmt-navy);">CMMC</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Cybersecurity Maturity Model Certification</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">Third-party cybersecurity certification becoming mandatory for DoD contractors. Level 2 is the new table stakes.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: Get certified before the deadlines hit. This is not optional for DoD work.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Cybersecurity</span>
+        </div>
+
+        <!-- === D === -->
+        <h2 id="letter-D" class="letter-header">D</h2>
+
+        <div class="term-entry" id="term-defense-health-networks" data-term="defense health networks regional healthcare delivery" data-tags="defense-health">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-defense-health-networks" class="no-underline" style="color:var(--mmt-navy);">Defense Health Networks</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Regional Healthcare Delivery</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">DHA's regional management structure replacing individual Service medical commands.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: Your regional POCs for implementation and sustainment contracts.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Defense Health</span>
+        </div>
+
+        <div class="term-entry" id="term-dha" data-term="dha defense health agency" data-tags="defense-health">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-dha" class="no-underline" style="color:var(--mmt-navy);">DHA</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Defense Health Agency</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">Runs military healthcare operations, TRICARE, pharmacy, and health IT for 9.6M beneficiaries.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: Your buyer for most DoD health IT work. DHA issues the task orders.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Defense Health</span>
+        </div>
+
+        <div class="term-entry" id="term-dhaca" data-term="dhaca dha contracting activity" data-tags="defense-health">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-dhaca" class="no-underline" style="color:var(--mmt-navy);">DHACA</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">DHA Contracting Activity</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">The contracting arm of DHA. Issues and manages health IT contract vehicles.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: DHACA is where your proposals go. Know their evaluation preferences.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Defense Health</span>
+        </div>
+
+        <div class="term-entry" id="term-dod-impact-levels" data-term="dod impact levels cloud security classification il2 il4 il5 il6" data-tags="cybersecurity">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-dod-impact-levels" class="no-underline" style="color:var(--mmt-navy);">DoD Impact Levels</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Cloud Security Classification</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">IL2 through IL6 classify what data DoD cloud systems can handle. IL4+ requires dedicated infrastructure.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: Know your IL. It determines which cloud environments you can use and what data you can process.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Cybersecurity</span>
+        </div>
+
+        <!-- === E === -->
+        <h2 id="letter-E" class="letter-header">E</h2>
+
+        <div class="term-entry" id="term-ehrm-io" data-term="ehrm-io ehr modernization integration office" data-tags="va">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-ehrm-io" class="no-underline" style="color:var(--mmt-navy);">EHRM-IO</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">EHR Modernization Integration Office</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">VA office managing the Oracle Health EHR deployment.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: EHRM-IO runs the deployment program. Know their priorities and pain points.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">VA</span>
+        </div>
+
+        <!-- === F === -->
+        <h2 id="letter-F" class="letter-header">F</h2>
+
+        <div class="term-entry" id="term-far" data-term="far federal acquisition regulation" data-tags="contracting">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-far" class="no-underline" style="color:var(--mmt-navy);">FAR</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Federal Acquisition Regulation</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">The primary rule book for government procurement. Applies to all federal contracts.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: FAR knowledge is non-negotiable. Focus on Parts 8, 12, 15, and 16 for IT services.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Contracting</span>
+        </div>
+
+        <div class="term-entry" id="term-fedramp" data-term="fedramp federal risk and authorization management program cloud" data-tags="cybersecurity">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-fedramp" class="no-underline" style="color:var(--mmt-navy);">FedRAMP</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Federal Risk and Authorization Management Program</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">Security certification required for any cloud product serving federal agencies.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: FedRAMP authorization is table stakes for selling cloud to the government.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Cybersecurity</span>
+        </div>
+
+        <div class="term-entry" id="term-fehrm" data-term="fehrm federal electronic health record modernization" data-tags="defense-health">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-fehrm" class="no-underline" style="color:var(--mmt-navy);">FEHRM</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Federal Electronic Health Record Modernization</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">Joint office coordinating EHR interoperability between DoD and VA.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: FEHRM sets interoperability standards that both DoD and VA contracts must follow.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Defense Health</span>
+        </div>
+
+        <div class="term-entry" id="term-fhir" data-term="fhir r4 fast healthcare interoperability resources" data-tags="interoperability">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-fhir" class="no-underline" style="color:var(--mmt-navy);">FHIR R4</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Fast Healthcare Interoperability Resources</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">The modern healthcare data exchange standard mandated by the 21st Century Cures Act. RESTful APIs.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: FHIR R4 support is a requirement in most federal health IT RFPs.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Interoperability</span>
+        </div>
+
+        <!-- === G === -->
+        <h2 id="letter-G" class="letter-header">G</h2>
+
+        <div class="term-entry" id="term-gwac" data-term="gwac government-wide acquisition contract" data-tags="contracting">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-gwac" class="no-underline" style="color:var(--mmt-navy);">GWAC</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Government-Wide Acquisition Contract</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">IT-specific contract vehicles that any federal agency can use. CIO-SP3, SEWP, Alliant 3 are the big ones.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: GWAC access opens doors across all agencies, not just one. Worth the investment to get on one.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Contracting</span>
+        </div>
+
+        <!-- === H === -->
+        <h2 id="letter-H" class="letter-header">H</h2>
+
+        <div class="term-entry" id="term-hl7" data-term="hl7 v2 health level seven version 2" data-tags="interoperability">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-hl7" class="no-underline" style="color:var(--mmt-navy);">HL7 v2</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Health Level Seven Version 2</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">The legacy healthcare messaging standard. Still dominant in hospital interfaces despite FHIR.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: Most existing systems speak HL7 v2. Your integration layer needs both HL7 v2 and FHIR.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Interoperability</span>
+        </div>
+
+        <!-- === I === -->
+        <h2 id="letter-I" class="letter-header">I</h2>
+
+        <div class="term-entry" id="term-idiq" data-term="idiq indefinite delivery indefinite quantity" data-tags="contracting">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-idiq" class="no-underline" style="color:var(--mmt-navy);">IDIQ</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Indefinite Delivery/Indefinite Quantity</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">Contract type with no guaranteed minimum. Government orders work via task orders over the contract period.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: Most federal health IT is bought through IDIQs. Win the vehicle first, then compete for task orders.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Contracting</span>
+        </div>
+
+        <div class="term-entry" id="term-information-blocking" data-term="information blocking 21st century cures act" data-tags="interoperability">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-information-blocking" class="no-underline" style="color:var(--mmt-navy);">Information Blocking</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">21st Century Cures Act Provision</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">Federal prohibition on practices that unreasonably limit health information exchange. Applies to health IT developers.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: Your software cannot restrict data sharing without qualifying for an exception. Violations carry penalties.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Interoperability</span>
+        </div>
+
+        <!-- === J === -->
+        <h2 id="letter-J" class="letter-header">J</h2>
+
+        <div class="term-entry" id="term-jlv" data-term="jlv joint longitudinal viewer" data-tags="defense-health">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-jlv" class="no-underline" style="color:var(--mmt-navy);">JLV</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Joint Longitudinal Viewer</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">Read-only viewer that bridges DoD and VA patient records for continuity of care.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: JLV integration is a common requirement in health IT RFPs.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Defense Health</span>
+        </div>
+
+        <!-- === M === -->
+        <h2 id="letter-M" class="letter-header">M</h2>
+
+        <div class="term-entry" id="term-mhs" data-term="mhs military health system" data-tags="defense-health">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-mhs" class="no-underline" style="color:var(--mmt-navy);">MHS</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Military Health System</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">The entire DoD healthcare enterprise: MTFs, TRICARE, dental, pharmacy, and all supporting IT systems.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: Understanding MHS structure tells you where money flows and who has authority.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Defense Health</span>
+        </div>
+
+        <div class="term-entry" id="term-mhs-eits" data-term="mhs eits enterprise it services dha" data-tags="contracting">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-mhs-eits" class="no-underline" style="color:var(--mmt-navy);">MHS EITS</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">MHS Enterprise IT Services</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">DHA's umbrella contract for enterprise IT infrastructure and managed services.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: MHS EITS covers network, compute, and cloud for the entire Military Health System.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Contracting</span>
+        </div>
+
+        <div class="term-entry" id="term-mhs-genesis" data-term="mhs genesis dod electronic health record ehr" data-tags="defense-health">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-mhs-genesis" class="no-underline" style="color:var(--mmt-navy);">MHS GENESIS</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">DoD Electronic Health Record</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">The single largest health IT deployment in federal history. Built on Oracle Health (Cerner), now live at 130+ facilities.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: Integration, training, and sustainment opportunities surround this platform.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Defense Health</span>
+        </div>
+
+        <div class="term-entry" id="term-mqs2-ng" data-term="mqs2-ng medical quality systems services next generation dha" data-tags="contracting">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-mqs2-ng" class="no-underline" style="color:var(--mmt-navy);">MQS2-NG</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Medical Quality Systems Services Next Generation</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">DHA contract vehicle for medical quality, patient safety, and clinical decision support IT.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: Niche but well-funded. Medical quality IT is a growing area.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Contracting</span>
+        </div>
+
+        <div class="term-entry" id="term-mtf" data-term="mtf military treatment facility" data-tags="defense-health">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-mtf" class="no-underline" style="color:var(--mmt-navy);">MTF</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Military Treatment Facility</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">Hospitals and clinics on military installations. Each runs MHS GENESIS.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: MTFs are where your technology gets deployed and tested.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Defense Health</span>
+        </div>
+
+        <!-- === N === -->
+        <h2 id="letter-N" class="letter-header">N</h2>
+
+        <div class="term-entry" id="term-nist-800-171" data-term="nist sp 800-171 protecting controlled unclassified information cui" data-tags="cybersecurity">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-nist-800-171" class="no-underline" style="color:var(--mmt-navy);">NIST SP 800-171</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Protecting Controlled Unclassified Information</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">110 security controls required for handling CUI in non-federal systems. CMMC is built on this.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: If you handle CUI (most health IT does), you must implement these controls.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Cybersecurity</span>
+        </div>
+
+        <!-- === O === -->
+        <h2 id="letter-O" class="letter-header">O</h2>
+
+        <div class="term-entry" id="term-oasis-plus" data-term="oasis+ one acquisition solution for integrated services plus gsa" data-tags="contracting">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-oasis-plus" class="no-underline" style="color:var(--mmt-navy);">OASIS+</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">One Acquisition Solution for Integrated Services Plus</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">GSA's multi-agency professional services contract. Covers IT, management consulting, and more.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: OASIS+ is the primary path for large professional services work across agencies.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Contracting</span>
+        </div>
+
+        <div class="term-entry" id="term-oracle-health" data-term="oracle health federal ehr commercial ehr platform cerner millennium" data-tags="va">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-oracle-health" class="no-underline" style="color:var(--mmt-navy);">Oracle Health Federal EHR</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Commercial EHR Platform</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">The commercial platform (formerly Cerner Millennium) underlying both MHS GENESIS and VA EHRM.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: Oracle Health sets the platform constraints your solutions must integrate with.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">VA</span>
+        </div>
+
+        <!-- === P === -->
+        <h2 id="letter-P" class="letter-header">P</h2>
+
+        <div class="term-entry" id="term-peo-dhms" data-term="peo-dhms opmed program executive office defense healthcare management systems" data-tags="defense-health">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-peo-dhms" class="no-underline" style="color:var(--mmt-navy);">PEO-DHMS / OPMED</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Program Executive Office, Defense Healthcare Management Systems</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">Now called OPMED. DoD's lead office for medical IT development and acquisition.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: This is the acquisition authority for major health IT programs.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Defense Health</span>
+        </div>
+
+        <!-- === R === -->
+        <h2 id="letter-R" class="letter-header">R</h2>
+
+        <div class="term-entry" id="term-rmf" data-term="rmf risk management framework nist" data-tags="cybersecurity">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-rmf" class="no-underline" style="color:var(--mmt-navy);">RMF</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Risk Management Framework</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">NIST's structured approach to security assessment: categorize, select, implement, assess, authorize, monitor.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: RMF is the process that gets you to ATO. Know the six steps cold.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Cybersecurity</span>
+        </div>
+
+        <!-- === S === -->
+        <h2 id="letter-S" class="letter-header">S</h2>
+
+        <div class="term-entry" id="term-sam-gov" data-term="sam.gov system for award management" data-tags="contracting">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-sam-gov" class="no-underline" style="color:var(--mmt-navy);">SAM.gov</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">System for Award Management</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">The federal government's official system for entity registration, contract opportunities, and award data.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: You cannot win a federal contract without SAM registration. Keep it current.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Contracting</span>
+        </div>
+
+        <div class="term-entry" id="term-smart-on-fhir" data-term="smart on fhir substitutable medical applications reusable technologies" data-tags="interoperability">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-smart-on-fhir" class="no-underline" style="color:var(--mmt-navy);">SMART on FHIR</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Substitutable Medical Applications, Reusable Technologies</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">App launch and authorization framework built on FHIR. Enables third-party apps on EHR platforms.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: SMART on FHIR is how you build apps that plug into MHS GENESIS and VA systems.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Interoperability</span>
+        </div>
+
+        <!-- === T === -->
+        <h2 id="letter-T" class="letter-header">T</h2>
+
+        <div class="term-entry" id="term-t4ng" data-term="t4ng transformation twenty-one total technology next generation va idiq" data-tags="contracting">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-t4ng" class="no-underline" style="color:var(--mmt-navy);">T4NG</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Transformation Twenty-One Total Technology Next Generation</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">VA's primary IT services IDIQ. $22.3B ceiling. Managed by VA TAC.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: T4NG is how VA buys most of its IT services. Critical vehicle for VA health IT work.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Contracting</span>
+        </div>
+
+        <div class="term-entry" id="term-tefca" data-term="tefca trusted exchange framework and common agreement" data-tags="interoperability">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-tefca" class="no-underline" style="color:var(--mmt-navy);">TEFCA</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Trusted Exchange Framework and Common Agreement</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">The national infrastructure for health data exchange. Connects all major health networks.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: TEFCA compliance is increasingly required. Understand the Qualified Health Information Networks.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Interoperability</span>
+        </div>
+
+        <div class="term-entry" id="term-tricare" data-term="tricare military health insurance" data-tags="defense-health">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-tricare" class="no-underline" style="color:var(--mmt-navy);">TRICARE</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Military Health Insurance</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">Health insurance for 9.6M service members, retirees, and families. Managed by DHA.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: TRICARE IT systems (claims, enrollment, referrals) are major contract areas.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Defense Health</span>
+        </div>
+
+        <!-- === U === -->
+        <h2 id="letter-U" class="letter-header">U</h2>
+
+        <div class="term-entry" id="term-uscdi" data-term="uscdi united states core data for interoperability onc" data-tags="interoperability">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-uscdi" class="no-underline" style="color:var(--mmt-navy);">USCDI</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">United States Core Data for Interoperability</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">The standardized set of health data classes systems must exchange. Updated annually by ONC.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: USCDI defines the minimum data your system must handle. Check the latest version.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Interoperability</span>
+        </div>
+
+        <!-- === V === -->
+        <h2 id="letter-V" class="letter-header">V</h2>
+
+        <div class="term-entry" id="term-va-ehrm" data-term="va ehrm ehr modernization" data-tags="va">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-va-ehrm" class="no-underline" style="color:var(--mmt-navy);">VA EHRM</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">VA EHR Modernization</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">The VA's program to replace VistA with Oracle Health (same platform as MHS GENESIS). Paused, under review.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: Status changes here shift billions in contract opportunities.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">VA</span>
+        </div>
+
+        <div class="term-entry" id="term-vista" data-term="vista veterans health information systems and technology architecture" data-tags="va">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-vista" class="no-underline" style="color:var(--mmt-navy);">VistA</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Veterans Health Information Systems and Technology Architecture</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">VA's legacy EHR built in-house since the 1970s. Still running at most VA facilities.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: VistA sustainment, migration, and modernization are active contract areas.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">VA</span>
+        </div>
+
+        <!-- === Z === -->
+        <h2 id="letter-Z" class="letter-header">Z</h2>
+
+        <div class="term-entry" id="term-zero-trust" data-term="zero trust architecture security model dod" data-tags="cybersecurity">
+          <p class="text-lg font-bold mb-0.5" style="color:var(--mmt-navy);"><a href="#term-zero-trust" class="no-underline" style="color:var(--mmt-navy);">Zero Trust Architecture</a></p>
+          <p class="text-sm font-medium mb-2" style="color:var(--mmt-teal);">Security Model</p>
+          <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">DoD's mandated security architecture. Never trust, always verify. Continuous authentication and authorization.</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contractor note: Every new DoD IT system must implement zero trust principles. Build it in from day one.</p>
+          <span class="tag mt-2" style="background:rgba(69,123,157,0.08); color:var(--mmt-teal);">Cybersecurity</span>
+        </div>
+
+      </div>
+
+      <div class="max-w-4xl mx-auto text-center mt-12">
+        <p class="text-sm" style="color:var(--mmt-text-secondary);">Missing a term? <a href="mailto:mary@missionmeetstech.com?subject=Glossary%20Term%20Suggestion" class="no-underline font-medium" style="color:var(--mmt-teal);">Suggest one</a>.</p>
       </div>
     </section>
 
+    <!-- ProposalPulse CTA -->
     <section class="section-alt py-20 px-6">
       <div class="max-w-4xl mx-auto text-center">
         <h2 class="text-3xl font-bold mb-4">Score Your Proposal Before You Submit</h2>
@@ -493,29 +602,44 @@
 document.addEventListener('DOMContentLoaded', function() {
   var searchInput = document.getElementById('glossary-search');
   var filterBtns = document.querySelectorAll('.filter-btn');
-  var cards = document.querySelectorAll('.term-card');
+  var entries = document.querySelectorAll('.term-entry');
+  var letterHeaders = document.querySelectorAll('.letter-header');
   var countEl = document.getElementById('term-count');
   var activeTag = 'all';
 
-  function filterCards() {
-    var query = searchInput.value.toLowerCase();
+  function filterTerms() {
+    var query = searchInput.value.toLowerCase().trim();
     var visible = 0;
-    cards.forEach(function(card) {
-      var term = card.getAttribute('data-term');
-      var tags = card.getAttribute('data-tags');
+    var visibleLetters = {};
+
+    entries.forEach(function(entry) {
+      var term = entry.getAttribute('data-term');
+      var tags = entry.getAttribute('data-tags');
       var matchesSearch = !query || term.indexOf(query) !== -1;
       var matchesTag = activeTag === 'all' || tags === activeTag;
       if (matchesSearch && matchesTag) {
-        card.style.display = '';
+        entry.style.display = '';
         visible++;
+        // Track which letter groups have visible terms
+        var prev = entry.previousElementSibling;
+        while (prev && !prev.classList.contains('letter-header')) {
+          prev = prev.previousElementSibling;
+        }
+        if (prev) visibleLetters[prev.id] = true;
       } else {
-        card.style.display = 'none';
+        entry.style.display = 'none';
       }
     });
+
+    // Show/hide letter headers based on whether they have visible terms
+    letterHeaders.forEach(function(h) {
+      h.style.display = visibleLetters[h.id] ? '' : 'none';
+    });
+
     countEl.textContent = 'Showing ' + visible + ' term' + (visible !== 1 ? 's' : '');
   }
 
-  searchInput.addEventListener('input', filterCards);
+  searchInput.addEventListener('input', filterTerms);
 
   filterBtns.forEach(function(btn) {
     btn.addEventListener('click', function() {
@@ -523,18 +647,29 @@ document.addEventListener('DOMContentLoaded', function() {
       filterBtns.forEach(function(b) {
         b.style.background = 'transparent';
         b.style.color = 'var(--mmt-text)';
-        b.style.borderColor = 'var(--mmt-border)';
+        b.style.borderColor = 'rgba(69,123,157,0.2)';
       });
-      this.style.background = 'rgba(69,123,157,0.15)';
+      this.style.background = 'rgba(69,123,157,0.12)';
       this.style.color = 'var(--mmt-teal)';
       this.style.borderColor = 'var(--mmt-teal)';
-      filterCards();
+      filterTerms();
+    });
+  });
+
+  // Smooth scroll for A-Z links
+  document.querySelectorAll('.az-nav a').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      var target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     });
   });
 });
   </script>
 
-  <!-- S15-05: Back to top -->
+  <!-- Back to top -->
   <button id="btt" aria-label="Back to top" style="position:fixed;bottom:2rem;right:2rem;width:44px;height:44px;border-radius:50%;background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.15);color:var(--mmt-teal);cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s,transform 0.3s;z-index:90;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onmouseover="this.style.borderColor='rgba(69,123,157,0.3)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(69,123,157,0.15)';this.style.transform='none'">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
   </button>

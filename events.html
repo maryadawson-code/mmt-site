@@ -101,51 +101,69 @@
   </nav>
 
   <main id="main-content">
-  <!-- Hero -->
-  <section class="pt-36 pb-20 px-6">
+
+  <!-- Section 1: Hero -->
+  <section class="pt-36 pb-16 px-6">
     <div class="max-w-4xl mx-auto text-center">
       <p class="text-xs uppercase tracking-widest font-semibold mb-4" style="color:var(--mmt-teal);">Calendar</p>
-      <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-4" style="font-family:'Inter',system-ui,sans-serif;">Events Calendar</h1>
-      <p class="text-lg max-w-2xl mx-auto leading-relaxed" style="color:var(--mmt-text);">Conferences, webinars, and key dates for federal health IT and defense health professionals. Stay plugged in to what matters.</p>
-    </div>
-  </section>
-
-  <!-- Events List -->
-  <section class="py-16 px-6 section-alt">
-    <div class="max-w-5xl mx-auto">
-      <!-- BUILD:EVENTS_LIST -->
-    </div>
-  </section>
-
-  <!-- Submit Note -->
-  <section class="py-12 px-6">
-    <div class="max-w-3xl mx-auto text-center">
-      <p class="text-sm leading-relaxed" style="color:var(--mmt-text-secondary);">Know of an event we should list? Email <a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);" class="hover:opacity-80 no-underline">mary@missionmeetstech.com</a></p>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <section class="py-16 px-6 section-alt">
-    <div class="max-w-2xl mx-auto text-center">
-      <h2 class="text-2xl font-bold mb-4">Get Federal Health IT Intel in Your Inbox</h2>
-      <p class="text-base mb-6 leading-relaxed" style="color:var(--mmt-text);">Events, analysis, and procurement intelligence. Subscribe for weekly updates.</p>
-      <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" target="_blank" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-        <label for="subscribe-email-cta" class="sr-only">Email</label>
-        <input type="email" name="email" id="subscribe-email-cta" placeholder="you@example.com" required class="px-4 py-3 rounded-lg text-sm flex-1" style="background:var(--mmt-soft); border:1px solid var(--mmt-border); color: var(--mmt-navy);">
-        <button type="submit" class="btn-primary px-6 py-3 rounded-lg text-sm font-semibold whitespace-nowrap" style="cursor:pointer; border:none;">Subscribe</button>
-      </form>
-      <div class="mt-4">
-        <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-teal);">
-          <svg class="mr-1" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
-          Or subscribe on LinkedIn
-        </a>
+      <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-4">Events Calendar</h1>
+      <p class="text-lg max-w-2xl mx-auto leading-relaxed mb-6" style="color:var(--mmt-text);">Conferences, webinars, contract deadlines, and the moments that matter for federal health IT and defense health professionals.</p>
+      <div class="flex flex-wrap justify-center gap-4 text-sm" style="color:var(--mmt-text-secondary);">
+        <span class="inline-flex items-center gap-1">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Conferences
+        </span>
+        <span class="inline-flex items-center gap-1">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 10l4.553-2.276A1 1 0 0 1 21 8.618v6.764a1 1 0 0 1-1.447.894L15 14M5 18h8a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2z"/></svg>
+          Webinars
+        </span>
+        <span class="inline-flex items-center gap-1">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Key deadlines
+        </span>
       </div>
     </div>
   </section>
 
-  <section class="py-8 px-6">
+  <!-- Section 2: Featured upcoming events (top 3, built from events.json at build time) -->
+  <section class="py-12 px-6" style="background:var(--mmt-soft);">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-xl font-bold mb-6">Coming up</h2>
+      <!-- BUILD:EVENTS_FEATURED -->
+      <p class="text-xs mt-6 text-center" style="color:var(--mmt-text-secondary);">Featured events are selected from the full list below.</p>
+    </div>
+  </section>
+
+  <!-- Section 3: Full event list -->
+  <section class="py-16 px-6">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-xl font-bold mb-6">All events</h2>
+      <!-- BUILD:EVENTS_LIST -->
+    </div>
+  </section>
+
+  <!-- Section 4: Submit / suggest -->
+  <section class="py-12 px-6" style="background:var(--mmt-soft);">
     <div class="max-w-3xl mx-auto text-center">
-      <p class="text-sm" style="color:var(--mmt-text-secondary);">Know about an event we're missing? Email <a href="mailto:mary@missionmeetstech.com" class="no-underline" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a></p>
+      <h2 class="text-lg font-bold mb-2">Know about an event we should list?</h2>
+      <p class="text-sm leading-relaxed" style="color:var(--mmt-text-secondary);">Email <a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);" class="hover:opacity-80 no-underline font-semibold">mary@missionmeetstech.com</a> with the event name, date, and a link. I add new events weekly.</p>
+    </div>
+  </section>
+
+  <!-- Newsletter bridge -->
+  <section class="py-16 px-6">
+    <div class="max-w-2xl mx-auto text-center">
+      <h2 class="text-2xl font-bold mb-4">Never miss a deadline that matters</h2>
+      <p class="text-base mb-6 leading-relaxed" style="color:var(--mmt-text);">Events, analysis, and contract deadlines. I send the calendar alongside the context you need to act on it.</p>
+      <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" target="_blank" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto mb-4">
+        <label for="subscribe-email-cta" class="sr-only">Email</label>
+        <input type="email" name="email" id="subscribe-email-cta" placeholder="you@example.com" required class="px-4 py-3 rounded-lg text-sm flex-1" style="background:var(--mmt-soft); border:1px solid rgba(69,123,157,0.15); color: var(--mmt-navy);">
+        <button type="submit" class="btn-primary px-6 py-3 rounded-lg text-sm font-semibold whitespace-nowrap" style="cursor:pointer; border:none;">Subscribe</button>
+      </form>
+      <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80 inline-flex items-center gap-1" style="color:var(--mmt-teal);">
+        <svg width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+        Follow on LinkedIn
+      </a>
     </div>
   </section>
 

@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MarketPulse Demo</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+    :root{
+      --navy:#0A192F;
+      --navy-2:#10243D;
+      --teal:#457B9D;
+      --green:#16796F;
+      --green-bg:#ECFDF5;
+      --blue:#2563EB;
+      --blue-bg:#EFF6FF;
+      --amber:#92400E;
+      --amber-bg:#FFFBEB;
+      --red:#E63946;
+      --surface:#F3F4F6;
+      --surface-2:#F8FAFC;
+      --white:#FFFFFF;
+      --line:#E5E7EB;
+      --line-2:#EEF2F7;
+      --text:#1F2937;
+      --text-2:#4B5563;
+      --text-3:#6B7280;
+      --text-4:#94A3B8;
+      --shadow-lg:0 24px 80px rgba(10,25,47,.10), 0 2px 12px rgba(10,25,47,.06);
+      --shadow-md:0 10px 30px rgba(10,25,47,.06);
+      --radius-xl:28px;
+      --radius-lg:24px;
+      --radius-md:18px;
+      --radius-sm:14px;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family:'Inter',system-ui,-apple-system,sans-serif;
+      background:linear-gradient(180deg,#f8fafc 0%,#eef2f7 100%);
+      color:var(--navy);
+      overflow-x:hidden;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    .page{
+      min-height:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      padding:32px 20px 44px;
+      gap:24px;
+    }
+
+    .topline,.hero,.footer-actions{width:min(1320px,100%)}
+
+    .topline{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      color:var(--text-3);
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-weight:700;
+    }
+    .brand{display:flex;gap:10px;align-items:center;color:var(--navy)}
+    .dot{width:9px;height:9px;border-radius:999px;background:var(--teal);box-shadow:0 0 0 6px rgba(69,123,157,.12)}
+
+    .hero{
+      display:grid;
+      grid-template-columns:1.02fr .98fr;
+      gap:28px;
+      align-items:start;
+    }
+    .left{padding:28px 8px 0 4px}
+    .eyebrow{font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--teal);margin-bottom:16px}
+    h1{font-size:clamp(42px,5.5vw,72px);line-height:1.02;letter-spacing:-.06em;font-weight:900;max-width:760px}
+    .lead{margin-top:18px;font-size:clamp(18px,1.6vw,22px);line-height:1.6;color:var(--text-2);max-width:760px}
+    .proof{display:flex;gap:24px;flex-wrap:wrap;margin-top:24px;color:var(--text-3);font-size:14px}
+    .proof strong{color:var(--navy);font-weight:800}
+
+    .stage{
+      background:rgba(255,255,255,.82);
+      backdrop-filter:blur(10px);
+      border:1px solid rgba(255,255,255,.82);
+      border-radius:var(--radius-xl);
+      box-shadow:var(--shadow-lg);
+      overflow:hidden;
+      position:relative;
+      min-height:960px;
+    }
+    .stage::before{
+      content:'';
+      position:absolute;
+      inset:0 0 auto 0;
+      height:150px;
+      background:linear-gradient(180deg,rgba(69,123,157,.10),rgba(69,123,157,0));
+      pointer-events:none;
+    }
+    .stage-top{
+      padding:18px 22px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+      position:relative;
+      z-index:2;
+      background:linear-gradient(180deg,rgba(255,255,255,.84),rgba(255,255,255,.62));
+    }
+    .stepper{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .step{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:#7b8794;text-transform:uppercase;letter-spacing:.06em}
+    .bubble{width:20px;height:20px;border-radius:999px;background:#dbe3ea;color:#7b8794;display:grid;place-items:center;font-size:11px;font-weight:800;transition:.35s ease}
+    .step.active{color:var(--navy)}
+    .step.active .bubble{background:rgba(69,123,157,.16);color:var(--teal)}
+    .step.done{color:var(--green)}
+    .step.done .bubble{background:var(--green);color:white}
+    .status{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3)}
+
+    .viewport{padding:22px;position:relative;min-height:880px}
+    .screen{position:absolute;inset:22px;opacity:0;transform:translateY(14px) scale(.99);pointer-events:none;transition:opacity .55s ease, transform .55s ease}
+    .screen.active{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
+
+    .card{background:white;border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);height:100%}
+    .intake,.routing,.generation,.delivery{padding:24px;display:grid;gap:18px}
+    .intake{grid-template-rows:auto auto 1fr auto}
+    .processing{padding:24px;display:grid;grid-template-columns:1.05fr .95fr;gap:18px}
+    .intake-top,.gen-top{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap}
+    .intake h2,.processing h2,.routing h2,.generation h2,.delivery h2{font-size:30px;line-height:1.08;letter-spacing:-.04em;font-weight:850;max-width:820px}
+    .sub{font-size:14px;color:var(--text-3);line-height:1.6;max-width:660px}
+    .badge,.job-badge{padding:9px 12px;border-radius:999px;font-size:12px;font-weight:800;letter-spacing:.06em;white-space:nowrap}
+    .badge{background:var(--surface);color:var(--text-3)}
+    .job-badge{background:var(--amber-bg);color:var(--amber);text-transform:uppercase}
+
+    .form-shell,.route-shell,.progress-card,.pane,.mail-shell{border:1px solid var(--line)}
+    .form-shell,.route-shell,.progress-card{background:#fbfcfe}
+    .form-shell{border-radius:var(--radius-md);padding:18px}
+    .form-title,.pane-title,.q-label,.confirm-chip .k,.field .k,.confidence .k,.thesis .t1,.route-node .rn-k,.mail-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:800}
+    .form-title,.pane-title,.q-label,.field .k,.confidence .k,.route-node .rn-k{color:var(--text-3)}
+    .q-box{padding:16px;border:1px solid var(--line);border-radius:16px;background:white;margin-bottom:14px}
+    .q-text{font-size:21px;line-height:1.45;letter-spacing:-.03em;color:var(--navy);min-height:122px}
+    .cursor{display:inline-block;width:10px;height:1.05em;background:var(--teal);vertical-align:-2px;animation:blink 1s steps(1,end) infinite}
+    @keyframes blink{50%{opacity:0}}
+
+    .fields{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .field,.confirm-chip,.item,.signal,.decision,.route-node,.branch,.risk,.rec,.attachment{border-radius:16px;background:white}
+    .field{padding:14px;border:1px solid var(--line)}
+    .field .v{font-size:14px;font-weight:700;line-height:1.4;color:var(--navy)}
+    .opt{color:var(--text-4);font-weight:600}
+    .action-row{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+    .privacy{font-size:13px;color:var(--text-3)}
+    .cta{display:inline-flex;align-items:center;gap:10px;background:var(--navy);color:white;padding:15px 20px;border-radius:14px;font-size:15px;font-weight:800;box-shadow:0 10px 24px rgba(10,25,47,.14)}
+
+    .confirm-shell{border:1px solid rgba(37,99,235,.14);background:linear-gradient(180deg,#f8fbff 0%,#eef5ff 100%);border-radius:22px;padding:22px;box-shadow:inset 0 1px 0 rgba(255,255,255,.8)}
+    .confirm-hero{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start}
+    .confirm-icon{width:54px;height:54px;border-radius:16px;background:#DBEAFE;display:grid;place-items:center;color:var(--blue);box-shadow:0 8px 20px rgba(37,99,235,.12)}
+    .confirm-copy h3{font-size:22px;line-height:1.15;letter-spacing:-.03em;font-weight:850;margin-bottom:6px;color:var(--navy)}
+    .confirm-copy p{font-size:14px;line-height:1.65;color:var(--text-2)}
+    .confirm-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+    .confirm-chip{padding:14px;border:1px solid rgba(37,99,235,.10)}
+    .confirm-chip .k{color:var(--text-4);margin-bottom:5px}
+    .confirm-chip .v{font-size:14px;font-weight:800;color:var(--navy);line-height:1.4}
+
+    .engine{padding:22px;border-right:1px solid var(--line)}
+    .signal-stack,.decision-list,.stack,.right-stack,.progress-list{display:grid;gap:10px}
+    .signal{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 16px;border:1px solid var(--line);background:#fbfcfe;transform:translateX(0);transition:.35s ease}
+    .signal.active{transform:translateX(8px);border-color:rgba(69,123,157,.3);box-shadow:0 8px 20px rgba(69,123,157,.08)}
+    .src{font-size:13px;font-weight:800;color:var(--navy)}
+    .meta{font-size:12px;color:var(--text-3)}
+    .chip{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:7px 10px;border-radius:999px;background:rgba(69,123,157,.10);color:var(--teal)}
+    .synthesis{padding:16px 6px 16px 18px;display:grid;align-content:center;gap:16px}
+    .orb{height:220px;border-radius:28px;background:radial-gradient(circle at 50% 45%, rgba(69,123,157,.22), rgba(69,123,157,.08) 40%, rgba(69,123,157,.03) 58%, transparent 60%), linear-gradient(180deg,#fff,#f5f8fb);border:1px solid var(--line);position:relative;overflow:hidden}
+    .orb::before,.orb::after{content:'';position:absolute;inset:50%;translate:-50% -50%;border-radius:999px;border:1px solid rgba(69,123,157,.18)}
+    .orb::before{width:180px;height:180px;animation:pulse 2.8s ease-in-out infinite}
+    .orb::after{width:120px;height:120px;animation:pulse 2.8s ease-in-out 1.1s infinite}
+    @keyframes pulse{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.12);opacity:1}}
+    .decision{padding:14px 16px;border:1px solid var(--line);opacity:.35;transform:translateY(8px);transition:.35s ease}
+    .decision.on{opacity:1;transform:translateY(0)}
+    .decision strong,.item strong,.risk strong,.rec strong,.attachment strong,.branch .b-title{display:block;font-size:14px;margin-bottom:4px}
+    .decision span,.item span,.risk span,.rec span,.attachment span,.branch .b-copy,.route-node .rn-s{font-size:12px;color:var(--text-3);line-height:1.55}
+
+    .band,.grid-two{display:grid;gap:14px}
+    .band{grid-template-columns:1.15fr .85fr}
+    .grid-two{grid-template-columns:1.04fr .96fr;min-height:0}
+    .thesis,.confidence,.pane,.progress-card{padding:18px;border-radius:18px}
+    .thesis{background:var(--green-bg);border:1px solid rgba(22,121,111,.14)}
+    .thesis .t1{color:var(--green);margin-bottom:8px}
+    .thesis .t2{font-size:22px;line-height:1.25;letter-spacing:-.03em;font-weight:800;color:var(--navy)}
+    .thesis .t3{font-size:14px;color:var(--text-2);line-height:1.6;margin-top:8px}
+    .confidence{background:#fbfcfe;border:1px solid var(--line)}
+    .score{font-size:44px;line-height:1;font-weight:900;letter-spacing:-.06em;color:var(--navy)}
+    .score-note{font-size:13px;color:var(--text-3);margin-top:8px;line-height:1.6}
+
+    .item{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:14px;border:1px solid var(--line);background:#fbfcfe}
+    .value{font-size:14px;font-weight:800;color:var(--navy)}
+    .status-pill{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:7px 10px;border-radius:999px}
+    .forecast{background:#FEF3C7;color:var(--amber)}
+    .activeP{background:#D1FAE5;color:var(--green)}
+    .presol{background:#DBEAFE;color:#1E40AF}
+    .risk{padding:14px;border-left:4px solid var(--red);background:#FEF2F2}
+    .risk strong{color:var(--red)}
+    .rec{padding:14px;background:var(--surface)}
+
+    .route-shell{padding:18px;border-radius:20px;background:#fbfcfe}
+    .route-diagram{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:center;margin-top:10px}
+    .route-node{padding:16px;border:1px solid var(--line);min-height:110px;display:grid;align-content:start;gap:6px}
+    .route-node .rn-v{font-size:16px;line-height:1.25;font-weight:800;color:var(--navy)}
+    .route-arrow{font-size:24px;color:var(--teal);font-weight:900;text-align:center}
+    .route-branches{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+    .branch{padding:14px;border:1px solid var(--line)}
+    .b-tag{display:inline-block;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+    .branch.free .b-tag{background:#D1FAE5;color:var(--green)}
+    .branch.paid .b-tag{background:#FEF3C7;color:var(--amber)}
+    .branch.admin .b-tag{background:#DBEAFE;color:#1E40AF}
+
+    .progress-card{background:#fbfcfe}
+    .p-row{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--text-3)}
+    .p-dot{width:22px;height:22px;border-radius:999px;display:grid;place-items:center;font-size:11px;font-weight:800;border:2px solid currentColor;color:#A3AEBB}
+    .p-row.on{color:var(--teal);font-weight:700}
+    .p-row.on .p-dot{color:var(--teal);border-color:var(--teal)}
+    .p-row.done{color:var(--green)}
+    .p-row.done .p-dot{background:var(--green);color:white;border-color:var(--green)}
+
+    .mail-shell{border-radius:20px;overflow:hidden;background:white;box-shadow:0 10px 28px rgba(10,25,47,.06)}
+    .mail-top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 18px;border-bottom:1px solid var(--line);background:#fbfcfe}
+    .mail-ui{display:flex;gap:8px;align-items:center}
+    .mail-ui span{width:10px;height:10px;border-radius:999px;background:#d5dce5}
+    .mail-ui span:nth-child(1){background:#FCA5A5}
+    .mail-ui span:nth-child(2){background:#FCD34D}
+    .mail-ui span:nth-child(3){background:#86EFAC}
+    .mail-app{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3)}
+    .mail-body{padding:18px}
+    .mail-row{display:grid;grid-template-columns:72px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--line-2)}
+    .mail-row:last-child{border-bottom:none}
+    .mail-label{color:var(--text-4);padding-top:2px}
+    .mail-value{font-size:14px;color:var(--navy);line-height:1.55}
+    .mail-subject{font-weight:800;font-size:15px}
+    .mail-copy{padding:14px 0 6px;color:var(--text-2);font-size:14px;line-height:1.75}
+    .mail-copy p{margin-bottom:12px}
+    .attachment{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 16px;border:1px solid var(--line);background:#fbfcfe;margin-top:8px}
+    .attach-tag{padding:8px 10px;border-radius:999px;background:rgba(69,123,157,.10);color:var(--teal);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+
+    .footer-actions{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+    .note{font-size:13px;color:var(--text-3);max-width:880px;line-height:1.6}
+    .replay{border:none;background:var(--navy);color:white;padding:14px 18px;border-radius:14px;font-weight:800;font-size:14px;cursor:pointer}
+
+    @media (max-width: 1180px){
+      .hero{grid-template-columns:1fr}
+      .stage{min-height:980px}
+      .processing,.band,.grid-two{grid-template-columns:1fr}
+      .engine{border-right:none;border-bottom:1px solid var(--line)}
+    }
+    @media (max-width: 820px){
+      .fields,.confirm-meta,.route-branches{grid-template-columns:1fr}
+      .route-diagram{grid-template-columns:1fr;gap:12px}
+      .route-arrow{transform:rotate(90deg)}
+      .screen{inset:16px}
+      .viewport{padding:16px;min-height:1180px}
+      .intake h2,.processing h2,.routing h2,.generation h2,.delivery h2{font-size:26px}
+      .q-text{font-size:18px;min-height:150px}
+    }
+    @media (max-width: 560px){
+      .page{padding:20px 12px 28px}
+      .item,.mail-row,.confirm-hero{grid-template-columns:1fr}
+      .status{display:none}
+      .stage-top{align-items:flex-start}
+      .attachment{flex-direction:column;align-items:flex-start}
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topline">
+      <div class="brand"><span class="dot"></span><span>MarketPulse</span></div>
+      <div>Auto-running product demo</div>
+    </div>
+
+    <section class="hero">
+      <div class="left">
+        <div class="eyebrow">Market intelligence, delivered by email</div>
+        <h1>Ask what matters. Get the brief your team needs.</h1>
+        <p class="lead">MarketPulse turns a federal market question into a source-cited brief your capture, strategy, and leadership teams can use immediately.</p>
+        <div class="proof">
+          <span><strong>1</strong> free report</span>
+          <span><strong>24hr</strong> delivery promise</span>
+          <span><strong>Source-cited</strong> PDF brief</span>
+          <span><strong>Private</strong> by default</span>
+        </div>
+      </div>
+
+      <div class="stage" id="stage">
+        <div class="stage-top">
+          <div class="stepper">
+            <div class="step active" id="step1"><span class="bubble">1</span><span>Land</span></div>
+            <div class="step" id="step2"><span class="bubble">2</span><span>Submit</span></div>
+            <div class="step" id="step3"><span class="bubble">3</span><span>Research</span></div>
+            <div class="step" id="step4"><span class="bubble">4</span><span>Route</span></div>
+            <div class="step" id="step5"><span class="bubble">5</span><span>Build</span></div>
+            <div class="step" id="step6"><span class="bubble">6</span><span>Deliver</span></div>
+          </div>
+          <div class="status" id="status">Preparing demo</div>
+        </div>
+
+        <div class="viewport">
+          <section class="screen active" id="screen-land">
+            <div class="card intake">
+              <div class="intake-top">
+                <div>
+                  <h2>Start with the question behind the decision.</h2>
+                  <p class="sub">Ask what you need to know, add the context that sharpens the answer, and MarketPulse takes it from there.</p>
+                </div>
+                <div class="badge">/marketpulse.html</div>
+              </div>
+
+              <div class="form-shell">
+                <div class="form-title">Request form</div>
+                <div class="q-box">
+                  <div class="q-label">Research topic <span style="color:var(--red)">*</span></div>
+                  <div class="q-text" id="typed"></div>
+                </div>
+                <div class="fields">
+                  <div class="field"><div class="k">Name <span class="opt">required</span></div><div class="v">Alex Rivera</div></div>
+                  <div class="field"><div class="k">Email <span class="opt">required</span></div><div class="v">alex@meridianhealth.com</div></div>
+                  <div class="field"><div class="k">Company <span class="opt">optional</span></div><div class="v">Meridian Health Systems</div></div>
+                  <div class="field"><div class="k">Audience <span class="opt">optional</span></div><div class="v">BD leadership, capture</div></div>
+                  <div class="field"><div class="k">Certifications <span class="opt">optional</span></div><div class="v">SDVOSB, ISO 27001</div></div>
+                  <div class="field"><div class="k">NAICS / vehicles <span class="opt">optional</span></div><div class="v">541512, 541519 • GSA MAS, T4NG</div></div>
+                </div>
+              </div>
+
+              <div class="action-row">
+                <div class="privacy">Private by default. Your question is used to build your brief and is not used as training data.</div>
+                <div class="cta">Request intelligence brief →</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen" id="screen-submit">
+            <div class="card intake">
+              <div class="intake-top">
+                <div>
+                  <h2>Your request is in. The brief will come to you.</h2>
+                  <p class="sub">No dashboard to monitor. No page to keep open. When the work is done, the brief arrives in your inbox.</p>
+                </div>
+                <div class="badge">Request received</div>
+              </div>
+
+              <div class="confirm-shell">
+                <div class="confirm-hero">
+                  <div class="confirm-icon">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                  </div>
+                  <div class="confirm-copy">
+                    <h3>Your request is moving.</h3>
+                    <p>We’ve received your question and company context. MarketPulse is now building the brief and will send it to your inbox when it’s ready.</p>
+                  </div>
+                </div>
+                <div class="confirm-meta">
+                  <div class="confirm-chip"><div class="k">Status</div><div class="v">Request accepted</div></div>
+                  <div class="confirm-chip"><div class="k">Delivery</div><div class="v">Email with PDF brief</div></div>
+                  <div class="confirm-chip"><div class="k">Trust</div><div class="v">Private by default</div></div>
+                </div>
+              </div>
+
+              <div class="grid-two">
+                <div class="pane">
+                  <div class="pane-title">What the user sees</div>
+                  <div class="stack">
+                    <div class="item"><div><strong>The form is checked first</strong><span>Name, email, and research topic have to be in place before the request goes through.</span></div><div class="value">Form</div><div class="status-pill activeP">Checked</div></div>
+                    <div class="item"><div><strong>You get an immediate confirmation</strong><span>The page tells you the request is in progress instead of leaving you wondering.</span></div><div class="value">Page</div><div class="status-pill forecast">Shown</div></div>
+                    <div class="item"><div><strong>The brief does not appear here</strong><span>The finished deliverable comes later by email, which matches how MarketPulse actually works.</span></div><div class="value">Output</div><div class="status-pill presol">Clear</div></div>
+                  </div>
+                </div>
+                <div class="right-stack">
+                  <div class="rec"><strong>Why this matters</strong><span>The experience stays clear: request submitted, work underway, answer coming by email.</span></div>
+                  <div class="rec"><strong>Trust posture</strong><span>Private by default. Not used as training data. Built for sensitive strategy questions.</span></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen" id="screen-scan">
+            <div class="card processing">
+              <div class="engine">
+                <h2>MarketPulse builds the answer from the market signals behind it.</h2>
+                <p class="sub">Procurement activity, agency direction, award history, and market context are pulled into one research path to produce a defensible brief.</p>
+                <div class="signal-stack">
+                  <div class="signal" id="sig1"><div><div class="src">SAM.gov</div><div class="meta">Solicitations, RFIs, and pre-solicitations</div></div><div class="chip">Source</div></div>
+                  <div class="signal" id="sig2"><div><div class="src">USASpending</div><div class="meta">Award history, obligations, and incumbency</div></div><div class="chip">Source</div></div>
+                  <div class="signal" id="sig3"><div><div class="src">Agency materials</div><div class="meta">Roadmaps, policy, and public documentation</div></div><div class="chip">Source</div></div>
+                  <div class="signal" id="sig4"><div><div class="src">Market trackers</div><div class="meta">Secondary context and competitive movement</div></div><div class="chip">Source</div></div>
+                  <div class="signal" id="sig5"><div><div class="src">Press</div><div class="meta">Supporting context and timing signals</div></div><div class="chip">Source</div></div>
+                </div>
+              </div>
+              <div class="synthesis">
+                <div class="orb"></div>
+                <div class="decision-list">
+                  <div class="decision" id="dec1"><strong>The market is narrowed</strong><span>The question is translated into the agencies, vendors, timing, and vehicles that actually matter.</span></div>
+                  <div class="decision" id="dec2"><strong>The signal is checked</strong><span>Findings are compared across sources so the brief is built on more than one datapoint.</span></div>
+                  <div class="decision" id="dec3"><strong>The implication is found</strong><span>The goal is not more research. It is a clearer next move.</span></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen" id="screen-route">
+            <div class="card routing">
+              <div class="gen-top">
+                <div>
+                  <h2>MarketPulse handles the request the right way before the brief is built.</h2>
+                  <p class="sub">Some requests move straight through. Others go to checkout first. Paid access skips that step.</p>
+                </div>
+                <div class="job-badge">Behind the scenes</div>
+              </div>
+
+              <div class="route-shell">
+                <div class="route-diagram">
+                  <div class="route-node">
+                    <div class="rn-k">Request received</div>
+                    <div class="rn-v">Question, email, and company details</div>
+                    <div class="rn-s">The request arrives with the information needed to fulfill it.</div>
+                  </div>
+                  <div class="route-arrow">→</div>
+                  <div class="route-node">
+                    <div class="rn-k">Checks applied</div>
+                    <div class="rn-v">Usage and access checks</div>
+                    <div class="rn-s">The system decides whether the request is free, paid, or already covered.</div>
+                  </div>
+                  <div class="route-arrow">→</div>
+                  <div class="route-node">
+                    <div class="rn-k">Next step</div>
+                    <div class="rn-v">Correct fulfillment path</div>
+                    <div class="rn-s">The request moves down the right path before the brief is built.</div>
+                  </div>
+                </div>
+                <div class="route-branches">
+                  <div class="branch free">
+                    <div class="b-tag">Free path</div>
+                    <div class="b-title">First report goes straight through</div>
+                    <div class="b-copy">If the user has not used the free report yet, the request moves ahead right away.</div>
+                  </div>
+                  <div class="branch paid">
+                    <div class="b-tag">Paid path</div>
+                    <div class="b-title">Later reports go to checkout</div>
+                    <div class="b-copy">If the free report has already been used, the user is sent to Stripe first.</div>
+                  </div>
+                  <div class="branch admin">
+                    <div class="b-tag">Bypass</div>
+                    <div class="b-title">Paid and admin users skip checkout</div>
+                    <div class="b-copy">Eligible users move straight into report generation.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="band">
+                <div class="thesis">
+                  <div class="t1">What this means</div>
+                  <div class="t2">The request moves forward cleanly, without blurring research, payment, and delivery into one confusing flow.</div>
+                  <div class="t3">The first experience stays simple, payment stays separate, and the finished brief still arrives by email.</div>
+                </div>
+                <div class="confidence">
+                  <div class="k">Payment handling</div>
+                  <div class="score">Stripe</div>
+                  <div class="score-note">Card details do not pass through MMT systems.</div>
+                </div>
+              </div>
+
+              <div class="grid-two">
+                <div class="pane">
+                  <div class="pane-title">Why this matters</div>
+                  <div class="stack">
+                    <div class="item"><div><strong>The first experience stays simple</strong><span>New users can get started without extra friction.</span></div><div class="value">Simple</div><div class="status-pill activeP">Clear</div></div>
+                    <div class="item"><div><strong>Payment stays separate</strong><span>Checkout is handled by Stripe rather than being built into the report workflow.</span></div><div class="value">Stripe</div><div class="status-pill forecast">Handled</div></div>
+                    <div class="item"><div><strong>Delivery stays private</strong><span>The brief is still sent only to the user’s email when the work is done.</span></div><div class="value">Email</div><div class="status-pill presol">Protected</div></div>
+                  </div>
+                </div>
+                <div class="right-stack">
+                  <div class="rec"><strong>Trust point</strong><span>Payment is handled by Stripe, and the finished brief is sent only to the person who requested it.</span></div>
+                  <div class="rec"><strong>Why this step exists</strong><span>It keeps fulfillment clear without making the customer think about system details.</span></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen" id="screen-generate">
+            <div class="card generation">
+              <div class="gen-top">
+                <div>
+                  <h2>MarketPulse turns the research into a brief the team can use.</h2>
+                  <p class="sub">The findings are shaped into a source-cited report designed to be read quickly, shared easily, and acted on with confidence.</p>
+                </div>
+                <div class="job-badge">Brief in progress</div>
+              </div>
+
+              <div class="band">
+                <div class="thesis">
+                  <div class="t1">What matters here</div>
+                  <div class="t2">The output is not research for research’s sake. It is a brief built for a decision.</div>
+                  <div class="t3">MarketPulse organizes the market context, opportunities, risks, and recommended next moves into one clear report.</div>
+                </div>
+                <div class="confidence">
+                  <div class="k">Output</div>
+                  <div class="score">PDF</div>
+                  <div class="score-note">A source-cited report prepared for email delivery.</div>
+                </div>
+              </div>
+
+              <div class="grid-two">
+                <div class="progress-card">
+                  <div class="pane-title">Brief assembly</div>
+                  <div class="progress-list">
+                    <div class="p-row" id="pr1"><span class="p-dot">1</span><span>Interpret the question and define the scope</span></div>
+                    <div class="p-row" id="pr2"><span class="p-dot">2</span><span>Research the most relevant sources</span></div>
+                    <div class="p-row" id="pr3"><span class="p-dot">3</span><span>Check the findings before they make the brief</span></div>
+                    <div class="p-row" id="pr4"><span class="p-dot">4</span><span>Assemble the report sections and verified sources</span></div>
+                    <div class="p-row" id="pr5"><span class="p-dot">5</span><span>Prepare the PDF and email delivery</span></div>
+                  </div>
+                </div>
+
+                <div class="right-stack">
+                  <div class="risk"><strong>Private by design</strong><span>The work happens in the background, and the finished brief is sent to the buyer’s inbox rather than posted publicly.</span></div>
+                  <div class="rec"><strong>What the brief includes</strong><span>Executive summary, market context, opportunities, competitive landscape, risks, recommendations, and verified sources.</span></div>
+                  <div class="rec"><strong>What the timing means</strong><span>The work happens in the background so the answer can be better than a rushed on-page result.</span></div>
+                  <div class="rec"><strong>What the buyer gets</strong><span>A finished PDF brief, prepared to be read, forwarded, and used.</span></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen" id="screen-deliver">
+            <div class="card delivery">
+              <div class="gen-top">
+                <div>
+                  <h2>Your brief arrives by email, ready to read and share.</h2>
+                  <p class="sub">The main takeaway is visible in the message, with the full PDF brief attached for the wider team.</p>
+                </div>
+                <div class="job-badge" style="background:var(--green-bg);color:var(--green)">Delivered</div>
+              </div>
+
+              <div class="mail-shell">
+                <div class="mail-top">
+                  <div class="mail-ui"><span></span><span></span><span></span></div>
+                  <div class="mail-app">Inbox</div>
+                </div>
+                <div class="mail-body">
+                  <div class="mail-row"><div class="mail-label">From</div><div class="mail-value">MarketPulse &lt;reports@missionmeetstech.com&gt;</div></div>
+                  <div class="mail-row"><div class="mail-label">To</div><div class="mail-value">Alex Rivera &lt;alex@meridianhealth.com&gt;</div></div>
+                  <div class="mail-row"><div class="mail-label">Subject</div><div class="mail-value mail-subject">Your MarketPulse intelligence brief is ready: VA ambient AI capture path</div></div>
+                  <div class="mail-row"><div class="mail-label">Sent</div><div class="mail-value">Today • with PDF attachment and source verification dates</div></div>
+                  <div class="mail-copy">
+                    <p>Alex — your MarketPulse brief is ready.</p>
+                    <p>We reviewed the procurement signals, award history, agency direction, competitive movement, and policy context tied to your question.</p>
+                    <p>The clearest next move is to shape the next requirement cycle while opening targeted teaming conversations with primes that lack SDVOSB coverage.</p>
+                    <p>The full source-cited brief is attached and ready to forward to your team.</p>
+                  </div>
+                  <div class="attachment">
+                    <div>
+                      <strong>MarketPulse_Brief_VA_Ambient_AI.pdf</strong>
+                      <span>Source-cited report with executive summary, opportunities, risks, recommendations, and verification dates.</span>
+                    </div>
+                    <div class="attach-tag">PDF attached</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid-two">
+                <div class="pane">
+                  <div class="pane-title">Why this ending works</div>
+                  <div class="stack">
+                    <div class="item"><div><strong>Immediate readability</strong><span>The buyer gets the main takeaway without opening another interface first.</span></div><div class="value">Email</div><div class="status-pill activeP">Readable</div></div>
+                    <div class="item"><div><strong>Easy forwarding</strong><span>The message and attachment can move directly to leadership, strategy, or capture.</span></div><div class="value">Team</div><div class="status-pill forecast">Forwardable</div></div>
+                    <div class="item"><div><strong>Repeatable workflow</strong><span>Once the answer lands, the team can ask the next question and run the cycle again.</span></div><div class="value">Loop</div><div class="status-pill presol">Repeatable</div></div>
+                  </div>
+                </div>
+                <div class="right-stack">
+                  <div class="rec"><strong>Why this lands</strong><span>The answer reaches the buyer in a format they can read, forward, and act on immediately.</span></div>
+                  <div class="rec"><strong>Truthful trust language</strong><span>Private by default. Not used as training data. Payments handled by Stripe. Built for sensitive strategy workflows.</span></div>
+                  <div class="rec"><strong>Product truth</strong><span>MarketPulse does not end with a dashboard. It ends with the brief in the buyer’s inbox.</span></div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-actions">
+      <div class="note">MarketPulse turns a market question into a source-cited brief delivered by email.</div>
+      <button class="replay" id="replay" type="button">Replay demo</button>
+    </div>
+  </div>
+
+  <script>
+    const question = 'VA ambient AI scribe procurement landscape — who has current contracts, what is in the pipeline, and where are the teaming opportunities for a mid-tier health IT firm?';
+
+    const typed = document.getElementById('typed');
+    const replay = document.getElementById('replay');
+    const statusEl = document.getElementById('status');
+
+    const screens = {
+      land: document.getElementById('screen-land'),
+      submit: document.getElementById('screen-submit'),
+      scan: document.getElementById('screen-scan'),
+      route: document.getElementById('screen-route'),
+      generate: document.getElementById('screen-generate'),
+      deliver: document.getElementById('screen-deliver')
+    };
+
+    const steps = [1,2,3,4,5,6].map(n => document.getElementById('step' + n));
+    const signals = [1,2,3,4,5].map(n => document.getElementById('sig' + n));
+    const decisions = [1,2,3].map(n => document.getElementById('dec' + n));
+    const progressRows = [1,2,3,4,5].map(n => document.getElementById('pr' + n));
+
+    let running = false;
+    const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+    function show(name) {
+      Object.values(screens).forEach(el => el.classList.remove('active'));
+      screens[name].classList.add('active');
+    }
+
+    function setStep(idx) {
+      steps.forEach((step, i) => {
+        step.classList.remove('active', 'done');
+        if (i < idx) step.classList.add('done');
+        if (i === idx) step.classList.add('active');
+      });
+    }
+
+    async function typeQuestion() {
+      typed.innerHTML = '';
+      for (let i = 0; i < question.length; i++) {
+        typed.textContent = question.slice(0, i + 1);
+        if (i % 5 === 0) await wait(28);
+      }
+      typed.insertAdjacentHTML('beforeend', '<span class="cursor"></span>');
+    }
+
+    function resetScan() {
+      signals.forEach(el => el.classList.remove('active'));
+      decisions.forEach(el => el.classList.remove('on'));
+    }
+
+    function resetProgress() {
+      progressRows.forEach(el => {
+        el.classList.remove('on', 'done');
+      });
+    }
+
+    async function runDemo() {
+      if (running) return;
+      running = true;
+      replay.disabled = true;
+      replay.style.opacity = '.6';
+
+      setStep(0);
+      statusEl.textContent = 'Landing on MarketPulse';
+      show('land');
+      await wait(700);
+      await typeQuestion();
+      await wait(2500);
+
+      setStep(1);
+      statusEl.textContent = 'Request received';
+      show('submit');
+      await wait(3800);
+
+      setStep(2);
+      statusEl.textContent = 'Researching the question';
+      show('scan');
+      resetScan();
+      for (let i = 0; i < signals.length; i++) {
+        signals[i].classList.add('active');
+        if (i >= 1 && decisions[i - 1]) {
+          decisions[i - 1].classList.add('on');
+        }
+        await wait(1300);
+      }
+      decisions.forEach(d => d.classList.add('on'));
+      await wait(2200);
+
+      setStep(3);
+      statusEl.textContent = 'Choosing the right request path';
+      show('route');
+      await wait(4200);
+
+      setStep(4);
+      statusEl.textContent = 'Building the brief';
+      show('generate');
+      resetProgress();
+      for (let i = 0; i < progressRows.length; i++) {
+        progressRows[i].classList.add('on');
+        await wait(1250);
+        progressRows[i].classList.remove('on');
+        progressRows[i].classList.add('done');
+      }
+      await wait(2000);
+
+      setStep(5);
+      statusEl.textContent = 'Brief sent by email';
+      show('deliver');
+      await wait(4500);
+
+      replay.disabled = false;
+      replay.style.opacity = '1';
+      running = false;
+    }
+
+    if (replay) {
+      replay.addEventListener('click', runDemo);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(runDemo, 900);
+    });
+  </script>
+</body>
+</html>

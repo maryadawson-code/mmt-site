@@ -48,9 +48,9 @@
         </div>
       </a>
       <div class="hidden md:flex items-center gap-5">
-        <a href="latest.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Intelligence</a>
+        <a href="latest.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Analysis</a>
         <a href="podcast.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Podcast</a>
-        <a href="resources.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Resources</a>
+        <a href="resources.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Intelligence Center</a>
         <a href="about.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">About</a>
         <button id="searchToggle" class="hover:opacity-70" style="color:var(--mmt-text-secondary);background:none;border:none;cursor:pointer;" aria-label="Search"><svg width="16" height="16" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></button>
         <a href="newsletter.html" class="btn-primary no-underline" style="margin-left:8px;">Subscribe</a>
@@ -62,9 +62,9 @@
     </div>
     <div id="mobileMenu" class="hidden md:hidden px-6 pb-4" style="background:var(--mmt-white);border-bottom:1px solid var(--mmt-border);">
       <div class="flex flex-col gap-4 pt-2" style="border-top:1px solid var(--mmt-border);">
-        <a href="latest.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Intelligence</a>
+        <a href="latest.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Analysis</a>
         <a href="podcast.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Podcast</a>
-        <a href="resources.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Resources</a>
+        <a href="resources.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Intelligence Center</a>
         <a href="about.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">About</a>
         <div class="pt-3 mt-1" style="border-top:1px solid var(--mmt-border);">
           <a href="newsletter.html" class="btn-primary no-underline">Subscribe</a>
@@ -75,109 +75,110 @@
 
   <main id="main-content" class="wrap">
 
-  <!-- 1. NEWSLETTER HERO — Split layout -->
-  <section style="padding:48px 0 24px;">
+  <!-- Section 1 — Hero form split -->
+  <section style="padding:48px 0 32px;">
     <div class="newsletter-layout">
 
-      <!-- Left: Editorial value proposition -->
+      <!-- Left: Value proposition -->
       <div class="newsletter-copy">
-        <div class="text-eyebrow">Subscribe</div>
-        <h1 style="font-size:clamp(34px, 4.6vw, 66px);line-height:0.95;letter-spacing:-0.045em;max-width:11ch;">Federal health IT intelligence that&nbsp;moves decisions.</h1>
-        <p class="lede" style="margin:0;">Analysis on DHA modernization, VA health IT, federal AI, and the procurement signals most coverage misses. Written for the people who actually have to act on this information.</p>
+        <h1 style="font-size:clamp(32px, 4.2vw, 56px);line-height:1.05;letter-spacing:-0.035em;max-width:16ch;">Get Mission Meets Tech free, twice weekly.</h1>
+        <p class="lede" style="margin:0;">I cover federal health IT the way it should be covered -- with a thesis, evidence, and a real stake. Twice a week, you get the policy shifts, contract movement, and operational implications that most outlets skip.</p>
 
-        <div style="display:grid;gap:12px;margin-top:18px;">
-          <div class="feature-row">
-            <div class="n">01</div>
-            <div>
-              <h3 style="font-size:18px;margin-bottom:4px;">Built for operators</h3>
-              <p>Defense contractors, federal health leaders, and the practitioners who need signal, not noise.</p>
-            </div>
-          </div>
-          <div class="feature-row">
-            <div class="n">02</div>
-            <div>
-              <h3 style="font-size:18px;margin-bottom:4px;">Thesis-led analysis</h3>
-              <p>Every issue filtered through one question: does this help someone save lives or enhance readiness?</p>
-            </div>
-          </div>
-          <div class="feature-row">
-            <div class="n">03</div>
-            <div>
-              <h3 style="font-size:18px;margin-bottom:4px;">Read where it matters</h3>
-              <p>Trusted by DHA leadership, VA executives, CMS policy teams, and the practitioners doing the actual work.</p>
-            </div>
-          </div>
-        </div>
+        <ul style="list-style:none;padding:0;margin:20px 0 0;display:grid;gap:10px;">
+          <li style="display:flex;align-items:baseline;gap:10px;">
+            <span style="color:var(--mmt-teal);font-weight:700;flex-shrink:0;">--</span>
+            <span><strong>Policy shifts explained.</strong> Who moved, what changed, and why it matters for your program.</span>
+          </li>
+          <li style="display:flex;align-items:baseline;gap:10px;">
+            <span style="color:var(--mmt-teal);font-weight:700;flex-shrink:0;">--</span>
+            <span><strong>Contract movement tracked.</strong> Awards, recompetes, and procurement signals with the backstory.</span>
+          </li>
+          <li style="display:flex;align-items:baseline;gap:10px;">
+            <span style="color:var(--mmt-teal);font-weight:700;flex-shrink:0;">--</span>
+            <span><strong>Operational implications interpreted.</strong> I tell you what happened, then I tell you what to do about it.</span>
+          </li>
+        </ul>
       </div>
 
       <!-- Right: Signup form panel -->
       <div class="newsletter-form-card">
-        <div class="pill">Subscribe free</div>
-        <h3>Get federal health IT intelligence in your inbox.</h3>
-        <p>Bi-weekly. Evidence-first. No press releases, no vendor gloss.</p>
+        <div class="pill">Free</div>
+        <h3>Subscribe now.</h3>
+        <p>Join defense contractors, DHA leadership, VA executives, and federal health practitioners who read this twice a week.</p>
         <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" target="_blank" style="display:grid;gap:12px;">
           <label for="subscribe-email" class="sr-only">Email address</label>
-          <input type="email" name="email" id="subscribe-email" placeholder="Work email" required class="form-input">
-          <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">Subscribe Now</button>
+          <input type="email" name="email" id="subscribe-email" placeholder="Your work email" required class="form-input">
+          <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">Subscribe Free</button>
         </form>
-        <a href="/newsletter/largest-healthcare-contract/" class="btn-secondary no-underline" style="width:100%;justify-content:center;">Read Sample Briefing</a>
-        <p style="font-size:13px;color:var(--mmt-text-secondary);">Free. No spam. Unsubscribe anytime.</p>
+        <p style="font-size:13px;color:var(--mmt-text-secondary);margin:0;">No spam. Unsubscribe anytime. Takes 10 seconds.</p>
+        <a href="/newsletter/largest-healthcare-contract/" class="btn-secondary no-underline" style="width:100%;justify-content:center;margin-top:4px;">Read a sample issue first</a>
       </div>
 
     </div>
   </section>
 
-  <!-- 2. WHY SUBSCRIBE — Three benefit modules -->
+  <!-- Section 2 — What you'll get -->
   <section class="section">
     <div class="section-head">
       <div>
-        <div class="section-label">Why subscribe</div>
-        <h2>What the briefing delivers.</h2>
+        <div class="section-label">What you get</div>
+        <h2>Every issue, same structure.</h2>
       </div>
     </div>
     <div class="grid-3">
       <div class="resource-card">
         <div class="resource-index">01</div>
-        <h3 style="font-size:18px;">Policy to impact</h3>
-        <p>Leadership shifts, modernization decisions, and policy signals translated into what they actually mean for your program, your contract, or your patient population.</p>
+        <h3 style="font-size:18px;">Policy shifts</h3>
+        <p>Leadership changes, budget decisions, and modernization signals translated into what they actually mean for your mission, your contract, or your patient population.</p>
       </div>
       <div class="resource-card">
         <div class="resource-index">02</div>
-        <h3 style="font-size:18px;">Procurement context</h3>
-        <p>Contract awards, recompetes, and acquisition strategy analysis with the backstory vendors leave out and news summaries miss.</p>
+        <h3 style="font-size:18px;">Contract movement</h3>
+        <p>Awards, recompetes, and acquisition strategy analysis. The context vendors leave out and wire services miss -- who won, why, and what it signals next.</p>
       </div>
       <div class="resource-card">
         <div class="resource-index">03</div>
-        <h3 style="font-size:18px;">System-level framing</h3>
-        <p>Isolated headlines connected into broader mission, clinical, and technical patterns. I tell you what happened, then I tell you why it matters.</p>
+        <h3 style="font-size:18px;">Operational impact</h3>
+        <p>Isolated headlines connected into mission, clinical, and technical patterns. Not just what happened, but what it means for the people doing the work.</p>
       </div>
     </div>
   </section>
 
-  <!-- 3. LOWER SECTION — Sample + Positioning split -->
+  <!-- Section 3 — Sample issue preview -->
   <section class="section">
-    <div class="split">
-
-      <!-- Left: Sample briefing -->
-      <div class="card" style="display:grid;gap:14px;align-content:start;">
-        <div class="section-label">Sample briefing</div>
-        <h3>See what a briefing looks like before you subscribe.</h3>
-        <p>Every issue starts with a thesis and backs it up. Read a recent issue to see the format, depth, and tone.</p>
-        <a href="/newsletter/largest-healthcare-contract/" class="btn-primary no-underline" style="width:fit-content;">Read Sample Issue</a>
-      </div>
-
-      <!-- Right: Tone / positioning guardrail -->
-      <div class="card" style="display:grid;gap:14px;align-content:start;">
-        <div class="section-label">What this is not</div>
-        <h3>No hype. No aggregation. No vague "insights."</h3>
-        <p>This is not a news summary and it is not a vendor marketing list. Every issue has a thesis, evidence, and a real stake.</p>
-        <p>If you want surface-level coverage, there are plenty of sources for that. If you want analysis that tells you what actually changed, what it means, and who it affects, this is the briefing.</p>
-      </div>
-
+    <div class="card" style="display:grid;gap:14px;align-content:start;max-width:640px;">
+      <div class="section-label">Sample issue</div>
+      <h3>Read one before you subscribe.</h3>
+      <p>Every issue starts with a thesis and backs it up. No filler paragraphs, no press release rewrites. Read a recent briefing to see the format, depth, and voice for yourself.</p>
+      <a href="/newsletter/largest-healthcare-contract/" class="btn-primary no-underline" style="width:fit-content;">Read Sample Briefing</a>
     </div>
   </section>
 
-  <!-- 4. ARCHIVE — Preserved from build system -->
+  <!-- Section 5 — FAQ -->
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-label">FAQ</div>
+        <h2>Quick answers.</h2>
+      </div>
+    </div>
+    <div style="display:grid;gap:16px;max-width:640px;">
+      <div class="card" style="padding:20px;">
+        <h3 style="font-size:16px;margin-bottom:6px;">How often does it come out?</h3>
+        <p style="margin:0;">Twice a week. Short enough to read during a coffee break, specific enough to forward to your team.</p>
+      </div>
+      <div class="card" style="padding:20px;">
+        <h3 style="font-size:16px;margin-bottom:6px;">Is it free?</h3>
+        <p style="margin:0;">Yes. The newsletter is free and will stay free. I make money through ProposalPulse and MarketPulse, not by locking analysis behind a paywall.</p>
+      </div>
+      <div class="card" style="padding:20px;">
+        <h3 style="font-size:16px;margin-bottom:6px;">Can I unsubscribe anytime?</h3>
+        <p style="margin:0;">One click, bottom of every email, instant. No guilt trip, no "are you sure" loops.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Archive — Preserved from build system -->
   <section id="all-issues" class="section">
     <div class="section-head">
       <div>
@@ -193,26 +194,11 @@
     </div>
   </section>
 
-  <!-- MMT Tools -->
-  <section class="wrap" style="padding:48px 0 24px;">
-    <p class="text-xs font-bold uppercase tracking-wider mb-4" style="color:var(--mmt-teal);">MMT Tools</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-      <a href="proposal-pulse.html" class="card rounded-xl p-6 no-underline block" style="transition:transform 0.2s;text-decoration:none;">
-        <h3 class="text-base font-bold mb-1" style="color:var(--mmt-navy);">Proposal<span style="color:var(--mmt-teal);">Pulse</span></h3>
-        <p class="text-xs" style="color:var(--mmt-text-secondary);margin:0;">Score your federal proposal across 9 criteria in 60 seconds. Three free.</p>
-      </a>
-      <a href="marketpulse.html" class="card rounded-xl p-6 no-underline block" style="transition:transform 0.2s;text-decoration:none;">
-        <h3 class="text-base font-bold mb-1" style="color:var(--mmt-navy);">Market<span style="color:var(--mmt-teal);">Pulse</span></h3>
-        <p class="text-xs" style="color:var(--mmt-text-secondary);margin:0;">Ask any federal health IT market question. Research brief in 24 hours. First free.</p>
-      </a>
-    </div>
-  </section>
-
   </main>
 
   <!-- Footer -->
   <footer class="wrap" style="padding:28px 0 58px;">
-    <div style="border-top:1px solid var(--mmt-border);padding-top:24px;display:grid;grid-template-columns:1fr auto auto;gap:40px;color:var(--mmt-text-secondary);font-size:13px;">
+    <div style="border-top:1px solid var(--mmt-border);padding-top:24px;display:grid;grid-template-columns:1fr auto auto auto auto;gap:32px;color:var(--mmt-text-secondary);font-size:13px;">
       <div>
         <p style="margin-bottom:6px;"><strong style="color:var(--mmt-navy);">Mission Meets Tech</strong></p>
         <p>Federal health IT intelligence. Mission first.</p>
@@ -220,27 +206,33 @@
         <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;">
-        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Explore</strong>
-        <a href="/latest.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Intelligence</a>
+        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Read</strong>
+        <a href="/latest.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Latest Analysis</a>
+        <a href="/topics.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Topics</a>
         <a href="/podcast.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Podcast</a>
-        <a href="/resources.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Resources</a>
-        <a href="/proposal-pulse.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">ProposalPulse</a>
-        <a href="/marketpulse.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">MarketPulse</a>
-        <a href="/about.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">About</a>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;">
-        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Connect</strong>
-        <a href="/newsletter.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Subscribe</a>
-        <a href="mailto:mary@missionmeetstech.com" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Contact</a>
-        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">LinkedIn</a>
-        <a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank" rel="noopener" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Apple Podcasts</a>
-        <a href="https://open.spotify.com/show/7sND342duH7Buw1cUs60lP" target="_blank" rel="noopener" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Spotify</a>
+        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Tools</strong>
+        <a href="/proposal-pulse.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">ProposalPulse</a>
+        <a href="/marketpulse.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">MarketPulse</a>
+        <a href="/contract-tracker.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Contract Tracker</a>
       </div>
-    </div>
-    <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--mmt-border);display:flex;gap:16px;font-size:12px;color:var(--mmt-text-secondary);">
-      <a href="/privacy.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Privacy</a>
-      <a href="/terms.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Terms</a>
-      <a href="/security.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Security</a>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Reference</strong>
+        <a href="/glossary.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Glossary</a>
+        <a href="/contracting.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Contracting Hub</a>
+        <a href="/agency-sources.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Agency Sources</a>
+        <a href="/events.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Events</a>
+        <a href="/newswire.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">News Wire</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Trust</strong>
+        <a href="/about.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">About</a>
+        <a href="/security.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Security</a>
+        <a href="/privacy.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Privacy</a>
+        <a href="/terms.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Terms</a>
+        <a href="mailto:mary@missionmeetstech.com" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Contact</a>
+      </div>
     </div>
   </footer>
 

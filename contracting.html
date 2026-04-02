@@ -33,10 +33,8 @@
   <style>
     :root {
       --mmt-teal: #457B9D;
-      
       --mmt-navy: #0A192F;
       --mmt-soft: #F3F4F6;
-      --mmt-white: #FFFFFF;
       --mmt-white: #FFFFFF;
       --mmt-text: #102033;
       --mmt-text-secondary: #5C6B7A;
@@ -46,52 +44,51 @@
     .gradient-text { color: var(--mmt-teal); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .btn-primary { color: var(--mmt-teal); color: var(--mmt-navy); font-weight: 600; padding: 0.75rem 2rem; border-radius: 9999px; transition: all 0.3s; }
     .btn-primary:hover { transform: translateY(-1px); opacity: 0.9; }
-    .btn-secondary { border: 1px solid var(--mmt-teal); color: var(--mmt-navy); padding: 0.75rem 2rem; border-radius: 9999px; transition: all 0.3s; }
-    .btn-secondary:hover { background: rgba(69,123,157,0.1); }
     .card { background: var(--mmt-soft); border: 1px solid rgba(69,123,157,0.1); }
     .card:hover { border-color: rgba(69,123,157,0.3); }
-    
     .section-alt { background: var(--mmt-white); }
     *:focus-visible { outline: 2px solid var(--mmt-teal); outline-offset: 2px; }
+
+    /* Sticky jump nav */
+    .jump-nav { position: sticky; top: 64px; z-index: 30; background: var(--mmt-white); border-bottom: 1px solid rgba(69,123,157,0.08); }
+    .jump-nav a { font-size: 0.8rem; font-weight: 600; color: var(--mmt-text-secondary); text-decoration: none; padding: 10px 0; border-bottom: 2px solid transparent; transition: all 0.15s; white-space: nowrap; }
+    .jump-nav a:hover, .jump-nav a.active { color: var(--mmt-teal); border-bottom-color: var(--mmt-teal); }
+
+    /* Primer cards */
+    .primer-card { background: var(--mmt-soft); border: 1px solid rgba(69,123,157,0.1); border-radius: 12px; padding: 1.25rem; }
+    .primer-card h3 { color: var(--mmt-teal); font-size: 1rem; font-weight: 700; margin-bottom: 0.35rem; }
+    .primer-card p { color: var(--mmt-text); font-size: 0.875rem; line-height: 1.6; }
+
+    /* Vehicle cards */
+    .vehicle-card { background: var(--mmt-soft); border: 1px solid rgba(69,123,157,0.1); border-radius: 12px; padding: 1.5rem; transition: border-color 0.15s; }
+    .vehicle-card:hover { border-color: rgba(69,123,157,0.3); }
+    .vehicle-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 0.75rem; }
+    .vehicle-meta dt { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--mmt-teal); font-weight: 600; }
+    .vehicle-meta dd { font-size: 0.825rem; color: var(--mmt-text); margin: 0 0 8px; }
+    .status-active { color: var(--mmt-teal); font-weight: 600; }
+    .status-cancelled { color: #E63946; font-weight: 600; }
+    .status-pre { color: #B8860B; font-weight: 600; }
+
+    /* Expandable detail */
+    .vehicle-detail-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+    .vehicle-card.expanded .vehicle-detail-content { max-height: 600px; }
+    .expand-toggle { cursor: pointer; font-size: 0.8rem; font-weight: 600; color: var(--mmt-teal); background: none; border: none; padding: 0; margin-top: 0.75rem; display: inline-flex; align-items: center; gap: 4px; }
+    .expand-toggle:hover { opacity: 0.8; }
+    .expand-toggle svg { transition: transform 0.2s; }
+    .vehicle-card.expanded .expand-toggle svg { transform: rotate(90deg); }
+
+    /* Resource links */
     .resource-link { display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 0.85rem; border-radius: 8px; font-size: 0.875rem; text-decoration: none; color: var(--mmt-text); background: rgba(69,123,157,0.04); transition: background 0.15s; }
     .resource-link:hover { background: rgba(69,123,157,0.1); }
     .resource-link strong { color: var(--mmt-navy); }
-    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .contract-table { width: 100%; border-collapse: collapse; min-width: 800px; font-size: 0.875rem; }
-    @media (max-width: 767px) {
-      .table-scroll { overflow-x: visible; }
-      .contract-table { min-width: unset; }
-      .contract-table thead { display: none; }
-      .contract-table tbody tr.vehicle-row { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; padding: 1rem; margin-bottom: 8px; border-radius: 12px; background: var(--mmt-soft); border: 1px solid rgba(69,123,157,0.1); }
-      .contract-table tbody tr.vehicle-row:hover { border-color: rgba(69,123,157,0.3); }
-      .contract-table tbody tr.vehicle-row td { padding: 4px 0; border-bottom: none; display: block; }
-      .contract-table tbody tr.vehicle-row td:first-child { grid-column: 1 / -1; font-size: 1rem; font-weight: 600; color: var(--mmt-navy); padding-bottom: 8px; border-bottom: 1px solid rgba(69,123,157,0.08); margin-bottom: 4px; }
-      .contract-table tbody tr.vehicle-row td:before { content: attr(data-label); display: block; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--mmt-teal); margin-bottom: 2px; font-weight: 600; }
-      .contract-table tbody tr.vehicle-detail td { display: block; padding: 1rem; border-radius: 0 0 12px 12px; margin-top: -9px; }
-      .expand-icon { font-size: 1.25rem; }
-    }
-    .contract-table thead { background: rgba(69,123,157,0.08); }
-    .contract-table th { padding: 0.75rem 1rem; text-align: left; color: var(--mmt-teal); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid rgba(69,123,157,0.15); white-space: nowrap; }
-    .contract-table td { padding: 0.75rem 1rem; border-bottom: 1px solid rgba(69,123,157,0.06); color: var(--mmt-text); vertical-align: top; }
-    .contract-table tbody tr:hover { background: rgba(69,123,157,0.04); }
-    .status-active { color: var(--mmt-teal); font-weight: 600; font-size: 0.75rem; }
-    .status-cancelled { color: #ff6b6b; font-weight: 600; font-size: 0.75rem; }
-    .status-pre { color: #ffd93d; font-weight: 600; font-size: 0.75rem; }
-    .vehicle-row { cursor: pointer; }
-    .vehicle-row:hover { background: rgba(69,123,157,0.04); }
-    .vehicle-detail { display: none; }
-    .vehicle-detail.open { display: table-row; }
-    .vehicle-detail td { padding: 1rem 1rem 1.5rem; background: rgba(69,123,157,0.03); border-bottom: 1px solid rgba(69,123,157,0.1); }
-    .expand-icon { transition: transform 0.2s; display: inline-block; }
-    .vehicle-row.expanded .expand-icon { transform: rotate(90deg); }
-    @media (max-width: 767px) {
-      .vehicle-row td:last-child { min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; }
-    }
+
+    /* Section scroll targets */
+    .section-target { scroll-margin-top: 120px; }
   </style>
 </head>
 <body class="antialiased">
 
-  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold" style="background:var(--mmt-teal); color: var(--mmt-navy);">Skip to main content</a>
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold" style="background:var(--mmt-teal); color:var(--mmt-navy);">Skip to main content</a>
 
     <!-- Navigation -->
   <nav class="nav-editorial">
@@ -133,7 +130,7 @@
 
   <!-- Breadcrumb -->
   <div class="pt-28 pb-0 px-6">
-    <div class="max-w-6xl mx-auto">
+    <div class="max-w-5xl mx-auto">
       <nav aria-label="Breadcrumb" class="text-xs" style="color:var(--mmt-text-secondary);">
         <a href="resources.html" class="no-underline hover:opacity-80" style="color:var(--mmt-text-secondary);">Resources</a>
         <span class="mx-1">/</span>
@@ -142,292 +139,353 @@
     </div>
   </div>
 
-  <!-- Hero -->
-  <section class="pt-8 pb-20 px-6">
-    <div class="max-w-4xl mx-auto text-center">
-      <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">Federal Health IT <span class="gradient-text">Contracting Hub</span></h1>
-      <p class="text-lg leading-relaxed max-w-2xl mx-auto" style="color:var(--mmt-text);">The vehicles, mechanics, and intelligence you need to win federal health IT work.</p>
+  <!-- Section 1: Hero -->
+  <section class="pt-8 pb-12 px-6">
+    <div class="max-w-5xl mx-auto">
+      <h1 class="text-4xl md:text-5xl font-bold mb-4 leading-tight" style="color:var(--mmt-navy);">Contracting Hub</h1>
+      <p class="text-base md:text-lg leading-relaxed max-w-2xl" style="color:var(--mmt-text);">Vehicles, set-asides, procurement references, and how the work actually gets bought.</p>
     </div>
   </section>
 
-  <!-- Contract Vehicles at a Glance -->
-  <section class="section-alt py-20 px-6">
-    <div class="max-w-6xl mx-auto">
-      <h2 class="text-3xl font-bold mb-2">Contract Vehicles at a Glance</h2>
-      <p class="text-sm mb-8" style="color:var(--mmt-text-secondary);">Click any vehicle for detailed analysis.</p>
-      <div class="card rounded-xl p-1">
-        <div class="table-scroll">
-          <table class="contract-table">
-            <thead>
-              <tr>
-                <th></th>
-                <th>Vehicle</th>
-                <th>Agency</th>
-                <th>Ceiling</th>
-                <th>Set-Asides</th>
-                <th>Status</th>
-                <th>Health IT Relevance</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="vehicle-row" data-vehicle="cio-sp3">
-                <td><span class="expand-icon" style="color:var(--mmt-teal);">&#9654;</span></td>
-                <td><strong style="color: var(--mmt-navy);">CIO-SP3</strong></td>
-                <td data-label="Agency">NIH/NITAAC</td>
-                <td data-label="Ceiling">$40B</td>
-                <td data-label="Competition">Full &amp; open, SB pools</td>
-                <td data-label="Status"><span class="status-active">Active (extended)</span></td>
-                <td data-label="Notes">Primary IT GWAC for DHA and VA health IT task orders</td>
-              </tr>
-              <tr class="vehicle-detail" id="detail-cio-sp3">
-                <td colspan="7">
-                  <div style="max-width:720px;">
-                    <h4 class="text-base font-bold mb-3" style="color:var(--mmt-teal);">CIO-SP3 — Detailed Analysis</h4>
-                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);">CIO-SP3 (Chief Information Officer-Solutions and Partners 3) is the workhorse IT GWAC managed by NITAAC at the National Institutes of Health. Originally awarded in 2012 with a $40B ceiling, it has been extended multiple times due to the CIO-SP4 cancellation.</p>
-                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);"><strong style="color: var(--mmt-navy);">Why it matters for health IT:</strong> DHA, VA, and HHS agencies route a significant volume of health IT task orders through CIO-SP3. If you are pursuing federal health IT work and are not on this vehicle, you are likely teaming with someone who is.</p>
-                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);"><strong style="color: var(--mmt-navy);">Current dynamics:</strong> With CIO-SP4 cancelled, CIO-SP3 holders have an extended runway. Agencies dependent on NITAAC GWACs have no near-term alternative at this scale. Watch NITAAC for signals on a potential rebid or bridge vehicle.</p>
-                    <p class="text-sm leading-relaxed" style="color:var(--mmt-text);"><strong style="color: var(--mmt-navy);">NAICS codes:</strong> 541512 (primary), 541511, 541519, 518210, 611420</p>
-                  </div>
-                </td>
-              </tr>
+  <!-- Section 2: Sticky jump nav -->
+  <div class="jump-nav px-6">
+    <div class="max-w-5xl mx-auto overflow-x-auto">
+      <nav class="flex gap-6" aria-label="Page sections">
+        <a href="#basics">The Basics</a>
+        <a href="#vehicles">Vehicles</a>
+        <a href="#set-asides">Set-Asides</a>
+        <a href="#references">Key Portals</a>
+        <a href="#tracked">Related Contracts</a>
+      </nav>
+    </div>
+  </div>
 
-              <tr class="vehicle-row" data-vehicle="cio-sp4">
-                <td><span class="expand-icon" style="color:var(--mmt-teal);">&#9654;</span></td>
-                <td><strong style="color: var(--mmt-navy);">CIO-SP4</strong></td>
-                <td data-label="Agency">NIH/NITAAC</td>
-                <td data-label="Ceiling">Was $50B</td>
-                <td data-label="Competition">Was tiered</td>
-                <td data-label="Status"><span class="status-cancelled">Cancelled (Feb 2026)</span></td>
-                <td data-label="Notes">Cancellation after years of protests reshuffled GWAC landscape</td>
-              </tr>
-              <tr class="vehicle-detail" id="detail-cio-sp4">
-                <td colspan="7">
-                  <div style="max-width:720px;">
-                    <h4 class="text-base font-bold mb-3" style="color:var(--mmt-teal);">CIO-SP4 — Post-Cancellation Analysis</h4>
-                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);">CIO-SP4 was supposed to be the $50B successor to CIO-SP3. After years of bid protests, legal challenges, and multiple re-evaluations, NITAAC cancelled the solicitation in February 2026.</p>
-                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);"><strong style="color: var(--mmt-navy);">What happened:</strong> The tiered evaluation approach drew sustained protests from firms excluded in early rounds. GAO sustained multiple protests. NITAAC attempted corrective actions but could not resolve the structural issues in the solicitation design.</p>
-                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);"><strong style="color: var(--mmt-navy);">Impact:</strong> Firms that invested heavily in the CIO-SP4 bid process face sunk costs with no vehicle to show for it. Agencies must redistribute task orders across CIO-SP3 (extended), OASIS+, and SEWP VI. The GWAC landscape is more fragmented as a result.</p>
-                    <p class="text-sm leading-relaxed" style="color:var(--mmt-text);"><strong style="color: var(--mmt-navy);">What to watch:</strong> Whether NITAAC attempts a streamlined rebid, or whether GSA and NASA SEWP absorb the demand permanently. This reshuffles competitive positioning across the federal IT market.</p>
-                  </div>
-                </td>
-              </tr>
-
-              <tr class="vehicle-row" data-vehicle="oasis-plus">
-                <td><span class="expand-icon" style="color:var(--mmt-teal);">&#9654;</span></td>
-                <td><strong style="color: var(--mmt-navy);">OASIS+</strong></td>
-                <td data-label="Agency">GSA</td>
-                <td data-label="Ceiling">Unlimited</td>
-                <td data-label="Competition">Full &amp; open, SB domains</td>
-                <td data-label="Status"><span class="status-active">Active</span></td>
-                <td data-label="Notes">Professional services across all agencies, including health IT consulting</td>
-              </tr>
-              <tr class="vehicle-detail" id="detail-oasis-plus">
-                <td colspan="7">
-                  <div style="max-width:720px;">
-                    <h4 class="text-base font-bold mb-3" style="color:var(--mmt-teal);">OASIS+ — Detailed Analysis</h4>
-                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);">OASIS+ is GSA's next-generation professional services vehicle with an unlimited ceiling. It replaces OASIS (One Acquisition Solution for Integrated Services) and covers management consulting, scientific, engineering, logistics, and IT services.</p>
-                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);"><strong style="color: var(--mmt-navy);">Health IT relevance:</strong> OASIS+ is increasingly used for health IT consulting, program management, and advisory services at DHA and VA. It is not an IT product vehicle, but it is where health IT strategy, PMO support, and implementation oversight work lands.</p>
-                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);"><strong style="color: var(--mmt-navy);">Small business:</strong> OASIS+ has dedicated small business domains. With CIO-SP4 cancelled, more health IT-adjacent work may flow through OASIS+ small business pools.</p>
-                    <p class="text-sm leading-relaxed" style="color:var(--mmt-text);"><strong style="color: var(--mmt-navy);">Key differentiator:</strong> Unlimited ceiling and broad scope make OASIS+ the default "catch-all" for professional services. If the work is not pure IT product/infrastructure, it likely fits here.</p>
-                  </div>
-                </td>
-              </tr>
-
-              <tr class="vehicle-row" data-vehicle="t4ng">
-                <td><span class="expand-icon" style="color:var(--mmt-teal);">&#9654;</span></td>
-                <td><strong style="color: var(--mmt-navy);">T4NG</strong></td>
-                <td data-label="Agency">VA TAC</td>
-                <td data-label="Ceiling">$22.3B</td>
-                <td data-label="Competition">SDVOSB pools</td>
-                <td data-label="Status"><span class="status-active">Active</span></td>
-                <td data-label="Notes">VA's primary vehicle for IT services including health IT modernization</td>
-              </tr>
-              <tr class="vehicle-detail" id="detail-t4ng">
-                <td colspan="7">
-                  <div style="max-width:720px;">
-                    <h4 class="text-base font-bold mb-3" style="color:var(--mmt-teal);">T4NG — Detailed Analysis</h4>
-                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);">Transformation Twenty-One Total Technology Next Generation (T4NG) is VA's primary IT services IDIQ, managed by the VA Technology Acquisition Center (TAC). The $22.3B ceiling covers IT infrastructure, cybersecurity, software development, cloud, and health IT modernization.</p>
-                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);"><strong style="color: var(--mmt-navy);">Health IT relevance:</strong> T4NG is where VA's biggest health IT task orders land, including EHR-adjacent work, clinical systems integration, data analytics, and telehealth infrastructure. If you work VA health IT, T4NG is essential.</p>
-                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);"><strong style="color: var(--mmt-navy);">SDVOSB dynamics:</strong> VA has strong SDVOSB set-aside requirements. Many T4NG task orders are set aside for verified SDVOSBs or require significant SDVOSB subcontracting. Joint ventures between large primes and SDVOSBs are common.</p>
-                    <p class="text-sm leading-relaxed" style="color:var(--mmt-text);"><strong style="color: var(--mmt-navy);">NAICS:</strong> 541512, 541511, 541519, 518210, 541513</p>
-                  </div>
-                </td>
-              </tr>
-
-              <tr class="vehicle-row" data-vehicle="mhs-eits">
-                <td><span class="expand-icon" style="color:var(--mmt-teal);">&#9654;</span></td>
-                <td><strong style="color: var(--mmt-navy);">MHS EITS</strong></td>
-                <td data-label="Agency">DHA</td>
-                <td data-label="Ceiling">Multi-billion</td>
-                <td data-label="Competition">Full &amp; open</td>
-                <td data-label="Status"><span class="status-active">Active</span></td>
-                <td data-label="Notes">Enterprise IT infrastructure for the entire Military Health System</td>
-              </tr>
-              <tr class="vehicle-detail" id="detail-mhs-eits">
-                <td colspan="7">
-                  <div style="max-width:720px;">
-                    <h4 class="text-base font-bold mb-3" style="color:var(--mmt-teal);">MHS EITS — Detailed Analysis</h4>
-                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);">Military Health System Enterprise IT Services (MHS EITS) is DHA's enterprise IT infrastructure contract. It covers network operations, end-user support, cybersecurity, data center management, and the IT backbone that all MHS clinical and administrative systems run on.</p>
-                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);"><strong style="color: var(--mmt-navy);">Health IT relevance:</strong> MHS EITS is the plumbing beneath MHS GENESIS. The EHR cannot function without the network, endpoint, and security infrastructure this contract provides. Performance on EITS directly affects clinical system availability at Military Treatment Facilities.</p>
-                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);"><strong style="color: var(--mmt-navy);">Competitive landscape:</strong> Large defense IT primes dominate. Subcontracting opportunities exist in specialized areas like clinical device integration, cybersecurity monitoring, and network optimization at MTFs.</p>
-                    <p class="text-sm leading-relaxed" style="color:var(--mmt-text);"><strong style="color: var(--mmt-navy);">Key risk:</strong> EITS performance has been scrutinized when MHS GENESIS deployment issues trace back to infrastructure readiness. Expect continued oversight pressure.</p>
-                  </div>
-                </td>
-              </tr>
-
-              <tr class="vehicle-row" data-vehicle="mqs2-ng">
-                <td><span class="expand-icon" style="color:var(--mmt-teal);">&#9654;</span></td>
-                <td><strong style="color: var(--mmt-navy);">MQS2-NG</strong></td>
-                <td data-label="Agency">DHA</td>
-                <td data-label="Ceiling">TBD</td>
-                <td data-label="Competition">TBD</td>
-                <td data-label="Status"><span class="status-pre">Pre-solicitation</span></td>
-                <td data-label="Notes">Medical quality systems, patient safety IT, clinical decision support</td>
-              </tr>
-              <tr class="vehicle-detail" id="detail-mqs2-ng">
-                <td colspan="7">
-                  <div style="max-width:720px;">
-                    <h4 class="text-base font-bold mb-3" style="color:var(--mmt-teal);">MQS2-NG — Detailed Analysis</h4>
-                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);">Medical Quality Systems Support Next Generation (MQS2-NG) is the follow-on to DHA's MQS2 contract for clinical quality, patient safety IT systems, and clinical decision support. It is currently in pre-solicitation.</p>
-                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);"><strong style="color: var(--mmt-navy);">Health IT relevance:</strong> This vehicle covers the clinical quality layer: adverse event tracking, quality metrics dashboards, clinical decision support tools, and patient safety reporting. It sits at the intersection of IT and clinical operations.</p>
-                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);"><strong style="color: var(--mmt-navy);">Opportunity:</strong> Pre-solicitation status means the requirements are still being shaped. Firms with clinical quality and patient safety expertise should monitor RFI/Sources Sought notices on SAM.gov for DHA Contracting Activity (DHACA) releases.</p>
-                    <p class="text-sm leading-relaxed" style="color:var(--mmt-text);"><strong style="color: var(--mmt-navy);">What to watch:</strong> Set-aside decisions and whether DHA bundles this with other clinical support contracts or keeps it standalone.</p>
-                  </div>
-                </td>
-              </tr>
-
-              <tr class="vehicle-row" data-vehicle="vha-iht">
-                <td><span class="expand-icon" style="color:var(--mmt-teal);">&#9654;</span></td>
-                <td><strong style="color: var(--mmt-navy);">VHA IHT 2.0</strong></td>
-                <td data-label="Agency">VA</td>
-                <td data-label="Ceiling">TBD</td>
-                <td data-label="Competition">SDVOSB</td>
-                <td data-label="Status"><span class="status-active">Active</span></td>
-                <td data-label="Notes">VA integrated health technologies services</td>
-              </tr>
-              <tr class="vehicle-detail" id="detail-vha-iht">
-                <td colspan="7">
-                  <div style="max-width:720px;">
-                    <h4 class="text-base font-bold mb-3" style="color:var(--mmt-teal);">VHA IHT 2.0 — Detailed Analysis</h4>
-                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);">VHA Integrated Health Technologies (IHT) 2.0 is VA's vehicle for health technology services including clinical systems integration, telehealth platforms, mobile health, and health data interoperability.</p>
-                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);"><strong style="color: var(--mmt-navy);">Health IT relevance:</strong> IHT 2.0 is specifically scoped for health technology, not general IT. Task orders cover VistA integration, connected care platforms, clinical workflow tools, and health data exchange. It is closer to the patient than T4NG's infrastructure focus.</p>
-                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);"><strong style="color: var(--mmt-navy);">SDVOSB focus:</strong> IHT 2.0 has significant SDVOSB set-aside requirements, creating opportunities for verified small businesses with health technology expertise.</p>
-                    <p class="text-sm leading-relaxed" style="color:var(--mmt-text);"><strong style="color: var(--mmt-navy);">Strategic note:</strong> As VA navigates its EHR modernization challenges, IHT 2.0 task orders for integration, interoperability, and connected care are likely to increase.</p>
-                  </div>
-                </td>
-              </tr>
-
-              <tr class="vehicle-row" data-vehicle="gsa-mas">
-                <td><span class="expand-icon" style="color:var(--mmt-teal);">&#9654;</span></td>
-                <td><strong style="color: var(--mmt-navy);">GSA MAS Health IT</strong></td>
-                <td data-label="Agency">GSA</td>
-                <td data-label="Ceiling">Open</td>
-                <td data-label="Competition">Multiple</td>
-                <td data-label="Status"><span class="status-active">Active</span></td>
-                <td data-label="Notes">GSA Schedule with Health IT Special Item Numbers</td>
-              </tr>
-              <tr class="vehicle-detail" id="detail-gsa-mas">
-                <td colspan="7">
-                  <div style="max-width:720px;">
-                    <h4 class="text-base font-bold mb-3" style="color:var(--mmt-teal);">GSA MAS Health IT — Detailed Analysis</h4>
-                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);">GSA Multiple Award Schedule (MAS) includes Health IT Special Item Numbers (SINs) that cover EHR products, health data analytics, telehealth platforms, medical device integration, and clinical IT services.</p>
-                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);"><strong style="color: var(--mmt-navy);">Health IT relevance:</strong> GSA MAS is the entry-level vehicle for health IT products and services. Lower barriers to entry than GWACs. Commonly used for COTS health IT products, SaaS platforms, and smaller-scale implementations.</p>
-                    <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);"><strong style="color: var(--mmt-navy);">How agencies use it:</strong> DHA and VA use GSA MAS for commercial health IT products, particularly when the requirement is well-defined and competitive pricing is available through GSA Advantage or eBuy.</p>
-                    <p class="text-sm leading-relaxed" style="color:var(--mmt-text);"><strong style="color: var(--mmt-navy);">Key SINs:</strong> 54151S (IT Professional Services), 54151HEAL (Health IT Services), 518210C (Cloud), OLM (Order-Level Materials for IT hardware/integration)</p>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+  <!-- Section 3: Start with the Basics -->
+  <section id="basics" class="section-target py-16 px-6">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-2xl font-bold mb-2" style="color:var(--mmt-navy);">Start with the Basics</h2>
+      <p class="text-sm mb-8" style="color:var(--mmt-text-secondary);">If you are new to federal acquisition, these five patterns explain how most health IT work gets bought.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="primer-card">
+          <h3>Open Competition</h3>
+          <p>Any qualified company can bid. The government publishes requirements on SAM.gov, evaluates proposals, and awards to the best value or lowest price. This is the default.</p>
+        </div>
+        <div class="primer-card">
+          <h3>IDIQ</h3>
+          <p>Indefinite Delivery/Indefinite Quantity. The government awards a contract vehicle to multiple companies, then issues task orders for specific work. You compete twice: once for the vehicle, again for each task order.</p>
+        </div>
+        <div class="primer-card">
+          <h3>BPA</h3>
+          <p>Blanket Purchase Agreement. A simplified ordering mechanism for recurring needs. Agencies set up BPAs under existing contracts (like GSA MAS) to buy faster without full competition each time.</p>
+        </div>
+        <div class="primer-card">
+          <h3>GWAC</h3>
+          <p>Government-Wide Acquisition Contract. IT-specific vehicles that any federal agency can use. CIO-SP3, SEWP, and Alliant 3 are the major ones. High barrier to win, but they open doors everywhere.</p>
+        </div>
+        <div class="primer-card">
+          <h3>Set-Asides</h3>
+          <p>Contracts restricted to specific business categories: small business, SDVOSB, 8(a), WOSB, HUBZone. The government is required to meet small business contracting goals, so set-asides are common.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CIO-SP4 Cancellation -->
-  <section class="py-20 px-6">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-3xl font-bold mb-6">CIO-SP4 Cancellation: What Happened</h2>
-      <div class="card rounded-xl p-8">
-        <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-text);">In January 2026, NITAAC cancelled the CIO-SP4 solicitation after years of bid protests and legal challenges. The $50B GWAC was intended to replace CIO-SP3, which has been extended as a result.</p>
-        <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-text);">The cancellation forces agencies to rely on existing vehicles (CIO-SP3, OASIS+, SEWP VI) and has created uncertainty for firms that invested heavily in the CIO-SP4 bid process. Watch for a potential rebid or alternative acquisition strategy from NITAAC.</p>
-        <a href="latest.html" class="text-sm font-semibold no-underline hover:opacity-80" style="color:var(--mmt-teal);">Read our analysis &rarr;</a>
+  <!-- Section 4: Vehicle Library -->
+  <section id="vehicles" class="section-target section-alt py-16 px-6" style="background:var(--mmt-soft);">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-2xl font-bold mb-2" style="color:var(--mmt-navy);">Vehicle Library</h2>
+      <p class="text-sm mb-8" style="color:var(--mmt-text-secondary);">The contract vehicles that matter most for federal health IT. Click any card for detailed analysis.</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+        <!-- CIO-SP3 -->
+        <div class="vehicle-card" id="vehicle-cio-sp3">
+          <div class="flex items-start justify-between mb-2">
+            <h3 class="text-xl font-bold" style="color:var(--mmt-navy);">CIO-SP3</h3>
+            <span class="status-active text-xs">Active (extended)</span>
+          </div>
+          <p class="text-sm mb-3" style="color:var(--mmt-text);">NITAAC's primary IT GWAC. The workhorse for DHA and VA health IT task orders.</p>
+          <dl class="vehicle-meta">
+            <div><dt>Sponsor</dt><dd>NIH / NITAAC</dd></div>
+            <div><dt>Ceiling</dt><dd>$40B</dd></div>
+            <div><dt>Competition</dt><dd>Full &amp; open, SB pools</dd></div>
+            <div><dt>Who cares</dt><dd>Any firm pursuing DoD/VA health IT</dd></div>
+          </dl>
+          <button class="expand-toggle" aria-expanded="false">Details <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
+          <div class="vehicle-detail-content">
+            <div style="padding-top:0.75rem; border-top:1px solid rgba(69,123,157,0.1); margin-top:0.75rem;">
+              <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">Originally awarded in 2012 with a $40B ceiling, CIO-SP3 has been extended multiple times due to the CIO-SP4 cancellation.</p>
+              <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);"><strong style="color:var(--mmt-navy);">Why it matters:</strong> DHA, VA, and HHS agencies route a significant volume of health IT task orders through CIO-SP3. If you are pursuing federal health IT work and are not on this vehicle, you are likely teaming with someone who is.</p>
+              <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);"><strong style="color:var(--mmt-navy);">Current dynamics:</strong> With CIO-SP4 cancelled, holders have an extended runway. Agencies dependent on NITAAC GWACs have no near-term alternative at this scale.</p>
+              <p class="text-sm leading-relaxed" style="color:var(--mmt-text);"><strong style="color:var(--mmt-navy);">NAICS:</strong> 541512, 541511, 541519, 518210, 611420</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- CIO-SP4 -->
+        <div class="vehicle-card" id="vehicle-cio-sp4">
+          <div class="flex items-start justify-between mb-2">
+            <h3 class="text-xl font-bold" style="color:var(--mmt-navy);">CIO-SP4</h3>
+            <span class="status-cancelled text-xs">Cancelled (Feb 2026)</span>
+          </div>
+          <p class="text-sm mb-3" style="color:var(--mmt-text);">Was the $50B successor to CIO-SP3. Years of protests killed it.</p>
+          <dl class="vehicle-meta">
+            <div><dt>Sponsor</dt><dd>NIH / NITAAC</dd></div>
+            <div><dt>Ceiling</dt><dd>Was $50B</dd></div>
+            <div><dt>Competition</dt><dd>Was tiered</dd></div>
+            <div><dt>Who cares</dt><dd>Anyone tracking GWAC landscape shifts</dd></div>
+          </dl>
+          <button class="expand-toggle" aria-expanded="false">Details <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
+          <div class="vehicle-detail-content">
+            <div style="padding-top:0.75rem; border-top:1px solid rgba(69,123,157,0.1); margin-top:0.75rem;">
+              <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">After years of bid protests, legal challenges, and multiple re-evaluations, NITAAC cancelled the solicitation in February 2026.</p>
+              <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);"><strong style="color:var(--mmt-navy);">What happened:</strong> The tiered evaluation approach drew sustained protests from firms excluded in early rounds. GAO sustained multiple protests. NITAAC attempted corrective actions but could not resolve the structural issues.</p>
+              <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);"><strong style="color:var(--mmt-navy);">Impact:</strong> Firms that invested heavily face sunk costs with no vehicle. Agencies must redistribute task orders across CIO-SP3, OASIS+, and SEWP VI.</p>
+              <p class="text-sm leading-relaxed" style="color:var(--mmt-text);"><strong style="color:var(--mmt-navy);">What to watch:</strong> Whether NITAAC attempts a streamlined rebid, or whether GSA and NASA SEWP absorb the demand permanently.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- OASIS+ -->
+        <div class="vehicle-card" id="vehicle-oasis-plus">
+          <div class="flex items-start justify-between mb-2">
+            <h3 class="text-xl font-bold" style="color:var(--mmt-navy);">OASIS+</h3>
+            <span class="status-active text-xs">Active</span>
+          </div>
+          <p class="text-sm mb-3" style="color:var(--mmt-text);">GSA's next-generation professional services vehicle. Unlimited ceiling. Covers IT consulting, PMO, advisory.</p>
+          <dl class="vehicle-meta">
+            <div><dt>Sponsor</dt><dd>GSA</dd></div>
+            <div><dt>Ceiling</dt><dd>Unlimited</dd></div>
+            <div><dt>Competition</dt><dd>Full &amp; open, SB domains</dd></div>
+            <div><dt>Who cares</dt><dd>Health IT consultants, PMO firms</dd></div>
+          </dl>
+          <button class="expand-toggle" aria-expanded="false">Details <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
+          <div class="vehicle-detail-content">
+            <div style="padding-top:0.75rem; border-top:1px solid rgba(69,123,157,0.1); margin-top:0.75rem;">
+              <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">OASIS+ replaces OASIS and covers management consulting, scientific, engineering, logistics, and IT services.</p>
+              <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);"><strong style="color:var(--mmt-navy);">Health IT relevance:</strong> Increasingly used for health IT consulting, program management, and advisory services at DHA and VA. Not an IT product vehicle, but where health IT strategy and implementation oversight work lands.</p>
+              <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);"><strong style="color:var(--mmt-navy);">Small business:</strong> OASIS+ has dedicated small business domains. With CIO-SP4 cancelled, more health IT-adjacent work may flow through OASIS+ small business pools.</p>
+              <p class="text-sm leading-relaxed" style="color:var(--mmt-text);"><strong style="color:var(--mmt-navy);">Key differentiator:</strong> Unlimited ceiling and broad scope make OASIS+ the default for professional services. If the work is not pure IT product/infrastructure, it likely fits here.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- T4NG -->
+        <div class="vehicle-card" id="vehicle-t4ng">
+          <div class="flex items-start justify-between mb-2">
+            <h3 class="text-xl font-bold" style="color:var(--mmt-navy);">T4NG</h3>
+            <span class="status-active text-xs">Active</span>
+          </div>
+          <p class="text-sm mb-3" style="color:var(--mmt-text);">VA's primary IT services IDIQ. Where most VA health IT task orders land.</p>
+          <dl class="vehicle-meta">
+            <div><dt>Sponsor</dt><dd>VA TAC</dd></div>
+            <div><dt>Ceiling</dt><dd>$22.3B</dd></div>
+            <div><dt>Competition</dt><dd>SDVOSB pools</dd></div>
+            <div><dt>Who cares</dt><dd>Any firm doing VA health IT</dd></div>
+          </dl>
+          <button class="expand-toggle" aria-expanded="false">Details <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
+          <div class="vehicle-detail-content">
+            <div style="padding-top:0.75rem; border-top:1px solid rgba(69,123,157,0.1); margin-top:0.75rem;">
+              <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">T4NG covers IT infrastructure, cybersecurity, software development, cloud, and health IT modernization.</p>
+              <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);"><strong style="color:var(--mmt-navy);">Health IT relevance:</strong> This is where VA's biggest health IT task orders land -- EHR-adjacent work, clinical systems integration, data analytics, and telehealth infrastructure.</p>
+              <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);"><strong style="color:var(--mmt-navy);">SDVOSB dynamics:</strong> VA has strong SDVOSB set-aside requirements. Many T4NG task orders are set aside for verified SDVOSBs or require significant SDVOSB subcontracting. JVs between large primes and SDVOSBs are common.</p>
+              <p class="text-sm leading-relaxed" style="color:var(--mmt-text);"><strong style="color:var(--mmt-navy);">NAICS:</strong> 541512, 541511, 541519, 518210, 541513</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- MHS EITS -->
+        <div class="vehicle-card" id="vehicle-mhs-eits">
+          <div class="flex items-start justify-between mb-2">
+            <h3 class="text-xl font-bold" style="color:var(--mmt-navy);">MHS EITS</h3>
+            <span class="status-active text-xs">Active</span>
+          </div>
+          <p class="text-sm mb-3" style="color:var(--mmt-text);">DHA's enterprise IT infrastructure contract. The plumbing beneath MHS GENESIS.</p>
+          <dl class="vehicle-meta">
+            <div><dt>Sponsor</dt><dd>DHA</dd></div>
+            <div><dt>Ceiling</dt><dd>Multi-billion</dd></div>
+            <div><dt>Competition</dt><dd>Full &amp; open</dd></div>
+            <div><dt>Who cares</dt><dd>Defense IT primes, infra subs</dd></div>
+          </dl>
+          <button class="expand-toggle" aria-expanded="false">Details <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
+          <div class="vehicle-detail-content">
+            <div style="padding-top:0.75rem; border-top:1px solid rgba(69,123,157,0.1); margin-top:0.75rem;">
+              <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">Covers network operations, end-user support, cybersecurity, data center management, and the IT backbone for all MHS clinical and administrative systems.</p>
+              <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);"><strong style="color:var(--mmt-navy);">Health IT relevance:</strong> MHS EITS is the plumbing beneath MHS GENESIS. The EHR cannot function without the network, endpoint, and security infrastructure this contract provides.</p>
+              <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);"><strong style="color:var(--mmt-navy);">Competitive landscape:</strong> Large defense IT primes dominate. Subcontracting opportunities exist in clinical device integration, cybersecurity monitoring, and network optimization at MTFs.</p>
+              <p class="text-sm leading-relaxed" style="color:var(--mmt-text);"><strong style="color:var(--mmt-navy);">Key risk:</strong> EITS performance has been scrutinized when MHS GENESIS deployment issues trace back to infrastructure readiness. Expect continued oversight pressure.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- MQS2-NG -->
+        <div class="vehicle-card" id="vehicle-mqs2-ng">
+          <div class="flex items-start justify-between mb-2">
+            <h3 class="text-xl font-bold" style="color:var(--mmt-navy);">MQS2-NG</h3>
+            <span class="status-pre text-xs">Pre-solicitation</span>
+          </div>
+          <p class="text-sm mb-3" style="color:var(--mmt-text);">DHA's vehicle for medical quality, patient safety, and clinical decision support IT.</p>
+          <dl class="vehicle-meta">
+            <div><dt>Sponsor</dt><dd>DHA</dd></div>
+            <div><dt>Ceiling</dt><dd>TBD</dd></div>
+            <div><dt>Competition</dt><dd>TBD</dd></div>
+            <div><dt>Who cares</dt><dd>Clinical quality IT firms</dd></div>
+          </dl>
+          <button class="expand-toggle" aria-expanded="false">Details <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
+          <div class="vehicle-detail-content">
+            <div style="padding-top:0.75rem; border-top:1px solid rgba(69,123,157,0.1); margin-top:0.75rem;">
+              <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">Follow-on to DHA's MQS2 contract for clinical quality, patient safety IT systems, and clinical decision support. Currently in pre-solicitation.</p>
+              <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);"><strong style="color:var(--mmt-navy);">Health IT relevance:</strong> Covers adverse event tracking, quality metrics dashboards, clinical decision support tools, and patient safety reporting.</p>
+              <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);"><strong style="color:var(--mmt-navy);">Opportunity:</strong> Pre-solicitation status means requirements are still being shaped. Monitor RFI/Sources Sought notices on SAM.gov for DHACA releases.</p>
+              <p class="text-sm leading-relaxed" style="color:var(--mmt-text);"><strong style="color:var(--mmt-navy);">What to watch:</strong> Set-aside decisions and whether DHA bundles this with other clinical support contracts or keeps it standalone.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- VHA IHT 2.0 -->
+        <div class="vehicle-card" id="vehicle-vha-iht">
+          <div class="flex items-start justify-between mb-2">
+            <h3 class="text-xl font-bold" style="color:var(--mmt-navy);">VHA IHT 2.0</h3>
+            <span class="status-active text-xs">Active</span>
+          </div>
+          <p class="text-sm mb-3" style="color:var(--mmt-text);">VA's vehicle for health technology services -- clinical systems, telehealth, mobile health.</p>
+          <dl class="vehicle-meta">
+            <div><dt>Sponsor</dt><dd>VA</dd></div>
+            <div><dt>Ceiling</dt><dd>TBD</dd></div>
+            <div><dt>Competition</dt><dd>SDVOSB</dd></div>
+            <div><dt>Who cares</dt><dd>Health tech firms with VA focus</dd></div>
+          </dl>
+          <button class="expand-toggle" aria-expanded="false">Details <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
+          <div class="vehicle-detail-content">
+            <div style="padding-top:0.75rem; border-top:1px solid rgba(69,123,157,0.1); margin-top:0.75rem;">
+              <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">Specifically scoped for health technology, not general IT. Task orders cover VistA integration, connected care platforms, clinical workflow tools, and health data exchange.</p>
+              <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);"><strong style="color:var(--mmt-navy);">SDVOSB focus:</strong> Significant SDVOSB set-aside requirements, creating opportunities for verified small businesses with health technology expertise.</p>
+              <p class="text-sm leading-relaxed" style="color:var(--mmt-text);"><strong style="color:var(--mmt-navy);">Strategic note:</strong> As VA navigates EHR modernization challenges, IHT 2.0 task orders for integration, interoperability, and connected care are likely to increase.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- GSA MAS Health IT -->
+        <div class="vehicle-card" id="vehicle-gsa-mas">
+          <div class="flex items-start justify-between mb-2">
+            <h3 class="text-xl font-bold" style="color:var(--mmt-navy);">GSA MAS Health IT</h3>
+            <span class="status-active text-xs">Active</span>
+          </div>
+          <p class="text-sm mb-3" style="color:var(--mmt-text);">GSA Schedule with Health IT Special Item Numbers. Entry-level vehicle for health IT products.</p>
+          <dl class="vehicle-meta">
+            <div><dt>Sponsor</dt><dd>GSA</dd></div>
+            <div><dt>Ceiling</dt><dd>Open</dd></div>
+            <div><dt>Competition</dt><dd>Multiple</dd></div>
+            <div><dt>Who cares</dt><dd>COTS health IT vendors, SaaS firms</dd></div>
+          </dl>
+          <button class="expand-toggle" aria-expanded="false">Details <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
+          <div class="vehicle-detail-content">
+            <div style="padding-top:0.75rem; border-top:1px solid rgba(69,123,157,0.1); margin-top:0.75rem;">
+              <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);">Covers EHR products, health data analytics, telehealth platforms, medical device integration, and clinical IT services.</p>
+              <p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text);"><strong style="color:var(--mmt-navy);">How agencies use it:</strong> DHA and VA use GSA MAS for commercial health IT products, particularly when the requirement is well-defined and competitive pricing is available through GSA Advantage or eBuy.</p>
+              <p class="text-sm leading-relaxed" style="color:var(--mmt-text);"><strong style="color:var(--mmt-navy);">Key SINs:</strong> 54151S (IT Professional Services), 54151HEAL (Health IT Services), 518210C (Cloud), OLM (Order-Level Materials)</p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
 
-  <!-- Set-Aside Types -->
-  <section class="section-alt py-20 px-6">
-    <div class="max-w-6xl mx-auto">
-      <h2 class="text-3xl font-bold mb-8">Set-Aside Types</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <!-- Section 5: Set-Aside Types -->
+  <section id="set-asides" class="section-target py-16 px-6">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-2xl font-bold mb-2" style="color:var(--mmt-navy);">Set-Aside Types</h2>
+      <p class="text-sm mb-8" style="color:var(--mmt-text-secondary);">Federal agencies are required to meet small business contracting goals. These categories determine which contracts you are eligible for.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-teal);">SDVOSB</h3>
+          <h3 class="text-lg font-bold mb-1" style="color:var(--mmt-teal);">SDVOSB</h3>
           <p class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:var(--mmt-text-secondary);">Service-Disabled Veteran-Owned Small Business</p>
-          <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">Required for many VA and some DHA contracts. VA has specific SDVOSB verification through SBA.</p>
+          <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">Required for many VA and some DHA contracts. VA has specific SDVOSB verification through SBA. If you are an SDVOSB and not pursuing VA health IT work, you are leaving money on the table.</p>
         </div>
         <div class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-teal);">WOSB</h3>
+          <h3 class="text-lg font-bold mb-1" style="color:var(--mmt-teal);">WOSB</h3>
           <p class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:var(--mmt-text-secondary);">Women-Owned Small Business</p>
-          <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">Eligible for set-asides in underrepresented industries. Certification through SBA.</p>
+          <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">Eligible for set-asides in underrepresented industries. Certification through SBA. Health IT qualifies under several NAICS codes with WOSB set-aside eligibility.</p>
         </div>
         <div class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-teal);">8(a) Business Development</h3>
+          <h3 class="text-lg font-bold mb-1" style="color:var(--mmt-teal);">8(a) Business Development</h3>
           <p class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:var(--mmt-text-secondary);">SBA Disadvantaged Small Business Program</p>
-          <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">SBA program for disadvantaged small businesses. Sole-source authority up to $4.5M for services.</p>
+          <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">SBA program for disadvantaged small businesses. Sole-source authority up to $4.5M for services. The 8(a) sole-source path is one of the fastest ways to win federal work.</p>
         </div>
         <div class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-teal);">HUBZone</h3>
+          <h3 class="text-lg font-bold mb-1" style="color:var(--mmt-teal);">HUBZone</h3>
           <p class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:var(--mmt-text-secondary);">Historically Underutilized Business Zones</p>
-          <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">Historically Underutilized Business Zones. Price evaluation preference and sole-source authority.</p>
+          <p class="text-sm leading-relaxed" style="color:var(--mmt-text);">Price evaluation preference and sole-source authority for firms in designated areas. Less common in health IT but worth checking if your principal office qualifies.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Key Acquisition Reference Links -->
-  <section class="py-20 px-6">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-3xl font-bold mb-8">Key Acquisition Reference Links</h2>
+  <!-- Section 6: Key Acquisition Reference Links -->
+  <section id="references" class="section-target section-alt py-16 px-6" style="background:var(--mmt-soft);">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-2xl font-bold mb-2" style="color:var(--mmt-navy);">Key Acquisition Portals</h2>
+      <p class="text-sm mb-8" style="color:var(--mmt-text-secondary);">The external sites you will actually use. Bookmark these.</p>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <a href="https://sam.gov/opportunities" target="_blank" rel="noopener" class="resource-link">
-          <strong>SAM.gov Opportunities</strong>
-          <svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true" style="opacity:0.5;flex-shrink:0;"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+          <div><strong>SAM.gov Opportunities</strong><br><span class="text-xs" style="color:var(--mmt-text-secondary);">Where all federal opportunities are posted</span></div>
+          <svg width="14" height="14" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true" style="opacity:0.4;flex-shrink:0;"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
         </a>
         <a href="https://sam.gov/fpds" target="_blank" rel="noopener" class="resource-link">
-          <strong>SAM.gov Award Data</strong>
-          <svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true" style="opacity:0.5;flex-shrink:0;"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+          <div><strong>SAM.gov Award Data</strong><br><span class="text-xs" style="color:var(--mmt-text-secondary);">Past award data for competitive intelligence</span></div>
+          <svg width="14" height="14" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true" style="opacity:0.4;flex-shrink:0;"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
         </a>
         <a href="https://health.mil/About-MHS/OASDHA/DHA-Contracting-Activity" target="_blank" rel="noopener" class="resource-link">
-          <strong>DHACA</strong>
-          <svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true" style="opacity:0.5;flex-shrink:0;"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+          <div><strong>DHACA</strong><br><span class="text-xs" style="color:var(--mmt-text-secondary);">DHA's contracting office -- your buyer for DoD health IT</span></div>
+          <svg width="14" height="14" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true" style="opacity:0.4;flex-shrink:0;"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
         </a>
         <a href="https://www.fpds.gov/" target="_blank" rel="noopener" class="resource-link">
-          <strong>FPDS</strong>
-          <svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true" style="opacity:0.5;flex-shrink:0;"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+          <div><strong>FPDS</strong><br><span class="text-xs" style="color:var(--mmt-text-secondary);">Federal Procurement Data System</span></div>
+          <svg width="14" height="14" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true" style="opacity:0.4;flex-shrink:0;"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
         </a>
         <a href="https://www.usaspending.gov/" target="_blank" rel="noopener" class="resource-link">
-          <strong>USAspending</strong>
-          <svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true" style="opacity:0.5;flex-shrink:0;"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+          <div><strong>USAspending</strong><br><span class="text-xs" style="color:var(--mmt-text-secondary);">Track where federal dollars go</span></div>
+          <svg width="14" height="14" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true" style="opacity:0.4;flex-shrink:0;"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
         </a>
         <a href="https://nitaac.nih.gov/" target="_blank" rel="noopener" class="resource-link">
-          <strong>NITAAC</strong>
-          <svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true" style="opacity:0.5;flex-shrink:0;"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+          <div><strong>NITAAC</strong><br><span class="text-xs" style="color:var(--mmt-text-secondary);">NIH IT Acquisition and Assessment Center</span></div>
+          <svg width="14" height="14" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true" style="opacity:0.4;flex-shrink:0;"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
         </a>
         <a href="https://www.ebuy.gsa.gov/" target="_blank" rel="noopener" class="resource-link">
-          <strong>GSA eBuy</strong>
-          <svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true" style="opacity:0.5;flex-shrink:0;"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+          <div><strong>GSA eBuy</strong><br><span class="text-xs" style="color:var(--mmt-text-secondary);">RFQ portal for GSA Schedule holders</span></div>
+          <svg width="14" height="14" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true" style="opacity:0.4;flex-shrink:0;"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
         </a>
         <a href="https://www.dau.edu/" target="_blank" rel="noopener" class="resource-link">
-          <strong>DAU</strong>
-          <svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true" style="opacity:0.5;flex-shrink:0;"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+          <div><strong>DAU</strong><br><span class="text-xs" style="color:var(--mmt-text-secondary);">Defense Acquisition University -- training and references</span></div>
+          <svg width="14" height="14" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true" style="opacity:0.4;flex-shrink:0;"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 7: Related MMT Coverage -->
+  <section id="tracked" class="section-target py-16 px-6">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-2xl font-bold mb-2" style="color:var(--mmt-navy);">Related MMT Coverage</h2>
+      <p class="text-sm mb-8" style="color:var(--mmt-text-secondary);">Track active contracts and read our analysis of vehicle changes.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <a href="contract-tracker.html" class="card rounded-xl p-6 no-underline block">
+          <h3 class="text-base font-bold mb-2" style="color:var(--mmt-navy);">Contract Tracker</h3>
+          <p class="text-sm" style="color:var(--mmt-text);">Live tracking of 10 major federal health IT contracts with AI-powered intelligence updates.</p>
+          <span class="text-sm font-semibold mt-3 inline-block" style="color:var(--mmt-teal);">View tracker &rarr;</span>
+        </a>
+        <a href="latest.html" class="card rounded-xl p-6 no-underline block">
+          <h3 class="text-base font-bold mb-2" style="color:var(--mmt-navy);">Intelligence Feed</h3>
+          <p class="text-sm" style="color:var(--mmt-text);">Analysis of contract awards, vehicle changes, and procurement shifts in federal health IT.</p>
+          <span class="text-sm font-semibold mt-3 inline-block" style="color:var(--mmt-teal);">Read analysis &rarr;</span>
         </a>
       </div>
     </div>
   </section>
 
   <!-- ProposalPulse CTA -->
-  <section class="section-alt py-20 px-6">
+  <section class="section-alt py-20 px-6" style="background:var(--mmt-soft);">
     <div class="max-w-4xl mx-auto text-center">
       <h2 class="text-3xl font-bold mb-4">Score Your Proposal Before You Submit</h2>
       <p class="text-sm mb-8 max-w-2xl mx-auto" style="color:var(--mmt-text);">ProposalPulse uses AI to score federal proposals against evaluation criteria. Upload your deck, get a scorecard with specific fixes. Three free assessments.</p>
@@ -472,23 +530,55 @@
   </footer>
 
   <script>
-    document.querySelectorAll('.vehicle-row').forEach(function(row) {
-      row.addEventListener('click', function() {
-        var vehicle = this.getAttribute('data-vehicle');
-        var detail = document.getElementById('detail-' + vehicle);
-        var isOpen = detail.classList.contains('open');
+    // Vehicle card expand/collapse
+    document.querySelectorAll('.expand-toggle').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var card = this.closest('.vehicle-card');
+        var isExpanded = card.classList.contains('expanded');
         // Close all
-        document.querySelectorAll('.vehicle-detail').forEach(function(d) { d.classList.remove('open'); });
-        document.querySelectorAll('.vehicle-row').forEach(function(r) { r.classList.remove('expanded'); });
+        document.querySelectorAll('.vehicle-card.expanded').forEach(function(c) {
+          c.classList.remove('expanded');
+          c.querySelector('.expand-toggle').setAttribute('aria-expanded', 'false');
+        });
         // Toggle clicked
-        if (!isOpen) {
-          detail.classList.add('open');
-          this.classList.add('expanded');
+        if (!isExpanded) {
+          card.classList.add('expanded');
+          this.setAttribute('aria-expanded', 'true');
         }
       });
     });
+
+    // Jump nav active state on scroll
+    (function() {
+      var sections = document.querySelectorAll('.section-target');
+      var navLinks = document.querySelectorAll('.jump-nav a');
+      function onScroll() {
+        var scrollPos = window.scrollY + 160;
+        sections.forEach(function(section) {
+          if (section.offsetTop <= scrollPos && section.offsetTop + section.offsetHeight > scrollPos) {
+            var id = section.id;
+            navLinks.forEach(function(link) {
+              link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+            });
+          }
+        });
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      // Smooth scroll for jump links
+      navLinks.forEach(function(link) {
+        link.addEventListener('click', function(e) {
+          var target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+    })();
   </script>
-  <!-- S15-05: Back to top -->
+
+  <!-- Back to top -->
   <button id="btt" aria-label="Back to top" style="position:fixed;bottom:2rem;right:2rem;width:44px;height:44px;border-radius:50%;background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.15);color:var(--mmt-teal);cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s,transform 0.3s;z-index:90;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onmouseover="this.style.borderColor='rgba(69,123,157,0.3)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(69,123,157,0.15)';this.style.transform='none'">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
   </button>

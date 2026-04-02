@@ -55,16 +55,6 @@
     *:focus-visible { outline: 2px solid var(--mmt-teal); outline-offset: 2px; }
     .hub-card { display: block; text-decoration: none; transition: border-color 0.2s, transform 0.2s; }
     .hub-card:hover { transform: translateY(-2px); }
-    .vh-toggle { display: none; }
-    .vh-toggle:checked + .vh-header .vh-chevron { transform: rotate(90deg); }
-    .vh-toggle:checked ~ .vh-detail { display: block; }
-    .vh-header { cursor: pointer; }
-    .vh-chevron { transition: transform 0.2s; display: inline-block; }
-    .vh-detail { display: none; }
-    .vh-row { border-bottom: 1px solid rgba(69,123,157,0.08); }
-    .vh-meta { font-size: 0.75rem; color: var(--mmt-text-secondary); }
-    .vh-meta strong { color: var(--mmt-text); }
-    .vh-status { font-size: 0.7rem; font-weight: 600; padding: 2px 8px; border-radius: 9999px; }
   </style>
 </head>
 <body class="antialiased">
@@ -82,9 +72,9 @@
         </div>
       </a>
       <div class="hidden md:flex items-center gap-5">
-        <a href="latest.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Intelligence</a>
+        <a href="latest.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Analysis</a>
         <a href="podcast.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Podcast</a>
-        <a href="resources.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Resources</a>
+        <a href="resources.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Intelligence Center</a>
         <a href="about.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">About</a>
         <button id="searchToggle" class="hover:opacity-70" style="color:var(--mmt-text-secondary);background:none;border:none;cursor:pointer;" aria-label="Search"><svg width="16" height="16" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></button>
         <a href="newsletter.html" class="btn-primary no-underline" style="margin-left:8px;">Subscribe</a>
@@ -96,9 +86,9 @@
     </div>
     <div id="mobileMenu" class="hidden md:hidden px-6 pb-4" style="background:var(--mmt-white);border-bottom:1px solid var(--mmt-border);">
       <div class="flex flex-col gap-4 pt-2" style="border-top:1px solid var(--mmt-border);">
-        <a href="latest.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Intelligence</a>
+        <a href="latest.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Analysis</a>
         <a href="podcast.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Podcast</a>
-        <a href="resources.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Resources</a>
+        <a href="resources.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Intelligence Center</a>
         <a href="about.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">About</a>
         <div class="pt-3 mt-1" style="border-top:1px solid var(--mmt-border);">
           <a href="newsletter.html" class="btn-primary no-underline">Subscribe</a>
@@ -109,143 +99,116 @@
 
   <main id="main-content">
 
-  <!-- Hero -->
+  <!-- Section 1: Hero -->
   <section class="pt-36 pb-16 px-6">
     <div class="max-w-4xl mx-auto text-center">
-      <h1 class="text-4xl md:text-5xl font-bold mb-4"><span class="gradient-text">The Federal Health IT Intelligence Center</span></h1>
-      <p class="text-base max-w-2xl mx-auto" style="color:var(--mmt-text);">Everything you need to understand the market, track the contracts, and win the work.</p>
-    </div>
-    <!-- Quick-Jump Navigation -->
-    <div class="flex flex-wrap justify-center gap-2 mt-8" role="navigation" aria-label="Jump to section">
-      <a href="#resource-hub" class="text-xs font-medium px-4 py-2 rounded-full no-underline" style="border:1px solid var(--mmt-border); color:var(--mmt-text);">Tools</a>
-      <a href="#news-wire" class="text-xs font-medium px-4 py-2 rounded-full no-underline" style="border:1px solid var(--mmt-border); color:var(--mmt-text);">Headlines</a>
-      <a href="#contract-intel" class="text-xs font-medium px-4 py-2 rounded-full no-underline" style="border:1px solid var(--mmt-border); color:var(--mmt-text);">Contracts</a>
-    </div>
-  </section>
-
-  <!-- Dual-Path Entry -->
-  <section class="pb-16 px-6">
-    <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
-      <a href="glossary.html" class="hub-card card rounded-xl p-8 no-underline">
-        <p class="text-xs font-semibold tracking-widest uppercase mb-3" style="color:var(--mmt-teal);">Start Here</p>
-        <h2 class="text-xl font-bold mb-2" style="color: var(--mmt-navy);">New to Federal Health IT?</h2>
-        <p class="text-sm mb-4" style="color:var(--mmt-text);">Learn the acronyms, agencies, and contract vehicles that define this market. Plain-language definitions, no jargon walls.</p>
-        <span class="text-sm font-semibold" style="color:var(--mmt-teal);">Browse the Glossary &rarr;</span>
-      </a>
-      <a href="contracting.html" class="hub-card card rounded-xl p-8 no-underline">
-        <p class="text-xs font-semibold tracking-widest uppercase mb-3" style="color:var(--mmt-teal);">Go Deeper</p>
-        <h2 class="text-xl font-bold mb-2" style="color: var(--mmt-navy);">I Know the Space</h2>
-        <p class="text-sm mb-4" style="color:var(--mmt-text);">Contract vehicles, set-aside mechanics, and acquisition intelligence. The tools and references you need to compete.</p>
-        <span class="text-sm font-semibold" style="color:var(--mmt-teal);">Explore Contracting &rarr;</span>
-      </a>
+      <h1 class="text-4xl md:text-5xl font-bold mb-4" style="color:var(--mmt-navy);">The Federal Health IT Intelligence Center</h1>
+      <p class="text-lg max-w-2xl mx-auto mb-10" style="color:var(--mmt-text);">Track the market, understand the acronyms, and find the work worth pursuing.</p>
+      <div class="flex flex-wrap justify-center gap-3">
+        <a href="getting-started.html" class="btn-secondary no-underline text-sm inline-flex items-center gap-2">I'm new here</a>
+        <a href="contract-tracker.html" class="btn-secondary no-underline text-sm inline-flex items-center gap-2">I track the market</a>
+        <a href="proposal-pulse.html" class="btn-secondary no-underline text-sm inline-flex items-center gap-2">I'm bidding work</a>
+      </div>
     </div>
   </section>
 
-  <!-- Resource Hub Cards -->
-  <div id="resource-hub"></div>
+  <!-- Section 2: Core Products and References -->
   <section class="section-alt py-20 px-6">
-    <div class="max-w-6xl mx-auto">
-      <h2 class="text-2xl font-bold mb-8 text-center">Resource Hub</h2>
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="grid md:grid-cols-2 gap-12">
 
-        <a href="newswire.html" class="hub-card card rounded-xl p-6 no-underline">
-          <div class="text-2xl mb-3">
-            <svg width="1.2em" height="1.2em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true" style="color:var(--mmt-teal);"><path d="M168 80c-13.3 0-24 10.7-24 24V408c0 8.4-1.4 16.5-4.2 24H440c13.3 0 24-10.7 24-24V104c0-13.3-10.7-24-24-24H168zM72 480c-39.8 0-72-32.2-72-72V112C0 98.7 10.7 88 24 88s24 10.7 24 24V408c0 13.3 10.7 24 24 24s24-10.7 24-24V104c0-39.8 32.2-72 72-72H440c39.8 0 72 32.2 72 72V408c0 39.8-32.2 72-72 72H72zM176 136c0-8.8 7.2-16 16-16H416c8.8 0 16 7.2 16 16s-7.2 16-16 16H192c-8.8 0-16-7.2-16-16zm0 64c0-8.8 7.2-16 16-16H416c8.8 0 16 7.2 16 16s-7.2 16-16 16H192c-8.8 0-16-7.2-16-16z"/></svg>
+        <!-- Left Column: Tools -->
+        <div>
+          <h2 class="text-xs font-semibold tracking-widest uppercase mb-6" style="color:var(--mmt-teal);">Tools</h2>
+          <div class="flex flex-col gap-5">
+            <a href="proposal-pulse.html" class="hub-card card rounded-xl p-6 no-underline">
+              <h3 class="text-base font-bold mb-1" style="color:var(--mmt-navy);">ProposalPulse</h3>
+              <p class="text-sm" style="color:var(--mmt-text-secondary);">AI-powered proposal scoring that reads your deck the way federal evaluators do. Upload, get a scorecard, fix the weak spots.</p>
+            </a>
+            <a href="marketpulse.html" class="hub-card card rounded-xl p-6 no-underline">
+              <h3 class="text-base font-bold mb-1" style="color:var(--mmt-navy);">MarketPulse</h3>
+              <p class="text-sm" style="color:var(--mmt-text-secondary);">Federal health IT market intelligence on demand. Competitor moves, recompete timelines, and opportunity signals.</p>
+            </a>
           </div>
-          <h3 class="text-base font-bold mb-1" style="color: var(--mmt-navy);">Latest Intelligence</h3>
-          <p class="text-xs" style="color:var(--mmt-text-secondary);">Real-time federal health IT headlines from 10 RSS feeds, updated every 4 hours.</p>
-        </a>
+        </div>
 
-        <a href="contract-tracker.html" class="hub-card card rounded-xl p-6 no-underline">
-          <div class="text-2xl mb-3">
-            <svg width="1.2em" height="1.2em" viewBox="0 0 384 512" fill="currentColor" aria-hidden="true" style="color:var(--mmt-teal);"><path d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM80 64h64c8.8 0 16 7.2 16 16s-7.2 16-16 16H80c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64h64c8.8 0 16 7.2 16 16s-7.2 16-16 16H80c-8.8 0-16-7.2-16-16s7.2-16 16-16zm16 144H288c17.7 0 32 14.3 32 32v64c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V304c0-17.7 14.3-32 32-32z"/></svg>
+        <!-- Right Column: Reference -->
+        <div>
+          <h2 class="text-xs font-semibold tracking-widest uppercase mb-6" style="color:var(--mmt-teal);">Reference</h2>
+          <div class="flex flex-col gap-5">
+            <a href="contract-tracker.html" class="hub-card card rounded-xl p-6 no-underline">
+              <h3 class="text-base font-bold mb-1" style="color:var(--mmt-navy);">Contract Tracker</h3>
+              <p class="text-sm" style="color:var(--mmt-text-secondary);">Live intelligence on 10 major federal health IT contracts. Status, competitors, and what moves next.</p>
+            </a>
+            <a href="contracting.html" class="hub-card card rounded-xl p-6 no-underline">
+              <h3 class="text-base font-bold mb-1" style="color:var(--mmt-navy);">Contracting Hub</h3>
+              <p class="text-sm" style="color:var(--mmt-text-secondary);">Contract vehicles, set-aside types, and acquisition mechanics for federal health IT.</p>
+            </a>
+            <a href="glossary.html" class="hub-card card rounded-xl p-6 no-underline">
+              <h3 class="text-base font-bold mb-1" style="color:var(--mmt-navy);">Glossary</h3>
+              <p class="text-sm" style="color:var(--mmt-text-secondary);">Federal health IT terms in plain language. No jargon walls, just clear definitions you can actually use.</p>
+            </a>
+            <a href="agency-sources.html" class="hub-card card rounded-xl p-6 no-underline">
+              <h3 class="text-base font-bold mb-1" style="color:var(--mmt-navy);">Agency Sources</h3>
+              <p class="text-sm" style="color:var(--mmt-text-secondary);">Official .gov and .mil links for DHA, VA, ONC, and key acquisition portals.</p>
+            </a>
           </div>
-          <h3 class="text-base font-bold mb-1" style="color: var(--mmt-navy);">Contract Tracker</h3>
-          <p class="text-xs" style="color:var(--mmt-text-secondary);">AI-powered intelligence on 10 major federal health IT contracts. Status, competitors, and opportunities.</p>
-        </a>
-
-        <a href="contracting.html" class="hub-card card rounded-xl p-6 no-underline">
-          <div class="text-2xl mb-3">
-            <svg width="1.2em" height="1.2em" viewBox="0 0 640 512" fill="currentColor" aria-hidden="true" style="color:var(--mmt-teal);"><path d="M384 32H512c17.7 0 32 14.3 32 32s-14.3 32-32 32H398.4c-5.2 25.8-22.9 47.1-46.4 57.3V448H512c17.7 0 32 14.3 32 32s-14.3 32-32 32H320 128c-17.7 0-32-14.3-32-32s14.3-32 32-32H288V153.3c-23.5-10.3-41.2-31.6-46.4-57.3H128c-17.7 0-32-14.3-32-32s14.3-32 32-32H256c14.6-19.4 37.8-32 64-32s49.4 12.6 64 32z"/></svg>
-          </div>
-          <h3 class="text-base font-bold mb-1" style="color: var(--mmt-navy);">Contracting Hub</h3>
-          <p class="text-xs" style="color:var(--mmt-text-secondary);">Contract vehicles, set-aside types, and acquisition reference links for federal health IT.</p>
-        </a>
-
-        <a href="glossary.html" class="hub-card card rounded-xl p-6 no-underline">
-          <div class="text-2xl mb-3">
-            <svg width="1.2em" height="1.2em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true" style="color:var(--mmt-teal);"><path d="M96 0C43 0 0 43 0 96V416c0 53 43 96 96 96H384h32c17.7 0 32-14.3 32-32s-14.3-32-32-32V384c17.7 0 32-14.3 32-32V32c0-17.7-14.3-32-32-32H384 96zm0 384H352v64H96c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16zm16 48H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16s7.2-16 16-16z"/></svg>
-          </div>
-          <h3 class="text-base font-bold mb-1" style="color: var(--mmt-navy);">Glossary</h3>
-          <p class="text-xs" style="color:var(--mmt-text-secondary);">37 federal health IT terms explained in plain language. Searchable and filterable by category.</p>
-        </a>
-
-        <a href="events.html" class="hub-card card rounded-xl p-6 no-underline">
-          <div class="text-2xl mb-3">
-            <svg width="1.2em" height="1.2em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true" style="color:var(--mmt-teal);"><path d="M128 0c17.7 0 32 14.3 32 32V64H288V32c0-17.7 14.3-32 32-32s32 14.3 32 32V64h48c26.5 0 48 21.5 48 48v48H0V112C0 85.5 21.5 64 48 64H96V32c0-17.7 14.3-32 32-32zM0 192H448V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V192zm64 80v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H80c-8.8 0-16 7.2-16 16z"/></svg>
-          </div>
-          <h3 class="text-base font-bold mb-1" style="color: var(--mmt-navy);">Events</h3>
-          <p class="text-xs" style="color:var(--mmt-text-secondary);">Federal health IT conferences, webinars, and deadlines. Know where to be and when.</p>
-        </a>
-
-        <a href="agency-sources.html" class="hub-card card rounded-xl p-6 no-underline">
-          <div class="text-2xl mb-3">
-            <svg width="1.2em" height="1.2em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true" style="color:var(--mmt-teal);"><path d="M352 256c0 22.2-1.2 43.6-3.3 64H163.3c-2.2-20.4-3.3-41.8-3.3-64s1.2-43.6 3.3-64H348.7c2.2 20.4 3.3 41.8 3.3 64zm28.8-64H503.9c5.3 20.5 8.1 41.9 8.1 64s-2.8 43.5-8.1 64H380.8c2.1-20.6 3.2-42 3.2-64s-1.1-43.4-3.2-64zm112.6-32H376.7c-10-63.9-29.8-117.4-55.3-151.6c78.3 20.7 142 77.5 171.9 151.6zm-149.1 0H167.7c6.1-36.4 15.5-68.6 27-94.7c10.5-23.6 22.2-40.7 33.5-51.5C239.4 3.2 248.7 0 256 0s16.6 3.2 27.8 13.8c11.3 10.8 23 27.9 33.5 51.5c11.6 26 20.9 58.2 27 94.7zm-209 0H18.6C48.6 85.9 112.2 29.1 190.6 8.4C165.1 42.6 145.3 96.1 135.3 160zM8.1 192H131.2c-2.1 20.6-3.2 42-3.2 64s1.1 43.4 3.2 64H8.1C2.8 299.5 0 278.1 0 256s2.8-43.5 8.1-64zM194.7 446.6c-11.6-26-20.9-58.2-27-94.6H344.3c-6.1 36.4-15.5 68.6-27 94.6c-10.5 23.6-22.2 40.7-33.5 51.5C272.6 508.8 263.3 512 256 512s-16.6-3.2-27.8-13.8c-11.3-10.8-23-27.9-33.5-51.5zM135.3 352c10 63.9 29.8 117.4 55.3 151.6C112.2 482.9 48.6 426.1 18.6 352H135.3zm245.1 0H493.4c-29.9 74.1-93.6 130.9-171.9 151.6c25.5-34.2 45.2-87.7 55.3-151.6z"/></svg>
-          </div>
-          <h3 class="text-base font-bold mb-1" style="color: var(--mmt-navy);">Agency Sources</h3>
-          <p class="text-xs" style="color:var(--mmt-text-secondary);">Curated .gov and .mil reference links. Official sources for DHA, VA, ONC, and acquisition portals.</p>
-        </a>
+        </div>
 
       </div>
     </div>
   </section>
 
-  <!-- Live Headlines -->
+  <!-- Section 3: Live Modules -->
   <section class="py-16 px-6" id="news-wire">
-    <div class="max-w-4xl mx-auto">
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-bold">Live Headlines</h2>
-        <a href="newswire.html" class="text-sm font-medium no-underline hover:opacity-80" style="color:var(--mmt-teal);">See all &rarr;</a>
+    <div class="max-w-5xl mx-auto">
+      <div class="grid md:grid-cols-3 gap-8">
+
+        <!-- Headlines Preview -->
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-bold" style="color:var(--mmt-navy);">Latest Headlines</h2>
+            <a href="newswire.html" class="text-xs font-medium no-underline hover:opacity-80" style="color:var(--mmt-teal);">See all &rarr;</a>
+          </div>
+          <!-- BUILD:NEWS_WIDGET -->
+        </div>
+
+        <!-- Contract Movement Preview -->
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-bold" style="color:var(--mmt-navy);">Contract Movement</h2>
+            <a href="contract-tracker.html" class="text-xs font-medium no-underline hover:opacity-80" style="color:var(--mmt-teal);">See all &rarr;</a>
+          </div>
+          <!-- BUILD:CONTRACT_SUMMARY -->
+        </div>
+
+        <!-- Upcoming Events Preview -->
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-bold" style="color:var(--mmt-navy);">Upcoming Events</h2>
+            <a href="events.html" class="text-xs font-medium no-underline hover:opacity-80" style="color:var(--mmt-teal);">See all &rarr;</a>
+          </div>
+          <!-- BUILD:EVENTS_PREVIEW -->
+        </div>
+
       </div>
-      <!-- BUILD:NEWS_WIDGET -->
     </div>
   </section>
 
-  <!-- Contract Intel -->
-  <section class="section-alt py-16 px-6" id="contract-intel">
-    <div class="max-w-4xl mx-auto">
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-bold">Contract Intel</h2>
-        <a href="contract-tracker.html" class="text-sm font-medium no-underline hover:opacity-80" style="color:var(--mmt-teal);">See all &rarr;</a>
-      </div>
-      <!-- BUILD:CONTRACT_SUMMARY -->
+  <!-- Section 4: Subscribe CTA -->
+  <section class="section-alt py-20 px-6">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="text-2xl font-bold mb-3" style="color:var(--mmt-navy);">Stay ahead of the market</h2>
+      <p class="text-sm mb-6" style="color:var(--mmt-text);">Get federal health IT intelligence in your inbox. Policy shifts, contract signals, and analysis you can act on.</p>
+      <a href="newsletter.html" class="btn-primary no-underline text-sm inline-block">Subscribe to the Newsletter</a>
     </div>
   </section>
-
-  <!-- ProposalPulse CTA -->
-  <section class="py-20 px-6">
-    <div class="max-w-4xl mx-auto text-center">
-      <h2 class="text-3xl font-bold mb-4">Score Your Proposal Before You Submit</h2>
-      <p class="text-sm mb-8 max-w-2xl mx-auto" style="color:var(--mmt-text);">ProposalPulse uses AI to score federal proposals the way evaluators actually read them. Upload your deck, get a scorecard with specific fixes. Three free assessments.</p>
-      <a href="proposal-pulse.html" class="btn-primary no-underline text-sm inline-block">Try ProposalPulse</a>
-    </div>
-  </section>
-
-  <!-- Contract Vehicles, Set-Aside Types, and Leadership Map moved to contracting.html and agency-sources.html (preserved, hidden from nav/sitemap) -->
-
-  <!-- Placeholder: remaining sections removed for page clarity -->
-  <!-- HIDDEN_SECTION_START: contract-vehicles, set-asides, leadership-map -->
-  <div id="contract-vehicles" style="display:none;"></div>
-  <div id="leadership" style="display:none;"></div>
-  <!-- HIDDEN_SECTION_END -->
-
-  <!-- Subscribe handled by shared nav Subscribe button -->
 
   </main>
 
   <!-- Footer -->
   <footer class="wrap" style="padding:28px 0 58px;">
-    <div style="border-top:1px solid var(--mmt-border);padding-top:24px;display:grid;grid-template-columns:1fr auto auto;gap:40px;color:var(--mmt-text-secondary);font-size:13px;">
+    <div style="border-top:1px solid var(--mmt-border);padding-top:24px;display:grid;grid-template-columns:1fr auto auto auto auto;gap:32px;color:var(--mmt-text-secondary);font-size:13px;">
       <div>
         <p style="margin-bottom:6px;"><strong style="color:var(--mmt-navy);">Mission Meets Tech</strong></p>
         <p>Federal health IT intelligence. Mission first.</p>
@@ -253,27 +216,33 @@
         <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;">
-        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Explore</strong>
-        <a href="latest.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Intelligence</a>
+        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Read</strong>
+        <a href="latest.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Latest Analysis</a>
+        <a href="topics.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Topics</a>
         <a href="podcast.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Podcast</a>
-        <a href="resources.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Resources</a>
-        <a href="proposal-pulse.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">ProposalPulse</a>
-        <a href="marketpulse.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">MarketPulse</a>
-        <a href="about.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">About</a>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;">
-        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Connect</strong>
-        <a href="newsletter.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Subscribe</a>
-        <a href="mailto:mary@missionmeetstech.com" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Contact</a>
-        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">LinkedIn</a>
-        <a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank" rel="noopener" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Apple Podcasts</a>
-        <a href="https://open.spotify.com/show/7sND342duH7Buw1cUs60lP" target="_blank" rel="noopener" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Spotify</a>
+        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Tools</strong>
+        <a href="proposal-pulse.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">ProposalPulse</a>
+        <a href="marketpulse.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">MarketPulse</a>
+        <a href="contract-tracker.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Contract Tracker</a>
       </div>
-    </div>
-    <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--mmt-border);display:flex;gap:16px;font-size:12px;color:var(--mmt-text-secondary);">
-      <a href="privacy.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Privacy</a>
-      <a href="terms.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Terms</a>
-      <a href="security.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Security</a>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Reference</strong>
+        <a href="glossary.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Glossary</a>
+        <a href="contracting.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Contracting Hub</a>
+        <a href="agency-sources.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Agency Sources</a>
+        <a href="events.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Events</a>
+        <a href="newswire.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">News Wire</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Trust</strong>
+        <a href="about.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">About</a>
+        <a href="security.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Security</a>
+        <a href="privacy.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Privacy</a>
+        <a href="terms.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Terms</a>
+        <a href="mailto:mary@missionmeetstech.com" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Contact</a>
+      </div>
     </div>
   </footer>
 

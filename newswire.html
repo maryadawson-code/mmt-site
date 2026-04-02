@@ -48,8 +48,8 @@
     .btn-primary:hover { transform: translateY(-1px); opacity: 0.9; }
     .btn-secondary { border: 1px solid var(--mmt-teal); color: var(--mmt-navy); padding: 0.75rem 2rem; border-radius: 9999px; transition: all 0.3s; }
     .btn-secondary:hover { background: rgba(69,123,157,0.1); }
-    .card { background: rgba(255,255,255,0.86); border: 1px solid rgba(216,224,232,0.96); border-radius: var(--radius, 24px); box-shadow: 0 18px 50px rgba(10,25,47,0.08); }
-    .card:hover { border-color: rgba(69,123,157,0.3); background: rgba(10,22,40,0.75); }
+    .card { background: var(--mmt-soft); border: 1px solid rgba(69,123,157,0.1); }
+    .card:hover { border-color: rgba(69,123,157,0.3); }
     
     .section-alt { background: var(--mmt-white); }
     *:focus-visible { outline: 2px solid var(--mmt-teal); outline-offset: 2px; }
@@ -106,26 +106,44 @@
 
   <main id="main-content">
 
-  <!-- Hero -->
-  <section class="pt-36 pb-20 px-6">
+  <!-- Section 1: Hero -->
+  <section class="pt-36 pb-16 px-6">
     <div class="max-w-4xl mx-auto text-center">
-      <h1 class="text-3xl md:text-4xl font-bold mb-4">News Wire</h1>
-      <p class="text-lg leading-relaxed mb-6" style="color:var(--mmt-text);">Federal health IT headlines from 10 sources, updated every 4 hours.</p>
-      <p class="text-sm" style="color:var(--mmt-text-secondary);">Sources: DefenseScoop, FedScoop, GovExec, Nextgov/FCW, MeriTalk, Military Times, GAO, Health IT Buzz, VA.gov, TRICARE</p>
+      <p class="text-xs uppercase tracking-widest font-semibold mb-4" style="color:var(--mmt-teal);">Headlines</p>
+      <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-4">News Wire</h1>
+      <p class="text-lg max-w-2xl mx-auto leading-relaxed mb-6" style="color:var(--mmt-text);">High-signal federal health IT headlines, filtered for operational relevance.</p>
+      <div class="flex flex-wrap justify-center gap-4 text-sm" style="color:var(--mmt-text-secondary);">
+        <span class="inline-flex items-center gap-1">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Updated every 4 hours
+        </span>
+        <span class="inline-flex items-center gap-1">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/></svg>
+          10 sources
+        </span>
+        <span class="inline-flex items-center gap-1">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Editorially filtered
+        </span>
+      </div>
+      <p class="text-xs mt-4" style="color:var(--mmt-text-secondary);">Sources: DefenseScoop, FedScoop, GovExec, Nextgov/FCW, MeriTalk, Military Times, GAO, Health IT Buzz, VA.gov, TRICARE</p>
     </div>
   </section>
 
-  <!-- Filter Pills + Headlines -->
-  <section class="py-10 px-6 section-alt">
+  <!-- Section 2: Category controls + Headlines -->
+  <section class="py-10 px-6" style="background:var(--mmt-soft);">
     <div class="max-w-4xl mx-auto">
 
-      <!-- Filter Pills -->
+      <!-- Category Filter Pills -->
       <div class="flex flex-wrap gap-2 mb-8" id="filterPills">
         <button class="filter-pill active text-sm px-4 py-2 rounded-full" data-filter="all">All</button>
-        <button class="filter-pill text-sm px-4 py-2 rounded-full" data-filter="defense">Defense</button>
-        <button class="filter-pill text-sm px-4 py-2 rounded-full" data-filter="health-it">Health IT</button>
+        <button class="filter-pill text-sm px-4 py-2 rounded-full" data-filter="defense">Defense health</button>
+        <button class="filter-pill text-sm px-4 py-2 rounded-full" data-filter="va">VA</button>
+        <button class="filter-pill text-sm px-4 py-2 rounded-full" data-filter="health-it">HHS / ONC / CMS</button>
+        <button class="filter-pill text-sm px-4 py-2 rounded-full" data-filter="procurement">Procurement</button>
+        <button class="filter-pill text-sm px-4 py-2 rounded-full" data-filter="oversight">Oversight / GAO / OIG</button>
+        <button class="filter-pill text-sm px-4 py-2 rounded-full" data-filter="ai">AI / digital health</button>
         <button class="filter-pill text-sm px-4 py-2 rounded-full" data-filter="policy">Policy</button>
-        <button class="filter-pill text-sm px-4 py-2 rounded-full" data-filter="oversight">Oversight</button>
       </div>
 
       <noscript><p class="text-sm mb-4" style="color:var(--mmt-text-secondary);">Enable JavaScript to use the category filters above.</p></noscript>
@@ -138,14 +156,14 @@
     </div>
   </section>
 
-  <!-- CTA Section -->
-  <section class="py-20 px-6">
+  <!-- Section 5: Newsletter bridge -->
+  <section class="py-16 px-6">
     <div class="max-w-2xl mx-auto text-center">
-      <h2 class="text-2xl font-bold mb-4">Get the full analysis, not just the headlines.</h2>
-      <p class="text-base leading-relaxed mb-8" style="color:var(--mmt-text);">Subscribe to Mission Meets Tech for deep-dive intelligence on federal health IT.</p>
+      <h2 class="text-2xl font-bold mb-4">Get the headlines with interpretation, not just links</h2>
+      <p class="text-base leading-relaxed mb-8" style="color:var(--mmt-text);">Headlines tell you what happened. I tell you what it means for your program, your contract, or your next move. Subscribe for the analysis behind the news.</p>
       <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" target="_blank" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto mb-4">
         <label for="subscribe-email-cta" class="sr-only">Email</label>
-        <input type="email" name="email" id="subscribe-email-cta" placeholder="you@example.com" required class="px-4 py-3 rounded-lg text-sm flex-1" style="background:var(--mmt-soft); border:1px solid var(--mmt-border); color: var(--mmt-navy);">
+        <input type="email" name="email" id="subscribe-email-cta" placeholder="you@example.com" required class="px-4 py-3 rounded-lg text-sm flex-1" style="background:var(--mmt-soft); border:1px solid rgba(69,123,157,0.15); color: var(--mmt-navy);">
         <button type="submit" class="btn-primary px-6 py-3 rounded-lg text-sm font-semibold whitespace-nowrap" style="cursor:pointer; border:none;">Subscribe</button>
       </form>
       <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80 inline-flex items-center gap-1" style="color:var(--mmt-teal);">
@@ -156,17 +174,19 @@
   </section>
 
   <!-- MMT Tools -->
-  <section class="wrap" style="padding:48px 0 24px;">
-    <p class="text-xs font-bold uppercase tracking-wider mb-4" style="color:var(--mmt-teal);">MMT Tools</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-      <a href="proposal-pulse.html" class="card rounded-xl p-6 no-underline block" style="transition:transform 0.2s;text-decoration:none;">
-        <h3 class="text-base font-bold mb-1" style="color:var(--mmt-navy);">Proposal<span style="color:var(--mmt-teal);">Pulse</span></h3>
-        <p class="text-xs" style="color:var(--mmt-text-secondary);margin:0;">Score your federal proposal across 9 criteria in 60 seconds. Three free.</p>
-      </a>
-      <a href="marketpulse.html" class="card rounded-xl p-6 no-underline block" style="transition:transform 0.2s;text-decoration:none;">
-        <h3 class="text-base font-bold mb-1" style="color:var(--mmt-navy);">Market<span style="color:var(--mmt-teal);">Pulse</span></h3>
-        <p class="text-xs" style="color:var(--mmt-text-secondary);margin:0;">Ask any federal health IT market question. Research brief in 24 hours. First free.</p>
-      </a>
+  <section class="py-12 px-6" style="background:var(--mmt-soft);">
+    <div class="max-w-4xl mx-auto">
+      <p class="text-xs font-bold uppercase tracking-wider mb-4" style="color:var(--mmt-teal);">MMT Tools</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <a href="proposal-pulse.html" class="rounded-xl p-6 no-underline block" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.12);transition:transform 0.2s;text-decoration:none;">
+          <h3 class="text-base font-bold mb-1" style="color:var(--mmt-navy);">Proposal<span style="color:var(--mmt-teal);">Pulse</span></h3>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);margin:0;">Score your federal proposal across 9 criteria in 60 seconds. Three free.</p>
+        </a>
+        <a href="marketpulse.html" class="rounded-xl p-6 no-underline block" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.12);transition:transform 0.2s;text-decoration:none;">
+          <h3 class="text-base font-bold mb-1" style="color:var(--mmt-navy);">Market<span style="color:var(--mmt-teal);">Pulse</span></h3>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);margin:0;">Ask any federal health IT market question. Research brief in 24 hours. First free.</p>
+        </a>
+      </div>
     </div>
   </section>
 

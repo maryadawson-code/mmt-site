@@ -53,9 +53,9 @@
     
     .section-alt { background: var(--mmt-white); }
     *:focus-visible { outline: 2px solid var(--mmt-teal); outline-offset: 2px; }
-    .resource-link { display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 0.85rem; border-radius: 8px; font-size: 0.875rem; text-decoration: none; color: var(--mmt-text); background: rgba(69,123,157,0.04); transition: background 0.15s; }
-    .resource-link:hover { background: rgba(69,123,157,0.1); }
-    .resource-link strong { color: var(--mmt-navy); }
+    .source-entry:hover { border-color: rgba(69,123,157,0.25) !important; }
+    .source-entry[data-hidden="true"] { display: none; }
+    [data-category][data-hidden="true"] { display: none; }
   </style>
 </head>
 <body class="antialiased">
@@ -101,399 +101,637 @@
 
   <main id="main-content">
 
-  <!-- Hero -->
-  <section class="pt-36 pb-20 px-6">
-    <div class="max-w-4xl mx-auto">
-      <p class="text-xs font-medium mb-4" style="color:var(--mmt-text-secondary);"><a href="resources.html" class="no-underline hover:opacity-80" style="color:var(--mmt-text-secondary);">Resources</a> <span style="color:var(--mmt-teal);">/</span> Agency Sources</p>
-      <h1 class="text-3xl md:text-4xl font-bold leading-tight mb-6">Official Agency Sources</h1>
-      <p class="text-lg leading-relaxed max-w-3xl" style="color:var(--mmt-text);">Curated .gov and .mil reference links. No vendor sites, no paywalls. The primary sources that drive federal health IT decisions.</p>
+  <!-- Section 1: Hero -->
+  <section class="pt-36 pb-16 px-6">
+    <div class="max-w-4xl mx-auto text-center">
+      <p class="text-xs uppercase tracking-widest font-semibold mb-4" style="color:var(--mmt-teal);">Reference library</p>
+      <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-4">Agency Sources</h1>
+      <p class="text-lg max-w-2xl mx-auto leading-relaxed mb-6" style="color:var(--mmt-text);">Official DHA, VA, HHS, ONC, acquisition, and oversight links worth bookmarking.</p>
+      <p class="text-sm" style="color:var(--mmt-text-secondary);">No vendor sites. No paywalls. The primary .gov and .mil sources that drive federal health IT decisions.</p>
     </div>
   </section>
 
-  <!-- Defense Health -->
-  <section class="section-alt py-20 px-6">
+  <!-- Section 2: Filter bar -->
+  <section class="py-6 px-6" style="background:var(--mmt-soft);">
     <div class="max-w-4xl mx-auto">
-      <h2 class="text-2xl font-bold mb-2">Defense Health</h2>
-      <p class="text-sm mb-8" style="color:var(--mmt-text-secondary);">DHA, FEHRM, TRICARE, and military medical research. The agencies that run health IT for 9.6 million beneficiaries.</p>
-      <div class="space-y-3">
-        <div>
-          <a href="https://health.mil" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>DHA Main</strong> — health.mil</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Defense Health Agency official site. News, leadership, policy documents.</p>
+      <div class="flex flex-wrap gap-2 mb-2" id="agencyFilterBar">
+        <p class="text-xs font-semibold uppercase tracking-wider mr-2 self-center" style="color:var(--mmt-text-secondary);">Agency</p>
+        <button class="filter-chip active text-xs px-3 py-1.5 rounded-full" data-agency="all" style="background:var(--mmt-teal);color:rgb(255,255,255);border:none;cursor:pointer;font-weight:600;transition:all 0.2s;">All</button>
+        <button class="filter-chip text-xs px-3 py-1.5 rounded-full" data-agency="defense" style="background:rgba(69,123,157,0.1);color:var(--mmt-teal);border:none;cursor:pointer;transition:all 0.2s;">Defense Health</button>
+        <button class="filter-chip text-xs px-3 py-1.5 rounded-full" data-agency="va" style="background:rgba(69,123,157,0.1);color:var(--mmt-teal);border:none;cursor:pointer;transition:all 0.2s;">VA</button>
+        <button class="filter-chip text-xs px-3 py-1.5 rounded-full" data-agency="interop" style="background:rgba(69,123,157,0.1);color:var(--mmt-teal);border:none;cursor:pointer;transition:all 0.2s;">Interoperability</button>
+        <button class="filter-chip text-xs px-3 py-1.5 rounded-full" data-agency="acquisition" style="background:rgba(69,123,157,0.1);color:var(--mmt-teal);border:none;cursor:pointer;transition:all 0.2s;">Acquisition</button>
+        <button class="filter-chip text-xs px-3 py-1.5 rounded-full" data-agency="budget" style="background:rgba(69,123,157,0.1);color:var(--mmt-teal);border:none;cursor:pointer;transition:all 0.2s;">Budget</button>
+        <button class="filter-chip text-xs px-3 py-1.5 rounded-full" data-agency="oversight" style="background:rgba(69,123,157,0.1);color:var(--mmt-teal);border:none;cursor:pointer;transition:all 0.2s;">Oversight</button>
+        <button class="filter-chip text-xs px-3 py-1.5 rounded-full" data-agency="cyber" style="background:rgba(69,123,157,0.1);color:var(--mmt-teal);border:none;cursor:pointer;transition:all 0.2s;">Cybersecurity</button>
+      </div>
+      <div class="flex flex-wrap gap-2" id="typeFilterBar">
+        <p class="text-xs font-semibold uppercase tracking-wider mr-2 self-center" style="color:var(--mmt-text-secondary);">Type</p>
+        <button class="type-chip active text-xs px-3 py-1.5 rounded-full" data-type="all" style="background:var(--mmt-teal);color:rgb(255,255,255);border:none;cursor:pointer;font-weight:600;transition:all 0.2s;">All</button>
+        <button class="type-chip text-xs px-3 py-1.5 rounded-full" data-type="portal" style="background:rgba(69,123,157,0.1);color:var(--mmt-teal);border:none;cursor:pointer;transition:all 0.2s;">Portals</button>
+        <button class="type-chip text-xs px-3 py-1.5 rounded-full" data-type="policy" style="background:rgba(69,123,157,0.1);color:var(--mmt-teal);border:none;cursor:pointer;transition:all 0.2s;">Policy</button>
+        <button class="type-chip text-xs px-3 py-1.5 rounded-full" data-type="procurement" style="background:rgba(69,123,157,0.1);color:var(--mmt-teal);border:none;cursor:pointer;transition:all 0.2s;">Procurement</button>
+        <button class="type-chip text-xs px-3 py-1.5 rounded-full" data-type="data" style="background:rgba(69,123,157,0.1);color:var(--mmt-teal);border:none;cursor:pointer;transition:all 0.2s;">Data / APIs</button>
+        <button class="type-chip text-xs px-3 py-1.5 rounded-full" data-type="research" style="background:rgba(69,123,157,0.1);color:var(--mmt-teal);border:none;cursor:pointer;transition:all 0.2s;">Research</button>
+      </div>
+      <noscript><p class="text-xs mt-3" style="color:var(--mmt-text-secondary);">Enable JavaScript to use filters. All sources are shown below.</p></noscript>
+    </div>
+  </section>
+
+  <!-- Section 3: Source directory -->
+
+  <!-- Defense Health -->
+  <section class="py-16 px-6" data-category="defense">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex items-center gap-3 mb-2">
+        <span class="inline-block w-1 h-6 rounded-full" style="background:var(--mmt-teal);"></span>
+        <h2 class="text-2xl font-bold">Defense Health</h2>
+      </div>
+      <p class="text-sm mb-8 ml-4" style="color:var(--mmt-text-secondary);">DHA, FEHRM, TRICARE, and military medical research. The agencies that run health IT for 9.6 million beneficiaries.</p>
+      <div class="space-y-4">
+        <div class="source-entry rounded-xl p-4" data-agency="defense" data-type="portal" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://health.mil" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">DHA Main <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">health.mil &middot; Portal</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Defense Health Agency official site. News, leadership, policy documents.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Ground truth for anything DHA announces or funds.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://health.mil/About-MHS/OASDHA/DHA-Contracting-Activity" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>DHA Contracting</strong> — health.mil</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">DHACA contract opportunities and procurement guidance.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="defense" data-type="procurement" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://health.mil/About-MHS/OASDHA/DHA-Contracting-Activity" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">DHA Contracting <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">health.mil &middot; Procurement</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">DHACA contract opportunities and procurement guidance.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Where DHA health IT solicitations originate.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://health.mil/About-MHS/OASDHA/PEO-DHMS" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>OPMED (formerly PEO DHMS)</strong> — health.mil</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Medical IT development, acquisition programs, MHS GENESIS.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="defense" data-type="portal" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://health.mil/About-MHS/OASDHA/PEO-DHMS" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">OPMED (formerly PEO DHMS) <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">health.mil &middot; Portal</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Medical IT development, acquisition programs, MHS GENESIS.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: The office that buys and deploys MHS GENESIS.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://fehrm.gov" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>FEHRM</strong> — fehrm.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Federal EHR Modernization. Joint DoD-VA interoperability.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="defense" data-type="policy" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://fehrm.gov" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">FEHRM <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">fehrm.gov &middot; Policy</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Federal EHR Modernization. Joint DoD-VA interoperability.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: The office that coordinates the joint DoD-VA EHR.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://tricare.mil" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>TRICARE</strong> — tricare.mil</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Beneficiary portal, provider info, regional contract details.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="defense" data-type="portal" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://tricare.mil" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">TRICARE <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">tricare.mil &middot; Portal</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Beneficiary portal, provider info, regional contract details.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Managed care contracts for 9.6M beneficiaries.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://cdmrp.health.mil" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>CDMRP</strong> — cdmrp.health.mil</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Military medical research funding opportunities.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="defense" data-type="research" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://cdmrp.health.mil" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">CDMRP <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">cdmrp.health.mil &middot; Research</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Military medical research funding opportunities.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Billions in directed research funding for health tech.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- VA Health IT -->
-  <section class="py-20 px-6">
+  <section class="py-16 px-6" data-category="va" style="background:var(--mmt-soft);">
     <div class="max-w-4xl mx-auto">
-      <h2 class="text-2xl font-bold mb-2">VA Health IT</h2>
-      <p class="text-sm mb-8" style="color:var(--mmt-text-secondary);">Department of Veterans Affairs. The largest integrated health system in the U.S., serving 9 million enrolled Veterans.</p>
-      <div class="space-y-3">
-        <div>
-          <a href="https://va.gov" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>VA Main</strong> — va.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Department of Veterans Affairs official site.</p>
+      <div class="flex items-center gap-3 mb-2">
+        <span class="inline-block w-1 h-6 rounded-full" style="background:var(--mmt-teal);"></span>
+        <h2 class="text-2xl font-bold">VA Health IT</h2>
+      </div>
+      <p class="text-sm mb-8 ml-4" style="color:var(--mmt-text-secondary);">Department of Veterans Affairs. The largest integrated health system in the U.S., serving 9 million enrolled Veterans.</p>
+      <div class="space-y-4">
+        <div class="source-entry rounded-xl p-4" data-agency="va" data-type="portal" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://va.gov" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">VA Main <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">va.gov &middot; Portal</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Department of Veterans Affairs official site.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Central hub for all VA programs and announcements.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://va.gov/health" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>VHA</strong> — va.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Veterans Health Administration. 1,300+ facilities.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="va" data-type="portal" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://va.gov/health" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">VHA <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">va.gov &middot; Portal</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Veterans Health Administration. 1,300+ facilities.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Runs the largest federal health system in the country.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://digital.va.gov/office-of-information-and-technology/" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>VA OIT</strong> — digital.va.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">VA Office of Information and Technology. IT strategy and programs.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="va" data-type="policy" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://digital.va.gov/office-of-information-and-technology/" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">VA OIT <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">digital.va.gov &middot; Policy</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">VA Office of Information and Technology. IT strategy and programs.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Sets the IT strategy for every VA facility.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://digital.va.gov/ehr-modernization/about/" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>VA EHR Modernization</strong> — digital.va.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">EHRM program status, deployment schedule, resources.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="va" data-type="policy" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://digital.va.gov/ehr-modernization/about/" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">VA EHR Modernization <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">digital.va.gov &middot; Policy</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">EHRM program status, deployment schedule, resources.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Tracks the most-watched IT program in federal health.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://developer.va.gov" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>VA Lighthouse APIs</strong> — developer.va.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">VA's public API platform. Health, benefits, and facilities data.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="va" data-type="data" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://developer.va.gov" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">VA Lighthouse APIs <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">developer.va.gov &middot; Data / APIs</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">VA's public API platform. Health, benefits, and facilities data.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: The open data layer for building on VA systems.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://connectedcare.va.gov" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>Connected Care</strong> — connectedcare.va.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Telehealth, remote monitoring, My HealtheVet.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="va" data-type="portal" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://connectedcare.va.gov" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">Connected Care <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">connectedcare.va.gov &middot; Portal</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Telehealth, remote monitoring, My HealtheVet.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: VA leads federal telehealth adoption.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://data.va.gov" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>VA Open Data</strong> — data.va.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Open datasets for research and analysis.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="va" data-type="data" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://data.va.gov" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">VA Open Data <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">data.va.gov &middot; Data / APIs</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Open datasets for research and analysis.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Raw data behind VA performance and outcomes.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://vaoig.gov" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>VA OIG</strong> — vaoig.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Inspector General. Audits, investigations, EHR deployment oversight.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="va" data-type="research" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://vaoig.gov" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">VA OIG <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">vaoig.gov &middot; Research</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Inspector General. Audits, investigations, EHR deployment oversight.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Independent audits that drive VA IT course corrections.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Interoperability & Standards -->
-  <section class="section-alt py-20 px-6">
+  <section class="py-16 px-6" data-category="interop">
     <div class="max-w-4xl mx-auto">
-      <h2 class="text-2xl font-bold mb-2">Interoperability and Standards</h2>
-      <p class="text-sm mb-8" style="color:var(--mmt-text-secondary);">ONC, FHIR, TEFCA, and the frameworks that govern how health data moves between systems.</p>
-      <div class="space-y-3">
-        <div>
-          <a href="https://healthit.gov" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>ONC/ASTP</strong> — healthit.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Office of the National Coordinator. Health IT policy and certification.</p>
+      <div class="flex items-center gap-3 mb-2">
+        <span class="inline-block w-1 h-6 rounded-full" style="background:var(--mmt-teal);"></span>
+        <h2 class="text-2xl font-bold">Interoperability and Standards</h2>
+      </div>
+      <p class="text-sm mb-8 ml-4" style="color:var(--mmt-text-secondary);">ONC, FHIR, TEFCA, and the frameworks that govern how health data moves between systems.</p>
+      <div class="space-y-4">
+        <div class="source-entry rounded-xl p-4" data-agency="interop" data-type="policy" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://healthit.gov" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">ONC/ASTP <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">healthit.gov &middot; Policy</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Office of the National Coordinator. Health IT policy and certification.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Sets the rules for health IT certification nationwide.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://healthit.gov/topic/interoperability/policy/trusted-exchange-framework-and-common-agreement-tefca" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>TEFCA</strong> — healthit.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Trusted Exchange Framework. National health data exchange infrastructure.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="interop" data-type="policy" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://healthit.gov/topic/interoperability/policy/trusted-exchange-framework-and-common-agreement-tefca" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">TEFCA <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">healthit.gov &middot; Policy</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Trusted Exchange Framework. National health data exchange infrastructure.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: The nationwide framework for cross-network data sharing.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://hl7.org/fhir" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>HL7 FHIR</strong> — hl7.org</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">FHIR specification. The modern healthcare interoperability standard.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="interop" data-type="policy" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://hl7.org/fhir" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">HL7 FHIR <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">hl7.org &middot; Policy</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">FHIR specification. The modern healthcare interoperability standard.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: The API standard every federal health system is adopting.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://healthit.gov/topic/certification-ehrs/about-onc-health-it-certification-program" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>ONC Certification</strong> — healthit.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Health IT certification program details and requirements.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="interop" data-type="policy" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://healthit.gov/topic/certification-ehrs/about-onc-health-it-certification-program" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">ONC Certification <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">healthit.gov &middot; Policy</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Health IT certification program details and requirements.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Determines which EHR products can sell to the feds.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://ehealthexchange.org" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>eHealth Exchange</strong> — ehealthexchange.org</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Largest health information network in the U.S.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="interop" data-type="portal" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://ehealthexchange.org" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">eHealth Exchange <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">ehealthexchange.org &middot; Portal</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Largest health information network in the U.S.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Where DoD and VA actually exchange records today.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://carequality.org" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>Carequality</strong> — carequality.org</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Interoperability framework connecting health networks nationwide.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="interop" data-type="portal" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://carequality.org" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">Carequality <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">carequality.org &middot; Portal</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Interoperability framework connecting health networks nationwide.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: The trust framework behind cross-network queries.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Acquisition & Contracting -->
-  <section class="py-20 px-6">
+  <section class="py-16 px-6" data-category="acquisition" style="background:var(--mmt-soft);">
     <div class="max-w-4xl mx-auto">
-      <h2 class="text-2xl font-bold mb-2">Acquisition and Contracting</h2>
-      <p class="text-sm mb-8" style="color:var(--mmt-text-secondary);">Where federal contracts are posted, tracked, and awarded. Registration, vehicles, and procurement guidance.</p>
-      <div class="space-y-3">
-        <div>
-          <a href="https://sam.gov" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>SAM.gov</strong> — sam.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Entity registration, contract opportunities, exclusions.</p>
+      <div class="flex items-center gap-3 mb-2">
+        <span class="inline-block w-1 h-6 rounded-full" style="background:var(--mmt-teal);"></span>
+        <h2 class="text-2xl font-bold">Acquisition and Contracting</h2>
+      </div>
+      <p class="text-sm mb-8 ml-4" style="color:var(--mmt-text-secondary);">Where federal contracts are posted, tracked, and awarded. Registration, vehicles, and procurement guidance.</p>
+      <div class="space-y-4">
+        <div class="source-entry rounded-xl p-4" data-agency="acquisition" data-type="procurement" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://sam.gov" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">SAM.gov <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">sam.gov &middot; Procurement</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Entity registration, contract opportunities, exclusions.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Where every federal opportunity gets posted.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://sam.gov/fpds" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>SAM.gov Award Data</strong> — sam.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Historical contract award data and FPDS search.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="acquisition" data-type="data" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://sam.gov/fpds" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">SAM.gov Award Data <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">sam.gov &middot; Data / APIs</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Historical contract award data and FPDS search.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Research who won what, for how much, and when.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://usaspending.gov" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>USAspending</strong> — usaspending.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Federal spending transparency. Search by agency, contract, recipient.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="acquisition" data-type="data" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://usaspending.gov" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">USAspending <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">usaspending.gov &middot; Data / APIs</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Federal spending transparency. Search by agency, contract, recipient.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Follow the money on any federal health IT contract.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://nitaac.nih.gov" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>NITAAC</strong> — nitaac.nih.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">NIH IT Acquisition and Assessment Center. CIO-SP3 and CIO-CS vehicles.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="acquisition" data-type="procurement" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://nitaac.nih.gov" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">NITAAC <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">nitaac.nih.gov &middot; Procurement</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">NIH IT Acquisition and Assessment Center. CIO-SP3 and CIO-CS vehicles.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Major IT GWAC vehicles for health agencies.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://ebuy.gsa.gov" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>GSA eBuy</strong> — ebuy.gsa.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">GSA's online Request for Quote system for Schedule and GWAC purchases.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="acquisition" data-type="procurement" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://ebuy.gsa.gov" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">GSA eBuy <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">ebuy.gsa.gov &middot; Procurement</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">GSA's online Request for Quote system for Schedule and GWAC purchases.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Task order RFQs under GSA Schedule IT contracts.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://dau.edu" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>DAU</strong> — dau.edu</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Defense Acquisition University. Training and certification resources.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="acquisition" data-type="research" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://dau.edu" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">DAU <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">dau.edu &middot; Research</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Defense Acquisition University. Training and certification resources.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: If you want to understand how DoD buys, start here.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://acqnotes.com" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>AcqNotes</strong> — acqnotes.com</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Community reference for defense acquisition processes and terminology.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="acquisition" data-type="research" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://acqnotes.com" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">AcqNotes <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">acqnotes.com &middot; Research</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Community reference for defense acquisition processes and terminology.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Plain-English reference when FAR jargon gets thick.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Budget & Spending -->
-  <section class="section-alt py-20 px-6">
+  <section class="py-16 px-6" data-category="budget">
     <div class="max-w-4xl mx-auto">
-      <h2 class="text-2xl font-bold mb-2">Budget and Spending</h2>
-      <p class="text-sm mb-8" style="color:var(--mmt-text-secondary);">Federal budget justifications, spending data, and analysis for defense health and VA programs.</p>
-      <div class="space-y-3">
-        <div>
-          <a href="https://usaspending.gov" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>USAspending.gov</strong> — usaspending.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Track federal spending by agency, contract, and category.</p>
+      <div class="flex items-center gap-3 mb-2">
+        <span class="inline-block w-1 h-6 rounded-full" style="background:var(--mmt-teal);"></span>
+        <h2 class="text-2xl font-bold">Budget and Spending</h2>
+      </div>
+      <p class="text-sm mb-8 ml-4" style="color:var(--mmt-text-secondary);">Federal budget justifications, spending data, and analysis for defense health and VA programs.</p>
+      <div class="space-y-4">
+        <div class="source-entry rounded-xl p-4" data-agency="budget" data-type="data" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://usaspending.gov" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">USAspending.gov <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">usaspending.gov &middot; Data / APIs</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Track federal spending by agency, contract, and category.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: The definitive source for where federal dollars go.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://comptroller.defense.gov" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>DoD Comptroller</strong> — comptroller.defense.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Defense budget materials, justification documents.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="budget" data-type="data" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://comptroller.defense.gov" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">DoD Comptroller <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">comptroller.defense.gov &middot; Data / APIs</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Defense budget materials, justification documents.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: The line-item breakdown of every DoD program.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://comptroller.defense.gov/Budget-Materials/" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>DHP Budget</strong> — comptroller.defense.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Defense Health Program budget justification (search for DHP).</p>
+        <div class="source-entry rounded-xl p-4" data-agency="budget" data-type="data" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://comptroller.defense.gov/Budget-Materials/" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">DHP Budget <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">comptroller.defense.gov &middot; Data / APIs</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Defense Health Program budget justification (search for DHP).</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Shows exactly how much DHA plans to spend on IT.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://department.va.gov/administrations-and-offices/management/budget/" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>VA Budget</strong> — department.va.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">VA budget submission and justification documents.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="budget" data-type="data" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://department.va.gov/administrations-and-offices/management/budget/" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">VA Budget <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">department.va.gov &middot; Data / APIs</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">VA budget submission and justification documents.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: VA IT spending trends start in these documents.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://cbo.gov/topics/defense-and-national-security/military-and-veterans-health-care" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>CBO Military Health</strong> — cbo.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Congressional Budget Office analysis of military health spending.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="budget" data-type="research" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://cbo.gov/topics/defense-and-national-security/military-and-veterans-health-care" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">CBO Military Health <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">cbo.gov &middot; Research</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Congressional Budget Office analysis of military health spending.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Independent cost projections Congress relies on.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Research & Oversight -->
-  <section class="py-20 px-6">
+  <section class="py-16 px-6" data-category="oversight" style="background:var(--mmt-soft);">
     <div class="max-w-4xl mx-auto">
-      <h2 class="text-2xl font-bold mb-2">Research and Oversight</h2>
-      <p class="text-sm mb-8" style="color:var(--mmt-text-secondary);">GAO, CRS, inspectors general, and independent research organizations covering military and VA health.</p>
-      <div class="space-y-3">
-        <div>
-          <a href="https://gao.gov/topics/defense-and-national-security/military-health-and-veterans-health-care" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>GAO Defense Health</strong> — gao.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Government Accountability Office reports on military and VA health.</p>
+      <div class="flex items-center gap-3 mb-2">
+        <span class="inline-block w-1 h-6 rounded-full" style="background:var(--mmt-teal);"></span>
+        <h2 class="text-2xl font-bold">Research and Oversight</h2>
+      </div>
+      <p class="text-sm mb-8 ml-4" style="color:var(--mmt-text-secondary);">GAO, CRS, inspectors general, and independent research organizations covering military and VA health.</p>
+      <div class="space-y-4">
+        <div class="source-entry rounded-xl p-4" data-agency="oversight" data-type="research" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://gao.gov/topics/defense-and-national-security/military-health-and-veterans-health-care" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">GAO Defense Health <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">gao.gov &middot; Research</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Government Accountability Office reports on military and VA health.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: The reports that trigger congressional hearings.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://congress.gov/crs-products" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>CRS Reports</strong> — congress.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Congressional Research Service. Authoritative policy analysis.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="oversight" data-type="research" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://congress.gov/crs-products" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">CRS Reports <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">congress.gov &middot; Research</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Congressional Research Service. Authoritative policy analysis.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: The background briefings that inform legislation.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://rand.org/topics/military-health-and-health-care.html" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>RAND Military Health</strong> — rand.org</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">RAND Corporation research on military health policy and systems.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="oversight" data-type="research" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://rand.org/topics/military-health-and-health-care.html" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">RAND Military Health <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">rand.org &middot; Research</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">RAND Corporation research on military health policy and systems.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Peer-reviewed research that shapes DoD health policy.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://mitre.org/our-impact/rd-centers/health-ffrdc" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>MITRE Health FFRDC</strong> — mitre.org</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">CMS Alliance to Modernize Healthcare (Health FFRDC).</p>
+        <div class="source-entry rounded-xl p-4" data-agency="oversight" data-type="research" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://mitre.org/our-impact/rd-centers/health-ffrdc" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">MITRE Health FFRDC <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">mitre.org &middot; Research</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">CMS Alliance to Modernize Healthcare (Health FFRDC).</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Independent technical advice to CMS and HHS.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://dodig.mil" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>DoD IG</strong> — dodig.mil</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Department of Defense Inspector General. Audits and evaluations.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="oversight" data-type="research" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://dodig.mil" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">DoD IG <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">dodig.mil &middot; Research</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Department of Defense Inspector General. Audits and evaluations.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Catches waste and mismanagement in defense health IT.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://vaoig.gov" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>VA OIG</strong> — vaoig.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">VA Inspector General. Audits and investigations.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="oversight" data-type="research" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://vaoig.gov" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">VA OIG <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">vaoig.gov &middot; Research</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">VA Inspector General. Audits and investigations.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: The EHR deployment oversight everyone reads.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Cybersecurity -->
-  <section class="section-alt py-20 px-6">
+  <section class="py-16 px-6" data-category="cyber">
     <div class="max-w-4xl mx-auto">
-      <h2 class="text-2xl font-bold mb-2">Cybersecurity</h2>
-      <p class="text-sm mb-8" style="color:var(--mmt-text-secondary);">FedRAMP, CMMC, NIST frameworks, and the security baselines that govern federal health IT systems.</p>
-      <div class="space-y-3">
-        <div>
-          <a href="https://marketplace.fedramp.gov" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>FedRAMP Marketplace</strong> — marketplace.fedramp.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Search FedRAMP-authorized cloud products.</p>
+      <div class="flex items-center gap-3 mb-2">
+        <span class="inline-block w-1 h-6 rounded-full" style="background:var(--mmt-teal);"></span>
+        <h2 class="text-2xl font-bold">Cybersecurity</h2>
+      </div>
+      <p class="text-sm mb-8 ml-4" style="color:var(--mmt-text-secondary);">FedRAMP, CMMC, NIST frameworks, and the security baselines that govern federal health IT systems.</p>
+      <div class="space-y-4">
+        <div class="source-entry rounded-xl p-4" data-agency="cyber" data-type="portal" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://marketplace.fedramp.gov" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">FedRAMP Marketplace <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">marketplace.fedramp.gov &middot; Portal</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Search FedRAMP-authorized cloud products.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: If it is not FedRAMP-authorized, it is not in the cloud.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://dodcio.defense.gov/CMMC/" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>CMMC (DoD CIO)</strong> — dodcio.defense.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Cybersecurity Maturity Model Certification program details.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="cyber" data-type="policy" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://dodcio.defense.gov/CMMC/" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">CMMC (DoD CIO) <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">dodcio.defense.gov &middot; Policy</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Cybersecurity Maturity Model Certification program details.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Required for every DoD contractor handling CUI.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://csrc.nist.gov/pubs/sp/800/171/r3/final" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>NIST SP 800-171</strong> — csrc.nist.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">CUI protection requirements for non-federal systems.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="cyber" data-type="policy" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://csrc.nist.gov/pubs/sp/800/171/r3/final" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">NIST SP 800-171 <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">csrc.nist.gov &middot; Policy</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">CUI protection requirements for non-federal systems.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: The controls CMMC is built on.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>NIST SP 800-53</strong> — csrc.nist.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Security and privacy controls catalog.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="cyber" data-type="policy" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">NIST SP 800-53 <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">csrc.nist.gov &middot; Policy</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Security and privacy controls catalog.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: The master control set for federal information systems.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://dodcio.defense.gov/Portals/0/Documents/Library/DoD-ZTStrategy.pdf" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>DoD Zero Trust Strategy</strong> — dodcio.defense.gov</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">DoD's zero trust architecture implementation plan.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="cyber" data-type="policy" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://dodcio.defense.gov/Portals/0/Documents/Library/DoD-ZTStrategy.pdf" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">DoD Zero Trust Strategy <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">dodcio.defense.gov &middot; Policy</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">DoD's zero trust architecture implementation plan.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: Every DoD network must hit zero trust targets by FY27.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <a href="https://cyber.mil/stigs/" target="_blank" rel="noopener" class="resource-link">
-            <span><strong>DISA STIGs</strong> — cyber.mil</span>
-            <span style="color:var(--mmt-teal); font-size:0.75em;" aria-hidden="true">&#8599;</span>
-          </a>
-          <p class="text-xs mt-1 ml-3 mb-0" style="color:var(--mmt-text-secondary);">Security Technical Implementation Guides.</p>
+        <div class="source-entry rounded-xl p-4" data-agency="cyber" data-type="portal" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.08);transition:border-color 0.2s;">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <a href="https://cyber.mil/stigs/" target="_blank" rel="noopener" class="text-base font-bold no-underline hover:opacity-80" style="color:var(--mmt-navy);">DISA STIGs <span style="color:var(--mmt-teal);font-size:0.75em;" aria-hidden="true">&#8599;</span></a>
+              <p class="text-xs mt-0.5 mb-1" style="color:var(--mmt-text-secondary);">cyber.mil &middot; Portal</p>
+              <p class="text-sm mb-1" style="color:var(--mmt-text);">Security Technical Implementation Guides.</p>
+              <p class="text-xs" style="color:var(--mmt-teal);">Why it matters: The hardening checklists every DoD system must pass.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ProposalPulse CTA -->
-  <section class="section-alt py-20 px-6">
-    <div class="max-w-4xl mx-auto text-center">
-      <h2 class="text-3xl font-bold mb-4">Score Your Proposal Before You Submit</h2>
-      <p class="text-sm mb-8 max-w-2xl mx-auto" style="color:var(--mmt-text);">ProposalPulse uses AI to score federal proposals against evaluation criteria. Upload your deck, get a scorecard with specific fixes. Three free assessments.</p>
-      <a href="proposal-pulse.html" class="btn-primary no-underline text-sm inline-block">Try ProposalPulse</a>
+  <!-- Section 4: If you only bookmark five -->
+  <section class="py-16 px-6" style="background:var(--mmt-soft);">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-2xl font-bold mb-2 text-center">If you only bookmark five</h2>
+      <p class="text-sm mb-8 text-center" style="color:var(--mmt-text-secondary);">New to federal health IT? Start here.</p>
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <a href="https://sam.gov" target="_blank" rel="noopener" class="rounded-xl p-4 no-underline text-center block" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.12);transition:border-color 0.2s;">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-navy);">SAM.gov</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Every federal opportunity</p>
+        </a>
+        <a href="https://health.mil" target="_blank" rel="noopener" class="rounded-xl p-4 no-underline text-center block" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.12);transition:border-color 0.2s;">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-navy);">health.mil</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">DHA ground truth</p>
+        </a>
+        <a href="https://healthit.gov" target="_blank" rel="noopener" class="rounded-xl p-4 no-underline text-center block" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.12);transition:border-color 0.2s;">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-navy);">healthit.gov</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">ONC policy and standards</p>
+        </a>
+        <a href="https://gao.gov/topics/defense-and-national-security/military-health-and-veterans-health-care" target="_blank" rel="noopener" class="rounded-xl p-4 no-underline text-center block" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.12);transition:border-color 0.2s;">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-navy);">GAO</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Independent oversight</p>
+        </a>
+        <a href="https://usaspending.gov" target="_blank" rel="noopener" class="rounded-xl p-4 no-underline text-center block" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.12);transition:border-color 0.2s;">
+          <p class="text-sm font-bold mb-1" style="color:var(--mmt-navy);">USAspending</p>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);">Follow the money</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: Subscribe bridge -->
+  <section class="py-16 px-6">
+    <div class="max-w-2xl mx-auto text-center">
+      <h2 class="text-2xl font-bold mb-4">Get the sources interpreted, not just linked</h2>
+      <p class="text-base leading-relaxed mb-8" style="color:var(--mmt-text);">I read these sources so you do not have to dig through every notice, budget doc, and OIG report. Subscribe and I will tell you what matters and why.</p>
+      <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" target="_blank" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto mb-4">
+        <label for="subscribe-email-cta" class="sr-only">Email</label>
+        <input type="email" name="email" id="subscribe-email-cta" placeholder="you@example.com" required class="px-4 py-3 rounded-lg text-sm flex-1" style="background:var(--mmt-soft); border:1px solid rgba(69,123,157,0.15); color: var(--mmt-navy);">
+        <button type="submit" class="btn-primary px-6 py-3 rounded-lg text-sm font-semibold whitespace-nowrap" style="cursor:pointer; border:none;">Subscribe</button>
+      </form>
+      <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7307800960485969920" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80 inline-flex items-center gap-1" style="color:var(--mmt-teal);">
+        <svg width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+        Follow on LinkedIn
+      </a>
+    </div>
+  </section>
+
+  <!-- MMT Tools -->
+  <section class="py-12 px-6" style="background:var(--mmt-soft);">
+    <div class="max-w-4xl mx-auto">
+      <p class="text-xs font-bold uppercase tracking-wider mb-4" style="color:var(--mmt-teal);">MMT Tools</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <a href="proposal-pulse.html" class="rounded-xl p-6 no-underline block" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.12);transition:transform 0.2s;text-decoration:none;">
+          <h3 class="text-base font-bold mb-1" style="color:var(--mmt-navy);">Proposal<span style="color:var(--mmt-teal);">Pulse</span></h3>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);margin:0;">Score your federal proposal across 9 criteria in 60 seconds. Three free.</p>
+        </a>
+        <a href="marketpulse.html" class="rounded-xl p-6 no-underline block" style="background:rgb(255,255,255);border:1px solid rgba(69,123,157,0.12);transition:transform 0.2s;text-decoration:none;">
+          <h3 class="text-base font-bold mb-1" style="color:var(--mmt-navy);">Market<span style="color:var(--mmt-teal);">Pulse</span></h3>
+          <p class="text-xs" style="color:var(--mmt-text-secondary);margin:0;">Ask any federal health IT market question. Research brief in 24 hours. First free.</p>
+        </a>
+      </div>
     </div>
   </section>
 
@@ -533,6 +771,65 @@
     </div>
   </footer>
 
+
+  <!-- Agency/Type filter JS -->
+  <script>
+  (function(){
+    var agencyBar = document.getElementById('agencyFilterBar');
+    var typeBar = document.getElementById('typeFilterBar');
+    if(!agencyBar || !typeBar) return;
+    var activeAgency = 'all';
+    var activeType = 'all';
+
+    function applyFilters(){
+      var entries = document.querySelectorAll('.source-entry');
+      var categories = document.querySelectorAll('[data-category]');
+      var visibleByCategory = {};
+
+      entries.forEach(function(e){
+        var aMatch = activeAgency === 'all' || e.getAttribute('data-agency') === activeAgency;
+        var tMatch = activeType === 'all' || e.getAttribute('data-type') === activeType;
+        var show = aMatch && tMatch;
+        e.setAttribute('data-hidden', show ? 'false' : 'true');
+        if(show){
+          var cat = e.closest('[data-category]');
+          if(cat) visibleByCategory[cat.getAttribute('data-category')] = true;
+        }
+      });
+
+      categories.forEach(function(s){
+        var cat = s.getAttribute('data-category');
+        s.setAttribute('data-hidden', visibleByCategory[cat] ? 'false' : 'true');
+      });
+    }
+
+    agencyBar.addEventListener('click', function(ev){
+      var btn = ev.target.closest('[data-agency]');
+      if(!btn || btn.tagName !== 'BUTTON') return;
+      activeAgency = btn.getAttribute('data-agency');
+      agencyBar.querySelectorAll('button').forEach(function(b){
+        var isActive = b === btn;
+        b.style.background = isActive ? 'var(--mmt-teal)' : 'rgba(69,123,157,0.1)';
+        b.style.color = isActive ? 'rgb(255,255,255)' : 'var(--mmt-teal)';
+        b.style.fontWeight = isActive ? '600' : '400';
+      });
+      applyFilters();
+    });
+
+    typeBar.addEventListener('click', function(ev){
+      var btn = ev.target.closest('[data-type]');
+      if(!btn || btn.tagName !== 'BUTTON') return;
+      activeType = btn.getAttribute('data-type');
+      typeBar.querySelectorAll('button').forEach(function(b){
+        var isActive = b === btn;
+        b.style.background = isActive ? 'var(--mmt-teal)' : 'rgba(69,123,157,0.1)';
+        b.style.color = isActive ? 'rgb(255,255,255)' : 'var(--mmt-teal)';
+        b.style.fontWeight = isActive ? '600' : '400';
+      });
+      applyFilters();
+    });
+  })();
+  </script>
 
   <!-- S15-05: Back to top -->
   <button id="btt" aria-label="Back to top" style="position:fixed;bottom:2rem;right:2rem;width:44px;height:44px;border-radius:50%;background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.15);color:var(--mmt-teal);cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s,transform 0.3s;z-index:90;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onmouseover="this.style.borderColor='rgba(69,123,157,0.3)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(69,123,157,0.15)';this.style.transform='none'">
