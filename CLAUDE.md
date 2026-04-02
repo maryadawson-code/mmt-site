@@ -137,3 +137,24 @@ All previously known issues are RESOLVED:
 - Zero dark mode regressions
 - ProposalPulse + MarketPulse visible (4 mentions each on homepage)
 - No broken internal links on homepage
+
+## Agent Hardening Contracts (S3-03)
+
+These contracts are mandatory for all Claude Code agents operating in this repo.
+
+### Prohibited Patterns
+- **No append-only iteration.** Do not keep layering code on top of broken code. If something is wrong, fix the root cause.
+- **No mock rewrites.** Never replace real implementations with mocks/stubs outside of test files.
+- **No exception swallowing.** Every catch block must log, re-throw, or return a typed error. Empty catch blocks are forbidden.
+- **No hardcoded test returns.** Functions must not contain `if (process.env.NODE_ENV === 'test') return <fixed value>` or equivalent shortcuts.
+- **No service role usage in client code.** API keys and service credentials must never appear in browser-delivered JavaScript.
+
+### Complexity Limits
+- **Cyclomatic complexity ceiling:** 15 for any new function, 25 hard halt (refuse to merge). If a function exceeds 15, refactor before proceeding.
+
+### Mandatory Practices
+- **Schema validation at external boundaries.** Any endpoint or form handler that accepts external input must validate before processing.
+- **Idempotency for retryable writes.** Any write operation that may be retried must be idempotent.
+- **Audit logging for mutations.** Content mutations should be logged or traceable.
+- **Correlation IDs for multi-step workflows.** Build pipelines, RSS sync, and newsletter sync must propagate a trace ID.
+- **Post-deploy smoke-test evidence for critical paths.** After any production deploy, run `node integrity-audit.js` and verify all 15 pages return 200.
