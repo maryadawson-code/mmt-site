@@ -3,7 +3,7 @@
   "configurations": [
     {
       "name": "Netlify Dev Server",
-      "runtimeExecutable": "npx",
+      "runtimeExecutable": "/usr/local/bin/npx",
       "runtimeArgs": ["netlify", "dev"],
       "port": 8888
     }

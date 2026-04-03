@@ -495,6 +495,7 @@ function generateNewslettersJson(articles) {
   }
 
   // Merge: use on-site URLs where we have markdown content, otherwise keep archive data
+  const archiveTitles = new Set(archive.map(e => e.title));
   const data = archive.map(entry => {
     const onSite = onSiteMap.get(entry.title);
     if (onSite) {
@@ -514,6 +515,27 @@ function generateNewslettersJson(articles) {
     }
     return entry;
   });
+
+  // Add markdown-only articles not in root newsletters.json
+  for (const article of articles) {
+    if (!archiveTitles.has(article.title)) {
+      data.push({
+        title: article.title,
+        date: article.formattedDate,
+        description: article.description,
+        url: article.url,
+        slug: article.slug,
+        tags: article.tags || [],
+        linkedin_url: article.linkedin_url || '',
+        ...(article.readTime ? { readTime: article.readTime } : {}),
+        ...(article.featured ? { featured: true } : {}),
+        ...(article.series ? { series: article.series } : {}),
+      });
+    }
+  }
+
+  // Re-sort by date (newest first) after adding new articles
+  data.sort((a, b) => new Date(b.date) - new Date(a.date));
 
   fs.writeFileSync(path.join(DIST_DIR, 'newsletters.json'), JSON.stringify(data, null, 2));
   console.log(`Generated newsletters.json with ${data.length} entries (${onSiteMap.size} with on-site URLs)`);
