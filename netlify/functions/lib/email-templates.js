@@ -276,7 +276,7 @@ function buildScoreReceiptHtml(data) {
 
       <!-- Uses remaining -->
       <p style="margin:32px 0 0;font-size:13px;color:#9ca3af;text-align:center;">
-        ${usesRemaining > 0 ? `You have ${usesRemaining} free assessment${usesRemaining === 1 ? "" : "s"} remaining.` : "You've used all 3 free assessments."}
+        ${usesRemaining > 0 ? `You have ${usesRemaining} free assessment${usesRemaining === 1 ? "" : "s"} remaining.` : "You've used your free assessment. Upgrade to score another proposal."}
       </p>
 
       <!-- CTA -->

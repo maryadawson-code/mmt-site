@@ -41,7 +41,7 @@ const MAX_FILE_SIZE_BYTES = 15 * 1024 * 1024;
 const MAX_TEXT_CHARS = 80000;
 // Legacy value — existing mp_feature_usage and mp_scoring_history records use "lethality_test"
 const FEATURE_NAME = "lethality_test";
-const FREE_USES = 3;
+const FREE_USES = 1;
 
 const ALLOWED_TYPES = {
   "application/pdf": "pdf",
@@ -388,7 +388,7 @@ exports.handler = wrapHandler(async (event) => {
         headers: CORS_HEADERS,
         body: JSON.stringify({
           error: "limit_reached",
-          message: "You've used all 3 free assessments. Contact Mission Meets Tech for a full review.",
+          message: "You've used your free assessment. Upgrade to score another proposal.",
           uses_remaining: 0,
         }),
       };
