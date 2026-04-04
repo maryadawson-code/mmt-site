@@ -31,6 +31,11 @@
 [functions."newsletter-sync"]
   schedule = "0 23 * * 2,5"
 
+# Buttondown newsletter send — runs 30 min after newsletter-sync (Tue/Fri 11:30 PM UTC)
+# Checks for new articles from the last 3 days and sends a digest to subscribers
+[functions."newsletter-send"]
+  schedule = "30 23 * * 2,5"
+
 # SAM.gov opportunities can post/close within days — 4hr polling
 [functions."opportunity-radar"]
   schedule = "0 */4 * * *"
