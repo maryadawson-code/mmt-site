@@ -194,7 +194,7 @@
     <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
 
       <!-- New to GovCon -->
-      <div class="card persona-card p-8 fade-up" onclick="toggleJourney(this)" role="button" tabindex="0" aria-expanded="false">
+      <div id="new" class="card persona-card p-8 fade-up" onclick="toggleJourney(this)" role="button" tabindex="0" aria-expanded="false">
         <button class="collapse-btn" onclick="event.stopPropagation();collapseJourney(this.parentElement)" aria-label="Collapse">&times;</button>
         <div class="journey-preview">
           <div style="width:40px;height:40px;border-radius:10px;background:rgba(69,123,157,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
@@ -261,7 +261,7 @@
       </div>
 
       <!-- Tracking Opportunities -->
-      <div class="card persona-card p-8 fade-up" style="transition-delay:0.08s;" onclick="toggleJourney(this)" role="button" tabindex="0" aria-expanded="false">
+      <div id="contractor" class="card persona-card p-8 fade-up" style="transition-delay:0.08s;" onclick="toggleJourney(this)" role="button" tabindex="0" aria-expanded="false">
         <button class="collapse-btn" onclick="event.stopPropagation();collapseJourney(this.parentElement)" aria-label="Collapse">&times;</button>
         <div class="journey-preview">
           <div style="width:40px;height:40px;border-radius:10px;background:rgba(0,255,133,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
@@ -324,7 +324,7 @@
       </div>
 
       <!-- Program Office Buyer -->
-      <div class="card persona-card p-8 fade-up" style="transition-delay:0.16s;" onclick="toggleJourney(this)" role="button" tabindex="0" aria-expanded="false">
+      <div id="government" class="card persona-card p-8 fade-up" style="transition-delay:0.16s;" onclick="toggleJourney(this)" role="button" tabindex="0" aria-expanded="false">
         <button class="collapse-btn" onclick="event.stopPropagation();collapseJourney(this.parentElement)" aria-label="Collapse">&times;</button>
         <div class="journey-preview">
           <div style="width:40px;height:40px;border-radius:10px;background:rgba(69,123,157,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
@@ -388,7 +388,7 @@
       </div>
 
       <!-- Health IT Executive -->
-      <div class="card persona-card p-8 fade-up" style="transition-delay:0.24s;" onclick="toggleJourney(this)" role="button" tabindex="0" aria-expanded="false">
+      <div id="executive" class="card persona-card p-8 fade-up" style="transition-delay:0.24s;" onclick="toggleJourney(this)" role="button" tabindex="0" aria-expanded="false">
         <button class="collapse-btn" onclick="event.stopPropagation();collapseJourney(this.parentElement)" aria-label="Collapse">&times;</button>
         <div class="journey-preview">
           <div style="width:40px;height:40px;border-radius:10px;background:rgba(0,255,133,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
@@ -527,6 +527,19 @@
       }
     });
   });
+  // Auto-expand persona card when arriving via hash link
+  (function(){
+    var hash = window.location.hash.replace('#','');
+    if(hash){
+      var target = document.getElementById(hash);
+      if(target && target.classList.contains('persona-card')){
+        setTimeout(function(){
+          toggleJourney(target);
+          target.scrollIntoView({behavior:'smooth',block:'start'});
+        }, 400);
+      }
+    }
+  })();
   </script>
   <script>
   (function(){

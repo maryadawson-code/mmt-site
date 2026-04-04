@@ -312,12 +312,20 @@ Layout:
 ### Section 4 — Start here by role
 **Purpose:** route new users faster than content type browsing
 
-Three large cards:
-- I work inside government
-- I’m a contractor or capture lead
-- I’m new to federal health IT
+Three large cards, each deep-linking to a persona-specific journey on getting-started.html:
+- "I work inside government" → `getting-started.html#government` (auto-expands the Program Office Buyer journey)
+- "I’m a contractor or capture lead" → `getting-started.html#contractor` (auto-expands the Tracking Opportunities journey)
+- "I’m new to federal health IT" → `getting-started.html#new` (auto-expands the New to GovCon journey)
 
-Each card links to a role-specific landing page or filtered center view.
+These must NEVER all link to the same generic page. Each persona gets a tailored entry point with specific next steps.
+
+The getting-started.html page has 4 persona sections with anchor IDs:
+- `#new` — New to GovCon (learning path)
+- `#contractor` — Tracking Opportunities (winning path)
+- `#government` — Program Office Buyer (decision path)
+- `#executive` — Health IT Executive (strategy path)
+
+When arriving via hash link, the corresponding persona card auto-expands and scrolls into view.
 
 ### Section 5 — Intelligence Center preview
 **Purpose:** show breadth without overwhelming
