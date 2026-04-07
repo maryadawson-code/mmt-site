@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Capture Intelligence: This Issue — Mission Meets Tech</title>
-  <meta name="description" content="The most actionable FY2027 signals across VA, DHA, HHS/ONC, ARPA-H, and compliance. Full capture sheet with programs, timing, and action windows.">
+  <title>Capture Intelligence: FY2027 Federal Health Budget — Mission Meets Tech</title>
+  <meta name="description" content="14 verified intelligence signals across VA, DHA, HHS/ONC, ARPA-H, and compliance. Every row sourced. Every window dated. FY2027 federal health budget deep dive.">
   <link rel="canonical" href="https://missionmeetstech.com/intel/capture-intelligence-this-issue">
-  <meta property="og:title" content="Capture Intelligence: This Issue — Mission Meets Tech">
-  <meta property="og:description" content="The most actionable FY2027 signals across VA, DHA, HHS/ONC, ARPA-H, and compliance. Full capture sheet with programs, timing, and action windows.">
+  <meta property="og:title" content="Capture Intelligence: FY2027 Federal Health Budget — Mission Meets Tech">
+  <meta property="og:description" content="14 verified intelligence signals across VA, DHA, HHS/ONC, ARPA-H, and compliance. Every row sourced. Every window dated.">
   <meta property="og:url" content="https://missionmeetstech.com/intel/capture-intelligence-this-issue">
   <meta property="og:type" content="article">
   <meta property="og:image" content="https://missionmeetstech.com/og/capture-intelligence.png">
@@ -15,17 +15,12 @@
   <meta property="og:image:height" content="630">
   <meta property="og:site_name" content="Mission Meets Tech">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Capture Intelligence: This Issue — Mission Meets Tech">
-  <meta name="twitter:description" content="The most actionable FY2027 signals across VA, DHA, HHS/ONC, ARPA-H, and compliance. Full capture sheet with programs, timing, and action windows.">
+  <meta name="twitter:title" content="Capture Intelligence: FY2027 Federal Health Budget">
+  <meta name="twitter:description" content="14 verified intelligence signals across VA, DHA, HHS/ONC, ARPA-H, and compliance.">
   <meta name="twitter:image" content="https://missionmeetstech.com/og/capture-intelligence.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-v3-16.png">
-  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-v3-48.png">
-  <link rel="icon" type="image/png" sizes="64x64" href="/favicon-v3-64.png">
-  <link rel="icon" type="image/png" sizes="128x128" href="/favicon-v3-128.png">
-  <link rel="icon" type="image/png" sizes="256x256" href="/favicon-v3-256.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-v3.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="/favicon-v3-512.png">
   <link rel="preconnect" href="https://plausible.io" crossorigin>
   <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
   <link rel="alternate" type="application/rss+xml" title="Mission Meets Tech" href="/feed.xml">
@@ -38,6 +33,7 @@
       --mmt-white: #FFFFFF;
       --mmt-text: #102033;
       --mmt-text-secondary: #5C6B7A;
+      --mmt-text-muted: #8896A6;
       --mmt-border: #D8E0E8;
       --mmt-border-light: #E8EDF2;
       --ci-gold: #92710A;
@@ -48,45 +44,134 @@
       --ci-amber-bg: #FFFBEB;
       --ci-red: #991B1B;
       --ci-red-bg: #FEF2F2;
+      --ci-purple: #5B21B6;
+      --ci-purple-bg: #F5F3FF;
+      --ci-emerald: #047857;
+      --ci-emerald-bg: #ECFDF5;
     }
     body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--mmt-white); color: var(--mmt-navy); }
     h1, h2, h3, h4, h5 { font-family: 'Inter', system-ui, sans-serif; }
 
+    /* Hero */
+    .ci-hero { padding: 56px 0 32px; border-bottom: 1px solid var(--mmt-border-light); }
+    .ci-hero-meta { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:16px; }
+    .ci-hero-meta span { font-size:12px; color:var(--mmt-text-secondary); letter-spacing:0.08em; text-transform:uppercase; font-weight:600; }
+    .ci-hero-meta .dot { color:var(--ci-gold); }
+    .ci-page-title { font-size:clamp(28px, 5vw, 48px); font-weight:700; color:var(--mmt-navy); line-height:1.15; margin-bottom:18px; }
+    .ci-page-title .accent { color:var(--ci-gold); }
+    .ci-page-subtitle { font-size:17px; color:var(--mmt-text-secondary); line-height:1.65; max-width:720px; margin-bottom:24px; }
+
+    /* CTA buttons */
+    .ci-btn { display:inline-block; font-weight:600; font-size:0.875rem; padding:12px 24px; border-radius:8px; text-decoration:none; transition:all 0.2s; }
+    .ci-btn-primary { background:var(--mmt-navy); color:#fff !important; border:1px solid var(--mmt-navy); }
+    .ci-btn-primary:hover { opacity:0.9; }
+    .ci-btn-secondary { background:transparent; color:var(--mmt-navy); border:1px solid var(--mmt-border); }
+    .ci-btn-secondary:hover { background:var(--mmt-soft); }
+
+    /* How-to strip */
+    .ci-how-to { padding:40px 0; border-bottom:1px solid var(--mmt-border-light); }
+    .ci-how-to-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:18px; }
+    .ci-how-to-item { background:var(--mmt-soft); border-radius:10px; padding:20px 22px; }
+    .ci-how-to-label { font-size:11px; font-weight:700; color:var(--ci-gold); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px; }
+    .ci-how-to-text { font-size:14px; color:var(--mmt-text-secondary); line-height:1.6; }
+
     /* Confidence badges */
-    .badge-verified { background: var(--ci-green-bg); color: var(--ci-green); }
-    .badge-directional { background: var(--ci-amber-bg); color: var(--ci-amber); }
-    .badge-proposed { background: var(--ci-red-bg); color: var(--ci-red); }
+    .badge { display:inline-block; font-size:11px; font-weight:600; letter-spacing:0.02em; padding:3px 9px; border-radius:99px; white-space:nowrap; }
+    .badge-verified    { background:var(--ci-green-bg); color:var(--ci-green); }
+    .badge-directional { background:var(--ci-amber-bg); color:var(--ci-amber); }
+    .badge-proposed    { background:var(--ci-red-bg);   color:var(--ci-red); }
+    .badge-analytical  { background:var(--ci-purple-bg);color:var(--ci-purple); }
+    .badge-corroborated{ background:var(--ci-emerald-bg);color:var(--ci-emerald); }
+    .badge-urgent      { background:var(--ci-red-bg);   color:var(--ci-red); border:1px solid #FCA5A5; }
 
-    /* Zebra striping */
-    .intel-row:nth-child(even) { background: var(--mmt-soft); }
-    .intel-row:nth-child(odd) { background: var(--mmt-white); }
+    /* Summary table */
+    .ci-table-section { padding:48px 0 32px; }
+    .ci-table-section h2 { font-size:1.5rem; font-weight:700; color:var(--mmt-navy); margin-bottom:6px; }
+    .ci-table-count { font-size:13px; color:var(--mmt-text-secondary); margin-bottom:24px; }
+    .ci-table-wrap { overflow-x:auto; border-radius:10px; border:1px solid var(--mmt-border); }
+    table.ci-table { width:100%; border-collapse:collapse; font-size:13px; min-width:880px; }
+    .ci-table thead { background:var(--mmt-soft); }
+    .ci-table th { font-size:11px; font-weight:700; color:var(--mmt-text-secondary); text-transform:uppercase; letter-spacing:0.1em; padding:14px 16px; text-align:left; border-bottom:1px solid var(--mmt-border); white-space:nowrap; }
+    .ci-table td { padding:14px 16px; color:var(--mmt-text-secondary); border-bottom:1px solid var(--mmt-border-light); vertical-align:top; line-height:1.55; }
+    .ci-table tbody tr:nth-child(even) { background:var(--mmt-soft); }
+    .ci-table tbody tr:last-child td { border-bottom:none; }
+    .ci-table td.agency { font-weight:600; color:var(--mmt-navy); white-space:nowrap; }
+    .ci-table td.program { font-weight:500; color:var(--mmt-text); }
+    .ci-table td.program a { color:var(--mmt-teal); text-decoration:none; font-weight:600; }
+    .ci-table td.program a:hover { text-decoration:underline; }
+    .ci-table td.window .urgent { color:var(--ci-red); font-weight:600; }
 
-    /* Sticky CTA sidebar */
-    @media (min-width: 1024px) {
-      .sticky-cta { position: sticky; top: 80px; }
-    }
+    /* Deep dive accordions */
+    .ci-deep-dive { padding:48px 0 64px; background:var(--mmt-soft); }
+    .ci-deep-dive > .wrap > h2 { font-size:1.5rem; font-weight:700; color:var(--mmt-navy); margin-bottom:6px; }
+    .ci-deep-dive-intro { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:28px; }
 
-    /* Print styles */
+    details.ci-accordion { background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:10px; margin-bottom:10px; overflow:hidden; transition:border-color 0.2s; }
+    details.ci-accordion[open] { border-color:var(--ci-gold); }
+    details.ci-accordion summary { list-style:none; cursor:pointer; padding:18px 22px; display:flex; align-items:flex-start; gap:14px; user-select:none; }
+    details.ci-accordion summary::-webkit-details-marker { display:none; }
+    .acc-number { font-size:11px; font-weight:700; color:var(--ci-gold); background:var(--ci-gold-bg); border-radius:6px; padding:4px 9px; white-space:nowrap; margin-top:2px; flex-shrink:0; letter-spacing:0.04em; }
+    .acc-header { flex:1; min-width:0; }
+    .acc-title { font-size:15px; font-weight:700; color:var(--mmt-navy); margin-bottom:6px; line-height:1.35; }
+    .acc-meta { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+    .acc-agency { font-size:12px; color:var(--mmt-text-secondary); font-weight:500; }
+    .acc-chevron { flex-shrink:0; width:18px; height:18px; color:var(--mmt-text-secondary); transition:transform 0.2s; margin-top:4px; }
+    details.ci-accordion[open] .acc-chevron { transform:rotate(180deg); }
+
+    .acc-body { padding:0 22px 24px; border-top:1px solid var(--mmt-border-light); }
+    .acc-body h3 { font-size:11px; font-weight:700; color:var(--ci-gold); text-transform:uppercase; letter-spacing:0.1em; margin:22px 0 8px; }
+    .acc-body p { font-size:14.5px; color:var(--mmt-text-secondary); line-height:1.7; margin-bottom:12px; }
+    .acc-body p strong { color:var(--mmt-navy); font-weight:600; }
+    .acc-body em { color:var(--mmt-text); font-style:italic; }
+    .acc-body ul { list-style:none; padding:0; margin:0 0 14px; }
+    .acc-body ul li { font-size:14.5px; color:var(--mmt-text-secondary); line-height:1.65; padding:5px 0 5px 18px; position:relative; }
+    .acc-body ul li::before { content:'›'; position:absolute; left:0; color:var(--ci-gold); font-weight:700; }
+    .acc-body ul li strong { color:var(--mmt-navy); font-weight:600; }
+    .acc-body .source-note { font-size:12px; color:var(--mmt-text-secondary); line-height:1.6; background:var(--mmt-soft); border-left:3px solid var(--ci-gold); border-radius:0 6px 6px 0; padding:12px 14px; margin-top:18px; }
+    .acc-body .action-box { background:var(--ci-gold-bg); border:1px solid #E5D9A8; border-radius:8px; padding:16px 18px; margin-top:18px; }
+    .acc-body .action-box .action-label { font-size:11px; font-weight:700; color:var(--ci-gold); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px; }
+    .acc-body .action-box p { font-size:13.5px; color:var(--mmt-text); margin-bottom:0; }
+    .acc-body .action-box p strong { color:var(--mmt-navy); }
+    .acc-body .window-urgent { display:inline-block; background:var(--ci-red-bg); border:1px solid #FCA5A5; color:var(--ci-red); font-size:12px; font-weight:700; padding:5px 12px; border-radius:6px; margin-bottom:14px; }
+    .acc-body .deadline-table { width:100%; border-collapse:collapse; margin:12px 0; }
+    .acc-body .deadline-table td { font-size:13px; padding:8px 12px; border-bottom:1px solid var(--mmt-border-light); color:var(--mmt-text-secondary); }
+    .acc-body .deadline-table td:first-child { color:var(--mmt-navy); font-weight:600; white-space:nowrap; width:160px; }
+    .acc-body .deadline-table tr:last-child td { border-bottom:none; }
+
+    /* Confidence key */
+    .ci-key { padding:48px 0; }
+    .ci-key h2 { font-size:1.25rem; font-weight:700; color:var(--mmt-navy); margin-bottom:18px; }
+    .ci-key-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; }
+    .ci-key-item { display:flex; flex-direction:column; gap:6px; }
+    .ci-key-item p { font-size:13px; color:var(--mmt-text-secondary); line-height:1.55; margin:0; }
+
+    /* Sources */
+    .ci-sources { padding:40px 0 56px; border-top:1px solid var(--mmt-border-light); }
+    .ci-sources h2 { font-size:1.25rem; font-weight:700; color:var(--mmt-navy); margin-bottom:18px; }
+    .sources-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:24px; }
+    .sources-group h3 { font-size:11px; font-weight:700; color:var(--ci-gold); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:10px; }
+    .sources-group ul { list-style:none; padding:0; margin:0; }
+    .sources-group ul li { font-size:13px; color:var(--mmt-text-secondary); line-height:1.55; padding:3px 0 3px 14px; position:relative; }
+    .sources-group ul li::before { content:'–'; position:absolute; left:0; color:var(--mmt-text-muted); }
+    .ci-disclaimer { font-size:12.5px; color:var(--mmt-text-muted); line-height:1.6; border-top:1px solid var(--mmt-border-light); padding-top:20px; margin-top:32px; font-style:italic; }
+
+    /* Print */
     @media print {
-      nav, .no-print, .sticky-cta-wrap, #linkedinBanner, .mobile-menu, #mobileMenu { display: none !important; }
-      footer { display: none !important; }
-      body { font-size: 10pt; color: #000; }
-      .intel-table { font-size: 9pt; }
-      .intel-row { break-inside: avoid; }
-      .badge-verified, .badge-directional, .badge-proposed { border: 1px solid #999; background: transparent !important; }
-      a { color: #000; text-decoration: none; }
-      .wrap { max-width: 100%; padding: 0 12px; }
-      h1 { font-size: 18pt; }
-      h2 { font-size: 14pt; }
-      @page { margin: 0.75in; }
+      nav, .no-print, #linkedinBanner, #mobileMenu, footer { display:none !important; }
+      details.ci-accordion { break-inside:avoid; border-color:#999; }
+      details.ci-accordion[open] .acc-body { display:block; }
+      details.ci-accordion .acc-body { display:block; }
+      .acc-chevron { display:none; }
+      body { font-size:10pt; color:#000; }
+      .badge { border:1px solid #999; }
+      a { color:#000; text-decoration:none; }
+      @page { margin:0.6in; }
     }
 
     @media (max-width: 767px) {
-      .intel-hero-grid { grid-template-columns: 1fr !important; }
-      .intel-table-header { display: none; }
-      .intel-row { display: flex; flex-direction: column; gap: 6px; padding: 16px !important; border-bottom: 1px solid var(--mmt-border-light); }
-      .intel-row > div::before { content: attr(data-label); display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--mmt-text-secondary); margin-bottom: 2px; }
-      .intel-row > div { padding: 0 !important; }
+      .ci-hero { padding:40px 0 24px; }
+      details.ci-accordion summary { padding:16px 18px; }
+      .acc-body { padding:0 18px 22px; }
     }
   </style>
 </head>
@@ -109,7 +194,6 @@
         <a href="/podcast.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Podcast</a>
         <a href="/resources.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Resources</a>
         <a href="/about.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">About</a>
-        <button id="searchToggle" class="hover:opacity-70" style="color:var(--mmt-text-secondary);background:none;border:none;cursor:pointer;" aria-label="Search"><svg width="16" height="16" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></button>
         <a href="/newsletter.html" class="btn-primary no-underline" style="margin-left:8px;">Subscribe</a>
       </div>
       <button id="menuToggle" class="md:hidden" style="color:var(--mmt-navy);background:none;border:none;cursor:pointer;" aria-label="Toggle menu">
@@ -130,7 +214,7 @@
     </div>
   </nav>
 
-  <!-- LinkedIn source banner (shown via JS when utm_source=linkedin) -->
+  <!-- LinkedIn source banner -->
   <div id="linkedinBanner" class="no-print" style="display:none;background:var(--ci-gold-bg);border-bottom:1px solid #E5D9A8;padding:10px 0;text-align:center;">
     <p style="margin:0;font-size:13px;color:var(--ci-gold);">You came from the LinkedIn article. Here's the full sheet.</p>
   </div>
@@ -138,219 +222,758 @@
   <main id="main-content">
 
     <!-- Hero -->
-    <section class="wrap" style="padding:48px 0 0;">
-      <p class="text-xs font-bold uppercase tracking-wider mb-3" style="color:var(--ci-gold);letter-spacing:0.18em;">Capture Intelligence</p>
-      <div style="display:grid;grid-template-columns:1fr 340px;gap:48px;align-items:start;" class="intel-hero-grid">
-        <div>
-          <h1 style="font-size:2.25rem;font-weight:700;line-height:1.2;margin-bottom:16px;color:var(--mmt-navy);">Capture Intelligence: This Issue</h1>
-          <p style="font-size:1.125rem;line-height:1.7;color:var(--mmt-text-secondary);margin-bottom:8px;">The most actionable FY2027 signals across VA, DHA, HHS/ONC, ARPA-H, and compliance.</p>
-          <p style="font-size:0.95rem;line-height:1.7;color:var(--mmt-text-secondary);max-width:620px;">This is the full version of the intelligence sheet referenced in the LinkedIn article. Every row includes the program, dollar signal, confidence level, and the action window you actually need to plan against. No paywalls, no gated PDFs&mdash;just the sheet.</p>
+    <section class="ci-hero">
+      <div class="wrap">
+        <div class="ci-hero-meta">
+          <span>April 2026</span>
+          <span class="dot">·</span>
+          <span>FY2027 Federal Health Budget</span>
+          <span class="dot">·</span>
+          <span>14 Signals · 6 Agencies</span>
         </div>
+        <h1 class="ci-page-title">Capture Intelligence:<br><span class="accent">FY2027 Federal Health Budget</span></h1>
+        <p class="ci-page-subtitle">Every row in the summary table is expanded below with sourced, decision-level intelligence: what the funding actually buys, what changed, who holds incumbent position, and what the action window requires. Every material claim carries a confidence label.</p>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+          <a href="#deep-dive" class="ci-btn ci-btn-primary" onclick="if(typeof plausible!=='undefined')plausible('go_to_deep_dive')">Go to Deep Dive ↓</a>
+          <a href="/newsletter.html?utm_source=capture-intel&utm_medium=hero" class="ci-btn ci-btn-secondary" onclick="if(typeof plausible!=='undefined')plausible('subscribe_click')">Subscribe for Updates</a>
+          <a href="javascript:window.print()" class="ci-btn ci-btn-secondary" onclick="if(typeof plausible!=='undefined')plausible('download_pdf_click')">Print / Save as PDF</a>
+        </div>
+      </div>
+    </section>
 
-        <!-- Sticky CTA sidebar -->
-        <aside class="sticky-cta-wrap no-print">
-          <div class="sticky-cta" style="background:var(--mmt-soft);border:1px solid var(--mmt-border-light);border-radius:12px;padding:28px;">
-            <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.14em;color:var(--mmt-text-secondary);margin-bottom:16px;">Actions</p>
-            <a href="javascript:window.print()" onclick="if(typeof plausible!=='undefined')plausible('download_pdf_click')" class="block text-center no-underline" style="background:var(--mmt-navy);color:#fff !important;font-weight:600;font-size:0.875rem;padding:12px 24px;border-radius:8px;margin-bottom:10px;display:block;">Print / Save as PDF</a>
-            <a href="/newsletter.html?utm_source=capture-intel&utm_medium=cta" onclick="if(typeof plausible!=='undefined')plausible('subscribe_click')" class="block text-center no-underline" style="border:1px solid var(--mmt-border);color:var(--mmt-navy);font-weight:600;font-size:0.875rem;padding:12px 24px;border-radius:8px;display:block;">Subscribe for updates</a>
-
-            <div style="border-top:1px solid var(--mmt-border-light);margin-top:20px;padding-top:20px;">
-              <p style="font-size:12px;font-weight:600;color:var(--mmt-navy);margin-bottom:12px;">Get future capture sheets by email</p>
-              <form id="intelForm" onsubmit="return handleIntelForm(event)" style="display:flex;flex-direction:column;gap:8px;">
-                <input type="hidden" name="utm_source" id="formUtmSource" value="">
-                <input type="hidden" name="utm_medium" id="formUtmMedium" value="">
-                <input type="hidden" name="utm_campaign" id="formUtmCampaign" value="">
-                <input type="text" name="name" placeholder="Name" required style="font-size:13px;padding:10px 12px;border:1px solid var(--mmt-border);border-radius:6px;background:var(--mmt-white);">
-                <input type="email" name="email" placeholder="Email" required style="font-size:13px;padding:10px 12px;border:1px solid var(--mmt-border);border-radius:6px;background:var(--mmt-white);">
-                <input type="text" name="company" placeholder="Company (optional)" style="font-size:13px;padding:10px 12px;border:1px solid var(--mmt-border);border-radius:6px;background:var(--mmt-white);">
-                <button type="submit" style="background:var(--ci-gold);color:#fff;font-weight:600;font-size:0.875rem;padding:12px;border-radius:8px;border:none;cursor:pointer;margin-top:4px;">Get the intel</button>
-              </form>
-              <p id="formSuccess" style="display:none;font-size:12px;color:var(--ci-green);margin-top:8px;text-align:center;">Got it. You're on the list.</p>
-            </div>
+    <!-- How to use -->
+    <section class="ci-how-to">
+      <div class="wrap">
+        <div class="ci-how-to-grid">
+          <div class="ci-how-to-item">
+            <div class="ci-how-to-label">What is funded</div>
+            <div class="ci-how-to-text">Dollar amounts with actual budget authority. Funded lines — not proposals, not wish lists.</div>
           </div>
-        </aside>
-      </div>
-    </section>
-
-    <!-- How to use this sheet -->
-    <section class="wrap" style="padding:40px 0 0;">
-      <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:16px;color:var(--mmt-navy);">How to use this sheet</h2>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;" class="intel-hero-grid">
-        <div style="background:var(--mmt-soft);border-radius:10px;padding:20px;">
-          <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--ci-gold);margin-bottom:6px;">What is funded</p>
-          <p style="font-size:0.85rem;line-height:1.6;color:var(--mmt-text-secondary);margin:0;">Dollar amounts and contract vehicles that have actual budget authority behind them. These aren't wish lists&mdash;they're funded lines.</p>
-        </div>
-        <div style="background:var(--mmt-soft);border-radius:10px;padding:20px;">
-          <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--ci-gold);margin-bottom:6px;">What is changing</p>
-          <p style="font-size:0.85rem;line-height:1.6;color:var(--mmt-text-secondary);margin:0;">Recompetes, consolidations, mandate shifts, and staffing gaps that change the competitive landscape for contractors and program offices alike.</p>
-        </div>
-        <div style="background:var(--mmt-soft);border-radius:10px;padding:20px;">
-          <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--ci-gold);margin-bottom:6px;">What window matters</p>
-          <p style="font-size:0.85rem;line-height:1.6;color:var(--mmt-text-secondary);margin:0;">Proposal deadlines, go-live gates, and compliance dates. The timing column is the reason this sheet exists&mdash;it tells you when to move.</p>
+          <div class="ci-how-to-item">
+            <div class="ci-how-to-label">What is changing</div>
+            <div class="ci-how-to-text">Recompetes, mandate shifts, consolidations, and staffing gaps that change the competitive landscape.</div>
+          </div>
+          <div class="ci-how-to-item">
+            <div class="ci-how-to-label">What window matters</div>
+            <div class="ci-how-to-text">Proposal deadlines, go-live gates, compliance dates, and protest windows. The timing column is why this sheet exists.</div>
+          </div>
+          <div class="ci-how-to-item">
+            <div class="ci-how-to-label">Confidence labels</div>
+            <div class="ci-how-to-text">Every material claim is tagged. Verified = primary source. Directional = direction confirmed, dollar is analytical. Proposed = needs legislative action.</div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Full Intelligence Table -->
-    <section class="wrap" style="padding:48px 0 0;">
-      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
-        <h2 style="font-size:1.25rem;font-weight:700;color:var(--mmt-navy);margin:0;">Full Capture Sheet &mdash; FY2027</h2>
-        <p style="font-size:12px;color:var(--mmt-text-secondary);margin:0;">14 signals &middot; 6 agencies &middot; Updated April 2026</p>
-      </div>
-
-      <div style="border:1px solid var(--mmt-border);border-radius:10px;overflow:hidden;" class="intel-table">
-        <!-- Table header -->
-        <div class="intel-table-header" style="display:grid;grid-template-columns:0.08fr 0.20fr 0.38fr 0.18fr 0.16fr;background:var(--mmt-soft);padding:12px 16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);border-bottom:1px solid var(--mmt-border);">
-          <div>Agency</div>
-          <div>Program</div>
-          <div>FY2027 Signal</div>
-          <div>Confidence</div>
-          <div>Window</div>
-        </div>
-
-        <!-- Row 1 -->
-        <div class="intel-row" style="display:grid;grid-template-columns:0.08fr 0.20fr 0.38fr 0.18fr 0.16fr;padding:14px 16px;font-size:13px;line-height:1.55;border-bottom:1px solid var(--mmt-border-light);align-items:start;">
-          <div data-label="Agency" style="font-weight:600;color:var(--mmt-navy);">VA</div>
-          <div data-label="Program" style="font-weight:500;color:var(--mmt-text);padding-right:12px;">CCN Next Gen (36C10G26R0003)</div>
-          <div data-label="FY2027 Signal" style="color:var(--mmt-text-secondary);padding-right:12px;">$56.2B community care (+17%); VBP models and utilization management enter new contract; neither exists in current CCN</div>
-          <div data-label="Confidence"><span class="badge-verified" style="display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;">Verified</span></div>
-          <div data-label="Window" style="color:var(--mmt-text-secondary);">Proposals due April 17</div>
-        </div>
-
-        <!-- Row 2 -->
-        <div class="intel-row" style="display:grid;grid-template-columns:0.08fr 0.20fr 0.38fr 0.18fr 0.16fr;padding:14px 16px;font-size:13px;line-height:1.55;border-bottom:1px solid var(--mmt-border-light);align-items:start;">
-          <div data-label="Agency" style="font-weight:600;color:var(--mmt-navy);">VA</div>
-          <div data-label="Program" style="font-weight:500;color:var(--mmt-text);padding-right:12px;">CCN Dental (36C10G26R0004)</div>
-          <div data-label="FY2027 Signal" style="color:var(--mmt-text-secondary);padding-right:12px;">~$47M companion dental network vehicle</div>
-          <div data-label="Confidence"><span class="badge-verified" style="display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;">Verified</span></div>
-          <div data-label="Window" style="color:var(--mmt-text-secondary);">Closed March 16; awards pending</div>
-        </div>
-
-        <!-- Row 3 -->
-        <div class="intel-row" style="display:grid;grid-template-columns:0.08fr 0.20fr 0.38fr 0.18fr 0.16fr;padding:14px 16px;font-size:13px;line-height:1.55;border-bottom:1px solid var(--mmt-border-light);align-items:start;">
-          <div data-label="Agency" style="font-weight:600;color:var(--mmt-navy);">VA</div>
-          <div data-label="Program" style="font-weight:500;color:var(--mmt-text);padding-right:12px;">EHRM: EHR Contract</div>
-          <div data-label="FY2027 Signal" style="color:var(--mmt-text-secondary);padding-right:12px;">$2.768B; Oracle Health sustainment of 19 live sites plus 26 new FY2027 go-lives</div>
-          <div data-label="Confidence"><span class="badge-verified" style="display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;">Verified</span></div>
-          <div data-label="Window" style="color:var(--mmt-text-secondary);">Michigan go-live this month; June 1 withhold gate</div>
-        </div>
-
-        <!-- Row 4 -->
-        <div class="intel-row" style="display:grid;grid-template-columns:0.08fr 0.20fr 0.38fr 0.18fr 0.16fr;padding:14px 16px;font-size:13px;line-height:1.55;border-bottom:1px solid var(--mmt-border-light);align-items:start;">
-          <div data-label="Agency" style="font-weight:600;color:var(--mmt-navy);">VA</div>
-          <div data-label="Program" style="font-weight:500;color:var(--mmt-text);padding-right:12px;">EHRM: Infrastructure Support</div>
-          <div data-label="FY2027 Signal" style="color:var(--mmt-text-secondary);padding-right:12px;">$745M; devices, cloud, interfaces, identity management for next deployment wave</div>
-          <div data-label="Confidence"><span class="badge-verified" style="display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;">Verified</span></div>
-          <div data-label="Window" style="color:var(--mmt-text-secondary);">Active</div>
-        </div>
-
-        <!-- Row 5 -->
-        <div class="intel-row" style="display:grid;grid-template-columns:0.08fr 0.20fr 0.38fr 0.18fr 0.16fr;padding:14px 16px;font-size:13px;line-height:1.55;border-bottom:1px solid var(--mmt-border-light);align-items:start;">
-          <div data-label="Agency" style="font-weight:600;color:var(--mmt-navy);">VA</div>
-          <div data-label="Program" style="font-weight:500;color:var(--mmt-text);padding-right:12px;">EHRM: PMO Support</div>
-          <div data-label="FY2027 Signal" style="color:var(--mmt-text-secondary);padding-right:12px;">$727M; 313 FTE authorized, ~250 filled; 24 additional losses in early 2026</div>
-          <div data-label="Confidence"><span class="badge-verified" style="display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;">Verified</span></div>
-          <div data-label="Window" style="color:var(--mmt-text-secondary);">Staffing gap is an active contractor opportunity</div>
-        </div>
-
-        <!-- Row 6 -->
-        <div class="intel-row" style="display:grid;grid-template-columns:0.08fr 0.20fr 0.38fr 0.18fr 0.16fr;padding:14px 16px;font-size:13px;line-height:1.55;border-bottom:1px solid var(--mmt-border-light);align-items:start;">
-          <div data-label="Agency" style="font-weight:600;color:var(--mmt-navy);">VA</div>
-          <div data-label="Program" style="font-weight:500;color:var(--mmt-text);padding-right:12px;">IT Systems (non-EHRM)</div>
-          <div data-label="FY2027 Signal" style="color:var(--mmt-text-secondary);padding-right:12px;">$7.36B</div>
-          <div data-label="Confidence"><span class="badge-verified" style="display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;">Verified</span></div>
-          <div data-label="Window" style="color:var(--mmt-text-secondary);">Task order pipeline; follow program office signals in BiB</div>
-        </div>
-
-        <!-- Row 7 -->
-        <div class="intel-row" style="display:grid;grid-template-columns:0.08fr 0.20fr 0.38fr 0.18fr 0.16fr;padding:14px 16px;font-size:13px;line-height:1.55;border-bottom:1px solid var(--mmt-border-light);align-items:start;">
-          <div data-label="Agency" style="font-weight:600;color:var(--mmt-navy);">VA</div>
-          <div data-label="Program" style="font-weight:500;color:var(--mmt-text);padding-right:12px;">Medical Services</div>
-          <div data-label="FY2027 Signal" style="color:var(--mmt-text-secondary);padding-right:12px;">$95.2B (+2.8%)</div>
-          <div data-label="Confidence"><span class="badge-verified" style="display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;">Verified</span></div>
-          <div data-label="Window" style="color:var(--mmt-text-secondary);">Ambient scribe, clinical AI, diagnostics</div>
-        </div>
-
-        <!-- Row 8 -->
-        <div class="intel-row" style="display:grid;grid-template-columns:0.08fr 0.20fr 0.38fr 0.18fr 0.16fr;padding:14px 16px;font-size:13px;line-height:1.55;border-bottom:1px solid var(--mmt-border-light);align-items:start;">
-          <div data-label="Agency" style="font-weight:600;color:var(--mmt-navy);">VA</div>
-          <div data-label="Program" style="font-weight:500;color:var(--mmt-text);padding-right:12px;">Medical Facilities</div>
-          <div data-label="FY2027 Signal" style="color:var(--mmt-text-secondary);padding-right:12px;">$13.1B (+6.7%)</div>
-          <div data-label="Confidence"><span class="badge-verified" style="display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;">Verified</span></div>
-          <div data-label="Window" style="color:var(--mmt-text-secondary);">Infrastructure and construction pipeline</div>
-        </div>
-
-        <!-- Row 9 - DHA -->
-        <div class="intel-row" style="display:grid;grid-template-columns:0.08fr 0.20fr 0.38fr 0.18fr 0.16fr;padding:14px 16px;font-size:13px;line-height:1.55;border-bottom:1px solid var(--mmt-border-light);align-items:start;">
-          <div data-label="Agency" style="font-weight:600;color:var(--mmt-navy);">DHA</div>
-          <div data-label="Program" style="font-weight:500;color:var(--mmt-text);padding-right:12px;">Care reattraction mandate</div>
-          <div data-label="FY2027 Signal" style="color:var(--mmt-text-secondary);padding-right:12px;">7% of private sector care (~$2.9B) shifting to MTFs by Dec 2026; TriWest and Humana Military utilization decreases without recompete</div>
-          <div data-label="Confidence"><span class="badge-directional" style="display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;">Verified directional; dollar figure analytical</span></div>
-          <div data-label="Window" style="color:var(--mmt-text-secondary);">MTF scheduling, telehealth, ambient listening, staffing</div>
-        </div>
-
-        <!-- Row 10 - DHA -->
-        <div class="intel-row" style="display:grid;grid-template-columns:0.08fr 0.20fr 0.38fr 0.18fr 0.16fr;padding:14px 16px;font-size:13px;line-height:1.55;border-bottom:1px solid var(--mmt-border-light);align-items:start;">
-          <div data-label="Agency" style="font-weight:600;color:var(--mmt-navy);">DHA</div>
-          <div data-label="Program" style="font-weight:500;color:var(--mmt-text);padding-right:12px;">Consulting contract terminations</div>
-          <div data-label="FY2027 Signal" style="color:var(--mmt-text-secondary);padding-right:12px;">$1.8B in DHA consulting cuts; Booz Allen ($345M), Deloitte ($264M), Accenture ($66M)</div>
-          <div data-label="Confidence"><span class="badge-verified" style="display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;">Verified</span></div>
-          <div data-label="Window" style="color:var(--mmt-text-secondary);">Support gap across EHRM, MHS GENESIS, DHA IT portfolio; GS-15 program managers expect disruption</div>
-        </div>
-
-        <!-- Row 11 - HHS/ONC -->
-        <div class="intel-row" style="display:grid;grid-template-columns:0.08fr 0.20fr 0.38fr 0.18fr 0.16fr;padding:14px 16px;font-size:13px;line-height:1.55;border-bottom:1px solid var(--mmt-border-light);align-items:start;">
-          <div data-label="Agency" style="font-weight:600;color:var(--mmt-navy);">HHS/ONC</div>
-          <div data-label="Program" style="font-weight:500;color:var(--mmt-text);padding-right:12px;">TEFCA interoperability</div>
-          <div data-label="FY2027 Signal" style="color:var(--mmt-text-secondary);padding-right:12px;">~500M records; governance authority moved to HHS OCIO April 1</div>
-          <div data-label="Confidence"><span class="badge-verified" style="display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;">Verified</span></div>
-          <div data-label="Window" style="color:var(--mmt-text-secondary);">Update contact maps; watch HTI-5 rule on next contract cycle</div>
-        </div>
-
-        <!-- Row 12 - ARPA-H -->
-        <div class="intel-row" style="display:grid;grid-template-columns:0.08fr 0.20fr 0.38fr 0.18fr 0.16fr;padding:14px 16px;font-size:13px;line-height:1.55;border-bottom:1px solid var(--mmt-border-light);align-items:start;">
-          <div data-label="Agency" style="font-weight:600;color:var(--mmt-navy);">ARPA-H</div>
-          <div data-label="Program" style="font-weight:500;color:var(--mmt-text);padding-right:12px;">ADVOCATE (agentic AI, cardiovascular)</div>
-          <div data-label="FY2027 Signal" style="color:var(--mmt-text-secondary);padding-right:12px;">Awards expected June 2026 from FY2026 appropriations; executing regardless of FY2027 budget outcome</div>
-          <div data-label="Confidence"><span class="badge-directional" style="display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;">Verified program, awards pending</span></div>
-          <div data-label="Window" style="color:var(--mmt-text-secondary);">Position for follow-on now</div>
-        </div>
-
-        <!-- Row 13 - HHS -->
-        <div class="intel-row" style="display:grid;grid-template-columns:0.08fr 0.20fr 0.38fr 0.18fr 0.16fr;padding:14px 16px;font-size:13px;line-height:1.55;border-bottom:1px solid var(--mmt-border-light);align-items:start;">
-          <div data-label="Agency" style="font-weight:600;color:var(--mmt-navy);">HHS</div>
-          <div data-label="Program" style="font-weight:500;color:var(--mmt-text);padding-right:12px;">HRSA/SAMHSA incumbents</div>
-          <div data-label="FY2027 Signal" style="color:var(--mmt-text-secondary);padding-right:12px;">28-to-15 division consolidation; single-agency vehicles at collapse risk</div>
-          <div data-label="Confidence"><span class="badge-proposed" style="display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;">Proposed; requires congressional action</span></div>
-          <div data-label="Window" style="color:var(--mmt-text-secondary);">Model recompete scenarios now</div>
-        </div>
-
-        <!-- Row 14 - DoD/VA -->
-        <div class="intel-row" style="display:grid;grid-template-columns:0.08fr 0.20fr 0.38fr 0.18fr 0.16fr;padding:14px 16px;font-size:13px;line-height:1.55;align-items:start;">
-          <div data-label="Agency" style="font-weight:600;color:var(--mmt-navy);">DoD/VA</div>
-          <div data-label="Program" style="font-weight:500;color:var(--mmt-text);padding-right:12px;">Anti-DEI contract clause</div>
-          <div data-label="FY2027 Signal" style="color:var(--mmt-text-secondary);padding-right:12px;">Effective April 25 for all new contracts and modifications; material under False Claims Act</div>
-          <div data-label="Confidence"><span class="badge-verified" style="display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;">Verified</span></div>
-          <div data-label="Window" style="color:var(--mmt-text-secondary);">Audit workforce programs and subcontractor flow-downs before April 25</div>
-        </div>
-      </div>
-
-      <!-- Table legend -->
-      <div class="no-print" style="display:flex;gap:16px;margin-top:14px;flex-wrap:wrap;">
-        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mmt-text-secondary);">
-          <span class="badge-verified" style="display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;">Verified</span> Confirmed by budget docs or contract actions
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mmt-text-secondary);">
-          <span class="badge-directional" style="display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;">Directional</span> Confirmed direction, figures analytical
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mmt-text-secondary);">
-          <span class="badge-proposed" style="display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;">Proposed</span> Requires legislative or executive action
+    <!-- Summary Table -->
+    <section class="ci-table-section">
+      <div class="wrap">
+        <h2>Full Capture Sheet — FY2027</h2>
+        <p class="ci-table-count">14 signals · 6 agencies · Updated April 2026</p>
+        <div class="ci-table-wrap">
+          <table class="ci-table">
+            <thead>
+              <tr>
+                <th>Agency</th>
+                <th>Program</th>
+                <th>FY2027 Signal</th>
+                <th>Confidence</th>
+                <th>Window</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="agency">VA</td>
+                <td class="program"><a href="#s1">CCN Next Gen (36C10G26R0003)</a></td>
+                <td>$56.2B community care (+17%); VBP models and utilization management enter new contract — neither exists in current CCN</td>
+                <td><span class="badge badge-verified">Verified</span></td>
+                <td class="window"><span class="urgent">Proposals due April 17</span></td>
+              </tr>
+              <tr>
+                <td class="agency">VA</td>
+                <td class="program"><a href="#s2">CCN Dental (36C10G26R0004)</a></td>
+                <td>~$47M companion dental network vehicle</td>
+                <td><span class="badge badge-verified">Verified</span></td>
+                <td class="window">Closed March 16 · Awards pending</td>
+              </tr>
+              <tr>
+                <td class="agency">VA</td>
+                <td class="program"><a href="#s3">EHRM: EHR Contract</a></td>
+                <td>$2.768B; Oracle Health sustainment of 19 live sites plus 26 new FY2027 go-lives</td>
+                <td><span class="badge badge-verified">Verified</span></td>
+                <td class="window"><span class="urgent">Michigan go-live April 11</span> · June 1 withhold gate</td>
+              </tr>
+              <tr>
+                <td class="agency">VA</td>
+                <td class="program"><a href="#s4">EHRM: Infrastructure Support</a></td>
+                <td>$745M; devices, cloud, interfaces, identity management for next deployment wave</td>
+                <td><span class="badge badge-verified">Verified</span></td>
+                <td class="window">Active · Watch FY2028 site list</td>
+              </tr>
+              <tr>
+                <td class="agency">VA</td>
+                <td class="program"><a href="#s5">EHRM: PMO Support</a></td>
+                <td>$727M; 313 FTE authorized, ~250 filled; 24 additional losses in early 2026</td>
+                <td><span class="badge badge-verified">Verified</span></td>
+                <td class="window">Staffing gap is open now</td>
+              </tr>
+              <tr>
+                <td class="agency">VA</td>
+                <td class="program"><a href="#s6">IT Systems (non-EHRM)</a></td>
+                <td>$7.36B; cybersecurity remediation, scheduling, community care billing, financial modernization</td>
+                <td><span class="badge badge-verified">Verified</span></td>
+                <td class="window">Ambient scribe closed April 3 · Cyber remediation active</td>
+              </tr>
+              <tr>
+                <td class="agency">VA</td>
+                <td class="program"><a href="#s7">Medical Services</a></td>
+                <td>$95.2B (+2.8%); clinical AI, diagnostics, ambient documentation</td>
+                <td><span class="badge badge-verified">Verified</span></td>
+                <td class="window">Clinical AI pipeline active</td>
+              </tr>
+              <tr>
+                <td class="agency">VA</td>
+                <td class="program"><a href="#s8">Medical Facilities</a></td>
+                <td>$13.1B (+6.7%); construction and infrastructure pipeline</td>
+                <td><span class="badge badge-verified">Verified</span></td>
+                <td class="window">Long-cycle; plan against FY2028 advance appropriations</td>
+              </tr>
+              <tr>
+                <td class="agency">DHA</td>
+                <td class="program"><a href="#s9">Care Reattraction Mandate</a></td>
+                <td>7% of private sector care (~$2.9B) shifting to MTFs by Dec 31, 2026; TriWest and Humana Military utilization decreases</td>
+                <td><span class="badge badge-directional">Directional</span></td>
+                <td class="window">MTF scheduling, telehealth, ambient listening, staffing</td>
+              </tr>
+              <tr>
+                <td class="agency">DHA</td>
+                <td class="program"><a href="#s10">Consulting Terminations</a></td>
+                <td>$1.8B in DHA consulting cuts; Booz Allen ($345M), Deloitte ($264M), Accenture ($66M) in prior 3-year obligations</td>
+                <td><span class="badge badge-verified">Verified</span></td>
+                <td class="window">Support gap active across DHA IT and EHRM portfolio</td>
+              </tr>
+              <tr>
+                <td class="agency">HHS/ONC</td>
+                <td class="program"><a href="#s11">TEFCA Interoperability</a></td>
+                <td>~500M records; governance authority moved to HHS OCIO April 1, 2026; HTI-5 rule moving</td>
+                <td><span class="badge badge-verified">Verified</span></td>
+                <td class="window">Update contact maps · Watch HTI-5 on next contract cycle</td>
+              </tr>
+              <tr>
+                <td class="agency">ARPA-H</td>
+                <td class="program"><a href="#s12">ADVOCATE (Agentic AI, CVD)</a></td>
+                <td>Awards expected June 2026 from FY2026 appropriations; executing regardless of FY2027 budget outcome</td>
+                <td><span class="badge badge-corroborated">Awards Pending</span></td>
+                <td class="window">Window closed April 1 · Position for follow-on and down-select</td>
+              </tr>
+              <tr>
+                <td class="agency">HHS</td>
+                <td class="program"><a href="#s13">HRSA/SAMHSA Consolidation</a></td>
+                <td>28-to-15 division consolidation proposed; single-agency vehicles at collapse risk</td>
+                <td><span class="badge badge-proposed">Proposed</span></td>
+                <td class="window">Model recompete scenarios now · Congress unlikely to pass as proposed</td>
+              </tr>
+              <tr>
+                <td class="agency">DoD / VA</td>
+                <td class="program"><a href="#s14">Anti-DEI Contract Clause</a></td>
+                <td>EO 14398 (March 26, 2026): mandatory FCA-enforceable clause enters all new contracts and modifications; flows to all subcontractor tiers</td>
+                <td><span class="badge badge-urgent">Verified</span></td>
+                <td class="window"><span class="urgent">Audit required before April 25</span></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
 
-    <!-- Spacer before footer -->
-    <div style="padding-bottom:48px;"></div>
+    <!-- Deep Dive Accordions -->
+    <section class="ci-deep-dive" id="deep-dive">
+      <div class="wrap">
+        <h2>Deep Dive: All 14 Signals</h2>
+        <p class="ci-deep-dive-intro">Click any row to expand sourced intelligence. Every material claim carries a confidence label and primary source attribution.</p>
+
+        <!-- 1. CCN Next Gen -->
+        <details class="ci-accordion" id="s1">
+          <summary>
+            <span class="acc-number">01</span>
+            <div class="acc-header">
+              <div class="acc-title">CCN Next Gen — Medical (36C10G26R0003)</div>
+              <div class="acc-meta">
+                <span class="acc-agency">VA</span>
+                <span class="badge badge-verified">Verified</span>
+                <span class="badge badge-urgent">Proposals Due April 17</span>
+              </div>
+            </div>
+            <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </summary>
+          <div class="acc-body">
+            <h3>What it funds</h3>
+            <p>The vehicle through which VA pays for veteran care delivered in the private sector. The FY2027 Medical Community Care account sits at <strong>$56.2 billion</strong> — up $8.1 billion (17%) from FY2026 enacted. That single account now represents approximately <strong>44% of all VA care delivery</strong>. The IDIQ ceiling of approximately $700 billion over ten years is the statutory maximum required to hold projected volume legally — not a spending projection. <span class="badge badge-verified">Verified — VA FY2027 Budget in Brief, April 3, 2026; GAO-26-108943</span></p>
+
+            <h3>What changed</h3>
+            <p>Two new mechanisms enter the contract that do not exist in the current CCN:</p>
+            <ul>
+              <li><strong>Value-based payments.</strong> Episode-based payments begin with lower-extremity joint replacements (hips and knees). VA CFO Richard Topping testified before the House VA Committee (January 2026) that at least three additional VBP models will be added over the performance period. Critically: future alternative payment model designs will be proposed by TOPR awardees. The organization that proposes the next cardiac or oncology episode model shapes the contract's economics for its full run. <span class="badge badge-verified">Verified — House VA Committee testimony, January 2026</span></li>
+              <li><strong>Utilization management.</strong> New oversight requirements cover ED visits, inpatient admissions, concurrent hospital reviews, and high-cost drug administration. Requires clinical decision support at the point of authorization. The current contract has no such requirement. Any organization operating in care navigation or utilization review under the existing CCN is operating under different rules on day one of the new contract.</li>
+            </ul>
+
+            <h3>Competitive landscape</h3>
+            <p><strong>Incumbents:</strong> Optum Health (East and South regions), TriWest Healthcare Alliance (West region). Neither position is automatic — this is a new contract with new capability requirements that the current structure does not require incumbents to hold.</p>
+            <p><strong>The Corporate Experience gating factor.</strong> Up to three references are permitted. Across all three references, the proposal must collectively demonstrate all three of the following or it is rated Unacceptable:</p>
+            <ul>
+              <li>Implementation of a network across multiple states</li>
+              <li>Program management of a service across multiple states</li>
+              <li>IT Integration with a client system across multiple states</li>
+            </ul>
+            <p>Missing any single factor across all three references = Unacceptable rating. Binary. This structure forces teaming between traditional healthcare payers (Implementation strength) and systems integrators (IT Integration strength). Solo proposals from either category are exposed.</p>
+            <p><strong>MOSA structure with No-Bid provision.</strong> A No-Bid is a compliant response to a task order. A specialized firm in network analytics, utilization review, rural telehealth, or clinical AI can win a bench position and wait for the matching task order without being penalized for passing on full-region awards.</p>
+
+            <div class="action-box">
+              <div class="action-label">Action Window</div>
+              <p>Proposals due <strong>April 17, 2026.</strong> If you do not have a complete team and proposal in progress, this window is closed. Post-award: VBP model design task orders are where the long-game positioning happens. Watch for early task order releases — the organizations that propose the next payment models shape the contract's economics across the performance period.</p>
+            </div>
+            <div class="source-note">Sources: VA FY2027 Budget in Brief, April 3, 2026 (Verified); CFO Topping testimony, House VA Committee January 2026 (Verified); IDIQ ceiling: GovConWire solicitation analysis (Corroborated — statutory ceiling, not projected spend); Corporate experience structure: solicitation 36C10G26R0003 pre-proposal conference materials (Verified).</div>
+          </div>
+        </details>
+
+        <!-- 2. CCN Dental -->
+        <details class="ci-accordion" id="s2">
+          <summary>
+            <span class="acc-number">02</span>
+            <div class="acc-header">
+              <div class="acc-title">CCN Dental (36C10G26R0004)</div>
+              <div class="acc-meta">
+                <span class="acc-agency">VA</span>
+                <span class="badge badge-verified">Verified</span>
+                <span class="badge badge-corroborated">Awards Pending</span>
+              </div>
+            </div>
+            <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </summary>
+          <div class="acc-body">
+            <h3>What it funds</h3>
+            <p>A companion dental network management vehicle to the medical IDIQ. Separate procurement, same structural logic: multiple-award IDIQ for nationwide dental network coordination for veterans using community care. Approximately <strong>$47 million.</strong> This vehicle is new — there was no standalone dental companion in prior CCN generations. <span class="badge badge-verified">Verified — SAM.gov</span></p>
+
+            <h3>Competitive landscape</h3>
+            <p>Proposals closed March 16. Awards are pending. Given that this solicitation has received considerably less scrutiny than the medical vehicle, it is more likely to contain evaluation inconsistencies that could support a protest.</p>
+
+            <div class="action-box">
+              <div class="action-label">Action Window</div>
+              <p>The actionable window is the <strong>protest period.</strong> Organizations that submitted and were not selected should assess whether the Corporate Experience matrix was applied consistently before the protest window closes. GAO protests must be filed within 10 calendar days of the date a debriefing is requested, or within 10 days of the debriefing if held.</p>
+            </div>
+            <div class="source-note">Sources: Solicitation number and dollar figure: SAM.gov (Verified). Vehicle structure: parallel to medical IDIQ (Analytical inference from solicitation documents).</div>
+          </div>
+        </details>
+
+        <!-- 3. EHRM EHR Contract -->
+        <details class="ci-accordion" id="s3">
+          <summary>
+            <span class="acc-number">03</span>
+            <div class="acc-header">
+              <div class="acc-title">EHRM: EHR Contract — Oracle Health</div>
+              <div class="acc-meta">
+                <span class="acc-agency">VA · $2.768B</span>
+                <span class="badge badge-verified">Verified</span>
+                <span class="badge badge-urgent">Go-Live April 11 · June 1 Gate</span>
+              </div>
+            </div>
+            <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </summary>
+          <div class="acc-body">
+            <h3>What it funds</h3>
+            <p>Oracle Health's prime contract for EHRM. The $2.768 billion covers sustainment of 19 currently live VA sites; 26 new go-lives planned in FY2027; help desk, training, and data hosting; and preparation of 28 FY2028-targeted sites. <span class="badge badge-verified">Verified — VA FY2027 Budget in Brief</span></p>
+
+            <h3>The Michigan go-live</h3>
+            <p>Four sites go live simultaneously in April 2026: <strong>Ann Arbor, Battle Creek, Detroit, and Saginaw.</strong> Ann Arbor and Detroit are Level 1A complex facilities — the highest classification in the VA system. No Oracle EHR deployment has previously attempted this complexity level. This is the first multi-site simultaneous deployment in the program's history. <span class="badge badge-verified">Verified — VA press releases; Healthcare IT News December 2025; Congress.gov hearing record</span></p>
+            <p>On March 4, 2026 — three weeks before the Michigan window — the Oracle federal EHR went down from 8:37 AM to 2:05 PM Eastern (nearly six hours) across all six live VA sites, 26 community clinics, and installations serving DoD and the Coast Guard. Cause: database performance issue. <span class="badge badge-verified">Verified — Fierce Healthcare, March 2026</span></p>
+
+            <h3>The June 1 withhold</h3>
+            <p>Congress withheld 30% of EHRM's FY2026 appropriation — approximately <strong>$1.02 billion</strong> — pending three conditions by June 1, 2026:</p>
+            <ul>
+              <li>An updated lifecycle cost estimate</li>
+              <li>A facility-by-facility deployment schedule through full deployment</li>
+              <li>The Secretary's certification of four or more consecutive successful go-lives without delays or patient harm</li>
+            </ul>
+            <p><strong>Structural problem with the cost estimate condition.</strong> Three lifecycle estimates exist: VA 2019 ($16.1B — GAO called it severely incomplete), IDA October 2022 ($49.8B: $32.7B implementation + $17.1B sustainment), and VA September 2025 ($37.2B, delivered by Deputy Secretary Paul Lawrence to Congress December 15, 2025). GAO's position as of December 2025: all three are outdated. GAO had not received the VA's September 2025 revision at the time of the hearing. GAO Director Carol Harris stated: <em>"We have not received that estimate, so I would ask the department to provide that to us so we can review it."</em> <span class="badge badge-verified">Verified — GAO-26-108812; House VA Subcommittee, December 15, 2025</span></p>
+            <p><strong>Definitional problem with the go-live condition.</strong> The withhold language requires certification of deployments "without delays or patient harm." No quantitative threshold defines delay. No threshold defines patient harm. Certification rests on the Secretary's judgment. Context: VA OIG found 149 instances of patient harm at Spokane, 826 major performance incidents across the first five live sites, and a veteran's death linked to scheduling failures at Columbus. All of those sites were certified as go-lives. <span class="badge badge-verified">Verified — VA OIG reports July 2022, September 2024, March 2024</span></p>
+
+            <h3>The program picture</h3>
+            <p>Total EHRM obligations through Q2 FY2025: <strong>$13.84 billion.</strong> After Michigan completes, fewer than one in six VA medical centers will be live (~23 of 170). GAO-26-108812 (December 2025): 16 of 18 prior recommendations unimplemented. Twelve carry priority status. GAO Director Harris told Congress completing all remaining sites on the contract timeline is <em>"impossible."</em> Contract expires May 2028. Full deployment runs to end of FY2031. <span class="badge badge-verified">Verified — GAO-26-108812</span></p>
+            <p>GAO-25-108091 user survey (September 2024): 75% of current EHRM users disagree the system enables efficient care. 13% believe it makes the VA efficient. 58% say it increased patient safety risks. These numbers come from sites already live. <span class="badge badge-verified">Verified — GAO-25-108091</span></p>
+
+            <div class="action-box">
+              <div class="action-label">Action Window</div>
+              <p>The June 1 withhold release determines FY2027 deployment pace. If Congress does not release the $1.02B on schedule, the deployment timeline slows and support contract structures shift. Monitor committee correspondence in May — that is where the withhold condition evaluation happens. Oracle's subcontractor and support ecosystem is the primary addressable market for most organizations outside the Oracle prime.</p>
+            </div>
+            <div class="source-note">Sources: VA FY2027 Budget in Brief (Verified); GAO-26-108812 (Verified); GAO-25-108091 (Verified); VA OIG reports 2022, 2024 (Verified); Harris quote: Congress.gov hearing record December 15, 2025 (Verified); Outage: Fierce Healthcare March 2026 (Verified; 5h28m duration confirmed).</div>
+          </div>
+        </details>
+
+        <!-- 4. EHRM Infrastructure -->
+        <details class="ci-accordion" id="s4">
+          <summary>
+            <span class="acc-number">04</span>
+            <div class="acc-header">
+              <div class="acc-title">EHRM: Infrastructure Support</div>
+              <div class="acc-meta">
+                <span class="acc-agency">VA · $745M</span>
+                <span class="badge badge-verified">Verified</span>
+              </div>
+            </div>
+            <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </summary>
+          <div class="acc-body">
+            <h3>What it funds</h3>
+            <p>Devices, cloud infrastructure, network interfaces, and identity management supporting the active deployment wave. This account is <strong>separate from the Oracle EHR prime contract</strong> and flows through independent contracting vehicles. Covers current live sites and 26 new FY2027 go-lives, with positioning for 28 FY2028-targeted sites. <span class="badge badge-verified">Verified — VA FY2027 Budget in Brief</span></p>
+
+            <h3>What changed</h3>
+            <p>Scale. As the deployment accelerates from 19 live sites to approximately 45 by end of FY2027, infrastructure requirements scale with every wave. Each new go-live requires device provisioning, network configuration, identity management integration, and data migration support that the Oracle prime contract does not cover.</p>
+
+            <div class="action-box">
+              <div class="action-label">Action Window</div>
+              <p>Verify that your existing VA vehicles (SEWP, existing BPAs) remain viable through FY2027. The facility-by-facility deployment schedule required as a condition of the June 1 withhold will show the FY2028 wave. Obtain that schedule when published. Infrastructure contractors embedded in current deployments carry site-specific configuration knowledge that transfers — and gives them a head start on follow-on waves.</p>
+            </div>
+            <div class="source-note">Sources: VA FY2027 Budget in Brief (Verified). FY2028 site details: VA press releases 2025 (Verified for nine additional sites announced; full list pending schedule release).</div>
+          </div>
+        </details>
+
+        <!-- 5. EHRM PMO -->
+        <details class="ci-accordion" id="s5">
+          <summary>
+            <span class="acc-number">05</span>
+            <div class="acc-header">
+              <div class="acc-title">EHRM: PMO Support</div>
+              <div class="acc-meta">
+                <span class="acc-agency">VA · $727M</span>
+                <span class="badge badge-verified">Verified</span>
+                <span class="badge badge-urgent">Gap Is Open Now</span>
+              </div>
+            </div>
+            <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </summary>
+          <div class="acc-body">
+            <h3>What it funds</h3>
+            <p>The EHRM Integration Office (EHRM-IO) program management office — the entity responsible for overseeing 170 total VA medical centers, a $37–49 billion lifecycle cost range, and an active GAO high-risk designation. <span class="badge badge-verified">Verified — VA FY2027 Budget in Brief</span></p>
+
+            <h3>The staffing gap</h3>
+            <p><strong>313 positions authorized. Approximately 250 filled.</strong> The program then lost 24 additional staff to probationary firings and deferred resignation offers in early 2026. The functional vacancy rate heading into the most intensive deployment phase in the program's history exceeds 20% — at the precise moment the PMO is simultaneously managing the June 1 Congressional deadline, a four-site simultaneous go-live at the highest complexity level ever attempted, and 16 open GAO recommendations. <span class="badge badge-verified">Verified — Congressional testimony, February 2025 and early 2026 (note: 250 filled and 24 losses are from separate testimony timepoints; current fill rate is lower than 250)</span></p>
+
+            <h3>What this means operationally</h3>
+            <p>Program management functions the PMO cannot staff internally become contractor work. Michigan goes live this month and the PMO is demonstrably understaffed for it. Functions most likely to be contracted: acquisition support, data governance, quality assurance, deployment coordination, and Congressional reporting support.</p>
+
+            <div class="action-box">
+              <div class="action-label">Action Window</div>
+              <p>Identify existing vehicles that allow program management support work at EHRM-IO or VA OIT. Monitor USAJobs for position reclassifications (a signal that functions are being re-categorized to contractor work) and SAM.gov for EHRM-IO support actions. The support gap is active now.</p>
+            </div>
+            <div class="source-note">Sources: Authorized FTE and fill rate: Congressional testimony, February 2025 (Verified). 24 additional losses: Congressional testimony, early 2026 (Verified). PMO account figure: VA FY2027 Budget in Brief (Verified).</div>
+          </div>
+        </details>
+
+        <!-- 6. VA IT non-EHRM -->
+        <details class="ci-accordion" id="s6">
+          <summary>
+            <span class="acc-number">06</span>
+            <div class="acc-header">
+              <div class="acc-title">VA IT Systems — Non-EHRM</div>
+              <div class="acc-meta">
+                <span class="acc-agency">VA · $7.36B</span>
+                <span class="badge badge-verified">Verified</span>
+              </div>
+            </div>
+            <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </summary>
+          <div class="acc-body">
+            <h3>What it funds</h3>
+            <p>VA's total FY2027 IT request is <strong>$12.2 billion</strong> — a 62% increase over FY2026 per Federal News Network analysis. Of that, $4.24 billion is EHRM. The remaining non-EHRM IT covers cybersecurity, financial management modernization, scheduling systems, community care billing, interoperable health records, and digital mental health platforms. The budget specifically allocates <strong>$1.3 billion</strong> targeting high-impact healthcare delivery capabilities: scheduling and referral processes, community care billing expansion, and interoperable health records. <span class="badge badge-verified">Verified — Federal News Network April 6, 2026; VA FY2027 Budget in Brief</span></p>
+
+            <h3>Active programs within this account</h3>
+            <p><strong>Ambient Scribe IDIQ (36C10B26R0006).</strong> A five-year IDIQ for ambient AI documentation at VA. Proposals closed April 3, 2026. Awards pending. The prior contract (36C10B26C0025) went to Rise8 and Thoughtworks at $4.9 million. Foreign influence concerns related to Thoughtworks were flagged; VA OIG was actively soliciting outside input on this question at time of publication. <span class="badge badge-verified">Verified — SAM.gov; contract record 36C10B26C0025</span></p>
+            <p><strong>Cybersecurity — MITRE Assessment Remediation.</strong> Under the Strengthening VA Cybersecurity Act of 2022, VA contracted MITRE to assess five key VA systems. GAO-26-107980 (December 2025) confirmed the assessment addressed requirements and VA's remediation plan generally met the standard. The plan includes a cost estimate and implementation timelines. Remediation work is active across identity management, zero trust architecture, and incident response. <span class="badge badge-verified">Verified — GAO-26-107980</span></p>
+            <p><strong>Community care billing.</strong> With $8.1 billion routed outside the VA system in FY2027, billing infrastructure is under volume pressure the system was not built for. The budget explicitly calls out billing expansion. Organizations with network billing, payment integrity, or claims processing capability should be tracking this.</p>
+
+            <div class="action-box">
+              <div class="action-label">Action Window</div>
+              <p>Pull VA Volume 5 (IT Programs and EHRM) from the FY2027 budget submission for account-level program detail. If you submitted on 36C10B26R0006, monitor for award. If you did not, the protest window is the secondary entry point if the award is contestable. For cybersecurity remediation: the remediation plan and timeline are published — map your capabilities against it.</p>
+            </div>
+            <div class="source-note">Sources: Total VA IT ($12.2B, +62%): Federal News Network April 6, 2026 (Verified from budget analysis). $1.3B healthcare delivery: VA FY2027 Budget in Brief (Verified). Ambient Scribe: SAM.gov 36C10B26R0006 (Verified). MITRE assessment: GAO-26-107980 December 2025 (Verified).</div>
+          </div>
+        </details>
+
+        <!-- 7. Medical Services -->
+        <details class="ci-accordion" id="s7">
+          <summary>
+            <span class="acc-number">07</span>
+            <div class="acc-header">
+              <div class="acc-title">VA Medical Services</div>
+              <div class="acc-meta">
+                <span class="acc-agency">VA · $95.2B (+2.8%)</span>
+                <span class="badge badge-verified">Verified</span>
+              </div>
+            </div>
+            <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </summary>
+          <div class="acc-body">
+            <h3>What it funds</h3>
+            <p>The largest single account in the VA budget. Covers direct care delivery at VA medical facilities — the clinical environment where AI tools, diagnostics, and scheduling systems operate. The FY2027 request explicitly names <strong>ambient scribe, clinical AI, and diagnostics</strong> as priority investment areas. <span class="badge badge-verified">Verified — VA FY2027 Budget in Brief</span></p>
+
+            <h3>What's happening inside this account</h3>
+            <p>The 17% growth in community care creates a knock-on effect on Medical Services: VA facilities see increased clinical complexity among patients who remain in direct care (lower-acuity patients route to community care more readily), while the referral authorization and triage function — 39.6 million referrals since the June 2019 MISSION Act launch — requires clinical decision support infrastructure to manage at volume. <span class="badge badge-verified">Verified — VA BiB for referral count, attributed to MISSION Act community care program</span></p>
+            <p>The Ambient Scribe IDIQ (36C10B26R0006) funded through this account closed April 3. Awards pending. Mental health residential rehabilitation (MHRRTP) expansion — a figure flagged for verification — will be addressed in Part 2 of this budget series.</p>
+
+            <div class="action-box">
+              <div class="action-label">Action Window</div>
+              <p>For organizations in clinical AI, ambient documentation, or care navigation: track the post-award landscape on 36C10B26R0006. Watch for RFIs and sources sought tied to authorization support and clinical decision infrastructure as community care volume grows. The next clinical AI vehicle in this account is the longer-game opportunity.</p>
+            </div>
+            <div class="source-note">Sources: Account figures: VA FY2027 Budget in Brief (Verified). Referral count: VA BiB (Verified; MISSION Act, June 2019).</div>
+          </div>
+        </details>
+
+        <!-- 8. Medical Facilities -->
+        <details class="ci-accordion" id="s8">
+          <summary>
+            <span class="acc-number">08</span>
+            <div class="acc-header">
+              <div class="acc-title">VA Medical Facilities</div>
+              <div class="acc-meta">
+                <span class="acc-agency">VA · $13.1B (+6.7%)</span>
+                <span class="badge badge-verified">Verified</span>
+              </div>
+            </div>
+            <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </summary>
+          <div class="acc-body">
+            <h3>What it funds</h3>
+            <p>Construction, renovation, and infrastructure at VA medical facilities. Covers major and minor construction, non-recurring maintenance, and leases. Up 6.7% over FY2026. <span class="badge badge-verified">Verified — VA FY2027 Budget in Brief</span></p>
+
+            <h3>The strategic dynamic</h3>
+            <p>The community care workforce-substitution model creates a counterintuitive facility investment pattern. Patients routed to community care are largely those where VA capacity was the constraint — meaning the remaining VA direct care volume skews toward higher complexity, specialty, and behavioral health cases that the community network cannot readily absorb. Facility investment will prioritize <strong>modernization, specialty capacity, and right-sizing</strong> over general expansion.</p>
+            <p>The FY2028 advance appropriations request ($138.2 billion in medical programs + $53.8 billion in Toxic Exposures Fund advances) is what long-cycle contractors are planning against — not FY2027. <span class="badge badge-verified">Verified — VA FY2027 Budget in Brief</span></p>
+
+            <div class="action-box">
+              <div class="action-label">Action Window</div>
+              <p>Long-cycle opportunity. Pull VA Volume 4 (Construction and Long Range Capital Plan) from the FY2027 budget submission and map your vehicle structure against the four-year construction pipeline. The FY2028 advance appropriations are your planning baseline.</p>
+            </div>
+            <div class="source-note">Sources: Account figures and advance appropriations: VA FY2027 Budget in Brief (Verified).</div>
+          </div>
+        </details>
+
+        <!-- 9. DHA Care Reattraction -->
+        <details class="ci-accordion" id="s9">
+          <summary>
+            <span class="acc-number">09</span>
+            <div class="acc-header">
+              <div class="acc-title">DHA Care Reattraction Mandate</div>
+              <div class="acc-meta">
+                <span class="acc-agency">DHA · ~$2.9B directional</span>
+                <span class="badge badge-directional">Directional</span>
+                <span class="badge badge-urgent">Deadline Dec 31, 2026</span>
+              </div>
+            </div>
+            <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </summary>
+          <div class="acc-body">
+            <h3>What it is</h3>
+            <p>In December 2023, then-Deputy Secretary of Defense Kathleen Hicks issued a memorandum directing DHA to reattract at least <strong>7% of available care from the private sector back to MTFs by December 31, 2026.</strong> The FY2025 NDAA (P.L. 118-159) subsequently encoded the staffing requirements to support the mandate, requiring each MTF to establish medical personnel requirements capable of achieving that shift. <span class="badge badge-verified">Verified — CRS IN12595; CRS IF13108; P.L. 118-159</span></p>
+
+            <h3>The operational context</h3>
+            <p>The Military Health System currently purchases <strong>more than 65% of total care</strong> for its 9.4 million beneficiaries through private sector contracts — primarily TriWest Healthcare Alliance (West Region, effective January 1, 2025) and Humana Military (East Region). Applied against the FY2026 MHS budget of approximately $64 billion, a 7% shift in private sector volume represents a directional signal of roughly $2.9 billion redirecting from managed care support contractors to MTF direct delivery. <span class="badge badge-analytical">Analytical — MMT calculation from CRS data</span></p>
+            <p>The mandate is a reversal of a decade-long policy that reduced MTF staffing. GAO found that DHA "didn't have the staff to meet its estimated needs" for its management construct and "still doesn't know how many staff it needs." MTFs are chronically understaffed heading into a mandate to absorb more volume. <span class="badge badge-verified">Verified — CRS IN12595</span></p>
+            <p>The T-5 TRICARE transition (HealthNet to TriWest, effective January 1, 2025) has been complicated by referral delays, call center backlogs, and portal failures affecting over 1.5 million beneficiaries who moved from East to West Region. DHA has issued multiple policy waivers to manage access. An Inspector General review of the transition was directed by the FY2026 NDAA House report. <span class="badge badge-corroborated">Corroborated — MOAA documentation; Military.com</span></p>
+
+            <h3>What MTFs need to absorb volume</h3>
+            <p>To achieve 7% reattraction, MTFs need capacity they currently lack: scheduling systems that can handle increased appointment volume, telehealth infrastructure to extend clinical reach beyond facility walls, ambient documentation to make provider time more efficient, and clinical staffing to see patients. These are contractor opportunities.</p>
+
+            <div class="action-box">
+              <div class="action-label">Action Window</div>
+              <p>December 31, 2026, is the statutory deadline. DHA is running short on time to implement the required staffing and capacity changes. Organizations with scheduling modernization, telehealth delivery, ambient documentation, or clinical staffing capabilities should be tracking DHA solicitations in those categories. Monitor Defense Health Network contracting activity on SAM.gov.</p>
+            </div>
+            <div class="source-note">Sources: Hicks memo December 2023: cited by CRS IF13108 (Verified). FY2025 NDAA: P.L. 118-159 (Verified). Private sector care percentage: CRS IF13108 citing FY2026 MHS budget request (Verified). Dollar figure ($2.9B): MMT analytical calculation — label as such in any downstream use. T-5 transition: MOAA documentation; Military.com (Corroborated).</div>
+          </div>
+        </details>
+
+        <!-- 10. DHA Consulting -->
+        <details class="ci-accordion" id="s10">
+          <summary>
+            <span class="acc-number">10</span>
+            <div class="acc-header">
+              <div class="acc-title">DHA Consulting Contract Terminations</div>
+              <div class="acc-meta">
+                <span class="acc-agency">DHA · $1.8B in DHA cuts</span>
+                <span class="badge badge-verified">Verified</span>
+              </div>
+            </div>
+            <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </summary>
+          <div class="acc-body">
+            <h3>What happened</h3>
+            <p>On April 10–11, 2025, Defense Secretary Pete Hegseth signed a memorandum terminating <strong>$5.1 billion in DoD contracts.</strong> Within that total, he specifically cited: <em>"DHA contracts for consulting services from Accenture, Deloitte, Booz Allen, and other firms that can be performed by our civilian workforce"</em> — saving the department $1.8 billion. <span class="badge badge-verified">Verified — Washington Technology April 12, 2025; Nextgov/FCW April 12, 2025; Hegseth memorandum</span></p>
+            <p>GovTribe three-year prior obligation data at DHA: Booz Allen Hamilton, $345 million; Deloitte, $264 million; Accenture, $66 million. These are prior obligation figures across a three-year window — not the terminated contract values. <span class="badge badge-corroborated">Corroborated — GovTribe data via Washington Technology and Nextgov/FCW</span></p>
+
+            <h3>What "in-sourcing" actually means</h3>
+            <p>The Hegseth memo directed DoD and DOGE to prepare within 30 days a plan to in-source IT consulting and management services to the civilian workforce. The practical constraint: the federal civilian workforce available to absorb this work was simultaneously subject to reduction-in-force actions across the department. Work that cannot be absorbed internally will be re-competed — most likely in smaller, more performance-specific statements of work than the broad advisory vehicles that were terminated.</p>
+
+            <h3>The support gap</h3>
+            <p>Programs covered by the terminated DHA consulting contracts include EHRM program management support, MHS GENESIS sustainment advisory, and DHA IT portfolio management. Those programs are still running. The gap creates demand for specialized task orders rather than broad management consulting capability. Organizations with specific DHA program knowledge and documented performance metrics are better positioned for the replacement work than generalist consulting shops.</p>
+
+            <div class="action-box">
+              <div class="action-label">Action Window</div>
+              <p>Monitor SAM.gov for DHA sources sought and RFIs in IT program management, EHRM advisory, and MHS GENESIS support categories. The replacement procurement actions have not been uniformly published. Firms that can demonstrate specific program-level expertise with measurable performance outcomes are better positioned under the administration's stated requirements framework.</p>
+            </div>
+            <div class="source-note">Sources: Hegseth memo and termination announcement: Washington Technology and Nextgov/FCW, April 12, 2025 (Verified from contemporaneous DoD announcement reporting). GovTribe obligation figures: corroborated across multiple outlets citing same dataset. In-source plan: directed in memo; public release status unverified.</div>
+          </div>
+        </details>
+
+        <!-- 11. TEFCA -->
+        <details class="ci-accordion" id="s11">
+          <summary>
+            <span class="acc-number">11</span>
+            <div class="acc-header">
+              <div class="acc-title">HHS/ONC — TEFCA Interoperability</div>
+              <div class="acc-meta">
+                <span class="acc-agency">HHS/ONC · ~500M records</span>
+                <span class="badge badge-verified">Verified</span>
+              </div>
+            </div>
+            <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </summary>
+          <div class="acc-body">
+            <h3>What changed on April 1</h3>
+            <p>Federal Register 2026-06284 (April 1, 2026) transferred ONC's AI, data, and CTO functions to HHS OCIO. ONC's standalone name was restored. ONC confirmed its programs and priorities are unchanged. The structural change: where governance authority sits is different. That change is already in effect. <span class="badge badge-verified">Verified — Federal Register 2026-06284</span></p>
+
+            <h3>The scale of what TEFCA now manages</h3>
+            <p>As of February 2026, TEFCA exchanged <strong>nearly 500 million health records</strong> across 14,214 organizations through 81,000 unique connections across eight QHINs. In January 2025, the exchange volume was 10 million records. That is a <strong>50-fold increase in thirteen months.</strong> This infrastructure is not theoretical — it is running at scale. <span class="badge badge-verified">Verified — ONC/healthit.gov</span></p>
+            <p>Before April 1, the policy authority governing information blocking and the IT contract authority governing QHIN operations reported to different principals. They now report to the same principal — the HHS CIO. This matters for contracts: the authority writing QHIN technical requirements and the authority holding QHIN contracts are now unified.</p>
+
+            <h3>The HTI-5 rule</h3>
+            <p>The proposed HTI-5 rule, published December 29, 2025, proposes removing <strong>34 of 60 health IT certification criteria</strong> and revising seven more. Comment period closed February 27, 2026. That rule is now moving under OCIO authority. Organizations holding QHIN certifications or operating as TEFCA Participants or Sub-Participants should assume their certification baseline may shift on the next contract cycle. <span class="badge badge-verified">Verified — Federal Register, December 29, 2025</span></p>
+            <p>HHS consolidated from more than 40 separate IT departments under this reorganization. The OCIO is now the single decision-making authority for health IT standards, QHIN contracts, and information blocking enforcement. <span class="badge badge-corroborated">Corroborated — Federal News Network</span></p>
+
+            <div class="action-box">
+              <div class="action-label">Action Window</div>
+              <p>Update your contact maps — the decision-maker chain changed. Map your current TEFCA certifications against the HTI-5 proposed removals to identify which criteria your system relies on that may be modified or eliminated. If your QHIN contract or TEFCA participation agreement comes up for renewal in the next 18 months, the technical framework it will be competed under is not the same as the framework under which it was awarded.</p>
+            </div>
+            <div class="source-note">Sources: Federal Register 2026-06284 (Verified). Exchange volume: ONC/healthit.gov (Verified). HTI-5: Federal Register December 29, 2025 (Verified). HHS IT department count: Federal News Network (Corroborated). ONC statement: GovCIO Media April 2, 2026 (Verified).</div>
+          </div>
+        </details>
+
+        <!-- 12. ARPA-H -->
+        <details class="ci-accordion" id="s12">
+          <summary>
+            <span class="acc-number">12</span>
+            <div class="acc-header">
+              <div class="acc-title">ARPA-H — ADVOCATE (Agentic AI, Cardiovascular)</div>
+              <div class="acc-meta">
+                <span class="acc-agency">ARPA-H · Awards Expected June 2026</span>
+                <span class="badge badge-corroborated">Awards Pending</span>
+              </div>
+            </div>
+            <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </summary>
+          <div class="acc-body">
+            <h3>What it is</h3>
+            <p>The Agentic AI-Enabled Cardiovascular Care Transformation (ADVOCATE) program aims to produce the <strong>first FDA-authorized clinical agentic AI</strong> providing 24/7 specialty care for cardiovascular disease — the leading cause of death in the U.S., responsible for more than 200,000 preventable deaths annually. Nearly half of U.S. counties have no practicing cardiologist. Full proposals were due April 1, 2026 — the window is closed. Awards expected June 2026. <span class="badge badge-verified">Verified — ARPA-H.gov; STAT News January 2026</span></p>
+
+            <h3>Three Technical Areas</h3>
+            <ul>
+              <li><strong>TA1: Patient-facing CVD agent.</strong> Autonomous AI for clinical reasoning, care navigation, and autonomous medical actions (medication adjustments, appointment scheduling). Connects to EHR, integrates with wearables. Available 24/7. Designed for FDA authorization for a specific intended use (heart failure management). Will almost certainly be proprietary technology.</li>
+              <li><strong>TA2: Supervisory agent.</strong> Disease-agnostic. Real-time monitoring, auditability, and control of clinical AI agents. ARPA-H has explicitly noted it would prefer this to be open source. This is the oversight architecture — it can scale beyond cardiovascular AI to any clinical agentic deployment. <strong>The organization that wins TA2 owns the oversight layer for every subsequent clinical agentic AI in healthcare, including potential DoD and VA deployments.</strong></li>
+              <li><strong>TA3: Health system integration.</strong> Recruiting and partnering with health systems that will co-develop and deploy the technology in real clinical settings. These are deployment partners, not technology developers.</li>
+            </ul>
+
+            <h3>Program structure</h3>
+            <p>Phase 1A: 12 months (development and prototype validation). Phase 1B: 12 months (independent V&amp;V). Down-select. Phase 2: 15 months (large-scale real-world scalability). Total: <strong>39 months.</strong> ARPA-H funds through Other Transaction Agreements — not contracts, grants, or cooperative agreements. Teaming is expected to be necessary. Solo proposals from a single organization are unlikely to cover all three TAs. ARPA-H is piloting secure LLMs to assist with initial solution summary review — a signal about how the agency intends to scale evaluation capacity going forward. <span class="badge badge-verified">Verified — ARPA-H.gov; STAT News January 2026; Fierce Healthcare January 2026</span></p>
+            <p>No clinical agentic AI has received FDA authorization as of this writing. ADVOCATE is designed to create that authorization pathway. The organization that first navigates it — and the health systems that deploy it — establish the clinical, regulatory, and reimbursement precedent for every agentic AI deployment in healthcare that follows.</p>
+
+            <div class="action-box">
+              <div class="action-label">Action Window</div>
+              <p>The ADVOCATE submission window is closed. Three follow-on positions: (1) Track the June award announcement — identify which health systems partnered for TA3 deployment, as those health systems are the access point for Phase 2 work and post-program commercialization. (2) If you hold VA or DHA clinical AI vehicles, monitor the TA2 supervisory architecture as it develops — it will likely influence DoD and VA clinical AI governance requirements. (3) The down-select after Phase 1A (~June 2027) is the next direct entry point.</p>
+            </div>
+            <div class="source-note">Sources: Program description: ARPA-H.gov (Verified). Award timeline: STAT News January 2026 (Verified: "ARPA-H will select teams within six months, in June 2026"). TA details: ARPA-H ISO; EverGlade analysis (Verified). LLM review: ARPA-H.gov statement (Verified). No prior FDA-authorized clinical agentic AI: STAT News; Fierce Healthcare January 2026 (Corroborated).</div>
+          </div>
+        </details>
+
+        <!-- 13. HRSA/SAMHSA -->
+        <details class="ci-accordion" id="s13">
+          <summary>
+            <span class="acc-number">13</span>
+            <div class="acc-header">
+              <div class="acc-title">HHS — HRSA/SAMHSA Consolidation</div>
+              <div class="acc-meta">
+                <span class="acc-agency">HHS · 28-to-15 Proposed</span>
+                <span class="badge badge-proposed">Proposed</span>
+              </div>
+            </div>
+            <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </summary>
+          <div class="acc-body">
+            <h3>What is proposed</h3>
+            <p>The FY2027 HHS discretionary request proposes collapsing 28 HHS divisions to 15 through a new Administration for a Healthy America (AHA). The AHA would absorb: OASH, HRSA, SAMHSA, ATSDR, and NIOSH. The proposal also calls for a $5 billion reduction to NIH and elimination of NIMHD, the Fogarty International Center, and NCCIH. ARPA-H is zeroed in the proposal. <span class="badge badge-verified">Verified as proposed — HHS FY2027 Budget in Brief</span></p>
+
+            <h3>Congressional history</h3>
+            <p>Senator Susan Collins (April 3, 2026): Congress had <em>"decisively rejected these particular cuts last year."</em> The record supports her. For FY2026, Congress enacted approximately FY2025 funding levels across most contested HHS lines. NIH remained whole. ARPA-H was funded. Defense received $10.6 billion above the Pentagon's own request. The same Congress is now voting on FY2027. <strong>Full consolidation as proposed is unlikely to pass.</strong> <span class="badge badge-verified">Verified — CRS R48891; Collins statement April 3, 2026</span></p>
+
+            <h3>Why act now regardless</h3>
+            <p>Partial restructuring, administrative consolidation without full legislative action, and de facto priority shifts within agencies are possible without a statutory vote. HRSA and SAMHSA program funding and contracting authority can shift even if the organizational chart does not change. Organizations holding vehicles scoped to individual agencies need to model what happens to those vehicles if the reporting structure changes — that is a contract language question, not a legislative one.</p>
+
+            <div class="action-box">
+              <div class="action-label">Action Window</div>
+              <p>Pull your current vehicles. Identify which are scoped to individual agencies (HRSA, SAMHSA, OASH, ATSDR, NIOSH) versus HHS enterprise. For any vehicle under a target agency: (1) Ask your CO whether vehicle continuity guidance exists for a consolidation scenario. (2) Model the recompete timeline if the vehicle does not transfer automatically. (3) Watch SAM.gov for pre-decisional RFIs or planning actions that signal the acquisition strategy is moving before legislative action completes.</p>
+            </div>
+            <div class="source-note">Sources: HHS proposed restructuring: HHS FY2027 Budget in Brief (Verified as proposed, not enacted). Collins quote: Senate hearing April 3, 2026 (Verified). FY2026 enacted levels: CRS R48891 (Verified).</div>
+          </div>
+        </details>
+
+        <!-- 14. Anti-DEI -->
+        <details class="ci-accordion" id="s14">
+          <summary>
+            <span class="acc-number">14</span>
+            <div class="acc-header">
+              <div class="acc-title">Anti-DEI Contract Clause — EO 14398</div>
+              <div class="acc-meta">
+                <span class="acc-agency">All Agencies</span>
+                <span class="badge badge-verified">Verified</span>
+                <span class="badge badge-urgent">Audit Required Before April 25</span>
+              </div>
+            </div>
+            <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </summary>
+          <div class="acc-body">
+            <div class="window-urgent">⚠ April 25, 2026 — 19 days from publication</div>
+
+            <h3>The executive order</h3>
+            <p>President Trump signed Executive Order 14398, <em>"Addressing DEI Discrimination by Federal Contractors,"</em> on March 26, 2026. This is categorically different from prior anti-DEI executive actions. Earlier orders (EO 14151 and EO 14173, January 2025) were policy directives. This one creates an <strong>enforceable contract clause</strong> with direct legal consequences for contractors and all subcontractor tiers. <span class="badge badge-verified">Verified — EO 14398; DLA Piper; Morgan Lewis; Holland &amp; Knight</span></p>
+
+            <h3>The mandatory clause — six binding elements</h3>
+            <p>By April 25, 2026, all federal agencies must insert the following clause into all covered contracts, modifications, and subcontracts at every tier:</p>
+            <ul>
+              <li>The contractor will not engage in any racially discriminatory DEI activities.</li>
+              <li>The contractor will furnish all information and reports, including access to books, records, and accounts, for compliance verification.</li>
+              <li>In the event of noncompliance, the contract may be canceled, terminated, or suspended in whole or in part.</li>
+              <li>The contractor or subcontractor may be declared ineligible for further government contracts.</li>
+              <li>The contractor will report any subcontractor's "known or reasonably knowable" violations and take remedial action directed by the agency.</li>
+              <li><strong>The contractor recognizes that compliance is material to the Government's payment decisions for purposes of section 3729(b)(4) of title 31, United States Code (False Claims Act).</strong></li>
+            </ul>
+            <p><span class="badge badge-verified">Verified — EO 14398 clause text</span></p>
+
+            <h3>What "racially discriminatory DEI activities" means</h3>
+            <p>The EO defines the term as: disparate treatment based on race or ethnicity in recruitment, employment (hiring, promotions), contracting (vendor agreements), program participation, or allocation of resources. <strong>"Program participation"</strong> includes membership in or access to training programs, mentoring, leadership development, educational opportunities, clubs, and associations sponsored by the contractor. The EO does <strong>not</strong> address sex-based discrimination. <span class="badge badge-verified">Verified — EO 14398</span></p>
+
+            <h3>The False Claims Act exposure</h3>
+            <p>The clause's explicit statement that compliance is "material to the Government's payment decisions" eliminates one of the most common FCA defenses — that the violated requirement was not material to the government's decision to pay. A contractor that submits a payment claim while knowingly maintaining a prohibited program faces <strong>treble damages</strong> (three times the contract value), civil penalties, and potential debarment. DOJ has stated its intent to aggressively pursue FCA enforcement. Qui tam whistleblowers — including employees — can initiate actions independently. <span class="badge badge-verified">Verified — Winston &amp; Strawn; DLA Piper; EO 14398</span></p>
+
+            <h3>Implementation deadlines</h3>
+            <table class="deadline-table">
+              <tr><td>April 25, 2026</td><td>Mandatory clause must appear in all covered contracts, modifications, and subcontractor flow-downs</td></tr>
+              <tr><td>May 25, 2026</td><td>FAR Council must issue interim deviation guidance</td></tr>
+              <tr><td>July 24, 2026</td><td>Agency heads must report implementation to the White House</td></tr>
+            </table>
+            <p style="font-size:12.5px; color:var(--mmt-text-muted); margin-top:8px;">Note: There is a timing gap — agencies must insert the clause before the FAR Council issues interim guidance. Consult legal counsel on how your specific contracting agency is interpreting the April 25 requirement.</p>
+
+            <h3>What to do before April 25</h3>
+            <ul>
+              <li><strong>Audit internal programs under legal privilege.</strong> Review mentorship programs, ERGs, leadership development tracks, supplier diversity initiatives, and hiring processes for any eligibility criteria based on race or ethnicity.</li>
+              <li><strong>Update subcontractor agreements.</strong> The clause flows to every tier. Begin incorporating the clause into subcontractor agreements now and establish a monitoring system for "known or reasonably knowable" violations.</li>
+              <li><strong>Check for jurisdictional conflicts.</strong> Some state equal opportunity laws may conflict with the federal clause. Assess the compliance conflict before April 25.</li>
+              <li><strong>Document any program changes.</strong> If you modify or terminate any program in response to this EO, document the basis and process. FCA qui tam actions frequently originate from employees who observed the change.</li>
+            </ul>
+
+            <div class="action-box">
+              <div class="action-label">Action Window</div>
+              <p>April 25 is 19 days from publication of this sheet. Every invoice submitted to the federal government after that date is an implicit statement that your organization is in full compliance. This applies to primes and all subcontractor tiers.</p>
+            </div>
+            <div class="source-note">Sources: EO 14398 March 26, 2026 (Verified). Clause text: cited verbatim across DLA Piper, Morgan Lewis, Holland &amp; Knight, Smith Currie, Winston &amp; Strawn client alerts (Verified — all cite EO language directly). FCA materiality analysis: Winston &amp; Strawn (Verified as legal analysis). FAR Council deadline: EO 14398 (Verified). Subcontract flow-down: EO 14398 (Verified).</div>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <!-- Confidence Key -->
+    <section class="ci-key">
+      <div class="wrap">
+        <h2>Confidence Key</h2>
+        <div class="ci-key-grid">
+          <div class="ci-key-item">
+            <span class="badge badge-verified">Verified</span>
+            <p>Confirmed by primary government source: budget documents, GAO reports, statutory text, SAM.gov, Federal Register, or congressional testimony.</p>
+          </div>
+          <div class="ci-key-item">
+            <span class="badge badge-directional">Directional</span>
+            <p>Direction confirmed from primary sources; specific dollar figure is MMT analysis derived from primary data.</p>
+          </div>
+          <div class="ci-key-item">
+            <span class="badge badge-proposed">Proposed</span>
+            <p>Requires legislative or regulatory action to take effect. Not yet enacted or in force.</p>
+          </div>
+          <div class="ci-key-item">
+            <span class="badge badge-analytical">Analytical</span>
+            <p>MMT calculation from primary source data. Sourcing and methodology shown in the deep dive.</p>
+          </div>
+          <div class="ci-key-item">
+            <span class="badge badge-corroborated">Corroborated</span>
+            <p>Confirmed by secondary sources consistent with the pattern; no single definitive primary source.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sources -->
+    <section class="ci-sources">
+      <div class="wrap">
+        <h2>Primary Sources Consulted</h2>
+        <div class="sources-grid">
+          <div class="sources-group">
+            <h3>Department of Veterans Affairs</h3>
+            <ul>
+              <li>VA FY2027 Budget in Brief, April 3, 2026</li>
+              <li>VA FY2027 Budget Submission Volume 2 — Medical Programs</li>
+              <li>VA FY2027 Budget Submission Volume 5 — IT and EHRM</li>
+              <li>SAM.gov: 36C10G26R0003, 36C10G26R0004, 36C10B26R0006</li>
+              <li>VA OIG: July 2022 (Spokane), September 2024 (first five sites), March 2024 (Columbus)</li>
+            </ul>
+          </div>
+          <div class="sources-group">
+            <h3>Government Accountability Office</h3>
+            <ul>
+              <li>GAO-26-108812, December 2025 — EHRM lifecycle costs and recommendations</li>
+              <li>GAO-25-108091, September 2024 — EHRM user survey</li>
+              <li>GAO-26-107980, December 2025 — VA cybersecurity MITRE assessment</li>
+              <li>GAO-26-108943, March 2026 — community care, 3.1M veterans</li>
+            </ul>
+          </div>
+          <div class="sources-group">
+            <h3>Congressional Sources</h3>
+            <ul>
+              <li>House VA Subcommittee, December 15, 2025 — EHRM readiness hearing</li>
+              <li>CRS IN12595 — MTF staffing and care reattraction</li>
+              <li>CRS IF13108 — FY2026 MHS budget</li>
+              <li>CRS R48891 — FY2026 enacted appropriations</li>
+              <li>P.L. 118-159, FY2025 NDAA — MTF staffing mandate</li>
+            </ul>
+          </div>
+          <div class="sources-group">
+            <h3>Federal Register and Executive</h3>
+            <ul>
+              <li>Federal Register 2026-06284, April 1, 2026 — ONC restructuring</li>
+              <li>EO 14398, March 26, 2026 — DEI contractor clause</li>
+              <li>Section 232 Pharmaceutical Tariff Proclamation, April 2, 2026</li>
+              <li>Hegseth memorandum, April 10, 2025</li>
+            </ul>
+          </div>
+          <div class="sources-group">
+            <h3>HHS and ARPA-H</h3>
+            <ul>
+              <li>HHS FY2027 Budget in Brief, April 2026</li>
+              <li>ARPA-H ADVOCATE program — arpa-h.gov</li>
+              <li>Federal Register: HTI-5 proposed rule, December 29, 2025</li>
+              <li>ONC/healthit.gov — TEFCA exchange volume data</li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="ci-disclaimer">The views expressed are those of the author and do not represent the official position of any organization. This content is for informational purposes only. Verify current solicitation status directly on SAM.gov before making procurement decisions. Confidence levels reflect the author's assessment of sourcing quality — not legal or investment advice.</p>
+      </div>
+    </section>
 
   </main>
 
@@ -396,32 +1019,23 @@
   </footer>
 
   <script>
-    // UTM capture + LinkedIn banner
+    // LinkedIn banner
     (function() {
       var params = new URLSearchParams(window.location.search);
-      var src = params.get('utm_source') || '';
-      var med = params.get('utm_medium') || '';
-      var cam = params.get('utm_campaign') || '';
-      if (src) document.getElementById('formUtmSource').value = src;
-      if (med) document.getElementById('formUtmMedium').value = med;
-      if (cam) document.getElementById('formUtmCampaign').value = cam;
-      if (src === 'linkedin') {
+      if (params.get('utm_source') === 'linkedin') {
         document.getElementById('linkedinBanner').style.display = 'block';
       }
     })();
 
-    // Form handler
-    function handleIntelForm(e) {
-      e.preventDefault();
-      var form = document.getElementById('intelForm');
-      var data = new FormData(form);
-      // Track event
-      if (typeof plausible !== 'undefined') plausible('form_submit', { props: { source: data.get('utm_source') || 'direct' } });
-      // Show success (in production, POST to Buttondown or your endpoint)
-      form.style.display = 'none';
-      document.getElementById('formSuccess').style.display = 'block';
-      return false;
-    }
+    // Accordion plausible tracking
+    document.querySelectorAll('details.ci-accordion').forEach(function(el) {
+      el.addEventListener('toggle', function() {
+        if (el.open && typeof plausible !== 'undefined') {
+          var title = el.querySelector('.acc-title');
+          plausible('table_row_expand', { props: { signal: title ? title.textContent.trim() : el.id } });
+        }
+      });
+    });
 
     // Mobile menu toggle
     var toggle = document.getElementById('menuToggle');
