@@ -73,8 +73,10 @@ const replacements = [
   [/body\s*\{([^}]*?)background:\s*var\(--mmt-navy\)/g, 'body {$1background: var(--mmt-white)'],
 
   // White text on dark bg → navy text on light bg
-  [/color:\s*#fff(?!\d)/g, 'color: var(--mmt-navy)'],
-  [/color:\s*#ffffff/gi, 'color: var(--mmt-navy)'],
+  // SKIP lines flagged with !important (legitimate white-on-navy buttons like CTAs)
+  // and skip -webkit-text-fill-color (used to force button text over link gradients)
+  [/(?<!-webkit-text-fill-)color:\s*#fff(?!\d)(?!\s*!important)/g, 'color: var(--mmt-navy)'],
+  [/(?<!-webkit-text-fill-)color:\s*#ffffff(?!\s*!important)/gi, 'color: var(--mmt-navy)'],
 
   // Clean up old gradient text
   [/background:\s*linear-gradient\(135deg,\s*var\(--mmt-teal\),\s*var\(--mmt-teal\)\)/g, 'color: var(--mmt-teal)'],

@@ -1726,9 +1726,11 @@ function inlineTailwindCss(html) {
   html = html.replace(/rgba\(255,255,255,0\.05\)/g, 'var(--mmt-border)');
   html = html.replace(/rgba\(255,255,255,0\.03\)/g, 'var(--mmt-border)');
   // Replace white text to navy in inline styles
+  // SKIP cases marked with !important (legit white-on-navy CTAs) and
+  // skip -webkit-text-fill-color: which is used to force button text over link gradients
   html = html.replace(/style="color:#fff;"/g, 'style="color:var(--mmt-navy);"');
-  html = html.replace(/color:\s*#fff(?=[;"])/g, 'color:var(--mmt-navy)');
-  html = html.replace(/color:\s*#ffffff(?=[;"])/gi, 'color:var(--mmt-navy)');
+  html = html.replace(/(?<!-webkit-text-fill-)color:\s*#fff(?=[;"])(?!\s*!important)/g, 'color:var(--mmt-navy)');
+  html = html.replace(/(?<!-webkit-text-fill-)color:\s*#ffffff(?=[;"])(?!\s*!important)/gi, 'color:var(--mmt-navy)');
   // Replace old dark-theme background colors in inline styles
   html = html.replace(/background:\s*#00050F/g, 'background:var(--mmt-white)');
   // NOTE: Do NOT replace background:var(--mmt-navy) — it's valid for
@@ -2051,8 +2053,9 @@ function inlineTailwindCss(html) {
     html = html.replace(/#00E5FA/g, '#457B9D');
     html = html.replace(/#00FF85/g, '#10B981');
     // Fix white text to dark (only in inline style attributes, not in compiled CSS)
-    html = html.replace(/style="([^"]*?)color:\s*#fff(?!f)([^"]*?)"/g, 'style="$1color: var(--mmt-text, #102033)$2"');
-    html = html.replace(/style="([^"]*?)color:\s*var\(--mmt-white\)([^"]*?)"/g, 'style="$1color: var(--mmt-text, #102033)$2"');
+    // SKIP !important (legit CTAs) and -webkit-text-fill-color
+    html = html.replace(/style="([^"]*?)(?<!-webkit-text-fill-)color:\s*#fff(?!f)(?!\s*!important)([^"]*?)"/g, 'style="$1color: var(--mmt-text, #102033)$2"');
+    html = html.replace(/style="([^"]*?)(?<!-webkit-text-fill-)color:\s*var\(--mmt-white\)(?!\s*!important)([^"]*?)"/g, 'style="$1color: var(--mmt-text, #102033)$2"');
     // Fix borders
     html = html.replace(/rgba\(0,229,250,0\.1\)/g, 'rgba(216,224,232,0.8)');
     html = html.replace(/rgba\(0,229,250,0\.15\)/g, 'rgba(216,224,232,0.96)');
