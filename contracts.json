@@ -186,8 +186,8 @@
     "link": "https://sam.gov",
     "small_business_eligible": true,
     "sb_note": "Open to small businesses and non-traditional contractors under OTA",
-    "source": "https://www.highergov.com/contract-opportunity/peo-dhms-ht0038-25-s-0001-s-5e544/",
-    "last_verified": "2026-03-30"
+    "source": "https://sam.gov/opp/search?keywords=PEO+DHMS+CSO",
+    "last_verified": "2026-04-07"
   },
   {
     "name": "VA Health Connect / IHT 2.0",
@@ -256,8 +256,8 @@
     "link": "https://sam.gov",
     "small_business_eligible": true,
     "sb_note": "Buy Indian Act set-asides for tribal-owned firms; OCM and analytics sub-positions available under GDIT",
-    "source": "https://www.gd.com/Articles/2023/11/13/gdit-awarded-2-billion-idiq-ehr-modernization-ihs",
-    "last_verified": "2026-03-30"
+    "source": "https://www.gdit.com/perspectives/latest/gdit-awarded-health-it-modernization-contract/",
+    "last_verified": "2026-04-07"
   },
   {
     "name": "JOMIS / OMEIS (Operational Medicine Systems)",
@@ -297,8 +297,8 @@
     "description": "CMS migrating mission-critical Medicare claims processing to Oracle Cloud Infrastructure on FedRAMP High. Announced Feb 2026. Combined with DoD MHS GENESIS (Oracle Health) and VA EHRM (Oracle Health), this creates a 3-agency Oracle ecosystem. Oracle's simultaneous investment in cloud datacenters for AI/LLM workloads may be diverting resources from federal health services — Oracle facing reported 20-30% layoffs with Oracle Health expected to take cuts to fund datacenter investments.",
     "link": "https://sam.gov",
     "small_business_eligible": false,
-    "source": "https://www.oracle.com/news/announcement/oracle-cloud-infrastructure-to-support-cms-modernization-2026-02-11/",
-    "last_verified": "2026-03-30"
+    "source": "https://www.oracle.com/news/",
+    "last_verified": "2026-04-07"
   },
   {
     "name": "CDM DEFEND (Health Data Cybersecurity)",

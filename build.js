@@ -1116,7 +1116,7 @@ function generatePodcastTeaserHtml(feed) {
           <span style="color:var(--mmt-text-secondary);">&middot;</span>
           <a href="https://open.spotify.com/show/7sND342duH7Buw1cUs60lP" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Spotify</a>
           <span style="color:var(--mmt-text-secondary);">&middot;</span>
-          <a href="https://www.youtube.com/@MissionMeetsTech" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">YouTube</a>
+          <a href="https://www.youtube.com/playlist?list=PLZc5CXZ4OSlhFU4qWsdCF0AwKZ9KDrttf" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">YouTube</a>
           <span style="color:var(--mmt-text-secondary);">&middot;</span>
           <a href="https://music.amazon.com/podcasts/920fec9b-4fae-4bd0-ae4d-eaf1459cad2f" target="_blank" rel="noopener" class="text-sm no-underline hover:opacity-80" style="color:var(--mmt-text);">Amazon Music</a>
           <span class="hidden sm:inline" style="color:var(--mmt-text-secondary);">&middot;</span>

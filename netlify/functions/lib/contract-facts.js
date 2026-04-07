@@ -116,7 +116,7 @@ const KNOWN_FACTS = {
     status: "active",
     naics: "541512",
     lastVerified: "2026-03-17",
-    sources: ["https://www.gd.com/Articles/2023/11/13/gdit-awarded-2-billion-idiq-ehr-modernization-ihs"],
+    sources: ["https://www.gdit.com/perspectives/latest/gdit-awarded-health-it-modernization-contract/"],
   },
   "tpharm5-tricare-pharmacy": {
     name: "TPharm5 (TRICARE Pharmacy)",
