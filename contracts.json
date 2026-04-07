@@ -2,15 +2,41 @@
   {
     "name": "Community Care Network Next Gen (CCN NG)",
     "agency": "Department of Veterans Affairs",
-    "vendor": "TBD — proposals due April 3, 2026",
-    "value": "Est. $65B+ (multi-region IDIQ)",
+    "vendor": "TBD — proposals due April 17, 2026",
+    "value": "Est. $700B IDIQ ceiling; $56.2B FY2027 community care account (+17%)",
     "status": "upcoming",
     "naics": "524292",
-    "description": "Next-generation VA community care IDIQ replacing current CCN regional contracts (Regions 1-6). Solicitation 36C10G26R0003 on SAM.gov. Multiple-Award IDIQ for national/regional health plans governing how veterans receive care at community providers. Contains a binary past performance gate: multi-state coverage documentation. This is pass/fail — cannot be overcome with other evidence. Operationally connected to Bi-Directional Imaging (36C10B26Q0076), which enables imaging data from community providers to return to VA. A firm holding both CCN NG and Bi-Directional positions has end-to-end community care coverage.",
+    "description": "Next-generation VA community care IDIQ (36C10G26R0003) replacing current CCN regional contracts. Two new mechanisms enter that do not exist in current CCN: (1) value-based payments starting with lower-extremity joint replacement episodes, with at least three more VBP models added over the performance period; (2) utilization management requiring clinical decision support at the point of authorization. Corporate Experience gate is binary across three references: implementation, program management, and IT integration across multiple states — missing any one factor = Unacceptable. Forces teaming between healthcare payers and systems integrators. MOSA structure with No-Bid provision allows specialized firms to win bench positions and respond only to matching task orders.",
     "link": "https://sam.gov/opp/7b2734002e4048bfa2ac4cc5b0479930/view",
     "small_business_eligible": false,
     "source": "https://sam.gov/opp/7b2734002e4048bfa2ac4cc5b0479930/view",
-    "last_verified": "2026-03-30"
+    "last_verified": "2026-04-06"
+  },
+  {
+    "name": "CCN Dental (36C10G26R0004)",
+    "agency": "Department of Veterans Affairs",
+    "vendor": "TBD — closed March 16, 2026; awards pending",
+    "value": "~$47M",
+    "status": "upcoming",
+    "naics": "621210",
+    "description": "Companion dental network management vehicle to the CCN Next Gen medical IDIQ. Separate procurement, same structural logic: multiple-award IDIQ for nationwide dental network coordination for veterans using community care. New vehicle — no standalone dental companion existed in prior CCN generations. Has received less scrutiny than the medical vehicle, increasing the chance of evaluation inconsistencies that could support a protest. GAO protests must be filed within 10 calendar days of debriefing request or debriefing.",
+    "link": "https://sam.gov",
+    "small_business_eligible": false,
+    "source": "https://sam.gov",
+    "last_verified": "2026-04-06"
+  },
+  {
+    "name": "VA Ambient Scribe IDIQ (36C10B26R0006)",
+    "agency": "Department of Veterans Affairs",
+    "vendor": "TBD — closed April 3, 2026; awards pending",
+    "value": "5-year IDIQ; prior contract was $4.9M",
+    "status": "upcoming",
+    "naics": "541512",
+    "description": "Five-year IDIQ for ambient AI documentation at VA. Funded through the FY2027 VA Medical Services account. Prior contract (36C10B26C0025) went to Rise8 and Thoughtworks at $4.9M; foreign influence concerns related to Thoughtworks were flagged and VA OIG was actively soliciting outside input. Awards pending. The protest window is the secondary entry point if the award is contestable.",
+    "link": "https://sam.gov",
+    "small_business_eligible": false,
+    "source": "https://sam.gov",
+    "last_verified": "2026-04-06"
   },
   {
     "name": "DHA Data Governance (WOSB Set-Aside)",
