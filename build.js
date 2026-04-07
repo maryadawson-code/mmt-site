@@ -2162,7 +2162,7 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     'resources.html', 'topics.html', '404.html',
     'proposal-pulse.html', 'latest.html', 'newswire.html',
     'contract-tracker.html', 'events.html',
-    'privacy.html', 'terms.html', 'security.html', 'glossary.html', 'contracting.html',
+    'privacy.html', 'terms.html', 'security.html', 'glossary.html', 'contracting.html', 'editorial-standards.html',
     'agency-sources.html', 'getting-started.html',
     'marketpulse.html', 'my-reports.html', 'tactical-brief-confirmed.html',
     'about-team.html', 'about-press.html',
@@ -2368,7 +2368,7 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
       if (related && slug !== 'index') {
         const termLinks = (related.terms || []).map(t => {
           const label = t.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-          return `<a href="/glossary/${t}/" class="text-xs font-medium px-3 py-1.5 rounded-full no-underline" style="border:1px solid var(--mmt-border); color:var(--mmt-teal, #457B9D);">${escapeHtml(label)}</a>`;
+          return `<a href="/glossary/${t}.html" class="text-xs font-medium px-3 py-1.5 rounded-full no-underline" style="border:1px solid var(--mmt-border); color:var(--mmt-teal, #457B9D);">${escapeHtml(label)}</a>`;
         }).join('\n                ');
         const contractLinks = (related.contracts || []).map(c => {
           const cSlug = c.toLowerCase().replace(/[^a-z0-9]+/g, '-');
@@ -3112,6 +3112,14 @@ async function build() {
     console.log(`  Articles: ${articles.length}`);
     console.log(`  Topics:   ${tags.length}`);
     console.log(`  Podcast episodes: ${feed.items.length}`);
+  }
+
+  // Content freshness audit (warnings only, never blocks build)
+  try {
+    const audit = require('./scripts/content-freshness-audit.js');
+    audit.run();
+  } catch (err) {
+    console.warn('Content freshness audit failed to run:', err.message);
   }
 }
 
