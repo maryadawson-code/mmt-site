@@ -2286,10 +2286,11 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     }
   });
 
-  // Copy about sub-pages to dist/about/team/ and dist/about/press/
+  // Copy nested sub-pages to clean URL directories
   const aboutSubPages = [
     { src: 'about-team.html', dest: path.join(DIST_DIR, 'about', 'team', 'index.html') },
     { src: 'about-press.html', dest: path.join(DIST_DIR, 'about', 'press', 'index.html') },
+    { src: 'intel-capture-intelligence.html', dest: path.join(DIST_DIR, 'intel', 'capture-intelligence-this-issue', 'index.html') },
   ];
   aboutSubPages.forEach(({ src, dest }) => {
     const srcPath = path.join(__dirname, src);
