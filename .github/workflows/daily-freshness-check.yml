@@ -1,0 +1,127 @@
+name: Daily Content Freshness Check
+
+# Runs the content freshness audit every morning at 7 AM ET (12 UTC).
+# On any error or warning, opens (or updates) a single GitHub issue with
+# the exact problems. On clean runs, closes the auto-issue if it exists.
+#
+# This is Layer 2 of the autonomous self-monitoring stack.
+#   - Layer 1: build-time audit in build.js (already running on every deploy)
+#   - Layer 2: scheduled detection (this file)
+#   - Layer 3: scripts/auto-repair.js + weekly-auto-repair-pr.yml
+#   - Layer 4: content-refresh agents (separate)
+
+on:
+  schedule:
+    - cron: '0 12 * * *'   # 7 AM ET daily
+  workflow_dispatch:        # allow manual trigger
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
+      - name: Run build (so dist/ exists for broken-link check)
+        run: node build.js
+        continue-on-error: true
+
+      - name: Run content freshness audit
+        id: audit
+        run: |
+          set +e
+          OUTPUT=$(node scripts/content-freshness-audit.js 2>&1)
+          EXIT=$?
+          echo "$OUTPUT"
+          echo "exit=$EXIT" >> $GITHUB_OUTPUT
+          # Save output to a file for the issue body
+          echo "$OUTPUT" > /tmp/audit-output.txt
+          # Detect warnings/errors
+          if echo "$OUTPUT" | grep -qE "(warning|error)\(s\):"; then
+            echo "has_findings=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_findings=false" >> $GITHUB_OUTPUT
+          fi
+          exit 0
+
+      - name: Open or update auto-issue on findings
+        if: steps.audit.outputs.has_findings == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const output = fs.readFileSync('/tmp/audit-output.txt', 'utf8');
+            const title = '[auto] Content freshness audit found issues';
+            const body = `The daily content freshness audit found issues.\n\n` +
+              `**Run:** ${context.runId}\n` +
+              `**Date:** ${new Date().toISOString().split('T')[0]}\n\n` +
+              `<details><summary>Audit output</summary>\n\n\`\`\`\n${output}\n\`\`\`\n</details>\n\n` +
+              `**Next steps:**\n` +
+              `1. Run \`node scripts/auto-repair.js --dry-run\` to see what can be fixed automatically.\n` +
+              `2. The weekly auto-repair PR will attempt fixes on Sunday.\n` +
+              `3. For broken links and orphan pages, manual review is required.\n\n` +
+              `_This issue is automatically updated daily until resolved._`;
+            // Find existing auto-issue
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'auto-freshness',
+            });
+            const existing = issues.data.find(i => i.title === title);
+            if (existing) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body,
+              });
+              console.log(`Updated existing issue #${existing.number}`);
+            } else {
+              const created = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: ['auto-freshness'],
+              });
+              console.log(`Created new issue #${created.data.number}`);
+            }
+
+      - name: Close auto-issue on clean run
+        if: steps.audit.outputs.has_findings == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'auto-freshness',
+            });
+            for (const issue of issues.data) {
+              if (issue.title === '[auto] Content freshness audit found issues') {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  body: `Audit is now clean as of ${new Date().toISOString().split('T')[0]}. Closing.`,
+                });
+                await github.rest.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  state: 'closed',
+                });
+              }
+            }

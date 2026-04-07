@@ -158,3 +158,26 @@ These contracts are mandatory for all Claude Code agents operating in this repo.
 - **Audit logging for mutations.** Content mutations should be logged or traceable.
 - **Correlation IDs for multi-step workflows.** Build pipelines, RSS sync, and newsletter sync must propagate a trace ID.
 - **Post-deploy smoke-test evidence for critical paths.** After any production deploy, run `node integrity-audit.js` and verify all 15 pages return 200.
+
+## Agent Operating Contract
+
+This repo inherits the **MMT Core Operating Standard** (`~/.claude/agents/core/operating-standard.md`).
+
+**Primary domain**: Editorial (`~/.claude/agents/domains/editorial.md`)
+**Secondary domain**: Technical Architect (`~/.claude/agents/domains/technical-architect.md`)
+
+All agents operating in this repo must:
+1. Follow the 6-step workflow: diagnose → structure → sequence → execute → pre-mortem → handoff
+2. Honor the truth contract (no fabricated anecdotes, composites, or "a client once told me..." stories)
+3. Produce the draft, not just the outline
+4. Enforce MMT voice (warm but fierce, story-first, conversational, technical but accessible)
+5. Reject clichés, AI-tell phrases, and generic openers
+
+**Repo-specific rejection rules** (MMT voice):
+- No em dashes, no exclamation points
+- 17 banned words (see full list above)
+- Entity blocklist: MMT, MissionPulse, ProposalPulse, OpenClaw blocked from customer-facing output
+- No banned openers ("In today's fast-paced world...", "Imagine a scenario...")
+- No AI-tell phrases ("delve into", "navigate the complexities of", "it's worth noting")
+
+**Eval rubric**: `~/.claude/agents/evals/rubric.yaml` (minimum 4/5 across all 7 dimensions)
