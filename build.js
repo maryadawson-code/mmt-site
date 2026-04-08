@@ -3124,6 +3124,40 @@ async function build() {
   } catch (err) {
     console.warn('Content freshness audit failed to run:', err.message);
   }
+
+  // Auto-send newsletter to Buttondown if a new article was published today
+  // Only fires in production (Netlify CI), never in local builds
+  if (process.env.NETLIFY === 'true' && process.env.CONTEXT === 'production') {
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const newToday = articles.filter(a => {
+        const d = (a.date instanceof Date ? a.date : new Date(a.date)).toISOString().split('T')[0];
+        return d === today;
+      });
+      if (newToday.length > 0) {
+        console.log(`\n--- New article(s) published today (${newToday.length}) — pinging newsletter-send ---`);
+        const https = require('https');
+        const req = https.request('https://missionmeetstech.com/.netlify/functions/newsletter-send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          timeout: 10000,
+        }, (res) => {
+          let body = '';
+          res.on('data', chunk => body += chunk);
+          res.on('end', () => {
+            console.log(`newsletter-send → ${res.statusCode}: ${body.slice(0, 200)}`);
+          });
+        });
+        req.on('error', (err) => console.warn('newsletter-send ping failed:', err.message));
+        req.on('timeout', () => { req.destroy(); console.warn('newsletter-send ping timed out (5s)'); });
+        req.end();
+      } else {
+        console.log('\n--- No new articles dated today — skipping newsletter-send ping ---');
+      }
+    } catch (err) {
+      console.warn('Auto-send check failed (non-fatal):', err.message);
+    }
+  }
 }
 
 build().catch(console.error);
