@@ -1900,13 +1900,15 @@ function inlineTailwindCss(html) {
       </a>
       <div class="hidden md:flex items-center gap-5">
         <a href="/latest.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Intelligence</a>
-        <a href="/podcast.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Podcast</a>
+        <a href="/proposal-pulse.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">ProposalPulse</a>
+        <a href="/marketpulse.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">MarketPulse</a>
         <a href="/resources.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Resources</a>
+        <a href="/podcast.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Podcast</a>
         <a href="/about.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">About</a>
         <button id="searchToggle" class="hover:opacity-70" style="color:var(--mmt-text-secondary);background:none;border:none;cursor:pointer;" aria-label="Search"><svg width="16" height="16" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></button>
       </div>
       <div class="flex items-center gap-3">
-        <a href="/newsletter.html" class="btn-primary no-underline">Subscribe</a>
+        <a href="/proposal-pulse.html" class="btn-primary no-underline">Start Free</a>
       </div>
       <button id="menuToggle" class="md:hidden" style="color:var(--mmt-navy);background:none;border:none;cursor:pointer;" aria-label="Toggle menu">
         <svg id="menuOpen" width="24" height="24" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
@@ -1916,18 +1918,20 @@ function inlineTailwindCss(html) {
     <div id="mobileMenu" class="hidden md:hidden px-6 pb-4" style="background:var(--mmt-white);border-bottom:1px solid var(--mmt-border);">
       <div class="flex flex-col gap-4 pt-2" style="border-top:1px solid var(--mmt-border);">
         <a href="/latest.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Intelligence</a>
-        <a href="/podcast.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Podcast</a>
+        <a href="/proposal-pulse.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">ProposalPulse</a>
+        <a href="/marketpulse.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">MarketPulse</a>
         <a href="/resources.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Resources</a>
+        <a href="/podcast.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Podcast</a>
         <a href="/about.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">About</a>
         <div class="pt-3 mt-1" style="border-top:1px solid var(--mmt-border);">
-          <a href="/newsletter.html" class="btn-primary no-underline">Subscribe</a>
+          <a href="/proposal-pulse.html" class="btn-primary no-underline">Start Free</a>
         </div>
       </div>
     </div>
   </nav>`;
 
   const editorialFooter = `<footer class="wrap" style="padding:28px 0 58px;">
-    <div style="border-top:1px solid var(--mmt-border);padding-top:24px;display:grid;grid-template-columns:1fr auto auto;gap:40px;color:var(--mmt-text-secondary);font-size:13px;">
+    <div style="border-top:1px solid var(--mmt-border);padding-top:24px;display:grid;grid-template-columns:1fr auto auto auto auto;gap:32px;color:var(--mmt-text-secondary);font-size:13px;">
       <div>
         <p style="margin-bottom:6px;"><strong style="color:var(--mmt-navy);">Mission Meets Tech</strong></p>
         <p>Federal health IT intelligence. Mission first.</p>
@@ -1935,27 +1939,35 @@ function inlineTailwindCss(html) {
         <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;">
-        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Explore</strong>
-        <a href="/latest.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Intelligence</a>
+        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Read</strong>
+        <a href="/latest.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Latest Intelligence</a>
+        <a href="/topics.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Topics</a>
         <a href="/podcast.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Podcast</a>
-        <a href="/resources.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Resources</a>
-        <a href="/proposal-pulse.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">ProposalPulse</a>
-        <a href="/marketpulse.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">MarketPulse</a>
-        <a href="/about.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">About</a>
+        <a href="/newsletter.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Subscribe</a>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;">
-        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Connect</strong>
-        <a href="/newsletter.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Subscribe</a>
-        <a href="mailto:mary@missionmeetstech.com" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Contact</a>
-        <a href="https://www.linkedin.com/in/marydwomack-digitalhealth/" target="_blank" rel="noopener" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">LinkedIn</a>
-        <a href="https://podcasts.apple.com/us/podcast/fed-up-where-mission-meets-reality/id1870101530" target="_blank" rel="noopener" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Apple Podcasts</a>
-        <a href="https://open.spotify.com/show/7sND342duH7Buw1cUs60lP" target="_blank" rel="noopener" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Spotify</a>
+        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Tools</strong>
+        <a href="/proposal-pulse.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">ProposalPulse</a>
+        <a href="/marketpulse.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">MarketPulse</a>
+        <a href="/contract-tracker.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Contract Tracker</a>
       </div>
-    </div>
-    <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--mmt-border);display:flex;gap:16px;font-size:12px;color:var(--mmt-text-secondary);">
-      <a href="/privacy.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Privacy</a>
-      <a href="/terms.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Terms</a>
-      <a href="/security.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Security</a>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Reference</strong>
+        <a href="/getting-started.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Getting Started</a>
+        <a href="/contracting.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Contracting Hub</a>
+        <a href="/glossary.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Glossary</a>
+        <a href="/agency-sources.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Agency Sources</a>
+        <a href="/newswire.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">News Wire</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Trust</strong>
+        <a href="/about.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">About</a>
+        <a href="/editorial-standards.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Editorial Standards</a>
+        <a href="/security.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Security</a>
+        <a href="/privacy.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Privacy</a>
+        <a href="/terms.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Terms</a>
+        <a href="mailto:mary@missionmeetstech.com" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Contact</a>
+      </div>
     </div>
   </footer>`;
 
@@ -1969,13 +1981,21 @@ function inlineTailwindCss(html) {
     html = html.replace(/<nav[\s\S]*?<\/nav>/i, editorialNav);
   }
 
-  // Replace old footer (any footer block — match all <footer>...</footer>)
-  if (html.match(/<footer[\s\S]*?<\/footer>/i)) {
-    // Replace unless footer already matches canonical editorial pattern (3-col grid with Explore/Connect)
-    const footerMatch = html.match(/<footer[\s\S]*?<\/footer>/i);
-    const hasCanonicalFooter = footerMatch && footerMatch[0].includes('grid-template-columns:1fr auto auto') && footerMatch[0].includes('Explore') && footerMatch[0].includes('Connect');
+  // Replace old footer. Anchor on `<footer class="wrap"` so we never
+  // match a semantic <footer> used inside a <blockquote> citation
+  // (e.g. about.html). Skip if the page-level footer already matches
+  // the canonical 5-column package layout.
+  const pageFooterRegex = /<footer class="wrap"[\s\S]*?<\/footer>/i;
+  if (html.match(pageFooterRegex)) {
+    const footerMatch = html.match(pageFooterRegex);
+    const hasCanonicalFooter = footerMatch &&
+      footerMatch[0].includes('grid-template-columns:1fr auto auto auto auto') &&
+      footerMatch[0].includes('>Read<') &&
+      footerMatch[0].includes('>Tools<') &&
+      footerMatch[0].includes('>Reference<') &&
+      footerMatch[0].includes('>Trust<');
     if (!hasCanonicalFooter) {
-      html = html.replace(/<footer[\s\S]*?<\/footer>/i, editorialFooter);
+      html = html.replace(pageFooterRegex, editorialFooter);
     }
   }
 
