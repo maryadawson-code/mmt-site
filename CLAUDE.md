@@ -184,12 +184,28 @@ All agents operating in this repo must:
 
 ## Learnings — Stop Repeating These
 
-### Buttondown API status values (2026-04-07)
-The Buttondown API does NOT accept `status: 'sent'` when creating a new email.
-Valid statuses for new emails: `draft`, `about_to_send`, `scheduled`, `imported`, `transactional`.
-Use `about_to_send` to send immediately. The function in `netlify/functions/newsletter-send.js`
-silently 500'd on every send for ~weeks because of this. Never assume API status enums —
-always test against the live API and capture the error response, not just the success path.
+### Buttondown API send-now requirements (2026-04-07)
+To send a newsletter immediately via the Buttondown API you need TWO things
+that are not obvious from typical API examples:
+
+1. **status='about_to_send'**, NOT 'sent'.
+   Valid statuses for newly created emails: `draft`, `about_to_send`,
+   `scheduled`, `imported`, `transactional`. The string 'sent' is rejected
+   with `status_invalid`.
+
+2. **`X-Buttondown-Live-Dangerously: true` header.**
+   Required at least once per API key when creating an email with
+   status='about_to_send'. Without it: `sending_requires_confirmation`.
+   It's a one-time guard for new accounts. Harmless to send always.
+
+Both bugs must be fixed for `netlify/functions/newsletter-send.js` to work.
+
+**Methodology rule:** When integrating any third-party API for the first
+time, hit the production endpoint with curl and parse the error response
+BEFORE shipping. Don't trust the SDK example. Don't trust the docs page.
+The error JSON tells you the exact valid values. Two separate error codes
+were hiding behind each other on this one — fixing the first revealed the
+second, costing two extra deploy cycles.
 
 ### Don't trust truncated CLI output (2026-04-07)
 `netlify env:list` (table format) wraps long lines and can hide variables in pagination.
