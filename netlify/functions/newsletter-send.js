@@ -124,7 +124,7 @@ exports.handler = async (event) => {
       body: JSON.stringify({
         subject: subject,
         body: body,
-        status: 'sent', // 'sent' = send immediately, 'draft' = save as draft
+        status: 'about_to_send', // Buttondown's "send immediately" status; 'draft' = save as draft
       }),
     });
 
