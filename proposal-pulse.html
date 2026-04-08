@@ -993,11 +993,11 @@
 <div id="screen-upload" class="screen active">
   <div class="hero" style="text-align:left;max-width:100%;">
     <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:var(--mmt-teal);margin-bottom:16px;">Evaluator-style scoring, before you submit</div>
-    <h1 style="font-family:'Inter',system-ui,sans-serif;font-size:clamp(32px,5vw,52px);font-weight:900;line-height:1.08;letter-spacing:-0.03em;margin-bottom:16px;color:var(--mmt-navy);max-width:700px;">Upload the draft. See what could cost the bid.</h1>
-    <p style="font-size:clamp(16px,1.4vw,19px);color:var(--mmt-text-secondary);max-width:640px;margin-bottom:24px;line-height:1.6;">ProposalPulse turns an uploaded proposal into an evaluator-style scorecard, shows the highest-impact fix, and follows with a strengthened Gold Team Review by email.</p>
+    <h1 style="font-family:'Inter',system-ui,sans-serif;font-size:clamp(32px,5vw,52px);font-weight:900;line-height:1.08;letter-spacing:-0.03em;margin-bottom:16px;color:var(--mmt-navy);max-width:760px;">Score your draft before your red team does.</h1>
+    <p style="font-size:clamp(16px,1.4vw,19px);color:var(--mmt-text-secondary);max-width:680px;margin-bottom:24px;line-height:1.6;">ProposalPulse helps GovCon BD, capture, and proposal teams identify evaluator-risk gaps before submission. Upload your draft and optional SOW/PWS to get an evaluator-style scorecard, top weaknesses, and prioritized fixes in 30&ndash;90 seconds.</p>
     <div style="display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--mmt-text-secondary);margin-bottom:16px;">
-      <span><strong style="color:var(--mmt-navy);font-weight:800;">1</strong> free trial</span>
-      <span><strong style="color:var(--mmt-navy);font-weight:800;">~90s</strong> to scorecard</span>
+      <span><strong style="color:var(--mmt-navy);font-weight:800;">1</strong> free assessment</span>
+      <span><strong style="color:var(--mmt-navy);font-weight:800;">30&ndash;90s</strong> to scorecard</span>
       <span><strong style="color:var(--mmt-navy);font-weight:800;">Gold Team</strong> follow-up by email</span>
     </div>
     <div style="display:flex;gap:16px;flex-wrap:wrap;padding-top:14px;border-top:1px solid rgba(69,123,157,0.12);margin-bottom:20px;">
@@ -1008,12 +1008,40 @@
   </div>
 
 
-  <!-- Demo Walkthrough -->
-  <section id="demo-section" style="margin:0 -20px 32px;padding:40px 20px;background:var(--mmt-soft);border-radius:16px;">
-    <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:var(--mmt-teal);margin-bottom:10px;text-align:center;">See it in action</div>
-    <h2 style="font-family:'Inter',system-ui,sans-serif;font-size:clamp(22px,2.5vw,30px);font-weight:800;line-height:1.15;letter-spacing:-0.02em;text-align:center;margin-bottom:24px;color:var(--mmt-navy);">From upload to scorecard to Gold Team Review</h2>
-    <div style="border-radius:18px;overflow:hidden;box-shadow:0 24px 80px rgba(10,25,47,0.10),0 2px 12px rgba(10,25,47,0.06);border:1px solid rgba(69,123,157,0.08);background:#fff;">
-      <iframe src="/demos/proposalpulse-demo.html" style="width:100%;height:1200px;border:none;display:block;" title="ProposalPulse product demo" loading="lazy"></iframe>
+  <!-- Sample Scorecard Preview -->
+  <section id="sample-preview" style="margin:0 -20px 32px;padding:40px 20px;background:var(--mmt-soft);border-radius:16px;">
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:var(--mmt-teal);margin-bottom:10px;">See the scorecard before you trust it</div>
+      <h2 style="font-family:'Inter',system-ui,sans-serif;font-size:clamp(22px,2.5vw,30px);font-weight:800;line-height:1.15;letter-spacing:-0.02em;color:var(--mmt-navy);max-width:680px;margin:0 auto;">A sample of what you get back in 30&ndash;90 seconds.</h2>
+    </div>
+    <div style="max-width:760px;margin:0 auto;background:#fff;border:1px solid rgba(69,123,157,0.18);border-radius:14px;padding:28px;box-shadow:0 10px 30px rgba(10,25,47,0.06);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap;border-bottom:1px solid rgba(69,123,157,0.12);padding-bottom:16px;margin-bottom:18px;">
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--mmt-text-secondary);margin-bottom:4px;">Sample scorecard &middot; redacted</div>
+          <div style="font-size:18px;font-weight:800;color:var(--mmt-navy);">Technical Volume &mdash; CMS Modernization Pursuit</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--mmt-text-secondary);margin-bottom:2px;">Overall</div>
+          <div style="font-size:34px;font-weight:900;color:var(--mmt-navy);line-height:1;">B&minus;</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:20px;">
+        <div style="border:1px solid rgba(69,123,157,0.14);border-radius:8px;padding:10px 12px;"><div style="font-size:10px;color:var(--mmt-text-secondary);text-transform:uppercase;letter-spacing:0.1em;">Win Theme Clarity</div><div style="font-size:18px;font-weight:800;color:var(--mmt-navy);">B</div></div>
+        <div style="border:1px solid rgba(69,123,157,0.14);border-radius:8px;padding:10px 12px;"><div style="font-size:10px;color:var(--mmt-text-secondary);text-transform:uppercase;letter-spacing:0.1em;">Past Performance Fit</div><div style="font-size:18px;font-weight:800;color:var(--mmt-navy);">A&minus;</div></div>
+        <div style="border:1px solid rgba(69,123,157,0.14);border-radius:8px;padding:10px 12px;"><div style="font-size:10px;color:var(--mmt-text-secondary);text-transform:uppercase;letter-spacing:0.1em;">Compliance Coverage</div><div style="font-size:18px;font-weight:800;color:#E63946;">D+</div></div>
+        <div style="border:1px solid rgba(69,123,157,0.14);border-radius:8px;padding:10px 12px;"><div style="font-size:10px;color:var(--mmt-text-secondary);text-transform:uppercase;letter-spacing:0.1em;">Technical Approach</div><div style="font-size:18px;font-weight:800;color:var(--mmt-navy);">B+</div></div>
+        <div style="border:1px solid rgba(69,123,157,0.14);border-radius:8px;padding:10px 12px;"><div style="font-size:10px;color:var(--mmt-text-secondary);text-transform:uppercase;letter-spacing:0.1em;">Risk Posture</div><div style="font-size:18px;font-weight:800;color:var(--mmt-navy);">C+</div></div>
+        <div style="border:1px solid rgba(69,123,157,0.14);border-radius:8px;padding:10px 12px;"><div style="font-size:10px;color:var(--mmt-text-secondary);text-transform:uppercase;letter-spacing:0.1em;">Pricing Narrative</div><div style="font-size:18px;font-weight:800;color:var(--mmt-navy);">C</div></div>
+      </div>
+      <div style="background:rgba(230,57,70,0.04);border-left:3px solid #E63946;padding:14px 16px;border-radius:6px;margin-bottom:14px;">
+        <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#E63946;margin-bottom:4px;">Highest evaluator risk</div>
+        <div style="font-size:14px;color:var(--mmt-text);line-height:1.55;">Section L compliance matrix is incomplete in three subfactors. Evaluators are likely to mark this as a deficiency rather than a weakness.</div>
+      </div>
+      <div style="background:rgba(69,123,157,0.06);border-left:3px solid var(--mmt-teal);padding:14px 16px;border-radius:6px;">
+        <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-teal);margin-bottom:4px;">Top fix &mdash; do this first</div>
+        <div style="font-size:14px;color:var(--mmt-text);line-height:1.55;">Rebuild the compliance matrix from Section L line by line, then trace each requirement to a Section C reference and a Section M evaluation criterion before any other rewrite work.</div>
+      </div>
+      <div style="margin-top:18px;padding-top:14px;border-top:1px dashed rgba(69,123,157,0.18);font-size:12px;color:var(--mmt-text-secondary);text-align:center;">Sample only. Real scorecards are tailored to your document type and SOW/PWS if you upload one.</div>
     </div>
   </section>
 
@@ -1278,7 +1306,7 @@
       </svg>
     </div>
     <h2>Ready for the Full Package?</h2>
-    <p>Your free trial is used up. Upgrade to score another proposal and get the full Gold Team Review:</p>
+    <p>Your free assessment is used up. Upgrade to score another proposal and get the full Gold Team Review:</p>
     <ul style="text-align:left; max-width:420px; margin:0 auto 2rem; list-style:none; padding:0;">
       <li style="display:flex; align-items:center; gap:0.75rem; padding:0.4rem 0; font-size:0.9rem; color:var(--text-secondary);">
         <svg width="1em" height="1em" viewBox="0 0 16 16" fill="var(--grade-a)" aria-hidden="true"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0-1.4A5.6 5.6 0 1 0 8 2.4a5.6 5.6 0 0 0 0 11.2zM7 9.6l3.5-3.5 1 1L7 11.6 4.5 9l1-1L7 9.6z"/></svg>
@@ -1300,6 +1328,11 @@
     <button class="btn btn-primary" id="btn-checkout">Unlock 1 Assessment &mdash; $19.99 &#8594;</button>
     <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.75rem;">Secure payment via Stripe</p>
     <button class="btn btn-secondary btn-sm" id="btn-start-over" style="margin-top:1rem;">Start Over</button>
+    <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px dashed rgba(255,255,255,0.12);">
+      <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:0.6rem;"><strong style="color:var(--text-primary);">Need ProposalPulse for a team?</strong></p>
+      <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.75rem;">Get pooled credits, repeat reviews, and a cleaner pre-red-team workflow.</p>
+      <a href="mailto:mary@missionmeetstech.com?subject=ProposalPulse%20team%20access" class="btn btn-secondary btn-sm">Talk to us about team access</a>
+    </div>
   </div>
 </div>
 
