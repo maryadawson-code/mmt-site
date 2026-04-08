@@ -181,3 +181,17 @@ All agents operating in this repo must:
 - No AI-tell phrases ("delve into", "navigate the complexities of", "it's worth noting")
 
 **Eval rubric**: `~/.claude/agents/evals/rubric.yaml` (minimum 4/5 across all 7 dimensions)
+
+## Learnings — Stop Repeating These
+
+### Buttondown API status values (2026-04-07)
+The Buttondown API does NOT accept `status: 'sent'` when creating a new email.
+Valid statuses for new emails: `draft`, `about_to_send`, `scheduled`, `imported`, `transactional`.
+Use `about_to_send` to send immediately. The function in `netlify/functions/newsletter-send.js`
+silently 500'd on every send for ~weeks because of this. Never assume API status enums —
+always test against the live API and capture the error response, not just the success path.
+
+### Don't trust truncated CLI output (2026-04-07)
+`netlify env:list` (table format) wraps long lines and can hide variables in pagination.
+Always use `netlify env:list --plain` and grep for the specific key when verifying env state.
+Almost wasted a setup cycle telling the user to add a key that was already there.

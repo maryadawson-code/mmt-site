@@ -120,6 +120,10 @@ exports.handler = async (event) => {
       headers: {
         'Authorization': `Token ${BUTTONDOWN_API_KEY}`,
         'Content-Type': 'application/json',
+        // Required by Buttondown for status='about_to_send'.
+        // Acts as a "I really mean to send live emails" guard.
+        // Required ONCE per API key on the first live send, but harmless to keep.
+        'X-Buttondown-Live-Dangerously': 'true',
       },
       body: JSON.stringify({
         subject: subject,
