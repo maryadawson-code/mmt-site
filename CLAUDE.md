@@ -94,8 +94,9 @@ Before publishing any copy, ask: "Would Mary actually say this out loud to someo
 - Run `scripts/clean-source-theme.js` if needed (idempotent).
 
 ### Nav
-- Canonical: Intelligence, Podcast, Resources, About + Search + Subscribe button
-- Do NOT add product pages (ProposalPulse, MarketPulse) to the nav — they're surfaced via homepage + footer.
+- Canonical (as of 2026-04-08, package override): Intelligence, ProposalPulse, MarketPulse, Resources, Podcast, About + Search + Start Free button
+- Start Free button points to /proposal-pulse.html
+- Products ARE in the main nav. The prior rule keeping products out of the nav was explicitly overridden by user decision when adopting the GovCon-team-focused redesign package. The footer Tools column also surfaces them.
 
 ### Footer
 - Explore: Intelligence, Podcast, Resources, ProposalPulse, MarketPulse, About

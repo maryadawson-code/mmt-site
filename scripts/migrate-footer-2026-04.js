@@ -94,7 +94,12 @@ function walk(dir, out) {
 const files = [];
 walk(REPO, files);
 
-const footerRegex = /<footer[\s\S]*?<\/footer>/;
+// Match the SITE footer block specifically. The original regex
+// /<footer[\s\S]*?<\/footer>/ matched too aggressively and replaced any
+// semantic <footer> element used inside <blockquote> for citation
+// purposes (e.g. about.html). Anchor on `class="wrap"` so we only ever
+// touch the page-level footer.
+const footerRegex = /<footer class="wrap"[\s\S]*?<\/footer>/;
 
 let updated = 0, skipped = 0, noMatch = 0;
 for (const file of files) {
