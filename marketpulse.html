@@ -315,7 +315,7 @@
       <h2 class="text-section text-center mb-10">Request Your MarketPulse Brief</h2>
       <div style="background:rgba(45,106,79,0.08);border:1px solid rgba(45,106,79,0.2);border-radius:12px;padding:16px 20px;margin-bottom:24px;font-size:14px;line-height:1.5;color:var(--mmt-text);">
         <strong style="color:#2d6a4f;">&#128274; Your research is protected.</strong>
-        Your data is never used to train AI models. Search inputs not stored beyond the current session.
+        Data is processed by named service providers and is not used to train models. Do not submit classified, ITAR/EAR, or otherwise restricted government material.
         <a href="/security.html" style="color:#2d6a4f;font-weight:600;text-decoration:underline;">Full security details &rarr;</a>
       </div>
       <form id="tactical-brief-form" class="space-y-5">
@@ -342,11 +342,11 @@
           <label for="tb-audience" class="block text-sm font-medium mb-2" style="color:var(--mmt-text);">Intended Audience (optional)</label>
           <textarea id="tb-audience" name="audience" rows="2" placeholder="e.g., my leadership team, a BD pursuit, internal strategy session" class="w-full px-4 py-3 rounded-lg text-sm resize-y" style="background:var(--mmt-soft);border:1px solid var(--mmt-border);color: var(--mmt-navy);"></textarea>
         </div>
-        <!-- Optional company context fields — improves report quality -->
+        <!-- Optional company context fields — improves brief quality -->
         <details style="border:1px solid rgba(69,123,157,0.1);border-radius:8px;padding:0;">
           <summary class="text-sm font-medium px-4 py-3" style="color:var(--mmt-teal);cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 1v10M1 6h10"/></svg>
-            Add company details for a tailored report (optional)
+            Add company details for a tailored brief (optional)
           </summary>
           <div style="padding:0 16px 16px;display:flex;flex-direction:column;gap:16px;">
             <p class="text-xs" style="color:var(--mmt-text-secondary);margin:8px 0 0;">Providing these details helps us tailor recommendations to your firm's actual position instead of giving generic advice.</p>
@@ -366,11 +366,11 @@
         </details>
         <div id="tb-error" style="display:none;color:#ef4444;font-size:0.875rem;padding:1rem;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:8px;" role="alert">
           <p id="tb-error-text" style="margin:0 0 0.5rem;"></p>
-          <button type="button" id="tb-retry-btn" onclick="document.getElementById('tb-error').style.display='none';document.getElementById('tb-submit-btn').disabled=false;document.getElementById('tb-submit-btn').textContent='Get Your Free MarketPulse Report';" style="margin:0.5rem 0;padding:8px 20px;background:transparent;color:var(--mmt-teal);border:1px solid var(--mmt-teal);border-radius:6px;cursor:pointer;font-size:0.8125rem;">Try Again</button>
-          <p style="margin:0.5rem 0 0;font-size:0.8125rem;color:rgba(239,68,68,0.8);">If this persists, email <a href="mailto:support@missionmeetstech.com" style="color:#ef4444;">support@missionmeetstech.com</a> with your topic and we'll generate your report manually.</p>
+          <button type="button" id="tb-retry-btn" onclick="document.getElementById('tb-error').style.display='none';document.getElementById('tb-submit-btn').disabled=false;document.getElementById('tb-submit-btn').textContent='Get Your Free MarketPulse Brief';" style="margin:0.5rem 0;padding:8px 20px;background:transparent;color:var(--mmt-teal);border:1px solid var(--mmt-teal);border-radius:6px;cursor:pointer;font-size:0.8125rem;">Try Again</button>
+          <p style="margin:0.5rem 0 0;font-size:0.8125rem;color:rgba(239,68,68,0.8);">If this persists, email <a href="mailto:support@missionmeetstech.com" style="color:#ef4444;">support@missionmeetstech.com</a> with your topic and we'll generate your brief manually.</p>
         </div>
         <div id="tb-loading" style="display:none;text-align:center;padding:1rem;color:var(--mmt-text-secondary);font-size:0.875rem;">Processing...</div>
-        <button type="submit" id="tb-submit-btn" class="btn-primary w-full text-center rounded-lg text-sm font-semibold" style="cursor:pointer;border:none;display:block;">Get Your Free MarketPulse Report</button>
+        <button type="submit" id="tb-submit-btn" class="btn-primary w-full text-center rounded-lg text-sm font-semibold" style="cursor:pointer;border:none;display:block;">Get Your Free MarketPulse Brief</button>
       </form>
       <div id="tb-success" style="display:none;padding:2rem;background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.15);border-radius:12px;text-align:center;">
         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--mmt-teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 1rem;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
@@ -400,7 +400,7 @@
         </details>
         <details style="border:1px solid rgba(69,123,157,0.12);border-radius:10px;padding:0;">
           <summary style="padding:16px 20px;font-size:15px;font-weight:600;color:var(--mmt-navy);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;">Will you tell me if my question is too broad?<span style="color:var(--mmt-teal);font-size:18px;transition:transform 0.2s;">+</span></summary>
-          <div style="padding:0 20px 16px;font-size:14px;color:var(--mmt-text-secondary);line-height:1.65;">Yes. If your question would require a 50-page report to answer properly, we will follow up with a suggestion for how to narrow it into something useful. We would rather give you a focused 5-page brief that changes a decision than a 30-page report that sits in a folder.</div>
+          <div style="padding:0 20px 16px;font-size:14px;color:var(--mmt-text-secondary);line-height:1.65;">Yes. If your question would require a 50-page brief to answer properly, we will follow up with a suggestion for how to narrow it into something useful. We would rather give you a focused 5-page brief that changes a decision than a 30-page doorstop that sits in a folder.</div>
         </details>
         <details style="border:1px solid rgba(69,123,157,0.12);border-radius:10px;padding:0;">
           <summary style="padding:16px 20px;font-size:15px;font-weight:600;color:var(--mmt-navy);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;">Do you use primary sources?<span style="color:var(--mmt-teal);font-size:18px;transition:transform 0.2s;">+</span></summary>
@@ -408,7 +408,7 @@
         </details>
         <details style="border:1px solid rgba(69,123,157,0.12);border-radius:10px;padding:0;">
           <summary style="padding:16px 20px;font-size:15px;font-weight:600;color:var(--mmt-navy);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;">What happens after the first free brief?<span style="color:var(--mmt-teal);font-size:18px;transition:transform 0.2s;">+</span></summary>
-          <div style="padding:0 20px 16px;font-size:14px;color:var(--mmt-text-secondary);line-height:1.65;">Your first report is free. Additional reports are $50 each. If you need ongoing coverage or multiple reports per month, email <a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a> and we can work out a package.</div>
+          <div style="padding:0 20px 16px;font-size:14px;color:var(--mmt-text-secondary);line-height:1.65;">You get 1 free brief per email address. Additional briefs are $50 each. If you need ongoing coverage or multiple briefs per month, email <a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a> and we can work out a package.</div>
         </details>
       </div>
     </div>

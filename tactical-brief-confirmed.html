@@ -121,8 +121,8 @@
         </div>
       </div>
       <p class="text-xs font-semibold tracking-widest uppercase mb-4" style="color:var(--mmt-teal);">Payment Confirmed</p>
-      <h1 class="text-3xl md:text-4xl font-bold mb-6" style="color: var(--mmt-navy);">Your MarketPulse Report Is Being Prepared</h1>
-      <p class="text-base mb-8" style="color:var(--mmt-text);max-width:520px;margin-left:auto;margin-right:auto;">Your research topic has been received and your custom MarketPulse report is now being generated. You will receive it via email within 24 hours.</p>
+      <h1 class="text-3xl md:text-4xl font-bold mb-6" style="color: var(--mmt-navy);">Your MarketPulse Brief Is Being Prepared</h1>
+      <p class="text-base mb-8" style="color:var(--mmt-text);max-width:520px;margin-left:auto;margin-right:auto;">Your research topic has been received and your custom MarketPulse brief is now being generated. You will receive it via email within 24 hours.</p>
     </div>
   </section>
 
@@ -156,7 +156,7 @@
       <p class="text-sm mb-6" style="color:var(--mmt-text-secondary);">Questions? Reach out at <a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a></p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <a href="index.html" class="btn-primary text-center rounded-lg text-sm no-underline">Back to Mission Meets Tech</a>
-        <a href="marketpulse.html" class="btn-secondary text-center rounded-lg text-sm no-underline">Order Another Report</a>
+        <a href="marketpulse.html" class="btn-secondary text-center rounded-lg text-sm no-underline">Order Another Brief</a>
       </div>
     </div>
   </section>
@@ -211,7 +211,7 @@
     var params = new URLSearchParams(window.location.search);
     if (params.get('free') === 'true') {
       var heading = document.querySelector('h1');
-      if (heading) heading.textContent = 'Your Free MarketPulse Report Is Being Prepared';
+      if (heading) heading.textContent = 'Your Free MarketPulse Brief Is Being Prepared';
       var eyebrows = document.querySelectorAll('p');
       eyebrows.forEach(function(p) {
         if (p.textContent.trim() === 'Payment Confirmed') {

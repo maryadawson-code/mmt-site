@@ -35,15 +35,19 @@ banned word/structure list.
 
 ## 2. Canonical nav
 
-**Desktop nav order (left → right):**
+**Desktop primary nav order (left → right):**
 1. Intelligence → `/latest.html`
 2. ProposalPulse → `/proposal-pulse.html`
 3. MarketPulse → `/marketpulse.html`
 4. Resources → `/resources.html`
 5. Podcast → `/podcast.html`
 6. About → `/about.html`
-7. Search button
-8. **Choose a Tool** (utility CTA)
+
+**Utility nav (right of primary nav):**
+1. Search button
+2. Subscribe → `/newsletter.html`
+3. Security → `/security.html`
+4. **Choose a Tool** → `/resources.html#paid-tools` (primary button)
 
 **Utility CTA.**
 - Label: `Choose a Tool`
@@ -51,7 +55,8 @@ banned word/structure list.
 - Do NOT use "Start Free". There are two free-entry products; the ambiguous
   label misroutes buyers.
 
-**Mobile menu.** Same six links plus the Choose a Tool button.
+**Mobile menu.** Same six primary links plus Subscribe, Security, and the
+Choose a Tool button.
 
 **Source of truth for nav markup.**
 - Root pages render their own `<nav class="nav-editorial">` block.
@@ -137,6 +142,8 @@ copyright.
 
 **Headline.** "Built for teams trying to qualify, shape, and strengthen pursuits."
 
+**Subhead.** "Trusted in the moments that matter most for federal growth teams."
+
 **Cards (4).** Role + use-case pairing. If real testimonials become
 available, use them verbatim with attribution. Do not fabricate quotes.
 
@@ -160,31 +167,38 @@ Current role cards:
 
 1. Hero (eyebrow → headline → dek → trust chips)
 2. Sample scorecard preview
-3. The 9 criteria
-4. Who it's for (document-type fit)
-5. **Free vs paid comparison block** (Choose the level of review you need)
-6. Upload form (with inline data-handling snippet)
-7. Team access inquiry CTA (`mailto:` with subject prefill)
-8. FAQ
-9. Cross-sell: MarketPulse (secondary)
-10. Footer
+3. **Free vs paid comparison block** (Choose the level of review you need)
+4. SOW/PWS differentiator callout (explains why uploading a SOW changes scoring)
+5. The 9 criteria ("scoring dimensions")
+6. Who it's for (best-fit documents)
+7. Upload form (with inline data-handling snippet)
+8. Team access inquiry CTA (`mailto:` with subject prefill)
+9. FAQ
+10. Cross-sell: MarketPulse (secondary)
+11. Footer
 
 ### MarketPulse
 
 1. Hero + sample brief anchor
 2. Sample brief preview
-3. How it works
-4. Pricing ("Pay per brief. Or talk to us about a pack.")
-5. Team coverage inquiry CTA
-6. FAQ
-7. Cross-sell: ProposalPulse (secondary)
-8. Footer
+3. Example questions (the kinds of questions MarketPulse answers)
+4. What's inside the brief (executive summary, findings, implications, next steps)
+5. Pricing / Packages ("Pay per brief. Or talk to us about a pack.")
+6. Team coverage inquiry CTA
+7. Request form (with inline canonical trust copy)
+8. FAQ
+9. Cross-sell: ProposalPulse (secondary)
+10. Footer
 
 **Hard rules for product pages:**
 - Sample previews must stay prominent.
 - Trust chips (not-trained / private / sensitive) stay near the top hero CTA.
 - Team inquiry CTAs must be visible before the footer on both pages.
 - Cross-sell is secondary, not primary.
+- The ProposalPulse free-vs-paid comparison block must render before the
+  upload form markup, not after it.
+- MarketPulse must use "brief" terminology consistently — no stale "report"
+  language in surface copy, FAQ, error states, or confirmation flows.
 
 ---
 
@@ -361,18 +375,18 @@ coordinated edit to the files listed in §7.
 
 These phrases are non-negotiable:
 
-| Canonical                                  | Never use                                    |
-|--------------------------------------------|----------------------------------------------|
-| 1 free assessment                          | "first assessment free", "free tier"         |
-| 1 free brief                               | "first report free", "first brief free"      |
-| twice a week                               | "bi-weekly", "biweekly", "every two weeks"   |
-| market brief                               | "tactical brief", "market report"            |
-| Gold Team Review                           | "Red Team Review"                            |
-| not used to train models                   | "never trains on our data"                   |
-| Choose a Tool                              | "Start Free" (as utility CTA)                |
-| Request a market brief                     | "Request a Report"                           |
-| Fed UP                                     | "Mission Meets Reality" (as podcast name)    |
-| Mission Meets Tech                         | "MissionPulse" (as site/platform name)       |
+| Canonical                                  | Never use                                                                  |
+|--------------------------------------------|----------------------------------------------------------------------------|
+| 1 free assessment                          | "first assessment free", "free tier"                                       |
+| 1 free brief                               | "first report free", "first brief free"                                    |
+| twice a week                               | "bi-weekly", "biweekly", "every two weeks", "every week" (for newsletter)  |
+| market brief                               | "tactical brief", "market report", "MarketPulse report", "your report"     |
+| Gold Team Review                           | "Red Team Review"                                                          |
+| not used to train models                   | "never trains on our data", "inputs not stored beyond the current session" |
+| Choose a Tool                              | "Start Free" (as utility CTA)                                              |
+| Request a market brief                     | "Request a Report"                                                         |
+| Fed UP                                     | "Mission Meets Reality" (as standalone podcast name, outside subtitle)     |
+| Mission Meets Tech                         | "MissionPulse" (as site/platform name)                                     |
 
 See `CLAUDE.md` for banned voice words, transitions, openers, and structures.
 
@@ -384,32 +398,44 @@ A build is only shippable if all of the following are true:
 
 1. **Build passes clean.** `node build.js` exits with no errors.
 2. **Dist nav consistency.** Every `dist/**/*.html` nav block contains
-   `brand-mark`, `Choose a Tool`, and `/resources.html#paid-tools`.
+   `brand-mark`, `Choose a Tool`, and `/resources.html#paid-tools`, plus
+   the Subscribe and Security utility links.
 3. **Dist footer consistency.** Every `dist/**/*.html` footer with
    `<footer class="wrap"` contains `>Read<`, `>Tools<`, `>Reference<`,
    `>Trust<`, and links to ProposalPulse, MarketPulse, and Contract Tracker.
 4. **Homepage sequence.** `dist/index.html` section order matches §4.
 5. **Buyer proof band present.** `dist/index.html` contains "Built for teams
-   trying to qualify, shape, and strengthen pursuits" and the four use-case
-   phrases (before red team / gate review / leadership readout / partner outreach).
+   trying to qualify, shape, and strengthen pursuits", the subhead "Trusted
+   in the moments that matter most for federal growth teams", and the four
+   use-case phrases (before red team / gate review / leadership readout /
+   partner outreach).
 6. **ProposalPulse comparison block.** `dist/proposal-pulse.html` contains
    "Choose the level of review you need" and both Free + Paid columns
-   above the upload form.
+   above the upload form markup.
 7. **Data-handling canon.** All five pages listed in §7 contain the canonical
    snippet, and no page contains the forbidden phrases in §7.
 8. **Canonical offer truth.** Any page that mentions pricing uses "1 free
    assessment / $19.99" and "1 free brief / $50". No contradictory prices.
 9. **Cadence canon.** No HTML file contains "bi-weekly", "biweekly",
-   "weekly newsletter", or "every two weeks".
-10. **Banned brand names removed.** No HTML file (except intentional podcast
-    subtitle locations) contains "MissionPulse" as the platform name or
-    "Mission Meets Reality" as a standalone product name.
+   "weekly newsletter", "every two weeks", or (for newsletter references)
+   "every week".
+10. **Banned brand names removed.** No HTML file (except the intentional
+    podcast subtitle on `podcast.html`) contains "MissionPulse" as the
+    platform name or "Mission Meets Reality" as a standalone product name.
 11. **Article ownership.** No article page contains "Read the full edition
     on LinkedIn" as the primary CTA. Stub articles expose internal CTAs.
 12. **Zero dark-mode regressions in dist/.** No `#00E5FA`, `#00FF85`,
     `#00050F`, `Space Grotesk`, `nav-glass`, `nav-apple`, `--mmt-cyan`,
     `--mmt-dark`, `--mmt-slate` in any `dist/**/*.html`.
-13. **Integrity audit.** `node integrity-audit.js` returns `SUCCESS/SYNCED`
+13. **MarketPulse brief-not-report canon.** `dist/marketpulse.html` and
+    `dist/tactical-brief.html` contain no user-facing "report" wording
+    that refers to a MarketPulse deliverable. "Brief" is the product noun.
+14. **Podcast cadence.** `dist/podcast.html` says "twice a week" wherever
+    it mentions newsletter cadence, never "every week".
+15. **Utility nav links present on all pages.** Every `dist/**/*.html` nav
+    block includes a link to `/newsletter.html` (Subscribe) and
+    `/security.html` (Security) as utility items alongside Choose a Tool.
+16. **Integrity audit.** `node integrity-audit.js` returns `SUCCESS/SYNCED`
     against the production fortress worker (post-deploy only).
 
 ---

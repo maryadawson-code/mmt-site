@@ -1905,9 +1905,11 @@ function inlineTailwindCss(html) {
         <a href="/resources.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Resources</a>
         <a href="/podcast.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Podcast</a>
         <a href="/about.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">About</a>
-        <button id="searchToggle" class="hover:opacity-70" style="color:var(--mmt-text-secondary);background:none;border:none;cursor:pointer;" aria-label="Search"><svg width="16" height="16" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></button>
       </div>
-      <div class="flex items-center gap-3">
+      <div class="hidden md:flex items-center gap-4">
+        <button id="searchToggle" class="hover:opacity-70" style="color:var(--mmt-text-secondary);background:none;border:none;cursor:pointer;" aria-label="Search"><svg width="16" height="16" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></button>
+        <a href="/newsletter.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Subscribe</a>
+        <a href="/security.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Security</a>
         <a href="/resources.html#paid-tools" class="btn-primary no-underline">Choose a Tool</a>
       </div>
       <button id="menuToggle" class="md:hidden" style="color:var(--mmt-navy);background:none;border:none;cursor:pointer;" aria-label="Toggle menu">
@@ -1923,6 +1925,8 @@ function inlineTailwindCss(html) {
         <a href="/resources.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Resources</a>
         <a href="/podcast.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Podcast</a>
         <a href="/about.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">About</a>
+        <a href="/newsletter.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">Subscribe</a>
+        <a href="/security.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">Security</a>
         <div class="pt-3 mt-1" style="border-top:1px solid var(--mmt-border);">
           <a href="/resources.html#paid-tools" class="btn-primary no-underline">Choose a Tool</a>
         </div>
@@ -1972,16 +1976,19 @@ function inlineTailwindCss(html) {
   </footer>`;
 
   // Replace old nav (any nav block that doesn't match the canonical editorial nav).
-  // The canonical nav has: brand-mark div, "Choose a Tool" button, and the six
-  // canonical links. If any of those markers is missing inside the <nav> block,
-  // the page has drifted and we replace the whole block.
+  // The canonical nav has: brand-mark div, "Choose a Tool" button, the six
+  // primary links, and the Subscribe + Security utility links. If any of those
+  // markers is missing inside the <nav> block, the page has drifted and we
+  // replace the whole block.
   const navBlockMatch = html.match(/<nav[\s\S]*?<\/nav>/i);
   if (navBlockMatch) {
     const navBlock = navBlockMatch[0];
     const hasCanonicalNav =
       navBlock.includes('brand-mark') &&
       navBlock.includes('Choose a Tool') &&
-      navBlock.includes('/resources.html#paid-tools');
+      navBlock.includes('/resources.html#paid-tools') &&
+      navBlock.includes('/newsletter.html') &&
+      navBlock.includes('/security.html');
     if (!hasCanonicalNav) {
       html = html.replace(/<nav[\s\S]*?<\/nav>/i, editorialNav);
     }
