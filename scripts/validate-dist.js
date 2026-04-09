@@ -130,6 +130,7 @@ for (const relFile of files) {
     /Fed UP: Where Mission Meets Reality/,
     /Introducing Mission Meets Reality/,
     /Episode 1: Mission Meets Reality/,
+    /originally announced as Mission Meets Reality/,
   ];
   let mmrMatch;
   while ((mmrMatch = mmrRe.exec(html)) !== null) {
