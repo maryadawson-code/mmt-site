@@ -67,19 +67,10 @@ const PATTERNS = [
   { name: 'consultant report',                 re: /consultant report/ },
   { name: 'tailored report',                   re: /tailored report/ },
   { name: 'generate your report manually',     re: /generate your report manually/ },
-  { name: 'Mission Meets Reality (standalone)', re: /Mission Meets Reality/,
-    // Legitimate uses:
-    //   - podcast.html: current Fed UP subtitle ("Fed UP: Where Mission
-    //     Meets Reality")
-    //   - latest.html / newsletter/ / topics/: archive listings and
-    //     article pages whose historical titles legitimately contain
-    //     "Mission Meets Reality" (e.g. "Introducing Mission Meets
-    //     Reality", "Episode 1: Mission Meets Reality"). These are
-    //     2026-01-31 historical articles; the podcast was originally
-    //     announced as Mission Meets Reality before the Fed UP rename.
-    //     Changing them would be historical fabrication.
-    // Any standalone use outside these paths is regression.
-    allowPaths: ['podcast.html', 'latest.html', 'newsletter/', 'topics/'] },
+  // Mission Meets Reality: allow ONLY specific historical/contextual
+  // occurrences. Rule is applied at the OCCURRENCE level, not the
+  // page level, so that stale UI on the same page is still caught.
+  // Handled below after the generic pattern loop.
   { name: 'dark-mode token',                   re: /#00E5FA|#00FF85|#00050F|Space Grotesk|nav-glass|nav-apple|--mmt-cyan|--mmt-dark|--mmt-slate/ },
 ];
 
@@ -98,6 +89,39 @@ for (const relFile of files) {
     const m = html.match(rule.re);
     if (m) {
       addFailure(rule.name, relFile, m[0].slice(0, 80));
+    }
+  }
+
+  // Mission Meets Reality — context-specific check applied at the
+  // OCCURRENCE level (not page-level). Each occurrence must be part
+  // of one of these exact historical/contextual phrases:
+  //   - "Fed UP: Where Mission Meets Reality"  (current podcast subtitle)
+  //   - "Introducing Mission Meets Reality"    (historical 2026-01-31 article title)
+  //   - "Episode 1: Mission Meets Reality"     (historical 2026-01-31 article title)
+  // Any other occurrence is regression, even on latest.html or
+  // newsletter/ archive pages where article titles legitimately
+  // appear — the rule only whitelists the specific historical title
+  // strings, not the entire page.
+  const mmrRe = /Mission Meets Reality/g;
+  const allowedContexts = [
+    /Fed UP: Where Mission Meets Reality/,
+    /Introducing Mission Meets Reality/,
+    /Episode 1: Mission Meets Reality/,
+  ];
+  let mmrMatch;
+  while ((mmrMatch = mmrRe.exec(html)) !== null) {
+    const idx = mmrMatch.index;
+    // Extract a 60-char window around the match for context checks
+    const windowStart = Math.max(0, idx - 30);
+    const windowEnd = Math.min(html.length, idx + 'Mission Meets Reality'.length + 30);
+    const window = html.slice(windowStart, windowEnd);
+    const isWhitelisted = allowedContexts.some(ctx => ctx.test(window));
+    if (!isWhitelisted) {
+      addFailure(
+        'Mission Meets Reality (standalone, not in whitelisted title)',
+        relFile,
+        window.replace(/\s+/g, ' ').slice(0, 80)
+      );
     }
   }
 }

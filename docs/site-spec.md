@@ -475,13 +475,41 @@ node build.js && node scripts/validate-dist.js`.
 
 ## 14a. Automated sweep patterns
 
-`scripts/validate-dist.js` runs the following forbidden-pattern checks
-on every `dist/**/*.html` file and fails the build on any match.
+Drift enforcement runs at **three layers**:
 
-Each pattern has an optional `allowPaths` whitelist for legitimate
-non-drift uses (e.g., `command-center.html` is a private ops page and
-its "Data refreshes every 60 seconds" refers to an internal dashboard
-refresh interval, not ProposalPulse timing).
+1. **`scripts/validate-dist.js`** — local/CI build-time. Walks every
+   `dist/**/*.html` and fails the build on any pattern listed below.
+2. **Netlify build** — runs `node build.js && node scripts/validate-dist.js`
+   as the publish command, so any failure blocks deploy.
+3. **`scripts/integrity-audit.js`** — post-deploy. Hits live
+   production URLs via the IntegrityPulse Fortress Worker and runs
+   the same drift sweep against the fetched page body, so any deploy
+   that somehow bypasses layers 1–2 is still caught on the live site.
+   This is the authoritative post-deploy check per CLAUDE.md: a task
+   is not "done" until `node integrity-audit.js` returns SUCCESS/SYNCED.
+
+**Whitelist policy.** Whitelist entries are applied at two levels:
+
+- **`allowPaths`** (page-level): grants a pattern an exemption for an
+  entire file. Use sparingly and only for private ops pages
+  (e.g., `command-center.html`'s "Data refreshes every 60 seconds"
+  is a dashboard refresh interval, not ProposalPulse timing).
+- **Context windows** (occurrence-level): applied for patterns like
+  "Mission Meets Reality" where the phrase is legitimate in certain
+  historical titles but drift everywhere else. The validator scans
+  every occurrence and extracts a ±30-char window. The occurrence
+  passes only if the window matches one of the allowed historical
+  title strings. Stale UI copy on the same page is still caught.
+
+**Allowed "Mission Meets Reality" contexts:**
+- `Fed UP: Where Mission Meets Reality` (current podcast subtitle)
+- `Introducing Mission Meets Reality` (historical 2026-01-31 article title)
+- `Episode 1: Mission Meets Reality` (historical 2026-01-31 article title)
+
+Any other occurrence, on any page, fails validation.
+
+Each pattern may also declare an optional `allowPaths` whitelist for
+legitimate non-drift uses on specific private ops pages.
 
 ```
 [
