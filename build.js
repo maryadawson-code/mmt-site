@@ -3056,6 +3056,18 @@ async function fetchPodcast() {
 async function build() {
   console.log('=== Mission Meets Tech Build ===\n');
 
+  // Force-clean dist/ at the start of every build. Netlify's default
+  // caches the publish directory between builds, which can let stale
+  // files survive when a source file that previously produced them is
+  // deleted or renamed. Wiping dist/ guarantees that every build
+  // produces a fresh, deterministic output that reflects only the
+  // current source tree. This is the fix for the class of drift
+  // where "source says X but live says Y" because an older dist file
+  // is still being served.
+  if (fs.existsSync(DIST_DIR)) {
+    fs.rmSync(DIST_DIR, { recursive: true, force: true });
+    console.log('Cleaned dist/ directory');
+  }
   ensureDir(DIST_DIR);
 
   // 0. Build Tailwind CSS
@@ -3137,6 +3149,48 @@ async function build() {
   // 6. Copy all static files (with build-time injections)
   console.log('\n--- Copying static files ---');
   copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleMap, agencyArticleMap, articles });
+
+  // 7. Write a deploy marker file. This is the simplest way to verify
+  // from outside the build pipeline whether a given commit actually
+  // reached production. The file is small and served as plain text at
+  // /deploy-id.txt. Your agent can fetch it to confirm which commit
+  // is currently live:
+  //   curl -s https://missionmeetstech.com/deploy-id.txt
+  // If the displayed SHA matches `git rev-parse HEAD` on main, the
+  // deploy landed. If not, Netlify is still building or the build
+  // failed and the previous deploy is still being served.
+  try {
+    const { execSync } = require('child_process');
+    let sha = 'unknown';
+    let branch = 'unknown';
+    try {
+      sha = execSync('git rev-parse HEAD', { cwd: __dirname }).toString().trim();
+      branch = execSync('git rev-parse --abbrev-ref HEAD', { cwd: __dirname }).toString().trim();
+    } catch (_) {
+      // On Netlify, git may not be available; fall back to env vars
+      sha = process.env.COMMIT_REF || process.env.GITHUB_SHA || 'unknown';
+      branch = process.env.BRANCH || process.env.HEAD || 'unknown';
+    }
+    const marker = [
+      `commit: ${sha}`,
+      `branch: ${branch}`,
+      `built:  ${new Date().toISOString()}`,
+      `netlify_context: ${process.env.CONTEXT || 'local'}`,
+      `netlify_deploy_id: ${process.env.DEPLOY_ID || 'n/a'}`,
+      '',
+      'This file is written by build.js at the end of every build.',
+      'It exists so that an external verifier can tell which commit',
+      'is currently live on missionmeetstech.com without trusting',
+      'the deploy summary or CDN cache alone.',
+      '',
+      'curl -s https://missionmeetstech.com/deploy-id.txt',
+      '',
+    ].join('\n');
+    fs.writeFileSync(path.join(DIST_DIR, 'deploy-id.txt'), marker);
+    console.log(`Wrote dist/deploy-id.txt (commit: ${sha.slice(0, 10)})`);
+  } catch (err) {
+    console.warn('Failed to write deploy marker:', err.message);
+  }
 
   console.log('\n=== Build complete! ===');
 

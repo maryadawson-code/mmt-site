@@ -360,6 +360,23 @@ requireString(
   'Editorial Standards: revenue language present'
 );
 
+// Deploy marker check — dist/deploy-id.txt must exist and must
+// contain a 40-char git SHA. This proves the build actually ran
+// (not a cached/stale dist/) and gives external verifiers a way
+// to confirm which commit is live on production.
+{
+  const markerPath = path.join(DIST_DIR, 'deploy-id.txt');
+  if (!fs.existsSync(markerPath)) {
+    addFailure('deploy marker: dist/deploy-id.txt missing', 'deploy-id.txt', '');
+  } else {
+    const contents = fs.readFileSync(markerPath, 'utf8');
+    const shaMatch = contents.match(/commit:\s*([0-9a-f]{7,40})/);
+    if (!shaMatch || shaMatch[1] === 'unknown') {
+      addFailure('deploy marker: commit SHA missing or unknown', 'deploy-id.txt', contents.slice(0, 80));
+    }
+  }
+}
+
 // --- Report ---
 
 const totalFiles = files.length;
