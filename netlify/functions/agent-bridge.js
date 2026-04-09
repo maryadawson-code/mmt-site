@@ -46,6 +46,62 @@ function stripHeavyFields(rows) {
   });
 }
 
+
+// Task deduplication system - emergency deployment 2026-04-09
+function generateTaskFingerprint(task, agent) {
+  const taskText = (task || '').toLowerCase();
+  const agentName = (agent || 'unknown').toLowerCase();
+  
+  // SSL patterns (EMERGENCY BLOCK)
+  if (taskText.includes('ssl') && taskText.includes('missionpulse.ai')) {
+    return `ssl-missionpulse-${agentName}`;
+  }
+  
+  // VHA OEM research patterns
+  if (taskText.includes('vha') && taskText.includes('oem')) {
+    return `vha-oem-research-${agentName}`;
+  }
+  
+  // CISO false positive patterns
+  if (taskText.includes('ciso') && (taskText.includes('false positive') || taskText.includes('ssl scanning'))) {
+    return `ciso-ssl-false-positive-${agentName}`;
+  }
+  
+  // Generic truncation
+  const truncated = taskText.substring(0, 50).replace(/[^a-z0-9]+/g, '-');
+  return `${truncated}-${agentName}`;
+}
+
+async function task_deduplication_check(supabase, task, agent) {
+  try {
+    const fingerprint = generateTaskFingerprint(task, agent);
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    
+    // Count recent tasks with same fingerprint
+    const { data: recentTasks } = await supabase
+      .from('task_queue')
+      .select('id')
+      .eq('status', 'pending')
+      .ilike('task', fingerprint.includes('ssl-missionpulse') ? '%ssl%missionpulse.ai%' : 
+            fingerprint.includes('vha-oem') ? '%vha%oem%' : 
+            '%' + task.substring(0, 20) + '%')
+      .gte('created_at', oneHourAgo);
+    
+    const recentCount = recentTasks?.length || 0;
+    
+    if (recentCount >= 3) {
+      console.log(`[DEDUP] Blocked duplicate task. Fingerprint: ${fingerprint}, Recent: ${recentCount}`);
+      return { allowed: false, reason: 'duplicate_rate_limit', fingerprint, recent_count: recentCount };
+    }
+    
+    return { allowed: true, fingerprint };
+  } catch (error) {
+    console.error('[DEDUP] Error in deduplication check:', error);
+    return { allowed: true, fingerprint: 'unknown' }; // Fail open
+  }
+}
+
+
 exports.handler = wrapHandler(async (event) => {
   const log = createLogger("agent-bridge");
   if (event.httpMethod === "OPTIONS") return { statusCode: 204, headers: HEADERS, body: "" };
