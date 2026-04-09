@@ -407,7 +407,11 @@ See `CLAUDE.md` for banned voice words, transitions, openers, and structures.
 
 ## 14. Acceptance criteria for deploy
 
-A build is only shippable if all of the following are true:
+A build is only shippable if all of the following are true. These checks
+run via `scripts/validate-dist.js` after `node build.js`, which walks
+every file under `dist/**/*.html` and fails the build if any pattern
+regresses. The build pipeline is `node scripts/sync-newsletters.js &&
+node build.js && node scripts/validate-dist.js`.
 
 1. **Build passes clean.** `node build.js` exits with no errors.
 2. **Dist nav consistency.** Every `dist/**/*.html` nav block contains
@@ -461,8 +465,77 @@ A build is only shippable if all of the following are true:
     the MarketPulse deliverable. "Brief" is the only canonical noun.
     "Consultant report" contrast phrasing is replaced with "consultant
     brief" or "two-week consulting engagement".
-20. **Integrity audit.** `node integrity-audit.js` returns `SUCCESS/SYNCED`
+20. **Weekly-cadence drift.** No public copy contains "weekly" or
+    "every week" when describing the newsletter cadence. The canonical
+    form is `twice a week` (or the adjectival `twice-weekly` /
+    `twice-a-week`). `weekly` on its own for the newsletter is
+    regression.
+21. **Integrity audit.** `node integrity-audit.js` returns `SUCCESS/SYNCED`
     against the production fortress worker (post-deploy only).
+
+## 14a. Automated sweep patterns
+
+`scripts/validate-dist.js` runs the following forbidden-pattern checks
+on every `dist/**/*.html` file and fails the build on any match.
+
+Each pattern has an optional `allowPaths` whitelist for legitimate
+non-drift uses (e.g., `command-center.html` is a private ops page and
+its "Data refreshes every 60 seconds" refers to an internal dashboard
+refresh interval, not ProposalPulse timing).
+
+```
+[
+  { name: 'Start Free',                     re: /Start Free/ },
+  { name: 'Proposal Pulse (with space)',    re: /Proposal Pulse/ },
+  { name: 'Market Pulse (with space)',      re: /Market Pulse/ },
+  { name: 'Not used for training',          re: /Not used for training/ },
+  { name: 'Not used as training data',      re: /Not used as training data/ },
+  { name: 'never trains on our data',       re: /never trains on our data/ },
+  { name: 'MissionPulse (platform name)',   re: /MissionPulse/ },
+  { name: 'bi-weekly cadence',              re: /bi-weekly|biweekly/i },
+  { name: 'newsletter every week',          re: /newsletter[^.]*every week|every week[^.]*newsletter/i },
+  { name: 'newsletter weekly (not twice)',  re: /Subscribe for weekly|newsletter[^.]*weekly(?!-|\s+twice)|weekly newsletter/i },
+  { name: 'ProposalPulse 60s drift',        re: /9 criteria in 60 seconds|specific fixes in 60 seconds/,
+    allowPaths: ['command-center.html'] },
+  { name: 'MarketPulse Report (stale)',     re: /MarketPulse Report|MarketPulse report|Your first report|additional reports/ },
+  { name: 'consultant report',              re: /consultant report/ },
+  { name: 'tailored report',                re: /tailored report/ },
+  { name: 'generate your report manually',  re: /generate your report manually/ },
+  { name: 'dark-mode token',                re: /#00E5FA|#00FF85|#00050F|Space Grotesk|nav-glass|nav-apple|--mmt-cyan|--mmt-dark|--mmt-slate/ },
+]
+```
+
+`scripts/validate-dist.js` also runs these shared-shell consistency
+checks on every `dist/**/*.html` that has a `<nav>` or
+`<footer class="wrap"`:
+
+- Nav block must contain `brand-mark`, `Choose a Tool`,
+  `/resources.html#paid-tools`, `/newsletter.html`, `/security.html`.
+- Footer block must contain `>Read<`, `>Tools<`, `>Reference<`,
+  `>Trust<`, plus links to `proposal-pulse.html`, `marketpulse.html`,
+  `contract-tracker.html`.
+
+Plus these structural checks on specific pages:
+
+- `dist/index.html` section order: `Quick intent selector` (section
+  label "Choose what you need now") before `Paid tools band` (section
+  label "For teams trying to win work") before `Buyer proof band`
+  ("Built for teams trying to qualify") before `Featured capture sheet`
+  (section label "Featured capture sheet").
+- `dist/index.html` contains the buyer-proof subhead ("Trusted in the
+  moments that matter most for federal growth teams").
+- `dist/index.html` contains all four use-case chips
+  (Before red team / gate review / leadership readout / partner outreach).
+- `dist/proposal-pulse.html` contains "Choose the level of review you
+  need" and that string appears before the `upload-card` div markup.
+- `dist/proposal-pulse.html` contains the SOW/PWS differentiator
+  ("Why a SOW or PWS changes the scorecard").
+- `dist/proposal-pulse.html` contains the canonical data-handling
+  snippet ("Original files are not stored" + "up to 90 days").
+- `dist/resources.html` contains `id="paid-tools"` and "I'm trying to
+  win work".
+- `dist/about.html` contains "Pick a path" and "Request a market brief".
+- `dist/podcast.html` contains "twice a week".
 
 ---
 

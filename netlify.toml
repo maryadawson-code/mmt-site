@@ -1,7 +1,10 @@
 [build]
   publish = "dist"
-  # Newsletter sync runs before build; set BUTTONDOWN_API_KEY env var for richer data
-  command = "node scripts/sync-newsletters.js; node build.js"
+  # Newsletter sync runs before build; set BUTTONDOWN_API_KEY env var for richer data.
+  # validate-dist.js fails the build if dist/ contains any public-facing
+  # drift pattern from docs/site-spec.md §14a. If it exits non-zero,
+  # Netlify will refuse to deploy.
+  command = "node scripts/sync-newsletters.js; node build.js && node scripts/validate-dist.js"
 
 [functions]
   directory = "netlify/functions"
