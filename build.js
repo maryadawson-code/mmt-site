@@ -1971,14 +1971,20 @@ function inlineTailwindCss(html) {
     </div>
   </footer>`;
 
-  // Replace old nav (any nav block with old content patterns)
-  // Check for old subscribe dropdown, old logo patterns, or missing brand-mark
-  const hasOldNavContent = html.includes('subscribeToggle') || html.includes('subscribePanel') ||
-    html.includes('nav-glass') || html.includes('nav-apple') ||
-    html.includes('mmt-shield-nav') || html.includes('nav-logo') || html.includes('nav-links') ||
-    html.includes('nav-cta') || (html.includes('<nav') && !html.includes('brand-mark') && !html.includes('mmt-shield-nav'));
-  if (hasOldNavContent) {
-    html = html.replace(/<nav[\s\S]*?<\/nav>/i, editorialNav);
+  // Replace old nav (any nav block that doesn't match the canonical editorial nav).
+  // The canonical nav has: brand-mark div, "Choose a Tool" button, and the six
+  // canonical links. If any of those markers is missing inside the <nav> block,
+  // the page has drifted and we replace the whole block.
+  const navBlockMatch = html.match(/<nav[\s\S]*?<\/nav>/i);
+  if (navBlockMatch) {
+    const navBlock = navBlockMatch[0];
+    const hasCanonicalNav =
+      navBlock.includes('brand-mark') &&
+      navBlock.includes('Choose a Tool') &&
+      navBlock.includes('/resources.html#paid-tools');
+    if (!hasCanonicalNav) {
+      html = html.replace(/<nav[\s\S]*?<\/nav>/i, editorialNav);
+    }
   }
 
   // Replace old footer. Anchor on `<footer class="wrap"` so we never
@@ -2149,11 +2155,10 @@ function inlineTailwindCss(html) {
 
   // ── Global fixes applied to ALL pages ──────────────────────
 
-  // Standardize non-canonical nav: remove ProposalPulse/MarketPulse/Getting Started from nav links
-  // These should only appear in homepage services grid + footer, per CLAUDE.md
-  html = html.replace(/<a href="proposal-pulse\.html"[^>]*>ProposalPulse<\/a>\s*/g, '');
-  html = html.replace(/<a href="marketpulse\.html"[^>]*>MarketPulse<\/a>\s*/g, '');
-  html = html.replace(/<a href="getting-started\.html"[^>]*>Getting Started<\/a>\s*/g, '');
+  // NOTE: The prior rule that stripped ProposalPulse/MarketPulse/Getting Started
+  // links globally has been removed. Per docs/site-spec.md and CLAUDE.md, products
+  // ARE in the main nav and MUST appear in the footer Tools column. The old
+  // rule caused 173 dist pages to render a Tools column with only Contract Tracker.
 
   // Fix glassmorphism dark cards across all pages
   html = html.replace(/background:\s*rgba\(10,22,40,0\.6\);\s*backdrop-filter:\s*blur\(16px\)/g,
