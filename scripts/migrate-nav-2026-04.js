@@ -5,7 +5,7 @@
  * Restructures the main desktop nav and mobile menu across every HTML
  * surface to match the new package canonical:
  *   Intelligence | ProposalPulse | MarketPulse | Resources | Podcast | About
- *   + Search + Start Free
+ *   + Search + Choose a Tool
  *
  * Old nav was: Analysis | Podcast | Intelligence Center | About + Subscribe.
  *
@@ -46,7 +46,7 @@ const newDesktopNav = `      <div class="hidden md:flex items-center gap-5">
         <a href="podcast.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Podcast</a>
         <a href="about.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">About</a>
         <button id="searchToggle" class="hover:opacity-70" style="color:var(--mmt-text-secondary);background:none;border:none;cursor:pointer;" aria-label="Search">${SEARCH_SVG}</button>
-        <a href="proposal-pulse.html" class="btn-primary no-underline" style="margin-left:8px;">Start Free</a>
+        <a href="resources.html#paid-tools" class="btn-primary no-underline" style="margin-left:8px;">Choose a Tool</a>
       </div>`;
 
 const newMobileMenu = `    <div id="mobileMenu" class="hidden md:hidden px-6 pb-4" style="background:var(--mmt-white);border-bottom:1px solid var(--mmt-border);">
@@ -58,7 +58,7 @@ const newMobileMenu = `    <div id="mobileMenu" class="hidden md:hidden px-6 pb-
         <a href="podcast.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Podcast</a>
         <a href="about.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">About</a>
         <div class="pt-3 mt-1" style="border-top:1px solid var(--mmt-border);">
-          <a href="proposal-pulse.html" class="btn-primary no-underline">Start Free</a>
+          <a href="resources.html#paid-tools" class="btn-primary no-underline">Choose a Tool</a>
         </div>
       </div>
     </div>`;

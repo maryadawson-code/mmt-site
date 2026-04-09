@@ -76,7 +76,7 @@
         <a href="podcast.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Podcast</a>
         <a href="about.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">About</a>
         <button id="searchToggle" class="hover:opacity-70" style="color:var(--mmt-text-secondary);background:none;border:none;cursor:pointer;" aria-label="Search"><svg width="16" height="16" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></button>
-        <a href="proposal-pulse.html" class="btn-primary no-underline" style="margin-left:8px;">Start Free</a>
+        <a href="resources.html#paid-tools" class="btn-primary no-underline" style="margin-left:8px;">Choose a Tool</a>
       </div>
       <button id="menuToggle" class="md:hidden" style="color:var(--mmt-navy);background:none;border:none;cursor:pointer;" aria-label="Toggle menu">
         <svg id="menuOpen" width="24" height="24" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
@@ -92,7 +92,7 @@
         <a href="podcast.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Podcast</a>
         <a href="about.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">About</a>
         <div class="pt-3 mt-1" style="border-top:1px solid var(--mmt-border);">
-          <a href="proposal-pulse.html" class="btn-primary no-underline">Start Free</a>
+          <a href="resources.html#paid-tools" class="btn-primary no-underline">Choose a Tool</a>
         </div>
       </div>
     </div>
@@ -116,10 +116,12 @@
       <div class="rounded-lg p-6" style="background:var(--mmt-soft);border:1px solid rgba(69,123,157,0.15);">
         <h2 class="text-base font-bold mb-3" style="color:var(--mmt-navy);">The short version</h2>
         <ul class="text-sm space-y-2 list-none p-0 m-0" style="color:var(--mmt-text);">
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#10003;</span> Your original files are never stored. We extract text, then discard the file.</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#10003;</span> Original files are not stored.</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#10003;</span> Extracted text may be retained for up to 90 days to support score retrieval and follow-up review.</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#10003;</span> Scorecards and related assessment outputs may be retained.</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#10003;</span> Data is processed by named service providers and is not used to train models.</li>
           <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#10003;</span> All data is encrypted in transit (TLS 1.2+) and at rest (AES-256).</li>
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#10003;</span> Your content is never used to train AI models.</li>
-          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#10003;</span> Document text is permanently purged after 90 days.</li>
+          <li class="flex items-start gap-2"><span style="color:var(--mmt-teal);" aria-hidden="true">&#10003;</span> Do not upload classified, ITAR/EAR, or otherwise restricted government material.</li>
         </ul>
       </div>
     </div>
@@ -132,11 +134,12 @@
         <h2 class="text-xl font-bold mb-3">What Happens When You Upload a Proposal</h2>
         <ol class="text-sm space-y-2 list-none p-0 m-0" style="color:var(--mmt-text); counter-reset:steps;">
           <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-teal);">1.</span> Document travels over TLS 1.2+ to our hosting provider's SOC 2 infrastructure.</li>
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-teal);">2.</span> We extract text. Original file is not stored.</li>
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-teal);">3.</span> Text sent to our AI analysis provider. Their policy: inputs never used to train models.</li>
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-teal);">4.</span> Scorecard stored in our database provider on cloud infrastructure, AES-256 encrypted at rest.</li>
-          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-teal);">5.</span> After 90 days, document text permanently purged. Scorecards retained.</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-teal);">2.</span> We extract text. The original file is not stored.</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-teal);">3.</span> Extracted text is processed by named service providers and is not used to train models.</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-teal);">4.</span> Scorecards and related assessment outputs are stored in our database provider on cloud infrastructure, AES-256 encrypted at rest.</li>
+          <li class="flex items-start gap-2"><span class="font-bold shrink-0" style="color:var(--mmt-teal);">5.</span> Extracted text may be retained for up to 90 days to support score retrieval and follow-up review. Scorecards and related assessment outputs may be retained beyond that.</li>
         </ol>
+        <p class="text-sm leading-relaxed mt-3" style="color:var(--mmt-text-secondary);">Do not upload classified, ITAR/EAR, or otherwise restricted government material.</p>
       </div>
 
       <div>

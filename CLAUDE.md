@@ -94,8 +94,8 @@ Before publishing any copy, ask: "Would Mary actually say this out loud to someo
 - Run `scripts/clean-source-theme.js` if needed (idempotent).
 
 ### Nav
-- Canonical (as of 2026-04-08, package override): Intelligence, ProposalPulse, MarketPulse, Resources, Podcast, About + Search + Start Free button
-- Start Free button points to /proposal-pulse.html
+- Canonical (as of 2026-04-09, package override): Intelligence, ProposalPulse, MarketPulse, Resources, Podcast, About + Search + Choose a Tool button
+- Choose a Tool button points to /resources.html#paid-tools (the paid tools band at the top of Resources). Do NOT regress to "Start Free" — there are two free-entry products.
 - Products ARE in the main nav. The prior rule keeping products out of the nav was explicitly overridden by user decision when adopting the GovCon-team-focused redesign package. The footer Tools column also surfaces them.
 
 ### Footer

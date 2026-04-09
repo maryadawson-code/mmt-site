@@ -904,6 +904,7 @@
       .upload-zone { padding: 2rem 1.25rem; }
       .upload-card { padding: 1.5rem; }
       .pill { padding: 0.55rem 0.9rem; }
+      .pp-free-paid-grid { grid-template-columns: 1fr !important; }
     }
 
     /* ===== REDUCED MOTION ===== */
@@ -963,7 +964,7 @@
         <a href="podcast.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Podcast</a>
         <a href="about.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">About</a>
         <button id="searchToggle" class="hover:opacity-70" style="color:var(--mmt-text-secondary);background:none;border:none;cursor:pointer;" aria-label="Search"><svg width="16" height="16" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></button>
-        <a href="proposal-pulse.html" class="btn-primary no-underline" style="margin-left:8px;">Start Free</a>
+        <a href="resources.html#paid-tools" class="btn-primary no-underline" style="margin-left:8px;">Choose a Tool</a>
       </div>
       <button id="menuToggle" class="md:hidden" style="color:var(--mmt-navy);background:none;border:none;cursor:pointer;" aria-label="Toggle menu">
         <svg id="menuOpen" width="24" height="24" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
@@ -979,7 +980,7 @@
         <a href="podcast.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Podcast</a>
         <a href="about.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">About</a>
         <div class="pt-3 mt-1" style="border-top:1px solid var(--mmt-border);">
-          <a href="proposal-pulse.html" class="btn-primary no-underline">Start Free</a>
+          <a href="resources.html#paid-tools" class="btn-primary no-underline">Choose a Tool</a>
         </div>
       </div>
     </div>
@@ -1122,6 +1123,45 @@
     </div>
   </section>
 
+  <!-- Free vs Paid comparison -->
+  <section style="margin:0 -20px 32px;padding:40px 20px;background:var(--mmt-soft);border-radius:16px;">
+    <div style="text-align:center;margin-bottom:28px;">
+      <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:var(--mmt-teal);margin-bottom:10px;">Free vs paid</div>
+      <h2 style="font-family:'Inter',system-ui,sans-serif;font-size:clamp(22px,2.5vw,30px);font-weight:800;letter-spacing:-0.02em;color:var(--mmt-navy);margin-bottom:8px;">Choose the level of review you need.</h2>
+      <p style="font-size:15px;color:var(--mmt-text-secondary);max-width:620px;margin:0 auto;">Start with the scorecard. Unlock the full rewrite and executive review when you need the deeper pass.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:820px;margin:0 auto;" class="pp-free-paid-grid">
+      <div style="padding:24px 26px;background:#fff;border:1px solid rgba(69,123,157,0.18);border-radius:12px;display:flex;flex-direction:column;gap:14px;">
+        <div>
+          <div style="font-size:11px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--mmt-text-secondary);margin-bottom:6px;">Free assessment</div>
+          <div style="font-size:22px;font-weight:900;color:var(--mmt-navy);line-height:1.15;">1 free assessment</div>
+          <div style="font-size:13px;color:var(--mmt-text-secondary);margin-top:4px;">No credit card. 30&ndash;90 seconds.</div>
+        </div>
+        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;">
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--mmt-text);line-height:1.55;"><span style="color:var(--mmt-teal);font-weight:800;flex-shrink:0;">&#10003;</span>Evaluator-style scorecard across 9 criteria</li>
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--mmt-text);line-height:1.55;"><span style="color:var(--mmt-teal);font-weight:800;flex-shrink:0;">&#10003;</span>Top risks, flagged and explained</li>
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--mmt-text);line-height:1.55;"><span style="color:var(--mmt-teal);font-weight:800;flex-shrink:0;">&#10003;</span>Prioritized fixes with evidence from your document</li>
+        </ul>
+      </div>
+      <div style="padding:24px 26px;background:#fff;border:2px solid var(--mmt-navy);border-radius:12px;display:flex;flex-direction:column;gap:14px;">
+        <div>
+          <div style="font-size:11px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--mmt-teal);margin-bottom:6px;">Paid assessment</div>
+          <div style="font-size:22px;font-weight:900;color:var(--mmt-navy);line-height:1.15;">$19.99 per additional</div>
+          <div style="font-size:13px;color:var(--mmt-text-secondary);margin-top:4px;">Full Gold Team Review, delivered by email.</div>
+        </div>
+        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;">
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--mmt-text);line-height:1.55;"><span style="color:var(--mmt-teal);font-weight:800;flex-shrink:0;">&#10003;</span>Full Gold Team Review</li>
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--mmt-text);line-height:1.55;"><span style="color:var(--mmt-teal);font-weight:800;flex-shrink:0;">&#10003;</span>Section-by-section rewrites across all 9 categories</li>
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--mmt-text);line-height:1.55;"><span style="color:var(--mmt-teal);font-weight:800;flex-shrink:0;">&#10003;</span>pWin estimate</li>
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--mmt-text);line-height:1.55;"><span style="color:var(--mmt-teal);font-weight:800;flex-shrink:0;">&#10003;</span>Executive change summary</li>
+        </ul>
+      </div>
+    </div>
+    <div style="margin:22px auto 0;max-width:820px;padding:14px 18px;background:rgba(69,123,157,0.05);border-left:3px solid var(--mmt-teal);border-radius:6px;font-size:13px;color:var(--mmt-text);line-height:1.55;">
+      <strong style="color:var(--mmt-navy);">Need ProposalPulse for a team?</strong> Pooled credits, repeat reviews, and pre-red-team workflow. <a href="mailto:mary@missionmeetstech.com?subject=ProposalPulse%20team%20access" style="color:var(--mmt-teal);font-weight:700;text-decoration:none;">Talk to us about team access &rarr;</a>
+    </div>
+  </section>
+
   <div id="upload-error" class="error-banner" role="alert">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 10.5a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5zM8.75 4v4.5h-1.5V4h1.5z"/></svg>
     <div>
@@ -1236,7 +1276,7 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--primary-cyan); flex-shrink:0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           <p style="font-family:var(--font-heading); font-size:0.8rem; font-weight:600; color:var(--primary-cyan); margin:0;">Your Data Stays Yours</p>
         </div>
-        <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.6; margin:0;">Documents submitted to ProposalPulse are used only to generate your requested analysis. Your content is not stored after processing, not shared with third parties, and not used to train AI models. Analysis is processed through our AI analysis provider under strict data handling policies. Do not submit classified, export-controlled (ITAR/EAR), or government-restricted information. Questions? <a href="mailto:mary@missionmeetstech.com" style="color:var(--primary-cyan); text-decoration:none;">mary@missionmeetstech.com</a></p>
+        <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.6; margin:0;">Original files are not stored. Extracted text may be retained for up to 90 days to support score retrieval and follow-up review. Scorecards and related assessment outputs may be retained. Data is processed by named service providers and is not used to train models. Do not upload classified, ITAR/EAR, or otherwise restricted government material. Questions? <a href="mailto:mary@missionmeetstech.com" style="color:var(--primary-cyan); text-decoration:none;">mary@missionmeetstech.com</a></p>
       </div>
     </div>
   </div>
@@ -1349,7 +1389,7 @@
       <div style="display:flex;flex-direction:column;gap:12px;">
         <details style="border:1px solid rgba(69,123,157,0.12);border-radius:10px;padding:0;">
           <summary style="padding:16px 20px;font-size:15px;font-weight:600;color:var(--mmt-navy);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;">What happens to my document?<span style="color:var(--mmt-teal);font-size:18px;transition:transform 0.2s;">+</span></summary>
-          <div style="padding:0 20px 16px;font-size:14px;color:var(--text-secondary);line-height:1.65;">Your file is sent directly to our analysis provider for scoring, then discarded. It is not saved to disk, not shared with any third party, and not used as training data. We keep your scores for 90 days so you can reference them &mdash; the original file is gone after your session ends.</div>
+          <div style="padding:0 20px 16px;font-size:14px;color:var(--text-secondary);line-height:1.65;">Original files are not stored. Extracted text may be retained for up to 90 days to support score retrieval and follow-up review. Scorecards and related assessment outputs may be retained. Data is processed by named service providers and is not used to train models. Do not upload classified, ITAR/EAR, or otherwise restricted government material.</div>
         </details>
         <details style="border:1px solid rgba(69,123,157,0.12);border-radius:10px;padding:0;">
           <summary style="padding:16px 20px;font-size:15px;font-weight:600;color:var(--mmt-navy);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;">What kinds of documents work best?<span style="color:var(--mmt-teal);font-size:18px;transition:transform 0.2s;">+</span></summary>
@@ -1375,7 +1415,7 @@
         <div style="flex:1;min-width:240px;">
           <p class="text-xs font-bold uppercase tracking-wider mb-2" style="color:var(--mmt-teal);">Also from Mission Meets Tech</p>
           <h3 class="text-xl font-bold mb-2" style="color:var(--mmt-navy);">Market<span style="color:var(--mmt-teal);">Pulse</span></h3>
-          <p class="text-sm" style="color:var(--mmt-text-secondary);">Ask any federal health IT market question. Get a live-sourced, fact-checked research brief in your inbox within 24 hours. First report free.</p>
+          <p class="text-sm" style="color:var(--mmt-text-secondary);">Ask any federal health IT market question. Get a source-cited brief in your inbox within 24 hours. 1 free brief.</p>
         </div>
         <a href="marketpulse.html" class="btn-primary no-underline" style="white-space:nowrap;">Try MarketPulse</a>
       </div>
