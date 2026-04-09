@@ -52,6 +52,29 @@ const PATTERNS = [
   { name: 'Not used for training',             re: /Not used for training/ },
   { name: 'Not used as training data',         re: /Not used as training data/ },
   { name: 'never trains on our data',          re: /never trains on our data/ },
+  // HTML-tag-split "Not used...for training" drift. The trust-chip on
+  // marketpulse.html used to render as <strong>Not used</strong> for
+  // training, so a string-level regex for "Not used for training" missed
+  // it. This rule catches any "Not used" followed by " for training"
+  // within ~60 chars of HTML markup.
+  {
+    name: 'HTML-split "Not used ... for training"',
+    re: /Not used<\/\w+>\s*for training/,
+  },
+  // Two-tone product-name splits. "Proposal<span>Pulse</span>" visually
+  // renders as "ProposalPulse" but HTML text extractors and parsers
+  // sometimes insert whitespace between adjacent inline nodes,
+  // producing "Proposal Pulse" (with space) in screen-reader output,
+  // accessibility tools, and RSS/feed consumers. Canonical form is a
+  // single text node.
+  {
+    name: 'Two-tone product name split (Proposal<span>Pulse)',
+    re: /Proposal<span[^>]*>Pulse<\/span>/,
+  },
+  {
+    name: 'Two-tone product name split (Market<span>Pulse)',
+    re: /Market<span[^>]*>Pulse<\/span>/,
+  },
   { name: 'MissionPulse (platform name)',      re: /MissionPulse/ },
   { name: 'bi-weekly cadence',                 re: /bi-weekly|biweekly/i },
   { name: 'newsletter every-week drift',       re: /newsletter[^.]*every week|every week[^.]*newsletter/i },
@@ -227,19 +250,33 @@ requireString(idx, 'Before gate review', 'homepage: use-case chip "Before gate r
 requireString(idx, 'Before leadership readout', 'homepage: use-case chip "Before leadership readout" present');
 requireString(idx, 'Before partner outreach', 'homepage: use-case chip "Before partner outreach" present');
 
-// Section-order check. The "Featured capture sheet" label appears twice on
-// index.html — once in the hero panel eyebrow and once as a section label.
-// The second occurrence (section label) must come AFTER the buyer-proof
-// headline, not before.
+// Homepage section-order check. Strict requirements:
+//   1. "Featured capture sheet" must appear EXACTLY ONCE on index.html.
+//      Previous builds had an early hero-panel "★ Featured capture sheet"
+//      label rendered BEFORE the quick selector, which interrupted the
+//      first commercial sequence. Only the dedicated section label
+//      (after the buyer-proof band) is allowed.
+//   2. Strict order: Quick intent selector -> Paid tools band ->
+//      Buyer proof band -> Featured capture sheet (section label).
+//   3. Any duplicate or out-of-order occurrence is a fail.
 const idxHtml = fs.readFileSync(path.join(DIST_DIR, idx), 'utf8');
 {
+  // Count "Featured capture sheet" occurrences. Exactly 1 is allowed.
+  const fcMatches = idxHtml.match(/Featured capture sheet/g) || [];
+  if (fcMatches.length === 0) {
+    addFailure('homepage: missing "Featured capture sheet" section', idx, '');
+  } else if (fcMatches.length > 1) {
+    addFailure(
+      `homepage: "Featured capture sheet" appears ${fcMatches.length} times (expected 1) — early hero-panel block must be removed`,
+      idx,
+      ''
+    );
+  }
+
   const quick = idxHtml.indexOf('Choose what you need now');
   const paid = idxHtml.indexOf('For teams trying to win work');
   const buyer = idxHtml.indexOf('Built for teams trying to qualify');
-  // Find the SECTION label for Featured capture sheet (the second occurrence)
-  const firstFC = idxHtml.indexOf('Featured capture sheet');
-  const secondFC = idxHtml.indexOf('Featured capture sheet', firstFC + 1);
-  const featured = secondFC >= 0 ? secondFC : firstFC;
+  const featured = idxHtml.indexOf('Featured capture sheet');
   const order = [
     ['Quick intent selector', quick],
     ['Paid tools band', paid],
