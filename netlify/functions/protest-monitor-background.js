@@ -2,8 +2,8 @@
 // protest-monitor-background.js — Netlify Background Function
 //
 // Daily at 8 AM ET (12:00 UTC): checks GAO protest status for
-// all active cases in the protest_monitor table using Perplexity
-// Sonar Pro. Sends email alert on status changes.
+// all active cases in the protest_monitor table using Claude
+// Sonnet + web_search. Sends email alert on status changes.
 //
 // Schedule configured in netlify.toml:
 //   [functions."protest-monitor"]
@@ -12,95 +12,13 @@
 
 const { createClient } = require("@supabase/supabase-js");
 const { getModelConfig } = require("./lib/model-router");
-const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
-const { withRetry } = require("./lib/retry");
 const { sendEmail } = require("./lib/send-email");
 const { checkKillSwitch } = require("./lib/kill-switch");
-const { trackPerplexity } = require("./lib/cost-tracker");
+const { callClaudeSearchJSON } = require("./lib/claude-search");
 
 // --- Constants ---
-const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
-
-// --- Perplexity API call (reused pattern from contract-intel-refresh) ---
-
-async function callPerplexity(systemPrompt, userMessage, model, maxTokens, _supabase) {
-  const _t = Date.now();
-  const response = await withRetry(() => fetchWithTimeout("https://api.perplexity.ai/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${PERPLEXITY_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model,
-      max_tokens: maxTokens,
-      temperature: 0.3,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userMessage },
-      ],
-    }),
-  }));
-
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Perplexity API error ${response.status}: ${errText}`);
-  }
-
-  const finalData = await response.json();
-
-  if (finalData.usage) {
-    const u = finalData.usage;
-    console.log(`  AI cost: model=${model}, input=${u.prompt_tokens}, output=${u.completion_tokens}`);
-  }
-
-  // Cost tracking
-  if (_supabase) {
-    try {
-      await trackPerplexity(_supabase, { functionName: 'protest-monitor-background', product: 'mmt-intel', model, usage: { input_tokens: finalData.usage?.prompt_tokens, output_tokens: finalData.usage?.completion_tokens }, latencyMs: Date.now() - _t });
-    } catch (_costErr) { /* never break parent */ }
-  }
-
-  let textContent = finalData.choices?.[0]?.message?.content || "";
-
-  // Strip inline citation markers
-  textContent = textContent.replace(/\[\d+\]/g, "");
-
-  // Clean and parse JSON
-  function cleanJson(str) {
-    str = str.replace(/,\s*([\]}])/g, "$1");
-    str = str.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, "");
-    return str;
-  }
-
-  function extractJsonString(text) {
-    try { return JSON.parse(cleanJson(text)); } catch { /* continue */ }
-
-    const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
-    if (jsonMatch) {
-      try { return JSON.parse(cleanJson(jsonMatch[1].trim())); } catch { /* continue */ }
-    }
-
-    const braceStart = text.indexOf("{");
-    const braceEnd = text.lastIndexOf("}");
-    if (braceStart >= 0 && braceEnd > braceStart) {
-      const candidate = text.substring(braceStart, braceEnd + 1);
-      try { return JSON.parse(cleanJson(candidate)); } catch { /* continue */ }
-    }
-
-    return null;
-  }
-
-  const parsed = extractJsonString(textContent);
-  if (!parsed) {
-    console.error("JSON parse failed. First 500 chars:", textContent.substring(0, 500));
-    throw new Error(`Could not parse JSON from Perplexity response (${textContent.length} chars)`);
-  }
-
-  return parsed;
-}
 
 // --- Email template for protest status alert ---
 
@@ -229,8 +147,8 @@ exports.handler = async (event) => {
 
   console.log("Protest monitor triggered:", new Date().toISOString());
 
-  if (!PERPLEXITY_API_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
-    console.error("Missing required env vars (PERPLEXITY_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY)");
+  if (!process.env.ANTHROPIC_API_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+    console.error("Missing required env vars (ANTHROPIC_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY)");
     return { statusCode: 500, body: "Missing env vars" };
   }
 
@@ -286,10 +204,14 @@ Return ONLY valid JSON.`;
 
       const userMessage = `Check the current status of GAO protest case ${caseRow.case_number} filed by ${caseRow.protester} against ${caseRow.agency} regarding solicitation ${caseRow.solicitation_number}. The case was filed on ${caseRow.filed_date} with a due date of ${caseRow.due_date}. Last known status: ${caseRow.status}.`;
 
-      if (modelConfig.provider !== "perplexity" || !PERPLEXITY_API_KEY) {
-        throw new Error(`protest_monitor requires Perplexity (provider=${modelConfig.provider}). Ensure PERPLEXITY_API_KEY is set.`);
-      }
-      const result = await callPerplexity(systemPrompt, userMessage, modelConfig.model, 4000, supabase);
+      const { parsed: result } = await callClaudeSearchJSON(systemPrompt, userMessage, {
+        model: modelConfig.model,
+        maxTokens: 4000,
+        temperature: 0.3,
+        supabase,
+        functionName: "protest-monitor-background",
+        product: "mmt-intel",
+      });
 
       // Compare status
       const statusChanged = result.current_status && result.current_status !== caseRow.last_status;

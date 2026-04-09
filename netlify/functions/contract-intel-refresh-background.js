@@ -2,8 +2,8 @@
 // contract-intel-refresh-background.js — Netlify Background Function
 //
 // Daily at 6 AM ET (11:00 UTC): researches each contract in
-// contracts.json using Perplexity API (sonar model with built-in
-// web search), then stores structured intel + BLACK HAT analysis
+// contracts.json using Claude API (Sonnet + web_search tool),
+// then stores structured intel + BLACK HAT analysis
 // in Supabase.
 //
 // Schedule configured in netlify.toml:
@@ -22,13 +22,14 @@ const { logOpsEvent } = require("./lib/ops-ledger");
 const { checkKillSwitch } = require("./lib/kill-switch");
 const { checkFreshness } = require("./lib/stale-detector");
 const { disambiguate } = require("./lib/entity-disambiguator");
-const { trackPerplexity } = require("./lib/cost-tracker");
+const { trackAnthropic } = require("./lib/cost-tracker");
 
 // --- Module-scoped state for cost tracking ---
 let _supabaseRef = null;
 
 // --- Constants ---
-const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const NETLIFY_BUILD_HOOK_URL = process.env.NETLIFY_BUILD_HOOK_URL;
@@ -258,33 +259,32 @@ Return ONLY valid JSON. No markdown code fences. No text before or after the JSO
 
 
 // ============================================================
-// HELPER: Call Perplexity API (OpenAI-compatible) and parse JSON
-// Perplexity sonar models have built-in web search — no tool needed.
-// Citations are returned in the response object.
+// HELPER: Call Claude API with web_search tool and parse JSON
+// Replaces Perplexity sonar-pro. Uses Anthropic web_search_20250305.
 // ============================================================
 
-async function callPerplexity(systemPrompt, userMessage, _maxSearches, model, maxTokens) {
+async function callClaudeSearch(systemPrompt, userMessage, _maxSearches, model, maxTokens) {
   const _costStart = Date.now();
-  const response = await withRetry(() => fetchWithTimeout("https://api.perplexity.ai/chat/completions", {
+  const response = await withRetry(() => fetchWithTimeout(ANTHROPIC_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${PERPLEXITY_API_KEY}`,
+      "x-api-key": ANTHROPIC_API_KEY,
+      "anthropic-version": "2023-06-01",
     },
     body: JSON.stringify({
       model,
       max_tokens: maxTokens,
       temperature: 0.3,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userMessage },
-      ],
+      system: systemPrompt,
+      messages: [{ role: "user", content: userMessage }],
+      tools: [{ type: "web_search_20250305" }],
     }),
   }));
 
   if (!response.ok) {
     const errText = await response.text();
-    throw new Error(`Perplexity API error ${response.status}: ${errText}`);
+    throw new Error(`Anthropic API error ${response.status}: ${errText}`);
   }
 
   const finalData = await response.json();
@@ -292,30 +292,37 @@ async function callPerplexity(systemPrompt, userMessage, _maxSearches, model, ma
   // Log token usage
   if (finalData.usage) {
     const u = finalData.usage;
-    console.log(`  AI cost: model=${model}, input=${u.prompt_tokens}, output=${u.completion_tokens}`);
+    console.log(`  AI cost: model=${model}, input=${u.input_tokens}, output=${u.output_tokens}`);
   }
 
-  // Cost tracking: Perplexity call
+  // Cost tracking: Anthropic call
   try {
     if (_supabaseRef) {
-      await trackPerplexity(_supabaseRef, {
+      await trackAnthropic(_supabaseRef, {
         functionName: 'contract-intel-refresh-background',
         product: 'contract-intel',
         model: model,
-        usage: finalData.usage ? { input_tokens: finalData.usage.prompt_tokens || 0, output_tokens: finalData.usage.completion_tokens || 0 } : null,
+        usage: finalData.usage ? { input_tokens: finalData.usage.input_tokens || 0, output_tokens: finalData.usage.output_tokens || 0 } : null,
         latencyMs: Date.now() - _costStart,
       });
     }
   } catch (_costErr) { /* never break contract refresh */ }
 
-  // Extract text from OpenAI-compatible response
-  let textContent = finalData.choices?.[0]?.message?.content || "";
-
-  // Extract citation URLs returned by Perplexity
-  const searchSources = Array.isArray(finalData.citations) ? finalData.citations : [];
-
-  // Strip inline citation markers like [1], [2] that Perplexity injects
-  textContent = textContent.replace(/\[\d+\]/g, "");
+  // Extract text and citations from Claude web_search response
+  let textContent = "";
+  const searchSources = [];
+  for (const block of (finalData.content || [])) {
+    if (block.type === "text") {
+      textContent += block.text;
+    }
+    if (block.type === "web_search_tool_result") {
+      for (const sr of (block.content || [])) {
+        if (sr.type === "web_search_result" && sr.url) {
+          searchSources.push(sr.url);
+        }
+      }
+    }
+  }
 
   // Clean up common JSON issues
   function cleanJson(str) {
@@ -353,7 +360,7 @@ async function callPerplexity(systemPrompt, userMessage, _maxSearches, model, ma
   if (!parsed) {
     console.error("JSON parse failed. First 500 chars:", textContent.substring(0, 500));
     console.error("Last 500 chars:", textContent.substring(Math.max(0, textContent.length - 500)));
-    throw new Error(`Could not parse JSON from Perplexity response (${textContent.length} chars)`);
+    throw new Error(`Could not parse JSON from Claude response (${textContent.length} chars)`);
   }
 
   return { parsed, searchSources };
@@ -379,7 +386,7 @@ ${contract.research_focus ? `\nRESEARCH PRIORITIES (search for these FIRST):\n${
 
 Search SAM.gov, USASpending.gov, FedScoop, Nextgov/FCW, MeriTalk, Healthcare IT News, GAO, CRS, and agency sites. NOTE: FPDS ATOM feed retiring summer 2026 — use SAM.gov API as canonical source. Include confidence percentages on every claim. Return JSON with "intel", "black_hat", and "sources" keys.`;
 
-  const { parsed: research, searchSources: researchSources } = await callPerplexity(
+  const { parsed: research, searchSources: researchSources } = await callClaudeSearch(
     RESEARCH_PROMPT, researchMessage, 5, researchModel.model, 8000
   );
 
@@ -425,7 +432,7 @@ ${JSON.stringify({ intel, black_hat: blackHat }, null, 2)}
 
 Use web search to spot-check the most important claims: dollar amounts, dates, contract actions, organizational roles, and any claims rated below 70% confidence. Return the verification JSON.`;
 
-    const { parsed: verification, searchSources: verifySources } = await callPerplexity(
+    const { parsed: verification, searchSources: verifySources } = await callClaudeSearch(
       VERIFY_PROMPT, verifyMessage, 3, verifyModel.model, 4000
     );
 
@@ -496,8 +503,8 @@ exports.handler = async (event) => {
 
   console.log("Contract intel refresh triggered:", new Date().toISOString());
 
-  if (!PERPLEXITY_API_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
-    console.error("Missing required env vars (PERPLEXITY_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY)");
+  if (!ANTHROPIC_API_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+    console.error("Missing required env vars (ANTHROPIC_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY)");
     return { statusCode: 500, body: "Missing env vars" };
   }
 
@@ -695,7 +702,7 @@ exports.handler = async (event) => {
   }
 
   // Log to ops_events with cost estimate
-  // Perplexity sonar-pro: ~$5/1000 requests. 2 calls per contract (research + verify).
+  // Claude Sonnet + web_search: ~$3-6 per 1000 requests. 2 calls per contract (research + verify).
   const totalCalls = successCount * 2;
   const costEstimate = totalCalls * 0.005;
 

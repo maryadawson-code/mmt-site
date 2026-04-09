@@ -7,7 +7,7 @@
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
-const { trackPerplexity, trackOpenAI, trackGoogle } = require("./lib/cost-tracker");
+const { trackAnthropic, trackOpenAI, trackGoogle } = require("./lib/cost-tracker");
 const { validateAuth } = require("./lib/auth");
 
 const HEADERS = {
@@ -31,31 +31,47 @@ exports.handler = async (event) => {
   let body;
   try { body = JSON.parse(event.body); } catch { return { statusCode: 400, headers: HEADERS, body: '{"error":"Invalid JSON"}' }; }
 
-  const { query, providers = ["perplexity", "chatgpt", "gemini"] } = body;
+  const { query, providers = ["claude", "chatgpt", "gemini"] } = body;
   const results = {};
   const tasks = [];
   const supabase = (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) ? createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY) : null;
 
-  if (providers.includes("perplexity") && process.env.PERPLEXITY_API_KEY) {
+  // Support legacy "perplexity" provider name — routes to Claude web_search
+  const wantsClaudeSearch = providers.includes("claude") || providers.includes("perplexity");
+  if (wantsClaudeSearch && process.env.ANTHROPIC_API_KEY) {
     tasks.push((async () => {
       const _t = Date.now();
       try {
-        const resp = await fetch("https://api.perplexity.ai/chat/completions", {
+        const resp = await fetch("https://api.anthropic.com/v1/messages", {
           method: "POST",
-          headers: { Authorization: `Bearer ${process.env.PERPLEXITY_API_KEY}`, "Content-Type": "application/json" },
+          headers: { "x-api-key": process.env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "Content-Type": "application/json" },
           body: JSON.stringify({
-            model: "sonar",
-            messages: [{ role: "system", content: SYSTEM_PROMPT }, { role: "user", content: query }],
+            model: "claude-sonnet-4-5-20250514",
+            max_tokens: 4000,
+            system: SYSTEM_PROMPT,
+            messages: [{ role: "user", content: query }],
+            tools: [{ type: "web_search_20250305" }],
+            temperature: 0.3,
           }),
         });
-        if (!resp.ok) throw new Error(`Perplexity ${resp.status}`);
+        if (!resp.ok) throw new Error(`Anthropic ${resp.status}`);
         const data = await resp.json();
-        results.perplexity = { answer: data.choices[0].message.content, citations: data.citations || [], model: "sonar" };
-        if (supabase) { try { await trackPerplexity(supabase, { functionName: 'ai-research', product: 'mmt-intel', model: 'sonar', usage: data.usage, latencyMs: Date.now() - _t }); } catch (_e) { /* never break parent */ } }
-      } catch (e) { results.perplexity = { error: e.message }; }
+        let answer = "";
+        const citations = [];
+        for (const block of (data.content || [])) {
+          if (block.type === "text") answer += block.text;
+          if (block.type === "web_search_tool_result") {
+            for (const sr of (block.content || [])) {
+              if (sr.type === "web_search_result" && sr.url) citations.push(sr.url);
+            }
+          }
+        }
+        results.claude = { answer, citations, model: "claude-sonnet-4-5-20250514" };
+        if (supabase) { try { await trackAnthropic(supabase, { functionName: 'ai-research', product: 'mmt-intel', model: 'claude-sonnet-4-5-20250514', usage: data.usage, latencyMs: Date.now() - _t }); } catch (_e) { /* never break parent */ } }
+      } catch (e) { results.claude = { error: e.message }; }
     })());
-  } else if (providers.includes("perplexity")) {
-    results.perplexity = { error: "PERPLEXITY_API_KEY not configured" };
+  } else if (wantsClaudeSearch) {
+    results.claude = { error: "ANTHROPIC_API_KEY not configured" };
   }
 
   if (providers.includes("chatgpt") && process.env.OPENAI_API_KEY) {

@@ -52,38 +52,8 @@ exports.handler = async () => {
     }
   }
 
-  // --- Check Perplexity API Key (MarketPulse) ---
-  const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
-  if (!PERPLEXITY_API_KEY) {
-    failures.push("PERPLEXITY_API_KEY is not set in environment variables");
-  } else {
-    try {
-      const res = await fetch("https://api.perplexity.ai/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${PERPLEXITY_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: "sonar",
-          messages: [{ role: "user", content: "Reply with OK" }],
-          max_tokens: 5,
-        }),
-      });
-      if (res.status === 401) {
-        failures.push("PERPLEXITY_API_KEY is invalid (401 Unauthorized)");
-      } else if (res.status === 403) {
-        failures.push("PERPLEXITY_API_KEY is forbidden (403)");
-      } else if (!res.ok && res.status !== 429) {
-        const errText = await res.text();
-        failures.push(`Perplexity API returned ${res.status}: ${errText.slice(0, 200)}`);
-      } else {
-        console.log("Perplexity API key: OK");
-      }
-    } catch (err) {
-      failures.push(`Perplexity API unreachable: ${err.message}`);
-    }
-  }
+  // --- Perplexity removed — all web search now via Claude web_search tool ---
+  // ANTHROPIC_API_KEY is already checked above and covers research tasks.
 
   // --- Check Resend API Key ---
   const RESEND_API_KEY = process.env.RESEND_API_KEY;

@@ -1,16 +1,16 @@
 // competitive-scan.js — Weekly competitive intelligence scan
 // Schedule: 0 14 * * 1 (Monday 2PM UTC / 10AM ET)
-// Uses Perplexity to research competitors, creates alerts for new developments
+// Uses Claude + web_search to research competitors, creates alerts for new developments
 
 const { createClient } = require("@supabase/supabase-js");
+const { callClaudeSearch } = require("./lib/claude-search");
 
 exports.handler = async () => {
   const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
-  const PERPLEXITY_KEY = process.env.PERPLEXITY_API_KEY;
   const results = { scanned: 0, alerts: 0, errors: [] };
 
-  if (!PERPLEXITY_KEY) {
-    console.log("[competitive-scan] No PERPLEXITY_API_KEY, skipping");
+  if (!process.env.ANTHROPIC_API_KEY) {
+    console.log("[competitive-scan] No ANTHROPIC_API_KEY, skipping");
     return { statusCode: 200, body: JSON.stringify({ skipped: true, reason: "No API key" }) };
   }
 
@@ -20,23 +20,12 @@ exports.handler = async () => {
     try {
       const query = `What are the latest news, product updates, pricing changes, or announcements from ${comp.name} (${comp.website}) in the last 7 days? Focus on: new products, pricing changes, funding, partnerships, government contracts. Be specific with dates and sources.`;
 
-      const res = await fetch("https://api.perplexity.ai/chat/completions", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${PERPLEXITY_KEY}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "sonar",
-          messages: [{ role: "user", content: query }],
-          max_tokens: 1000,
-        }),
-      });
-
-      if (!res.ok) {
-        results.errors.push({ competitor: comp.name, error: `HTTP ${res.status}` });
-        continue;
-      }
-
-      const data = await res.json();
-      const content = data.choices?.[0]?.message?.content || "";
+      const result = await callClaudeSearch(
+        "You are a competitive intelligence analyst. Be specific with dates and sources.",
+        query,
+        { maxTokens: 1000, temperature: 0.3, supabase: sb, functionName: "competitive-scan", product: "mmt-intel" }
+      );
+      const content = result.content || "";
 
       // Check if there's anything new compared to last research
       const hasNewInfo = content.length > 100

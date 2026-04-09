@@ -82,9 +82,10 @@ exports.handler = async (event) => {
     status: process.env.SENTRY_DSN ? "configured" : "missing",
   };
 
-  // --- Perplexity (contract intel) ---
-  checks.perplexity = {
-    status: process.env.PERPLEXITY_API_KEY ? "configured" : "missing",
+  // --- Anthropic (research + contract intel via web_search) ---
+  checks.anthropic_research = {
+    status: process.env.ANTHROPIC_API_KEY ? "configured" : "missing",
+    note: "Replaces Perplexity sonar-pro for all web search tasks",
   };
 
   // --- Edge functions list ---

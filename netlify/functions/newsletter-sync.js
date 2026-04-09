@@ -4,7 +4,7 @@
 // Runs Tuesday and Friday at 6 PM ET (23:00 UTC) to check for
 // new Mission Meets Tech LinkedIn newsletter articles.
 //
-// Uses Perplexity API to search LinkedIn for new articles,
+// Uses Claude API + web_search to search LinkedIn for new articles,
 // compares against existing content, creates markdown stubs
 // via GitHub API, and triggers a Netlify rebuild.
 //
@@ -13,7 +13,7 @@
 //     schedule = "0 23 * * 2,5"
 // ============================================================
 
-const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
+const { callClaudeSearch } = require("./lib/claude-search");
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const NETLIFY_BUILD_HOOK_URL = process.env.NETLIFY_BUILD_HOOK_URL;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -61,24 +61,8 @@ async function searchForNewArticles() {
   const twoWeeksAgo = new Date(today - 14 * 24 * 60 * 60 * 1000);
   const dateStr = twoWeeksAgo.toISOString().split("T")[0];
 
-  const response = await fetch("https://api.perplexity.ai/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${PERPLEXITY_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: "sonar",
-      max_tokens: 2000,
-      temperature: 0.1,
-      messages: [
-        {
-          role: "system",
-          content: `You search for LinkedIn newsletter articles. Return ONLY valid JSON. No markdown fences.`,
-        },
-        {
-          role: "user",
-          content: `Search for the most recent articles from the "Mission Meets Tech" LinkedIn newsletter by Mary Womack (federal health IT). The newsletter URL is ${LINKEDIN_NEWSLETTER_URL}. Find articles published after ${dateStr}.
+  const systemPrompt = `You search for LinkedIn newsletter articles. Return ONLY valid JSON. No markdown fences.`;
+  const userPrompt = `Search for the most recent articles from the "Mission Meets Tech" LinkedIn newsletter by Mary Womack (federal health IT). The newsletter URL is ${LINKEDIN_NEWSLETTER_URL}. Find articles published after ${dateStr}.
 
 For each article found, return a JSON array of objects with these fields:
 - "title": exact article title
@@ -86,29 +70,22 @@ For each article found, return a JSON array of objects with these fields:
 - "url": full LinkedIn URL
 - "description": 1-2 sentence summary of the article
 
-Return ONLY the JSON array. If no new articles found, return [].`,
-        },
-      ],
-    }),
+Return ONLY the JSON array. If no new articles found, return [].`;
+
+  const result = await callClaudeSearch(systemPrompt, userPrompt, {
+    maxTokens: 2000,
+    functionName: "newsletter-sync",
+    product: "mmt-intel",
   });
 
-  if (!response.ok) {
-    const err = await response.text();
-    throw new Error(`Perplexity API error ${response.status}: ${err}`);
-  }
-
-  const data = await response.json();
-  let text = data.choices?.[0]?.message?.content || "[]";
-
-  // Clean up response
+  let text = result.content || "[]";
   text = text.replace(/```json\s*/g, "").replace(/```\s*/g, "").trim();
-  text = text.replace(/\[\d+\]/g, ""); // Remove citation markers
 
   try {
     const articles = JSON.parse(text);
     return Array.isArray(articles) ? articles : [];
   } catch {
-    console.error("Failed to parse Perplexity response:", text.substring(0, 500));
+    console.error("Failed to parse Claude response:", text.substring(0, 500));
     return [];
   }
 }
@@ -222,8 +199,8 @@ async function logEvent(message, details) {
 exports.handler = async (event) => {
   console.log("Newsletter sync started:", new Date().toISOString());
 
-  if (!PERPLEXITY_API_KEY || !GITHUB_TOKEN) {
-    console.error("Missing required env vars (PERPLEXITY_API_KEY, GITHUB_TOKEN)");
+  if (!process.env.ANTHROPIC_API_KEY || !GITHUB_TOKEN) {
+    console.error("Missing required env vars (ANTHROPIC_API_KEY, GITHUB_TOKEN)");
     return { statusCode: 500, body: "Missing env vars" };
   }
 

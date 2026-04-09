@@ -6,20 +6,16 @@
 // authoritative government sources.
 //
 // Engine routing (via model-router):
-//   fact_check → claude-sonnet-4-6/anthropic (web_search tool, cheaper + better)
-//   Perplexity fallback used only if PERPLEXITY_API_KEY set and provider overridden.
+//   fact_check → claude-sonnet-4-6/anthropic (web_search tool)
 //
 // Rate limited: max 10 requests per hour.
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
 const { getModelConfig } = require("./lib/model-router");
-const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
 const { withRetry } = require("./lib/retry");
-const { trackPerplexity } = require("./lib/cost-tracker");
 
 // --- Constants ---
-const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -103,84 +99,6 @@ async function callAnthropicWebSearch(systemPrompt, userMessage, model, maxToken
   return parsed;
 }
 
-// --- Perplexity API call (fallback / future override) ---
-
-async function callPerplexity(systemPrompt, userMessage, model, maxTokens, _supabase) {
-  const _t = Date.now();
-  const response = await withRetry(() => fetchWithTimeout("https://api.perplexity.ai/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${PERPLEXITY_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model,
-      max_tokens: maxTokens,
-      temperature: 0.3,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userMessage },
-      ],
-    }),
-  }));
-
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Perplexity API error ${response.status}: ${errText}`);
-  }
-
-  const finalData = await response.json();
-
-  if (finalData.usage) {
-    const u = finalData.usage;
-    console.log(`  AI cost: model=${model}, input=${u.prompt_tokens}, output=${u.completion_tokens}`);
-  }
-
-  // Cost tracking
-  if (_supabase) {
-    try {
-      await trackPerplexity(_supabase, { functionName: 'fact-check', product: 'mmt-intel', model, usage: { input_tokens: finalData.usage?.prompt_tokens, output_tokens: finalData.usage?.completion_tokens }, latencyMs: Date.now() - _t });
-    } catch (_costErr) { /* never break parent */ }
-  }
-
-  let textContent = finalData.choices?.[0]?.message?.content || "";
-
-  // Strip inline citation markers
-  textContent = textContent.replace(/\[\d+\]/g, "");
-
-  // Clean and parse JSON
-  function cleanJson(str) {
-    str = str.replace(/,\s*([\]}])/g, "$1");
-    str = str.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, "");
-    return str;
-  }
-
-  function extractJsonString(text) {
-    try { return JSON.parse(cleanJson(text)); } catch { /* continue */ }
-
-    const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
-    if (jsonMatch) {
-      try { return JSON.parse(cleanJson(jsonMatch[1].trim())); } catch { /* continue */ }
-    }
-
-    const braceStart = text.indexOf("{");
-    const braceEnd = text.lastIndexOf("}");
-    if (braceStart >= 0 && braceEnd > braceStart) {
-      const candidate = text.substring(braceStart, braceEnd + 1);
-      try { return JSON.parse(cleanJson(candidate)); } catch { /* continue */ }
-    }
-
-    return null;
-  }
-
-  const parsed = extractJsonString(textContent);
-  if (!parsed) {
-    console.error("JSON parse failed. First 500 chars:", textContent.substring(0, 500));
-    throw new Error(`Could not parse JSON from Perplexity response (${textContent.length} chars)`);
-  }
-
-  return parsed;
-}
 
 
 // ============================================================
@@ -201,7 +119,7 @@ exports.handler = async (event) => {
     };
   }
 
-  if (!PERPLEXITY_API_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+  if (!ANTHROPIC_API_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
     console.error("Missing required env vars");
     return {
       statusCode: 500,
@@ -295,11 +213,8 @@ Return ONLY valid JSON. Prioritize government primary sources over trade press.`
 
     const userMessage = `Fact-check the following content${context ? ` (context: ${context})` : ""}:\n\n${content}`;
 
-    const isPerplexity = modelConfig.provider === "perplexity" && PERPLEXITY_API_KEY;
-    console.log(`Calling ${isPerplexity ? "Perplexity" : "Anthropic"} for fact-check (model=${modelConfig.model})...`);
-    const result = isPerplexity
-      ? await callPerplexity(systemPrompt, userMessage, modelConfig.model, 6000, supabase)
-      : await callAnthropicWebSearch(systemPrompt, userMessage, modelConfig.model, 6000, supabase);
+    console.log(`Calling Anthropic for fact-check (model=${modelConfig.model})...`);
+    const result = await callAnthropicWebSearch(systemPrompt, userMessage, modelConfig.model, 6000, supabase);
 
     // Store in Supabase
     const { error: insertErr } = await supabase

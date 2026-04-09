@@ -3,7 +3,7 @@
 //
 // Monday and Thursday at 7 AM ET (11:00 UTC): compiles a
 // research package for the Mission Meets Tech newsletter using
-// Perplexity Sonar Pro for live web intelligence.
+// Claude Sonnet + web_search for live web intelligence.
 //
 // Schedule configured in netlify.toml:
 //   [functions."newsletter-research"]
@@ -12,95 +12,13 @@
 
 const { createClient } = require("@supabase/supabase-js");
 const { getModelConfig } = require("./lib/model-router");
-const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
-const { withRetry } = require("./lib/retry");
 const { sendEmail } = require("./lib/send-email");
 const { checkKillSwitch } = require("./lib/kill-switch");
-const { trackPerplexity } = require("./lib/cost-tracker");
+const { callClaudeSearchJSON } = require("./lib/claude-search");
 
 // --- Constants ---
-const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
-
-// --- Perplexity API call (reused pattern from contract-intel-refresh) ---
-
-async function callPerplexity(systemPrompt, userMessage, model, maxTokens, _supabase) {
-  const _t = Date.now();
-  const response = await withRetry(() => fetchWithTimeout("https://api.perplexity.ai/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${PERPLEXITY_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model,
-      max_tokens: maxTokens,
-      temperature: 0.3,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userMessage },
-      ],
-    }),
-  }, 120000)); // 2 min timeout for research calls
-
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Perplexity API error ${response.status}: ${errText}`);
-  }
-
-  const finalData = await response.json();
-
-  if (finalData.usage) {
-    const u = finalData.usage;
-    console.log(`  AI cost: model=${model}, input=${u.prompt_tokens}, output=${u.completion_tokens}`);
-  }
-
-  // Cost tracking
-  if (_supabase) {
-    try {
-      await trackPerplexity(_supabase, { functionName: 'newsletter-research-background', product: 'mmt-intel', model, usage: { input_tokens: finalData.usage?.prompt_tokens, output_tokens: finalData.usage?.completion_tokens }, latencyMs: Date.now() - _t });
-    } catch (_costErr) { /* never break parent */ }
-  }
-
-  let textContent = finalData.choices?.[0]?.message?.content || "";
-
-  // Strip inline citation markers
-  textContent = textContent.replace(/\[\d+\]/g, "");
-
-  // Clean and parse JSON
-  function cleanJson(str) {
-    str = str.replace(/,\s*([\]}])/g, "$1");
-    str = str.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, "");
-    return str;
-  }
-
-  function extractJsonString(text) {
-    try { return JSON.parse(cleanJson(text)); } catch { /* continue */ }
-
-    const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
-    if (jsonMatch) {
-      try { return JSON.parse(cleanJson(jsonMatch[1].trim())); } catch { /* continue */ }
-    }
-
-    const braceStart = text.indexOf("{");
-    const braceEnd = text.lastIndexOf("}");
-    if (braceStart >= 0 && braceEnd > braceStart) {
-      const candidate = text.substring(braceStart, braceEnd + 1);
-      try { return JSON.parse(cleanJson(candidate)); } catch { /* continue */ }
-    }
-
-    return null;
-  }
-
-  const parsed = extractJsonString(textContent);
-  if (!parsed) {
-    console.error("JSON parse failed. First 500 chars:", textContent.substring(0, 500));
-    throw new Error(`Could not parse JSON from Perplexity response (${textContent.length} chars)`);
-  }
-
-  return parsed;
-}
 
 // --- Email template for newsletter research summary ---
 
@@ -227,8 +145,8 @@ exports.handler = async (event) => {
 
   console.log("Newsletter research triggered:", new Date().toISOString());
 
-  if (!PERPLEXITY_API_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
-    console.error("Missing required env vars (PERPLEXITY_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY)");
+  if (!process.env.ANTHROPIC_API_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+    console.error("Missing required env vars (ANTHROPIC_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY)");
     return { statusCode: 500, body: "Missing env vars" };
   }
 
@@ -290,11 +208,15 @@ Return ONLY valid JSON. Every item must include a source_url.`;
   const userMessage = `Compile the research package for the Mission Meets Tech newsletter targeting publish date ${publishDateStr}. Today is ${now.toISOString().split("T")[0]}. Search for federal health IT developments from the past 3-4 days across all five categories.`;
 
   try {
-    if (modelConfig.provider !== "perplexity" || !PERPLEXITY_API_KEY) {
-      throw new Error(`newsletter_research requires Perplexity (provider=${modelConfig.provider}). Ensure PERPLEXITY_API_KEY is set.`);
-    }
-    console.log(`Calling Perplexity (${modelConfig.model}) for newsletter research...`);
-    const research = await callPerplexity(systemPrompt, userMessage, modelConfig.model, 8000, supabase);
+    console.log(`Calling Claude (${modelConfig.model}) for newsletter research...`);
+    const { parsed: research } = await callClaudeSearchJSON(systemPrompt, userMessage, {
+      model: modelConfig.model,
+      maxTokens: 8000,
+      temperature: 0.3,
+      supabase,
+      functionName: "newsletter-research-background",
+      product: "mmt-intel",
+    });
 
     // Ensure required fields
     research.compiled_date = research.compiled_date || now.toISOString().split("T")[0];

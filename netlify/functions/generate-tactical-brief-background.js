@@ -2,7 +2,7 @@
 // generate-tactical-brief-background.js — Netlify Background Function
 //
 // Filename ends in -background.js → Netlify gives 15-minute timeout.
-// Defensive 7-pass Perplexity pipeline (sonar-pro) → PDF → email.
+// Defensive 7-pass Claude pipeline (Sonnet + web_search) → HTML report → email.
 //
 // Pipeline:
 //   Pass 0: Entity disambiguation (CHANGE 1)
@@ -39,13 +39,11 @@ const { sanitizeSynthesis } = require("./lib/synthesis-sanitizer");
 const { logOpsEvent } = require("./lib/ops-ledger");
 const { trackQuality } = require("./lib/quality-tracker");
 const { getFlag } = require("./lib/feature-flags");
-const { trackPerplexity } = require("./lib/cost-tracker");
+const { trackAnthropic } = require("./lib/cost-tracker");
 
-const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
-const PERPLEXITY_MODEL = "sonar-pro";
+const CLAUDE_RESEARCH_MODEL = "claude-sonnet-4-5-20250514"; // research passes — web search enabled
 const CLAUDE_ANALYSIS_MODEL = "claude-haiku-4-5-20251001"; // synthesis/validation — no live search
-const PERPLEXITY_URL = "https://api.perplexity.ai/chat/completions";
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 
 // --- Claude call (Pass 4 + Pass 5: cross-validation and corrections — no live search needed) ---
@@ -76,63 +74,76 @@ async function callClaude(systemPrompt, userPrompt, maxTokens = 4000) {
   return { content, citations: [] };
 }
 
-// --- Perplexity API call (with per-order cap) ---
-const PERPLEXITY_CAP = 12;
-let _perplexityCallCount = 0;
+// --- Claude + web_search API call (replaces Perplexity sonar-pro) ---
+const RESEARCH_CALL_CAP = 12;
+let _researchCallCount = 0;
 let _supabase = null;
 let _orderId = null;
 
-async function callPerplexity(systemPrompt, userPrompt, maxTokens = 4000) {
-  _perplexityCallCount++;
-  if (_perplexityCallCount > PERPLEXITY_CAP) {
-    console.warn(`[PERPLEXITY CAP] Call ${_perplexityCallCount} exceeds cap of ${PERPLEXITY_CAP} — returning empty result`);
+async function callClaudeSearch(systemPrompt, userPrompt, maxTokens = 4000) {
+  _researchCallCount++;
+  if (_researchCallCount > RESEARCH_CALL_CAP) {
+    console.warn(`[RESEARCH CAP] Call ${_researchCallCount} exceeds cap of ${RESEARCH_CALL_CAP} — returning empty result`);
     return { content: "", citations: [], capped: true };
   }
   const _costStart = Date.now();
-  const response = await withRetry(() => fetch(PERPLEXITY_URL, {
+  const response = await withRetry(() => fetch(ANTHROPIC_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${PERPLEXITY_API_KEY}`,
+      "x-api-key": ANTHROPIC_API_KEY,
+      "anthropic-version": "2023-06-01",
     },
     body: JSON.stringify({
-      model: PERPLEXITY_MODEL,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ],
-      temperature: 0.1,
+      model: CLAUDE_RESEARCH_MODEL,
       max_tokens: maxTokens,
+      system: systemPrompt,
+      messages: [{ role: "user", content: userPrompt }],
+      tools: [{ type: "web_search_20250305" }],
+      temperature: 0.1,
     }),
   }), { maxRetries: 2, baseDelayMs: 3000 });
 
   if (!response.ok) {
     const errText = await response.text();
-    const err = new Error(`Perplexity API ${response.status}: ${errText}`);
+    const err = new Error(`Anthropic API ${response.status}: ${errText}`);
     err.status = response.status;
     throw err;
   }
 
   const data = await response.json();
 
-  // Cost tracking: Perplexity call
+  // Cost tracking: Claude research call
   try {
     if (_supabase) {
-      await trackPerplexity(_supabase, {
+      await trackAnthropic(_supabase, {
         functionName: 'generate-tactical-brief-background',
         product: 'marketpulse',
         orderId: _orderId,
-        model: PERPLEXITY_MODEL,
-        usage: data.usage ? { input_tokens: data.usage.prompt_tokens || 0, output_tokens: data.usage.completion_tokens || 0 } : null,
+        model: CLAUDE_RESEARCH_MODEL,
+        usage: data.usage ? { input_tokens: data.usage.input_tokens || 0, output_tokens: data.usage.output_tokens || 0 } : null,
         latencyMs: Date.now() - _costStart,
       });
     }
   } catch (_costErr) { /* never break research pipeline */ }
 
-  return {
-    content: data.choices[0].message.content,
-    citations: data.citations || [],
-  };
+  // Extract text content and citations from Claude web_search response
+  let textContent = "";
+  const citations = [];
+  for (const block of (data.content || [])) {
+    if (block.type === "text") {
+      textContent += block.text;
+    }
+    if (block.type === "web_search_tool_result") {
+      for (const searchResult of (block.content || [])) {
+        if (searchResult.type === "web_search_result" && searchResult.url) {
+          citations.push(searchResult.url);
+        }
+      }
+    }
+  }
+
+  return { content: textContent, citations };
 }
 
 // ============================================================
@@ -141,7 +152,7 @@ async function callPerplexity(systemPrompt, userPrompt, maxTokens = 4000) {
 async function disambiguateEntity(topic) {
   console.log("Pass 0: Entity disambiguation...");
 
-  const result = await callPerplexity(
+  const result = await callClaudeSearch(
     `You are a federal government organizational structure expert. Your ONLY job is to identify the exact federal entity the user is asking about and classify every term as either a SUBJECT to research or a FILTER to apply.
 
 CRITICAL RULES:
@@ -275,7 +286,7 @@ async function runLandscapeScan(topic, audience, company, disambiguation, { prim
   const companyCtx = company ? `The requesting organization is: ${company}.` : "";
   const contextBlock = primedContext ? `\n\nCURRENT CONTEXT (verified facts — use as grounding):\n${primedContext}` : "";
 
-  const result = await callPerplexity(
+  const result = await callClaudeSearch(
     `You are a federal health IT market intelligence analyst for Mission Meets Tech, a federal health IT intelligence platform. ${audienceContext} ${companyCtx}
 
 BRAND POSITIONING — FEDERAL HEALTH IT LENS:
@@ -364,7 +375,7 @@ Step 4: Identify recompete pipeline
 Step 5: Package as structured entries`
     : "";
 
-  const result = await callPerplexity(
+  const result = await callClaudeSearch(
     `You are a senior federal health IT strategy advisor and competitive intelligence analyst for Mission Meets Tech. ${audienceContext} ${companyContext}
 
 FEDERAL HEALTH IT LENS: Prioritize health agencies (DHA, VA, CMS, IHS, HHS) in analysis. When the target entity is not a health agency, include a "Health IT Implications" subsection connecting findings to health IT market effects.
@@ -421,7 +432,7 @@ async function runSynthesis(topic, audience, company, disambiguation, landscapeC
     }
   }
 
-  const result = await callPerplexity(
+  const result = await callClaudeSearch(
     `You are a fact-checker and editor for Mission Meets Tech, a federal health IT intelligence publication. ${audienceContext} ${companyLine}
 
 FEDERAL HEALTH IT LENS: When organizing Pipeline Intelligence, group opportunities by agency subsections where applicable (VA Opportunities, DHA Opportunities, CMS Opportunities, Other). Always lead with health IT-relevant findings.
@@ -742,8 +753,8 @@ function extractCompanyContext(company, additionalContext, topic) {
 
 // --- Main handler ---
 exports.handler = async (event) => {
-  // Reset per-order Perplexity counter
-  _perplexityCallCount = 0;
+  // Reset per-order research call counter
+  _researchCallCount = 0;
 
   // Kill switch
   const killCheck = checkKillSwitch("generate-tactical-brief-background");
@@ -753,8 +764,8 @@ exports.handler = async (event) => {
     return { statusCode: 405, body: "Method not allowed" };
   }
 
-  if (!PERPLEXITY_API_KEY) {
-    console.error("generate-tactical-brief-background: PERPLEXITY_API_KEY not configured");
+  if (!ANTHROPIC_API_KEY) {
+    console.error("generate-tactical-brief-background: ANTHROPIC_API_KEY not configured");
     return { statusCode: 500, body: "Research pipeline not configured" };
   }
 
@@ -862,7 +873,7 @@ exports.handler = async (event) => {
     }
     // Live priming if event detected but not in Appendix C
     if (classification.context_priming_needed && !contextData.length) {
-      const primingResult = await callPerplexity(
+      const primingResult = await callClaudeSearch(
         "You are a federal procurement current-events analyst. Provide a brief factual summary: what happened, when, scale, which agencies affected. Be specific.",
         buildContextPrimingPrompt(classification.scope.event_trigger, classification.scope),
         2000
@@ -926,7 +937,7 @@ exports.handler = async (event) => {
       const pivotStart = Date.now();
       const topicWords = topic.split(" ").slice(0, 5).join(" ");
       const entity = disambiguation.selected_entity || {};
-      const pivotResult = await callPerplexity(
+      const pivotResult = await callClaudeSearch(
         `You are a federal contracting intelligence analyst. IMPORTANT: Previous research queries for "${entity.name || topic}" returned limited results across ${nullPassCount} passes. The search strategy was wrong, not the data.
 
 NULL RESULT PROTOCOL — MANDATORY:
@@ -1277,13 +1288,13 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
     } catch (_custErr) { console.error("customer-sync:", _custErr.message); }
 
     const totalTime = Math.round((Date.now() - startTime) / 1000);
-    console.log(`generate-tactical-brief-background: completed in ${totalTime}s for ${email} (${_perplexityCallCount} Perplexity calls)`);
+    console.log(`generate-tactical-brief-background: completed in ${totalTime}s for ${email} (${_researchCallCount} research calls)`);
 
     return { statusCode: 200, body: JSON.stringify({ success: true, duration_seconds: totalTime, passes: Object.keys(passTimings).length }) };
   } catch (err) {
     console.error("generate-tactical-brief-background: pipeline error:", err);
-    const errType = err.message && err.message.includes("Perplexity API") ? "MODEL_FAILURE" : "HARNESS_FAILURE";
-    await logOpsEvent(_supabase, { event_type: errType, source_function: "generate-tactical-brief-background", severity: "critical", signature: errType === "MODEL_FAILURE" ? `perplexity_${err.status || "unknown"}` : "unhandled_error", affected_entity: session_id, details: { email, topic: topic.substring(0, 200), error: err.message } });
+    const errType = err.message && err.message.includes("Anthropic API") ? "MODEL_FAILURE" : "HARNESS_FAILURE";
+    await logOpsEvent(_supabase, { event_type: errType, source_function: "generate-tactical-brief-background", severity: "critical", signature: errType === "MODEL_FAILURE" ? `claude_search_${err.status || "unknown"}` : "unhandled_error", affected_entity: session_id, details: { email, topic: topic.substring(0, 200), error: err.message } });
 
     // Notify customer of failure
     try {

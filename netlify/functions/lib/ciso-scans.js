@@ -427,7 +427,7 @@ async function scanAccessInventory(supabase) {
       { name: "SENTRY_DSN", service: "sentry", type: "api_key", scope: "Error reporting" },
       { name: "AGENT_BRIDGE_KEY", service: "agent-bridge", type: "api_key", scope: "Agent bridge authentication" },
       { name: "COMMAND_CENTER_KEY", service: "agent-bridge", type: "api_key", scope: "Command center API authentication" },
-      { name: "PERPLEXITY_API_KEY", service: "perplexity", type: "api_key", scope: "Perplexity search API for research" },
+      { name: "PERPLEXITY_API_KEY", service: "perplexity", type: "api_key", scope: "DEPRECATED — replaced by Claude web_search. Can be removed." },
       { name: "OPENAI_API_KEY", service: "openai", type: "api_key", scope: "OpenAI API access" },
     ];
 

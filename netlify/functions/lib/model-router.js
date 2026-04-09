@@ -8,13 +8,13 @@
 //   scoring              → Sonnet (floor: Sonnet)
 //   rewrite              → Sonnet (floor: Sonnet)
 //   review               → Haiku  (escalates to Sonnet if avg rating < 3.0)
-//   contract_research    → sonar-pro/perplexity (live SAM/FPDS web search)
-//   contract_verify      → sonar-pro/perplexity (live source verification)
+//   contract_research    → Sonnet/anthropic (web_search tool)
+//   contract_verify      → Sonnet/anthropic (web_search tool)
 //   opportunity_scan     → Sonnet (web search + structured extraction)
 //   sb_classify          → Haiku  (batch classification)
-//   newsletter_research  → sonar-pro/perplexity (live web for topic research)
-//   fact_check           → Sonnet/anthropic (web_search tool, cheaper+better)
-//   protest_monitor      → sonar-pro/perplexity (live GAO/COFC data)
+//   newsletter_research  → Sonnet/anthropic (web_search tool)
+//   fact_check           → Sonnet/anthropic (web_search tool)
+//   protest_monitor      → Sonnet/anthropic (web_search tool)
 // ============================================================
 
 const MODELS = {
@@ -31,14 +31,14 @@ const MODELS = {
     floor: "claude-haiku-4-5-20251001",
   },
   contract_research: {
-    default: "sonar-pro",
-    floor: "sonar-pro",
-    provider: "perplexity",
+    default: "claude-sonnet-4-5-20250514",
+    floor: "claude-sonnet-4-5-20250514",
+    provider: "anthropic",
   },
   contract_verify: {
-    default: "sonar-pro",
-    floor: "sonar-pro",
-    provider: "perplexity",
+    default: "claude-sonnet-4-5-20250514",
+    floor: "claude-sonnet-4-5-20250514",
+    provider: "anthropic",
   },
   opportunity_scan: {
     default: "claude-sonnet-4-5-20250929",
@@ -49,9 +49,9 @@ const MODELS = {
     floor: "claude-haiku-4-5-20251001",
   },
   newsletter_research: {
-    default: "sonar-pro",
-    floor: "sonar-pro",
-    provider: "perplexity",
+    default: "claude-sonnet-4-5-20250514",
+    floor: "claude-sonnet-4-5-20250514",
+    provider: "anthropic",
   },
   fact_check: {
     default: "claude-sonnet-4-6",
@@ -59,9 +59,9 @@ const MODELS = {
     provider: "anthropic",
   },
   protest_monitor: {
-    default: "sonar-pro",
-    floor: "sonar-pro",
-    provider: "perplexity",
+    default: "claude-sonnet-4-5-20250514",
+    floor: "claude-sonnet-4-5-20250514",
+    provider: "anthropic",
   },
 };
 

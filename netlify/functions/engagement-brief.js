@@ -32,8 +32,6 @@ exports.handler = async (event) => {
     return { statusCode: 401, headers: CORS_HEADERS, body: '{"error":"Unauthorized"}' };
   }
 
-  const perplexityApiKey = process.env.PERPLEXITY_API_KEY;
-
   const topics = [
     "MHS GENESIS",
     "VA EHR modernization",
@@ -43,7 +41,7 @@ exports.handler = async (event) => {
     "SDVOSB federal health",
   ];
 
-  const brief = await generateEngagementBrief(supabase, { topics, perplexityApiKey });
+  const brief = await generateEngagementBrief(supabase, { topics });
 
   // Optionally deliver via email
   if (params.deliver === "true") {
