@@ -382,11 +382,24 @@ These phrases are non-negotiable:
 | twice a week                               | "bi-weekly", "biweekly", "every two weeks", "every week" (for newsletter)  |
 | market brief                               | "tactical brief", "market report", "MarketPulse report", "your report"     |
 | Gold Team Review                           | "Red Team Review"                                                          |
-| not used to train models                   | "never trains on our data", "inputs not stored beyond the current session" |
+| not used to train models                   | "Not used for training", "Not used as training data", "never trains on our data" |
 | Choose a Tool                              | "Start Free" (as utility CTA)                                              |
 | Request a market brief                     | "Request a Report"                                                         |
 | Fed UP                                     | "Mission Meets Reality" (as standalone podcast name, outside subtitle)     |
 | Mission Meets Tech                         | "MissionPulse" (as site/platform name)                                     |
+| ProposalPulse                              | "Proposal Pulse" (with a space, in copy)                                   |
+| MarketPulse                                | "Market Pulse" (with a space, in copy)                                     |
+| 30–90 seconds (ProposalPulse scoring time) | "60 seconds", "under 60 seconds"                                           |
+
+**Trust chip canon.** Every inline trust chip on product pages, homepage
+product cards, cross-sell modules, and FAQ trust blurbs must read exactly
+`not used to train models`. No stylistic variants. This rule lets both
+humans and automated sweeps verify consistency with a single string search.
+
+**Consultant / report contrast phrasing.** On MarketPulse, do not compare
+MarketPulse to "a consultant report". Use "a consultant brief" or "a
+two-week consulting engagement" instead. The word "report" should never
+appear as the MarketPulse deliverable noun in public copy.
 
 See `CLAUDE.md` for banned voice words, transitions, openers, and structures.
 
@@ -435,7 +448,20 @@ A build is only shippable if all of the following are true:
 15. **Utility nav links present on all pages.** Every `dist/**/*.html` nav
     block includes a link to `/newsletter.html` (Subscribe) and
     `/security.html` (Security) as utility items alongside Choose a Tool.
-16. **Integrity audit.** `node integrity-audit.js` returns `SUCCESS/SYNCED`
+16. **Trust-chip phrase canon.** No `dist/**/*.html` contains
+    "Not used for training" or "Not used as training data". The only
+    canonical form is `not used to train models`.
+17. **Timing canon.** No ProposalPulse-related copy contains "60 seconds"
+    as the scoring duration. Canonical form is `30–90 seconds`.
+18. **Product-name spacing.** No public copy contains "Proposal Pulse" or
+    "Market Pulse" with a space. Brand names are `ProposalPulse` and
+    `MarketPulse`. The two-tone visual treatment `Proposal<span>Pulse</span>`
+    is allowed because the rendered text has no space.
+19. **MarketPulse deliverable noun.** Public copy never uses "report" as
+    the MarketPulse deliverable. "Brief" is the only canonical noun.
+    "Consultant report" contrast phrasing is replaced with "consultant
+    brief" or "two-week consulting engagement".
+20. **Integrity audit.** `node integrity-audit.js` returns `SUCCESS/SYNCED`
     against the production fortress worker (post-deploy only).
 
 ---

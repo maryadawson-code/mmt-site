@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Reports — Mission Meets Tech</title>
-  <meta name="description" content="Access your ProposalPulse scorecards and MarketPulse market briefs. Download reports, provide feedback, and request re-runs.">
+  <title>My Results — Mission Meets Tech</title>
+  <meta name="description" content="Access your ProposalPulse scorecards and MarketPulse market briefs. Download results, provide feedback, and request re-runs.">
   <link rel="canonical" href="https://missionmeetstech.com/my-reports">
-  <meta property="og:title" content="My Reports — Mission Meets Tech">
-  <meta property="og:description" content="Access your ProposalPulse scorecards and MarketPulse market briefs. Download reports, provide feedback, and request re-runs.">
+  <meta property="og:title" content="My Results — Mission Meets Tech">
+  <meta property="og:description" content="Access your ProposalPulse scorecards and MarketPulse market briefs. Download results, provide feedback, and request re-runs.">
   <meta property="og:url" content="https://missionmeetstech.com/my-reports">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://missionmeetstech.com/mmt-logo.png">
@@ -15,7 +15,7 @@
   <meta property="og:image:height" content="200">
   <meta property="og:site_name" content="Mission Meets Tech">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="My Reports — Mission Meets Tech">
+  <meta name="twitter:title" content="My Results — Mission Meets Tech">
   <meta name="twitter:description" content="Access your ProposalPulse scorecards and MarketPulse market briefs.">
   <meta name="twitter:image" content="https://missionmeetstech.com/mmt-logo.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
@@ -126,8 +126,8 @@
     <div id="login-view">
       <div class="login-box">
         <div style="font-size:2.5rem; margin-bottom:16px;">📊</div>
-        <h1 style="font-size:1.5rem; margin:0 0 8px;">My Reports</h1>
-        <p style="color:var(--mmt-text-secondary); font-size:0.95rem; margin:0 0 24px;">Enter your email to access your reports and order history.</p>
+        <h1 style="font-size:1.5rem; margin:0 0 8px;">My Results</h1>
+        <p style="color:var(--mmt-text-secondary); font-size:0.95rem; margin:0 0 24px;">Enter your email to access your briefs, scorecards, and order history.</p>
         <div id="login-form">
           <input type="email" id="login-email" class="login-input" placeholder="you@company.com" autocomplete="email">
           <button onclick="requestMagicLink()" class="btn-portal btn-portal-primary" style="width:100%; justify-content:center; margin-top:12px; padding:12px;">Send Login Link</button>
@@ -144,7 +144,7 @@
     <!-- DASHBOARD VIEW -->
     <div id="dashboard-view" style="display:none; max-width:900px; margin:0 auto; padding:0 20px 60px;">
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px;">
-        <h1 style="font-size:1.5rem; margin:0;"><span class="gradient-text">My Reports</span></h1>
+        <h1 style="font-size:1.5rem; margin:0;"><span class="gradient-text">My Results</span></h1>
         <div style="display:flex; align-items:center; gap:12px;">
           <span id="user-email" style="color:var(--mmt-text-secondary); font-size:0.85rem;"></span>
           <button onclick="logout()" class="btn-portal btn-portal-secondary" style="padding:4px 12px; font-size:0.78rem;">Sign Out</button>
@@ -157,8 +157,8 @@
         <div id="pending-items"></div>
       </div>
 
-      <!-- Reports -->
-      <div class="section-title" style="margin-top:8px;">Your Reports</div>
+      <!-- Results -->
+      <div class="section-title" style="margin-top:8px;">Your Results</div>
       <div id="reports-list">
         <div class="empty-state">
           <p style="font-size:1.2rem;">Loading...</p>
@@ -181,7 +181,7 @@
         <div style="margin-top:20px;">
           <div style="font-size:0.78rem; color:var(--mmt-text-secondary); text-transform:uppercase; margin-bottom:8px;">Notification Preferences</div>
           <label style="display:flex; align-items:center; gap:8px; margin-bottom:8px; cursor:pointer; font-size:0.9rem;">
-            <input type="checkbox" id="pref-report-ready" checked onchange="savePreferences()"> Notify me when reports are ready
+            <input type="checkbox" id="pref-report-ready" checked onchange="savePreferences()"> Notify me when results are ready
           </label>
           <label style="display:flex; align-items:center; gap:8px; margin-bottom:8px; cursor:pointer; font-size:0.9rem;">
             <input type="checkbox" id="pref-product-updates" checked onchange="savePreferences()"> Product updates
@@ -346,7 +346,7 @@
       all.sort(function(a, b) { return new Date(b.created_at) - new Date(a.created_at); });
 
       if (!all.length) {
-        el.innerHTML = '<div class="empty-state"><p style="font-size:1.5rem;">📋</p><p>No reports yet.</p><p style="font-size:0.85rem;">Order a <a href="/proposal-pulse.html" style="color:var(--mmt-teal);">ProposalPulse</a> or <a href="/marketpulse.html" style="color:var(--mmt-teal);">MarketPulse</a> report to get started.</p></div>';
+        el.innerHTML = '<div class="empty-state"><p style="font-size:1.5rem;">📋</p><p>No results yet.</p><p style="font-size:0.85rem;">Order a <a href="/proposal-pulse.html" style="color:var(--mmt-teal);">ProposalPulse</a> assessment or a <a href="/marketpulse.html" style="color:var(--mmt-teal);">MarketPulse</a> brief to get started.</p></div>';
         return;
       }
 
@@ -355,7 +355,7 @@
       (delivered.length ? delivered : all.slice(0, 5)).forEach(function(o) {
         var grade = o.overall_grade || o.quality_grade || '';
         var gradeColor = { 'A+':'green','A':'green','A-':'green','B+':'blue','B':'blue','B-':'yellow','C+':'yellow','C':'yellow','C-':'red','D':'red','F':'red' }[grade] || 'cyan';
-        var title = o.topic || o.file_name || 'Report';
+        var title = o.topic || o.file_name || 'Untitled';
         var id = o.id || o.session_id;
         var productBadge = o.product === 'ProposalPulse' ? '<span class="badge badge-blue">ProposalPulse</span>' : '<span class="badge badge-cyan">MarketPulse</span>';
 
@@ -370,13 +370,13 @@
         // Actions
         h += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;">';
         if (o.report_url) h += '<a href="' + esc(o.report_url) + '" target="_blank" class="btn-portal btn-portal-secondary">📥 Download</a>';
-        h += '<button onclick="showFeedback(\'' + id + '\',\'' + o.product + '\')" class="btn-portal btn-portal-secondary">⭐ Rate Report</button>';
+        h += '<button onclick="showFeedback(\'' + id + '\',\'' + o.product + '\')" class="btn-portal btn-portal-secondary">⭐ Rate This</button>';
         h += '<button onclick="requestRerun(\'' + id + '\')" class="btn-portal btn-portal-secondary">🔄 Request Re-run</button>';
         h += '</div>';
 
         // Feedback widget (hidden by default)
         h += '<div id="feedback-' + id + '" style="display:none;margin-top:16px;padding:16px;background:rgba(255,255,255,0.03);border-radius:8px;">';
-        h += '<div style="font-size:0.85rem;color:var(--mmt-text);margin-bottom:8px;">How useful was this report?</div>';
+        h += '<div style="font-size:0.85rem;color:var(--mmt-text);margin-bottom:8px;">How useful was this?</div>';
         h += '<div class="stars" id="stars-' + id + '">';
         for (var s = 1; s <= 5; s++) {
           h += '<svg class="star" data-rating="' + s + '" onclick="setRating(\'' + id + '\',' + s + ')" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
