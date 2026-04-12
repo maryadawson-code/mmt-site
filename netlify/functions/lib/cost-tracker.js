@@ -73,4 +73,50 @@ async function trackGoogle(supabase, { functionName, product, model, usage, late
   return trackCost(supabase, { functionName, product, provider: "google", model: model || "gemini-2.5-pro", inputTokens: usage?.input_tokens || 0, outputTokens: usage?.output_tokens || 0, latencyMs, status, errorMessage, metadata });
 }
 
-module.exports = { trackCost, trackAnthropic, trackPerplexity, trackResend, trackOpenAI, trackGoogle, calculateCostCents, getRateCard };
+// Local-eligible task types that should NOT hit Anthropic when OLLAMA_BASE_URL is set
+const LOCAL_ELIGIBLE_TASKS = new Set([
+  "scoring", "rewrite", "review", "opportunity_scan", "sb_classify",
+  "summarization", "classification", "extraction", "drafting_routine",
+  "code_generation", "research_synthesis",
+]);
+
+async function trackOllama(supabase, { functionName, product, model, usage, latencyMs, status, errorMessage }) {
+  return trackCost(supabase, {
+    functionName, product, provider: "ollama", model: model || "gemma3:27b",
+    inputTokens: usage?.input_tokens || 0, outputTokens: usage?.output_tokens || 0,
+    latencyMs, status, errorMessage,
+  });
+}
+
+async function trackViolation(supabase, { agent, model, taskType, inputTokens, outputTokens }) {
+  if (!supabase) return;
+  if (!LOCAL_ELIGIBLE_TASKS.has(taskType)) return; // not a violation if task requires Anthropic
+  if (!process.env.OLLAMA_BASE_URL) return; // no violation if local routing isn't enabled
+
+  // Only flag if an Anthropic model was used for a local-eligible task
+  if (!model || !model.startsWith("claude-")) return;
+
+  const rateCard = await getRateCard(supabase);
+  const costCents = calculateCostCents(rateCard, "anthropic", model, inputTokens || 0, outputTokens || 0);
+
+  try {
+    await supabase.from("penny_findings").insert({
+      finding_type: "model_overuse",
+      severity: costCents > 10 ? "high" : costCents > 2 ? "medium" : "low",
+      title: `${agent || "unknown"} used ${model} for local-eligible task "${taskType}"`,
+      description: `Agent "${agent}" routed "${taskType}" to Anthropic ${model} instead of local Ollama. Estimated cost: $${(costCents / 100).toFixed(4)}.`,
+      affected_agent: agent || null,
+      estimated_daily_waste_usd: parseFloat(((costCents / 100) * 10).toFixed(4)), // assume ~10 calls/day
+      estimated_monthly_waste_usd: parseFloat(((costCents / 100) * 300).toFixed(4)),
+      recommendation: `Route "${taskType}" to gemma3:${taskType === "sb_classify" || taskType === "classification" ? "12b" : "27b"} via OLLAMA_BASE_URL`,
+      auto_fixable: true,
+    });
+  } catch (err) {
+    console.error("[cost-tracker] violation log failed:", err.message);
+  }
+}
+
+module.exports = {
+  trackCost, trackAnthropic, trackPerplexity, trackResend, trackOpenAI, trackGoogle,
+  trackOllama, trackViolation, calculateCostCents, getRateCard, LOCAL_ELIGIBLE_TASKS,
+};

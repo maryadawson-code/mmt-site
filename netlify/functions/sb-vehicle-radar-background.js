@@ -21,7 +21,8 @@ const { withRetry } = require("./lib/retry");
 const { validateVehicle } = require("./lib/contract-validator");
 const { ACTIVE_VEHICLES, CANCELLED_VEHICLES } = require("./lib/contract-facts");
 const { checkKillSwitch } = require("./lib/kill-switch");
-const { trackAnthropic } = require("./lib/cost-tracker");
+const { trackAnthropic, trackOllama } = require("./lib/cost-tracker");
+const { callModel, isLocalProvider } = require("./lib/inference");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -168,50 +169,75 @@ AWARDS:
 ${summaries}`;
 }
 
-async function classifyWithClaude(awards, model, _supabase) {
+async function classifyWithClaude(awards, model, _supabase, _modelConfig) {
   if (!awards.length) return [];
 
   const _t = Date.now();
-  const response = await withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": ANTHROPIC_API_KEY,
-      "anthropic-version": "2023-06-01",
-    },
-    body: JSON.stringify({
-      model,
-      max_tokens: 8000,
-      temperature: 0.1,
-      messages: [{
-        role: "user",
-        content: buildClassificationPrompt(awards),
-      }],
-    }),
-  }));
+  let text, usage;
 
-  if (!response.ok) {
-    console.error("Claude error:", response.status, await response.text().catch(() => ""));
-    return [];
-  }
-
-  const data = await response.json();
-
-  if (data.usage) {
-    console.log(`  AI cost: model=${model}, input=${data.usage.input_tokens}, output=${data.usage.output_tokens}`);
-  }
-
-  // Cost tracking
-  if (_supabase) {
+  // Use inference helper when model config is available (routes to Ollama or Anthropic)
+  if (_modelConfig && typeof callModel === "function") {
     try {
-      await trackAnthropic(_supabase, { functionName: 'sb-vehicle-radar-background', product: 'mmt-intel', model, usage: data.usage, latencyMs: Date.now() - _t });
-    } catch (_costErr) { /* never break parent */ }
-  }
+      const result = await withRetry(() => callModel(_modelConfig, {
+        messages: [{ role: "user", content: buildClassificationPrompt(awards) }],
+        max_tokens: 8000,
+        temperature: 0.1,
+        agent: "sb-vehicle-radar",
+        taskType: "sb_classify",
+      }));
+      text = result.text;
+      usage = result.usage;
+      console.log(`  AI cost: model=${result.model} (${result.provider}), input=${usage.input_tokens}, output=${usage.output_tokens}`);
 
-  const text = data.content
-    .filter((b) => b.type === "text")
-    .map((b) => b.text)
-    .join("");
+      if (_supabase) {
+        try {
+          const tracker = isLocalProvider(_modelConfig) ? trackOllama : trackAnthropic;
+          await tracker(_supabase, { functionName: "sb-vehicle-radar-background", product: "mmt-intel", model: result.model, usage, latencyMs: Date.now() - _t });
+        } catch (_costErr) { /* never break parent */ }
+      }
+    } catch (err) {
+      console.error("Inference error:", err.message);
+      return [];
+    }
+  } else {
+    // Legacy path: direct Anthropic call
+    const response = await withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model,
+        max_tokens: 8000,
+        temperature: 0.1,
+        messages: [{ role: "user", content: buildClassificationPrompt(awards) }],
+      }),
+    }));
+
+    if (!response.ok) {
+      console.error("Claude error:", response.status, await response.text().catch(() => ""));
+      return [];
+    }
+
+    const data = await response.json();
+    usage = data.usage;
+    if (usage) {
+      console.log(`  AI cost: model=${model}, input=${usage.input_tokens}, output=${usage.output_tokens}`);
+    }
+
+    if (_supabase) {
+      try {
+        await trackAnthropic(_supabase, { functionName: "sb-vehicle-radar-background", product: "mmt-intel", model, usage, latencyMs: Date.now() - _t });
+      } catch (_costErr) { /* never break parent */ }
+    }
+
+    text = data.content
+      .filter((b) => b.type === "text")
+      .map((b) => b.text)
+      .join("");
+  }
 
   const cleaned = text
     .replace(/<cite[^>]*>/g, "")
@@ -358,8 +384,8 @@ exports.handler = async (event) => {
   // ============================================================
 
   if (topResults.length > 0) {
-    console.log(`Phase 1: Classifying USASpending awards (${classifyModel.model})...`);
-    const classifications = await classifyWithClaude(topResults, classifyModel.model, supabase);
+    console.log(`Phase 1: Classifying USASpending awards (${classifyModel.model} via ${classifyModel.provider})...`);
+    const classifications = await classifyWithClaude(topResults, classifyModel.model, supabase, classifyModel);
     console.log(`Claude classified ${classifications.length} awards`);
 
     for (const cls of classifications) {
@@ -478,8 +504,8 @@ exports.handler = async (event) => {
     } else if (unclassified && unclassified.length > 0) {
       console.log(`Found ${unclassified.length} unclassified records, classifying (${classifyModel.model})...`);
 
-      const classifications = await classifyWithClaude(unclassified, classifyModel.model, supabase);
-      console.log(`Phase 2: Claude classified ${classifications.length} records`);
+      const classifications = await classifyWithClaude(unclassified, classifyModel.model, supabase, classifyModel);
+      console.log(`Phase 2: classified ${classifications.length} records (${classifyModel.provider})`);
 
       for (const cls of classifications) {
         const idx = cls.index;

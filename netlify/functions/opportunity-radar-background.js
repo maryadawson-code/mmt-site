@@ -18,6 +18,7 @@ const { validateOpportunity } = require("./lib/contract-validator");
 const { CANCELLED_VEHICLES } = require("./lib/contract-facts");
 const { checkKillSwitch } = require("./lib/kill-switch");
 const { trackAnthropic } = require("./lib/cost-tracker");
+const { logInference } = require("./lib/inference");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -149,12 +150,17 @@ async function callClaude(systemPrompt, userMessage, maxSearches, model, maxToke
     console.log(`  AI cost: model=${model}, input=${u.input_tokens}, output=${u.output_tokens}`);
   }
 
-  // Cost tracking
+  // Cost tracking + inference logging for Penny Pincher
   if (_supabase) {
     try {
       await trackAnthropic(_supabase, { functionName: 'opportunity-radar-background', product: 'mmt-intel', model, usage: finalData.usage, latencyMs: Date.now() - _t });
     } catch (_costErr) { /* never break parent */ }
   }
+  logInference({
+    agent: "opportunity-radar", model, provider: "anthropic",
+    input_tokens: finalData.usage?.input_tokens || 0, output_tokens: finalData.usage?.output_tokens || 0,
+    task_type: "opportunity_scan", latency_ms: Date.now() - _t, status: "success",
+  });
 
   const allContent = finalData.content;
 

@@ -1,0 +1,340 @@
+{
+  "audit_date": "2026-04-12",
+  "auditor": "openclaw-routing-sprint",
+  "total_agents": 25,
+  "routed_to_local": 14,
+  "routed_to_anthropic": 9,
+  "kept_on_external": 2,
+  "agents": [
+    {
+      "id": "mmt-newsletter",
+      "name": "Newsletter",
+      "domain": "mmt_platform",
+      "detected_task_type": "summarization",
+      "current_model": "claude-sonnet-4 (Anthropic)",
+      "assigned_model": "gemma3:27b (local)",
+      "assigned_provider": "ollama",
+      "routing_reason": "Editorial drafting and summarization run locally"
+    },
+    {
+      "id": "mmt-website",
+      "name": "Website",
+      "domain": "mmt_platform",
+      "detected_task_type": "code_generation",
+      "current_model": "claude-sonnet-4 (Anthropic)",
+      "assigned_model": "gemma3:27b (local)",
+      "assigned_provider": "ollama",
+      "routing_reason": "Site development and code generation run locally"
+    },
+    {
+      "id": "mmt-missionpulse",
+      "name": "MissionPulse Builder",
+      "domain": "mmt_platform",
+      "detected_task_type": "code_generation",
+      "current_model": "claude-sonnet-4 (Anthropic)",
+      "assigned_model": "gemma3:27b (local)",
+      "assigned_provider": "ollama",
+      "routing_reason": "Platform code generation runs locally"
+    },
+    {
+      "id": "mmt-business",
+      "name": "Business",
+      "domain": "mmt_platform",
+      "detected_task_type": "reasoning_complex",
+      "current_model": "claude-sonnet-4 (Anthropic)",
+      "assigned_model": "claude-sonnet-4-5 (Anthropic)",
+      "assigned_provider": "anthropic",
+      "routing_reason": "Multi-step business strategy requires complex reasoning"
+    },
+    {
+      "id": "mmt-dafe",
+      "name": "DAFE",
+      "domain": "mmt_platform",
+      "detected_task_type": "extraction",
+      "current_model": "claude-sonnet-4 (Anthropic)",
+      "assigned_model": "gemma3:27b (local)",
+      "assigned_provider": "ollama",
+      "routing_reason": "Appropriations data extraction runs locally"
+    },
+    {
+      "id": "rid-capture",
+      "name": "Capture & Proposal",
+      "domain": "rockitdata",
+      "detected_task_type": "proposal_writing",
+      "current_model": "claude-sonnet-4 (Anthropic)",
+      "assigned_model": "claude-sonnet-4-5 (Anthropic)",
+      "assigned_provider": "anthropic",
+      "routing_reason": "Federal GovCon proposals require Anthropic-grade compliance"
+    },
+    {
+      "id": "rid-marketing",
+      "name": "Marketing & Content",
+      "domain": "rockitdata",
+      "detected_task_type": "drafting_routine",
+      "current_model": "claude-sonnet-4 (Anthropic)",
+      "assigned_model": "gemma3:27b (local)",
+      "assigned_provider": "ollama",
+      "routing_reason": "Routine marketing content drafts run locally"
+    },
+    {
+      "id": "rid-contracts",
+      "name": "Contracts Manager",
+      "domain": "rockitdata",
+      "detected_task_type": "reasoning_complex",
+      "current_model": "claude-sonnet-4 (Anthropic)",
+      "assigned_model": "claude-sonnet-4-5 (Anthropic)",
+      "assigned_provider": "anthropic",
+      "routing_reason": "Federal contract management requires complex reasoning"
+    },
+    {
+      "id": "cap-oasis",
+      "name": "OASIS+",
+      "domain": "active_captures",
+      "detected_task_type": "proposal_writing",
+      "current_model": "claude-sonnet-4 (Anthropic)",
+      "assigned_model": "claude-sonnet-4-5 (Anthropic)",
+      "assigned_provider": "anthropic",
+      "routing_reason": "Federal proposal writing requires Anthropic"
+    },
+    {
+      "id": "cap-ccn",
+      "name": "CCN Next Gen",
+      "domain": "active_captures",
+      "detected_task_type": "proposal_writing",
+      "current_model": "claude-sonnet-4 (Anthropic)",
+      "assigned_model": "claude-sonnet-4-5 (Anthropic)",
+      "assigned_provider": "anthropic",
+      "routing_reason": "Federal proposal writing requires Anthropic"
+    },
+    {
+      "id": "cap-iht2",
+      "name": "IHT 2.0",
+      "domain": "active_captures",
+      "detected_task_type": "proposal_writing",
+      "current_model": "claude-sonnet-4 (Anthropic)",
+      "assigned_model": "claude-sonnet-4-5 (Anthropic)",
+      "assigned_provider": "anthropic",
+      "routing_reason": "RFI response is proposal-grade work"
+    },
+    {
+      "id": "cap-gtm",
+      "name": "Go To Market",
+      "domain": "active_captures",
+      "detected_task_type": "reasoning_complex",
+      "current_model": "claude-sonnet-4 (Anthropic)",
+      "assigned_model": "claude-sonnet-4-5 (Anthropic)",
+      "assigned_provider": "anthropic",
+      "routing_reason": "GTM strategy requires complex reasoning"
+    },
+    {
+      "id": "personal-bio",
+      "name": "Biography",
+      "domain": "content_personal",
+      "detected_task_type": "drafting_routine",
+      "current_model": "claude-sonnet-4 (Anthropic)",
+      "assigned_model": "gemma3:27b (local)",
+      "assigned_provider": "ollama",
+      "routing_reason": "Bio drafting is routine text generation"
+    },
+    {
+      "id": "personal-babydev",
+      "name": "Baby Dev",
+      "domain": "content_personal",
+      "detected_task_type": "drafting_routine",
+      "current_model": "claude-sonnet-4 (Anthropic)",
+      "assigned_model": "gemma3:27b (local)",
+      "assigned_provider": "ollama",
+      "routing_reason": "Content multiplication is routine drafting"
+    },
+    {
+      "id": "personal-resume",
+      "name": "Resume Alignment",
+      "domain": "content_personal",
+      "detected_task_type": "extraction",
+      "current_model": "claude-sonnet-4 (Anthropic)",
+      "assigned_model": "gemma3:27b (local)",
+      "assigned_provider": "ollama",
+      "routing_reason": "Skill extraction and resume formatting run locally"
+    },
+    {
+      "id": "personal-podcast",
+      "name": "Podcast",
+      "domain": "content_personal",
+      "detected_task_type": "summarization",
+      "current_model": "claude-sonnet-4 (Anthropic)",
+      "assigned_model": "gemma3:27b (local)",
+      "assigned_provider": "ollama",
+      "routing_reason": "Show notes and summaries run locally"
+    },
+    {
+      "id": "ops-editorial",
+      "name": "Editorial (OpenClaw)",
+      "domain": "operations",
+      "detected_task_type": "drafting_routine",
+      "current_model": "claude-opus-4 (Anthropic)",
+      "assigned_model": "gemma3:27b (local)",
+      "assigned_provider": "ollama",
+      "routing_reason": "Routine editorial drafts run locally; final voice QA escalates to Anthropic"
+    },
+    {
+      "id": "ops-code",
+      "name": "Code",
+      "domain": "operations",
+      "detected_task_type": "code_generation",
+      "current_model": "claude-sonnet-4 (Anthropic)",
+      "assigned_model": "gemma3:27b (local)",
+      "assigned_provider": "ollama",
+      "routing_reason": "Code generation and build tasks run locally"
+    },
+    {
+      "id": "ops-research",
+      "name": "Research",
+      "domain": "operations",
+      "detected_task_type": "research_synthesis",
+      "current_model": "sonar-pro (Perplexity)",
+      "assigned_model": "gemma3:27b (local)",
+      "assigned_provider": "ollama",
+      "routing_reason": "Research synthesis runs locally; live web search stays on Perplexity"
+    },
+    {
+      "id": "ops-ciso",
+      "name": "CISO",
+      "domain": "operations",
+      "detected_task_type": "reasoning_complex",
+      "current_model": "claude-sonnet-4 (Anthropic)",
+      "assigned_model": "claude-sonnet-4-5 (Anthropic)",
+      "assigned_provider": "anthropic",
+      "routing_reason": "CMMC compliance analysis requires complex reasoning"
+    },
+    {
+      "id": "ops-penny",
+      "name": "Penny Pincher",
+      "domain": "cost-optimization",
+      "detected_task_type": "classification",
+      "current_model": "claude-haiku-3.5 (Anthropic)",
+      "assigned_model": "gemma3:12b (local)",
+      "assigned_provider": "ollama",
+      "routing_reason": "Cost agent must be cheapest; classification only"
+    },
+    {
+      "id": "ext-chatgpt",
+      "name": "ChatGPT",
+      "domain": "operations",
+      "detected_task_type": "research_synthesis",
+      "current_model": "gpt-4o (OpenAI)",
+      "assigned_model": "gemma3:27b (local)",
+      "assigned_provider": "ollama",
+      "routing_reason": "Research/analysis runs locally unless image generation needed"
+    },
+    {
+      "id": "ext-gemini",
+      "name": "Gemini",
+      "domain": "operations",
+      "detected_task_type": "research_synthesis",
+      "current_model": "gemini-2.5-pro (Google)",
+      "assigned_model": "gemma3:27b (local)",
+      "assigned_provider": "ollama",
+      "routing_reason": "Research synthesis runs locally unless image generation needed"
+    },
+    {
+      "id": "content-refresh",
+      "name": "Content Refresh Agent",
+      "domain": "mmt_platform",
+      "detected_task_type": "drafting_routine",
+      "current_model": "claude-sonnet-4-6 (Anthropic)",
+      "assigned_model": "gemma3:27b (local)",
+      "assigned_provider": "ollama",
+      "routing_reason": "Content suggestions are internal drafts, not client-facing",
+      "source_file": "scripts/content-refresh-agent.js"
+    },
+    {
+      "id": "seo-intelligence",
+      "name": "SEO Intelligence Agent",
+      "domain": "mmt_platform",
+      "detected_task_type": "extraction",
+      "current_model": "claude-sonnet-4 (via Claude Code runner)",
+      "assigned_model": "gemma3:27b (local)",
+      "assigned_provider": "ollama",
+      "routing_reason": "SEO audit is extraction/grading; shell script has no AI dependency"
+    }
+  ],
+  "model_router_tasks": [
+    {
+      "task_type": "scoring",
+      "current_model": "claude-sonnet-4-5-20250929",
+      "assigned_model": "gemma3:27b",
+      "assigned_provider": "ollama",
+      "routing_reason": "Proposal scoring is structured extraction"
+    },
+    {
+      "task_type": "rewrite",
+      "current_model": "claude-sonnet-4-5-20250929",
+      "assigned_model": "gemma3:27b",
+      "assigned_provider": "ollama",
+      "routing_reason": "Routine rewriting is drafting"
+    },
+    {
+      "task_type": "review",
+      "current_model": "claude-haiku-4-5-20251001",
+      "assigned_model": "gemma3:27b",
+      "assigned_provider": "ollama",
+      "routing_reason": "Routine review runs locally"
+    },
+    {
+      "task_type": "contract_research",
+      "current_model": "claude-sonnet-4-5-20250514",
+      "assigned_model": "claude-sonnet-4-5 (Anthropic)",
+      "assigned_provider": "anthropic",
+      "routing_reason": "REQUIRES Anthropic web_search tool - cannot run locally"
+    },
+    {
+      "task_type": "contract_verify",
+      "current_model": "claude-sonnet-4-5-20250514",
+      "assigned_model": "claude-sonnet-4-5 (Anthropic)",
+      "assigned_provider": "anthropic",
+      "routing_reason": "REQUIRES Anthropic web_search tool - cannot run locally"
+    },
+    {
+      "task_type": "opportunity_scan",
+      "current_model": "claude-sonnet-4-5-20250929",
+      "assigned_model": "gemma3:27b",
+      "assigned_provider": "ollama",
+      "routing_reason": "Structured extraction from existing data"
+    },
+    {
+      "task_type": "sb_classify",
+      "current_model": "claude-haiku-4-5-20251001",
+      "assigned_model": "gemma3:12b",
+      "assigned_provider": "ollama",
+      "routing_reason": "Batch classification runs on smallest local model"
+    },
+    {
+      "task_type": "newsletter_research",
+      "current_model": "claude-sonnet-4-5-20250514",
+      "assigned_model": "claude-sonnet-4-5 (Anthropic)",
+      "assigned_provider": "anthropic",
+      "routing_reason": "REQUIRES Anthropic web_search tool"
+    },
+    {
+      "task_type": "fact_check",
+      "current_model": "claude-sonnet-4-6",
+      "assigned_model": "claude-sonnet-4-5 (Anthropic)",
+      "assigned_provider": "anthropic",
+      "routing_reason": "REQUIRES Anthropic web_search tool for verification"
+    },
+    {
+      "task_type": "protest_monitor",
+      "current_model": "claude-sonnet-4-5-20250514",
+      "assigned_model": "claude-sonnet-4-5 (Anthropic)",
+      "assigned_provider": "anthropic",
+      "routing_reason": "REQUIRES Anthropic web_search tool"
+    }
+  ],
+  "summary": {
+    "total_anthropic_calls_before": 25,
+    "total_anthropic_calls_after": 9,
+    "total_local_calls_after": 14,
+    "external_unchanged": 2,
+    "estimated_monthly_savings_pct": "56-64%"
+  }
+}

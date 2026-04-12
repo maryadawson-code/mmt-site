@@ -30,7 +30,8 @@ const { extractIntelSignals } = require("./lib/signal-extractor");
 const { trackQuality } = require("./lib/quality-tracker");
 const { getFlag } = require("./lib/feature-flags");
 const { generateReportUrl } = require("./lib/report-url");
-const { trackAnthropic } = require("./lib/cost-tracker");
+const { trackAnthropic, trackOllama } = require("./lib/cost-tracker");
+const { callModel, isLocalProvider } = require("./lib/inference");
 const { createLogger } = require("./lib/logger");
 
 // --- Environment Variables ---
@@ -448,85 +449,113 @@ exports.handler = wrapHandler(async (event) => {
     try { await transitionState(supabase, "mp_scoring_history", scoring_id, "extract_completed"); } catch (e) { console.error("State transition error:", e.message); }
     try { await transitionState(supabase, "mp_scoring_history", scoring_id, "score_started"); } catch (e) { console.error("State transition error:", e.message); }
 
-    // --- Build prompt and call Claude API ---
+    // --- Build prompt and call model (Ollama local or Anthropic) ---
     const scoringModelConfig = await getModelConfig(supabase, "scoring");
-    console.log(`Calling Claude API for ${scoring_id} (${fileType}, textLen=${extractedText?.length || 0}, model=${scoringModelConfig.model} [${scoringModelConfig.reason}])`);
+    const useLocalScoring = isLocalProvider(scoringModelConfig) && !fileBase64; // Ollama can't handle binary PDFs
+    console.log(`Scoring ${scoring_id} (${fileType}, textLen=${extractedText?.length || 0}, model=${scoringModelConfig.model} [${scoringModelConfig.reason}], local=${useLocalScoring})`);
     const systemPrompt = buildSystemPrompt(documentType, finalSowText);
     const messageContent = buildMessageContent(fileType, fileBase64, extractedText, documentType);
 
-    // --- C5: Dual-model scoring (primary + shadow in parallel) ---
-    const apiCallBody = {
-      model: scoringModelConfig.model,
-      max_tokens: MAX_OUTPUT_TOKENS,
-      temperature: 0.3,
-      // Prompt caching: system prompt is repeated across calls, cache it for 90% input cost savings
-      system: [{ type: "text", text: systemPrompt, cache_control: { type: "ephemeral" } }],
-      messages: [{ role: "user", content: messageContent }],
-    };
-
     const _costStart = Date.now();
+    let claudeData, tokenUsage, shadowResponse;
 
-    const primaryPromise = withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify(apiCallBody),
-    }));
-
-    const ADMIN_EMAILS = ["maryadawson@gmail.com", "mary@missionmeetstech.com", "jackyang2326@gmail.com", "amchicu@gmail.com"];
-    const isAdmin = ADMIN_EMAILS.includes((email || "").toLowerCase());
-    const shadowPromise = isAdmin
-      ? Promise.resolve(null)
-      : withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": ANTHROPIC_API_KEY,
-            "anthropic-version": "2023-06-01",
-          },
-          body: JSON.stringify({
-            ...apiCallBody,
-            model: "claude-haiku-4-5-20251001",
-            max_tokens: MAX_OUTPUT_TOKENS,
-          }),
-        })).catch((err) => {
-          console.error("Shadow scoring failed:", err.message);
-          return null;
-        });
-
-    if (isAdmin) console.log("[SHADOW] Skipped shadow scoring for admin email");
-
-    const [claudeResponse, shadowResponse] = await Promise.all([primaryPromise, shadowPromise]);
-
-    if (!claudeResponse.ok) {
-      const errText = await claudeResponse.text();
-      console.error("Claude API error:", claudeResponse.status, errText);
-      await logOpsEvent(supabase, { event_type: "MODEL_FAILURE", source_function: "score-deck-background", severity: "error", signature: `anthropic_${claudeResponse.status}`, affected_entity: scoring_id, details: { status: claudeResponse.status, error: errText.substring(0, 500) } });
-      await markError(supabase, scoring_id, "AI scoring service error. Please try again.");
-      return { statusCode: 200, body: "Claude API error" };
+    if (useLocalScoring) {
+      // ─── LOCAL SCORING PATH (Ollama) ──────────────────────────
+      try {
+        const result = await withRetry(() => callModel(scoringModelConfig, {
+          system: systemPrompt,
+          messages: [{ role: "user", content: typeof messageContent === "string" ? messageContent : JSON.stringify(messageContent) }],
+          max_tokens: MAX_OUTPUT_TOKENS,
+          temperature: 0.3,
+          agent: "score-deck",
+          taskType: "scoring",
+        }));
+        // Build Anthropic-compatible response shape so downstream code works unchanged
+        claudeData = {
+          content: [{ type: "text", text: result.text }],
+          usage: result.usage,
+          model: result.model,
+        };
+        tokenUsage = { input: result.usage.input_tokens, output: result.usage.output_tokens };
+        try {
+          await trackOllama(supabase, {
+            functionName: "score-deck-background", product: "proposalpulse", orderId: scoring_id,
+            model: result.model, usage: result.usage, latencyMs: Date.now() - _costStart,
+          });
+        } catch (_costErr) { /* never break scoring */ }
+      } catch (localErr) {
+        console.error("Local scoring failed, falling back to Anthropic:", localErr.message);
+        // Fall through to Anthropic path below
+      }
     }
 
-    const claudeData = await claudeResponse.json();
+    // ─── ANTHROPIC SCORING PATH (production default or fallback) ───
+    if (!claudeData) {
+      const apiCallBody = {
+        model: scoringModelConfig.model.startsWith("gemma") ? "claude-sonnet-4-5-20250929" : scoringModelConfig.model,
+        max_tokens: MAX_OUTPUT_TOKENS,
+        temperature: 0.3,
+        system: [{ type: "text", text: systemPrompt, cache_control: { type: "ephemeral" } }],
+        messages: [{ role: "user", content: messageContent }],
+      };
 
-    // Cost tracking: primary scoring call
-    try {
-      await trackAnthropic(supabase, {
-        functionName: 'score-deck-background',
-        product: 'proposalpulse',
-        orderId: scoring_id,
-        model: scoringModelConfig.model,
-        usage: claudeData.usage,
-        latencyMs: Date.now() - _costStart,
-      });
-    } catch (_costErr) { /* never break scoring */ }
+      const primaryPromise = withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": ANTHROPIC_API_KEY,
+          "anthropic-version": "2023-06-01",
+        },
+        body: JSON.stringify(apiCallBody),
+      }));
 
-    const tokenUsage = {
-      input: claudeData.usage?.input_tokens || null,
-      output: claudeData.usage?.output_tokens || null,
-    };
+      const ADMIN_EMAILS = ["maryadawson@gmail.com", "mary@missionmeetstech.com", "jackyang2326@gmail.com", "amchicu@gmail.com"];
+      const isAdmin = ADMIN_EMAILS.includes((email || "").toLowerCase());
+      const shadowPromise = isAdmin
+        ? Promise.resolve(null)
+        : withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-key": ANTHROPIC_API_KEY,
+              "anthropic-version": "2023-06-01",
+            },
+            body: JSON.stringify({
+              ...apiCallBody,
+              model: "claude-haiku-4-5-20251001",
+              max_tokens: MAX_OUTPUT_TOKENS,
+            }),
+          })).catch((err) => {
+            console.error("Shadow scoring failed:", err.message);
+            return null;
+          });
+
+      if (isAdmin) console.log("[SHADOW] Skipped shadow scoring for admin email");
+
+      const [claudeResponse, shadowResponse] = await Promise.all([primaryPromise, shadowPromise]);
+
+      if (!claudeResponse.ok) {
+        const errText = await claudeResponse.text();
+        console.error("Claude API error:", claudeResponse.status, errText);
+        await logOpsEvent(supabase, { event_type: "MODEL_FAILURE", source_function: "score-deck-background", severity: "error", signature: `anthropic_${claudeResponse.status}`, affected_entity: scoring_id, details: { status: claudeResponse.status, error: errText.substring(0, 500) } });
+        await markError(supabase, scoring_id, "AI scoring service error. Please try again.");
+        return { statusCode: 200, body: "Claude API error" };
+      }
+
+      claudeData = await claudeResponse.json();
+
+      try {
+        await trackAnthropic(supabase, {
+          functionName: "score-deck-background", product: "proposalpulse", orderId: scoring_id,
+          model: apiCallBody.model, usage: claudeData.usage, latencyMs: Date.now() - _costStart,
+        });
+      } catch (_costErr) { /* never break scoring */ }
+
+      tokenUsage = {
+        input: claudeData.usage?.input_tokens || null,
+        output: claudeData.usage?.output_tokens || null,
+      };
+    } // end Anthropic path
 
     const responseText = claudeData.content
       .filter((block) => block.type === "text")

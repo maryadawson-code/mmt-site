@@ -24,7 +24,8 @@ const { checkKillSwitch } = require("./lib/kill-switch");
 const { extractIntelSignals } = require("./lib/signal-extractor");
 const { logOpsEvent } = require("./lib/ops-ledger");
 const { generateReportUrl } = require("./lib/report-url");
-const { trackAnthropic } = require("./lib/cost-tracker");
+const { trackAnthropic, trackOllama } = require("./lib/cost-tracker");
+const { callModel, isLocalProvider } = require("./lib/inference");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -46,7 +47,22 @@ const CORS_HEADERS = {
 
 let _lastClaudeUsage = null;
 
-async function callClaude(systemPrompt, userPrompt, maxTokens, model, temperature = 0.3) {
+async function callClaude(systemPrompt, userPrompt, maxTokens, model, temperature = 0.3, modelConfig = null) {
+  // Route through inference helper when model config indicates local provider
+  if (modelConfig && isLocalProvider(modelConfig)) {
+    const result = await withRetry(() => callModel(modelConfig, {
+      system: systemPrompt,
+      messages: [{ role: "user", content: userPrompt }],
+      max_tokens: maxTokens,
+      temperature,
+      agent: "gold-team-review",
+      taskType: modelConfig._taskType || "rewrite",
+    }));
+    _lastClaudeUsage = result.usage || null;
+    return result.text;
+  }
+
+  // Anthropic path (production default)
   const response = await withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -431,7 +447,7 @@ exports.handler = async (event) => {
 
     const _costStartRewrite = Date.now();
     try {
-      const rewriteText = await callClaude(rewritePrompt.system, rewritePrompt.user, REWRITE_MAX_TOKENS, rewriteModelConfig.model, 0.4);
+      const rewriteText = await callClaude(rewritePrompt.system, rewritePrompt.user, REWRITE_MAX_TOKENS, rewriteModelConfig.model, 0.4, { ...rewriteModelConfig, _taskType: "rewrite" });
       rewriteResult = parseJson(rewriteText);
       // Cost tracking: rewrite call
       try {
@@ -478,7 +494,7 @@ exports.handler = async (event) => {
     const _costStartReview = Date.now();
     try {
       const reviewPrompt = buildReviewPrompt(rewriteResult, config);
-      const reviewText = await callClaude(reviewPrompt.system, reviewPrompt.user, REVIEW_MAX_TOKENS, reviewModelConfig.model, 0.2);
+      const reviewText = await callClaude(reviewPrompt.system, reviewPrompt.user, REVIEW_MAX_TOKENS, reviewModelConfig.model, 0.2, { ...reviewModelConfig, _taskType: "review" });
       reviewResult = parseJson(reviewText);
       // Cost tracking: review call
       try {

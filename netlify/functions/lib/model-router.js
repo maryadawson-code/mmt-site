@@ -35,6 +35,7 @@ const ANTHROPIC_ONLY_TASKS = new Set([
   "newsletter_research",
   "fact_check",
   "protest_monitor",
+  "opportunity_scan", // uses web_search_20250305 tool
 ]);
 
 const MODELS = {
