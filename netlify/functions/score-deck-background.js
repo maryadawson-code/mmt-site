@@ -31,6 +31,7 @@ const { trackQuality } = require("./lib/quality-tracker");
 const { getFlag } = require("./lib/feature-flags");
 const { generateReportUrl } = require("./lib/report-url");
 const { trackAnthropic, trackOllama } = require("./lib/cost-tracker");
+const { checkRegulatoryCompliance } = require("./lib/regulatory-flags");
 const { callModel, isLocalProvider } = require("./lib/inference");
 const { createLogger } = require("./lib/logger");
 
@@ -706,6 +707,20 @@ exports.handler = wrapHandler(async (event) => {
     };
     console.log(`[pWin] ${pwinResult.pwin_range} | Penalties: ${pwinResult.penalties.length} | Kill conditions: ${pwinResult.kill_conditions.length}`);
 
+    // Regulatory compliance flags (GSA MAS Refresh 31, FAR Modernization)
+    const regulatoryResult = checkRegulatoryCompliance(extractedText || documentText, scorecard, documentType);
+    if (regulatoryResult.flags.length > 0 || regulatoryResult.warnings.length > 0) {
+      scorecard._regulatory_flags = regulatoryResult;
+      console.log(`[REGULATORY] ${regulatoryResult.flags.length} flags, ${regulatoryResult.warnings.length} warnings`);
+      // Merge high-severity regulatory flags into red_flags for visibility
+      for (const flag of regulatoryResult.flags) {
+        if (flag.severity === "high") {
+          scorecard.red_flags = scorecard.red_flags || [];
+          scorecard.red_flags.push(`[REGULATORY] ${flag.title}`);
+        }
+      }
+    }
+
     // Track quality metrics
     try {
       await trackQuality(supabase, { product: "proposalpulse", orderId: scoring_id, grade: overallGrade, score: avgScore ? parseFloat(avgScore.toFixed(2)) : null, factors: { verdict: scorecard.verdict, pwin: pwinResult.pwin, document_type: documentType } });
@@ -730,6 +745,8 @@ exports.handler = wrapHandler(async (event) => {
     }
 
     // Store scorecard + document text + model routing metadata
+    const wasTextTruncated = extractedText && extractedText.length >= MAX_TEXT_CHARS;
+    const wasSowTruncated = finalSowText && finalSowText.length >= MAX_TEXT_CHARS;
     const scorecardWithMeta = {
       ...scorecard,
       _document_text: documentText || null,
@@ -737,6 +754,12 @@ exports.handler = wrapHandler(async (event) => {
         scoring: { model: scoringModelConfig.model, reason: scoringModelConfig.reason },
       },
       _sow_detected_in_document: detectedSowInDocument,
+      _truncation_warning: (wasTextTruncated || wasSowTruncated) ? {
+        document_truncated: wasTextTruncated,
+        sow_truncated: wasSowTruncated,
+        max_chars: MAX_TEXT_CHARS,
+        message: "Document exceeded maximum length and was truncated. Scoring may not reflect content beyond the cutoff point.",
+      } : null,
     };
 
     const { error: updateErr } = await supabase

@@ -61,7 +61,10 @@ Your job: Read the uploaded white paper or technical volume and score it across 
 - Staffing plan relies on "TBD" key personnel
 - Solution requires persistent connectivity with no resilience story
 - No risk mitigation section or risks are dismissed as "low"
-- Document reads like a marketing brochure instead of a technical proposal`,
+- Document reads like a marketing brochure instead of a technical proposal
+- For GSA MAS proposals: references Price Reduction Clause (PRC) or CSP-1 instead of Transactional Data Reporting (TDR) — PRC was eliminated in Refresh 31 (April 2026)
+- For defense health IT: no reference to CMMC, DFARS 252.204-7012, or NIST 800-171 cybersecurity requirements
+- References revoked EO 11246 affirmative action requirements (revoked by EO 14173, removed from SAM.gov March 2026)`,
     score_ids: [
       { id: "problem-understanding", title: "Problem Understanding" },
       { id: "technical-approach", title: "Technical Approach" },
@@ -96,7 +99,11 @@ Your job: Read the uploaded RFP/RFI response and score it across 9 criteria. Be 
 - Technical approach is copy-pasted boilerplate (not tailored to this RFP)
 - Missing required certifications or compliance statements
 - No transition plan for incumbent replacement
-- Management approach is generic org chart with no substance`,
+- Management approach is generic org chart with no substance
+- For GSA MAS task orders: no TDR compliance language — Transactional Data Reporting is mandatory for all SINs as of Refresh 31 (April 2026)
+- References obsolete Price Reduction Clause (PRC) or CSP-1 Commercial Sales Practices (eliminated in Refresh 31)
+- References revoked EO 11246 affirmative action requirements (removed from SAM.gov FAR reps & certs, March 2026)
+- For defense health IT (DHA/VA/MHS): no CMMC or NIST SP 800-171 cybersecurity compliance language`,
     score_ids: [
       { id: "requirements-compliance", title: "Requirements Compliance" },
       { id: "technical-approach", title: "Technical Approach" },
@@ -166,7 +173,9 @@ Your job: Read the uploaded pricing volume or cost proposal and score it across 
 - Math errors or inconsistencies between tables
 - Missing CLINs or pricing for required optional periods
 - No indirect rate disclosure or wrap rate explanation
-- Pricing assumptions contradict the technical volume`,
+- Pricing assumptions contradict the technical volume
+- For GSA MAS pricing: no TDR data field alignment — pricing tables should map to the 12 mandatory TDR reporting fields (Refresh 31, April 2026)
+- References obsolete PRC/CSP-1 pricing structure instead of TDR-based transactional reporting`,
     score_ids: [
       { id: "cost-realism", title: "Cost Realism" },
       { id: "rate-competitiveness", title: "Rate Competitiveness" },
