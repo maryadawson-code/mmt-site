@@ -27,15 +27,16 @@
 
   <main class="wrap" style="padding-top:60px; padding-bottom:80px;">
 
-    <!-- Password gate -->
+    <!-- Auth gate -->
     <div id="gate">
       <h1 style="font-size:28px; font-weight:800; margin-bottom:8px;">MMT Premium Dashboard</h1>
-      <p style="color:var(--mmt-text-secondary); margin-bottom:24px;">Enter your member password from your welcome email.</p>
+      <p style="color:var(--mmt-text-secondary); margin-bottom:24px;">Enter your subscriber email to access your dashboard.</p>
       <div>
-        <input type="password" id="gate-password" placeholder="Member password" autocomplete="current-password">
+        <input type="email" id="gate-email" placeholder="you@company.com" autocomplete="email" style="padding:12px 16px; border:1px solid var(--mmt-border); border-radius:8px; font-size:15px; width:100%; max-width:320px; margin-bottom:12px;">
       </div>
-      <button onclick="checkAccess()">Access Dashboard</button>
-      <p id="gate-error" style="color:#E63946; margin-top:12px; display:none;">Incorrect password. Check your welcome email or contact mary@missionmeetstech.com</p>
+      <button onclick="checkAccess()" style="padding:12px 24px; background:var(--mmt-navy); color:var(--mmt-white); border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:15px;">Access Dashboard</button>
+      <p id="gate-error" style="color:#E63946; margin-top:12px; display:none;"></p>
+      <p id="gate-loading" style="color:var(--mmt-text-secondary); margin-top:12px; display:none;">Checking subscription...</p>
       <p style="margin-top:24px; font-size:13px; color:var(--mmt-text-secondary);">Not a member? <a href="/pricing.html" style="color:var(--mmt-teal);">See Premium pricing &rarr;</a></p>
     </div>
 
@@ -87,24 +88,39 @@
   <script>
     // Simple password gate for launch. Mary sets the password and shares via welcome email.
     // Replace with proper auth (magic link, Buttondown API, etc.) post-launch.
-    var PREMIUM_PASSWORD_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'; // SHA-256 of 'admin' — Mary will change
-
-    async function hashPassword(pw) {
-      var enc = new TextEncoder().encode(pw);
-      var buf = await crypto.subtle.digest('SHA-256', enc);
-      return Array.from(new Uint8Array(buf)).map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
-    }
-
     async function checkAccess() {
-      var pw = document.getElementById('gate-password').value;
-      var hash = await hashPassword(pw);
-      if (hash === PREMIUM_PASSWORD_HASH) {
-        localStorage.setItem('mmt_premium', 'true');
-        localStorage.setItem('mmt_premium_ts', Date.now().toString());
-        document.getElementById('gate').style.display = 'none';
-        document.getElementById('content').style.display = 'block';
-      } else {
-        document.getElementById('gate-error').style.display = 'block';
+      var email = document.getElementById('gate-email').value.trim().toLowerCase();
+      if (!email) return;
+
+      document.getElementById('gate-loading').style.display = 'block';
+      document.getElementById('gate-error').style.display = 'none';
+
+      try {
+        var res = await fetch('/.netlify/functions/member-auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email }),
+        });
+        var data = await res.json();
+
+        if (data.authenticated) {
+          localStorage.setItem('mmt_premium', 'true');
+          localStorage.setItem('mmt_premium_ts', Date.now().toString());
+          localStorage.setItem('mmt_email', email);
+          if (data.token) localStorage.setItem('mmt_subscriber_token', data.token);
+          document.getElementById('gate').style.display = 'none';
+          document.getElementById('content').style.display = 'block';
+        } else {
+          document.getElementById('gate-loading').style.display = 'none';
+          var errEl = document.getElementById('gate-error');
+          errEl.textContent = data.message || 'No active subscription found.';
+          errEl.style.display = 'block';
+        }
+      } catch (err) {
+        document.getElementById('gate-loading').style.display = 'none';
+        var errEl = document.getElementById('gate-error');
+        errEl.textContent = 'Could not verify. Please try again or email mary@missionmeetstech.com';
+        errEl.style.display = 'block';
       }
     }
 
@@ -117,7 +133,7 @@
       }
     })();
 
-    document.getElementById('gate-password').addEventListener('keydown', function(e) {
+    document.getElementById('gate-email').addEventListener('keydown', function(e) {
       if (e.key === 'Enter') checkAccess();
     });
   </script>

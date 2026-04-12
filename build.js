@@ -2068,7 +2068,7 @@ function inlineTailwindCss(html) {
         <button id="searchToggle" class="hover:opacity-70" style="color:var(--mmt-text-secondary);background:none;border:none;cursor:pointer;" aria-label="Search"><svg width="16" height="16" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></button>
         <a href="/newsletter.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Subscribe</a>
         <a href="/pricing.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-teal);">★ Pricing</a>
-        <a href="/security.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Security</a>
+        <a href="#" onclick="mmtSignIn();return false;" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Sign In</a>
         <a href="/resources.html#paid-tools" class="btn-primary no-underline">Choose a Tool</a>
       </div>
       <button id="menuToggle" class="md:hidden" style="color:var(--mmt-navy);background:none;border:none;cursor:pointer;" aria-label="Toggle menu">
@@ -2086,7 +2086,7 @@ function inlineTailwindCss(html) {
         <a href="/about.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">About</a>
         <a href="/newsletter.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">Subscribe</a>
         <a href="/pricing.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-teal);">★ Pricing</a>
-        <a href="/security.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">Security</a>
+        <a href="#" onclick="mmtSignIn();return false;" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">Sign In</a>
         <div class="pt-3 mt-1" style="border-top:1px solid var(--mmt-border);">
           <a href="/resources.html#paid-tools" class="btn-primary no-underline">Choose a Tool</a>
         </div>
@@ -2374,7 +2374,8 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     'ops.html', 'command-center.html',
     'pricing.html',
     'welcome-premium.html',
-    'dashboard.html'
+    'dashboard.html',
+    'subscribed.html'
   ];
   const ogMap = {
     'index.html': 'index.png',

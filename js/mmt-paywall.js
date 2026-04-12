@@ -149,7 +149,36 @@
     }
   }
 
-  // --- Email prompt for gated actions ---
+  // --- Sign In function — checks Stripe subscription via serverless function ---
+  window.mmtSignIn = function () {
+    var email = prompt("Enter your Premium subscriber email:");
+    if (!email) return;
+    email = email.toLowerCase().trim();
+
+    fetch("/.netlify/functions/member-auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email }),
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (data.authenticated) {
+          localStorage.setItem(PREMIUM_KEY, "true");
+          localStorage.setItem("mmt_premium_ts", Date.now().toString());
+          localStorage.setItem(EMAIL_KEY, email);
+          if (data.token) localStorage.setItem("mmt_subscriber_token", data.token);
+          alert("Welcome back! Refreshing to unlock Premium content.");
+          location.reload();
+        } else {
+          alert(data.message || "No active subscription found. Subscribe at /pricing.html");
+        }
+      })
+      .catch(function () {
+        alert("Could not verify subscription. Please try again or email mary@missionmeetstech.com");
+      });
+  };
+
+  // --- Legacy email prompt (kept for backward compat) ---
   window.mmtRequireEmail = function (callback) {
     var email = localStorage.getItem(EMAIL_KEY);
     if (email) {
