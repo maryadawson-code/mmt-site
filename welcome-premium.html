@@ -67,6 +67,19 @@
   </main>
 
   <footer class="wrap"></footer>
+  <script>
+    // Auto-authenticate subscriber arriving from Stripe checkout
+    (function() {
+      var params = new URLSearchParams(window.location.search);
+      var emailParam = params.get('prefilled_email') || params.get('customer_email');
+      localStorage.setItem('mmt_premium', 'true');
+      localStorage.setItem('mmt_premium_ts', Date.now().toString());
+      document.cookie = 'mmt_premium=true; path=/; max-age=2592000; SameSite=Lax';
+      if (emailParam) {
+        localStorage.setItem('mmt_email', emailParam.toLowerCase());
+      }
+    })();
+  </script>
   <script src="/js/mmt-paywall.js" defer></script>
 </body>
 </html>

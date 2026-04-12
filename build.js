@@ -2075,7 +2075,7 @@ function inlineTailwindCss(html) {
         <a href="/newsletter.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Subscribe</a>
         <a href="/pricing.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-teal);">★ Pricing</a>
         <a href="/security.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Security</a>
-        <a href="#" onclick="mmtSignIn();return false;" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Sign In</a>
+        <a href="/dashboard.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Sign In</a>
         <a href="/resources.html#paid-tools" class="btn-primary no-underline">Choose a Tool</a>
       </div>
       <button id="menuToggle" class="md:hidden" style="color:var(--mmt-navy);background:none;border:none;cursor:pointer;" aria-label="Toggle menu">
@@ -2094,7 +2094,7 @@ function inlineTailwindCss(html) {
         <a href="/newsletter.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">Subscribe</a>
         <a href="/pricing.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-teal);">★ Pricing</a>
         <a href="/security.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">Security</a>
-        <a href="#" onclick="mmtSignIn();return false;" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">Sign In</a>
+        <a href="/dashboard.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">Sign In</a>
         <div class="pt-3 mt-1" style="border-top:1px solid var(--mmt-border);">
           <a href="/resources.html#paid-tools" class="btn-primary no-underline">Choose a Tool</a>
         </div>
