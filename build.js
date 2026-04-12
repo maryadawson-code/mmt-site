@@ -584,15 +584,19 @@ function generateTopicPages(tags) {
     const outDir = path.join(DIST_DIR, 'topics', tag.slug);
     ensureDir(outDir);
 
-    const articleListHtml = tag.articles.map(article => `
+    const articleListHtml = tag.articles.map(article => {
+      const hasPremiumCC = article.capture_corner && article.capture_corner.length > 0;
+      const ccBadge = hasPremiumCC ? ' <span style="display:inline-block;font-size:10px;font-weight:800;background:rgba(69,123,157,0.1);color:#457B9D;padding:2px 7px;border-radius:4px;vertical-align:middle;">★ Premium</span>' : '';
+      return `
         <article class="card rounded-xl p-6">
-          <h3 class="text-lg font-bold mb-2"><a href="${article.url}" class="no-underline hover:opacity-80" style="color:var(--mmt-navy);">${article.title}</a></h3>
+          <h3 class="text-lg font-bold mb-2"><a href="${article.url}" class="no-underline hover:opacity-80" style="color:var(--mmt-navy);">${article.title}</a>${ccBadge}</h3>
           <p class="text-xs mb-3" style="color:var(--mmt-text-secondary);"><svg class="mr-1" width="1em" height="1em" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H64C28.7 64 0 92.7 0 128v16 48V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192 144 128c0-35.3-28.7-64-64-64H344V24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H152V24zM48 192H400V448c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192z"/></svg>${article.formattedDate}${readTimeBadge(article.readTime)}</p>
           <p class="text-sm leading-relaxed mb-4" style="color:var(--mmt-text);">${article.description}</p>
           <div class="flex flex-wrap gap-2">
             ${(article.tags || []).map(t => `<a href="/topics/${slugify(t)}/" class="tag no-underline">${t}</a>`).join('')}
           </div>
-        </article>`).join('\n');
+        </article>`;
+    }).join('\n');
 
     // Topic description
     const desc = topicDescriptions[tag.name] || '';
@@ -1000,9 +1004,11 @@ function generateLatestArticlesHtml(archive, count) {
     ).join('');
     const isExternal = item.url && item.url.startsWith('http');
     const linkAttrs = isExternal ? ' target="_blank" rel="noopener"' : '';
+    const hasPremium = item.capture_corner && item.capture_corner.length > 0;
+    const premiumBadge = hasPremium ? '<span style="display:inline-block;font-size:10px;font-weight:800;background:rgba(69,123,157,0.1);color:#457B9D;padding:2px 7px;border-radius:4px;margin-left:6px;vertical-align:middle;">★ Premium</span>' : '';
     return `<a href="${item.url}"${linkAttrs} class="article-card no-underline">
           <div>
-            <div class="kicker">${(item.tags || [])[0] || 'Analysis'}</div>
+            <div class="kicker">${(item.tags || [])[0] || 'Analysis'}${premiumBadge}</div>
             <h3 style="margin:10px 0;font-size:18px;">${escapeHtml(item.title)}</h3>
             <p>${escapeHtml(item.description)}</p>
           </div>
@@ -2357,6 +2363,31 @@ function inlineTailwindCss(html) {
     'where policy meets technology in federal healthcare');
   html = html.replace(/at the intersection of/gi, 'where');
 
+  // --- Inject Premium CTA block before footer on content pages ---
+  // Pages that should get a Premium CTA: resources, podcast, about, latest, topics,
+  // getting-started, contracting, events, newswire, agency-sources, glossary
+  // Add Premium CTA block before footer on content pages (not tools, not pricing, not member pages)
+  const isToolPage = html.includes('score-deck') || html.includes('tactical-brief-form') || html.includes('MMT_CONFIG');
+  const isMemberPage = html.includes('gate-email') || html.includes('welcome-premium') || html.includes('subscribed');
+  const hasContent = html.includes('<footer class="wrap"') && !isToolPage && !isMemberPage;
+  if (hasContent && !html.includes('mmt-premium-cta-block')) {
+    const premiumBlock = `
+    <section class="mmt-premium-cta-block" style="padding:32px 0;border-top:1px solid var(--mmt-border,#E5E7EB);">
+      <div class="wrap" style="max-width:640px;margin:0 auto;text-align:center;padding:0 24px;">
+        <p style="font-size:15px;color:var(--mmt-navy,#0A192F);font-weight:700;margin:0 0 8px;">Turn the intelligence into action.</p>
+        <p style="font-size:14px;color:var(--mmt-text-secondary,#6B7280);margin:0 0 16px;">Monthly Capture Intelligence sheets, Capture Corner depth, early access, tool discounts. No sponsors.</p>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <a href="/proposal-pulse.html" style="font-size:13px;font-weight:600;color:var(--mmt-navy,#0A192F);text-decoration:none;">Score a proposal &rarr;</a>
+          <span style="color:var(--mmt-border,#E5E7EB);">&middot;</span>
+          <a href="/marketpulse.html" style="font-size:13px;font-weight:600;color:var(--mmt-navy,#0A192F);text-decoration:none;">Request a brief &rarr;</a>
+          <span style="color:var(--mmt-border,#E5E7EB);">&middot;</span>
+          <a href="/pricing.html" style="font-size:13px;font-weight:600;color:var(--mmt-teal,#457B9D);text-decoration:none;">&#9733; See Premium &rarr;</a>
+        </div>
+      </div>
+    </section>`;
+    html = html.replace(/<footer class="wrap"/, premiumBlock + '\n  <footer class="wrap"');
+  }
+
   return html;
 }
 
@@ -2375,7 +2406,8 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     'pricing.html',
     'welcome-premium.html',
     'dashboard.html',
-    'subscribed.html'
+    'subscribed.html',
+    'upgrade.html'
   ];
   const ogMap = {
     'index.html': 'index.png',

@@ -129,6 +129,24 @@
         premiumCtaEls[p].style.display = "none";
       }
     }
+
+    // Gate contractor notes in glossary and contract tracker sections
+    var gatedNotes = document.querySelectorAll('.contractor-note-gated');
+    if (gatedNotes.length > 0 && status !== 'premium') {
+      for (var g = 0; g < gatedNotes.length; g++) {
+        gatedNotes[g].style.filter = 'blur(4px)';
+        gatedNotes[g].style.userSelect = 'none';
+        gatedNotes[g].style.pointerEvents = 'none';
+        gatedNotes[g].style.position = 'relative';
+        // Add overlay
+        var overlay = document.createElement('a');
+        overlay.href = '/pricing.html';
+        overlay.style.cssText = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--mmt-teal);text-decoration:none;background:rgba(255,255,255,0.7);border-radius:4px;';
+        overlay.textContent = '★ Premium — Unlock contractor notes';
+        gatedNotes[g].style.position = 'relative';
+        gatedNotes[g].appendChild(overlay);
+      }
+    }
   }
 
   // --- Capture Intelligence 72-hour auto-unlock ---
