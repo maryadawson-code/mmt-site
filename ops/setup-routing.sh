@@ -78,11 +78,9 @@ cp "$SCRIPT_DIR/openclaw/openclaw.json" "$OPENCLAW_DIR/openclaw.json"
 cp "$SCRIPT_DIR/openclaw/providers.yaml" "$OPENCLAW_DIR/providers.yaml"
 cp "$SCRIPT_DIR/openclaw/agent-audit.json" "$OPENCLAW_DIR/workspace/agent-audit.json"
 
-# Copy agent configs
-if [ -d "$OPENCLAW_DIR/workspace/agents" ]; then
-  for f in "$SCRIPT_DIR/openclaw/agents/"*.json 2>/dev/null; do
-    [ -f "$f" ] && cp "$f" "$OPENCLAW_DIR/workspace/agents/"
-  done
+# Copy agent configs if they exist
+if [ -d "$SCRIPT_DIR/openclaw/agents" ]; then
+  cp "$SCRIPT_DIR/openclaw/agents/"*.json "$OPENCLAW_DIR/workspace/agents/" 2>/dev/null || true
 fi
 
 touch "$OPENCLAW_DIR/logs/inference.jsonl"
