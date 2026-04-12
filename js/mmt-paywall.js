@@ -186,12 +186,50 @@
     }
   }
 
+  // --- Go Premium Sticky Bar ---
+  function initStickyBar() {
+    // Don't show on legal/privacy pages
+    var skipPages = ['/security', '/privacy', '/terms', '/editorial-standards'];
+    var path = window.location.pathname;
+    for (var i = 0; i < skipPages.length; i++) {
+      if (path.indexOf(skipPages[i]) === 0) return;
+    }
+    // Don't show if premium
+    if (getSubscriberStatus() === 'premium') return;
+    // Don't show if dismissed
+    if (localStorage.getItem('mmt_sticky_dismissed')) return;
+    // Don't show if visited pricing this session
+    if (sessionStorage.getItem('mmt_visited_pricing')) return;
+    if (path.indexOf('/pricing') === 0) {
+      sessionStorage.setItem('mmt_visited_pricing', '1');
+      return;
+    }
+
+    var shown = false;
+    window.addEventListener('scroll', function onScroll() {
+      if (shown) return;
+      var scrollPct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+      if (scrollPct < 0.3) return;
+      shown = true;
+
+      var bar = document.createElement('div');
+      bar.id = 'mmt-sticky-bar';
+      bar.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#0A192F;color:#fff;padding:10px 24px;display:flex;align-items:center;justify-content:center;gap:16px;font-size:14px;font-family:Inter,system-ui,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,0.15);';
+      bar.innerHTML = '<span>&#9733; Founding Member pricing &#8212; 100 seats, first-come. $199/yr locked in for life.</span>' +
+        '<a href="/pricing.html#founding-member" style="background:#457B9D;color:#fff;padding:6px 16px;border-radius:6px;font-weight:700;font-size:13px;text-decoration:none;white-space:nowrap;">Claim your seat &rarr;</a>' +
+        '<button onclick="document.getElementById(\'mmt-sticky-bar\').remove();localStorage.setItem(\'mmt_sticky_dismissed\',\'1\');" style="background:none;border:none;color:#999;cursor:pointer;font-size:18px;padding:0 4px;" aria-label="Dismiss">&times;</button>';
+      document.body.prepend(bar);
+      if (typeof plausible !== 'undefined') plausible('Sticky Bar View');
+    });
+  }
+
   // --- Init ---
   function init() {
     var status = getSubscriberStatus();
     applyPaywallVisibility();
     applyCIDelayedAccess(status);
     trackGateViews(status);
+    initStickyBar();
   }
 
   if (document.readyState === "loading") {
