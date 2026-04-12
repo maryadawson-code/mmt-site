@@ -1353,7 +1353,12 @@ function generateContractTrackerHtml(contracts, contractArticleMap) {
                 </div>
               </div>
               <p class="text-xs mb-2" style="color:var(--mmt-teal);">${escapeHtml(c.agency)}</p>
-              <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);">${escapeHtml(c.description)}</p>
+              <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);">${(() => {
+                const words = (c.description || '').split(/\s+/);
+                if (words.length <= 40) return escapeHtml(c.description);
+                const teaser = escapeHtml(words.slice(0, 40).join(' '));
+                return teaser + '... <a href="/pricing.html" style="font-size:11px;font-weight:700;color:var(--mmt-teal);text-decoration:none;white-space:nowrap;" data-gate-overlay="premium">★ Full competitive note — Premium</a>';
+              })()}</p>
               <div class="flex flex-wrap gap-3 text-xs" style="color:var(--mmt-text-secondary);">
                 <span><strong style="color:var(--mmt-text);">Vendor:</strong> ${escapeHtml(c.vendor)}</span>
                 <span><strong style="color:var(--mmt-text);">Value:</strong> ${escapeHtml(c.value)}</span>
