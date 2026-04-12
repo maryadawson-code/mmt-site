@@ -273,7 +273,13 @@ async function createCheckoutSession({ name, email, company, topic, audience, ad
   }
 
   const stripe = new Stripe(STRIPE_SECRET_KEY);
-  const truncate = (s, max) => (s.length > max ? s.slice(0, max) : s);
+  const truncate = (s, max) => {
+    if (s && s.length > max) {
+      console.warn(`[marketpulse-gateway] Stripe metadata truncated: ${s.length} chars → ${max} (field value starts: "${s.substring(0, 60)}...")`);
+      return s.slice(0, max);
+    }
+    return s || "";
+  };
 
   const session = await stripe.checkout.sessions.create({
     customer_email: email,

@@ -138,12 +138,12 @@ exports.handler = async () => {
       try {
         const payload = {
           session_id: order.session_id,
-          name: order.name,
+          name: order.name || order.company_name || null,
           email: order.email,
-          company: order.company,
+          company: order.company || order.company_name || null,
           topic: order.topic,
-          audience: order.audience,
-          amount_paid: order.amount_paid,
+          audience: order.audience || null,
+          additional_context: order.additional_context || order.company_context || null,
         };
 
         const res = await fetchWithTimeout(BG_URL, {
