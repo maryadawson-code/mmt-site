@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium Dashboard — Mission Meets Tech</title>
+  <meta name="description" content="Your MMT Premium member dashboard.">
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <link rel="icon" href="/favicon-v3.png" type="image/png">
+  <style>
+    :root { --mmt-navy:#0A192F; --mmt-teal:#457B9D; --mmt-white:#FFFFFF; --mmt-surface:#F3F4F6; --mmt-text-secondary:#6B7280; --mmt-border:#E5E7EB; }
+    body { font-family:Inter,system-ui,sans-serif; color:var(--mmt-navy); background:var(--mmt-white); margin:0; }
+    .wrap { max-width:760px; margin:0 auto; padding:0 24px; }
+    .btn-primary { display:inline-block; background:var(--mmt-navy); color:var(--mmt-white); font-weight:700; padding:12px 24px; border-radius:8px; text-decoration:none; font-size:14px; }
+    .btn-primary:hover { opacity:0.85; }
+    .dash-card { background:var(--mmt-surface); border-radius:12px; padding:24px; margin-bottom:16px; }
+    .dash-card h3 { margin:0 0 8px; font-size:17px; }
+    #gate { text-align:center; padding:80px 24px; }
+    #gate input { padding:12px 16px; border:1px solid var(--mmt-border); border-radius:8px; font-size:15px; width:100%; max-width:320px; margin-bottom:12px; }
+    #gate button { padding:12px 24px; background:var(--mmt-navy); color:var(--mmt-white); border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:15px; }
+    #content { display:none; }
+  </style>
+</head>
+<body>
+  <nav class="nav-editorial"></nav>
+
+  <main class="wrap" style="padding-top:60px; padding-bottom:80px;">
+
+    <!-- Password gate -->
+    <div id="gate">
+      <h1 style="font-size:28px; font-weight:800; margin-bottom:8px;">MMT Premium Dashboard</h1>
+      <p style="color:var(--mmt-text-secondary); margin-bottom:24px;">Enter your member password from your welcome email.</p>
+      <div>
+        <input type="password" id="gate-password" placeholder="Member password" autocomplete="current-password">
+      </div>
+      <button onclick="checkAccess()">Access Dashboard</button>
+      <p id="gate-error" style="color:#E63946; margin-top:12px; display:none;">Incorrect password. Check your welcome email or contact mary@missionmeetstech.com</p>
+      <p style="margin-top:24px; font-size:13px; color:var(--mmt-text-secondary);">Not a member? <a href="/pricing.html" style="color:var(--mmt-teal);">See Premium pricing &rarr;</a></p>
+    </div>
+
+    <!-- Premium content (hidden until authenticated) -->
+    <div id="content">
+      <h1 style="font-size:28px; font-weight:800; margin-bottom:4px;">&#9733; MMT Premium</h1>
+      <p style="color:var(--mmt-text-secondary); margin-bottom:32px;">Welcome back. Your Premium access is active.</p>
+
+      <div class="dash-card" style="border-left:3px solid var(--mmt-teal);">
+        <h3>Capture Intelligence — This Month</h3>
+        <p style="margin:0 0 12px; color:var(--mmt-text-secondary); font-size:14px;">Full sheet with all action windows, confidence labels, and deep-dive analysis.</p>
+        <a href="/intel/capture-intelligence-this-issue/" class="btn-primary">View Full Sheet &rarr;</a>
+      </div>
+
+      <div class="dash-card">
+        <h3>Premium Article Archive</h3>
+        <p style="margin:0 0 12px; color:var(--mmt-text-secondary); font-size:14px;">All articles with Capture Corner depth unlocked.</p>
+        <a href="/latest.html" style="color:var(--mmt-teal); font-weight:600;">Browse articles &rarr;</a>
+      </div>
+
+      <div class="dash-card">
+        <h3>Tool Discounts</h3>
+        <p style="margin:0; color:var(--mmt-text-secondary); font-size:14px;">
+          <strong>ProposalPulse:</strong> $14.99 per assessment (25% off)<br>
+          <strong>MarketPulse:</strong> $35 per brief (30% off)<br>
+          <span style="font-size:13px;">Discounts apply automatically when using your registered email.</span>
+        </p>
+      </div>
+
+      <div class="dash-card">
+        <h3>Monthly Q&A</h3>
+        <p style="margin:0; color:var(--mmt-text-secondary); font-size:14px;">
+          Reply to any Premium newsletter issue with your question. Selected questions answered in the next issue.
+        </p>
+      </div>
+
+      <div class="dash-card">
+        <h3>Account</h3>
+        <p style="margin:0; color:var(--mmt-text-secondary); font-size:14px;">
+          Manage your subscription, update billing, or cancel: <a href="https://billing.stripe.com/p/login/7sY28f3vn9N4aAwaEE" style="color:var(--mmt-teal);">Stripe Customer Portal &rarr;</a><br>
+          <span style="font-size:13px;">Questions? <a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a></span>
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="wrap"></footer>
+
+  <script>
+    // Simple password gate for launch. Mary sets the password and shares via welcome email.
+    // Replace with proper auth (magic link, Buttondown API, etc.) post-launch.
+    var PREMIUM_PASSWORD_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'; // SHA-256 of 'admin' — Mary will change
+
+    async function hashPassword(pw) {
+      var enc = new TextEncoder().encode(pw);
+      var buf = await crypto.subtle.digest('SHA-256', enc);
+      return Array.from(new Uint8Array(buf)).map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+    }
+
+    async function checkAccess() {
+      var pw = document.getElementById('gate-password').value;
+      var hash = await hashPassword(pw);
+      if (hash === PREMIUM_PASSWORD_HASH) {
+        localStorage.setItem('mmt_premium', 'true');
+        localStorage.setItem('mmt_premium_ts', Date.now().toString());
+        document.getElementById('gate').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+      } else {
+        document.getElementById('gate-error').style.display = 'block';
+      }
+    }
+
+    // Auto-unlock if already authenticated (within 30 days)
+    (function() {
+      var ts = localStorage.getItem('mmt_premium_ts');
+      if (localStorage.getItem('mmt_premium') === 'true' && ts && (Date.now() - parseInt(ts)) < 30 * 24 * 60 * 60 * 1000) {
+        document.getElementById('gate').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+      }
+    })();
+
+    document.getElementById('gate-password').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') checkAccess();
+    });
+  </script>
+  <script src="/js/mmt-paywall.js" defer></script>
+</body>
+</html>

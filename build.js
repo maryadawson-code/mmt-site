@@ -338,7 +338,7 @@ function generatePremiumGateHtml(article) {
   const gateHeaderStyle = 'display:flex;align-items:center;gap:8px;padding:18px 24px;background:var(--mmt-soft);border-bottom:1px solid var(--mmt-border);';
   const lockIcon = '<svg width="14" height="14" viewBox="0 0 448 512" fill="currentColor" style="opacity:0.5;" aria-hidden="true"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg>';
   const ctaBtn = '<a href="/pricing.html" class="btn-primary no-underline" style="font-size:13px;padding:10px 20px;" data-premium-cta onclick="if(typeof plausible!==\'undefined\')plausible(\'Capture Upgrade Click\',{props:{article:document.title}})">See what\'s in Premium</a>';
-  const signInLink = '<a href="#" onclick="mmtRequireEmail(function(e){localStorage.setItem(\'mmt_email\',e);location.reload()});return false;" style="font-size:13px;color:var(--mmt-teal);font-weight:600;">Already a member? Sign in</a>';
+  const signInLink = '<a href="/dashboard.html" style="font-size:13px;color:var(--mmt-teal);font-weight:600;">Already a member? Sign in &rarr;</a>';
 
   // Standard analysis: simple upgrade prompt at bottom
   if (category === 'standard') {
@@ -2067,6 +2067,7 @@ function inlineTailwindCss(html) {
       <div class="hidden md:flex items-center gap-4">
         <button id="searchToggle" class="hover:opacity-70" style="color:var(--mmt-text-secondary);background:none;border:none;cursor:pointer;" aria-label="Search"><svg width="16" height="16" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></button>
         <a href="/newsletter.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Subscribe</a>
+        <a href="/pricing.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-teal);">★ Pricing</a>
         <a href="/security.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Security</a>
         <a href="/resources.html#paid-tools" class="btn-primary no-underline">Choose a Tool</a>
       </div>
@@ -2084,6 +2085,7 @@ function inlineTailwindCss(html) {
         <a href="/podcast.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Podcast</a>
         <a href="/about.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">About</a>
         <a href="/newsletter.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">Subscribe</a>
+        <a href="/pricing.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-teal);">★ Pricing</a>
         <a href="/security.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">Security</a>
         <div class="pt-3 mt-1" style="border-top:1px solid var(--mmt-border);">
           <a href="/resources.html#paid-tools" class="btn-primary no-underline">Choose a Tool</a>
@@ -2093,10 +2095,11 @@ function inlineTailwindCss(html) {
   </nav>`;
 
   const editorialFooter = `<footer class="wrap" style="padding:28px 0 58px;">
-    <div style="border-top:1px solid var(--mmt-border);padding-top:24px;display:grid;grid-template-columns:1fr auto auto auto auto;gap:32px;color:var(--mmt-text-secondary);font-size:13px;">
+    <div style="border-top:1px solid var(--mmt-border);padding-top:24px;display:grid;grid-template-columns:1fr auto auto auto auto auto;gap:32px;color:var(--mmt-text-secondary);font-size:13px;">
       <div>
         <p style="margin-bottom:6px;"><strong style="color:var(--mmt-navy);">Mission Meets Tech</strong></p>
         <p>Federal health IT intelligence. Mission first.</p>
+        <p>Independent. Reader-funded. No sponsors.</p>
         <p style="margin-top:10px;">Views expressed are those of the authors and do not represent any employer or government agency.</p>
         <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
       </div>
@@ -2130,6 +2133,13 @@ function inlineTailwindCss(html) {
         <a href="/terms.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Terms</a>
         <a href="mailto:mary@missionmeetstech.com" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Contact</a>
       </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <strong style="color:var(--mmt-teal);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">★ Premium</strong>
+        <a href="/pricing.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">MMT Premium</a>
+        <a href="/pricing.html#founding-member" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Founding Member</a>
+        <a href="/pricing.html#institutional" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Institutional</a>
+        <a href="/security.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Security & Privacy</a>
+      </div>
     </div>
   </footer>`;
 
@@ -2146,6 +2156,7 @@ function inlineTailwindCss(html) {
       navBlock.includes('Choose a Tool') &&
       navBlock.includes('/resources.html#paid-tools') &&
       navBlock.includes('/newsletter.html') &&
+      navBlock.includes('/pricing.html') &&
       navBlock.includes('/security.html');
     if (!hasCanonicalNav) {
       html = html.replace(/<nav[\s\S]*?<\/nav>/i, editorialNav);
@@ -2155,16 +2166,17 @@ function inlineTailwindCss(html) {
   // Replace old footer. Anchor on `<footer class="wrap"` so we never
   // match a semantic <footer> used inside a <blockquote> citation
   // (e.g. about.html). Skip if the page-level footer already matches
-  // the canonical 5-column package layout.
+  // the canonical 6-column package layout (with Premium column).
   const pageFooterRegex = /<footer class="wrap"[\s\S]*?<\/footer>/i;
   if (html.match(pageFooterRegex)) {
     const footerMatch = html.match(pageFooterRegex);
     const hasCanonicalFooter = footerMatch &&
-      footerMatch[0].includes('grid-template-columns:1fr auto auto auto auto') &&
+      footerMatch[0].includes('grid-template-columns:1fr auto auto auto auto auto') &&
       footerMatch[0].includes('>Read<') &&
       footerMatch[0].includes('>Tools<') &&
       footerMatch[0].includes('>Reference<') &&
-      footerMatch[0].includes('>Trust<');
+      footerMatch[0].includes('>Trust<') &&
+      footerMatch[0].includes('>★ Premium<');
     if (!hasCanonicalFooter) {
       html = html.replace(pageFooterRegex, editorialFooter);
     }
@@ -2360,7 +2372,9 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     'marketpulse.html', 'my-reports.html', 'tactical-brief-confirmed.html',
     'about-team.html', 'about-press.html',
     'ops.html', 'command-center.html',
-    'pricing.html'
+    'pricing.html',
+    'welcome-premium.html',
+    'dashboard.html'
   ];
   const ogMap = {
     'index.html': 'index.png',

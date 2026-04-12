@@ -131,12 +131,22 @@
     </div>
   </section>
 
+  <!-- Testimonial -->
+  <section style="padding:0 0 24px;">
+    <blockquote style="max-width:640px;margin:0 auto;text-align:center;padding:24px;border:none;font-size:17px;font-style:italic;color:var(--mmt-navy);line-height:1.6;">
+      "Exceedingly well articulated. I truly appreciate you speaking to the budget and mindset. Thanks for putting it out there."
+      <footer style="margin-top:12px;font-style:normal;font-size:14px;color:var(--mmt-text-secondary);">
+        — LTG Telita Crosland (Ret.), Former Director, Defense Health Agency
+      </footer>
+    </blockquote>
+  </section>
+
   <!-- Section 2: Pricing Cards -->
   <section style="padding:24px 0 var(--space-section);">
     <div class="grid-4" style="gap:18px;align-items:stretch;">
 
       <!-- FOUNDING MEMBER (highlighted) -->
-      <div class="card plan-card highlighted" style="padding:32px;display:flex;flex-direction:column;">
+      <div id="founding-member" class="card plan-card highlighted" style="padding:32px;display:flex;flex-direction:column;">
         <div style="margin-bottom:24px;">
           <div style="display:flex;align-items:center;gap:6px;margin-bottom:12px;">
             <span class="founding-star">&#9733;</span>
@@ -160,7 +170,7 @@
       </div>
 
       <!-- ANNUAL -->
-      <div class="card plan-card" style="padding:32px;display:flex;flex-direction:column;">
+      <div id="annual" class="card plan-card" style="padding:32px;display:flex;flex-direction:column;">
         <div style="margin-bottom:24px;">
           <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.12em;color:var(--mmt-teal);margin-bottom:12px;">Annual</div>
           <div class="plan-price">$249<span class="period">/yr</span></div>
@@ -185,7 +195,7 @@
       </div>
 
       <!-- MONTHLY -->
-      <div class="card plan-card" style="padding:32px;display:flex;flex-direction:column;">
+      <div id="monthly" class="card plan-card" style="padding:32px;display:flex;flex-direction:column;">
         <div style="margin-bottom:24px;">
           <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.12em;color:var(--mmt-teal);margin-bottom:12px;">Monthly</div>
           <div class="plan-price">$29<span class="period">/mo</span></div>
@@ -209,7 +219,7 @@
       </div>
 
       <!-- INSTITUTIONAL -->
-      <div class="card plan-card" style="padding:32px;display:flex;flex-direction:column;">
+      <div id="institutional" class="card plan-card" style="padding:32px;display:flex;flex-direction:column;">
         <div style="margin-bottom:24px;">
           <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.12em;color:var(--mmt-teal);margin-bottom:12px;">Institutional</div>
           <div class="plan-price" style="font-size:28px;">$2,500 &ndash; $5,000<span class="period">/yr</span></div>
@@ -229,6 +239,7 @@
       </div>
 
     </div>
+    <p style="text-align:center;margin-top:20px;font-size:13px;color:var(--mmt-text-secondary);">&#128274; Your subscription is secured by Stripe. ProposalPulse and MarketPulse documents are not stored, not used to train models, and processed under the security practices documented at <a href="/security.html">missionmeetstech.com/security</a>.</p>
   </section>
 
   <!-- Section 3: Comparison Table -->
@@ -428,6 +439,12 @@
       });
     }
   })();
+  </script>
+  <script>
+    // Redirect from Stripe success to welcome page
+    if (window.location.search.includes('subscription=success')) {
+      window.location.replace('/welcome-premium.html');
+    }
   </script>
   <script src="/js/mmt-paywall.js" defer></script>
   <script src="/js/mmt-motion.js" defer></script>
