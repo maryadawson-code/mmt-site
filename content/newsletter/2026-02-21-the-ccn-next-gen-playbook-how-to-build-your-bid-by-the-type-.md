@@ -13,6 +13,11 @@ agencies:
   - "VA"
 related_contracts: true
 linkedin_url: "https://www.linkedin.com/pulse/ccn-next-gen-playbook-how-build-your-bid-type-company-mary-womack-dkkzc"
+category: solicitation
+capture_corner:
+  - "The evaluation criteria weight network readiness over implementation timeline. Firms that lead with 'we can build the network' lose to firms that lead with 'we already have the network, here is how we adapt it.'"
+  - "VA evaluators on CCN have read every prior protest decision. The compliance section of your proposal is a threshold gate, not a differentiator. Spend your page count on technical approach and past performance, not on restating the SOW."
+  - "Small business teaming partners in community care coordination are the highest-value additions for large primes. The evaluation favors demonstrated care management at the local level. If you are a small firm with regional care coordination past performance, your teaming leverage is at its peak right now."
 ---
 
 A practical guide to building competitive bids for the Community Care Network Next Generation contract by the kind of company you actually are. The firms that win this pursuit will not all look the same, and the firms that lose will almost all have written the same proposal.

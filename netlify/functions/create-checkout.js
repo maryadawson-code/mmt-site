@@ -15,6 +15,7 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
 const SITE_URL = "https://missionmeetstech.com";
 const PRICE_CENTS = 1999; // $19.99
+const PREMIUM_PRICE_CENTS = 1499; // $14.99 for Premium subscribers
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": SITE_URL,
@@ -61,7 +62,7 @@ exports.handler = async (event) => {
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
     const { data: user, error: userErr } = await supabase
       .from("mp_users")
-      .select("id, stripe_customer_id")
+      .select("id, stripe_customer_id, subscription_tier, subscription_status")
       .eq("email", email)
       .single();
 
@@ -91,6 +92,11 @@ exports.handler = async (event) => {
         .eq("id", user.id);
     }
 
+    // --- Determine pricing (Premium subscribers get discount) ---
+    const isPremium = user.subscription_tier === "premium" && user.subscription_status === "active";
+    const unitAmount = isPremium ? PREMIUM_PRICE_CENTS : PRICE_CENTS;
+    const priceLabel = isPremium ? "$14.99 (Premium discount)" : "$19.99";
+
     // --- Create Checkout Session ---
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
@@ -101,9 +107,11 @@ exports.handler = async (event) => {
             currency: "usd",
             product_data: {
               name: "ProposalPulse Assessment",
-              description: "1 additional assessment with full Red Team Review",
+              description: isPremium
+                ? "1 additional assessment with full Red Team Review (Premium member discount)"
+                : "1 additional assessment with full Red Team Review",
             },
-            unit_amount: PRICE_CENTS,
+            unit_amount: unitAmount,
           },
           quantity: 1,
         },

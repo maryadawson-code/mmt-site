@@ -137,22 +137,68 @@ exports.handler = async (event) => {
     case "customer.subscription.created":
     case "customer.subscription.updated": {
       const sub = stripeEvent.data.object;
-      console.log(`stripe-webhook: subscription ${stripeEvent.type} — ${sub.id} (status: ${sub.status})`);
+      const subEmail = (sub.metadata && sub.metadata.user_email) || null;
+      const isMmtPremium = sub.metadata && sub.metadata.product === "mmt_premium";
+      const isActive = sub.status === "active" || sub.status === "trialing";
+      const isFounding = sub.metadata && sub.metadata.founding_member === "true";
+
+      console.log(`stripe-webhook: subscription ${stripeEvent.type} — ${sub.id} (status: ${sub.status}, product: ${sub.metadata?.product})`);
+
+      // Update premium tier in mp_users if this is an MMT Premium subscription
+      if (isMmtPremium && subEmail) {
+        const tierUpdate = {
+          subscription_tier: isActive ? "premium" : "free",
+          subscription_status: sub.status,
+          stripe_subscription_id: sub.id,
+        };
+        if (isFounding) tierUpdate.founding_member = true;
+
+        const { error: updateErr } = await supabase
+          .from("mp_users")
+          .update(tierUpdate)
+          .eq("email", subEmail.toLowerCase().trim());
+
+        if (updateErr) {
+          // User might not exist yet — try upsert
+          await supabase.from("mp_users").upsert({
+            email: subEmail.toLowerCase().trim(),
+            stripe_customer_id: sub.customer,
+            ...tierUpdate,
+          }, { onConflict: "email" });
+        }
+
+        console.log(`stripe-webhook: ${subEmail} tier → ${isActive ? "premium" : "free"} (${sub.status})`);
+      }
+
       await supabase.from("ops_events").insert({
         event_type: "stripe_subscription",
         severity: "info",
-        payload: { type: stripeEvent.type, subscription_id: sub.id, status: sub.status, customer: sub.customer },
+        payload: { type: stripeEvent.type, subscription_id: sub.id, status: sub.status, customer: sub.customer, email: subEmail },
       });
       return { statusCode: 200, body: JSON.stringify({ received: true, type: stripeEvent.type }) };
     }
 
     case "customer.subscription.deleted": {
       const sub = stripeEvent.data.object;
-      console.log(`stripe-webhook: subscription deleted — ${sub.id}`);
+      const subEmail = (sub.metadata && sub.metadata.user_email) || null;
+      const isMmtPremium = sub.metadata && sub.metadata.product === "mmt_premium";
+
+      console.log(`stripe-webhook: subscription deleted — ${sub.id} (email: ${subEmail})`);
+
+      // Revoke premium tier
+      if (isMmtPremium && subEmail) {
+        await supabase
+          .from("mp_users")
+          .update({ subscription_tier: "free", subscription_status: "canceled" })
+          .eq("email", subEmail.toLowerCase().trim());
+
+        console.log(`stripe-webhook: ${subEmail} tier → free (subscription deleted)`);
+      }
+
       await supabase.from("ops_events").insert({
         event_type: "stripe_subscription",
         severity: "warning",
-        payload: { type: stripeEvent.type, subscription_id: sub.id, status: sub.status, customer: sub.customer },
+        payload: { type: stripeEvent.type, subscription_id: sub.id, status: sub.status, customer: sub.customer, email: subEmail },
       });
       return { statusCode: 200, body: JSON.stringify({ received: true, type: stripeEvent.type }) };
     }

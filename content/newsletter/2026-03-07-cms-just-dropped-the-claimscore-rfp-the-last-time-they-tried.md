@@ -9,6 +9,11 @@ tags:
 agencies:
   - "CMS"
 linkedin_url: "https://www.linkedin.com/pulse/cms-just-dropped-claimscore-rfp-last-time-tried-spent-mary-womack-yueze"
+category: solicitation
+capture_corner:
+  - "CMS evaluators will specifically look for evidence that your COTS platform has been deployed without custom code in a comparable federal environment. If your case study requires an asterisk about customizations, it will not score well."
+  - "The protest risk on this procurement is high. CMS has structured the evaluation to favor prototype demonstrations, which narrows the viable competitor set. Firms without a working prototype at proposal time should seriously evaluate whether to bid or position for subcontracting."
+  - "The legacy COBOL migration component is the part most bidders will underestimate. Firms with mainframe modernization credentials (not just cloud migration) have disproportionate teaming value on this pursuit."
 ---
 
 CMS released an RFP to replace four decades-old legacy claims processing systems with a single commercial platform. This procurement learned from previous federal failures, emphasizing competition, prototypes, and COTS over custom development.

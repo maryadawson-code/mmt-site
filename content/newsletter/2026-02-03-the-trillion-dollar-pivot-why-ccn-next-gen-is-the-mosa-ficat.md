@@ -8,6 +8,12 @@ tags:
   - Military Health System
   - Veterans Affairs
 linkedin_url: "https://www.linkedin.com/pulse/trillion-dollar-pivot-why-ccn-next-gen-mosa-fication-federal-womack-xalbe"
+category: deep-dive
+capture_corner:
+  - "MOSA compliance in the CCN recompete means proposal Section L will require explicit interface documentation. Firms that cannot describe their data exchange boundaries in technical detail will score low on the technical approach."
+  - "The teaming dynamic MOSA creates is the opposite of what most health IT primes expect. System integrators need clinical partners. Clinical partners need interoperability partners. Vertical integration is the wrong posture."
+  - "The one evaluation criterion most competitors will underweight: data portability. VA is testing whether vendors will let the agency move data to a successor without friction. Your proposal needs to make that commitment explicit, not implied."
+  - "Action this month: identify the program office contacts for the conformed TOPRs and get your questions on the record before the next amendment window closes."
 ---
 
 Treat CCN Next Gen as a regular community care contract and you will write the wrong proposal. It is VA's attempt to apply modular open systems architecture thinking to a care network. That changes what a competitive bid looks like — and most of the firms drafting proposals are still writing to the old shape.

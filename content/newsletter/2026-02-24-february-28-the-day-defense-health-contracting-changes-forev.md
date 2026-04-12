@@ -8,6 +8,11 @@ tags:
   - Military Health System
   - Defense Health
 linkedin_url: "https://www.linkedin.com/pulse/february-28-day-defense-health-contracting-changes-forever-womack-0tx9e"
+category: solicitation
+capture_corner:
+  - "The structural shift affects eligibility criteria on multiple existing vehicles. Capture teams should audit their active pipeline against the new rules this week. Pursuits that were viable on February 27 may require different teaming by March 1."
+  - "DHA is publishing updated evaluation guidance that accompanies this change. The firms that read the guidance before writing their next proposal will see the shift. The firms that keep writing to the old criteria will lose on compliance before the evaluator reaches technical approach."
+  - "If you are a small business, this change expands your competitive surface area on defense health task orders. Map the SINs and NAICS codes that are now open to your size standard that were not before."
 ---
 
 A structural shift in how defense health contracting works, and what capture and BD teams have to rewrite in their playbooks to keep up.

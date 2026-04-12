@@ -1474,6 +1474,60 @@
       });
     }
   </script>
+  <script src="/js/mmt-paywall.js" defer></script>
   <script src="/js/nav-active.js"></script>
+  <script>
+    // Capture Intelligence paywall gating
+    // Hides action windows + deep dive action boxes for non-premium users
+    (function() {
+      function applyCI() {
+        var tier = window.mmtGetTier ? window.mmtGetTier() : 'anonymous';
+        if (tier === 'premium') return; // Full access
+
+        // Gate action window column cells (5th column) in the summary table
+        var windowCells = document.querySelectorAll('.ci-table td.window');
+        windowCells.forEach(function(td, i) {
+          // First 3 signals are free preview
+          if (i < 3) return;
+          td.innerHTML = '<span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--mmt-text-secondary);opacity:0.5;">' +
+            '<svg width="12" height="12" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg>' +
+            'Premium</span>';
+        });
+
+        // Gate action boxes inside deep-dive accordions
+        var actionBoxes = document.querySelectorAll('.acc-body .action-box');
+        actionBoxes.forEach(function(box, i) {
+          if (i < 3) return; // First 3 signals free
+          box.innerHTML = '<div style="text-align:center;padding:8px 0;">' +
+            '<p style="font-size:13px;color:var(--mmt-text-secondary);margin-bottom:10px;">Action window and recommendations are Premium only.</p>' +
+            '<a href="/pricing.html" style="font-size:13px;font-weight:700;color:var(--mmt-teal);text-decoration:none;">Unlock with MMT Premium &rarr;</a>' +
+            '</div>';
+        });
+
+        // Add premium gate banner after the table
+        var tableSection = document.querySelector('.ci-table-section');
+        if (tableSection && !document.getElementById('ci-gate-banner')) {
+          var banner = document.createElement('div');
+          banner.id = 'ci-gate-banner';
+          banner.style.cssText = 'margin:24px auto;max-width:680px;padding:24px 28px;background:var(--ci-gold-bg);border:1px solid #E5D9A8;border-radius:12px;text-align:center;';
+          banner.innerHTML = '<p style="font-size:15px;font-weight:700;color:var(--mmt-navy);margin-bottom:8px;">Action windows and confidence-level recommendations are Premium.</p>' +
+            '<p style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:16px;">Free subscribers see all signals 72 hours after publication. Premium subscribers get immediate access with action windows.</p>' +
+            '<div style="display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;">' +
+            '<a href="/pricing.html" class="ci-btn ci-btn-primary" style="font-size:13px;padding:10px 20px;">Unlock full sheet</a>' +
+            '<span style="font-size:13px;color:var(--mmt-text-secondary);">or</span>' +
+            '<a href="#" onclick="mmtRequireEmail(function(e){localStorage.setItem(\'mmt_email\',e);location.reload()});return false;" style="font-size:13px;color:var(--mmt-teal);font-weight:600;text-decoration:none;">Sign in</a>' +
+            '</div>';
+          tableSection.querySelector('.wrap').appendChild(banner);
+        }
+      }
+
+      // Run after paywall.js initializes
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() { setTimeout(applyCI, 100); });
+      } else {
+        setTimeout(applyCI, 100);
+      }
+    })();
+  </script>
 </body>
 </html>

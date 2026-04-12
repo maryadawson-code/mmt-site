@@ -134,8 +134,23 @@
         if (topicEl) topicEl.textContent = topic;
         if (emailEl) emailEl.textContent = email;
         successDiv.style.display = 'block';
+
+        // Inject post-free upgrade prompt
+        var upgradePrompt = document.getElementById('mp-upgrade-prompt');
+        if (!upgradePrompt) {
+          upgradePrompt = document.createElement('div');
+          upgradePrompt.id = 'mp-upgrade-prompt';
+          upgradePrompt.style.cssText = 'margin-top:24px;padding:22px 24px;background:var(--mmt-soft, #F3F4F6);border:1px solid var(--mmt-border, #D8E0E8);border-radius:12px;';
+          var isPremium = typeof mmtIsPremium === 'function' && mmtIsPremium();
+          var priceLabel = isPremium ? '$35' : '$50';
+          upgradePrompt.innerHTML = '<p style="font-size:15px;font-weight:700;color:var(--mmt-navy, #0A192F);margin-bottom:8px;">Additional briefs: ' + priceLabel + ' each, delivered in 24 hours.</p>' +
+            (isPremium
+              ? '<p style="font-size:13px;color:#92710A;font-weight:600;">Premium member discount applied.</p>'
+              : '<p style="font-size:13px;color:var(--mmt-text-secondary, #5C6B7A);">Premium subscribers pay $35 per brief. <a href="/pricing.html" style="color:var(--mmt-teal, #457B9D);font-weight:600;">See Premium</a></p>');
+          successDiv.appendChild(upgradePrompt);
+          if (typeof plausible !== 'undefined') plausible('MarketPulse Upgrade Prompt View');
+        }
       } else {
-        // Fallback to redirect if success div missing
         window.location.href = '/tactical-brief-confirmed.html?free=true';
       }
     }

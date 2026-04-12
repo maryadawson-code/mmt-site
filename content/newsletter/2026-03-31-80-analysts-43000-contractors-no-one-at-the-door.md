@@ -8,6 +8,11 @@ tags:
   - Defense Health
   - Contracting & Procurement
 linkedin_url: "https://www.linkedin.com/pulse/80-analysts-43000-contractors-one-door-mary-womack-a4tue"
+category: deep-dive
+capture_corner:
+  - "FOCI compliance is about to become an evaluation discriminator on AI contracts. If your firm has any foreign ownership or investment, get your FOCI mitigation plan documented before the next AI-related RFP drops. Evaluators are watching for it."
+  - "The 80-analyst bottleneck creates a de facto enforcement lottery. Firms that proactively disclose and mitigate will be in stronger position when enforcement capacity inevitably expands. Treat FOCI compliance as a competitive advantage, not a checkbox."
+  - "For capture teams: add FOCI status to your teaming partner evaluation criteria. A partner with unresolved FOCI exposure becomes your exposure on a joint bid."
 ---
 
 Federal contractor vetting runs on self-disclosure, does not apply to civilian agencies, and does not apply to hundreds of millions in AI contracts that required zero foreign influence review. Meanwhile, Washington is in court over the wrong supply chain problem.

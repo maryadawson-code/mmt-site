@@ -7,6 +7,11 @@ tags:
   - Contracting & Procurement
 agencies:
   - GSA
+category: solicitation
+capture_corner:
+  - "TDR compliance is a pass/fail gate, not a scored criterion, but non-compliance triggers schedule cancellation. The compliance deadline (October 2026) is firm. If your TDR reporting systems are not configured, start the GSA eMod process this quarter."
+  - "The real competitive impact of mandatory TDR is pricing transparency. Your competitors will see your transactional pricing patterns via FPDS-NG within 90 days of implementation. Firms that have been maintaining different rate structures across MAS customers need to align before the data goes public."
+  - "For capture teams bidding against MAS holders: TDR data gives you a new competitive intelligence source. After October 2026, you can analyze incumbent pricing at the transaction level. Build this into your competitive analysis workflow for any MAS-based pursuit."
 ---
 
 GSA released Solicitation Refresh 31 for the Multiple Award Schedule. The headline change: **Transactional Data Reporting is now mandatory across every Special Item Number on the program.**

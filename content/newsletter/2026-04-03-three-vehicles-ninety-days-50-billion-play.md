@@ -12,6 +12,12 @@ agencies:
   - VA
 related_contracts: true
 linkedin_url: "https://www.linkedin.com/pulse/three-vehicles-ninety-days-50-billion-play-mary-womack-qkfge"
+category: solicitation
+capture_corner:
+  - "The three vehicles share overlapping evaluation criteria around network adequacy and care coordination. A single past performance narrative can serve two of the three if framed around outcomes, not contract number."
+  - "The 90-day overlap creates a teaming constraint that most firms have not mapped. If your best clinical partner is exclusive to one prime on CCN, they cannot appear on your team for the DHA vehicle. Map your teaming conflicts now, not at proposal."
+  - "Pricing discipline across three simultaneous pursuits means rate exposure. If you bid aggressively on one to win share, the other two evaluators may reference it. Align your rate strategy across all three."
+  - "The incumbents on the expiring vehicles are more vulnerable than usual because the new requirements (VBP, MOSA, utilization management) are outside their core delivery model. This is the window for new entrants with clinical transformation credentials."
 ---
 
 Three major federal health IT contract vehicles are moving simultaneously in a 90-day window. The firms that position now will define the next decade of defense and VA health technology.

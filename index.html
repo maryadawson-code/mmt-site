@@ -113,9 +113,14 @@
         <a href="proposal-pulse.html" class="btn-primary no-underline">Start ProposalPulse</a>
         <a href="marketpulse.html" class="btn-primary no-underline" style="background:var(--mmt-teal);">Request MarketPulse</a>
       </div>
-      <div class="flex flex-wrap gap-3" style="margin-bottom:18px;">
-        <a href="latest.html" class="btn-secondary no-underline">Read this week's analysis</a>
-        <a href="newsletter.html" class="btn-secondary no-underline">Subscribe free</a>
+      <div class="flex flex-wrap gap-3" style="margin-bottom:14px;">
+        <a href="newsletter.html?ref=forecast" class="btn-secondary no-underline" onclick="if(typeof plausible!=='undefined')plausible('Lead Magnet CTA Click')">Get the FY2027 Federal Health IT Contract Forecast &rarr;</a>
+      </div>
+      <p style="font-size:13px;color:var(--mmt-text-secondary);line-height:1.6;margin-bottom:14px;">Free intelligence brief covering VA EHRM ($4.24B), DHA pipeline, and 15 upcoming recompetes.</p>
+      <!-- Subscriber count — update MMT_SUBSCRIBER_COUNT when this changes -->
+      <div class="pill" style="margin-bottom:18px;font-size:12px;">
+        <span style="color:var(--mmt-teal);">&#9679;</span>
+        Join <strong id="subscriberCount">1,528</strong>+ federal health IT leaders &mdash; 59% Senior, Director, or CXO-level
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--mmt-text-secondary);letter-spacing:0.01em;">
         <span><strong style="color:var(--mmt-navy);">Evidence over opinion</strong></span>
@@ -155,6 +160,7 @@
 
   <!-- 3. PAID TOOLS BAND -->
   <section class="section">
+    <p style="font-size:18px;color:var(--mmt-teal);font-weight:600;margin-bottom:18px;line-height:1.5;">Your team has been reading the intelligence. Now use the tools.</p>
     <div class="section-head">
       <div>
         <div class="section-label">For teams trying to win work</div>
@@ -246,29 +252,89 @@
     </div>
   </section>
 
-  <!-- 5. FEATURED CAPTURE SHEET -->
+  <!-- 5. FEATURED CAPTURE SHEET — Tiered Preview -->
   <section class="section">
     <div class="section-head">
       <div>
-        <div class="section-label">Featured capture sheet</div>
+        <div class="section-label">Capture Intelligence</div>
         <h2>What actually matters this month.</h2>
       </div>
-      <a href="latest.html" class="btn-secondary no-underline hidden sm:inline-flex">View all analysis &rarr;</a>
+      <a href="intel-capture-intelligence.html" class="btn-secondary no-underline hidden sm:inline-flex">View full sheet &rarr;</a>
     </div>
-    <div class="mb-4">
-      <!-- BUILD:LEAD_STORY -->
-      <div id="lead-story-fallback" class="article-card featured" style="padding:28px;">
+
+    <!-- 3 free preview signals -->
+    <div style="display:grid;gap:14px;margin-bottom:18px;">
+      <!-- Signal 1 -->
+      <div class="card" style="padding:22px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;">
         <div>
-          <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
-            <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#92710A;">★ Capture Intelligence</span>
-            <span style="font-size:11px;color:var(--mmt-text-secondary);">&middot; April 2026 &middot; 14 signals</span>
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+            <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#92710A;">VA</span>
+            <span style="font-size:11px;color:var(--mmt-text-secondary);">&middot; CCN Next Gen</span>
           </div>
-          <h3 style="font-size:26px;line-height:1.15;margin-bottom:10px;">Capture Intelligence: FY2027 Federal Health Budget</h3>
-          <p style="font-size:15px;line-height:1.65;">14 sourced signals across VA, DHA, HHS/ONC, ARPA-H, and compliance. Every row includes the program, dollar signal, confidence level, and the action window.</p>
+          <p style="font-size:15px;line-height:1.6;color:var(--mmt-navy);font-weight:600;margin-bottom:6px;">$56.2B community care (+17%); VBP models enter new contract</p>
+          <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;">
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--mmt-text-secondary);opacity:0.5;">
+              <svg width="12" height="12" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg>
+              Action window
+            </span>
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--mmt-text-secondary);opacity:0.5;">
+              <svg width="12" height="12" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg>
+              Confidence
+            </span>
+          </div>
         </div>
-        <div class="meta">
-          <a href="/intel/capture-intelligence-this-issue" style="color:var(--mmt-navy);font-weight:700;font-size:13px;text-decoration:none;">Read the full sheet &rarr;</a>
+      </div>
+      <!-- Signal 2 -->
+      <div class="card" style="padding:22px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;">
+        <div>
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+            <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#92710A;">VA</span>
+            <span style="font-size:11px;color:var(--mmt-text-secondary);">&middot; EHRM / Oracle Health</span>
+          </div>
+          <p style="font-size:15px;line-height:1.6;color:var(--mmt-navy);font-weight:600;margin-bottom:6px;">$4.24B appropriation request; 13 MTF go-lives Q3-Q4 FY2026</p>
+          <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;">
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--mmt-text-secondary);opacity:0.5;">
+              <svg width="12" height="12" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg>
+              Action window
+            </span>
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--mmt-text-secondary);opacity:0.5;">
+              <svg width="12" height="12" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg>
+              Confidence
+            </span>
+          </div>
         </div>
+      </div>
+      <!-- Signal 3 -->
+      <div class="card" style="padding:22px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;">
+        <div>
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+            <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#92710A;">HHS/ONC</span>
+            <span style="font-size:11px;color:var(--mmt-text-secondary);">&middot; Interoperability Enforcement</span>
+          </div>
+          <p style="font-size:15px;line-height:1.6;color:var(--mmt-navy);font-weight:600;margin-bottom:6px;">TEFCA enforcement and information blocking penalties expanding</p>
+          <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;">
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--mmt-text-secondary);opacity:0.5;">
+              <svg width="12" height="12" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg>
+              Action window
+            </span>
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--mmt-text-secondary);opacity:0.5;">
+              <svg width="12" height="12" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg>
+              Confidence
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Locked signals count + CTA -->
+    <div style="background:var(--mmt-soft);border:1px solid var(--mmt-border);border-radius:12px;padding:22px 28px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;">
+      <div>
+        <p style="font-size:14px;color:var(--mmt-navy);font-weight:700;margin-bottom:4px;">+11 more signals across DHA, PEO DHMS, ARPA-H, CMS, and compliance</p>
+        <p style="font-size:13px;color:var(--mmt-text-secondary);">Each includes action window and confidence label.</p>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+        <a href="pricing.html" class="btn-primary no-underline" style="font-size:13px;padding:10px 18px;">Unlock the full sheet</a>
+        <span style="font-size:12px;color:var(--mmt-text-secondary);">Free subscribers get access in 72 hours.</span>
       </div>
     </div>
   </section>
@@ -400,6 +466,11 @@
         <button type="submit" class="btn-primary" style="white-space:nowrap;">Subscribe free</button>
       </form>
       <p style="margin-top:16px;font-size:13px;color:var(--mmt-text-secondary);"><a href="latest.html" style="color:var(--mmt-navy);font-weight:600;">Read a sample issue</a> before you decide.</p>
+      <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--mmt-border);font-size:13px;color:var(--mmt-text-secondary);display:grid;gap:6px;">
+        <div><strong style="color:var(--mmt-navy);">Free:</strong> Twice-weekly analysis, full article archive, 72-hour access to Capture Intelligence</div>
+        <div><strong style="color:var(--mmt-navy);">Premium:</strong> Monthly Capture Intelligence sheets + early access + deep-dive solicitation analysis</div>
+        <a href="pricing.html" style="color:var(--mmt-teal);font-weight:600;margin-top:4px;">What's in Premium?</a>
+      </div>
     </div>
   </section>
 
@@ -447,6 +518,7 @@
     </div>
   </footer>
 
+  <script src="/js/mmt-paywall.js" defer></script>
   <script src="/js/mmt-motion.js" defer></script>
   <script src="/js/nav-active.js"></script>
 </body>

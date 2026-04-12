@@ -327,6 +327,163 @@ const searchOverlayHtml = `
 // External script tags injected before </body> on all pages
 const siteScriptTag = '  <script src="/js/site.js" defer></script>\n  <script src="/js/nav-active.js" defer></script>';
 
+// --- Premium Gate HTML generators (per article category from PAYWALL_SPEC.md) ---
+
+function generatePremiumGateHtml(article) {
+  const category = (article.category || 'standard').toLowerCase();
+  const captureCorner = article.capture_corner || [];
+
+  // Base styles shared by all gate types
+  const gateBoxStyle = 'margin:40px 0 24px;border:1px solid var(--mmt-border);border-radius:12px;overflow:hidden;';
+  const gateHeaderStyle = 'display:flex;align-items:center;gap:8px;padding:18px 24px;background:var(--mmt-soft);border-bottom:1px solid var(--mmt-border);';
+  const lockIcon = '<svg width="14" height="14" viewBox="0 0 448 512" fill="currentColor" style="opacity:0.5;" aria-hidden="true"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg>';
+  const ctaBtn = '<a href="/pricing.html" class="btn-primary no-underline" style="font-size:13px;padding:10px 20px;" data-premium-cta onclick="if(typeof plausible!==\'undefined\')plausible(\'Capture Upgrade Click\',{props:{article:document.title}})">See what\'s in Premium</a>';
+  const signInLink = '<a href="#" onclick="mmtRequireEmail(function(e){localStorage.setItem(\'mmt_email\',e);location.reload()});return false;" style="font-size:13px;color:var(--mmt-teal);font-weight:600;">Already a member? Sign in</a>';
+
+  // Standard analysis: simple upgrade prompt at bottom
+  if (category === 'standard') {
+    let gate = `<div style="${gateBoxStyle}" data-gate-overlay="premium">
+      <div style="padding:24px 28px;text-align:center;">
+        <p style="font-size:16px;font-weight:700;color:var(--mmt-navy);margin-bottom:8px;">This analysis is free. The capture layer goes deeper.</p>
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:18px;max-width:48ch;margin-left:auto;margin-right:auto;">MMT Premium includes monthly Capture Intelligence sheets with action windows and confidence labels, specific to VA, DHA, and HHS pipeline.</p>
+        <div style="display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;">
+          ${ctaBtn}
+          ${signInLink}
+        </div>
+      </div>
+    </div>`;
+
+    // If article has capture_corner content, add the gated section
+    if (captureCorner.length > 0) {
+      const bullets = captureCorner.map(b => `<li style="position:relative;padding-left:18px;margin-bottom:8px;font-size:14.5px;color:var(--mmt-text-secondary);line-height:1.65;"><span style="position:absolute;left:0;color:var(--mmt-teal);font-weight:700;">›</span>${escapeHtml(b)}</li>`).join('\n              ');
+      gate = `<div style="${gateBoxStyle}">
+        <div style="${gateHeaderStyle}">
+          ${lockIcon}
+          <span style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-navy);">Capture Corner</span>
+          <span style="font-size:12px;color:var(--mmt-text-secondary);">Premium subscribers only</span>
+        </div>
+        <div data-gate="premium" style="display:none;padding:24px 28px;">
+          <p style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:14px;">The BD and capture implications this article didn't cover:</p>
+          <ul style="list-style:none;padding:0;margin:0;">${bullets}</ul>
+        </div>
+        <div data-gate-overlay="premium" style="padding:24px 28px;text-align:center;">
+          <p style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:14px;">Unlock the capture-specific analysis for this article.</p>
+          <div style="display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;">
+            <a href="/pricing.html" class="btn-primary no-underline" style="font-size:13px;padding:10px 20px;" data-premium-cta onclick="if(typeof plausible!=='undefined')plausible('Capture Upgrade Click',{props:{article:document.title}})">Unlock Capture Corner</a>
+            ${signInLink}
+          </div>
+        </div>
+      </div>`;
+    }
+    return gate;
+  }
+
+  // Solicitation-specific: gated capture intelligence layer
+  if (category === 'solicitation') {
+    return `<div style="${gateBoxStyle}">
+      <div style="${gateHeaderStyle}">
+        ${lockIcon}
+        <span style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-navy);">Capture Intelligence Layer</span>
+        <span style="font-size:12px;color:var(--mmt-text-secondary);">Premium</span>
+      </div>
+      <div data-gate="premium" style="display:none;padding:24px 28px;">
+        ${captureCorner.length > 0 ? '<ul style="list-style:none;padding:0;margin:0;">' + captureCorner.map(b => `<li style="position:relative;padding-left:18px;margin-bottom:8px;font-size:14.5px;color:var(--mmt-text-secondary);line-height:1.65;"><span style="position:absolute;left:0;color:var(--mmt-teal);font-weight:700;">›</span>${escapeHtml(b)}</li>`).join('') + '</ul>' : ''}
+      </div>
+      <div data-gate-overlay="premium" style="padding:24px 28px;">
+        <p style="font-size:15px;font-weight:600;color:var(--mmt-navy);margin-bottom:12px;">The capture-specific analysis for this opportunity:</p>
+        <div style="display:grid;gap:6px;margin-bottom:18px;">
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mmt-text-secondary);">${lockIcon} Evaluation criteria breakdown</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mmt-text-secondary);">${lockIcon} Incumbent analysis and vulnerability</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mmt-text-secondary);">${lockIcon} Teaming considerations</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mmt-text-secondary);">${lockIcon} Win theme recommendations</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mmt-text-secondary);">${lockIcon} Action window: when to move</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mmt-text-secondary);">${lockIcon} What NOT to do</div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+          <a href="/pricing.html" class="btn-primary no-underline" style="font-size:13px;padding:10px 20px;" data-premium-cta onclick="if(typeof plausible!=='undefined')plausible('Capture Upgrade Click',{props:{article:document.title}})">Unlock this analysis</a>
+          ${signInLink}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // Budget/funding: pipeline implications gate
+  if (category === 'budget') {
+    return `<div style="${gateBoxStyle}">
+      <div style="${gateHeaderStyle}">
+        ${lockIcon}
+        <span style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-navy);">Pipeline Implications</span>
+        <span style="font-size:12px;color:var(--mmt-text-secondary);">Premium</span>
+      </div>
+      <div data-gate="premium" style="display:none;padding:24px 28px;">
+        ${captureCorner.length > 0 ? '<ul style="list-style:none;padding:0;margin:0;">' + captureCorner.map(b => `<li style="position:relative;padding-left:18px;margin-bottom:8px;font-size:14.5px;color:var(--mmt-text-secondary);line-height:1.65;"><span style="position:absolute;left:0;color:var(--mmt-teal);font-weight:700;">›</span>${escapeHtml(b)}</li>`).join('') + '</ul>' : ''}
+      </div>
+      <div data-gate-overlay="premium" style="padding:24px 28px;">
+        <p style="font-size:15px;font-weight:600;color:var(--mmt-navy);margin-bottom:12px;">What these numbers mean for your capture calendar:</p>
+        <div style="display:grid;gap:6px;margin-bottom:18px;">
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mmt-text-secondary);">${lockIcon} Programs most likely to see RFPs in 90-180 days</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mmt-text-secondary);">${lockIcon} Programs at risk of delay or rescission</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mmt-text-secondary);">${lockIcon} Agencies with new money and no incumbent</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mmt-text-secondary);">${lockIcon} Action window for each signal</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mmt-text-secondary);">${lockIcon} Confidence level on each projection</div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+          <a href="/pricing.html" class="btn-primary no-underline" style="font-size:13px;padding:10px 20px;" data-premium-cta onclick="if(typeof plausible!=='undefined')plausible('Capture Upgrade Click',{props:{article:document.title}})">Unlock the pipeline analysis</a>
+          ${signInLink}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // Deep-dive: Capture Corner addendum
+  if (category === 'deep-dive') {
+    if (captureCorner.length === 0) {
+      // No capture corner yet — show standard upgrade prompt
+      return `<div style="${gateBoxStyle}" data-gate-overlay="premium">
+        <div style="padding:24px 28px;text-align:center;">
+          <p style="font-size:16px;font-weight:700;color:var(--mmt-navy);margin-bottom:8px;">This analysis is free. The capture layer goes deeper.</p>
+          <p style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:18px;max-width:48ch;margin-left:auto;margin-right:auto;">MMT Premium includes monthly Capture Intelligence sheets with action windows and confidence labels, specific to VA, DHA, and HHS pipeline.</p>
+          <div style="display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;">
+            ${ctaBtn}
+            ${signInLink}
+          </div>
+        </div>
+      </div>`;
+    }
+    const bullets = captureCorner.map(b => `<li style="position:relative;padding-left:18px;margin-bottom:8px;font-size:14.5px;color:var(--mmt-text-secondary);line-height:1.65;"><span style="position:absolute;left:0;color:var(--mmt-teal);font-weight:700;">›</span>${escapeHtml(b)}</li>`).join('\n              ');
+    return `<div style="${gateBoxStyle}">
+      <div style="${gateHeaderStyle}">
+        ${lockIcon}
+        <span style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-navy);">Capture Corner</span>
+        <span style="font-size:12px;color:var(--mmt-text-secondary);">Premium subscribers only</span>
+      </div>
+      <div data-gate="premium" style="display:none;padding:24px 28px;">
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:14px;">The BD and capture implications this article didn't cover:</p>
+        <ul style="list-style:none;padding:0;margin:0;">${bullets}</ul>
+      </div>
+      <div data-gate-overlay="premium" style="padding:24px 28px;text-align:center;">
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:14px;">Unlock the capture-specific analysis for this article.</p>
+        <div style="display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;">
+          <a href="/pricing.html" class="btn-primary no-underline" style="font-size:13px;padding:10px 20px;" data-premium-cta onclick="if(typeof plausible!=='undefined')plausible('Capture Upgrade Click',{props:{article:document.title}})">Unlock Capture Corner</a>
+          ${signInLink}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // Default: standard upgrade prompt
+  return `<div style="${gateBoxStyle}" data-gate-overlay="premium">
+    <div style="padding:24px 28px;text-align:center;">
+      <p style="font-size:16px;font-weight:700;color:var(--mmt-navy);margin-bottom:8px;">This analysis is free. The capture layer goes deeper.</p>
+      <p style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:18px;max-width:48ch;margin-left:auto;margin-right:auto;">MMT Premium includes monthly Capture Intelligence sheets with action windows and confidence labels, specific to VA, DHA, and HHS pipeline.</p>
+      <div style="display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;">
+        ${ctaBtn}
+        ${signInLink}
+      </div>
+    </div>
+  </div>`;
+}
+
 function generateArticlePages(articles, glossaryTerms) {
   const templatePath = path.join(TEMPLATES_DIR, 'article.html');
   if (!fs.existsSync(templatePath)) {
@@ -384,7 +541,8 @@ function generateArticlePages(articles, glossaryTerms) {
       .replace(/\{\{PREV_LINK\}\}/g, prevLink)
       .replace(/\{\{NEXT_LINK\}\}/g, nextLink)
       .replace(/\{\{KEYWORDS\}\}/g, (article.tags || []).join(', '))
-      .replace(/\{\{RELATED_ARTICLES\}\}/g, relatedHtml);
+      .replace(/\{\{RELATED_ARTICLES\}\}/g, relatedHtml)
+      .replace(/\{\{PREMIUM_GATE\}\}/g, generatePremiumGateHtml(article));
 
     // Inject search overlay after </nav>
     html = html.replace('</nav>', '</nav>' + searchOverlayHtml);
@@ -2201,7 +2359,8 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     'agency-sources.html', 'getting-started.html',
     'marketpulse.html', 'my-reports.html', 'tactical-brief-confirmed.html',
     'about-team.html', 'about-press.html',
-    'ops.html', 'command-center.html'
+    'ops.html', 'command-center.html',
+    'pricing.html'
   ];
   const ogMap = {
     'index.html': 'index.png',

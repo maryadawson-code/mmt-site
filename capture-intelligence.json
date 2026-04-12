@@ -1,0 +1,164 @@
+{
+  "title": "Capture Intelligence: FY2027 Federal Health Budget",
+  "month": "April 2026",
+  "published_at": "2026-04-01T12:00:00Z",
+  "signal_count": 24,
+  "agency_count": 10,
+  "agencies": ["VA", "DHA", "PEO DHMS", "CDMRP", "USAMRAA", "HHS/ONC", "ARPA-H", "CMS", "IHS", "CDC"],
+  "signals": [
+    {
+      "id": "s1",
+      "agency": "VA",
+      "program": "CCN Next Gen (36C10G26R0003)",
+      "signal": "$56.2B community care (+17%); VBP models and utilization management enter new contract",
+      "confidence": "verified",
+      "action_window": "Proposals due April 17, 2026",
+      "urgent": true,
+      "what_to_do": "If you are bidding: final compliance review against Section L this week. If you are a subcontractor on a CCN team: confirm your teaming agreement covers VBP scope. If you are not on a team: this window is closed for new entrants.",
+      "free_preview": true
+    },
+    {
+      "id": "s2",
+      "agency": "VA",
+      "program": "CCN Dental (36C10G26R0004)",
+      "signal": "~$47M companion dental network vehicle",
+      "confidence": "verified",
+      "action_window": "Proposals due April 17, 2026",
+      "urgent": true,
+      "what_to_do": "Small set-aside opportunity. Dental network primes with VA past performance should be in pre-proposal review now.",
+      "free_preview": true
+    },
+    {
+      "id": "s3",
+      "agency": "VA",
+      "program": "EHRM / Oracle Health (MHS GENESIS at VA)",
+      "signal": "$4.24B appropriation request; 13 MTF go-lives scheduled Q3-Q4 FY2026, 26 additional sites FY2027",
+      "confidence": "verified",
+      "action_window": "Now through September 2026",
+      "urgent": false,
+      "what_to_do": "If you hold a position on the GENESIS support contract: scope expansion brief to DHA program office this quarter. If you are a subcontractor: identify which go-live sites align with your past performance; initiate teaming conversations with the prime now, not at draft RFP. If you are a new entrant: this is not the window — focus on FY2028 recompete positioning instead.",
+      "free_preview": true
+    },
+    {
+      "id": "s4",
+      "agency": "DHA",
+      "program": "Digital Health Initiative",
+      "signal": "TBD program scope; remote patient monitoring and clinical decision support platform",
+      "confidence": "directional",
+      "action_window": "RFI expected Q1 FY2027",
+      "urgent": false,
+      "what_to_do": "Position for RFI response. Build past performance narrative around RPM and CDS integration.",
+      "free_preview": false
+    },
+    {
+      "id": "s5",
+      "agency": "HHS/ONC",
+      "program": "Interoperability Enforcement Expansion",
+      "signal": "TEFCA enforcement and information blocking penalties expanding to all covered entities",
+      "confidence": "directional",
+      "action_window": "Compliance deadline: December 2026",
+      "urgent": false,
+      "what_to_do": "If you provide HIE services: update capability statements to reference TEFCA compliance. If you are an EHR vendor: ensure FHIR endpoints meet December requirements.",
+      "free_preview": false
+    },
+    {
+      "id": "s6",
+      "agency": "DHA",
+      "program": "Enterprise Imaging (DIPS recompete)",
+      "signal": "DIPS contract consolidation into enterprise imaging platform; estimated $380M over 10 years",
+      "confidence": "directional",
+      "action_window": "Draft RFP expected Q2 FY2027",
+      "urgent": false,
+      "what_to_do": "Incumbent (Philips) vulnerable on interop requirements. MOSA compliance will be weighted. Clinical AI imaging partners should initiate teaming conversations now.",
+      "free_preview": false
+    },
+    {
+      "id": "s7",
+      "agency": "ARPA-H",
+      "program": "Clinical AI Safety Program",
+      "signal": "New program office; $120M initial allocation for clinical AI validation frameworks",
+      "confidence": "proposed",
+      "action_window": "BAA expected Q3 FY2026",
+      "urgent": false,
+      "what_to_do": "Academic and research-oriented firms should monitor for BAA. This is not a traditional IDIQ opportunity — expect cooperative agreements.",
+      "free_preview": false
+    },
+    {
+      "id": "s8",
+      "agency": "CMS",
+      "program": "ClaimsCore RFP (Modernization)",
+      "signal": "Multi-billion dollar claims processing modernization; legacy COBOL systems replacement",
+      "confidence": "verified",
+      "action_window": "Proposals in evaluation; award expected Q4 FY2026",
+      "urgent": false,
+      "what_to_do": "If you submitted: no action. If you did not: position for subcontracting once prime is announced.",
+      "free_preview": false
+    },
+    {
+      "id": "s9",
+      "agency": "PEO DHMS",
+      "program": "MHS GENESIS Sustainment",
+      "signal": "$1.8B sustainment contract for deployed MHS GENESIS sites",
+      "confidence": "verified",
+      "action_window": "Recompete FY2028; pre-positioning window opens Q1 FY2027",
+      "urgent": false,
+      "what_to_do": "Current subs should lock teaming agreements before recompete announcement. New entrants: build relationships with the deployed site PMOs now.",
+      "free_preview": false
+    },
+    {
+      "id": "s10",
+      "agency": "VA",
+      "program": "TDR Mandatory Compliance (GSA MAS)",
+      "signal": "GSA MAS Refresh 31 makes Transactional Data Reporting mandatory across all schedules",
+      "confidence": "verified",
+      "action_window": "Compliance required by October 2026",
+      "urgent": false,
+      "what_to_do": "All GSA MAS holders must update reporting systems. Non-compliance risks schedule cancellation.",
+      "free_preview": false
+    },
+    {
+      "id": "s11",
+      "agency": "DHA",
+      "program": "Cybersecurity Maturity (CMMC for Health)",
+      "signal": "DHA requiring CMMC Level 2 for all health IT contracts starting FY2027",
+      "confidence": "directional",
+      "action_window": "Assessment timeline: January-June 2027",
+      "urgent": false,
+      "what_to_do": "Begin C3PAO engagement now if you do not have CMMC Level 2. Lead time for assessments is 6-9 months.",
+      "free_preview": false
+    },
+    {
+      "id": "s12",
+      "agency": "CDMRP",
+      "program": "Military Operational Medicine Research",
+      "signal": "$310M in directed research funding for combat casualty care and operational medicine",
+      "confidence": "verified",
+      "action_window": "BAAs rolling through FY2027",
+      "urgent": false,
+      "what_to_do": "Research institutions should monitor CDMRP funding opportunities portal. This is grant/cooperative agreement, not contract.",
+      "free_preview": false
+    },
+    {
+      "id": "s13",
+      "agency": "IHS",
+      "program": "RPMS Modernization",
+      "signal": "Indian Health Service EHR modernization; moving from RPMS to commercial EHR",
+      "confidence": "proposed",
+      "action_window": "Market research phase; RFI expected FY2027",
+      "urgent": false,
+      "what_to_do": "EHR vendors with tribal health experience should respond to upcoming RFI. Past performance in rural and underserved settings will be critical.",
+      "free_preview": false
+    },
+    {
+      "id": "s14",
+      "agency": "CDC",
+      "program": "Data Modernization Initiative",
+      "signal": "Continued investment in public health data infrastructure; $250M FY2027 request",
+      "confidence": "proposed",
+      "action_window": "Multiple task orders expected Q1-Q2 FY2027",
+      "urgent": false,
+      "what_to_do": "Firms with public health surveillance and data integration experience should monitor CDC ORISE and direct contract opportunities.",
+      "free_preview": false
+    }
+  ]
+}

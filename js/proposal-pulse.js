@@ -686,14 +686,21 @@ function renderResults(data) {
   // Upsell CTA (show only when no uses remaining)
   const upsellEl = document.getElementById('results-upsell');
   if (typeof data.uses_remaining === 'number' && data.uses_remaining <= 0) {
+    const isPremium = typeof mmtIsPremium === 'function' && mmtIsPremium();
+    const priceLabel = isPremium ? '$14.99' : '$19.99';
+    const discountNote = isPremium
+      ? '<p style="font-size:13px;color:#92710A;font-weight:600;margin-top:8px;">Premium member discount applied.</p>'
+      : '<p style="font-size:13px;color:var(--mmt-text-secondary);margin-top:12px;">Premium subscribers pay $14.99 &mdash; save 25% on every score. <a href="/pricing.html" style="color:var(--mmt-teal);font-weight:600;">See Premium</a></p>';
     upsellEl.innerHTML = `
       <div class="upsell-box">
-        <h3>Score another proposal</h3>
-        <p>Each assessment includes the full Red Team Review: every section rewritten for evaluator impact, a probability-of-win estimate, executive summary, and a prioritized fix list you can act on today.</p>
-        <button class="btn btn-primary" id="btn-upsell-checkout">Unlock 1 Assessment &mdash; $19.99 &#8594;</button>
+        <h3>You've used your free assessment.</h3>
+        <p>Additional assessments: ${priceLabel} each. Each includes the full Red Team Review.</p>
+        <button class="btn btn-primary" id="btn-upsell-checkout">Buy additional assessment &mdash; ${priceLabel} &#8594;</button>
         <p class="stripe-note">Secure checkout via Stripe &middot; No subscription required</p>
+        ${discountNote}
       </div>
     `;
+    if (typeof plausible !== 'undefined') plausible('ProposalPulse Upgrade Prompt View');
   } else {
     upsellEl.innerHTML = '';
   }

@@ -208,6 +208,9 @@
           {{CONTENT}}
         </div>
 
+        <!-- Premium gate section (injected by build.js based on article category) -->
+        {{PREMIUM_GATE}}
+
         <!-- Section 4a: Inline product CTA (mid/post article) -->
         <div style="margin:32px 0;padding:22px 24px;background:var(--mmt-soft);border-left:3px solid var(--mmt-navy);border-radius:8px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;">
           <div>
@@ -349,6 +352,7 @@
     </div>
   </footer>
 
+  <script src="/js/mmt-paywall.js" defer></script>
   <script src="/js/mmt-motion.js" defer></script>
 </body>
 </html>

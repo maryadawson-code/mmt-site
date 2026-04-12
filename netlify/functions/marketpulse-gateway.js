@@ -19,6 +19,7 @@ const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const SITE_URL = "https://missionmeetstech.com";
 const PRICE_CENTS = 5000; // $50.00
+const PREMIUM_PRICE_CENTS = 3500; // $35.00 for Premium subscribers
 const FREE_REPORTS = 1;
 
 const CORS_HEADERS = {
@@ -249,8 +250,17 @@ exports.handler = wrapHandler(async (event) => {
       };
 
     } else {
-      // PAID PATH
-      return createCheckoutSession({ name, email, company, topic, audience, additional_context });
+      // PAID PATH — check if user is Premium subscriber for discount
+      let isPremium = false;
+      if (mpUser) {
+        const { data: fullUser } = await supabase
+          .from("mp_users")
+          .select("subscription_tier, subscription_status")
+          .eq("email", email)
+          .single();
+        isPremium = fullUser && fullUser.subscription_tier === "premium" && fullUser.subscription_status === "active";
+      }
+      return createCheckoutSession({ name, email, company, topic, audience, additional_context, isPremium });
     }
 
   } catch (err) {
@@ -263,7 +273,7 @@ exports.handler = wrapHandler(async (event) => {
   }
 });
 
-async function createCheckoutSession({ name, email, company, topic, audience, additional_context }) {
+async function createCheckoutSession({ name, email, company, topic, audience, additional_context, isPremium }) {
   if (!STRIPE_SECRET_KEY) {
     return {
       statusCode: 500,
@@ -274,6 +284,7 @@ async function createCheckoutSession({ name, email, company, topic, audience, ad
 
   const stripe = new Stripe(STRIPE_SECRET_KEY);
   const truncate = (s, max) => (s.length > max ? s.slice(0, max) : s);
+  const unitAmount = isPremium ? PREMIUM_PRICE_CENTS : PRICE_CENTS;
 
   const session = await stripe.checkout.sessions.create({
     customer_email: email,
@@ -284,9 +295,11 @@ async function createCheckoutSession({ name, email, company, topic, audience, ad
           currency: "usd",
           product_data: {
             name: "MarketPulse Report",
-            description: "Custom federal health IT market intelligence report",
+            description: isPremium
+              ? "Custom federal health IT market intelligence report (Premium member discount)"
+              : "Custom federal health IT market intelligence report",
           },
-          unit_amount: PRICE_CENTS,
+          unit_amount: unitAmount,
         },
         quantity: 1,
       },
