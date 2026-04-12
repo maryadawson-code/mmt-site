@@ -1494,15 +1494,42 @@
             'Premium</span>';
         });
 
-        // Gate action boxes inside deep-dive accordions
-        var actionBoxes = document.querySelectorAll('.acc-body .action-box');
-        actionBoxes.forEach(function(box, i) {
-          if (i < 3) return; // First 3 signals free
-          box.innerHTML = '<div style="text-align:center;padding:8px 0;">' +
-            '<p style="font-size:13px;color:var(--mmt-text-secondary);margin-bottom:10px;">Action window and recommendations are Premium only.</p>' +
-            '<a href="/pricing.html" style="font-size:13px;font-weight:700;color:var(--mmt-teal);text-decoration:none;">Unlock with MMT Premium &rarr;</a>' +
-            '</div>';
+        // Gate deep-dive accordions — hide all but first 3, gate action boxes on visible ones
+        var accordions = document.querySelectorAll('details.ci-accordion');
+        accordions.forEach(function(acc, i) {
+          if (i < 3) {
+            // First 3 visible but action boxes gated
+            var actionBox = acc.querySelector('.action-box');
+            if (actionBox) {
+              actionBox.innerHTML = '<div style="text-align:center;padding:8px 0;">' +
+                '<p style="font-size:13px;color:var(--mmt-text-secondary);margin-bottom:10px;">Action window and recommendations are Premium only.</p>' +
+                '<a href="/pricing.html" style="font-size:13px;font-weight:700;color:var(--mmt-teal);text-decoration:none;">Unlock with MMT Premium &rarr;</a>' +
+                '</div>';
+            }
+          } else {
+            acc.style.display = 'none';
+          }
         });
+
+        // Add gate overlay after the 3rd accordion
+        var deepDive = document.querySelector('.ci-deep-dive .wrap');
+        if (deepDive && !document.getElementById('ci-deep-gate')) {
+          var gateDiv = document.createElement('div');
+          gateDiv.id = 'ci-deep-gate';
+          gateDiv.style.cssText = 'margin:28px 0;padding:32px 28px;background:var(--ci-gold-bg);border:1px solid #E5D9A8;border-radius:12px;text-align:center;';
+          gateDiv.innerHTML = '<svg width="20" height="20" viewBox="0 0 448 512" fill="#92710A" style="margin-bottom:12px;" aria-hidden="true"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg>' +
+            '<p style="font-size:17px;font-weight:700;color:var(--mmt-navy);margin-bottom:8px;">+' + (accordions.length - 3) + ' more deep-dive signals behind Premium</p>' +
+            '<p style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:18px;max-width:480px;margin-left:auto;margin-right:auto;">Each signal includes sourced intelligence, confidence labels, action windows, and what to do this month.</p>' +
+            '<a href="/pricing.html" class="ci-btn ci-btn-primary" style="font-size:14px;padding:12px 24px;" onclick="if(typeof plausible!==\'undefined\')plausible(\'Capture Upgrade Click\',{props:{article:document.title}})">Unlock the full deep dive</a>' +
+            '<p style="font-size:12px;color:var(--mmt-text-secondary);margin-top:12px;">Free subscribers get signal access 72 hours after publication.</p>';
+          // Insert after the 3rd accordion
+          var thirdAcc = accordions[2];
+          if (thirdAcc && thirdAcc.nextSibling) {
+            deepDive.insertBefore(gateDiv, thirdAcc.nextSibling);
+          } else {
+            deepDive.appendChild(gateDiv);
+          }
+        }
 
         // Add premium gate banner after the table
         var tableSection = document.querySelector('.ci-table-section');
