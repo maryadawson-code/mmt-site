@@ -2,7 +2,7 @@
 /**
  * Content Refresh Agent
  *
- * Layer 4 of the autonomous self-monitoring stack. Uses Claude API to draft
+ * Layer 4 of the autonomous self-monitoring stack. Uses LLM to draft
  * fixes for things the audit flagged but auto-repair can't safely handle:
  *   - Orphan pages (drafts a "Where this page should be linked from" suggestion)
  *   - Missing glossary terms referenced in articles (drafts new entries)
@@ -11,13 +11,15 @@
  * Output: drafts/refresh-suggestions-{date}.md — a markdown report
  * the human reviews in batch. Never modifies source files directly.
  *
- * Requires: ANTHROPIC_API_KEY env var.
+ * Model routing:
+ *   - If OLLAMA_BASE_URL is set, routes to local gemma3:27b (free)
+ *   - Otherwise falls back to Anthropic Claude (requires ANTHROPIC_API_KEY)
  *
  * Usage:
  *   node scripts/content-refresh-agent.js          # full run
- *   node scripts/content-refresh-agent.js --dry    # skip Claude calls, just show what would run
+ *   node scripts/content-refresh-agent.js --dry    # skip LLM calls, just show what would run
  *
- * NOTE: This is a stub. The Claude API integration is wired but the
+ * NOTE: This is a stub. The LLM integration is wired but the
  * orchestration is intentionally minimal — extend the prompts and
  * checks as the workflow matures.
  */
@@ -29,17 +31,46 @@ const ROOT = path.join(__dirname, '..');
 const DRAFTS_DIR = path.join(ROOT, 'drafts');
 const dry = process.argv.includes('--dry');
 
-if (!process.env.ANTHROPIC_API_KEY && !dry) {
-  console.error('ANTHROPIC_API_KEY env var not set. Set it or use --dry.');
+// Model routing: prefer local Ollama, fall back to Anthropic
+const OLLAMA_BASE_URL = process.env.OLLAMA_BASE_URL || '';
+const USE_LOCAL = OLLAMA_BASE_URL.length > 0;
+const LOCAL_MODEL = process.env.OLLAMA_MODEL || 'gemma3:27b';
+const ANTHROPIC_MODEL = 'claude-sonnet-4-5';
+
+if (!USE_LOCAL && !process.env.ANTHROPIC_API_KEY && !dry) {
+  console.error('Neither OLLAMA_BASE_URL nor ANTHROPIC_API_KEY set. Set one or use --dry.');
   process.exit(1);
 }
 
-const ANTHROPIC_MODEL = 'claude-sonnet-4-6';
-
-async function callClaude(systemPrompt, userPrompt) {
-  if (dry) {
-    return `[DRY RUN] Would call Claude with prompt:\n${userPrompt.slice(0, 200)}...`;
+/**
+ * Call local Ollama instance for inference.
+ */
+async function callOllama(systemPrompt, userPrompt) {
+  const url = `${OLLAMA_BASE_URL}/api/chat`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: LOCAL_MODEL,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
+      ],
+      stream: false,
+    }),
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Ollama API error: ${res.status} ${err}`);
   }
+  const json = await res.json();
+  return json.message.content;
+}
+
+/**
+ * Call Anthropic Claude API for inference (fallback).
+ */
+async function callAnthropic(systemPrompt, userPrompt) {
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -56,10 +87,23 @@ async function callClaude(systemPrompt, userPrompt) {
   });
   if (!res.ok) {
     const err = await res.text();
-    throw new Error(`Claude API error: ${res.status} ${err}`);
+    throw new Error(`Anthropic API error: ${res.status} ${err}`);
   }
   const json = await res.json();
   return json.content[0].text;
+}
+
+async function callLLM(systemPrompt, userPrompt) {
+  if (dry) {
+    const provider = USE_LOCAL ? `Ollama/${LOCAL_MODEL}` : `Anthropic/${ANTHROPIC_MODEL}`;
+    return `[DRY RUN] Would call ${provider} with prompt:\n${userPrompt.slice(0, 200)}...`;
+  }
+  if (USE_LOCAL) {
+    console.log(`  [router] → local Ollama/${LOCAL_MODEL}`);
+    return callOllama(systemPrompt, userPrompt);
+  }
+  console.log(`  [router] → Anthropic/${ANTHROPIC_MODEL}`);
+  return callAnthropic(systemPrompt, userPrompt);
 }
 
 // MMT voice system prompt — this is the "role contract" baked in
@@ -122,7 +166,7 @@ H1: ${h1}
 
 Suggest the 2-3 best places on the site to link this page from, and write the exact link text (in MMT voice). Be specific about which page and which section. Do not invent details about the page content — base your suggestions only on the title and H1 above.`;
 
-  return await callClaude(MMT_SYSTEM_PROMPT, userPrompt);
+  return await callLLM(MMT_SYSTEM_PROMPT, userPrompt);
 }
 
 // ─── RUN ──────────────────────────────────────────────────────────

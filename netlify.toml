@@ -58,8 +58,13 @@
 [functions."tactical-brief-cleanup"]
   schedule = "*/30 * * * *"
 
+# DISABLED — not needed for launch
+# [functions."newsletter-research"]
+#   schedule = "..."
+
 [functions."ops-pattern-detector"]
-  schedule = "0 13 * * *"
+  # DISABLED for launch — re-enable when ops monitoring is tuned
+  # schedule = "0 13 * * *"
 
 [functions."quality-drift-check-background"]
   schedule = "0 12 * * 1"
@@ -68,7 +73,8 @@
   schedule = "0 11 * * *"
 
 [functions."predictive-signals-background"]
-  schedule = "0 10 * * 3"
+  # DISABLED for launch — re-enable when signal pipeline is validated
+  # schedule = "0 10 * * 3"
 
 [functions."ops-health-check"]
   schedule = "*/30 * * * *"

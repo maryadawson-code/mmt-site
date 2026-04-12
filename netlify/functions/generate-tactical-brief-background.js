@@ -809,10 +809,12 @@ exports.handler = async (event) => {
         const { data: newOrder, error: insertErr } = await _supabase.from("marketpulse_orders").insert({
           session_id,
           email,
-          name,
+          name: name || null,
           company: company || null,
+          company_name: company || null,
           topic,
           audience: audience || null,
+          additional_context: additional_context || null,
           status: "processing",
         }).select("id").single();
         if (newOrder) _orderId = newOrder.id;
@@ -1247,8 +1249,9 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
     }
 
     // Send notification email to Mary (include disambiguation info)
+    const _escHtml = (s) => String(s || "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
     const disambigNote = disambiguation.is_ambiguous
-      ? `\n\n⚠️ DISAMBIGUATION: User conflated ${disambiguation.entities_found?.length || 0} entities. Selected: ${disambiguation.selected_entity?.name || "unknown"}. See methodology appendix.`
+      ? `\n\n⚠️ DISAMBIGUATION: User conflated ${disambiguation.entities_found?.length || 0} entities. Selected: ${_escHtml(disambiguation.selected_entity?.name || "unknown")}. See methodology appendix.`
       : "";
     const validationNote = !validation.overall_passed
       ? `\n\n⚠️ CROSS-VALIDATION: ${(validation.corrections_needed || []).length} corrections were applied.`
@@ -1257,8 +1260,8 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
     const notifyHtml = buildNotificationEmail({ name, email, company, topic, audience, session_id });
     await sendEmail({
       to: "mary@missionmeetstech.com",
-      subject: `[MarketPulse] New order from ${name}${disambiguation.is_ambiguous ? " ⚠️ DISAMBIGUATED" : ""}`,
-      html: notifyHtml + `<p style="color:#888;font-size:12px;">${disambigNote}${validationNote}<br>Pipeline: ${researchTime}s, ${Object.keys(passTimings).length} passes, ${allCitations.length} sources</p>`,
+      subject: `[MarketPulse] New order from ${_escHtml(name)}${disambiguation.is_ambiguous ? " ⚠️ DISAMBIGUATED" : ""}`,
+      html: notifyHtml + `<p style="color:#888;font-size:12px;">${_escHtml(disambigNote)}${_escHtml(validationNote)}<br>Pipeline: ${researchTime}s, ${Object.keys(passTimings).length} passes, ${allCitations.length} sources</p>`,
       from: "Mission Meets Tech <noreply@missionmeetstech.com>",
     });
 

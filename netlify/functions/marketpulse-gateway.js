@@ -218,7 +218,7 @@ exports.handler = wrapHandler(async (event) => {
 
       const bgUrl = `${SITE_URL}/.netlify/functions/generate-tactical-brief-background`;
       try {
-        await new Promise((resolve, reject) => {
+        const bgResult = await new Promise((resolve, reject) => {
           const url = new URL(bgUrl);
           const req = https.request(
             {
@@ -230,7 +230,7 @@ exports.handler = wrapHandler(async (event) => {
                 "Content-Type": "application/json",
                 "Content-Length": Buffer.byteLength(payload),
               },
-              timeout: 5000,
+              timeout: 30000, // 30s — enough for background function to accept (returns 202)
             },
             (res) => resolve(res.statusCode)
           );
@@ -239,6 +239,9 @@ exports.handler = wrapHandler(async (event) => {
           req.write(payload);
           req.end();
         });
+        if (bgResult !== 202 && bgResult !== 200 && bgResult !== "timeout-ok") {
+          console.error(`marketpulse-gateway: background returned unexpected status ${bgResult}`);
+        }
       } catch (bgErr) {
         console.error("marketpulse-gateway: background trigger error:", bgErr.message);
       }
@@ -283,7 +286,13 @@ async function createCheckoutSession({ name, email, company, topic, audience, ad
   }
 
   const stripe = new Stripe(STRIPE_SECRET_KEY);
-  const truncate = (s, max) => (s.length > max ? s.slice(0, max) : s);
+  const truncate = (s, max) => {
+    if (s && s.length > max) {
+      console.warn(`[marketpulse-gateway] Stripe metadata truncated: ${s.length} chars → ${max} (field value starts: "${s.substring(0, 60)}...")`);
+      return s.slice(0, max);
+    }
+    return s || "";
+  };
   const unitAmount = isPremium ? PREMIUM_PRICE_CENTS : PRICE_CENTS;
 
   const session = await stripe.checkout.sessions.create({

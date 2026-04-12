@@ -1,0 +1,14 @@
+[Unit]
+Description=Penny Pincher — OpenClaw Model Routing Cost Monitor
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /root/Projects/penny-pincher/penny_pincher.py
+WorkingDirectory=/root/Projects/penny-pincher
+Restart=on-failure
+RestartSec=30
+Environment=OLLAMA_BASE_URL=http://localhost:11434
+
+[Install]
+WantedBy=default.target

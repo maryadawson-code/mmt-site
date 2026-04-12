@@ -1,0 +1,20 @@
+{
+  "version": "1.0.0",
+  "workspace": "~/.openclaw/workspace",
+  "logs_dir": "~/.openclaw/logs",
+  "providers_config": "~/.openclaw/providers.yaml",
+  "agent_audit": "~/.openclaw/workspace/agent-audit.json",
+  "site_root": "/home/user/mmt-site",
+  "project": "mmt-openclaw",
+  "inference_log": "~/.openclaw/logs/inference.jsonl",
+  "created": "2026-04-12",
+  "routing": {
+    "default_provider": "local_primary",
+    "anthropic_reserved_tasks": [
+      "reasoning_complex",
+      "proposal_writing",
+      "sensitive_review",
+      "web_search_required"
+    ]
+  }
+}
