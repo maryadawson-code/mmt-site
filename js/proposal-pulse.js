@@ -671,12 +671,38 @@ function renderResults(data) {
     document.getElementById('results-top-fix').innerHTML = '';
   }
 
-  // Red Flags
+  // Truncation Warning
+  const truncWarnEl = document.getElementById('results-truncation-warning');
+  if (truncWarnEl && sc._truncation_warning) {
+    truncWarnEl.innerHTML = `
+      <div class="truncation-warning reveal" style="animation-delay: ${redFlagsDelay - 100}ms; background: #fffbeb; border: 1px solid #f59e0b; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px;">
+        <p style="margin:0; color: #92400e; font-size: 14px;"><strong>Note:</strong> ${esc(sc._truncation_warning.message)}</p>
+      </div>
+    `;
+  } else if (truncWarnEl) {
+    truncWarnEl.innerHTML = '';
+  }
+
+  // Red Flags (includes regulatory flags merged by backend)
   if (sc.red_flags && sc.red_flags.length > 0) {
+    const regulatoryFlags = sc.red_flags.filter(f => f.startsWith('[REGULATORY]'));
+    const standardFlags = sc.red_flags.filter(f => !f.startsWith('[REGULATORY]'));
+
+    let flagsHtml = '';
+    if (standardFlags.length > 0) {
+      flagsHtml += `<ul>${standardFlags.map(f => `<li>${esc(f)}</li>`).join('')}</ul>`;
+    }
+    if (regulatoryFlags.length > 0) {
+      flagsHtml += `<div style="margin-top:12px; padding:10px 14px; background:#fef2f2; border-left:3px solid #dc2626; border-radius:4px;">
+        <strong style="color:#991b1b; font-size:13px;">Regulatory Compliance Risks (${regulatoryFlags.length})</strong>
+        <ul style="margin:6px 0 0 0;">${regulatoryFlags.map(f => `<li style="color:#991b1b;">${esc(f.replace('[REGULATORY] ', ''))}</li>`).join('')}</ul>
+      </div>`;
+    }
+
     document.getElementById('results-red-flags').innerHTML = `
       <div class="red-flags reveal" style="animation-delay: ${redFlagsDelay}ms">
         <h3>Red Flags Detected (${sc.red_flags.length})</h3>
-        <ul>${sc.red_flags.map(f => `<li>${esc(f)}</li>`).join('')}</ul>
+        ${flagsHtml}
       </div>
     `;
   } else {

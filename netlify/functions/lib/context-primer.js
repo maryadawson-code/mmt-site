@@ -6,8 +6,8 @@
 // ============================================================
 
 const APPENDIX_C = {
-  last_updated: "2026-03-18",
-  quarterly_refresh_due: "2026-06-18",
+  last_updated: "2026-04-12",
+  quarterly_refresh_due: "2026-07-12",
   events: [
     {
       id: "doge_terminations",
@@ -53,10 +53,10 @@ const APPENDIX_C = {
     },
     {
       id: "far_overhaul",
-      summary: "Revolutionary FAR simplification initiative announced April 2025",
-      sources: ["Federal Register"],
-      keywords: ["far", "overhaul", "simplification"],
-      date_range: "April 2025",
+      summary: "Revolutionary FAR Overhaul (RFO) in progress. SAM.gov modernized FAR/DFARS Reps & Certs released March 24, 2026. Type 1 entity-level reps collected in SAM; Types 2/3 now solicitation-level only. EO 11246 affirmative action provisions removed (revoked by EO 14173).",
+      sources: ["SAM.gov", "Federal Register", "acquisition.gov"],
+      keywords: ["far", "overhaul", "simplification", "reps", "certs", "representations", "certifications", "rfo"],
+      date_range: "March 2026-current",
     },
     {
       id: "usaid_terminations",
@@ -64,6 +64,20 @@ const APPENDIX_C = {
       sources: ["NPR", "HigherGov"],
       keywords: ["usaid", "terminated", "canceled"],
       date_range: "Feb-Mar 2025",
+    },
+    {
+      id: "gsa_mas_refresh_31",
+      summary: "GSA MAS Solicitation Refresh 31 (Mass Mod A914) released April 2, 2026. TDR mandatory for ALL SINs (112 total). Price Reduction Clause (PRC) and CSP-1 Commercial Sales Practices eliminated. New AI governance requirements per OMB M-25-22: American AI systems required, government owns data outputs. Springboard Program limited to FASt Lane qualifiers. TDR monthly reporting: 12 mandatory data fields via FAS Sales Reporting Portal within 30 calendar days.",
+      sources: ["GSA.gov", "buy.gsa.gov", "gormgroup.com"],
+      keywords: ["mas", "refresh", "tdr", "transactional data", "prc", "price reduction", "csp-1", "gsa schedule", "ai governance"],
+      date_range: "April 2026",
+    },
+    {
+      id: "cmmc_2026",
+      summary: "CMMC Level 2 assessments underway for defense contractors handling CUI. DFARS 252.204-7012 and NIST SP 800-171 Rev 2 compliance required for all DoD health IT contracts (DHA, VA, MHS). CMMC Level 2 certification expected as mandatory evaluation criterion for new DHA solicitations in FY2026.",
+      sources: ["acq.osd.mil", "acquisition.gov"],
+      keywords: ["cmmc", "nist 800-171", "cui", "cybersecurity", "dfars", "dha", "mhs"],
+      date_range: "2026-current",
     },
   ],
 };

@@ -80,7 +80,7 @@ exports.handler = async (event) => {
             "Content-Type": "application/json",
             "Content-Length": Buffer.byteLength(postData),
           },
-          timeout: 5000,
+          timeout: 30000, // 30s — enough for background function to accept and return 202
         },
         (res) => {
           // Background function returns 202 immediately
@@ -90,7 +90,8 @@ exports.handler = async (event) => {
       req.on("error", reject);
       req.on("timeout", () => {
         req.destroy();
-        resolve("timeout-ok"); // Background function already started
+        console.warn("tactical-brief-webhook: background trigger timed out at 30s — cleanup will retry if needed");
+        resolve("timeout-ok");
       });
       req.write(postData);
       req.end();

@@ -74,6 +74,19 @@ exports.handler = async () => {
     failures.push("STRIPE_SECRET_KEY is not set — paid MarketPulse reports won't work");
   }
 
+  // --- Check Stripe Webhook Secrets ---
+  if (!process.env.STRIPE_WEBHOOK_SECRET) {
+    failures.push("STRIPE_WEBHOOK_SECRET is not set — ProposalPulse payment webhooks will fail");
+  }
+  if (!process.env.STRIPE_TB_WEBHOOK_SECRET) {
+    failures.push("STRIPE_TB_WEBHOOK_SECRET is not set — MarketPulse payment webhooks will fail");
+  }
+
+  // --- Check Report Viewer Secret ---
+  if (!process.env.REPORT_VIEWER_SECRET) {
+    failures.push("REPORT_VIEWER_SECRET is not set — MarketPulse report URLs will use fallback HMAC (set this before production traffic)");
+  }
+
   // --- Report results ---
   if (failures.length > 0) {
     console.error("HEALTH CHECK FAILURES:", failures);

@@ -510,7 +510,7 @@ exports.handler = wrapHandler(async (event) => {
         body: JSON.stringify(apiCallBody),
       }));
 
-      const ADMIN_EMAILS = ["maryadawson@gmail.com", "mary@missionmeetstech.com", "jackyang2326@gmail.com", "amchicu@gmail.com"];
+      const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "maryadawson@gmail.com,mary@missionmeetstech.com,jackyang2326@gmail.com,amchicu@gmail.com").split(",").map(e => e.trim().toLowerCase());
       const isAdmin = ADMIN_EMAILS.includes((email || "").toLowerCase());
       const shadowPromise = isAdmin
         ? Promise.resolve(null)
