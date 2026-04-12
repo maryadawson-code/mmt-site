@@ -110,6 +110,13 @@ exports.handler = async (event) => {
       };
     }
 
+    // Check for premium auth before exposing black_hat competitive intel
+    const cookieHeader = event.headers.cookie || '';
+    const hasPremiumCookie = cookieHeader.includes('mmt_premium=true');
+    // Also check for auth token in query string (for API consumers)
+    const authToken = event.queryStringParameters?.token;
+    const isPremium = hasPremiumCookie || !!authToken;
+
     return {
       statusCode: 200,
       headers: {
@@ -119,7 +126,8 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         intel: record.intel,
-        black_hat: record.black_hat,
+        black_hat: isPremium ? record.black_hat : null,
+        black_hat_gated: !isPremium,
         sources: record.sources,
         last_updated: record.last_updated,
       }),

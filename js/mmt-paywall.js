@@ -130,21 +130,19 @@
       }
     }
 
-    // Gate contractor notes in glossary and contract tracker sections
+    // Gate contractor notes in glossary — 12-word teaser free, remainder gated
     var gatedNotes = document.querySelectorAll('.contractor-note-gated');
     if (gatedNotes.length > 0 && status !== 'premium') {
       for (var g = 0; g < gatedNotes.length; g++) {
-        gatedNotes[g].style.filter = 'blur(4px)';
-        gatedNotes[g].style.userSelect = 'none';
-        gatedNotes[g].style.pointerEvents = 'none';
-        gatedNotes[g].style.position = 'relative';
-        // Add overlay
-        var overlay = document.createElement('a');
-        overlay.href = '/pricing.html';
-        overlay.style.cssText = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--mmt-teal);text-decoration:none;background:rgba(255,255,255,0.7);border-radius:4px;';
-        overlay.textContent = '★ Premium — Unlock contractor notes';
-        gatedNotes[g].style.position = 'relative';
-        gatedNotes[g].appendChild(overlay);
+        var note = gatedNotes[g];
+        var fullText = note.textContent;
+        var words = fullText.split(/\s+/);
+        if (words.length <= 12) continue; // short notes stay fully visible
+        var teaser = words.slice(0, 12).join(' ');
+        var remainder = words.slice(12).join(' ');
+        note.innerHTML = '<span style="color:var(--mmt-teal);font-weight:700;">★ Contractor note:</span> ' +
+          teaser + '... ' +
+          '<a href="/pricing.html" style="font-size:11px;font-weight:700;color:var(--mmt-teal);text-decoration:none;white-space:nowrap;">Unlock full note — Premium &rarr;</a>';
       }
     }
   }
