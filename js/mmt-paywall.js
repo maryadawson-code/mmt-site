@@ -85,6 +85,88 @@
       }
     }
 
+    // Decode and inject premium field values for authenticated users
+    if (status === 'premium') {
+      var encodedFields = document.querySelectorAll('[data-premium-fields]');
+      for (var f = 0; f < encodedFields.length; f++) {
+        try {
+          var raw = atob(encodedFields[f].getAttribute('data-premium-fields'));
+          var data = JSON.parse(raw);
+          var placeholder = encodedFields[f].querySelector('.premium-fields-placeholder');
+          if (placeholder && data) {
+            var html = '';
+            if (data.v) html += '<span><strong style="color:var(--mmt-text);">Vendor:</strong> ' + data.v + '</span>';
+            if (data.val) html += '<span><strong style="color:var(--mmt-text);">Value:</strong> ' + data.val + '</span>';
+            if (data.n) html += '<span><strong style="color:var(--mmt-text);">NAICS:</strong> ' + data.n + '</span>';
+            placeholder.innerHTML = html;
+            if (data.ver) {
+              var d = new Date(data.ver);
+              var days = Math.floor((Date.now() - d.getTime()) / 86400000);
+              var verColor = days < 7 ? '#22C55E' : days < 30 ? '#FBBF24' : days < 90 ? '#FB923C' : '#F87171';
+              var icon = days < 7 ? '\u2713' : '\u26A0';
+              var fmt = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+              placeholder.insertAdjacentHTML('afterend', '<span class="text-xs block mt-2" style="color:' + verColor + ';">' + icon + ' Verified ' + fmt + '</span>');
+            }
+          }
+        } catch (e) {}
+      }
+    }
+
+    // Decode and inject agency intelligence for authenticated users
+    if (status === 'premium') {
+      var agencyEl = document.querySelector('[data-agency-intel]');
+      if (agencyEl) {
+        try {
+          var agencyData = JSON.parse(atob(agencyEl.getAttribute('data-agency-intel')));
+          var container = document.getElementById('agency-premium-content');
+          if (container && agencyData) {
+            var h = '';
+            h += '<div class="profile-section"><div class="profile-label">MMT\'s Current Read</div>';
+            h += '<div style="background:rgba(69,123,157,0.04);border-left:3px solid var(--mmt-teal);border-radius:0 10px 10px 0;padding:16px 20px;">';
+            h += '<p style="font-size:15px;line-height:1.7;color:var(--mmt-text);">' + agencyData.current_read + '</p>';
+            h += '<p style="font-size:12px;color:var(--mmt-text-secondary);margin-top:8px;">Updated: April 2026</p></div></div>';
+            h += '<div class="profile-section"><div class="profile-label">Budget Posture</div>';
+            h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">';
+            h += '<div><span style="font-size:12px;color:var(--mmt-text-secondary);">FY2026 Enacted</span><div style="font-size:18px;font-weight:700;">' + agencyData.fy2026 + '</div></div>';
+            h += '<div><span style="font-size:12px;color:var(--mmt-text-secondary);">FY2027 Request</span><div style="font-size:18px;font-weight:700;">' + agencyData.fy2027 + '</div></div></div>';
+            if (agencyData.programs && agencyData.programs.length) {
+              h += '<div style="font-size:13px;font-weight:600;margin-bottom:6px;">Key Funded Programs</div><ul style="list-style:none;padding:0;margin:0 0 12px;font-size:14px;color:var(--mmt-text-secondary);">';
+              agencyData.programs.forEach(function(p) { h += '<li style="margin-bottom:4px;">' + p + '</li>'; });
+              h += '</ul>';
+            }
+            if (agencyData.vehicles && agencyData.vehicles.length) {
+              h += '</div><div class="profile-section"><div class="profile-label">Key Vehicles</div><div style="display:flex;gap:8px;flex-wrap:wrap;">';
+              agencyData.vehicles.forEach(function(v) { h += '<span class="tag" style="font-size:12px;">' + v + '</span>'; });
+              h += '</div></div>';
+            }
+            if (agencyData.signals && agencyData.signals.length) {
+              h += '<div class="profile-section"><div class="profile-label">Upcoming Procurement Signals</div><ul style="list-style:none;padding:0;margin:0;color:var(--mmt-text-secondary);">';
+              agencyData.signals.forEach(function(s) { h += '<li style="margin-bottom:6px;font-size:14px;">\u2022 ' + s + '</li>'; });
+              h += '</ul></div>';
+            }
+            if (agencyData.offices && agencyData.offices.length) {
+              h += '<div class="profile-section"><div class="profile-label">Key Program Offices</div><ul style="list-style:none;padding:0;margin:0;color:var(--mmt-text-secondary);">';
+              agencyData.offices.forEach(function(o) { h += '<li style="margin-bottom:6px;font-size:14px;">' + o + '</li>'; });
+              h += '</ul></div>';
+            }
+            container.innerHTML = h;
+          }
+        } catch (e) {}
+      }
+    }
+
+    // Decode and inject premium text content for authenticated users
+    if (status === 'premium') {
+      var encodedText = document.querySelectorAll('[data-premium-text]');
+      for (var t = 0; t < encodedText.length; t++) {
+        try {
+          var decoded = atob(encodedText[t].getAttribute('data-premium-text'));
+          var textEl = encodedText[t].querySelector('.premium-text-placeholder');
+          if (textEl) textEl.innerHTML = decoded;
+        } catch (e) {}
+      }
+    }
+
     // data-gate elements (show based on minimum tier)
     var gated = document.querySelectorAll("[data-gate]");
     for (var i = 0; i < gated.length; i++) {
@@ -155,19 +237,24 @@
       }
     }
 
-    // Gate contractor notes in glossary — 12-word teaser free, remainder gated
+    // Gate contractor notes in glossary
     var gatedNotes = document.querySelectorAll('.contractor-note-gated');
-    if (gatedNotes.length > 0 && status !== 'premium') {
+    if (gatedNotes.length > 0) {
       for (var g = 0; g < gatedNotes.length; g++) {
         var note = gatedNotes[g];
-        var fullText = note.textContent;
-        var words = fullText.split(/\s+/);
-        if (words.length <= 12) continue; // short notes stay fully visible
-        var teaser = words.slice(0, 12).join(' ');
-        var remainder = words.slice(12).join(' ');
-        note.innerHTML = '<span style="color:var(--mmt-teal);font-weight:700;">★ Contractor note:</span> ' +
-          teaser + '... ' +
-          '<a href="/pricing.html" style="font-size:11px;font-weight:700;color:var(--mmt-teal);text-decoration:none;white-space:nowrap;">Unlock full note — Premium &rarr;</a>';
+        if (status === 'premium') {
+          // Decode full note from data attribute for premium users
+          var fullNote = note.getAttribute('data-full-note');
+          if (fullNote) {
+            try { note.textContent = atob(fullNote); } catch (e) {}
+          }
+        } else {
+          // Non-premium: show teaser with upgrade link
+          var currentText = note.textContent.trim();
+          note.innerHTML = '<span style="color:var(--mmt-teal);font-weight:700;">★ Contractor note:</span> ' +
+            currentText + ' ' +
+            '<a href="/pricing.html" style="font-size:11px;font-weight:700;color:var(--mmt-teal);text-decoration:none;white-space:nowrap;">Unlock full note — Premium &rarr;</a>';
+        }
       }
     }
   }

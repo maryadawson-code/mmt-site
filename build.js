@@ -1406,21 +1406,12 @@ function generateContractTrackerHtml(contracts, contractArticleMap) {
                 const teaser = escapeHtml(words.slice(0, 40).join(' '));
                 return teaser + '... <a href="/pricing.html" style="font-size:11px;font-weight:700;color:var(--mmt-teal);text-decoration:none;white-space:nowrap;" data-gate-overlay="premium">★ Full competitive note — Premium</a>';
               })()}</p>
-              <div data-access="premium">
-                <div class="flex flex-wrap gap-3 text-xs" style="color:var(--mmt-text-secondary);">
-                  <span><strong style="color:var(--mmt-text);">Vendor:</strong> ${escapeHtml(c.vendor)}</span>
-                  <span><strong style="color:var(--mmt-text);">Value:</strong> ${escapeHtml(c.value)}</span>
-                  ${c.naics ? `<span><strong style="color:var(--mmt-text);">NAICS:</strong> ${escapeHtml(c.naics)}</span>` : ''}
+              <div data-access="premium" data-premium-fields="${Buffer.from(JSON.stringify({v:c.vendor,val:c.value,n:c.naics||'',ver:c.last_verified||'',src:c.source||''})).toString('base64')}">
+                <div class="flex flex-wrap gap-3 text-xs premium-fields-placeholder" style="color:var(--mmt-text-secondary);">
+                  <span><strong style="color:var(--mmt-text);">Vendor:</strong> <em style="color:var(--mmt-text-secondary);">Premium</em></span>
+                  <span><strong style="color:var(--mmt-text);">Value:</strong> <em style="color:var(--mmt-text-secondary);">Premium</em></span>
+                  ${c.naics ? `<span><strong style="color:var(--mmt-text);">NAICS:</strong> <em style="color:var(--mmt-text-secondary);">Premium</em></span>` : ''}
                 </div>
-                ${c.last_verified ? (() => {
-                  const d = new Date(c.last_verified);
-                  const days = Math.floor((Date.now() - d.getTime()) / 86400000);
-                  const verColor = days < 7 ? '#22C55E' : days < 30 ? '#FBBF24' : days < 90 ? '#FB923C' : '#F87171';
-                  const icon = days < 7 ? '✓' : '⚠';
-                  const fmt = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                  return `<span class="text-xs block mt-2" style="color:${verColor};" data-last-verified="${escapeHtml(c.last_verified)}">${icon} Verified ${fmt}</span>`;
-                })() : ''}
-                ${c.source ? `<span class="text-xs mt-1 inline-block" style="color:var(--mmt-teal);">Source</span>` : ''}
                 ${lastCovered}
               </div>
               <div style="border-top:1px solid var(--mmt-border,#D8E0E8);margin-top:12px;"></div>
@@ -2664,6 +2655,19 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
         });
       }
 
+      // Glossary: encode contractor notes so full text isn't in HTML source
+      if (file === 'glossary.html') {
+        html = html.replace(
+          /<p class="text-xs contractor-note-gated"[^>]*>([^<]+)<\/p>/g,
+          (match, noteText) => {
+            const words = noteText.trim().split(/\s+/);
+            const teaser = words.slice(0, 8).join(' ');
+            const encoded = Buffer.from(noteText.trim()).toString('base64');
+            return `<p class="text-xs contractor-note-gated" data-requires="premium" data-full-note="${encoded}" style="color:var(--mmt-text-secondary);">${teaser}...</p>`;
+          }
+        );
+      }
+
       // Inject search overlay after </nav>
       if (html.includes('</nav>')) {
         html = html.replace('</nav>\n\n', '</nav>\n' + searchOverlayHtml + '\n\n');
@@ -3052,7 +3056,7 @@ function generateNewswireHtml(newsItems) {
               <span class="text-xs whitespace-nowrap" style="color:var(--mmt-text-secondary);">${escapeHtml(time)}</span>
             </div>
             <h3 class="text-base font-bold mb-1" style="color:var(--mmt-navy);">${escapeHtml(item.title)}</h3>
-            ${item.description ? `<div data-access="premium"><p class="text-sm leading-relaxed" style="color:var(--mmt-text);">${escapeHtml(item.description)}</p></div><div data-gate-overlay="premium"><p class="text-xs" style="color:#92710A;">&#9733; Full context — Premium</p></div>` : ''}
+            ${item.description ? `<div data-access="premium" data-premium-text="${Buffer.from(escapeHtml(item.description)).toString('base64')}"><p class="text-sm leading-relaxed premium-text-placeholder" style="color:var(--mmt-text);"><em style="color:var(--mmt-text-secondary);">Premium context</em></p></div><div data-gate-overlay="premium"><p class="text-xs" style="color:#92710A;">&#9733; Full context — Premium</p></div>` : ''}
           </a>\n`;
     });
 
@@ -3306,39 +3310,18 @@ function generateAgencyProfilePage(agency) {
     </div>
     <p style="font-size:16px;line-height:1.6;color:var(--mmt-text-secondary);margin-bottom:32px;">${escapeHtml(agency.description)}</p>
 
-    <div data-gate="premium" style="display:none;">
-      <div class="profile-section">
-        <div class="profile-label">MMT's Current Read</div>
-        <div style="background:rgba(69,123,157,0.04);border-left:3px solid var(--mmt-teal);border-radius:0 10px 10px 0;padding:16px 20px;">
-          <p style="font-size:15px;line-height:1.7;color:var(--mmt-text);">${escapeHtml(agency.current_read)}</p>
-          <p style="font-size:12px;color:var(--mmt-text-secondary);margin-top:8px;">Updated: April 2026</p>
-        </div>
-      </div>
-
-      <div class="profile-section">
-        <div class="profile-label">Budget Posture</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-          <div><span style="font-size:12px;color:var(--mmt-text-secondary);">FY2026 Enacted</span><div style="font-size:18px;font-weight:700;">${escapeHtml(agency.budget.fy2026_enacted)}</div></div>
-          <div><span style="font-size:12px;color:var(--mmt-text-secondary);">FY2027 Request</span><div style="font-size:18px;font-weight:700;">${escapeHtml(agency.budget.fy2027_request)}</div></div>
-        </div>
-        <div style="font-size:13px;font-weight:600;margin-bottom:6px;">Key Funded Programs</div>
-        <ul style="list-style:none;padding:0;margin:0 0 12px;font-size:14px;color:var(--mmt-text-secondary);">${budgetItems}</ul>
-        ${riskItems ? `<div style="font-size:13px;font-weight:600;margin-bottom:6px;">Programs at Risk</div><ul style="list-style:none;padding:0;margin:0;font-size:14px;">${riskItems}</ul>` : ''}
-      </div>
-
-      <div class="profile-section">
-        <div class="profile-label">Key Vehicles</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">${vehicles || '<span style="font-size:14px;color:var(--mmt-text-secondary);">No tracked vehicles yet.</span>'}</div>
-      </div>
-
-      <div class="profile-section">
-        <div class="profile-label">Upcoming Procurement Signals</div>
-        <ul style="list-style:none;padding:0;margin:0;color:var(--mmt-text-secondary);">${signals || '<li style="font-size:14px;">No signals tracked yet.</li>'}</ul>
-      </div>
-
-      <div class="profile-section">
-        <div class="profile-label">Key Program Offices</div>
-        <ul style="list-style:none;padding:0;margin:0;color:var(--mmt-text-secondary);">${offices}</ul>
+    <div data-gate="premium" data-agency-intel="${Buffer.from(JSON.stringify({
+      current_read: agency.current_read,
+      fy2026: agency.budget.fy2026_enacted,
+      fy2027: agency.budget.fy2027_request,
+      programs: agency.budget.key_programs,
+      at_risk: agency.budget.at_risk || [],
+      vehicles: agency.key_vehicles,
+      signals: agency.upcoming_signals,
+      offices: agency.key_offices
+    })).toString('base64')}" style="display:none;">
+      <div id="agency-premium-content">
+        <p style="font-size:14px;color:var(--mmt-text-secondary);text-align:center;padding:24px;">Loading premium intelligence...</p>
       </div>
     </div>
 
