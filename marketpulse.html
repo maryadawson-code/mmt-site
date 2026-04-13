@@ -135,22 +135,35 @@
         <span>1 free brief</span><span>&middot;</span><span>24hr delivery</span><span>&middot;</span><span>Private by default</span><span>&middot;</span><span>Not used to train models</span>
       </div>
 
-      <!-- Sample brief Preview (detailed interactive demo) -->
-      <div id="sample-brief" style="margin-top:36px;border-radius:20px;overflow:hidden;box-shadow:0 24px 80px rgba(10,25,47,0.10),0 2px 12px rgba(10,25,47,0.06);border:1px solid rgba(69,123,157,0.08);max-width:900px;">
-        <iframe src="/samples/sample-tactical-brief.html" style="width:100%;height:3200px;border:none;display:block;" title="MarketPulse sample intelligence brief" loading="lazy"></iframe>
-      </div>
+      <!-- Sample brief Preview (collapsible) -->
+      <details id="sample-brief" style="margin-top:36px;border-radius:16px;border:1px solid rgba(69,123,157,0.15);overflow:hidden;max-width:900px;">
+        <summary style="padding:16px 24px;cursor:pointer;font-size:15px;font-weight:700;color:var(--mmt-navy);list-style:none;display:flex;align-items:center;justify-content:space-between;background:var(--mmt-soft);">
+          View sample brief
+          <span style="font-size:13px;color:var(--mmt-teal);font-weight:600;">Expand &#9662;</span>
+        </summary>
+        <div style="border-radius:0 0 16px 16px;overflow:hidden;box-shadow:0 12px 40px rgba(10,25,47,0.08);">
+          <iframe src="/samples/sample-tactical-brief.html" style="width:100%;height:3200px;border:none;display:block;" title="MarketPulse sample intelligence brief" loading="lazy"></iframe>
+        </div>
+      </details>
     </div>
   </section>
 
 
-  <!-- Demo Walkthrough -->
+  <!-- Demo Walkthrough (collapsible) -->
   <section id="demo-section" class="px-6" style="padding:48px 0 64px;background:var(--mmt-soft);">
     <div style="max-width:1320px;margin:0 auto;">
-      <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:var(--mmt-teal);margin-bottom:12px;text-align:center;">See it in action</div>
-      <h2 style="font-family:'Inter',system-ui,sans-serif;font-size:clamp(24px,3vw,36px);font-weight:800;line-height:1.15;letter-spacing:-0.03em;text-align:center;margin-bottom:28px;color:var(--mmt-navy);">From question to brief &mdash; the full workflow</h2>
-      <div style="border-radius:20px;overflow:hidden;box-shadow:0 24px 80px rgba(10,25,47,0.10),0 2px 12px rgba(10,25,47,0.06);border:1px solid rgba(69,123,157,0.08);background:#fff;">
-        <iframe src="/demos/marketpulse-demo.html" style="width:100%;height:1100px;border:none;display:block;" title="MarketPulse product demo" loading="lazy"></iframe>
-      </div>
+      <details style="border-radius:16px;border:1px solid rgba(69,123,157,0.15);overflow:hidden;background:#fff;">
+        <summary style="padding:20px 28px;cursor:pointer;font-size:15px;font-weight:700;color:var(--mmt-navy);list-style:none;display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:var(--mmt-teal);margin-bottom:4px;">See it in action</div>
+            From question to brief &mdash; the full workflow
+          </div>
+          <span style="font-size:13px;color:var(--mmt-teal);font-weight:600;">Watch demo &#9662;</span>
+        </summary>
+        <div style="border-radius:0 0 16px 16px;overflow:hidden;">
+          <iframe src="/demos/marketpulse-demo.html" style="width:100%;height:1100px;border:none;display:block;" title="MarketPulse product demo" loading="lazy"></iframe>
+        </div>
+      </details>
     </div>
   </section>
 

@@ -1009,10 +1009,16 @@
   </div>
 
 
-  <!-- Sample Scorecard Preview (detailed interactive demo) -->
-  <section id="sample-preview" style="margin:0 -20px 32px;padding:0;border-radius:20px;overflow:hidden;box-shadow:0 24px 80px rgba(10,25,47,0.10),0 2px 12px rgba(10,25,47,0.06);border:1px solid rgba(69,123,157,0.08);">
-    <iframe src="/samples/sample-proposal-pulse.html" style="width:100%;height:2400px;border:none;display:block;" title="ProposalPulse sample scored assessment" loading="lazy"></iframe>
-  </section>
+  <!-- Sample Scorecard Preview (collapsible) -->
+  <details id="sample-preview" style="margin:0 -20px 32px;border-radius:16px;border:1px solid rgba(69,123,157,0.15);overflow:hidden;">
+    <summary style="padding:16px 24px;cursor:pointer;font-size:15px;font-weight:700;color:var(--mmt-navy);list-style:none;display:flex;align-items:center;justify-content:space-between;background:var(--mmt-soft);">
+      View sample scorecard
+      <span style="font-size:13px;color:var(--mmt-teal);font-weight:600;">Expand &#9662;</span>
+    </summary>
+    <div style="border-radius:0 0 16px 16px;overflow:hidden;box-shadow:0 12px 40px rgba(10,25,47,0.08);">
+      <iframe src="/samples/sample-proposal-pulse.html" style="width:100%;height:2400px;border:none;display:block;" title="ProposalPulse sample scored assessment" loading="lazy"></iframe>
+    </div>
+  </details>
 
   <!-- The 9 Criteria -->
   <section style="margin:0 -20px 32px;padding:40px 20px;background:var(--mmt-soft);border-radius:16px;">
