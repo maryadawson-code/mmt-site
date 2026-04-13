@@ -527,6 +527,14 @@ function generateArticlePages(articles, glossaryTerms) {
       articleContent = autoLinkGlossaryTerms(articleContent, glossaryTerms);
     }
 
+    // Strip duplicate dek/description from article body (ART-02)
+    // If the first <p> in the body matches the article description, remove it
+    if (article.description) {
+      const descText = article.description.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const dekDupRegex = new RegExp(`^\\s*<p>${descText}</p>\\s*`, 'i');
+      articleContent = articleContent.replace(dekDupRegex, '');
+    }
+
     // Strip "What you can do next" CTA blocks from article body
     // These are baked into 74+ markdown sources and should not render as article content
     articleContent = articleContent.replace(/<hr>\s*<p><strong>What you can do next<\/strong><\/p>\s*<ul>[\s\S]*?<\/ul>/gi, '');
