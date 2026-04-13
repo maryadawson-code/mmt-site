@@ -216,32 +216,45 @@
           document.getElementById('last-updated').textContent = 'Updated ' + fmtDate(data.last_updated);
         }
 
-        // Intel
-        if (data.intel) {
-          document.getElementById('intel-container').innerHTML = renderIntel(data.intel);
+        // Auth check: only render full intelligence for premium users
+        var isPremium = typeof window.mmtIsPremium === 'function' && window.mmtIsPremium();
+
+        if (!isPremium) {
+          // Show gate card instead of full intelligence
+          document.getElementById('intel-container').innerHTML = '<div style="padding:32px;background:rgba(146,113,10,0.04);border:1px dashed rgba(146,113,10,0.2);border-radius:12px;text-align:center;">' +
+            '<p style="font-size:17px;font-weight:700;color:var(--mmt-navy);margin-bottom:8px;">&#9733; Full contract intelligence is Premium</p>' +
+            '<p style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:16px;">Key developments, competitor analysis, timeline, financials, risks, opportunities, and verification notes.</p>' +
+            '<a href="/pricing.html" class="btn-primary no-underline" style="font-size:14px;padding:12px 24px;">See premium plans &rarr;</a>' +
+            '<p style="font-size:12px;color:var(--mmt-text-secondary);margin-top:10px;">Already a member? <a href="#" onclick="if(typeof mmtSignIn===\'function\')mmtSignIn();return false;" style="color:var(--mmt-teal);font-weight:600;">Sign in</a></p>' +
+            '</div>';
         } else {
-          document.getElementById('intel-container').innerHTML = '<div class="card rounded-xl p-8 text-center"><p class="text-base" style="color:var(--mmt-text-secondary);">No intelligence data available yet.</p></div>';
-        }
-
-        // Small Business
-        if (data.intel && data.intel.small_business) {
-          var sb = data.intel.small_business;
-          if ((sb.opportunities && sb.opportunities.length) || (sb.set_aside_types && sb.set_aside_types.length) || sb.subcontracting_note) {
-            document.getElementById('smallbiz-section').classList.remove('hidden');
-            document.getElementById('smallbiz-container').innerHTML = renderSmallBiz(sb);
+          // Premium: render full intelligence
+          if (data.intel) {
+            document.getElementById('intel-container').innerHTML = renderIntel(data.intel);
+          } else {
+            document.getElementById('intel-container').innerHTML = '<div class="card rounded-xl p-8 text-center"><p class="text-base" style="color:var(--mmt-text-secondary);">No intelligence data available yet.</p></div>';
           }
-        }
 
-        // BLACK HAT
-        if (data.black_hat) {
-          document.getElementById('blackhat-section').classList.remove('hidden');
-          document.getElementById('blackhat-container').innerHTML = renderBlackHat(data.black_hat);
-        }
+          // Small Business
+          if (data.intel && data.intel.small_business) {
+            var sb = data.intel.small_business;
+            if ((sb.opportunities && sb.opportunities.length) || (sb.set_aside_types && sb.set_aside_types.length) || sb.subcontracting_note) {
+              document.getElementById('smallbiz-section').classList.remove('hidden');
+              document.getElementById('smallbiz-container').innerHTML = renderSmallBiz(sb);
+            }
+          }
 
-        // Sources
-        if (data.sources && data.sources.length) {
-          document.getElementById('sources-section').classList.remove('hidden');
-          document.getElementById('sources-container').innerHTML = renderSources(data.sources);
+          // BLACK HAT
+          if (data.black_hat) {
+            document.getElementById('blackhat-section').classList.remove('hidden');
+            document.getElementById('blackhat-container').innerHTML = renderBlackHat(data.black_hat);
+          }
+
+          // Sources
+          if (data.sources && data.sources.length) {
+            document.getElementById('sources-section').classList.remove('hidden');
+            document.getElementById('sources-container').innerHTML = renderSources(data.sources);
+          }
         }
       } catch(err) {
         document.getElementById('intel-container').innerHTML = '<p class="text-base" style="color:var(--mmt-red, #E63946);">Failed to load intelligence data. Please try again later.</p>';
