@@ -198,14 +198,25 @@
   <!-- Article Body + Rail -->
   <section class="wrap" style="padding:0 0 48px;">
     <div class="article-layout">
-      <article class="article-shell" style="max-width:740px;">
+      <article class="article-shell" style="max-width:740px;" data-age-days="{{AGE_DAYS}}" data-access="{{ACCESS_TIER}}">
 
         <!-- Section 2: What This Means (summary box) -->
         {{WHAT_THIS_MEANS}}
 
         <!-- Section 3: Main article body -->
-        <div class="article-content">
+        <div class="article-content" id="article-body">
           {{CONTENT}}
+        </div>
+
+        <!-- Article gate card (hidden by default, shown by mmt-paywall.js for non-premium users on recent articles) -->
+        <div id="article-gate" class="article-gate-card" style="display:none;">
+          <p style="font-size:17px;font-weight:700;color:var(--mmt-navy);margin-bottom:8px;">&#9733; Continue reading</p>
+          <p style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:18px;max-width:48ch;margin-left:auto;margin-right:auto;">This analysis is available to MMT Premium members. Capture leads, BD directors, and proposal teams use this content before gate review.</p>
+          <div style="display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;">
+            <a href="/pricing.html" class="btn-primary no-underline" style="font-size:14px;padding:12px 24px;">Start Premium</a>
+            <a href="/newsletter.html" style="font-size:14px;font-weight:600;color:var(--mmt-teal);text-decoration:none;">Create free account &rarr;</a>
+          </div>
+          <p style="font-size:12px;color:var(--mmt-text-secondary);margin-top:14px;">Already a member? <a href="#" onclick="if(typeof mmtSignIn==='function')mmtSignIn();return false;" style="color:var(--mmt-teal);font-weight:600;">Sign in</a></p>
         </div>
 
         <!-- Premium gate section (injected by build.js based on article category) -->

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Federal Health IT IDIQ Tracker — Mission Meets Tech</title>
+  <meta name="description" content="Track every major IDIQ vehicle in federal health IT: ceilings, awardees, task order history, burn rates, and re-compete windows. Updated monthly.">
+  <link rel="canonical" href="https://missionmeetstech.com/idiq-tracker">
+  <meta property="og:title" content="Federal Health IT IDIQ Tracker — Mission Meets Tech">
+  <meta property="og:description" content="Track every major IDIQ vehicle in federal health IT: ceilings, awardees, task order history, burn rates, and re-compete windows.">
+  <meta property="og:url" content="https://missionmeetstech.com/idiq-tracker">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/mmt-logo.png">
+  <meta property="og:site_name" content="Mission Meets Tech">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Federal Health IT IDIQ Tracker — Mission Meets Tech">
+  <meta name="twitter:description" content="Track every major IDIQ vehicle in federal health IT: ceilings, awardees, burn rates, and re-compete windows.">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-v3.png">
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
+  <link rel="alternate" type="application/rss+xml" title="Mission Meets Tech" href="/feed.xml">
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <style>
+    :root {
+      --mmt-teal: #457B9D;
+      --mmt-navy: #0A192F;
+      --mmt-soft: #F3F4F6;
+      --mmt-white: #FFFFFF;
+      --mmt-text: #102033;
+      --mmt-text-secondary: #5C6B7A;
+      --mmt-border: #D8E0E8;
+      --ci-gold: #92710A;
+      --ci-gold-bg: #FEF9E7;
+    }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--mmt-white); color: var(--mmt-navy); }
+    .idiq-card { background: var(--mmt-white); border: 1px solid var(--mmt-border); border-radius: 16px; padding: 24px; transition: all 0.2s; }
+    .idiq-card:hover { box-shadow: 0 8px 24px rgba(10,25,47,0.08); transform: translateY(-2px); }
+    .status-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 6px; }
+    .status-active { background: rgba(34,197,94,0.1); color: #16A34A; }
+    .status-recompete { background: rgba(251,191,36,0.1); color: #D97706; }
+    .status-upcoming { background: rgba(69,123,157,0.1); color: var(--mmt-teal); }
+    .burn-bar { height: 8px; border-radius: 4px; background: var(--mmt-soft); overflow: hidden; }
+    .burn-fill { height: 100%; border-radius: 4px; background: var(--mmt-teal); transition: width 0.3s; }
+    .premium-lock { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--ci-gold); }
+  </style>
+</head>
+<body>
+  <nav class="nav-editorial"></nav>
+
+  <!-- Hero -->
+  <section class="wrap" style="padding:48px 0 24px;">
+    <div style="max-width:680px;">
+      <div class="section-label" style="margin-bottom:12px;">MMT Premium &middot; Reference Intelligence</div>
+      <h1 style="font-size:clamp(28px,3.5vw,44px);line-height:1.05;letter-spacing:-0.035em;margin-bottom:16px;">Federal Health IT IDIQ Tracker</h1>
+      <p style="font-size:17px;line-height:1.6;color:var(--mmt-text-secondary);max-width:56ch;">Track the vehicles, ceilings, and re-compete windows that shape the federal health IT competitive landscape. Updated monthly.</p>
+    </div>
+  </section>
+
+  <!-- Stats bar -->
+  <section class="wrap" style="padding:0 0 32px;">
+    <div style="display:flex;gap:24px;flex-wrap:wrap;padding:16px 20px;background:var(--ci-gold-bg);border:1px solid rgba(146,113,10,0.15);border-radius:12px;">
+      <div><strong style="font-size:24px;color:var(--mmt-navy);">11</strong><span class="text-xs block" style="color:var(--mmt-text-secondary);">Vehicles tracked</span></div>
+      <div><strong style="font-size:24px;color:var(--mmt-navy);">6</strong><span class="text-xs block" style="color:var(--mmt-text-secondary);">Agencies covered</span></div>
+      <div><strong style="font-size:24px;color:var(--mmt-navy);">April 2026</strong><span class="text-xs block" style="color:var(--mmt-text-secondary);">Last updated</span></div>
+    </div>
+  </section>
+
+  <!-- Sample entry (public preview) -->
+  <section class="wrap" style="padding:0 0 24px;">
+    <h2 style="font-size:18px;font-weight:700;margin-bottom:16px;">Sample entry</h2>
+    <div class="idiq-card">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+        <span class="status-chip status-recompete">Re-compete &middot; ~8 months</span>
+      </div>
+      <h3 style="font-size:20px;font-weight:800;margin-bottom:4px;">T4NG2 (Transformation Twenty-One Total Technology Next Generation 2)</h3>
+      <p style="font-size:14px;color:var(--mmt-teal);margin-bottom:12px;">Department of Veterans Affairs &middot; Multi-Award IDIQ</p>
+      <p style="font-size:14px;line-height:1.6;color:var(--mmt-text-secondary);margin-bottom:16px;">The primary vehicle through which VA buys IT professional services. T4NG2 is the follow-on to the $22.3B T4NG contract.</p>
+
+      <!-- Premium-locked fields -->
+      <div style="padding:16px;background:var(--ci-gold-bg);border:1px solid rgba(146,113,10,0.15);border-radius:10px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+          <div>
+            <span class="text-xs" style="color:var(--mmt-text-secondary);">Ceiling</span>
+            <div class="premium-lock">&#9733; Premium</div>
+          </div>
+          <div>
+            <span class="text-xs" style="color:var(--mmt-text-secondary);">Awardees</span>
+            <div class="premium-lock">&#9733; Premium</div>
+          </div>
+          <div>
+            <span class="text-xs" style="color:var(--mmt-text-secondary);">Ceiling burn rate</span>
+            <div class="burn-bar" style="width:120px;opacity:0.3;"><div class="burn-fill" style="width:0%;"></div></div>
+          </div>
+          <div>
+            <span class="text-xs" style="color:var(--mmt-text-secondary);">NAICS</span>
+            <div class="premium-lock">&#9733; Premium</div>
+          </div>
+        </div>
+        <div style="border-top:1px solid rgba(146,113,10,0.15);padding-top:12px;">
+          <span class="text-xs font-bold uppercase tracking-wider" style="color:var(--ci-gold);">MMT Intel</span>
+          <div class="premium-lock" style="margin-top:4px;">&#9733; Full analysis available with Premium</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gate CTA -->
+  <section class="wrap" style="padding:0 0 64px;">
+    <div style="text-align:center;padding:40px 28px;background:var(--mmt-soft);border-radius:16px;">
+      <h2 style="font-size:22px;font-weight:800;margin-bottom:8px;">Access all 11 tracked vehicles</h2>
+      <p style="font-size:15px;color:var(--mmt-text-secondary);margin-bottom:20px;max-width:48ch;margin-left:auto;margin-right:auto;">Full ceiling data, awardee lists, burn rates, re-compete windows, and MMT intel notes on every major federal health IT IDIQ.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href="/pricing.html" class="btn-primary no-underline" style="font-size:14px;padding:14px 28px;">Start Premium</a>
+        <a href="/pricing.html#plans" style="font-size:14px;font-weight:600;color:var(--mmt-teal);text-decoration:none;padding:14px 8px;">View plan options &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="wrap"></footer>
+  <script src="/js/mmt-paywall.js" defer></script>
+  <script src="/js/nav-active.js"></script>
+</body>
+</html>

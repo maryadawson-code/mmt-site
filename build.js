@@ -527,6 +527,11 @@ function generateArticlePages(articles, glossaryTerms) {
       articleContent = autoLinkGlossaryTerms(articleContent, glossaryTerms);
     }
 
+    // Calculate article age in days for paywall gating
+    const articleDate = new Date(article.date);
+    const ageDays = Math.floor((Date.now() - articleDate.getTime()) / 86400000);
+    const accessTier = ageDays <= 90 ? 'premium' : 'email';
+
     let html = template
       .replace(/\{\{TITLE\}\}/g, article.title)
       .replace(/\{\{DESCRIPTION\}\}/g, escapeXml(article.description))
@@ -542,7 +547,9 @@ function generateArticlePages(articles, glossaryTerms) {
       .replace(/\{\{NEXT_LINK\}\}/g, nextLink)
       .replace(/\{\{KEYWORDS\}\}/g, (article.tags || []).join(', '))
       .replace(/\{\{RELATED_ARTICLES\}\}/g, relatedHtml)
-      .replace(/\{\{PREMIUM_GATE\}\}/g, generatePremiumGateHtml(article));
+      .replace(/\{\{PREMIUM_GATE\}\}/g, generatePremiumGateHtml(article))
+      .replace(/\{\{AGE_DAYS\}\}/g, String(ageDays))
+      .replace(/\{\{ACCESS_TIER\}\}/g, accessTier);
 
     // Inject search overlay after </nav>
     html = html.replace('</nav>', '</nav>' + searchOverlayHtml);
@@ -729,6 +736,7 @@ function generateSitemap(articles, tags, contracts) {
     { loc: '/getting-started.html', priority: '0.7' },
     { loc: '/topics.html', priority: '0.7' },
     { loc: '/newswire.html', priority: '0.7' },
+    { loc: '/idiq-tracker.html', priority: '0.7' },
     { loc: '/events.html', priority: '0.6' },
     { loc: '/privacy.html', priority: '0.3' },
     { loc: '/terms.html', priority: '0.3' },
@@ -1004,8 +1012,9 @@ function generateLatestArticlesHtml(archive, count) {
     ).join('');
     const isExternal = item.url && item.url.startsWith('http');
     const linkAttrs = isExternal ? ' target="_blank" rel="noopener"' : '';
-    const hasPremium = item.capture_corner && item.capture_corner.length > 0;
-    const premiumBadge = hasPremium ? '<span style="display:inline-block;font-size:10px;font-weight:800;background:rgba(69,123,157,0.1);color:#457B9D;padding:2px 7px;border-radius:4px;margin-left:6px;vertical-align:middle;">★ Premium</span>' : '';
+    const itemAge = Math.floor((Date.now() - new Date(item.date).getTime()) / 86400000);
+    const isPremium = itemAge <= 90;
+    const premiumBadge = isPremium ? '<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#92710A;background:rgba(146,113,10,0.08);border:1px solid rgba(146,113,10,0.2);border-radius:999px;padding:2px 8px;margin-left:6px;">&#9733; Premium</span>' : '';
     return `<a href="${item.url}"${linkAttrs} class="article-card no-underline">
           <div>
             <div class="kicker">${(item.tags || [])[0] || 'Analysis'}${premiumBadge}</div>
@@ -1219,8 +1228,11 @@ function generateLatestAllHtml(archive, feed) {
     const isExternal = item.url && item.url.startsWith('http');
     const linkAttrs = isExternal ? 'target="_blank" rel="noopener"' : '';
     const externalIcon = isExternal ? ' <svg width="0.75em" height="0.75em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:baseline;opacity:0.5;" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>' : '';
-    return `<article class="card rounded-xl p-6 archive-item" data-content-type="article" data-topics="${topicSlugs}">
-          <div class="flex flex-wrap gap-2 mb-2">${tags}</div>
+    const itemAgeDays = Math.floor((Date.now() - item.sortDate.getTime()) / 86400000);
+    const isPremiumArticle = itemAgeDays <= 90;
+    const premiumBadge = isPremiumArticle ? ' <span class="premium-badge" style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#92710A;background:rgba(146,113,10,0.08);border:1px solid rgba(146,113,10,0.2);border-radius:999px;padding:2px 8px;">&#9733; Premium</span>' : '';
+    return `<article class="card rounded-xl p-6 archive-item" data-content-type="article" data-topics="${topicSlugs}" data-age-days="${itemAgeDays}" data-access="${isPremiumArticle ? 'premium' : 'email'}">
+          <div class="flex flex-wrap gap-2 mb-2">${tags}${premiumBadge}</div>
           <h3 class="text-lg font-bold mb-2"><a href="${item.url}" ${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-navy);">${escapeHtml(item.title)}${externalIcon}</a></h3>
           <p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);">${escapeHtml(item.description)}</p>
           <p class="text-xs" style="color:var(--mmt-text-secondary);">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
@@ -1359,21 +1371,31 @@ function generateContractTrackerHtml(contracts, contractArticleMap) {
                 const teaser = escapeHtml(words.slice(0, 40).join(' '));
                 return teaser + '... <a href="/pricing.html" style="font-size:11px;font-weight:700;color:var(--mmt-teal);text-decoration:none;white-space:nowrap;" data-gate-overlay="premium">★ Full competitive note — Premium</a>';
               })()}</p>
-              <div class="flex flex-wrap gap-3 text-xs" style="color:var(--mmt-text-secondary);">
-                <span><strong style="color:var(--mmt-text);">Vendor:</strong> ${escapeHtml(c.vendor)}</span>
-                <span><strong style="color:var(--mmt-text);">Value:</strong> ${escapeHtml(c.value)}</span>
-                ${c.naics ? `<span><strong style="color:var(--mmt-text);">NAICS:</strong> ${escapeHtml(c.naics)}</span>` : ''}
+              <div data-gate="premium" style="display:none;">
+                <div class="flex flex-wrap gap-3 text-xs" style="color:var(--mmt-text-secondary);">
+                  <span><strong style="color:var(--mmt-text);">Vendor:</strong> ${escapeHtml(c.vendor)}</span>
+                  <span><strong style="color:var(--mmt-text);">Value:</strong> ${escapeHtml(c.value)}</span>
+                  ${c.naics ? `<span><strong style="color:var(--mmt-text);">NAICS:</strong> ${escapeHtml(c.naics)}</span>` : ''}
+                </div>
+                ${c.last_verified ? (() => {
+                  const d = new Date(c.last_verified);
+                  const days = Math.floor((Date.now() - d.getTime()) / 86400000);
+                  const verColor = days < 7 ? '#22C55E' : days < 30 ? '#FBBF24' : days < 90 ? '#FB923C' : '#F87171';
+                  const icon = days < 7 ? '✓' : '⚠';
+                  const fmt = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                  return `<span class="text-xs block mt-2" style="color:${verColor};" data-last-verified="${escapeHtml(c.last_verified)}">${icon} Verified ${fmt}</span>`;
+                })() : ''}
+                ${c.source ? `<span class="text-xs mt-1 inline-block" style="color:var(--mmt-teal);">Source</span>` : ''}
+                ${lastCovered}
               </div>
-              ${c.last_verified ? (() => {
-                const d = new Date(c.last_verified);
-                const days = Math.floor((Date.now() - d.getTime()) / 86400000);
-                const color = days < 7 ? '#22C55E' : days < 30 ? '#FBBF24' : days < 90 ? '#FB923C' : '#F87171';
-                const icon = days < 7 ? '✓' : '⚠';
-                const fmt = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                return `<span class="text-xs block mt-2" style="color:${color};" data-last-verified="${escapeHtml(c.last_verified)}">${icon} Verified ${fmt}</span>`;
-              })() : ''}
-              ${c.source ? `<span class="text-xs mt-1 inline-block" style="color:var(--mmt-teal);">Source</span>` : ''}
-              ${lastCovered}
+              <div data-gate-overlay="premium" style="margin-top:10px;padding:10px 14px;background:rgba(146,113,10,0.04);border:1px solid rgba(146,113,10,0.15);border-radius:8px;">
+                <div class="flex flex-wrap gap-3 text-xs" style="color:var(--mmt-text-secondary);opacity:0.5;">
+                  <span>Vendor: ████</span>
+                  <span>Value: ████</span>
+                  ${c.naics ? '<span>NAICS: ████</span>' : ''}
+                </div>
+                <a href="/pricing.html" class="text-xs font-semibold no-underline" style="color:#92710A;display:block;margin-top:6px;">&#9733; Unlock full intel — Premium &rarr;</a>
+              </div>
               <p class="text-xs mt-2 font-semibold" style="color:var(--mmt-teal);">View Intel &rarr;</p>
               </a>${relatedAnalysis}
             </div>\n`;
@@ -2158,6 +2180,7 @@ function inlineTailwindCss(html) {
         <a href="/glossary.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Glossary</a>
         <a href="/agency-sources.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Agency Sources</a>
         <a href="/newswire.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">News Wire</a>
+        <a href="/idiq-tracker.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">IDIQ Tracker</a>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;">
         <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Trust</strong>
@@ -2438,7 +2461,8 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     'dashboard.html',
     'subscribed.html',
     'upgrade.html',
-    'fy2027-forecast.html'
+    'fy2027-forecast.html',
+    'idiq-tracker.html'
   ];
   const ogMap = {
     'index.html': 'index.png',
@@ -2889,7 +2913,7 @@ function generateNewswireHtml(newsItems) {
               <span class="text-xs whitespace-nowrap" style="color:var(--mmt-text-secondary);">${escapeHtml(time)}</span>
             </div>
             <h3 class="text-base font-bold mb-1" style="color:var(--mmt-navy);">${escapeHtml(item.title)}</h3>
-            ${item.description ? `<p class="text-sm leading-relaxed" style="color:var(--mmt-text);">${escapeHtml(item.description)}</p>` : ''}
+            ${item.description ? `<div data-gate="premium" style="display:none;"><p class="text-sm leading-relaxed" style="color:var(--mmt-text);">${escapeHtml(item.description)}</p></div><div data-gate-overlay="premium"><p class="text-xs" style="color:#92710A;">&#9733; Full context — Premium</p></div>` : ''}
           </a>\n`;
     });
 

@@ -1,564 +1,289 @@
-# MMT Content Paywall Spec
-### What Is Free, What Is Gated, and Exactly Where the Line Is — Page by Page
+# MMT Content Paywall & Premium Experience Spec
+### Complete Free vs. Paid Definition, Content Gating Architecture, and Implementation Guide
+### Updated: April 12, 2026
 
-> **Purpose:** This document is the definitive specification for what every visitor sees at every access level. It tells your agent builder exactly where to place paywall gates, what preview content shows before the gate, and what copy appears at the cutoff point. The guiding principle: **high-level intelligence is always free. The expanded analysis, action windows, and operational depth that turns intelligence into a capture decision belong behind the paywall.**
-
-***
-
-## The Core Free vs. Premium Model
-
-The model is simple: MMT gives visitors enough to understand the landscape and trust the source — then gates the part that tells them what to *do* about it.
-
-| Level | Who Sees It | What It Is |
-|---|---|---|
-| **Free — Public** | Anyone visiting the site | High-level framing, headlines, macro trends, what happened |
-| **Free — Subscriber** | Email subscribers (free tier) | Full analysis articles, standard newsletter issues, delayed access to premium intel |
-| **Premium — Paid** | Paying subscribers ($25/mo or $249/yr) | Capture Intelligence full sheets, deep solicitation analysis, early access, Q&A, tool discounts |
-| **Institutional** | Team license holders | All Premium content, multiple seats, enhanced tool credits |
-
-The paywall is never about withholding the story. It is about withholding the **so what** — the action windows, the confidence-level assessments, the capture-specific recommendations, and the depth of competitive analysis that turns a news item into a pursuit decision.
+> **Purpose:** This is the definitive specification for what every visitor sees at every access level — and the technical implementation for Claude Code. The guiding principle: **free content builds trust and earns the email; premium content is worth paying for because it saves time and wins work.** Every gating decision flows from that.
 
 ***
 
-## Master Content Decision Table
+## The Core Problem This Spec Fixes
 
-Use this table as the reference for every piece of content on the site. If a content type is not listed, default to Free — Subscriber.
-
-| Content Type | Free (Public) | Free (Subscriber) | Premium (Paid) |
-|---|---|---|---|
-| Twice-weekly newsletter — standard analysis | Teaser only (title + 2 sentences) | ✅ Full article | ✅ Full + 48hr early access |
-| Breaking news / contract awards | Title + 1-paragraph summary | ✅ Full article | ✅ Full + immediate |
-| Long-form analysis (5+ min reads) | Title + intro paragraph | ✅ Full article | ✅ Full + 48hr early access |
-| Solicitation-specific coverage | Title + what was awarded/released | ✅ High-level who/what/when | ✅ Full: eval criteria read, what to do, ProposalPulse score |
-| Agency budget analysis | Title + top-line number | ✅ What the numbers are | ✅ What they mean for your pipeline, action windows |
-| Capture Intelligence sheets | 3 signals (no action windows) | 3 signals (no action windows) | ✅ All signals + action windows + confidence labels |
-| Deep-dive solicitation analysis | Not visible | Intro section only | ✅ Full analysis |
-| Exclusive Q&A posts | Not visible | Not visible | ✅ Full access |
-| Podcast episodes | ✅ Full access | ✅ Full access | ✅ Full access |
-| Podcast episode show notes | Summary only | ✅ Full show notes | ✅ Full show notes + linked analysis |
-| Article archive (/latest) | All titles + summaries | ✅ All articles | ✅ All articles + premium-only pieces |
-| ProposalPulse | Not applicable | 1 free assessment, $19.99 after | Discounted rate (define per tier) |
-| MarketPulse | Not applicable | 1 free brief, $50 after | Discounted rate (define per tier) |
-| FY2027 Contract Forecast (lead magnet) | Email capture → free download | ✅ Free download | ✅ Free download |
-| MissionPulse (future) | Waitlist signup | Waitlist signup | Founding pricing access |
+The live site currently has **no functional paywall anywhere**. All 86+ articles are fully readable. Every Capture Intelligence sheet preview is on the public homepage. Contract entries are visible. The "5 min read" deep-analysis pieces are free. This means the thing that should be the most compelling reason to pay is currently the strongest reason not to.
 
 ***
 
-## Page-by-Page Paywall Implementation
+## Part 1 — Content Tier Definitions
 
-***
+### Tier 0 — Free Forever (No Gate, No Meter)
 
-### HOMEPAGE
+These surfaces build audience, SEO equity, and trust. They are never gated.
 
-**No hard paywalls on the homepage.** The homepage converts visitors to free subscribers. Premium is introduced as a concept but not gated here.
-
-**Capture Intelligence Featured Section (Section 5) — TIERED PREVIEW:**
-
-```
-WHAT THE AGENT SHOULD BUILD:
-
-Show 3 signals from the current Capture Intelligence sheet.
-Each signal shows: Program name + dollar signal only.
-Action window and confidence label are HIDDEN behind a lock icon.
-
-Example display:
-
-Signal 1
-VA EHRM — FY2027 deployment: $4.24B appropriation request
-🔒 Action window: [locked]  🔒 Confidence: [locked]
-
-Signal 2
-DHA Digital Health — TBD program
-🔒 Action window: [locked]  🔒 Confidence: [locked]
-
-Signal 3
-HHS/ONC — Interoperability enforcement expansion
-🔒 Action window: [locked]  🔒 Confidence: [locked]
-
-[Grey bar below the 3 signals]
-+11 more signals across DHA, HHS/ONC, ARPA-H, and compliance
-Each includes action window and confidence label.
-
-[Button]  Unlock the full sheet — MMT Premium →   (links to /pricing)
-[Text link]  Free subscribers get access in 72 hours.
-```
-
-**Newsletter CTA (Section 9):**
-Free subscribers see the full CTA. Add one line distinguishing the tiers:
-
-```
-Free: Twice-weekly analysis, full article archive, 72-hour access to Capture Intelligence
-Premium: Monthly Capture Intelligence sheets + early access + deep-dive solicitation analysis
-[Link: What's in Premium? →]
-```
-
-***
-
-### ARTICLE PAGES (All 86 Existing + Future Articles)
-
-Articles are the core free product. The rule: **the article itself is always free for subscribers. What's gated is the expanded capture layer — the "what does this mean for your pursuit" depth that goes beyond the article.**
-
-#### Category 1: Standard Analysis Articles
-*(Policy commentary, agency strategy, budget framing, tech trends)*
-*(Examples: "I Don't Use AI. I Deploy It." / "80 Analysts. 43,000 Contractors." / "2026: The Genesis of Federal AI")*
-
-| What Free Subscribers See | What Premium Subscribers See |
+| Resource | Rationale |
 |---|---|
-| Full article text | Full article + premium insight callout |
-| Standard "What you can do next" footer | Enhanced footer with capture-specific recommendations |
-| ProposalPulse / MarketPulse tool CTAs | Same CTAs + discounted tool rate reminder |
+| Podcast — all episodes | Audience acquisition tool; friction kills growth |
+| Getting Started guide | Onramp for new users; free utility builds loyalty |
+| About, Security, Privacy, Terms, Editorial Standards | Trust infrastructure |
+| Newswire — **headlines + source name only** | Demonstrates coverage breadth; full text is premium |
+| Glossary — **50 foundational terms** | Entry-level utility; SEO value; remainder is premium |
+| Agency Sources page | Reference page; no proprietary content |
+| Newsletter subscribe page | The conversion destination for free tier |
 
-**No hard paywall on these articles.** They are the free product and the trust-builder. The premium upgrade prompt appears at the bottom:
+### Tier 1 — Email Gate (Free Account / Lead Gen)
 
-```
-[End of article — upgrade prompt for all standard analysis articles]
+Requires an email address but no payment. Converts anonymous visitors into identified leads.
 
-─────────────────────────────────────────────
-This analysis is free. The capture layer goes deeper.
+| Resource | What the gate unlocks |
+|---|---|
+| Sample ProposalPulse scorecard | One full sample — not a live assessment |
+| Sample MarketPulse brief | One full sample — not a live brief |
+| Capture Intelligence sheets — **teaser to summary** | Title + signal count + 2-3 teaser rows; full sheet is premium |
+| Newsletter archive — **articles older than 90 days** | Older analysis is free with email; recent analysis is premium |
+| Getting Started — **deep content sections** | Role-specific paths unlock with email |
 
-MMT Premium includes monthly Capture Intelligence sheets — 
-sourced signals with action windows and confidence labels, 
-specific to VA, DHA, and HHS pipeline.
+Free account users see a soft prompt after 3 articles in a session:
+> *"You've read 3 articles this month. Create a free account to keep reading — no credit card required."*
 
-[Button: See what's in Premium →]   (links to /pricing)
-─────────────────────────────────────────────
-```
+### Tier 2 — MMT Premium (Paid Subscription)
 
-***
+Core revenue tier. Every item here is something a BD lead, capture manager, or proposal team would pay to have in one place.
 
-#### Category 2: Solicitation-Specific Articles
-*(Contract releases, RFPs, awards, vehicle updates)*
-*(Examples: "CMS Just Dropped the ClaimsCore RFP" / "Three Vehicles. Ninety Days. A $50 Billion Play." / "The CCN Next Gen Playbook" / "GSA Just Made TDR Mandatory")*
-
-These articles have the highest immediate purchase intent. A BD professional reading about a specific solicitation is in active capture mode. The free layer gives them the news; the premium layer gives them what to do with it.
-
-**Structure for solicitation-specific articles:**
-
-```
-FREE SECTION (all subscribers see this):
-─────────────────────────────────────────
-[Full article: What was released/awarded, the high-level what happened, 
- key contract details, timeline, official sources, why it matters broadly]
-─────────────────────────────────────────
-
-PREMIUM SECTION (appears after article body, gated):
-─────────────────────────────────────────
-[Lock icon]  CAPTURE INTELLIGENCE LAYER — Premium
-
-The capture-specific analysis for this opportunity:
-
-• Evaluation criteria breakdown: What factors will determine the award
-• Incumbent analysis: Who holds it now, their vulnerability, their likely approach  
-• Teaming considerations: What partner types strengthen a response
-• Win theme recommendations: What narrative the evaluation panel will reward
-• Action window: When to move, what to do this week vs. next month
-• ProposalPulse score: [Complexity score]/100 — what it means for response strategy
-• What NOT to do: The most common mistake for this opportunity type
-
-[Button: Unlock this analysis — MMT Premium →]
-[Secondary: Already a member? Sign in →]
-─────────────────────────────────────────
-```
-
-**In-article tool CTA** (appears mid-article, after the second paragraph, for all solicitation articles):
-
-```
-[Styled callout box — mid-article]
-Working this pursuit?
-
-ProposalPulse scores your draft against this solicitation's 
-evaluation criteria in 30–90 seconds. First assessment is free.
-Your data is never used to train AI models.
-
-[Button: Score this opportunity free →]
-```
-
-***
-
-#### Category 3: Budget / Funding Analysis Articles
-*(Agency budget requests, appropriations, NDAA analysis, continuing resolutions)*
-*(Examples: "The $90 Billion Squeeze" / "The $3 Trillion Pivot" / FY2027 budget coverage)*
-
-The free layer tells readers what the budget numbers are. The premium layer tells them what the numbers mean for specific contract opportunities.
-
-**Structure:**
-
-```
-FREE SECTION:
-─────────────────────────────────────────
-[Full article: What the budget proposes, top-line numbers, 
- agency priorities, policy context, what changed from prior year]
-─────────────────────────────────────────
-
-PREMIUM SECTION (gated):
-─────────────────────────────────────────
-[Lock icon]  PIPELINE IMPLICATIONS — Premium
-
-What these numbers mean for your capture calendar:
-
-• Programs most likely to see RFPs in the next 90–180 days
-• Programs at risk of delay or rescission — stop investing capture resources
-• Agencies with new money and no incumbent — highest opportunity density
-• Action window for each signal: this month / this quarter / next fiscal year
-• Confidence level on each projection (High / Medium / Speculative)
-
-[Button: Unlock the pipeline analysis — MMT Premium →]
-─────────────────────────────────────────
-```
-
-***
-
-#### Category 4: Deep-Dive Long-Form Articles
-*(5+ min reads with detailed technical or strategic analysis)*
-*(Examples: "The Trillion-Dollar Pivot: CCN Next Gen is the MOSA-fication of Federal Health" / "Clinical AI Can Be Jailbroken in Three Prompts")*
-
-The free article is complete. Premium gets an exclusive addendum: a "Capture Corner" section with the BD/capture-specific implications that didn't fit the article's editorial framing.
-
-**Structure:**
-
-```
-FREE SECTION:
-─────────────────────────────────────────
-[Full article — complete, no truncation]
-─────────────────────────────────────────
-
-PREMIUM ADDENDUM (gated, appears after "What you can do next"):
-─────────────────────────────────────────
-[Lock icon]  CAPTURE CORNER — Premium subscribers only
-
-The BD and capture implications this article didn't cover:
-
-[2–4 bullet points specific to this article's subject — written at the 
-time of publication, not retroactively added to old articles. 
-Start this practice on new articles from launch date forward.]
-
-Example for "The Trillion-Dollar Pivot: CCN Next Gen is the MOSA-fication":
-• What MOSA compliance means for proposal section L requirements in the next CCN recompete
-• The teaming dynamic MOSA creates — why system integrators need clinical partners and vice versa
-• The one evaluation criterion most competitors will underweight
-• Action this month: who to call before the draft RFP drops
-
-[Button: Unlock Capture Corner — MMT Premium →]
-─────────────────────────────────────────
-```
-
-**Note to agent:** Do not retroactively write Capture Corner sections for all 86 existing articles. Apply this structure to all new articles going forward. For the top 10 highest-traffic/most-shared existing articles, write Capture Corner sections as a priority launch task.
-
-**Priority articles to add Capture Corner first:**
-1. "Three Vehicles. Ninety Days. A $50 Billion Play."
-2. "The CCN Next Gen Playbook: How to Build Your Bid"
-3. "The Trillion-Dollar Pivot: CCN Next Gen is the MOSA-fication of Federal Health"
-4. "The Largest Healthcare Contract in American History"
-5. "CMS Just Dropped the ClaimsCore RFP"
-6. "February 28: The Day Defense Health Contracting Changes"
-7. "The $90 Billion Squeeze"
-8. "The Great Clawback: Why 2026 Marks the End of Paper Performance"
-9. "80 Analysts. 43,000 Contractors. No One at the Door."
-10. "GSA Just Made TDR Mandatory Across the MAS Program"
-
-***
-
-### CAPTURE INTELLIGENCE SHEETS (/capture-intelligence)
-
-This is the flagship Premium product. The entire concept: **the headline intelligence is free so subscribers understand what to watch. The actionable layer — what to do, when, and with what confidence — is Premium.**
-
-Every Capture Intelligence sheet follows this exact three-layer structure:
-
-***
-
-**Layer 1 — Free (Public, no login required):**
-
-```
-Capture Intelligence: [Month/Topic]
-[X] sourced signals across [agencies covered]
-
-PREVIEW — 3 signals:
-
-Program: VA EHRM FY2027 Deployment
-Signal: $4.24B appropriation request, 13 MTF go-lives scheduled Q3–Q4 FY2026
-[Lock icon] Action window: HIDDEN
-[Lock icon] Confidence: HIDDEN
-[Lock icon] What to do this month: HIDDEN
-
-Program: DHA Digital Health Initiative
-Signal: [high-level what was announced]
-[Lock icon] Action window: HIDDEN
-[Lock icon] Confidence: HIDDEN
-[Lock icon] What to do this month: HIDDEN
-
-Program: HHS/ONC Interoperability
-Signal: [high-level what was announced]
-[Lock icon] Action window: HIDDEN
-[Lock icon] Confidence: HIDDEN
-[Lock icon] What to do this month: HIDDEN
-
-[Lock bar]
-🔒  +[X] more signals — including DHA, HHS/ONC, ARPA-H, and compliance
-    Each signal includes: action window · confidence label · what to do this month
-
-[Button]  Unlock full sheet — MMT Premium →
-[Text]    Free subscribers receive full access 72 hours after publication.
-```
-
-***
-
-**Layer 2 — Free Subscriber (72-hour delayed access):**
-
-```
-[Full sheet — all signals visible]
-[Each signal includes program, dollar signal, and confidence label]
-[Action windows STILL HIDDEN — this is the Premium differentiator]
-
-[Lock bar at bottom of each signal row]
-🔒 Action window for this signal — Premium only
-   What to do, when to move, and what to watch for.
-
-[Button]  Unlock action windows — MMT Premium →
-```
-
-**Why delay action windows even for free subscribers?** The intelligence itself (what the signal is) is the editorial product. The action recommendation (what to do about it in your capture process this month) is the professional service product. These are distinct value propositions that justify the tier separation.
-
-***
-
-**Layer 3 — Premium Subscriber (immediate access, full sheet):**
-
-```
-[Full sheet — all signals, immediate access, no delays]
-
-Each signal row contains:
-┌──────────────────────────────────────────────────────────────┐
-│ PROGRAM: VA EHRM FY2027 Deployment                           │
-│ SIGNAL: $4.24B appropriation, 13 go-lives Q3–Q4 FY2026,    │
-│         26 additional sites in FY2027                        │
-│                                                              │
-│ CONFIDENCE: ● High — based on passed appropriations +        │
-│             confirmed DHA deployment schedule                │
-│                                                              │
-│ ACTION WINDOW: Now through September 2026                    │
-│                                                              │
-│ WHAT TO DO THIS MONTH:                                       │
-│ • If you hold a position on the GENESIS support contract:    │
-│   scope expansion brief to DHA program office this quarter   │
-│ • If you are a subcontractor: identify which go-live sites   │
-│   align with your past performance; initiate teaming         │
-│   conversations with the prime NOW, not at draft RFP         │
-│ • If you are a new entrant: this is not the window — focus  │
-│   on FY2028 recompete positioning instead                    │
-│                                                              │
-│ [Button: Score a related solicitation with ProposalPulse →]  │
-└──────────────────────────────────────────────────────────────┘
-```
-
-***
-
-### NEWSLETTER ISSUES (delivered via Buttondown)
-
-The newsletter itself operates on a two-tier system. **Free issues** and **Premium issues** are separate sends.
-
-#### Free Newsletter Issues (sent to all subscribers)
-- Complete article analysis — no truncation
-- "What you can do next" footer with tool CTAs
-- One contextual CTA per issue (tool, premium upgrade, or soft engagement — never more than one)
-- Premium teaser at bottom: "Premium subscribers also received [topic] Capture Intelligence this month →"
-
-**Free issue footer template:**
-```
-─────────────────────────────────────────
-What you can do next
-
-→ Working a pursuit from this issue? Score your draft: ProposalPulse — first assessment free
-→ Need the full competitive picture: MarketPulse — first brief free, 24-hour delivery
-→ Want the capture layer: See what's in MMT Premium →
-→ Share this issue: Forward to your BD lead
-─────────────────────────────────────────
-```
-
-***
-
-#### Premium Newsletter Issues (sent to paid subscribers only)
-Premium subscribers receive everything free subscribers receive, PLUS:
-
-1. **Monthly Capture Intelligence email** — the full sheet, all signals, all action windows, all confidence labels. Delivered as a premium-only issue on the first Tuesday of each month.
-
-2. **Early access issues** — the standard twice-weekly analysis delivered 48–72 hours before free distribution. These arrive in the paid subscriber inbox before the free version publishes.
-
-3. **Deep-dive solicitation analysis** — when a major solicitation drops (CCN Next Gen, GENESIS recompete, etc.), paid subscribers receive a dedicated issue with the full capture layer: eval criteria read, incumbent analysis, teaming recommendations, win themes, action window.
-
-4. **Q&A issue** — once per month, paid subscribers can reply to the premium issue with a question. Selected questions are answered in the next premium issue. Free subscribers see the topic but not the answer.
-
-**Premium issue header:**
-```
-[Visual badge at top of email]
-★ MMT PREMIUM  ·  [Month] [Year]
-This issue is for Premium subscribers.
-Not a member? missionmeetstech.com/pricing
-─────────────────────────────────────────
-```
-
-**Premium Capture Intelligence issue structure:**
-```
-Subject line: ★ Capture Intelligence: [Month] — [Number] signals, action windows inside
-
-[Body]
-This month's Capture Intelligence sheet covers [agencies and programs].
-[Number] sourced signals. Every row includes the action window and confidence label.
-
-[Full signal table — all signals, all columns visible]
-
-[Footer]
-Questions about any of these signals? Reply to this email.
-Premium subscribers can ask one question per month for direct analysis.
-Next issue: [date/topic preview]
-```
-
-***
-
-### INTELLIGENCE / LATEST PAGE (/latest)
-
-**Visitor (not subscribed):** Sees all article titles and summaries. Clicking any article shows the intro paragraph, then a subscribe prompt.
-
-**Free Subscriber:** Full access to all articles. Capture Intelligence sheet shows 3 signals, no action windows.
-
-**Premium Subscriber:** Full access to everything + lock icons replaced with full content + "Premium" badge on Capture Intelligence entries.
-
-**Agent implementation for the /latest page:**
-
-```
-For visitors (not logged in / not subscribed):
-
-[Article card]
-Title: "Three Vehicles. Ninety Days. A $50 Billion Play."
-Date: April 3, 2026 · Category: Contracting & Procurement
-Preview: "Three major federal health IT contract vehicles are moving 
-simultaneously in a 90-day window. The firms that position now will 
-define the next decade of defense and VA health technology."
-[Read more — subscribe free to continue →]
-
-For free subscribers (logged in / confirmed subscriber):
-
-[Article card — same as above, but "Read full article →" instead of subscribe gate]
-
-For premium subscribers:
-
-[Article card — same, but with ★ badge on premium-only content]
-[No gates, all content accessible immediately]
-```
-
-**Capture Intelligence entries in /latest list:**
-
-```
-For visitors and free subscribers:
-
-★ Capture Intelligence · April 2026 · 14 signals
-Capture Intelligence: FY2027 Federal Health Budget
-[Preview badge] 3 signals free · 🔒 11 signals + action windows — Premium
-[Read 3 free signals →]  |  [Unlock full sheet →]
-
-For premium subscribers:
-
-★ Capture Intelligence · April 2026 · 14 signals — FULL ACCESS
-Capture Intelligence: FY2027 Federal Health Budget
-[Read full sheet →]
-```
-
-***
-
-### TOOLS — ProposalPulse and MarketPulse
-
-The tools are not paywalled. They operate on a freemium model. The access structure is:
-
-| User Type | ProposalPulse | MarketPulse |
+| Resource | Free user sees | Premium user sees |
 |---|---|---|
-| Any visitor | 1 free assessment, then $19.99 | 1 free brief, then $50 |
-| Free subscriber | Same as visitor (free is the same) | Same as visitor |
-| Premium subscriber | 1 free + discounted rate (set at launch: recommend $14.99 vs $19.99 / $35 vs $50) | Same discount structure |
-| Institutional license | Included credits per tier; set volume at contract | Same |
+| Articles — recent (< 90 days) | Title + 2-paragraph preview + CSS fade + gate card | Full article, unlimited |
+| Articles — archive (> 90 days) | Title + deck (email gate) | Full article, unlimited |
+| Capture Intelligence sheets | Title + signal count + 2 teaser rows | Full sheet: all signals, confidence labels, action windows, source citations |
+| Contract Tracker | Title, Agency, Status, 1-2 sentence summary only | Full entry: vendor, ceiling value, NAICS, mod history, expiration, MMT intel notes |
+| IDIQ Tracker (new page) | Vehicle name, Ceiling, Status only | Full entry: awardees, task order history, ceiling burn rate, expiration window, re-compete signals |
+| Glossary | 50 foundational terms | Full 200+ term library including IDIQ vehicles, FAR/DFARS references, program-specific acronyms |
+| Newswire | Headlines + source name | Full article text, source link, MMT context note |
+| Newsletter — premium issues | Does not receive these | Deeper analysis issues, briefing packets, monthly capture sheet digest |
+| ProposalPulse | 1 free assessment; $19.99 each | Discounted rate ($14.99) or included assessments/month |
+| MarketPulse | 1 free brief; $50 each | Discounted rate ($35) or included briefs/month |
+| Topic series / deep dives | 2-paragraph excerpt only | Full series access |
 
-**Tool purchase flow — post-free-use:**
+### Tier 3 — Institutional / Team (Enterprise)
 
-```
-After a free ProposalPulse assessment is used, the user sees:
+Everything in Premium, plus:
 
-"You've used your free assessment.
-
-Additional assessments: $19.99 each
-Premium subscribers pay $14.99 — save 25% on every score.
-
-[Buy additional assessment — $19.99 →]  (Stripe, one-time)
-[Or: See Premium — includes tool discounts →]  (links to /pricing)
-
-Already a Premium subscriber? Sign in to access your discounted rate →"
-```
-
-**Premium tool discount trigger:** When a user has spent $40+ on ProposalPulse scores (2+ purchases) in a 30-day period, trigger this upgrade prompt:
-
-```
-[Email automation — sent within 24 hours of second purchase]
-Subject: You've spent $40 on ProposalPulse this month.
-
-Quick note: MMT Premium includes unlimited ProposalPulse scoring 
-at the discounted rate for $25/month.
-
-At your current usage, Premium pays for itself in 2 assessments.
-
-[Button: Upgrade to Premium →]
-```
+| Feature | Description |
+|---|---|
+| Multi-seat access | Up to X team members under one account |
+| Custom contract tracking | Track specific agencies, vehicles, or NAICS codes; receive alerts |
+| Exportable intelligence tables | Download Capture sheets, Contract Tracker, IDIQ Tracker as CSV or PDF |
+| Priority MarketPulse turnaround | 12-hour delivery instead of 24-hour |
+| Onboarding session | 1:1 setup call with Mary |
+| Quarterly briefing | Curated intelligence digest formatted for leadership review |
 
 ***
 
-### PODCAST PAGES
+## Part 2 — Article Gating by Category
 
-**All podcast content is fully free.** The podcast is a trust-building and discovery channel, not a revenue channel.
+### Category 1: Standard Analysis Articles
+*(Policy commentary, agency strategy, budget framing, tech trends)*
 
-What changes: Every podcast page and episode page adds a contextual bridge to the premium product:
+Recent articles (< 90 days): show 2 full paragraphs, CSS blur/fade on paragraph 3+, gate card below.
 
+Archive articles (> 90 days): email gate only (free with account).
+
+Gate card copy:
 ```
-[After episode show notes — for all episodes]
+★ CONTINUE READING
 
-The analysis that goes with this conversation:
+This analysis is available to MMT Premium members.
+Capture leads, BD directors, and proposal teams use
+this content before gate review.
 
-This episode covered [topic]. The written intelligence on this goes 
-deeper in the newsletter — including Capture Intelligence signals 
-specific to [agency/program discussed in episode].
+[Start Premium — $X/month]   [Create free account →]
 
-[Button: Subscribe free →]
-[Button: See what's in Premium →]
+Already a member? [Sign in]
 ```
+
+### Category 2: Solicitation-Specific Articles
+
+Recent: 2-paragraph preview + gate (same as Category 1).
+
+Premium unlocks full article PLUS the Capture Intelligence Layer appended after the body:
+- Evaluation criteria breakdown
+- Incumbent analysis and vulnerability
+- Teaming considerations
+- Win theme recommendations
+- Action window: when to move
+- What NOT to do
+
+### Category 3: Budget / Funding Analysis
+
+Recent: 2-paragraph preview + gate.
+
+Premium unlocks full article PLUS Pipeline Implications section:
+- Programs most likely to see RFPs in 90-180 days
+- Programs at risk of delay or rescission
+- Agencies with new money and no incumbent
+- Action window for each signal
+- Confidence level on each projection (High / Medium / Speculative)
+
+### Category 4: Deep-Dive Long-Form
+
+Recent: 2-paragraph preview + gate.
+
+Premium unlocks full article PLUS Capture Corner addendum:
+- 2-4 bullet points on BD/capture implications specific to the article
 
 ***
 
-## Free vs. Premium — Summary for Every User Journey
+## Part 3 — Page-by-Page Gating
 
-### Journey 1: First-time visitor from LinkedIn
-1. Lands on homepage → sees hero, testimonials, tool CTAs, 3 free Capture Intelligence signals
-2. Clicks "Get the FY2027 Federal Health IT Contract Forecast" → enters email → gets PDF
-3. Receives welcome sequence (5 emails) — full free articles + ProposalPulse free trial offer
-4. At Email 5: introduced to Premium and Capture Intelligence full sheet
-5. Upgrade path: /pricing → Founding Member $199/year
+### Homepage
+No hard paywalls. Premium is introduced as a concept. Recent article cards show `[★ Premium]` badge. Capture Intelligence teaser shows 1 full signal + 2 truncated teasers.
 
-### Journey 2: Existing free subscriber
-1. Receives tools announcement email → uses ProposalPulse free assessment
-2. Browses /latest → sees Capture Intelligence sheet, sees lock on action windows
-3. Gets paid tier launch email → Founding Member offer → /pricing → Stripe
-4. If no conversion: gets Capture Intelligence 72-hour delayed access (free subscriber perk) → upgrade prompt at bottom of sheet
+### `/latest` — Analysis Archive
+- Articles < 90 days: show title + deck + `[★ Premium]` badge; clicking goes to gated article page
+- Articles > 90 days: no badge; email gate on article page
+- Inline upgrade prompt after the 3rd premium-badge card
+- Do NOT hide titles of premium articles — visibility drives conversion
 
-### Journey 3: Free subscriber who uses ProposalPulse 2x
-1. Uses free assessment → uses second assessment ($19.99)
-2. Automated email: "You've spent $40. Premium pays for itself in 2 assessments."
-3. Upgrade → Premium → discounted tool rate going forward
+### `/contract-tracker`
+- Free: title, agency, status chip, 1-2 sentence summary
+- Premium: full entry (ceiling, vendor, NAICS, verification date, MMT intel notes, task order history, re-compete window)
+- Premium fields shown as locked placeholders with `[★ Premium]` treatment
 
-### Journey 4: BD director from institutional prospect firm
-1. Referred by a colleague or finds via LinkedIn
-2. Lands on /institutional page → 90-day pilot offer at $750
-3. Contacts via form → advisory conversation → institutional license
-4. Full team access: all seats, tool credits, priority response
+### `/idiq-tracker` (NEW PAGE)
+- Free: public stub with vehicle name, ceiling (blurred), status, 1 sample entry preview
+- Premium: full tracker with awardees, task order history, ceiling burn rate, expiration window, MMT intel notes, filter/sort, export
+
+### `/glossary`
+- Free: 50 foundational terms (visible, searchable)
+- Premium: full 200+ term library
+- Premium upsell inline after ~10 terms in scroll
+
+### `/newswire`
+- Free: headline + source name + date + link to original source
+- Premium: headline + source + date + **MMT Context note** (Mary's one-sentence read on why this matters)
+
+### Capture Intelligence Sheets
+- Email gate for current month's sheet (lead gen hook)
+- Premium for previous months' sheets
+- Free preview: title + signal count + 1 full signal + 2 truncated teasers
+- Premium: full sheet with all signals, confidence labels, action windows
+
+### Newsletter Issues (Buttondown)
+- Free issues: complete article analysis, standard "What you can do next" footer
+- Premium issues: monthly Capture Intelligence, early access (48-72hr), deep-dive solicitation analysis, Q&A
+
+### Podcast
+All free. Contextual bridge to premium at end of show notes.
+
+### Tools (ProposalPulse, MarketPulse)
+Freemium model — not paywalled. 1 free each, then per-use pricing. Premium subscribers get discounted rates.
 
 ***
 
-## The Governing Principle (for the agent)
+## Part 4 — Technical Implementation
+
+### Content Attribute System
+
+Every content item gets a `data-access` attribute for consistent gate logic:
+
+```html
+<article data-access="premium" data-age-days="12">   <!-- recent article -->
+<article data-access="email" data-age-days="120">     <!-- archive article -->
+<div class="contract-entry" data-access="premium">    <!-- contract detail -->
+<div class="idiq-entry" data-access="premium">        <!-- IDIQ detail -->
+<div class="glossary-term" data-access="free">        <!-- first 50 terms -->
+<div class="glossary-term" data-access="premium">     <!-- remaining terms -->
+<div class="news-entry">
+  <div data-access="free"><!-- headline + source --></div>
+  <div data-access="premium" class="mmt-context"><!-- MMT note --></div>
+</div>
+```
+
+### Auth Detection
+
+`mmt-paywall.js` handles tier detection via:
+1. Cookie: `mmt_premium=true` or `mmt_subscriber=true`
+2. localStorage: `mmt_premium=true` (set by dashboard and mmtSignIn)
+3. localStorage: `mmt_tier_cache` (API-based, 5-min TTL)
+4. Default: `public`
+
+### Article Gate CSS
+
+```css
+.article-gated {
+  position: relative;
+  max-height: 420px;
+  overflow: hidden;
+}
+.article-gated::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 200px;
+  background: linear-gradient(to bottom, transparent 0%, var(--mmt-white) 75%);
+  pointer-events: none;
+}
+```
+
+### Premium Badge
+
+```css
+.premium-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #92710A;
+  background: rgba(146,113,10,0.08);
+  border: 1px solid rgba(146,113,10,0.2);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+.premium-badge::before { content: '★ '; }
+```
+
+### Navigation — Premium State
+
+Logged-out: `Analysis  Tools  Resources  Podcast  About  |  Sign In  Subscribe  [Choose a Tool]`
+Logged-in Premium: `Analysis  Tools  Resources  Podcast  About  |  Dashboard  [★ Member]  [Choose a Tool]`
+
+***
+
+## Part 5 — Implementation Execution Order
+
+| Step | Action |
+|---|---|
+| PW-1 | Add `data-access` attributes and `data-age-days` to article pages via build.js |
+| PW-2 | Update `mmt-paywall.js` with article gating logic (2-paragraph reveal + CSS fade + gate card) |
+| PW-3 | Add `[★ Premium]` badge to recent articles (< 90 days) on `/latest` and homepage |
+| PW-4 | Gate Contract Tracker entries — free view: title/agency/status/summary only |
+| PW-5 | Gate Glossary — cap free terms at 50; badge remainder as Premium |
+| PW-6 | Gate Newswire MMT context notes — headline/source free, context note Premium |
+| PW-7 | Gate Capture Intelligence sheets — email gate for current month, Premium for archive |
+| PW-8 | Build IDIQ Tracker page — public stub + full Premium view |
+| PW-9 | Build Premium Dashboard — nav + home view + tracked contracts + IDIQ watch |
+| PW-10 | Wire nav premium state (Dashboard replaces Sign In for authenticated users) |
+
+***
+
+## The Governing Principle
 
 **Every paywall placement should feel like a natural depth increase, not a sudden wall.**
 
-The visitor reads the news → understands what happened → hits the premium gate at the moment they're asking "so what does this mean for my team?" That is the only moment the gate should appear. Never block the high-level story. Always gate the operational depth.
+The visitor reads the news, understands what happened, hits the premium gate at the moment they ask "so what does this mean for my team?" That is the only moment the gate should appear. Never block the high-level story. Always gate the operational depth.
 
 If a visitor leaves without converting, they should have still gotten real value — enough to trust MMT. That trust is what they pay to access more of.
+
+***
+
+## What Premium Makes Worth Paying For
+
+A Premium member gets something that cannot be assembled anywhere else in one place:
+
+1. **The full intelligence archive** — 86+ articles, unlimited, with recent tactical analysis behind the wall
+2. **Monthly Capture Intelligence sheets** — sourced, confidence-labeled, action-windowed signals
+3. **Contract Tracker — full entries** — not just what exists, but who holds it, what it's worth, and Mary's read on it
+4. **IDIQ Tracker** — re-compete windows and ceiling burn rates that every capture lead needs
+5. **Full Glossary** — 200+ terms beyond basics into acquisition strategy and program-specific vocabulary
+6. **Newswire with MMT context** — the "why this matters for your pursuit" layer
+7. **ProposalPulse and MarketPulse** — included or discounted
+
+That is a credible premium offer. The job now is to put it behind a wall.

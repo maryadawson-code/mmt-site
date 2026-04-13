@@ -274,10 +274,66 @@
     });
   }
 
+  // --- Article body gating (2-paragraph reveal + CSS fade) ---
+  function applyArticleGate() {
+    var articleEl = document.querySelector('article[data-age-days]');
+    if (!articleEl) return;
+
+    var status = getSubscriberStatus();
+    var ageDays = parseInt(articleEl.getAttribute('data-age-days') || '999');
+    var accessTier = articleEl.getAttribute('data-access') || 'free';
+
+    // Premium users see everything
+    if (status === 'premium') return;
+
+    // Archive articles (> 90 days): only email-gate (not implemented yet — skip for now)
+    if (accessTier === 'email') return;
+
+    // Recent articles (< 90 days): gate at 2 paragraphs for non-premium
+    var body = document.getElementById('article-body');
+    var gate = document.getElementById('article-gate');
+    if (!body || !gate) return;
+
+    // Find first 2 paragraphs — show them, hide rest via CSS fade
+    var paragraphs = body.querySelectorAll('p, h2, h3, ul, ol, blockquote, table, .wtm-box');
+    var visibleCount = 0;
+    var cutoffReached = false;
+    for (var i = 0; i < paragraphs.length; i++) {
+      if (cutoffReached) {
+        paragraphs[i].style.visibility = 'hidden';
+        paragraphs[i].style.height = '0';
+        paragraphs[i].style.overflow = 'hidden';
+        paragraphs[i].style.margin = '0';
+        paragraphs[i].style.padding = '0';
+      } else if (paragraphs[i].tagName === 'P') {
+        visibleCount++;
+        if (visibleCount >= 2) cutoffReached = true;
+      }
+    }
+
+    // Apply fade overlay on body
+    body.style.position = 'relative';
+    body.style.maxHeight = '420px';
+    body.style.overflow = 'hidden';
+
+    var fadeOverlay = document.createElement('div');
+    fadeOverlay.style.cssText = 'position:absolute;bottom:0;left:0;right:0;height:200px;background:linear-gradient(to bottom,transparent 0%,#FFFFFF 75%);pointer-events:none;';
+    body.appendChild(fadeOverlay);
+
+    // Show gate card
+    gate.style.display = 'block';
+
+    // Track gate impression
+    if (typeof plausible !== 'undefined') {
+      plausible('Article Gate View', { props: { article: document.title, age: ageDays } });
+    }
+  }
+
   // --- Init ---
   function init() {
     var status = getSubscriberStatus();
     applyPaywallVisibility();
+    applyArticleGate();
     applyCIDelayedAccess(status);
     trackGateViews(status);
     initStickyBar();
