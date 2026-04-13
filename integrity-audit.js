@@ -52,6 +52,7 @@ try {
 // §15 post-deploy smoke checklist.
 // -----------------------------------------------------------------------
 const ROUTES = [
+  // Core public pages
   { path: '/',                                     label: 'homepage' },
   { path: '/proposal-pulse.html',                  label: 'ProposalPulse' },
   { path: '/marketpulse.html',                     label: 'MarketPulse' },
@@ -64,6 +65,32 @@ const ROUTES = [
   { path: '/security.html',                        label: 'Security' },
   { path: '/editorial-standards.html',             label: 'Editorial Standards' },
   { path: '/newsletter.html',                      label: 'Newsletter' },
+  // Reference + intelligence pages
+  { path: '/glossary.html',                        label: 'Glossary' },
+  { path: '/contract-tracker.html',                label: 'Contract Tracker' },
+  { path: '/newswire.html',                        label: 'Newswire' },
+  { path: '/getting-started.html',                 label: 'Getting Started' },
+  { path: '/idiq-tracker.html',                    label: 'IDIQ Tracker' },
+  { path: '/events.html',                          label: 'Events' },
+  { path: '/pricing.html',                         label: 'Pricing' },
+  { path: '/agency-sources.html',                  label: 'Agency Sources' },
+  { path: '/contracting.html',                     label: 'Contracting Hub' },
+  // Premium pages
+  { path: '/premium/dashboard/',                   label: 'Premium Dashboard' },
+  { path: '/premium/briefings/',                   label: 'Friday Brief' },
+  { path: '/premium/monthly-briefs/',              label: 'Monthly Brief' },
+  { path: '/premium/calendar/',                    label: 'Pursuit Calendar' },
+  { path: '/premium/ask-mmt/',                     label: 'Ask MMT' },
+  { path: '/agencies/',                            label: 'Agency Profiles Index' },
+  { path: '/agencies/dha/',                        label: 'Agency: DHA' },
+  { path: '/agencies/va/',                         label: 'Agency: VA' },
+  { path: '/agencies/hhs/',                        label: 'Agency: HHS' },
+  { path: '/agencies/onc/',                        label: 'Agency: ONC' },
+  { path: '/agencies/arpa-h/',                     label: 'Agency: ARPA-H' },
+  { path: '/agencies/cms/',                        label: 'Agency: CMS' },
+  // Utility pages
+  { path: '/dashboard.html',                       label: 'Sign-In (dashboard)' },
+  { path: '/fy2027-forecast.html',                 label: 'FY2027 Forecast Gate' },
   // 5 contractor-relevant articles
   { path: '/newsletter/80-analysts-43000-contractors-no-one-at-the-door/',       label: 'article: 80 Analysts' },
   { path: '/newsletter/april-3-is-not-the-hard-deadline-ccn-next-gen-the-follow-up/', label: 'article: CCN Next Gen follow-up' },
@@ -79,7 +106,10 @@ const SHELL_ROUTES = new Set([
   '/', '/proposal-pulse.html', '/marketpulse.html', '/resources.html',
   '/about.html', '/podcast.html', '/latest.html', '/privacy.html',
   '/terms.html', '/security.html', '/editorial-standards.html',
-  '/newsletter.html',
+  '/newsletter.html', '/glossary.html', '/contract-tracker.html',
+  '/newswire.html', '/getting-started.html', '/idiq-tracker.html',
+  '/events.html', '/pricing.html', '/agency-sources.html',
+  '/contracting.html',
 ]);
 
 // -----------------------------------------------------------------------
