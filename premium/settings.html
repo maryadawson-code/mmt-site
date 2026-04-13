@@ -137,9 +137,34 @@
   <footer class="wrap"></footer>
 
   <script>
-    // Initialize window.MMT.prefs
+    // Initialize window.MMT.prefs — load from backend if available, fallback to localStorage
     window.MMT = window.MMT || {};
     window.MMT.prefs = window.MMT.prefs || JSON.parse(localStorage.getItem('mmt_prefs') || '{}');
+
+    // Try loading from backend (async, updates UI when ready)
+    (function() {
+      var email = localStorage.getItem('mmt_email');
+      if (!email) return;
+      fetch('/.netlify/functions/member-preferences?email=' + encodeURIComponent(email))
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data.prefs) {
+            var bp = data.prefs;
+            window.MMT.prefs = { agencies: bp.agencies || [], role: bp.role || '', naics: bp.naics || [], notify: bp.notifications || {} };
+            localStorage.setItem('mmt_prefs', JSON.stringify(window.MMT.prefs));
+            // Refresh UI with backend data
+            if (bp.agencies) bp.agencies.forEach(function(a) {
+              var chip = document.querySelector('.agency-chip[data-agency="' + a + '"]');
+              if (chip && !chip.classList.contains('selected')) chip.classList.add('selected');
+            });
+            if (bp.role) {
+              var radio = document.querySelector('input[name="role"][value="' + bp.role + '"]');
+              if (radio) { radio.checked = true; radio.closest('.role-option').classList.add('selected'); }
+            }
+          }
+        })
+        .catch(function() {}); // Fallback to localStorage silently
+    })();
 
     // Restore saved state
     var prefs = window.MMT.prefs;
@@ -205,6 +230,23 @@
       };
       window.MMT.prefs = saved;
       localStorage.setItem('mmt_prefs', JSON.stringify(saved));
+
+      // Persist to backend (Supabase + Buttondown tag sync)
+      var memberEmail = localStorage.getItem('mmt_email');
+      if (memberEmail) {
+        fetch('/.netlify/functions/member-preferences', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: memberEmail,
+            agencies: saved.agencies,
+            role: saved.role,
+            naics: saved.naics,
+            notifications: saved.notify,
+          }),
+        }).catch(function() {}); // Non-blocking
+      }
+
       var toast = document.getElementById('prefs-toast');
       toast.classList.add('show');
       setTimeout(function() { toast.classList.remove('show'); }, 3000);

@@ -505,6 +505,38 @@
     });
   }
 
+  // --- AUT-05: Watchlist API helpers ---
+  window.mmtWatchlistAdd = function(entryId, title, url) {
+    var email = localStorage.getItem(EMAIL_KEY);
+    if (!email) return;
+    fetch('/.netlify/functions/member-watchlist', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, action: 'add', entry_id: entryId, entry_title: title, entry_url: url }),
+    }).catch(function() {});
+  };
+
+  window.mmtWatchlistRemove = function(entryId) {
+    var email = localStorage.getItem(EMAIL_KEY);
+    if (!email) return;
+    fetch('/.netlify/functions/member-watchlist', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, action: 'remove', entry_id: entryId }),
+    }).catch(function() {});
+  };
+
+  // --- AUT-08: Read state API helper ---
+  window.mmtMarkRead = function(entryId) {
+    var email = localStorage.getItem(EMAIL_KEY);
+    if (!email) return;
+    fetch('/.netlify/functions/member-read-state', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, entry_id: entryId }),
+    }).catch(function() {});
+  };
+
   // --- Init ---
   function init() {
     var status = getSubscriberStatus();
