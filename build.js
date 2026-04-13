@@ -2173,7 +2173,7 @@ function inlineTailwindCss(html) {
           <a href="/pricing.html" class="no-underline hover:opacity-70" style="font-size:13px;font-weight:500;color:var(--mmt-teal);">&#9733; Premium</a>
         </span>
         <!-- Logged-in state (hidden by default, shown by JS) -->
-        <span id="nav-logged-in" style="display:none;position:relative;">
+        <span id="nav-logged-in" data-auth-only style="display:none;position:relative;">
           <button class="member-chip" onclick="document.getElementById('member-dropdown').classList.toggle('open')">M &#9662;</button>
           <div id="member-dropdown" class="member-dropdown">
             <a href="/premium/dashboard/">Dashboard</a>
@@ -2485,6 +2485,12 @@ function inlineTailwindCss(html) {
   html = html.replace(/twice-twice-weekly/gi, 'twice-weekly');
   html = html.replace(/bi-bi-weekly/gi, 'twice-weekly');
   html = html.replace(/bi-weekly/gi, 'twice-weekly');
+
+  // TICKET-003: Canonical vocabulary normalization
+  html = html.replace(/1 free assessment/gi, 'First assessment free');
+  html = html.replace(/1 free brief/gi, 'First brief free');
+  html = html.replace(/in 60 seconds/gi, 'in 30–90 seconds');
+  html = html.replace(/60 seconds/gi, '30–90 seconds');
 
   // Fix banned phrase "at the intersection of" (replace with concrete language)
   html = html.replace(/at the intersection of policy, technology, and operational reality/gi,

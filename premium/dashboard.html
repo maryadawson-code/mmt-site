@@ -92,7 +92,16 @@
 
       <main class="dash-main">
         <h1 style="font-size:24px;font-weight:800;margin-bottom:4px;">Welcome back</h1>
-        <p style="color:var(--mmt-text-secondary);margin-bottom:28px;">Your premium access is active.</p>
+        <p style="color:var(--mmt-text-secondary);margin-bottom:12px;">Your premium access is active.</p>
+        <!-- Entitlement summary -->
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;">
+          <span style="font-size:12px;font-weight:600;color:var(--mmt-teal,#457B9D);background:rgba(69,123,157,0.08);padding:4px 10px;border-radius:999px;">&#10003; Full article archive</span>
+          <span style="font-size:12px;font-weight:600;color:var(--mmt-teal,#457B9D);background:rgba(69,123,157,0.08);padding:4px 10px;border-radius:999px;">&#10003; Capture Intelligence</span>
+          <span style="font-size:12px;font-weight:600;color:var(--mmt-teal,#457B9D);background:rgba(69,123,157,0.08);padding:4px 10px;border-radius:999px;">&#10003; Friday Brief</span>
+          <span style="font-size:12px;font-weight:600;color:var(--mmt-teal,#457B9D);background:rgba(69,123,157,0.08);padding:4px 10px;border-radius:999px;">&#10003; Contract + IDIQ Tracker</span>
+          <span style="font-size:12px;font-weight:600;color:var(--mmt-teal,#457B9D);background:rgba(69,123,157,0.08);padding:4px 10px;border-radius:999px;">&#10003; Tool discounts</span>
+          <span style="font-size:12px;font-weight:600;color:var(--mmt-teal,#457B9D);background:rgba(69,123,157,0.08);padding:4px 10px;border-radius:999px;">&#10003; Ask MMT (2/mo)</span>
+        </div>
 
         <!-- This Week's Capture Sheet -->
         <div class="dash-card" style="border-left:3px solid var(--ci-gold);background:var(--ci-gold-bg);">
@@ -102,11 +111,16 @@
           <a href="/intel/capture-intelligence-this-issue/" style="font-size:14px;font-weight:600;color:var(--ci-gold);text-decoration:none;">Open full sheet &rarr;</a>
         </div>
 
-        <!-- Latest Premium Analysis -->
-        <h2 style="font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--mmt-text-secondary);margin:24px 0 12px;">Latest Premium Analysis</h2>
+        <!-- Latest for Members -->
+        <h2 style="font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--mmt-text-secondary);margin:24px 0 12px;">Latest for members</h2>
         <div class="dash-card">
-          <a href="/latest.html" style="font-size:14px;font-weight:600;color:var(--mmt-teal,#457B9D);text-decoration:none;">View full archive &rarr;</a>
-          <p style="font-size:13px;color:var(--mmt-text-secondary);margin-top:8px;">All 100+ articles available with your Premium access. No paywalls.</p>
+          <p style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:12px;">Start with this week's Friday Brief, then review newly updated trackers and capture notes below.</p>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <a href="/premium/briefings/" style="font-size:14px;font-weight:600;color:var(--mmt-teal,#457B9D);text-decoration:none;">This week's Friday Brief &rarr;</a>
+            <a href="/contract-tracker.html" style="font-size:14px;font-weight:600;color:var(--mmt-teal,#457B9D);text-decoration:none;">Contract Tracker &mdash; updated entries &rarr;</a>
+            <a href="/intel/capture-intelligence-this-issue/" style="font-size:14px;font-weight:600;color:var(--mmt-teal,#457B9D);text-decoration:none;">Featured Capture Intelligence &rarr;</a>
+            <a href="/latest.html" style="font-size:14px;color:var(--mmt-text-secondary);text-decoration:none;">View full archive (100+ articles) &rarr;</a>
+          </div>
         </div>
 
         <!-- Quick Links -->

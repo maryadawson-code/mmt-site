@@ -312,7 +312,7 @@ if (ppHtml) {
 const mpFile = 'marketpulse.html';
 requireString(mpFile, 'Sample brief', 'MarketPulse: sample brief present');
 requireString(mpFile, 'Not used to train models', 'MarketPulse: canonical trust chip present');
-requireString(mpFile, '1 free brief per email address', 'MarketPulse: FAQ "1 free brief" language present');
+requireString(mpFile, 'First brief free', 'MarketPulse: canonical "First brief free" language present');
 requireString(
   mpFile,
   'Data is processed by named service providers and is not used to train models',
