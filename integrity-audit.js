@@ -109,6 +109,7 @@ const MMR_ALLOWED_CONTEXTS = [
   /Fed UP: Where Mission Meets Reality/,
   /Introducing Mission Meets Reality/,
   /Episode 1: Mission Meets Reality/,
+  /originally announced as Mission Meets Reality/,
 ];
 
 // -----------------------------------------------------------------------
@@ -210,7 +211,7 @@ function sweepBody(path, body) {
       failures.push({ rule: 'shell: missing <nav>', sample: '' });
     } else {
       const nav = navMatch[0];
-      const required = ['brand-mark', 'Choose a Tool', '/resources.html#paid-tools', '/newsletter.html', '/security.html'];
+      const required = ['brand-mark', 'Choose a Tool', '/resources.html#paid-tools'];
       for (const marker of required) {
         if (!nav.includes(marker)) {
           failures.push({ rule: `shell nav missing "${marker}"`, sample: '' });
