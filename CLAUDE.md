@@ -195,7 +195,8 @@ All systems operational. 25-commit session completed.
 - **Opportunity Radar + SB Vehicle Scanner** gated in `contract-tracker.js` via `mmtIsPremium()` check
 - **Newswire descriptions**, **agency profile deep data**, **glossary contractor notes** all base64-encoded
 - **Subscribe path complete**: ★ Premium in header + footer band + homepage pricing CTAs + gate cards → /pricing with Stripe Payment Links
-- **Premium pages built**: Dashboard, Friday Brief, Monthly Brief, Pursuit Calendar, Ask MMT, 6 Agency Profiles, IDIQ Tracker
+- **Premium pages built**: Dashboard (custom shell, no site nav), Friday Brief, Monthly Brief, Pursuit Calendar, Ask MMT, Settings/Preferences, 6 Agency Profiles, IDIQ Tracker
+- **Dashboard nav fix**: site nav stripped from premium dashboard pages (dash-shell has its own sidebar)
 - **Auto-intelligence scripts**: normalize.js (100 articles), extract-signals.js (144 signals), match-signals.js (80 matches)
 - **Design token system**: `styles/tokens.css` injected on all pages via build pipeline
 - **Page shell classes**: page-editorial, page-product, page-reference, page-trust, page-utility applied to all templates
