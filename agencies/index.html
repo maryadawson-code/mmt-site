@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Federal Health IT Agency Profiles — MMT Premium</title>
+  <meta name="description" content="Intelligence dossiers for DHA, VA, HHS, ONC, ARPA-H, and CMS. Budget posture, open vehicles, procurement signals, and MMT analysis.">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <style>
+    :root { --mmt-teal:#457B9D; --mmt-navy:#0A192F; --mmt-soft:#F3F4F6; --mmt-white:#FFFFFF; --mmt-text:#102033; --mmt-text-secondary:#5C6B7A; --mmt-border:#D8E0E8; --ci-gold:#92710A; --ci-gold-bg:#FEF9E7; }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--mmt-white); color:var(--mmt-navy); }
+    .agency-card { background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:14px; padding:24px; position:relative; transition:all 0.2s; }
+    .agency-card:hover { box-shadow:0 8px 24px rgba(10,25,47,0.08); transform:translateY(-2px); }
+    .agency-abbrev { font-size:28px; font-weight:800; color:var(--mmt-navy); margin-bottom:4px; }
+    .agency-name { font-size:13px; color:var(--mmt-text-secondary); margin-bottom:12px; }
+    .agency-star { position:absolute; top:16px; right:16px; font-size:12px; color:var(--ci-gold); }
+  </style>
+</head>
+<body>
+  <nav class="nav-editorial"></nav>
+
+  <main class="wrap" style="padding:48px 0 80px;">
+    <div class="section-label" style="margin-bottom:12px;">MMT Premium &middot; Agency Intelligence</div>
+    <h1 style="font-size:clamp(28px,3.5vw,44px);line-height:1.05;letter-spacing:-0.035em;margin-bottom:12px;">Federal Health IT Agency Profiles</h1>
+    <p style="font-size:17px;line-height:1.6;color:var(--mmt-text-secondary);max-width:60ch;margin-bottom:40px;">Current budget posture, open vehicles, procurement signals, and MMT's read on what matters at each agency right now. Updated monthly.</p>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+      <a href="/agencies/dha.html" class="agency-card no-underline" data-access="premium">
+        <span class="agency-star">&#9733;</span>
+        <div class="agency-abbrev">DHA</div>
+        <div class="agency-name">Defense Health Agency</div>
+        <p style="font-size:13px;color:var(--mmt-text-secondary);line-height:1.5;">Primary federal buyer of health IT for the Military Health System. MHS GENESIS, EHRM, enterprise imaging.</p>
+      </a>
+      <a href="/agencies/va.html" class="agency-card no-underline" data-access="premium">
+        <span class="agency-star">&#9733;</span>
+        <div class="agency-abbrev">VA</div>
+        <div class="agency-name">Department of Veterans Affairs</div>
+        <p style="font-size:13px;color:var(--mmt-text-secondary);line-height:1.5;">Largest integrated healthcare system in the US. EHR modernization, community care, telehealth expansion.</p>
+      </a>
+      <a href="/agencies/hhs.html" class="agency-card no-underline" data-access="premium">
+        <span class="agency-star">&#9733;</span>
+        <div class="agency-abbrev">HHS</div>
+        <div class="agency-name">Dept. of Health and Human Services</div>
+        <p style="font-size:13px;color:var(--mmt-text-secondary);line-height:1.5;">Parent agency for CMS, ONC, and NIH. Data modernization, interoperability enforcement, AI governance.</p>
+      </a>
+      <a href="/agencies/onc.html" class="agency-card no-underline" data-access="premium">
+        <span class="agency-star">&#9733;</span>
+        <div class="agency-abbrev">ONC</div>
+        <div class="agency-name">Office of the Nat'l Coordinator for Health IT</div>
+        <p style="font-size:13px;color:var(--mmt-text-secondary);line-height:1.5;">Sets interoperability standards. TEFCA, USCDI, information blocking enforcement. Small but high-impact.</p>
+      </a>
+      <a href="/agencies/arpa-h.html" class="agency-card no-underline" data-access="premium">
+        <span class="agency-star">&#9733;</span>
+        <div class="agency-abbrev">ARPA-H</div>
+        <div class="agency-name">Advanced Research Projects Agency for Health</div>
+        <p style="font-size:13px;color:var(--mmt-text-secondary);line-height:1.5;">Newest health research agency. ADVOCATE, Sprint for Women's Health, OTA-driven procurement model.</p>
+      </a>
+      <a href="/agencies/cms.html" class="agency-card no-underline" data-access="premium">
+        <span class="agency-star">&#9733;</span>
+        <div class="agency-abbrev">CMS</div>
+        <div class="agency-name">Centers for Medicare & Medicaid Services</div>
+        <p style="font-size:13px;color:var(--mmt-text-secondary);line-height:1.5;">Administers Medicare, Medicaid, ACA marketplaces. ClaimsCore, data modernization, fraud analytics.</p>
+      </a>
+    </div>
+
+    <!-- Gate for non-premium -->
+    <div data-gate-overlay="premium" style="text-align:center;padding:32px 24px;background:var(--mmt-soft);border-radius:14px;margin-top:32px;">
+      <p style="font-size:16px;font-weight:700;color:var(--mmt-navy);margin-bottom:8px;">Full agency profiles are Premium</p>
+      <p style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:18px;">Budget posture, open vehicles, recent awards, procurement signals, and key program offices for each agency.</p>
+      <a href="/pricing.html" class="btn-primary no-underline" style="font-size:14px;padding:12px 24px;">Start Premium</a>
+    </div>
+  </main>
+
+  <footer class="wrap"></footer>
+  <script src="/js/mmt-paywall.js" defer></script>
+  <script src="/js/nav-active.js"></script>
+  <style>@media(max-width:768px){div[style*="grid-template-columns:repeat(3"]{grid-template-columns:repeat(2,1fr)!important;}}</style>
+</body>
+</html>

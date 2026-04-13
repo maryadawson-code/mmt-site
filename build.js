@@ -737,6 +737,10 @@ function generateSitemap(articles, tags, contracts) {
     { loc: '/topics.html', priority: '0.7' },
     { loc: '/newswire.html', priority: '0.7' },
     { loc: '/idiq-tracker.html', priority: '0.7' },
+    { loc: '/agencies/', priority: '0.6' },
+    { loc: '/premium/briefings/', priority: '0.5' },
+    { loc: '/premium/monthly-briefs/', priority: '0.5' },
+    { loc: '/premium/calendar/', priority: '0.5' },
     { loc: '/events.html', priority: '0.6' },
     { loc: '/privacy.html', priority: '0.3' },
     { loc: '/terms.html', priority: '0.3' },
@@ -2462,7 +2466,19 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     'subscribed.html',
     'upgrade.html',
     'fy2027-forecast.html',
-    'idiq-tracker.html'
+    'idiq-tracker.html',
+  ];
+  // Premium subdirectory pages
+  const premiumPages = [
+    { src: 'premium/briefings.html', dest: 'premium/briefings.html', index: 'premium/briefings/index.html' },
+    { src: 'premium/monthly-briefs.html', dest: 'premium/monthly-briefs.html', index: 'premium/monthly-briefs/index.html' },
+    { src: 'premium/calendar.html', dest: 'premium/calendar.html', index: 'premium/calendar/index.html' },
+    { src: 'premium/ask-mmt.html', dest: 'premium/ask-mmt.html', index: 'premium/ask-mmt/index.html' },
+    { src: 'premium/dashboard.html', dest: 'premium/dashboard.html', index: 'premium/dashboard/index.html' },
+  ];
+  // Agency profile pages
+  const agencyPages = [
+    { src: 'agencies/index.html', dest: 'agencies/index.html' },
   ];
   const ogMap = {
     'index.html': 'index.png',
@@ -2609,6 +2625,51 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
       console.log(`Copied ${src} → ${dest.replace(DIST_DIR + '/', '')}`);
     }
   });
+
+  // Copy premium and agency subdirectory pages
+  const subDirPages = [
+    { src: 'premium/briefings.html', dest: 'premium/briefings/index.html' },
+    { src: 'premium/monthly-briefs.html', dest: 'premium/monthly-briefs/index.html' },
+    { src: 'premium/calendar.html', dest: 'premium/calendar/index.html' },
+    { src: 'premium/ask-mmt.html', dest: 'premium/ask-mmt/index.html' },
+    { src: 'premium/dashboard.html', dest: 'premium/dashboard/index.html' },
+    { src: 'agencies/index.html', dest: 'agencies/index.html' },
+  ];
+  subDirPages.forEach(({ src, dest }) => {
+    const srcPath = path.join(__dirname, src);
+    const destPath = path.join(DIST_DIR, dest);
+    if (fs.existsSync(srcPath)) {
+      ensureDir(path.dirname(destPath));
+      let html = fs.readFileSync(srcPath, 'utf8');
+      html = html.replace('</head>',
+        '  <link rel="manifest" href="/manifest.json">\n' +
+        '  <meta name="apple-mobile-web-app-capable" content="yes">\n' +
+        '  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\n' +
+        '  <meta name="apple-mobile-web-app-title" content="MMT">\n</head>'
+      );
+      if (html.includes('</nav>')) {
+        html = html.replace('</nav>', '</nav>' + searchOverlayHtml);
+      }
+      html = html.replace('</body>', siteScriptTag + '\n</body>');
+      html = inlineTailwindCss(html);
+      fs.writeFileSync(destPath, html);
+      console.log(`Copied ${src} → ${dest}`);
+    }
+  });
+
+  // Generate individual agency profile pages from data
+  const agencyDataPath = path.join(__dirname, 'data/premium/agency-profiles/agencies.json');
+  if (fs.existsSync(agencyDataPath)) {
+    const agencyData = JSON.parse(fs.readFileSync(agencyDataPath, 'utf8'));
+    agencyData.forEach(agency => {
+      const agencyDir = path.join(DIST_DIR, 'agencies', agency.slug);
+      ensureDir(agencyDir);
+      let html = generateAgencyProfilePage(agency);
+      html = inlineTailwindCss(html);
+      fs.writeFileSync(path.join(agencyDir, 'index.html'), html);
+    });
+    console.log(`Generated ${agencyData.length} agency profile pages`);
+  }
 
   // Copy glossary pages (with .gov/.mil source injection)
   const glossarySrc = path.join(__dirname, 'glossary');
@@ -3132,6 +3193,90 @@ function autoLinkGlossaryTerms(articleHtml, glossaryTerms) {
 /**
  * Generate "Related Analysis" HTML for a contract card.
  */
+function generateAgencyProfilePage(agency) {
+  const budgetItems = agency.budget.key_programs.map(p => `<li style="margin-bottom:4px;">${escapeHtml(p)}</li>`).join('');
+  const riskItems = (agency.budget.at_risk || []).map(r => `<li style="margin-bottom:4px;color:#D97706;">${escapeHtml(r)}</li>`).join('');
+  const vehicles = agency.key_vehicles.map(v => `<a href="/idiq-tracker.html" class="tag no-underline" style="font-size:12px;">${escapeHtml(v)}</a>`).join(' ');
+  const offices = agency.key_offices.map(o => `<li style="margin-bottom:6px;font-size:14px;">${escapeHtml(o)}</li>`).join('');
+  const signals = agency.upcoming_signals.map(s => `<li style="margin-bottom:6px;font-size:14px;">&#8226; ${escapeHtml(s)}</li>`).join('');
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${escapeHtml(agency.name)} — Agency Intelligence Profile — MMT Premium</title>
+  <meta name="description" content="Intelligence profile for ${escapeHtml(agency.name)}: budget posture, open vehicles, procurement signals, and MMT analysis.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <style>
+    :root { --mmt-teal:#457B9D; --mmt-navy:#0A192F; --mmt-soft:#F3F4F6; --mmt-white:#FFFFFF; --mmt-text:#102033; --mmt-text-secondary:#5C6B7A; --mmt-border:#D8E0E8; --ci-gold:#92710A; }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--mmt-white); color:var(--mmt-navy); }
+    .profile-section { margin-bottom:32px; }
+    .profile-label { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--mmt-text-secondary); border-bottom:1px solid var(--mmt-border); padding-bottom:8px; margin-bottom:16px; }
+  </style>
+</head>
+<body>
+  <nav class="nav-editorial"></nav>
+  <main class="wrap" style="padding:48px 0 80px; max-width:760px;">
+    <a href="/agencies/" style="font-size:13px;color:var(--mmt-teal);text-decoration:none;display:inline-flex;align-items:center;gap:4px;margin-bottom:16px;">&larr; Agency Index</a>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+      <h1 style="font-size:clamp(28px,3.5vw,40px);line-height:1.05;letter-spacing:-0.035em;">${escapeHtml(agency.name)} (${escapeHtml(agency.abbrev)})</h1>
+      <span style="font-size:12px;font-weight:700;color:var(--ci-gold);">&#9733; Member</span>
+    </div>
+    <p style="font-size:16px;line-height:1.6;color:var(--mmt-text-secondary);margin-bottom:32px;">${escapeHtml(agency.description)}</p>
+
+    <div data-gate="premium" style="display:none;">
+      <div class="profile-section">
+        <div class="profile-label">MMT's Current Read</div>
+        <div style="background:rgba(69,123,157,0.04);border-left:3px solid var(--mmt-teal);border-radius:0 10px 10px 0;padding:16px 20px;">
+          <p style="font-size:15px;line-height:1.7;color:var(--mmt-text);">${escapeHtml(agency.current_read)}</p>
+          <p style="font-size:12px;color:var(--mmt-text-secondary);margin-top:8px;">Updated: April 2026</p>
+        </div>
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-label">Budget Posture</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div><span style="font-size:12px;color:var(--mmt-text-secondary);">FY2026 Enacted</span><div style="font-size:18px;font-weight:700;">${escapeHtml(agency.budget.fy2026_enacted)}</div></div>
+          <div><span style="font-size:12px;color:var(--mmt-text-secondary);">FY2027 Request</span><div style="font-size:18px;font-weight:700;">${escapeHtml(agency.budget.fy2027_request)}</div></div>
+        </div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:6px;">Key Funded Programs</div>
+        <ul style="list-style:none;padding:0;margin:0 0 12px;font-size:14px;color:var(--mmt-text-secondary);">${budgetItems}</ul>
+        ${riskItems ? `<div style="font-size:13px;font-weight:600;margin-bottom:6px;">Programs at Risk</div><ul style="list-style:none;padding:0;margin:0;font-size:14px;">${riskItems}</ul>` : ''}
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-label">Key Vehicles</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">${vehicles || '<span style="font-size:14px;color:var(--mmt-text-secondary);">No tracked vehicles yet.</span>'}</div>
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-label">Upcoming Procurement Signals</div>
+        <ul style="list-style:none;padding:0;margin:0;color:var(--mmt-text-secondary);">${signals || '<li style="font-size:14px;">No signals tracked yet.</li>'}</ul>
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-label">Key Program Offices</div>
+        <ul style="list-style:none;padding:0;margin:0;color:var(--mmt-text-secondary);">${offices}</ul>
+      </div>
+    </div>
+
+    <div data-gate-overlay="premium" style="text-align:center;padding:40px 28px;background:var(--mmt-soft);border-radius:16px;margin-top:16px;">
+      <h2 style="font-size:20px;font-weight:800;margin-bottom:8px;">Full agency profile is Premium</h2>
+      <p style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:18px;">Budget posture, open vehicles, recent awards, procurement signals, and key program offices.</p>
+      <a href="/pricing.html" class="btn-primary no-underline" style="font-size:14px;padding:12px 24px;">Start Premium</a>
+    </div>
+  </main>
+  <footer class="wrap"></footer>
+  <script src="/js/mmt-paywall.js" defer></script>
+  <script src="/js/nav-active.js"></script>
+</body>
+</html>`;
+}
+
 function generateContractRelatedAnalysisHtml(contractName, contractArticleMap) {
   const articles = contractArticleMap[contractName] || [];
   if (articles.length === 0) return '';

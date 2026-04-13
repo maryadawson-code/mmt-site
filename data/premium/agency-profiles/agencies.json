@@ -1,0 +1,80 @@
+[
+  {
+    "slug": "dha",
+    "abbrev": "DHA",
+    "name": "Defense Health Agency",
+    "description": "Primary federal buyer of health IT for the Military Health System. Total IT budget: ~$11B annually across COMP accounts.",
+    "current_read": "DHA is mid-deployment on MHS GENESIS with 13 MTF go-lives scheduled Q3-Q4 FY2026 and 26 additional sites in FY2027. Congress withheld 30% of FY2026 EHRM funding (~$1.02B) pending three conditions due June 1, 2026. The Oracle subcontractor and support ecosystem is the primary addressable market. Digital health and enterprise imaging are the growth areas.",
+    "budget": { "fy2026_enacted": "$10.8B (COMP)", "fy2027_request": "$11.2B (+3.7%)", "key_programs": ["MHS GENESIS deployment", "Enterprise Imaging", "Digital Health Initiative", "MHS EITS"], "at_risk": ["EHRM funding (30% withheld pending June 1 conditions)"] },
+    "key_vehicles": ["DHITUC", "MHS EITS", "MedSurg II"],
+    "key_offices": ["EHRM-IO (EHR Modernization Integration Office)", "PEO DHMS (Program Executive Office, Defense Healthcare Management Systems)", "DHACA (Defense Health Agency Contracting Activity)"],
+    "recent_awards": [],
+    "upcoming_signals": ["DHITUC follow-on RFI (April 2026)", "MHS EITS re-compete (expected Q3 FY2026)", "Enterprise Imaging expansion RFP (expected Q4 FY2026)"],
+    "related_tags": ["Military Health System", "AI & Innovation"]
+  },
+  {
+    "slug": "va",
+    "abbrev": "VA",
+    "name": "Department of Veterans Affairs",
+    "description": "Largest integrated healthcare system in the US. VA serves 9+ million enrolled veterans across 1,298 healthcare facilities.",
+    "current_read": "VA is executing the CCN Next Gen procurement (proposals due April 17, 2026) and managing the ongoing EHRM modernization with Oracle Health. The FY2027 budget request maintains community care funding at $56.2B. T4NG2 is the primary IT services vehicle and is approaching re-compete. The VA ambient AI scribe IDIQ is the largest clinical AI procurement in federal health.",
+    "budget": { "fy2026_enacted": "$325B (total)", "fy2027_request": "$332B (+2.2%)", "key_programs": ["EHRM modernization", "Community Care Network", "Telehealth expansion", "Ambient AI scribe"], "at_risk": ["EHRM deployment pace (congressional scrutiny)"] },
+    "key_vehicles": ["T4NG2", "CCN Next Gen", "VA Ambient AI Scribe IDIQ"],
+    "key_offices": ["VA OIT (Office of Information and Technology)", "VHA (Veterans Health Administration)", "OAL (Office of Acquisition and Logistics)"],
+    "recent_awards": [],
+    "upcoming_signals": ["CCN Next Gen proposals due April 17, 2026", "T4NG2 re-compete planning (FY2027)", "VA ambient scribe IDIQ task orders (ongoing)"],
+    "related_tags": ["Veterans Affairs", "Contracting & Procurement"]
+  },
+  {
+    "slug": "hhs",
+    "abbrev": "HHS",
+    "name": "Department of Health and Human Services",
+    "description": "Parent agency for CMS, ONC, NIH, CDC, and FDA. Oversees the broadest health IT policy portfolio in the federal government.",
+    "current_read": "HHS is driving data modernization across sub-agencies with a focus on interoperability enforcement. The FY2027 budget proposes targeted AI governance frameworks. HIPAA modernization is under active policy review. HHS IT procurement increasingly flows through CMS and ONC rather than departmental-level vehicles.",
+    "budget": { "fy2026_enacted": "$127B (discretionary)", "fy2027_request": "$131B (+3.1%)", "key_programs": ["Data modernization", "Interoperability enforcement", "AI governance framework", "HIPAA modernization"], "at_risk": ["Public health preparedness funding (proposed cuts)"] },
+    "key_vehicles": ["HCIS IDIQ", "CIO-SP3 (via NIH)"],
+    "key_offices": ["OCIO (Office of the Chief Information Officer)", "ASFR (Assistant Secretary for Financial Resources)", "OS/OCIO"],
+    "recent_awards": [],
+    "upcoming_signals": ["HIPAA security rule update (proposed rulemaking)", "Data modernization RFI (expected Q3 2026)"],
+    "related_tags": ["Healthcare Policy", "Interoperability"]
+  },
+  {
+    "slug": "onc",
+    "abbrev": "ONC",
+    "name": "Office of the National Coordinator for Health IT",
+    "description": "Sets health IT interoperability standards, certifies EHR technology, and enforces information blocking rules. Small office with outsized regulatory impact.",
+    "current_read": "ONC is enforcing TEFCA and expanding USCDI requirements. Information blocking enforcement actions are increasing. The USCDI v4 standard is in development. ONC procurement is limited but its regulatory decisions shape billions in private-sector and government health IT spending.",
+    "budget": { "fy2026_enacted": "$62M", "fy2027_request": "$65M (+4.8%)", "key_programs": ["TEFCA implementation", "USCDI expansion", "Information blocking enforcement", "EHR certification"], "at_risk": ["ONC budget is small and vulnerable to broader HHS cuts"] },
+    "key_vehicles": [],
+    "key_offices": ["ONC (direct)", "Standards and Technology Division", "Policy Division"],
+    "recent_awards": [],
+    "upcoming_signals": ["USCDI v4 draft (expected mid-2026)", "TEFCA expansion milestones"],
+    "related_tags": ["Interoperability", "Healthcare Policy"]
+  },
+  {
+    "slug": "arpa-h",
+    "abbrev": "ARPA-H",
+    "name": "Advanced Research Projects Agency for Health",
+    "description": "Newest federal health research agency (est. 2022). Uses OTA and other flexible procurement to fund breakthrough health technology.",
+    "current_read": "ARPA-H is executing its first wave of major programs: ADVOCATE (agentic clinical AI), Sprint for Women's Health, and health security resilience. Awards for ADVOCATE TA1/TA2/TA3 are expected June 2026. ARPA-H uses OTA procurement extensively, making it accessible to non-traditional vendors. FY2027 budget status is uncertain given broader HHS review.",
+    "budget": { "fy2026_enacted": "$1.5B", "fy2027_request": "Zeroed in proposed budget (executing FY2026 funds)", "key_programs": ["ADVOCATE", "Sprint for Women's Health", "Health Security"], "at_risk": ["FY2027 budget zeroed in HHS proposal — executing on existing appropriations"] },
+    "key_vehicles": ["OTA vehicles (program-specific)"],
+    "key_offices": ["ARPA-H HQ (Dallas, TX)", "Program Managers (direct engagement model)"],
+    "recent_awards": [],
+    "upcoming_signals": ["ADVOCATE TA1/TA2/TA3 awards (June 2026)", "New program announcements (rolling)"],
+    "related_tags": ["AI & Innovation"]
+  },
+  {
+    "slug": "cms",
+    "abbrev": "CMS",
+    "name": "Centers for Medicare & Medicaid Services",
+    "description": "Administers Medicare, Medicaid, ACA marketplaces, and CHIP. Largest single payer in the US healthcare system.",
+    "current_read": "CMS is executing the ClaimsCore RFP (the largest claims processing modernization in CMS history) and advancing data modernization across its systems. AI fraud detection and payment integrity are growth areas. CMS procurement is large-scale and long-cycle, with multi-year IDIQs as the dominant vehicle type.",
+    "budget": { "fy2026_enacted": "$1.1T (mandatory + discretionary)", "fy2027_request": "$1.15T", "key_programs": ["ClaimsCore modernization", "Data modernization", "AI fraud detection", "Payment integrity"], "at_risk": ["ACA marketplace IT funding (policy-dependent)"] },
+    "key_vehicles": ["ClaimsCore IDIQ", "CMS OAGM vehicles"],
+    "key_offices": ["OIT (Office of Information Technology)", "CCIIO (Center for Consumer Information and Insurance Oversight)", "OAGM (Office of Acquisition and Grants Management)"],
+    "recent_awards": [],
+    "upcoming_signals": ["ClaimsCore RFP evaluation (ongoing)", "Data modernization Phase 2 RFI"],
+    "related_tags": ["Healthcare Policy", "Contracting & Procurement"]
+  }
+]
