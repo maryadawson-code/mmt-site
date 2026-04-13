@@ -325,7 +325,7 @@ const searchOverlayHtml = `
   </div>`;
 
 // External script tags injected before </body> on all pages
-const siteScriptTag = '  <script src="/js/site.js" defer></script>\n  <script src="/js/nav-active.js" defer></script>';
+const siteScriptTag = '  <script src="/js/site.js" defer></script>\n  <script src="/js/nav-active.js" defer></script>\n  <script src="/js/mmt-paywall.js" defer></script>';
 
 // --- Premium Gate HTML generators (per article category from PAYWALL_SPEC.md) ---
 
