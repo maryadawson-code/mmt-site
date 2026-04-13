@@ -261,6 +261,102 @@ function sweepBody(path, body) {
     }
   }
 
+  // -------------------------------------------------------------------
+  // PAYWALL ENFORCEMENT CHECKS
+  // Verifies that premium content is properly gated in the raw HTML
+  // served to unauthenticated requests (no cookies, no localStorage).
+  // -------------------------------------------------------------------
+
+  // Check 1: CSS-first hide rule must be present on every page that
+  // could contain premium content. The rule [data-access="premium"]
+  // { display: none !important } prevents content from flashing before
+  // JS runs.
+  const PAYWALL_CSS_PAGES = new Set([
+    '/contract-tracker.html', '/newswire.html', '/glossary.html',
+    '/idiq-tracker.html', '/latest.html', '/',
+  ]);
+  // Also check all article pages
+  const isArticle = path.startsWith('/newsletter/') && path !== '/newsletter.html';
+  if (PAYWALL_CSS_PAGES.has(path) || isArticle) {
+    if (!body.includes('[data-access="premium"]')) {
+      failures.push({ rule: 'paywall: CSS-first hide rule missing', sample: 'Expected [data-access="premium"] { display: none }' });
+    }
+  }
+
+  // Check 2: Contract Tracker must NOT leak vendor/value/NAICS in plain
+  // text to unauthenticated requests. Premium fields should be inside
+  // data-access="premium" wrappers which are hidden by CSS.
+  if (path === '/contract-tracker.html') {
+    // The premium fields wrapper should exist
+    if (!body.includes('data-access="premium"')) {
+      failures.push({ rule: 'paywall: contract-tracker missing data-access="premium" wrappers', sample: '' });
+    }
+    // Gate overlay (upgrade prompt) should be visible
+    if (!body.includes('data-gate-overlay="premium"')) {
+      failures.push({ rule: 'paywall: contract-tracker missing gate overlay', sample: '' });
+    }
+  }
+
+  // Check 3: Newswire descriptions must be gated
+  if (path === '/newswire.html') {
+    if (!body.includes('data-access="premium"')) {
+      failures.push({ rule: 'paywall: newswire missing data-access="premium" on descriptions', sample: '' });
+    }
+  }
+
+  // Check 4: Article pages must have the gate card for non-premium users
+  if (isArticle) {
+    if (!body.includes('article-gate')) {
+      failures.push({ rule: 'paywall: article missing gate card (id="article-gate")', sample: '' });
+    }
+    // Articles should have data-age-days attribute for paywall logic
+    if (!body.includes('data-age-days=')) {
+      failures.push({ rule: 'paywall: article missing data-age-days attribute', sample: '' });
+    }
+  }
+
+  // Check 5: Premium dashboard pages should have auth gating
+  const PREMIUM_ROUTES = [
+    '/premium/dashboard/', '/premium/briefings/', '/premium/monthly-briefs/',
+    '/premium/calendar/', '/premium/ask-mmt/',
+  ];
+  if (PREMIUM_ROUTES.includes(path)) {
+    // These pages should have data-gate="premium" content that's hidden by default
+    if (!body.includes('data-gate="premium"') && !body.includes('data-access="premium"')) {
+      failures.push({ rule: 'paywall: premium page missing gate attributes', sample: '' });
+    }
+  }
+
+  // Check 6: Agency profile pages should gate deep data for public users
+  if (path.startsWith('/agencies/') && path !== '/agencies/') {
+    if (!body.includes('data-gate="premium"') && !body.includes('data-access="premium"')) {
+      failures.push({ rule: 'paywall: agency profile missing premium gate', sample: '' });
+    }
+  }
+
+  // Check 7: IDIQ Tracker should not leak premium vehicle data
+  if (path === '/idiq-tracker.html') {
+    // Public stub should show gate CTA
+    if (!body.includes('/pricing.html') && !body.includes('Start Premium')) {
+      failures.push({ rule: 'paywall: idiq-tracker missing pricing/upgrade CTA', sample: '' });
+    }
+  }
+
+  // Check 8: Glossary premium upsell should exist but NOT be the first
+  // visible element (should be below first terms)
+  if (path === '/glossary.html') {
+    const upsellIdx = body.indexOf('Unlock all with Premium');
+    const firstTermIdx = body.indexOf('term-entry');
+    if (upsellIdx > -1 && firstTermIdx > -1 && upsellIdx < firstTermIdx) {
+      failures.push({ rule: 'paywall: glossary premium upsell appears BEFORE first term', sample: '' });
+    }
+  }
+
+  // Check 9: mmt-paywall.js must be loaded on every page
+  if (!body.includes('mmt-paywall.js')) {
+    failures.push({ rule: 'paywall: mmt-paywall.js not loaded on this page', sample: '' });
+  }
+
   return failures;
 }
 
