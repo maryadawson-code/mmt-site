@@ -1375,7 +1375,7 @@ function generateContractTrackerHtml(contracts, contractArticleMap) {
                 const teaser = escapeHtml(words.slice(0, 40).join(' '));
                 return teaser + '... <a href="/pricing.html" style="font-size:11px;font-weight:700;color:var(--mmt-teal);text-decoration:none;white-space:nowrap;" data-gate-overlay="premium">★ Full competitive note — Premium</a>';
               })()}</p>
-              <div data-gate="premium" style="display:none;">
+              <div data-access="premium">
                 <div class="flex flex-wrap gap-3 text-xs" style="color:var(--mmt-text-secondary);">
                   <span><strong style="color:var(--mmt-text);">Vendor:</strong> ${escapeHtml(c.vendor)}</span>
                   <span><strong style="color:var(--mmt-text);">Value:</strong> ${escapeHtml(c.value)}</span>
@@ -2125,8 +2125,9 @@ function inlineTailwindCss(html) {
       <div class="hidden md:flex items-center gap-4">
         <button id="searchToggle" class="hover:opacity-70" style="color:var(--mmt-text-secondary);background:none;border:none;cursor:pointer;" aria-label="Search"><svg width="16" height="16" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></button>
         <!-- Logged-out state -->
-        <span id="nav-logged-out">
+        <span id="nav-logged-out" style="display:inline-flex;align-items:center;gap:12px;">
           <a href="/dashboard.html" class="text-sm no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);font-weight:400;">Sign In</a>
+          <a href="/newsletter.html" class="text-sm no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);font-weight:400;border:1px solid var(--mmt-border,#D8E0E8);border-radius:6px;padding:4px 12px;">Subscribe</a>
         </span>
         <!-- Logged-in state (hidden by default, shown by JS) -->
         <span id="nav-logged-in" style="display:none;position:relative;">
@@ -3007,7 +3008,7 @@ function generateNewswireHtml(newsItems) {
               <span class="text-xs whitespace-nowrap" style="color:var(--mmt-text-secondary);">${escapeHtml(time)}</span>
             </div>
             <h3 class="text-base font-bold mb-1" style="color:var(--mmt-navy);">${escapeHtml(item.title)}</h3>
-            ${item.description ? `<div data-gate="premium" style="display:none;"><p class="text-sm leading-relaxed" style="color:var(--mmt-text);">${escapeHtml(item.description)}</p></div><div data-gate-overlay="premium"><p class="text-xs" style="color:#92710A;">&#9733; Full context — Premium</p></div>` : ''}
+            ${item.description ? `<div data-access="premium"><p class="text-sm leading-relaxed" style="color:var(--mmt-text);">${escapeHtml(item.description)}</p></div><div data-gate-overlay="premium"><p class="text-xs" style="color:#92710A;">&#9733; Full context — Premium</p></div>` : ''}
           </a>\n`;
     });
 

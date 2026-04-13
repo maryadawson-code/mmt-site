@@ -98,6 +98,27 @@
 }
 
 /* ============================================================
+   PAYWALL ENFORCEMENT — CSS-first hide
+   Premium content hidden by default. JS reveals ONLY after auth.
+   If JS fails, content stays hidden (safe failure).
+   ============================================================ */
+
+[data-access="premium"] { display: none !important; }
+[data-access="premium"].access-granted { display: block !important; }
+/* For inline/flex elements that need non-block display when granted */
+[data-access="premium"].access-granted-flex { display: flex !important; }
+[data-access="premium"].access-granted-inline { display: inline-flex !important; }
+
+/* Article gated content — hidden by default */
+.article-gated-content { display: none; }
+.article-gated-content.access-granted { display: block; }
+
+/* JS-ready gate for collapse buttons (GS-01 fix) */
+.collapse-btn, [data-dismiss], [data-close] { display: none; }
+.js-ready .collapse-btn { display: flex; }
+.js-ready [data-dismiss], .js-ready [data-close] { display: flex; }
+
+/* ============================================================
    BUTTON SYSTEM — canonical definitions
    ============================================================ */
 

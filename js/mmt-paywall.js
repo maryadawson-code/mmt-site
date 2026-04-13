@@ -65,6 +65,25 @@
 
     // Set data attribute on body for CSS-based gating
     document.body.setAttribute("data-mmt-tier", status);
+    // Add js-ready class (enables collapse buttons, etc.)
+    document.body.classList.add('js-ready');
+
+    // CSS-first paywall: reveal data-access="premium" elements for premium users
+    if (status === 'premium') {
+      var premiumContent = document.querySelectorAll('[data-access="premium"]');
+      for (var p = 0; p < premiumContent.length; p++) {
+        var el = premiumContent[p];
+        var computedDisplay = window.getComputedStyle(el).display;
+        // Use appropriate access-granted variant based on context
+        if (el.style.display === 'flex' || el.classList.contains('flex')) {
+          el.classList.add('access-granted-flex');
+        } else if (el.style.display === 'inline-flex' || el.classList.contains('inline-flex')) {
+          el.classList.add('access-granted-inline');
+        } else {
+          el.classList.add('access-granted');
+        }
+      }
+    }
 
     // data-gate elements (show based on minimum tier)
     var gated = document.querySelectorAll("[data-gate]");
