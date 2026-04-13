@@ -20,7 +20,7 @@
   <main class="wrap" style="padding:48px 0 80px; max-width:680px;">
     <div class="section-label" style="margin-bottom:12px;">MMT Premium &middot; Direct Access</div>
     <h1 style="font-size:clamp(28px,3.5vw,40px);line-height:1.05;letter-spacing:-0.035em;margin-bottom:12px;">Ask MMT</h1>
-    <p style="font-size:17px;line-height:1.6;color:var(--mmt-text-secondary);margin-bottom:32px;">Your question goes directly to Mary. Written answer within 5 business days. 1 question per month included with Premium.</p>
+    <p style="font-size:17px;line-height:1.6;color:var(--mmt-text-secondary);margin-bottom:32px;">Your question goes directly to Mary. Written answer within 5 business days. 2 questions per month included with Premium.</p>
 
     <div data-gate="premium" style="display:none;">
       <div style="background:var(--mmt-soft);border:1px solid var(--mmt-border);border-radius:14px;padding:28px;">
@@ -28,8 +28,8 @@
         <p style="font-size:13px;color:var(--mmt-text-secondary);margin-bottom:16px;">Be specific: include agency, type of work, and your constraints.</p>
         <textarea id="ask-question" rows="5" maxlength="500" placeholder="What vehicle would you use to go after DHA medical staffing work as an 8(a) firm?" style="width:100%;padding:12px 14px;border:1px solid var(--mmt-border);border-radius:10px;font-size:14px;font-family:inherit;resize:vertical;line-height:1.6;"></textarea>
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;">
-          <span style="font-size:12px;color:var(--mmt-text-secondary);">Questions remaining this month: 1 of 1</span>
-          <button onclick="alert('Ask MMT submission — Supabase integration pending')" style="padding:10px 20px;background:var(--mmt-navy);color:rgb(255,255,255);border:none;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;">Send question &rarr;</button>
+          <span style="font-size:12px;color:var(--mmt-text-secondary);">Questions remaining this month: 2 of 2</span>
+          <button onclick="var q=document.getElementById('ask-question').value.trim();if(!q){alert('Please enter a question.');return;}var email=localStorage.getItem('mmt_email')||'';window.location.href='mailto:support@missionmeetstech.com?subject='+encodeURIComponent('[ASK MMT] '+q.substring(0,60))+'&body='+encodeURIComponent('Question: '+q+'\n\nFrom: '+email);alert('Your question will be sent via email. We will respond within 5 business days.');" style="padding:10px 20px;background:var(--mmt-navy);color:rgb(255,255,255);border:none;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;">Send question &rarr;</button>
         </div>
       </div>
 
@@ -39,7 +39,7 @@
 
     <div data-gate-overlay="premium" style="text-align:center;padding:40px 28px;background:var(--mmt-soft);border-radius:16px;">
       <h2 style="font-size:20px;font-weight:800;margin-bottom:8px;">Direct access to Mary</h2>
-      <p style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:18px;max-width:44ch;margin-left:auto;margin-right:auto;">Premium members can submit 1 question per month. Written answer within 5 business days.</p>
+      <p style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:18px;max-width:44ch;margin-left:auto;margin-right:auto;">Premium members can submit 2 questions per month. Written answer within 5 business days.</p>
       <a href="/pricing.html" class="btn-primary no-underline" style="font-size:14px;padding:12px 24px;">Start Premium</a>
     </div>
   </main>

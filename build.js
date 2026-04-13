@@ -752,6 +752,7 @@ function generateSitemap(articles, tags, contracts) {
     { loc: '/topics.html', priority: '0.7' },
     { loc: '/newswire.html', priority: '0.7' },
     { loc: '/idiq-tracker.html', priority: '0.7' },
+    { loc: '/help.html', priority: '0.5' },
     { loc: '/agencies/', priority: '0.6' },
     { loc: '/premium/briefings/', priority: '0.5' },
     { loc: '/premium/monthly-briefs/', priority: '0.5' },
@@ -2265,6 +2266,7 @@ function inlineTailwindCss(html) {
         <a href="/security.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Security</a>
         <a href="/privacy.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Privacy</a>
         <a href="/terms.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Terms</a>
+        <a href="/help.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Help</a>
         <a href="mailto:mary@missionmeetstech.com" class="hover:opacity-70" style="color:var(--mmt-teal);text-decoration:underline;">Contact</a>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;">
@@ -2536,6 +2538,7 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     'upgrade.html',
     'fy2027-forecast.html',
     'idiq-tracker.html',
+    'help.html',
   ];
   // Premium subdirectory pages
   const premiumPages = [
