@@ -1,6 +1,6 @@
 # MMT Content Paywall & Premium Experience Spec
 ### Complete Free vs. Paid Definition, Content Gating Architecture, and Implementation Guide
-### Updated: April 12, 2026
+### Updated: April 13, 2026 (post-QA data protection pass)
 
 > **Purpose:** This is the definitive specification for what every visitor sees at every access level — and the technical implementation for Claude Code. The guiding principle: **free content builds trust and earns the email; premium content is worth paying for because it saves time and wins work.** Every gating decision flows from that.
 
@@ -52,14 +52,22 @@ Core revenue tier. Every item here is something a BD lead, capture manager, or p
 | Articles — recent (< 90 days) | Title + 2-paragraph preview + CSS fade + gate card | Full article, unlimited |
 | Articles — archive (> 90 days) | Title + deck (email gate) | Full article, unlimited |
 | Capture Intelligence sheets | Title + signal count + 2 teaser rows | Full sheet: all signals, confidence labels, action windows, source citations |
-| Contract Tracker | Title, Agency, Status, 1-2 sentence summary only | Full entry: vendor, ceiling value, NAICS, mod history, expiration, MMT intel notes |
-| IDIQ Tracker (new page) | Vehicle name, Ceiling, Status only | Full entry: awardees, task order history, ceiling burn rate, expiration window, re-compete signals |
-| Glossary | 50 foundational terms | Full 200+ term library including IDIQ vehicles, FAR/DFARS references, program-specific acronyms |
-| Newswire | Headlines + source name | Full article text, source link, MMT context note |
-| Newsletter — premium issues | Does not receive these | Deeper analysis issues, briefing packets, monthly capture sheet digest |
-| ProposalPulse | 1 free assessment; $19.99 each | Discounted rate ($14.99) or included assessments/month |
-| MarketPulse | 1 free brief; $50 each | Discounted rate ($35) or included briefs/month |
-| Topic series / deep dives | 2-paragraph excerpt only | Full series access |
+| Contract Tracker listing | Title, Agency, Status, summary + blurred placeholders | Full entry: vendor, value, NAICS decoded from base64 |
+| Contract detail pages | Title, agency, 30-word teaser, "Premium" placeholders | Full description, vendor, value, NAICS, source documents, competitive intel |
+| IDIQ Tracker | Vehicle name + public stub | Full entry: awardees, task order history, ceiling burn rate, re-compete signals |
+| Opportunity Radar | Title + agency + type + set-aside | + AI summary, description, value, sol#, NAICS, confidence, deadline, source |
+| SB Vehicle Scanner | Title + agency + vehicle badge | + Full detail, reasoning, confidence, deadline, value, source links |
+| Glossary | 50 terms + 8-word contractor note teasers | Full 200+ terms + full contractor notes decoded from base64 |
+| Newswire | Headlines + source name only | + editorial context notes decoded from base64 |
+| Agency Intelligence Profiles (6) | Agency name + description only | Full profile: budget intel, programs, vehicles, signals, offices (from base64) |
+| Premium Dashboard | Gate card / sign-in prompt | Full dashboard with sidebar nav, activity feed, quick actions |
+| Weekly Friday Brief | Locked preview | Full brief + archive |
+| Monthly PDF Brief | Email gate (current month) | Full brief + archive download |
+| Pursuit Calendar | Locked teaser | Full calendar with color-coded events |
+| Ask MMT portal | Upgrade prompt | Submission form + answer archive (2 questions/month) |
+| Newsletter — premium issues | Does not receive | Deeper analysis, briefing packets, capture sheet digest |
+| ProposalPulse | 1 free assessment; $19.99 each | Discounted rate ($14.99) |
+| MarketPulse | 1 free brief; $50 each | Discounted rate ($35) |
 
 ### Tier 3 — Institutional / Team (Enterprise)
 
@@ -195,6 +203,21 @@ Every content item gets a `data-access` attribute for consistent gate logic:
   <div data-access="premium" class="mmt-context"><!-- MMT note --></div>
 </div>
 ```
+
+### Data Protection (Base64 Encoding)
+
+Premium field values are NOT rendered as plaintext in HTML. Instead:
+- **Contract Tracker cards**: vendor/value/NAICS encoded in `data-premium-fields` attribute
+- **Contract detail pages**: all premium fields encoded in `data-contract-premium` attribute
+- **Newswire descriptions**: encoded in `data-premium-text` attribute
+- **Agency profiles**: deep data encoded in `data-agency-intel` attribute
+- **Glossary notes**: full text encoded in `data-full-note` attribute
+- **Opportunity Radar + Vehicle Scanner**: auth check in JS before rendering API data
+
+Public users see placeholder text ("Premium", "Premium context", 8-word teasers).
+JS decodes base64 and injects real values only after `getSubscriberStatus()` returns premium.
+
+CSS-first hide rule ensures `[data-access="premium"]` content is `display: none !important` by default.
 
 ### Auth Detection
 
