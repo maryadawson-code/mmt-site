@@ -2,7 +2,7 @@
 // claude-search.js — Shared Claude + web_search helper
 //
 // Replaces Perplexity sonar-pro across all functions.
-// Uses Anthropic API with web_search_20250305 tool.
+// Uses Anthropic API with web_search_20260209 tool.
 // ============================================================
 
 const { withRetry } = require("../lib/retry");
@@ -53,7 +53,7 @@ async function callClaudeSearch(systemPrompt, userPrompt, opts = {}) {
       max_tokens: maxTokens,
       system: systemPrompt,
       messages: [{ role: "user", content: userPrompt }],
-      tools: [{ type: "web_search_20250305" }],
+      tools: [{ type: "web_search_20260209", name: "web_search", max_uses: 5 }],
       temperature,
     }),
   }), { maxRetries: 2, baseDelayMs: 3000 });

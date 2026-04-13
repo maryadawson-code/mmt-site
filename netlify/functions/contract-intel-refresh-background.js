@@ -260,7 +260,7 @@ Return ONLY valid JSON. No markdown code fences. No text before or after the JSO
 
 // ============================================================
 // HELPER: Call Claude API with web_search tool and parse JSON
-// Replaces Perplexity sonar-pro. Uses Anthropic web_search_20250305.
+// Replaces Perplexity sonar-pro. Uses Anthropic web_search_20260209.
 // ============================================================
 
 async function callClaudeSearch(systemPrompt, userMessage, _maxSearches, model, maxTokens) {
@@ -278,7 +278,7 @@ async function callClaudeSearch(systemPrompt, userMessage, _maxSearches, model, 
       temperature: 0.3,
       system: systemPrompt,
       messages: [{ role: "user", content: userMessage }],
-      tools: [{ type: "web_search_20250305" }],
+      tools: [{ type: "web_search_20260209", name: "web_search", max_uses: 5 }],
     }),
   }));
 

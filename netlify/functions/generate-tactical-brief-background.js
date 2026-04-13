@@ -99,7 +99,7 @@ async function callClaudeSearch(systemPrompt, userPrompt, maxTokens = 4000) {
       max_tokens: maxTokens,
       system: systemPrompt,
       messages: [{ role: "user", content: userPrompt }],
-      tools: [{ type: "web_search_20250305" }],
+      tools: [{ type: "web_search_20260209", name: "web_search", max_uses: 5 }],
       temperature: 0.1,
     }),
   }), { maxRetries: 2, baseDelayMs: 3000 });
@@ -1314,7 +1314,7 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
             <li>If we can't resolve it, you'll receive a full refund</li>
           </ul>
           <p>You don't need to do anything. We'll follow up.</p>
-          <p>Questions? Reply to this email or contact <a href="mailto:mary@missionmeetstech.com">mary@missionmeetstech.com</a>.</p>
+          <p>Questions? Reply to this email or contact <a href="mailto:support@missionmeetstech.com">support@missionmeetstech.com</a>.</p>
           <p style="margin-top:24px;">— Mission Meets Tech</p>
         </div>`,
         from: "Mission Meets Tech <noreply@missionmeetstech.com>",

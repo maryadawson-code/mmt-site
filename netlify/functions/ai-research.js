@@ -50,7 +50,7 @@ exports.handler = async (event) => {
             max_tokens: 4000,
             system: SYSTEM_PROMPT,
             messages: [{ role: "user", content: query }],
-            tools: [{ type: "web_search_20250305" }],
+            tools: [{ type: "web_search_20260209", name: "web_search", max_uses: 5 }],
             temperature: 0.3,
           }),
         });

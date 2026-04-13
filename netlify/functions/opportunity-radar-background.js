@@ -106,7 +106,7 @@ async function callClaude(systemPrompt, userMessage, maxSearches, model, maxToke
       max_tokens: maxTokens,
       temperature: 0.3,
       system: systemPrompt,
-      tools: [{ type: "web_search_20250305", name: "web_search", max_uses: maxSearches }],
+      tools: [{ type: "web_search_20260209", name: "web_search", max_uses: maxSearches }],
       messages: [{ role: "user", content: userMessage }],
     }),
   }));
@@ -131,7 +131,7 @@ async function callClaude(systemPrompt, userMessage, maxSearches, model, maxToke
         model,
         max_tokens: maxTokens,
         system: systemPrompt,
-        tools: [{ type: "web_search_20250305", name: "web_search", max_uses: maxSearches }],
+        tools: [{ type: "web_search_20260209", name: "web_search", max_uses: maxSearches }],
         messages: [
           { role: "user", content: userMessage },
           { role: "assistant", content: finalData.content },
