@@ -93,15 +93,65 @@ Before publishing any copy, ask: "Would Mary actually say this out loud to someo
 - If you see `#00E5FA`, `#00FF85`, `#00050F`, `#0D1117`, `#0A1628`, `Space Grotesk`, `nav-glass`, `nav-apple`, `--mmt-cyan`, `--mmt-dark`, `--mmt-slate` in a source file, it's a regression. Fix it.
 - Run `scripts/clean-source-theme.js` if needed (idempotent).
 
-### Nav
-- Canonical (as of 2026-04-09, package override): Intelligence, ProposalPulse, MarketPulse, Resources, Podcast, About + Search + Choose a Tool button
-- Choose a Tool button points to /resources.html#paid-tools (the paid tools band at the top of Resources). Do NOT regress to "Start Free" — there are two free-entry products.
-- Products ARE in the main nav. The prior rule keeping products out of the nav was explicitly overridden by user decision when adopting the GovCon-team-focused redesign package. The footer Tools column also surfaces them.
+### Nav (as of 2026-04-13)
+- **Primary links**: Intelligence, ProposalPulse, MarketPulse, Resources, Podcast, About
+- **Utility cluster**: Search icon | Sign In (text link) | ★ Premium (text link → /pricing) | Choose a Tool (primary CTA → /resources.html#paid-tools)
+- **Logged-in premium state**: Sign In replaced by Member chip (initials ▾) with dropdown: Dashboard, My Briefs, Pursuit Calendar, Sign Out
+- **Mobile**: Logo + hamburger → drawer with all nav items + ★ Go Premium + Choose a Tool
+- Products ARE in the main nav. Never demote them.
+- `mmt-paywall.js` is injected on ALL pages via `siteScriptTag` in build.js — handles auth state toggling
 
-### Footer
-- Explore: Intelligence, Podcast, Resources, ProposalPulse, MarketPulse, About
-- Connect: Subscribe, Contact, LinkedIn, Apple Podcasts, Spotify
-- Legal row: Privacy, Terms, Security
+### Footer (as of 2026-04-13)
+- **Premium band** (above footer columns): ★ MMT Premium value prop + "See premium plans" CTA
+- **6 columns**: Brand | Read | Tools | Reference | Trust | ★ Premium
+- Read: Latest Intelligence, Topics, Podcast, Subscribe
+- Tools: ProposalPulse, MarketPulse, Contract Tracker
+- Reference: Getting Started, Contracting Hub, Glossary, Agency Sources, News Wire, IDIQ Tracker
+- Trust: About, Editorial Standards, Security, Privacy, Terms, Contact (underlined, teal, mailto)
+- ★ Premium: MMT Premium, Founding Member, Institutional
+- "Security & Privacy" removed from ★ Premium group (already in Trust)
+
+---
+
+## 🔒 Paywall Architecture (as of 2026-04-13)
+
+### Tier System
+- **Free**: Newsletter, podcast, article previews (2 paragraphs for <90 day articles), 50 glossary terms, contract/newswire headlines
+- **Premium** ($199-249/yr or $29/mo): Full articles, Capture Intelligence, Contract Tracker full intel, IDIQ Tracker, Agency Profiles, Opportunity Radar, Friday Brief, Monthly Brief, Pursuit Calendar, Ask MMT, full Glossary, Newswire context notes
+- **Institutional** ($2,500-5,000/yr): Everything in Premium + 5 seats + Watchlist Alerts + exportable intel + priority Q&A
+
+### Data Protection
+Premium field values are NOT in the HTML source. They are base64-encoded in data attributes and decoded by `mmt-paywall.js` only after auth check:
+- `data-premium-fields` — Contract Tracker listing cards (vendor, value, NAICS)
+- `data-contract-premium` — Contract detail pages (vendor, value, NAICS, description, source link)
+- `data-premium-text` — Newswire descriptions
+- `data-agency-intel` — Agency profile deep data (budget, programs, vehicles, signals, offices)
+- `data-full-note` — Glossary contractor notes (8-word teaser in HTML, full text in base64)
+- `contract-detail.js` — Current Intelligence section gated via `mmtIsPremium()` check
+- `contract-tracker.js` — Opportunity Radar + SB Vehicle Scanner gated via `isPremiumUser()` check
+
+### CSS-First Enforcement
+`tokens.css` contains: `[data-access="premium"] { display: none !important; }`
+JS adds `.access-granted` class only after `getSubscriberStatus()` returns premium.
+If JS fails to load, premium content stays hidden (safe failure).
+
+### Auth State
+`mmt-paywall.js` is loaded on ALL pages via `siteScriptTag` in build.js.
+Auth checked via: cookies → localStorage (`mmt_premium`) → tier cache.
+Nav state toggled by `applyNavPremiumState()` on DOMContentLoaded.
+
+### Key Files
+- `js/mmt-paywall.js` — auth detection, paywall visibility, premium data decoders
+- `js/contract-detail.js` — Current Intelligence auth gate
+- `js/contract-tracker.js` — Opportunity Radar + Vehicle Scanner auth gate
+- `styles/tokens.css` — CSS-first hide rules, button contrast, page shell classes
+- `integrity-audit.js` — 40-route live audit with 9 paywall enforcement checks
+- `scripts/validate-dist.js` — 266-page local validation
+
+### Specs
+- `PAYWALL_SPEC.md` — complete free vs paid definition, content gating architecture
+- `ADDON_FEATURES_SPEC.md` — 9 premium features with wireframes and build sequence
+- `AUTO_INTELLIGENCE_SPEC.md` — autonomous update system for premium resources
 
 ---
 
@@ -120,24 +170,40 @@ ProposalPulse and MarketPulse are how MMT makes money. NEVER:
 Before declaring work complete, verify:
 
 1. **Build passes**: `node build.js` exits cleanly
-2. **Integrity audit passes**: `node integrity-audit.js` returns SUCCESS
-3. **Zero dark-mode colors in dist/**: `grep -rl '#00E5FA\|#00FF85\|#00050F' dist/ --include="*.html" | wc -l` returns 0
-4. **Voice check on changed copy**: Re-read every line of changed text against Voice Rules above
-5. **Product visibility**: ProposalPulse and MarketPulse appear in homepage services grid AND footer
-6. **Nav consistency**: All pages have canonical 4-link nav
-7. **Footer consistency**: All pages have canonical 3-column footer with products in Explore
+2. **Dist validation passes**: `node scripts/validate-dist.js` returns "266 dist pages, all sweeps pass"
+3. **Integrity audit**: `node integrity-audit.js` — 40 routes, all 200 OK, all fortress=SUCCESS
+4. **Zero dark-mode colors in dist/**: `grep -rl '#00E5FA\|#00FF85\|#00050F' dist/ --include="*.html" | wc -l` returns 0
+5. **Zero frontmatter leaks**: `grep -r 'category:' dist/ --include="*.html" | grep -v meta | wc -l` returns 0
+6. **Paywall enforcement**: open /contract-tracker in incognito — vendor/value/NAICS show "Premium" placeholders, not real data
+7. **Button contrast**: all `.btn-primary` buttons have white text on dark background (tokens.css `!important` rule)
+8. **Product visibility**: ProposalPulse and MarketPulse appear in nav, homepage, and footer
+9. **Nav consistency**: All pages have canonical nav with Sign In + ★ Premium + Choose a Tool
+10. **Footer consistency**: All pages have 6-column footer (Read, Tools, Reference, Trust, ★ Premium) + premium band
+11. **Premium subscribe path**: ★ Premium in header → /pricing → Stripe Payment Links work
+12. **Voice check on changed copy**: Re-read every line of changed text against Voice Rules above
 
 ---
 
-## Status (as of 2026-03-29)
-All previously known issues are RESOLVED:
-- Newswire: 100K+ content, 100+ headlines from 10 RSS sources
-- Newsletter: 81 articles, 7 pagination pages, all live
-- About page: Black background logo removed, only headshots remain
-- All 15 pages return 200 OK
+## Status (as of 2026-04-13)
+All systems operational. 25-commit session completed.
+- **266 pages** pass `validate-dist.js` (all sweeps)
+- **40 routes** pass `integrity-audit.js` (IntegrityPulse) with fortress=SUCCESS
+- **100 articles**, 9 topic pages, 32 contract pages, 5 podcast episodes
+- **Paywall enforced** via CSS-first hide (`[data-access="premium"] { display: none !important }`)
+- **Premium data protected**: vendor/value/NAICS/descriptions encoded as base64 in HTML attributes, decoded by JS only after auth check
+- **Contract detail pages** (`/contracts/[slug]/`) gated: metadata placeholders + Current Intelligence gated via `contract-detail.js` auth check
+- **Opportunity Radar + SB Vehicle Scanner** gated in `contract-tracker.js` via `mmtIsPremium()` check
+- **Newswire descriptions**, **agency profile deep data**, **glossary contractor notes** all base64-encoded
+- **Subscribe path complete**: ★ Premium in header + footer band + homepage pricing CTAs + gate cards → /pricing with Stripe Payment Links
+- **Premium pages built**: Dashboard, Friday Brief, Monthly Brief, Pursuit Calendar, Ask MMT, 6 Agency Profiles, IDIQ Tracker
+- **Auto-intelligence scripts**: normalize.js (100 articles), extract-signals.js (144 signals), match-signals.js (80 matches)
+- **Design token system**: `styles/tokens.css` injected on all pages via build pipeline
+- **Page shell classes**: page-editorial, page-product, page-reference, page-trust, page-utility applied to all templates
+- **Web search tool**: upgraded to `web_search_20260209` with `name: "web_search"` across all 6 Netlify functions
 - Zero dark mode regressions
-- ProposalPulse + MarketPulse visible (4 mentions each on homepage)
-- No broken internal links on homepage
+- Zero frontmatter leaks
+- Zero "Twice-twice-weekly" strings
+- ProposalPulse rubric uses federal evaluator language (Vehicle & Acquisition Fit, Cost/Price Credibility, Funding Ask & Scope)
 
 ## Agent Hardening Contracts (S3-03)
 
@@ -158,7 +224,7 @@ These contracts are mandatory for all Claude Code agents operating in this repo.
 - **Idempotency for retryable writes.** Any write operation that may be retried must be idempotent.
 - **Audit logging for mutations.** Content mutations should be logged or traceable.
 - **Correlation IDs for multi-step workflows.** Build pipelines, RSS sync, and newsletter sync must propagate a trace ID.
-- **Post-deploy smoke-test evidence for critical paths.** After any production deploy, run `node integrity-audit.js` and verify all 15 pages return 200.
+- **Post-deploy smoke-test evidence for critical paths.** After any production deploy, run `node integrity-audit.js` and verify all 40 routes return 200 with fortress=SUCCESS. Paywall checks must pass on all applicable routes.
 
 ## Agent Operating Contract
 
