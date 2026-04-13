@@ -234,20 +234,7 @@ function requireOrder(relFile, pairs, label) {
 const idx = 'index.html';
 requireString(idx, 'Choose what you need now', 'homepage: quick intent selector present');
 requireString(idx, 'For teams trying to win work', 'homepage: paid tools band present');
-requireString(
-  idx,
-  'Built for teams trying to qualify, shape, and strengthen pursuits',
-  'homepage: buyer proof headline present'
-);
-requireString(
-  idx,
-  'Trusted in the moments that matter most for federal growth teams',
-  'homepage: buyer proof subhead present'
-);
-requireString(idx, 'Before red team', 'homepage: use-case chip "Before red team" present');
-requireString(idx, 'Before gate review', 'homepage: use-case chip "Before gate review" present');
-requireString(idx, 'Before leadership readout', 'homepage: use-case chip "Before leadership readout" present');
-requireString(idx, 'Before partner outreach', 'homepage: use-case chip "Before partner outreach" present');
+// Buyer proof band removed per v3 spec (folded into routing block)
 
 // Homepage section-order check. Strict requirements:
 //   1. "Featured capture sheet" must appear EXACTLY ONCE on index.html.
@@ -274,12 +261,10 @@ const idxHtml = fs.readFileSync(path.join(DIST_DIR, idx), 'utf8');
 
   const quick = idxHtml.indexOf('Choose what you need now');
   const paid = idxHtml.indexOf('For teams trying to win work');
-  const buyer = idxHtml.indexOf('Built for teams trying to qualify');
   const featured = idxHtml.indexOf('Featured capture sheet');
   const order = [
     ['Quick intent selector', quick],
     ['Paid tools band', paid],
-    ['Buyer proof band', buyer],
     ['Featured capture sheet (section label)', featured],
   ];
   let lastIdx2 = -1;

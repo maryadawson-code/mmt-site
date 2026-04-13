@@ -527,6 +527,13 @@ function generateArticlePages(articles, glossaryTerms) {
       articleContent = autoLinkGlossaryTerms(articleContent, glossaryTerms);
     }
 
+    // Strip "What you can do next" CTA blocks from article body
+    // These are baked into 74+ markdown sources and should not render as article content
+    articleContent = articleContent.replace(/<hr>\s*<p><strong>What you can do next<\/strong><\/p>\s*<ul>[\s\S]*?<\/ul>/gi, '');
+    articleContent = articleContent.replace(/<p><strong>What you can do next<\/strong><\/p>\s*<ul>[\s\S]*?<\/ul>/gi, '');
+    // Also strip the LinkedIn post reference line that follows
+    articleContent = articleContent.replace(/<p>Mary['']s full LinkedIn post[^<]*<a[^>]*>[^<]*<\/a>[^<]*<\/p>/gi, '');
+
     // Calculate article age in days for paywall gating
     const articleDate = new Date(article.date);
     const ageDays = Math.floor((Date.now() - articleDate.getTime()) / 86400000);
@@ -1163,8 +1170,9 @@ function generateTopicFilterChipsHtml(archive) {
   ).join('\n          ');
 }
 
-function generateLatestAllHtml(archive, feed) {
-  const articles = archive.map(item => ({
+function generateLatestAllHtml(archive, feed, excludeSlugs) {
+  const skipSlugs = excludeSlugs || new Set();
+  const articles = archive.filter(item => !skipSlugs.has(item.slug)).map(item => ({
     type: 'article',
     title: item.title,
     date: item.date,
@@ -1217,8 +1225,17 @@ function generateLatestAllHtml(archive, feed) {
                 <source src="${escapeHtml(item.audioUrl)}" type="audio/mpeg">
               </audio>`
         : '';
+      // Detect trailer (< 60 seconds duration)
+      const isTrailer = item.duration && (() => {
+        const parts = item.duration.split(':').map(Number);
+        const totalSec = parts.length === 3 ? parts[0]*3600 + parts[1]*60 + parts[2] : parts.length === 2 ? parts[0]*60 + parts[1] : 0;
+        return totalSec < 60;
+      })();
+      const episodeLabel = isTrailer
+        ? '<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#D97706;background:rgba(251,191,36,0.1);border-radius:4px;padding:2px 8px;">TRAILER</span> '
+        : '';
       return `<article class="card rounded-xl p-6 archive-item" data-content-type="episode" style="border-left:3px solid #92710A;background:rgba(146,113,10,0.03);">
-          <p class="text-xs uppercase tracking-wider font-semibold mb-1" style="color:#92710A;">&#127911; Fed UP Podcast</p>
+          <p class="text-xs uppercase tracking-wider font-semibold mb-1" style="color:#92710A;">&#127911; Fed UP Podcast ${episodeLabel}</p>
           <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-navy);">${escapeHtml(item.title)}</h3>
           <p class="text-xs mb-2" style="color:var(--mmt-text-secondary);">${calendarSvg}${escapeHtml(item.date)}${item.duration ? ` &middot; ${item.duration}` : ''}</p>
           ${item.description ? `<p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);">${escapeHtml(item.description)}</p>` : ''}
@@ -1242,6 +1259,12 @@ function generateLatestAllHtml(archive, feed) {
           <p class="text-xs" style="color:var(--mmt-text-secondary);">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
         </article>`;
   }).join('\n        ');
+}
+
+function getEditorPicksSlugs(archive) {
+  const featured = archive.filter(a => a.featured);
+  const picks = featured.length >= 3 ? featured.slice(0, 3) : [...featured, ...archive.filter(a => !a.featured)].slice(0, 3);
+  return new Set(picks.map(p => p.slug));
 }
 
 function generateEditorsPicksHtml(archive) {
@@ -2212,7 +2235,7 @@ function inlineTailwindCss(html) {
         <a href="/security.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Security</a>
         <a href="/privacy.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Privacy</a>
         <a href="/terms.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Terms</a>
-        <a href="mailto:mary@missionmeetstech.com" class="hover:opacity-70" style="color:var(--mmt-text-secondary);text-decoration:underline;">Contact</a>
+        <a href="mailto:mary@missionmeetstech.com" class="hover:opacity-70" style="color:var(--mmt-teal);text-decoration:underline;">Contact</a>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;">
         <strong style="color:var(--mmt-teal);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">★ Premium</strong>
@@ -2534,9 +2557,9 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     '<!-- BUILD:LATEST_ISSUES -->': generateLatestIssuesHtml(archive, 3),
     '<!-- BUILD:ALL_ISSUES -->': generateArchiveHtml(archive),
     '<!-- BUILD:TOPIC_FILTER_CHIPS -->': generateTopicFilterChipsHtml(archive),
-    '<!-- BUILD:LATEST_ALL -->': generateLatestAllHtml(archive, feed),
-    '<!-- BUILD:ARTICLE_COUNT_BADGE -->': generateArticleCountBadge(archive, feed),
     '<!-- BUILD:EDITORS_PICKS -->': generateEditorsPicksHtml(archive),
+    '<!-- BUILD:LATEST_ALL -->': generateLatestAllHtml(archive, feed, getEditorPicksSlugs(archive)),
+    '<!-- BUILD:ARTICLE_COUNT_BADGE -->': generateArticleCountBadge(archive, feed),
     '<!-- BUILD:ANALYSIS_TOPIC_CHIPS -->': generateTopicFilterChipsHtml(archive),
     '<!-- BUILD:PODCAST_TEASER -->': generatePodcastTeaserHtml(feed),
     '<!-- BUILD:PODCAST_EPISODES -->': generatePodcastEpisodesHtml(feed),
