@@ -375,8 +375,41 @@
         </details>
         <details style="border:1px solid rgba(69,123,157,0.12);border-radius:10px;padding:0;">
           <summary style="padding:16px 20px;font-size:15px;font-weight:600;color:var(--mmt-navy);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;">What happens after the first free brief?<span style="color:var(--mmt-teal);font-size:18px;transition:transform 0.2s;">+</span></summary>
-          <div style="padding:0 20px 16px;font-size:14px;color:var(--mmt-text-secondary);line-height:1.65;">You get 1 free brief per email address. Additional briefs are $50 each. If you need ongoing coverage or multiple briefs per month, email <a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a> and we can work out a package.</div>
+          <div style="padding:0 20px 16px;font-size:14px;color:var(--mmt-text-secondary);line-height:1.65;">You get 1 free brief per email address. Additional briefs are $50 each ($35 for Premium members). For brief packs or ongoing team coverage, see the team inquiry form below.</div>
         </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team inquiry block -->
+  <section class="px-6" style="padding:48px 0;">
+    <div style="max-width:880px;margin:0 auto;background:var(--mmt-soft);border:1px solid var(--mmt-border);border-radius:14px;padding:32px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;">
+        <div>
+          <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--mmt-teal);margin-bottom:8px;">Teams &amp; Agencies</p>
+          <h3 style="font-size:20px;font-weight:700;color:var(--mmt-navy);margin-bottom:12px;">Brief packs and ongoing coverage</h3>
+          <p style="font-size:14px;color:var(--mmt-text-secondary);line-height:1.6;margin-bottom:16px;">For BD teams running multiple pursuits or agencies needing recurring market research. Brief packs start at 3 briefs. Ongoing coverage available monthly.</p>
+          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--mmt-text-secondary);">
+            <li style="padding-left:20px;position:relative;"><span style="position:absolute;left:0;color:var(--mmt-teal);">&rarr;</span> Brief Pack (3 briefs): structured purchase</li>
+            <li style="padding-left:20px;position:relative;"><span style="position:absolute;left:0;color:var(--mmt-teal);">&rarr;</span> Team Coverage: scoped monthly retainer</li>
+            <li style="padding-left:20px;position:relative;"><span style="position:absolute;left:0;color:var(--mmt-teal);">&rarr;</span> Volume pricing for 5+ seat teams</li>
+          </ul>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--mmt-text-secondary);">Name</label>
+          <input type="text" id="team-name" placeholder="Your name" style="padding:10px 14px;border:1px solid var(--mmt-border);border-radius:8px;font-size:14px;">
+          <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--mmt-text-secondary);">Work email</label>
+          <input type="email" id="team-email" placeholder="you@company.com" style="padding:10px 14px;border:1px solid var(--mmt-border);border-radius:8px;font-size:14px;">
+          <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--mmt-text-secondary);">What do you need?</label>
+          <select id="team-need" style="padding:10px 14px;border:1px solid var(--mmt-border);border-radius:8px;font-size:14px;background:var(--mmt-white);">
+            <option value="">Select one</option>
+            <option value="brief-pack">Brief Pack (3 briefs)</option>
+            <option value="monthly">Monthly Coverage</option>
+            <option value="team">Team / Multi-seat Access</option>
+            <option value="other">Other</option>
+          </select>
+          <button onclick="var n=document.getElementById('team-name').value,e=document.getElementById('team-email').value,nd=document.getElementById('team-need').value;if(!n||!e){alert('Please fill in name and email.');return;}window.location.href='mailto:support@missionmeetstech.com?subject='+encodeURIComponent('[MarketPulse Team] '+nd+' — '+n)+'&body='+encodeURIComponent('Name: '+n+'\nEmail: '+e+'\nNeed: '+nd);alert('Request sent. We will respond within 1 business day.');" class="btn-primary" style="margin-top:4px;padding:12px 20px;font-size:14px;">Request team pricing</button>
+        </div>
       </div>
     </div>
   </section>
