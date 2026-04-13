@@ -2194,7 +2194,7 @@ function inlineTailwindCss(html) {
   const editorialFooter = `<div style="background:var(--mmt-navy);padding:16px 0;">
     <div class="wrap" style="text-align:center;">
       <p style="font-size:13px;color:rgba(255,255,255,0.7);margin:0 0 8px;">Reading on LinkedIn? Get direct email delivery — plus the archive and tools.</p>
-      <a href="/newsletter.html" class="no-underline" style="font-size:12px;font-weight:700;padding:6px 16px;background:var(--mmt-teal);color:#fff;border-radius:6px;text-decoration:none;" onclick="if(typeof plausible!=='undefined')plausible('Footer Email Migrate Click')">Subscribe at missionmeetstech.com &rarr;</a>
+      <a href="/newsletter.html" class="btn-primary no-underline" style="font-size:12px;padding:6px 16px;border-radius:6px;" onclick="if(typeof plausible!=='undefined')plausible('Footer Email Migrate Click')">Subscribe at missionmeetstech.com &rarr;</a>
     </div>
   </div>
   <footer class="wrap" style="padding:28px 0 58px;">

@@ -119,6 +119,35 @@
 .js-ready [data-dismiss], .js-ready [data-close] { display: flex; }
 
 /* ============================================================
+   BUTTON CONTRAST FIX — forces white text on all dark-bg buttons
+   This rule must survive build.js color migration pipeline.
+   Uses !important because the migration replaces color values
+   globally and this is the last-resort anchor.
+   ============================================================ */
+
+.btn-primary,
+a.btn-primary,
+button.btn-primary {
+  color: rgb(255,255,255) !important;
+  -webkit-text-fill-color: rgb(255,255,255) !important;
+}
+.btn-primary:hover,
+a.btn-primary:hover {
+  color: rgb(255,255,255) !important;
+  -webkit-text-fill-color: rgb(255,255,255) !important;
+}
+
+/* Gate card buttons — explicit white text in all contexts */
+[data-gate-overlay] .btn-primary,
+[data-gate-overlay] a.btn-primary,
+.article-gate-card .btn-primary,
+.article-gate-card a.btn-primary,
+[data-access] ~ [data-gate-overlay] a {
+  color: rgb(255,255,255) !important;
+  -webkit-text-fill-color: rgb(255,255,255) !important;
+}
+
+/* ============================================================
    BUTTON SYSTEM — canonical definitions
    ============================================================ */
 
