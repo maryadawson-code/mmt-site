@@ -156,17 +156,20 @@ for (const relFile of files) {
   const full = path.join(DIST_DIR, relFile);
   const html = fs.readFileSync(full, 'utf8');
 
-  const navMatch = html.match(/<nav[\s\S]*?<\/nav>/i);
-  if (navMatch) {
-    const nav = navMatch[0];
-    const required = [
-      'brand-mark',
-      'Choose a Tool',
-      '/resources.html#paid-tools',
-    ];
-    for (const marker of required) {
-      if (!nav.includes(marker)) {
-        addFailure(`nav missing "${marker}"`, relFile, '');
+  // Skip nav check on pages with custom nav shells (dashboard)
+  if (!html.includes('dash-nav') && !html.includes('dash-shell')) {
+    const navMatch = html.match(/<nav[\s\S]*?<\/nav>/i);
+    if (navMatch) {
+      const nav = navMatch[0];
+      const required = [
+        'brand-mark',
+        'Choose a Tool',
+        '/resources.html#paid-tools',
+      ];
+      for (const marker of required) {
+        if (!nav.includes(marker)) {
+          addFailure(`nav missing "${marker}"`, relFile, '');
+        }
       }
     }
   }

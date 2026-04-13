@@ -2283,16 +2283,19 @@ function inlineTailwindCss(html) {
   // primary links, and the Subscribe + Security utility links. If any of those
   // markers is missing inside the <nav> block, the page has drifted and we
   // replace the whole block.
-  const navBlockMatch = html.match(/<nav[\s\S]*?<\/nav>/i);
-  if (navBlockMatch) {
-    const navBlock = navBlockMatch[0];
-    const hasCanonicalNav =
-      navBlock.includes('brand-mark') &&
-      navBlock.includes('Choose a Tool') &&
-      navBlock.includes('/resources.html#paid-tools') &&
-      navBlock.includes('nav-logged-out');
-    if (!hasCanonicalNav) {
-      html = html.replace(/<nav[\s\S]*?<\/nav>/i, editorialNav);
+  // Skip nav replacement on pages with custom nav shells (dashboard)
+  if (!html.includes('dash-nav') && !html.includes('dash-shell')) {
+    const navBlockMatch = html.match(/<nav[\s\S]*?<\/nav>/i);
+    if (navBlockMatch) {
+      const navBlock = navBlockMatch[0];
+      const hasCanonicalNav =
+        navBlock.includes('brand-mark') &&
+        navBlock.includes('Choose a Tool') &&
+        navBlock.includes('/resources.html#paid-tools') &&
+        navBlock.includes('nav-logged-out');
+      if (!hasCanonicalNav) {
+        html = html.replace(/<nav[\s\S]*?<\/nav>/i, editorialNav);
+      }
     }
   }
 
@@ -2765,9 +2768,8 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
       }
       html = html.replace('</body>', siteScriptTag + '\n</body>');
       html = inlineTailwindCss(html);
-      // Dashboard has its own shell — skip nav/footer replacement
-      if (src.includes('dashboard.html')) {
-        // Remove any injected nav-editorial that the migration pipeline added
+      // Dashboard cleanup: remove any nav-editorial that slipped through
+      if (src.includes('dashboard.html') && html.includes('nav-editorial')) {
         html = html.replace(/<nav class="nav-editorial">[\s\S]*?<\/nav>/g, '');
       }
       fs.writeFileSync(destPath, html);

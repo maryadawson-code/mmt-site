@@ -37,7 +37,7 @@
         <button style="padding:6px 14px;border:1px solid var(--mmt-border);background:transparent;color:var(--mmt-text-secondary);border-radius:8px;font-size:13px;cursor:pointer;">HHS/CMS</button>
       </div>
 
-      <div class="cal-entry">
+      <div class="cal-entry" data-agency="dha">
         <div style="font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;">Apr 14</div>
         <div>
           <span class="cal-chip chip-rfi">Sources Sought</span>
@@ -46,7 +46,7 @@
         </div>
         <a href="/contract-tracker.html" style="font-size:13px;color:var(--mmt-teal);text-decoration:none;white-space:nowrap;">View &rarr;</a>
       </div>
-      <div class="cal-entry">
+      <div class="cal-entry" data-agency="va">
         <div style="font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;">Apr 17</div>
         <div>
           <span class="cal-chip chip-due">Proposal Due</span>
@@ -55,7 +55,7 @@
         </div>
         <a href="/contract-tracker.html" style="font-size:13px;color:var(--mmt-teal);text-decoration:none;white-space:nowrap;">View &rarr;</a>
       </div>
-      <div class="cal-entry">
+      <div class="cal-entry" data-agency="hhs">
         <div style="font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;">Apr 28</div>
         <div>
           <span class="cal-chip chip-rfi">RFI</span>
@@ -64,7 +64,7 @@
         </div>
         <a href="/contract-tracker.html" style="font-size:13px;color:var(--mmt-teal);text-decoration:none;white-space:nowrap;">View &rarr;</a>
       </div>
-      <div class="cal-entry">
+      <div class="cal-entry" data-agency="dha">
         <div style="font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;">May 6</div>
         <div>
           <span class="cal-chip chip-rfp">Draft RFP</span>
@@ -73,7 +73,7 @@
         </div>
         <a href="/contract-tracker.html" style="font-size:13px;color:var(--mmt-teal);text-decoration:none;white-space:nowrap;">View &rarr;</a>
       </div>
-      <div class="cal-entry">
+      <div class="cal-entry" data-agency="dha">
         <div style="font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;">May 15</div>
         <div>
           <span class="cal-chip chip-recompete">Re-compete</span>
@@ -82,7 +82,7 @@
         </div>
         <a href="/idiq-tracker.html" style="font-size:13px;color:var(--mmt-teal);text-decoration:none;white-space:nowrap;">View &rarr;</a>
       </div>
-      <div class="cal-entry" style="border-bottom:none;">
+      <div class="cal-entry" data-agency="arpa-h" style="border-bottom:none;">
         <div style="font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;">Jun 1</div>
         <div>
           <span class="cal-chip chip-award">Award Expected</span>
@@ -104,5 +104,28 @@
   <footer class="wrap"></footer>
   <script src="/js/mmt-paywall.js" defer></script>
   <script src="/js/nav-active.js"></script>
+  <script>
+    // Pursuit Calendar agency filter
+    document.querySelectorAll('button[style*="border:1px solid"]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        // Update active state
+        btn.parentElement.querySelectorAll('button').forEach(function(b) {
+          b.style.background = 'transparent';
+          b.style.color = 'var(--mmt-text-secondary)';
+          b.style.borderColor = 'var(--mmt-border,#D8E0E8)';
+        });
+        btn.style.background = 'rgba(69,123,157,0.08)';
+        btn.style.color = 'var(--mmt-teal,#457B9D)';
+        btn.style.borderColor = 'var(--mmt-teal,#457B9D)';
+        // Filter entries
+        var filter = btn.textContent.trim().toLowerCase();
+        document.querySelectorAll('.cal-entry').forEach(function(entry) {
+          if (filter === 'all') { entry.style.display = ''; return; }
+          var agency = entry.getAttribute('data-agency') || '';
+          entry.style.display = agency.includes(filter) || (filter === 'hhs/cms' && (agency === 'hhs' || agency === 'cms')) ? '' : 'none';
+        });
+      });
+    });
+  </script>
 </body>
 </html>
