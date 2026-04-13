@@ -2528,7 +2528,7 @@ function inlineTailwindCss(html) {
   return html;
 }
 
-function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleMap, agencyArticleMap, articles }) {
+function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleMap, agencyArticleMap, articles, subscriberCount }) {
   // Copy root HTML files (with inlined Tailwind CSS + build-time injections)
   const htmlFiles = [
     'index.html', 'about.html', 'podcast.html', 'newsletter.html',
@@ -2630,6 +2630,13 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
       if (ogMap[file]) {
         html = rewriteOgTags(html, ogMap[file]);
       }
+      // Inject subscriber count (from env var or fallback)
+      if (subscriberCount && html.includes('subscriberCount')) {
+        html = html.replace(/(<strong id="subscriberCount">)[^<]*(<\/strong>)/g, `$1${subscriberCount}$2`);
+        html = html.replace(/Join 1,750\+/g, `Join ${subscriberCount}+`);
+        html = html.replace(/Join 1,528\+/g, `Join ${subscriberCount}+`);
+      }
+
       // Inject build-time content
       for (const [marker, content] of Object.entries(injections)) {
         if (html.includes(marker)) {
@@ -2777,7 +2784,9 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     }
   });
 
-  // Copy premium brief detail pages (premium/briefs/*.html)
+  // Premium brief detail pages are auto-discovered from premium/briefs/*.html.
+  // To add a new brief, drop an HTML file in that directory — no build.js edit needed.
+  // The archive page (premium/briefings.html) currently requires manual updates.
   const briefsSrcDir = path.join(__dirname, 'premium', 'briefs');
   if (fs.existsSync(briefsSrcDir)) {
     const briefFiles = fs.readdirSync(briefsSrcDir).filter(f => f.endsWith('.html'));
@@ -2786,6 +2795,10 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
       const destPath = path.join(DIST_DIR, 'premium', 'briefs', file);
       ensureDir(path.dirname(destPath));
       let html = fs.readFileSync(srcPath, 'utf8');
+      // Add noindex (premium content, not for public crawling)
+      if (!html.includes('noindex')) {
+        html = html.replace('<head>', '<head>\n  <meta name="robots" content="noindex, nofollow">');
+      }
       html = html.replace('</head>',
         '  <link rel="manifest" href="/manifest.json">\n' +
         '  <meta name="apple-mobile-web-app-capable" content="yes">\n' +
@@ -2798,6 +2811,7 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
       html = html.replace('</body>', siteScriptTag + '\n</body>');
       html = inlineTailwindCss(html);
       fs.writeFileSync(destPath, html);
+      console.log(`Copied premium/briefs/${file}`);
     });
     console.log(`Copied ${briefFiles.length} premium brief pages`);
   }
@@ -3626,6 +3640,10 @@ async function build() {
   });
   console.log('Built dist/styles/tailwind.css');
 
+  // 0b. Subscriber count — reads from env var or falls back to static value
+  // LinkedIn subscriber count is updated manually via Netlify env var
+  const subscriberCount = process.env.MMT_SUBSCRIBER_COUNT || '1,750';
+
   // 1. Load and process newsletter articles
   console.log('--- Processing newsletter articles ---');
   const articles = loadArticles();
@@ -3695,7 +3713,7 @@ async function build() {
 
   // 6. Copy all static files (with build-time injections)
   console.log('\n--- Copying static files ---');
-  copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleMap, agencyArticleMap, articles });
+  copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleMap, agencyArticleMap, articles, subscriberCount });
 
   // 7. Write a deploy marker file. This is the simplest way to verify
   // from outside the build pipeline whether a given commit actually
