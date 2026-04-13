@@ -1478,23 +1478,42 @@ function generateContractPages(contracts) {
       ? `<div class="mt-4 pt-4" style="border-top:1px solid var(--mmt-soft);"><span class="text-xs" style="color:var(--mmt-text-secondary);"><strong style="color:var(--mmt-text);">NAICS:</strong> ${escapeHtml(c.naics)}</span></div>`
       : '';
 
+    // Encode premium fields as base64 for paywall protection
+    const contractPremiumData = Buffer.from(JSON.stringify({
+      vendor: c.vendor, value: c.value, naics: c.naics || '',
+      link: c.link || '', description: c.description
+    })).toString('base64');
+
     let html = template
       .replace(/\{\{CONTRACT_NAME\}\}/g, escapeHtml(c.name))
       .replace(/\{\{CONTRACT_SLUG\}\}/g, cSlug)
       .replace(/\{\{AGENCY\}\}/g, escapeHtml(c.agency))
-      .replace(/\{\{VENDOR\}\}/g, escapeHtml(c.vendor))
-      .replace(/\{\{VALUE\}\}/g, escapeHtml(c.value))
+      .replace(/\{\{VENDOR\}\}/g, '<span class="contract-premium-field" data-field="vendor">Premium</span>')
+      .replace(/\{\{VALUE\}\}/g, '<span class="contract-premium-field" data-field="value">Premium</span>')
       .replace(/\{\{STATUS\}\}/g, escapeHtml(statusLabel))
       .replace(/\{\{STATUS_COLOR\}\}/g, statusColor)
-      .replace(/\{\{NAICS_ROW\}\}/g, naicsRow)
-      .replace(/\{\{DESCRIPTION\}\}/g, escapeHtml(c.description))
-      .replace(/\{\{SAM_LINK\}\}/g, escapeHtml(c.link))
+      .replace(/\{\{NAICS_ROW\}\}/g, c.naics ? `<div class="mt-4 pt-4" style="border-top:1px solid var(--mmt-soft);"><span class="text-xs" style="color:var(--mmt-text-secondary);"><strong style="color:var(--mmt-text);">NAICS:</strong> <span class="contract-premium-field" data-field="naics">Premium</span></span></div>` : '')
+      .replace(/\{\{DESCRIPTION\}\}/g, escapeHtml((c.description || '').split(/\s+/).slice(0, 30).join(' ')) + '...')
+      .replace(/\{\{SAM_LINK\}\}/g, '#')
       .replace(/\{\{CONTRACT_NAME_ENCODED\}\}/g, escapeHtml(c.name))
       .replace(/\{\{NAICS_FALLBACK\}\}/g, c.naics
-        ? `<div><span style="color:var(--mmt-text-secondary);">NAICS:</span> <span style="color:var(--mmt-navy);">${escapeHtml(c.naics)}</span></div>`
+        ? `<div><span style="color:var(--mmt-text-secondary);">NAICS:</span> <span class="contract-premium-field" data-field="naics" style="color:var(--mmt-navy);">Premium</span></div>`
         : '')
       .replace(/\{\{BUILD_DATE\}\}/g, new Date().toISOString().split('T')[0])
       .replace(/\{\{CANONICAL_URL\}\}/g, `${SITE_URL}/contracts/${cSlug}/`);
+
+    // Inject contract premium data attribute on <main>
+    html = html.replace('<main id="main-content">', `<main id="main-content" data-contract-premium="${contractPremiumData}">`);
+
+    // Inject premium gate card before the "Current Intelligence" section
+    const gateCard = `
+    <div id="contract-gate" data-gate-overlay="premium" style="max-width:56rem;margin:0 auto 24px;padding:24px 28px;background:rgba(146,113,10,0.04);border:1px dashed rgba(146,113,10,0.2);border-radius:12px;text-align:center;">
+      <p style="font-size:17px;font-weight:700;color:var(--mmt-navy);margin-bottom:8px;">&#9733; Full contract intelligence is Premium</p>
+      <p style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:16px;">Vendor, value, NAICS, full description, competitive analysis, and source documents.</p>
+      <a href="/pricing.html" class="btn-primary no-underline" style="font-size:14px;padding:12px 24px;">See premium plans &rarr;</a>
+      <p style="font-size:12px;color:var(--mmt-text-secondary);margin-top:10px;">Already a member? <a href="#" onclick="if(typeof mmtSignIn==='function')mmtSignIn();return false;" style="color:var(--mmt-teal);font-weight:600;">Sign in</a></p>
+    </div>`;
+    html = html.replace('<!-- Current Intelligence -->', gateCard + '\n  <!-- Current Intelligence -->');
 
     // Inject search overlay after </nav>
     html = html.replace('</nav>', '</nav>' + searchOverlayHtml);

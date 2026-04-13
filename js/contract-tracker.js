@@ -48,10 +48,15 @@
       }
     }
 
+    function isPremiumUser() {
+      return typeof window.mmtIsPremium === 'function' && window.mmtIsPremium();
+    }
+
     function renderOpportunities(opps) {
       if (!opps || opps.length === 0) {
         return '<div class="card rounded-xl p-8 text-center"><p class="text-base" style="color:var(--mmt-text-secondary);">No opportunities match the current filter.</p></div>';
       }
+      var isPremium = isPremiumUser();
       var html = '<div class="grid md:grid-cols-2 gap-4">';
       opps.forEach(function(o) {
         html += '<div class="card rounded-xl p-5 transition-all duration-200">';
@@ -64,42 +69,50 @@
         if (o.contract_vehicle) {
           html += '<span class="text-xs font-bold px-2 py-0.5 rounded" style="color:var(--mmt-teal);background:rgba(69,123,157,0.08);">' + esc(o.contract_vehicle) + '</span>';
         }
-        html += radarConfidenceBadge(o.vehicle_confidence);
+        if (isPremium) {
+          html += radarConfidenceBadge(o.vehicle_confidence);
+        }
         html += setAsideBadge(o.set_aside_type);
         html += '</div>';
-        html += deadlineCountdown(o.response_deadline);
+        if (isPremium) html += deadlineCountdown(o.response_deadline);
         html += '</div>';
-        // Title
+        // Title (always public)
         html += '<h3 class="text-sm font-bold mb-1" style="color:var(--mmt-navy);">' + esc(o.title) + '</h3>';
-        // Agency
+        // Agency (always public)
         html += '<p class="text-xs mb-2" style="color:var(--mmt-teal);">' + esc(o.agency) + '</p>';
-        // Description
-        if (o.ai_summary) {
-          html += '<p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text-secondary);">' + esc(o.ai_summary) + '</p>';
-        } else if (o.description) {
-          html += '<p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text-secondary);">' + esc(o.description) + '</p>';
+        // Premium content: description, reasoning, metadata
+        if (isPremium) {
+          if (o.ai_summary) {
+            html += '<p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text-secondary);">' + esc(o.ai_summary) + '</p>';
+          } else if (o.description) {
+            html += '<p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text-secondary);">' + esc(o.description) + '</p>';
+          }
+          if (o.vehicle_reasoning) {
+            html += '<p class="text-xs italic mb-3" style="color:var(--mmt-text-secondary);">' + esc(o.vehicle_reasoning) + '</p>';
+          }
+        } else {
+          html += '<p class="text-xs" style="color:#92710A;">&#9733; Full details — <a href="/pricing.html" style="color:#92710A;font-weight:600;text-decoration:none;">Premium</a></p>';
         }
-        if (o.vehicle_reasoning) {
-          html += '<p class="text-xs italic mb-3" style="color:var(--mmt-text-secondary);">' + esc(o.vehicle_reasoning) + '</p>';
-        }
-        // Meta row
+        // Meta row (premium only)
         html += '<div class="flex flex-wrap gap-3 items-center text-xs" style="color:var(--mmt-text-secondary);">';
-        if (o.value_estimate) html += '<span><strong style="color:var(--mmt-text-secondary);">Value:</strong> ' + esc(o.value_estimate) + '</span>';
-        if (o.solicitation_number) html += '<span><strong style="color:var(--mmt-text-secondary);">Sol#:</strong> ' + esc(o.solicitation_number) + '</span>';
-        if (o.naics_codes && o.naics_codes.length) html += '<span><strong style="color:var(--mmt-text-secondary);">NAICS:</strong> ' + esc(o.naics_codes.join(', ')) + '</span>';
+        if (isPremium && o.value_estimate) html += '<span><strong style="color:var(--mmt-text-secondary);">Value:</strong> ' + esc(o.value_estimate) + '</span>';
+        if (isPremium && o.solicitation_number) html += '<span><strong style="color:var(--mmt-text-secondary);">Sol#:</strong> ' + esc(o.solicitation_number) + '</span>';
+        if (isPremium && o.naics_codes && o.naics_codes.length) html += '<span><strong style="color:var(--mmt-text-secondary);">NAICS:</strong> ' + esc(o.naics_codes.join(', ')) + '</span>';
         html += '</div>';
         // Deadline date + source link
-        html += '<div class="flex items-center justify-between mt-3 pt-3" style="border-top:1px solid rgba(69,123,157,0.08);">';
-        if (o.response_deadline) {
-          var dl = new Date(o.response_deadline);
-          html += '<span class="text-xs" style="color:var(--mmt-text-secondary);">Due: ' + dl.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + '</span>';
-        } else {
-          html += '<span></span>';
+        if (isPremium) {
+          html += '<div class="flex items-center justify-between mt-3 pt-3" style="border-top:1px solid rgba(69,123,157,0.08);">';
+          if (o.response_deadline) {
+            var dl = new Date(o.response_deadline);
+            html += '<span class="text-xs" style="color:var(--mmt-text-secondary);">Due: ' + dl.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + '</span>';
+          } else {
+            html += '<span></span>';
+          }
+          if (o.source_url) {
+            html += '<a href="' + esc(o.source_url) + '" target="_blank" rel="noopener" class="text-xs font-semibold no-underline hover:opacity-80" style="color:var(--mmt-teal);">View Source &rarr;</a>';
+          }
+          html += '</div>';
         }
-        if (o.source_url) {
-          html += '<a href="' + esc(o.source_url) + '" target="_blank" rel="noopener" class="text-xs font-semibold no-underline hover:opacity-80" style="color:var(--mmt-teal);">View Source &rarr;</a>';
-        }
-        html += '</div>';
         html += '</div>';
       });
       html += '</div>';
@@ -240,46 +253,53 @@
         }
         return '<div class="card rounded-xl p-8 text-center"><p class="text-base mb-2" style="color:var(--mmt-text-secondary);">Small Business Vehicle Scanner is initializing.</p><p class="text-sm" style="color:var(--mmt-text-secondary);">Vehicle-specific opportunities are scanned daily at 8 AM ET. Check back soon.</p></div>';
       }
+      var isPremium = isPremiumUser();
       var html = '<div class="grid md:grid-cols-2 gap-4">';
       opps.forEach(function(o) {
         html += '<div class="card rounded-xl p-5 transition-all duration-200">';
         html += '<div class="flex items-start justify-between gap-2 mb-2">';
         html += '<div class="flex flex-wrap gap-2">';
         html += vehicleBadge(o.contract_vehicle);
-        html += confidenceBadge(o.vehicle_confidence);
+        if (isPremium) html += confidenceBadge(o.vehicle_confidence);
         if (o.opportunity_type) {
           html += '<span class="text-xs px-2 py-0.5 rounded" style="background:rgba(69,123,157,0.08);color:var(--mmt-teal);">' + esc(o.opportunity_type) + '</span>';
         }
         html += setAsideBadge(o.set_aside_type);
         html += '</div>';
-        html += deadlineCountdown(o.response_deadline);
+        if (isPremium) html += deadlineCountdown(o.response_deadline);
         html += '</div>';
         html += '<h3 class="text-sm font-bold mb-1" style="color:var(--mmt-navy);">' + esc(o.title) + '</h3>';
         html += '<p class="text-xs mb-2" style="color:var(--mmt-teal);">' + esc(o.agency) + '</p>';
-        if (o.ai_summary) {
-          html += '<p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text-secondary);">' + esc(o.ai_summary) + '</p>';
-        } else if (o.description) {
-          html += '<p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text-secondary);">' + esc(o.description) + '</p>';
-        }
-        if (o.vehicle_reasoning) {
-          html += '<p class="text-xs italic mb-3" style="color:var(--mmt-text-secondary);">' + esc(o.vehicle_reasoning) + '</p>';
+        if (isPremium) {
+          if (o.ai_summary) {
+            html += '<p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text-secondary);">' + esc(o.ai_summary) + '</p>';
+          } else if (o.description) {
+            html += '<p class="text-sm leading-relaxed mb-2" style="color:var(--mmt-text-secondary);">' + esc(o.description) + '</p>';
+          }
+          if (o.vehicle_reasoning) {
+            html += '<p class="text-xs italic mb-3" style="color:var(--mmt-text-secondary);">' + esc(o.vehicle_reasoning) + '</p>';
+          }
+        } else {
+          html += '<p class="text-xs" style="color:#92710A;">&#9733; Full details — <a href="/pricing.html" style="color:#92710A;font-weight:600;text-decoration:none;">Premium</a></p>';
         }
         html += '<div class="flex flex-wrap gap-3 items-center text-xs" style="color:var(--mmt-text-secondary);">';
-        if (o.value_estimate) html += '<span><strong style="color:var(--mmt-text-secondary);">Value:</strong> ' + esc(o.value_estimate) + '</span>';
-        if (o.solicitation_number) html += '<span><strong style="color:var(--mmt-text-secondary);">Sol#:</strong> ' + esc(o.solicitation_number) + '</span>';
-        if (o.naics_codes && o.naics_codes.length) html += '<span><strong style="color:var(--mmt-text-secondary);">NAICS:</strong> ' + esc(o.naics_codes.join(', ')) + '</span>';
+        if (isPremium && o.value_estimate) html += '<span><strong style="color:var(--mmt-text-secondary);">Value:</strong> ' + esc(o.value_estimate) + '</span>';
+        if (isPremium && o.solicitation_number) html += '<span><strong style="color:var(--mmt-text-secondary);">Sol#:</strong> ' + esc(o.solicitation_number) + '</span>';
+        if (isPremium && o.naics_codes && o.naics_codes.length) html += '<span><strong style="color:var(--mmt-text-secondary);">NAICS:</strong> ' + esc(o.naics_codes.join(', ')) + '</span>';
         html += '</div>';
-        html += '<div class="flex items-center justify-between mt-3 pt-3" style="border-top:1px solid rgba(69,123,157,0.08);">';
-        if (o.response_deadline) {
-          var dl = new Date(o.response_deadline);
-          html += '<span class="text-xs" style="color:var(--mmt-text-secondary);">Due: ' + dl.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + '</span>';
-        } else {
-          html += '<span></span>';
+        if (isPremium) {
+          html += '<div class="flex items-center justify-between mt-3 pt-3" style="border-top:1px solid rgba(69,123,157,0.08);">';
+          if (o.response_deadline) {
+            var dl = new Date(o.response_deadline);
+            html += '<span class="text-xs" style="color:var(--mmt-text-secondary);">Due: ' + dl.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + '</span>';
+          } else {
+            html += '<span></span>';
+          }
+          if (o.source_url) {
+            html += '<a href="' + esc(o.source_url) + '" target="_blank" rel="noopener" class="text-xs font-semibold no-underline hover:opacity-80" style="color:var(--mmt-teal);">View Source &rarr;</a>';
+          }
+          html += '</div>';
         }
-        if (o.source_url) {
-          html += '<a href="' + esc(o.source_url) + '" target="_blank" rel="noopener" class="text-xs font-semibold no-underline hover:opacity-80" style="color:var(--mmt-teal);">View Source &rarr;</a>';
-        }
-        html += '</div>';
         html += '</div>';
       });
       html += '</div>';

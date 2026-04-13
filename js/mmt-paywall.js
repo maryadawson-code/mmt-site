@@ -85,7 +85,25 @@
       }
     }
 
-    // Decode and inject premium field values for authenticated users
+    // Decode contract detail page premium fields for authenticated users
+    if (status === 'premium') {
+      var contractMain = document.querySelector('[data-contract-premium]');
+      if (contractMain) {
+        try {
+          var cData = JSON.parse(atob(contractMain.getAttribute('data-contract-premium')));
+          var premFields = document.querySelectorAll('.contract-premium-field');
+          for (var cf = 0; cf < premFields.length; cf++) {
+            var field = premFields[cf].getAttribute('data-field');
+            if (field && cData[field]) premFields[cf].textContent = cData[field];
+          }
+          // Hide the gate card for premium users
+          var contractGate = document.getElementById('contract-gate');
+          if (contractGate) contractGate.style.display = 'none';
+        } catch (e) {}
+      }
+    }
+
+    // Decode contract tracker card premium fields for authenticated users
     if (status === 'premium') {
       var encodedFields = document.querySelectorAll('[data-premium-fields]');
       for (var f = 0; f < encodedFields.length; f++) {
