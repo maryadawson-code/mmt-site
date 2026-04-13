@@ -222,32 +222,19 @@
         <!-- Premium gate section (injected by build.js based on article category) -->
         {{PREMIUM_GATE}}
 
-        <!-- Section 4a: Inline product CTA (mid/post article) -->
-        <div style="margin:32px 0;padding:22px 24px;background:var(--mmt-soft);border-left:3px solid var(--mmt-navy);border-radius:8px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;">
-          <div>
-            <strong style="display:block;font-size:15px;color:var(--mmt-navy);margin-bottom:4px;">Working this pursuit?</strong>
-            <span style="font-size:14px;color:var(--mmt-text-secondary);">Run ProposalPulse before your draft hits review.</span>
+        <!-- Section 4: Post-article zone (1 divider + 1 commercial CTA + 1 compact subscribe) -->
+        <div style="border-top:1px solid var(--mmt-border,#D8E0E8);margin-top:48px;padding-top:24px;">
+          <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--mmt-text-secondary,#5C6B7A);margin-bottom:16px;">What you can do next</p>
+          <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:24px;">
+            <a href="/proposal-pulse.html" class="btn-primary no-underline" style="font-size:14px;padding:10px 20px;">Score a Proposal</a>
+            <a href="/latest.html" style="font-size:14px;font-weight:600;color:var(--mmt-teal,#457B9D);text-decoration:none;">Read more analysis &rarr;</a>
           </div>
-          <a href="/proposal-pulse.html" class="btn-primary no-underline" style="white-space:nowrap;">Score a Proposal</a>
-        </div>
-
-        <!-- Section 4b: Post-article MarketPulse CTA -->
-        <div style="margin:24px 0 8px;padding:22px 24px;background:var(--mmt-soft);border-left:3px solid var(--mmt-teal);border-radius:8px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;">
-          <div>
-            <strong style="display:block;font-size:15px;color:var(--mmt-navy);margin-bottom:4px;">Need the vehicle, incumbent, and market picture?</strong>
-            <span style="font-size:14px;color:var(--mmt-text-secondary);">Request a MarketPulse brief. Source-cited, 24-hour delivery.</span>
+          <div style="display:flex;gap:0;max-width:400px;">
+            <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" target="_blank" style="display:flex;gap:0;width:100%;">
+              <input type="email" name="email" placeholder="you@agency.gov" required aria-label="Email address" style="flex:1;height:36px;padding:0 12px;border:1px solid var(--mmt-border,#D8E0E8);border-right:none;border-radius:6px 0 0 6px;font-size:13px;">
+              <button type="submit" style="height:36px;padding:0 14px;background:var(--mmt-navy,#0A192F);color:rgb(255,255,255);border:none;border-radius:0 6px 6px 0;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;">Subscribe</button>
+            </form>
           </div>
-          <a href="/marketpulse.html" class="btn-primary no-underline" style="white-space:nowrap;background:var(--mmt-teal);">Get a Market Brief</a>
-        </div>
-
-        <!-- Section 4c: Newsletter subscribe -->
-        <div class="inline-subscribe">
-          <h3>Get the briefing twice a week</h3>
-          <p>Independent federal health IT intelligence, written for the people who actually have to act on it.</p>
-          <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" target="_blank">
-            <input type="email" name="email" placeholder="you@agency.gov" required aria-label="Email address">
-            <button type="submit" class="btn-primary" style="padding:10px 18px;font-size:13px;">Subscribe</button>
-          </form>
         </div>
 
         <!-- Prev/Next navigation -->

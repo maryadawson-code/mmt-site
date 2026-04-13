@@ -135,7 +135,7 @@
   </section>
 
   <!-- Section 2: Category controls + Headlines -->
-  <section class="py-10 px-6" style="background:var(--mmt-soft);">
+  <section class="py-12 px-6" style="background:var(--mmt-soft);margin-top:32px;">
     <div class="max-w-4xl mx-auto">
 
       <!-- Category Filter Pills -->
@@ -150,7 +150,16 @@
         <button class="filter-pill text-sm px-4 py-2 rounded-full" data-filter="policy">Policy</button>
       </div>
 
-      <noscript><p class="text-sm mb-4" style="color:var(--mmt-text-secondary);">Filters require JavaScript. All stories are shown below.</p></noscript>
+      <noscript>
+        <nav class="flex flex-wrap gap-2 mb-4 text-sm" style="color:var(--mmt-teal);">
+          <a href="#defense-health" style="color:var(--mmt-teal);">Defense Health</a> &middot;
+          <a href="#va" style="color:var(--mmt-teal);">VA</a> &middot;
+          <a href="#hhs" style="color:var(--mmt-teal);">HHS/ONC/CMS</a> &middot;
+          <a href="#ai" style="color:var(--mmt-teal);">AI</a> &middot;
+          <a href="#policy" style="color:var(--mmt-teal);">Policy</a>
+        </nav>
+        <p class="text-xs mb-4" style="color:var(--mmt-text-secondary);">All stories shown below.</p>
+      </noscript>
 
       <!-- Headlines Grid -->
       <div class="space-y-3" id="newswireGrid">

@@ -1217,8 +1217,8 @@ function generateLatestAllHtml(archive, feed) {
                 <source src="${escapeHtml(item.audioUrl)}" type="audio/mpeg">
               </audio>`
         : '';
-      return `<article class="card rounded-xl p-6 archive-item" data-content-type="episode">
-          <p class="text-xs uppercase tracking-wider font-semibold mb-1" style="color:var(--mmt-teal);">Fed UP Podcast</p>
+      return `<article class="card rounded-xl p-6 archive-item" data-content-type="episode" style="border-left:3px solid #92710A;background:rgba(146,113,10,0.03);">
+          <p class="text-xs uppercase tracking-wider font-semibold mb-1" style="color:#92710A;">&#127911; Fed UP Podcast</p>
           <h3 class="text-lg font-bold mb-2" style="color:var(--mmt-navy);">${escapeHtml(item.title)}</h3>
           <p class="text-xs mb-2" style="color:var(--mmt-text-secondary);">${calendarSvg}${escapeHtml(item.date)}${item.duration ? ` &middot; ${item.duration}` : ''}</p>
           ${item.description ? `<p class="text-sm leading-relaxed mb-3" style="color:var(--mmt-text);">${escapeHtml(item.description)}</p>` : ''}
@@ -1392,7 +1392,8 @@ function generateContractTrackerHtml(contracts, contractArticleMap) {
                 ${c.source ? `<span class="text-xs mt-1 inline-block" style="color:var(--mmt-teal);">Source</span>` : ''}
                 ${lastCovered}
               </div>
-              <div data-gate-overlay="premium" style="margin-top:10px;padding:10px 14px;background:rgba(146,113,10,0.04);border:1px solid rgba(146,113,10,0.15);border-radius:8px;">
+              <div style="border-top:1px solid var(--mmt-border,#D8E0E8);margin-top:12px;"></div>
+              <div data-gate-overlay="premium" style="margin-top:10px;padding:10px 14px;background:rgba(146,113,10,0.04);border:1px dashed rgba(146,113,10,0.2);border-radius:8px;">
                 <div class="flex flex-wrap gap-3 text-xs" style="color:var(--mmt-text-secondary);opacity:0.5;">
                   <span>Vendor: ████</span>
                   <span>Value: ████</span>
