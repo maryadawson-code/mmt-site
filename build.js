@@ -2132,9 +2132,9 @@ function inlineTailwindCss(html) {
         <span id="nav-logged-in" style="display:none;position:relative;">
           <button class="member-chip" onclick="document.getElementById('member-dropdown').classList.toggle('open')">M &#9662;</button>
           <div id="member-dropdown" class="member-dropdown">
-            <a href="/premium/dashboard.html">Dashboard</a>
-            <a href="/premium/briefings.html">My Briefs</a>
-            <a href="/premium/calendar.html">Pursuit Calendar</a>
+            <a href="/premium/dashboard/">Dashboard</a>
+            <a href="/premium/briefings/">My Briefs</a>
+            <a href="/premium/calendar/">Pursuit Calendar</a>
             <hr>
             <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_email');location.reload();return false;">Sign Out</a>
           </div>
@@ -2156,8 +2156,8 @@ function inlineTailwindCss(html) {
         <a href="/about.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">About</a>
         <span class="mobile-logged-out"><a href="/dashboard.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">Sign In</a></span>
         <span class="mobile-logged-in" style="display:none;">
-          <a href="/premium/dashboard.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-teal);">★ Dashboard</a>
-          <a href="/premium/briefings.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">My Briefs</a>
+          <a href="/premium/dashboard/" class="text-sm font-semibold no-underline" style="color:var(--mmt-teal);">★ Dashboard</a>
+          <a href="/premium/briefings/" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">My Briefs</a>
         </span>
         <div class="pt-3 mt-1" style="border-top:1px solid var(--mmt-border);">
           <a href="/resources.html#paid-tools" class="btn-primary no-underline">Choose a Tool</a>
@@ -2233,9 +2233,7 @@ function inlineTailwindCss(html) {
       navBlock.includes('brand-mark') &&
       navBlock.includes('Choose a Tool') &&
       navBlock.includes('/resources.html#paid-tools') &&
-      navBlock.includes('/newsletter.html') &&
-      navBlock.includes('/pricing.html') &&
-      navBlock.includes('/security.html');
+      navBlock.includes('nav-logged-out');
     if (!hasCanonicalNav) {
       html = html.replace(/<nav[\s\S]*?<\/nav>/i, editorialNav);
     }

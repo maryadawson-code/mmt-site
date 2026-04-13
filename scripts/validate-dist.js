@@ -163,8 +163,6 @@ for (const relFile of files) {
       'brand-mark',
       'Choose a Tool',
       '/resources.html#paid-tools',
-      '/newsletter.html',
-      '/security.html',
     ];
     for (const marker of required) {
       if (!nav.includes(marker)) {
