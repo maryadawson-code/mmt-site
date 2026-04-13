@@ -13,20 +13,10 @@ tags:
   - Strategy & Leadership
 linkedin_url: "https://www.linkedin.com/pulse/i-dont-use-ai-deploy-mary-womack"
 ---
-category: "strategy"
-capture_corner:
-  - "DHA enterprise GenAI rollout means every HCDS competitor needs a credible AI deployment narrative. Demo-only AI experience will not score well"
-  - "The gap between using AI and deploying it in a FedRAMP/IL5 environment is where most proposals fail. Address ATO timeline and data sovereignty explicitly"
-  - "If your team is building AI features but has never deployed to a military network with an ATO, partner with a firm that has"
 
 The difference between using AI and deploying it is the difference between a demo and a production system. Here's what that looks like in federal health IT.
 
 ---
-category: "strategy"
-capture_corner:
-  - "DHA enterprise GenAI rollout means every HCDS competitor needs a credible AI deployment narrative. Demo-only AI experience will not score well"
-  - "The gap between using AI and deploying it in a FedRAMP/IL5 environment is where most proposals fail. Address ATO timeline and data sovereignty explicitly"
-  - "If your team is building AI features but has never deployed to a military network with an ATO, partner with a firm that has"
 
 **What you can do next**
 

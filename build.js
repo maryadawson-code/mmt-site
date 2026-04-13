@@ -2808,15 +2808,18 @@ async function fetchNewsFeeds() {
     }
   });
 
-  // Filter broad feeds to health IT relevance only
-  const healthKeywords = /health|medical|hospital|clinic|veteran|va\b|dha\b|tricare|ehr\b|mhs\b|genesis|pharma|biotech|telemedicine|telehealth|mental.?health|suicide|ptsd|traumatic|wound|medic|nurse|physician|fhir|hipaa|cms\b|hhs\b|onc\b|medicare|medicaid|cybersecurity|cyber|ai\b|artificial.?intelligence|data|digital|it\b|tech|contract|procurement|budget|appropriation/i;
+  // Filter non-health-specific feeds to health IT relevance only.
+  // Health-focused feeds (Healthcare IT News, Healthcare Dive, Health IT Buzz,
+  // VA.gov News, TRICARE, GAO Reports) pass through unfiltered.
+  const healthSpecificFeeds = new Set([
+    'Healthcare IT News', 'Healthcare Dive', 'Health IT Buzz',
+    'VA.gov News', 'GAO Reports', 'TRICARE'
+  ]);
+  const healthKeywords = /health|medical|hospital|clinic\b|veteran|va\b|dha\b|tricare|ehr\b|mhs\b|genesis|pharma|biotech|telemedicine|telehealth|mental.?health|suicide|ptsd|traumatic|wound\b|medic|nurse|physician|fhir|hipaa|cms\b|hhs\b|onc\b|medicare|medicaid|cybersecurity|artificial.?intelligence|fedramp|defense.?health|military.?health/i;
   items = items.filter(item => {
-    // Only filter broad feeds (Military Times); other feeds are already topical
-    if (item.source === 'Military Times') {
-      const text = `${item.title} ${item.description}`;
-      return healthKeywords.test(text);
-    }
-    return true;
+    if (healthSpecificFeeds.has(item.source)) return true;
+    const text = `${item.title} ${item.description}`;
+    return healthKeywords.test(text);
   });
 
   // Deduplicate by URL

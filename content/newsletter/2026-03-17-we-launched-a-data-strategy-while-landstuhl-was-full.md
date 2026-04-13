@@ -13,20 +13,10 @@ tags:
   - Strategy & Leadership
 linkedin_url: "https://www.linkedin.com/pulse/we-launched-data-strategy-while-landstuhl-was-full-mary-womack"
 ---
-category: "budget"
-capture_corner:
-  - "The $2.6B Information Management line in the COMP account funds data infrastructure. Proposals targeting this must connect to operational readiness not just IT modernization"
-  - "DHA data strategy programs that cannot demonstrate deployment to at least one MTF with measured clinical impact will not survive DOGE review"
-  - "The gap between strategy and execution is where contract opportunities live. Position as the bridge not another strategy layer"
 
 While DHA drafted data strategy documents, military treatment facilities were managing real patient load. The gap between strategy and operations is the gap that kills readiness.
 
 ---
-category: "budget"
-capture_corner:
-  - "The $2.6B Information Management line in the COMP account funds data infrastructure. Proposals targeting this must connect to operational readiness not just IT modernization"
-  - "DHA data strategy programs that cannot demonstrate deployment to at least one MTF with measured clinical impact will not survive DOGE review"
-  - "The gap between strategy and execution is where contract opportunities live. Position as the bridge not another strategy layer"
 
 **What you can do next**
 

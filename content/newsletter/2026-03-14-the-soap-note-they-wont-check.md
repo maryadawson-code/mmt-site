@@ -13,20 +13,10 @@ tags:
   - Healthcare Policy
 linkedin_url: "https://www.linkedin.com/pulse/soap-note-they-wont-check-mary-womack"
 ---
-category: "deep_dive"
-capture_corner:
-  - "Clinical documentation quality is emerging as an evaluation criterion in MHS GENESIS sustainment contracts. Your proposal needs a documentation integrity narrative"
-  - "The VA ambient scribe rollout creates a new market for documentation QA tools. Position for this before the RFI drops"
-  - "GAO findings on documentation failures at EHRM sites will drive new requirements in the HCDS follow-on"
 
 SOAP notes in military health are the atomic unit of clinical documentation. But the system that produces them is the system nobody audits.
 
 ---
-category: "deep_dive"
-capture_corner:
-  - "Clinical documentation quality is emerging as an evaluation criterion in MHS GENESIS sustainment contracts. Your proposal needs a documentation integrity narrative"
-  - "The VA ambient scribe rollout creates a new market for documentation QA tools. Position for this before the RFI drops"
-  - "GAO findings on documentation failures at EHRM sites will drive new requirements in the HCDS follow-on"
 
 **What you can do next**
 

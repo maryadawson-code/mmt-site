@@ -13,20 +13,10 @@ tags:
   - Cybersecurity
 linkedin_url: "https://www.linkedin.com/pulse/hipaa-was-written-1996-hole-not-bug-mary-womack"
 ---
-category: "deep_dive"
-capture_corner:
-  - "HIPAA gaps are now a selling point for proposals offering beyond-HIPAA controls. Position NIST 800-171 and CMMC as the floor not the ceiling"
-  - "The convergence of HIPAA reform with the FAR overhaul creates a 12-18 month window where compliance requirements will shift"
-  - "For VA and DHA contracts handling CUI, your cybersecurity narrative must go beyond HIPAA to DFARS 252.204-7012"
 
 HIPAA's security framework predates the modern threat landscape by decades. The gaps aren't oversights — they're architectural limitations baked into a law written before broadband existed.
 
 ---
-category: "deep_dive"
-capture_corner:
-  - "HIPAA gaps are now a selling point for proposals offering beyond-HIPAA controls. Position NIST 800-171 and CMMC as the floor not the ceiling"
-  - "The convergence of HIPAA reform with the FAR overhaul creates a 12-18 month window where compliance requirements will shift"
-  - "For VA and DHA contracts handling CUI, your cybersecurity narrative must go beyond HIPAA to DFARS 252.204-7012"
 
 **What you can do next**
 
