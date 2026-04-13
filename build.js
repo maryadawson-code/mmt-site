@@ -2553,6 +2553,7 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     { src: 'premium/calendar.html', dest: 'premium/calendar.html', index: 'premium/calendar/index.html' },
     { src: 'premium/ask-mmt.html', dest: 'premium/ask-mmt.html', index: 'premium/ask-mmt/index.html' },
     { src: 'premium/dashboard.html', dest: 'premium/dashboard.html', index: 'premium/dashboard/index.html' },
+    { src: 'premium/settings.html', dest: 'premium/settings.html', index: 'premium/settings/index.html' },
   ];
   // Agency profile pages
   const agencyPages = [
@@ -2743,6 +2744,7 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     { src: 'premium/calendar.html', dest: 'premium/calendar/index.html' },
     { src: 'premium/ask-mmt.html', dest: 'premium/ask-mmt/index.html' },
     { src: 'premium/dashboard.html', dest: 'premium/dashboard/index.html' },
+    { src: 'premium/settings.html', dest: 'premium/settings/index.html' },
     { src: 'agencies/index.html', dest: 'agencies/index.html' },
   ];
   subDirPages.forEach(({ src, dest }) => {
@@ -2757,11 +2759,17 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
         '  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\n' +
         '  <meta name="apple-mobile-web-app-title" content="MMT">\n</head>'
       );
-      if (html.includes('</nav>')) {
+      // Skip search overlay on dashboard (has its own nav)
+      if (!src.includes('dashboard.html') && html.includes('</nav>')) {
         html = html.replace('</nav>', '</nav>' + searchOverlayHtml);
       }
       html = html.replace('</body>', siteScriptTag + '\n</body>');
       html = inlineTailwindCss(html);
+      // Dashboard has its own shell — skip nav/footer replacement
+      if (src.includes('dashboard.html')) {
+        // Remove any injected nav-editorial that the migration pipeline added
+        html = html.replace(/<nav class="nav-editorial">[\s\S]*?<\/nav>/g, '');
+      }
       fs.writeFileSync(destPath, html);
       console.log(`Copied ${src} → ${dest}`);
     }

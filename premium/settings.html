@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intelligence Preferences — MMT Premium</title>
+  <meta name="description" content="Customize your dashboard, trackers, and notifications. Select agencies, role, NAICS codes, and email preferences.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <style>
+    :root { --mmt-teal:#457B9D; --mmt-navy:#0A192F; --mmt-soft:#F3F4F6; --mmt-white:#FFFFFF; --mmt-text:#102033; --mmt-text-secondary:#5C6B7A; --mmt-border:#D8E0E8; }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--mmt-white); color:var(--mmt-navy); }
+    .prefs-section { border:1px solid var(--mmt-border); border-radius:12px; padding:24px; background:var(--mmt-soft); margin-bottom:16px; }
+    .prefs-heading { font-size:16px; font-weight:700; margin-bottom:6px; }
+    .prefs-desc { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:20px; line-height:1.55; }
+    .agency-chips { display:flex; flex-wrap:wrap; gap:8px; }
+    .agency-chip { display:flex; align-items:center; justify-content:center; padding:8px 16px; min-height:40px; font-size:14px; font-weight:700; letter-spacing:0.04em; color:var(--mmt-text-secondary); background:var(--mmt-white); border:1.5px solid var(--mmt-border); border-radius:8px; cursor:pointer; user-select:none; transition:all 0.15s; }
+    .agency-chip.selected { background:rgba(69,123,157,0.1); color:var(--mmt-teal); border-color:var(--mmt-teal); }
+    .role-option { display:flex; align-items:flex-start; gap:12px; padding:12px 16px; border:1.5px solid var(--mmt-border); border-radius:8px; cursor:pointer; margin-bottom:8px; transition:all 0.15s; }
+    .role-option.selected { border-color:var(--mmt-teal); background:rgba(69,123,157,0.06); }
+    .role-option input { margin-top:3px; accent-color:var(--mmt-teal); }
+    .role-label { font-size:14px; font-weight:600; display:block; }
+    .role-desc { font-size:12px; color:var(--mmt-text-secondary); display:block; margin-top:2px; }
+    .naics-tags { display:flex; flex-wrap:wrap; gap:8px; min-height:32px; margin-bottom:12px; }
+    .naics-tag { display:flex; align-items:center; gap:8px; padding:4px 12px; background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:999px; font-size:13px; font-weight:600; font-variant-numeric:tabular-nums; }
+    .naics-tag button { background:none; border:none; cursor:pointer; color:var(--mmt-text-secondary); font-size:16px; padding:0; line-height:1; }
+    .naics-tag button:hover { color:#E63946; }
+    .naics-input-row { display:flex; gap:8px; }
+    .naics-input { flex:1; padding:8px 12px; border:1px solid var(--mmt-border); border-radius:8px; font-size:14px; font-variant-numeric:tabular-nums; }
+    .notif-toggle { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px 16px; border-radius:8px; cursor:pointer; }
+    .notif-toggle:hover { background:rgba(69,123,157,0.04); }
+    .notif-label { font-size:14px; font-weight:600; display:block; }
+    .notif-desc { font-size:12px; color:var(--mmt-text-secondary); display:block; margin-top:2px; }
+    .toggle-switch { appearance:none; -webkit-appearance:none; width:40px; height:22px; border-radius:999px; background:var(--mmt-border); border:none; position:relative; cursor:pointer; flex-shrink:0; transition:background 0.15s; }
+    .toggle-switch::before { content:''; position:absolute; top:3px; left:3px; width:16px; height:16px; border-radius:999px; background:white; transition:transform 0.15s; }
+    .toggle-switch:checked { background:var(--mmt-teal); }
+    .toggle-switch:checked::before { transform:translateX(18px); }
+    .prefs-toast { position:fixed; bottom:24px; right:24px; padding:12px 20px; background:var(--mmt-navy); color:white; border-radius:8px; font-size:14px; font-weight:500; box-shadow:0 12px 32px rgba(0,0,0,0.12); z-index:500; display:none; }
+    .prefs-toast.show { display:block; animation:toast-in 0.2s ease; }
+    @keyframes toast-in { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  </style>
+</head>
+<body>
+  <nav class="nav-editorial"></nav>
+
+  <main class="wrap" style="max-width:640px;padding:40px 24px 80px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+      <div>
+        <h1 style="font-size:24px;font-weight:800;margin-bottom:4px;">Intelligence preferences</h1>
+        <p style="font-size:15px;color:var(--mmt-text-secondary);">Customize what you see in your dashboard and trackers.</p>
+      </div>
+      <button id="save-prefs" class="btn-primary" style="padding:10px 20px;font-size:14px;">Save preferences</button>
+    </div>
+
+    <!-- Agency Focus -->
+    <div class="prefs-section">
+      <h2 class="prefs-heading">Agency focus</h2>
+      <p class="prefs-desc">Select the agencies most relevant to your pursuits. Your dashboard will prioritize these.</p>
+      <div class="agency-chips" id="agency-chips">
+        <div class="agency-chip" data-agency="dha" onclick="this.classList.toggle('selected')">DHA</div>
+        <div class="agency-chip" data-agency="va" onclick="this.classList.toggle('selected')">VA</div>
+        <div class="agency-chip" data-agency="hhs" onclick="this.classList.toggle('selected')">HHS</div>
+        <div class="agency-chip" data-agency="onc" onclick="this.classList.toggle('selected')">ONC</div>
+        <div class="agency-chip" data-agency="arpa-h" onclick="this.classList.toggle('selected')">ARPA-H</div>
+        <div class="agency-chip" data-agency="cms" onclick="this.classList.toggle('selected')">CMS</div>
+      </div>
+    </div>
+
+    <!-- Role -->
+    <div class="prefs-section">
+      <h2 class="prefs-heading">Your role</h2>
+      <p class="prefs-desc">Affects how content is framed and which signals are highlighted.</p>
+      <div id="role-options">
+        <label class="role-option" onclick="document.querySelectorAll('.role-option').forEach(function(o){o.classList.remove('selected')});this.classList.add('selected');">
+          <input type="radio" name="role" value="bd">
+          <div><span class="role-label">BD / Business Development</span><span class="role-desc">Pipeline building, relationship development, early signals</span></div>
+        </label>
+        <label class="role-option" onclick="document.querySelectorAll('.role-option').forEach(function(o){o.classList.remove('selected')});this.classList.add('selected');">
+          <input type="radio" name="role" value="capture">
+          <div><span class="role-label">Capture Manager</span><span class="role-desc">Competitive intel, vehicle eligibility, teaming</span></div>
+        </label>
+        <label class="role-option" onclick="document.querySelectorAll('.role-option').forEach(function(o){o.classList.remove('selected')});this.classList.add('selected');">
+          <input type="radio" name="role" value="proposal">
+          <div><span class="role-label">Proposal Manager / Writer</span><span class="role-desc">RFP timelines, requirements, evaluation criteria</span></div>
+        </label>
+        <label class="role-option" onclick="document.querySelectorAll('.role-option').forEach(function(o){o.classList.remove('selected')});this.classList.add('selected');">
+          <input type="radio" name="role" value="executive">
+          <div><span class="role-label">Executive / Leadership</span><span class="role-desc">Market overview, strategic signals, budget trends</span></div>
+        </label>
+        <label class="role-option" onclick="document.querySelectorAll('.role-option').forEach(function(o){o.classList.remove('selected')});this.classList.add('selected');">
+          <input type="radio" name="role" value="program">
+          <div><span class="role-label">Program / Contracts</span><span class="role-desc">Active contract monitoring, modifications, options</span></div>
+        </label>
+      </div>
+    </div>
+
+    <!-- NAICS -->
+    <div class="prefs-section">
+      <h2 class="prefs-heading">NAICS codes of interest</h2>
+      <p class="prefs-desc">Up to 5 codes. Entries matching these will be highlighted in trackers.</p>
+      <div class="naics-tags" id="naics-tags"></div>
+      <div class="naics-input-row">
+        <input type="text" id="naics-input" class="naics-input" placeholder="Type a 6-digit NAICS code" maxlength="6">
+        <button type="button" class="btn-secondary" id="naics-add" style="padding:8px 16px;font-size:14px;">Add</button>
+      </div>
+      <p style="font-size:12px;color:var(--mmt-text-secondary);margin-top:8px;">Common: 541512 (Computer Systems Design), 541519 (IT Services), 621 (Health Care)</p>
+    </div>
+
+    <!-- Notifications -->
+    <div class="prefs-section">
+      <h2 class="prefs-heading">Email notifications</h2>
+      <div>
+        <label class="notif-toggle">
+          <div><span class="notif-label">New contract entries</span><span class="notif-desc">When a new opportunity matching your agencies is added</span></div>
+          <input type="checkbox" name="notify-contracts" class="toggle-switch" checked>
+        </label>
+        <label class="notif-toggle">
+          <div><span class="notif-label">Deadline reminders</span><span class="notif-desc">7 days, 3 days, and 1 day before tracked deadlines</span></div>
+          <input type="checkbox" name="notify-deadlines" class="toggle-switch" checked>
+        </label>
+        <label class="notif-toggle">
+          <div><span class="notif-label">Weekly brief delivery</span><span class="notif-desc">Email when each Friday brief is published</span></div>
+          <input type="checkbox" name="notify-brief" class="toggle-switch" checked>
+        </label>
+        <label class="notif-toggle">
+          <div><span class="notif-label">Ask MMT answer ready</span><span class="notif-desc">Email when your monthly question is answered</span></div>
+          <input type="checkbox" name="notify-ask" class="toggle-switch" checked>
+        </label>
+      </div>
+    </div>
+  </main>
+
+  <div class="prefs-toast" id="prefs-toast">&#10003; Preferences saved</div>
+
+  <footer class="wrap"></footer>
+
+  <script>
+    // Initialize window.MMT.prefs
+    window.MMT = window.MMT || {};
+    window.MMT.prefs = window.MMT.prefs || JSON.parse(localStorage.getItem('mmt_prefs') || '{}');
+
+    // Restore saved state
+    var prefs = window.MMT.prefs;
+    if (prefs.agencies) {
+      prefs.agencies.forEach(function(a) {
+        var chip = document.querySelector('.agency-chip[data-agency="' + a + '"]');
+        if (chip) chip.classList.add('selected');
+      });
+    }
+    if (prefs.role) {
+      var radio = document.querySelector('input[name="role"][value="' + prefs.role + '"]');
+      if (radio) { radio.checked = true; radio.closest('.role-option').classList.add('selected'); }
+    }
+
+    // NAICS tags
+    var naicsList = prefs.naics || [];
+    var naicsContainer = document.getElementById('naics-tags');
+    var naicsInput = document.getElementById('naics-input');
+
+    function renderNaics() {
+      naicsContainer.innerHTML = '';
+      naicsList.forEach(function(code) {
+        var tag = document.createElement('div');
+        tag.className = 'naics-tag';
+        tag.innerHTML = code + '<button onclick="removeNaics(\'' + code + '\')">&times;</button>';
+        naicsContainer.appendChild(tag);
+      });
+      naicsInput.disabled = naicsList.length >= 5;
+    }
+    window.removeNaics = function(code) { naicsList = naicsList.filter(function(c) { return c !== code; }); renderNaics(); };
+    document.getElementById('naics-add').addEventListener('click', function() {
+      var val = naicsInput.value.trim().replace(/\D/g, '').substring(0, 6);
+      if (val.length >= 3 && !naicsList.includes(val) && naicsList.length < 5) {
+        naicsList.push(val);
+        renderNaics();
+        naicsInput.value = '';
+      }
+    });
+    naicsInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); document.getElementById('naics-add').click(); } });
+    renderNaics();
+
+    // Notification toggles — restore
+    if (prefs.notify) {
+      var map = { 'notify-contracts': 'newContracts', 'notify-deadlines': 'deadlineReminders', 'notify-brief': 'weeklyBrief', 'notify-ask': 'askMmtAnswer' };
+      Object.keys(map).forEach(function(name) {
+        var input = document.querySelector('input[name="' + name + '"]');
+        if (input && prefs.notify[map[name]] !== undefined) input.checked = prefs.notify[map[name]];
+      });
+    }
+
+    // Save
+    document.getElementById('save-prefs').addEventListener('click', function() {
+      var saved = {
+        agencies: Array.from(document.querySelectorAll('.agency-chip.selected')).map(function(c) { return c.dataset.agency; }),
+        role: (document.querySelector('input[name="role"]:checked') || {}).value || '',
+        naics: naicsList.slice(),
+        notify: {
+          newContracts: document.querySelector('input[name="notify-contracts"]').checked,
+          deadlineReminders: document.querySelector('input[name="notify-deadlines"]').checked,
+          weeklyBrief: document.querySelector('input[name="notify-brief"]').checked,
+          askMmtAnswer: document.querySelector('input[name="notify-ask"]').checked,
+        }
+      };
+      window.MMT.prefs = saved;
+      localStorage.setItem('mmt_prefs', JSON.stringify(saved));
+      var toast = document.getElementById('prefs-toast');
+      toast.classList.add('show');
+      setTimeout(function() { toast.classList.remove('show'); }, 3000);
+    });
+  </script>
+</body>
+</html>
