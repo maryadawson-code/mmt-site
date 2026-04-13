@@ -1025,7 +1025,7 @@ function generateLatestArticlesHtml(archive, count) {
     const linkAttrs = isExternal ? ' target="_blank" rel="noopener"' : '';
     const itemAge = Math.floor((Date.now() - new Date(item.date).getTime()) / 86400000);
     const isPremium = itemAge <= 90;
-    const premiumBadge = isPremium ? '<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#92710A;background:rgba(146,113,10,0.08);border:1px solid rgba(146,113,10,0.2);border-radius:999px;padding:2px 8px;margin-left:6px;">&#9733; Premium</span>' : '';
+    const premiumBadge = isPremium ? '<a href="/pricing.html" class="no-underline" style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#92710A;background:rgba(146,113,10,0.08);border:1px solid rgba(146,113,10,0.2);border-radius:999px;padding:2px 8px;margin-left:6px;" title="Premium article — see plans">&#9733; Premium</a>' : '';
     return `<a href="${item.url}"${linkAttrs} class="article-card no-underline">
           <div>
             <div class="kicker">${(item.tags || [])[0] || 'Analysis'}${premiumBadge}</div>
@@ -1251,7 +1251,7 @@ function generateLatestAllHtml(archive, feed, excludeSlugs) {
     const externalIcon = isExternal ? ' <svg width="0.75em" height="0.75em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:baseline;opacity:0.5;" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>' : '';
     const itemAgeDays = Math.floor((Date.now() - item.sortDate.getTime()) / 86400000);
     const isPremiumArticle = itemAgeDays <= 90;
-    const premiumBadge = isPremiumArticle ? ' <span class="premium-badge" style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#92710A;background:rgba(146,113,10,0.08);border:1px solid rgba(146,113,10,0.2);border-radius:999px;padding:2px 8px;">&#9733; Premium</span>' : '';
+    const premiumBadge = isPremiumArticle ? ' <a href="/pricing.html" class="premium-badge no-underline" style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#92710A;background:rgba(146,113,10,0.08);border:1px solid rgba(146,113,10,0.2);border-radius:999px;padding:2px 8px;" title="Premium article — see plans">&#9733; Premium</a>' : '';
     return `<article class="card rounded-xl p-6 archive-item" data-content-type="article" data-topics="${topicSlugs}" data-age-days="${itemAgeDays}" data-access="${isPremiumArticle ? 'premium' : 'email'}">
           <div class="flex flex-wrap gap-2 mb-2">${tags}${premiumBadge}</div>
           <h3 class="text-lg font-bold mb-2"><a href="${item.url}" ${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-navy);">${escapeHtml(item.title)}${externalIcon}</a></h3>
@@ -2151,7 +2151,7 @@ function inlineTailwindCss(html) {
         <!-- Logged-out state -->
         <span id="nav-logged-out" style="display:inline-flex;align-items:center;gap:12px;">
           <a href="/dashboard.html" class="text-sm no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);font-weight:400;">Sign In</a>
-          <a href="/newsletter.html" class="text-sm no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);font-weight:400;border:1px solid var(--mmt-border,#D8E0E8);border-radius:6px;padding:4px 12px;">Subscribe</a>
+          <a href="/pricing.html" class="no-underline" style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--mmt-navy);border:1px solid var(--mmt-navy);border-radius:999px;padding:4px 12px;letter-spacing:0.02em;">&#9733; Go Premium</a>
         </span>
         <!-- Logged-in state (hidden by default, shown by JS) -->
         <span id="nav-logged-in" style="display:none;position:relative;">
@@ -2179,7 +2179,10 @@ function inlineTailwindCss(html) {
         <a href="/resources.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Resources</a>
         <a href="/podcast.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Podcast</a>
         <a href="/about.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">About</a>
-        <span class="mobile-logged-out"><a href="/dashboard.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">Sign In</a></span>
+        <span class="mobile-logged-out">
+          <a href="/dashboard.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">Sign In</a>
+          <a href="/pricing.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-teal);">★ Go Premium</a>
+        </span>
         <span class="mobile-logged-in" style="display:none;">
           <a href="/premium/dashboard/" class="text-sm font-semibold no-underline" style="color:var(--mmt-teal);">★ Dashboard</a>
           <a href="/premium/briefings/" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">My Briefs</a>
@@ -2195,6 +2198,15 @@ function inlineTailwindCss(html) {
     <div class="wrap" style="text-align:center;">
       <p style="font-size:13px;color:rgba(255,255,255,0.7);margin:0 0 8px;">Reading on LinkedIn? Get direct email delivery — plus the archive and tools.</p>
       <a href="/newsletter.html" class="btn-primary no-underline" style="font-size:12px;padding:6px 16px;border-radius:6px;" onclick="if(typeof plausible!=='undefined')plausible('Footer Email Migrate Click')">Subscribe at missionmeetstech.com &rarr;</a>
+    </div>
+  </div>
+  <div style="background:var(--mmt-soft);border-top:1px solid var(--mmt-border);border-bottom:1px solid var(--mmt-border);padding:20px 0;">
+    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;">
+      <div>
+        <span style="display:block;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--mmt-teal);margin-bottom:4px;">&#9733; MMT Premium</span>
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0;max-width:48ch;">Monthly capture intelligence, deep solicitation analysis, and early access for teams that can't afford to miss the window.</p>
+      </div>
+      <a href="/pricing.html" class="btn-primary no-underline" style="flex-shrink:0;padding:10px 24px;font-size:14px;">See premium plans</a>
     </div>
   </div>
   <footer class="wrap" style="padding:28px 0 58px;">
