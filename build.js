@@ -2777,6 +2777,31 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     }
   });
 
+  // Copy premium brief detail pages (premium/briefs/*.html)
+  const briefsSrcDir = path.join(__dirname, 'premium', 'briefs');
+  if (fs.existsSync(briefsSrcDir)) {
+    const briefFiles = fs.readdirSync(briefsSrcDir).filter(f => f.endsWith('.html'));
+    briefFiles.forEach(file => {
+      const srcPath = path.join(briefsSrcDir, file);
+      const destPath = path.join(DIST_DIR, 'premium', 'briefs', file);
+      ensureDir(path.dirname(destPath));
+      let html = fs.readFileSync(srcPath, 'utf8');
+      html = html.replace('</head>',
+        '  <link rel="manifest" href="/manifest.json">\n' +
+        '  <meta name="apple-mobile-web-app-capable" content="yes">\n' +
+        '  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\n' +
+        '  <meta name="apple-mobile-web-app-title" content="MMT">\n</head>'
+      );
+      if (html.includes('</nav>')) {
+        html = html.replace('</nav>', '</nav>' + searchOverlayHtml);
+      }
+      html = html.replace('</body>', siteScriptTag + '\n</body>');
+      html = inlineTailwindCss(html);
+      fs.writeFileSync(destPath, html);
+    });
+    console.log(`Copied ${briefFiles.length} premium brief pages`);
+  }
+
   // Generate individual agency profile pages from data
   const agencyDataPath = path.join(__dirname, 'data/premium/agency-profiles/agencies.json');
   if (fs.existsSync(agencyDataPath)) {
