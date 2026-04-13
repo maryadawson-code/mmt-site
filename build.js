@@ -2159,7 +2159,7 @@ function inlineTailwindCss(html) {
         <!-- Logged-out state -->
         <span id="nav-logged-out" style="display:inline-flex;align-items:center;gap:12px;">
           <a href="/dashboard.html" class="text-sm no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);font-weight:400;">Sign In</a>
-          <a href="/pricing.html" class="no-underline" style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--mmt-navy);border:1px solid var(--mmt-navy);border-radius:999px;padding:4px 12px;letter-spacing:0.02em;">&#9733; Go Premium</a>
+          <a href="/pricing.html" class="no-underline hover:opacity-70" style="font-size:13px;font-weight:500;color:var(--mmt-teal);">&#9733; Premium</a>
         </span>
         <!-- Logged-in state (hidden by default, shown by JS) -->
         <span id="nav-logged-in" style="display:none;position:relative;">

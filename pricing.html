@@ -43,7 +43,7 @@
       monthly: 'https://buy.stripe.com/28EbJ3dsicYQ9Ta8ST4c802'
     },
     // Founding Member spots remaining (update manually)
-    foundingSpotsRemaining: 97, // UPDATE AFTER EACH FOUNDING MEMBER SIGNUP — decrement by 1
+    foundingSpotsRemaining: 97, // MANUAL: Update weekly from Stripe dashboard. Decrement by 1 per new Founding Member.
     // Subscriber count for social proof (update manually)
     subscriberCount: '1,528'
   };
@@ -233,7 +233,7 @@
             <div class="plan-feature"><span class="check">&#10003;</span> Priority Q&amp;A response</div>
           </div>
           <div style="margin-top:auto;padding-top:24px;">
-            <a href="mailto:mary@missionmeetstech.com?subject=MMT%20Institutional%20Pricing" class="btn-secondary no-underline" style="width:100%;justify-content:center;" onclick="if(typeof plausible!=='undefined')plausible('Institutional Contact Click')">Contact for team pricing</a>
+            <a href="mailto:support@missionmeetstech.com?subject=MMT%20Institutional%20Pricing" class="btn-secondary no-underline" style="width:100%;justify-content:center;" onclick="if(typeof plausible!=='undefined')plausible('Institutional Contact Click')">Contact for team pricing</a>
           </div>
         </div>
       </div>
@@ -253,7 +253,7 @@
               <tr>
                 <th style="min-width:260px;"></th>
                 <th style="min-width:120px;">Free</th>
-                <th style="min-width:120px;">Premium</th>
+                <th style="min-width:120px;">Premium <span style="display:block;font-size:11px;font-weight:400;color:var(--mmt-text-secondary);">All paid plans</span></th>
               </tr>
             </thead>
             <tbody>
@@ -337,11 +337,11 @@
         </details>
         <details style="background:var(--mmt-soft);border-radius:12px;padding:20px 24px;">
           <summary style="cursor:pointer;font-weight:700;color:var(--mmt-navy);font-size:15px;list-style:none;">Can I switch from monthly to annual?</summary>
-          <p style="margin-top:12px;font-size:14px;">Yes. Email mary@missionmeetstech.com and we will upgrade your plan and credit the difference.</p>
+          <p style="margin-top:12px;font-size:14px;">Yes. Email support@missionmeetstech.com and we will upgrade your plan and credit the difference.</p>
         </details>
         <details style="background:var(--mmt-soft);border-radius:12px;padding:20px 24px;">
           <summary style="cursor:pointer;font-weight:700;color:var(--mmt-navy);font-size:15px;list-style:none;">What is your refund policy?</summary>
-          <p style="margin-top:12px;font-size:14px;">Annual subscribers who cancel within 14 days of their renewal date receive a full refund. Monthly subscribers can cancel anytime before their next billing date.</p>
+          <p style="margin-top:12px;font-size:14px;">Annual subscribers may request a full refund within 14 days of any charge (initial purchase or renewal). Monthly subscribers can cancel anytime before their next billing date.</p>
         </details>
       </div>
     </div>
