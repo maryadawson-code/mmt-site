@@ -176,7 +176,7 @@ EXAMPLE (abbreviated — show this level of specificity):
     },
     {
       "id": "financials",
-      "title": "Financials & Pricing",
+      "title": "Cost / Price Credibility",
       "grade": "D",
       "points": 1.0,
       "assessment": "No cost model presented. The pricing section contains only a placeholder table with TBD values. No basis of estimate, no rate justification, no indirect rate disclosure. This is a red flag for any evaluator."

@@ -2360,14 +2360,15 @@ function inlineTailwindCss(html) {
   html = html.replace(/background:\s*rgba\(10,22,40,0\.6\);\s*backdrop-filter:\s*blur\(16px\)/g,
     'background: rgba(255,255,255,0.86); border: 1px solid rgba(216,224,232,0.96); box-shadow: 0 18px 50px rgba(10,25,47,0.08)');
 
-  // Fix cadence claims: "weekly" → "twice-weekly" (but not "bi-weekly" itself)
-  // Use negative lookbehind to avoid matching "bi-weekly" → "bi-twice-weekly"
-  html = html.replace(/(?<!bi-)updated weekly/gi, 'updated twice-weekly');
-  html = html.replace(/(?<!bi-)Subscribe for weekly/gi, 'Subscribe for twice-weekly');
-  html = html.replace(/(?<!bi-)Weekly intelligence/gi, 'Twice-weekly intelligence');
-  html = html.replace(/(?<!bi-)weekly updates/gi, 'twice-weekly updates');
-  html = html.replace(/(?<!bi-)weekly analysis/gi, 'twice-weekly analysis');
-  // Fix any existing double-bi from previous builds
+  // Fix cadence claims: "weekly" → "twice-weekly" (but not already-correct forms)
+  // Lookbehinds exclude "bi-" and "twice-" to prevent double-replacement
+  html = html.replace(/(?<!bi-)(?<!twice-)updated weekly/gi, 'updated twice-weekly');
+  html = html.replace(/(?<!bi-)(?<!twice-)Subscribe for weekly/gi, 'Subscribe for twice-weekly');
+  html = html.replace(/(?<!bi-)(?<!twice-)Weekly intelligence/gi, 'Twice-weekly intelligence');
+  html = html.replace(/(?<!bi-)(?<!twice-)weekly updates/gi, 'twice-weekly updates');
+  html = html.replace(/(?<!bi-)(?<!twice-)weekly analysis/gi, 'twice-weekly analysis');
+  // Fix any existing double forms from previous builds
+  html = html.replace(/twice-twice-weekly/gi, 'twice-weekly');
   html = html.replace(/bi-bi-weekly/gi, 'twice-weekly');
   html = html.replace(/bi-weekly/gi, 'twice-weekly');
 
@@ -2805,6 +2806,17 @@ async function fetchNewsFeeds() {
     } else if (result.status === 'rejected') {
       console.warn(`  Warning: ${NEWS_FEEDS[i].name} feed rejected: ${result.reason}`);
     }
+  });
+
+  // Filter broad feeds to health IT relevance only
+  const healthKeywords = /health|medical|hospital|clinic|veteran|va\b|dha\b|tricare|ehr\b|mhs\b|genesis|pharma|biotech|telemedicine|telehealth|mental.?health|suicide|ptsd|traumatic|wound|medic|nurse|physician|fhir|hipaa|cms\b|hhs\b|onc\b|medicare|medicaid|cybersecurity|cyber|ai\b|artificial.?intelligence|data|digital|it\b|tech|contract|procurement|budget|appropriation/i;
+  items = items.filter(item => {
+    // Only filter broad feeds (Military Times); other feeds are already topical
+    if (item.source === 'Military Times') {
+      const text = `${item.title} ${item.description}`;
+      return healthKeywords.test(text);
+    }
+    return true;
   });
 
   // Deduplicate by URL

@@ -14,29 +14,29 @@ Your job: Read the uploaded pitch deck and score it across 9 criteria. Be direct
     criteria: `1. PROBLEM CLARITY — Is the agency's mission problem stated first? Is it specific and urgent? Does it pass the "so what" test?
 2. MISSION RELEVANCE — Does the solution connect to the agency's stated mission? Does it address the specific problem in the solicitation? Is the federal context clear?
 3. SOLUTION CLARITY — Is the technical approach clear? Does it use language appropriate to the target agency? Is the architecture feasible for the federal environment?
-4. MARKET SIZING — Is the federal market sized appropriately? Government vehicles mentioned (OTAs, IDIQs, SBIR, GSA MAS, SEWP)?
+4. VEHICLE & ACQUISITION FIT — Does the proposed solution map to the right vehicle type (IDIQ, OTA, GSA MAS, SEWP)? Is the scope calibrated to the acquisition ceiling and period of performance?
 5. TEAM & CREDIBILITY — Are relevant credentials visible? Federal experience, certifications, clearance capabilities? Credibility front-loaded?
 6. TRACTION — Relevant pilots or contracts? FedRAMP/IL status mentioned? Government references? Real traction, not "in conversations with"?
-7. FINANCIALS — Numbers add up? Charts match text? Projections defensible? Unit economics clear?
+7. COST / PRICE CREDIBILITY — Do cost projections add up? Are labor categories mapped to realistic rates? Are indirect cost structures defensible? Charts match text?
 8. COMPETITIVE POSITION — Landscape acknowledged? Differentiation specific? Moat clear? Incumbent risk addressed?
-9. THE ASK — Funding amount clear? Milestones tied to mission outcomes? Use of funds logical?`,
+9. FUNDING ASK & SCOPE — Is the requested funding amount or contract value clearly stated and tied to deliverables? Are milestone payments mapped to mission outcomes?`,
     red_flags: `- Problem statement leads with the company, not the agency's mission
 - "Improves efficiency" without connecting to specific mission outcomes
 - No FedRAMP/IL status for a software company
 - Financials/charts don't match the text
-- No federal market sizing separate from commercial TAM
+- No vehicle or acquisition fit analysis separate from commercial TAM
 - Technology requires persistent connectivity with no offline/resilience story
 - No mention of relevant contract vehicles or acquisition pathways`,
     score_ids: [
       { id: "problem-clarity", title: "Problem Clarity" },
       { id: "mission-relevance", title: "Mission Relevance" },
       { id: "solution-clarity", title: "Solution Clarity" },
-      { id: "market-sizing", title: "Market Sizing" },
+      { id: "market-sizing", title: "Vehicle & Acquisition Fit" },
       { id: "team-credibility", title: "Team & Credibility" },
       { id: "traction", title: "Traction" },
-      { id: "financials", title: "Financials" },
+      { id: "financials", title: "Cost / Price Credibility" },
       { id: "competitive-position", title: "Competitive Position" },
-      { id: "the-ask", title: "The Ask" },
+      { id: "the-ask", title: "Funding Ask & Scope" },
     ],
   },
 

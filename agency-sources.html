@@ -37,14 +37,13 @@
       --mmt-navy: #0A192F;
       --mmt-soft: #F3F4F6;
       --mmt-white: #FFFFFF;
-      --mmt-white: #FFFFFF;
       --mmt-text: #102033;
       --mmt-text-secondary: #5C6B7A;
     }
     body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--mmt-white); color: var(--mmt-navy); }
     h1, h2, h3, h4, h5 { font-family: 'Inter', system-ui, sans-serif; }
     .gradient-text { color: var(--mmt-teal); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .btn-primary { color: var(--mmt-teal); color: var(--mmt-navy); font-weight: 600; padding: 0.75rem 2rem; border-radius: 9999px; transition: all 0.3s; }
+    .btn-primary { background: var(--mmt-teal); color: #fff; font-weight: 600; padding: 0.75rem 2rem; border-radius: 9999px; transition: all 0.3s; }
     .btn-primary:hover { transform: translateY(-1px); opacity: 0.9; }
     .btn-secondary { border: 1px solid var(--mmt-teal); color: var(--mmt-navy); padding: 0.75rem 2rem; border-radius: 9999px; transition: all 0.3s; }
     .btn-secondary:hover { background: rgba(69,123,157,0.1); }
@@ -138,7 +137,7 @@
         <button class="type-chip text-xs px-3 py-1.5 rounded-full" data-type="data" style="background:rgba(69,123,157,0.1);color:var(--mmt-teal);border:none;cursor:pointer;transition:all 0.2s;">Data / APIs</button>
         <button class="type-chip text-xs px-3 py-1.5 rounded-full" data-type="research" style="background:rgba(69,123,157,0.1);color:var(--mmt-teal);border:none;cursor:pointer;transition:all 0.2s;">Research</button>
       </div>
-      <noscript><p class="text-xs mt-3" style="color:var(--mmt-text-secondary);">Enable JavaScript to use filters. All sources are shown below.</p></noscript>
+      <noscript><p class="text-xs mt-3" style="color:var(--mmt-text-secondary);">Filters require JavaScript. All sources are shown below.</p></noscript>
     </div>
   </section>
 
