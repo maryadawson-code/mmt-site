@@ -25,6 +25,7 @@
   "use strict";
 
   var EMAIL_KEY = "mmt_email";
+  var PREMIUM_KEY = "mmt_premium";
 
   // --- Cookie helpers ---
   function getCookie(name) {
@@ -34,11 +35,16 @@
 
   // --- Tier detection ---
   function getSubscriberStatus() {
-    // Cookie-based detection (primary for launch)
+    // Cookie-based detection
     if (getCookie('mmt_premium') === 'true') return 'premium';
     if (getCookie('mmt_subscriber') === 'true') return 'free';
 
-    // localStorage fallback (from API-based flow)
+    // localStorage direct check (set by mmtSignIn and dashboard auth)
+    try {
+      if (localStorage.getItem(PREMIUM_KEY) === 'true') return 'premium';
+    } catch (e) {}
+
+    // localStorage tier cache fallback (from API-based flow)
     try {
       var cached = localStorage.getItem('mmt_tier_cache');
       if (cached) {

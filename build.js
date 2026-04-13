@@ -1748,7 +1748,8 @@ function inlineTailwindCss(html) {
   // Preserve section-navy/podcast-card white text (they have dark backgrounds)
   // Strategy: replace globally, then restore the Tailwind CSS section-navy rules
   html = html.replace(/color:\s*var\(--mmt-white\)/g, 'color: var(--mmt-navy)');
-  // Immediately restore section-navy and podcast-card white text
+  // Immediately restore white text in elements that have dark backgrounds
+  // Section-navy
   html = html.replace(
     /\.section-navy,\.section-navy h1,\.section-navy h2,\.section-navy h3\{color:\s*var\(--mmt-navy\)\}/g,
     '.section-navy,.section-navy h1,.section-navy h2,.section-navy h3{color:var(--mmt-white)}'
@@ -1756,6 +1757,21 @@ function inlineTailwindCss(html) {
   html = html.replace(
     /\.section-navy p\{color:\s*var\(--mmt-navy\)\}/g,
     '.section-navy p{color:hsla(0,0%,100%,.78)}'
+  );
+  // btn-primary and gate button text (white on navy background)
+  // Use rgb() to survive downstream #fff→navy and var(--mmt-white)→navy replacements
+  html = html.replace(
+    /\.btn-primary\s*\{([^}]*?)background:\s*var\(--mmt-navy\);\s*color:\s*var\(--mmt-navy\)/g,
+    '.btn-primary {$1background: var(--mmt-navy); color: rgb(255,255,255)'
+  );
+  html = html.replace(
+    /#gate button\s*\{([^}]*?)background:\s*var\(--mmt-navy\);\s*color:\s*var\(--mmt-navy\)/g,
+    '#gate button {$1background: var(--mmt-navy); color: rgb(255,255,255)'
+  );
+  // Inline button styles: background:var(--mmt-navy); color: var(--mmt-navy) → white
+  html = html.replace(
+    /background:\s*var\(--mmt-navy\);\s*color:\s*var\(--mmt-navy\);/g,
+    'background: var(--mmt-navy); color: rgb(255,255,255);'
   );
   // Podcast-card restoration moved to end of migration pipeline (after #fff replacement)
   // Replace old heading font-family
@@ -2815,10 +2831,13 @@ async function fetchNewsFeeds() {
     'Healthcare IT News', 'Healthcare Dive', 'Health IT Buzz',
     'VA.gov News', 'GAO Reports', 'TRICARE'
   ]);
-  const healthKeywords = /health|medical|hospital|clinic\b|veteran|va\b|dha\b|tricare|ehr\b|mhs\b|genesis|pharma|biotech|telemedicine|telehealth|mental.?health|suicide|ptsd|traumatic|wound\b|medic|nurse|physician|fhir|hipaa|cms\b|hhs\b|onc\b|medicare|medicaid|cybersecurity|artificial.?intelligence|fedramp|defense.?health|military.?health/i;
+  const healthKeywords = /health|medical|hospital|clinic\b|veteran|va\b|dha\b|tricare|ehr\b|mhs\b|genesis|pharma|biotech|telemedicine|telehealth|mental.?health|suicide|ptsd|nurse|physician|fhir|hipaa|cms\b|hhs\b|onc\b|medicare|medicaid|cybersecurity|artificial.?intelligence|fedramp|defense.?health|military.?health|interoperab|patient.?data|clinical|electronic.?record/i;
+  // Blocklist for stories that match health keywords incidentally but are off-topic
+  const offTopicPatterns = /dead rat|energy drink|food recall(?!.*hospital)|pet food|recipe|sports score|entertainment|movie review|book review|real estate|housing market/i;
   items = items.filter(item => {
     if (healthSpecificFeeds.has(item.source)) return true;
     const text = `${item.title} ${item.description}`;
+    if (offTopicPatterns.test(text)) return false;
     return healthKeywords.test(text);
   });
 
