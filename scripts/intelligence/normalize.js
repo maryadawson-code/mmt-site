@@ -88,6 +88,24 @@ function normalizeAll() {
     }
   });
 
+  // AUT-12: Output pipeline manifest for data status bar
+  const manifest = {
+    lastRun: new Date().toISOString(),
+    entriesTracked: count,
+    newThisWeek: files.filter(f => {
+      try {
+        const raw = fs.readFileSync(path.join(CONTENT_DIR, f), 'utf8');
+        const { data } = matter(raw);
+        const age = Math.floor((Date.now() - new Date(data.date).getTime()) / 86400000);
+        return age <= 7;
+      } catch (e) { return false; }
+    }).length,
+    sourcesMonitored: 12,
+  };
+  const manifestPath = path.join(__dirname, '../../data/pipeline-manifest.json');
+  fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
+  console.log(`Wrote pipeline manifest to ${manifestPath}`);
+
   console.log(`Normalized ${count} articles to ${OUTPUT_DIR}`);
 }
 

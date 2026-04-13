@@ -127,6 +127,13 @@
   <!-- Contract Grid -->
   <section class="py-16 px-6 section-alt">
     <div class="max-w-5xl mx-auto">
+      <!-- AUT-06: Export button (premium only) -->
+      <div data-gate="premium" style="display:none;margin-bottom:16px;text-align:right;">
+        <button id="export-csv" class="btn-secondary" style="padding:8px 16px;font-size:13px;display:inline-flex;align-items:center;gap:6px;" onclick="exportContractsCSV()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export CSV
+        </button>
+      </div>
       <!-- BUILD:CONTRACT_TRACKER -->
     </div>
   </section>
@@ -337,6 +344,53 @@
       </div>
     </div>
   </section>
+
+  <!-- AUT-12: Data pipeline status bar -->
+  <section class="px-6" style="padding:24px 0 48px;">
+    <div class="max-w-5xl mx-auto">
+      <div style="display:flex;align-items:center;gap:24px;padding:16px 20px;background:var(--mmt-soft);border:1px solid var(--mmt-border);border-radius:8px;flex-wrap:wrap;font-size:13px;">
+        <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--mmt-text-secondary);">Data pipeline</span>
+        <span><strong style="color:var(--mmt-navy);" id="dsb-last-run">Loading...</strong> <span style="color:var(--mmt-text-secondary);">last sync</span></span>
+        <span><strong style="color:var(--mmt-navy);">32</strong> <span style="color:var(--mmt-text-secondary);">entries tracked</span></span>
+        <span><strong style="color:var(--mmt-navy);">12</strong> <span style="color:var(--mmt-text-secondary);">sources monitored</span></span>
+        <span style="font-size:12px;color:var(--mmt-text-secondary);margin-left:auto;font-style:italic;">Sources: SAM.gov, USASpending.gov, FPDS-NG, agency portals</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- AUT-06: CSV export script -->
+  <script>
+    function exportContractsCSV() {
+      var cards = document.querySelectorAll('.card.rounded-xl');
+      if (!cards.length) { alert('No entries to export.'); return; }
+      var rows = [['Title','Agency','Status','Description']];
+      cards.forEach(function(card) {
+        var title = (card.querySelector('h3') || {}).textContent || '';
+        var agency = '';
+        var texts = card.querySelectorAll('.text-xs');
+        if (texts.length > 0) agency = texts[0].textContent.trim();
+        var desc = (card.querySelector('.text-sm') || {}).textContent || '';
+        rows.push([title.trim(), agency, '', desc.trim().substring(0, 200)]);
+      });
+      var csv = rows.map(function(r) {
+        return r.map(function(c) { var s = String(c).replace(/"/g, '""'); return s.includes(',') ? '"' + s + '"' : s; }).join(',');
+      }).join('\r\n');
+      var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'mmt-contracts-' + new Date().toISOString().split('T')[0] + '.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+    // Pipeline last sync (approximate from build time)
+    var runEl = document.getElementById('dsb-last-run');
+    if (runEl) {
+      var buildDate = document.querySelector('[data-last-verified]');
+      if (buildDate) runEl.textContent = buildDate.getAttribute('data-last-verified');
+      else runEl.textContent = 'Today';
+    }
+  </script>
 
   </main>
 

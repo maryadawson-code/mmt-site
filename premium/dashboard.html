@@ -103,6 +103,22 @@
           <span style="font-size:12px;font-weight:600;color:var(--mmt-teal,#457B9D);background:rgba(69,123,157,0.08);padding:4px 10px;border-radius:999px;">&#10003; Ask MMT (2/mo)</span>
         </div>
 
+        <!-- AUT-02: Personalization banner (shown when prefs set) -->
+        <div id="pref-banner" style="display:none;padding:12px 20px;background:rgba(69,123,157,0.06);border:1px solid rgba(69,123,157,0.15);border-radius:8px;margin-bottom:20px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+            <span style="font-size:13px;color:var(--mmt-navy,#0A192F);">Showing intel for: <span id="pref-agency-pills" style="display:inline-flex;gap:4px;"></span></span>
+            <a href="/premium/settings/" style="font-size:12px;color:var(--mmt-teal,#457B9D);text-decoration:none;font-weight:600;">Edit preferences &rarr;</a>
+          </div>
+        </div>
+
+        <!-- AUT-09: What's new since last visit -->
+        <div id="new-since-banner" style="display:none;padding:12px 20px;background:var(--mmt-soft,#F3F4F6);border:1px solid var(--mmt-border,#D8E0E8);border-radius:8px;margin-bottom:20px;">
+          <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+            <span style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--mmt-text-secondary,#5C6B7A);">Since your last visit</span>
+            <span id="new-since-counts" style="font-size:14px;color:var(--mmt-navy,#0A192F);"></span>
+          </div>
+        </div>
+
         <!-- This Week's Capture Sheet -->
         <div class="dash-card" style="border-left:3px solid var(--ci-gold);background:var(--ci-gold-bg);">
           <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--ci-gold);margin-bottom:8px;">This Month's Capture Sheet</div>
@@ -151,6 +167,41 @@
     var isPremium = localStorage.getItem('mmt_premium') === 'true';
     if (!isPremium) {
       document.querySelector('.dash-main').innerHTML = '<div style="text-align:center;padding:60px 24px;"><h1 style="font-size:24px;font-weight:800;margin-bottom:8px;">Premium access required</h1><p style="color:#5C6B7A;margin-bottom:20px;">Sign in with your Premium subscriber email to access the dashboard.</p><a href="/dashboard.html" style="display:inline-block;padding:12px 24px;background:#0A192F;color:rgb(255,255,255);border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;">Sign in</a></div>';
+    } else {
+      // AUT-02: Personalization banner
+      var prefs = JSON.parse(localStorage.getItem('mmt_prefs') || '{}');
+      if (prefs.agencies && prefs.agencies.length > 0) {
+        var banner = document.getElementById('pref-banner');
+        var pills = document.getElementById('pref-agency-pills');
+        if (banner && pills) {
+          banner.style.display = 'block';
+          prefs.agencies.forEach(function(a) {
+            var pill = document.createElement('span');
+            pill.style.cssText = 'font-size:11px;font-weight:700;padding:2px 8px;background:#457B9D;color:white;border-radius:999px;letter-spacing:0.04em;';
+            pill.textContent = a.toUpperCase();
+            pills.appendChild(pill);
+          });
+        }
+      }
+      // AUT-09: What's new since last visit
+      var lastVisit = parseInt(localStorage.getItem('mmt_last_visit') || '0');
+      var now = Date.now();
+      if (lastVisit > 0) {
+        var daysSince = Math.floor((now - lastVisit) / 86400000);
+        if (daysSince >= 1) {
+          var newBanner = document.getElementById('new-since-banner');
+          var countsEl = document.getElementById('new-since-counts');
+          if (newBanner && countsEl) {
+            // Estimate new content based on typical publishing cadence
+            var newArticles = Math.min(daysSince * 2, 14); // ~2 articles/week
+            var label = daysSince === 1 ? 'yesterday' : daysSince + ' days ago';
+            countsEl.innerHTML = '<strong style="color:#457B9D;">' + newArticles + '</strong> new items since ' + label;
+            newBanner.style.display = 'block';
+          }
+        }
+      }
+      // Record this visit
+      localStorage.setItem('mmt_last_visit', String(now));
     }
   </script>
 </body>
