@@ -79,7 +79,7 @@ const PATTERNS = [
   { name: 'bi-weekly cadence',                 re: /bi-weekly|biweekly/i },
   { name: 'newsletter every-week drift',       re: /newsletter[^.]*every week|every week[^.]*newsletter/i },
   { name: 'Subscribe for weekly',              re: /Subscribe for weekly/ },
-  { name: 'weekly newsletter',                 re: /weekly newsletter/i },
+  { name: 'weekly newsletter',                 re: /(?<!twice-)weekly newsletter/i },
   {
     name: 'ProposalPulse 60s drift',
     re: /9 criteria in 60 seconds|specific fixes in 60 seconds/,
