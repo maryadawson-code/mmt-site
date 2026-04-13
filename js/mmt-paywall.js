@@ -329,11 +329,46 @@
     }
   }
 
+  // --- Nav premium state toggle ---
+  function applyNavPremiumState() {
+    var status = getSubscriberStatus();
+    if (status !== 'premium') return;
+
+    // Desktop nav: show member chip, hide sign-in
+    var loggedOut = document.getElementById('nav-logged-out');
+    var loggedIn = document.getElementById('nav-logged-in');
+    if (loggedOut) loggedOut.style.display = 'none';
+    if (loggedIn) loggedIn.style.display = 'inline-flex';
+
+    // Set initials in member chip
+    var email = localStorage.getItem(EMAIL_KEY) || '';
+    var chipBtn = loggedIn ? loggedIn.querySelector('.member-chip') : null;
+    if (chipBtn && email) {
+      var initial = email.charAt(0).toUpperCase();
+      chipBtn.textContent = initial + ' \u25BE';
+    }
+
+    // Mobile nav: show dashboard links, hide sign-in
+    var mobileOut = document.querySelectorAll('.mobile-logged-out');
+    var mobileIn = document.querySelectorAll('.mobile-logged-in');
+    for (var i = 0; i < mobileOut.length; i++) mobileOut[i].style.display = 'none';
+    for (var j = 0; j < mobileIn.length; j++) mobileIn[j].style.display = 'block';
+
+    // Close dropdown on outside click
+    document.addEventListener('click', function(e) {
+      var dropdown = document.getElementById('member-dropdown');
+      if (dropdown && !e.target.closest('.member-chip') && !e.target.closest('#member-dropdown')) {
+        dropdown.classList.remove('open');
+      }
+    });
+  }
+
   // --- Init ---
   function init() {
     var status = getSubscriberStatus();
     applyPaywallVisibility();
     applyArticleGate();
+    applyNavPremiumState();
     applyCIDelayedAccess(status);
     trackGateViews(status);
     initStickyBar();

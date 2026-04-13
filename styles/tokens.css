@@ -1,0 +1,226 @@
+/* ============================================================
+   MMT Design Token System — Single Source of Truth
+   Every component references these tokens. No hardcoded values.
+   ============================================================ */
+
+:root {
+  /* COLORS — canonical palette */
+  --color-bg: #FFFFFF;
+  --color-surface: #F3F4F6;
+  --color-surface-2: #F8FAFC;
+  --color-surface-offset: rgba(69,123,157,0.04);
+  --color-surface-offset-2: #0A192F;
+  --color-primary: #0A192F;
+  --color-primary-hover: #0D2240;
+  --color-primary-active: #061224;
+  --color-primary-highlight: rgba(69,123,157,0.08);
+  --color-accent: #457B9D;
+  --color-text: #102033;
+  --color-text-muted: #5C6B7A;
+  --color-text-faint: #9CA3AF;
+  --color-text-inverse: #FFFFFF;
+  --color-gold: #92710A;
+  --color-gold-highlight: rgba(146,113,10,0.08);
+  --color-red: #E63946;
+  --color-green: #16A34A;
+
+  /* SPACING */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+
+  /* TYPOGRAPHY */
+  --font-body: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+  --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+  --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+  --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+  --text-2xl: clamp(2rem, 1.2rem + 2.5vw, 3.5rem);
+
+  /* COMPONENT TOKENS */
+  --btn-height: 2.5rem;
+  --btn-height-sm: 2rem;
+  --btn-padding-x: 1.25rem;
+  --btn-padding-x-sm: 1rem;
+  --btn-radius: 0.375rem;
+  --btn-font-size: var(--text-sm);
+  --btn-font-weight: 500;
+
+  --input-height: 2.5rem;
+  --input-padding-x: 0.875rem;
+  --input-radius: 0.375rem;
+  --input-border: 1px solid rgba(16,32,51,0.18);
+  --input-border-focus: 2px solid var(--color-accent);
+
+  --card-radius: 0.5rem;
+  --card-padding: var(--space-6);
+  --card-border: 1px solid rgba(16,32,51,0.10);
+  --card-shadow: 0 1px 3px rgba(10,25,47,0.06), 0 4px 12px rgba(10,25,47,0.04);
+  --shadow-md: 0 4px 12px rgba(10,25,47,0.08), 0 8px 24px rgba(10,25,47,0.06);
+
+  --radius-full: 999px;
+  --tag-radius: var(--radius-full);
+  --tag-padding: 0.2rem 0.6rem;
+  --tag-font-size: var(--text-xs);
+  --tag-font-weight: 600;
+  --tag-letter-spacing: 0.04em;
+
+  --divider-color: rgba(16,32,51,0.10);
+  --divider-style: 1px solid var(--divider-color);
+
+  --content-narrow: 640px;
+  --content-default: 880px;
+  --content-wide: 1120px;
+  --content-form: 480px;
+
+  --section-padding: clamp(var(--space-12), 6vw, var(--space-20));
+  --section-padding-tight: clamp(var(--space-8), 4vw, var(--space-12));
+
+  /* Legacy token aliases (for backward compat with existing CSS) */
+  --mmt-navy: #0A192F;
+  --mmt-teal: #457B9D;
+  --mmt-soft: #F3F4F6;
+  --mmt-white: #FFFFFF;
+  --mmt-text: #102033;
+  --mmt-text-secondary: #5C6B7A;
+  --mmt-border: #D8E0E8;
+  --mmt-border-light: #E8EDF2;
+  --mmt-red: #E63946;
+}
+
+/* ============================================================
+   BUTTON SYSTEM — canonical definitions
+   ============================================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: var(--btn-height);
+  padding: 0 var(--btn-padding-x);
+  border-radius: var(--btn-radius);
+  font-size: var(--btn-font-size);
+  font-weight: var(--btn-font-weight);
+  font-family: var(--font-body);
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
+}
+
+.btn-sm {
+  height: var(--btn-height-sm);
+  padding: 0 var(--btn-padding-x-sm);
+  font-size: 0.8125rem;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-text-muted);
+  border-color: transparent;
+}
+.btn-ghost:hover { background: var(--color-surface); color: var(--color-text); }
+
+/* ============================================================
+   PREMIUM MEMBER CHIP + DROPDOWN
+   ============================================================ */
+
+.member-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--btn-height-sm);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-full);
+  background: var(--color-primary-highlight);
+  color: var(--color-accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border: 1px solid rgba(69,123,157,0.25);
+  cursor: pointer;
+  position: relative;
+}
+.member-chip:hover { background: rgba(69,123,157,0.12); }
+
+.member-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 200px;
+  background: var(--color-surface-2);
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-2);
+  z-index: 200;
+  display: none;
+}
+.member-dropdown.open { display: block; }
+
+.member-dropdown a {
+  display: block;
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.8125rem;
+  color: var(--color-text);
+  text-decoration: none;
+  border-radius: 4px;
+}
+.member-dropdown a:hover { background: var(--color-surface); }
+.member-dropdown hr {
+  border: none;
+  border-top: var(--divider-style);
+  margin: var(--space-1) 0;
+}
+
+/* ============================================================
+   PAGE MODE SHELLS
+   ============================================================ */
+
+.page-editorial { background: var(--color-bg); }
+.page-product { background: var(--color-surface); }
+.page-reference { background: var(--color-bg); }
+.page-trust { background: var(--color-surface-2); }
+.page-trust .btn-primary { display: none; } /* No conversion CTA on trust pages */
+.page-utility { background: var(--color-bg); }
+
+/* ============================================================
+   FORM INLINE (email + button as single visual unit)
+   ============================================================ */
+
+.form-inline {
+  display: flex;
+  gap: 0;
+  max-width: var(--content-form);
+}
+.form-inline input {
+  flex: 1;
+  border-radius: var(--input-radius) 0 0 var(--input-radius);
+  border-right: none;
+  height: var(--btn-height);
+  padding: 0 var(--input-padding-x);
+  border: var(--input-border);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+}
+.form-inline input:focus {
+  border: var(--input-border-focus);
+  outline: none;
+}
+.form-inline .btn-primary {
+  border-radius: 0 var(--btn-radius) var(--btn-radius) 0;
+  white-space: nowrap;
+  flex-shrink: 0;
+}

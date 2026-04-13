@@ -1693,6 +1693,11 @@ function inlineTailwindCss(html) {
   if (_cachedTailwindCss === null) {
     const cssPath = path.join(DIST_DIR, 'styles', 'tailwind.css');
     _cachedTailwindCss = fs.existsSync(cssPath) ? fs.readFileSync(cssPath, 'utf8') : '';
+    // Append tokens.css to the cached CSS
+    const tokensPath = path.join(__dirname, 'styles', 'tokens.css');
+    if (fs.existsSync(tokensPath)) {
+      _cachedTailwindCss += '\n' + fs.readFileSync(tokensPath, 'utf8');
+    }
   }
   if (!_cachedTailwindCss) return html;
   html = html.replace(
@@ -2119,11 +2124,22 @@ function inlineTailwindCss(html) {
       </div>
       <div class="hidden md:flex items-center gap-4">
         <button id="searchToggle" class="hover:opacity-70" style="color:var(--mmt-text-secondary);background:none;border:none;cursor:pointer;" aria-label="Search"><svg width="16" height="16" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></button>
-        <a href="/newsletter.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Subscribe</a>
-        <a href="/pricing.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-teal);">★ Pricing</a>
-        <a href="/security.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Security</a>
-        <a href="/dashboard.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Sign In</a>
-        <a href="/resources.html#paid-tools" class="btn-primary no-underline">Choose a Tool</a>
+        <!-- Logged-out state -->
+        <span id="nav-logged-out">
+          <a href="/dashboard.html" class="text-sm no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);font-weight:400;">Sign In</a>
+        </span>
+        <!-- Logged-in state (hidden by default, shown by JS) -->
+        <span id="nav-logged-in" style="display:none;position:relative;">
+          <button class="member-chip" onclick="document.getElementById('member-dropdown').classList.toggle('open')">M &#9662;</button>
+          <div id="member-dropdown" class="member-dropdown">
+            <a href="/premium/dashboard.html">Dashboard</a>
+            <a href="/premium/briefings.html">My Briefs</a>
+            <a href="/premium/calendar.html">Pursuit Calendar</a>
+            <hr>
+            <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_email');location.reload();return false;">Sign Out</a>
+          </div>
+        </span>
+        <a href="/resources.html#paid-tools" class="btn-primary btn-sm no-underline">Choose a Tool</a>
       </div>
       <button id="menuToggle" class="md:hidden" style="color:var(--mmt-navy);background:none;border:none;cursor:pointer;" aria-label="Toggle menu">
         <svg id="menuOpen" width="24" height="24" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
@@ -2138,10 +2154,11 @@ function inlineTailwindCss(html) {
         <a href="/resources.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Resources</a>
         <a href="/podcast.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Podcast</a>
         <a href="/about.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">About</a>
-        <a href="/newsletter.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">Subscribe</a>
-        <a href="/pricing.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-teal);">★ Pricing</a>
-        <a href="/security.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">Security</a>
-        <a href="/dashboard.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">Sign In</a>
+        <span class="mobile-logged-out"><a href="/dashboard.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">Sign In</a></span>
+        <span class="mobile-logged-in" style="display:none;">
+          <a href="/premium/dashboard.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-teal);">★ Dashboard</a>
+          <a href="/premium/briefings.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">My Briefs</a>
+        </span>
         <div class="pt-3 mt-1" style="border-top:1px solid var(--mmt-border);">
           <a href="/resources.html#paid-tools" class="btn-primary no-underline">Choose a Tool</a>
         </div>
@@ -2193,14 +2210,13 @@ function inlineTailwindCss(html) {
         <a href="/security.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Security</a>
         <a href="/privacy.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Privacy</a>
         <a href="/terms.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Terms</a>
-        <a href="mailto:mary@missionmeetstech.com" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Contact</a>
+        <a href="mailto:mary@missionmeetstech.com" class="hover:opacity-70" style="color:var(--mmt-text-secondary);text-decoration:underline;">Contact</a>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;">
         <strong style="color:var(--mmt-teal);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">★ Premium</strong>
         <a href="/pricing.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">MMT Premium</a>
         <a href="/pricing.html#founding-member" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Founding Member</a>
         <a href="/pricing.html#institutional" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Institutional</a>
-        <a href="/security.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Security & Privacy</a>
       </div>
     </div>
   </footer>`;
@@ -2569,6 +2585,25 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
         'ops.html', 'tactical-brief.html', 'tactical-brief-confirmed.html'];
       if (hiddenPages.includes(file) && !html.includes('noindex')) {
         html = html.replace('<head>', '<head>\n  <meta name="robots" content="noindex, nofollow">');
+      }
+
+      // Add page shell classes based on page type
+      const trustPages = ['security.html', 'privacy.html', 'terms.html', 'editorial-standards.html'];
+      const productPages = ['proposal-pulse.html', 'marketpulse.html'];
+      const referencePages = ['resources.html', 'contract-tracker.html', 'glossary.html', 'newswire.html', 'agency-sources.html', 'getting-started.html', 'contracting.html', 'idiq-tracker.html'];
+      const utilityPages = ['pricing.html', 'dashboard.html', 'subscribed.html', 'upgrade.html', 'welcome-premium.html'];
+      let pageShellClass = '';
+      if (trustPages.includes(file)) pageShellClass = 'page-trust';
+      else if (productPages.includes(file)) pageShellClass = 'page-product';
+      else if (referencePages.includes(file)) pageShellClass = 'page-reference';
+      else if (utilityPages.includes(file)) pageShellClass = 'page-utility';
+      else if (['index.html', 'about.html', 'podcast.html', 'latest.html', 'newsletter.html', 'topics.html'].includes(file)) pageShellClass = 'page-editorial';
+      if (pageShellClass) {
+        // Handle both <body> and <body class="..."> variants
+        html = html.replace(/<body(\s+class="([^"]*)")?/i, (match, classAttr, existingClasses) => {
+          if (existingClasses) return `<body class="${existingClasses} ${pageShellClass}"`;
+          return `<body class="${pageShellClass}"`;
+        });
       }
 
       // Inject agency coverage into agency-sources.html
