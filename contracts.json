@@ -10,7 +10,18 @@
     "link": "https://sam.gov/opp/7b2734002e4048bfa2ac4cc5b0479930/view",
     "small_business_eligible": false,
     "source": "https://sam.gov/opp/7b2734002e4048bfa2ac4cc5b0479930/view",
-    "last_verified": "2026-04-06"
+    "last_verified": "2026-04-06",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "High ceiling but complex teaming required",
+      "factors": {
+        "vehicle_fit": { "score": "pass", "note": "IDIQ with MOSA structure allows bench positioning" },
+        "agency_alignment": { "score": "pass", "note": "VA community care — active relationship signals required" },
+        "timeline": { "score": "watch", "note": "Proposals due April 17 — very tight runway" },
+        "competition": { "score": "watch", "note": "4-5 major payer-integrator teams expected" },
+        "scope_fit": { "score": "pass", "note": "Multi-region structure allows right-sized participation" }
+      }
+    }
   },
   {
     "name": "CCN Dental (36C10G26R0004)",

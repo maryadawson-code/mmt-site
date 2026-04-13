@@ -34,8 +34,15 @@
   }
 
   // --- Tier detection ---
+  // Returns: 'institutional' | 'premium' | 'free' | 'public'
   function getSubscriberStatus() {
-    // Cookie-based detection
+    // Institutional check first (highest tier)
+    try {
+      if (localStorage.getItem('mmt_institutional') === 'true') return 'institutional';
+    } catch (e) {}
+    if (getCookie('mmt_institutional') === 'true') return 'institutional';
+
+    // Premium check
     if (getCookie('mmt_premium') === 'true') return 'premium';
     if (getCookie('mmt_subscriber') === 'true') return 'free';
 
@@ -50,6 +57,7 @@
       if (cached) {
         var data = JSON.parse(cached);
         if (Date.now() - data.ts < 5 * 60 * 1000) {
+          if (data.tier === 'institutional') return 'institutional';
           if (data.tier === 'premium') return 'premium';
           if (data.tier === 'subscriber') return 'free';
         }
@@ -57,6 +65,11 @@
     } catch (e) {}
 
     return 'public';
+  }
+
+  // Helper: is at least premium (includes institutional)
+  function isAtLeastPremium(status) {
+    return status === 'premium' || status === 'institutional';
   }
 
   // --- Gate logic ---
@@ -69,7 +82,7 @@
     document.body.classList.add('js-ready');
 
     // CSS-first paywall: reveal data-access="premium" elements for premium users
-    if (status === 'premium') {
+    if (isAtLeastPremium(status)) {
       var premiumContent = document.querySelectorAll('[data-access="premium"]');
       for (var p = 0; p < premiumContent.length; p++) {
         var el = premiumContent[p];
@@ -86,7 +99,7 @@
     }
 
     // Decode contract detail page premium fields for authenticated users
-    if (status === 'premium') {
+    if (isAtLeastPremium(status)) {
       var contractMain = document.querySelector('[data-contract-premium]');
       if (contractMain) {
         try {
@@ -104,7 +117,7 @@
     }
 
     // Decode contract tracker card premium fields for authenticated users
-    if (status === 'premium') {
+    if (isAtLeastPremium(status)) {
       var encodedFields = document.querySelectorAll('[data-premium-fields]');
       for (var f = 0; f < encodedFields.length; f++) {
         try {
@@ -131,7 +144,7 @@
     }
 
     // Decode and inject agency intelligence for authenticated users
-    if (status === 'premium') {
+    if (isAtLeastPremium(status)) {
       var agencyEl = document.querySelector('[data-agency-intel]');
       if (agencyEl) {
         try {
@@ -174,7 +187,7 @@
     }
 
     // Decode and inject premium text content for authenticated users
-    if (status === 'premium') {
+    if (isAtLeastPremium(status)) {
       var encodedText = document.querySelectorAll('[data-premium-text]');
       for (var t = 0; t < encodedText.length; t++) {
         try {
@@ -260,7 +273,7 @@
     if (gatedNotes.length > 0) {
       for (var g = 0; g < gatedNotes.length; g++) {
         var note = gatedNotes[g];
-        if (status === 'premium') {
+        if (isAtLeastPremium(status)) {
           // Decode full note from data attribute for premium users
           var fullNote = note.getAttribute('data-full-note');
           if (fullNote) {
@@ -344,13 +357,18 @@
   };
 
   window.mmtIsPremium = function () {
-    return getSubscriberStatus() === "premium";
+    var s = getSubscriberStatus();
+    return s === "premium" || s === "institutional";
+  };
+
+  window.mmtIsInstitutional = function () {
+    return getSubscriberStatus() === "institutional";
   };
 
   // --- Plausible gate view tracking ---
   function trackGateViews(status) {
     if (typeof plausible === 'undefined') return;
-    if (status === 'premium') return; // No gates visible
+    if (isAtLeastPremium(status)) return; // No gates visible
 
     var gates = document.querySelectorAll('[data-gate-overlay]');
     for (var i = 0; i < gates.length; i++) {
@@ -408,7 +426,7 @@
     var accessTier = articleEl.getAttribute('data-access') || 'free';
 
     // Premium users see everything
-    if (status === 'premium') return;
+    if (isAtLeastPremium(status)) return;
 
     // Archive articles (> 90 days): only email-gate (not implemented yet — skip for now)
     if (accessTier === 'email') return;
@@ -456,7 +474,7 @@
   // --- Nav premium state toggle ---
   function applyNavPremiumState() {
     var status = getSubscriberStatus();
-    if (status !== 'premium') return;
+    if (!isAtLeastPremium(status)) return;
 
     // Desktop nav: show member chip, hide sign-in
     var loggedOut = document.getElementById('nav-logged-out');

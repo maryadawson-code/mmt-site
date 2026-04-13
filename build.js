@@ -3712,6 +3712,14 @@ async function build() {
     console.warn('Failed to write deploy marker:', err.message);
   }
 
+  // Build premium search index
+  try {
+    const { buildIndex } = require('./scripts/build-search-index.js');
+    buildIndex();
+  } catch (err) {
+    console.warn('Search index build failed:', err.message);
+  }
+
   console.log('\n=== Build complete! ===');
 
   // Summary
