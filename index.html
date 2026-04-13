@@ -114,7 +114,7 @@
         <a href="marketpulse.html" class="btn-primary no-underline" style="background:var(--mmt-teal);">Request MarketPulse</a>
       </div>
       <div class="flex flex-wrap gap-3" style="margin-bottom:14px;">
-        <a href="newsletter.html?ref=forecast" class="btn-secondary no-underline" onclick="if(typeof plausible!=='undefined')plausible('Lead Magnet CTA Click')">Get the FY2027 Federal Health IT Contract Forecast &rarr;</a>
+        <a href="/fy2027-forecast.html" class="btn-secondary no-underline" onclick="if(typeof plausible!=='undefined')plausible('Lead Magnet CTA Click')">Get the FY2027 Federal Health IT Contract Forecast &rarr;</a>
       </div>
       <p style="font-size:13px;color:var(--mmt-text-secondary);line-height:1.6;margin-bottom:14px;">Free intelligence brief covering VA EHRM ($4.24B), DHA pipeline, and 15 upcoming recompetes.</p>
       <!-- Subscriber count — update MMT_SUBSCRIBER_COUNT when this changes -->
@@ -185,7 +185,7 @@
         </div>
         <div style="margin-top:8px;display:flex;gap:14px;align-items:center;">
           <span class="btn-primary" style="display:inline-block;">Start free assessment</span>
-          <span style="font-size:13px;color:var(--mmt-teal);font-weight:700;">View sample scorecard &rarr;</span>
+          <a href="/samples/proposalpulse-assessment.html" style="font-size:13px;color:var(--mmt-teal);font-weight:700;text-decoration:none;" class="no-underline">View sample scorecard &rarr;</a>
         </div>
         <div style="font-size:12px;color:var(--mmt-text-secondary);margin-top:6px;">Not used to train models. Private by default.</div>
       </a>
@@ -206,7 +206,7 @@
         </div>
         <div style="margin-top:8px;display:flex;gap:14px;align-items:center;">
           <span class="btn-primary" style="display:inline-block;background:var(--mmt-teal);">Request first brief</span>
-          <span style="font-size:13px;color:var(--mmt-teal);font-weight:700;">View sample brief &rarr;</span>
+          <a href="/samples/sample-tactical-brief.html" style="font-size:13px;color:var(--mmt-teal);font-weight:700;text-decoration:none;" class="no-underline">View sample brief &rarr;</a>
         </div>
       </a>
     </div>
@@ -471,7 +471,23 @@
       <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--mmt-border);font-size:13px;color:var(--mmt-text-secondary);display:grid;gap:6px;">
         <div><strong style="color:var(--mmt-navy);">Free:</strong> Twice-weekly analysis, full article archive, 72-hour access to Capture Intelligence</div>
         <div><strong style="color:var(--mmt-navy);">Premium:</strong> Monthly Capture Intelligence sheets + early access + deep-dive solicitation analysis</div>
-        <a href="pricing.html" style="color:var(--mmt-teal);font-weight:600;margin-top:4px;">What's in Premium?</a>
+        <details style="margin-top:12px;border:1px solid var(--mmt-border);border-radius:12px;overflow:hidden;">
+          <summary style="padding:12px 16px;cursor:pointer;font-size:13px;font-weight:700;color:var(--mmt-navy);list-style:none;display:flex;align-items:center;justify-content:space-between;">What's included at each level <span style="font-size:11px;color:var(--mmt-teal);">See comparison &#8595;</span></summary>
+          <div style="padding:0 16px 16px;">
+            <table style="width:100%;font-size:12px;border-collapse:collapse;">
+              <thead><tr><th style="text-align:left;padding:6px 0;color:var(--mmt-text-secondary);">Content</th><th style="text-align:center;padding:6px;color:var(--mmt-text-secondary);">Free</th><th style="text-align:center;padding:6px;color:var(--mmt-navy);font-weight:700;">&#9733; Premium</th></tr></thead>
+              <tbody>
+                <tr style="border-top:1px solid var(--mmt-border);"><td style="padding:6px 0;">Twice-weekly analysis</td><td style="text-align:center;color:#22c55e;">&#10003;</td><td style="text-align:center;color:#22c55e;">&#10003; + 48hr early</td></tr>
+                <tr style="border-top:1px solid var(--mmt-border);"><td style="padding:6px 0;">Capture Intelligence</td><td style="text-align:center;color:var(--mmt-text-secondary);">3 signals, 72hr delay</td><td style="text-align:center;color:#22c55e;">All 24 + action windows</td></tr>
+                <tr style="border-top:1px solid var(--mmt-border);"><td style="padding:6px 0;">Capture Corner</td><td style="text-align:center;color:#e5e7eb;">&mdash;</td><td style="text-align:center;color:#22c55e;">&#10003;</td></tr>
+                <tr style="border-top:1px solid var(--mmt-border);"><td style="padding:6px 0;">ProposalPulse</td><td style="text-align:center;">1 free, $19.99</td><td style="text-align:center;color:#22c55e;">1 free, $14.99</td></tr>
+                <tr style="border-top:1px solid var(--mmt-border);"><td style="padding:6px 0;">MarketPulse</td><td style="text-align:center;">1 free, $50</td><td style="text-align:center;color:#22c55e;">1 free, $35</td></tr>
+                <tr style="border-top:1px solid var(--mmt-border);"><td style="padding:6px 0;font-weight:700;">Price</td><td style="text-align:center;font-weight:700;">$0</td><td style="text-align:center;font-weight:700;color:var(--mmt-navy);">$199/yr Founding</td></tr>
+              </tbody>
+            </table>
+            <div style="margin-top:12px;text-align:center;"><a href="/pricing.html" style="font-size:12px;font-weight:700;color:var(--mmt-teal);text-decoration:none;" onclick="if(typeof plausible!=='undefined')plausible('Homepage Compare CTA Click')">See Founding Member pricing &rarr;</a></div>
+          </div>
+        </details>
       </div>
     </div>
   </section>

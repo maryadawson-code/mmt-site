@@ -1,4 +1,9 @@
 ---
+category: "solicitation"
+capture_corner:
+  - "The conformed TOPRs shifted risk ownership from VA to the CCN contractor. Proposals that price like the old CCN without accounting for VBP infrastructure will be non-responsive"
+  - "VA OIG and GAO documented the governance gap. Winning proposals must cite these specific findings and show how their approach closes them"
+  - "The $700B IDIQ ceiling is a statutory maximum not a projected spend. Build your capture strategy around the FY2027 community care budget: $56.2B"
 title: "April 3 Is Not the Hard Deadline. CCN Next Gen: The Follow-Up"
 date: 2026-03-26
 slug: april-3-is-not-the-hard-deadline-ccn-next-gen-the-follow-up
@@ -14,6 +19,11 @@ agencies:
 related_contracts: true
 linkedin_url: "https://www.linkedin.com/pulse/april-3-hard-deadline-ccn-next-gen-follow-up-mary-womack-1zlne"
 ---
+category: "solicitation"
+capture_corner:
+  - "The conformed TOPRs shifted risk ownership from VA to the CCN contractor. Proposals that price like the old CCN without accounting for VBP infrastructure will be non-responsive"
+  - "VA OIG and GAO documented the governance gap. Winning proposals must cite these specific findings and show how their approach closes them"
+  - "The $700B IDIQ ceiling is a statutory maximum not a projected spend. Build your capture strategy around the FY2027 community care budget: $56.2B"
 
 The conformed TOPRs settled who owns the risk. VA's own OIG, GAO, and Congress documented the governance gap. Here is what the winning proposals on Community Care Network Next Gen have to build — and what eleven years of oversight says happens if they don't.
 

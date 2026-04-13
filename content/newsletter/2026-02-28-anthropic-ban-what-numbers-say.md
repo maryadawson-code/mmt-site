@@ -1,4 +1,9 @@
 ---
+category: "deep_dive"
+capture_corner:
+  - "The Anthropic designation creates a procurement template applicable to any AI vendor. Build a vendor-switching contingency into your architecture"
+  - "The 180-day DoW AI strategy mandate requiring any lawful use language will affect every AI contract in the MHS"
+  - "Organizations using Claude in active DoD programs need alternatives within 30 days. If you are a teaming partner on an affected contract initiate the conversation now"
 title: "The Anthropic Ban: What the Numbers Actually Say"
 date: 2026-02-28
 slug: anthropic-ban-what-numbers-say
@@ -8,6 +13,11 @@ tags:
   - Strategy & Leadership
   - Acquisition & Contracting
 ---
+category: "deep_dive"
+capture_corner:
+  - "The Anthropic designation creates a procurement template applicable to any AI vendor. Build a vendor-switching contingency into your architecture"
+  - "The 180-day DoW AI strategy mandate requiring any lawful use language will affect every AI contract in the MHS"
+  - "Organizations using Claude in active DoD programs need alternatives within 30 days. If you are a teaming partner on an affected contract initiate the conversation now"
 
 Deep analytical foundation for this week's issue. Hard data, market penetration, enterprise exposure, legal precedent, and the double standard the Pentagon created in a single evening.
 

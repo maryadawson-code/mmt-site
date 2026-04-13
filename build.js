@@ -2107,7 +2107,13 @@ function inlineTailwindCss(html) {
     </div>
   </nav>`;
 
-  const editorialFooter = `<footer class="wrap" style="padding:28px 0 58px;">
+  const editorialFooter = `<div style="background:var(--mmt-navy);padding:16px 0;">
+    <div class="wrap" style="text-align:center;">
+      <p style="font-size:13px;color:rgba(255,255,255,0.7);margin:0 0 8px;">Reading on LinkedIn? Get direct email delivery — plus the archive and tools.</p>
+      <a href="/newsletter.html" class="no-underline" style="font-size:12px;font-weight:700;padding:6px 16px;background:var(--mmt-teal);color:#fff;border-radius:6px;text-decoration:none;" onclick="if(typeof plausible!=='undefined')plausible('Footer Email Migrate Click')">Subscribe at missionmeetstech.com &rarr;</a>
+    </div>
+  </div>
+  <footer class="wrap" style="padding:28px 0 58px;">
     <div style="border-top:1px solid var(--mmt-border);padding-top:24px;display:grid;grid-template-columns:1fr auto auto auto auto auto;gap:32px;color:var(--mmt-text-secondary);font-size:13px;">
       <div>
         <p style="margin-bottom:6px;"><strong style="color:var(--mmt-navy);">Mission Meets Tech</strong></p>
@@ -2414,7 +2420,8 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     'welcome-premium.html',
     'dashboard.html',
     'subscribed.html',
-    'upgrade.html'
+    'upgrade.html',
+    'fy2027-forecast.html'
   ];
   const ogMap = {
     'index.html': 'index.png',

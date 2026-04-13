@@ -412,10 +412,23 @@
       monthlyBtn.href = links.monthly;
     }
 
-    // Founding Member counter
+    // Founding Member counter — fetch live count from Netlify function
     var counter = document.getElementById('foundingCounter');
-    if (counter && cfg.foundingSpotsRemaining != null) {
+    if (counter) {
+      // Show hardcoded fallback first, then update from API
       counter.textContent = cfg.foundingSpotsRemaining + ' of 100 Founding Member spots remaining.';
+      fetch('/.netlify/functions/founding-count')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data.remaining != null) {
+            counter.textContent = data.remaining + ' of 100 Founding Member spots remaining.';
+            if (data.remaining <= 0) {
+              var btn = document.getElementById('foundingBtn');
+              if (btn) { btn.textContent = 'Founding Member — SOLD OUT'; btn.style.opacity = '0.5'; btn.style.pointerEvents = 'none'; }
+            }
+          }
+        })
+        .catch(function() {}); // Fail silently — hardcoded fallback stays visible
     }
 
     // Plausible: pricing page view

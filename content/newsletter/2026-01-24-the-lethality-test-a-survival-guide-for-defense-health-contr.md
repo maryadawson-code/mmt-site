@@ -7,6 +7,11 @@ tags:
   - Acquisition & Contracting
   - Strategy & Leadership
 linkedin_url: "https://www.linkedin.com/newsletters/mission-meets-tech-7307800960485969920/"
+category: "strategy"
+capture_corner:
+  - "The 8(a) sole-source threshold increase to $5M creates a new competitive band where SDVOSB and HUBZone firms compete directly against graduated 8(a) companies"
+  - "Via's Lethality Test framework is now the de facto evaluation criterion for every DHA acquisition under DOGE review. Proposals that cannot articulate measurable operational value to warfighter readiness will not survive"
+  - "If your firm graduated 8(a) in the last 24 months, your capture strategy must shift from sole-source positioning to best-value competition against the firms that took your old seats"
 ---
 
 How defense health contractors can survive and compete in the post-8(a) landscape using the Lethality Test framework.

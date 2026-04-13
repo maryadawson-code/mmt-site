@@ -1548,11 +1548,18 @@
         }
       }
 
-      // Run after paywall.js initializes
+      // Poll for mmtGetTier availability before running CI gating
+      function runCI() {
+        if (typeof window.mmtGetTier === 'function') {
+          applyCI();
+        } else {
+          setTimeout(runCI, 50);
+        }
+      }
       if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function() { setTimeout(applyCI, 100); });
+        document.addEventListener('DOMContentLoaded', runCI);
       } else {
-        setTimeout(applyCI, 100);
+        runCI();
       }
     })();
   </script>
