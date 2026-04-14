@@ -54,7 +54,7 @@ async function trackCost(supabase, opts) {
 }
 
 async function trackAnthropic(supabase, { functionName, product, orderId, model, usage, latencyMs, status, errorMessage }) {
-  return trackCost(supabase, { functionName, product, orderId, provider: "anthropic", model: model || "claude-sonnet-4-20250514", inputTokens: usage?.input_tokens || 0, outputTokens: usage?.output_tokens || 0, latencyMs, status, errorMessage });
+  return trackCost(supabase, { functionName, product, orderId, provider: "anthropic", model: model || "claude-sonnet-4-6", inputTokens: usage?.input_tokens || 0, outputTokens: usage?.output_tokens || 0, latencyMs, status, errorMessage });
 }
 
 async function trackPerplexity(supabase, { functionName, product, orderId, model, usage, latencyMs, status, errorMessage }) {

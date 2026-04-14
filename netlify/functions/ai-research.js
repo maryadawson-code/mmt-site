@@ -46,7 +46,7 @@ exports.handler = async (event) => {
           method: "POST",
           headers: { "x-api-key": process.env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "Content-Type": "application/json" },
           body: JSON.stringify({
-            model: "claude-sonnet-4-5-20250514",
+            model: "claude-sonnet-4-6",
             max_tokens: 4000,
             system: SYSTEM_PROMPT,
             messages: [{ role: "user", content: query }],
@@ -66,8 +66,8 @@ exports.handler = async (event) => {
             }
           }
         }
-        results.claude = { answer, citations, model: "claude-sonnet-4-5-20250514" };
-        if (supabase) { try { await trackAnthropic(supabase, { functionName: 'ai-research', product: 'mmt-intel', model: 'claude-sonnet-4-5-20250514', usage: data.usage, latencyMs: Date.now() - _t }); } catch (_e) { /* never break parent */ } }
+        results.claude = { answer, citations, model: "claude-sonnet-4-6" };
+        if (supabase) { try { await trackAnthropic(supabase, { functionName: 'ai-research', product: 'mmt-intel', model: 'claude-sonnet-4-6', usage: data.usage, latencyMs: Date.now() - _t }); } catch (_e) { /* never break parent */ } }
       } catch (e) { results.claude = { error: e.message }; }
     })());
   } else if (wantsClaudeSearch) {

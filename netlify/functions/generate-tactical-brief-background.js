@@ -42,7 +42,7 @@ const { getFlag } = require("./lib/feature-flags");
 const { trackAnthropic } = require("./lib/cost-tracker");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
-const CLAUDE_RESEARCH_MODEL = "claude-sonnet-4-5-20250514"; // research passes — web search enabled
+const CLAUDE_RESEARCH_MODEL = "claude-sonnet-4-6"; // research passes — web search enabled
 const CLAUDE_ANALYSIS_MODEL = "claude-haiku-4-5-20251001"; // synthesis/validation — no live search
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 

@@ -40,13 +40,13 @@ const ANTHROPIC_ONLY_TASKS = new Set([
 
 const MODELS = {
   scoring: {
-    default: "claude-sonnet-4-5-20250929",
-    floor: "claude-sonnet-4-5-20250929",
+    default: "claude-sonnet-4-6",
+    floor: "claude-sonnet-4-6",
     local: { model: "gemma3:27b", provider: "ollama" },
   },
   rewrite: {
-    default: "claude-sonnet-4-5-20250929",
-    floor: "claude-sonnet-4-5-20250929",
+    default: "claude-sonnet-4-6",
+    floor: "claude-sonnet-4-6",
     local: { model: "gemma3:27b", provider: "ollama" },
   },
   review: {
@@ -55,19 +55,19 @@ const MODELS = {
     local: { model: "gemma3:27b", provider: "ollama" },
   },
   contract_research: {
-    default: "claude-sonnet-4-5-20250514",
-    floor: "claude-sonnet-4-5-20250514",
+    default: "claude-sonnet-4-6",
+    floor: "claude-sonnet-4-6",
     provider: "anthropic",
     // No local — requires Anthropic web_search tool
   },
   contract_verify: {
-    default: "claude-sonnet-4-5-20250514",
-    floor: "claude-sonnet-4-5-20250514",
+    default: "claude-sonnet-4-6",
+    floor: "claude-sonnet-4-6",
     provider: "anthropic",
   },
   opportunity_scan: {
-    default: "claude-sonnet-4-5-20250929",
-    floor: "claude-sonnet-4-5-20250929",
+    default: "claude-sonnet-4-6",
+    floor: "claude-sonnet-4-6",
     local: { model: "gemma3:27b", provider: "ollama" },
   },
   sb_classify: {
@@ -76,8 +76,8 @@ const MODELS = {
     local: { model: "gemma3:12b", provider: "ollama" },
   },
   newsletter_research: {
-    default: "claude-sonnet-4-5-20250514",
-    floor: "claude-sonnet-4-5-20250514",
+    default: "claude-sonnet-4-6",
+    floor: "claude-sonnet-4-6",
     provider: "anthropic",
   },
   fact_check: {
@@ -86,14 +86,14 @@ const MODELS = {
     provider: "anthropic",
   },
   protest_monitor: {
-    default: "claude-sonnet-4-5-20250514",
-    floor: "claude-sonnet-4-5-20250514",
+    default: "claude-sonnet-4-6",
+    floor: "claude-sonnet-4-6",
     provider: "anthropic",
   },
 };
 
 const ESCALATION_THRESHOLD = 3.0;
-const ESCALATION_MODEL = "claude-sonnet-4-5-20250929";
+const ESCALATION_MODEL = "claude-sonnet-4-6";
 const FEEDBACK_SAMPLE_SIZE = 10;
 
 /**
@@ -111,7 +111,7 @@ async function getModelConfig(supabase, taskType) {
   const config = MODELS[taskType];
   if (!config) {
     console.warn(`model-router: unknown task type "${taskType}", using Sonnet`);
-    return { model: "claude-sonnet-4-5-20250929", reason: "unknown_task", provider: "anthropic" };
+    return { model: "claude-sonnet-4-6", reason: "unknown_task", provider: "anthropic" };
   }
 
   // Check for local routing: Ollama available + task has local config + not Anthropic-only

@@ -9,7 +9,7 @@ const { withRetry } = require("../lib/retry");
 const { trackAnthropic } = require("../lib/cost-tracker");
 
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
-const DEFAULT_MODEL = "claude-sonnet-4-5-20250514";
+const DEFAULT_MODEL = "claude-sonnet-4-6";
 
 /**
  * Call Claude with web_search tool and return text content + citations.

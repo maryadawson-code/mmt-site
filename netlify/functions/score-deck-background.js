@@ -493,7 +493,7 @@ exports.handler = wrapHandler(async (event) => {
     // ─── ANTHROPIC SCORING PATH (production default or fallback) ───
     if (!claudeData) {
       const apiCallBody = {
-        model: scoringModelConfig.model.startsWith("gemma") ? "claude-sonnet-4-5-20250929" : scoringModelConfig.model,
+        model: scoringModelConfig.model.startsWith("gemma") ? "claude-sonnet-4-6" : scoringModelConfig.model,
         max_tokens: MAX_OUTPUT_TOKENS,
         temperature: 0.3,
         system: [{ type: "text", text: systemPrompt, cache_control: { type: "ephemeral" } }],
