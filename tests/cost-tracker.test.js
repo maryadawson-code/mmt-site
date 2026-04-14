@@ -3,13 +3,13 @@ import { calculateCostCents } from "../netlify/functions/lib/cost-tracker.js";
 
 describe("cost-tracker", () => {
   const rateCard = [
-    { provider: "anthropic", model: "claude-sonnet-4-20250514", input_cost_per_1k_cents: "0.3", output_cost_per_1k_cents: "1.5", per_call_cost_cents: null, per_email_cost_cents: null },
+    { provider: "anthropic", model: "claude-sonnet-4-6", input_cost_per_1k_cents: "0.3", output_cost_per_1k_cents: "1.5", per_call_cost_cents: null, per_email_cost_cents: null },
     { provider: "perplexity", model: "sonar", per_call_cost_cents: "0.5", input_cost_per_1k_cents: null, output_cost_per_1k_cents: null, per_email_cost_cents: null },
     { provider: "resend", model: "transactional", per_email_cost_cents: "0.033", per_call_cost_cents: null, input_cost_per_1k_cents: null, output_cost_per_1k_cents: null },
   ];
 
   it("calculates Anthropic token-based cost", () => {
-    const cost = calculateCostCents(rateCard, "anthropic", "claude-sonnet-4-20250514", 10000, 2000);
+    const cost = calculateCostCents(rateCard, "anthropic", "claude-sonnet-4-6", 10000, 2000);
     // (10000/1000)*0.3 + (2000/1000)*1.5 = 3 + 3 = 6
     expect(cost).toBeCloseTo(6, 1);
   });
@@ -29,6 +29,6 @@ describe("cost-tracker", () => {
   });
 
   it("returns 0 with empty rate card", () => {
-    expect(calculateCostCents([], "anthropic", "claude-sonnet-4-20250514", 1000, 1000)).toBe(0);
+    expect(calculateCostCents([], "anthropic", "claude-sonnet-4-6", 1000, 1000)).toBe(0);
   });
 });

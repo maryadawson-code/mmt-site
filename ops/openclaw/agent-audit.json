@@ -261,14 +261,14 @@
   "model_router_tasks": [
     {
       "task_type": "scoring",
-      "current_model": "claude-sonnet-4-5-20250929",
+      "current_model": "claude-sonnet-4-6",
       "assigned_model": "gemma3:27b",
       "assigned_provider": "ollama",
       "routing_reason": "Proposal scoring is structured extraction"
     },
     {
       "task_type": "rewrite",
-      "current_model": "claude-sonnet-4-5-20250929",
+      "current_model": "claude-sonnet-4-6",
       "assigned_model": "gemma3:27b",
       "assigned_provider": "ollama",
       "routing_reason": "Routine rewriting is drafting"
@@ -282,21 +282,21 @@
     },
     {
       "task_type": "contract_research",
-      "current_model": "claude-sonnet-4-5-20250514",
+      "current_model": "claude-sonnet-4-6",
       "assigned_model": "claude-sonnet-4-5 (Anthropic)",
       "assigned_provider": "anthropic",
       "routing_reason": "REQUIRES Anthropic web_search tool - cannot run locally"
     },
     {
       "task_type": "contract_verify",
-      "current_model": "claude-sonnet-4-5-20250514",
+      "current_model": "claude-sonnet-4-6",
       "assigned_model": "claude-sonnet-4-5 (Anthropic)",
       "assigned_provider": "anthropic",
       "routing_reason": "REQUIRES Anthropic web_search tool - cannot run locally"
     },
     {
       "task_type": "opportunity_scan",
-      "current_model": "claude-sonnet-4-5-20250929",
+      "current_model": "claude-sonnet-4-6",
       "assigned_model": "gemma3:27b",
       "assigned_provider": "ollama",
       "routing_reason": "Structured extraction from existing data"
@@ -310,7 +310,7 @@
     },
     {
       "task_type": "newsletter_research",
-      "current_model": "claude-sonnet-4-5-20250514",
+      "current_model": "claude-sonnet-4-6",
       "assigned_model": "claude-sonnet-4-5 (Anthropic)",
       "assigned_provider": "anthropic",
       "routing_reason": "REQUIRES Anthropic web_search tool"
@@ -324,7 +324,7 @@
     },
     {
       "task_type": "protest_monitor",
-      "current_model": "claude-sonnet-4-5-20250514",
+      "current_model": "claude-sonnet-4-6",
       "assigned_model": "claude-sonnet-4-5 (Anthropic)",
       "assigned_provider": "anthropic",
       "routing_reason": "REQUIRES Anthropic web_search tool"

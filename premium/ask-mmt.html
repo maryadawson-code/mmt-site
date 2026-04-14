@@ -64,14 +64,37 @@
       </div>
       <div class="dash-main">
 
-        <h1 style="font-size:24px; font-weight:800; margin:0 0 24px;">Ask MMT — Monthly Q&A</h1>
-        <div class="dash-card" style="border-left:3px solid var(--mmt-teal);">
-          <h3>Submit a Question</h3>
-          <p style="margin:0 0 16px; color:var(--mmt-text-secondary); font-size:14px;">Premium subscribers can submit one question per month. Selected questions are answered in the next Premium newsletter issue.</p>
-          <p style="margin:0 0 12px; font-size:14px; color:var(--mmt-navy);">Email your question to:</p>
-          <a href="mailto:mary@missionmeetstech.com?subject=Premium%20Q%26A%20Question" style="display:inline-block;background:var(--mmt-navy);color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px;">Send Question &rarr;</a>
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin-bottom:8px;">MMT Premium &middot; Direct Access</p>
+        <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">Ask MMT</h1>
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 20px;">Direct access to Mary. Written answer within 5 business days. 2 questions per month included with Premium.</p>
+
+        <!-- Quota card -->
+        <div class="dash-card" style="padding:16px 20px;margin-bottom:16px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-size:12px;color:var(--mmt-text-secondary);margin-bottom:4px;" id="ask-month-label">April 2026</div>
+              <div style="font-size:14px;font-weight:600;" id="ask-quota-label">Loading...</div>
+            </div>
+            <div style="width:120px;height:6px;background:var(--mmt-border);border-radius:999px;overflow:hidden;">
+              <div id="ask-bar" style="height:100%;background:var(--mmt-teal);border-radius:999px;width:0%;transition:width 0.3s;"></div>
+            </div>
+          </div>
         </div>
-        <p style="font-size:14px; color:var(--mmt-text-secondary);">Questions should be specific to federal health IT procurement, contracting, or strategy. Mary responds to selected questions in the monthly Premium issue.</p>
+
+        <!-- Question form -->
+        <div class="dash-card" style="border-left:3px solid var(--mmt-teal);">
+          <h3 style="margin-bottom:12px;">Your question</h3>
+          <textarea id="ask-question" rows="4" maxlength="500" placeholder="Be specific: agency, type of work, constraints. Example: What vehicle should an SDVOSB use for DHA telehealth work?" style="width:100%;padding:12px 16px;border:1px solid var(--mmt-border);border-radius:8px;font-size:14px;font-family:inherit;resize:vertical;margin-bottom:8px;"></textarea>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:12px;color:var(--mmt-text-secondary);" id="ask-char-count">500 characters remaining</span>
+            <button id="ask-submit-btn" onclick="submitQuestion()" style="padding:10px 20px;background:var(--mmt-navy);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;">Send question &rarr;</button>
+          </div>
+          <div id="ask-confirm" style="display:none;margin-top:12px;padding:12px 16px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:8px;font-size:14px;color:#15803D;font-weight:600;">&#10003; Question received. Mary will respond within 5 business days.</div>
+        </div>
+
+        <!-- History -->
+        <h2 style="font-size:16px;font-weight:700;margin:24px 0 12px;">Question History</h2>
+        <div id="ask-history-list"><p style="font-size:14px;color:var(--mmt-text-secondary);">No questions yet this month. You have 2 available.</p></div>
       </div>
     </div>
   </div>
@@ -82,6 +105,65 @@
     <a href="/marketpulse.html">Brief</a>
     <a href="/premium/settings.html">Account</a>
   </div>
-  <script>var email=localStorage.getItem('mmt_email');if(email)document.getElementById('dash-email').textContent=email;</script>
+  <script>
+    var email=localStorage.getItem('mmt_email');if(email)document.getElementById('dash-email').textContent=email;
+
+    // Character counter
+    var ta = document.getElementById('ask-question');
+    var cc = document.getElementById('ask-char-count');
+    if (ta && cc) ta.addEventListener('input', function() {
+      cc.textContent = (500 - ta.value.length) + ' characters remaining';
+    });
+
+    // Quota
+    function updateQuota() {
+      var mk = 'mmt_ask_count_' + new Date().toISOString().slice(0, 7);
+      var used = parseInt(localStorage.getItem(mk) || '0');
+      var remaining = Math.max(0, 2 - used);
+      var ql = document.getElementById('ask-quota-label');
+      var bar = document.getElementById('ask-bar');
+      if (ql) ql.textContent = 'Questions remaining: ' + remaining + ' of 2';
+      if (bar) bar.style.width = Math.min(100, (used / 2) * 100) + '%';
+      var btn = document.getElementById('ask-submit-btn');
+      if (btn && remaining <= 0) { btn.disabled = true; btn.style.opacity = '0.5'; }
+    }
+
+    // History
+    function renderHistory() {
+      var list = document.getElementById('ask-history-list');
+      if (!list) return;
+      var history = JSON.parse(localStorage.getItem('mmt_ask_history') || '[]');
+      if (history.length === 0) { list.innerHTML = '<p style="font-size:14px;color:var(--mmt-text-secondary);">No questions yet this month. You have 2 available.</p>'; return; }
+      list.innerHTML = history.map(function(item) {
+        return '<div class="dash-card" style="padding:14px 18px;">' +
+          '<div style="font-size:12px;color:var(--mmt-text-secondary);margin-bottom:4px;">' + item.date + ' &middot; <span style="font-weight:600;">' + item.status + '</span></div>' +
+          '<div style="font-size:14px;font-weight:600;">"' + item.question.substring(0, 80) + (item.question.length > 80 ? '...' : '') + '"</div>' +
+          '</div>';
+      }).join('');
+    }
+
+    // Submit
+    function submitQuestion() {
+      var q = document.getElementById('ask-question').value.trim();
+      if (!q) return;
+      var mk = 'mmt_ask_count_' + new Date().toISOString().slice(0, 7);
+      var used = parseInt(localStorage.getItem(mk) || '0');
+      if (used >= 2) { alert('You have used both questions this month. Resets on the 1st.'); return; }
+      localStorage.setItem(mk, String(used + 1));
+      var history = JSON.parse(localStorage.getItem('mmt_ask_history') || '[]');
+      history.unshift({ date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }), question: q, status: 'Pending' });
+      localStorage.setItem('mmt_ask_history', JSON.stringify(history));
+      // Send via mailto as bridge
+      var e = localStorage.getItem('mmt_email') || '';
+      window.open('mailto:mary@missionmeetstech.com?subject=' + encodeURIComponent('[Ask MMT] ' + q.substring(0, 60)) + '&body=' + encodeURIComponent('Question: ' + q + '\n\nFrom: ' + e), '_blank');
+      document.getElementById('ask-question').value = '';
+      document.getElementById('ask-confirm').style.display = 'block';
+      updateQuota();
+      renderHistory();
+    }
+
+    updateQuota();
+    renderHistory();
+  </script>
 </body>
 </html>

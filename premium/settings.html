@@ -64,7 +64,9 @@
       </div>
       <div class="dash-main">
 
-        <h1 style="font-size:24px; font-weight:800; margin:0 0 24px;">Account Settings</h1>
+        <a href="/premium/dashboard.html" style="font-size:13px;color:var(--mmt-teal);text-decoration:none;display:inline-block;margin-bottom:16px;">&larr; Back to dashboard</a>
+        <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">Account Settings</h1>
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 24px;">Manage your subscription, preferences, and tool access.</p>
         <div class="dash-card">
           <h3>Subscription</h3>
           <p style="margin:0 0 12px; color:var(--mmt-text-secondary); font-size:14px;">Manage your subscription, update payment method, or cancel.</p>
@@ -75,8 +77,21 @@
           <p style="margin:0; color:var(--mmt-text-secondary); font-size:14px;"><strong>ProposalPulse:</strong> $14.99 per assessment (25% off standard $19.99)<br><strong>MarketPulse:</strong> $35 per brief (30% off standard $50)<br><span style="font-size:13px;">Discounts apply automatically when using your registered email.</span></p>
         </div>
         <div class="dash-card">
-          <h3>Contact</h3>
-          <p style="margin:0; color:var(--mmt-text-secondary); font-size:14px;">Questions about your subscription? Email <a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a></p>
+          <h3>Account Status</h3>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:14px;">Subscription status</span>
+              <span style="font-size:13px;font-weight:700;color:#16A34A;">&#9679; Active Premium</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:14px;">Manage billing / cancel</span>
+              <a href="https://billing.stripe.com/p/login/7sY28f3vn9N4aAwaEE" target="_blank" rel="noopener" style="font-size:13px;font-weight:600;color:var(--mmt-teal);text-decoration:none;">Stripe Portal &rarr;</a>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:14px;">Questions</span>
+              <a href="mailto:mary@missionmeetstech.com" style="font-size:13px;color:var(--mmt-teal);text-decoration:none;">mary@missionmeetstech.com</a>
+            </div>
+          </div>
         </div>
       </div>
     </div>

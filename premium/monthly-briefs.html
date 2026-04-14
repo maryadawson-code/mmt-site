@@ -64,11 +64,49 @@
       </div>
       <div class="dash-main">
 
-        <h1 style="font-size:24px; font-weight:800; margin:0 0 24px;">Monthly Intelligence Briefs</h1>
-        <div class="dash-card" style="border-left:3px solid var(--mmt-teal);">
-          <h3>April 2026 — FY2027 Federal Health Budget</h3>
-          <p style="margin:0 0 12px; color:var(--mmt-text-secondary); font-size:14px;">24 signals across 10 agencies. Every row includes action window and confidence label.</p>
-          <a href="/intel/capture-intelligence-this-issue/" style="color:var(--mmt-teal); font-weight:600; font-size:14px; text-decoration:none;">View full sheet &rarr;</a>
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin-bottom:8px;">MMT Premium &middot; Monthly Intelligence</p>
+        <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">Monthly Brief</h1>
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 20px;">Deep-dive intelligence packet delivered the first Tuesday of each month. Full budget signals, contract pipeline, and competitive dynamics.</p>
+
+        <!-- Current month -->
+        <div class="dash-card" style="border-left:3px solid #92710A;background:#FEF9E7;margin-bottom:24px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;">
+            <div>
+              <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#92710A;margin-bottom:6px;">Current &middot; April 2026</div>
+              <div style="font-size:17px;font-weight:700;margin-bottom:4px;">FY2027 Federal Health Budget</div>
+              <div style="font-size:14px;color:var(--mmt-text-secondary);">24 signals across VA, DHA, HHS, ARPA-H. Full action windows and confidence labels.</div>
+            </div>
+            <a href="/intel/capture-intelligence-this-issue/" style="font-size:14px;font-weight:700;color:#92710A;text-decoration:none;white-space:nowrap;">View full sheet &rarr;</a>
+          </div>
+        </div>
+
+        <!-- Email delivery -->
+        <div class="dash-card" style="margin-bottom:24px;">
+          <h3 style="margin-bottom:8px;">Get the brief by email</h3>
+          <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 12px;">Enter your email to receive the current monthly brief as a formatted email.</p>
+          <div style="display:flex;gap:8px;max-width:400px;">
+            <input type="email" id="brief-email" placeholder="you@company.com" style="flex:1;padding:10px 14px;border:1px solid var(--mmt-border);border-radius:8px;font-size:14px;">
+            <button id="brief-download-btn" onclick="submitBriefEmail()" style="padding:10px 20px;background:var(--mmt-navy);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;">Request by email &rarr;</button>
+          </div>
+        </div>
+
+        <!-- Archive -->
+        <h2 style="font-size:16px;font-weight:700;margin:0 0 16px;padding-bottom:12px;border-bottom:1px solid var(--mmt-border);">Archive</h2>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div class="dash-card" style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;">
+            <div>
+              <div style="font-size:12px;color:var(--mmt-text-secondary);">March 2026</div>
+              <div style="font-size:15px;font-weight:600;">Q2 Pipeline Forecast</div>
+            </div>
+            <span style="font-size:13px;color:var(--mmt-text-secondary);">Coming soon</span>
+          </div>
+          <div class="dash-card" style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;">
+            <div>
+              <div style="font-size:12px;color:var(--mmt-text-secondary);">February 2026</div>
+              <div style="font-size:15px;font-weight:600;">DOGE Impact Assessment</div>
+            </div>
+            <span style="font-size:13px;color:var(--mmt-text-secondary);">Coming soon</span>
+          </div>
         </div>
       </div>
     </div>
@@ -80,6 +118,16 @@
     <a href="/marketpulse.html">Brief</a>
     <a href="/premium/settings.html">Account</a>
   </div>
-  <script>var email=localStorage.getItem('mmt_email');if(email)document.getElementById('dash-email').textContent=email;</script>
+  <script>
+    var email=localStorage.getItem('mmt_email');if(email)document.getElementById('dash-email').textContent=email;
+    function submitBriefEmail() {
+      var e = document.getElementById('brief-email').value.trim();
+      if (!e || !e.includes('@')) { alert('Please enter a valid email.'); return; }
+      localStorage.setItem('mmt_email', e);
+      var btn = document.getElementById('brief-download-btn');
+      btn.textContent = 'Request sent \u2713'; btn.disabled = true; btn.style.background = '#457B9D';
+      window.open('mailto:mary@missionmeetstech.com?subject=' + encodeURIComponent('[Monthly Brief] April 2026 request') + '&body=' + encodeURIComponent('Please send me the April 2026 Monthly Brief.\n\nEmail: ' + e), '_blank');
+    }
+  </script>
 </body>
 </html>
