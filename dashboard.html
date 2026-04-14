@@ -108,8 +108,7 @@
           localStorage.setItem('mmt_premium_ts', Date.now().toString());
           localStorage.setItem('mmt_email', email);
           if (data.token) localStorage.setItem('mmt_subscriber_token', data.token);
-          document.getElementById('gate').style.display = 'none';
-          document.getElementById('content').style.display = 'block';
+          window.location.href = '/premium/dashboard.html';
         } else {
           document.getElementById('gate-loading').style.display = 'none';
           var errEl = document.getElementById('gate-error');
@@ -128,8 +127,8 @@
     (function() {
       var ts = localStorage.getItem('mmt_premium_ts');
       if (localStorage.getItem('mmt_premium') === 'true' && ts && (Date.now() - parseInt(ts)) < 30 * 24 * 60 * 60 * 1000) {
-        document.getElementById('gate').style.display = 'none';
-        document.getElementById('content').style.display = 'block';
+        window.location.href = '/premium/dashboard.html';
+        return;
       }
     })();
 

@@ -113,6 +113,37 @@
 [context.staging]
   command = "node build.js"
 
+# Premium dashboard sub-page rewrites (clean URLs)
+[[redirects]]
+  from = "/premium/dashboard/"
+  to = "/premium/dashboard.html"
+  status = 200
+
+[[redirects]]
+  from = "/premium/briefings/"
+  to = "/premium/briefings.html"
+  status = 200
+
+[[redirects]]
+  from = "/premium/calendar/"
+  to = "/premium/calendar.html"
+  status = 200
+
+[[redirects]]
+  from = "/premium/ask-mmt/"
+  to = "/premium/ask-mmt.html"
+  status = 200
+
+[[redirects]]
+  from = "/premium/settings/"
+  to = "/premium/settings.html"
+  status = 200
+
+[[redirects]]
+  from = "/premium/monthly-briefs/"
+  to = "/premium/monthly-briefs.html"
+  status = 200
+
 [context.branch-deploy]
   command = "node build.js"
 

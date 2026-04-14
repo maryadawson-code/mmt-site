@@ -20,7 +20,7 @@
 # Customer Portal
 /my-reports /my-reports.html 200
 /portal /my-reports.html 301
-/dashboard /my-reports.html 301
+/dashboard /dashboard.html 200
 
 # MHS GENESIS shortcut redirect
 /contracts/mhs-genesis/ /contracts/mhs-genesis-electronic-health-record/ 301

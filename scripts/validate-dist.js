@@ -79,7 +79,7 @@ const PATTERNS = [
   { name: 'bi-weekly cadence',                 re: /bi-weekly|biweekly/i },
   { name: 'newsletter every-week drift',       re: /newsletter[^.]*every week|every week[^.]*newsletter/i },
   { name: 'Subscribe for weekly',              re: /Subscribe for weekly/ },
-  { name: 'weekly newsletter',                 re: /(?<!twice-)weekly newsletter/i },
+  { name: 'weekly newsletter',                 re: /weekly newsletter/i },
   {
     name: 'ProposalPulse 60s drift',
     re: /9 criteria in 60 seconds|specific fixes in 60 seconds/,
@@ -156,20 +156,21 @@ for (const relFile of files) {
   const full = path.join(DIST_DIR, relFile);
   const html = fs.readFileSync(full, 'utf8');
 
-  // Skip nav check on pages with custom nav shells (dashboard)
-  if (!html.includes('dash-nav') && !html.includes('dash-shell')) {
-    const navMatch = html.match(/<nav[\s\S]*?<\/nav>/i);
-    if (navMatch) {
-      const nav = navMatch[0];
-      const required = [
-        'brand-mark',
-        'Choose a Tool',
-        '/resources.html#paid-tools',
-      ];
-      for (const marker of required) {
-        if (!nav.includes(marker)) {
-          addFailure(`nav missing "${marker}"`, relFile, '');
-        }
+  // Skip nav checks for premium dashboard pages (they use their own sidebar shell)
+  const isPremiumPage = relFile.startsWith('premium/');
+  const navMatch = html.match(/<nav[\s\S]*?<\/nav>/i);
+  if (navMatch && !isPremiumPage) {
+    const nav = navMatch[0];
+    const required = [
+      'brand-mark',
+      'Choose a Tool',
+      '/resources.html#paid-tools',
+      '/newsletter.html',
+      '/security.html',
+    ];
+    for (const marker of required) {
+      if (!nav.includes(marker)) {
+        addFailure(`nav missing "${marker}"`, relFile, '');
       }
     }
   }
@@ -237,7 +238,20 @@ function requireOrder(relFile, pairs, label) {
 const idx = 'index.html';
 requireString(idx, 'Choose what you need now', 'homepage: quick intent selector present');
 requireString(idx, 'For teams trying to win work', 'homepage: paid tools band present');
-// Buyer proof band removed per v3 spec (folded into routing block)
+requireString(
+  idx,
+  'Built for teams trying to qualify, shape, and strengthen pursuits',
+  'homepage: buyer proof headline present'
+);
+requireString(
+  idx,
+  'Trusted in the moments that matter most for federal growth teams',
+  'homepage: buyer proof subhead present'
+);
+requireString(idx, 'Before red team', 'homepage: use-case chip "Before red team" present');
+requireString(idx, 'Before gate review', 'homepage: use-case chip "Before gate review" present');
+requireString(idx, 'Before leadership readout', 'homepage: use-case chip "Before leadership readout" present');
+requireString(idx, 'Before partner outreach', 'homepage: use-case chip "Before partner outreach" present');
 
 // Homepage section-order check. Strict requirements:
 //   1. "Featured capture sheet" must appear EXACTLY ONCE on index.html.
@@ -264,10 +278,12 @@ const idxHtml = fs.readFileSync(path.join(DIST_DIR, idx), 'utf8');
 
   const quick = idxHtml.indexOf('Choose what you need now');
   const paid = idxHtml.indexOf('For teams trying to win work');
+  const buyer = idxHtml.indexOf('Built for teams trying to qualify');
   const featured = idxHtml.indexOf('Featured capture sheet');
   const order = [
     ['Quick intent selector', quick],
     ['Paid tools band', paid],
+    ['Buyer proof band', buyer],
     ['Featured capture sheet (section label)', featured],
   ];
   let lastIdx2 = -1;
@@ -315,7 +331,7 @@ if (ppHtml) {
 const mpFile = 'marketpulse.html';
 requireString(mpFile, 'Sample brief', 'MarketPulse: sample brief present');
 requireString(mpFile, 'Not used to train models', 'MarketPulse: canonical trust chip present');
-requireString(mpFile, 'First brief free', 'MarketPulse: canonical "First brief free" language present');
+requireString(mpFile, '1 free brief per email address', 'MarketPulse: FAQ "1 free brief" language present');
 requireString(
   mpFile,
   'Data is processed by named service providers and is not used to train models',

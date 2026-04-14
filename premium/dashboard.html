@@ -4,205 +4,139 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Premium Dashboard — Mission Meets Tech</title>
-  <meta name="description" content="Your MMT Premium intelligence dashboard.">
   <meta name="robots" content="noindex">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
-  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
   <link rel="stylesheet" href="/styles/tailwind.css">
+  <link rel="icon" href="/favicon-v3.png" type="image/png">
   <style>
-    :root { --mmt-teal:#457B9D; --mmt-navy:#0A192F; --mmt-soft:#F3F4F6; --mmt-white:#FFFFFF; --mmt-text:#102033; --mmt-text-secondary:#5C6B7A; --mmt-border:#D8E0E8; --ci-gold:#92710A; --ci-gold-bg:#FEF9E7; }
-    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--mmt-white); color:var(--mmt-navy); margin:0; }
-    .dash-shell { display:grid; grid-template-columns:220px 1fr; min-height:100dvh; }
-    .dash-nav { background:var(--mmt-soft); border-right:1px solid var(--mmt-border); padding:24px 16px; }
-    .dash-nav-group { margin-bottom:20px; }
-    .dash-nav-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--mmt-text-secondary); margin-bottom:8px; padding:0 8px; }
-    .dash-nav-link { display:block; padding:8px 12px; border-radius:8px; font-size:14px; font-weight:500; color:var(--mmt-text); text-decoration:none; transition:background 0.15s; }
-    .dash-nav-link:hover { background:rgba(69,123,157,0.08); }
-    .dash-nav-link.active { background:rgba(69,123,157,0.1); color:var(--mmt-teal); font-weight:600; }
-    .dash-main { padding:32px 40px; overflow-y:auto; }
-    .dash-card { background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:14px; padding:24px; margin-bottom:16px; }
-    .dash-header { display:flex; align-items:center; justify-content:space-between; padding:16px 40px; border-bottom:1px solid var(--mmt-border); background:var(--mmt-white); }
-    @media(max-width:768px) {
+    :root { --mmt-navy:#0A192F; --mmt-teal:#457B9D; --mmt-white:#FFFFFF; --mmt-surface:#F3F4F6; --mmt-text-secondary:#6B7280; --mmt-border:#E5E7EB; --dash-sidebar:220px; }
+    body { font-family:Inter,system-ui,sans-serif; color:var(--mmt-navy); background:var(--mmt-surface); margin:0; }
+    .dash-shell { display:grid; grid-template-columns:var(--dash-sidebar) 1fr; min-height:100vh; }
+    .dash-nav { background:var(--mmt-navy); padding:24px 0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto; }
+    .dash-nav-brand { padding:0 20px 24px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px; }
+    .dash-nav-brand a { color:#fff; text-decoration:none; font-weight:800; font-size:14px; }
+    .dash-nav-brand small { display:block; font-size:11px; color:rgba(255,255,255,0.5); font-weight:400; margin-top:2px; }
+    .dash-nav-link { display:flex; align-items:center; gap:10px; padding:10px 20px; color:rgba(255,255,255,0.6); text-decoration:none; font-size:13px; font-weight:500; transition:all 0.15s; }
+    .dash-nav-link:hover { color:#fff; background:rgba(255,255,255,0.05); }
+    .dash-nav-link.active { color:#fff; background:rgba(69,123,157,0.3); border-left:3px solid var(--mmt-teal); }
+    .dash-nav-section { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:rgba(255,255,255,0.3); padding:16px 20px 6px; }
+    .dash-header { background:var(--mmt-white); padding:16px 32px; border-bottom:1px solid var(--mmt-border); display:flex; align-items:center; justify-content:space-between; }
+    .dash-main { padding:32px; max-width:900px; }
+    .dash-card { background:var(--mmt-white); border-radius:12px; padding:24px; margin-bottom:16px; border:1px solid var(--mmt-border); }
+    .dash-card h3 { margin:0 0 8px; font-size:17px; font-weight:700; }
+    .btn-primary { display:inline-block; background:var(--mmt-navy); color:var(--mmt-white); font-weight:700; padding:10px 20px; border-radius:8px; text-decoration:none; font-size:13px; }
+    @media (max-width:768px) {
       .dash-shell { grid-template-columns:1fr; }
-      .dash-nav { position:fixed; bottom:0; left:0; right:0; display:flex; flex-direction:row; overflow-x:auto; border-right:none; border-top:1px solid var(--mmt-border); padding:8px 12px; z-index:100; gap:4px; background:var(--mmt-soft); }
-      .dash-nav-group { margin-bottom:0; display:flex; gap:4px; }
-      .dash-nav-label { display:none; }
-      .dash-nav-link { white-space:nowrap; font-size:12px; padding:6px 10px; }
-      .dash-main { padding:20px 16px 80px; }
-      .dash-header { padding:12px 16px; }
+      .dash-nav { display:none; }
+      .dash-mobile-nav { display:flex; position:fixed; bottom:0; left:0; right:0; background:var(--mmt-navy); padding:8px 0; justify-content:space-around; z-index:100; }
+      .dash-mobile-nav a { color:rgba(255,255,255,0.6); text-decoration:none; font-size:10px; text-align:center; padding:6px 8px; }
+      .dash-mobile-nav a.active { color:#fff; }
+      .dash-main { padding:16px; padding-bottom:80px; }
     }
+    @media (min-width:769px) { .dash-mobile-nav { display:none; } }
   </style>
+  <script>
+    (function() {
+      var isPremium = localStorage.getItem('mmt_premium') === 'true';
+      var ts = localStorage.getItem('mmt_premium_ts');
+      var withinWindow = ts && (Date.now() - parseInt(ts)) < 30 * 24 * 60 * 60 * 1000;
+      if (!isPremium || !withinWindow) {
+        window.location.href = '/dashboard.html?next=' + encodeURIComponent(window.location.pathname);
+      }
+    })();
+  </script>
 </head>
 <body>
   <div class="dash-shell">
-    <!-- Sidebar Nav -->
+    <!-- Sidebar -->
     <nav class="dash-nav">
-      <div style="margin-bottom:24px;">
-        <a href="/" style="font-weight:800;font-size:15px;color:var(--mmt-navy);text-decoration:none;">Mission Meets Tech</a>
+      <div class="dash-nav-brand">
+        <a href="/premium/dashboard.html">★ MMT Premium<small>Intelligence Dashboard</small></a>
       </div>
-
-      <div class="dash-nav-group">
-        <div class="dash-nav-label">Intelligence</div>
-        <a href="/premium/dashboard/" class="dash-nav-link active">Home</a>
-        <a href="/latest.html" class="dash-nav-link">Latest Analysis</a>
-        <a href="/agencies/" class="dash-nav-link">Agency Profiles</a>
-        <a href="/premium/briefings/" class="dash-nav-link">Friday Brief</a>
-        <a href="/premium/monthly-briefs/" class="dash-nav-link">Monthly Brief</a>
-      </div>
-
-      <div class="dash-nav-group">
-        <div class="dash-nav-label">Pursuit Tools</div>
-        <a href="/contract-tracker.html" class="dash-nav-link">Contract Tracker</a>
-        <a href="/idiq-tracker.html" class="dash-nav-link">IDIQ Tracker</a>
-        <a href="/premium/calendar/" class="dash-nav-link">Pursuit Calendar</a>
-      </div>
-
-      <div class="dash-nav-group">
-        <div class="dash-nav-label">My Tools</div>
-        <a href="/proposal-pulse.html" class="dash-nav-link">ProposalPulse</a>
-        <a href="/marketpulse.html" class="dash-nav-link">MarketPulse</a>
-      </div>
-
-      <div class="dash-nav-group">
-        <div class="dash-nav-label">Reference</div>
-        <a href="/glossary.html" class="dash-nav-link">Glossary</a>
-        <a href="/newswire.html" class="dash-nav-link">Newswire</a>
-        <a href="/agency-sources.html" class="dash-nav-link">Agency Sources</a>
-      </div>
-
-      <div class="dash-nav-group">
-        <div class="dash-nav-label">Account</div>
-        <a href="/premium/ask-mmt/" class="dash-nav-link">Ask MMT</a>
-        <a href="/premium/settings/" class="dash-nav-link">Settings</a>
-      </div>
+      <div class="dash-nav-section">Intelligence</div>
+      <a href="/premium/dashboard.html" class="dash-nav-link active">Dashboard</a>
+      <a href="/intel/capture-intelligence-this-issue/" class="dash-nav-link">Capture Intelligence</a>
+      <a href="/premium/briefings.html" class="dash-nav-link">Monthly Briefs</a>
+      <div class="dash-nav-section">Tools</div>
+      <a href="/proposal-pulse.html" class="dash-nav-link">ProposalPulse ($14.99)</a>
+      <a href="/marketpulse.html" class="dash-nav-link">MarketPulse ($35)</a>
+      <div class="dash-nav-section">Resources</div>
+      <a href="/latest.html" class="dash-nav-link">Article Archive</a>
+      <a href="/contract-tracker.html" class="dash-nav-link">Contract Tracker</a>
+      <a href="/glossary.html" class="dash-nav-link">Glossary</a>
+      <div class="dash-nav-section">Account</div>
+      <a href="/premium/settings.html" class="dash-nav-link">Settings</a>
+      <a href="/" class="dash-nav-link" style="margin-top:auto; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px;">&larr; Back to site</a>
     </nav>
 
-    <!-- Main Content -->
+    <!-- Main content -->
     <div>
-      <header class="dash-header">
-        <div>
-          <span style="font-size:14px;font-weight:600;">&#9733; Premium Dashboard</span>
+      <div class="dash-header">
+        <span style="font-size:14px; font-weight:700;">★ Premium Dashboard</span>
+        <div style="display:flex; align-items:center; gap:16px;">
+          <span style="font-size:13px; color:var(--mmt-text-secondary);" id="dash-email"></span>
+          <a href="/" style="font-size:12px; color:var(--mmt-teal); text-decoration:none;">Back to site</a>
+          <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_premium_ts');localStorage.removeItem('mmt_email');document.cookie='mmt_premium=;path=/;max-age=0';window.location.href='/';return false;" style="font-size:12px; color:var(--mmt-text-secondary); text-decoration:none;">Sign out</a>
         </div>
-        <div style="display:flex;align-items:center;gap:16px;">
-          <span style="font-size:13px;color:var(--mmt-text-secondary);" id="dash-email"></span>
-          <a href="/" style="font-size:13px;color:var(--mmt-teal);text-decoration:none;">Back to site</a>
-          <button onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_email');location.href='/'" style="font-size:13px;color:var(--mmt-text-secondary);background:none;border:none;cursor:pointer;">Sign out</button>
-        </div>
-      </header>
+      </div>
 
-      <main class="dash-main">
-        <h1 style="font-size:24px;font-weight:800;margin-bottom:4px;">Welcome back</h1>
-        <p style="color:var(--mmt-text-secondary);margin-bottom:12px;">Your premium access is active.</p>
-        <!-- Entitlement summary -->
-        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;">
-          <span style="font-size:12px;font-weight:600;color:var(--mmt-teal,#457B9D);background:rgba(69,123,157,0.08);padding:4px 10px;border-radius:999px;">&#10003; Full article archive</span>
-          <span style="font-size:12px;font-weight:600;color:var(--mmt-teal,#457B9D);background:rgba(69,123,157,0.08);padding:4px 10px;border-radius:999px;">&#10003; Capture Intelligence</span>
-          <span style="font-size:12px;font-weight:600;color:var(--mmt-teal,#457B9D);background:rgba(69,123,157,0.08);padding:4px 10px;border-radius:999px;">&#10003; Friday Brief</span>
-          <span style="font-size:12px;font-weight:600;color:var(--mmt-teal,#457B9D);background:rgba(69,123,157,0.08);padding:4px 10px;border-radius:999px;">&#10003; Contract + IDIQ Tracker</span>
-          <span style="font-size:12px;font-weight:600;color:var(--mmt-teal,#457B9D);background:rgba(69,123,157,0.08);padding:4px 10px;border-radius:999px;">&#10003; Tool discounts</span>
-          <span style="font-size:12px;font-weight:600;color:var(--mmt-teal,#457B9D);background:rgba(69,123,157,0.08);padding:4px 10px;border-radius:999px;">&#10003; Ask MMT (2/mo)</span>
+      <div class="dash-main">
+        <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">Welcome back.</h1>
+        <p style="color:var(--mmt-text-secondary); margin:0 0 32px; font-size:14px;">Your Premium access is active.</p>
+
+        <div class="dash-card" style="border-left:3px solid var(--mmt-teal);">
+          <h3>Capture Intelligence — This Month</h3>
+          <p style="margin:0 0 12px; color:var(--mmt-text-secondary); font-size:14px;">Full sheet with all action windows, confidence labels, and deep-dive analysis. 24 signals across 10 agencies.</p>
+          <a href="/intel/capture-intelligence-this-issue/" class="btn-primary">View Full Sheet &rarr;</a>
         </div>
 
-        <!-- AUT-02: Personalization banner (shown when prefs set) -->
-        <div id="pref-banner" style="display:none;padding:12px 20px;background:rgba(69,123,157,0.06);border:1px solid rgba(69,123,157,0.15);border-radius:8px;margin-bottom:20px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-            <span style="font-size:13px;color:var(--mmt-navy,#0A192F);">Showing intel for: <span id="pref-agency-pills" style="display:inline-flex;gap:4px;"></span></span>
-            <a href="/premium/settings/" style="font-size:12px;color:var(--mmt-teal,#457B9D);text-decoration:none;font-weight:600;">Edit preferences &rarr;</a>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+          <div class="dash-card">
+            <h3>ProposalPulse</h3>
+            <p style="margin:0 0 8px; color:var(--mmt-text-secondary); font-size:14px;">Score proposals at your Premium rate.</p>
+            <p style="margin:0 0 12px; font-size:20px; font-weight:800; color:var(--mmt-navy);">$14.99 <span style="font-size:12px; color:var(--mmt-text-secondary); font-weight:400;">per assessment (25% off)</span></p>
+            <a href="/proposal-pulse.html" class="btn-primary">Score a Proposal &rarr;</a>
+          </div>
+          <div class="dash-card">
+            <h3>MarketPulse</h3>
+            <p style="margin:0 0 8px; color:var(--mmt-text-secondary); font-size:14px;">Request briefs at your Premium rate.</p>
+            <p style="margin:0 0 12px; font-size:20px; font-weight:800; color:var(--mmt-navy);">$35 <span style="font-size:12px; color:var(--mmt-text-secondary); font-weight:400;">per brief (30% off)</span></p>
+            <a href="/marketpulse.html" class="btn-primary">Request a Brief &rarr;</a>
           </div>
         </div>
 
-        <!-- AUT-09: What's new since last visit -->
-        <div id="new-since-banner" style="display:none;padding:12px 20px;background:var(--mmt-soft,#F3F4F6);border:1px solid var(--mmt-border,#D8E0E8);border-radius:8px;margin-bottom:20px;">
-          <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
-            <span style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--mmt-text-secondary,#5C6B7A);">Since your last visit</span>
-            <span id="new-since-counts" style="font-size:14px;color:var(--mmt-navy,#0A192F);"></span>
-          </div>
-        </div>
-
-        <!-- This Week's Capture Sheet -->
-        <div class="dash-card" style="border-left:3px solid var(--ci-gold);background:var(--ci-gold-bg);">
-          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--ci-gold);margin-bottom:8px;">This Month's Capture Sheet</div>
-          <h2 style="font-size:18px;font-weight:700;margin-bottom:4px;">FY2027 Budget Signals &middot; April 2026</h2>
-          <p style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:12px;">14 signals &middot; VA, DHA, HHS/ONC, ARPA-H, compliance tracks</p>
-          <a href="/intel/capture-intelligence-this-issue/" style="font-size:14px;font-weight:600;color:var(--ci-gold);text-decoration:none;">Open full sheet &rarr;</a>
-        </div>
-
-        <!-- Latest for Members -->
-        <h2 style="font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--mmt-text-secondary);margin:24px 0 12px;">Latest for members</h2>
         <div class="dash-card">
-          <p style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:12px;">Start with this week's Friday Brief, then review newly updated trackers and capture notes below.</p>
-          <div style="display:flex;flex-direction:column;gap:8px;">
-            <a href="/premium/briefings/" style="font-size:14px;font-weight:600;color:var(--mmt-teal,#457B9D);text-decoration:none;">This week's Friday Brief &rarr;</a>
-            <a href="/contract-tracker.html" style="font-size:14px;font-weight:600;color:var(--mmt-teal,#457B9D);text-decoration:none;">Contract Tracker &mdash; updated entries &rarr;</a>
-            <a href="/intel/capture-intelligence-this-issue/" style="font-size:14px;font-weight:600;color:var(--mmt-teal,#457B9D);text-decoration:none;">Featured Capture Intelligence &rarr;</a>
-            <a href="/latest.html" style="font-size:14px;color:var(--mmt-text-secondary);text-decoration:none;">View full archive (100+ articles) &rarr;</a>
-          </div>
+          <h3>Premium Article Archive</h3>
+          <p style="margin:0 0 12px; color:var(--mmt-text-secondary); font-size:14px;">All 100 articles with Capture Corner depth unlocked. 48-hour early access on new analysis.</p>
+          <a href="/latest.html" style="color:var(--mmt-teal); font-weight:600; font-size:14px; text-decoration:none;">Browse articles &rarr;</a>
         </div>
 
-        <!-- Quick Links -->
-        <h2 style="font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--mmt-text-secondary);margin:24px 0 12px;">Quick Access</h2>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
-          <a href="/premium/briefings/" class="dash-card no-underline" style="text-align:center;">
-            <div style="font-size:20px;margin-bottom:4px;">&#128203;</div>
-            <div style="font-size:14px;font-weight:600;">Friday Brief</div>
-          </a>
-          <a href="/premium/calendar/" class="dash-card no-underline" style="text-align:center;">
-            <div style="font-size:20px;margin-bottom:4px;">&#128197;</div>
-            <div style="font-size:14px;font-weight:600;">Pursuit Calendar</div>
-          </a>
-          <a href="/premium/ask-mmt/" class="dash-card no-underline" style="text-align:center;">
-            <div style="font-size:20px;margin-bottom:4px;">&#128172;</div>
-            <div style="font-size:14px;font-weight:600;">Ask MMT</div>
-          </a>
+        <div class="dash-card">
+          <h3>Monthly Q&A</h3>
+          <p style="margin:0; color:var(--mmt-text-secondary); font-size:14px;">Reply to any Premium newsletter issue with your question. Selected questions answered in the next issue. Email <a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a> directly.</p>
         </div>
-      </main>
+
+        <div class="dash-card">
+          <h3>Account</h3>
+          <p style="margin:0; color:var(--mmt-text-secondary); font-size:14px;">
+            Manage your subscription, update billing, or cancel: <a href="https://billing.stripe.com/p/login/7sY28f3vn9N4aAwaEE" style="color:var(--mmt-teal);">Stripe Customer Portal &rarr;</a>
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 
+  <!-- Mobile bottom nav -->
+  <div class="dash-mobile-nav">
+    <a href="/premium/dashboard.html" class="active">Dashboard</a>
+    <a href="/intel/capture-intelligence-this-issue/">Intel</a>
+    <a href="/proposal-pulse.html">Score</a>
+    <a href="/marketpulse.html">Brief</a>
+    <a href="/premium/settings.html">Account</a>
+  </div>
+
   <script>
-    // Display email
     var email = localStorage.getItem('mmt_email');
     if (email) document.getElementById('dash-email').textContent = email;
-    // Redirect if not premium
-    var isPremium = localStorage.getItem('mmt_premium') === 'true';
-    if (!isPremium) {
-      document.querySelector('.dash-main').innerHTML = '<div style="text-align:center;padding:60px 24px;"><h1 style="font-size:24px;font-weight:800;margin-bottom:8px;">Premium access required</h1><p style="color:#5C6B7A;margin-bottom:20px;">Sign in with your Premium subscriber email to access the dashboard.</p><a href="/dashboard.html" style="display:inline-block;padding:12px 24px;background:#0A192F;color:rgb(255,255,255);border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;">Sign in</a></div>';
-    } else {
-      // AUT-02: Personalization banner
-      var prefs = JSON.parse(localStorage.getItem('mmt_prefs') || '{}');
-      if (prefs.agencies && prefs.agencies.length > 0) {
-        var banner = document.getElementById('pref-banner');
-        var pills = document.getElementById('pref-agency-pills');
-        if (banner && pills) {
-          banner.style.display = 'block';
-          prefs.agencies.forEach(function(a) {
-            var pill = document.createElement('span');
-            pill.style.cssText = 'font-size:11px;font-weight:700;padding:2px 8px;background:#457B9D;color:white;border-radius:999px;letter-spacing:0.04em;';
-            pill.textContent = a.toUpperCase();
-            pills.appendChild(pill);
-          });
-        }
-      }
-      // AUT-09: What's new since last visit
-      var lastVisit = parseInt(localStorage.getItem('mmt_last_visit') || '0');
-      var now = Date.now();
-      if (lastVisit > 0) {
-        var daysSince = Math.floor((now - lastVisit) / 86400000);
-        if (daysSince >= 1) {
-          var newBanner = document.getElementById('new-since-banner');
-          var countsEl = document.getElementById('new-since-counts');
-          if (newBanner && countsEl) {
-            // Estimate new content based on typical publishing cadence
-            var newArticles = Math.min(daysSince * 2, 14); // ~2 articles/week
-            var label = daysSince === 1 ? 'yesterday' : daysSince + ' days ago';
-            countsEl.innerHTML = '<strong style="color:#457B9D;">' + newArticles + '</strong> new items since ' + label;
-            newBanner.style.display = 'block';
-          }
-        }
-      }
-      // Record this visit
-      localStorage.setItem('mmt_last_visit', String(now));
-    }
   </script>
 </body>
 </html>

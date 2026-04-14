@@ -3089,6 +3089,20 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     console.log(`Copied ${sampleFiles.length} sample files`);
   }
 
+  // Copy premium dashboard pages
+  const premiumDir = path.join(__dirname, 'premium');
+  if (fs.existsSync(premiumDir)) {
+    const distPremiumDir = path.join(DIST_DIR, 'premium');
+    ensureDir(distPremiumDir);
+    const premiumFiles = fs.readdirSync(premiumDir).filter(f => f.endsWith('.html'));
+    premiumFiles.forEach(file => {
+      let html = fs.readFileSync(path.join(premiumDir, file), 'utf8');
+      // Don't apply editorial nav/footer to dashboard pages (they use their own shell)
+      fs.writeFileSync(path.join(distPremiumDir, file), html);
+    });
+    console.log(`Copied ${premiumFiles.length} premium dashboard pages`);
+  }
+
 }
 
 // --- News Wire ---

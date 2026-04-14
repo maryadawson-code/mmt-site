@@ -3,49 +3,85 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ask MMT — Premium Q&A</title>
-  <meta name="description" content="Submit a question directly to Mary. Written answer within 5 business days. Premium members get 2 questions per month.">
+  <title>Ask MMT — MMT Premium</title>
   <meta name="robots" content="noindex">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
-  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
   <link rel="stylesheet" href="/styles/tailwind.css">
+  <link rel="icon" href="/favicon-v3.png" type="image/png">
   <style>
-    :root { --mmt-teal:#457B9D; --mmt-navy:#0A192F; --mmt-soft:#F3F4F6; --mmt-white:#FFFFFF; --mmt-text:#102033; --mmt-text-secondary:#5C6B7A; --mmt-border:#D8E0E8; --ci-gold:#92710A; }
-    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--mmt-white); color:var(--mmt-navy); }
+    :root { --mmt-navy:#0A192F; --mmt-teal:#457B9D; --mmt-white:#FFFFFF; --mmt-surface:#F3F4F6; --mmt-text-secondary:#6B7280; --mmt-border:#E5E7EB; --dash-sidebar:220px; }
+    body { font-family:Inter,system-ui,sans-serif; color:var(--mmt-navy); background:var(--mmt-surface); margin:0; }
+    .dash-shell { display:grid; grid-template-columns:var(--dash-sidebar) 1fr; min-height:100vh; }
+    .dash-nav { background:var(--mmt-navy); padding:24px 0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto; }
+    .dash-nav-brand { padding:0 20px 24px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px; }
+    .dash-nav-brand a { color:#fff; text-decoration:none; font-weight:800; font-size:14px; }
+    .dash-nav-brand small { display:block; font-size:11px; color:rgba(255,255,255,0.5); font-weight:400; margin-top:2px; }
+    .dash-nav-link { display:flex; align-items:center; gap:10px; padding:10px 20px; color:rgba(255,255,255,0.6); text-decoration:none; font-size:13px; font-weight:500; transition:all 0.15s; }
+    .dash-nav-link:hover { color:#fff; background:rgba(255,255,255,0.05); }
+    .dash-nav-link.active { color:#fff; background:rgba(69,123,157,0.3); border-left:3px solid var(--mmt-teal); }
+    .dash-nav-section { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:rgba(255,255,255,0.3); padding:16px 20px 6px; }
+    .dash-header { background:var(--mmt-white); padding:16px 32px; border-bottom:1px solid var(--mmt-border); display:flex; align-items:center; justify-content:space-between; }
+    .dash-main { padding:32px; max-width:900px; }
+    .dash-card { background:var(--mmt-white); border-radius:12px; padding:24px; margin-bottom:16px; border:1px solid var(--mmt-border); }
+    @media (max-width:768px) { .dash-shell { grid-template-columns:1fr; } .dash-nav { display:none; } .dash-main { padding:16px; padding-bottom:80px; } .dash-mobile-nav { display:flex; position:fixed; bottom:0; left:0; right:0; background:var(--mmt-navy); padding:8px 0; justify-content:space-around; z-index:100; } .dash-mobile-nav a { color:rgba(255,255,255,0.6); text-decoration:none; font-size:10px; text-align:center; padding:6px 8px; } .dash-mobile-nav a.active { color:#fff; } }
+    @media (min-width:769px) { .dash-mobile-nav { display:none; } }
   </style>
+  <script>
+    (function() {
+      var isPremium = localStorage.getItem('mmt_premium') === 'true';
+      var ts = localStorage.getItem('mmt_premium_ts');
+      var withinWindow = ts && (Date.now() - parseInt(ts)) < 30 * 24 * 60 * 60 * 1000;
+      if (!isPremium || !withinWindow) { window.location.href = '/dashboard.html'; }
+    })();
+  </script>
 </head>
 <body>
-  <nav class="nav-editorial"></nav>
-
-  <main class="wrap" style="padding:48px 0 80px; max-width:680px;">
-    <div class="section-label" style="margin-bottom:12px;">MMT Premium &middot; Direct Access</div>
-    <h1 style="font-size:clamp(28px,3.5vw,40px);line-height:1.05;letter-spacing:-0.035em;margin-bottom:12px;">Ask MMT</h1>
-    <p style="font-size:17px;line-height:1.6;color:var(--mmt-text-secondary);margin-bottom:32px;">Your question goes directly to Mary. Written answer within 5 business days. 2 questions per month included with Premium.</p>
-
-    <div data-gate="premium" style="display:none;">
-      <div style="background:var(--mmt-soft);border:1px solid var(--mmt-border);border-radius:14px;padding:28px;">
-        <h2 style="font-size:16px;font-weight:700;margin-bottom:4px;">Your question this month</h2>
-        <p style="font-size:13px;color:var(--mmt-text-secondary);margin-bottom:16px;">Be specific: include agency, type of work, and your constraints.</p>
-        <textarea id="ask-question" rows="5" maxlength="500" placeholder="What vehicle would you use to go after DHA medical staffing work as an 8(a) firm?" style="width:100%;padding:12px 14px;border:1px solid var(--mmt-border);border-radius:10px;font-size:14px;font-family:inherit;resize:vertical;line-height:1.6;"></textarea>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;">
-          <span style="font-size:12px;color:var(--mmt-text-secondary);">Questions remaining this month: 2 of 2</span>
-          <button onclick="var q=document.getElementById('ask-question').value.trim();if(!q){alert('Please enter a question.');return;}var email=localStorage.getItem('mmt_email')||'';window.location.href='mailto:support@missionmeetstech.com?subject='+encodeURIComponent('[ASK MMT] '+q.substring(0,60))+'&body='+encodeURIComponent('Question: '+q+'\n\nFrom: '+email);alert('Your question will be sent via email. We will respond within 5 business days.');" style="padding:10px 20px;background:var(--mmt-navy);color:rgb(255,255,255);border:none;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;">Send question &rarr;</button>
+  <div class="dash-shell">
+    <nav class="dash-nav">
+      <div class="dash-nav-brand"><a href="/premium/dashboard.html">★ MMT Premium<small>Intelligence Dashboard</small></a></div>
+      <div class="dash-nav-section">Intelligence</div>
+      <a href="/premium/dashboard.html" class="dash-nav-link">Dashboard</a>
+      <a href="/intel/capture-intelligence-this-issue/" class="dash-nav-link">Capture Intelligence</a>
+      <a href="/premium/briefings.html" class="dash-nav-link">Monthly Briefs</a>
+      <div class="dash-nav-section">Tools</div>
+      <a href="/proposal-pulse.html" class="dash-nav-link">ProposalPulse ($14.99)</a>
+      <a href="/marketpulse.html" class="dash-nav-link">MarketPulse ($35)</a>
+      <div class="dash-nav-section">Resources</div>
+      <a href="/latest.html" class="dash-nav-link">Article Archive</a>
+      <a href="/contract-tracker.html" class="dash-nav-link">Contract Tracker</a>
+      <a href="/glossary.html" class="dash-nav-link">Glossary</a>
+      <div class="dash-nav-section">Account</div>
+      <a href="/premium/settings.html" class="dash-nav-link">Settings</a>
+      <a href="/" class="dash-nav-link" style="margin-top:auto; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px;">&larr; Back to site</a>
+    </nav>
+    <div>
+      <div class="dash-header">
+        <span style="font-size:14px; font-weight:700;">★ Premium Dashboard</span>
+        <div style="display:flex; align-items:center; gap:16px;">
+          <span style="font-size:13px; color:var(--mmt-text-secondary);" id="dash-email"></span>
+          <a href="/" style="font-size:12px; color:var(--mmt-teal); text-decoration:none;">Back to site</a>
+          <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_premium_ts');localStorage.removeItem('mmt_email');document.cookie='mmt_premium=;path=/;max-age=0';window.location.href='/';return false;" style="font-size:12px; color:var(--mmt-text-secondary); text-decoration:none;">Sign out</a>
         </div>
       </div>
+      <div class="dash-main">
 
-      <h2 style="font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--mmt-text-secondary);margin:32px 0 16px;">Question History</h2>
-      <p style="font-size:14px;color:var(--mmt-text-secondary);">No questions submitted yet. Your first answer will appear here.</p>
+        <h1 style="font-size:24px; font-weight:800; margin:0 0 24px;">Ask MMT — Monthly Q&A</h1>
+        <div class="dash-card" style="border-left:3px solid var(--mmt-teal);">
+          <h3>Submit a Question</h3>
+          <p style="margin:0 0 16px; color:var(--mmt-text-secondary); font-size:14px;">Premium subscribers can submit one question per month. Selected questions are answered in the next Premium newsletter issue.</p>
+          <p style="margin:0 0 12px; font-size:14px; color:var(--mmt-navy);">Email your question to:</p>
+          <a href="mailto:mary@missionmeetstech.com?subject=Premium%20Q%26A%20Question" style="display:inline-block;background:var(--mmt-navy);color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px;">Send Question &rarr;</a>
+        </div>
+        <p style="font-size:14px; color:var(--mmt-text-secondary);">Questions should be specific to federal health IT procurement, contracting, or strategy. Mary responds to selected questions in the monthly Premium issue.</p>
+      </div>
     </div>
-
-    <div data-gate-overlay="premium" style="text-align:center;padding:40px 28px;background:var(--mmt-soft);border-radius:16px;">
-      <h2 style="font-size:20px;font-weight:800;margin-bottom:8px;">Direct access to Mary</h2>
-      <p style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:18px;max-width:44ch;margin-left:auto;margin-right:auto;">Premium members can submit 2 questions per month. Written answer within 5 business days.</p>
-      <a href="/pricing.html" class="btn-primary no-underline" style="font-size:14px;padding:12px 24px;">Start Premium</a>
-    </div>
-  </main>
-
-  <footer class="wrap"></footer>
-  <script src="/js/mmt-paywall.js" defer></script>
-  <script src="/js/nav-active.js"></script>
+  </div>
+  <div class="dash-mobile-nav">
+    <a href="/premium/dashboard.html">Dashboard</a>
+    <a href="/intel/capture-intelligence-this-issue/">Intel</a>
+    <a href="/proposal-pulse.html">Score</a>
+    <a href="/marketpulse.html">Brief</a>
+    <a href="/premium/settings.html">Account</a>
+  </div>
+  <script>var email=localStorage.getItem('mmt_email');if(email)document.getElementById('dash-email').textContent=email;</script>
 </body>
 </html>
