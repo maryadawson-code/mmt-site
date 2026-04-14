@@ -356,8 +356,8 @@ function sweepBody(path, body) {
     }
   }
 
-  // Check 9: mmt-paywall.js must be loaded on every page
-  if (!body.includes('mmt-paywall.js')) {
+  // Check 9: mmt-paywall.js must be loaded on every page (except premium dashboard pages which use their own auth guard)
+  if (!body.includes('mmt-paywall.js') && !path.startsWith('/premium/')) {
     failures.push({ rule: 'paywall: mmt-paywall.js not loaded on this page', sample: '' });
   }
 
