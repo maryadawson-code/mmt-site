@@ -1034,7 +1034,7 @@ function generateLatestArticlesHtml(archive, count) {
     const linkAttrs = isExternal ? ' target="_blank" rel="noopener"' : '';
     const itemAge = Math.floor((Date.now() - new Date(item.date).getTime()) / 86400000);
     const isPremium = itemAge <= 90;
-    const premiumBadge = isPremium ? '<a href="/pricing.html" class="no-underline" style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#92710A;background:rgba(146,113,10,0.08);border:1px solid rgba(146,113,10,0.2);border-radius:999px;padding:2px 8px;margin-left:6px;" title="Premium article — see plans">&#9733; Premium</a>' : '';
+    const premiumBadge = isPremium ? '<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#92710A;background:rgba(146,113,10,0.08);border:1px solid rgba(146,113,10,0.2);border-radius:999px;padding:2px 8px;margin-left:6px;">&#9733; Premium</span>' : '';
     return `<a href="${item.url}"${linkAttrs} class="article-card no-underline">
           <div>
             <div class="kicker">${(item.tags || [])[0] || 'Analysis'}${premiumBadge}</div>
