@@ -144,9 +144,12 @@ Nav state toggled by `applyNavPremiumState()` on DOMContentLoaded.
 - `js/mmt-paywall.js` — auth detection, paywall visibility, premium data decoders
 - `js/contract-detail.js` — Current Intelligence auth gate
 - `js/contract-tracker.js` — Opportunity Radar + Vehicle Scanner auth gate
+- `js/support-widget.js` — floating AI support chat widget (injected on all pages via siteScriptTag)
+- `netlify/functions/support-agent.js` — AI support agent (Claude Haiku, knowledge base, auto-escalation to support@ via Resend)
+- `netlify/functions/founding-count.js` — Stripe API query for remaining Founding Member spots
 - `styles/tokens.css` — CSS-first hide rules, button contrast, page shell classes
 - `integrity-audit.js` — 40-route live audit with 9 paywall enforcement checks
-- `scripts/validate-dist.js` — 266-page local validation
+- `scripts/validate-dist.js` — 272-page local validation
 
 ### Specs
 - `PAYWALL_SPEC.md` — complete free vs paid definition, content gating architecture
@@ -185,8 +188,8 @@ Before declaring work complete, verify:
 ---
 
 ## Status (as of 2026-04-13)
-All systems operational. 25-commit session completed.
-- **266 pages** pass `validate-dist.js` (all sweeps)
+All systems operational.
+- **272 pages** pass `validate-dist.js` (all sweeps)
 - **40 routes** pass `integrity-audit.js` (IntegrityPulse) with fortress=SUCCESS
 - **100 articles**, 9 topic pages, 32 contract pages, 5 podcast episodes
 - **Paywall enforced** via CSS-first hide (`[data-access="premium"] { display: none !important }`)
@@ -195,8 +198,11 @@ All systems operational. 25-commit session completed.
 - **Opportunity Radar + SB Vehicle Scanner** gated in `contract-tracker.js` via `mmtIsPremium()` check
 - **Newswire descriptions**, **agency profile deep data**, **glossary contractor notes** all base64-encoded
 - **Subscribe path complete**: ★ Premium in header + footer band + homepage pricing CTAs + gate cards → /pricing with Stripe Payment Links
-- **Premium pages built**: Dashboard (custom shell, no site nav), Friday Brief, Monthly Brief, Pursuit Calendar, Ask MMT, Settings/Preferences, 6 Agency Profiles, IDIQ Tracker
-- **Dashboard nav fix**: site nav stripped from premium dashboard pages (dash-shell has its own sidebar)
+- **Premium pages built**: Dashboard, Friday Brief, Monthly Brief, Pursuit Calendar, Ask MMT, Settings/Preferences, 6 Agency Profiles, IDIQ Tracker
+- **Dashboard sidebar on ALL premium subpages**: build.js `injectDashShell()` wraps briefings, monthly-briefs, calendar, ask-mmt, settings, and brief detail pages in the same dash-shell grid as the dashboard. Sidebar nav persists across all premium pages with correct active states.
+- **Friday Brief auto-generation**: `generateBriefArchiveHtml()` and `generateBriefLatestHtml()` in build.js auto-discover briefs from `premium/briefs/*.html`. Drop a new HTML file and it appears in the archive.
+- **Founding Member counter**: `founding-count.js` queries Stripe API for active subscriptions, falls back to `FOUNDING_SPOTS_REMAINING` env var.
+- **Support ecosystem**: AI-powered support agent (`support-agent.js`) + floating chat widget (`support-widget.js`). Claude Haiku answers questions from platform knowledge base. Low-confidence answers auto-escalate to support@missionmeetstech.com via Resend email.
 - **Auto-intelligence scripts**: normalize.js (100 articles), extract-signals.js (144 signals), match-signals.js (80 matches)
 - **Design token system**: `styles/tokens.css` injected on all pages via build pipeline
 - **Page shell classes**: page-editorial, page-product, page-reference, page-trust, page-utility applied to all templates

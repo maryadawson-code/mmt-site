@@ -325,7 +325,7 @@ const searchOverlayHtml = `
   </div>`;
 
 // External script tags injected before </body> on all pages
-const siteScriptTag = '  <script src="/js/site.js" defer></script>\n  <script src="/js/nav-active.js" defer></script>\n  <script src="/js/mmt-paywall.js" defer></script>';
+const siteScriptTag = '  <script src="/js/site.js" defer></script>\n  <script src="/js/nav-active.js" defer></script>\n  <script src="/js/mmt-paywall.js" defer></script>\n  <script src="/js/support-widget.js" defer></script>';
 
 // --- Premium Gate HTML generators (per article category from PAYWALL_SPEC.md) ---
 
@@ -2610,6 +2610,8 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     '<!-- BUILD:NEWSWIRE_HEADLINES -->': generateNewswireHtml(newsItems || []),
     '<!-- BUILD:NEWS_WIDGET -->': generateNewsWidgetHtml(newsItems || []),
     '<!-- BUILD:CONTRACT_TRACKER -->': generateContractTrackerHtml(contracts, contractArticleMap || {}),
+    '<!-- BUILD:BRIEF_ARCHIVE -->': generateBriefArchiveHtml(),
+    '<!-- BUILD:BRIEF_LATEST -->': generateBriefLatestHtml(),
     '<!-- BUILD:CONTRACT_SUMMARY -->': generateContractSummaryHtml(contracts),
     '<!-- BUILD:EVENTS_LIST -->': generateEventsListHtml(),
     '<!-- BUILD:LATEST_ANALYSIS -->': generateLatestAnalysisHtml(articles || []),
@@ -2747,6 +2749,91 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     }
   });
 
+  // Dashboard sidebar injection for premium subpages
+  // Wraps premium pages in the same dash-shell layout as premium/dashboard.html
+  function injectDashShell(html, activePage) {
+    const dashCss = `
+    .dash-shell { display:grid; grid-template-columns:220px 1fr; min-height:100dvh; }
+    .dash-nav { background:var(--mmt-soft,#F3F4F6); border-right:1px solid var(--mmt-border,#D8E0E8); padding:24px 16px; }
+    .dash-nav-group { margin-bottom:20px; }
+    .dash-nav-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--mmt-text-secondary,#5C6B7A); margin-bottom:8px; padding:0 8px; }
+    .dash-nav-link { display:block; padding:8px 12px; border-radius:8px; font-size:14px; font-weight:500; color:var(--mmt-text,#102033); text-decoration:none; transition:background 0.15s; }
+    .dash-nav-link:hover { background:rgba(69,123,157,0.08); }
+    .dash-nav-link.active { background:rgba(69,123,157,0.1); color:var(--mmt-teal,#457B9D); font-weight:600; }
+    .dash-main { padding:32px 40px; overflow-y:auto; }
+    @media(max-width:768px) {
+      .dash-shell { grid-template-columns:1fr; }
+      .dash-nav { position:fixed; bottom:0; left:0; right:0; display:flex; flex-direction:row; overflow-x:auto; border-right:none; border-top:1px solid var(--mmt-border,#D8E0E8); padding:8px 12px; z-index:100; gap:4px; background:var(--mmt-soft,#F3F4F6); }
+      .dash-nav-group { margin-bottom:0; display:flex; gap:4px; }
+      .dash-nav-label { display:none; }
+      .dash-nav-link { white-space:nowrap; font-size:12px; padding:6px 10px; }
+      .dash-main { padding:20px 16px 80px; }
+    }`;
+
+    const links = [
+      { href: '/premium/dashboard/', label: 'Home', id: 'home' },
+      { href: '/latest.html', label: 'Latest Analysis', id: 'latest', group: 'Intelligence' },
+      { href: '/agencies/', label: 'Agency Profiles', id: 'agencies' },
+      { href: '/premium/briefings/', label: 'Friday Brief', id: 'briefings' },
+      { href: '/premium/monthly-briefs/', label: 'Monthly Brief', id: 'monthly-briefs' },
+      { href: '/contract-tracker.html', label: 'Contract Tracker', id: 'contract-tracker', group: 'Pursuit Tools' },
+      { href: '/idiq-tracker.html', label: 'IDIQ Tracker', id: 'idiq-tracker' },
+      { href: '/premium/calendar/', label: 'Pursuit Calendar', id: 'calendar' },
+      { href: '/proposal-pulse.html', label: 'ProposalPulse', id: 'proposal-pulse', group: 'My Tools' },
+      { href: '/marketpulse.html', label: 'MarketPulse', id: 'marketpulse' },
+      { href: '/glossary.html', label: 'Glossary', id: 'glossary', group: 'Reference' },
+      { href: '/newswire.html', label: 'Newswire', id: 'newswire' },
+      { href: '/agency-sources.html', label: 'Agency Sources', id: 'agency-sources' },
+      { href: '/premium/ask-mmt/', label: 'Ask MMT', id: 'ask-mmt', group: 'Account' },
+      { href: '/premium/settings/', label: 'Settings', id: 'settings' },
+    ];
+
+    let navHtml = '<nav class="dash-nav">\n';
+    navHtml += '  <div style="margin-bottom:24px;"><a href="/" style="font-weight:800;font-size:15px;color:var(--mmt-navy,#0A192F);text-decoration:none;">Mission Meets Tech</a></div>\n';
+    let currentGroup = 'Intelligence';
+    navHtml += '  <div class="dash-nav-group">\n    <div class="dash-nav-label">Intelligence</div>\n';
+    links.forEach(link => {
+      if (link.group && link.group !== currentGroup) {
+        navHtml += '  </div>\n  <div class="dash-nav-group">\n    <div class="dash-nav-label">' + link.group + '</div>\n';
+        currentGroup = link.group;
+      }
+      const activeClass = link.id === activePage ? ' active' : '';
+      navHtml += `    <a href="${link.href}" class="dash-nav-link${activeClass}">${link.label}</a>\n`;
+    });
+    navHtml += '  </div>\n</nav>';
+
+    // Inject dash CSS into <style> or before </head>
+    if (html.includes('</style>')) {
+      html = html.replace('</style>', dashCss + '\n  </style>');
+    } else {
+      html = html.replace('</head>', '<style>' + dashCss + '</style>\n</head>');
+    }
+
+    // Replace <nav class="nav-editorial"></nav> with dash-shell wrapper opening
+    // and wrap <main> + <footer> inside the dash content div
+    html = html.replace(/<nav class="nav-editorial"><\/nav>/, '');
+
+    // Wrap body content in dash-shell: sidebar + main content area
+    html = html.replace(/<body([^>]*)>/, `<body$1>\n<div class="dash-shell">\n${navHtml}\n<div class="dash-main">`);
+
+    // Close dash-main and dash-shell before </body>
+    html = html.replace('</body>', '</div>\n</div>\n</body>');
+
+    // Remove the editorial footer inside the dash layout (sidebar replaces navigation)
+    html = html.replace(/<footer class="wrap">[\s\S]*?<\/footer>/i, '');
+
+    return html;
+  }
+
+  // Map premium page paths to sidebar active link IDs
+  const dashPageMap = {
+    'premium/briefings.html': 'briefings',
+    'premium/monthly-briefs.html': 'monthly-briefs',
+    'premium/calendar.html': 'calendar',
+    'premium/ask-mmt.html': 'ask-mmt',
+    'premium/settings.html': 'settings',
+  };
+
   // Copy premium and agency subdirectory pages
   const subDirPages = [
     { src: 'premium/briefings.html', dest: 'premium/briefings/index.html' },
@@ -2769,8 +2856,12 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
         '  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\n' +
         '  <meta name="apple-mobile-web-app-title" content="MMT">\n</head>'
       );
-      // Skip search overlay on dashboard (has its own nav)
-      if (!src.includes('dashboard.html') && html.includes('</nav>')) {
+      // Inject dashboard shell on premium subpages (not dashboard itself, it has its own)
+      if (dashPageMap[src]) {
+        html = injectDashShell(html, dashPageMap[src]);
+      }
+      // Skip search overlay on dashboard shell pages (have their own nav)
+      if (!src.includes('dashboard.html') && !dashPageMap[src] && html.includes('</nav>')) {
         html = html.replace('</nav>', '</nav>' + searchOverlayHtml);
       }
       html = html.replace('</body>', siteScriptTag + '\n</body>');
@@ -2805,9 +2896,8 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
         '  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\n' +
         '  <meta name="apple-mobile-web-app-title" content="MMT">\n</head>'
       );
-      if (html.includes('</nav>')) {
-        html = html.replace('</nav>', '</nav>' + searchOverlayHtml);
-      }
+      // Inject dashboard shell (brief detail pages show Friday Brief as active)
+      html = injectDashShell(html, 'briefings');
       html = html.replace('</body>', siteScriptTag + '\n</body>');
       html = inlineTailwindCss(html);
       fs.writeFileSync(destPath, html);
@@ -3413,6 +3503,59 @@ function generateAgencyProfilePage(agency) {
   <script src="/js/nav-active.js"></script>
 </body>
 </html>`;
+}
+
+// Auto-discover Friday Brief pages from premium/briefs/*.html
+function getBriefFiles() {
+  const briefsDir = path.join(__dirname, 'premium', 'briefs');
+  if (!fs.existsSync(briefsDir)) return [];
+  return fs.readdirSync(briefsDir)
+    .filter(f => f.endsWith('.html') && /^\d{4}-\d{2}-\d{2}/.test(f))
+    .sort()
+    .reverse() // newest first
+    .map(f => {
+      const dateStr = f.replace('.html', '');
+      const parts = dateStr.split('-');
+      const d = new Date(parts[0], parts[1] - 1, parts[2]);
+      const formatted = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+      // Read description from meta tag
+      const html = fs.readFileSync(path.join(briefsDir, f), 'utf8');
+      const descMatch = html.match(/<meta name="description" content="([^"]+)"/);
+      const desc = descMatch ? descMatch[1].split('. Weekly')[0] : '';
+      return { file: f, date: dateStr, formatted, desc, url: `/premium/briefs/${f}` };
+    });
+}
+
+function generateBriefArchiveHtml() {
+  const briefs = getBriefFiles();
+  if (briefs.length <= 1) return '<p style="font-size:14px;color:var(--mmt-text-secondary);">Archive will populate as new briefs are published.</p>';
+  // Skip the first one (it's the "latest issue" shown above)
+  return briefs.slice(1).map(b =>
+    `<div class="brief-card" style="margin-bottom:8px;">
+        <div>
+          <div style="font-size:14px;font-weight:600;">${b.formatted}</div>
+          <div style="font-size:13px;color:var(--mmt-text-secondary);">${escapeHtml(b.desc)}</div>
+        </div>
+        <a href="${b.url}" style="font-size:13px;font-weight:600;color:var(--mmt-teal);text-decoration:none;white-space:nowrap;">Read &rarr;</a>
+      </div>`
+  ).join('\n      ');
+}
+
+function generateBriefLatestHtml() {
+  const briefs = getBriefFiles();
+  if (briefs.length === 0) return '<p style="font-size:14px;color:var(--mmt-text-secondary);">First Friday Brief coming soon.</p>';
+  const latest = briefs[0];
+  return `<div style="background:var(--ci-gold-bg);border:1px solid rgba(146,113,10,0.15);border-radius:14px;padding:28px;margin-bottom:32px;">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--ci-gold);margin-bottom:8px;">Latest Issue</div>
+      <h2 style="font-size:20px;font-weight:800;margin-bottom:8px;">Week of ${latest.formatted}</h2>
+      <p style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:16px;">${escapeHtml(latest.desc)}</p>
+      <div data-gate="premium" style="display:none;">
+        <a href="${latest.url}" style="font-size:14px;font-weight:600;color:var(--mmt-teal);text-decoration:none;">Read full brief &rarr;</a>
+      </div>
+      <div data-gate-overlay="premium">
+        <a href="/pricing.html" style="font-size:14px;font-weight:700;color:var(--ci-gold);text-decoration:none;">&#9733; Read this brief — Premium only &rarr;</a>
+      </div>
+    </div>`;
 }
 
 function generateContractRelatedAnalysisHtml(contractName, contractArticleMap) {
