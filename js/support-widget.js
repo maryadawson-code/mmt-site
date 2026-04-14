@@ -15,7 +15,9 @@
     btn.id = 'support-fab';
     btn.setAttribute('aria-label', 'Get help');
     btn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
-    btn.style.cssText = 'position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:#457B9D;color:white;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.15);z-index:9999;display:flex;align-items:center;justify-content:center;transition:transform 0.2s;';
+    var hasDashNav = !!document.querySelector('.dash-nav') && window.matchMedia('(max-width:768px)').matches;
+    var fabBottom = hasDashNav ? '124px' : '24px';
+    btn.style.cssText = 'position:fixed;bottom:' + fabBottom + ';right:24px;width:56px;height:56px;border-radius:50%;background:#457B9D;color:white;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.15);z-index:9999;display:flex;align-items:center;justify-content:center;transition:transform 0.2s;';
     btn.addEventListener('mouseenter', function() { btn.style.transform = 'scale(1.08)'; });
     btn.addEventListener('mouseleave', function() { btn.style.transform = 'scale(1)'; });
     btn.addEventListener('click', togglePanel);
@@ -23,7 +25,8 @@
     // Chat panel
     var panel = document.createElement('div');
     panel.id = 'support-panel';
-    panel.style.cssText = 'position:fixed;bottom:92px;right:24px;width:360px;max-height:480px;background:white;border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,0.12);z-index:9999;display:none;flex-direction:column;overflow:hidden;font-family:Inter,-apple-system,sans-serif;';
+    var panelBottom = hasDashNav ? '192px' : '92px';
+    panel.style.cssText = 'position:fixed;bottom:' + panelBottom + ';right:24px;width:360px;max-height:480px;background:white;border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,0.12);z-index:9999;display:none;flex-direction:column;overflow:hidden;font-family:Inter,-apple-system,sans-serif;';
 
     // Header
     var header = document.createElement('div');

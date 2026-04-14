@@ -76,11 +76,11 @@ const ROUTES = [
   { path: '/agency-sources.html',                  label: 'Agency Sources' },
   { path: '/contracting.html',                     label: 'Contracting Hub' },
   // Premium pages
-  { path: '/premium/dashboard.html',                label: 'Premium Dashboard' },
-  { path: '/premium/briefings.html',               label: 'Friday Brief' },
-  { path: '/premium/monthly-briefs.html',          label: 'Monthly Brief' },
-  { path: '/premium/calendar.html',                label: 'Pursuit Calendar' },
-  { path: '/premium/ask-mmt.html',                 label: 'Ask MMT' },
+  { path: '/premium/dashboard/',                   label: 'Premium Dashboard' },
+  { path: '/premium/briefings/',                   label: 'Friday Brief' },
+  { path: '/premium/monthly-briefs/',              label: 'Monthly Brief' },
+  { path: '/premium/calendar/',                    label: 'Pursuit Calendar' },
+  { path: '/premium/ask-mmt/',                     label: 'Ask MMT' },
   { path: '/agencies/',                            label: 'Agency Profiles Index' },
   { path: '/agencies/dha/',                        label: 'Agency: DHA' },
   { path: '/agencies/va/',                         label: 'Agency: VA' },
@@ -127,7 +127,7 @@ const PATTERNS = [
   { name: 'bi-weekly cadence',              re: /bi-weekly|biweekly/i },
   { name: 'newsletter every-week drift',    re: /newsletter[^.]*every week|every week[^.]*newsletter/i },
   { name: 'Subscribe for weekly',           re: /Subscribe for weekly/ },
-  { name: 'weekly newsletter',              re: /(?<!twice-)weekly newsletter/i },
+  { name: 'weekly newsletter',              re: /weekly newsletter/i },
   { name: 'ProposalPulse 60s drift',        re: /9 criteria in 60 seconds|specific fixes in 60 seconds/ },
   { name: 'MarketPulse Report (stale)',     re: /MarketPulse Report|MarketPulse report|Your first report|additional reports/ },
   { name: 'consultant report',              re: /consultant report/ },
@@ -154,7 +154,11 @@ function fetchUrl(url) {
       },
     }, (res) => {
       if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-        return fetchUrl(res.headers.location).then(resolve, reject);
+        // Resolve relative Location headers against the request URL
+        const redirectTarget = res.headers.location.startsWith('/')
+          ? new URL(res.headers.location, url).href
+          : res.headers.location;
+        return fetchUrl(redirectTarget).then(resolve, reject);
       }
       let body = '';
       res.on('data', (chunk) => (body += chunk));
@@ -221,8 +225,8 @@ function sweepBody(path, body) {
   let mmrMatch;
   while ((mmrMatch = mmrRe.exec(body)) !== null) {
     const idx = mmrMatch.index;
-    const start = Math.max(0, idx - 80);
-    const end = Math.min(body.length, idx + 'Mission Meets Reality'.length + 80);
+    const start = Math.max(0, idx - 30);
+    const end = Math.min(body.length, idx + 'Mission Meets Reality'.length + 30);
     const window = body.slice(start, end);
     const ok = MMR_ALLOWED_CONTEXTS.some((ctx) => ctx.test(window));
     if (!ok) {
@@ -241,12 +245,16 @@ function sweepBody(path, body) {
       failures.push({ rule: 'shell: missing <nav>', sample: '' });
     } else {
       const nav = navMatch[0];
-      const required = ['brand-mark'];
-      // The nav was redesigned with Premium/Sign In member chip pattern.
-      // Only check for brand-mark as the structural anchor.
-      for (const marker of required) {
-        if (!nav.includes(marker)) {
-          failures.push({ rule: `shell nav missing "${marker}"`, sample: '' });
+      // Netlify Pretty URLs strips .html from hrefs in served pages, so
+      // accept both /resources.html#paid-tools and /resources#paid-tools.
+      const navChecks = [
+        { markers: ['brand-mark'], label: 'brand-mark' },
+        { markers: ['Choose a Tool'], label: 'Choose a Tool' },
+        { markers: ['/resources.html#paid-tools', '/resources#paid-tools'], label: '/resources#paid-tools' },
+      ];
+      for (const check of navChecks) {
+        if (!check.markers.some((m) => nav.includes(m))) {
+          failures.push({ rule: `shell nav missing "${check.label}"`, sample: '' });
         }
       }
     }
@@ -254,12 +262,20 @@ function sweepBody(path, body) {
     const footerMatch = body.match(/<footer class="wrap"[\s\S]*?<\/footer>/);
     if (footerMatch) {
       const footer = footerMatch[0];
-      const required = ['>Read<', '>Tools<', '>Reference<', '>Trust<'];
-      // Footer links may use /proposal-pulse.html or /proposal-pulse/ format
-      // depending on which session's build is deployed. Check for either.
-      for (const marker of required) {
-        if (!footer.includes(marker)) {
-          failures.push({ rule: `shell footer missing "${marker}"`, sample: '' });
+      // Netlify Pretty URLs strips .html from hrefs in served pages, so
+      // accept both .html and clean URL variants for product links.
+      const footerChecks = [
+        { markers: ['>Read<'], label: '>Read<' },
+        { markers: ['>Tools<'], label: '>Tools<' },
+        { markers: ['>Reference<'], label: '>Reference<' },
+        { markers: ['>Trust<'], label: '>Trust<' },
+        { markers: ['proposal-pulse.html', '/proposal-pulse"', '/proposal-pulse\''], label: 'proposal-pulse' },
+        { markers: ['marketpulse.html', '/marketpulse"', '/marketpulse\''], label: 'marketpulse' },
+        { markers: ['contract-tracker.html', '/contract-tracker"', '/contract-tracker\''], label: 'contract-tracker' },
+      ];
+      for (const check of footerChecks) {
+        if (!check.markers.some((m) => footer.includes(m))) {
+          failures.push({ rule: `shell footer missing "${check.label}"`, sample: '' });
         }
       }
     }
@@ -319,14 +335,21 @@ function sweepBody(path, body) {
     }
   }
 
-  // Check 5: Premium dashboard pages should have auth gating
+  // Check 5: Premium dashboard pages should have auth gating.
+  // These pages use dash-shell with localStorage auth (mmt_premium check)
+  // and may also carry data-gate/data-access attributes. Accept either
+  // pattern as valid gating. Netlify may strip trailing slashes, so
+  // match with or without them.
   const PREMIUM_ROUTES = [
     '/premium/dashboard/', '/premium/briefings/', '/premium/monthly-briefs/',
     '/premium/calendar/', '/premium/ask-mmt/',
+    '/premium/dashboard', '/premium/briefings', '/premium/monthly-briefs',
+    '/premium/calendar', '/premium/ask-mmt',
   ];
   if (PREMIUM_ROUTES.includes(path)) {
-    // These pages should have data-gate="premium" content that's hidden by default
-    if (!body.includes('data-gate="premium"') && !body.includes('data-access="premium"')) {
+    const hasDashShellAuth = body.includes('mmt_premium') || body.includes('dash-shell');
+    const hasGateAttrs = body.includes('data-gate="premium"') || body.includes('data-access="premium"');
+    if (!hasDashShellAuth && !hasGateAttrs) {
       failures.push({ rule: 'paywall: premium page missing gate attributes', sample: '' });
     }
   }
@@ -356,9 +379,15 @@ function sweepBody(path, body) {
     }
   }
 
-  // Check 9: mmt-paywall.js must be loaded on every page (except premium dashboard pages which use their own auth guard)
-  if (!body.includes('mmt-paywall.js') && !path.startsWith('/premium/')) {
-    failures.push({ rule: 'paywall: mmt-paywall.js not loaded on this page', sample: '' });
+  // Check 9: mmt-paywall.js must be loaded on every page.
+  // Premium dash-shell pages use inline localStorage auth instead of
+  // mmt-paywall.js, so accept either pattern as valid.
+  if (!body.includes('mmt-paywall.js')) {
+    const isDashShellPage = PREMIUM_ROUTES.includes(path);
+    const hasDashAuth = body.includes('mmt_premium') || body.includes('dash-shell');
+    if (!(isDashShellPage && hasDashAuth)) {
+      failures.push({ rule: 'paywall: mmt-paywall.js not loaded on this page', sample: '' });
+    }
   }
 
   return failures;
