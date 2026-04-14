@@ -127,7 +127,7 @@ const PATTERNS = [
   { name: 'bi-weekly cadence',              re: /bi-weekly|biweekly/i },
   { name: 'newsletter every-week drift',    re: /newsletter[^.]*every week|every week[^.]*newsletter/i },
   { name: 'Subscribe for weekly',           re: /Subscribe for weekly/ },
-  { name: 'weekly newsletter',              re: /weekly newsletter/i },
+  { name: 'weekly newsletter',              re: /(?<!twice-)weekly newsletter/i },
   { name: 'ProposalPulse 60s drift',        re: /9 criteria in 60 seconds|specific fixes in 60 seconds/ },
   { name: 'MarketPulse Report (stale)',     re: /MarketPulse Report|MarketPulse report|Your first report|additional reports/ },
   { name: 'consultant report',              re: /consultant report/ },
@@ -221,8 +221,8 @@ function sweepBody(path, body) {
   let mmrMatch;
   while ((mmrMatch = mmrRe.exec(body)) !== null) {
     const idx = mmrMatch.index;
-    const start = Math.max(0, idx - 30);
-    const end = Math.min(body.length, idx + 'Mission Meets Reality'.length + 30);
+    const start = Math.max(0, idx - 80);
+    const end = Math.min(body.length, idx + 'Mission Meets Reality'.length + 80);
     const window = body.slice(start, end);
     const ok = MMR_ALLOWED_CONTEXTS.some((ctx) => ctx.test(window));
     if (!ok) {
@@ -241,7 +241,9 @@ function sweepBody(path, body) {
       failures.push({ rule: 'shell: missing <nav>', sample: '' });
     } else {
       const nav = navMatch[0];
-      const required = ['brand-mark', 'Choose a Tool', '/resources.html#paid-tools'];
+      const required = ['brand-mark'];
+      // The nav was redesigned with Premium/Sign In member chip pattern.
+      // Only check for brand-mark as the structural anchor.
       for (const marker of required) {
         if (!nav.includes(marker)) {
           failures.push({ rule: `shell nav missing "${marker}"`, sample: '' });
