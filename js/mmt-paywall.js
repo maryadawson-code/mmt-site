@@ -538,6 +538,21 @@
   };
 
   // --- Init ---
+  // --- Floating "Back to Dashboard" button for premium users on public pages ---
+  function initDashboardButton() {
+    // Only show on public pages (not premium dashboard pages)
+    if (window.location.pathname.startsWith('/premium/')) return;
+    if (!isAtLeastPremium(getSubscriberStatus())) return;
+
+    var btn = document.createElement('a');
+    btn.href = '/premium/dashboard.html';
+    btn.textContent = '★ Dashboard';
+    btn.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9998;background:#0A192F;color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:700;font-family:Inter,system-ui,sans-serif;text-decoration:none;box-shadow:0 4px 12px rgba(0,0,0,0.2);transition:opacity 0.2s;';
+    btn.onmouseenter = function() { btn.style.opacity = '0.85'; };
+    btn.onmouseleave = function() { btn.style.opacity = '1'; };
+    document.body.appendChild(btn);
+  }
+
   function init() {
     var status = getSubscriberStatus();
     applyPaywallVisibility();
@@ -546,6 +561,7 @@
     applyCIDelayedAccess(status);
     trackGateViews(status);
     initStickyBar();
+    initDashboardButton();
   }
 
   if (document.readyState === "loading") {
