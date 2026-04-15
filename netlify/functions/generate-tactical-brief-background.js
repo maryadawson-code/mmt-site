@@ -792,6 +792,10 @@ exports.handler = async (event) => {
   console.log(`[COMPANY] ${companyContext.hasIdentity ? companyContext.company : "No company identified"} | MMT platform: ${companyContext.isMmtPlatform} | Certs: ${companyContext.knownCerts.join(",") || "none"} | Vehicles: ${companyContext.knownVehicles.join(",") || "none"}`);
   const startTime = Date.now();
   const passTimings = {};
+  // Deadline watchdog: Netlify background functions have a 15-minute (900s) limit.
+  // Reserve 120s for report rendering + email delivery so we never time out before sending.
+  const DEADLINE_MS = 780 * 1000; // 13 minutes — leaves 2 min for render + email
+  function pastDeadline() { return (Date.now() - startTime) > DEADLINE_MS; }
 
   // Note: MarketPulse state machine uses marketpulse_orders table, keyed by session_id.
   // We attempt transitions but don't block on failure — state tracking is observability, not control flow.
@@ -811,7 +815,6 @@ exports.handler = async (event) => {
           email,
           name: name || null,
           company: company || null,
-          company_name: company || null,
           topic,
           audience: audience || null,
           additional_context: additional_context || null,
@@ -926,14 +929,20 @@ exports.handler = async (event) => {
     }
 
     // Pass 2: Deep analysis + evidence-based competitive landscape (CHANGES 4, 5)
-    const pass2Start = Date.now();
-    const pass2 = await runDeepAnalysis(optimizedTopic, audience, company, disambiguation, pass1.content, { primedContext, classification });
-    passTimings["Pass 2 — Deep analysis"] = Math.round((Date.now() - pass2Start) / 1000);
-    analyzePassResult(reportQuality, pass2.content, pass2.citations);
-    if (!pass2.content || pass2.content.trim().length < 200) nullPassCount++;
+    let pass2 = { content: "", citations: [] };
+    if (!pastDeadline()) {
+      const pass2Start = Date.now();
+      pass2 = await runDeepAnalysis(optimizedTopic, audience, company, disambiguation, pass1.content, { primedContext, classification });
+      passTimings["Pass 2 — Deep analysis"] = Math.round((Date.now() - pass2Start) / 1000);
+      analyzePassResult(reportQuality, pass2.content, pass2.citations);
+      if (!pass2.content || pass2.content.trim().length < 200) nullPassCount++;
+    } else {
+      console.log("[DEADLINE] Skipping Pass 2 — time budget exceeded");
+      passTimings["Pass 2 — Deep analysis"] = 0;
+    }
 
     // Null result pivot check after Pass 2 (NULL RESULT PROTOCOL)
-    if (nullPassCount >= NULL_PASS_THRESHOLD) {
+    if (!pastDeadline() && nullPassCount >= NULL_PASS_THRESHOLD) {
       console.log(`[NULL PROTOCOL] ${nullPassCount} passes returned empty. STOP — reassessing search strategy.`);
       // The search strategy is wrong, not the data. Reassess what we're actually looking for.
       const pivotStart = Date.now();
@@ -970,13 +979,19 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
     analyzePassResult(reportQuality, pass3.content, pass3.citations);
 
     // Pass 4: Cross-validation gate (CHANGE 7)
-    const pass4Start = Date.now();
-    const validation = await runCrossValidation(optimizedTopic, disambiguation, pass3.content);
-    passTimings["Pass 4 — Cross-validation"] = Math.round((Date.now() - pass4Start) / 1000);
+    let validation = { overall_passed: true, corrections_needed: [], _citations: [] };
+    if (!pastDeadline()) {
+      const pass4Start = Date.now();
+      validation = await runCrossValidation(optimizedTopic, disambiguation, pass3.content);
+      passTimings["Pass 4 — Cross-validation"] = Math.round((Date.now() - pass4Start) / 1000);
+    } else {
+      console.log("[DEADLINE] Skipping Pass 4 (cross-validation) — time budget exceeded");
+      passTimings["Pass 4 — Cross-validation"] = 0;
+    }
 
     // Pass 5: Apply corrections if needed
     let finalSynthesis = pass3.content;
-    if (!validation.overall_passed || (validation.corrections_needed || []).length > 0) {
+    if (!pastDeadline() && (!validation.overall_passed || (validation.corrections_needed || []).length > 0)) {
       const pass5Start = Date.now();
       finalSynthesis = await applyCorrections(optimizedTopic, pass3.content, validation);
       passTimings["Pass 5 — Corrections"] = Math.round((Date.now() - pass5Start) / 1000);
