@@ -27,17 +27,17 @@ function scoreColor(s) {
   return "#ef4444";
 }
 
-const LOGO_SVG = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="6" fill="#0a0e17"/><path d="M8 22V10l4 6 4-6v12" stroke="#00e5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 10h4a2 2 0 0 1 0 4h-4v8" stroke="#00e5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const LOGO_SVG = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="6" fill="#0A192F"/><path d="M8 22V10l4 6 4-6v12" stroke="#457B9D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 10h4a2 2 0 0 1 0 4h-4v8" stroke="#457B9D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
 const BASE_STYLES = `
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; }
   .container { max-width: 800px; margin: 0 auto; background: #fff; }
-  .header { background: #0a0e17; color: #f8fafc; padding: 32px 40px; }
-  .header-title { font-size: 24px; font-weight: 700; color: #00e5fa; letter-spacing: 0.5px; }
+  .header { background: #0A192F; color: #f8fafc; padding: 32px 40px; }
+  .header-title { font-size: 24px; font-weight: 700; color: #457B9D; letter-spacing: 0.5px; }
   .header-sub { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 4px; }
   .content { padding: 32px 40px; }
-  h2 { font-size: 18px; font-weight: 700; color: #0f172a; margin: 28px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #00e5fa; }
+  h2 { font-size: 18px; font-weight: 700; color: #0f172a; margin: 28px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #457B9D; }
   h3 { font-size: 15px; font-weight: 600; color: #334155; margin: 20px 0 8px; }
   p { margin: 0 0 12px; font-size: 14px; }
   ul, ol { margin: 0 0 12px; padding-left: 24px; font-size: 14px; }
@@ -53,7 +53,7 @@ const BASE_STYLES = `
   .alert { padding: 12px 16px; border-radius: 8px; margin: 12px 0; font-size: 14px; font-weight: 600; }
   .alert-red { background: #fef2f2; border: 2px solid #fecaca; color: #991b1b; }
   .alert-amber { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
-  .alert-blue { background: #f0f9ff; border: 1px solid #bae6fd; color: #0369a1; }
+  .alert-blue { background: #f0f9ff; border: 1px solid #bae6fd; color: #457B9D; }
   .alert-gray { background: #f9fafb; border: 1px solid #e5e7eb; color: #475569; }
   .big-number { font-size: 36px; font-weight: 800; text-align: center; margin: 8px 0; }
   .meta { font-size: 12px; color: #6b7280; }
@@ -62,10 +62,10 @@ const BASE_STYLES = `
   .tier-high { border-left: 4px solid #f97316; background: #fffbeb; padding: 12px 16px; margin: 8px 0; border-radius: 0 8px 8px 0; }
   .tier-polish { border-left: 4px solid #3b82f6; background: #f0f4f8; padding: 12px 16px; margin: 8px 0; border-radius: 0 8px 8px 0; }
   .tier-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-  .pipeline-card { border-left: 4px solid #00e5fa; background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #00e5fa; border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 10px 0; }
+  .pipeline-card { border-left: 4px solid #457B9D; background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #457B9D; border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 10px 0; }
   .pipeline-label { font-size: 11px; font-weight: 700; color: #475569; }
   .pipeline-value { font-size: 13px; color: #1e293b; }
-  a { color: #0369a1; }
+  a { color: #457B9D; }
   .original-box { background: #f3f4f6; padding: 12px 16px; border-radius: 6px; margin: 8px 0; font-style: italic; color: #6b7280; font-size: 13px; }
   .strengthened-box { background: #f0f9ff; border: 1px solid #bae6fd; padding: 12px 16px; border-radius: 6px; margin: 8px 0; font-size: 13px; }
   @media print {

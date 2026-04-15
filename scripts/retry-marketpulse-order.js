@@ -301,23 +301,23 @@ Be specific. Cite sources. If data isn't available, say so and explain when it w
     from: "Mission Meets Tech <noreply@missionmeetstech.com>",
     to: [ORDER.email],
     subject: `Your MarketPulse Report: ${ORDER.topic.slice(0, 60)}...`,
-    html: `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;">
-  <div style="background:#0a0e17;padding:32px 40px;text-align:center;">
-    <div style="font-size:24px;font-weight:700;color:#00e5fa;letter-spacing:0.5px;">MARKETPULSE</div>
+    html: `<div style="font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;">
+  <div style="background:#0A192F;padding:32px 40px;text-align:center;">
+    <div style="font-size:24px;font-weight:700;color:#FFFFFF;letter-spacing:0.5px;">MARKETPULSE</div>
     <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-top:4px;">Federal Health IT Market Intelligence</div>
   </div>
   <div style="padding:32px 40px;">
-    <p style="font-size:16px;color:#1e293b;margin:0 0 16px;">Hi ${firstName},</p>
-    <p style="font-size:16px;color:#1e293b;margin:0 0 24px;">Your MarketPulse report is ready.</p>
-    <p style="font-size:14px;color:#475569;margin:0 0 8px;font-weight:600;">Topic</p>
-    <p style="font-size:16px;color:#1e293b;margin:0 0 24px;">${ORDER.topic.replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]))}</p>
+    <p style="font-size:16px;color:#0A192F;margin:0 0 16px;">Hi ${firstName},</p>
+    <p style="font-size:16px;color:#0A192F;margin:0 0 24px;">Your MarketPulse report is ready.</p>
+    <p style="font-size:14px;color:#5C6B7A;margin:0 0 8px;font-weight:600;">Topic</p>
+    <p style="font-size:16px;color:#0A192F;margin:0 0 24px;">${ORDER.topic.replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]))}</p>
     <div style="text-align:center;margin:32px 0;">
-      <a href="${reportUrl}" style="display:inline-block;background:#00e5fa;color:#0a0e17;font-weight:700;font-size:16px;padding:14px 40px;text-decoration:none;border-radius:6px;">View Your Report</a>
+      <a href="${reportUrl}" style="display:inline-block;background:#0A192F;color:#FFFFFF;font-weight:700;font-size:16px;padding:14px 40px;text-decoration:none;border-radius:6px;">View Your Report</a>
     </div>
     <p style="font-size:12px;color:#9ca3af;margin:24px 0 0;text-align:center;">This link expires in 90 days. Right-click and "Save As" to keep a permanent copy.</p>
   </div>
-  <div style="padding:20px 40px;background:#f9fafb;border-top:1px solid #e2e8f0;text-align:center;font-size:12px;color:#9ca3af;">
-    Mission Meets Tech LLC &middot; <a href="https://missionmeetstech.com" style="color:#0369a1;">missionmeetstech.com</a><br>
+  <div style="padding:20px 40px;background:#F3F4F6;border-top:1px solid #D8E0E8;text-align:center;font-size:12px;color:#5C6B7A;">
+    Mission Meets Tech LLC &middot; <a href="https://missionmeetstech.com" style="color:#457B9D;">missionmeetstech.com</a><br>
     AI-assisted research. Verify all claims independently.
   </div>
 </div>`,
