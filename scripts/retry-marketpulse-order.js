@@ -25,38 +25,42 @@ const ORDER = {
 };
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
-const MODEL = "claude-sonnet-4-6";
+const PERPLEXITY_MODEL = "sonar-pro";
+const PERPLEXITY_URL = "https://api.perplexity.ai/chat/completions";
+const CLAUDE_MODEL = "claude-sonnet-4-6";
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 
-if (!ANTHROPIC_API_KEY || !RESEND_API_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
-  console.error("Missing env vars. Need: ANTHROPIC_API_KEY, RESEND_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY");
+if (!PERPLEXITY_API_KEY || !ANTHROPIC_API_KEY || !RESEND_API_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+  console.error("Missing env vars. Need: PERPLEXITY_API_KEY, ANTHROPIC_API_KEY, RESEND_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY");
   process.exit(1);
 }
 
 // --- Helpers ---
 async function callClaudeSearch(systemPrompt, userPrompt, maxTokens = 8000) {
-  console.log(`  [Claude+Search] Calling ${MODEL} (max ${maxTokens} tokens)...`);
+  console.log(`  [Perplexity] Calling ${PERPLEXITY_MODEL} (max ${maxTokens} tokens)...`);
   const start = Date.now();
   let response;
   for (let attempt = 0; attempt < 4; attempt++) {
     try {
-      response = await fetch(ANTHROPIC_URL, {
+      response = await fetch(PERPLEXITY_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": ANTHROPIC_API_KEY,
-          "anthropic-version": "2023-06-01",
+          "Authorization": `Bearer ${PERPLEXITY_API_KEY}`,
         },
         body: JSON.stringify({
-          model: MODEL,
+          model: PERPLEXITY_MODEL,
           max_tokens: maxTokens,
-          system: systemPrompt,
-          messages: [{ role: "user", content: userPrompt }],
-          tools: [{ type: "web_search_20260209", name: "web_search", max_uses: 8 }],
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt },
+          ],
           temperature: 0.1,
+          web_search_options: { search_context_size: "high" },
         }),
       });
       if (response.ok) break;
@@ -79,27 +83,19 @@ async function callClaudeSearch(systemPrompt, userPrompt, maxTokens = 8000) {
 
   if (!response.ok) {
     const errText = await response.text();
-    throw new Error(`Anthropic API ${response.status}: ${errText}`);
+    throw new Error(`Perplexity API ${response.status}: ${errText}`);
   }
 
   const data = await response.json();
-  let textContent = "";
-  const citations = [];
-  for (const block of (data.content || [])) {
-    if (block.type === "text") textContent += block.text;
-    if (block.type === "web_search_tool_result") {
-      for (const sr of (block.content || [])) {
-        if (sr.type === "web_search_result" && sr.url) citations.push(sr.url);
-      }
-    }
-  }
+  const textContent = data.choices?.[0]?.message?.content || "";
+  const citations = data.citations || [];
   const elapsed = Math.round((Date.now() - start) / 1000);
   console.log(`  [Claude+Search] Done in ${elapsed}s — ${textContent.length} chars, ${citations.length} citations`);
   return { content: textContent, citations };
 }
 
 async function callClaude(systemPrompt, userPrompt, maxTokens = 8000) {
-  console.log(`  [Claude] Calling ${MODEL} (no search, max ${maxTokens} tokens)...`);
+  console.log(`  [Claude] Calling ${CLAUDE_MODEL} (no search, max ${maxTokens} tokens)...`);
   const start = Date.now();
   let response;
   for (let attempt = 0; attempt < 4; attempt++) {
@@ -112,7 +108,7 @@ async function callClaude(systemPrompt, userPrompt, maxTokens = 8000) {
           "anthropic-version": "2023-06-01",
         },
         body: JSON.stringify({
-          model: MODEL,
+          model: CLAUDE_MODEL,
           max_tokens: maxTokens,
           system: systemPrompt,
           messages: [{ role: "user", content: userPrompt }],

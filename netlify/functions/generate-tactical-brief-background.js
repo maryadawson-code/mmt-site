@@ -42,9 +42,11 @@ const { getFlag } = require("./lib/feature-flags");
 const { trackAnthropic } = require("./lib/cost-tracker");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
-const CLAUDE_RESEARCH_MODEL = "claude-sonnet-4-6"; // research passes — web search enabled
+const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 const CLAUDE_ANALYSIS_MODEL = "claude-haiku-4-5-20251001"; // synthesis/validation — no live search
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
+const PERPLEXITY_URL = "https://api.perplexity.ai/chat/completions";
+const PERPLEXITY_MODEL = "sonar-pro"; // research passes — native web search
 
 // --- Claude call (Pass 4 + Pass 5: cross-validation and corrections — no live search needed) ---
 async function callClaude(systemPrompt, userPrompt, maxTokens = 4000) {
@@ -79,7 +81,7 @@ async function callClaude(systemPrompt, userPrompt, maxTokens = 4000) {
   return { content, citations: [] };
 }
 
-// --- Claude + web_search API call (replaces Perplexity sonar-pro) ---
+// --- Perplexity sonar-pro API call (web search research) ---
 const RESEARCH_CALL_CAP = 12;
 let _researchCallCount = 0;
 let _supabase = null;
@@ -94,64 +96,55 @@ async function callClaudeSearch(systemPrompt, userPrompt, maxTokens = 4000) {
   const _costStart = Date.now();
   const response = await withRetry(() => {
     const ac = new AbortController();
-    const timer = setTimeout(() => ac.abort(), 180000); // 180s timeout — web search calls are slow
-    return fetch(ANTHROPIC_URL, {
+    const timer = setTimeout(() => ac.abort(), 120000); // 120s timeout
+    return fetch(PERPLEXITY_URL, {
       method: "POST",
       signal: ac.signal,
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
+        "Authorization": `Bearer ${PERPLEXITY_API_KEY}`,
       },
       body: JSON.stringify({
-        model: CLAUDE_RESEARCH_MODEL,
+        model: PERPLEXITY_MODEL,
         max_tokens: maxTokens,
-        system: systemPrompt,
-        messages: [{ role: "user", content: userPrompt }],
-        tools: [{ type: "web_search_20260209", name: "web_search", max_uses: 5 }],
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
         temperature: 0.1,
+        web_search_options: {
+          search_context_size: "high",
+        },
       }),
     }).finally(() => clearTimeout(timer));
   }, { maxRetries: 2, baseDelayMs: 3000 });
 
   if (!response.ok) {
     const errText = await response.text();
-    const err = new Error(`Anthropic API ${response.status}: ${errText}`);
+    const err = new Error(`Perplexity API ${response.status}: ${errText}`);
     err.status = response.status;
     throw err;
   }
 
   const data = await response.json();
 
-  // Cost tracking: Claude research call
+  // Cost tracking
   try {
     if (_supabase) {
       await trackAnthropic(_supabase, {
         functionName: 'generate-tactical-brief-background',
         product: 'marketpulse',
         orderId: _orderId,
-        model: CLAUDE_RESEARCH_MODEL,
-        usage: data.usage ? { input_tokens: data.usage.input_tokens || 0, output_tokens: data.usage.output_tokens || 0 } : null,
+        model: PERPLEXITY_MODEL,
+        usage: data.usage ? { input_tokens: data.usage.prompt_tokens || 0, output_tokens: data.usage.completion_tokens || 0 } : null,
         latencyMs: Date.now() - _costStart,
       });
     }
   } catch (_costErr) { /* never break research pipeline */ }
 
-  // Extract text content and citations from Claude web_search response
-  let textContent = "";
-  const citations = [];
-  for (const block of (data.content || [])) {
-    if (block.type === "text") {
-      textContent += block.text;
-    }
-    if (block.type === "web_search_tool_result") {
-      for (const searchResult of (block.content || [])) {
-        if (searchResult.type === "web_search_result" && searchResult.url) {
-          citations.push(searchResult.url);
-        }
-      }
-    }
-  }
+  // Extract text and citations from Perplexity response
+  const textContent = data.choices?.[0]?.message?.content || "";
+  const citations = data.citations || [];
 
   return { content: textContent, citations };
 }
