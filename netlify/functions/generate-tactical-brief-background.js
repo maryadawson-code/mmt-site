@@ -152,12 +152,13 @@ async function callClaudeSearch(systemPrompt, userPrompt, maxTokens = 4000) {
 async function disambiguateEntity(topic) {
   console.log("Pass 0: Entity disambiguation...");
 
-  const result = await callClaudeSearch(
+  // Use analysis model (Haiku, no web search) — disambiguation is entity structure
+  // reasoning, not live data retrieval. Saves ~3 min vs Sonnet + web_search.
+  const result = await callClaude(
     `You are a federal government organizational structure expert. Your ONLY job is to identify the exact federal entity the user is asking about and classify every term as either a SUBJECT to research or a FILTER to apply.
 
 CRITICAL RULES:
 - Users often conflate agencies, offices, or acronyms. You MUST check if the user's description maps to ONE entity or MULTIPLE distinct entities.
-- Search the parent agency's official website (.gov), org charts, staff directories, and "about" pages.
 - If an acronym could refer to multiple offices (even within the same agency), list ALL matches.
 - If the user says "X, also referred to as Y" — verify whether X and Y are actually the same entity or different entities.
 
@@ -165,21 +166,18 @@ SET-ASIDE / SOCIOECONOMIC FILTER RULES:
 When a query mentions a set-aside type (SDVOSB, 8(a), HUBZone, WOSB, VOSB):
 - This is a FILTER on contract actions, NOT a direction to research the certifying program.
 - "SDVOSB contracts" = contracts with SDVOSB set-aside across all agencies.
-- "SDVOSB contracts" ≠ SBA's SDVOSB certification program.
-- Do NOT disambiguate to SBA when the user mentions a set-aside type. SBA is the certifying body, not the subject.
+- Do NOT disambiguate to SBA when the user mentions a set-aside type.
 
 CURRENT ADMINISTRATION ACTIONS RULES:
 When a query mentions "current administration" actions (cancellations, terminations, cuts, freezes, DOGE):
 - Map to: DOGE termination actions, executive orders, agency workforce reductions, contract de-obligations.
 - Search terms should include: "DOGE contract terminations," "federal contract cancellations 2025-2026," "de-obligated contracts."
-- Do NOT search for a specific agency's cancellation policy.
 
 AMBIGUOUS ACRONYM RULES:
 When a query mentions a government office by acronym:
 - Verify the acronym resolves to the correct organizational level.
 - Example: "VHA OEM" = Veterans Health Administration Office of Emergency Management (19OEM, Martinsburg WV).
-- Example: "OEMR" = completely different VA staff office.
-- When ambiguous, search for BOTH interpretations, then select the one with contract activity.
+- When ambiguous, list BOTH interpretations, then select the one with contract activity.
 
 OUTPUT FORMAT (respond ONLY in this JSON structure, no markdown fences):
 {
@@ -189,10 +187,7 @@ OUTPUT FORMAT (respond ONLY in this JSON structure, no markdown fences):
       "acronym": "ACRONYM",
       "org_code": "if known",
       "parent_org": "Parent agency/office",
-      "location": "City, State",
-      "approx_staff": "number or range",
-      "mission": "1-2 sentence mission description",
-      "source_url": ".gov URL where you found this"
+      "mission": "1-2 sentence mission description"
     }
   ],
   "is_ambiguous": true/false,
@@ -215,7 +210,7 @@ OUTPUT FORMAT (respond ONLY in this JSON structure, no markdown fences):
     { "term": "example", "type": "subject|filter|context", "explanation": "Why this term is a subject to research, a filter to apply, or background context" }
   ]
 }`,
-    `Identify and disambiguate the federal entity in this request:\n\n${topic}\n\nSearch official .gov sources. If the request conflates multiple entities, identify all of them and select the best match. Classify every term as subject (to research), filter (to apply to results), or context (background framing).`,
+    `Identify and disambiguate the federal entity in this request:\n\n${topic}\n\nIf the request conflates multiple entities, identify all of them and select the best match. Classify every term as subject (to research), filter (to apply to results), or context (background framing).`,
     3000
   );
 
