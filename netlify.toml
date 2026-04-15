@@ -69,8 +69,9 @@
 [functions."quality-drift-check-background"]
   schedule = "0 12 * * 1"
 
-[functions."review-queue-digest-background"]
-  schedule = "0 11 * * *"
+# DISABLED — not in use, wastes tokens generating low-value intel review emails
+# [functions."review-queue-digest-background"]
+#   schedule = "0 11 * * *"
 
 [functions."predictive-signals-background"]
   # DISABLED for launch — re-enable when signal pipeline is validated
