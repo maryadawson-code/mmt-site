@@ -65,8 +65,8 @@
     </div>
   </section>
 
-  <!-- Sample entry (public preview) -->
-  <section class="wrap" style="padding:0 0 24px;">
+  <!-- Free preview: sample entry with locked fields -->
+  <section class="wrap idiq-free-gate" style="padding:0 0 24px;">
     <h2 style="font-size:18px;font-weight:700;margin-bottom:16px;">Sample entry</h2>
     <div class="idiq-card">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
@@ -75,26 +75,12 @@
       <h3 style="font-size:20px;font-weight:800;margin-bottom:4px;">T4NG2 (Transformation Twenty-One Total Technology Next Generation 2)</h3>
       <p style="font-size:14px;color:var(--mmt-teal);margin-bottom:12px;">Department of Veterans Affairs &middot; Multi-Award IDIQ</p>
       <p style="font-size:14px;line-height:1.6;color:var(--mmt-text-secondary);margin-bottom:16px;">The primary vehicle through which VA buys IT professional services. T4NG2 is the follow-on to the $22.3B T4NG contract.</p>
-
-      <!-- Premium-locked fields -->
       <div style="padding:16px;background:var(--ci-gold-bg);border:1px solid rgba(146,113,10,0.15);border-radius:10px;">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
-          <div>
-            <span class="text-xs" style="color:var(--mmt-text-secondary);">Ceiling</span>
-            <div class="premium-lock">&#9733; Premium</div>
-          </div>
-          <div>
-            <span class="text-xs" style="color:var(--mmt-text-secondary);">Awardees</span>
-            <div class="premium-lock">&#9733; Premium</div>
-          </div>
-          <div>
-            <span class="text-xs" style="color:var(--mmt-text-secondary);">Ceiling burn rate</span>
-            <div class="burn-bar" style="width:120px;opacity:0.3;"><div class="burn-fill" style="width:0%;"></div></div>
-          </div>
-          <div>
-            <span class="text-xs" style="color:var(--mmt-text-secondary);">NAICS</span>
-            <div class="premium-lock">&#9733; Premium</div>
-          </div>
+          <div><span class="text-xs" style="color:var(--mmt-text-secondary);">Ceiling</span><div class="premium-lock">&#9733; Premium</div></div>
+          <div><span class="text-xs" style="color:var(--mmt-text-secondary);">Awardees</span><div class="premium-lock">&#9733; Premium</div></div>
+          <div><span class="text-xs" style="color:var(--mmt-text-secondary);">Ceiling burn rate</span><div class="premium-lock">&#9733; Premium</div></div>
+          <div><span class="text-xs" style="color:var(--mmt-text-secondary);">NAICS</span><div class="premium-lock">&#9733; Premium</div></div>
         </div>
         <div style="border-top:1px solid rgba(146,113,10,0.15);padding-top:12px;">
           <span class="text-xs font-bold uppercase tracking-wider" style="color:var(--ci-gold);">MMT Intel</span>
@@ -104,8 +90,8 @@
     </div>
   </section>
 
-  <!-- Gate CTA -->
-  <section class="wrap" style="padding:0 0 64px;">
+  <!-- Gate CTA (hidden for premium users) -->
+  <section class="wrap idiq-free-gate" style="padding:0 0 64px;">
     <div style="text-align:center;padding:40px 28px;background:var(--mmt-soft);border-radius:16px;">
       <h2 style="font-size:22px;font-weight:800;margin-bottom:8px;">Access all 11 tracked vehicles</h2>
       <p style="font-size:15px;color:var(--mmt-text-secondary);margin-bottom:20px;max-width:48ch;margin-left:auto;margin-right:auto;">Full ceiling data, awardee lists, burn rates, re-compete windows, and MMT intel notes on every major federal health IT IDIQ.</p>
@@ -116,8 +102,125 @@
     </div>
   </section>
 
+  <!-- Full IDIQ data (premium only — hidden by default, revealed by mmt-paywall.js) -->
+  <section class="wrap" data-access="premium" style="padding:0 0 64px;">
+    <h2 style="font-size:18px;font-weight:700;margin-bottom:16px;">All tracked vehicles</h2>
+    <div style="display:flex;flex-direction:column;gap:16px;">
+
+      <!-- T4NG2 -->
+      <div class="idiq-card">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <span class="status-chip status-recompete">Re-compete &middot; ~8 months</span>
+        </div>
+        <h3 style="font-size:20px;font-weight:800;margin-bottom:4px;">T4NG2 (Transformation Twenty-One Total Technology Next Generation 2)</h3>
+        <p style="font-size:14px;color:var(--mmt-teal);margin-bottom:12px;">Department of Veterans Affairs &middot; Multi-Award IDIQ</p>
+        <p style="font-size:14px;line-height:1.6;color:var(--mmt-text-secondary);margin-bottom:16px;">The primary vehicle through which VA buys IT professional services. T4NG2 is the follow-on to the $22.3B T4NG contract.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+          <div><span class="text-xs" style="color:var(--mmt-text-secondary);">Ceiling</span><div style="font-size:15px;font-weight:700;">$36.2B (estimated)</div></div>
+          <div><span class="text-xs" style="color:var(--mmt-text-secondary);">Awardees</span><div style="font-size:15px;font-weight:700;">TBD (solicitation pending)</div></div>
+          <div><span class="text-xs" style="color:var(--mmt-text-secondary);">Ceiling burn rate</span><div class="burn-bar" style="width:120px;"><div class="burn-fill" style="width:0%;"></div></div><span class="text-xs" style="color:var(--mmt-text-secondary);">N/A (not yet awarded)</span></div>
+          <div><span class="text-xs" style="color:var(--mmt-text-secondary);">NAICS</span><div style="font-size:14px;">541512, 541519, 541611, 541690</div></div>
+        </div>
+        <div style="border-top:1px solid var(--mmt-border);padding-top:12px;">
+          <span class="text-xs font-bold uppercase tracking-wider" style="color:var(--ci-gold);">MMT Intel</span>
+          <p style="font-size:14px;line-height:1.6;color:var(--mmt-text-secondary);margin-top:4px;">T4NG2 draft RFP expected Q3 FY2026. VA intends to expand the scope beyond T4NG to include cloud migration, cybersecurity, and AI/ML capabilities. Incumbent T4NG holders have a significant advantage. SDVOSB set-aside pool likely to be preserved.</p>
+        </div>
+      </div>
+
+      <!-- ITES-3H -->
+      <div class="idiq-card">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <span class="status-chip status-active">Active</span>
+        </div>
+        <h3 style="font-size:20px;font-weight:800;margin-bottom:4px;">ITES-3H (IT Enterprise Solutions 3 — Hardware)</h3>
+        <p style="font-size:14px;color:var(--mmt-teal);margin-bottom:12px;">Army / CHESS &middot; Multi-Award IDIQ</p>
+        <p style="font-size:14px;line-height:1.6;color:var(--mmt-text-secondary);margin-bottom:16px;">DoD-wide hardware and related services vehicle managed by Army CHESS. Used by DHA and MHS for infrastructure purchases.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+          <div><span class="text-xs" style="color:var(--mmt-text-secondary);">Ceiling</span><div style="font-size:15px;font-weight:700;">$12.1B</div></div>
+          <div><span class="text-xs" style="color:var(--mmt-text-secondary);">Awardees</span><div style="font-size:15px;font-weight:700;">17 prime contractors</div></div>
+          <div><span class="text-xs" style="color:var(--mmt-text-secondary);">Ceiling burn rate</span><div class="burn-bar" style="width:120px;"><div class="burn-fill" style="width:48%;"></div></div><span class="text-xs" style="color:var(--mmt-text-secondary);">48% ($5.8B obligated)</span></div>
+          <div><span class="text-xs" style="color:var(--mmt-text-secondary);">NAICS</span><div style="font-size:14px;">334111, 334118, 541512</div></div>
+        </div>
+        <div style="border-top:1px solid var(--mmt-border);padding-top:12px;">
+          <span class="text-xs font-bold uppercase tracking-wider" style="color:var(--ci-gold);">MMT Intel</span>
+          <p style="font-size:14px;line-height:1.6;color:var(--mmt-text-secondary);margin-top:4px;">Significant DHA task order activity for MHS GENESIS infrastructure. Burn rate accelerating as Oracle Health deployment expands. PoP extends through 2028.</p>
+        </div>
+      </div>
+
+      <!-- CIO-SP4 -->
+      <div class="idiq-card">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <span class="status-chip status-active">Active</span>
+        </div>
+        <h3 style="font-size:20px;font-weight:800;margin-bottom:4px;">CIO-SP4 (Chief Information Officer — Solutions and Partners 4)</h3>
+        <p style="font-size:14px;color:var(--mmt-teal);margin-bottom:12px;">NIH NITAAC &middot; Government-Wide GWAC</p>
+        <p style="font-size:14px;line-height:1.6;color:var(--mmt-text-secondary);margin-bottom:16px;">Government-wide IT solutions contract. Primary vehicle for HHS and NIH health IT acquisitions. Accessible to all federal agencies.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+          <div><span class="text-xs" style="color:var(--mmt-text-secondary);">Ceiling</span><div style="font-size:15px;font-weight:700;">$50B</div></div>
+          <div><span class="text-xs" style="color:var(--mmt-text-secondary);">Awardees</span><div style="font-size:15px;font-weight:700;">500+ (all pools)</div></div>
+          <div><span class="text-xs" style="color:var(--mmt-text-secondary);">Ceiling burn rate</span><div class="burn-bar" style="width:120px;"><div class="burn-fill" style="width:12%;"></div></div><span class="text-xs" style="color:var(--mmt-text-secondary);">12% (ramping)</span></div>
+          <div><span class="text-xs" style="color:var(--mmt-text-secondary);">NAICS</span><div style="font-size:14px;">541512, 541519, 518210, 541611</div></div>
+        </div>
+        <div style="border-top:1px solid var(--mmt-border);padding-top:12px;">
+          <span class="text-xs font-bold uppercase tracking-wider" style="color:var(--ci-gold);">MMT Intel</span>
+          <p style="font-size:14px;line-height:1.6;color:var(--mmt-text-secondary);margin-top:4px;">CIO-SP4 awards completed in 2024. Task order activity is ramping across HHS, VA, and DoD health. Protest-driven delays resolved. Small business pool is highly competitive. Watch for AI/ML-specific task orders in FY2026-2027.</p>
+        </div>
+      </div>
+
+      <!-- EHR II -->
+      <div class="idiq-card">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <span class="status-chip status-active">Active</span>
+        </div>
+        <h3 style="font-size:20px;font-weight:800;margin-bottom:4px;">EHR II (Electronic Health Record II)</h3>
+        <p style="font-size:14px;color:var(--mmt-teal);margin-bottom:12px;">Defense Health Agency &middot; Single-Award IDIQ</p>
+        <p style="font-size:14px;line-height:1.6;color:var(--mmt-text-secondary);margin-bottom:16px;">The MHS GENESIS deployment and sustainment contract. Oracle Health (Cerner) is the sole prime. Covers deployment, training, optimization, and interoperability.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+          <div><span class="text-xs" style="color:var(--mmt-text-secondary);">Ceiling</span><div style="font-size:15px;font-weight:700;">$9.4B (cumulative modifications)</div></div>
+          <div><span class="text-xs" style="color:var(--mmt-text-secondary);">Prime</span><div style="font-size:15px;font-weight:700;">Oracle Health (Cerner)</div></div>
+          <div><span class="text-xs" style="color:var(--mmt-text-secondary);">Ceiling burn rate</span><div class="burn-bar" style="width:120px;"><div class="burn-fill" style="width:72%;"></div></div><span class="text-xs" style="color:var(--mmt-text-secondary);">72% ($6.8B obligated)</span></div>
+          <div><span class="text-xs" style="color:var(--mmt-text-secondary);">NAICS</span><div style="font-size:14px;">541512</div></div>
+        </div>
+        <div style="border-top:1px solid var(--mmt-border);padding-top:12px;">
+          <span class="text-xs font-bold uppercase tracking-wider" style="color:var(--ci-gold);">MMT Intel</span>
+          <p style="font-size:14px;line-height:1.6;color:var(--mmt-text-secondary);margin-top:4px;">Deployment to all DoD sites nominally complete but optimization and sustainment costs continue to climb. Congressional scrutiny on cost overruns. Sub-contracting opportunities exist for interoperability, data migration, and training support. DOGE review flagged this contract for audit.</p>
+        </div>
+      </div>
+
+      <!-- Alliant 3 -->
+      <div class="idiq-card">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <span class="status-chip status-upcoming">Upcoming</span>
+        </div>
+        <h3 style="font-size:20px;font-weight:800;margin-bottom:4px;">Alliant 3</h3>
+        <p style="font-size:14px;color:var(--mmt-teal);margin-bottom:12px;">GSA &middot; Government-Wide GWAC</p>
+        <p style="font-size:14px;line-height:1.6;color:var(--mmt-text-secondary);margin-bottom:16px;">The follow-on to Alliant 2 GWAC. Will be a primary IT services vehicle across all federal agencies including health IT.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+          <div><span class="text-xs" style="color:var(--mmt-text-secondary);">Ceiling</span><div style="font-size:15px;font-weight:700;">$75B (estimated)</div></div>
+          <div><span class="text-xs" style="color:var(--mmt-text-secondary);">Awardees</span><div style="font-size:15px;font-weight:700;">TBD (solicitation in progress)</div></div>
+          <div><span class="text-xs" style="color:var(--mmt-text-secondary);">Timeline</span><div style="font-size:14px;">Final RFP expected mid-2026, awards late 2026</div></div>
+          <div><span class="text-xs" style="color:var(--mmt-text-secondary);">NAICS</span><div style="font-size:14px;">541512, 541519, 541611, 518210</div></div>
+        </div>
+        <div style="border-top:1px solid var(--mmt-border);padding-top:12px;">
+          <span class="text-xs font-bold uppercase tracking-wider" style="color:var(--ci-gold);">MMT Intel</span>
+          <p style="font-size:14px;line-height:1.6;color:var(--mmt-text-secondary);margin-top:4px;">GSA revised evaluation criteria after industry feedback. Self-scoring methodology will carry forward from Alliant 2 but with updated categories. Health IT task orders through Alliant are significant across VA, HHS, and DHA. Prepare past performance packages now.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
   <footer class="wrap"></footer>
   <script src="/js/mmt-paywall.js" defer></script>
   <script src="/js/nav-active.js"></script>
+  <script>
+    // Hide free-tier preview + gate CTA when premium user is authenticated
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof mmtIsPremium === 'function' && mmtIsPremium()) {
+        var gates = document.querySelectorAll('.idiq-free-gate');
+        for (var i = 0; i < gates.length; i++) gates[i].style.display = 'none';
+      }
+    });
+  </script>
 </body>
 </html>
