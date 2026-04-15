@@ -48,21 +48,26 @@ const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 
 // --- Claude call (Pass 4 + Pass 5: cross-validation and corrections — no live search needed) ---
 async function callClaude(systemPrompt, userPrompt, maxTokens = 4000) {
-  const response = await withRetry(() => fetch(ANTHROPIC_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": ANTHROPIC_API_KEY,
-      "anthropic-version": "2023-06-01",
-    },
-    body: JSON.stringify({
-      model: CLAUDE_ANALYSIS_MODEL,
-      max_tokens: maxTokens,
-      system: systemPrompt,
-      messages: [{ role: "user", content: userPrompt }],
-      temperature: 0.1,
-    }),
-  }), { maxRetries: 2, baseDelayMs: 3000 });
+  const response = await withRetry(() => {
+    const ac = new AbortController();
+    const timer = setTimeout(() => ac.abort(), 60000); // 60s timeout
+    return fetch(ANTHROPIC_URL, {
+      method: "POST",
+      signal: ac.signal,
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: CLAUDE_ANALYSIS_MODEL,
+        max_tokens: maxTokens,
+        system: systemPrompt,
+        messages: [{ role: "user", content: userPrompt }],
+        temperature: 0.1,
+      }),
+    }).finally(() => clearTimeout(timer));
+  }, { maxRetries: 2, baseDelayMs: 3000 });
 
   if (!response.ok) {
     const errText = await response.text();
@@ -87,22 +92,27 @@ async function callClaudeSearch(systemPrompt, userPrompt, maxTokens = 4000) {
     return { content: "", citations: [], capped: true };
   }
   const _costStart = Date.now();
-  const response = await withRetry(() => fetch(ANTHROPIC_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": ANTHROPIC_API_KEY,
-      "anthropic-version": "2023-06-01",
-    },
-    body: JSON.stringify({
-      model: CLAUDE_RESEARCH_MODEL,
-      max_tokens: maxTokens,
-      system: systemPrompt,
-      messages: [{ role: "user", content: userPrompt }],
-      tools: [{ type: "web_search_20260209", name: "web_search", max_uses: 5 }],
-      temperature: 0.1,
-    }),
-  }), { maxRetries: 2, baseDelayMs: 3000 });
+  const response = await withRetry(() => {
+    const ac = new AbortController();
+    const timer = setTimeout(() => ac.abort(), 180000); // 180s timeout — web search calls are slow
+    return fetch(ANTHROPIC_URL, {
+      method: "POST",
+      signal: ac.signal,
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: CLAUDE_RESEARCH_MODEL,
+        max_tokens: maxTokens,
+        system: systemPrompt,
+        messages: [{ role: "user", content: userPrompt }],
+        tools: [{ type: "web_search_20260209", name: "web_search", max_uses: 5 }],
+        temperature: 0.1,
+      }),
+    }).finally(() => clearTimeout(timer));
+  }, { maxRetries: 2, baseDelayMs: 3000 });
 
   if (!response.ok) {
     const errText = await response.text();
