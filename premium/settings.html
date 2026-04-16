@@ -80,6 +80,100 @@
           <h3>Tool Discounts</h3>
           <p style="margin:0; color:var(--mmt-text-secondary); font-size:14px;"><strong>ProposalPulse:</strong> $14.99 per assessment (25% off standard $19.99)<br><strong>MarketPulse:</strong> $35 per brief (30% off standard $50)<br><span style="font-size:13px;">Discounts apply automatically when using your registered email.</span></p>
         </div>
+        <!-- Notification Preferences -->
+        <div class="dash-card" id="notif-card">
+          <h3>Email Notifications</h3>
+          <p style="margin:0 0 16px;color:var(--mmt-text-secondary);font-size:14px;">Choose what hits your inbox. All notifications use your registered email.</p>
+
+          <div id="notif-loading" style="font-size:14px;color:var(--mmt-text-secondary);">Loading preferences...</div>
+          <div id="notif-form" style="display:none;">
+
+            <!-- Always-on (not toggleable) -->
+            <div style="padding:12px 0;border-bottom:1px solid var(--mmt-border);">
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <div>
+                  <div style="font-size:14px;font-weight:600;">Friday Brief</div>
+                  <div style="font-size:12px;color:var(--mmt-text-secondary);">Weekly intelligence summary, every Friday 6 AM ET</div>
+                </div>
+                <span style="font-size:11px;font-weight:700;color:#16A34A;text-transform:uppercase;letter-spacing:0.08em;">Always on</span>
+              </div>
+            </div>
+            <div style="padding:12px 0;border-bottom:1px solid var(--mmt-border);">
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <div>
+                  <div style="font-size:14px;font-weight:600;">Monthly Intelligence Brief</div>
+                  <div style="font-size:12px;color:var(--mmt-text-secondary);">Deep-dive packet, 1st of each month</div>
+                </div>
+                <span style="font-size:11px;font-weight:700;color:#16A34A;text-transform:uppercase;letter-spacing:0.08em;">Always on</span>
+              </div>
+            </div>
+
+            <!-- Toggleable notifications -->
+            <div style="padding:12px 0;border-bottom:1px solid var(--mmt-border);">
+              <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+                <div>
+                  <div style="font-size:14px;font-weight:600;">New Solicitations</div>
+                  <div style="font-size:12px;color:var(--mmt-text-secondary);">SAM.gov opportunities matching your tracked agencies. Scanned every 4 hours.</div>
+                </div>
+                <input type="checkbox" id="notif-solicitations" style="width:18px;height:18px;accent-color:var(--mmt-teal);">
+              </label>
+              <div id="notif-solicitations-freq" style="display:none;margin-top:8px;padding-left:4px;">
+                <label style="font-size:13px;color:var(--mmt-text-secondary);cursor:pointer;margin-right:16px;">
+                  <input type="radio" name="sol-freq" value="daily" style="accent-color:var(--mmt-teal);"> Daily digest (6 AM ET)
+                </label>
+                <label style="font-size:13px;color:var(--mmt-text-secondary);cursor:pointer;">
+                  <input type="radio" name="sol-freq" value="weekly" checked style="accent-color:var(--mmt-teal);"> Weekly digest (Monday)
+                </label>
+              </div>
+            </div>
+
+            <div style="padding:12px 0;border-bottom:1px solid var(--mmt-border);">
+              <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+                <div>
+                  <div style="font-size:14px;font-weight:600;">Contract Intel Updates</div>
+                  <div style="font-size:12px;color:var(--mmt-text-secondary);">Status changes, budget signals, and recompete alerts on tracked contracts.</div>
+                </div>
+                <input type="checkbox" id="notif-contracts" style="width:18px;height:18px;accent-color:var(--mmt-teal);">
+              </label>
+            </div>
+
+            <div style="padding:12px 0;border-bottom:1px solid var(--mmt-border);">
+              <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+                <div>
+                  <div style="font-size:14px;font-weight:600;">Protest Alerts</div>
+                  <div style="font-size:12px;color:var(--mmt-text-secondary);">GAO protest status changes on health IT contracts. Checked daily.</div>
+                </div>
+                <input type="checkbox" id="notif-protests" style="width:18px;height:18px;accent-color:var(--mmt-teal);">
+              </label>
+            </div>
+
+            <div style="padding:12px 0;border-bottom:1px solid var(--mmt-border);">
+              <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+                <div>
+                  <div style="font-size:14px;font-weight:600;">Small Business Awards</div>
+                  <div style="font-size:12px;color:var(--mmt-text-secondary);">Weekly summary of SB contract awards by vehicle (OASIS+, CIO-SP4, T4NG2, etc.)</div>
+                </div>
+                <input type="checkbox" id="notif-sb-awards" style="width:18px;height:18px;accent-color:var(--mmt-teal);">
+              </label>
+            </div>
+
+            <div style="padding:12px 0;">
+              <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+                <div>
+                  <div style="font-size:14px;font-weight:600;">New Analysis Published</div>
+                  <div style="font-size:12px;color:var(--mmt-text-secondary);">Get notified when new articles and deep-dives drop. Twice per week.</div>
+                </div>
+                <input type="checkbox" id="notif-articles" style="width:18px;height:18px;accent-color:var(--mmt-teal);">
+              </label>
+            </div>
+
+            <div style="margin-top:16px;display:flex;align-items:center;gap:12px;">
+              <button id="notif-save-btn" onclick="saveNotifications()" style="padding:10px 20px;background:var(--mmt-navy);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;">Save preferences</button>
+              <span id="notif-status" style="font-size:13px;color:#16A34A;font-weight:600;display:none;">Saved</span>
+            </div>
+          </div>
+        </div>
+
         <div class="dash-card">
           <h3>Account Status</h3>
           <div style="display:flex;flex-direction:column;gap:12px;">
@@ -107,6 +201,74 @@
     <a href="/marketpulse.html">Brief</a>
     <a href="/premium/settings.html">Account</a>
   </div>
-  <script>var email=localStorage.getItem('mmt_email');if(email)document.getElementById('dash-email').textContent=email;</script>
+  <script>
+    var email=localStorage.getItem('mmt_email');
+    if(email)document.getElementById('dash-email').textContent=email;
+
+    // --- Notification preferences ---
+    var solCheck = document.getElementById('notif-solicitations');
+    var solFreq = document.getElementById('notif-solicitations-freq');
+    if (solCheck) solCheck.addEventListener('change', function() {
+      solFreq.style.display = solCheck.checked ? 'block' : 'none';
+    });
+
+    function loadNotifications() {
+      if (!email) { document.getElementById('notif-loading').textContent = 'Sign in to manage notifications.'; return; }
+      fetch('/.netlify/functions/member-preferences?email=' + encodeURIComponent(email))
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          var n = (data.prefs && data.prefs.notifications) || {};
+          if (n.solicitations) { solCheck.checked = true; solFreq.style.display = 'block'; }
+          var freq = n.solicitation_frequency || 'weekly';
+          var radios = document.querySelectorAll('input[name="sol-freq"]');
+          for (var i = 0; i < radios.length; i++) { if (radios[i].value === freq) radios[i].checked = true; }
+          document.getElementById('notif-contracts').checked = !!n.contract_intel;
+          document.getElementById('notif-protests').checked = !!n.protests;
+          document.getElementById('notif-sb-awards').checked = !!n.sb_awards;
+          document.getElementById('notif-articles').checked = !!n.new_articles;
+          document.getElementById('notif-loading').style.display = 'none';
+          document.getElementById('notif-form').style.display = 'block';
+        })
+        .catch(function() {
+          document.getElementById('notif-loading').textContent = 'Could not load preferences.';
+        });
+    }
+
+    function saveNotifications() {
+      if (!email) return;
+      var btn = document.getElementById('notif-save-btn');
+      btn.disabled = true; btn.textContent = 'Saving...';
+      var freqRadio = document.querySelector('input[name="sol-freq"]:checked');
+      var notifications = {
+        solicitations: document.getElementById('notif-solicitations').checked,
+        solicitation_frequency: freqRadio ? freqRadio.value : 'weekly',
+        contract_intel: document.getElementById('notif-contracts').checked,
+        protests: document.getElementById('notif-protests').checked,
+        sb_awards: document.getElementById('notif-sb-awards').checked,
+        new_articles: document.getElementById('notif-articles').checked
+      };
+      fetch('/.netlify/functions/member-preferences', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, notifications: notifications })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        btn.disabled = false; btn.textContent = 'Save preferences';
+        var status = document.getElementById('notif-status');
+        if (data.saved) { status.textContent = 'Saved'; status.style.color = '#16A34A'; }
+        else { status.textContent = 'Error saving'; status.style.color = '#E63946'; }
+        status.style.display = 'inline';
+        setTimeout(function() { status.style.display = 'none'; }, 3000);
+      })
+      .catch(function() {
+        btn.disabled = false; btn.textContent = 'Save preferences';
+        var status = document.getElementById('notif-status');
+        status.textContent = 'Network error'; status.style.color = '#E63946'; status.style.display = 'inline';
+      });
+    }
+
+    loadNotifications();
+  </script>
 </body>
 </html>

@@ -33,6 +33,11 @@
 [functions."monthly-brief-send"]
   schedule = "0 11 1 * *"
 
+# Premium Digest — daily at 6:30 AM ET (11:30 UTC)
+# Personalized notification digest based on subscriber preferences
+[functions."premium-digest-send"]
+  schedule = "30 11 * * *"
+
 [functions."rebuild-trigger"]
   schedule = "0 */4 * * *"
 
