@@ -80,12 +80,14 @@ exports.handler = async (event) => {
 
   // Pre-fetch data for all notification types (only if at least one subscriber wants it)
   const anyWants = (key) => Object.values(prefsMap).some((p) => p.notifications && p.notifications[key]);
+  const anyHasWatchlist = Object.values(prefsMap).some((p) => p.notifications && p.notifications.watchlist && p.notifications.watchlist.length > 0);
 
   let newSolicitations = [];
   let contractUpdates = [];
   let protestAlerts = [];
   let sbAwards = [];
   let newArticles = [];
+  let allWatchlistUpdates = []; // contract_intel + opportunity_radar for watchlist matching
 
   // New solicitations (from opportunity_radar, last 24h)
   if (anyWants("solicitations")) {
@@ -152,6 +154,18 @@ exports.handler = async (event) => {
         newArticles = (nlData || []).filter((a) => new Date(a.date) >= cutoff).slice(0, 5);
       }
     } catch (e) { console.warn("Article fetch failed:", e.message); }
+  }
+
+  // Watchlist: fetch recent contract intel and opportunity data for keyword matching
+  if (anyHasWatchlist) {
+    try {
+      const [wlContracts, wlOpps] = await Promise.all([
+        supabase.from("contract_intel").select("contract_name, intel, last_updated").gte("last_updated", since24h).order("last_updated", { ascending: false }).limit(30),
+        supabase.from("opportunity_radar").select("title, solicitation_number, agency, deadline, opportunity_type, created_at").gte("created_at", since24h).order("created_at", { ascending: false }).limit(30),
+      ]);
+      if (wlContracts.data) allWatchlistUpdates.push(...wlContracts.data.map((c) => ({ type: "contract", name: c.contract_name, detail: typeof c.intel === "string" ? c.intel.substring(0, 150) : (c.intel?.summary || "").substring(0, 150), date: c.last_updated })));
+      if (wlOpps.data) allWatchlistUpdates.push(...wlOpps.data.map((o) => ({ type: "opportunity", name: o.title, detail: `${o.opportunity_type || "notice"} — ${o.agency || ""}`, date: o.created_at })));
+    } catch (e) { console.warn("Watchlist data query failed:", e.message); }
   }
 
   // Send personalized digests
@@ -244,6 +258,34 @@ exports.handler = async (event) => {
         title: "New Analysis",
         html: rows + `<a href="${SITE_URL}/latest.html" style="font-size:13px;color:#457B9D;font-weight:600;text-decoration:none;display:inline-block;margin-top:8px;">View all analysis &rarr;</a>`,
       });
+    }
+
+    // Watchlist matches — check if any watched keywords appear in today's updates
+    const watchlist = (notifs.watchlist || []);
+    if (watchlist.length > 0 && allWatchlistUpdates.length > 0) {
+      const matches = [];
+      for (const item of allWatchlistUpdates) {
+        const nameLC = (item.name || "").toLowerCase();
+        for (const keyword of watchlist) {
+          if (nameLC.includes(keyword.toLowerCase())) {
+            matches.push({ keyword, ...item });
+            break; // one match per update is enough
+          }
+        }
+      }
+      if (matches.length > 0) {
+        const rows = matches.map((m) =>
+          `<div style="padding:8px 0;border-bottom:1px solid #D8E0E8;">
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#92710A;margin-bottom:2px;">Watching: ${esc(m.keyword)}</div>
+            <div style="font-size:14px;font-weight:600;color:#0A192F;">${esc(m.name)}</div>
+            <div style="font-size:12px;color:#5C6B7A;margin-top:2px;">${esc(m.detail)}</div>
+          </div>`
+        ).join("");
+        sections.unshift({
+          title: "Watchlist Alerts",
+          html: rows,
+        });
+      }
     }
 
     // Skip if no sections have content

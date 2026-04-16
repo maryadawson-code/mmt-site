@@ -330,6 +330,19 @@ Premium subscribers can toggle these in Settings (saved to `mmt_preferences.noti
 - **Protest Alerts** — from `ops_events` protest events, daily
 - **Small Business Awards** — from `opportunity_radar` awards, weekly (Mondays)
 - **New Analysis Published** — from `newsletters.json`, daily
+- **Watchlist** — follow specific contracts/vehicles by keyword (e.g., "T4NG2", "CCN Next Gen"). Matches against `contract_intel` + `opportunity_radar` updates daily. Watchlist alerts appear at top of digest email.
+
+### Federal Data API Integrations
+
+MarketPulse research pipeline enriched with direct API queries (run before Pass 1):
+- **USASpending.gov** — contract awards, spending by NAICS, agency totals (no auth)
+- **SAM.gov Opportunities** — active solicitations with NAICS/set-aside filters (API key: `SAM_GOV_API_KEY`)
+- **SAM.gov Entity Management** — vendor registration verification (API key)
+- **Federal Register** — proposed/final rules, notices (no auth)
+- **GAO Reports** — oversight findings (no auth)
+- **USASpending Agency Budgets** — total obligated/budget authority by agency (no auth)
+
+Data injected as "VERIFIED FEDERAL DATA" context block — higher authority than Perplexity web search results.
 
 ***
 

@@ -167,6 +167,17 @@
               </label>
             </div>
 
+            <!-- Watchlist: follow specific contracts/vehicles -->
+            <div style="padding:16px 0 12px;border-top:2px solid var(--mmt-border);margin-top:4px;">
+              <div style="font-size:14px;font-weight:700;margin-bottom:4px;">Watchlist</div>
+              <div style="font-size:12px;color:var(--mmt-text-secondary);margin-bottom:12px;">Follow specific contracts or vehicles. You will be notified when we detect updates (status changes, new task orders, recompete announcements, protest filings).</div>
+              <div id="watchlist-items" style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;"></div>
+              <div style="display:flex;gap:8px;">
+                <input type="text" id="watchlist-input" placeholder="e.g., T4NG2, CCN Next Gen, EHRM" style="flex:1;padding:8px 12px;border:1px solid var(--mmt-border);border-radius:6px;font-size:13px;font-family:inherit;">
+                <button onclick="addWatchlistItem()" style="padding:8px 16px;background:var(--mmt-teal);color:#fff;border:none;border-radius:6px;font-weight:600;font-size:12px;cursor:pointer;white-space:nowrap;">+ Add</button>
+              </div>
+            </div>
+
             <div style="margin-top:16px;display:flex;align-items:center;gap:12px;">
               <button id="notif-save-btn" onclick="saveNotifications()" style="padding:10px 20px;background:var(--mmt-navy);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;">Save preferences</button>
               <span id="notif-status" style="font-size:13px;color:#16A34A;font-weight:600;display:none;">Saved</span>
@@ -212,6 +223,43 @@
       solFreq.style.display = solCheck.checked ? 'block' : 'none';
     });
 
+    // --- Watchlist ---
+    var _watchlist = [];
+
+    function renderWatchlist() {
+      var container = document.getElementById('watchlist-items');
+      if (!container) return;
+      if (_watchlist.length === 0) {
+        container.innerHTML = '<div style="font-size:13px;color:var(--mmt-text-secondary);font-style:italic;">No items on your watchlist yet.</div>';
+        return;
+      }
+      container.innerHTML = _watchlist.map(function(item, idx) {
+        return '<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:var(--mmt-soft,#F3F4F6);border-radius:6px;">' +
+          '<span style="font-size:13px;font-weight:600;color:var(--mmt-navy);">' + item + '</span>' +
+          '<button onclick="removeWatchlistItem(' + idx + ')" style="background:none;border:none;color:var(--mmt-text-secondary);cursor:pointer;font-size:16px;padding:0 4px;" title="Remove">&times;</button>' +
+          '</div>';
+      }).join('');
+    }
+
+    function addWatchlistItem() {
+      var input = document.getElementById('watchlist-input');
+      var val = (input.value || '').trim();
+      if (!val) return;
+      if (_watchlist.indexOf(val) >= 0) { input.value = ''; return; } // no dupes
+      _watchlist.push(val);
+      input.value = '';
+      renderWatchlist();
+    }
+
+    function removeWatchlistItem(idx) {
+      _watchlist.splice(idx, 1);
+      renderWatchlist();
+    }
+
+    // Enter key adds item
+    var wlInput = document.getElementById('watchlist-input');
+    if (wlInput) wlInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); addWatchlistItem(); } });
+
     function loadNotifications() {
       if (!email) { document.getElementById('notif-loading').textContent = 'Sign in to manage notifications.'; return; }
       fetch('/.netlify/functions/member-preferences?email=' + encodeURIComponent(email))
@@ -226,6 +274,9 @@
           document.getElementById('notif-protests').checked = !!n.protests;
           document.getElementById('notif-sb-awards').checked = !!n.sb_awards;
           document.getElementById('notif-articles').checked = !!n.new_articles;
+          // Load watchlist
+          _watchlist = (n.watchlist || []).slice();
+          renderWatchlist();
           document.getElementById('notif-loading').style.display = 'none';
           document.getElementById('notif-form').style.display = 'block';
         })
@@ -245,7 +296,8 @@
         contract_intel: document.getElementById('notif-contracts').checked,
         protests: document.getElementById('notif-protests').checked,
         sb_awards: document.getElementById('notif-sb-awards').checked,
-        new_articles: document.getElementById('notif-articles').checked
+        new_articles: document.getElementById('notif-articles').checked,
+        watchlist: _watchlist.slice()
       };
       fetch('/.netlify/functions/member-preferences', {
         method: 'POST',
