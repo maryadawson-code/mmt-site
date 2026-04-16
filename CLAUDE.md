@@ -113,7 +113,7 @@ Before publishing any copy, ask: "Would Mary actually say this out loud to someo
 
 ---
 
-## 🔒 Paywall Architecture (as of 2026-04-13)
+## 🔒 Paywall Architecture (as of 2026-04-16)
 
 ### Tier System
 - **Free**: Newsletter, podcast, article previews (2 paragraphs for <90 day articles), 50 glossary terms, contract/newswire headlines
@@ -127,8 +127,11 @@ Premium field values are NOT in the HTML source. They are base64-encoded in data
 - `data-premium-text` — Newswire descriptions
 - `data-agency-intel` — Agency profile deep data (budget, programs, vehicles, signals, offices)
 - `data-full-note` — Glossary contractor notes (8-word teaser in HTML, full text in base64)
+- `data-access="premium"` — IDIQ Tracker full vehicle data (5 entries with ceilings, awardees, NAICS, burn rates, MMT Intel)
+- `data-early-access="true"` — Articles < 48 hours old fully gated for free users; premium users see immediately
 - `contract-detail.js` — Current Intelligence section gated via `mmtIsPremium()` check
 - `contract-tracker.js` — Opportunity Radar + SB Vehicle Scanner gated via `isPremiumUser()` check
+- `ask-mmt-submit.js` — Server-side premium verification + 2/month quota via ops_events
 
 ### CSS-First Enforcement
 `tokens.css` contains: `[data-access="premium"] { display: none !important; }`
@@ -141,15 +144,24 @@ Auth checked via: cookies → localStorage (`mmt_premium`) → tier cache.
 Nav state toggled by `applyNavPremiumState()` on DOMContentLoaded.
 
 ### Key Files
-- `js/mmt-paywall.js` — auth detection, paywall visibility, premium data decoders
+- `js/mmt-paywall.js` — auth detection, paywall visibility, premium data decoders, 48-hour early access gate
 - `js/contract-detail.js` — Current Intelligence auth gate
 - `js/contract-tracker.js` — Opportunity Radar + Vehicle Scanner auth gate
 - `js/support-widget.js` — floating AI support chat widget (injected on all pages via siteScriptTag)
 - `netlify/functions/support-agent.js` — AI support agent (Claude Haiku, knowledge base, auto-escalation to support@ via Resend)
 - `netlify/functions/founding-count.js` — Stripe API query for remaining Founding Member spots
+- `netlify/functions/premium-brief-send.js` — Friday Brief email to premium subscribers (Fri 6 AM ET)
+- `netlify/functions/monthly-brief-send.js` — Monthly Brief email to premium subscribers (1st of month 6 AM ET)
+- `netlify/functions/premium-digest-send.js` — Personalized notification digest (daily 6:30 AM ET)
+- `netlify/functions/ask-mmt-submit.js` — Ask MMT question submission + quota enforcement
+- `netlify/functions/member-preferences.js` — GET/POST subscriber preferences (agencies, notifications)
+- `netlify/functions/lib/premium-brief-templates.js` — Email templates for briefs + CSS variable inlining
+- `netlify/functions/generate-tactical-brief-background.js` — MarketPulse 7-pass pipeline (Perplexity sonar-pro + Claude)
+- `netlify/functions/marketpulse-gateway.js` — MarketPulse request gateway (free/paid routing)
 - `styles/tokens.css` — CSS-first hide rules, button contrast, page shell classes
 - `integrity-audit.js` — 40-route live audit with 9 paywall enforcement checks
 - `scripts/validate-dist.js` — 272-page local validation
+- `scripts/retry-marketpulse-order.js` — Local retry runner for failed MarketPulse orders (Perplexity)
 
 ### Specs
 - `PAYWALL_SPEC.md` — complete free vs paid definition, content gating architecture
@@ -187,7 +199,7 @@ Before declaring work complete, verify:
 
 ---
 
-## Status (as of 2026-04-13)
+## Status (as of 2026-04-16)
 All systems operational.
 - **272 pages** pass `validate-dist.js` (all sweeps)
 - **40 routes** pass `integrity-audit.js` (IntegrityPulse) with fortress=SUCCESS
@@ -196,17 +208,26 @@ All systems operational.
 - **Premium data protected**: vendor/value/NAICS/descriptions encoded as base64 in HTML attributes, decoded by JS only after auth check
 - **Contract detail pages** (`/contracts/[slug]/`) gated: metadata placeholders + Current Intelligence gated via `contract-detail.js` auth check
 - **Opportunity Radar + SB Vehicle Scanner** gated in `contract-tracker.js` via `mmtIsPremium()` check
+- **IDIQ Tracker** gated via `data-access="premium"` with 5 vehicle entries (T4NG2, ITES-3H, CIO-SP4, EHR II, Alliant 3). Free users see sample + gate CTA; premium users see full data.
 - **Newswire descriptions**, **agency profile deep data**, **glossary contractor notes** all base64-encoded
 - **Subscribe path complete**: ★ Premium in header + footer band + homepage pricing CTAs + gate cards → /pricing with Stripe Payment Links
 - **Premium pages built**: Dashboard, Friday Brief, Monthly Brief, Pursuit Calendar, Ask MMT, Settings/Preferences, 6 Agency Profiles, IDIQ Tracker
-- **Dashboard sidebar on ALL premium subpages**: build.js `injectDashShell()` wraps briefings, monthly-briefs, calendar, ask-mmt, settings, and brief detail pages in the same dash-shell grid as the dashboard. Sidebar nav persists across all premium pages with correct active states.
-- **Friday Brief auto-generation**: `generateBriefArchiveHtml()` and `generateBriefLatestHtml()` in build.js auto-discover briefs from `premium/briefs/*.html`. Drop a new HTML file and it appears in the archive.
+- **Dashboard sidebar on ALL premium subpages**: build.js `injectDashShell()` wraps briefings, monthly-briefs, calendar, ask-mmt, settings, and brief detail pages. All 6 hardcoded sidebars include IDIQ Tracker link.
+- **Friday Brief auto-generation**: `generateBriefArchiveHtml()` and `generateBriefLatestHtml()` in build.js auto-discover briefs from `premium/briefs/*.html`. Archive links point to actual brief files (not a shared Capture Intelligence page).
+- **Friday Brief email automation**: `premium-brief-send.js` scheduled Friday 6 AM ET. Fetches latest brief HTML from live site, extracts gated content, sends to all active premium subscribers via Resend. Duplicate prevention via ops_ledger.
+- **Monthly Brief email automation**: `monthly-brief-send.js` scheduled 1st of month 6 AM ET. Same architecture. First content issue: May 2026.
+- **48-hour early access**: Articles published within 2 days are fully gated for free users with dedicated "Premium members are reading this now" gate card. `data-early-access` attribute on article template, handled by `mmt-paywall.js`.
+- **Ask MMT backend**: `ask-mmt-submit.js` endpoint. Server-side premium verification, 2 questions/month quota enforced via ops_events count, question stored in Supabase, Mary notified via email, subscriber gets confirmation email with remaining count.
+- **Notification preferences**: Premium Settings page has Email Notifications section with 5 toggleable types (New Solicitations, Contract Intel Updates, Protest Alerts, Small Business Awards, New Analysis). Saved to `mmt_preferences.notifications` JSONB via `member-preferences.js`.
+- **Personalized digest**: `premium-digest-send.js` scheduled daily 6:30 AM ET. Reads subscriber preferences, queries matching Supabase data (opportunity_radar, contract_intel, ops_events, newsletters.json), assembles personalized email per subscriber. Skips subscribers with no new content.
+- **MarketPulse research pipeline**: Switched from Anthropic web_search (unreliable 502s) to Perplexity sonar-pro. Research passes complete in ~30s total. Synthesis/validation still uses Claude. Env var: `PERPLEXITY_API_KEY`.
+- **MarketPulse pipeline hardening**: Removed phantom `company_name` column, added 13-min deadline watchdog, Pass 0 disambiguation on Haiku, AbortController timeouts (60s analysis / 180s research).
 - **Founding Member counter**: `founding-count.js` queries Stripe API for active subscriptions, falls back to `FOUNDING_SPOTS_REMAINING` env var.
 - **Support ecosystem**: AI-powered support agent (`support-agent.js`) + floating chat widget (`support-widget.js`). Claude Haiku answers questions from platform knowledge base. Low-confidence answers auto-escalate to support@missionmeetstech.com via Resend email.
 - **Auto-intelligence scripts**: normalize.js (100 articles), extract-signals.js (144 signals), match-signals.js (80 matches)
 - **Design token system**: `styles/tokens.css` injected on all pages via build pipeline
 - **Page shell classes**: page-editorial, page-product, page-reference, page-trust, page-utility applied to all templates
-- **Web search tool**: upgraded to `web_search_20260209` with `name: "web_search"` across all 6 Netlify functions
+- **Brand compliance**: All email templates use canonical colors (#0A192F navy, #457B9D teal, #FFFFFF white). Banned dark-mode colors (#0a0e17, #00e5fa) purged from 7 subscriber-facing Netlify functions + report HTML renderer.
 - Zero dark mode regressions
 - Zero frontmatter leaks
 - Zero "Twice-twice-weekly" strings
@@ -285,3 +306,24 @@ second, costing two extra deploy cycles.
 `netlify env:list` (table format) wraps long lines and can hide variables in pagination.
 Always use `netlify env:list --plain` and grep for the specific key when verifying env state.
 Almost wasted a setup cycle telling the user to add a key that was already there.
+
+### Anthropic web_search is unreliable from serverless (2026-04-15)
+Claude Sonnet + `web_search_20260209` tool returns intermittent 502 Bad Gateway
+and `fetch failed` errors from both Netlify functions AND local Node.js. Simple
+Claude API calls (no web_search) work fine. The web_search tool with Sonnet is
+unreliable for production pipelines that must complete within a timeout.
+
+**Fix:** Switched MarketPulse research passes to Perplexity sonar-pro. Research
+passes now complete in ~30s (vs 10+ min or timeout). Env var: `PERPLEXITY_API_KEY`.
+Perplexity credits are prepaid — check balance at perplexity.ai/settings/api.
+
+### mp_users column is full_name, not name (2026-04-15)
+The `mp_users` Supabase table uses `full_name` (not `name`). Querying
+`.select("email, name")` returns a 42703 column-not-found error.
+Always check actual column names before writing subscriber queries.
+
+### Supabase marketpulse_orders has no company_name column (2026-04-15)
+The `marketpulse_orders` table has `company` but NOT `company_name`.
+Including `company_name` in an insert silently fails the entire row insert
+with "Could not find column in schema cache." The function continues but
+with `_orderId = null`, breaking report URL generation and state tracking.

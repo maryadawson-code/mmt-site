@@ -296,16 +296,16 @@ Every feature promised on the pricing page, with its current delivery status.
 | 1 | Monthly Capture Intelligence sheets | Gated (base64) | -- | Build-time from JSON | `capture-intelligence.json` |
 | 2 | Action windows + confidence labels | In capture sheet | -- | Build-time | Confidence field on each signal |
 | 3 | Capture Corner on every article | Gated (build.js) | -- | Auto (frontmatter) | `capture_corner[]` in article data |
-| 4 | 48-hour early access to all analysis | -- | -- | Not implemented | Needs `premium_available_at` field |
+| 4 | 48-hour early access to all analysis | **Implemented** | -- | Auto (build + paywall) | `data-early-access` attr, `mmt-paywall.js` gate |
 | 5 | Deep-dive solicitation analysis | Gated (category) | -- | Build-time | `category: solicitation` articles |
 | 6 | Premium Dashboard | Auth-gated | -- | Auto | `premium/dashboard.html` |
 | 7 | Weekly Friday Brief | Auth-gated | **Automated** | `premium-brief-send.js` | Cron: Fri 6 AM ET |
 | 8 | Monthly PDF Intelligence Brief | Auth-gated | **Automated** | `monthly-brief-send.js` | Cron: 1st of month 6 AM ET |
 | 9 | Pursuit Calendar | Auth-gated | -- | Manual curation | `premium/calendar.html` |
-| 10 | Ask MMT — 2 questions/month | Form page | -- | Manual answers | Needs backend handler |
+| 10 | Ask MMT — 2 questions/month | **Backend live** | Confirmation email | `ask-mmt-submit.js` | Server-side quota, Mary notified |
 | 11 | Agency Intelligence Profiles (6) | Auth-gated (base64) | -- | Build-time from JSON | `agencies.json` |
 | 12 | Full Contract Tracker | Gated (base64) | -- | Auto | `contract-tracker.js` auth gate |
-| 13 | Full IDIQ Tracker | Gated (`data-access`) | -- | Auto | `idiq-tracker.html` paywall |
+| 13 | Full IDIQ Tracker | Gated (`data-access`) | -- | Auto | 5 vehicles with full data |
 | 14 | Full Glossary (200+ terms) | Gated (base64) | -- | Auto | 50 free, rest premium |
 | 15 | Newswire context notes | Gated (base64) | -- | Auto | Headlines free, notes gated |
 | 16 | Opportunity Radar + Vehicle Scanner | Auth-gated | -- | Auto (4hr cron) | `opportunity-radar.js` |
@@ -318,8 +318,18 @@ Every feature promised on the pricing page, with its current delivery status.
 |----------|----------|-----------|---------|
 | `premium-brief-send.js` | `0 11 * * 5` (Fri 6am ET) | Active premium subscribers | Friday Brief HTML |
 | `monthly-brief-send.js` | `0 11 1 * *` (1st 6am ET) | Active premium subscribers | Monthly Intelligence Brief |
+| `premium-digest-send.js` | `30 11 * * *` (daily 6:30am ET) | Subscribers with opted-in preferences | Personalized digest (solicitations, contract intel, protests, SB awards, articles) |
 | `newsletter-send.js` | `30 23 * * 2,5` (Tue/Fri) | All Buttondown subscribers | Article digest |
 | `weekly-report.js` | `0 14 * * 1` (Mon 9am ET) | mary@ (admin) | ProposalPulse usage |
+
+### Notification Preferences
+
+Premium subscribers can toggle these in Settings (saved to `mmt_preferences.notifications` JSONB):
+- **New Solicitations** — from `opportunity_radar`, daily or weekly digest
+- **Contract Intel Updates** — from `contract_intel`, daily
+- **Protest Alerts** — from `ops_events` protest events, daily
+- **Small Business Awards** — from `opportunity_radar` awards, weekly (Mondays)
+- **New Analysis Published** — from `newsletters.json`, daily
 
 ***
 
