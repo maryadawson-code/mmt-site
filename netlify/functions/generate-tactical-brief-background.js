@@ -40,6 +40,7 @@ const { logOpsEvent } = require("./lib/ops-ledger");
 const { trackQuality } = require("./lib/quality-tracker");
 const { getFlag } = require("./lib/feature-flags");
 const { trackAnthropic } = require("./lib/cost-tracker");
+const { enrichWithFederalData, formatFederalDataContext } = require("./lib/federal-data-apis");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
@@ -982,6 +983,27 @@ exports.handler = async (event) => {
     }
     if (currentEventsCheck.socioFilters) {
       disambiguation._socioFilters = currentEventsCheck.socioFilters;
+    }
+
+    // Pre-pass: Federal data API enrichment (USASpending, SAM.gov, Federal Register)
+    let federalDataContext = "";
+    try {
+      const entityName = disambiguation.selected_entity?.name || topic;
+      const entityAcronym = disambiguation.selected_entity?.acronym || "";
+      const naicsFocus = (classification && classification.scope && classification.scope.naics_focus) || [];
+      const apiStart = Date.now();
+      const federalData = await enrichWithFederalData({
+        topic: entityName,
+        agency: entityAcronym || undefined,
+        naics: naicsFocus.length > 0 ? naicsFocus : undefined,
+      });
+      federalDataContext = formatFederalDataContext(federalData);
+      passTimings["Pre-pass — Federal API enrichment"] = Math.round((Date.now() - apiStart) / 1000);
+      if (federalDataContext) {
+        primedContext = (primedContext || "") + federalDataContext;
+      }
+    } catch (apiErr) {
+      console.warn("Federal API enrichment failed (non-blocking):", apiErr.message);
     }
 
     // Pass 1: Landscape scan with query expansion (CHANGES 2, 5)
