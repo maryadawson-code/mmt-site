@@ -327,19 +327,34 @@ RULES:
 
     `Research topic: ${topic}
 
-Using the entity context above, conduct a STRATEGIC landscape scan. For each area, go beyond cataloging facts — explain what the data MEANS for someone trying to compete in this market:
+Using the entity context above, conduct a STRATEGIC landscape scan. Go deep. This is a premium product — the customer is paying $35-50 for analyst-quality research, not a web search summary.
 
-1. MARKET STRUCTURE — What is the shape of this market? Is it growing, stable, or contracting? What's driving demand? How is spending trending YoY? What's the approximate total addressable market (TAM)? Search for budget justification documents, USASpending obligated amounts, and appropriations data.
+1. MARKET STRUCTURE AND SIZE — Search for the ACTUAL spending data:
+   - Search "USASpending.gov [agency] telehealth" or "[agency] [topic] obligations" for real award data
+   - Search the agency's Congressional Budget Justification PDF for line-item allocations
+   - Calculate TAM from actual obligations, not estimates. Show the math.
+   - What is the YoY trend? Use at least 2 fiscal years of data for comparison.
 
-2. DEMAND DRIVERS — What policy, regulatory, or mission changes are creating new requirements? What executive orders, mandates, or legislation are shaping procurement? What technology shifts (AI, cloud, interoperability) are changing what agencies buy?
+2. DEMAND DRIVERS — What SPECIFIC policy, regulatory, or mission changes are creating requirements?
+   - Search for recent executive orders, proposed rules in the Federal Register, and legislation
+   - Search for agency strategic plans and IT modernization roadmaps
+   - What technology mandates (interoperability, AI, cloud) are changing procurement patterns?
 
-3. PROCUREMENT LANDSCAPE — What active contracts, solicitations, and upcoming recompetes exist? Search SAM.gov and USASpending with multiple query variants. For each, note contract number, value, vehicle, set-aside, and timeline.
+3. PROCUREMENT LANDSCAPE — Search HARD for contract data:
+   - Search "SAM.gov [agency] [topic]" for active solicitations and recent awards
+   - Search "USASpending.gov awards [agency] [NAICS code]" for obligated amounts
+   - Search "[agency] [topic] contract award" in trade press for recent awards with contract numbers
+   - For each contract found: get the contract NUMBER, not just the name. Search specifically for the PIID/contract identifier.
+   - Search GovTribe, Bloomberg Government, or GovWin for contract details
 
-4. BUDGET CONTEXT — What do Congressional Budget Justification docs say about funding? Is this area getting more or less money? Are there continuing resolution impacts?
+4. BUDGET CONTEXT — Get the NUMBERS from source documents:
+   - Search for the agency's FY2027 Budget in Brief or Budget Justification PDF
+   - Find the specific line items, not just totals
+   - Compare to FY2026 enacted and FY2025 actual where available
 
-5. REGULATORY AND OVERSIGHT — What GAO/IG reports or congressional testimony affect this space? Any protests, corrective actions, or policy shifts?
+5. REGULATORY AND OVERSIGHT — Search for recent GAO/IG reports and congressional testimony
 
-For each finding: specific source URL, confidence level (HIGH only if .gov + verifiable).`,
+For each finding: specific source URL, confidence level (HIGH only if .gov + verifiable). CITE DOLLAR FIGURES WITH THEIR SOURCE IN THE SAME SENTENCE so the sanitizer doesn't flag them.`,
     8000
   );
 
@@ -402,24 +417,27 @@ CRITICAL RULES:
 Landscape scan findings:
 ${landscapeContent}
 
-Using the landscape data above, produce a STRATEGIC competitive analysis:
+Using the landscape data AND fresh searches, produce a STRATEGIC competitive analysis. DIG DEEPER than the landscape scan — search for data it missed.
 
-1. COMPETITIVE POSITIONING — Who holds this market today? Map the competitive structure:
-   - Verified incumbents with contract numbers, values, and vehicles
-   - Market concentration (top 3 vendors' share of total dollars)
-   - Market tier assessment (large prime vs mid-tier vs small business)
-   - SB set-aside share and trend direction (growing or shrinking)
+1. COMPETITIVE POSITIONING — Search specifically for contract award data:
+   - Search "USASpending.gov [vendor name] [agency]" for each vendor mentioned in the landscape scan
+   - Search "[vendor name] [agency] contract award" to find PIID/contract identifiers
+   - Search "GovTribe [contract name]" or "Bloomberg Government [contract name]" for contract details
+   - For EVERY vendor you list, include the contract number (PIID) or explicitly state "contract number not found in [sources searched]"
+   - Market concentration: top 3 vendors' share of total dollars (calculate from USASpending if possible)
+   - Market tier: large prime vs mid-tier vs small business dominated
+   - SB set-aside share and trend (use FPDS/SAM small business goal data)
 
-2. COMPETITIVE DYNAMICS — Go beyond listing companies. Answer:
-   - Which vendors are gaining vs losing ground? Evidence?
-   - What teaming/JV/mentor-protege arrangements exist?
-   - What are the WIN THEMES — what capabilities do buyers select for?
-   - What are the BARRIERS TO ENTRY — clearances, certifications, past performance, FedRAMP?
+2. COMPETITIVE DYNAMICS — Go beyond listing companies:
+   - Which vendors are gaining vs losing ground? Search for recent award announcements.
+   - What teaming/JV arrangements exist? Search "[vendor] joint venture [agency]"
+   - What WIN THEMES do buyers select for? Search recent RFP evaluation criteria.
+   - What BARRIERS TO ENTRY exist? Specific certifications, clearances, past performance requirements.
 
-3. ADDRESSABLE MARKET — Estimate the total addressable market (TAM):
-   - Sum of active + upcoming contract ceilings in this space
-   - Serviceable addressable market (SAM) — what portion is realistic for a new entrant?
-   - Growth trajectory — is this market expanding or contracting?
+3. ADDRESSABLE MARKET — Calculate TAM from data, don't estimate:
+   - Sum active contract ceilings from USASpending/SAM
+   - Serviceable addressable market (SAM) for a new entrant
+   - Growth trajectory from multi-year obligation data
 
 4. RISK FACTORS — Specific, evidence-based risks:
    - Budget/CR risk, DOGE/administration impacts
@@ -586,6 +604,8 @@ The 5-7 events that will reshape this market in the next year:
 
 RULES:
 - Every claim must have a source. .gov preferred.
+- CRITICAL FORMATTING: Every dollar figure MUST have its source citation IN THE SAME SENTENCE. Write "$123.4B (per VA FY2027 Budget in Brief)" not "$123.4B" followed by a citation somewhere else. This prevents automated quality flags.
+- Use inline parenthetical sources: "(per USASpending.gov)", "(per VA Budget Justification FY2027)", "(per SAM.gov award notice)".
 - NO YouTube. NO generic blogs as primary data.
 - NO basic program descriptions the reader already knows.
 - NO empty sections. Merge or explain what to monitor.

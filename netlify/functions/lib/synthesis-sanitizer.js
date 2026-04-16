@@ -34,11 +34,14 @@ function sanitizeSynthesis(text, citations) {
     const context = originalText.substring(Math.max(0, prevLineStart), Math.min(originalText.length, nextLineEnd >= 0 ? nextLineEnd : originalText.length));
 
     const hasSource = citationPatterns.some((p) => context.includes(p)) ||
-      /per\s|source:|according to|from\s|via\s|\(.*\.gov\)|sam\.gov|usaspending|fpds|govspend|govwin|govtribe/i.test(context);
+      /per\s|source:|according to|from\s|via\s|\(.*\.gov\)|sam\.gov|usaspending|fpds|govspend|govwin|govtribe/i.test(context) ||
+      /\[\d+\]/.test(context); // Bracket citations from Perplexity (e.g., [1], [3][7])
     if (hasSource) return match;
     // Don't flag if it's inside a pipeline entry (those have Source: fields)
     const nearbyLines = originalText.substring(Math.max(0, offset - 300), Math.min(originalText.length, offset + 300));
     if (/CONTRACT\/OPPORTUNITY:/i.test(nearbyLines) && /Source:\s*https?:\/\//i.test(nearbyLines)) return match;
+    // Don't flag if nearby text has bracket citations
+    if (/\[\d+\]/.test(nearbyLines)) return match;
     flagCount++;
     return `${match} [source needed]`;
   });
@@ -73,7 +76,8 @@ function sanitizeSynthesis(text, citations) {
     if (result.substring(offset + match.length, offset + match.length + 20).includes("[source needed]")) return match;
     const context = result.substring(Math.max(0, offset - 200), offset + match.length + 200);
     const hasSource = /per\s|source:|according to|calculated|based on|from\s|scorecard|goal|target|FAR\s|threshold/i.test(context) ||
-      citationPatterns.some((p) => context.includes(p));
+      citationPatterns.some((p) => context.includes(p)) ||
+      /\[\d+\]/.test(context); // Bracket citations from Perplexity
     // Don't flag common contextual percentages
     if (/\b(5%|4\.7%|30%|60%)\b/.test(match) && /sdvosb|goal|target|gate|threshold/i.test(context)) return match;
     if (hasSource) return match;
