@@ -194,6 +194,26 @@ function calculatePwin(scorecard, opts) {
   const low = Math.max(5, pwin - confidenceBand);
   const high = Math.min(85, pwin + confidenceBand);
 
+  // Go/No-Bid recommendation
+  let recommendation, recommendationRationale;
+  if (killConditions.length > 0) {
+    recommendation = "CONSIDER_NO_BID";
+    recommendationRationale = `Kill conditions detected: ${killConditions.join("; ")}. This proposal has fundamental issues that cannot be resolved with prose improvements alone.`;
+  } else if (pwin >= 65) {
+    recommendation = "SUBMIT_AS_IS";
+    recommendationRationale = `pWin ${low}-${high}% with no kill conditions. Proposal strengths are competitive. Focus remaining time on polish and discriminator amplification.`;
+  } else if (pwin >= 40) {
+    recommendation = "SUBMIT_WITH_REVISIONS";
+    const weakFactors = factorTable.filter((f) => !f.excluded && f.raw_score < 50).map((f) => f.factor);
+    recommendationRationale = `pWin ${low}-${high}% — competitive but with addressable weaknesses${weakFactors.length > 0 ? ` in ${weakFactors.join(", ")}` : ""}. Targeted revisions to these areas could move pWin into the 60-70% range.`;
+  } else if (pwin >= 20) {
+    recommendation = "MAJOR_REWRITE";
+    recommendationRationale = `pWin ${low}-${high}% — structural weaknesses across multiple evaluation factors. This proposal needs significant rework, not just editing. Consider whether the deadline allows enough time for a quality rewrite.`;
+  } else {
+    recommendation = "CONSIDER_NO_BID";
+    recommendationRationale = `pWin below 20%. The gap between this proposal's current state and a competitive submission is too large for editing to close. Evaluate whether this opportunity is worth the capture investment.`;
+  }
+
   return {
     pwin,
     pwin_range: `${low}-${high}%`,
@@ -202,6 +222,8 @@ function calculatePwin(scorecard, opts) {
     factor_table: factorTable,
     penalties,
     kill_conditions: killConditions,
+    recommendation,
+    recommendation_rationale: recommendationRationale,
     // Backward-compatible pWin_factors array
     pWin_factors: factorTable.map((f) => ({
       factor: `${f.factor} (${f.excluded ? "excluded" : f.normalized_weight})`,
@@ -209,7 +231,7 @@ function calculatePwin(scorecard, opts) {
       note: f.excluded ? "No data in document" : "",
     })),
     pwin_estimate: `${low}-${high}%`,
-    pwin_justification: `Weighted model (${excludedFactors.length > 0 ? `${excludedFactors.length} factor${excludedFactors.length > 1 ? "s" : ""} excluded — weights redistributed` : "all 6 factors scored"}): ${factorTable.filter((f) => !f.excluded).map((f) => `${f.factor} ${f.adjusted_score}`).join(", ")}. ${penalties.length > 0 ? `Penalties: ${penalties.map((p) => p.description).join("; ")}.` : "No interdependency penalties."}${killConditions.length > 0 ? ` Kill conditions: ${killConditions.join("; ")}` : ""} Confidence: ${low}-${high}% (±${confidenceBand}%).`,
+    pwin_justification: `Weighted model (${excludedFactors.length > 0 ? `${excludedFactors.length} factor${excludedFactors.length > 1 ? "s" : ""} excluded — weights redistributed` : "all 6 factors scored"}): ${factorTable.filter((f) => !f.excluded).map((f) => `${f.factor} ${f.adjusted_score}`).join(", ")}. ${penalties.length > 0 ? `Penalties: ${penalties.map((p) => p.description).join("; ")}.` : "No interdependency penalties."}${killConditions.length > 0 ? ` Kill conditions: ${killConditions.join("; ")}` : ""} Recommendation: ${recommendation}. Confidence: ${low}-${high}% (±${confidenceBand}%).`,
   };
 }
 

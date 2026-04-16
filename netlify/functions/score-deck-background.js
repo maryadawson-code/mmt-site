@@ -230,6 +230,32 @@ Even without knowing the specific competitive field, evaluate:
 Include a competitive_positioning field in the scorecard:
 { "differentiation": "strong|moderate|weak|absent", "reasoning": "...specific observation..." }
 
+DISCRIMINATOR ASSESSMENT (MANDATORY):
+After scoring all criteria, identify the proposal's discriminators — the specific strengths that would make an SSEB member write "significant strength" in their consensus notes:
+Include a discriminator_assessment field:
+{
+  "discriminators": ["list of 2-3 specific, provable differentiators found — or empty array if none"],
+  "discriminator_quality": "strong|moderate|weak|absent",
+  "win_themes": ["list of consistent themes threading through multiple sections — or empty array if absent"],
+  "win_theme_coherence": "strong|partial|absent",
+  "evaluator_takeaway": "One sentence: what would the SSEB chair remember about this proposal?",
+  "sseb_prediction": "For each scored criterion, what SSEB consensus rating would this likely receive? Use: significant_strength, strength, acceptable, weakness, significant_weakness, deficiency"
+}
+
+GO/NO-BID RECOMMENDATION:
+Based on the overall assessment, provide a strategic recommendation:
+Include a bid_recommendation field:
+{
+  "recommendation": "SUBMIT_AS_IS|SUBMIT_WITH_REVISIONS|MAJOR_REWRITE|CONSIDER_NO_BID",
+  "rationale": "2-3 sentences explaining why — reference specific scorecard findings",
+  "critical_revisions": ["if SUBMIT_WITH_REVISIONS or MAJOR_REWRITE, list the specific changes required"]
+}
+Rules:
+- SUBMIT_AS_IS: pWin factors average >70, no kill conditions, discriminators present
+- SUBMIT_WITH_REVISIONS: pWin factors average 45-70, specific fixable weaknesses
+- MAJOR_REWRITE: pWin factors average 25-45, structural issues (missing sections, no past performance)
+- CONSIDER_NO_BID: pWin factors average <25, or kill conditions present, or fundamental misfit with requirements
+
 ${sowText ? `SECTION L/M COMPLIANCE MAPPING (MANDATORY when SOW/PWS is provided):
 Extract EVERY requirement from Section L (Instructions to Offerors) and Section M (Evaluation Criteria) in the SOW/PWS.
 For each requirement, search the proposal document for where it is addressed.
