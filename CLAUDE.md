@@ -232,6 +232,7 @@ All systems operational.
 - Zero dark mode regressions
 - Zero frontmatter leaks
 - Zero "Twice-twice-weekly" strings
+- **ProposalPulse Shipley/Lohfeld-level quality**: All 6 document type prompts rewritten with evaluator personas (SSEB member, SSA, PM, DCAA auditor). Every criterion includes "EVALUATOR TEST" explaining what real evaluators look for. Discriminator Assessment identifies 2-3 differentiators + win theme coherence. SSEB prediction maps each criterion to consensus rating. Go/No-Bid recommendation (SUBMIT_AS_IS / SUBMIT_WITH_REVISIONS / MAJOR_REWRITE / CONSIDER_NO_BID) from pWin calculator. Gold Team Review uses Shipley capture strategist persona with win theme injection and competitive repositioning.
 - ProposalPulse rubric uses federal evaluator language (Vehicle & Acquisition Fit, Cost/Price Credibility, Funding Ask & Scope)
 
 ## Agent Hardening Contracts (S3-03)
