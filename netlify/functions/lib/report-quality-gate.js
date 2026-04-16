@@ -390,9 +390,9 @@ function scoreReport(synthesis, citations, classification) {
   const chars = text.length;
   const estPages = Math.round(chars / 3000); // ~3000 chars per PDF page
   let pageScore;
-  if (estPages >= 4 && estPages <= 8) {
+  if (estPages >= 6 && estPages <= 14) {
     pageScore = 100;
-  } else if (estPages >= 3 && estPages <= 10) {
+  } else if (estPages >= 4 && estPages <= 16) {
     pageScore = 70;
   } else if (estPages >= 2) {
     pageScore = 40;

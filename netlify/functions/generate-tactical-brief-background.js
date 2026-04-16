@@ -340,7 +340,7 @@ Using the entity context above, conduct a STRATEGIC landscape scan. For each are
 5. REGULATORY AND OVERSIGHT — What GAO/IG reports or congressional testimony affect this space? Any protests, corrective actions, or policy shifts?
 
 For each finding: specific source URL, confidence level (HIGH only if .gov + verifiable).`,
-    5000
+    8000
   );
 
   return result;
@@ -434,7 +434,7 @@ Using the landscape data above, produce a STRATEGIC competitive analysis:
    - Budget milestones (FYDP, appropriations markups)
 
 Cross-reference all landscape findings. Flag anything that cannot be confirmed.`,
-    5000
+    8000
   );
 
   return result;
@@ -590,7 +590,7 @@ RULES:
 - NO basic program descriptions the reader already knows.
 - NO empty sections. Merge or explain what to monitor.
 - Data density: every paragraph must have a specific fact.
-- Maximum 6 pages (~18,000 chars). Cut generic context, not pipeline data or strategic analysis.
+- Target 8-12 pages (~24,000-36,000 chars). This is a premium product — depth matters. Cut generic context and program descriptions the reader already knows, but preserve ALL pipeline data, competitive analysis, and strategic insights. An analyst-quality 10-page report is worth more than a thin 4-page summary.
 - Current-events overrides: VetCert ~12 days; SEWP VI not yet awarded; FPDS migrated to SAM.gov Feb 2026.${contextBlock}`,
 
     `Topic: ${topic}
@@ -611,7 +611,7 @@ Lead with the STRATEGIC THESIS — the single most important insight. Then build
 5. What should I do next? (specific actions tied to specific opportunities)
 
 Apply confidence scoring strictly. No HIGH on null results. Every dollar needs a source. Every vendor needs a contract number.`,
-    8000
+    16000
   );
 
   return result;
