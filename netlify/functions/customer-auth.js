@@ -142,13 +142,13 @@ exports.handler = async (event) => {
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;padding:40px 20px;">
 <tr><td align="center">
 <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;">
-  <tr><td style="background:#0a0e17;padding:24px 32px;">
-    <span style="color:#00e5fa;font-size:18px;font-weight:700;">Mission Meets Tech</span>
+  <tr><td style="background:#0A192F;padding:24px 32px;">
+    <span style="color:#FFFFFF;font-size:18px;font-weight:700;">Mission Meets Tech</span>
   </td></tr>
   <tr><td style="padding:32px;">
-    <h1 style="margin:0 0 16px;font-size:22px;color:#1a1a2e;">Sign in to My Reports</h1>
-    <p style="margin:0 0 24px;color:#4a4a68;font-size:15px;line-height:1.6;">Click the button below to access your reports, scorecards, and order history.</p>
-    <a href="${portalUrl}" style="display:inline-block;background:#00e5fa;color:#0a0e17;padding:12px 28px;border-radius:6px;font-weight:700;font-size:15px;text-decoration:none;">Sign In</a>
+    <h1 style="margin:0 0 16px;font-size:22px;color:#0A192F;">Sign in to My Reports</h1>
+    <p style="margin:0 0 24px;color:#5C6B7A;font-size:15px;line-height:1.6;">Click the button below to access your reports, scorecards, and order history.</p>
+    <a href="${portalUrl}" style="display:inline-block;background:#0A192F;color:#FFFFFF;padding:12px 28px;border-radius:6px;font-weight:700;font-size:15px;text-decoration:none;">Sign In</a>
     <p style="margin:24px 0 0;color:#9ca3af;font-size:12px;">This link expires in 7 days. If you didn't request this, you can ignore it.</p>
   </td></tr>
   <tr><td style="background:#f9fafb;padding:16px 32px;border-top:1px solid #e5e7eb;">

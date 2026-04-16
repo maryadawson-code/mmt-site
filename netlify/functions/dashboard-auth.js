@@ -144,8 +144,8 @@ exports.handler = async (event) => {
             subject: "Your Command Center Login Link",
             html: `
               <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 500px; margin: 0 auto; padding: 40px 20px;">
-                <div style="background: #0a0e17; padding: 24px; border-radius: 8px 8px 0 0;">
-                  <h1 style="margin: 0; color: #00e5fa; font-size: 18px; letter-spacing: 0.5px;">Mission Meets Tech</h1>
+                <div style="background: #0A192F; padding: 24px; border-radius: 8px 8px 0 0;">
+                  <h1 style="margin: 0; color: #FFFFFF; font-size: 18px; letter-spacing: 0.5px;">Mission Meets Tech</h1>
                   <p style="margin: 4px 0 0; color: rgba(255,255,255,0.6); font-size: 13px;">Command Center</p>
                 </div>
                 <div style="background: #fff; border: 1px solid #e2e8f0; border-top: none; padding: 32px 24px; border-radius: 0 0 8px 8px;">
@@ -153,7 +153,7 @@ exports.handler = async (event) => {
                   <p style="margin: 0 0 24px; color: #475569; font-size: 14px; line-height: 1.6;">
                     Click below to log into the MMT Command Center. This link expires in 15 minutes.
                   </p>
-                  <a href="${loginUrl}" style="display: inline-block; background: #00e5fa; color: #0a0e17; padding: 12px 32px; border-radius: 6px; font-weight: 600; font-size: 14px; text-decoration: none;">
+                  <a href="${loginUrl}" style="display: inline-block; background: #0A192F; color: #FFFFFF; padding: 12px 32px; border-radius: 6px; font-weight: 600; font-size: 14px; text-decoration: none;">
                     Log In
                   </a>
                   <p style="margin: 24px 0 0; color: #94a3b8; font-size: 12px; line-height: 1.5;">

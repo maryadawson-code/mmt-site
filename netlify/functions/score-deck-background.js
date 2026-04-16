@@ -849,8 +849,8 @@ exports.handler = wrapHandler(async (event) => {
 
       // Build email with link to hosted report
       const linkEmailHtml = `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;">
-  <div style="background:#0a0e17;padding:32px 40px;text-align:center;">
-    <div style="font-size:24px;font-weight:700;color:#00e5fa;letter-spacing:0.5px;">PROPOSALPULSE</div>
+  <div style="background:#0A192F;padding:32px 40px;text-align:center;">
+    <div style="font-size:24px;font-weight:700;color:#FFFFFF;letter-spacing:0.5px;">PROPOSALPULSE</div>
     <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-top:4px;">AI-Powered Proposal Intelligence</div>
   </div>
   <div style="padding:32px 40px;">
@@ -860,7 +860,7 @@ exports.handler = wrapHandler(async (event) => {
     <p style="font-size:14px;color:#475569;margin:0 0 4px;font-weight:600;">Overall Grade</p>
     <p style="font-size:28px;font-weight:700;color:${gradeColorMap(overallGrade)};margin:0 0 24px;">${overallGrade || "N/A"}</p>
     <div style="text-align:center;margin:32px 0;">
-      <a href="${reportUrl || '#'}" style="display:inline-block;background:#00e5fa;color:#0a0e17;font-weight:700;font-size:16px;padding:14px 40px;text-decoration:none;border-radius:6px;">View Score Report</a>
+      <a href="${reportUrl || '#'}" style="display:inline-block;background:#0A192F;color:#FFFFFF;font-weight:700;font-size:16px;padding:14px 40px;text-decoration:none;border-radius:6px;">View Score Report</a>
     </div>
     <p style="font-size:12px;color:#9ca3af;margin:24px 0 0;text-align:center;">This link expires in 90 days.</p>
   </div>

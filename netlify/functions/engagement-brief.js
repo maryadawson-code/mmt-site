@@ -82,13 +82,13 @@ function buildBriefEmail(brief) {
 
   return `
     <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
-      <h2 style="color:#0a0e17;border-bottom:2px solid #00e5fa;padding-bottom:8px;">MMT Engagement Brief</h2>
+      <h2 style="color:#0A192F;border-bottom:2px solid #457B9D;padding-bottom:8px;">MMT Engagement Brief</h2>
       <p style="color:#888;font-size:12px;">Generated: ${brief.generated_at}</p>
 
-      <h3 style="color:#0a0e17;margin-top:20px;">High Priority Engagements</h3>
+      <h3 style="color:#0A192F;margin-top:20px;">High Priority Engagements</h3>
       ${highPriorityRows.length > 0 ? `<table style="width:100%;border-collapse:collapse;">${highPriorityRows}</table>` : "<p style='color:#888;'>No high-priority opportunities found.</p>"}
 
-      <h3 style="color:#0a0e17;margin-top:20px;">Trending Topics</h3>
+      <h3 style="color:#0A192F;margin-top:20px;">Trending Topics</h3>
       ${trendingRows.length > 0 ? `<table style="width:100%;border-collapse:collapse;">${trendingRows}</table>` : "<p style='color:#888;'>No trending topics found.</p>"}
 
       <p style="color:#aaa;font-size:11px;margin-top:20px;border-top:1px solid #eee;padding-top:10px;">Mission Meets Tech — Engagement Intelligence</p>

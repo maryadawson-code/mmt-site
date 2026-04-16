@@ -12,14 +12,14 @@ function brandedError(title, message) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>${title}</title></head>
-<body style="margin:0;padding:0;background:#0a0e17;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#f8fafc;display:flex;align-items:center;justify-content:center;min-height:100vh;">
-<div style="text-align:center;max-width:480px;padding:40px;">
-  <div style="font-size:32px;font-weight:700;color:#00e5fa;margin-bottom:8px;">MISSION MEETS TECH</div>
-  <div style="font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:40px;">Federal Health IT Intelligence</div>
+<body style="margin:0;padding:0;background:#F3F4F6;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#0A192F;display:flex;align-items:center;justify-content:center;min-height:100vh;">
+<div style="text-align:center;max-width:480px;padding:40px;background:#FFFFFF;border-radius:12px;margin:20px;">
+  <div style="font-size:28px;font-weight:800;color:#0A192F;margin-bottom:4px;">MISSION MEETS TECH</div>
+  <div style="font-size:14px;color:#5C6B7A;margin-bottom:40px;">Federal Health IT Intelligence</div>
   <div style="font-size:48px;margin-bottom:16px;">&#128274;</div>
-  <h1 style="font-size:24px;margin:0 0 12px;">${title}</h1>
-  <p style="font-size:16px;color:rgba(255,255,255,0.7);line-height:1.6;">${message}</p>
-  <a href="https://missionmeetstech.com" style="display:inline-block;margin-top:32px;color:#00e5fa;text-decoration:none;font-size:14px;">Back to missionmeetstech.com</a>
+  <h1 style="font-size:24px;margin:0 0 12px;color:#0A192F;">${title}</h1>
+  <p style="font-size:16px;color:#5C6B7A;line-height:1.6;">${message}</p>
+  <a href="https://missionmeetstech.com" style="display:inline-block;margin-top:32px;color:#457B9D;text-decoration:none;font-size:14px;font-weight:600;">Back to missionmeetstech.com</a>
 </div>
 </body>
 </html>`;

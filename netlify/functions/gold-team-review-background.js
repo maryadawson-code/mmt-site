@@ -606,7 +606,7 @@ exports.handler = async (event) => {
 
     // Send email with link to hosted Red Team report
     const redTeamEmailHtml = `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;">
-  <div style="background:#0a0e17;padding:32px 40px;text-align:center;">
+  <div style="background:#0A192F;padding:32px 40px;text-align:center;">
     <div style="font-size:24px;font-weight:700;color:#ef4444;letter-spacing:0.5px;">RED TEAM REVIEW</div>
     <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-top:4px;">ProposalPulse Deep Analysis</div>
   </div>
