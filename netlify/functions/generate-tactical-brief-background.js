@@ -1208,77 +1208,32 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
       await trackQuality(_supabase, { product: "marketpulse", orderId: _orderId || session_id, grade: qualityResult.grade, score: reportScore.overall, factors: { pipeline_count: reportScore.pipeline_opportunities.count, gov_percent: reportScore.source_quality.gov_percent, quality_failures: qualityResult.failures } });
     } catch { /* non-blocking */ }
 
-    // === QUALITY GATE: FAIL — do not generate PDF ===
+    // === QUALITY GATE: FAIL handling ===
+    // Policy: If research passes produced content (nullPasses < 2), deliver with
+    // disclaimer rather than blocking. Only block if research genuinely failed
+    // (2+ null passes = no useful data gathered).
     if (qualityResult.grade === "FAIL") {
-      console.log(`[QUALITY GATE] FAIL — blocking PDF generation. Failures: ${qualityResult.failures.join("; ")}`);
-      await logOpsEvent(_supabase, { event_type: "QUALITY_FAILURE", source_function: "generate-tactical-brief-background", severity: "error", signature: "quality_gate_fail", affected_entity: session_id, details: { email, topic: topic.substring(0, 200), grade: qualityResult.grade, failures: qualityResult.failures } });
+      const researchFailed = reportQuality.nullPasses >= 2;
 
-      // Log failure to ops_events
-      if (_supabase) {
-        try {
-          await _supabase.from("ops_events").insert({
-            event_type: "marketpulse_quality_fail",
-            details: {
-              email,
-              topic,
-              quality_grade: qualityResult.grade,
-              failures: qualityResult.failures,
-              metrics: reportQuality,
-              session_id,
-            },
-          });
-        } catch (opsErr) {
-          console.error("Failed to log quality failure to ops_events:", opsErr.message);
-        }
+      if (researchFailed) {
+        // Research genuinely failed — block delivery, notify customer + Mary
+        console.log(`[QUALITY GATE] HARD FAIL — ${reportQuality.nullPasses} null passes, blocking delivery. Failures: ${qualityResult.failures.join("; ")}`);
+        await logOpsEvent(_supabase, { event_type: "QUALITY_FAILURE", source_function: "generate-tactical-brief-background", severity: "error", signature: "quality_gate_hard_fail", affected_entity: session_id, details: { email, topic: topic.substring(0, 200), grade: "FAIL", failures: qualityResult.failures, nullPasses: reportQuality.nullPasses } });
 
-        // Queue for manual review
-        try {
-          await _supabase.from("marketpulse_review_queue").insert({
-            session_id,
-            email,
-            name,
-            company,
-            topic,
-            audience,
-            quality_grade: qualityResult.grade,
-            quality_failures: qualityResult.failures,
-            quality_metrics: reportQuality,
-            synthesis_preview: (finalSynthesis || "").substring(0, 2000),
-            status: "pending_review",
-          });
-        } catch (queueErr) {
-          console.error("Failed to queue for manual review:", queueErr.message);
+        const failEmailHtml = buildDeliveryEmail({ name, topic, orderId: _orderId, qualityFail: true });
+        if (!shouldHoldEmail()) {
+          await sendEmail({ to: email, subject: `Your MarketPulse Request: ${topic.slice(0, 60)}${topic.length > 60 ? "..." : ""}`, html: failEmailHtml, from: "Mission Meets Tech <noreply@missionmeetstech.com>" });
         }
+        await sendEmail({ to: "mary@missionmeetstech.com", subject: `[MarketPulse] HARD FAIL — ${name} (${email})`, html: `<p><strong>Research failed (${reportQuality.nullPasses} null passes).</strong></p><p><strong>Topic:</strong> ${topic}</p><p><strong>Failures:</strong></p><ul>${qualityResult.failures.map(f => `<li>${f}</li>`).join("")}</ul><p>Session: ${session_id}</p>`, from: "Mission Meets Tech <noreply@missionmeetstech.com>" });
+        await _transition("quality_fail");
+        return { statusCode: 200, body: JSON.stringify({ success: true, quality_gate: "FAIL", duration_seconds: Math.round((Date.now() - startTime) / 1000) }) };
       }
 
-      // Send alternative email to customer
-      const failEmailHtml = buildDeliveryEmail({ name, topic, orderId: _orderId, qualityFail: true });
-      const failSubject = `Your MarketPulse Request: ${topic.slice(0, 60)}${topic.length > 60 ? "..." : ""}`;
-
-      if (!shouldHoldEmail()) {
-        await sendEmail({
-          to: email,
-          subject: failSubject,
-          html: failEmailHtml,
-          from: "Mission Meets Tech <noreply@missionmeetstech.com>",
-        });
-      }
-
-      // Notify Mary
-      await sendEmail({
-        to: "mary@missionmeetstech.com",
-        subject: `[MarketPulse] QUALITY FAIL — ${name} (${email})`,
-        html: `<p><strong>Quality gate blocked PDF delivery.</strong></p>
-          <p><strong>Topic:</strong> ${topic}</p>
-          <p><strong>Grade:</strong> ${qualityResult.grade}</p>
-          <p><strong>Failures:</strong></p><ul>${qualityResult.failures.map(f => `<li>${f}</li>`).join("")}</ul>
-          <p><strong>Metrics:</strong> contracts=${reportQuality.specificContracts}, dollars=${reportQuality.dollarValues}, nullPasses=${reportQuality.nullPasses}/${reportQuality.totalPasses}</p>
-          <p>Queued for manual review. Session: ${session_id}</p>`,
-        from: "Mission Meets Tech <noreply@missionmeetstech.com>",
-      });
-
-      await _transition("quality_fail");
-      return { statusCode: 200, body: JSON.stringify({ success: true, quality_gate: "FAIL", duration_seconds: Math.round((Date.now() - startTime) / 1000) }) };
+      // Research produced content but gate flagged issues — downgrade to MARGINAL and deliver
+      console.log(`[QUALITY GATE] SOFT FAIL → MARGINAL — research has content (${reportQuality.nullPasses} null passes), delivering with disclaimer. Failures: ${qualityResult.failures.join("; ")}`);
+      qualityResult.grade = "MARGINAL";
+      qualityResult.failures.push("Auto-downgraded from FAIL — research produced content but quality metrics flagged issues");
+      await logOpsEvent(_supabase, { event_type: "QUALITY_FAILURE", source_function: "generate-tactical-brief-background", severity: "warn", signature: "quality_gate_soft_fail", affected_entity: session_id, details: { email, topic: topic.substring(0, 200), grade: "MARGINAL (downgraded)", failures: qualityResult.failures } });
     }
 
     await _transition("pdf_started");

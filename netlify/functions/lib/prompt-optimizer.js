@@ -33,6 +33,15 @@ function optimizeMarketPrompt(userRequest) {
   // Core research topic (preserved verbatim)
   sections.push(`PRIMARY RESEARCH TOPIC: ${topic.trim()}`);
 
+  // Synonym expansion — broaden search terms for common health IT concepts
+  const synonymExpansions = expandSynonyms(topic);
+  if (synonymExpansions.length > 0) {
+    sections.push(
+      `SEARCH TERM EXPANSION (use ALL of these when querying data sources):\n` +
+      synonymExpansions.map((s) => `- "${s.term}" also search for: ${s.synonyms.join(", ")}`).join("\n")
+    );
+  }
+
   // Federal market context
   if (detectedContext.agencies.length > 0 || segment) {
     sections.push(
@@ -140,7 +149,7 @@ const NAICS_PATTERNS = [
   { pattern: /\b(cloud|infrastructure|hosting)\b/i, codes: ["518210", "541512"] },
   { pattern: /\b(consulting|advisory|strategy)\b/i, codes: ["541611", "541618"] },
   { pattern: /\b(AI|artificial intelligence|machine learning|data analytics)\b/i, codes: ["541512", "541519", "541715"] },
-  { pattern: /\b(telehealth|telemedicine|remote health)\b/i, codes: ["541512", "621999"] },
+  { pattern: /\b(telehealth|telemedicine|remote health|virtual health|digital health|connected care|remote patient monitoring|RPM|VVC|Video Connect|mHealth|remote care|virtual care)\b/i, codes: ["541512", "621999", "541519"] },
   { pattern: /\b(medical device|biomedical)\b/i, codes: ["334510", "339112"] },
   { pattern: /\b(training|education|workforce)\b/i, codes: ["611430", "541612"] },
   { pattern: /\b(interoperability|data exchange|FHIR|HL7)\b/i, codes: ["541512", "541519"] },
@@ -154,6 +163,30 @@ function detectNaicsCodes(topic) {
     }
   }
   return [...codes];
+}
+
+// --- Synonym expansion for health IT concepts ---
+const SYNONYM_MAP = [
+  { trigger: /\b(telehealth)\b/i, term: "telehealth", synonyms: ["virtual health", "digital health", "connected care", "remote patient monitoring", "RPM", "telemedicine", "VA Video Connect", "VVC", "virtual care", "mHealth", "remote care", "tele-ICU", "store-and-forward"] },
+  { trigger: /\b(virtual health)\b/i, term: "virtual health", synonyms: ["telehealth", "digital health", "connected care", "telemedicine", "remote patient monitoring", "virtual care"] },
+  { trigger: /\b(EHR|electronic health record)\b/i, term: "EHR", synonyms: ["electronic health record", "health information system", "clinical information system", "VistA", "MHS GENESIS", "Oracle Health", "Cerner", "EHRM"] },
+  { trigger: /\b(cybersecurity|cyber)\b/i, term: "cybersecurity", synonyms: ["information security", "FISMA", "FedRAMP", "CMMC", "zero trust", "NIST 800-171", "ATO", "Authority to Operate"] },
+  { trigger: /\b(AI|artificial intelligence)\b/i, term: "AI", synonyms: ["artificial intelligence", "machine learning", "ML", "predictive analytics", "decision intelligence", "clinical decision support", "natural language processing", "NLP", "agentic AI"] },
+  { trigger: /\b(interoperability)\b/i, term: "interoperability", synonyms: ["health data exchange", "FHIR", "HL7", "TEFCA", "USCDI", "health information exchange", "HIE", "data sharing"] },
+  { trigger: /\b(cloud)\b/i, term: "cloud", synonyms: ["cloud computing", "cloud migration", "FedRAMP", "cloud hosting", "IaaS", "PaaS", "SaaS", "AWS GovCloud", "Azure Government"] },
+  { trigger: /\b(SDVOSB)\b/i, term: "SDVOSB", synonyms: ["Service-Disabled Veteran-Owned Small Business", "VOSB", "veteran-owned", "VetCert", "VA OSDBU"] },
+  { trigger: /\b(data analytics|analytics)\b/i, term: "data analytics", synonyms: ["business intelligence", "data visualization", "predictive analytics", "population health analytics", "clinical analytics", "data warehouse", "data lake"] },
+  { trigger: /\b(medical device)\b/i, term: "medical device", synonyms: ["biomedical equipment", "FDA-cleared", "clinical device", "point-of-care", "wearable", "remote monitoring device", "durable medical equipment", "DME"] },
+];
+
+function expandSynonyms(topic) {
+  const results = [];
+  for (const entry of SYNONYM_MAP) {
+    if (entry.trigger.test(topic)) {
+      results.push({ term: entry.term, synonyms: entry.synonyms });
+    }
+  }
+  return results;
 }
 
 module.exports = { optimizeMarketPrompt };
