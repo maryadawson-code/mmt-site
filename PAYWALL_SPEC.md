@@ -287,6 +287,42 @@ Logged-in Premium: `Analysis  Tools  Resources  Podcast  About  |  Dashboard  [�
 
 ***
 
+## Part 6 — Premium Feature Automation Status
+
+Every feature promised on the pricing page, with its current delivery status.
+
+| # | Feature | Portal | Email | Automation | Notes |
+|---|---------|--------|-------|------------|-------|
+| 1 | Monthly Capture Intelligence sheets | Gated (base64) | -- | Build-time from JSON | `capture-intelligence.json` |
+| 2 | Action windows + confidence labels | In capture sheet | -- | Build-time | Confidence field on each signal |
+| 3 | Capture Corner on every article | Gated (build.js) | -- | Auto (frontmatter) | `capture_corner[]` in article data |
+| 4 | 48-hour early access to all analysis | -- | -- | Not implemented | Needs `premium_available_at` field |
+| 5 | Deep-dive solicitation analysis | Gated (category) | -- | Build-time | `category: solicitation` articles |
+| 6 | Premium Dashboard | Auth-gated | -- | Auto | `premium/dashboard.html` |
+| 7 | Weekly Friday Brief | Auth-gated | **Automated** | `premium-brief-send.js` | Cron: Fri 6 AM ET |
+| 8 | Monthly PDF Intelligence Brief | Auth-gated | **Automated** | `monthly-brief-send.js` | Cron: 1st of month 6 AM ET |
+| 9 | Pursuit Calendar | Auth-gated | -- | Manual curation | `premium/calendar.html` |
+| 10 | Ask MMT — 2 questions/month | Form page | -- | Manual answers | Needs backend handler |
+| 11 | Agency Intelligence Profiles (6) | Auth-gated (base64) | -- | Build-time from JSON | `agencies.json` |
+| 12 | Full Contract Tracker | Gated (base64) | -- | Auto | `contract-tracker.js` auth gate |
+| 13 | Full IDIQ Tracker | Gated (`data-access`) | -- | Auto | `idiq-tracker.html` paywall |
+| 14 | Full Glossary (200+ terms) | Gated (base64) | -- | Auto | 50 free, rest premium |
+| 15 | Newswire context notes | Gated (base64) | -- | Auto | Headlines free, notes gated |
+| 16 | Opportunity Radar + Vehicle Scanner | Auth-gated | -- | Auto (4hr cron) | `opportunity-radar.js` |
+| 17 | ProposalPulse at $14.99 (25% off) | Live | Score receipt | Stripe | `score-deck-background.js` |
+| 18 | MarketPulse at $35 (30% off) | Live | Report delivery | Stripe + Perplexity | `generate-tactical-brief-background.js` |
+
+### Email Delivery Functions
+
+| Function | Schedule | Recipient | Content |
+|----------|----------|-----------|---------|
+| `premium-brief-send.js` | `0 11 * * 5` (Fri 6am ET) | Active premium subscribers | Friday Brief HTML |
+| `monthly-brief-send.js` | `0 11 1 * *` (1st 6am ET) | Active premium subscribers | Monthly Intelligence Brief |
+| `newsletter-send.js` | `30 23 * * 2,5` (Tue/Fri) | All Buttondown subscribers | Article digest |
+| `weekly-report.js` | `0 14 * * 1` (Mon 9am ET) | mary@ (admin) | ProposalPulse usage |
+
+***
+
 ## The Governing Principle
 
 **Every paywall placement should feel like a natural depth increase, not a sudden wall.**

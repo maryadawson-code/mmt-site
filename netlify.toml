@@ -23,6 +23,16 @@
 [functions."weekly-report"]
   schedule = "0 14 * * 1"
 
+# Premium Friday Brief — every Friday at 6 AM ET (11:00 UTC)
+# Emails the latest brief to all active premium subscribers via Resend
+[functions."premium-brief-send"]
+  schedule = "0 11 * * 5"
+
+# Premium Monthly Brief — 1st of month at 6 AM ET (11:00 UTC)
+# Emails the monthly intelligence brief to premium subscribers
+[functions."monthly-brief-send"]
+  schedule = "0 11 1 * *"
+
 [functions."rebuild-trigger"]
   schedule = "0 */4 * * *"
 
