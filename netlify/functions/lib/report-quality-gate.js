@@ -367,8 +367,14 @@ function scoreReport(synthesis, citations, classification) {
   const text = synthesis || "";
   const cites = citations || [];
 
-  // 1. Pipeline opportunities (30% weight)
-  const pipelineCount = (text.match(/CONTRACT\/OPPORTUNITY:/g) || []).length;
+  // 1. Pipeline opportunities (20% weight)
+  // Match pipeline entries via multiple patterns (Claude may format differently):
+  //   - "CONTRACT/OPPORTUNITY:" (standard format)
+  //   - "**CONTRACT/OPPORTUNITY:**" (bold markdown)
+  //   - Lines starting with "Agency:" followed by "Contract #:" (structured entry)
+  const pipelineByMarker = (text.match(/CONTRACT\/OPPORTUNITY:\s*/gi) || []).length;
+  const pipelineByAgencyBlocks = (text.match(/\nAgency:\s+.*\nContract\s*#/gi) || []).length;
+  const pipelineCount = Math.max(pipelineByMarker, pipelineByAgencyBlocks);
   const pipelineScore = Math.min(100, Math.round((pipelineCount / 3) * 100));
 
   // 2. Source quality (20% weight)

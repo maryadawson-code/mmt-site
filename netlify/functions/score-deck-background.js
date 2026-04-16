@@ -107,6 +107,21 @@ ${examples.join(",\n")}
   "competitive_positioning": {
     "differentiation": "strong|moderate|weak|absent",
     "reasoning": "Specific observation about what makes this proposal stand out or fail to"
+  },
+  "discriminator_assessment": {
+    "discriminators": ["2-3 specific, provable differentiators found — or empty if none"],
+    "discriminator_quality": "strong|moderate|weak|absent",
+    "win_themes": ["consistent themes threading through multiple sections — or empty if absent"],
+    "win_theme_coherence": "strong|partial|absent",
+    "evaluator_takeaway": "One sentence: what would the SSEB chair remember about this proposal?",
+    "sseb_prediction": {
+      "overall": "significant_strength|strength|acceptable|weakness|deficiency"
+    }
+  },
+  "bid_recommendation": {
+    "recommendation": "SUBMIT_AS_IS|SUBMIT_WITH_REVISIONS|MAJOR_REWRITE|CONSIDER_NO_BID",
+    "rationale": "2-3 sentences referencing specific scorecard findings",
+    "critical_revisions": ["if revisions needed, list specific changes required"]
   }
 }`;
 }
@@ -731,7 +746,19 @@ exports.handler = wrapHandler(async (event) => {
       penalties: pwinResult.penalties,
       kill_conditions: pwinResult.kill_conditions,
     };
-    console.log(`[pWin] ${pwinResult.pwin_range} | Penalties: ${pwinResult.penalties.length} | Kill conditions: ${pwinResult.kill_conditions.length}`);
+    // Inject go/no-bid recommendation from pWin calculator
+    scorecard.recommendation = pwinResult.recommendation || null;
+    scorecard.recommendation_rationale = pwinResult.recommendation_rationale || null;
+    console.log(`[pWin] ${pwinResult.pwin_range} | Recommendation: ${pwinResult.recommendation} | Kill conditions: ${pwinResult.kill_conditions.length}`);
+
+    // Preserve discriminator assessment and bid recommendation from Claude (if returned)
+    // These are computed by Claude in the scoring prompt, stored in scorecard root
+    if (!scorecard.discriminator_assessment) {
+      scorecard.discriminator_assessment = { discriminators: [], discriminator_quality: "absent", win_themes: [], win_theme_coherence: "absent", evaluator_takeaway: "No discriminator analysis returned." };
+    }
+    if (!scorecard.bid_recommendation) {
+      scorecard.bid_recommendation = { recommendation: pwinResult.recommendation, rationale: pwinResult.recommendation_rationale, critical_revisions: [] };
+    }
 
     // Regulatory compliance flags (GSA MAS Refresh 31, FAR Modernization)
     const regulatoryResult = checkRegulatoryCompliance(extractedText || documentText, scorecard, documentType);

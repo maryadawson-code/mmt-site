@@ -242,6 +242,36 @@ function buildScoreReceiptHtml(data) {
       </div>`;
       })() : ""}
 
+      <!-- Discriminator Assessment -->
+      ${scorecard.discriminator_assessment ? (() => {
+        const da = scorecard.discriminator_assessment;
+        const qualColors = { strong: "#16a34a", moderate: "#eab308", weak: "#f97316", absent: "#ef4444" };
+        return `
+      <div style="margin-top:24px;padding:16px 20px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;">
+        <p style="margin:0 0 8px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#0369a1;">Discriminator Analysis</p>
+        ${da.discriminators && da.discriminators.length > 0 ? `
+        <ul style="margin:0 0 8px;padding-left:20px;font-size:14px;color:#0A192F;line-height:1.6;">
+          ${da.discriminators.map((d) => '<li>' + escapeHtml(d) + '</li>').join("")}
+        </ul>` : '<p style="margin:0 0 8px;font-size:14px;color:#ef4444;font-weight:600;">No discriminators identified. This proposal does not stand out from competitors.</p>'}
+        <p style="margin:0 0 4px;font-size:13px;color:#5C6B7A;">Win Theme Coherence: <strong style="color:${qualColors[da.win_theme_coherence] || "#6b7280"};">${escapeHtml((da.win_theme_coherence || "absent").toUpperCase())}</strong></p>
+        ${da.evaluator_takeaway ? '<p style="margin:4px 0 0;font-size:13px;color:#374151;font-style:italic;">' + escapeHtml(da.evaluator_takeaway) + '</p>' : ""}
+      </div>`;
+      })() : ""}
+
+      <!-- Bid Recommendation -->
+      ${scorecard.recommendation ? (() => {
+        const rec = scorecard.recommendation;
+        const recColors = { SUBMIT_AS_IS: "#16a34a", SUBMIT_WITH_REVISIONS: "#eab308", MAJOR_REWRITE: "#f97316", CONSIDER_NO_BID: "#ef4444" };
+        const recLabels = { SUBMIT_AS_IS: "SUBMIT AS-IS", SUBMIT_WITH_REVISIONS: "SUBMIT WITH REVISIONS", MAJOR_REWRITE: "MAJOR REWRITE REQUIRED", CONSIDER_NO_BID: "CONSIDER NO-BID" };
+        const recColor = recColors[rec] || "#6b7280";
+        return `
+      <div style="margin-top:16px;padding:16px 20px;border-left:4px solid ${recColor};background-color:#f9fafb;border-radius:0 8px 8px 0;">
+        <p style="margin:0 0 4px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6b7280;">Strategic Recommendation</p>
+        <p style="margin:0 0 8px;font-size:20px;font-weight:800;color:${recColor};">${recLabels[rec] || rec}</p>
+        ${scorecard.recommendation_rationale ? '<p style="margin:0;font-size:14px;color:#374151;line-height:1.5;">' + escapeHtml(scorecard.recommendation_rationale) + '</p>' : ""}
+      </div>`;
+      })() : ""}
+
       <!-- Compliance Matrix -->
       ${scorecard.compliance_matrix && scorecard.compliance_matrix.length > 0 ? `
       <div style="margin-top:24px;">

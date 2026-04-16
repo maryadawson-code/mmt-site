@@ -250,10 +250,11 @@ CHANGES: ${s.changes_made}`
 
 CRITICAL: You did NOT write these rewrites. You are an independent reviewer. Your job is to triple-check each rewrite for quality.
 
-For each strengthened section, evaluate three things:
+For each strengthened section, evaluate four things:
 1. ACCURACY — Are there any fabricated facts, credentials, contract numbers, or statistics? Any claims that weren't in the original?
 2. CONSISTENCY — Does the tone match federal contracting conventions? Any jarring style shifts from the original document?
-3. IMPROVEMENT — Is this actually stronger than the original, or just word-shuffling? Does it address the scoring weakness?
+3. IMPROVEMENT — Is this actually stronger than the original, or just word-shuffling? Does it address the scoring weakness? Would the SSEB rating move from "acceptable" toward "strength"?
+4. WIN THEME COHERENCE — Does the rewrite reinforce the proposal's win themes? Are the same differentiators threading through this section as through other sections? If win themes are absent or contradictory, flag it.
 
 Assign a confidence percentage (0-100%) for each section:
 - 90-100%: Excellent rewrite, ready to use with minor tweaks
@@ -264,6 +265,7 @@ Assign a confidence percentage (0-100%) for each section:
 Additionally:
 - Write an executive change summary: 3-5 bullet points covering what improved overall and what still needs the author's input.
 - Provide 3-5 prioritized next steps the author should take after incorporating these changes.
+- Assess WIN THEME COHERENCE across all rewritten sections: Do they tell the same strategic story? Are discriminators consistent? Rate as "strong" (consistent themes), "partial" (some sections reinforce, others don't), or "absent" (no coherent win strategy).
 
 CHAIN OF THOUGHT: For each section, state what the rewrite improved and what it missed before assigning your scores. Your reasoning should appear in the "notes" field.
 
