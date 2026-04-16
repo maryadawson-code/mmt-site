@@ -119,20 +119,22 @@
       cc.textContent = (500 - ta.value.length) + ' characters remaining';
     });
 
-    // Quota
-    function updateQuota() {
-      var mk = 'mmt_ask_count_' + new Date().toISOString().slice(0, 7);
-      var used = parseInt(localStorage.getItem(mk) || '0');
-      var remaining = Math.max(0, 2 - used);
+    // Quota — synced with server via localStorage cache
+    function updateQuota(remaining) {
+      if (typeof remaining === 'number') {
+        localStorage.setItem('mmt_ask_remaining', String(remaining));
+      }
+      var r = parseInt(localStorage.getItem('mmt_ask_remaining') || '2');
+      var used = 2 - r;
       var ql = document.getElementById('ask-quota-label');
       var bar = document.getElementById('ask-bar');
-      if (ql) ql.textContent = 'Questions remaining: ' + remaining + ' of 2';
+      if (ql) ql.textContent = 'Questions remaining: ' + r + ' of 2';
       if (bar) bar.style.width = Math.min(100, (used / 2) * 100) + '%';
       var btn = document.getElementById('ask-submit-btn');
-      if (btn && remaining <= 0) { btn.disabled = true; btn.style.opacity = '0.5'; }
+      if (btn && r <= 0) { btn.disabled = true; btn.style.opacity = '0.5'; btn.textContent = 'Limit reached this month'; }
     }
 
-    // History
+    // History from localStorage
     function renderHistory() {
       var list = document.getElementById('ask-history-list');
       if (!list) return;
@@ -146,24 +148,41 @@
       }).join('');
     }
 
-    // Submit
+    // Submit — POST to backend
     function submitQuestion() {
       var q = document.getElementById('ask-question').value.trim();
       if (!q) return;
-      var mk = 'mmt_ask_count_' + new Date().toISOString().slice(0, 7);
-      var used = parseInt(localStorage.getItem(mk) || '0');
-      if (used >= 2) { alert('You have used both questions this month. Resets on the 1st.'); return; }
-      localStorage.setItem(mk, String(used + 1));
-      var history = JSON.parse(localStorage.getItem('mmt_ask_history') || '[]');
-      history.unshift({ date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }), question: q, status: 'Pending' });
-      localStorage.setItem('mmt_ask_history', JSON.stringify(history));
-      // Send via mailto as bridge
       var e = localStorage.getItem('mmt_email') || '';
-      window.open('mailto:mary@missionmeetstech.com?subject=' + encodeURIComponent('[Ask MMT] ' + q.substring(0, 60)) + '&body=' + encodeURIComponent('Question: ' + q + '\n\nFrom: ' + e), '_blank');
-      document.getElementById('ask-question').value = '';
-      document.getElementById('ask-confirm').style.display = 'block';
-      updateQuota();
-      renderHistory();
+      if (!e) { alert('Please sign in first.'); return; }
+      var btn = document.getElementById('ask-submit-btn');
+      btn.disabled = true; btn.textContent = 'Sending...';
+      fetch('/.netlify/functions/ask-mmt-submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: e, question: q })
+      })
+      .then(function(res) { return res.json().then(function(data) { return { ok: res.ok, data: data }; }); })
+      .then(function(result) {
+        if (!result.ok) {
+          alert(result.data.error || 'Something went wrong.');
+          btn.disabled = false; btn.textContent = 'Send question \u2192';
+          if (typeof result.data.remaining === 'number') updateQuota(result.data.remaining);
+          return;
+        }
+        // Success
+        var history = JSON.parse(localStorage.getItem('mmt_ask_history') || '[]');
+        history.unshift({ date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }), question: q, status: 'Pending' });
+        localStorage.setItem('mmt_ask_history', JSON.stringify(history));
+        document.getElementById('ask-question').value = '';
+        document.getElementById('ask-confirm').style.display = 'block';
+        updateQuota(result.data.remaining);
+        renderHistory();
+        btn.textContent = 'Sent \u2713';
+      })
+      .catch(function(err) {
+        alert('Network error. Please try again.');
+        btn.disabled = false; btn.textContent = 'Send question \u2192';
+      });
     }
 
     updateQuota();
