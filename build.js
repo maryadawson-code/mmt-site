@@ -545,6 +545,7 @@ function generateArticlePages(articles, glossaryTerms) {
     // Calculate article age in days for paywall gating
     const articleDate = new Date(article.date);
     const ageDays = Math.floor((Date.now() - articleDate.getTime()) / 86400000);
+    const isEarlyAccess = ageDays <= 2;
     const accessTier = ageDays <= 90 ? 'premium' : 'email';
 
     let html = template
@@ -564,7 +565,8 @@ function generateArticlePages(articles, glossaryTerms) {
       .replace(/\{\{RELATED_ARTICLES\}\}/g, relatedHtml)
       .replace(/\{\{PREMIUM_GATE\}\}/g, generatePremiumGateHtml(article))
       .replace(/\{\{AGE_DAYS\}\}/g, String(ageDays))
-      .replace(/\{\{ACCESS_TIER\}\}/g, accessTier);
+      .replace(/\{\{ACCESS_TIER\}\}/g, accessTier)
+      .replace(/\{\{EARLY_ACCESS\}\}/g, isEarlyAccess ? 'true' : 'false');
 
     // Inject search overlay after </nav>
     html = html.replace('</nav>', '</nav>' + searchOverlayHtml);

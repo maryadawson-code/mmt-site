@@ -425,8 +425,26 @@
     var ageDays = parseInt(articleEl.getAttribute('data-age-days') || '999');
     var accessTier = articleEl.getAttribute('data-access') || 'free';
 
-    // Premium users see everything
+    // Premium users see everything (including 48-hour early access)
     if (isAtLeastPremium(status)) return;
+
+    // 48-hour early access: completely gate article for free users
+    var isEarlyAccess = articleEl.getAttribute('data-early-access') === 'true';
+    if (isEarlyAccess) {
+      var body = document.getElementById('article-body');
+      var gate = document.getElementById('article-gate');
+      if (body) { body.style.display = 'none'; }
+      if (gate) {
+        gate.innerHTML = '<div style="text-align:center;padding:40px 24px;background:var(--mmt-soft,#F3F4F6);border-radius:14px;">' +
+          '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#92710A;margin-bottom:8px;">48-Hour Early Access</div>' +
+          '<p style="font-size:18px;font-weight:700;color:var(--mmt-navy,#0A192F);margin:0 0 8px;">Premium members are reading this now</p>' +
+          '<p style="font-size:15px;color:var(--mmt-text-secondary,#5C6B7A);margin:0 0 20px;max-width:44ch;margin-left:auto;margin-right:auto;">This analysis is available to free readers in ' + (ageDays <= 0 ? '2 days' : '1 day') + '. Premium members get every article 48 hours early.</p>' +
+          '<a href="/pricing.html" class="btn-primary no-underline" style="font-size:14px;padding:12px 24px;">Get early access</a>' +
+          '</div>';
+        gate.style.display = 'block';
+      }
+      return;
+    }
 
     // Archive articles (> 90 days): only email-gate (not implemented yet — skip for now)
     if (accessTier === 'email') return;
@@ -547,7 +565,7 @@
     var btn = document.createElement('a');
     btn.href = '/premium/dashboard.html';
     btn.textContent = '★ Dashboard';
-    btn.style.cssText = 'position:fixed;bottom:24px;left:24px;z-index:9998;background:#0A192F;color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:700;font-family:Inter,system-ui,sans-serif;text-decoration:none;box-shadow:0 4px 12px rgba(0,0,0,0.2);transition:opacity 0.2s;';
+    btn.style.cssText = 'position:fixed;top:80px;left:24px;z-index:9998;background:#0A192F;color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:700;font-family:Inter,system-ui,sans-serif;text-decoration:none;box-shadow:0 4px 12px rgba(0,0,0,0.2);transition:opacity 0.2s;';
     btn.onmouseenter = function() { btn.style.opacity = '0.85'; };
     btn.onmouseleave = function() { btn.style.opacity = '1'; };
     document.body.appendChild(btn);
