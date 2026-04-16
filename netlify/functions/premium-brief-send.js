@@ -40,80 +40,47 @@ exports.handler = async (event) => {
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
-  // Determine the brief date — the most recent Friday (today if Friday)
+  // Find the most recent brief by trying dates around the most recent Friday
+  // Brief filenames are YYYY-MM-DD.html but may not exactly match computed Fridays
   const now = new Date();
-  const dayOfWeek = now.getUTCDay();
-  const daysBack = dayOfWeek === 5 ? 0 : (dayOfWeek + 2) % 7;
-  const briefDate = new Date(now);
-  briefDate.setUTCDate(briefDate.getUTCDate() - daysBack);
-  const dateStr = briefDate.toISOString().slice(0, 10); // YYYY-MM-DD
-
-  console.log(`premium-brief-send: looking for brief ${dateStr}`);
-
-  // Duplicate check — skip if already sent in last 48h
-  try {
-    const { data: existing } = await supabase
-      .from("ops_ledger")
-      .select("id")
-      .eq("signature", "premium_brief_sent")
-      .eq("affected_entity", dateStr)
-      .limit(1);
-    if (existing && existing.length > 0) {
-      console.log(`premium-brief-send: already sent for ${dateStr}, skipping`);
-      return { statusCode: 200, body: JSON.stringify({ skipped: "already_sent", briefDate: dateStr }) };
-    }
-  } catch (e) {
-    console.warn("premium-brief-send: duplicate check failed, proceeding:", e.message);
+  const candidateDates = [];
+  // Generate candidate dates: today and each of the last 14 days
+  for (let i = 0; i < 14; i++) {
+    const d = new Date(now);
+    d.setUTCDate(d.getUTCDate() - i);
+    candidateDates.push(d.toISOString().slice(0, 10));
   }
 
-  // Fetch the brief HTML from the live site
-  const briefUrl = `${SITE_URL}/premium/briefs/${dateStr}.html`;
-  let briefHtml;
-  try {
-    const res = await fetch(briefUrl);
-    if (!res.ok) {
-      // No brief for this date — check the last 4 Fridays
-      console.log(`premium-brief-send: no brief at ${briefUrl} (${res.status}), checking recent dates`);
-      let found = false;
-      for (let i = 1; i <= 4; i++) {
-        const fallback = new Date(briefDate);
-        fallback.setUTCDate(fallback.getUTCDate() - 7 * i);
-        const fallbackStr = fallback.toISOString().slice(0, 10);
-        // Check if we already sent this older brief
-        const { data: prevSent } = await supabase
-          .from("ops_ledger")
-          .select("id")
-          .eq("signature", "premium_brief_sent")
-          .eq("affected_entity", fallbackStr)
-          .limit(1);
-        if (prevSent && prevSent.length > 0) continue; // already sent this one
+  // Find the newest brief that hasn't been sent yet
+  let dateStr = null;
+  let briefHtml = null;
+  for (const candidate of candidateDates) {
+    // Check if already sent
+    try {
+      const { data: existing } = await supabase
+        .from("ops_ledger")
+        .select("id")
+        .eq("signature", "premium_brief_sent")
+        .eq("affected_entity", candidate)
+        .limit(1);
+      if (existing && existing.length > 0) continue;
+    } catch (e) { /* proceed on failure */ }
 
-        const fallbackRes = await fetch(`${SITE_URL}/premium/briefs/${fallbackStr}.html`);
-        if (fallbackRes.ok) {
-          briefHtml = await fallbackRes.text();
-          console.log(`premium-brief-send: using fallback brief ${fallbackStr}`);
-          found = true;
-          break;
-        }
+    // Try to fetch
+    try {
+      const res = await fetch(`${SITE_URL}/premium/briefs/${candidate}.html`);
+      if (res.ok) {
+        briefHtml = await res.text();
+        dateStr = candidate;
+        console.log(`premium-brief-send: found brief ${candidate}`);
+        break;
       }
-      if (!found) {
-        console.log("premium-brief-send: no unsent brief found, skipping");
-        return { statusCode: 200, body: JSON.stringify({ skipped: "no_content" }) };
-      }
-    } else {
-      briefHtml = await res.text();
-    }
-  } catch (fetchErr) {
-    console.error("premium-brief-send: fetch error:", fetchErr.message);
-    await logOpsEvent(supabase, {
-      event_type: "INFRA_FAILURE",
-      source_function: "premium-brief-send",
-      severity: "error",
-      signature: "brief_fetch_failed",
-      affected_entity: dateStr,
-      details: { error: fetchErr.message },
-    });
-    return { statusCode: 500, body: "Failed to fetch brief" };
+    } catch { /* try next */ }
+  }
+
+  if (!briefHtml || !dateStr) {
+    console.log("premium-brief-send: no unsent brief found in last 14 days, skipping");
+    return { statusCode: 200, body: JSON.stringify({ skipped: "no_content" }) };
   }
 
   // Extract content
