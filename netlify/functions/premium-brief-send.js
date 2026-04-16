@@ -116,7 +116,7 @@ exports.handler = async (event) => {
   // Query active premium subscribers
   const { data: subscribers, error: subErr } = await supabase
     .from("mp_users")
-    .select("email, name")
+    .select("email, full_name")
     .eq("subscription_tier", "premium")
     .eq("subscription_status", "active");
 
@@ -128,7 +128,7 @@ exports.handler = async (event) => {
   // Also include admin/paid tier users
   const { data: adminUsers } = await supabase
     .from("mp_users")
-    .select("email, name")
+    .select("email, full_name")
     .in("tier", ["admin", "paid"]);
 
   const allRecipients = [...(subscribers || []), ...(adminUsers || [])];
