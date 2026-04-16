@@ -31,10 +31,10 @@ const LOGO_SVG = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xm
 
 const BASE_STYLES = `
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; }
+  body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F3F4F6; color: #0A192F; line-height: 1.6; }
   .container { max-width: 800px; margin: 0 auto; background: #fff; }
   .header { background: #0A192F; color: #f8fafc; padding: 32px 40px; }
-  .header-title { font-size: 24px; font-weight: 700; color: #457B9D; letter-spacing: 0.5px; }
+  .header-title { font-size: 24px; font-weight: 700; color: #FFFFFF; letter-spacing: 0.5px; }
   .header-sub { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 4px; }
   .content { padding: 32px 40px; }
   h2 { font-size: 18px; font-weight: 700; color: #0f172a; margin: 28px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #457B9D; }
@@ -290,7 +290,7 @@ function renderProposalPulseHTML(data) {
 // ============================================================
 
 function renderMarketPulseHTML(data) {
-  const { synthesis, citations, name, company, topic, audience, generatedAt } = data || {};
+  const { synthesis, citations, name, company, topic, audience, generatedAt, reportScore } = data || {};
 
   let body = "";
 
@@ -309,6 +309,26 @@ function renderMarketPulseHTML(data) {
   body += `<p style="text-align:center;font-weight:700;color:#94a3b8;font-size:12px;letter-spacing:1px;">CONFIDENTIAL — Prepared for ${prepFor}</p>`;
   body += `<h2 style="border-bottom:none;">Research Topic</h2><p style="font-size:16px;">${esc(topic)}</p>`;
   body += `<p class="meta">Date: ${new Date(generatedAt || Date.now()).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}${audience ? ` &middot; Audience: ${esc(audience)}` : ""}</p>`;
+  // Research Confidence Score
+  if (reportScore && reportScore.overall) {
+    const score = reportScore.overall;
+    const scoreColor = score >= 75 ? "#16A34A" : score >= 50 ? "#D97706" : "#DC2626";
+    const govPct = reportScore.source_quality ? reportScore.source_quality.gov_percent : 0;
+    const pipeCount = reportScore.pipeline_opportunities ? reportScore.pipeline_opportunities.count : 0;
+    const stratScore = reportScore.strategic_depth ? reportScore.strategic_depth.score : 0;
+    body += `<div style="display:flex;gap:16px;flex-wrap:wrap;padding:16px 20px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;margin:16px 0 20px;">
+      <div style="text-align:center;min-width:80px;">
+        <div style="font-size:32px;font-weight:800;color:${scoreColor};">${score}</div>
+        <div style="font-size:11px;font-weight:600;color:#5C6B7A;text-transform:uppercase;letter-spacing:0.08em;">Research Score</div>
+      </div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;font-size:12px;color:#5C6B7A;">
+        <div>${govPct}% .gov sources</div>
+        <div>${pipeCount} pipeline opportunities</div>
+        <div>Strategic depth: ${stratScore >= 75 ? "High" : stratScore >= 40 ? "Medium" : "Limited"}</div>
+      </div>
+    </div>`;
+  }
+
   body += `<hr style="border:none;border-top:1px solid #e2e8f0;margin:20px 0;">`;
 
   // Render synthesis markdown-ish content

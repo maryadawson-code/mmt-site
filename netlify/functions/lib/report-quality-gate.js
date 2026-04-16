@@ -268,7 +268,26 @@ function gateCompetitiveData(synthesis) {
 }
 
 /**
- * Run all 8 quality gates on the final synthesis.
+ * Gate 9: Strategic depth — report must contain analysis, not just inventory.
+ * Checks for strategic thesis, market structure assessment, barriers to entry,
+ * competitive dynamics, and forward catalysts.
+ */
+function gateStrategicDepth(synthesis) {
+  const checks = [
+    { test: /STRATEGIC THESIS/i, label: "strategic thesis" },
+    { test: /market (structure|concentration|tier)|TAM|addressable market/i, label: "market assessment" },
+    { test: /barriers? to entry|entry barriers|what.*need.*compete/i, label: "barrier analysis" },
+    { test: /COMPETITIVE DYNAMICS|CAPTURE STRATEGY/i, label: "strategic sections" },
+  ];
+  const missing = checks.filter((c) => !c.test.test(synthesis)).map((c) => c.label);
+  if (missing.length >= 3) {
+    return `Report lacks strategic depth — missing: ${missing.join(", ")}. Analysis reads as inventory rather than intelligence.`;
+  }
+  return null;
+}
+
+/**
+ * Run all 9 quality gates on the final synthesis.
  * @param {Object} quality - The reportQuality metrics object
  * @param {string} synthesis - Final synthesized report text
  * @param {Object} [opts] - Optional: { citations, topic }
@@ -287,6 +306,7 @@ function checkReportQuality(quality, synthesis, opts) {
     gateCustomerValue(quality, synthesis || ""),
     gateQueryFulfillment(synthesis || "", topic),
     gateCompetitiveData(synthesis || ""),
+    gateStrategicDepth(synthesis || ""),
   ];
 
   for (const result of gates) {
@@ -390,15 +410,14 @@ function scoreReport(synthesis, citations, classification) {
   // 6. Query fulfillment (10% weight)
   let fulfillmentScore = 50; // default if no classification
   if (classification && classification.intents) {
-    // Check if primary intent sections are present
     const intentSectionMap = {
       pipeline_scan: /PIPELINE INTELLIGENCE/i,
       market_event_analysis: /MARKET CONTEXT|MARKET EVENT/i,
-      competitive_intelligence: /COMPETITIVE LANDSCAPE/i,
-      entity_intelligence: /EXECUTIVE SUMMARY/i,
-      landscape_overview: /MARKET CONTEXT/i,
-      forward_view: /FORWARD VIEW/i,
-      weekly_actions: /THIS WEEK|WEEKLY ACTIONS/i,
+      competitive_intelligence: /COMPETITIVE (LANDSCAPE|DYNAMICS)/i,
+      entity_intelligence: /STRATEGIC THESIS|EXECUTIVE SUMMARY/i,
+      landscape_overview: /MARKET LANDSCAPE/i,
+      forward_view: /FORWARD (VIEW|CATALYSTS)/i,
+      weekly_actions: /CAPTURE STRATEGY|THIS WEEK/i,
     };
     let matched = 0;
     for (const intent of classification.intents) {
@@ -411,11 +430,33 @@ function scoreReport(synthesis, citations, classification) {
       : 50;
   }
 
-  // Weighted average
+  // 7. Strategic depth (15% weight) — does the report contain analysis, not just inventory?
+  let strategicScore = 0;
+  const strategicChecks = [
+    { test: /STRATEGIC THESIS/i, weight: 25, label: "thesis" },
+    { test: /TAM|total addressable|addressable market/i, weight: 15, label: "TAM" },
+    { test: /market (structure|concentration|tier)|oligopoly|fragmented|monopoly/i, weight: 15, label: "market_structure" },
+    { test: /barriers? to entry|entry barriers/i, weight: 10, label: "barriers" },
+    { test: /growing|declining|trend|trajectory|YoY|year.over.year|CAGR/i, weight: 10, label: "trend" },
+    { test: /win themes?|winning|competitive advantage|differentiat/i, weight: 10, label: "win_themes" },
+    { test: /teaming|joint venture|mentor.protege|subcontract/i, weight: 10, label: "teaming" },
+    { test: /CAPTURE STRATEGY/i, weight: 5, label: "capture" },
+  ];
+  const strategicHits = [];
+  for (const check of strategicChecks) {
+    if (check.test.test(text)) {
+      strategicScore += check.weight;
+      strategicHits.push(check.label);
+    }
+  }
+  strategicScore = Math.min(100, strategicScore);
+
+  // Weighted average (rebalanced to include strategic depth)
   const overall = Math.round(
-    pipelineScore * 0.3 +
-    sourceScore * 0.2 +
-    confidenceScore * 0.2 +
+    pipelineScore * 0.2 +
+    sourceScore * 0.15 +
+    confidenceScore * 0.15 +
+    strategicScore * 0.2 +
     pageScore * 0.1 +
     densityScore * 0.1 +
     fulfillmentScore * 0.1
@@ -425,6 +466,7 @@ function scoreReport(synthesis, citations, classification) {
     pipeline_opportunities: { count: pipelineCount, target: 3, score: pipelineScore },
     source_quality: { gov_percent: govPercent, target: 60, score: sourceScore },
     confidence_accuracy: { over_rated: overRated, score: confidenceScore },
+    strategic_depth: { hits: strategicHits, score: strategicScore },
     content_pages: { chars, est_pages: estPages, target_range: [4, 8], score: pageScore },
     data_density: { items_per_page: Math.round(itemsPerPage * 10) / 10, target: 1, score: densityScore },
     query_fulfillment: { match_percent: fulfillmentScore, score: fulfillmentScore },
