@@ -549,7 +549,7 @@ exports.handler = wrapHandler(async (event) => {
           "anthropic-version": "2023-06-01",
         },
         body: JSON.stringify(apiCallBody),
-      }));
+      }, 180000)); // 180s — scoring with large documents can take 2+ minutes
 
       const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "maryadawson@gmail.com,mary@missionmeetstech.com,jackyang2326@gmail.com,amchicu@gmail.com").split(",").map(e => e.trim().toLowerCase());
       const isAdmin = ADMIN_EMAILS.includes((email || "").toLowerCase());
@@ -567,7 +567,7 @@ exports.handler = wrapHandler(async (event) => {
               model: "claude-haiku-4-5-20251001",
               max_tokens: MAX_OUTPUT_TOKENS,
             }),
-          })).catch((err) => {
+          }, 120000)).catch((err) => { // 120s for shadow (Haiku is faster)
             console.error("Shadow scoring failed:", err.message);
             return null;
           });
