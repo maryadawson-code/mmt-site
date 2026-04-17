@@ -7,11 +7,52 @@
 // Implements Section 5.2 of docs/MMT-Technical-Spec.md.
 // ============================================================
 
+const crypto = require("crypto");
 const { createClient } = require("@supabase/supabase-js");
 const { scorePursuit } = require("./lib/pursuit-score-engine");
 
 const MONTHLY_SCORE_CAP = 20;
 const INSTITUTIONAL_SCORE_CAP = 100;
+const CACHE_TTL_HOURS = 72;
+
+function cacheKeyFor({ keyword, agency, naics }) {
+  const fy = new Date().getUTCFullYear();
+  const quarter = Math.floor(new Date().getUTCMonth() / 3) + 1;
+  const normalized = `${(keyword || "").toLowerCase().trim()}|${agency || ""}|${(naics || []).join(",")}|FY${fy}Q${quarter}`;
+  return crypto.createHash("sha256").update(normalized).digest("hex");
+}
+
+async function readCache(supabase, key) {
+  try {
+    const cutoff = new Date(Date.now() - CACHE_TTL_HOURS * 3600 * 1000).toISOString();
+    const { data } = await supabase
+      .from("ops_events")
+      .select("details, created_at")
+      .eq("event_type", "pursuit_score_cache")
+      .eq("details->>cache_key", key)
+      .gte("created_at", cutoff)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (data && data.details && data.details.card) {
+      return { card: data.details.card, cachedAt: data.created_at };
+    }
+  } catch (err) {
+    console.warn("pursuit-score: cache read failed:", err.message);
+  }
+  return null;
+}
+
+async function writeCache(supabase, key, card) {
+  try {
+    await supabase.from("ops_events").insert({
+      event_type: "pursuit_score_cache",
+      details: { cache_key: key, card, stored_at: new Date().toISOString() },
+    });
+  } catch (err) {
+    console.warn("pursuit-score: cache write failed:", err.message);
+  }
+}
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "https://missionmeetstech.com",
@@ -93,12 +134,31 @@ exports.handler = async (event) => {
 
   const cap = isInstitutional ? INSTITUTIONAL_SCORE_CAP : MONTHLY_SCORE_CAP;
   const used = count || 0;
+
+  // Cache lookup BEFORE decrementing quota — cache hits are free per spec §4
+  const cacheKey = cacheKeyFor({ keyword, agency, naics });
+  const cached = await readCache(supabase, cacheKey);
+  if (cached) {
+    const ageHours = Math.floor((Date.now() - new Date(cached.cachedAt).getTime()) / (3600 * 1000));
+    return {
+      statusCode: 200,
+      headers: { ...CORS_HEADERS, "X-Cache": "HIT" },
+      body: JSON.stringify({
+        ...cached.card,
+        remaining: Math.max(cap - used, 0),
+        cached: true,
+        cachedAgoHours: ageHours,
+      }),
+    };
+  }
+
   if (used >= cap) {
     return {
       statusCode: 429,
       headers: CORS_HEADERS,
       body: JSON.stringify({
-        error: `Monthly Pursuit Score limit reached (${cap} scores). Resets on the 1st.`,
+        error: "QUOTA_EXHAUSTED",
+        message: `Monthly Pursuit Score limit reached (${cap} scores). Resets on the 1st.`,
         remaining: 0,
       }),
     };
@@ -107,6 +167,9 @@ exports.handler = async (event) => {
   let card;
   try {
     card = await scorePursuit({ keyword, agency, naics });
+    if (card.error === "QUERY_TOO_SHORT") {
+      return { statusCode: 400, headers: CORS_HEADERS, body: JSON.stringify(card) };
+    }
   } catch (err) {
     console.error("pursuit-score: engine threw:", err.message);
     return {
@@ -116,6 +179,9 @@ exports.handler = async (event) => {
     };
   }
 
+  // Write to cache (non-blocking — subsequent requests can use it)
+  writeCache(supabase, cacheKey, card).catch(() => { /* swallow */ });
+
   try {
     await supabase.from("ops_events").insert({
       event_type: "pursuit_score",
@@ -123,9 +189,10 @@ exports.handler = async (event) => {
         email,
         keyword,
         agency: card.resolved?.agency,
-        total: card.total,
+        total: card.totalScore || card.total,
         verdict: card.verdict,
         vehicles: card.resolved?.vehicles,
+        partial: card.partial || false,
         submitted_at: now.toISOString(),
         month: now.toISOString().slice(0, 7),
       },
@@ -136,10 +203,11 @@ exports.handler = async (event) => {
 
   return {
     statusCode: 200,
-    headers: CORS_HEADERS,
+    headers: { ...CORS_HEADERS, "X-Cache": "MISS" },
     body: JSON.stringify({
       ...card,
       remaining: Math.max(cap - used - 1, 0),
+      cached: false,
     }),
   };
 };

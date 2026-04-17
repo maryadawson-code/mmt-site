@@ -110,6 +110,44 @@
           <a href="/intel/capture-intelligence-this-issue/" class="btn-primary">View Full Sheet &rarr;</a>
         </div>
 
+        <!-- Recent Pursuit Scores — populated from localStorage -->
+        <div id="ps-recent-wrap" style="display:none;margin:24px 0 8px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin:0;">Recent Pursuit Scores</p>
+            <a href="/premium/pursuit-score.html" style="font-size:12px;color:var(--mmt-teal);text-decoration:none;font-weight:600;">Score another &rarr;</a>
+          </div>
+          <div id="ps-recent-list" style="display:grid;gap:6px;margin-bottom:16px;"></div>
+        </div>
+        <script>
+          (function() {
+            try {
+              var h = JSON.parse(localStorage.getItem('mmt_pursuit_history') || '[]');
+              if (!h.length) return;
+              var wrap = document.getElementById('ps-recent-wrap');
+              var list = document.getElementById('ps-recent-list');
+              var verdictColors = { 'GO':'#15803D','LEAN GO':'#457B9D','DEVELOP':'#92710A','LEAN NO-BID':'#F97316','NO-BID':'#E63946' };
+              h.slice(0, 5).forEach(function(item) {
+                var d = new Date(item.scoredAt).toLocaleDateString();
+                var color = verdictColors[item.verdict] || '#457B9D';
+                var row = document.createElement('a');
+                row.href = '/premium/pursuit-score.html?keyword=' + encodeURIComponent(item.query || '') + (item.agency ? '&agency=' + item.agency : '');
+                row.style.cssText = 'background:#fff;border:1px solid #E5E7EB;border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:12px;text-decoration:none;color:inherit;';
+                row.innerHTML =
+                  '<div style="flex:1;min-width:0;">' +
+                    '<div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (item.query || '—') + '</div>' +
+                    '<div style="font-size:11px;color:#6B7280;">' + (item.agency || 'Any agency') + ' · ' + d + '</div>' +
+                  '</div>' +
+                  '<div style="display:flex;align-items:center;gap:10px;">' +
+                    '<span style="font-size:12px;font-weight:700;padding:3px 10px;border-radius:4px;color:#fff;background:' + color + ';">' + (item.verdict || '—') + '</span>' +
+                    '<span style="font-size:16px;font-weight:800;">' + (item.totalScore || 0) + '</span>' +
+                  '</div>';
+                list.appendChild(row);
+              });
+              wrap.style.display = 'block';
+            } catch (_) { /* noop */ }
+          })();
+        </script>
+
         <!-- Premium tools row — the three new Premium-included tools -->
         <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin:24px 0 10px;">Premium tools &middot; included with your subscription</p>
         <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:16px;">

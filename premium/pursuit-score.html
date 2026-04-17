@@ -106,6 +106,9 @@
             </select>
             <input type="text" id="ps-naics" placeholder="NAICS (optional)" maxlength="20">
           </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px;" id="ps-chips">
+            <!-- Quick-fill chips — click a chip to populate keyword + agency -->
+          </div>
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <span style="font-size:12px;color:var(--mmt-text-secondary);" id="ps-quota">20 scores / month included</span>
             <button id="ps-submit" class="btn-primary" onclick="runScore()">Score pursuit &rarr;</button>
@@ -113,8 +116,26 @@
           <div id="ps-error" style="display:none;margin-top:12px;padding:10px 14px;background:rgba(230,57,70,0.08);border:1px solid rgba(230,57,70,0.2);border-radius:8px;font-size:13px;color:#B91C1C;"></div>
         </div>
 
+        <!-- Loading state — shown during active score -->
+        <div id="ps-loading" style="display:none;">
+          <div class="dash-card">
+            <div id="ps-loading-status" style="font-size:13px;font-weight:600;color:var(--mmt-teal);margin-bottom:16px;">Querying USASpending award data…</div>
+            <div style="height:4px;background:var(--mmt-border);border-radius:999px;overflow:hidden;margin-bottom:20px;">
+              <div id="ps-loading-bar" style="height:100%;background:var(--mmt-teal);border-radius:999px;width:10%;transition:width 1.2s;"></div>
+            </div>
+            <div style="display:grid;gap:10px;">
+              <div style="background:var(--mmt-surface);border-radius:8px;padding:12px 14px;"><div style="height:12px;width:40%;background:var(--mmt-border);border-radius:3px;margin-bottom:8px;"></div><div style="height:8px;width:80%;background:var(--mmt-border);border-radius:3px;"></div></div>
+              <div style="background:var(--mmt-surface);border-radius:8px;padding:12px 14px;"><div style="height:12px;width:35%;background:var(--mmt-border);border-radius:3px;margin-bottom:8px;"></div><div style="height:8px;width:75%;background:var(--mmt-border);border-radius:3px;"></div></div>
+              <div style="background:var(--mmt-surface);border-radius:8px;padding:12px 14px;"><div style="height:12px;width:45%;background:var(--mmt-border);border-radius:3px;margin-bottom:8px;"></div><div style="height:8px;width:70%;background:var(--mmt-border);border-radius:3px;"></div></div>
+              <div style="background:var(--mmt-surface);border-radius:8px;padding:12px 14px;"><div style="height:12px;width:38%;background:var(--mmt-border);border-radius:3px;margin-bottom:8px;"></div><div style="height:8px;width:65%;background:var(--mmt-border);border-radius:3px;"></div></div>
+            </div>
+          </div>
+        </div>
+
         <!-- Result -->
         <div id="ps-result" style="display:none;">
+          <div id="ps-partial-warning" style="display:none;background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.3);color:#92710A;padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:14px;"></div>
+          <div id="ps-cache-note" style="display:none;background:rgba(69,123,157,0.08);color:var(--mmt-teal);padding:8px 14px;border-radius:6px;font-size:12px;margin-bottom:14px;"></div>
           <div class="dash-card">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:8px;">
               <div>
@@ -127,15 +148,23 @@
                 <div class="score-of">/ 100</div>
               </div>
             </div>
+
+            <!-- Analyst take (narrative) -->
+            <div style="margin:18px 0 20px;padding:14px 16px;background:var(--mmt-surface);border-radius:8px;border-left:3px solid var(--mmt-teal);">
+              <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--mmt-teal);margin-bottom:6px;">Analyst take</div>
+              <div id="ps-narrative" style="font-size:14px;line-height:1.6;color:var(--mmt-navy);"></div>
+            </div>
+
             <div style="margin-top:16px;">
               <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--mmt-text-secondary);margin-bottom:8px;">Dimension breakdown</div>
               <div id="ps-dims"></div>
             </div>
-            <div style="margin-top:20px;">
-              <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--mmt-text-secondary);margin-bottom:8px;">Evidence</div>
-              <div id="ps-evidence" class="evidence-grid"></div>
-            </div>
             <div id="ps-awardees" style="margin-top:20px;"></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:20px;padding-top:16px;border-top:1px solid var(--mmt-border);">
+              <button onclick="shareScore()" style="padding:8px 14px;background:var(--mmt-surface);color:var(--mmt-navy);border:1px solid var(--mmt-border);border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;">Share</button>
+              <button onclick="saveScore()" id="ps-save-btn" style="padding:8px 14px;background:var(--mmt-teal);color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;">Save to Dashboard</button>
+              <button onclick="document.getElementById('ps-keyword').focus(); document.getElementById('ps-keyword').scrollIntoView({behavior:'smooth',block:'center'});" style="padding:8px 14px;background:transparent;color:var(--mmt-teal);border:1px solid var(--mmt-teal);border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;">Score another</button>
+            </div>
             <p style="font-size:11px;color:var(--mmt-text-secondary);margin-top:16px;font-style:italic;">Composed from USASpending, SAM.gov, Congress.gov, ClinicalTrials.gov, PubMed, and the Federal IT Dashboard. The verdict is MMT analysis — verify primary sources before committing B&amp;P resources.</p>
           </div>
         </div>
@@ -168,11 +197,63 @@
 
     var VERDICT_COLORS = {
       'GO':          '#15803D',
-      'LEAN GO':     '#84cc16',
+      'LEAN GO':     '#457B9D',
       'DEVELOP':     '#92710A',
       'LEAN NO-BID': '#F97316',
       'NO-BID':      '#E63946'
     };
+
+    // Quick-fill chips — seed with common federal health IT pursuits
+    var QUICK_CHIPS = [
+      { label: 'MHS GENESIS', keyword: 'MHS GENESIS', agency: 'DHA' },
+      { label: 'CCN Next Gen', keyword: 'CCN Next Gen', agency: 'VA' },
+      { label: 'VA EHRM', keyword: 'VA EHR Modernization', agency: 'VA' },
+      { label: 'DHA Data Governance', keyword: 'DHA data governance', agency: 'DHA' },
+      { label: 'OASIS+', keyword: 'OASIS+', agency: 'GSA' }
+    ];
+    (function renderChips() {
+      var wrap = document.getElementById('ps-chips');
+      if (!wrap) return;
+      QUICK_CHIPS.forEach(function(chip) {
+        var btn = document.createElement('button');
+        btn.textContent = chip.label;
+        btn.style.cssText = 'padding:4px 12px;background:var(--mmt-surface);border:1px solid var(--mmt-border);border-radius:999px;font-size:12px;color:var(--mmt-teal);cursor:pointer;font-weight:600;';
+        btn.addEventListener('click', function() {
+          document.getElementById('ps-keyword').value = chip.keyword;
+          if (chip.agency) document.getElementById('ps-agency').value = chip.agency;
+        });
+        wrap.appendChild(btn);
+      });
+    })();
+
+    var LOADING_MESSAGES = [
+      'Querying USASpending award data…',
+      'Checking incumbent contract concentration…',
+      'Scanning Congressional activity…',
+      'Pulling federal research pipeline…',
+      'Calculating budget momentum…',
+      'Composing your score…'
+    ];
+    var loadingTimer = null;
+    function startLoading() {
+      var card = document.getElementById('ps-loading');
+      var status = document.getElementById('ps-loading-status');
+      var bar = document.getElementById('ps-loading-bar');
+      card.style.display = 'block';
+      document.getElementById('ps-result').style.display = 'none';
+      var i = 0;
+      status.textContent = LOADING_MESSAGES[0];
+      bar.style.width = '10%';
+      loadingTimer = setInterval(function() {
+        i = (i + 1) % LOADING_MESSAGES.length;
+        status.textContent = LOADING_MESSAGES[i];
+        bar.style.width = Math.min(95, 20 + i * 13) + '%';
+      }, 1500);
+    }
+    function stopLoading() {
+      if (loadingTimer) { clearInterval(loadingTimer); loadingTimer = null; }
+      document.getElementById('ps-loading').style.display = 'none';
+    }
 
     function setError(msg) {
       var el = document.getElementById('ps-error');
@@ -181,69 +262,98 @@
       el.style.display = 'block';
     }
 
+    var lastScore = null;
+
     function renderResult(card) {
+      lastScore = card;
       document.getElementById('ps-result').style.display = 'block';
-      document.getElementById('ps-total').textContent = card.total;
-      document.getElementById('ps-verdict').textContent = card.verdict;
-      document.getElementById('ps-verdict').style.color = VERDICT_COLORS[card.verdict] || '#0A192F';
-      document.getElementById('ps-ring').style.background = VERDICT_COLORS[card.verdict] || '#457B9D';
+
+      var total = card.totalScore || card.total || 0;
+      var verdict = card.verdict || 'NO-BID';
+      document.getElementById('ps-verdict').textContent = verdict;
+      document.getElementById('ps-verdict').style.color = VERDICT_COLORS[verdict] || '#0A192F';
+      document.getElementById('ps-ring').style.background = VERDICT_COLORS[verdict] || '#457B9D';
+
+      // Animate total score from 0
+      var ringEl = document.getElementById('ps-total');
+      var startTs = performance.now();
+      function animate(ts) {
+        var elapsed = ts - startTs;
+        var pct = Math.min(elapsed / 1200, 1);
+        ringEl.textContent = Math.round(pct * total);
+        if (pct < 1) requestAnimationFrame(animate);
+        else ringEl.textContent = total;
+      }
+      requestAnimationFrame(animate);
 
       var resolved = card.resolved || {};
       var resolvedParts = [];
-      if (resolved.searched && resolved.searched !== card.keyword) resolvedParts.push('Searched: "' + resolved.searched + '"');
+      if (resolved.searched && resolved.searched !== card.query) resolvedParts.push('Searched: "' + resolved.searched + '"');
       if (resolved.agency) resolvedParts.push('Agency: ' + resolved.agency);
       if (resolved.vehicles && resolved.vehicles.length) resolvedParts.push('Vehicle: ' + resolved.vehicles.join(', '));
+      if (card.scoredAt) resolvedParts.push('Scored: ' + new Date(card.scoredAt).toLocaleString());
       document.getElementById('ps-resolved').textContent = resolvedParts.join(' · ');
 
-      // Dimensions
+      // Partial warning
+      var partialEl = document.getElementById('ps-partial-warning');
+      if (card.partial) {
+        partialEl.textContent = '⚠ One or more data sources timed out. Score may be understated. Timed out: ' + (card.timedOut || []).join(', ') + '.';
+        partialEl.style.display = 'block';
+      } else {
+        partialEl.style.display = 'none';
+      }
+
+      // Cache note
+      var cacheEl = document.getElementById('ps-cache-note');
+      if (card.cached) {
+        cacheEl.textContent = 'Served from cache · Scored ' + (card.cachedAgoHours || 0) + ' hour' + (card.cachedAgoHours === 1 ? '' : 's') + ' ago · This did not count against your monthly quota.';
+        cacheEl.style.display = 'block';
+      } else {
+        cacheEl.style.display = 'none';
+      }
+
+      // Narrative
+      document.getElementById('ps-narrative').textContent = card.narrative || '';
+
+      // Dimensions — new camelCase shape with evidence bullets
       var dims = card.dimensions || {};
-      var dimLabels = {
-        incumbent_vulnerability: 'Incumbent vulnerability',
-        budget_momentum:         'Budget momentum',
-        legislative_tailwind:    'Legislative tailwind',
-        research_pipeline:       'Research pipeline'
-      };
+      var dimKeys = [
+        { key: 'incumbentVulnerability', label: 'Incumbent Vulnerability' },
+        { key: 'budgetMomentum',         label: 'Budget Momentum' },
+        { key: 'legislativeTailwind',    label: 'Legislative Tailwind' },
+        { key: 'researchPipeline',       label: 'Research Pipeline' }
+      ];
       var dimsEl = document.getElementById('ps-dims');
       dimsEl.innerHTML = '';
-      Object.keys(dimLabels).forEach(function(key) {
-        var d = dims[key] || { score: 0, max: 25 };
-        var pct = Math.round((d.score / d.max) * 100);
+      dimKeys.forEach(function(spec) {
+        var d = dims[spec.key] || { score: 0, evidence: [] };
+        var pct = Math.round((d.score / 25) * 100);
+        var evHtml = '';
+        if (d.evidence && d.evidence.length) {
+          evHtml = '<ul style="margin:8px 0 0;padding-left:18px;font-size:12px;color:var(--mmt-text-secondary);line-height:1.55;">' +
+            d.evidence.map(function(e) { return '<li style="margin:3px 0;">' + e + '</li>'; }).join('') +
+            '</ul>';
+        }
+        var dimColor = d.score >= 20 ? '#15803D' : d.score >= 15 ? '#457B9D' : d.score >= 10 ? '#92710A' : d.score >= 6 ? '#F97316' : '#E63946';
         dimsEl.insertAdjacentHTML('beforeend',
-          '<div class="dim-row">' +
-          '<span class="dim-name">' + dimLabels[key] + '</span>' +
-          '<div class="dim-bar"><div class="dim-fill" style="width:' + pct + '%;"></div></div>' +
-          '<span class="dim-score">' + d.score + ' / ' + d.max + '</span>' +
-          '</div>'
-        );
-      });
-
-      // Evidence KPIs
-      var ev = card.evidence || {};
-      var evLabels = [
-        ['usaspending_total',       'USASpending awards'],
-        ['active_opportunities',    'Active SAM opps'],
-        ['active_bills',            'Active bills'],
-        ['crs_reports',             'CRS reports'],
-        ['hearings',                'Hearings'],
-        ['completed_trials',        'Completed trials'],
-        ['pubmed_articles',         'PubMed articles'],
-        ['it_dashboard_programs',   'IT Dashboard programs']
-      ];
-      var evEl = document.getElementById('ps-evidence');
-      evEl.innerHTML = '';
-      evLabels.forEach(function(pair) {
-        evEl.insertAdjacentHTML('beforeend',
-          '<div class="evidence-kpi">' +
-          '<div class="evidence-kpi-label">' + pair[1] + '</div>' +
-          '<div class="evidence-kpi-value">' + (ev[pair[0]] || 0) + '</div>' +
+          '<div style="padding:12px 0;border-bottom:1px solid var(--mmt-border);">' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+            '<span style="font-size:13px;font-weight:700;color:var(--mmt-navy);">' + spec.label + '</span>' +
+            '<div style="flex:1;height:6px;background:var(--mmt-border);border-radius:999px;margin:0 14px;overflow:hidden;">' +
+              '<div style="height:100%;background:' + dimColor + ';border-radius:999px;width:' + pct + '%;transition:width 0.8s;"></div>' +
+            '</div>' +
+            '<span style="font-size:12px;font-weight:600;color:var(--mmt-text-secondary);white-space:nowrap;">' + d.score + ' / 25</span>' +
+          '</div>' +
+          evHtml +
           '</div>'
         );
       });
 
       // Top awardees
       var awEl = document.getElementById('ps-awardees');
-      if (ev.top_awardees && ev.top_awardees.length) {
-        var rows = ev.top_awardees.map(function(a) {
+      var topAwardees = (card.evidence && card.evidence.top_awardees) || [];
+      if (topAwardees.length) {
+        var rows = topAwardees.map(function(a) {
           var obl = a.obligated ? '$' + (a.obligated / 1e6).toFixed(1) + 'M' : 'n/a';
           var end = a.end_date ? ' · ends ' + a.end_date : '';
           return '<li style="margin:4px 0;font-size:13px;">' + (a.recipient || 'Unknown') + ' — ' + obl + end + '</li>';
@@ -258,6 +368,50 @@
       document.getElementById('ps-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
+    function shareScore() {
+      if (!lastScore) return;
+      var s = lastScore;
+      var dims = s.dimensions || {};
+      var txt = 'Pursuit Score: ' + s.query + ' | ' + (s.agency || 'Any agency') + '\n' +
+        'Score: ' + (s.totalScore || s.total || 0) + '/100 — ' + s.verdict + '\n' +
+        'Incumbent Vulnerability: ' + (dims.incumbentVulnerability?.score || 0) + '/25\n' +
+        'Budget Momentum: ' + (dims.budgetMomentum?.score || 0) + '/25\n' +
+        'Legislative Tailwind: ' + (dims.legislativeTailwind?.score || 0) + '/25\n' +
+        'Research Pipeline: ' + (dims.researchPipeline?.score || 0) + '/25\n' +
+        'Scored with MMT Pursuit Score Engine · missionmeetstech.com';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(function() {
+          alert('Score summary copied to clipboard.');
+        }).catch(function() {
+          prompt('Copy this summary:', txt);
+        });
+      } else {
+        prompt('Copy this summary:', txt);
+      }
+    }
+
+    function saveScore() {
+      if (!lastScore) return;
+      try {
+        var history = JSON.parse(localStorage.getItem('mmt_pursuit_history') || '[]');
+        history.unshift({
+          query: lastScore.query,
+          agency: lastScore.agency,
+          totalScore: lastScore.totalScore || lastScore.total,
+          verdict: lastScore.verdict,
+          scoredAt: lastScore.scoredAt || new Date().toISOString(),
+        });
+        history = history.slice(0, 10);
+        localStorage.setItem('mmt_pursuit_history', JSON.stringify(history));
+        var btn = document.getElementById('ps-save-btn');
+        btn.textContent = 'Saved ✓';
+        btn.disabled = true;
+        setTimeout(function() { btn.textContent = 'Save to Dashboard'; btn.disabled = false; }, 2500);
+      } catch (err) {
+        alert('Could not save: ' + err.message);
+      }
+    }
+
     function runScore() {
       var kw = document.getElementById('ps-keyword').value.trim();
       var agency = document.getElementById('ps-agency').value || null;
@@ -265,13 +419,13 @@
       var naics = naicsRaw ? naicsRaw.split(/[\s,]+/).filter(Boolean) : null;
       var e = localStorage.getItem('mmt_email') || '';
       if (!e) { setError('Please sign in first.'); return; }
-      if (!kw) { setError('Enter a keyword to score.'); return; }
+      if (!kw || kw.length < 2) { setError('Enter at least 2 characters to score.'); return; }
       setError('');
 
       var btn = document.getElementById('ps-submit');
       btn.disabled = true;
-      btn.textContent = 'Scoring...';
-      document.getElementById('ps-result').style.display = 'none';
+      btn.textContent = 'Scoring…';
+      startLoading();
 
       fetch('/.netlify/functions/pursuit-score', {
         method: 'POST',
@@ -280,10 +434,11 @@
       })
         .then(function(res) { return res.json().then(function(data) { return { ok: res.ok, status: res.status, data: data }; }); })
         .then(function(result) {
+          stopLoading();
           btn.disabled = false;
           btn.textContent = 'Score pursuit \u2192';
           if (!result.ok) {
-            setError(result.data.error || 'Scoring failed. Try again.');
+            setError(result.data.message || result.data.error || 'Scoring failed. Try again.');
             return;
           }
           renderResult(result.data);
@@ -292,6 +447,7 @@
           }
         })
         .catch(function(err) {
+          stopLoading();
           btn.disabled = false;
           btn.textContent = 'Score pursuit \u2192';
           setError('Network error: ' + err.message);
