@@ -159,8 +159,49 @@ source).
 | `BLS_API_KEY` | bls-api.js | No (25 req/day unregistered) | bls.gov/developers |
 | `SAM_GOV_SYSTEM_ACCOUNT_KEY` | federal-data-apis.js (future) | Only for Contract Awards API | sam.gov System Account request |
 
+## Delta vs. Full Technical Implementation Spec
+
+The canonical full platform spec is [`docs/MMT-Technical-Spec.md`](MMT-Technical-Spec.md)
+(v1.0, 2026-04-17). What in this roadmap is **landed**, what is **partial**, and
+what is **queued** against that spec:
+
+**Landed:**
+- All 15 federal-data API library modules from Spec §2
+- ProposalPulse enrichment (BLS + PubMed + SCA wage + ONC CHPL) — covers Spec §3.2
+  compliance checks except the dedicated standalone endpoint
+- Premium chat endpoint + widget with full multi-source enrichment (Spec §5.3)
+- Ask MMT AI-assisted draft with corpus search (Spec §5.3 adjacent)
+- Pursuit Score Engine library + `/api/pursuit-score` endpoint (Spec §3.3, §5.2)
+- MMT content corpus (101 articles + 4 briefs) indexed for assistant context
+- Known-vehicles dictionary (16 IDIQs) with canonical search term expansion
+
+**Partial:**
+- Compliance checks run inside `score-deck-background.js` rather than a
+  standalone `/api/compliance-check` endpoint. Spec §3.2 calls for a dedicated
+  endpoint + structured ComplianceReport JSON. To split out, extract the
+  enrichment + rollup logic into `lib/compliance-checker.js` and expose as
+  `netlify/functions/compliance-check.js`.
+- NLP extraction is regex + keyword lookup (`lib/proposal-enrichment.js`);
+  Spec §3.1 calls for Claude-driven structured JSON extraction. Worth an
+  upgrade once live data proves the current extractor's false-negative rate
+  is hurting scoring quality.
+
+**Queued (no implementation yet):**
+- `lib/signal-engine.js` + Signal Chain dashboard (Spec §3.4)
+- `lib/sam-contract-awards.js` as a distinct module (Spec §2.1) — currently
+  we use USASpending v2 as the canonical awards source. Blocked on SAM.gov
+  System Account approval.
+- Redis/in-memory cache (`services/cache.js`) — Spec §4. Today every
+  enrichment call hits the upstream API fresh; under load this will need TTL caching.
+- DB schemas for `tracked-programs`, `signal-events`, `pursuit-scores`,
+  `compliance-reports` (Spec §6). Today we persist runs via `ops_events`
+  which is fine for audit but not for the dashboard queries the spec
+  assumes.
+- `/api/programs/track` + `/api/alerts` endpoints (Spec §5.4 / §5.5)
+
 ## Reference
 
+- Canonical full spec: [docs/MMT-Technical-Spec.md](MMT-Technical-Spec.md)
 - Original roadmap write-up: see chat log 2026-04-17
 - Migration guide for FPDS → SAM.gov Contract Awards: <https://open.gsa.gov>
 - api.data.gov signup: <https://api.data.gov/signup>
