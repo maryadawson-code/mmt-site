@@ -233,7 +233,7 @@
           <span class="dot">·</span>
           <span>FY2027 Federal Health Budget</span>
           <span class="dot">·</span>
-          <span>24 Signals · 10 Agencies</span>
+          <span>25 Signals · 10 Agencies</span>
         </div>
         <h1 class="ci-page-title">Capture Intelligence:<br><span class="accent">FY2027 Federal Health Budget</span></h1>
         <p class="ci-page-subtitle">Two issues. Every row in the summary table is expanded below with sourced, decision-level intelligence: what the funding actually buys, what changed, who holds incumbent position, and what the action window requires. Every material claim carries a confidence label.</p>
@@ -273,7 +273,7 @@
     <section class="ci-table-section">
       <div class="wrap">
         <h2>Full Capture Sheet — FY2027</h2>
-        <p class="ci-table-count">24 signals · 10 agencies · Updated April 2026</p>
+        <p class="ci-table-count">25 signals · 10 agencies · Updated April 2026</p>
         <div class="ci-table-wrap">
           <table class="ci-table">
             <thead>
@@ -457,6 +457,13 @@
                 <td><span class="badge badge-verified">Verified</span></td>
                 <td class="window">Active · Varies by project</td>
               </tr>
+              <tr>
+                <td class="agency">DHA CDAO</td>
+                <td class="program"><a href="#s25">DHA Data Strategy — The Orchestration Playbook</a></td>
+                <td>Data-as-a-Product mandate; Orchestration Layer is <em>not</em> a new platform; ~51 systems orchestrated to Space Force API Portal reference model within 12 months</td>
+                <td><span class="badge badge-verified">Verified</span></td>
+                <td class="window">Active · Track Enterprise Data Product Registry and catalog follow-ons</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -466,7 +473,7 @@
     <!-- Deep Dive Accordions -->
     <section class="ci-deep-dive" id="deep-dive">
       <div class="wrap">
-        <h2>Deep Dive: All 24 Signals</h2>
+        <h2>Deep Dive: All 25 Signals</h2>
         <p class="ci-deep-dive-intro">Click any row to expand sourced intelligence. Every material claim carries a confidence label and primary source attribution.</p>
 
         <!-- 1. CCN Next Gen -->
@@ -1266,6 +1273,76 @@
               <p>Construction timelines vary by project. AE firms should position against <strong>Bethesda ($142.3M concurrent), Kunsan ($65M), and Rhine ORB ($95M)</strong> as the largest active opportunities. Lakenheath Phase 2 ($78M) and Fort Wainwright ($45.8M) follow active authorization sequences.</p>
             </div>
             <div class="source-note">Sources: FY2027 C-1 Military Construction exhibit (Verified). Project values and locations (Verified — comptroller.war.gov). INDOPACOM geographic pivot: comparison with FY2026 C-1 (Verified — no prior INDOPACOM DHA MILCON entry).</div>
+          </div>
+        </details>
+
+        <details class="ci-accordion" id="s25">
+          <summary>
+            <span class="acc-number">25</span>
+            <div class="acc-header">
+              <div class="acc-title">DHA CDAO Data Strategy — The Orchestration Playbook</div>
+              <div class="acc-meta">
+                <span class="acc-agency">DHA CDAO · Active · 12-Month Orchestration Horizon</span>
+                <span class="badge badge-verified">Verified</span>
+              </div>
+            </div>
+            <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </summary>
+          <div class="acc-body">
+            <h3>What it is</h3>
+            <p>On April 16, 2026, DHA's Chief Data and Analytics Office published <em>Enabling Decision Advantage With Health Data</em> — the strategy, governance, and request-process playbook for how DHA will consolidate data operations across more than 100 source systems. This is the structural document every DHA data solicitation through at least FY2028 will operate inside. Every capture team working DHA data, GenAI, or MHS analytics needs to read it against their pipeline. <span class="badge badge-verified">Verified — DHA CDAO, April 16, 2026</span></p>
+
+            <h3>The three things this document tells you</h3>
+
+            <p><strong>1. The buy is Data as a Product.</strong> Strategic Line of Effort #3 is explicit: transition to a reusable, outcome-driven DaaP model. Every funded data product must originate from an Authoritative Data Source, carry measurable SLAs, sit in the Enterprise Data Catalog, and follow a seven-step lifecycle from Discover through Retire. Dataset-per-project work is off-strategy. Capabilities positioned as one-off integrations will be repackaged into Data Products or will lose to vendors that already frame them that way. <span class="badge badge-verified">Verified</span></p>
+
+            <p><strong>2. The architecture is orchestration, not consolidation.</strong> The Data Orchestration Layer is described with a triple negative: <em>Not a New Platform. Not a Cloud Service. Not a Replacement.</em> It is a logical layer built on infrastructure services (monitoring, lineage, auditing, scheduler, bucket, GenAI hook), an Enterprise Data Product Registry, and an Enterprise Data Product Access tier enforcing sharing policies, classification and tagging, access control, authentication, and APIs across NIPR, SIPR, and COCOM consumers. Any pitch that leads with "we'll build you a new lake" is misreading the requirement. The buy favors API work, metadata harvesting, catalog tooling, identity management, governed data-sharing services, and contract-and-quality instrumentation. <span class="badge badge-verified">Verified</span></p>
+
+            <p><strong>3. The timeline is near.</strong> A source annotation on the published briefing reads: <em>"51 systems, less than 12 months — Space Force API Portal."</em> That is the orchestration horizon and the reference architecture DHA CDAO is working against. The Space Force API portal is the published model for serving data products to downstream consumers through governed APIs rather than bulk replication. <span class="badge badge-corroborated">Corroborated — annotated source copy; single-source directional signal</span></p>
+
+            <h3>Who you actually talk to</h3>
+            <p>The strategy defines six data governance roles. For capture teams, two of them matter most:</p>
+            <ul>
+              <li><strong>Data Domain Steward</strong> — day-to-day governance lead for a data domain (bed status, blood inventory, access to care, pharmacy, readiness, etc.). Owns definitions, metadata, business rules, and access criteria. This is where product shape gets decided.</li>
+              <li><strong>Data Steward Coordinator</strong> — facilitates cross-functional governance, leads forums, tracks decisions, manages change requests. This is the orchestration function — the human workflow the Orchestration Layer supports.</li>
+            </ul>
+            <p>Pitching IT Data Custodians will route your capability into security and operations work. Pitching Data Domain Stewards and their Coordinators positions your capability as a Data Product. Those are different contract shapes and different ceiling values. <span class="badge badge-verified">Verified</span></p>
+
+            <h3>How DHA accepts requests</h3>
+            <p>Four pathways feed the DHA Global Support Center at <a href="https://gsc.health.mil/" target="_blank" rel="noopener">gsc.health.mil</a>:</p>
+            <ol>
+              <li><strong>GSC Online Services Portal</strong> — DHA personnel, DHA Network personnel, COCOMS liaisons. Route to: CDAO Triage.</li>
+              <li><strong>Local ISC Routing</strong> — MTF personnel.</li>
+              <li><strong>Data Request Catalog Form</strong> — flagged "coming soon." This is a small-dollar tech opportunity in the catalog implementation itself.</li>
+              <li><strong>Email and phone</strong> — <code>dha.jbsa.j-6.mbx.mhs-service-desk@health.mil</code> or 1-800-600-9332. This is the external-partner pathway.</li>
+            </ol>
+            <p>"CDAO Triage" is the routing label that gets requests into the seven-step Enterprise Measure Request Process. External-org data products (primes, SIs, research partners) trigger MOA, DSA, or DUA review plus DHA Agreements, Patient Privacy, and OGC approval before delivery. <span class="badge badge-verified">Verified</span></p>
+
+            <h3>The GenAI gate</h3>
+            <p>The strategy names six approved GenAI platforms. Only two are cleared for PHI and PII:</p>
+            <ul>
+              <li><strong>Ask Sage (health.mil)</strong> — PHI/PII approved; tokens required; API available. Fewer models than the CUI tiers.</li>
+              <li><strong>Approved Cloud-native services</strong> — AWS Bedrock, AWS SageMaker, Azure AI Endpoint, deployed by approved developers inside DHA GovCloud.</li>
+            </ul>
+            <p>Microsoft CoPilot is MED365-integrated and handles PHI/PII but sits in limited pilot with no API. CamoGPT, Ask Sage (Army), and GenAI.mil are CUI-only — useful for administrative, supply-chain, and policy work, not clinical content. <strong>Any GenAI capability touching PHI that is not on this list is classified as a reportable data breach and security violation.</strong> Clinical solicitations should be read against this list — not against general commercial AI availability. <span class="badge badge-verified">Verified</span></p>
+
+            <h3>What this means for your pipeline</h3>
+            <p><strong>For vendors already in DHA data work:</strong> signal 18 (Enterprise Data Catalog, HT001126RE011, $34M, WOSB) is the first procurement instantiation of this strategy. Read it as a template — metadata harvesting, catalog integration, VAULTIS framework, and ADS lineage language will recur across follow-on actions. Position against the catalog, not against a replacement platform.</p>
+            <p><strong>For vendors outside DHA:</strong> the three use cases published in this document (Bed Status from CAPMAN, Blood Inventory, Access to Care at 80–100M records and a 51-step pipeline) are the published templates for what "done" looks like. Capabilities that can be written as a reusable, versioned Data Product against those domains have a clearer path than capabilities positioned as custom integrations.</p>
+            <p><strong>For GenAI vendors:</strong> if your clinical AI is not on the approved list and you cannot host inside DHA GovCloud, you are positioning for CUI-only work. Clinical decision support touching PHI requires Ask Sage integration or cloud-native deployment. Those are distinct procurement paths and distinct teaming partners.</p>
+            <p><strong>For proposal teams:</strong> evaluators reading technical volumes on DHA data and AI solicitations through at least FY2028 will be trained on this playbook. Technical approaches that use the language of DaaP, ADS, federated governance, metadata foundation, and orchestration-layer consumption will read as on-strategy. Approaches that describe ingest pipelines, data lakes, and custom ETL will read as off-strategy regardless of technical merit.</p>
+
+            <div class="action-box">
+              <div class="action-label">Action Window</div>
+              <p><strong>Active now.</strong> Track three things on SAM.gov:</p>
+              <ol>
+                <li>Follow-on and amendment activity on <strong>HT001126RE011</strong> and related CDAO metadata and catalog actions.</li>
+                <li><strong>Enterprise Data Product Registry</strong> and <strong>Enterprise Data Product Marketplace</strong> standup work — both are named components of the Summer 2027 future-state architecture that are not yet procured.</li>
+                <li><strong>API portal and orchestration-layer implementation</strong> — if the Space Force API portal reference is accurate, expect RFIs that reference that model before a full solicitation posts.</li>
+              </ol>
+              <p>For teams with clinical content: audit your AI stack against the approved GenAI list <em>before</em> submitting on DHA solicitations that may involve PHI. A compliant stack is a proposal-defensibility issue, not a post-award one.</p>
+            </div>
+            <div class="source-note">Sources: DHA CDAO, <em>Enabling Decision Advantage With Health Data: DHA Data Strategy, Governance, and Request Process</em>, April 16, 2026 (Verified — primary publication). Solicitation HT001126RE011 (Verified — SAM.gov). Approved GenAI platforms list (Verified — DHA CDAO publication). Six-role governance model and seven-step Enterprise Measure Request Process (Verified — DHA CDAO publication). 51-systems / 12-month / Space Force API Portal reference (Corroborated — annotated source copy, single-source directional).</div>
           </div>
         </details>
 
