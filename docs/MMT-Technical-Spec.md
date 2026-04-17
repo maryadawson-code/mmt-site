@@ -2,6 +2,18 @@
 ### ProposalPulse Premium + MarketPulse Signal Chain + Pursuit Score Engine
 **Version 1.0 · April 17, 2026 · Hand to Developer**
 
+> **Pricing addendum (2026-04-17):** Section 5 (Pricing/Tier Definitions) of the original
+> spec shipped with placeholder numbers. Canonical pricing now lives in a single
+> source of truth at [`netlify/functions/lib/mmt-pricing.js`](../netlify/functions/lib/mmt-pricing.js).
+> That module exports `MMT_PRICING` (raw numbers + Stripe product IDs from env) and
+> `PRICING_COPY` (pre-formatted strings for UI display). Any code that needs a
+> monthly allowance, overage rate, or standalone price must `require` this module.
+> Rates match Section 5 of the MMT Session Review (2026-04-17). Stripe Product
+> IDs are env-backed (`STRIPE_COMPLIANCE_STANDALONE_ID`, `STRIPE_PURSUIT_STANDALONE_ID`,
+> `STRIPE_SIGNAL_ADDON_ID`, etc.) — they must be created in Stripe Dashboard before
+> any non-Premium purchase path goes live. Pricing also renders on `/pricing`,
+> each premium tool page, and the dashboard tile row.
+
 ---
 
 ## 0. CRITICAL — Do First (Deadline: July 31, 2026)

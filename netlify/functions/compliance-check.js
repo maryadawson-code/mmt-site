@@ -15,6 +15,7 @@
 
 const { createClient } = require("@supabase/supabase-js");
 const { enrichProposal } = require("./lib/proposal-enrichment");
+const { MMT_PRICING } = require("./lib/mmt-pricing");
 
 // --- Documentation flag detection ---
 // Health-IT-specific references evaluators expect to see. Presence alone
@@ -65,8 +66,9 @@ const CORS_HEADERS = {
   "Content-Type": "application/json",
 };
 
-const MONTHLY_CAP = 15;
-const INSTITUTIONAL_CAP = 75;
+// Monthly cap + overage values come from lib/mmt-pricing.js (single source of truth)
+const MONTHLY_CAP = MMT_PRICING.compliance_check.premium_monthly_allowance;         // 15
+const INSTITUTIONAL_CAP = MMT_PRICING.compliance_check.team_pack_allowance + 25;   // 75 (Team + Institutional headroom)
 
 exports.handler = async (event) => {
   if (event.httpMethod === "OPTIONS") {
@@ -226,6 +228,13 @@ exports.handler = async (event) => {
   } catch (logErr) {
     console.warn("compliance-check: ops_events log failed:", logErr.message);
   }
+
+  // Attach pricing info so the UI can display overage cost if user is near the cap
+  report.pricing = {
+    cap,
+    overage_per_check: MMT_PRICING.compliance_check.premium_overage_per_check,
+    standalone_per_check: MMT_PRICING.compliance_check.standalone_per_check,
+  };
 
   return {
     statusCode: 200,

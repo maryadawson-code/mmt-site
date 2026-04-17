@@ -91,6 +91,22 @@
         <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">Compliance Check</h1>
         <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 20px;">Paste a proposal's technical volume (or SOW) and get automated checks against ONC CHPL certification, SCA/DBA wage floors, PubMed evidence, and standard documentation requirements. Each check cites primary sources.</p>
 
+        <!-- Interactive walkthrough -->
+        <details style="margin-bottom:16px;border:1px solid var(--mmt-border);border-radius:12px;overflow:hidden;background:var(--mmt-white);">
+          <summary style="padding:14px 20px;cursor:pointer;font-size:14px;font-weight:700;color:var(--mmt-navy);list-style:none;display:flex;align-items:center;justify-content:space-between;">
+            <span>Watch a 90-second walkthrough</span>
+            <span style="font-size:12px;color:var(--mmt-teal);font-weight:600;">Expand &#9662;</span>
+          </summary>
+          <div style="border-top:1px solid var(--mmt-border);background:var(--mmt-surface);">
+            <div style="padding:14px 20px 8px;display:flex;gap:8px;flex-wrap:wrap;font-size:12px;">
+              <a href="/demos/compliance-check-demo-01.html" target="_blank" rel="noopener noreferrer" style="padding:6px 12px;border-radius:999px;background:var(--mmt-navy);color:#fff;font-weight:600;">Full walkthrough (90s)</a>
+              <a href="/demos/compliance-check-demo-02.html" target="_blank" rel="noopener noreferrer" style="padding:6px 12px;border-radius:999px;background:var(--mmt-white);color:var(--mmt-navy);border:1px solid var(--mmt-border);font-weight:600;">CHPL deep-dive (80s)</a>
+              <a href="/demos/compliance-check-demo-03.html" target="_blank" rel="noopener noreferrer" style="padding:6px 12px;border-radius:999px;background:var(--mmt-white);color:var(--mmt-navy);border:1px solid var(--mmt-border);font-weight:600;">SCA wage floor (85s)</a>
+            </div>
+            <iframe src="/demos/compliance-check-demo-01.html" title="Compliance Check 90-second walkthrough" loading="lazy" style="width:100%;height:760px;border:0;display:block;"></iframe>
+          </div>
+        </details>
+
         <div class="dash-card" style="border-left:3px solid var(--mmt-teal);">
           <h3 style="margin:0 0 8px;font-size:15px;font-weight:700;">Proposal text</h3>
           <textarea id="cc-text" rows="12" placeholder="Paste technical volume, approach section, or SOW text. At least a few paragraphs." style="width:100%;padding:12px 14px;border:1px solid var(--mmt-border);border-radius:8px;font-size:13px;font-family:inherit;line-height:1.55;resize:vertical;"></textarea>
@@ -98,8 +114,11 @@
             <summary style="cursor:pointer;color:var(--mmt-teal);font-weight:600;">Add SOW / PWS text (optional)</summary>
             <textarea id="cc-sow" rows="6" placeholder="Paste the solicitation SOW or PWS text to strengthen keyword-based clinical claim detection." style="width:100%;margin-top:8px;padding:12px 14px;border:1px solid var(--mmt-border);border-radius:8px;font-size:13px;font-family:inherit;line-height:1.55;resize:vertical;"></textarea>
           </details>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;">
-            <span style="font-size:12px;color:var(--mmt-text-secondary);" id="cc-quota">15 checks / month included</span>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;flex-wrap:wrap;gap:8px;">
+            <div>
+              <div style="font-size:12px;color:var(--mmt-text-secondary);" id="cc-quota">15 checks / month included</div>
+              <div style="font-size:11px;color:var(--mmt-text-secondary);margin-top:2px;">Over cap: $4.99/check · Standalone (non-Premium): $49.99</div>
+            </div>
             <button id="cc-submit" class="btn-primary" onclick="runCheck()">Run compliance check &rarr;</button>
           </div>
           <div id="cc-error" style="display:none;margin-top:12px;padding:10px 14px;background:rgba(230,57,70,0.08);border:1px solid rgba(230,57,70,0.2);border-radius:8px;font-size:13px;color:#B91C1C;"></div>

@@ -109,8 +109,11 @@
           <div style="display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px;" id="ps-chips">
             <!-- Quick-fill chips — click a chip to populate keyword + agency -->
           </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span style="font-size:12px;color:var(--mmt-text-secondary);" id="ps-quota">20 scores / month included</span>
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+            <div>
+              <div style="font-size:12px;color:var(--mmt-text-secondary);" id="ps-quota">20 scores / month included</div>
+              <div style="font-size:11px;color:var(--mmt-text-secondary);margin-top:2px;">Over cap: $3.99/score · Standalone (non-Premium): $29.99</div>
+            </div>
             <button id="ps-submit" class="btn-primary" onclick="runScore()">Score pursuit &rarr;</button>
           </div>
           <div id="ps-error" style="display:none;margin-top:12px;padding:10px 14px;background:rgba(230,57,70,0.08);border:1px solid rgba(230,57,70,0.2);border-radius:8px;font-size:13px;color:#B91C1C;"></div>

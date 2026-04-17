@@ -10,9 +10,11 @@
 const crypto = require("crypto");
 const { createClient } = require("@supabase/supabase-js");
 const { scorePursuit } = require("./lib/pursuit-score-engine");
+const { MMT_PRICING } = require("./lib/mmt-pricing");
 
-const MONTHLY_SCORE_CAP = 20;
-const INSTITUTIONAL_SCORE_CAP = 100;
+// Cap + overage values come from lib/mmt-pricing.js (single source of truth)
+const MONTHLY_SCORE_CAP = MMT_PRICING.pursuit_score.premium_monthly_allowance;    // 20
+const INSTITUTIONAL_SCORE_CAP = MMT_PRICING.pursuit_score.team_pack_allowance + 25; // 100
 const CACHE_TTL_HOURS = 72;
 
 function cacheKeyFor({ keyword, agency, naics }) {
@@ -208,6 +210,11 @@ exports.handler = async (event) => {
       ...card,
       remaining: Math.max(cap - used - 1, 0),
       cached: false,
+      pricing: {
+        cap,
+        overage_per_score: MMT_PRICING.pursuit_score.premium_overage_per_score,
+        standalone_per_score: MMT_PRICING.pursuit_score.standalone_per_score,
+      },
     }),
   };
 };
