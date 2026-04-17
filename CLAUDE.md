@@ -5,6 +5,7 @@
 - This is the final word on site architecture and wireframes.
 - Federal-data API stack and product wiring: `docs/api-integration-roadmap.md`.
 - Full platform technical implementation spec (Signal Chain + Pursuit Score Engine + Premium Compliance): `docs/MMT-Technical-Spec.md`. v1.0, 2026-04-17.
+- MarketPulse v2 subscriber context: `migrations/008_subscriber_context.sql`, `netlify/functions/lib/subscriber-context.js`, admin import at `POST /.netlify/functions/subscriber-context` (ADMIN_EMAILS gated). Seed JSONs in `data/subscriber-context/`. Load with `node scripts/seed-subscriber-context.js`. Failure prevented: MarketPulse must not recommend pursuing an opportunity the subscriber has already submitted (see 4/17/26 HT001126RE011 incident).
 
 ## 🛡️ Infrastructure (IntegrityPulse Integrity Suite)
 - **Authority**: Fortress Worker (https://integritypulse-fortress.marywomack.workers.dev)

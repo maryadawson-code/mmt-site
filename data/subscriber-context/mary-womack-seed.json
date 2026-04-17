@@ -1,0 +1,86 @@
+{
+  "email": "mary@missionmeetstech.com",
+  "entity_name": "rockITdata LLC",
+  "uei": "TUXGLCLFM2L2",
+  "set_aside_certifications": ["WOSB", "SDVOSB"],
+  "lanes": [
+    { "name": "VA Scale Engine", "target_pct": 58, "priority": 1 },
+    { "name": "DHA Prime Authority", "target_pct": 22, "priority": 2 },
+    { "name": "CMS/IHS Analytics Wedges", "target_pct": 12, "priority": 3 },
+    { "name": "Human Performance + OpMed", "target_pct": 8, "priority": 4 }
+  ],
+  "active_pursuits": [
+    {
+      "solicitation_number": "HT001126RE011",
+      "name": "DHA Data Governance",
+      "role": "prime",
+      "stage": "submitted",
+      "key_dates": { "submitted": "2026-01-09", "validity_through": "2026-07-08" },
+      "status_notes": "BDR protest dismissed 3/30/26; pWin 70%"
+    },
+    {
+      "solicitation_number": "36C10G26R0003",
+      "name": "VA CCN Next Gen",
+      "role": "prime",
+      "stage": "submitted",
+      "key_dates": { "submitted": "2026-04-17" },
+      "status_notes": "Prime to bench, no TriWest"
+    },
+    {
+      "solicitation_number": "TBD-EHRM",
+      "name": "VA EHRM Restart",
+      "role": "sub",
+      "stage": "capture",
+      "status_notes": "Sub to AFS/Oracle; legislative risk via Budzinski bill"
+    },
+    {
+      "solicitation_number": "TBD-IHT2",
+      "name": "IHT 2.0 via A4V",
+      "role": "sub",
+      "stage": "capture",
+      "status_notes": "Stage S2a; RFP ~Apr 7-14; proposals due ~May 19-26"
+    },
+    {
+      "solicitation_number": "TBD-Imaging",
+      "name": "VA Imaging Portfolio (NEIS, Multi-VISN PACS, Bi-Directional)",
+      "role": "prime",
+      "stage": "capture",
+      "status_notes": "Arazzo JV path with AFS + Philips"
+    }
+  ],
+  "incumbent_positions": [
+    { "contract_number": "36C10X19N0141", "name": "VA HRO BPA", "role": "prime" },
+    { "contract_number": "USAMRDC", "name": "Army MRDC", "role": "prime" },
+    { "contract_number": "DHA OMNIBUS", "name": "DHA OMNIBUS (current TOs)", "role": "sub" }
+  ],
+  "no_go_list": [
+    {
+      "solicitation_number": "HT003826RE001",
+      "name": "PEO DHMS Deployment Solutions",
+      "reason": "OCI clause conflicts with MHS GENESIS follow-on and JOMIS pursuits",
+      "date_decided": "2026-03-15"
+    }
+  ],
+  "oci_exclusions": [
+    {
+      "blocking_contract": "HT003826RE001 (if awarded to competitor teaming partner)",
+      "blocked_scope": "DHMS-related work",
+      "notes": "Monitor awardees list"
+    }
+  ],
+  "vehicle_holdings": [
+    { "vehicle": "GSA MAS", "contract": "GS-00F-243DA", "role": "prime", "expires": "2035" },
+    { "vehicle": "IHT 2.0 IDIQ", "contract": "36C10X25D0017", "role": "sub via A4V" },
+    { "vehicle": "Arazzo JV GSA MAS", "contract": "47QTCA25D003L", "role": "JV member" },
+    { "vehicle": "SeaPort-NxG MAC", "role": "SDVOSB pool" }
+  ],
+  "teaming_preferred": [
+    "LMI",
+    "Accenture Federal Services (AFS)",
+    "Arazzo JV",
+    "Philips",
+    "Oracle Health",
+    "GDIT"
+  ],
+  "teaming_no_fly": []
+}

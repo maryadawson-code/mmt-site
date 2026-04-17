@@ -186,6 +186,31 @@ what is **queued** against that spec:
   upgrade once live data proves the current extractor's false-negative rate
   is hurting scoring quality.
 
+**MarketPulse v2 — Subscriber Context Integration (2026-04-17):**
+- `migrations/008_subscriber_context.sql` — new `subscriber_context` table (lanes, active_pursuits, incumbent_positions, no_go_list, oci_exclusions, teaming_preferred/no_fly, vehicle_holdings) with auto-bumping `context_version`
+- `netlify/functions/lib/subscriber-context.js` — loader + prompt-block
+  formatter + system-prompt tagging rules (NEW / IN-FLIGHT / INCUMBENT-RECOMPETE
+  / PREVIOUSLY-PASSED / OCI-BLOCKED / OFF-LANE) + post-generation validator
+  that catches IN-FLIGHT pursuit recommendations, no-fly teaming, and
+  fabricated-precision claims ("18% odds uncontested" etc.)
+- Wired into `generate-tactical-brief-background.js`: context loads
+  up-front, injects at top of primedContext before any pass, and the
+  post-generation validator logs `SUBSCRIBER_CONTEXT_VIOLATION` to
+  ops_events for any rule breach. No-context banner appears in the
+  rendered report when a run hits a subscriber without a record.
+- `netlify/functions/subscriber-context.js` — admin import endpoint
+  (POST/GET/DELETE) gated on ADMIN_EMAILS. JSON import is the v2 UX;
+  a full UI is v3.
+- `data/subscriber-context/mary-womack-seed.json` — Mary's rockITdata
+  seed. Load via `node scripts/seed-subscriber-context.js` after
+  applying the migration.
+- **Open-question answer (ops-code → Mary):** MarketPulse runs
+  stateless per query (confirmed by inspection of
+  `generate-tactical-brief-background.js` — every invocation reads
+  payload, hits Supabase fresh, no session memory). So
+  subscriber_context loads on every call. One DB query against a
+  ~1KB record is not a concern.
+
 **Landed since last update:**
 - `lib/sam-contract-awards.js` — stub-ready FPDS replacement (Spec §2.1).
   Waits on SAM_SYSTEM_ACCOUNT_API_KEY; until then USASpending v2 remains

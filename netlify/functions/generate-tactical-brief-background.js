@@ -52,6 +52,7 @@ const { enrichWithCMSProviderData, formatCMSContext } = require("./lib/cms-provi
 const { enrichWithClinicalTrials, formatClinicalTrialsContext } = require("./lib/clinicaltrials-api");
 const { enrichWithONCHealthIT, formatONCHealthITContext } = require("./lib/onc-healthit-api");
 const { enrichWithHHSOpenData, formatHHSOpenDataContext } = require("./lib/hhs-open-data");
+const { loadSubscriberContext, formatContextBlock, contextSystemRules, noContextBanner, validateReport: validateSubscriberReport } = require("./lib/subscriber-context");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
@@ -949,6 +950,20 @@ exports.handler = async (event) => {
     const classification = classifyIntent(originalTopic, company, audience, null);
     console.log(`[INTENT] Types: ${classification.intents.join(", ")} | Entity: ${classification.scope.target_entity || "government-wide"} | Event: ${classification.scope.event_trigger || "none"}`);
 
+    // === MarketPulse v2: Subscriber Context Layer (2026-04-17 spec) ===
+    // Loaded upfront so it's in scope for prompt building, tagging rules,
+    // and post-generation validation. If no record exists, `subscriberContext`
+    // is null and the "no context" banner gets injected into the report.
+    let subscriberContext = null;
+    if (_supabase) {
+      subscriberContext = await loadSubscriberContext(_supabase, email);
+      if (subscriberContext) {
+        console.log(`[SUBSCRIBER-CTX] Loaded for ${subscriberContext.entity_name} (v${subscriberContext.context_version}, ${(subscriberContext.active_pursuits || []).length} active pursuits, ${(subscriberContext.incumbent_positions || []).length} incumbent)`);
+      } else {
+        console.log(`[SUBSCRIBER-CTX] No context record for ${email} — will emit banner`);
+      }
+    }
+
     // === SPRINT D: Context Priming (Spec 2.3 + Appendix C) ===
     const contextData = getRelevantContext(classification.scope.event_trigger, originalTopic);
     let primedContext = "";
@@ -1058,6 +1073,16 @@ exports.handler = async (event) => {
       }
     } catch (apiErr) {
       console.warn("Federal API enrichment failed (non-blocking):", apiErr.message);
+    }
+
+    // Subscriber context + tagging rules prepend to primedContext. This
+    // positions the subscriber's active pursuits, incumbent positions, and
+    // OCI exclusions *first* in the research prompt so the model reads them
+    // before any federal-data findings, and applies tags accordingly.
+    if (subscriberContext) {
+      const ctxBlock = formatContextBlock(subscriberContext);
+      const ctxRules = contextSystemRules();
+      primedContext = ctxBlock + ctxRules + "\n\n" + (primedContext || "");
     }
 
     // Pass 1: Landscape scan with query expansion (CHANGES 2, 5)
@@ -1295,8 +1320,39 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
     // Generate report HTML
     console.log("Generating report HTML...");
     const generatedAt = new Date().toISOString();
-    const reportHtmlContent = renderMarketPulseHTML({ name, company, topic, audience, generatedAt, synthesis: finalSynthesis, citations: allCitations, reportScore });
+    let reportHtmlContent = renderMarketPulseHTML({ name, company, topic, audience, generatedAt, synthesis: finalSynthesis, citations: allCitations, reportScore });
     console.log(`Report HTML generated: ${Math.round(reportHtmlContent.length / 1024)}KB`);
+
+    // === MarketPulse v2: subscriber-context post-generation validation ===
+    // If no subscriber_context was loaded, prepend the no-context banner.
+    // If context WAS loaded, scan the output for rule violations and log
+    // them to ops_events so repeat failures surface without being silent.
+    if (!subscriberContext) {
+      const banner = `<div style="background:#FEF9E7;border:1px solid #E5D9A8;border-radius:8px;padding:14px 18px;margin:0 0 20px;font-size:13px;color:#92710A;"><strong>⚠️ No subscriber context loaded.</strong> This report is generic market intelligence. Recommendations may conflict with your firm's active positions. Load a subscriber_context record to enable opportunity tagging and IN-FLIGHT detection.</div>`;
+      reportHtmlContent = reportHtmlContent.replace(/(<body[^>]*>)/i, `$1\n${banner}`);
+      console.log("[SUBSCRIBER-CTX] No context — banner injected into report HTML");
+    } else {
+      const v = validateSubscriberReport({ reportHtml: reportHtmlContent, ctx: subscriberContext });
+      if (!v.ok) {
+        console.warn(`[SUBSCRIBER-CTX] ${v.violations.length} rule violation(s) detected post-generation:`);
+        v.violations.forEach((vv) => console.warn(`  - ${vv.rule}: ${vv.detail}`));
+        try {
+          await logOpsEvent(_supabase, {
+            event_type: "SUBSCRIBER_CONTEXT_VIOLATION",
+            source_function: "generate-tactical-brief-background",
+            severity: "warn",
+            signature: "context_rule_violation",
+            affected_entity: session_id,
+            details: {
+              email,
+              topic: (topic || "").substring(0, 200),
+              entity: subscriberContext.entity_name,
+              violations: v.violations,
+            },
+          });
+        } catch (_) { /* logging must not break delivery */ }
+      }
+    }
 
     // Store report HTML in Supabase and generate viewer URL
     let reportUrl = null;
