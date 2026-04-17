@@ -186,6 +186,27 @@ what is **queued** against that spec:
   upgrade once live data proves the current extractor's false-negative rate
   is hurting scoring quality.
 
+**Signal Chain v2 — Refinement (2026-04-17):**
+- `lib/signal-chain-query-builder.js` — stopword-filtered keyword
+  extraction + agency-gated PubMed affiliation filter. The headline fix
+  for the v1 bug where DHA queries returned muscle-physiology papers.
+- Full rewrite of `netlify/functions/signal-chain.js`: 5 layers each
+  scoring 0–100 (not 0–25), weighted composite (Budget/Contract 25%,
+  Legislative 20%, Research/Workforce 15%), verdict bands (CAPTURE
+  ALERT 75+ / ACTIVE / BUILDING / EMERGING / QUIET), signal items with
+  source tags + clickable URLs + relevance notes per layer instead of
+  aggregate counters. SAM.gov Opportunities promoted to primary
+  contract source (type-weighted with recency multiplier); Federal
+  Register demoted to supplemental and always keyword-filtered.
+- UI: quick-fill chips, animated 5-layer loading card, CAPTURE ALERT
+  banner with pulse animation, colored source tags per signal item,
+  "No signals matched — <reason>" explanations, Watch-this-topic
+  subscription form.
+- `migrations/009_signal_monitors.sql` + `signal-chain-subscribe.js` —
+  persistent monitor table + upsert endpoint. Weekly cron sweep +
+  Capture Alert email delivery is queued (v2.1).
+- 1-week result cache via ops_events.
+
 **MarketPulse v2 — Subscriber Context Integration (2026-04-17):**
 - `migrations/008_subscriber_context.sql` — new `subscriber_context` table (lanes, active_pursuits, incumbent_positions, no_go_list, oci_exclusions, teaming_preferred/no_fly, vehicle_holdings) with auto-bumping `context_version`
 - `netlify/functions/lib/subscriber-context.js` — loader + prompt-block
