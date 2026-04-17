@@ -35,6 +35,11 @@
     try {
       if (typeof window.mmtIsPremium === 'function') return !!window.mmtIsPremium();
       if (localStorage.getItem('mmt_premium') === 'true') return true;
+      // Cookie-based fallback — mmt-paywall sets this cookie on auth
+      if (/(?:^|;\s*)mmt_premium=true/.test(document.cookie)) return true;
+      // If we're on a page under /premium/, assume the user is premium —
+      // the page wouldn't have rendered for them otherwise.
+      if (window.location.pathname.indexOf('/premium/') === 0) return true;
     } catch (_) { /* noop */ }
     return false;
   }
@@ -263,11 +268,13 @@
 
     sendBtn.addEventListener('click', send);
     textarea.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      // Enter submits; Shift+Enter inserts a newline. Matches modern chat UX.
+      if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         send();
       }
     });
+    textarea.placeholder = 'Ask about a contract, vehicle, agency, or trend... (Enter to send, Shift+Enter for newline)';
   }
 
   function attemptMount(attempt) {

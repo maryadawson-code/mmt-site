@@ -2908,6 +2908,34 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     console.log(`Copied ${briefFiles.length} premium brief pages`);
   }
 
+  // Premium Monthly Brief detail pages — same handling as Friday briefs
+  // but with Monthly Brief as the active dashboard nav item.
+  const monthlyBriefsSrcDir = path.join(__dirname, 'premium', 'monthly');
+  if (fs.existsSync(monthlyBriefsSrcDir)) {
+    const monthlyFiles = fs.readdirSync(monthlyBriefsSrcDir).filter(f => f.endsWith('.html'));
+    monthlyFiles.forEach(file => {
+      const srcPath = path.join(monthlyBriefsSrcDir, file);
+      const destPath = path.join(DIST_DIR, 'premium', 'monthly', file);
+      ensureDir(path.dirname(destPath));
+      let html = fs.readFileSync(srcPath, 'utf8');
+      if (!html.includes('noindex')) {
+        html = html.replace('<head>', '<head>\n  <meta name="robots" content="noindex, nofollow">');
+      }
+      html = html.replace('</head>',
+        '  <link rel="manifest" href="/manifest.json">\n' +
+        '  <meta name="apple-mobile-web-app-capable" content="yes">\n' +
+        '  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\n' +
+        '  <meta name="apple-mobile-web-app-title" content="MMT">\n</head>'
+      );
+      html = injectDashShell(html, 'monthly-briefs');
+      html = html.replace('</body>', siteScriptTag + '\n</body>');
+      html = inlineTailwindCss(html);
+      fs.writeFileSync(destPath, html);
+      console.log(`Copied premium/monthly/${file}`);
+    });
+    console.log(`Copied ${monthlyFiles.length} premium monthly brief pages`);
+  }
+
   // Generate individual agency profile pages from data
   const agencyDataPath = path.join(__dirname, 'data/premium/agency-profiles/agencies.json');
   if (fs.existsSync(agencyDataPath)) {

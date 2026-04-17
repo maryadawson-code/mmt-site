@@ -24,6 +24,7 @@ const { enrichWithClinicalTrials, formatClinicalTrialsContext } = require("./cli
 const { enrichWithONCHealthIT, formatONCHealthITContext } = require("./onc-healthit-api");
 const { enrichWithHHSOpenData, formatHHSOpenDataContext } = require("./hhs-open-data");
 const { searchCorpus, formatCorpusContext } = require("./content-index");
+const { detectVehicles, formatVehiclesContext, expandedSearchTerms } = require("./known-vehicles");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
@@ -73,12 +74,31 @@ OUTPUT FORMAT (markdown):
 - End with a "Sources" list pulling every inline citation into markdown links. Put MMT article links first so the subscriber can continue reading on the site.`;
 
 async function runEnrichment(question) {
-  const agency = detectAgency(question);
-  const agencyCodeMap = { VA: "036", DHA: "097", HHS: "075", DoD: "097" };
+  // Detect any federal vehicles mentioned (OASIS+, T4NG2, MHS GENESIS, etc.).
+  // Matched vehicles override the agency and search-term detection so that
+  // a question like "what's going on with OASIS+?" gets queried as
+  // 'OASIS+ OR OASIS Plus' instead of just tokenizing the question text.
+  const matchedVehicles = detectVehicles(question);
+  const vehicleAgency = matchedVehicles.length > 0 ? matchedVehicles[0].agency : null;
+  const agency = detectAgency(question) || vehicleAgency;
+  const agencyCodeMap = { VA: "036", DHA: "097", HHS: "075", DoD: "097", GSA: "047", NASA: "080", Army: "097" };
   const agencyCode = agencyCodeMap[agency];
+
+  // If a vehicle was detected, use its canonical + alias search terms
+  // as the primary query for USASpending/SAM. Otherwise fall back to
+  // the raw question text (same behavior as before).
+  const vehicleSearchTerms = expandedSearchTerms(matchedVehicles);
+  const primaryQuery = vehicleSearchTerms.length > 0
+    ? vehicleSearchTerms.join(" ")
+    : question;
+  const primaryNaics = matchedVehicles.length > 0 && matchedVehicles[0].naics.length > 0
+    ? matchedVehicles[0].naics
+    : undefined;
+
   const safe = (p) => p.catch((e) => ({ error: e.message }));
 
-  // MMT content corpus search is synchronous (local file) — run it upfront.
+  // MMT content corpus search — uses the raw question so it picks up
+  // nuance the vehicle dictionary doesn't know about.
   const corpusMatches = searchCorpus(question, 5);
 
   const [
@@ -95,14 +115,14 @@ async function runEnrichment(question) {
     oncHealthITData,
     hhsOpenData,
   ] = await Promise.all([
-    safe(enrichWithFederalData({ topic: question, agency: agency || undefined })),
-    safe(enrichWithCongress({ topic: question })),
-    safe(enrichWithGovInfo({ topic: question })),
+    safe(enrichWithFederalData({ topic: primaryQuery, agency: agency || undefined, naics: primaryNaics })),
+    safe(enrichWithCongress({ topic: primaryQuery })),
+    safe(enrichWithGovInfo({ topic: primaryQuery })),
     safe(enrichWithPubMed({ topic: question, yearsBack: 5 })),
-    safe(enrichWithGrants({ topic: question })),
-    safe(enrichWithAssistance({ topic: question, agency })),
-    safe(enrichWithUSAJobs({ topic: question })),
-    safe(enrichWithITDashboard({ topic: question, agencyCode })),
+    safe(enrichWithGrants({ topic: primaryQuery })),
+    safe(enrichWithAssistance({ topic: primaryQuery, agency })),
+    safe(enrichWithUSAJobs({ topic: primaryQuery })),
+    safe(enrichWithITDashboard({ topic: primaryQuery, agencyCode })),
     safe(enrichWithCMSProviderData({ topic: question })),
     safe(enrichWithClinicalTrials({ topic: question })),
     safe(enrichWithONCHealthIT({ topic: question })),
@@ -110,6 +130,7 @@ async function runEnrichment(question) {
   ]);
 
   const context = [
+    formatVehiclesContext(matchedVehicles),
     formatCorpusContext(corpusMatches),
     formatFederalDataContext(federalData),
     formatCongressContext(congressData),
@@ -130,6 +151,7 @@ async function runEnrichment(question) {
     context,
     hasAnyData: context.length > 0,
     corpusMatches: corpusMatches.length,
+    vehiclesDetected: matchedVehicles.map((v) => v.canonical),
   };
 }
 

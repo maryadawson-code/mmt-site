@@ -42,8 +42,10 @@
       annual: 'https://buy.stripe.com/eVqeVf0Fw8IA2qId994c801',
       monthly: 'https://buy.stripe.com/28EbJ3dsicYQ9Ta8ST4c802'
     },
-    // Founding Member spots remaining (update manually)
-    foundingSpotsRemaining: 97, // MANUAL: Update weekly from Stripe dashboard. Decrement by 1 per new Founding Member.
+    // Founding Member spots remaining — placeholder only. Real count is
+    // fetched live from /.netlify/functions/founding-count (Stripe query).
+    // This value is only shown for the <1s between page load and API response.
+    foundingSpotsRemaining: 96,
     // Subscriber count for social proof (update manually)
     subscriberCount: '1,528'
   };
@@ -503,23 +505,44 @@
       monthlyBtn.href = links.monthly;
     }
 
-    // Founding Member counter — fetch live count from Netlify function
+    // Founding Member counter — fetches live count from Stripe via
+    // /.netlify/functions/founding-count. Refreshes every 60s while the
+    // pricing page is open so a user watching the page sees a sale go
+    // through in close to real time.
     var counter = document.getElementById('foundingCounter');
     if (counter) {
-      // Show hardcoded fallback first, then update from API
+      // Show hardcoded placeholder for the <1s before API responds
       counter.textContent = cfg.foundingSpotsRemaining + ' of 100 Founding Member spots remaining.';
-      fetch('/.netlify/functions/founding-count')
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-          if (data.remaining != null) {
-            counter.textContent = data.remaining + ' of 100 Founding Member spots remaining.';
-            if (data.remaining <= 0) {
-              var btn = document.getElementById('foundingBtn');
-              if (btn) { btn.textContent = 'Founding Member — SOLD OUT'; btn.style.opacity = '0.5'; btn.style.pointerEvents = 'none'; }
+
+      function refreshFoundingCount() {
+        fetch('/.netlify/functions/founding-count', { cache: 'no-cache' })
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            if (data && typeof data.remaining === 'number') {
+              counter.textContent = data.remaining + ' of 100 Founding Member spots remaining.';
+              counter.setAttribute('data-source', data.source || 'unknown');
+              if (data.remaining <= 0) {
+                var btn = document.getElementById('foundingBtn');
+                if (btn) {
+                  btn.textContent = 'Founding Member — SOLD OUT';
+                  btn.style.opacity = '0.5';
+                  btn.style.pointerEvents = 'none';
+                }
+              }
             }
-          }
-        })
-        .catch(function() {}); // Fail silently — hardcoded fallback stays visible
+          })
+          .catch(function() { /* fail silently — placeholder stays */ });
+      }
+
+      refreshFoundingCount();
+      // Refresh every 60s while the tab is visible
+      setInterval(function() {
+        if (document.visibilityState === 'visible') refreshFoundingCount();
+      }, 60000);
+      // Refresh on tab re-focus
+      document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible') refreshFoundingCount();
+      });
     }
 
     // Plausible: pricing page view

@@ -4,6 +4,7 @@
 - All structural and UX work MUST follow `ARCHITECTURE_SPEC.md`.
 - This is the final word on site architecture and wireframes.
 - Federal-data API stack and product wiring: `docs/api-integration-roadmap.md`.
+- Full platform technical implementation spec (Signal Chain + Pursuit Score Engine + Premium Compliance): `docs/MMT-Technical-Spec.md`. v1.0, 2026-04-17.
 
 ## 🛡️ Infrastructure (IntegrityPulse Integrity Suite)
 - **Authority**: Fortress Worker (https://integritypulse-fortress.marywomack.workers.dev)
