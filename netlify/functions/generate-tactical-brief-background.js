@@ -41,6 +41,17 @@ const { trackQuality } = require("./lib/quality-tracker");
 const { getFlag } = require("./lib/feature-flags");
 const { trackAnthropic } = require("./lib/cost-tracker");
 const { enrichWithFederalData, formatFederalDataContext } = require("./lib/federal-data-apis");
+const { enrichWithCongress, formatCongressContext } = require("./lib/congress-api");
+const { enrichWithGovInfo, formatGovInfoContext } = require("./lib/govinfo-api");
+const { enrichWithPubMed, formatPubMedContext } = require("./lib/pubmed-api");
+const { enrichWithGrants, formatGrantsContext } = require("./lib/grants-api");
+const { enrichWithAssistance, formatAssistanceContext } = require("./lib/sam-assistance");
+const { enrichWithUSAJobs, formatUSAJobsContext } = require("./lib/usajobs-api");
+const { enrichWithITDashboard, formatITDashboardContext } = require("./lib/it-dashboard-api");
+const { enrichWithCMSProviderData, formatCMSContext } = require("./lib/cms-provider-data");
+const { enrichWithClinicalTrials, formatClinicalTrialsContext } = require("./lib/clinicaltrials-api");
+const { enrichWithONCHealthIT, formatONCHealthITContext } = require("./lib/onc-healthit-api");
+const { enrichWithHHSOpenData, formatHHSOpenDataContext } = require("./lib/hhs-open-data");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
@@ -311,7 +322,7 @@ ENTITY CONTEXT (from disambiguation):
 
 SOURCE HIERARCHY (search ALL before drafting):
 1. Agency .gov pages — org structure, leadership, budget justifications
-2. Federal procurement databases — SAM.gov, USASpending.gov, FPDS
+2. Federal procurement databases — SAM.gov (Contract Opportunities + Contract Awards API, canonical as of Feb 2026), USASpending.gov
 3. Oversight — GAO reports, agency IG reports, congressional testimony
 4. Aggregators — GovTribe, GovWin, Bloomberg Gov
 5. Trade press — Federal News Network, GovExec, NextGov
@@ -396,7 +407,7 @@ TARGET ENTITY: ${entity.name || topic}
 SEARCH TERMS: ${JSON.stringify(searchTerms)}
 
 COMPETITIVE INTELLIGENCE METHODOLOGY:
-1. Search USASpending.gov and FPDS/SAM.gov for ACTUAL awardees. Filter by sub-agency + NAICS + keywords.
+1. Search USASpending.gov and SAM.gov Contract Awards API for ACTUAL awardees (FPDS was decommissioned Feb 2026 — do NOT cite fpds.gov). Filter by sub-agency + NAICS + keywords.
 2. For each awardee: contract number, amount, period, vehicle, set-aside category.
 3. Then ANALYZE the competitive structure:
    a. MARKET CONCENTRATION — Is this a 1-vendor monopoly, 3-vendor oligopoly, or fragmented market? What % of dollars go to top 3 vendors?
@@ -427,7 +438,7 @@ Using the landscape data AND fresh searches, produce a STRATEGIC competitive ana
    - For EVERY vendor you list, include the contract number (PIID) or explicitly state "contract number not found in [sources searched]"
    - Market concentration: top 3 vendors' share of total dollars (calculate from USASpending if possible)
    - Market tier: large prime vs mid-tier vs small business dominated
-   - SB set-aside share and trend (use FPDS/SAM small business goal data)
+   - SB set-aside share and trend (use SAM.gov Contract Awards / USASpending small business goal data)
 
 2. COMPETITIVE DYNAMICS — Go beyond listing companies:
    - Which vendors are gaining vs losing ground? Search for recent award announcements.
@@ -612,7 +623,7 @@ RULES:
 - NO empty sections. Merge or explain what to monitor.
 - Data density: every paragraph must have a specific fact.
 - Target 8-12 pages (~24,000-36,000 chars). This is a premium product — depth matters. Cut generic context and program descriptions the reader already knows, but preserve ALL pipeline data, competitive analysis, and strategic insights. An analyst-quality 10-page report is worth more than a thin 4-page summary.
-- Current-events overrides: VetCert ~12 days; SEWP VI not yet awarded; FPDS migrated to SAM.gov Feb 2026.${contextBlock}`,
+- Current-events overrides: VetCert ~12 days; SEWP VI not yet awarded; FPDS decommissioned Feb 24 2026, canonical source is SAM.gov Contract Awards API; FPDS ATOM feed retires permanently July 31 2026 — never cite fpds.gov.${contextBlock}`,
 
     `Topic: ${topic}
 
@@ -985,19 +996,62 @@ exports.handler = async (event) => {
       disambiguation._socioFilters = currentEventsCheck.socioFilters;
     }
 
-    // Pre-pass: Federal data API enrichment (USASpending, SAM.gov, Federal Register)
+    // Pre-pass: Federal data API enrichment — runs all sources in parallel.
+    // Each source is wrapped individually so one failure can't poison the rest.
+    // See docs/api-integration-roadmap.md for the full source matrix.
     let federalDataContext = "";
     try {
       const entityName = disambiguation.selected_entity?.name || topic;
       const entityAcronym = disambiguation.selected_entity?.acronym || "";
       const naicsFocus = (classification && classification.scope && classification.scope.naics_focus) || [];
+      const agencyCodeMap = { VA: "036", DHA: "097", HHS: "075", DoD: "097" };
+      const agencyCode = agencyCodeMap[entityAcronym];
       const apiStart = Date.now();
-      const federalData = await enrichWithFederalData({
-        topic: entityName,
-        agency: entityAcronym || undefined,
-        naics: naicsFocus.length > 0 ? naicsFocus : undefined,
-      });
-      federalDataContext = formatFederalDataContext(federalData);
+
+      const safe = (p) => p.catch((e) => ({ error: e.message }));
+      const [
+        federalData,
+        congressData,
+        govinfoData,
+        pubmedData,
+        grantsData,
+        assistanceData,
+        usajobsData,
+        itDashboardData,
+        cmsData,
+        ctgovData,
+        oncHealthITData,
+        hhsOpenData,
+      ] = await Promise.all([
+        safe(enrichWithFederalData({ topic: entityName, agency: entityAcronym || undefined, naics: naicsFocus.length > 0 ? naicsFocus : undefined })),
+        safe(enrichWithCongress({ topic: entityName })),
+        safe(enrichWithGovInfo({ topic: entityName })),
+        safe(enrichWithPubMed({ topic: entityName, yearsBack: 5 })),
+        safe(enrichWithGrants({ topic: entityName })),
+        safe(enrichWithAssistance({ topic: entityName, agency: entityAcronym })),
+        safe(enrichWithUSAJobs({ topic: entityName })),
+        safe(enrichWithITDashboard({ topic: entityName, agencyCode })),
+        safe(enrichWithCMSProviderData({ topic: entityName })),
+        safe(enrichWithClinicalTrials({ topic: entityName })),
+        safe(enrichWithONCHealthIT({ topic: entityName })),
+        safe(enrichWithHHSOpenData({ topic: entityName })),
+      ]);
+
+      federalDataContext = [
+        formatFederalDataContext(federalData),
+        formatCongressContext(congressData),
+        formatGovInfoContext(govinfoData),
+        formatPubMedContext(pubmedData),
+        formatGrantsContext(grantsData),
+        formatAssistanceContext(assistanceData),
+        formatUSAJobsContext(usajobsData),
+        formatITDashboardContext(itDashboardData),
+        formatCMSContext(cmsData),
+        formatClinicalTrialsContext(ctgovData),
+        formatONCHealthITContext(oncHealthITData),
+        formatHHSOpenDataContext(hhsOpenData),
+      ].filter(Boolean).join("");
+
       passTimings["Pre-pass — Federal API enrichment"] = Math.round((Date.now() - apiStart) / 1000);
       if (federalDataContext) {
         primedContext = (primedContext || "") + federalDataContext;

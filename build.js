@@ -325,7 +325,7 @@ const searchOverlayHtml = `
   </div>`;
 
 // External script tags injected before </body> on all pages
-const siteScriptTag = '  <script src="/js/site.js" defer></script>\n  <script src="/js/nav-active.js" defer></script>\n  <script src="/js/mmt-paywall.js" defer></script>\n  <script src="/js/support-widget.js" defer></script>';
+const siteScriptTag = '  <script src="/js/site.js" defer></script>\n  <script src="/js/nav-active.js" defer></script>\n  <script src="/js/mmt-paywall.js" defer></script>\n  <script src="/js/support-widget.js" defer></script>\n  <script src="/js/premium-chat-widget.js" defer></script>';
 
 // --- Premium Gate HTML generators (per article category from PAYWALL_SPEC.md) ---
 
@@ -3922,6 +3922,14 @@ async function build() {
     buildIndex();
   } catch (err) {
     console.warn('Search index build failed:', err.message);
+  }
+
+  // Build MMT content corpus for Ask MMT + premium chat assistant
+  try {
+    const { build: buildCorpus } = require('./scripts/build-content-corpus.js');
+    buildCorpus();
+  } catch (err) {
+    console.warn('Content corpus build failed:', err.message);
   }
 
   console.log('\n=== Build complete! ===');

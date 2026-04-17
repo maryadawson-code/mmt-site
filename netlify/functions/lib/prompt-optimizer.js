@@ -59,13 +59,13 @@ function optimizeMarketPrompt(userRequest) {
     `- Applicable NAICS codes${detectedNaics.length > 0 ? `: start with ${detectedNaics.join(", ")} and identify others` : ""}\n` +
     `- Set-aside categories (SDVOSB, 8(a), HUBZone, WOSB, full-and-open)\n` +
     `- Recent SAM.gov opportunities and solicitations (last 12 months)\n` +
-    `- FPDS award data for incumbent contractors`
+    `- SAM.gov Contract Awards + USASpending.gov award data for incumbent contractors (FPDS decommissioned Feb 2026)`
   );
 
   // Competitive landscape request
   sections.push(
     `COMPETITIVE LANDSCAPE REQUIRED:\n` +
-    `- Incumbent contractors with actual contract numbers and values from FPDS/USASpending\n` +
+    `- Incumbent contractors with actual contract numbers and values from SAM.gov Contract Awards / USASpending\n` +
     `- Market tier analysis (small business vs. mid-tier vs. large prime)\n` +
     `- Teaming patterns and joint ventures active in this space\n` +
     `- Recent wins and protests relevant to this domain`

@@ -3,6 +3,7 @@
 ## 📜 Canonical Specification
 - All structural and UX work MUST follow `ARCHITECTURE_SPEC.md`.
 - This is the final word on site architecture and wireframes.
+- Federal-data API stack and product wiring: `docs/api-integration-roadmap.md`.
 
 ## 🛡️ Infrastructure (IntegrityPulse Integrity Suite)
 - **Authority**: Fortress Worker (https://integritypulse-fortress.marywomack.workers.dev)

@@ -384,7 +384,7 @@ VALUE: ${contract.value}
 DESCRIPTION: ${contract.description}
 ${contract.research_focus ? `\nRESEARCH PRIORITIES (search for these FIRST):\n${contract.research_focus}` : ''}
 
-Search SAM.gov, USASpending.gov, FedScoop, Nextgov/FCW, MeriTalk, Healthcare IT News, GAO, CRS, and agency sites. NOTE: FPDS ATOM feed retiring summer 2026 — use SAM.gov API as canonical source. Include confidence percentages on every claim. Return JSON with "intel", "black_hat", and "sources" keys.`;
+Search SAM.gov (Contract Opportunities + Contract Awards API), USASpending.gov, Congress.gov, GovInfo.gov, FedScoop, Nextgov/FCW, MeriTalk, Healthcare IT News, GAO, and agency sites. NOTE: FPDS was decommissioned Feb 24 2026 and the ATOM feed retires permanently July 31 2026 — the canonical award source is now SAM.gov Contract Awards API. Do NOT cite fpds.gov. Include confidence percentages on every claim. Return JSON with "intel", "black_hat", and "sources" keys.`;
 
   const { parsed: research, searchSources: researchSources } = await callClaudeSearch(
     RESEARCH_PROMPT, researchMessage, 5, researchModel.model, 8000

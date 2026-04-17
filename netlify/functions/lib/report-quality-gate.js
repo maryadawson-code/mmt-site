@@ -347,8 +347,8 @@ function buildQualityDisclaimer(failures) {
     "\n\n---\n**RESEARCH NOTE:** This report contains limited specific intelligence " +
     "for your query. The following limitations were detected:\n" +
     failures.map((f) => `- ${f}`).join("\n") +
-    "\n\nWe recommend supplementing with direct searches on SAM.gov, " +
-    "USASpending.gov, and FPDS.gov for the most current procurement data.\n---\n"
+    "\n\nWe recommend supplementing with direct searches on SAM.gov " +
+    "(Contract Opportunities + Contract Awards API) and USASpending.gov for the most current procurement data.\n---\n"
   );
 }
 

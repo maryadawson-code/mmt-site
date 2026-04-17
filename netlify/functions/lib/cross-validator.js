@@ -15,7 +15,7 @@ const VALIDATION_MATRIX = {
     max_confidence_single_source: "MEDIUM",
   },
   contract_status: {
-    required: "SAM.gov or FPDS record",
+    required: "SAM.gov (Contract Opportunities or Contract Awards API) record",
     gov_required: true,
     max_confidence_without_gov: "LOW",
   },

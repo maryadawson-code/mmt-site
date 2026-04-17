@@ -10,6 +10,32 @@
 const { createClient } = require("@supabase/supabase-js");
 const { sendEmail } = require("./lib/send-email");
 const { logOpsEvent } = require("./lib/ops-ledger");
+const { answerQuestion } = require("./lib/premium-assistant");
+
+// Escape user-supplied strings before dropping them into HTML templates.
+function escapeHtml(s) {
+  return String(s || "").replace(/[<>&"']/g, (c) => ({
+    "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&#39;",
+  }[c]));
+}
+
+// Minimal markdown → HTML for the assisted draft block in the confirmation email.
+// Handles paragraphs, bold, italics, bullets, and links. Not a full parser.
+function renderAnswerHtml(md) {
+  if (!md) return "";
+  const safe = escapeHtml(md);
+  return safe
+    .replace(/^### (.+)$/gm, '<h4 style="margin:16px 0 8px;color:#0A192F;font-size:14px;">$1</h4>')
+    .replace(/^## (.+)$/gm, '<h3 style="margin:16px 0 8px;color:#0A192F;font-size:15px;">$1</h3>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color:#457B9D;">$1</a>')
+    .replace(/(^|\n)- (.+)/g, (_, p, t) => `${p}<li style="margin:4px 0;">${t}</li>`)
+    .replace(/(<li[^>]*>.+<\/li>\n?)+/g, (list) => `<ul style="margin:8px 0 12px;padding-left:20px;">${list}</ul>`)
+    .replace(/\n{2,}/g, '</p><p style="margin:0 0 12px;font-size:14px;color:#314155;line-height:1.6;">')
+    .replace(/^/, '<p style="margin:0 0 12px;font-size:14px;color:#314155;line-height:1.6;">')
+    .concat('</p>');
+}
 
 const MONTHLY_LIMIT = 2;
 const ADMIN_EMAIL = "mary@missionmeetstech.com";
@@ -100,6 +126,24 @@ exports.handler = async (event) => {
     };
   }
 
+  // Generate an AI-assisted draft answer using the federal-data enrichment stack.
+  // This runs BEFORE insert so the draft can be persisted alongside the question.
+  // Non-blocking: if it fails, the subscriber still gets the normal "Mary will
+  // respond in 5 business days" confirmation.
+  let assistedDraft = null;
+  let assistedMeta = null;
+  try {
+    const result = await answerQuestion({ question, maxTokens: 1500 });
+    if (result.answer) {
+      assistedDraft = result.answer;
+      assistedMeta = { agency: result.agency, hasData: result.hasData, model: result.model };
+    } else if (result.error) {
+      console.warn("ask-mmt-submit: assisted draft failed:", result.error);
+    }
+  } catch (draftErr) {
+    console.warn("ask-mmt-submit: assisted draft threw:", draftErr.message);
+  }
+
   // Store the question
   const { error: insertErr } = await supabase.from("ops_events").insert({
     event_type: "ask_mmt_question",
@@ -108,6 +152,8 @@ exports.handler = async (event) => {
       question,
       submitted_at: now.toISOString(),
       month: now.toISOString().slice(0, 7),
+      assisted_draft: assistedDraft,
+      assisted_meta: assistedMeta,
     },
   });
 
@@ -136,7 +182,15 @@ exports.handler = async (event) => {
     console.error("ask-mmt-submit: notification failed:", emailErr.message);
   }
 
-  // Send confirmation to subscriber
+  // Send confirmation to subscriber — includes the assisted draft if we got one
+  const draftBlock = assistedDraft ? `
+    <div style="border-left:3px solid #457B9D;background:#F3F4F6;border-radius:8px;padding:20px;margin:0 0 20px;">
+      <p style="margin:0 0 12px;font-size:12px;font-weight:700;color:#457B9D;letter-spacing:0.05em;text-transform:uppercase;">Assisted draft — verified federal data</p>
+      ${renderAnswerHtml(assistedDraft)}
+      <p style="margin:12px 0 0;font-size:12px;color:#5C6B7A;font-style:italic;">This draft was generated from direct API queries to USASpending, SAM.gov, Congress.gov, PubMed, and related sources. Mary will review and send her own response within 5 business days.</p>
+    </div>
+  ` : "";
+
   try {
     await sendEmail({
       to: email,
@@ -147,7 +201,8 @@ exports.handler = async (event) => {
   </div>
   <div style="padding:32px;">
     <p style="font-size:16px;color:#0A192F;margin:0 0 16px;">Your question has been received.</p>
-    <div style="background:#F3F4F6;border-radius:8px;padding:16px;margin:0 0 16px;font-size:14px;color:#314155;line-height:1.6;">${question.replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c]))}</div>
+    <div style="background:#F3F4F6;border-radius:8px;padding:16px;margin:0 0 16px;font-size:14px;color:#314155;line-height:1.6;">${escapeHtml(question)}</div>
+    ${draftBlock}
     <p style="font-size:14px;color:#5C6B7A;margin:0 0 8px;">Mary will respond within 5 business days via email.</p>
     <p style="font-size:13px;color:#5C6B7A;margin:0;">You have ${remaining} question${remaining === 1 ? "" : "s"} remaining this month.</p>
   </div>
@@ -164,6 +219,10 @@ exports.handler = async (event) => {
   return {
     statusCode: 200,
     headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
-    body: JSON.stringify({ success: true, remaining }),
+    body: JSON.stringify({
+      success: true,
+      remaining,
+      assistedDraft: assistedDraft || null,
+    }),
   };
 };

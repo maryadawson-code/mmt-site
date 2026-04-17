@@ -34,6 +34,7 @@ const { trackAnthropic, trackOllama } = require("./lib/cost-tracker");
 const { checkRegulatoryCompliance } = require("./lib/regulatory-flags");
 const { callModel, isLocalProvider } = require("./lib/inference");
 const { createLogger } = require("./lib/logger");
+const { enrichProposal } = require("./lib/proposal-enrichment");
 
 // --- Environment Variables ---
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -495,7 +496,34 @@ exports.handler = wrapHandler(async (event) => {
     const scoringModelConfig = await getModelConfig(supabase, "scoring");
     const useLocalScoring = isLocalProvider(scoringModelConfig) && !fileBase64; // Ollama can't handle binary PDFs
     console.log(`Scoring ${scoring_id} (${fileType}, textLen=${extractedText?.length || 0}, model=${scoringModelConfig.model} [${scoringModelConfig.reason}], local=${useLocalScoring})`);
-    const systemPrompt = buildSystemPrompt(documentType, finalSowText);
+
+    // Pre-scoring enrichment: BLS labor-rate benchmarks + PubMed evidence.
+    // Non-blocking — any failure is logged and scoring continues without it.
+    let enrichmentContext = "";
+    let enrichmentMeta = null;
+    try {
+      const enrichStart = Date.now();
+      const enrichment = await enrichProposal({ documentText: extractedText, sowText: finalSowText });
+      enrichmentContext = enrichment.context || "";
+      enrichmentMeta = {
+        labor_categories_found: enrichment.laborCategories.length,
+        clinical_keywords_found: enrichment.keywords.length,
+        labor_flags: enrichment.laborFlags,
+        wage_determination_flags: enrichment.wageDeterminationFlags || [],
+        chpl_verified: enrichment.chplVerified,
+        chpl_claim: enrichment.chplClaim,
+        evidence_count: enrichment.evidenceCount,
+        duration_ms: Date.now() - enrichStart,
+      };
+      console.log(`[ENRICH] scoring_id=${scoring_id} labor=${enrichmentMeta.labor_categories_found} kw=${enrichmentMeta.clinical_keywords_found} evidence=${enrichmentMeta.evidence_count} bls_flags=${enrichmentMeta.labor_flags.length} wd_flags=${enrichmentMeta.wage_determination_flags.length} chpl=${enrichmentMeta.chpl_verified}`);
+    } catch (enrichErr) {
+      console.warn(`[ENRICH] enrichment failed (non-blocking) for ${scoring_id}:`, enrichErr.message);
+    }
+
+    const baseSystemPrompt = buildSystemPrompt(documentType, finalSowText);
+    const systemPrompt = enrichmentContext
+      ? baseSystemPrompt + "\n\n---\n\nEXTERNAL EVIDENCE LAYER (verified via direct API calls — weight higher than claims in the document itself):" + enrichmentContext + "\n\nUSE THE EVIDENCE LAYER when scoring:\n- Labor rates above BLS p90 or below p10 → flag in Cost/Price Credibility\n- SCA wage determination floor violations → automatic Cost/Price CREDIBILITY red flag (this is a regulatory non-compliance)\n- ONC CHPL ❌ NOT VERIFIED → call out vendor certification claim as unsupported in Technical Approach\n- Clinical/technical claims ignoring the peer-reviewed PubMed evidence → flag in Technical Approach"
+      : baseSystemPrompt;
     const messageContent = buildMessageContent(fileType, fileBase64, extractedText, documentType);
 
     const _costStart = Date.now();
