@@ -185,6 +185,22 @@
       });
     }
 
+    // Enter submits; Shift+Enter inserts a newline.
+    (function() {
+      var ta = document.getElementById('ask-question');
+      if (!ta) return;
+      ta.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          submitQuestion();
+        }
+      });
+      // Update placeholder hint so users know Enter works
+      if (ta.placeholder && ta.placeholder.indexOf('Enter to send') === -1) {
+        ta.placeholder = ta.placeholder + ' (Enter to send, Shift+Enter for newline)';
+      }
+    })();
+
     updateQuota();
     renderHistory();
   </script>
