@@ -2781,13 +2781,16 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
       { href: '/contract-tracker.html', label: 'Contract Tracker', id: 'contract-tracker', group: 'Pursuit Tools' },
       { href: '/idiq-tracker.html', label: 'IDIQ Tracker', id: 'idiq-tracker' },
       { href: '/premium/calendar/', label: 'Pursuit Calendar', id: 'calendar' },
-      { href: '/proposal-pulse.html', label: 'ProposalPulse', id: 'proposal-pulse', group: 'My Tools' },
+      { href: '/premium/pursuit-score/', label: 'Pursuit Score', id: 'pursuit-score', group: 'My Tools' },
+      { href: '/premium/compliance-check/', label: 'Compliance Check', id: 'compliance-check' },
+      { href: '/premium/signal-chain/', label: 'Signal Chain', id: 'signal-chain' },
+      { href: '/premium/ask-mmt/', label: 'Ask MMT', id: 'ask-mmt' },
+      { href: '/proposal-pulse.html', label: 'ProposalPulse', id: 'proposal-pulse' },
       { href: '/marketpulse.html', label: 'MarketPulse', id: 'marketpulse' },
       { href: '/glossary.html', label: 'Glossary', id: 'glossary', group: 'Reference' },
       { href: '/newswire.html', label: 'Newswire', id: 'newswire' },
       { href: '/agency-sources.html', label: 'Agency Sources', id: 'agency-sources' },
-      { href: '/premium/ask-mmt/', label: 'Ask MMT', id: 'ask-mmt', group: 'Account' },
-      { href: '/premium/settings/', label: 'Settings', id: 'settings' },
+      { href: '/premium/settings/', label: 'Settings', id: 'settings', group: 'Account' },
     ];
 
     let navHtml = '<nav class="dash-nav">\n';
@@ -2833,6 +2836,9 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     'premium/monthly-briefs.html': 'monthly-briefs',
     'premium/calendar.html': 'calendar',
     'premium/ask-mmt.html': 'ask-mmt',
+    'premium/pursuit-score.html': 'pursuit-score',
+    'premium/compliance-check.html': 'compliance-check',
+    'premium/signal-chain.html': 'signal-chain',
     'premium/settings.html': 'settings',
   };
 
@@ -2842,6 +2848,9 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     { src: 'premium/monthly-briefs.html', dest: 'premium/monthly-briefs/index.html' },
     { src: 'premium/calendar.html', dest: 'premium/calendar/index.html' },
     { src: 'premium/ask-mmt.html', dest: 'premium/ask-mmt/index.html' },
+    { src: 'premium/pursuit-score.html', dest: 'premium/pursuit-score/index.html' },
+    { src: 'premium/compliance-check.html', dest: 'premium/compliance-check/index.html' },
+    { src: 'premium/signal-chain.html', dest: 'premium/signal-chain/index.html' },
     { src: 'premium/dashboard.html', dest: 'premium/dashboard/index.html' },
     { src: 'premium/settings.html', dest: 'premium/settings/index.html' },
     { src: 'agencies/index.html', dest: 'agencies/index.html' },

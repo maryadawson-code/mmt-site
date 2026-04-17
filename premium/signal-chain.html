@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signal Chain — MMT Premium</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <link rel="icon" href="/favicon-v3.png" type="image/png">
+  <style>
+    :root { --mmt-navy:#0A192F; --mmt-teal:#457B9D; --mmt-white:#FFFFFF; --mmt-surface:#F3F4F6; --mmt-text-secondary:#6B7280; --mmt-border:#E5E7EB; --dash-sidebar:220px; --mmt-red:#E63946; }
+    body { font-family:Inter,system-ui,sans-serif; color:var(--mmt-navy); background:var(--mmt-surface); margin:0; }
+    .dash-shell { display:grid; grid-template-columns:var(--dash-sidebar) 1fr; min-height:100vh; }
+    .dash-nav { background:var(--mmt-navy); padding:24px 0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto; }
+    .dash-nav-brand { padding:0 20px 24px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px; }
+    .dash-nav-brand a { color:#fff; text-decoration:none; font-weight:800; font-size:14px; }
+    .dash-nav-brand small { display:block; font-size:11px; color:rgba(255,255,255,0.5); font-weight:400; margin-top:2px; }
+    .dash-nav-link { display:flex; align-items:center; gap:10px; padding:10px 20px; color:rgba(255,255,255,0.6); text-decoration:none; font-size:13px; font-weight:500; transition:all 0.15s; }
+    .dash-nav-link:hover { color:#fff; background:rgba(255,255,255,0.05); }
+    .dash-nav-link.active { color:#fff; background:rgba(69,123,157,0.3); border-left:3px solid var(--mmt-teal); }
+    .dash-nav-section { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:rgba(255,255,255,0.3); padding:16px 20px 6px; }
+    .dash-header { background:var(--mmt-white); padding:16px 32px; border-bottom:1px solid var(--mmt-border); display:flex; align-items:center; justify-content:space-between; }
+    .dash-main { padding:32px; max-width:960px; }
+    .dash-card { background:var(--mmt-white); border-radius:12px; padding:24px; margin-bottom:16px; border:1px solid var(--mmt-border); }
+    .btn-primary { padding:11px 24px; background:var(--mmt-navy); color:#fff; border:none; border-radius:8px; font-weight:700; font-size:14px; cursor:pointer; }
+    .btn-primary:disabled { opacity:0.5; cursor:wait; }
+    .layers-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin:16px 0; }
+    .layer-card { background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:10px; padding:16px; }
+    .layer-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+    .layer-name { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; }
+    .layer-score { font-size:22px; font-weight:800; color:var(--mmt-navy); }
+    .layer-bar { height:4px; background:var(--mmt-border); border-radius:999px; margin:8px 0 10px; overflow:hidden; }
+    .layer-bar-fill { height:100%; background:var(--mmt-teal); border-radius:999px; transition:width 0.4s; }
+    .layer-items { list-style:none; padding:0; margin:8px 0 0; font-size:12px; color:var(--mmt-text-secondary); line-height:1.5; }
+    .layer-items li { padding:4px 0; border-top:1px solid var(--mmt-border); }
+    .layer-items a { color:var(--mmt-teal); text-decoration:none; }
+    .alert-band { display:inline-block; padding:6px 14px; border-radius:999px; font-size:12px; font-weight:800; letter-spacing:0.1em; color:#fff; text-transform:uppercase; }
+    @media (max-width:900px) { .layers-grid { grid-template-columns:1fr 1fr; } }
+    @media (max-width:768px) { .dash-shell { grid-template-columns:1fr; } .dash-nav { display:none; } .dash-main { padding:16px; padding-bottom:80px; } .dash-mobile-nav { display:flex; position:fixed; bottom:0; left:0; right:0; background:var(--mmt-navy); padding:8px 0; justify-content:space-around; z-index:100; } .dash-mobile-nav a { color:rgba(255,255,255,0.6); text-decoration:none; font-size:10px; text-align:center; padding:6px 8px; } .dash-mobile-nav a.active { color:#fff; } }
+    @media (min-width:769px) { .dash-mobile-nav { display:none; } }
+  </style>
+  <script>
+    (function() {
+      var isPremium = localStorage.getItem('mmt_premium') === 'true';
+      var ts = localStorage.getItem('mmt_premium_ts');
+      var withinWindow = ts && (Date.now() - parseInt(ts)) < 30 * 24 * 60 * 60 * 1000;
+      if (!isPremium || !withinWindow) { window.location.href = '/dashboard.html'; }
+    })();
+  </script>
+</head>
+<body>
+  <div class="dash-shell">
+    <nav class="dash-nav">
+      <div class="dash-nav-brand"><a href="/premium/dashboard.html">★ MMT Premium<small>Intelligence Dashboard</small></a></div>
+      <div class="dash-nav-section">Intelligence</div>
+      <a href="/premium/dashboard.html" class="dash-nav-link">Dashboard</a>
+      <a href="/intel/capture-intelligence-this-issue/" class="dash-nav-link">Capture Intelligence</a>
+      <a href="/premium/briefings.html" class="dash-nav-link">Friday Brief</a>
+      <a href="/premium/monthly-briefs.html" class="dash-nav-link">Monthly Brief</a>
+      <div class="dash-nav-section">Tools</div>
+      <a href="/premium/pursuit-score.html" class="dash-nav-link">Pursuit Score</a>
+      <a href="/premium/compliance-check.html" class="dash-nav-link">Compliance Check</a>
+      <a href="/premium/signal-chain.html" class="dash-nav-link active">Signal Chain</a>
+      <a href="/proposal-pulse.html" class="dash-nav-link">ProposalPulse ($14.99)</a>
+      <a href="/marketpulse.html" class="dash-nav-link">MarketPulse ($35)</a>
+      <div class="dash-nav-section">Resources</div>
+      <a href="/latest.html" class="dash-nav-link">Article Archive</a>
+      <a href="/contract-tracker.html" class="dash-nav-link">Contract Tracker</a>
+      <a href="/idiq-tracker.html" class="dash-nav-link">IDIQ Tracker</a>
+      <a href="/glossary.html" class="dash-nav-link">Glossary</a>
+      <a href="/premium/calendar.html" class="dash-nav-link">Pursuit Calendar</a>
+      <a href="/premium/ask-mmt.html" class="dash-nav-link">Ask MMT</a>
+      <div class="dash-nav-section">Account</div>
+      <a href="/premium/settings.html" class="dash-nav-link">Settings</a>
+      <a href="/" class="dash-nav-link" style="margin-top:auto; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px;">&larr; Back to site</a>
+    </nav>
+    <div>
+      <div class="dash-header">
+        <span style="font-size:14px; font-weight:700;">★ Premium Dashboard</span>
+        <div style="display:flex; align-items:center; gap:16px;">
+          <span style="font-size:13px; color:var(--mmt-text-secondary);" id="dash-email"></span>
+          <a href="/" style="font-size:12px; color:var(--mmt-teal); text-decoration:none;">Back to site</a>
+          <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_premium_ts');localStorage.removeItem('mmt_email');document.cookie='mmt_premium=;path=/;max-age=0';window.location.href='/';return false;" style="font-size:12px; color:var(--mmt-text-secondary); text-decoration:none;">Sign out</a>
+        </div>
+      </div>
+      <div class="dash-main">
+
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin-bottom:8px;">MMT Premium &middot; 5-Layer Federal Signal Monitor</p>
+        <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">Signal Chain</h1>
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 20px;">Type a program or vehicle. Returns a live composite score across research, legislative, workforce, budget, and contract layers — each sourced from direct federal API queries. Watch thresholds trigger capture alerts.</p>
+
+        <div class="dash-card" style="border-left:3px solid var(--mmt-teal);">
+          <h3 style="margin:0 0 12px;font-size:15px;font-weight:700;">Monitor a topic</h3>
+          <div style="display:grid;grid-template-columns:1fr 180px auto;gap:12px;margin-bottom:8px;">
+            <input type="text" id="sc-topic" placeholder="Topic, program, or vehicle (CCN Next Gen, MHS GENESIS, GLP-1 VA coverage...)" maxlength="300" style="padding:11px 14px;border:1px solid var(--mmt-border);border-radius:8px;font-size:14px;">
+            <select id="sc-agency" style="padding:11px 14px;border:1px solid var(--mmt-border);border-radius:8px;font-size:14px;background:#fff;">
+              <option value="">Any agency</option>
+              <option value="VA">VA</option>
+              <option value="DHA">DHA</option>
+              <option value="HHS">HHS</option>
+              <option value="DoD">DoD</option>
+            </select>
+            <button id="sc-submit" class="btn-primary" onclick="runChain()">Run &rarr;</button>
+          </div>
+          <div id="sc-error" style="display:none;margin-top:12px;padding:10px 14px;background:rgba(230,57,70,0.08);border:1px solid rgba(230,57,70,0.2);border-radius:8px;font-size:13px;color:#B91C1C;"></div>
+        </div>
+
+        <div id="sc-result" style="display:none;">
+          <div class="dash-card" style="display:flex;justify-content:space-between;align-items:center;gap:16px;">
+            <div>
+              <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--mmt-text-secondary);">Composite score</div>
+              <div style="display:flex;align-items:baseline;gap:12px;margin-top:4px;">
+                <div id="sc-composite" style="font-size:40px;font-weight:800;letter-spacing:-0.02em;">0</div>
+                <div style="font-size:14px;color:var(--mmt-text-secondary);">/ 100</div>
+                <div id="sc-alert" class="alert-band" style="background:#6B7280;">QUIET</div>
+              </div>
+              <div id="sc-resolved" style="font-size:12px;color:var(--mmt-text-secondary);margin-top:6px;"></div>
+            </div>
+          </div>
+
+          <div class="layers-grid" id="sc-layers"></div>
+
+          <p style="font-size:11px;color:var(--mmt-text-secondary);font-style:italic;">Composite weights: budget + contract 25% each, legislative 20%, research + workforce 15% each. Capture Alert fires at composite ≥75. Queries: ClinicalTrials.gov, PubMed, Congress.gov, GovInfo, USAJobs, USASpending, SAM.gov Opportunities, Federal Register.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="dash-mobile-nav">
+    <a href="/premium/dashboard.html">Dashboard</a>
+    <a href="/premium/pursuit-score.html">Score</a>
+    <a href="/premium/signal-chain.html" class="active">Signal</a>
+    <a href="/premium/ask-mmt.html">Ask</a>
+    <a href="/premium/settings.html">Account</a>
+  </div>
+  <script>
+    var email = localStorage.getItem('mmt_email');
+    if (email) document.getElementById('dash-email').textContent = email;
+
+    // Allow Newsletter-to-Tool deep links: /premium/signal-chain.html?topic=CCN+Next+Gen&agency=VA
+    (function() {
+      var params = new URLSearchParams(location.search);
+      if (params.get('topic')) {
+        document.getElementById('sc-topic').value = params.get('topic');
+      }
+      if (params.get('agency')) {
+        document.getElementById('sc-agency').value = params.get('agency');
+      }
+      if (params.get('topic')) runChain();
+    })();
+
+    function setError(msg) {
+      var el = document.getElementById('sc-error');
+      if (!msg) { el.style.display = 'none'; return; }
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    var LAYER_LABELS = {
+      research:    'Research',
+      legislative: 'Legislative',
+      workforce:   'Workforce',
+      budget:      'Budget',
+      contract:    'Contract',
+    };
+
+    function runChain() {
+      var topic = document.getElementById('sc-topic').value.trim();
+      var agency = document.getElementById('sc-agency').value || '';
+      var e = localStorage.getItem('mmt_email') || '';
+      if (!e) { setError('Please sign in first.'); return; }
+      if (!topic) { setError('Enter a topic to monitor.'); return; }
+      setError('');
+
+      var btn = document.getElementById('sc-submit');
+      btn.disabled = true;
+      btn.textContent = 'Running...';
+      document.getElementById('sc-result').style.display = 'none';
+
+      var qs = new URLSearchParams({ email: e, topic: topic });
+      if (agency) qs.set('agency', agency);
+
+      fetch('/.netlify/functions/signal-chain?' + qs.toString())
+        .then(function(res) { return res.json().then(function(data) { return { ok: res.ok, data: data }; }); })
+        .then(function(result) {
+          btn.disabled = false;
+          btn.textContent = 'Run \u2192';
+          if (!result.ok) {
+            setError(result.data.error || 'Failed. Try again.');
+            return;
+          }
+          renderResult(result.data);
+        })
+        .catch(function(err) {
+          btn.disabled = false;
+          btn.textContent = 'Run \u2192';
+          setError('Network error: ' + err.message);
+        });
+    }
+
+    function renderResult(r) {
+      document.getElementById('sc-result').style.display = 'block';
+      document.getElementById('sc-composite').textContent = r.composite_score;
+      var alertEl = document.getElementById('sc-alert');
+      alertEl.textContent = r.alert_band;
+      alertEl.style.background = r.alert_color;
+
+      var res = r.resolved || {};
+      var parts = [];
+      if (res.agency) parts.push('Agency: ' + res.agency);
+      if (res.vehicles && res.vehicles.length) parts.push('Vehicle: ' + res.vehicles.join(', '));
+      if (res.searched && res.searched !== r.topic) parts.push('Searched: "' + res.searched + '"');
+      parts.push('Generated: ' + new Date(r.generated_at).toLocaleString());
+      document.getElementById('sc-resolved').textContent = parts.join(' · ');
+
+      var grid = document.getElementById('sc-layers');
+      grid.innerHTML = '';
+      ['research','legislative','workforce','budget','contract'].forEach(function(key) {
+        var layer = r.layers[key] || { score: 0, evidence: {}, items: [] };
+        var card = document.createElement('div');
+        card.className = 'layer-card';
+        var itemsHtml = (layer.items || []).slice(0, 4).map(function(it) {
+          return '<li><a href="' + (it.url || '#') + '" target="_blank" rel="noopener">' +
+            (it.title || '').substring(0, 70) + (it.title && it.title.length > 70 ? '...' : '') +
+            '</a><br><span style="font-size:11px;">' + (it.sponsor || '') + (it.date ? ' · ' + it.date : '') + '</span></li>';
+        }).join('');
+        card.innerHTML =
+          '<div class="layer-head">' +
+            '<span class="layer-name">' + LAYER_LABELS[key] + '</span>' +
+            '<span class="layer-score">' + layer.score + '</span>' +
+          '</div>' +
+          '<div class="layer-bar"><div class="layer-bar-fill" style="width:' + layer.score + '%;"></div></div>' +
+          (itemsHtml ? '<ul class="layer-items">' + itemsHtml + '</ul>' : '<div style="font-size:12px;color:var(--mmt-text-secondary);">No signals matched.</div>');
+        grid.appendChild(card);
+      });
+
+      document.getElementById('sc-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Enter submits from topic field
+    document.getElementById('sc-topic').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); runChain(); }
+    });
+  </script>
+</body>
+</html>

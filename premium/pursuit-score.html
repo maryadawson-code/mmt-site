@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pursuit Score — MMT Premium</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <link rel="icon" href="/favicon-v3.png" type="image/png">
+  <style>
+    :root { --mmt-navy:#0A192F; --mmt-teal:#457B9D; --mmt-white:#FFFFFF; --mmt-surface:#F3F4F6; --mmt-text-secondary:#6B7280; --mmt-border:#E5E7EB; --dash-sidebar:220px; }
+    body { font-family:Inter,system-ui,sans-serif; color:var(--mmt-navy); background:var(--mmt-surface); margin:0; }
+    .dash-shell { display:grid; grid-template-columns:var(--dash-sidebar) 1fr; min-height:100vh; }
+    .dash-nav { background:var(--mmt-navy); padding:24px 0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto; }
+    .dash-nav-brand { padding:0 20px 24px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px; }
+    .dash-nav-brand a { color:#fff; text-decoration:none; font-weight:800; font-size:14px; }
+    .dash-nav-brand small { display:block; font-size:11px; color:rgba(255,255,255,0.5); font-weight:400; margin-top:2px; }
+    .dash-nav-link { display:flex; align-items:center; gap:10px; padding:10px 20px; color:rgba(255,255,255,0.6); text-decoration:none; font-size:13px; font-weight:500; transition:all 0.15s; }
+    .dash-nav-link:hover { color:#fff; background:rgba(255,255,255,0.05); }
+    .dash-nav-link.active { color:#fff; background:rgba(69,123,157,0.3); border-left:3px solid var(--mmt-teal); }
+    .dash-nav-section { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:rgba(255,255,255,0.3); padding:16px 20px 6px; }
+    .dash-header { background:var(--mmt-white); padding:16px 32px; border-bottom:1px solid var(--mmt-border); display:flex; align-items:center; justify-content:space-between; }
+    .dash-main { padding:32px; max-width:900px; }
+    .dash-card { background:var(--mmt-white); border-radius:12px; padding:24px; margin-bottom:16px; border:1px solid var(--mmt-border); }
+    .form-row { display:grid; grid-template-columns:1fr 180px 180px; gap:12px; margin-bottom:12px; }
+    .form-row input, .form-row select { padding:11px 14px; border:1px solid var(--mmt-border); border-radius:8px; font-size:14px; font-family:inherit; background:#fff; }
+    .btn-primary { padding:11px 24px; background:var(--mmt-navy); color:#fff; border:none; border-radius:8px; font-weight:700; font-size:14px; cursor:pointer; }
+    .btn-primary:disabled { opacity:0.5; cursor:wait; }
+    .score-hero { display:flex; align-items:center; gap:24px; padding:20px 0; }
+    .score-ring { width:120px; height:120px; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; font-weight:800; }
+    .score-ring .score-num { font-size:36px; letter-spacing:-0.02em; line-height:1; }
+    .score-ring .score-of { font-size:11px; opacity:0.85; margin-top:2px; }
+    .dim-row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--mmt-border); }
+    .dim-row:last-child { border-bottom:none; }
+    .dim-name { font-size:13px; font-weight:600; color:var(--mmt-navy); }
+    .dim-bar { flex:1; height:6px; background:var(--mmt-border); border-radius:999px; margin:0 16px; overflow:hidden; }
+    .dim-fill { height:100%; background:var(--mmt-teal); border-radius:999px; }
+    .dim-score { font-size:12px; color:var(--mmt-text-secondary); white-space:nowrap; font-weight:600; }
+    .evidence-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin-top:12px; }
+    .evidence-kpi { background:var(--mmt-surface); border-radius:8px; padding:10px 14px; }
+    .evidence-kpi-label { font-size:11px; color:var(--mmt-text-secondary); text-transform:uppercase; letter-spacing:0.08em; font-weight:700; margin-bottom:3px; }
+    .evidence-kpi-value { font-size:18px; font-weight:700; color:var(--mmt-navy); }
+    @media (max-width:768px) { .dash-shell { grid-template-columns:1fr; } .dash-nav { display:none; } .dash-main { padding:16px; padding-bottom:80px; } .form-row { grid-template-columns:1fr; } .dash-mobile-nav { display:flex; position:fixed; bottom:0; left:0; right:0; background:var(--mmt-navy); padding:8px 0; justify-content:space-around; z-index:100; } .dash-mobile-nav a { color:rgba(255,255,255,0.6); text-decoration:none; font-size:10px; text-align:center; padding:6px 8px; } .dash-mobile-nav a.active { color:#fff; } }
+    @media (min-width:769px) { .dash-mobile-nav { display:none; } }
+  </style>
+  <script>
+    (function() {
+      var isPremium = localStorage.getItem('mmt_premium') === 'true';
+      var ts = localStorage.getItem('mmt_premium_ts');
+      var withinWindow = ts && (Date.now() - parseInt(ts)) < 30 * 24 * 60 * 60 * 1000;
+      if (!isPremium || !withinWindow) { window.location.href = '/dashboard.html'; }
+    })();
+  </script>
+</head>
+<body>
+  <div class="dash-shell">
+    <nav class="dash-nav">
+      <div class="dash-nav-brand"><a href="/premium/dashboard.html">★ MMT Premium<small>Intelligence Dashboard</small></a></div>
+      <div class="dash-nav-section">Intelligence</div>
+      <a href="/premium/dashboard.html" class="dash-nav-link">Dashboard</a>
+      <a href="/intel/capture-intelligence-this-issue/" class="dash-nav-link">Capture Intelligence</a>
+      <a href="/premium/briefings.html" class="dash-nav-link">Friday Brief</a>
+      <a href="/premium/monthly-briefs.html" class="dash-nav-link">Monthly Brief</a>
+      <div class="dash-nav-section">Tools</div>
+      <a href="/premium/pursuit-score.html" class="dash-nav-link active">Pursuit Score</a>
+      <a href="/proposal-pulse.html" class="dash-nav-link">ProposalPulse ($14.99)</a>
+      <a href="/marketpulse.html" class="dash-nav-link">MarketPulse ($35)</a>
+      <div class="dash-nav-section">Resources</div>
+      <a href="/latest.html" class="dash-nav-link">Article Archive</a>
+      <a href="/contract-tracker.html" class="dash-nav-link">Contract Tracker</a>
+      <a href="/idiq-tracker.html" class="dash-nav-link">IDIQ Tracker</a>
+      <a href="/glossary.html" class="dash-nav-link">Glossary</a>
+      <a href="/premium/calendar.html" class="dash-nav-link">Pursuit Calendar</a>
+      <a href="/premium/ask-mmt.html" class="dash-nav-link">Ask MMT</a>
+      <div class="dash-nav-section">Account</div>
+      <a href="/premium/settings.html" class="dash-nav-link">Settings</a>
+      <a href="/" class="dash-nav-link" style="margin-top:auto; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px;">&larr; Back to site</a>
+    </nav>
+    <div>
+      <div class="dash-header">
+        <span style="font-size:14px; font-weight:700;">★ Premium Dashboard</span>
+        <div style="display:flex; align-items:center; gap:16px;">
+          <span style="font-size:13px; color:var(--mmt-text-secondary);" id="dash-email"></span>
+          <a href="/" style="font-size:12px; color:var(--mmt-teal); text-decoration:none;">Back to site</a>
+          <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_premium_ts');localStorage.removeItem('mmt_email');document.cookie='mmt_premium=;path=/;max-age=0';window.location.href='/';return false;" style="font-size:12px; color:var(--mmt-text-secondary); text-decoration:none;">Sign out</a>
+        </div>
+      </div>
+      <div class="dash-main">
+
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin-bottom:8px;">MMT Premium &middot; Bid/No-Bid Decision Support</p>
+        <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">Pursuit Score</h1>
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 20px;">Type a contract, vehicle, or program. Get a 0–100 score across incumbent vulnerability, budget momentum, legislative tailwind, and research pipeline — all composed from live federal data.</p>
+
+        <!-- Score form -->
+        <div class="dash-card" style="border-left:3px solid var(--mmt-teal);">
+          <h3 style="margin:0 0 12px;font-size:15px;font-weight:700;">Score a pursuit</h3>
+          <div class="form-row">
+            <input type="text" id="ps-keyword" placeholder="Keyword or vehicle (e.g., OASIS+, CCN Next Gen, MHS GENESIS)" maxlength="300">
+            <select id="ps-agency">
+              <option value="">Any agency</option>
+              <option value="VA">VA</option>
+              <option value="DHA">DHA</option>
+              <option value="HHS">HHS</option>
+              <option value="DoD">DoD</option>
+              <option value="GSA">GSA</option>
+            </select>
+            <input type="text" id="ps-naics" placeholder="NAICS (optional)" maxlength="20">
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:12px;color:var(--mmt-text-secondary);" id="ps-quota">20 scores / month included</span>
+            <button id="ps-submit" class="btn-primary" onclick="runScore()">Score pursuit &rarr;</button>
+          </div>
+          <div id="ps-error" style="display:none;margin-top:12px;padding:10px 14px;background:rgba(230,57,70,0.08);border:1px solid rgba(230,57,70,0.2);border-radius:8px;font-size:13px;color:#B91C1C;"></div>
+        </div>
+
+        <!-- Result -->
+        <div id="ps-result" style="display:none;">
+          <div class="dash-card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:8px;">
+              <div>
+                <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--mmt-text-secondary);">Verdict</div>
+                <div id="ps-verdict" style="font-size:28px;font-weight:800;letter-spacing:-0.02em;margin-top:2px;"></div>
+                <div id="ps-resolved" style="font-size:12px;color:var(--mmt-text-secondary);margin-top:4px;"></div>
+              </div>
+              <div id="ps-ring" class="score-ring" style="background:#457B9D;">
+                <div class="score-num" id="ps-total">0</div>
+                <div class="score-of">/ 100</div>
+              </div>
+            </div>
+            <div style="margin-top:16px;">
+              <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--mmt-text-secondary);margin-bottom:8px;">Dimension breakdown</div>
+              <div id="ps-dims"></div>
+            </div>
+            <div style="margin-top:20px;">
+              <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--mmt-text-secondary);margin-bottom:8px;">Evidence</div>
+              <div id="ps-evidence" class="evidence-grid"></div>
+            </div>
+            <div id="ps-awardees" style="margin-top:20px;"></div>
+            <p style="font-size:11px;color:var(--mmt-text-secondary);margin-top:16px;font-style:italic;">Composed from USASpending, SAM.gov, Congress.gov, ClinicalTrials.gov, PubMed, and the Federal IT Dashboard. The verdict is MMT analysis — verify primary sources before committing B&amp;P resources.</p>
+          </div>
+        </div>
+
+        <!-- How it's scored -->
+        <div class="dash-card" style="background:var(--mmt-surface);">
+          <h3 style="margin:0 0 8px;font-size:14px;font-weight:700;">How it's scored</h3>
+          <p style="font-size:13px;color:var(--mmt-text-secondary);line-height:1.6;margin:0 0 10px;">Each dimension is worth 25 points, scored from direct API queries. Scores combine into a verdict: <strong style="color:#15803D;">GO</strong> (75+), <strong style="color:#84cc16;">LEAN GO</strong> (55–74), <strong style="color:#92710A;">DEVELOP</strong> (40–54), <strong style="color:#F97316;">LEAN NO-BID</strong> (25–39), <strong style="color:#E63946;">NO-BID</strong> (&lt;25).</p>
+          <ul style="font-size:12px;color:var(--mmt-text-secondary);margin:0;padding-left:18px;line-height:1.7;">
+            <li><strong>Incumbent vulnerability</strong> — awardee concentration + expiring contracts (USASpending)</li>
+            <li><strong>Budget momentum</strong> — obligations volume + budget docs + IT Dashboard programs</li>
+            <li><strong>Legislative tailwind</strong> — active bills + CRS reports + committee hearings</li>
+            <li><strong>Research pipeline</strong> — completed federal clinical trials + recent PubMed articles</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="dash-mobile-nav">
+    <a href="/premium/dashboard.html">Dashboard</a>
+    <a href="/premium/pursuit-score.html" class="active">Score</a>
+    <a href="/premium/ask-mmt.html">Ask</a>
+    <a href="/premium/briefings.html">Briefs</a>
+    <a href="/premium/settings.html">Account</a>
+  </div>
+  <script>
+    var email = localStorage.getItem('mmt_email');
+    if (email) document.getElementById('dash-email').textContent = email;
+
+    var VERDICT_COLORS = {
+      'GO':          '#15803D',
+      'LEAN GO':     '#84cc16',
+      'DEVELOP':     '#92710A',
+      'LEAN NO-BID': '#F97316',
+      'NO-BID':      '#E63946'
+    };
+
+    function setError(msg) {
+      var el = document.getElementById('ps-error');
+      if (!msg) { el.style.display = 'none'; return; }
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    function renderResult(card) {
+      document.getElementById('ps-result').style.display = 'block';
+      document.getElementById('ps-total').textContent = card.total;
+      document.getElementById('ps-verdict').textContent = card.verdict;
+      document.getElementById('ps-verdict').style.color = VERDICT_COLORS[card.verdict] || '#0A192F';
+      document.getElementById('ps-ring').style.background = VERDICT_COLORS[card.verdict] || '#457B9D';
+
+      var resolved = card.resolved || {};
+      var resolvedParts = [];
+      if (resolved.searched && resolved.searched !== card.keyword) resolvedParts.push('Searched: "' + resolved.searched + '"');
+      if (resolved.agency) resolvedParts.push('Agency: ' + resolved.agency);
+      if (resolved.vehicles && resolved.vehicles.length) resolvedParts.push('Vehicle: ' + resolved.vehicles.join(', '));
+      document.getElementById('ps-resolved').textContent = resolvedParts.join(' · ');
+
+      // Dimensions
+      var dims = card.dimensions || {};
+      var dimLabels = {
+        incumbent_vulnerability: 'Incumbent vulnerability',
+        budget_momentum:         'Budget momentum',
+        legislative_tailwind:    'Legislative tailwind',
+        research_pipeline:       'Research pipeline'
+      };
+      var dimsEl = document.getElementById('ps-dims');
+      dimsEl.innerHTML = '';
+      Object.keys(dimLabels).forEach(function(key) {
+        var d = dims[key] || { score: 0, max: 25 };
+        var pct = Math.round((d.score / d.max) * 100);
+        dimsEl.insertAdjacentHTML('beforeend',
+          '<div class="dim-row">' +
+          '<span class="dim-name">' + dimLabels[key] + '</span>' +
+          '<div class="dim-bar"><div class="dim-fill" style="width:' + pct + '%;"></div></div>' +
+          '<span class="dim-score">' + d.score + ' / ' + d.max + '</span>' +
+          '</div>'
+        );
+      });
+
+      // Evidence KPIs
+      var ev = card.evidence || {};
+      var evLabels = [
+        ['usaspending_total',       'USASpending awards'],
+        ['active_opportunities',    'Active SAM opps'],
+        ['active_bills',            'Active bills'],
+        ['crs_reports',             'CRS reports'],
+        ['hearings',                'Hearings'],
+        ['completed_trials',        'Completed trials'],
+        ['pubmed_articles',         'PubMed articles'],
+        ['it_dashboard_programs',   'IT Dashboard programs']
+      ];
+      var evEl = document.getElementById('ps-evidence');
+      evEl.innerHTML = '';
+      evLabels.forEach(function(pair) {
+        evEl.insertAdjacentHTML('beforeend',
+          '<div class="evidence-kpi">' +
+          '<div class="evidence-kpi-label">' + pair[1] + '</div>' +
+          '<div class="evidence-kpi-value">' + (ev[pair[0]] || 0) + '</div>' +
+          '</div>'
+        );
+      });
+
+      // Top awardees
+      var awEl = document.getElementById('ps-awardees');
+      if (ev.top_awardees && ev.top_awardees.length) {
+        var rows = ev.top_awardees.map(function(a) {
+          var obl = a.obligated ? '$' + (a.obligated / 1e6).toFixed(1) + 'M' : 'n/a';
+          var end = a.end_date ? ' · ends ' + a.end_date : '';
+          return '<li style="margin:4px 0;font-size:13px;">' + (a.recipient || 'Unknown') + ' — ' + obl + end + '</li>';
+        }).join('');
+        awEl.innerHTML =
+          '<div style="font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--mmt-text-secondary);margin-bottom:8px;">Top awardees</div>' +
+          '<ul style="margin:0;padding-left:18px;">' + rows + '</ul>';
+      } else {
+        awEl.innerHTML = '';
+      }
+
+      document.getElementById('ps-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function runScore() {
+      var kw = document.getElementById('ps-keyword').value.trim();
+      var agency = document.getElementById('ps-agency').value || null;
+      var naicsRaw = document.getElementById('ps-naics').value.trim();
+      var naics = naicsRaw ? naicsRaw.split(/[\s,]+/).filter(Boolean) : null;
+      var e = localStorage.getItem('mmt_email') || '';
+      if (!e) { setError('Please sign in first.'); return; }
+      if (!kw) { setError('Enter a keyword to score.'); return; }
+      setError('');
+
+      var btn = document.getElementById('ps-submit');
+      btn.disabled = true;
+      btn.textContent = 'Scoring...';
+      document.getElementById('ps-result').style.display = 'none';
+
+      fetch('/.netlify/functions/pursuit-score', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: e, keyword: kw, agency: agency, naics: naics })
+      })
+        .then(function(res) { return res.json().then(function(data) { return { ok: res.ok, status: res.status, data: data }; }); })
+        .then(function(result) {
+          btn.disabled = false;
+          btn.textContent = 'Score pursuit \u2192';
+          if (!result.ok) {
+            setError(result.data.error || 'Scoring failed. Try again.');
+            return;
+          }
+          renderResult(result.data);
+          if (typeof result.data.remaining === 'number') {
+            document.getElementById('ps-quota').textContent = result.data.remaining + ' scores remaining this month';
+          }
+        })
+        .catch(function(err) {
+          btn.disabled = false;
+          btn.textContent = 'Score pursuit \u2192';
+          setError('Network error: ' + err.message);
+        });
+    }
+
+    // Enter submits from the keyword field
+    document.getElementById('ps-keyword').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); runScore(); }
+    });
+
+    // Newsletter-to-Tool deep links: /premium/pursuit-score.html?keyword=OASIS%2B&agency=GSA
+    (function() {
+      var params = new URLSearchParams(location.search);
+      if (params.get('keyword')) document.getElementById('ps-keyword').value = params.get('keyword');
+      if (params.get('agency'))  document.getElementById('ps-agency').value = params.get('agency');
+      if (params.get('naics'))   document.getElementById('ps-naics').value = params.get('naics');
+      if (params.get('keyword')) runScore();
+    })();
+  </script>
+</body>
+</html>

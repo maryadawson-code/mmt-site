@@ -186,18 +186,54 @@ what is **queued** against that spec:
   upgrade once live data proves the current extractor's false-negative rate
   is hurting scoring quality.
 
+**Landed since last update:**
+- `lib/sam-contract-awards.js` — stub-ready FPDS replacement (Spec §2.1).
+  Waits on SAM_SYSTEM_ACCOUNT_API_KEY; until then USASpending v2 remains
+  the canonical awards source and the module reports `configured: false`.
+- `lib/pursuit-score-engine.js` + `/api/pursuit-score` + `/premium/pursuit-score` dashboard page (Spec §3.3, §5.2)
+- `/api/compliance-check` + `/premium/compliance-check` dashboard page (Spec §3.2)
+  — wraps the `proposal-enrichment` rollup as a standalone endpoint with
+  structured ComplianceReport JSON (ONC CHPL, SCA wage, PubMed evidence,
+  documentation flags, top-fix stack).
+- `/api/signal-chain` + `/premium/signal-chain` dashboard page (Spec §3.4)
+  — 5-layer composite monitor (Research, Legislative, Workforce, Budget, Contract)
+  with capture-alert banding. Stateless aggregator; persistence is the
+  follow-up pass.
+- Newsletter-to-Tool deep links: `/premium/pursuit-score.html?keyword=X&agency=Y` and
+  `/premium/signal-chain.html?topic=X&agency=Y` auto-run on load.
+- Tools section in dashboard sidebar + tool tile row on dashboard home.
+
 **Queued (no implementation yet):**
-- `lib/signal-engine.js` + Signal Chain dashboard (Spec §3.4)
-- `lib/sam-contract-awards.js` as a distinct module (Spec §2.1) — currently
-  we use USASpending v2 as the canonical awards source. Blocked on SAM.gov
-  System Account approval.
 - Redis/in-memory cache (`services/cache.js`) — Spec §4. Today every
   enrichment call hits the upstream API fresh; under load this will need TTL caching.
 - DB schemas for `tracked-programs`, `signal-events`, `pursuit-scores`,
   `compliance-reports` (Spec §6). Today we persist runs via `ops_events`
   which is fine for audit but not for the dashboard queries the spec
-  assumes.
+  assumes. Blocker for persistent Signal Chain alerts and historical
+  pursuit-score trendlines.
 - `/api/programs/track` + `/api/alerts` endpoints (Spec §5.4 / §5.5)
+- Full Signal Engine event-firing (persist signals, diff against user
+  watch list, email when threshold crossed). Today Signal Chain is
+  on-demand only.
+
+**A++ Differentiators (Spec §9 — queued, sequenced by dependency):**
+- **Editorial Intelligence Layer** — newsletter-derived structured intel
+  cards displayed inside tools. Dependency: extend `scripts/build-content-corpus.js`
+  to emit per-article structured facts (program names, dollar amounts,
+  dates) the tools can filter and cite.
+- **COMP/PSCP Live Budget Tracker** — live-tracked FY2027 account-level
+  figures tied to newsletter coverage. Dependency: GovInfo API (landed) +
+  a scheduled function that parses budget markups.
+- **Win-Rate Correlation Engine** — personalizes Pursuit Score weights
+  from a firm's actual award outcomes. Dependency: persistent
+  `pursuit-scores` table + outcome capture UI. Blocked on DB schemas above.
+- **Newsletter-to-Tool Deep Links** — *partial*: Pursuit Score and Signal
+  Chain accept query-string deep links. Still queued: editing the newsletter
+  template so "Run Signal Chain on this program" buttons are auto-injected
+  into relevant articles.
+- **Team Collaboration Layer** — shared pursuit lists, compliance reports,
+  signal alerts across a BD team. Dependency: multi-seat auth (already in
+  institutional tier) + `shared_pursuits` + `team_members` tables.
 
 ## Reference
 

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compliance Check — MMT Premium</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <link rel="icon" href="/favicon-v3.png" type="image/png">
+  <style>
+    :root { --mmt-navy:#0A192F; --mmt-teal:#457B9D; --mmt-white:#FFFFFF; --mmt-surface:#F3F4F6; --mmt-text-secondary:#6B7280; --mmt-border:#E5E7EB; --dash-sidebar:220px; --mmt-red:#E63946; }
+    body { font-family:Inter,system-ui,sans-serif; color:var(--mmt-navy); background:var(--mmt-surface); margin:0; }
+    .dash-shell { display:grid; grid-template-columns:var(--dash-sidebar) 1fr; min-height:100vh; }
+    .dash-nav { background:var(--mmt-navy); padding:24px 0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto; }
+    .dash-nav-brand { padding:0 20px 24px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px; }
+    .dash-nav-brand a { color:#fff; text-decoration:none; font-weight:800; font-size:14px; }
+    .dash-nav-brand small { display:block; font-size:11px; color:rgba(255,255,255,0.5); font-weight:400; margin-top:2px; }
+    .dash-nav-link { display:flex; align-items:center; gap:10px; padding:10px 20px; color:rgba(255,255,255,0.6); text-decoration:none; font-size:13px; font-weight:500; transition:all 0.15s; }
+    .dash-nav-link:hover { color:#fff; background:rgba(255,255,255,0.05); }
+    .dash-nav-link.active { color:#fff; background:rgba(69,123,157,0.3); border-left:3px solid var(--mmt-teal); }
+    .dash-nav-section { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:rgba(255,255,255,0.3); padding:16px 20px 6px; }
+    .dash-header { background:var(--mmt-white); padding:16px 32px; border-bottom:1px solid var(--mmt-border); display:flex; align-items:center; justify-content:space-between; }
+    .dash-main { padding:32px; max-width:900px; }
+    .dash-card { background:var(--mmt-white); border-radius:12px; padding:24px; margin-bottom:16px; border:1px solid var(--mmt-border); }
+    .btn-primary { padding:11px 24px; background:var(--mmt-navy); color:#fff; border:none; border-radius:8px; font-weight:700; font-size:14px; cursor:pointer; }
+    .btn-primary:disabled { opacity:0.5; cursor:wait; }
+    .risk-pill { display:inline-block; padding:4px 12px; border-radius:999px; font-size:11px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; }
+    .risk-HIGH   { background:rgba(230,57,70,0.12); color:#B91C1C; }
+    .risk-MEDIUM { background:rgba(234,179,8,0.15); color:#92710A; }
+    .risk-LOW    { background:rgba(21,128,61,0.12); color:#15803D; }
+    .sev-CRITICAL { color:var(--mmt-red); font-weight:700; }
+    .sev-HIGH    { color:#B91C1C; font-weight:700; }
+    .sev-MEDIUM  { color:#92710A; font-weight:700; }
+    .sev-PASS    { color:#15803D; font-weight:700; }
+    .fix-row { padding:12px 16px; border-radius:8px; margin-bottom:8px; border-left:3px solid var(--mmt-border); }
+    .fix-row.p-STOP-SHIP { background:#FEF2F2; border-left-color:var(--mmt-red); }
+    .fix-row.p-HIGH      { background:#FFFBEB; border-left-color:#F97316; }
+    .fix-row.p-MEDIUM    { background:#F0F9FF; border-left-color:var(--mmt-teal); }
+    .section-head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; }
+    .section-title { font-size:14px; font-weight:700; }
+    @media (max-width:768px) { .dash-shell { grid-template-columns:1fr; } .dash-nav { display:none; } .dash-main { padding:16px; padding-bottom:80px; } .dash-mobile-nav { display:flex; position:fixed; bottom:0; left:0; right:0; background:var(--mmt-navy); padding:8px 0; justify-content:space-around; z-index:100; } .dash-mobile-nav a { color:rgba(255,255,255,0.6); text-decoration:none; font-size:10px; text-align:center; padding:6px 8px; } .dash-mobile-nav a.active { color:#fff; } }
+    @media (min-width:769px) { .dash-mobile-nav { display:none; } }
+  </style>
+  <script>
+    (function() {
+      var isPremium = localStorage.getItem('mmt_premium') === 'true';
+      var ts = localStorage.getItem('mmt_premium_ts');
+      var withinWindow = ts && (Date.now() - parseInt(ts)) < 30 * 24 * 60 * 60 * 1000;
+      if (!isPremium || !withinWindow) { window.location.href = '/dashboard.html'; }
+    })();
+  </script>
+</head>
+<body>
+  <div class="dash-shell">
+    <nav class="dash-nav">
+      <div class="dash-nav-brand"><a href="/premium/dashboard.html">★ MMT Premium<small>Intelligence Dashboard</small></a></div>
+      <div class="dash-nav-section">Intelligence</div>
+      <a href="/premium/dashboard.html" class="dash-nav-link">Dashboard</a>
+      <a href="/intel/capture-intelligence-this-issue/" class="dash-nav-link">Capture Intelligence</a>
+      <a href="/premium/briefings.html" class="dash-nav-link">Friday Brief</a>
+      <a href="/premium/monthly-briefs.html" class="dash-nav-link">Monthly Brief</a>
+      <div class="dash-nav-section">Tools</div>
+      <a href="/premium/pursuit-score.html" class="dash-nav-link">Pursuit Score</a>
+      <a href="/premium/compliance-check.html" class="dash-nav-link active">Compliance Check</a>
+      <a href="/premium/signal-chain.html" class="dash-nav-link">Signal Chain</a>
+      <a href="/proposal-pulse.html" class="dash-nav-link">ProposalPulse ($14.99)</a>
+      <a href="/marketpulse.html" class="dash-nav-link">MarketPulse ($35)</a>
+      <div class="dash-nav-section">Resources</div>
+      <a href="/latest.html" class="dash-nav-link">Article Archive</a>
+      <a href="/contract-tracker.html" class="dash-nav-link">Contract Tracker</a>
+      <a href="/idiq-tracker.html" class="dash-nav-link">IDIQ Tracker</a>
+      <a href="/glossary.html" class="dash-nav-link">Glossary</a>
+      <a href="/premium/calendar.html" class="dash-nav-link">Pursuit Calendar</a>
+      <a href="/premium/ask-mmt.html" class="dash-nav-link">Ask MMT</a>
+      <div class="dash-nav-section">Account</div>
+      <a href="/premium/settings.html" class="dash-nav-link">Settings</a>
+      <a href="/" class="dash-nav-link" style="margin-top:auto; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px;">&larr; Back to site</a>
+    </nav>
+    <div>
+      <div class="dash-header">
+        <span style="font-size:14px; font-weight:700;">★ Premium Dashboard</span>
+        <div style="display:flex; align-items:center; gap:16px;">
+          <span style="font-size:13px; color:var(--mmt-text-secondary);" id="dash-email"></span>
+          <a href="/" style="font-size:12px; color:var(--mmt-teal); text-decoration:none;">Back to site</a>
+          <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_premium_ts');localStorage.removeItem('mmt_email');document.cookie='mmt_premium=;path=/;max-age=0';window.location.href='/';return false;" style="font-size:12px; color:var(--mmt-text-secondary); text-decoration:none;">Sign out</a>
+        </div>
+      </div>
+      <div class="dash-main">
+
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin-bottom:8px;">MMT Premium &middot; Health IT Compliance</p>
+        <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">Compliance Check</h1>
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 20px;">Paste a proposal's technical volume (or SOW) and get automated checks against ONC CHPL certification, SCA/DBA wage floors, PubMed evidence, and standard documentation requirements. Each check cites primary sources.</p>
+
+        <div class="dash-card" style="border-left:3px solid var(--mmt-teal);">
+          <h3 style="margin:0 0 8px;font-size:15px;font-weight:700;">Proposal text</h3>
+          <textarea id="cc-text" rows="12" placeholder="Paste technical volume, approach section, or SOW text. At least a few paragraphs." style="width:100%;padding:12px 14px;border:1px solid var(--mmt-border);border-radius:8px;font-size:13px;font-family:inherit;line-height:1.55;resize:vertical;"></textarea>
+          <details style="margin-top:10px;font-size:13px;">
+            <summary style="cursor:pointer;color:var(--mmt-teal);font-weight:600;">Add SOW / PWS text (optional)</summary>
+            <textarea id="cc-sow" rows="6" placeholder="Paste the solicitation SOW or PWS text to strengthen keyword-based clinical claim detection." style="width:100%;margin-top:8px;padding:12px 14px;border:1px solid var(--mmt-border);border-radius:8px;font-size:13px;font-family:inherit;line-height:1.55;resize:vertical;"></textarea>
+          </details>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;">
+            <span style="font-size:12px;color:var(--mmt-text-secondary);" id="cc-quota">15 checks / month included</span>
+            <button id="cc-submit" class="btn-primary" onclick="runCheck()">Run compliance check &rarr;</button>
+          </div>
+          <div id="cc-error" style="display:none;margin-top:12px;padding:10px 14px;background:rgba(230,57,70,0.08);border:1px solid rgba(230,57,70,0.2);border-radius:8px;font-size:13px;color:#B91C1C;"></div>
+        </div>
+
+        <div id="cc-result" style="display:none;">
+          <div class="dash-card" style="display:flex;justify-content:space-between;align-items:center;gap:16px;">
+            <div>
+              <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--mmt-text-secondary);">Overall risk</div>
+              <div id="cc-overall" style="font-size:24px;font-weight:800;margin-top:4px;"></div>
+              <div id="cc-generated" style="font-size:12px;color:var(--mmt-text-secondary);margin-top:4px;"></div>
+            </div>
+            <div id="cc-risk-pill"></div>
+          </div>
+
+          <div class="dash-card" id="cc-fixes-card" style="display:none;">
+            <div class="section-head"><span class="section-title">Top fixes</span></div>
+            <div id="cc-fixes"></div>
+          </div>
+
+          <div class="dash-card">
+            <div class="section-head"><span class="section-title">ONC CHPL</span><span id="cc-chpl-sev"></span></div>
+            <div id="cc-chpl-body" style="font-size:13px;color:var(--mmt-text-secondary);"></div>
+          </div>
+
+          <div class="dash-card">
+            <div class="section-head"><span class="section-title">SCA / DBA wage floor</span><span id="cc-wage-sev"></span></div>
+            <div id="cc-wage-body" style="font-size:13px;color:var(--mmt-text-secondary);"></div>
+          </div>
+
+          <div class="dash-card">
+            <div class="section-head"><span class="section-title">Clinical evidence (PubMed)</span><span id="cc-evidence-sev"></span></div>
+            <div id="cc-evidence-body" style="font-size:13px;color:var(--mmt-text-secondary);"></div>
+          </div>
+
+          <div class="dash-card">
+            <div class="section-head"><span class="section-title">Documentation references</span></div>
+            <div id="cc-docs-body" style="font-size:13px;color:var(--mmt-text-secondary);"></div>
+          </div>
+
+          <p style="font-size:11px;color:var(--mmt-text-secondary);font-style:italic;margin-top:16px;">Composed from ONC CHPL, SAM.gov Wage Determinations, PubMed, and pattern-matching against federal health IT documentation standards. This is automated — verify each finding against primary sources before final submission.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="dash-mobile-nav">
+    <a href="/premium/dashboard.html">Dashboard</a>
+    <a href="/premium/pursuit-score.html">Score</a>
+    <a href="/premium/compliance-check.html" class="active">Comply</a>
+    <a href="/premium/ask-mmt.html">Ask</a>
+    <a href="/premium/settings.html">Account</a>
+  </div>
+  <script>
+    var email = localStorage.getItem('mmt_email');
+    if (email) document.getElementById('dash-email').textContent = email;
+
+    function setError(msg) {
+      var el = document.getElementById('cc-error');
+      if (!msg) { el.style.display = 'none'; return; }
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    function sevPill(sev) {
+      if (!sev) return '';
+      return '<span class="sev-' + sev + '" style="font-size:12px;">' + sev + '</span>';
+    }
+
+    function runCheck() {
+      var text = document.getElementById('cc-text').value.trim();
+      var sow = document.getElementById('cc-sow').value.trim();
+      var e = localStorage.getItem('mmt_email') || '';
+      if (!e) { setError('Please sign in first.'); return; }
+      if (text.length < 200) { setError('Paste at least a few paragraphs of proposal text (200+ characters).'); return; }
+      setError('');
+
+      var btn = document.getElementById('cc-submit');
+      btn.disabled = true;
+      btn.textContent = 'Checking...';
+      document.getElementById('cc-result').style.display = 'none';
+
+      fetch('/.netlify/functions/compliance-check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: e, text: text, sowText: sow || null })
+      })
+        .then(function(res) { return res.json().then(function(data) { return { ok: res.ok, status: res.status, data: data }; }); })
+        .then(function(result) {
+          btn.disabled = false;
+          btn.textContent = 'Run compliance check \u2192';
+          if (!result.ok) {
+            setError(result.data.error || 'Check failed. Try again.');
+            return;
+          }
+          renderReport(result.data);
+          if (typeof result.data.remaining === 'number') {
+            document.getElementById('cc-quota').textContent = result.data.remaining + ' checks remaining this month';
+          }
+        })
+        .catch(function(err) {
+          btn.disabled = false;
+          btn.textContent = 'Run compliance check \u2192';
+          setError('Network error: ' + err.message);
+        });
+    }
+
+    function renderReport(r) {
+      document.getElementById('cc-result').style.display = 'block';
+      document.getElementById('cc-overall').textContent = r.overall_risk + ' RISK';
+      document.getElementById('cc-generated').textContent = 'Generated ' + new Date(r.generated_at).toLocaleString();
+      document.getElementById('cc-risk-pill').innerHTML = '<span class="risk-pill risk-' + r.overall_risk + '">' + r.overall_risk + '</span>';
+
+      // Top fixes
+      var fixesCard = document.getElementById('cc-fixes-card');
+      var fixesEl = document.getElementById('cc-fixes');
+      if (r.top_fixes && r.top_fixes.length > 0) {
+        fixesEl.innerHTML = r.top_fixes.map(function(f) {
+          return '<div class="fix-row p-' + f.priority + '">' +
+            '<div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">' + f.priority + ' &middot; ' + f.area + '</div>' +
+            '<div style="font-size:13px;color:var(--mmt-navy);">' + f.fix + '</div>' +
+          '</div>';
+        }).join('');
+        fixesCard.style.display = 'block';
+      } else {
+        fixesCard.style.display = 'none';
+      }
+
+      // ONC CHPL
+      var chpl = r.sections.onc_chpl;
+      document.getElementById('cc-chpl-sev').innerHTML = sevPill(chpl.severity);
+      var chplBody = '';
+      if (!chpl.claim_detected) {
+        chplBody = 'No vendor certification claim detected in the text — nothing to verify.';
+      } else {
+        chplBody = 'Claim detected: <strong>' + (chpl.claim_detected.vendor || 'unknown vendor') + '</strong>' +
+          (chpl.claim_detected.edition ? ' / ' + chpl.claim_detected.edition : '') +
+          '<br>CHPL verified: <strong>' + (chpl.verified ? 'Yes' : 'No') + '</strong>';
+        if (chpl.flag) chplBody += '<br><span style="color:#B91C1C;">' + chpl.flag + '</span>';
+      }
+      document.getElementById('cc-chpl-body').innerHTML = chplBody;
+
+      // Wage floor
+      var wage = r.sections.sca_wage_floor;
+      document.getElementById('cc-wage-sev').innerHTML = sevPill(wage.severity);
+      var wageBody = 'Labor categories benchmarked: <strong>' + wage.categories_benchmarked + '</strong>';
+      if (wage.bls_flags && wage.bls_flags.length) {
+        wageBody += '<div style="margin-top:8px;"><strong>BLS p10/p90 flags:</strong><ul style="margin:4px 0 0 18px;">' +
+          wage.bls_flags.map(function(f) { return '<li>' + f + '</li>'; }).join('') + '</ul></div>';
+      }
+      if (wage.scaDBA_floor_violations && wage.scaDBA_floor_violations.length) {
+        wageBody += '<div style="margin-top:8px;color:#B91C1C;"><strong>SCA wage floor violations:</strong><ul style="margin:4px 0 0 18px;">' +
+          wage.scaDBA_floor_violations.map(function(f) { return '<li>' + f + '</li>'; }).join('') + '</ul></div>';
+      }
+      if ((!wage.bls_flags || !wage.bls_flags.length) && (!wage.scaDBA_floor_violations || !wage.scaDBA_floor_violations.length)) {
+        wageBody += '<br>No flags detected across benchmarked categories.';
+      }
+      document.getElementById('cc-wage-body').innerHTML = wageBody;
+
+      // Evidence
+      var ev = r.sections.clinical_evidence;
+      document.getElementById('cc-evidence-sev').innerHTML = sevPill(ev.severity);
+      var evBody = 'Clinical keywords detected: <strong>' + (ev.keywords_detected.join(', ') || 'none') + '</strong><br>' +
+        'Peer-reviewed articles found: <strong>' + ev.evidence_count + '</strong>';
+      if (ev.flag) evBody += '<br><span style="color:#92710A;">' + ev.flag + '</span>';
+      document.getElementById('cc-evidence-body').innerHTML = evBody;
+
+      // Docs
+      var docs = r.sections.documentation_gaps;
+      var docsBody = '<ul style="margin:0;padding-left:18px;">';
+      docs.checks.forEach(function(c) {
+        docsBody += '<li><strong>' + c.documentation + '</strong>: ' +
+          (c.mentioned ? '<span style="color:#15803D;">referenced</span>' :
+            (c.required ? '<span style="color:#B91C1C;">not referenced (required)</span>' : '<span style="color:var(--mmt-text-secondary);">not referenced</span>')) +
+        '</li>';
+      });
+      docsBody += '</ul>';
+      document.getElementById('cc-docs-body').innerHTML = docsBody;
+
+      document.getElementById('cc-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  </script>
+</body>
+</html>

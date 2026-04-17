@@ -44,6 +44,9 @@
       <a href="/premium/briefings.html" class="dash-nav-link">Friday Brief</a>
       <a href="/premium/monthly-briefs.html" class="dash-nav-link">Monthly Brief</a>
       <div class="dash-nav-section">Tools</div>
+      <a href="/premium/pursuit-score.html" class="dash-nav-link">Pursuit Score</a>
+      <a href="/premium/compliance-check.html" class="dash-nav-link">Compliance Check</a>
+      <a href="/premium/signal-chain.html" class="dash-nav-link">Signal Chain</a>
       <a href="/proposal-pulse.html" class="dash-nav-link">ProposalPulse ($14.99)</a>
       <a href="/marketpulse.html" class="dash-nav-link">MarketPulse ($35)</a>
       <div class="dash-nav-section">Resources</div>
@@ -96,6 +99,17 @@
           <div id="ask-confirm" style="display:none;margin-top:12px;padding:12px 16px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:8px;font-size:14px;color:#15803D;font-weight:600;">&#10003; Question received. Mary will respond within 5 business days.</div>
         </div>
 
+        <!-- AI-assisted draft — rendered inline after submit when the server returns one -->
+        <div id="ask-draft-card" class="dash-card" style="display:none;border-left:3px solid var(--mmt-teal);background:#F9FAFB;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--mmt-teal);margin-bottom:10px;">
+            Assisted draft &middot; verified federal data
+          </div>
+          <div id="ask-draft-body" style="font-size:14px;line-height:1.65;color:#1f2937;"></div>
+          <div style="margin-top:14px;font-size:12px;color:var(--mmt-text-secondary);font-style:italic;">
+            Generated from SAM.gov, USASpending, Congress.gov, PubMed, and Mary's own MMT articles. Mary will review and send her own response within 5 business days.
+          </div>
+        </div>
+
         <!-- History -->
         <h2 style="font-size:16px;font-weight:700;margin:24px 0 12px;">Question History</h2>
         <div id="ask-history-list"><p style="font-size:14px;color:var(--mmt-text-secondary);">No questions yet this month. You have 2 available.</p></div>
@@ -118,6 +132,27 @@
     if (ta && cc) ta.addEventListener('input', function() {
       cc.textContent = (500 - ta.value.length) + ' characters remaining';
     });
+
+    // Minimal markdown renderer for the assisted-draft card.
+    // Matches the render style used by the premium chat widget + email templates.
+    function renderMarkdown(md) {
+      var s = String(md || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+      s = s
+        .replace(/^### (.+)$/gm, '<h4 style="margin:14px 0 6px;font-size:14px;color:#0A192F;">$1</h4>')
+        .replace(/^## (.+)$/gm, '<h3 style="margin:16px 0 8px;font-size:15px;color:#0A192F;">$1</h3>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener" style="color:#457B9D;">$1</a>')
+        .replace(/^- (.+)$/gm, '<li style="margin:3px 0;">$1</li>');
+      s = s.replace(/(<li[^>]*>.+<\/li>\n?)+/g, function(list) {
+        return '<ul style="margin:8px 0 12px;padding-left:20px;">' + list + '</ul>';
+      });
+      s = s.replace(/\n{2,}/g, '</p><p style="margin:0 0 10px;">');
+      return '<p style="margin:0 0 10px;">' + s + '</p>';
+    }
 
     // Quota — synced with server via localStorage cache
     function updateQuota(remaining) {
@@ -171,10 +206,20 @@
         }
         // Success
         var history = JSON.parse(localStorage.getItem('mmt_ask_history') || '[]');
-        history.unshift({ date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }), question: q, status: 'Pending' });
+        history.unshift({ date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }), question: q, status: 'Pending', draft: result.data.assistedDraft || null });
         localStorage.setItem('mmt_ask_history', JSON.stringify(history));
         document.getElementById('ask-question').value = '';
         document.getElementById('ask-confirm').style.display = 'block';
+        // Render assisted draft inline if the server produced one
+        if (result.data.assistedDraft) {
+          var card = document.getElementById('ask-draft-card');
+          var body = document.getElementById('ask-draft-body');
+          if (card && body) {
+            body.innerHTML = renderMarkdown(result.data.assistedDraft);
+            card.style.display = 'block';
+            card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
         updateQuota(result.data.remaining);
         renderHistory();
         btn.textContent = 'Sent \u2713';
