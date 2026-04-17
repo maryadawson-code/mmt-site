@@ -1,223 +1,435 @@
 // ============================================================
-// signal-chain.js — 5-layer federal signal monitor
+// signal-chain.js — Signal Chain Engine v2
 //
-// GET ?email=...&topic=...&agency=...
+// Rewrite per /Users/marywomack/Downloads/signal-chain-refinement-spec.md
+// (2026-04-17). Fixes the v1 bugs:
+//   - "muscle physiology / banana-peel carbon dots" PubMed results
+//     (missing affiliation filter)
+//   - 2010 hurricane EIS / 2020 arms sales contract results
+//     (missing keyword filter on Federal Register, wrong source for
+//      contract signals)
+//   - Legislative/Workforce/Budget layers returning zero for every query
 //
-// Aggregates the MMT federal-data stack into 5 weighted layers:
-//
-//   Research    — ClinicalTrials.gov completions + PubMed recent papers
-//   Legislative — Congress.gov bills + CRS reports + hearings
-//   Workforce   — USAJobs posts at DHA/VA/HHS
-//   Budget      — USASpending FY obligations + GovInfo budget docs
-//   Contract    — SAM.gov Opportunities + Federal Register notices
-//
-// Each layer returns a score (0–100) and a list of evidence items.
-// A signal fires when the cross-layer composite score exceeds 60.
-//
-// Implements Section 3.4 of docs/MMT-Technical-Spec.md (scaled down
-// to a stateless aggregator — the full spec envisions signal event
-// persistence + alerting, which lives in a follow-up pass).
+// Each of 5 layers scores 0–100 from 1–2 targeted API calls. Composite
+// is weighted: Budget 25%, Contract 25%, Legislative 20%, Research 15%,
+// Workforce 15%. Alert at composite ≥75 ("CAPTURE ALERT").
 // ============================================================
 
+const crypto = require("crypto");
 const { createClient } = require("@supabase/supabase-js");
-const { enrichWithFederalData } = require("./lib/federal-data-apis");
-const { enrichWithCongress } = require("./lib/congress-api");
-const { enrichWithGovInfo } = require("./lib/govinfo-api");
-const { enrichWithClinicalTrials } = require("./lib/clinicaltrials-api");
-const { enrichWithPubMed } = require("./lib/pubmed-api");
-const { enrichWithUSAJobs } = require("./lib/usajobs-api");
+const { searchUSASpending, searchFederalRegister, searchGAOReports, searchSAMOpportunities } = require("./lib/federal-data-apis");
+const { searchBills, searchHearings, searchCRSReports, searchCommitteeReports } = require("./lib/congress-api");
+const { searchTrials } = require("./lib/clinicaltrials-api");
+const { searchPubMed, fetchPubMedSummaries } = require("./lib/pubmed-api");
+const { searchJobs } = require("./lib/usajobs-api");
 const { detectVehicles, expandedSearchTerms } = require("./lib/known-vehicles");
+const { buildQueryTerms, buildPubMedQuery, FR_AGENCY_SLUGS, USASPENDING_AGENCY_NAMES } = require("./lib/signal-chain-query-builder");
 
-const AGENCY_CODE_MAP = { VA: "036", DHA: "097", HHS: "075", DoD: "097" };
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "https://missionmeetstech.com",
   "Access-Control-Allow-Headers": "Content-Type",
-  "Access-Control-Allow-Methods": "GET, OPTIONS",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
   "Content-Type": "application/json",
 };
 
+const CACHE_TTL_HOURS = 168; // 1 week — signal data moves slowly
+const DAY_MS = 86400000;
+
 function clamp(n, lo, hi) { return Math.max(lo, Math.min(hi, n)); }
-
-function researchLayer(ctgov, pubmed) {
-  const completedTrials = [
-    ...(ctgov?.dha?.studies || []),
-    ...(ctgov?.va?.studies || []),
-  ].filter((s) => (s.status || "").toUpperCase() === "COMPLETED");
-  const recentPapers = (pubmed?.articles || []).length;
-  const rawScore = completedTrials.length * 15 + recentPapers * 5;
-  return {
-    score: clamp(rawScore, 0, 100),
-    evidence: {
-      completed_trials: completedTrials.length,
-      recent_papers: recentPapers,
-    },
-    items: [
-      ...completedTrials.slice(0, 5).map((t) => ({
-        type: "trial",
-        title: t.title,
-        date: t.completion_date,
-        sponsor: t.lead_sponsor,
-        url: t.url,
-      })),
-      ...((pubmed?.articles || []).slice(0, 5).map((a) => ({
-        type: "paper",
-        title: a.title,
-        date: a.pub_date,
-        sponsor: a.journal,
-        url: a.url,
-      }))),
-    ],
-  };
+function formatDollarsShort(n) {
+  if (!n) return "$0";
+  if (n >= 1e9) return `$${(n / 1e9).toFixed(1)}B`;
+  if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
+  if (n >= 1e3) return `$${(n / 1e3).toFixed(0)}K`;
+  return `$${Math.round(n)}`;
+}
+function daysAgo(dateStr) {
+  if (!dateStr) return Infinity;
+  const d = new Date(dateStr).getTime();
+  if (isNaN(d)) return Infinity;
+  return (Date.now() - d) / DAY_MS;
+}
+function race(ms, fn) {
+  return Promise.race([
+    fn().catch((e) => ({ __error: e.message })),
+    new Promise((resolve) => setTimeout(() => resolve({ __timedOut: true }), ms)),
+  ]);
 }
 
-function legislativeLayer(congress) {
-  if (!congress || !congress.configured) {
-    return { score: 0, evidence: { configured: false }, items: [] };
-  }
-  const bills = congress.bills?.bills?.length || 0;
-  const crs = congress.crs?.reports?.length || 0;
-  const hearings = congress.hearings?.hearings?.length || 0;
-  return {
-    score: clamp(bills * 7 + crs * 6 + hearings * 8, 0, 100),
-    evidence: { active_bills: bills, crs_reports: crs, hearings },
-    items: [
-      ...(congress.bills?.bills || []).slice(0, 4).map((b) => ({
-        type: "bill",
-        title: `${b.type} ${b.number}: ${b.title}`,
-        date: b.latest_action_date,
-        sponsor: "",
-        url: b.url,
-      })),
-      ...(congress.hearings?.hearings || []).slice(0, 3).map((h) => ({
-        type: "hearing",
-        title: h.title,
-        date: h.date,
-        sponsor: h.committee,
-        url: h.url,
-      })),
-      ...(congress.crs?.reports || []).slice(0, 3).map((r) => ({
-        type: "crs",
-        title: r.title,
-        date: r.update_date,
-        sponsor: "CRS",
-        url: r.url,
-      })),
-    ],
-  };
-}
+// ------------------------------------------------------------
+// Layer 1: Research (PubMed + ClinicalTrials.gov) — weight 15%
+// ------------------------------------------------------------
+async function layerResearch(terms, agency) {
+  const pubmedQuery = buildPubMedQuery(terms, agency);
+  const [pm, trials] = await Promise.all([
+    searchPubMed({ query: pubmedQuery, retmax: 5, daysBack: 730 }).catch(() => ({ pmids: [], count: 0 })),
+    searchTrials({
+      query: terms.base,
+      sponsor: agency === "DHA" || agency === "DoD" ? "Defense Health Agency" : (agency === "VA" ? "VA Office of Research" : undefined),
+      status: ["COMPLETED", "ACTIVE_NOT_RECRUITING", "RECRUITING"],
+      limit: 5,
+    }).catch(() => ({ studies: [], total: 0 })),
+  ]);
+  const articles = pm.pmids.length > 0
+    ? (await fetchPubMedSummaries(pm.pmids).catch(() => ({ articles: [] }))).articles || []
+    : [];
 
-function workforceLayer(usajobs) {
-  if (!usajobs || !usajobs.configured) {
-    return { score: 0, evidence: { configured: false }, items: [] };
-  }
-  const dha = usajobs.dha?.total || 0;
-  const va = usajobs.va?.total || 0;
-  const hhs = usajobs.hhs?.total || 0;
-  const total = dha + va + hhs;
-  return {
-    score: clamp(total * 2, 0, 100),
-    evidence: { dha_postings: dha, va_postings: va, hhs_postings: hhs, total },
-    items: [
-      ...(usajobs.dha?.jobs || []).slice(0, 3).map((j) => ({
-        type: "job",
-        title: `${j.position_title} (${j.agency})`,
-        date: j.open_date,
-        sponsor: j.location,
-        url: j.url,
-      })),
-      ...(usajobs.va?.jobs || []).slice(0, 3).map((j) => ({
-        type: "job",
-        title: `${j.position_title} (${j.agency})`,
-        date: j.open_date,
-        sponsor: j.location,
-        url: j.url,
-      })),
-    ],
-  };
-}
+  const pubmedCount = pm.count || articles.length;
+  const trialsCount = trials.total || (trials.studies || []).length;
+  const trialResults = trials.studies || [];
+  const recentCompleted = trialResults.filter((t) =>
+    (t.status || "").toUpperCase() === "COMPLETED" && daysAgo(t.completion_date) < 730
+  );
 
-function budgetLayer(federal, govinfo) {
-  const totalObligated = (federal?.usaspending_awards?.awards || [])
-    .reduce((sum, a) => sum + (a.obligated || 0), 0);
-  const budgetDocs = govinfo?.budget?.packages?.length || 0;
   let score = 0;
-  if (totalObligated > 500e6) score += 60;
-  else if (totalObligated > 100e6) score += 45;
-  else if (totalObligated > 10e6) score += 25;
-  else if (totalObligated > 0) score += 10;
-  score += budgetDocs * 10;
-  return {
-    score: clamp(score, 0, 100),
-    evidence: {
-      total_obligated: totalObligated,
-      budget_docs: budgetDocs,
-    },
-    items: [
-      ...(govinfo?.budget?.packages || []).slice(0, 4).map((p) => ({
-        type: "budget_doc",
-        title: p.title,
-        date: p.date_issued,
-        sponsor: "GovInfo",
-        url: p.url,
-      })),
-    ],
-  };
+  if (pubmedCount > 30) score += 50;
+  else if (pubmedCount > 15) score += 40;
+  else if (pubmedCount > 7) score += 30;
+  else if (pubmedCount > 3) score += 20;
+  else if (pubmedCount > 0) score += 10;
+  if (trialsCount > 10) score += 50;
+  else if (trialsCount > 5) score += 40;
+  else if (trialsCount > 2) score += 25;
+  else if (trialsCount > 0) score += 15;
+  if (recentCompleted.length > 0) score = Math.min(score + 10, 100);
+
+  const signals = [
+    ...articles.slice(0, 3).map((a) => ({
+      title: (a.title || "").substring(0, 140),
+      url: a.url,
+      source: "PubMed",
+      date: a.pub_date,
+      organization: a.journal,
+      relevanceNote: null,
+    })),
+    ...trialResults.slice(0, 2).map((t) => ({
+      title: (t.title || "").substring(0, 140),
+      url: t.url,
+      source: "ClinicalTrials",
+      date: t.completion_date || t.start_date,
+      organization: t.lead_sponsor,
+      relevanceNote: (t.status || "").toUpperCase() === "COMPLETED" ? "Completed — results often feed next-phase procurement" : null,
+    })),
+  ];
+
+  const reason = signals.length === 0
+    ? `No recent federal-affiliated research found for these keywords in PubMed or ClinicalTrials.gov (${agency || "any agency"}).`
+    : null;
+
+  return { score: clamp(score, 0, 100), weight: 0.15, source: "PubMed + ClinicalTrials", signals, noSignalReason: reason };
 }
 
-function contractLayer(federal) {
-  const opps = federal?.sam_opportunities?.opportunities || [];
-  const regDocs = federal?.federal_register?.documents || [];
-  const oppCount = opps.length;
-  const regCount = regDocs.length;
-  return {
-    score: clamp(oppCount * 8 + regCount * 5, 0, 100),
-    evidence: {
-      active_opportunities: oppCount,
-      federal_register_docs: regCount,
-    },
-    items: [
-      ...opps.slice(0, 4).map((o) => ({
-        type: "opportunity",
-        title: o.title,
-        date: o.response_deadline || o.posted_date,
-        sponsor: o.agency,
-        url: o.url,
-      })),
-      ...regDocs.slice(0, 3).map((d) => ({
-        type: "federal_register",
-        title: d.title,
-        date: d.publication_date,
-        sponsor: d.agencies,
-        url: d.url,
-      })),
-    ],
-  };
+// ------------------------------------------------------------
+// Layer 2: Legislative (Congress + Committee Reports) — weight 20%
+// ------------------------------------------------------------
+async function layerLegislative(terms) {
+  const [bills, hearings, reports] = await Promise.all([
+    searchBills({ keyword: terms.forCongress, congress: 119, limit: 5 }).catch(() => ({ bills: [] })),
+    searchHearings({ keyword: terms.forCongress, congress: 119, limit: 5 }).catch(() => ({ hearings: [] })),
+    searchCommitteeReports({ keyword: terms.forCongress, congress: 119, limit: 3 }).catch(() => ({ reports: [] })),
+  ]);
+
+  const billList = bills.bills || [];
+  const hearingList = hearings.hearings || [];
+  const reportList = reports.reports || [];
+
+  let score = 0;
+  score += Math.min(billList.length * 10, 40);
+  hearingList.forEach((h) => {
+    score += daysAgo(h.date) < 90 ? 15 : 8;
+  });
+  score = Math.min(score, 80);
+  score += Math.min(reportList.length * 7, 20);
+  score = clamp(score, 0, 100);
+
+  const signals = [
+    ...billList.slice(0, 2).map((b) => ({
+      title: `${b.type} ${b.number}: ${(b.title || "").substring(0, 100)}`,
+      url: b.url,
+      source: "Congress.gov",
+      date: b.latest_action_date || b.update_date,
+      organization: "119th Congress",
+      relevanceNote: b.latest_action ? `Latest action: ${b.latest_action.substring(0, 80)}` : null,
+    })),
+    ...hearingList.slice(0, 2).map((h) => ({
+      title: (h.title || "").substring(0, 120),
+      url: h.url,
+      source: "Congress.gov",
+      date: h.date,
+      organization: h.committee,
+      relevanceNote: null,
+    })),
+    ...reportList.slice(0, 1).map((r) => ({
+      title: (r.title || "").substring(0, 120),
+      url: r.url,
+      source: "Congress.gov",
+      date: null,
+      organization: `${r.chamber || ""} ${r.type || ""}`.trim() || "Committee Report",
+      relevanceNote: null,
+    })),
+  ];
+
+  const reason = signals.length === 0
+    ? "No active bills or hearings found in 119th Congress for these terms."
+    : null;
+
+  return { score, weight: 0.20, source: "Congress.gov + GovInfo", signals, noSignalReason: reason };
 }
 
-function compositeScore(layers) {
-  // Weighted average — contract + budget slightly over-weighted since
-  // they're the closest-to-procurement signals. Adjust if live use shows
-  // better predictive performance with even weights.
-  const weights = { research: 0.15, legislative: 0.20, workforce: 0.15, budget: 0.25, contract: 0.25 };
-  let total = 0;
-  for (const [key, w] of Object.entries(weights)) {
-    total += (layers[key]?.score || 0) * w;
-  }
-  return Math.round(total);
+// ------------------------------------------------------------
+// Layer 3: Workforce (USAJobs) — weight 15%
+// ------------------------------------------------------------
+async function layerWorkforce(terms, agency) {
+  const agencyCodeMap = { DHA: "DD17", VA: "VATA", HHS: "HE00", DoD: "DD00", GSA: "GS00" };
+  const org = agencyCodeMap[agency];
+  const { jobs = [] } = await searchJobs({
+    keyword: terms.forUSAJobs,
+    agency: org,
+    limit: 10,
+  }).catch(() => ({ jobs: [] }));
+
+  const keywordsLower = terms.topKeywords.map((k) => k.toLowerCase());
+  const relevant = jobs.filter((p) => {
+    const title = (p.position_title || "").toLowerCase();
+    return keywordsLower.some((k) => title.includes(k));
+  });
+
+  let score = 0;
+  if (relevant.length > 10) score += 60;
+  else if (relevant.length > 5) score += 45;
+  else if (relevant.length > 2) score += 30;
+  else if (relevant.length > 0) score += 15;
+  else if (jobs.length > 0) score += 5;
+  const senior = relevant.filter((p) => {
+    const t = (p.position_title || "").toLowerCase();
+    if (/senior|lead|director|chief|supervisor/.test(t)) return true;
+    const pm = parseFloat(p.pay_max || p.pay_min || 0);
+    return pm > 130000;
+  });
+  score += Math.min(senior.length * 12, 25);
+  const veryRecent = relevant.filter((p) => daysAgo(p.open_date) < 14);
+  if (veryRecent.length > 0) score += 15;
+  score = clamp(score, 0, 100);
+
+  const signals = relevant.slice(0, 5).map((j) => ({
+    title: (j.position_title || "").substring(0, 120),
+    url: j.url,
+    source: "USAJobs",
+    date: j.open_date,
+    organization: `${j.agency || ""}${j.location ? " · " + j.location : ""}`,
+    relevanceNote: /senior|lead|director|chief|supervisor/i.test(j.position_title || "")
+      ? "Senior hire — program leadership signal"
+      : null,
+  }));
+
+  const reason = signals.length === 0
+    ? `No active federal job postings matching these keywords at ${agency || "any agency"}. Hiring leads contracts by 6–18 months — check back.`
+    : null;
+
+  return { score, weight: 0.15, source: "USAJobs", signals, noSignalReason: reason };
 }
 
-function alertBand(composite) {
-  if (composite >= 75) return { band: "CAPTURE ALERT", color: "#E63946" };
-  if (composite >= 60) return { band: "WATCH", color: "#F97316" };
-  if (composite >= 40) return { band: "TRACK", color: "#92710A" };
-  return { band: "QUIET", color: "#6B7280" };
+// ------------------------------------------------------------
+// Layer 4: Budget (USASpending + GAO) — weight 25%
+// ------------------------------------------------------------
+async function layerBudget(terms, agency) {
+  const [awards, gaoReports] = await Promise.all([
+    searchUSASpending({
+      keyword: terms.forUSASpending,
+      agency,
+      startDate: new Date(Date.now() - 730 * DAY_MS).toISOString().slice(0, 10),
+      limit: 10,
+    }).catch(() => ({ awards: [], total: 0 })),
+    searchGAOReports({ keyword: terms.forUSASpending, limit: 3 }).catch(() => ({ reports: [] })),
+  ]);
+
+  const awardList = awards.awards || [];
+  const totalObligated = awardList.reduce((s, a) => s + (a.obligated || 0), 0);
+  const awardCount = awardList.length;
+  const mostRecentDaysAgo = awardList.length > 0
+    ? Math.min(...awardList.map((a) => daysAgo(a.start_date || a.end_date)))
+    : Infinity;
+  const gao = gaoReports.reports || [];
+
+  let score = 0;
+  if (totalObligated > 500_000_000) score += 50;
+  else if (totalObligated > 100_000_000) score += 40;
+  else if (totalObligated > 50_000_000) score += 30;
+  else if (totalObligated > 10_000_000) score += 20;
+  else if (totalObligated > 1_000_000) score += 10;
+  else if (awardCount > 0) score += 5;
+  if (mostRecentDaysAgo < 30) score += 30;
+  else if (mostRecentDaysAgo < 90) score += 20;
+  else if (mostRecentDaysAgo < 180) score += 10;
+  else if (mostRecentDaysAgo < 365) score += 5;
+  score += Math.min(gao.length * 10, 20);
+  score = clamp(score, 0, 100);
+
+  const signals = [
+    ...awardList.slice(0, 3).map((a) => ({
+      title: `${formatDollarsShort(a.obligated || 0)} to ${a.recipient || "Unknown"}`,
+      url: a.source_url,
+      source: "USASpending",
+      date: a.start_date,
+      organization: a.sub_agency || a.agency,
+      relevanceNote: (a.obligated || 0) > 50_000_000 ? "Major award" : null,
+    })),
+    ...gao.slice(0, 2).map((r) => ({
+      title: (r.title || "").substring(0, 120),
+      url: r.url,
+      source: "GAO",
+      date: r.date,
+      organization: "Government Accountability Office",
+      relevanceNote: "GAO scrutiny often precedes budget action",
+    })),
+  ];
+
+  const reason = signals.length === 0
+    ? `No obligation data found for these keywords at ${agency || "any agency"} in USASpending. Try a broader search term.`
+    : null;
+
+  return { score, weight: 0.25, source: "USASpending + GAO", signals, noSignalReason: reason };
 }
 
+// ------------------------------------------------------------
+// Layer 5: Contract (SAM.gov primary, Federal Register supplemental) — weight 25%
+// ------------------------------------------------------------
+const SAM_TYPE_WEIGHTS = { o: 25, r: 20, p: 15, k: 12, s: 8 };
+const SAM_TYPE_LABELS = {
+  o: "Solicitation", r: "Combined Synopsis/Solicitation",
+  p: "Pre-Solicitation", k: "Sources Sought", s: "Special Notice",
+};
+
+async function layerContract(terms, agency) {
+  const [samOpps, frDocs] = await Promise.all([
+    // Use SAM.gov Opportunities as the PRIMARY source for contract signals.
+    searchSAMOpportunities({
+      keyword: terms.forSAM,
+      limit: 10,
+    }).catch(() => ({ opportunities: [], total: 0 })),
+    // Federal Register supplemental, ALWAYS with keyword filter now.
+    searchFederalRegister({
+      keyword: terms.forFedRegister,
+      agencies: FR_AGENCY_SLUGS[agency] ? [FR_AGENCY_SLUGS[agency]] : undefined,
+      type: ["NOTICE", "RULE"],
+      limit: 3,
+    }).catch(() => ({ documents: [], total: 0 })),
+  ]);
+
+  const opps = samOpps.opportunities || [];
+  const docs = frDocs.documents || [];
+
+  let score = 0;
+  opps.forEach((opp) => {
+    const typeKey = (opp.type || "").toLowerCase()[0] || "s";
+    const weight = SAM_TYPE_WEIGHTS[typeKey] || 5;
+    const dAgo = daysAgo(opp.posted_date);
+    const recency = dAgo < 30 ? 1.0 : dAgo < 60 ? 0.75 : dAgo < 90 ? 0.5 : 0.25;
+    score += weight * recency;
+  });
+  score = Math.min(score, 80);
+  if (docs.length > 0) score += Math.min(docs.length * 7, 20);
+  score = clamp(score, 0, 100);
+
+  const signals = [
+    ...opps.slice(0, 5).map((opp) => {
+      const typeKey = (opp.type || "").toLowerCase()[0] || "s";
+      const label = SAM_TYPE_LABELS[typeKey] || opp.type || "Notice";
+      return {
+        title: `[${label}] ${(opp.title || "").substring(0, 100)}`,
+        url: opp.url,
+        source: "SAM.gov",
+        date: opp.posted_date,
+        organization: opp.agency,
+        relevanceNote: typeKey === "o" ? "LIVE SOLICITATION" : null,
+      };
+    }),
+    ...docs.slice(0, 2).map((d) => ({
+      title: (d.title || "").substring(0, 120),
+      url: d.url,
+      source: "Federal Register",
+      date: d.publication_date,
+      organization: d.agencies,
+      relevanceNote: null,
+    })),
+  ];
+
+  const reason = signals.length === 0
+    ? `No active SAM.gov solicitations matching these keywords at ${agency || "any agency"}. Zero Federal Register notices in the window.`
+    : (opps.length === 0 && docs.length > 0
+        ? `No active SAM.gov solicitations found. ${docs.length} Federal Register notice${docs.length === 1 ? "" : "s"} — showing most relevant.`
+        : null);
+
+  return { score, weight: 0.25, source: "SAM.gov + Federal Register", signals, noSignalReason: reason };
+}
+
+// ------------------------------------------------------------
+// Composite + verdict
+// ------------------------------------------------------------
+function computeComposite(layers) {
+  return Math.round(
+    (layers.research.score * 0.15) +
+    (layers.legislative.score * 0.20) +
+    (layers.workforce.score * 0.15) +
+    (layers.budget.score * 0.25) +
+    (layers.contract.score * 0.25)
+  );
+}
+
+function getVerdict(composite) {
+  if (composite >= 75) return { verdict: "CAPTURE ALERT", captureAlert: true, color: "#E63946" };
+  if (composite >= 55) return { verdict: "ACTIVE", captureAlert: false, color: "#15803D" };
+  if (composite >= 40) return { verdict: "BUILDING", captureAlert: false, color: "#457B9D" };
+  if (composite >= 25) return { verdict: "EMERGING", captureAlert: false, color: "#92710A" };
+  return { verdict: "QUIET", captureAlert: false, color: "#6B7280" };
+}
+
+// ------------------------------------------------------------
+// Caching (1-week TTL, ops_events-backed)
+// ------------------------------------------------------------
+function cacheKeyFor(topic, agency) {
+  const now = new Date();
+  const week = Math.floor((now - new Date(now.getUTCFullYear(), 0, 1)) / (7 * DAY_MS));
+  const normalized = `${(topic || "").toLowerCase().trim()}|${agency || ""}|W${now.getUTCFullYear()}-${week}`;
+  return crypto.createHash("sha256").update(normalized).digest("hex");
+}
+
+async function readCache(supabase, key) {
+  try {
+    const cutoff = new Date(Date.now() - CACHE_TTL_HOURS * 3600 * 1000).toISOString();
+    const { data } = await supabase
+      .from("ops_events")
+      .select("details, created_at")
+      .eq("event_type", "signal_chain_cache")
+      .eq("details->>cache_key", key)
+      .gte("created_at", cutoff)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (data && data.details && data.details.card) {
+      return { card: data.details.card, cachedAt: data.created_at };
+    }
+  } catch (_) { /* swallow */ }
+  return null;
+}
+
+async function writeCache(supabase, key, card) {
+  try {
+    await supabase.from("ops_events").insert({
+      event_type: "signal_chain_cache",
+      details: { cache_key: key, card, stored_at: new Date().toISOString() },
+    });
+  } catch (_) { /* swallow */ }
+}
+
+// ------------------------------------------------------------
+// Main handler
+// ------------------------------------------------------------
 exports.handler = async (event) => {
   if (event.httpMethod === "OPTIONS") {
     return { statusCode: 204, headers: CORS_HEADERS, body: "" };
   }
-  if (event.httpMethod !== "GET") {
+  if (event.httpMethod !== "GET" && event.httpMethod !== "POST") {
     return { statusCode: 405, headers: CORS_HEADERS, body: JSON.stringify({ error: "Method not allowed" }) };
   }
 
@@ -227,16 +439,29 @@ exports.handler = async (event) => {
     return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ error: "Service not configured" }) };
   }
 
-  const params = event.queryStringParameters || {};
-  const email = (params.email || "").toLowerCase().trim();
-  const topic = (params.topic || "").trim();
-  const agency = params.agency || null;
+  // Accept topic + agency via querystring (GET) or JSON body (POST)
+  let email, topic, agency;
+  if (event.httpMethod === "GET") {
+    const qs = event.queryStringParameters || {};
+    email = (qs.email || "").toLowerCase().trim();
+    topic = (qs.topic || "").trim();
+    agency = qs.agency || null;
+  } else {
+    let body;
+    try { body = JSON.parse(event.body || "{}"); } catch { body = {}; }
+    email = (body.email || "").toLowerCase().trim();
+    topic = (body.topic || "").trim();
+    agency = body.agency || null;
+  }
 
   if (!email || !topic) {
     return { statusCode: 400, headers: CORS_HEADERS, body: JSON.stringify({ error: "email and topic required" }) };
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return { statusCode: 400, headers: CORS_HEADERS, body: JSON.stringify({ error: "invalid email" }) };
+  }
+  if (topic.length < 3) {
+    return { statusCode: 400, headers: CORS_HEADERS, body: JSON.stringify({ error: "QUERY_TOO_SHORT", message: "Enter at least 3 characters." }) };
   }
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
@@ -257,43 +482,97 @@ exports.handler = async (event) => {
     return { statusCode: 403, headers: CORS_HEADERS, body: JSON.stringify({ error: "Signal Chain is a Premium feature." }) };
   }
 
-  // Vehicle detection: let OASIS+, T4NG2, etc. resolve to canonical search terms
-  const vehicles = detectVehicles(topic);
-  const searchQuery = vehicles.length > 0 ? expandedSearchTerms(vehicles).join(" ") : topic;
-  const resolvedAgency = agency || (vehicles[0]?.agency) || undefined;
-  const resolvedNaics = vehicles[0]?.naics || undefined;
+  // Cache read
+  const cacheKey = cacheKeyFor(topic, agency);
+  const cached = await readCache(supabase, cacheKey);
+  if (cached) {
+    const ageHours = Math.floor((Date.now() - new Date(cached.cachedAt).getTime()) / 3600000);
+    return {
+      statusCode: 200,
+      headers: { ...CORS_HEADERS, "X-Cache": "HIT" },
+      body: JSON.stringify({ ...cached.card, cached: true, cachedAgoHours: ageHours }),
+    };
+  }
 
-  const safe = (p) => p.catch((e) => ({ error: e.message }));
-  const [federal, congress, govinfo, ctgov, pubmed, usajobs] = await Promise.all([
-    safe(enrichWithFederalData({ topic: searchQuery, agency: resolvedAgency, naics: resolvedNaics })),
-    safe(enrichWithCongress({ topic: searchQuery })),
-    safe(enrichWithGovInfo({ topic: searchQuery })),
-    safe(enrichWithClinicalTrials({ topic })),
-    safe(enrichWithPubMed({ topic, yearsBack: 3 })),
-    safe(enrichWithUSAJobs({ topic: searchQuery })),
+  // Vehicle detection — resolve aliases (OASIS+ → "OASIS Plus" etc.)
+  const matchedVehicles = detectVehicles(topic);
+  const resolvedTopic = matchedVehicles.length > 0
+    ? [topic, ...expandedSearchTerms(matchedVehicles)].join(" ")
+    : topic;
+  const resolvedAgency = agency || (matchedVehicles[0] && matchedVehicles[0].agency) || null;
+
+  const terms = buildQueryTerms(resolvedTopic, resolvedAgency);
+
+  // Run all 5 layers in parallel with 6s per-layer timeout
+  const [research, legislative, workforce, budget, contract] = await Promise.all([
+    race(6000, () => layerResearch(terms, resolvedAgency)),
+    race(6000, () => layerLegislative(terms)),
+    race(6000, () => layerWorkforce(terms, resolvedAgency)),
+    race(6000, () => layerBudget(terms, resolvedAgency)),
+    race(6000, () => layerContract(terms, resolvedAgency)),
   ]);
 
+  const zero = { score: 0, weight: 0, source: "", signals: [], noSignalReason: "Data source timed out — try again." };
+  const timedOut = [];
+  if (research.__timedOut) timedOut.push("research");
+  if (legislative.__timedOut) timedOut.push("legislative");
+  if (workforce.__timedOut) timedOut.push("workforce");
+  if (budget.__timedOut) timedOut.push("budget");
+  if (contract.__timedOut) timedOut.push("contract");
+
   const layers = {
-    research:    researchLayer(ctgov, pubmed),
-    legislative: legislativeLayer(congress),
-    workforce:   workforceLayer(usajobs),
-    budget:      budgetLayer(federal, govinfo),
-    contract:    contractLayer(federal),
+    research:    research.__timedOut || research.__error ? { ...zero, weight: 0.15 } : research,
+    legislative: legislative.__timedOut || legislative.__error ? { ...zero, weight: 0.20 } : legislative,
+    workforce:   workforce.__timedOut || workforce.__error ? { ...zero, weight: 0.15 } : workforce,
+    budget:      budget.__timedOut || budget.__error ? { ...zero, weight: 0.25 } : budget,
+    contract:    contract.__timedOut || contract.__error ? { ...zero, weight: 0.25 } : contract,
   };
-  const composite = compositeScore(layers);
-  const { band, color } = alertBand(composite);
+
+  const composite = computeComposite(layers);
+  const { verdict, captureAlert, color } = getVerdict(composite);
+
+  const card = {
+    topic,
+    agency: resolvedAgency,
+    composite,
+    verdict,
+    captureAlert,
+    verdictColor: color,
+    partial: timedOut.length > 0,
+    timedOut,
+    generatedAt: new Date().toISOString(),
+    resolved: {
+      searchedTopic: resolvedTopic,
+      agency: resolvedAgency,
+      vehicles: matchedVehicles.map((v) => v.canonical),
+      topKeywords: terms.topKeywords,
+    },
+    layers,
+  };
+
+  // Write to cache (non-blocking)
+  writeCache(supabase, cacheKey, card).catch(() => {});
+
+  // Log for observability + potential future alerting
+  try {
+    await supabase.from("ops_events").insert({
+      event_type: "signal_chain_run",
+      details: {
+        email,
+        topic,
+        agency: resolvedAgency,
+        composite,
+        verdict,
+        captureAlert,
+        partial: card.partial,
+        submitted_at: new Date().toISOString(),
+      },
+    });
+  } catch (_) {}
 
   return {
     statusCode: 200,
-    headers: CORS_HEADERS,
-    body: JSON.stringify({
-      topic,
-      resolved: { searched: searchQuery, agency: resolvedAgency, vehicles: vehicles.map((v) => v.canonical) },
-      composite_score: composite,
-      alert_band: band,
-      alert_color: color,
-      layers,
-      generated_at: new Date().toISOString(),
-    }),
+    headers: { ...CORS_HEADERS, "X-Cache": "MISS" },
+    body: JSON.stringify({ ...card, cached: false }),
   };
 };

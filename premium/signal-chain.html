@@ -35,6 +35,27 @@
     .layer-items li { padding:4px 0; border-top:1px solid var(--mmt-border); }
     .layer-items a { color:var(--mmt-teal); text-decoration:none; }
     .alert-band { display:inline-block; padding:6px 14px; border-radius:999px; font-size:12px; font-weight:800; letter-spacing:0.1em; color:#fff; text-transform:uppercase; }
+    .capture-alert-banner { background:linear-gradient(90deg, rgba(230,57,70,0.15), rgba(230,57,70,0.05)); border:2px solid var(--mmt-red); color:#991B1B; border-radius:12px; padding:16px 20px; margin-bottom:16px; animation:alertPulse 2s ease-in-out infinite; }
+    .alert-pulse-dot { display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--mmt-red); margin-right:10px; animation:pulseDot 1.5s ease-in-out infinite; }
+    @keyframes alertPulse { 0%,100% { box-shadow:0 0 0 0 rgba(230,57,70,0.4); } 50% { box-shadow:0 0 0 8px rgba(230,57,70,0); } }
+    @keyframes pulseDot { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.5; transform:scale(1.3); } }
+    .source-tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; margin-right:6px; }
+    .source-PubMed         { background:rgba(59,130,246,0.1); color:#1D4ED8; }
+    .source-ClinicalTrials { background:rgba(139,92,246,0.1); color:#6D28D9; }
+    .source-Congress-gov   { background:rgba(10,25,47,0.1); color:var(--mmt-navy); }
+    .source-GovInfo        { background:rgba(30,64,175,0.1); color:#1E40AF; }
+    .source-USAJobs        { background:rgba(21,128,61,0.1); color:#15803D; }
+    .source-USASpending    { background:rgba(69,123,157,0.12); color:var(--mmt-teal); }
+    .source-SAM-gov        { background:rgba(230,57,70,0.1); color:#B91C1C; }
+    .source-Federal-Register { background:rgba(249,115,22,0.1); color:#C2410C; }
+    .source-GAO            { background:rgba(120,53,15,0.1); color:#78350F; }
+    .signal-item { padding:10px 0; border-top:1px solid var(--mmt-border); }
+    .signal-item:first-child { border-top:none; padding-top:0; }
+    .signal-item a { color:var(--mmt-navy); text-decoration:none; font-weight:600; font-size:13px; line-height:1.4; }
+    .signal-item a:hover { color:var(--mmt-teal); text-decoration:underline; }
+    .signal-item-meta { font-size:11px; color:var(--mmt-text-secondary); margin-top:4px; }
+    .signal-item-note { display:inline-block; font-size:10px; font-weight:700; background:rgba(230,57,70,0.1); color:var(--mmt-red); padding:1px 6px; border-radius:3px; margin-left:6px; letter-spacing:0.04em; text-transform:uppercase; }
+    .layer-weight { font-size:10px; color:var(--mmt-text-secondary); text-transform:uppercase; letter-spacing:0.08em; font-weight:600; margin-top:10px; }
     @media (max-width:900px) { .layers-grid { grid-template-columns:1fr 1fr; } }
     @media (max-width:768px) { .dash-shell { grid-template-columns:1fr; } .dash-nav { display:none; } .dash-main { padding:16px; padding-bottom:80px; } .dash-mobile-nav { display:flex; position:fixed; bottom:0; left:0; right:0; background:var(--mmt-navy); padding:8px 0; justify-content:space-around; z-index:100; } .dash-mobile-nav a { color:rgba(255,255,255,0.6); text-decoration:none; font-size:10px; text-align:center; padding:6px 8px; } .dash-mobile-nav a.active { color:#fff; } }
     @media (min-width:769px) { .dash-mobile-nav { display:none; } }
@@ -99,13 +120,43 @@
               <option value="DHA">DHA</option>
               <option value="HHS">HHS</option>
               <option value="DoD">DoD</option>
+              <option value="GSA">GSA</option>
             </select>
             <button id="sc-submit" class="btn-primary" onclick="runChain()">Run &rarr;</button>
           </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;" id="sc-chips"></div>
           <div id="sc-error" style="display:none;margin-top:12px;padding:10px 14px;background:rgba(230,57,70,0.08);border:1px solid rgba(230,57,70,0.2);border-radius:8px;font-size:13px;color:#B91C1C;"></div>
         </div>
 
+        <!-- Loading state -->
+        <div id="sc-loading" style="display:none;">
+          <div class="dash-card">
+            <div id="sc-loading-status" style="font-size:13px;font-weight:600;color:var(--mmt-teal);margin-bottom:16px;">Scanning research pipeline (PubMed + ClinicalTrials)…</div>
+            <div style="height:4px;background:var(--mmt-border);border-radius:999px;overflow:hidden;margin-bottom:20px;">
+              <div id="sc-loading-bar" style="height:100%;background:var(--mmt-teal);border-radius:999px;width:10%;transition:width 1s;"></div>
+            </div>
+            <div class="layers-grid">
+              <div class="layer-card"><div style="height:12px;background:var(--mmt-border);border-radius:3px;width:60%;margin-bottom:10px;"></div><div style="height:4px;background:var(--mmt-border);border-radius:3px;width:80%;"></div></div>
+              <div class="layer-card"><div style="height:12px;background:var(--mmt-border);border-radius:3px;width:55%;margin-bottom:10px;"></div><div style="height:4px;background:var(--mmt-border);border-radius:3px;width:70%;"></div></div>
+              <div class="layer-card"><div style="height:12px;background:var(--mmt-border);border-radius:3px;width:50%;margin-bottom:10px;"></div><div style="height:4px;background:var(--mmt-border);border-radius:3px;width:85%;"></div></div>
+              <div class="layer-card"><div style="height:12px;background:var(--mmt-border);border-radius:3px;width:65%;margin-bottom:10px;"></div><div style="height:4px;background:var(--mmt-border);border-radius:3px;width:75%;"></div></div>
+              <div class="layer-card"><div style="height:12px;background:var(--mmt-border);border-radius:3px;width:58%;margin-bottom:10px;"></div><div style="height:4px;background:var(--mmt-border);border-radius:3px;width:82%;"></div></div>
+            </div>
+          </div>
+        </div>
+
         <div id="sc-result" style="display:none;">
+          <div id="sc-capture-banner" class="capture-alert-banner" style="display:none;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+              <span class="alert-pulse-dot"></span>
+              <strong style="font-size:14px;letter-spacing:0.06em;">CAPTURE ALERT</strong>
+            </div>
+            <p id="sc-banner-body" style="margin:0;font-size:13px;line-height:1.55;"></p>
+          </div>
+
+          <div id="sc-partial-warning" style="display:none;background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.3);color:#92710A;padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:12px;"></div>
+          <div id="sc-cache-note" style="display:none;background:rgba(69,123,157,0.08);color:var(--mmt-teal);padding:8px 14px;border-radius:6px;font-size:12px;margin-bottom:12px;"></div>
+
           <div class="dash-card" style="display:flex;justify-content:space-between;align-items:center;gap:16px;">
             <div>
               <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--mmt-text-secondary);">Composite score</div>
@@ -119,6 +170,17 @@
           </div>
 
           <div class="layers-grid" id="sc-layers"></div>
+
+          <!-- Subscribe to alerts -->
+          <div class="dash-card" style="background:var(--mmt-surface);border-left:3px solid var(--mmt-teal);">
+            <h3 style="margin:0 0 6px;font-size:14px;font-weight:700;">Watch this topic</h3>
+            <p style="margin:0 0 10px;font-size:13px;color:var(--mmt-text-secondary);line-height:1.5;">Get notified by email when the composite score crosses the capture threshold (≥75).</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <input type="email" id="sc-subscribe-email" placeholder="you@company.com" style="flex:1;min-width:200px;padding:9px 14px;border:1px solid var(--mmt-border);border-radius:6px;font-size:13px;">
+              <button onclick="subscribeAlert()" id="sc-subscribe-btn" style="padding:9px 18px;background:var(--mmt-navy);color:#fff;border:none;border-radius:6px;font-weight:600;font-size:13px;cursor:pointer;">Subscribe to alerts</button>
+            </div>
+            <div id="sc-subscribe-msg" style="margin-top:8px;font-size:12px;"></div>
+          </div>
 
           <p style="font-size:11px;color:var(--mmt-text-secondary);font-style:italic;">Composite weights: budget + contract 25% each, legislative 20%, research + workforce 15% each. Capture Alert fires at composite ≥75. Queries: ClinicalTrials.gov, PubMed, Congress.gov, GovInfo, USAJobs, USASpending, SAM.gov Opportunities, Federal Register.</p>
         </div>
@@ -136,6 +198,58 @@
   <script>
     var email = localStorage.getItem('mmt_email');
     if (email) document.getElementById('dash-email').textContent = email;
+
+    // Quick-fill chips
+    var SC_CHIPS = [
+      { label: 'GENESIS EHR', topic: 'GENESIS EHR modernization', agency: 'DHA' },
+      { label: 'DHMSM', topic: 'DHMSM', agency: 'DHA' },
+      { label: 'VA Community Care', topic: 'VA community care network', agency: 'VA' },
+      { label: 'MHS modernization', topic: 'MHS modernization', agency: 'DHA' },
+      { label: 'DHA telehealth', topic: 'DHA telehealth', agency: 'DHA' }
+    ];
+    (function renderChips() {
+      var wrap = document.getElementById('sc-chips');
+      if (!wrap) return;
+      SC_CHIPS.forEach(function(c) {
+        var btn = document.createElement('button');
+        btn.textContent = c.label;
+        btn.style.cssText = 'padding:4px 12px;background:var(--mmt-surface);border:1px solid var(--mmt-border);border-radius:999px;font-size:12px;color:var(--mmt-teal);cursor:pointer;font-weight:600;';
+        btn.addEventListener('click', function() {
+          document.getElementById('sc-topic').value = c.topic;
+          if (c.agency) document.getElementById('sc-agency').value = c.agency;
+        });
+        wrap.appendChild(btn);
+      });
+    })();
+
+    var SC_LOADING_MESSAGES = [
+      'Scanning research pipeline (PubMed + ClinicalTrials)…',
+      'Checking Congressional activity…',
+      'Reading federal job postings…',
+      'Querying USASpending obligation data…',
+      'Scanning SAM.gov for active solicitations…',
+      'Weighing composite score…'
+    ];
+    var scLoadingTimer = null;
+    function scStartLoading() {
+      var card = document.getElementById('sc-loading');
+      var status = document.getElementById('sc-loading-status');
+      var bar = document.getElementById('sc-loading-bar');
+      card.style.display = 'block';
+      document.getElementById('sc-result').style.display = 'none';
+      var i = 0;
+      status.textContent = SC_LOADING_MESSAGES[0];
+      bar.style.width = '10%';
+      scLoadingTimer = setInterval(function() {
+        i = (i + 1) % SC_LOADING_MESSAGES.length;
+        status.textContent = SC_LOADING_MESSAGES[i];
+        bar.style.width = Math.min(95, 20 + i * 13) + '%';
+      }, 1200);
+    }
+    function scStopLoading() {
+      if (scLoadingTimer) { clearInterval(scLoadingTimer); scLoadingTimer = null; }
+      document.getElementById('sc-loading').style.display = 'none';
+    }
 
     // Allow Newsletter-to-Tool deep links: /premium/signal-chain.html?topic=CCN+Next+Gen&agency=VA
     (function() {
@@ -164,18 +278,20 @@
       contract:    'Contract',
     };
 
+    var lastChain = null;
+
     function runChain() {
       var topic = document.getElementById('sc-topic').value.trim();
       var agency = document.getElementById('sc-agency').value || '';
       var e = localStorage.getItem('mmt_email') || '';
       if (!e) { setError('Please sign in first.'); return; }
-      if (!topic) { setError('Enter a topic to monitor.'); return; }
+      if (!topic || topic.length < 3) { setError('Enter at least 3 characters.'); return; }
       setError('');
 
       var btn = document.getElementById('sc-submit');
       btn.disabled = true;
-      btn.textContent = 'Running...';
-      document.getElementById('sc-result').style.display = 'none';
+      btn.textContent = 'Running…';
+      scStartLoading();
 
       var qs = new URLSearchParams({ email: e, topic: topic });
       if (agency) qs.set('agency', agency);
@@ -183,58 +299,158 @@
       fetch('/.netlify/functions/signal-chain?' + qs.toString())
         .then(function(res) { return res.json().then(function(data) { return { ok: res.ok, data: data }; }); })
         .then(function(result) {
+          scStopLoading();
           btn.disabled = false;
           btn.textContent = 'Run \u2192';
           if (!result.ok) {
-            setError(result.data.error || 'Failed. Try again.');
+            setError(result.data.message || result.data.error || 'Failed. Try again.');
             return;
           }
           renderResult(result.data);
         })
         .catch(function(err) {
+          scStopLoading();
           btn.disabled = false;
           btn.textContent = 'Run \u2192';
           setError('Network error: ' + err.message);
         });
     }
 
-    function renderResult(r) {
-      document.getElementById('sc-result').style.display = 'block';
-      document.getElementById('sc-composite').textContent = r.composite_score;
-      var alertEl = document.getElementById('sc-alert');
-      alertEl.textContent = r.alert_band;
-      alertEl.style.background = r.alert_color;
+    function escapeHtml(s) {
+      return String(s || '').replace(/[<>&"']/g, function(c) {
+        return { '<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;' }[c];
+      });
+    }
 
+    function renderResult(r) {
+      lastChain = r;
+      document.getElementById('sc-result').style.display = 'block';
+      document.getElementById('sc-composite').textContent = r.composite;
+      var alertEl = document.getElementById('sc-alert');
+      alertEl.textContent = r.verdict;
+      alertEl.style.background = r.verdictColor || '#6B7280';
+
+      // Capture Alert banner
+      var banner = document.getElementById('sc-capture-banner');
+      if (r.captureAlert) {
+        document.getElementById('sc-banner-body').textContent =
+          'Multiple signal layers converging on "' + r.topic + '" at ' + (r.agency || 'covered agencies') + '. ' +
+          'Composite score ' + r.composite + '/100 exceeds alert threshold. ' +
+          'Recommend immediate BD qualification.';
+        banner.style.display = 'block';
+      } else {
+        banner.style.display = 'none';
+      }
+
+      // Partial warning
+      var partialEl = document.getElementById('sc-partial-warning');
+      if (r.partial && r.timedOut && r.timedOut.length) {
+        partialEl.textContent = '⚠ ' + r.timedOut.length + ' data source' + (r.timedOut.length === 1 ? '' : 's') + ' timed out: ' + r.timedOut.join(', ') + '. Composite may be understated.';
+        partialEl.style.display = 'block';
+      } else {
+        partialEl.style.display = 'none';
+      }
+
+      // Cache note
+      var cacheEl = document.getElementById('sc-cache-note');
+      if (r.cached) {
+        cacheEl.textContent = 'Served from cache · Updated ' + (r.cachedAgoHours || 0) + ' hour' + (r.cachedAgoHours === 1 ? '' : 's') + ' ago.';
+        cacheEl.style.display = 'block';
+      } else {
+        cacheEl.style.display = 'none';
+      }
+
+      // Resolved line
       var res = r.resolved || {};
       var parts = [];
       if (res.agency) parts.push('Agency: ' + res.agency);
       if (res.vehicles && res.vehicles.length) parts.push('Vehicle: ' + res.vehicles.join(', '));
-      if (res.searched && res.searched !== r.topic) parts.push('Searched: "' + res.searched + '"');
-      parts.push('Generated: ' + new Date(r.generated_at).toLocaleString());
+      if (res.searchedTopic && res.searchedTopic !== r.topic) parts.push('Searched: "' + res.searchedTopic + '"');
+      if (res.topKeywords && res.topKeywords.length) parts.push('Terms: ' + res.topKeywords.join(', '));
+      parts.push('Generated: ' + new Date(r.generatedAt).toLocaleString());
       document.getElementById('sc-resolved').textContent = parts.join(' · ');
 
+      // Pre-fill subscribe email
+      var emEl = document.getElementById('sc-subscribe-email');
+      if (emEl && !emEl.value) emEl.value = localStorage.getItem('mmt_email') || '';
+
+      // Layer cards
       var grid = document.getElementById('sc-layers');
       grid.innerHTML = '';
       ['research','legislative','workforce','budget','contract'].forEach(function(key) {
-        var layer = r.layers[key] || { score: 0, evidence: {}, items: [] };
+        var layer = r.layers[key] || { score: 0, weight: 0, signals: [], source: '', noSignalReason: 'Unavailable.' };
         var card = document.createElement('div');
         card.className = 'layer-card';
-        var itemsHtml = (layer.items || []).slice(0, 4).map(function(it) {
-          return '<li><a href="' + (it.url || '#') + '" target="_blank" rel="noopener">' +
-            (it.title || '').substring(0, 70) + (it.title && it.title.length > 70 ? '...' : '') +
-            '</a><br><span style="font-size:11px;">' + (it.sponsor || '') + (it.date ? ' · ' + it.date : '') + '</span></li>';
-        }).join('');
+
+        var signalsHtml;
+        if (layer.signals && layer.signals.length) {
+          signalsHtml = '<div>' + layer.signals.map(function(s) {
+            var safeSrcClass = 'source-' + (s.source || '').replace(/[^A-Za-z0-9]/g, '-');
+            var meta = [];
+            if (s.organization) meta.push(escapeHtml(s.organization));
+            if (s.date) meta.push(escapeHtml(s.date));
+            var note = s.relevanceNote ? '<span class="signal-item-note">' + escapeHtml(s.relevanceNote) + '</span>' : '';
+            var titleInner = escapeHtml(s.title || '(Untitled)');
+            var titleHtml = s.url
+              ? '<a href="' + escapeHtml(s.url) + '" target="_blank" rel="noopener">' + titleInner + '</a>'
+              : '<span style="color:var(--mmt-navy);font-weight:600;font-size:13px;">' + titleInner + '</span>';
+            return '<div class="signal-item">' +
+              '<span class="source-tag ' + safeSrcClass + '">' + escapeHtml(s.source || '') + '</span>' +
+              titleHtml + note +
+              (meta.length ? '<div class="signal-item-meta">' + meta.join(' · ') + '</div>' : '') +
+              '</div>';
+          }).join('') + '</div>';
+        } else {
+          signalsHtml = '<div style="font-size:12px;color:var(--mmt-text-secondary);font-style:italic;margin-top:8px;">' + escapeHtml(layer.noSignalReason || 'No signals matched.') + '</div>';
+        }
+
+        var weightPct = Math.round((layer.weight || 0) * 100);
         card.innerHTML =
           '<div class="layer-head">' +
             '<span class="layer-name">' + LAYER_LABELS[key] + '</span>' +
-            '<span class="layer-score">' + layer.score + '</span>' +
+            '<span class="layer-score">' + layer.score + '<span style="font-size:11px;color:var(--mmt-text-secondary);font-weight:600;"> / 100</span></span>' +
           '</div>' +
           '<div class="layer-bar"><div class="layer-bar-fill" style="width:' + layer.score + '%;"></div></div>' +
-          (itemsHtml ? '<ul class="layer-items">' + itemsHtml + '</ul>' : '<div style="font-size:12px;color:var(--mmt-text-secondary);">No signals matched.</div>');
+          '<div style="font-size:11px;color:var(--mmt-text-secondary);margin-bottom:4px;">' + escapeHtml(layer.source || '') + '</div>' +
+          signalsHtml +
+          '<div class="layer-weight">Weight: ' + weightPct + '% of composite</div>';
         grid.appendChild(card);
       });
 
       document.getElementById('sc-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function subscribeAlert() {
+      if (!lastChain) return;
+      var em = document.getElementById('sc-subscribe-email').value.trim();
+      if (!em) { document.getElementById('sc-subscribe-msg').innerHTML = '<span style="color:#B91C1C;">Enter an email.</span>'; return; }
+      var btn = document.getElementById('sc-subscribe-btn');
+      btn.disabled = true;
+      btn.textContent = 'Subscribing…';
+      fetch('/.netlify/functions/signal-chain-subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: em,
+          topic: lastChain.topic,
+          agency: lastChain.agency,
+          threshold: 75
+        })
+      }).then(function(res) { return res.json().then(function(d) { return { ok: res.ok, data: d }; }); })
+        .then(function(r) {
+          btn.disabled = false;
+          btn.textContent = 'Subscribe to alerts';
+          if (r.ok) {
+            document.getElementById('sc-subscribe-msg').innerHTML = '<span style="color:#15803D;font-weight:600;">✓ Subscribed. You\'ll get an email when the composite crosses 75.</span>';
+          } else {
+            document.getElementById('sc-subscribe-msg').innerHTML = '<span style="color:#B91C1C;">' + escapeHtml(r.data.error || 'Subscribe failed.') + '</span>';
+          }
+        })
+        .catch(function(err) {
+          btn.disabled = false;
+          btn.textContent = 'Subscribe to alerts';
+          document.getElementById('sc-subscribe-msg').innerHTML = '<span style="color:#B91C1C;">Network error: ' + escapeHtml(err.message) + '</span>';
+        });
     }
 
     // Enter submits from topic field
