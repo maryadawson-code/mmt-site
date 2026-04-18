@@ -73,7 +73,8 @@
 
         <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin-bottom:8px;">MMT Premium &middot; Direct Access</p>
         <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">Ask MMT</h1>
-        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 20px;">Direct access to Mary. Written answer within 5 business days. 2 questions per month included with Premium.</p>
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 8px;">Submit your question to the queue. The best questions each month are answered in the monthly Q&amp;A issue.</p>
+        <p style="font-size:13px;color:var(--mmt-text-secondary);margin:0 0 20px;"><strong style="color:var(--mmt-navy);">Premium</strong> 1/mo &middot; <strong style="color:#92710A;">Founding Member</strong> 2/mo (priority + personal reply on tool/product suggestions) &middot; <strong style="color:var(--mmt-teal);">Institutional</strong> 3/mo (2-business-day response).</p>
 
         <!-- Quota card -->
         <div class="dash-card" style="padding:16px 20px;margin-bottom:16px;">
@@ -112,7 +113,7 @@
 
         <!-- History -->
         <h2 style="font-size:16px;font-weight:700;margin:24px 0 12px;">Question History</h2>
-        <div id="ask-history-list"><p style="font-size:14px;color:var(--mmt-text-secondary);">No questions yet this month. You have 2 available.</p></div>
+        <div id="ask-history-list"><p style="font-size:14px;color:var(--mmt-text-secondary);">No questions yet this month.</p></div>
       </div>
     </div>
   </div>
@@ -154,17 +155,19 @@
       return '<p style="margin:0 0 10px;">' + s + '</p>';
     }
 
-    // Quota — synced with server via localStorage cache
-    function updateQuota(remaining) {
-      if (typeof remaining === 'number') {
-        localStorage.setItem('mmt_ask_remaining', String(remaining));
-      }
-      var r = parseInt(localStorage.getItem('mmt_ask_remaining') || '2');
-      var used = 2 - r;
+    // Quota — synced with server; server knows the tier and returns the correct cap.
+    // Until we get a response, optimistically show the Premium default (1/mo).
+    // Server response includes remaining + cap so we update both.
+    function updateQuota(remaining, cap) {
+      if (typeof remaining === 'number') localStorage.setItem('mmt_ask_remaining', String(remaining));
+      if (typeof cap === 'number') localStorage.setItem('mmt_ask_cap', String(cap));
+      var r = parseInt(localStorage.getItem('mmt_ask_remaining') || '1');
+      var c = parseInt(localStorage.getItem('mmt_ask_cap') || '1');
+      var used = c - r;
       var ql = document.getElementById('ask-quota-label');
       var bar = document.getElementById('ask-bar');
-      if (ql) ql.textContent = 'Questions remaining: ' + r + ' of 2';
-      if (bar) bar.style.width = Math.min(100, (used / 2) * 100) + '%';
+      if (ql) ql.textContent = 'Questions remaining: ' + r + ' of ' + c;
+      if (bar) bar.style.width = Math.min(100, c > 0 ? (used / c) * 100 : 0) + '%';
       var btn = document.getElementById('ask-submit-btn');
       if (btn && r <= 0) { btn.disabled = true; btn.style.opacity = '0.5'; btn.textContent = 'Limit reached this month'; }
     }
@@ -174,7 +177,7 @@
       var list = document.getElementById('ask-history-list');
       if (!list) return;
       var history = JSON.parse(localStorage.getItem('mmt_ask_history') || '[]');
-      if (history.length === 0) { list.innerHTML = '<p style="font-size:14px;color:var(--mmt-text-secondary);">No questions yet this month. You have 2 available.</p>'; return; }
+      if (history.length === 0) { list.innerHTML = '<p style="font-size:14px;color:var(--mmt-text-secondary);">No questions yet this month.</p>'; return; }
       list.innerHTML = history.map(function(item) {
         return '<div class="dash-card" style="padding:14px 18px;">' +
           '<div style="font-size:12px;color:var(--mmt-text-secondary);margin-bottom:4px;">' + item.date + ' &middot; <span style="font-weight:600;">' + item.status + '</span></div>' +

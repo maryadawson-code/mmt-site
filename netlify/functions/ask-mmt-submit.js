@@ -2,7 +2,10 @@
 // ask-mmt-submit.js — Ask MMT question submission endpoint
 //
 // POST body: { email, question }
-// Enforces 2 questions/month per email (server-side).
+// Per the 2026-04-17 launch article: Premium subscribers submit 1 question/month;
+// Founding Members get 2/month with priority review + personal reply on tool/product
+// proposals; Institutional subscribers get 3/month with 2-business-day response.
+// Tier detection uses mp_users.subscription_tier and is_founding_member flag.
 // Stores in Supabase ops_events, emails Mary via Resend.
 // Returns: { success, remaining } or { error }
 // ============================================================
@@ -37,7 +40,10 @@ function renderAnswerHtml(md) {
     .concat('</p>');
 }
 
-const MONTHLY_LIMIT = 2;
+// Tier-scoped monthly question limits. Canonical source: docs/launch-article-spec.md.
+const LIMIT_PREMIUM = 1;
+const LIMIT_FOUNDING = 2;
+const LIMIT_INSTITUTIONAL = 3;
 const ADMIN_EMAIL = "mary@missionmeetstech.com";
 
 const CORS_HEADERS = {
@@ -85,15 +91,18 @@ exports.handler = async (event) => {
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
-  // Verify premium status
+  // Verify premium status + detect tier
   const { data: user } = await supabase
     .from("mp_users")
-    .select("tier, subscription_tier, subscription_status")
+    .select("tier, subscription_tier, subscription_status, is_founding_member")
     .eq("email", email)
     .single();
 
+  const isInstitutional = user && user.subscription_tier === "institutional" && user.subscription_status === "active";
+  const isFounding = user && user.is_founding_member === true;
   const isPremium = user && (
     (user.subscription_tier === "premium" && user.subscription_status === "active") ||
+    isInstitutional ||
     user.tier === "admin" ||
     user.tier === "paid"
   );
@@ -101,6 +110,10 @@ exports.handler = async (event) => {
   if (!isPremium) {
     return { statusCode: 403, headers: CORS_HEADERS, body: JSON.stringify({ error: "Ask MMT is a Premium feature. Subscribe at missionmeetstech.com/pricing" }) };
   }
+
+  // Tier → monthly cap. Institutional > Founding > Premium.
+  const MONTHLY_LIMIT = isInstitutional ? LIMIT_INSTITUTIONAL : (isFounding ? LIMIT_FOUNDING : LIMIT_PREMIUM);
+  const tierLabel = isInstitutional ? "Institutional" : (isFounding ? "Founding Member" : "Premium");
 
   // Check monthly quota — count questions this month
   const now = new Date();
@@ -122,7 +135,7 @@ exports.handler = async (event) => {
     return {
       statusCode: 429,
       headers: CORS_HEADERS,
-      body: JSON.stringify({ error: "Monthly limit reached (2 questions). Resets on the 1st.", remaining: 0 }),
+      body: JSON.stringify({ error: `Monthly limit reached (${MONTHLY_LIMIT} question${MONTHLY_LIMIT === 1 ? "" : "s"} for ${tierLabel}). Resets on the 1st.`, remaining: 0 }),
     };
   }
 
@@ -164,16 +177,23 @@ exports.handler = async (event) => {
 
   // Email Mary
   const remaining = MONTHLY_LIMIT - used - 1;
+  const isToolSuggestion = /\b(tool|feature|product|build|ship|idea|suggestion|could you add|what if you|please add)\b/i.test(question);
+  const deservesPersonalReply = isFounding && isToolSuggestion;
   try {
     await sendEmail({
       to: ADMIN_EMAIL,
-      subject: `[Ask MMT] New question from ${email}`,
+      subject: deservesPersonalReply
+        ? `[Ask MMT · FOUNDING TOOL SUGGESTION] ${email}`
+        : (isInstitutional ? `[Ask MMT · INSTITUTIONAL 2-biz-day] ${email}` : `[Ask MMT · ${tierLabel}] New question from ${email}`),
       html: `<div style="font-family:sans-serif;max-width:600px;padding:24px;color:#333;">
   <h2 style="margin:0 0 16px;color:#0A192F;">Ask MMT — New Question</h2>
-  <p style="margin:0 0 8px;"><strong>From:</strong> ${email}</p>
+  <p style="margin:0 0 4px;"><strong>From:</strong> ${email}</p>
+  <p style="margin:0 0 4px;"><strong>Tier:</strong> ${tierLabel}${isFounding ? " · Founding Member" : ""}</p>
+  ${deservesPersonalReply ? '<p style="margin:0 0 8px;color:#B91C1C;font-weight:700;">⚠ Founding Member tool/product suggestion — personal reply expected regardless of whether this publishes in the monthly Q&amp;A issue.</p>' : ""}
+  ${isInstitutional ? '<p style="margin:0 0 8px;color:#B91C1C;font-weight:700;">⚠ Institutional tier — 2-business-day response SLA.</p>' : ""}
   <p style="margin:0 0 8px;"><strong>Question:</strong></p>
   <div style="background:#F3F4F6;border-radius:8px;padding:16px;margin:0 0 16px;font-size:15px;line-height:1.6;">${question.replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c]))}</div>
-  <p style="font-size:13px;color:#5C6B7A;">This subscriber has ${remaining} question${remaining === 1 ? "" : "s"} remaining this month.</p>
+  <p style="font-size:13px;color:#5C6B7A;">This subscriber has ${remaining} question${remaining === 1 ? "" : "s"} remaining this month (${tierLabel} tier allows ${MONTHLY_LIMIT}/mo).</p>
   <p style="font-size:13px;color:#5C6B7A;">Reply directly to the subscriber at <a href="mailto:${email}" style="color:#457B9D;">${email}</a>.</p>
 </div>`,
       from: "Mission Meets Tech <noreply@missionmeetstech.com>",
@@ -203,8 +223,13 @@ exports.handler = async (event) => {
     <p style="font-size:16px;color:#0A192F;margin:0 0 16px;">Your question has been received.</p>
     <div style="background:#F3F4F6;border-radius:8px;padding:16px;margin:0 0 16px;font-size:14px;color:#314155;line-height:1.6;">${escapeHtml(question)}</div>
     ${draftBlock}
-    <p style="font-size:14px;color:#5C6B7A;margin:0 0 8px;">Mary will respond within 5 business days via email.</p>
-    <p style="font-size:13px;color:#5C6B7A;margin:0;">You have ${remaining} question${remaining === 1 ? "" : "s"} remaining this month.</p>
+    ${isInstitutional
+      ? '<p style="font-size:14px;color:#0A192F;margin:0 0 8px;font-weight:600;">Institutional tier — Mary will respond within 2 business days.</p>'
+      : (deservesPersonalReply
+          ? '<p style="font-size:14px;color:#0A192F;margin:0 0 8px;font-weight:600;">Founding Member tool/product suggestion detected. Mary will reply personally, regardless of whether this publishes in the monthly Q&amp;A issue.</p>'
+          : '<p style="font-size:14px;color:#5C6B7A;margin:0 0 8px;">Your question is in the queue. The best questions each month are answered in the monthly Q&amp;A issue (anonymized unless you are a Founding Member).</p>')
+    }
+    <p style="font-size:13px;color:#5C6B7A;margin:0;">You have ${remaining} question${remaining === 1 ? "" : "s"} remaining this month (${tierLabel} tier: ${MONTHLY_LIMIT}/mo).</p>
   </div>
   <div style="padding:16px 32px;background:#F3F4F6;border-top:1px solid #D8E0E8;font-size:12px;color:#5C6B7A;text-align:center;">
     Mission Meets Tech LLC &middot; <a href="https://missionmeetstech.com" style="color:#457B9D;">missionmeetstech.com</a>

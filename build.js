@@ -1397,6 +1397,13 @@ function generateContractTrackerHtml(contracts, contractArticleMap) {
               <div class="flex items-start justify-between gap-3 mb-2">
                 <h3 class="text-base font-bold" style="color:var(--mmt-navy);">${escapeHtml(c.name)}</h3>
                 <div class="flex items-center gap-2 flex-shrink-0">
+                  ${(() => {
+                    const v = (c.pursuit_score && c.pursuit_score.verdict) || null;
+                    if (!v) return '';
+                    const vColor = v === 'GO' ? '#15803D' : v === 'PASS' ? '#B91C1C' : '#92710A';
+                    const vBg = v === 'GO' ? 'rgba(21,128,61,0.1)' : v === 'PASS' ? 'rgba(230,57,70,0.08)' : 'rgba(146,113,10,0.1)';
+                    return `<span class="text-xs whitespace-nowrap px-2 py-1 rounded font-bold" title="Pursuit verdict" style="background:${vBg}; color:${vColor}; letter-spacing:0.04em;">${v}</span>`;
+                  })()}
                   ${c.small_business_eligible ? '<span class="text-xs whitespace-nowrap px-2 py-1 rounded font-semibold" style="background:var(--mmt-soft); color:var(--mmt-teal);">SB Eligible</span>' : ''}
                   <span class="text-xs whitespace-nowrap px-2 py-1 rounded" style="background:var(--mmt-soft); color:${color};">${escapeHtml(label)}</span>
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--mmt-teal);"><path d="M6 3l5 5-5 5"/></svg>
