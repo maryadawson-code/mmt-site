@@ -1,7 +1,77 @@
 # MMT Platform — Deploy Handoff Checklist
 
-**Last updated:** 2026-04-17
+**Last updated:** 2026-04-17 (autonomous execution pass)
 **Owner:** Mary Womack
+
+> **Status legend:** ✅ done · ⏳ waiting on external · 🔴 requires user action
+
+## Completed this autonomous pass (2026-04-17)
+
+- ✅ **Supabase migrations** (008 subscriber_context + 009 signal_monitors) applied to production via Supabase Management API
+- ✅ **Mary's rockITdata seed** loaded → `subscriber_context` v1 in production
+- ✅ **Stripe products** — 7 live-mode products + prices created, all price IDs set in Netlify env:
+  - `STRIPE_COMPLIANCE_STANDALONE_ID` → `price_1TNKwTR7Vg1dZJSLmy2tCQnQ` ($49.99 one-time)
+  - `STRIPE_COMPLIANCE_TEAM_ID` → `price_1TNKwUR7Vg1dZJSLUINe8O1B` ($199/mo)
+  - `STRIPE_PURSUIT_STANDALONE_ID` → `price_1TNKwVR7Vg1dZJSLPBfTSBCw` ($29.99 one-time)
+  - `STRIPE_PURSUIT_TEAM_ID` → `price_1TNKwVR7Vg1dZJSLhqUVRFMK` ($149/mo)
+  - `STRIPE_SIGNAL_ADDON_ID` → `price_1TNKwWR7Vg1dZJSLgYRXeXMJ` ($49/mo)
+  - `STRIPE_SIGNAL_PRO_ID` → `price_1TNKwXR7Vg1dZJSL5PMa2o5u` ($149/mo)
+  - `STRIPE_SIGNAL_ENT_ID` → `price_1TNKwYR7Vg1dZJSLAJbPrO3u` ($399/mo)
+- ✅ **api.data.gov key** — `CONGRESS_API_KEY` set in Netlify (unlocks Congress.gov v3 + GovInfo)
+- ✅ **NCBI API key** — `NCBI_API_KEY` set in Netlify (raises PubMed rate limit to 10/s)
+- ✅ **Launch article audit** (see `docs/launch-article-audit.md`) — every promise from the 2026-04-17 "Capture Gap" article reconciled against production. Drift fixed: Ask MMT tier quotas, Contract Tracker GO/WATCH/PASS verdicts on all 32 entries, Institutional Quarterly Briefings, Founding Member personal-reply language.
+
+## Waiting on external
+
+- ⏳ **USAJobs API key** — registration submitted 2026-04-17 under maryadawson@gmail.com. USAJobs reviews manually (up to 1 business day). When approved, the `Authorization-Key` token arrives by email. Set via `netlify env:set USAJOBS_API_KEY <token>` then:
+  ```
+  netlify env:set USAJOBS_USER_EMAIL maryadawson@gmail.com
+  ```
+
+## Requires user action (cannot be done autonomously)
+
+- 🔴 **SAM.gov System Account application** for `SAM_SYSTEM_ACCOUNT_API_KEY`.
+  SAM.gov's Terms of Use explicitly prohibit third-party credential access:
+  *"Using another person's email address and password to access SAM.gov is
+  prohibited."* The autonomous run cancelled at the ToU dialog because
+  clicking Agree under the user's session would be a false certification.
+
+  **Mary needs to do this herself**:
+  1. Go to <https://sam.gov/workspace> signed in as the rockITdata entity admin
+  2. Click "System Accounts" widget
+  3. Request System Account with permission scope = "Contract Data → Read Public"
+  4. Provide the IP whitelist (Netlify's egress IPs — their docs have the current list)
+  5. Approval takes 2–4 weeks
+  6. When the key arrives: `netlify env:set SAM_SYSTEM_ACCOUNT_API_KEY <key>`
+
+  Until this lands, `lib/sam-contract-awards.js` returns `configured: false`
+  and USASpending v2 remains the canonical awards source. No downstream code breaks.
+
+- 🔴 **BLS API key** — registration form has a CAPTCHA. CLAUDE operating rules
+  prohibit CAPTCHA solving. Optional — raises quota from 25/day to 500/day.
+  Mary can complete at <https://data.bls.gov/registrationEngine/> in under 60s.
+
+- 🔴 **Premium subscription price decision** — recommended $79/mo (Session Review)
+  vs current live $29/mo (Stripe). I did NOT change this. It's a business call
+  about price positioning that should be made deliberately. The 7 new-tool Stripe
+  products are live-ready; flipping the base Premium price is a separate action.
+
+## Database
+
+| Migration | Status |
+|---|---|
+| `migrations/008_subscriber_context.sql` | ✅ applied 2026-04-17 via `supabase db query --linked` |
+| `migrations/009_signal_monitors.sql` | ✅ applied 2026-04-17 |
+
+## Seed data
+
+| Seed | Status |
+|---|---|
+| `data/subscriber-context/mary-womack-seed.json` → `subscriber_context` | ✅ loaded; `mary@missionmeetstech.com → rockITdata LLC (v1)` live in production |
+
+---
+
+## Historical (pre-this-pass) — see `docs/api-integration-roadmap.md`
 
 This tracks the steps needed to make each piece of the recent platform work fully live in production. Things already applied are marked ✅. Things waiting on Mary are marked ⏳ with the external action required.
 
