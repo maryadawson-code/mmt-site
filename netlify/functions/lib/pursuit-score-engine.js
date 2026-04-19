@@ -399,22 +399,34 @@ async function scorePursuit({ keyword, agency, naics }) {
   const resolvedNaics = naics || (matchedVehicles[0] && matchedVehicles[0].naics) || undefined;
   const agencyCode = resolvedAgency ? AGENCY_CODE_MAP[resolvedAgency] : undefined;
 
-  // Race each dimension's upstream enrichment against a 6s timeout so
-  // one slow source can't starve the rest.
+  // Race each dimension's upstream enrichment against a timeout.
+  // Federal data is the single most important source (USASpending awards
+  // + SAM opps + GAO) and fans out to ~5 upstream calls, so it gets a
+  // longer budget than the others. The old uniform 6s was causing
+  // MHS GENESIS (a $billions DHA program) to score LEAN NO-BID because
+  // USASpending occasionally takes 7–9s to return awards.
   const timeout = (ms, label) => new Promise((resolve) =>
     setTimeout(() => resolve({ __timedOut: label }), ms));
-  const race = (label, promise) => Promise.race([
+  const race = (label, ms, promise) => Promise.race([
     promise.catch((e) => ({ error: e.message })),
-    timeout(6000, label),
+    timeout(ms, label),
   ]);
 
+  // Congress.gov receives a TIGHT keyword (the canonical vehicle name
+  // or a short top-keyword set) instead of the expanded search query.
+  // The expanded query was matching unrelated bills on noise words
+  // like "system", "management", "modernization".
+  const congressQuery = matchedVehicles.length > 0
+    ? matchedVehicles[0].canonical
+    : keyword;
+
   const [federalResult, congressResult, govinfoResult, ctgovResult, pubmedResult, itDashboardResult] = await Promise.all([
-    race("federal", enrichWithFederalData({ topic: searchQuery, agency: resolvedAgency, naics: resolvedNaics })),
-    race("congress", enrichWithCongress({ topic: searchQuery })),
-    race("govinfo", enrichWithGovInfo({ topic: searchQuery })),
-    race("ctgov", enrichWithClinicalTrials({ topic: keyword })),
-    race("pubmed", enrichWithPubMed({ topic: keyword, yearsBack: 2 })),
-    race("itdashboard", enrichWithITDashboard({ topic: searchQuery, agencyCode })),
+    race("federal", 12000, enrichWithFederalData({ topic: searchQuery, agency: resolvedAgency, naics: resolvedNaics })),
+    race("congress", 6000, enrichWithCongress({ topic: congressQuery })),
+    race("govinfo", 6000, enrichWithGovInfo({ topic: searchQuery })),
+    race("ctgov", 6000, enrichWithClinicalTrials({ topic: keyword })),
+    race("pubmed", 6000, enrichWithPubMed({ topic: keyword, yearsBack: 2 })),
+    race("itdashboard", 6000, enrichWithITDashboard({ topic: searchQuery, agencyCode })),
   ]);
 
   const timedOut = [federalResult, congressResult, govinfoResult, ctgovResult, pubmedResult, itDashboardResult]
