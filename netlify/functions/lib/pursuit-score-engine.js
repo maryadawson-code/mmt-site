@@ -419,10 +419,16 @@ async function scorePursuit({ keyword, agency, naics }) {
   const congressQuery = matchedVehicles.length > 0
     ? matchedVehicles[0].canonical
     : keyword;
+  // Tokens the matched bill/hearing/CRS titles must contain. For a known
+  // vehicle, include canonical + aliases so short tokens like "MHS" or
+  // "VA EHRM" aren't dropped by the default len>3 filter.
+  const congressRelevanceTokens = matchedVehicles.length > 0
+    ? [matchedVehicles[0].canonical, ...(matchedVehicles[0].aliases || [])]
+    : undefined;
 
   const [federalResult, congressResult, govinfoResult, ctgovResult, pubmedResult, itDashboardResult] = await Promise.all([
     race("federal", 12000, enrichWithFederalData({ topic: searchQuery, agency: resolvedAgency, naics: resolvedNaics })),
-    race("congress", 6000, enrichWithCongress({ topic: congressQuery })),
+    race("congress", 6000, enrichWithCongress({ topic: congressQuery, relevanceTokens: congressRelevanceTokens })),
     race("govinfo", 6000, enrichWithGovInfo({ topic: searchQuery })),
     race("ctgov", 6000, enrichWithClinicalTrials({ topic: keyword })),
     race("pubmed", 6000, enrichWithPubMed({ topic: keyword, yearsBack: 2 })),

@@ -128,18 +128,56 @@ async function searchCommitteeReports({ keyword, congress = 119, limit = 10 }) {
 }
 
 /**
- * Combined enrichment helper for MarketPulse.
+ * Combined enrichment helper for MarketPulse + Pursuit Score.
  * Returns parallel bill/hearing/CRS results for a topic.
+ *
+ * Congress.gov's `q` parameter is weak — it returns recently updated
+ * bills even when the keyword doesn't appear in the title. We
+ * over-fetch, then post-filter every result set so callers get
+ * relevance instead of noise ("Central Business District Tolling"
+ * was slipping through on searches for "MHS GENESIS").
+ *
+ * Callers can pass `relevanceTokens` (array of tokens that MUST appear
+ * in at least one of title/latest_action/committee) for tighter control
+ * — especially useful for short vehicle names like "MHS", "VA EHRM"
+ * where the default len>3 drop would lose too much signal.
  */
-async function enrichWithCongress({ topic, congress = 119 }) {
+async function enrichWithCongress({ topic, relevanceTokens, congress = 119 }) {
   if (!API_KEY) return { configured: false };
-  const keyword = (topic || "").split(/\s+/).filter((w) => w.length > 3).slice(0, 4).join(" ");
+  const rawTokens = Array.isArray(relevanceTokens) && relevanceTokens.length > 0
+    ? relevanceTokens
+    : (topic || "").split(/\s+/).filter((w) => w.length > 2);
+  const tokens = rawTokens
+    .map((t) => String(t || "").trim().toLowerCase())
+    .filter(Boolean);
+  const keyword = tokens.filter((w) => w.length > 3).slice(0, 4).join(" ");
+
+  const matchesAny = (text) => {
+    if (!text || tokens.length === 0) return false;
+    const lc = String(text).toLowerCase();
+    return tokens.some((t) => lc.includes(t));
+  };
+
   const [bills, hearings, crs, committeeReports] = await Promise.all([
-    searchBills({ keyword, congress, limit: 8 }),
-    searchHearings({ keyword, congress, limit: 5 }),
-    searchCRSReports({ keyword, limit: 5 }),
-    searchCommitteeReports({ keyword, congress, limit: 5 }),
+    searchBills({ keyword, congress, limit: 40 }),
+    searchHearings({ keyword, congress, limit: 20 }),
+    searchCRSReports({ keyword, limit: 20 }),
+    searchCommitteeReports({ keyword, congress, limit: 20 }),
   ]);
+
+  if (bills.bills) {
+    bills.bills = bills.bills.filter((b) => matchesAny(b.title) || matchesAny(b.latest_action)).slice(0, 8);
+  }
+  if (hearings.hearings) {
+    hearings.hearings = hearings.hearings.filter((h) => matchesAny(h.title) || matchesAny(h.committee)).slice(0, 5);
+  }
+  if (crs.reports) {
+    crs.reports = crs.reports.filter((r) => matchesAny(r.title)).slice(0, 5);
+  }
+  if (committeeReports.reports) {
+    committeeReports.reports = committeeReports.reports.filter((r) => matchesAny(r.title)).slice(0, 5);
+  }
+
   return { configured: true, bills, hearings, crs, committeeReports };
 }
 
