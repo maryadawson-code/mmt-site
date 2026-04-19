@@ -157,9 +157,12 @@ for (const relFile of files) {
   const html = fs.readFileSync(full, 'utf8');
 
   // Skip nav checks for premium dashboard pages (they use their own sidebar shell)
+  // and demo pages (standalone iframes intentionally use minimal nav so they
+  // render cleanly when embedded in product pages).
   const isPremiumPage = relFile.startsWith('premium/');
+  const isDemoPage = relFile.startsWith('demos/');
   const navMatch = html.match(/<nav[\s\S]*?<\/nav>/i);
-  if (navMatch && !isPremiumPage) {
+  if (navMatch && !isPremiumPage && !isDemoPage) {
     const nav = navMatch[0];
     const required = [
       'brand-mark',
