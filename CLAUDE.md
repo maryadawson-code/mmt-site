@@ -1,5 +1,8 @@
 # Mission Meets Tech - Developer & Content Governance
 
+**Automation defaults to the lowest determinism level that handles the task.
+See ~/.openclaw/automation-selection-rule.md.**
+
 ## 📜 Canonical Specification
 - All structural and UX work MUST follow `ARCHITECTURE_SPEC.md`.
 - This is the final word on site architecture and wireframes.
