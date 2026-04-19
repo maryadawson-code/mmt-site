@@ -123,15 +123,25 @@ async function layerResearch(terms, agency) {
 // Layer 2: Legislative (Congress + Committee Reports) — weight 20%
 // ------------------------------------------------------------
 async function layerLegislative(terms) {
+  // Over-fetch then post-filter: Congress.gov's q param returns recently
+  // updated bills regardless of keyword match, so we need to verify each
+  // result actually references our terms.
   const [bills, hearings, reports] = await Promise.all([
-    searchBills({ keyword: terms.forCongress, congress: 119, limit: 5 }).catch(() => ({ bills: [] })),
-    searchHearings({ keyword: terms.forCongress, congress: 119, limit: 5 }).catch(() => ({ hearings: [] })),
-    searchCommitteeReports({ keyword: terms.forCongress, congress: 119, limit: 3 }).catch(() => ({ reports: [] })),
+    searchBills({ keyword: terms.forCongress, congress: 119, limit: 30 }).catch(() => ({ bills: [] })),
+    searchHearings({ keyword: terms.forCongress, congress: 119, limit: 20 }).catch(() => ({ hearings: [] })),
+    searchCommitteeReports({ keyword: terms.forCongress, congress: 119, limit: 15 }).catch(() => ({ reports: [] })),
   ]);
 
-  const billList = bills.bills || [];
-  const hearingList = hearings.hearings || [];
-  const reportList = reports.reports || [];
+  const tokens = (terms.topKeywords || []).map((k) => String(k || "").toLowerCase()).filter(Boolean);
+  const matchesAny = (text) => {
+    if (!text || tokens.length === 0) return false;
+    const lc = String(text).toLowerCase();
+    return tokens.some((t) => lc.includes(t));
+  };
+
+  const billList = (bills.bills || []).filter((b) => matchesAny(b.title) || matchesAny(b.latest_action)).slice(0, 5);
+  const hearingList = (hearings.hearings || []).filter((h) => matchesAny(h.title) || matchesAny(h.committee)).slice(0, 5);
+  const reportList = (reports.reports || []).filter((r) => matchesAny(r.title)).slice(0, 3);
 
   let score = 0;
   score += Math.min(billList.length * 10, 40);
