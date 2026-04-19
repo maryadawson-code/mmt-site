@@ -176,8 +176,13 @@ async function benchmarkProposalRates(categories) {
       continue;
     }
     const proposed = parseFloat(cat.hourly_rate || 0);
+    // BLS returns 0 for unpublished percentiles (small-sample suppression or
+    // no data for that SOC/geo). Treat any zero percentile as missing — we
+    // can't flag "above p90" when p90 is unknown.
+    const hasRealPercentiles = data.hourly_p10 > 0 && data.hourly_p90 > 0;
     const verdict = (() => {
       if (!proposed) return "no-rate";
+      if (!hasRealPercentiles) return "no-bls-data";
       if (proposed > data.hourly_p90) return "above-p90";
       if (proposed < data.hourly_p10) return "below-p10";
       if (proposed > data.hourly_p75) return "above-p75";

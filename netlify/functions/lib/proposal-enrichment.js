@@ -145,15 +145,20 @@ function extractClinicalKeywords(text) {
 // Match phrases like "ONC 2015 Edition Cures certified", "certified to 2015 Edition"
 const CHPL_CLAIM_PATTERN = /(?:ONC[-\s]?)?(?:certified|certification)\b[^.]{0,120}?(2015 Edition(?:\s+Cures(?:\s+Update)?)?|2014 Edition)/i;
 const VENDOR_CLAIM_PATTERN = /\b(Epic|Oracle Health|Cerner|MEDITECH|Allscripts|athenahealth|NextGen|eClinicalWorks|Greenway)\b/i;
+// CHPL product IDs follow the format {edition}.{product_code}.{developer_code}.{vendor}.{type}.{version}
+// — e.g. "15.04.04.2891.Epic.AM.13". Treat a match as both an edition AND vendor claim.
+const CHPL_ID_PATTERN = /\b(1[45])\.(\d{2})\.(\d{2})\.(\d{4})\.([A-Za-z][A-Za-z0-9]*)\.(AM|EH|IN|SM|RL|RD)\.(\d{1,3})\b/;
 
 function extractCHPLClaim(text) {
   if (!text) return null;
+  const idMatch = text.match(CHPL_ID_PATTERN);
   const edMatch = text.match(CHPL_CLAIM_PATTERN);
   const vendorMatch = text.match(VENDOR_CLAIM_PATTERN);
-  if (!edMatch && !vendorMatch) return null;
+  if (!idMatch && !edMatch && !vendorMatch) return null;
   return {
-    vendor: vendorMatch ? vendorMatch[1] : null,
-    edition: edMatch ? edMatch[1] : null,
+    vendor: idMatch ? idMatch[5] : (vendorMatch ? vendorMatch[1] : null),
+    edition: idMatch ? (idMatch[1] === "15" ? "2015 Edition" : "2014 Edition") : (edMatch ? edMatch[1] : null),
+    chpl_id: idMatch ? idMatch[0] : null,
   };
 }
 
@@ -179,7 +184,9 @@ async function enrichProposal({ documentText, sowText }) {
 
   const laborCategories = extractLaborCategories(textForLabor);
   const keywords = extractClinicalKeywords(textForKeywords);
-  const chplClaim = extractCHPLClaim(textForKeywords);
+  // CHPL claims are the CONTRACTOR's assertion in the proposal, not
+  // the government's ask in the SOW. Extract from documentText only.
+  const chplClaim = extractCHPLClaim(documentText || "");
   const { state, county } = extractStateCounty(textForLabor);
 
   const [blsResult, pubmedResult, wdResult, chplResult] = await Promise.all([
