@@ -20,6 +20,72 @@ Multiple sequential LLM calls in a fixed pipeline are still Level 2. It is deter
 
 ---
 
+## Ecosystem Summary
+
+Total items classified: **108** across Netlify functions (91), n8n workflows (3), OpenClaw agents (6), LaunchAgents (5), and crontab (2). Two crontab entries in missionpulse-frontend are deferred to Sprint 3.
+
+### Level distribution (current state)
+
+| Level | Count | % of classified | Annual Token Cost (est) | Downgrade Targets |
+|---|---|---|---|---|
+| 1 (script, no LLM) | 72 | 68% | $0 (no LLM) | 0 |
+| 2 (script + one LLM call) | 18 | 17% | moderate (per-call Haiku/Sonnet) | 0 |
+| 3 (no-code agent builder) | 5 | 5% | moderate to high (n8n + per-call) | 5 |
+| 5 (code-first framework) | 2 | 2% | high (multi-pass Sonnet pipelines) | 2 |
+| 6 (Claude Code on-demand) | 2 | 2% | bounded by `--max-budget-usd` per run | 1 |
+| 7 (autonomous always-on) | 7 | 7% | mixed (1 platform + 6 agents on free Llama or Sonnet) | 6 |
+| Unclassified (deferred) | 2 | 2% | TBD | deferred to Sprint 3 |
+| **Total** | **106 classified** | | | **14 + the 6 OpenClaw agents under review** |
+
+Token cost columns are qualitative ranks; exact numbers come from DET-401 when we pull the Anthropic console and Perplexity balance.
+
+### Downgrade summary
+
+**17 items flagged for downgrade** across the ecosystem:
+- 7 Netlify functions (DET-001)
+- 3 n8n workflows (DET-002), all 3 being Level 3 items with Level 2 targets
+- 6 OpenClaw agents (DET-003), pending validation of which are truly autonomous vs. on-demand
+- 1 launchd job (DET-003), `com.mmt.sentinel`
+
+### Top 5 Downgrade Opportunities (ranked by estimated cost-saving)
+
+Estimates are qualitative until DET-401 pulls real Anthropic console data.
+
+1. **`generate-tactical-brief-background` (Netlify, Level 5 → 2)**
+   Heaviest LLM workload in the ecosystem. Seven-pass pipeline of Perplexity sonar-pro + Claude Haiku (disambiguation) + Claude Sonnet (synthesis) + Claude Haiku (cross-validation) per MarketPulse report. MarketPulse is a paid product with growing volume. Level 2 rewrite: deterministic federal API enrichment + single Claude Sonnet synthesis call. Largest single lever in the sprint.
+
+2. **`contract-intel-refresh-background` (Netlify, Level 5 → 2)**
+   Seven Sonnet passes on scheduled refresh with `web_search`. Per the 2026-04-15 learning, `web_search` is unreliable from serverless. Level 2 rewrite uses direct federal API calls and a single synthesis pass.
+
+3. **`score-deck-background` (Netlify, Level 3 → 2)**
+   Eight-thousand-token Sonnet evaluation per scoring run. Level 2 rewrite uses deterministic rubric scoring for routine checks and a single Haiku call for the fuzzy sections only.
+
+4. **MMT Newsletter Draft Writer (n8n, Level 3 → 2)**
+   Twice-weekly Sonnet draft call orchestrated by n8n. Level 2 rewrite is a Python/Node script that does fetch + Claude + save + email directly. Removes n8n as a runtime dependency. Also the exact target of DET-203 in Sprint 2.
+
+5. **`com.mmt.sentinel` (LaunchAgent, Level 6 → 2)**
+   Full Claude Code invocation every 6 hours with a $0.25 budget ceiling. Upper bound of ~$365/year per the budget cap. Level 2 rewrite is `mmt-health-check.sh` + one Haiku classification call. Health check is already deterministic; only the classify step is fuzzy.
+
+### Secondary opportunities (not top 5 but worth tracking)
+
+- `agent-bridge` (Netlify, 3 → 1) — architectural simplification, no LLM cost
+- `engagement-brief` (Netlify, 2 → 1) — remove optional Claude call in favor of SQL aggregations
+- `newsletter-sync` (Netlify, 2 → 1) — RSS parser + deterministic keyword tagging
+- `competitive-scan` (Netlify, 2 → 1) — RSS + keyword matching on a fixed alert list
+- `MMT Fact-Check + Rewrite` (n8n, 3 → 2) — fold into single Netlify function, eliminate n8n hop
+- `MMT SAM.gov Scanner` (n8n, 3 → 2) — already deactivated; DET-202 target for Sprint 2 rebuild
+- OpenClaw `ops-monitor` agent (7 → 1-2) — likely the strongest OpenClaw downgrade candidate pending usage validation
+
+### Recommended Sprint 2 ordering
+
+Based on production risk and payoff:
+
+1. Sprint 2 starts with DET-202 (SAM.gov at Level 2) because the n8n workflow is already deactivated. Zero production risk.
+2. Then DET-203 (newsletter pipeline) because it has a clean two-week side-by-side trial mechanism and current spend is bounded.
+3. Then DET-205 Netlify downgrades in order: `engagement-brief` and `agent-bridge` first (lowest risk, pure architectural), then `competitive-scan` and `newsletter-sync`, then `score-deck-background`, then `contract-intel-refresh-background`, saving `generate-tactical-brief-background` for last because it is the revenue-critical MarketPulse pipeline and warrants the most conservative cutover.
+
+---
+
 ## Netlify Functions — mmt-site (91 handlers)
 
 Source: `~/Projects/mmt-site/netlify/functions/`. Every handler read top-of-file through the core logic branch. Classification follows the rule: if the task is a fixed sequence of steps, it is Level 1.
@@ -266,8 +332,3 @@ Both entries are MissionPulse work and are covered by Sprint 3 (MissionPulse det
 1. **Gateway plist holds plaintext API keys in launchd `EnvironmentVariables`**: `ai.openclaw.gateway.plist` contains Anthropic, OpenAI, Google AI, Perplexity, and Telegram bot credentials as plist XML values. Anyone with read access to `~/Library/LaunchAgents/` sees them. Track as a separate security ticket (move to keychain or encrypted env file).
 2. **Scheduled jobs reference the diverged clone**: `com.mmt.sentinel` and `com.mmt.seo-agent` both operate against `$HOME/mmt-site` (the diverged clone), not `~/Projects/mmt-site` (the Netlify-linked primary). This means scheduled automations are running against a different codebase than the one that ships to production. Track as part of the existing mmt-site clone remediation item.
 
----
-
-## Pending sections
-
-- **Ecosystem Summary** — populated by DET-004
