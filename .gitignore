@@ -41,7 +41,9 @@ supabase/.temp/
 # SEO agent local logs (knowledge base is version-controlled — logs are not)
 .seo-agent/
 .claude/worktrees/
-demos/
+# demos/ removed — the production iframe demo assets (proposal-pulse-demo.html,
+# compliance-check-demo-0{1,2,3}.html) are linked from /proposal-pulse and
+# /premium/compliance-check and must ship to production.
 output/
 test-results/
 n8n-workflows/

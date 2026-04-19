@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="MMT Premium Compliance Check — SCA wage floor deep-dive. See how the tool catches below-floor labor pricing against the current DOL wage determination.">
+<title>Compliance Check · SCA Wage Floor — Mission Meets Tech</title>
+<link rel="preconnect" href="https://rsms.me/">
+<link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+<!-- Design system: matches compliance-check-demo-01.html exactly -->
+<style>
+:root {
+  --bg:#FFFFFF; --surface:#FFFFFF; --surface-2:#F3F4F6; --offset:#E5E7EB;
+  --text:#0A192F; --text-muted:#4A5A70; --text-faint:#8A95A5;
+  --primary:#457B9D; --primary-soft:rgba(69,123,157,0.10); --primary-ring:rgba(69,123,157,0.22);
+  --warning:#B45309; --warning-soft:rgba(180,83,9,0.10);
+  --error:#E63946; --error-soft:rgba(230,57,70,0.10);
+  --success:#1E7E4B; --success-soft:rgba(30,126,75,0.10);
+  --border:rgba(10,25,47,0.08); --border-strong:rgba(10,25,47,0.14); --scrim:rgba(10,25,47,0.55);
+  --nav-bg:#0A192F; --nav-fg:rgba(255,255,255,0.6); --nav-fg-strong:#FFFFFF;
+  --radius-sm:6px; --radius:10px; --radius-lg:14px;
+  --shadow:0 1px 2px rgba(10,25,47,0.06),0 6px 20px rgba(10,25,47,0.08);
+  --shadow-lg:0 4px 12px rgba(10,25,47,0.10),0 24px 48px rgba(10,25,47,0.14);
+  --text-xs:12px; --text-sm:13px; --text-base:14px; --text-md:15px; --text-lg:17px; --text-xl:22px; --text-2xl:26px;
+  --sidebar-w:240px; --header-h:52px;
+}
+* { box-sizing:border-box; }
+html, body { margin:0; padding:0; }
+body { font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif; font-feature-settings:'ss01','cv11','tnum'; font-size:var(--text-base); line-height:1.55; color:var(--text); background:var(--surface-2); -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+button { font-family:inherit; cursor:pointer; }
+a { color:var(--primary); text-decoration:none; }
+a:hover { text-decoration:underline; }
+.app { display:grid; grid-template-columns:var(--sidebar-w) 1fr; min-height:100vh; }
+.sidebar { background:var(--nav-bg); color:var(--nav-fg); display:flex; flex-direction:column; position:sticky; top:0; height:100vh; padding:20px 0 16px; font-size:var(--text-sm); }
+.brand { padding:0 20px 18px; border-bottom:1px solid rgba(255,255,255,0.10); margin-bottom:12px; color:var(--nav-fg-strong); }
+.brand-title { font-weight:800; font-size:var(--text-sm); letter-spacing:-0.01em; }
+.brand-sub { display:block; font-size:11px; color:rgba(255,255,255,0.5); margin-top:2px; font-weight:400; }
+.nav-section { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:rgba(255,255,255,0.30); padding:14px 20px 6px; }
+.nav-item { display:flex; align-items:center; gap:8px; padding:9px 20px; color:var(--nav-fg); font-size:var(--text-sm); font-weight:500; background:transparent; border:0; text-align:left; width:100%; transition:background 0.12s,color 0.12s; text-decoration:none; }
+.nav-item:hover { background:rgba(255,255,255,0.05); color:var(--nav-fg-strong); }
+.nav-item.active { color:var(--nav-fg-strong); background:rgba(69,123,157,0.30); border-left:3px solid var(--primary); padding-left:17px; font-weight:600; }
+.nav-back { border-top:1px solid rgba(255,255,255,0.10); padding-top:14px; margin-top:auto; }
+.quick-ref {
+  margin:12px 14px 0;
+  background:rgba(69,123,157,0.08);
+  border:1px solid rgba(69,123,157,0.20);
+  border-radius:8px;
+  padding:10px 12px;
+  font-size:11px; line-height:1.7;
+  color:rgba(255,255,255,0.72);
+}
+.quick-ref-title { color:var(--nav-fg-strong); font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px; }
+.quick-ref ul { margin:0; padding-left:16px; }
+.quick-ref b { color:#fff; }
+.main-col { display:flex; flex-direction:column; min-width:0; }
+.header { height:var(--header-h); background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 24px; position:sticky; top:0; z-index:10; font-size:var(--text-sm); }
+.header-label { font-weight:700; }
+.header-right { display:flex; align-items:center; gap:14px; color:var(--text-muted); font-size:var(--text-xs); }
+.header-right a { color:var(--primary); }
+.main { flex:1; padding:28px 32px 120px; max-width:940px; width:100%; }
+.eyebrow { font-size:11px; font-weight:700; letter-spacing:0.10em; text-transform:uppercase; color:var(--text-muted); margin:0 0 8px; }
+.h1 { font-size:var(--text-2xl); font-weight:800; margin:0 0 6px; letter-spacing:-0.02em; color:var(--text); }
+.h1-sub { font-size:var(--text-sm); color:var(--text-muted); margin:0 0 20px; max-width:680px; }
+.card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px 22px; margin-bottom:14px; box-shadow:var(--shadow); }
+.card-title { font-size:var(--text-md); font-weight:700; margin:0 0 10px; }
+.input-card { border-left:3px solid var(--primary); }
+.ta { width:100%; padding:12px 14px; border:1px solid var(--border-strong); border-radius:8px; font-size:var(--text-sm); font-family:inherit; line-height:1.55; color:var(--text); resize:vertical; min-height:110px; }
+.ta-small { min-height:80px; }
+.ta:focus { outline:2px solid var(--primary); border-color:var(--primary); }
+.field-row { margin-bottom:12px; }
+.field-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-faint); margin-bottom:4px; display:block; }
+.run-row { display:flex; justify-content:space-between; align-items:center; margin-top:14px; gap:12px; flex-wrap:wrap; }
+.quota { font-size:var(--text-xs); color:var(--text-muted); }
+.btn { display:inline-flex; align-items:center; gap:8px; padding:10px 18px; border-radius:8px; font-size:var(--text-sm); font-weight:700; border:0; transition:filter 0.1s,background 0.15s,transform 0.1s; white-space:nowrap; }
+.btn-primary { background:var(--text); color:#FFFFFF; }
+.btn-primary:hover { filter:brightness(1.15); }
+.btn-ghost { background:transparent; color:var(--text-muted); padding:8px 12px; }
+.btn-ghost:hover { color:var(--text); background:var(--surface-2); }
+.btn.sim-press { transform:scale(0.96); filter:brightness(0.92); }
+.loading-track { height:4px; background:var(--surface-2); border-radius:999px; overflow:hidden; margin-bottom:16px; }
+.loading-fill { height:100%; background:var(--primary); width:0%; }
+.wd-step { padding:8px 0; font-size:var(--text-sm); color:var(--text-muted); display:flex; align-items:center; gap:10px; }
+.wd-step.done, .wd-step.warn, .wd-step.active { color:var(--text); }
+.wd-icon { width:16px; height:16px; flex-shrink:0; border-radius:50%; display:grid; place-items:center; background:var(--surface-2); }
+.wd-icon svg { width:10px; height:10px; }
+.wd-step.done .wd-icon { background:var(--success-soft); color:var(--success); }
+.wd-step.warn .wd-icon { background:var(--warning-soft); color:var(--warning); }
+.spinner { width:10px; height:10px; border-radius:50%; border:2px solid var(--border-strong); border-top-color:var(--primary); animation:spin 0.7s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+.rate-table {
+  width:100%; border-collapse:collapse; margin-top:14px;
+  font-size:var(--text-sm); font-variant-numeric:tabular-nums;
+}
+.rate-table th { text-align:left; padding:8px 10px; background:var(--surface-2); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-faint); border-bottom:1px solid var(--border); }
+.rate-table td { padding:10px; border-bottom:1px solid var(--border); }
+.rate-table tr:last-child td { border-bottom:0; }
+.rate-table tr.neg td { background:rgba(230,57,70,0.06); }
+.rate-table tr.neg td:last-child { color:var(--error); font-weight:700; }
+.rate-table tr.pos td:last-child { color:var(--success); font-weight:600; }
+.rate-table tr.fade { opacity:0; transform:translateY(-4px); transition:opacity 0.3s, transform 0.3s; }
+.rate-table tr.visible { opacity:1; transform:translateY(0); }
+
+/* Gap calculator card */
+.calc-card { border-left:3px solid var(--error); }
+.calc-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; gap:12px; }
+.calc-title { font-size:var(--text-md); font-weight:700; margin:0; }
+.status-pill { display:inline-flex; align-items:center; padding:4px 10px; border-radius:999px; font-size:11px; font-weight:800; letter-spacing:0.05em; text-transform:uppercase; border:1px solid; }
+.status-high { background:var(--error-soft); color:var(--error); border-color:rgba(230,57,70,0.25); }
+.status-med { background:var(--warning-soft); color:var(--warning); border-color:rgba(180,83,9,0.25); }
+.status-pass { background:var(--success-soft); color:var(--success); border-color:rgba(30,126,75,0.25); }
+.calc-rows { display:grid; grid-template-columns:auto 1fr auto; gap:6px 16px; font-size:var(--text-sm); }
+.calc-rows .k { color:var(--text-faint); text-transform:uppercase; font-size:10px; font-weight:700; letter-spacing:0.06em; padding-top:3px; white-space:nowrap; }
+.calc-rows .m { color:var(--text-muted); font-size:11px; padding-top:3px; }
+.calc-rows .v { color:var(--text); font-variant-numeric:tabular-nums; text-align:right; }
+.calc-rows .v.neg { color:var(--error); font-weight:600; }
+.calc-rows .v.pos { color:var(--success); font-weight:600; }
+.calc-row { display:contents; opacity:1; }
+.calc-row.fade > * { opacity:0; transition:opacity 0.35s; }
+.calc-row.visible > * { opacity:1; }
+.calc-sep {
+  grid-column:1 / -1;
+  height:1px; background:var(--border-strong);
+  margin:6px 0;
+  width:0;
+  transition:width 0.5s ease-out;
+}
+.calc-sep.draw { width:100%; }
+.calc-total {
+  grid-column:1 / -1;
+  display:flex; justify-content:space-between; align-items:baseline;
+  padding-top:4px;
+  font-size:var(--text-md); font-weight:700; color:var(--text);
+}
+.calc-total-label { text-transform:uppercase; font-size:11px; letter-spacing:0.06em; color:var(--text-faint); font-weight:700; }
+.calc-total-value { font-size:22px; color:var(--error); font-weight:800; font-variant-numeric:tabular-nums; letter-spacing:-0.01em; }
+.calc-footnote { font-size:11px; color:var(--text-faint); margin-top:8px; font-style:italic; }
+.action-note { margin-top:12px; padding:10px 12px; background:var(--primary-soft); border-radius:6px; font-size:var(--text-sm); color:var(--text); }
+.action-note b { color:var(--primary); font-weight:700; }
+
+.hw-card { border-left:3px solid var(--warning); }
+.kv { display:grid; grid-template-columns:140px 1fr; gap:6px 14px; font-size:var(--text-sm); }
+.kv .k { color:var(--text-faint); text-transform:uppercase; font-size:10px; font-weight:700; letter-spacing:0.06em; padding-top:3px; }
+.kv .v { color:var(--text); }
+.v.neg { color:var(--error); font-weight:600; }
+.v.pos { color:var(--success); font-weight:600; }
+
+.diff-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+@media (max-width: 720px) { .diff-grid { grid-template-columns:1fr; } }
+.diff-col { background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:16px 18px; }
+.diff-label { font-size:10px; font-weight:800; letter-spacing:0.10em; text-transform:uppercase; color:var(--text-faint); margin-bottom:8px; }
+.diff-col.before { border-color:rgba(230,57,70,0.30); }
+.diff-col.after { border-color:rgba(30,126,75,0.30); }
+.diff-col .big {
+  font-size:24px; font-weight:800; letter-spacing:-0.01em;
+  font-variant-numeric:tabular-nums;
+  margin-bottom:4px;
+}
+.diff-col.before .big { color:var(--error); }
+.diff-col.after .big { color:var(--success); }
+.diff-col .sub { font-size:var(--text-sm); color:var(--text-muted); line-height:1.55; }
+.summary-line {
+  margin-top:12px; padding:10px 12px; background:var(--text); color:#FFFFFF;
+  border-radius:6px; font-size:var(--text-sm); font-weight:600;
+}
+.summary-line b { color:#FFFFFF; font-weight:800; font-variant-numeric:tabular-nums; }
+
+.modal { position:fixed; inset:0; z-index:1000; background:rgba(10,25,47,0.55); backdrop-filter:blur(6px); display:none; align-items:center; justify-content:center; padding:24px; }
+.modal.open { display:flex; animation:fadeIn 0.35s ease-out; }
+.modal-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-lg); padding:36px 32px; max-width:540px; width:100%; text-align:center; }
+.modal-card h2 { font-size:var(--text-2xl); font-weight:800; margin:0 0 12px; letter-spacing:-0.02em; line-height:1.25; }
+.modal-card > p { color:var(--text-muted); margin:0 0 18px; font-size:var(--text-md); line-height:1.55; }
+.modal-meta { margin-top:14px; font-size:var(--text-xs); color:var(--text-faint); }
+.modal-card .actions { justify-content:center; margin-top:8px; display:flex; gap:10px; flex-wrap:wrap; }
+.stat-pills { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:14px 0 8px; }
+.stat-pill { padding:6px 12px; border-radius:999px; background:var(--surface-2); border:1px solid var(--border); font-size:var(--text-xs); color:var(--text-muted); }
+.stat-pill b { color:var(--text); font-weight:700; }
+.big-number { font-size:44px; font-weight:800; color:var(--error); letter-spacing:-0.02em; margin-bottom:6px; font-variant-numeric:tabular-nums; }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+.spotlight-overlay { position:fixed; z-index:900; pointer-events:none; border-radius:10px; box-shadow:0 0 0 3px var(--primary),0 0 0 8px var(--primary-ring),0 0 0 9999px var(--scrim); transition:top 0.4s cubic-bezier(0.4,0,0.2,1), left 0.4s cubic-bezier(0.4,0,0.2,1), width 0.4s cubic-bezier(0.4,0,0.2,1), height 0.4s cubic-bezier(0.4,0,0.2,1); display:none; }
+.spotlight-overlay.visible { display:block; }
+.tooltip { position:fixed; z-index:910; width:340px; max-width:calc(100vw - 24px); background:var(--surface); border:1px solid var(--border-strong); border-radius:var(--radius-lg); box-shadow:var(--shadow-lg); padding:16px 18px; display:none; transition:top 0.4s cubic-bezier(0.4,0,0.2,1),left 0.4s cubic-bezier(0.4,0,0.2,1); }
+.tooltip.visible { display:block; animation:tipIn 0.28s ease-out; }
+@keyframes tipIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+.tt-counter { font-size:10px; font-weight:800; letter-spacing:0.10em; text-transform:uppercase; color:var(--primary); margin-bottom:4px; }
+.tt-title { font-size:var(--text-lg); font-weight:700; margin:0 0 6px; letter-spacing:-0.01em; line-height:1.3; }
+.tt-body { font-size:var(--text-sm); color:var(--text-muted); margin:0 0 12px; line-height:1.55; }
+.tt-dots { display:flex; gap:4px; }
+.tt-dot { width:6px; height:6px; border-radius:50%; background:var(--border-strong); transition:background 0.2s; }
+.tt-dot.active { background:var(--primary); }
+.sim-cursor { position:fixed; z-index:920; width:22px; height:22px; pointer-events:none; transform:translate(-4px,-2px); transition:transform 0.9s cubic-bezier(0.35,0.05,0.25,1); filter:drop-shadow(0 2px 4px rgba(10,25,47,0.28)); opacity:0; }
+.sim-cursor.visible { opacity:1; }
+.sim-cursor svg { width:100%; height:100%; }
+.sim-cursor .click-ring { position:absolute; top:50%; left:50%; width:28px; height:28px; border-radius:50%; transform:translate(-50%,-50%) scale(0); background:var(--primary-ring); opacity:0; }
+.sim-cursor.clicking .click-ring { animation:clickPulse 0.5s ease-out; }
+@keyframes clickPulse { 0% { transform:translate(-50%,-50%) scale(0); opacity:0.7; } 100% { transform:translate(-50%,-50%) scale(2.2); opacity:0; } }
+.playback { position:fixed; bottom:18px; left:50%; transform:translateX(-50%); z-index:950; display:flex; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--border-strong); border-radius:999px; padding:6px 6px 6px 10px; box-shadow:var(--shadow-lg); max-width:calc(100vw - 24px); }
+.pb-btn { width:32px; height:32px; border-radius:50%; display:grid; place-items:center; background:var(--text); color:#FFFFFF; border:0; }
+.pb-btn:hover { filter:brightness(1.15); }
+.pb-btn svg { width:14px; height:14px; }
+.pb-btn.ghost { background:transparent; color:var(--text-muted); }
+.pb-btn.ghost:hover { color:var(--text); background:var(--surface-2); }
+.pb-track { width:180px; height:4px; background:var(--border-strong); border-radius:999px; overflow:hidden; position:relative; }
+.pb-fill { position:absolute; top:0; left:0; bottom:0; background:var(--primary); width:0%; transition:width 0.2s linear; }
+.pb-label { font-size:var(--text-xs); color:var(--text-muted); min-width:40px; text-align:right; padding-right:4px; font-variant-numeric:tabular-nums; }
+.screen { display:none; }
+.screen.active { display:block; animation:fadeIn 0.3s ease-out; }
+@media (max-width: 860px) {
+  .app { grid-template-columns:1fr; } .sidebar { display:none; }
+  .main { padding:16px 16px 120px; }
+  .modal-card { padding:28px 20px; } .modal-card h2 { font-size:var(--text-xl); }
+  .tooltip { width:calc(100vw - 24px); } .pb-track { width:110px; }
+  .kv { grid-template-columns:1fr; } .kv .k { padding-top:0; }
+  .calc-rows { grid-template-columns:1fr auto; }
+  .calc-rows .m { display:none; }
+  .rate-table th:nth-child(3), .rate-table td:nth-child(3) { display:none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration:0.001ms !important; transition-duration:0.001ms !important; }
+  .spinner { animation:none !important; border-top-color:var(--primary); }
+  .sim-cursor { display:none; }
+}
+:focus-visible { outline:2px solid var(--primary); outline-offset:2px; border-radius:4px; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar" aria-label="Primary navigation">
+    <div class="brand">
+      <div class="brand-title">★ MMT Premium</div>
+      <span class="brand-sub">Intelligence Dashboard</span>
+    </div>
+    <div class="nav-section">Intelligence</div>
+    <a href="#" class="nav-item">Dashboard</a>
+    <a href="#" class="nav-item">Capture Intelligence</a>
+    <a href="#" class="nav-item">Friday Brief</a>
+    <div class="nav-section">Tools</div>
+    <a href="#" class="nav-item">Pursuit Score</a>
+    <a href="#" class="nav-item active" aria-current="page">Compliance Check</a>
+    <a href="#" class="nav-item">Signal Chain</a>
+    <a href="#" class="nav-item">ProposalPulse ($14.99)</a>
+    <a href="#" class="nav-item">MarketPulse ($35)</a>
+    <div class="quick-ref">
+      <div class="quick-ref-title">SCA / DBA quick facts</div>
+      <ul>
+        <li>Applies to service contracts &gt; <b>$2,500</b></li>
+        <li>Geographic: state + county</li>
+        <li>Updated: <b>Jan 1</b> and <b>Jul 1</b></li>
+        <li>Source: sam.gov/wage-determinations</li>
+        <li>Clause: <b>FAR 52.222-41</b></li>
+      </ul>
+    </div>
+    <a href="#" class="nav-item nav-back">← Back to site</a>
+  </aside>
+
+  <div class="main-col">
+    <header class="header">
+      <div class="header-label">★ MMT Premium · Health IT Compliance · SCA Wage Floor</div>
+      <div class="header-right">
+        <span>sam@example.gov</span>
+        <a href="#">Sign out</a>
+      </div>
+    </header>
+
+    <main class="main" role="main">
+      <p class="eyebrow">MMT Premium · Health IT Compliance</p>
+      <h1 class="h1">The SCA wage floor check</h1>
+      <p class="h1-sub">The current Department of Labor wage determination sets the floor. The proposed labor rate card doesn't always catch up. The tool pulls the live WD for your place of performance and compares it line-by-line.</p>
+
+      <section class="screen active" data-screen="input">
+        <div class="card input-card" id="inputCard">
+          <div class="field-row">
+            <label class="field-label" for="sowTa">SOW / PWS (place of performance)</label>
+            <textarea class="ta ta-small" id="sowTa" readonly>Place of Performance: Walter Reed National Military Medical Center (WRNMMC), 8901 Wisconsin Ave, Bethesda, MD 20889. Montgomery County. Primary NAICS: 541519 — Other Computer Related Services.</textarea>
+          </div>
+          <div class="field-row">
+            <label class="field-label" for="ta">Proposal text (labor section)</label>
+            <textarea class="ta" id="ta" readonly>Key personnel include three (3) Software Developer III staff supporting EHR integration and sustainment at the WRNMMC campus. Labor rates are consistent with our GSA Schedule pricing and industry benchmarks. Additional Software Developer I, Software Developer II, and Systems Administrator categories support the base period and option years.</textarea>
+          </div>
+          <div class="run-row">
+            <span class="quota">15 checks / month included</span>
+            <button class="btn btn-primary" id="runBtn" aria-label="Run SCA wage check">Run SCA wage check →</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="loading">
+        <div class="card" id="loadingCard">
+          <h3 class="card-title">Retrieving SCA Wage Determination · Montgomery County, MD</h3>
+          <div class="loading-track"><div class="loading-fill" id="loadingFill"></div></div>
+          <div id="wdSteps">
+            <div class="wd-step" data-i="0"><span class="wd-icon"></span><span>Querying SAM.gov Wage Determinations API…</span></div>
+            <div class="wd-step" data-i="1"><span class="wd-icon"></span><span>WD 2015-4281 Rev 22 retrieved · effective January 1, 2026</span></div>
+            <div class="wd-step" data-i="2"><span class="wd-icon"></span><span>Extracting rates for Software Developer labor categories…</span></div>
+            <div class="wd-step" data-i="3"><span class="wd-icon"></span><span>Mapping to proposal labor categories…</span></div>
+            <div class="wd-step" data-i="4"><span class="wd-icon"></span><span>Rate comparison complete · 1 gap identified</span></div>
+          </div>
+
+          <table class="rate-table" id="rateTable" aria-label="Rate comparison">
+            <thead>
+              <tr><th>Labor category</th><th>WD floor</th><th>H&amp;W</th><th>Proposed</th><th>Gap</th></tr>
+            </thead>
+            <tbody>
+              <tr class="fade pos" data-i="0"><td>Software Dev I</td><td>$31.14/hr</td><td>$4.98</td><td>$34.00/hr</td><td>+$2.86</td></tr>
+              <tr class="fade pos" data-i="1"><td>Software Dev II</td><td>$38.47/hr</td><td>$4.98</td><td>$40.00/hr</td><td>+$1.53</td></tr>
+              <tr class="fade neg" data-i="2"><td>Software Dev III</td><td>$47.43/hr</td><td>$4.98</td><td>$43.50/hr</td><td>−$3.93</td></tr>
+              <tr class="fade pos" data-i="3"><td>Systems Admin</td><td>$33.21/hr</td><td>$4.98</td><td>$35.50/hr</td><td>+$2.29</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="results">
+        <div class="card calc-card" id="calcCard">
+          <div class="calc-head">
+            <h3 class="calc-title">Cost impact · Software Developer III</h3>
+            <span class="status-pill status-high">High</span>
+          </div>
+          <div class="calc-rows" id="calcRows">
+            <div class="calc-row fade" data-i="0">
+              <span class="k">WD</span><span class="m">2015-4281 Rev 22 · Montgomery County, MD · eff. Jan 1, 2026</span><span class="v"></span>
+            </div>
+            <div class="calc-row fade" data-i="1">
+              <span class="k">SCA floor</span><span class="m">Software Developer III</span><span class="v">$47.43 / hr</span>
+            </div>
+            <div class="calc-row fade" data-i="2">
+              <span class="k">Proposed rate</span><span class="m">Section B CLIN</span><span class="v neg">$43.50 / hr</span>
+            </div>
+            <div class="calc-row fade" data-i="3">
+              <span class="k">Gap</span><span class="m">Per hour, per FTE</span><span class="v neg">−$3.93 / hr</span>
+            </div>
+            <div class="calc-row fade" data-i="4">
+              <span class="k">FTEs × Hours × Years</span><span class="m">3 × 2,080 × 5</span><span class="v">31,200 hrs</span>
+            </div>
+            <div class="calc-sep" id="calcSep"></div>
+            <div class="calc-row fade" data-i="5" style="grid-column:1 / -1;">
+              <div class="calc-total">
+                <span class="calc-total-label">5-year unbudgeted cost</span>
+                <span class="calc-total-value" id="totalValue">$0</span>
+              </div>
+            </div>
+          </div>
+          <p class="calc-footnote">FAR 52.222-41 · Service Contract Labor Standards. Contracting officer issues a modification at award; the contractor absorbs the gap.</p>
+          <div class="action-note"><b>Action:</b> Revise Section B CLIN pricing for CLIN 0003 Software Development Support and attach WD 2015-4281 Rev 22.</div>
+        </div>
+
+        <div class="card hw-card" id="hwCard">
+          <div class="calc-head">
+            <h3 class="calc-title">Health &amp; welfare rate · separate, and mandatory</h3>
+            <span class="status-pill status-med">Medium</span>
+          </div>
+          <div class="kv">
+            <span class="k">H&amp;W rate</span><span class="v">$4.98/hr · mandatory above the base wage</span>
+            <span class="k">Regulatory basis</span><span class="v">SCA § 2(a)(2); 29 CFR Part 4</span>
+            <span class="k">Common mistake</span><span class="v">Offsetting H&amp;W with existing health insurance without a formal fringe benefit plan on file with DOL</span>
+            <span class="k">5-yr impact</span><span class="v neg">$4.98 × 3 × 2,080 × 5 = $155,376</span>
+          </div>
+          <div class="action-note"><b>Action:</b> Verify the fringe benefit plan covers $4.98/hr equivalent. If not, add the H&amp;W cost as a separate line in Section B.</div>
+        </div>
+
+        <div class="card" id="beforeAfter">
+          <h3 class="card-title">Before / after</h3>
+          <div class="diff-grid">
+            <div class="diff-col before">
+              <div class="diff-label">Before</div>
+              <div class="big">$43.50/hr</div>
+              <div class="sub">Software Dev III base rate. No explicit H&amp;W line.</div>
+            </div>
+            <div class="diff-col after">
+              <div class="diff-label">After</div>
+              <div class="big">$52.41/hr</div>
+              <div class="sub">$47.43/hr SCA floor + $4.98/hr H&amp;W. Compliant.</div>
+            </div>
+          </div>
+          <div class="summary-line">Total catch across 5 years: <b>$278,112</b> — $122,736 base-wage gap + $155,376 H&amp;W.</div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div class="spotlight-overlay" id="spotlight" aria-hidden="true"></div>
+<div class="tooltip" id="tooltip" role="dialog" aria-live="polite" aria-labelledby="tooltipTitle">
+  <div class="tt-counter" id="tooltipCounter">Step 1 of 8</div>
+  <h3 class="tt-title" id="tooltipTitle">Title</h3>
+  <p class="tt-body" id="tooltipBody">Body</p>
+  <div class="tt-dots" id="tooltipDots" aria-hidden="true"></div>
+</div>
+
+<div class="sim-cursor" id="simCursor" aria-hidden="true">
+  <span class="click-ring"></span>
+  <svg viewBox="0 0 24 24" fill="none"><path d="M4 2 L4 18 L8.5 14 L11 20 L14 19 L11.5 13 L18 13 Z" fill="#FFFFFF" stroke="#0A192F" stroke-width="1.2" stroke-linejoin="round"/></svg>
+</div>
+
+<div class="modal open" id="welcomeModal" role="dialog" aria-labelledby="welcomeTitle" aria-modal="true">
+  <div class="modal-card">
+    <div class="big-number">$122,736</div>
+    <h2 id="welcomeTitle">Hidden in the labor rate card.</h2>
+    <p>The SCA wage floor updated January 1, 2026. The rate card didn't. Three FTEs. Five years. One check catches it before submission.</p>
+    <div class="actions">
+      <button class="btn btn-primary" id="startBtn" aria-label="Start the walkthrough">Start the walkthrough →</button>
+    </div>
+    <div class="modal-meta">An 85-second autoplay demo · SCA wage floor deep-dive</div>
+  </div>
+</div>
+
+<div class="modal" id="closingModal" role="dialog" aria-labelledby="closingTitle" aria-modal="true">
+  <div class="modal-card">
+    <h2 id="closingTitle">The rate card said $43.50. The WD said $47.43. The contract said pay up.</h2>
+    <p>Compliance Check pulls the current WD for the place of performance and compares it against your proposed rates. Every submission. Every location.</p>
+    <div class="stat-pills">
+      <span class="stat-pill"><b>SAM.gov</b> · primary source</span>
+      <span class="stat-pill"><b>H&amp;W rate</b> included</span>
+      <span class="stat-pill"><b>FAR 52.222-41</b> cited</span>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" aria-label="Check your rates">Check your rates →</button>
+      <button class="btn btn-ghost" id="replayBtn" aria-label="Replay walkthrough">Replay walkthrough</button>
+    </div>
+    <div class="modal-meta">WD 2015-4281 Rev 22 · Montgomery County, MD · Effective Jan 1, 2026 · SAM.gov</div>
+  </div>
+</div>
+
+<div class="playback" role="group" aria-label="Walkthrough playback controls">
+  <button class="pb-btn" id="playPauseBtn" aria-label="Pause walkthrough"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg></button>
+  <div class="pb-track" aria-hidden="true"><div class="pb-fill" id="pbFill"></div></div>
+  <div class="pb-label" id="pbLabel">1 / 8</div>
+  <button class="pb-btn ghost" id="restartBtn" aria-label="Restart walkthrough"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></button>
+</div>
+
+<script>
+(function(){
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const sp = (ms) => reducedMotion ? Math.min(ms, 500) : ms;
+  const screens = document.querySelectorAll('[data-screen]');
+  function showScreen(name) { screens.forEach(s => s.classList.toggle('active', s.dataset.screen === name)); }
+  const spotlight = document.getElementById('spotlight');
+  const tooltip = document.getElementById('tooltip');
+  const tooltipCounter = document.getElementById('tooltipCounter');
+  const tooltipTitle = document.getElementById('tooltipTitle');
+  const tooltipBody = document.getElementById('tooltipBody');
+  const tooltipDots = document.getElementById('tooltipDots');
+  const welcomeModal = document.getElementById('welcomeModal');
+  const closingModal = document.getElementById('closingModal');
+  const simCursor = document.getElementById('simCursor');
+  const playPauseBtn = document.getElementById('playPauseBtn');
+  const restartBtn = document.getElementById('restartBtn');
+  const replayBtn = document.getElementById('replayBtn');
+  const pbFill = document.getElementById('pbFill');
+  const pbLabel = document.getElementById('pbLabel');
+
+  function moveCursorTo(sel) { const el = document.querySelector(sel); if (!el) return; const r = el.getBoundingClientRect(); simCursor.style.transform = 'translate(' + (r.left + r.width/2 - 4) + 'px,' + (r.top + r.height/2 - 2) + 'px)'; simCursor.classList.add('visible'); }
+  function clickSim(sel) { const el = document.querySelector(sel); if (!el) return; simCursor.classList.remove('clicking'); void simCursor.offsetWidth; simCursor.classList.add('clicking'); el.classList.add('sim-press'); setTimeout(() => el.classList.remove('sim-press'), 180); }
+  function hideCursor() { simCursor.classList.remove('visible'); }
+
+  function runWdLookup() {
+    const fill = document.getElementById('loadingFill');
+    fill.style.transition = 'none'; fill.style.width = '0%';
+    const steps = document.querySelectorAll('.wd-step');
+    steps.forEach(s => { s.className = 'wd-step'; s.querySelector('.wd-icon').innerHTML = ''; });
+    const tableRows = document.querySelectorAll('#rateTable tbody tr');
+    tableRows.forEach(r => r.classList.remove('visible'));
+    const duration = reducedMotion ? 300 : 3800;
+    fill.offsetWidth; fill.style.transition = 'width ' + duration + 'ms linear';
+    requestAnimationFrame(() => { fill.style.width = '100%'; });
+    const stagger = duration / steps.length;
+    steps.forEach((s, i) => {
+      setTimeout(() => {
+        s.classList.add('active');
+        if (i < steps.length - 1) s.querySelector('.wd-icon').innerHTML = '<span class="spinner" aria-hidden="true"></span>';
+      }, i * stagger * 0.5);
+      setTimeout(() => {
+        const isWarn = (i === steps.length - 1);
+        s.className = 'wd-step ' + (isWarn ? 'warn' : 'done');
+        s.querySelector('.wd-icon').innerHTML = isWarn
+          ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
+          : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>';
+      }, (i + 1) * stagger);
+    });
+    // Table rows fade in near end
+    tableRows.forEach((r, i) => {
+      setTimeout(() => r.classList.add('visible'), duration * 0.55 + i * 140);
+    });
+  }
+
+  function countUpTo(el, target, ms) {
+    if (reducedMotion) { el.textContent = '$' + target.toLocaleString(); return; }
+    const start = performance.now();
+    function frame(now) {
+      const t = Math.min(1, (now - start) / ms);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const v = Math.floor(eased * target);
+      el.textContent = '$' + v.toLocaleString();
+      if (t < 1) requestAnimationFrame(frame);
+      else el.textContent = '$' + target.toLocaleString();
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function runCalc() {
+    const rows = document.querySelectorAll('#calcRows .calc-row');
+    rows.forEach(r => r.classList.remove('visible'));
+    const sep = document.getElementById('calcSep'); sep.classList.remove('draw');
+    const total = document.getElementById('totalValue'); total.textContent = '$0';
+    const stagger = reducedMotion ? 30 : 160;
+    rows.forEach((row, i) => {
+      // Rows 0-4 appear sequentially; row 5 (total) appears after separator
+      if (i < 5) setTimeout(() => row.classList.add('visible'), i * stagger + 200);
+    });
+    setTimeout(() => sep.classList.add('draw'), 5 * stagger + 280);
+    setTimeout(() => {
+      rows[5].classList.add('visible');
+      countUpTo(total, 122736, reducedMotion ? 0 : 1200);
+    }, 5 * stagger + 600);
+  }
+  function resetCalc() {
+    document.querySelectorAll('#calcRows .calc-row').forEach(r => r.classList.remove('visible'));
+    document.getElementById('calcSep').classList.remove('draw');
+    document.getElementById('totalValue').textContent = '$0';
+  }
+
+  const steps = [
+    { id: 'welcome', modal: 'welcome', duration: sp(6500) },
+    {
+      id: 'sow', target: '#sowTa', screen: 'input',
+      title: 'Place of performance is the key input.',
+      body: 'The SCA WD is geographic. Montgomery County MD has a different floor than Fairfax County VA. County matters.',
+      placement: 'right',
+      duration: sp(7500)
+    },
+    {
+      id: 'labor', target: '#ta', screen: 'input',
+      title: 'Finds the labor categories.',
+      body: 'NLP extraction pulls "Software Developer III" and maps it against the DOL occupational titles used in SCA WDs.',
+      placement: 'right',
+      duration: sp(7500)
+    },
+    {
+      id: 'run', target: '#inputCard .run-row', screen: 'input',
+      title: 'SAM.gov returns the current determination.',
+      body: 'WD 2015-4281 Rev 22 — Montgomery County, MD, effective Jan 1, 2026. SCA WDs update quarterly.',
+      placement: 'top',
+      duration: sp(7000),
+      actions: [
+        { at: sp(1800), do: () => moveCursorTo('#runBtn') },
+        { at: sp(3400), do: () => clickSim('#runBtn') }
+      ]
+    },
+    {
+      id: 'lookup', target: '#loadingCard', screen: 'loading',
+      title: 'Live WD, four labor categories, one gap.',
+      body: 'Three of four categories clear the floor. Software Dev III is $3.93/hr under. That row lights red.',
+      placement: 'right',
+      duration: sp(6500),
+      onEnter: () => { hideCursor(); runWdLookup(); }
+    },
+    {
+      id: 'calc', target: '#calcCard', screen: 'results',
+      title: 'The number that hurts at award.',
+      body: 'The CO issues a modification. The contractor adjusts price. Overhead and profit priced at $43.50 don\u2019t reprice automatically. The gap comes out of margin.',
+      placement: 'right',
+      duration: sp(10000),
+      onEnter: () => runCalc()
+    },
+    {
+      id: 'hw', target: '#hwCard', screen: 'results',
+      title: 'H&W rate is separate. Also mandatory.',
+      body: 'SCA requires $4.98/hr in H&W benefits above the base wage for Montgomery County. If the fringe calc doesn\u2019t include this, add $155,376 more across the base of performance.',
+      placement: 'top',
+      duration: sp(8500)
+    },
+    {
+      id: 'diff', target: '#beforeAfter', screen: 'results',
+      title: 'Before, after, and the total catch.',
+      body: '$278,112 across five years — base-wage gap plus H&W. All flagged before submission.',
+      placement: 'top',
+      duration: sp(7500)
+    },
+    { id: 'closing', modal: 'closing', duration: sp(7000) }
+  ];
+  const totalSteps = steps.length;
+
+  for (let i = 0; i < totalSteps; i++) { const d = document.createElement('span'); d.className = 'tt-dot'; tooltipDots.appendChild(d); }
+  function updateDots(i) { Array.from(tooltipDots.children).forEach((d, idx) => d.classList.toggle('active', idx === i)); }
+
+  function computeCoords(rect, placement, tipW, tipH, gap) {
+    if (placement === 'bottom') return { top: rect.bottom + gap, left: rect.left + rect.width/2 - tipW/2 };
+    if (placement === 'top')    return { top: rect.top - tipH - gap, left: rect.left + rect.width/2 - tipW/2 };
+    if (placement === 'right')  return { top: rect.top + rect.height/2 - tipH/2, left: rect.right + gap };
+    if (placement === 'left')   return { top: rect.top + rect.height/2 - tipH/2, left: rect.left - tipW - gap };
+    return { top: rect.bottom + gap, left: rect.left };
+  }
+  function placeSpotlight(el, placement) {
+    const preRect = el.getBoundingClientRect();
+    if (preRect.top < 60 || preRect.bottom > window.innerHeight - 80) el.scrollIntoView({ block: 'center', behavior: 'auto' });
+    const rect = el.getBoundingClientRect();
+    const pad = 8;
+    spotlight.style.top = (rect.top - pad) + 'px';
+    spotlight.style.left = (rect.left - pad) + 'px';
+    spotlight.style.width = (rect.width + pad*2) + 'px';
+    spotlight.style.height = (rect.height + pad*2) + 'px';
+    spotlight.classList.add('visible');
+    tooltip.classList.add('visible');
+    const tipW = tooltip.offsetWidth || 340, tipH = tooltip.offsetHeight || 160;
+    const gap = 14, viewH = window.innerHeight, viewW = window.innerWidth;
+    const order = [placement || 'bottom', 'bottom', 'top', 'right', 'left'];
+    let chosen = null;
+    for (const p of order) {
+      const c = computeCoords(rect, p, tipW, tipH, gap);
+      if (c.top >= 12 && c.top + tipH <= viewH - 80 && c.left >= 12 && c.left + tipW <= viewW - 12) { chosen = c; break; }
+    }
+    if (!chosen) chosen = computeCoords(rect, placement || 'bottom', tipW, tipH, gap);
+    chosen.top = Math.max(12, Math.min(chosen.top, viewH - tipH - 80));
+    chosen.left = Math.max(12, Math.min(chosen.left, viewW - tipW - 12));
+    tooltip.style.top = chosen.top + 'px'; tooltip.style.left = chosen.left + 'px';
+  }
+  function hideSpotlight() { spotlight.classList.remove('visible'); tooltip.classList.remove('visible'); }
+
+  let currentStep = 0, isPlaying = true, stepStartTime = 0, stepElapsed = 0;
+  let pendingTimers = [], rafId = null;
+  function clearPendingTimers() { pendingTimers.forEach(t => clearTimeout(t)); pendingTimers = []; }
+
+  function enterStep(i) {
+    clearPendingTimers();
+    currentStep = i;
+    const step = steps[i];
+    welcomeModal.classList.remove('open'); closingModal.classList.remove('open');
+    updateDots(i); pbLabel.textContent = (i + 1) + ' / ' + totalSteps;
+    if (step.modal === 'welcome') { welcomeModal.classList.add('open'); hideSpotlight(); hideCursor(); }
+    else if (step.modal === 'closing') { closingModal.classList.add('open'); hideSpotlight(); hideCursor(); }
+    else {
+      if (step.screen) showScreen(step.screen);
+      tooltipCounter.textContent = 'Step ' + (i + 1) + ' of ' + totalSteps;
+      tooltipTitle.textContent = step.title; tooltipBody.textContent = step.body;
+      if (step.onEnter) step.onEnter();
+      requestAnimationFrame(() => {
+        const el = document.querySelector(step.target);
+        if (el) placeSpotlight(el, step.placement);
+      });
+    }
+    stepStartTime = performance.now(); stepElapsed = 0;
+    scheduleStepActions(step, 0);
+  }
+  function scheduleStepActions(step, fromMs) {
+    if (!step.actions) return;
+    step.actions.forEach(a => {
+      if (a.at >= fromMs) { const t = setTimeout(() => { if (isPlaying) a.do(); }, a.at - fromMs); pendingTimers.push(t); }
+    });
+  }
+  function tick(now) {
+    if (!isPlaying) return;
+    const step = steps[currentStep];
+    stepElapsed = now - stepStartTime;
+    const pct = Math.min(100, (stepElapsed / step.duration) * 100);
+    pbFill.style.width = (((currentStep + pct/100) / totalSteps) * 100) + '%';
+    if (stepElapsed >= step.duration) {
+      if (currentStep < totalSteps - 1) enterStep(currentStep + 1);
+      else { pause(); pbFill.style.width = '100%'; return; }
+    }
+    rafId = requestAnimationFrame(tick);
+  }
+  function play() {
+    if (isPlaying) return; isPlaying = true;
+    playPauseBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
+    playPauseBtn.setAttribute('aria-label', 'Pause walkthrough');
+    stepStartTime = performance.now() - stepElapsed;
+    scheduleStepActions(steps[currentStep], stepElapsed);
+    rafId = requestAnimationFrame(tick);
+  }
+  function pause() {
+    if (!isPlaying) return; isPlaying = false;
+    clearPendingTimers(); if (rafId) cancelAnimationFrame(rafId);
+    playPauseBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 3v18l15-9z"/></svg>';
+    playPauseBtn.setAttribute('aria-label', 'Play walkthrough');
+  }
+  function resetState() {
+    clearPendingTimers(); if (rafId) cancelAnimationFrame(rafId);
+    const fill = document.getElementById('loadingFill'); fill.style.transition = 'none'; fill.style.width = '0%';
+    document.querySelectorAll('.wd-step').forEach(s => { s.className = 'wd-step'; s.querySelector('.wd-icon').innerHTML = ''; });
+    document.querySelectorAll('#rateTable tbody tr').forEach(r => r.classList.remove('visible'));
+    resetCalc();
+    pbFill.style.width = '0%';
+    showScreen('input'); hideCursor();
+  }
+  function startFresh() {
+    resetState(); isPlaying = true;
+    playPauseBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
+    playPauseBtn.setAttribute('aria-label', 'Pause walkthrough');
+    enterStep(0); rafId = requestAnimationFrame(tick);
+  }
+  playPauseBtn.addEventListener('click', () => { isPlaying ? pause() : play(); });
+  restartBtn.addEventListener('click', startFresh);
+  if (replayBtn) replayBtn.addEventListener('click', startFresh);
+  document.getElementById('startBtn').addEventListener('click', () => { if (currentStep === 0) enterStep(1); });
+  document.addEventListener('keydown', (e) => {
+    if (e.target && ['INPUT','TEXTAREA'].includes(e.target.tagName)) return;
+    if (e.key === ' ' || e.code === 'Space') { e.preventDefault(); isPlaying ? pause() : play(); }
+    else if (e.key === 'ArrowRight') { if (currentStep < totalSteps - 1) enterStep(currentStep + 1); }
+    else if (e.key === 'ArrowLeft') { if (currentStep > 0) { resetState(); enterStep(currentStep - 1); } }
+    else if (e.key === 'Escape') { pause(); }
+  });
+  window.addEventListener('resize', () => {
+    const step = steps[currentStep];
+    if (!step || !step.target) return;
+    const el = document.querySelector(step.target);
+    if (el && tooltip.classList.contains('visible')) placeSpotlight(el, step.placement);
+  });
+  enterStep(0); rafId = requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
