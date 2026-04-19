@@ -211,7 +211,63 @@ All three n8n workflows follow the same shape: a scheduled or webhook trigger, a
 
 ---
 
+## OpenClaw Agents, LaunchAgents, and Cron
+
+### OpenClaw agents (6)
+
+Source: `openclaw agents list`. All agents route through the always-on gateway daemon (`ai.openclaw.gateway`, port 18789). By framework definition, agents hosted in an autonomous always-on runtime sit at Level 7 on the orchestration axis. The correct level question for each is whether the agent's actual task warrants that runtime.
+
+| agent_name | model | workspace | current_level | target_level_for_task | notes |
+|---|---|---|---|---|---|
+| editorial (default) | anthropic/claude-sonnet-4-20250514 | mmt-ops-exec/workspaces/editorial | 7 | 6 | Editorial drafting is open-ended and human-summoned. Claude Code with a project workspace would cover it. Downgrade candidate if not actively used autonomously. |
+| ops-code | openrouter/meta-llama/llama-3.3-70b-instruct:free | mmt-ops-exec/workspaces/ops-code | 7 | 6 | Free-tier Llama; cheap to run. Bounded "ops-code" scope suggests scheduled tasks, not open-ended reasoning. Review usage before keeping at 7. |
+| ops-research | openrouter/meta-llama/llama-3.3-70b-instruct:free | mmt-ops-exec/workspaces/ops-research | 7 | 2-6 | Research tasks are typically Level 2 (fetch + one LLM pass). If used interactively, Level 6. Either way, below 7. |
+| ops-monitor | openrouter/meta-llama/llama-3.3-70b-instruct:free | mmt-ops-exec/workspaces/ops-monitor | 7 | 1-2 | Monitoring is deterministic checks with optional LLM summarization. Strong downgrade candidate. |
+| ops-ciso | openrouter/meta-llama/llama-3.3-70b-instruct:free | mmt-ops-exec/workspaces/ops-ciso | 7 | 6 | Security review is open-ended human-summoned. Claude Code pattern fits. |
+| ops-visual | anthropic/claude-sonnet-4-20250514 | mmt-ops-exec/workspaces/ops-visual | 7 | 6 | Creative visual work; human-summoned fits. |
+
+**Downgrade opportunities flagged: 6 out of 6 agents.** All six are hosted on Level 7 infrastructure when their actual tasks do not require always-on autonomy. Sprint 2 should validate which agents are actually invoked autonomously vs. on-demand, then migrate on-demand agents to Claude Code (Level 6) or scripts (Level 1-2). The OpenClaw gateway itself stays at Level 7 as platform infrastructure.
+
+### LaunchAgents (5 plists)
+
+Source: `~/Library/LaunchAgents/*.plist` + `launchctl list`.
+
+| label | trigger | command | current_level | target_level | downgrade_opportunity |
+|---|---|---|---|---|---|
+| ai.openclaw.gateway | Always-on (KeepAlive) | node openclaw gateway (port 18789) | 7 | 7 | N (platform infrastructure) |
+| com.maryd.pennypincher | Always-on (KeepAlive) | python3 penny_pincher.py (Ollama local) | 1 | 1 | N (already right-sized: cost ledger + log tailer + daily markdown; no LLM spend) |
+| com.mmt.cost-tracker-weekly | Mon 6am ET | node weeklySync.js | 1 | 1 | N (deterministic cost sync) |
+| com.mmt.sentinel | Every 6h (21600s) | `claude -p` with max-turns 10, budget $0.25 | 6 | 2 | Y |
+| com.mmt.seo-agent | Mon 8am ET | `claude -p` with max-turns 25, budget $0.75 | 6 | 4 or 6 | N (task warrants agent behavior; current pattern is bounded and correct) |
+
+### LaunchAgent downgrade notes
+
+**com.mmt.sentinel (6 → 2)**
+Current: every 6 hours, invoke Claude Code with up to 10 turns and $0.25 budget to (1) run `mmt-health-check.sh`, (2) classify results L0-L3 per a decision tree, (3) apply pre-approved fixes.
+Level 2 version: run `mmt-health-check.sh` directly in the shell script; pass the JSON result to a single Anthropic API call that returns the classification and fix list as JSON; apply pre-approved fixes with a deterministic switch on the fix type. The health check is already Level 1. The classification is a single fuzzy step, not a 10-turn agent. Budget drops from $0.25 per run to roughly one Haiku call.
+
+**com.mmt.seo-agent (6 stays)**
+Current: Mon 8am ET, 25 turns, $0.75 budget. Reads knowledge base, audits 5+ pages, applies fixes across files, commits to git, updates learning log.
+Keep at Level 6. The task spans multi-page reasoning, file edits, and self-updating strategy — genuine agent territory. A Level 4 hand-rolled loop would reimplement most of Claude Code's agent harness. The existing `--max-turns 25` and `--max-budget-usd 0.75` are the right bounds.
+
+### Crontab (2)
+
+Source: `crontab -l`.
+
+| command | trigger | current_level | target_level | downgrade_opportunity |
+|---|---|---|---|---|
+| missionpulse-frontend/scripts/evaluate-shadow-mode.ts | Daily 6am | unclassified (missionpulse) | TBD in Sprint 3 | deferred |
+| missionpulse-frontend/scripts/weekly-shadow-report.ts | Mon 10am | unclassified (missionpulse) | TBD in Sprint 3 | deferred |
+
+Both entries are MissionPulse work and are covered by Sprint 3 (MissionPulse determinism-by-design). Not reclassifying them here to avoid scope creep.
+
+### Side findings (out of scope for this sprint, but flagged)
+
+1. **Gateway plist holds plaintext API keys in launchd `EnvironmentVariables`**: `ai.openclaw.gateway.plist` contains Anthropic, OpenAI, Google AI, Perplexity, and Telegram bot credentials as plist XML values. Anyone with read access to `~/Library/LaunchAgents/` sees them. Track as a separate security ticket (move to keychain or encrypted env file).
+2. **Scheduled jobs reference the diverged clone**: `com.mmt.sentinel` and `com.mmt.seo-agent` both operate against `$HOME/mmt-site` (the diverged clone), not `~/Projects/mmt-site` (the Netlify-linked primary). This means scheduled automations are running against a different codebase than the one that ships to production. Track as part of the existing mmt-site clone remediation item.
+
+---
+
 ## Pending sections
 
-- **OpenClaw Agents and Cron** — populated by DET-003
 - **Ecosystem Summary** — populated by DET-004
