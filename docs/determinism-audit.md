@@ -181,8 +181,37 @@ Ranked by estimated annual token spend (qualitative until DET-401 pulls the Anth
 
 ---
 
+## n8n Workflows (3 workflows)
+
+Source: `~/Projects/mmt-site/n8n-workflows/` (exported JSON). The n8n instance at `http://localhost:5678` is not running at audit time, so classification is based on the exported workflow definitions. All three exports remain under the `mmt-intelligence` tag.
+
+| workflow_name | trigger | apis | decision_points | current_level | target_level | downgrade_opportunity | status |
+|---|---|---|---|---|---|---|---|
+| MMT Fact-Check + Rewrite | Webhook POST (/fact-check-rewrite) | Netlify fact-check fn, Anthropic Sonnet, Resend | 1 validation + 1 LLM rewrite | 3 | 2 | Y | active |
+| MMT Newsletter Draft Writer | Scheduled Mon/Thu 8am ET | Supabase, Anthropic Sonnet, Resend | 1 has-data check + 1 LLM draft | 3 | 2 | Y | active |
+| MMT SAM.gov Opportunity Scanner | Scheduled daily 6:30am ET | Perplexity sonar-pro, Anthropic Haiku, Resend | 1 has-opps + 1 LLM discovery + 1 LLM scoring | 3 | 2 | Y | retired (spec notes replaced by Perplexity Computer manual prompts; export still on disk) |
+
+### Downgrade notes (all 3)
+
+**1. MMT Fact-Check + Rewrite (3 → 2)**
+Current: n8n webhook calls Netlify `fact-check.js` (already Level 2), then calls Claude Sonnet for rewrite. Two hops, n8n orchestration in the middle.
+Level 2 version: fold the rewrite step into a single Netlify function. `fact-check.js` does both the check and the conditional rewrite in one handler. Eliminates n8n entirely. This workflow already proxies to a Netlify function, so the n8n layer is pure overhead.
+
+**2. MMT Newsletter Draft Writer (3 → 2)**
+Current: scheduled n8n pulls `newsletter_research` from Supabase, sends research JSON to Claude Sonnet, saves draft back, emails Mary.
+Level 2 version: Python/Node script (scheduled via launchd or Netlify scheduled function) that does the same four steps. This is the exact target of DET-203. The n8n orchestration adds no value because the flow is linear with no branching beyond has-data.
+
+**3. MMT SAM.gov Opportunity Scanner (3 → 2)**
+Current: deactivated. When active: Perplexity does discovery (search SAM.gov indirectly), Claude Haiku scores relevance, Resend delivers brief.
+Level 2 version: hit `api.sam.gov/opportunities/v2/search` directly with NAICS + agency + set-aside filters (deterministic fetch — no LLM needed for retrieval). One Haiku call per surviving hit for relevance scoring against current pursuits. This is the exact target of DET-202. Discovery via Perplexity was only necessary because the Level 1 API approach had not been built.
+
+### Pattern observed
+
+All three n8n workflows follow the same shape: a scheduled or webhook trigger, a linear deterministic pipeline, one or two targeted LLM calls, an email delivery. None of them branch on LLM reasoning. None use n8n's agent node. They are Level 2 tasks running on a Level 3 platform. The n8n layer adds deploy friction, credential management overhead, and a separate runtime to monitor — all without adding capability.
+
+---
+
 ## Pending sections
 
-- **n8n Workflows** — populated by DET-002
 - **OpenClaw Agents and Cron** — populated by DET-003
 - **Ecosystem Summary** — populated by DET-004
