@@ -489,7 +489,7 @@ exports.handler = async (event) => {
   );
 
   if (!isPremium) {
-    return { statusCode: 403, headers: CORS_HEADERS, body: JSON.stringify({ error: "Signal Chain is a Premium feature." }) };
+    return { statusCode: 403, headers: CORS_HEADERS, body: JSON.stringify({ error: "Signal Chain is a Premium feature. Subscribe at missionmeetstech.com/pricing" }) };
   }
 
   // Cache read
