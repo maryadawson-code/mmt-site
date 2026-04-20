@@ -13,19 +13,35 @@
 const fs = require("fs");
 const path = require("path");
 
-const CORPUS_PATH = path.join(__dirname, "..", "data", "mmt-content-corpus.json");
+// In local dev the corpus lives at netlify/functions/data/mmt-content-corpus.json
+// relative to this file. In Netlify's bundled function runtime, __dirname
+// points inside the zipped bundle and the included_files config copies
+// the data directory to a different absolute path. Try every candidate
+// so the corpus loads in both environments without manual config.
+const CORPUS_CANDIDATES = [
+  path.join(__dirname, "..", "data", "mmt-content-corpus.json"),                       // local dev, next to lib/
+  path.join(process.cwd(), "netlify", "functions", "data", "mmt-content-corpus.json"), // Netlify, cwd at repo root
+  "/var/task/netlify/functions/data/mmt-content-corpus.json",                          // AWS Lambda task root (Netlify default)
+  path.join(process.env.LAMBDA_TASK_ROOT || "", "netlify", "functions", "data", "mmt-content-corpus.json"),
+];
 
 let CORPUS = null;
 
 function loadCorpus() {
   if (CORPUS) return CORPUS;
-  try {
-    const raw = fs.readFileSync(CORPUS_PATH, "utf8");
-    CORPUS = JSON.parse(raw);
-  } catch (err) {
-    console.warn(`[content-index] corpus not available: ${err.message}`);
-    CORPUS = { items: [], total: 0 };
+  let lastErr = null;
+  for (const candidate of CORPUS_CANDIDATES) {
+    if (!candidate) continue;
+    try {
+      const raw = fs.readFileSync(candidate, "utf8");
+      CORPUS = JSON.parse(raw);
+      return CORPUS;
+    } catch (err) {
+      lastErr = err;
+    }
   }
+  console.warn(`[content-index] corpus not available (tried ${CORPUS_CANDIDATES.length} paths): ${lastErr && lastErr.message}`);
+  CORPUS = { items: [], total: 0 };
   return CORPUS;
 }
 

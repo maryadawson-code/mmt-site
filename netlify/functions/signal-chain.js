@@ -29,15 +29,24 @@ const fs = require("fs");
 const path = require("path");
 
 // Contracts intelligence — Mary-curated intel on known programs.
+// See content-index.js for the path-candidate rationale.
+const CONTRACTS_CANDIDATES = [
+  path.join(__dirname, "..", "..", "contracts.json"),
+  path.join(process.cwd(), "contracts.json"),
+  "/var/task/contracts.json",
+  path.join(process.env.LAMBDA_TASK_ROOT || "", "contracts.json"),
+];
 let CONTRACTS_DATA = null;
 function loadContracts() {
   if (CONTRACTS_DATA) return CONTRACTS_DATA;
-  try {
-    const raw = fs.readFileSync(path.join(__dirname, "..", "..", "contracts.json"), "utf8");
-    CONTRACTS_DATA = JSON.parse(raw);
-  } catch (_) {
-    CONTRACTS_DATA = [];
+  for (const candidate of CONTRACTS_CANDIDATES) {
+    if (!candidate) continue;
+    try {
+      CONTRACTS_DATA = JSON.parse(fs.readFileSync(candidate, "utf8"));
+      return CONTRACTS_DATA;
+    } catch (_) { /* try next */ }
   }
+  CONTRACTS_DATA = [];
   return CONTRACTS_DATA;
 }
 
