@@ -24,6 +24,22 @@ const { searchPubMed, fetchPubMedSummaries } = require("./lib/pubmed-api");
 const { searchJobs } = require("./lib/usajobs-api");
 const { detectVehicles, expandedSearchTerms } = require("./lib/known-vehicles");
 const { buildQueryTerms, buildPubMedQuery, FR_AGENCY_SLUGS, USASPENDING_AGENCY_NAMES } = require("./lib/signal-chain-query-builder");
+const { searchCorpus } = require("./lib/content-index");
+const fs = require("fs");
+const path = require("path");
+
+// Contracts intelligence — Mary-curated intel on known programs.
+let CONTRACTS_DATA = null;
+function loadContracts() {
+  if (CONTRACTS_DATA) return CONTRACTS_DATA;
+  try {
+    const raw = fs.readFileSync(path.join(__dirname, "..", "..", "contracts.json"), "utf8");
+    CONTRACTS_DATA = JSON.parse(raw);
+  } catch (_) {
+    CONTRACTS_DATA = [];
+  }
+  return CONTRACTS_DATA;
+}
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "https://missionmeetstech.com",
@@ -374,6 +390,62 @@ async function layerContract(terms, agency) {
 }
 
 // ------------------------------------------------------------
+// Layer 6: MMT Coverage (Mary's articles + contracts intel) — weight 0%
+// Informational layer so subscribers see Mary's own reporting on the
+// topic. Includes aliases (HCDS, CSO, DHMSM, etc.) via tokenized search
+// against the content corpus + contracts.json.
+// ------------------------------------------------------------
+function layerMmtCoverage(terms, topic) {
+  const query = [topic, ...(terms.topKeywords || []), ...(terms.aliases || [])].filter(Boolean).join(" ");
+  let articles = [];
+  try {
+    articles = searchCorpus(query, 5).map((a) => ({
+      title: a.title,
+      url: a.url && a.url.startsWith("http") ? a.url : `https://missionmeetstech.com${a.url || ""}`,
+      date: a.date || "",
+      source: "Mission Meets Tech",
+      organization: a.type === "episode" ? "MMT Podcast" : "MMT Analysis",
+      relevanceNote: (a.description || "").substring(0, 140),
+    }));
+  } catch (_) { /* corpus unavailable */ }
+
+  const contracts = loadContracts();
+  const tokens = (terms.topKeywords || [])
+    .concat([topic])
+    .map((t) => String(t || "").toLowerCase())
+    .filter((t) => t.length > 2);
+  const contractSignals = contracts
+    .filter((c) => {
+      const hay = `${c.name || ""} ${c.description || ""} ${c.agency || ""}`.toLowerCase();
+      return tokens.some((t) => hay.includes(t));
+    })
+    .slice(0, 5)
+    .map((c) => ({
+      title: `${c.name}${c.status ? ` · ${c.status}` : ""}`,
+      url: c.link || `https://missionmeetstech.com/contract-tracker.html`,
+      date: c.last_verified || "",
+      source: "MMT Contract Tracker",
+      organization: c.agency || "",
+      relevanceNote: c.pursuit_score && c.pursuit_score.headline
+        ? `Verdict ${c.pursuit_score.verdict}: ${c.pursuit_score.headline}`
+        : (c.value || ""),
+    }));
+
+  const signals = [...articles, ...contractSignals];
+  const reason = signals.length === 0
+    ? `No MMT coverage found for "${topic}". If this is a newer program, Mary may be tracking it under a different name — e.g., DHMSM coverage often lives under HCDS or CSO.`
+    : null;
+
+  return {
+    score: 0,            // informational — does not affect composite
+    weight: 0,
+    source: "Mission Meets Tech (articles + contract tracker)",
+    signals,
+    noSignalReason: reason,
+  };
+}
+
+// ------------------------------------------------------------
 // Composite + verdict
 // ------------------------------------------------------------
 function computeComposite(layers) {
@@ -536,6 +608,7 @@ exports.handler = async (event) => {
     workforce:   workforce.__timedOut || workforce.__error ? { ...zero, weight: 0.15 } : workforce,
     budget:      budget.__timedOut || budget.__error ? { ...zero, weight: 0.25 } : budget,
     contract:    contract.__timedOut || contract.__error ? { ...zero, weight: 0.25 } : contract,
+    mmtCoverage: layerMmtCoverage(terms, topic),
   };
 
   const composite = computeComposite(layers);
