@@ -15,6 +15,11 @@ const FLAG_DEFAULTS = {
   // "off" until validated on staging; flip to "on" to route through
   // v4 prompt + self-audit + decomposed research score + BLOCKED gate.
   MARKETPULSE_V4: "off",
+  // v4 tiered audit gating (2026-04-20). Default "off" uses the new tiered
+  // policy: Tier A failures hard-stop; Tier B failures deliver with a
+  // Verification Notes footnote when score ≥ 85. Flip to "on" to restore
+  // the legacy binary behavior (any failure hard-stops) for A/B testing.
+  MARKETPULSE_STRICT_AUDIT: "off",
   // Premium Tools v2 — Pursuit Score / Compliance Check / Signal Chain
   // rebuild using the shared intelligence core (docs/premium-tools-master-sprint.md).
   // Default "off"; flip to "on" to wrap legacy tool output in the v2 ToolEnvelope,

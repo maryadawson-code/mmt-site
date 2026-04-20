@@ -480,46 +480,105 @@ function renderAuditBlock(audit) {
 }
 
 /**
- * Check stop conditions per v4 §9.
- * Returns { stop, reasons[], diagnostic } — if stop, diagnostic should be
- * delivered INSTEAD of the report.
+ * Tiered audit gating (2026-04-20).
+ *
+ * TIER A (hard stop — always block delivery):
+ *   #1 subscriber context, #5 issue coverage, #10 readiness metrics,
+ *   #11 capture strategy, #13 source table, #14 decomposed score banner,
+ *   #17 fetch quota.
+ * These are structural / wiring gates — if they fail the report is
+ * broken regardless of score.
+ *
+ * TIER B (soft warn — model-compliance micro-issues):
+ *   All other audit failures. Blocks delivery only when score < 85.
+ *   At score ≥ 85 the report delivers with a "## Verification Notes"
+ *   footnote listing the flagged items.
+ *
+ * The floor condition (score < 50) is still a hard stop regardless of
+ * tier — it catches unsanitized garbage that slipped past the audit.
+ *
+ * MARKETPULSE_STRICT_AUDIT=on preserves the old binary behavior for
+ * A/B testing (any audit failure hard-stops).
  */
-function checkStopConditions({ audit, score, hasSubscriberContext, waived }) {
-  const reasons = [];
+const TIER_A_CHECK_IDS = new Set([1, 5, 10, 11, 13, 14, 17]);
+const SOFT_DELIVERY_SCORE_THRESHOLD = 85;
 
-  // (1) Subscriber context missing and not waived
+/**
+ * Check stop conditions under the tiered policy.
+ * Returns { stop, reasons[], diagnostic, softFlags } — when stop is false
+ * but softFlags is non-empty, caller should append renderVerificationNotes
+ * to the delivered report.
+ */
+function checkStopConditions({ audit, score, hasSubscriberContext, waived, strict = false }) {
+  const reasons = [];
+  const failed = audit.checks.filter((c) => !c.passed);
+  const tierAFailed = failed.filter((c) => TIER_A_CHECK_IDS.has(c.id));
+  const tierBFailed = failed.filter((c) => !TIER_A_CHECK_IDS.has(c.id));
+
+  // Explicit subscriber-context gate (also represented by check #1, but
+  // preserved as a top-level reason string for operator clarity).
   if (!hasSubscriberContext && !waived) {
     reasons.push("Subscriber context missing and not waived");
   }
-  // (2) Dollar >$100M unverified — audit check 2 catches this in aggregate
-  const c2 = audit.checks.find((c) => c.id === 2);
-  if (c2 && !c2.passed) reasons.push(`Unsourced dollar figures: ${c2.evidence}`);
-  // (3) Tier 1 <40%
-  const c6 = audit.checks.find((c) => c.id === 6);
-  if (c6 && !c6.passed) reasons.push(`Tier 1 share below 40%: ${c6.evidence}`);
-  // (4) Any issue subsection empty
-  const c5 = audit.checks.find((c) => c.id === 5);
-  if (c5 && !c5.passed) reasons.push(`Issue coverage incomplete: ${c5.evidence}`);
-  // (5) PIID or award date unverified
-  const c3 = audit.checks.find((c) => c.id === 3);
-  const c4 = audit.checks.find((c) => c.id === 4);
-  if (c3 && !c3.passed) reasons.push(`PIID unverified: ${c3.evidence}`);
-  if (c4 && !c4.passed) reasons.push(`Award date unverified: ${c4.evidence}`);
-  // (6) Research Score <50
+
+  // Score floor — always a hard stop.
   if (score && typeof score.total === "number" && score.total < 50) {
-    reasons.push(`Research Score ${score.total}/100 below stop threshold (50)`);
+    reasons.push(`Research Score ${score.total}/100 below floor (50)`);
   }
-  // (7) Self-audit has unchecked box — any failure counts if score is also not green
-  if (audit.failedCount > 0 && score && score.total < 70) {
-    reasons.push(`Self-audit failures (${audit.failedCount}) with score ${score.total}/100 below remediation threshold`);
+
+  // Tier A failures always hard-stop.
+  for (const c of tierAFailed) {
+    reasons.push(`[TIER A — hard stop] #${c.id} ${c.label}: ${c.evidence}`);
+  }
+
+  // Strict mode: treat Tier B like Tier A (legacy binary behavior).
+  if (strict) {
+    for (const c of tierBFailed) {
+      reasons.push(`[STRICT — #${c.id} treated as hard stop] ${c.label}: ${c.evidence}`);
+    }
+    if (reasons.length === 0) {
+      return { stop: false, reasons: [], diagnostic: null, softFlags: [] };
+    }
+    return { stop: true, reasons, diagnostic: renderDiagnosticBlock({ audit, score, reasons }), softFlags: [] };
+  }
+
+  // Non-strict: Tier B only stops when score is below the soft-delivery threshold.
+  const scoreBelowSoft = !score || typeof score.total !== "number" || score.total < SOFT_DELIVERY_SCORE_THRESHOLD;
+  if (tierBFailed.length > 0 && scoreBelowSoft) {
+    const scoreLabel = score && typeof score.total === "number" ? `${score.total}/100` : "unknown";
+    for (const c of tierBFailed) {
+      reasons.push(`[TIER B — blocked because score ${scoreLabel} <${SOFT_DELIVERY_SCORE_THRESHOLD}] #${c.id} ${c.label}: ${c.evidence}`);
+    }
   }
 
   if (reasons.length === 0) {
-    return { stop: false, reasons: [], diagnostic: null };
+    // Either clean OR Tier B fails with score ≥ 85 → deliver with softFlags.
+    const softFlags = tierBFailed.map((c) => ({ id: c.id, label: c.label, evidence: c.evidence }));
+    return { stop: false, reasons: [], diagnostic: null, softFlags };
   }
 
-  const diagnostic = renderDiagnosticBlock({ audit, score, reasons });
-  return { stop: true, reasons, diagnostic };
+  return { stop: true, reasons, diagnostic: renderDiagnosticBlock({ audit, score, reasons }), softFlags: [] };
+}
+
+/**
+ * Render the "## Verification Notes" footnote emitted when a report
+ * delivers under the soft-warn path (score ≥ 85, Tier B failures only).
+ * Listed items are model-compliance flags, not structural failures.
+ */
+function renderVerificationNotes(softFlags) {
+  if (!softFlags || softFlags.length === 0) return "";
+  const lines = [
+    "## Verification Notes",
+    "",
+    "This report met all structural delivery gates (context, issue coverage, readiness, capture, source table, decomposed score banner, fetch quota) and scored at or above the soft-delivery threshold. The following model-compliance flags were recorded but did not block delivery — they are surfaced here so you can apply extra scrutiny before using these specific claims:",
+    "",
+  ];
+  for (const f of softFlags) {
+    lines.push(`- **#${f.id} ${f.label}** — ${f.evidence}`);
+  }
+  lines.push("");
+  lines.push("_For a stricter audit, the operator can set `MARKETPULSE_STRICT_AUDIT=on` to block delivery on any audit failure._");
+  return lines.join("\n");
 }
 
 /**
@@ -561,5 +620,8 @@ module.exports = {
   renderAuditBlock,
   checkStopConditions,
   renderDiagnosticBlock,
+  renderVerificationNotes,
+  TIER_A_CHECK_IDS,
+  SOFT_DELIVERY_SCORE_THRESHOLD,
   PSEUDO_CITATIONS,
 };

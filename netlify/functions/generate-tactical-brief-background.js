@@ -56,7 +56,7 @@ const { loadSubscriberContext, formatContextBlock, contextSystemRules, noContext
 
 // --- v4 Deep Research Loop modules (gated by MARKETPULSE_V4 flag) ---
 const { scoreReportV4, buildRemediationPlan, renderScoreBanner } = require("./lib/research-score-v4");
-const { runSelfAudit, renderAuditBlock, checkStopConditions } = require("./lib/self-audit-v4");
+const { runSelfAudit, renderAuditBlock, checkStopConditions, renderVerificationNotes } = require("./lib/self-audit-v4");
 const {
   decomposeQuery,
   planSourceStrategy,
@@ -1349,11 +1349,13 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
       });
       console.log(`[V4 AUDIT] ${v4Audit.passedCount}/${v4Audit.checks.length} checks passed${v4Audit.allPassed ? " ✓" : ""}`);
 
+      const strictAudit = getFlag("MARKETPULSE_STRICT_AUDIT") === "on";
       const stopCheck = checkStopConditions({
         audit: v4Audit,
         score: v4Score,
         hasSubscriberContext: !!subscriberContext,
         waived: v4Waived,
+        strict: strictAudit,
       });
       if (stopCheck.stop) {
         v4Stop = true;
@@ -1363,6 +1365,13 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
 
       // Append AUDIT BLOCK + REMEDIATION PLAN to the report if we're still delivering
       if (!v4Stop) {
+        // Soft-delivery path: Tier A clean + score ≥ 85 but ≥1 Tier B flag.
+        // Emit the Verification Notes footnote so the customer can apply extra
+        // scrutiny to the specific flagged claims.
+        if (stopCheck.softFlags && stopCheck.softFlags.length > 0) {
+          console.log(`[V4 SOFT DELIVERY] score=${v4Score.total}/100, ${stopCheck.softFlags.length} Tier B flag(s) surfaced in Verification Notes`);
+          finalSynthesis += "\n\n" + renderVerificationNotes(stopCheck.softFlags);
+        }
         finalSynthesis += "\n\n" + renderAuditBlock(v4Audit);
         if (v4Score.band === "remediate") {
           finalSynthesis += "\n\n" + buildRemediationPlan(v4Score);
