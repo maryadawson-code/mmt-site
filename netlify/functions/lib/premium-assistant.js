@@ -167,10 +167,10 @@ async function callClaude({ question, context, model = DEFAULT_MODEL, maxTokens 
   }
   const userPrompt = `Subscriber question: "${question}"
 
-VERIFIED FACTS FROM DIRECT API QUERIES (these are the ONLY facts you may cite):
-${context || "(No direct API results returned. Answer honestly — say what you can from general knowledge of federal health IT and recommend what the subscriber should check.)"}
+VERIFIED FACTS AVAILABLE (cite any of these — the block may contain MMT articles, MMT federal-vehicle baselines, MMT contract intel, MMT capture-intel signals, MMT IDIQ-vehicle analyst notes, and live federal API results. All are first-class evidence. Treat "MMT ORIGINAL CONTENT" entries and IDIQ vehicle excerpts as things Mary has already published — answer from them and cite the URL):
+${context || "(Nothing matched on either the MMT corpus or the live federal APIs. Answer honestly — say what you can from general knowledge and recommend what the subscriber should check next. Do NOT invent facts.)"}
 
-Answer the subscriber now, following the voice and format rules in the system prompt.`;
+Answer the subscriber now, following the voice and format rules in the system prompt. If the block contains MMT coverage of the topic, lead with what I wrote and quote the most relevant line.`;
 
   const ac = new AbortController();
   const timer = setTimeout(() => ac.abort(), 45000);
