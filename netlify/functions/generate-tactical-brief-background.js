@@ -1286,6 +1286,16 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
       }
       finalSynthesis = v4Clean.sanitized;
 
+      // === EDIT 1: Waived/no-context banner BEFORE scoring ===
+      // scoreSubscriberRelevance scans finalSynthesis for a banner phrase when
+      // subscriberContext is absent. If we inject the banner later (at HTML
+      // render time, formerly line 1487), the scorer sees empty text and
+      // returns 0/15. Inject the markdown banner here so the scorer sees it.
+      if (!subscriberContext) {
+        finalSynthesis = waivedContextBanner() + finalSynthesis;
+        console.log(`[V4 BANNER] ${v4Waived ? "WAIVED" : "no-context"} banner prepended to synthesis before scoring`);
+      }
+
       // Build opportunity count from Pipeline Intelligence structured entries
       const opportunityCount = (finalSynthesis.match(/CONTRACT\/OPPORTUNITY:/g) || []).length;
 
@@ -1296,6 +1306,26 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
         opportunityCount,
       });
       console.log(`[V4 SCORE] ${v4Score.total}/100 band=${v4Score.band} | ${Object.entries(v4Score.dimensions).map(([k, v]) => `${k}=${v.score}/${v.max}`).join(" ")}`);
+
+      // === EDIT 2: Prepend decomposed score banner BEFORE audit ===
+      // Audit #14 (checkDecomposedScore) searches the report for all 5
+      // dimension labels. renderScoreBanner emits the exact format the audit
+      // expects. Prepend here so the audit sees it on this pass.
+      const subscriberStatusLabel = subscriberContext
+        ? `LOADED: ${subscriberContext.entity_name}`
+        : (v4Waived ? "WAIVED (generic run)" : "not loaded");
+      const scoreBannerMd = renderScoreBanner(v4Score, {
+        subscriberStatus: subscriberStatusLabel,
+        topic,
+        date: new Date().toISOString().slice(0, 10),
+      });
+      finalSynthesis = scoreBannerMd + "\n\n" + finalSynthesis;
+
+      // === EDIT 3: Append source table BEFORE audit ===
+      // Audit #13 (checkSourceTable) expects a markdown "# | URL | Tier |"
+      // table with row count within 10% of total citations. buildSourceTable
+      // emits exactly that shape.
+      finalSynthesis += "\n\n## Source Table\n\n" + buildSourceTable(allPassCitations);
 
       v4Audit = runSelfAudit({
         reportText: finalSynthesis,
@@ -1512,12 +1542,17 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
     // If context WAS loaded, scan the output for rule violations and log
     // them to ops_events so repeat failures surface without being silent.
     if (!subscriberContext) {
-      const bannerText = V4_ON && v4Waived
-        ? `<strong>⚠️ GENERIC RUN — WAIVED.</strong> No subscriber context loaded (WAIVE_CONTEXT=true). This report is generic market intelligence. No opportunity tagging, no IN-FLIGHT detection. Mode defaulted to "generic".`
-        : `<strong>⚠️ No subscriber context loaded.</strong> This report is generic market intelligence. Recommendations may conflict with your firm's active positions. Load a subscriber_context record to enable opportunity tagging and IN-FLIGHT detection.`;
-      const banner = `<div style="background:#FEF9E7;border:1px solid #E5D9A8;border-radius:8px;padding:14px 18px;margin:0 0 20px;font-size:13px;color:#92710A;">${bannerText}</div>`;
-      reportHtmlContent = reportHtmlContent.replace(/(<body[^>]*>)/i, `$1\n${banner}`);
-      console.log(`[SUBSCRIBER-CTX] ${v4Waived ? "WAIVED" : "No context"} — banner injected into report HTML`);
+      if (V4_ON) {
+        // v4 markdown banner was prepended to finalSynthesis before scoring;
+        // renderMarketPulseHTML already rendered it into the HTML body.
+        // Skipping the HTML-level injection here prevents double-rendering.
+        console.log(`[SUBSCRIBER-CTX] ${v4Waived ? "WAIVED" : "no-context"} — markdown banner handled pre-scoring, skipping HTML-level injection`);
+      } else {
+        const bannerText = `<strong>⚠️ No subscriber context loaded.</strong> This report is generic market intelligence. Recommendations may conflict with your firm's active positions. Load a subscriber_context record to enable opportunity tagging and IN-FLIGHT detection.`;
+        const banner = `<div style="background:#FEF9E7;border:1px solid #E5D9A8;border-radius:8px;padding:14px 18px;margin:0 0 20px;font-size:13px;color:#92710A;">${bannerText}</div>`;
+        reportHtmlContent = reportHtmlContent.replace(/(<body[^>]*>)/i, `$1\n${banner}`);
+        console.log(`[SUBSCRIBER-CTX] No context — banner injected into report HTML`);
+      }
     } else {
       const v = validateSubscriberReport({ reportHtml: reportHtmlContent, ctx: subscriberContext });
       if (!v.ok) {
