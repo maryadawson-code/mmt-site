@@ -25,6 +25,7 @@ const MONTHLY_DIR = path.join(ROOT, "premium", "monthly");
 const CONTRACTS_FILE = path.join(ROOT, "contracts.json");
 const CAPTURE_INTEL_FILE = path.join(ROOT, "capture-intelligence.json");
 const GLOSSARY_FILE = path.join(ROOT, "glossary.json");
+const IDIQ_VEHICLES_FILE = path.join(ROOT, "data", "idiq-vehicles.json");
 const OUT_FILE = path.join(ROOT, "netlify", "functions", "data", "mmt-content-corpus.json");
 
 // 8000 chars per item captures enough body that acronym-heavy topics
@@ -266,6 +267,51 @@ function buildGlossary() {
   }
 }
 
+function buildIdiqVehicles() {
+  if (!fs.existsSync(IDIQ_VEHICLES_FILE)) return [];
+  try {
+    const raw = fs.readFileSync(IDIQ_VEHICLES_FILE, "utf8");
+    const data = JSON.parse(raw);
+    const vehicles = data.vehicles || [];
+    return vehicles.map((v) => {
+      const body = [
+        `Vehicle: ${v.name}`,
+        `Agency: ${v.agency} / ${v.sub_agency || ""}`.trim(),
+        v.contract_number ? `Contract number: ${v.contract_number}` : "",
+        v.ceiling_usd ? `Ceiling: $${(v.ceiling_usd / 1e9).toFixed(2)}B` : "",
+        (v.pop_start || v.pop_end) ? `Period of performance: ${v.pop_start || "?"} to ${v.pop_end || "?"}` : "",
+        v.set_aside ? `Set-aside: ${v.set_aside}` : "",
+        v.vehicle_type ? `Type: ${v.vehicle_type}` : "",
+        v.status ? `Status: ${v.status}` : "",
+        v.primes_count ? `Primes: ${v.primes_count}` : "",
+        v.naics_primary ? `NAICS primary: ${v.naics_primary}` : "",
+        v.naics_secondary ? `NAICS secondary: ${v.naics_secondary}` : "",
+        v.psc ? `PSC: ${v.psc}` : "",
+        v.burn_status ? `MMT burn status: ${v.burn_status}` : "",
+        v.incumbent_vulnerability_score ? `MMT Incumbent Vulnerability Score: ${v.incumbent_vulnerability_score}/5` : "",
+        v.forecast_event ? `MMT forecast: ${v.forecast_event} (${v.forecast_window || ""}) — ${v.forecast_confidence_pct || "?"}% confidence` : "",
+        v.mmt_note ? `MMT note: ${v.mmt_note}` : "",
+        v.primary_source_url ? `Primary source: ${v.primary_source_url}` : "",
+      ].filter(Boolean).join("\n");
+      return {
+        id: `idiq-${v.vehicle_id || (v.name || "unknown").toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
+        type: "idiq_vehicle",
+        title: v.name,
+        slug: v.vehicle_id || (v.name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+        date: v.pop_start || "",
+        description: `${v.agency || ""} ${v.sub_agency || ""} — ${v.vehicle_type || "IDIQ"} ${v.ceiling_usd ? `· $${(v.ceiling_usd/1e9).toFixed(2)}B ceiling` : ""}`.trim(),
+        tags: ["idiq", v.agency, v.sub_agency, v.set_aside, v.vehicle_type, v.status].filter(Boolean),
+        url: v.primary_source_url || "/idiq-tracker.html",
+        excerpt: body.substring(0, EXCERPT_CHARS),
+        premium: false,
+      };
+    });
+  } catch (err) {
+    console.warn(`[corpus] idiq vehicles skip: ${err.message}`);
+    return [];
+  }
+}
+
 function build() {
   console.log("[corpus] building MMT content corpus...");
   const articles = buildArticles();
@@ -274,7 +320,8 @@ function build() {
   const contracts = buildContracts();
   const captureIntel = buildCaptureIntel();
   const glossary = buildGlossary();
-  const allItems = [...articles, ...briefs, ...monthlies, ...contracts, ...captureIntel, ...glossary];
+  const idiqVehicles = buildIdiqVehicles();
+  const allItems = [...articles, ...briefs, ...monthlies, ...contracts, ...captureIntel, ...glossary, ...idiqVehicles];
   const corpus = {
     generated_at: new Date().toISOString(),
     total: allItems.length,
@@ -285,6 +332,7 @@ function build() {
       contracts: contracts.length,
       capture_intel: captureIntel.length,
       glossary: glossary.length,
+      idiq_vehicles: idiqVehicles.length,
     },
     items: allItems,
   };

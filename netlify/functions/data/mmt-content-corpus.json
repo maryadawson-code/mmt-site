@@ -1,13 +1,14 @@
 {
-  "generated_at": "2026-04-20T01:15:30.496Z",
-  "total": 153,
+  "generated_at": "2026-04-20T02:16:38.991Z",
+  "total": 181,
   "counts": {
     "articles": 101,
     "friday_briefs": 4,
     "monthly_briefs": 2,
     "contracts": 32,
     "capture_intel": 14,
-    "glossary": 0
+    "glossary": 0,
+    "idiq_vehicles": 28
   },
   "items": [
     {
@@ -1623,7 +1624,7 @@
         "monthly-brief"
       ],
       "url": "/premium/monthly/2026-03.html",
-      "excerpt": "Monthly Brief — March 2026: Q2 Pipeline Forecast — MMT Premium &larr; All Monthly Briefs MMT Premium &middot; Monthly Intelligence Brief March 2026 — Q2 Pipeline Forecast Federal health IT opportunities expected to drop April–June 2026, ranked by confidence, with action windows and competitive dynamics for each. Bottom line up front Q2 FY2026 lands inside the OMB passback window and the FY2027 budget submission cycle, so the volume of new solicitations will look modest while the strategic weight of each one is higher than a typical quarter. I'm tracking 12 high-confidence opportunities, 9 medium-confidence, and a rolling backlog from Q1 that is shifting into this window after the DOGE-driven task-order slowdown. The single most important call for BD teams: DHA Health IT Deployment Support Services (HITDSS), VA OIT ECMS Wave 3 task orders, and ARPA-H ADVOCATE Phase 1A awards are the three releases most likely to reshape the competitive landscape this quarter. Pipeline at a glance High-confidence drops 12 ≥70% probability of solicitation release in Q2 Medium confidence 9 30–70% probability, most tied to passback outcome Q1 carryover 6 Expected Q1 releases now slipped into Q2 Estimated ceiling (top 12) $4.8B Combined 5-year ceiling across high-confidence opportunities Top 5 opportunities to work now 1. DHA HITDSS — Health IT Deployment Support Services Defense Health Agency &middot; J6 acquisition HIGH &middot; 85% The follow-on to the DHITUC vehicle. Draft RFP expected May; final RFP June. Covers clinical system deployment, integration, and sustainment support across MHS GENESIS, My Military Health, and cross-domain data services. DHA is signaling a move toward more performance-based scopes and fewer SME labor categories — a direct response to DOGE pressure on advisory spend. Small business share is being expanded: expect a multi-tier award structure with dedicated SDVOSB and 8(a) tracks alongside full-and-open. Ceiling ~$2.4B over 5 years NAICS 541512 primary; 541511 secondary Set-aside Multi-tier (SDVOSB + 8(a) + F&O) Action window Teaming decisions locked by early May Action window closes: May 9, 2026 2. VA OIT ECMS Wave 3 task orders VA Office of Information & Technology HIGH &middot; 78% Wave 3 call orders against the ECMS parent IDIQ are the delayed Q1 releases coming into Q2. Focus areas: Veteran-facing digital services, claims modernization, and VA-DOD interoperability. VA OIT has been explicit that Wave 3 task orders will emphasize measurable user-facing outcomes over staff augmentation. Incumbents who can document throughput, error-rate reduction, or claim processing time improvements enter with a decisive advantage. Ceiling (aggregate) ~$850M across expected call orders NAICS 541512 Set-aside Limited to ECMS primes Action window Proposal responses tight — 21-day average Rolling releases through Q2 3. ARPA-H ADVOCATE Phase 1A awards ARPA-H &middot; Resilient Systems Office HIGH &middot; 90% Not a new solicitation — the Q2 event is the award announcements for the ADVOCATE agentic AI cardiovascular care program. Full proposals closed April 1; awards are tracked to Q3 FY2026 but ARPA-H has been releasing decisions ahead of schedule on recent programs. These will be the first federal awards to explicitly fund agentic AI in clinical settings with FDA engagement built into the program structure. The winners become the reference dataset for every clinical AI solicitation that follows. Instrument Other Transaction Agreements Expected awardees 4–7 performer teams Period 39 months base, Phase 1A Watch for Teaming signals — non-award teams will seek subcontract paths Award window: late Q2 4. CDMRP FY2026 program announcements USAMRDC / CDMRP HIGH &middot; 82% With FY2026 CDMRP funding restored to $1.27B, the program announcements (PAs) for individual research programs post on the usual rolling Q2 cadence. Priority programs to monitor: Traumatic Brain Injury and PTSD Research Program, Prostate Cancer Research Program, and Joint Warfighter Medical Research Program. For firms with clinical research delivery capability and past CDMRP performance, this is the cleanest growth lane in the stack — advisory-heavy competitors are retreating as DOGE pressure compresses their core. Instrument Mix of grants + cooperative agreements Total FY2026 $1.27B restored Relevant NAICS 541712 (R&D in physical/engineering) and 541715 Action window PAs post rolling — monitor weekly Rolling releases April–June 5. HHS ONC HTI-5 implementation contracts HHS / ONC MEDIUM &middot; 62% HTI-5 proposed rule closed its comment period in February. If ONC finalizes within Q2 (60% probability), implementation support contracts for AI-enabled clinical decision support certification and TEFCA exchange operations follow in 45–90 days. The political risk is real — administration deregulation posture may delay finalization into Q3. Firms should complete teaming and white paper positioning now so they can respond inside 30 days if the final rule drops. Expected ceiling $180M–$250M (implementation support) NAICS 541512; 541990 secondary Set-aside TBD — watch for small business preference in final rule Risk factor Timing tied to HTI-5 final rule Contingent on HTI-5 finalization Next 7 high-confidence opportunities DHA MHS GENESIS Enterprise Support Sustainment — bridge task order expected May while the long-term vehicle is shaped. $180M–$240M one-year bridge ceiling. VA EHRM Technical Integration Office support recompete — draft RFP already in circulation; final RFP mid-Q2. Incumbent positioned strong, but VA has signaled openness to restructured teaming. IHS Electronic Health Record Modernization task orders — Q2 should see the first post-pilot operational task orders against the IHS EHR Modernization IDIQ. DHA J6 Zero Trust Architecture implementation — follow-on to the ZTA pilot. Cybersecurity compliance core, not advisory — one of the least DOGE-exposed scopes in the quarter. HHS AI Office governance and evaluation support — new AI governance funding line being stood up. Small initial ceiling ($25M–$40M) but strategic foothold for firms building federal AI compliance practices. VA Community Care Network telehealth sustainment — CCN telehealth operations contract supporting 9M+ enrolled Veterans. Stable demand, low DOGE exposure. DHA Virtual First / My Military Health expansion task orders — post-Amwell rollout expansion. Incumbents (LPDH and partners) carry structural advantage; open for mid-tier teaming. Competitive dynamics for the quarter The Q2 competitive field is shaped by three dynamics working in parallel. First, advisory-heavy primes are under pressure to redirect capacity toward delivery-centric scopes — expect aggressive teaming outreach from firms trying to reposition books. Second, mid-tier integrators with clinical delivery past performance and ATO currency are the single most leverage-able teaming partner in the stack; their capacity is the constraint. Third, small business primes in the 8(a), SDVOSB, and WOSB tracks have a genuinely improved competitive position this quarter as agencies expand set-aside share to satisfy small business goals under tighter overall obligation ceilings. For capture managers: the signal to prioritize is whether your past performance can be rewritten to lead with measurable outcomes (visits delivered, time reduced, errors caught, claims processed) rather than staff deployed or strategic advice. Evaluators in Q2 will reward the former and penalize the latter more than in any quarter in the last three years. What to do this month Lock HITDSS teaming by early May. Draft RFP release will compress the window and the primes currently shaping the solution are already circulating teaming papers. Audit your past performance narratives. For every relevant PP volume, verify that the opening paragraph leads with a quantified outcome, not an activity. Our ProposalPulse red-team pass catches the difference. Monitor ARPA-H ADVOCATE awards weekly. Non-winning teams",
+      "excerpt": "Monthly Brief — March 2026: Q2 Pipeline Forecast — MMT Premium &larr; All Monthly Briefs MMT Premium &middot; Monthly Intelligence Brief March 2026 — Q2 Pipeline Forecast Federal health IT opportunities expected to drop April–June 2026, ranked by confidence, with action windows and competitive dynamics for each. Bottom line up front Revised April 19, 2026 to correct the HITDSS section and re-tag forecast vs. fact throughout. The prior ~$2.4B &ldquo;HITDSS&rdquo; figure was based on an internal working name; the live DHA vehicle in this window is PEO DHMS Deployment Solutions (HT003826RE001) with an official $300M, 5-year ceiling . Top-12 aggregate re-baselined accordingly. Q2 FY2026 sits inside the active FY2027 budget-formulation cycle, so the net-new solicitation volume will look moderate while the strategic weight of each live acquisition is elevated. The three releases most likely to reshape the competitive landscape this quarter: DHA / PEO DHMS Deployment Solutions IDIQ (HT003826RE001) &mdash; live now, proposals due April 21, 2026; ARPA&#x2011;H ADVOCATE Phase 1A award window &mdash; proposals closed April 1, 2026; and CDMRP FY2026 program announcements under the restored $1.27B / 34-program funding level authorized by the Consolidated Appropriations Act, 2026. All counts, ceilings, and probability scores below are MMT analyst estimates unless a primary source is cited. Pipeline at a glance High-confidence drops 12 ≥70% probability of solicitation release in Q2 Medium confidence 9 30–70% probability, most tied to passback outcome Q1 carryover 6 Expected Q1 releases now slipped into Q2 Estimated ceiling (top 12) Re-baseline pending Prior $4.8B figure withdrawn after HITDSS correction &mdash; MMT estimate, recomputation in progress Top 5 opportunities to work now 1. DHA PEO DHMS Deployment Solutions IDIQ (HT003826RE001) &mdash; FACT Defense Health Agency Contracting Activity on behalf of PEO Defense Healthcare Management Systems (PEO DHMS) LIVE SOLICITATION &middot; 100% The real, currently open DHA health IT deployment vehicle. Multiple-award IDIQ for on-demand deployment services supporting DHMS products &mdash; site preparation, deployment execution, training, user adoption, change management, and post-installation support across MHS GENESIS and related DHMS systems. Issuing office includes DHMSM PMO and JOMIS PMO components. Ceiling $300,000,000 over a 5-year ordering period NAICS / PSC 541512 (Computer Systems Design Services) / DA01 Set-aside Unrestricted / full and open (earlier WOSB-framing superseded) Key dates Amendment 0001 issued April 8, 2026; proposals due April 21, 2026 at 4:00 PM ET; anticipated award/start June 2026 Sources SAM.gov &middot; HigherGov &middot; Sweetspot MMT Analysis: Scope language emphasizes deployment execution and user-enabled outcomes over advisory labor categories. Teaming decisions for non-primes are effectively locked; near-term BD lever is subcontract positioning with named primes for downstream task orders. Proposals due: April 21, 2026 Adjacent signal &mdash; do not conflate with Deployment Solutions AIX Tech DHA Acquisition Support IDIQ $225M ceiling through June 2031, supporting acquisition, program management, and administrative functions across DHA. Separate vehicle but often confused with Deployment Solutions; expect reallocation of advisory-spend demand toward this IDIQ under DOGE pressure. GovConWire . 2. VA OIT ECMS Wave 3 task orders &mdash; MMT ANALYSIS VA Office of Information & Technology HIGH &middot; 78% Publicly posted SAM.gov evidence for a formal &ldquo;ECMS Wave 3&rdquo; release schedule was not confirmed in this cycle. The opportunity is retained in the pipeline based on MMT analyst signals and agency cadence, but the specifics below should be treated as forecast, not fact. Do not conflate with the VA OIT WAVE &mdash; Workforce Analysis requirement, which is a separate, live solicitation on SAM.gov. Wave 3 call orders against the ECMS parent IDIQ are expected to cover Veteran-facing digital services, claims modernization, and VA-DOD interoperability. Incumbents able to document throughput, error-rate reduction, or claim-processing-time improvements enter with decisive PP advantage. Ceiling (aggregate) ~$850M across expected call orders NAICS 541512 Set-aside Limited to ECMS primes Action window Proposal responses tight — 21-day average Rolling releases through Q2 3. ARPA-H ADVOCATE Phase 1A awards ARPA-H &middot; Resilient Systems Office HIGH &middot; 90% Not a new solicitation — the Q2 event is the award announcements for the ADVOCATE agentic AI cardiovascular care program. Full proposals closed April 1; awards are tracked to Q3 FY2026 but ARPA-H has been releasing decisions ahead of schedule on recent programs. These will be the first federal awards to explicitly fund agentic AI in clinical settings with FDA engagement built into the program structure. The winners become the reference dataset for every clinical AI solicitation that follows. Instrument Other Transaction Agreements Expected awardees 4–7 performer teams Period 39 months base, Phase 1A Watch for Teaming signals — non-award teams will seek subcontract paths Award window: late Q2 4. CDMRP FY2026 program announcements USAMRDC / CDMRP HIGH &middot; 82% With FY2026 CDMRP funding restored to $1.27B, the program announcements (PAs) for individual research programs post on the usual rolling Q2 cadence. Priority programs to monitor: Traumatic Brain Injury and PTSD Research Program, Prostate Cancer Research Program, and Joint Warfighter Medical Research Program. For firms with clinical research delivery capability and past CDMRP performance, this is the cleanest growth lane in the stack — advisory-heavy competitors are retreating as DOGE pressure compresses their core. Instrument Mix of grants + cooperative agreements Total FY2026 $1.27B restored Relevant NAICS 541712 (R&D in physical/engineering) and 541715 Action window PAs post rolling — monitor weekly Rolling releases April–June 5. HHS / ONC HTI-series implementation contracts &mdash; MMT ANALYSIS &middot; rule identity unverified HHS / ONC MEDIUM &middot; 62% The prior brief referred to this rulemaking as &ldquo;HTI&#x2011;5.&rdquo; We were unable to verify an HTI&#x2011;5 NPRM with a February 2026 comment close via primary-source channels in this pass. Until the Federal Register docket is confirmed, treat the rule name and the implementation-contract forecast as provisional. If ONC finalizes the relevant HTI rule in Q2 (~60% probability), AI-enabled clinical decision support certification and TEFCA exchange operations support contracts typically follow within 45&ndash;90 days. Estimated ceiling band: $180M&ndash;$250M. NAICS 541512 primary; 541990 secondary. Political risk: deregulation posture may push finalization into Q3. Action: Complete teaming and white-paper positioning now; verify the specific rule designation against the Federal Register docket before quoting. Expected ceiling $180M–$250M (implementation support) NAICS 541512; 541990 secondary Set-aside TBD — watch for small business preference in final rule Risk factor Timing tied to HTI-5 final rule Contingent on HTI-5 finalization Next 7 high-confidence opportunities DHA MHS GENESIS Enterprise Support Sustainment — bridge task order expected May while the long-term vehicle is shaped. $180M–$240M one-year bridge ceiling. VA EHRM Technical Integration Office support recompete — draft RFP already in circulation; final RFP mid-Q2. Incumbent positioned strong, but VA has signaled openness to restructured teaming. IHS Electronic Health Record Modernization task orders — Q2 should see the first post-pilot operational task orders against the IHS EHR Modernization IDIQ. DHA J6 Zero Trust Architecture implementation — follow-on to the ZTA pilot. Cybersecurity compliance core, not advisory — one of the least DOGE-exposed scopes in the quarter. HHS AI Office governance and evaluation support — new AI governance funding lin",
       "premium": true
     },
     {
@@ -2347,6 +2348,536 @@
       "url": "/intel/capture-intelligence-this-issue/",
       "excerpt": "id: s14\nagency: CDC\nprogram: Data Modernization Initiative\nsignal: Continued investment in public health data infrastructure; $250M FY2027 request\nconfidence: proposed\naction_window: Multiple task orders expected Q1-Q2 FY2027\nurgent: false\nwhat_to_do: Firms with public health surveillance and data integration experience should monitor CDC ORISE and direct contract opportunities.\nfree_preview: false",
       "premium": true
+    },
+    {
+      "id": "idiq-peo-dhms-deployment",
+      "type": "idiq_vehicle",
+      "title": "PEO DHMS Deployment Solutions IDIQ",
+      "slug": "peo-dhms-deployment",
+      "date": "2026-06-01",
+      "description": "DoD DHA / PEO DHMS — Multiple Award IDIQ · $0.30B ceiling",
+      "tags": [
+        "idiq",
+        "DoD",
+        "DHA / PEO DHMS",
+        "Unrestricted",
+        "Multiple Award IDIQ",
+        "Active Solicitation"
+      ],
+      "url": "https://sam.gov/workspace/contract/opp/111847a96d214505b4d398a931dfdf1d/view",
+      "excerpt": "Vehicle: PEO DHMS Deployment Solutions IDIQ\nAgency: DoD / DHA / PEO DHMS\nContract number: HT003826RE001\nCeiling: $0.30B\nPeriod of performance: 2026-06-01 to 2031-05-31\nSet-aside: Unrestricted\nType: Multiple Award IDIQ\nStatus: Active Solicitation\nPrimes: 6-9 expected\nNAICS primary: 541512\nPSC: DA01\nMMT burn status: New\nMMT Incumbent Vulnerability Score: 3/5\nMMT forecast: First task order (2026-07-01 to 2026-09-30) — 70% confidence\nMMT note: MHS GENESIS deployment; proposals due 2026-04-21\nPrimary source: https://sam.gov/workspace/contract/opp/111847a96d214505b4d398a931dfdf1d/view",
+      "premium": false
+    },
+    {
+      "id": "idiq-dha-gsp",
+      "type": "idiq_vehicle",
+      "title": "DHA Geographic Service Provider IDIQ",
+      "slug": "dha-gsp",
+      "date": "2024-01-31",
+      "description": "DoD DHA / MHS EITS — Multiple Award IDIQ · $2.40B ceiling",
+      "tags": [
+        "idiq",
+        "DoD",
+        "DHA / MHS EITS",
+        "Total Small Business",
+        "Multiple Award IDIQ",
+        "Active"
+      ],
+      "url": "https://www.choisystechnology.com/contract-vehicles/dha-gsp/",
+      "excerpt": "Vehicle: DHA Geographic Service Provider IDIQ\nAgency: DoD / DHA / MHS EITS\nContract number: HT0015-24-series\nCeiling: $2.40B\nPeriod of performance: 2024-01-31 to 2034-01-30\nSet-aside: Total Small Business\nType: Multiple Award IDIQ\nStatus: Active\nPrimes: multi-SB\nNAICS primary: 541513\nMMT burn status: Underburning\nMMT Incumbent Vulnerability Score: 2/5\nMMT forecast: SB on-ramp health check (2027-04-01 to 2028-01-31) — 60% confidence\nMMT note: IT support to MTFs/OLBs worldwide\nPrimary source: https://www.choisystechnology.com/contract-vehicles/dha-gsp/",
+      "premium": false
+    },
+    {
+      "id": "idiq-dha-omnibus-iv",
+      "type": "idiq_vehicle",
+      "title": "DHA OMNIBUS IV IDIQ",
+      "slug": "dha-omnibus-iv",
+      "date": "2022-06-20",
+      "description": "DoD DHA / USAMRAA / USUHS — Multiple Award IDIQ · $10.00B ceiling",
+      "tags": [
+        "idiq",
+        "DoD",
+        "DHA / USAMRAA / USUHS",
+        "Multi-tier + 8(a) On-Ramp",
+        "Multiple Award IDIQ",
+        "Active"
+      ],
+      "url": "https://www.sysplus.com/contract/dha-omnibus-iv-idiq/",
+      "excerpt": "Vehicle: DHA OMNIBUS IV IDIQ\nAgency: DoD / DHA / USAMRAA / USUHS\nContract number: HT001122D-series\nCeiling: $10.00B\nPeriod of performance: 2022-06-20 to 2032-06-19\nSet-aside: Multi-tier + 8(a) On-Ramp\nType: Multiple Award IDIQ\nStatus: Active\nPrimes: 30+\nNAICS primary: 541715\nNAICS secondary: 541990\nMMT burn status: Underburning\nMMT Incumbent Vulnerability Score: 3/5\nMMT forecast: 8(a) on-ramp solicitation (2026-05-15 to 2026-06-15) — 85% confidence\nMMT note: 4 R&D market segments\nPrimary source: https://www.sysplus.com/contract/dha-omnibus-iv-idiq/",
+      "premium": false
+    },
+    {
+      "id": "idiq-dha-mss",
+      "type": "idiq_vehicle",
+      "title": "DHA Medical Support Services IDIQ",
+      "slug": "dha-mss",
+      "date": "",
+      "description": "DoD DHA — IDIQ · $0.97B ceiling",
+      "tags": [
+        "idiq",
+        "DoD",
+        "DHA",
+        "Multiple Award IDIQ",
+        "614000000"
+      ],
+      "url": "Clinical/medical support at MTFs",
+      "excerpt": "Vehicle: DHA Medical Support Services IDIQ\nAgency: DoD / DHA\nCeiling: $0.97B\nPeriod of performance: ? to 2025-10-31\nSet-aside: Multiple Award IDIQ\nStatus: 614000000\nPrimes: Winding Down\nMMT burn status: 5\nMMT forecast: 2026-10-01 to 2027-03-31 (65) — ?% confidence\nPrimary source: Clinical/medical support at MTFs",
+      "premium": false
+    },
+    {
+      "id": "idiq-dha-medlog-jhuapl",
+      "type": "idiq_vehicle",
+      "title": "DHA MEDLOG Enterprise Engineering IDC",
+      "slug": "dha-medlog-jhuapl",
+      "date": "",
+      "description": "DoD DHA MEDLOG — Single Award IDC · $0.10B ceiling",
+      "tags": [
+        "idiq",
+        "DoD",
+        "DHA MEDLOG",
+        "Single Award",
+        "Single Award IDC",
+        "Active"
+      ],
+      "url": "https://www.federalcompass.com/award-contract-detail/HT001121D0002",
+      "excerpt": "Vehicle: DHA MEDLOG Enterprise Engineering IDC\nAgency: DoD / DHA MEDLOG\nContract number: HT001121D0002\nCeiling: $0.10B\nPeriod of performance: ? to 2026-05-30\nSet-aside: Single Award\nType: Single Award IDC\nStatus: Active\nPrimes: JHU APL\nMMT Incumbent Vulnerability Score: 2/5\nMMT forecast: Successor RFP or BAA (2026-07-01 to 2026-09-30) — 75% confidence\nMMT note: Johns Hopkins APL prime\nPrimary source: https://www.federalcompass.com/award-contract-detail/HT001121D0002",
+      "premium": false
+    },
+    {
+      "id": "idiq-aix-tech-dha",
+      "type": "idiq_vehicle",
+      "title": "DHA Acquisition Support IDIQ (AIX Tech)",
+      "slug": "aix-tech-dha",
+      "date": "",
+      "description": "DoD DHA — Single Award IDIQ · $0.23B ceiling",
+      "tags": [
+        "idiq",
+        "DoD",
+        "DHA",
+        "Small Business",
+        "Single Award IDIQ",
+        "Active"
+      ],
+      "url": "https://www.govconwire.com/articles/aix-tech-dha-acquisition-support-idiq",
+      "excerpt": "Vehicle: DHA Acquisition Support IDIQ (AIX Tech)\nAgency: DoD / DHA\nCeiling: $0.23B\nPeriod of performance: ? to 2031-06-30\nSet-aside: Small Business\nType: Single Award IDIQ\nStatus: Active\nPrimes: AIX Tech\nMMT Incumbent Vulnerability Score: 2/5\nMMT forecast: Ceiling re-benchmark (2027-01-01 to 2027-12-31) — 50% confidence\nMMT note: Advisory/PM not health IT delivery\nPrimary source: https://www.govconwire.com/articles/aix-tech-dha-acquisition-support-idiq",
+      "premium": false
+    },
+    {
+      "id": "idiq-va-t4ng2",
+      "type": "idiq_vehicle",
+      "title": "VA T4NG2",
+      "slug": "va-t4ng2",
+      "date": "2026-03-01",
+      "description": "VA VA OIT / TAC — Multiple Award IDIQ · $60.70B ceiling",
+      "tags": [
+        "idiq",
+        "VA",
+        "VA OIT / TAC",
+        "Multiple Award",
+        "Multiple Award IDIQ",
+        "Active"
+      ],
+      "url": "https://orangeslices.ai/va-t4ng2-awards-thread/",
+      "excerpt": "Vehicle: VA T4NG2\nAgency: VA / VA OIT / TAC\nCeiling: $60.70B\nPeriod of performance: 2026-03-01 to 2036-03-01\nSet-aside: Multiple Award\nType: Multiple Award IDIQ\nStatus: Active\nPrimes: 32\nNAICS primary: 541512\nMMT burn status: New\nMMT Incumbent Vulnerability Score: 2/5\nMMT forecast: ECMS Wave 3 call orders (2026-05-15 to 2026-06-30) — 70% confidence\nMMT note: 32 primes finalized May 2025\nPrimary source: https://orangeslices.ai/va-t4ng2-awards-thread/",
+      "premium": false
+    },
+    {
+      "id": "idiq-va-ehrm-idiq",
+      "type": "idiq_vehicle",
+      "title": "VA EHRM IDIQ (Oracle Health)",
+      "slug": "va-ehrm-idiq",
+      "date": "2018-05-17",
+      "description": "VA VA TAC — Single Award IDIQ",
+      "tags": [
+        "idiq",
+        "VA",
+        "VA TAC",
+        "Single Award",
+        "Single Award IDIQ",
+        "Active"
+      ],
+      "url": "https://www.gdit.com/about-gdit/press-releases/gdit-awarded-usd2-5-billion-idiq-contract-for-electronic-health-record/",
+      "excerpt": "Vehicle: VA EHRM IDIQ (Oracle Health)\nAgency: VA / VA TAC\nContract number: 36C10B18D5000\nPeriod of performance: 2018-05-17 to ?\nSet-aside: Single Award\nType: Single Award IDIQ\nStatus: Active\nPrimes: Oracle Health\nNAICS primary: 541512\nMMT Incumbent Vulnerability Score: 1/5\nMMT forecast: Sustainment task order $220-290M (2026-07-01 to 2026-09-30) — 65% confidence\nMMT note: VA EHR Modernization program vehicle\nPrimary source: https://www.gdit.com/about-gdit/press-releases/gdit-awarded-usd2-5-billion-idiq-contract-for-electronic-health-record/",
+      "premium": false
+    },
+    {
+      "id": "idiq-va-vector",
+      "type": "idiq_vehicle",
+      "title": "VA VECTOR",
+      "slug": "va-vector",
+      "date": "2018-08-27",
+      "description": "VA VA SAC-F — Multiple Award IDIQ · $25.00B ceiling",
+      "tags": [
+        "idiq",
+        "VA",
+        "VA SAC-F",
+        "SDVOSB Total Set-Aside",
+        "Multiple Award IDIQ",
+        "Active"
+      ],
+      "url": "https://rbci.com/contracts/va-vector/",
+      "excerpt": "Vehicle: VA VECTOR\nAgency: VA / VA SAC-F\nCeiling: $25.00B\nPeriod of performance: 2018-08-27 to 2028-08-26\nSet-aside: SDVOSB Total Set-Aside\nType: Multiple Award IDIQ\nStatus: Active\nPrimes: 69\nNAICS primary: 541611\nMMT burn status: Healthy\nMMT Incumbent Vulnerability Score: 3/5\nMMT forecast: VECTOR 2.0 draft RFP (2026-10-01 to 2026-12-31) — 55% confidence\nMMT note: 6 service groups; 80+ labor categories\nPrimary source: https://rbci.com/contracts/va-vector/",
+      "premium": false
+    },
+    {
+      "id": "idiq-vha-iht",
+      "type": "idiq_vehicle",
+      "title": "VHA Integrated Healthcare Transformation IDIQ",
+      "slug": "vha-iht",
+      "date": "",
+      "description": "VA VHA — Multiple Award IDIQ",
+      "tags": [
+        "idiq",
+        "VA",
+        "VHA",
+        "Multiple Award",
+        "Multiple Award IDIQ",
+        "Active"
+      ],
+      "url": "https://insights.govforum.io/2022/12/va-awards-ehrm-support-contract/",
+      "excerpt": "Vehicle: VHA Integrated Healthcare Transformation IDIQ\nAgency: VA / VHA\nSet-aside: Multiple Award\nType: Multiple Award IDIQ\nStatus: Active\nNAICS primary: 541611\nMMT Incumbent Vulnerability Score: 3/5\nMMT forecast: Absorbed into T4NG2 clinical tracks (2027-01-01 to 2027-12-31) — 60% confidence\nMMT note: VHA clinical + IT transformation\nPrimary source: https://insights.govforum.io/2022/12/va-awards-ehrm-support-contract/",
+      "premium": false
+    },
+    {
+      "id": "idiq-cms-sparc",
+      "type": "idiq_vehicle",
+      "title": "CMS SPARC",
+      "slug": "cms-sparc",
+      "date": "2016-06-01",
+      "description": "HHS CMS — Multiple Award IDIQ · $25.00B ceiling",
+      "tags": [
+        "idiq",
+        "HHS",
+        "CMS",
+        "Multi-tier (LB/SB/WOSB)",
+        "Multiple Award IDIQ",
+        "Active Saturating"
+      ],
+      "url": "https://www.cms.gov/data-research/cms-information-technology/sparc",
+      "excerpt": "Vehicle: CMS SPARC\nAgency: HHS / CMS\nContract number: HHSM-500-2016-00051I\nCeiling: $25.00B\nPeriod of performance: 2016-06-01 to 2027-02-28\nSet-aside: Multi-tier (LB/SB/WOSB)\nType: Multiple Award IDIQ\nStatus: Active Saturating\nPrimes: Multiple\nNAICS primary: 541512\nMMT burn status: Saturating\nMMT Incumbent Vulnerability Score: 1/5\nMMT forecast: SPARC-Next draft RFP (2027-04-01 to 2027-06-30) — 80% confidence\nMMT note: Full CMS IT lifecycle\nPrimary source: https://www.cms.gov/data-research/cms-information-technology/sparc",
+      "premium": false
+    },
+    {
+      "id": "idiq-nitaac-cio-sp4",
+      "type": "idiq_vehicle",
+      "title": "NITAAC CIO-SP4",
+      "slug": "nitaac-cio-sp4",
+      "date": "2026-01-01",
+      "description": "HHS NIH NITAAC (Govtwide) — GWAC · $50.00B ceiling",
+      "tags": [
+        "idiq",
+        "HHS",
+        "NIH NITAAC (Govtwide)",
+        "Multi-tier GWAC",
+        "GWAC",
+        "Active Ramping"
+      ],
+      "url": "https://nitaac.nih.gov/resources/announcements/nitaac-releases-highly-anticipated-cio-sp4-request-proposals-0",
+      "excerpt": "Vehicle: NITAAC CIO-SP4\nAgency: HHS / NIH NITAAC (Govtwide)\nCeiling: $50.00B\nPeriod of performance: 2026-01-01 to 2041-01-01\nSet-aside: Multi-tier GWAC\nType: GWAC\nStatus: Active Ramping\nPrimes: TBD post-litigation\nNAICS primary: 541512\nMMT burn status: New\nMMT Incumbent Vulnerability Score: 3/5\nMMT forecast: First 100 task orders (2026-05-01 to 2027-03-31) — 85% confidence\nMMT note: 10 task areas incl biomedical/health IT\nPrimary source: https://nitaac.nih.gov/resources/announcements/nitaac-releases-highly-anticipated-cio-sp4-request-proposals-0",
+      "premium": false
+    },
+    {
+      "id": "idiq-nitaac-ecs-iii",
+      "type": "idiq_vehicle",
+      "title": "NITAAC ECS III",
+      "slug": "nitaac-ecs-iii",
+      "date": "",
+      "description": "HHS NIH NITAAC — GWAC Commodities",
+      "tags": [
+        "idiq",
+        "HHS",
+        "NIH NITAAC",
+        "Multiple Award",
+        "GWAC Commodities",
+        "Tapering"
+      ],
+      "url": "https://redriver.com/contracts/ecs-iii",
+      "excerpt": "Vehicle: NITAAC ECS III\nAgency: HHS / NIH NITAAC\nContract number: HHSN263999900483I\nSet-aside: Multiple Award\nType: GWAC Commodities\nStatus: Tapering\nPrimes: Multiple\nMMT burn status: Saturating\nMMT Incumbent Vulnerability Score: 4/5\nMMT forecast: ECS IV solicitation (2026-07-01 to 2026-09-30) — 65% confidence\nMMT note: COTS hardware/software/telecom\nPrimary source: https://redriver.com/contracts/ecs-iii",
+      "premium": false
+    },
+    {
+      "id": "idiq-nih-arpah-stats",
+      "type": "idiq_vehicle",
+      "title": "NIH/ARPA-H STATS IDIQ",
+      "slug": "nih-arpah-stats",
+      "date": "2024-11-01",
+      "description": "HHS NIH (supports ARPA-H) — Multiple Award IDIQ",
+      "tags": [
+        "idiq",
+        "HHS",
+        "NIH (supports ARPA-H)",
+        "Multiple Award",
+        "Multiple Award IDIQ",
+        "Active"
+      ],
+      "url": "https://orangeslices.ai/ecs-beats-out-3-to-win-88-5m-nih-arpa-h-stats-idiq-professional-support-services/",
+      "excerpt": "Vehicle: NIH/ARPA-H STATS IDIQ\nAgency: HHS / NIH (supports ARPA-H)\nContract number: 75N99224D00003\nPeriod of performance: 2024-11-01 to 2028-11-01\nSet-aside: Multiple Award\nType: Multiple Award IDIQ\nStatus: Active\nPrimes: Multiple\nNAICS primary: 541611\nMMT burn status: Healthy\nMMT Incumbent Vulnerability Score: 2/5\nMMT forecast: Additional ARPA-H TOs (2026-07-01 to 2027-06-30) — 70% confidence\nMMT note: ECS Federal holds $88.5M TO\nPrimary source: https://orangeslices.ai/ecs-beats-out-3-to-win-88-5m-nih-arpa-h-stats-idiq-professional-support-services/",
+      "premium": false
+    },
+    {
+      "id": "idiq-cdc-itopss-4",
+      "type": "idiq_vehicle",
+      "title": "CDC ITOPSS 4.0",
+      "slug": "cdc-itopss-4",
+      "date": "",
+      "description": "HHS CDC / Center for Global Health — Multiple Award IDIQ · $0.04B ceiling",
+      "tags": [
+        "idiq",
+        "HHS",
+        "CDC / Center for Global Health",
+        "Multiple Award",
+        "Multiple Award IDIQ",
+        "Active"
+      ],
+      "url": "https://orangeslices.ai/cdc-awards-45m-international-technical-operational-and-professional-support-services-itopss-4-0-idiq/",
+      "excerpt": "Vehicle: CDC ITOPSS 4.0\nAgency: HHS / CDC / Center for Global Health\nContract number: 75D301-23-R-72854\nCeiling: $0.04B\nSet-aside: Multiple Award\nType: Multiple Award IDIQ\nStatus: Active\nPrimes: 9\nNAICS primary: 541611\nMMT burn status: Healthy\nMMT Incumbent Vulnerability Score: 3/5\nMMT forecast: ITOPSS 5.0 market research (2027-04-01 to 2027-06-30) — 60% confidence\nMMT note: Global health ops/tech/pro services\nPrimary source: https://orangeslices.ai/cdc-awards-45m-international-technical-operational-and-professional-support-services-itopss-4-0-idiq/",
+      "premium": false
+    },
+    {
+      "id": "idiq-cdc-tass",
+      "type": "idiq_vehicle",
+      "title": "CDC OCIO TASS",
+      "slug": "cdc-tass",
+      "date": "",
+      "description": "HHS CDC OCIO — Multiple Award IDIQ · $0.07B ceiling",
+      "tags": [
+        "idiq",
+        "HHS",
+        "CDC OCIO",
+        "TBD",
+        "Multiple Award IDIQ",
+        "In Market Research"
+      ],
+      "url": "https://orangeslices.ai/research-request-75m-cdc-ocio-technical-applications-support-services-rfp/",
+      "excerpt": "Vehicle: CDC OCIO TASS\nAgency: HHS / CDC OCIO\nCeiling: $0.07B\nSet-aside: TBD\nType: Multiple Award IDIQ\nStatus: In Market Research\nPrimes: TBD (incumbent Booz Allen)\nNAICS primary: 541512\nMMT Incumbent Vulnerability Score: 4/5\nMMT forecast: Draft RFP (2026-07-01 to 2026-09-30) — 65% confidence\nMMT note: 80+ IT/informatics projects\nPrimary source: https://orangeslices.ai/research-request-75m-cdc-ocio-technical-applications-support-services-rfp/",
+      "premium": false
+    },
+    {
+      "id": "idiq-ihs-path-ehr",
+      "type": "idiq_vehicle",
+      "title": "IHS PATH EHR IDIQ",
+      "slug": "ihs-path-ehr",
+      "date": "2023-10-01",
+      "description": "HHS Indian Health Service — Single Award IDIQ · $2.50B ceiling",
+      "tags": [
+        "idiq",
+        "HHS",
+        "Indian Health Service",
+        "Single Award",
+        "Single Award IDIQ",
+        "Active Pilot Year"
+      ],
+      "url": "https://www.gdit.com/about-gdit/press-releases/gdit-awarded-usd2-5-billion-idiq-contract-for-electronic-health-record/",
+      "excerpt": "Vehicle: IHS PATH EHR IDIQ\nAgency: HHS / Indian Health Service\nCeiling: $2.50B\nPeriod of performance: 2023-10-01 to 2033-10-01\nSet-aside: Single Award\nType: Single Award IDIQ\nStatus: Active Pilot Year\nPrimes: GDIT\nNAICS primary: 541512\nMMT burn status: Underburning\nMMT Incumbent Vulnerability Score: 1/5\nMMT forecast: First post-pilot operational TO ($80-140M) (2026-07-01 to 2026-09-30) — 70% confidence\nMMT note: Oracle Health FedRAMP High\nPrimary source: https://www.gdit.com/about-gdit/press-releases/gdit-awarded-usd2-5-billion-idiq-contract-for-electronic-health-record/",
+      "premium": false
+    },
+    {
+      "id": "idiq-fda-ead-bpa",
+      "type": "idiq_vehicle",
+      "title": "FDA Enterprise IT App Dev BPA (CANCELLED)",
+      "slug": "fda-ead-bpa",
+      "date": "",
+      "description": "HHS FDA CIO — BPA",
+      "tags": [
+        "idiq",
+        "HHS",
+        "FDA CIO",
+        "TBD",
+        "BPA",
+        "Cancelled"
+      ],
+      "url": "https://orangeslices.ai/fda-rfi-enterprise-it-application-development-ead-bpa-to-centralize-streamline-and-rationalize-acquisition",
+      "excerpt": "Vehicle: FDA Enterprise IT App Dev BPA (CANCELLED)\nAgency: HHS / FDA CIO\nContract number: FDA-RFI-75F40124Q00156\nSet-aside: TBD\nType: BPA\nStatus: Cancelled\nNAICS primary: 541512\nMMT Incumbent Vulnerability Score: 4/5\nMMT forecast: Replacement strategy (2026-07-01 to 2026-12-31) — 55% confidence\nMMT note: RFI cancelled 2025-05-13\nPrimary source: https://orangeslices.ai/fda-rfi-enterprise-it-application-development-ead-bpa-to-centralize-streamline-and-rationalize-acquisition",
+      "premium": false
+    },
+    {
+      "id": "idiq-dla-mspv-gen-vi",
+      "type": "idiq_vehicle",
+      "title": "DLA MedSurg Prime Vendor Gen VI",
+      "slug": "dla-mspv-gen-vi",
+      "date": "",
+      "description": "DoD DLA Troop Support Medical — Unrestricted + regional · $5.00B ceiling",
+      "tags": [
+        "idiq",
+        "DoD",
+        "DLA Troop Support Medical",
+        "Unrestricted + regional",
+        "TBD"
+      ],
+      "url": "70",
+      "excerpt": "Vehicle: DLA MedSurg Prime Vendor Gen VI\nAgency: DoD / DLA Troop Support Medical\nContract number: SPE2DV25R0001\nCeiling: $5.00B\nType: Unrestricted + regional\nStatus: TBD\nPrimes: Commercial distribution\nNAICS secondary: 339113\nPSC: 424210\nMMT forecast: 2 (Award decisions) — ?% confidence\nMMT note: https://www.highergov.com/contract-opportunity/dla-medsurg-prime-vendor-gen-vi-spe2dv25r0001-o-daa0a/\nPrimary source: 70",
+      "premium": false
+    },
+    {
+      "id": "idiq-va-mspv-gen-z",
+      "type": "idiq_vehicle",
+      "title": "VA MSPV Gen-Z V1",
+      "slug": "va-mspv-gen-z",
+      "date": "",
+      "description": "VA VA SAC — Multiple Award IDIQ",
+      "tags": [
+        "idiq",
+        "VA",
+        "VA SAC",
+        "Multiple Award",
+        "Multiple Award IDIQ",
+        "Active"
+      ],
+      "url": "https://department.va.gov/procurement-acquisition-and-logistics/strategic-acquisition-center/sac-medical-surgical-prime-vendor-program-mspv-updated",
+      "excerpt": "Vehicle: VA MSPV Gen-Z V1\nAgency: VA / VA SAC\nSet-aside: Multiple Award\nType: Multiple Award IDIQ\nStatus: Active\nNAICS primary: 339113\nMMT burn status: Healthy\nMMT Incumbent Vulnerability Score: 3/5\nMMT forecast: Gen-Z V2 solicitation (2027-04-01 to 2027-06-30) — 60% confidence\nMMT note: Medical/surgical prime vendor for VAMCs\nPrimary source: https://department.va.gov/procurement-acquisition-and-logistics/strategic-acquisition-center/sac-medical-surgical-prime-vendor-program-mspv-updated",
+      "premium": false
+    },
+    {
+      "id": "idiq-usace-medcom-dbmatoc",
+      "type": "idiq_vehicle",
+      "title": "USACE MEDCOM Nationwide Design-Build MATOC",
+      "slug": "usace-medcom-dbmatoc",
+      "date": "2021-03-01",
+      "description": "DoD USACE — Multiple Award Task Order Contract · $0.23B ceiling",
+      "tags": [
+        "idiq",
+        "DoD",
+        "USACE",
+        "Multiple Award",
+        "Multiple Award Task Order Contract",
+        "Active/Recompete Watch"
+      ],
+      "url": "https://www.doyongovgrp.com/2021/03/10/usace-medcom-design-build-nationwide-matoc-230m/",
+      "excerpt": "Vehicle: USACE MEDCOM Nationwide Design-Build MATOC\nAgency: DoD / USACE\nCeiling: $0.23B\nPeriod of performance: 2021-03-01 to 2025-03-01\nSet-aside: Multiple Award\nType: Multiple Award Task Order Contract\nStatus: Active/Recompete Watch\nPrimes: Multiple\nNAICS primary: 236220\nMMT burn status: Saturating\nMMT Incumbent Vulnerability Score: 3/5\nMMT forecast: Successor MATOC (2026-10-01 to 2027-06-30) — 60% confidence\nMMT note: Clinical facility build-out feeds EHRM readiness\nPrimary source: https://www.doyongovgrp.com/2021/03/10/usace-medcom-design-build-nationwide-matoc-230m/",
+      "premium": false
+    },
+    {
+      "id": "idiq-usace-huntsville-medae",
+      "type": "idiq_vehicle",
+      "title": "USACE Huntsville Medical Facilities A&E MATOC",
+      "slug": "usace-huntsville-medae",
+      "date": "2019-12-01",
+      "description": "DoD USACE Huntsville — Multiple Award Task Order Contract",
+      "tags": [
+        "idiq",
+        "DoD",
+        "USACE Huntsville",
+        "Multiple Award (3 SB + 3 unrestricted)",
+        "Multiple Award Task Order Contract",
+        "Recompete Watch"
+      ],
+      "url": "https://www.hnc.usace.army.mil/Media/News-Releases/Article/2053676/huntsville-center-awards-medical-facilities-architecture",
+      "excerpt": "Vehicle: USACE Huntsville Medical Facilities A&E MATOC\nAgency: DoD / USACE Huntsville\nPeriod of performance: 2019-12-01 to 2024-12-01\nSet-aside: Multiple Award (3 SB + 3 unrestricted)\nType: Multiple Award Task Order Contract\nStatus: Recompete Watch\nPrimes: 6\nNAICS primary: 541330\nMMT burn status: Saturating\nMMT Incumbent Vulnerability Score: 3/5\nMMT forecast: Successor MATOC (2026-07-01 to 2027-03-31) — 65% confidence\nMMT note: Medical MILCON A&E design\nPrimary source: https://www.hnc.usace.army.mil/Media/News-Releases/Article/2053676/huntsville-center-awards-medical-facilities-architecture",
+      "premium": false
+    },
+    {
+      "id": "idiq-usace-mobile-dha-west",
+      "type": "idiq_vehicle",
+      "title": "USACE Mobile DHA Western Region IDIQ MATOC",
+      "slug": "usace-mobile-dha-west",
+      "date": "2026-07-01",
+      "description": "DoD USACE Mobile / DHA — Multiple Award Task Order Contract",
+      "tags": [
+        "idiq",
+        "DoD",
+        "USACE Mobile / DHA",
+        "Multi-pool (8(a)/SDVOSB carveouts)",
+        "Multiple Award Task Order Contract",
+        "Active Solicitation"
+      ],
+      "url": "https://www.highergov.com/contract-opportunity/design-build-idiq-matoc-in-support-of-the-dha-prog-w9127826ra017-o-7ec48/",
+      "excerpt": "Vehicle: USACE Mobile DHA Western Region IDIQ MATOC\nAgency: DoD / USACE Mobile / DHA\nContract number: W9127826RA017\nPeriod of performance: 2026-07-01 to ?\nSet-aside: Multi-pool (8(a)/SDVOSB carveouts)\nType: Multiple Award Task Order Contract\nStatus: Active Solicitation\nPrimes: TBD\nNAICS primary: 236220\nMMT burn status: New\nMMT Incumbent Vulnerability Score: 3/5\nMMT forecast: Pool awards (2026-07-01 to 2026-09-30) — 70% confidence\nMMT note: MTF renovations + new build in occupied facilities\nPrimary source: https://www.highergov.com/contract-opportunity/design-build-idiq-matoc-in-support-of-the-dha-prog-w9127826ra017-o-7ec48/",
+      "premium": false
+    },
+    {
+      "id": "idiq-gsa-alliant-2",
+      "type": "idiq_vehicle",
+      "title": "GSA Alliant 2",
+      "slug": "gsa-alliant-2",
+      "date": "2018-07-01",
+      "description": "GSA GSA — GWAC · $50.00B ceiling",
+      "tags": [
+        "idiq",
+        "GSA",
+        "GSA",
+        "Multiple Award",
+        "GWAC",
+        "Active"
+      ],
+      "url": "https://gsa.gov/alliant",
+      "excerpt": "Vehicle: GSA Alliant 2\nAgency: GSA / GSA\nCeiling: $50.00B\nPeriod of performance: 2018-07-01 to 2028-07-01\nSet-aside: Multiple Award\nType: GWAC\nStatus: Active\nPrimes: Multiple\nNAICS primary: 541512\nMMT Incumbent Vulnerability Score: 2/5\nMMT forecast: Alliant 3 takeover (2026-10-01 to 2027-12-31) — 85% confidence\nMMT note: Heavy HHS use via IDV 47QRAD20D8152\nPrimary source: https://gsa.gov/alliant",
+      "premium": false
+    },
+    {
+      "id": "idiq-gsa-alliant-3",
+      "type": "idiq_vehicle",
+      "title": "GSA Alliant 3",
+      "slug": "gsa-alliant-3",
+      "date": "2026-10-01",
+      "description": "GSA GSA — GWAC · $75.00B ceiling",
+      "tags": [
+        "idiq",
+        "GSA",
+        "GSA",
+        "Multiple Award",
+        "GWAC",
+        "In Source Selection"
+      ],
+      "url": "https://gsa.gov/alliant",
+      "excerpt": "Vehicle: GSA Alliant 3\nAgency: GSA / GSA\nCeiling: $75.00B\nPeriod of performance: 2026-10-01 to 2036-10-01\nSet-aside: Multiple Award\nType: GWAC\nStatus: In Source Selection\nPrimes: TBD\nNAICS primary: 541512\nMMT burn status: New\nMMT Incumbent Vulnerability Score: 3/5\nMMT forecast: Awards (2026-10-01 to 2026-12-31) — 70% confidence\nMMT note: Alliant 2 successor\nPrimary source: https://gsa.gov/alliant",
+      "premium": false
+    },
+    {
+      "id": "idiq-gsa-oasis-plus",
+      "type": "idiq_vehicle",
+      "title": "GSA OASIS+",
+      "slug": "gsa-oasis-plus",
+      "date": "2024-01-01",
+      "description": "GSA GSA — Multiple Award IDIQ",
+      "tags": [
+        "idiq",
+        "GSA",
+        "GSA",
+        "Multi-tier (LB/SB/WOSB/SDVOSB/8a)",
+        "Multiple Award IDIQ",
+        "Active"
+      ],
+      "url": "https://gsa.gov/oasis-plus",
+      "excerpt": "Vehicle: GSA OASIS+\nAgency: GSA / GSA\nPeriod of performance: 2024-01-01 to 2034-01-01\nSet-aside: Multi-tier (LB/SB/WOSB/SDVOSB/8a)\nType: Multiple Award IDIQ\nStatus: Active\nPrimes: Multiple\nNAICS primary: 541611\nMMT Incumbent Vulnerability Score: 3/5\nMMT forecast: Ongoing pool adds (2026-07-01 to 2027-12-31) — 80% confidence\nMMT note: Health domain underused\nPrimary source: https://gsa.gov/oasis-plus",
+      "premium": false
+    },
+    {
+      "id": "idiq-gsa-stars-iii",
+      "type": "idiq_vehicle",
+      "title": "GSA 8(a) STARS III",
+      "slug": "gsa-stars-iii",
+      "date": "2021-07-01",
+      "description": "GSA GSA — GWAC · $50.00B ceiling",
+      "tags": [
+        "idiq",
+        "GSA",
+        "GSA",
+        "8(a) Total Set-Aside",
+        "GWAC",
+        "Active"
+      ],
+      "url": "https://gsa.gov/stars3",
+      "excerpt": "Vehicle: GSA 8(a) STARS III\nAgency: GSA / GSA\nCeiling: $50.00B\nPeriod of performance: 2021-07-01 to 2029-07-01\nSet-aside: 8(a) Total Set-Aside\nType: GWAC\nStatus: Active\nPrimes: Multiple\nNAICS primary: 541512\nMMT burn status: Healthy\nMMT Incumbent Vulnerability Score: 3/5\nMMT forecast: STARS IV planning (2027-07-01 to 2028-06-30) — 60% confidence\nMMT note: Heavy HHS use for sub-$10M TOs\nPrimary source: https://gsa.gov/stars3",
+      "premium": false
+    },
+    {
+      "id": "idiq-gsa-vets-2",
+      "type": "idiq_vehicle",
+      "title": "GSA VETS 2",
+      "slug": "gsa-vets-2",
+      "date": "2018-02-01",
+      "description": "GSA GSA — GWAC · $5.00B ceiling",
+      "tags": [
+        "idiq",
+        "GSA",
+        "GSA",
+        "SDVOSB Total Set-Aside",
+        "GWAC",
+        "Active"
+      ],
+      "url": "https://gsa.gov/vets2",
+      "excerpt": "Vehicle: GSA VETS 2\nAgency: GSA / GSA\nCeiling: $5.00B\nPeriod of performance: 2018-02-01 to 2028-02-01\nSet-aside: SDVOSB Total Set-Aside\nType: GWAC\nStatus: Active\nPrimes: Multiple\nNAICS primary: 541512\nMMT burn status: Healthy\nMMT Incumbent Vulnerability Score: 3/5\nMMT forecast: VETS 3 planning (2026-10-01 to 2027-06-30) — 55% confidence\nMMT note: Non-VA SDVOSB IT\nPrimary source: https://gsa.gov/vets2",
+      "premium": false
     }
   ]
 }
