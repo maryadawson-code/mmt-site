@@ -108,6 +108,13 @@
 /* For inline/flex elements that need non-block display when granted */
 [data-access="premium"].access-granted-flex { display: flex !important; }
 [data-access="premium"].access-granted-inline { display: inline-flex !important; }
+/* Filter-hidden state: layered HIGHER than access-granted so filter JS can
+   hide premium items that don't match the active filter. Filter JS adds
+   .filter-hidden; removes it to re-show. */
+[data-access="premium"].access-granted.filter-hidden,
+[data-access="premium"].access-granted-flex.filter-hidden,
+[data-access="premium"].access-granted-inline.filter-hidden,
+.filter-hidden { display: none !important; }
 
 /* Article gated content — hidden by default */
 .article-gated-content { display: none; }

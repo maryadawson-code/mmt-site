@@ -207,11 +207,14 @@
       items.forEach(function(el) {
         var typeMatch = activeType === 'all' || el.getAttribute('data-content-type') === activeType;
         var topicMatch = !activeTopic || (el.getAttribute('data-topics') || '').split(',').indexOf(activeTopic) !== -1;
+        // Use .filter-hidden class instead of inline style so we beat the
+        // [data-access="premium"].access-granted { display: block !important }
+        // rule that would otherwise keep premium items visible.
         if (typeMatch && topicMatch) {
-          el.style.display = '';
+          el.classList.remove('filter-hidden');
           visible++;
         } else {
-          el.style.display = 'none';
+          el.classList.add('filter-hidden');
         }
       });
       var noRes = document.getElementById('noResults');
