@@ -172,6 +172,19 @@
       "free_preview": true,
       "report_url": "/premium/briefs/rhrp-2026-04.html",
       "report_title": "Special Report: RHRP-4 Market Intelligence Dashboard"
+    },
+    {
+      "id": "s16-8a-dismantling",
+      "agency": "SBA / DoW / VA / HHS",
+      "program": "8(a) Program Restructuring",
+      "signal": "SBA issuing first race-neutral eligibility determinations by May 15; DoW termination wave expected ~June 1 on 8(a) sole-source contracts failing lethality review; ANCs projected to capture 60-70% of remaining 8(a) dollars by Q4 2026",
+      "confidence": "mmt_projection",
+      "action_window": "Q2 2026 audit + migration window — GSA MAS, OASIS+ SB, SEWP VI positioning",
+      "urgent": true,
+      "what_to_do": "Run the 5-point pipeline audit (constitutional vulnerability, lethality defensibility, subcontracting exposure, vehicle dependency, termination contingency) against every 8(a) position. If you are not ANC / tribally owned, begin race-neutral documentation AND vehicle migration now. If you are ANC / tribally owned, position for Mancari-protected market-share capture as individual firms exit.",
+      "free_preview": true,
+      "report_url": "/premium/briefs/capture-corner-2026-04-21.html",
+      "report_title": "Capture Corner: 8(a) Dismantling Tactical Intelligence"
     }
   ]
 }

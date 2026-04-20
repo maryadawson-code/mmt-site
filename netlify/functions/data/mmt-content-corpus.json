@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-04-20T15:52:39.564Z",
-  "total": 183,
+  "generated_at": "2026-04-20T17:59:31.420Z",
+  "total": 185,
   "counts": {
     "articles": 101,
-    "friday_briefs": 5,
+    "friday_briefs": 6,
     "monthly_briefs": 2,
     "contracts": 32,
-    "capture_intel": 15,
+    "capture_intel": 16,
     "glossary": 0,
     "idiq_vehicles": 28
   },
@@ -1598,6 +1598,21 @@
       "premium": true
     },
     {
+      "id": "brief-capture-corner-2026-04-21",
+      "type": "premium_brief",
+      "title": "8(a) Dismantling Tactical Intelligence for Federal Health IT",
+      "slug": "capture-corner-2026-04-21",
+      "date": "capture-corner-2026-04-21",
+      "description": "Capture Corner: 8(a) Dismantling Tactical Intelligence — MMT Premium &larr; Capture Intelligence MMT Premium &middot; Capture Corner &middot; April 21, 2026 8(a) Dismantling Tactical Intelligence for ",
+      "tags": [
+        "premium",
+        "friday-brief"
+      ],
+      "url": "/premium/briefs/capture-corner-2026-04-21.html",
+      "excerpt": "Capture Corner: 8(a) Dismantling Tactical Intelligence — MMT Premium &larr; Capture Intelligence MMT Premium &middot; Capture Corner &middot; April 21, 2026 8(a) Dismantling Tactical Intelligence for Federal Health IT Actionable frameworks for pipeline management and positioning in the post-8(a) environment. Agency: SBA / DoW / VA / HHS Q2 2026 DECISIONS 5-Point Audit 3-Move Strategy ★ Premium Capture Corner The tactical frameworks MMT Premium subscribers need for Q2 2026 decisions: five-point pipeline audit, three-move positioning strategy, dated predictions, and opportunity radar. Free members see the headline; premium gets the playbook. See premium plans The 8(a) laboratory results are in. For federal health IT contractors, the question is no longer whether the program survives. It is how quickly you audit your pipeline, assess constitutional vulnerability, and position for the reallocation economy. Here are the tactical frameworks MMT Premium subscribers need for Q2 2026 decisions. Five-Point Pipeline Audit Run this audit against every 8(a) task order, IDIQ position, and upcoming opportunity in your pipeline. Each point requires a binary assessment: PASS or FAIL. 1. Constitutional Vulnerability Assessment Question: Can this contract survive race-neutral eligibility requirements? Pass criteria You qualify for 8(a) through individualized economic disadvantage documentation (tax returns, credit reports, personal financial statements showing objective economic harm) You are an Alaska Native Corporation or tribally owned entity with Mancari protection Contract flows through vehicle with non-8(a) small business pools (OASIS+ SB, SEWP, GSA MAS) Fail criteria 8(a) eligibility depends on racial presumption without economic documentation Individual minority ownership without tribal affiliation Exclusive dependence on 8(a) set-aside vehicles Action for FAIL: Immediately begin race-neutral eligibility documentation or vehicle migration. Do not wait for SBA guidance updates. 2. Lethality Defensibility Review Question: Can this contract demonstrate direct contribution to warfighting capability? Pass criteria Clinical technology directly supports deployment readiness (medical training simulators, combat casualty care systems) Force health protection with measurable readiness impact (disease surveillance, medical logistics) Platform sustainment for mission-critical clinical systems already deployed Fail criteria Administrative support without direct clinical connection Research activities without operational application timeline Legacy system maintenance for platforms being phased out Action for FAIL: Develop mission-relevance positioning immediately. Document specific readiness contributions. If defensibility is weak, begin exit planning. 3. Subcontracting Exposure Analysis Question: Do you perform 51%+ of contract value with organic capability? Pass criteria Direct performance of majority technical work Subcontractors provide specialized expertise you cannot perform organically Clear limitations-on-subcontracting compliance with documented controls Fail criteria Pass-through arrangement with large business performing majority work Subcontracting relationships that exceed 49% of contract value Prime contractor role without substantial technical contribution Action for FAIL: Renegotiate subcontracting arrangements immediately or prepare for termination for convenience. Pentagon reviews are active now. 4. Vehicle Dependency Risk Question: Can you compete effectively without 8(a) set-aside protection? Pass criteria Active GSA MAS schedule with competitive pricing OASIS+ small business pool positioning Demonstrated ability to win unrestricted competition Fail criteria Revenue concentration >50% through 8(a) vehicles No positioning on non-set-aside vehicles Pricing structure dependent on set-aside margins Action for FAIL: Emergency vehicle diversification. Begin GSA MAS application immediately. Develop unrestricted competition capability. 5. Termination Contingency Planning Question: Can you survive sudden contract termination? Pass criteria Cash reserves for 60+ days operations without task order revenue Alternative revenue sources or pipeline opportunities identified Staff retention strategy for key technical personnel Fail criteria Task order revenue >80% of total revenue No cash reserves for operational continuity Key personnel at risk if task orders terminate Action for FAIL: Immediate cash management and revenue diversification. Begin conversations with potential acquirers or merger partners. Three-Move Positioning Strategy Move 1: Tribal Shield Assessment Important Qualifier Move 1 applies only to firms majority-owned and controlled by a federally recognized tribe, Alaska Native Corporation, or Native Hawaiian Organization. Firms with minority tribal affiliation, joint venture relationships, or consulting arrangements do not qualify for Mancari protection and should not position as if they do. If your eligibility status is unclear, consult counsel before responding to any SBA inquiry. If you have qualifying Alaska Native Corporation ownership, tribal ownership, or Native Hawaiian Organization control, position immediately for Mancari protection. Immediate actions Document government-to-government relationship basis for eligibility Emphasize tribal economic development objectives in all 8(a) submissions Prepare legal positioning for political classification rather than racial classification Constitutional firewall: ANC and tribal entities should retain 8(a) eligibility while individual minority-owned firms face constitutional challenge. This creates competitive advantage through reduced competition. Market opportunity: As individual firms exit, tribal entities face fewer competitors for the same contract opportunities. Position aggressively for increased market share. Move 2: Lethality Positioning Protocol Reframe every federal health IT capability in readiness terms. Stop talking about \"healthcare support.\" Start talking about \"force health protection\" and \"deployment readiness.\" Messaging transformation \"Electronic health records\" &rarr; \"Medical readiness data systems\" \"Clinical decision support\" &rarr; \"Combat medical capability enhancement\" \"Health IT integration\" &rarr; \"Operational medical data interoperability\" \"Telehealth platforms\" &rarr; \"Remote care delivery for deployed forces\" Contract positioning: Every proposal must answer: How does this technology make forces more lethal, more ready, or more survivable? If you cannot answer that question clearly, the contract fails lethality review. Agency targeting: Focus on contracts where mission relevance is obvious &mdash; battlefield medicine, deployment health, operational medical support. Avoid administrative health IT without clear readiness connection. Move 3: Vehicle Migration Strategy Begin immediate migration to non-8(a) vehicles. Do not wait for program guidance or eligibility clarification. Priority sequence GSA Multiple Award Schedule: Most accessible alternative for federal health IT services. Application process 6&ndash;12 months. Begin immediately. OASIS+ Small Business Pool: If you currently qualify as small business without 8(a) dependency. Higher barriers but substantial ceiling values. SEWP VI positioning: Critical for health IT hardware, software, and integration services. Vehicle competition in progress. Prime contractor partnerships: Subcontracting relationships with large primes positioned on enterprise vehicles. Revenue bridge strategy: Maintain current 8(a) positioning while building alternative vehicle capability. Do not abandon 8(a) opportunities until alternatives are active. Q2 2026 Specific Predictions MMT Projection &middot; High Confidence May 15, 2026: First Race-Neutral Determination SBA is likely to issue the first 8(a) eligibility determination under the race-neutral framework by May 15. This precedent-setting decision will determine how \"social disadvantage\" documenta",
+      "premium": true
+    },
+    {
       "id": "brief-rhrp-2026-04",
       "type": "premium_brief",
       "title": "RHRP-4 Market Intelligence Dashboard",
@@ -2377,6 +2392,21 @@
       ],
       "url": "/intel/capture-intelligence-this-issue/",
       "excerpt": "id: s15-rhrp4\nagency: DHA\nprogram: RHRP-4 (HT001126DE001)\nsignal: OptumServe won $1.61B single-award IDIQ (April 10, 2026); first TO is $11M transition-in; 4 task orders expected over 10-year POP; population expanded to DHS civilians\nconfidence: verified\naction_window: TO 2-4 over next 18 months — subcontracting window for behavioral health, dental, audiology, vision, lab\nurgent: true\nwhat_to_do: If you were a sub on RHRP-3 (LHI/OptumServe team), confirm teaming-agreement portability to RHRP-4 now. If you are new, approach OptumServe's federal arm directly — single-award IDIQ means zero prime opportunity but all 4 task orders will require specialty subs. Population expansion to DHS civilians (CBP/TSA/FEMA readiness) is the scope-creep watch.\nfree_preview: true\nreport_url: /premium/briefs/rhrp-2026-04.html\nreport_title: Special Report: RHRP-4 Market Intelligence Dashboard",
+      "premium": true
+    },
+    {
+      "id": "capture-s16-8a-dismantling",
+      "type": "capture_intel",
+      "title": "8(a) Program Restructuring",
+      "slug": "signal-15",
+      "date": "",
+      "description": "",
+      "tags": [
+        "capture-intel",
+        "SBA / DoW / VA / HHS"
+      ],
+      "url": "/intel/capture-intelligence-this-issue/",
+      "excerpt": "id: s16-8a-dismantling\nagency: SBA / DoW / VA / HHS\nprogram: 8(a) Program Restructuring\nsignal: SBA issuing first race-neutral eligibility determinations by May 15; DoW termination wave expected ~June 1 on 8(a) sole-source contracts failing lethality review; ANCs projected to capture 60-70% of remaining 8(a) dollars by Q4 2026\nconfidence: mmt_projection\naction_window: Q2 2026 audit + migration window — GSA MAS, OASIS+ SB, SEWP VI positioning\nurgent: true\nwhat_to_do: Run the 5-point pipeline audit (constitutional vulnerability, lethality defensibility, subcontracting exposure, vehicle dependency, termination contingency) against every 8(a) position. If you are not ANC / tribally owned, begin race-neutral documentation AND vehicle migration now. If you are ANC / tribally owned, position for Mancari-protected market-share capture as individual firms exit.\nfree_preview: true\nreport_url: /premium/briefs/capture-corner-2026-04-21.html\nreport_title: Capture Corner: 8(a) Dismantling Tactical Intelligence",
       "premium": true
     },
     {

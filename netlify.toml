@@ -78,6 +78,13 @@
 [functions."health-check"]
   schedule = "0 */6 * * *"
 
+# Capture Corner one-shot: April 21, 2026 at 9 AM EDT (= 13:00 UTC)
+# Cron fires annually on April 21; the function gates on SCHEDULED_DATE
+# so it only actually sends in the configured year. Ops_ledger dedup
+# prevents double-sends.
+[functions."capture-corner-send"]
+  schedule = "0 13 21 4 *"
+
 [functions."daily-stats-rollup"]
   schedule = "0 0 * * *"
 
