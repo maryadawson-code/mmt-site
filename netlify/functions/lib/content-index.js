@@ -50,34 +50,65 @@ function tokenize(text) {
     .filter((t) => t.length > 2 && !STOPWORDS.has(t));
 }
 
+// Detect all-caps acronyms (HCDS, DHMSM, OASIS, CCN, PEO) and multi-word
+// proper nouns (MHS GENESIS, PEO DHMS) in the ORIGINAL query string.
+// These are the load-bearing tokens; matches on them should dominate.
+function extractAcronyms(text) {
+  const out = new Set();
+  if (!text) return out;
+  // All-caps runs of 2+ letters (with optional digits + dashes)
+  const acre = /\b[A-Z][A-Z0-9-]{1,}\b/g;
+  let m;
+  while ((m = acre.exec(text)) !== null) {
+    const tok = m[0].toLowerCase();
+    if (tok.length >= 2) out.add(tok);
+  }
+  return out;
+}
+
 /**
  * Score a single corpus item against a query's tokens.
  * Title matches weigh 3x, description 2x, tags 2x, excerpt 1x.
  */
-function scoreItem(item, queryTokens) {
+function scoreItem(item, queryTokens, acronyms) {
   const titleText = (item.title || "").toLowerCase();
   const descText = (item.description || "").toLowerCase();
   const tagText = (item.tags || []).join(" ").toLowerCase();
   const bodyText = (item.excerpt || "").toLowerCase();
 
   let score = 0;
+  let acronymHit = false;
+  const isAcronym = (t) => acronyms && acronyms.has(t);
+
   for (const tok of queryTokens) {
-    if (titleText.includes(tok)) score += 3;
-    if (descText.includes(tok)) score += 2;
-    if (tagText.includes(tok)) score += 2;
-    // Count body occurrences (capped at 5 per token so a single long article
-    // doesn't dominate purely because it repeats one word).
+    // Acronyms and proper-noun tokens from the original query are the
+    // load-bearing part of the question. Weight them 5x so a single
+    // HCDS/DHMSM/OASIS hit dominates a dozen matches on "about" or
+    // "written" or "tell".
+    const weight = isAcronym(tok) ? 5 : 1;
+    if (titleText.includes(tok)) { score += 3 * weight; if (isAcronym(tok)) acronymHit = true; }
+    if (descText.includes(tok))  { score += 2 * weight; if (isAcronym(tok)) acronymHit = true; }
+    if (tagText.includes(tok))   { score += 2 * weight; if (isAcronym(tok)) acronymHit = true; }
     const matches = bodyText.split(tok).length - 1;
-    score += Math.min(matches, 5);
+    if (matches > 0 && isAcronym(tok)) acronymHit = true;
+    score += Math.min(matches, 5) * weight;
   }
 
-  // Recency boost — newer content is usually more relevant for federal
-  // health IT questions where the landscape moves fast.
-  if (item.date) {
+  // Recency boost only applies when the item matched on a load-bearing
+  // acronym; otherwise a recent article scores high just because it was
+  // published last week.
+  if (item.date && acronymHit) {
     const ageDays = (Date.now() - new Date(item.date).getTime()) / (1000 * 60 * 60 * 24);
     if (ageDays < 30) score += 4;
     else if (ageDays < 90) score += 2;
     else if (ageDays < 365) score += 1;
+  }
+
+  // If there were acronyms in the query but THIS item didn't match any of
+  // them, it almost certainly isn't on-topic. Drop its score hard so
+  // acronym-matching items float to the top.
+  if (acronyms && acronyms.size > 0 && !acronymHit) {
+    score = Math.floor(score / 4);
   }
 
   return score;
@@ -94,8 +125,9 @@ function searchCorpus(query, limit = 5) {
   if (!corpus.items || corpus.items.length === 0) return [];
   const tokens = tokenize(query);
   if (tokens.length === 0) return [];
+  const acronyms = extractAcronyms(query);
   const scored = corpus.items
-    .map((item) => ({ item, score: scoreItem(item, tokens) }))
+    .map((item) => ({ item, score: scoreItem(item, tokens, acronyms) }))
     .filter((s) => s.score > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);

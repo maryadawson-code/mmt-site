@@ -5,7 +5,21 @@
 - This is the final word on site architecture and wireframes.
 - Federal-data API stack and product wiring: `docs/api-integration-roadmap.md`.
 - Full platform technical implementation spec (Signal Chain + Pursuit Score Engine + Premium Compliance): `docs/MMT-Technical-Spec.md`. v1.0, 2026-04-17.
+- IDIQ Tracker v2 spec: `docs/idiq-tracker-v2-spec.md` (full narrative + Section J comparative analytics). Canonical 28-vehicle dataset in `data/idiq-vehicles.json`, source of truth `data/research-agent/idiq-vehicles.csv`.
+- Research-agent handoff bundle (IDIQ + SAM.gov watchlist + field schema): `data/research-agent/`.
 - MarketPulse v2 subscriber context: `migrations/008_subscriber_context.sql`, `netlify/functions/lib/subscriber-context.js`, admin import at `POST /.netlify/functions/subscriber-context` (ADMIN_EMAILS gated). Seed JSONs in `data/subscriber-context/`. Load with `node scripts/seed-subscriber-context.js`. Failure prevented: MarketPulse must not recommend pursuing an opportunity the subscriber has already submitted (see 4/17/26 HT001126RE011 incident).
+
+## 🧠 Unified Knowledge Layer (Ask MMT, Signal Chain, Pursuit Score, Compliance Check)
+- Source of truth: `netlify/functions/data/mmt-content-corpus.json` (181 items as of 2026-04-19).
+- Regenerate with `node scripts/build-content-corpus.js` after any article/brief/contract/vehicle change. The script loads:
+  - `content/newsletter/*.md` (published articles + weekly briefs)
+  - `premium/briefs/*.html` (Friday Brief archive)
+  - `premium/monthly/*.html` (Monthly Brief archive)
+  - `contracts.json` (Contract Tracker intel)
+  - `capture-intelligence.json` (current Capture Intelligence sheet)
+  - `data/idiq-vehicles.json` (28-vehicle IDIQ dataset with IVS, burn status, forecast calls)
+- Consumers: `netlify/functions/lib/content-index.js` → `searchCorpus(q, n)` + `formatCorpusContext(matches)`, wired into `premium-assistant.js` (Ask MMT + premium-chat) and `signal-chain.js` (`layerMmtCoverage`).
+- When Ask MMT answers "I haven't written about X," check (1) has the corpus been rebuilt since the article shipped, and (2) does the term appear in the excerpt (first 8,000 chars) — not just the full body.
 
 ## 🛡️ Infrastructure (IntegrityPulse Integrity Suite)
 - **Authority**: Fortress Worker (https://integritypulse-fortress.marywomack.workers.dev)
@@ -201,6 +215,25 @@ Before declaring work complete, verify:
 12. **Voice check on changed copy**: Re-read every line of changed text against Voice Rules above
 
 ---
+
+## Sprint 2026-04-19 — Premium tool hardening + unified knowledge layer
+Shipped tonight ahead of the Premium marketing push:
+
+- **Pursuit Score**: federal-data race budget 6s→12s (USASpending fans out to 5 upstream calls); Congress.gov queries scoped to canonical vehicle name; `enrichWithCongress` over-fetches then post-filters by title/action relevance — fixes MHS GENESIS false NO-BID and the "Central Business District Tolling" noise.
+- **Compliance Check**: CHPL claim extraction now reads `documentText` (not SOW); recognizes explicit CHPL product IDs (`15.04.04.2891.Epic.AM.13`) as simultaneous vendor + edition evidence; BLS zero-percentile no longer flags "$0/hr" LPTA vulnerabilities.
+- **Signal Chain**: legislative layer now post-filters Congress.gov results by topic tokens; added 6th `layerMmtCoverage` surfacing Mary's own articles + contracts.json entries (no composite weight, informational).
+- **Ask MMT / premium-chat**: user prompt reframed so MMT articles + IDIQ vehicle notes + contract intel in the context block are treated as first-class evidence, not "API results only."
+- **Content corpus**: excerpt 2,500→8,000 chars; monthly briefs, `contracts.json`, `capture-intelligence.json`, and 28-vehicle `idiq-vehicles.json` ingested. 153→181 items. Corpus builder is now `scripts/build-content-corpus.js` (run after any content change).
+- **Intelligence archive toggle** (`/latest.html`): All/Articles/Podcast filter now uses `.filter-hidden` class layered above the paywall rule, so filtering actually hides matched items even when they're `data-access="premium"`.
+- **Premium nav consistency**: Pursuit Score sidebar restored Compliance Check + Signal Chain links (was the only tool page missing them).
+- **Capture Intelligence realtime**: past-deadline signals collapse into "Show N past signals" block; header count updates from "25 signals" to "N live (M closed)"; re-runs hourly.
+- **IDIQ Tracker**: hardcoded card set expanded from 6 to 17 (added OASIS+, CCN Next Gen, PEO DHMS Deployment Solutions HT003826RE001, SEWP VI, ITES-SW2, DHITSC, DHITUC, VETS 2, 8(a) STARS III, VA ECMS, VA EHRM). 28-vehicle research-agent dataset now lives in `data/idiq-vehicles.json` for the v2 page rebuild.
+- **March 2026 Monthly Brief**: replaced the ~$2.4B "HITDSS" section with the verified PEO DHMS Deployment Solutions IDIQ (HT003826RE001, $300M/5yr, proposals due April 21); tagged ECMS Wave 3 + HTI-series as MMT Analysis vs. FACT; added AIX Tech adjacent signal.
+
+Known gaps (next sprint):
+- Pursuit Score USASpending still returns 0 awards for real DHA programs when only agency + NAICS are passed — needs recipient-name + PSC-code lookups to match prime contractors (e.g., Leidos for MHS GENESIS).
+- IDIQ Tracker v2 narrative page (Section J comparative analytics, IVS heatmap, teaming map) is specced in `docs/idiq-tracker-v2-spec.md` but not yet rendered as a page; the 17-card v1 is shipping in the interim.
+- Glossary extraction for the corpus isn't implemented yet (there's no `glossary.json` — terms live in `glossary.html`).
 
 ## Status (as of 2026-04-16)
 All systems operational.
