@@ -9,6 +9,17 @@
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
+  # Ensure non-require'd data files ship inside every function bundle.
+  # The MMT content corpus + IDIQ dataset + contracts + capture intel
+  # are loaded at runtime via fs.readFileSync, which esbuild can't
+  # trace automatically — they must be listed here or Ask MMT, Signal
+  # Chain, and premium-chat come up with an empty corpus.
+  included_files = [
+    "netlify/functions/data/**",
+    "contracts.json",
+    "capture-intelligence.json",
+    "data/idiq-vehicles.json",
+  ]
 
 [[edge_functions]]
   function = "security-headers"
