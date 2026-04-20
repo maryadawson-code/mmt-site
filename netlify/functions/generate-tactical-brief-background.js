@@ -489,7 +489,7 @@ Cross-reference all landscape findings. Flag anything that cannot be confirmed.`
 // ============================================================
 // PASS 3: Fact-Check, Synthesis, and Confidence Scoring (CHANGES 3, 6, 8)
 // ============================================================
-async function runSynthesis(topic, audience, company, disambiguation, landscapeContent, analysisContent, { primedContext, classification, companyContext: compCtx } = {}) {
+async function runSynthesis(topic, audience, company, disambiguation, landscapeContent, analysisContent, { primedContext, classification, companyContext: compCtx, v4On = false, v4Waived = false, subscriberContext = null } = {}) {
   console.log("Pass 3: Fact-check, synthesis, and confidence scoring...");
 
   const entity = disambiguation.selected_entity || {};
@@ -516,8 +516,7 @@ async function runSynthesis(topic, audience, company, disambiguation, landscapeC
     }
   }
 
-  const result = await callClaudeSearch(
-    `You are the lead analyst at a federal health IT market intelligence firm, producing a report that competes with Gartner Market Guides and Deltek GovWin analyst briefs. ${audienceContext} ${companyLine}
+  const v3SystemPrompt = `You are the lead analyst at a federal health IT market intelligence firm, producing a report that competes with Gartner Market Guides and Deltek GovWin analyst briefs. ${audienceContext} ${companyLine}
 
 YOUR STANDARD: This report is a PAID intelligence product ($35-50 per report). The reader is a federal BD/capture professional who already knows their market. They pay because your analysis tells them something they did not know and could not easily find themselves. If this report reads like a ChatGPT web search summary, you have FAILED.
 
@@ -639,9 +638,9 @@ RULES:
 - NO empty sections. Merge or explain what to monitor.
 - Data density: every paragraph must have a specific fact.
 - Target 8-12 pages (~24,000-36,000 chars). This is a premium product — depth matters. Cut generic context and program descriptions the reader already knows, but preserve ALL pipeline data, competitive analysis, and strategic insights. An analyst-quality 10-page report is worth more than a thin 4-page summary.
-- Current-events overrides: VetCert ~12 days; SEWP VI not yet awarded; FPDS decommissioned Feb 24 2026, canonical source is SAM.gov Contract Awards API; FPDS ATOM feed retires permanently July 31 2026 — never cite fpds.gov.${contextBlock}`,
+- Current-events overrides: VetCert ~12 days; SEWP VI not yet awarded; FPDS decommissioned Feb 24 2026, canonical source is SAM.gov Contract Awards API; FPDS ATOM feed retires permanently July 31 2026 — never cite fpds.gov.${contextBlock}`;
 
-    `Topic: ${topic}
+  const v3UserPrompt = `Topic: ${topic}
 
 Landscape scan:
 ${landscapeContent}
@@ -658,9 +657,38 @@ Lead with the STRATEGIC THESIS — the single most important insight. Then build
 4. What do I need to compete? (barriers, certifications, past performance)
 5. What should I do next? (specific actions tied to specific opportunities)
 
-Apply confidence scoring strictly. No HIGH on null results. Every dollar needs a source. Every vendor needs a contract number.`,
-    16000
-  );
+Apply confidence scoring strictly. No HIGH on null results. Every dollar needs a source. Every vendor needs a contract number.`;
+
+  // v4 Deep Research Loop: swap to v4 system prompt + user prompt when flag is on.
+  // buildV4SystemPrompt internally calls detectMode() and captureStrategyInstructions(),
+  // so mode-aware output + all 15 sections (incl. 6 issue subsections) are mandated here.
+  let synthesisSystemPrompt = v3SystemPrompt;
+  let synthesisUserPrompt = v3UserPrompt;
+  if (v4On) {
+    synthesisSystemPrompt = buildV4SystemPrompt({
+      topic,
+      audience,
+      company,
+      subscriberContext,
+      companyContext: compCtx,
+      researchPlanMd: null,
+      primedContext,
+    });
+    const waivedNote = v4Waived
+      ? "\n\nSUBSCRIBER CONTEXT WAIVED (WAIVE_CONTEXT=true). This is a generic run — do NOT emit firm-specific pursuit recommendations; use GENERIC-mode Capture Strategy as instructed above."
+      : "";
+    synthesisUserPrompt = `Topic: ${topic}
+
+Landscape scan:
+${landscapeContent}
+
+Deep analysis:
+${analysisContent}
+
+Synthesize into the final MarketPulse v4 report. Follow the 15-section structure in the exact order specified, with all six mandatory issue subsections populated (4.1 Performance, 4.2 Procurement/contracting, 4.3 Structural, 4.4 Readiness outcomes, 4.5 Transition/execution, 4.6 Oversight/compliance) — each with ≥2 primary-source citations. Meet the enforced minimums: ≥25 distinct source fetches, ≥40% Tier 1 share. Every statement must carry an evidence level (Verified Fact / [inference] / [speculative]). No pseudo-citations. No "[source needed]" in user-visible text. Include the Readiness Outcomes section with ≥3 dated hard metrics, and the Capture Strategy section with mode-specific plays (not generic bid advice).${waivedNote}`;
+  }
+
+  const result = await callClaudeSearch(synthesisSystemPrompt, synthesisUserPrompt, 16000);
 
   return result;
 }
@@ -1196,7 +1224,7 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
 
     // Pass 3: Fact-check, synthesis, confidence scoring (CHANGES 3, 6, 8)
     const pass3Start = Date.now();
-    const pass3 = await runSynthesis(optimizedTopic, audience, company, disambiguation, pass1.content, pass2.content, { primedContext, classification, companyContext });
+    const pass3 = await runSynthesis(optimizedTopic, audience, company, disambiguation, pass1.content, pass2.content, { primedContext, classification, companyContext, v4On: V4_ON, v4Waived, subscriberContext });
     passTimings["Pass 3 — Synthesis"] = Math.round((Date.now() - pass3Start) / 1000);
     analyzePassResult(reportQuality, pass3.content, pass3.citations);
 
