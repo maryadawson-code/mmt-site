@@ -142,6 +142,55 @@ function noContextBanner() {
 }
 
 /**
+ * v4 run-blocker gate (spec §4). Implements the BLOCKED / WAIVED / OK
+ * decision tree every serious run must pass before research begins.
+ *
+ * @param {Object|null} ctx — result of loadSubscriberContext
+ * @param {Object} env — process.env
+ * @returns {{ state: 'OK'|'WAIVED'|'BLOCKED', banner?: string, reason?: string }}
+ */
+function gateContext(ctx, env) {
+  if (ctx) return { state: "OK" };
+  const waive = (env && (env.WAIVE_CONTEXT || env.MARKETPULSE_WAIVE_CONTEXT)) || "";
+  const waived = String(waive).toLowerCase() === "true" || waive === "1" || waive === "on";
+  if (waived) {
+    return {
+      state: "WAIVED",
+      banner: waivedContextBanner(),
+    };
+  }
+  return {
+    state: "BLOCKED",
+    reason: "subscriber_context not loaded and WAIVE_CONTEXT not set",
+  };
+}
+
+/**
+ * Persistent generic-run banner shown when WAIVE_CONTEXT=true.
+ */
+function waivedContextBanner() {
+  return `\n\n> ⚠️ **GENERIC RUN — WAIVED.** No subscriber context loaded (WAIVE_CONTEXT=true). This report is generic market intelligence. No opportunity tagging, no IN-FLIGHT detection, no OCI-aware capture advice. Mode defaulted to "generic".\n\n`;
+}
+
+/**
+ * Render the BLOCKED diagnostic for a run that could not start.
+ */
+function renderBlockedDiagnostic(reason, email) {
+  return [
+    "# BLOCKED: subscriber_context not loaded",
+    "",
+    `Run halted before research began. Reason: ${reason || "no subscriber_context for this email"}`,
+    `Subscriber email: ${email || "(unknown)"}`,
+    "",
+    "## To unblock",
+    "- Load a subscriber_context record for this email via `scripts/seed-subscriber-context.js` or the admin import endpoint (`POST /.netlify/functions/subscriber-context`), OR",
+    "- Set the env var `WAIVE_CONTEXT=true` to force a generic run. A persistent banner will be shown on the report, tagging will be disabled, and the mode will default to \"generic\".",
+    "",
+    "No report was generated. No email was sent to the customer.",
+  ].join("\n");
+}
+
+/**
  * Post-generation validation — scans the final report for signs the
  * context rules were violated. Returns { ok, violations[] }.
  *
@@ -212,5 +261,8 @@ module.exports = {
   formatContextBlock,
   contextSystemRules,
   noContextBanner,
+  waivedContextBanner,
+  gateContext,
+  renderBlockedDiagnostic,
   validateReport,
 };

@@ -16,6 +16,8 @@
 const { createClient } = require("@supabase/supabase-js");
 const { enrichProposal } = require("./lib/proposal-enrichment");
 const { MMT_PRICING } = require("./lib/mmt-pricing");
+const { getFlag } = require("./lib/feature-flags");
+const { loadToolContext, buildToolEnvelope, buildEvidencePanel, renderBlockedResponse } = require("./lib/premium-tools-core");
 
 // --- Documentation flag detection ---
 // Health-IT-specific references evaluators expect to see. Presence alone
@@ -235,6 +237,63 @@ exports.handler = async (event) => {
     overage_per_check: MMT_PRICING.compliance_check.premium_overage_per_check,
     standalone_per_check: MMT_PRICING.compliance_check.standalone_per_check,
   };
+
+  // === PREMIUM_TOOLS_V2 envelope wrapping ===
+  const V2_ON = getFlag("PREMIUM_TOOLS_V2") === "on";
+  if (V2_ON) {
+    const toolCtx = await loadToolContext(supabase, email, { company: body.company });
+    if (toolCtx.state === "BLOCKED") {
+      return {
+        statusCode: 409,
+        headers: CORS_HEADERS,
+        body: JSON.stringify(renderBlockedResponse(email, toolCtx.reason)),
+      };
+    }
+    const evidence = [];
+    // Surface any primary-source citations from enrichment
+    if (enrichment.chplVerified && enrichment.chplClaim) {
+      evidence.push({ claim: `ONC CHPL cert ${enrichment.chplClaim} verified`, url: "https://chpl.healthit.gov/", observed_date: new Date().toISOString().slice(0, 10) });
+    }
+    if ((enrichment.laborFlags || []).length > 0) {
+      evidence.push({ claim: "BLS wage benchmarking performed", url: "https://www.bls.gov/oes/", observed_date: new Date().toISOString().slice(0, 10) });
+    }
+
+    const severityToState = {
+      HIGH: "Major revision required",
+      MEDIUM: "Revise before submission",
+      LOW: "Minor polish",
+    };
+    const reasons = [];
+    if (enrichment.chplClaim && enrichment.chplVerified === false) reasons.push("ONC CHPL claim unverified");
+    if ((enrichment.wageDeterminationFlags || []).length > 0) reasons.push(`${(enrichment.wageDeterminationFlags || []).length} SCA wage floor violation(s)`);
+    if (docs.missing_required > 0) reasons.push(`${docs.missing_required} required documentation reference(s) missing`);
+
+    const envelope = buildToolEnvelope({
+      tool: "compliance",
+      email,
+      inputs: { text_length: text.length, has_sow: !!sowText },
+      toolContext: toolCtx,
+      resolved: { entity: "proposal" },
+      rawFinding: {
+        topic: "compliance",
+        state: severityToState[report.overall_risk] || "Revise",
+        why: reasons,
+        blockers: (report.top_fixes || []).filter(f => f.priority === "STOP-SHIP").map(f => `${f.area}: ${f.fix}`),
+        what_would_flip: (report.top_fixes || []).filter(f => f.priority !== "STOP-SHIP").map(f => `${f.area}: ${f.fix}`),
+      },
+      dimensions: {
+        chpl: { score: report.sections.onc_chpl.severity === "PASS" ? 100 : 0, max: 100, detail: report.sections.onc_chpl.flag || "passed" },
+        wage: { score: report.sections.sca_wage_floor.severity === "PASS" ? 100 : 0, max: 100, detail: `${report.sections.sca_wage_floor.critical_count} violations` },
+        clinical: { score: report.sections.clinical_evidence.severity === "PASS" ? 100 : 50, max: 100, detail: report.sections.clinical_evidence.flag || "passed" },
+        docs: { score: Math.max(0, 100 - docs.missing_required * 25), max: 100, detail: `${docs.missing_required} required refs missing` },
+      },
+      totalScore: report.overall_risk === "LOW" ? 85 : report.overall_risk === "MEDIUM" ? 60 : 35,
+      band: report.overall_risk === "LOW" ? "high" : report.overall_risk === "MEDIUM" ? "medium" : "low",
+      evidence,
+      legacy: report,
+    });
+    report.envelope = envelope;
+  }
 
   return {
     statusCode: 200,

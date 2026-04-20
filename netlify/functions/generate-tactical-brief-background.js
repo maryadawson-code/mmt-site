@@ -52,7 +52,22 @@ const { enrichWithCMSProviderData, formatCMSContext } = require("./lib/cms-provi
 const { enrichWithClinicalTrials, formatClinicalTrialsContext } = require("./lib/clinicaltrials-api");
 const { enrichWithONCHealthIT, formatONCHealthITContext } = require("./lib/onc-healthit-api");
 const { enrichWithHHSOpenData, formatHHSOpenDataContext } = require("./lib/hhs-open-data");
-const { loadSubscriberContext, formatContextBlock, contextSystemRules, noContextBanner, validateReport: validateSubscriberReport } = require("./lib/subscriber-context");
+const { loadSubscriberContext, formatContextBlock, contextSystemRules, noContextBanner, validateReport: validateSubscriberReport, gateContext, renderBlockedDiagnostic, waivedContextBanner } = require("./lib/subscriber-context");
+
+// --- v4 Deep Research Loop modules (gated by MARKETPULSE_V4 flag) ---
+const { scoreReportV4, buildRemediationPlan, renderScoreBanner } = require("./lib/research-score-v4");
+const { runSelfAudit, renderAuditBlock, checkStopConditions } = require("./lib/self-audit-v4");
+const {
+  decomposeQuery,
+  planSourceStrategy,
+  createNullRegister,
+  createRefinementLog,
+  createFetchTracker,
+  renderMethodology: renderV4Methodology,
+} = require("./lib/research-planner");
+const { buildV4SystemPrompt, detectMode, renderBanner: renderV4Banner, ACKNOWLEDGMENT: V4_ACK } = require("./lib/marketpulse-v4-prompt");
+const { sanitizeV4 } = require("./lib/synthesis-sanitizer");
+const { enforceTierRatio, buildSourceTable } = require("./lib/source-tiering");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
@@ -964,6 +979,44 @@ exports.handler = async (event) => {
       }
     }
 
+    // === v4 RUN-BLOCKER GATE (§4) ===
+    // When MARKETPULSE_V4=on and no subscriber_context is loaded, require
+    // an explicit WAIVE_CONTEXT=true or halt before any research begins.
+    const V4_ON = getFlag("MARKETPULSE_V4") === "on";
+    let v4Waived = false;
+    if (V4_ON) {
+      const gate = gateContext(subscriberContext, process.env);
+      if (gate.state === "BLOCKED") {
+        console.log(`[V4 GATE] BLOCKED — ${gate.reason}`);
+        const diagnostic = renderBlockedDiagnostic(gate.reason, email);
+        await logOpsEvent(_supabase, {
+          event_type: "MARKETPULSE_V4_BLOCKED",
+          source_function: "generate-tactical-brief-background",
+          severity: "warn",
+          signature: "v4_subscriber_context_gate",
+          affected_entity: session_id,
+          details: { email, topic: (topic || "").substring(0, 200), reason: gate.reason },
+        });
+        // Email Mary but not the customer — this is an ops condition, not a customer-facing failure.
+        try {
+          await sendEmail({
+            to: "mary@missionmeetstech.com",
+            subject: `[MarketPulse v4] BLOCKED — ${email}`,
+            html: `<pre style="font-family:ui-monospace,monospace;white-space:pre-wrap;">${diagnostic.replace(/[<&>]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]))}</pre>`,
+            from: "Mission Meets Tech <noreply@missionmeetstech.com>",
+          });
+        } catch (_) { /* non-blocking */ }
+        return { statusCode: 200, body: JSON.stringify({ success: false, v4_gate: "BLOCKED", reason: gate.reason }) };
+      }
+      if (gate.state === "WAIVED") {
+        v4Waived = true;
+        console.log(`[V4 GATE] WAIVED — generic-run banner will appear on report`);
+      } else {
+        console.log(`[V4 GATE] OK — subscriber context loaded`);
+      }
+    }
+    console.log(V4_ON ? `${V4_ACK}` : "[v3 path] MARKETPULSE_V4 flag is off — using v3 pipeline");
+
     // === SPRINT D: Context Priming (Spec 2.3 + Appendix C) ===
     const contextData = getRelevantContext(classification.scope.event_trigger, originalTopic);
     let primedContext = "";
@@ -1188,6 +1241,68 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
     }
     finalSynthesis = sanitizedSynthesis;
 
+    // === v4 SANITIZER + SCORE + SELF-AUDIT ===
+    // When v4 is on, run the addendum sanitizer (strip [source needed],
+    // ban pseudo-cites, cap $ mentions, label Tier 3), compute the
+    // decomposed 100-point Research Score, and run the 18-check audit.
+    // If stop conditions fire, deliver the DIAGNOSTIC BLOCK to ops and
+    // block customer delivery.
+    let v4Audit = null;
+    let v4Score = null;
+    let v4Diagnostic = null;
+    let v4Stop = false;
+    if (V4_ON) {
+      const v4Clean = sanitizeV4(finalSynthesis, allPassCitations);
+      if (v4Clean.cleanedCount > 0) {
+        console.log(`[V4 SANITIZER] stripped ${v4Clean.cleanedCount} internal flags from user-visible text (${v4Clean.gaps.length} sentences dropped, ${v4Clean.pseudoCiteHits.length} pseudo-cites)`);
+      }
+      finalSynthesis = v4Clean.sanitized;
+
+      // Build opportunity count from Pipeline Intelligence structured entries
+      const opportunityCount = (finalSynthesis.match(/CONTRACT\/OPPORTUNITY:/g) || []).length;
+
+      v4Score = scoreReportV4({
+        reportText: finalSynthesis,
+        citations: allPassCitations,
+        hasSubscriberContext: !!subscriberContext,
+        opportunityCount,
+      });
+      console.log(`[V4 SCORE] ${v4Score.total}/100 band=${v4Score.band} | ${Object.entries(v4Score.dimensions).map(([k, v]) => `${k}=${v.score}/${v.max}`).join(" ")}`);
+
+      v4Audit = runSelfAudit({
+        reportText: finalSynthesis,
+        citations: allPassCitations,
+        hasSubscriberContext: !!subscriberContext,
+        waived: v4Waived,
+        isBidder: !!(subscriberContext && (subscriberContext.active_pursuits || []).length > 0),
+        nullQueryCount: 0, // populated when planner is wired into research loop
+        fetchCount: allPassCitations.length,
+        refinementPasses: Object.keys(passTimings).length,
+        score: v4Score,
+      });
+      console.log(`[V4 AUDIT] ${v4Audit.passedCount}/${v4Audit.checks.length} checks passed${v4Audit.allPassed ? " ✓" : ""}`);
+
+      const stopCheck = checkStopConditions({
+        audit: v4Audit,
+        score: v4Score,
+        hasSubscriberContext: !!subscriberContext,
+        waived: v4Waived,
+      });
+      if (stopCheck.stop) {
+        v4Stop = true;
+        v4Diagnostic = stopCheck.diagnostic;
+        console.log(`[V4 STOP] ${stopCheck.reasons.join(" | ")}`);
+      }
+
+      // Append AUDIT BLOCK + REMEDIATION PLAN to the report if we're still delivering
+      if (!v4Stop) {
+        finalSynthesis += "\n\n" + renderAuditBlock(v4Audit);
+        if (v4Score.band === "remediate") {
+          finalSynthesis += "\n\n" + buildRemediationPlan(v4Score);
+        }
+      }
+    }
+
     // === QUALITY GATE ===
     const qualityResult = checkReportQuality(reportQuality, finalSynthesis, { citations: allPassCitations, topic });
     console.log(`[QUALITY GATE] Grade: ${qualityResult.grade} | Failures: ${qualityResult.failures.length} | Metrics: contracts=${reportQuality.specificContracts}, dollars=${reportQuality.dollarValues}, entities=${reportQuality.namedEntities}, nullPasses=${reportQuality.nullPasses}/${reportQuality.totalPasses}`);
@@ -1315,6 +1430,47 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
       await logOpsEvent(_supabase, { event_type: "QUALITY_FAILURE", source_function: "generate-tactical-brief-background", severity: "warn", signature: "quality_gate_soft_fail", affected_entity: session_id, details: { email, topic: topic.substring(0, 200), grade: "MARGINAL (downgraded)", failures: qualityResult.failures } });
     }
 
+    // === v4 STOP HANDLER ===
+    // If v4 self-audit triggered a stop condition, email the diagnostic
+    // to Mary (not the customer), log the event, and return without
+    // rendering/sending the report.
+    if (V4_ON && v4Stop) {
+      await logOpsEvent(_supabase, {
+        event_type: "MARKETPULSE_V4_STOP",
+        source_function: "generate-tactical-brief-background",
+        severity: "error",
+        signature: "v4_self_audit_stop",
+        affected_entity: session_id,
+        details: {
+          email,
+          topic: (topic || "").substring(0, 200),
+          score: v4Score ? v4Score.total : null,
+          band: v4Score ? v4Score.band : null,
+          failed_checks: v4Audit ? v4Audit.checks.filter(c => !c.passed).map(c => `#${c.id} ${c.label}`) : [],
+        },
+      });
+      try {
+        await sendEmail({
+          to: "mary@missionmeetstech.com",
+          subject: `[MarketPulse v4] STOP — ${name} (${email}) — score ${v4Score ? v4Score.total : "?"}/100`,
+          html: `<pre style="font-family:ui-monospace,monospace;white-space:pre-wrap;background:#f3f4f6;padding:16px;border-radius:8px;">${(v4Diagnostic || "").replace(/[<&>]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]))}</pre>`,
+          from: "Mission Meets Tech <noreply@missionmeetstech.com>",
+        });
+      } catch (_) { /* non-blocking */ }
+
+      // Customer notification: a gentle "we need more time" rather than the raw diagnostic
+      try {
+        await sendEmail({
+          to: email,
+          subject: `We're still working on your MarketPulse Report — ${(topic || "").substring(0, 50)}`,
+          html: `<p>Hi ${(name || "there").split(" ")[0]},</p><p>Our audit flagged that your MarketPulse report needs additional primary-source verification before we deliver it. We don't ship reports that can't be fully grounded in Tier 1 federal sources.</p><p>Our team is working on closing the gaps. You'll have your report within 24 hours.</p><p>— Mission Meets Tech</p>`,
+          from: "Mission Meets Tech <noreply@missionmeetstech.com>",
+        });
+      } catch (_) { /* non-blocking */ }
+      await _transition("quality_fail");
+      return { statusCode: 200, body: JSON.stringify({ success: false, v4_stop: true, score: v4Score ? v4Score.total : null }) };
+    }
+
     await _transition("pdf_started");
 
     // Generate report HTML
@@ -1328,9 +1484,12 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
     // If context WAS loaded, scan the output for rule violations and log
     // them to ops_events so repeat failures surface without being silent.
     if (!subscriberContext) {
-      const banner = `<div style="background:#FEF9E7;border:1px solid #E5D9A8;border-radius:8px;padding:14px 18px;margin:0 0 20px;font-size:13px;color:#92710A;"><strong>⚠️ No subscriber context loaded.</strong> This report is generic market intelligence. Recommendations may conflict with your firm's active positions. Load a subscriber_context record to enable opportunity tagging and IN-FLIGHT detection.</div>`;
+      const bannerText = V4_ON && v4Waived
+        ? `<strong>⚠️ GENERIC RUN — WAIVED.</strong> No subscriber context loaded (WAIVE_CONTEXT=true). This report is generic market intelligence. No opportunity tagging, no IN-FLIGHT detection. Mode defaulted to "generic".`
+        : `<strong>⚠️ No subscriber context loaded.</strong> This report is generic market intelligence. Recommendations may conflict with your firm's active positions. Load a subscriber_context record to enable opportunity tagging and IN-FLIGHT detection.`;
+      const banner = `<div style="background:#FEF9E7;border:1px solid #E5D9A8;border-radius:8px;padding:14px 18px;margin:0 0 20px;font-size:13px;color:#92710A;">${bannerText}</div>`;
       reportHtmlContent = reportHtmlContent.replace(/(<body[^>]*>)/i, `$1\n${banner}`);
-      console.log("[SUBSCRIBER-CTX] No context — banner injected into report HTML");
+      console.log(`[SUBSCRIBER-CTX] ${v4Waived ? "WAIVED" : "No context"} — banner injected into report HTML`);
     } else {
       const v = validateSubscriberReport({ reportHtml: reportHtmlContent, ctx: subscriberContext });
       if (!v.ok) {

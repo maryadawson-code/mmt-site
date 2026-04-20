@@ -11,6 +11,15 @@ const FLAG_DEFAULTS = {
   FEATURE_ENTITY_GUARD: "on",
   FEATURE_COMPLIANCE_MAPPING: "on",
   FEATURE_CIRCUIT_BREAKERS: "on",
+  // v4 deep research loop (docs/marketpulse-v4-system-prompt.md). Default
+  // "off" until validated on staging; flip to "on" to route through
+  // v4 prompt + self-audit + decomposed research score + BLOCKED gate.
+  MARKETPULSE_V4: "off",
+  // Premium Tools v2 — Pursuit Score / Compliance Check / Signal Chain
+  // rebuild using the shared intelligence core (docs/premium-tools-master-sprint.md).
+  // Default "off"; flip to "on" to wrap legacy tool output in the v2 ToolEnvelope,
+  // add subscriber profile gate, mode dispatcher, evidence panel, Monday Move.
+  PREMIUM_TOOLS_V2: "off",
 };
 
 let _logged = false;

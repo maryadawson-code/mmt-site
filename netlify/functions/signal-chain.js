@@ -27,6 +27,8 @@ const { buildQueryTerms, buildPubMedQuery, FR_AGENCY_SLUGS, USASPENDING_AGENCY_N
 const { searchCorpus } = require("./lib/content-index");
 const fs = require("fs");
 const path = require("path");
+const { getFlag } = require("./lib/feature-flags");
+const { loadToolContext, buildToolEnvelope, buildEvidencePanel, renderBlockedResponse } = require("./lib/premium-tools-core");
 
 // Contracts intelligence — Mary-curated intel on known programs.
 // See content-index.js for the path-candidate rationale.
@@ -661,6 +663,60 @@ exports.handler = async (event) => {
       },
     });
   } catch (_) {}
+
+  // === PREMIUM_TOOLS_V2 envelope wrapping ===
+  const V2_ON = getFlag("PREMIUM_TOOLS_V2") === "on";
+  if (V2_ON) {
+    const toolCtx = await loadToolContext(supabase, email, { company: body.company });
+    if (toolCtx.state === "BLOCKED") {
+      return {
+        statusCode: 409,
+        headers: CORS_HEADERS,
+        body: JSON.stringify(renderBlockedResponse(email, toolCtx.reason)),
+      };
+    }
+    // Collect citations from layer signals
+    const allUrls = [];
+    for (const layer of Object.values(layers)) {
+      if (!layer || !Array.isArray(layer.signals)) continue;
+      for (const sig of layer.signals) {
+        if (sig.url) allUrls.push({ claim: sig.title || sig.summary || "signal", url: sig.url, observed_date: sig.date || new Date().toISOString().slice(0, 10) });
+      }
+    }
+    const evidence = buildEvidencePanel(allUrls);
+    const verdictToState = {
+      "CAPTURE ALERT": "Pursue",
+      "ACTIVE": "Watch",
+      "BUILDING": "Watch",
+      "EMERGING": "Monitor",
+    };
+    const dimensions = {};
+    for (const [k, v] of Object.entries(layers)) {
+      if (!v || typeof v.score !== "number") continue;
+      dimensions[k] = { score: v.score, max: 100, detail: v.noSignalReason || (v.source || "") };
+    }
+    const envelope = buildToolEnvelope({
+      tool: "signal",
+      email,
+      inputs: { topic, agency: resolvedAgency },
+      toolContext: toolCtx,
+      resolved: card.resolved || {},
+      rawFinding: {
+        topic,
+        state: verdictToState[verdict] || "Monitor",
+        why: Object.entries(layers)
+          .filter(([_, v]) => v && v.score > 0)
+          .map(([k, v]) => `${k}: ${v.score} — ${(v.signals || []).slice(0, 1).map(s => s.title || "signal").join("")}`),
+        blockers: card.timedOut && card.timedOut.length > 0 ? [`Layers timed out: ${card.timedOut.join(", ")}`] : [],
+        what_would_flip: ["New RFI/RFP posting", "Protest decision", "Budget mark"],
+      },
+      dimensions,
+      totalScore: composite,
+      evidence,
+      legacy: card,
+    });
+    card.envelope = envelope;
+  }
 
   return {
     statusCode: 200,

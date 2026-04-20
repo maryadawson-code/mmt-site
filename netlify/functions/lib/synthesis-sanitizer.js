@@ -1,9 +1,16 @@
 // ============================================================
 // synthesis-sanitizer.js — Post-synthesis anti-hallucination filter
 //
-// Scans synthesis text for unverifiable claims and flags them.
+// v3: flags unverifiable claims (dollar figures, percentages,
+//     competitive entries without contract numbers).
+// v4: strips [source needed] from user-visible text per addendum
+//     ("never print internal notes in user-visible text"), flags
+//     pseudo-citations, caps dollar mention counts, labels Tier 3.
+//
 // Runs AFTER Pass 3 but BEFORE quality gate.
 // ============================================================
+
+const { classifyTier } = require("./source-tiering");
 
 /**
  * Sanitize synthesis text by flagging unverified claims.
@@ -98,4 +105,157 @@ function sanitizeSynthesis(text, citations) {
   return { sanitized: result, flagCount };
 }
 
-module.exports = { sanitizeSynthesis };
+// ============================================================
+// v4 sanitizer — addendum rules (2026-04-20)
+// ============================================================
+
+const PSEUDO_CITES = [
+  /\[landscape\]/gi,
+  /\[current context\]/gi,
+  /\[verified ground truth\]/gi,
+  /\[verified USASpending\]/gi,
+  /\[verified Federal Register\]/gi,
+  /\[verified SAM\.gov\]/gi,
+];
+
+/**
+ * Remove `[source needed]` and similar internal flags from user-visible
+ * text and replace them with cleaner alternatives. If a sentence cannot
+ * be salvaged, the entire sentence is dropped and an entry is added to
+ * the gaps list for Methodology to surface.
+ *
+ * Per v4 addendum §1: "Never print [source needed] or internal notes in
+ * user-visible text."
+ *
+ * @returns {{ sanitized: string, dropped: string[], cleanedCount: number }}
+ */
+function stripInternalFlags(text) {
+  const dropped = [];
+  let cleanedCount = 0;
+  if (!text) return { sanitized: "", dropped, cleanedCount };
+
+  // Sentence-level pass: if a sentence ends in "[source needed]" (etc.)
+  // and introduces a hard claim (dollar, date, PIID), drop the whole
+  // sentence. Otherwise strip the flag.
+  const sentences = text.split(/(?<=[.!?])\s+/);
+  const kept = [];
+  const flagRE = /\[(?:source needed|no contract number verified|unverified|needs verification)\]/gi;
+  const hardClaim = /\$\s?\d|[A-Z0-9]{2,6}[-_][A-Z0-9]{2,}|20\d{2}-\d{2}-\d{2}/;
+
+  for (const s of sentences) {
+    if (flagRE.test(s)) {
+      if (hardClaim.test(s)) {
+        // Sentence makes a hard claim without a verified source — drop.
+        dropped.push(s.replace(/\s+/g, " ").trim().slice(0, 200));
+        cleanedCount++;
+        continue;
+      }
+      // Otherwise strip the flag and keep the sentence
+      kept.push(s.replace(flagRE, "").replace(/\s+\./g, ".").trim());
+      cleanedCount++;
+    } else {
+      kept.push(s);
+    }
+    flagRE.lastIndex = 0;
+  }
+  return {
+    sanitized: kept.join(" ").replace(/\s{2,}/g, " ").replace(/\s+\n/g, "\n"),
+    dropped,
+    cleanedCount,
+  };
+}
+
+/**
+ * Flag pseudo-citations (v4 §5 rule 3). Returns list of hits; caller
+ * can either strip or fail the audit.
+ */
+function flagPseudoCitations(text) {
+  const hits = [];
+  for (const pat of PSEUDO_CITES) {
+    const matches = (text || "").match(pat);
+    if (matches) hits.push(...matches);
+  }
+  return hits;
+}
+
+/**
+ * Cap the number of times a specific dollar ceiling appears. v4 §10
+ * caps any single dollar ceiling at 2 mentions report-wide.
+ */
+function capDollarMentions(text, maxPer = 2) {
+  if (!text) return text;
+  const counts = new Map();
+  const re = /\$\s?\d[\d,.]*\s?(?:billion|million|bn|B|M)\b/g;
+  return text.replace(re, (match) => {
+    const key = match.replace(/\s+/g, "").toUpperCase();
+    const n = (counts.get(key) || 0) + 1;
+    counts.set(key, n);
+    if (n > maxPer) return "(amount above)";
+    return match;
+  });
+}
+
+/**
+ * Ensure every Tier 3 URL in the text is tagged with [sentiment-source].
+ * Does not enforce — just inserts labels where they are missing.
+ */
+function labelTier3Sources(text, citations) {
+  if (!text || !citations) return text;
+  let result = text;
+  for (const url of citations) {
+    const { tier } = classifyTier(url);
+    if (tier !== 3) continue;
+    const idx = result.indexOf(url);
+    if (idx < 0) continue;
+    const after = result.slice(idx + url.length, idx + url.length + 120);
+    if (/\[sentiment-source\]/i.test(after)) continue;
+    result = result.slice(0, idx + url.length) + " [sentiment-source]" + result.slice(idx + url.length);
+  }
+  return result;
+}
+
+/**
+ * Run all v4 sanitizer passes. Call AFTER sanitizeSynthesis and BEFORE
+ * the self-audit.
+ *
+ * @returns {{ sanitized: string, gaps: string[], pseudoCiteHits: string[], cleanedCount: number }}
+ */
+function sanitizeV4(text, citations) {
+  const pseudoCiteHits = flagPseudoCitations(text);
+  let result = text;
+
+  // Strip pseudo-citations (leave the surrounding claim for the audit to
+  // evaluate on its own merits)
+  for (const pat of PSEUDO_CITES) {
+    result = result.replace(pat, "");
+  }
+
+  // Strip internal [source needed] / [no contract number verified] flags
+  const stripResult = stripInternalFlags(result);
+  result = stripResult.sanitized;
+
+  // Cap repeated dollar mentions
+  result = capDollarMentions(result, 2);
+
+  // Label Tier 3 citations
+  result = labelTier3Sources(result, citations);
+
+  // Clean up artifacts
+  result = result.replace(/\n{3,}/g, "\n\n").trim();
+
+  return {
+    sanitized: result,
+    gaps: stripResult.dropped,
+    pseudoCiteHits,
+    cleanedCount: stripResult.cleanedCount,
+  };
+}
+
+module.exports = {
+  sanitizeSynthesis,
+  sanitizeV4,
+  stripInternalFlags,
+  flagPseudoCitations,
+  capDollarMentions,
+  labelTier3Sources,
+};

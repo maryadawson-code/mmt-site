@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-04-20T02:16:38.991Z",
-  "total": 181,
+  "generated_at": "2026-04-20T15:52:39.564Z",
+  "total": 183,
   "counts": {
     "articles": 101,
-    "friday_briefs": 4,
+    "friday_briefs": 5,
     "monthly_briefs": 2,
     "contracts": 32,
-    "capture_intel": 14,
+    "capture_intel": 15,
     "glossary": 0,
     "idiq_vehicles": 28
   },
@@ -1598,6 +1598,21 @@
       "premium": true
     },
     {
+      "id": "brief-rhrp-2026-04",
+      "type": "premium_brief",
+      "title": "RHRP-4 Market Intelligence Dashboard",
+      "slug": "rhrp-2026-04",
+      "date": "rhrp-2026-04",
+      "description": "Special Report: RHRP-4 Market Intelligence — MMT Premium &larr; Capture Intelligence MMT Premium &middot; Special Report &middot; April 20, 2026 RHRP-4 Market Intelligence Dashboard OptumServe wins $1",
+      "tags": [
+        "premium",
+        "friday-brief"
+      ],
+      "url": "/premium/briefs/rhrp-2026-04.html",
+      "excerpt": "Special Report: RHRP-4 Market Intelligence — MMT Premium &larr; Capture Intelligence MMT Premium &middot; Special Report &middot; April 20, 2026 RHRP-4 Market Intelligence Dashboard OptumServe wins $1.61B DHA single-award IDIQ (HT001126DE001). 10-year POP, 4 task orders expected, scope expanded to DHS civilians. What the subcontracting window looks like, and who the subs on RHRP-3 should be calling this week. Agency: DHA Vehicle: RHRP-4 NAICS 621112 · PSC Q201 Set-aside: Full & Open Signal: Verified ★ Premium Special Report This is the MMT Premium deep-dive on the RHRP-4 award — contract lineage, subcontracting windows, population-expansion analysis, and the teaming list for TO 2&ndash;4. Free members see the headline in Capture Intelligence. See premium plans Executive Thesis RHRP-4 is a single-award IDIQ. That means zero prime opportunity for anyone other than OptumServe through 2036. But it also means every specialty requirement under the 4 expected task orders will be subcontracted, and the contracting activity (DHA Professional Services Contracting Division, Falls Church) is the same shop that issued RHRP-3's tasking history. Subs on RHRP-3 (LHI/OptumServe team) have a natural follow-on only if their teaming agreements carry over — confirm this week . The hidden story: population expansion to DHS civilians (CBP, TSA, FEMA readiness) is the 18-month scope-creep watch. Key Metrics Ceiling Value $1.61B RHRP-4 (HT001126DE001) Period of Performance 10 years Transition + base + 9 options Population Served ~400k Annually (AD + RC + Guard + DoD civ + DHS civ) First Task Order $11M TO 0001 — transition-in Contract Lineage — RHRP-4 vs RHRP-3 Field RHRP-4 (current) RHRP-3 (legacy) PIID HT001126DE001 W15QKN21D5000 Awardee OptumServe Health Services, Inc. (La Crosse, WI) OptumServe / Logistics Health Inc. Type Single-award IDIQ, Full & Open IDIQ, Full & Open NAICS / PSC 621112 / Q201 621112 / Q201 Ceiling $1,610,000,000 $999,000,000 Obligated to date $157,000 (TO 0001) ~$259.0M (~26% used) Guaranteed minimum $11,000,000 — Award date 2026-04-10 (posted 2026-04-16) 2020-10-01 POP Up to 10 years 5 years Contracting activity DHA Professional Services Contracting Division, Falls Church, VA DHA via Army Contracting Command Proposals received 4 3 Expected TOs 4 (per DHA planning) — In-Scope Services (RHRP-4) Periodic Health Assessments (PHA, DD-3024), Mental Health Assessments (DD-2978), immunizations, laboratory services, audiology, vision screenings, pre-deployment assessments (DD-2975), post-deployment reassessments (DD-2900), dental readiness exams, dental treatment (Reserve Component only), physical exams. Subcontracting Windows — TO 2 through TO 4 Window 1 — Specialty clinical services Behavioral health, dental, audiology, vision, lab These are the lines where OptumServe did not have native national coverage on RHRP-3. Subs with CONUS + OCONUS footprint across these specialties will be on the shortlist for TO 2&ndash;4. Teaming agreements should be in place before TO 1 closes transition. Window 2 — DHS civilian expansion CBP, TSA, FEMA readiness RHRP-4 scope was expanded to include DHS civilians. This is new ground — DHS component medical readiness has historically been handled by FEHB contractors, not DHA-style IDIQs. If OptumServe stands up a dedicated DHS task order, specialty subs with DHS past performance become differentiators. Window 3 — Data + interoperability MHS GENESIS integration + DHA analytics RHRP readiness data feeds into IMR scoring for DoD deployability. As MHS GENESIS rolls out to additional sites, RHRP contractor data integration becomes a differentiator. Health IT firms with MHS GENESIS / Cerner Millennium experience should approach OptumServe's federal IT arm. Methodology & Limitations Sources searched: DoD Contracts Announcements, SAM.gov Opportunities API, USASpending.gov award detail, GovTribe opportunity profile, HigherGov IDV, health.mil RHRP program page, Washington Technology award coverage, OrangeSlices.ai award summary. Tier 1 share: 5 of 9 sources Tier 1 (56%). Meets v4 &ge;40% floor. Gaps: RHRP-3 full obligation history post-FPDS migration is partial — SAM.gov awards API has not yet surfaced all task-order-level obligations. RHRP-4 subcontractor identities not yet disclosed in public sources. Future updates will add task-order-level obligation tracking once USASpending IDV endpoint fully reflects RHRP-4. What would close the gaps: (1) USASpending IDV endpoint freshness for HT001126DE001. (2) OptumServe subcontracting plan (public via SBA's subcontracting reports in 6 months). (3) DHS MOU/IAA for civilian-population expansion. Monday Move — What to Do This Week If you were a sub on RHRP-3: Email your OptumServe POC this week to confirm teaming-agreement portability to RHRP-4. Do not assume. TO 0001 transition closes ~90 days. If you are new: Approach OptumServe's federal arm directly. Single-award IDIQ means no prime path, but all 4 TOs will need specialty subs. Lead with CONUS + OCONUS coverage evidence. If you cover DHS: Watch for a DHS-scoped task order under RHRP-4. Past performance with CBP/TSA/FEMA medical readiness becomes a differentiator within 12 months. If you cover data/interoperability: Track RHRP readiness data integration into MHS GENESIS — this is where RHRP intersects with the larger DHA digital health investment thesis. HHS Small Business Spending — Backdrop for Diversification Metric Value FY HHS total contract spending $160.7B FY21&ndash;FY24 HHS small business share of prime obligations 24.83% FY24 HHS FY24 small business goal 22.0% (exceeded) FY24 HHS FY25 small business goal 24.5% (raised from 23%) FY25 Federal-wide SB goal 23% FY25 HHS is a durable small-business buyer — useful context for firms diversifying off DoD exposure. 8(a) goal was reduced after EO 14151; SDVOSB / HUBZone / WOSB unchanged. Healthcare IT Market — Growth Backdrop Metric Value Source 2025 market size $866.48B Grand View Research 2033 projected size $2,864.39B Grand View Research CAGR 2026&ndash;2033 16.2% Grand View Research Largest segment (2025) Revenue cycle management (44.39%) Grand View Research Why it matters: 16.2% CAGR through 2033 supports MHS GENESIS, EHR modernization, and DHA digital health investment thesis &mdash; RHRP data integration is downstream of this tailwind. Alternate forecast (Market Data Forecast) pegs the market at $205.55B &rarr; $766.06B; divergence is scope. We use Grand View as primary and flag MDF as secondary. Source Table # URL Tier Claim Supported 1 DoD Contracts Announcement, Apr 16 2026 T1 RHRP-4 award, ceiling, PIID 2 health.mil RHRP page T1 Population served, program scope 3 Army Benefits — DHA RHRP support T1 Services delivered annually 4 SBA Scorecard T1 Federal-wide SB goal 5 RAND Health Quarterly T1 IMR compliance goal 6 Washington Technology T2 Population expansion to DHS, ceiling 7 GovTribe RHRP-4 profile T2 Contract detail 8 HigherGov RHRP-3 IDV T2 RHRP-3 utilization, ceiling 9 OrangeSlices.ai T2 Award summary 10 GovWin HHS Strategic Outlook T2 HHS SB spending trend",
+      "premium": true
+    },
+    {
       "id": "monthly-2026-02",
       "type": "monthly_brief",
       "title": "February 2026 — DOGE Impact Assessment",
@@ -2347,6 +2362,21 @@
       ],
       "url": "/intel/capture-intelligence-this-issue/",
       "excerpt": "id: s14\nagency: CDC\nprogram: Data Modernization Initiative\nsignal: Continued investment in public health data infrastructure; $250M FY2027 request\nconfidence: proposed\naction_window: Multiple task orders expected Q1-Q2 FY2027\nurgent: false\nwhat_to_do: Firms with public health surveillance and data integration experience should monitor CDC ORISE and direct contract opportunities.\nfree_preview: false",
+      "premium": true
+    },
+    {
+      "id": "capture-s15-rhrp4",
+      "type": "capture_intel",
+      "title": "RHRP-4 (HT001126DE001)",
+      "slug": "signal-14",
+      "date": "",
+      "description": "",
+      "tags": [
+        "capture-intel",
+        "DHA"
+      ],
+      "url": "/intel/capture-intelligence-this-issue/",
+      "excerpt": "id: s15-rhrp4\nagency: DHA\nprogram: RHRP-4 (HT001126DE001)\nsignal: OptumServe won $1.61B single-award IDIQ (April 10, 2026); first TO is $11M transition-in; 4 task orders expected over 10-year POP; population expanded to DHS civilians\nconfidence: verified\naction_window: TO 2-4 over next 18 months — subcontracting window for behavioral health, dental, audiology, vision, lab\nurgent: true\nwhat_to_do: If you were a sub on RHRP-3 (LHI/OptumServe team), confirm teaming-agreement portability to RHRP-4 now. If you are new, approach OptumServe's federal arm directly — single-award IDIQ means zero prime opportunity but all 4 task orders will require specialty subs. Population expansion to DHS civilians (CBP/TSA/FEMA readiness) is the scope-creep watch.\nfree_preview: true\nreport_url: /premium/briefs/rhrp-2026-04.html\nreport_title: Special Report: RHRP-4 Market Intelligence Dashboard",
       "premium": true
     },
     {

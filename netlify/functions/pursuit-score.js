@@ -11,6 +11,8 @@ const crypto = require("crypto");
 const { createClient } = require("@supabase/supabase-js");
 const { scorePursuit } = require("./lib/pursuit-score-engine");
 const { MMT_PRICING } = require("./lib/mmt-pricing");
+const { getFlag } = require("./lib/feature-flags");
+const { loadToolContext, buildToolEnvelope, buildEvidencePanel, renderBlockedResponse } = require("./lib/premium-tools-core");
 
 // Cap + overage values come from lib/mmt-pricing.js (single source of truth)
 const MONTHLY_SCORE_CAP = MMT_PRICING.pursuit_score.premium_monthly_allowance;    // 20
@@ -181,6 +183,58 @@ exports.handler = async (event) => {
     };
   }
 
+  // === PREMIUM_TOOLS_V2 envelope wrapping ===
+  // Wrap the legacy card in the uniform ToolEnvelope (mode dispatch,
+  // evidence panel, Monday Move, methodology & gaps). Legacy fields
+  // remain available at envelope.legacy for backward compatibility.
+  const V2_ON = getFlag("PREMIUM_TOOLS_V2") === "on";
+  let envelope = null;
+  if (V2_ON) {
+    const toolCtx = await loadToolContext(supabase, email, { company: body.company });
+    if (toolCtx.state === "BLOCKED") {
+      return {
+        statusCode: 409,
+        headers: CORS_HEADERS,
+        body: JSON.stringify(renderBlockedResponse(email, toolCtx.reason)),
+      };
+    }
+    const evidence = buildEvidencePanel(card.sources || card.resolved?.sources || []);
+    const verdictToState = (v) => {
+      const s = String(v || "").toLowerCase();
+      if (s.includes("pursue") || s.includes("prime")) return "Prime";
+      if (s.includes("team") || s.includes("sub")) return "Sub";
+      if (s.includes("watch") || s.includes("monitor")) return "Watch";
+      if (s.includes("no-bid") || s.includes("skip")) return "No-bid now";
+      return "Watch";
+    };
+    const dimensions = {};
+    if (card.dimensions) {
+      for (const [k, v] of Object.entries(card.dimensions)) {
+        dimensions[k] = { score: v.score || 0, max: v.max || 100, detail: v.detail || v.explanation || "" };
+      }
+    }
+    envelope = buildToolEnvelope({
+      tool: "pursuit",
+      email,
+      inputs: { keyword, agency, naics },
+      toolContext: toolCtx,
+      resolved: card.resolved || {},
+      rawFinding: {
+        topic: keyword,
+        state: verdictToState(card.verdict),
+        why: card.why || card.reasons || [],
+        blockers: card.blockers || [],
+        what_would_flip: card.what_would_flip || [],
+        next_catalyst: card.next_catalyst,
+      },
+      dimensions,
+      totalScore: card.totalScore || card.total,
+      evidence,
+      subQuestions: [],
+      legacy: card,
+    });
+  }
+
   // Write to cache (non-blocking — subsequent requests can use it)
   writeCache(supabase, cacheKey, card).catch(() => { /* swallow */ });
 
@@ -203,18 +257,21 @@ exports.handler = async (event) => {
     console.warn("pursuit-score: ops_events log failed:", logErr.message);
   }
 
+  const responseBody = {
+    ...card,
+    remaining: Math.max(cap - used - 1, 0),
+    cached: false,
+    pricing: {
+      cap,
+      overage_per_score: MMT_PRICING.pursuit_score.premium_overage_per_score,
+      standalone_per_score: MMT_PRICING.pursuit_score.standalone_per_score,
+    },
+  };
+  if (envelope) responseBody.envelope = envelope;
+
   return {
     statusCode: 200,
     headers: { ...CORS_HEADERS, "X-Cache": "MISS" },
-    body: JSON.stringify({
-      ...card,
-      remaining: Math.max(cap - used - 1, 0),
-      cached: false,
-      pricing: {
-        cap,
-        overage_per_score: MMT_PRICING.pursuit_score.premium_overage_per_score,
-        standalone_per_score: MMT_PRICING.pursuit_score.standalone_per_score,
-      },
-    }),
+    body: JSON.stringify(responseBody),
   };
 };
