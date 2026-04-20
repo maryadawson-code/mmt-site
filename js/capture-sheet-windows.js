@@ -134,6 +134,71 @@
     document.head.appendChild(s);
   }
 
+  function hidePastRows() {
+    // After rewriteLabel stamps elements with .capture-window-closed,
+    // move the whole enclosing <tr> (or accordion) into a collapsed
+    // "Past signals" section with a show/hide toggle. Signals don't
+    // vanish — they're still available for reference — but they stop
+    // competing for attention with live action windows.
+    var closedEls = document.querySelectorAll('.capture-window-closed');
+    if (closedEls.length === 0) return;
+
+    // --- Table rows ---
+    var pastRows = [];
+    closedEls.forEach(function (el) {
+      var tr = el.closest && el.closest('tr');
+      if (tr && pastRows.indexOf(tr) === -1) pastRows.push(tr);
+    });
+    pastRows.forEach(function (tr) {
+      tr.classList.add('capture-row-past');
+      tr.style.display = 'none';
+    });
+
+    var anyTable = pastRows[0] && pastRows[0].closest('table');
+    if (pastRows.length > 0 && anyTable && !document.getElementById('capture-past-toggle')) {
+      var tfootRow = document.createElement('tr');
+      tfootRow.id = 'capture-past-toggle';
+      tfootRow.innerHTML = '<td colspan="5" style="text-align:center;padding:12px;background:#F9FAFB;font-size:13px;">' +
+        '<button type="button" onclick="(function(){var rows=document.querySelectorAll(\'.capture-row-past\');var btn=document.getElementById(\'capture-past-toggle-btn\');var open=btn.getAttribute(\'data-open\')===\'true\';rows.forEach(function(r){r.style.display=open?\'none\':\'\';});btn.setAttribute(\'data-open\',open?\'false\':\'true\');btn.textContent=(open?\'Show \':\'Hide \')+' + pastRows.length + '+\' past signal' + (pastRows.length === 1 ? '' : 's') + '\';})();" id="capture-past-toggle-btn" data-open="false" style="background:transparent;border:0;color:#457B9D;font-weight:600;cursor:pointer;font-size:13px;">Show ' + pastRows.length + ' past signal' + (pastRows.length === 1 ? '' : 's') + '</button>' +
+        '</td>';
+      anyTable.querySelector('tbody').appendChild(tfootRow);
+    }
+
+    // --- Deep dive accordions ---
+    var accordions = document.querySelectorAll('.acc-item, details.acc-item, .ci-deep-dive .acc-item');
+    var pastAccordions = [];
+    accordions.forEach(function (acc) {
+      var closed = acc.querySelector('.capture-window-closed');
+      if (closed) {
+        acc.classList.add('capture-row-past');
+        acc.style.display = 'none';
+        pastAccordions.push(acc);
+      }
+    });
+    if (pastAccordions.length > 0 && !document.getElementById('capture-deep-past-toggle')) {
+      var dd = document.querySelector('.ci-deep-dive .wrap');
+      if (dd) {
+        var box = document.createElement('div');
+        box.id = 'capture-deep-past-toggle';
+        box.style.cssText = 'margin:24px 0;padding:14px 20px;background:#F9FAFB;border:1px dashed #D1D5DB;border-radius:10px;text-align:center;font-size:13px;';
+        box.innerHTML = '<button type="button" onclick="(function(){var accs=document.querySelectorAll(\'.capture-row-past\');var btn=document.getElementById(\'capture-deep-past-btn\');var open=btn.getAttribute(\'data-open\')===\'true\';accs.forEach(function(a){if(a.classList.contains(\'acc-item\')||a.matches(\'details.acc-item\')){a.style.display=open?\'none\':\'\';}});btn.setAttribute(\'data-open\',open?\'false\':\'true\');btn.textContent=(open?\'Show \':\'Hide \')+' + pastAccordions.length + '+\' closed deep-dive signal' + (pastAccordions.length === 1 ? '' : 's') + '\';})();" id="capture-deep-past-btn" data-open="false" style="background:transparent;border:0;color:#457B9D;font-weight:600;cursor:pointer;font-size:13px;">Show ' + pastAccordions.length + ' closed deep-dive signal' + (pastAccordions.length === 1 ? '' : 's') + '</button>';
+        dd.appendChild(box);
+      }
+    }
+
+    // Update signal count banner
+    var countEl = document.querySelector('.ci-table-count');
+    if (countEl && !countEl.getAttribute('data-live-updated')) {
+      var m = countEl.textContent.match(/(\d+)\s+signals/);
+      if (m) {
+        var total = parseInt(m[1], 10);
+        var live = total - pastRows.length;
+        countEl.textContent = countEl.textContent.replace(/(\d+)\s+signals/, live + ' live signals (' + pastRows.length + ' closed)');
+        countEl.setAttribute('data-live-updated', 'true');
+      }
+    }
+  }
+
   function run() {
     injectStyles();
     // Target: the .window column in the capture sheet table + any element
@@ -165,6 +230,7 @@
       });
     });
     rewriteUpdatedStamp();
+    hidePastRows();
   }
 
   if (document.readyState === 'loading') {
