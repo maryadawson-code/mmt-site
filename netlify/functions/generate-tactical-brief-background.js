@@ -1334,6 +1334,13 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
       // Audit #13 (checkSourceTable) expects a markdown "# | URL | Tier |"
       // table with row count within 10% of total citations. buildSourceTable
       // emits exactly that shape.
+      //
+      // v4 prompt §16 also mandates the MODEL emit a ## Source Table. If
+      // both the model's and our appended tables land in finalSynthesis,
+      // audit #13's greedy regex counts rows from both and hard-stops
+      // (rows=50 when citations=25). Strip the model-emitted section first
+      // so exactly one canonical Source Table ends up in the delivered body.
+      finalSynthesis = finalSynthesis.replace(/\n?##\s*Source Table[\s\S]*?(?=\n##\s|$)/gi, "");
       finalSynthesis += "\n\n## Source Table\n\n" + buildSourceTable(v4Citations);
 
       // Auto-label any inline Tier 3 citation that lacks [sentiment-source]
