@@ -91,6 +91,7 @@ No subscriber context loaded. Do NOT emit firm-specific pursuit recommendations.
 - **Market plays** — what the market as a whole is doing
 - **Watch triggers** — dated signals any reader should monitor
 - **Who would benefit** — profile of firm type (size, cert, capabilities) the signal favors
+- **MMT editorial angle** (REQUIRED) — name the specific MMT channel that will carry this signal: Friday Brief section, Monthly Brief feature, newsletter post, Mission Meets Reality podcast segment, Capture Intelligence row, sponsorship alert, or referral. MarketPulse is published by MMT, so every generic-mode Capture Strategy MUST name at least one MMT editorial play. This is enforced by the self-audit.
 Label this section "GENERIC — no subscriber profile loaded" at the top.`;
   }
 }
@@ -178,6 +179,9 @@ Separate every statement into one of three levels:
 10. Null results state the exact query string, source queried, and interpretation.
 11. Single-award IDIQs already awarded are **NOT pipeline opportunities** for generic users. Treat as context for incumbents only, unless subscriber profile flags incumbent status.
 12. Cap any single dollar ceiling at 2 mentions report-wide.
+13. **Award dates.** Every AWARD DATE (ISO \`YYYY-MM-DD\`, \`FY20NN\`, or \`Q#FY20NN\`) must appear on the same line as a Tier 1 citation — SAM.gov, USASpending, FPDS, agency \`.gov\`/\`.mil\`, GAO, COFC, CourtListener, or a bracketed reference resolving to a Tier 1 row in the Source Table. No award date may stand alone on its line. Set the date to \`null\` and log a Null-Result Register entry rather than emit an uncited award date.
+14. **Tier 3 labeling.** Every TIER 3 source cited inline must be followed by the literal marker \`[sentiment-source]\` within the same sentence — no exceptions. Reddit, LinkedIn posts, vendor blogs, BBB, and press releases are the only allowed Tier 3 categories. Never use Tier 3 as the sole citation for a number, date, or legal fact.
+15. **Quotes.** Every DIRECT QUOTE of 25 or more characters must appear with a citation (bracketed reference, inline URL, or parenthetical \`(per ...)\`) in the same line or the line immediately following the quote. If a source is not retrievable, paraphrase — never fabricate quoted text.
 
 ## REPORT STRUCTURE — 15 sections, this exact order
 
@@ -197,12 +201,16 @@ Separate every statement into one of three levels:
 8. **Stakeholder Map**
 9. **Competitive Dynamics & Teaming**
 10. **Protest / Litigation Watch** — GAO + COFC docket check for every contract <90 days old
-11. **Readiness Outcomes** — ≥3 hard metrics with dates and trendlines
+11. **Readiness Outcomes** (MANDATORY — never omit) — emit the literal heading \`## Readiness Outcomes\` and include ≥3 hard metrics. Each metric line must contain BOTH a number/percentage AND a date reference (\`YYYY-MM-DD\`, \`FY20NN\`, or \`Q#FY20NN\`) on the same line, with an inline citation. If fewer than 3 dated metrics are available, emit what you have plus an "insufficient evidence" note — do not pad with undated figures.
 12. **Risk Matrix** — L/M/H + dated trigger + mitigation
 13. **Forward Catalysts** — 12-24 months, specific dates
 14. **Not Found / Null-Result Register** — exact queries, source family, model, interpretation
-15. **Capture Strategy** (mode-specific — see below)
+15. **Capture Strategy** (MANDATORY — never omit; mode-specific below) — emit the literal heading \`## Capture Strategy\`. In EVERY mode — contractor, platform, mixed, and generic — the body MUST include at least one MMT-platform play by name: editorial angle, Friday Brief, Monthly Brief, newsletter, podcast, Capture Intelligence, sponsorship alert, or referral. MarketPulse is itself an editorial product, so every Capture Strategy must reference how MMT's channels carry this signal. In contractor/mixed mode this is additive to bid/teaming/watch plays — it does not replace them.
 16. **Source Table** — # | URL | Tier | Date | Claim Supported
+
+## SECTION HEADING DISCIPLINE
+
+Emit each section heading as a literal \`##\` H2 followed by the section name, EXACTLY as written in the list above — no numbering on the heading line (\`## Readiness Outcomes\`, not \`## 11. Readiness Outcomes\`), no alternate phrasings (\`## Readiness Outcomes\`, not \`## Readiness\` or \`### Readiness Outcomes\`). The self-audit matches these headings verbatim against fixed regexes; a paraphrased or re-numbered heading causes the section to register as missing and blocks delivery.
 
 ${modeBlock}${rhrp}
 
