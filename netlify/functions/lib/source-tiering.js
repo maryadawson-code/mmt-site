@@ -232,17 +232,89 @@ function enforceTierRatio(citations, minTier1Ratio = 0.40) {
   };
 }
 
+// Tracking params stripped during canonicalization. Anything matching
+// utm_* is also dropped (handled by the regex below).
+const TRACKING_PARAMS = new Set([
+  "ref",
+  "fbclid",
+  "gclid",
+  "mc_cid",
+  "mc_eid",
+  "msclkid",
+  "yclid",
+  "igshid",
+  "_hsenc",
+  "_hsmi",
+  "hsctatracking",
+]);
+
+/**
+ * Canonicalize a URL so trivially-different spellings of the same resource
+ * collapse to one key. Rules:
+ *   - lowercase hostname
+ *   - drop fragment
+ *   - strip utm_* params + known tracking params (ref, fbclid, gclid, …)
+ *   - sort remaining params alphabetically
+ *   - strip trailing slashes from pathname (except root "/")
+ * Falls back to a lowercased trimmed string when URL parsing fails.
+ *
+ * @param {string} url
+ * @returns {string}
+ */
+function canonicalizeUrl(url) {
+  if (!url || typeof url !== "string") return "";
+  const raw = url.trim();
+  try {
+    const u = new URL(raw);
+    u.hash = "";
+    u.hostname = u.hostname.toLowerCase();
+    const kept = [...u.searchParams.entries()]
+      .filter(([k]) => !/^utm_/i.test(k) && !TRACKING_PARAMS.has(k.toLowerCase()))
+      .sort(([a], [b]) => a.localeCompare(b));
+    u.search = kept.length ? "?" + kept.map(([k, v]) => `${k}=${v}`).join("&") : "";
+    if (u.pathname.length > 1) u.pathname = u.pathname.replace(/\/+$/, "");
+    return u.toString();
+  } catch {
+    return raw.toLowerCase().replace(/#.*$/, "").replace(/\/+$/, "");
+  }
+}
+
+/**
+ * Deduplicate citations by canonical URL. Preserves first occurrence
+ * (original casing, original query-param order) so the user-visible
+ * table shows the source as the model first cited it.
+ *
+ * @param {string[]} citations
+ * @returns {string[]}
+ */
+function dedupeCitations(citations) {
+  const seen = new Set();
+  const out = [];
+  for (const url of citations || []) {
+    if (!url || typeof url !== "string") continue;
+    const key = canonicalizeUrl(url);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    out.push(url);
+  }
+  return out;
+}
+
 /**
  * Build a Source Table (v4 §6 section 15) for inclusion in the report.
  * Each row: # | URL | Tier | Date | Claim Supported
  * The 'date' and 'claim' fields are filled by the synthesis prompt; this
  * function emits a markdown table skeleton that the synthesis step extends.
  *
+ * Dedupes by canonical URL before emitting rows — one row per unique
+ * source, preserving first occurrence + its tier classification.
+ *
  * @param {string[]} citations
  * @returns {string} markdown table
  */
 function buildSourceTable(citations) {
-  const rows = (citations || []).map((url, i) => {
+  const unique = dedupeCitations(citations);
+  const rows = unique.map((url, i) => {
     const { tier } = classifyTier(url);
     return `| ${i + 1} | ${url} | T${tier} | — | — |`;
   });
@@ -258,6 +330,8 @@ module.exports = {
   classifyAll,
   enforceTierRatio,
   buildSourceTable,
+  canonicalizeUrl,
+  dedupeCitations,
   TIER_1_DOMAINS,
   TIER_2_DOMAINS,
   TIER_3_DOMAINS,

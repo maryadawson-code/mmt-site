@@ -67,7 +67,7 @@ const {
 } = require("./lib/research-planner");
 const { buildV4SystemPrompt, detectMode, renderBanner: renderV4Banner, ACKNOWLEDGMENT: V4_ACK } = require("./lib/marketpulse-v4-prompt");
 const { sanitizeV4 } = require("./lib/synthesis-sanitizer");
-const { enforceTierRatio, buildSourceTable } = require("./lib/source-tiering");
+const { enforceTierRatio, buildSourceTable, dedupeCitations } = require("./lib/source-tiering");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
@@ -1286,6 +1286,15 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
       }
       finalSynthesis = v4Clean.sanitized;
 
+      // Dedupe citations by canonical URL once, up-front, so score + audit
+      // + source table all reason over the same unique list. Raw allPass has
+      // near-duplicates (utm params, trailing slashes) that inflate the count
+      // and break audit #13 (expected-row gate).
+      const v4Citations = dedupeCitations(allPassCitations);
+      if (v4Citations.length !== allPassCitations.length) {
+        console.log(`[V4 DEDUP] ${allPassCitations.length} raw citations → ${v4Citations.length} unique`);
+      }
+
       // === EDIT 1: Waived/no-context banner BEFORE scoring ===
       // scoreSubscriberRelevance scans finalSynthesis for a banner phrase when
       // subscriberContext is absent. If we inject the banner later (at HTML
@@ -1301,7 +1310,7 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
 
       v4Score = scoreReportV4({
         reportText: finalSynthesis,
-        citations: allPassCitations,
+        citations: v4Citations,
         hasSubscriberContext: !!subscriberContext,
         opportunityCount,
       });
@@ -1325,16 +1334,16 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
       // Audit #13 (checkSourceTable) expects a markdown "# | URL | Tier |"
       // table with row count within 10% of total citations. buildSourceTable
       // emits exactly that shape.
-      finalSynthesis += "\n\n## Source Table\n\n" + buildSourceTable(allPassCitations);
+      finalSynthesis += "\n\n## Source Table\n\n" + buildSourceTable(v4Citations);
 
       v4Audit = runSelfAudit({
         reportText: finalSynthesis,
-        citations: allPassCitations,
+        citations: v4Citations,
         hasSubscriberContext: !!subscriberContext,
         waived: v4Waived,
         isBidder: !!(subscriberContext && (subscriberContext.active_pursuits || []).length > 0),
         nullQueryCount: 0, // populated when planner is wired into research loop
-        fetchCount: allPassCitations.length,
+        fetchCount: v4Citations.length,
         refinementPasses: Object.keys(passTimings).length,
         score: v4Score,
       });
