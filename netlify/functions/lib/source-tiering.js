@@ -250,13 +250,21 @@ const TRACKING_PARAMS = new Set([
 
 /**
  * Canonicalize a URL so trivially-different spellings of the same resource
- * collapse to one key. Rules:
+ * collapse to one key. Used as the dedup key — NOT for display. The
+ * original URL is preserved in dedupeCitations output.
+ *
+ * Rules (aggressive):
+ *   - normalize protocol (http → https)
  *   - lowercase hostname
+ *   - strip leading "www."
  *   - drop fragment
  *   - strip utm_* params + known tracking params (ref, fbclid, gclid, …)
- *   - sort remaining params alphabetically
- *   - strip trailing slashes from pathname (except root "/")
- * Falls back to a lowercased trimmed string when URL parsing fails.
+ *   - sort remaining query params alphabetically
+ *   - lowercase pathname + strip trailing slashes (except root "/")
+ *
+ * Falls back to an aggressively-normalized raw string when URL parsing
+ * fails — lowercase, drop fragment, strip trailing slash, strip www.,
+ * strip http(s) prefix.
  *
  * @param {string} url
  * @returns {string}
@@ -267,15 +275,25 @@ function canonicalizeUrl(url) {
   try {
     const u = new URL(raw);
     u.hash = "";
-    u.hostname = u.hostname.toLowerCase();
+    if (u.protocol === "http:") u.protocol = "https:";
+    let host = u.hostname.toLowerCase();
+    if (host.startsWith("www.")) host = host.slice(4);
+    u.hostname = host;
     const kept = [...u.searchParams.entries()]
       .filter(([k]) => !/^utm_/i.test(k) && !TRACKING_PARAMS.has(k.toLowerCase()))
       .sort(([a], [b]) => a.localeCompare(b));
     u.search = kept.length ? "?" + kept.map(([k, v]) => `${k}=${v}`).join("&") : "";
-    if (u.pathname.length > 1) u.pathname = u.pathname.replace(/\/+$/, "");
+    if (u.pathname.length > 1) {
+      u.pathname = u.pathname.toLowerCase().replace(/\/+$/, "");
+    }
     return u.toString();
   } catch {
-    return raw.toLowerCase().replace(/#.*$/, "").replace(/\/+$/, "");
+    return raw
+      .toLowerCase()
+      .replace(/#.*$/, "")
+      .replace(/^https?:\/\//, "")
+      .replace(/^www\./, "")
+      .replace(/\/+$/, "");
   }
 }
 
@@ -307,7 +325,9 @@ function dedupeCitations(citations) {
  * function emits a markdown table skeleton that the synthesis step extends.
  *
  * Dedupes by canonical URL before emitting rows — one row per unique
- * source, preserving first occurrence + its tier classification.
+ * source, preserving first occurrence + its tier classification. Tier 3
+ * rows are auto-annotated with [sentiment-source] in the Claim Supported
+ * column so the table itself is self-documenting under audit #8.
  *
  * @param {string[]} citations
  * @returns {string} markdown table
@@ -316,13 +336,53 @@ function buildSourceTable(citations) {
   const unique = dedupeCitations(citations);
   const rows = unique.map((url, i) => {
     const { tier } = classifyTier(url);
-    return `| ${i + 1} | ${url} | T${tier} | — | — |`;
+    const claimLabel = tier === 3 ? "[sentiment-source]" : "—";
+    return `| ${i + 1} | ${url} | T${tier} | — | ${claimLabel} |`;
   });
   return [
     "| # | URL | Tier | Date | Claim Supported |",
     "|---|---|---|---|---|",
     ...rows,
   ].join("\n");
+}
+
+/**
+ * Post-process the synthesis text to insert "[sentiment-source]" next to
+ * every inline Tier 3 URL that lacks the marker. Audit #8 scans a ±120-char
+ * window around each Tier 3 URL occurrence; this helper guarantees the
+ * marker is present without depending on the model to emit it.
+ *
+ * Idempotent — occurrences that already have the marker in their window
+ * are skipped. Returns { text, labeled } so callers can log the count.
+ *
+ * @param {string} reportText
+ * @param {string[]} citations
+ * @returns {{ text: string, labeled: number }}
+ */
+function autoLabelTier3(reportText, citations) {
+  if (!reportText || !citations || citations.length === 0) {
+    return { text: reportText || "", labeled: 0 };
+  }
+  const { tier3 } = classifyAll(citations);
+  if (tier3.length === 0) return { text: reportText, labeled: 0 };
+
+  const uniqueTier3 = [...new Set(tier3)];
+  let text = reportText;
+  let labeled = 0;
+
+  for (const url of uniqueTier3) {
+    const escaped = url.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const re = new RegExp(escaped, "g");
+    text = text.replace(re, (match, offset) => {
+      const start = Math.max(0, offset - 120);
+      const end = offset + match.length + 120;
+      const window = text.slice(start, end);
+      if (/\[sentiment-source\]/i.test(window)) return match;
+      labeled++;
+      return `${match} [sentiment-source]`;
+    });
+  }
+  return { text, labeled };
 }
 
 module.exports = {
@@ -332,6 +392,7 @@ module.exports = {
   buildSourceTable,
   canonicalizeUrl,
   dedupeCitations,
+  autoLabelTier3,
   TIER_1_DOMAINS,
   TIER_2_DOMAINS,
   TIER_3_DOMAINS,

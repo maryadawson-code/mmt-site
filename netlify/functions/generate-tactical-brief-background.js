@@ -67,7 +67,7 @@ const {
 } = require("./lib/research-planner");
 const { buildV4SystemPrompt, detectMode, renderBanner: renderV4Banner, ACKNOWLEDGMENT: V4_ACK } = require("./lib/marketpulse-v4-prompt");
 const { sanitizeV4 } = require("./lib/synthesis-sanitizer");
-const { enforceTierRatio, buildSourceTable, dedupeCitations } = require("./lib/source-tiering");
+const { enforceTierRatio, buildSourceTable, dedupeCitations, autoLabelTier3 } = require("./lib/source-tiering");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
@@ -1335,6 +1335,16 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
       // table with row count within 10% of total citations. buildSourceTable
       // emits exactly that shape.
       finalSynthesis += "\n\n## Source Table\n\n" + buildSourceTable(v4Citations);
+
+      // Auto-label any inline Tier 3 citation that lacks [sentiment-source]
+      // in its ±120-char window. Deterministic fix for audit #8 — the model
+      // is instructed to emit the marker (hard rule #14) but doesn't always
+      // comply, so this guarantees the label before the audit runs.
+      const tier3Labeling = autoLabelTier3(finalSynthesis, v4Citations);
+      if (tier3Labeling.labeled > 0) {
+        console.log(`[V4 TIER3 AUTO-LABEL] inserted [sentiment-source] at ${tier3Labeling.labeled} inline occurrence(s)`);
+        finalSynthesis = tier3Labeling.text;
+      }
 
       v4Audit = runSelfAudit({
         reportText: finalSynthesis,
