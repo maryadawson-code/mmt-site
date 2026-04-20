@@ -79,8 +79,17 @@ exports.handler = async (event) => {
     results.stripe_subscriptions_scanned += subs.data.length;
 
     for (const sub of subs.data) {
+      // Match MMT Premium by EITHER metadata tag OR price amount ($199/yr).
+      // Payment Links don't reliably forward metadata from the Checkout
+      // Session to the Subscription, so the metadata tag is often missing.
+      // Fall back to the canonical $199/yr price.
       const product = sub.metadata && sub.metadata.product;
-      if (product !== "mmt_premium") continue;
+      const priceAmount = sub.items && sub.items.data && sub.items.data[0] && sub.items.data[0].price && sub.items.data[0].price.unit_amount;
+      const priceInterval = sub.items && sub.items.data && sub.items.data[0] && sub.items.data[0].price && sub.items.data[0].price.recurring && sub.items.data[0].price.recurring.interval;
+      const isMmtPremiumByMetadata = product === "mmt_premium";
+      const isMmtPremiumByPrice = priceAmount === 19900 && priceInterval === "year"; // $199/yr
+      const isMmtPremiumByMonthly = priceAmount === 2900 && priceInterval === "month"; // $29/mo
+      if (!isMmtPremiumByMetadata && !isMmtPremiumByPrice && !isMmtPremiumByMonthly) continue;
       results.mmt_premium_found++;
 
       const isActive = sub.status === "active" || sub.status === "trialing";

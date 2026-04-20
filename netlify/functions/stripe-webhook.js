@@ -196,12 +196,31 @@ exports.handler = async (event) => {
     case "customer.subscription.created":
     case "customer.subscription.updated": {
       const sub = stripeEvent.data.object;
-      const subEmail = (sub.metadata && sub.metadata.user_email) || null;
-      const isMmtPremium = sub.metadata && sub.metadata.product === "mmt_premium";
+      // Email resolution — metadata first, then Stripe customer object
+      let subEmail = (sub.metadata && sub.metadata.user_email) || null;
+      if (!subEmail && sub.customer) {
+        try {
+          const customer = await stripe.customers.retrieve(sub.customer);
+          subEmail = customer && customer.email;
+        } catch (_) { /* non-blocking */ }
+      }
+
+      // MMT Premium detection: metadata tag first, then price-amount fallback.
+      // Stripe Payment Links don't always forward metadata from the Session
+      // to the Subscription, so we also match on the canonical $199/yr and
+      // $29/mo MMT Premium prices.
+      const isMmtPremiumByMetadata = sub.metadata && sub.metadata.product === "mmt_premium";
+      const firstItem = sub.items && sub.items.data && sub.items.data[0];
+      const priceAmount = firstItem && firstItem.price && firstItem.price.unit_amount;
+      const priceInterval = firstItem && firstItem.price && firstItem.price.recurring && firstItem.price.recurring.interval;
+      const isMmtPremiumByPrice =
+        (priceAmount === 19900 && priceInterval === "year") ||   // $199/yr
+        (priceAmount === 2900 && priceInterval === "month");      // $29/mo
+      const isMmtPremium = isMmtPremiumByMetadata || isMmtPremiumByPrice;
       const isActive = sub.status === "active" || sub.status === "trialing";
       const isFounding = sub.metadata && sub.metadata.founding_member === "true";
 
-      console.log(`stripe-webhook: subscription ${stripeEvent.type} — ${sub.id} (status: ${sub.status}, product: ${sub.metadata?.product})`);
+      console.log(`stripe-webhook: subscription ${stripeEvent.type} — ${sub.id} (status: ${sub.status}, email: ${subEmail}, premium: ${isMmtPremium}, match: ${isMmtPremiumByMetadata ? "metadata" : isMmtPremiumByPrice ? "price" : "none"})`);
 
       // Update premium tier in mp_users if this is an MMT Premium subscription
       if (isMmtPremium && subEmail) {
