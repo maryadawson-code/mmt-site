@@ -3,7 +3,11 @@
 //
 // Builds email-safe HTML for Friday Brief and Monthly Brief.
 // Converts CSS custom properties to inline values for email clients.
+// Absolutizes any root-relative or bare-relative hrefs against BASE_URL,
+// since email clients do not resolve relative URLs against a base.
 // ============================================================
+
+const BASE_URL = (process.env.SITE_URL || "https://missionmeetstech.com").replace(/\/$/, "");
 
 const VAR_MAP = {
   "var(--mmt-navy)": "#0A192F",
@@ -32,6 +36,32 @@ function inlineVars(html) {
     result = result.replace(new RegExp(escaped, "g"), value);
   }
   return result;
+}
+
+/**
+ * Rewrite relative hrefs to absolute URLs for email delivery.
+ *
+ * Email clients (Gmail, Outlook, Apple Mail) do not resolve relative URLs
+ * against any base — a leading-slash path inside an email body ends up
+ * pointing at the recipient's domain (or nothing). Every internal link in
+ * brief body HTML must be fully qualified with BASE_URL.
+ *
+ * Leaves alone: absolute schemes (http://, https://, mailto:, tel:),
+ * protocol-relative (//), hash anchors (#), and already-absolute URLs.
+ */
+function absolutizeLinks(html) {
+  if (!html) return html;
+  return html.replace(
+    /(\s(?:href|src)=)(["'])([^"']+)\2/gi,
+    (match, attr, quote, value) => {
+      // Leave anchors, schemes, and protocol-relative URLs alone
+      if (/^(?:https?:|mailto:|tel:|#|\/\/)/i.test(value)) return match;
+      // Root-relative: /foo -> BASE_URL/foo
+      if (value.startsWith("/")) return `${attr}${quote}${BASE_URL}${value}${quote}`;
+      // Bare-relative: foo.html or foo/bar -> BASE_URL/foo.html
+      return `${attr}${quote}${BASE_URL}/${value}${quote}`;
+    }
+  );
 }
 
 /**
@@ -74,6 +104,7 @@ function extractBriefContent(fullHtml) {
  * Build email-safe HTML for a Friday Brief.
  */
 function buildFridayBriefEmail({ title, subtitle, briefBodyHtml, briefDate }) {
+  const body = absolutizeLinks(briefBodyHtml || "");
   return `<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
@@ -95,17 +126,17 @@ function buildFridayBriefEmail({ title, subtitle, briefBodyHtml, briefDate }) {
   <!-- Body -->
   <tr><td style="padding:0 32px 32px;">
     <div style="font-size:14px;line-height:1.7;color:#314155;">
-      ${briefBodyHtml}
+      ${body}
     </div>
   </td></tr>
   <!-- Footer -->
   <tr><td style="padding:20px 32px;background:#F3F4F6;border-top:1px solid #D8E0E8;text-align:center;">
     <p style="font-size:12px;color:#5C6B7A;margin:0 0 8px;">
-      <a href="https://missionmeetstech.com/premium/briefings/" style="color:#457B9D;text-decoration:none;font-weight:600;">View all briefs</a>
+      <a href="${BASE_URL}/premium/briefings/" style="color:#457B9D;text-decoration:none;font-weight:600;">View all briefs</a>
       &nbsp;&middot;&nbsp;
-      <a href="https://missionmeetstech.com/premium/dashboard/" style="color:#457B9D;text-decoration:none;font-weight:600;">Premium Dashboard</a>
+      <a href="${BASE_URL}/premium/dashboard/" style="color:#457B9D;text-decoration:none;font-weight:600;">Premium Dashboard</a>
     </p>
-    <p style="font-size:11px;color:#9ca3af;margin:0;">Mission Meets Tech LLC &middot; <a href="https://missionmeetstech.com" style="color:#457B9D;">missionmeetstech.com</a></p>
+    <p style="font-size:11px;color:#9ca3af;margin:0;">Mission Meets Tech LLC &middot; <a href="${BASE_URL}" style="color:#457B9D;">missionmeetstech.com</a></p>
   </td></tr>
 </table>
 </td></tr>
@@ -118,6 +149,7 @@ function buildFridayBriefEmail({ title, subtitle, briefBodyHtml, briefDate }) {
  * Build email-safe HTML for a Monthly Intelligence Brief.
  */
 function buildMonthlyBriefEmail({ title, subtitle, briefBodyHtml, briefDate }) {
+  const body = absolutizeLinks(briefBodyHtml || "");
   return `<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
@@ -136,16 +168,16 @@ function buildMonthlyBriefEmail({ title, subtitle, briefBodyHtml, briefDate }) {
   </td></tr>
   <tr><td style="padding:0 32px 32px;">
     <div style="font-size:14px;line-height:1.7;color:#314155;">
-      ${briefBodyHtml}
+      ${body}
     </div>
   </td></tr>
   <tr><td style="padding:20px 32px;background:#F3F4F6;border-top:1px solid #D8E0E8;text-align:center;">
     <p style="font-size:12px;color:#5C6B7A;margin:0 0 8px;">
-      <a href="https://missionmeetstech.com/premium/monthly-briefs/" style="color:#457B9D;text-decoration:none;font-weight:600;">View all monthly briefs</a>
+      <a href="${BASE_URL}/premium/monthly-briefs/" style="color:#457B9D;text-decoration:none;font-weight:600;">View all monthly briefs</a>
       &nbsp;&middot;&nbsp;
-      <a href="https://missionmeetstech.com/premium/dashboard/" style="color:#457B9D;text-decoration:none;font-weight:600;">Premium Dashboard</a>
+      <a href="${BASE_URL}/premium/dashboard/" style="color:#457B9D;text-decoration:none;font-weight:600;">Premium Dashboard</a>
     </p>
-    <p style="font-size:11px;color:#9ca3af;margin:0;">Mission Meets Tech LLC &middot; <a href="https://missionmeetstech.com" style="color:#457B9D;">missionmeetstech.com</a></p>
+    <p style="font-size:11px;color:#9ca3af;margin:0;">Mission Meets Tech LLC &middot; <a href="${BASE_URL}" style="color:#457B9D;">missionmeetstech.com</a></p>
   </td></tr>
 </table>
 </td></tr>
@@ -175,4 +207,6 @@ module.exports = {
   buildMonthlyBriefEmail,
   buildBriefNotificationEmail,
   inlineVars,
+  absolutizeLinks,
+  BASE_URL,
 };

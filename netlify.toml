@@ -213,6 +213,11 @@
   status = 200
 
 [[redirects]]
+  from = "/capture-corner"
+  to = "/capture-corner.html"
+  status = 200
+
+[[redirects]]
   from = "/lethality-test*"
   to = "/proposal-pulse.html"
   status = 301

@@ -2557,6 +2557,7 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     'fy2027-forecast.html',
     'idiq-tracker.html',
     'help.html',
+    'capture-corner.html',
   ];
   // Premium subdirectory pages
   const premiumPages = [
