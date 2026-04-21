@@ -789,7 +789,7 @@ exports.handler = wrapHandler(async (event) => {
     }
 
     // Regulatory compliance flags (GSA MAS Refresh 31, FAR Modernization)
-    const regulatoryResult = checkRegulatoryCompliance(extractedText || documentText, scorecard, documentType);
+    const regulatoryResult = checkRegulatoryCompliance(extractedText, scorecard, documentType);
     if (regulatoryResult.flags.length > 0 || regulatoryResult.warnings.length > 0) {
       scorecard._regulatory_flags = regulatoryResult;
       console.log(`[REGULATORY] ${regulatoryResult.flags.length} flags, ${regulatoryResult.warnings.length} warnings`);
