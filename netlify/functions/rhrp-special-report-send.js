@@ -175,6 +175,7 @@ exports.handler = async (event) => {
           subject,
           html: emailHtml,
           from: "Mission Meets Tech <noreply@missionmeetstech.com>",
+          adminCopy: true,
         });
         if (result && result.success === false) {
           failed++;

@@ -343,6 +343,7 @@ exports.handler = async (event) => {
           subject: subject.length > 78 ? subject.substring(0, 75) + "..." : subject,
           html: emailHtml,
           from: "Mission Meets Tech <noreply@missionmeetstech.com>",
+          adminCopy: true,
         });
         if (result.success) sentCount++;
         else failCount++;

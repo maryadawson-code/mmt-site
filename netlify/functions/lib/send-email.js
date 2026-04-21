@@ -26,15 +26,31 @@ const RESEND_API_URL = "https://api.resend.com/emails";
 const DEFAULT_FROM = "ProposalPulse <noreply@missionmeetstech.com>";
 
 /**
+ * Read the admin BCC list from ADMIN_BCC_EMAILS env var.
+ * Returns an empty array when the var is unset/empty, which disables
+ * BCC. Set (e.g.) ADMIN_BCC_EMAILS="maryadawson@gmail.com,mary@missionmeetstech.com"
+ * to BCC every customer-facing send to those addresses for quality tracking.
+ */
+function adminBccList() {
+  const raw = process.env.ADMIN_BCC_EMAILS || "";
+  return raw.split(",").map((e) => e.trim()).filter(Boolean);
+}
+
+/**
  * Send an email via Resend.
  * @param {Object} opts
  * @param {string} opts.to - Recipient email address
  * @param {string} opts.subject - Email subject line
  * @param {string} opts.html - HTML email body
  * @param {string} [opts.from] - From address (defaults to noreply@missionmeetstech.com)
+ * @param {string[]} [opts.bcc] - Optional BCC recipients. When omitted and
+ *   `adminCopy: true`, the BCC list is read from ADMIN_BCC_EMAILS env var.
+ * @param {boolean} [opts.adminCopy] - Set true on customer-facing sends to
+ *   auto-BCC the admin list (for quality tracking). Operator / internal
+ *   emails should leave this false to avoid duplicate copies.
  * @returns {Promise<{success: boolean, error?: string, id?: string}>}
  */
-async function sendEmail({ to, subject, html, from, attachments }) {
+async function sendEmail({ to, subject, html, from, attachments, bcc, adminCopy }) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     console.warn("RESEND_API_KEY not set — skipping email send");
@@ -43,6 +59,13 @@ async function sendEmail({ to, subject, html, from, attachments }) {
 
   const circuit = getCircuit("resend");
   const useCircuit = circuit && getFlag("FEATURE_CIRCUIT_BREAKERS") !== "off";
+
+  // Resolve BCC: explicit `bcc` wins; otherwise adminCopy → ADMIN_BCC_EMAILS.
+  let bccList = Array.isArray(bcc) ? bcc.filter(Boolean) : [];
+  if (adminCopy && bccList.length === 0) bccList = adminBccList();
+  // Never BCC the same address that's in `to` — would send the customer two copies.
+  const toLower = String(to || "").toLowerCase();
+  bccList = bccList.filter((e) => e.toLowerCase() !== toLower);
 
   const doSend = async () => {
     const response = await fetchWithTimeout(RESEND_API_URL, {
@@ -56,6 +79,7 @@ async function sendEmail({ to, subject, html, from, attachments }) {
         to: [to],
         subject,
         html,
+        ...(bccList.length > 0 && { bcc: bccList }),
         ...(attachments && attachments.length > 0 && { attachments }),
       }),
     });
@@ -113,4 +137,4 @@ async function sendEmail({ to, subject, html, from, attachments }) {
   }
 }
 
-module.exports = { sendEmail };
+module.exports = { sendEmail, adminBccList };
