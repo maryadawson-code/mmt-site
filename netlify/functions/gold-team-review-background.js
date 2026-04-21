@@ -34,6 +34,13 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const REWRITE_MAX_TOKENS = 12000;
 const REVIEW_MAX_TOKENS = 6000;
 
+// Retry + degrade config for Anthropic calls.
+// Per-attempt timeout < Netlify 900s background cap / 6 (leaves headroom for rewrite + review + email).
+// Backoff deltas from user spec: 2s, 6s between attempts.
+const ANTHROPIC_ATTEMPT_TIMEOUT_MS = 120000;
+const ANTHROPIC_RETRY_DELAYS_MS = [2000, 6000];
+const ANTHROPIC_MAX_ATTEMPTS = ANTHROPIC_RETRY_DELAYS_MS.length + 1;
+
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "https://missionmeetstech.com",
   "Access-Control-Allow-Headers": "Content-Type",
@@ -48,7 +55,9 @@ const CORS_HEADERS = {
 let _lastClaudeUsage = null;
 
 async function callClaude(systemPrompt, userPrompt, maxTokens, model, temperature = 0.3, modelConfig = null) {
-  // Route through inference helper when model config indicates local provider
+  // Route through inference helper when model config indicates local provider.
+  // Local provider path uses its own retry via withRetry — not covered by the
+  // per-attempt timeout + backoff logic below (which is Anthropic-specific).
   if (modelConfig && isLocalProvider(modelConfig)) {
     const result = await withRetry(() => callModel(modelConfig, {
       system: systemPrompt,
@@ -62,34 +71,69 @@ async function callClaude(systemPrompt, userPrompt, maxTokens, model, temperatur
     return result.text;
   }
 
-  // Anthropic path (production default)
-  const response = await withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": ANTHROPIC_API_KEY,
-      "anthropic-version": "2023-06-01",
-    },
-    body: JSON.stringify({
-      model,
-      max_tokens: maxTokens,
-      temperature,
-      system: [{ type: "text", text: systemPrompt, cache_control: { type: "ephemeral" } }],
-      messages: [{ role: "user", content: userPrompt }],
-    }),
-  }, 180000));
+  // Anthropic path (production default): per-attempt 120s timeout, 3 attempts,
+  // 2s + 6s exponential backoff. Throws with err.allRetriesTimeout = true when
+  // every attempt trips the timeout so callers can degrade gracefully instead
+  // of just logging and aborting.
+  const role = modelConfig && modelConfig._taskType ? modelConfig._taskType : "call";
+  const startedAt = Date.now();
+  let lastError = null;
+  for (let attempt = 0; attempt < ANTHROPIC_MAX_ATTEMPTS; attempt++) {
+    try {
+      const response = await fetchWithTimeout("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": ANTHROPIC_API_KEY,
+          "anthropic-version": "2023-06-01",
+        },
+        body: JSON.stringify({
+          model,
+          max_tokens: maxTokens,
+          temperature,
+          system: [{ type: "text", text: systemPrompt, cache_control: { type: "ephemeral" } }],
+          messages: [{ role: "user", content: userPrompt }],
+        }),
+      }, ANTHROPIC_ATTEMPT_TIMEOUT_MS);
 
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Claude API ${response.status}: ${errText}`);
+      if (!response.ok) {
+        const errText = await response.text();
+        const status = response.status;
+        // Retry transient server errors; bail immediately on 4xx (client errors won't self-heal)
+        if ([429, 500, 502, 503, 529].includes(status) && attempt < ANTHROPIC_MAX_ATTEMPTS - 1) {
+          lastError = new Error(`Claude API ${status}: ${errText}`);
+          console.error(`Gold Team ${role}: attempt ${attempt + 1}/${ANTHROPIC_MAX_ATTEMPTS} got ${status}, retrying`);
+          await new Promise((r) => setTimeout(r, ANTHROPIC_RETRY_DELAYS_MS[attempt]));
+          continue;
+        }
+        throw new Error(`Claude API ${status}: ${errText}`);
+      }
+
+      const data = await response.json();
+      _lastClaudeUsage = data.usage || null;
+      return data.content
+        .filter((block) => block.type === "text")
+        .map((block) => block.text)
+        .join("");
+    } catch (err) {
+      lastError = err;
+      const isTimeout = /timed out after/i.test(err.message);
+      if (!isTimeout) {
+        // Non-timeout exceptions (JSON parse, network error) — throw immediately
+        throw err;
+      }
+      console.error(`Gold Team ${role}: attempt ${attempt + 1}/${ANTHROPIC_MAX_ATTEMPTS} timed out`);
+      if (attempt < ANTHROPIC_MAX_ATTEMPTS - 1) {
+        await new Promise((r) => setTimeout(r, ANTHROPIC_RETRY_DELAYS_MS[attempt]));
+      }
+    }
   }
-
-  const data = await response.json();
-  _lastClaudeUsage = data.usage || null;
-  return data.content
-    .filter((block) => block.type === "text")
-    .map((block) => block.text)
-    .join("");
+  // All attempts timed out
+  const timeoutErr = new Error(`Gold Team ${role}: all ${ANTHROPIC_MAX_ATTEMPTS} attempts timed out`);
+  timeoutErr.allRetriesTimeout = true;
+  timeoutErr.elapsedMs = Date.now() - startedAt;
+  timeoutErr.cause = lastError ? lastError.message : null;
+  throw timeoutErr;
 }
 
 function parseJson(text) {
@@ -232,6 +276,65 @@ ${sectionList}
 ${scorecard.top_fix ? `Top Fix recommended: ${scorecard.top_fix}` : ""}
 
 Rewrite every section (polish strong ones, substantially rewrite weak ones). Estimate pWin. Return only the JSON.`,
+  };
+}
+
+/**
+ * Degraded-mode review prompt used when the rewrite pass was skipped
+ * (e.g., Anthropic timed out on all retries). Reviewer evaluates the ORIGINAL
+ * scorecard + document text directly and produces the same response shape as
+ * buildReviewPrompt so downstream merging/email code is unchanged.
+ */
+function buildReviewPromptFromOriginal(scorecard, scores, documentText, config) {
+  const sectionsForReview = scores
+    .map(
+      (s) => `## ${s.title} (Original grade: ${s.grade}, ${s.points} pts)
+ASSESSMENT: "${s.assessment || "(no assessment)"}"`
+    )
+    .join("\n\n");
+
+  const truncatedDoc = (documentText || "").substring(0, 40000);
+
+  return {
+    system: `You are an independent quality reviewer for federal proposal documents. The AI rewrite pass for this ${config.noun} was unavailable (timed out), so you are providing an EXPEDITED review directly on the ORIGINAL document and its scorecard.
+
+Your job:
+1. For each scored section, re-evaluate the original assessment. Is the grade consistent with what the document shows? Any mischaracterizations? What is the strongest critique a federal evaluator would make?
+2. Write a 3-5 bullet executive summary of strengths and weaknesses across the document.
+3. Provide 3-5 prioritized next steps the author should take to strengthen the proposal before the next revision.
+4. Assess overall confidence (0-100%) that the current scorecard accurately reflects the document.
+
+Return ONLY valid JSON. No markdown code fences. No preamble.
+
+{
+  "reviews": [
+    {
+      "criterion_id": "id matching the original scorecard section",
+      "confidence_pct": 0-100,
+      "accuracy_ok": true|false,
+      "consistency_ok": true|false,
+      "improvement_ok": null,
+      "notes": "Your critique of the original assessment and what an evaluator would say."
+    }
+  ],
+  "overall_confidence": 0-100,
+  "executive_summary": "3-5 bullets about document strengths and weaknesses",
+  "next_steps": ["Prioritized action 1", "Prioritized action 2", "..."],
+  "reviewer_notes": "Optional: anything the reviewer wants to flag that doesn't fit above.",
+  "win_theme_coherence": "strong|partial|absent"
+}`,
+    user: `ORIGINAL DOCUMENT (first 40,000 chars):
+---
+${truncatedDoc}
+---
+
+ORIGINAL SCORECARD (${scorecard.verdict || "no verdict"}):
+${sectionsForReview}
+
+TOP FIX: ${scorecard.top_fix || "(none)"}
+RED FLAGS: ${(scorecard.red_flags || []).map((f) => `- ${f}`).join("\n") || "(none)"}
+
+Review this expedited delivery now. Return only JSON.`,
   };
 }
 
@@ -546,6 +649,7 @@ exports.handler = async (event) => {
       rewritePrompt.user += competitiveContext;
     }
     let rewriteResult;
+    let rewriteSkipped = false;
 
     const _costStartRewrite = Date.now();
     try {
@@ -564,9 +668,47 @@ exports.handler = async (event) => {
         });
       } catch (_costErr) { /* never break gold team */ }
     } catch (err) {
-      console.error("Gold Team: rewrite call failed:", err);
-      await logOpsEvent(supabase, { event_type: "MODEL_FAILURE", source_function: "gold-team-review-background", severity: "error", signature: "anthropic_rewrite_failure", affected_entity: scoring_id, details: { error: err.message } });
-      return;
+      if (err.allRetriesTimeout) {
+        // Degrade path: skip the rewrite, synthesize a minimal rewriteResult from
+        // the original scorecard, and proceed to an expedited review pass. This
+        // delivers SOMETHING useful to the customer instead of silent failure.
+        rewriteSkipped = true;
+        const attempts = ANTHROPIC_MAX_ATTEMPTS;
+        await logOpsEvent(supabase, {
+          event_type: "GOLD_TEAM_REWRITE_SKIPPED",
+          source_function: "gold-team-review-background",
+          severity: "warn",
+          signature: "ALL_RETRIES_TIMEOUT",
+          affected_entity: scoring_id,
+          details: {
+            attempts,
+            elapsed_ms: err.elapsedMs || (Date.now() - _costStartRewrite),
+            model: rewriteModelConfig.model,
+            last_error: err.cause || err.message,
+          },
+        });
+        console.warn(`Gold Team: rewrite skipped after ${attempts} timeouts — proceeding to expedited review`);
+        rewriteResult = {
+          strengthened_sections: scores.map((s) => ({
+            criterion_id: s.id,
+            criterion_title: s.title,
+            original_grade: s.grade,
+            original_excerpt: s.assessment || "",
+            strengthened_text: s.assessment || "",
+            changes_made: "(rewrite pass skipped — expedited delivery)",
+            status: "expedited",
+            rewrite_confidence: null,
+            confidence_rationale: null,
+          })),
+          pwin_estimate: null,
+          pwin_justification: null,
+          _rewrite_skipped: true,
+        };
+      } else {
+        console.error("Gold Team: rewrite call failed:", err);
+        await logOpsEvent(supabase, { event_type: "MODEL_FAILURE", source_function: "gold-team-review-background", severity: "error", signature: "anthropic_rewrite_failure", affected_entity: scoring_id, details: { error: err.message } });
+        return;
+      }
     }
 
     if (!rewriteResult.strengthened_sections || rewriteResult.strengthened_sections.length === 0) {
@@ -574,28 +716,32 @@ exports.handler = async (event) => {
       return;
     }
 
-    // Post-processing: validate entity integrity
-    const entityCheck = validateEntityIntegrity(rewriteResult, documentText);
-    if (!entityCheck.clean) {
-      console.warn(`Gold Team: entity validation found ${entityCheck.warnings.length} issues — scrubbed`);
-      await logOpsEvent(supabase, {
-        event_type: "QUALITY_FAILURE",
-        source_function: "gold-team-review-background",
-        severity: "warn",
-        signature: "entity_substitution_detected",
-        affected_entity: scoring_id,
-        details: { warnings: entityCheck.warnings },
-      });
+    // Post-processing: validate entity integrity (skip when rewrites are synthetic)
+    if (!rewriteSkipped) {
+      const entityCheck = validateEntityIntegrity(rewriteResult, documentText);
+      if (!entityCheck.clean) {
+        console.warn(`Gold Team: entity validation found ${entityCheck.warnings.length} issues — scrubbed`);
+        await logOpsEvent(supabase, {
+          event_type: "QUALITY_FAILURE",
+          source_function: "gold-team-review-background",
+          severity: "warn",
+          signature: "entity_substitution_detected",
+          affected_entity: scoring_id,
+          details: { warnings: entityCheck.warnings },
+        });
+      }
     }
 
     // --- Call 2: Review + Executive Summary + Next Steps ---
     const reviewModelConfig = await getModelConfig(supabase, "review");
-    console.log(`Gold Team: reviewing rewrites (model=${reviewModelConfig.model} [${reviewModelConfig.reason}])...`);
+    console.log(`Gold Team: reviewing ${rewriteSkipped ? "original document (expedited mode)" : "rewrites"} (model=${reviewModelConfig.model} [${reviewModelConfig.reason}])...`);
 
     let reviewResult = null;
     const _costStartReview = Date.now();
     try {
-      const reviewPrompt = buildReviewPrompt(rewriteResult, config);
+      const reviewPrompt = rewriteSkipped
+        ? buildReviewPromptFromOriginal(scorecard, scores, documentText, config)
+        : buildReviewPrompt(rewriteResult, config);
       const reviewText = await callClaude(reviewPrompt.system, reviewPrompt.user, REVIEW_MAX_TOKENS, reviewModelConfig.model, 0.2, { ...reviewModelConfig, _taskType: "review" });
       reviewResult = parseJson(reviewText);
       // Cost tracking: review call
@@ -611,8 +757,26 @@ exports.handler = async (event) => {
         });
       } catch (_costErr) { /* never break gold team */ }
     } catch (err) {
+      if (err.allRetriesTimeout) {
+        await logOpsEvent(supabase, {
+          event_type: "GOLD_TEAM_REVIEW_FAILED",
+          source_function: "gold-team-review-background",
+          severity: "error",
+          signature: "ALL_RETRIES_TIMEOUT",
+          affected_entity: scoring_id,
+          details: {
+            attempts: ANTHROPIC_MAX_ATTEMPTS,
+            elapsed_ms: err.elapsedMs || (Date.now() - _costStartReview),
+            model: reviewModelConfig.model,
+            rewrite_skipped: rewriteSkipped,
+            last_error: err.cause || err.message,
+          },
+        });
+        console.error(`Gold Team: review call exhausted ${ANTHROPIC_MAX_ATTEMPTS} attempts — aborting delivery (no partial email)`);
+        return;
+      }
       console.error("Gold Team: review call failed (degrading gracefully):", err);
-      // Continue without review — send rewrites without confidence scores
+      // Non-timeout error on review — continue without reviewResult to preserve prior behavior
     }
 
     // --- Merge results ---
@@ -707,12 +871,20 @@ exports.handler = async (event) => {
     }
 
     // Send email with link to hosted Red Team report
+    const expeditedHeaderLabel = rewriteSkipped
+      ? `<div style="font-size:12px;color:#f59e0b;margin-top:6px;font-weight:600;">Expedited delivery &mdash; rewrite pass skipped</div>`
+      : "";
+    const expeditedBanner = rewriteSkipped
+      ? `<div style="background:#FEF9E7;border:1px solid #E5D9A8;border-radius:6px;padding:12px 14px;margin:0 0 20px;font-size:13px;color:#92710A;line-height:1.55;"><strong>Gold Team Review (expedited).</strong> The rewrite pass was skipped due to document complexity; the review findings below are based on the source document. If you want the full rewrite pass, reply to this email and we'll re-run it.</div>`
+      : "";
     const redTeamEmailHtml = `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;">
   <div style="background:#0A192F;padding:32px 40px;text-align:center;">
     <div style="font-size:24px;font-weight:700;color:#ef4444;letter-spacing:0.5px;">RED TEAM REVIEW</div>
     <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-top:4px;">ProposalPulse Deep Analysis</div>
+    ${expeditedHeaderLabel}
   </div>
   <div style="padding:32px 40px;">
+    ${expeditedBanner}
     <p style="font-size:16px;color:#1e293b;margin:0 0 16px;">Your Red Team Review is ready.</p>
     <p style="font-size:14px;color:#475569;margin:0 0 4px;font-weight:600;">Document</p>
     <p style="font-size:16px;color:#1e293b;margin:0 0 24px;">${(file_name || "uploaded document").replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]))}</p>
