@@ -821,7 +821,18 @@ exports.handler = wrapHandler(async (event) => {
           documentText = documentText.substring(0, MAX_TEXT_CHARS);
         }
       } catch (pdfErr) {
-        console.error("PDF text extraction for Gold Team failed:", pdfErr);
+        await logOpsEvent(supabase, {
+          event_type: "PDF_PARSE_FAILED",
+          source_function: "score-deck-background",
+          severity: "warn",
+          signature: "gold_team_text_extraction",
+          affected_entity: scoring_id,
+          details: {
+            document_type: documentType,
+            error_message: pdfErr.message,
+            byte_size: Buffer.from(fileBase64, "base64").length,
+          },
+        });
       }
     }
 
@@ -831,6 +842,8 @@ exports.handler = wrapHandler(async (event) => {
     const scorecardWithMeta = {
       ...scorecard,
       _document_text: documentText || null,
+      // Preserve PDF base64 for Gold Team native-PDF fallback when pdf-parse yielded nothing usable
+      _pdf_fallback_b64: (!documentText && fileType === "pdf" && fileBase64) ? fileBase64 : null,
       _model_routing: {
         scoring: { model: scoringModelConfig.model, reason: scoringModelConfig.reason },
       },
@@ -1025,9 +1038,24 @@ exports.handler = wrapHandler(async (event) => {
         body: gtrPayload,
       });
       console.log(`Gold Team Review triggered for ${scoring_id}`);
+      await logOpsEvent(supabase, {
+        event_type: "GOLD_TEAM_TRIGGERED",
+        source_function: "score-deck-background",
+        severity: "info",
+        affected_entity: scoring_id,
+        details: { document_type: documentType },
+      });
     } catch (gtErr) {
       // Gold Team failure must never block delivery
       console.error(`Gold Team Review trigger failed for ${scoring_id}: ${gtErr.message}`);
+      await logOpsEvent(supabase, {
+        event_type: "GOLD_TEAM_TRIGGER_FAILED",
+        source_function: "score-deck-background",
+        severity: "error",
+        signature: "trigger_post_failed",
+        affected_entity: scoring_id,
+        details: { error_message: gtErr.message, document_type: documentType },
+      });
     }
 
     // --- B9: Log completion with cost estimate ---

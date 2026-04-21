@@ -345,31 +345,59 @@ exports.handler = async (event) => {
       .single();
 
     if (lookupErr || !record) {
-      console.error("Gold Team: scoring record not found:", scoring_id);
+      await logOpsEvent(supabase, {
+        event_type: "GOLD_TEAM_SKIPPED",
+        source_function: "gold-team-review-background",
+        severity: "error",
+        signature: "MISSING_RECORD",
+        affected_entity: scoring_id,
+        details: { lookup_error: lookupErr?.message || null },
+      });
       return;
     }
 
     // Anti-abuse: verify record is recent (within 10 minutes)
     const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
     if (record.created_at < tenMinutesAgo) {
-      console.error("Gold Team: scoring record too old — possible abuse");
+      await logOpsEvent(supabase, {
+        event_type: "GOLD_TEAM_SKIPPED",
+        source_function: "gold-team-review-background",
+        severity: "warn",
+        signature: "ALREADY_DELIVERED",
+        affected_entity: scoring_id,
+        details: { scoring_record_created_at: record.created_at },
+      });
       return;
     }
 
     if (!record.scores || record.scores._pending) {
-      console.error("Gold Team: scoring not yet complete for:", scoring_id);
+      await logOpsEvent(supabase, {
+        event_type: "GOLD_TEAM_SKIPPED",
+        source_function: "gold-team-review-background",
+        severity: "warn",
+        signature: "MISSING_SCORES",
+        affected_entity: scoring_id,
+        details: { scores_null: !record.scores, pending: record.scores?._pending === true },
+      });
       return;
     }
 
     // Extract data from the scoring record
     const scorecard = record.scores;
-    const documentText = scorecard._document_text || null;
+    let documentText = scorecard._document_text || null;
     const document_type = record.document_type || "pitch_deck";
     const file_name = record.file_name;
 
     const config = DOCUMENT_TYPES[document_type];
     if (!config) {
-      console.error(`Gold Team: unknown document type "${document_type}"`);
+      await logOpsEvent(supabase, {
+        event_type: "GOLD_TEAM_SKIPPED",
+        source_function: "gold-team-review-background",
+        severity: "error",
+        signature: "MISSING_DOC_TYPE",
+        affected_entity: scoring_id,
+        details: { document_type },
+      });
       return;
     }
 
@@ -381,15 +409,79 @@ exports.handler = async (event) => {
       .single();
 
     if (!user || !user.email) {
-      console.error("Gold Team: no user found for scoring record");
+      await logOpsEvent(supabase, {
+        event_type: "GOLD_TEAM_SKIPPED",
+        source_function: "gold-team-review-background",
+        severity: "error",
+        signature: "MISSING_EMAIL",
+        affected_entity: scoring_id,
+        details: { user_id: record.user_id, document_type },
+      });
       return;
     }
 
     const normalizedEmail = user.email.toLowerCase().trim();
 
+    // Fallback: if stored text is insufficient (e.g., pdf-parse failed on an image-heavy PDF),
+    // hand the preserved PDF buffer to Claude natively — same path score-deck uses for scoring.
     if (!documentText || documentText.trim().length < 50) {
-      console.error("Gold Team: insufficient document text in scoring record");
-      return;
+      const pdfFallbackB64 = scorecard._pdf_fallback_b64 || null;
+      let fallbackError = null;
+      if (pdfFallbackB64) {
+        console.log(`Gold Team: attempting native-PDF fallback for ${scoring_id}`);
+        try {
+          const fbResponse = await fetchWithTimeout("https://api.anthropic.com/v1/messages", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-key": ANTHROPIC_API_KEY,
+              "anthropic-version": "2023-06-01",
+            },
+            body: JSON.stringify({
+              model: "claude-haiku-4-5-20251001",
+              max_tokens: 8000,
+              temperature: 0,
+              messages: [{
+                role: "user",
+                content: [
+                  { type: "document", source: { type: "base64", media_type: "application/pdf", data: pdfFallbackB64 } },
+                  { type: "text", text: "Extract all visible text from this document verbatim. Return only the raw extracted text with paragraph breaks preserved. No commentary, no markdown, no summary." },
+                ],
+              }],
+            }),
+          }, 120000);
+          if (!fbResponse.ok) {
+            fallbackError = `anthropic_${fbResponse.status}`;
+          } else {
+            const fbData = await fbResponse.json();
+            const extracted = (fbData.content || []).filter((b) => b.type === "text").map((b) => b.text).join("");
+            if (extracted && extracted.trim().length >= 50) {
+              documentText = extracted;
+              console.log(`Gold Team: native-PDF fallback succeeded (${extracted.length} chars)`);
+            } else {
+              fallbackError = "empty_extraction";
+            }
+          }
+        } catch (fbErr) {
+          fallbackError = fbErr.message;
+        }
+      }
+      if (!documentText || documentText.trim().length < 50) {
+        await logOpsEvent(supabase, {
+          event_type: "GOLD_TEAM_SKIPPED",
+          source_function: "gold-team-review-background",
+          severity: "warn",
+          signature: "INSUFFICIENT_DOCUMENT_TEXT",
+          affected_entity: scoring_id,
+          details: {
+            email: normalizedEmail,
+            document_type,
+            fallback_attempted: !!pdfFallbackB64,
+            fallback_error: fallbackError,
+          },
+        });
+        return;
+      }
     }
 
     // --- C7: Query competitive context from platform intelligence ---
