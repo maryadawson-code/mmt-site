@@ -2558,6 +2558,7 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     'idiq-tracker.html',
     'help.html',
     'capture-corner.html',
+    'compliance-check.html',
   ];
   // Premium subdirectory pages
   const premiumPages = [

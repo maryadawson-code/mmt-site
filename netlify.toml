@@ -218,6 +218,11 @@
   status = 200
 
 [[redirects]]
+  from = "/compliance-check"
+  to = "/compliance-check.html"
+  status = 200
+
+[[redirects]]
   from = "/lethality-test*"
   to = "/proposal-pulse.html"
   status = 301
