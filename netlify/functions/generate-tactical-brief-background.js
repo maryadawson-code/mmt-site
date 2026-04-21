@@ -56,7 +56,8 @@ const { loadSubscriberContext, formatContextBlock, contextSystemRules, noContext
 
 // --- v4 Deep Research Loop modules (gated by MARKETPULSE_V4 flag) ---
 const { scoreReportV4, buildRemediationPlan, renderScoreBanner } = require("./lib/research-score-v4");
-const { runSelfAudit, renderAuditBlock, checkStopConditions, renderVerificationNotes } = require("./lib/self-audit-v4");
+const { runSelfAudit, renderAuditBlock, checkStopConditions } = require("./lib/self-audit-v4");
+const { sanitizeCustomerSynthesis } = require("./lib/customer-sanitizer");
 const {
   decomposeQuery,
   planSourceStrategy,
@@ -1279,6 +1280,7 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
     let v4Score = null;
     let v4Diagnostic = null;
     let v4Stop = false;
+    let v4SoftFlags = [];
     if (V4_ON) {
       const v4Clean = sanitizeV4(finalSynthesis, allPassCitations);
       if (v4Clean.cleanedCount > 0) {
@@ -1380,14 +1382,16 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
         console.log(`[V4 STOP] ${stopCheck.reasons.join(" | ")}`);
       }
 
-      // Append AUDIT BLOCK + REMEDIATION PLAN to the report if we're still delivering
+      // Hoist soft flags to outer scope so the customer sanitizer can
+      // emit a customer-voice Verification Notes footnote at render time.
+      v4SoftFlags = stopCheck.softFlags || [];
+
+      // Append AUDIT BLOCK + REMEDIATION PLAN to finalSynthesis. These are
+      // internal scaffolding — operator-visible only. The customer sanitizer
+      // strips both sections before rendering the customer HTML.
       if (!v4Stop) {
-        // Soft-delivery path: Tier A clean + score ≥ 85 but ≥1 Tier B flag.
-        // Emit the Verification Notes footnote so the customer can apply extra
-        // scrutiny to the specific flagged claims.
-        if (stopCheck.softFlags && stopCheck.softFlags.length > 0) {
-          console.log(`[V4 SOFT DELIVERY] score=${v4Score.total}/100, ${stopCheck.softFlags.length} Tier B flag(s) surfaced in Verification Notes`);
-          finalSynthesis += "\n\n" + renderVerificationNotes(stopCheck.softFlags);
+        if (v4SoftFlags.length > 0) {
+          console.log(`[V4 SOFT DELIVERY] score=${v4Score.total}/100, ${v4SoftFlags.length} Tier B flag(s) to surface in customer Verification Notes`);
         }
         finalSynthesis += "\n\n" + renderAuditBlock(v4Audit);
         if (v4Score.band === "remediate") {
@@ -1566,10 +1570,25 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
 
     await _transition("pdf_started");
 
-    // Generate report HTML
+    // Generate report HTML. In v4 mode we strip all internal scaffolding
+    // (score banner, audit block, inference tokens, waiver callout, etc.)
+    // and suppress the legacy hardcoded scorecard before rendering. The
+    // operator STOP diagnostic email (elsewhere in this function) keeps
+    // the full-fidelity finalSynthesis untouched.
     console.log("Generating report HTML...");
     const generatedAt = new Date().toISOString();
-    let reportHtmlContent = renderMarketPulseHTML({ name, company, topic, audience, generatedAt, synthesis: finalSynthesis, citations: allCitations, reportScore });
+    const customerSynthesis = V4_ON
+      ? sanitizeCustomerSynthesis(finalSynthesis, v4SoftFlags)
+      : finalSynthesis;
+    if (V4_ON && customerSynthesis.length !== finalSynthesis.length) {
+      console.log(`[V4 CUSTOMER SANITIZE] ${finalSynthesis.length}→${customerSynthesis.length} chars, ${v4SoftFlags.length} customer-surfaced flag(s)`);
+    }
+    let reportHtmlContent = renderMarketPulseHTML({
+      name, company, topic, audience, generatedAt,
+      synthesis: customerSynthesis,
+      citations: allCitations,
+      reportScore: V4_ON ? undefined : reportScore,
+    });
     console.log(`Report HTML generated: ${Math.round(reportHtmlContent.length / 1024)}KB`);
 
     // === MarketPulse v2: subscriber-context post-generation validation ===
