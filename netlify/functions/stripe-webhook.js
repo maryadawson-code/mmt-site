@@ -13,26 +13,82 @@ const { upsertCustomer, logCustomerEvent } = require("./lib/customer-sync");
 const { sendEmail } = require("./lib/send-email");
 const { logOpsEvent } = require("./lib/ops-ledger");
 const { buildFoundingMemberWelcome } = require("./lib/email-templates/founding-member-welcome");
+const { Sentry } = require("./lib/sentry");
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
+// Founding-member price whitelist. STRIPE_PRICE_FOUNDING_YEARLY is required;
+// STRIPE_PRICE_FOUNDING_MONTHLY is optional (no monthly founding SKU exists
+// at time of writing — yearly-only whitelist per 2026-04-22 decision).
+// STRIPE_PRICE_FOUNDING is kept as a legacy alias for backward compat with
+// founding-count.js and pre-hardening code.
 const STRIPE_PRICE_FOUNDING = process.env.STRIPE_PRICE_FOUNDING;
+const STRIPE_PRICE_FOUNDING_YEARLY = process.env.STRIPE_PRICE_FOUNDING_YEARLY;
+const STRIPE_PRICE_FOUNDING_MONTHLY = process.env.STRIPE_PRICE_FOUNDING_MONTHLY;
 const STRIPE_PRICE_FOUNDING_ANNUAL = process.env.STRIPE_PRICE_FOUNDING_ANNUAL;
-const FOUNDING_PRICE_IDS = [STRIPE_PRICE_FOUNDING, STRIPE_PRICE_FOUNDING_ANNUAL].filter(Boolean);
+const FOUNDING_PRICE_IDS = [
+  STRIPE_PRICE_FOUNDING_YEARLY,
+  STRIPE_PRICE_FOUNDING_MONTHLY,
+  STRIPE_PRICE_FOUNDING_ANNUAL,
+  STRIPE_PRICE_FOUNDING,
+].filter(Boolean);
+
+// Module-load assertion — block boot if the whitelist is empty. This is the
+// safe failure mode: an empty whitelist means every subscription event would
+// be classified FOREIGN_EVENT_IGNORED and no customer would ever receive a
+// welcome email. Crashing on boot surfaces the misconfiguration immediately
+// rather than silently breaking fulfillment.
+if (FOUNDING_PRICE_IDS.length === 0) {
+  throw new Error(
+    "stripe-webhook: FOUNDING_PRICE_IDS is empty — set STRIPE_PRICE_FOUNDING_YEARLY (and optionally STRIPE_PRICE_FOUNDING_MONTHLY) in Netlify env before deploy. Refusing to boot to avoid silent founding-member fulfillment regression."
+  );
+}
 
 /**
  * Detect whether a Stripe subscription carries a founding-member price.
  * Uses price.id identity (not metadata) because Stripe Payment Links do NOT
- * propagate session metadata to the Subscription object — sub.metadata is
- * always `{}` for Payment-Link-sourced subs. Verified 2026-04-22 on three
- * live subscriptions. See reports/founding-member-audit-20260422.md §4(c).
+ * propagate session metadata to the Subscription object. Verified 2026-04-22
+ * on three live subscriptions. See reports/founding-member-audit-20260422.md.
  */
 function isFoundingSubscription(sub) {
   if (!sub || !sub.items || !Array.isArray(sub.items.data)) return false;
   if (FOUNDING_PRICE_IDS.length === 0) return false;
   return sub.items.data.some((item) => item && item.price && FOUNDING_PRICE_IDS.includes(item.price.id));
+}
+
+/**
+ * Foreign-event filter. Returns true only if the incoming Stripe event
+ * belongs to MMT. Everything else is logged FOREIGN_EVENT_IGNORED and
+ * dropped at the webhook boundary before any fulfillment side effect runs.
+ *
+ * Accept rules (OR):
+ *   1. metadata.app === 'mmt'  (explicit tag — preferred going forward)
+ *   2. metadata.product === 'mmt_premium'  (legacy; still in production sessions)
+ *   3. price.id in FOUNDING_PRICE_IDS whitelist  (subscriptions where metadata empty)
+ *
+ * Reject rules (immediate FOREIGN regardless of other signals):
+ *   - metadata.app set to something OTHER than 'mmt'
+ *
+ * Session events (checkout.session.completed) don't have inline line_items,
+ * so rule 3 doesn't fire for them; they rely on metadata.product === 'mmt_premium'
+ * from create-premium-checkout.js or its Payment Link equivalents.
+ */
+function isMmtEvent(stripeEvent) {
+  const obj = stripeEvent && stripeEvent.data && stripeEvent.data.object;
+  if (!obj) return { mmt: false, reason: "no_event_object" };
+  const meta = (obj.metadata && typeof obj.metadata === "object") ? obj.metadata : {};
+  // Hard reject if metadata.app is set to a non-MMT value
+  if (meta.app && meta.app !== "mmt") return { mmt: false, reason: `metadata_app_${meta.app}` };
+  if (meta.app === "mmt") return { mmt: true, reason: "metadata_app_mmt" };
+  if (meta.product === "mmt_premium") return { mmt: true, reason: "metadata_product_mmt_premium" };
+  // Subscription-shaped objects carry items.data[].price.id
+  if (obj.items && Array.isArray(obj.items.data)) {
+    const match = obj.items.data.find((i) => i && i.price && FOUNDING_PRICE_IDS.includes(i.price.id));
+    if (match) return { mmt: true, reason: `price_id_whitelist:${match.price.id}` };
+  }
+  return { mmt: false, reason: "no_mmt_signal" };
 }
 
 // Legacy value — existing Supabase records use "lethality_test"
@@ -61,6 +117,45 @@ exports.handler = async (event) => {
   }
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+
+  // Foreign-event filter — drop non-MMT events at the boundary before any
+  // side effect fires. See isMmtEvent() definition. Log+200 so Stripe's
+  // retry machinery doesn't loop on what is effectively a no-op.
+  const mmtCheck = isMmtEvent(stripeEvent);
+  if (!mmtCheck.mmt) {
+    try {
+      await logOpsEvent(supabase, {
+        event_type: "FOREIGN_EVENT_IGNORED",
+        source_function: "stripe-webhook",
+        severity: "info",
+        signature: mmtCheck.reason || "foreign",
+        affected_entity: stripeEvent.id,
+        details: {
+          event_id: stripeEvent.id,
+          event_type: stripeEvent.type,
+          reason: mmtCheck.reason,
+          object_id: stripeEvent.data && stripeEvent.data.object && stripeEvent.data.object.id,
+        },
+      });
+    } catch { /* never crash on observability */ }
+    // Sentry breadcrumb/message so rate-based alerts (>10%/hr) can fire
+    // without scanning ops_events. Tagged so the alert rule can filter.
+    try {
+      if (Sentry && Sentry.captureMessage) {
+        Sentry.captureMessage("FOREIGN_EVENT_IGNORED", {
+          level: "info",
+          tags: {
+            function: "stripe-webhook",
+            event_type: stripeEvent.type,
+            reason: mmtCheck.reason,
+            alert_signal: "foreign_event",
+          },
+          extra: { event_id: stripeEvent.id },
+        });
+      }
+    } catch { /* never break webhook on telemetry */ }
+    return { statusCode: 200, body: JSON.stringify({ received: true, ignored: true, reason: mmtCheck.reason }) };
+  }
 
   // Idempotency check: skip already-processed events. Wrap in try/catch so
   // a missing `stripe_events` table or transient DB error never causes the
@@ -224,24 +319,21 @@ exports.handler = async (event) => {
         } catch (_) { /* non-blocking */ }
       }
 
-      // MMT Premium detection: metadata tag first, then price-amount fallback.
-      // Stripe Payment Links don't always forward metadata from the Session
-      // to the Subscription, so we also match on the canonical $199/yr and
-      // $29/mo MMT Premium prices.
+      // MMT Premium detection: metadata tag OR price.id whitelist.
+      // The amount-based fallback ($199/yr + $29/mo heuristics) has been removed;
+      // a strict price.id whitelist is the authoritative signal. Any event that
+      // survived the isMmtEvent() filter at the top is already known to belong
+      // to MMT, so this is just figuring out which premium tier.
       const isMmtPremiumByMetadata = sub.metadata && sub.metadata.product === "mmt_premium";
       const firstItem = sub.items && sub.items.data && sub.items.data[0];
-      const priceAmount = firstItem && firstItem.price && firstItem.price.unit_amount;
-      const priceInterval = firstItem && firstItem.price && firstItem.price.recurring && firstItem.price.recurring.interval;
-      const isMmtPremiumByPrice =
-        (priceAmount === 19900 && priceInterval === "year") ||   // $199/yr
-        (priceAmount === 2900 && priceInterval === "month");      // $29/mo
-      const isMmtPremium = isMmtPremiumByMetadata || isMmtPremiumByPrice;
+      const isMmtPremiumByPriceId = !!(firstItem && firstItem.price && FOUNDING_PRICE_IDS.includes(firstItem.price.id));
+      const isMmtPremium = isMmtPremiumByMetadata || isMmtPremiumByPriceId;
       const isActive = sub.status === "active" || sub.status === "trialing";
       // Founding detection via price.id (Stripe Payment Links don't propagate session
       // metadata to the Subscription, so the old metadata-based flag check never matched).
       const isFounding = isFoundingSubscription(sub);
 
-      console.log(`stripe-webhook: subscription ${stripeEvent.type} — ${sub.id} (status: ${sub.status}, email: ${subEmail}, premium: ${isMmtPremium}, match: ${isMmtPremiumByMetadata ? "metadata" : isMmtPremiumByPrice ? "price" : "none"})`);
+      console.log(`stripe-webhook: subscription ${stripeEvent.type} — ${sub.id} (status: ${sub.status}, email: ${subEmail}, premium: ${isMmtPremium}, match: ${isMmtPremiumByMetadata ? "metadata" : isMmtPremiumByPriceId ? "price_id" : "none"})`);
 
       // Update premium tier in mp_users if this is an MMT Premium subscription
       if (isMmtPremium && subEmail) {

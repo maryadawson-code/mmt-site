@@ -188,6 +188,12 @@
   force = true
 
 [[redirects]]
+  from = "/api/health/fulfillment"
+  to = "/.netlify/functions/health-fulfillment"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/"
   to = "/index.html"
   status = 200
