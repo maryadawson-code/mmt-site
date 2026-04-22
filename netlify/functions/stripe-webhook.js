@@ -10,11 +10,32 @@
 const { createClient } = require("@supabase/supabase-js");
 const Stripe = require("stripe");
 const { upsertCustomer, logCustomerEvent } = require("./lib/customer-sync");
+const { sendEmail } = require("./lib/send-email");
+const { logOpsEvent } = require("./lib/ops-ledger");
+const { buildFoundingMemberWelcome } = require("./lib/email-templates/founding-member-welcome");
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
+const STRIPE_PRICE_FOUNDING = process.env.STRIPE_PRICE_FOUNDING;
+const STRIPE_PRICE_FOUNDING_ANNUAL = process.env.STRIPE_PRICE_FOUNDING_ANNUAL;
+const FOUNDING_PRICE_IDS = [STRIPE_PRICE_FOUNDING, STRIPE_PRICE_FOUNDING_ANNUAL].filter(Boolean);
+const PROPOSALPULSE_FOUNDING_CODE = process.env.STRIPE_PROMO_CODE_PROPOSALPULSE || null;
+const MARKETPULSE_FOUNDING_CODE = process.env.STRIPE_PROMO_CODE_MARKETPULSE || null;
+
+/**
+ * Detect whether a Stripe subscription carries a founding-member price.
+ * Uses price.id identity (not metadata) because Stripe Payment Links do NOT
+ * propagate session metadata to the Subscription object — sub.metadata is
+ * always `{}` for Payment-Link-sourced subs. Verified 2026-04-22 on three
+ * live subscriptions. See reports/founding-member-audit-20260422.md §4(c).
+ */
+function isFoundingSubscription(sub) {
+  if (!sub || !sub.items || !Array.isArray(sub.items.data)) return false;
+  if (FOUNDING_PRICE_IDS.length === 0) return false;
+  return sub.items.data.some((item) => item && item.price && FOUNDING_PRICE_IDS.includes(item.price.id));
+}
 
 // Legacy value — existing Supabase records use "lethality_test"
 const FEATURE_NAME = "lethality_test";
@@ -253,6 +274,113 @@ exports.handler = async (event) => {
         severity: "info",
         payload: { type: stripeEvent.type, subscription_id: sub.id, status: sub.status, customer: sub.customer, email: subEmail },
       });
+
+      // --- Founding-member welcome email (new for Commit 1, 2026-04-22) ---
+      // Fire once per subscription, only when price.id matches FOUNDING + status is active,
+      // and only on .created (not .updated — updates shouldn't re-send).
+      // Idempotency: skip if customer_events already has a welcome_sent row for this sub.
+      // All failures are logged but NEVER block the webhook 200 response (Stripe would retry forever).
+      const shouldSendWelcome =
+        stripeEvent.type === "customer.subscription.created" &&
+        isActive &&
+        subEmail &&
+        isFoundingSubscription(sub);
+
+      if (shouldSendWelcome) {
+        try {
+          // Idempotency check: have we already sent a welcome for this subscription?
+          const { data: existingWelcome } = await supabase
+            .from("customer_events")
+            .select("id")
+            .eq("email", subEmail.toLowerCase().trim())
+            .eq("event_type", "welcome_sent")
+            .eq("product", "mmt_premium_founding")
+            .limit(1);
+
+          if (existingWelcome && existingWelcome.length > 0) {
+            console.log(`stripe-webhook: welcome_sent already recorded for ${subEmail} — skipping`);
+          } else {
+            const { subject, html, text } = buildFoundingMemberWelcome({
+              customerEmail: subEmail.toLowerCase().trim(),
+              isBackfill: false,
+              pulseToolsCodes: (PROPOSALPULSE_FOUNDING_CODE || MARKETPULSE_FOUNDING_CODE)
+                ? { proposalpulse: PROPOSALPULSE_FOUNDING_CODE, marketpulse: MARKETPULSE_FOUNDING_CODE }
+                : undefined,
+            });
+            const sendResult = await sendEmail({
+              to: subEmail.toLowerCase().trim(),
+              subject,
+              html,
+              text,
+              from: "Mary at Mission Meets Tech <mary@missionmeetstech.com>",
+            });
+
+            if (sendResult && sendResult.success) {
+              const resendId = sendResult.id || sendResult.messageId || null;
+              // Record the send so future webhook retries don't double-fire.
+              try {
+                await logCustomerEvent(supabase, {
+                  email: subEmail.toLowerCase().trim(),
+                  eventType: "welcome_sent",
+                  product: "mmt_premium_founding",
+                  amountCents: 0,
+                  metadata: {
+                    subscription_id: sub.id,
+                    resend_message_id: resendId,
+                    sent_via: "stripe-webhook",
+                  },
+                });
+              } catch (_eventErr) { /* non-blocking */ }
+              await logOpsEvent(supabase, {
+                event_type: "WELCOME_EMAIL_SENT",
+                source_function: "stripe-webhook",
+                severity: "info",
+                signature: "founding_member",
+                affected_entity: sub.id,
+                details: {
+                  customer_email: subEmail.toLowerCase().trim(),
+                  subscription_id: sub.id,
+                  resend_message_id: resendId,
+                },
+              });
+              console.log(`stripe-webhook: WELCOME_EMAIL_SENT → ${subEmail} (resend ${resendId})`);
+            } else {
+              const reason = (sendResult && sendResult.error) || "unknown_send_failure";
+              await logOpsEvent(supabase, {
+                event_type: "WELCOME_EMAIL_FAILED",
+                source_function: "stripe-webhook",
+                severity: "error",
+                signature: "founding_member_send_failed",
+                affected_entity: sub.id,
+                details: {
+                  customer_email: subEmail.toLowerCase().trim(),
+                  subscription_id: sub.id,
+                  reason: String(reason).substring(0, 300),
+                },
+              });
+              console.error(`stripe-webhook: WELCOME_EMAIL_FAILED for ${subEmail}: ${reason}`);
+            }
+          }
+        } catch (welcomeErr) {
+          // Email failure must never cause Stripe to retry — log and move on.
+          try {
+            await logOpsEvent(supabase, {
+              event_type: "WELCOME_EMAIL_FAILED",
+              source_function: "stripe-webhook",
+              severity: "error",
+              signature: "founding_member_exception",
+              affected_entity: sub.id,
+              details: {
+                customer_email: subEmail,
+                subscription_id: sub.id,
+                reason: String(welcomeErr.message || "").substring(0, 300),
+              },
+            });
+          } catch { /* never break webhook */ }
+          console.error("stripe-webhook: welcome email path threw:", welcomeErr.message);
+        }
+      }
+
       return { statusCode: 200, body: JSON.stringify({ received: true, type: stripeEvent.type }) };
     }
 
