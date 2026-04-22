@@ -329,7 +329,10 @@ async function sendWelcomeForCustomer(supabase, target, stripeInfo) {
 }
 
 async function verifyDelivery(supabase, email, subId) {
-  // Post-send check: customer_events row + ops_events row should both exist for this sub
+  // Post-send check: customer_events row + ops_events row should both exist for this sub.
+  // Note: ops_events has no `affected_entity` column (that column lives on ops_ledger).
+  // We filter by source_function + event_type + recency, then check details.subscription_id
+  // client-side.
   const { data: ce } = await supabase
     .from("customer_events")
     .select("id, metadata")
@@ -339,15 +342,18 @@ async function verifyDelivery(supabase, email, subId) {
     .order("created_at", { ascending: false })
     .limit(5);
   const hasCe = (ce || []).some((e) => e.metadata && e.metadata.subscription_id === subId);
+
+  const sinceIso = new Date(Date.now() - 5 * 60 * 1000).toISOString();
   const { data: oe } = await supabase
     .from("ops_events")
-    .select("id, details")
+    .select("id, details, created_at")
     .eq("event_type", "WELCOME_EMAIL_SENT")
     .eq("source_function", "backfill-founding-members")
-    .eq("affected_entity", subId)
+    .gte("created_at", sinceIso)
     .order("created_at", { ascending: false })
-    .limit(5);
+    .limit(20);
   const hasOe = (oe || []).some((e) => e.details && e.details.subscription_id === subId);
+
   return { hasCustomerEvent: hasCe, hasOpsEvent: hasOe };
 }
 
