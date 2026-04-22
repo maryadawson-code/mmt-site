@@ -905,6 +905,21 @@ exports.handler = async (event) => {
 
   if (!email || !topic) {
     console.error("generate-tactical-brief-background: missing email or topic");
+    // Observability: no order row exists yet (creation comes after this block), so log at function level only.
+    try {
+      const { createClient: _cc } = require("@supabase/supabase-js");
+      if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
+        const _sb = _cc(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+        await logOpsEvent(_sb, {
+          event_type: "TACTICAL_BRIEF_FAILED",
+          source_function: "generate-tactical-brief-background",
+          severity: "warn",
+          signature: email ? "MISSING_TOPIC" : "MISSING_CUSTOMER_EMAIL",
+          affected_entity: session_id || null,
+          details: { reason: email ? "MISSING_TOPIC" : "MISSING_CUSTOMER_EMAIL", session_id: session_id || null, email_present: !!email, topic_present: !!topic },
+        });
+      }
+    } catch { /* best-effort log */ }
     return { statusCode: 400, body: "Email and topic are required" };
   }
 
@@ -949,6 +964,20 @@ exports.handler = async (event) => {
         if (insertErr) console.error("Order insert failed:", insertErr.message || insertErr);
       }
     } catch (e) { console.error("Order lookup/create failed:", e.message); }
+    // Forward-looking observability: if we couldn't materialize an order row, downstream updates will
+    // no-op silently. Log MISSING_ORDER so this case shows up in ops_events.
+    if (!_orderId) {
+      try {
+        await logOpsEvent(_supabase, {
+          event_type: "TACTICAL_BRIEF_FAILED",
+          source_function: "generate-tactical-brief-background",
+          severity: "warn",
+          signature: "MISSING_ORDER",
+          affected_entity: session_id || null,
+          details: { reason: "MISSING_ORDER", session_id: session_id || null, customer_email: email },
+        });
+      } catch { /* best-effort log */ }
+    }
   }
   async function _transition(state, details) {
     if (!_supabase || !_orderId) return;
@@ -1743,7 +1772,40 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
   } catch (err) {
     console.error("generate-tactical-brief-background: pipeline error:", err);
     const errType = err.message && err.message.includes("Anthropic API") ? "MODEL_FAILURE" : "HARNESS_FAILURE";
+    // Classify failure reason for the BUG-STUCKJOB-OBS taxonomy so stuck orders no longer go dark
+    const errMsg = String(err.message || "");
+    let reason = "UNHANDLED";
+    if (/timed out|aborted|AbortError/i.test(errMsg)) reason = "MODEL_TIMEOUT";
+    else if (/Anthropic API|claude|sonar|Perplexity API/i.test(errMsg)) reason = "MODEL_ERROR";
+    else if (/pdf|pdf-parse/i.test(errMsg)) reason = "PDF_PARSE_FAILED";
+    else if (/empty brief|no content|no scorecard/i.test(errMsg)) reason = "EMPTY_BRIEF";
+    else if (/Resend|email_send|send failed|sendEmail/i.test(errMsg)) reason = "SEND_FAILED";
+    const _elapsedMs = (typeof startTime === "number") ? (Date.now() - startTime) : null;
     await logOpsEvent(_supabase, { event_type: errType, source_function: "generate-tactical-brief-background", severity: "critical", signature: errType === "MODEL_FAILURE" ? `claude_search_${err.status || "unknown"}` : "unhandled_error", affected_entity: session_id, details: { email, topic: topic.substring(0, 200), error: err.message } });
+    // Forward-looking observability: emit TACTICAL_BRIEF_FAILED with classified reason + update the
+    // order row so the customer-facing state carries the cause (was null for all 23 stuck rows in audit).
+    try {
+      await logOpsEvent(_supabase, {
+        event_type: "TACTICAL_BRIEF_FAILED",
+        source_function: "generate-tactical-brief-background",
+        severity: "error",
+        signature: reason,
+        affected_entity: _orderId || session_id,
+        details: { reason, order_id: _orderId, customer_email: email, elapsed_ms: _elapsedMs, error_message: errMsg.substring(0, 500) },
+      });
+    } catch { /* never break error handling */ }
+    if (_supabase && _orderId) {
+      try {
+        await _supabase
+          .from("marketpulse_orders")
+          .update({
+            workflow_state: "failed",
+            status: "failed",
+            error_message: `[${reason}] ${errMsg.substring(0, 480)}`,
+          })
+          .eq("id", _orderId);
+      } catch (updateErr) { console.error("Failed to update marketpulse_orders on pipeline error:", updateErr.message); }
+    }
 
     // Notify customer of failure
     try {
@@ -1768,6 +1830,17 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
       console.log(`[ERROR EMAIL] Sent technical failure notification to ${email}`);
     } catch (custErr) {
       console.error("Failed to send customer error notification:", custErr.message);
+      // Customer never sees the failure if this fallback email also fails — log explicitly.
+      try {
+        await logOpsEvent(_supabase, {
+          event_type: "TACTICAL_BRIEF_FAILED",
+          source_function: "generate-tactical-brief-background",
+          severity: "error",
+          signature: "SEND_FAILED",
+          affected_entity: _orderId || session_id,
+          details: { reason: "SEND_FAILED", order_id: _orderId, customer_email: email, error_message: String(custErr.message || "").substring(0, 400), context: "customer_error_notification" },
+        });
+      } catch { /* best-effort log */ }
     }
 
     // Notify Mary of failure

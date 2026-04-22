@@ -104,7 +104,7 @@ exports.handler = async () => {
     const fifteenMinAgo = new Date(now - 15 * 60 * 1000).toISOString();
     const { data: stuckOrders } = await supabase
       .from("marketpulse_orders")
-      .select("id, session_id, created_at, workflow_state")
+      .select("id, session_id, created_at, updated_at, state_updated_at, workflow_state, email, error_message")
       .not("workflow_state", "in", '("delivered","email_sent","quality_fail","failed","error")')
       .lt("created_at", fifteenMinAgo)
       .limit(20);
@@ -113,6 +113,7 @@ exports.handler = async () => {
       for (const order of stuckOrders) {
         const ageMs = now - new Date(order.created_at).getTime();
         const ageMin = Math.round(ageMs / 60000);
+        const lastTransitionAt = order.state_updated_at || order.updated_at || order.created_at;
         findings.push({ type: "stuck_marketpulse", id: order.id, session_id: order.session_id, age_minutes: ageMin, state: order.workflow_state });
 
         if (!recentStuckIds.has(order.session_id)) {
@@ -122,15 +123,28 @@ exports.handler = async () => {
             severity: ageMin > 30 ? "critical" : "warn",
             signature: "stuck_job",
             affected_entity: order.session_id,
-            details: { product: "marketpulse", age_minutes: ageMin, state: order.workflow_state },
+            details: {
+              product: "marketpulse",
+              age_minutes: ageMin,
+              state: order.workflow_state,
+              order_id: order.id,
+              customer_email: order.email,
+              stuck_state: order.workflow_state,
+              stuck_duration_minutes: ageMin,
+              last_transition_at: lastTransitionAt,
+            },
           });
         }
 
         if (ageMin > 30) {
           try {
+            // Preserve any existing error_message; only set default reason when none was captured upstream
+            const cleanupReason = order.error_message
+              ? order.error_message
+              : `[OPS_HEALTH_TIMEOUT] Order timed out after ${ageMin} min in state: ${order.workflow_state}. No upstream error captured.`;
             await supabase
               .from("marketpulse_orders")
-              .update({ workflow_state: "failed", status: "failed" })
+              .update({ workflow_state: "failed", status: "failed", error_message: cleanupReason })
               .eq("id", order.id);
 
             await logOpsEvent(supabase, {
@@ -139,7 +153,16 @@ exports.handler = async () => {
               severity: "warn",
               signature: "stuck_job_recovered",
               affected_entity: order.session_id,
-              details: { product: "marketpulse", age_minutes: ageMin, action: "marked_failed" },
+              details: {
+                product: "marketpulse",
+                age_minutes: ageMin,
+                action: "marked_failed",
+                order_id: order.id,
+                customer_email: order.email,
+                stuck_state: order.workflow_state,
+                stuck_duration_minutes: ageMin,
+                last_transition_at: lastTransitionAt,
+              },
               resolution: "Auto-transitioned to failed state after 30+ min timeout",
             });
 

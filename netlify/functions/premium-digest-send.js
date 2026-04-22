@@ -374,14 +374,17 @@ exports.handler = async (event) => {
     } catch { /* non-blocking */ }
   }
 
-  // Log for duplicate prevention
+  // Log for duplicate prevention.
+  // Label fix: historic rows always logged DELIVERY_FAILURE even on clean runs, which tripped
+  // dashboards filtering by event_type. Use DIGEST_COMPLETE when failed_count == 0.
+  const _failedCount = failCount || 0;
   await logOpsEvent(supabase, {
-    event_type: "DELIVERY_FAILURE",
+    event_type: _failedCount > 0 ? "DELIVERY_FAILURE" : "DIGEST_COMPLETE",
     source_function: "premium-digest-send",
-    severity: "info",
+    severity: _failedCount > 0 ? "error" : "info",
     signature: "premium_digest_sent",
     affected_entity: todayStr,
-    details: { sent: sentCount, skipped: skipCount, failed: failCount },
+    details: { sent: sentCount, skipped: skipCount, failed: _failedCount, failed_count: _failedCount },
   });
 
   return { statusCode: 200, body: JSON.stringify({ sent: sentCount, skipped: skipCount, failed: failCount }) };

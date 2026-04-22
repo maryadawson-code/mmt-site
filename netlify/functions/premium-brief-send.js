@@ -209,17 +209,21 @@ exports.handler = async (event) => {
     console.error("premium-brief-send: notification failed:", notifyErr.message);
   }
 
-  // Log to ops_ledger for duplicate prevention
+  // Log to ops_ledger for duplicate prevention.
+  // Label fix: historic rows always logged DELIVERY_FAILURE even on clean runs (failed=0), which
+  // tripped dashboards filtering by event_type. Use BRIEF_SEND_COMPLETE when failed_count == 0.
+  const _failedCount = failCount || 0;
   await logOpsEvent(supabase, {
-    event_type: "DELIVERY_FAILURE", // using existing type for forward compat
+    event_type: _failedCount > 0 ? "DELIVERY_FAILURE" : "BRIEF_SEND_COMPLETE",
     source_function: "premium-brief-send",
-    severity: "info",
+    severity: _failedCount > 0 ? "error" : "info",
     signature: "premium_brief_sent",
     affected_entity: dateStr,
     details: {
       recipients: recipients.length,
       sent: successCount,
-      failed: failCount,
+      failed: _failedCount,
+      failed_count: _failedCount,
       held: holdMode,
     },
   });
