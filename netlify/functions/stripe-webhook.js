@@ -21,8 +21,6 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const STRIPE_PRICE_FOUNDING = process.env.STRIPE_PRICE_FOUNDING;
 const STRIPE_PRICE_FOUNDING_ANNUAL = process.env.STRIPE_PRICE_FOUNDING_ANNUAL;
 const FOUNDING_PRICE_IDS = [STRIPE_PRICE_FOUNDING, STRIPE_PRICE_FOUNDING_ANNUAL].filter(Boolean);
-const PROPOSALPULSE_FOUNDING_CODE = process.env.STRIPE_PROMO_CODE_PROPOSALPULSE || null;
-const MARKETPULSE_FOUNDING_CODE = process.env.STRIPE_PROMO_CODE_MARKETPULSE || null;
 
 /**
  * Detect whether a Stripe subscription carries a founding-member price.
@@ -305,9 +303,6 @@ exports.handler = async (event) => {
             const { subject, html, text } = buildFoundingMemberWelcome({
               customerEmail: subEmail.toLowerCase().trim(),
               isBackfill: false,
-              pulseToolsCodes: (PROPOSALPULSE_FOUNDING_CODE || MARKETPULSE_FOUNDING_CODE)
-                ? { proposalpulse: PROPOSALPULSE_FOUNDING_CODE, marketpulse: MARKETPULSE_FOUNDING_CODE }
-                : undefined,
             });
             const sendResult = await sendEmail({
               to: subEmail.toLowerCase().trim(),

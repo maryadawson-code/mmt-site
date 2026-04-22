@@ -32,7 +32,6 @@ function firstNameFromEmail(email) {
  * @param {string} [opts.firstName]               — optional; falls back to email-local-part
  * @param {boolean} [opts.isBackfill=false]       — true → prepend apology paragraph
  * @param {string} [opts.compDetail]              — optional explicit comp text (e.g., "3 extra MarketPulse briefs")
- * @param {Object} [opts.pulseToolsCodes]         — { proposalpulse: "FOUND14", marketpulse: "FOUND35" }
  * @returns {{ subject: string, html: string, text: string }}
  */
 function buildFoundingMemberWelcome(opts = {}) {
@@ -41,7 +40,6 @@ function buildFoundingMemberWelcome(opts = {}) {
     firstName: firstNameOpt,
     isBackfill = false,
     compDetail,
-    pulseToolsCodes,
   } = opts;
 
   if (!customerEmail) {
@@ -52,15 +50,6 @@ function buildFoundingMemberWelcome(opts = {}) {
   const subject = isBackfill
     ? "Your MMT Premium founding-member welcome (sorry for the delay)"
     : "Welcome to MMT Premium — your founding-member access is live";
-
-  const codesBlock = (() => {
-    if (pulseToolsCodes && (pulseToolsCodes.proposalpulse || pulseToolsCodes.marketpulse)) {
-      const pp = pulseToolsCodes.proposalpulse ? `<li><strong>ProposalPulse</strong> — $14.99 per assessment with code <code style="background:#F3F4F6;padding:2px 6px;border-radius:4px;font-family:Menlo,monospace;">${esc(pulseToolsCodes.proposalpulse)}</code></li>` : "";
-      const mp = pulseToolsCodes.marketpulse ? `<li><strong>MarketPulse</strong> — $35 per brief with code <code style="background:#F3F4F6;padding:2px 6px;border-radius:4px;font-family:Menlo,monospace;">${esc(pulseToolsCodes.marketpulse)}</code></li>` : "";
-      return `<ul style="margin:8px 0 0;padding-left:20px;font-size:15px;color:#102033;line-height:1.7;">${pp}${mp}</ul>`;
-    }
-    return `<p style="margin:8px 0 0;font-size:14px;color:#5C6B7A;">Founding-member discount codes for ProposalPulse and MarketPulse will arrive in a separate note within 24 hours — Mary sends those personally.</p>`;
-  })();
 
   const apology = isBackfill
     ? `<div style="background:#FEF9E7;border:1px solid #E5D9A8;border-radius:8px;padding:16px 20px;margin-bottom:24px;">
@@ -100,9 +89,8 @@ function buildFoundingMemberWelcome(opts = {}) {
     </div>
 
     <div style="border-left:3px solid #457B9D;padding:4px 0 4px 16px;margin:24px 0;">
-      <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#0A192F;text-transform:uppercase;letter-spacing:0.1em;">3. Pulse tools — founding discount</p>
-      <p style="margin:0;font-size:15px;line-height:1.6;color:#314155;">Your paid tools are discounted for the life of your founding subscription:</p>
-      ${codesBlock}
+      <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#0A192F;text-transform:uppercase;letter-spacing:0.1em;">3. Founding-member status</p>
+      <p style="margin:0;font-size:15px;line-height:1.6;color:#314155;">Active. Your $199 founding price is locked in for the life of your subscription, even when the public price goes up. <a href="https://missionmeetstech.com/premium/dashboard/" style="color:#457B9D;font-weight:600;">Open your dashboard</a> to start using what you paid for.</p>
     </div>
 
     <div style="border-left:3px solid #457B9D;padding:4px 0 4px 16px;margin:24px 0;">
@@ -141,13 +129,8 @@ function buildFoundingMemberWelcome(opts = {}) {
     "2. This week: https://missionmeetstech.com/intel/capture-intelligence-this-issue/",
     "   The current Capture Intelligence sheet covers every action window in the FY2027 federal health budget.",
     "",
-    "3. Pulse tools — founding discount:",
-    pulseToolsCodes && pulseToolsCodes.proposalpulse
-      ? `   - ProposalPulse $14.99/assessment with code ${pulseToolsCodes.proposalpulse}`
-      : "   - ProposalPulse founding discount code arriving in a separate note within 24 hours.",
-    pulseToolsCodes && pulseToolsCodes.marketpulse
-      ? `   - MarketPulse $35/brief with code ${pulseToolsCodes.marketpulse}`
-      : "   - MarketPulse founding discount code arriving in a separate note within 24 hours.",
+    "3. Founding-member status: active",
+    "   Your $199 founding price is locked in for the life of your subscription, even when the public price goes up. Open your dashboard to start using what you paid for: https://missionmeetstech.com/premium/dashboard/",
     "",
     "4. Friday Briefs + Monthly Intelligence Brief land in your inbox automatically. 48-hour early access is on.",
     "",
