@@ -239,7 +239,9 @@ exports.handler = async (event) => {
         (priceAmount === 2900 && priceInterval === "month");      // $29/mo
       const isMmtPremium = isMmtPremiumByMetadata || isMmtPremiumByPrice;
       const isActive = sub.status === "active" || sub.status === "trialing";
-      const isFounding = sub.metadata && sub.metadata.founding_member === "true";
+      // Founding detection via price.id (Stripe Payment Links don't propagate session
+      // metadata to the Subscription, so the old metadata-based flag check never matched).
+      const isFounding = isFoundingSubscription(sub);
 
       console.log(`stripe-webhook: subscription ${stripeEvent.type} — ${sub.id} (status: ${sub.status}, email: ${subEmail}, premium: ${isMmtPremium}, match: ${isMmtPremiumByMetadata ? "metadata" : isMmtPremiumByPrice ? "price" : "none"})`);
 

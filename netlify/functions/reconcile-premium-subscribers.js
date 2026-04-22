@@ -17,10 +17,25 @@
 
 const { createClient } = require("@supabase/supabase-js");
 const Stripe = require("stripe");
+const { upsertCustomer, logCustomerEvent } = require("./lib/customer-sync");
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
+const STRIPE_PRICE_FOUNDING = process.env.STRIPE_PRICE_FOUNDING;
+const STRIPE_PRICE_FOUNDING_ANNUAL = process.env.STRIPE_PRICE_FOUNDING_ANNUAL;
+const FOUNDING_PRICE_IDS = [STRIPE_PRICE_FOUNDING, STRIPE_PRICE_FOUNDING_ANNUAL].filter(Boolean);
+
+/**
+ * Founding detection via price.id identity — Stripe Payment Links do NOT
+ * propagate session metadata to the Subscription, so sub.metadata is always
+ * {} on Payment-Link-sourced subs. Matches the webhook's isFoundingSubscription.
+ */
+function isFoundingByPriceId(sub) {
+  if (!sub || !sub.items || !Array.isArray(sub.items.data)) return false;
+  if (FOUNDING_PRICE_IDS.length === 0) return false;
+  return sub.items.data.some((item) => item && item.price && FOUNDING_PRICE_IDS.includes(item.price.id));
+}
 
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "mary@missionmeetstech.com,maryadawson@gmail.com")
   .toLowerCase()
@@ -101,7 +116,10 @@ exports.handler = async (event) => {
 
       const normalizedEmail = email.toLowerCase().trim();
       const expectedTier = isActive ? "premium" : "free";
-      const isFounding = sub.metadata && sub.metadata.founding_member === "true";
+      // price.id identity — Payment Links don't propagate metadata, so the old
+      // metadata-based founding flag check was always false and is why the 10
+      // audit-window customers had founding_member=false in mp_users.
+      const isFounding = isFoundingByPriceId(sub);
 
       // Check current state
       const { data: user } = await supabase
@@ -143,6 +161,27 @@ exports.handler = async (event) => {
         results.errors.push({ email: normalizedEmail, sub_id: sub.id, error: upsertErr.message });
       } else {
         results.reconciled++;
+        // Also populate customer_profiles + customer_events (previously reconcile only
+        // touched mp_users, which left customer_profiles empty for the 10 audit-window
+        // customers). customer-sync helpers swallow their own errors, never re-throw.
+        try {
+          const stripeCustomerId = typeof sub.customer === "string" ? sub.customer : sub.customer.id;
+          const amountCents = priceAmount || (isMmtPremiumByPrice ? 19900 : (isMmtPremiumByMonthly ? 2900 : null));
+          await upsertCustomer(supabase, {
+            email: normalizedEmail,
+            stripeCustomerId,
+            product: "mmt_premium",
+            amountCents,
+            foundingMember: isFounding,
+          });
+          await logCustomerEvent(supabase, {
+            email: normalizedEmail,
+            eventType: "subscription_reconciled",
+            product: "mmt_premium",
+            amountCents,
+            metadata: { subscription_id: sub.id, founding_member: isFounding, via: "reconcile" },
+          });
+        } catch (_syncErr) { /* non-blocking — logged inside customer-sync */ }
       }
     }
 
