@@ -83,6 +83,20 @@
 [functions."reconcile-marketpulse-scheduled"]
   schedule = "0 3 * * *"
 
+# Capture Corner Premium portal publisher — every 5 min
+# Flips premium_deliverables.published=true when publish_at <= now
+[functions."scheduled-portal-publisher"]
+  schedule = "*/5 * * * *"
+
+# Capture Corner Premium email worker — every 5 min
+# Picks up due scheduled_emails rows, sends via Resend, handles retry
+[functions."scheduled-email-worker"]
+  schedule = "*/5 * * * *"
+
+# Capture Corner nightly metrics — 04:00 UTC (11 PM ET)
+[functions."capture-corner-metrics-scheduled"]
+  schedule = "0 4 * * *"
+
 # Capture Corner one-shot: April 21, 2026 at 9 AM EDT (= 13:00 UTC)
 # Cron fires annually on April 21; the function gates on SCHEDULED_DATE
 # so it only actually sends in the configured year. Ops_ledger dedup
@@ -201,6 +215,68 @@
 [[redirects]]
   from = "/api/health/marketpulse"
   to = "/.netlify/functions/health-marketpulse"
+  status = 200
+  force = true
+
+# Capture Corner Premium portal — dynamic markdown renderer
+# Serves premium_deliverables rows when publish_at <= now AND published=true
+[[redirects]]
+  from = "/premium/capture-corner/:slug/"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/capture-corner/:slug"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/capture-corner/:slug"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/capture-corner/:slug"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/capture-sheet/:slug/"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/capture-sheet/:slug"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/capture-sheet/:slug"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/capture-sheet/:slug"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/pattern-map/:slug/"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/pattern-map/:slug"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/pattern-map/:slug"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/pattern-map/:slug"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/cycle-tracker/:slug/"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/cycle-tracker/:slug"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/cycle-tracker/:slug"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/cycle-tracker/:slug"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/execution-watch/:slug/"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/execution-watch/:slug"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/execution-watch/:slug"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/execution-watch/:slug"
   status = 200
   force = true
 
