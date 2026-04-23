@@ -33,7 +33,10 @@ const CAPTURE_CORNER_CROSS_LINKS = [
 function render404() {
   return {
     statusCode: 404,
-    headers: { "Content-Type": "text/html; charset=utf-8" },
+    headers: {
+      "Content-Type": "text/html; charset=utf-8",
+      "Cache-Control": "no-store, max-age=0",
+    },
     body: "<!DOCTYPE html><html><body><h1>Not Found</h1></body></html>",
   };
 }
@@ -112,7 +115,7 @@ exports.handler = async (event) => {
     statusCode: 200,
     headers: {
       "Content-Type": "text/html; charset=utf-8",
-      "Cache-Control": "public, max-age=300",
+      "Cache-Control": "public, max-age=60",
     },
     body: portalShell({ title: data.title, bodyHtml, slug }),
   };
