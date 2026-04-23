@@ -78,6 +78,11 @@
 [functions."health-check"]
   schedule = "0 */6 * * *"
 
+# MarketPulse stuck-job reconciliation — daily at 03:00 UTC
+# Retries retryable-failed orders up to 3x, dead-letters on cap
+[functions."reconcile-marketpulse-scheduled"]
+  schedule = "0 3 * * *"
+
 # Capture Corner one-shot: April 21, 2026 at 9 AM EDT (= 13:00 UTC)
 # Cron fires annually on April 21; the function gates on SCHEDULED_DATE
 # so it only actually sends in the configured year. Ops_ledger dedup
@@ -190,6 +195,12 @@
 [[redirects]]
   from = "/api/health/fulfillment"
   to = "/.netlify/functions/health-fulfillment"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/health/marketpulse"
+  to = "/.netlify/functions/health-marketpulse"
   status = 200
   force = true
 
