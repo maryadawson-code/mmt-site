@@ -21,7 +21,7 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const SITE_URL = process.env.URL || "https://missionmeetstech.com";
 const ADMIN_EMAIL = (process.env.ADMIN_EMAILS || "mary@missionmeetstech.com").split(",")[0].trim();
 
-if (process.env.SENTRY_DSN && !Sentry.getCurrentHub().getClient()) {
+if (process.env.SENTRY_DSN && !Sentry.isInitialized()) {
   Sentry.init({ dsn: process.env.SENTRY_DSN, tracesSampleRate: 0 });
 }
 

@@ -19,7 +19,7 @@ const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 
-if (process.env.SENTRY_DSN && !Sentry.getCurrentHub().getClient()) {
+if (process.env.SENTRY_DSN && !Sentry.isInitialized()) {
   Sentry.init({ dsn: process.env.SENTRY_DSN, tracesSampleRate: 0 });
 }
 
