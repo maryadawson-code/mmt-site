@@ -125,7 +125,12 @@ describe("scheduled-email-worker / processJob", () => {
       "user5@example.com",
     ]);
 
-    const writeCall = supabase._updates.find((u) => u.table === "scheduled_emails");
+    // Worker now stamps started_at on first processing (pre-existing rows
+    // without started_at get one update for the stamp + one for the main
+    // status write). Pick the last write that carries the `status` field.
+    const writeCall = supabase._updates.findLast(
+      (u) => u.table === "scheduled_emails" && u.payload && typeof u.payload.status !== "undefined"
+    );
     expect(writeCall).toBeDefined();
     expect(writeCall.payload.status).toBe("queued");
     expect(writeCall.payload.successful_recipients).toHaveLength(6);
@@ -167,7 +172,12 @@ describe("scheduled-email-worker / processJob", () => {
     expect(result.rate_limited).toBe(0);
     expect(result.other_errors).toBe(0);
 
-    const writeCall = supabase._updates.find((u) => u.table === "scheduled_emails");
+    // Worker now stamps started_at on first processing (pre-existing rows
+    // without started_at get one update for the stamp + one for the main
+    // status write). Pick the last write that carries the `status` field.
+    const writeCall = supabase._updates.findLast(
+      (u) => u.table === "scheduled_emails" && u.payload && typeof u.payload.status !== "undefined"
+    );
     expect(writeCall.payload.status).toBe("sent");
     expect(writeCall.payload.successful_recipients).toHaveLength(10);
     expect(writeCall.payload.last_error).toBeNull();
@@ -204,7 +214,12 @@ describe("scheduled-email-worker / processJob", () => {
     expect(result.rate_limited).toBe(0);
     expect(result.other_errors).toBe(2);
 
-    const writeCall = supabase._updates.find((u) => u.table === "scheduled_emails");
+    // Worker now stamps started_at on first processing (pre-existing rows
+    // without started_at get one update for the stamp + one for the main
+    // status write). Pick the last write that carries the `status` field.
+    const writeCall = supabase._updates.findLast(
+      (u) => u.table === "scheduled_emails" && u.payload && typeof u.payload.status !== "undefined"
+    );
     expect(writeCall.payload.status).toBe("sent");
     // last_error preserved for audit of the 2 non-429 failures
     const parsedErr = JSON.parse(writeCall.payload.last_error);
@@ -261,7 +276,12 @@ describe("scheduled-email-worker / processJob", () => {
     expect(result.sent).toBe(4);
     expect(result.successful_recipients_final).toHaveLength(10);
 
-    const writeCall = supabase._updates.find((u) => u.table === "scheduled_emails");
+    // Worker now stamps started_at on first processing (pre-existing rows
+    // without started_at get one update for the stamp + one for the main
+    // status write). Pick the last write that carries the `status` field.
+    const writeCall = supabase._updates.findLast(
+      (u) => u.table === "scheduled_emails" && u.payload && typeof u.payload.status !== "undefined"
+    );
     expect(writeCall.payload.status).toBe("sent");
     expect(writeCall.payload.successful_recipients).toHaveLength(10);
     // resend_ids merged: 6 prior + 4 this attempt

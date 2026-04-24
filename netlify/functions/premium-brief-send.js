@@ -288,10 +288,13 @@ exports.handler = async (event) => {
       errors.push({ email: recipient.email, error: err.message });
     }
 
-    // Rate limit: 100ms pause between sends
-    if (recipients.length > 10) {
-      await new Promise((r) => setTimeout(r, 100));
-    }
+    // Rate limit: 220ms between sends, unconditional. 4.5 rps, safely
+    // under Resend's 5 rps cap. Previously this was a 100ms gate that
+    // only fired above 10 recipients — too fast (10 rps) AND skipped
+    // entirely for small lists. That's the same class of bug that
+    // stranded 4 of 10 biosurveillance recipients on 2026-04-24;
+    // see reports/biosurveillance-replay-20260424.md.
+    await new Promise((r) => setTimeout(r, 220));
   }
 
   console.log(`premium-brief-send: ${successCount} sent, ${failCount} failed${holdMode ? " (held)" : ""}`);

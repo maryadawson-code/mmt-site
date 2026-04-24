@@ -32,16 +32,19 @@ const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const THROTTLE_MS = 220;
 const MAX_ATTEMPTS = 3;
 const RETRY_DELAY_MS = 15 * 60 * 1000;
+const ABORT_WINDOW_MS = 6 * 60 * 60 * 1000; // 6h hard abort for long-running Friday-brief rows
 
 if (process.env.SENTRY_DSN && !Sentry.isInitialized()) {
   Sentry.init({ dsn: process.env.SENTRY_DSN, tracesSampleRate: 0 });
 }
 
-async function defaultResendSend({ from, to, reply_to, bcc, subject, html, text }) {
+async function defaultResendSend({ from, to, reply_to, bcc, subject, html, text, tags }) {
+  const payload = { from, to: [to], reply_to, bcc, subject, html, text };
+  if (Array.isArray(tags) && tags.length > 0) payload.tags = tags;
   const rsp = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from, to: [to], reply_to, bcc, subject, html, text }),
+    body: JSON.stringify(payload),
   });
   const body = await rsp.json().catch(() => ({}));
   return { status: rsp.status, body };
@@ -57,7 +60,66 @@ async function defaultFetchRecipients(supabase, selector) {
     if (error) throw error;
     return data || [];
   }
+  if (selector === "premium_brief_audience") {
+    // Matches premium-brief-send.js union — premium subscribers + legacy
+    // admin/paid tier users. Deduplicated case-insensitively on email.
+    const [{ data: prem, error: premErr }, { data: admin, error: admErr }] = await Promise.all([
+      supabase
+        .from("mp_users")
+        .select("email, founding_member, full_name")
+        .eq("subscription_tier", "premium")
+        .eq("subscription_status", "active"),
+      supabase
+        .from("mp_users")
+        .select("email, founding_member, full_name")
+        .in("tier", ["admin", "paid"]),
+    ]);
+    if (premErr) throw premErr;
+    if (admErr) throw admErr;
+    const seen = new Set();
+    const out = [];
+    for (const u of [...(prem || []), ...(admin || [])]) {
+      const k = (u.email || "").toLowerCase();
+      if (!k || seen.has(k)) continue;
+      seen.add(k);
+      out.push(u);
+    }
+    return out;
+  }
   return [];
+}
+
+/**
+ * Map stream → ops_ledger event_type names. Keeps the Capture Corner
+ * taxonomy unchanged (null/'capture_corner' stream) and adds the
+ * BRIEF_SEND_* taxonomy for stream='friday_brief' so dashboards can
+ * filter cleanly per-product.
+ */
+function eventTypeFor(stream, outcome) {
+  const friday = stream === "friday_brief";
+  switch (outcome) {
+    case "partial_retry":
+      return friday ? "BRIEF_SEND_PARTIAL_RETRY" : "CAPTURE_CORNER_RELEASE_PARTIAL_RETRY";
+    case "sent":
+      return friday ? "BRIEF_SEND_SENT" : "CAPTURE_CORNER_RELEASE_SENT";
+    case "failed_only":
+      return friday ? "BRIEF_SEND_FAILED" : "CAPTURE_CORNER_RELEASE_FAILED";
+    case "hold":
+      return friday ? "BRIEF_SEND_HOLD" : "CAPTURE_CORNER_RELEASE_HOLD";
+    default:
+      return friday ? "BRIEF_SEND_UNKNOWN" : "CAPTURE_CORNER_RELEASE_UNKNOWN";
+  }
+}
+
+function resendTagsFor(stream) {
+  if (stream === "friday_brief") {
+    // MissionPulse webhook foreign-event filter short-circuits on these tags.
+    return [
+      { name: "app", value: "mmt" },
+      { name: "stream", value: "friday_brief" },
+    ];
+  }
+  return undefined;
 }
 
 function defaultSleep(ms) {
@@ -98,8 +160,62 @@ async function processJob({
   throttleMs = THROTTLE_MS,
   maxAttempts = MAX_ATTEMPTS,
   retryDelayMs = RETRY_DELAY_MS,
+  abortWindowMs = ABORT_WINDOW_MS,
 }) {
   const attempts = job.attempts || 1;
+  const stream = job.stream || null;
+
+  // 6h hard abort for friday_brief stream. On re-entry, if the row has
+  // been "alive" (started_at set) for more than 6h AND is still not
+  // terminal, abort to avoid unbounded partial-retry cycles across a
+  // multi-hour outage.
+  if (stream === "friday_brief" && job.started_at) {
+    const elapsed = Date.now() - new Date(job.started_at).getTime();
+    if (elapsed > abortWindowMs) {
+      await supabase
+        .from("scheduled_emails")
+        .update({
+          status: "aborted",
+          last_error: JSON.stringify({ reason: "timeout_6h", started_at: job.started_at }),
+          updated_at: now(),
+        })
+        .eq("id", job.id);
+      if (logEvt) {
+        await logEvt(supabase, {
+          event_type: "BRIEF_SEND_ABORTED",
+          source_function: "scheduled-email-worker",
+          severity: "error",
+          signature: "timeout_6h",
+          affected_entity: job.id,
+          details: {
+            reason: "timeout_6h",
+            started_at: job.started_at,
+            elapsed_ms: elapsed,
+            target_date: job.target_date || null,
+            attempts,
+          },
+        });
+      }
+      return {
+        finalStatus: "aborted",
+        sent: 0,
+        rate_limited: 0,
+        other_errors: 0,
+        reason: "timeout_6h",
+      };
+    }
+  }
+
+  // Stamp started_at on the very first processing of this row (any stream).
+  // Used by the 6h abort check above on subsequent re-entries.
+  if (!job.started_at) {
+    const startedNow = now();
+    await supabase
+      .from("scheduled_emails")
+      .update({ started_at: startedNow, updated_at: startedNow })
+      .eq("id", job.id);
+    job.started_at = startedNow;
+  }
 
   // Fetch eligible recipients, then filter out anyone already confirmed
   // delivered on a prior attempt of this same row.
@@ -123,6 +239,8 @@ async function processJob({
   const rateLimited = [];
   const otherErrors = [];
 
+  const tags = resendTagsFor(stream);
+
   for (let i = 0; i < recipients.length; i++) {
     if (i > 0) await sleep(throttleMs);
     const r = recipients[i];
@@ -139,6 +257,7 @@ async function processJob({
         subject: job.subject,
         html,
         text: job.text_body,
+        tags,
       });
       if (status >= 200 && status < 300 && body && body.id) {
         resendIds.push({ email: r.email, resend_id: body.id, founding: isFounding });
@@ -171,29 +290,29 @@ async function processJob({
     // Requeue with only the 429s outstanding. Successes preserved in
     // successful_recipients so next cycle skips them.
     finalStatus = "queued";
-    opsEventType = "CAPTURE_CORNER_RELEASE_PARTIAL_RETRY";
+    opsEventType = eventTypeFor(stream, "partial_retry");
     updatedScheduledAt = new Date(Date.now() + retryDelayMs).toISOString();
   } else if (has429Remaining && attempts >= maxAttempts) {
     // Cap reached, still have 429s. Give up; hold alert.
     finalStatus = "failed";
-    opsEventType = "CAPTURE_CORNER_RELEASE_HOLD";
+    opsEventType = eventTypeFor(stream, "hold");
   } else if (anySuccessThisAttempt || successfulRecipientsFinal.length > 0) {
     // No 429s left. If any success happened (now or previously), consider done.
     finalStatus = "sent";
-    opsEventType = "CAPTURE_CORNER_RELEASE_SENT";
+    opsEventType = eventTypeFor(stream, "sent");
     updatedSentAt = now();
   } else if (anyOtherErrors && attempts < maxAttempts) {
     // Zero successes, only non-429 errors — legacy retry path (preserved).
     finalStatus = "queued";
-    opsEventType = "CAPTURE_CORNER_RELEASE_FAILED";
+    opsEventType = eventTypeFor(stream, "failed_only");
     updatedScheduledAt = new Date(Date.now() + retryDelayMs).toISOString();
   } else if (anyOtherErrors) {
     finalStatus = "failed";
-    opsEventType = "CAPTURE_CORNER_RELEASE_HOLD";
+    opsEventType = eventTypeFor(stream, "hold");
   } else {
     // No recipients at all — mark sent so we don't loop forever.
     finalStatus = "sent";
-    opsEventType = "CAPTURE_CORNER_RELEASE_SENT";
+    opsEventType = eventTypeFor(stream, "sent");
     updatedSentAt = now();
   }
 
@@ -215,6 +334,12 @@ async function processJob({
   const priorResendIds = Array.isArray(job.resend_ids) ? job.resend_ids : [];
   const mergedResendIds = [...priorResendIds, ...resendIds];
 
+  // Snapshot total recipients on first completing attempt — informational.
+  const totalRecipientsSnapshot =
+    typeof job.total_recipients === "number"
+      ? job.total_recipients
+      : allRecipients.length;
+
   await supabase
     .from("scheduled_emails")
     .update({
@@ -223,6 +348,7 @@ async function processJob({
       successful_recipients: successfulRecipientsFinal.length
         ? successfulRecipientsFinal
         : null,
+      total_recipients: totalRecipientsSnapshot,
       last_error: lastErrorJson,
       sent_at: updatedSentAt,
       scheduled_at: updatedScheduledAt,
@@ -240,16 +366,19 @@ async function processJob({
           : finalStatus === "failed"
           ? "error"
           : "warn",
-      signature: job.release_id || "unknown",
+      signature: job.release_id || (stream === "friday_brief" ? `friday_brief_${job.target_date || "unknown"}` : "unknown"),
       affected_entity: job.id,
       details: {
+        stream: stream || "capture_corner",
         release_id: job.release_id,
+        target_date: job.target_date || null,
         subject: job.subject,
         attempt: attempts,
         sent_count: resendIds.length,
         rate_limited_count: rateLimited.length,
         other_error_count: otherErrors.length,
         total_successful_count: successfulRecipientsFinal.length,
+        total_recipients: totalRecipientsSnapshot,
         status: finalStatus,
       },
     });
@@ -260,9 +389,14 @@ async function processJob({
     SentryClient &&
     typeof SentryClient.captureMessage === "function"
   ) {
-    SentryClient.captureMessage("CAPTURE_CORNER_RELEASE_HOLD", {
+    const holdEvent = eventTypeFor(stream, "hold");
+    SentryClient.captureMessage(holdEvent, {
       level: "error",
-      tags: { source: "capture_corner", release_id: job.release_id || "unknown" },
+      tags: {
+        source: stream === "friday_brief" ? "friday_brief" : "capture_corner",
+        release_id: job.release_id || "unknown",
+        target_date: job.target_date || null,
+      },
       extra: {
         scheduled_email_id: job.id,
         rate_limited_count: rateLimited.length,
@@ -330,4 +464,7 @@ exports.handler = async () => {
 
 // Exports for unit tests
 exports.processJob = processJob;
-exports._internal = { lowerSet, THROTTLE_MS, MAX_ATTEMPTS, RETRY_DELAY_MS };
+exports.defaultFetchRecipients = defaultFetchRecipients;
+exports.eventTypeFor = eventTypeFor;
+exports.resendTagsFor = resendTagsFor;
+exports._internal = { lowerSet, THROTTLE_MS, MAX_ATTEMPTS, RETRY_DELAY_MS, ABORT_WINDOW_MS };

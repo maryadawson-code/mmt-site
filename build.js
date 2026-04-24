@@ -5,6 +5,7 @@ const matter = require('gray-matter');
 const { marked } = require('marked');
 const { execSync } = require('child_process');
 const sharp = require('sharp');
+const fridayBriefLoader = require('./netlify/functions/lib/friday-brief-loader');
 
 // Configure marked to open external links in new tabs with safe attributes
 marked.use({
@@ -2830,6 +2831,16 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     // Wrap body content in dash-shell: sidebar + main content area
     html = html.replace(/<body([^>]*)>/, `<body$1>\n<div class="dash-shell">\n${navHtml}\n<div class="dash-main">`);
 
+    // Latest Friday Brief tile — shown on the dashboard home page when a
+    // brief exists in content/friday-briefs/. Returns '' when no brief
+    // is available, so the injection is a no-op during bootstrapping.
+    if (activePage === 'home') {
+      const fridayBriefTile = generateFridayBriefLatestTileHtml();
+      if (fridayBriefTile) {
+        html = html.replace('<div class="dash-main">', `<div class="dash-main">\n${fridayBriefTile}`);
+      }
+    }
+
     // Close dash-main and dash-shell before </body>
     html = html.replace('</body>', '</div>\n</div>\n</body>');
 
@@ -2924,6 +2935,23 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
       console.log(`Copied premium/briefs/${file}`);
     });
     console.log(`Copied ${briefFiles.length} premium brief pages`);
+  }
+
+  // Friday Brief pipeline — render content/friday-briefs/*.md to
+  // premium/friday-briefs/<date>.html using the friday-brief-loader.
+  // Added 2026-04-24 along with the scheduled_emails.stream='friday_brief'
+  // row insertion path via scripts/publish-friday-brief.js.
+  try {
+    const fbResult = buildFridayBriefsStatic({
+      injectDashShellFn: injectDashShell,
+      siteScriptTag,
+      inlineTailwindCssFn: inlineTailwindCss,
+    });
+    if (fbResult.count > 0) {
+      console.log(`Built ${fbResult.count} Friday-brief page(s); latest=${fbResult.latest}`);
+    }
+  } catch (err) {
+    console.warn(`Friday-brief build step warning (non-fatal): ${err.message}`);
   }
 
   // Premium Monthly Brief detail pages — same handling as Friday briefs
@@ -3601,6 +3629,90 @@ function generateBriefArchiveHtml() {
         <a href="${b.url}" style="font-size:13px;font-weight:600;color:var(--mmt-teal);text-decoration:none;white-space:nowrap;">Read &rarr;</a>
       </div>`
   ).join('\n      ');
+}
+
+// =====================================================================
+// Friday Brief pipeline (content/friday-briefs → premium/friday-briefs)
+// Rendered at build time from markdown via friday-brief-loader.
+// =====================================================================
+
+function buildFridayBriefsStatic({ injectDashShellFn, siteScriptTag, inlineTailwindCssFn }) {
+  const briefs = fridayBriefLoader.listAvailableBriefs();
+  if (briefs.length === 0) {
+    console.log('No content/friday-briefs/*.md found — skipping Friday-brief build.');
+    return { count: 0 };
+  }
+  const outDir = path.join(DIST_DIR, 'premium', 'friday-briefs');
+  ensureDir(outDir);
+  let built = 0;
+  for (const dateStr of briefs) {
+    let brief;
+    try {
+      brief = fridayBriefLoader.loadFridayBrief(dateStr);
+    } catch (err) {
+      console.warn(`Skipping friday-brief ${dateStr}: ${err.message}`);
+      continue;
+    }
+    if (!brief) continue;
+    let html = fridayBriefLoader.renderBriefStaticPage(brief);
+    // noindex (premium content, not for public crawling)
+    html = html.replace('<head>', '<head>\n  <meta name="robots" content="noindex, nofollow">');
+    // Dashboard shell wraps the page — reuse the 'briefings' active-nav ID
+    // so the sidebar highlights Friday Brief like other brief pages.
+    html = injectDashShellFn(html, 'briefings');
+    html = html.replace('</body>', siteScriptTag + '\n</body>');
+    html = inlineTailwindCssFn(html);
+    fs.writeFileSync(path.join(outDir, `${dateStr}.html`), html);
+    built++;
+    console.log(`Built premium/friday-briefs/${dateStr}.html`);
+  }
+  // Archive index — minimal, mirrors the simple-listing pattern.
+  const indexRows = briefs
+    .map((d) => {
+      let b;
+      try {
+        b = fridayBriefLoader.loadFridayBrief(d);
+      } catch {
+        return '';
+      }
+      if (!b) return '';
+      const pretty = new Date(d + 'T12:00:00Z').toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      });
+      return `<li style="margin:0 0 12px 0;"><a href="/premium/friday-briefs/${d}.html" style="color:#457B9D;text-decoration:none;font-weight:600;">${escapeHtml(b.frontmatter.title)}</a><div style="font-size:13px;color:#6b7280;">${escapeHtml(pretty)} — ${escapeHtml(b.frontmatter.summary)}</div></li>`;
+    })
+    .filter(Boolean)
+    .join('\n      ');
+  const indexHtml = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>MMT Friday Brief — Archive</title><style>body{font-family:Inter,-apple-system,sans-serif;color:#0A192F;background:#FFF;margin:0;padding:48px 24px;}main{max-width:720px;margin:0 auto;}h1{font-size:26px;margin:0 0 16px 0;}ul{list-style:none;padding:0;}</style></head><body data-access="premium"><main><h1>MMT Friday Brief — Archive</h1><ul>\n      ${indexRows}\n    </ul></main></body></html>`;
+  fs.writeFileSync(path.join(outDir, 'index.html'), indexHtml);
+  return { count: built, latest: briefs[0] };
+}
+
+function generateFridayBriefLatestTileHtml() {
+  const briefs = fridayBriefLoader.listAvailableBriefs();
+  if (briefs.length === 0) return '';
+  const latest = briefs[0];
+  let brief;
+  try {
+    brief = fridayBriefLoader.loadFridayBrief(latest);
+  } catch {
+    return '';
+  }
+  if (!brief) return '';
+  const pretty = new Date(latest + 'T12:00:00Z').toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  });
+  return `<div class="dash-tile" style="background:#F3F4F6;border:1px solid #D8E0E8;border-radius:14px;padding:24px;margin-bottom:32px;">
+    <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#457B9D;margin-bottom:8px;">Latest Friday Brief</div>
+    <h2 style="font-size:20px;font-weight:800;margin:0 0 8px 0;color:#0A192F;">${escapeHtml(brief.frontmatter.title)}</h2>
+    <div style="font-size:13px;color:#6b7280;margin-bottom:12px;">${escapeHtml(pretty)}</div>
+    <p style="font-size:14px;color:#4b5563;margin:0 0 16px 0;">${escapeHtml(brief.frontmatter.summary)}</p>
+    <a href="/premium/friday-briefs/${latest}.html" style="font-size:14px;font-weight:600;color:#457B9D;text-decoration:none;">Read this brief &rarr;</a>
+  </div>`;
 }
 
 function generateBriefLatestHtml() {

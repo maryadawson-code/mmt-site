@@ -48,9 +48,14 @@ function adminBccList() {
  * @param {boolean} [opts.adminCopy] - Set true on customer-facing sends to
  *   auto-BCC the admin list (for quality tracking). Operator / internal
  *   emails should leave this false to avoid duplicate copies.
+ * @param {Array<{name: string, value: string}>} [opts.tags] - Optional Resend
+ *   email tags. When provided, passed through to Resend's tag array. Used by
+ *   the MissionPulse webhook's foreign-event filter to short-circuit cleanly
+ *   on non-MP streams (e.g. tags=[{name:'app',value:'mmt'},{name:'stream',
+ *   value:'friday_brief'}]). Default undefined — existing callers unchanged.
  * @returns {Promise<{success: boolean, error?: string, id?: string}>}
  */
-async function sendEmail({ to, subject, html, from, attachments, bcc, adminCopy }) {
+async function sendEmail({ to, subject, html, from, attachments, bcc, adminCopy, tags }) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     console.warn("RESEND_API_KEY not set — skipping email send");
@@ -81,6 +86,7 @@ async function sendEmail({ to, subject, html, from, attachments, bcc, adminCopy 
         html,
         ...(bccList.length > 0 && { bcc: bccList }),
         ...(attachments && attachments.length > 0 && { attachments }),
+        ...(Array.isArray(tags) && tags.length > 0 && { tags }),
       }),
     });
 
