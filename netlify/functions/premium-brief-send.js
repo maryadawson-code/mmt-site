@@ -25,16 +25,43 @@ const SITE_URL = "https://missionmeetstech.com";
 const ADMIN_EMAIL = "mary@missionmeetstech.com";
 
 exports.handler = async (event) => {
-  console.log("premium-brief-send: triggered", new Date().toISOString());
+  const checkedAt = new Date().toISOString();
+  console.log("premium-brief-send: triggered", checkedAt);
 
   // Kill switch
   const killCheck = checkKillSwitch("premium-brief-send");
-  if (killCheck.blocked) return killCheck.response;
+  if (killCheck.blocked) {
+    // Observability patch 2026-04-24: log kill-switch early-exit so
+    // "did the scheduler tick today" is answerable from Supabase.
+    // Best-effort — if Supabase env is missing we still return the
+    // kill response (behavior unchanged).
+    try {
+      if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
+        const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+        await logOpsEvent(sb, {
+          event_type: "BRIEF_SEND_SKIPPED",
+          source_function: "premium-brief-send",
+          severity: "warn",
+          signature: "kill_switch",
+          details: {
+            reason: "kill_switch_blocked",
+            kill_reason: killCheck.reason || null,
+            checked_at: checkedAt,
+          },
+        });
+      }
+    } catch { /* best-effort, never block the kill-switch return */ }
+    return killCheck.response;
+  }
 
   const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
   if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
-    console.error("premium-brief-send: missing Supabase env vars");
+    // Can't log to Supabase without the env vars we're asserting are
+    // missing. Console.error is the sole trace for this branch. Surfaced
+    // in function logs; audit reports must check Netlify function logs,
+    // not Supabase, for this specific failure mode.
+    console.error("premium-brief-send: missing Supabase env vars (cannot log to ops_ledger)");
     return { statusCode: 500, body: "Missing env vars" };
   }
 
@@ -51,9 +78,13 @@ exports.handler = async (event) => {
     candidateDates.push(d.toISOString().slice(0, 10));
   }
 
-  // Find the newest brief that hasn't been sent yet
+  // Find the newest brief that hasn't been sent yet.
+  // Track per-candidate disposition for the observability event if we
+  // reach the no-content skip at the end of the loop.
   let dateStr = null;
   let briefHtml = null;
+  const alreadySentDates = [];
+  const missingFileDates = [];
   for (const candidate of candidateDates) {
     // Check if already sent
     try {
@@ -63,7 +94,10 @@ exports.handler = async (event) => {
         .eq("signature", "premium_brief_sent")
         .eq("affected_entity", candidate)
         .limit(1);
-      if (existing && existing.length > 0) continue;
+      if (existing && existing.length > 0) {
+        alreadySentDates.push(candidate);
+        continue;
+      }
     } catch (e) { /* proceed on failure */ }
 
     // Try to fetch
@@ -74,11 +108,40 @@ exports.handler = async (event) => {
         dateStr = candidate;
         console.log(`premium-brief-send: found brief ${candidate}`);
         break;
+      } else {
+        missingFileDates.push(candidate);
       }
-    } catch { /* try next */ }
+    } catch {
+      missingFileDates.push(candidate);
+    }
   }
 
   if (!briefHtml || !dateStr) {
+    // Observability patch: distinguish "all candidates are already sent"
+    // (BRIEF_ALREADY_SENT) from "no brief file exists" (BRIEF_SEND_SKIPPED).
+    // Both return the same 200 skipped response — behavior unchanged.
+    const eventType = alreadySentDates.length > 0 ? "BRIEF_ALREADY_SENT" : "BRIEF_SEND_SKIPPED";
+    const reason =
+      alreadySentDates.length === candidateDates.length
+        ? "all_candidates_already_sent"
+        : alreadySentDates.length > 0
+        ? "latest_available_briefs_already_sent"
+        : "no_brief_file_in_window";
+    await logOpsEvent(supabase, {
+      event_type: eventType,
+      source_function: "premium-brief-send",
+      severity: "info",
+      signature: "no_unsent_brief",
+      details: {
+        reason,
+        candidates_checked: candidateDates.length,
+        already_sent_count: alreadySentDates.length,
+        already_sent_dates: alreadySentDates,
+        missing_file_count: missingFileDates.length,
+        missing_file_dates_sample: missingFileDates.slice(0, 5),
+        checked_at: checkedAt,
+      },
+    });
     console.log("premium-brief-send: no unsent brief found in last 14 days, skipping");
     return { statusCode: 200, body: JSON.stringify({ skipped: "no_content" }) };
   }
@@ -87,13 +150,21 @@ exports.handler = async (event) => {
   const { title, subtitle, briefBody } = extractBriefContent(briefHtml);
   if (!briefBody || briefBody.length < 100) {
     console.warn("premium-brief-send: brief body too short, skipping");
+    // Observability patch: standardized to BRIEF_CONTENT_ERROR taxonomy.
+    // Was DATA_FAILURE/brief_body_empty; behavior unchanged (still skips).
     await logOpsEvent(supabase, {
-      event_type: "DATA_FAILURE",
+      event_type: "BRIEF_CONTENT_ERROR",
       source_function: "premium-brief-send",
       severity: "warn",
       signature: "brief_body_empty",
       affected_entity: dateStr,
-      details: { bodyLength: (briefBody || "").length },
+      details: {
+        reason: "body_too_short",
+        brief_date: dateStr,
+        body_length: (briefBody || "").length,
+        minimum_required: 100,
+        checked_at: checkedAt,
+      },
     });
     return { statusCode: 200, body: JSON.stringify({ skipped: "empty_content" }) };
   }
@@ -122,6 +193,24 @@ exports.handler = async (event) => {
 
   if (subErr) {
     console.error("premium-brief-send: subscriber query failed:", subErr.message);
+    // Observability patch: subscriber-query failure is an infra-level
+    // blocker — log BRIEF_SEND_FAILED with the upstream error. Behavior
+    // unchanged (still returns 500).
+    try {
+      await logOpsEvent(supabase, {
+        event_type: "BRIEF_SEND_FAILED",
+        source_function: "premium-brief-send",
+        severity: "error",
+        signature: "subscriber_query_failed",
+        affected_entity: dateStr,
+        details: {
+          reason: "subscriber_query_failed",
+          brief_date: dateStr,
+          error: String(subErr.message || subErr).substring(0, 400),
+          checked_at: checkedAt,
+        },
+      });
+    } catch { /* best-effort log */ }
     return { statusCode: 500, body: "Subscriber query failed" };
   }
 
@@ -145,6 +234,22 @@ exports.handler = async (event) => {
 
   if (recipients.length === 0) {
     console.log("premium-brief-send: no subscribers, skipping");
+    // Observability patch: empty recipient list is a skip, not a
+    // failure. Behavior unchanged.
+    await logOpsEvent(supabase, {
+      event_type: "BRIEF_SEND_SKIPPED",
+      source_function: "premium-brief-send",
+      severity: "warn",
+      signature: "no_subscribers",
+      affected_entity: dateStr,
+      details: {
+        reason: "no_subscribers",
+        brief_date: dateStr,
+        premium_count: (subscribers || []).length,
+        admin_paid_count: (adminUsers || []).length,
+        checked_at: checkedAt,
+      },
+    });
     return { statusCode: 200, body: JSON.stringify({ skipped: "no_subscribers" }) };
   }
 
