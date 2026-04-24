@@ -69,8 +69,8 @@ function buildTesterCompWelcome(opts = {}) {
     <h2 style="font-size:17px;font-weight:700;margin:24px 0 10px 0;">Start here</h2>
     <ul style="padding-left:20px;margin:0 0 20px 0;font-size:15px;">
       <li style="margin-bottom:8px;"><a href="https://missionmeetstech.com/premium/dashboard/" style="color:#457B9D;font-weight:600;text-decoration:none;">Premium dashboard</a> — your home base. Latest Friday Brief, Monthly Brief, Pursuit Calendar, Ask MMT all live here.</li>
-      <li style="margin-bottom:8px;"><a href="https://missionmeetstech.com/marketpulse.html" style="color:#457B9D;font-weight:600;text-decoration:none;">MarketPulse</a> — on-demand strategic market briefs. Standard subscriber quota applies; tell me if that's the wrong shape.</li>
-      <li style="margin-bottom:8px;"><a href="https://missionmeetstech.com/proposal-pulse.html" style="color:#457B9D;font-weight:600;text-decoration:none;">ProposalPulse</a> — proposal scoring with Gold Team Review. Upload a deck or SOW/PWS.</li>
+      <li style="margin-bottom:8px;"><a href="https://missionmeetstech.com/marketpulse.html" style="color:#457B9D;font-weight:600;text-decoration:none;">MarketPulse</a> — on-demand strategic market briefs. <strong>Unlimited while you're in tester access</strong> (admin/paid tier bypasses the per-report payment flow).</li>
+      <li style="margin-bottom:8px;"><a href="https://missionmeetstech.com/proposal-pulse.html" style="color:#457B9D;font-weight:600;text-decoration:none;">ProposalPulse</a> — proposal scoring with Gold Team Review. <strong>Unlimited while you're in tester access</strong>; upload a deck or SOW/PWS.</li>
     </ul>
 
     <h2 style="font-size:17px;font-weight:700;margin:24px 0 10px 0;">What I want from you</h2>
