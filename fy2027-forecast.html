@@ -37,11 +37,30 @@
 
     <div style="max-width:480px;margin:0 auto 32px;background:var(--mmt-surface);border:1px solid var(--mmt-border);border-radius:12px;padding:24px;box-shadow:0 1px 3px rgba(10,25,47,0.06);">
       <p style="font-size:14px; color:var(--mmt-text-secondary); margin-bottom:12px;text-align:center;">Enter your email to get the forecast delivered instantly.</p>
-      <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" target="_blank">
-        <input type="hidden" name="tag" value="fy2027-forecast">
-        <input type="email" name="email" placeholder="you@agency.gov" required style="width:100%;padding:12px 16px;border:1px solid var(--mmt-border);border-radius:8px;font-size:14px;margin-bottom:8px;height:44px;">
+      <!-- Posts to MMT's own Netlify function (not a third-party endpoint).
+           The function (1) emails the PDF via Resend, (2) adds the
+           subscriber to Buttondown with tag fy2027-forecast.
+           Architecture: docs/email-architecture.md -->
+      <form action="/.netlify/functions/lead-magnet-fy2027" method="post">
+        <input type="email" name="email" placeholder="you@agency.gov" required style="width:100%;padding:12px 16px;border:1px solid var(--mmt-border);border-radius:8px;font-size:14px;margin-bottom:8px;height:44px;" autocomplete="email">
+        <input type="text" name="name" placeholder="Your name (optional)" style="width:100%;padding:12px 16px;border:1px solid var(--mmt-border);border-radius:8px;font-size:14px;margin-bottom:8px;height:44px;" autocomplete="name">
+        <input type="text" name="company" placeholder="Company (optional)" style="width:100%;padding:12px 16px;border:1px solid var(--mmt-border);border-radius:8px;font-size:14px;margin-bottom:8px;height:44px;" autocomplete="organization">
+        <!-- Honeypots: real users leave `website` empty; `hp_ts` ages so
+             instant-submit bots are filtered (>2s required). -->
+        <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;height:0;width:0;opacity:0;" aria-hidden="true">
+        <input type="hidden" name="hp_ts" value="">
         <button type="submit" class="btn-primary" style="width:100%;height:44px;">Send me the forecast</button>
       </form>
+      <script>
+        // Stamp hp_ts with the moment the form rendered so the server
+        // can reject submissions that arrive faster than a human types.
+        (function () {
+          var f = document.currentScript.previousElementSibling;
+          if (!f) return;
+          var hp = f.querySelector('input[name="hp_ts"]');
+          if (hp) hp.value = String(Date.now());
+        })();
+      </script>
       <p style="margin-top:10px; font-size:12px; color:var(--mmt-text-secondary);text-align:center;">Read by 1,528+ federal health IT professionals. No spam. Unsubscribe anytime.</p>
     </div>
 
