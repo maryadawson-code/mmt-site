@@ -335,8 +335,9 @@
     .template-btn.active { background: #457B9D; color: #0a0e17; }
     .scaffold-preview { background: #0a0e17; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 12px; font-family: monospace; font-size: 0.78rem; white-space: pre-wrap; max-height: 300px; overflow-y: auto; margin-top: 12px; color: #a5f3fc; }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js" defer></script>
+  <!-- Vendored CDN deps to satisfy edge-fn CSP (script-src is 'self' + plausible + cdnjs only). Version-pinned. -->
+  <script src="/assets/vendor/chart.js-4.5.1.umd.min.js" defer></script>
+  <script src="/assets/vendor/mermaid-10.9.5.min.js" defer></script>
   <script src="https://browser.sentry-cdn.com/9.1.0/bundle.tracing.min.js" crossorigin="anonymous"></script>
   <script>
     if (window.Sentry) {
