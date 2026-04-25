@@ -15,6 +15,7 @@ const { createClient } = require("@supabase/supabase-js");
 const { sendEmail } = require("./lib/send-email");
 const { checkKillSwitch, shouldHoldEmail, holdEmail } = require("./lib/kill-switch");
 const { logOpsEvent } = require("./lib/ops-ledger");
+const { withOpsLogging } = require("./lib/scheduled-fn-wrapper");
 const {
   extractBriefContent,
   buildFridayBriefEmail,
@@ -24,7 +25,7 @@ const {
 const SITE_URL = "https://missionmeetstech.com";
 const ADMIN_EMAIL = "mary@missionmeetstech.com";
 
-exports.handler = async (event) => {
+async function _handler(event) {
   const checkedAt = new Date().toISOString();
   console.log("premium-brief-send: triggered", checkedAt);
 
@@ -346,4 +347,6 @@ exports.handler = async (event) => {
       held: holdMode,
     }),
   };
-};
+}
+
+exports.handler = withOpsLogging("premium_brief_send", _handler);

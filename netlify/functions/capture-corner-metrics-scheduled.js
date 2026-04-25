@@ -15,8 +15,9 @@
 const { createClient } = require("@supabase/supabase-js");
 const { logOpsEvent } = require("./lib/ops-ledger");
 const { runCaptureCornerMetrics } = require("./lib/capture-corner-metrics");
+const { withOpsLogging } = require("./lib/scheduled-fn-wrapper");
 
-exports.handler = async () => {
+async function _handler() {
   const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
   if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
@@ -51,4 +52,6 @@ exports.handler = async () => {
     statusCode: err ? 500 : 200,
     body: JSON.stringify({ ok: !err, error: err, summary }),
   };
-};
+}
+
+exports.handler = withOpsLogging("capture_corner_metrics_scheduled", _handler);

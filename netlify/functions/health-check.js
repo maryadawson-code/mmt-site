@@ -10,10 +10,11 @@
 // ============================================================
 
 const { sendEmail } = require("./lib/send-email");
+const { withOpsLogging } = require("./lib/scheduled-fn-wrapper");
 
 const ALERT_EMAIL = "mary@missionmeetstech.com";
 
-exports.handler = async () => {
+async function _handler() {
   // Scheduled invocation — run full checks
   console.log("Health check started:", new Date().toISOString());
   const failures = [];
@@ -113,4 +114,6 @@ exports.handler = async () => {
 
   console.log("All health checks passed");
   return { statusCode: 200, body: JSON.stringify({ status: "OK" }) };
-};
+}
+
+exports.handler = withOpsLogging("health_check", _handler);

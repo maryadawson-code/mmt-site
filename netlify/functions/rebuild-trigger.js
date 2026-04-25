@@ -3,8 +3,9 @@
 // Requires NETLIFY_BUILD_HOOK_URL env var (create via Netlify dashboard).
 
 const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
+const { withOpsLogging } = require("./lib/scheduled-fn-wrapper");
 
-exports.handler = async function () {
+async function _handler() {
   const hookUrl = process.env.NETLIFY_BUILD_HOOK_URL;
 
   if (!hookUrl) {
@@ -26,4 +27,6 @@ exports.handler = async function () {
     console.error('Error triggering rebuild:', err.message);
     return { statusCode: 500, body: `Error: ${err.message}` };
   }
-};
+}
+
+exports.handler = withOpsLogging("rebuild_trigger", _handler);

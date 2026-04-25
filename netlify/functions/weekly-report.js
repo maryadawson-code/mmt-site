@@ -10,12 +10,13 @@
 const { createClient } = require("@supabase/supabase-js");
 const { sendEmail } = require("./lib/send-email");
 const { buildWeeklyReportHtml } = require("./lib/email-templates");
+const { withOpsLogging } = require("./lib/scheduled-fn-wrapper");
 
 const REPORT_RECIPIENT = "mary@missionmeetstech.com";
 // Legacy value — existing Supabase records use "lethality_test"
 const FEATURE_NAME = "lethality_test";
 
-exports.handler = async (event) => {
+async function _handler(event) {
   // Scheduled functions receive event.body with schedule metadata
   console.log("Weekly report triggered:", new Date().toISOString());
 
@@ -132,4 +133,6 @@ exports.handler = async (event) => {
     console.error("Weekly report error:", err);
     return { statusCode: 500, body: JSON.stringify({ error: err.message }) };
   }
-};
+}
+
+exports.handler = withOpsLogging("weekly_report", _handler);

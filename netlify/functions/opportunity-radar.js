@@ -8,9 +8,11 @@
 // Runs at 7 AM ET — one hour after contract intel refresh.
 // ============================================================
 
+const { withOpsLogging } = require("./lib/scheduled-fn-wrapper");
+
 const SITE_URL = process.env.URL || "https://missionmeetstech.com";
 
-exports.handler = async (event) => {
+async function _handler(event) {
   console.log("Opportunity radar trigger:", new Date().toISOString());
 
   try {
@@ -36,4 +38,6 @@ exports.handler = async (event) => {
       body: JSON.stringify({ error: err.message }),
     };
   }
-};
+}
+
+exports.handler = withOpsLogging("opportunity_radar", _handler);

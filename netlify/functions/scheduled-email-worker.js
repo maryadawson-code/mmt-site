@@ -24,6 +24,7 @@
 const { createClient } = require("@supabase/supabase-js");
 const Sentry = require("@sentry/node");
 const { logOpsEvent } = require("./lib/ops-ledger");
+const { withOpsLogging } = require("./lib/scheduled-fn-wrapper");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -416,7 +417,7 @@ async function processJob({
   };
 }
 
-exports.handler = async () => {
+async function _handler() {
   if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY || !RESEND_API_KEY) {
     return { statusCode: 500, body: JSON.stringify({ error: "env_not_configured" }) };
   }
@@ -460,7 +461,9 @@ exports.handler = async () => {
     statusCode: 200,
     body: JSON.stringify({ ok: true, processed: summary.length, summary, now: nowIso }),
   };
-};
+}
+
+exports.handler = withOpsLogging("scheduled_email_worker", _handler);
 
 // Exports for unit tests
 exports.processJob = processJob;

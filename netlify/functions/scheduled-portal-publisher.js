@@ -8,11 +8,12 @@
 
 const { createClient } = require("@supabase/supabase-js");
 const { logOpsEvent } = require("./lib/ops-ledger");
+const { withOpsLogging } = require("./lib/scheduled-fn-wrapper");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
-exports.handler = async () => {
+async function _handler() {
   if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
     return { statusCode: 500, body: "supabase_not_configured" };
   }
@@ -60,4 +61,6 @@ exports.handler = async () => {
     statusCode: 200,
     body: JSON.stringify({ ok: true, flipped_count: flipped.length, flipped, now }),
   };
-};
+}
+
+exports.handler = withOpsLogging("scheduled_portal_publisher", _handler);

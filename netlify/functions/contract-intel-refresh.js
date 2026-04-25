@@ -11,9 +11,11 @@
 //     schedule = "0 11 * * *"
 // ============================================================
 
+const { withOpsLogging } = require("./lib/scheduled-fn-wrapper");
+
 const SITE_URL = process.env.URL || "https://missionmeetstech.com";
 
-exports.handler = async (event) => {
+async function _handler(event) {
   console.log("Contract intel refresh trigger:", new Date().toISOString());
 
   try {
@@ -39,4 +41,6 @@ exports.handler = async (event) => {
       body: JSON.stringify({ error: err.message }),
     };
   }
-};
+}
+
+exports.handler = withOpsLogging("contract_intel_refresh", _handler);

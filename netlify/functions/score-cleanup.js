@@ -29,7 +29,9 @@ const STALE_THRESHOLD_MS = 5 * 60 * 1000;
 // Max retrigger attempts per record to avoid infinite loops
 const MAX_RETRIGGER_ATTEMPTS = 3;
 
-exports.handler = async () => {
+const { withOpsLogging } = require("./lib/scheduled-fn-wrapper");
+
+async function _handler() {
   console.log("score-cleanup: started", new Date().toISOString());
 
   if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
@@ -161,4 +163,6 @@ exports.handler = async () => {
     console.error("score-cleanup: unhandled error:", err);
     return { statusCode: 500, body: err.message };
   }
-};
+}
+
+exports.handler = withOpsLogging("score_cleanup", _handler);
