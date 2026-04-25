@@ -7,6 +7,7 @@
     "build:no-validate": "node scripts/sync-newsletters.js; node build.js",
     "validate-dist": "node scripts/validate-dist.js",
     "sync-newsletters": "node scripts/sync-newsletters.js",
+    "build:fy2027-pdf": "node scripts/build-fy2027-pdf.js",
     "test": "npx vitest run",
     "test:unit": "npx vitest run tests/unit",
     "test:smoke": "npx vitest run tests/smoke",
