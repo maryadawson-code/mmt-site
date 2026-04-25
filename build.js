@@ -3141,6 +3141,20 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     console.log(`Copied ${jsFiles.length} JS files`);
   }
 
+  // Copy vendored CDN deps (assets/vendor/*) — version-pinned local files
+  // that replace third-party-CDN references blocked by the edge-fn CSP.
+  // Currently chart.js + mermaid for command-center.html.
+  const vendorDir = path.join(__dirname, 'assets', 'vendor');
+  const distVendorDir = path.join(DIST_DIR, 'assets', 'vendor');
+  if (fs.existsSync(vendorDir)) {
+    ensureDir(distVendorDir);
+    const vendorFiles = fs.readdirSync(vendorDir).filter(f => f.endsWith('.js') || f.endsWith('.css'));
+    vendorFiles.forEach(file => {
+      fs.copyFileSync(path.join(vendorDir, file), path.join(distVendorDir, file));
+    });
+    console.log(`Copied ${vendorFiles.length} vendor asset(s)`);
+  }
+
   // Copy self-hosted fonts
   const fontsDir = path.join(__dirname, 'fonts');
   const distFontsDir = path.join(DIST_DIR, 'fonts');
