@@ -259,70 +259,83 @@ Return ONLY valid JSON. No markdown code fences. No text before or after the JSO
 
 
 // ============================================================
-// HELPER: Call Claude API with web_search tool and parse JSON
-// Replaces Perplexity sonar-pro. Uses Anthropic web_search_20260209.
+// HELPER: Perplexity sonar-pro web search + JSON parse
+//
+// Migrated 2026-04-25 off the Anthropic Sonnet websearch tool (which
+// was silently failing nightly per CLAUDE.md 2026-04-15 gotcha and
+// reports/contract-intel-diagnosis-20260425.md). Mirrors the
+// MarketPulse pattern in generate-tactical-brief-background.js.
+//
+// Function name kept as callClaudeSearch for minimal diff downstream;
+// the `model` parameter is preserved but logged-only (Perplexity uses
+// sonar-pro for all research calls).
 // ============================================================
 
+const PERPLEXITY_URL = "https://api.perplexity.ai/chat/completions";
+const PERPLEXITY_MODEL = "sonar-pro";
+
 async function callClaudeSearch(systemPrompt, userMessage, _maxSearches, model, maxTokens) {
+  const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
+  if (!PERPLEXITY_API_KEY) {
+    throw new Error("PERPLEXITY_API_KEY not configured (used by contract-intel-refresh after web_search migration)");
+  }
+
   const _costStart = Date.now();
-  const response = await withRetry(() => fetchWithTimeout(ANTHROPIC_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": ANTHROPIC_API_KEY,
-      "anthropic-version": "2023-06-01",
-    },
-    body: JSON.stringify({
-      model,
-      max_tokens: maxTokens,
-      temperature: 0.3,
-      system: systemPrompt,
-      messages: [{ role: "user", content: userMessage }],
-      tools: [{ type: "web_search_20260209", name: "web_search", max_uses: 5 }],
-    }),
-  }));
+  const response = await withRetry(() => {
+    const ac = new AbortController();
+    const timer = setTimeout(() => ac.abort(), 120000);
+    return fetch(PERPLEXITY_URL, {
+      method: "POST",
+      signal: ac.signal,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${PERPLEXITY_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: PERPLEXITY_MODEL,
+        max_tokens: maxTokens,
+        temperature: 0.3,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userMessage },
+        ],
+        web_search_options: { search_context_size: "high" },
+      }),
+    }).finally(() => clearTimeout(timer));
+  }, { maxRetries: 2, baseDelayMs: 3000 });
 
   if (!response.ok) {
     const errText = await response.text();
-    throw new Error(`Anthropic API error ${response.status}: ${errText}`);
+    throw new Error(`Perplexity API error ${response.status}: ${errText}`);
   }
 
   const finalData = await response.json();
 
-  // Log token usage
   if (finalData.usage) {
     const u = finalData.usage;
-    console.log(`  AI cost: model=${model}, input=${u.input_tokens}, output=${u.output_tokens}`);
+    console.log(`  Perplexity cost: model=${PERPLEXITY_MODEL}, input=${u.prompt_tokens || u.input_tokens}, output=${u.completion_tokens || u.output_tokens} (req model=${model})`);
   }
 
-  // Cost tracking: Anthropic call
+  // Cost tracking — best effort, never break the refresh
   try {
     if (_supabaseRef) {
+      const u = finalData.usage || {};
       await trackAnthropic(_supabaseRef, {
-        functionName: 'contract-intel-refresh-background',
-        product: 'contract-intel',
-        model: model,
-        usage: finalData.usage ? { input_tokens: finalData.usage.input_tokens || 0, output_tokens: finalData.usage.output_tokens || 0 } : null,
+        functionName: "contract-intel-refresh-background",
+        product: "contract-intel",
+        model: PERPLEXITY_MODEL,
+        usage: {
+          input_tokens: u.prompt_tokens || u.input_tokens || 0,
+          output_tokens: u.completion_tokens || u.output_tokens || 0,
+        },
         latencyMs: Date.now() - _costStart,
       });
     }
   } catch (_costErr) { /* never break contract refresh */ }
 
-  // Extract text and citations from Claude web_search response
-  let textContent = "";
-  const searchSources = [];
-  for (const block of (finalData.content || [])) {
-    if (block.type === "text") {
-      textContent += block.text;
-    }
-    if (block.type === "web_search_tool_result") {
-      for (const sr of (block.content || [])) {
-        if (sr.type === "web_search_result" && sr.url) {
-          searchSources.push(sr.url);
-        }
-      }
-    }
-  }
+  // Perplexity returns choices[0].message.content + citations array
+  const textContent = finalData.choices?.[0]?.message?.content || "";
+  const searchSources = Array.isArray(finalData.citations) ? finalData.citations : [];
 
   // Clean up common JSON issues
   function cleanJson(str) {

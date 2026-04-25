@@ -102,8 +102,8 @@
 [functions."pursuit-calendar-refresh"]
   schedule = "0 */6 * * *"
 
-# Pursuit Calendar — daily 06:00 UTC, expires past-date pursuits and
-# archives rows >30d expired.
+# Pursuit Calendar — daily 06:00 UTC, expires past-date pursuit_calendar
+# rows and archives rows >30d expired.
 [functions."pursuit-calendar-sweep"]
   schedule = "0 6 * * *"
 
