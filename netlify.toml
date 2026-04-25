@@ -97,6 +97,16 @@
 [functions."capture-corner-metrics-scheduled"]
   schedule = "0 4 * * *"
 
+# Pursuit Calendar — every 6h, polls PURSUIT_FEEDS and upserts
+# pursuit_calendar rows.
+[functions."pursuit-calendar-refresh"]
+  schedule = "0 */6 * * *"
+
+# Pursuit Calendar — daily 06:00 UTC, expires past-date pursuits and
+# archives rows >30d expired.
+[functions."pursuit-calendar-sweep"]
+  schedule = "0 6 * * *"
+
 # Capture Corner one-shot: April 21, 2026 at 9 AM EDT (= 13:00 UTC)
 # Cron fires annually on April 21; the function gates on SCHEDULED_DATE
 # so it only actually sends in the configured year. Ops_ledger dedup

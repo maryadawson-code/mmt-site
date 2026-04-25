@@ -6,6 +6,8 @@ const { marked } = require('marked');
 const { execSync } = require('child_process');
 const sharp = require('sharp');
 const fridayBriefLoader = require('./netlify/functions/lib/friday-brief-loader');
+const { renderPursuitCalendarHtml } = require('./netlify/functions/lib/pursuit-calendar-render');
+const { createClient: createSupabaseClient } = require('@supabase/supabase-js');
 
 // Configure marked to open external links in new tabs with safe attributes
 marked.use({
@@ -2954,6 +2956,23 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     console.warn(`Friday-brief build step warning (non-fatal): ${err.message}`);
   }
 
+  // Pursuit Calendar — render the empty-state placeholder synchronously
+  // here so the page exists even on local builds with no DB access. The
+  // async build() function below this hydrates it from Supabase if
+  // SUPABASE_URL/SUPABASE_SERVICE_KEY are present.
+  try {
+    const outDir = path.join(DIST_DIR, 'premium', 'calendar');
+    ensureDir(outDir);
+    let html = renderPursuitCalendarHtml([]);
+    html = injectDashShell(html, 'calendar');
+    html = html.replace('</body>', siteScriptTag + '\n</body>');
+    html = inlineTailwindCss(html);
+    fs.writeFileSync(path.join(outDir, 'index.html'), html);
+    console.log('Built premium/calendar/index.html (empty-state placeholder)');
+  } catch (err) {
+    console.warn(`Pursuit calendar placeholder warning (non-fatal): ${err.message}`);
+  }
+
   // Premium Monthly Brief detail pages — same handling as Friday briefs
   // but with Monthly Brief as the active dashboard nav item.
   const monthlyBriefsSrcDir = path.join(__dirname, 'premium', 'monthly');
@@ -4045,6 +4064,38 @@ async function build() {
   // 6. Copy all static files (with build-time injections)
   console.log('\n--- Copying static files ---');
   copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleMap, agencyArticleMap, articles, subscriberCount });
+
+  // 6b. Pursuit Calendar — hydrate dist/premium/calendar/index.html
+  // from Supabase if creds are present. The placeholder written by
+  // copyStaticFiles is overwritten with live rows. Best-effort: if
+  // Supabase is down or env missing, the placeholder stays as-is.
+  if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
+    try {
+      const sb = createSupabaseClient(
+        process.env.SUPABASE_URL,
+        process.env.SUPABASE_SERVICE_KEY
+      );
+      const { data, error } = await sb
+        .from('pursuit_calendar')
+        .select('id, title, event_date, end_date, agency, vehicle, category, source_url, notes')
+        .eq('status', 'active')
+        .order('event_date', { ascending: true });
+      if (error) {
+        console.warn(`Pursuit calendar hydrate warning: ${error.message}`);
+      } else {
+        const rows = data || [];
+        const outPath = path.join(DIST_DIR, 'premium', 'calendar', 'index.html');
+        let html = renderPursuitCalendarHtml(rows);
+        html = injectDashShell(html, 'calendar');
+        html = html.replace('</body>', siteScriptTag + '\n</body>');
+        html = inlineTailwindCss(html);
+        fs.writeFileSync(outPath, html);
+        console.log(`Hydrated premium/calendar/index.html — ${rows.length} active pursuit(s)`);
+      }
+    } catch (err) {
+      console.warn(`Pursuit calendar hydrate warning (non-fatal): ${err.message}`);
+    }
+  }
 
   // 7. Write a deploy marker file. This is the simplest way to verify
   // from outside the build pipeline whether a given commit actually
