@@ -335,30 +335,43 @@ exports.handler = async (event) => {
 
       console.log(`stripe-webhook: subscription ${stripeEvent.type} — ${sub.id} (status: ${sub.status}, email: ${subEmail}, premium: ${isMmtPremium}, match: ${isMmtPremiumByMetadata ? "metadata" : isMmtPremiumByPriceId ? "price_id" : "none"})`);
 
-      // Update premium tier in mp_users if this is an MMT Premium subscription
+      // Upsert premium tier in mp_users for any MMT Premium subscription.
+      // Always upsert (not update-then-fallback): a Supabase update against a
+      // non-existent row returns { data: [], error: null }, so the prior code's
+      // `if (updateErr) upsert(...)` fallback never fired and Founding members
+      // who paid via Stripe Payment Link before any other MMT touchpoint never
+      // got their mp_users row. Confirmed against Dave Nelson (4/23) and Fred
+      // Hannett (4/24) in reports/premium-customers-account-fix-20260426.md.
       if (isMmtPremium && subEmail) {
+        const normalizedEmail = subEmail.toLowerCase().trim();
         const tierUpdate = {
+          email: normalizedEmail,
+          stripe_customer_id: sub.customer,
+          stripe_subscription_id: sub.id,
           subscription_tier: isActive ? "premium" : "free",
           subscription_status: sub.status,
-          stripe_subscription_id: sub.id,
         };
         if (isFounding) tierUpdate.founding_member = true;
 
-        const { error: updateErr } = await supabase
+        const { error: upsertErr } = await supabase
           .from("mp_users")
-          .update(tierUpdate)
-          .eq("email", subEmail.toLowerCase().trim());
+          .upsert(tierUpdate, { onConflict: "email" });
 
-        if (updateErr) {
-          // User might not exist yet — try upsert
-          await supabase.from("mp_users").upsert({
-            email: subEmail.toLowerCase().trim(),
-            stripe_customer_id: sub.customer,
-            ...tierUpdate,
-          }, { onConflict: "email" });
+        if (upsertErr) {
+          console.error(`stripe-webhook: mp_users upsert failed for ${normalizedEmail}: ${upsertErr.message}`);
+          try {
+            await logOpsEvent(supabase, {
+              event_type: "MP_USERS_UPSERT_FAILED",
+              source_function: "stripe-webhook",
+              severity: "error",
+              signature: "subscription_tier_grant",
+              affected_entity: sub.id,
+              details: { email: normalizedEmail, subscription_id: sub.id, error: upsertErr.message },
+            });
+          } catch { /* never break webhook on telemetry */ }
         }
 
-        console.log(`stripe-webhook: ${subEmail} tier → ${isActive ? "premium" : "free"} (${sub.status})`);
+        console.log(`stripe-webhook: ${normalizedEmail} tier → ${isActive ? "premium" : "free"} (${sub.status})`);
       }
 
       await supabase.from("ops_events").insert({

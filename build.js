@@ -2897,6 +2897,15 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
       if (!src.includes('dashboard.html') && !dashPageMap[src] && html.includes('</nav>')) {
         html = html.replace('</nav>', '</nav>' + searchOverlayHtml);
       }
+      // Run BUILD marker injections on premium subpages so briefings.html
+      // (and any future premium page) picks up auto-generated archives + tiles.
+      // Was previously htmlFiles-only, so briefings.html silently ignored
+      // <!-- BUILD:BRIEF_LATEST --> and <!-- BUILD:BRIEF_ARCHIVE -->.
+      for (const [marker, content] of Object.entries(injections)) {
+        if (html.includes(marker)) {
+          html = html.replace(marker, content);
+        }
+      }
       html = html.replace('</body>', siteScriptTag + '\n</body>');
       html = inlineTailwindCss(html);
       // Dashboard cleanup: remove any nav-editorial that slipped through
@@ -3628,25 +3637,67 @@ function generateAgencyProfilePage(agency) {
 </html>`;
 }
 
-// Auto-discover Friday Brief pages from premium/briefs/*.html
+// Auto-discover Friday Brief pages from BOTH pipelines:
+//   1. content/friday-briefs/*.md (markdown, new pipeline) → /premium/friday-briefs/{date}.html
+//   2. premium/briefs/*.html (hand-curated, legacy) → /premium/briefs/{date}.html
+// Combined and date-deduped (markdown wins on conflict). Newest first.
+// Was previously briefs/*.html only — that broke briefings.html when the
+// 4/18 + 4/25 briefs came out of the markdown pipeline and never showed.
 function getBriefFiles() {
-  const briefsDir = path.join(__dirname, 'premium', 'briefs');
-  if (!fs.existsSync(briefsDir)) return [];
-  return fs.readdirSync(briefsDir)
-    .filter(f => f.endsWith('.html') && /^\d{4}-\d{2}-\d{2}/.test(f))
-    .sort()
-    .reverse() // newest first
-    .map(f => {
-      const dateStr = f.replace('.html', '');
+  const out = new Map();
+
+  // Pipeline 1: content/friday-briefs/*.md
+  try {
+    const dates = fridayBriefLoader.listAvailableBriefs();
+    for (const dateStr of dates) {
+      let brief;
+      try {
+        brief = fridayBriefLoader.loadFridayBrief(dateStr);
+      } catch { continue; }
+      if (!brief || !brief.frontmatter) continue;
       const parts = dateStr.split('-');
       const d = new Date(parts[0], parts[1] - 1, parts[2]);
       const formatted = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-      // Read description from meta tag
+      const desc = (brief.frontmatter.summary || brief.frontmatter.title || '').toString();
+      out.set(dateStr, {
+        file: `${dateStr}.md`,
+        date: dateStr,
+        formatted,
+        desc,
+        url: `/premium/friday-briefs/${dateStr}.html`,
+        title: brief.frontmatter.title || `Friday Brief — ${formatted}`,
+        source: 'markdown',
+      });
+    }
+  } catch { /* loader error → fall back to legacy */ }
+
+  // Pipeline 2: premium/briefs/*.html (legacy archive)
+  const briefsDir = path.join(__dirname, 'premium', 'briefs');
+  if (fs.existsSync(briefsDir)) {
+    const files = fs.readdirSync(briefsDir)
+      .filter(f => f.endsWith('.html') && /^\d{4}-\d{2}-\d{2}/.test(f));
+    for (const f of files) {
+      const dateStr = f.replace('.html', '');
+      if (out.has(dateStr)) continue; // markdown wins
+      const parts = dateStr.split('-');
+      const d = new Date(parts[0], parts[1] - 1, parts[2]);
+      const formatted = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
       const html = fs.readFileSync(path.join(briefsDir, f), 'utf8');
       const descMatch = html.match(/<meta name="description" content="([^"]+)"/);
       const desc = descMatch ? descMatch[1].split('. Weekly')[0] : '';
-      return { file: f, date: dateStr, formatted, desc, url: `/premium/briefs/${f}` };
-    });
+      out.set(dateStr, {
+        file: f,
+        date: dateStr,
+        formatted,
+        desc,
+        url: `/premium/briefs/${f}`,
+        title: `Friday Brief — Week of ${formatted}`,
+        source: 'legacy_html',
+      });
+    }
+  }
+
+  return Array.from(out.values()).sort((a, b) => b.date.localeCompare(a.date));
 }
 
 function generateBriefArchiveHtml() {
