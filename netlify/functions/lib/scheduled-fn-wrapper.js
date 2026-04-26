@@ -21,6 +21,7 @@
 
 const { createClient } = require("@supabase/supabase-js");
 const { logOpsEvent } = require("./ops-ledger");
+const { Sentry } = require("./sentry");
 
 const STACK_TRUNCATE_BYTES = 4 * 1024;
 
@@ -126,6 +127,22 @@ function withOpsLogging(fnName, handler, opts = {}) {
           error_stack: _truncate(errStack, STACK_TRUNCATE_BYTES),
         },
       });
+      // Sentry tag emission so the *_RUN_FAILED alert rule can fire on the
+      // canonical event_type (not just the underlying error). Failures here
+      // are non-blocking — the rethrow below is what Netlify acts on.
+      try {
+        if (Sentry && Sentry.captureMessage) {
+          Sentry.captureMessage(failEvent, {
+            level: "error",
+            tags: {
+              function: sourceFunction,
+              event_type: failEvent,
+              alert_signal: "run_failed",
+            },
+            extra: { error_name: errName, error_message: _truncate(errMessage, 1024) },
+          });
+        }
+      } catch { /* never break wrapper on telemetry */ }
       throw err;
     }
 
