@@ -216,6 +216,36 @@ Before declaring work complete, verify:
 
 ---
 
+## Sprint 2026-04-27 — Subscriber-platform stabilization
+
+Triggered by stacked subscriber-trust failures: Founding Member Danielle blocked from Ask MMT, marketed routes 404ing, scanner stuck on "initializing", `████` redactions on Contract Tracker, IDIQ Tracker looking empty.
+
+**Hard rules added — apply to every future change:**
+
+- **No paid feature without:** route, entitlement helper call, locked public preview, monthly-cap test, doc entry. The canonical helper is `netlify/functions/lib/entitlement.js` — every paid-tool function must use `loadEntitlement(supabase, email)`. Scattered `.eq("email", email).select("subscription_tier, ...")` shapes are a regression and `tests/unit/entitlement-matrix.test.js` enforces this.
+- **No data-backed feature without:** `last_updated` / `freshness` field, stale UI state at `> SLA` hours, ops-event log on refresh failures.
+- **Canonical column name is `founding_member`.** `is_founding_member` is the typo that broke Danielle on 2026-04-27. The entitlement matrix test fails CI if anyone reintroduces it.
+- **No `████` block redactions.** Locked content uses the `data-gate-overlay="premium"` chip + "PREMIUM" label per `build.js generateContractTrackerHtml`. `validate-dist.js` fails on any `████` in built output.
+- **No marketed URL outside `docs/member-features.json`.** `scripts/validate-routes.js` reads that registry and fails the build if a marketed clean URL has no resolution path.
+
+**What shipped:**
+- Canonical entitlement helper + 4-tool wiring (Ask MMT, Pursuit Score, Compliance Check, Signal Chain)
+- Feature registry: `docs/member-features.json` + `scripts/validate-routes.js`
+- 14 clean-URL redirects in `netlify.toml`: `/pursuit-score`, `/pursuit-calendar`, `/askmtt`, `/ask-mtt`, `/tools`, `/help`, `/pricing`, `/compliance-check`, `/signal-chain`, `/capture-corner`, `/idiq-tracker`, `/contract-tracker`, `/proposal-pulse`, `/ask-mmt`
+- `tools.html` — single hub linking every marketed tool with access labels
+- Scanner empty-state fix in `opportunity-feed.js` (always returns table-wide `latest_scan_date` + freshness label) + `js/contract-tracker.js` (honest empty/stale states, no indefinite "initializing")
+- `████` removed from `build.js`; replaced with PREMIUM chip + "locked" labels
+- IDIQ Tracker public preview now shows tracked-count, combined ceiling, refresh cadence, and per-vehicle field list — gate is intentional, not empty
+- Capture Corner: `content/newsletter/_template.md` reference template + build-time `CAPTURE_CORNER_MISSING` warning when recent posts lack frontmatter
+- Smoke checklist (`docs/manual-subscriber-smoke-checklist.md`) + per-deploy runbook (`docs/deploy-runbook.md`) + entitlement spec (`docs/entitlement-spec.md`)
+- `migrations/011_mp_users_columns_documented.sql` — idempotent column doc + soft CHECK constraints. **Production application gated on Mary approval.**
+- 19 new unit tests (entitlement matrix + route registry); 145/145 total pass
+
+Known follow-ups (Mary-approved manual steps):
+- Apply `migrations/010_subscriber_context_alignment.sql` to production (Pursuit Score company-alignment columns).
+- Apply `migrations/011_mp_users_columns_documented.sql` (idempotent, no behavior change).
+- Backfill `founding_member=true` for the 10 audited Founding Members per `reports/founding-member-audit-20260422.md`.
+
 ## Sprint 2026-04-19 — Premium tool hardening + unified knowledge layer
 Shipped tonight ahead of the Premium marketing push:
 

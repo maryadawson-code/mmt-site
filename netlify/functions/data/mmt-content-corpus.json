@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-04-26T17:50:49.530Z",
-  "total": 185,
+  "generated_at": "2026-04-27T17:06:17.670Z",
+  "total": 186,
   "counts": {
-    "articles": 101,
+    "articles": 102,
     "friday_briefs": 6,
     "monthly_briefs": 2,
     "contracts": 32,
@@ -1535,6 +1535,20 @@
       ],
       "url": "/articles/dow-cio-five-new-leadership-hires/",
       "excerpt": "The Department of War CIO just made five hires in a single announcement. That is not how government usually fills leadership seats. Government usually fills them one at a time, months apart, after the requisition has aged in HR long enough to forget why it was opened. Kirsten Davies, the DoW CIO, is not doing it that way. The five names and what they carried in Kayla Huthoefer Nelson is the new Chief of Staff. She comes from BAE Systems and Clarity Innovations, with a stint advising the Colorado Aerospace and Defense Economic Council. The Chief of Staff role in a CIO shop controls operational tempo. It decides which projects get staffed, which meetings happen, and which priorities survive the week. Nelson now owns that for the entire DoW CIO office. Marci McCarthy takes Director of External Engagements, a role focused on strategic communications and partnerships with industry and allies. McCarthy founded the Information Security Executive Program Series and previously served as Director of Public Affairs at CISA. The move puts someone with deep cybersecurity community ties in charge of how the DoW CIO office talks to the outside world. Ryan McArthur is Special Advisor for Capability Development and Operational Excellence. He is a retired Army Signal Chief Warrant Officer who went to Zscaler as Federal CTO and, before that, led the $9 billion Joint Warfighting Cloud Capability program at DISA. McArthur has built and bought enterprise IT at scale on both sides of the procurement table. David Vaughn is Technical Advisor for Data Infrastructure. He is a U.S. Army Chief Warrant Officer 4 in Cyber with 30 years across cyber warfare, enterprise risk management, DISA, the 75th Innovation Command, Equinix, and Cyber Defense Technologies. The title says data infrastructure. The resume says someone who knows where the data actually lives and how it moves under fire. Vishal Aswani is Special Advisor for Transformation, transitioning from a Chief of Staff role. His prior stops include DoW, the Federal Energy Regulatory Commission, and the Office of the Chief of Naval Operations. Aswani has worked transformation portfolios across agencies that do not share IT architectures, budgets, or culture. That is exactly the problem the DoW CIO is trying to solve. What the batch hire tells you Davies said it directly: \"Their collective expertise in cybersecurity, defense innovation, and enterprise-level strategy is exactly what we need to accelerate our mission.\" Read the five portfolios together and you get a picture of where this office is heading. A Chief of Staff to run the machine. An industry engagement lead to build the partnerships. A cloud and capability advisor who already ran the largest DoD cloud contract. A data infrastructure advisor with operational cyber credentials. A transformation advisor who has done cross-agency modernization before. This is not a CIO office that is planning to study the problem. This is a CIO office that is staffing up to execute. Why it matters for contractors The DoW CIO sits at the center of every major IT modernization, cybersecurity, and data initiative across the department. When a CIO hires five senior advisors at once, the solicitations follow. The engagement windows follow. The evaluation criteria shift to reflect the priorities the new team brings in. McArthur's JWCC and Zscaler background means zero trust and cloud migration are not just talking points in this office. They are led by someone who has procured and delivered them. McCarthy's role formalizes industry engagement in a way that creates a structured path for pre-solicitation access. Vaughn's data infrastructure portfolio signals that the CIO is building a dedicated lane for data architecture and movement, separate from the cyber and cloud conversations. Firms that are positioning on DoW IT work should be mapping capabilities to these five portfolios now, not after the first RFI drops.",
+      "premium": false
+    },
+    {
+      "id": "article-replace-with-url-slug",
+      "type": "article",
+      "title": "Headline that makes the reader mad and motivated at the same time",
+      "slug": "replace-with-url-slug",
+      "date": "2026-04-27",
+      "description": "1–2 sentences. Lead with the moment, not a thesis. Mary's voice.",
+      "tags": [
+        "Topic"
+      ],
+      "url": "/articles/replace-with-url-slug/",
+      "excerpt": "Lead with a real moment. Mary's voice — warm but fierce, story-first, conversational. Use \"I\" and \"my\" freely. Fragments are fine. Start sentences with And or But. Example opener: \"I was on a call last week with a procurement officer who said the quiet part out loud. She told me — and I am going to say this like I heard it — ...\" Use the contrast engine often. The military can synchronize a kill chain in milliseconds but cannot move a veteran's health record across two government systems. --- What you can do next - Read the rest of this week's analysis: Latest intelligence - Score this opportunity against your company: Pursuit Score - Pressure-test a proposal before review: ProposalPulse — 1 free assessment - Ask the market question your team needs answered: MarketPulse — 1 free brief, 24-hour delivery - Get the twice-a-week briefing: Subscribe free",
       "premium": false
     },
     {
