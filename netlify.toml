@@ -481,6 +481,21 @@
   to = "/tools.html"
   status = 200
 
+[[redirects]]
+  from = "/rfp-shredder"
+  to = "/rfp-shredder.html"
+  status = 200
+
+[[redirects]]
+  from = "/rfp-shreadder"
+  to = "/rfp-shredder.html"
+  status = 301
+
+[[redirects]]
+  from = "/solicitation-shredder"
+  to = "/rfp-shredder.html"
+  status = 301
+
 [[headers]]
   for = "/*"
   [headers.values]

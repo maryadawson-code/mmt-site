@@ -75,7 +75,13 @@ const PATTERNS = [
     name: 'Two-tone product name split (Market<span>Pulse)',
     re: /Market<span[^>]*>Pulse<\/span>/,
   },
-  { name: 'MissionPulse (platform name)',      re: /MissionPulse/ },
+  // MissionPulse is the SaaS platform on missionpulse.ai. Generally
+  // banned on missionmeetstech.com to avoid cross-platform brand bleed.
+  // Allowed on:
+  //   - rfp-shredder.html / tools.html — RFP Shredder runs on the
+  //     MissionPulse backend, so the cross-repo handoff is intentionally
+  //     surfaced (see docs/rfp-shredder-cross-repo-handoff.md).
+  { name: 'MissionPulse (platform name)',      re: /MissionPulse/, allowPaths: ['rfp-shredder.html', 'tools.html'] },
   { name: 'bi-weekly cadence',                 re: /bi-weekly|biweekly/i },
   { name: 'newsletter every-week drift',       re: /newsletter[^.]*every week|every week[^.]*newsletter/i },
   { name: 'Subscribe for weekly',              re: /Subscribe for weekly/ },
