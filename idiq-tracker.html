@@ -91,10 +91,36 @@
   </section>
 
   <!-- Gate CTA (hidden for premium users) -->
-  <section class="wrap idiq-free-gate" style="padding:0 0 64px;">
-    <div style="text-align:center;padding:40px 28px;background:var(--mmt-soft);border-radius:16px;">
-      <h2 style="font-size:22px;font-weight:800;margin-bottom:8px;">Access all 11 tracked vehicles</h2>
-      <p style="font-size:15px;color:var(--mmt-text-secondary);margin-bottom:20px;max-width:48ch;margin-left:auto;margin-right:auto;">Full ceiling data, awardee lists, burn rates, re-compete windows, and MMT intel notes on every major federal health IT IDIQ.</p>
+  <section class="wrap idiq-free-gate" style="padding:0 0 64px;" data-testid="idiq-gate">
+    <div style="padding:32px 28px;background:var(--mmt-soft);border-radius:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:20px;margin-bottom:20px;">
+        <div style="flex:1;min-width:240px;">
+          <span style="display:inline-block;font-size:10px;font-weight:800;letter-spacing:0.1em;background:#FACC15;color:#0A192F;padding:3px 8px;border-radius:3px;text-transform:uppercase;">Premium-locked</span>
+          <h2 style="font-size:22px;font-weight:800;margin:8px 0 4px;">28 IDIQ vehicles. Behind this lock.</h2>
+          <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0;">VA, DHA, GSA, NIH, and mixed-agency vehicles — tracked with ceiling, awardees, NAICS, burn rate, and MMT analysis on each one.</p>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px;">
+        <div style="background:var(--mmt-white);border:1px solid var(--mmt-border);border-radius:10px;padding:12px 14px;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--mmt-text-secondary);">Tracked</div>
+          <div style="font-size:22px;font-weight:800;color:var(--mmt-navy);">28</div>
+          <div style="font-size:11px;color:var(--mmt-text-secondary);">vehicles</div>
+        </div>
+        <div style="background:var(--mmt-white);border:1px solid var(--mmt-border);border-radius:10px;padding:12px 14px;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--mmt-text-secondary);">Combined ceiling</div>
+          <div style="font-size:22px;font-weight:800;color:var(--mmt-navy);">$540B+</div>
+          <div style="font-size:11px;color:var(--mmt-text-secondary);">across vehicles</div>
+        </div>
+        <div style="background:var(--mmt-white);border:1px solid var(--mmt-border);border-radius:10px;padding:12px 14px;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--mmt-text-secondary);">Refresh cadence</div>
+          <div style="font-size:22px;font-weight:800;color:var(--mmt-navy);">Weekly</div>
+          <div style="font-size:11px;color:var(--mmt-text-secondary);">+ on-demand</div>
+        </div>
+        <div style="background:var(--mmt-white);border:1px solid var(--mmt-border);border-radius:10px;padding:12px 14px;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--mmt-text-secondary);">Per vehicle</div>
+          <div style="font-size:14px;font-weight:700;color:var(--mmt-navy);line-height:1.3;">ceiling &middot; awardees &middot; NAICS &middot; burn &middot; recompete &middot; MMT intel</div>
+        </div>
+      </div>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
         <a href="/pricing.html" class="btn-primary no-underline" style="font-size:14px;padding:14px 28px;">Start Premium</a>
         <a href="/pricing.html#plans" style="font-size:14px;font-weight:600;color:var(--mmt-teal);text-decoration:none;padding:14px 8px;">View plan options &rarr;</a>

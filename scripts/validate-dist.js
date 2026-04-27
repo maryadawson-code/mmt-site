@@ -95,6 +95,10 @@ const PATTERNS = [
   // page level, so that stale UI on the same page is still caught.
   // Handled below after the generic pattern loop.
   { name: 'dark-mode token',                   re: /#00E5FA|#00FF85|#00050F|Space Grotesk|nav-glass|nav-apple|--mmt-cyan|--mmt-dark|--mmt-slate/ },
+  // ████ block redactions look like a rendering error to subscribers.
+  // Real gates use the `data-gate-overlay="premium"` chip + locked
+  // labels (see build.js generateContractTrackerHtml).
+  { name: 'block-character redaction (████)',  re: /████/ },
 ];
 
 const failures = [];
