@@ -177,11 +177,19 @@ for (const relFile of files) {
     const required = [
       'brand-mark',
       'Choose a Tool',
-      '/resources.html#paid-tools',
     ];
     for (const marker of required) {
       if (!nav.includes(marker)) {
         addFailure(`nav missing "${marker}"`, relFile, '');
+      }
+    }
+    // Choose a Tool href must point to /tools (or /tools.html), NOT
+    // /resources.html#paid-tools. Catches the 2026-04-27 regression.
+    const ctaMatch = nav.match(/href="([^"]+)"[^>]*>\s*Choose a Tool/);
+    if (ctaMatch) {
+      const href = ctaMatch[1];
+      if (!/^\/tools(\/|\?|$|#)/.test(href) && !/^\/tools\.html/.test(href)) {
+        addFailure(`nav Choose a Tool href is "${href}", expected /tools`, relFile, '');
       }
     }
   }

@@ -142,8 +142,59 @@ if (fs.existsSync(newsletterDir)) {
   }
 }
 
+// Homepage Choose-a-Tool CTA must point to /tools (not the old
+// /resources#paid-tools path). Catches the 2026-04-27 regression where
+// the homepage CTA still routed to the old anchor.
+const indexHtml = readDistFile("/");
+if (indexHtml) {
+  const cta = indexHtml.match(/<a[^>]*class="[^"]*btn-primary[^"]*"[^>]*href="([^"]+)"[^>]*>\s*Choose a Tool/i);
+  if (cta) {
+    if (!/^\/tools(\/|\?|$|#)/.test(cta[1]) && !/^\/tools\.html/.test(cta[1])) {
+      failures.push({ feature: "Homepage", url: "/", kind: "choose_a_tool_href_wrong", observed: cta[1], expected: "/tools" });
+    }
+  }
+  if (/href="[^"]*resources\.html#paid-tools"[^>]*>\s*Choose a Tool/i.test(indexHtml)) {
+    failures.push({ feature: "Homepage", url: "/", kind: "stale_paid_tools_anchor_present" });
+  }
+}
+
+// /pursuit-calendar built page must contain the 90-Day Deadline Tracker
+// signature AND must NOT have its main page heading collapse into a
+// generic "Premium Dashboard" (which is allowed only as the small
+// dash-shell header chip, never as the page title).
+{
+  const calHtml = readDistFile("/premium/calendar.html");
+  if (calHtml) {
+    if (!calHtml.includes("90-Day Deadline Tracker")) {
+      failures.push({ feature: "Pursuit Calendar", url: "/premium/calendar.html", kind: "calendar_subtitle_missing" });
+    }
+    // The page <title> must be the calendar one, NOT something generic.
+    const titleMatch = calHtml.match(/<title>([^<]+)<\/title>/i);
+    if (titleMatch && /^Premium Dashboard\b/.test(titleMatch[1])) {
+      failures.push({ feature: "Pursuit Calendar", url: "/premium/calendar.html", kind: "calendar_title_is_generic_premium_dashboard", observed: titleMatch[1] });
+    }
+    // Must list the pursuit-deadline categories somewhere on page (legend or content).
+    const categoriesPresent = ["RFI", "Industry Day", "Final RFP", "Proposal Due"].filter((c) => calHtml.includes(c));
+    if (categoriesPresent.length < 3) {
+      failures.push({ feature: "Pursuit Calendar", url: "/premium/calendar.html", kind: "calendar_categories_thin", observed: categoriesPresent });
+    }
+  }
+}
+
+// Tools hub must list the major tools (signatures the user expects to see).
+{
+  const toolsHtml = readDistFile("/tools");
+  if (toolsHtml) {
+    const expected = ["Pursuit Score", "Ask MMT", "Pursuit Calendar", "Compliance Check", "Signal Chain", "ProposalPulse", "MarketPulse", "Capture Corner", "Contract Tracker", "IDIQ Tracker"];
+    const missing = expected.filter((t) => !toolsHtml.includes(t));
+    if (missing.length > 0) {
+      failures.push({ feature: "Tools Hub", url: "/tools", kind: "tools_hub_missing_tool", observed_missing: missing });
+    }
+  }
+}
+
 if (failures.length === 0) {
-  console.log(`validate-routes: ✓ all ${registry.features.length} features resolve, signatures + archive + /latest checks pass`);
+  console.log(`validate-routes: ✓ all ${registry.features.length} features resolve, signatures + archive + /latest + homepage CTA + calendar + tools hub checks pass`);
   process.exit(0);
 }
 

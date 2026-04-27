@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Mission Meets Tech website with auto-updating podcast episodes",
   "scripts": {
-    "build": "node scripts/sync-newsletters.js; node build.js && node scripts/validate-dist.js && node scripts/validate-routes.js",
+    "build": "node scripts/sync-newsletters.js; node build.js && node scripts/validate-dist.js && node scripts/validate-routes.js && node scripts/newsletter-inventory.js",
     "build:no-validate": "node scripts/sync-newsletters.js; node build.js",
     "validate-dist": "node scripts/validate-dist.js",
     "validate-routes": "node scripts/validate-routes.js",

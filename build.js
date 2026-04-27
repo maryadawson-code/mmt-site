@@ -2221,7 +2221,7 @@ function inlineTailwindCss(html) {
             <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_email');location.reload();return false;">Sign Out</a>
           </div>
         </span>
-        <a href="/resources.html#paid-tools" class="btn-primary btn-sm no-underline">Choose a Tool</a>
+        <a href="/tools" class="btn-primary btn-sm no-underline">Choose a Tool</a>
       </div>
       <button id="menuToggle" class="md:hidden" style="color:var(--mmt-navy);background:none;border:none;cursor:pointer;" aria-label="Toggle menu">
         <svg id="menuOpen" width="24" height="24" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
@@ -2245,7 +2245,7 @@ function inlineTailwindCss(html) {
           <a href="/premium/briefings/" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">My Briefs</a>
         </span>
         <div class="pt-3 mt-1" style="border-top:1px solid var(--mmt-border);">
-          <a href="/resources.html#paid-tools" class="btn-primary no-underline">Choose a Tool</a>
+          <a href="/tools" class="btn-primary no-underline">Choose a Tool</a>
         </div>
       </div>
     </div>
@@ -2329,7 +2329,7 @@ function inlineTailwindCss(html) {
       const hasCanonicalNav =
         navBlock.includes('brand-mark') &&
         navBlock.includes('Choose a Tool') &&
-        navBlock.includes('/resources.html#paid-tools') &&
+        (navBlock.includes('/resources.html#paid-tools') || navBlock.includes('href="/tools"')) &&
         navBlock.includes('nav-logged-out');
       if (!hasCanonicalNav) {
         html = html.replace(/<nav[\s\S]*?<\/nav>/i, editorialNav);
@@ -2643,7 +2643,12 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     '<!-- BUILD:ALL_ISSUES -->': generateArchiveHtml(archive),
     '<!-- BUILD:TOPIC_FILTER_CHIPS -->': generateTopicFilterChipsHtml(archive),
     '<!-- BUILD:EDITORS_PICKS -->': generateEditorsPicksHtml(archive),
-    '<!-- BUILD:LATEST_ALL -->': generateLatestAllHtml(archive, feed, getEditorPicksSlugs(archive)),
+    // The main archive feed includes ALL articles, newest first. Editor's
+    // Picks rendering above is a separate highlight tile group; we no
+    // longer exclude those slugs from the main list because subscribers
+    // perceived "April 7" at the top of /latest as staleness — the
+    // newer articles were buried in the small picks tiles.
+    '<!-- BUILD:LATEST_ALL -->': generateLatestAllHtml(archive, feed, new Set()),
     '<!-- BUILD:ARTICLE_COUNT_BADGE -->': generateArticleCountBadge(archive, feed),
     '<!-- BUILD:ANALYSIS_TOPIC_CHIPS -->': generateTopicFilterChipsHtml(archive),
     '<!-- BUILD:PODCAST_TEASER -->': generatePodcastTeaserHtml(feed),
