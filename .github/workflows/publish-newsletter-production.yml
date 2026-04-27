@@ -1,0 +1,105 @@
+# Mary's "send to production" newsletter publishing workflow.
+#
+# Triggered manually (workflow_dispatch). Receives the production payload
+# JSON as a single input, validates it, runs build + tests, and either
+# opens a PR (default, safer) or commits directly to main (only when the
+# payload explicitly authorizes it).
+#
+# This workflow does NOT send email newsletters. Email delivery is a
+# separate manual step gated on Mary saying "send email newsletter".
+
+name: Publish newsletter (production)
+
+on:
+  workflow_dispatch:
+    inputs:
+      payload:
+        description: 'Newsletter production payload (JSON). MUST contain status=production_approved + approval_phrase=send_to_production.'
+        required: true
+        type: string
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Write payload to disk
+        env:
+          PAYLOAD: ${{ inputs.payload }}
+        run: |
+          mkdir -p .tmp
+          printf '%s' "$PAYLOAD" > .tmp/newsletter-payload.json
+          echo "Payload size: $(wc -c < .tmp/newsletter-payload.json) bytes"
+
+      - name: Dry-run publish (validate payload)
+        run: |
+          node scripts/publish-newsletter.js --input .tmp/newsletter-payload.json --dry-run
+
+      - name: Detect publish mode
+        id: mode
+        run: |
+          MODE=$(node -e "const p=JSON.parse(require('fs').readFileSync('.tmp/newsletter-payload.json','utf8'));console.log(p.publish_mode||'pr')")
+          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
+          echo "Selected publish mode: $MODE"
+
+      - name: Write the article markdown
+        run: |
+          node scripts/publish-newsletter.js --input .tmp/newsletter-payload.json --production-approved
+
+      - name: Build and validate
+        run: |
+          node build.js
+          node scripts/validate-dist.js
+          node scripts/validate-routes.js
+          npx vitest run tests/unit
+
+      - name: Configure git
+        run: |
+          git config user.name  "MMT Newsletter Bot"
+          git config user.email "noreply@missionmeetstech.com"
+
+      - name: Commit + open PR (default safe path)
+        if: steps.mode.outputs.mode != 'direct_to_main'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          SLUG=$(node -e "const p=JSON.parse(require('fs').readFileSync('.tmp/newsletter-payload.json','utf8'));console.log(p.slug || p.title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,90))")
+          DATE=$(node -e "const p=JSON.parse(require('fs').readFileSync('.tmp/newsletter-payload.json','utf8'));console.log(p.publish_date)")
+          BRANCH="newsletter/${DATE}-${SLUG}"
+          git checkout -b "$BRANCH"
+          git add content/newsletter/
+          git commit -m "newsletter: ${DATE} ${SLUG}"
+          git push origin "$BRANCH"
+          gh pr create \
+            --title "Newsletter: $(node -e "const p=JSON.parse(require('fs').readFileSync('.tmp/newsletter-payload.json','utf8'));console.log(p.title)")" \
+            --body "Generated from production payload by publish-newsletter workflow. Build + tests passed in CI. Ready for Mary's review/merge." \
+            --base main \
+            --head "$BRANCH"
+
+      - name: Direct-to-main publish (only when explicitly authorized)
+        if: steps.mode.outputs.mode == 'direct_to_main'
+        run: |
+          git add content/newsletter/
+          git commit -m "newsletter: $(node -e "const p=JSON.parse(require('fs').readFileSync('.tmp/newsletter-payload.json','utf8'));console.log(p.publish_date+' '+(p.slug||p.title))")"
+          git push origin main
+
+      - name: Post-publish smoke (workflow-internal)
+        run: |
+          node scripts/post-publish-smoke.js --payload .tmp/newsletter-payload.json
