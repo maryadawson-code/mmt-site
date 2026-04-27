@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "Mission Meets Tech website with auto-updating podcast episodes",
   "scripts": {
-    "build": "node scripts/sync-newsletters.js; node build.js && node scripts/validate-dist.js",
+    "build": "node scripts/sync-newsletters.js; node build.js && node scripts/validate-dist.js && node scripts/validate-routes.js",
     "build:no-validate": "node scripts/sync-newsletters.js; node build.js",
     "validate-dist": "node scripts/validate-dist.js",
+    "validate-routes": "node scripts/validate-routes.js",
     "sync-newsletters": "node scripts/sync-newsletters.js",
     "build:fy2027-pdf": "node scripts/build-fy2027-pdf.js",
     "test": "npx vitest run",
@@ -14,7 +15,7 @@
     "test:e2e": "npx playwright test",
     "test:links": "node scripts/validate-links.js",
     "test:integrity": "node scripts/verify-integrity.js",
-    "verify": "node build.js && node scripts/verify-integrity.js && npx vitest run tests/unit && npx playwright test",
+    "verify": "node build.js && node scripts/validate-dist.js && node scripts/validate-routes.js && npx vitest run tests/unit",
     "lighthouse": "npx @lhci/cli autorun",
     "smoke": "bash scripts/smoke-test.sh",
     "dev": "npx netlify dev"

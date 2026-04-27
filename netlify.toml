@@ -4,7 +4,7 @@
   # validate-dist.js fails the build if dist/ contains any public-facing
   # drift pattern from docs/site-spec.md §14a. If it exits non-zero,
   # Netlify will refuse to deploy.
-  command = "node scripts/sync-newsletters.js; node scripts/sync-linkedin-newsletter.js; node build.js && node scripts/validate-dist.js"
+  command = "node scripts/sync-newsletters.js; node scripts/sync-linkedin-newsletter.js; node build.js && node scripts/validate-dist.js && node scripts/validate-routes.js"
 
 [functions]
   directory = "netlify/functions"
@@ -403,6 +403,82 @@
 [[redirects]]
   from = "/getting-started"
   to = "/getting-started.html"
+  status = 200
+
+# === Marketed member-tool clean URLs ===
+# Canonical registry: docs/member-features.json
+# These are the URLs published in pricing/help/email/onboarding copy.
+# scripts/validate-routes.js reads docs/member-features.json and fails
+# the build if any of these stop resolving.
+
+[[redirects]]
+  from = "/pursuit-score"
+  to = "/premium/pursuit-score.html"
+  status = 200
+
+[[redirects]]
+  from = "/pursuit-calendar"
+  to = "/premium/calendar.html"
+  status = 200
+
+[[redirects]]
+  from = "/askmtt"
+  to = "/premium/ask-mmt.html"
+  status = 200
+
+[[redirects]]
+  from = "/ask-mtt"
+  to = "/premium/ask-mmt.html"
+  status = 200
+
+[[redirects]]
+  from = "/ask-mmt"
+  to = "/premium/ask-mmt.html"
+  status = 200
+
+[[redirects]]
+  from = "/compliance-check"
+  to = "/premium/compliance-check.html"
+  status = 200
+
+[[redirects]]
+  from = "/signal-chain"
+  to = "/premium/signal-chain.html"
+  status = 200
+
+[[redirects]]
+  from = "/capture-corner"
+  to = "/capture-corner.html"
+  status = 200
+
+[[redirects]]
+  from = "/idiq-tracker"
+  to = "/idiq-tracker.html"
+  status = 200
+
+[[redirects]]
+  from = "/contract-tracker"
+  to = "/contract-tracker.html"
+  status = 200
+
+[[redirects]]
+  from = "/proposal-pulse"
+  to = "/proposal-pulse.html"
+  status = 200
+
+[[redirects]]
+  from = "/help"
+  to = "/help.html"
+  status = 200
+
+[[redirects]]
+  from = "/pricing"
+  to = "/pricing.html"
+  status = 200
+
+[[redirects]]
+  from = "/tools"
+  to = "/tools.html"
   status = 200
 
 [[headers]]

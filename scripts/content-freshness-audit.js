@@ -132,6 +132,17 @@ function checkBrokenLinks() {
 
   const skipPrefixes = ['/styles/', '/js/', '/og/', '/favicon', '/fonts/', '/images/', '/audio/', '/og-images/', '/manifest', '/feed.xml', '/sitemap.xml', '/robots.txt', '/newsletters.json', '/search-index.json', '/mmt-', '/apple-touch-icon', '/sara', '/mary', '/api/', '/.netlify/'];
 
+  // Build a set of every clean URL that has a netlify.toml [[redirects]]
+  // entry — these are valid even though they have no file in dist/.
+  const tomlPath = path.join(__dirname, '..', 'netlify.toml');
+  const redirectFroms = new Set();
+  if (fs.existsSync(tomlPath)) {
+    const tomlText = fs.readFileSync(tomlPath, 'utf8');
+    const fromRegex = /from\s*=\s*"([^"]+)"/g;
+    let mm;
+    while ((mm = fromRegex.exec(tomlText)) !== null) redirectFroms.add(mm[1]);
+  }
+
   const linkRegex = /href="(\/[^"#?]+)/g;
 
   // Walk dist/ for HTML files
@@ -164,7 +175,9 @@ function checkBrokenLinks() {
         path.join(DIST, target + '.html'),
         path.join(DIST, target, 'index.html'),
       ];
-      if (!candidates.some(c => fs.existsSync(c))) {
+      const fileResolves = candidates.some(c => fs.existsSync(c));
+      const redirectResolves = redirectFroms.has(target) || (target.endsWith('/') && redirectFroms.has(target.slice(0, -1)));
+      if (!fileResolves && !redirectResolves) {
         errors.push(`BROKEN LINK in ${rel}: ${target}`);
       }
     }

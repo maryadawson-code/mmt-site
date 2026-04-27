@@ -106,7 +106,8 @@ function loadArticles() {
     return [];
   }
 
-  const files = fs.readdirSync(CONTENT_DIR).filter(f => f.endsWith('.md'));
+  // Skip files that start with `_` — those are templates / drafts.
+  const files = fs.readdirSync(CONTENT_DIR).filter(f => f.endsWith('.md') && !f.startsWith('_'));
   const articles = files.map(file => {
     const raw = fs.readFileSync(path.join(CONTENT_DIR, file), 'utf8');
     const { data, content } = matter(raw);
@@ -597,6 +598,30 @@ function generateArticlePages(articles, glossaryTerms) {
   });
 
   console.log(`Generated ${articles.length} article pages`);
+
+  // Capture Corner coverage warning: any article published within the
+  // last 30 days that names a contract/vehicle in the title but lacks
+  // capture_corner frontmatter is a content gap. Soft warn; do not fail
+  // build. (Editorial team treats CAPTURE_CORNER_MISSING as a blocker
+  // for the next deploy.)
+  const THIRTY_DAYS = 30 * 24 * 3600 * 1000;
+  const cutoff = Date.now() - THIRTY_DAYS;
+  const SIGNAL_KEYWORDS = /\b(IDIQ|GWAC|BPA|MAS|EHRM|MHS|GENESIS|VA OIT|Franchise Fund|CCN|OASIS|SEWP|T4NG|CIO-?SP|recompete|RFI|RFP|solicitation|HT00|36C10)\b/i;
+  let captureCornerMissing = 0;
+  articles.forEach((a) => {
+    const dateMs = a.date ? new Date(a.date).getTime() : 0;
+    if (dateMs < cutoff) return;
+    const haystack = `${a.title || ''} ${a.description || ''}`;
+    if (!SIGNAL_KEYWORDS.test(haystack)) return;
+    const hasCC = Array.isArray(a.capture_corner) && a.capture_corner.length > 0;
+    if (!hasCC) {
+      console.warn(`  ⚠ CAPTURE_CORNER_MISSING: ${a.slug || a.title} — capture-related signal in title but no capture_corner frontmatter`);
+      captureCornerMissing++;
+    }
+  });
+  if (captureCornerMissing > 0) {
+    console.warn(`  ⚠ ${captureCornerMissing} recent article(s) need capture_corner backfill`);
+  }
 }
 
 function generateTopicPages(tags) {
@@ -1428,13 +1453,14 @@ function generateContractTrackerHtml(contracts, contractArticleMap) {
                 ${lastCovered}
               </div>
               <div style="border-top:1px solid var(--mmt-border,#D8E0E8);margin-top:12px;"></div>
-              <div data-gate-overlay="premium" style="margin-top:10px;padding:10px 14px;background:rgba(146,113,10,0.04);border:1px dashed rgba(146,113,10,0.2);border-radius:8px;">
-                <div class="flex flex-wrap gap-3 text-xs" style="color:var(--mmt-text-secondary);opacity:0.5;">
-                  <span>Vendor: ████</span>
-                  <span>Value: ████</span>
-                  ${c.naics ? '<span>NAICS: ████</span>' : ''}
+              <div data-gate-overlay="premium" data-testid="premium-locked-fields" style="margin-top:10px;padding:10px 14px;background:rgba(146,113,10,0.04);border:1px dashed rgba(146,113,10,0.2);border-radius:8px;">
+                <div class="flex flex-wrap gap-3 text-xs items-center" style="color:var(--mmt-text-secondary);" aria-label="Premium-only contract intelligence">
+                  <span style="display:inline-flex;align-items:center;gap:4px;"><span style="font-size:10px;font-weight:800;background:#FACC15;color:#0A192F;padding:2px 6px;border-radius:3px;">PREMIUM</span></span>
+                  <span><strong>Vendor:</strong> <em>locked</em></span>
+                  <span><strong>Value:</strong> <em>locked</em></span>
+                  ${c.naics ? '<span><strong>NAICS:</strong> <em>locked</em></span>' : ''}
                 </div>
-                <a href="/pricing.html" class="text-xs font-semibold no-underline" style="color:#92710A;display:block;margin-top:6px;">&#9733; Unlock full intel — Premium &rarr;</a>
+                <a href="/pricing.html" class="text-xs font-semibold no-underline" style="color:#92710A;display:block;margin-top:6px;">&#9733; Unlock full intel &mdash; Premium &rarr;</a>
               </div>
               <p class="text-xs mt-2 font-semibold" style="color:var(--mmt-teal);">View Intel &rarr;</p>
               </a>${relatedAnalysis}
@@ -2562,6 +2588,7 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     'help.html',
     'capture-corner.html',
     'compliance-check.html',
+    'tools.html',
   ];
   // Premium subdirectory pages
   const premiumPages = [
@@ -2875,6 +2902,7 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     { src: 'premium/signal-chain.html', dest: 'premium/signal-chain/index.html' },
     { src: 'premium/dashboard.html', dest: 'premium/dashboard/index.html' },
     { src: 'premium/settings.html', dest: 'premium/settings/index.html' },
+    { src: 'premium/profile.html', dest: 'premium/profile/index.html' },
     { src: 'agencies/index.html', dest: 'agencies/index.html' },
   ];
   subDirPages.forEach(({ src, dest }) => {
