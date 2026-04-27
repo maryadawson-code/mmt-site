@@ -54,7 +54,19 @@
 
     function renderOpportunities(opps) {
       if (!opps || opps.length === 0) {
-        return '<div class="card rounded-xl p-8 text-center"><p class="text-base" style="color:var(--mmt-text-secondary);">No opportunities match the current filter.</p></div>';
+        // Honest empty-but-healthy state. If radarData reports the
+        // scanner has run recently we say so; if not we say so.
+        var note = '';
+        if (radarData) {
+          if (radarData.freshness === 'fresh' || radarData.freshness === 'stale') {
+            note = '<p class="text-sm" style="color:var(--mmt-text-secondary);">No solicitations match this filter today. The scanner ran ' + (radarData.age_hours != null ? radarData.age_hours + 'h ago' : 'recently') + ' and tracked ' + (radarData.total_count || 0) + ' opportunities.</p>';
+          } else if (radarData.freshness === 'very_stale') {
+            note = '<p class="text-sm" style="color:#92710A;">Last scan ' + (radarData.age_hours || '?') + 'h ago \u2014 may be stale. Scans normally run daily at 7 AM ET.</p>';
+          } else {
+            note = '<p class="text-sm" style="color:var(--mmt-text-secondary);">No scan results yet. The scanner runs daily at 7 AM ET.</p>';
+          }
+        }
+        return '<div class="card rounded-xl p-8 text-center" data-testid="radar-empty"><p class="text-base mb-2" style="color:var(--mmt-text-secondary);">No opportunities match the current filter.</p>' + note + '</div>';
       }
       var isPremium = isPremiumUser();
       var html = '<div class="grid md:grid-cols-2 gap-4">';
@@ -167,14 +179,23 @@
       .then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); })
       .then(function(data) {
         radarData = data;
-        if (data.scan_date) {
-          var sd = new Date(data.scan_date);
-          document.getElementById('radar-scan-date').textContent = 'Last scan: ' + sd.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        // Prefer table-wide latest_scan_date so an empty filter result
+        // still surfaces real scanner health. Falls back to per-row scan_date.
+        var displayDate = data.latest_scan_date || data.scan_date;
+        if (displayDate) {
+          var sd = new Date(displayDate);
+          var label = 'Last scan: ' + sd.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+          if (data.freshness === 'stale' || data.freshness === 'very_stale') {
+            label += ' \u00b7 ' + data.age_hours + 'h ago (refreshing)';
+          }
+          document.getElementById('radar-scan-date').textContent = label;
+        } else if (data.freshness === 'no_scan_yet') {
+          document.getElementById('radar-scan-date').textContent = 'No scan yet \u2014 first sweep runs daily at 7 AM ET.';
         }
         applyFilter();
       })
       .catch(function() {
-        document.getElementById('radar-container').innerHTML = '<div class="card rounded-xl p-8 text-center"><p class="text-base mb-2" style="color:var(--mmt-text-secondary);">Opportunity Radar is initializing.</p><p class="text-sm" style="color:var(--mmt-text-secondary);">New opportunities are scanned daily at 7 AM ET. Check back soon.</p></div>';
+        document.getElementById('radar-container').innerHTML = '<div class="card rounded-xl p-8 text-center" data-testid="radar-unavailable"><p class="text-base mb-2" style="color:var(--mmt-text-secondary);">Opportunity Radar is temporarily unavailable.</p><p class="text-sm" style="color:var(--mmt-text-secondary);">If this persists, email <a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a>. Scans run daily at 7 AM ET.</p></div>';
       });
   })();
 
@@ -248,10 +269,23 @@
 
     function renderVehicleOpps(opps, isFiltered) {
       if (!opps || opps.length === 0) {
-        if (isFiltered) {
-          return '<div class="card rounded-xl p-8 text-center"><p class="text-base" style="color:var(--mmt-text-secondary);">No opportunities found for this vehicle. Try "All Vehicles" or check back after the next scan.</p></div>';
+        // Empty-but-healthy: scanner has run, but no rows match. The
+        // 2026-04-27 incident: scanner looked "stuck initializing" because
+        // we couldn't tell those two states apart on the client.
+        var note = '';
+        if (vehicleData) {
+          if (vehicleData.freshness === 'fresh' || vehicleData.freshness === 'stale') {
+            note = '<p class="text-sm" style="color:var(--mmt-text-secondary);">Scanner ran ' + (vehicleData.age_hours != null ? vehicleData.age_hours + 'h ago' : 'recently') + ' and tracked ' + (vehicleData.total_count || 0) + ' classified opportunities.</p>';
+          } else if (vehicleData.freshness === 'very_stale') {
+            note = '<p class="text-sm" style="color:#92710A;">Last scan ' + (vehicleData.age_hours || '?') + 'h ago \u2014 may be stale. Scans normally run daily at 8 AM ET.</p>';
+          } else {
+            note = '<p class="text-sm" style="color:var(--mmt-text-secondary);">No scan results yet. Scans run daily at 8 AM ET.</p>';
+          }
         }
-        return '<div class="card rounded-xl p-8 text-center"><p class="text-base mb-2" style="color:var(--mmt-text-secondary);">Small Business Vehicle Scanner is initializing.</p><p class="text-sm" style="color:var(--mmt-text-secondary);">Vehicle-specific opportunities are scanned daily at 8 AM ET. Check back soon.</p></div>';
+        if (isFiltered) {
+          return '<div class="card rounded-xl p-8 text-center" data-testid="vehicle-empty-filtered"><p class="text-base mb-2" style="color:var(--mmt-text-secondary);">No opportunities for this vehicle in the current window. Try "All Vehicles" or wait for the next scan.</p>' + note + '</div>';
+        }
+        return '<div class="card rounded-xl p-8 text-center" data-testid="vehicle-empty"><p class="text-base mb-2" style="color:var(--mmt-text-secondary);">No vehicle-classified opportunities yet.</p>' + note + '</div>';
       }
       var isPremium = isPremiumUser();
       var html = '<div class="grid md:grid-cols-2 gap-4">';
@@ -362,17 +396,28 @@
       });
     });
 
-    fetch('/.netlify/functions/opportunity-feed?min_confidence=1&days=30&limit=60&sort=confidence')
+    // Vehicle scanner — uses min_confidence=1 to filter to opportunities
+    // we've classified onto a known vehicle. has_vehicle=true is the
+    // belt-and-suspenders guard so even if vehicle_confidence migrates
+    // we still see only classified rows.
+    fetch('/.netlify/functions/opportunity-feed?min_confidence=1&has_vehicle=true&days=30&limit=60&sort=confidence')
       .then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); })
       .then(function(data) {
         vehicleData = data;
-        if (data.scan_date) {
-          var sd = new Date(data.scan_date);
-          document.getElementById('vehicle-scan-date').textContent = 'Last scan: ' + sd.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        var displayDate = data.latest_scan_date || data.scan_date;
+        if (displayDate) {
+          var sd = new Date(displayDate);
+          var label = 'Last scan: ' + sd.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+          if (data.freshness === 'stale' || data.freshness === 'very_stale') {
+            label += ' \u00b7 ' + data.age_hours + 'h ago (refreshing)';
+          }
+          document.getElementById('vehicle-scan-date').textContent = label;
+        } else if (data.freshness === 'no_scan_yet') {
+          document.getElementById('vehicle-scan-date').textContent = 'No scan yet \u2014 first sweep runs daily at 8 AM ET.';
         }
         applyVehicleFilter();
       })
       .catch(function() {
-        document.getElementById('vehicle-container').innerHTML = '<div class="card rounded-xl p-8 text-center"><p class="text-base mb-2" style="color:var(--mmt-text-secondary);">Small Business Vehicle Scanner is initializing.</p><p class="text-sm" style="color:var(--mmt-text-secondary);">Vehicle-specific opportunities are scanned daily at 8 AM ET. Check back soon.</p></div>';
+        document.getElementById('vehicle-container').innerHTML = '<div class="card rounded-xl p-8 text-center" data-testid="vehicle-unavailable"><p class="text-base mb-2" style="color:var(--mmt-text-secondary);">Small Business Vehicle Scanner is temporarily unavailable.</p><p class="text-sm" style="color:var(--mmt-text-secondary);">If this persists, email <a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a>. Scans run daily at 8 AM ET.</p></div>';
       });
   })();

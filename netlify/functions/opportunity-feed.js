@@ -111,8 +111,40 @@ exports.handler = async (event) => {
 
     const { count } = await countQuery;
 
-    // Find most recent scan date
-    const scanDate = opportunities.length > 0 ? opportunities[0].scan_date : null;
+    // Most recent scan date for the filtered set.
+    let scanDate = opportunities.length > 0 ? opportunities[0].scan_date : null;
+
+    // Fallback: when the filter yields zero rows, query the table-wide
+    // most-recent scan_date so the UI can still distinguish "scanner is
+    // healthy but nothing matches your filter today" from "scanner has
+    // never run." Without this, contract-tracker.js sees scan_date=null
+    // and presents an indefinite "initializing" state to subscribers
+    // (the 2026-04-27 incident).
+    let latestScanDate = scanDate;
+    try {
+      const { data: latest } = await supabase
+        .from("opportunity_radar")
+        .select("scan_date")
+        .order("scan_date", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (latest && latest.scan_date) latestScanDate = latest.scan_date;
+    } catch (latestErr) {
+      console.warn("opportunity-feed: latest scan_date query failed:", latestErr.message);
+    }
+
+    // Freshness state. SLA per docs/member-features.json (24h).
+    const STALE_THRESHOLD_HOURS = 48;
+    let freshness = "unknown";
+    let ageHours = null;
+    if (latestScanDate) {
+      ageHours = (Date.now() - new Date(latestScanDate).getTime()) / 3600000;
+      if (ageHours <= STALE_THRESHOLD_HOURS) freshness = "fresh";
+      else if (ageHours <= STALE_THRESHOLD_HOURS * 2) freshness = "stale";
+      else freshness = "very_stale";
+    } else {
+      freshness = "no_scan_yet";
+    }
 
     return {
       statusCode: 200,
@@ -125,6 +157,10 @@ exports.handler = async (event) => {
         opportunities: opportunities || [],
         total_count: count || 0,
         scan_date: scanDate,
+        latest_scan_date: latestScanDate,
+        freshness,
+        age_hours: ageHours !== null ? Math.round(ageHours) : null,
+        stale_threshold_hours: STALE_THRESHOLD_HOURS,
       }),
     };
   } catch (err) {
