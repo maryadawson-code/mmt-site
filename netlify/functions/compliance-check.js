@@ -18,6 +18,46 @@ const { enrichProposal } = require("./lib/proposal-enrichment");
 const { MMT_PRICING } = require("./lib/mmt-pricing");
 const { getFlag } = require("./lib/feature-flags");
 const { loadToolContext, buildToolEnvelope, buildEvidencePanel, renderBlockedResponse } = require("./lib/premium-tools-core");
+const { searchSAMOpportunities } = require("./lib/federal-data-apis");
+
+// Solicitation-number patterns commonly seen in the wild. Lenient on
+// formatting; first match wins. Detection is opportunistic — if the
+// proposal text doesn't reference a solicitation, the SAM.gov sidecar
+// is simply skipped (not an error).
+const SOLICITATION_PATTERNS = [
+  /\b\d{2}[A-Z]{2}\d{2}[A-Z]\d{4}\b/i,            // VA pattern, e.g. 36C10G26R0003
+  /\b[A-Z]{2}\d{6}[A-Z]\d{3,4}\b/i,                // DHA / DoD pattern, e.g. HT001126RE011
+  /\b\d{5}-\d{2}-[A-Z]-\d{4}\b/i,                  // Generic dash-separated
+  /\b[A-Z]\d{2}[A-Z]{2,3}-?\d{2,4}-[A-Z]-\d{4}\b/, // Air Force / Navy patterns
+];
+
+function extractSolicitationNumbers(text) {
+  if (!text) return [];
+  const found = new Set();
+  for (const pat of SOLICITATION_PATTERNS) {
+    const re = new RegExp(pat.source, pat.flags.includes("g") ? pat.flags : pat.flags + "g");
+    let m;
+    while ((m = re.exec(text)) !== null) {
+      found.add(m[0].toUpperCase());
+      if (found.size >= 3) break; // cap at 3 per run
+    }
+    if (found.size >= 3) break;
+  }
+  return [...found];
+}
+
+async function lookupSamOpportunities(text) {
+  const solNums = extractSolicitationNumbers(text);
+  if (solNums.length === 0) return { solicitations: [], looked_up: false };
+  // SAM.gov search-by-title is the most permissive way to fetch
+  // a solicitation. We don't have a notice-id direct lookup here
+  // (the v2 search supports `solnum`), so we use the keyword path.
+  const results = await Promise.all(
+    solNums.slice(0, 2).map((sol) => searchSAMOpportunities({ keyword: sol, limit: 3 }).catch(() => ({ opportunities: [] })))
+  );
+  const flat = results.flatMap((r) => r.opportunities || []);
+  return { solicitations: flat, looked_up: true, queried: solNums };
+}
 
 // --- Documentation flag detection ---
 // Health-IT-specific references evaluators expect to see. Presence alone
@@ -172,6 +212,17 @@ exports.handler = async (event) => {
 
   const docs = checkDocumentationFlags(text);
 
+  // SAM.gov sidecar — look up any solicitation numbers detected in the
+  // document so the compliance report can cite the actual posted
+  // set-aside, NAICS, agency, and response deadline. Failures are
+  // non-blocking; the rest of the compliance report still ships.
+  let samContext = { solicitations: [], looked_up: false };
+  try {
+    samContext = await lookupSamOpportunities(`${text}\n${sowText || ""}`);
+  } catch (samErr) {
+    console.warn("compliance-check: SAM.gov lookup failed:", samErr.message);
+  }
+
   // Build structured ComplianceReport
   const report = {
     generated_at: now.toISOString(),
@@ -206,6 +257,23 @@ exports.handler = async (event) => {
           : null,
       },
       documentation_gaps: docs,
+      sam_gov_solicitations: {
+        looked_up: samContext.looked_up,
+        queried: samContext.queried || [],
+        matches: (samContext.solicitations || []).slice(0, 3).map((o) => ({
+          solicitation_number: o.solicitation_number,
+          title: o.title,
+          agency: o.agency,
+          naics: o.naics,
+          set_aside: o.set_aside,
+          response_deadline: o.response_deadline,
+          url: o.url,
+        })),
+        severity: "INFO",
+        note: samContext.looked_up
+          ? `${(samContext.solicitations || []).length} SAM.gov match${(samContext.solicitations || []).length === 1 ? "" : "es"} for solicitation numbers detected in this document.`
+          : "No solicitation number detected in the document — SAM.gov sidecar skipped.",
+      },
     },
     top_fixes: buildTopFixes(enrichment, docs),
     remaining: Math.max(cap - used - 1, 0),

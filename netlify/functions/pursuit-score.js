@@ -13,17 +13,28 @@ const { scorePursuit } = require("./lib/pursuit-score-engine");
 const { MMT_PRICING } = require("./lib/mmt-pricing");
 const { getFlag } = require("./lib/feature-flags");
 const { loadToolContext, buildToolEnvelope, buildEvidencePanel, renderBlockedResponse } = require("./lib/premium-tools-core");
+const { loadSubscriberContext } = require("./lib/subscriber-context");
 
 // Cap + overage values come from lib/mmt-pricing.js (single source of truth)
 const MONTHLY_SCORE_CAP = MMT_PRICING.pursuit_score.premium_monthly_allowance;    // 20
 const INSTITUTIONAL_SCORE_CAP = MMT_PRICING.pursuit_score.team_pack_allowance + 25; // 100
 const CACHE_TTL_HOURS = 72;
 
-function cacheKeyFor({ keyword, agency, naics }) {
+function cacheKeyFor({ keyword, agency, naics, profileFingerprint }) {
   const fy = new Date().getUTCFullYear();
   const quarter = Math.floor(new Date().getUTCMonth() / 3) + 1;
-  const normalized = `${(keyword || "").toLowerCase().trim()}|${agency || ""}|${(naics || []).join(",")}|FY${fy}Q${quarter}`;
+  // The cache MUST include a profile fingerprint — otherwise two
+  // different companies asking the same question would share a verdict.
+  const normalized = `${(keyword || "").toLowerCase().trim()}|${agency || ""}|${(naics || []).join(",")}|FY${fy}Q${quarter}|p:${profileFingerprint || "none"}`;
   return crypto.createHash("sha256").update(normalized).digest("hex");
+}
+
+function profileFingerprintOf(ctx) {
+  if (!ctx) return "none";
+  return crypto.createHash("sha256")
+    .update(`${ctx.email || ""}|${ctx.context_version || 0}|${ctx.last_updated || ""}`)
+    .digest("hex")
+    .slice(0, 16);
 }
 
 async function readCache(supabase, key) {
@@ -139,8 +150,13 @@ exports.handler = async (event) => {
   const cap = isInstitutional ? INSTITUTIONAL_SCORE_CAP : MONTHLY_SCORE_CAP;
   const used = count || 0;
 
+  // Load subscriber_context BEFORE the cache lookup — the cache key
+  // must include a profile fingerprint or two members share verdicts.
+  const subscriberContext = await loadSubscriberContext(supabase, email);
+  const profileFingerprint = profileFingerprintOf(subscriberContext);
+
   // Cache lookup BEFORE decrementing quota — cache hits are free per spec §4
-  const cacheKey = cacheKeyFor({ keyword, agency, naics });
+  const cacheKey = cacheKeyFor({ keyword, agency, naics, profileFingerprint });
   const cached = await readCache(supabase, cacheKey);
   if (cached) {
     const ageHours = Math.floor((Date.now() - new Date(cached.cachedAt).getTime()) / (3600 * 1000));
@@ -170,7 +186,7 @@ exports.handler = async (event) => {
 
   let card;
   try {
-    card = await scorePursuit({ keyword, agency, naics });
+    card = await scorePursuit({ keyword, agency, naics, subscriberContext });
     if (card.error === "QUERY_TOO_SHORT") {
       return { statusCode: 400, headers: CORS_HEADERS, body: JSON.stringify(card) };
     }

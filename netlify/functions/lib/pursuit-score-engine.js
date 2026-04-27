@@ -24,6 +24,12 @@ const { enrichWithClinicalTrials } = require("./clinicaltrials-api");
 const { enrichWithPubMed } = require("./pubmed-api");
 const { enrichWithITDashboard } = require("./it-dashboard-api");
 const { detectVehicles, expandedSearchTerms } = require("./known-vehicles");
+const {
+  detectPositiveSignals,
+  classifyCapturePosition,
+  scoreCompanyFit,
+  combineVerdict,
+} = require("./company-alignment");
 
 const AGENCY_CODE_MAP = { VA: "036", DHA: "097", HHS: "075", DoD: "097", GSA: "047" };
 
@@ -351,6 +357,43 @@ function verdictFor(total) {
   return { verdict: "NO-BID", color: "#E63946" };
 }
 
+// Produces a 2-3 sentence narrative that explicitly references the
+// company profile. Falls back to a generic "no profile loaded" framing
+// when subscriberContext is absent.
+function generateCompanyAlignedNarrative({ dimensions, query, agency, verdict, combined, companyFit, capturePosition, signals, profileLoaded, entityName }) {
+  const totalMarket = (dimensions.incumbentVulnerability?.score || 0)
+    + (dimensions.budgetMomentum?.score || 0)
+    + (dimensions.legislativeTailwind?.score || 0)
+    + (dimensions.researchPipeline?.score || 0);
+  const marketVerdict = verdictFor(totalMarket).verdict;
+  const baseMarket = generateNarrative({ dimensions, query, agency, verdict: marketVerdict });
+  const parts = [baseMarket];
+
+  if (!profileLoaded) {
+    parts.push(`Generic preliminary read — no company profile loaded. Complete your profile to convert this into a "${entityName || "your company"}" bid/no-bid call. Until then, treat this as monitor / capture-validation, not a no-bid.`);
+    return parts.join(" ");
+  }
+
+  if (capturePosition?.tag === "IN_FLIGHT") {
+    parts.push(`Because of your company profile, this matches an opportunity already in flight (${capturePosition.detail}). Defend the submission, do not double-pursue.`);
+  } else if (capturePosition?.tag === "INCUMBENT_RECOMPETE") {
+    parts.push(`Because of your company profile, this is a defensive recompete (${capturePosition.detail}). Treat as incumbency-protection, not new-entry pursuit.`);
+  } else if (capturePosition?.tag === "OCI_BLOCKED") {
+    parts.push(`Because of your company profile, this is OCI-blocked (${capturePosition.detail}). Cannot pursue without a mitigation plan.`);
+  } else if (companyFit?.reasoning?.length) {
+    parts.push(`Because of your company profile (${entityName}), ${companyFit.reasoning[0]}`);
+  }
+
+  if (signals && signals.length) {
+    parts.push(`Positive signal${signals.length === 1 ? "" : "s"} detected: ${signals.map((s) => s.tag).join(", ")}.`);
+  }
+
+  if (combined?.reason) {
+    parts.push(`Verdict: ${combined.reason}`);
+  }
+  return parts.join(" ");
+}
+
 function generateNarrative({ dimensions, query, agency, verdict }) {
   const sorted = [
     { name: "budget trajectory", score: dimensions.budgetMomentum.score },
@@ -382,8 +425,18 @@ function generateNarrative({ dimensions, query, agency, verdict }) {
 
 // ------------------------------------------------------------
 // Main entry
+//
+// Accepts an optional `subscriberContext` (the row from the
+// subscriber_context table). When present, the engine layers a
+// company-fit score on top of the 4 market dimensions, classifies
+// the capture position (in-flight / incumbent / OCI-blocked / new),
+// detects positive signals in the keyword, and combines all three
+// into a verdict that distinguishes "we don't know yet" from "this
+// company shouldn't pursue this." Without a profile, the engine
+// returns a "generic preliminary" score and refuses to declare a
+// hard NO-BID.
 // ------------------------------------------------------------
-async function scorePursuit({ keyword, agency, naics }) {
+async function scorePursuit({ keyword, agency, naics, subscriberContext }) {
   if (!keyword || keyword.trim().length < 2) {
     return { error: "QUERY_TOO_SHORT", message: "Please enter at least 2 keywords." };
   }
@@ -468,7 +521,27 @@ async function scorePursuit({ keyword, agency, naics }) {
     researchPipeline,
   };
   const totalScore = incumbentVulnerability.score + budgetMomentum.score + legislativeTailwind.score + researchPipeline.score;
-  const { verdict, color } = verdictFor(totalScore);
+
+  // ---- Company alignment overlay -------------------------------
+  // Layered ON TOP of the 4 market dimensions. With no profile, the
+  // overlay returns null and the verdict combiner downgrades to a
+  // "generic preliminary" read.
+  const companyFit = scoreCompanyFit(subscriberContext, { keyword, agency: resolvedAgency, naics: resolvedNaics });
+  const capturePosition = classifyCapturePosition(subscriberContext, { keyword, agency: resolvedAgency });
+  const signals = detectPositiveSignals(keyword);
+  const combined = combineVerdict({
+    marketScore: totalScore,
+    partial,
+    companyFit,
+    capturePosition,
+    signals,
+    opportunity: { keyword, agency: resolvedAgency, naics: resolvedNaics },
+  });
+
+  const profileLoaded = !!(subscriberContext && subscriberContext.entity_name);
+  const profileBanner = profileLoaded
+    ? null
+    : "Generic preliminary score — no company profile loaded. Complete your profile at /premium/profile.html before treating this as a bid/no-bid decision.";
 
   const topAwardees = federalResult && federalResult.usaspending_awards
     ? (federalResult.usaspending_awards.awards || []).slice(0, 5).map((a) => ({
@@ -478,7 +551,27 @@ async function scorePursuit({ keyword, agency, naics }) {
       }))
     : [];
 
-  const narrative = generateNarrative({ dimensions, query: keyword, agency: resolvedAgency, verdict });
+  const narrative = generateCompanyAlignedNarrative({
+    dimensions,
+    query: keyword,
+    agency: resolvedAgency,
+    verdict: combined.verdict,
+    combined,
+    companyFit,
+    capturePosition,
+    signals,
+    profileLoaded,
+    entityName: subscriberContext?.entity_name,
+  });
+
+  // Recommended action — explicit, distinct from verdict.
+  const recommendedAction = recommendActionFor({
+    verdict: combined.verdict,
+    capturePosition,
+    profileLoaded,
+    signals,
+    partial,
+  });
 
   return {
     query: keyword,
@@ -491,8 +584,15 @@ async function scorePursuit({ keyword, agency, naics }) {
       naics: resolvedNaics,
     },
     totalScore,
-    verdict,
-    verdictColor: color,
+    verdict: combined.verdict,
+    verdictColor: combined.color,
+    verdictReason: combined.reason,
+    profileLoaded,
+    profileBanner,
+    companyFit,
+    capturePosition,
+    signals,
+    recommendedAction,
     partial,
     timedOut,
     scoredAt: new Date().toISOString(),
@@ -504,11 +604,46 @@ async function scorePursuit({ keyword, agency, naics }) {
       usaspending_total: federalResult?.usaspending_awards?.total || 0,
       active_opportunities: federalResult?.sam_opportunities?.total || 0,
     },
-    // Legacy 'total' + 'dimensions.*' snake-case mapping for existing UI
-    // that rendered the first version of this engine
+    // Legacy 'total' + 'color' aliases for older UI consumers
     total: totalScore,
-    color,
+    color: combined.color,
   };
+}
+
+// Build the recommended-next-action object the UI surfaces below the verdict.
+function recommendActionFor({ verdict, capturePosition, profileLoaded, signals, partial }) {
+  if (!profileLoaded) {
+    return {
+      action: "COMPLETE_PROFILE",
+      label: "Complete your company profile",
+      detail: "Fill in your target agencies, capabilities, NAICS, vehicle holdings, and capture priorities, then re-score. Profile-aware scoring is what turns this into a real bid/no-bid call.",
+      cta: { label: "Open profile", href: "/premium/profile.html" },
+    };
+  }
+  if (capturePosition?.tag === "OCI_BLOCKED") {
+    return { action: "DO_NOT_PURSUE", label: "Do not pursue", detail: capturePosition.detail };
+  }
+  if (capturePosition?.tag === "IN_FLIGHT") {
+    return { action: "DEFEND_SUBMISSION", label: "Defend the in-flight submission", detail: capturePosition.detail };
+  }
+  if (capturePosition?.tag === "INCUMBENT_RECOMPETE") {
+    return { action: "DEFEND_INCUMBENCY", label: "Defend incumbency", detail: capturePosition.detail };
+  }
+  switch (verdict) {
+    case "PURSUE":
+      return { action: "PURSUE", label: "Pursue", detail: "Commit B&P. Stand up the capture team and confirm teaming partners now." };
+    case "QUALIFY":
+      return { action: "QUALIFY", label: "Qualify", detail: "Schedule a capture-qualification review. Confirm vehicle eligibility, partner availability, and price-to-win range before committing B&P." };
+    case "MONITOR":
+      return { action: "MONITOR", label: "Monitor", detail: partial ? "Sources timed out — re-score after upstream data refreshes." : "Set a 60-day re-score on the next forward catalyst (RFI response, draft RFP, or budget pass)." };
+    case "CAPTURE_VALIDATION":
+      return { action: "CAPTURE_VALIDATION", label: "Capture-research required", detail: `${(signals || []).length} positive signal${signals.length === 1 ? "" : "s"} present — fund 2 weeks of capture research (incumbent, budget line, customer relationship) before the bid/no-bid call.` };
+    case "DEFEND":
+      return { action: "DEFEND_INCUMBENCY", label: "Defend incumbency", detail: "Recompete-defense playbook." };
+    case "NO-BID":
+    default:
+      return { action: "NO_BID", label: "No-bid", detail: "Both market signal and company fit are weak and no positive signals were detected." };
+  }
 }
 
 module.exports = {
@@ -519,5 +654,7 @@ module.exports = {
   scoreResearchPipeline,
   verdictFor,
   generateNarrative,
+  generateCompanyAlignedNarrative,
+  recommendActionFor,
   formatDollarsShort,
 };

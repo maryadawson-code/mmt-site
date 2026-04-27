@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Company Profile — MMT Premium</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <link rel="icon" href="/favicon-v3.png" type="image/png">
+  <style>
+    :root { --mmt-navy:#0A192F; --mmt-teal:#457B9D; --mmt-white:#FFFFFF; --mmt-surface:#F3F4F6; --mmt-text-secondary:#6B7280; --mmt-border:#E5E7EB; --dash-sidebar:220px; }
+    body { font-family:Inter,system-ui,sans-serif; color:var(--mmt-navy); background:var(--mmt-surface); margin:0; }
+    .dash-shell { display:grid; grid-template-columns:var(--dash-sidebar) 1fr; min-height:100vh; }
+    .dash-nav { background:var(--mmt-navy); padding:24px 0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto; }
+    .dash-nav-brand { padding:0 20px 24px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px; }
+    .dash-nav-brand a { color:#fff; text-decoration:none; font-weight:800; font-size:14px; }
+    .dash-nav-brand small { display:block; font-size:11px; color:rgba(255,255,255,0.5); font-weight:400; margin-top:2px; }
+    .dash-nav-link { display:flex; align-items:center; gap:10px; padding:10px 20px; color:rgba(255,255,255,0.6); text-decoration:none; font-size:13px; font-weight:500; }
+    .dash-nav-link:hover { color:#fff; background:rgba(255,255,255,0.05); }
+    .dash-nav-link.active { color:#fff; background:rgba(69,123,157,0.3); border-left:3px solid var(--mmt-teal); }
+    .dash-nav-section { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:rgba(255,255,255,0.3); padding:16px 20px 6px; }
+    .dash-header { background:var(--mmt-white); padding:16px 32px; border-bottom:1px solid var(--mmt-border); display:flex; align-items:center; justify-content:space-between; }
+    .dash-main { padding:32px; max-width:900px; }
+    .dash-card { background:var(--mmt-white); border-radius:12px; padding:24px; margin-bottom:16px; border:1px solid var(--mmt-border); }
+    .pf-label { display:block; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--mmt-text-secondary); margin-bottom:6px; }
+    .pf-help  { font-size:12px; color:var(--mmt-text-secondary); margin:0 0 8px; line-height:1.5; }
+    .pf-input { width:100%; padding:10px 12px; border:1px solid var(--mmt-border); border-radius:6px; font-size:14px; font-family:inherit; box-sizing:border-box; }
+    .pf-row   { margin-bottom:18px; }
+    .btn-primary { padding:11px 24px; background:var(--mmt-navy); color:#fff; border:none; border-radius:8px; font-weight:700; font-size:14px; cursor:pointer; }
+    @media (max-width:768px) { .dash-shell { grid-template-columns:1fr; } .dash-nav { display:none; } .dash-main { padding:16px; padding-bottom:80px; } }
+  </style>
+  <script>
+    (function() {
+      var isPremium = localStorage.getItem('mmt_premium') === 'true';
+      var ts = localStorage.getItem('mmt_premium_ts');
+      var withinWindow = ts && (Date.now() - parseInt(ts)) < 30 * 24 * 60 * 60 * 1000;
+      if (!isPremium || !withinWindow) { window.location.href = '/dashboard.html'; }
+    })();
+  </script>
+</head>
+<body>
+  <div class="dash-shell">
+    <nav class="dash-nav">
+      <div class="dash-nav-brand"><a href="/premium/dashboard.html">★ MMT Premium<small>Intelligence Dashboard</small></a></div>
+      <div class="dash-nav-section">Intelligence</div>
+      <a href="/premium/dashboard.html" class="dash-nav-link">Dashboard</a>
+      <a href="/intel/capture-intelligence-this-issue/" class="dash-nav-link">Capture Intelligence</a>
+      <a href="/premium/briefings.html" class="dash-nav-link">Friday Brief</a>
+      <a href="/premium/monthly-briefs.html" class="dash-nav-link">Monthly Brief</a>
+      <div class="dash-nav-section">Tools</div>
+      <a href="/premium/pursuit-score.html" class="dash-nav-link">Pursuit Score</a>
+      <a href="/premium/compliance-check.html" class="dash-nav-link">Compliance Check</a>
+      <a href="/premium/signal-chain.html" class="dash-nav-link">Signal Chain</a>
+      <div class="dash-nav-section">Account</div>
+      <a href="/premium/profile.html" class="dash-nav-link active">Company Profile</a>
+      <a href="/premium/settings.html" class="dash-nav-link">Settings</a>
+      <a href="/" class="dash-nav-link" style="margin-top:auto; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px;">&larr; Back to site</a>
+    </nav>
+    <div>
+      <div class="dash-header">
+        <span style="font-size:14px; font-weight:700;">★ Premium Dashboard</span>
+        <div style="display:flex; align-items:center; gap:16px;">
+          <span style="font-size:13px; color:var(--mmt-text-secondary);" id="dash-email"></span>
+          <a href="/" style="font-size:12px; color:var(--mmt-teal); text-decoration:none;">Back to site</a>
+        </div>
+      </div>
+      <div class="dash-main">
+
+        <a href="/premium/dashboard.html" style="font-size:13px;color:var(--mmt-teal);text-decoration:none;display:inline-block;margin-bottom:16px;">&larr; Back to dashboard</a>
+        <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">Company Profile</h1>
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 24px;">Pursuit Score, Compliance Check, and Signal Chain read this profile to score opportunities against <em>your</em> company &mdash; not as a generic market signal. Save anything you can; you can always come back.</p>
+
+        <div id="pf-status" style="display:none;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:16px;"></div>
+
+        <div class="dash-card">
+          <h3 style="margin:0 0 14px;font-size:15px;font-weight:800;">Identity</h3>
+          <div class="pf-row">
+            <label class="pf-label" for="pf-entity-name">Company name *</label>
+            <input class="pf-input" id="pf-entity-name" placeholder="e.g., rockITdata LLC" required>
+          </div>
+          <div class="pf-row">
+            <label class="pf-label" for="pf-uei">UEI</label>
+            <input class="pf-input" id="pf-uei" placeholder="12-character SAM.gov UEI">
+          </div>
+          <div class="pf-row">
+            <label class="pf-label" for="pf-setasides">Set-aside certifications</label>
+            <p class="pf-help">Comma-separated. Examples: WOSB, SDVOSB, 8(a), HUBZone.</p>
+            <input class="pf-input" id="pf-setasides" placeholder="WOSB, SDVOSB">
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <h3 style="margin:0 0 14px;font-size:15px;font-weight:800;">Where you play</h3>
+          <div class="pf-row">
+            <label class="pf-label" for="pf-target-agencies">Target agencies</label>
+            <p class="pf-help">Comma-separated. Use codes (VA, DHA, HHS, DoD, GSA) or full names.</p>
+            <input class="pf-input" id="pf-target-agencies" placeholder="VA, DHA, HHS">
+          </div>
+          <div class="pf-row">
+            <label class="pf-label" for="pf-capabilities">Capabilities / service lines</label>
+            <p class="pf-help">Comma-separated short phrases. These are token-matched against opportunity keywords. Example: "EHR modernization, data governance, infrastructure operations".</p>
+            <input class="pf-input" id="pf-capabilities" placeholder="EHR modernization, data governance, infrastructure operations">
+          </div>
+          <div class="pf-row">
+            <label class="pf-label" for="pf-naics">NAICS codes</label>
+            <p class="pf-help">Comma-separated 6-digit codes you are registered under.</p>
+            <input class="pf-input" id="pf-naics" placeholder="541512, 541611, 541519">
+          </div>
+          <div class="pf-row">
+            <label class="pf-label" for="pf-psc">PSC / FSC codes</label>
+            <input class="pf-input" id="pf-psc" placeholder="D302, D316">
+          </div>
+          <div class="pf-row">
+            <label class="pf-label" for="pf-geography">Geography</label>
+            <p class="pf-help">Where you can perform. Comma-separated.</p>
+            <input class="pf-input" id="pf-geography" placeholder="CONUS, DC Metro, OCONUS">
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <h3 style="margin:0 0 14px;font-size:15px;font-weight:800;">Posture</h3>
+          <div class="pf-row">
+            <label class="pf-label" for="pf-clearances">Clearance levels</label>
+            <input class="pf-input" id="pf-clearances" placeholder="Secret, TS/SCI">
+          </div>
+          <div class="pf-row">
+            <label class="pf-label" for="pf-compliance">Compliance posture</label>
+            <p class="pf-help">FedRAMP, CMMC level, ATO status, etc.</p>
+            <input class="pf-input" id="pf-compliance" placeholder="CMMC L2, FedRAMP Moderate, FISMA Moderate ATO">
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <h3 style="margin:0 0 14px;font-size:15px;font-weight:800;">Capture priorities</h3>
+          <div class="pf-row">
+            <label class="pf-label" for="pf-priorities">FY capture priorities</label>
+            <p class="pf-help">Comma-separated phrases that describe what you are actively chasing this year. Example: "VA OIT Franchise Fund recompetes, FY27 EHRM task orders, MHS GENESIS follow-on".</p>
+            <input class="pf-input" id="pf-priorities" placeholder="VA OIT Franchise Fund recompetes, FY27 EHRM task orders">
+          </div>
+          <div class="pf-row">
+            <label class="pf-label" for="pf-no-go">No-go criteria</label>
+            <p class="pf-help">Free-text rules you will not pursue.</p>
+            <input class="pf-input" id="pf-no-go" placeholder="No clinical labs, No OCONUS, No subordinate to large business">
+          </div>
+          <div class="pf-row">
+            <label class="pf-label" for="pf-vehicles">Vehicle holdings</label>
+            <p class="pf-help">Comma-separated short labels &mdash; you can edit JSON in advanced mode below.</p>
+            <input class="pf-input" id="pf-vehicles" placeholder="GSA MAS, SeaPort-NxG, IHT 2.0">
+          </div>
+        </div>
+
+        <details class="dash-card">
+          <summary style="cursor:pointer;font-weight:700;font-size:14px;">Advanced (JSON for active pursuits, incumbent positions, OCI, teaming)</summary>
+          <p class="pf-help" style="margin-top:12px;">For now this is a JSON textarea. A friendlier editor lands next sprint &mdash; this matches the admin import schema documented in <code>docs/MMT-Technical-Spec.md</code>.</p>
+          <div class="pf-row">
+            <label class="pf-label" for="pf-active-pursuits">Active pursuits (JSON array)</label>
+            <textarea class="pf-input" id="pf-active-pursuits" rows="4" placeholder='[{"solicitation_number":"36C10G26R0003","name":"VA CCN Next Gen","role":"prime","stage":"submitted"}]'></textarea>
+          </div>
+          <div class="pf-row">
+            <label class="pf-label" for="pf-incumbent-positions">Incumbent positions (JSON array)</label>
+            <textarea class="pf-input" id="pf-incumbent-positions" rows="3" placeholder='[{"contract_number":"36C10X19N0141","name":"VA HRO BPA","role":"prime"}]'></textarea>
+          </div>
+          <div class="pf-row">
+            <label class="pf-label" for="pf-oci-exclusions">OCI exclusions (JSON array)</label>
+            <textarea class="pf-input" id="pf-oci-exclusions" rows="2"></textarea>
+          </div>
+          <div class="pf-row">
+            <label class="pf-label" for="pf-teaming-preferred">Preferred teaming partners (comma-separated)</label>
+            <input class="pf-input" id="pf-teaming-preferred" placeholder="LMI, AFS, Oracle Health">
+          </div>
+          <div class="pf-row">
+            <label class="pf-label" for="pf-teaming-no-fly">No-fly teaming partners (comma-separated)</label>
+            <input class="pf-input" id="pf-teaming-no-fly" placeholder="">
+          </div>
+        </details>
+
+        <div style="display:flex;gap:12px;align-items:center;margin-top:8px;">
+          <button class="btn-primary" id="pf-save-btn" onclick="saveProfile()">Save profile</button>
+          <span id="pf-saved-marker" style="display:none;font-size:13px;color:#16A34A;font-weight:700;">Saved &mdash; re-score Pursuit Score to apply.</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script>
+    var email = localStorage.getItem('mmt_email');
+    if (email) document.getElementById('dash-email').textContent = email;
+
+    function csv(field) {
+      var v = (field.value || '').trim();
+      if (!v) return [];
+      return v.split(/[,;\n]/).map(function(s) { return s.trim(); }).filter(Boolean);
+    }
+    function parseJsonField(field) {
+      var v = (field.value || '').trim();
+      if (!v) return [];
+      try { var p = JSON.parse(v); return Array.isArray(p) ? p : []; }
+      catch { return null; }
+    }
+    function setStatus(msg, kind) {
+      var el = document.getElementById('pf-status');
+      if (!msg) { el.style.display = 'none'; return; }
+      el.textContent = msg;
+      if (kind === 'error') {
+        el.style.background = 'rgba(230,57,70,0.08)';
+        el.style.border = '1px solid rgba(230,57,70,0.25)';
+        el.style.color = '#B91C1C';
+      } else {
+        el.style.background = 'rgba(21,128,61,0.08)';
+        el.style.border = '1px solid rgba(21,128,61,0.25)';
+        el.style.color = '#15803D';
+      }
+      el.style.display = 'block';
+    }
+
+    function loadProfile() {
+      if (!email) { setStatus('Sign in first.', 'error'); return; }
+      fetch('/.netlify/functions/member-profile?email=' + encodeURIComponent(email))
+        .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+        .then(function(res) {
+          if (!res.ok) { setStatus(res.data.error || 'Could not load profile', 'error'); return; }
+          var p = res.data.profile;
+          if (!p) {
+            setStatus('No profile yet \u2014 fill in what you can and save. Pursuit Score will become company-aligned the moment you save.', 'success');
+            return;
+          }
+          document.getElementById('pf-entity-name').value = p.entity_name || '';
+          document.getElementById('pf-uei').value = p.uei || '';
+          document.getElementById('pf-setasides').value         = (p.set_aside_certifications || []).join(', ');
+          document.getElementById('pf-target-agencies').value   = (p.target_agencies || []).join(', ');
+          document.getElementById('pf-capabilities').value      = (p.capabilities || []).join(', ');
+          document.getElementById('pf-naics').value             = (p.naics_codes || []).join(', ');
+          document.getElementById('pf-psc').value               = (p.psc_codes || []).join(', ');
+          document.getElementById('pf-geography').value         = (p.geography || []).join(', ');
+          document.getElementById('pf-clearances').value        = (p.clearance_levels || []).join(', ');
+          document.getElementById('pf-compliance').value        = (p.compliance_posture || []).join(', ');
+          document.getElementById('pf-priorities').value        = (p.capture_priorities || []).join(', ');
+          document.getElementById('pf-no-go').value             = (p.no_go_criteria || []).join(', ');
+          document.getElementById('pf-vehicles').value          = (p.vehicle_holdings || []).map(function(v) { return v.vehicle || v; }).join(', ');
+          document.getElementById('pf-active-pursuits').value     = JSON.stringify(p.active_pursuits || [], null, 2);
+          document.getElementById('pf-incumbent-positions').value = JSON.stringify(p.incumbent_positions || [], null, 2);
+          document.getElementById('pf-oci-exclusions').value      = JSON.stringify(p.oci_exclusions || [], null, 2);
+          document.getElementById('pf-teaming-preferred').value   = (p.teaming_preferred || []).join(', ');
+          document.getElementById('pf-teaming-no-fly').value      = (p.teaming_no_fly || []).join(', ');
+        })
+        .catch(function() { setStatus('Network error while loading profile.', 'error'); });
+    }
+
+    function saveProfile() {
+      if (!email) { setStatus('Sign in first.', 'error'); return; }
+      var name = document.getElementById('pf-entity-name').value.trim();
+      if (!name) { setStatus('Company name is required.', 'error'); return; }
+      var btn = document.getElementById('pf-save-btn');
+      btn.disabled = true; btn.textContent = 'Saving...';
+
+      var activePursuits = parseJsonField(document.getElementById('pf-active-pursuits'));
+      var incumbents     = parseJsonField(document.getElementById('pf-incumbent-positions'));
+      var oci            = parseJsonField(document.getElementById('pf-oci-exclusions'));
+      if (activePursuits === null || incumbents === null || oci === null) {
+        setStatus('One of the JSON fields is invalid. Check formatting.', 'error');
+        btn.disabled = false; btn.textContent = 'Save profile';
+        return;
+      }
+
+      var vehicles = csv(document.getElementById('pf-vehicles')).map(function(v) { return { vehicle: v }; });
+
+      var body = {
+        email: email,
+        entity_name: name,
+        uei: document.getElementById('pf-uei').value.trim() || null,
+        set_aside_certifications: csv(document.getElementById('pf-setasides')),
+        target_agencies:    csv(document.getElementById('pf-target-agencies')),
+        capabilities:       csv(document.getElementById('pf-capabilities')),
+        naics_codes:        csv(document.getElementById('pf-naics')),
+        psc_codes:          csv(document.getElementById('pf-psc')),
+        geography:          csv(document.getElementById('pf-geography')),
+        clearance_levels:   csv(document.getElementById('pf-clearances')),
+        compliance_posture: csv(document.getElementById('pf-compliance')),
+        capture_priorities: csv(document.getElementById('pf-priorities')),
+        no_go_criteria:     csv(document.getElementById('pf-no-go')),
+        vehicle_holdings:   vehicles,
+        active_pursuits:    activePursuits,
+        incumbent_positions: incumbents,
+        oci_exclusions:     oci,
+        teaming_preferred:  csv(document.getElementById('pf-teaming-preferred')),
+        teaming_no_fly:     csv(document.getElementById('pf-teaming-no-fly')),
+      };
+
+      fetch('/.netlify/functions/member-profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+        .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+        .then(function(res) {
+          btn.disabled = false; btn.textContent = 'Save profile';
+          if (!res.ok) {
+            setStatus(res.data.error || 'Save failed.', 'error');
+            return;
+          }
+          var marker = document.getElementById('pf-saved-marker');
+          marker.style.display = 'inline';
+          setTimeout(function() { marker.style.display = 'none'; }, 8000);
+          setStatus('Profile saved. Pursuit Score, Compliance Check, and Signal Chain will read it on the next run.', 'success');
+        })
+        .catch(function() {
+          btn.disabled = false; btn.textContent = 'Save profile';
+          setStatus('Network error.', 'error');
+        });
+    }
+
+    loadProfile();
+  </script>
+</body>
+</html>

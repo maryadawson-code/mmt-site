@@ -75,6 +75,7 @@
       <a href="/premium/calendar.html" class="dash-nav-link">Pursuit Calendar</a>
       <a href="/premium/ask-mmt.html" class="dash-nav-link">Ask MMT</a>
       <div class="dash-nav-section">Account</div>
+      <a href="/premium/profile.html" class="dash-nav-link">Company Profile</a>
       <a href="/premium/settings.html" class="dash-nav-link">Settings</a>
       <a href="/" class="dash-nav-link" style="margin-top:auto; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px;">&larr; Back to site</a>
     </nav>
@@ -90,7 +91,7 @@
       <div class="dash-main">
 
         <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin-bottom:8px;">MMT Premium &middot; Bid/No-Bid Decision Support</p>
-        <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">Pursuit Score</h1>
+        <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">Pursuit Score <span style="display:inline-block;font-size:10px;font-weight:800;letter-spacing:0.1em;background:#FACC15;color:#0A192F;padding:3px 8px;border-radius:4px;vertical-align:middle;margin-left:8px;">BETA</span></h1>
         <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 20px;">Type a contract, vehicle, or program. Get a 0–100 score across incumbent vulnerability, budget momentum, legislative tailwind, and research pipeline — all composed from live federal data.</p>
 
         <!-- Score form -->
@@ -139,6 +140,7 @@
 
         <!-- Result -->
         <div id="ps-result" style="display:none;">
+          <div id="ps-profile-banner" style="display:none;background:rgba(146,113,10,0.08);border:1px solid rgba(146,113,10,0.25);color:#5a4307;padding:14px 16px;border-radius:8px;font-size:13px;margin-bottom:14px;line-height:1.6;"></div>
           <div id="ps-partial-warning" style="display:none;background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.3);color:#92710A;padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:14px;"></div>
           <div id="ps-cache-note" style="display:none;background:rgba(69,123,157,0.08);color:var(--mmt-teal);padding:8px 14px;border-radius:6px;font-size:12px;margin-bottom:14px;"></div>
           <div class="dash-card">
@@ -160,6 +162,41 @@
               <div id="ps-narrative" style="font-size:14px;line-height:1.6;color:var(--mmt-navy);"></div>
             </div>
 
+            <!-- Recommended next action -->
+            <div id="ps-action-card" style="display:none;margin:0 0 20px;padding:14px 16px;background:#0A192F;color:#fff;border-radius:8px;">
+              <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:#9ec3e6;margin-bottom:4px;">Recommended next action</div>
+              <div id="ps-action-label" style="font-size:16px;font-weight:800;margin-bottom:4px;"></div>
+              <div id="ps-action-detail" style="font-size:13px;line-height:1.55;color:rgba(255,255,255,0.8);"></div>
+              <a id="ps-action-cta" href="#" style="display:none;margin-top:10px;font-size:12px;font-weight:700;color:#9ec3e6;text-decoration:underline;"></a>
+            </div>
+
+            <!-- Company fit + capture position grid -->
+            <div id="ps-alignment-grid" style="display:none;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+              <div style="padding:14px 16px;background:var(--mmt-surface);border-radius:8px;">
+                <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--mmt-text-secondary);margin-bottom:6px;">Company fit</div>
+                <div id="ps-fit-score" style="font-size:22px;font-weight:800;color:var(--mmt-navy);"></div>
+                <div id="ps-fit-band" style="font-size:12px;color:var(--mmt-text-secondary);margin-bottom:8px;"></div>
+                <div id="ps-fit-reasoning" style="font-size:12px;line-height:1.55;color:var(--mmt-navy);"></div>
+              </div>
+              <div style="padding:14px 16px;background:var(--mmt-surface);border-radius:8px;">
+                <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--mmt-text-secondary);margin-bottom:6px;">Capture position</div>
+                <div id="ps-capture-tag" style="font-size:14px;font-weight:800;color:var(--mmt-navy);margin-bottom:4px;"></div>
+                <div id="ps-capture-detail" style="font-size:12px;line-height:1.55;color:var(--mmt-navy);"></div>
+              </div>
+            </div>
+
+            <!-- Positive signals + completeness (Known / Inferred / Missing) -->
+            <div id="ps-signals-row" style="display:none;margin-bottom:20px;padding:14px 16px;background:rgba(21,128,61,0.06);border:1px solid rgba(21,128,61,0.2);border-radius:8px;">
+              <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:#15803D;margin-bottom:6px;">Positive signals detected</div>
+              <div id="ps-signals-list" style="font-size:12px;line-height:1.6;color:var(--mmt-navy);"></div>
+            </div>
+            <div id="ps-completeness" style="display:none;margin-bottom:20px;padding:14px 16px;background:#fff;border:1px solid var(--mmt-border);border-radius:8px;">
+              <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--mmt-text-secondary);margin-bottom:8px;">Information completeness</div>
+              <div id="ps-known"    style="font-size:12px;line-height:1.55;color:#15803D;margin-bottom:6px;"></div>
+              <div id="ps-inferred" style="font-size:12px;line-height:1.55;color:#92710A;margin-bottom:6px;"></div>
+              <div id="ps-missing"  style="font-size:12px;line-height:1.55;color:#B91C1C;"></div>
+            </div>
+
             <div style="margin-top:16px;">
               <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--mmt-text-secondary);margin-bottom:8px;">Dimension breakdown</div>
               <div id="ps-dims"></div>
@@ -177,7 +214,7 @@
         <!-- How it's scored -->
         <div class="dash-card" style="background:var(--mmt-surface);">
           <h3 style="margin:0 0 8px;font-size:14px;font-weight:700;">How it's scored</h3>
-          <p style="font-size:13px;color:var(--mmt-text-secondary);line-height:1.6;margin:0 0 10px;">Each dimension is worth 25 points, scored from direct API queries. Scores combine into a verdict: <strong style="color:#15803D;">GO</strong> (75+), <strong style="color:#84cc16;">LEAN GO</strong> (55–74), <strong style="color:#92710A;">DEVELOP</strong> (40–54), <strong style="color:#F97316;">LEAN NO-BID</strong> (25–39), <strong style="color:#E63946;">NO-BID</strong> (&lt;25).</p>
+          <p style="font-size:13px;color:var(--mmt-text-secondary);line-height:1.6;margin:0 0 10px;">Each market dimension is worth 25 points, scored from direct API queries. The verdict layers your <strong>company profile</strong> on top: <strong style="color:#15803D;">PURSUE</strong> · <strong style="color:#15803D;">DEFEND</strong> (incumbent) · <strong style="color:#457B9D;">QUALIFY</strong> · <strong style="color:#92710A;">MONITOR</strong> · <strong style="color:#F97316;">CAPTURE VALIDATION</strong> · <strong style="color:#E63946;">NO-BID</strong>. Without a profile, scoring is a <em>generic preliminary read</em> and the engine refuses to declare a hard NO-BID.</p>
           <ul style="font-size:12px;color:var(--mmt-text-secondary);margin:0;padding-left:18px;line-height:1.7;">
             <li><strong>Incumbent vulnerability</strong> — awardee concentration + expiring contracts (USASpending)</li>
             <li><strong>Budget momentum</strong> — obligations volume + budget docs + IT Dashboard programs</li>
@@ -201,11 +238,25 @@
     if (email) document.getElementById('dash-email').textContent = email;
 
     var VERDICT_COLORS = {
-      'GO':          '#15803D',
-      'LEAN GO':     '#457B9D',
-      'DEVELOP':     '#92710A',
-      'LEAN NO-BID': '#F97316',
-      'NO-BID':      '#E63946'
+      'PURSUE':              '#15803D',
+      'DEFEND':              '#15803D',
+      'QUALIFY':             '#457B9D',
+      'MONITOR':             '#92710A',
+      'CAPTURE_VALIDATION':  '#F97316',
+      'NO-BID':              '#E63946',
+      // Legacy mappings kept for cached responses
+      'GO':                  '#15803D',
+      'LEAN GO':             '#457B9D',
+      'DEVELOP':             '#92710A',
+      'LEAN NO-BID':         '#F97316'
+    };
+    var VERDICT_LABELS = {
+      'PURSUE':              'PURSUE',
+      'DEFEND':              'DEFEND INCUMBENCY',
+      'QUALIFY':             'QUALIFY',
+      'MONITOR':             'MONITOR',
+      'CAPTURE_VALIDATION':  'CAPTURE VALIDATION',
+      'NO-BID':              'NO-BID'
     };
 
     // Quick-fill chips — seed with common federal health IT pursuits
@@ -274,10 +325,83 @@
       document.getElementById('ps-result').style.display = 'block';
 
       var total = card.totalScore || card.total || 0;
-      var verdict = card.verdict || 'NO-BID';
-      document.getElementById('ps-verdict').textContent = verdict;
+      var verdict = card.verdict || 'MONITOR';
+      var verdictLabel = VERDICT_LABELS[verdict] || verdict;
+      document.getElementById('ps-verdict').textContent = verdictLabel;
       document.getElementById('ps-verdict').style.color = VERDICT_COLORS[verdict] || '#0A192F';
       document.getElementById('ps-ring').style.background = VERDICT_COLORS[verdict] || '#457B9D';
+
+      // Profile banner — shown when no company profile is loaded.
+      var bannerEl = document.getElementById('ps-profile-banner');
+      if (card.profileBanner || card.profileLoaded === false) {
+        bannerEl.innerHTML = (card.profileBanner || 'Generic preliminary score \u2014 no company profile loaded.') +
+          ' <a href="/premium/profile.html" style="color:#0A192F;font-weight:700;text-decoration:underline;">Complete your profile \u2192</a>';
+        bannerEl.style.display = 'block';
+      } else {
+        bannerEl.style.display = 'none';
+      }
+
+      // Recommended action card
+      var rec = card.recommendedAction;
+      var actionCard = document.getElementById('ps-action-card');
+      if (rec) {
+        document.getElementById('ps-action-label').textContent = rec.label || rec.action || '';
+        document.getElementById('ps-action-detail').textContent = rec.detail || '';
+        var ctaEl = document.getElementById('ps-action-cta');
+        if (rec.cta && rec.cta.href) {
+          ctaEl.href = rec.cta.href;
+          ctaEl.textContent = rec.cta.label || 'Open \u2192';
+          ctaEl.style.display = 'inline-block';
+        } else {
+          ctaEl.style.display = 'none';
+        }
+        actionCard.style.display = 'block';
+      } else {
+        actionCard.style.display = 'none';
+      }
+
+      // Company fit + capture position grid
+      var alignmentGrid = document.getElementById('ps-alignment-grid');
+      var fit = card.companyFit;
+      var pos = card.capturePosition;
+      if (fit && fit.score !== null && fit.score !== undefined) {
+        document.getElementById('ps-fit-score').textContent = fit.score + ' / 100';
+        document.getElementById('ps-fit-band').textContent = (fit.band || '').replace(/_/g, ' ');
+        var fitReason = (fit.reasoning && fit.reasoning[0]) ? fit.reasoning[0] : '';
+        if (fitReason && !/^because\b/i.test(fitReason)) fitReason = 'Because of your company profile, ' + fitReason;
+        document.getElementById('ps-fit-reasoning').textContent = fitReason;
+        document.getElementById('ps-capture-tag').textContent = pos && pos.tag ? pos.tag.replace(/_/g, ' ') : '\u2014';
+        document.getElementById('ps-capture-detail').textContent = pos && pos.detail ? pos.detail : '';
+        alignmentGrid.style.display = 'grid';
+      } else {
+        alignmentGrid.style.display = 'none';
+      }
+
+      // Positive signals row
+      var signalsRow = document.getElementById('ps-signals-row');
+      var signals = card.signals || [];
+      if (signals.length) {
+        document.getElementById('ps-signals-list').innerHTML = signals.map(function(s) {
+          return '<div style="margin:3px 0;"><strong>' + s.tag + ':</strong> ' + s.note + '</div>';
+        }).join('');
+        signalsRow.style.display = 'block';
+      } else {
+        signalsRow.style.display = 'none';
+      }
+
+      // Information completeness — Known / Inferred / Missing
+      var compEl = document.getElementById('ps-completeness');
+      if (fit && (fit.known || fit.inferred || fit.missing)) {
+        var knownEl = document.getElementById('ps-known');
+        var inferredEl = document.getElementById('ps-inferred');
+        var missingEl = document.getElementById('ps-missing');
+        knownEl.innerHTML    = (fit.known    && fit.known.length)    ? '<strong>Known:</strong> '    + fit.known.join(' \u00b7 ')                  : '';
+        inferredEl.innerHTML = (fit.inferred && fit.inferred.length) ? '<strong>Inferred:</strong> ' + fit.inferred.join(' \u00b7 ')               : '';
+        missingEl.innerHTML  = (fit.missing  && fit.missing.length)  ? '<strong>Missing:</strong> '  + fit.missing.join(', ').replace(/_/g, ' ')   : '';
+        compEl.style.display = (knownEl.innerHTML || inferredEl.innerHTML || missingEl.innerHTML) ? 'block' : 'none';
+      } else {
+        compEl.style.display = 'none';
+      }
 
       // Animate total score from 0
       var ringEl = document.getElementById('ps-total');
