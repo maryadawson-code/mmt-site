@@ -123,6 +123,33 @@
       "noindex": false
     },
     {
+      "feature_name": "RFP Shredder",
+      "public_marketing_urls": ["/rfp-shredder", "/rfp-shreadder", "/solicitation-shredder"],
+      "member_url": "/rfp-shredder.html",
+      "backing_function": "MissionPulse backend (cross-repo); mmt-site is a marketing + handoff page only until public access wires up",
+      "entitlement_required": "private_beta (pilot list); future: premium|founding|institutional|admin",
+      "public_locked_preview_behavior": "honest landing page explaining private-beta status and pilot signup; no scoring is run on this domain",
+      "expected_data_source": "MissionPulse RFP Shredder service — see docs/rfp-shredder-cross-repo-handoff.md",
+      "freshness_sla_hours": null,
+      "smoke_test_url": "/rfp-shredder",
+      "noindex": false,
+      "title_signature": "RFP Shredder"
+    },
+    {
+      "feature_name": "Friday Brief Archive",
+      "public_marketing_urls": ["/premium/briefings"],
+      "member_url": "/premium/briefings.html",
+      "backing_function": "build.js generateBriefArchiveHtml + content/friday-briefs + premium/briefs",
+      "entitlement_required": "premium|founding|institutional|admin",
+      "public_locked_preview_behavior": "redirect to dashboard.html (sign-in gate)",
+      "expected_data_source": "content/friday-briefs/*.md and premium/briefs/*.html",
+      "freshness_sla_hours": 168,
+      "smoke_test_url": "/premium/briefings",
+      "noindex": true,
+      "title_signature": "The Friday Brief",
+      "min_archive_items": 1
+    },
+    {
       "feature_name": "Premium Dashboard",
       "public_marketing_urls": ["/dashboard"],
       "member_url": "/dashboard.html",

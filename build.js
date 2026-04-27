@@ -2589,6 +2589,7 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     'capture-corner.html',
     'compliance-check.html',
     'tools.html',
+    'rfp-shredder.html',
   ];
   // Premium subdirectory pages
   const premiumPages = [
@@ -2942,6 +2943,14 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
       }
       fs.writeFileSync(destPath, html);
       console.log(`Copied ${src} → ${dest}`);
+      // Also write the root-level alias (dist/premium/<name>.html) with
+      // the same BUILD-substituted body so Netlify's pretty-URL resolver
+      // doesn't fall back to a stale verbatim copy. This is what broke
+      // /premium/briefings on 2026-04-27 (raw <!-- BUILD:BRIEF_ARCHIVE -->
+      // markers visible to subscribers).
+      const rootAliasPath = path.join(DIST_DIR, src);
+      ensureDir(path.dirname(rootAliasPath));
+      fs.writeFileSync(rootAliasPath, html);
     }
   });
 
@@ -3235,19 +3244,13 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     console.log(`Copied ${sampleFiles.length} sample files`);
   }
 
-  // Copy premium dashboard pages
-  const premiumDir = path.join(__dirname, 'premium');
-  if (fs.existsSync(premiumDir)) {
-    const distPremiumDir = path.join(DIST_DIR, 'premium');
-    ensureDir(distPremiumDir);
-    const premiumFiles = fs.readdirSync(premiumDir).filter(f => f.endsWith('.html'));
-    premiumFiles.forEach(file => {
-      let html = fs.readFileSync(path.join(premiumDir, file), 'utf8');
-      // Don't apply editorial nav/footer to dashboard pages (they use their own shell)
-      fs.writeFileSync(path.join(distPremiumDir, file), html);
-    });
-    console.log(`Copied ${premiumFiles.length} premium dashboard pages`);
-  }
+  // NOTE: dist/premium/<file>.html is written by the subDirPages loop
+  // earlier in this function with full BUILD: marker substitution and
+  // dashboard-shell injection. Do NOT also copy premium/*.html verbatim
+  // here — that overwrites the substituted output and was the cause of
+  // the 2026-04-27 Friday Brief archive disappearance, where the live
+  // /premium/briefings page rendered with raw <!-- BUILD:BRIEF_ARCHIVE -->
+  // markers and a stale "Monthly Briefs" page title.
 
 }
 
@@ -4156,20 +4159,31 @@ async function build() {
       );
       const { data, error } = await sb
         .from('pursuit_calendar')
-        .select('id, title, event_date, end_date, agency, vehicle, category, source_url, notes')
+        .select('id, title, event_date, end_date, agency, vehicle, category, source_url, notes, updated_at')
         .eq('status', 'active')
         .order('event_date', { ascending: true });
       if (error) {
         console.warn(`Pursuit calendar hydrate warning: ${error.message}`);
       } else {
         const rows = data || [];
+        // Most recent updated_at across the active set is the
+        // refresh-freshness signal the UI surfaces.
+        const lastRefreshedAt = rows
+          .map((r) => r.updated_at)
+          .filter(Boolean)
+          .sort()
+          .reverse()[0] || null;
         const outPath = path.join(DIST_DIR, 'premium', 'calendar', 'index.html');
-        let html = renderPursuitCalendarHtml(rows);
+        let html = renderPursuitCalendarHtml(rows, { lastRefreshedAt });
         html = injectDashShell(html, 'calendar');
         html = html.replace('</body>', siteScriptTag + '\n</body>');
         html = inlineTailwindCss(html);
         fs.writeFileSync(outPath, html);
-        console.log(`Hydrated premium/calendar/index.html — ${rows.length} active pursuit(s)`);
+        // Also overwrite the root-level alias so /premium/calendar.html
+        // serves the same hydrated content.
+        const aliasPath = path.join(DIST_DIR, 'premium', 'calendar.html');
+        fs.writeFileSync(aliasPath, html);
+        console.log(`Hydrated premium/calendar (index.html + calendar.html) — ${rows.length} active pursuit(s); last refresh ${lastRefreshedAt || 'unknown'}`);
       }
     } catch (err) {
       console.warn(`Pursuit calendar hydrate warning (non-fatal): ${err.message}`);
