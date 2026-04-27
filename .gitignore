@@ -48,3 +48,6 @@ output/
 test-results/
 n8n-workflows/
 deno.lock
+
+# Ops health rollup is regenerated on every build; not committed.
+ops/

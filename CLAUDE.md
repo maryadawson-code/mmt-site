@@ -216,6 +216,25 @@ Before declaring work complete, verify:
 
 ---
 
+## Sprint 2026-04-27 (afternoon) — Follow-on stabilization
+
+After Mary ran the production SQL repair, this pass closed the remaining gaps. Hard rules (in addition to those below):
+
+- **No premium subdir page may have `BUILD:` markers leak to dist.** `build.js` previously had a verbatim `premium/*.html` copy that overwrote BUILD-substituted output (the 2026-04-27 Friday Brief disappearance). The verbatim copy is removed; `subDirPages` writes both `dist/premium/<name>/index.html` AND `dist/premium/<name>.html` from the substituted body. `validate-routes.js` now enforces a `title_signature` and `min_archive_items` count per feature so a future regression fails CI before deploy.
+- **No newsletter publishes outside the `send to production` workflow.** `scripts/publish-newsletter.js` refuses to write a markdown file unless `status=production_approved`, `approval_phrase=send_to_production`, AND `--production-approved` flag is passed. `.github/workflows/publish-newsletter-production.yml` is the canonical path.
+- **Email is NEVER sent by the publish workflow.** `send_email: true` in the payload is ignored. Email delivery is a separate workflow Mary triggers by saying `send email newsletter`.
+- **Pursuit Calendar = 90-Day Deadline Tracker.** `pursuit-calendar-render.js` separates pursuit deadlines (RFI / Industry Day / Draft RFP / Q&A / Final RFP / Proposal Due / Recompete / Award) from public events, and surfaces a freshness banner driven by the most recent `updated_at` across active rows.
+- **RFP Shredder runs on MissionPulse.** mmt-site has a marketing landing page at `/rfp-shredder` with a "private beta" status block. Cross-repo contract documented in `docs/rfp-shredder-cross-repo-handoff.md`. No live tool runs on this domain.
+
+What shipped:
+- Friday Brief root-cause: removed verbatim `premium/*.html` copy that overwrote BUILD substitutions; subDirPages writes both root + subdir variants. Title signature added to registry.
+- `/latest` regression guard: `validate-routes.js` walks `content/newsletter/` for the newest valid markdown and fails build if it doesn't appear in `dist/latest.html`.
+- Pursuit Calendar: 11-category deadline taxonomy, 90-day window emphasis, last-refreshed freshness banner, dual `dist/premium/calendar/{index,html}` write so pretty URLs are consistent.
+- Newsletter publishing: `docs/newsletter-production-payload.schema.json`, `scripts/publish-newsletter.js`, `scripts/post-publish-smoke.js`, `.github/workflows/publish-newsletter-production.yml`, `docs/newsletter-production-publishing.md`, `docs/claude-newsletter-agent-production-prompt.md`.
+- RFP Shredder: `/rfp-shredder.html`, redirects (`/rfp-shreadder`, `/solicitation-shredder`), feature registry entry, tools-hub card, `docs/rfp-shredder-spec.md`, `docs/rfp-shredder-cross-repo-handoff.md`.
+- Founding propagation status doc (`docs/founding-member-propagation.md`) — code path was already fixed; this doc enumerates the env-var watch list and remaining manual backfill.
+- Ops health rollup foundation (`scripts/ops-health-rollup.js` → `ops/health-rollup.json`): routes / latest / capture / friday brief / redactions / founding env-var presence.
+
 ## Sprint 2026-04-27 — Subscriber-platform stabilization
 
 Triggered by stacked subscriber-trust failures: Founding Member Danielle blocked from Ask MMT, marketed routes 404ing, scanner stuck on "initializing", `████` redactions on Contract Tracker, IDIQ Tracker looking empty.
