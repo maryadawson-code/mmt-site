@@ -29,6 +29,7 @@ const fs = require("fs");
 const path = require("path");
 const { getFlag } = require("./lib/feature-flags");
 const { loadToolContext, buildToolEnvelope, buildEvidencePanel, renderBlockedResponse } = require("./lib/premium-tools-core");
+const { loadEntitlement, blockMessageFor, logEntitlementMismatch } = require("./lib/entitlement");
 
 // Contracts intelligence — Mary-curated intel on known programs.
 // See content-index.js for the path-candidate rationale.
@@ -558,21 +559,20 @@ exports.handler = async (event) => {
   }
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
-  const { data: user } = await supabase
-    .from("mp_users")
-    .select("tier, subscription_tier, subscription_status")
-    .eq("email", email)
-    .single();
-
-  const isPremium = user && (
-    (user.subscription_tier === "premium" && user.subscription_status === "active") ||
-    (user.subscription_tier === "institutional" && user.subscription_status === "active") ||
-    user.tier === "admin" ||
-    user.tier === "paid"
-  );
-
-  if (!isPremium) {
-    return { statusCode: 403, headers: CORS_HEADERS, body: JSON.stringify({ error: "Signal Chain is a Premium feature. Subscribe at missionmeetstech.com/pricing" }) };
+  const entitlement = await loadEntitlement(supabase, email);
+  if (!entitlement.ok) {
+    const block = blockMessageFor(entitlement);
+    await logEntitlementMismatch(supabase, { email, tool: "signal_chain", entitlement, expected: "premium|founding|institutional|admin" });
+    return {
+      statusCode: 403,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({
+        error: block.message,
+        reason_code: block.reason_code,
+        detected_tier: entitlement.tier,
+        support: "mary@missionmeetstech.com",
+      }),
+    };
   }
 
   // Cache read

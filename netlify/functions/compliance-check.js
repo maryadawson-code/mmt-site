@@ -19,6 +19,7 @@ const { MMT_PRICING } = require("./lib/mmt-pricing");
 const { getFlag } = require("./lib/feature-flags");
 const { loadToolContext, buildToolEnvelope, buildEvidencePanel, renderBlockedResponse } = require("./lib/premium-tools-core");
 const { searchSAMOpportunities } = require("./lib/federal-data-apis");
+const { loadEntitlement, blockMessageFor, logEntitlementMismatch } = require("./lib/entitlement");
 
 // Solicitation-number patterns commonly seen in the wild. Lenient on
 // formatting; first match wins. Detection is opportunistic — if the
@@ -152,26 +153,27 @@ exports.handler = async (event) => {
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
-  // Premium verification — same gate as Ask MMT / premium-chat / pursuit-score
-  const { data: user } = await supabase
-    .from("mp_users")
-    .select("tier, subscription_tier, subscription_status")
-    .eq("email", email)
-    .single();
+  // Canonical entitlement check — covers premium / founding / institutional / admin.
+  const entitlement = await loadEntitlement(supabase, email);
+  const isInstitutional = entitlement.tier === "institutional";
 
-  const isInstitutional = user && user.subscription_tier === "institutional" && user.subscription_status === "active";
-  const isPremium = user && (
-    (user.subscription_tier === "premium" && user.subscription_status === "active") ||
-    isInstitutional ||
-    user.tier === "admin" ||
-    user.tier === "paid"
-  );
-
-  if (!isPremium) {
+  if (!entitlement.ok) {
+    const block = blockMessageFor(entitlement);
+    await logEntitlementMismatch(supabase, {
+      email,
+      tool: "compliance_check",
+      entitlement,
+      expected: "premium|founding|institutional|admin",
+    });
     return {
       statusCode: 403,
       headers: CORS_HEADERS,
-      body: JSON.stringify({ error: "Compliance Checker is a Premium feature. Subscribe at missionmeetstech.com/pricing" }),
+      body: JSON.stringify({
+        error: block.message,
+        reason_code: block.reason_code,
+        detected_tier: entitlement.tier,
+        support: "mary@missionmeetstech.com",
+      }),
     };
   }
 

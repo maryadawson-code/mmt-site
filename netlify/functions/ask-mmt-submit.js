@@ -5,7 +5,7 @@
 // Per the 2026-04-17 launch article: Premium subscribers submit 1 question/month;
 // Founding Members get 2/month with priority review + personal reply on tool/product
 // proposals; Institutional subscribers get 3/month with 2-business-day response.
-// Tier detection uses mp_users.subscription_tier and is_founding_member flag.
+// Tier detection uses the canonical entitlement helper (mp_users.subscription_tier + founding_member).
 // Stores in Supabase ops_events, emails Mary via Resend.
 // Returns: { success, remaining } or { error }
 // ============================================================
@@ -14,6 +14,7 @@ const { createClient } = require("@supabase/supabase-js");
 const { sendEmail } = require("./lib/send-email");
 const { logOpsEvent } = require("./lib/ops-ledger");
 const { answerQuestion } = require("./lib/premium-assistant");
+const { loadEntitlement, blockMessageFor, logEntitlementMismatch } = require("./lib/entitlement");
 
 // Escape user-supplied strings before dropping them into HTML templates.
 function escapeHtml(s) {
@@ -91,29 +92,35 @@ exports.handler = async (event) => {
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
-  // Verify premium status + detect tier
-  const { data: user } = await supabase
-    .from("mp_users")
-    .select("tier, subscription_tier, subscription_status, is_founding_member")
-    .eq("email", email)
-    .single();
+  // Canonical entitlement check — replaces the per-function shape that
+  // contained the `is_founding_member` typo (see 2026-04-27 incident).
+  const entitlement = await loadEntitlement(supabase, email);
+  const isInstitutional = entitlement.tier === "institutional";
+  const isFounding = entitlement.founding_member;
 
-  const isInstitutional = user && user.subscription_tier === "institutional" && user.subscription_status === "active";
-  const isFounding = user && user.is_founding_member === true;
-  const isPremium = user && (
-    (user.subscription_tier === "premium" && user.subscription_status === "active") ||
-    isInstitutional ||
-    user.tier === "admin" ||
-    user.tier === "paid"
-  );
-
-  if (!isPremium) {
-    return { statusCode: 403, headers: CORS_HEADERS, body: JSON.stringify({ error: "Ask MMT is a Premium feature. Subscribe at missionmeetstech.com/pricing" }) };
+  if (!entitlement.ok) {
+    const block = blockMessageFor(entitlement);
+    await logEntitlementMismatch(supabase, {
+      email,
+      tool: "ask_mmt",
+      entitlement,
+      expected: "premium|founding|institutional|admin",
+    });
+    return {
+      statusCode: 403,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({
+        error: block.message,
+        reason_code: block.reason_code,
+        detected_tier: entitlement.tier,
+        support: "mary@missionmeetstech.com",
+      }),
+    };
   }
 
-  // Tier → monthly cap. Institutional > Founding > Premium.
-  const MONTHLY_LIMIT = isInstitutional ? LIMIT_INSTITUTIONAL : (isFounding ? LIMIT_FOUNDING : LIMIT_PREMIUM);
-  const tierLabel = isInstitutional ? "Institutional" : (isFounding ? "Founding Member" : "Premium");
+  // Tier → monthly cap from the canonical helper.
+  const MONTHLY_LIMIT = entitlement.askMmtMonthlyCap || LIMIT_PREMIUM;
+  const tierLabel = isInstitutional ? "Institutional" : (isFounding ? "Founding Member" : (entitlement.tier === "admin" ? "Admin" : "Premium"));
 
   // Check monthly quota — count questions this month
   const now = new Date();
