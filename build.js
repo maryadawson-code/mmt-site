@@ -2045,12 +2045,23 @@ function inlineTailwindCss(html) {
   html = html.replace(/rgba\(0,229,250,0\.15\)/g, 'var(--mmt-border)');
   html = html.replace(/rgba\(255,255,255,0\.05\)/g, 'var(--mmt-border)');
   html = html.replace(/rgba\(255,255,255,0\.03\)/g, 'var(--mmt-border)');
-  // Replace white text to navy in inline styles
+  // Replace white text to navy in inline styles — but ONLY when the
+  // same style attribute does NOT have a dark background. This is the
+  // 2026-04-27 fix for the "invisible button" bug: pages had inline
+  // <button style="background:var(--mmt-navy);color:#fff;">…</button>
+  // and the blanket #fff→navy replacement turned them into navy text
+  // on a navy button — the text vanished. Process per style attribute
+  // and preserve white text when paired with a dark background.
   // SKIP cases marked with !important (legit white-on-navy CTAs) and
   // skip -webkit-text-fill-color: which is used to force button text over link gradients
-  html = html.replace(/style="color:#fff;"/g, 'style="color:var(--mmt-navy);"');
-  html = html.replace(/(?<!-webkit-text-fill-)color:\s*#fff(?=[;"])(?!\s*!important)/g, 'color:var(--mmt-navy)');
-  html = html.replace(/(?<!-webkit-text-fill-)color:\s*#ffffff(?=[;"])(?!\s*!important)/gi, 'color:var(--mmt-navy)');
+  const DARK_BG_RE = /background(?:-color)?:\s*(?:var\(--mmt-(?:navy|navy-2|ink|teal)\b[^)]*\)|#0[Aa]192[Ff]|#10243[Dd]|#102033|#457[Bb]9[Dd]|linear-gradient\([^)]*var\(--mmt-(?:navy|ink)\b)/;
+  html = html.replace(/style="([^"]*)"/g, (match, styleContent) => {
+    if (DARK_BG_RE.test(styleContent)) return match;
+    let updated = styleContent
+      .replace(/(?<!-webkit-text-fill-)color:\s*#fff(?=[;"]|$)(?!\s*!important)/g, 'color:var(--mmt-navy)')
+      .replace(/(?<!-webkit-text-fill-)color:\s*#ffffff(?=[;"]|$)(?!\s*!important)/gi, 'color:var(--mmt-navy)');
+    return `style="${updated}"`;
+  });
   // Replace old dark-theme background colors in inline styles
   html = html.replace(/background:\s*#00050F/g, 'background:var(--mmt-white)');
   // NOTE: Do NOT replace background:var(--mmt-navy) — it's valid for
@@ -2791,6 +2802,56 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     }
   });
 
+  // May 2026 VA Enterprise Imaging tracker page — date-gated.
+  // Renders data/may-1-release/contracts-tracker-update.md to a static
+  // page at /contracts/may-2026-va-enterprise-imaging/ when today >=
+  // 2026-05-01. Before that, the source file exists on disk but the
+  // page is not built (so /contracts/.../ 404s — same gating model as
+  // the May 1 article publish_date guard).
+  (function renderMay1ContractsTracker() {
+    const RUN_DATE_UTC = '2026-05-01';
+    const todayUtc = new Date().toISOString().slice(0, 10);
+    if (todayUtc < RUN_DATE_UTC) return;
+    const srcMd = path.join(__dirname, 'data', 'may-1-release', 'contracts-tracker-update.md');
+    if (!fs.existsSync(srcMd)) return;
+    const md = fs.readFileSync(srcMd, 'utf8');
+    const innerHtml = marked.parse(md);
+    const dest = path.join(DIST_DIR, 'contracts', 'may-2026-va-enterprise-imaging', 'index.html');
+    ensureDir(path.dirname(dest));
+    const trackerHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VA Enterprise Imaging — May 2026 Update | Mission Meets Tech</title>
+<meta name="description" content="Twelve tracked signals across the VA Enterprise Imaging procurement, updated as the record changes.">
+<link rel="canonical" href="https://missionmeetstech.com/contracts/may-2026-va-enterprise-imaging/">
+<meta property="og:title" content="VA Enterprise Imaging — May 2026 Update">
+<meta property="og:description" content="Twelve tracked signals across the VA Enterprise Imaging procurement.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://missionmeetstech.com/contracts/may-2026-va-enterprise-imaging/">
+</head>
+<body>
+<nav class="nav-editorial"></nav>
+<main class="wrap">
+<article class="prose">
+${innerHtml}
+</article>
+</main>
+<footer class="wrap"></footer>
+</body>
+</html>`;
+    let out = trackerHtml;
+    out = injectBreadcrumbJsonLd(out, 'contracts/may-2026-va-enterprise-imaging/index.html');
+    if (out.includes('</nav>')) {
+      out = out.replace('</nav>\n', '</nav>\n' + searchOverlayHtml + '\n');
+    }
+    out = out.replace('</body>', siteScriptTag + '\n</body>');
+    out = inlineTailwindCss(out);
+    fs.writeFileSync(dest, out);
+    console.log(`Rendered May 1 tracker → ${dest.replace(DIST_DIR + '/', '')}`);
+  })();
+
   // Copy nested sub-pages to clean URL directories
   const aboutSubPages = [
     { src: 'about-team.html', dest: path.join(DIST_DIR, 'about', 'team', 'index.html') },
@@ -2877,6 +2938,7 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
       { href: '/agencies/', label: 'Agency Profiles', id: 'agencies' },
       { href: '/premium/briefings/', label: 'Friday Brief', id: 'briefings' },
       { href: '/premium/monthly-briefs/', label: 'Monthly Brief', id: 'monthly-briefs' },
+      { href: '/capture-corner.html', label: 'Capture Corner', id: 'capture-corner' },
       { href: '/contract-tracker.html', label: 'Contract Tracker', id: 'contract-tracker', group: 'Pursuit Tools' },
       { href: '/idiq-tracker.html', label: 'IDIQ Tracker', id: 'idiq-tracker' },
       { href: '/premium/calendar/', label: 'Pursuit Calendar', id: 'calendar' },

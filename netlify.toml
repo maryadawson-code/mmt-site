@@ -4,7 +4,7 @@
   # validate-dist.js fails the build if dist/ contains any public-facing
   # drift pattern from docs/site-spec.md §14a. If it exits non-zero,
   # Netlify will refuse to deploy.
-  command = "node scripts/sync-newsletters.js; node scripts/sync-linkedin-newsletter.js; node build.js && node scripts/validate-dist.js && node scripts/validate-routes.js && node scripts/newsletter-inventory.js && node scripts/capture-corner-inventory.js"
+  command = "node scripts/sync-newsletters.js; node scripts/sync-linkedin-newsletter.js; node build.js && node scripts/validate-dist.js && node scripts/validate-routes.js && node scripts/newsletter-inventory.js && node scripts/capture-corner-inventory.js && node scripts/qa-contrast-scan.js"
 
 [functions]
   directory = "netlify/functions"
@@ -19,6 +19,9 @@
     "contracts.json",
     "capture-intelligence.json",
     "data/idiq-vehicles.json",
+    "data/may-1-release/**",
+    "migrations/010_subscriber_context_alignment.sql",
+    "migrations/011_mp_users_columns_documented.sql",
   ]
 
 [[edge_functions]]
@@ -165,6 +168,17 @@
 
 [functions."roadmap-health-check"]
   schedule = "0 10 * * *"
+
+# May 1, 2026 release automations — date-guarded inside each function;
+# the daily cron is harmless on every other day.
+[functions."may1-premium-capture-send"]
+  schedule = "0 10 * * *"
+
+[functions."may1-build-trigger"]
+  schedule = "0 13 * * *"
+
+[functions."may1-tracker-trigger"]
+  schedule = "0 16 * * *"
 
 # Sentry Netlify build plugin REMOVED — archived package was failing deploys
 # during onPostBuild (API timeout). Runtime @sentry/node monitoring in Netlify

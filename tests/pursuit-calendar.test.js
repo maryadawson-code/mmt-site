@@ -48,7 +48,7 @@ describe("pursuit-relevance / scoreRelevance", () => {
 describe("pursuit-calendar-render / renderPursuitCalendarHtml", () => {
   it("renders empty-state when zero rows", () => {
     const html = render.renderPursuitCalendarHtml([]);
-    expect(html).toContain("No active pursuits");
+    expect(html).toContain("No tracked pursuits or events yet");
     expect(html).toContain('data-access="premium"');
   });
 
