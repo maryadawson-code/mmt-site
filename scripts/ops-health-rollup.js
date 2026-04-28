@@ -75,11 +75,14 @@ const newsletterDir = path.join(ROOT, "content/newsletter");
 let newest = null;
 if (fs.existsSync(newsletterDir)) {
   const matter = require(path.join(ROOT, "node_modules/gray-matter"));
+  const now = Date.now();
   for (const f of fs.readdirSync(newsletterDir)) {
     if (!f.endsWith(".md") || f.startsWith("_")) continue;
     const fm = matter(fs.readFileSync(path.join(newsletterDir, f), "utf8")).data;
     if (!fm.date || !fm.title) continue;
     const date = new Date(fm.date);
+    // Future-date gate: skip articles held by build.js until publish_date.
+    if (date.getTime() > now) continue;
     if (!newest || date > newest.date) newest = { date, slug: fm.slug || f.replace(/^\d{4}-\d{2}-\d{2}-/, "").replace(/\.md$/, ""), title: fm.title, file: f };
   }
 }
@@ -132,6 +135,76 @@ function walk(dir) {
 }
 if (fs.existsSync(DIST)) walk(DIST);
 out.sections.redactions = { block_char_count: blockChars };
+
+// Capture Corner inventory + redirect freshness
+{
+  const ccPath = path.join(ROOT, "reports/capture-corner-inventory.json");
+  if (fs.existsSync(ccPath)) {
+    const ccInv = JSON.parse(fs.readFileSync(ccPath, "utf8"));
+    out.sections.capture_corner_inventory = {
+      candidate_count: ccInv.candidate_count,
+      newest_id: ccInv.newest_eligible?.id || null,
+      newest_url: ccInv.newest_eligible?.url || null,
+      redirect_target: ccInv.redirect_target_in_netlify_toml,
+      redirect_stale: ccInv.redirect_stale,
+    };
+  } else {
+    out.sections.capture_corner_inventory = { error: "no inventory file" };
+  }
+}
+
+// Pursuit Calendar freshness state — read what the rendered page
+// reports in its freshness banner (text-level scrape).
+{
+  const calHtml = fs.existsSync(path.join(DIST, "premium/calendar.html"))
+    ? fs.readFileSync(path.join(DIST, "premium/calendar.html"), "utf8")
+    : "";
+  const m = calHtml.match(/data-testid="pc-freshness"[^>]*>([^<]+)</);
+  const titleHasGeneric = /<title>\s*Premium Dashboard\b/i.test(calHtml);
+  out.sections.pursuit_calendar = {
+    has_90day_signature: calHtml.includes("90-Day Deadline Tracker"),
+    title_is_generic: titleHasGeneric,
+    freshness_text: m ? m[1].trim() : null,
+    pursuit_categories_count: ["RFI", "Industry Day", "Final RFP", "Proposal Due", "Recompete", "Award"].filter((c) => calHtml.includes(c)).length,
+  };
+}
+
+// Tools hub completeness
+{
+  const toolsHtml = fs.existsSync(path.join(DIST, "tools.html"))
+    ? fs.readFileSync(path.join(DIST, "tools.html"), "utf8")
+    : "";
+  const expected = ["Pursuit Score", "Ask MMT", "Pursuit Calendar", "Compliance Check", "Signal Chain", "ProposalPulse", "MarketPulse", "Capture Corner", "Contract Tracker", "IDIQ Tracker", "RFP Shredder"];
+  const missing = expected.filter((t) => !toolsHtml.includes(t));
+  out.sections.tools_hub = { expected_count: expected.length, missing };
+}
+
+// Homepage Choose a Tool target
+{
+  const idxHtml = fs.existsSync(path.join(DIST, "index.html"))
+    ? fs.readFileSync(path.join(DIST, "index.html"), "utf8")
+    : "";
+  const ctas = (idxHtml.match(/<a[^>]*href="([^"]+)"[^>]*>\s*Choose a Tool/g) || []).map((s) => {
+    const m = s.match(/href="([^"]+)"/);
+    return m ? m[1] : null;
+  });
+  out.sections.homepage_choose_a_tool = {
+    cta_count: ctas.length,
+    targets: ctas,
+    all_point_to_tools: ctas.every((h) => h && (/^\/tools(\/|\?|$|#)/.test(h) || h === "/tools.html")),
+  };
+}
+
+// RFP Shredder status label
+{
+  const rfpHtml = fs.existsSync(path.join(DIST, "rfp-shredder.html"))
+    ? fs.readFileSync(path.join(DIST, "rfp-shredder.html"), "utf8")
+    : "";
+  out.sections.rfp_shredder = {
+    has_private_beta_label: /Private Beta|private[_\- ]beta/i.test(rfpHtml),
+    claims_live_without_flag: /(run a live|paste here for instant analysis)/i.test(rfpHtml) && !process.env.RFP_SHREDDER_LIVE,
+  };
+}
 
 // Founding env-var presence (presence only — never the value)
 out.sections.founding = {
