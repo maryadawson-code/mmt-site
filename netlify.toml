@@ -4,7 +4,7 @@
   # validate-dist.js fails the build if dist/ contains any public-facing
   # drift pattern from docs/site-spec.md §14a. If it exits non-zero,
   # Netlify will refuse to deploy.
-  command = "node scripts/sync-newsletters.js; node scripts/sync-linkedin-newsletter.js; node build.js && node scripts/validate-dist.js && node scripts/validate-routes.js && node scripts/newsletter-inventory.js"
+  command = "node scripts/sync-newsletters.js; node scripts/sync-linkedin-newsletter.js; node build.js && node scripts/validate-dist.js && node scripts/validate-routes.js && node scripts/newsletter-inventory.js && node scripts/capture-corner-inventory.js"
 
 [functions]
   directory = "netlify/functions"
@@ -320,6 +320,14 @@
   to = "/capture-corner.html"
   status = 200
 
+# /capture-corner/latest is the stable URL that always resolves to the
+# newest eligible Capture Intelligence issue. The redirect target is
+# kept up to date by scripts/capture-corner-inventory.js.
+[[redirects]]
+  from = "/capture-corner/latest"
+  to = "/intel/capture-intelligence-this-issue/"
+  status = 302
+
 [[redirects]]
   from = "/compliance-check"
   to = "/compliance-check.html"
@@ -444,11 +452,6 @@
 [[redirects]]
   from = "/signal-chain"
   to = "/premium/signal-chain.html"
-  status = 200
-
-[[redirects]]
-  from = "/capture-corner"
-  to = "/capture-corner.html"
   status = 200
 
 [[redirects]]

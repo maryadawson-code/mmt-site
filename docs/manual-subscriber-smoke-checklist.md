@@ -21,13 +21,20 @@ Visit each route and verify it loads (200) and looks intentional:
 - [ ] `/ask-mtt` → same
 - [ ] `/compliance-check` → redirects to `/premium/compliance-check.html`, then to `/dashboard.html` sign-in form
 - [ ] `/signal-chain` → redirects to `/premium/signal-chain.html`, then to `/dashboard.html` sign-in form
-- [ ] `/capture-corner` → 200, locked teaser visible, no `████` blocks
+- [ ] `/capture-corner` → 200, locked teaser visible, **primary CTA `Read this week's issue` points to `/capture-corner/latest`** (not the old `/intel/...` route), no `████` blocks
+- [ ] `/capture-corner/latest` → 302 → resolves to a real Capture Intelligence page with current month/issue label
 - [ ] `/contract-tracker` → 200, vendor/value/NAICS show "Premium" placeholders, scanner shows last-scan date OR honest "no scan yet" message
 - [ ] `/idiq-tracker` → 200, "28 vehicles" gate card visible (not empty), no `████`
-- [ ] `/tools` → 200, every premium tool listed with a working link
+- [ ] `/tools` → 200, every premium tool listed with a working link, RFP Shredder card carries `PRIVATE BETA` chip
+- [ ] `/rfp-shredder` → 200, "Private Beta" status block visible, page does NOT claim live analysis runs on this domain
 - [ ] `/help` → 200
 - [ ] `/pricing` → 200, three Stripe Payment Links work (don't actually purchase)
 - [ ] `/dashboard` → sign-in form
+- [ ] `/latest` → newest source-of-truth article (from `content/newsletter/`) appears at top of main archive list, not just in editor's-picks tiles
+- [ ] `/pursuit-calendar` (after sign-in) → page title is `Pursuit Calendar — 90-Day Deadline Tracker — MMT Premium` (NOT `Premium Dashboard`); RFI / Industry Day / Final RFP / Proposal Due / Recompete / Award all visible as category labels; freshness banner present
+- [ ] `/premium/briefings` (after sign-in) → H1 is `The Friday Brief`; no raw `<!-- BUILD:BRIEF_ARCHIVE -->` markers; ≥1 archive card; title is NOT `Monthly Briefs`
+- [ ] All premium pages render with **exactly one sidebar** — if you see two side-by-side sidebars, the double-sidebar regression is back; check `injectDashShell` in `build.js`
+- [ ] Homepage `Choose a Tool` CTA href is `/tools` (not `/resources#paid-tools`) — verify by hovering on desktop and inspecting on mobile
 
 ## Founding/Premium pass
 

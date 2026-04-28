@@ -108,7 +108,7 @@ function loadArticles() {
 
   // Skip files that start with `_` — those are templates / drafts.
   const files = fs.readdirSync(CONTENT_DIR).filter(f => f.endsWith('.md') && !f.startsWith('_'));
-  const articles = files.map(file => {
+  const articlesAll = files.map(file => {
     const raw = fs.readFileSync(path.join(CONTENT_DIR, file), 'utf8');
     const { data, content } = matter(raw);
     const html = marked(content);
@@ -127,6 +127,29 @@ function loadArticles() {
       canonicalUrl: `${SITE_URL}/newsletter/${data.slug || slugify(data.title)}/`,
     };
   });
+
+  // Future-date gating: hold articles with publish_date > today.
+  // The Netlify rebuild-trigger cron runs every 4 hours; once the
+  // article's publish date arrives (in UTC), the next build picks it
+  // up and it appears in /latest, /sitemap.xml, and the article page
+  // is generated. This is how Mary stages issues for "automatic
+  // release based on the schedule" without anyone having to merge a
+  // PR on publish day.
+  const now = Date.now();
+  const articles = articlesAll.filter((a) => {
+    if (!a.date) return true;
+    const t = new Date(a.date).getTime();
+    if (Number.isNaN(t)) return true;
+    if (t > now) {
+      console.log(`  ⏳ HOLDING (future-dated): ${a.file} (publish_date ${a.date})`);
+      return false;
+    }
+    return true;
+  });
+  const heldCount = articlesAll.length - articles.length;
+  if (heldCount > 0) {
+    console.log(`  Held ${heldCount} future-dated article(s); they will appear once publish_date arrives.`);
+  }
 
   // Sort by date descending (newest first)
   articles.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -2799,6 +2822,37 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
   // Dashboard sidebar injection for premium subpages
   // Wraps premium pages in the same dash-shell layout as premium/dashboard.html
   function injectDashShell(html, activePage) {
+    // 2026-04-28 double-sidebar fix: source pages premium/*.html ship
+    // with their own embedded dash-shell + dash-nav (a self-contained
+    // sidebar that pre-dates this canonical injection). When the
+    // injection then wrapped them in ANOTHER dash-shell, the page
+    // rendered TWO sidebars side-by-side.
+    //
+    // Strip the source's pre-existing dash-shell pieces so the
+    // canonical injected shell is the single source of truth across
+    // all premium pages.
+    if (/class\s*=\s*"dash-nav"/i.test(html)) {
+      html = html.replace(/<nav\s+class="dash-nav"[\s\S]*?<\/nav>/gi, '');
+    }
+    if (/class\s*=\s*"dash-shell"/i.test(html)) {
+      // Replace the source's opening <div class="dash-shell"> with a
+      // neutral <div> so its matching </div> still balances. This
+      // avoids any complex tag-counting and keeps the rest of the
+      // source markup intact.
+      html = html.replace(/<div\s+class="dash-shell"[^>]*>/gi, '<div data-dash-shell-stripped="true">');
+    }
+    if (/class\s*=\s*"dash-mobile-nav"/i.test(html)) {
+      html = html.replace(/<div\s+class="dash-mobile-nav"[\s\S]*?<\/div>/gi, '');
+    }
+    // Strip the source's standalone dash-header (the small "★ Premium
+    // Dashboard / email / Back to site / Sign out" strip). It
+    // duplicates info the injected shell now provides on hover.
+    if (/class\s*=\s*"dash-header"/i.test(html)) {
+      // The dash-header contains exactly one inner <div>, so the close
+      // pattern is `</div>\s*</div>` (inner close, then outer close).
+      html = html.replace(/<div\s+class="dash-header"[\s\S]*?<\/div>\s*<\/div>/gi, '');
+    }
+
     const dashCss = `
     .dash-shell { display:grid; grid-template-columns:220px 1fr; min-height:100dvh; }
     .dash-nav { background:var(--mmt-soft,#F3F4F6); border-right:1px solid var(--mmt-border,#D8E0E8); padding:24px 16px; }

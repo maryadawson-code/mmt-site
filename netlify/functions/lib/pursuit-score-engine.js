@@ -583,6 +583,15 @@ async function scorePursuit({ keyword, agency, naics, subscriberContext }) {
       agency: resolvedAgency,
       naics: resolvedNaics,
     },
+    // The composite score is the headline number — it combines market
+    // signal (weighted 0.55), company fit (0.45), and a positive-signal
+    // bonus, then runs through the verdict thresholds. The UI ring
+    // displays compositeScore so the verdict and the visible number
+    // tell the same story. totalScore (sum of 4 market dimensions) is
+    // kept as the secondary "Market signal" sub-label for the dimension
+    // breakdown panel — it answers "what's federal data telling us
+    // about this opportunity, ignoring our company?"
+    compositeScore: combined.composite ?? totalScore,
     totalScore,
     verdict: combined.verdict,
     verdictColor: combined.color,

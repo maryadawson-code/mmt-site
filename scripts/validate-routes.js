@@ -126,11 +126,16 @@ if (fs.existsSync(newsletterDir)) {
   if (matter) {
     const files = fs.readdirSync(newsletterDir).filter((f) => f.endsWith(".md") && !f.startsWith("_"));
     let newest = null;
+    const now = Date.now();
     for (const f of files) {
       const raw = fs.readFileSync(path.join(newsletterDir, f), "utf8");
       const fm = matter(raw).data;
       if (!fm.date || !fm.title) continue;
       const date = new Date(fm.date);
+      // Future-date gate: future-dated articles are intentionally
+      // held by build.js until publish_date arrives. Don't fail the
+      // /latest check for an article that hasn't published yet.
+      if (date.getTime() > now) continue;
       if (!newest || date > newest.date) newest = { date, slug: fm.slug || f.replace(/^\d{4}-\d{2}-\d{2}-/, "").replace(/\.md$/, ""), title: fm.title };
     }
     if (newest) {
@@ -193,8 +198,100 @@ if (indexHtml) {
   }
 }
 
+// Capture Corner stale-link guard: no built page may still point to
+// /intel/capture-intelligence-this-issue/ as a "this week's issue" CTA
+// — that's the old hardcoded route. Capture-corner.html's CTA must use
+// /capture-corner/latest. Other site pages can continue to deep-link
+// to /intel/... directly (that is still the canonical issue page).
+{
+  const ccHtml = readDistFile("/capture-corner");
+  if (ccHtml) {
+    if (/Read this week's issue|Open this week's issue/.test(ccHtml) && /href="\/intel\/capture-intelligence-this-issue/.test(ccHtml.match(/cc-btn cc-btn-primary[^<]*<[\s\S]{0,200}/g)?.join("\n") || "")) {
+      // Soft check — only fail if the primary CTA is hardcoded.
+      const primaryCta = ccHtml.match(/<a[^>]*class="cc-btn cc-btn-primary"[^>]*href="([^"]+)"/);
+      if (primaryCta && primaryCta[1] === "/intel/capture-intelligence-this-issue/") {
+        failures.push({ feature: "Capture Corner", url: "/capture-corner", kind: "primary_cta_hardcoded_to_intel_route", observed: primaryCta[1], expected: "/capture-corner/latest" });
+      }
+    }
+  }
+}
+
+// Pursuit Calendar generic-dashboard guard: the page must NOT be a
+// generic Premium Dashboard. Has to contain "90-Day Deadline Tracker"
+// AND distinct categories.
+{
+  const calHtml = readDistFile("/premium/calendar.html") || readDistFile("/pursuit-calendar");
+  if (calHtml) {
+    const hasTracker = calHtml.includes("90-Day Deadline Tracker");
+    const hasCategories = ["RFI", "Industry Day", "Final RFP", "Proposal Due"].filter((c) => calHtml.includes(c)).length >= 3;
+    if (!hasTracker) failures.push({ feature: "Pursuit Calendar", url: "/premium/calendar.html", kind: "calendar_missing_90day_tracker_signature" });
+    if (!hasCategories) failures.push({ feature: "Pursuit Calendar", url: "/premium/calendar.html", kind: "calendar_missing_pursuit_categories" });
+    // The page <title> must NOT be "Premium Dashboard" — only the
+    // small dash-shell chip can carry that text.
+    const titleMatch = calHtml.match(/<title>([^<]+)<\/title>/i);
+    if (titleMatch && /^Premium Dashboard\b/i.test(titleMatch[1].trim())) {
+      failures.push({ feature: "Pursuit Calendar", url: "/premium/calendar.html", kind: "calendar_title_is_generic_premium_dashboard", observed: titleMatch[1] });
+    }
+  }
+}
+
+// Friday Brief raw-marker guard: dist must NOT contain unsubstituted
+// BUILD:BRIEF_ARCHIVE or BUILD:BRIEF_LATEST markers.
+{
+  for (const p of ["/premium/briefings.html", "/premium/briefings"]) {
+    const bHtml = readDistFile(p);
+    if (bHtml && /<!--\s*BUILD:BRIEF_(ARCHIVE|LATEST)\s*-->/.test(bHtml)) {
+      failures.push({ feature: "Friday Brief Archive", url: p, kind: "raw_build_marker_leaked" });
+    }
+  }
+}
+
+// Stale paid-tools anchor guard: no built page may still point to
+// /resources#paid-tools or /resources.html#paid-tools.
+{
+  const fs2 = require("fs");
+  const path2 = require("path");
+  function walkDist(d) {
+    const out = [];
+    for (const e of fs2.readdirSync(d, { withFileTypes: true })) {
+      if (e.name === ".git") continue;
+      const full = path2.join(d, e.name);
+      if (e.isDirectory()) out.push(...walkDist(full));
+      else if (e.name.endsWith(".html")) out.push(full);
+    }
+    return out;
+  }
+  const distFiles = walkDist(DIST);
+  const offenders = [];
+  for (const f of distFiles) {
+    const txt = fs2.readFileSync(f, "utf8");
+    if (/href="(?:\/resources(?:\.html)?#paid-tools)"/.test(txt)) {
+      offenders.push(path2.relative(DIST, f));
+    }
+  }
+  if (offenders.length > 0) {
+    failures.push({ feature: "Homepage / nav", url: "*", kind: "stale_paid_tools_anchor_in_dist", offenders: offenders.slice(0, 5), total: offenders.length });
+  }
+}
+
+// RFP Shredder live-implication guard: the marketing page may not
+// claim live functionality unless an integration flag is set.
+{
+  const rfpHtml = readDistFile("/rfp-shredder");
+  if (rfpHtml) {
+    const claimsLive = /(run a live|live analysis runs on this domain|paste here for instant analysis)/i.test(rfpHtml);
+    const labelsBeta = /(Private Beta|private[_\- ]beta|in private beta)/i.test(rfpHtml);
+    if (claimsLive && !process.env.RFP_SHREDDER_LIVE) {
+      failures.push({ feature: "RFP Shredder", url: "/rfp-shredder", kind: "rfp_shredder_claims_live_without_integration_flag" });
+    }
+    if (!labelsBeta) {
+      failures.push({ feature: "RFP Shredder", url: "/rfp-shredder", kind: "rfp_shredder_missing_private_beta_label" });
+    }
+  }
+}
+
 if (failures.length === 0) {
-  console.log(`validate-routes: ✓ all ${registry.features.length} features resolve, signatures + archive + /latest + homepage CTA + calendar + tools hub checks pass`);
+  console.log(`validate-routes: ✓ all ${registry.features.length} features resolve, signatures + archive + /latest + homepage CTA + calendar + tools hub + capture-corner + brief + paid-tools-anchor + RFP-shredder checks pass`);
   process.exit(0);
 }
 

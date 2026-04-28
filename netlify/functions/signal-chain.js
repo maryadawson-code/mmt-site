@@ -23,7 +23,7 @@ const { searchTrials } = require("./lib/clinicaltrials-api");
 const { searchPubMed, fetchPubMedSummaries } = require("./lib/pubmed-api");
 const { searchJobs } = require("./lib/usajobs-api");
 const { detectVehicles, expandedSearchTerms } = require("./lib/known-vehicles");
-const { buildQueryTerms, buildPubMedQuery, FR_AGENCY_SLUGS, USASPENDING_AGENCY_NAMES } = require("./lib/signal-chain-query-builder");
+const { buildQueryTerms, buildPubMedQuery, FR_AGENCY_SLUGS, USASPENDING_AGENCY_NAMES, correctCommonTypos, fallbackSuggestionsFor } = require("./lib/signal-chain-query-builder");
 const { searchCorpus } = require("./lib/content-index");
 const fs = require("fs");
 const path = require("path");
@@ -558,6 +558,18 @@ exports.handler = async (event) => {
     return { statusCode: 400, headers: CORS_HEADERS, body: JSON.stringify({ error: "QUERY_TOO_SHORT", message: "Enter at least 3 characters." }) };
   }
 
+  // Typo correction — silently fix common federal-vocab misspellings
+  // before we burn API quota on a query that returns 0 results across
+  // every layer. The corrected topic is what reaches the upstream APIs;
+  // the original is preserved on the response so the user sees a
+  // "We searched 'X' (corrected from 'Y')." line in the UI.
+  const _typoFix = correctCommonTypos(topic);
+  const originalTopic = topic;
+  if (_typoFix.changed) {
+    console.log(`signal-chain: typo correction "${topic}" -> "${_typoFix.corrected}" (${_typoFix.replacements.map(([f,t]) => `${f}→${t}`).join(", ")})`);
+    topic = _typoFix.corrected;
+  }
+
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
   const entitlement = await loadEntitlement(supabase, email);
   if (!entitlement.ok) {
@@ -625,8 +637,21 @@ exports.handler = async (event) => {
   const composite = computeComposite(layers);
   const { verdict, captureAlert, color } = getVerdict(composite);
 
+  // Empty-result intelligence — when composite is effectively zero
+  // across all 5 layers, surface fallback suggestions so the
+  // subscriber has somewhere productive to click instead of staring
+  // at "0/100 QUIET". This is the 2026-04-28 Signal Chain failure
+  // mode: misspelled query → all layers return 0 → user perceives
+  // the tool as broken.
+  const layerScores = Object.values(layers || {}).map((l) => l && typeof l.score === "number" ? l.score : 0);
+  const allLayersEmpty = layerScores.every((s) => s === 0);
+  const empty_state = (composite < 5 && allLayersEmpty);
+  const suggestions = empty_state ? fallbackSuggestionsFor(resolvedAgency).slice(0, 4) : [];
+
   const card = {
     topic,
+    original_topic: originalTopic !== topic ? originalTopic : undefined,
+    typo_corrections: _typoFix.changed ? _typoFix.replacements : undefined,
     agency: resolvedAgency,
     composite,
     verdict,
@@ -642,6 +667,11 @@ exports.handler = async (event) => {
       topKeywords: terms.topKeywords,
     },
     layers,
+    empty_state,
+    suggestions,
+    empty_state_message: empty_state
+      ? `No federal data signal for "${topic}" at ${resolvedAgency || "any agency"} this window. Try one of the active programs below, or broaden your terms.`
+      : undefined,
   };
 
   // Write to cache (non-blocking)

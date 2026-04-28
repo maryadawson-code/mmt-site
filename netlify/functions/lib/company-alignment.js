@@ -344,6 +344,7 @@ function combineVerdict({ marketScore, partial, companyFit, capturePosition, sig
       verdict: "NO-BID",
       color: "#E63946",
       band: "blocked",
+      composite: 0,
       reason: "OCI exclusion blocks pursuit.",
     };
   }
@@ -352,6 +353,7 @@ function combineVerdict({ marketScore, partial, companyFit, capturePosition, sig
       verdict: "MONITOR",
       color: "#457B9D",
       band: "in_flight",
+      composite: companyFit?.score || 50,
       reason: "Already in flight — defend current submission, do not double-pursue.",
     };
   }
@@ -360,6 +362,7 @@ function combineVerdict({ marketScore, partial, companyFit, capturePosition, sig
       verdict: "DEFEND",
       color: "#15803D",
       band: "incumbent",
+      composite: Math.max(75, companyFit?.score || 75),
       reason: "Defensive recompete — incumbency is the strongest possible position.",
     };
   }
@@ -371,6 +374,7 @@ function combineVerdict({ marketScore, partial, companyFit, capturePosition, sig
         verdict: "MONITOR",
         color: "#457B9D",
         band: "no_profile_partial",
+        composite: marketScore || 0,
         reason: "Generic preliminary score — sources timed out and no company profile is loaded. Complete your company profile and re-score before any bid/no-bid decision.",
       };
     }
@@ -379,6 +383,7 @@ function combineVerdict({ marketScore, partial, companyFit, capturePosition, sig
         verdict: "QUALIFY",
         color: "#15803D",
         band: "no_profile_strong",
+        composite: marketScore,
         reason: "Generic preliminary score — strong market signal, but no company profile is loaded. Complete your profile to convert this into a company-fit verdict.",
       };
     }
@@ -386,6 +391,7 @@ function combineVerdict({ marketScore, partial, companyFit, capturePosition, sig
       verdict: "CAPTURE_VALIDATION",
       color: "#92710A",
       band: "no_profile_weak",
+      composite: marketScore || 0,
       reason: "Generic preliminary score — market signal is thin and no company profile is loaded. Treat as capture-research required, not no-bid.",
     };
   }
@@ -401,6 +407,7 @@ function combineVerdict({ marketScore, partial, companyFit, capturePosition, sig
       verdict: "CAPTURE_VALIDATION",
       color: "#92710A",
       band: "signals_present",
+      composite,
       reason: `${(signals || []).length} positive signal${signals.length === 1 ? "" : "s"} present (${signals.map((s) => s.tag).join(", ")}) — capture validation required, not no-bid.`,
     };
   }
@@ -409,15 +416,16 @@ function combineVerdict({ marketScore, partial, companyFit, capturePosition, sig
       verdict: "MONITOR",
       color: "#457B9D",
       band: "partial_data",
+      composite,
       reason: "Some upstream sources timed out — score may be understated. Monitor and re-run rather than no-bid.",
     };
   }
 
-  if (composite >= 75) return { verdict: "PURSUE", color: "#15803D", band: "high", reason: "Strong market signal and company fit." };
-  if (composite >= 60) return { verdict: "QUALIFY", color: "#457B9D", band: "medium_high", reason: "Material signal — qualify with capture-team validation." };
-  if (composite >= 45) return { verdict: "MONITOR", color: "#92710A", band: "medium", reason: "Mixed signal — monitor and re-evaluate at next catalyst." };
-  if (composite >= 30) return { verdict: "CAPTURE_VALIDATION", color: "#F97316", band: "low", reason: "Thin signal — capture validation required before any bid commitment." };
-  return { verdict: "NO-BID", color: "#E63946", band: "very_low", reason: "Both market signal and company fit are weak; no positive signals detected." };
+  if (composite >= 75) return { verdict: "PURSUE", color: "#15803D", band: "high", composite, reason: "Strong market signal and company fit." };
+  if (composite >= 60) return { verdict: "QUALIFY", color: "#457B9D", band: "medium_high", composite, reason: "Material signal — qualify with capture-team validation." };
+  if (composite >= 45) return { verdict: "MONITOR", color: "#92710A", band: "medium", composite, reason: "Mixed signal — monitor and re-evaluate at next catalyst." };
+  if (composite >= 30) return { verdict: "CAPTURE_VALIDATION", color: "#F97316", band: "low", composite, reason: "Thin signal — capture validation required before any bid commitment." };
+  return { verdict: "NO-BID", color: "#E63946", band: "very_low", composite, reason: "Both market signal and company fit are weak; no positive signals detected." };
 }
 
 module.exports = {

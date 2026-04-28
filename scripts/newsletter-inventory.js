@@ -34,16 +34,19 @@ const KNOWN_RECENT_TITLES = [
 function listSourceArticles() {
   if (!fs.existsSync(NEWSLETTER_DIR)) return [];
   const out = [];
+  const now = Date.now();
   for (const f of fs.readdirSync(NEWSLETTER_DIR)) {
     if (!f.endsWith(".md") || f.startsWith("_")) continue;
     const raw = fs.readFileSync(path.join(NEWSLETTER_DIR, f), "utf8");
     const { data } = matter(raw);
     if (!data.title || !data.date) continue;
+    const dateMs = new Date(data.date).getTime();
     out.push({
       file: f,
       title: data.title,
       date: data.date,
       slug: data.slug || f.replace(/^\d{4}-\d{2}-\d{2}-/, "").replace(/\.md$/, ""),
+      future_dated: !Number.isNaN(dateMs) && dateMs > now,
     });
   }
   return out.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -59,7 +62,8 @@ function newestInDist() {
 }
 
 const sourceArticles = listSourceArticles();
-const newestSource = sourceArticles[0] || null;
+const newestSource = sourceArticles.find((a) => !a.future_dated) || null;
+const heldFutureArticles = sourceArticles.filter((a) => a.future_dated);
 const newestDist = newestInDist();
 
 const titlesPresent = new Set(sourceArticles.map((a) => a.title.trim().toLowerCase()));
@@ -80,6 +84,7 @@ const report = {
   in_sync: !!(newestSource && newestDist && (newestDist.slug === newestSource.slug)),
   imported_in_this_run: [],
   missing_known_titles: missing,
+  held_future_articles: heldFutureArticles.map((a) => ({ file: a.file, title: a.title, publish_date: a.date })),
 };
 
 if (!fs.existsSync(path.dirname(REPORT_PATH))) fs.mkdirSync(path.dirname(REPORT_PATH), { recursive: true });

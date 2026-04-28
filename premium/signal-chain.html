@@ -352,6 +352,63 @@
       alertEl.textContent = r.verdict;
       alertEl.style.background = r.verdictColor || '#6B7280';
 
+      // Typo-correction notice — silently fix common federal-vocab
+      // misspellings before searching, surface the correction so the
+      // user knows what we actually queried.
+      var typoEl = document.getElementById('sc-typo-notice');
+      if (!typoEl) {
+        typoEl = document.createElement('div');
+        typoEl.id = 'sc-typo-notice';
+        typoEl.style.cssText = 'background:rgba(146,113,10,0.08);border:1px solid rgba(146,113,10,0.25);color:#5a4307;padding:10px 14px;border-radius:8px;font-size:13px;margin:0 0 14px;line-height:1.5;display:none;';
+        var resultEl = document.getElementById('sc-result');
+        if (resultEl && resultEl.firstChild) resultEl.insertBefore(typoEl, resultEl.firstChild);
+      }
+      if (r.original_topic && r.typo_corrections && r.typo_corrections.length) {
+        var corr = r.typo_corrections.map(function(p) { return '<strong>' + escapeHtml(p[0]) + '</strong>&nbsp;\u2192&nbsp;<strong>' + escapeHtml(p[1]) + '</strong>'; }).join(', ');
+        typoEl.innerHTML = 'We searched <strong>"' + escapeHtml(r.topic) + '"</strong> (corrected from "' + escapeHtml(r.original_topic) + '" \u2014 ' + corr + ').';
+        typoEl.style.display = 'block';
+      } else {
+        typoEl.style.display = 'none';
+      }
+
+      // Empty-state suggestions — when composite is effectively zero
+      // across all 5 layers, render a "Try one of these instead" tile
+      // so subscribers have somewhere productive to click.
+      var emptyEl = document.getElementById('sc-empty-suggestions');
+      if (!emptyEl) {
+        emptyEl = document.createElement('div');
+        emptyEl.id = 'sc-empty-suggestions';
+        emptyEl.style.cssText = 'background:#fff;border:1px solid var(--mmt-border);border-radius:12px;padding:18px 20px;margin:0 0 16px;display:none;';
+        var resultEl2 = document.getElementById('sc-result');
+        if (resultEl2 && resultEl2.firstChild) resultEl2.insertBefore(emptyEl, resultEl2.firstChild.nextSibling || null);
+      }
+      if (r.empty_state && Array.isArray(r.suggestions) && r.suggestions.length) {
+        var chips = r.suggestions.map(function(s) {
+          return '<button type="button" class="sc-suggest-btn" data-q="' + escapeHtml(s.query) + '" style="display:block;width:100%;text-align:left;background:var(--mmt-soft,#F3F4F6);border:1px solid var(--mmt-border);border-radius:8px;padding:10px 14px;margin:6px 0;cursor:pointer;font:inherit;">' +
+                 '<strong style="color:var(--mmt-navy);">' + escapeHtml(s.label) + '</strong>' +
+                 '<div style="font-size:12px;color:var(--mmt-text-secondary);margin-top:2px;">' + escapeHtml(s.reason) + '</div>' +
+                 '</button>';
+        }).join('');
+        emptyEl.innerHTML =
+          '<div style="font-size:11px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#92710A;margin-bottom:6px;">No federal data signal this window</div>' +
+          '<p style="font-size:13px;color:var(--mmt-text);line-height:1.55;margin:0 0 12px;">' + escapeHtml(r.empty_state_message || '') + '</p>' +
+          '<div>' + chips + '</div>';
+        emptyEl.style.display = 'block';
+        // Wire chip clicks
+        var btns = emptyEl.querySelectorAll('.sc-suggest-btn');
+        for (var i = 0; i < btns.length; i++) {
+          btns[i].addEventListener('click', function() {
+            var q = this.getAttribute('data-q');
+            var topicInput = document.getElementById('sc-topic');
+            if (topicInput) topicInput.value = q;
+            var runBtn = document.getElementById('sc-run');
+            if (runBtn) runBtn.click();
+          });
+        }
+      } else {
+        emptyEl.style.display = 'none';
+      }
+
       // Capture Alert banner
       var banner = document.getElementById('sc-capture-banner');
       if (r.captureAlert) {

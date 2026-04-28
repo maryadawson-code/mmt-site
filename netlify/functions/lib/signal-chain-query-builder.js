@@ -12,6 +12,67 @@
 // only federal/military-authored papers show up.
 // ============================================================
 
+// Common typos in federal-health-IT and procurement vocabulary that we
+// silently correct before building the query. Subscribers expect the
+// tool to be tolerant of misspellings — losing a quota slot to a typo
+// that produces "0/100 QUIET across all 5 layers" is the failure mode
+// Signal Chain was caught in (2026-04-28). Keep the list small and
+// high-confidence. Do not auto-correct ambiguous user intent.
+const COMMON_TYPOS = {
+  "governence":   "governance",
+  "goverance":    "governance",
+  "governce":     "governance",
+  "governence,":  "governance",
+  "interopability":"interoperability",
+  "interopabiliy":"interoperability",
+  "telehealh":    "telehealth",
+  "telehelath":   "telehealth",
+  "moderniztion": "modernization",
+  "modernzation": "modernization",
+  "acquistion":   "acquisition",
+  "acqusition":   "acquisition",
+  "appropritions":"appropriations",
+  "appropations": "appropriations",
+  "biosurveilance":"biosurveillance",
+  "cybersecruity":"cybersecurity",
+  "cybersecurty": "cybersecurity",
+  "veterens":     "veterans",
+  "milityary":    "military",
+  "miliatry":     "military",
+  "elecrtronic":  "electronic",
+  "electronc":    "electronic",
+  "infrastucture":"infrastructure",
+  "infastructure":"infrastructure",
+  "anaylytics":   "analytics",
+  "analyitcs":    "analytics",
+  "geneisis":     "genesis",
+  "genisis":      "genesis",
+};
+
+/**
+ * Correct common federal-vocabulary typos token-by-token. Returns
+ * { corrected, changed: boolean, replacements: [[from, to], ...] }.
+ * The replacements list is surfaced in the response so subscribers see
+ * "We searched 'data governance' (corrected from 'data governence')."
+ */
+function correctCommonTypos(input) {
+  const raw = String(input || "");
+  if (!raw.trim()) return { corrected: raw, changed: false, replacements: [] };
+  const replacements = [];
+  const corrected = raw.replace(/\b[a-z]+\b/gi, (token) => {
+    const fix = COMMON_TYPOS[token.toLowerCase()];
+    if (fix) {
+      replacements.push([token, fix]);
+      // Preserve original casing
+      if (token === token.toUpperCase()) return fix.toUpperCase();
+      if (token[0] === token[0].toUpperCase()) return fix[0].toUpperCase() + fix.slice(1);
+      return fix;
+    }
+    return token;
+  });
+  return { corrected, changed: corrected !== raw, replacements };
+}
+
 const STOPWORDS = new Set([
   "the","a","an","and","or","for","of","to","in","on","at","by","with","as",
   "is","are","was","were","be","been","being","have","has","had","do","does",
@@ -100,12 +161,54 @@ const USASPENDING_AGENCY_NAMES = {
   GSA: "General Services Administration",
 };
 
+// Suggested broader/related queries that produce non-empty results
+// at each agency. When all 5 layers return zero, the response includes
+// these as fallback options so the user has something to click into
+// instead of staring at "0/100 QUIET". Conservative list — these are
+// programs / vehicles known to have active federal data signal.
+const FALLBACK_SUGGESTIONS = {
+  DHA: [
+    { label: "MHS GENESIS",          query: "MHS GENESIS",          reason: "DoD's electronic health record platform — active signal across all 5 layers" },
+    { label: "DHMSM",                query: "DHMSM",                reason: "Defense Healthcare Management Systems Modernization" },
+    { label: "DHA Data Governance",  query: "DHA data governance",  reason: "Active solicitation HT001126RE011" },
+    { label: "TRICARE",              query: "TRICARE modernization", reason: "Persistent active signal — purchased care + benefits" },
+  ],
+  VA: [
+    { label: "VA EHRM",              query: "VA EHRM",              reason: "Oracle Health rollout, 13 sites in 2026" },
+    { label: "CCN Next Gen",         query: "CCN Next Gen",         reason: "Community care network recompete, $700B medical IDIQ" },
+    { label: "VA OIT Franchise Fund",query: "VA OIT Franchise Fund",reason: "Recurring infrastructure recompete window" },
+    { label: "VA Enterprise Imaging",query: "VA Enterprise Imaging",reason: "EIS RFI — largest federal imaging procurement in history" },
+  ],
+  HHS: [
+    { label: "CDC Data Modernization", query: "CDC Data Modernization Initiative", reason: "Active modernization initiative" },
+    { label: "ARPA-H",               query: "ARPA-H",               reason: "Advanced Research Projects Agency for Health" },
+    { label: "CMS interoperability", query: "CMS interoperability", reason: "Active CMS rules + technology spend" },
+  ],
+  DoD: [
+    { label: "JWCC",                 query: "JWCC",                 reason: "Joint Warfighting Cloud Capability — active task orders" },
+    { label: "Software Acquisition Pathway", query: "Software Acquisition Pathway", reason: "DoD preferred software path" },
+  ],
+  GSA: [
+    { label: "OASIS+",               query: "OASIS+",               reason: "Multi-award professional services vehicle" },
+    { label: "GSA MAS",              query: "GSA MAS modernization", reason: "Schedule program activity" },
+    { label: "SEWP VI",              query: "SEWP VI",              reason: "Successor IT vehicle in active competition" },
+  ],
+};
+
+function fallbackSuggestionsFor(agency) {
+  return FALLBACK_SUGGESTIONS[agency] || FALLBACK_SUGGESTIONS.DHA;
+}
+
 module.exports = {
   STOPWORDS,
   AGENCY_CONTEXT,
+  COMMON_TYPOS,
+  correctCommonTypos,
   buildQueryTerms,
   buildPubMedQuery,
   USAJOBS_ORG_CODES,
   FR_AGENCY_SLUGS,
   USASPENDING_AGENCY_NAMES,
+  FALLBACK_SUGGESTIONS,
+  fallbackSuggestionsFor,
 };
