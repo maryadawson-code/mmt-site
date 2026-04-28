@@ -154,6 +154,25 @@ a.btn-primary:hover {
   -webkit-text-fill-color: rgb(255,255,255) !important;
 }
 
+/* Defensive: any inline-styled button or link with a dark navy/teal
+   background gets forced white text. This catches the historical
+   "invisible button" pattern (build.js color migration was rewriting
+   color:#fff → color:var(--mmt-navy) and turning text the same color
+   as the background). Selector matches against the inline style
+   attribute; specificity 0,1,1 beats most authored rules but inline
+   color values still win — which is fine, the migration regex now
+   leaves dark-bg styles alone, so the inline value should be #fff
+   or rgb(255,255,255) by the time the page reaches the browser. */
+button[style*="background:var(--mmt-navy)"],
+button[style*="background:#0A192F"],
+a[style*="background:var(--mmt-navy)"],
+a[style*="background:#0A192F"],
+button[style*="background:var(--mmt-teal)"],
+a[style*="background:var(--mmt-teal)"] {
+  color: rgb(255,255,255) !important;
+  -webkit-text-fill-color: rgb(255,255,255) !important;
+}
+
 /* ============================================================
    PRODUCT LADDER — reusable component
    ============================================================ */
