@@ -20,6 +20,7 @@
     "capture-intelligence.json",
     "data/idiq-vehicles.json",
     "data/may-1-release/**",
+    "data/apr-29-release/**",
     "migrations/010_subscriber_context_alignment.sql",
     "migrations/011_mp_users_columns_documented.sql",
   ]
@@ -168,6 +169,12 @@
 
 [functions."roadmap-health-check"]
   schedule = "0 10 * * *"
+
+# April 29, 2026 — DHA Reorganization premium piece (paired with
+# Mary's LinkedIn cadence). 09:00 ET = 13:00 UTC, daily cron is
+# harmless on every other day (date guard inside the function).
+[functions."apr29-dha-reorg-send"]
+  schedule = "0 13 * * *"
 
 # May 1, 2026 release automations — date-guarded inside each function;
 # the daily cron is harmless on every other day.
