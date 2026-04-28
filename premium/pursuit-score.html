@@ -198,7 +198,10 @@
             </div>
 
             <div style="margin-top:16px;">
-              <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--mmt-text-secondary);margin-bottom:8px;">Dimension breakdown</div>
+              <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;">
+                <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--mmt-text-secondary);">Dimension breakdown</div>
+                <div style="font-size:12px;color:var(--mmt-text-secondary);">Market signal: <strong id="ps-market-signal" style="color:var(--mmt-navy);">0</strong> / 100</div>
+              </div>
               <div id="ps-dims"></div>
             </div>
             <div id="ps-awardees" style="margin-top:20px;"></div>
@@ -324,7 +327,13 @@
       lastScore = card;
       document.getElementById('ps-result').style.display = 'block';
 
-      var total = card.totalScore || card.total || 0;
+      // The big ring shows the composite score (verdict-aligned). The
+      // market-only totalScore is a secondary metric shown inside the
+      // dimension-breakdown panel so subscribers can see the federal
+      // data signal independently of company fit.
+      var total = (typeof card.compositeScore === 'number' ? card.compositeScore
+                : (card.totalScore || card.total || 0));
+      var marketSignal = card.totalScore || card.total || 0;
       var verdict = card.verdict || 'MONITOR';
       var verdictLabel = VERDICT_LABELS[verdict] || verdict;
       document.getElementById('ps-verdict').textContent = verdictLabel;
@@ -414,6 +423,8 @@
         else ringEl.textContent = total;
       }
       requestAnimationFrame(animate);
+      var marketEl = document.getElementById('ps-market-signal');
+      if (marketEl) marketEl.textContent = marketSignal;
 
       var resolved = card.resolved || {};
       var resolvedParts = [];
