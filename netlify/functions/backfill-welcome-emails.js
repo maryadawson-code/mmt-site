@@ -58,6 +58,11 @@ exports.handler = async (event) => {
   }
 
   const dryRun = (event.queryStringParameters || {}).dry === "1";
+  // Force-resend for a specific email (skips idempotency for that one address only).
+  // Use case: subscriber reports they didn't receive the welcome (e.g. spam folder
+  // tag, deliverability issue) and Mary needs to retry without invalidating the
+  // global idempotency guard.
+  const forceEmail = ((event.queryStringParameters || {}).force_email || "").toLowerCase().trim();
 
   const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
   const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -126,6 +131,7 @@ exports.handler = async (event) => {
       } catch { report.mp_users_failed++; }
     }
 
+    const isForced = forceEmail && forceEmail === s.email;
     const { data: existing } = await supabase
       .from("customer_events")
       .select("id, product")
@@ -133,7 +139,7 @@ exports.handler = async (event) => {
       .eq("event_type", "welcome_sent")
       .in("product", ["mmt_premium_founding", "mmt_premium"])
       .limit(1);
-    if (existing && existing.length > 0) {
+    if (existing && existing.length > 0 && !isForced) {
       report.already_sent++;
       continue;
     }

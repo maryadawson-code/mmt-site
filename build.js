@@ -2943,9 +2943,10 @@ ${innerHtml}
       { href: '/premium/dashboard/', label: 'Home', id: 'home' },
       { href: '/latest.html', label: 'Latest Analysis', id: 'latest', group: 'Intelligence' },
       { href: '/agencies/', label: 'Agency Profiles', id: 'agencies' },
+      { href: '/intel/capture-intelligence-this-issue/', label: 'Capture Intelligence', id: 'capture-intelligence' },
+      { href: '/capture-corner.html', label: 'Capture Corner', id: 'capture-corner' },
       { href: '/premium/briefings/', label: 'Friday Brief', id: 'briefings' },
       { href: '/premium/monthly-briefs/', label: 'Monthly Brief', id: 'monthly-briefs' },
-      { href: '/capture-corner.html', label: 'Capture Corner', id: 'capture-corner' },
       { href: '/contract-tracker.html', label: 'Contract Tracker', id: 'contract-tracker', group: 'Pursuit Tools' },
       { href: '/idiq-tracker.html', label: 'IDIQ Tracker', id: 'idiq-tracker' },
       { href: '/premium/calendar/', label: 'Pursuit Calendar', id: 'calendar' },
@@ -3008,8 +3009,16 @@ ${innerHtml}
     return html;
   }
 
-  // Map premium page paths to sidebar active link IDs
+  // Map premium page paths to sidebar active link IDs.
+  // Every premium page MUST be in this map so injectDashShell() runs and
+  // strips any hardcoded sidebar — otherwise users see two different
+  // sidebars across pages (the source's hardcoded one on un-mapped pages,
+  // the canonical injected one elsewhere). Surfaced 2026-04-29 when Mary
+  // saw /premium/dashboard.html shipping its own sidebar with different
+  // groups + label order than every other premium page.
   const dashPageMap = {
+    'premium/dashboard.html': 'home',
+    'premium/profile.html': 'home',
     'premium/briefings.html': 'briefings',
     'premium/monthly-briefs.html': 'monthly-briefs',
     'premium/calendar.html': 'calendar',

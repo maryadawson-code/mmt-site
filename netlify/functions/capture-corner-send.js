@@ -149,12 +149,14 @@ exports.handler = async (event) => {
     };
   }
 
-  // Active premium subscribers
+  // Active premium subscribers — every paid tier including founding.
+  // Founding members were excluded by the prior filter (mmt_premium_founding
+  // not listed). Fixed 2026-04-29 alongside Friday/Monthly Brief send.
   const { data: subscribers, error: subErr } = await supabase
     .from("mp_users")
-    .select("email, full_name")
-    .in("subscription_tier", ["premium", "institutional"])
-    .eq("subscription_status", "active");
+    .select("email, full_name, subscription_tier")
+    .in("subscription_tier", ["premium", "institutional", "mmt_premium_founding"])
+    .in("subscription_status", ["active", "trialing"]);
 
   if (subErr) {
     return {

@@ -103,12 +103,15 @@ exports.handler = async (event) => {
     briefDate: displayDate,
   });
 
-  // Query active premium subscribers + admin/paid
+  // Query active premium subscribers + admin/paid — every paid tier, not
+  // just "premium". Founding (mmt_premium_founding) and institutional were
+  // excluded by the prior single-value filter (gating-bug family fixed
+  // 2026-04-29 alongside the welcome gate).
   const { data: subscribers } = await supabase
     .from("mp_users")
-    .select("email, full_name")
-    .eq("subscription_tier", "premium")
-    .eq("subscription_status", "active");
+    .select("email, full_name, subscription_tier")
+    .in("subscription_tier", ["premium", "mmt_premium_founding", "institutional"])
+    .in("subscription_status", ["active", "trialing"]);
 
   const { data: adminUsers } = await supabase
     .from("mp_users")

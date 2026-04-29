@@ -152,7 +152,7 @@ function buildFoundingMemberWelcome(opts = {}) {
  * Tiers:
  *   - "founding"        — $199/yr locked rate; Founding Member badge copy
  *   - "premium_annual"  — $249/yr standard
- *   - "premium_monthly" — $25/mo standard
+ *   - "premium_monthly" — $29.99/mo standard
  *   - "premium_unknown" — fallback when tier can't be determined
  *
  * @param {Object} opts
@@ -177,7 +177,7 @@ function buildPremiumWelcome(opts = {}) {
     tier === "premium_annual"
       ? "Annual MMT Premium subscription — $249/year, renews automatically."
       : tier === "premium_monthly"
-      ? "Monthly MMT Premium subscription — $25/month, renews automatically."
+      ? "Monthly MMT Premium subscription — $29.99/month, renews automatically."
       : "MMT Premium subscription is active.";
   const subject = isBackfill
     ? "Your MMT Premium welcome (sorry for the delay)"

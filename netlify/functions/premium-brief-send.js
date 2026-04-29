@@ -185,12 +185,16 @@ async function _handler(event) {
     briefDate: displayDate,
   });
 
-  // Query active premium subscribers
+  // Query active premium subscribers — every paid tier, not just "premium".
+  // Surfaced 2026-04-29: prior filter was subscription_tier='premium' only,
+  // which excluded founding (mmt_premium_founding), institutional, and any
+  // future tier from receiving Friday Briefs. Same gating-bug family as the
+  // founding-only welcome gate.
   const { data: subscribers, error: subErr } = await supabase
     .from("mp_users")
-    .select("email, full_name")
-    .eq("subscription_tier", "premium")
-    .eq("subscription_status", "active");
+    .select("email, full_name, subscription_tier, subscription_status")
+    .in("subscription_tier", ["premium", "mmt_premium_founding", "institutional"])
+    .in("subscription_status", ["active", "trialing"]);
 
   if (subErr) {
     console.error("premium-brief-send: subscriber query failed:", subErr.message);
