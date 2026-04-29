@@ -173,6 +173,32 @@ a[style*="background:var(--mmt-teal)"] {
   -webkit-text-fill-color: rgb(255,255,255) !important;
 }
 
+/* Defensive: any text input MUST have visible text. Surfaced 2026-04-29
+   when Jim St. Clair reported "When I type in my email, none of the
+   characters show up" on /dashboard.html. Some browsers / autofill
+   states / cascade combos can leave color undefined and inherit white
+   from a parent. Pin the color and the -webkit-text-fill-color so an
+   input can never render text the same color as its background. */
+input[type="email"],
+input[type="text"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+input[type="number"],
+textarea {
+  color: #0A192F !important;
+  -webkit-text-fill-color: #0A192F !important;
+  background-color: #FFFFFF;
+  caret-color: #0A192F;
+}
+input[type="email"]:-webkit-autofill,
+input[type="text"]:-webkit-autofill,
+input[type="password"]:-webkit-autofill {
+  -webkit-text-fill-color: #0A192F !important;
+  -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+}
+
 /* ============================================================
    PRODUCT LADDER — reusable component
    ============================================================ */

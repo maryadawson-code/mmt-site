@@ -2169,11 +2169,17 @@ function inlineTailwindCss(html) {
   html = html.replace(/<h1>MarketPulse<\/h1>/g,
     '<h1 style="color:var(--mmt-navy);">Market<span style="color:var(--mmt-teal);">Pulse</span></h1>');
 
-  // btn-primary has navy background → needs white text
-  html = html.split('.btn-primary{').map((part, i) => {
-    if (i === 0) return part;
-    return part.replace(/color:\s*var\(--mmt-navy\)/, 'color:var(--mmt-white)');
-  }).join('.btn-primary{');
+  // btn-primary has navy background → needs white text. Scope the
+  // replacement strictly to the rule body (between { and the next })
+  // so we don't bleed into the next CSS rule. Surfaced 2026-04-29 when
+  // /pricing rendered .plan-price as white-on-white because the prior
+  // .split('.btn-primary{').replace(...).join() looked for the FIRST
+  // `color:var(--mmt-navy)` after `.btn-primary{` — the canonical injected
+  // .btn-primary already has color:var(--mmt-white) so the replacement
+  // hopped into .plan-price instead.
+  html = html.replace(/\.btn-primary\{([^}]*)\}/g, (full, body) =>
+    `.btn-primary{${body.replace(/color:\s*var\(--mmt-navy\)/g, 'color:var(--mmt-white)')}}`,
+  );
   // section-navy headings → needs white text (restore after global replacement)
   html = html.replace(
     /\.section-navy,\.section-navy h1,\.section-navy h2,\.section-navy h3\{color:var\(--mmt-navy\)\}/g,

@@ -1575,14 +1575,25 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
           failed_checks: v4Audit ? v4Audit.checks.filter(c => !c.passed).map(c => `#${c.id} ${c.label}`) : [],
         },
       });
-      try {
-        await sendEmail({
-          to: "mary@missionmeetstech.com",
-          subject: `[MarketPulse v4] STOP — ${name} (${email}) — score ${v4Score ? v4Score.total : "?"}/100`,
-          html: `<pre style="font-family:ui-monospace,monospace;white-space:pre-wrap;background:#f3f4f6;padding:16px;border-radius:8px;">${(v4Diagnostic || "").replace(/[<&>]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]))}</pre>`,
-          from: "Mission Meets Tech <noreply@missionmeetstech.com>",
-        });
-      } catch (_) { /* non-blocking */ }
+      // Diagnostic email to Mary — silenced by default 2026-04-29 to stop the
+      // noise stream from Tier-B-only failures (e.g. score 84/100 with one
+      // unsourced row). The ops_events MARKETPULSE_V4_STOP entry above is the
+      // permanent durable signal; she can query it any time. Email fires only
+      // for catastrophic failures (score < 70 OR more than 3 failed checks)
+      // OR when MARKETPULSE_V4_DIAGNOSTIC_EMAIL=true is explicitly set.
+      const v4FailedCheckCount = v4Audit ? v4Audit.checks.filter((c) => !c.passed).length : 0;
+      const v4Critical = (v4Score && typeof v4Score.total === "number" && v4Score.total < 70) || v4FailedCheckCount > 3;
+      const v4DiagnosticEnabled = String(process.env.MARKETPULSE_V4_DIAGNOSTIC_EMAIL || "").toLowerCase() === "true";
+      if (v4Critical || v4DiagnosticEnabled) {
+        try {
+          await sendEmail({
+            to: "mary@missionmeetstech.com",
+            subject: `[MarketPulse v4] STOP — ${name} (${email}) — score ${v4Score ? v4Score.total : "?"}/100`,
+            html: `<pre style="font-family:ui-monospace,monospace;white-space:pre-wrap;background:#f3f4f6;padding:16px;border-radius:8px;">${(v4Diagnostic || "").replace(/[<&>]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]))}</pre>`,
+            from: "Mission Meets Tech <noreply@missionmeetstech.com>",
+          });
+        } catch (_) { /* non-blocking */ }
+      }
 
       // Customer notification: a gentle "we need more time" rather than the raw diagnostic
       try {

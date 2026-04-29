@@ -17,7 +17,8 @@
     .dash-card { background:var(--mmt-surface); border-radius:12px; padding:24px; margin-bottom:16px; }
     .dash-card h3 { margin:0 0 8px; font-size:17px; }
     #gate { text-align:center; padding:80px 24px; }
-    #gate input { padding:12px 16px; border:1px solid var(--mmt-border); border-radius:8px; font-size:15px; width:100%; max-width:320px; margin-bottom:12px; }
+    #gate input { padding:12px 16px; border:1px solid var(--mmt-border); border-radius:8px; font-size:15px; width:100%; max-width:320px; margin-bottom:12px; background:#FFFFFF !important; color:#0A192F !important; -webkit-text-fill-color:#0A192F !important; caret-color:#0A192F; }
+    #gate input::placeholder { color:#9CA3AF; opacity:1; }
     #gate button { padding:12px 24px; background:var(--mmt-navy); color:var(--mmt-white); border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:15px; }
     #content { display:none; }
   </style>
@@ -32,7 +33,7 @@
       <h1 style="font-size:28px; font-weight:800; margin-bottom:8px;">MMT Premium Dashboard</h1>
       <p style="color:var(--mmt-text-secondary); margin-bottom:24px;">Enter your subscriber email to access your dashboard.</p>
       <div>
-        <input type="email" id="gate-email" placeholder="you@company.com" autocomplete="email" style="padding:12px 16px; border:1px solid var(--mmt-border); border-radius:8px; font-size:15px; width:100%; max-width:320px; margin-bottom:12px;">
+        <input type="email" id="gate-email" placeholder="you@company.com" autocomplete="email" style="padding:12px 16px; border:1px solid var(--mmt-border); border-radius:8px; font-size:15px; width:100%; max-width:320px; margin-bottom:12px; background:#FFFFFF; color:#0A192F; -webkit-text-fill-color:#0A192F; caret-color:#0A192F;">
       </div>
       <button onclick="checkAccess()" style="padding:12px 24px; background:var(--mmt-navy); color:var(--mmt-white); border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:15px;">Access Dashboard</button>
       <p id="gate-error" style="color:#E63946; margin-top:12px; display:none;"></p>

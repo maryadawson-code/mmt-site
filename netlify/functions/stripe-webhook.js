@@ -12,7 +12,7 @@ const Stripe = require("stripe");
 const { upsertCustomer, logCustomerEvent } = require("./lib/customer-sync");
 const { sendEmail } = require("./lib/send-email");
 const { logOpsEvent } = require("./lib/ops-ledger");
-const { buildFoundingMemberWelcome } = require("./lib/email-templates/founding-member-welcome");
+const { buildFoundingMemberWelcome, buildPremiumWelcome } = require("./lib/email-templates/founding-member-welcome");
 const { Sentry } = require("./lib/sentry");
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
@@ -34,6 +34,33 @@ const FOUNDING_PRICE_IDS = [
   STRIPE_PRICE_FOUNDING_ANNUAL,
   STRIPE_PRICE_FOUNDING,
 ].filter(Boolean);
+
+// Non-founding MMT Premium tiers (set in Netlify env). New subscribers on
+// these prices were silently excluded from welcome emails until 2026-04-29
+// when Jim St. Clair's email surfaced the gap. Adding them here brings every
+// MMT Premium subscriber into the welcome flow.
+const STRIPE_PRICE_PREMIUM_MONTHLY = process.env.STRIPE_PRICE_PREMIUM_MONTHLY;
+const STRIPE_PRICE_PREMIUM_ANNUAL = process.env.STRIPE_PRICE_PREMIUM_ANNUAL;
+const PREMIUM_NONFOUNDING_PRICE_IDS = [
+  STRIPE_PRICE_PREMIUM_MONTHLY,
+  STRIPE_PRICE_PREMIUM_ANNUAL,
+].filter(Boolean);
+const ALL_MMT_PREMIUM_PRICE_IDS = [...FOUNDING_PRICE_IDS, ...PREMIUM_NONFOUNDING_PRICE_IDS];
+
+function classifyMmtPremiumTier(sub) {
+  if (!sub || !sub.items || !Array.isArray(sub.items.data)) return null;
+  for (const item of sub.items.data) {
+    const pid = item && item.price && item.price.id;
+    if (!pid) continue;
+    if (FOUNDING_PRICE_IDS.includes(pid)) return "founding";
+    if (pid === STRIPE_PRICE_PREMIUM_ANNUAL) return "premium_annual";
+    if (pid === STRIPE_PRICE_PREMIUM_MONTHLY) return "premium_monthly";
+  }
+  return null;
+}
+function isMmtPremiumSubscription(sub) {
+  return classifyMmtPremiumTier(sub) !== null;
+}
 
 // Module-load assertion — block boot if the whitelist is empty. This is the
 // safe failure mode: an empty whitelist means every subscription event would
@@ -83,9 +110,10 @@ function isMmtEvent(stripeEvent) {
   if (meta.app && meta.app !== "mmt") return { mmt: false, reason: `metadata_app_${meta.app}` };
   if (meta.app === "mmt") return { mmt: true, reason: "metadata_app_mmt" };
   if (meta.product === "mmt_premium") return { mmt: true, reason: "metadata_product_mmt_premium" };
-  // Subscription-shaped objects carry items.data[].price.id
+  // Subscription-shaped objects carry items.data[].price.id — accept any
+  // MMT premium price (founding OR non-founding annual/monthly).
   if (obj.items && Array.isArray(obj.items.data)) {
-    const match = obj.items.data.find((i) => i && i.price && FOUNDING_PRICE_IDS.includes(i.price.id));
+    const match = obj.items.data.find((i) => i && i.price && ALL_MMT_PREMIUM_PRICE_IDS.includes(i.price.id));
     if (match) return { mmt: true, reason: `price_id_whitelist:${match.price.id}` };
   }
   return { mmt: false, reason: "no_mmt_signal" };
@@ -326,7 +354,11 @@ exports.handler = async (event) => {
       // to MMT, so this is just figuring out which premium tier.
       const isMmtPremiumByMetadata = sub.metadata && sub.metadata.product === "mmt_premium";
       const firstItem = sub.items && sub.items.data && sub.items.data[0];
-      const isMmtPremiumByPriceId = !!(firstItem && firstItem.price && FOUNDING_PRICE_IDS.includes(firstItem.price.id));
+      // Broadened 2026-04-29: include non-founding premium prices so paid
+      // $249/yr and $25/mo subscribers also land in mp_users. Prior gate was
+      // founding-only — Jim St. Clair subscribed Apr 28 and got "no account
+      // found" on /dashboard.html because his row never got upserted.
+      const isMmtPremiumByPriceId = !!(firstItem && firstItem.price && ALL_MMT_PREMIUM_PRICE_IDS.includes(firstItem.price.id));
       const isMmtPremium = isMmtPremiumByMetadata || isMmtPremiumByPriceId;
       const isActive = sub.status === "active" || sub.status === "trialing";
       // Founding detection via price.id (Stripe Payment Links don't propagate session
@@ -380,33 +412,37 @@ exports.handler = async (event) => {
         payload: { type: stripeEvent.type, subscription_id: sub.id, status: sub.status, customer: sub.customer, email: subEmail },
       });
 
-      // --- Founding-member welcome email (new for Commit 1, 2026-04-22) ---
-      // Fire once per subscription, only when price.id matches FOUNDING + status is active,
-      // and only on .created (not .updated — updates shouldn't re-send).
-      // Idempotency: skip if customer_events already has a welcome_sent row for this sub.
-      // All failures are logged but NEVER block the webhook 200 response (Stripe would retry forever).
+      // --- MMT Premium welcome email (broadened 2026-04-29) ---
+      // Originally founding-only; non-founding tiers (premium_annual, premium_monthly)
+      // were silently dropped — surfaced by Jim St. Clair's "I subscribed but didn't
+      // get a welcome" email. Now fires on any MMT premium tier; tier classification
+      // selects the right template variant.
+      const tier = classifyMmtPremiumTier(sub);
       const shouldSendWelcome =
         stripeEvent.type === "customer.subscription.created" &&
         isActive &&
         subEmail &&
-        isFoundingSubscription(sub);
+        tier !== null;
 
       if (shouldSendWelcome) {
         try {
-          // Idempotency check: have we already sent a welcome for this subscription?
+          // Idempotency check: any welcome_sent for this email + product family.
+          // Match either the founding product key or the new generic key so a tier
+          // upgrade doesn't double-send; existing founding members keep their record.
           const { data: existingWelcome } = await supabase
             .from("customer_events")
-            .select("id")
+            .select("id, product")
             .eq("email", subEmail.toLowerCase().trim())
             .eq("event_type", "welcome_sent")
-            .eq("product", "mmt_premium_founding")
+            .in("product", ["mmt_premium_founding", "mmt_premium"])
             .limit(1);
 
           if (existingWelcome && existingWelcome.length > 0) {
             console.log(`stripe-webhook: welcome_sent already recorded for ${subEmail} — skipping`);
           } else {
-            const { subject, html, text } = buildFoundingMemberWelcome({
+            const { subject, html, text } = buildPremiumWelcome({
               customerEmail: subEmail.toLowerCase().trim(),
+              tier,
               isBackfill: false,
             });
             const sendResult = await sendEmail({
@@ -419,15 +455,16 @@ exports.handler = async (event) => {
 
             if (sendResult && sendResult.success) {
               const resendId = sendResult.id || sendResult.messageId || null;
-              // Record the send so future webhook retries don't double-fire.
+              const productKey = tier === "founding" ? "mmt_premium_founding" : "mmt_premium";
               try {
                 await logCustomerEvent(supabase, {
                   email: subEmail.toLowerCase().trim(),
                   eventType: "welcome_sent",
-                  product: "mmt_premium_founding",
+                  product: productKey,
                   amountCents: 0,
                   metadata: {
                     subscription_id: sub.id,
+                    tier,
                     resend_message_id: resendId,
                     sent_via: "stripe-webhook",
                   },
@@ -437,44 +474,46 @@ exports.handler = async (event) => {
                 event_type: "WELCOME_EMAIL_SENT",
                 source_function: "stripe-webhook",
                 severity: "info",
-                signature: "founding_member",
+                signature: tier,
                 affected_entity: sub.id,
                 details: {
                   customer_email: subEmail.toLowerCase().trim(),
                   subscription_id: sub.id,
+                  tier,
                   resend_message_id: resendId,
                 },
               });
-              console.log(`stripe-webhook: WELCOME_EMAIL_SENT → ${subEmail} (resend ${resendId})`);
+              console.log(`stripe-webhook: WELCOME_EMAIL_SENT [${tier}] → ${subEmail} (resend ${resendId})`);
             } else {
               const reason = (sendResult && sendResult.error) || "unknown_send_failure";
               await logOpsEvent(supabase, {
                 event_type: "WELCOME_EMAIL_FAILED",
                 source_function: "stripe-webhook",
                 severity: "error",
-                signature: "founding_member_send_failed",
+                signature: `${tier}_send_failed`,
                 affected_entity: sub.id,
                 details: {
                   customer_email: subEmail.toLowerCase().trim(),
                   subscription_id: sub.id,
+                  tier,
                   reason: String(reason).substring(0, 300),
                 },
               });
-              console.error(`stripe-webhook: WELCOME_EMAIL_FAILED for ${subEmail}: ${reason}`);
+              console.error(`stripe-webhook: WELCOME_EMAIL_FAILED [${tier}] for ${subEmail}: ${reason}`);
             }
           }
         } catch (welcomeErr) {
-          // Email failure must never cause Stripe to retry — log and move on.
           try {
             await logOpsEvent(supabase, {
               event_type: "WELCOME_EMAIL_FAILED",
               source_function: "stripe-webhook",
               severity: "error",
-              signature: "founding_member_exception",
+              signature: `${tier || "unknown"}_exception`,
               affected_entity: sub.id,
               details: {
                 customer_email: subEmail,
                 subscription_id: sub.id,
+                tier,
                 reason: String(welcomeErr.message || "").substring(0, 300),
               },
             });
