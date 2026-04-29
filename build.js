@@ -2693,6 +2693,7 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     '<!-- BUILD:CONTRACT_TRACKER -->': generateContractTrackerHtml(contracts, contractArticleMap || {}),
     '<!-- BUILD:BRIEF_ARCHIVE -->': generateBriefArchiveHtml(),
     '<!-- BUILD:BRIEF_LATEST -->': generateBriefLatestHtml(),
+    '<!-- BUILD:CAPTURE_CORNER_ARCHIVE -->': generateCaptureCornerArchiveHtml(),
     '<!-- BUILD:CONTRACT_SUMMARY -->': generateContractSummaryHtml(contracts),
     '<!-- BUILD:EVENTS_LIST -->': generateEventsListHtml(),
     '<!-- BUILD:LATEST_ANALYSIS -->': generateLatestAnalysisHtml(articles || []),
@@ -3864,6 +3865,56 @@ function generateBriefArchiveHtml() {
         </div>
         <a href="${b.url}" style="font-size:13px;font-weight:600;color:var(--mmt-teal);text-decoration:none;white-space:nowrap;">Read &rarr;</a>
       </div>`
+  ).join('\n      ');
+}
+
+// =====================================================================
+// Capture Corner archive — premium/briefs/capture-corner-YYYY-MM-DD.html
+// Distinct from the Friday Brief archive (which scans YYYY-MM-DD.html).
+// Powers the <!-- BUILD:CAPTURE_CORNER_ARCHIVE --> marker on
+// capture-corner.html so subscribers see every issue that's gone out.
+// =====================================================================
+function getCaptureCornerFiles() {
+  const briefsDir = path.join(__dirname, 'premium', 'briefs');
+  if (!fs.existsSync(briefsDir)) return [];
+  const files = fs.readdirSync(briefsDir).filter((f) => /^capture-corner-(\d{4}-\d{2}-\d{2})\.html$/.test(f));
+  return files.map((f) => {
+    const dateStr = f.match(/(\d{4}-\d{2}-\d{2})/)[1];
+    const parts = dateStr.split('-');
+    const d = new Date(parts[0], parts[1] - 1, parts[2]);
+    const formatted = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    const html = fs.readFileSync(path.join(briefsDir, f), 'utf8');
+    const titleMatch = html.match(/<title>([^<]+)<\/title>/);
+    const descMatch = html.match(/<meta name="description" content="([^"]+)"/);
+    const h1Match = html.match(/<h1[^>]*>([^<]+)<\/h1>/);
+    const rawTitle = (h1Match && h1Match[1]) || (titleMatch && titleMatch[1]) || `Capture Corner — ${formatted}`;
+    const title = rawTitle.replace(/\s*\|\s*Mission Meets Tech.*$/, '').replace(/\s*—\s*Capture Corner.*$/, '').trim();
+    const desc = descMatch ? descMatch[1].replace(/\s*\.?\s*Weekly.*$/, '').trim() : '';
+    return {
+      file: f,
+      date: dateStr,
+      formatted,
+      title,
+      desc,
+      url: `/premium/briefs/${f}`,
+    };
+  }).sort((a, b) => b.date.localeCompare(a.date));
+}
+
+function generateCaptureCornerArchiveHtml() {
+  const issues = getCaptureCornerFiles();
+  if (issues.length === 0) {
+    return '<p style="font-size:14px;color:var(--mmt-text-secondary);margin:0;">The archive will populate as issues publish. The first issue is in production.</p>';
+  }
+  return issues.map((it) =>
+    `<a href="${it.url}" class="cc-archive-row" style="display:flex;justify-content:space-between;align-items:flex-start;gap:24px;padding:18px 22px;background:var(--mmt-white);border:1px solid var(--mmt-border);border-radius:10px;text-decoration:none;color:inherit;margin-bottom:10px;transition:border-color 0.15s,transform 0.15s;">
+        <div style="min-width:0;flex:1;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ci-gold);margin-bottom:6px;">${escapeHtml(it.formatted)}</div>
+          <div style="font-size:15px;font-weight:600;color:var(--mmt-navy);line-height:1.4;margin-bottom:4px;">${escapeHtml(it.title)}</div>
+          ${it.desc ? `<div style="font-size:13.5px;color:var(--mmt-text-secondary);line-height:1.55;">${escapeHtml(it.desc)}</div>` : ''}
+        </div>
+        <div style="font-size:13px;font-weight:600;color:var(--mmt-teal);white-space:nowrap;flex-shrink:0;padding-top:2px;">Read &rarr;</div>
+      </a>`
   ).join('\n      ');
 }
 
