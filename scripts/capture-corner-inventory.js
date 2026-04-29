@@ -17,22 +17,29 @@ const path = require("path");
 const ROOT = path.resolve(__dirname, "..");
 const REPORT = path.join(ROOT, "reports/capture-corner-inventory.json");
 
-// Known canonical and dated capture-intel locations.
+// Capture Corner is the WEEKLY NEWSLETTER, distinct from the monthly
+// Capture Intelligence sheet at /intel/capture-intelligence-this-issue/.
+// Issues live at premium/briefs/capture-corner-YYYY-MM-DD.html.
 const candidates = [];
 
-// 1. The canonical "this issue" page.
-const canonical = path.join(ROOT, "intel-capture-intelligence.html");
-if (fs.existsSync(canonical)) {
-  candidates.push({
-    id: "canonical",
-    path: "intel-capture-intelligence.html",
-    url: "/intel/capture-intelligence-this-issue/",
-    publish_date: null,
-    description: "The canonical Capture Intelligence 'this issue' page. Replaced as Mary publishes new issues.",
-  });
+// 1. Dated Capture Corner issues — premium/briefs/capture-corner-*.html
+const briefsDir = path.join(ROOT, "premium/briefs");
+if (fs.existsSync(briefsDir)) {
+  for (const f of fs.readdirSync(briefsDir)) {
+    if (!/^capture-corner-(\d{4}-\d{2}-\d{2})\.html$/.test(f)) continue;
+    const dateMatch = f.match(/(\d{4}-\d{2}-\d{2})/);
+    const slug = f.replace(/\.html$/, "");
+    candidates.push({
+      id: f,
+      path: path.relative(ROOT, path.join(briefsDir, f)),
+      url: `/premium/briefs/${slug}.html`,
+      publish_date: dateMatch ? dateMatch[1] : null,
+      description: "Dated Capture Corner newsletter issue.",
+    });
+  }
 }
 
-// 2. Dated capture-corner files in data/ or premium/captures/
+// 2. Dated Capture Corner drafts in data/ or premium/captures/ (not yet wired)
 const datedRoots = [
   path.join(ROOT, "data/may-1-release"),
   path.join(ROOT, "premium/captures"),
@@ -42,23 +49,34 @@ for (const root of datedRoots) {
   for (const f of fs.readdirSync(root)) {
     if (!/\.(md|html)$/.test(f)) continue;
     const full = path.join(root, f);
-    // Look for a date in the filename
     const dateMatch = f.match(/(\d{4}-\d{2}-\d{2})/);
     candidates.push({
       id: f,
       path: path.relative(ROOT, full),
-      url: null, // not yet routed; Mary chooses route on deploy
+      url: null,
       publish_date: dateMatch ? dateMatch[1] : null,
       description: "Dated capture-intelligence draft. Not yet wired to a public URL.",
     });
   }
 }
 
-// Pick the newest eligible (publish_date <= today, prefer dated over canonical).
+// 3. Capture Corner landing page (fallback if no dated issue exists)
+const landing = path.join(ROOT, "capture-corner.html");
+if (fs.existsSync(landing)) {
+  candidates.push({
+    id: "landing",
+    path: "capture-corner.html",
+    url: "/capture-corner.html",
+    publish_date: null,
+    description: "The Capture Corner landing page. Fallback when no dated issue is published yet.",
+  });
+}
+
+// Pick the newest eligible: dated issue with a URL wins over the landing fallback.
 const today = new Date().toISOString().slice(0, 10);
 const eligible = candidates.filter((c) => !c.publish_date || c.publish_date <= today);
 const dated = eligible.filter((c) => c.publish_date && c.url).sort((a, b) => b.publish_date.localeCompare(a.publish_date));
-const newest = dated[0] || eligible.find((c) => c.id === "canonical") || null;
+const newest = dated[0] || eligible.find((c) => c.id === "landing") || null;
 
 // Read the netlify.toml redirect target for /capture-corner/latest
 const tomlText = fs.existsSync(path.join(ROOT, "netlify.toml")) ? fs.readFileSync(path.join(ROOT, "netlify.toml"), "utf8") : "";

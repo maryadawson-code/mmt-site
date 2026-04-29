@@ -1,0 +1,43 @@
+{
+  "generated_at": "2026-04-29T00:01:48.186Z",
+  "candidate_count": 4,
+  "newest_eligible": {
+    "id": "capture-corner-2026-04-21.html",
+    "path": "premium/briefs/capture-corner-2026-04-21.html",
+    "url": "/premium/briefs/capture-corner-2026-04-21.html",
+    "publish_date": "2026-04-21",
+    "description": "Dated Capture Corner newsletter issue."
+  },
+  "redirect_target_in_netlify_toml": "/premium/briefs/capture-corner-2026-04-21.html",
+  "redirect_stale": false,
+  "candidates": [
+    {
+      "id": "capture-corner-2026-04-21.html",
+      "path": "premium/briefs/capture-corner-2026-04-21.html",
+      "url": "/premium/briefs/capture-corner-2026-04-21.html",
+      "publish_date": "2026-04-21",
+      "description": "Dated Capture Corner newsletter issue."
+    },
+    {
+      "id": "contracts-tracker-update.md",
+      "path": "data/may-1-release/contracts-tracker-update.md",
+      "url": null,
+      "publish_date": null,
+      "description": "Dated capture-intelligence draft. Not yet wired to a public URL."
+    },
+    {
+      "id": "premium-capture-sheet.md",
+      "path": "data/may-1-release/premium-capture-sheet.md",
+      "url": null,
+      "publish_date": null,
+      "description": "Dated capture-intelligence draft. Not yet wired to a public URL."
+    },
+    {
+      "id": "landing",
+      "path": "capture-corner.html",
+      "url": "/capture-corner.html",
+      "publish_date": null,
+      "description": "The Capture Corner landing page. Fallback when no dated issue is published yet."
+    }
+  ]
+}
