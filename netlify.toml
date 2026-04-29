@@ -228,6 +228,50 @@
   to = "/premium/monthly-briefs.html"
   status = 200
 
+# No-trailing-slash variants — mobile + browser bookmark behavior strips
+# trailing slashes routinely; without these the user gets a 404 on
+# /premium/settings, /premium/dashboard, etc. Surfaced 2026-04-29 audit.
+[[redirects]]
+  from = "/premium/dashboard"
+  to = "/premium/dashboard.html"
+  status = 200
+[[redirects]]
+  from = "/premium/briefings"
+  to = "/premium/briefings.html"
+  status = 200
+[[redirects]]
+  from = "/premium/calendar"
+  to = "/premium/calendar.html"
+  status = 200
+[[redirects]]
+  from = "/premium/ask-mmt"
+  to = "/premium/ask-mmt.html"
+  status = 200
+[[redirects]]
+  from = "/premium/settings"
+  to = "/premium/settings.html"
+  status = 200
+[[redirects]]
+  from = "/premium/monthly-briefs"
+  to = "/premium/monthly-briefs.html"
+  status = 200
+[[redirects]]
+  from = "/premium/pursuit-score"
+  to = "/premium/pursuit-score.html"
+  status = 200
+[[redirects]]
+  from = "/premium/compliance-check"
+  to = "/premium/compliance-check.html"
+  status = 200
+[[redirects]]
+  from = "/premium/signal-chain"
+  to = "/premium/signal-chain.html"
+  status = 200
+[[redirects]]
+  from = "/premium/profile"
+  to = "/premium/profile.html"
+  status = 200
+
 [context.branch-deploy]
   command = "node build.js"
 

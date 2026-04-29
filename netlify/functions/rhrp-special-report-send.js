@@ -112,12 +112,14 @@ exports.handler = async (event) => {
     };
   }
 
-  // Fetch active premium subscribers
+  // Fetch active premium subscribers — every paid tier including founding.
+  // TKT-8 (2026-04-29): prior filter omitted mmt_premium_founding so
+  // founding members never received RHRP special reports.
   const { data: subscribers, error: subErr } = await supabase
     .from("mp_users")
     .select("email, full_name")
-    .in("subscription_tier", ["premium", "institutional"])
-    .eq("subscription_status", "active");
+    .in("subscription_tier", ["premium", "institutional", "mmt_premium_founding"])
+    .in("subscription_status", ["active", "trialing"]);
 
   if (subErr) {
     return {

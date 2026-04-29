@@ -58,11 +58,22 @@ exports.handler = async (event) => {
     }
   } catch (e) { /* proceed */ }
 
-  // Get all premium subscribers with preferences
+  // Get all premium subscribers with preferences. TKT-4: prior filter
+  // matched ANY active subscription_status without a subscription_tier
+  // gate, which could match free-tier accounts that happened to have an
+  // active row from a non-paid product. Now requires both a paid tier
+  // AND an active/trialing status, plus the legacy admin/paid tier column.
   const { data: subscribers } = await supabase
     .from("mp_users")
-    .select("email, full_name, tier, subscription_tier, subscription_status")
-    .or("subscription_status.eq.active,tier.eq.admin,tier.eq.paid");
+    .select("email, full_name, tier, subscription_tier, subscription_status, founding_member")
+    .or(
+      [
+        "and(subscription_tier.in.(premium,institutional,mmt_premium_founding),subscription_status.in.(active,trialing))",
+        "tier.eq.admin",
+        "tier.eq.paid",
+        "founding_member.eq.true",
+      ].join(",")
+    );
 
   if (!subscribers || subscribers.length === 0) {
     return { statusCode: 200, body: JSON.stringify({ skipped: "no_subscribers" }) };

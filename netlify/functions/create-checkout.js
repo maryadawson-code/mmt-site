@@ -92,8 +92,16 @@ exports.handler = async (event) => {
         .eq("id", user.id);
     }
 
-    // --- Determine pricing (Premium subscribers get discount) ---
-    const isPremium = user.subscription_tier === "premium" && user.subscription_status === "active";
+    // --- Determine pricing (any active paid tier gets the discount) ---
+    // TKT-7 (2026-04-29): single-value premium check excluded institutional
+    // and founding members from the ProposalPulse / per-assessment discount.
+    const PAID_TIERS = ["premium", "institutional", "mmt_premium_founding"];
+    const ACTIVE_STATUSES = ["active", "trialing"];
+    const isPremium =
+      (PAID_TIERS.includes(user.subscription_tier) && ACTIVE_STATUSES.includes(user.subscription_status)) ||
+      user.founding_member === true ||
+      user.tier === "admin" ||
+      user.tier === "paid";
     const unitAmount = isPremium ? PREMIUM_PRICE_CENTS : PRICE_CENTS;
     const priceLabel = isPremium ? "$14.99 (Premium discount)" : "$19.99";
 

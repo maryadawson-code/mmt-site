@@ -58,9 +58,15 @@ exports.handler = async (event) => {
       };
     }
 
-    // Check for active premium subscription
+    // Check for any active paid tier — premium, institutional, founding.
+    // Trialing also counts as paid access. Broadened 2026-04-29 (TKT-2):
+    // single-value match excluded institutional and the legacy
+    // mmt_premium_founding shape, locking those subscribers out of login.
+    const PAID_TIERS = ["premium", "institutional", "mmt_premium_founding"];
+    const ACTIVE_STATUSES = ["active", "trialing"];
     const isPremium =
-      (user.subscription_tier === "premium" && user.subscription_status === "active") ||
+      (PAID_TIERS.includes(user.subscription_tier) && ACTIVE_STATUSES.includes(user.subscription_status)) ||
+      user.founding_member === true ||
       user.tier === "admin" ||
       user.tier === "paid";
 

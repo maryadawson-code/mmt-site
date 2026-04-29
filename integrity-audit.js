@@ -245,12 +245,15 @@ function sweepBody(path, body) {
       failures.push({ rule: 'shell: missing <nav>', sample: '' });
     } else {
       const nav = navMatch[0];
-      // Netlify Pretty URLs strips .html from hrefs in served pages, so
-      // accept both /resources.html#paid-tools and /resources#paid-tools.
+      // Netlify Pretty URLs strips .html from hrefs, so accept both forms.
+      // The Choose a Tool button now points at /tools (dedicated tools hub
+      // page) — accept either the new /tools target or the legacy
+      // /resources#paid-tools anchor for backward compat with older pages
+      // that may still link to the resources anchor directly.
       const navChecks = [
         { markers: ['brand-mark'], label: 'brand-mark' },
         { markers: ['Choose a Tool'], label: 'Choose a Tool' },
-        { markers: ['/resources.html#paid-tools', '/resources#paid-tools'], label: '/resources#paid-tools' },
+        { markers: ['/tools', '/resources.html#paid-tools', '/resources#paid-tools'], label: 'tools-hub link' },
       ];
       for (const check of navChecks) {
         if (!check.markers.some((m) => nav.includes(m))) {

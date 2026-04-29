@@ -121,11 +121,14 @@ exports.handler = async (event) => {
         user_email: email,
         plan,
         product: "mmt_premium",
+        subscription_tier: plan === "founding" ? "mmt_premium_founding" : "premium",
       },
       subscription_data: {
         metadata: {
           user_email: email,
           product: "mmt_premium",
+          subscription_tier: plan === "founding" ? "mmt_premium_founding" : "premium",
+          plan,
           founding_member: plan === "founding" ? "true" : "false",
         },
       },

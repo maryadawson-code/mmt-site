@@ -258,10 +258,21 @@ exports.handler = wrapHandler(async (event) => {
       if (mpUser) {
         const { data: fullUser } = await supabase
           .from("mp_users")
-          .select("subscription_tier, subscription_status")
+          .select("subscription_tier, subscription_status, founding_member, tier")
           .eq("email", email)
           .single();
-        isPremium = fullUser && fullUser.subscription_tier === "premium" && fullUser.subscription_status === "active";
+        // TKT-3: accept all paid tiers (premium / institutional / founding)
+        // + trialing status + admin/paid legacy tier column. Prior single
+        // "premium" match was locking institutional + founding members
+        // out of the discounted MarketPulse rate.
+        const PAID_TIERS = ["premium", "institutional", "mmt_premium_founding"];
+        const ACTIVE_STATUSES = ["active", "trialing"];
+        isPremium = !!fullUser && (
+          (PAID_TIERS.includes(fullUser.subscription_tier) && ACTIVE_STATUSES.includes(fullUser.subscription_status)) ||
+          fullUser.founding_member === true ||
+          fullUser.tier === "admin" ||
+          fullUser.tier === "paid"
+        );
       }
       return createCheckoutSession({ name, email, company, topic, audience, additional_context, isPremium });
     }

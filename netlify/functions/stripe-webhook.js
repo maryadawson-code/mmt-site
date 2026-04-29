@@ -376,11 +376,24 @@ exports.handler = async (event) => {
       // Hannett (4/24) in reports/premium-customers-account-fix-20260426.md.
       if (isMmtPremium && subEmail) {
         const normalizedEmail = subEmail.toLowerCase().trim();
+        // TKT-6 (2026-04-29): use proper tier classification on upsert so
+        // institutional + future tiers don't all collapse into "premium".
+        // Founding stays as "premium" + founding_member=true for backward
+        // compat with existing entitlement helper logic; institutional gets
+        // its own subscription_tier value.
+        const classifiedTier = classifyMmtPremiumTier(sub);
+        let mpUsersTier = "premium";
+        // Future hook for institutional: if classifyMmtPremiumTier returns
+        // "institutional", set mpUsersTier = "institutional". (Not yet wired
+        // into ALL_MMT_PREMIUM_PRICE_IDS — when an institutional price ID is
+        // added to the env whitelist, classifyMmtPremiumTier will start
+        // returning "institutional" and this branch activates automatically.)
+        if (classifiedTier === "institutional") mpUsersTier = "institutional";
         const tierUpdate = {
           email: normalizedEmail,
           stripe_customer_id: sub.customer,
           stripe_subscription_id: sub.id,
-          subscription_tier: isActive ? "premium" : "free",
+          subscription_tier: isActive ? mpUsersTier : "free",
           subscription_status: sub.status,
         };
         if (isFounding) tierUpdate.founding_member = true;
@@ -527,10 +540,25 @@ exports.handler = async (event) => {
 
     case "customer.subscription.deleted": {
       const sub = stripeEvent.data.object;
-      const subEmail = (sub.metadata && sub.metadata.user_email) || null;
-      const isMmtPremium = sub.metadata && sub.metadata.product === "mmt_premium";
+      // TKT-5 (2026-04-29): mirror the .created handler's email + premium-tier
+      // resolution. Prior code only checked metadata.product === "mmt_premium"
+      // and only used metadata.user_email, so subscriptions canceled via Stripe
+      // Payment Link (which doesn't propagate session metadata) were never
+      // downgrading mp_users — leaving canceled subscribers with active access.
+      let subEmail = (sub.metadata && sub.metadata.user_email) || null;
+      if (!subEmail && sub.customer) {
+        try {
+          const customer = await stripe.customers.retrieve(sub.customer);
+          subEmail = customer && customer.email;
+        } catch (_) { /* non-blocking */ }
+      }
 
-      console.log(`stripe-webhook: subscription deleted — ${sub.id} (email: ${subEmail})`);
+      const isMmtPremiumByMetadata = sub.metadata && sub.metadata.product === "mmt_premium";
+      const firstItem = sub.items && sub.items.data && sub.items.data[0];
+      const isMmtPremiumByPriceId = !!(firstItem && firstItem.price && ALL_MMT_PREMIUM_PRICE_IDS.includes(firstItem.price.id));
+      const isMmtPremium = isMmtPremiumByMetadata || isMmtPremiumByPriceId;
+
+      console.log(`stripe-webhook: subscription deleted — ${sub.id} (email: ${subEmail}, premium: ${isMmtPremium})`);
 
       // Revoke premium tier
       if (isMmtPremium && subEmail) {
@@ -545,7 +573,7 @@ exports.handler = async (event) => {
       await supabase.from("ops_events").insert({
         event_type: "stripe_subscription",
         severity: "warning",
-        payload: { type: stripeEvent.type, subscription_id: sub.id, status: sub.status, customer: sub.customer, email: subEmail },
+        payload: { type: stripeEvent.type, subscription_id: sub.id, status: sub.status, customer: sub.customer, email: subEmail, mmt_premium: isMmtPremium },
       });
       return { statusCode: 200, body: JSON.stringify({ received: true, type: stripeEvent.type }) };
     }

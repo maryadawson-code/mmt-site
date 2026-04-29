@@ -52,13 +52,18 @@ exports.handler = async (event) => {
         .eq("email", email)
         .maybeSingle();
 
-      if (user && user.subscription_tier === "premium" && user.subscription_status === "active") {
+      // Broadened 2026-04-29 (TKT-2): accept premium / institutional /
+      // mmt_premium_founding + trialing status. Single-value check was
+      // locking institutional users out of /api/check-tier.
+      const PAID_TIERS = ["premium", "institutional", "mmt_premium_founding"];
+      const ACTIVE_STATUSES = ["active", "trialing"];
+      if (user && PAID_TIERS.includes(user.subscription_tier) && ACTIVE_STATUSES.includes(user.subscription_status)) {
         return {
           statusCode: 200,
           headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
           body: JSON.stringify({
-            tier: "premium",
-            subscription_status: "active",
+            tier: user.subscription_tier === "institutional" ? "institutional" : "premium",
+            subscription_status: user.subscription_status,
             founding_member: user.founding_member || false,
           }),
         };
