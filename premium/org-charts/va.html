@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>VA Organizational Structure &middot; MMT Premium</title>
+<link rel="stylesheet" href="/styles/tokens.css">
+<style>
+:root{
+  --mmt-navy:#0A192F;
+  --mmt-teal:#457B9D;
+  --mmt-soft:#F3F4F6;
+  --mmt-white:#FFFFFF;
+  --mmt-border:#D8E0E8;
+  --mmt-text:#102033;
+  --mmt-text-secondary:#5C6B7A;
+  --mmt-text-faint:#8898b0;
+  --mmt-red:#E63946;
+  /* Status tones, retoned to MMT palette */
+  --status-acting:#457B9D;
+  --status-acting-bg:rgba(69,123,157,0.08);
+  --status-acting-border:rgba(69,123,157,0.35);
+  --status-vacant:#5C6B7A;
+  --status-vacant-bg:rgba(92,107,122,0.08);
+  --status-vacant-border:rgba(92,107,122,0.30);
+  --status-rise:#457B9D;
+  --status-rise-bg:rgba(69,123,157,0.10);
+  --status-rise-border:rgba(69,123,157,0.40);
+  --status-confirmed:#0A192F;
+  /* Layout/elevation */
+  --bg:var(--mmt-white);
+  --surface:var(--mmt-white);
+  --surface-2:var(--mmt-soft);
+  --surface-offset:#E8EDF3;
+  --border:var(--mmt-border);
+  --text:var(--mmt-text);
+  --text-muted:var(--mmt-text-secondary);
+  --text-faint:var(--mmt-text-faint);
+  --primary:var(--mmt-navy);
+  --primary-light:rgba(10,25,47,0.06);
+  --navy:var(--mmt-navy);
+  --navy-light:rgba(10,25,47,0.06);
+  --accent:var(--mmt-teal);
+  --accent-light:rgba(69,123,157,0.10);
+  --acting:var(--status-acting);
+  --acting-bg:var(--status-acting-bg);
+  --acting-border:var(--status-acting-border);
+  --vacant:var(--status-vacant);
+  --vacant-bg:var(--status-vacant-bg);
+  --vacant-border:var(--status-vacant-border);
+  --rise:var(--status-rise);
+  --rise-bg:var(--status-rise-bg);
+  --rise-border:var(--status-rise-border);
+  --shadow-sm:0 1px 3px rgba(10,25,47,0.06);
+  --shadow-md:0 4px 16px rgba(10,25,47,0.08);
+  --shadow-lg:0 12px 40px rgba(10,25,47,0.10);
+  --radius-lg:12px;
+  --font-body:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --transition:180ms cubic-bezier(0.16,1,0.3,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+.page-hero{background:var(--primary);color:#fff;padding:32px 24px 40px;border-bottom:3px solid var(--accent)}
+.page-hero-inner{max-width:1400px;margin:0 auto}
+.hero-eyebrow{font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;opacity:0.7;margin-bottom:8px}
+.hero-title{font-family:var(--font-body);font-weight:700;font-size:clamp(1.5rem,3vw,2.25rem);line-height:1.2;margin-bottom:12px;letter-spacing:-0.01em}
+.hero-meta{display:flex;flex-wrap:wrap;gap:16px;font-size:0.8rem;opacity:0.85}
+.controls-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;position:sticky;top:0;z-index:90}
+.controls-bar-inner{max-width:1400px;margin:0 auto;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.search-wrap{position:relative;flex:1;min-width:200px;max-width:360px}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-faint);pointer-events:none}
+.search-input{width:100%;padding:8px 12px 8px 34px;border:1px solid var(--border);border-radius:6px;background:var(--surface-2);color:var(--text);font-size:0.85rem;outline:none;font-family:var(--font-body)}
+.search-input:focus{border-color:var(--primary)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-left:auto;font-size:0.72rem}
+.legend-item{display:flex;align-items:center;gap:5px;color:var(--text-muted)}
+.legend-dot{width:10px;height:10px;border-radius:50%}
+.expand-btn{padding:6px 14px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text-muted);font-size:0.78rem;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:var(--font-body)}
+.expand-btn:hover{border-color:var(--primary);color:var(--primary)}
+.org-container{max-width:1400px;margin:0 auto;padding:32px 24px}
+.section-label{background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--text-muted);margin-bottom:16px;display:inline-block}
+.node-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;cursor:pointer;transition:all var(--transition);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:4px}
+.node-card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.node-card.secretary{border-top:4px solid var(--accent);border-left:4px solid var(--primary)}
+.node-card.acting-card{border-color:var(--acting-border);background:var(--acting-bg)}
+.node-tier{font-size:0.64rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;margin-bottom:2px}
+.node-name{font-weight:600;font-size:0.86rem;line-height:1.3}
+.node-role{font-size:0.74rem;color:var(--text-muted);line-height:1.3}
+.node-badge{display:inline-flex;align-items:center;font-size:0.62rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-top:3px;padding:2px 6px;border-radius:20px}
+.node-badge.acting{background:rgba(69,123,157,0.15);color:var(--acting)}
+.node-badge.vacant{background:rgba(92,107,122,0.15);color:var(--vacant)}
+.node-badge.confirmed{background:rgba(10,25,47,0.10);color:var(--status-confirmed)}
+.org-tier{margin-bottom:32px}
+.org-tier-title{font-family:var(--font-body);font-weight:700;font-size:1.1rem;color:var(--text);margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid var(--primary);display:flex;align-items:center;gap:10px;letter-spacing:-0.01em}
+.org-tier-title span{font-size:0.7rem;font-weight:400;color:var(--text-faint);text-transform:uppercase;letter-spacing:0.08em}
+.cards-row{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}
+.admin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.staff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.pmo-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:0.75rem;color:var(--text-muted);transition:border-color var(--transition)}
+.pmo-card:hover{border-color:var(--primary)}
+.pmo-card-title{font-weight:600;font-size:0.74rem;color:var(--text);margin-bottom:3px}
+.pmo-card-sub{font-size:0.68rem;color:var(--text-faint)}
+.admin-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.admin-card-header{padding:16px;color:#fff;display:flex;flex-direction:column;gap:4px}
+.admin-card-title{font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;opacity:0.8}
+.admin-card-name{font-weight:700;font-size:0.95rem}
+.admin-card-role{font-size:0.75rem;opacity:0.85}
+.admin-card-body{padding:14px}
+.rise-note{background:var(--rise-bg);border:1px solid var(--rise-border);border-radius:8px;padding:12px 16px;margin-top:12px;font-size:0.78rem;color:var(--rise);line-height:1.6}
+.ehrm-box{background:var(--surface);border:1px solid var(--accent);border-radius:12px;padding:20px;margin-bottom:32px}
+.visn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:5px}
+.detail-panel{position:fixed;right:-420px;top:0;width:400px;height:100vh;background:var(--surface);border-left:1px solid var(--border);z-index:200;overflow-y:auto;transition:right var(--transition);box-shadow:var(--shadow-lg)}
+.detail-panel.open{right:0}
+.detail-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:6px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);cursor:pointer;color:#fff;font-size:1.1rem;display:flex;align-items:center;justify-content:center;font-family:var(--font-body)}
+.detail-header{background:var(--primary);color:#fff;padding:32px 24px 24px}
+.detail-name{font-family:var(--font-body);font-weight:700;font-size:1.4rem;line-height:1.2;margin-bottom:4px;letter-spacing:-0.01em}
+.detail-role{font-size:0.85rem;opacity:0.85}
+.detail-tier{font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;opacity:0.7;margin-bottom:6px}
+.detail-body{padding:24px}
+.detail-section{margin-bottom:20px}
+.detail-section-title{font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-faint);font-weight:600;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.detail-item{margin-bottom:8px;font-size:0.82rem;color:var(--text-muted);line-height:1.5;padding-left:12px}
+.detail-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.detail-tag{padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:500;background:var(--primary-light);color:var(--primary)}
+@media(max-width:768px){.admin-grid{grid-template-columns:1fr}.staff-grid{grid-template-columns:1fr}.cards-row{flex-direction:column}.legend{display:none}}
+</style>
+</head>
+<body>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="hero-eyebrow">Organizational Intelligence</div>
+    <h1 class="hero-title">Department of Veterans Affairs<br>Organizational Structure</h1>
+    <div class="hero-meta">
+      <span>Current as of April 30, 2026</span>
+      <span>&#8226; Secretary: Doug Collins (sworn in Feb 5, 2025)</span>
+      <span>&#8226; RISE Initiative: 18 VISNs &#8594; 5 Operations Centers</span>
+      <span>&#8226; Sources: VA.gov &#183; Government Manual &#183; Military Times</span>
+    </div>
+  </div>
+</div>
+
+<div class="controls-bar">
+  <div class="controls-bar-inner">
+    <div class="search-wrap">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" class="search-input" id="searchInput" placeholder="Search name, role, office&#8230;">
+    </div>
+    <button class="expand-btn" onclick="toggleAll(true)">&#9660; Expand All</button>
+    <button class="expand-btn" onclick="toggleAll(false)">&#9654; Collapse All</button>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--acting)"></div>Acting / Performing Duties</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--vacant)"></div>Vacant</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--rise)"></div>RISE Initiative</div>
+    </div>
+  </div>
+</div>
+
+<div class="org-container">
+
+  <div class="org-tier">
+    <div class="org-tier-title">Office of the Secretary <span>Executive Leadership</span></div>
+    <div class="cards-row">
+      <div class="node-card secretary" onclick="showDetail('collins')" style="max-width:290px">
+        <div class="node-tier" style="color:var(--primary)">12th Secretary of Veterans Affairs</div>
+        <div class="node-name">The Hon. Douglas A. Collins</div>
+        <div class="node-role">Sworn in Feb 5, 2025 &#183; Trump 2nd Term</div>
+        <span class="node-badge confirmed">Senate Confirmed</span>
+      </div>
+      <div class="node-card" onclick="showDetail('lawrence')" style="max-width:290px;border-top:3px solid var(--navy)">
+        <div class="node-tier" style="color:var(--navy)">Deputy Secretary / COO</div>
+        <div class="node-name">Dr. Paul R. Lawrence, Ph.D.</div>
+        <div class="node-role">Confirmed March 27, 2025 &#183; EHRM Program Lead for VA</div>
+        <span class="node-badge confirmed">Senate Confirmed</span>
+      </div>
+      <div class="node-card" onclick="showDetail('cashour')" style="max-width:240px">
+        <div class="node-tier" style="color:var(--navy)">Chief of Staff</div>
+        <div class="node-name">Curt Cashour</div>
+        <div class="node-role">Effective Feb 13, 2026 &#183; Iraq Vet &#183; Bronze Star</div>
+      </div>
+      <div class="node-card acting-card" style="max-width:220px">
+        <div class="node-tier">General Counsel</div>
+        <div class="node-name">Catherine Mitrano</div>
+        <div class="node-role">Acting General Counsel</div>
+        <span class="node-badge acting">Acting</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="org-tier">
+    <div class="org-tier-title">Three Administrations <span>Primary Operating Pillars</span></div>
+    <div class="admin-grid">
+
+      <div class="admin-card">
+        <div class="admin-card-header" style="background:var(--primary)">
+          <div class="admin-card-title">Veterans Health Administration (VHA)</div>
+          <div class="admin-card-name">Under Secretary for Health</div>
+          <div class="admin-card-role">&#9888; VACANT &#183; No confirmed USH since Jan 20, 2025</div>
+        </div>
+        <div class="admin-card-body">
+          <span class="node-badge vacant" style="margin-bottom:10px;display:inline-flex">Vacant &#183; Senate Confirmation Required</span>
+          <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:10px;line-height:1.5">Last confirmed USH was Dr. Shereef Elnahal (Biden). Dr. Thomas O&#39;Toole serves as Acting AUSH for Clinical Services / Acting CMO.</p>
+          <p style="font-size:0.72rem;color:var(--text-faint);margin-bottom:12px">170+ VAMCs &#183; 1,200+ outpatient sites &#183; 9M+ enrolled veterans &#183; ~$65B annual healthcare budget</p>
+          <button class="expand-btn" id="vha-toggle" onclick="toggleSection('vha')" style="margin-bottom:10px;font-size:0.72rem">&#9660; VHA Structure &amp; RISE Initiative</button>
+          <div id="vha-section">
+            <div class="section-label" style="font-size:0.6rem">VHA Internal Structure</div>
+            <div style="display:grid;gap:6px;margin-bottom:14px">
+              <div class="pmo-card"><div class="pmo-card-title">Deputy Under Secretary for Health (DUSH)</div><div class="pmo-card-sub">Principal deputy &#183; reports to USH</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">Acting AUSH for Clinical Services</div><div class="pmo-card-sub">Dr. Thomas O&#39;Toole &#183; also Acting CMO</div></div>
+              <div class="pmo-card" style="border-color:var(--vacant-border)"><div class="pmo-card-title" style="color:var(--vacant)">VHA Chief Operating Officer</div><div class="pmo-card-sub">&#9888; BEING ELIMINATED under RISE Initiative</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">VHA Central Office (VHACO)</div><div class="pmo-card-sub">Policy, Financial Mgmt, Oversight, Compliance</div></div>
+            </div>
+            <div class="rise-note">
+              <strong>RISE Initiative (Restructure for Impact &amp; Sustainability Effort)</strong><br>
+              Announced Dec 15, 2025. Implementation: 2026 to 2027.<br><br>
+              <strong>Key Structural Changes:</strong><br>
+              &#8226; 18 VISNs &#8594; 5 Operations Centers reporting directly to USH<br>
+              &#8226; VHA COO position eliminated<br>
+              &#8226; VHACO staff placed under USH, DUSH, or Associate DUSH<br>
+              &#8226; Medical facility directors empowered with more local authority<br>
+              &#8226; No RIF &#183; staffing at VAMCs and clinics unchanged<br><br>
+              <strong>Goal:</strong> Eliminate redundant bureaucracy, clearer accountability chain Secretary &#8594; front-line clinical leaders.
+            </div>
+            <div style="margin-top:14px">
+              <div class="section-label" style="font-size:0.6rem">18 Current VISNs (Consolidating to 5 Operations Centers)</div>
+              <div class="visn-grid">
+                <div class="pmo-card" style="padding:6px 8px"><div class="pmo-card-title" style="font-size:0.67rem">VISN 1 &#183; New England</div></div>
+                <div class="pmo-card" style="padding:6px 8px"><div class="pmo-card-title" style="font-size:0.67rem">VISN 2 &#183; NY/NJ VA HCS</div></div>
+                <div class="pmo-card" style="padding:6px 8px"><div class="pmo-card-title" style="font-size:0.67rem">VISN 4 &#183; VISN 4</div></div>
+                <div class="pmo-card" style="padding:6px 8px"><div class="pmo-card-title" style="font-size:0.67rem">VISN 5 &#183; Capitol HC</div></div>
+                <div class="pmo-card" style="padding:6px 8px"><div class="pmo-card-title" style="font-size:0.67rem">VISN 6 &#183; Mid-Atlantic</div></div>
+                <div class="pmo-card" style="padding:6px 8px"><div class="pmo-card-title" style="font-size:0.67rem">VISN 7 &#183; SE Network</div></div>
+                <div class="pmo-card" style="padding:6px 8px"><div class="pmo-card-title" style="font-size:0.67rem">VISN 8 &#183; Sunshine</div></div>
+                <div class="pmo-card" style="padding:6px 8px"><div class="pmo-card-title" style="font-size:0.67rem">VISN 9 &#183; Mid South</div></div>
+                <div class="pmo-card" style="padding:6px 8px"><div class="pmo-card-title" style="font-size:0.67rem">VISN 10 &#183; Great Lakes</div></div>
+                <div class="pmo-card" style="padding:6px 8px"><div class="pmo-card-title" style="font-size:0.67rem">VISN 12 &#183; Midwest</div></div>
+                <div class="pmo-card" style="padding:6px 8px"><div class="pmo-card-title" style="font-size:0.67rem">VISN 15 &#183; Heartland</div></div>
+                <div class="pmo-card" style="padding:6px 8px"><div class="pmo-card-title" style="font-size:0.67rem">VISN 16 &#183; S Central</div></div>
+                <div class="pmo-card" style="padding:6px 8px"><div class="pmo-card-title" style="font-size:0.67rem">VISN 17 &#183; TX Valley</div></div>
+                <div class="pmo-card" style="padding:6px 8px"><div class="pmo-card-title" style="font-size:0.67rem">VISN 19 &#183; Mtn States</div></div>
+                <div class="pmo-card" style="padding:6px 8px"><div class="pmo-card-title" style="font-size:0.67rem">VISN 20 &#183; Northwest</div></div>
+                <div class="pmo-card" style="padding:6px 8px"><div class="pmo-card-title" style="font-size:0.67rem">VISN 21 &#183; Sierra Pacific</div></div>
+                <div class="pmo-card" style="padding:6px 8px"><div class="pmo-card-title" style="font-size:0.67rem">VISN 22 &#183; SW HC</div></div>
+                <div class="pmo-card" style="padding:6px 8px"><div class="pmo-card-title" style="font-size:0.67rem">VISN 23 &#183; Midwest HC</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-card">
+        <div class="admin-card-header" style="background:var(--navy)">
+          <div class="admin-card-title">Veterans Benefits Administration (VBA)</div>
+          <div class="admin-card-name">Acting Under Secretary for Benefits</div>
+          <div class="admin-card-role">Margarita Devlin &#183; Principal Deputy performing duties</div>
+        </div>
+        <div class="admin-card-body">
+          <span class="node-badge acting" style="margin-bottom:10px;display:inline-flex">Acting &#183; Confirmation Required</span>
+          <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:10px;line-height:1.5">Karen Brazell (nominated June 2025) withdrew Oct 2025. Deputy Sec. Lawrence re-launched search Jan 2026. Margarita Devlin continues as PDUSB/Acting.</p>
+          <button class="expand-btn" id="vba-toggle" onclick="toggleSection('vba')" style="margin-bottom:10px;font-size:0.72rem">&#9660; VBA Structure</button>
+          <div id="vba-section">
+            <p style="font-size:0.72rem;color:var(--text-faint);margin-bottom:10px">Manages nearly $200B in annual benefits. 56 Regional Offices nationwide.</p>
+            <div style="display:grid;gap:6px">
+              <div class="pmo-card"><div class="pmo-card-title">Principal Deputy USBenefits &#183; Margarita Devlin</div><div class="pmo-card-sub">Effectively running full VBA operations</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">Deputy US for Disability Assistance</div><div class="pmo-card-sub">Compensation &#183; Pension &amp; Fiduciary &#183; Insurance &#183; Benefits Assistance</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">Deputy US for Economic Opportunity</div><div class="pmo-card-sub">VR&amp;E &#183; Education &#183; Transition Assistance &#183; Loan Guaranty</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">Deputy US for Field Operations</div><div class="pmo-card-sub">56 Regional Offices &#183; Records Mgmt Center &#183; Appeals Mgmt Center</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">Board of Veterans&#39; Appeals (BVA)</div><div class="pmo-card-sub">Chair: Cheryl L. Mason</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-card">
+        <div class="admin-card-header" style="background:var(--accent)">
+          <div class="admin-card-title">National Cemetery Administration (NCA)</div>
+          <div class="admin-card-name">Under Secretary for Memorial Affairs</div>
+          <div class="admin-card-role">Sam Brown &#183; Confirmed Aug 1, 2025</div>
+        </div>
+        <div class="admin-card-body">
+          <span class="node-badge confirmed" style="margin-bottom:10px;display:inline-flex">Senate Confirmed Aug 1, 2025</span>
+          <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:10px;line-height:1.5">Nominated Jan 20, 2025. Confirmed 54 to 44. Sworn in by Secretary Collins.</p>
+          <button class="expand-btn" id="nca-toggle" onclick="toggleSection('nca')" style="margin-bottom:10px;font-size:0.72rem">&#9660; NCA Structure</button>
+          <div id="nca-section">
+            <div style="display:grid;gap:6px">
+              <div class="pmo-card"><div class="pmo-card-title">150+ National Cemeteries (US &amp; Puerto Rico)</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">State Cemetery Grants Program</div><div class="pmo-card-sub">State &amp; tribal veterans cemeteries funding</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">Headstones, Markers &amp; Presidential Memorial Certificates</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="org-tier">
+    <div class="org-tier-title">Staff Offices <span>Assistant Secretaries &amp; Executive Directors</span></div>
+    <div style="margin-bottom:16px">
+      <div class="section-label">Assistant Secretaries</div>
+      <div class="staff-grid">
+        <div class="node-card" onclick="showDetail('tucker')">
+          <div class="node-tier" style="color:var(--navy)">AS for Congressional &amp; Legislative Affairs</div>
+          <div class="node-name">Brooks D. Tucker</div>
+          <div class="node-role">VA-Congress relationship, legislative engagement, GAO liaison</div>
+          <span class="node-badge confirmed">Confirmed</span>
+        </div>
+        <div class="node-card" onclick="showDetail('glynn')">
+          <div class="node-tier" style="color:var(--navy)">AS for Enterprise Integration</div>
+          <div class="node-name">Melissa S. Glynn, Ph.D.</div>
+          <div class="node-role">Cross-functional integration, strategic analysis, departmental planning</div>
+        </div>
+        <div class="node-card acting-card">
+          <div class="node-tier">AS for Human Resources &amp; Administration</div>
+          <div class="node-name">Jacquelyn Hayes-Byrd</div>
+          <div class="node-role">Acting &#183; VA workforce 300,000+</div>
+          <span class="node-badge acting">Acting</span>
+        </div>
+        <div class="node-card acting-card" onclick="showDetail('shatswell')">
+          <div class="node-tier">AS for IT / Chief Information Officer</div>
+          <div class="node-name">Gary Shatswell</div>
+          <div class="node-role">Nominated April 21, 2026 (3rd nominee). Lawrence performing duties pending confirmation.</div>
+          <span class="node-badge acting">Nominated &#183; Pending</span>
+        </div>
+        <div class="node-card" onclick="showDetail('rychalski')">
+          <div class="node-tier" style="color:var(--navy)">AS for Management / CFO</div>
+          <div class="node-name">Jon J. Rychalski</div>
+          <div class="node-role">CFO &#183; ~$350B total VA budget authority</div>
+        </div>
+        <div class="node-card acting-card">
+          <div class="node-tier">AS for Public &amp; Intergovernmental Affairs</div>
+          <div class="node-name">Position Under Transition</div>
+          <div class="node-role">Cashour moved to Chief of Staff Feb 2026 &#183; role under review</div>
+          <span class="node-badge acting">Transitioning</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="section-label">Executive Directors &amp; Independent Offices</div>
+      <div class="staff-grid">
+        <div class="node-card"><div class="node-tier" style="color:var(--navy)">Accountability &amp; Whistleblower Protection</div><div class="node-name">Kirk M. Nicholas</div><div class="node-role">Employee accountability and whistleblower protections</div></div>
+        <div class="node-card"><div class="node-tier" style="color:var(--navy)">Acquisition, Logistics &amp; Construction (OALC)</div><div class="node-name">Karen L. Brazell</div><div class="node-role">Chief Acquisition Officer &#183; withdrew VBA nomination Oct 2025, remains OALC</div></div>
+        <div class="node-card"><div class="node-tier" style="color:var(--navy)">Chief Veterans Experience Officer</div><div class="node-name">Lynda C. Davis</div><div class="node-role">Veterans&#39; experience, satisfaction, and access initiatives</div></div>
+        <div class="node-card"><div class="node-tier" style="color:var(--navy)">Office of Inspector General</div><div class="node-name">Michael J. Missal</div><div class="node-role">Independent oversight of VA programs and operations</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ehrm-box">
+    <div style="font-weight:700;font-size:0.85rem;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px">
+      <span style="background:var(--accent-light);color:var(--accent);padding:3px 8px;border-radius:4px;font-size:0.7rem;font-weight:700">FEHRM</span>
+      Federal EHR Modernization &#183; VA / DoD Joint Program
+    </div>
+    <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.6">
+      The <strong style="color:var(--text)">Federal EHR Modernization (FEHRM)</strong> is jointly managed by VA and DoD (DHA). FEHRM Director Bill Tinston coordinates Oracle Cerner deployment across both enterprises. As of April 2026, VA has 13+ active deployment sites. Deputy Secretary Lawrence personally oversees the EHRM program for VA, appearing weekly on the &#8220;Federal Electronic Health Record Update&#8221; internal program.
+    </p>
+    <p style="font-size:0.8rem;color:var(--text-muted);line-height:1.6;margin-top:8px">
+      <strong style="color:var(--mmt-red)">&#9888; Risk Flag:</strong> The DHA April 2026 reorg &#183; PAE &#8220;Construct Pending&#8221; status and HCDS recompete &#183; creates a governance gap for FEHRM coordination on the DoD side during the IOC to FOC transition (target: Jul 19, 2026). On the VA side, the vacant CIO position (Gary Shatswell pending confirmation) adds further coordination risk for the joint program.
+    </p>
+  </div>
+
+  <p style="font-size:0.7rem;color:var(--text-faint);text-align:center;margin-top:24px">
+    Sources: VA.gov &#183; US Government Manual &#183; Military Times &#183; Army Times &#183; NextGov &#183; Mission Meets Tech Research &#183; Current as of April 30, 2026
+  </p>
+</div>
+
+<div class="detail-panel" id="detailPanel">
+  <button class="detail-close" onclick="closeDetail()">&#10005;</button>
+  <div class="detail-header">
+    <div class="detail-tier" id="detailTier"></div>
+    <div class="detail-name" id="detailName"></div>
+    <div class="detail-role" id="detailRole"></div>
+  </div>
+  <div class="detail-body" id="detailBody"></div>
+</div>
+<div id="overlay" onclick="closeDetail()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:150"></div>
+
+<script>
+const leaders={
+  collins:{tier:'12th Secretary of Veterans Affairs',name:'The Hon. Douglas A. Collins',role:'Secretary of Veterans Affairs',sections:[
+    {title:'Background',items:['Sworn in Feb 5, 2025: nominated by President Trump','Former U.S. Representative, Georgia 9th District (2013 to 2021)','U.S. Air Force JAG officer and chaplain: military veteran','Senior ranking member, House Judiciary Committee']},
+    {title:'Key Initiatives',items:['RISE: Largest VHA reorganization in 30 years: 18 VISNs to 5 Operations Centers','DOGE-aligned workforce reductions','Community care expansion','EHRM oversight through Deputy Sec. Lawrence']},
+    {title:'Budget Authority',items:['~$350B total VA budget','~$65B VHA healthcare budget','~$200B VBA benefits payments annually']}
+  ],tags:['12th Secretary','Trump Admin','RISE Initiative','Air Force Veteran']},
+  lawrence:{tier:'Deputy Secretary / COO',name:'Dr. Paul R. Lawrence, Ph.D.',role:'Deputy Secretary: Chief Operating Officer',sections:[
+    {title:'Background',items:['Confirmed March 27, 2025 (51 to 45 vote)','Army veteran','7th Under Secretary for Benefits, Trump 1st term (2017 to 2021)','National Academy of Public Administration Fellow since 2012']},
+    {title:'Current Responsibilities',items:['VA Chief Operating Officer','Leads VBA Under Secretary search commission','Performing duties as Acting CIO until Shatswell confirmed','Personally oversees EHRM weekly program','Oversees RISE Implementation']}
+  ],tags:['Deputy Secretary','Army Veteran','EHRM Lead','VBA Expert','COO']},
+  cashour:{tier:'Chief of Staff',name:'Curt Cashour',role:'Chief of Staff, VA: Effective Feb 13, 2026',sections:[
+    {title:'Background',items:['Iraq War Veteran: Bronze Star Medal recipient','2nd tenure at VA: previously VA press secretary under Trump 1st term','Led congressional communication for Veterans Access, Choice and Accountability Act']}
+  ],tags:['Iraq War Vet','Bronze Star','Chief of Staff']},
+  tucker:{tier:'AS for Congressional & Legislative Affairs',name:'Brooks D. Tucker',role:'Assistant Secretary for Congressional and Legislative Affairs',sections:[{title:'Role',items:["VA's principal liaison to Congress","Manages GAO relationship for VA","Advances pro-Veteran legislation"]}],tags:['OCLA','Congressional Relations']},
+  glynn:{tier:'AS for Enterprise Integration',name:'Melissa S. Glynn, Ph.D.',role:'Assistant Secretary for Enterprise Integration',sections:[{title:'Role',items:['Strategic analysis and departmental planning','Cross-administration integration','Data governance and performance management']}],tags:['Enterprise Integration','PhD']},
+  shatswell:{tier:'Nominated AS for IT / CIO',name:'Gary Shatswell',role:'Nominated CIO & AS for Information and Technology (3rd nominee)',sections:[
+    {title:'Background',items:['Senior Advisor to Secretary Collins since December 2025','3rd CIO nominee of Trump 2nd term: Ryan Cote and Alan Boehme both withdrew in 2025','Pending Senate confirmation as of April 30, 2026']},
+    {title:'Watch Item',items:['Lawrence performing dual CIO duties until confirmed','IT modernization critical to EHRM, VBA claims, Veterans.gov']}
+  ],tags:['CIO Nominee','3rd Nominee','IT Modernization','EHRM','Pending Confirmation']},
+  rychalski:{tier:'AS for Management / CFO',name:'Jon J. Rychalski',role:'Assistant Secretary for Management & CFO',sections:[{title:'Role',items:['CFO for second-largest U.S. government department','Manages ~$135B+ discretionary plus ~$200B+ mandatory benefits','Financial controls across VHA, VBA, NCA, and staff offices']}],tags:['CFO','Budget Authority']}
+};
+function showDetail(id){
+  const d=leaders[id];if(!d)return;
+  document.getElementById('detailTier').textContent=d.tier;
+  document.getElementById('detailName').textContent=d.name;
+  document.getElementById('detailRole').textContent=d.role;
+  let html='';
+  d.sections.forEach(s=>{html+=`<div class="detail-section"><div class="detail-section-title">${s.title}</div>`;s.items.forEach(i=>html+=`<div class="detail-item">&#8226; ${i}</div>`);html+='</div>';});
+  if(d.tags){html+='<div class="detail-section"><div class="detail-section-title">Tags</div><div class="detail-tags">';d.tags.forEach(t=>html+=`<span class="detail-tag">${t}</span>`);html+='</div></div>';}
+  document.getElementById('detailBody').innerHTML=html;
+  document.getElementById('detailPanel').classList.add('open');
+  document.getElementById('overlay').style.display='block';
+}
+function closeDetail(){document.getElementById('detailPanel').classList.remove('open');document.getElementById('overlay').style.display='none';}
+function toggleSection(id){
+  const el=document.getElementById(id+'-section'),btn=document.getElementById(id+'-toggle');
+  if(!el)return;
+  if(el.style.display==='none'){el.style.display='';if(btn)btn.textContent=btn.textContent.replace('▶','▼');}
+  else{el.style.display='none';if(btn)btn.textContent=btn.textContent.replace('▼','▶');}
+}
+function toggleAll(expand){['vha','vba','nca'].forEach(id=>{const el=document.getElementById(id+'-section'),btn=document.getElementById(id+'-toggle');if(el){el.style.display=expand?'':'none';if(btn)btn.textContent=expand?btn.textContent.replace('▶','▼'):btn.textContent.replace('▼','▶');}});}
+document.getElementById('searchInput').addEventListener('input',function(){
+  const q=this.value.toLowerCase();
+  document.querySelectorAll('.node-card,.pmo-card,.admin-card').forEach(el=>{el.style.opacity=(!q||el.textContent.toLowerCase().includes(q))?'1':'0.2';});
+});
+</script>
+</body>
+</html>

@@ -170,6 +170,12 @@
 [functions."roadmap-health-check"]
   schedule = "0 10 * * *"
 
+# Weekly org-chart pulse (Mondays 11:00 UTC = 07:00 ET). Hashes the
+# canonical agency leadership pages and emails Mary if the content
+# has changed since last week. First run seeds the baseline silently.
+[functions."org-chart-monitor"]
+  schedule = "0 11 * * 1"
+
 # May 1, 2026 release automations — date-guarded inside each function;
 # the daily cron is harmless on every other day.
 [functions."may1-premium-capture-send"]

@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>DHA Organizational Structure &middot; MMT Premium</title>
+<link rel="stylesheet" href="/styles/tokens.css">
+<style>
+:root{
+  --mmt-navy:#0A192F;
+  --mmt-teal:#457B9D;
+  --mmt-soft:#F3F4F6;
+  --mmt-white:#FFFFFF;
+  --mmt-border:#D8E0E8;
+  --mmt-text:#102033;
+  --mmt-text-secondary:#5C6B7A;
+  --mmt-text-faint:#8898aa;
+  --mmt-red:#E63946;
+  /* Status tones, retoned to MMT palette */
+  --status-acting:#457B9D;
+  --status-acting-bg:rgba(69,123,157,0.08);
+  --status-acting-border:rgba(69,123,157,0.35);
+  --status-vacant:#5C6B7A;
+  --status-vacant-bg:rgba(92,107,122,0.08);
+  --status-vacant-border:rgba(92,107,122,0.30);
+  --status-new:#457B9D;
+  --status-new-bg:rgba(69,123,157,0.10);
+  --status-new-border:rgba(69,123,157,0.40);
+  --status-foc:#0A192F;
+  --status-foc-bg:rgba(10,25,47,0.05);
+  --status-foc-border:rgba(10,25,47,0.20);
+  /* Layout/elevation */
+  --bg:var(--mmt-white);
+  --surface:var(--mmt-white);
+  --surface-2:var(--mmt-soft);
+  --surface-offset:#E8EDF3;
+  --border:var(--mmt-border);
+  --text:var(--mmt-text);
+  --text-muted:var(--mmt-text-secondary);
+  --text-faint:var(--mmt-text-faint);
+  --primary:var(--mmt-navy);
+  --primary-hover:#06122A;
+  --primary-light:rgba(10,25,47,0.06);
+  --accent:var(--mmt-teal);
+  --accent-hover:#3A6A8B;
+  --accent-light:rgba(69,123,157,0.10);
+  --acting:var(--status-acting);
+  --acting-bg:var(--status-acting-bg);
+  --acting-border:var(--status-acting-border);
+  --new:var(--status-new);
+  --new-bg:var(--status-new-bg);
+  --new-border:var(--status-new-border);
+  --foc:var(--status-foc);
+  --foc-bg:var(--status-foc-bg);
+  --foc-border:var(--status-foc-border);
+  --shadow-sm:0 1px 3px rgba(10,25,47,0.06);
+  --shadow-md:0 4px 16px rgba(10,25,47,0.08);
+  --shadow-lg:0 12px 40px rgba(10,25,47,0.10);
+  --radius:8px;--radius-lg:12px;--radius-xl:16px;
+  --font-body:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --transition:180ms cubic-bezier(0.16,1,0.3,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+.page-hero{background:var(--primary);color:#fff;padding:32px 24px 40px;border-bottom:3px solid var(--accent)}
+.page-hero-inner{max-width:1400px;margin:0 auto}
+.hero-eyebrow{font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;opacity:0.7;margin-bottom:8px}
+.hero-title{font-family:var(--font-body);font-weight:700;font-size:clamp(1.5rem,3vw,2.25rem);line-height:1.2;margin-bottom:12px;letter-spacing:-0.01em}
+.hero-meta{display:flex;flex-wrap:wrap;gap:16px;font-size:0.8rem;opacity:0.85}
+.hero-meta span{display:flex;align-items:center;gap:6px}
+.hero-meta span::before{content:'\00B7';opacity:0.5}
+.hero-meta span:first-child::before{display:none}
+.controls-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;position:sticky;top:0;z-index:90;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.controls-bar-inner{max-width:1400px;margin:0 auto;width:100%;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.search-wrap{position:relative;flex:1;min-width:200px;max-width:360px}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-faint);pointer-events:none}
+.search-input{width:100%;padding:8px 12px 8px 34px;border:1px solid var(--border);border-radius:6px;background:var(--surface-2);color:var(--text);font-size:0.85rem;outline:none;transition:border-color var(--transition);font-family:var(--font-body)}
+.search-input:focus{border-color:var(--primary)}
+.toggle-group{display:flex;gap:4px;background:var(--surface-2);border-radius:6px;padding:3px}
+.toggle-btn{padding:5px 12px;border:none;background:transparent;color:var(--text-muted);font-size:0.78rem;border-radius:4px;cursor:pointer;transition:all var(--transition);font-weight:500;font-family:var(--font-body)}
+.toggle-btn.active{background:var(--surface);color:var(--text);box-shadow:var(--shadow-sm)}
+.expand-btn{padding:6px 14px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text-muted);font-size:0.78rem;cursor:pointer;transition:all var(--transition);display:flex;align-items:center;gap:6px;font-family:var(--font-body)}
+.expand-btn:hover{border-color:var(--primary);color:var(--primary)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-left:auto;font-size:0.72rem}
+.legend-item{display:flex;align-items:center;gap:5px;color:var(--text-muted)}
+.legend-dot{width:10px;height:10px;border-radius:50%}
+.org-container{max-width:1400px;margin:0 auto;padding:32px 24px;overflow-x:auto}
+.org-tree{min-width:900px}
+.node-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;min-width:180px;max-width:240px;position:relative;cursor:pointer;transition:all var(--transition);box-shadow:var(--shadow-sm);display:inline-flex;flex-direction:column;gap:4px}
+.node-card:hover{box-shadow:var(--shadow-md);border-color:var(--primary);transform:translateY(-1px)}
+.node-card.active{border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-light),var(--shadow-md)}
+.node-card.acting-badge{border-color:var(--acting-border);background:var(--acting-bg)}
+.node-card.new-badge{border-color:var(--new-border);background:var(--new-bg)}
+.node-card.foc-badge{border-color:var(--foc-border);background:var(--foc-bg);opacity:0.85}
+.node-tier{font-size:0.64rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;margin-bottom:2px}
+.node-tier.tier-1{color:var(--accent)}
+.node-tier.tier-2{color:var(--primary)}
+.node-tier.tier-3{color:var(--text-muted)}
+.node-name{font-weight:600;font-size:0.82rem;line-height:1.3;color:var(--text)}
+.node-role{font-size:0.74rem;color:var(--text-muted);line-height:1.3}
+.node-badge{display:inline-flex;align-items:center;gap:3px;font-size:0.62rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-top:3px;padding:2px 6px;border-radius:20px}
+.node-badge.acting{background:rgba(69,123,157,0.15);color:var(--acting)}
+.node-badge.new-org{background:rgba(69,123,157,0.18);color:var(--new)}
+.node-badge.foc{background:rgba(10,25,47,0.10);color:var(--foc)}
+.node-badge.pending{background:rgba(92,107,122,0.15);color:var(--text-muted)}
+.connector-v{width:2px;height:24px;background:var(--border);margin:0 auto}
+.connector-v.thick{background:var(--primary);opacity:0.4}
+.children-group{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;position:relative;padding-top:24px}
+.children-group::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--border)}
+.child-col{display:flex;flex-direction:column;align-items:center;position:relative}
+.child-col::before{content:'';position:absolute;top:-24px;left:50%;width:2px;height:24px;background:var(--border);transform:translateX(-50%)}
+.detail-panel{position:fixed;right:-400px;top:0;width:380px;height:100vh;background:var(--surface);border-left:1px solid var(--border);z-index:200;overflow-y:auto;transition:right var(--transition);box-shadow:var(--shadow-lg);padding:0}
+.detail-panel.open{right:0}
+.detail-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border:1px solid rgba(255,255,255,0.2);border-radius:6px;background:rgba(255,255,255,0.1);cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;font-family:var(--font-body)}
+.detail-header{background:var(--primary);color:#fff;padding:32px 24px 24px}
+.detail-tier{font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;opacity:0.7;margin-bottom:6px}
+.detail-name{font-family:var(--font-body);font-weight:700;font-size:1.4rem;line-height:1.2;margin-bottom:4px;letter-spacing:-0.01em}
+.detail-role{font-size:0.85rem;opacity:0.85;line-height:1.4}
+.detail-body{padding:24px}
+.detail-section{margin-bottom:20px}
+.detail-section-title{font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-faint);font-weight:600;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.detail-item{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;font-size:0.82rem;color:var(--text-muted);line-height:1.5}
+.detail-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.detail-tag{padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:500;background:var(--primary-light);color:var(--primary)}
+.section-label{background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--text-muted);margin-bottom:16px;display:inline-block}
+.pmo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:8px}
+.pmo-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:0.75rem;color:var(--text-muted);transition:all var(--transition);cursor:default}
+.pmo-card:hover{border-color:var(--primary);color:var(--text);background:var(--primary-light)}
+.pmo-card-title{font-weight:600;font-size:0.74rem;color:var(--text);margin-bottom:3px}
+.pmo-card-sub{font-size:0.68rem;color:var(--text-faint)}
+.status-bar{background:var(--accent-light);border:1px solid var(--accent);border-radius:8px;padding:12px 16px;margin-bottom:24px;font-size:0.8rem;color:var(--text-muted);display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.ioc-foc-note{background:var(--foc-bg);border:1px solid var(--foc-border);border-radius:8px;padding:12px 16px;margin-bottom:8px;font-size:0.8rem;color:var(--foc)}
+.network-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.network-pill{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-size:0.74rem;font-weight:500;color:var(--text-muted);text-align:center;transition:all var(--transition)}
+.network-pill:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-light)}
+.node-hidden{display:none !important}
+@media(max-width:768px){.org-container{padding:16px 12px}.detail-panel{width:100%;right:-100%}.controls-bar{padding:10px 16px}.legend{display:none}}
+</style>
+</head>
+<body>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="hero-eyebrow">Organizational Intelligence</div>
+    <h1 class="hero-title">Defense Health Agency<br>Organizational Structure</h1>
+    <div class="hero-meta">
+      <span>Structure effective 20 APR 2026</span>
+      <span>Leadership as of 30 APR 2026</span>
+      <span>IOC: 21 APR 2026 &middot; FOC Target: 19 JUL 2026</span>
+      <span>Source: AD-RDA Town Hall 29APR26 (UNCLASSIFIED)</span>
+    </div>
+  </div>
+</div>
+
+<div class="controls-bar">
+  <div class="controls-bar-inner">
+    <div class="search-wrap">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" class="search-input" id="searchInput" placeholder="Search name, role, PMO...">
+    </div>
+    <div class="toggle-group">
+      <button class="toggle-btn active" onclick="setView(this)">IOC View (21 APR)</button>
+      <button class="toggle-btn" onclick="setView(this)">FOC View (19 JUL)</button>
+      <button class="toggle-btn" onclick="setView(this)">Full Org</button>
+    </div>
+    <button class="expand-btn" onclick="toggleAll(true)">&#9660; Expand All</button>
+    <button class="expand-btn" onclick="toggleAll(false)">&#9654; Collapse All</button>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--acting)"></div>Acting</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--new)"></div>New Organization</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--foc)"></div>FOC Target</div>
+    </div>
+  </div>
+</div>
+
+<div class="org-container">
+  <div class="status-bar">
+    <span style="font-size:1rem">&#8505;</span>
+    <div><strong>Restructuring in Progress.</strong> DHA completed Initial Operating Capability (IOC) on 21 APR 2026 under Vice Admiral Darin K. Via. Full Operating Capability (FOC) targeted 19 JUL 2026. Key transitions: PEO DHMS moving under AD-RDA, J-4/J-6 moving to AD-SPFO, three Portfolio Acquisition Executives (PAEs) standing up to replace PEO Medical Systems construct.</div>
+  </div>
+
+  <!-- TIER 1: DIRECTOR -->
+  <div style="text-align:center;margin-bottom:0">
+    <div class="section-label">Office of the Director</div>
+    <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:8px">
+      <div style="display:flex;flex-direction:column;align-items:center">
+        <div class="node-card" onclick="showDetail('via')" style="border-top:3px solid var(--accent);max-width:260px">
+          <div class="node-tier tier-1">Director &middot; DHA 5</div>
+          <div class="node-name">VADM Darin K. Via</div>
+          <div class="node-role">Director, Defense Health Agency</div>
+          <span class="node-badge" style="background:rgba(69,123,157,0.18);color:var(--accent)">&#9650; O-9 Vice Admiral</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center">
+        <div class="node-card" onclick="showDetail('smith')" style="border-top:3px solid var(--primary)">
+          <div class="node-tier tier-1">Deputy Director</div>
+          <div class="node-name">Dr. David J. Smith</div>
+          <div class="node-role">Deputy Director, DHA</div>
+          <span class="node-badge" style="background:rgba(10,25,47,0.10);color:var(--primary)">SES Civilian</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center">
+        <div class="node-card" onclick="showDetail('mangaran')">
+          <div class="node-tier tier-2">Command Senior Enlisted</div>
+          <div class="node-name">FORCM PatrickPaul Mangaran</div>
+          <div class="node-role">"PaP" &middot; Command Senior Enlisted Leader</div>
+          <span class="node-badge" style="background:rgba(10,25,47,0.10);color:var(--primary)">E-9</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:4px">
+      <div class="node-card" onclick="showDetail('marty')" style="max-width:210px">
+        <div class="node-tier tier-3">HQ Operations</div>
+        <div class="node-name">Mr. Stephen Marty</div>
+        <div class="node-role">Director, Headquarters Operations</div>
+      </div>
+      <div class="node-card" onclick="showDetail('farrill')" style="max-width:230px;border-color:var(--new-border);background:var(--new-bg)">
+        <div class="node-tier tier-2" style="color:var(--new)">OWHA &middot; New</div>
+        <div class="node-name">RDML Tracy Farrill</div>
+        <div class="node-role">Director, Office of Warfighter Health Advantage</div>
+        <span class="node-badge new-org">New Entity</span>
+      </div>
+      <div class="node-card" style="max-width:200px">
+        <div class="node-tier tier-3">Special Staff</div>
+        <div class="node-name">General Counsel &middot; DAG &middot; Program Integration &middot; Comms &amp; PA</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;padding:16px 0 8px">
+    <div class="connector-v thick" style="height:32px"></div>
+  </div>
+
+  <!-- TIER 2: THREE ADs -->
+  <div style="text-align:center;margin-bottom:0">
+    <div class="section-label">Three Assistant Directors (Principal Lines)</div>
+    <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap">
+
+      <!-- AD-HCAO -->
+      <div style="display:flex;flex-direction:column;align-items:center;min-width:260px;max-width:340px">
+        <div class="node-card acting-badge" onclick="showDetail('soliz')" style="width:100%;text-align:center">
+          <div class="node-tier tier-2" style="color:var(--acting)">AD-HCAO</div>
+          <div class="node-name">BG Bill A. Soliz</div>
+          <div class="node-role">Acting Asst. Director &middot; Healthcare Administration &amp; Operations</div>
+          <span class="node-badge acting">Acting &middot; O-7 BGen</span>
+        </div>
+        <div class="connector-v thick"></div>
+        <button class="expand-btn" id="hcao-toggle" onclick="toggleSection('hcao')" style="font-size:0.72rem;margin-bottom:8px">&#9660; HCAO Sub-Units</button>
+        <div id="hcao-section" style="width:100%;text-align:left">
+          <div class="section-label" style="font-size:0.62rem">Operations, Strategy &amp; Plans</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
+            <div class="pmo-card"><div class="pmo-card-title">J-3/5 Ops, Strategy &amp; Plans</div><div class="pmo-card-sub">Principal Deputy (vacant)</div></div>
+            <div class="pmo-card"><div class="pmo-card-title">J-7 Education &amp; Training</div><div class="pmo-card-sub">METC, ASBP, JTS, AFMES</div></div>
+            <div class="pmo-card" style="border-color:var(--new-border)"><div class="pmo-card-title">J-9 Requirements (New)</div><div class="pmo-card-sub">New construct under HCAO</div></div>
+          </div>
+          <div class="section-label" style="font-size:0.62rem">Healthcare Operations</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+            <div class="pmo-card"><div class="pmo-card-title">Healthcare Operations</div></div>
+            <div class="pmo-card"><div class="pmo-card-title">Medical Affairs</div></div>
+            <div class="pmo-card"><div class="pmo-card-title">DSPO</div><div class="pmo-card-sub">Defense Suicide Prevention Office</div></div>
+            <div class="pmo-card"><div class="pmo-card-title">Public Health</div></div>
+            <div class="pmo-card"><div class="pmo-card-title">TRICARE Health Plan</div></div>
+          </div>
+          <div class="section-label" style="font-size:0.62rem;margin-top:10px">Subordinate Activities</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+            <div class="pmo-card"><div class="pmo-card-title">METC</div><div class="pmo-card-sub">Fort Sam Houston</div></div>
+            <div class="pmo-card"><div class="pmo-card-title">Armed Services Blood Program</div></div>
+            <div class="pmo-card"><div class="pmo-card-title">Joint Trauma System</div></div>
+            <div class="pmo-card"><div class="pmo-card-title">Armed Forces Medical Examiner System</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AD-RDA/CAE -->
+      <div style="display:flex;flex-direction:column;align-items:center;min-width:280px;max-width:400px">
+        <div class="node-card acting-badge" onclick="showDetail('arena')" style="width:100%;text-align:center">
+          <div class="node-tier tier-2" style="color:var(--acting)">AD-RDA / CAE</div>
+          <div class="node-name">RDML Ivonne Arena</div>
+          <div class="node-role">Acting Asst. Director &middot; Research, Development &amp; Acquisition / Component Acquisition Executive</div>
+          <span class="node-badge acting">Acting &middot; O-7 RDML (USPHS)</span>
+        </div>
+        <div class="connector-v thick"></div>
+        <button class="expand-btn" id="rda-toggle" onclick="toggleSection('rda')" style="font-size:0.72rem;margin-bottom:8px">&#9660; AD-RDA Sub-Units (IOC)</button>
+        <div id="rda-section" style="width:100%;text-align:left">
+          <div class="node-card" onclick="showDetail('scheideman')" style="margin-bottom:8px;border-color:var(--acting-border);width:100%">
+            <div class="node-tier tier-3">Principal Deputy RDA / DCAE</div>
+            <div class="node-name">Mr. Brett Scheideman</div>
+            <div class="node-role">Acting NH-IV &middot; S&amp;T, Chief Scientist, Industry Engagement, Category Mgmt</div>
+            <span class="node-badge acting">Acting NH-IV</span>
+          </div>
+          <div class="node-card" style="margin-bottom:8px;width:100%">
+            <div class="node-tier tier-3">MILDEP AD-RDA</div>
+            <div class="node-name">COL Basia Bujak</div>
+            <div class="node-role">Military Department AD-RDA Liaison</div>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px">
+            <div class="node-card acting-badge" onclick="showDetail('perkins')" style="margin-bottom:8px;width:100%">
+              <div class="node-tier tier-3">PEO DHMS</div>
+              <div class="node-name">Mr. James Perkins (Acting)</div>
+              <div class="node-role">Program Executive Officer &middot; Defense Healthcare Management Systems</div>
+              <span class="node-badge acting">Acting PEO</span>
+            </div>
+            <div class="section-label" style="font-size:0.6rem">19 PMOs under PEO DHMS</div>
+            <div class="pmo-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr))">
+              <div class="pmo-card"><div class="pmo-card-title">MHS GENESIS (HCDS)</div><div class="pmo-card-sub">EHR &middot; recompete Jul 2026</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">JOMIS</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">EIDS</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">Health Services Support</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">MEDLOG IT</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">Web &amp; Mobile Technology</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">Clinical Support</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">Care &amp; Benefits Integrated Systems</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">Occ. &amp; Env. Health Surveillance</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">Enterprise Medical Services</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">Reserve Health Readiness</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">Virtual Health</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">TRICARE Acquisition Cell</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">Acquisition of Services CoE</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">Warfighter Readiness &amp; Brain Health</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">Warfighter Expeditionary Medicine</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">Warfighter Protection &amp; Acute Care</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">Medical Devices &amp; Equipment</div></div>
+              <div class="pmo-card"><div class="pmo-card-title">Medical Simulation &amp; Training</div></div>
+            </div>
+          </div>
+          <div class="node-card acting-badge" onclick="showDetail('moss')" style="margin-bottom:8px;width:100%">
+            <div class="node-tier tier-3">PEO Medical Systems (IOC)</div>
+            <div class="node-name">COL Marcus Moss (Acting)</div>
+            <div class="node-role">Transitions to PAE structure by FOC 19 JUL 2026</div>
+            <span class="node-badge acting">Acting PEO</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
+            <div class="node-card acting-badge" onclick="showDetail('friedman')">
+              <div class="node-tier tier-3" style="color:var(--new)">PAE Medical Services</div>
+              <div class="node-name">Mrs. Madeleine Friedman</div>
+              <span class="node-badge new-org">New PAE</span>
+            </div>
+            <div class="node-card acting-badge" onclick="showDetail('felkoski')">
+              <div class="node-tier tier-3" style="color:var(--new)">PAE Medical Products</div>
+              <div class="node-name">Ms. Caitlyn Felkoski</div>
+              <span class="node-badge new-org">New PAE &middot; NH-IV</span>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+            <div class="node-card" onclick="showDetail('watkins')">
+              <div class="node-tier tier-3">DHACA</div>
+              <div class="node-name">Mr. James Watkins</div>
+              <div class="node-role">DHA Contracting Activity</div>
+            </div>
+            <div class="node-card" onclick="showDetail('lodi')">
+              <div class="node-tier tier-3">DHA R&amp;D / MRDC</div>
+              <div class="node-name">MG Paula Lodi</div>
+              <div class="node-role">Medical Research &amp; Development Command</div>
+              <span class="node-badge" style="background:rgba(230,57,70,0.10);color:var(--mmt-red)">Budget -59%</span>
+            </div>
+          </div>
+          <div class="ioc-foc-note" style="margin-top:10px">
+            <strong>FOC (19 JUL 2026):</strong> Three PAEs fully stood up &middot; PAE Medical Software &amp; Business Systems, PAE Medical Services, PAE Medical Products. PEO DHMS consolidates under AD-RDA.
+          </div>
+        </div>
+      </div>
+
+      <!-- AD-SPFO -->
+      <div style="display:flex;flex-direction:column;align-items:center;min-width:240px;max-width:300px">
+        <div class="node-card" onclick="showDetail('emerson')" style="width:100%;text-align:center;border-top:3px solid var(--primary)">
+          <div class="node-tier tier-2">AD-SPFO</div>
+          <div class="node-name">Mr. Michael R. Emerson</div>
+          <div class="node-role">Assistant Director &middot; Support, Personnel &amp; Financial Operations</div>
+          <span class="node-badge" style="background:rgba(10,25,47,0.10);color:var(--primary)">SES Civilian</span>
+        </div>
+        <div class="connector-v thick"></div>
+        <button class="expand-btn" id="spfo-toggle" onclick="toggleSection('spfo')" style="font-size:0.72rem;margin-bottom:8px">&#9660; SPFO Sub-Units</button>
+        <div id="spfo-section" style="width:100%;text-align:left">
+          <div style="display:grid;gap:6px">
+            <div class="pmo-card"><div class="pmo-card-title">J-1 Personnel &amp; Administration</div></div>
+            <div class="pmo-card"><div class="pmo-card-title">J-8 Financial Management</div><div class="pmo-card-sub">TRICARE Program Resource Mgmt &middot; Defense Health Programming</div></div>
+            <div class="pmo-card" style="border-color:var(--foc-border)"><div class="pmo-card-title" style="color:var(--foc)">J-4 Medical Logistics &#8592; FOC</div></div>
+            <div class="pmo-card"><div class="pmo-card-title">DHA Facilities Enterprise</div></div>
+            <div class="pmo-card" style="border-color:var(--foc-border)"><div class="pmo-card-title" style="color:var(--foc)">J-6 Chief Information Office &#8592; FOC</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9 NETWORKS -->
+  <div style="margin-top:40px">
+    <div class="section-label">9 Direct Reporting Networks (Healthcare Operations)</div>
+    <div class="network-grid">
+      <div class="network-pill">Continental</div>
+      <div class="network-pill">East</div>
+      <div class="network-pill">West</div>
+      <div class="network-pill">Central</div>
+      <div class="network-pill">Atlantic</div>
+      <div class="network-pill">NCR (National Capital Region)</div>
+      <div class="network-pill">Europe</div>
+      <div class="network-pill">Pacific Rim</div>
+      <div class="network-pill">Indo-Pacific</div>
+    </div>
+  </div>
+
+  <!-- GOVERNANCE -->
+  <div style="margin-top:32px">
+    <div class="section-label">Governance &middot; Boards &amp; Panels</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px">
+      <div class="pmo-card"><div class="pmo-card-title">Corporate Executive Board (CEB)</div></div>
+      <div class="pmo-card"><div class="pmo-card-title">Executive Management Board (EMB)</div></div>
+      <div class="pmo-card"><div class="pmo-card-title">Operations Integration Board</div><div class="pmo-card-sub">OIS Panel &middot; E&amp;T Panel</div></div>
+      <div class="pmo-card"><div class="pmo-card-title">IT Integration Board</div><div class="pmo-card-sub">IM/IT Panel</div></div>
+      <div class="pmo-card"><div class="pmo-card-title">Resource Oversight Board (ROB)</div><div class="pmo-card-sub">Facilities Panel</div></div>
+      <div class="pmo-card"><div class="pmo-card-title">Acquisition Integration Board</div><div class="pmo-card-sub">RD&amp;A Panel</div></div>
+      <div class="pmo-card"><div class="pmo-card-title">Warfighter Modernization &amp; Support Board</div></div>
+      <div class="pmo-card"><div class="pmo-card-title">Healthcare Integration Board</div><div class="pmo-card-sub">HCD Panel</div></div>
+    </div>
+  </div>
+
+  <!-- IOC -> FOC TIMELINE -->
+  <div style="margin-top:32px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px">
+    <div class="section-label">IOC &#8594; FOC Transition Milestones</div>
+    <div style="display:grid;gap:8px">
+      <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.8rem;padding:8px;border-radius:6px;background:var(--surface-2)">
+        <span style="min-width:90px;font-weight:600;color:var(--new)">&#10003; 21 APR 2026</span>
+        <span style="color:var(--text-muted)">IOC &middot; AD-RDA stood up under RDML Arena. Acting leaders in place across all PAEs, PEOs, and DHACA.</span>
+      </div>
+      <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.8rem;padding:8px;border-radius:6px;background:var(--surface-2)">
+        <span style="min-width:90px;font-weight:600;color:var(--foc)">&#8594; 19 JUL 2026</span>
+        <span style="color:var(--text-muted)">FOC &middot; PEO DHMS consolidates under AD-RDA. J-4/J-6 move to AD-SPFO. USAHCA workload &#8594; DHACA. Three PAEs fully stood up with signed charters and delegation memos.</span>
+      </div>
+    </div>
+  </div>
+
+  <p style="font-size:0.7rem;color:var(--text-faint);margin-top:24px;text-align:center">
+    Sources: DHA-ORG-20APR26 &middot; AD-RDA Town Hall 29APR26 (UNCLASSIFIED) &middot; DHA.mil &middot; Mission Meets Tech Research &middot; Verified 30 APR 2026
+  </p>
+</div>
+
+<!-- DETAIL PANEL -->
+<div class="detail-panel" id="detailPanel">
+  <button class="detail-close" onclick="closeDetail()">&#10005;</button>
+  <div class="detail-header">
+    <div class="detail-tier" id="detailTier"></div>
+    <div class="detail-name" id="detailName"></div>
+    <div class="detail-role" id="detailRole"></div>
+  </div>
+  <div class="detail-body" id="detailBody"></div>
+</div>
+<div id="overlay" onclick="closeDetail()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:150"></div>
+
+<script>
+const leaders={
+  via:{tier:'Director: DHA 5',name:'VADM Darin K. Via',role:'Director, Defense Health Agency',sections:[{title:'Background',items:['Vice Admiral, U.S. Navy: O-9','Enlisted corpsman before commissioning','5th Director of the Defense Health Agency','Declared DHA a Combat Support Agency']},{title:'4 Lines of Effort',items:['LOE 1: Warfighter Medical Readiness','LOE 2: Beneficiary Healthcare Quality','LOE 3: Enterprise Business Operations','LOE 4: Organizational Culture']},{title:'Budget Authority',items:['DHP COMP: ~$18.9B FY2027','PSCP: ~$1.2B FY2027','RDTE: ~$1.0B FY2027']}],tags:['O-9 Vice Admiral','DHA 5','Combat Support Agency','Warfighter Readiness']},
+  smith:{tier:'Deputy Director',name:'Dr. David J. Smith',role:'Deputy Director, Defense Health Agency',sections:[{title:'Background',items:['SES Civilian: Senate-confirmed','Acted as DHA Director for ~1 year before Via arrived','Present during 2017 MTF transfer: key institutional memory','Confirmed Deputy Director April 6, 2026']}],tags:['SES Civilian','Deputy Director','Institutional Memory']},
+  mangaran:{tier:'Command Senior Enlisted Leader',name:'FORCM PatrickPaul "PaP" Mangaran',role:'Command Senior Enlisted Leader, DHA',sections:[{title:'Role',items:['Force Master Chief: E-9','Voice of the enlisted medical force','Bridges unit-level concerns to DHA strategy']}],tags:['E-9 Force Master Chief','CSEL']},
+  marty:{tier:'Director HQ Operations',name:'Mr. Stephen Marty',role:'Director, Headquarters Operations',sections:[{title:'Role',items:['Manages DHA HQ administrative operations','Coordination of staff, schedules, internal communications']}],tags:['HQ Operations']},
+  farrill:{tier:'OWHA Director',name:'RDML Tracy Farrill',role:'Director, Office of Warfighter Health Advantage',sections:[{title:'About OWHA',items:['New entity: created April 20, 2026 reorg','Consolidates: CDAO, BID, Digital Health Integration, DIG, SIG elements','Focused on warfighter health data, AI/ML, digital health modernization','Reports directly to DHA Director']},{title:'Background',items:['Rear Admiral: O-7, U.S. Navy','Former DHA Deputy CIO and digital health leader']}],tags:['O-7 RDML','OWHA','New Entity','Digital Health','AI/ML']},
+  soliz:{tier:'Acting AD-HCAO',name:'BG Bill A. Soliz',role:'Acting Assistant Director: Healthcare Administration & Operations',sections:[{title:'Background',items:['Brigadier General: O-7, U.S. Army','Acting AD-HCAO as of April 2026 restructuring','Oversees direct care, TRICARE, public health, behavioral health, readiness ops']},{title:'Budget Oversight',items:['COMP direct care accounts','TRICARE Health Plan program management','DSPO program ($23M+ FY2027)']}],tags:['O-7 BGen','Acting AD-HCAO','Healthcare Ops','TRICARE']},
+  arena:{tier:'Acting AD-RDA / CAE',name:'RDML Ivonne Arena',role:'Acting Asst. Director: RDA / Component Acquisition Executive',sections:[{title:'Background',items:['Rear Admiral: O-7, USPHS','Former Deputy CIO, Defense Health Agency','Deputy, Business Operations, PEO DHMS','PM, Joint Pathology Center','Chief Health Services Admin, TSA']},{title:'Education',items:['MS Health Informatics: George Washington University','MS Healthcare Administration: Univ. of Puerto Rico Medical Science Campus']},{title:'Acquisition Authority',items:['CAE for DHA: all acquisition authority','Oversees 19 PMOs under PEO DHMS','Standing up 3 new PAEs by FOC 19 JUL 2026','Manages DHACA and DHA R&D/MRDC']},{title:'Personal',items:['Hobbies: Spartan Races, CrossFit']}],tags:['O-7 RDML (USPHS)','Acting AD-RDA','CAE','Former Deputy CIO']},
+  scheideman:{tier:'Acting Principal Deputy RDA / DCAE',name:'Mr. Brett Scheideman',role:'Acting Principal Deputy RDA / Deputy CAE',sections:[{title:'Role',items:['NH-IV civilian (highest non-SES acq pay band)','S&T, Chief Scientist, Research Support, Industry Engagement, Agreements & Partnerships, Category Management, Acquisition Workforce']}],tags:['Acting NH-IV','Principal Deputy RDA','DCAE']},
+  perkins:{tier:'Acting PEO DHMS',name:'Mr. James Perkins',role:'Acting Program Executive Officer: Defense Healthcare Management Systems',sections:[{title:'Role',items:['Acting PEO for MHS GENESIS and all 19 PMOs','Overseeing HCDS recompete: projected award July 2026','Manages ~$2B+ annual DHMS acquisition portfolio']},{title:'Key Watch',items:['HCDS recompete: Leidos bridge active','Oracle Cerner interoperability dependency','Terry Dover named Chief of Products, April 2026']}],tags:['Acting PEO','MHS GENESIS','HCDS Recompete']},
+  moss:{tier:'Acting PEO Medical Systems',name:'COL Marcus Moss',role:'Acting PEO Medical Systems (IOC only)',sections:[{title:'Role',items:['Acting PEO Medical Systems at IOC','Construct transitions to PAE structure by FOC 19 JUL 2026','PAE Medical Services and PAE Medical Products absorb MS mission areas']}],tags:['Acting PEO','O-6 Colonel','IOC Leadership']},
+  friedman:{tier:'Acting PAE Medical Services',name:'Mrs. Madeleine Friedman',role:'Acting Portfolio Acquisition Executive: Medical Services',sections:[{title:'Role',items:['New PAE: fully stood up by FOC 19 JUL 2026','Manages acquisition of medical services contracts','Authority defined by charters and delegation memos']}],tags:['Acting PAE','New Organization','Medical Services']},
+  felkoski:{tier:'Acting PAE Medical Products',name:'Ms. Caitlyn Felkoski',role:'Acting Portfolio Acquisition Executive: Medical Products (NH-IV)',sections:[{title:'Role',items:['New PAE: NH-IV civilian','Medical products, devices, equipment acquisition','Fully stood up by FOC 19 JUL 2026']}],tags:['Acting PAE','NH-IV','New Organization','Medical Products']},
+  watkins:{tier:'DHACA Director',name:'Mr. James Watkins',role:'Director, DHA Contracting Activity',sections:[{title:'Role',items:['Executes contract awards across DHA enterprise','Receives USAHCA/USAMHCA workload and staff transition by FOC','Major workload and staffing impact expected']}],tags:['DHACA','Contracting Authority','USAHCA Transition']},
+  lodi:{tier:'DHA R&D / MRDC Commander',name:'MG Paula Lodi',role:'CG, DHA Research & Development / MRDC',sections:[{title:'Background',items:['Major General: O-8, U.S. Army Medical Corps','Commands MRDC after transfer from Army to DHA (June 2024)']},{title:'Budget Crisis',items:['FY2027 RDTE: ~$1.0B vs $2.47B FY2026 enacted = -$1.45B (-59%)','Army Medical SAG 124: -$5.2M, -43 FTEs to PEO Soldier','TATRC described as "dead in name and spirit" (Quinn, Apr 2026)','MRDC described as "on life support" after Kathy Berst departure']},{title:'Valley of Death',items:['Research outputs not transitioning to acquisition','April 29, 2026 All-Hands called to address TATRC/MRDC future']}],tags:['O-8 Major General','MRDC','Budget Crisis -59%','TATRC','Valley of Death']},
+  emerson:{tier:'AD-SPFO',name:'Mr. Michael R. Emerson',role:'Assistant Director: Support, Personnel & Financial Operations',sections:[{title:'Role',items:['Confirmed (non-acting): stable senior civilian','J-1 (Personnel), J-8 (Financial Mgmt), Facilities Enterprise, Medical Logistics']},{title:'FOC Additions by 19 JUL',items:['J-4 Medical Logistics consolidating under SPFO','J-6 CIO transitioning under SPFO']},{title:'Budget',items:['Defense Health Programming, Budgeting & Justification','TRICARE Program Resource Management (direct J-8 report)']}],tags:['AD-SPFO','SES Civilian','J-1 J-4 J-6 J-8','Financial Management']}
+};
+function showDetail(id){const d=leaders[id];if(!d)return;document.getElementById('detailTier').textContent=d.tier;document.getElementById('detailName').textContent=d.name;document.getElementById('detailRole').textContent=d.role;let h='';d.sections.forEach(s=>{h+=`<div class="detail-section"><div class="detail-section-title">${s.title}</div>`;s.items.forEach(i=>h+=`<div class="detail-item">&bull; ${i}</div>`);h+='</div>';});if(d.tags){h+='<div class="detail-section"><div class="detail-section-title">Tags</div><div class="detail-tags">';d.tags.forEach(t=>h+=`<span class="detail-tag">${t}</span>`);h+='</div></div>';}document.getElementById('detailBody').innerHTML=h;document.getElementById('detailPanel').classList.add('open');document.getElementById('overlay').style.display='block';}
+function closeDetail(){document.getElementById('detailPanel').classList.remove('open');document.getElementById('overlay').style.display='none';}
+function toggleSection(id){const el=document.getElementById(id+'-section');const btn=document.getElementById(id+'-toggle');if(!el)return;if(el.style.display==='none'){el.style.display='';if(btn)btn.textContent=btn.textContent.replace('▶','▼');}else{el.style.display='none';if(btn)btn.textContent=btn.textContent.replace('▼','▶');}}
+function toggleAll(expand){['hcao','rda','spfo'].forEach(id=>{const el=document.getElementById(id+'-section');const btn=document.getElementById(id+'-toggle');if(el){el.style.display=expand?'':'none';if(btn)btn.textContent=expand?btn.textContent.replace('▶','▼'):btn.textContent.replace('▼','▶');}});}
+function setView(btn){document.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+document.getElementById('searchInput').addEventListener('input',function(){const q=this.value.toLowerCase().trim();document.querySelectorAll('.node-card,.pmo-card,.network-pill').forEach(el=>{if(!q){el.classList.remove('node-hidden');return;}el.classList.toggle('node-hidden',!el.textContent.toLowerCase().includes(q));});});
+</script>
+</body>
+</html>

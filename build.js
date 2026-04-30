@@ -3122,6 +3122,35 @@ ${innerHtml}
     console.log(`Copied ${briefFiles.length} premium brief pages`);
   }
 
+  // Org-chart pages — auto-discovered from premium/org-charts/*.html.
+  // Drop a new agency org chart in that directory and the build picks
+  // it up. Standalone full-width layout (no dashboard sidebar) because
+  // the org-tree visualization needs the full viewport.
+  const orgChartsSrcDir = path.join(__dirname, 'premium', 'org-charts');
+  if (fs.existsSync(orgChartsSrcDir)) {
+    const ocFiles = fs.readdirSync(orgChartsSrcDir).filter(f => f.endsWith('.html'));
+    ocFiles.forEach(file => {
+      const srcPath = path.join(orgChartsSrcDir, file);
+      const destPath = path.join(DIST_DIR, 'premium', 'org-charts', file);
+      ensureDir(path.dirname(destPath));
+      let html = fs.readFileSync(srcPath, 'utf8');
+      if (!html.includes('noindex')) {
+        html = html.replace('<head>', '<head>\n  <meta name="robots" content="noindex, nofollow">');
+      }
+      html = html.replace('</head>',
+        '  <link rel="manifest" href="/manifest.json">\n' +
+        '  <meta name="apple-mobile-web-app-capable" content="yes">\n' +
+        '  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\n' +
+        '  <meta name="apple-mobile-web-app-title" content="MMT">\n</head>'
+      );
+      html = html.replace('</body>', siteScriptTag + '\n</body>');
+      html = inlineTailwindCss(html);
+      fs.writeFileSync(destPath, html);
+      console.log(`Copied premium/org-charts/${file}`);
+    });
+    console.log(`Copied ${ocFiles.length} premium org-chart page(s)`);
+  }
+
   // Friday Brief pipeline — render content/friday-briefs/*.md to
   // premium/friday-briefs/<date>.html using the friday-brief-loader.
   // Added 2026-04-24 along with the scheduled_emails.stream='friday_brief'
@@ -3749,12 +3778,21 @@ function generateAgencyProfilePage(agency) {
   const offices = agency.key_offices.map(o => `<li style="margin-bottom:6px;font-size:14px;">${escapeHtml(o)}</li>`).join('');
   const signals = agency.upcoming_signals.map(s => `<li style="margin-bottom:6px;font-size:14px;">&#8226; ${escapeHtml(s)}</li>`).join('');
 
+  // Org chart availability — extend this Set when more chart pages land
+  // in premium/org-charts/.
+  const ORG_CHART_AGENCIES = new Set(['dha', 'va']);
+  const orgChartUrl = ORG_CHART_AGENCIES.has(agency.slug) ? `/premium/org-charts/${agency.slug}` : null;
+  const orgChartCta = orgChartUrl ? `
+    <a href="${orgChartUrl}" class="no-underline" style="display:inline-flex;align-items:center;gap:8px;padding:10px 16px;background:var(--mmt-navy);color:var(--mmt-white);font-weight:600;font-size:13px;border-radius:8px;margin-bottom:24px;">
+      View ${escapeHtml(agency.abbrev)} Org Chart &rarr;
+    </a>` : '';
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${escapeHtml(agency.name)} — Agency Intelligence Profile — MMT Premium</title>
+  <title>${escapeHtml(agency.name)} &middot; Agency Intelligence &middot; MMT Premium</title>
   <meta name="description" content="Intelligence profile for ${escapeHtml(agency.name)}: budget posture, open vehicles, procurement signals, and MMT analysis.">
   <meta name="robots" content="noindex">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
@@ -3775,8 +3813,8 @@ function generateAgencyProfilePage(agency) {
       <h1 style="font-size:clamp(28px,3.5vw,40px);line-height:1.05;letter-spacing:-0.035em;">${escapeHtml(agency.name)} (${escapeHtml(agency.abbrev)})</h1>
       <span style="font-size:12px;font-weight:700;color:var(--ci-gold);">&#9733; Member</span>
     </div>
-    <p style="font-size:16px;line-height:1.6;color:var(--mmt-text-secondary);margin-bottom:32px;">${escapeHtml(agency.description)}</p>
-
+    <p style="font-size:16px;line-height:1.6;color:var(--mmt-text-secondary);margin-bottom:24px;">${escapeHtml(agency.description)}</p>
+    ${orgChartCta}
     <div data-gate="premium" data-agency-intel="${Buffer.from(JSON.stringify({
       current_read: agency.current_read,
       fy2026: agency.budget.fy2026_enacted,
