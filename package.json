@@ -29,7 +29,7 @@
     "marked": "^17.0.5",
     "officeparser": "^6.0.7",
     "pdf-parse": "~1.1.1",
-    "pdfkit": "^0.17.2",
+    "pdfkit": "^0.18.0",
     "rss-parser": "^3.13.0",
     "sharp": "^0.34.5",
     "stripe": "^22.0.0"
