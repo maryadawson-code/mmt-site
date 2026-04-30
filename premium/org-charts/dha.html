@@ -296,13 +296,21 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
             <div class="node-role">Military Department AD-RDA Liaison</div>
           </div>
           <div style="border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px">
-            <div class="node-card acting-badge" onclick="showDetail('perkins')" style="margin-bottom:8px;width:100%">
-              <div class="node-tier tier-3">PEO DHMS</div>
-              <div class="node-name">Mr. James Perkins (Acting)</div>
-              <div class="node-role">Program Executive Officer &middot; Defense Healthcare Management Systems</div>
-              <span class="node-badge acting">Acting PEO</span>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+              <div class="node-card acting-badge" onclick="showDetail('perkins')">
+                <div class="node-tier tier-3">PEO DHMS</div>
+                <div class="node-name">Mr. James Perkins (Acting)</div>
+                <div class="node-role">Acting PEO &middot; Defense Healthcare Management Systems</div>
+                <span class="node-badge acting">Acting PEO</span>
+              </div>
+              <div class="node-card acting-badge" onclick="showDetail('moss')">
+                <div class="node-tier tier-3">PEO Medical Systems</div>
+                <div class="node-name">COL Marcus Moss (Acting)</div>
+                <div class="node-role">Acting PEO &middot; transitions into PAE structure by FOC</div>
+                <span class="node-badge acting">Acting PEO</span>
+              </div>
             </div>
-            <div class="section-label" style="font-size:0.6rem">19 PMOs under PEO DHMS</div>
+            <div class="section-label" style="font-size:0.6rem">19 PMOs &middot; Distributed across PEO DHMS &amp; PEO Medical Systems at IOC (exact split defined at FOC, per Key Next Steps)</div>
             <div class="pmo-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr))">
               <div class="pmo-card"><div class="pmo-card-title">MHS GENESIS (HCDS)</div><div class="pmo-card-sub">EHR &middot; recompete Jul 2026</div></div>
               <div class="pmo-card"><div class="pmo-card-title">JOMIS</div></div>
@@ -324,12 +332,6 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
               <div class="pmo-card"><div class="pmo-card-title">Medical Devices &amp; Equipment</div></div>
               <div class="pmo-card"><div class="pmo-card-title">Medical Simulation &amp; Training</div></div>
             </div>
-          </div>
-          <div class="node-card acting-badge" onclick="showDetail('moss')" style="margin-bottom:8px;width:100%">
-            <div class="node-tier tier-3">PEO Medical Systems (IOC)</div>
-            <div class="node-name">COL Marcus Moss (Acting)</div>
-            <div class="node-role">Transitions to PAE structure by FOC 19 JUL 2026</div>
-            <span class="node-badge acting">Acting PEO</span>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
             <div class="node-card acting-badge" onclick="showDetail('friedman')">
@@ -357,7 +359,7 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
             </div>
           </div>
           <div class="ioc-foc-note" style="margin-top:10px">
-            <strong>FOC (19 JUL 2026):</strong> Three PAEs fully stood up &middot; PAE Medical Software &amp; Business Systems, PAE Medical Services, PAE Medical Products. PEO DHMS consolidates under AD-RDA.
+            <strong>FOC (19 JUL 2026):</strong> Three PAEs fully stood up &middot; PAE Medical Software &amp; Business Systems, PAE Medical Services, PAE Medical Products. PEO DHMS consolidates under AD-RDA. Note: PAE Medical Software &amp; Business Systems has no named Acting lead at IOC &middot; leadership assignment is a Key Next Step.
           </div>
         </div>
       </div>
