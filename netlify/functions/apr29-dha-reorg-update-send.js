@@ -49,7 +49,11 @@ async function alreadySent(supabase) {
 
 function readBodyMd() {
   for (const p of [SOURCE_PATH, FALLBACK_PATH]) {
-    try { if (fs.existsSync(p)) return fs.readFileSync(p, "utf8"); } catch {}
+    try {
+      if (fs.existsSync(p)) return fs.readFileSync(p, "utf8");
+    } catch (err) {
+      console.warn(`apr29-dha-reorg-update-send: read failed for ${p}:`, err.message);
+    }
   }
   return null;
 }

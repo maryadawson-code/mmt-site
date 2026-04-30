@@ -170,19 +170,6 @@
 [functions."roadmap-health-check"]
   schedule = "0 10 * * *"
 
-# April 29, 2026 — DHA Reorganization premium piece (paired with
-# Mary's LinkedIn cadence). 09:00 ET = 13:00 UTC, daily cron is
-# harmless on every other day (date guard inside the function).
-[functions."apr29-dha-reorg-send"]
-  schedule = "0 13 * * *"
-
-# April 29, 2026 — UPDATE notice for the DHA Reorg premium piece.
-# Fires every 15 minutes; window-guarded to 2026-04-29 / 2026-04-30 UTC
-# so it can only send today or tomorrow, idempotency-guarded so it
-# only sends once. Source: data/apr-29-release/dha-reorg-update.md.
-[functions."apr29-dha-reorg-update-send"]
-  schedule = "*/15 * * * *"
-
 # May 1, 2026 release automations — date-guarded inside each function;
 # the daily cron is harmless on every other day.
 [functions."may1-premium-capture-send"]
