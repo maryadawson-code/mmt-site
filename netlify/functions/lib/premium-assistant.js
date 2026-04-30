@@ -23,6 +23,9 @@ const { enrichWithCMSProviderData, formatCMSContext } = require("./cms-provider-
 const { enrichWithClinicalTrials, formatClinicalTrialsContext } = require("./clinicaltrials-api");
 const { enrichWithONCHealthIT, formatONCHealthITContext } = require("./onc-healthit-api");
 const { enrichWithHHSOpenData, formatHHSOpenDataContext } = require("./hhs-open-data");
+const { enrichWithCALC, formatCALCContext } = require("./calc-rates");
+const { enrichWithECFR, formatECFRContext } = require("./ecfr-api");
+const { enrichWithRegulationsGov, formatRegulationsGovContext } = require("./regulations-gov");
 const { searchCorpus, formatCorpusContext } = require("./content-index");
 const { detectVehicles, formatVehiclesContext, expandedSearchTerms } = require("./known-vehicles");
 
@@ -120,6 +123,9 @@ async function runEnrichment(question) {
     ctgovData,
     oncHealthITData,
     hhsOpenData,
+    calcData,
+    ecfrData,
+    regsGovData,
   ] = await Promise.all([
     safe(enrichWithFederalData({ topic: primaryQuery, agency: agency || undefined, naics: primaryNaics })),
     safe(enrichWithCongress({ topic: primaryQuery })),
@@ -133,6 +139,9 @@ async function runEnrichment(question) {
     safe(enrichWithClinicalTrials({ topic: question })),
     safe(enrichWithONCHealthIT({ topic: question })),
     safe(enrichWithHHSOpenData({ topic: question })),
+    safe(enrichWithCALC({ topic: question })),
+    safe(enrichWithECFR({ topic: question })),
+    safe(enrichWithRegulationsGov({ topic: question })),
   ]);
 
   const context = [
@@ -150,6 +159,9 @@ async function runEnrichment(question) {
     formatClinicalTrialsContext(ctgovData),
     formatONCHealthITContext(oncHealthITData),
     formatHHSOpenDataContext(hhsOpenData),
+    formatCALCContext(calcData),
+    formatECFRContext(ecfrData),
+    formatRegulationsGovContext(regsGovData),
   ].filter(Boolean).join("");
 
   return {
