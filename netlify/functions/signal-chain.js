@@ -697,6 +697,7 @@ exports.handler = async (event) => {
   } catch (_) {}
 
   // === PREMIUM_TOOLS_V2 envelope wrapping ===
+  let envelope = null;
   const V2_ON = getFlag("PREMIUM_TOOLS_V2") === "on";
   if (V2_ON) {
     const toolCtx = await loadToolContext(supabase, email, { company });
@@ -727,7 +728,7 @@ exports.handler = async (event) => {
       if (!v || typeof v.score !== "number") continue;
       dimensions[k] = { score: v.score, max: 100, detail: v.noSignalReason || (v.source || "") };
     }
-    const envelope = buildToolEnvelope({
+    envelope = buildToolEnvelope({
       tool: "signal",
       email,
       inputs: { topic, agency: resolvedAgency },
@@ -747,12 +748,17 @@ exports.handler = async (event) => {
       evidence,
       legacy: card,
     });
-    card.envelope = envelope;
+    // Do NOT mutate card with `card.envelope = envelope` — it creates a
+    // circular structure (envelope.legacy === card → card.envelope === envelope)
+    // that crashes JSON.stringify. Mirror pursuit-score's pattern: add the
+    // envelope to a fresh response object below.
   }
 
+  const responseBody = { ...card, cached: false };
+  if (envelope) responseBody.envelope = envelope;
   return {
     statusCode: 200,
     headers: { ...CORS_HEADERS, "X-Cache": "MISS" },
-    body: JSON.stringify({ ...card, cached: false }),
+    body: JSON.stringify(responseBody),
   };
 };

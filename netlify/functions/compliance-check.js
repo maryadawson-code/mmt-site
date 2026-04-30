@@ -309,6 +309,7 @@ exports.handler = async (event) => {
   };
 
   // === PREMIUM_TOOLS_V2 envelope wrapping ===
+  let envelope = null;
   const V2_ON = getFlag("PREMIUM_TOOLS_V2") === "on";
   if (V2_ON) {
     const toolCtx = await loadToolContext(supabase, email, { company: body.company });
@@ -338,7 +339,7 @@ exports.handler = async (event) => {
     if ((enrichment.wageDeterminationFlags || []).length > 0) reasons.push(`${(enrichment.wageDeterminationFlags || []).length} SCA wage floor violation(s)`);
     if (docs.missing_required > 0) reasons.push(`${docs.missing_required} required documentation reference(s) missing`);
 
-    const envelope = buildToolEnvelope({
+    envelope = buildToolEnvelope({
       tool: "compliance",
       email,
       inputs: { text_length: text.length, has_sow: !!sowText },
@@ -362,13 +363,17 @@ exports.handler = async (event) => {
       evidence,
       legacy: report,
     });
-    report.envelope = envelope;
+    // Do NOT mutate report with `report.envelope = envelope` — it creates a
+    // circular structure (envelope.legacy === report → report.envelope === envelope)
+    // that crashes JSON.stringify. Build a fresh response body instead.
   }
 
+  const responseBody = { ...report };
+  if (envelope) responseBody.envelope = envelope;
   return {
     statusCode: 200,
     headers: CORS_HEADERS,
-    body: JSON.stringify(report),
+    body: JSON.stringify(responseBody),
   };
 };
 
