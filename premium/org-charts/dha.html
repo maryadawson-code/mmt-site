@@ -295,54 +295,72 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
             <div class="node-name">COL Basia Bujak</div>
             <div class="node-role">Military Department AD-RDA Liaison</div>
           </div>
-          <div style="border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
-              <div class="node-card acting-badge" onclick="showDetail('perkins')">
+          <div class="section-label" style="font-size:0.62rem;margin-top:6px">AD-RDA at IOC (21 APR 2026) &middot; 4 Acting program execs + DHACA + DHA R&amp;D &middot; 19 PMOs distributed per AD-RDA Town Hall slide</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+            <!-- Acting PEO DHMS (Perkins): 3 DHMS PMOs at IOC -->
+            <div style="border:1px solid var(--acting-border);border-radius:10px;padding:10px;background:var(--acting-bg)">
+              <div class="node-card acting-badge" onclick="showDetail('perkins')" style="margin-bottom:6px">
                 <div class="node-tier tier-3">PEO DHMS</div>
                 <div class="node-name">Mr. James Perkins (Acting)</div>
                 <div class="node-role">Acting PEO &middot; Defense Healthcare Management Systems</div>
                 <span class="node-badge acting">Acting PEO</span>
               </div>
-              <div class="node-card acting-badge" onclick="showDetail('moss')">
-                <div class="node-tier tier-3">PEO Medical Systems</div>
-                <div class="node-name">COL Marcus Moss (Acting)</div>
-                <div class="node-role">Acting PEO &middot; transitions into PAE structure by FOC</div>
-                <span class="node-badge acting">Acting PEO</span>
+              <div class="pmo-grid" style="grid-template-columns:1fr;gap:4px">
+                <div class="pmo-card"><div class="pmo-card-title">DOD Healthcare Mgmt System Modernization</div><div class="pmo-card-sub">MHS GENESIS / HCDS</div></div>
+                <div class="pmo-card"><div class="pmo-card-title">Joint Operational Medicine Information Systems</div><div class="pmo-card-sub">JOMIS</div></div>
+                <div class="pmo-card"><div class="pmo-card-title">Enterprise Intelligence &amp; Data Solutions</div><div class="pmo-card-sub">EIDS</div></div>
               </div>
             </div>
-            <div class="section-label" style="font-size:0.6rem">19 PMOs &middot; Distributed across PEO DHMS &amp; PEO Medical Systems at IOC (exact split defined at FOC, per Key Next Steps)</div>
-            <div class="pmo-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr))">
-              <div class="pmo-card"><div class="pmo-card-title">MHS GENESIS (HCDS)</div><div class="pmo-card-sub">EHR &middot; recompete Jul 2026</div></div>
-              <div class="pmo-card"><div class="pmo-card-title">JOMIS</div></div>
-              <div class="pmo-card"><div class="pmo-card-title">EIDS</div></div>
-              <div class="pmo-card"><div class="pmo-card-title">Health Services Support</div></div>
-              <div class="pmo-card"><div class="pmo-card-title">MEDLOG IT</div></div>
-              <div class="pmo-card"><div class="pmo-card-title">Web &amp; Mobile Technology</div></div>
-              <div class="pmo-card"><div class="pmo-card-title">Clinical Support</div></div>
-              <div class="pmo-card"><div class="pmo-card-title">Care &amp; Benefits Integrated Systems</div></div>
-              <div class="pmo-card"><div class="pmo-card-title">Occ. &amp; Env. Health Surveillance</div></div>
-              <div class="pmo-card"><div class="pmo-card-title">Enterprise Medical Services</div></div>
-              <div class="pmo-card"><div class="pmo-card-title">Reserve Health Readiness</div></div>
-              <div class="pmo-card"><div class="pmo-card-title">Virtual Health</div></div>
-              <div class="pmo-card"><div class="pmo-card-title">TRICARE Acquisition Cell</div></div>
-              <div class="pmo-card"><div class="pmo-card-title">Acquisition of Services CoE</div></div>
-              <div class="pmo-card"><div class="pmo-card-title">Warfighter Readiness &amp; Brain Health</div></div>
-              <div class="pmo-card"><div class="pmo-card-title">Warfighter Expeditionary Medicine</div></div>
-              <div class="pmo-card"><div class="pmo-card-title">Warfighter Protection &amp; Acute Care</div></div>
-              <div class="pmo-card"><div class="pmo-card-title">Medical Devices &amp; Equipment</div></div>
-              <div class="pmo-card"><div class="pmo-card-title">Medical Simulation &amp; Training</div></div>
+            <!-- Acting PEO Medical Systems (Moss): 6 PMOs at IOC, dissolves at FOC -->
+            <div style="border:1px solid var(--acting-border);border-radius:10px;padding:10px;background:var(--acting-bg)">
+              <div class="node-card acting-badge" onclick="showDetail('moss')" style="margin-bottom:6px">
+                <div class="node-tier tier-3">PEO Medical Systems</div>
+                <div class="node-name">COL Marcus Moss (Acting)</div>
+                <div class="node-role">IOC only &middot; absorbs into PAE Med Software &amp; Business Systems by FOC</div>
+                <span class="node-badge acting">Acting PEO</span>
+              </div>
+              <div class="pmo-grid" style="grid-template-columns:1fr;gap:4px">
+                <div class="pmo-card"><div class="pmo-card-title">Health Services Support</div></div>
+                <div class="pmo-card"><div class="pmo-card-title">Occ. &amp; Env. Health Surveillance &amp; Readiness</div></div>
+                <div class="pmo-card"><div class="pmo-card-title">Clinical Support</div></div>
+                <div class="pmo-card"><div class="pmo-card-title">MEDLOG IT</div></div>
+                <div class="pmo-card"><div class="pmo-card-title">Web &amp; Mobile Technology</div></div>
+                <div class="pmo-card"><div class="pmo-card-title">Care &amp; Benefits Integrated Systems</div></div>
+              </div>
             </div>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
-            <div class="node-card acting-badge" onclick="showDetail('friedman')">
-              <div class="node-tier tier-3" style="color:var(--new)">PAE Medical Services</div>
-              <div class="node-name">Mrs. Madeleine Friedman</div>
-              <span class="node-badge new-org">New PAE</span>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+            <!-- Acting PAE Medical Services (Friedman): 5 PMOs at IOC -->
+            <div style="border:1px solid var(--status-new-border);border-radius:10px;padding:10px;background:var(--status-new-bg)">
+              <div class="node-card acting-badge" onclick="showDetail('friedman')" style="margin-bottom:6px">
+                <div class="node-tier tier-3" style="color:var(--status-new)">PAE Medical Services &middot; New</div>
+                <div class="node-name">Mrs. Madeleine Friedman (Acting)</div>
+                <div class="node-role">Acting PAE &middot; stands up at IOC</div>
+                <span class="node-badge new-org">Acting PAE</span>
+              </div>
+              <div class="pmo-grid" style="grid-template-columns:1fr;gap:4px">
+                <div class="pmo-card"><div class="pmo-card-title">Enterprise Medical Services</div></div>
+                <div class="pmo-card"><div class="pmo-card-title">Reserve Health Readiness</div></div>
+                <div class="pmo-card"><div class="pmo-card-title">Virtual Health</div></div>
+                <div class="pmo-card"><div class="pmo-card-title">TRICARE Acquisition Cell</div></div>
+                <div class="pmo-card"><div class="pmo-card-title">Acquisition of Services Center of Excellence</div></div>
+              </div>
             </div>
-            <div class="node-card acting-badge" onclick="showDetail('felkoski')">
-              <div class="node-tier tier-3" style="color:var(--new)">PAE Medical Products</div>
-              <div class="node-name">Ms. Caitlyn Felkoski</div>
-              <span class="node-badge new-org">New PAE &middot; NH-IV</span>
+            <!-- Acting PAE Medical Products (Felkoski, NH-IV): 5 PMOs at IOC -->
+            <div style="border:1px solid var(--status-new-border);border-radius:10px;padding:10px;background:var(--status-new-bg)">
+              <div class="node-card acting-badge" onclick="showDetail('felkoski')" style="margin-bottom:6px">
+                <div class="node-tier tier-3" style="color:var(--status-new)">PAE Medical Products &middot; New</div>
+                <div class="node-name">Ms. Caitlyn Felkoski (Acting)</div>
+                <div class="node-role">Acting PAE NH-IV &middot; stands up at IOC</div>
+                <span class="node-badge new-org">Acting PAE &middot; NH-IV</span>
+              </div>
+              <div class="pmo-grid" style="grid-template-columns:1fr;gap:4px">
+                <div class="pmo-card"><div class="pmo-card-title">Warfighter Readiness, Performance &amp; Brain Health</div></div>
+                <div class="pmo-card"><div class="pmo-card-title">Warfighter Expeditionary Medicine &amp; Treatment</div></div>
+                <div class="pmo-card"><div class="pmo-card-title">Warfighter Protection &amp; Acute Care</div></div>
+                <div class="pmo-card"><div class="pmo-card-title">Medical Devices &amp; Equipment</div></div>
+                <div class="pmo-card"><div class="pmo-card-title">Medical Simulation &amp; Training</div></div>
+              </div>
             </div>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
@@ -359,7 +377,10 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
             </div>
           </div>
           <div class="ioc-foc-note" style="margin-top:10px">
-            <strong>FOC (19 JUL 2026):</strong> Three PAEs fully stood up &middot; PAE Medical Software &amp; Business Systems, PAE Medical Services, PAE Medical Products. PEO DHMS consolidates under AD-RDA. Note: PAE Medical Software &amp; Business Systems has no named Acting lead at IOC &middot; leadership assignment is a Key Next Step.
+            <strong>FOC (19 JUL 2026):</strong> Three PAEs stand up fully &middot; PAE Medical Software &amp; Business Systems (absorbs Perkins's 3 DHMS PMOs + Moss's 6 PMOs), PAE Medical Services (Friedman), PAE Medical Products (Felkoski). PEO DHMS and PEO Medical Systems both dissolve into PAE structure. DHACA and DHA R&amp;D continue as direct reports. Note: PAE Medical Software &amp; Business Systems has no named Acting lead at IOC &middot; leadership assignment is a Key Next Step.
+          </div>
+          <div style="margin-top:10px;padding:8px 12px;background:var(--mmt-soft);border-radius:6px;font-size:0.68rem;color:var(--mmt-text-secondary);line-height:1.5">
+            <strong>Source:</strong> AD-RDA Town Hall briefing slides, 29 APR 2026 (DHA HQ Senior Leaders effective 04 MAY 2026, DHA Org Structure as of 20 APR 2026, AD-RDA Day 2 / IOC, AD-RDA Day 90 / FOC, Key Next Steps IOC to FOC).
           </div>
         </div>
       </div>

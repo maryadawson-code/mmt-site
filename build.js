@@ -2959,10 +2959,10 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>VA Enterprise Imaging — May 2026 Update | Mission Meets Tech</title>
+<title>VA Enterprise Imaging &middot; May 2026 Update &middot; Mission Meets Tech</title>
 <meta name="description" content="Twelve tracked signals across the VA Enterprise Imaging procurement, updated as the record changes.">
 <link rel="canonical" href="https://missionmeetstech.com/contracts/may-2026-va-enterprise-imaging/">
-<meta property="og:title" content="VA Enterprise Imaging — May 2026 Update">
+<meta property="og:title" content="VA Enterprise Imaging &middot; May 2026 Update">
 <meta property="og:description" content="Twelve tracked signals across the VA Enterprise Imaging procurement.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://missionmeetstech.com/contracts/may-2026-va-enterprise-imaging/">
