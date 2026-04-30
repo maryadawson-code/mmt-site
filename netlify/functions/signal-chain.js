@@ -534,18 +534,20 @@ exports.handler = async (event) => {
   }
 
   // Accept topic + agency via querystring (GET) or JSON body (POST)
-  let email, topic, agency;
+  let email, topic, agency, company;
   if (event.httpMethod === "GET") {
     const qs = event.queryStringParameters || {};
     email = (qs.email || "").toLowerCase().trim();
     topic = (qs.topic || "").trim();
     agency = qs.agency || null;
+    company = qs.company || null;
   } else {
     let body;
     try { body = JSON.parse(event.body || "{}"); } catch { body = {}; }
     email = (body.email || "").toLowerCase().trim();
     topic = (body.topic || "").trim();
     agency = body.agency || null;
+    company = body.company || null;
   }
 
   if (!email || !topic) {
@@ -697,7 +699,7 @@ exports.handler = async (event) => {
   // === PREMIUM_TOOLS_V2 envelope wrapping ===
   const V2_ON = getFlag("PREMIUM_TOOLS_V2") === "on";
   if (V2_ON) {
-    const toolCtx = await loadToolContext(supabase, email, { company: body.company });
+    const toolCtx = await loadToolContext(supabase, email, { company });
     if (toolCtx.state === "BLOCKED") {
       return {
         statusCode: 409,
