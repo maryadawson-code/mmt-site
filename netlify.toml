@@ -176,6 +176,14 @@
 [functions."org-chart-monitor"]
   schedule = "0 11 * * 1"
 
+# Daily SAM.gov key-expiration watch (10:00 ET = 14:00 UTC). Emails Mary
+# at 30 / 14 / 7 / 3 / 1 days before the SAM_GOV_API_KEY expires (and
+# daily once expired) so Ask MMT's SAM.gov layer doesn't go dark.
+# Update SAM_KEY_EXPIRES_UTC inside the function each time the key
+# is regenerated.
+[functions."sam-key-expiration-reminder"]
+  schedule = "0 14 * * *"
+
 # May 1, 2026 release automations — date-guarded inside each function;
 # the daily cron is harmless on every other day.
 [functions."may1-premium-capture-send"]

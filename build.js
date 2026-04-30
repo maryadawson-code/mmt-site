@@ -3953,6 +3953,30 @@ function generateAgencyProfilePage(agency) {
       View ${escapeHtml(agency.abbrev)} Org Chart &rarr;
     </a>` : '';
 
+  // New public-tier fields (added 2026-04-30): officialSources, mmtRead,
+  // lastUpdated, type, keyPrograms, procurementSignals, openVehicles.
+  // These render outside the premium gate so non-subscribers see a real
+  // profile rather than a wall.
+  const officialSources = Array.isArray(agency.officialSources) ? agency.officialSources : [];
+  const sourcesBlock = officialSources.length > 0 ? `
+    <div class="profile-section" style="margin-top:8px;margin-bottom:24px;">
+      <div class="profile-label">Official Sources</div>
+      <ul style="list-style:none;padding-left:0;">
+        ${officialSources.map(s => `<li style="margin-bottom:6px;font-size:14px;"><a href="${escapeHtml(s.url)}" rel="noopener" style="color:var(--mmt-teal);text-decoration:none;border-bottom:1px solid rgba(69,123,157,0.3);">${escapeHtml(s.label)}</a></li>`).join('')}
+      </ul>
+    </div>` : '';
+  const teaserBlock = agency.mmtRead ? `
+    <div class="profile-section" style="margin-bottom:28px;padding:18px 22px;background:var(--mmt-soft);border-radius:12px;border-left:3px solid var(--mmt-teal);">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--mmt-teal);margin-bottom:8px;">MMT Read</div>
+      <p style="font-size:14px;line-height:1.55;color:var(--mmt-text);margin:0;">${escapeHtml(agency.mmtRead)}</p>
+    </div>` : '';
+  const metaLine = agency.type || agency.lastUpdated ? `
+    <div style="font-size:12px;color:var(--mmt-text-secondary);margin-bottom:18px;">
+      ${agency.type ? `<span>${escapeHtml(agency.type)}</span>` : ''}
+      ${agency.type && agency.lastUpdated ? ' &middot; ' : ''}
+      ${agency.lastUpdated ? `<span>Updated ${escapeHtml(agency.lastUpdated)}</span>` : ''}
+    </div>` : '';
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -3979,7 +4003,10 @@ function generateAgencyProfilePage(agency) {
       <h1 style="font-size:clamp(28px,3.5vw,40px);line-height:1.05;letter-spacing:-0.035em;">${escapeHtml(agency.name)} (${escapeHtml(agency.abbrev)})</h1>
       <span style="font-size:12px;font-weight:700;color:var(--ci-gold);">&#9733; Member</span>
     </div>
+    ${metaLine}
     <p style="font-size:16px;line-height:1.6;color:var(--mmt-text-secondary);margin-bottom:24px;">${escapeHtml(agency.description)}</p>
+    ${teaserBlock}
+    ${sourcesBlock}
     ${orgChartCta}
     <div data-gate="premium" data-agency-intel="${Buffer.from(JSON.stringify({
       current_read: agency.current_read,

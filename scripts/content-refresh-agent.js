@@ -35,7 +35,11 @@ const dry = process.argv.includes('--dry');
 const OLLAMA_BASE_URL = process.env.OLLAMA_BASE_URL || '';
 const USE_LOCAL = OLLAMA_BASE_URL.length > 0;
 const LOCAL_MODEL = process.env.OLLAMA_MODEL || 'gemma3:27b';
-const ANTHROPIC_MODEL = 'claude-sonnet-4-5';
+// Migrated 2026-04-30 from claude-sonnet-4-5 to claude-sonnet-4-6 after
+// Anthropic retired the 1M-context beta on Sonnet 4 / 4.5. We do not use
+// the context-1m-2025-08-07 header (verified by grep), so this was just
+// hygiene — but standardizing on 4.6 across the codebase.
+const ANTHROPIC_MODEL = 'claude-sonnet-4-6';
 
 if (!USE_LOCAL && !process.env.ANTHROPIC_API_KEY && !dry) {
   console.error('Neither OLLAMA_BASE_URL nor ANTHROPIC_API_KEY set. Set one or use --dry.');
