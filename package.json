@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@sentry/node": "^9.0.0",
-    "@supabase/supabase-js": "^2.100.1",
+    "@supabase/supabase-js": "^2.105.1",
     "bcryptjs": "^3.0.3",
     "gray-matter": "^4.0.3",
     "mammoth": "^1.8.0",
