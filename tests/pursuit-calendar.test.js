@@ -46,9 +46,17 @@ describe("pursuit-relevance / scoreRelevance", () => {
 });
 
 describe("pursuit-calendar-render / renderPursuitCalendarHtml", () => {
-  it("renders empty-state when zero rows", () => {
+  it("renders login-gate empty-state by default when zero rows", () => {
     const html = render.renderPursuitCalendarHtml([]);
-    expect(html).toContain("No tracked pursuits or events yet");
+    // Default mode = login_required: show a clear sign-in CTA, NOT a
+    // bare 'no data' view that looks like the calendar is broken.
+    expect(html).toContain("Sign in to load your Pursuit Calendar");
+    expect(html).toContain('data-access="premium"');
+  });
+
+  it("renders no-active-pursuits empty-state when caller is authenticated but rows are empty", () => {
+    const html = render.renderPursuitCalendarHtml([], { emptyMode: "no_active_pursuits" });
+    expect(html).toContain("No active pursuits in the calendar right now");
     expect(html).toContain('data-access="premium"');
   });
 

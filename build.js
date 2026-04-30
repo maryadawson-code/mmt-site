@@ -1403,6 +1403,37 @@ const CONTRACT_STATUS_LABELS = {
   'awarded': 'Recently Awarded',
 };
 
+// Classification taxonomy (see CLAUDE.md / contracts.json schema).
+// Color groups: Contract / IDIQ = teal; Solicitation = navy; Watch types = muted;
+// Vendor-Announced / Needs Source = red.
+const CONTRACT_CLASSIFICATION_COLORS = {
+  'Contract': '#457B9D',
+  'IDIQ': '#457B9D',
+  'Solicitation': '#0A192F',
+  'Program Watch': '#5C6B7A',
+  'Policy-Infrastructure Watch': '#5C6B7A',
+  'Cloud Program Watch': '#5C6B7A',
+  'Strategy Watch': '#5C6B7A',
+  'Grant Program': '#5C6B7A',
+  'Managed Care': '#5C6B7A',
+  'Vendor-Announced': '#E63946',
+  'Needs Source': '#E63946',
+};
+
+function classificationBadgeHtml(cls) {
+  if (!cls) return '';
+  const color = CONTRACT_CLASSIFICATION_COLORS[cls] || '#5C6B7A';
+  // Slight tint background derived from the badge color for visibility on white.
+  const bg = color === '#E63946'
+    ? 'rgba(230,57,70,0.08)'
+    : color === '#0A192F'
+      ? 'rgba(10,25,47,0.06)'
+      : color === '#457B9D'
+        ? 'rgba(69,123,157,0.08)'
+        : 'rgba(92,107,122,0.08)';
+  return `<span class="text-xs whitespace-nowrap px-2 py-1 rounded font-semibold" title="Classification" style="background:${bg}; color:${color}; letter-spacing:0.02em;">${escapeHtml(cls)}</span>`;
+}
+
 function loadContracts() {
   const contractsPath = path.join(__dirname, 'contracts.json');
   if (!fs.existsSync(contractsPath)) return [];
@@ -1456,6 +1487,7 @@ function generateContractTrackerHtml(contracts, contractArticleMap) {
                     return `<span class="text-xs whitespace-nowrap px-2 py-1 rounded font-bold" title="Pursuit verdict" style="background:${vBg}; color:${vColor}; letter-spacing:0.04em;">${v}</span>`;
                   })()}
                   ${c.small_business_eligible ? '<span class="text-xs whitespace-nowrap px-2 py-1 rounded font-semibold" style="background:var(--mmt-soft); color:var(--mmt-teal);">SB Eligible</span>' : ''}
+                  ${classificationBadgeHtml(c.classification)}
                   <span class="text-xs whitespace-nowrap px-2 py-1 rounded" style="background:var(--mmt-soft); color:${color};">${escapeHtml(label)}</span>
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--mmt-teal);"><path d="M6 3l5 5-5 5"/></svg>
                 </div>
@@ -2606,6 +2638,103 @@ function inlineTailwindCss(html) {
   return html;
 }
 
+// Dashboard sidebar injection for premium subpages — module-scoped so
+// async build() steps (e.g., the Pursuit Calendar hydrate) can call it
+// after copyStaticFiles has already run. Function body unchanged from
+// the previous in-copyStaticFiles definition.
+function injectDashShell(html, activePage) {
+  // 2026-04-28 double-sidebar fix: source pages premium/*.html ship
+  // with their own embedded dash-shell + dash-nav. Strip them so the
+  // canonical injected shell is the single source of truth.
+  if (/class\s*=\s*"dash-nav"/i.test(html)) {
+    html = html.replace(/<nav\s+class="dash-nav"[\s\S]*?<\/nav>/gi, '');
+  }
+  if (/class\s*=\s*"dash-shell"/i.test(html)) {
+    html = html.replace(/<div\s+class="dash-shell"[^>]*>/gi, '<div data-dash-shell-stripped="true">');
+  }
+  if (/class\s*=\s*"dash-mobile-nav"/i.test(html)) {
+    html = html.replace(/<div\s+class="dash-mobile-nav"[\s\S]*?<\/div>/gi, '');
+  }
+  if (/class\s*=\s*"dash-header"/i.test(html)) {
+    html = html.replace(/<div\s+class="dash-header"[\s\S]*?<\/div>\s*<\/div>/gi, '');
+  }
+
+  const dashCss = `
+    .dash-shell { display:grid; grid-template-columns:220px 1fr; min-height:100dvh; }
+    .dash-nav { background:var(--mmt-soft,#F3F4F6); border-right:1px solid var(--mmt-border,#D8E0E8); padding:24px 16px; }
+    .dash-nav-group { margin-bottom:20px; }
+    .dash-nav-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--mmt-text-secondary,#5C6B7A); margin-bottom:8px; padding:0 8px; }
+    .dash-nav-link { display:block; padding:8px 12px; border-radius:8px; font-size:14px; font-weight:500; color:var(--mmt-text,#102033); text-decoration:none; transition:background 0.15s; }
+    .dash-nav-link:hover { background:rgba(69,123,157,0.08); }
+    .dash-nav-link.active { background:rgba(69,123,157,0.1); color:var(--mmt-teal,#457B9D); font-weight:600; }
+    .dash-main { padding:32px 40px; overflow-y:auto; }
+    @media(max-width:768px) {
+      .dash-shell { grid-template-columns:1fr; }
+      .dash-nav { position:fixed; bottom:0; left:0; right:0; display:flex; flex-direction:row; overflow-x:auto; border-right:none; border-top:1px solid var(--mmt-border,#D8E0E8); padding:8px 12px; z-index:100; gap:4px; background:var(--mmt-soft,#F3F4F6); }
+      .dash-nav-group { margin-bottom:0; display:flex; gap:4px; }
+      .dash-nav-label { display:none; }
+      .dash-nav-link { white-space:nowrap; font-size:12px; padding:6px 10px; }
+      .dash-main { padding:20px 16px 80px; }
+    }`;
+
+  const links = [
+    { href: '/premium/dashboard/', label: 'Home', id: 'home' },
+    { href: '/latest.html', label: 'Latest Analysis', id: 'latest', group: 'Intelligence' },
+    { href: '/agencies/', label: 'Agency Profiles', id: 'agencies' },
+    { href: '/intel/capture-intelligence-this-issue/', label: 'Capture Intelligence', id: 'capture-intelligence' },
+    { href: '/capture-corner.html', label: 'Capture Corner', id: 'capture-corner' },
+    { href: '/premium/briefings/', label: 'Friday Brief', id: 'briefings' },
+    { href: '/premium/monthly-briefs/', label: 'Monthly Brief', id: 'monthly-briefs' },
+    { href: '/contract-tracker.html', label: 'Contract Tracker', id: 'contract-tracker', group: 'Pursuit Tools' },
+    { href: '/idiq-tracker.html', label: 'IDIQ Tracker', id: 'idiq-tracker' },
+    { href: '/premium/calendar/', label: 'Pursuit Calendar', id: 'calendar' },
+    { href: '/premium/pursuit-score/', label: 'Pursuit Score', id: 'pursuit-score', group: 'My Tools' },
+    { href: '/premium/compliance-check/', label: 'Compliance Check', id: 'compliance-check' },
+    { href: '/premium/signal-chain/', label: 'Signal Chain', id: 'signal-chain' },
+    { href: '/premium/ask-mmt/', label: 'Ask MMT', id: 'ask-mmt' },
+    { href: '/proposal-pulse.html', label: 'ProposalPulse', id: 'proposal-pulse' },
+    { href: '/marketpulse.html', label: 'MarketPulse', id: 'marketpulse' },
+    { href: '/glossary.html', label: 'Glossary', id: 'glossary', group: 'Reference' },
+    { href: '/newswire.html', label: 'Newswire', id: 'newswire' },
+    { href: '/agency-sources.html', label: 'Agency Sources', id: 'agency-sources' },
+    { href: '/premium/settings/', label: 'Settings', id: 'settings', group: 'Account' },
+  ];
+
+  let navHtml = '<nav class="dash-nav">\n';
+  navHtml += '  <div style="margin-bottom:24px;"><a href="/" style="font-weight:800;font-size:15px;color:var(--mmt-navy,#0A192F);text-decoration:none;">Mission Meets Tech</a></div>\n';
+  let currentGroup = 'Intelligence';
+  navHtml += '  <div class="dash-nav-group">\n    <div class="dash-nav-label">Intelligence</div>\n';
+  links.forEach(link => {
+    if (link.group && link.group !== currentGroup) {
+      navHtml += '  </div>\n  <div class="dash-nav-group">\n    <div class="dash-nav-label">' + link.group + '</div>\n';
+      currentGroup = link.group;
+    }
+    const activeClass = link.id === activePage ? ' active' : '';
+    navHtml += `    <a href="${link.href}" class="dash-nav-link${activeClass}">${link.label}</a>\n`;
+  });
+  navHtml += '  </div>\n</nav>';
+
+  if (html.includes('</style>')) {
+    html = html.replace('</style>', dashCss + '\n  </style>');
+  } else {
+    html = html.replace('</head>', '<style>' + dashCss + '</style>\n</head>');
+  }
+
+  html = html.replace(/<nav class="nav-editorial"><\/nav>/, '');
+  html = html.replace(/<body([^>]*)>/, `<body$1>\n<div class="dash-shell">\n${navHtml}\n<div class="dash-main">`);
+
+  if (activePage === 'home') {
+    const fridayBriefTile = generateFridayBriefLatestTileHtml();
+    if (fridayBriefTile) {
+      html = html.replace('<div class="dash-main">', `<div class="dash-main">\n${fridayBriefTile}`);
+    }
+  }
+
+  html = html.replace('</body>', '</div>\n</div>\n</body>');
+  html = html.replace(/<footer class="wrap">[\s\S]*?<\/footer>/i, '');
+  return html;
+}
+
 function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleMap, agencyArticleMap, articles, subscriberCount }) {
   // Copy root HTML files (with inlined Tailwind CSS + build-time injections)
   const htmlFiles = [
@@ -3168,19 +3297,56 @@ ${innerHtml}
     console.warn(`Friday-brief build step warning (non-fatal): ${err.message}`);
   }
 
-  // Pursuit Calendar — render the empty-state placeholder synchronously
-  // here so the page exists even on local builds with no DB access. The
-  // async build() function below this hydrates it from Supabase if
+  // Pursuit Calendar — render synchronously from the curated seed JSON
+  // (data/premium/pursuit-calendar-seed.json) so the page is correct on
+  // local builds and on production when Supabase is empty / unreachable.
+  // The async build() block below upgrades to live Supabase rows when
   // SUPABASE_URL/SUPABASE_SERVICE_KEY are present.
   try {
     const outDir = path.join(DIST_DIR, 'premium', 'calendar');
     ensureDir(outDir);
-    let html = renderPursuitCalendarHtml([]);
+
+    // Load curated seed events — these are Mary-verified pursuit deadlines
+    // that always render, even with no DB. The shape maps directly into
+    // renderPursuitCalendarHtml's row format.
+    const seedPath = path.join(__dirname, 'data', 'premium', 'pursuit-calendar-seed.json');
+    let seedRows = [];
+    let seedRefreshedAt = null;
+    if (fs.existsSync(seedPath)) {
+      try {
+        const seed = JSON.parse(fs.readFileSync(seedPath, 'utf8'));
+        seedRows = (seed.events || []).map((e) => ({
+          title: e.title,
+          event_date: e.event_date,
+          end_date: e.end_date || null,
+          event_time_et: e.event_time_et || null,
+          agency: e.agency || null,
+          vehicle: e.vehicle || null,
+          ref: e.ref || null,
+          category: e.category,
+          status_override: e.status_override || null,
+          source_url: e.source_url || null,
+          source_system: e.source_system || 'manual',
+          notes: e.notes || null,
+        }));
+        if (seed._meta && seed._meta.last_curated_at) {
+          // Treat curation date as the freshness signal for seed mode.
+          seedRefreshedAt = new Date(seed._meta.last_curated_at + 'T12:00:00Z').toISOString();
+        }
+      } catch (seedErr) {
+        console.warn(`Pursuit calendar seed parse warning: ${seedErr.message}`);
+      }
+    }
+
+    let html = renderPursuitCalendarHtml(seedRows, {
+      lastRefreshedAt: seedRefreshedAt,
+      emptyMode: 'login_required',
+    });
     html = injectDashShell(html, 'calendar');
     html = html.replace('</body>', siteScriptTag + '\n</body>');
     html = inlineTailwindCss(html);
     fs.writeFileSync(path.join(outDir, 'index.html'), html);
-    console.log('Built premium/calendar/index.html (empty-state placeholder)');
+    console.log(`Built premium/calendar/index.html (seed: ${seedRows.length} curated event(s))`);
   } catch (err) {
     console.warn(`Pursuit calendar placeholder warning (non-fatal): ${err.message}`);
   }
@@ -4374,44 +4540,95 @@ async function build() {
 
   // 6b. Pursuit Calendar — hydrate dist/premium/calendar/index.html
   // from Supabase if creds are present. The placeholder written by
-  // copyStaticFiles is overwritten with live rows. Best-effort: if
-  // Supabase is down or env missing, the placeholder stays as-is.
-  if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
-    try {
-      const sb = createSupabaseClient(
-        process.env.SUPABASE_URL,
-        process.env.SUPABASE_SERVICE_KEY
-      );
-      const { data, error } = await sb
-        .from('pursuit_calendar')
-        .select('id, title, event_date, end_date, agency, vehicle, category, source_url, notes, updated_at')
-        .eq('status', 'active')
-        .order('event_date', { ascending: true });
-      if (error) {
-        console.warn(`Pursuit calendar hydrate warning: ${error.message}`);
-      } else {
-        const rows = data || [];
-        // Most recent updated_at across the active set is the
-        // refresh-freshness signal the UI surfaces.
-        const lastRefreshedAt = rows
-          .map((r) => r.updated_at)
-          .filter(Boolean)
-          .sort()
-          .reverse()[0] || null;
-        const outPath = path.join(DIST_DIR, 'premium', 'calendar', 'index.html');
-        let html = renderPursuitCalendarHtml(rows, { lastRefreshedAt });
-        html = injectDashShell(html, 'calendar');
-        html = html.replace('</body>', siteScriptTag + '\n</body>');
-        html = inlineTailwindCss(html);
-        fs.writeFileSync(outPath, html);
-        // Also overwrite the root-level alias so /premium/calendar.html
-        // serves the same hydrated content.
-        const aliasPath = path.join(DIST_DIR, 'premium', 'calendar.html');
-        fs.writeFileSync(aliasPath, html);
-        console.log(`Hydrated premium/calendar (index.html + calendar.html) — ${rows.length} active pursuit(s); last refresh ${lastRefreshedAt || 'unknown'}`);
+  // copyStaticFiles already has the curated seed JSON rendered into it.
+  // Supabase rows merge ON TOP of seed rows; when the table is empty or
+  // unreachable the seed-rendered page stays as-is.
+  // Merge key: lower-case ref OR (title + event_date) — Supabase rows
+  // win on conflict so live updates beat stale seed data.
+  {
+    // Re-read the seed so we always have the curated baseline available
+    // for the merge, regardless of which order the build steps ran.
+    const seedPath = path.join(__dirname, 'data', 'premium', 'pursuit-calendar-seed.json');
+    let seedRows = [];
+    let seedRefreshedAt = null;
+    if (fs.existsSync(seedPath)) {
+      try {
+        const seed = JSON.parse(fs.readFileSync(seedPath, 'utf8'));
+        seedRows = (seed.events || []).map((e) => ({
+          title: e.title,
+          event_date: e.event_date,
+          end_date: e.end_date || null,
+          event_time_et: e.event_time_et || null,
+          agency: e.agency || null,
+          vehicle: e.vehicle || null,
+          ref: e.ref || null,
+          category: e.category,
+          status_override: e.status_override || null,
+          source_url: e.source_url || null,
+          source_system: e.source_system || 'manual',
+          notes: e.notes || null,
+        }));
+        if (seed._meta && seed._meta.last_curated_at) {
+          seedRefreshedAt = new Date(seed._meta.last_curated_at + 'T12:00:00Z').toISOString();
+        }
+      } catch (seedErr) {
+        console.warn(`Pursuit calendar seed merge parse warning: ${seedErr.message}`);
       }
+    }
+
+    let supabaseRows = [];
+    let lastRefreshedAt = seedRefreshedAt;
+    if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
+      try {
+        const sb = createSupabaseClient(
+          process.env.SUPABASE_URL,
+          process.env.SUPABASE_SERVICE_KEY
+        );
+        const { data, error } = await sb
+          .from('pursuit_calendar')
+          .select('id, title, event_date, end_date, agency, vehicle, category, source_url, notes, updated_at')
+          .eq('status', 'active')
+          .order('event_date', { ascending: true });
+        if (error) {
+          console.warn(`Pursuit calendar hydrate warning: ${error.message}`);
+        } else {
+          supabaseRows = data || [];
+          const supabaseRefresh = supabaseRows
+            .map((r) => r.updated_at)
+            .filter(Boolean)
+            .sort()
+            .reverse()[0] || null;
+          if (supabaseRefresh) lastRefreshedAt = supabaseRefresh;
+        }
+      } catch (err) {
+        console.warn(`Pursuit calendar hydrate warning (non-fatal): ${err.message}`);
+      }
+    }
+
+    // Merge: Supabase rows beat seed rows on the same ref / title+date key.
+    const keyOf = (r) => (r.ref ? `ref:${String(r.ref).toLowerCase()}` : `td:${r.title}|${r.event_date}`);
+    const merged = new Map();
+    for (const r of seedRows) merged.set(keyOf(r), r);
+    for (const r of supabaseRows) merged.set(keyOf(r), r);
+    const rows = Array.from(merged.values());
+
+    try {
+      const outPath = path.join(DIST_DIR, 'premium', 'calendar', 'index.html');
+      let html = renderPursuitCalendarHtml(rows, {
+        lastRefreshedAt,
+        emptyMode: 'login_required',
+      });
+      html = injectDashShell(html, 'calendar');
+      html = html.replace('</body>', siteScriptTag + '\n</body>');
+      html = inlineTailwindCss(html);
+      fs.writeFileSync(outPath, html);
+      // Also overwrite the root-level alias so /premium/calendar.html
+      // serves the same hydrated content.
+      const aliasPath = path.join(DIST_DIR, 'premium', 'calendar.html');
+      fs.writeFileSync(aliasPath, html);
+      console.log(`Hydrated premium/calendar (index.html + calendar.html) — ${rows.length} pursuit(s) (seed:${seedRows.length} + supabase:${supabaseRows.length}); refresh ${lastRefreshedAt || 'unknown'}`);
     } catch (err) {
-      console.warn(`Pursuit calendar hydrate warning (non-fatal): ${err.message}`);
+      console.warn(`Pursuit calendar hydrate write warning (non-fatal): ${err.message}`);
     }
   }
 

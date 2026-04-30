@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pursuit Calendar — 90-Day Deadline Tracker — MMT Premium</title>
   <meta name="robots" content="noindex">
+  <meta name="description" content="Federal pursuit calendar — RFIs, Industry Days, Draft RFPs, Q&A, Final RFPs, proposal-due dates, recompete milestones, awards, and GAO protest deadlines for defense health IT. 90-day window. Times in ET.">
   <link rel="stylesheet" href="/styles/tailwind.css">
   <link rel="icon" href="/favicon-v3.png" type="image/png">
   <style>
@@ -20,12 +21,19 @@
     .dash-nav-link.active { color:#fff; background:rgba(69,123,157,0.3); border-left:3px solid var(--mmt-teal); }
     .dash-nav-section { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:rgba(255,255,255,0.3); padding:16px 20px 6px; }
     .dash-header { background:var(--mmt-white); padding:16px 32px; border-bottom:1px solid var(--mmt-border); display:flex; align-items:center; justify-content:space-between; }
-    .dash-main { padding:32px; max-width:900px; }
+    .dash-main { padding:32px; max-width:920px; }
     .dash-card { background:var(--mmt-white); border-radius:12px; padding:24px; margin-bottom:16px; border:1px solid var(--mmt-border); }
+    .pc-gate { background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:12px; padding:32px; text-align:center; }
+    .pc-gate h2 { font-size:18px; font-weight:700; margin:0 0 8px; }
+    .pc-gate p { font-size:14px; color:var(--mmt-text-secondary); margin:0 0 16px; }
+    .pc-gate .btn { display:inline-block; background:var(--mmt-navy); color:#fff; padding:10px 18px; border-radius:8px; text-decoration:none; font-size:13px; font-weight:600; }
     @media (max-width:768px) { .dash-shell { grid-template-columns:1fr; } .dash-nav { display:none; } .dash-main { padding:16px; padding-bottom:80px; } .dash-mobile-nav { display:flex; position:fixed; bottom:0; left:0; right:0; background:var(--mmt-navy); padding:8px 0; justify-content:space-around; z-index:100; } .dash-mobile-nav a { color:rgba(255,255,255,0.6); text-decoration:none; font-size:10px; text-align:center; padding:6px 8px; } .dash-mobile-nav a.active { color:#fff; } }
     @media (min-width:769px) { .dash-mobile-nav { display:none; } }
   </style>
   <script>
+    // Auth gate: keep the existing premium check. If not premium, do NOT
+    // render an empty calendar — bounce to /dashboard.html which carries
+    // the sign-in entry point.
     (function() {
       var isPremium = localStorage.getItem('mmt_premium') === 'true';
       var ts = localStorage.getItem('mmt_premium_ts');
@@ -75,75 +83,20 @@
         <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin-bottom:8px;">MMT Premium &middot; Pursuit Tools</p>
         <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">Pursuit Calendar</h1>
         <div style="font-size:13px;font-weight:700;color:var(--mmt-teal);letter-spacing:0.04em;margin-bottom:8px;">90-Day Deadline Tracker</div>
-        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 16px;">RFI &middot; Industry Day &middot; Draft RFP &middot; Q&amp;A &middot; Final RFP &middot; Proposal Due &middot; Recompete milestones &middot; Award notices for defense health IT. Pursuit deadlines are separated from public events. Refreshed every 6 hours from SAM.gov + agency feeds.</p>
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 16px;">RFI &middot; Industry Day &middot; Draft RFP &middot; Q&amp;A &middot; Final RFP &middot; Proposal Due &middot; Recompete &middot; Award &middot; Protest milestones for defense health IT. Pursuit deadlines are separated from public events. Refreshed every 6 hours from SAM.gov + agency feeds; cross-linked with the <a href="/contract-tracker.html" style="color:var(--mmt-teal);">Contract Tracker</a> and <a href="/idiq-tracker.html" style="color:var(--mmt-teal);">IDIQ Tracker</a>. All times in <strong>America/New_York (ET)</strong>; past deadlines auto-mark <em>Closed</em>.</p>
 
-        <!-- Filters -->
-        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
-          <button class="cal-filter active" data-agency="all" style="padding:6px 14px;border:1px solid var(--mmt-border);background:rgba(69,123,157,0.08);color:var(--mmt-teal);border-radius:8px;font-size:13px;cursor:pointer;border-color:var(--mmt-teal);">All</button>
-          <button class="cal-filter" data-agency="dha" style="padding:6px 14px;border:1px solid var(--mmt-border);background:transparent;color:var(--mmt-text-secondary);border-radius:8px;font-size:13px;cursor:pointer;">DHA</button>
-          <button class="cal-filter" data-agency="va" style="padding:6px 14px;border:1px solid var(--mmt-border);background:transparent;color:var(--mmt-text-secondary);border-radius:8px;font-size:13px;cursor:pointer;">VA</button>
-          <button class="cal-filter" data-agency="hhs" style="padding:6px 14px;border:1px solid var(--mmt-border);background:transparent;color:var(--mmt-text-secondary);border-radius:8px;font-size:13px;cursor:pointer;">HHS</button>
-          <button class="cal-filter" data-agency="arpa-h" style="padding:6px 14px;border:1px solid var(--mmt-border);background:transparent;color:var(--mmt-text-secondary);border-radius:8px;font-size:13px;cursor:pointer;">ARPA-H</button>
+        <!-- Calendar contents are rendered by build.js via
+             renderPursuitCalendarHtml(rows) using the curated seed at
+             data/premium/pursuit-calendar-seed.json (and any live rows
+             from the Supabase pursuit_calendar table). This static fallback
+             only renders when the build step did not run (e.g., a raw
+             checkout opened in a browser). Authenticated users get the
+             rendered version automatically. -->
+        <div class="pc-gate">
+          <h2>Loading your Pursuit Calendar&hellip;</h2>
+          <p>If this gate persists for more than a few seconds, the calendar build did not run. Sign in to your premium dashboard to see live pursuit deadlines, GAO protest decisions, and the 90-day window.</p>
+          <a class="btn" href="/dashboard.html">Sign in &rarr;</a>
         </div>
-
-        <!-- Entries -->
-        <div id="cal-entries" style="display:flex;flex-direction:column;gap:8px;">
-          <div class="dash-card cal-entry" data-agency="va" data-date="2026-04-17" style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px;">
-            <div>
-              <div style="font-size:12px;color:var(--mmt-text-secondary);">Apr 17, 2026</div>
-              <div style="font-size:15px;font-weight:600;">CCN Next Gen Medical — Proposals Due</div>
-              <div style="font-size:13px;color:var(--mmt-text-secondary);">VA &middot; 36C10G26R0003 &middot; $700B IDIQ ceiling</div>
-              <div class="urgency-label"></div>
-            </div>
-            <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;background:rgba(220,38,38,0.08);color:#DC2626;">Proposal Due</span>
-          </div>
-          <div class="dash-card cal-entry" data-agency="dha" data-date="2026-04-21" style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px;">
-            <div>
-              <div style="font-size:12px;color:var(--mmt-text-secondary);">Apr 21, 2026</div>
-              <div style="font-size:15px;font-weight:600;">DHP Budget Justification Books Release</div>
-              <div style="font-size:13px;color:var(--mmt-text-secondary);">DHA &middot; COMP + PSCP program detail</div>
-              <div class="urgency-label"></div>
-            </div>
-            <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;background:rgba(69,123,157,0.08);color:var(--mmt-teal);">Intel Release</span>
-          </div>
-          <div class="dash-card cal-entry" data-agency="dha" data-date="2026-04-28" style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px;">
-            <div>
-              <div style="font-size:12px;color:var(--mmt-text-secondary);">Apr 28-29, 2026</div>
-              <div style="font-size:15px;font-weight:600;">DoW/VA Government Health IT Summit</div>
-              <div style="font-size:13px;color:var(--mmt-text-secondary);">DHA &middot; HCDS direction expected</div>
-              <div class="urgency-label"></div>
-            </div>
-            <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;background:rgba(69,123,157,0.08);color:var(--mmt-teal);">Event</span>
-          </div>
-          <div class="dash-card cal-entry" data-agency="dha" data-date="2026-05-20" style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px;">
-            <div>
-              <div style="font-size:12px;color:var(--mmt-text-secondary);">May 20, 2026</div>
-              <div style="font-size:15px;font-weight:600;">DHA Industry Day</div>
-              <div style="font-size:13px;color:var(--mmt-text-secondary);">DHA &middot; Acquisition priorities preview</div>
-              <div class="urgency-label"></div>
-            </div>
-            <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;background:rgba(69,123,157,0.08);color:var(--mmt-teal);">Event</span>
-          </div>
-          <div class="dash-card cal-entry" data-agency="arpa-h" data-date="2026-06-15" style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px;">
-            <div>
-              <div style="font-size:12px;color:var(--mmt-text-secondary);">Jun 2026</div>
-              <div style="font-size:15px;font-weight:600;">ARPA-H ADVOCATE Awards Expected</div>
-              <div style="font-size:13px;color:var(--mmt-text-secondary);">ARPA-H &middot; Agentic AI cardiovascular care</div>
-              <div class="urgency-label"></div>
-            </div>
-            <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;background:rgba(34,197,94,0.08);color:#16A34A;">Award</span>
-          </div>
-          <div class="dash-card cal-entry" data-agency="dha" data-date="2026-08-30" style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px;">
-            <div>
-              <div style="font-size:12px;color:var(--mmt-text-secondary);">Aug 30, 2026</div>
-              <div style="font-size:15px;font-weight:600;">HCDS Industry Input Deadline</div>
-              <div style="font-size:13px;color:var(--mmt-text-secondary);">DHA &middot; Last window before solicitation</div>
-              <div class="urgency-label"></div>
-            </div>
-            <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;background:rgba(220,38,38,0.08);color:#DC2626;">Deadline</span>
-          </div>
-        </div>
-        <p style="font-size:13px; color:var(--mmt-text-secondary);margin-top:16px;">Updated monthly with each Capture Intelligence sheet. <a href="/intel/capture-intelligence-this-issue/" style="color:var(--mmt-teal);">View current sheet &rarr;</a></p>
       </div>
     </div>
   </div>
@@ -156,35 +109,6 @@
   </div>
   <script>
     var email=localStorage.getItem('mmt_email');if(email)document.getElementById('dash-email').textContent=email;
-
-    // Urgency labels
-    document.querySelectorAll('.cal-entry').forEach(function(entry) {
-      var dateStr = entry.getAttribute('data-date');
-      if (!dateStr) return;
-      var target = new Date(dateStr);
-      var diff = Math.ceil((target - new Date()) / 86400000);
-      var label = entry.querySelector('.urgency-label');
-      if (!label) return;
-      if (diff <= 0) { label.innerHTML = '<span style="font-size:12px;font-weight:700;color:var(--mmt-text-secondary);">Past</span>'; }
-      else if (diff <= 7) { label.innerHTML = '<span style="font-size:12px;font-weight:700;color:#DC2626;">⚠ ' + diff + ' day' + (diff > 1 ? 's' : '') + ' away</span>'; }
-      else if (diff <= 14) { label.innerHTML = '<span style="font-size:12px;font-weight:700;color:#D97706;">' + diff + ' days away</span>'; }
-    });
-
-    // Filter buttons
-    var activeAgency = 'all';
-    document.querySelectorAll('.cal-filter').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        document.querySelectorAll('.cal-filter').forEach(function(b) {
-          b.style.background = 'transparent'; b.style.color = 'var(--mmt-text-secondary)'; b.style.borderColor = 'var(--mmt-border)';
-        });
-        btn.style.background = 'rgba(69,123,157,0.08)'; btn.style.color = 'var(--mmt-teal)'; btn.style.borderColor = 'var(--mmt-teal)';
-        activeAgency = btn.getAttribute('data-agency');
-        document.querySelectorAll('.cal-entry').forEach(function(entry) {
-          var agency = entry.getAttribute('data-agency') || '';
-          entry.style.display = (activeAgency === 'all' || agency === activeAgency) ? '' : 'none';
-        });
-      });
-    });
   </script>
 </body>
 </html>

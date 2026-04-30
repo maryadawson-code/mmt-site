@@ -1,0 +1,108 @@
+{
+  "_meta": {
+    "description": "Pursuit Calendar seed events. Source of truth when Supabase pursuit_calendar table is unreachable. Times are America/New_York (ET). Status is computed dynamically by the renderer for date-based events; explicit status values (Protest, Protest Due, Watch, Needs Source) are honored as-is.",
+    "last_curated_at": "2026-04-30",
+    "curator": "Mary Womack",
+    "timezone": "America/New_York"
+  },
+  "events": [
+    {
+      "id": "dha-data-governance-2026",
+      "title": "DHA Data Governance proposals due",
+      "event_date": "2026-01-09",
+      "event_time_et": "09:00",
+      "agency": "DHA",
+      "vehicle": "DHA Data Governance",
+      "ref": "HT001126RE011",
+      "category": "proposal_due",
+      "status_override": null,
+      "source_url": "https://www.highergov.com/contract-opportunity/defense-health-agency-data-governance-transforming-ht001126re011-o-69830/",
+      "source_system": "manual",
+      "notes": "Solicitation HT001126RE011. DHA Data Governance — Transforming. Proposals due 9:00 AM ET."
+    },
+    {
+      "id": "va-devsecops-2026",
+      "title": "VA Health Services DevSecOps response due",
+      "event_date": "2026-02-12",
+      "event_time_et": "10:00",
+      "agency": "VA TAC",
+      "vehicle": "DA01 Health Services DevSecOps",
+      "ref": "36C10B26Q0163",
+      "category": "proposal_due",
+      "status_override": null,
+      "source_url": "https://www.highergov.com/contract-opportunity/da01-health-services-devsecops-new-contract-va-36c10b26q0163-r-4a060/",
+      "source_system": "manual",
+      "notes": "VA Technology Acquisition Center. New DevSecOps contract. Responses due 10:00 AM ET."
+    },
+    {
+      "id": "fda-sentinel-3-2026",
+      "title": "FDA Sentinel 3.0 sources sought due",
+      "event_date": "2026-03-23",
+      "event_time_et": "10:00",
+      "agency": "FDA",
+      "vehicle": "Sentinel 3.0",
+      "ref": "75F40126SSN00100",
+      "category": "rfi",
+      "status_override": null,
+      "source_url": "https://www.highergov.com/contract-opportunity/sentinel-3-0-2026-updated-market-research-75f40126ssn00100-r-43567/",
+      "source_system": "manual",
+      "notes": "Sources sought / updated market research for Sentinel 3.0. Responses due 10:00 AM ET."
+    },
+    {
+      "id": "ccn-next-gen-medical-2026",
+      "title": "CCN Next Gen Medical proposals due",
+      "event_date": "2026-04-03",
+      "event_time_et": "14:00",
+      "agency": "VA SAC",
+      "vehicle": "Community Care Network Next Gen Medical",
+      "ref": "36C10G26R0003",
+      "category": "proposal_due",
+      "status_override": null,
+      "source_url": "https://www.highergov.com/contract-opportunity/q201-ccn-next-gen-medical-36c10g26r0003-k-79930/",
+      "source_system": "manual",
+      "notes": "VA Strategic Acquisition Center. Multi-region IDIQ. Proposals due 2:00 PM ET."
+    },
+    {
+      "id": "peo-dhms-deployment-solutions-2026",
+      "title": "PEO DHMS Deployment Solutions proposals due",
+      "event_date": "2026-04-21",
+      "event_time_et": "16:00",
+      "agency": "DHA / PEO DHMS",
+      "vehicle": "PEO DHMS Deployment Solutions",
+      "ref": "HT003826RE001",
+      "category": "proposal_due",
+      "status_override": null,
+      "source_url": "https://www.highergov.com/contract-opportunity/program-executive-office-peo-defense-healthcare-ht003826re001-k-feb02/",
+      "source_system": "manual",
+      "notes": "Program Executive Office, Defense Healthcare Management Systems. $300M / 5yr IDIQ. Proposals due 4:00 PM ET."
+    },
+    {
+      "id": "va-ambient-scribe-protest-filed-2026",
+      "title": "VA Ambient Scribe GAO protest filed",
+      "event_date": "2026-04-28",
+      "event_time_et": null,
+      "agency": "VA TAC",
+      "vehicle": "Ambient Scribe Enterprise IDIQ",
+      "ref": "36C10B26R0006 / B-424447.1",
+      "category": "protest",
+      "status_override": "Protest",
+      "source_url": "https://orangeslices.ai/protest-filed-ambient-scribe-enterprise-idiq/",
+      "source_system": "manual",
+      "notes": "GAO protest filed against VA Ambient Scribe Enterprise IDIQ award (Sol 36C10B26R0006). GAO docket B-424447.1. Time of day not specified."
+    },
+    {
+      "id": "va-ambient-scribe-protest-decision-due-2026",
+      "title": "VA Ambient Scribe GAO decision due",
+      "event_date": "2026-08-06",
+      "event_time_et": null,
+      "agency": "VA TAC",
+      "vehicle": "Ambient Scribe Enterprise IDIQ",
+      "ref": "B-424447.1",
+      "category": "protest_due",
+      "status_override": "Protest Due",
+      "source_url": "https://orangeslices.ai/protest-filed-ambient-scribe-enterprise-idiq/",
+      "source_system": "manual",
+      "notes": "GAO statutory 100-day decision deadline for B-424447.1 (Ambient Scribe protest). Time of day not specified."
+    }
+  ]
+}
