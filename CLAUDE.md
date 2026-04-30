@@ -216,6 +216,171 @@ Before declaring work complete, verify:
 
 ---
 
+## Sprint 2026-04-30 — Premium tools recovery + agency surfaces + May 1 release prep
+
+Massive day. Ten production commits closing real bugs, adding new live-data
+surfaces, and locking the May 1 release pipeline. Hard rules added:
+
+- **No tool function may reference variables declared inside a conditional
+  branch.** Signal Chain crashed every GET request for hours because the V2
+  envelope code referenced `body.company` declared inside the POST-only
+  `else` block. Fixed in `signal-chain.js` (hoisted `body` parsing into a
+  top-level `company` variable). Same audit pass cleared `pursuit-score.js`
+  and `compliance-check.js` (both already declared `body` at outer scope).
+- **buildToolEnvelope must NOT receive a card that will later have
+  `card.envelope = envelope` set on it.** Doing both creates `card →
+  envelope → legacy → card`, an infinite recursion that crashes
+  `JSON.stringify`. Fixed in `signal-chain.js` and `compliance-check.js` by
+  building the response into a fresh object instead of mutating the card.
+  `pursuit-score.js` was already correct. `tests/unit/premium-tools-envelope.test.js`
+  should be added next sprint to prevent regression.
+- **Every premium-tool / Ask MMT enrichment helper must return cleanly
+  on upstream failure** (`{ matched: false }` or empty arrays + an `error`
+  field). The new `lib/calc-rates.js` / `lib/ecfr-api.js` /
+  `lib/regulations-gov.js` modules each follow this pattern so a single
+  upstream 4xx never breaks the assistant.
+- **SAM.gov API key has a hard 90-day expiration.** The key was rotated
+  2026-04-30, expiring 2026-07-28. `netlify/functions/sam-key-expiration-reminder.js`
+  fires daily 14:00 UTC, emails Mary at 30 / 14 / 7 / 3 / 1 days out
+  (idempotency-keyed in `ops_events`), and nags daily once expired.
+  **Update `SAM_KEY_EXPIRES_UTC` in that file every time the key rotates.**
+
+### What shipped (10 commits — `aa81db3..5d886bd`)
+
+1. **`6dda476`** — apr29 DHA reorg v2 + post-Town-Hall update email.
+   Article (`premium/briefs/capture-corner-2026-04-29.html`) updated
+   with RDML Tracy Farrill (OWHA), RDML Ivonne Arena (Acting AD-RDA),
+   BG Bill A. Soliz (Acting AD-HCAO), three named PAEs, new "Two
+   Integration Boards Culled" section, Four Dates with July 19 FOC.
+   New one-shot sender `apr29-dha-reorg-update-send.js` emailed
+   21/21 active premium subscribers at 23:46 UTC.
+2. **`6cdb086`** — cleanup. Title em-dashes → middot, retired apr29
+   cron schedules (idempotency-blocked anyway), replaced empty catch
+   in `apr29-dha-reorg-update-send.js readBodyMd()` with logged catch.
+3. **`81a6243`** — Signal Chain `body is not defined` ReferenceError
+   on every GET (V2 envelope crash). Hoist fix.
+4. **`edf2dbc`** — Signal Chain + Compliance Check circular JSON
+   (`property 'legacy' -> object closes the circle`). Stop mutating
+   `card.envelope`; build response in a fresh object instead.
+5. **`f354743`** — premium org charts: `/premium/org-charts/dha`
+   and `/premium/org-charts/va`. Rebranded from non-MMT palette to
+   canonical MMT design tokens (white / `#0A192F` / `#457B9D` / Inter,
+   no Google Fonts CDN, no dark mode, no em-dashes). Auto-discovered
+   by build.js loop mirroring premium briefs. New
+   `netlify/functions/org-chart-monitor.js` weekly cron (Mondays
+   11:00 UTC) hashes the canonical agency leadership pages and
+   emails Mary on change.
+6. **`d71bbc3`** — three new federal-data layers wired into Ask MMT
+   and premium-chat: `lib/calc-rates.js` (GSA CALC+ — currently a
+   no-op because GSA migrated CALC to IGCE; ready when GSA publishes
+   the new endpoint), `lib/ecfr-api.js` (eCFR live FAR/DFARS/HIPAA
+   section search — VERIFIED WORKING), `lib/regulations-gov.js`
+   (Regulations.gov v4 dockets + open comment periods).
+7. **`fbd9bfc`** — 5 org chart factual corrections. DHA: 19 PMOs
+   are a shared pool not all under PEO DHMS; PEO DHMS and PEO
+   Medical Systems are peers at IOC, not nested; PAE Medical
+   Software & Business Systems has no Acting lead at IOC. VA:
+   VBA Acting USB is Michael Frueh (was Margarita Devlin); VHA
+   Acting context — Dr. Steven Lieberman left to VA New Jersey
+   in January 2026.
+8. **`1067e63`** — IDIQ + Contract Tracker + Pursuit Calendar
+   factual overhaul (3 parallel subagents). 28 → 32 IDIQ vehicles
+   in `data/idiq-vehicles.json` (T4NG2 awarded $60.7B, ITES-3H
+   legacy, CIO-SP4 canceled, DHA DHMSM/MHS GENESIS Leidos prime
+   not Oracle, Alliant 3 NTP Mar 10 2026, plus ITES-4H + Polaris
+   adds). 32 → 35 contract entries in `contracts.json` with new
+   `classification` field (Contract / IDIQ / Solicitation / Program
+   Watch / Policy-Infrastructure Watch / Grant Program /
+   Vendor-Announced / Cloud Program Watch / Strategy Watch /
+   Managed Care / Needs Source). Pursuit Calendar rewritten with
+   7 verified Mary-curated events (`data/premium/pursuit-calendar-seed.json`)
+   + dynamic `Closed` computation in `America/New_York` + login-required
+   default empty state. **Latent bug fixed**: `injectDashShell` was
+   scoped inside `copyStaticFiles` but called from `build()`'s async
+   hydrate path — every Supabase hydrate was throwing a non-fatal
+   warning and writing the calendar without the dash sidebar.
+   Hoisted to module scope.
+9. **`de1f130`** — agencies overhaul. `data/premium/agency-profiles/agencies.json`
+   went from 6 → 11 cards: added IHS, CDC, FDA, NIH/NITAAC, GSA;
+   corrected DHA / VA / HHS / ONC / ARPA-H / CMS per Mary's spec
+   (HHS reframed as a department-level navigation map, ONC emphasizes
+   USCDI / TEFCA / information blocking, etc.). New per-card fields:
+   `type`, `lastUpdated`, `officialSources[]`, `keyPrograms[]`,
+   `procurementSignals[]`, `openVehicles[]`, `mmtRead`, `premiumLocked`.
+   `generateAgencyProfilePage` now surfaces an MMT Read teaser +
+   Official Sources block + agency type/lastUpdated meta line ABOVE
+   the existing premium gate. **Sonnet 4.6 migration**: zero
+   `context-1m-2025-08-07` beta-header references in the codebase;
+   swapped the one remaining `claude-sonnet-4-5` reference in
+   `scripts/content-refresh-agent.js` to `claude-sonnet-4-6` for
+   consistency. **SAM key reminder cron** added per the hard rule
+   above.
+10. **`5d886bd`** — May 1 release prep + DHA org chart fact-check.
+    Premium Capture Sheet markdown (`data/may-1-release/premium-capture-sheet.md`)
+    staged at the path `may1-premium-capture-send.js` reads. Tracker
+    markdown verified byte-identical. Em-dashes in the May 1 tracker
+    page `<title>` replaced with middots. New
+    `scripts/append-newsletter-entry.js` CLI helper for the 16:00 ET
+    `newsletters.json` append. **DHA org chart restructured to
+    mirror Town Hall slide 5 (Day 2 / IOC) exactly**: 4 specific IOC
+    buckets with their own PMO assignments — Perkins (PEO DHMS, 3
+    DHMS PMOs), Moss (PEO Medical Systems, 6 PMOs), Friedman (Acting
+    PAE Medical Services, 5 PMOs), Felkoski (Acting PAE Medical
+    Products NH-IV, 5 PMOs). FOC text updated: both PEOs dissolve
+    into PAE Med Software & Business Systems by 19 JUL 2026. Source
+    citation footer added.
+
+### New live infrastructure (post-2026-04-30)
+
+- `/premium/org-charts/dha` and `/premium/org-charts/va` — premium
+  org chart pages, build.js auto-discovery loop in
+  `premium/org-charts/*.html`, no Google Fonts, no dark mode, no
+  em-dashes. Source citation block at the bottom.
+- `netlify/functions/org-chart-monitor.js` — weekly cron Mondays 11:00 UTC.
+- `netlify/functions/sam-key-expiration-reminder.js` — daily cron 14:00 UTC.
+- `netlify/functions/lib/calc-rates.js` — GSA CALC+ enrichment
+  (currently no-op pending IGCE endpoint).
+- `netlify/functions/lib/ecfr-api.js` — eCFR FAR/DFARS/HIPAA live
+  section search.
+- `netlify/functions/lib/regulations-gov.js` — Regulations.gov v4
+  dockets + open comment periods. Requires `REGULATIONS_GOV_API_KEY`
+  (set 2026-04-30; falls back to `DEMO_KEY`).
+- `scripts/append-newsletter-entry.js` — CLI helper for manifest append
+  with JSON validation, duplicate-URL/title block, prepend-newest semantics.
+- `data/premium/pursuit-calendar-seed.json` — Mary-curated events
+  rendered by `lib/pursuit-calendar-render.js`.
+
+### May 1 release timeline (lock state, all date-guarded + idempotent)
+
+| Time (ET) | Action | Mechanism |
+|---|---|---|
+| 06:00 | Premium Capture Sheet email blast | `may1-premium-capture-send.js` (cron 10:00 UTC, reads `data/may-1-release/premium-capture-sheet.md`) |
+| 09:00 | LinkedIn newsletter publish | Mary, manual |
+| 09:00 | Site rebuild for newsletter article | `may1-build-trigger.js` (cron 13:00 UTC, fires `NETLIFY_BUILD_HOOK_URL`) |
+| 12:00 | Contracts tracker page → live at `/contracts/may-2026-va-enterprise-imaging/` | `may1-tracker-trigger.js` (cron 16:00 UTC fires Netlify build; build.js renderMay1ContractsTracker activates because `today >= 2026-05-01`) |
+| 16:00 | newsletters.json append | Mary runs `node scripts/append-newsletter-entry.js --title ... --url <linkedin> --tags ...` then commits |
+
+Kill switches: `MAY1_PREMIUM_CAPTURE_DISABLED`, `MAY1_BUILD_TRIGGER_DISABLED`,
+`MAY1_TRACKER_TRIGGER_DISABLED`. Pre-flight pattern checks (negation-reveal,
+"not just," banned vocab, setup phrases) verified zero hits across all
+three deliverable files.
+
+### State at end-of-day 2026-04-30
+
+- 320 dist pages (was 309 at start of day, +11 net: 5 new agency
+  profiles + 2 org charts + 1 May 1 contracts tracker [date-gated] +
+  3 misc additions).
+- IntegrityPulse Fortress audit: SUCCESS/SYNCED, 40 routes, 0 drift,
+  0 HTTP failures (last run 19:18 UTC).
+- 11 agency profiles live (was 6).
+- 32 IDIQ vehicles in dataset (was 28).
+- 35 contract entries with classification field (was 32).
+- 7 verified events seeded in Pursuit Calendar (was empty / stale).
+- Signal Chain + Compliance Check + Pursuit Score all returning
+  HTTP 200 with proper envelopes (verified post-fix).
+- Ask MMT context block now sources from 17 layers (was 14):
+  added eCFR + GSA CALC+ + Regulations.gov.
+
 ## Sprint 2026-04-27 (afternoon) — Follow-on stabilization
 
 After Mary ran the production SQL repair, this pass closed the remaining gaps. Hard rules (in addition to those below):

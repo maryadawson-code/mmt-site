@@ -239,7 +239,7 @@
   </div>
   <script>
     var email = localStorage.getItem('mmt_email');
-    if (email) document.getElementById('dash-email').textContent = email;
+    var __de=document.getElementById('dash-email');if(__de&&email)__de.textContent=email;
 
     var VERDICT_COLORS = {
       'PURSUE':              '#15803D',

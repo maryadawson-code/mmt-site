@@ -231,7 +231,7 @@
 
   <script>
     var email = localStorage.getItem('mmt_email');
-    if (email) document.getElementById('dash-email').textContent = email;
+    var __de=document.getElementById('dash-email');if(__de&&email)__de.textContent=email;
 
     // PMD-05: First-visit onboarding banner
     if (!localStorage.getItem('mmt_first_visit_done') && localStorage.getItem('mmt_premium') === 'true') {

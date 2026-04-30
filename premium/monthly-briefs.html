@@ -125,7 +125,7 @@
     <a href="/premium/settings.html">Account</a>
   </div>
   <script>
-    var email=localStorage.getItem('mmt_email');if(email)document.getElementById('dash-email').textContent=email;
+    var email=localStorage.getItem('mmt_email');var __de=document.getElementById('dash-email');if(__de&&email)__de.textContent=email;
     function submitBriefEmail() {
       var e = document.getElementById('brief-email').value.trim();
       if (!e || !e.includes('@')) { alert('Please enter a valid email.'); return; }
