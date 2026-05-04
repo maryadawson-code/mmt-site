@@ -30,8 +30,53 @@ const {
   scoreCompanyFit,
   combineVerdict,
 } = require("./company-alignment");
+const fs = require("fs");
+const path = require("path");
 
 const AGENCY_CODE_MAP = { VA: "036", DHA: "097", HHS: "075", DoD: "097", GSA: "047" };
+
+// Lazy-load the canonical IDIQ dataset once. Used to enrich the
+// signal-detection text with vehicle metadata (notes, set-aside,
+// forecast event) so a search like "OASIS+" matches RECOMPETE /
+// $1B+ / set-aside signals from the dataset, not just whatever the
+// user happened to type. Falls back to an empty list if the file is
+// not bundled (Netlify includes it via included_files).
+let _IDIQ_VEHICLES_CACHE = null;
+function _loadIdiqVehicles() {
+  if (_IDIQ_VEHICLES_CACHE !== null) return _IDIQ_VEHICLES_CACHE;
+  try {
+    const candidates = [
+      path.join(process.cwd(), "data", "idiq-vehicles.json"),
+      path.resolve(__dirname, "..", "..", "..", "data", "idiq-vehicles.json"),
+    ];
+    for (const p of candidates) {
+      if (fs.existsSync(p)) {
+        const raw = JSON.parse(fs.readFileSync(p, "utf8"));
+        _IDIQ_VEHICLES_CACHE = Array.isArray(raw) ? raw : (raw.vehicles || []);
+        return _IDIQ_VEHICLES_CACHE;
+      }
+    }
+  } catch { /* fall through */ }
+  _IDIQ_VEHICLES_CACHE = [];
+  return _IDIQ_VEHICLES_CACHE;
+}
+
+function _findIdiqVehicleFor(matchedVehicle, keyword) {
+  if (!matchedVehicle && !keyword) return null;
+  const vehicles = _loadIdiqVehicles();
+  if (!vehicles.length) return null;
+  const candidates = [];
+  if (matchedVehicle) {
+    candidates.push(matchedVehicle.canonical);
+    if (Array.isArray(matchedVehicle.aliases)) candidates.push(...matchedVehicle.aliases);
+  }
+  if (keyword) candidates.push(keyword);
+  const tokens = candidates.filter(Boolean).map((s) => String(s).toLowerCase());
+  return vehicles.find((v) => {
+    const name = String(v.name || "").toLowerCase();
+    return tokens.some((t) => t && (name.includes(t) || t.includes(name.replace(/^gsa\s+|^va\s+|^dha\s+/i, "").toLowerCase())));
+  }) || null;
+}
 
 function formatDollarsShort(n) {
   if (!n) return "$0";
@@ -528,7 +573,28 @@ async function scorePursuit({ keyword, agency, naics, subscriberContext }) {
   // "generic preliminary" read.
   const companyFit = scoreCompanyFit(subscriberContext, { keyword, agency: resolvedAgency, naics: resolvedNaics });
   const capturePosition = classifyCapturePosition(subscriberContext, { keyword, agency: resolvedAgency });
-  const signals = detectPositiveSignals(keyword);
+  // Signal-detection input expands beyond the user's typed keyword to
+  // include the matched vehicle's canonical notes (known-vehicles.js)
+  // and the IDIQ dataset row (data/idiq-vehicles.json). Without this,
+  // a search like "OASIS+ OASIS Plus 47QRCA" returns 0 positive signals
+  // even though the vehicle dataset says "succeeding OASIS and OASIS SB"
+  // (RECOMPETE) and is multi-billion (DOLLAR_1B_PLUS). The 2026-04-19
+  // sprint flagged this as a recurring regression.
+  const idiqVehicle = _findIdiqVehicleFor(matchedVehicles[0], keyword);
+  const signalText = [
+    keyword,
+    matchedVehicles[0]?.notes,
+    matchedVehicles[0]?.canonical,
+    (matchedVehicles[0]?.search_terms || []).join(" "),
+    idiqVehicle?.notes,
+    idiqVehicle?.mmt_note,
+    idiqVehicle?.set_aside,
+    idiqVehicle?.status,
+    idiqVehicle?.forecast_event,
+    idiqVehicle?.vehicle_type,
+    idiqVehicle?.ceiling_usd ? `$${idiqVehicle.ceiling_usd}` : "",
+  ].filter(Boolean).join(" \n ");
+  const signals = detectPositiveSignals(signalText);
   const combined = combineVerdict({
     marketScore: totalScore,
     partial,

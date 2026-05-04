@@ -127,17 +127,19 @@ exports.handler = async (event) => {
     } catch (e) { console.warn("Contract intel query failed:", e.message); }
   }
 
-  // Protest alerts (from ops_events with protest-related types, last 24h)
+  // Protest alerts — read from protest_monitor (source of truth, written
+  // by protest-monitor-background). Surface rows whose status changed
+  // since the last check window (last_checked within 24h AND
+  // status != last_status, i.e. a real transition).
   if (anyWants("protests")) {
     try {
       const { data } = await supabase
-        .from("ops_events")
-        .select("details, created_at")
-        .eq("event_type", "protest_status_change")
-        .gte("created_at", since24h)
-        .order("created_at", { ascending: false })
+        .from("protest_monitor")
+        .select("case_number, protester, agency, status, last_status, details, last_checked")
+        .gte("last_checked", since24h)
+        .order("last_checked", { ascending: false })
         .limit(10);
-      protestAlerts = data || [];
+      protestAlerts = (data || []).filter((r) => r.status && r.last_status && r.status !== r.last_status);
     } catch (e) { console.warn("Protest query failed:", e.message); }
   }
 
@@ -238,9 +240,13 @@ exports.handler = async (event) => {
     if (notifs.protests && protestAlerts.length > 0) {
       const rows = protestAlerts.slice(0, 5).map((p) => {
         const d = p.details || {};
+        const headline = `${p.case_number || "GAO Protest"} — ${p.protester || ""} v. ${p.agency || ""}`.trim();
+        const change = `Status: ${p.last_status || "?"} → ${p.status || "?"}`;
+        const summary = d.summary || d.next_milestone || "Status change detected";
         return `<div style="padding:10px 0;border-bottom:1px solid #D8E0E8;">
-          <div style="font-size:14px;font-weight:600;color:#0A192F;">${esc(d.contract_name || d.case_number || "Protest Update")}</div>
-          <div style="font-size:13px;color:#5C6B7A;margin-top:2px;">${esc(d.status_change || d.summary || "Status change detected")}</div>
+          <div style="font-size:14px;font-weight:600;color:#0A192F;">${esc(headline)}</div>
+          <div style="font-size:12px;color:#92710A;margin-top:2px;font-weight:600;">${esc(change)}</div>
+          <div style="font-size:13px;color:#5C6B7A;margin-top:2px;">${esc(summary)}</div>
         </div>`;
       }).join("");
       sections.push({ title: "Protest Alerts", html: rows });
@@ -349,12 +355,17 @@ exports.handler = async (event) => {
         await holdEmail(supabase, email, subject, emailHtml, { type: "premium_digest", date: todayStr });
         sentCount++;
       } else {
+        // No adminCopy: BCCing every per-subscriber digest to admin
+        // produced ~21+ inbox copies/day (one per active subscriber × the
+        // ADMIN_BCC_EMAILS list). The end-of-run admin summary email
+        // (~390 below) gives Mary one daily rollup with sent/skipped/failed
+        // counts and per-source totals — that's the signal worth keeping.
+        // Removed 2026-05-04 inbox cleanup pass.
         const result = await sendEmail({
           to: email,
           subject: subject.length > 78 ? subject.substring(0, 75) + "..." : subject,
           html: emailHtml,
           from: "Mission Meets Tech <noreply@missionmeetstech.com>",
-          adminCopy: true,
         });
         if (result.success) sentCount++;
         else failCount++;

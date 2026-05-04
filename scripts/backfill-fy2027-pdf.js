@@ -36,11 +36,17 @@ const CSV_PATH = path.resolve(__dirname, "..", "data", "fy2027-backfill-list.csv
 const SLEEP_MS = 1000;
 
 function parseArgs(argv) {
-  const args = { dryRun: false };
-  for (const a of argv.slice(2)) {
+  const args = { dryRun: false, email: null };
+  const rest = argv.slice(2);
+  for (let i = 0; i < rest.length; i++) {
+    const a = rest[i];
     if (a === "--dry-run") args.dryRun = true;
-    else if (a === "--help" || a === "-h") {
-      console.log("Usage: node scripts/backfill-fy2027-pdf.js [--dry-run]");
+    else if (a === "--email") {
+      args.email = (rest[i + 1] || "").toLowerCase().trim();
+      i++;
+    } else if (a === "--help" || a === "-h") {
+      console.log("Usage: node scripts/backfill-fy2027-pdf.js [--dry-run] [--email addr]");
+      console.log("  --email addr   send only to the row matching this email (safe re-run)");
       process.exit(0);
     } else {
       console.error(`Unknown flag: ${a}`);
@@ -83,8 +89,16 @@ async function main() {
     process.exit(1);
   }
 
-  const rows = parseCsv(fs.readFileSync(CSV_PATH, "utf8"));
-  console.log(`Loaded ${rows.length} subscribers from ${path.basename(CSV_PATH)}`);
+  const allRows = parseCsv(fs.readFileSync(CSV_PATH, "utf8"));
+  const rows = args.email
+    ? allRows.filter((r) => (r.email || "").toLowerCase().trim() === args.email)
+    : allRows;
+  if (args.email && rows.length === 0) {
+    console.error(`[fatal] --email ${args.email} not found in ${path.basename(CSV_PATH)}. Append the row first.`);
+    process.exit(1);
+  }
+  console.log(`Loaded ${allRows.length} subscribers from ${path.basename(CSV_PATH)}; targeting ${rows.length}.`);
+  if (args.email) console.log(`Single-recipient mode: ${args.email}`);
   console.log(`Mode: ${args.dryRun ? "DRY-RUN (no sends)" : "LIVE — sending PDF + apology"}`);
   console.log("");
 

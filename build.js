@@ -3223,9 +3223,27 @@ ${innerHtml}
   // Premium brief detail pages are auto-discovered from premium/briefs/*.html.
   // To add a new brief, drop an HTML file in that directory — no build.js edit needed.
   // The archive page (premium/briefings.html) currently requires manual updates.
+  //
+  // Future-date gate: a brief filename containing a YYYY-MM-DD that's
+  // > today (UTC) is held until that date arrives. The next rebuild-trigger
+  // cron run after the publish date picks it up. Mirrors the article
+  // future-date pattern in extractAllArticles(). Filenames without a
+  // date pattern are always copied (treated as undated standing pages).
   const briefsSrcDir = path.join(__dirname, 'premium', 'briefs');
+  const _briefNowMs = Date.now();
   if (fs.existsSync(briefsSrcDir)) {
-    const briefFiles = fs.readdirSync(briefsSrcDir).filter(f => f.endsWith('.html'));
+    const allBriefFiles = fs.readdirSync(briefsSrcDir).filter(f => f.endsWith('.html'));
+    const briefFiles = allBriefFiles.filter((f) => {
+      const m = f.match(/(\d{4}-\d{2}-\d{2})/);
+      if (!m) return true;
+      const t = new Date(m[1] + 'T00:00:00Z').getTime();
+      if (Number.isNaN(t)) return true;
+      if (t > _briefNowMs) {
+        console.log(`  ⏳ HOLDING (future-dated): premium/briefs/${f} (publish_date ${m[1]})`);
+        return false;
+      }
+      return true;
+    });
     briefFiles.forEach(file => {
       const srcPath = path.join(briefsSrcDir, file);
       const destPath = path.join(DIST_DIR, 'premium', 'briefs', file);
@@ -4070,28 +4088,47 @@ function getBriefFiles() {
     }
   } catch { /* loader error → fall back to legacy */ }
 
-  // Pipeline 2: premium/briefs/*.html (legacy archive)
+  // Pipeline 2: premium/briefs/*.html (legacy archive). Two filename
+  // patterns are accepted:
+  //   - YYYY-MM-DD.html             (legacy Friday Brief)
+  //   - capture-corner-YYYY-MM-DD.html (current weekly cadence — the
+  //     Capture Corner replaced the standalone Friday Brief; subscribers
+  //     looking for "last Friday's brief" expect this issue here too.)
   const briefsDir = path.join(__dirname, 'premium', 'briefs');
+  const _archiveNowMs = Date.now();
   if (fs.existsSync(briefsDir)) {
     const files = fs.readdirSync(briefsDir)
-      .filter(f => f.endsWith('.html') && /^\d{4}-\d{2}-\d{2}/.test(f));
+      .filter(f => f.endsWith('.html') && /(?:^|-)(\d{4}-\d{2}-\d{2})\.html$/.test(f));
     for (const f of files) {
-      const dateStr = f.replace('.html', '');
+      const dateMatch = f.match(/(\d{4}-\d{2}-\d{2})/);
+      if (!dateMatch) continue;
+      const dateStr = dateMatch[1];
+      // Future-date gate — a 2026-05-05 brief shouldn't show in the
+      // archive listing on 2026-05-04. Mirrors the file-copy guard above.
+      const _ts = new Date(dateStr + 'T00:00:00Z').getTime();
+      if (!Number.isNaN(_ts) && _ts > _archiveNowMs) continue;
       if (out.has(dateStr)) continue; // markdown wins
+      const isCaptureCorner = /^capture-corner-/.test(f);
       const parts = dateStr.split('-');
       const d = new Date(parts[0], parts[1] - 1, parts[2]);
       const formatted = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
       const html = fs.readFileSync(path.join(briefsDir, f), 'utf8');
       const descMatch = html.match(/<meta name="description" content="([^"]+)"/);
+      const titleMatch = html.match(/<title>([^<]+)<\/title>/);
+      const h1Match = html.match(/<h1[^>]*>([^<]+)<\/h1>/);
       const desc = descMatch ? descMatch[1].split('. Weekly')[0] : '';
+      const rawTitle = (h1Match && h1Match[1]) || (titleMatch && titleMatch[1]) || '';
+      const cleanedTitle = rawTitle.replace(/\s*\|\s*Mission Meets Tech.*$/, '').trim();
       out.set(dateStr, {
         file: f,
         date: dateStr,
         formatted,
         desc,
         url: `/premium/briefs/${f}`,
-        title: `Friday Brief — Week of ${formatted}`,
-        source: 'legacy_html',
+        title: isCaptureCorner
+          ? (cleanedTitle || `Capture Corner — ${formatted}`)
+          : `Friday Brief — Week of ${formatted}`,
+        source: isCaptureCorner ? 'capture_corner' : 'legacy_html',
       });
     }
   }
@@ -4123,7 +4160,18 @@ function generateBriefArchiveHtml() {
 function getCaptureCornerFiles() {
   const briefsDir = path.join(__dirname, 'premium', 'briefs');
   if (!fs.existsSync(briefsDir)) return [];
-  const files = fs.readdirSync(briefsDir).filter((f) => /^capture-corner-(\d{4}-\d{2}-\d{2})\.html$/.test(f));
+  const _ccNowMs = Date.now();
+  const files = fs.readdirSync(briefsDir)
+    .filter((f) => /^capture-corner-(\d{4}-\d{2}-\d{2})\.html$/.test(f))
+    .filter((f) => {
+      // Future-date gate — same rule as the file-copy step. A
+      // capture-corner-2026-05-05.html should not appear in the
+      // /capture-corner archive on 2026-05-04.
+      const dm = f.match(/(\d{4}-\d{2}-\d{2})/);
+      if (!dm) return true;
+      const t = new Date(dm[1] + 'T00:00:00Z').getTime();
+      return Number.isNaN(t) || t <= _ccNowMs;
+    });
   return files.map((f) => {
     const dateStr = f.match(/(\d{4}-\d{2}-\d{2})/)[1];
     const parts = dateStr.split('-');

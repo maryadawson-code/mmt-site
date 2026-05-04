@@ -216,6 +216,132 @@ Before declaring work complete, verify:
 
 ---
 
+## Sprint 2026-05-04 — Subscriber-trust failures + premium archive surfacing + May 5 release stage
+
+Five live tickets opened by Mary's reports of subscriber-visible failures. Hard rules added:
+
+- **Every static asset a Netlify Function reads at runtime must be in
+  `[functions].included_files` in `netlify.toml`.** The FY2027 lead-magnet
+  alert chain ran for 3+ days because `static/lead-magnets/**` was never
+  bundled — `readPdfAttachment` failed every form submission with
+  "PDF not found in any candidate path" and Mary got per-failure alert
+  emails. Bundling target is now `static/lead-magnets/**`. Same rule
+  applies to any future `lib/lead-magnet`-style helper that resolves
+  files via `process.cwd()` or `__dirname` at call time.
+- **Premium archive pages (`/premium/briefings`, `/premium/monthly-briefs`)
+  are subscriber-visible — they must surface every published issue,
+  not just files that match the historical naming pattern.** The
+  briefings archive `getBriefFiles()` regex was anchored to
+  `^\d{4}-\d{2}-\d{2}` and silently skipped `capture-corner-*.html`
+  files. After the cadence transition (commit b138e9d) those files
+  ARE the weekly Friday Brief. Mary saw "last Friday's brief is
+  missing" on a page that was filtering it out. Regex relaxed to
+  `(?:^|-)(\d{4}-\d{2}-\d{2})\.html$`; capture-corner files now
+  surface in the archive with their h1/title as the display label.
+- **Cron schedules must be wired in `netlify.toml`, not just commented
+  in the function source.** `protest-monitor.js` had a
+  `// schedule = "0 12 * * *"` comment for months but no actual
+  `[functions."protest-monitor"]` block. Result: the premium digest's
+  "Protest Alerts" section was permanently empty AND the digest queried
+  the wrong table (`ops_events.event_type=protest_status_change`)
+  instead of the actual source of truth (`protest_monitor` rows where
+  `status != last_status`). Fixed: added the cron block + repointed
+  the digest query at `protest_monitor` with a status-transition
+  filter. Watch list rule: any `// schedule = ...` comment in a
+  function is a TODO, not a deployment.
+- **Pursuit Score's positive-signal detection must scan the matched
+  vehicle's metadata, not just the user's typed search keyword.**
+  When Mary's rockITdata account searched "OASIS+ OASIS Plus 47QRCA"
+  and got 0 positive signals → CAPTURE VALIDATION verdict (44/100),
+  the engine was passing only `keyword` to `detectPositiveSignals`,
+  which couldn't fire any pattern. Fix: `signalText` now concatenates
+  keyword + matched vehicle's known-vehicles notes/canonical/aliases
+  + IDIQ dataset row's notes/mmt_note/set_aside/status/forecast_event.
+  Also added 3 new patterns (`succeeding`/`successor to` → RECOMPETE,
+  `on-ramp`/`pool adds` → POOL_ON_RAMP, SDVOSB/WOSB/8(a)/HUBZone →
+  SET_ASIDE_ELIGIBLE). Verified: OASIS+ now picks up RECOMPETE +
+  POOL_ON_RAMP + SET_ASIDE_ELIGIBLE; verdict moves above the
+  CAPTURE_VALIDATION floor.
+
+### What shipped (commits TBD on push)
+
+1. **`netlify.toml`** — added `static/lead-magnets/**` to
+   `[functions].included_files`. FY2027 lead-magnet PDF will be in
+   the function bundle on next deploy. Backfill the
+   `lherrington@koniag-gs.com` submission via
+   `scripts/backfill-fy2027-pdf.js` (add their row to
+   `data/fy2027-backfill-list.csv` first).
+2. **`netlify.toml`** — added `[functions."protest-monitor"]
+   schedule = "0 12 * * *"` so GAO protest case checks actually run
+   daily. Function was implemented but never scheduled.
+3. **`netlify/functions/premium-digest-send.js`** — protest section
+   reads from `protest_monitor` table (the real source) with
+   `status != last_status` filter; HTML row builder updated to use
+   the new fields (`case_number`, `protester`, `agency`,
+   `last_status` → `status`).
+4. **`build.js getBriefFiles()`** — accepts both `YYYY-MM-DD.html`
+   AND `capture-corner-YYYY-MM-DD.html` filename patterns. Capture
+   Corner issues now appear in the `/premium/briefings` archive
+   alongside legacy Friday Briefs, with title sourced from the file's
+   h1 or `<title>`. Regression-prevented by the broader regex.
+5. **`premium/monthly/2026-05.html`** — copied from
+   `premium/briefs/capture-corner-2026-05-01.html` so the May 2026
+   monthly slot resolves on `/premium/monthly-briefs`. Per Mary's
+   May 1 email, that issue IS the May Capture Intelligence Sheet
+   under the cadence transition. Not a build bug — the file was
+   simply unauthored at the monthly path.
+6. **`netlify/functions/lib/pursuit-score-engine.js`** — `signalText`
+   now aggregates keyword + matched-vehicle metadata + IDIQ-dataset
+   row before calling `detectPositiveSignals`. Adds `_loadIdiqVehicles`
+   helper with `included_files` fallback resolution mirroring the
+   lead-magnet pattern.
+7. **`netlify/functions/lib/company-alignment.js`** — three new
+   POSITIVE_SIGNAL_PATTERNS (RECOMPETE expanded with `succeeding`/
+   `successor to`; new POOL_ON_RAMP and SET_ASIDE_ELIGIBLE tags).
+8. **`content/newsletter/2026-05-05-what-anthropic-refused.md`** —
+   May 5 public newsletter staged with frontmatter (date 2026-05-05,
+   slug `what-anthropic-refused`, agencies GSA/DoD, capture-corner
+   teaser). Build correctly held it as future-dated; auto-publishes
+   when 2026-05-05 UTC arrives (May 4 17:00 PT) on the next
+   `rebuild-trigger` cron run.
+9. **`premium/briefs/capture-corner-2026-05-05.html`** — May 5
+   Capture Corner ("GSAR 552.239-7001 Exposure Map and the Refresh 32
+   Acceptance Playbook") rendered into the canonical premium-brief
+   template (Inter / navy / teal, no dark mode, gated free preview
+   above `data-access="premium"` body, `noindex` meta). Surfaces on
+   `/premium/briefings` via the regex fix in (4) and on
+   `/capture-corner` via the existing CAPTURE_CORNER_ARCHIVE marker.
+10. **CLAUDE.md** — this sprint section.
+
+### Verification (ran 2026-05-04 ~12:13 PT)
+
+- `node build.js` exits clean. 105 articles (May 5 newsletter held
+  as future-dated), 20 topics, 5 podcast episodes, 320+ dist pages.
+- `node integrity-audit.js` returns SUCCESS/SYNCED — 40 routes,
+  0 drift, 0 HTTP failures. The 4 FORTRESS_NETWORK_ERROR entries
+  are transient worker-fetch hiccups on premium routes; HTTP 200
+  with clean content is the gate.
+- Pursuit Score smoke: `OASIS+ OASIS Plus 47QRCA` against rockITdata
+  profile now returns 3 positive signals (RECOMPETE, POOL_ON_RAMP,
+  SET_ASIDE_ELIGIBLE) instead of 0.
+
+### Known follow-ups (Mary's call)
+
+- Backfill `lherrington@koniag-gs.com` once the deploy ships the
+  static/lead-magnets bundle: append to
+  `data/fy2027-backfill-list.csv`, run
+  `node scripts/backfill-fy2027-pdf.js`. Or one-shot via a Node
+  REPL using the exported `sendLeadMagnet` helper.
+- Author future May Monthly Brief content as `premium/monthly/
+  2026-MM.html` (pattern is HTML, no markdown render) — for now
+  May points at the Capture Intelligence Sheet copy. If Mary wants
+  May to be a separate piece, swap that file.
+- Scheduling pattern for date-gated Capture Corner: today's stage
+  drops `capture-corner-2026-05-05.html` directly into
+  `premium/briefs/`. Build doesn't gate that path by date, so it
+  appears live on the next deploy. Mary controls deploy timing
+  (matches how 2026-05-01 issue rolled out).
+
 ## Sprint 2026-04-30 — Premium tools recovery + agency surfaces + May 1 release prep
 
 Massive day. Ten production commits closing real bugs, adding new live-data

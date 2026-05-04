@@ -20,9 +20,11 @@
     "capture-intelligence.json",
     "data/idiq-vehicles.json",
     "data/may-1-release/**",
+    "data/may-6-release/**",
     "data/apr-29-release/**",
     "migrations/010_subscriber_context_alignment.sql",
     "migrations/011_mp_users_columns_documented.sql",
+    "static/lead-magnets/**",
   ]
 
 [[edge_functions]]
@@ -75,6 +77,13 @@
 
 [functions."sb-vehicle-radar"]
   schedule = "0 13 * * *"
+
+# GAO protest case status checks — daily 12:00 UTC (8 AM ET)
+# Iterates active rows in protest_monitor table; updates status,
+# emails Mary on change. Premium digest reads protest_monitor.last_checked
+# to surface recent updates.
+[functions."protest-monitor"]
+  schedule = "0 12 * * *"
 
 [functions."score-cleanup"]
   schedule = "*/30 * * * *"
@@ -194,6 +203,13 @@
 
 [functions."may1-tracker-trigger"]
   schedule = "0 16 * * *"
+
+# May 6, 2026 release — "The Formulary Storm" Premium issue (DoD P&T
+# Committee meets May 6-7; UFBAP advisory committee pause). Daily cron
+# at 10:00 UTC (06:00 ET); the function gates on RUN_DATE_UTC=2026-05-06
+# and exits on every other day. Idempotency-keyed in ops_events.
+[functions."may6-premium-formulary-send"]
+  schedule = "0 10 * * *"
 
 # Sentry Netlify build plugin REMOVED — archived package was failing deploys
 # during onPostBuild (API timeout). Runtime @sentry/node monitoring in Netlify
