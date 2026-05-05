@@ -16,6 +16,19 @@ exports.handler = async (event) => {
   }
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
   const out = { mode: process.env.STRIPE_SECRET_KEY.startsWith("sk_live_") ? "live" : "test" };
+
+  // Optional action: re-enable a webhook endpoint by id.
+  // Usage: ?key=...&enable=we_xxx
+  const enableId = event.queryStringParameters && event.queryStringParameters.enable;
+  if (enableId) {
+    try {
+      const updated = await stripe.webhookEndpoints.update(enableId, { disabled: false });
+      out.enabled = { id: updated.id, url: updated.url, status: updated.status };
+    } catch (err) {
+      out.enable_error = err.message;
+    }
+  }
+
   try {
     const wh = await stripe.webhookEndpoints.list({ limit: 20 });
     out.webhook_endpoints = wh.data.map((w) => ({
