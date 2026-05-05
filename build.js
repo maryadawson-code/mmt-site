@@ -4272,27 +4272,22 @@ function buildFridayBriefsStatic({ injectDashShellFn, siteScriptTag, inlineTailw
 }
 
 function generateFridayBriefLatestTileHtml() {
-  const briefs = fridayBriefLoader.listAvailableBriefs();
+  // Use the unified brief pipeline (getBriefFiles) so the dashboard
+  // tile reflects the actual newest issue across BOTH the markdown
+  // pipeline (content/friday-briefs/*.md) AND the legacy/Capture
+  // Corner archive (premium/briefs/*.html). Prior implementation only
+  // read the markdown pipeline, leaving the dashboard pinned to
+  // 2026-04-24 even after the May 1 + May 5 Capture Corner issues
+  // shipped (cadence transition).
+  const briefs = getBriefFiles();
   if (briefs.length === 0) return '';
   const latest = briefs[0];
-  let brief;
-  try {
-    brief = fridayBriefLoader.loadFridayBrief(latest);
-  } catch {
-    return '';
-  }
-  if (!brief) return '';
-  const pretty = new Date(latest + 'T12:00:00Z').toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  });
   return `<div class="dash-tile" style="background:#F3F4F6;border:1px solid #D8E0E8;border-radius:14px;padding:24px;margin-bottom:32px;">
     <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#457B9D;margin-bottom:8px;">Latest Friday Brief</div>
-    <h2 style="font-size:20px;font-weight:800;margin:0 0 8px 0;color:#0A192F;">${escapeHtml(brief.frontmatter.title)}</h2>
-    <div style="font-size:13px;color:#6b7280;margin-bottom:12px;">${escapeHtml(pretty)}</div>
-    <p style="font-size:14px;color:#4b5563;margin:0 0 16px 0;">${escapeHtml(brief.frontmatter.summary)}</p>
-    <a href="/premium/friday-briefs/${latest}.html" style="font-size:14px;font-weight:600;color:#457B9D;text-decoration:none;">Read this brief &rarr;</a>
+    <h2 style="font-size:20px;font-weight:800;margin:0 0 8px 0;color:#0A192F;">${escapeHtml(latest.title)}</h2>
+    <div style="font-size:13px;color:#6b7280;margin-bottom:12px;">${escapeHtml(latest.formatted)}</div>
+    ${latest.desc ? `<p style="font-size:14px;color:#4b5563;margin:0 0 16px 0;">${escapeHtml(latest.desc)}</p>` : ''}
+    <a href="${latest.url}" style="font-size:14px;font-weight:600;color:#457B9D;text-decoration:none;">Read this brief &rarr;</a>
   </div>`;
 }
 

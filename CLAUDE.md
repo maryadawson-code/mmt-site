@@ -216,6 +216,90 @@ Before declaring work complete, verify:
 
 ---
 
+## Sprint 2026-05-05 — Stripe-to-mp_users sync gap + same-day Capture Corner blast + dashboard surface
+
+Triggered by reports the May 5 Capture Corner email never went out and the
+/premium/dashboard "Latest Friday Brief" tile was pinned to 2026-04-24.
+While investigating, surfaced an underlying truth: the Stripe webhook
+hasn't been delivering events in 14+ days, leaving 8 paying subscribers
+absent from mp_users entirely.
+
+Hard rules added:
+
+- **The Stripe webhook is necessary but not sufficient.** Stripe Payment
+  Links periodically (intermittently) produce subscriptions whose
+  webhook events never reach `/.netlify/functions/stripe-webhook`.
+  Verified 2026-05-05: 14-day window with 12+ active subs in Stripe
+  and ZERO `stripe_subscription` ops_events rows. Subscribers paid;
+  mp_users never got their row; they didn't appear in any
+  premium-content send list. New rule: every sub-list query must be
+  cross-checked against Stripe by the hourly
+  `stripe-subscriber-sync` cron. This is the safety net regardless
+  of webhook health.
+- **Capture Corner files need an accompanying email blast staged at
+  the same time as the static page.** The May 1 release had one
+  (`may1-premium-capture-send.js`). The May 5 release shipped only
+  the static HTML — premium subs got nothing in their inbox. New
+  convention: a `premium/briefs/capture-corner-YYYY-MM-DD.html`
+  drop ships paired with `data/may-D-release/capture-corner-premium.md`
+  source markdown; both go into the deploy together. The May 5
+  one-off ran via `/tmp/send-may5-capture-corner.js` against
+  production env; future Capture Corners should pre-stage
+  `mayD-premium-capture-corner-send.js` next to the static page.
+- **`/capture-corner/latest` redirect must update with every new
+  Capture Corner.** `capture-corner-inventory.js` fails the build
+  if `netlify.toml` redirect target doesn't match the newest
+  capture-corner file. Builds errored 2x today (14:32 UTC, 15:16 UTC)
+  because the redirect was pinned to May 1. Bundle this update with
+  every Capture Corner drop or the next deploy fails.
+- **`/premium/dashboard` "Latest Friday Brief" tile must use the
+  unified `getBriefFiles()` reader, not `fridayBriefLoader.list*`.**
+  The markdown-only reader leaves the tile pinned to whatever
+  was last published as a markdown brief, ignoring the post-cadence-
+  transition Capture Corner archive. Same rule as the briefings
+  archive page (sprint 2026-05-04).
+
+What shipped:
+
+1. **`netlify/functions/stripe-subscriber-sync.js`** — new hourly
+   cron (`15 * * * *`) that lists active+trialing Stripe subscriptions,
+   filters to ALL_MMT_PREMIUM_PRICE_IDS, and upserts any subscriber
+   missing or downgraded in mp_users. Never downgrades (that stays
+   the webhook's job). Logs `STRIPE_SYNC_SWEEP` to ops_events on
+   every run; `STRIPE_SYNC_UPSERT_FAILED` on per-row errors.
+2. **`netlify.toml`** — added the cron + `external_node_modules =
+   ["stripe"]`. Updated `/capture-corner/latest` redirect target to
+   the May 5 issue.
+3. **`build.js generateFridayBriefLatestTileHtml()`** — switched
+   from `fridayBriefLoader.listAvailableBriefs()` to `getBriefFiles()`
+   so the dashboard tile reflects the actual newest brief across
+   markdown + legacy + Capture Corner pipelines.
+4. **`data/may-5-release/capture-corner-premium.md`** — source
+   markdown for the May 5 Capture Corner ("GSAR 552.239-7001
+   Exposure Map and the Refresh 32 Acceptance Playbook"). Sent via
+   one-shot to 29 recipients (21 known + 8 newly synced) at
+   ~11:55 PT and ~12:05 PT 2026-05-05.
+5. **`netlify/functions/_diag-stripe-webhook.js`** — temp
+   diagnostic, auth-gated by COMMAND_CENTER_KEY, lists Stripe
+   webhook endpoints + recent events + configured price IDs. Delete
+   after the webhook gap is confirmed resolved.
+
+8 subscribers backfilled into mp_users 2026-05-05 (cheryl.scheidt@mantech.com,
+estherhbrito@briehealthsolutionsllc.com, m8williams@yahoo.com,
+ericbbowman@gmail.com, don@starrdoc.com, kasondra.phillips@icloud.com,
+suzanne.charleston@elevancehealth.com, bdmanager@deepmile.com) with
+correct tier/founding flags. They got the May 5 Capture Corner email.
+
+Open follow-ups:
+- Diagnose why the Stripe webhook isn't being called by Stripe
+  (run `/.netlify/functions/_diag-stripe-webhook?key=$COMMAND_CENTER_KEY`
+  after deploy lands; expected to show webhook URL config + price ID
+  alignment).
+- Generic Capture Corner auto-send: a recurring cron that scans
+  `premium/briefs/capture-corner-*.html` for unsent issues
+  (no `capture_corner_sent` event for that date) and emails them.
+  Removes the per-issue cron pattern.
+
 ## Sprint 2026-05-04 — Subscriber-trust failures + premium archive surfacing + May 5 release stage
 
 Five live tickets opened by Mary's reports of subscriber-visible failures. Hard rules added:
