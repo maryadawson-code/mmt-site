@@ -216,6 +216,78 @@ Before declaring work complete, verify:
 
 ---
 
+## Sprint 2026-05-06 — RUN-ORDER content audit (Sprints 1–3)
+
+Three-sprint sequential audit closing surface inconsistencies, May currency,
+and copy hygiene.
+
+- **Sprint 1 (conflicts, commit `63cbf9a`)**: help.html size limit 25MB→4MB
+  (MMT-101); ProposalPulse criterion "Agency Alignment" → "Mission Relevance"
+  to match production rubric (MMT-102); archive copy reframe (MMT-103); free
+  glossary teaser count standardized to "37 foundational terms" replacing
+  several "50" stragglers (MMT-104); IDIQ + Contract Tracker counts
+  reconciled to truth — IDIQ Tracker rendered cards 11→17 with header counts
+  matching dataset (`28→32 IDIQ vehicles tracked`, "Tracked 28"→"Tracked 32"),
+  Contract Tracker `32→36 contracts tracked` (MMT-105); events.html replaced
+  past-April bullets with VA EHRM Wave 2 / Radiology IDIQ / NEIS
+  upcoming items (MMT-106).
+- **Sprint 2 (currency, commit `d016d33`)**: Featured Capture Sheet on
+  resources.html updated April→May 2026 with "VA Enterprise Imaging" headline
+  + 12 signals (MMT-201); homepage signal #3 swapped HHS/ONC TEFCA → VA
+  NEIS to match May sheet (MMT-201); CCN Next Gen status moved from
+  "Proposals due April 17" to "Proposals received · Award TBD" (MMT-203);
+  PEO DHMS Deployment Solutions IDIQ moved to "Proposals received · Award
+  expected ~June 2026" (MMT-203); VA Ambient Scribe IDIQ idx 2 in
+  contracts.json reframed to active GAO protest B-424447.1, decision
+  Aug 6 2026 (MMT-203); TRICARE T-5 description reframed off Dec 2025
+  anchor to "Option Period Two in execution" (MMT-204); IDIQ header date
+  April→May 2026 (MMT-205); events.html added DHITS 2026, HLTH 2026, AFCEA
+  Federal Health IT Summit with annual-cadence "date TBD" qualifiers
+  (MMT-206); T4NG2 reflects $60.7B award + 33 final roster + EHRM
+  task-order ramp (MMT-203).
+- **Sprint 3 (polish, this commit)**:
+  - **MMT-301**: MHS GENESIS beneficiary count 9.5M→9.6M to match glossary +
+    T-5 entry.
+  - **MMT-302**: Pricing ladder confirmed canonical at help.html line 83
+    (`$199/yr Founding, $249/yr Annual, or $29/mo`); product pages already
+    defer to /pricing.html via "Get Premium →" / "See Premium pricing →"
+    links — no duplicate ladders to reconcile.
+  - **MMT-303**: All cadence variants ("Twice a week", "twice-weekly",
+    "twice weekly", "Twice-a-week") replaced with "every Tuesday and Friday"
+    site-wide. Updated `scripts/validate-dist.js` line 350 podcast-cadence
+    assertion to match new canonical phrase.
+  - **MMT-304**: 1,750+ subscriber count removed from index.html (2 places)
+    pending Buttondown verification; replaced with non-numerical framing
+    plus VERIFY HTML comment for future refresh.
+  - **MMT-305**: getting-started.html "79+ links" → "dozens of vetted
+    links" to remove brittle count.
+  - **MMT-306**: All "News Wire" occurrences → "Newswire" across HTML
+    (~40 files including templates, glossary subpages, footer columns).
+  - **MMT-307**: help.html ProposalPulse retention language now matches
+    proposal-pulse.html verbatim ("Original files are not stored. Extracted
+    text may be retained for up to 90 days...").
+  - **MMT-308**: security.html Third-Party Services table now names all 8
+    providers (Anthropic, Perplexity, Supabase, Netlify, Stripe, Resend,
+    Buttondown, Plausible) with privacy-policy links, matching privacy.html.
+  - **MMT-309**: about.html "By the numbers" inline block added after the
+    "How I work" four-rules grid (106 articles, 3 episodes, 36 contracts,
+    32 IDIQs, 11 agency profiles) with a refresh-source HTML comment.
+
+Hard rule for this audit (do not regress):
+- **The canonical newsletter cadence string is "every Tuesday and Friday".**
+  validate-dist.js enforces this on podcast.html. Do not reintroduce "twice
+  a week" / "twice-weekly" / "Twice a week" anywhere in source HTML —
+  Sprint 3 gate-check expects 0 hits across `--include="*.html"`.
+- **The canonical reference name is "Newswire" (one word).** Footer columns,
+  inline mentions, glossary cross-references all use Newswire. Sprint 3
+  gate-check expects 0 hits on "News Wire".
+
+Verification (ran 2026-05-06):
+- `node build.js` — exits clean. 341 dist pages, 106 articles, 27 topics,
+  5 podcast episodes (3 public-facing).
+- `node scripts/validate-dist.js` — `OK — 341 dist pages, all sweeps pass`.
+- Sprint 3 gate-check (5 banned-string sweeps): all 0/0/0/0/0.
+
 ## Sprint 2026-05-05 — Stripe-to-mp_users sync gap + same-day Capture Corner blast + dashboard surface
 
 Triggered by reports the May 5 Capture Corner email never went out and the

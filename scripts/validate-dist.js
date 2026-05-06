@@ -347,7 +347,7 @@ requireString(abtFile, 'Request a market brief', 'About: Request a market brief 
 
 // Podcast
 const podFile = 'podcast.html';
-requireString(podFile, 'twice a week', 'Podcast: canonical cadence present');
+requireString(podFile, 'every Tuesday and Friday', 'Podcast: canonical cadence present');
 
 // Trust pages
 requireString('privacy.html', 'Original files are not stored', 'Privacy: canonical data-handling present');
