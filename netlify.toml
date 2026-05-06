@@ -651,5 +651,16 @@
 [[headers]]
   for = "/js/*.js"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    # Short-cache JS so deploys reach users without a hard refresh.
+    # The site's JS files (mmt-paywall.js, nav-active.js, support-widget.js,
+    # etc.) ship under stable URLs — they aren't fingerprinted per build —
+    # so the previous `max-age=31536000, immutable` permanently pinned
+    # users to the deploy-day version of each script. Symptom: the
+    # 2026-05-06 keyContacts renderer in mmt-paywall.js shipped to
+    # production but premium users continued running the pre-deploy
+    # cached copy until they hard-refreshed. 5-minute browser cache +
+    # 10-minute CDN cache + must-revalidate balances responsiveness
+    # against load on the origin. If we later move to fingerprinted
+    # filenames, this rule can go back to immutable.
+    Cache-Control = "public, max-age=300, s-maxage=600, must-revalidate"
 
