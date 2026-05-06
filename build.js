@@ -4034,7 +4034,12 @@ function generateAgencyProfilePage(agency) {
       at_risk: agency.budget.at_risk || [],
       vehicles: agency.key_vehicles,
       signals: agency.upcoming_signals,
-      offices: agency.key_offices
+      offices: agency.key_offices,
+      // keyContacts: named individuals (name, email, title, org,
+      // category, notes). Premium-only — not echoed to public HTML.
+      // Sourced from operator's working contact database; first
+      // batch from Kirk Hendler 2026-05-05 (43 VA + 2 HHS/ONC).
+      contacts: Array.isArray(agency.keyContacts) ? agency.keyContacts : []
     })).toString('base64')}" style="display:none;">
       <div id="agency-premium-content">
         <p style="font-size:14px;color:var(--mmt-text-secondary);text-align:center;padding:24px;">Loading premium intelligence...</p>
@@ -4043,7 +4048,7 @@ function generateAgencyProfilePage(agency) {
 
     <div data-gate-overlay="premium" style="text-align:center;padding:40px 28px;background:var(--mmt-soft);border-radius:16px;margin-top:16px;">
       <h2 style="font-size:20px;font-weight:800;margin-bottom:8px;">Full agency profile is Premium</h2>
-      <p style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:18px;">Budget posture, open vehicles, recent awards, procurement signals, and key program offices.</p>
+      <p style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:18px;">Budget posture, open vehicles, recent awards, procurement signals, key program offices${Array.isArray(agency.keyContacts) && agency.keyContacts.length > 0 ? `, and ${agency.keyContacts.length} named contact${agency.keyContacts.length === 1 ? '' : 's'}` : ''}.</p>
       <a href="/pricing.html" class="btn-primary no-underline" style="font-size:14px;padding:12px 24px;">Start Premium</a>
     </div>
   </main>

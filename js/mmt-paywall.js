@@ -72,6 +72,18 @@
     return status === 'premium' || status === 'institutional';
   }
 
+  // Helper: HTML-escape so contact-name strings (e.g. "O'Brien")
+  // don't break attribute parsing or surface as XSS via decoded
+  // base64. Used by the agency-intel renderer for keyContacts.
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   // --- Gate logic ---
   function applyPaywallVisibility() {
     var status = getSubscriberStatus();
@@ -179,6 +191,35 @@
               h += '<div class="profile-section"><div class="profile-label">Key Program Offices</div><ul style="list-style:none;padding:0;margin:0;color:var(--mmt-text-secondary);">';
               agencyData.offices.forEach(function(o) { h += '<li style="margin-bottom:6px;font-size:14px;">' + o + '</li>'; });
               h += '</ul></div>';
+            }
+            // Key Contacts section — operator-curated named individuals.
+            // Grouped by Category for skim-ability (43 VA contacts is too
+            // long to read flat). Each contact shows name, title, org,
+            // a mailto, and the background notes when present.
+            if (agencyData.contacts && agencyData.contacts.length) {
+              var groups = {};
+              agencyData.contacts.forEach(function(c) {
+                var key = c.category || 'Other';
+                (groups[key] = groups[key] || []).push(c);
+              });
+              h += '<div class="profile-section"><div class="profile-label">Key Contacts (' + agencyData.contacts.length + ')</div>';
+              h += '<p style="font-size:12px;color:var(--mmt-text-secondary);margin:-8px 0 14px;">Operator-curated. Use these for cold-outreach research and capture-call prep — do NOT mass-email.</p>';
+              Object.keys(groups).sort().forEach(function(cat) {
+                h += '<details style="margin-bottom:10px;border:1px solid var(--mmt-border);border-radius:8px;padding:10px 14px;">';
+                h += '<summary style="cursor:pointer;font-weight:600;font-size:14px;color:var(--mmt-navy);">' + esc(cat) + ' <span style="color:var(--mmt-text-secondary);font-weight:400;">(' + groups[cat].length + ')</span></summary>';
+                h += '<ul style="list-style:none;padding:0;margin:12px 0 0;">';
+                groups[cat].forEach(function(c) {
+                  h += '<li style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px dashed var(--mmt-border);">';
+                  h += '<div style="font-size:14px;font-weight:600;color:var(--mmt-navy);">' + esc(c.name || '') + '</div>';
+                  if (c.title) h += '<div style="font-size:13px;color:var(--mmt-text);margin-top:2px;">' + esc(c.title) + '</div>';
+                  if (c.org) h += '<div style="font-size:12px;color:var(--mmt-text-secondary);margin-top:2px;">' + esc(c.org) + '</div>';
+                  if (c.email) h += '<div style="font-size:12px;margin-top:4px;"><a href="mailto:' + esc(c.email) + '" style="color:var(--mmt-teal);text-decoration:none;border-bottom:1px solid rgba(69,123,157,0.3);">' + esc(c.email) + '</a></div>';
+                  if (c.notes) h += '<div style="font-size:12px;color:var(--mmt-text-secondary);margin-top:6px;line-height:1.5;">' + esc(c.notes) + '</div>';
+                  h += '</li>';
+                });
+                h += '</ul></details>';
+              });
+              h += '</div>';
             }
             container.innerHTML = h;
           }
