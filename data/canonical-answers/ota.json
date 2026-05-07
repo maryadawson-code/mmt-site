@@ -1,0 +1,14 @@
+{
+  "entity_id": "ota",
+  "canonical_name": "OTA",
+  "aliases": [
+    "OTA"
+  ],
+  "summary": "OTA.",
+  "body": "OTA: OTA. Statutory reference: 10 USC 4021/4022.",
+  "last_updated": "2026-05-07",
+  "sources": [],
+  "related_entities": [],
+  "next_action": "Search Mary's article archive for the latest coverage on OTA.",
+  "watch_signals": []
+}

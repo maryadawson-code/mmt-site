@@ -1,0 +1,15 @@
+{
+  "entity_id": "polaris",
+  "canonical_name": "Polaris",
+  "aliases": [
+    "GSA IT SB pools",
+    "Polaris"
+  ],
+  "summary": "Polaris (GSA IT SB pools).",
+  "body": "Polaris — GSA IT SB pools.",
+  "last_updated": "2026-05-07",
+  "sources": [],
+  "related_entities": [],
+  "next_action": "Search Mary's article archive for the latest coverage on Polaris.",
+  "watch_signals": []
+}

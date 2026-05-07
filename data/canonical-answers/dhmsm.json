@@ -1,0 +1,17 @@
+{
+  "entity_id": "dhmsm",
+  "canonical_name": "DHMSM",
+  "aliases": [
+    "DHMSM",
+    "DoD MHS GENESIS sustainment"
+  ],
+  "summary": "DHMSM (DoD MHS GENESIS sustainment).",
+  "body": "DHMSM — DoD MHS GENESIS sustainment.",
+  "last_updated": "2026-05-07",
+  "sources": [],
+  "related_entities": [
+    "mhs-genesis"
+  ],
+  "next_action": "Search Mary's article archive for the latest coverage on DHMSM.",
+  "watch_signals": []
+}

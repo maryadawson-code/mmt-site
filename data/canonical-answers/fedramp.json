@@ -1,0 +1,14 @@
+{
+  "entity_id": "fedramp",
+  "canonical_name": "FedRAMP",
+  "aliases": [
+    "FedRAMP"
+  ],
+  "summary": "FedRAMP.",
+  "body": "FedRAMP () — levels: Low, Moderate, High, IL4, IL5, IL6.",
+  "last_updated": "2026-05-07",
+  "sources": [],
+  "related_entities": [],
+  "next_action": "Search Mary's article archive for the latest coverage on FedRAMP.",
+  "watch_signals": []
+}

@@ -1,0 +1,15 @@
+{
+  "entity_id": "hhs-psc-pvs",
+  "canonical_name": "HHS PSC PVS",
+  "aliases": [
+    "HHS PSC PVS",
+    "HHS Program Support Center vehicles"
+  ],
+  "summary": "HHS PSC PVS (HHS Program Support Center vehicles).",
+  "body": "HHS PSC PVS — HHS Program Support Center vehicles.",
+  "last_updated": "2026-05-07",
+  "sources": [],
+  "related_entities": [],
+  "next_action": "Search Mary's article archive for the latest coverage on HHS PSC PVS.",
+  "watch_signals": []
+}

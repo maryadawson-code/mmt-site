@@ -1,0 +1,15 @@
+{
+  "entity_id": "jomis",
+  "canonical_name": "JOMIS",
+  "aliases": [
+    "JOMIS",
+    "Joint Operational Medicine Information Systems"
+  ],
+  "summary": "JOMIS (Joint Operational Medicine Information Systems).",
+  "body": "JOMIS — Joint Operational Medicine Information Systems.",
+  "last_updated": "2026-05-07",
+  "sources": [],
+  "related_entities": [],
+  "next_action": "Search Mary's article archive for the latest coverage on JOMIS.",
+  "watch_signals": []
+}

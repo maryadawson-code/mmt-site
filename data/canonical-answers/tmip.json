@@ -1,0 +1,15 @@
+{
+  "entity_id": "tmip",
+  "canonical_name": "TMIP",
+  "aliases": [
+    "TMIP",
+    "Theater Medical Information Program"
+  ],
+  "summary": "TMIP (Theater Medical Information Program).",
+  "body": "TMIP — Theater Medical Information Program.",
+  "last_updated": "2026-05-07",
+  "sources": [],
+  "related_entities": [],
+  "next_action": "Search Mary's article archive for the latest coverage on TMIP.",
+  "watch_signals": []
+}

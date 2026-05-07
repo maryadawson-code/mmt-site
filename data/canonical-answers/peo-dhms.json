@@ -1,0 +1,14 @@
+{
+  "entity_id": "peo-dhms",
+  "canonical_name": "PEO DHMS",
+  "aliases": [
+    "PEO DHMS"
+  ],
+  "summary": "PEO DHMS.",
+  "body": "PEO DHMS.",
+  "last_updated": "2026-05-07",
+  "sources": [],
+  "related_entities": [],
+  "next_action": "Search Mary's article archive for the latest coverage on PEO DHMS.",
+  "watch_signals": []
+}

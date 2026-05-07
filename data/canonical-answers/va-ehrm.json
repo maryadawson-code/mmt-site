@@ -1,0 +1,15 @@
+{
+  "entity_id": "va-ehrm",
+  "canonical_name": "VA EHRM",
+  "aliases": [
+    "Oracle Cerner deployment",
+    "VA EHRM"
+  ],
+  "summary": "VA EHRM (Oracle Cerner deployment).",
+  "body": "VA EHRM — Oracle Cerner deployment.",
+  "last_updated": "2026-05-07",
+  "sources": [],
+  "related_entities": [],
+  "next_action": "Search Mary's article archive for the latest coverage on VA EHRM.",
+  "watch_signals": []
+}

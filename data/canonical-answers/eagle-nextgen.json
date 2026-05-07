@@ -1,0 +1,15 @@
+{
+  "entity_id": "eagle-nextgen",
+  "canonical_name": "EAGLE NextGen",
+  "aliases": [
+    "DHS IT services",
+    "EAGLE NextGen"
+  ],
+  "summary": "EAGLE NextGen (DHS IT services).",
+  "body": "EAGLE NextGen — DHS IT services.",
+  "last_updated": "2026-05-07",
+  "sources": [],
+  "related_entities": [],
+  "next_action": "Search Mary's article archive for the latest coverage on EAGLE NextGen.",
+  "watch_signals": []
+}

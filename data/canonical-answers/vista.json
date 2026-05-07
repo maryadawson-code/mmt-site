@@ -1,0 +1,15 @@
+{
+  "entity_id": "vista",
+  "canonical_name": "VistA",
+  "aliases": [
+    "Legacy VA EHR",
+    "VistA"
+  ],
+  "summary": "VistA (Legacy VA EHR).",
+  "body": "VistA — Legacy VA EHR.",
+  "last_updated": "2026-05-07",
+  "sources": [],
+  "related_entities": [],
+  "next_action": "Search Mary's article archive for the latest coverage on VistA.",
+  "watch_signals": []
+}

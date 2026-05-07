@@ -1,0 +1,15 @@
+{
+  "entity_id": "hopss",
+  "canonical_name": "HOPSS",
+  "aliases": [
+    "DHA healthcare ops services",
+    "HOPSS"
+  ],
+  "summary": "HOPSS (DHA healthcare ops services).",
+  "body": "HOPSS — DHA healthcare ops services.",
+  "last_updated": "2026-05-07",
+  "sources": [],
+  "related_entities": [],
+  "next_action": "Search Mary's article archive for the latest coverage on HOPSS.",
+  "watch_signals": []
+}

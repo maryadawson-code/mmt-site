@@ -1,0 +1,15 @@
+{
+  "entity_id": "seaport-nxg",
+  "canonical_name": "SeaPort-NxG",
+  "aliases": [
+    "Navy services",
+    "SeaPort-NxG"
+  ],
+  "summary": "SeaPort-NxG (Navy services).",
+  "body": "SeaPort-NxG — Navy services.",
+  "last_updated": "2026-05-07",
+  "sources": [],
+  "related_entities": [],
+  "next_action": "Search Mary's article archive for the latest coverage on SeaPort-NxG.",
+  "watch_signals": []
+}

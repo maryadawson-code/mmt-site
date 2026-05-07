@@ -1,0 +1,25 @@
+{
+  "entity_id": "dha-omnibus-iv",
+  "canonical_name": "DHA OMNIBUS IV",
+  "aliases": [
+    "DHA OMNIBUS IV",
+    "DHA OMNIBUS IV IDIQ",
+    "HT001122D-series",
+    "OMNIBUS 4",
+    "dha-omnibus-iv"
+  ],
+  "summary": "DHA OMNIBUS IV — contract HT001122D-series (DoD).",
+  "body": "4 R&D market segments Ceiling: $10.0B. Period of performance: 2022-06-20 → 2032-06-19. Primary NAICS: 541715. Set-aside: Multi-tier + 8(a) On-Ramp. Status: Active. Next forecast event: 8(a) on-ramp solicitation (2026-05-15 to 2026-06-15).",
+  "last_updated": "2026-05-07",
+  "sources": [
+    {
+      "title": "Primary source",
+      "url": "https://www.sysplus.com/contract/dha-omnibus-iv-idiq/"
+    }
+  ],
+  "related_entities": [],
+  "next_action": "Pull the latest forecast from SAM and align your capture timeline backward from 8(a) on-ramp solicitation.",
+  "watch_signals": [
+    "8(a) on-ramp solicitation (2026-05-15 to 2026-06-15)"
+  ]
+}

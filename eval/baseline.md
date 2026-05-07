@@ -17,12 +17,13 @@ regression.
   "captured_at": "2026-05-07",
   "n": 100,
   "means": {
-    "faithfulness": null,
-    "voice_match": null,
-    "action_correctness": null,
-    "latency": null
+    "faithfulness": 3.99,
+    "voice_match": 3.84,
+    "action_correctness": 7.33,
+    "latency": 6.02
   },
-  "notes": "Pending first live run. Run `node eval/run-eval.js --target=<Ask MMT V1 endpoint>` after Langfuse is deployed and ANTHROPIC_API_KEY is set in CI. The current means values will be filled in by the first successful eval and committed as the locked baseline before any V2 sprint code lands."
+  "target": "netlify/functions/lib/premium-assistant.js (V1 Ask MMT)",
+  "notes": "Locked baseline. Every later sprint must beat or not regress more than 0.5 below these means on the same suite. See eval/baseline.md update protocol."
 }
 ```
 
