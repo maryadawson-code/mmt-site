@@ -1,0 +1,60 @@
+# Digital Mary nightly eval — runs the full 100-prompt golden set against
+# the live Ask MMT endpoint, scores via Claude Opus 4.7 LLM-as-judge,
+# posts a one-line summary to Slack. Fails the run if any scorer regresses
+# more than 0.5 below the locked baseline in eval/baseline.md.
+#
+# DM-004 (Sprint P0-1, 2026-05-07).
+
+name: nightly-eval
+
+on:
+  schedule:
+    - cron: "0 3 * * *"   # 03:00 UTC nightly
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: "Eval suite (all | transcript-suite | phase1-mid | ...)"
+        default: "all"
+        required: false
+      target:
+        description: "Target endpoint URL"
+        default: "https://missionmeetstech.com/.netlify/functions/premium-assistant"
+        required: false
+
+jobs:
+  run-eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - run: npm ci --no-audit --no-fund
+
+      - name: Install eval deps
+        run: |
+          npm install --no-save @anthropic-ai/sdk langfuse
+
+      - name: Run eval
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+          LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+          LANGFUSE_HOST: ${{ secrets.LANGFUSE_HOST }}
+          EVAL_SLACK_WEBHOOK: ${{ secrets.EVAL_SLACK_WEBHOOK }}
+        run: |
+          SUITE="${{ inputs.suite || 'all' }}"
+          TARGET="${{ inputs.target || 'https://missionmeetstech.com/.netlify/functions/premium-assistant' }}"
+          node eval/run-eval.js --suite="$SUITE" --target="$TARGET" --against-baseline
+
+      - name: Upload eval report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-report-${{ github.run_id }}
+          path: eval/reports/
+          retention-days: 90
