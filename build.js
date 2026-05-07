@@ -3287,6 +3287,24 @@ ${innerHtml}
       console.log(`Copied premium/briefs/${file}`);
     });
     console.log(`Copied ${briefFiles.length} premium brief pages`);
+
+    // Copy any non-HTML assets that briefs reference (charts, images, etc.).
+    // Lives at premium/briefs/charts/ — copied verbatim so brief HTML can
+    // reference /premium/briefs/charts/<file> directly. Added 2026-05-07
+    // for the May 8 COMP/PSCP capture corner chart.
+    const briefAssetsDir = path.join(briefsSrcDir, 'charts');
+    if (fs.existsSync(briefAssetsDir)) {
+      const assetDest = path.join(DIST_DIR, 'premium', 'briefs', 'charts');
+      ensureDir(assetDest);
+      for (const f of fs.readdirSync(briefAssetsDir)) {
+        const fromP = path.join(briefAssetsDir, f);
+        const toP = path.join(assetDest, f);
+        if (fs.statSync(fromP).isFile()) {
+          fs.copyFileSync(fromP, toP);
+        }
+      }
+      console.log(`Copied premium/briefs/charts/ assets`);
+    }
   }
 
   // Org-chart pages — auto-discovered from premium/org-charts/*.html.
