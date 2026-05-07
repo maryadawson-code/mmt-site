@@ -1,0 +1,43 @@
+# Fly.io config for mmt-mcp-federal.
+# Deploy:
+#   cd services/mmt-mcp-federal
+#   fly launch --no-deploy --copy-config --name mmt-mcp-federal --region ord
+#   fly secrets set SAM_GOV_API_KEY=$SAM_GOV_API_KEY \
+#                   CONGRESS_GOV_API_KEY=$CONGRESS_GOV_API_KEY \
+#                   SUPABASE_URL=$SUPABASE_URL \
+#                   SUPABASE_SERVICE_KEY=$SUPABASE_SERVICE_KEY \
+#                   LANGFUSE_PUBLIC_KEY=$LANGFUSE_PUBLIC_KEY \
+#                   LANGFUSE_SECRET_KEY=$LANGFUSE_SECRET_KEY \
+#                   LANGFUSE_HOST=$LANGFUSE_HOST
+#   fly deploy
+#
+# DM-104 (Sprint A1, 2026-05-07).
+
+app = "mmt-mcp-federal"
+primary_region = "ord"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  NODE_ENV = "production"
+  PORT = "3001"
+
+[http_service]
+  internal_port = 3001
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "10s"
+    method = "get"
+    path = "/health"
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 512
