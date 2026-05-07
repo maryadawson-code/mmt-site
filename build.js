@@ -2768,6 +2768,10 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
     { src: 'premium/ask-mmt.html', dest: 'premium/ask-mmt.html', index: 'premium/ask-mmt/index.html' },
     { src: 'premium/dashboard.html', dest: 'premium/dashboard.html', index: 'premium/dashboard/index.html' },
     { src: 'premium/settings.html', dest: 'premium/settings.html', index: 'premium/settings/index.html' },
+    // Sprint 4 (2026-05-06) — Wave 1 paywall enrichment
+    { src: 'premium/fpds-migration.html', dest: 'premium/fpds-migration.html', index: 'premium/fpds-migration/index.html' },
+    { src: 'premium/single-bidder.html', dest: 'premium/single-bidder.html', index: 'premium/single-bidder/index.html' },
+    { src: 'premium/gao-sustain.html', dest: 'premium/gao-sustain.html', index: 'premium/gao-sustain/index.html' },
   ];
   // Agency profile pages
   const agencyPages = [
@@ -3156,6 +3160,10 @@ ${innerHtml}
     'premium/compliance-check.html': 'compliance-check',
     'premium/signal-chain.html': 'signal-chain',
     'premium/settings.html': 'settings',
+    // Sprint 4 (2026-05-06) — Wave 1 paywall enrichment
+    'premium/fpds-migration.html': 'fpds-migration',
+    'premium/single-bidder.html': 'single-bidder',
+    'premium/gao-sustain.html': 'gao-sustain',
   };
 
   // Copy premium and agency subdirectory pages
@@ -3170,6 +3178,10 @@ ${innerHtml}
     { src: 'premium/dashboard.html', dest: 'premium/dashboard/index.html' },
     { src: 'premium/settings.html', dest: 'premium/settings/index.html' },
     { src: 'premium/profile.html', dest: 'premium/profile/index.html' },
+    // Sprint 4 (2026-05-06) — Wave 1 paywall enrichment
+    { src: 'premium/fpds-migration.html', dest: 'premium/fpds-migration/index.html' },
+    { src: 'premium/single-bidder.html', dest: 'premium/single-bidder/index.html' },
+    { src: 'premium/gao-sustain.html', dest: 'premium/gao-sustain/index.html' },
     { src: 'agencies/index.html', dest: 'agencies/index.html' },
   ];
   subDirPages.forEach(({ src, dest }) => {

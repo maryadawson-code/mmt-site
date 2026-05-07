@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GAO Sustain Tracker &mdash; MMT Premium</title>
+  <meta name="robots" content="noindex">
+  <meta name="description" content="Monthly editorial digest of sustained GAO protests in federal health IT and adjacent IT services markets, with capture implications.">
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <link rel="icon" href="/favicon-v3.png" type="image/png">
+  <style>
+    :root { --mmt-navy:#0A192F; --mmt-teal:#457B9D; --mmt-white:#FFFFFF; --mmt-surface:#F3F4F6; --mmt-text-secondary:#6B7280; --mmt-border:#E5E7EB; --dash-sidebar:220px; }
+    body { font-family:Inter,system-ui,sans-serif; color:var(--mmt-navy); background:var(--mmt-surface); margin:0; }
+    .dash-shell { display:grid; grid-template-columns:var(--dash-sidebar) 1fr; min-height:100vh; }
+    .dash-nav { background:var(--mmt-navy); padding:24px 0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto; }
+    .dash-nav-brand { padding:0 20px 24px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px; }
+    .dash-nav-brand a { color:#fff; text-decoration:none; font-weight:800; font-size:14px; }
+    .dash-nav-brand small { display:block; font-size:11px; color:rgba(255,255,255,0.5); font-weight:400; margin-top:2px; }
+    .dash-nav-link { display:flex; align-items:center; gap:10px; padding:10px 20px; color:rgba(255,255,255,0.6); text-decoration:none; font-size:13px; font-weight:500; transition:all 0.15s; }
+    .dash-nav-link:hover { color:#fff; background:rgba(255,255,255,0.05); }
+    .dash-nav-link.active { color:#fff; background:rgba(69,123,157,0.3); border-left:3px solid var(--mmt-teal); }
+    .dash-nav-section { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:rgba(255,255,255,0.3); padding:16px 20px 6px; }
+    .dash-header { background:var(--mmt-white); padding:16px 32px; border-bottom:1px solid var(--mmt-border); display:flex; align-items:center; justify-content:space-between; }
+    .dash-main { padding:32px; max-width:920px; }
+    .dash-card { background:var(--mmt-white); border-radius:12px; padding:24px; margin-bottom:16px; border:1px solid var(--mmt-border); }
+    .gao-meta { display:flex; gap:14px; flex-wrap:wrap; font-size:12px; color:var(--mmt-text-secondary); margin:6px 0 14px; }
+    .gao-chip { display:inline-block; padding:2px 8px; border-radius:10px; background:rgba(69,123,157,0.1); color:var(--mmt-teal); font-weight:700; font-size:11px; letter-spacing:0.04em; }
+    .gao-body { font-size:14px; line-height:1.7; color:var(--mmt-navy); }
+    .gao-body p { margin:0 0 12px; }
+    .gao-body blockquote { border-left:3px solid var(--mmt-teal); padding:6px 14px; margin:10px 0; background:var(--mmt-surface); border-radius:0 8px 8px 0; color:var(--mmt-text-secondary); font-style:italic; }
+    .gao-archive li { margin-bottom:6px; }
+    @media (max-width:768px) { .dash-shell { grid-template-columns:1fr; } .dash-nav { display:none; } .dash-main { padding:16px; padding-bottom:80px; } }
+  </style>
+  <script>
+    (function() {
+      var isPremium = localStorage.getItem('mmt_premium') === 'true';
+      var ts = localStorage.getItem('mmt_premium_ts');
+      var withinWindow = ts && (Date.now() - parseInt(ts)) < 30 * 24 * 60 * 60 * 1000;
+      if (!isPremium || !withinWindow) { window.location.href = '/dashboard.html'; }
+    })();
+  </script>
+</head>
+<body>
+  <div class="dash-shell">
+    <nav class="dash-nav">
+      <div class="dash-nav-brand"><a href="/premium/dashboard.html">★ MMT Premium<small>Intelligence Dashboard</small></a></div>
+      <div class="dash-nav-section">Intelligence</div>
+      <a href="/premium/dashboard.html" class="dash-nav-link">Dashboard</a>
+      <a href="/intel/capture-intelligence-this-issue/" class="dash-nav-link">Capture Intelligence</a>
+      <a href="/capture-corner.html" class="dash-nav-link">Capture Corner</a>
+      <a href="/premium/briefings.html" class="dash-nav-link">Friday Brief</a>
+      <a href="/premium/monthly-briefs.html" class="dash-nav-link">Monthly Brief</a>
+      <a href="/premium/gao-sustain.html" class="dash-nav-link active">GAO Sustains</a>
+      <div class="dash-nav-section">Tools</div>
+      <a href="/premium/pursuit-score.html" class="dash-nav-link">Pursuit Score</a>
+      <a href="/premium/compliance-check.html" class="dash-nav-link">Compliance Check</a>
+      <a href="/premium/signal-chain.html" class="dash-nav-link">Signal Chain</a>
+      <a href="/proposal-pulse.html" class="dash-nav-link">ProposalPulse ($14.99)</a>
+      <a href="/marketpulse.html" class="dash-nav-link">MarketPulse ($35)</a>
+      <div class="dash-nav-section">Resources</div>
+      <a href="/latest.html" class="dash-nav-link">Article Archive</a>
+      <a href="/contract-tracker.html" class="dash-nav-link">Contract Tracker</a>
+      <a href="/idiq-tracker.html" class="dash-nav-link">IDIQ Tracker</a>
+      <a href="/premium/single-bidder.html" class="dash-nav-link">Single-Bidder</a>
+      <a href="/premium/fpds-migration.html" class="dash-nav-link">FPDS Sunset</a>
+      <a href="/glossary.html" class="dash-nav-link">Glossary</a>
+      <a href="/premium/calendar.html" class="dash-nav-link">Pursuit Calendar</a>
+      <a href="/premium/ask-mmt.html" class="dash-nav-link">Ask MMT</a>
+      <div class="dash-nav-section">Account</div>
+      <a href="/premium/settings.html" class="dash-nav-link">Settings</a>
+      <a href="/" class="dash-nav-link" style="margin-top:auto; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px;">&larr; Back to site</a>
+    </nav>
+    <div>
+      <div class="dash-header">
+        <span style="font-size:14px; font-weight:700;">★ Premium Dashboard</span>
+        <div style="display:flex; align-items:center; gap:16px;">
+          <span style="font-size:13px; color:var(--mmt-text-secondary);" id="dash-email"></span>
+          <a href="/" style="font-size:12px; color:var(--mmt-teal); text-decoration:none;">Back to site</a>
+          <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_premium_ts');localStorage.removeItem('mmt_email');document.cookie='mmt_premium=;path=/;max-age=0';window.location.href='/';return false;" style="font-size:12px; color:var(--mmt-text-secondary); text-decoration:none;">Sign out</a>
+        </div>
+      </div>
+      <div class="dash-main">
+
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin-bottom:8px;">MMT Premium &middot; Protest Intelligence</p>
+        <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">GAO Sustain Tracker</h1>
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 24px;">Monthly editorial digest of sustained GAO protests in federal health IT and adjacent IT services markets &mdash; with capture implications, not just decision summaries. Read the agency's source-selection mistake; reposition for the do-over.</p>
+
+        <!-- BUILD:GAO_SUSTAIN_LATEST -->
+        <div class="dash-card">
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-teal);margin:0 0 4px;">May 2026 &middot; Latest entry</p>
+          <h2 style="font-size:18px;font-weight:700;margin:0 0 4px;">GovCIO TIS recompete sustained &mdash; what it means for federal IT services protests</h2>
+          <div class="gao-meta">
+            <span class="gao-chip">GSA</span>
+            <span class="gao-chip">TIS</span>
+            <a href="https://www.washingtontechnology.com/contracts/2026/01/govcio-loses-gao-it-services-recompete-saic/410617/" target="_blank" rel="noopener" style="color:var(--mmt-teal);font-weight:600;">Reference &rarr;</a>
+          </div>
+          <div class="gao-body">
+            <blockquote>Editorial commentary placeholder &mdash; Mary fills this in after reading the GAO opinion. Two paragraphs on past-performance evaluation traps, source-selection rationale gaps GAO will accept, and the timeline-reset implications for capture teams pursuing similar IT services recompetes.</blockquote>
+            <p><strong>Why Premium subscribers should care:</strong> sustained protests at GAO are rare (historically ~10–15% sustain rate). When the agency reopens an acquisition after a sustain, the do-over evaluation typically runs 60–120 days behind the original schedule. That's your window to reposition.</p>
+          </div>
+        </div>
+
+        <!-- BUILD:GAO_SUSTAIN_ARCHIVE -->
+        <div class="dash-card">
+          <h3 style="font-size:14px;font-weight:700;margin:0 0 10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--mmt-text-secondary);">Archive</h3>
+          <ul class="gao-archive" style="font-size:14px;color:var(--mmt-text-secondary);margin:0;padding-left:18px;">
+            <li>May 2026 &mdash; GovCIO TIS recompete (this entry)</li>
+            <li style="color:var(--mmt-text-secondary);font-style:italic;">Earlier issues will appear here as Mary publishes them.</li>
+          </ul>
+        </div>
+
+        <p style="font-size:12px;color:var(--mmt-text-secondary);margin:0;">Source markdown lives at <code>content/gao-sustain/*.md</code>. Each entry includes frontmatter (date, decision_url, agencies, vehicles) plus editorial commentary. New entries auto-appear at the top of this page on the next build.</p>
+      </div>
+    </div>
+  </div>
+  <script>
+    var email=localStorage.getItem('mmt_email');var __de=document.getElementById('dash-email');if(__de&&email)__de.textContent=email;
+  </script>
+</body>
+</html>

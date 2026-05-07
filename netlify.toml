@@ -61,6 +61,13 @@
 [functions."contract-intel-refresh"]
   schedule = "0 11 * * *"
 
+# Single-Bidder Contracts refresh — 1st of month at 6 AM ET (11:00 UTC).
+# Sprint 4 MMT-402. Pulls SAM.gov awards with numberOfOffersReceived=1
+# across DHA/VA/HHS/ARPA-H/CMS/ONC for the past 12 months, writes
+# data/single-bidder.json for /premium/single-bidder.html.
+[functions."refresh-single-bidder"]
+  schedule = "0 11 1 * *"
+
 # LinkedIn newsletter sync — Tue/Fri at 6 PM ET (23:00 UTC)
 # Searches for new Mission Meets Tech articles, creates markdown stubs via GitHub API, triggers rebuild
 [functions."newsletter-sync"]
@@ -586,6 +593,20 @@
 [[redirects]]
   from = "/tools"
   to = "/tools.html"
+  status = 200
+
+# Sprint 4 (MMT-401, MMT-402, MMT-403) — premium feature redirects
+[[redirects]]
+  from = "/fpds-migration"
+  to = "/premium/fpds-migration.html"
+  status = 200
+[[redirects]]
+  from = "/single-bidder"
+  to = "/premium/single-bidder.html"
+  status = 200
+[[redirects]]
+  from = "/gao-sustain"
+  to = "/premium/gao-sustain.html"
   status = 200
 
 [[redirects]]

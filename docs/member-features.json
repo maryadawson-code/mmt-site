@@ -196,6 +196,42 @@
       "freshness_sla_hours": null,
       "smoke_test_url": "/help.html",
       "noindex": false
+    },
+    {
+      "feature_name": "FPDS Sunset Watch",
+      "public_marketing_urls": ["/fpds-migration"],
+      "member_url": "/premium/fpds-migration.html",
+      "backing_function": "static page (Sprint 4 MMT-401)",
+      "entitlement_required": "premium|founding|institutional|admin",
+      "public_locked_preview_behavior": "redirect to dashboard.html (sign-in gate)",
+      "expected_data_source": "static (GSA announcement + FPDS-vs-SAM PDF)",
+      "freshness_sla_hours": null,
+      "smoke_test_url": "/premium/fpds-migration.html",
+      "noindex": true
+    },
+    {
+      "feature_name": "Single-Bidder Contracts",
+      "public_marketing_urls": ["/single-bidder"],
+      "member_url": "/premium/single-bidder.html",
+      "backing_function": "netlify/functions/refresh-single-bidder.js",
+      "entitlement_required": "premium|founding|institutional|admin",
+      "public_locked_preview_behavior": "redirect to dashboard.html (sign-in gate)",
+      "expected_data_source": "SAM.gov Contract Data API (DHA/VA/HHS/ARPA-H/CMS/ONC, numberOfOffersReceived=1, 365-day window)",
+      "freshness_sla_hours": 720,
+      "smoke_test_url": "/premium/single-bidder.html",
+      "noindex": true
+    },
+    {
+      "feature_name": "GAO Sustain Tracker",
+      "public_marketing_urls": ["/gao-sustain"],
+      "member_url": "/premium/gao-sustain.html",
+      "backing_function": "static page reading content/gao-sustain/*.md (Sprint 4 MMT-403)",
+      "entitlement_required": "premium|founding|institutional|admin",
+      "public_locked_preview_behavior": "redirect to dashboard.html (sign-in gate)",
+      "expected_data_source": "editorial markdown (Mary)",
+      "freshness_sla_hours": null,
+      "smoke_test_url": "/premium/gao-sustain.html",
+      "noindex": true
     }
   ]
 }

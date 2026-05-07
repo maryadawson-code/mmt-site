@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FPDS Sunset Watch — MMT Premium</title>
+  <meta name="robots" content="noindex">
+  <meta name="description" content="What Premium subscribers need to know about the FPDS-to-SAM data migration: timeline, risk checklist, and migration links.">
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <link rel="icon" href="/favicon-v3.png" type="image/png">
+  <style>
+    :root { --mmt-navy:#0A192F; --mmt-teal:#457B9D; --mmt-white:#FFFFFF; --mmt-surface:#F3F4F6; --mmt-text-secondary:#6B7280; --mmt-border:#E5E7EB; --dash-sidebar:220px; }
+    body { font-family:Inter,system-ui,sans-serif; color:var(--mmt-navy); background:var(--mmt-surface); margin:0; }
+    .dash-shell { display:grid; grid-template-columns:var(--dash-sidebar) 1fr; min-height:100vh; }
+    .dash-nav { background:var(--mmt-navy); padding:24px 0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto; }
+    .dash-nav-brand { padding:0 20px 24px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px; }
+    .dash-nav-brand a { color:#fff; text-decoration:none; font-weight:800; font-size:14px; }
+    .dash-nav-brand small { display:block; font-size:11px; color:rgba(255,255,255,0.5); font-weight:400; margin-top:2px; }
+    .dash-nav-link { display:flex; align-items:center; gap:10px; padding:10px 20px; color:rgba(255,255,255,0.6); text-decoration:none; font-size:13px; font-weight:500; transition:all 0.15s; }
+    .dash-nav-link:hover { color:#fff; background:rgba(255,255,255,0.05); }
+    .dash-nav-link.active { color:#fff; background:rgba(69,123,157,0.3); border-left:3px solid var(--mmt-teal); }
+    .dash-nav-section { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:rgba(255,255,255,0.3); padding:16px 20px 6px; }
+    .dash-header { background:var(--mmt-white); padding:16px 32px; border-bottom:1px solid var(--mmt-border); display:flex; align-items:center; justify-content:space-between; }
+    .dash-main { padding:32px; max-width:920px; }
+    .dash-card { background:var(--mmt-white); border-radius:12px; padding:24px; margin-bottom:16px; border:1px solid var(--mmt-border); }
+    .timeline-row { display:grid; grid-template-columns:160px 1fr; gap:16px; padding:14px 0; border-bottom:1px solid var(--mmt-border); }
+    .timeline-row:last-child { border-bottom:none; }
+    .timeline-date { font-weight:700; color:var(--mmt-navy); font-size:14px; }
+    .timeline-body { font-size:14px; color:var(--mmt-text-secondary); line-height:1.6; }
+    .check-item { display:flex; gap:10px; padding:10px 0; align-items:flex-start; }
+    .check-item input { margin-top:4px; }
+    .check-item label { font-size:14px; color:var(--mmt-navy); line-height:1.55; }
+    a.ext { color:var(--mmt-teal); text-decoration:none; font-weight:600; }
+    a.ext:hover { text-decoration:underline; }
+    @media (max-width:768px) { .dash-shell { grid-template-columns:1fr; } .dash-nav { display:none; } .dash-main { padding:16px; padding-bottom:80px; } .timeline-row { grid-template-columns:1fr; gap:4px; } }
+  </style>
+  <script>
+    (function() {
+      var isPremium = localStorage.getItem('mmt_premium') === 'true';
+      var ts = localStorage.getItem('mmt_premium_ts');
+      var withinWindow = ts && (Date.now() - parseInt(ts)) < 30 * 24 * 60 * 60 * 1000;
+      if (!isPremium || !withinWindow) { window.location.href = '/dashboard.html'; }
+    })();
+  </script>
+</head>
+<body>
+  <div class="dash-shell">
+    <nav class="dash-nav">
+      <div class="dash-nav-brand"><a href="/premium/dashboard.html">★ MMT Premium<small>Intelligence Dashboard</small></a></div>
+      <div class="dash-nav-section">Intelligence</div>
+      <a href="/premium/dashboard.html" class="dash-nav-link">Dashboard</a>
+      <a href="/intel/capture-intelligence-this-issue/" class="dash-nav-link">Capture Intelligence</a>
+      <a href="/capture-corner.html" class="dash-nav-link">Capture Corner</a>
+      <a href="/premium/briefings.html" class="dash-nav-link">Friday Brief</a>
+      <a href="/premium/monthly-briefs.html" class="dash-nav-link">Monthly Brief</a>
+      <div class="dash-nav-section">Tools</div>
+      <a href="/premium/pursuit-score.html" class="dash-nav-link">Pursuit Score</a>
+      <a href="/premium/compliance-check.html" class="dash-nav-link">Compliance Check</a>
+      <a href="/premium/signal-chain.html" class="dash-nav-link">Signal Chain</a>
+      <a href="/proposal-pulse.html" class="dash-nav-link">ProposalPulse ($14.99)</a>
+      <a href="/marketpulse.html" class="dash-nav-link">MarketPulse ($35)</a>
+      <div class="dash-nav-section">Resources</div>
+      <a href="/latest.html" class="dash-nav-link">Article Archive</a>
+      <a href="/contract-tracker.html" class="dash-nav-link">Contract Tracker</a>
+      <a href="/idiq-tracker.html" class="dash-nav-link">IDIQ Tracker</a>
+      <a href="/premium/fpds-migration.html" class="dash-nav-link active">FPDS Sunset</a>
+      <a href="/glossary.html" class="dash-nav-link">Glossary</a>
+      <a href="/premium/calendar.html" class="dash-nav-link">Pursuit Calendar</a>
+      <a href="/premium/ask-mmt.html" class="dash-nav-link">Ask MMT</a>
+      <div class="dash-nav-section">Account</div>
+      <a href="/premium/settings.html" class="dash-nav-link">Settings</a>
+      <a href="/" class="dash-nav-link" style="margin-top:auto; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px;">&larr; Back to site</a>
+    </nav>
+    <div>
+      <div class="dash-header">
+        <span style="font-size:14px; font-weight:700;">★ Premium Dashboard</span>
+        <div style="display:flex; align-items:center; gap:16px;">
+          <span style="font-size:13px; color:var(--mmt-text-secondary);" id="dash-email"></span>
+          <a href="/" style="font-size:12px; color:var(--mmt-teal); text-decoration:none;">Back to site</a>
+          <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_premium_ts');localStorage.removeItem('mmt_email');document.cookie='mmt_premium=;path=/;max-age=0';window.location.href='/';return false;" style="font-size:12px; color:var(--mmt-text-secondary); text-decoration:none;">Sign out</a>
+        </div>
+      </div>
+      <div class="dash-main">
+
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin-bottom:8px;">MMT Premium &middot; Migration Watch</p>
+        <h1 style="font-size:26px; font-weight:800; margin:0 0 4px;">FPDS Sunset &mdash; What Premium Subscribers Need to Know</h1>
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 24px;">FPDS.gov is being decommissioned in favor of SAM.gov contract data. If your pipeline tools, BI dashboards, or competitive-intel scripts still pull from FPDS, you have a migration window measured in months, not years.</p>
+
+        <div class="dash-card">
+          <h2 style="font-size:18px;font-weight:700;margin:0 0 16px;">Timeline</h2>
+          <div class="timeline-row">
+            <div class="timeline-date">Feb 24, 2026</div>
+            <div class="timeline-body">FPDS.gov primary site decommissioned. Public-facing FPDS searches return SAM.gov redirects. <a class="ext" href="https://sam.gov/announcements/fpdsgov-decommissions-february-24-2026-0" target="_blank" rel="noopener">Read GSA announcement &rarr;</a></div>
+          </div>
+          <div class="timeline-row">
+            <div class="timeline-date">FY2026 Q3</div>
+            <div class="timeline-body">FPDS Atom Feed sunset window. Programs still consuming Atom feeds will stop receiving fresh data. Confirm any nightly scrape job that hits the Atom endpoint.</div>
+          </div>
+          <div class="timeline-row">
+            <div class="timeline-date">FY2027</div>
+            <div class="timeline-body">Full SAM cutover. SAM.gov Contract Data API becomes the only sanctioned source of federal contract award records. <a class="ext" href="https://open.gsa.gov/api/contract-awards/v1/FPDSvsSAM-ContractDataAPI.pdf" target="_blank" rel="noopener">FPDS-vs-SAM field mapping (PDF) &rarr;</a></div>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <h2 style="font-size:18px;font-weight:700;margin:0 0 4px;">Is your pipeline at risk?</h2>
+          <p style="font-size:13px;color:var(--mmt-text-secondary);margin:0 0 12px;">Three checks. If any answer is yes, you need a migration plan before the next FY rollover.</p>
+          <div class="check-item">
+            <input type="checkbox" id="chk1">
+            <label for="chk1">Are you (or your tooling vendor) still pulling from the <strong>FPDS Atom Feed</strong> for award data? Check your nightly batch jobs and BI ingestion scripts.</label>
+          </div>
+          <div class="check-item">
+            <input type="checkbox" id="chk2">
+            <label for="chk2">Do your reports use <strong>hard-coded FPDS field names</strong> (e.g., <code>contractActionType</code>, <code>baseAndAllOptionsValue</code>) that don't map cleanly to the SAM.gov Contract Data API schema?</label>
+          </div>
+          <div class="check-item">
+            <input type="checkbox" id="chk3">
+            <label for="chk3">Are scripts still using the <strong>old IDV PIID format</strong> (FPDS-style hyphenation) that SAM.gov has normalized to the new structured format?</label>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <h2 style="font-size:18px;font-weight:700;margin:0 0 12px;">Migration links</h2>
+          <ul style="margin:0;padding-left:20px;font-size:14px;color:var(--mmt-navy);line-height:1.8;">
+            <li><a class="ext" href="https://sam.gov/announcements/fpdsgov-decommissions-february-24-2026-0" target="_blank" rel="noopener">GSA: FPDS.gov Decommissions February 24, 2026</a></li>
+            <li><a class="ext" href="https://open.gsa.gov/api/contract-awards/v1/FPDSvsSAM-ContractDataAPI.pdf" target="_blank" rel="noopener">FPDS vs SAM Contract Data API field mapping (PDF)</a></li>
+            <li><a class="ext" href="https://open.gsa.gov/api/contract-awards/" target="_blank" rel="noopener">SAM.gov Contract Data API (open.gsa.gov)</a></li>
+          </ul>
+        </div>
+
+        <p style="font-size:12px;color:var(--mmt-text-secondary);margin:16px 0 0;">MMT's <a href="/contract-tracker.html" style="color:var(--mmt-teal);">Contract Tracker</a> migrated to SAM.gov as the primary source in early 2026. If you maintain your own pipeline, replicate the field mapping in the PDF above and validate against the same award records before cutting over.</p>
+      </div>
+    </div>
+  </div>
+  <script>
+    var email=localStorage.getItem('mmt_email');var __de=document.getElementById('dash-email');if(__de&&email)__de.textContent=email;
+  </script>
+</body>
+</html>

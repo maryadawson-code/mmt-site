@@ -216,6 +216,57 @@ Before declaring work complete, verify:
 
 ---
 
+## Sprint 2026-05-06 (afternoon) — RUN-ORDER Sprint 4: Paywall enrichment Wave 1
+
+Three new premium features ship as a single PR. All three follow the
+existing premium/*.html convention (sidebar nav + localStorage auth gate
+that bounces to /dashboard.html).
+
+- **MMT-401: FPDS Sunset Watch** — `premium/fpds-migration.html`. Static
+  explainer page with timeline (Feb 24 2026 decommission, FY2026 Q3 Atom
+  feed sunset, FY2027 full SAM cutover), 3-item risk checklist, and
+  migration links to GSA + open.gsa.gov. Inline alert injected at top of
+  `contract-tracker.html` linking to the page.
+- **MMT-402: Single-Bidder Contracts dashboard** —
+  `premium/single-bidder.html` + `data/single-bidder.json` (seeded empty
+  array) + `netlify/functions/refresh-single-bidder.js` (monthly cron,
+  `0 11 1 * *`, registered in netlify.toml). Pulls SAM.gov Contract Data
+  API awards from past 365 days where `numberOfOffersReceived = 1`
+  filtered to DHA/VA/HHS/ARPA-H/CMS/ONC. Page renders agency-filterable
+  table client-side from the JSON.
+- **MMT-403: GAO Sustain Tracker** — `premium/gao-sustain.html` + seed
+  `content/gao-sustain/2026-05.md` (GovCIO TIS recompete, with editorial
+  commentary placeholder Mary will edit). Page surfaces the latest entry
+  inline plus an archive list. Future entries auto-appear on rebuild.
+
+All three registered in `docs/member-features.json` and have `/fpds-migration`,
+`/single-bidder`, `/gao-sustain` clean-URL redirects in netlify.toml.
+
+Hard rules (do not regress):
+- **Premium feature pages live at `premium/<feature>.html` (no per-feature
+  subdirs).** The Sprint 4 spec referenced a subdir convention
+  (`premium/fpds-migration/index.html`) that doesn't exist in this repo;
+  adapted to the flat-file pattern matching `calendar.html`, `dashboard.html`,
+  `pursuit-score.html`, etc.
+- **Auth gate is the inline `mmt_premium` localStorage check.** No
+  `lib/premium-gate.js` — that path was a spec abstraction. Every new
+  premium page copies the gate script verbatim from `calendar.html`.
+- **Crons live in flat `netlify/functions/<name>.js` with schedule blocks
+  in netlify.toml.** No `netlify/functions/scheduled/` subdirectory exists
+  in this repo.
+- **Sprint 4 ships as a single PR per RUN-ORDER spec.** Sprints 5 and 6
+  are separate PRs; Sprint 6 is gated on Sprint 5 merge per its preamble.
+  As of this commit, Sprint 5 spec (wave2) is NOT in `~/Downloads/`;
+  Sprint 4 ships standalone.
+
+Verification (run after this commit):
+- `node build.js` — 341+ dist pages, all sweeps pass.
+- `node scripts/validate-dist.js` — OK.
+- `test -f premium/fpds-migration.html && test -f premium/single-bidder.html && test -f premium/gao-sustain.html` — all 3 exist.
+- `test -f netlify/functions/refresh-single-bidder.js` — cron registered.
+- `node -e "JSON.parse(require('fs').readFileSync('data/single-bidder.json'))"` — valid JSON (empty array on first deploy until cron fires).
+- `grep -n "FPDS" contract-tracker.html` — alert wired in.
+
 ## Sprint 2026-05-06 — RUN-ORDER content audit (Sprints 1–3)
 
 Three-sprint sequential audit closing surface inconsistencies, May currency,
