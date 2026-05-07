@@ -216,6 +216,47 @@ Before declaring work complete, verify:
 
 ---
 
+## Sprint 2026-05-07 (late afternoon) — Digital Mary handoff: data laydown + halt for missing specs
+
+Mary directed: "do sprint 5 wave2 then do the handoff package digital mary".
+Sprint 5 shipped (commit 1a428f6). Then I attempted the Digital Mary
+handoff and hit a hard halt — two canonical files referenced by
+`HANDOFF-PACKAGE.md` are absent on disk:
+
+1. **`DIGITAL-MARY-SPEC.md`** — The handoff package step 1 says
+   *"Read `DIGITAL-MARY-SPEC.md` (in same directory) — that's the full
+   sprint sequence."* That file is NOT in `~/Downloads/`. Without it, the
+   13-sprint sequence (P0-1 → A1-A4 → B1-B4 → C1-C4) has no defined
+   deliverables. The package provides resolved decisions, golden answers,
+   entity list, and win themes — not sprint-by-sprint architecture.
+
+2. **`~/Projects/openclaw/SOUL.md`** — referenced by §1 as the
+   verbatim source for Digital Mary's voice rules. File doesn't exist
+   at that path. DM-401 (voice rules import) blocked.
+
+What I DID stage (mechanical data laydown from the handoff package
+itself, no sprint code):
+
+- `eval/golden-set.jsonl` — 100 prompts (30 entity / 30 capture / 20
+  platform / 20 trap) with ideal answers + scoring rubrics. Validated:
+  all 100 rows valid JSON. Source: HANDOFF-PACKAGE.md §2.
+- `data/digital-mary/canonical-entities.json` — 50 entities (20
+  vehicles, 15 programs, 5 people, 10 frameworks). Source: §3.
+- `data/digital-mary/win-themes.json` — 30 themes structured as
+  `{id, category, name, applies_when, message, proofs_required,
+  anti_pattern}`. Source: §4.
+- `services/digital-mary/prompts/voice-rules.md` — STUB with the
+  Digital Mary delta (`[ACTION: <name>]` prefix rule) only. Header
+  block flags the halt for SOUL.md import.
+- `services/digital-mary/README.md` — Documents what's staged, what's
+  missing, and the halt protocol.
+
+Hard rule (do not regress): **No fabricating sprint definitions.**
+Mary's "no placeholder text on the public site" rule extends to
+internal architecture — if the canonical spec is missing, halt and ask.
+Don't autonomously invent a 13-sprint sequence the future eval rubric
+will be measured against.
+
 ## Sprint 2026-05-07 (afternoon) — RUN-ORDER Sprint 5 (Wave 2): Key People, Forecast Delta, CR Exposure
 
 Three new premium features. Single PR. Maps to PAYWALL-ENRICHMENT.md

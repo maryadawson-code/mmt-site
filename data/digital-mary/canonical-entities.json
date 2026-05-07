@@ -1,0 +1,68 @@
+{
+  "_schema": {
+    "version": "1.0",
+    "source": "HANDOFF-PACKAGE.md §3 (Canonical Entity Shortlist, 50 entities for DM-203)",
+    "last_updated": "2026-05-07",
+    "purpose": "Pre-compute canonical answers cached in entity_canonical_answers table per DM-203. The agentic loop checks this cache first before doing graph + vector retrieval. Goal: identical-quality answers every time these entities come up."
+  },
+  "categories": {
+    "contract_vehicles": [
+      { "name": "HCDS", "long": "Healthcare Data Services (DHA)" },
+      { "name": "DHA OMNIBUS IV", "aliases": ["OMNIBUS 4"] },
+      { "name": "T4NG2", "long": "VA IT IDIQ" },
+      { "name": "CIO-SP4", "long": "NIH NITAAC governmentwide IT" },
+      { "name": "OASIS+", "long": "GSA non-IT services" },
+      { "name": "Alliant 3", "long": "GSA IT" },
+      { "name": "HOPSS", "long": "DHA healthcare ops services" },
+      { "name": "RHRP-4", "long": "Reserve Health Readiness Program" },
+      { "name": "DHMSM", "long": "DoD MHS GENESIS sustainment" },
+      { "name": "GSA MAS IT", "long": "Schedule 70 successor" },
+      { "name": "SeaPort-NxG", "long": "Navy services" },
+      { "name": "CHESS", "long": "Army IT" },
+      { "name": "DLA Medical Surgical Prime Vendor" },
+      { "name": "VA NetCents successor", "note": "NetCents-3 if active" },
+      { "name": "STARS III", "long": "GSA 8(a) IT" },
+      { "name": "WOSB Federal Marketplace" },
+      { "name": "HHS PSC PVS", "long": "HHS Program Support Center vehicles" },
+      { "name": "Polaris", "long": "GSA IT SB pools" },
+      { "name": "FirstNet", "long": "Federal/public-safety mobility" },
+      { "name": "EAGLE NextGen", "long": "DHS IT services" }
+    ],
+    "programs_systems": [
+      { "name": "MHS GENESIS" },
+      { "name": "VA EHRM", "long": "Oracle Cerner deployment" },
+      { "name": "VistA", "long": "Legacy VA EHR" },
+      { "name": "Federal EHR", "alias": "FEHRM" },
+      { "name": "CHCS", "long": "Legacy DoD EHR" },
+      { "name": "Advana" },
+      { "name": "AskSage" },
+      { "name": "JOMIS", "long": "Joint Operational Medicine Information Systems" },
+      { "name": "TMIP", "long": "Theater Medical Information Program" },
+      { "name": "DMDC", "long": "Defense Manpower Data Center" },
+      { "name": "DHA Information Operations" },
+      { "name": "VA OIT" },
+      { "name": "DHA J-6", "long": "Health Informatics" },
+      { "name": "DHA J-9", "long": "R&D and Acquisition" },
+      { "name": "PEO DHMS" }
+    ],
+    "people": [
+      { "name": "Hon. Keith Bass", "role": "ASW(HA)" },
+      { "name": "Stephen Ferrara", "role": "Principal Deputy ASW(HA)" },
+      { "name": "VADM Darin K. Via", "role": "DHA Director" },
+      { "name": "DoD CIO", "note": "Pull live — current officeholder may change" },
+      { "name": "VA CIO", "note": "Pull live — current officeholder may change (Paul Lawrence acting as of 2026-05-07)" }
+    ],
+    "acronyms_frameworks": [
+      { "name": "MOSA", "ref": "10 USC 4401" },
+      { "name": "FedRAMP", "levels": ["Low", "Moderate", "High", "IL4", "IL5", "IL6"] },
+      { "name": "CMMC", "levels": ["Foundational", "Advanced", "Expert"] },
+      { "name": "FAR Part 15 vs Part 16", "topic": "Negotiation procedures vs contract types/IDIQs" },
+      { "name": "FAR 16.505", "topic": "Fair opportunity ordering on IDIQs" },
+      { "name": "FAR 52.219-14", "topic": "Limitations on subcontracting (50% rule)" },
+      { "name": "CPARS", "long": "Contractor Performance Assessment Reporting System" },
+      { "name": "DPAS", "levels": ["DO", "DX"] },
+      { "name": "OTA", "ref": "10 USC 4021/4022" },
+      { "name": "NIST AI RMF + 2025 AI EO + OMB M-25-21/22" }
+    ]
+  }
+}

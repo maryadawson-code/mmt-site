@@ -1,0 +1,220 @@
+{
+  "_schema": {
+    "version": "1.0",
+    "source": "HANDOFF-PACKAGE.md §4 (Win Theme Library, 30 themes for DM-904)",
+    "last_updated": "2026-05-07",
+    "note": "Reusable win-theme library Digital Mary draws from when coaching a capture pursuit. Mapped to typical federal health IT scenarios. Author: Mary Womack via OpenClaw Digital Mary handoff."
+  },
+  "themes": [
+    {
+      "id": 1, "category": "Agility & Speed", "name": "Modular Delivery Sprint",
+      "applies_when": "Customer demands rapid capability fielding inside a long IDIQ",
+      "message": "We deliver value in 90-day sprints, not 18-month waterfalls — the customer sees working capability before next quarter's ART planning",
+      "proofs_required": ["Past delivery cadence data", "Sprint demos", "Customer stand-up testimonials"],
+      "anti_pattern": "Generic 'Agile' claims with no cadence proof"
+    },
+    {
+      "id": 2, "category": "Agility & Speed", "name": "Onramp-in-30",
+      "applies_when": "Customer has been burned by 6-month transition pain",
+      "message": "Full operational transition in 30 calendar days with zero capability gap to the incumbent",
+      "proofs_required": ["Prior transition timelines", "Retained-staff percentages", "Knowledge-transfer artifacts"],
+      "anti_pattern": "Promising fast onramp without naming the retention strategy"
+    },
+    {
+      "id": 3, "category": "Agility & Speed", "name": "Decision-Velocity Advantage",
+      "applies_when": "Slow incumbent is missing customer windows",
+      "message": "Our flat decision authority means a customer ask Monday morning has a yes/no by Wednesday — not a 30-day change request",
+      "proofs_required": ["Sample decision-cycle metrics", "Named delegated authorities"],
+      "anti_pattern": "Vague 'responsive' language"
+    },
+    {
+      "id": 4, "category": "Agility & Speed", "name": "Smaller is Faster",
+      "applies_when": "Competing as small biz vs giant prime",
+      "message": "No matrix layers between SOW and execution — your contracting officer talks to the person doing the work",
+      "proofs_required": ["Org chart showing flat structure", "Named one-handoff escalation path"],
+      "anti_pattern": "Apologizing for being small"
+    },
+    {
+      "id": 5, "category": "Agility & Speed", "name": "Pre-Mobilized Bench",
+      "applies_when": "Customer has urgent staffing need",
+      "message": "Cleared, credentialed, MHS-experienced staff ready to badge-in within 10 days — not 90",
+      "proofs_required": ["Bench depth numbers", "Clearance levels", "Credentialing timeline data"],
+      "anti_pattern": "Listing resume names without confirming availability"
+    },
+    {
+      "id": 6, "category": "Mission Fit", "name": "DHA-Native Past Performance",
+      "applies_when": "Customer is DHA and weighting DHA-specific PP heavily",
+      "message": "Five active DHA contracts in the last 36 months — we operate inside DHA, not adjacent to it",
+      "proofs_required": ["Contract numbers", "COR contacts", "CPARS scores"],
+      "anti_pattern": "Citing generic DoD or commercial PP and calling it equivalent"
+    },
+    {
+      "id": 7, "category": "Mission Fit", "name": "Health-IT-Only Focus",
+      "applies_when": "Competing against a generalist prime",
+      "message": "100% of our revenue is federal health IT — we don't borrow attention from civilian or commercial portfolios",
+      "proofs_required": ["Revenue breakdown", "Executive bios scoped to health IT"],
+      "anti_pattern": "Claiming focus when LinkedIn shows broad portfolio"
+    },
+    {
+      "id": 8, "category": "Mission Fit", "name": "Clinical-Operator Insight",
+      "applies_when": "SOW touches clinical workflow (MHS GENESIS optimization, etc.)",
+      "message": "Our team includes [N] former MTF clinical operators who have used the system in care delivery, not just designed for it",
+      "proofs_required": ["Named staff with MTF clinical roles", "Recency of clinical experience"],
+      "anti_pattern": "Listing clinical advisors who haven't touched a patient in a decade"
+    },
+    {
+      "id": 9, "category": "Mission Fit", "name": "Federal EHR Coordination Fluency",
+      "applies_when": "Buy touches FEHRM-coordinated workstreams",
+      "message": "We've operated on both sides — DoD and VA — of the Federal EHR, so we deliver across the seam, not from one side of it",
+      "proofs_required": ["Past performance on both sides", "Named cross-org leaders"],
+      "anti_pattern": "DoD-only or VA-only past performance claiming joint expertise"
+    },
+    {
+      "id": 10, "category": "Mission Fit", "name": "Mission-Read Roadmap",
+      "applies_when": "Customer has explicit mission priorities (DHA Strategic Plan, VA EHRM milestones)",
+      "message": "Our solution maps each capability directly to a published [DHA/VA] strategic priority — section, page, line",
+      "proofs_required": ["Mapping table from solution to strategic doc paragraphs"],
+      "anti_pattern": "Generic 'aligned with mission' language"
+    },
+    {
+      "id": 11, "category": "Technical Differentiation", "name": "Open-by-Default Architecture (MOSA)",
+      "applies_when": "SOW invokes MOSA or vendor-lock concerns",
+      "message": "Open standards (HL7 FHIR, OpenAPI, OCI) are the default — no proprietary glue that locks the customer into us",
+      "proofs_required": ["Architecture diagrams showing open interfaces", "Prior MOSA-compliant deliveries"],
+      "anti_pattern": "Claiming MOSA while shipping proprietary connectors"
+    },
+    {
+      "id": 12, "category": "Technical Differentiation", "name": "AI Governance Maturity",
+      "applies_when": "AI/ML is in scope post-2025 EO",
+      "message": "NIST AI RMF documentation, model cards, and bias-testing artifacts ship as deliverables — not afterthoughts",
+      "proofs_required": ["Sample AI risk plan", "Prior model cards", "Bias-test reports"],
+      "anti_pattern": "'We follow NIST AI RMF' without concrete artifact samples"
+    },
+    {
+      "id": 13, "category": "Technical Differentiation", "name": "FedRAMP-Ready Stack",
+      "applies_when": "Cloud delivery is in scope",
+      "message": "Production stack is FedRAMP Moderate / High authorized — not 'in process,' authorized",
+      "proofs_required": ["ATO letter", "Agency sponsor name", "Current authorization date"],
+      "anti_pattern": "Naming 'FedRAMP-aligned' or 'FedRAMP-ready' instead of authorized"
+    },
+    {
+      "id": 14, "category": "Technical Differentiation", "name": "Data-First Engineering",
+      "applies_when": "Buy touches Advana, HCDS, or analytics",
+      "message": "Data products land in Advana on day one — not an afterthought migration in year two",
+      "proofs_required": ["Prior Advana product deliveries", "Named data engineering leads"],
+      "anti_pattern": "Claiming Advana fluency without prior deliveries"
+    },
+    {
+      "id": 15, "category": "Technical Differentiation", "name": "Zero-Trust Native",
+      "applies_when": "Customer cybersecurity priorities are visible",
+      "message": "Solution architecture is zero-trust from day one (per OMB M-22-09 / DoD ZT Strategy) — not bolt-on remediation",
+      "proofs_required": ["ZT reference architecture", "Prior ZT delivery PP"],
+      "anti_pattern": "Generic 'secure by design'"
+    },
+    {
+      "id": 16, "category": "Cost & Risk", "name": "DCAA-Audited Discipline",
+      "applies_when": "Cost-realism evaluation is heavy",
+      "message": "Our forward pricing rates are DCAA-approved and cost-realism-tested across [N] prior cost-reimbursable awards — your evaluators won't adjust us up",
+      "proofs_required": ["DCAA audit letter", "Prior cost-realism scores"],
+      "anti_pattern": "Underbidding without showing the audit posture"
+    },
+    {
+      "id": 17, "category": "Cost & Risk", "name": "Risk-Adjusted Pricing",
+      "applies_when": "Customer is risk-averse after a prior failed program",
+      "message": "Fixed-price firm where we can; cost-plus only where the work is genuinely undefined — and we'll show you which is which line by line",
+      "proofs_required": ["Prior pricing structures", "Risk-allocation table"],
+      "anti_pattern": "Race-to-the-bottom on every CLIN"
+    },
+    {
+      "id": 18, "category": "Cost & Risk", "name": "Transparent ODC Posture",
+      "applies_when": "Travel and ODCs matter (regional services)",
+      "message": "ODC and travel estimates built bottom-up from the SOW, not borrowed from a competitor's prior bid — and reconciled to the customer's IGCE",
+      "proofs_required": ["Sample ODC build-up"],
+      "anti_pattern": "Round-number ODCs that look made up"
+    },
+    {
+      "id": 19, "category": "Cost & Risk", "name": "Insourced Continuity",
+      "applies_when": "Customer has been hurt by sub turnover",
+      "message": "[X]% of work performed by W-2 employees — not 1099s or sub-of-a-sub — so the team you evaluate is the team that delivers",
+      "proofs_required": ["W-2 vs sub ratio", "Retention metrics"],
+      "anti_pattern": "Claiming continuity while leaning heavily on subs"
+    },
+    {
+      "id": 20, "category": "Cost & Risk", "name": "Capped-Risk Backstop",
+      "applies_when": "Customer fears cost overruns",
+      "message": "Cost-plus award fee with our share line steeper than baseline — we lose more than the customer if we overrun",
+      "proofs_required": ["Sample share-line proposal"],
+      "anti_pattern": "Vague 'skin in the game' claims"
+    },
+    {
+      "id": 21, "category": "Team Strength", "name": "Named Key Personnel",
+      "applies_when": "Section L names key personnel",
+      "message": "Every key personnel resume names a real person currently on staff with letter of commitment — no ghost résumés",
+      "proofs_required": ["LOCs dated within 30 days", "Employment-verification letters"],
+      "anti_pattern": "'TBD' or 'to be hired' key roles"
+    },
+    {
+      "id": 22, "category": "Team Strength", "name": "Clearance Density",
+      "applies_when": "Cleared work is the bulk of the SOW",
+      "message": "[X]% of proposed staff already hold the required clearances — no clearance ramp risk",
+      "proofs_required": ["JPAS report (sanitized)", "Staff clearance matrix"],
+      "anti_pattern": "Counting recruitable cleared personnel as if they're already on staff"
+    },
+    {
+      "id": 23, "category": "Team Strength", "name": "Diverse Sourcing Network",
+      "applies_when": "Customer values supply chain diversity (small biz, set-aside flow-down)",
+      "message": "Our subcontract plan flows [X]% to small business and [Y]% to specific set-aside categories — exceeding the customer's goals",
+      "proofs_required": ["Subcontract plan with named partners", "Prior small-biz utilization data"],
+      "anti_pattern": "Generic small-biz commitment without named partners"
+    },
+    {
+      "id": 24, "category": "Team Strength", "name": "Customer-Facing Continuity",
+      "applies_when": "Long PoP and customer cares about turnover",
+      "message": "Our project leadership turnover on comparable contracts averages [X]% — not [Y]% industry baseline",
+      "proofs_required": ["Tenure data on comparable PWS leads"],
+      "anti_pattern": "Selling stability without showing turnover numbers"
+    },
+    {
+      "id": 25, "category": "Team Strength", "name": "Cross-Tier Bench",
+      "applies_when": "SOW spans junior to senior labor categories",
+      "message": "We staff senior architects to entry analysts from a single integrated bench — no cobbled subs at every labor band",
+      "proofs_required": ["Staffing matrix mapped to LCATs"],
+      "anti_pattern": "Heavy sub usage at junior bands undermining unified-team claim"
+    },
+    {
+      "id": 26, "category": "Mission Outcome", "name": "Outcome SLAs over LOE",
+      "applies_when": "Customer is shifting from LOE to outcomes",
+      "message": "We propose mission-outcome SLAs (system uptime, time-to-deploy, user-satisfaction) — not just hours billed",
+      "proofs_required": ["Sample SLA structure", "Prior outcome-based contracts"],
+      "anti_pattern": "Outcome talk paired with LOE pricing"
+    },
+    {
+      "id": 27, "category": "Mission Outcome", "name": "Operational Tempo Match",
+      "applies_when": "Customer cadence is rapid (DHA J-6 sprints, etc.)",
+      "message": "Our delivery cadence matches the customer's tempo — weekly demos in their stand-ups, not quarterly briefings",
+      "proofs_required": ["Sample meeting cadence", "Prior tempo-matched delivery"],
+      "anti_pattern": "Imposing a vendor cadence on the customer"
+    },
+    {
+      "id": 28, "category": "Mission Outcome", "name": "End-User Satisfaction Track Record",
+      "applies_when": "Clinician/end-user satisfaction is a stated goal",
+      "message": "End-user CSAT on prior MHS GENESIS optimization work averaged [X]/10 — measured, not asserted",
+      "proofs_required": ["Prior CSAT survey results", "Methodology"],
+      "anti_pattern": "Generic 'user-centered' without measured outcome"
+    },
+    {
+      "id": 29, "category": "Mission Outcome", "name": "Continuous Improvement Loop",
+      "applies_when": "Customer wants ongoing learning, not one-time delivery",
+      "message": "Built-in retrospectives feed quarterly capability roadmap updates — the contract gets better quarter over quarter, not just delivered",
+      "proofs_required": ["Sample retrospective artifacts", "Capability roadmap evolution"],
+      "anti_pattern": "'Lessons learned' without showing how they shaped follow-on work"
+    },
+    {
+      "id": 30, "category": "Mission Outcome", "name": "Sustainable Knowledge Transfer",
+      "applies_when": "Customer fears vendor lock-in to your team",
+      "message": "Government-owned artifacts (runbooks, code, data models) updated continuously and reviewed quarterly with the COR — the customer can swap us out at any option year",
+      "proofs_required": ["Sample runbook", "Prior KT artifacts"],
+      "anti_pattern": "KT only at end of PoP"
+    }
+  ]
+}
