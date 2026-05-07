@@ -30,8 +30,8 @@
 | PDF generation | shipped | 95% | B | PDFKit. Table rendering improved 3/19. |
 | Email delivery (Resend) | shipped | 95% | A- | Score + Red Team delivered. |
 | Red Team review | shipped | 95% | B+ | Adversarial critique pass via Gold Team. |
-| Stripe checkout | shipped | 100% | A | $19.99/assessment after 3 free. |
-| Free tier | shipped | 100% | A | 3 free assessments per email. |
+| Stripe checkout | shipped | 100% | A | $19.99/assessment after 1 free. |
+| Free tier | shipped | 100% | A | 1 free assessment per email. |
 | Rewrite confidence | shipped | 85% | B | Flags AI-generated proposals. |
 | Client timeout UX | shipped | 100% | A | 3-min soft + 10-min hard. Added 3/19. |
 

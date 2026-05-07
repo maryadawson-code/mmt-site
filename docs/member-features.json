@@ -210,13 +210,13 @@
       "noindex": true
     },
     {
-      "feature_name": "Single-Bidder Contracts",
-      "public_marketing_urls": ["/single-bidder"],
+      "feature_name": "Sole-Source & Limited-Competition Watch",
+      "public_marketing_urls": ["/single-bidder", "/sole-source"],
       "member_url": "/premium/single-bidder.html",
       "backing_function": "netlify/functions/refresh-single-bidder.js",
       "entitlement_required": "premium|founding|institutional|admin",
       "public_locked_preview_behavior": "redirect to dashboard.html (sign-in gate)",
-      "expected_data_source": "SAM.gov Contract Data API (DHA/VA/HHS/ARPA-H/CMS/ONC, numberOfOffersReceived=1, 365-day window)",
+      "expected_data_source": "USASpending.gov v2 (no auth) — extent_competed_codes [B,C,E,G] across VA / DoD-DHA / HHS subcomponents (ARPA-H, CMS, ONC, NIH, CDC, FDA, IHS), 365-day window, $250K+ floor",
       "freshness_sla_hours": 720,
       "smoke_test_url": "/premium/single-bidder.html",
       "noindex": true

@@ -30,7 +30,7 @@ Record of significant architectural choices for the mmt-site. Each entry capture
 
 ## Stripe for Payments
 **Added:** 2025-03
-**Reason:** Single $19.99 payments via Stripe Checkout (no subscriptions). 3 free assessments per email, then pay-per-use.
+**Reason:** Single $19.99 payments via Stripe Checkout (no subscriptions). 1 free assessment per email, then pay-per-use.
 
 ## CSP Standard
 **Added:** 2025-02

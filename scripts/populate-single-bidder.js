@@ -1,0 +1,172 @@
+#!/usr/bin/env node
+// scripts/populate-single-bidder.js
+// Populates data/single-bidder.json with sole-source / limited-competition
+// federal health awards from the past 365 days. Source: USASpending.gov v2
+// (no auth). Uses `extent_competed_codes` filter so we get clean results
+// in one shot without fanning out to per-award detail calls.
+//
+// extent_competed codes:
+//   A = Full and Open Competition (excluded — multiple offers expected)
+//   B = Not Available for Competition
+//   C = Not Competed
+//   D = Full and Open After Exclusion (excluded)
+//   E = Follow On to Competed Action
+//   F = Competed Under SAP (excluded — competition existed)
+//   G = Not Competed Under SAP
+// We keep B, C, E, G — the genuine limited-competition signal.
+
+const fs = require("fs");
+const path = require("path");
+
+const LIMITED_COMPETITION_CODES = ["B", "C", "E", "G"];
+const LOOKBACK_DAYS = 365;
+const MIN_AWARD_VALUE = 250000;
+const RESULTS_PER_PAGE = 100;
+const PAGES_PER_AGENCY = 3; // 300 hits/agency cap is plenty
+const OUTPUT_PATH = path.join(__dirname, "..", "data", "single-bidder.json");
+
+const AGENCIES = [
+  { code: "VA",     toptier_name: "Department of Veterans Affairs" },
+  { code: "DHA",    toptier_name: "Department of Defense" },
+  { code: "HHS",    toptier_name: "Department of Health and Human Services" },
+];
+
+function classifyHHSSubAgency(subAgencyName) {
+  const s = (subAgencyName || "").toUpperCase();
+  if (s.includes("ARPA-H") || s.includes("ADVANCED RESEARCH PROJECTS AGENCY FOR HEALTH")) return "ARPA-H";
+  if (s.includes("CENTERS FOR MEDICARE") || s.includes("CMS")) return "CMS";
+  if (s.includes("OFFICE OF THE NATIONAL COORDINATOR") || s.includes("ONC")) return "ONC";
+  if (s.includes("NATIONAL INSTITUTES OF HEALTH") || s.includes("NIH")) return "NIH";
+  if (s.includes("CENTERS FOR DISEASE CONTROL") || s.includes("CDC")) return "CDC";
+  if (s.includes("FOOD AND DRUG ADMINISTRATION") || s.includes("FDA")) return "FDA";
+  if (s.includes("INDIAN HEALTH SERVICE") || s.includes("IHS")) return "IHS";
+  return "HHS";
+}
+
+function classifyDoDSubAgency(subAgencyName) {
+  const s = (subAgencyName || "").toUpperCase();
+  if (s.includes("DEFENSE HEALTH AGENCY") || s.includes("DEFENSE HEALTH PROGRAM") || s.includes("DHA")) return "DHA";
+  return null; // skip non-DHA DoD awards
+}
+
+async function searchPage(toptierName, page) {
+  const since = new Date(Date.now() - LOOKBACK_DAYS * 86400_000)
+    .toISOString()
+    .slice(0, 10);
+  const today = new Date().toISOString().slice(0, 10);
+
+  const res = await fetch(
+    "https://api.usaspending.gov/api/v2/search/spending_by_award/",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        filters: {
+          award_type_codes: ["A", "B", "C", "D"],
+          agencies: [
+            { type: "awarding", tier: "toptier", name: toptierName },
+          ],
+          time_period: [{ start_date: since, end_date: today }],
+          award_amounts: [{ lower_bound: MIN_AWARD_VALUE }],
+          extent_competed_codes: LIMITED_COMPETITION_CODES,
+        },
+        fields: [
+          "Award ID",
+          "Recipient Name",
+          "Award Amount",
+          "Description",
+          "Start Date",
+          "Awarding Agency",
+          "Awarding Sub Agency",
+          "NAICS Code",
+          "NAICS Description",
+        ],
+        limit: RESULTS_PER_PAGE,
+        page,
+        sort: "Award Amount",
+        order: "desc",
+        subawards: false,
+      }),
+    }
+  );
+  if (!res.ok) {
+    console.warn(`  HTTP ${res.status} on ${toptierName} page ${page}`);
+    return [];
+  }
+  const d = await res.json();
+  return d.results || [];
+}
+
+async function searchWithRetry(toptierName, page, attempt = 1) {
+  try {
+    return await searchPage(toptierName, page);
+  } catch (err) {
+    if (attempt >= 3) {
+      console.warn(`  ${toptierName} page ${page} failed after retries: ${err.message}`);
+      return [];
+    }
+    await new Promise((r) => setTimeout(r, 800 * attempt));
+    return searchWithRetry(toptierName, page, attempt + 1);
+  }
+}
+
+async function main() {
+  const all = [];
+  const seen = new Set();
+
+  for (const a of AGENCIES) {
+    console.log(`\n[search] ${a.toptier_name}`);
+    for (let page = 1; page <= PAGES_PER_AGENCY; page++) {
+      const rows = await searchWithRetry(a.toptier_name, page);
+      console.log(`  page ${page}: ${rows.length} rows`);
+      for (const row of rows) {
+        const id = row.generated_internal_id || row["Award ID"];
+        if (seen.has(id)) continue;
+        seen.add(id);
+
+        // Determine canonical agency code
+        let agencyCode = a.code;
+        if (a.code === "HHS") agencyCode = classifyHHSSubAgency(row["Awarding Sub Agency"]);
+        if (a.code === "DHA") {
+          agencyCode = classifyDoDSubAgency(row["Awarding Sub Agency"]);
+          if (!agencyCode) continue; // skip non-DHA DoD
+        }
+
+        all.push({
+          piid: row["Award ID"],
+          agency: agencyCode,
+          sub_agency: row["Awarding Sub Agency"],
+          awardee: row["Recipient Name"],
+          value: row["Award Amount"],
+          award_date: row["Start Date"],
+          naics: row["NAICS Code"],
+          naics_desc: row["NAICS Description"],
+          description: (row["Description"] || "").slice(0, 240),
+          source_url: `https://www.usaspending.gov/award/${encodeURIComponent(id)}`,
+        });
+      }
+      if (rows.length < RESULTS_PER_PAGE) break;
+      await new Promise((r) => setTimeout(r, 250));
+    }
+    // Save partial after each toptier
+    fs.writeFileSync(OUTPUT_PATH, JSON.stringify(all, null, 2));
+    console.log(`  [partial] ${all.length} cumulative`);
+  }
+
+  // Sort by award_date desc
+  all.sort((a, b) =>
+    String(b.award_date || "").localeCompare(String(a.award_date || ""))
+  );
+  fs.writeFileSync(OUTPUT_PATH, JSON.stringify(all, null, 2));
+
+  // Per-agency breakdown
+  const byAgency = {};
+  for (const r of all) byAgency[r.agency] = (byAgency[r.agency] || 0) + 1;
+  console.log(`\n[done] wrote ${all.length} limited-competition awards`);
+  console.log("[breakdown]", byAgency);
+}
+
+main().catch((err) => {
+  console.error("populate-single-bidder failed:", err.message);
+  process.exit(1);
+});

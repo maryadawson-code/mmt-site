@@ -31,7 +31,7 @@ Canonical source: `netlify/functions/lib/entitlement.js`. This doc explains the 
 | Signal Chain     | yes                        | unlimited (cache-driven)                                 |
 | Capture Corner (full module) | yes            | unlimited                                                |
 | Pursuit Calendar | yes                        | unlimited                                                |
-| ProposalPulse    | no (free trial + pay-as-you-go) | 3 free, then $19.99 (Premium $14.99)                |
+| ProposalPulse    | no (free trial + pay-as-you-go) | 1 free, then $19.99 (Premium $14.99)                |
 | MarketPulse      | no (free trial + pay-as-you-go) | 1 free, then $50 (Premium $35)                      |
 | Contract Tracker | partial (headlines public, intel premium) | n/a                                       |
 | IDIQ Tracker     | partial (preview public, full data premium) | n/a                                     |

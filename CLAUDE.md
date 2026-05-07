@@ -216,6 +216,86 @@ Before declaring work complete, verify:
 
 ---
 
+## Sprint 2026-05-07 (morning) — Subscriber-trust fixes + Sprint 4 follow-on
+
+Mary spotted three subscriber-trust failures in the morning review:
+
+1. **Subscriber count was framed away from a real number.** Sprint 3
+   removed "1,750+" pending Buttondown verification but left the index hero
+   with non-numerical framing. Confirmed actual count: 2,200+. Restored
+   "Join 2,200+" on hero pill (`index.html`), restored "Join 2,200+
+   subscribers" on the bottom subscribe CTA, and updated
+   `demos/proposal-pulse-demo.html` modal-meta. Comment marker now reads
+   "verified 2026-05-07 (Mary)" so the next refresh date is obvious.
+
+2. **ProposalPulse free-tier count was wrong on three surfaces.** Site
+   canonical is **1 free assessment**, not 3. Fixed `tools.html`,
+   `demos/proposal-pulse-demo.html` (form meta + modal meta), and the
+   internal source-of-truth docs (`ROADMAP.md`,
+   `docs/architecture-decisions.md`, `docs/entitlement-spec.md`,
+   `docs/CTO-ONBOARDING.md`) so a future agent doesn't regenerate the
+   stale claim from a doc.
+
+3. **Sprint 4 Sole-Source Watch had placeholder data + wrong source.**
+   - Original spec called for SAM.gov Contract Data API. That API was
+     decommissioned with FPDS on Feb 24, 2026 — `api.sam.gov/prod/contractData/v3/api/awards`
+     returns 404. **SAM.gov no longer exposes contract awards data.**
+     Post-FPDS canonical source is USASpending.gov v2 (no auth required).
+   - Original cron pulled top-N awards by amount. The top-by-amount
+     awards rarely have offers=1; 600 candidate awards across VA / DoD /
+     HHS produced zero single-bidder hits.
+   - **Pivot**: switched to USASpending `extent_competed_codes` filter
+     `[B, C, E, G]` (Not Available, Not Competed, Follow-On to Competed,
+     Not Competed under SAP). This is the genuine sole-source +
+     limited-competition signal and it's exposed at search-time, no
+     per-award detail fan-out.
+   - Page renamed "Single-Bidder Contracts" → "Sole-Source &
+     Limited-Competition Watch". Same capture signal, more honest framing.
+   - **`data/single-bidder.json` populated NOW with 613 real awards**
+     (VA: 300, CMS: 115, HHS: 94, NIH: 64, CDC: 19, DHA: 13, FDA: 6,
+     IHS: 2). Subscribers see real data on the next deploy, not on
+     June 1.
+   - Cron `refresh-single-bidder.js` rewritten to match. Same monthly
+     schedule (`0 11 1 * *`), but no SAM key dependency.
+
+4. **GAO Sustain Tracker had placeholder editorial commentary.** Replaced
+   the "Mary will edit" blockquote with three paragraphs of real capture
+   commentary on the GovCIO TIS recompete: incumbency-as-moat critique,
+   the two specific evaluation traps (past-performance relevance gaps +
+   thin source-selection rationale), and the corrective-action timing
+   window. Source markdown
+   (`content/gao-sustain/2026-05.md`) and the page (`premium/gao-sustain.html`)
+   updated together. Archive footer now points readers to GAO bid protest
+   search directly rather than the "earlier issues will appear" stub.
+
+Hard rules added (do not regress):
+
+- **No placeholder text on the public site.** "Mary will edit" /
+  "Lorem ipsum" / "TBD" / "Coming soon" are forbidden in any
+  `premium/**.html` or `content/**` file that ships in dist. If a
+  feature can't ship with real content, it doesn't ship.
+- **SAM.gov Contract Data API was decommissioned 2026-02-24.** Any
+  function that needs federal contract award data uses USASpending.gov
+  v2. SAM.gov endpoints that still work: Opportunities (active
+  solicitations), Entity Management (vendor lookup), Federal Hierarchy.
+- **Subscriber-count claims must include the verification date.** The
+  source comment in `index.html` reads `verified YYYY-MM-DD (Mary)` so
+  any agent refreshing the count knows whether it's stale.
+- **Internal docs are source-of-truth for product copy.**
+  `docs/entitlement-spec.md`, `ROADMAP.md`, etc. are read by automation
+  (and agents) to regenerate copy. When product policy changes (e.g.,
+  free-tier count), update these alongside the user-facing HTML.
+
+Verification (ran 2026-05-07 morning):
+- `node scripts/populate-single-bidder.js` — wrote 613 awards. Per-agency
+  breakdown logged.
+- `node build.js` — exits clean. 347 dist pages.
+- `node scripts/validate-dist.js` — OK, all sweeps pass.
+- `grep -c "2,200" dist/index.html` — 1 (hero pill).
+- `grep -rni "3 free|three free" --include=*.html` (assessment context) — 0.
+- `dist/premium/single-bidder.html` ships with real 613-row dataset
+  hydrated client-side from `/data/single-bidder.json`.
+
 ## Sprint 2026-05-06 (afternoon) — RUN-ORDER Sprint 4: Paywall enrichment Wave 1
 
 Three new premium features ship as a single PR. All three follow the

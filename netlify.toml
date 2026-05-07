@@ -605,6 +605,10 @@
   to = "/premium/single-bidder.html"
   status = 200
 [[redirects]]
+  from = "/sole-source"
+  to = "/premium/single-bidder.html"
+  status = 200
+[[redirects]]
   from = "/gao-sustain"
   to = "/premium/gao-sustain.html"
   status = 200

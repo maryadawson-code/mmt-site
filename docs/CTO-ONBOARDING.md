@@ -37,7 +37,7 @@
 ## Products
 
 ### ProposalPulse ($19.99/assessment)
-AI-powered federal proposal scorer. 6 document types, 9 criteria each. 3 free, then Stripe.
+AI-powered federal proposal scorer. 6 document types, 9 criteria each. 1 free, then Stripe.
 - Flow: Upload → `score-deck.js` → `score-deck-background.js` → `score-status.js` (poll) → Email
 - Gold Team Review: automatic 9-section rewrite + pWin
 

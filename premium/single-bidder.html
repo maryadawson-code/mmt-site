@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Single-Bidder Contracts &mdash; MMT Premium</title>
+  <title>Sole-Source &amp; Limited-Competition Watch &mdash; MMT Premium</title>
   <meta name="robots" content="noindex">
-  <meta name="description" content="Federal health IT awards from the past 12 months where the agency received only one offer. Updated monthly from SAM.gov.">
+  <meta name="description" content="Federal health awards from the past 12 months that were sole-sourced or had limited competition (extent_competed B/C/E/G). Refreshed monthly from USASpending.gov.">
   <link rel="stylesheet" href="/styles/tailwind.css">
   <link rel="icon" href="/favicon-v3.png" type="image/png">
   <style>
@@ -60,7 +60,7 @@
       <a href="/latest.html" class="dash-nav-link">Article Archive</a>
       <a href="/contract-tracker.html" class="dash-nav-link">Contract Tracker</a>
       <a href="/idiq-tracker.html" class="dash-nav-link">IDIQ Tracker</a>
-      <a href="/premium/single-bidder.html" class="dash-nav-link active">Single-Bidder</a>
+      <a href="/premium/single-bidder.html" class="dash-nav-link active">Sole-Source Watch</a>
       <a href="/premium/fpds-migration.html" class="dash-nav-link">FPDS Sunset</a>
       <a href="/glossary.html" class="dash-nav-link">Glossary</a>
       <a href="/premium/calendar.html" class="dash-nav-link">Pursuit Calendar</a>
@@ -81,25 +81,29 @@
       <div class="dash-main">
 
         <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin-bottom:8px;">MMT Premium &middot; Competitive Signal</p>
-        <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">Single-Bidder Contracts</h1>
-        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 8px;">Federal health IT awards from the past 12 months where the agency received <strong>only one offer</strong>. Tracks DHA, VA, HHS, ARPA-H, CMS, and ONC.</p>
-        <p style="font-size:12px;color:var(--mmt-text-secondary);margin:0 0 24px;">Refreshed monthly from SAM.gov Contract Data API. A single-offer award is a market signal: incumbents are protected, the recompete window is your most realistic entry, and capture timing matters more than price.</p>
+        <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">Sole-Source &amp; Limited-Competition Watch</h1>
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 8px;">Federal health awards from the past 12 months that were sole-sourced or had limited competition. Tracks VA, DHA, ARPA-H, CMS, ONC, NIH, CDC, FDA, IHS, and HHS-wide.</p>
+        <p style="font-size:12px;color:var(--mmt-text-secondary);margin:0 0 24px;">Refreshed monthly from USASpending.gov (extent_competed codes B, C, E, G &mdash; Not Available, Not Competed, Follow-On to Competed, Not Competed under SAP). A limited-competition award signals a capture vacuum: incumbents are protected, the recompete window is your most realistic entry, and capture timing matters more than price.</p>
 
         <div class="dash-card">
           <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px;">
             <select id="agencyFilter" style="padding:8px 12px;border:1px solid var(--mmt-border);border-radius:6px;font-size:13px;">
               <option value="">All agencies</option>
-              <option value="DHA">DHA</option>
               <option value="VA">VA</option>
-              <option value="HHS">HHS</option>
+              <option value="DHA">DHA</option>
               <option value="ARPA-H">ARPA-H</option>
               <option value="CMS">CMS</option>
               <option value="ONC">ONC</option>
+              <option value="NIH">NIH</option>
+              <option value="CDC">CDC</option>
+              <option value="FDA">FDA</option>
+              <option value="IHS">IHS</option>
+              <option value="HHS">HHS (other)</option>
             </select>
             <span id="rowCount" style="font-size:12px;color:var(--mmt-text-secondary);"></span>
           </div>
           <div id="sbTableWrap">
-            <div class="empty-state" id="emptyState">Loading single-bidder awards&hellip;</div>
+            <div class="empty-state" id="emptyState">Loading limited-competition awards&hellip;</div>
             <table class="sb" id="sbTable" style="display:none;">
               <thead>
                 <tr>
@@ -116,7 +120,7 @@
           </div>
         </div>
 
-        <p style="font-size:12px;color:var(--mmt-text-secondary);margin:0;">Source: SAM.gov Contract Data API. Single-bidder filter applies <code>numberOfOffersReceived = 1</code>. Cross-link with the <a href="/contract-tracker.html" style="color:var(--mmt-teal);">Contract Tracker</a> to identify recompete-window opportunities.</p>
+        <p style="font-size:12px;color:var(--mmt-text-secondary);margin:0;">Source: USASpending.gov v2 (no auth). Limited-competition filter applies <code>extent_competed_codes</code> in <code>[B, C, E, G]</code>. SAM.gov's old Contract Data API was decommissioned with FPDS on Feb 24, 2026 &mdash; see the <a href="/premium/fpds-migration.html" style="color:var(--mmt-teal);">FPDS Sunset Watch</a>. Cross-link with the <a href="/contract-tracker.html" style="color:var(--mmt-teal);">Contract Tracker</a> to identify recompete-window opportunities.</p>
       </div>
     </div>
   </div>
