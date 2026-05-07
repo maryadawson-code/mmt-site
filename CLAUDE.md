@@ -216,6 +216,75 @@ Before declaring work complete, verify:
 
 ---
 
+## Sprint 2026-05-07 (afternoon) — RUN-ORDER Sprint 5 (Wave 2): Key People, Forecast Delta, CR Exposure
+
+Three new premium features. Single PR. Maps to PAYWALL-ENRICHMENT.md
+items 4, 5, 6.
+
+- **Item 4 — Key People** (`premium/key-people.html` +
+  `data/key-people.json`). Named profiles of 41 senior leaders across
+  DHA (7), OASD/ASW(HA) (5), Service Surgeons General (5), USU (1),
+  ARPA-H (15), VA OIT (2), VBA (1). Every profile cites its source page
+  (health.mil/Biographies, dha.mil/Organizational-Structure-NEW,
+  arpa-h.gov/about/people, department.va.gov OIT page). Page renders
+  agency-grouped cards client-side from the JSON, with a jump menu and
+  "verified date" per agency block. Quarterly refresh cadence.
+
+- **Item 5 — Forecast Delta Tracker** (`premium/forecast-delta.html` +
+  `data/forecast-portals.json` +
+  `content/forecast-delta/2026-05.md`). Two layers: (1) curated portal
+  of 6 priority federal-health-IT forecast URLs (VA, DHA-via-DoD, HHS
+  mySBCX, GSA, DoD umbrella, plus DHS APFS as the gold-standard UX
+  benchmark), each with format / cadence / MMT note; (2) monthly
+  editorial entries at `content/forecast-delta/YYYY-MM.md`. May 2026
+  seed entry covers VA Enterprise Imaging surfacing, DHA reorg ripples,
+  ARPA-H Resilient Systems pipeline. Auto-scraping diff is a future
+  add — agency forecasts are published in too many heterogeneous
+  formats (Excel / search interface / HTML) for a single scraper.
+
+- **Item 6 — CR &amp; Appropriations Exposure Map**
+  (`premium/cr-exposure.html` + `data/cr-deadlines.json`). Maps
+  upcoming federal fiscal-policy deadlines to capture-team impact.
+  Three primary deadlines surfaced: 2026-06-30 Q3 close (mid-year
+  obligation push), 2026-09-30 FY26 end (the big one — FY27 funding
+  gap risk, CR scenario, related VA/Medicaid/Surface
+  Transportation/Farm-Bill expirations co-incident on the same date),
+  2026-12-31 Medicare Physician Payment expiration (CMS impact). Each
+  deadline includes plain-English impact, capture playbook, and a
+  high-risk visual treatment for the FY26 close. Status band shows
+  FY26 enacted / FY27 pending. Source: CRFB upcoming-deadlines tracker.
+
+Wired:
+- All 3 in `docs/member-features.json`.
+- 5 clean-URL redirects in `netlify.toml`: `/key-people`,
+  `/forecast-delta`, `/forecasts`, `/cr-exposure`, `/appropriations`.
+- 3 pages added to `build.js dashPageMap` + `subDirPages` so
+  `dist/premium/<name>.html` and `dist/premium/<name>/index.html` ship.
+- Sidebar links propagated to all Sprint 4 pages
+  (fpds-migration, single-bidder, gao-sustain) so navigation is
+  consistent across the new wave.
+
+Hard rules (do not regress):
+- **No placeholder text on the public site** (re-stated from morning
+  sprint). All three pages ship with real, sourced content. Editorial
+  monthly entries follow the GAO Sustain pattern: real commentary, real
+  citations, no "Mary will edit" stubs.
+- **Profile data must cite a source URL.** Each agency block in
+  `key-people.json` carries a `source_url` and `verified_date`. Quarterly
+  re-verification cadence; if a leader changes role between refreshes,
+  update both fields.
+- **CR/budget deadline data is editorial-curated, not auto-fetched.**
+  CRFB updates the canonical deadline list as legislation moves; the
+  monthly refresh of `cr-deadlines.json` is manual against the cited
+  source URL.
+
+Verification (ran 2026-05-07 afternoon):
+- `node build.js` — clean. Sprint 5 pages copied to dist
+  (premium/key-people.html + .../index.html etc.).
+- `node scripts/validate-dist.js` — OK, all sweeps pass.
+- All 3 pages render their respective JSON datasets client-side without
+  console errors.
+
 ## Sprint 2026-05-07 (morning) — Subscriber-trust fixes + Sprint 4 follow-on
 
 Mary spotted three subscriber-trust failures in the morning review:

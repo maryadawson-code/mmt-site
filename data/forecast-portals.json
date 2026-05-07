@@ -1,0 +1,58 @@
+{
+  "_schema": {
+    "version": "1.0",
+    "last_verified": "2026-05-07",
+    "source": "https://www.acquisition.gov/procurement-forecasts",
+    "note": "Curated to federal-health-IT-relevant agencies. Each entry includes the official forecast URL plus our read on data accessibility (HTML-only, downloadable, or API)."
+  },
+  "agencies": [
+    {
+      "agency": "Department of Veterans Affairs",
+      "code": "VA",
+      "url": "https://www.va.gov/osdbu/acquisition/",
+      "format": "HTML + downloadable spreadsheet",
+      "cadence": "Quarterly refresh",
+      "mmt_note": "VA OSDBU posts a forecast spreadsheet quarterly. Health-IT relevant items concentrate in the OIT portfolio (T4NG2 task orders) and VHA medical IT. Cross-check against contracts.json for Tracker overlap."
+    },
+    {
+      "agency": "Defense Health Agency (via DoD Acquisition Forecasts)",
+      "code": "DHA",
+      "url": "https://business.defense.gov/Archived-Pages/Acquisition-Forecasts/",
+      "format": "HTML — links to each Component's forecast",
+      "cadence": "Per-component cadence varies; DHA refreshes annually with intra-year addenda",
+      "mmt_note": "DHA-specific items live within the broader Defense Health Program forecast. PEO DHMS and DHA J-6 procurement signals show up here before they land on SAM.gov."
+    },
+    {
+      "agency": "Department of Health and Human Services",
+      "code": "HHS",
+      "url": "https://mysbcx.hhs.gov/#search-opportunities",
+      "format": "Search interface (mySBCX) — filterable, exportable",
+      "cadence": "Continuous updates",
+      "mmt_note": "HHS uses mySBCX as the unified small-business forecast portal across CMS, NIH, ARPA-H, CDC, FDA, IHS, ONC. Filter by Operating Division for component-specific signals."
+    },
+    {
+      "agency": "Department of Homeland Security (model platform)",
+      "code": "DHS",
+      "url": "https://apfs-cloud.dhs.gov/",
+      "format": "Web app with structured filters and CSV export",
+      "cadence": "Continuous updates",
+      "mmt_note": "DHS APFS is the gold-standard federal forecast UX. Not health-relevant directly, but worth watching as the format other agencies emulate."
+    },
+    {
+      "agency": "General Services Administration",
+      "code": "GSA",
+      "url": "https://www.gsa.gov/small-business/forecast-of-contracting-opportunities",
+      "format": "HTML + downloadable Excel",
+      "cadence": "Quarterly refresh",
+      "mmt_note": "GSA forecast covers Schedules, governmentwide IDIQs (Alliant 3, OASIS+, etc.), and FAS/PBS buys. Health-IT relevant when DHA or VA buys via GSA vehicles."
+    },
+    {
+      "agency": "Department of Defense (umbrella)",
+      "code": "DoD",
+      "url": "https://business.defense.gov/Archived-Pages/Acquisition-Forecasts/",
+      "format": "HTML — links to Component forecasts",
+      "cadence": "Component-dependent",
+      "mmt_note": "Each Service medical department (Army MEDCOM, AFMS, BUMED) maintains its own forecast linked from the DoD hub."
+    }
+  ]
+}

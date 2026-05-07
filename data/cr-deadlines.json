@@ -1,0 +1,49 @@
+{
+  "_schema": {
+    "version": "1.0",
+    "last_verified": "2026-05-07",
+    "source": "https://www.crfb.org/blogs/upcoming-congressional-fiscal-policy-deadlines",
+    "note": "Curated to deadlines that materially affect federal-health-IT procurement. Each entry links to authoritative source plus MMT's read on capture impact."
+  },
+  "deadlines": [
+    {
+      "date": "2026-06-30",
+      "label": "Q3 FY26 close",
+      "headline": "Mid-year obligation push window",
+      "fy_impact": "Final ~3 months to obligate remaining FY26 funds before fiscal-year close pressure",
+      "agencies_affected": ["VA", "DHA", "HHS", "ARPA-H", "GSA"],
+      "capture_read": "Agencies push to obligate remaining FY26 dollars in Q4 FY26 (Jul–Sep). Watch for accelerated task-order awards on existing IDIQs and small-dollar buys clearing in this window. Capture teams that respond fast win.",
+      "source_url": "https://www.crfb.org/blogs/upcoming-congressional-fiscal-policy-deadlines"
+    },
+    {
+      "date": "2026-09-30",
+      "label": "FY26 fiscal year end",
+      "headline": "FY27 funding gap risk — CR or shutdown territory",
+      "fy_impact": "FY27 begins Oct 1. If appropriations don't pass, agencies operate under Continuing Resolution: capped at FY26 levels, limited new starts, restrictions on contract awards above the CR rate.",
+      "agencies_affected": ["VA", "DHA", "HHS", "ARPA-H", "CMS", "ONC", "GSA"],
+      "capture_read": "The biggest deadline on this calendar for federal-health-IT capture. New solicitations slow under CR. Task orders against existing IDIQs are the safest bet — they're authorized at the IDIQ level and don't require new appropriations. If your pipeline depends on FY27 new starts, build a CR scenario and a back-up TO pursuit list now.",
+      "related_expirations": [
+        "VA health care extenders expire",
+        "Surface transportation authorization expires",
+        "Export-Import Bank authorization expires",
+        "New Medicaid provider tax limits take effect",
+        "Farm Bill provisions expire"
+      ],
+      "source_url": "https://www.crfb.org/blogs/upcoming-congressional-fiscal-policy-deadlines"
+    },
+    {
+      "date": "2026-12-31",
+      "label": "Calendar year end",
+      "headline": "Medicare Physician Payment increase expires",
+      "fy_impact": "Direct CMS reimbursement impact; physician practices and Medicare-touching IT vendors see margin pressure. Indirect: CMS administrative budget pressure may delay non-essential IT modernization buys.",
+      "agencies_affected": ["CMS", "HHS"],
+      "capture_read": "Not a contract deadline directly, but if you sell to CMS or to Medicare-billing health systems, watch for downstream RFP slips. Vendors whose revenue model depends on physician-practice IT investment should expect Q1 2027 buying-cycle softness.",
+      "source_url": "https://www.crfb.org/blogs/upcoming-congressional-fiscal-policy-deadlines"
+    }
+  ],
+  "appropriations_status": {
+    "fy26_status": "Enacted — current law in effect through 2026-09-30",
+    "fy27_status": "Pending — FY27 budget request submitted by White House April 2026; appropriations process underway in Congress",
+    "cr_history_note": "Federal fiscal years frequently begin under a Continuing Resolution rather than full-year appropriations. Plan capture timelines assuming a 30–90-day CR runway in Q1 FY27."
+  }
+}

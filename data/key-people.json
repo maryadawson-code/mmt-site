@@ -1,0 +1,286 @@
+{
+  "_schema": {
+    "version": "1.0",
+    "last_updated": "2026-05-07",
+    "source_note": "Profiles sourced from official agency leadership pages. Each profile cites its source URL. Quarterly refresh cadence per PAYWALL-ENRICHMENT.md item 4."
+  },
+  "agencies": [
+    {
+      "agency_code": "DHA",
+      "agency_name": "Defense Health Agency",
+      "source_url": "https://www.dha.mil/About-DHA/Organizational-Structure-NEW",
+      "verified_date": "2026-05-07",
+      "people": [
+        {
+          "name": "Vice Adm. Darin K. Via, MC, USN",
+          "title": "Director",
+          "scope": "Operates DHA enterprise — MHS GENESIS sustainment, MTF management, military health benefits.",
+          "why_watch": "Reports to ASW(HA). Owns the operational health-IT footprint that contractors deliver against."
+        },
+        {
+          "name": "Dr. David J. Smith",
+          "title": "Deputy Director",
+          "scope": "Day-to-day DHA enterprise operations.",
+          "why_watch": "Where the operational decisions on DHMSM sustainment and HCDS task-order execution actually land."
+        },
+        {
+          "name": "Force Master Chief Paul C. Mangaran",
+          "title": "Command Senior Enlisted Leader",
+          "scope": "Senior enlisted advisor to the DHA Director.",
+          "why_watch": "Voice for the military beneficiary side of MHS GENESIS rollout and clinical-IT usability."
+        },
+        {
+          "name": "Brig. Gen. Bill A. Soliz",
+          "title": "Acting Assistant Director, Healthcare Administration & Operations",
+          "scope": "AD-HCAO portfolio — markets, MTF operations, healthcare ops PMOs.",
+          "why_watch": "Per the April 2026 reorg, AD-HCAO oversees one of four IOC PMO clusters. Five PMOs roll up here through FOC."
+        },
+        {
+          "name": "Rear Adm. Ivonne Arena",
+          "title": "Acting Assistant Director, Research, Development & Acquisition; Component Acquisition Executive",
+          "scope": "AD-RDA — DHA acquisition authority, including PEO DHMS and PEO Medical Systems oversight.",
+          "why_watch": "The CAE for DHA. Final acquisition decision authority for medical systems and informatics buys at the component level."
+        },
+        {
+          "name": "Mr. Michael Emerson",
+          "title": "Assistant Director, Support, Personnel & Financial Operations",
+          "scope": "AD-SPFO — comptroller, personnel, contracting support functions.",
+          "why_watch": "Owns the financial machinery behind every DHA buy. Budget execution lives here."
+        },
+        {
+          "name": "Rear Adm. Tracy Farrill",
+          "title": "Office of Women's Health Affairs (OWHA) Lead",
+          "scope": "Per the April 2026 DHA reorg, leads the new Office of Women's Health Affairs.",
+          "why_watch": "New office created in the April 2026 reorg. Watch for women's-health-specific clinical IT and benefits buys flowing through OWHA."
+        }
+      ]
+    },
+    {
+      "agency_code": "OASD-HA",
+      "agency_name": "Office of the Assistant Secretary of War for Health Affairs (ASW(HA))",
+      "source_url": "https://www.health.mil/About-MHS/Biographies",
+      "verified_date": "2026-05-07",
+      "note": "Office renamed from ASD(HA) to ASW(HA) following the Department of War rename. ASW(HA) reports through OUSD(P&R) to the Secretary of War.",
+      "people": [
+        {
+          "name": "Hon. Keith Bass",
+          "title": "Assistant Secretary of War for Health Affairs (ASW(HA))",
+          "scope": "Civilian head of the Military Health System. Policy and oversight of DHA and the Service medical departments.",
+          "why_watch": "ASW(HA) sets MHS policy direction. Bass's priorities shape what DHA actually buys."
+        },
+        {
+          "name": "Dr. Stephen Ferrara",
+          "title": "Principal Deputy Assistant Secretary of War for Health Affairs",
+          "scope": "Day-to-day ASW(HA) operations; acts when Bass is out.",
+          "why_watch": "Often the actual signature on policy memos and budget guidance to DHA."
+        },
+        {
+          "name": "Ms. Susan Orsega",
+          "title": "Deputy Assistant Secretary of War, Health Services Policy and Oversight",
+          "scope": "Health services policy, TRICARE-related oversight, MHS quality.",
+          "why_watch": "Owns the policy lens on TRICARE T-5 execution and managed-care contractor performance."
+        },
+        {
+          "name": "Mr. Darrell Landreaux",
+          "title": "Deputy Assistant Secretary of War for Health Resources Management and Policy",
+          "scope": "Health resources management, including budget formulation across the MHS.",
+          "why_watch": "Where the Defense Health Program (DHP) budget guidance lands before flowing to DHA."
+        },
+        {
+          "name": "Terry M. Rauch, Ph.D., MPH, MBA",
+          "title": "Acting Deputy Assistant Secretary of War for Health Readiness Policy and Oversight",
+          "scope": "Health readiness policy — operational medicine, deployable systems.",
+          "why_watch": "JOMIS and operational health IT priorities flow through this office."
+        }
+      ]
+    },
+    {
+      "agency_code": "SG",
+      "agency_name": "Service Surgeons General",
+      "source_url": "https://www.health.mil/About-MHS/Biographies",
+      "verified_date": "2026-05-07",
+      "note": "Each Service medical department retains its own leadership and partial budget authority for Service-specific medical systems and personnel.",
+      "people": [
+        {
+          "name": "Lt. Gen. Mary K. Izaguirre",
+          "title": "Surgeon General of the Army",
+          "scope": "Army medical department; Army-specific clinical-IT and medical readiness systems.",
+          "why_watch": "Service SG retains some procurement authority outside DHA's enterprise IDIQs."
+        },
+        {
+          "name": "Lt. Gen. (Dr.) John J. Degoes",
+          "title": "Surgeon General of the Air Force and Space Force",
+          "scope": "USAF and Space Force medical departments.",
+          "why_watch": "AF/SF flight medicine, aerospace medicine, and Service-specific medical research lines."
+        },
+        {
+          "name": "Rear Adm. Rick Freedman",
+          "title": "Acting Surgeon General of the Navy",
+          "scope": "Navy medical department.",
+          "why_watch": "Operational/deployed medicine, BUMED-managed medical systems."
+        },
+        {
+          "name": "Maj. Gen. Clinton K. Murray",
+          "title": "Joint Staff Surgeon",
+          "scope": "Joint Staff medical advisor; coordinates joint health priorities.",
+          "why_watch": "Bridge between OSD-level policy and Combatant Command medical execution."
+        },
+        {
+          "name": "Maj. Gen. Lisa J. Hou",
+          "title": "Director, Office of the Joint Surgeon General, U.S. National Guard Bureau",
+          "scope": "Guard medical readiness, RHRP-4 stakeholder.",
+          "why_watch": "RHRP-4 (Reserve Health Readiness Program) execution touches this office."
+        }
+      ]
+    },
+    {
+      "agency_code": "USU",
+      "agency_name": "Uniformed Services University of the Health Sciences",
+      "source_url": "https://www.health.mil/About-MHS/Biographies",
+      "verified_date": "2026-05-07",
+      "people": [
+        {
+          "name": "Dr. Jonathan Woodson",
+          "title": "President, Uniformed Services University of the Health Sciences (USU)",
+          "scope": "USU — military medical school and research enterprise.",
+          "why_watch": "USU drives medical research priorities and partners on operational medicine and AI-for-health work."
+        }
+      ]
+    },
+    {
+      "agency_code": "ARPA-H",
+      "agency_name": "Advanced Research Projects Agency for Health (ARPA-H)",
+      "source_url": "https://arpa-h.gov/about/people",
+      "verified_date": "2026-05-07",
+      "note": "ARPA-H is HHS's high-risk biomedical R&D agency. Program managers run individual programs with significant autonomy. Capture work focuses on the four mission offices: Health Science Futures, Proactive Health, Resilient Systems, Scalable Solutions.",
+      "people": [
+        {
+          "name": "Alicia Jackson",
+          "title": "Director, ARPA-H",
+          "scope": "Agency-wide direction; sets strategic priorities across the four mission offices.",
+          "why_watch": "Director's priorities shape which programs get funded and which get sunset."
+        },
+        {
+          "name": "Rafid Fadul",
+          "title": "Chief Medical Officer; assuming some Deputy Director duties",
+          "scope": "Clinical advisor; cross-cutting medical perspective on programs.",
+          "why_watch": "Currently bridging Deputy Director responsibilities while that seat is in transition."
+        },
+        {
+          "name": "Maxwell Watkins",
+          "title": "Chief of Staff",
+          "scope": "Operations and execution support to the Director.",
+          "why_watch": "Often the execution-side gatekeeper for program-level decisions."
+        },
+        {
+          "name": "Tyler Best",
+          "title": "Acting Director, Health Science Futures",
+          "scope": "Mission office — high-risk basic-to-translational health science.",
+          "why_watch": "One of four mission offices; programs span from foundational science to platform technology."
+        },
+        {
+          "name": "Glen Coppersmith",
+          "title": "Director, Proactive Health",
+          "scope": "Mission office — prevention, wellness, behavioral and mental health.",
+          "why_watch": "Active program area for AI-driven health monitoring and digital therapeutics."
+        },
+        {
+          "name": "Natalie Kates",
+          "title": "Acting Director, Scalable Solutions",
+          "scope": "Mission office — manufacturing, supply chain, deployable health technology.",
+          "why_watch": "Procurement and scale-up programs land here."
+        },
+        {
+          "name": "Nikolaos Ipiotis",
+          "title": "Chief Information Officer, Office of Information Technology and Data Innovation",
+          "scope": "ARPA-H IT/data infrastructure across all programs.",
+          "why_watch": "ARPA-H's IT strategy and data platform decisions flow through this office."
+        },
+        {
+          "name": "Christopher Pashley",
+          "title": "Chief Information Security Officer",
+          "scope": "ARPA-H security posture; FedRAMP, FISMA, ATO oversight.",
+          "why_watch": "Critical for any contractor delivering cloud-based or data-handling capabilities to ARPA-H."
+        },
+        {
+          "name": "Carmelita Chadwick-Gallo",
+          "title": "Director, Comptroller Division",
+          "scope": "ARPA-H budget execution and financial controls.",
+          "why_watch": "Where program money actually moves. Budget decisions land here before contracts execute."
+        },
+        {
+          "name": "Dan Barry",
+          "title": "General Counsel",
+          "scope": "Legal advisor to ARPA-H leadership; OTA and contract law.",
+          "why_watch": "ARPA-H uses Other Transaction Authority extensively. GC reviews shape OTA structure."
+        },
+        {
+          "name": "Andrew Carney",
+          "title": "Program Manager, Resilient Systems",
+          "scope": "Programs in the Resilient Systems mission office.",
+          "why_watch": "PMs at ARPA-H run their programs with significant autonomy. Direct relationships matter."
+        },
+        {
+          "name": "James Coburn",
+          "title": "Portfolio Lead, Scalable Solutions",
+          "scope": "Portfolio-level coordination across multiple Scalable Solutions programs.",
+          "why_watch": "Sets cross-program priorities within Scalable Solutions."
+        },
+        {
+          "name": "Karen Schmaling",
+          "title": "Portfolio Lead, Proactive Health",
+          "scope": "Portfolio-level coordination across multiple Proactive Health programs.",
+          "why_watch": "Sets cross-program priorities within Proactive Health."
+        },
+        {
+          "name": "David Gunning",
+          "title": "Program Manager, Proactive Health",
+          "scope": "Specific program in the Proactive Health portfolio.",
+          "why_watch": "AI/ML-adjacent program manager — historically connected to defense AI work."
+        },
+        {
+          "name": "Jen Cama",
+          "title": "Director, Division of Government Relations and Strategy",
+          "scope": "ARPA-H external affairs; congressional and interagency engagement.",
+          "why_watch": "Where Hill engagement and strategic positioning flows."
+        }
+      ]
+    },
+    {
+      "agency_code": "VA-OIT",
+      "agency_name": "Department of Veterans Affairs — Office of Information & Technology",
+      "source_url": "https://department.va.gov/administrations-and-offices/information-and-technology/",
+      "verified_date": "2026-05-07",
+      "note": "Largest civilian IT shop in the federal government. Owns VA EHRM, legacy VistA, and VA-wide infrastructure.",
+      "people": [
+        {
+          "name": "Paul Lawrence",
+          "title": "Performing the delegable duties of the Assistant Secretary for Information and Technology and Chief Information Officer",
+          "scope": "VA CIO role; OIT-wide direction.",
+          "why_watch": "Acting/delegated CIO. Sets posture on EHRM, VistA, and T4NG2 task-order strategy."
+        },
+        {
+          "name": "Zachary Schwartz",
+          "title": "Principal Deputy Assistant Secretary for Information and Technology",
+          "scope": "Day-to-day OIT operations.",
+          "why_watch": "Often the operational decision authority on T4NG2 task orders and EHRM execution."
+        }
+      ]
+    },
+    {
+      "agency_code": "VBA",
+      "agency_name": "Department of Veterans Affairs — Veterans Benefits Administration",
+      "source_url": "https://benefits.va.gov/benefits/leadership.asp",
+      "verified_date": "2026-05-07",
+      "note": "VBA owns benefits delivery systems — claims processing, GI Bill, compensation/pension IT. Distinct procurement footprint from OIT.",
+      "people": [
+        {
+          "name": "Michael Frueh",
+          "title": "Acting Under Secretary for Benefits",
+          "scope": "VBA enterprise; benefits IT, claims modernization.",
+          "why_watch": "Replaced Margarita Devlin in early 2026. VBA modernization priorities flow through this office."
+        }
+      ]
+    }
+  ]
+}

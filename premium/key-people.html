@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Key People &mdash; Federal Health IT Leadership Profiles &mdash; MMT Premium</title>
+  <meta name="robots" content="noindex">
+  <meta name="description" content="Named profiles of senior leaders at DHA, ASW(HA), VA OIT, ARPA-H, and other federal health agencies. Each profile cites its source. Quarterly refresh.">
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <link rel="icon" href="/favicon-v3.png" type="image/png">
+  <style>
+    :root { --mmt-navy:#0A192F; --mmt-teal:#457B9D; --mmt-white:#FFFFFF; --mmt-surface:#F3F4F6; --mmt-text-secondary:#6B7280; --mmt-border:#E5E7EB; --dash-sidebar:220px; }
+    body { font-family:Inter,system-ui,sans-serif; color:var(--mmt-navy); background:var(--mmt-surface); margin:0; }
+    .dash-shell { display:grid; grid-template-columns:var(--dash-sidebar) 1fr; min-height:100vh; }
+    .dash-nav { background:var(--mmt-navy); padding:24px 0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto; }
+    .dash-nav-brand { padding:0 20px 24px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px; }
+    .dash-nav-brand a { color:#fff; text-decoration:none; font-weight:800; font-size:14px; }
+    .dash-nav-brand small { display:block; font-size:11px; color:rgba(255,255,255,0.5); font-weight:400; margin-top:2px; }
+    .dash-nav-link { display:flex; align-items:center; gap:10px; padding:10px 20px; color:rgba(255,255,255,0.6); text-decoration:none; font-size:13px; font-weight:500; transition:all 0.15s; }
+    .dash-nav-link:hover { color:#fff; background:rgba(255,255,255,0.05); }
+    .dash-nav-link.active { color:#fff; background:rgba(69,123,157,0.3); border-left:3px solid var(--mmt-teal); }
+    .dash-nav-section { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:rgba(255,255,255,0.3); padding:16px 20px 6px; }
+    .dash-header { background:var(--mmt-white); padding:16px 32px; border-bottom:1px solid var(--mmt-border); display:flex; align-items:center; justify-content:space-between; }
+    .dash-main { padding:32px; max-width:1100px; }
+    .dash-card { background:var(--mmt-white); border-radius:12px; padding:24px; margin-bottom:16px; border:1px solid var(--mmt-border); }
+    .agency-block { background:var(--mmt-white); border-radius:12px; padding:24px; margin-bottom:20px; border:1px solid var(--mmt-border); }
+    .agency-head { display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid var(--mmt-border); }
+    .agency-head h2 { font-size:18px; font-weight:800; margin:0; color:var(--mmt-navy); }
+    .agency-meta { font-size:11px; color:var(--mmt-text-secondary); }
+    .agency-meta a { color:var(--mmt-teal); text-decoration:none; font-weight:600; }
+    .agency-meta a:hover { text-decoration:underline; }
+    .agency-note { font-size:13px; color:var(--mmt-text-secondary); font-style:italic; margin:0 0 16px; line-height:1.55; }
+    .person-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:14px; }
+    .person-card { padding:14px 16px; background:var(--mmt-surface); border:1px solid var(--mmt-border); border-radius:8px; }
+    .person-card h3 { font-size:14px; font-weight:700; margin:0 0 2px; color:var(--mmt-navy); line-height:1.3; }
+    .person-card .role { font-size:12px; color:var(--mmt-teal); font-weight:600; margin:0 0 8px; line-height:1.4; }
+    .person-card .scope { font-size:12px; color:var(--mmt-navy); margin:0 0 6px; line-height:1.55; }
+    .person-card .why { font-size:12px; color:var(--mmt-text-secondary); margin:0; line-height:1.55; padding-top:6px; border-top:1px solid var(--mmt-border); }
+    .person-card .why strong { color:var(--mmt-navy); font-weight:700; }
+    .agency-jump { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
+    .agency-jump a { padding:6px 12px; background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:6px; font-size:12px; font-weight:600; color:var(--mmt-navy); text-decoration:none; transition:all 0.15s; }
+    .agency-jump a:hover { background:var(--mmt-navy); color:var(--mmt-white); border-color:var(--mmt-navy); }
+    @media (max-width:768px) { .dash-shell { grid-template-columns:1fr; } .dash-nav { display:none; } .dash-main { padding:16px; padding-bottom:80px; } .person-grid { grid-template-columns:1fr; } }
+  </style>
+  <script>
+    (function() {
+      var isPremium = localStorage.getItem('mmt_premium') === 'true';
+      var ts = localStorage.getItem('mmt_premium_ts');
+      var withinWindow = ts && (Date.now() - parseInt(ts)) < 30 * 24 * 60 * 60 * 1000;
+      if (!isPremium || !withinWindow) { window.location.href = '/dashboard.html'; }
+    })();
+  </script>
+</head>
+<body>
+  <div class="dash-shell">
+    <nav class="dash-nav">
+      <div class="dash-nav-brand"><a href="/premium/dashboard.html">★ MMT Premium<small>Intelligence Dashboard</small></a></div>
+      <div class="dash-nav-section">Intelligence</div>
+      <a href="/premium/dashboard.html" class="dash-nav-link">Dashboard</a>
+      <a href="/intel/capture-intelligence-this-issue/" class="dash-nav-link">Capture Intelligence</a>
+      <a href="/capture-corner.html" class="dash-nav-link">Capture Corner</a>
+      <a href="/premium/briefings.html" class="dash-nav-link">Friday Brief</a>
+      <a href="/premium/monthly-briefs.html" class="dash-nav-link">Monthly Brief</a>
+      <a href="/premium/gao-sustain.html" class="dash-nav-link">GAO Sustains</a>
+      <a href="/premium/key-people.html" class="dash-nav-link active">Key People</a>
+      <div class="dash-nav-section">Tools</div>
+      <a href="/premium/pursuit-score.html" class="dash-nav-link">Pursuit Score</a>
+      <a href="/premium/compliance-check.html" class="dash-nav-link">Compliance Check</a>
+      <a href="/premium/signal-chain.html" class="dash-nav-link">Signal Chain</a>
+      <a href="/proposal-pulse.html" class="dash-nav-link">ProposalPulse ($14.99)</a>
+      <a href="/marketpulse.html" class="dash-nav-link">MarketPulse ($35)</a>
+      <div class="dash-nav-section">Resources</div>
+      <a href="/latest.html" class="dash-nav-link">Article Archive</a>
+      <a href="/contract-tracker.html" class="dash-nav-link">Contract Tracker</a>
+      <a href="/idiq-tracker.html" class="dash-nav-link">IDIQ Tracker</a>
+      <a href="/premium/single-bidder.html" class="dash-nav-link">Sole-Source Watch</a>
+      <a href="/premium/fpds-migration.html" class="dash-nav-link">FPDS Sunset</a>
+      <a href="/glossary.html" class="dash-nav-link">Glossary</a>
+      <a href="/premium/calendar.html" class="dash-nav-link">Pursuit Calendar</a>
+      <a href="/premium/ask-mmt.html" class="dash-nav-link">Ask MMT</a>
+      <div class="dash-nav-section">Account</div>
+      <a href="/premium/settings.html" class="dash-nav-link">Settings</a>
+      <a href="/" class="dash-nav-link" style="margin-top:auto; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px;">&larr; Back to site</a>
+    </nav>
+    <div>
+      <div class="dash-header">
+        <span style="font-size:14px; font-weight:700;">★ Premium Dashboard</span>
+        <div style="display:flex; align-items:center; gap:16px;">
+          <span style="font-size:13px; color:var(--mmt-text-secondary);" id="dash-email"></span>
+          <a href="/" style="font-size:12px; color:var(--mmt-teal); text-decoration:none;">Back to site</a>
+          <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_premium_ts');localStorage.removeItem('mmt_email');document.cookie='mmt_premium=;path=/;max-age=0';window.location.href='/';return false;" style="font-size:12px; color:var(--mmt-text-secondary); text-decoration:none;">Sign out</a>
+        </div>
+      </div>
+      <div class="dash-main">
+
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin-bottom:8px;">MMT Premium &middot; Leadership Intelligence</p>
+        <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">Key People</h1>
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 8px;">Named profiles of senior leaders at DHA, ASW(HA), VA OIT, ARPA-H, the Service Surgeons General, and USU. Every profile cites its source page so you can verify before you write a teaming letter or a capture call list.</p>
+        <p style="font-size:12px;color:var(--mmt-text-secondary);margin:0 0 24px;">Quarterly refresh. If a leader changed roles since the verified date on the agency block, email <a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a> &mdash; we'll update the entry and re-verify the source.</p>
+
+        <div id="agencyJump" class="agency-jump"></div>
+        <div id="people"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    var email=localStorage.getItem('mmt_email');var __de=document.getElementById('dash-email');if(__de&&email)__de.textContent=email;
+
+    (function(){
+      var esc = function(s){ if(s==null) return ''; return String(s).replace(/[&<>"']/g, function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); };
+      function render(data){
+        var jump = document.getElementById('agencyJump');
+        var root = document.getElementById('people');
+        var jumpHtml = (data.agencies||[]).map(function(a){
+          return '<a href="#'+esc(a.agency_code)+'">'+esc(a.agency_name)+' ('+esc(((a.people||[]).length)+'')+')</a>';
+        }).join('');
+        jump.innerHTML = jumpHtml;
+        var blocks = (data.agencies||[]).map(function(a){
+          var people = (a.people||[]).map(function(p){
+            return '<div class="person-card">' +
+              '<h3>'+esc(p.name)+'</h3>' +
+              '<p class="role">'+esc(p.title)+'</p>' +
+              (p.scope ? '<p class="scope">'+esc(p.scope)+'</p>' : '') +
+              (p.why_watch ? '<p class="why"><strong>Why watch:</strong> '+esc(p.why_watch)+'</p>' : '') +
+            '</div>';
+          }).join('');
+          var meta = '<span class="agency-meta">' +
+            'Verified ' + esc(a.verified_date || '—') +
+            (a.source_url ? ' &middot; <a href="'+esc(a.source_url)+'" target="_blank" rel="noopener">Source &rarr;</a>' : '') +
+            '</span>';
+          return '<section id="'+esc(a.agency_code)+'" class="agency-block">' +
+            '<div class="agency-head">' +
+              '<h2>'+esc(a.agency_name)+'</h2>' +
+              meta +
+            '</div>' +
+            (a.note ? '<p class="agency-note">'+esc(a.note)+'</p>' : '') +
+            '<div class="person-grid">'+people+'</div>' +
+          '</section>';
+        }).join('');
+        root.innerHTML = blocks;
+      }
+      fetch('/data/key-people.json').then(function(r){return r.json();}).then(render).catch(function(){
+        document.getElementById('people').innerHTML = '<div class="dash-card"><p style="margin:0;color:var(--mmt-text-secondary);">Could not load key-people data. Try refreshing in a moment.</p></div>';
+      });
+    })();
+  </script>
+</body>
+</html>

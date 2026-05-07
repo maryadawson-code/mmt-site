@@ -613,6 +613,28 @@
   to = "/premium/gao-sustain.html"
   status = 200
 
+# Sprint 5 wave2 — premium feature redirects
+[[redirects]]
+  from = "/key-people"
+  to = "/premium/key-people.html"
+  status = 200
+[[redirects]]
+  from = "/forecast-delta"
+  to = "/premium/forecast-delta.html"
+  status = 200
+[[redirects]]
+  from = "/forecasts"
+  to = "/premium/forecast-delta.html"
+  status = 200
+[[redirects]]
+  from = "/cr-exposure"
+  to = "/premium/cr-exposure.html"
+  status = 200
+[[redirects]]
+  from = "/appropriations"
+  to = "/premium/cr-exposure.html"
+  status = 200
+
 [[redirects]]
   from = "/rfp-shredder"
   to = "/rfp-shredder.html"

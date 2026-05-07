@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forecast Delta Tracker &mdash; MMT Premium</title>
+  <meta name="robots" content="noindex">
+  <meta name="description" content="Monthly editorial diff of federal agency procurement forecasts — what was added, removed, slipped. VA, DHA, HHS, ARPA-H, GSA. Plus a vetted portal of every official forecast source.">
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <link rel="icon" href="/favicon-v3.png" type="image/png">
+  <style>
+    :root { --mmt-navy:#0A192F; --mmt-teal:#457B9D; --mmt-white:#FFFFFF; --mmt-surface:#F3F4F6; --mmt-text-secondary:#6B7280; --mmt-border:#E5E7EB; --dash-sidebar:220px; }
+    body { font-family:Inter,system-ui,sans-serif; color:var(--mmt-navy); background:var(--mmt-surface); margin:0; }
+    .dash-shell { display:grid; grid-template-columns:var(--dash-sidebar) 1fr; min-height:100vh; }
+    .dash-nav { background:var(--mmt-navy); padding:24px 0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto; }
+    .dash-nav-brand { padding:0 20px 24px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px; }
+    .dash-nav-brand a { color:#fff; text-decoration:none; font-weight:800; font-size:14px; }
+    .dash-nav-brand small { display:block; font-size:11px; color:rgba(255,255,255,0.5); font-weight:400; margin-top:2px; }
+    .dash-nav-link { display:flex; align-items:center; gap:10px; padding:10px 20px; color:rgba(255,255,255,0.6); text-decoration:none; font-size:13px; font-weight:500; transition:all 0.15s; }
+    .dash-nav-link:hover { color:#fff; background:rgba(255,255,255,0.05); }
+    .dash-nav-link.active { color:#fff; background:rgba(69,123,157,0.3); border-left:3px solid var(--mmt-teal); }
+    .dash-nav-section { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:rgba(255,255,255,0.3); padding:16px 20px 6px; }
+    .dash-header { background:var(--mmt-white); padding:16px 32px; border-bottom:1px solid var(--mmt-border); display:flex; align-items:center; justify-content:space-between; }
+    .dash-main { padding:32px; max-width:980px; }
+    .dash-card { background:var(--mmt-white); border-radius:12px; padding:24px; margin-bottom:16px; border:1px solid var(--mmt-border); }
+    .editorial p { font-size:14px; line-height:1.7; color:var(--mmt-navy); margin:0 0 12px; }
+    .editorial p strong { font-weight:700; }
+    .editorial a { color:var(--mmt-teal); text-decoration:none; font-weight:600; }
+    .editorial a:hover { text-decoration:underline; }
+    .portal-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; margin-top:8px; }
+    .portal-card { padding:14px 16px; background:var(--mmt-surface); border:1px solid var(--mmt-border); border-radius:8px; }
+    .portal-card h3 { font-size:14px; font-weight:700; margin:0 0 4px; color:var(--mmt-navy); line-height:1.3; }
+    .portal-card .format { font-size:11px; color:var(--mmt-teal); font-weight:600; margin:0 0 4px; text-transform:uppercase; letter-spacing:0.04em; }
+    .portal-card .cadence { font-size:11px; color:var(--mmt-text-secondary); margin:0 0 8px; font-style:italic; }
+    .portal-card .note { font-size:12px; color:var(--mmt-navy); line-height:1.55; margin:0 0 10px; }
+    .portal-card a.go { font-size:12px; font-weight:700; color:var(--mmt-teal); text-decoration:none; }
+    .portal-card a.go:hover { text-decoration:underline; }
+    @media (max-width:768px) { .dash-shell { grid-template-columns:1fr; } .dash-nav { display:none; } .dash-main { padding:16px; padding-bottom:80px; } }
+  </style>
+  <script>
+    (function() {
+      var isPremium = localStorage.getItem('mmt_premium') === 'true';
+      var ts = localStorage.getItem('mmt_premium_ts');
+      var withinWindow = ts && (Date.now() - parseInt(ts)) < 30 * 24 * 60 * 60 * 1000;
+      if (!isPremium || !withinWindow) { window.location.href = '/dashboard.html'; }
+    })();
+  </script>
+</head>
+<body>
+  <div class="dash-shell">
+    <nav class="dash-nav">
+      <div class="dash-nav-brand"><a href="/premium/dashboard.html">★ MMT Premium<small>Intelligence Dashboard</small></a></div>
+      <div class="dash-nav-section">Intelligence</div>
+      <a href="/premium/dashboard.html" class="dash-nav-link">Dashboard</a>
+      <a href="/intel/capture-intelligence-this-issue/" class="dash-nav-link">Capture Intelligence</a>
+      <a href="/capture-corner.html" class="dash-nav-link">Capture Corner</a>
+      <a href="/premium/briefings.html" class="dash-nav-link">Friday Brief</a>
+      <a href="/premium/monthly-briefs.html" class="dash-nav-link">Monthly Brief</a>
+      <a href="/premium/gao-sustain.html" class="dash-nav-link">GAO Sustains</a>
+      <a href="/premium/key-people.html" class="dash-nav-link">Key People</a>
+      <a href="/premium/forecast-delta.html" class="dash-nav-link active">Forecast Delta</a>
+      <div class="dash-nav-section">Tools</div>
+      <a href="/premium/pursuit-score.html" class="dash-nav-link">Pursuit Score</a>
+      <a href="/premium/compliance-check.html" class="dash-nav-link">Compliance Check</a>
+      <a href="/premium/signal-chain.html" class="dash-nav-link">Signal Chain</a>
+      <a href="/proposal-pulse.html" class="dash-nav-link">ProposalPulse ($14.99)</a>
+      <a href="/marketpulse.html" class="dash-nav-link">MarketPulse ($35)</a>
+      <div class="dash-nav-section">Resources</div>
+      <a href="/latest.html" class="dash-nav-link">Article Archive</a>
+      <a href="/contract-tracker.html" class="dash-nav-link">Contract Tracker</a>
+      <a href="/idiq-tracker.html" class="dash-nav-link">IDIQ Tracker</a>
+      <a href="/premium/single-bidder.html" class="dash-nav-link">Sole-Source Watch</a>
+      <a href="/premium/fpds-migration.html" class="dash-nav-link">FPDS Sunset</a>
+      <a href="/glossary.html" class="dash-nav-link">Glossary</a>
+      <a href="/premium/calendar.html" class="dash-nav-link">Pursuit Calendar</a>
+      <a href="/premium/ask-mmt.html" class="dash-nav-link">Ask MMT</a>
+      <div class="dash-nav-section">Account</div>
+      <a href="/premium/settings.html" class="dash-nav-link">Settings</a>
+      <a href="/" class="dash-nav-link" style="margin-top:auto; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px;">&larr; Back to site</a>
+    </nav>
+    <div>
+      <div class="dash-header">
+        <span style="font-size:14px; font-weight:700;">★ Premium Dashboard</span>
+        <div style="display:flex; align-items:center; gap:16px;">
+          <span style="font-size:13px; color:var(--mmt-text-secondary);" id="dash-email"></span>
+          <a href="/" style="font-size:12px; color:var(--mmt-teal); text-decoration:none;">Back to site</a>
+          <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_premium_ts');localStorage.removeItem('mmt_email');document.cookie='mmt_premium=;path=/;max-age=0';window.location.href='/';return false;" style="font-size:12px; color:var(--mmt-text-secondary); text-decoration:none;">Sign out</a>
+        </div>
+      </div>
+      <div class="dash-main">
+
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin-bottom:8px;">MMT Premium &middot; Procurement Signal</p>
+        <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">Forecast Delta Tracker</h1>
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 24px;">Monthly editorial diff of federal agency procurement forecasts &mdash; what was added, what slipped, what was removed. VA, DHA, HHS, ARPA-H, GSA. Plus a vetted portal of the official sources we monitor.</p>
+
+        <div class="dash-card editorial">
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-teal);margin:0 0 4px;">May 2026 &middot; Latest read</p>
+          <h2 style="font-size:18px;font-weight:700;margin:0 0 12px;">VA Enterprise Imaging surfaces, DHA reorg ripples, ARPA-H Resilient Systems pipeline</h2>
+          <p>The May Capture Intelligence Sheet led with <strong>VA Enterprise Imaging</strong> because that's the procurement signal flashing brightest right now in the VA forecast. It's worth restating in this format: VA OIT's quarterly forecast refresh added the Enterprise Imaging line item ahead of a draft RFP that we expect inside the next two quarters. If you're not already engaged with VA OIT on imaging infrastructure or PACS modernization, the window to position is narrowing.</p>
+          <p><strong>DHA forecast ripples from the April 2026 reorg.</strong> The DHA reorg restructured assistant-director portfolios, which means the official DHA forecast as published is structurally aligned to the OLD org chart. PEOs roll up differently in the new structure. Until the next forecast refresh catches up, cross-reference the forecast directly with the new IOC/FOC PMO map (covered in the April 29 Capture Corner). Forecast addenda posted between full refreshes are the place to watch.</p>
+          <p><strong>ARPA-H Resilient Systems pipeline thickening.</strong> The ARPA-H people directory shows seven program managers in Resilient Systems, several of whom have moved into program-launch posture. ARPA-H doesn't post a traditional forecast &mdash; its program announcements drop on <a href="https://arpa-h.gov/research-funding" target="_blank" rel="noopener">arpa-h.gov/research-funding</a> without the long-runway notice agencies like VA give you. If your capture pipeline includes ARPA-H, set up a recurring check on the program announcements page rather than relying on the procurement-forecast hub.</p>
+          <p><strong>The methodology note for subscribers:</strong> federal procurement forecasts are not a single source of truth. They're per-agency snapshots, updated on their own cadence, in formats that range from a downloadable Excel sheet (VA, GSA) to a search interface (HHS via mySBCX) to plain HTML (DHA-via-DoD). The MMT Forecast Delta Tracker layers editorial commentary on top of the official sources below &mdash; because the diff matters more than the snapshot, and nobody else is publishing it month-over-month.</p>
+        </div>
+
+        <div class="dash-card">
+          <h2 style="font-size:18px;font-weight:700;margin:0 0 4px;">Forecast Portals &mdash; the official sources we monitor</h2>
+          <p style="font-size:13px;color:var(--mmt-text-secondary);margin:0 0 16px;">Direct links to each agency's procurement forecast page, with our read on data accessibility and refresh cadence. Click through to verify the source for any signal we surface.</p>
+          <div id="portalGrid" class="portal-grid"></div>
+        </div>
+
+        <p style="font-size:12px;color:var(--mmt-text-secondary);margin:8px 0 0;">Refresh cadence: monthly editorial entries land at <code>content/forecast-delta/YYYY-MM.md</code>. Portal inventory is verified on each entry. Source: <a href="https://www.acquisition.gov/procurement-forecasts" target="_blank" rel="noopener" style="color:var(--mmt-teal);">acquisition.gov/procurement-forecasts</a>.</p>
+      </div>
+    </div>
+  </div>
+  <script>
+    var email=localStorage.getItem('mmt_email');var __de=document.getElementById('dash-email');if(__de&&email)__de.textContent=email;
+
+    (function(){
+      var esc = function(s){ if(s==null) return ''; return String(s).replace(/[&<>"']/g, function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); };
+      fetch('/data/forecast-portals.json').then(function(r){return r.json();}).then(function(d){
+        var html = (d.agencies||[]).map(function(a){
+          return '<div class="portal-card">' +
+            '<h3>'+esc(a.agency)+'</h3>' +
+            '<p class="format">'+esc(a.format)+'</p>' +
+            (a.cadence ? '<p class="cadence">'+esc(a.cadence)+'</p>' : '') +
+            (a.mmt_note ? '<p class="note">'+esc(a.mmt_note)+'</p>' : '') +
+            '<a class="go" href="'+esc(a.url)+'" target="_blank" rel="noopener">Open forecast page &rarr;</a>' +
+          '</div>';
+        }).join('');
+        document.getElementById('portalGrid').innerHTML = html;
+      }).catch(function(){
+        document.getElementById('portalGrid').innerHTML = '<p style="color:var(--mmt-text-secondary);">Could not load portal data.</p>';
+      });
+    })();
+  </script>
+</body>
+</html>

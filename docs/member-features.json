@@ -232,6 +232,42 @@
       "freshness_sla_hours": null,
       "smoke_test_url": "/premium/gao-sustain.html",
       "noindex": true
+    },
+    {
+      "feature_name": "Key People",
+      "public_marketing_urls": ["/key-people"],
+      "member_url": "/premium/key-people.html",
+      "backing_function": "static page reading data/key-people.json (Sprint 5 wave2)",
+      "entitlement_required": "premium|founding|institutional|admin",
+      "public_locked_preview_behavior": "redirect to dashboard.html (sign-in gate)",
+      "expected_data_source": "Curated profiles sourced from official agency leadership pages (DHA, MHS, ARPA-H, VA OIT). Quarterly refresh.",
+      "freshness_sla_hours": null,
+      "smoke_test_url": "/premium/key-people.html",
+      "noindex": true
+    },
+    {
+      "feature_name": "Forecast Delta Tracker",
+      "public_marketing_urls": ["/forecast-delta", "/forecasts"],
+      "member_url": "/premium/forecast-delta.html",
+      "backing_function": "static page reading data/forecast-portals.json + content/forecast-delta/*.md (Sprint 5 wave2)",
+      "entitlement_required": "premium|founding|institutional|admin",
+      "public_locked_preview_behavior": "redirect to dashboard.html (sign-in gate)",
+      "expected_data_source": "Editorial monthly entries + curated portal of agency forecast URLs (acquisition.gov hub)",
+      "freshness_sla_hours": null,
+      "smoke_test_url": "/premium/forecast-delta.html",
+      "noindex": true
+    },
+    {
+      "feature_name": "CR & Appropriations Exposure Map",
+      "public_marketing_urls": ["/cr-exposure", "/appropriations"],
+      "member_url": "/premium/cr-exposure.html",
+      "backing_function": "static page reading data/cr-deadlines.json (Sprint 5 wave2)",
+      "entitlement_required": "premium|founding|institutional|admin",
+      "public_locked_preview_behavior": "redirect to dashboard.html (sign-in gate)",
+      "expected_data_source": "CRFB upcoming-deadlines tracker; editorially curated to federal-health-IT capture impact",
+      "freshness_sla_hours": null,
+      "smoke_test_url": "/premium/cr-exposure.html",
+      "noindex": true
     }
   ]
 }

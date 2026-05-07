@@ -3164,6 +3164,10 @@ ${innerHtml}
     'premium/fpds-migration.html': 'fpds-migration',
     'premium/single-bidder.html': 'single-bidder',
     'premium/gao-sustain.html': 'gao-sustain',
+    // Sprint 5 (2026-05-07) — Wave 2 paywall enrichment
+    'premium/key-people.html': 'key-people',
+    'premium/forecast-delta.html': 'forecast-delta',
+    'premium/cr-exposure.html': 'cr-exposure',
   };
 
   // Copy premium and agency subdirectory pages
@@ -3182,6 +3186,10 @@ ${innerHtml}
     { src: 'premium/fpds-migration.html', dest: 'premium/fpds-migration/index.html' },
     { src: 'premium/single-bidder.html', dest: 'premium/single-bidder/index.html' },
     { src: 'premium/gao-sustain.html', dest: 'premium/gao-sustain/index.html' },
+    // Sprint 5 (2026-05-07) — Wave 2 paywall enrichment
+    { src: 'premium/key-people.html', dest: 'premium/key-people/index.html' },
+    { src: 'premium/forecast-delta.html', dest: 'premium/forecast-delta/index.html' },
+    { src: 'premium/cr-exposure.html', dest: 'premium/cr-exposure/index.html' },
     { src: 'agencies/index.html', dest: 'agencies/index.html' },
   ];
   subDirPages.forEach(({ src, dest }) => {
