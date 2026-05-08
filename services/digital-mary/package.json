@@ -1,0 +1,22 @@
+{
+  "name": "digital-mary",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Digital Mary agent loop — plan, retrieve, reflect, answer. Phase 1 foundation.",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test:retrieval": "node --experimental-strip-types scripts/test-retrieval.ts || node dist/scripts/test-retrieval.js",
+    "test:agent": "node --experimental-strip-types scripts/test-agent.ts || node dist/scripts/test-agent.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.30.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

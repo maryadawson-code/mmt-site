@@ -1,0 +1,1886 @@
+{
+  "generated_at": "2026-05-08T02:04:06.136Z",
+  "count": 107,
+  "items": [
+    {
+      "article_slug": "were-official-introducing-fed-up",
+      "title": "We're Official: Introducing Fed UP",
+      "url": "/articles/were-official-introducing-fed-up/",
+      "published": "2025-01-01",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "mission-meets-tech-march-20-2025",
+      "title": "Mission Meets Tech: March 20, 2025",
+      "url": "/articles/mission-meets-tech-march-20-2025/",
+      "published": "2025-03-20",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "when-tech-lifts-the-load-a-vision-for-transforming-military-",
+      "title": "When Tech Lifts the Load: A Vision for Transforming Military Healthcare",
+      "url": "/articles/when-tech-lifts-the-load-a-vision-for-transforming-military-/",
+      "published": "2025-03-24",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "mission-meets-tech-ai-powered-symptom-triage-redefining-heal",
+      "title": "Mission Meets Tech: AI-Powered Symptom Triage Redefining Healthcare in 2025",
+      "url": "/articles/mission-meets-tech-ai-powered-symptom-triage-redefining-heal/",
+      "published": "2025-03-28",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "on-april-10-2025-the-dod-dropped-a-bombshell-51-billion-in-c",
+      "title": "On April 10, 2025, the DoD Dropped a Bombshell — $5.1 Billion in Consulting Contracts Gone",
+      "url": "/articles/on-april-10-2025-the-dod-dropped-a-bombshell-51-billion-in-c/",
+      "published": "2025-04-11",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 2
+        },
+        {
+          "topic": "capture-strategy",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "ai-wearables-and-beyond-a-new-era-for-warfighter-care",
+      "title": "AI, Wearables, and Beyond: A New Era for Warfighter Care",
+      "url": "/articles/ai-wearables-and-beyond-a-new-era-for-warfighter-care/",
+      "published": "2025-04-14",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "lead-or-lag-the-virtual-care-imperative-for-mhs-leadership",
+      "title": "Lead or Lag: The Virtual Care Imperative for MHS Leadership",
+      "url": "/articles/lead-or-lag-the-virtual-care-imperative-for-mhs-leadership/",
+      "published": "2025-04-17",
+      "tags": [
+        {
+          "topic": "telehealth",
+          "score": 2
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "amplify-the-blueprint-how-digital-first-can-turn-success-int",
+      "title": "Amplify the Blueprint: How Digital First Can Turn Success into Standard",
+      "url": "/articles/amplify-the-blueprint-how-digital-first-can-turn-success-int/",
+      "published": "2025-04-21",
+      "tags": [
+        {
+          "topic": "telehealth",
+          "score": 2
+        },
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "squad-vibes-and-ai-scaling-mental-health-for-our-heroes",
+      "title": "Squad Vibes and AI: Scaling Mental Health for our Heroes",
+      "url": "/articles/squad-vibes-and-ai-scaling-mental-health-for-our-heroes/",
+      "published": "2025-04-28",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        },
+        {
+          "topic": "capture-strategy",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "digital-health-the-unbreakable-spine-of-military-readiness",
+      "title": "Digital Health: The Unbreakable Spine of Military Readiness",
+      "url": "/articles/digital-health-the-unbreakable-spine-of-military-readiness/",
+      "published": "2025-05-05",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "far-overhaul-unlocking-a-new-era-of-innovation-for-the-milit",
+      "title": "FAR Overhaul: Unlocking a New Era of Innovation for the Military Health System",
+      "url": "/articles/far-overhaul-unlocking-a-new-era-of-innovation-for-the-milit/",
+      "published": "2025-05-19",
+      "tags": [
+        {
+          "topic": "regulatory-far",
+          "score": 3
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "mhs-imaging-fragmented-foundation",
+      "title": "Pixels and Promises: The Fragmented Foundation of MHS Imaging (Part 1)",
+      "url": "/articles/mhs-imaging-fragmented-foundation/",
+      "published": "2025-05-20",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "pixels-and-promises-the-fragmented-foundation-of-mhs-imaging",
+      "title": "Pixels and Promises: The Fragmented Foundation of MHS Imaging (Part 1)",
+      "url": "/articles/pixels-and-promises-the-fragmented-foundation-of-mhs-imaging/",
+      "published": "2025-05-20",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "can-we-trust-ai-with-soldiers-lives",
+      "title": "Can We Trust AI with Soldiers' Lives?",
+      "url": "/articles/can-we-trust-ai-with-soldiers-lives/",
+      "published": "2025-05-22",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "from-despair-to-hope-a-veterans-journey-with-ptsd",
+      "title": "From Despair to Hope: A Veteran's Journey with PTSD",
+      "url": "/articles/from-despair-to-hope-a-veterans-journey-with-ptsd/",
+      "published": "2025-05-26",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "from-silos-to-synergy-building-the-future-of-mhs-enterprise-",
+      "title": "From Silos to Synergy: Building the Future of MHS Enterprise Imaging (Part 2)",
+      "url": "/articles/from-silos-to-synergy-building-the-future-of-mhs-enterprise-/",
+      "published": "2025-05-27",
+      "tags": [
+        {
+          "topic": "cloud-modernization",
+          "score": 1
+        },
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "mhs-imaging-future",
+      "title": "From Silos to Synergy: Building the Future of MHS Enterprise Imaging (Part 2)",
+      "url": "/articles/mhs-imaging-future/",
+      "published": "2025-05-27",
+      "tags": [
+        {
+          "topic": "cloud-modernization",
+          "score": 3
+        },
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-swift-breakthrough-redefining-possibilities",
+      "title": "The SWIFT Breakthrough: Redefining Possibilities",
+      "url": "/articles/the-swift-breakthrough-redefining-possibilities/",
+      "published": "2025-05-29",
+      "tags": [
+        {
+          "topic": "interoperability",
+          "score": 2
+        },
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "data-chaos-the-hidden-threat-to-military-healthcare",
+      "title": "Data Chaos: The Hidden Threat to Military Healthcare",
+      "url": "/articles/data-chaos-the-hidden-threat-to-military-healthcare/",
+      "published": "2025-06-19",
+      "tags": [
+        {
+          "topic": "data-governance",
+          "score": 2
+        },
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "mhs-resilience-modernizing-forward",
+      "title": "MHS Resilience: Modernizing Forward",
+      "url": "/articles/mhs-resilience-modernizing-forward/",
+      "published": "2025-06-26",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "ai-enters-the-ranks-scaling-big-tech-partnerships-for-health",
+      "title": "AI Enters the Ranks: Scaling Big Tech Partnerships for Health Innovation",
+      "url": "/articles/ai-enters-the-ranks-scaling-big-tech-partnerships-for-health/",
+      "published": "2025-07-17",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "shadow-ai-risks-to-game-changing-wins-how-government-leaders",
+      "title": "Shadow AI Risks to Game-Changing Wins: How Government Leaders Are Mastering 2025's Essential Tool",
+      "url": "/articles/shadow-ai-risks-to-game-changing-wins-how-government-leaders/",
+      "published": "2025-07-21",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "mission-meets-tech-digital-health-20-beyond-the-basics",
+      "title": "Mission Meets Tech: Digital Health 2.0 — Beyond the Basics",
+      "url": "/articles/mission-meets-tech-digital-health-20-beyond-the-basics/",
+      "published": "2025-07-24",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-digital-pulse-of-military-health-2025-milestones-reveale",
+      "title": "The Digital Pulse of Military Health: 2025 Milestones Revealed",
+      "url": "/articles/the-digital-pulse-of-military-health-2025-milestones-reveale/",
+      "published": "2025-07-28",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-retrofit-trap-why-ai-in-health-demands-a-total-reinventi",
+      "title": "The Retrofit Trap: Why AI in Health Demands a Total Reinvention",
+      "url": "/articles/the-retrofit-trap-why-ai-in-health-demands-a-total-reinventi/",
+      "published": "2025-08-14",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-ripple-effect-dhas-innovation-fellowship-and-the-future-",
+      "title": "The Ripple Effect: DHA's Innovation Fellowship and the Future of Federal EHR",
+      "url": "/articles/the-ripple-effect-dhas-innovation-fellowship-and-the-future-/",
+      "published": "2025-08-18",
+      "tags": [
+        {
+          "topic": "fehrm",
+          "score": 1.5
+        },
+        {
+          "topic": "ehr",
+          "score": 1
+        },
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-post-dhits-playbook-scaling-ai-ehr-and-readiness",
+      "title": "The Post-DHITS Playbook: Scaling AI, EHR, and Readiness",
+      "url": "/articles/the-post-dhits-playbook-scaling-ai-ehr-and-readiness/",
+      "published": "2025-08-21",
+      "tags": [
+        {
+          "topic": "ehr",
+          "score": 1
+        },
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "mission-meets-tech-the-merit-revolution",
+      "title": "Mission Meets Tech: The Merit Revolution",
+      "url": "/articles/mission-meets-tech-the-merit-revolution/",
+      "published": "2025-08-25",
+      "tags": [
+        {
+          "topic": "regulatory-far",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        },
+        {
+          "topic": "capture-strategy",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "think-data-sharing-is-optional-hhs-disagrees",
+      "title": "Think Data Sharing is Optional? HHS Disagrees",
+      "url": "/articles/think-data-sharing-is-optional-hhs-disagrees/",
+      "published": "2025-08-28",
+      "tags": [
+        {
+          "topic": "interoperability",
+          "score": 2
+        },
+        {
+          "topic": "cybersecurity",
+          "score": 1
+        },
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "brain-on-the-frontlines-new-ai-sensors-redefine-troop-cognit",
+      "title": "Brain on the Frontlines: New AI Sensors Redefine Troop Cognitive Resilience",
+      "url": "/articles/brain-on-the-frontlines-new-ai-sensors-redefine-troop-cognit/",
+      "published": "2025-09-11",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "from-pitch-to-enterprise-how-the-mhs-is-cutting-years-off-he",
+      "title": "From Pitch to Enterprise: How the MHS is Cutting Years Off Health Tech Timelines",
+      "url": "/articles/from-pitch-to-enterprise-how-the-mhs-is-cutting-years-off-he/",
+      "published": "2025-09-15",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "a-unified-front-why-the-dows-cyber-strategy-is-now-mission-c",
+      "title": "A Unified Front: Why the DOW's Cyber Strategy is Now Mission-Critical for HIPAA Compliance",
+      "url": "/articles/a-unified-front-why-the-dows-cyber-strategy-is-now-mission-c/",
+      "published": "2025-09-18",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 2
+        },
+        {
+          "topic": "cybersecurity",
+          "score": 1
+        },
+        {
+          "topic": "compliance-audits",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "ai-the-ultimate-change-management-challenge",
+      "title": "AI: The Ultimate Change Management Challenge",
+      "url": "/articles/ai-the-ultimate-change-management-challenge/",
+      "published": "2025-09-22",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "shutdown-survival-guide-transform-hhs-cpgs-into-your-mtfs-se",
+      "title": "Shutdown Survival Guide: Transform HHS CPGs into Your MTF's Secret Weapon Against Breaches",
+      "url": "/articles/shutdown-survival-guide-transform-hhs-cpgs-into-your-mtfs-se/",
+      "published": "2025-09-25",
+      "tags": [
+        {
+          "topic": "cybersecurity",
+          "score": 3
+        },
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "fail-fast-win-the-war-how-a-leaked-memo-proves-the-pentagons",
+      "title": "Fail Fast, Win the War: How a Leaked Memo Proves the Pentagon's New Cyber Strategy Works",
+      "url": "/articles/fail-fast-win-the-war-how-a-leaked-memo-proves-the-pentagons/",
+      "published": "2025-09-29",
+      "tags": [
+        {
+          "topic": "cybersecurity",
+          "score": 1
+        },
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "algorithm-warfare-darpas-triage-revolution-and-the-global-ai",
+      "title": "Algorithm Warfare: DARPA's Triage Revolution and the Global AI Sprint for Survival",
+      "url": "/articles/algorithm-warfare-darpas-triage-revolution-and-the-global-ai/",
+      "published": "2025-10-16",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "regulatory-far",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "ai-in-the-mhs-revolution-or-expensive-paperweight",
+      "title": "AI in the MHS: Revolution or Expensive Paperweight?",
+      "url": "/articles/ai-in-the-mhs-revolution-or-expensive-paperweight/",
+      "published": "2025-10-20",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "chaos-or-cure-ai-agents-storm-health-tech-and-warfare-dodgin",
+      "title": "Chaos or Cure? AI Agents Storm Health-Tech and Warfare, Dodging Regulatory Handcuffs",
+      "url": "/articles/chaos-or-cure-ai-agents-storm-health-tech-and-warfare-dodgin/",
+      "published": "2025-10-24",
+      "tags": [
+        {
+          "topic": "cybersecurity",
+          "score": 1
+        },
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "regulatory-far",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-real-goal-for-2026-how-user-centric-ai-can-transform-mhs",
+      "title": "The Real Goal for 2026: How User-Centric AI Can Transform MHS Readiness, Not Just Check a Box",
+      "url": "/articles/the-real-goal-for-2026-how-user-centric-ai-can-transform-mhs/",
+      "published": "2025-10-27",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 2
+        },
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "compliance-audits",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "special-issue-how-hegseths-arsenal-of-freedom-speech-unlocks",
+      "title": "Special Issue: How Hegseth's 'Arsenal of Freedom' Speech Unlocks AI in Military Health",
+      "url": "/articles/special-issue-how-hegseths-arsenal-of-freedom-speech-unlocks/",
+      "published": "2025-10-31",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "introducing-fed-up",
+      "title": "We're Official: Introducing Fed UP",
+      "url": "/articles/introducing-fed-up/",
+      "published": "2025-11-01",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "audacious-innovator-or-forensic-auditor-the-impossible-choic",
+      "title": "Audacious Innovator or Forensic Auditor? The Impossible Choice Facing Every KO",
+      "url": "/articles/audacious-innovator-or-forensic-auditor-the-impossible-choic/",
+      "published": "2025-11-17",
+      "tags": [
+        {
+          "topic": "cybersecurity",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        },
+        {
+          "topic": "compliance-audits",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "beyond-the-cloud-the-governor-the-concierge-and-the-catalog",
+      "title": "Beyond the Cloud: The 'Governor,' the 'Concierge,' and the 'Catalog'",
+      "url": "/articles/beyond-the-cloud-the-governor-the-concierge-and-the-catalog/",
+      "published": "2025-11-20",
+      "tags": [
+        {
+          "topic": "cloud-modernization",
+          "score": 1
+        },
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-42-trillion-ghost-in-the-machine-why-data-hygiene-is-the",
+      "title": "The $4.2 Trillion Ghost in the Machine: Why Data Hygiene is the New Front Line of Defense Medicine",
+      "url": "/articles/the-42-trillion-ghost-in-the-machine-why-data-hygiene-is-the/",
+      "published": "2025-11-24",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-silent-crisis-and-the-digital-signal",
+      "title": "The Silent Crisis and the Digital Signal",
+      "url": "/articles/the-silent-crisis-and-the-digital-signal/",
+      "published": "2025-11-28",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        },
+        {
+          "topic": "research-cdmrp",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "on-keeping-your-cots-products-in-the-mattress",
+      "title": "On Keeping Your COTS Products in the Mattress",
+      "url": "/articles/on-keeping-your-cots-products-in-the-mattress/",
+      "published": "2025-12-04",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "meet-mhs-triad",
+      "title": "Meet the MHS Triad: Keith Bass, Emil Michael, and the Silicon Valley Bet",
+      "url": "/articles/meet-mhs-triad/",
+      "published": "2025-12-11",
+      "tags": [
+        {
+          "topic": "agency-leadership",
+          "score": 1.5
+        },
+        {
+          "topic": "cybersecurity",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "meet-the-mhs-triad-keith-bass-emil-michael-and-the-silicon-v",
+      "title": "Meet the MHS Triad: Keith Bass, Emil Michael, and the Silicon Valley Bet",
+      "url": "/articles/meet-the-mhs-triad-keith-bass-emil-michael-and-the-silicon-v/",
+      "published": "2025-12-11",
+      "tags": [
+        {
+          "topic": "agency-leadership",
+          "score": 1.5
+        },
+        {
+          "topic": "cybersecurity",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-procurement-paradox-why-the-government-discourages-ai-in",
+      "title": "The Procurement Paradox: Why the Government Discourages AI in Proposals for AI Tools",
+      "url": "/articles/the-procurement-paradox-why-the-government-discourages-ai-in/",
+      "published": "2025-12-13",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        },
+        {
+          "topic": "research-cdmrp",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-ai-civil-war-is-the-wrong-fight-why-the-battle-over-250m",
+      "title": "The AI Civil War is the Wrong Fight: Why the Battle Over $250M Tools Misses the Architecture That Actually Wins",
+      "url": "/articles/the-ai-civil-war-is-the-wrong-fight-why-the-battle-over-250m/",
+      "published": "2025-12-16",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "mhs-triad-appointment-means",
+      "title": "The MHS Triad: What Their Appointment Actually Means",
+      "url": "/articles/mhs-triad-appointment-means/",
+      "published": "2025-12-18",
+      "tags": [
+        {
+          "topic": "agency-leadership",
+          "score": 1.5
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        },
+        {
+          "topic": "research-cdmrp",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-mhs-triad-what-their-appointment-actually-means",
+      "title": "The MHS Triad: What Their Appointment Actually Means",
+      "url": "/articles/the-mhs-triad-what-their-appointment-actually-means/",
+      "published": "2025-12-18",
+      "tags": [
+        {
+          "topic": "agency-leadership",
+          "score": 1.5
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        },
+        {
+          "topic": "research-cdmrp",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-governance-paradox-why-buying-the-platform-is-the-fastes",
+      "title": "The Governance Paradox: Why 'Buying the Platform' Is the Fastest Way to Fail",
+      "url": "/articles/the-governance-paradox-why-buying-the-platform-is-the-fastes/",
+      "published": "2025-12-20",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "dc-wants-ai-to-save-billions-but-a-single-san-diego-lawsuit-",
+      "title": "D.C. Wants AI to Save Billions — But a Single San Diego Lawsuit Just Changed the Math",
+      "url": "/articles/dc-wants-ai-to-save-billions-but-a-single-san-diego-lawsuit-/",
+      "published": "2025-12-23",
+      "tags": [
+        {
+          "topic": "cloud-modernization",
+          "score": 1
+        },
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "unlocking-the-vault-a-historic-turning-point-for-veteran-hea",
+      "title": "Unlocking the Vault: A Historic Turning Point for Veteran Healing Through Medical Cannabis",
+      "url": "/articles/unlocking-the-vault-a-historic-turning-point-for-veteran-hea/",
+      "published": "2025-12-27",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "2026-the-genesis-of-federal-ai",
+      "title": "2026: The Genesis of Federal AI",
+      "url": "/articles/2026-the-genesis-of-federal-ai/",
+      "published": "2025-12-30",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-synchronization-gap-why-we-perfect-the-kill-chain-but-ne",
+      "title": "The Synchronization Gap: Why We Perfect the Kill Chain But Neglect the Care Chain",
+      "url": "/articles/the-synchronization-gap-why-we-perfect-the-kill-chain-but-ne/",
+      "published": "2026-01-03",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-great-clawback-why-2026-marks-the-end-of-paper-performan",
+      "title": "The Great Clawback: Why 2026 Marks the End of 'Paper Performance'",
+      "url": "/articles/the-great-clawback-why-2026-marks-the-end-of-paper-performan/",
+      "published": "2026-01-06",
+      "tags": [
+        {
+          "topic": "regulatory-far",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "somewhere-in-the-pacific-when-telehealth-routes-through-cont",
+      "title": "Somewhere in the Pacific: When Telehealth Routes Through Contested Systems",
+      "url": "/articles/somewhere-in-the-pacific-when-telehealth-routes-through-cont/",
+      "published": "2026-01-08",
+      "tags": [
+        {
+          "topic": "telehealth",
+          "score": 1
+        },
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "telehealth-contested-systems",
+      "title": "Somewhere in the Pacific: When Telehealth Routes Through Contested Systems",
+      "url": "/articles/telehealth-contested-systems/",
+      "published": "2026-01-08",
+      "tags": [
+        {
+          "topic": "telehealth",
+          "score": 1
+        },
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "research-cdmrp",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-new-iron-triangle-meet-the-three-leaders-who-will-reshap",
+      "title": "The New Iron Triangle: Meet the Three Leaders Who Will Reshape Military Medicine",
+      "url": "/articles/the-new-iron-triangle-meet-the-three-leaders-who-will-reshap/",
+      "published": "2026-01-10",
+      "tags": [
+        {
+          "topic": "cybersecurity",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-mhs-triad-part-2-the-programs-the-platforms-the-playbook",
+      "title": "The MHS Triad, Part 2: The Programs, The Platforms, The Playbook",
+      "url": "/articles/the-mhs-triad-part-2-the-programs-the-platforms-the-playbook/",
+      "published": "2026-01-13",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "agentic-ai-reckoning",
+      "title": "Healthcare's Agentic AI Reckoning: The Operating Model Shift No One Can Postpone",
+      "url": "/articles/agentic-ai-reckoning/",
+      "published": "2026-01-15",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "regulatory-far",
+          "score": 1
+        },
+        {
+          "topic": "research-cdmrp",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "healthcares-agentic-ai-reckoning-the-operating-model-shift-n",
+      "title": "Healthcare's Agentic AI Reckoning: The Operating Model Shift No One Can Postpone",
+      "url": "/articles/healthcares-agentic-ai-reckoning-the-operating-model-shift-n/",
+      "published": "2026-01-15",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "regulatory-far",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-90-billion-squeeze-what-the-triads-budget-really-means-f",
+      "title": "The $90 Billion Squeeze: What the Triad's Budget Really Means for Your Capture Strategy",
+      "url": "/articles/the-90-billion-squeeze-what-the-triads-budget-really-means-f/",
+      "published": "2026-01-20",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        },
+        {
+          "topic": "capture-strategy",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "va-referral-care-coordination",
+      "title": "VA Solicits Demos for Next-Gen Referral and Care Coordination System",
+      "url": "/articles/va-referral-care-coordination/",
+      "published": "2026-01-22",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 2
+        },
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "research-cdmrp",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "va-solicits-demos-for-next-gen-referral-and-care-coordinatio",
+      "title": "VA Solicits Demos for Next-Gen Referral and Care Coordination System",
+      "url": "/articles/va-solicits-demos-for-next-gen-referral-and-care-coordinatio/",
+      "published": "2026-01-22",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-lethality-test-a-survival-guide-for-defense-health-contr",
+      "title": "The Lethality Test: A Survival Guide for Defense Health Contractors in the Post-8(a) Era",
+      "url": "/articles/the-lethality-test-a-survival-guide-for-defense-health-contr/",
+      "published": "2026-01-24",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 2
+        },
+        {
+          "topic": "8a-program",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "why-vas-quiet-rfi-should-be-on-every-federal-health-contract",
+      "title": "Why VA's Quiet RFI Should Be on Every Federal Health Contractor's Radar",
+      "url": "/articles/why-vas-quiet-rfi-should-be-on-every-federal-health-contract/",
+      "published": "2026-01-27",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 2
+        },
+        {
+          "topic": "proposal-evaluation",
+          "score": 2
+        },
+        {
+          "topic": "cybersecurity",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-va-is-executing-the-largest-healthcare-reorganization-si",
+      "title": "The VA Is Executing the Largest Healthcare Reorganization Since the 1990s",
+      "url": "/articles/the-va-is-executing-the-largest-healthcare-reorganization-si/",
+      "published": "2026-01-29",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "va-healthcare-reorganization",
+      "title": "The VA Is Executing the Largest Healthcare Reorganization Since the 1990s",
+      "url": "/articles/va-healthcare-reorganization/",
+      "published": "2026-01-29",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "episode-1-mission-meets-reality",
+      "title": "Episode 1: Mission Meets Reality",
+      "url": "/articles/episode-1-mission-meets-reality/",
+      "published": "2026-01-31",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "introducing-mission-meets-reality",
+      "title": "Introducing Mission Meets Reality",
+      "url": "/articles/introducing-mission-meets-reality/",
+      "published": "2026-01-31",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-trillion-dollar-pivot-why-ccn-next-gen-is-the-mosa-ficat",
+      "title": "The Trillion-Dollar Pivot: Why CCN Next Gen is the MOSA-fication of Federal Health",
+      "url": "/articles/the-trillion-dollar-pivot-why-ccn-next-gen-is-the-mosa-ficat/",
+      "published": "2026-02-03",
+      "tags": [
+        {
+          "topic": "capture-strategy",
+          "score": 3
+        },
+        {
+          "topic": "open-architecture-mosa",
+          "score": 3
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 2
+        }
+      ]
+    },
+    {
+      "article_slug": "largest-healthcare-contract",
+      "title": "The Largest Healthcare Contract in American History Just Hit the Street",
+      "url": "/articles/largest-healthcare-contract/",
+      "published": "2026-02-05",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-3-trillion-pivot-what-the-vas-rise-initiative-means-for-",
+      "title": "The $3 Trillion Pivot: What the VA's RISE Initiative Means for Federal Health Contractors",
+      "url": "/articles/the-3-trillion-pivot-what-the-vas-rise-initiative-means-for-/",
+      "published": "2026-02-05",
+      "tags": [
+        {
+          "topic": "capture-strategy",
+          "score": 5
+        },
+        {
+          "topic": "interoperability",
+          "score": 2
+        },
+        {
+          "topic": "cybersecurity",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-largest-healthcare-contract-in-american-history-just-hit",
+      "title": "The Largest Healthcare Contract in American History Just Hit the Street",
+      "url": "/articles/the-largest-healthcare-contract-in-american-history-just-hit/",
+      "published": "2026-02-05",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-elephant-in-the-waiting-room",
+      "title": "The Elephant in the Waiting Room",
+      "url": "/articles/the-elephant-in-the-waiting-room/",
+      "published": "2026-02-10",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-human-weapon-system-finally-gets-real",
+      "title": "The Human Weapon System Finally Gets Real",
+      "url": "/articles/the-human-weapon-system-finally-gets-real/",
+      "published": "2026-02-12",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        },
+        {
+          "topic": "onc-tefca",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-forgotten-beneficiaries-why-the-glp-1-coverage-gap-is-a-",
+      "title": "The Forgotten Beneficiaries: Why the GLP-1 Coverage Gap Is a Readiness Problem",
+      "url": "/articles/the-forgotten-beneficiaries-why-the-glp-1-coverage-gap-is-a-/",
+      "published": "2026-02-14",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-ccn-next-gen-playbook-how-build-your-bid-type-company",
+      "title": "The CCN Next Gen Playbook: How to Build Your Bid (By the Type of Company You Actually Are)",
+      "url": "/articles/the-ccn-next-gen-playbook-how-build-your-bid-type-company/",
+      "published": "2026-02-21",
+      "tags": [
+        {
+          "topic": "capture-strategy",
+          "score": 3.5
+        },
+        {
+          "topic": "va-community-care",
+          "score": 3
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 2
+        }
+      ]
+    },
+    {
+      "article_slug": "february-28-the-day-defense-health-contracting-changes-forev",
+      "title": "February 28: The Day Defense Health Contracting Changes",
+      "url": "/articles/february-28-the-day-defense-health-contracting-changes-forev/",
+      "published": "2026-02-24",
+      "tags": [
+        {
+          "topic": "capture-strategy",
+          "score": 6
+        },
+        {
+          "topic": "regulatory-far",
+          "score": 2
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 2
+        }
+      ]
+    },
+    {
+      "article_slug": "the-pentagon-is-trying-to-blacklist-the-ai-it-cant-live-with",
+      "title": "The Pentagon Is Trying to Blacklist the AI It Can't Live Without",
+      "url": "/articles/the-pentagon-is-trying-to-blacklist-the-ai-it-cant-live-with/",
+      "published": "2026-02-26",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 2
+        },
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-opening-act",
+      "title": "The Opening Act",
+      "url": "/articles/the-opening-act/",
+      "published": "2026-02-27",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 2
+        },
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "anthropic-ban-what-numbers-say",
+      "title": "The Anthropic Ban: What the Numbers Actually Say",
+      "url": "/articles/anthropic-ban-what-numbers-say/",
+      "published": "2026-02-28",
+      "tags": [
+        {
+          "topic": "cloud-modernization",
+          "score": 5
+        },
+        {
+          "topic": "ai-clinical",
+          "score": 2
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 2
+        }
+      ]
+    },
+    {
+      "article_slug": "the-anthropic-ban-what-the-numbers-actually-say",
+      "title": "The Anthropic Ban: What the Numbers Actually Say",
+      "url": "/articles/the-anthropic-ban-what-the-numbers-actually-say/",
+      "published": "2026-02-28",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "cms-just-dropped-the-claimscore-rfp-the-last-time-they-tried",
+      "title": "CMS Just Dropped the ClaimsCore RFP. The Last Time They Tried This, They Spent $40 Million and Failed.",
+      "url": "/articles/cms-just-dropped-the-claimscore-rfp-the-last-time-they-tried/",
+      "published": "2026-03-07",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 2
+        },
+        {
+          "topic": "capture-strategy",
+          "score": 2
+        },
+        {
+          "topic": "cybersecurity",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "hipaa-was-written-in-1996-the-hole-is-not-a-bug",
+      "title": "HIPAA Was Written in 1996. The Hole Is Not a Bug.",
+      "url": "/articles/hipaa-was-written-in-1996-the-hole-is-not-a-bug/",
+      "published": "2026-03-10",
+      "tags": [
+        {
+          "topic": "cybersecurity",
+          "score": 3
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "the-soap-note-they-wont-check",
+      "title": "The SOAP Note They Won't Check",
+      "url": "/articles/the-soap-note-they-wont-check/",
+      "published": "2026-03-14",
+      "tags": [
+        {
+          "topic": "cybersecurity",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        },
+        {
+          "topic": "compliance-audits",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "we-launched-a-data-strategy-while-landstuhl-was-full",
+      "title": "We Launched a Data Strategy While Landstuhl Was Full",
+      "url": "/articles/we-launched-a-data-strategy-while-landstuhl-was-full/",
+      "published": "2026-03-17",
+      "tags": [
+        {
+          "topic": "data-governance",
+          "score": 2
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "i-dont-use-ai-i-deploy-it",
+      "title": "I Don't Use AI. I Deploy It.",
+      "url": "/articles/i-dont-use-ai-i-deploy-it/",
+      "published": "2026-03-19",
+      "tags": [
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "clinical-ai-jailbroken-three-prompts",
+      "title": "Clinical AI Can Be Jailbroken in Three Prompts. VA Just Contracted to Scale This Tool Category to 130 Facilities.",
+      "url": "/articles/clinical-ai-jailbroken-three-prompts/",
+      "published": "2026-03-24",
+      "tags": [
+        {
+          "topic": "cybersecurity",
+          "score": 3
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 2
+        },
+        {
+          "topic": "capture-strategy",
+          "score": 2
+        }
+      ]
+    },
+    {
+      "article_slug": "april-3-is-not-the-hard-deadline-ccn-next-gen-the-follow-up",
+      "title": "April 3 Is Not the Hard Deadline. CCN Next Gen: The Follow-Up",
+      "url": "/articles/april-3-is-not-the-hard-deadline-ccn-next-gen-the-follow-up/",
+      "published": "2026-03-26",
+      "tags": [
+        {
+          "topic": "va-community-care",
+          "score": 3
+        },
+        {
+          "topic": "interoperability",
+          "score": 2
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 2
+        }
+      ]
+    },
+    {
+      "article_slug": "80-analysts-43000-contractors-no-one-at-the-door",
+      "title": "80 Analysts. 43,000 Contractors. No One at the Door.",
+      "url": "/articles/80-analysts-43000-contractors-no-one-at-the-door/",
+      "published": "2026-03-31",
+      "tags": [
+        {
+          "topic": "cloud-modernization",
+          "score": 2
+        },
+        {
+          "topic": "supply-chain",
+          "score": 2
+        },
+        {
+          "topic": "cybersecurity",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "va-ai-scribe-contract-foreign-influence",
+      "title": "VA Awarded a $4.9M AI Scribe Contract to a Company Under Federal Scrutiny for Foreign Influence",
+      "url": "/articles/va-ai-scribe-contract-foreign-influence/",
+      "published": "2026-03-31",
+      "tags": [
+        {
+          "topic": "cybersecurity",
+          "score": 4
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 3
+        },
+        {
+          "topic": "small-business-setasides",
+          "score": 2
+        }
+      ]
+    },
+    {
+      "article_slug": "three-vehicles-ninety-days-50-billion-play",
+      "title": "Three Vehicles. Ninety Days. A $50 Billion Play.",
+      "url": "/articles/three-vehicles-ninety-days-50-billion-play/",
+      "published": "2026-04-03",
+      "tags": [
+        {
+          "topic": "capture-strategy",
+          "score": 5
+        },
+        {
+          "topic": "open-architecture-mosa",
+          "score": 2
+        },
+        {
+          "topic": "cybersecurity",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "fy2027-federal-health-budget-part-1",
+      "title": "The FY2027 Federal Health Budget: $56 Billion for the Network, $4 Billion for the System (1 of 2)",
+      "url": "/articles/fy2027-federal-health-budget-part-1/",
+      "published": "2026-04-07",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 4
+        },
+        {
+          "topic": "va-community-care",
+          "score": 2
+        },
+        {
+          "topic": "fehrm",
+          "score": 1.5
+        }
+      ]
+    },
+    {
+      "article_slug": "gsa-mas-refresh-31-tdr-mandatory",
+      "title": "GSA Just Made TDR Mandatory Across the MAS Program",
+      "url": "/articles/gsa-mas-refresh-31-tdr-mandatory/",
+      "published": "2026-04-07",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 2
+        },
+        {
+          "topic": "compliance-audits",
+          "score": 2
+        },
+        {
+          "topic": "cybersecurity",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "article_slug": "fy2027-military-health-budget-part-2",
+      "title": "$3.139 Billion in Mandatory Funding. One Subaccount. The FY2027 Military Health Budget. (2 of 2)",
+      "url": "/articles/fy2027-military-health-budget-part-2/",
+      "published": "2026-04-10",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 9
+        },
+        {
+          "topic": "tricare-managed-care",
+          "score": 4
+        },
+        {
+          "topic": "operational-medicine",
+          "score": 4
+        }
+      ]
+    },
+    {
+      "article_slug": "the-pipeline-is-open-rule-of-two",
+      "title": "The Pipeline Is Open. The Set-Aside Protections That Got You In Aren't.",
+      "url": "/articles/the-pipeline-is-open-rule-of-two/",
+      "published": "2026-04-14",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 6
+        },
+        {
+          "topic": "small-business-setasides",
+          "score": 4.5
+        },
+        {
+          "topic": "capture-strategy",
+          "score": 3
+        }
+      ]
+    },
+    {
+      "article_slug": "dow-cio-five-new-leadership-hires",
+      "title": "DoW CIO Builds a Bench: Five Hires Signal Where Kirsten Davies Is Taking the Fight",
+      "url": "/articles/dow-cio-five-new-leadership-hires/",
+      "published": "2026-04-15",
+      "tags": [
+        {
+          "topic": "cybersecurity",
+          "score": 5.5
+        },
+        {
+          "topic": "cloud-modernization",
+          "score": 3
+        },
+        {
+          "topic": "agency-restructure",
+          "score": 2
+        }
+      ]
+    },
+    {
+      "article_slug": "direct-care-system-outperforms-fy2027-restructures",
+      "title": "The Direct Care System Outperforms. The FY2027 Budget Restructures It Anyway.",
+      "url": "/articles/direct-care-system-outperforms-fy2027-restructures/",
+      "published": "2026-04-18",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 4
+        },
+        {
+          "topic": "mtf-operations",
+          "score": 2.5
+        },
+        {
+          "topic": "tricare-managed-care",
+          "score": 2
+        }
+      ]
+    },
+    {
+      "article_slug": "the-laboratory-trump-8a-dismantling",
+      "title": "The Laboratory: How Trump Is Dismantling the $26.2 Billion 8(a) Program and What Comes Next",
+      "url": "/articles/the-laboratory-trump-8a-dismantling/",
+      "published": "2026-04-22",
+      "tags": [
+        {
+          "topic": "8a-program",
+          "score": 99
+        },
+        {
+          "topic": "small-business-setasides",
+          "score": 3
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 3
+        }
+      ]
+    },
+    {
+      "article_slug": "the-architecture-va-asks-for",
+      "title": "The Architecture VA Asks For Is Not the Architecture VA Buys",
+      "url": "/articles/the-architecture-va-asks-for/",
+      "published": "2026-05-01",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 4
+        },
+        {
+          "topic": "cloud-modernization",
+          "score": 3
+        },
+        {
+          "topic": "regulatory-far",
+          "score": 2
+        }
+      ]
+    },
+    {
+      "article_slug": "what-anthropic-refused",
+      "title": "What Anthropic Refused",
+      "url": "/articles/what-anthropic-refused/",
+      "published": "2026-05-05",
+      "tags": [
+        {
+          "topic": "regulatory-far",
+          "score": 3
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 3
+        },
+        {
+          "topic": "small-business-setasides",
+          "score": 2
+        }
+      ]
+    },
+    {
+      "article_slug": "what-the-budget-is-catching-up-to",
+      "title": "What the Budget Is Catching Up To",
+      "url": "/articles/what-the-budget-is-catching-up-to/",
+      "published": "2026-05-08",
+      "tags": [
+        {
+          "topic": "va-ehrm",
+          "score": 99
+        },
+        {
+          "topic": "va-community-care",
+          "score": 7.5
+        },
+        {
+          "topic": "appropriations-budget",
+          "score": 6
+        }
+      ]
+    },
+    {
+      "article_slug": "replace-with-url-slug",
+      "title": "Headline that makes the reader mad and motivated at the same time",
+      "url": "/articles/replace-with-url-slug/",
+      "published": "2026-04-27",
+      "tags": [
+        {
+          "topic": "appropriations-budget",
+          "score": 2
+        },
+        {
+          "topic": "ai-clinical",
+          "score": 1
+        },
+        {
+          "topic": "capture-strategy",
+          "score": 1
+        }
+      ]
+    }
+  ]
+}
