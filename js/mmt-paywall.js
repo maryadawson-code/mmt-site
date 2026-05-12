@@ -164,10 +164,36 @@
           var container = document.getElementById('agency-premium-content');
           if (container && agencyData) {
             var h = '';
+            // Helper: build a source-note line given a source_id + map.
+            // Modules pass source_id; sources[] (top-level) holds the
+            // {url,label,verified_at,confidence,caveat} payload.
+            var sourceMap = {};
+            (agencyData.sources || []).forEach(function (s) { if (s && s.id) sourceMap[s.id] = s; });
+            function sourceNote(sid) {
+              var s = sourceMap[sid];
+              if (!s) return '';
+              var confDot = s.confidence === 'high' ? '#0F6E3D' : (s.confidence === 'medium' ? '#92710A' : '#6B7280');
+              return '<div style="font-size:11px;color:var(--mmt-text-secondary);margin-top:10px;line-height:1.5;">' +
+                'Source: <a href="' + esc(s.url) + '" rel="noopener" style="color:var(--mmt-teal);">' + esc(s.label) + '</a>' +
+                ' &middot; verified ' + esc(s.verified_at || '') +
+                ' &middot; <span style="color:' + confDot + ';font-weight:600;">' + esc(s.confidence || 'unknown') + ' confidence</span>' +
+                (s.caveat ? '<div style="margin-top:6px;color:#92710A;">Caveat: ' + esc(s.caveat) + '</div>' : '') +
+                '</div>';
+            }
+
             h += '<div class="profile-section"><div class="profile-label">MMT\'s Current Read</div>';
             h += '<div style="background:rgba(69,123,157,0.04);border-left:3px solid var(--mmt-teal);border-radius:0 10px 10px 0;padding:16px 20px;">';
-            h += '<p style="font-size:15px;line-height:1.7;color:var(--mmt-text);">' + agencyData.current_read + '</p>';
+            h += '<p style="font-size:15px;line-height:1.7;color:var(--mmt-text);">' + esc(agencyData.current_read || '') + '</p>';
             h += '<p style="font-size:12px;color:var(--mmt-text-secondary);margin-top:8px;">Updated: April 2026</p></div></div>';
+
+            // Contractor Read — operator-grade interpretation that
+            // translates the official signals into capture implications.
+            if (agencyData.contractorRead) {
+              h += '<div class="profile-section"><div class="profile-label">Contractor Read</div>';
+              h += '<div style="background:#FEF9E7;border-left:3px solid #92710A;border-radius:0 10px 10px 0;padding:16px 20px;">';
+              h += '<p style="font-size:14px;line-height:1.65;color:var(--mmt-text);margin:0;">' + esc(agencyData.contractorRead) + '</p>';
+              h += '</div></div>';
+            }
             h += '<div class="profile-section"><div class="profile-label">Budget Posture</div>';
             h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">';
             h += '<div><span style="font-size:12px;color:var(--mmt-text-secondary);">FY2026 Enacted</span><div style="font-size:18px;font-weight:700;">' + agencyData.fy2026 + '</div></div>';
@@ -177,8 +203,107 @@
               agencyData.programs.forEach(function(p) { h += '<li style="margin-bottom:4px;">' + p + '</li>'; });
               h += '</ul>';
             }
+            h += '</div>'; // close Budget Posture section before new modules
+
+            // Scale Cards (DHA) — source-anchored magnitude numbers
+            if (agencyData.scaleCards && Array.isArray(agencyData.scaleCards.items) && agencyData.scaleCards.items.length) {
+              h += '<div class="profile-section"><div class="profile-label">' + esc(agencyData.scaleCards.title || 'Scale') + '</div>';
+              h += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;">';
+              agencyData.scaleCards.items.forEach(function(c) {
+                h += '<div style="background:var(--mmt-soft);border-radius:10px;padding:14px 16px;">';
+                h += '<div style="font-size:11px;color:var(--mmt-text-secondary);text-transform:uppercase;letter-spacing:0.08em;">' + esc(c.label) + '</div>';
+                h += '<div style="font-size:20px;font-weight:800;color:var(--mmt-navy);margin:4px 0 4px;">' + esc(c.value) + '</div>';
+                if (c.context) h += '<div style="font-size:12px;color:var(--mmt-text-secondary);line-height:1.4;">' + esc(c.context) + '</div>';
+                h += '</div>';
+              });
+              h += '</div>';
+              h += sourceNote(agencyData.scaleCards.source_id);
+              h += '</div>';
+            }
+
+            // Data Strategy (DHA) — lines of effort table
+            if (agencyData.dataStrategy && Array.isArray(agencyData.dataStrategy.lines_of_effort)) {
+              var ds = agencyData.dataStrategy;
+              h += '<div class="profile-section"><div class="profile-label">' + esc(ds.title || 'Data Strategy') + '</div>';
+              if (ds.summary) h += '<p style="font-size:14px;color:var(--mmt-text);line-height:1.6;margin-bottom:14px;">' + esc(ds.summary) + '</p>';
+              h += '<table style="width:100%;border-collapse:collapse;font-size:13px;">';
+              h += '<thead><tr><th style="text-align:left;padding:8px;border-bottom:1px solid var(--mmt-border);background:var(--mmt-soft);">LOE</th><th style="text-align:left;padding:8px;border-bottom:1px solid var(--mmt-border);background:var(--mmt-soft);">Line of Effort</th><th style="text-align:left;padding:8px;border-bottom:1px solid var(--mmt-border);background:var(--mmt-soft);">Vendor implication</th></tr></thead><tbody>';
+              ds.lines_of_effort.forEach(function(loe) {
+                h += '<tr><td style="padding:8px;border-bottom:1px solid var(--mmt-border);font-weight:700;white-space:nowrap;">' + esc(loe.id) + '</td>';
+                h += '<td style="padding:8px;border-bottom:1px solid var(--mmt-border);font-weight:600;">' + esc(loe.name) + '</td>';
+                h += '<td style="padding:8px;border-bottom:1px solid var(--mmt-border);color:var(--mmt-text-secondary);">' + esc(loe.vendor_implication) + '</td></tr>';
+              });
+              h += '</tbody></table>';
+              h += sourceNote(ds.source_id);
+              h += '</div>';
+            }
+
+            // Modernization Timeline (VA) — wave-by-wave site rollout
+            if (agencyData.modernizationTimeline && Array.isArray(agencyData.modernizationTimeline.items)) {
+              var mt = agencyData.modernizationTimeline;
+              h += '<div class="profile-section"><div class="profile-label">' + esc(mt.title || 'Modernization Timeline') + '</div>';
+              if (mt.scope) h += '<p style="font-size:13px;color:var(--mmt-text-secondary);margin-bottom:14px;">Scope: ' + esc(mt.scope) + '</p>';
+              mt.items.forEach(function(item) {
+                h += '<div style="border-left:3px solid var(--mmt-teal);padding:10px 16px;margin-bottom:12px;background:rgba(69,123,157,0.04);border-radius:0 8px 8px 0;">';
+                h += '<div style="font-size:13px;font-weight:700;color:var(--mmt-navy);">' + esc(item.window) + '</div>';
+                if (Array.isArray(item.sites) && item.sites.length) {
+                  h += '<div style="font-size:13px;color:var(--mmt-text);margin-top:4px;">Sites: ' + item.sites.map(function(s){return esc(s);}).join(', ') + '</div>';
+                }
+                if (item.why_it_matters) h += '<div style="font-size:13px;color:var(--mmt-text-secondary);margin-top:6px;line-height:1.5;">' + esc(item.why_it_matters) + '</div>';
+                h += '</div>';
+              });
+              if (mt.caveat) {
+                h += '<div style="font-size:12px;color:#92710A;background:#FEF9E7;border-radius:8px;padding:10px 14px;margin-bottom:10px;line-height:1.55;"><strong>Source caveat:</strong> ' + esc(mt.caveat) + '</div>';
+              }
+              h += sourceNote(mt.source_id);
+              h += '</div>';
+            }
+
+            // Policy Module (HHS / ONC / CMS) — confirmed facts vs vendor watch
+            if (agencyData.policyModule && (Array.isArray(agencyData.policyModule.confirmed_facts) || Array.isArray(agencyData.policyModule.vendor_watch))) {
+              var pm = agencyData.policyModule;
+              h += '<div class="profile-section"><div class="profile-label">' + esc(pm.title || 'Policy Signal') + '</div>';
+              h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">';
+              h += '<div style="background:#EEF7F1;border-radius:10px;padding:14px 16px;">';
+              h += '<div style="font-size:11px;font-weight:700;color:#0F6E3D;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">Confirmed Facts</div>';
+              h += '<ul style="list-style:none;padding:0;margin:0;font-size:13px;color:var(--mmt-text);line-height:1.55;">';
+              (pm.confirmed_facts || []).forEach(function(f) { h += '<li style="margin-bottom:8px;">&#8226; ' + esc(f) + '</li>'; });
+              h += '</ul></div>';
+              h += '<div style="background:#FEF9E7;border-radius:10px;padding:14px 16px;">';
+              h += '<div style="font-size:11px;font-weight:700;color:#92710A;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">Vendor Watch</div>';
+              h += '<ul style="list-style:none;padding:0;margin:0;font-size:13px;color:var(--mmt-text);line-height:1.55;">';
+              (pm.vendor_watch || []).forEach(function(f) { h += '<li style="margin-bottom:8px;">&#8226; ' + esc(f) + '</li>'; });
+              h += '</ul></div>';
+              h += '</div>';
+              h += sourceNote(pm.source_id);
+              h += '</div>';
+            }
+
+            // Opportunity Map (ARPA-H) — grouped by funding mechanism
+            if (agencyData.opportunityMap && Array.isArray(agencyData.opportunityMap.groups)) {
+              var om = agencyData.opportunityMap;
+              h += '<div class="profile-section"><div class="profile-label">' + esc(om.title || 'Opportunity Map') + '</div>';
+              om.groups.forEach(function(g) {
+                h += '<div style="border:1px solid var(--mmt-border);border-radius:10px;padding:14px 16px;margin-bottom:10px;">';
+                h += '<div style="font-size:13px;font-weight:700;color:var(--mmt-navy);">' + esc(g.mechanism) + '</div>';
+                if (g.note) h += '<div style="font-size:12px;color:var(--mmt-text-secondary);margin-top:4px;line-height:1.5;">' + esc(g.note) + '</div>';
+                if (Array.isArray(g.items) && g.items.length) {
+                  h += '<ul style="list-style:none;padding:0;margin:10px 0 0;font-size:13px;">';
+                  g.items.forEach(function(it) {
+                    h += '<li style="margin-bottom:4px;">&#8226; <strong>' + esc(it.name) + '</strong>';
+                    if (it.solicitation) h += ' <span style="font-family:monospace;color:var(--mmt-text-secondary);font-size:12px;">(' + esc(it.solicitation) + ')</span>';
+                    h += '</li>';
+                  });
+                  h += '</ul>';
+                }
+                h += '</div>';
+              });
+              h += sourceNote(om.source_id);
+              h += '</div>';
+            }
+
             if (agencyData.vehicles && agencyData.vehicles.length) {
-              h += '</div><div class="profile-section"><div class="profile-label">Key Vehicles</div><div style="display:flex;gap:8px;flex-wrap:wrap;">';
+              h += '<div class="profile-section"><div class="profile-label">Key Vehicles</div><div style="display:flex;gap:8px;flex-wrap:wrap;">';
               agencyData.vehicles.forEach(function(v) { h += '<span class="tag" style="font-size:12px;">' + v + '</span>'; });
               h += '</div></div>';
             }
@@ -186,6 +311,29 @@
               h += '<div class="profile-section"><div class="profile-label">Upcoming Procurement Signals</div><ul style="list-style:none;padding:0;margin:0;color:var(--mmt-text-secondary);">';
               agencyData.signals.forEach(function(s) { h += '<li style="margin-bottom:6px;font-size:14px;">\u2022 ' + s + '</li>'; });
               h += '</ul></div>';
+            }
+            // Watch Next \u2014 structured signals tied back to a source.
+            // Differs from "Upcoming Procurement Signals" (free-text):
+            // each item has signal, buyer, window, and source_id so the
+            // citation is always one click away.
+            if (Array.isArray(agencyData.watchNext) && agencyData.watchNext.length) {
+              h += '<div class="profile-section"><div class="profile-label">Watch Next</div>';
+              h += '<div style="display:grid;grid-template-columns:1fr;gap:8px;">';
+              agencyData.watchNext.forEach(function(w) {
+                h += '<div style="border:1px solid var(--mmt-border);border-radius:10px;padding:12px 14px;background:var(--mmt-white);">';
+                h += '<div style="font-size:13px;font-weight:600;color:var(--mmt-navy);line-height:1.5;">' + esc(w.signal) + '</div>';
+                h += '<div style="font-size:12px;color:var(--mmt-text-secondary);margin-top:4px;">';
+                if (w.buyer) h += '<span style="font-weight:600;">' + esc(w.buyer) + '</span>';
+                if (w.buyer && w.window) h += ' &middot; ';
+                if (w.window) h += esc(w.window);
+                h += '</div>';
+                if (w.source_id && sourceMap[w.source_id]) {
+                  var ws = sourceMap[w.source_id];
+                  h += '<div style="font-size:11px;color:var(--mmt-text-secondary);margin-top:6px;">Source: <a href="' + esc(ws.url) + '" rel="noopener" style="color:var(--mmt-teal);">' + esc(ws.label) + '</a></div>';
+                }
+                h += '</div>';
+              });
+              h += '</div></div>';
             }
             if (agencyData.offices && agencyData.offices.length) {
               h += '<div class="profile-section"><div class="profile-label">Key Program Offices</div><ul style="list-style:none;padding:0;margin:0;color:var(--mmt-text-secondary);">';
@@ -220,6 +368,22 @@
                 h += '</ul></details>';
               });
               h += '</div>';
+            }
+            // Sources block — every cited URL collected in one place with
+            // verified_at + confidence + caveat. Mirrors the contracts.json
+            // source_urls + last_verified convention.
+            if (Array.isArray(agencyData.sources) && agencyData.sources.length) {
+              h += '<div class="profile-section"><div class="profile-label">Sources &amp; Confidence</div>';
+              h += '<ul style="list-style:none;padding:0;margin:0;font-size:13px;">';
+              agencyData.sources.forEach(function(s) {
+                var confDot = s.confidence === 'high' ? '#0F6E3D' : (s.confidence === 'medium' ? '#92710A' : '#6B7280');
+                h += '<li style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px dashed var(--mmt-border);">';
+                h += '<a href="' + esc(s.url) + '" rel="noopener" style="color:var(--mmt-teal);font-weight:600;">' + esc(s.label) + '</a>';
+                h += ' <span style="color:var(--mmt-text-secondary);font-size:12px;">&middot; verified ' + esc(s.verified_at || '') + ' &middot; <span style="color:' + confDot + ';font-weight:600;">' + esc(s.confidence || 'unknown') + ' confidence</span></span>';
+                if (s.caveat) h += '<div style="font-size:12px;color:#92710A;margin-top:4px;line-height:1.5;">Caveat: ' + esc(s.caveat) + '</div>';
+                h += '</li>';
+              });
+              h += '</ul></div>';
             }
             container.innerHTML = h;
           }

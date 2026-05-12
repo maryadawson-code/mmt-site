@@ -4,7 +4,7 @@
     "abbrev": "DHA",
     "name": "Defense Health Agency",
     "type": "Combat Support Agency (DoD)",
-    "lastUpdated": "2026-04-30",
+    "lastUpdated": "2026-05-12",
     "description": "DoD's combat support agency for the Military Health System. Buys MHS GENESIS, PEO DHMS / EIDS, enterprise imaging, and the cyber and data modernization layer beneath them.",
     "mmtRead": "DHA reorganized April 20, 2026 with FOC target July 19. PEO DHMS retains executive authority over MHS GENESIS, JOMIS, and DMIX/EIDS while acquisition reporting moves under AD-RDA. The Office of Warfighter Health Advantage (RDML Tracy Farrill, just appointed) consolidates data, analytics, AI, and digital health into a single seat. The HCDS deployment RFP and the Leidos bridge are both inside the PAE transition window.",
     "officialSources": [
@@ -76,6 +76,108 @@
     "related_tags": [
       "Military Health System",
       "AI & Innovation"
+    ],
+    "role": "Primary buyer (DoD health IT)",
+    "premiumModules": [
+      "Data Strategy",
+      "MHS GENESIS Scale",
+      "Contractor Read",
+      "Watch Next"
+    ],
+    "dataStrategy": {
+      "title": "FY2026-2030 Data Strategy",
+      "summary": "DHA frames data as a trusted, mission-enabling strategic asset across combat support, healthcare delivery, and operational efficiency. Five lines of effort define the operating model. Source-backed vendor implications below.",
+      "lines_of_effort": [
+        {
+          "id": "LOE-1",
+          "name": "Data Roles and Responsibilities",
+          "vendor_implication": "Governance, RACI documentation, data-steward enablement, training pipelines, role-based access design."
+        },
+        {
+          "id": "LOE-2",
+          "name": "Authoritative Data Sources (ADS)",
+          "vendor_implication": "ADS designation services, source-of-truth analytics, deduplication, system-of-record consolidation."
+        },
+        {
+          "id": "LOE-3",
+          "name": "Operationalizing Data as a Product",
+          "vendor_implication": "Product-oriented data engineering, consumer-grade interfaces, SLAs, lifecycle ownership, internal data-product teams."
+        },
+        {
+          "id": "LOE-4",
+          "name": "Data Quality and Transparency",
+          "vendor_implication": "Enterprise data quality scorecards, automated lineage, observability tooling, public-facing quality dashboards."
+        },
+        {
+          "id": "LOE-5",
+          "name": "Enterprise Data Catalog (EDC)",
+          "vendor_implication": "Catalog metadata governance, ADS registration workflows, integration with EDC, search and discovery layers."
+        }
+      ],
+      "source_id": "dha_data"
+    },
+    "scaleCards": {
+      "title": "MHS GENESIS Scale (Worldwide Deployment Complete)",
+      "items": [
+        {
+          "label": "Beneficiaries",
+          "value": "9.5M+",
+          "context": "MHS GENESIS reach"
+        },
+        {
+          "label": "Users",
+          "value": "194,000",
+          "context": "Clinical + admin users"
+        },
+        {
+          "label": "Facilities",
+          "value": "3,800",
+          "context": "Military + federal partner facilities"
+        },
+        {
+          "label": "Ambient Listening",
+          "value": "Enterprise rollout in progress",
+          "context": "Limited fielding completed 2025; full DoD enterprise deployment began February 2026"
+        }
+      ],
+      "source_id": "dhmsm_fact"
+    },
+    "contractorRead": "DHA's data strategy is the dominant capture signal for FY2026-2030. Vendors with productized data-engineering offerings, ADS-readiness assessments, EDC-integration experience, or data-quality observability tooling get a directly relevant lane. On the EHR side, MHS GENESIS is in worldwide sustainment posture, which moves the work into change orders, sustainment integrators, and ambient-clinical-documentation buildout rather than a new core competition. Position around demonstrable lineage, source-of-truth governance, and product-team operating models, not generic analytics.",
+    "watchNext": [
+      {
+        "signal": "Ambient clinical documentation enterprise rollout (Feb 2026 start)",
+        "buyer": "DHA / DHMSM",
+        "window": "FY2026",
+        "source_id": "dhmsm_fact"
+      },
+      {
+        "signal": "DHMSM sustainment task orders against deployment-integrator vehicles",
+        "buyer": "DHA / DHMSM",
+        "window": "FY2026-FY2027",
+        "source_id": "dhmsm_fact"
+      },
+      {
+        "signal": "Authoritative Data Source designation rollouts under the FY2026-2030 Data Strategy",
+        "buyer": "DHA",
+        "window": "FY2026-FY2030",
+        "source_id": "dha_data"
+      }
+    ],
+    "sources": [
+      {
+        "label": "DHA Data Strategy",
+        "url": "https://dha.mil/Reference-Library/d/e/f/Defense-Health-Agency-Data-Strategy",
+        "verified_at": "2026-05-12",
+        "confidence": "high",
+        "id": "dha_data"
+      },
+      {
+        "label": "Health.mil DHMSM fact sheet",
+        "url": "https://www.health.mil/Reference-Center/Fact-Sheets/2026/03/24/DOD-Healthcare-Management-System-Modernization-Fact-Sheet",
+        "verified_at": "2026-05-12",
+        "confidence": "high",
+        "id": "dhmsm_fact"
+      }
     ]
   },
   {
@@ -83,7 +185,7 @@
     "abbrev": "VA",
     "name": "Department of Veterans Affairs / Veterans Health Administration",
     "type": "Cabinet Department / Integrated Health System",
-    "lastUpdated": "2026-05-06",
+    "lastUpdated": "2026-05-12",
     "description": "Largest integrated healthcare system in the US (1,298 facilities, 9M+ enrolled veterans). VHA delivers care; VA OIT runs the IT layer through T4NG2 and IHT 2.0; community care flows through CCN Next Gen; imaging and ambient AI are active growth areas.",
     "mmtRead": "VA EHR modernization is back on track with four Michigan sites live April 11, 2026 \u2014 first wave of 13 sites planned for 2026. T4NG2 is awarded ($60.7B, 33 final awardees post-protest). IHT 2.0 ($14B, 100% SDVOSB, 9 awardees) covers VHA technology services through 2035. The VA Ambient Scribe IDIQ (36C10B26R0006) is in active GAO protest with decision due Aug 6 2026.",
     "officialSources": [
@@ -500,6 +602,70 @@
         "category": "VHA Staff",
         "notes": "VA role"
       }
+    ],
+    "role": "Largest integrated buyer (US healthcare)",
+    "premiumModules": [
+      "EHR Deployment Tracker",
+      "Source-Discrepancy Caveat",
+      "Contractor Read",
+      "Watch Next"
+    ],
+    "modernizationTimeline": {
+      "title": "Federal EHR Deployment Schedule (2026)",
+      "scope": "Federal EHR will deploy at 164 medical centers and associated clinics; rollout continues through this decade.",
+      "items": [
+        {
+          "window": "April 11, 2026 (Michigan cohort)",
+          "sites": [
+            "VA Ann Arbor",
+            "VA Battle Creek",
+            "VA Detroit",
+            "VA Saginaw"
+          ],
+          "why_it_matters": "First named 2026 wave. Sets cadence and produces the public proof point cited in every subsequent late-2026 solicitation."
+        },
+        {
+          "window": "Later 2026 waves",
+          "sites": [
+            "Chillicothe",
+            "Cincinnati",
+            "Dayton",
+            "Fort Wayne",
+            "Marion",
+            "Indianapolis",
+            "Alaska sites",
+            "Cleveland sites"
+          ],
+          "why_it_matters": "Ohio + Indiana + Alaska + Cleveland brings the rollout across multiple VISNs in a single fiscal year. The demand surface expands for change management, clinician training, and interoperability integration."
+        }
+      ],
+      "caveat": "DigitalVA states 10 medical centers are currently live on the Federal EHR; the extracted deployment table identifies 6 prior sites. Preserve this discrepancy as an integrity signal \u2014 verify before publishing an external numeric live-site count.",
+      "source_id": "va_ehr_sched"
+    },
+    "contractorRead": "VA's 2026 deployment posture moves the conversation from 'will the program continue?' to 'who supports the wave cadence?' Look at integrator vehicles, change-management staffing, clinician-trainer pipelines, telehealth and interoperability adapters, and EHRM-aligned cybersecurity. Michigan in April is the proof point downstream solicitations will cite.",
+    "watchNext": [
+      {
+        "signal": "Post-Michigan cohort lessons-learned + downstream wave staffing",
+        "buyer": "VA OIT / EHRM",
+        "window": "Q2-Q3 2026",
+        "source_id": "va_ehr_sched"
+      },
+      {
+        "signal": "Federal EHR live-site count clarification (current source discrepancy)",
+        "buyer": "VA OIT",
+        "window": "Verify before quoting externally",
+        "source_id": "va_ehr_sched"
+      }
+    ],
+    "sources": [
+      {
+        "label": "DigitalVA EHR deployment schedule",
+        "url": "https://digital.va.gov/ehr-modernization/ehr-deployment-schedule/",
+        "verified_at": "2026-05-12",
+        "confidence": "medium",
+        "caveat": "Page states 10 medical centers currently live; the deployment table identifies 6 prior sites. Treat live-site count as unverified before quoting.",
+        "id": "va_ehr_sched"
+      }
     ]
   },
   {
@@ -507,7 +673,7 @@
     "abbrev": "HHS",
     "name": "Department of Health and Human Services",
     "type": "Cabinet Department (parent of CMS, NIH, FDA, CDC, IHS, ONC, ARPA-H)",
-    "lastUpdated": "2026-04-30",
+    "lastUpdated": "2026-05-12",
     "description": "Department-level map. HHS itself sets policy and coordinates; the buying happens through its operating divisions. Map: CMS (Medicare, Medicaid, claims), NIH (research IT, NITAAC), FDA (Sentinel, regulated-product data), CDC (data modernization, DCIPHER), IHS (PATH EHR), ONC (interoperability, certification), ARPA-H (OTA-funded R&D).",
     "mmtRead": "HHS IT spend is decentralized. Treat HHS as a navigation layer: route procurement questions to the operating division that owns the program (CMS for claims, NIH for research IT, FDA for surveillance, etc.). The departmental level is for policy and rulemaking, not contract awards.",
     "officialSources": [
@@ -580,6 +746,47 @@
     "related_tags": [
       "Healthcare Policy",
       "Interoperability"
+    ],
+    "role": "Department-level navigation + AI governance",
+    "premiumModules": [
+      "AI Governance Module",
+      "Confirmed-vs-Watch Split",
+      "Contractor Read"
+    ],
+    "policyModule": {
+      "title": "HHS Enterprise AI and Digital Governance",
+      "confirmed_facts": [
+        "HHS frames its AI work as making AI available to the federal workforce and integrating AI across internal operations, research, and public health.",
+        "The official AI strategy themes are: driving AI innovation, improving AI governance, and fostering public trust in federal AI use.",
+        "The current public-facing AI artifact does not specify contract clauses, purchasing vehicles, or procurement requirements."
+      ],
+      "vendor_watch": [
+        "Governance artifacts: model documentation, evaluation frameworks, audit-ready logs, bias and fairness measurement.",
+        "Workforce enablement: AI literacy, role-specific training, secure model access for federal employees.",
+        "Responsible implementation: explainability, content provenance, safety/security review documentation.",
+        "Public-trust posture: transparency reports, plain-language disclosures, third-party assurance options.",
+        "Do not market HHS AI procurement requirements that the public page does not state. Treat as watch, not confirmed buy."
+      ],
+      "source_id": "hhs_ai"
+    },
+    "contractorRead": "HHS is a regulator-of-self for AI rollout across operating divisions, not a single buyer. Treat HHS-level AI direction as setting tone for CMS, CDC, FDA, IHS, NIH operating-division procurements. The right capture move is to map each governance theme to the operating division that actually buys, then position there.",
+    "watchNext": [
+      {
+        "signal": "HHS AI compliance plan publications and operating-division alignment activity",
+        "buyer": "HHS + operating divisions",
+        "window": "FY2026-FY2027",
+        "source_id": "hhs_ai"
+      }
+    ],
+    "sources": [
+      {
+        "label": "HHS AI Strategy & Implementation",
+        "url": "https://www.hhs.gov/programs/topic-sites/ai/strategy-implementation/index.html",
+        "verified_at": "2026-05-12",
+        "confidence": "high",
+        "caveat": "Page does not state contract clauses, vehicles, or procurement requirements. Vendor implications are watch items, not confirmed buys.",
+        "id": "hhs_ai"
+      }
     ]
   },
   {
@@ -587,7 +794,7 @@
     "abbrev": "ONC",
     "name": "Office of the National Coordinator for Health IT",
     "type": "HHS Sub-Office (regulatory, not a primary buyer)",
-    "lastUpdated": "2026-05-06",
+    "lastUpdated": "2026-05-12",
     "description": "Sets health IT interoperability standards, certifies EHR technology under ONC Health IT Certification, owns USCDI evolution, runs TEFCA implementation through the RCE (Sequoia Project), and enforces information blocking under 45 CFR Part 171.",
     "mmtRead": "ONC's procurement footprint is small. Its regulatory leverage is enormous: USCDI determines what data EHRs must exchange, TEFCA determines who participates in the network, and information blocking enforcement determines who pays the penalty. Track ONC for what it enables, not what it buys.",
     "officialSources": [
@@ -668,6 +875,46 @@
         "category": "HHS/ONC",
         "notes": "Contractor (CTR) role in ASTP; Likely supporting ONC health IT initiatives"
       }
+    ],
+    "role": "Standards regulator (HIT)",
+    "premiumModules": [
+      "HTI-2 / TEFCA Module",
+      "Compliance Watchlist",
+      "Contractor Read"
+    ],
+    "policyModule": {
+      "title": "HTI-2 Final Rule + TEFCA",
+      "confirmed_facts": [
+        "The HTI-2 final rule finalizes TEFCA-related provisions supporting electronic health information access, exchange, and use.",
+        "The rule establishes 45 CFR Part 172 for TEFCA-related provisions.",
+        "The rule amends information-blocking regulations by adding TEFCA Manner Exception definitions.",
+        "The rule makes no changes to the existing TEFCA Manner Exception at 45 CFR \u00a7 171.403."
+      ],
+      "vendor_watch": [
+        "TEFCA transparency and reliability documentation as a deliverable compliance artifact set.",
+        "QHIN ecosystem positioning: partnership, integration, or QHIN-adjacent service models.",
+        "Information-blocking compliance posture as a product attribute, not only a legal review.",
+        "Privacy, security, and trust documentation built to TEFCA Manner Exception expectations."
+      ],
+      "source_id": "onc_hti2"
+    },
+    "contractorRead": "ASTP/ONC is a standards regulator, not a conventional buyer. Vendor capture moves are around compliance positioning, certification-mark readiness, and QHIN-ecosystem integration. Treat ONC rule activity as a market-shaping signal that flows into every downstream HHS, VA, DOD, and commercial EHR procurement.",
+    "watchNext": [
+      {
+        "signal": "HTI-2 implementation guidance + downstream QHIN ecosystem activity",
+        "buyer": "ASTP/ONC + QHINs",
+        "window": "Through FY2027",
+        "source_id": "onc_hti2"
+      }
+    ],
+    "sources": [
+      {
+        "label": "ASTP/ONC HTI-2 Final Rule",
+        "url": "https://healthit.gov/regulations/hti-rules/hti-2-final-rule/",
+        "verified_at": "2026-05-12",
+        "confidence": "high",
+        "id": "onc_hti2"
+      }
     ]
   },
   {
@@ -675,7 +922,7 @@
     "abbrev": "ARPA-H",
     "name": "Advanced Research Projects Agency for Health",
     "type": "HHS Research Agency (OTA / ISO-style funding)",
-    "lastUpdated": "2026-04-30",
+    "lastUpdated": "2026-05-12",
     "description": "Newest federal health research agency (est. 2022). Funds breakthrough health technology through Other Transaction Authority (OTA) and ISO-style program structures. Accessible to non-traditional vendors through program-manager-led solicitations.",
     "mmtRead": "ARPA-H's procurement model is the access lever. OTA awards are not constrained by FAR-style competition rules, which is why non-traditional vendors and academic-industry teams can win. Watch ADVOCATE (agentic clinical AI), Sprint for Women's Health, and the next program announcement wave for FY2027.",
     "officialSources": [
@@ -729,6 +976,104 @@
     ],
     "related_tags": [
       "AI & Innovation"
+    ],
+    "role": "Funder (programmatic, ISO-driven)",
+    "premiumModules": [
+      "Opportunity Map",
+      "Mission Office ISOs",
+      "Solution Summary Gate",
+      "Contractor Read"
+    ],
+    "opportunityMap": {
+      "title": "Open Funding Opportunities",
+      "groups": [
+        {
+          "mechanism": "Programs (limited-window via ISOs)",
+          "note": "Programs are announced through Innovative Solution Openings with fixed application windows.",
+          "items": [
+            {
+              "name": "1-CURE"
+            },
+            {
+              "name": "BoSS"
+            },
+            {
+              "name": "CIRCLE"
+            },
+            {
+              "name": "Delphi"
+            },
+            {
+              "name": "HEARING"
+            },
+            {
+              "name": "IGoR"
+            },
+            {
+              "name": "STOMP"
+            }
+          ]
+        },
+        {
+          "mechanism": "Initiatives + Small Business",
+          "note": "2026 SBIR/STTR topics published; TIGAR Exploratory Topic open.",
+          "items": [
+            {
+              "name": "2026 SBIR/STTR topics"
+            },
+            {
+              "name": "TIGAR Exploratory Topic"
+            }
+          ]
+        },
+        {
+          "mechanism": "Mission Office ISOs (rolling)",
+          "note": "Proposers submit a Solution Summary and receive ARPA-H feedback before submitting a full proposal. Open on a rolling basis.",
+          "items": [
+            {
+              "name": "Health Science Futures",
+              "solicitation": "ARPA-H-SOL-24-104"
+            },
+            {
+              "name": "Proactive Health",
+              "solicitation": "ARPA-H-SOL-24-106"
+            },
+            {
+              "name": "Resilient Systems",
+              "solicitation": "ARPA-H-SOL-24-103"
+            },
+            {
+              "name": "Scalable Solutions",
+              "solicitation": "ARPA-H-SOL-24-105"
+            }
+          ]
+        }
+      ],
+      "source_id": "arpa_h_open"
+    },
+    "contractorRead": "ARPA-H runs a programmatic, ISO-driven model. The Mission Office ISO lane is the perpetual front door: rolling, gated by Solution Summary feedback, and matched to four named offices. Capture posture is to pick the office, study its strategic direction, write a Solution Summary that maps to it, and use the feedback step as your iteration loop. Treat program ISOs as time-boxed RFP equivalents.",
+    "watchNext": [
+      {
+        "signal": "New Mission Office ISO publications + Solution Summary feedback cadence",
+        "buyer": "ARPA-H Mission Offices",
+        "window": "Rolling",
+        "source_id": "arpa_h_open"
+      },
+      {
+        "signal": "2026 SBIR/STTR topic windows + TIGAR Exploratory deadlines",
+        "buyer": "ARPA-H",
+        "window": "FY2026",
+        "source_id": "arpa_h_open"
+      }
+    ],
+    "sources": [
+      {
+        "label": "ARPA-H Open Funding Opportunities",
+        "url": "https://arpa-h.gov/explore-funding/open-funding-opportunities",
+        "verified_at": "2026-05-12",
+        "confidence": "high",
+        "id": "arpa_h_open"
+      }
     ]
   },
   {
@@ -736,7 +1081,7 @@
     "abbrev": "CMS",
     "name": "Centers for Medicare & Medicaid Services",
     "type": "HHS Operating Division (largest single payer in US)",
-    "lastUpdated": "2026-04-30",
+    "lastUpdated": "2026-05-12",
     "description": "Administers Medicare, Medicaid, CHIP, the ACA Marketplace, claims processing systems, and program integrity infrastructure. Largest single payer in the US healthcare system. CMS modernization runs through SPARC and a network of multi-year IDIQs.",
     "mmtRead": "CMS procurement is large-scale and long-cycle. SPARC ($25B, POP through Jun 7 2026) is approaching recompete. Claims modernization, payment integrity, and AI fraud detection are the active growth areas. The Rural Health Transformation program ($50B FY2026-FY2030) is grant funding to states, not a contract.",
     "officialSources": [
@@ -804,6 +1149,51 @@
     "related_tags": [
       "Healthcare Policy",
       "Contracting & Procurement"
+    ],
+    "role": "Buyer + ecosystem-builder",
+    "premiumModules": [
+      "Health Technology Ecosystem Module",
+      "Confirmed-vs-Watch Split",
+      "Contractor Read"
+    ],
+    "policyModule": {
+      "title": "CMS Health Technology Ecosystem",
+      "confirmed_facts": [
+        "CMS describes the Health Technology Ecosystem as a collaborative vision to modernize the national digital health ecosystem, empower Medicare beneficiaries, improve outcomes, reduce provider burden, and drive value.",
+        "The official page highlights voluntary alignment of data networks, EHR systems, health app developers, providers, and innovators around a shared framework for data and access.",
+        "The page references expansion of CMS data-sharing capabilities, modern identity on Medicare.gov, launch of public infrastructure for provider data, and an RFI regarding digital health products for Medicare beneficiaries and interoperability infrastructure."
+      ],
+      "vendor_watch": [
+        "Data-sharing expansion: identity-resolution, FHIR-mediated APIs, beneficiary-consent management.",
+        "Modern identity on Medicare.gov: identity proofing, multi-factor authentication, account-recovery flows, accessibility.",
+        "National Provider Directory: provider-data ingestion, validation, deduplication, dissemination services.",
+        "RFI engagement: position now on digital health products + interoperability infrastructure to influence framing."
+      ],
+      "source_id": "cms_eco"
+    },
+    "contractorRead": "CMS is positioning as an ecosystem-builder, not only a buyer. The voluntary-alignment framing matters: CMS is signaling influence comes from showing up to the framework, not waiting on an RFP. The Provider Directory and Medicare.gov identity work are concrete infrastructure builds with clear vendor surfaces. The RFI is the leading indicator of the FY2027-FY2028 buy.",
+    "watchNext": [
+      {
+        "signal": "National Provider Directory infrastructure build + Medicare.gov identity modernization steps",
+        "buyer": "CMS",
+        "window": "FY2026-FY2027",
+        "source_id": "cms_eco"
+      },
+      {
+        "signal": "Digital-health-products RFI responses and downstream interoperability-infrastructure activity",
+        "buyer": "CMS",
+        "window": "FY2027 budget cycle",
+        "source_id": "cms_eco"
+      }
+    ],
+    "sources": [
+      {
+        "label": "CMS Health Technology Ecosystem",
+        "url": "https://www.cms.gov/priorities/health-technology-ecosystem/overview",
+        "verified_at": "2026-05-12",
+        "confidence": "high",
+        "id": "cms_eco"
+      }
     ]
   },
   {

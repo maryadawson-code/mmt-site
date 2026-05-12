@@ -4077,7 +4077,21 @@ function generateAgencyProfilePage(agency) {
       // category, notes). Premium-only — not echoed to public HTML.
       // Sourced from operator's working contact database; first
       // batch from Kirk Hendler 2026-05-05 (43 VA + 2 HHS/ONC).
-      contacts: Array.isArray(agency.keyContacts) ? agency.keyContacts : []
+      contacts: Array.isArray(agency.keyContacts) ? agency.keyContacts : [],
+      // Premium expansion modules (added 2026-05-12). Each is rendered
+      // by mmt-paywall.js only when present; agencies without the
+      // module keep the legacy view. Source-anchored per the
+      // AG-001..AG-007 sprint; every numeric/named claim points back
+      // to a `sources[]` entry by source_id.
+      role: agency.role || null,
+      contractorRead: agency.contractorRead || null,
+      dataStrategy: agency.dataStrategy || null,
+      scaleCards: agency.scaleCards || null,
+      modernizationTimeline: agency.modernizationTimeline || null,
+      policyModule: agency.policyModule || null,
+      opportunityMap: agency.opportunityMap || null,
+      watchNext: Array.isArray(agency.watchNext) ? agency.watchNext : [],
+      sources: Array.isArray(agency.sources) ? agency.sources : []
     })).toString('base64')}" style="display:none;">
       <div id="agency-premium-content">
         <p style="font-size:14px;color:var(--mmt-text-secondary);text-align:center;padding:24px;">Loading premium intelligence...</p>
