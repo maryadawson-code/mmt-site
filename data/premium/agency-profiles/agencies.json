@@ -1201,7 +1201,7 @@
     "abbrev": "IHS",
     "name": "Indian Health Service",
     "type": "HHS Operating Division (federal-tribal health system)",
-    "lastUpdated": "2026-04-30",
+    "lastUpdated": "2026-05-12",
     "description": "Federal health system serving American Indian and Alaska Native populations. Currently executing PATH EHR Modernization on Oracle Cerner / Oracle Health to replace the legacy RPMS system. Vendor: GDIT.",
     "mmtRead": "IHS PATH is the active EHR modernization arc \u2014 replacing RPMS with Oracle Health on the GDIT platform. Tribal health IT procurement intersects with both federal contracting and tribal sovereignty considerations, which constrains what vendors can compete and how.",
     "officialSources": [
@@ -1252,6 +1252,52 @@
     "related_tags": [
       "Tribal Health",
       "EHR Modernization"
+    ],
+    "role": "Federal care delivery + EHR modernization",
+    "premiumModules": [
+      "PATH EHR Module",
+      "Tribal/Urban Partner Model",
+      "Contractor Read",
+      "Watch Next"
+    ],
+    "policyModule": {
+      "title": "PATH EHR Modernization (IHS Health IT)",
+      "confirmed_facts": [
+        "IHS HIT is modernizing the agency's health IT infrastructure to support direct, Tribal, and Urban Indian (I/T/U) health programs.",
+        "PATH EHR is the IHS-led modernization intended to replace legacy systems, improve interoperability, support continuity of care, and provide centralized infrastructure and support.",
+        "The model accommodates IHS direct service operations and partnerships with Tribal and Urban Indian organizations."
+      ],
+      "vendor_watch": [
+        "Multi-year deployment posture: change management, training, and site-readiness services across federal, Tribal, and Urban partners.",
+        "Interoperability with federal partners (VA, DHA) is an operating requirement under PATH, not a future ask.",
+        "Centralized support model favors managed-service and disaster-recovery offerings over per-site point solutions.",
+        "Tribal and Urban consultation processes are a procurement variable; vendors accustomed to a single-customer federal model need a different engagement posture."
+      ],
+      "source_id": "ihs_hit"
+    },
+    "contractorRead": "IHS PATH is a multi-year EHR modernization with three customer surfaces: direct service, Tribal, and Urban. Capture posture is to position around interoperability with VA and DHA, centralized support and disaster recovery, and the Tribal/Urban consultation model. Per-site point solutions are the wrong shape; managed-service and platform plays fit.",
+    "watchNext": [
+      {
+        "signal": "PATH EHR phase-by-phase deployment status (validate against current IHS HIT announcements before quoting externally)",
+        "buyer": "IHS HIT",
+        "window": "Multi-year",
+        "source_id": "ihs_hit"
+      },
+      {
+        "signal": "Tribal and Urban partnership consultation activity and downstream procurement variations",
+        "buyer": "IHS HIT + Tribal/Urban orgs",
+        "window": "Ongoing",
+        "source_id": "ihs_hit"
+      }
+    ],
+    "sources": [
+      {
+        "label": "IHS Health IT Modernization",
+        "url": "https://www.ihs.gov/hit/",
+        "verified_at": "2026-05-12",
+        "confidence": "high",
+        "id": "ihs_hit"
+      }
     ]
   },
   {
@@ -1259,7 +1305,7 @@
     "abbrev": "CDC",
     "name": "Centers for Disease Control and Prevention",
     "type": "HHS Operating Division (public health agency)",
-    "lastUpdated": "2026-04-30",
+    "lastUpdated": "2026-05-12",
     "description": "Federal public health agency. Buys data modernization, surveillance, and analytics tooling through DMI, PHDS, DIBBs, and DCIPHER (Palantir Foundry-based). State, tribal, local, and territorial (STLT) adoption of DIBBs tools is a tracked metric.",
     "mmtRead": "CDC's procurement focus is data modernization. DMI is the umbrella; PHDS is the data services layer; DIBBs is the toolkit; DCIPHER is the Palantir-based surveillance platform. The 2026 target is greater than 30 percent STLT adoption of at least one DIBBs product.",
     "officialSources": [
@@ -1316,6 +1362,100 @@
     "related_tags": [
       "Public Health",
       "Data Modernization"
+    ],
+    "role": "Public health data modernization",
+    "premiumModules": [
+      "PHDS 2026 Milestones",
+      "STLT Modernization Themes",
+      "Contractor Read",
+      "Watch Next"
+    ],
+    "modernizationTimeline": {
+      "title": "PHDS 2026 Milestones (Public Health Data Strategy)",
+      "scope": "CDC's Public Health Data Strategy defines 2026 milestones across surveillance modernization, interoperability, and STLT (state, tribal, local, territorial) partner capacity.",
+      "items": [
+        {
+          "window": "2026",
+          "sites": [
+            "Electronic Case Reporting (eCR) scaling"
+          ],
+          "why_it_matters": "eCR closes the loop between EHRs and public health surveillance. Vendor surface includes EHR-side connector work, jurisdictional ingestion, and case routing."
+        },
+        {
+          "window": "2026",
+          "sites": [
+            "Mortality FHIR exchange"
+          ],
+          "why_it_matters": "Modernizes how mortality data flows between vital records, CDC, and downstream public health users. FHIR-mediated APIs and provenance tracking are core."
+        },
+        {
+          "window": "2026",
+          "sites": [
+            "National Notifiable Diseases Surveillance System (NBS) modernization"
+          ],
+          "why_it_matters": "NBS replatform creates an integration surface for jurisdictional case management and reporting tools."
+        },
+        {
+          "window": "2026",
+          "sites": [
+            "One CDP products and assets (1CDP)"
+          ],
+          "why_it_matters": "1CDP framing consolidates the CDC data platform. Capture moves are around shared services, identity, and reusable analytics."
+        },
+        {
+          "window": "2026",
+          "sites": [
+            "Multi-jurisdictional Data Network (MDN) governance"
+          ],
+          "why_it_matters": "Governance posture shapes how data-sharing agreements, technical standards, and partner onboarding work. Leading indicator for tooling and policy-implementation services."
+        }
+      ],
+      "source_id": "cdc_phds"
+    },
+    "policyModule": {
+      "title": "STLT Data Modernization Themes (DMI)",
+      "confirmed_facts": [
+        "CDC's Data Modernization Initiative (DMI) is the multi-year program to modernize public health data systems across CDC and STLT partners.",
+        "STLT modernization is funded and tracked as a partnership, not a single CDC procurement, with shared themes across jurisdictions."
+      ],
+      "vendor_watch": [
+        "STLT capacity building: workforce, training, governance support, technical assistance.",
+        "Interoperability and standards adoption: HL7 FHIR, USCDI alignment, terminology services.",
+        "Cloud, data engineering, and shared services that reduce per-jurisdiction lift.",
+        "Privacy, security, and equity-data practices baked into the modernization design."
+      ],
+      "source_id": "cdc_dmi"
+    },
+    "contractorRead": "CDC's DMI and PHDS framing is the leading indicator for CDC procurements and for state/tribal/local/territorial buys downstream. Capture posture is to read the 2026 milestones as theme signals (eCR, mortality FHIR, NBS, 1CDP, MDN governance) and position with reusable services that scale across jurisdictions rather than bespoke point solutions. STLT funding flows through partnership channels, so capture teams need to track CDC-side awards and STLT-side downstream procurements together.",
+    "watchNext": [
+      {
+        "signal": "PHDS 2026 milestone status updates and downstream STLT procurement activity",
+        "buyer": "CDC + STLT partners",
+        "window": "FY2026",
+        "source_id": "cdc_phds"
+      },
+      {
+        "signal": "1CDP product/asset publications and the MDN governance posture",
+        "buyer": "CDC",
+        "window": "FY2026-FY2027",
+        "source_id": "cdc_phds"
+      }
+    ],
+    "sources": [
+      {
+        "label": "CDC Data Modernization Initiative (DMI)",
+        "url": "https://www.cdc.gov/surveillance/data-modernization/index.html",
+        "verified_at": "2026-05-12",
+        "confidence": "high",
+        "id": "cdc_dmi"
+      },
+      {
+        "label": "CDC Public Health Data Strategy 2026 Milestones",
+        "url": "https://www.cdc.gov/public-health-data-strategy/php/about/phds-milestones.html",
+        "verified_at": "2026-05-12",
+        "confidence": "high",
+        "id": "cdc_phds"
+      }
     ]
   },
   {
@@ -1323,7 +1463,7 @@
     "abbrev": "FDA",
     "name": "Food and Drug Administration",
     "type": "HHS Operating Division (regulated-product oversight)",
-    "lastUpdated": "2026-04-30",
+    "lastUpdated": "2026-05-12",
     "description": "Regulates food, drugs, biologics, devices, and tobacco. Buys post-market surveillance and regulated-product data systems through Sentinel, market-research vehicles, and operating-division IT modernization. Sentinel 3.0 market research is active (75F40126SSN00100).",
     "mmtRead": "FDA Sentinel is the flagship post-market drug surveillance program. Sentinel 3.0 is in market-research stage with eight tiers spanning data broker services (1-6), GOCO platform (Tier 7), and scientific support (Tier 8). NAICS 518210.",
     "officialSources": [
@@ -1374,6 +1514,47 @@
     "related_tags": [
       "Drug Safety",
       "Post-Market Surveillance"
+    ],
+    "role": "Regulatory data modernization",
+    "premiumModules": [
+      "DMAP Module",
+      "Currentness Caveat",
+      "Contractor Read",
+      "Watch Next"
+    ],
+    "policyModule": {
+      "title": "Data Modernization Action Plan (DMAP)",
+      "confirmed_facts": [
+        "DMAP is FDA's data modernization framework anchored on three components: data drivers (high-value driver projects), repeatable data practices, and people/external partnerships.",
+        "DMAP positions data modernization as a regulatory mission enabler, supporting FDA's product-area centers, review activities, and post-market surveillance.",
+        "The published DMAP is a high-level strategy document; current FDA implementation status is communicated through individual center activity and follow-on publications."
+      ],
+      "vendor_watch": [
+        "Repeatable data practices: shared services, common data models, reusable pipelines across centers.",
+        "Talent and external partnerships: workforce enablement, academic collaboration, public-private partnership posture.",
+        "Regulatory mission alignment: tooling that supports review, post-market surveillance, and inspection workflows.",
+        "Currentness caveat: DMAP framing should be paired with newer FDA implementation sources before publishing capture briefs to clients."
+      ],
+      "source_id": "fda_dmap"
+    },
+    "contractorRead": "FDA DMAP is the strategic frame; specific procurement signals live in individual FDA centers (CDER, CBER, CDRH, CFSAN, CVM) and offices. Capture posture is to align with the three DMAP components (drivers, practices, partnerships) and then trace into the specific center that owns the high-value driver project. Treat DMAP as stable framing, not a current acquisition forecast.",
+    "watchNext": [
+      {
+        "signal": "DMAP follow-on implementation publications and center-level activity",
+        "buyer": "FDA + centers",
+        "window": "Ongoing",
+        "source_id": "fda_dmap"
+      }
+    ],
+    "sources": [
+      {
+        "label": "FDA Data Modernization Action Plan (DMAP)",
+        "url": "https://www.fda.gov/about-fda/reports/data-modernization-action-plan",
+        "verified_at": "2026-05-12",
+        "confidence": "medium",
+        "caveat": "DMAP is a high-level strategy. Pair with newer FDA implementation publications and center-level activity before publishing client-facing capture briefs.",
+        "id": "fda_dmap"
+      }
     ]
   },
   {
@@ -1381,7 +1562,7 @@
     "abbrev": "NIH / NITAAC",
     "name": "National Institutes of Health / NIH IT Acquisition and Assessment Center",
     "type": "HHS Research Agency + Acquisition Channel",
-    "lastUpdated": "2026-04-30",
+    "lastUpdated": "2026-05-12",
     "description": "NIH is the country's biomedical research agency. NITAAC is NIH's acquisition center and runs CIO-SP3 / CIO-SP4 (canceled) / CIO-CS \u2014 the NIH GWACs that anchor IT procurement across HHS. Treat NIH as both a research buyer and an acquisition channel for the rest of HHS.",
     "mmtRead": "CIO-SP4 was canceled (SAM Amendment 0017 on RFP 75N98121R00001). CIO-SP3 is the active bridge through Apr 29 2027. CIO-CS is the IT commodities vehicle and a follow-on (`The Store`) is in pre-RFP at a reported $20B-$25B.",
     "officialSources": [
@@ -1449,6 +1630,52 @@
     "related_tags": [
       "Research IT",
       "Acquisition Channel"
+    ],
+    "role": "Health IT GWAC channel",
+    "premiumModules": [
+      "CIO-SP3 Status",
+      "CIO-SP4 Verify-Before-Publishing Watch",
+      "Contractor Read",
+      "Watch Next"
+    ],
+    "policyModule": {
+      "title": "NITAAC CIO-SP3 Status + Vehicle Watch",
+      "confirmed_facts": [
+        "NITAAC CIO-SP3 is a Government-Wide Acquisition Contract (GWAC) operated by NIH NITAAC.",
+        "CIO-SP3 has been used extensively for health IT and broader IT services across federal agencies.",
+        "Vehicle ordering periods and extensions are managed by NITAAC and posted on the NITAAC GWAC page."
+      ],
+      "vendor_watch": [
+        "Ordering-period status: verify current state directly on the NITAAC CIO-SP3 page before committing to a CIO-SP3 task-order strategy.",
+        "Extension caveat: if the ordering period has been extended, downstream agencies may still issue task orders; if it has closed, contractors need an alternative GWAC channel.",
+        "Verify-before-publishing: do NOT state CIO-SP4 cancellation as official without a primary-source citation. As of this update, the operator has not located a primary-source statement confirming cancellation."
+      ],
+      "source_id": "nitaac_cio_sp3"
+    },
+    "contractorRead": "NITAAC CIO-SP3 has been a primary federal health IT GWAC for years. The current capture move is to verify CIO-SP3 ordering-period status directly before relying on it, and to track NITAAC's posture on follow-on vehicles. Do not publish CIO-SP4 cancellation as official to clients without a primary-source citation; that is a trust-failure waiting to happen.",
+    "watchNext": [
+      {
+        "signal": "CIO-SP3 ordering-period and extension status (verify on the NITAAC GWAC page)",
+        "buyer": "NITAAC + ordering agencies",
+        "window": "Continuous",
+        "source_id": "nitaac_cio_sp3"
+      },
+      {
+        "signal": "CIO-SP4 status \u2014 verify-before-publishing watch; treat any cancellation claim as unverified until primary-source-confirmed",
+        "buyer": "NITAAC",
+        "window": "Verify before quoting",
+        "source_id": "nitaac_cio_sp3"
+      }
+    ],
+    "sources": [
+      {
+        "label": "NITAAC CIO-SP3 GWAC",
+        "url": "https://nitaac.nih.gov/gwacs/cio-sp3",
+        "verified_at": "2026-05-12",
+        "confidence": "medium",
+        "caveat": "Vehicle ordering-period and extension status change over time; verify directly on the NITAAC GWAC page before relying on a CIO-SP3 task-order strategy.",
+        "id": "nitaac_cio_sp3"
+      }
     ]
   },
   {
@@ -1456,7 +1683,7 @@
     "abbrev": "GSA",
     "name": "General Services Administration",
     "type": "Acquisition Channel (governmentwide IT vehicles)",
-    "lastUpdated": "2026-04-30",
+    "lastUpdated": "2026-05-12",
     "description": "Acquisition channel only. GSA runs Alliant 3 (active, no ceiling), Polaris (small business), 8(a) STARS III ($50B), and OASIS+ (governmentwide professional services). Track GSA vehicles for the access lane, not for the agency mission itself.",
     "mmtRead": "Alliant 3 went live with NTP March 10 2026 (42 Phase 1 contractors). Polaris small business GWAC is active. 8(a) STARS III ordering window runs through Jul 1 2026 with GSA option through 2029. OASIS+ continues on-ramping.",
     "officialSources": [
@@ -1525,6 +1752,111 @@
     "related_tags": [
       "Acquisition Channel",
       "Contracting & Procurement"
+    ],
+    "role": "Governmentwide acquisition channel",
+    "premiumModules": [
+      "OASIS+ Map",
+      "Ordering Mechanics",
+      "Non-IT Caveat",
+      "Contractor Read",
+      "Watch Next"
+    ],
+    "opportunityMap": {
+      "title": "OASIS+ IDIQ (Professional Services)",
+      "groups": [
+        {
+          "mechanism": "Contract Families",
+          "note": "OASIS+ comprises six contract families covering different size and socioeconomic categories. Each family has its own award pool and ordering rules.",
+          "items": [
+            {
+              "name": "Unrestricted"
+            },
+            {
+              "name": "Small Business"
+            },
+            {
+              "name": "8(a) Small Business"
+            },
+            {
+              "name": "HUBZone Small Business"
+            },
+            {
+              "name": "Service-Disabled Veteran-Owned Small Business (SDVOSB)"
+            },
+            {
+              "name": "Women-Owned Small Business (WOSB)"
+            }
+          ]
+        },
+        {
+          "mechanism": "Domains",
+          "note": "OASIS+ covers professional services domains, structured to scope task orders into a category.",
+          "items": [
+            {
+              "name": "Management and Advisory"
+            },
+            {
+              "name": "Technical and Engineering"
+            },
+            {
+              "name": "Research and Development"
+            },
+            {
+              "name": "Intelligence Services"
+            },
+            {
+              "name": "Environmental"
+            },
+            {
+              "name": "Logistics"
+            },
+            {
+              "name": "Enterprise Solutions"
+            }
+          ]
+        },
+        {
+          "mechanism": "Ordering Mechanics",
+          "note": "Task orders are issued by federal agencies through a Delegation of Procurement Authority (DPA) workflow with required training. The Symphony portal handles ordering activity. GSA publishes a contractor list updated weekly.",
+          "items": [
+            {
+              "name": "DPA + required training"
+            },
+            {
+              "name": "Symphony portal"
+            },
+            {
+              "name": "Weekly contractor list (GSA-published)"
+            }
+          ]
+        }
+      ],
+      "source_id": "gsa_oasis_plus"
+    },
+    "contractorRead": "OASIS+ is the governmentwide IDIQ family for professional services. It is emphatically NOT a health IT-specific vehicle. The six contract families plus seven domains shape where task orders land. Capture posture for health IT vendors: position OASIS+ as the channel for advisory, management, R&D, or enterprise-solutions work adjacent to health IT delivery (program management, capture strategy, evaluation studies). Do not market OASIS+ as a direct health IT acquisition lane; that mischaracterization will fail evaluator scrutiny.",
+    "watchNext": [
+      {
+        "signal": "DPA training updates and Symphony portal changes affecting ordering velocity",
+        "buyer": "GSA + ordering agencies",
+        "window": "Continuous",
+        "source_id": "gsa_oasis_plus"
+      },
+      {
+        "signal": "OASIS+ contractor-list weekly publications (track new awardees and family-specific dynamics)",
+        "buyer": "GSA",
+        "window": "Weekly",
+        "source_id": "gsa_oasis_plus"
+      }
+    ],
+    "sources": [
+      {
+        "label": "GSA OASIS+ (Professional Services)",
+        "url": "https://www.gsa.gov/buy-through-us/products-and-services/professional-services/buy-services/oasis-plus",
+        "verified_at": "2026-05-12",
+        "confidence": "high",
+        "caveat": "OASIS+ is a non-IT professional services IDIQ. Do not market it as a direct health IT acquisition lane.",
+        "id": "gsa_oasis_plus"
+      }
     ]
   }
 ]
