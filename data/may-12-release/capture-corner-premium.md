@@ -99,6 +99,10 @@ Premium readers should look for:
 
 USSOCOM's POTFF market proves that embedded human performance can be an enterprise services buy. KBR announced a $500 million single-award IDIQ in 2018 to provide POTFF human performance and behavioral health services at 26 locations, with five base years and three option years. [9] The May 2025 USSOCOM acquisition forecast lists a POTFF single-award IDIQ at $1.5 billion, with estimated solicitation release in March 2026, estimated award in October 2026, NAICS 621340, incumbent KBR Wyle, and current contract number H9240019D0001. [10]
 
+**Status as of May 12, 2026.** The March 2026 solicitation date appears to have slipped, at least in the public record. As of today, no public SAM.gov notice for the command-wide POTFF IDIQ follow-on appears to have been released. Direct SAM.gov searches for "Preservation of the Force and Family," "POTFF," and "H9240019D0001" return the prior ceiling-increase activity and smaller local POTFF-related notices (SOCKOR Korea POTFF Marriage Retreat, SOCNORTH family-retreat notices), not the enterprise human performance and behavioral health IDIQ follow-on. SOCOM's major acquisition listing still shows the current POTFF contract expiring October 22, 2026, with follow-on activity beginning in FY25 but no public RFP release date.
+
+**Capture read.** This is not "dead." It is more likely delayed, forecast-stale, or being worked pre-release. The market should treat POTFF as a high-priority watch item with a compressed runway, not as a March opportunity that already passed cleanly. Unless the government uses an extension, a bridge, a delayed release, or a non-public acquisition step, the recompete is still time-sensitive against the October 22, 2026 incumbent expiration.
+
 Companies that touch human performance, behavioral health, strength and conditioning, PT, AT, dietetics, cognitive performance, data science, or case management should treat POTFF as the benchmark for how the rest of the force may think about embedded readiness at scale.
 
 ## Signal 7: Air Force embedded prevention is consolidating
@@ -116,7 +120,7 @@ Do not assume all embedded readiness buys flow through DHA. Some move through se
 1. **Build a re-attraction heat map.** Pick the markets where your company already has access, then map high-volume referrals, access bottlenecks, specialty gaps, and MTF recapture opportunities against the 7 percent re-attraction target.
 2. **Separate necessary network care from avoidable leakage.** Show where network demand can be prevented without harming beneficiary access.
 3. **Watch H2F as a portfolio, not a program.** Track H2F workforce, H2FAST, SPRC facilities, H2FMS, P3T, data, and ROI support separately.
-4. **Track POTFF like a market signal.** The forecasted $1.5 billion POTFF IDIQ is a human-performance benchmark for the rest of DOD, not only a SOCOM recompete.
+4. **Track POTFF like a market signal.** The forecasted $1.5 billion POTFF IDIQ is a human-performance benchmark for the rest of DOD, not only a SOCOM recompete. The March 2026 solicitation date has slipped in the public record; with the incumbent contract expiring October 22, 2026, the runway is compressed and the next public notice is the live capture trigger.
 5. **Position around duty days.** The strongest buyer metric is earlier evaluation, fewer profiles, fewer referrals, faster return to duty, and restored mission capacity.
 
 The capture thesis is straightforward: the next MHS fight will turn on who can prove they return workload, time, trust, and readiness to the direct-care and operational-medicine system.
@@ -139,7 +143,7 @@ Mission Meets Tech.
 
 You are reading this because you subscribe.
 
-The POTFF acquisition forecast remains a live watch item: estimated solicitation release March 2026, estimated award October 2026. Premium subscribers will get the live read when the solicitation drops.
+The POTFF acquisition forecast has slipped past its March 2026 estimated release; as of May 12, 2026, no public SAM.gov notice for the command-wide IDIQ follow-on has been issued. The incumbent contract still shows an October 22, 2026 expiration in SOCOM's major acquisition listing, which leaves a compressed recompete runway absent an extension, bridge, delayed release, or non-public acquisition step. Premium subscribers will get the live read when the solicitation drops.
 
 **Refer a colleague.** Forward this issue. When they subscribe and mention your name, you both get 30 days of MMT Premium free.
 
