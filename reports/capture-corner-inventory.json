@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-04-29T00:01:48.186Z",
-  "candidate_count": 4,
+  "generated_at": "2026-05-12T14:35:37.768Z",
+  "candidate_count": 9,
   "newest_eligible": {
-    "id": "capture-corner-2026-04-21.html",
-    "path": "premium/briefs/capture-corner-2026-04-21.html",
-    "url": "/premium/briefs/capture-corner-2026-04-21.html",
-    "publish_date": "2026-04-21",
+    "id": "capture-corner-2026-05-12.html",
+    "path": "premium/briefs/capture-corner-2026-05-12.html",
+    "url": "/premium/briefs/capture-corner-2026-05-12.html",
+    "publish_date": "2026-05-12",
     "description": "Dated Capture Corner newsletter issue."
   },
-  "redirect_target_in_netlify_toml": "/premium/briefs/capture-corner-2026-04-21.html",
+  "redirect_target_in_netlify_toml": "/premium/briefs/capture-corner-2026-05-12.html",
   "redirect_stale": false,
   "candidates": [
     {
@@ -16,6 +16,41 @@
       "path": "premium/briefs/capture-corner-2026-04-21.html",
       "url": "/premium/briefs/capture-corner-2026-04-21.html",
       "publish_date": "2026-04-21",
+      "description": "Dated Capture Corner newsletter issue."
+    },
+    {
+      "id": "capture-corner-2026-04-29.html",
+      "path": "premium/briefs/capture-corner-2026-04-29.html",
+      "url": "/premium/briefs/capture-corner-2026-04-29.html",
+      "publish_date": "2026-04-29",
+      "description": "Dated Capture Corner newsletter issue."
+    },
+    {
+      "id": "capture-corner-2026-05-01.html",
+      "path": "premium/briefs/capture-corner-2026-05-01.html",
+      "url": "/premium/briefs/capture-corner-2026-05-01.html",
+      "publish_date": "2026-05-01",
+      "description": "Dated Capture Corner newsletter issue."
+    },
+    {
+      "id": "capture-corner-2026-05-05.html",
+      "path": "premium/briefs/capture-corner-2026-05-05.html",
+      "url": "/premium/briefs/capture-corner-2026-05-05.html",
+      "publish_date": "2026-05-05",
+      "description": "Dated Capture Corner newsletter issue."
+    },
+    {
+      "id": "capture-corner-2026-05-08.html",
+      "path": "premium/briefs/capture-corner-2026-05-08.html",
+      "url": "/premium/briefs/capture-corner-2026-05-08.html",
+      "publish_date": "2026-05-08",
+      "description": "Dated Capture Corner newsletter issue."
+    },
+    {
+      "id": "capture-corner-2026-05-12.html",
+      "path": "premium/briefs/capture-corner-2026-05-12.html",
+      "url": "/premium/briefs/capture-corner-2026-05-12.html",
+      "publish_date": "2026-05-12",
       "description": "Dated Capture Corner newsletter issue."
     },
     {

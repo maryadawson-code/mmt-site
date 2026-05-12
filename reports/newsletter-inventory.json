@@ -1,0 +1,47 @@
+{
+  "generated_at": "2026-05-11T16:47:45.609Z",
+  "source_dir": "content/newsletter",
+  "source_count": 108,
+  "newest_in_source": {
+    "file": "2026-05-08-what-the-budget-is-catching-up-to.md",
+    "title": "What the Budget Is Catching Up To",
+    "date": "2026-05-08T00:00:00.000Z",
+    "slug": "what-the-budget-is-catching-up-to",
+    "future_dated": false
+  },
+  "newest_in_dist_latest": {
+    "slug": "what-the-budget-is-catching-up-to",
+    "title": "What the Budget Is Catching Up To"
+  },
+  "in_sync": true,
+  "imported_in_this_run": [],
+  "missing_known_titles": [
+    {
+      "title": "The DHP Is Gone. The Direct Care System Stayed.",
+      "reason": "source_not_found",
+      "note": "Article body not present in content/newsletter/. See docs/newsletter-source-of-truth-gap.md for resolution paths."
+    },
+    {
+      "title": "The Capture Gap. And how I'm closing it.",
+      "reason": "source_not_found",
+      "note": "Article body not present in content/newsletter/. See docs/newsletter-source-of-truth-gap.md for resolution paths."
+    },
+    {
+      "title": "The Rule of Two No Longer Applies to IDIQ Task Orders. The Q3 Window Is Now.",
+      "reason": "source_not_found",
+      "note": "Article body not present in content/newsletter/. See docs/newsletter-source-of-truth-gap.md for resolution paths."
+    },
+    {
+      "title": "The force multiplier is live.",
+      "reason": "source_not_found",
+      "note": "Article body not present in content/newsletter/. See docs/newsletter-source-of-truth-gap.md for resolution paths."
+    }
+  ],
+  "held_future_articles": [
+    {
+      "file": "2026-05-12-the-warfighter-under-the-pendulum.md",
+      "title": "The Warfighter Under the Pendulum",
+      "publish_date": "2026-05-12T00:00:00.000Z"
+    }
+  ]
+}
