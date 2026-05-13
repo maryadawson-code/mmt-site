@@ -155,13 +155,36 @@
       }
     }
 
-    // Decode and inject agency intelligence for authenticated users
+    // Fetch agency intelligence for authenticated premium users.
+    // Per the 2026-05-13 security audit, the previous implementation
+    // embedded the full premium payload as base64 in `data-agency-intel`
+    // — any visitor could `atob()` the value and read the entire dossier
+    // (including 43 named VA contacts with emails). Payload is now
+    // server-side; the browser fetches it from
+    // /.netlify/functions/agency-intel after loadEntitlement() confirms
+    // the email's tier server-side.
     if (isAtLeastPremium(status)) {
-      var agencyEl = document.querySelector('[data-agency-intel]');
-      if (agencyEl) {
-        try {
-          var agencyData = JSON.parse(atob(agencyEl.getAttribute('data-agency-intel')));
-          var container = document.getElementById('agency-premium-content');
+      var agencySlugEl = document.querySelector('[data-agency-intel-slug]');
+      if (agencySlugEl) {
+        var slug = agencySlugEl.getAttribute('data-agency-intel-slug');
+        var email = null;
+        try { email = localStorage.getItem(EMAIL_KEY); } catch (e) {}
+        if (!email) { email = getCookie('mmt_email'); }
+        var container = document.getElementById('agency-premium-content');
+        if (slug && email && container) {
+          fetch('/.netlify/functions/agency-intel', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email, slug: slug }),
+          }).then(function (res) {
+            if (!res.ok) {
+              container.innerHTML = '<p style="font-size:14px;color:var(--mmt-text-secondary);text-align:center;padding:24px;">Premium dossier unavailable. Sign in again or contact support.</p>';
+              return null;
+            }
+            return res.json();
+          }).then(function (body) {
+            if (!body || !body.agency) return;
+            var agencyData = body.agency;
           if (container && agencyData) {
             var h = '';
             // Helper: build a source-note line given a source_id + map.
@@ -184,7 +207,7 @@
             h += '<div class="profile-section"><div class="profile-label">MMT\'s Current Read</div>';
             h += '<div style="background:rgba(69,123,157,0.04);border-left:3px solid var(--mmt-teal);border-radius:0 10px 10px 0;padding:16px 20px;">';
             h += '<p style="font-size:15px;line-height:1.7;color:var(--mmt-text);">' + esc(agencyData.current_read || '') + '</p>';
-            h += '<p style="font-size:12px;color:var(--mmt-text-secondary);margin-top:8px;">Updated: April 2026</p></div></div>';
+            h += '<p style="font-size:12px;color:var(--mmt-text-secondary);margin-top:8px;">' + (agencyData.lastUpdated ? 'Updated ' + esc(agencyData.lastUpdated) : 'Updated monthly') + '</p></div></div>';
 
             // Contractor Read — operator-grade interpretation that
             // translates the official signals into capture implications.
@@ -387,7 +410,10 @@
             }
             container.innerHTML = h;
           }
-        } catch (e) {}
+          }).catch(function () {
+            container.innerHTML = '<p style="font-size:14px;color:var(--mmt-text-secondary);text-align:center;padding:24px;">Premium dossier unavailable. Network error.</p>';
+          });
+        }
       }
     }
 

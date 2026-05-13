@@ -20,7 +20,8 @@
     "smoke": "bash scripts/smoke-test.sh",
     "dev": "npx netlify dev",
     "gov:check": "node scripts/gov-check.js",
-    "gov:check:probe": "node scripts/gov-check.js --probe"
+    "gov:check:probe": "node scripts/gov-check.js --probe",
+    "validate:agency-profiles": "node scripts/validate-agency-profiles.js"
   },
   "dependencies": {
     "@sentry/node": "^9.0.0",

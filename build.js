@@ -3435,7 +3435,12 @@ ${innerHtml}
     console.log(`Copied ${monthlyFiles.length} premium monthly brief pages`);
   }
 
-  // Generate individual agency profile pages from data
+  // Generate individual agency profile pages from data, AND regenerate
+  // /agencies/index.html from the same JSON so the landing-card grid
+  // can't drift from the per-agency data. Previously the landing page
+  // was hand-edited HTML — every JSON update required a parallel HTML
+  // update and the two surfaces fell out of sync. Now both are derived
+  // from data/premium/agency-profiles/agencies.json.
   const agencyDataPath = path.join(__dirname, 'data/premium/agency-profiles/agencies.json');
   if (fs.existsSync(agencyDataPath)) {
     const agencyData = JSON.parse(fs.readFileSync(agencyDataPath, 'utf8'));
@@ -3446,7 +3451,12 @@ ${innerHtml}
       html = inlineTailwindCss(html);
       fs.writeFileSync(path.join(agencyDir, 'index.html'), html);
     });
-    console.log(`Generated ${agencyData.length} agency profile pages`);
+    // Overwrite the landing /agencies/index.html with a data-driven build.
+    const landingPath = path.join(DIST_DIR, 'agencies', 'index.html');
+    let landingHtml = generateAgenciesLandingHtml(agencyData);
+    landingHtml = inlineTailwindCss(landingHtml);
+    fs.writeFileSync(landingPath, landingHtml);
+    console.log(`Generated ${agencyData.length} agency profile pages + landing index from JSON`);
   }
 
   // Copy glossary pages (with .gov/.mil source injection)
@@ -3993,6 +4003,93 @@ function autoLinkGlossaryTerms(articleHtml, glossaryTerms) {
 /**
  * Generate "Related Analysis" HTML for a contract card.
  */
+function generateAgenciesLandingHtml(agencies) {
+  // Public landing grid. EVERY field rendered here is non-sensitive
+  // and never contains premium body content:
+  //   abbrev, name, type, role, lastUpdated, description (one-line),
+  //   premiumModules (LABELS only, not content), data-access="premium"
+  //   for the wrapper card (drives the upgrade overlay).
+  //
+  // Premium content (current_read, budget, key_vehicles, keyContacts,
+  // dataStrategy, scaleCards, modernizationTimeline, policyModule,
+  // opportunityMap, contractorRead, watchNext, sources) is fetched
+  // by mmt-paywall.js from /.netlify/functions/agency-intel after
+  // entitlement passes on the per-agency profile page — never on the
+  // landing index.
+  const cards = agencies.map((a) => {
+    const modules = Array.isArray(a.premiumModules) ? a.premiumModules : [];
+    const modulesHtml = modules.length === 0 ? '' : `
+      <div class="agency-modules"><strong>Modules:</strong> ${modules.map((m) => escapeHtml(m)).join(' &middot; ')}</div>`;
+    const role = a.role ? `<div class="agency-role">${escapeHtml(a.role)}</div>` : '';
+    const updated = a.lastUpdated ? `<span>Updated ${escapeHtml(a.lastUpdated)}</span>` : '<span>Updated monthly</span>';
+    const desc = a.description ? `<p class="agency-desc">${escapeHtml(a.description.length > 180 ? a.description.slice(0, 177) + '…' : a.description)}</p>` : '';
+    // Per the 2026-05-13 spec rule #8 ("Do not mark agency anchor
+    // cards themselves data-access=\"premium\""), the cards stay
+    // visible to public users. Only the upgrade CTA below the grid
+    // uses data-gate-overlay="premium" to show for non-premium.
+    return `
+      <a href="/agencies/${escapeHtml(a.slug)}/" class="agency-card no-underline">
+        <span class="agency-star">&#9733;</span>
+        <div class="agency-abbrev">${escapeHtml(a.abbrev)}</div>
+        <div class="agency-name">${escapeHtml(a.name)}</div>
+        ${role}
+        ${desc}
+        ${modulesHtml}
+        <div class="agency-footer">${updated}<span class="open-arrow">Open &rarr;</span></div>
+      </a>`;
+  }).join('\n');
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Federal Health IT Agency Profiles &middot; MMT Premium</title>
+  <meta name="description" content="Intelligence dossiers for ${agencies.length} federal health IT agencies. Strategy tables, deployment timelines, policy modules, opportunity maps, source-anchored contractor reads.">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <style>
+    :root { --mmt-teal:#457B9D; --mmt-navy:#0A192F; --mmt-soft:#F3F4F6; --mmt-white:#FFFFFF; --mmt-text:#102033; --mmt-text-secondary:#5C6B7A; --mmt-border:#D8E0E8; --ci-gold:#92710A; --ci-gold-bg:#FEF9E7; }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--mmt-white); color:var(--mmt-navy); }
+    .agency-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .agency-card { background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:14px; padding:22px; position:relative; transition:all 0.2s; display:flex; flex-direction:column; gap:8px; }
+    .agency-card:hover { box-shadow:0 8px 24px rgba(10,25,47,0.08); transform:translateY(-2px); border-color:var(--mmt-teal); }
+    .agency-abbrev { font-size:26px; font-weight:800; color:var(--mmt-navy); margin-bottom:0; letter-spacing:-0.02em; }
+    .agency-name { font-size:12px; color:var(--mmt-text-secondary); margin-bottom:4px; line-height:1.4; }
+    .agency-role { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--mmt-teal); }
+    .agency-star { position:absolute; top:14px; right:14px; font-size:12px; color:var(--ci-gold); }
+    .agency-desc { font-size:12px; color:var(--mmt-text-secondary); line-height:1.5; margin:0; }
+    .agency-modules { font-size:12px; color:var(--mmt-text); line-height:1.5; }
+    .agency-modules strong { font-weight:700; color:var(--mmt-text); }
+    .agency-footer { display:flex; justify-content:space-between; align-items:baseline; margin-top:auto; padding-top:10px; border-top:1px solid var(--mmt-soft); font-size:11px; color:var(--mmt-text-secondary); }
+    .open-arrow { color:var(--mmt-teal); font-weight:700; }
+    @media (max-width: 980px) { .agency-grid { grid-template-columns:repeat(2,1fr); } }
+    @media (max-width: 560px) { .agency-grid { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="nav-editorial"></nav>
+  <main class="wrap" style="padding:48px 0 80px;">
+    <div class="section-label" style="margin-bottom:12px;">MMT Premium &middot; Agency Intelligence</div>
+    <h1 style="font-size:clamp(28px,3.5vw,44px);line-height:1.05;letter-spacing:-0.035em;margin-bottom:12px;">Federal Health IT Agency Profiles</h1>
+    <p style="font-size:17px;line-height:1.6;color:var(--mmt-text-secondary);max-width:62ch;margin-bottom:36px;">Source-anchored intelligence for ${agencies.length} federal health IT agencies. Each premium profile carries the official artifact, the operator-grade contractor read, and a Watch Next block with citations and confidence ratings. Updated monthly.</p>
+    <div class="agency-grid">
+${cards}
+    </div>
+    <p style="font-size:12px;color:var(--mmt-text-secondary);margin-top:24px;line-height:1.55;max-width:62ch;">Module labels above are non-gated teasers. The full source-anchored tables, timelines, contractor reads, and Watch Next signals render inside each profile for premium subscribers.</p>
+    <div data-gate-overlay="premium" style="text-align:center;padding:32px 24px;background:var(--mmt-soft);border-radius:14px;margin-top:32px;">
+      <p style="font-size:16px;font-weight:700;color:var(--mmt-navy);margin-bottom:8px;">Full agency profiles are Premium</p>
+      <p style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:18px;">Strategy tables, deployment timelines, policy modules, opportunity maps, contractor reads, Watch Next signals, and a sourced confidence rating for every claim.</p>
+      <a href="/pricing.html" class="btn-primary no-underline" style="font-size:14px;padding:12px 24px;">Start Premium</a>
+    </div>
+  </main>
+  <footer class="wrap"></footer>
+  <script src="/js/mmt-paywall.js" defer></script>
+  <script src="/js/nav-active.js"></script>
+</body>
+</html>`;
+}
+
 function generateAgencyProfilePage(agency) {
   const budgetItems = agency.budget.key_programs.map(p => `<li style="margin-bottom:4px;">${escapeHtml(p)}</li>`).join('');
   const riskItems = (agency.budget.at_risk || []).map(r => `<li style="margin-bottom:4px;color:#D97706;">${escapeHtml(r)}</li>`).join('');
@@ -4028,11 +4125,24 @@ function generateAgencyProfilePage(agency) {
       <div style="font-size:11px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--mmt-teal);margin-bottom:8px;">MMT Read</div>
       <p style="font-size:14px;line-height:1.55;color:var(--mmt-text);margin:0;">${escapeHtml(agency.mmtRead)}</p>
     </div>` : '';
-  const metaLine = agency.type || agency.lastUpdated ? `
+  const metaLine = agency.type || agency.lastUpdated || agency.role ? `
     <div style="font-size:12px;color:var(--mmt-text-secondary);margin-bottom:18px;">
+      ${agency.role ? `<span style="color:var(--mmt-teal);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;font-size:11px;">${escapeHtml(agency.role)}</span>` : ''}
+      ${agency.role && (agency.type || agency.lastUpdated) ? ' &middot; ' : ''}
       ${agency.type ? `<span>${escapeHtml(agency.type)}</span>` : ''}
       ${agency.type && agency.lastUpdated ? ' &middot; ' : ''}
       ${agency.lastUpdated ? `<span>Updated ${escapeHtml(agency.lastUpdated)}</span>` : ''}
+    </div>` : '';
+  // Public-tier premium-module pills. These are LABELS only, not
+  // content. The labels are non-sensitive teasers describing what
+  // lives behind the paywall; the actual module bodies are fetched
+  // from /.netlify/functions/agency-intel after entitlement passes.
+  const premiumModulePills = Array.isArray(agency.premiumModules) && agency.premiumModules.length > 0 ? `
+    <div class="profile-section" style="margin-bottom:20px;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--ci-gold);margin-bottom:10px;">&#9733; Premium Modules</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">
+        ${agency.premiumModules.map(m => `<span style="font-size:11px;font-weight:600;background:rgba(146,113,10,0.08);color:var(--ci-gold);padding:4px 10px;border-radius:12px;">${escapeHtml(m)}</span>`).join('')}
+      </div>
     </div>` : '';
 
   return `<!DOCTYPE html>
@@ -4064,37 +4174,14 @@ function generateAgencyProfilePage(agency) {
     ${metaLine}
     <p style="font-size:16px;line-height:1.6;color:var(--mmt-text-secondary);margin-bottom:24px;">${escapeHtml(agency.description)}</p>
     ${teaserBlock}
+    ${premiumModulePills}
     ${sourcesBlock}
     ${orgChartCta}
-    <div data-gate="premium" data-agency-intel="${Buffer.from(JSON.stringify({
-      current_read: agency.current_read,
-      fy2026: agency.budget.fy2026_enacted,
-      fy2027: agency.budget.fy2027_request,
-      programs: agency.budget.key_programs,
-      at_risk: agency.budget.at_risk || [],
-      vehicles: agency.key_vehicles,
-      signals: agency.upcoming_signals,
-      offices: agency.key_offices,
-      // keyContacts: named individuals (name, email, title, org,
-      // category, notes). Premium-only — not echoed to public HTML.
-      // Sourced from operator's working contact database; first
-      // batch from Kirk Hendler 2026-05-05 (43 VA + 2 HHS/ONC).
-      contacts: Array.isArray(agency.keyContacts) ? agency.keyContacts : [],
-      // Premium expansion modules (added 2026-05-12). Each is rendered
-      // by mmt-paywall.js only when present; agencies without the
-      // module keep the legacy view. Source-anchored per the
-      // AG-001..AG-007 sprint; every numeric/named claim points back
-      // to a `sources[]` entry by source_id.
-      role: agency.role || null,
-      contractorRead: agency.contractorRead || null,
-      dataStrategy: agency.dataStrategy || null,
-      scaleCards: agency.scaleCards || null,
-      modernizationTimeline: agency.modernizationTimeline || null,
-      policyModule: agency.policyModule || null,
-      opportunityMap: agency.opportunityMap || null,
-      watchNext: Array.isArray(agency.watchNext) ? agency.watchNext : [],
-      sources: Array.isArray(agency.sources) ? agency.sources : []
-    })).toString('base64')}" style="display:none;">
+    <!-- Premium content gate. Full dossier lives server-side; the
+         browser fetches from /.netlify/functions/agency-intel after
+         the paywall script detects a paid tier. The previous static
+         base64 payload was removed in the 2026-05-13 security audit. -->
+    <div data-gate="premium" data-agency-intel-slug="${escapeHtml(agency.slug)}" style="display:none;">
       <div id="agency-premium-content">
         <p style="font-size:14px;color:var(--mmt-text-secondary);text-align:center;padding:24px;">Loading premium intelligence...</p>
       </div>
