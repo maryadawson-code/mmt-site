@@ -1499,7 +1499,7 @@ function generateContractTrackerHtml(contracts, contractArticleMap) {
                 const teaser = escapeHtml(words.slice(0, 40).join(' '));
                 return teaser + '... <a href="/pricing.html" style="font-size:11px;font-weight:700;color:var(--mmt-teal);text-decoration:none;white-space:nowrap;" data-gate-overlay="premium">★ Full competitive note — Premium</a>';
               })()}</p>
-              <div data-access="premium" data-premium-fields="${Buffer.from(JSON.stringify({v:c.vendor,val:c.value,n:c.naics||'',ver:c.last_verified||'',src:c.source||''})).toString('base64')}">
+              <div data-access="premium" data-premium-fields-slug="${escapeHtml(c.slug || slugify(c.name))}">
                 <div class="flex flex-wrap gap-3 text-xs premium-fields-placeholder" style="color:var(--mmt-text-secondary);">
                   <span><strong style="color:var(--mmt-text);">Vendor:</strong> <em style="color:var(--mmt-text-secondary);">Premium</em></span>
                   <span><strong style="color:var(--mmt-text);">Value:</strong> <em style="color:var(--mmt-text-secondary);">Premium</em></span>
@@ -1572,11 +1572,15 @@ function generateContractPages(contracts) {
       ? `<div class="mt-4 pt-4" style="border-top:1px solid var(--mmt-soft);"><span class="text-xs" style="color:var(--mmt-text-secondary);"><strong style="color:var(--mmt-text);">NAICS:</strong> ${escapeHtml(c.naics)}</span></div>`
       : '';
 
-    // Encode premium fields as base64 for paywall protection
-    const contractPremiumData = Buffer.from(JSON.stringify({
-      vendor: c.vendor, value: c.value, naics: c.naics || '',
-      link: c.link || '', description: c.description
-    })).toString('base64');
+    // Per the 2026-05-13 security audit, the previous base64
+    // `data-contract-premium` attribute exposed vendor / value / NAICS
+    // / link / full description as base64 in the static HTML — any
+    // visitor could `atob()` the value. Premium fields are now served
+    // by /.netlify/functions/contract-fields and gated by
+    // loadEntitlement(). The detail page ships only the slug
+    // placeholder; the paywall script fetches the fields after a
+    // verified premium tier.
+    const contractPremiumSlug = c.slug || slugify(c.name);
 
     let html = template
       .replace(/\{\{CONTRACT_NAME\}\}/g, escapeHtml(c.name))
@@ -1596,8 +1600,9 @@ function generateContractPages(contracts) {
       .replace(/\{\{BUILD_DATE\}\}/g, new Date().toISOString().split('T')[0])
       .replace(/\{\{CANONICAL_URL\}\}/g, `${SITE_URL}/contracts/${cSlug}/`);
 
-    // Inject contract premium data attribute on <main>
-    html = html.replace('<main id="main-content">', `<main id="main-content" data-contract-premium="${contractPremiumData}">`);
+    // Inject slug-only placeholder; the premium payload is served by
+    // /.netlify/functions/contract-fields after loadEntitlement passes.
+    html = html.replace('<main id="main-content">', `<main id="main-content" data-contract-premium-slug="${contractPremiumSlug}">`);
 
     // Inject premium gate card before the "Current Intelligence" section
     const gateCard = `

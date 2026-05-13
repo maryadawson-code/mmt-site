@@ -41,7 +41,9 @@
           "note": "Multi-region structure allows right-sized participation"
         }
       }
-    }
+    },
+    "slug": "community-care-network-next-gen-ccn-ng",
+    "content_gap": false
   },
   {
     "name": "CCN Dental (36C10G26R0004)",
@@ -55,14 +57,18 @@
     "link": "https://sam.gov",
     "small_business_eligible": false,
     "source": "https://sam.gov",
-    "source_urls": [],
+    "source_urls": [
+      "https://sam.gov"
+    ],
     "notes": "source-required",
     "last_verified": "2026-04-06",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Upcoming \u2014 action window within 6 months",
       "factors": {}
-    }
+    },
+    "slug": "ccn-dental-36c10g26r0004",
+    "content_gap": false
   },
   {
     "name": "VA Ambient Scribe IDIQ (36C10B26R0006)",
@@ -84,7 +90,9 @@
       "verdict": "WATCH",
       "headline": "Award held pending GAO decision Aug 6, 2026",
       "factors": {}
-    }
+    },
+    "slug": "va-ambient-scribe-idiq-36c10b26r0006",
+    "content_gap": false
   },
   {
     "name": "DHA Data Governance (WOSB Set-Aside)",
@@ -107,7 +115,9 @@
       "verdict": "WATCH",
       "headline": "Upcoming \u2014 action window within 6 months",
       "factors": {}
-    }
+    },
+    "slug": "dha-data-governance-wosb-set-aside",
+    "content_gap": false
   },
   {
     "name": "PEO DHMS Deployment Solutions (New IDIQ)",
@@ -131,7 +141,9 @@
       "verdict": "WATCH",
       "headline": "Upcoming \u2014 action window within 6 months",
       "factors": {}
-    }
+    },
+    "slug": "peo-dhms-deployment-solutions-new-idiq",
+    "content_gap": false
   },
   {
     "name": "VA Enterprise Imaging (NEIS + Multi-VISN PACS + Bi-Directional)",
@@ -147,13 +159,17 @@
     "small_business_eligible": true,
     "sb_note": "SDVOSB prime paths available through JV vehicles",
     "source": "https://sam.gov",
-    "source_urls": [],
+    "source_urls": [
+      "https://sam.gov"
+    ],
     "last_verified": "2026-03-30",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Upcoming \u2014 action window within 6 months",
       "factors": {}
-    }
+    },
+    "slug": "va-enterprise-imaging-neis-multi-visn-pacs-bi-directional",
+    "content_gap": false
   },
   {
     "name": "HHS HOPSS - HHS One Professional Services Solutions",
@@ -169,14 +185,18 @@
     "small_business_eligible": true,
     "sb_note": "Reported small business set-aside",
     "source": "https://sam.gov",
-    "source_urls": [],
+    "source_urls": [
+      "https://sam.gov"
+    ],
     "notes": "source-required",
     "last_verified": "2026-03-30",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Upcoming \u2014 action window within 6 months",
       "factors": {}
-    }
+    },
+    "slug": "hhs-hopss-hhs-one-professional-services-solutions",
+    "content_gap": false
   },
   {
     "name": "HCDS - Health Care Delivery Solutions (MHS GENESIS Follow-On)",
@@ -191,13 +211,18 @@
     "small_business_eligible": true,
     "sb_note": "Multiple distinct lanes create new prime and sub opportunities. HCD carve-out is a small focused contract \u2014 potential SDVOSB/WOSB target. Services lane likely to include small business set-asides.",
     "source": "https://sam.gov",
-    "source_urls": [],
+    "source_urls": [
+      "https://sam.gov",
+      "https://sam.gov/opp/hcds"
+    ],
     "last_verified": "2026-03-31",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Upcoming \u2014 action window within 6 months",
       "factors": {}
-    }
+    },
+    "slug": "hcds-health-care-delivery-solutions-mhs-genesis-follow-on",
+    "content_gap": false
   },
   {
     "name": "FDA Sentinel 3.0",
@@ -221,7 +246,9 @@
       "verdict": "WATCH",
       "headline": "Upcoming \u2014 action window within 6 months",
       "factors": {}
-    }
+    },
+    "slug": "fda-sentinel-3-0",
+    "content_gap": false
   },
   {
     "name": "VA Health Services DevSecOps",
@@ -245,7 +272,9 @@
       "verdict": "WATCH",
       "headline": "Upcoming \u2014 action window within 6 months",
       "factors": {}
-    }
+    },
+    "slug": "va-health-services-devsecops",
+    "content_gap": false
   },
   {
     "name": "VA Data Center and Telecommunications Modernization",
@@ -261,13 +290,17 @@
     "small_business_eligible": true,
     "sb_note": "TBD",
     "source": "https://sam.gov",
-    "source_urls": [],
+    "source_urls": [
+      "https://sam.gov"
+    ],
     "last_verified": "2026-04-29",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Upcoming \u2014 action window within 6 months",
       "factors": {}
-    }
+    },
+    "slug": "va-data-center-and-telecommunications-modernization",
+    "content_gap": false
   },
   {
     "name": "VA Supply Chain DevSecOps / HELM",
@@ -283,14 +316,18 @@
     "small_business_eligible": true,
     "sb_note": "TBD",
     "source": "https://sam.gov",
-    "source_urls": [],
+    "source_urls": [
+      "https://sam.gov"
+    ],
     "notes": "source-required",
     "last_verified": "2026-04-29",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Upcoming \u2014 action window within 6 months",
       "factors": {}
-    }
+    },
+    "slug": "va-supply-chain-devsecops-helm",
+    "content_gap": false
   },
   {
     "name": "CIO-CS Follow-On / The Store",
@@ -306,13 +343,17 @@
     "small_business_eligible": true,
     "sb_note": "Reported small business set-aside lanes anticipated",
     "source": "https://sam.gov",
-    "source_urls": [],
+    "source_urls": [
+      "https://sam.gov"
+    ],
     "last_verified": "2026-04-29",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Upcoming \u2014 action window within 6 months",
       "factors": {}
-    }
+    },
+    "slug": "cio-cs-follow-on-the-store",
+    "content_gap": false
   },
   {
     "name": "VA EHRM (Electronic Health Record Modernization)",
@@ -336,7 +377,9 @@
       "verdict": "WATCH",
       "headline": "Active award \u2014 monitor task orders and mod history",
       "factors": {}
-    }
+    },
+    "slug": "va-ehrm-electronic-health-record-modernization",
+    "content_gap": false
   },
   {
     "name": "MHS GENESIS (DHMSM Bridge)",
@@ -360,7 +403,9 @@
       "verdict": "WATCH",
       "headline": "Active award \u2014 monitor task orders and mod history",
       "factors": {}
-    }
+    },
+    "slug": "mhs-genesis-dhmsm-bridge",
+    "content_gap": false
   },
   {
     "name": "Federal Electronic Health Record Modernization (FEHRM)",
@@ -383,7 +428,9 @@
       "verdict": "WATCH",
       "headline": "Program watch \u2014 interoperability office, not a contract",
       "factors": {}
-    }
+    },
+    "slug": "federal-electronic-health-record-modernization-fehrm",
+    "content_gap": false
   },
   {
     "name": "T4NG2 (VA IT Services)",
@@ -406,7 +453,9 @@
       "verdict": "WATCH",
       "headline": "Active IDIQ \u2014 monitor task orders and mod history",
       "factors": {}
-    }
+    },
+    "slug": "t4ng2-va-it-services",
+    "content_gap": false
   },
   {
     "name": "PEO DHMS CSO (Competitive Solutions Opening)",
@@ -429,7 +478,10 @@
       "verdict": "WATCH",
       "headline": "Open CSO/OTA \u2014 rolling submissions through July 1, 2026",
       "factors": {}
-    }
+    },
+    "slug": "peo-dhms-cso-competitive-solutions-opening",
+    "content_gap": true,
+    "content_gap_note": "Editorial placeholder. Lower-confidence shell while Mary supplies a source-specific update. Public fields kept honest; premium fields gated."
   },
   {
     "name": "VA Health Connect / IHT 2.0",
@@ -453,7 +505,10 @@
       "verdict": "WATCH",
       "headline": "Active IDIQ \u2014 task orders competing across 9 holders",
       "factors": {}
-    }
+    },
+    "slug": "va-health-connect-iht-2-0",
+    "content_gap": true,
+    "content_gap_note": "Editorial placeholder. Lower-confidence shell while Mary supplies a source-specific update. Public fields kept honest; premium fields gated."
   },
   {
     "name": "Enterprise Intelligence & Data Solutions (EIDS)",
@@ -476,7 +531,9 @@
       "verdict": "WATCH",
       "headline": "Program watch \u2014 multi-vehicle PMO, not a single contract",
       "factors": {}
-    }
+    },
+    "slug": "enterprise-intelligence-data-solutions-eids",
+    "content_gap": false
   },
   {
     "name": "DHA Enterprise Generative AI",
@@ -499,7 +556,9 @@
       "verdict": "WATCH",
       "headline": "Vendor-announced \u2014 awaiting official DHA confirmation",
       "factors": {}
-    }
+    },
+    "slug": "dha-enterprise-generative-ai",
+    "content_gap": false
   },
   {
     "name": "CMS Rural Health Transformation",
@@ -522,7 +581,9 @@
       "verdict": "WATCH",
       "headline": "Grant program \u2014 state-level pass-through awards",
       "factors": {}
-    }
+    },
+    "slug": "cms-rural-health-transformation",
+    "content_gap": false
   },
   {
     "name": "IHS Health IT Modernization (RPMS Replacement)",
@@ -545,7 +606,10 @@
       "verdict": "WATCH",
       "headline": "Active award \u2014 monitor task orders and mod history",
       "factors": {}
-    }
+    },
+    "slug": "ihs-health-it-modernization-rpms-replacement",
+    "content_gap": true,
+    "content_gap_note": "Editorial placeholder. Lower-confidence shell while Mary supplies a source-specific update. Public fields kept honest; premium fields gated."
   },
   {
     "name": "MHS GENESIS-Theater + JOMIS (Operational Medicine Systems)",
@@ -568,7 +632,9 @@
       "verdict": "WATCH",
       "headline": "Program watch \u2014 operational medicine systems",
       "factors": {}
-    }
+    },
+    "slug": "mhs-genesis-theater-jomis-operational-medicine-systems",
+    "content_gap": false
   },
   {
     "name": "DHA Telehealth Programs",
@@ -591,7 +657,9 @@
       "verdict": "WATCH",
       "headline": "Active award \u2014 monitor task orders and mod history",
       "factors": {}
-    }
+    },
+    "slug": "dha-telehealth-programs",
+    "content_gap": false
   },
   {
     "name": "CMS Cloud Infrastructure (OCI)",
@@ -613,7 +681,9 @@
       "verdict": "WATCH",
       "headline": "Vendor-announced \u2014 awaiting official CMS confirmation",
       "factors": {}
-    }
+    },
+    "slug": "cms-cloud-infrastructure-oci",
+    "content_gap": false
   },
   {
     "name": "CDM DEFEND (Health Data Cybersecurity)",
@@ -627,14 +697,18 @@
     "link": "https://sam.gov",
     "small_business_eligible": false,
     "source": "https://sam.gov",
-    "source_urls": [],
+    "source_urls": [
+      "https://sam.gov"
+    ],
     "notes": "source-required",
     "last_verified": "2026-04-29",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Needs source \u2014 verify current health-data DEFEND prime",
       "factors": {}
-    }
+    },
+    "slug": "cdm-defend-health-data-cybersecurity",
+    "content_gap": false
   },
   {
     "name": "TRICARE Managed Care Support - T-5 (MCS)",
@@ -656,7 +730,9 @@
       "verdict": "WATCH",
       "headline": "Managed care vehicle \u2014 not IT",
       "factors": {}
-    }
+    },
+    "slug": "tricare-managed-care-support-t-5-mcs",
+    "content_gap": false
   },
   {
     "name": "TPharm5 (TRICARE Pharmacy)",
@@ -678,7 +754,9 @@
       "verdict": "WATCH",
       "headline": "Active award \u2014 monitor option exercises",
       "factors": {}
-    }
+    },
+    "slug": "tpharm5-tricare-pharmacy",
+    "content_gap": false
   },
   {
     "name": "DHA Zero Trust 2.0 / GSP",
@@ -700,7 +778,9 @@
       "verdict": "WATCH",
       "headline": "Strategy watch \u2014 awaiting DHA-specific solicitation",
       "factors": {}
-    }
+    },
+    "slug": "dha-zero-trust-2-0-gsp",
+    "content_gap": false
   },
   {
     "name": "MPSM (Medicare Payment Systems Modernization)",
@@ -722,7 +802,9 @@
       "verdict": "WATCH",
       "headline": "Program watch \u2014 monitor task-order activity",
       "factors": {}
-    }
+    },
+    "slug": "mpsm-medicare-payment-systems-modernization",
+    "content_gap": false
   },
   {
     "name": "TEFCA / RCE (Health Information Exchange)",
@@ -744,7 +826,9 @@
       "verdict": "WATCH",
       "headline": "Policy / interoperability framework",
       "factors": {}
-    }
+    },
+    "slug": "tefca-rce-health-information-exchange",
+    "content_gap": false
   },
   {
     "name": "CDC DCIPHER (Disease Surveillance)",
@@ -766,7 +850,9 @@
       "verdict": "WATCH",
       "headline": "Active award \u2014 surveillance platform",
       "factors": {}
-    }
+    },
+    "slug": "cdc-dcipher-disease-surveillance",
+    "content_gap": false
   },
   {
     "name": "SSA DCPS2 (Disability Claims Processing)",
@@ -780,14 +866,20 @@
     "link": "https://sam.gov",
     "small_business_eligible": false,
     "source": "https://oig-files.ssa.gov/audits/full/A-14-15-15016.pdf",
-    "source_urls": [],
+    "source_urls": [
+      "https://oig-files.ssa.gov/audits/full/A-14-15-15016.pdf",
+      "https://sam.gov"
+    ],
     "notes": "source-required",
     "last_verified": "2026-04-29",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Needs source \u2014 verify before treating as health IT contract item",
       "factors": {}
-    }
+    },
+    "slug": "ssa-dcps2-disability-claims-processing",
+    "content_gap": true,
+    "content_gap_note": "Editorial placeholder. Lower-confidence shell while Mary supplies a source-specific update. Public fields kept honest; premium fields gated."
   },
   {
     "name": "NIH STRIDES (Cloud for Biomedical Data)",
@@ -809,7 +901,9 @@
       "verdict": "WATCH",
       "headline": "Cloud platform tracking \u2014 program-level",
       "factors": {}
-    }
+    },
+    "slug": "nih-strides-cloud-for-biomedical-data",
+    "content_gap": false
   },
   {
     "name": "CDC DIBBs (Data Integration Building Blocks)",
@@ -832,6 +926,8 @@
       "verdict": "WATCH",
       "headline": "Program watch \u2014 STLT adoption tracking",
       "factors": {}
-    }
+    },
+    "slug": "cdc-dibbs-data-integration-building-blocks",
+    "content_gap": false
   }
 ]

@@ -110,48 +110,80 @@
       }
     }
 
-    // Decode contract detail page premium fields for authenticated users
+    // Fetch contract intelligence for authenticated premium users.
+    // Per the 2026-05-13 security audit, the previous implementation
+    // embedded vendor / value / NAICS / description / link as base64
+    // in static HTML attributes (`data-contract-premium` on detail
+    // pages, `data-premium-fields` on tracker cards). Any visitor
+    // could decode the values with atob(). Both attributes are now
+    // slug-only placeholders; the browser fetches the gated payload
+    // from /.netlify/functions/contract-fields after loadEntitlement()
+    // confirms a paid tier server-side.
     if (isAtLeastPremium(status)) {
-      var contractMain = document.querySelector('[data-contract-premium]');
-      if (contractMain) {
-        try {
-          var cData = JSON.parse(atob(contractMain.getAttribute('data-contract-premium')));
-          var premFields = document.querySelectorAll('.contract-premium-field');
-          for (var cf = 0; cf < premFields.length; cf++) {
-            var field = premFields[cf].getAttribute('data-field');
-            if (field && cData[field]) premFields[cf].textContent = cData[field];
-          }
-          // Hide the gate card for premium users
-          var contractGate = document.getElementById('contract-gate');
-          if (contractGate) contractGate.style.display = 'none';
-        } catch (e) {}
-      }
-    }
+      var contractEmail = null;
+      try { contractEmail = localStorage.getItem(EMAIL_KEY); } catch (e) {}
+      if (!contractEmail) contractEmail = getCookie('mmt_email');
 
-    // Decode contract tracker card premium fields for authenticated users
-    if (isAtLeastPremium(status)) {
-      var encodedFields = document.querySelectorAll('[data-premium-fields]');
-      for (var f = 0; f < encodedFields.length; f++) {
-        try {
-          var raw = atob(encodedFields[f].getAttribute('data-premium-fields'));
-          var data = JSON.parse(raw);
-          var placeholder = encodedFields[f].querySelector('.premium-fields-placeholder');
-          if (placeholder && data) {
-            var html = '';
-            if (data.v) html += '<span><strong style="color:var(--mmt-text);">Vendor:</strong> ' + data.v + '</span>';
-            if (data.val) html += '<span><strong style="color:var(--mmt-text);">Value:</strong> ' + data.val + '</span>';
-            if (data.n) html += '<span><strong style="color:var(--mmt-text);">NAICS:</strong> ' + data.n + '</span>';
-            placeholder.innerHTML = html;
-            if (data.ver) {
-              var d = new Date(data.ver);
-              var days = Math.floor((Date.now() - d.getTime()) / 86400000);
-              var verColor = days < 7 ? '#22C55E' : days < 30 ? '#FBBF24' : days < 90 ? '#FB923C' : '#F87171';
-              var icon = days < 7 ? '\u2713' : '\u26A0';
-              var fmt = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-              placeholder.insertAdjacentHTML('afterend', '<span class="text-xs block mt-2" style="color:' + verColor + ';">' + icon + ' Verified ' + fmt + '</span>');
-            }
+      // Helper: paint a row of vendor/value/naics into a card placeholder
+      function applyCardData(slug, data) {
+        var card = document.querySelector('[data-premium-fields-slug="' + slug.replace(/"/g, '') + '"]');
+        if (!card || !data) return;
+        var placeholder = card.querySelector('.premium-fields-placeholder');
+        if (!placeholder) return;
+        var html = '';
+        if (data.v) html += '<span><strong style="color:var(--mmt-text);">Vendor:</strong> ' + esc(data.v) + '</span>';
+        if (data.val) html += '<span><strong style="color:var(--mmt-text);">Value:</strong> ' + esc(data.val) + '</span>';
+        if (data.n) html += '<span><strong style="color:var(--mmt-text);">NAICS:</strong> ' + esc(data.n) + '</span>';
+        placeholder.innerHTML = html;
+        if (data.ver) {
+          var d = new Date(data.ver);
+          var days = Math.floor((Date.now() - d.getTime()) / 86400000);
+          var verColor = days < 7 ? '#22C55E' : days < 30 ? '#FBBF24' : days < 90 ? '#FB923C' : '#F87171';
+          var icon = days < 7 ? '\u2713' : '\u26A0';
+          var fmt = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+          placeholder.insertAdjacentHTML('afterend', '<span class="text-xs block mt-2" style="color:' + verColor + ';">' + icon + ' Verified ' + fmt + '</span>');
+        }
+      }
+
+      // Helper: fill detail-page .contract-premium-field nodes by name
+      function applyDetail(data) {
+        if (!data) return;
+        var premFields = document.querySelectorAll('.contract-premium-field');
+        for (var cf = 0; cf < premFields.length; cf++) {
+          var field = premFields[cf].getAttribute('data-field');
+          if (field && data[field]) premFields[cf].textContent = data[field];
+        }
+        var contractGate = document.getElementById('contract-gate');
+        if (contractGate) contractGate.style.display = 'none';
+      }
+
+      var detailSlugEl = document.querySelector('[data-contract-premium-slug]');
+      var cardSlugEls = document.querySelectorAll('[data-premium-fields-slug]');
+
+      if ((detailSlugEl || cardSlugEls.length) && contractEmail) {
+        // Detail page: targeted slug request. Tracker page: bulk
+        // request (no slug) returns the entire keyed map in one call.
+        var body = detailSlugEl
+          ? { email: contractEmail, slug: detailSlugEl.getAttribute('data-contract-premium-slug') }
+          : { email: contractEmail };
+        fetch('/.netlify/functions/contract-fields', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        }).then(function (res) {
+          if (!res.ok) return null;
+          return res.json();
+        }).then(function (payload) {
+          if (!payload || !payload.intel) return;
+          if (detailSlugEl) {
+            var slug = detailSlugEl.getAttribute('data-contract-premium-slug');
+            applyDetail(payload.intel[slug]);
           }
-        } catch (e) {}
+          for (var i = 0; i < cardSlugEls.length; i++) {
+            var s = cardSlugEls[i].getAttribute('data-premium-fields-slug');
+            applyCardData(s, payload.intel[s]);
+          }
+        }).catch(function () { /* silent \u2014 placeholders stay visible */ });
       }
     }
 
