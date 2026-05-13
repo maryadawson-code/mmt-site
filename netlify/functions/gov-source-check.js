@@ -14,13 +14,11 @@
 // whether they are SET. Safe to expose; never echoes secrets.
 // ============================================================
 
-const path = require("path");
-const fs = require("fs");
-
-// The Netlify function bundle does not include the repo root by
-// default. The registry + check module live two directories up from
-// netlify/functions. esbuild WILL trace these `require` calls.
-const { checkAll, summarize } = require(path.join(__dirname, "..", "..", "lib", "gov-sources", "check"));
+// Use a literal relative `require` so esbuild traces and bundles the
+// registry + check modules into the function. A runtime-built path
+// (path.join(__dirname, ...)) does NOT bundle and fails at cold start
+// with "Cannot find module" — verified 2026-05-13.
+const { checkAll, summarize } = require("../../lib/gov-sources/check");
 
 exports.handler = async (event) => {
   const qs = event.queryStringParameters || {};
