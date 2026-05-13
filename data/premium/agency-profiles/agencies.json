@@ -4,9 +4,9 @@
     "abbrev": "DHA",
     "name": "Defense Health Agency",
     "type": "Combat Support Agency (DoD)",
-    "lastUpdated": "2026-05-12",
-    "description": "DoD's combat support agency for the Military Health System. Buys MHS GENESIS, PEO DHMS / EIDS, enterprise imaging, and the cyber and data modernization layer beneath them.",
-    "mmtRead": "DHA reorganized April 20, 2026 with FOC target July 19. PEO DHMS retains executive authority over MHS GENESIS, JOMIS, and DMIX/EIDS while acquisition reporting moves under AD-RDA. The Office of Warfighter Health Advantage (RDML Tracy Farrill, just appointed) consolidates data, analytics, AI, and digital health into a single seat. The HCDS deployment RFP and the Leidos bridge are both inside the PAE transition window.",
+    "lastUpdated": "2026-05-13",
+    "description": "DoD's combat support agency for the Military Health System. Buys MHS GENESIS, PEO DHMS, OPMED (operational medicine systems including JOMIS and MHS GENESIS-Theater), EIDS, HCDS, enterprise imaging, and the cyber and data modernization layer beneath them. Reorganized April 20, 2026 with FOC target July 19; Office of Warfighter Health Advantage (OWHA) consolidates data, analytics, AI, and digital health.",
+    "mmtRead": "DHA reorganized April 20, 2026 with FOC target July 19. PEO DHMS retains executive authority over MHS GENESIS, OPMED programs (JOMIS, MHS GENESIS-Theater, deployable / Role 1-2-3 medical C2, blood inventory, theater data movement), and DMIX / EIDS while acquisition reporting moves under AD-RDA. The Office of Warfighter Health Advantage (RDML Tracy Farrill, just appointed) consolidates data, analytics, AI, and digital health into a single seat. The HCDS deployment RFP and the Leidos bridge are both inside the PAE transition window.",
     "officialSources": [
       {
         "label": "DHA program office (health.mil)",
@@ -26,7 +26,8 @@
       "PEO DHMS / EIDS",
       "Enterprise Imaging",
       "Cyber and Data Modernization",
-      "OWHA (data, analytics, AI, digital health)"
+      "OWHA (data, analytics, AI, digital health)",
+      "OPMED (operational medicine: JOMIS, MHS GENESIS-Theater, deployable systems)"
     ],
     "procurementSignals": [
       "HCDS deployment RFP (inside PAE transition window)",
@@ -185,9 +186,9 @@
     "abbrev": "VA",
     "name": "Department of Veterans Affairs / Veterans Health Administration",
     "type": "Cabinet Department / Integrated Health System",
-    "lastUpdated": "2026-05-12",
-    "description": "Largest integrated healthcare system in the US (1,298 facilities, 9M+ enrolled veterans). VHA delivers care; VA OIT runs the IT layer through T4NG2 and IHT 2.0; community care flows through CCN Next Gen; imaging and ambient AI are active growth areas.",
-    "mmtRead": "VA EHR modernization is back on track with four Michigan sites live April 11, 2026 \u2014 first wave of 13 sites planned for 2026. T4NG2 is awarded ($60.7B, 33 final awardees post-protest). IHT 2.0 ($14B, 100% SDVOSB, 9 awardees) covers VHA technology services through 2035. The VA Ambient Scribe IDIQ (36C10B26R0006) is in active GAO protest with decision due Aug 6 2026.",
+    "lastUpdated": "2026-05-13",
+    "description": "Largest integrated US healthcare system (1,298 facilities, 9M+ enrolled veterans). VHA RISE reorganization, HELM / VALIP supply chain DevSecOps, CCN Next Gen community care, and EHRM Oracle Health deployment all run in parallel. VA OIT operates the IT layer through T4NG2 and IHT 2.0; imaging and ambient AI are active growth areas.",
+    "mmtRead": "VA is mid-reorganization (VHA RISE, December 2025 announcement) and mid-modernization. EHRM is back on track with four Michigan sites live April 11, 2026 (first wave of 13 sites for 2026). T4NG2 awarded ($60.7B, 33 final awardees post-protest); IHT 2.0 ($14B, 100% SDVOSB, 9 awardees) covers VHA technology services through 2035. CCN Next Gen proposals due April 3, 2026 (in award review). HELM / VALIP supply-chain DevSecOps is the under-tracked acquisition + financial-system integration lane; VA Ambient Scribe IDIQ (36C10B26R0006) is in active GAO protest with decision due August 6, 2026. The capture frame is agency shift before RFP: read RISE, then map to EHRM / CCN / HELM signals.",
     "officialSources": [
       {
         "label": "VHA About",
@@ -207,13 +208,18 @@
       "Community Care Network",
       "Telehealth and VA Health Connect",
       "Enterprise Imaging",
-      "T4NG2 IT services"
+      "T4NG2 IT services",
+      "VHA RISE reorganization (18 VISNs to 5 regions, 18-24 months)",
+      "HELM / VALIP (VA supply chain DevSecOps)",
+      "Acquisition + financial-system integration (post-RISE pipeline)"
     ],
     "procurementSignals": [
       "CCN Next Gen Medical 36C10G26R0003 (proposals closed Apr 3 2026)",
       "VA Ambient Scribe protest decision due Aug 6 2026",
       "VA Enterprise Imaging 36C10X25Q0015 pre-RFP",
-      "VA Health Services DevSecOps 36C10B26Q0163 sources sought"
+      "VA Health Services DevSecOps 36C10B26Q0163 sources sought",
+      "VA Supply Chain DevSecOps / HELM sources sought (36C10B26Q0163 adjacent)",
+      "VHA RISE structural milestones (regional consolidation cadence)"
     ],
     "openVehicles": [
       "T4NG2",
@@ -251,7 +257,9 @@
     "upcoming_signals": [
       "Michigan EHRM go-lives 2 through 13 (rolling 2026)",
       "VA Ambient Scribe protest decision Aug 6 2026",
-      "T4NG2 task order ramp-up"
+      "T4NG2 task order ramp-up",
+      "VHA RISE: 18-VISN to 5-region rollout milestones (read agency shift before RFP)",
+      "HELM / VALIP supply chain DevSecOps procurement activity (acquisition + financial system integration)"
     ],
     "related_tags": [
       "Veterans Affairs",
@@ -673,9 +681,9 @@
     "abbrev": "HHS",
     "name": "Department of Health and Human Services",
     "type": "Cabinet Department (parent of CMS, NIH, FDA, CDC, IHS, ONC, ARPA-H)",
-    "lastUpdated": "2026-05-12",
-    "description": "Department-level map. HHS itself sets policy and coordinates; the buying happens through its operating divisions. Map: CMS (Medicare, Medicaid, claims), NIH (research IT, NITAAC), FDA (Sentinel, regulated-product data), CDC (data modernization, DCIPHER), IHS (PATH EHR), ONC (interoperability, certification), ARPA-H (OTA-funded R&D).",
-    "mmtRead": "HHS IT spend is decentralized. Treat HHS as a navigation layer: route procurement questions to the operating division that owns the program (CMS for claims, NIH for research IT, FDA for surveillance, etc.). The departmental level is for policy and rulemaking, not contract awards.",
+    "lastUpdated": "2026-05-13",
+    "description": "Department-level map. HHS itself sets policy and coordinates; the buying happens through its operating divisions. OS/OCIO (Office of the Secretary, CIO) is the enterprise IT, cybersecurity, AI governance, and data-operations consolidation point at the department level. Operating divisions: CMS (Medicare, Medicaid, claims), NIH (research IT, NITAAC), FDA (Sentinel, regulated-product data), CDC (data modernization, DCIPHER), IHS (PATH EHR), ASTP/ONC (interoperability, certification), ARPA-H (OTA-funded R&D).",
+    "mmtRead": "HHS IT spend is decentralized, but OS/OCIO is the department-level consolidation seat for AI, data, technology, cybersecurity, and data operations \u2014 that's where cross-OPDIV framing lives (the HHS AI strategy + the HIPAA security rule update + cross-cutting tech and cyber direction). Treat HHS as a navigation layer: route procurement questions to the operating division that owns the program (CMS for claims, NIH for research IT, FDA for surveillance, ASTP/ONC for standards). The departmental level is for policy, rulemaking, and OCIO-level enterprise coordination, not contract awards.",
     "officialSources": [
       {
         "label": "HHS About",
@@ -704,12 +712,17 @@
       {
         "label": "FDA Sentinel",
         "url": "https://www.fda.gov/safety/fdas-sentinel-initiative"
+      },
+      {
+        "label": "HHS AI Strategy & Implementation",
+        "url": "https://www.hhs.gov/programs/topic-sites/ai/strategy-implementation/index.html"
       }
     ],
     "keyPrograms": [
       "Department-level coordination",
       "Cross-OPDIV interoperability and AI governance",
-      "HIPAA modernization (policy)"
+      "HIPAA modernization (policy)",
+      "OS/OCIO enterprise IT, cybersecurity, AI/data governance, data operations (department level)"
     ],
     "procurementSignals": [
       "See operating division profiles for actual procurement"
@@ -1683,9 +1696,9 @@
     "abbrev": "GSA",
     "name": "General Services Administration",
     "type": "Acquisition Channel (governmentwide IT vehicles)",
-    "lastUpdated": "2026-05-12",
-    "description": "Acquisition channel only. GSA runs Alliant 3 (active, no ceiling), Polaris (small business), 8(a) STARS III ($50B), and OASIS+ (governmentwide professional services). Track GSA vehicles for the access lane, not for the agency mission itself.",
-    "mmtRead": "Alliant 3 went live with NTP March 10 2026 (42 Phase 1 contractors). Polaris small business GWAC is active. 8(a) STARS III ordering window runs through Jul 1 2026 with GSA option through 2029. OASIS+ continues on-ramping.",
+    "lastUpdated": "2026-05-13",
+    "description": "Acquisition channel + GSAR owner. Runs Alliant 3 (active, no ceiling), Polaris (small business), 8(a) STARS III ($50B), OASIS+ (professional services). GSAR \u2014 the GSA Acquisition Regulation, including the GSAR 552.239-7001 AI procurement clause \u2014 sets governmentwide AI and IT procurement governance language. Track GSA vehicles AND the GSAR rule-shaping lane.",
+    "mmtRead": "Alliant 3 went live with NTP March 10 2026 (42 Phase 1 contractors). Polaris small business GWAC is active. 8(a) STARS III ordering window runs through Jul 1 2026 with GSA option through 2029. OASIS+ continues on-ramping. The GSAR layer \u2014 particularly the GSAR 552.239-7001 AI procurement clause and the Refresh 32 acceptance work \u2014 is the rule-shaping signal vendors should track alongside vehicle access; AI procurement governance is moving faster than the vehicle on-ramps.",
     "officialSources": [
       {
         "label": "GSA Alliant 3",
@@ -1708,12 +1721,14 @@
       "Alliant 3 (no ceiling, NTP Mar 10 2026)",
       "Polaris (small business GWAC)",
       "8(a) STARS III ($50B, Jul 2026 ordering end)",
-      "OASIS+ (professional services, no ceiling)"
+      "OASIS+ (professional services, no ceiling)",
+      "GSAR (GSA Acquisition Regulation) \u2014 AI procurement governance, e.g., 552.239-7001"
     ],
     "procurementSignals": [
       "Alliant 3 task orders ramping",
       "8(a) STARS III ordering window closes Jul 1 2026",
-      "OASIS+ on-ramp opportunities"
+      "OASIS+ on-ramp opportunities",
+      "GSAR 552.239-7001 AI clause (procurement-governance watch)"
     ],
     "openVehicles": [
       "Alliant 3",

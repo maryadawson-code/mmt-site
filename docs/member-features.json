@@ -4,7 +4,10 @@
   "features": [
     {
       "feature_name": "Ask MMT",
-      "public_marketing_urls": ["/askmtt", "/ask-mtt"],
+      "public_marketing_urls": [
+        "/askmtt",
+        "/ask-mtt"
+      ],
       "member_url": "/premium/ask-mmt.html",
       "backing_function": "netlify/functions/ask-mmt-submit.js",
       "entitlement_required": "premium|founding|institutional|admin",
@@ -16,7 +19,9 @@
     },
     {
       "feature_name": "Pursuit Score",
-      "public_marketing_urls": ["/pursuit-score"],
+      "public_marketing_urls": [
+        "/pursuit-score"
+      ],
       "member_url": "/premium/pursuit-score.html",
       "backing_function": "netlify/functions/pursuit-score.js",
       "entitlement_required": "premium|founding|institutional|admin",
@@ -28,7 +33,9 @@
     },
     {
       "feature_name": "Pursuit Calendar",
-      "public_marketing_urls": ["/pursuit-calendar"],
+      "public_marketing_urls": [
+        "/pursuit-calendar"
+      ],
       "member_url": "/premium/calendar.html",
       "backing_function": "netlify/functions/pursuit-calendar-refresh.js",
       "entitlement_required": "premium|founding|institutional|admin",
@@ -40,7 +47,9 @@
     },
     {
       "feature_name": "Capture Corner",
-      "public_marketing_urls": ["/capture-corner"],
+      "public_marketing_urls": [
+        "/capture-corner"
+      ],
       "member_url": "/capture-corner.html",
       "backing_function": "build.js (per-article render) + content/newsletter/*.md frontmatter",
       "entitlement_required": "free (teaser) / premium+ (full)",
@@ -52,7 +61,9 @@
     },
     {
       "feature_name": "Compliance Check",
-      "public_marketing_urls": ["/compliance-check"],
+      "public_marketing_urls": [
+        "/compliance-check"
+      ],
       "member_url": "/premium/compliance-check.html",
       "backing_function": "netlify/functions/compliance-check.js",
       "entitlement_required": "premium|founding|institutional|admin",
@@ -64,7 +75,9 @@
     },
     {
       "feature_name": "Signal Chain",
-      "public_marketing_urls": ["/signal-chain"],
+      "public_marketing_urls": [
+        "/signal-chain"
+      ],
       "member_url": "/premium/signal-chain.html",
       "backing_function": "netlify/functions/signal-chain.js",
       "entitlement_required": "premium|founding|institutional|admin",
@@ -76,7 +89,10 @@
     },
     {
       "feature_name": "ProposalPulse",
-      "public_marketing_urls": ["/proposal-pulse", "/proposalpulse"],
+      "public_marketing_urls": [
+        "/proposal-pulse",
+        "/proposalpulse"
+      ],
       "member_url": "/proposal-pulse.html",
       "backing_function": "netlify/functions/score-deck.js",
       "entitlement_required": "free (3 trials, then paid)",
@@ -88,7 +104,10 @@
     },
     {
       "feature_name": "MarketPulse",
-      "public_marketing_urls": ["/marketpulse", "/market-pulse"],
+      "public_marketing_urls": [
+        "/marketpulse",
+        "/market-pulse"
+      ],
       "member_url": "/marketpulse.html",
       "backing_function": "netlify/functions/marketpulse-gateway.js",
       "entitlement_required": "free (1 brief), then paid",
@@ -100,7 +119,9 @@
     },
     {
       "feature_name": "Contract Tracker",
-      "public_marketing_urls": ["/contract-tracker"],
+      "public_marketing_urls": [
+        "/contract-tracker"
+      ],
       "member_url": "/contract-tracker.html",
       "backing_function": "build.js + netlify/functions/opportunity-feed.js + sb-vehicle-radar cron",
       "entitlement_required": "public preview / premium full intel",
@@ -112,7 +133,9 @@
     },
     {
       "feature_name": "IDIQ Tracker",
-      "public_marketing_urls": ["/idiq-tracker"],
+      "public_marketing_urls": [
+        "/idiq-tracker"
+      ],
       "member_url": "/idiq-tracker.html",
       "backing_function": "build.js (renders data/idiq-vehicles.json)",
       "entitlement_required": "public preview / premium full data",
@@ -124,12 +147,16 @@
     },
     {
       "feature_name": "RFP Shredder",
-      "public_marketing_urls": ["/rfp-shredder", "/rfp-shreadder", "/solicitation-shredder"],
+      "public_marketing_urls": [
+        "/rfp-shredder",
+        "/rfp-shreadder",
+        "/solicitation-shredder"
+      ],
       "member_url": "/rfp-shredder.html",
       "backing_function": "MissionPulse backend (cross-repo); mmt-site is a marketing + handoff page only until public access wires up",
       "entitlement_required": "private_beta (pilot list); future: premium|founding|institutional|admin",
       "public_locked_preview_behavior": "honest landing page explaining private-beta status and pilot signup; no scoring is run on this domain",
-      "expected_data_source": "MissionPulse RFP Shredder service — see docs/rfp-shredder-cross-repo-handoff.md",
+      "expected_data_source": "MissionPulse RFP Shredder service \u2014 see docs/rfp-shredder-cross-repo-handoff.md",
       "freshness_sla_hours": null,
       "smoke_test_url": "/rfp-shredder",
       "noindex": false,
@@ -137,7 +164,9 @@
     },
     {
       "feature_name": "Friday Brief Archive",
-      "public_marketing_urls": ["/premium/briefings"],
+      "public_marketing_urls": [
+        "/premium/briefings"
+      ],
       "member_url": "/premium/briefings.html",
       "backing_function": "build.js generateBriefArchiveHtml + content/friday-briefs + premium/briefs",
       "entitlement_required": "premium|founding|institutional|admin",
@@ -151,7 +180,9 @@
     },
     {
       "feature_name": "Premium Dashboard",
-      "public_marketing_urls": ["/dashboard"],
+      "public_marketing_urls": [
+        "/dashboard"
+      ],
       "member_url": "/dashboard.html",
       "backing_function": "build.js (dashboard shell + dynamic content)",
       "entitlement_required": "premium|founding|institutional|admin (full); free sees sign-in",
@@ -163,7 +194,9 @@
     },
     {
       "feature_name": "Tools Hub",
-      "public_marketing_urls": ["/tools"],
+      "public_marketing_urls": [
+        "/tools"
+      ],
       "member_url": "/resources.html#paid-tools",
       "backing_function": "static page (build.js renders resources.html)",
       "entitlement_required": "public",
@@ -175,7 +208,9 @@
     },
     {
       "feature_name": "Pricing",
-      "public_marketing_urls": ["/pricing"],
+      "public_marketing_urls": [
+        "/pricing"
+      ],
       "member_url": "/pricing.html",
       "backing_function": "static page",
       "entitlement_required": "public",
@@ -187,7 +222,9 @@
     },
     {
       "feature_name": "Help",
-      "public_marketing_urls": ["/help"],
+      "public_marketing_urls": [
+        "/help"
+      ],
       "member_url": "/help.html",
       "backing_function": "static page + support-agent.js",
       "entitlement_required": "public",
@@ -199,7 +236,9 @@
     },
     {
       "feature_name": "FPDS Sunset Watch",
-      "public_marketing_urls": ["/fpds-migration"],
+      "public_marketing_urls": [
+        "/fpds-migration"
+      ],
       "member_url": "/premium/fpds-migration.html",
       "backing_function": "static page (Sprint 4 MMT-401)",
       "entitlement_required": "premium|founding|institutional|admin",
@@ -211,19 +250,24 @@
     },
     {
       "feature_name": "Sole-Source & Limited-Competition Watch",
-      "public_marketing_urls": ["/single-bidder", "/sole-source"],
+      "public_marketing_urls": [
+        "/single-bidder",
+        "/sole-source"
+      ],
       "member_url": "/premium/single-bidder.html",
       "backing_function": "netlify/functions/refresh-single-bidder.js",
       "entitlement_required": "premium|founding|institutional|admin",
       "public_locked_preview_behavior": "redirect to dashboard.html (sign-in gate)",
-      "expected_data_source": "USASpending.gov v2 (no auth) — extent_competed_codes [B,C,E,G] across VA / DoD-DHA / HHS subcomponents (ARPA-H, CMS, ONC, NIH, CDC, FDA, IHS), 365-day window, $250K+ floor",
+      "expected_data_source": "USASpending.gov v2 (no auth) \u2014 extent_competed_codes [B,C,E,G] across VA / DoD-DHA / HHS subcomponents (ARPA-H, CMS, ONC, NIH, CDC, FDA, IHS), 365-day window, $250K+ floor",
       "freshness_sla_hours": 720,
       "smoke_test_url": "/premium/single-bidder.html",
       "noindex": true
     },
     {
       "feature_name": "GAO Sustain Tracker",
-      "public_marketing_urls": ["/gao-sustain"],
+      "public_marketing_urls": [
+        "/gao-sustain"
+      ],
       "member_url": "/premium/gao-sustain.html",
       "backing_function": "static page reading content/gao-sustain/*.md (Sprint 4 MMT-403)",
       "entitlement_required": "premium|founding|institutional|admin",
@@ -235,7 +279,9 @@
     },
     {
       "feature_name": "Key People",
-      "public_marketing_urls": ["/key-people"],
+      "public_marketing_urls": [
+        "/key-people"
+      ],
       "member_url": "/premium/key-people.html",
       "backing_function": "static page reading data/key-people.json (Sprint 5 wave2)",
       "entitlement_required": "premium|founding|institutional|admin",
@@ -247,7 +293,10 @@
     },
     {
       "feature_name": "Forecast Delta Tracker",
-      "public_marketing_urls": ["/forecast-delta", "/forecasts"],
+      "public_marketing_urls": [
+        "/forecast-delta",
+        "/forecasts"
+      ],
       "member_url": "/premium/forecast-delta.html",
       "backing_function": "static page reading data/forecast-portals.json + content/forecast-delta/*.md (Sprint 5 wave2)",
       "entitlement_required": "premium|founding|institutional|admin",
@@ -259,7 +308,10 @@
     },
     {
       "feature_name": "CR & Appropriations Exposure Map",
-      "public_marketing_urls": ["/cr-exposure", "/appropriations"],
+      "public_marketing_urls": [
+        "/cr-exposure",
+        "/appropriations"
+      ],
       "member_url": "/premium/cr-exposure.html",
       "backing_function": "static page reading data/cr-deadlines.json (Sprint 5 wave2)",
       "entitlement_required": "premium|founding|institutional|admin",
@@ -268,6 +320,21 @@
       "freshness_sla_hours": null,
       "smoke_test_url": "/premium/cr-exposure.html",
       "noindex": true
+    },
+    {
+      "feature_name": "Agency Profiles",
+      "public_marketing_urls": [
+        "/agencies/",
+        "/agencies"
+      ],
+      "member_url": "/agencies/",
+      "backing_function": "netlify/functions/agency-intel.js (premium fetch); build.js generateAgencyProfilePage + generateAgenciesLandingHtml (public shells)",
+      "entitlement_required": "premium|founding|institutional|admin",
+      "public_locked_preview_behavior": "public shell shows name + role + MMT Read teaser + Official Sources + Premium Module pills + upgrade CTA; premium body fetched after entitlement",
+      "expected_data_source": "data/premium/agency-profiles/agencies.json (11 agencies \u2014 DHA, VA, HHS, ASTP/ONC, ARPA-H, CMS, IHS, CDC, FDA, NIH/NITAAC, GSA)",
+      "freshness_sla_hours": null,
+      "smoke_test_url": "/agencies/",
+      "noindex": false
     }
   ]
 }
