@@ -22,7 +22,8 @@
     "gov:check": "node scripts/gov-check.js",
     "gov:check:probe": "node scripts/gov-check.js --probe",
     "validate:agency-profiles": "node scripts/validate-agency-profiles.js",
-    "validate:contract-tracker": "node scripts/validate-contract-tracker.js"
+    "validate:contract-tracker": "node scripts/validate-contract-tracker.js",
+    "scan:pii": "node scripts/scan-pii.js"
   },
   "dependencies": {
     "@sentry/node": "^9.0.0",

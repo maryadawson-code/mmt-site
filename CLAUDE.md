@@ -597,11 +597,10 @@ What shipped:
    webhook endpoints + recent events + configured price IDs. Delete
    after the webhook gap is confirmed resolved.
 
-8 subscribers backfilled into mp_users 2026-05-05 (cheryl.scheidt@mantech.com,
-estherhbrito@briehealthsolutionsllc.com, m8williams@yahoo.com,
-ericbbowman@gmail.com, don@starrdoc.com, kasondra.phillips@icloud.com,
-suzanne.charleston@elevancehealth.com, bdmanager@deepmile.com) with
-correct tier/founding flags. They got the May 5 Capture Corner email.
+8 subscribers backfilled into mp_users 2026-05-05 (customer emails redacted
+2026-05-13 per Sprint A PII scrub — operator can retrieve the list from
+Supabase mp_users by created_at = 2026-05-05) with correct tier/founding
+flags. They got the May 5 Capture Corner email.
 
 Open follow-ups:
 - Diagnose why the Stripe webhook isn't being called by Stripe
@@ -664,10 +663,10 @@ Five live tickets opened by Mary's reports of subscriber-visible failures. Hard 
 
 1. **`netlify.toml`** — added `static/lead-magnets/**` to
    `[functions].included_files`. FY2027 lead-magnet PDF will be in
-   the function bundle on next deploy. Backfill the
-   `lherrington@koniag-gs.com` submission via
-   `scripts/backfill-fy2027-pdf.js` (add their row to
-   `data/fy2027-backfill-list.csv` first).
+   the function bundle on next deploy. Backfill the missed subscriber
+   submission (customer email redacted 2026-05-13 — Mary has the
+   contact in her ops log) via `scripts/backfill-fy2027-pdf.js` (add
+   their row to `private/fy2027-backfill-list.csv` first).
 2. **`netlify.toml`** — added `[functions."protest-monitor"]
    schedule = "0 12 * * *"` so GAO protest case checks actually run
    daily. Function was implemented but never scheduled.
@@ -724,9 +723,10 @@ Five live tickets opened by Mary's reports of subscriber-visible failures. Hard 
 
 ### Known follow-ups (Mary's call)
 
-- Backfill `lherrington@koniag-gs.com` once the deploy ships the
-  static/lead-magnets bundle: append to
-  `data/fy2027-backfill-list.csv`, run
+- Backfill the missed FY2027 lead-magnet submission once the deploy
+  ships the static/lead-magnets bundle (customer email redacted
+  2026-05-13 — Mary has the contact in her ops log): append to
+  `private/fy2027-backfill-list.csv`, run
   `node scripts/backfill-fy2027-pdf.js`. Or one-shot via a Node
   REPL using the exported `sendLeadMagnet` helper.
 - Author future May Monthly Brief content as `premium/monthly/

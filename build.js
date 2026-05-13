@@ -2922,15 +2922,20 @@ function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleM
         });
       }
 
-      // Glossary: encode contractor notes so full text isn't in HTML source
+      // Glossary contractor notes — per the 2026-05-13 Sprint A audit,
+      // the base64-encoded `data-full-note=` attribute previously
+      // shipped the full note in static HTML, decodable via atob() by
+      // any visitor. Now we keep the 8-word teaser only; the full note
+      // is delivered through the entitlement-gated premium portal
+      // (premium-deliverable-render.js) rather than baked into public
+      // glossary pages.
       if (file === 'glossary.html') {
         html = html.replace(
           /<p class="text-xs contractor-note-gated"[^>]*>([^<]+)<\/p>/g,
           (match, noteText) => {
             const words = noteText.trim().split(/\s+/);
             const teaser = words.slice(0, 8).join(' ');
-            const encoded = Buffer.from(noteText.trim()).toString('base64');
-            return `<p class="text-xs contractor-note-gated" data-requires="premium" data-full-note="${encoded}" style="color:var(--mmt-text-secondary);">${teaser}...</p>`;
+            return `<p class="text-xs contractor-note-gated" style="color:var(--mmt-text-secondary);">${teaser}<span style="color:#92710A;font-weight:600;">… &#9733; full contractor note in MMT Premium briefs</span></p>`;
           }
         );
       }
@@ -3789,7 +3794,7 @@ function generateNewswireHtml(newsItems) {
               <span class="text-xs whitespace-nowrap" style="color:var(--mmt-text-secondary);">${escapeHtml(time)}</span>
             </div>
             <h3 class="text-base font-bold mb-1" style="color:var(--mmt-navy);">${escapeHtml(item.title)}</h3>
-            ${item.description ? `<div data-access="premium" data-premium-text="${Buffer.from(escapeHtml(item.description)).toString('base64')}"><p class="text-sm leading-relaxed premium-text-placeholder" style="color:var(--mmt-text);"><em style="color:var(--mmt-text-secondary);">Premium context</em></p></div><div data-gate-overlay="premium"><p class="text-xs" style="color:#92710A;">&#9733; Full context — Premium</p></div>` : ''}
+            ${item.description ? `<p class="text-xs" style="color:#92710A;">&#9733; Full context on the source article (link above)</p>` : ''}
           </a>\n`;
     });
 

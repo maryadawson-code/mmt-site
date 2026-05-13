@@ -105,6 +105,17 @@ const PATTERNS = [
   // Real gates use the `data-gate-overlay="premium"` chip + locked
   // labels (see build.js generateContractTrackerHtml).
   { name: 'block-character redaction (████)',  re: /████/ },
+  // Sprint A 2026-05-13 anti-regression gates. These patterns were the
+  // root cause of the P0 leaks closed in this sprint — any reintroduction
+  // ships premium content to anyone who runs atob() in DevTools.
+  { name: 'agency-intel base64 payload (P0 — Sprint A)',
+    re: /data-agency-intel="[A-Za-z0-9+/=]{40,}"/ },
+  { name: 'contract-tracker base64 payload (P0 — Sprint A)',
+    re: /data-contract-premium="[A-Za-z0-9+/=]{40,}"|data-premium-fields="[A-Za-z0-9+/=]{40,}"/ },
+  { name: 'newswire premium-text base64 (P0 — Sprint A)',
+    re: /data-premium-text="[A-Za-z0-9+/=]{40,}"/ },
+  { name: 'glossary full-note base64 (P0 — Sprint A)',
+    re: /data-full-note="[A-Za-z0-9+/=]{40,}"/ },
 ];
 
 const failures = [];

@@ -18,9 +18,55 @@
 
 const { createClient } = require("@supabase/supabase-js");
 const { marked } = require("marked");
+const { loadEntitlement, blockMessageFor, logEntitlementMismatch } = require("./lib/entitlement");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
+
+function parseCookies(header) {
+  const out = {};
+  if (!header) return out;
+  String(header).split(";").forEach((p) => {
+    const i = p.indexOf("=");
+    if (i < 0) return;
+    const k = p.slice(0, i).trim();
+    const v = p.slice(i + 1).trim();
+    if (k) out[k] = decodeURIComponent(v);
+  });
+  return out;
+}
+
+function upgradeShell({ slug, reason, message }) {
+  // Server-rendered upgrade page for unauthenticated / non-entitled
+  // requests. Replaces the previous behavior of returning the full
+  // body_markdown to anyone who hit the URL. NO premium body content
+  // is included in this response by design.
+  const safeSlug = String(slug || "").replace(/[<>"]/g, "");
+  return {
+    statusCode: reason === "NOT_SIGNED_IN" ? 401 : 403,
+    headers: {
+      "Content-Type": "text/html; charset=utf-8",
+      // No public caching of the upgrade shell — different visitors
+      // need different responses based on their auth state.
+      "Cache-Control": "private, no-store, max-age=0",
+    },
+    body: `<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MMT Premium · Sign in or subscribe</title>
+<meta name="robots" content="noindex, nofollow">
+<style>body{font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif;color:#0A192F;max-width:560px;margin:0 auto;padding:48px 24px;line-height:1.6;background:#FFFFFF;text-align:center;}
+.tag{display:inline-block;background:#FEF9E7;color:#92710A;padding:4px 10px;border-radius:4px;font-size:12px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:14px;}
+h1{font-size:24px;margin:0 0 12px;}p{color:#5C6B7A;margin:0 0 22px;}
+a.btn{display:inline-block;padding:12px 24px;background:#0A192F;color:#FFFFFF;font-weight:700;font-size:14px;border-radius:8px;text-decoration:none;margin:0 6px;}
+a.btn.secondary{background:#FFFFFF;color:#0A192F;border:1px solid #D8E0E8;}</style></head><body>
+<span class="tag">★ MMT Premium</span>
+<h1>This is a Premium deliverable.</h1>
+<p>${message || "Sign in or subscribe to read this issue. Premium content is delivered only to verified subscribers."}</p>
+<a class="btn" href="/pricing.html">Start Premium</a>
+<a class="btn secondary" href="/dashboard.html?redirect=${encodeURIComponent("/premium/" + safeSlug)}">Sign in</a>
+</body></html>`,
+  };
+}
 
 const CAPTURE_CORNER_CROSS_LINKS = [
   { slug: "/premium/capture-corner/biosurveillance-reframing-playbook/", title: "Biosurveillance Reframing Playbook" },
@@ -96,6 +142,27 @@ exports.handler = async (event) => {
   if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) return render404();
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
+  // P0 entitlement gate (Sprint A 2026-05-13).
+  // Previously this endpoint returned data.body_markdown to anyone who
+  // hit the URL, with Cache-Control: public, max-age=60. That meant
+  // every premium deliverable was effectively public. Now: require
+  // mmt_email cookie, run loadEntitlement against Supabase, return
+  // upgrade shell on anonymous / non-entitled.
+  const cookies = parseCookies(event.headers?.cookie || event.headers?.Cookie);
+  const email = (cookies.mmt_email || "").trim();
+  if (!email) {
+    return upgradeShell({ slug, reason: "NOT_SIGNED_IN", message: "Sign in or subscribe to read this issue." });
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return upgradeShell({ slug, reason: "NOT_SIGNED_IN", message: "Sign in or subscribe to read this issue." });
+  }
+  const entitlement = await loadEntitlement(supabase, email);
+  if (!entitlement.ok) {
+    const block = blockMessageFor(entitlement);
+    try { await logEntitlementMismatch(supabase, { email, tool: "premium_deliverable_render", entitlement, expected: "premium|founding|institutional|admin" }); } catch {}
+    return upgradeShell({ slug, reason: block.reason_code, message: block.message });
+  }
+
   const { data, error } = await supabase
     .from("premium_deliverables")
     .select("slug, title, body_markdown, publish_at, published, is_capture_corner_release")
@@ -115,7 +182,10 @@ exports.handler = async (event) => {
     statusCode: 200,
     headers: {
       "Content-Type": "text/html; charset=utf-8",
-      "Cache-Control": "public, max-age=60",
+      // Private cache only — different subscribers receive different
+      // bodies, and a shared/CDN cache would defeat the entitlement
+      // gate above. Previous setting (public, max-age=60) is unsafe.
+      "Cache-Control": "private, max-age=60",
     },
     body: portalShell({ title: data.title, bodyHtml, slug }),
   };

@@ -187,6 +187,76 @@
       }
     }
 
+    // Fetch IDIQ Tracker premium cards for authenticated premium users.
+    // Per the 2026-05-13 Sprint A audit, the entire premium-card payload
+    // (ceilings, awardees, MMT Intel, burn analytics, IVS, forecast
+    // confidence) was previously inlined in idiq-tracker.html and
+    // CSS-hidden for free users — anyone with view-source could read it.
+    // Payload now ships from /.netlify/functions/idiq-fields and renders
+    // only after loadEntitlement() confirms a paid tier server-side.
+    if (isAtLeastPremium(status)) {
+      var idiqEl = document.querySelector('[data-idiq-load]');
+      var idiqContainer = document.getElementById('idiq-premium-content');
+      if (idiqEl && idiqContainer) {
+        var idiqEmail = null;
+        try { idiqEmail = localStorage.getItem(EMAIL_KEY); } catch (e) {}
+        if (!idiqEmail) idiqEmail = getCookie('mmt_email');
+        if (idiqEmail) {
+          fetch('/.netlify/functions/idiq-fields', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: idiqEmail }),
+          }).then(function (res) {
+            if (!res.ok) {
+              idiqContainer.innerHTML = '<p style="font-size:14px;color:var(--mmt-text-secondary);text-align:center;padding:24px;">Premium IDIQ data unavailable. Sign in again or contact support.</p>';
+              return null;
+            }
+            return res.json();
+          }).then(function (payload) {
+            if (!payload || !Array.isArray(payload.vehicles)) return;
+            var fmtUsd = function (n) {
+              if (!n || typeof n !== 'number') return '—';
+              if (n >= 1e9) return '$' + (n/1e9).toFixed(2).replace(/\.00$/,'') + 'B';
+              if (n >= 1e6) return '$' + (n/1e6).toFixed(1).replace(/\.0$/,'') + 'M';
+              return '$' + n.toLocaleString();
+            };
+            var pct = function (n) { return (typeof n === 'number') ? (n + '%') : '—'; };
+            var html = '<div style="display:flex;flex-direction:column;gap:16px;">';
+            payload.vehicles.forEach(function (v) {
+              html += '<div class="idiq-card">';
+              if (v.status) {
+                html += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;"><span class="status-chip">' + esc(v.status) + '</span></div>';
+              }
+              html += '<h3 style="font-size:20px;font-weight:800;margin-bottom:4px;">' + esc(v.name || '') + '</h3>';
+              html += '<p style="font-size:14px;color:var(--mmt-teal);margin-bottom:12px;">' + esc(v.agency || '') + (v.vehicle_type ? ' &middot; ' + esc(v.vehicle_type) : '') + '</p>';
+              if (v.mmt_note) {
+                html += '<p style="font-size:14px;line-height:1.6;color:var(--mmt-text);margin-bottom:16px;">' + esc(v.mmt_note) + '</p>';
+              }
+              html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;font-size:13px;">';
+              html += '<div><span class="text-xs" style="color:var(--mmt-text-secondary);">Ceiling</span><div style="font-size:15px;font-weight:700;">' + esc(fmtUsd(v.ceiling_usd)) + '</div></div>';
+              html += '<div><span class="text-xs" style="color:var(--mmt-text-secondary);">Awardees</span><div style="font-size:15px;font-weight:700;">' + esc(v.primes_count || '—') + '</div></div>';
+              html += '<div><span class="text-xs" style="color:var(--mmt-text-secondary);">NAICS</span><div style="font-size:15px;font-weight:700;">' + esc(v.naics_primary || '—') + '</div></div>';
+              html += '<div><span class="text-xs" style="color:var(--mmt-text-secondary);">Burn status</span><div style="font-size:15px;font-weight:700;">' + esc(v.burn_status || '—') + '</div></div>';
+              html += '<div><span class="text-xs" style="color:var(--mmt-text-secondary);">IVS (1-5)</span><div style="font-size:15px;font-weight:700;">' + esc(v.incumbent_vulnerability_score == null ? '—' : String(v.incumbent_vulnerability_score)) + '</div></div>';
+              html += '<div><span class="text-xs" style="color:var(--mmt-text-secondary);">Forecast confidence</span><div style="font-size:15px;font-weight:700;">' + esc(pct(v.forecast_confidence_pct)) + '</div></div>';
+              html += '</div>';
+              if (v.forecast_event) {
+                html += '<div style="font-size:12px;color:var(--mmt-text-secondary);margin-bottom:10px;"><strong style="color:var(--mmt-text);">Watch:</strong> ' + esc(v.forecast_event) + (v.forecast_window ? ' (' + esc(v.forecast_window) + ')' : '') + '</div>';
+              }
+              if (v.primary_source_url) {
+                html += '<div style="font-size:11px;color:var(--mmt-text-secondary);"><a href="' + esc(v.primary_source_url) + '" rel="noopener" style="color:var(--mmt-teal);">Primary source &rarr;</a></div>';
+              }
+              html += '</div>';
+            });
+            html += '</div>';
+            idiqContainer.innerHTML = html;
+          }).catch(function () {
+            idiqContainer.innerHTML = '<p style="font-size:14px;color:var(--mmt-text-secondary);text-align:center;padding:24px;">Premium IDIQ data unavailable. Network error.</p>';
+          });
+        }
+      }
+    }
+
     // Fetch agency intelligence for authenticated premium users.
     // Per the 2026-05-13 security audit, the previous implementation
     // embedded the full premium payload as base64 in `data-agency-intel`
@@ -449,17 +519,13 @@
       }
     }
 
-    // Decode and inject premium text content for authenticated users
-    if (isAtLeastPremium(status)) {
-      var encodedText = document.querySelectorAll('[data-premium-text]');
-      for (var t = 0; t < encodedText.length; t++) {
-        try {
-          var decoded = atob(encodedText[t].getAttribute('data-premium-text'));
-          var textEl = encodedText[t].querySelector('.premium-text-placeholder');
-          if (textEl) textEl.innerHTML = decoded;
-        } catch (e) {}
-      }
-    }
+    // [Removed 2026-05-13 Sprint A] The previous block decoded a
+    // base64-encoded `data-premium-text` attribute that build.js
+    // attached to every newswire item, exposing premium descriptions
+    // to any visitor via atob(). The generator no longer emits the
+    // attribute. This block is intentionally a no-op so the public
+    // HTML carries no `atob` premium reveal path; the validator
+    // (scripts/validate-dist.js) gates against any re-introduction.
 
     // data-gate elements (show based on minimum tier)
     var gated = document.querySelectorAll("[data-gate]");
@@ -531,24 +597,23 @@
       }
     }
 
-    // Gate contractor notes in glossary
+    // Glossary contractor notes — per the 2026-05-13 Sprint A audit,
+    // the `data-full-note` base64 attribute was stripped from the
+    // build (build.js glossary regex). The 8-word teaser is now the
+    // public-tier surface. Premium subscribers receive the full
+    // contractor notes through the MMT Premium briefs (which go
+    // through the entitlement-gated premium-deliverable-render after
+    // the A1 fix). This block only adds an upgrade-link affordance
+    // on the teaser for non-premium users; it no longer decodes or
+    // reveals premium body content.
     var gatedNotes = document.querySelectorAll('.contractor-note-gated');
-    if (gatedNotes.length > 0) {
+    if (gatedNotes.length > 0 && !isAtLeastPremium(status)) {
       for (var g = 0; g < gatedNotes.length; g++) {
         var note = gatedNotes[g];
-        if (isAtLeastPremium(status)) {
-          // Decode full note from data attribute for premium users
-          var fullNote = note.getAttribute('data-full-note');
-          if (fullNote) {
-            try { note.textContent = atob(fullNote); } catch (e) {}
-          }
-        } else {
-          // Non-premium: show teaser with upgrade link
-          var currentText = note.textContent.trim();
-          note.innerHTML = '<span style="color:var(--mmt-teal);font-weight:700;">★ Contractor note:</span> ' +
-            currentText + ' ' +
-            '<a href="/pricing.html" style="font-size:11px;font-weight:700;color:var(--mmt-teal);text-decoration:none;white-space:nowrap;">Unlock full note — Premium &rarr;</a>';
-        }
+        var currentText = note.textContent.trim();
+        note.innerHTML = '<span style="color:var(--mmt-teal);font-weight:700;">★ Contractor note:</span> ' +
+          currentText + ' ' +
+          '<a href="/pricing.html" style="font-size:11px;font-weight:700;color:var(--mmt-teal);text-decoration:none;white-space:nowrap;">Unlock full note — Premium &rarr;</a>';
       }
     }
   }

@@ -51,3 +51,9 @@ deno.lock
 
 # Ops health rollup is regenerated on every build; not committed.
 ops/
+
+# Private/server-only PII files. Per Sprint A (2026-05-13) PII scrub,
+# anything under private/ MUST stay off the public repo tip. This
+# directory exists for files like fy2027-backfill-list.csv that the
+# local backfill script reads but that contain customer emails.
+private/

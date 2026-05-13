@@ -5,7 +5,9 @@
 // 2026-03-01 and 2026-04-24 and never received it (the original
 // form posted directly to Buttondown and emailed nothing).
 //
-// Reads data/fy2027-backfill-list.csv. For each row:
+// Reads private/fy2027-backfill-list.csv (moved out of data/ in the
+// 2026-05-13 Sprint A PII scrub — the file contains customer emails
+// and is gitignored). For each row:
 //   1. Sends the PDF via Resend with the apology preface
 //   2. Adds (or updates) the Buttondown subscriber with the
 //      fy2027-forecast tag and a backfill source note
@@ -32,7 +34,7 @@ const fs = require("fs");
 const path = require("path");
 const { sendLeadMagnet } = require("../netlify/functions/lead-magnet-fy2027");
 
-const CSV_PATH = path.resolve(__dirname, "..", "data", "fy2027-backfill-list.csv");
+const CSV_PATH = path.resolve(__dirname, "..", "private", "fy2027-backfill-list.csv");
 const SLEEP_MS = 1000;
 
 function parseArgs(argv) {
