@@ -4,23 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Federal Health IT Agency Profiles &middot; MMT Premium</title>
-  <meta name="description" content="Intelligence dossiers for DHA, VA, HHS, ONC, ARPA-H, and CMS. Strategy tables, deployment timelines, policy modules, opportunity maps, source-anchored contractor reads.">
+  <meta name="description" content="Intelligence dossiers for 11 federal health IT agencies. Strategy tables, deployment timelines, policy modules, opportunity maps, source-anchored contractor reads.">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
   <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
   <link rel="stylesheet" href="/styles/tailwind.css">
   <style>
     :root { --mmt-teal:#457B9D; --mmt-navy:#0A192F; --mmt-soft:#F3F4F6; --mmt-white:#FFFFFF; --mmt-text:#102033; --mmt-text-secondary:#5C6B7A; --mmt-border:#D8E0E8; --ci-gold:#92710A; --ci-gold-bg:#FEF9E7; }
     body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--mmt-white); color:var(--mmt-navy); }
-    .agency-card { background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:14px; padding:24px; position:relative; transition:all 0.2s; display:flex; flex-direction:column; gap:8px; }
-    .agency-card:hover { box-shadow:0 8px 24px rgba(10,25,47,0.08); transform:translateY(-2px); }
-    .agency-abbrev { font-size:28px; font-weight:800; color:var(--mmt-navy); margin-bottom:0; }
-    .agency-name { font-size:13px; color:var(--mmt-text-secondary); margin-bottom:4px; }
-    .agency-role { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--mmt-teal); }
-    .agency-star { position:absolute; top:16px; right:16px; font-size:12px; color:var(--ci-gold); }
-    .agency-desc { font-size:13px; color:var(--mmt-text-secondary); line-height:1.5; margin:0; }
-    .agency-modules { display:flex; flex-wrap:wrap; gap:6px; margin-top:auto; padding-top:10px; }
-    .agency-module-pill { font-size:10px; font-weight:600; background:rgba(69,123,157,0.08); color:var(--mmt-teal); padding:3px 8px; border-radius:10px; }
-    .agency-updated { font-size:11px; color:var(--mmt-text-secondary); margin-top:8px; }
+    .agency-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .agency-card { background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:14px; padding:22px; position:relative; transition:all 0.2s; display:flex; flex-direction:column; gap:8px; }
+    .agency-card:hover { box-shadow:0 8px 24px rgba(10,25,47,0.08); transform:translateY(-2px); border-color:var(--mmt-teal); }
+    .agency-abbrev { font-size:26px; font-weight:800; color:var(--mmt-navy); margin-bottom:0; letter-spacing:-0.02em; }
+    .agency-name { font-size:12px; color:var(--mmt-text-secondary); margin-bottom:4px; line-height:1.4; }
+    .agency-role { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--mmt-teal); }
+    .agency-star { position:absolute; top:14px; right:14px; font-size:12px; color:var(--ci-gold); }
+    .agency-modules { font-size:12px; color:var(--mmt-text); line-height:1.5; }
+    .agency-modules strong { font-weight:700; color:var(--mmt-text); }
+    .agency-footer { display:flex; justify-content:space-between; align-items:baseline; margin-top:auto; padding-top:10px; border-top:1px solid var(--mmt-soft); font-size:11px; color:var(--mmt-text-secondary); }
+    .open-arrow { color:var(--mmt-teal); font-weight:700; }
+    @media (max-width: 980px) { .agency-grid { grid-template-columns:repeat(2,1fr); } }
+    @media (max-width: 560px) { .agency-grid { grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
@@ -29,93 +32,112 @@
   <main class="wrap" style="padding:48px 0 80px;">
     <div class="section-label" style="margin-bottom:12px;">MMT Premium &middot; Agency Intelligence</div>
     <h1 style="font-size:clamp(28px,3.5vw,44px);line-height:1.05;letter-spacing:-0.035em;margin-bottom:12px;">Federal Health IT Agency Profiles</h1>
-    <p style="font-size:17px;line-height:1.6;color:var(--mmt-text-secondary);max-width:62ch;margin-bottom:36px;">Source-anchored intelligence for the six agencies that drive federal health IT. Each premium profile carries the official artifact, the operator-grade contractor read, and a Watch Next block with citations and confidence ratings. Updated monthly.</p>
+    <p style="font-size:17px;line-height:1.6;color:var(--mmt-text-secondary);max-width:62ch;margin-bottom:36px;">Source-anchored intelligence for the eleven agencies that drive federal health IT. Each premium profile carries the official artifact, the operator-grade contractor read, and a Watch Next block with citations and confidence ratings. Updated monthly.</p>
 
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+    <div class="agency-grid">
+
       <a href="/agencies/dha/" class="agency-card no-underline" data-access="premium">
         <span class="agency-star">&#9733;</span>
         <div class="agency-abbrev">DHA</div>
         <div class="agency-name">Defense Health Agency</div>
         <div class="agency-role">Primary buyer (DoD health IT)</div>
-        <p class="agency-desc">MHS GENESIS in worldwide sustainment (9.5M+ beneficiaries, 194K users, 3,800 facilities). FY26-30 Data Strategy is the dominant capture lane.</p>
-        <div class="agency-modules">
-          <span class="agency-module-pill">Data Strategy</span>
-          <span class="agency-module-pill">MHS GENESIS Scale</span>
-          <span class="agency-module-pill">Contractor Read</span>
-          <span class="agency-module-pill">Watch Next</span>
-        </div>
-        <div class="agency-updated">Updated 2026-05-12</div>
+        <div class="agency-modules"><strong>Modules:</strong> Data Strategy &middot; MHS GENESIS Scale &middot; Contractor Read &middot; Watch Next</div>
+        <div class="agency-footer"><span>Updated 2026-05-13</span><span class="open-arrow">Open &rarr;</span></div>
       </a>
+
       <a href="/agencies/va/" class="agency-card no-underline" data-access="premium">
         <span class="agency-star">&#9733;</span>
         <div class="agency-abbrev">VA</div>
         <div class="agency-name">Department of Veterans Affairs</div>
         <div class="agency-role">Largest integrated buyer (US healthcare)</div>
-        <p class="agency-desc">Federal EHR deploying at 164 medical centers. Michigan cohort live April 11, 2026. Multi-VISN waves through late 2026.</p>
-        <div class="agency-modules">
-          <span class="agency-module-pill">EHR Deployment Tracker</span>
-          <span class="agency-module-pill">Source Caveat</span>
-          <span class="agency-module-pill">Contractor Read</span>
-          <span class="agency-module-pill">Watch Next</span>
-        </div>
-        <div class="agency-updated">Updated 2026-05-12</div>
+        <div class="agency-modules"><strong>Modules:</strong> EHR Deployment Tracker &middot; Source-Discrepancy Caveat &middot; Contractor Read &middot; Watch Next</div>
+        <div class="agency-footer"><span>Updated 2026-05-13</span><span class="open-arrow">Open &rarr;</span></div>
       </a>
+
       <a href="/agencies/hhs/" class="agency-card no-underline" data-access="premium">
         <span class="agency-star">&#9733;</span>
         <div class="agency-abbrev">HHS</div>
         <div class="agency-name">Dept. of Health and Human Services</div>
         <div class="agency-role">Department-level navigation + AI governance</div>
-        <p class="agency-desc">Sets AI direction for CMS, CDC, FDA, IHS, NIH. Department-level page does not specify procurement requirements; treat as watch.</p>
-        <div class="agency-modules">
-          <span class="agency-module-pill">AI Governance Module</span>
-          <span class="agency-module-pill">Confirmed vs Watch</span>
-          <span class="agency-module-pill">Contractor Read</span>
-        </div>
-        <div class="agency-updated">Updated 2026-05-12</div>
+        <div class="agency-modules"><strong>Modules:</strong> AI Governance Module &middot; Confirmed vs Watch &middot; Contractor Read</div>
+        <div class="agency-footer"><span>Updated 2026-05-13</span><span class="open-arrow">Open &rarr;</span></div>
       </a>
+
       <a href="/agencies/onc/" class="agency-card no-underline" data-access="premium">
         <span class="agency-star">&#9733;</span>
-        <div class="agency-abbrev">ONC</div>
-        <div class="agency-name">ASTP/ONC (Office of the Nat'l Coordinator)</div>
+        <div class="agency-abbrev">ASTP/ONC</div>
+        <div class="agency-name">Assistant Secretary for Technology Policy / Office of the National Coordinator for Health IT</div>
         <div class="agency-role">Standards regulator (HIT)</div>
-        <p class="agency-desc">HTI-2 final rule establishes 45 CFR Part 172 for TEFCA-related provisions and adds Manner Exception definitions. Compliance posture matters more than RFP timing.</p>
-        <div class="agency-modules">
-          <span class="agency-module-pill">HTI-2 / TEFCA</span>
-          <span class="agency-module-pill">Compliance Watchlist</span>
-          <span class="agency-module-pill">Contractor Read</span>
-        </div>
-        <div class="agency-updated">Updated 2026-05-12</div>
+        <div class="agency-modules"><strong>Modules:</strong> HTI-2 / TEFCA &middot; Compliance Watchlist &middot; Contractor Read</div>
+        <div class="agency-footer"><span>Updated 2026-05-13</span><span class="open-arrow">Open &rarr;</span></div>
       </a>
+
       <a href="/agencies/arpa-h/" class="agency-card no-underline" data-access="premium">
         <span class="agency-star">&#9733;</span>
         <div class="agency-abbrev">ARPA-H</div>
         <div class="agency-name">Advanced Research Projects Agency for Health</div>
         <div class="agency-role">Funder (programmatic, ISO-driven)</div>
-        <p class="agency-desc">Programs + Initiatives + SBIR/STTR + four Mission Office ISOs. Solution Summary feedback is the iteration loop.</p>
-        <div class="agency-modules">
-          <span class="agency-module-pill">Opportunity Map</span>
-          <span class="agency-module-pill">Mission Office ISOs</span>
-          <span class="agency-module-pill">Solution Summary Gate</span>
-          <span class="agency-module-pill">Contractor Read</span>
-        </div>
-        <div class="agency-updated">Updated 2026-05-12</div>
+        <div class="agency-modules"><strong>Modules:</strong> Opportunity Map &middot; Mission Office ISOs &middot; Solution Summary Gate &middot; Contractor Read</div>
+        <div class="agency-footer"><span>Updated 2026-05-13</span><span class="open-arrow">Open &rarr;</span></div>
       </a>
+
       <a href="/agencies/cms/" class="agency-card no-underline" data-access="premium">
         <span class="agency-star">&#9733;</span>
         <div class="agency-abbrev">CMS</div>
         <div class="agency-name">Centers for Medicare &amp; Medicaid Services</div>
         <div class="agency-role">Buyer + ecosystem-builder</div>
-        <p class="agency-desc">Health Technology Ecosystem framing. Provider Directory, Medicare.gov identity, digital health RFI shape the FY27-FY28 buy.</p>
-        <div class="agency-modules">
-          <span class="agency-module-pill">Health Tech Ecosystem</span>
-          <span class="agency-module-pill">Confirmed vs Watch</span>
-          <span class="agency-module-pill">Contractor Read</span>
-        </div>
-        <div class="agency-updated">Updated 2026-05-12</div>
+        <div class="agency-modules"><strong>Modules:</strong> Health Tech Ecosystem &middot; Confirmed vs Watch &middot; Contractor Read</div>
+        <div class="agency-footer"><span>Updated 2026-05-13</span><span class="open-arrow">Open &rarr;</span></div>
       </a>
+
+      <a href="/agencies/ihs/" class="agency-card no-underline" data-access="premium">
+        <span class="agency-star">&#9733;</span>
+        <div class="agency-abbrev">IHS</div>
+        <div class="agency-name">Indian Health Service</div>
+        <div class="agency-role">Federal care delivery + EHR modernization</div>
+        <div class="agency-modules"><strong>Modules:</strong> PATH EHR Module &middot; Tribal/Urban Partner Model &middot; Contractor Read &middot; Watch Next</div>
+        <div class="agency-footer"><span>Updated 2026-05-13</span><span class="open-arrow">Open &rarr;</span></div>
+      </a>
+
+      <a href="/agencies/cdc/" class="agency-card no-underline" data-access="premium">
+        <span class="agency-star">&#9733;</span>
+        <div class="agency-abbrev">CDC</div>
+        <div class="agency-name">Centers for Disease Control and Prevention</div>
+        <div class="agency-role">Public health data modernization</div>
+        <div class="agency-modules"><strong>Modules:</strong> PHDS 2026 Milestones &middot; STLT Modernization Themes &middot; Contractor Read &middot; Watch Next</div>
+        <div class="agency-footer"><span>Updated 2026-05-13</span><span class="open-arrow">Open &rarr;</span></div>
+      </a>
+
+      <a href="/agencies/fda/" class="agency-card no-underline" data-access="premium">
+        <span class="agency-star">&#9733;</span>
+        <div class="agency-abbrev">FDA</div>
+        <div class="agency-name">Food and Drug Administration</div>
+        <div class="agency-role">Regulatory data modernization</div>
+        <div class="agency-modules"><strong>Modules:</strong> DMAP Module &middot; Currentness Caveat &middot; Contractor Read &middot; Watch Next</div>
+        <div class="agency-footer"><span>Updated 2026-05-13</span><span class="open-arrow">Open &rarr;</span></div>
+      </a>
+
+      <a href="/agencies/nih-nitaac/" class="agency-card no-underline" data-access="premium">
+        <span class="agency-star">&#9733;</span>
+        <div class="agency-abbrev">NIH/NITAAC</div>
+        <div class="agency-name">NIH Information Technology Acquisition and Assessment Center</div>
+        <div class="agency-role">Health IT GWAC channel</div>
+        <div class="agency-modules"><strong>Modules:</strong> CIO-SP3 Status &middot; CIO-SP4 Verify-Before-Publishing Watch &middot; Contractor Read &middot; Watch Next</div>
+        <div class="agency-footer"><span>Updated 2026-05-13</span><span class="open-arrow">Open &rarr;</span></div>
+      </a>
+
+      <a href="/agencies/gsa/" class="agency-card no-underline" data-access="premium">
+        <span class="agency-star">&#9733;</span>
+        <div class="agency-abbrev">GSA</div>
+        <div class="agency-name">General Services Administration</div>
+        <div class="agency-role">Governmentwide acquisition channel</div>
+        <div class="agency-modules"><strong>Modules:</strong> OASIS+ Map &middot; Ordering Mechanics &middot; Non-IT Caveat &middot; Contractor Read &middot; Watch Next</div>
+        <div class="agency-footer"><span>Updated 2026-05-13</span><span class="open-arrow">Open &rarr;</span></div>
+      </a>
+
     </div>
 
-    <p style="font-size:12px;color:var(--mmt-text-secondary);margin-top:24px;line-height:1.55;max-width:62ch;">Five other federal health IT agencies have profile pages with the legacy intelligence depth: <a href="/agencies/ihs/" style="color:var(--mmt-teal);">IHS</a>, <a href="/agencies/cdc/" style="color:var(--mmt-teal);">CDC</a>, <a href="/agencies/fda/" style="color:var(--mmt-teal);">FDA</a>, <a href="/agencies/nih-nitaac/" style="color:var(--mmt-teal);">NIH/NITAAC</a>, <a href="/agencies/gsa/" style="color:var(--mmt-teal);">GSA</a>. These will receive the same deep-module expansion in subsequent waves.</p>
+    <p style="font-size:12px;color:var(--mmt-text-secondary);margin-top:24px;line-height:1.55;max-width:62ch;">Module labels above are non-gated teasers. The full source-anchored tables, timelines, contractor reads, and Watch Next signals render inside each profile for premium subscribers.</p>
 
     <!-- Gate for non-premium -->
     <div data-gate-overlay="premium" style="text-align:center;padding:32px 24px;background:var(--mmt-soft);border-radius:14px;margin-top:32px;">
@@ -128,6 +150,5 @@
   <footer class="wrap"></footer>
   <script src="/js/mmt-paywall.js" defer></script>
   <script src="/js/nav-active.js"></script>
-  <style>@media(max-width:768px){div[style*="grid-template-columns:repeat(3"]{grid-template-columns:repeat(2,1fr)!important;}}</style>
 </body>
 </html>

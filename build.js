@@ -4005,8 +4005,10 @@ function generateAgencyProfilePage(agency) {
   const ORG_CHART_AGENCIES = new Set(['dha', 'va']);
   const orgChartUrl = ORG_CHART_AGENCIES.has(agency.slug) ? `/premium/org-charts/${agency.slug}` : null;
   const orgChartCta = orgChartUrl ? `
-    <a href="${orgChartUrl}" class="no-underline" style="display:inline-flex;align-items:center;gap:8px;padding:10px 16px;background:var(--mmt-navy);color:var(--mmt-white);font-weight:600;font-size:13px;border-radius:8px;margin-bottom:24px;">
-      View ${escapeHtml(agency.abbrev)} Org Chart &rarr;
+    <a href="${orgChartUrl}" class="no-underline" style="display:inline-flex;align-items:center;gap:10px;padding:10px 16px;background:var(--mmt-navy);color:var(--mmt-white);font-weight:600;font-size:13px;border-radius:8px;margin-bottom:24px;">
+      View ${escapeHtml(agency.abbrev)} Org Chart
+      <span style="font-size:10px;font-weight:700;color:var(--ci-gold);background:rgba(254,249,231,0.18);padding:2px 6px;border-radius:10px;letter-spacing:0.04em;">&#9733; PREMIUM</span>
+      <span aria-hidden="true">&rarr;</span>
     </a>` : '';
 
   // New public-tier fields (added 2026-04-30): officialSources, mmtRead,

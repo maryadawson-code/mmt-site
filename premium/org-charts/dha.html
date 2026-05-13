@@ -141,6 +141,14 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
 </head>
 <body>
 
+<div data-gate-overlay="premium" style="max-width:760px;margin:48px auto 0;padding:36px 32px;background:linear-gradient(180deg,#FFFFFF 0%,#F3F4F6 100%);border:1px solid #D8E0E8;border-radius:14px;text-align:center;font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif;">
+  <div style="font-size:12px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:#92710A;margin-bottom:10px;">&#9733; Premium &middot; Organizational Intelligence</div>
+  <h2 style="font-size:24px;font-weight:800;color:#0A192F;margin:0 0 8px;letter-spacing:-0.02em;">Org chart is Premium</h2>
+  <p style="font-size:14px;line-height:1.55;color:#5C6B7A;max-width:54ch;margin:0 auto 18px;">Leadership-level org chart with named principals, acting designations, PEO/PAE structure, and PMO portfolio. Includes search, expand/collapse, and source attribution.</p>
+  <a href="/pricing.html" style="display:inline-block;padding:12px 24px;background:#0A192F;color:#FFFFFF;font-weight:700;font-size:14px;border-radius:8px;text-decoration:none;">Start Premium</a>
+</div>
+<div data-access="premium" data-gate="premium">
+
 <div class="page-hero">
   <div class="page-hero-inner">
     <div class="hero-eyebrow">Organizational Intelligence</div>
@@ -496,5 +504,7 @@ function toggleAll(expand){['hcao','rda','spfo'].forEach(id=>{const el=document.
 function setView(btn){document.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
 document.getElementById('searchInput').addEventListener('input',function(){const q=this.value.toLowerCase().trim();document.querySelectorAll('.node-card,.pmo-card,.network-pill').forEach(el=>{if(!q){el.classList.remove('node-hidden');return;}el.classList.toggle('node-hidden',!el.textContent.toLowerCase().includes(q));});});
 </script>
+</div>
+<script src="/js/mmt-paywall.js" defer></script>
 </body>
 </html>

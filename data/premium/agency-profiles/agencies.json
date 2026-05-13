@@ -791,10 +791,10 @@
   },
   {
     "slug": "onc",
-    "abbrev": "ONC",
-    "name": "Office of the National Coordinator for Health IT",
+    "abbrev": "ASTP/ONC",
+    "name": "Assistant Secretary for Technology Policy / Office of the National Coordinator for Health IT",
     "type": "HHS Sub-Office (regulatory, not a primary buyer)",
-    "lastUpdated": "2026-05-12",
+    "lastUpdated": "2026-05-13",
     "description": "Sets health IT interoperability standards, certifies EHR technology under ONC Health IT Certification, owns USCDI evolution, runs TEFCA implementation through the RCE (Sequoia Project), and enforces information blocking under 45 CFR Part 171.",
     "mmtRead": "ONC's procurement footprint is small. Its regulatory leverage is enormous: USCDI determines what data EHRs must exchange, TEFCA determines who participates in the network, and information blocking enforcement determines who pays the penalty. Track ONC for what it enables, not what it buys.",
     "officialSources": [
