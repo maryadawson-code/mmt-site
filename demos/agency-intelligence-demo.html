@@ -1,0 +1,902 @@
+<!--
+  Screen-recording demo page. Public-safe representative copy.
+  Not a live premium data endpoint.
+
+  Recording instructions:
+    1. Open /demos/agency-intelligence-demo.html
+    2. Start screen recording (1440x900 recommended)
+    3. Click "Play demo"
+    4. Stop recording after the closing CTA screen
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Mission Meets Tech — Agency Intelligence walkthrough. Source-anchored capture intelligence for federal health IT.">
+<meta name="robots" content="noindex">
+<title>Agency Intelligence Demo · Mission Meets Tech</title>
+<link rel="preconnect" href="https://rsms.me/">
+<link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
+<style>
+  :root {
+    --mmt-navy:#0A192F;
+    --mmt-teal:#457B9D;
+    --mmt-soft:#F3F4F6;
+    --mmt-white:#FFFFFF;
+    --mmt-text:#102033;
+    --mmt-text-secondary:#5C6B7A;
+    --mmt-text-faint:#8A95A5;
+    --mmt-border:#D8E0E8;
+    --ci-gold:#92710A;
+    --ci-gold-bg:#FEF9E7;
+    --conf-high:#0F6E3D;
+    --conf-high-bg:#EEF7F1;
+    --conf-medium:#92710A;
+    --conf-medium-bg:#FEF9E7;
+  }
+
+  * { box-sizing:border-box; }
+  html, body { margin:0; padding:0; }
+  body {
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    background:var(--mmt-white);
+    color:var(--mmt-navy);
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+
+  /* Top brand bar — matches MMT site nav feel */
+  .topbar {
+    position:sticky; top:0; z-index:50;
+    background:var(--mmt-white);
+    border-bottom:1px solid var(--mmt-border);
+    padding:14px 32px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .brand {
+    font-size:16px; font-weight:800; color:var(--mmt-navy);
+    letter-spacing:-0.02em;
+  }
+  .brand span { color:var(--mmt-teal); }
+  .topbar-links { display:flex; gap:24px; align-items:center; font-size:13px; }
+  .topbar-links a {
+    color:var(--mmt-text-secondary); text-decoration:none; font-weight:500;
+  }
+  .topbar-links a:hover { color:var(--mmt-navy); }
+  .topbar-links .premium-link {
+    color:var(--ci-gold); font-weight:700;
+  }
+
+  /* Stage container */
+  .stage-wrap {
+    max-width:1440px; margin:0 auto; padding:32px 32px 80px;
+  }
+
+  /* Splash screen */
+  .splash {
+    text-align:center; padding:60px 24px 40px;
+  }
+  .splash .eyebrow {
+    font-size:12px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--ci-gold); margin-bottom:14px;
+  }
+  .splash h1 {
+    font-size:clamp(32px,4vw,52px); line-height:1.05; letter-spacing:-0.035em;
+    margin:0 0 14px; color:var(--mmt-navy);
+  }
+  .splash .lede {
+    font-size:18px; line-height:1.55; color:var(--mmt-text-secondary);
+    max-width:62ch; margin:0 auto 36px;
+  }
+  .play-btn {
+    display:inline-flex; align-items:center; gap:12px;
+    padding:18px 36px; border:none; border-radius:12px;
+    background:var(--mmt-navy); color:var(--mmt-white);
+    font-family:inherit; font-size:17px; font-weight:700;
+    cursor:pointer; transition:transform 0.15s, box-shadow 0.15s;
+    box-shadow:0 6px 20px rgba(10,25,47,0.18);
+  }
+  .play-btn:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(10,25,47,0.24); }
+  .play-btn svg { width:18px; height:18px; }
+  .secondary-row {
+    margin-top:22px; display:flex; gap:18px; justify-content:center; flex-wrap:wrap;
+    font-size:14px;
+  }
+  .secondary-row a {
+    color:var(--mmt-teal); text-decoration:none; font-weight:600;
+    border-bottom:1px solid rgba(69,123,157,0.3); padding-bottom:1px;
+  }
+  .secondary-row a:hover { color:var(--mmt-navy); }
+  .splash-note {
+    font-size:12px; color:var(--mmt-text-faint); margin-top:32px;
+  }
+
+  /* Playback chrome */
+  .player {
+    display:none;
+    background:var(--mmt-white);
+    border:1px solid var(--mmt-border);
+    border-radius:16px;
+    overflow:hidden;
+  }
+  .player.active { display:block; }
+  .player-header {
+    padding:18px 24px;
+    background:var(--mmt-soft);
+    border-bottom:1px solid var(--mmt-border);
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    flex-wrap:wrap;
+  }
+  .beat-label {
+    display:flex; align-items:center; gap:10px;
+    font-size:13px; color:var(--mmt-text); font-weight:600;
+  }
+  .beat-num {
+    display:inline-flex; align-items:center; justify-content:center;
+    width:26px; height:26px; border-radius:50%;
+    background:var(--mmt-navy); color:var(--mmt-white);
+    font-size:12px; font-weight:700;
+  }
+  .progress-dots { display:flex; gap:6px; align-items:center; }
+  .dot {
+    width:10px; height:10px; border-radius:50%;
+    background:var(--mmt-border); transition:background 0.3s, transform 0.3s;
+  }
+  .dot.done { background:var(--mmt-teal); }
+  .dot.active { background:var(--mmt-navy); transform:scale(1.35); }
+  .controls { display:flex; gap:8px; }
+  .ctrl-btn {
+    padding:8px 14px; border:1px solid var(--mmt-border); border-radius:8px;
+    background:var(--mmt-white); color:var(--mmt-text);
+    font-family:inherit; font-size:12px; font-weight:600;
+    cursor:pointer; transition:background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .ctrl-btn:hover { border-color:var(--mmt-teal); color:var(--mmt-teal); }
+  .ctrl-btn.primary { background:var(--mmt-navy); border-color:var(--mmt-navy); color:var(--mmt-white); }
+  .ctrl-btn.primary:hover { background:var(--mmt-teal); border-color:var(--mmt-teal); color:var(--mmt-white); }
+
+  /* Stage — where beats render. Fixed height keeps recording stable. */
+  .stage {
+    position:relative;
+    min-height:620px;
+    padding:32px 28px;
+    background:var(--mmt-white);
+  }
+  .beat {
+    position:absolute; inset:32px 28px;
+    opacity:0; transform:translateY(8px);
+    transition:opacity 0.4s ease, transform 0.4s ease;
+    pointer-events:none;
+  }
+  .beat.active { opacity:1; transform:translateY(0); pointer-events:auto; }
+
+  .beat-title {
+    font-size:11px; font-weight:700; letter-spacing:0.10em; text-transform:uppercase;
+    color:var(--ci-gold); margin-bottom:8px;
+  }
+  .beat-h2 {
+    font-size:clamp(22px,2.4vw,30px); line-height:1.15; letter-spacing:-0.025em;
+    margin:0 0 18px; color:var(--mmt-navy);
+  }
+  .beat-sub {
+    font-size:14px; color:var(--mmt-text-secondary); line-height:1.6;
+    max-width:64ch; margin:0 0 22px;
+  }
+
+  /* === Beat 1: 11-agency index grid === */
+  .agency-grid {
+    display:grid; grid-template-columns:repeat(4,1fr); gap:12px;
+  }
+  .agency-card-mini {
+    border:1px solid var(--mmt-border); border-radius:10px; padding:14px;
+    background:var(--mmt-white);
+    display:flex; flex-direction:column; gap:6px;
+    transition:border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    position:relative;
+  }
+  .agency-card-mini.is-highlighted {
+    border-color:var(--mmt-teal);
+    transform:translateY(-3px);
+    box-shadow:0 8px 24px rgba(69,123,157,0.18);
+  }
+  .agency-card-mini .abbrev {
+    font-size:19px; font-weight:800; color:var(--mmt-navy); letter-spacing:-0.02em;
+  }
+  .agency-card-mini .role {
+    font-size:10px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--mmt-teal); line-height:1.3;
+  }
+  .agency-card-mini .mods {
+    font-size:11px; color:var(--mmt-text-secondary); line-height:1.45;
+  }
+  .agency-card-mini .star {
+    position:absolute; top:10px; right:10px; font-size:10px; color:var(--ci-gold);
+  }
+
+  /* === Beat 3/4: profile panel === */
+  .profile-shell {
+    display:grid; grid-template-columns:340px 1fr; gap:24px;
+  }
+  .profile-left {
+    border:1px solid var(--mmt-border); border-radius:12px; padding:18px;
+  }
+  .profile-left .role-pill {
+    display:inline-block;
+    font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--mmt-teal); background:rgba(69,123,157,0.08);
+    padding:4px 10px; border-radius:12px; margin-bottom:10px;
+  }
+  .profile-left h3 {
+    font-size:24px; margin:0 0 4px; letter-spacing:-0.02em; color:var(--mmt-navy);
+  }
+  .profile-left .agency-name {
+    font-size:13px; color:var(--mmt-text-secondary); margin-bottom:14px;
+  }
+  .profile-left .meta-line {
+    font-size:12px; color:var(--mmt-text-faint); padding-top:12px;
+    border-top:1px solid var(--mmt-soft);
+  }
+  .profile-right { display:grid; gap:14px; }
+
+  .module-card {
+    border:1px solid var(--mmt-border); border-radius:12px; padding:18px;
+  }
+  .module-card .label {
+    font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--mmt-text-secondary); margin-bottom:10px;
+  }
+  .module-card h4 {
+    font-size:16px; margin:0 0 8px; color:var(--mmt-navy);
+  }
+  .module-card p {
+    font-size:13px; line-height:1.6; color:var(--mmt-text); margin:0;
+  }
+  .module-card ul {
+    list-style:none; padding:0; margin:8px 0 0; font-size:13px; line-height:1.6; color:var(--mmt-text);
+  }
+  .module-card ul li { margin-bottom:6px; padding-left:14px; position:relative; }
+  .module-card ul li::before {
+    content:""; position:absolute; left:0; top:9px;
+    width:6px; height:6px; border-radius:50%; background:var(--mmt-teal);
+  }
+  .contractor-read {
+    background:var(--ci-gold-bg); border-left:3px solid var(--ci-gold);
+    border-radius:0 10px 10px 0; padding:14px 18px;
+  }
+  .contractor-read .label { color:var(--ci-gold); }
+  .contractor-read p { color:var(--mmt-text); font-style:normal; }
+
+  /* Source chip */
+  .source-chip {
+    display:inline-flex; align-items:center; flex-wrap:wrap; gap:8px;
+    font-size:12px; color:var(--mmt-text-secondary);
+    margin-top:12px;
+  }
+  .source-chip a {
+    color:var(--mmt-teal); text-decoration:none; font-weight:600;
+    border-bottom:1px solid rgba(69,123,157,0.25);
+  }
+  .conf {
+    display:inline-flex; align-items:center; gap:5px;
+    padding:3px 8px; border-radius:10px; font-size:11px; font-weight:700;
+  }
+  .conf.high { background:var(--conf-high-bg); color:var(--conf-high); }
+  .conf.medium { background:var(--conf-medium-bg); color:var(--conf-medium); }
+  .conf .conf-dot {
+    width:7px; height:7px; border-radius:50%;
+  }
+  .conf.high .conf-dot { background:var(--conf-high); }
+  .conf.medium .conf-dot { background:var(--conf-medium); }
+
+  /* Watch Next cards */
+  .watch-list { display:grid; gap:8px; }
+  .watch-item {
+    border:1px solid var(--mmt-border); border-radius:8px; padding:10px 14px;
+  }
+  .watch-item .signal { font-size:13px; font-weight:600; color:var(--mmt-navy); }
+  .watch-item .meta { font-size:11px; color:var(--mmt-text-secondary); margin-top:4px; }
+  .watch-item .meta strong { font-weight:700; color:var(--mmt-text); }
+
+  /* Beat 4 — CDC milestone table */
+  .milestone-table {
+    width:100%; border-collapse:collapse; font-size:13px;
+  }
+  .milestone-table th, .milestone-table td {
+    border-bottom:1px solid var(--mmt-border); padding:10px 12px; text-align:left; vertical-align:top;
+  }
+  .milestone-table th {
+    background:var(--mmt-soft); color:var(--mmt-navy); font-weight:700; font-size:11px;
+    text-transform:uppercase; letter-spacing:0.06em;
+  }
+  .milestone-table td.window { white-space:nowrap; font-weight:700; color:var(--mmt-navy); }
+
+  /* Beat 5 — trust layer */
+  .trust-callout {
+    background:var(--mmt-soft); border-radius:14px; padding:28px;
+    display:grid; grid-template-columns:1fr 1fr; gap:24px;
+  }
+  .trust-col h4 {
+    font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--mmt-text-secondary); margin:0 0 8px;
+  }
+  .trust-col p { font-size:13px; line-height:1.6; color:var(--mmt-text); margin:0; }
+  .trust-col .field {
+    margin-bottom:10px; padding-bottom:10px; border-bottom:1px dashed var(--mmt-border);
+  }
+  .trust-col .field:last-child { border:none; margin:0; padding:0; }
+  .trust-col .field-label { font-size:11px; color:var(--mmt-text-faint); margin-bottom:3px; text-transform:uppercase; letter-spacing:0.06em; }
+  .trust-col .field-value { font-size:13px; color:var(--mmt-navy); font-weight:600; }
+  .trust-col .caveat {
+    background:var(--ci-gold-bg); color:var(--ci-gold);
+    padding:8px 12px; border-radius:6px; font-size:12px; line-height:1.5;
+    margin-top:6px;
+  }
+
+  /* Beat 6 — capture workflow */
+  .workflow {
+    display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
+  }
+  .flow-step {
+    border:1px solid var(--mmt-border); border-radius:10px; padding:16px;
+    background:var(--mmt-white); position:relative;
+  }
+  .flow-step .step-num {
+    font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--mmt-teal); margin-bottom:6px;
+  }
+  .flow-step h5 {
+    font-size:14px; margin:0 0 6px; color:var(--mmt-navy);
+  }
+  .flow-step p {
+    font-size:12px; line-height:1.55; color:var(--mmt-text-secondary); margin:0;
+  }
+  .flow-arrow {
+    position:absolute; right:-12px; top:50%; transform:translateY(-50%);
+    color:var(--mmt-border); font-size:18px; z-index:2;
+  }
+  .worked-example {
+    margin-top:18px;
+    border:1px solid var(--mmt-border); border-radius:10px;
+    background:var(--mmt-soft); padding:14px 18px;
+  }
+  .worked-example .label { color:var(--ci-gold); }
+  .worked-example p { font-size:13px; line-height:1.6; color:var(--mmt-text); margin:0; }
+
+  /* Beat 7 — premium boundary */
+  .boundary {
+    display:grid; grid-template-columns:1fr 1fr; gap:18px;
+  }
+  .boundary-pane {
+    border:1px solid var(--mmt-border); border-radius:12px; padding:18px;
+  }
+  .boundary-pane.public-pane { background:var(--mmt-white); }
+  .boundary-pane.premium-pane {
+    background:linear-gradient(180deg,var(--mmt-white) 0%,var(--ci-gold-bg) 100%);
+    border-color:rgba(146,113,10,0.3);
+  }
+  .boundary-pane .tier {
+    font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+    margin-bottom:10px;
+  }
+  .public-pane .tier { color:var(--mmt-text-secondary); }
+  .premium-pane .tier { color:var(--ci-gold); }
+  .boundary-pane h4 {
+    font-size:15px; margin:0 0 8px; color:var(--mmt-navy);
+  }
+  .boundary-pane .row {
+    padding:8px 0; border-bottom:1px dashed var(--mmt-border);
+    font-size:12px; color:var(--mmt-text);
+  }
+  .boundary-pane .row:last-child { border:none; }
+  .boundary-pane .row .check { color:var(--conf-high); font-weight:700; margin-right:6px; }
+  .boundary-pane .row .lock { color:var(--ci-gold); font-weight:700; margin-right:6px; }
+
+  /* Beat 8 — closing CTA */
+  .cta-close {
+    text-align:center; padding:32px 24px 8px;
+  }
+  .cta-close h2 {
+    font-size:clamp(26px,3.2vw,40px); line-height:1.1; letter-spacing:-0.03em;
+    margin:0 0 14px; color:var(--mmt-navy);
+  }
+  .cta-close p {
+    font-size:16px; color:var(--mmt-text-secondary); line-height:1.55;
+    max-width:54ch; margin:0 auto 30px;
+  }
+  .cta-row {
+    display:flex; gap:14px; justify-content:center; flex-wrap:wrap;
+  }
+  .cta-btn {
+    display:inline-flex; align-items:center; gap:8px;
+    padding:14px 28px; border-radius:10px;
+    font-family:inherit; font-size:14px; font-weight:700;
+    text-decoration:none; transition:transform 0.15s;
+  }
+  .cta-btn:hover { transform:translateY(-2px); }
+  .cta-btn.primary { background:var(--mmt-navy); color:var(--mmt-white); }
+  .cta-btn.secondary {
+    background:var(--mmt-white); color:var(--mmt-navy);
+    border:1px solid var(--mmt-border);
+  }
+
+  /* Footer recording-instructions panel */
+  .rec-panel {
+    margin-top:24px; border:1px dashed var(--mmt-border); border-radius:10px;
+    padding:14px 18px; font-size:12px; color:var(--mmt-text-secondary);
+    background:var(--mmt-soft);
+  }
+  .rec-panel summary {
+    cursor:pointer; font-weight:700; color:var(--mmt-text); list-style:none;
+  }
+  .rec-panel summary::-webkit-details-marker { display:none; }
+  .rec-panel ol { margin:10px 0 0; padding-left:20px; }
+  .rec-panel li { margin-bottom:4px; }
+
+  @media (max-width: 980px) {
+    .agency-grid { grid-template-columns:repeat(3,1fr); }
+    .profile-shell { grid-template-columns:1fr; }
+    .workflow { grid-template-columns:repeat(2,1fr); }
+    .flow-arrow { display:none; }
+    .trust-callout { grid-template-columns:1fr; }
+    .boundary { grid-template-columns:1fr; }
+  }
+  @media (max-width: 600px) {
+    .agency-grid { grid-template-columns:repeat(2,1fr); }
+    .stage { min-height:auto; padding:24px 16px; }
+    .beat { position:relative; inset:auto; }
+    .beat:not(.active) { display:none; }
+    .topbar { padding:12px 16px; }
+    .topbar-links { gap:14px; }
+    .stage-wrap { padding:20px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Top brand bar -->
+<nav class="topbar">
+  <div class="brand">Mission Meets Tech<span> · Premium</span></div>
+  <div class="topbar-links">
+    <a href="/agencies/">Agency Profiles</a>
+    <a href="/pricing.html" class="premium-link">★ Premium</a>
+  </div>
+</nav>
+
+<div class="stage-wrap">
+
+  <!-- ====== SPLASH ====== -->
+  <section id="splash" class="splash">
+    <div class="eyebrow">★ Mission Meets Tech · Agency Intelligence</div>
+    <h1>Agency intelligence for federal health IT capture teams.</h1>
+    <p class="lede">Source-anchored profiles for the eleven federal agencies that drive health IT spend. Strategy tables, deployment timelines, policy modules, opportunity maps, and contractor reads with verified-date and confidence on every claim.</p>
+    <button class="play-btn" id="play-btn" type="button">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+      Play demo
+    </button>
+    <div class="secondary-row">
+      <a href="/agencies/">Open Agency Profiles</a>
+      <a href="/pricing.html">Start Premium</a>
+    </div>
+    <p class="splash-note">Screen-recording demo. Public-safe representative copy. Not a live premium data endpoint.</p>
+  </section>
+
+  <!-- ====== PLAYER ====== -->
+  <section id="player" class="player" aria-live="polite">
+    <header class="player-header">
+      <div class="beat-label">
+        <span class="beat-num" id="beat-num">1</span>
+        <span id="beat-name">Agency Index</span>
+      </div>
+      <div class="progress-dots" id="dots"></div>
+      <div class="controls">
+        <button class="ctrl-btn" id="pause-btn" type="button">Pause</button>
+        <button class="ctrl-btn primary" id="restart-btn" type="button">Restart</button>
+      </div>
+    </header>
+
+    <div class="stage" id="stage">
+
+      <!-- BEAT 1: Index grid (all 11 agencies) -->
+      <div class="beat" data-beat="1">
+        <div class="beat-title">Beat 1 · Agency Index</div>
+        <h2 class="beat-h2">Eleven federal health IT agencies, one source-anchored hub.</h2>
+        <p class="beat-sub">Every card carries role, premium module summary, and an updated stamp. Free readers see the index shell. Premium subscribers see the full operator-grade intelligence on each profile.</p>
+        <div class="agency-grid" id="agency-grid">
+          <div class="agency-card-mini" data-slug="dha"><span class="star">★</span><div class="abbrev">DHA</div><div class="role">Primary buyer · DoD health IT</div><div class="mods">Data Strategy · MHS GENESIS Scale</div></div>
+          <div class="agency-card-mini" data-slug="va"><span class="star">★</span><div class="abbrev">VA</div><div class="role">Largest integrated buyer</div><div class="mods">EHR Deployment Tracker</div></div>
+          <div class="agency-card-mini" data-slug="hhs"><span class="star">★</span><div class="abbrev">HHS</div><div class="role">Dept-level · AI governance</div><div class="mods">AI Governance Module</div></div>
+          <div class="agency-card-mini" data-slug="onc"><span class="star">★</span><div class="abbrev">ASTP/ONC</div><div class="role">Standards regulator (HIT)</div><div class="mods">HTI-2 / TEFCA</div></div>
+          <div class="agency-card-mini" data-slug="arpa-h"><span class="star">★</span><div class="abbrev">ARPA-H</div><div class="role">Funder · programmatic, ISO-driven</div><div class="mods">Opportunity Map · Mission Office ISOs</div></div>
+          <div class="agency-card-mini" data-slug="cms"><span class="star">★</span><div class="abbrev">CMS</div><div class="role">Buyer + ecosystem-builder</div><div class="mods">Health Tech Ecosystem</div></div>
+          <div class="agency-card-mini" data-slug="ihs"><span class="star">★</span><div class="abbrev">IHS</div><div class="role">Federal care delivery + EHR modernization</div><div class="mods">PATH EHR Module</div></div>
+          <div class="agency-card-mini" data-slug="cdc"><span class="star">★</span><div class="abbrev">CDC</div><div class="role">Public health data modernization</div><div class="mods">PHDS 2026 Milestones · STLT Themes</div></div>
+          <div class="agency-card-mini" data-slug="fda"><span class="star">★</span><div class="abbrev">FDA</div><div class="role">Regulatory data modernization</div><div class="mods">DMAP Module · Currentness Caveat</div></div>
+          <div class="agency-card-mini" data-slug="nih-nitaac"><span class="star">★</span><div class="abbrev">NIH/NITAAC</div><div class="role">Health IT GWAC channel</div><div class="mods">CIO-SP3 Status · Verify-Before-Publishing</div></div>
+          <div class="agency-card-mini" data-slug="gsa"><span class="star">★</span><div class="abbrev">GSA</div><div class="role">Governmentwide acquisition channel</div><div class="mods">OASIS+ Map · Non-IT Caveat</div></div>
+        </div>
+      </div>
+
+      <!-- BEAT 2: Highlight a Wave 2 agency (IHS) -->
+      <div class="beat" data-beat="2">
+        <div class="beat-title">Beat 2 · Selecting a Wave 2 Agency</div>
+        <h2 class="beat-h2">Wave 2 agencies have the same depth as the priority six.</h2>
+        <p class="beat-sub">IHS, CDC, FDA, NIH/NITAAC, and GSA all carry a role, a source-anchored module, a Contractor Read, and Watch Next signals. No tail-agency drop-off.</p>
+        <div class="agency-grid" id="agency-grid-2">
+          <div class="agency-card-mini"><span class="star">★</span><div class="abbrev">DHA</div><div class="role">Primary buyer · DoD health IT</div><div class="mods">Data Strategy · MHS GENESIS Scale</div></div>
+          <div class="agency-card-mini"><span class="star">★</span><div class="abbrev">VA</div><div class="role">Largest integrated buyer</div><div class="mods">EHR Deployment Tracker</div></div>
+          <div class="agency-card-mini"><span class="star">★</span><div class="abbrev">HHS</div><div class="role">Dept-level · AI governance</div><div class="mods">AI Governance Module</div></div>
+          <div class="agency-card-mini"><span class="star">★</span><div class="abbrev">ASTP/ONC</div><div class="role">Standards regulator (HIT)</div><div class="mods">HTI-2 / TEFCA</div></div>
+          <div class="agency-card-mini"><span class="star">★</span><div class="abbrev">ARPA-H</div><div class="role">Funder · programmatic, ISO-driven</div><div class="mods">Opportunity Map · Mission Office ISOs</div></div>
+          <div class="agency-card-mini"><span class="star">★</span><div class="abbrev">CMS</div><div class="role">Buyer + ecosystem-builder</div><div class="mods">Health Tech Ecosystem</div></div>
+          <div class="agency-card-mini is-highlighted"><span class="star">★</span><div class="abbrev">IHS</div><div class="role">Federal care delivery + EHR modernization</div><div class="mods">PATH EHR Module</div></div>
+          <div class="agency-card-mini"><span class="star">★</span><div class="abbrev">CDC</div><div class="role">Public health data modernization</div><div class="mods">PHDS 2026 Milestones · STLT Themes</div></div>
+          <div class="agency-card-mini"><span class="star">★</span><div class="abbrev">FDA</div><div class="role">Regulatory data modernization</div><div class="mods">DMAP Module · Currentness Caveat</div></div>
+          <div class="agency-card-mini"><span class="star">★</span><div class="abbrev">NIH/NITAAC</div><div class="role">Health IT GWAC channel</div><div class="mods">CIO-SP3 Status · Verify-Before-Publishing</div></div>
+          <div class="agency-card-mini"><span class="star">★</span><div class="abbrev">GSA</div><div class="role">Governmentwide acquisition channel</div><div class="mods">OASIS+ Map · Non-IT Caveat</div></div>
+        </div>
+      </div>
+
+      <!-- BEAT 3: IHS profile panel -->
+      <div class="beat" data-beat="3">
+        <div class="beat-title">Beat 3 · IHS Profile</div>
+        <h2 class="beat-h2">Indian Health Service · PATH EHR</h2>
+        <div class="profile-shell">
+          <aside class="profile-left">
+            <span class="role-pill">Federal care delivery + EHR modernization</span>
+            <h3>IHS</h3>
+            <div class="agency-name">Indian Health Service</div>
+            <p style="font-size:13px;line-height:1.55;color:var(--mmt-text);margin:0 0 12px;">Federal HIT modernization across IHS direct service, Tribal, and Urban Indian (I/T/U) health programs. PATH EHR is the multi-year replacement and interoperability program.</p>
+            <div class="meta-line">Type: HHS operating division · Updated 2026-05-13</div>
+          </aside>
+          <div class="profile-right">
+            <div class="module-card">
+              <div class="label">PATH EHR Modernization</div>
+              <h4>Confirmed facts</h4>
+              <ul>
+                <li>IHS HIT is modernizing the agency's health IT infrastructure across direct, Tribal, and Urban Indian (I/T/U) health programs.</li>
+                <li>PATH EHR replaces legacy systems, improves interoperability, supports continuity of care, and provides centralized infrastructure and support.</li>
+                <li>Model accommodates IHS direct service operations and partnerships with Tribal and Urban Indian organizations.</li>
+              </ul>
+              <div class="source-chip">
+                <span>Source:</span>
+                <a href="https://www.ihs.gov/hit/" target="_blank" rel="noopener">IHS Health IT Modernization</a>
+                <span>· verified 2026-05-13</span>
+                <span class="conf high"><span class="conf-dot"></span>high confidence</span>
+              </div>
+            </div>
+            <div class="module-card contractor-read">
+              <div class="label">Contractor Read</div>
+              <p>IHS PATH is a multi-year EHR modernization with three customer surfaces (direct service, Tribal, Urban). Capture posture: position around interoperability with VA and DHA, centralized support and disaster recovery, and the Tribal/Urban consultation model. Per-site point solutions are the wrong shape; managed-service and platform plays fit.</p>
+            </div>
+            <div class="module-card">
+              <div class="label">Watch Next</div>
+              <div class="watch-list">
+                <div class="watch-item">
+                  <div class="signal">PATH EHR phase-by-phase deployment status</div>
+                  <div class="meta"><strong>IHS HIT</strong> · Multi-year · validate against current IHS HIT announcements before quoting externally</div>
+                </div>
+                <div class="watch-item">
+                  <div class="signal">Tribal and Urban partnership consultation activity</div>
+                  <div class="meta"><strong>IHS HIT + Tribal/Urban orgs</strong> · Ongoing</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BEAT 4: CDC profile panel -->
+      <div class="beat" data-beat="4">
+        <div class="beat-title">Beat 4 · CDC Profile</div>
+        <h2 class="beat-h2">CDC · PHDS 2026 Milestones + DMI</h2>
+        <div class="profile-shell">
+          <aside class="profile-left">
+            <span class="role-pill">Public health data modernization</span>
+            <h3>CDC</h3>
+            <div class="agency-name">Centers for Disease Control and Prevention</div>
+            <p style="font-size:13px;line-height:1.55;color:var(--mmt-text);margin:0 0 12px;">CDC's Public Health Data Strategy defines 2026 milestones across surveillance modernization, interoperability, and STLT (state, tribal, local, territorial) partner capacity.</p>
+            <div class="meta-line">Type: HHS operating division · Updated 2026-05-13</div>
+          </aside>
+          <div class="profile-right">
+            <div class="module-card">
+              <div class="label">PHDS 2026 Milestones</div>
+              <table class="milestone-table">
+                <thead><tr><th>Window</th><th>Milestone</th><th>Why it matters</th></tr></thead>
+                <tbody>
+                  <tr><td class="window">2026</td><td>eCR scaling</td><td>Closes the loop between EHRs and public health surveillance. Vendor surface: EHR-side connectors, jurisdictional ingestion, case routing.</td></tr>
+                  <tr><td class="window">2026</td><td>Mortality FHIR exchange</td><td>Modernizes flow between vital records, CDC, and downstream users. FHIR-mediated APIs and provenance.</td></tr>
+                  <tr><td class="window">2026</td><td>NBS modernization</td><td>NBS replatform creates an integration surface for jurisdictional case management and reporting tools.</td></tr>
+                  <tr><td class="window">2026</td><td>1CDP products + assets</td><td>1CDP framing consolidates the CDC data platform. Capture moves: shared services, identity, reusable analytics.</td></tr>
+                  <tr><td class="window">2026</td><td>MDN governance</td><td>Governance posture shapes data-sharing agreements, technical standards, partner onboarding.</td></tr>
+                </tbody>
+              </table>
+              <div class="source-chip">
+                <span>Source:</span>
+                <a href="https://www.cdc.gov/public-health-data-strategy/php/about/phds-milestones.html" target="_blank" rel="noopener">CDC PHDS 2026 Milestones</a>
+                <span>· verified 2026-05-13</span>
+                <span class="conf high"><span class="conf-dot"></span>high confidence</span>
+              </div>
+            </div>
+            <div class="module-card contractor-read">
+              <div class="label">Contractor Read</div>
+              <p>CDC's DMI + PHDS framing is the leading indicator for both CDC procurements and downstream state/tribal/local/territorial buys. Read 2026 milestones as theme signals (eCR, mortality FHIR, NBS, 1CDP, MDN governance) and position with reusable services that scale across jurisdictions, not bespoke point solutions.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BEAT 5: Source-backed trust layer -->
+      <div class="beat" data-beat="5">
+        <div class="beat-title">Beat 5 · Source-Backed Trust Layer</div>
+        <h2 class="beat-h2">Every claim points back to a primary source.</h2>
+        <p class="beat-sub">Each agency carries a sources block with url, label, verified date, confidence rating, and (where applicable) a published caveat. The FDA DMAP example below shows a medium-confidence source with an explicit currentness caveat.</p>
+        <div class="trust-callout">
+          <div class="trust-col">
+            <h4>Source entry · FDA DMAP</h4>
+            <div class="field">
+              <div class="field-label">Official URL</div>
+              <div class="field-value"><a href="https://www.fda.gov/about-fda/reports/data-modernization-action-plan" target="_blank" rel="noopener" style="color:var(--mmt-teal);text-decoration:none;border-bottom:1px solid rgba(69,123,157,0.25);">fda.gov/about-fda/reports/data-modernization-action-plan</a></div>
+            </div>
+            <div class="field">
+              <div class="field-label">Label</div>
+              <div class="field-value">FDA Data Modernization Action Plan (DMAP)</div>
+            </div>
+            <div class="field">
+              <div class="field-label">Verified at</div>
+              <div class="field-value">2026-05-13</div>
+            </div>
+            <div class="field">
+              <div class="field-label">Confidence</div>
+              <div class="field-value"><span class="conf medium"><span class="conf-dot"></span>medium</span></div>
+            </div>
+            <div class="field">
+              <div class="field-label">Caveat</div>
+              <div class="caveat">DMAP is a high-level strategy document. Pair with newer FDA implementation publications and center-level activity before publishing client-facing capture briefs.</div>
+            </div>
+          </div>
+          <div class="trust-col">
+            <h4>Why this matters</h4>
+            <p style="margin-bottom:14px;">Most agency intelligence in this market is opinion stacked on opinion. MMT publishes the opinion AND the receipt.</p>
+            <p style="margin-bottom:14px;"><strong>What you get on every claim:</strong></p>
+            <ul style="list-style:none;padding:0;margin:0;font-size:13px;line-height:1.7;color:var(--mmt-text);">
+              <li style="padding-left:18px;position:relative;"><span style="position:absolute;left:0;color:var(--conf-high);font-weight:700;">✓</span>Primary-source URL you can click and verify</li>
+              <li style="padding-left:18px;position:relative;"><span style="position:absolute;left:0;color:var(--conf-high);font-weight:700;">✓</span>Verified-at date so you know how fresh it is</li>
+              <li style="padding-left:18px;position:relative;"><span style="position:absolute;left:0;color:var(--conf-high);font-weight:700;">✓</span>Confidence rating (high · medium · low)</li>
+              <li style="padding-left:18px;position:relative;"><span style="position:absolute;left:0;color:var(--conf-high);font-weight:700;">✓</span>Caveat where the source has known limits</li>
+              <li style="padding-left:18px;position:relative;"><span style="position:absolute;left:0;color:var(--conf-high);font-weight:700;">✓</span>Build-gate validator that fails CI if a claim drops its source</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- BEAT 6: Capture workflow -->
+      <div class="beat" data-beat="6">
+        <div class="beat-title">Beat 6 · Capture Workflow</div>
+        <h2 class="beat-h2">Signal · Agency Read · Action · Gate Review.</h2>
+        <p class="beat-sub">The workflow that turns a published signal into a defensible gate review talking point. Worked example: how the GSA OASIS+ profile prevents a common health IT capture mistake.</p>
+        <div class="workflow">
+          <div class="flow-step">
+            <div class="step-num">Step 1</div>
+            <h5>Signal</h5>
+            <p>OASIS+ awards flowing across federal agencies; weekly contractor list update on the GSA portal.</p>
+            <span class="flow-arrow">›</span>
+          </div>
+          <div class="flow-step">
+            <div class="step-num">Step 2</div>
+            <h5>Agency Read</h5>
+            <p>MMT's GSA profile flags: OASIS+ is non-IT professional services. Not a direct health IT vehicle.</p>
+            <span class="flow-arrow">›</span>
+          </div>
+          <div class="flow-step">
+            <div class="step-num">Step 3</div>
+            <h5>Action</h5>
+            <p>Position OASIS+ for advisory, R&amp;D, program management, or enterprise-solutions work adjacent to health IT delivery.</p>
+            <span class="flow-arrow">›</span>
+          </div>
+          <div class="flow-step">
+            <div class="step-num">Step 4</div>
+            <h5>Gate Review Talking Point</h5>
+            <p>"We engaged OASIS+ where the scope fits, not as a health IT shortcut. Evaluator scrutiny won't fail us on vehicle fit."</p>
+          </div>
+        </div>
+        <div class="worked-example">
+          <div class="label">Trust at the gate</div>
+          <p>Every step above traces back to a sourced field on the GSA profile. A capture lead can walk into a gate review with the source URL in hand and answer the vehicle-fit question on the first try.</p>
+        </div>
+      </div>
+
+      <!-- BEAT 7: Premium boundary -->
+      <div class="beat" data-beat="7">
+        <div class="beat-title">Beat 7 · Premium Boundary</div>
+        <h2 class="beat-h2">Public shell shows the agency. Premium shows the operator-grade read.</h2>
+        <p class="beat-sub">The free tier is honest — agency name, role, official source links, MMT Read teaser. Everything operator-grade lives behind the premium gate.</p>
+        <div class="boundary">
+          <div class="boundary-pane public-pane">
+            <div class="tier">Public Shell</div>
+            <h4>Visible to everyone</h4>
+            <div class="row"><span class="check">✓</span>Agency name, abbrev, type</div>
+            <div class="row"><span class="check">✓</span>Role descriptor</div>
+            <div class="row"><span class="check">✓</span>Plain-English MMT Read teaser</div>
+            <div class="row"><span class="check">✓</span>Official Sources block (clickable .gov / .mil links)</div>
+            <div class="row"><span class="check">✓</span>Last-updated date</div>
+            <div class="row"><span class="check">✓</span>Premium module pill labels (no content)</div>
+          </div>
+          <div class="boundary-pane premium-pane">
+            <div class="tier">★ Premium · Behind the Gate</div>
+            <h4>Visible after subscribe</h4>
+            <div class="row"><span class="lock">🔒</span>Strategy tables (e.g., DHA Data Strategy · 5 LOEs with vendor implications)</div>
+            <div class="row"><span class="lock">🔒</span>Modernization timelines (e.g., VA EHR rollout with caveat)</div>
+            <div class="row"><span class="lock">🔒</span>Policy modules (HHS / ONC / CMS · confirmed facts vs vendor watch)</div>
+            <div class="row"><span class="lock">🔒</span>Opportunity maps (ARPA-H · Mission Office ISOs with solicitation numbers)</div>
+            <div class="row"><span class="lock">🔒</span>Contractor Reads (operator-grade interpretation)</div>
+            <div class="row"><span class="lock">🔒</span>Watch Next signals + sourced confidence chips</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BEAT 8: Closing CTA -->
+      <div class="beat" data-beat="8">
+        <div class="cta-close">
+          <div class="beat-title" style="text-align:center;">Beat 8 · Use This Before Your Next Capture Meeting</div>
+          <h2>Stop walking into capture reviews with stale agency reads.</h2>
+          <p>Eleven federal health IT agencies. Source-anchored modules. Verified-date and confidence on every claim. Updated monthly.</p>
+          <div class="cta-row">
+            <a class="cta-btn primary" href="/pricing.html">Start Premium</a>
+            <a class="cta-btn secondary" href="/agencies/">Open Agency Profiles</a>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.stage -->
+  </section>
+
+  <details class="rec-panel">
+    <summary>Recording instructions</summary>
+    <ol>
+      <li>Open <code>/demos/agency-intelligence-demo.html</code> in a 1440×900 browser window.</li>
+      <li>Start screen recording.</li>
+      <li>Click <strong>Play demo</strong>.</li>
+      <li>Let the eight beats auto-advance (about 45 seconds end-to-end).</li>
+      <li>Stop recording on the closing CTA screen.</li>
+    </ol>
+  </details>
+
+</div><!-- /.stage-wrap -->
+
+<script>
+(function () {
+  'use strict';
+
+  // Beat configuration: [number, label, durationMs]
+  // 8 beats x ~5.5s each = ~44s total walkthrough
+  var BEATS = [
+    { n: 1, label: 'Agency Index',           ms: 5500 },
+    { n: 2, label: 'Selecting a Wave 2 Agency', ms: 4500 },
+    { n: 3, label: 'IHS · PATH EHR',         ms: 6500 },
+    { n: 4, label: 'CDC · PHDS 2026',        ms: 6500 },
+    { n: 5, label: 'Source-Backed Trust',    ms: 6000 },
+    { n: 6, label: 'Capture Workflow',       ms: 6000 },
+    { n: 7, label: 'Premium Boundary',       ms: 5500 },
+    { n: 8, label: 'Use This Before Your Next Capture Meeting', ms: 6500 }
+  ];
+
+  var splash   = document.getElementById('splash');
+  var player   = document.getElementById('player');
+  var playBtn  = document.getElementById('play-btn');
+  var pauseBtn = document.getElementById('pause-btn');
+  var restartBtn = document.getElementById('restart-btn');
+  var beatNumEl  = document.getElementById('beat-num');
+  var beatNameEl = document.getElementById('beat-name');
+  var dotsEl     = document.getElementById('dots');
+  var beats      = document.querySelectorAll('.beat');
+
+  // State
+  var idx = 0;                  // current beat index
+  var timerId = null;
+  var beatStartedAt = 0;        // ms timestamp when the current beat became active
+  var remainingMs = 0;          // remaining time on the current beat when paused
+  var paused = false;
+  var running = false;
+
+  // Build progress dots
+  BEATS.forEach(function (b, i) {
+    var d = document.createElement('span');
+    d.className = 'dot';
+    d.setAttribute('data-beat', String(b.n));
+    d.setAttribute('aria-label', 'Beat ' + b.n);
+    dotsEl.appendChild(d);
+  });
+  var dots = dotsEl.querySelectorAll('.dot');
+
+  function renderBeat(i) {
+    // Show only beat i, hide the rest
+    beats.forEach(function (el, j) {
+      if (j === i) el.classList.add('active');
+      else el.classList.remove('active');
+    });
+    // Update label + number
+    beatNumEl.textContent = String(BEATS[i].n);
+    beatNameEl.textContent = BEATS[i].label;
+    // Update dots
+    dots.forEach(function (d, j) {
+      d.classList.remove('active', 'done');
+      if (j < i) d.classList.add('done');
+      else if (j === i) d.classList.add('active');
+    });
+  }
+
+  function scheduleNext(ms) {
+    clearTimeout(timerId);
+    beatStartedAt = Date.now();
+    remainingMs = ms;
+    timerId = setTimeout(advance, ms);
+  }
+
+  function advance() {
+    if (idx < BEATS.length - 1) {
+      idx += 1;
+      renderBeat(idx);
+      scheduleNext(BEATS[idx].ms);
+    } else {
+      // End-of-walkthrough — stay on the closing CTA, mark all dots done.
+      dots.forEach(function (d) { d.classList.remove('active'); d.classList.add('done'); });
+      running = false;
+      pauseBtn.textContent = 'Pause';
+      pauseBtn.disabled = true;
+    }
+  }
+
+  function startWalkthrough() {
+    splash.style.display = 'none';
+    player.classList.add('active');
+    idx = 0;
+    paused = false;
+    running = true;
+    pauseBtn.disabled = false;
+    pauseBtn.textContent = 'Pause';
+    renderBeat(0);
+    scheduleNext(BEATS[0].ms);
+    // Scroll to top so the screen recording frames cleanly
+    if (window.scrollTo) window.scrollTo({ top: 0, behavior: 'auto' });
+  }
+
+  function togglePause() {
+    if (!running) return;
+    if (!paused) {
+      // Pause
+      clearTimeout(timerId);
+      var elapsed = Date.now() - beatStartedAt;
+      remainingMs = Math.max(0, remainingMs - elapsed);
+      paused = true;
+      pauseBtn.textContent = 'Resume';
+    } else {
+      // Resume
+      paused = false;
+      pauseBtn.textContent = 'Pause';
+      scheduleNext(remainingMs);
+    }
+  }
+
+  function restart() {
+    clearTimeout(timerId);
+    startWalkthrough();
+  }
+
+  playBtn.addEventListener('click', startWalkthrough);
+  pauseBtn.addEventListener('click', togglePause);
+  restartBtn.addEventListener('click', restart);
+
+  // Keyboard: spacebar = pause/resume, R = restart
+  document.addEventListener('keydown', function (e) {
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+    if (e.code === 'Space' && running) { e.preventDefault(); togglePause(); }
+    else if ((e.key === 'r' || e.key === 'R') && running) { e.preventDefault(); restart(); }
+  });
+})();
+</script>
+
+</body>
+</html>
