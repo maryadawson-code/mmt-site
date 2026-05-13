@@ -505,6 +505,5 @@ function setView(btn){document.querySelectorAll('.toggle-btn').forEach(b=>b.clas
 document.getElementById('searchInput').addEventListener('input',function(){const q=this.value.toLowerCase().trim();document.querySelectorAll('.node-card,.pmo-card,.network-pill').forEach(el=>{if(!q){el.classList.remove('node-hidden');return;}el.classList.toggle('node-hidden',!el.textContent.toLowerCase().includes(q));});});
 </script>
 </div>
-<script src="/js/mmt-paywall.js" defer></script>
 </body>
 </html>
