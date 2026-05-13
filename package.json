@@ -18,7 +18,9 @@
     "verify": "node build.js && node scripts/validate-dist.js && node scripts/validate-routes.js && npx vitest run tests/unit",
     "lighthouse": "npx @lhci/cli autorun",
     "smoke": "bash scripts/smoke-test.sh",
-    "dev": "npx netlify dev"
+    "dev": "npx netlify dev",
+    "gov:check": "node scripts/gov-check.js",
+    "gov:check:probe": "node scripts/gov-check.js --probe"
   },
   "dependencies": {
     "@sentry/node": "^9.0.0",
