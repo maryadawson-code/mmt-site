@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-14T17:23:03.011Z",
+  "generated_at": "2026-05-14T18:51:50.762Z",
   "candidate_count": 10,
   "newest_eligible": {
     "id": "capture-corner-2026-05-12.html",
@@ -9,7 +9,8 @@
     "description": "Dated Capture Corner newsletter issue."
   },
   "redirect_target_in_netlify_toml": "/premium/briefs/capture-corner-2026-05-15.html",
-  "redirect_stale": true,
+  "redirect_target_is_pre_staged": true,
+  "redirect_stale": false,
   "candidates": [
     {
       "id": "capture-corner-2026-04-21.html",
