@@ -8,6 +8,7 @@
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
+const { loadEntitlement } = require("./lib/entitlement");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -40,14 +41,17 @@ exports.handler = async (event) => {
     const normalizedEmail = email.toLowerCase().trim();
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
-    // Check mp_users for subscription tier
-    const { data: user, error } = await supabase
-      .from("mp_users")
-      .select("id, tier, subscription_tier, subscription_status, founding_member")
-      .eq("email", normalizedEmail)
-      .single();
+    // Sprint C 2026-05-14: switched to the canonical loadEntitlement
+    // helper. The previous inline PAID_TIERS + ACTIVE_STATUSES check
+    // was the third copy of that shape in the codebase (Sprint B
+    // closed the premium-chat copy; member-profile.js was the second).
+    // loadEntitlement already encodes the same broadening logic
+    // (premium / institutional / mmt_premium_founding / founding_member
+    // / admin / legacy paid), case-insensitive email lookup, and
+    // graceful no-row handling — all in one tested helper.
+    const entitlement = await loadEntitlement(supabase, normalizedEmail);
 
-    if (error || !user) {
+    if (entitlement.reason === "no_user") {
       return {
         statusCode: 200,
         headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
@@ -58,26 +62,14 @@ exports.handler = async (event) => {
       };
     }
 
-    // Check for any active paid tier — premium, institutional, founding.
-    // Trialing also counts as paid access. Broadened 2026-04-29 (TKT-2):
-    // single-value match excluded institutional and the legacy
-    // mmt_premium_founding shape, locking those subscribers out of login.
-    const PAID_TIERS = ["premium", "institutional", "mmt_premium_founding"];
-    const ACTIVE_STATUSES = ["active", "trialing"];
-    const isPremium =
-      (PAID_TIERS.includes(user.subscription_tier) && ACTIVE_STATUSES.includes(user.subscription_status)) ||
-      user.founding_member === true ||
-      user.tier === "admin" ||
-      user.tier === "paid";
-
-    if (!isPremium) {
+    if (!entitlement.ok) {
       return {
         statusCode: 200,
         headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
         body: JSON.stringify({
           authenticated: false,
           message: "No active Premium subscription. Upgrade at /pricing.html",
-          tier: user.tier || "free",
+          tier: entitlement.tier,
         }),
       };
     }
@@ -95,8 +87,8 @@ exports.handler = async (event) => {
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
       body: JSON.stringify({
         authenticated: true,
-        tier: user.subscription_tier || user.tier,
-        founding_member: user.founding_member || false,
+        tier: entitlement.tier,
+        founding_member: entitlement.founding_member,
         token,
         expires: new Date(expiry).toISOString(),
       }),

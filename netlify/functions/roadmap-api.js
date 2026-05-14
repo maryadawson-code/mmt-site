@@ -6,14 +6,27 @@ const { createClient } = require("@supabase/supabase-js");
 const { validateAuth } = require("./lib/auth");
 const { createLogger } = require("./lib/logger");
 
-const HEADERS = { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "Content-Type, Authorization", "Access-Control-Allow-Methods": "GET, POST, OPTIONS" };
+const HEADERS = { "Content-Type": "application/json", "Access-Control-Allow-Origin": "https://missionmeetstech.com", "Access-Control-Allow-Headers": "Content-Type, Authorization", "Access-Control-Allow-Methods": "GET, POST, OPTIONS" };
 function ok(d) { return { statusCode: 200, headers: HEADERS, body: JSON.stringify(d) }; }
 function err(s, m) { return { statusCode: s, headers: HEADERS, body: JSON.stringify({ error: m }) }; }
 
-const ADMIN_EMAILS = ["maryadawson@gmail.com", "mary@missionmeetstech.com", "jackyang2326@gmail.com", "amchicu@gmail.com"];
+// Sprint C 2026-05-14: admin allowlist moved out of source.
+// ADMIN_EMAILS env var is a comma-separated, case-insensitive list of
+// addresses authorized to use the admin paths of this API. The
+// previous hardcoded 4-name array exposed real operator/customer
+// emails in the public repo. If the env var is missing on a deploy,
+// the allowlist is empty — admin paths return 403 — which is the safe
+// failure mode.
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "")
+  .split(",")
+  .map((s) => s.trim().toLowerCase())
+  .filter(Boolean);
 
 function isAdmin(auth) {
-  return auth.type === "agent" || ADMIN_EMAILS.includes(auth.email);
+  if (!auth) return false;
+  if (auth.type === "agent") return true;
+  if (!auth.email) return false;
+  return ADMIN_EMAILS.includes(String(auth.email).toLowerCase());
 }
 
 // Log a change to both product_roadmap_log and activity_feed
@@ -49,7 +62,7 @@ const { validateAuth } = require("./lib/auth");
 const { createLogger } = require("./lib/logger");
 const { sanitize } = require("./lib/sanitize");
 
-const HEADERS = { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "Content-Type, Authorization", "Access-Control-Allow-Methods": "GET, POST, OPTIONS" };
+const HEADERS = { "Content-Type": "application/json", "Access-Control-Allow-Origin": "https://missionmeetstech.com", "Access-Control-Allow-Headers": "Content-Type, Authorization", "Access-Control-Allow-Methods": "GET, POST, OPTIONS" };
 function ok(d) { return { statusCode: 200, headers: HEADERS, body: JSON.stringify(d) }; }
 function err(s, m) { return { statusCode: s, headers: HEADERS, body: JSON.stringify({ error: m }) }; }
 

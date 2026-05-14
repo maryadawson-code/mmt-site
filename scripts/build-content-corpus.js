@@ -27,6 +27,13 @@ const CAPTURE_INTEL_FILE = path.join(ROOT, "capture-intelligence.json");
 const GLOSSARY_FILE = path.join(ROOT, "glossary.json");
 const IDIQ_VEHICLES_FILE = path.join(ROOT, "data", "idiq-vehicles.json");
 const OUT_FILE = path.join(ROOT, "netlify", "functions", "data", "mmt-content-corpus.json");
+// Sprint C 2026-05-14: also emit a public-only subset for any future
+// unauthenticated endpoint that needs to do content search. The full
+// corpus (OUT_FILE) still ships and is consumed by the three
+// entitlement-gated endpoints (Ask MMT, premium-chat, signal-chain);
+// the public file is defense-in-depth so a future unauthenticated
+// consumer can't accidentally bundle premium excerpts.
+const OUT_FILE_PUBLIC = path.join(ROOT, "netlify", "functions", "data", "mmt-content-corpus-public.json");
 
 // 8000 chars per item captures enough body that acronym-heavy topics
 // (HCDS, DHMSM, HTI-5, OASIS+, CSO) surface in search even when they
@@ -344,6 +351,28 @@ function build() {
   const size = fs.statSync(OUT_FILE).size;
   console.log(`[corpus] wrote ${corpus.total} items — ${(size / 1024).toFixed(1)}KB → ${path.relative(ROOT, OUT_FILE)}`);
   console.log(`[corpus] breakdown:`, corpus.counts);
+
+  // Sprint C 2026-05-14: emit public-only subset. Excludes every item
+  // with premium: true. Captures and counts MUST be a pure subset of
+  // the full corpus — no rewriting of fields, no different excerpt
+  // lengths, no different schema. scripts/validate-dist.js checks
+  // this file has zero `premium: true` entries.
+  const publicItems = allItems.filter((it) => !it.premium);
+  const publicCorpus = {
+    generated_at: corpus.generated_at,
+    total: publicItems.length,
+    note: "Public subset of mmt-content-corpus.json (premium=false items only). For unauthenticated endpoints. Per Sprint C 2026-05-14.",
+    counts: {
+      articles: publicItems.filter((i) => i.type === "article").length,
+      contracts: publicItems.filter((i) => i.type === "contract_intel").length,
+      glossary: publicItems.filter((i) => i.type === "glossary").length,
+      idiq_vehicles: publicItems.filter((i) => i.type === "idiq_vehicle").length,
+    },
+    items: publicItems,
+  };
+  fs.writeFileSync(OUT_FILE_PUBLIC, JSON.stringify(publicCorpus, null, 2));
+  const pubSize = fs.statSync(OUT_FILE_PUBLIC).size;
+  console.log(`[corpus] wrote ${publicCorpus.total} public-only items — ${(pubSize / 1024).toFixed(1)}KB → ${path.relative(ROOT, OUT_FILE_PUBLIC)}`);
 }
 
 if (require.main === module) {

@@ -14,7 +14,7 @@ const { createClient } = require("@supabase/supabase-js");
 const { createLogger } = require("./lib/logger");
 
 const HEADERS = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": "https://missionmeetstech.com",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
   "Content-Type": "application/json",
 };

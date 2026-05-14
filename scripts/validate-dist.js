@@ -116,6 +116,28 @@ const PATTERNS = [
     re: /data-premium-text="[A-Za-z0-9+/=]{40,}"/ },
   { name: 'glossary full-note base64 (P0 — Sprint A)',
     re: /data-full-note="[A-Za-z0-9+/=]{40,}"/ },
+  // Sprint C 2026-05-14 anti-regression gates. Catch any non-base64
+  // form of the same leak class: a build-time generator that adds the
+  // attribute (even with a slug placeholder) is fine, but if a future
+  // generator ships the attribute with body text or a long value it
+  // gets caught here.
+  { name: 'data-premium-text attribute on public page (Sprint C)',
+    re: /data-premium-text="[^"]{1,}"/ },
+  { name: 'data-full-note attribute on public page (Sprint C)',
+    re: /data-full-note="[^"]{1,}"/ },
+  // Atob premium-decode path on public pages is dead code post-Sprint A.
+  // Catch any reintroduction. The mmt-paywall.js script that ships in
+  // dist/js/ has surviving atob() calls for unrelated surfaces (legacy
+  // newswire and glossary blocks that are now no-ops); the path
+  // exception below scopes this rule to dist HTML only.
+  { name: 'inline atob( premium decode (Sprint C)',
+    re: /\batob\s*\(\s*[^)]*premium/i,
+    skipPaths: ['/js/'] },
+  // Sprint C C2: MMT Intel body text on public IDIQ pages. The only
+  // ALLOWED occurrence is the teaser label "Full analysis available
+  // with Premium" — anything else means premium body text leaked.
+  // Implemented as a custom check below the generic loop (needs
+  // per-file allow-list logic).
 ];
 
 const failures = [];
@@ -130,6 +152,11 @@ for (const relFile of files) {
   const html = fs.readFileSync(full, 'utf8');
   for (const rule of PATTERNS) {
     if (rule.allowPaths && rule.allowPaths.some(p => relFile.includes(p))) continue;
+    // skipPaths is the inverse: skip the rule when the file path
+    // contains any of these substrings. Used by Sprint C to scope the
+    // atob-premium check to dist HTML only and exempt the mmt-paywall.js
+    // bundle (which has surviving atob() calls for unrelated surfaces).
+    if (rule.skipPaths && rule.skipPaths.some(p => relFile.includes(p))) continue;
     const m = html.match(rule.re);
     if (m) {
       addFailure(rule.name, relFile, m[0].slice(0, 80));
@@ -384,6 +411,51 @@ requireString(
     if (!shaMatch || shaMatch[1] === 'unknown') {
       addFailure('deploy marker: commit SHA missing or unknown', 'deploy-id.txt', contents.slice(0, 80));
     }
+  }
+}
+
+// --- Sprint C custom checks ---
+// 1. Public IDIQ pages must NOT contain MMT Intel body text. The only
+//    allowed occurrence is the public teaser label.
+const idiqPaths = ['idiq-tracker.html', 'idiq-tracker/index.html'];
+for (const rel of idiqPaths) {
+  const full = path.join(DIST_DIR, rel);
+  if (!fs.existsSync(full)) continue;
+  const html = fs.readFileSync(full, 'utf8');
+  const mentions = html.match(/MMT Intel/g) || [];
+  // Allowed teaser label: "Full analysis available with Premium" lives
+  // right after the "MMT Intel" eyebrow on each public card. Anything
+  // more than that count of mentions means premium body content leaked.
+  // Current public idiq-tracker.html has exactly 1 "MMT Intel" mention
+  // (the teaser label); allow up to a small ceiling for future cards
+  // that follow the same teaser pattern, fail loudly if it grows beyond.
+  const MAX_TEASER_MENTIONS = 6; // generous; current is 1
+  if (mentions.length > MAX_TEASER_MENTIONS) {
+    addFailure(
+      'MMT Intel body text on public IDIQ page (Sprint C)',
+      rel,
+      `${mentions.length} MMT Intel occurrences (max ${MAX_TEASER_MENTIONS} teaser labels allowed; premium body must come from /.netlify/functions/idiq-fields after entitlement)`
+    );
+  }
+}
+
+// 2. Public corpus must contain zero premium=true items.
+const corpusPath = path.join(DIST_DIR, '..', 'netlify', 'functions', 'data', 'mmt-content-corpus-public.json');
+const corpusPathAlt = path.resolve(__dirname, '..', 'netlify', 'functions', 'data', 'mmt-content-corpus-public.json');
+const corpusFile = fs.existsSync(corpusPath) ? corpusPath : corpusPathAlt;
+if (fs.existsSync(corpusFile)) {
+  try {
+    const corpus = JSON.parse(fs.readFileSync(corpusFile, 'utf8'));
+    const premiumLeaks = (corpus.items || []).filter(it => it && it.premium === true);
+    if (premiumLeaks.length > 0) {
+      addFailure(
+        'public corpus contains premium items (Sprint C)',
+        path.relative(path.resolve(__dirname, '..'), corpusFile),
+        `${premiumLeaks.length} items with premium=true; public corpus must be premium-free`
+      );
+    }
+  } catch (err) {
+    addFailure('public corpus unreadable (Sprint C)', corpusFile, err.message);
   }
 }
 

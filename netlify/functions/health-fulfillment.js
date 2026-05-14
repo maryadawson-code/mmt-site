@@ -24,7 +24,7 @@ const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
 const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": "https://missionmeetstech.com",
   "Content-Type": "application/json",
   "Cache-Control": "private, max-age=10",
 };

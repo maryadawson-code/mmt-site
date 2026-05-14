@@ -16,7 +16,7 @@ const { validateAuth } = require("./lib/auth");
 const { listApprovals, decideApproval, triageSignal } = require("./lib/approvals");
 
 const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": "https://missionmeetstech.com",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
   "Content-Type": "application/json",

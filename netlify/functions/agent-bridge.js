@@ -18,6 +18,16 @@ const { listApprovals, decideApproval, triageSignal } = require("./lib/approvals
 const { Sentry, wrapHandler } = require("./lib/sentry");
 const { checkRateLimit } = require("./lib/rate-limiter");
 
+// CORS allow-origin INTENTIONALLY wildcard (Sprint C 2026-05-14):
+// agent-bridge is hit by the editorial agent and other operator
+// tooling from heterogeneous environments (claude.ai sessions, local
+// CLIs, dev machines). The actual auth gate is the AGENT_BRIDGE_KEY
+// bearer token validated below on every request — CORS lockdown
+// would break agent workflows without adding a security boundary
+// (CORS only restricts browser-side cross-origin calls, and the
+// browsers that consume this surface don't carry agent bearer tokens
+// anyway). Every other admin/agent endpoint in this directory was
+// tightened to https://missionmeetstech.com in the same sprint.
 const HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",

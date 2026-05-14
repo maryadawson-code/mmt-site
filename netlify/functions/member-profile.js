@@ -14,6 +14,7 @@
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
+const { loadEntitlement } = require("./lib/entitlement");
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "https://missionmeetstech.com",
@@ -46,18 +47,13 @@ function pickFields(body) {
 }
 
 async function verifyMember(supabase, email) {
-  const { data: user } = await supabase
-    .from("mp_users")
-    .select("tier, subscription_tier, subscription_status")
-    .eq("email", email)
-    .single();
-  if (!user) return false;
-  return (
-    (user.subscription_tier === "premium" && user.subscription_status === "active") ||
-    (user.subscription_tier === "institutional" && user.subscription_status === "active") ||
-    user.tier === "admin" ||
-    user.tier === "paid"
-  );
+  // Sprint C 2026-05-14: replaced the inline mp_users / subscription_tier
+  // check with the canonical loadEntitlement helper. Same regression
+  // pattern as Sprint B's premium-chat fix — the previous shape would
+  // have blocked founding members whose subscription_tier is
+  // "mmt_premium_founding" rather than "premium".
+  const entitlement = await loadEntitlement(supabase, email);
+  return entitlement.ok;
 }
 
 exports.handler = async (event) => {

@@ -12,7 +12,7 @@ const { sendEmail } = require("./lib/send-email");
 const { validateAuth } = require("./lib/auth");
 
 const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": "https://missionmeetstech.com",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
   "Content-Type": "application/json",
 };

@@ -5,7 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MarketPulse Demo</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    /* Sprint C 2026-05-14: removed @import url(fonts.googleapis.com)
+       — fonts.googleapis.com / fonts.gstatic.com are not allowed by
+       the site CSP (style-src 'self' 'unsafe-inline'; font-src 'self').
+       The font-family declaration below already lists system fonts
+       as fallbacks; the browser renders cleanly on the native stack. */
 
     :root{
       --navy:#0A192F;

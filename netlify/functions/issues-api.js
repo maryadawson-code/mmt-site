@@ -3,7 +3,7 @@
 const { createClient } = require("@supabase/supabase-js");
 const { validateAuth } = require("./lib/auth");
 
-const HEADERS = { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "Content-Type, Authorization", "Access-Control-Allow-Methods": "GET, POST, OPTIONS" };
+const HEADERS = { "Content-Type": "application/json", "Access-Control-Allow-Origin": "https://missionmeetstech.com", "Access-Control-Allow-Headers": "Content-Type, Authorization", "Access-Control-Allow-Methods": "GET, POST, OPTIONS" };
 function ok(d) { return { statusCode: 200, headers: HEADERS, body: JSON.stringify(d) }; }
 function err(s, m) { return { statusCode: s, headers: HEADERS, body: JSON.stringify({ error: m }) }; }
 

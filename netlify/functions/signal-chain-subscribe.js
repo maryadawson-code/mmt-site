@@ -12,6 +12,7 @@
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
+const { loadEntitlement, blockMessageFor, logEntitlementMismatch } = require("./lib/entitlement");
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "https://missionmeetstech.com",
@@ -55,20 +56,19 @@ exports.handler = async (event) => {
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
-  // Premium gate
-  const { data: user } = await supabase
-    .from("mp_users")
-    .select("tier, subscription_tier, subscription_status")
-    .eq("email", email)
-    .single();
-  const isPremium = user && (
-    (user.subscription_tier === "premium" && user.subscription_status === "active") ||
-    (user.subscription_tier === "institutional" && user.subscription_status === "active") ||
-    user.tier === "admin" ||
-    user.tier === "paid"
-  );
-  if (!isPremium) {
-    return { statusCode: 403, headers: CORS_HEADERS, body: JSON.stringify({ error: "Signal Chain monitoring is a Premium feature." }) };
+  // Canonical entitlement gate (Sprint C 2026-05-14 — replaces the
+  // inline mp_users / subscription_tier query that was the regression
+  // pattern documented in CLAUDE.md after the 2026-04-27 founding-member
+  // incident).
+  const entitlement = await loadEntitlement(supabase, email);
+  if (!entitlement.ok) {
+    const block = blockMessageFor(entitlement);
+    try { await logEntitlementMismatch(supabase, { email, tool: "signal_chain_subscribe", entitlement, expected: "premium|founding|institutional|admin" }); } catch {}
+    return {
+      statusCode: 403,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({ error: block.message, reason_code: block.reason_code, tier: entitlement.tier }),
+    };
   }
 
   if (event.httpMethod === "DELETE") {
