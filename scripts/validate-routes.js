@@ -37,6 +37,25 @@ const tomlText = fs.existsSync(TOML_PATH) ? fs.readFileSync(TOML_PATH, "utf8") :
 const redirectFroms = new Set();
 const fromRegex = /from\s*=\s*"([^"]+)"/g;
 let m;
+// Sprint B 2026-05-13: also detect DUPLICATE `from = "..."` redirect
+// rules. Netlify applies first-match-wins, so a duplicate from-line
+// means the second rule is silently dead — root cause of the
+// /compliance-check routing collision that surfaced in the Sprint B
+// audit. Fail the build on any duplicate so this kind of drift
+// can't ship again.
+const seenFromCounts = new Map();
+const tomlRedirectRe = /from\s*=\s*"([^"]+)"/g;
+while ((m = tomlRedirectRe.exec(tomlText)) !== null) {
+  seenFromCounts.set(m[1], (seenFromCounts.get(m[1]) || 0) + 1);
+}
+const duplicateFroms = Array.from(seenFromCounts.entries()).filter(([, n]) => n > 1);
+if (duplicateFroms.length) {
+  console.error("\nvalidate-routes: FAIL — duplicate `from = \"...\"` redirect rule(s) in netlify.toml:");
+  for (const [from, n] of duplicateFroms) console.error(`  - from = "${from}" appears ${n} times (Netlify first-match-wins; later rules are silently dead)`);
+  console.error("\nResolution: remove the duplicate [[redirects]] block(s) so each `from` is defined exactly once.");
+  process.exit(1);
+}
+fromRegex.lastIndex = 0;
 while ((m = fromRegex.exec(tomlText)) !== null) redirectFroms.add(m[1]);
 
 // _redirects file (legacy)

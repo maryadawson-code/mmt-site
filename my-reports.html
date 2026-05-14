@@ -275,7 +275,16 @@
 
     async function verifyAndLoad() {
       try {
-        var res = await fetch('/.netlify/functions/customer-auth?action=me&token=' + sessionToken);
+        // Sprint B 2026-05-13: POST the token in the JSON body so it
+        // does not appear in server access logs / CDN logs / browser
+        // history. The url-token path (set on first arrival from the
+        // magic-link email) is already cleaned via history.replaceState
+        // a few lines above.
+        var res = await fetch('/.netlify/functions/customer-auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'me', token: sessionToken })
+        });
         if (!res.ok) { logout(); return; }
         var data = await res.json();
         customerEmail = data.email;
@@ -330,7 +339,11 @@
 
     async function loadOrders() {
       try {
-        var res = await fetch('/.netlify/functions/customer-auth?action=orders&token=' + sessionToken);
+        var res = await fetch('/.netlify/functions/customer-auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'orders', token: sessionToken })
+        });
         if (!res.ok) return;
         var data = await res.json();
         renderReports(data);
@@ -412,7 +425,11 @@
 
     async function loadPending() {
       try {
-        var res = await fetch('/.netlify/functions/customer-auth?action=pending&token=' + sessionToken);
+        var res = await fetch('/.netlify/functions/customer-auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'pending', token: sessionToken })
+        });
         if (!res.ok) return;
         var data = await res.json();
         if (data.approvals && data.approvals.length > 0) {

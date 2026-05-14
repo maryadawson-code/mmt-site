@@ -20,12 +20,6 @@
     "capture-intelligence.json",
     "data/idiq-vehicles.json",
     "data/premium/agency-profiles/agencies.json",
-    "data/may-1-release/**",
-    "data/may-5-release/**",
-    "data/may-6-release/**",
-    "data/may-8-release/**",
-    "data/may-12-release/**",
-    "data/apr-29-release/**",
     "migrations/010_subscriber_context_alignment.sql",
     "migrations/011_mp_users_columns_documented.sql",
     "static/lead-magnets/**",
@@ -204,42 +198,18 @@
 [functions."sam-key-expiration-reminder"]
   schedule = "0 14 * * *"
 
-# May 1, 2026 release automations — date-guarded inside each function;
-# the daily cron is harmless on every other day.
-[functions."may1-premium-capture-send"]
-  schedule = "0 10 * * *"
-
-[functions."may1-build-trigger"]
-  schedule = "0 13 * * *"
-
-[functions."may1-tracker-trigger"]
-  schedule = "0 16 * * *"
-
-# May 6, 2026 release — "The Formulary Storm" Premium issue (DoD P&T
-# Committee meets May 6-7; UFBAP advisory committee pause). Daily cron
-# at 10:00 UTC (06:00 ET); the function gates on RUN_DATE_UTC=2026-05-06
-# and exits on every other day. Idempotency-keyed in ops_events.
-[functions."may6-premium-formulary-send"]
-  schedule = "0 10 * * *"
-
-# May 8, 2026 release — "COMP/PSCP — Vendors, Vehicles, and the
-# Mandatory Floor That Lives in One Subaccount." Capture Corner email
-# blast to premium subscribers. Daily cron at 10:00 UTC (06:00 ET);
-# the function gates on RUN_DATE_UTC=2026-05-08 and exits on every
-# other day. Idempotency-keyed in ops_events as may8_premium_capture_sent.
-# Kill switch: MAY8_PREMIUM_CAPTURE_DISABLED=true.
-[functions."may8-premium-capture-send"]
-  schedule = "0 10 * * *"
-
-# May 12, 2026 release — "Where the Pendulum Becomes Spend." Paid
-# companion to "The Warfighter Under the Pendulum." Capture Corner
-# email blast to premium subscribers. Daily cron at 10:00 UTC
-# (06:00 ET); the function gates on RUN_DATE_UTC=2026-05-12 and
-# exits on every other day. Idempotency-keyed in ops_events as
-# may12_premium_capture_sent.
-# Kill switch: MAY12_PREMIUM_CAPTURE_DISABLED=true.
-[functions."may12-premium-capture-send"]
-  schedule = "0 10 * * *"
+# [Sprint B 2026-05-13] Retired the May 1 / May 6 / May 8 / May 12
+# one-shot capture-corner email crons. Each was date-guarded
+# (RUN_DATE_UTC=<release date>), idempotency-keyed in ops_events,
+# fired live on its release date, and was a daily no-op afterward
+# burning a Netlify Function invocation. The functions themselves
+# (netlify/functions/may1-*, may6-*, may8-*, may12-*, apr29-*) have
+# been removed in the same commit, along with their data/may-X-release/**
+# and data/apr-29-release/** included_files entries.
+# Pattern reminder for the NEXT capture corner one-shot:
+#   • Date-guard with RUN_DATE_UTC.
+#   • Idempotency key in ops_events.
+#   • Delete the function + this block within ~14 days of the run date.
 
 # Hourly Stripe -> mp_users safety-net sync.
 # Stripe Payment Links (the pricing page checkout) periodically produce
@@ -578,10 +548,16 @@
   to = "/premium/ask-mmt.html"
   status = 200
 
-[[redirects]]
-  from = "/compliance-check"
-  to = "/premium/compliance-check.html"
-  status = 200
+# [Sprint B 2026-05-13] Removed the duplicate /compliance-check redirect
+# rule that pointed to /premium/compliance-check.html. The canonical
+# /compliance-check rule (earlier in this file, at line ~436) routes
+# to /compliance-check.html — the public marketing/walkthrough page
+# whose <link rel="canonical"> declares /compliance-check as its URL.
+# The premium tool itself lives at /premium/compliance-check.html and
+# is the member_url in docs/member-features.json. Tools hub links to
+# /compliance-check (marketing) which CTAs into the premium page.
+# scripts/validate-routes.js now fails the build on any duplicate
+# `from = ...` redirect line so this kind of collision can't recur.
 
 [[redirects]]
   from = "/signal-chain"

@@ -5,22 +5,47 @@
 // approval. This function does NOT auto-fire. It runs only when called
 // directly with the `MIGRATION_APPLY_TOKEN` env var as a bearer token.
 //
-// Applies migrations 010 and 011 idempotently (both use ADD COLUMN IF
-// NOT EXISTS / CREATE INDEX IF NOT EXISTS so re-running is safe).
+// Reads SQL files exclusively from the `migrations/` directory at the
+// repo root (the CANONICAL directory documented in migrations/README.md).
+// `supabase/migrations/` is intentionally NOT read by this function —
+// see migrations/README.md § 3 for why.
+//
+// Each migration here must be IDEMPOTENT (CREATE TABLE IF NOT EXISTS /
+// ADD COLUMN IF NOT EXISTS / CREATE INDEX IF NOT EXISTS) so re-running
+// is always safe.
 //
 // Trigger:
 //   curl -X POST -H "Authorization: Bearer $TOKEN" \
 //     https://missionmeetstech.com/.netlify/functions/apply-pending-migrations
 //
-// Returns the per-migration status so Mary sees which ones applied
-// cleanly and which (if any) errored.
+// Returns the per-migration status so Mary sees which applied cleanly,
+// which were already up to date (idempotent no-op), and which errored.
+//
+// To add a new migration:
+//   1. Write the SQL in migrations/<file>.sql with idempotent guards.
+//   2. Append its filename to MIGRATIONS below, in the order
+//      documented in migrations/README.md § 2.
+//   3. Commit; do not auto-apply from CI.
 // ============================================================
 
 const fs = require("fs");
 const path = require("path");
 const { createClient } = require("@supabase/supabase-js");
 
-const MIGRATIONS = ["010_subscriber_context_alignment.sql", "011_mp_users_columns_documented.sql"];
+// Canonical apply-in-order list. New entries APPEND to the end and must
+// be paired with a row in migrations/README.md § 2.
+//
+// Today's set targets the two mp_users / subscriber_context alignment
+// migrations that need to be present on any clean environment. Earlier
+// numbered files (001-009) have already been applied to the prod
+// database and are not re-listed here to keep the applier's blast
+// radius small; if you need a clean environment, apply the README's
+// full § 2 list manually in the Supabase editor and then this function
+// brings the rest up to date.
+const MIGRATIONS = [
+  "010_subscriber_context_alignment.sql",
+  "011_mp_users_columns_documented.sql",
+];
 
 exports.handler = async (event) => {
   const token = (event.headers.authorization || event.headers.Authorization || "").replace(/^Bearer\s+/i, "");

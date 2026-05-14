@@ -2,7 +2,16 @@
 //
 // POST { action: "request_link", email } — sends magic link email
 // POST { action: "verify", token } — verifies token, returns session
-// GET  ?action=me&token=X — returns customer profile if valid session
+// POST { action: "me",      token } — returns customer profile (Sprint B 2026-05-13)
+// POST { action: "orders",  token } — returns customer orders     (Sprint B 2026-05-13)
+// POST { action: "pending", token } — returns pending approvals   (Sprint B 2026-05-13)
+//
+// Legacy GET handlers (?action=me|orders|pending&token=X) are still
+// supported for inbound magic-link URLs and any cached front-ends in
+// flight, but the my-reports.html page now POSTs the token in the
+// JSON body so it no longer appears in server access logs / CDN
+// logs / browser history. The token is also never logged by this
+// function itself.
 
 const { createClient } = require("@supabase/supabase-js");
 const { sendEmail } = require("./lib/send-email");
@@ -90,6 +99,63 @@ exports.handler = async (event) => {
   if (event.httpMethod === "POST") {
     let body;
     try { body = JSON.parse(event.body); } catch { return err(400, "Invalid JSON"); }
+
+    // Sprint B 2026-05-13: POST-with-token-in-body handlers for the
+    // three session-bearing reads (me / orders / pending). Moved off
+    // the legacy GET shape so tokens stop appearing in server access
+    // logs, CDN logs, and browser history. Logic identical to the GET
+    // handler above — only the transport changes.
+    if (body.action === "me" && body.token) {
+      const tokenHash = hashToken(body.token);
+      const { data: session } = await sb.from("customer_sessions")
+        .select("email, expires_at")
+        .eq("token_hash", tokenHash)
+        .eq("is_valid", true)
+        .gt("expires_at", new Date().toISOString())
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
+      if (!session) return err(401, "Invalid or expired session");
+      const { data: profile } = await sb.from("customer_profiles").select("*").eq("email", session.email).single();
+      const { data: prefs } = await sb.from("customer_preferences").select("*").eq("email", session.email).single();
+      return ok({ email: session.email, profile: profile || null, preferences: prefs || null });
+    }
+
+    if (body.action === "orders" && body.token) {
+      const tokenHash = hashToken(body.token);
+      const { data: session } = await sb.from("customer_sessions")
+        .select("email")
+        .eq("token_hash", tokenHash)
+        .eq("is_valid", true)
+        .gt("expires_at", new Date().toISOString())
+        .limit(1)
+        .single();
+      if (!session) return err(401, "Invalid or expired session");
+      const [mpRes, ppRes] = await Promise.all([
+        sb.from("marketpulse_orders").select("*").eq("email", session.email).order("created_at", { ascending: false }).limit(50),
+        sb.from("mp_scoring_history").select("*").eq("email", session.email).order("created_at", { ascending: false }).limit(50),
+      ]);
+      return ok({ marketpulse: mpRes.data || [], proposalpulse: ppRes.data || [] });
+    }
+
+    if (body.action === "pending" && body.token) {
+      const tokenHash = hashToken(body.token);
+      const { data: session } = await sb.from("customer_sessions")
+        .select("email")
+        .eq("token_hash", tokenHash)
+        .eq("is_valid", true)
+        .gt("expires_at", new Date().toISOString())
+        .limit(1)
+        .single();
+      if (!session) return err(401, "Invalid or expired session");
+      const { data } = await sb.from("approval_queue")
+        .select("*")
+        .eq("target_role", "customer")
+        .eq("target_email", session.email)
+        .eq("status", "pending")
+        .order("created_at", { ascending: false });
+      return ok({ approvals: data || [] });
+    }
 
     if (body.action === "request_link") {
       const { email } = body;

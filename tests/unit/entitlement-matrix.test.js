@@ -142,6 +142,47 @@ describe("entitlement matrix", () => {
   });
 });
 
+describe("premium-chat founding-member access (Sprint B 2026-05-13)", () => {
+  // premium-chat previously rolled its own `.eq("email").select("tier,
+  // subscription_tier, subscription_status").single()` shape and only
+  // matched subscription_tier === "premium" + active. A Founding Member
+  // with subscription_tier === "mmt_premium_founding" would FAIL that
+  // check unless they also had tier === "admin" / "paid" — same class
+  // of bug as the 2026-04-27 Ask MMT incident. Sprint B replaced it
+  // with the canonical loadEntitlement helper.
+  //
+  // This test guards two things:
+  //   1. The entitlement-matrix output for a founding member passes
+  //      (ok=true, tier="founding"), which is what premium-chat now
+  //      checks via entitlement.ok.
+  //   2. premium-chat.js literally imports loadEntitlement (a regression
+  //      grep that catches anyone re-introducing the inline shape).
+  it("founding-member entitlement passes the same gate premium-chat uses", async () => {
+    const sb = makeSupabase({ "founding@example.com": { tier: null, subscription_tier: "premium", subscription_status: "active", founding_member: true } });
+    const e = await loadEntitlement(sb, "founding@example.com");
+    expect(e.ok).toBe(true);
+    expect(e.tier).toBe("founding");
+  });
+
+  it("mmt_premium_founding subscription_tier also passes (legacy founders)", async () => {
+    const sb = makeSupabase({ "legacy-founder@example.com": { tier: null, subscription_tier: "mmt_premium_founding", subscription_status: "active", founding_member: true } });
+    const e = await loadEntitlement(sb, "legacy-founder@example.com");
+    expect(e.ok).toBe(true);
+    expect(e.tier).toBe("founding");
+  });
+
+  it("premium-chat.js imports loadEntitlement (no inline mp_users entitlement)", async () => {
+    const fs = await import("fs");
+    const path = await import("path");
+    const p = path.resolve(process.cwd(), "netlify/functions/premium-chat.js");
+    const txt = fs.readFileSync(p, "utf8");
+    expect(txt).toMatch(/require\(["']\.\/lib\/entitlement["']\)/);
+    expect(txt).toMatch(/loadEntitlement\s*\(/);
+    // Old shape should be gone — no inline subscription_tier-only check.
+    expect(txt).not.toMatch(/\.eq\(\s*["']email["'][^)]*\)[\s\S]{0,200}\.single\(\)/);
+  });
+});
+
 describe("regression guard: no function uses is_founding_member", () => {
   // Tests for the literal typo that caused the 2026-04-27 incident.
   // If anyone reintroduces it, this fails before deploy.

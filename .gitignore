@@ -57,3 +57,16 @@ ops/
 # directory exists for files like fy2027-backfill-list.csv that the
 # local backfill script reads but that contain customer emails.
 private/
+
+# Editor / one-shot backup artifacts. Per Sprint B (2026-05-13), we
+# caught netlify/functions/agent-bridge.js.backup in tip-of-tree —
+# this rule prevents the same regression class.
+*.backup
+*.bak
+
+# Root sitemap.xml is build-generated into dist/sitemap.xml by
+# build.js (line ~852). The root copy that used to live here was
+# stale (last updated 2026-03-03) and unreferenced. Per Sprint B
+# (2026-05-13), keep root sitemap.xml out of tip-of-tree so editor
+# auto-saves or build artifacts can't re-introduce a stale copy.
+/sitemap.xml

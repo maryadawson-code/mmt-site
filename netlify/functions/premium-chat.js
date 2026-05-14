@@ -15,6 +15,7 @@
 
 const { createClient } = require("@supabase/supabase-js");
 const { answerQuestion } = require("./lib/premium-assistant");
+const { loadEntitlement, blockMessageFor, logEntitlementMismatch } = require("./lib/entitlement");
 
 const MONTHLY_TURN_CAP = 50;
 const INSTITUTIONAL_TURN_CAP = 200;
@@ -62,26 +63,21 @@ exports.handler = async (event) => {
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
-  // Premium verification
-  const { data: user } = await supabase
-    .from("mp_users")
-    .select("tier, subscription_tier, subscription_status")
-    .eq("email", email)
-    .single();
-
-  const isInstitutional = user && user.subscription_tier === "institutional" && user.subscription_status === "active";
-  const isPremium = user && (
-    (user.subscription_tier === "premium" && user.subscription_status === "active") ||
-    isInstitutional ||
-    user.tier === "admin" ||
-    user.tier === "paid"
-  );
-
-  if (!isPremium) {
+  // Canonical entitlement check (Sprint B 2026-05-13 — replaces the
+  // inline mp_users / subscription_tier query that was the regression
+  // pattern documented in CLAUDE.md after the 2026-04-27 founding-member
+  // incident. The previous shape required subscription_tier === "premium"
+  // AND active, which incorrectly excluded mmt_premium_founding subscribers
+  // who weren't also tier === "admin" / "paid".)
+  const entitlement = await loadEntitlement(supabase, email);
+  const isInstitutional = entitlement.tier === "institutional";
+  if (!entitlement.ok) {
+    const block = blockMessageFor(entitlement);
+    try { await logEntitlementMismatch(supabase, { email, tool: "premium_chat", entitlement, expected: "premium|founding|institutional|admin" }); } catch {}
     return {
       statusCode: 403,
       headers: CORS_HEADERS,
-      body: JSON.stringify({ error: "Premium chat is for subscribers. Subscribe at missionmeetstech.com/pricing" }),
+      body: JSON.stringify({ error: block.message, reason_code: block.reason_code, tier: entitlement.tier }),
     };
   }
 

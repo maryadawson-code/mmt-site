@@ -1,9 +1,24 @@
+# SECURITY HEADER OWNERSHIP (Sprint B 2026-05-13)
+# ------------------------------------------------
+# _headers owns:        X-Frame-Options, X-Content-Type-Options,
+#                       Referrer-Policy, all caching rules.
+# Edge function owns:   Content-Security-Policy, Permissions-Policy,
+#                       Strict-Transport-Security.
+#                       (see netlify/edge-functions/security-headers.js)
+#
+# Why split: the edge function runs on EVERY route (including dynamic
+# Netlify Function routes where _headers doesn't apply). Caching + the
+# non-CSP security headers stay here because they're more efficient
+# at the static-file layer. Previously CSP + Permissions-Policy were
+# duplicated across both files with subtle differences (jsdelivr only
+# in _headers but unused anywhere; *.stripe.com wildcard in _headers
+# vs explicit subdomains in edge); Netlify's pipeline applies _headers
+# first then the edge function can override, so the edge always won
+# for CSP. Now de-duplicated and documented.
 /*
   X-Frame-Options: SAMEORIGIN
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; frame-src 'self' https://checkout.stripe.com https://open.spotify.com; media-src 'self' https://api.riverside.fm https://hosting-media.rs-prod.riverside.fm; connect-src 'self' https://plausible.io https://*.stripe.com; object-src 'none'; base-uri 'self'; form-action 'self' https://buttondown.com https://checkout.stripe.com
 
 /styles/*.css
   Cache-Control: public, max-age=31536000, immutable
