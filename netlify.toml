@@ -319,6 +319,88 @@
   to = "/premium/profile.html"
   status = 200
 
+# Sprint 4 / Sprint 5 premium pages — no-trailing-slash variants.
+# Each maps directly to its premium subpage (auth-gated client-side).
+[[redirects]]
+  from = "/premium/fpds-migration"
+  to = "/premium/fpds-migration.html"
+  status = 200
+[[redirects]]
+  from = "/premium/single-bidder"
+  to = "/premium/single-bidder.html"
+  status = 200
+[[redirects]]
+  from = "/premium/gao-sustain"
+  to = "/premium/gao-sustain.html"
+  status = 200
+[[redirects]]
+  from = "/premium/key-people"
+  to = "/premium/key-people.html"
+  status = 200
+[[redirects]]
+  from = "/premium/forecast-delta"
+  to = "/premium/forecast-delta.html"
+  status = 200
+[[redirects]]
+  from = "/premium/cr-exposure"
+  to = "/premium/cr-exposure.html"
+  status = 200
+
+# Bare /premium and /premium/ — canonical lands on the premium dashboard.
+# Authed users see their dashboard; unauthed get bounced to /dashboard.html
+# by the dashboard page's own auth gate.
+[[redirects]]
+  from = "/premium"
+  to = "/premium/dashboard.html"
+  status = 302
+[[redirects]]
+  from = "/premium/"
+  to = "/premium/dashboard.html"
+  status = 302
+
+# /intel and /agency-intel root → /agencies/ (Agency Intelligence Index).
+# Note: /intel/<article-slug>/ paths (e.g., /intel/capture-intelligence-this-issue/)
+# are real article URLs and resolve before this rule via more-specific routes.
+[[redirects]]
+  from = "/intel"
+  to = "/agencies/"
+  status = 301
+[[redirects]]
+  from = "/agency-intel"
+  to = "/agencies/"
+  status = 301
+[[redirects]]
+  from = "/agency-intel/"
+  to = "/agencies/"
+  status = 301
+
+# /agency-profiles legacy alias → /agencies/.
+[[redirects]]
+  from = "/agency-profiles"
+  to = "/agencies/"
+  status = 301
+[[redirects]]
+  from = "/agency-profiles/"
+  to = "/agencies/"
+  status = 301
+
+# Canonical clean URLs for /pricing and /dashboard.
+# Internal links should use the bare path; .html variants 301 to clean.
+# (The /pricing -> /pricing.html and /tools -> /tools.html 200-rewrites
+# live further down in this file and continue to serve the asset.)
+[[redirects]]
+  from = "/pricing.html"
+  to = "/pricing"
+  status = 301
+[[redirects]]
+  from = "/dashboard.html"
+  to = "/dashboard"
+  status = 301
+[[redirects]]
+  from = "/dashboard"
+  to = "/dashboard.html"
+  status = 200
+
 [context.branch-deploy]
   command = "node build.js"
 

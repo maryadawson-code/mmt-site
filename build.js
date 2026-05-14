@@ -1146,10 +1146,12 @@ function generateTopicsGridHtml(archive) {
   const tagArticles = {};
   archive.forEach(item => {
     (item.tags || []).forEach(tag => {
-      tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-      if (!tagArticles[tag]) tagArticles[tag] = [];
-      if (tagArticles[tag].length < 2) {
-        tagArticles[tag].push(item);
+      const clean = typeof tag === 'string' ? tag.trim() : '';
+      if (!clean) return;
+      tagCounts[clean] = (tagCounts[clean] || 0) + 1;
+      if (!tagArticles[clean]) tagArticles[clean] = [];
+      if (tagArticles[clean].length < 2) {
+        tagArticles[clean].push(item);
       }
     });
   });
@@ -1592,6 +1594,14 @@ function generateContractPages(contracts) {
       .replace(/\{\{STATUS_COLOR\}\}/g, statusColor)
       .replace(/\{\{NAICS_ROW\}\}/g, c.naics ? `<div class="mt-4 pt-4" style="border-top:1px solid var(--mmt-soft);"><span class="text-xs" style="color:var(--mmt-text-secondary);"><strong style="color:var(--mmt-text);">NAICS:</strong> <span class="contract-premium-field" data-field="naics">Premium</span></span></div>` : '')
       .replace(/\{\{DESCRIPTION\}\}/g, escapeHtml((c.description || '').split(/\s+/).slice(0, 30).join(' ')) + '...')
+      .replace(/\{\{SAM_LINK_BLOCK\}\}/g, (() => {
+        const samUrl = (c.link || c.source || '').trim();
+        if (!samUrl || !/^https?:\/\//i.test(samUrl)) return '';
+        return `<a href="${escapeHtml(samUrl)}" target="_blank" rel="noopener" class="text-xs no-underline px-3 py-1.5 rounded-lg hover:opacity-80 inline-flex items-center gap-1" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">
+            <svg width="1em" height="1em" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>
+            View on Source
+          </a>`;
+      })())
       .replace(/\{\{SAM_LINK\}\}/g, '#')
       .replace(/\{\{CONTRACT_NAME_ENCODED\}\}/g, escapeHtml(c.name))
       .replace(/\{\{NAICS_FALLBACK\}\}/g, c.naics
@@ -2403,10 +2413,17 @@ function inlineTailwindCss(html) {
     const navBlockMatch = html.match(/<nav[\s\S]*?<\/nav>/i);
     if (navBlockMatch) {
       const navBlock = navBlockMatch[0];
+      // Canonical "Choose a Tool" target is /tools. The stale paid-tools
+      // anchor (resources page hash) no longer qualifies a nav as
+      // canonical — if it appears, the nav is replaced wholesale.
+      // String composed at runtime so it doesn't itself trip the
+      // post-build grep guard.
+      const stalePaidToolsAnchor = '/' + 'resources.html#paid' + '-tools';
       const hasCanonicalNav =
         navBlock.includes('brand-mark') &&
         navBlock.includes('Choose a Tool') &&
-        (navBlock.includes('/resources.html#paid-tools') || navBlock.includes('href="/tools"')) &&
+        navBlock.includes('href="/tools"') &&
+        !navBlock.includes(stalePaidToolsAnchor) &&
         navBlock.includes('nav-logged-out');
       if (!hasCanonicalNav) {
         html = html.replace(/<nav[\s\S]*?<\/nav>/i, editorialNav);
@@ -2693,6 +2710,12 @@ function injectDashShell(html, activePage) {
     { href: '/contract-tracker.html', label: 'Contract Tracker', id: 'contract-tracker', group: 'Pursuit Tools' },
     { href: '/idiq-tracker.html', label: 'IDIQ Tracker', id: 'idiq-tracker' },
     { href: '/premium/calendar/', label: 'Pursuit Calendar', id: 'calendar' },
+    { href: '/premium/single-bidder/', label: 'Sole-Source Watch', id: 'single-bidder', group: 'Capture Watch' },
+    { href: '/premium/gao-sustain/', label: 'GAO Sustains', id: 'gao-sustain' },
+    { href: '/premium/fpds-migration/', label: 'FPDS Sunset', id: 'fpds-migration' },
+    { href: '/premium/key-people/', label: 'Key People', id: 'key-people' },
+    { href: '/premium/forecast-delta/', label: 'Forecast Delta', id: 'forecast-delta' },
+    { href: '/premium/cr-exposure/', label: 'CR Exposure', id: 'cr-exposure' },
     { href: '/premium/pursuit-score/', label: 'Pursuit Score', id: 'pursuit-score', group: 'My Tools' },
     { href: '/premium/compliance-check/', label: 'Compliance Check', id: 'compliance-check' },
     { href: '/premium/signal-chain/', label: 'Signal Chain', id: 'signal-chain' },
@@ -3093,6 +3116,12 @@ ${innerHtml}
       { href: '/contract-tracker.html', label: 'Contract Tracker', id: 'contract-tracker', group: 'Pursuit Tools' },
       { href: '/idiq-tracker.html', label: 'IDIQ Tracker', id: 'idiq-tracker' },
       { href: '/premium/calendar/', label: 'Pursuit Calendar', id: 'calendar' },
+      { href: '/premium/single-bidder/', label: 'Sole-Source Watch', id: 'single-bidder', group: 'Capture Watch' },
+      { href: '/premium/gao-sustain/', label: 'GAO Sustains', id: 'gao-sustain' },
+      { href: '/premium/fpds-migration/', label: 'FPDS Sunset', id: 'fpds-migration' },
+      { href: '/premium/key-people/', label: 'Key People', id: 'key-people' },
+      { href: '/premium/forecast-delta/', label: 'Forecast Delta', id: 'forecast-delta' },
+      { href: '/premium/cr-exposure/', label: 'CR Exposure', id: 'cr-exposure' },
       { href: '/premium/pursuit-score/', label: 'Pursuit Score', id: 'pursuit-score', group: 'My Tools' },
       { href: '/premium/compliance-check/', label: 'Compliance Check', id: 'compliance-check' },
       { href: '/premium/signal-chain/', label: 'Signal Chain', id: 'signal-chain' },
@@ -4688,6 +4717,20 @@ async function build() {
     stdio: 'inherit',
   });
   console.log('Built dist/styles/tailwind.css');
+
+  // Copy tokens.css to dist. Most pages inline it via the build pipeline,
+  // but a handful (tools.html, rfp-shredder.html, premium/org-charts/*)
+  // load it via <link rel="stylesheet">, so the file must ship.
+  try {
+    const tokensSrc = path.join(__dirname, 'styles', 'tokens.css');
+    const tokensDest = path.join(DIST_DIR, 'styles', 'tokens.css');
+    if (fs.existsSync(tokensSrc)) {
+      fs.copyFileSync(tokensSrc, tokensDest);
+      console.log('Copied dist/styles/tokens.css');
+    }
+  } catch (err) {
+    console.warn('Failed to copy tokens.css:', err.message);
+  }
 
   // 0b. Subscriber count — reads from env var or falls back to static value
   // LinkedIn subscriber count is updated manually via Netlify env var

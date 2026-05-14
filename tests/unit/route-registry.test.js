@@ -30,9 +30,9 @@ describe("docs/member-features.json — canonical feature registry", () => {
     }
   });
 
-  it("Ask MMT marketing URLs include both /askmtt and /ask-mtt (typo handling)", () => {
+  it("Ask MMT marketing URLs include canonical /ask-mmt plus typo aliases /askmtt and /ask-mtt", () => {
     const askMmt = reg.features.find((f) => f.feature_name === "Ask MMT");
-    expect(askMmt.public_marketing_urls).toEqual(expect.arrayContaining(["/askmtt", "/ask-mtt"]));
+    expect(askMmt.public_marketing_urls).toEqual(expect.arrayContaining(["/ask-mmt", "/askmtt", "/ask-mtt"]));
   });
 
   it("data-backed tools declare freshness_sla_hours", () => {
@@ -43,7 +43,7 @@ describe("docs/member-features.json — canonical feature registry", () => {
     }
   });
 
-  it("tools hub points to /tools or to resources.html#paid-tools", () => {
+  it("tools hub points to /tools (canonical)", () => {
     const hub = reg.features.find((f) => f.feature_name === "Tools Hub");
     expect(hub).toBeTruthy();
     expect(hub.public_marketing_urls).toContain("/tools");

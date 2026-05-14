@@ -112,7 +112,7 @@ Before publishing any copy, ask: "Would Mary actually say this out loud to someo
 
 ### Nav (as of 2026-04-13)
 - **Primary links**: Intelligence, ProposalPulse, MarketPulse, Resources, Podcast, About
-- **Utility cluster**: Search icon | Sign In (text link) | ★ Premium (text link → /pricing) | Choose a Tool (primary CTA → /resources.html#paid-tools)
+- **Utility cluster**: Search icon | Sign In (text link) | ★ Premium (text link → /pricing) | Choose a Tool (primary CTA → /tools)
 - **Logged-in premium state**: Sign In replaced by Member chip (initials ▾) with dropdown: Dashboard, My Briefs, Pursuit Calendar, Sign Out
 - **Mobile**: Logo + hamburger → drawer with all nav items + ★ Go Premium + Choose a Tool
 - Products ARE in the main nav. Never demote them.

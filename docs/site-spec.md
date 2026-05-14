@@ -47,11 +47,11 @@ banned word/structure list.
 1. Search button
 2. Subscribe → `/newsletter.html`
 3. Security → `/security.html`
-4. **Choose a Tool** → `/resources.html#paid-tools` (primary button)
+4. **Choose a Tool** → `/tools` (primary button)
 
 **Utility CTA.**
 - Label: `Choose a Tool`
-- Target: `/resources.html#paid-tools`
+- Target: `/tools`
 - Do NOT use "Start Free". There are two free-entry products; the ambiguous
   label misroutes buyers.
 
@@ -62,7 +62,7 @@ Choose a Tool button.
 - Root pages render their own `<nav class="nav-editorial">` block.
 - `build.js` enforces the canonical nav at build time. The detection is
   "nav block that is missing `brand-mark`, `Choose a Tool`, or
-  `/resources.html#paid-tools`" → replace with the canonical editorial nav.
+  `/tools`" → replace with the canonical editorial nav.
   This makes the check order-independent and catches glossary drift.
 - Canonical nav markup lives in the `editorialNav` template inside `build.js`.
 - `scripts/migrate-nav-2026-04.js` is a legacy migration; it should match
@@ -415,7 +415,7 @@ node build.js && node scripts/validate-dist.js`.
 
 1. **Build passes clean.** `node build.js` exits with no errors.
 2. **Dist nav consistency.** Every `dist/**/*.html` nav block contains
-   `brand-mark`, `Choose a Tool`, and `/resources.html#paid-tools`, plus
+   `brand-mark`, `Choose a Tool`, and `/tools`, plus
    the Subscribe and Security utility links.
 3. **Dist footer consistency.** Every `dist/**/*.html` footer with
    `<footer class="wrap"` contains `>Read<`, `>Tools<`, `>Reference<`,
@@ -538,7 +538,7 @@ checks on every `dist/**/*.html` that has a `<nav>` or
 `<footer class="wrap"`:
 
 - Nav block must contain `brand-mark`, `Choose a Tool`,
-  `/resources.html#paid-tools`, `/newsletter.html`, `/security.html`.
+  `/tools`, `/newsletter.html`, `/security.html`.
 - Footer block must contain `>Read<`, `>Tools<`, `>Reference<`,
   `>Trust<`, plus links to `proposal-pulse.html`, `marketpulse.html`,
   `contract-tracker.html`.

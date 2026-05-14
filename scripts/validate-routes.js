@@ -284,12 +284,48 @@ if (indexHtml) {
   const offenders = [];
   for (const f of distFiles) {
     const txt = fs2.readFileSync(f, "utf8");
-    if (/href="(?:\/resources(?:\.html)?#paid-tools)"/.test(txt)) {
+    if (/href="\/?resources(?:\.html)?#paid-tools"/.test(txt)) {
       offenders.push(path2.relative(DIST, f));
     }
   }
   if (offenders.length > 0) {
     failures.push({ feature: "Homepage / nav", url: "*", kind: "stale_paid_tools_anchor_in_dist", offenders: offenders.slice(0, 5), total: offenders.length });
+  }
+}
+
+// Stale legacy-href guards: no built page may emit the typo route
+// /askmtt or /askmmt (canonical is /ask-mmt) or the legacy
+// /agency-profiles path (canonical is /agencies/).
+{
+  const fs3 = require("fs");
+  const path3 = require("path");
+  function walkDist2(d) {
+    const out = [];
+    for (const e of fs3.readdirSync(d, { withFileTypes: true })) {
+      if (e.name === ".git") continue;
+      const full = path3.join(d, e.name);
+      if (e.isDirectory()) out.push(...walkDist2(full));
+      else if (e.name.endsWith(".html")) out.push(full);
+    }
+    return out;
+  }
+  const distFiles2 = walkDist2(DIST);
+  const askmttHits = [];
+  const agencyProfilesHits = [];
+  for (const f of distFiles2) {
+    const txt = fs3.readFileSync(f, "utf8");
+    if (/href="\/?ask(?:m|-)?m?tt"|href="\/?askmmt"/.test(txt)) {
+      askmttHits.push(path3.relative(DIST, f));
+    }
+    if (/href="\/?agency-profiles"/.test(txt)) {
+      agencyProfilesHits.push(path3.relative(DIST, f));
+    }
+  }
+  if (askmttHits.length > 0) {
+    failures.push({ feature: "Ask MMT", url: "*", kind: "stale_askmtt_href_in_dist", offenders: askmttHits.slice(0, 5), total: askmttHits.length });
+  }
+  if (agencyProfilesHits.length > 0) {
+    failures.push({ feature: "Agency Profiles", url: "*", kind: "stale_agency_profiles_href_in_dist", offenders: agencyProfilesHits.slice(0, 5), total: agencyProfilesHits.length });
   }
 }
 

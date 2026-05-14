@@ -253,7 +253,7 @@ function sweepBody(path, body) {
       const navChecks = [
         { markers: ['brand-mark'], label: 'brand-mark' },
         { markers: ['Choose a Tool'], label: 'Choose a Tool' },
-        { markers: ['/tools', '/resources.html#paid-tools', '/resources#paid-tools'], label: 'tools-hub link' },
+        { markers: ['/tools'], label: 'tools-hub link' },
       ];
       for (const check of navChecks) {
         if (!check.markers.some((m) => nav.includes(m))) {

@@ -5,6 +5,7 @@
     {
       "feature_name": "Ask MMT",
       "public_marketing_urls": [
+        "/ask-mmt",
         "/askmtt",
         "/ask-mtt"
       ],
@@ -197,8 +198,8 @@
       "public_marketing_urls": [
         "/tools"
       ],
-      "member_url": "/resources.html#paid-tools",
-      "backing_function": "static page (build.js renders resources.html)",
+      "member_url": "/tools",
+      "backing_function": "static page (build.js renders tools.html)",
       "entitlement_required": "public",
       "public_locked_preview_behavior": "list of all marketed tools with access labels",
       "expected_data_source": "static",

@@ -65,7 +65,7 @@
       var isPremium = localStorage.getItem('mmt_premium') === 'true';
       var ts = localStorage.getItem('mmt_premium_ts');
       var withinWindow = ts && (Date.now() - parseInt(ts)) < 30 * 24 * 60 * 60 * 1000;
-      if (!isPremium || !withinWindow) { window.location.href = '/dashboard.html'; }
+      if (!isPremium || !withinWindow) { window.location.href = '/dashboard.html?tool=signal-chain'; }
     })();
   </script>
 </head>
