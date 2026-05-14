@@ -20,6 +20,7 @@
     "capture-intelligence.json",
     "data/idiq-vehicles.json",
     "data/premium/agency-profiles/agencies.json",
+    "data/may-15-release/**",
     "migrations/010_subscriber_context_alignment.sql",
     "migrations/011_mp_users_columns_documented.sql",
     "static/lead-magnets/**",
@@ -210,6 +211,15 @@
 #   • Date-guard with RUN_DATE_UTC.
 #   • Idempotency key in ops_events.
 #   • Delete the function + this block within ~14 days of the run date.
+
+# May 15, 2026 Capture Corner: "SCMDSO Intelligence Brief — 36C10B26Q0376"
+# Premium companion to the May 15 public article "The Reorg Lives or
+# Dies in the Loading Dock." Date-guarded (RUN_DATE_UTC=2026-05-15),
+# idempotency-keyed in ops_events as may15_premium_capture_sent.
+# Daily fire at 10:00 UTC (06:00 ET); no-op every day except 2026-05-15.
+# Kill switch: MAY15_PREMIUM_CAPTURE_DISABLED=true. Retire by 2026-05-29.
+[functions."may15-premium-capture-send"]
+  schedule = "0 10 * * *"
 
 # Hourly Stripe -> mp_users safety-net sync.
 # Stripe Payment Links (the pricing page checkout) periodically produce
@@ -429,7 +439,7 @@
 # Target is enforced by scripts/capture-corner-inventory.js.
 [[redirects]]
   from = "/capture-corner/latest"
-  to = "/premium/briefs/capture-corner-2026-05-12.html"
+  to = "/premium/briefs/capture-corner-2026-05-15.html"
   status = 302
 
 [[redirects]]
