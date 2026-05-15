@@ -3605,6 +3605,26 @@ ${innerHtml}
     console.log('Copied _redirects');
   }
 
+  // Copy /data/*.json (top level only) to dist/data/ so premium pages can
+  // fetch them at runtime. premium/single-bidder, key-people, cr-exposure,
+  // forecast-delta all do `fetch('/data/<file>.json')` client-side and have
+  // been 404-ing in prod since Sprint 5 (2026-05-07) because build.js never
+  // shipped them. Top-level only — data/premium/, data/may-15-release/, and
+  // other subdirs are build inputs, not public assets.
+  const dataSrcDir = path.join(__dirname, 'data');
+  const dataDistDir = path.join(DIST_DIR, 'data');
+  if (fs.existsSync(dataSrcDir)) {
+    ensureDir(dataDistDir);
+    let dataCopied = 0;
+    for (const f of fs.readdirSync(dataSrcDir)) {
+      const src = path.join(dataSrcDir, f);
+      if (!fs.statSync(src).isFile() || !f.endsWith('.json')) continue;
+      fs.copyFileSync(src, path.join(dataDistDir, f));
+      dataCopied++;
+    }
+    console.log(`Copied ${dataCopied} data/*.json file(s) to dist/data/`);
+  }
+
   // Copy demos
   const demosDir = path.join(__dirname, 'demos');
   if (fs.existsSync(demosDir)) {
