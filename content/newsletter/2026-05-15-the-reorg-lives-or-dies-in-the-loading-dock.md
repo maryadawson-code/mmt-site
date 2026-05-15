@@ -218,7 +218,7 @@ That is the job in front of whoever wins this. Bigger than DevSecOps. Bigger tha
 
 That's this week's Mission Meets Tech. If you are working a VA modernization opportunity in 2026, the question I would press you on is whether the requirements your team is responding to test for the five things above. If they do not, the winner will deliver to the RFP and the operating model will still fail.
 
-Sara and I are going to dig into this one on Mission Meets Reality. If you want to weigh in before we record, leave a comment or hit reply. I read every one.
+Sara and I are going to dig into this one on Fed UP. If you want to weigh in before we record, leave a comment or hit reply. I read every one.
 
 Let's roll.
 

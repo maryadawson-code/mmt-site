@@ -416,6 +416,38 @@ exports.handler = async (event) => {
           } catch { /* never break webhook on telemetry */ }
         }
 
+        // Default notification preferences for new paid subscribers.
+        // Without a mmt_preferences row, premium-digest-send.js treats the
+        // subscriber as opted-out of every category and skips them — so the
+        // daily digest silently reaches ~10% of paying subs. Set all-on
+        // defaults at signup; users can opt out from /premium/settings/.
+        // Only inserts when no row exists (won't clobber existing prefs).
+        if (isActive) {
+          try {
+            const { data: existingPrefs } = await supabase
+              .from("mmt_preferences")
+              .select("email")
+              .eq("email", normalizedEmail)
+              .maybeSingle();
+            if (!existingPrefs) {
+              await supabase.from("mmt_preferences").insert({
+                email: normalizedEmail,
+                notifications: {
+                  solicitations: true,
+                  contract_intel: true,
+                  protests: true,
+                  sb_awards: true,
+                  new_articles: true,
+                  watchlist: [],
+                },
+                agencies: [],
+              });
+            }
+          } catch (prefsErr) {
+            console.warn(`stripe-webhook: default prefs seed failed for ${normalizedEmail}: ${prefsErr.message}`);
+          }
+        }
+
         console.log(`stripe-webhook: ${normalizedEmail} tier → ${isActive ? "premium" : "free"} (${sub.status})`);
       }
 

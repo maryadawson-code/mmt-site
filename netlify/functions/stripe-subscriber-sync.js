@@ -150,6 +150,34 @@ exports.handler = async () => {
     upserted++;
     upsertReport.push({ email, tier, founding: isFounding, was: cur ? `${cur.subscription_tier}/${cur.subscription_status}` : "absent" });
     console.log(`  upserted ${email} → ${tier} (founding=${isFounding})${cur ? `; was ${cur.subscription_tier}/${cur.subscription_status}` : "; new"}`);
+
+    // Default notification preferences for webhook-gap subscribers picked
+    // up by this sync. Matches the seed in stripe-webhook.js so the daily
+    // digest reaches them without requiring a manual /premium/settings/
+    // visit. Only inserts when no row exists (won't clobber existing prefs).
+    try {
+      const { data: existingPrefs } = await supabase
+        .from("mmt_preferences")
+        .select("email")
+        .eq("email", email)
+        .maybeSingle();
+      if (!existingPrefs) {
+        await supabase.from("mmt_preferences").insert({
+          email,
+          notifications: {
+            solicitations: true,
+            contract_intel: true,
+            protests: true,
+            sb_awards: true,
+            new_articles: true,
+            watchlist: [],
+          },
+          agencies: [],
+        });
+      }
+    } catch (prefsErr) {
+      console.warn(`  default prefs seed failed for ${email}: ${prefsErr.message}`);
+    }
   }
 
   // Always log a sweep summary so silent gaps surface in dashboards.
