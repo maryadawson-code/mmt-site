@@ -34,9 +34,93 @@ const { enrichWithWageDeterminations, formatWageDeterminationsContext } = requir
 const { enrichWithEDGAR, formatEDGARContext } = require("./sec-edgar-api");
 const { searchCorpus, formatCorpusContext } = require("./content-index");
 const { detectVehicles, formatVehiclesContext, expandedSearchTerms } = require("./known-vehicles");
+// Sprint 6 Phase 2 2026-05-15: optional circuit breakers + metrics.
+// Both gates default OFF — code paths byte-identical to Sprint 5 unless
+// ASK_MMT_CIRCUITS_ENABLED=true and/or ASK_MMT_METRICS_ENABLED=true are
+// set in Netlify env. Rollout is a Mary-controlled flip; see Sprint 6 spec.
+const { getCircuit } = require("./circuit-registry");
+const { createClient: createSupabaseClient } = require("@supabase/supabase-js");
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
+
+const CIRCUITS_ENABLED = process.env.ASK_MMT_CIRCUITS_ENABLED === "true";
+const METRICS_ENABLED = process.env.ASK_MMT_METRICS_ENABLED === "true";
+
+function getSupabaseForMetrics() {
+  if (!METRICS_ENABLED) return null;
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) return null;
+  try { return createSupabaseClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY); }
+  catch { return null; }
+}
+
+// 8s timeout shared by safe() and instrument(). Module-scope so instrument()
+// can reuse it; matches Sprint 5 Phase C behavior exactly.
+function withTimeout(p) {
+  return Promise.race([
+    p.catch((e) => ({ error: e && e.message ? e.message : String(e) })),
+    new Promise((resolve) => setTimeout(() => resolve({ error: "timeout-8s" }), 8000)),
+  ]);
+}
+
+// Wraps an enrichment promise with optional circuit breaker + timing
+// metrics. If CIRCUITS_ENABLED is false, behavior is byte-identical to
+// the Sprint 5 safe() path (8s timeout + caught error → { error }).
+// If anything inside the wrapper throws unexpectedly, we return
+// { error: msg } instead of re-running fn() so prod cannot break.
+async function instrument(circuitName, fn, supabase) {
+  const start = Date.now();
+  let result, hadError = false, errMsg = null, openCircuit = false;
+  try {
+    if (CIRCUITS_ENABLED) {
+      const circuit = getCircuit(circuitName);
+      if (circuit) {
+        try {
+          result = await withTimeout(Promise.resolve().then(() => circuit.execute(fn)));
+        } catch (err) {
+          if (err && err.name === "CircuitOpenError") {
+            openCircuit = true;
+            result = { error: "circuit_open", circuit: circuitName };
+          } else {
+            hadError = true;
+            errMsg = err && err.message;
+            result = { error: errMsg };
+          }
+        }
+      } else {
+        result = await withTimeout(fn());
+      }
+    } else {
+      result = await withTimeout(fn());
+    }
+    if (result && result.error === "timeout-8s") { hadError = true; errMsg = "timeout-8s"; }
+    else if (result && result.error && !openCircuit) { hadError = true; errMsg = result.error; }
+  } catch (outerErr) {
+    console.error("instrument wrapper crash:", outerErr && outerErr.message);
+    result = { error: outerErr && outerErr.message };
+    hadError = true;
+    errMsg = outerErr && outerErr.message;
+  }
+  const elapsed = Date.now() - start;
+  if (METRICS_ENABLED && supabase) {
+    Promise.resolve().then(async () => {
+      try {
+        await supabase.from("ops_events").insert({
+          event_type: "ask_mmt_api_call",
+          details: {
+            api: circuitName,
+            elapsed_ms: elapsed,
+            had_error: hadError,
+            error: errMsg,
+            open_circuit: openCircuit,
+            had_data: !hadError && !openCircuit && !!(result && (Array.isArray(result) ? result.length : Object.keys(result || {}).length > 0)),
+          },
+        });
+      } catch { /* never throw from telemetry */ }
+    });
+  }
+  return result;
+}
 
 // Default to Haiku — fast, cheap, and good enough for grounded Q&A where
 // the model's job is to synthesize already-verified facts.
@@ -110,15 +194,14 @@ async function runEnrichment(question) {
     ? matchedVehicles[0].naics
     : undefined;
 
-  // Sprint 5 2026-05-15: 8s per-enrichment timeout. Prior unbounded behavior
-  // let a slow upstream (USASpending occasionally >20s) hold the whole
-  // answer until the 45s Anthropic call timer. With 18 enrichments running
-  // in parallel an 8s cap means the slowest possible enrichment phase is
-  // 8s, leaving 37s+ for Claude.
-  const safe = (p) => Promise.race([
-    p.catch((e) => ({ error: e.message })),
-    new Promise((resolve) => setTimeout(() => resolve({ error: "timeout-8s" }), 8000)),
-  ]);
+  // Sprint 5 2026-05-15: 8s per-enrichment timeout. Sprint 6 2026-05-15
+  // Phase 2: same behavior, but the helper now lives at module scope as
+  // withTimeout() so instrument() can reuse it. safe() is kept inline for
+  // the CALC enrichment which has no circuit per the Sprint 6 mapping.
+  const safe = withTimeout;
+
+  // Optional metrics client. Returns null unless ASK_MMT_METRICS_ENABLED=true.
+  const metricsSb = getSupabaseForMetrics();
 
   // MMT content corpus search — uses the raw question so it picks up
   // nuance the vehicle dictionary doesn't know about.
@@ -146,28 +229,29 @@ async function runEnrichment(question) {
     wageDetData,
     edgarData,
   ] = await Promise.all([
-    safe(enrichWithFederalData({ topic: primaryQuery, agency: agency || undefined, naics: primaryNaics })),
-    safe(enrichWithCongress({ topic: primaryQuery })),
-    safe(enrichWithGovInfo({ topic: primaryQuery })),
-    safe(enrichWithPubMed({ topic: question, yearsBack: 5 })),
-    safe(enrichWithGrants({ topic: primaryQuery })),
-    safe(enrichWithAssistance({ topic: primaryQuery, agency })),
-    safe(enrichWithUSAJobs({ topic: primaryQuery })),
-    safe(enrichWithITDashboard({ topic: primaryQuery, agencyCode })),
-    safe(enrichWithCMSProviderData({ topic: question })),
-    safe(enrichWithClinicalTrials({ topic: question })),
-    safe(enrichWithONCHealthIT({ topic: question })),
-    safe(enrichWithHHSOpenData({ topic: question })),
+    instrument("usaspending",             () => enrichWithFederalData({ topic: primaryQuery, agency: agency || undefined, naics: primaryNaics }), metricsSb),
+    instrument("congress",                () => enrichWithCongress({ topic: primaryQuery }),                                     metricsSb),
+    instrument("govinfo",                 () => enrichWithGovInfo({ topic: primaryQuery }),                                      metricsSb),
+    instrument("pubmed",                  () => enrichWithPubMed({ topic: question, yearsBack: 5 }),                             metricsSb),
+    instrument("grants",                  () => enrichWithGrants({ topic: primaryQuery }),                                       metricsSb),
+    instrument("sam_assistance",          () => enrichWithAssistance({ topic: primaryQuery, agency }),                           metricsSb),
+    instrument("usajobs",                 () => enrichWithUSAJobs({ topic: primaryQuery }),                                      metricsSb),
+    instrument("it_dashboard",            () => enrichWithITDashboard({ topic: primaryQuery, agencyCode }),                      metricsSb),
+    instrument("cms",                     () => enrichWithCMSProviderData({ topic: question }),                                  metricsSb),
+    instrument("clinicaltrials",          () => enrichWithClinicalTrials({ topic: question }),                                   metricsSb),
+    instrument("onc_healthit",            () => enrichWithONCHealthIT({ topic: question }),                                      metricsSb),
+    instrument("hhs_open",                () => enrichWithHHSOpenData({ topic: question }),                                      metricsSb),
+    // CALC has no circuit per Sprint 6 mapping (GSA, low traffic). safe() = withTimeout().
     safe(enrichWithCALC({ topic: question })),
-    safe(enrichWithECFR({ topic: question })),
-    safe(enrichWithRegulationsGov({ topic: question })),
-    safe(enrichWithBLS({ topic: question })),
-    safe(enrichWithCHPL({ topic: question })),
-    safe(enrichWithContractAwards({ topic: primaryQuery, agency })),
-    safe(enrichWithWageDeterminations({ topic: question })),
+    instrument("ecfr",                    () => enrichWithECFR({ topic: question }),                                             metricsSb),
+    instrument("regulations_gov",         () => enrichWithRegulationsGov({ topic: question }),                                   metricsSb),
+    instrument("bls",                     () => enrichWithBLS({ topic: question }),                                              metricsSb),
+    instrument("onc_chpl",                () => enrichWithCHPL({ topic: question }),                                             metricsSb),
+    instrument("sam_contract_awards",     () => enrichWithContractAwards({ topic: primaryQuery, agency }),                       metricsSb),
+    instrument("sam_wage_determinations", () => enrichWithWageDeterminations({ topic: question }),                               metricsSb),
     // EDGAR takes a competitor list — empty by default until callers can
     // pass company context. Skipped result is a no-op so no answer regression.
-    safe(enrichWithEDGAR({ competitors: [] })),
+    instrument("sec_edgar",               () => enrichWithEDGAR({ competitors: [] }),                                            metricsSb),
   ]);
 
   const context = [
