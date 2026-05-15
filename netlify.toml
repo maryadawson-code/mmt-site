@@ -4,7 +4,7 @@
   # validate-dist.js fails the build if dist/ contains any public-facing
   # drift pattern from docs/site-spec.md §14a. If it exits non-zero,
   # Netlify will refuse to deploy.
-  command = "node scripts/sync-newsletters.js; node scripts/sync-linkedin-newsletter.js; node build.js && node scripts/validate-dist.js && node scripts/validate-routes.js && node scripts/newsletter-inventory.js && node scripts/capture-corner-inventory.js && node scripts/qa-contrast-scan.js && node scripts/validate-agency-parity.js && node scripts/validate-agency-profiles.js && node scripts/validate-contract-tracker.js && node scripts/scan-pii.js"
+  command = "node scripts/sync-newsletters.js; node scripts/sync-linkedin-newsletter.js; node build.js && node scripts/validate-dist.js && node scripts/validate-routes.js && node scripts/newsletter-inventory.js && node scripts/capture-corner-inventory.js && node scripts/qa-contrast-scan.js && node scripts/validate-agency-parity.js && node scripts/validate-agency-profiles.js && node scripts/validate-contract-tracker.js && node scripts/scan-pii.js && node scripts/validate-no-scrubbed-stubs.js"
 
 [functions]
   directory = "netlify/functions"
