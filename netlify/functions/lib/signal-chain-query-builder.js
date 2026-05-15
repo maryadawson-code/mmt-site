@@ -150,17 +150,19 @@ const USAJOBS_ORG_CODES = {
   GSA: "GS00",
 };
 
-// Federal Register agency slugs. Values are arrays so an agency that
-// publishes under multiple slugs (e.g., DHA mostly under DoD's
-// `defense-department` but occasionally under `defense-health-agency`)
-// can fan out to both and union the results.
+// Federal Register agency slugs. Values are arrays so callers always
+// get a uniform shape (and we can fan out to multiple slugs in the
+// future if a sub-agency gets its own listing).
 //
 // Source of truth: https://www.federalregister.gov/agencies
-// Verified 2026-05-15: DHA queries against `defense-health-agency` alone
-// return 0 documents because the bulk of DHA-relevant rules and notices
-// actually publish under the parent DoD slug.
+// Verified 2026-05-15 via `GET /api/v1/agencies.json`: there is NO
+// `defense-health-agency` slug. DHA's rules and notices publish under
+// the parent DoD slug `defense-department`. The Federal Register API
+// rejects the entire `conditions[agencies][]` array with
+// `{"errors":{"agencies":"invalid value"}}` if any value isn't in
+// their canonical list, so we must only pass valid slugs.
 const FR_AGENCY_SLUGS = {
-  DHA: ["defense-department", "defense-health-agency"],
+  DHA: ["defense-department"],
   VA:  ["veterans-affairs-department"],
   HHS: ["health-and-human-services-department"],
   DoD: ["defense-department"],

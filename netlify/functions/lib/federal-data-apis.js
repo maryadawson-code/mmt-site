@@ -41,18 +41,33 @@ async function searchUSASpending({ keyword, agency, naics, startDate, endDate, l
   filters.award_type_codes = ["A", "B", "C", "D"];
 
   if (agency) {
-    // Map common agency names to toptier codes
-    const agencyMap = {
-      "VA": "036", "Department of Veterans Affairs": "036",
-      "DHA": "097", "Defense Health Agency": "097", "DoD": "097",
-      "HHS": "075", "Department of Health and Human Services": "075",
-      "CMS": "075", "Centers for Medicare and Medicaid Services": "075",
-      "NIH": "075", "National Institutes of Health": "075",
-      "IHS": "075", "Indian Health Service": "075",
+    // USASpending agencies filter accepts `{type, tier, name}` only.
+    // `toptier_code` is rejected ("Unexpected field 'toptier_code' in
+    // parameter filters|agencies"). Map every supported input — short
+    // alias OR full name — to the canonical toptier name. Sub-agencies
+    // (DHA, CMS, NIH, IHS) roll up to their parent toptier; the
+    // keyword filter narrows further.
+    const agencyToToptierName = {
+      "VA": "Department of Veterans Affairs",
+      "Department of Veterans Affairs": "Department of Veterans Affairs",
+      "DHA": "Department of Defense",
+      "Defense Health Agency": "Department of Defense",
+      "DoD": "Department of Defense",
+      "Department of Defense": "Department of Defense",
+      "HHS": "Department of Health and Human Services",
+      "Department of Health and Human Services": "Department of Health and Human Services",
+      "CMS": "Department of Health and Human Services",
+      "Centers for Medicare and Medicaid Services": "Department of Health and Human Services",
+      "NIH": "Department of Health and Human Services",
+      "National Institutes of Health": "Department of Health and Human Services",
+      "IHS": "Department of Health and Human Services",
+      "Indian Health Service": "Department of Health and Human Services",
+      "GSA": "General Services Administration",
+      "General Services Administration": "General Services Administration",
     };
-    const code = agencyMap[agency];
-    if (code) {
-      filters.agencies = [{ type: "funding", tier: "toptier", name: agency, toptier_code: code }];
+    const toptierName = agencyToToptierName[agency];
+    if (toptierName) {
+      filters.agencies = [{ type: "funding", tier: "toptier", name: toptierName }];
     }
   }
 
