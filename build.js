@@ -28,6 +28,14 @@ marked.use({
 const RSS_FEED = 'https://api.riverside.fm/hosting/KJvFk8EM.rss';
 const SITE_URL = 'https://missionmeetstech.com';
 
+// Returns "YYYY-MM-DD" in America/New_York. Compare as strings.
+// Why ET: a file dated 2026-05-15 should publish at 00:00 ET on May 15,
+// not at 00:00 UTC (which is 20:00 ET on May 14). Prior UTC-midnight gates
+// caused the 2026-05-15 build to filter out same-day files until 04:00 UTC.
+function todayET() {
+  return new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+}
+
 // News Wire RSS feeds — focused on federal health IT, not generic defense
 const NEWS_FEEDS = [
   // Federal health IT trade press (highest signal)
@@ -3289,15 +3297,13 @@ ${innerHtml}
   // future-date pattern in extractAllArticles(). Filenames without a
   // date pattern are always copied (treated as undated standing pages).
   const briefsSrcDir = path.join(__dirname, 'premium', 'briefs');
-  const _briefNowMs = Date.now();
+  const _briefTodayET = todayET();
   if (fs.existsSync(briefsSrcDir)) {
     const allBriefFiles = fs.readdirSync(briefsSrcDir).filter(f => f.endsWith('.html'));
     const briefFiles = allBriefFiles.filter((f) => {
       const m = f.match(/(\d{4}-\d{2}-\d{2})/);
       if (!m) return true;
-      const t = new Date(m[1] + 'T00:00:00Z').getTime();
-      if (Number.isNaN(t)) return true;
-      if (t > _briefNowMs) {
+      if (m[1] > _briefTodayET) {
         console.log(`  ⏳ HOLDING (future-dated): premium/briefs/${f} (publish_date ${m[1]})`);
         return false;
       }
@@ -4300,7 +4306,7 @@ function getBriefFiles() {
   //     Capture Corner replaced the standalone Friday Brief; subscribers
   //     looking for "last Friday's brief" expect this issue here too.)
   const briefsDir = path.join(__dirname, 'premium', 'briefs');
-  const _archiveNowMs = Date.now();
+  const _archiveTodayET = todayET();
   if (fs.existsSync(briefsDir)) {
     const files = fs.readdirSync(briefsDir)
       .filter(f => f.endsWith('.html') && /(?:^|-)(\d{4}-\d{2}-\d{2})\.html$/.test(f));
@@ -4310,8 +4316,7 @@ function getBriefFiles() {
       const dateStr = dateMatch[1];
       // Future-date gate — a 2026-05-05 brief shouldn't show in the
       // archive listing on 2026-05-04. Mirrors the file-copy guard above.
-      const _ts = new Date(dateStr + 'T00:00:00Z').getTime();
-      if (!Number.isNaN(_ts) && _ts > _archiveNowMs) continue;
+      if (dateStr > _archiveTodayET) continue;
       if (out.has(dateStr)) continue; // markdown wins
       const isCaptureCorner = /^capture-corner-/.test(f);
       const parts = dateStr.split('-');
@@ -4365,7 +4370,7 @@ function generateBriefArchiveHtml() {
 function getCaptureCornerFiles() {
   const briefsDir = path.join(__dirname, 'premium', 'briefs');
   if (!fs.existsSync(briefsDir)) return [];
-  const _ccNowMs = Date.now();
+  const _ccTodayET = todayET();
   const files = fs.readdirSync(briefsDir)
     .filter((f) => /^capture-corner-(\d{4}-\d{2}-\d{2})\.html$/.test(f))
     .filter((f) => {
@@ -4374,8 +4379,7 @@ function getCaptureCornerFiles() {
       // /capture-corner archive on 2026-05-04.
       const dm = f.match(/(\d{4}-\d{2}-\d{2})/);
       if (!dm) return true;
-      const t = new Date(dm[1] + 'T00:00:00Z').getTime();
-      return Number.isNaN(t) || t <= _ccNowMs;
+      return dm[1] <= _ccTodayET;
     });
   return files.map((f) => {
     const dateStr = f.match(/(\d{4}-\d{2}-\d{2})/)[1];
