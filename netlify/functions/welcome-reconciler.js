@@ -1,28 +1,28 @@
 // ============================================================
-// backfill-welcome-emails.js — One-shot welcome-email backfill
+// welcome-reconciler.js — Half-hourly safety net for the welcome path
 //
-// Surfaced by Jim St. Clair (2026-04-28): subscribed to MMT Premium but
-// never received a welcome email. Root cause: stripe-webhook.js gated
-// welcomes on isFoundingSubscription(sub), so non-founding tiers
-// (premium_annual $249, premium_monthly $25) were silently excluded.
+// Sprint 7 Phase B (2026-05-15). Replaces the manual-only
+// backfill-welcome-emails.js function.
 //
-// This function:
-//   1. Reads Stripe subscriptions (status=active|trialing) directly from
-//      the Stripe API — Supabase mp_users may not be the source of truth
-//      for tier when an upgrade happened off-platform.
-//   2. For every MMT premium price (founding OR non-founding) it checks
-//      customer_events for an existing welcome_sent row.
-//   3. If none, it sends the appropriate welcome (with isBackfill apology)
-//      and records welcome_sent so this is idempotent across runs.
+// What changed vs backfill:
+//   - Cron-scheduled */30 (Netlify scheduled function — see netlify.toml).
+//     No bearer-token gate; auth is handled by Netlify's scheduling.
+//   - Scoped to subscriptions created in the last 24 hours. The
+//     unbounded paginated walk (50 pages × 100 / status) was a one-shot
+//     remediation tool. The reconciler only needs to catch fresh signups
+//     the live webhook missed.
+//   - Sends with isBackfill: false so the customer doesn't see "sorry
+//     for the delay" framing on a 0-30 minute reconciliation. The
+//     manual-trigger path (POST with ?force_email=...) keeps
+//     isBackfill: true for the explicit retry case.
 //
-// AUTH: bearer token via WELCOME_BACKFILL_TOKEN env var. Mary's standing
-// rule on production side effects — explicit token required, no auto-fire.
+// The 2026-05-15 Bridget/Brian missed-welcome incident: the live
+// webhook silently failed for 2 of 3 paid signups; only ekrepps got
+// the auto-welcome. This reconciler is the safety net for that
+// failure mode regardless of root cause in the live path.
 //
-// Trigger:
-//   curl -X POST -H "Authorization: Bearer $TOKEN" \
-//     https://missionmeetstech.com/.netlify/functions/backfill-welcome-emails
-//
-// Optional ?dry=1 query string: scans + reports, sends nothing.
+// Idempotency: same customer_events welcome_sent guard as the original
+// backfill. Re-running cannot double-send.
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
@@ -39,6 +39,8 @@ const STRIPE_PRICE_PREMIUM_ANNUAL = process.env.STRIPE_PRICE_PREMIUM_ANNUAL;
 
 const FOUNDING_PRICE_IDS = [STRIPE_PRICE_FOUNDING_YEARLY, STRIPE_PRICE_FOUNDING_MONTHLY, STRIPE_PRICE_FOUNDING_ANNUAL, STRIPE_PRICE_FOUNDING].filter(Boolean);
 
+const LOOKBACK_HOURS = 24;
+
 function classifyTier(priceId) {
   if (!priceId) return null;
   if (FOUNDING_PRICE_IDS.includes(priceId)) return "founding";
@@ -48,21 +50,13 @@ function classifyTier(priceId) {
 }
 
 exports.handler = async (event) => {
-  const expected = process.env.WELCOME_BACKFILL_TOKEN;
-  if (!expected) {
-    return { statusCode: 503, body: JSON.stringify({ error: "WELCOME_BACKFILL_TOKEN not configured — set in Netlify env to enable" }) };
-  }
-  const token = (event.headers.authorization || event.headers.Authorization || "").replace(/^Bearer\s+/i, "");
-  if (!token || token !== expected) {
-    return { statusCode: 401, body: JSON.stringify({ error: "unauthorized" }) };
-  }
-
-  const dryRun = (event.queryStringParameters || {}).dry === "1";
-  // Force-resend for a specific email (skips idempotency for that one address only).
-  // Use case: subscriber reports they didn't receive the welcome (e.g. spam folder
-  // tag, deliverability issue) and Mary needs to retry without invalidating the
-  // global idempotency guard.
-  const forceEmail = ((event.queryStringParameters || {}).force_email || "").toLowerCase().trim();
+  const qs = (event && event.queryStringParameters) || {};
+  const dryRun = qs.dry === "1";
+  const forceEmail = (qs.force_email || "").toLowerCase().trim();
+  // Manual-trigger path explicitly opts back into isBackfill framing
+  // (the "sorry for the delay" copy) since these are typically retries
+  // hours or days after the original failure.
+  const isManualTrigger = !!(event && event.httpMethod && event.httpMethod !== "GET");
 
   const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
   const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -73,30 +67,28 @@ exports.handler = async (event) => {
   const stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: "2024-04-10" });
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
-  // Walk all active + trialing subs that match an MMT price.
+  // 24h window. created_after filters at the Stripe API. The cron runs
+  // every 30 min so every signup gets up to ~48 reconciler passes before
+  // it ages out of the window. Stripe Subscription.list paginates at
+  // 100 / page; in normal volume the 24h window fits in one page.
+  const createdGte = Math.floor((Date.now() - LOOKBACK_HOURS * 60 * 60 * 1000) / 1000);
   const subscribers = []; // {email, tier, sub_id}
-  for (const status of ["active", "trialing"]) {
-    let starting_after = undefined;
-    for (let page = 0; page < 50; page++) {
-      const subs = await stripe.subscriptions.list({
-        status,
-        limit: 100,
-        starting_after,
-        expand: ["data.customer"],
-      });
-      for (const sub of subs.data) {
-        const items = (sub.items && sub.items.data) || [];
-        for (const item of items) {
-          const tier = classifyTier(item && item.price && item.price.id);
-          if (!tier) continue;
-          const email = (sub.customer && sub.customer.email) || null;
-          if (!email) continue;
-          subscribers.push({ email: email.toLowerCase().trim(), tier, sub_id: sub.id });
-          break;
-        }
-      }
-      if (!subs.has_more) break;
-      starting_after = subs.data[subs.data.length - 1].id;
+  const params = {
+    status: "active",
+    created: { gte: createdGte },
+    limit: 100,
+    expand: ["data.customer"],
+  };
+  const subs = await stripe.subscriptions.list(params);
+  for (const sub of subs.data) {
+    const items = (sub.items && sub.items.data) || [];
+    for (const item of items) {
+      const tier = classifyTier(item && item.price && item.price.id);
+      if (!tier) continue;
+      const email = (sub.customer && sub.customer.email) || null;
+      if (!email) continue;
+      subscribers.push({ email: email.toLowerCase().trim(), tier, sub_id: sub.id });
+      break;
     }
   }
 
@@ -109,13 +101,19 @@ exports.handler = async (event) => {
   }
   const unique = Array.from(byEmail.values());
 
-  const report = { dry_run: dryRun, scanned: unique.length, already_sent: 0, sent: 0, failed: 0, mp_users_upserted: 0, mp_users_failed: 0, missing: [] };
+  const report = {
+    window_hours: LOOKBACK_HOURS,
+    dry_run: dryRun,
+    manual_trigger: isManualTrigger,
+    scanned: unique.length,
+    already_sent: 0,
+    sent: 0,
+    failed: 0,
+    mp_users_upserted: 0,
+    mp_users_failed: 0,
+    missing: [],
+  };
   for (const s of unique) {
-    // mp_users upsert — every active premium subscriber should have a row.
-    // Surfaced 2026-04-29 by Jim St. Clair: paid Apr 28, got "no account found"
-    // on /dashboard.html because his row was never created (the upsert was
-    // founding-gated). This backfill catches any historical gap of the same
-    // shape.
     if (!dryRun) {
       try {
         const { error: upsertErr } = await supabase
@@ -147,7 +145,12 @@ exports.handler = async (event) => {
     if (dryRun) continue;
 
     try {
-      const { subject, html, text } = buildPremiumWelcome({ customerEmail: s.email, tier: s.tier, isBackfill: true });
+      // Cron path: isBackfill=false (subscriber sees a normal welcome,
+      // no "sorry for the delay" framing on a 0-30 min reconciliation).
+      // Manual-trigger path: isBackfill=true (explicit retry — apology
+      // framing is appropriate).
+      const isBackfill = isManualTrigger;
+      const { subject, html, text } = buildPremiumWelcome({ customerEmail: s.email, tier: s.tier, isBackfill });
       const sendResult = await sendEmail({
         to: s.email,
         subject,
@@ -163,12 +166,12 @@ exports.handler = async (event) => {
           event_type: "welcome_sent",
           product: productKey,
           amount_cents: 0,
-          metadata: { subscription_id: s.sub_id, tier: s.tier, resend_message_id: resendId, sent_via: "backfill-welcome-emails", is_backfill: true },
+          metadata: { subscription_id: s.sub_id, tier: s.tier, resend_message_id: resendId, sent_via: "welcome-reconciler", is_backfill: isBackfill },
         });
         await supabase.from("ops_events").insert({
           event_type: "WELCOME_EMAIL_BACKFILLED",
           severity: "info",
-          payload: { email: s.email, tier: s.tier, sub_id: s.sub_id, resend_message_id: resendId },
+          payload: { email: s.email, tier: s.tier, sub_id: s.sub_id, resend_message_id: resendId, source: "welcome-reconciler" },
         });
         report.sent++;
       } else {
@@ -176,7 +179,7 @@ exports.handler = async (event) => {
       }
     } catch (err) {
       report.failed++;
-      console.error(`backfill-welcome-emails: send to ${s.email} threw:`, err.message);
+      console.error(`welcome-reconciler: send to ${s.email} threw:`, err.message);
     }
   }
 

@@ -76,6 +76,13 @@
 [functions."api-health-cron"]
   schedule = "0 * * * *"
 
+# Sprint 7 Phase B 2026-05-15 — welcome-email reconciler. Every 30 min.
+# Catches any paid subscriber whose live stripe-webhook welcome path failed
+# silently. Idempotent via customer_events welcome_sent row check; no
+# double-sends possible.
+[functions."welcome-reconciler"]
+  schedule = "*/30 * * * *"
+
 # Buttondown newsletter send — runs 30 min after newsletter-sync (Tue/Fri 11:30 PM UTC)
 # Checks for new articles from the last 3 days and sends a digest to subscribers
 [functions."newsletter-send"]
