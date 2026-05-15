@@ -20,7 +20,13 @@ const { checkKillSwitch, shouldHoldEmail, holdEmail } = require("./lib/kill-swit
 const { extractBriefContent, buildFridayBriefEmail } = require("./lib/premium-brief-templates");
 
 const SITE_URL = "https://missionmeetstech.com";
-// Current scheduled issue
+// Current scheduled issue.
+// FIXME (Sprint 2 2026-05-15): this path was migrated to /premium/capture-corner/2026-04-21
+// (DB-backed, auth-gated via premium-deliverable-render). The constant is preserved so the
+// existing ops_events dedupe signature (signature + affected_entity) doesn't reset on the
+// already-completed April 21 send. Re-invocation for a new issue requires both: (1) updating
+// this path AND (2) replacing the SITE_URL fetch-and-scrape with a direct premium_deliverables
+// row read (a server-side fetch hits the 401 auth gate now).
 const DEFAULT_BRIEF_PATH = "/premium/briefs/capture-corner-2026-04-21.html";
 const SCHEDULED_DATE = "2026-04-21"; // YYYY-MM-DD — cron fires annually, this gates the year
 const SIGNATURE = "capture_corner_sent";

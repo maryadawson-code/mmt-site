@@ -1,0 +1,153 @@
+<!-- slug: /premium/monthly/2026-02 -->
+<!-- release_id: monthly-2026-02 -->
+<!-- title: February 2026 — DOGE Impact Assessment -->
+<!-- source: premium/monthly/2026-02.html @ f6cfe41^ -->
+<!-- is_capture_corner_release: false -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monthly Brief — February 2026: DOGE Impact Assessment — MMT Premium</title>
+  <meta name="description" content="DOGE's first 90 days inside federal health IT — what actually got cut, what got frozen, and what the data says about FY2027 pipeline risk for DHA, VA, and HHS contractors.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <style>
+    :root { --mmt-teal:#457B9D; --mmt-navy:#0A192F; --mmt-soft:#F3F4F6; --mmt-white:#FFFFFF; --mmt-text:#102033; --mmt-text-secondary:#5C6B7A; --mmt-border:#D8E0E8; --ci-gold:#92710A; --ci-gold-bg:#FEF9E7; --mmt-red:#E63946; }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--mmt-white); color:var(--mmt-navy); }
+    .brief-body { font-size:15px; line-height:1.75; color:#314155; }
+    .brief-body h2 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:40px 0 12px; letter-spacing:-0.02em; }
+    .brief-body h3 { font-size:16px; font-weight:700; color:var(--mmt-navy); margin:24px 0 8px; }
+    .brief-body p { margin-bottom:16px; max-width:65ch; }
+    .brief-body ul { margin-bottom:16px; padding-left:1.25rem; }
+    .brief-body li { margin-bottom:8px; }
+    .brief-body a { color:var(--mmt-teal); text-decoration:underline; text-underline-offset:3px; }
+    .kpi-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin:16px 0 28px; }
+    .kpi { background:var(--mmt-soft); border-radius:10px; padding:14px 16px; }
+    .kpi-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--mmt-text-secondary); }
+    .kpi-value { font-size:24px; font-weight:800; color:var(--mmt-navy); margin-top:4px; letter-spacing:-0.02em; }
+    .kpi-sub { font-size:12px; color:var(--mmt-text-secondary); }
+    .signal-card { background:var(--ci-gold-bg); border:1px solid rgba(146,113,10,0.15); border-radius:10px; padding:16px 20px; margin-bottom:12px; }
+    .signal-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--ci-gold); margin-bottom:4px; }
+    .signal-title { font-size:15px; font-weight:700; color:var(--mmt-navy); margin-bottom:4px; }
+    .signal-body { font-size:13px; color:var(--mmt-text-secondary); line-height:1.55; }
+    .risk-card { background:#FEF2F2; border:1px solid rgba(230,57,70,0.18); border-radius:10px; padding:16px 20px; margin-bottom:12px; }
+    .risk-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--mmt-red); margin-bottom:4px; }
+    .tag { display:inline-block; font-size:10px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; padding:2px 8px; border-radius:4px; margin-right:4px; }
+    .tag-cut { background:rgba(230,57,70,0.08); color:var(--mmt-red); }
+    .tag-freeze { background:rgba(146,113,10,0.1); color:var(--ci-gold); }
+    .tag-safe { background:rgba(21,128,61,0.08); color:#15803D; }
+    .back-link { font-size:13px; font-weight:600; color:var(--mmt-teal); text-decoration:none; }
+    .back-link:hover { opacity:0.7; }
+    .section-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--mmt-text-secondary); }
+  </style>
+</head>
+<body>
+  <nav class="nav-editorial"></nav>
+
+  <main class="wrap" style="padding:48px 0 80px; max-width:760px;">
+    <a href="/premium/monthly-briefs.html" class="back-link">&larr; All Monthly Briefs</a>
+
+    <div style="margin-top:20px; margin-bottom:8px;">
+      <div class="section-label">MMT Premium &middot; Monthly Intelligence Brief</div>
+    </div>
+    <h1 style="font-size:clamp(26px,3.2vw,40px);line-height:1.1;letter-spacing:-0.03em;margin-bottom:6px;">February 2026 — DOGE Impact Assessment</h1>
+    <p style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:28px;">What the first 90 days of DOGE activity actually did to federal health IT — and what the data says about FY2027 pipeline risk for DHA, VA, and HHS contractors.</p>
+
+    <div data-gate="premium" style="display:none;">
+      <div class="brief-body">
+
+        <h2>Bottom line up front</h2>
+        <p>DOGE's first 90 days inside federal health IT produced a smaller visible footprint than the headlines suggested and a larger invisible one than most contractors have priced in. Direct contract terminations are concentrated in consulting, communications, and DEI-adjacent task orders; the deeper impact is a soft freeze on new IDIQ task order releases at VA OIT and DHA J6 while policy reviews run. For the federal health IT prime and mid-tier ecosystem, the question isn't whether DOGE cancels your contract — it's whether your FY2026 task orders get exercised on the original cadence, and whether FY2027 new starts survive the OMB passback cycle.</p>
+
+        <h2>By the numbers</h2>
+        <div class="kpi-row">
+          <div class="kpi">
+            <div class="kpi-label">Consulting &amp; advisory cut</div>
+            <div class="kpi-value">$5.1B</div>
+            <div class="kpi-sub">DoD-announced April 10, health IT adjacent share not broken out</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">VA OIT task-order pause</div>
+            <div class="kpi-value">~60 days</div>
+            <div class="kpi-sub">Average lag across T4NG2 and ECMS call orders, Dec–Feb</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">SAM.gov new posts (DHA)</div>
+            <div class="kpi-value">-18%</div>
+            <div class="kpi-sub">Feb 2026 vs Feb 2025, health IT NAICS (541512/541511)</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">CDMRP CR cut restored</div>
+            <div class="kpi-value">$1.27B</div>
+            <div class="kpi-sub">FY2026 restoration after $1.51B→$650M CR pass-through</div>
+          </div>
+        </div>
+
+        <h2>The three signal groups</h2>
+
+        <div class="signal-card">
+          <div class="signal-label">Signal Group 1 &middot; Direct Cuts</div>
+          <div class="signal-title">Consulting, communications, and DEI task orders terminated — not core health IT sustainment</div>
+          <div class="signal-body">
+            The $5.1B DoD consulting action announced April 10 hit strategic advisory, organizational change management, and communications task orders across OSD and the services. Federal health IT sustainment contracts, clinical modernization prime work, and MHS GENESIS deployment task orders were NOT part of this cut. The analyst read: DOGE is pruning the advisory edge of the contractor stack, not the delivery core. Firms delivering code, clinical workflow, or EHR integration saw option years exercised on schedule. Firms carrying large advisory books (McKinsey, BAH advisory, Deloitte Digital) absorbed most of the impact. This is the cleaner signal to pass to BD teams: if your work product is a slide deck, your pipeline just compressed. If your work product is a running system, you're still in the plan — but see Signal Group 2.
+          </div>
+        </div>
+
+        <div class="signal-card">
+          <div class="signal-label">Signal Group 2 &middot; Soft Freezes</div>
+          <div class="signal-title">VA OIT and DHA J6 slowed task order releases while OMB policy reviews ran</div>
+          <div class="signal-body">
+            Between late December and late February, both VA OIT and DHA J6 absorbed an informal slowdown in new task order releases against active IDIQs. This did not come as a written policy — it appeared as extended legal review cycles, delayed funding certifications, and longer gaps between J&amp;A posting and award. Contractors on T4NG2, ECMS, and DHITUC reported awards arriving 45–75 days later than the FY2025 baseline for comparable orders. This is the invisible DOGE impact: no press release, no protest-worthy paper trail, just reduced flow rate through the pipeline. Plan FY2026 revenue recognition around a 30–60 day lag relative to prior-year assumptions, and price options assuming one missed exercise window before year-end.
+          </div>
+        </div>
+
+        <div class="signal-card">
+          <div class="signal-label">Signal Group 3 &middot; Restorations</div>
+          <div class="signal-title">CDMRP and ARPA-H protected by bipartisan defense appropriations posture</div>
+          <div class="signal-body">
+            CDMRP's FY2026 funding was restored to $1.27B after the $650M CR haircut pass-through, and ARPA-H program funding is tracking to plan. Defense health research and cross-service clinical innovation programs survived the review with bipartisan air cover — both HASC and HAC-D members across both parties publicly defended the investment. For firms in the CDMRP, ARPA-H, and DHA ADVOCATE orbit, this is the clearest "stay the course" signal in the stack. The pre-procurement research pipeline remains intact; the 12–24 month lag from trial completion to solicitation still holds.
+          </div>
+        </div>
+
+        <h2>Portfolio risk reassessment</h2>
+
+        <div class="risk-card">
+          <div class="risk-label">High risk &middot; reprice now</div>
+          <p style="margin:0;font-size:14px;color:var(--mmt-text);">Any BPA or IDIQ task order whose primary deliverable is a report, roadmap, assessment, strategy deck, or playbook. Communications, public affairs, and DEI-adjacent scopes. Advisory SME labor categories ($250+/hr without concrete delivery tied to running systems). Small prime positions on advisory-heavy recompetes should assume ~30% probability of descope or non-exercise for at least one option year through FY2028.</p>
+        </div>
+
+        <div class="risk-card" style="background:var(--ci-gold-bg);border-color:rgba(146,113,10,0.18);">
+          <div class="risk-label" style="color:var(--ci-gold);">Medium risk &middot; monitor</div>
+          <p style="margin:0;font-size:14px;color:var(--mmt-text);">MHS GENESIS deployment follow-ons, VA EHRM sustainment lines, DHA J6 cloud modernization work. These survive but face extended award cycles and tighter scope discipline. Expect heavier J&amp;A scrutiny, reduced labor mix flexibility, and more frequent partial exercise of option years rather than full-year exercises. Carry 60-day AR runway above prior assumptions.</p>
+        </div>
+
+        <div class="risk-card" style="background:rgba(21,128,61,0.05);border-color:rgba(21,128,61,0.18);">
+          <div class="risk-label" style="color:#15803D;">Lower risk &middot; hold</div>
+          <p style="margin:0;font-size:14px;color:var(--mmt-text);">Direct clinical delivery (telehealth operations, My Military Health, TRICARE claims infrastructure), cybersecurity compliance work with active ATO dependencies, ONC interoperability enforcement support. These are running systems with beneficiary-facing impact — the political cost of interruption is high and the delivery teams know it.</p>
+        </div>
+
+        <h2>What to do next</h2>
+        <ul>
+          <li><strong>Audit your backlog for advisory exposure.</strong> Pull every active task order. If the deliverable is a PDF without a running system behind it, flag it as Tier-1 DOGE risk and start the conversation with the CO now about repositioning scope toward measurable outcomes.</li>
+          <li><strong>Stress-test FY2026 revenue with a 60-day lag.</strong> Assume every new task order arrives 45–75 days later than the FY2025 cadence. Revisit covenants, hiring plans, and subcontractor ramp commitments against that shifted profile.</li>
+          <li><strong>Lean into the restoration signals.</strong> CDMRP and ARPA-H are the cleanest growth lanes for FY2026–FY2027. If your past performance supports a credible CDMRP proposal, the competitive field has thinned as advisory-heavy competitors retrench.</li>
+          <li><strong>Watch the FY2027 passback.</strong> OMB passback drops in late April. The true DOGE impact on federal health IT posts FY2027 will be visible there, not in DOGE press releases. Plan to update your pipeline probability assumptions the week after passback.</li>
+        </ul>
+
+        <h2>Sources and methodology</h2>
+        <p style="font-size:13px;color:var(--mmt-text-secondary);">Task order cadence analysis: USASpending.gov award posting dates, Dec 2025–Feb 2026 vs Dec 2024–Feb 2025, filtered to T4NG2, ECMS, and DHITUC parent IDVs. SAM.gov posting counts: SAM.gov Contract Opportunities API, NAICS 541512/541511, monthly rollups. Direct cut announcements: DoD public affairs releases and Mission Meets Tech reporting on the April 10 $5.1B consulting action (see latest.html). Restoration figures: HAC-D markup documents via Congress.gov. This brief represents Mission Meets Tech analysis for MMT Premium subscribers; verify each claim against primary sources before operational use.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer"></footer>
+  <script src="/js/site.js" defer></script>
+  <script src="/js/nav-active.js" defer></script>
+  <script src="/js/mmt-paywall.js" defer></script>
+  <script src="/js/support-widget.js" defer></script>
+  <script src="/js/premium-chat-widget.js" defer></script>
+</body>
+</html>

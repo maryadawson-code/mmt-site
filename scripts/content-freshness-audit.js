@@ -134,14 +134,35 @@ function checkBrokenLinks() {
 
   // Build a set of every clean URL that has a netlify.toml [[redirects]]
   // entry — these are valid even though they have no file in dist/.
+  // Captures both literal froms (e.g. "/premium/briefs/2026-04-04") and
+  // wildcard froms (e.g. "/premium/monthly/:slug") so the broken-link
+  // check resolves either.
   const tomlPath = path.join(__dirname, '..', 'netlify.toml');
   const redirectFroms = new Set();
+  const redirectWildcards = [];
   if (fs.existsSync(tomlPath)) {
     const tomlText = fs.readFileSync(tomlPath, 'utf8');
     const fromRegex = /from\s*=\s*"([^"]+)"/g;
     let mm;
-    while ((mm = fromRegex.exec(tomlText)) !== null) redirectFroms.add(mm[1]);
+    while ((mm = fromRegex.exec(tomlText)) !== null) {
+      const from = mm[1];
+      if (from.includes(':') || from.includes('*')) {
+        // Wildcard: convert :placeholder → single-segment match, * → any segments.
+        const pattern = '^' + from
+          .replace(/[.+?^${}()|[\]\\]/g, '\\$&')
+          .replace(/:[a-zA-Z_][a-zA-Z0-9_]*/g, '[^/]+')
+          .replace(/\\\*/g, '.*') + '\\/?$';
+        redirectWildcards.push(new RegExp(pattern));
+      } else {
+        redirectFroms.add(from);
+      }
+    }
   }
+  const matchesRedirect = (target) => {
+    if (redirectFroms.has(target)) return true;
+    if (target.endsWith('/') && redirectFroms.has(target.slice(0, -1))) return true;
+    return redirectWildcards.some((re) => re.test(target));
+  };
 
   const linkRegex = /href="(\/[^"#?]+)/g;
 
@@ -176,8 +197,7 @@ function checkBrokenLinks() {
         path.join(DIST, target, 'index.html'),
       ];
       const fileResolves = candidates.some(c => fs.existsSync(c));
-      const redirectResolves = redirectFroms.has(target) || (target.endsWith('/') && redirectFroms.has(target.slice(0, -1)));
-      if (!fileResolves && !redirectResolves) {
+      if (!fileResolves && !matchesRedirect(target)) {
         errors.push(`BROKEN LINK in ${rel}: ${target}`);
       }
     }

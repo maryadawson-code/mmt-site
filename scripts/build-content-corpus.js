@@ -22,6 +22,11 @@ const ROOT = path.join(__dirname, "..");
 const ARTICLE_DIR = path.join(ROOT, "content", "newsletter");
 const BRIEFS_DIR = path.join(ROOT, "premium", "briefs");
 const MONTHLY_DIR = path.join(ROOT, "premium", "monthly");
+// Sprint 2 2026-05-15: scrubbed-stub recovery files. Contains the pre-scrub
+// HTML for 10 briefs/monthlies migrated to premium_deliverables (DB-served).
+// The source files in premium/briefs and premium/monthly were deleted, so we
+// read here to keep the Ask MMT corpus complete for the Feb-April 2026 issues.
+const SEED_DIR = path.join(ROOT, "scripts", "seed-data");
 const CONTRACTS_FILE = path.join(ROOT, "contracts.json");
 const CAPTURE_INTEL_FILE = path.join(ROOT, "capture-intelligence.json");
 const GLOSSARY_FILE = path.join(ROOT, "glossary.json");
@@ -319,11 +324,50 @@ function buildIdiqVehicles() {
   }
 }
 
+function buildMigratedDeliverables() {
+  if (!fs.existsSync(SEED_DIR)) return [];
+  const files = fs.readdirSync(SEED_DIR).filter((f) => f.endsWith(".html"));
+  const items = [];
+  for (const file of files) {
+    try {
+      const raw = fs.readFileSync(path.join(SEED_DIR, file), "utf8");
+      const slugMatch = raw.match(/<!--\s*slug:\s*([^>]*?)\s*-->/i);
+      const titleMatch = raw.match(/<!--\s*title:\s*([^>]*?)\s*-->/i);
+      if (!slugMatch) continue;
+      const slug = slugMatch[1];
+      const title = (titleMatch && titleMatch[1]) || file.replace(/\.html$/, "");
+      const dateMatch = slug.match(/(\d{4}-\d{2}(?:-\d{2})?)/);
+      const date = dateMatch ? dateMatch[1] : "";
+      let type, tag;
+      if (slug.includes("/monthly/")) { type = "monthly_brief"; tag = "monthly-brief"; }
+      else if (slug.includes("/capture-corner/")) { type = "capture_corner"; tag = "capture-corner"; }
+      else { type = "premium_brief"; tag = "friday-brief"; }
+      const body = stripHtml(raw);
+      items.push({
+        id: `migrated-${slug.replace(/[^a-z0-9-]/gi, "-")}`,
+        type,
+        title,
+        slug,
+        date,
+        description: body.substring(0, 200),
+        tags: ["premium", tag],
+        url: slug,
+        excerpt: body.substring(0, EXCERPT_CHARS),
+        premium: true,
+      });
+    } catch (err) {
+      console.warn(`[corpus] skip migrated ${file}: ${err.message}`);
+    }
+  }
+  return items;
+}
+
 function build() {
   console.log("[corpus] building MMT content corpus...");
   const articles = buildArticles();
-  const briefs = buildBriefs();
-  const monthlies = buildMonthlyBriefs();
+  const migrated = buildMigratedDeliverables();
+  const briefs = [...buildBriefs(), ...migrated.filter((i) => i.type !== "monthly_brief")];
+  const monthlies = [...buildMonthlyBriefs(), ...migrated.filter((i) => i.type === "monthly_brief")];
   const contracts = buildContracts();
   const captureIntel = buildCaptureIntel();
   const glossary = buildGlossary();

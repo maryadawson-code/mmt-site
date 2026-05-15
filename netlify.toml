@@ -485,6 +485,83 @@
   force = true
 
 [[redirects]]
+  from = "/premium/monthly/:slug/"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/monthly/:slug"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/monthly/:slug"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/monthly/:slug"
+  status = 200
+  force = true
+
+# Per-slug redirects for the 5 scrubbed-stub briefs migrated to the
+# render fn (Sprint 2 — 2026-05-15). We can't use a /premium/briefs/:slug
+# wildcard because the 8 live Capture Corner files (capture-corner-*.html)
+# still ship as static HTML at /premium/briefs/ and a wildcard would
+# shadow them.
+[[redirects]]
+  from = "/premium/briefs/2026-03-21"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/briefs/2026-03-21"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/briefs/2026-03-21/"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/briefs/2026-03-21"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/briefs/2026-03-28"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/briefs/2026-03-28"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/briefs/2026-03-28/"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/briefs/2026-03-28"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/briefs/2026-04-04"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/briefs/2026-04-04"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/briefs/2026-04-04/"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/briefs/2026-04-04"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/briefs/2026-04-11"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/briefs/2026-04-11"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/briefs/2026-04-11/"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/briefs/2026-04-11"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/briefs/rhrp-2026-04"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/briefs/rhrp-2026-04"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/briefs/rhrp-2026-04/"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/briefs/rhrp-2026-04"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/"
   to = "/index.html"
   status = 200
