@@ -2771,7 +2771,7 @@ function injectDashShell(html, activePage) {
   return html;
 }
 
-function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleMap, agencyArticleMap, articles, subscriberCount }) {
+async function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleMap, agencyArticleMap, articles, subscriberCount }) {
   // Copy root HTML files (with inlined Tailwind CSS + build-time injections)
   const htmlFiles = [
     'index.html', 'about.html', 'podcast.html', 'newsletter.html',
@@ -3617,6 +3617,14 @@ ${innerHtml}
   // been 404-ing in prod since Sprint 5 (2026-05-07) because build.js never
   // shipped them. Top-level only — data/premium/, data/may-15-release/, and
   // other subdirs are build inputs, not public assets.
+  //
+  // Sprint 3 2026-05-15: single-bidder.json is special-cased. The
+  // refresh-single-bidder cron now writes to Supabase Storage
+  // (public-data/single-bidder.json) since its prior lambda-FS writes were
+  // lost on every invocation. We fetch the cron output at build time,
+  // unwrap the { updated_at, count, by_agency, data } envelope, and write
+  // the flat array the page expects. Local data/single-bidder.json is the
+  // fallback for offline / pre-Supabase-bucket builds.
   const dataSrcDir = path.join(__dirname, 'data');
   const dataDistDir = path.join(DIST_DIR, 'data');
   if (fs.existsSync(dataSrcDir)) {
@@ -3625,10 +3633,41 @@ ${innerHtml}
     for (const f of fs.readdirSync(dataSrcDir)) {
       const src = path.join(dataSrcDir, f);
       if (!fs.statSync(src).isFile() || !f.endsWith('.json')) continue;
+      if (f === 'single-bidder.json') continue; // handled below
       fs.copyFileSync(src, path.join(dataDistDir, f));
       dataCopied++;
     }
     console.log(`Copied ${dataCopied} data/*.json file(s) to dist/data/`);
+
+    // single-bidder.json: prefer Supabase Storage (cron output), fall back to local.
+    const sbDestPath = path.join(dataDistDir, 'single-bidder.json');
+    const sbLocalPath = path.join(dataSrcDir, 'single-bidder.json');
+    const sbUrl = process.env.SUPABASE_URL
+      ? `${process.env.SUPABASE_URL}/storage/v1/object/public/public-data/single-bidder.json`
+      : null;
+    let sbWritten = false;
+    if (sbUrl && typeof fetch !== 'undefined') {
+      try {
+        const res = await fetch(sbUrl);
+        if (res.ok) {
+          const wrapper = await res.json();
+          const arr = Array.isArray(wrapper) ? wrapper : (wrapper && wrapper.data) || [];
+          fs.writeFileSync(sbDestPath, JSON.stringify(arr, null, 2));
+          console.log(`Fetched single-bidder.json from Supabase Storage (${arr.length} rows, updated_at=${wrapper && wrapper.updated_at || 'n/a'})`);
+          sbWritten = true;
+        } else {
+          console.warn(`Supabase fetch for single-bidder.json returned ${res.status} — falling back to local file`);
+        }
+      } catch (err) {
+        console.warn(`Supabase fetch for single-bidder.json failed: ${err.message} — falling back to local file`);
+      }
+    }
+    if (!sbWritten && fs.existsSync(sbLocalPath)) {
+      fs.copyFileSync(sbLocalPath, sbDestPath);
+      console.log('Copied local data/single-bidder.json to dist (fallback)');
+    } else if (!sbWritten) {
+      console.warn('single-bidder.json not available from Supabase or local file — page will show empty state');
+    }
   }
 
   // Copy demos
@@ -4829,7 +4868,7 @@ async function build() {
 
   // 6. Copy all static files (with build-time injections)
   console.log('\n--- Copying static files ---');
-  copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleMap, agencyArticleMap, articles, subscriberCount });
+  await copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleMap, agencyArticleMap, articles, subscriberCount });
 
   // 6b. Pursuit Calendar — hydrate dist/premium/calendar/index.html
   // from Supabase if creds are present. The placeholder written by

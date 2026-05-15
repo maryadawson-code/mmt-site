@@ -1,27 +1,34 @@
 // refresh-single-bidder.js
 // Scheduled function (cron in netlify.toml: 0 11 1 * * — 1st of month, 6 AM ET).
 // Pulls federal-health limited-competition awards from USASpending.gov v2
-// for VA / DoD-DHA / HHS subcomponents over the past 365 days. Writes
-// data/single-bidder.json which /premium/single-bidder.html renders.
+// for VA / DoD-DHA / HHS subcomponents over the past 365 days. Uploads
+// the JSON payload to Supabase Storage at public-data/single-bidder.json;
+// build.js fetches it at build time and writes dist/data/single-bidder.json
+// for /premium/single-bidder.html to consume.
 //
 // Source: USASpending.gov (no auth). Filter: extent_competed_codes
 // in [B, C, E, G] = Not Available / Not Competed / Follow-On to Competed /
 // Not Competed under SAP. This is the genuine sole-source +
 // limited-competition signal post-FPDS sunset.
 //
-// MMT-402 (Sprint 4 Wave 1, 2026-05-06; revised 2026-05-07 to use
-// USASpending after SAM.gov Contract Data API was decommissioned with
-// FPDS on Feb 24 2026).
+// History:
+// - MMT-402 (Sprint 4 Wave 1, 2026-05-06; revised 2026-05-07 to use
+//   USASpending after SAM.gov Contract Data API was decommissioned with
+//   FPDS on Feb 24 2026).
+// - Sprint 3 2026-05-15: switched persistence from lambda ephemeral FS
+//   (fs.writeFileSync) to Supabase Storage. Prior writes were lost on
+//   every invocation, so the page's /data/single-bidder.json was always
+//   the last build-shipped snapshot, never the cron output.
 
-const fs = require("fs");
-const path = require("path");
+const { createClient } = require("@supabase/supabase-js");
 
 const LIMITED_COMPETITION_CODES = ["B", "C", "E", "G"];
 const LOOKBACK_DAYS = 365;
 const MIN_AWARD_VALUE = 250000;
 const RESULTS_PER_PAGE = 100;
 const PAGES_PER_AGENCY = 3;
-const OUTPUT_PATH = path.join(__dirname, "..", "..", "data", "single-bidder.json");
+const STORAGE_BUCKET = "public-data";
+const STORAGE_KEY = "single-bidder.json";
 
 const AGENCIES = [
   { code: "VA", toptier_name: "Department of Veterans Affairs" },
@@ -133,14 +140,45 @@ exports.handler = async () => {
     all.sort((a, b) =>
       String(b.award_date || "").localeCompare(String(a.award_date || ""))
     );
-    fs.writeFileSync(OUTPUT_PATH, JSON.stringify(all, null, 2));
 
     const byAgency = {};
     for (const r of all) byAgency[r.agency] = (byAgency[r.agency] || 0) + 1;
 
+    const payload = {
+      updated_at: new Date().toISOString(),
+      count: all.length,
+      by_agency: byAgency,
+      data: all,
+    };
+
+    const SUPABASE_URL = process.env.SUPABASE_URL;
+    const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
+    if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+      console.error("refresh-single-bidder: missing SUPABASE_URL or SUPABASE_SERVICE_KEY");
+      return { statusCode: 500, body: "missing supabase env" };
+    }
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+    const buf = Buffer.from(JSON.stringify(payload), "utf8");
+    const { error: uploadErr } = await supabase.storage
+      .from(STORAGE_BUCKET)
+      .upload(STORAGE_KEY, buf, {
+        upsert: true,
+        contentType: "application/json",
+        cacheControl: "300",
+      });
+    if (uploadErr) {
+      console.error("refresh-single-bidder: storage upload failed:", uploadErr.message);
+      return { statusCode: 500, body: `storage upload failed: ${uploadErr.message}` };
+    }
+
     return {
       statusCode: 200,
-      body: JSON.stringify({ ok: true, count: all.length, by_agency: byAgency }),
+      body: JSON.stringify({
+        ok: true,
+        count: all.length,
+        by_agency: byAgency,
+        storage_url: `${SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKET}/${STORAGE_KEY}`,
+      }),
     };
   } catch (err) {
     console.error("refresh-single-bidder error:", err);
