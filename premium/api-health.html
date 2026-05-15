@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ask MMT — API Health</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/favicon-v3.png" type="image/png">
+  <style>
+    body { font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif; max-width: 1100px; margin: 24px auto; padding: 0 16px; color: #0A192F; background: #FFFFFF; }
+    h1 { margin: 0 0 8px; font-size: 24px; }
+    p { color: #5C6B7A; font-size: 14px; margin: 0 0 16px; }
+    a { color: #457B9D; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 16px 0; }
+    th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid #E5E7EB; }
+    th { background: #F3F4F6; font-weight: 700; }
+    tr.err-hi { background: #FEE2E2; }
+    tr.err-mid { background: #FEF3C7; }
+    tr.err-low { background: #D1FAE5; }
+    .circuit-open { color: #DC2626; font-weight: 700; }
+    .circuit-half { color: #D97706; font-weight: 700; }
+    .circuit-closed { color: #10B981; }
+    pre { background: #F9FAFB; padding: 12px; border-radius: 6px; font-size: 12px; overflow: auto; }
+    .meta { font-size: 12px; color: #6B7280; margin: 8px 0 16px; }
+  </style>
+</head>
+<body>
+  <h1>Ask MMT — API Health</h1>
+  <p>Last 7 days of <code>ops_events.ask_mmt_api_call</code> rows. Cold-start circuit state on the right. <a href="/premium/dashboard.html">Back to dashboard</a></p>
+  <div id="status">Loading…</div>
+  <script>
+    fetch('/.netlify/functions/api-health', { credentials: 'include' })
+      .then(function (r) { if (r.ok) return r.json(); return Promise.reject('HTTP ' + r.status); })
+      .then(function (d) {
+        var rows = (d.per_api || []).map(function (a) {
+          var cls = a.error_rate > 0.2 ? 'err-hi' : (a.error_rate > 0.05 ? 'err-mid' : 'err-low');
+          var cstate = (d.circuits_now && d.circuits_now[a.api] && d.circuits_now[a.api].state) || '—';
+          var ccls = cstate === 'OPEN' ? 'circuit-open' : (cstate === 'HALF_OPEN' ? 'circuit-half' : 'circuit-closed');
+          return '<tr class="' + cls + '"><td>' + a.api + '</td><td>' + a.calls + '</td><td>' + (a.error_rate * 100).toFixed(1) + '%</td><td>' + (a.open_rate * 100).toFixed(1) + '%</td><td>' + (a.had_data_rate * 100).toFixed(1) + '%</td><td>' + a.avg_latency_ms + 'ms</td><td>' + a.p95_latency_ms + 'ms</td><td class="' + ccls + '">' + cstate + '</td></tr>';
+        }).join('');
+        document.getElementById('status').innerHTML =
+          '<div class="meta">Generated ' + d.generated_at + ' · Window: ' + d.window + '</div>' +
+          (rows.length
+            ? '<table><thead><tr><th>API</th><th>Calls</th><th>Error rate</th><th>Open rate</th><th>Had data</th><th>Avg latency</th><th>p95 latency</th><th>Circuit (now)</th></tr></thead><tbody>' + rows + '</tbody></table>'
+            : '<p>No <code>ask_mmt_api_call</code> rows in the last 7 days. Set <code>ASK_MMT_METRICS_ENABLED=true</code> to start recording.</p>');
+      })
+      .catch(function (err) {
+        document.getElementById('status').innerHTML = '<p style="color:#DC2626;">Error: ' + err + '. This dashboard is admin-only — confirm you are signed in with an admin account.</p>';
+      });
+  </script>
+</body>
+</html>

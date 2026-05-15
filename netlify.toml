@@ -72,6 +72,10 @@
 [functions."newsletter-sync"]
   schedule = "0 23 * * 2,5"
 
+# Sprint 6 Phase 4 2026-05-15 — hourly Ask MMT API probe + degradation alert
+[functions."api-health-cron"]
+  schedule = "0 * * * *"
+
 # Buttondown newsletter send — runs 30 min after newsletter-sync (Tue/Fri 11:30 PM UTC)
 # Checks for new articles from the last 3 days and sends a digest to subscribers
 [functions."newsletter-send"]
@@ -483,6 +487,12 @@
   to = "/.netlify/functions/premium-deliverable-render?_path=/premium/execution-watch/:slug"
   status = 200
   force = true
+
+# Sprint 6 Phase 3 2026-05-15 — admin-only API health dashboard.
+[[redirects]]
+  from = "/admin/api-health"
+  to = "/premium/api-health.html"
+  status = 200
 
 [[redirects]]
   from = "/premium/monthly/:slug/"
