@@ -133,9 +133,50 @@ async function getIncumbentHistory({ solicitationNumber, programKeyword, limit =
   });
 }
 
+// Sprint 5 2026-05-15: Ask MMT enrichment wrapper. Pulls recent awards
+// AND expiring contracts in parallel so subscribers asking about
+// incumbency / recompete risk get both surfaces in one round-trip.
+async function enrichWithContractAwards({ topic, agency }) {
+  try {
+    const [awards, expiring] = await Promise.all([
+      searchContractAwards({ keyword: topic, agency, limit: 10 }).catch((e) => ({ error: e.message })),
+      getExpiringContracts({ keyword: topic, withinDays: 365, limit: 10 }).catch((e) => ({ error: e.message })),
+    ]);
+    return { awards, expiring };
+  } catch (err) {
+    return { error: err.message };
+  }
+}
+
+function formatContractAwardsContext(data) {
+  if (!data || data.error || (!data.awards && !data.expiring)) return "";
+  const sections = [];
+  if (data.awards && Array.isArray(data.awards) && data.awards.length) {
+    sections.push(
+      "RECENT CONTRACT AWARDS (SAM.gov contract data):\n" +
+        data.awards
+          .slice(0, 10)
+          .map((a) => `- ${a.vendor || a.recipient_name} — $${(a.amount || 0).toLocaleString()} — PIID ${a.piid || a.contract_id} — ${a.agency} (${a.action_date || a.date})`)
+          .join("\n")
+    );
+  }
+  if (data.expiring && Array.isArray(data.expiring) && data.expiring.length) {
+    sections.push(
+      "EXPIRING CONTRACTS (next 365 days):\n" +
+        data.expiring
+          .slice(0, 10)
+          .map((e) => `- ${e.vendor || e.recipient_name} — $${(e.amount || 0).toLocaleString()} — PIID ${e.piid} — expires ${e.end_date}`)
+          .join("\n")
+    );
+  }
+  return sections.length ? "\n\n" + sections.join("\n\n") + "\n\n" : "";
+}
+
 module.exports = {
   searchContractAwards,
   getExpiringContracts,
   getIncumbentHistory,
   configured,
+  enrichWithContractAwards,
+  formatContractAwardsContext,
 };

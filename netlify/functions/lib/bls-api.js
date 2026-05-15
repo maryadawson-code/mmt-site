@@ -212,10 +212,28 @@ function formatBLSContext({ benchmarks, flags }) {
   return `\n\nBLS OEWS LABOR RATE BENCHMARKS (${benchmarks.length} categories):\n${rows}${flagsBlock}`;
 }
 
+// Sprint 5 2026-05-15: Ask MMT enrichment wrapper. Topic-gated — only runs
+// when the question mentions wages/rates/labor/pricing. Wage benchmarks
+// for proposal rates already power the ProposalPulse pricing review;
+// this exposes the same lookup to Ask MMT for BD/pricing questions.
+async function enrichWithBLS({ topic }) {
+  try {
+    if (!/\b(wage|rate|salary|labor|pricing|cost\s+per|hour|FTE|GSA\s+schedule|fully\s+burdened)\b/i.test(topic)) {
+      return { skipped: true };
+    }
+    const categories = ["Software Developer", "Project Manager", "Systems Engineer", "Cybersecurity Analyst"];
+    const benchmarks = await benchmarkProposalRates(categories);
+    return { benchmarks, flags: [] };
+  } catch (err) {
+    return { error: err.message };
+  }
+}
+
 module.exports = {
   socFor,
   metroFor,
   fetchWagePercentiles,
   benchmarkProposalRates,
   formatBLSContext,
+  enrichWithBLS,
 };

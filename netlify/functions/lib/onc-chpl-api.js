@@ -105,8 +105,26 @@ Reason: ${result.reason}
 ${rows ? "Matched listings:\n" + rows : ""}`;
 }
 
+// Sprint 5 2026-05-15: Ask MMT enrichment wrapper. Topic-gated to vendor /
+// certified-EHR questions so we don't fan out CHPL queries on every Ask
+// MMT call. formatCHPLContext expects { products, verified, reason } —
+// the wrapper omits verified/reason and lets the formatter degrade
+// gracefully (it returns "" when verified is undefined).
+async function enrichWithCHPL({ topic }) {
+  try {
+    if (!/\b(Oracle|Cerner|Epic|Allscripts|Meditech|Athenahealth|certified|CHPL|ONC|2015\s+edition|Cures)\b/i.test(topic)) {
+      return { skipped: true };
+    }
+    const products = await searchCertifiedProducts({ keyword: topic, limit: 8 });
+    return { products, verified: undefined, reason: `Ask MMT vendor lookup for: ${topic}` };
+  } catch (err) {
+    return { error: err.message };
+  }
+}
+
 module.exports = {
   searchCertifiedProducts,
   verifyCertificationClaim,
   formatCHPLContext,
+  enrichWithCHPL,
 };

@@ -26,6 +26,12 @@ const { enrichWithHHSOpenData, formatHHSOpenDataContext } = require("./hhs-open-
 const { enrichWithCALC, formatCALCContext } = require("./calc-rates");
 const { enrichWithECFR, formatECFRContext } = require("./ecfr-api");
 const { enrichWithRegulationsGov, formatRegulationsGovContext } = require("./regulations-gov");
+// Sprint 5 2026-05-15: 5 additional federal-API enrichments.
+const { enrichWithBLS, formatBLSContext } = require("./bls-api");
+const { enrichWithCHPL, formatCHPLContext } = require("./onc-chpl-api");
+const { enrichWithContractAwards, formatContractAwardsContext } = require("./sam-contract-awards");
+const { enrichWithWageDeterminations, formatWageDeterminationsContext } = require("./sam-wage-determinations");
+const { enrichWithEDGAR, formatEDGARContext } = require("./sec-edgar-api");
 const { searchCorpus, formatCorpusContext } = require("./content-index");
 const { detectVehicles, formatVehiclesContext, expandedSearchTerms } = require("./known-vehicles");
 
@@ -104,7 +110,15 @@ async function runEnrichment(question) {
     ? matchedVehicles[0].naics
     : undefined;
 
-  const safe = (p) => p.catch((e) => ({ error: e.message }));
+  // Sprint 5 2026-05-15: 8s per-enrichment timeout. Prior unbounded behavior
+  // let a slow upstream (USASpending occasionally >20s) hold the whole
+  // answer until the 45s Anthropic call timer. With 18 enrichments running
+  // in parallel an 8s cap means the slowest possible enrichment phase is
+  // 8s, leaving 37s+ for Claude.
+  const safe = (p) => Promise.race([
+    p.catch((e) => ({ error: e.message })),
+    new Promise((resolve) => setTimeout(() => resolve({ error: "timeout-8s" }), 8000)),
+  ]);
 
   // MMT content corpus search — uses the raw question so it picks up
   // nuance the vehicle dictionary doesn't know about.
@@ -126,6 +140,11 @@ async function runEnrichment(question) {
     calcData,
     ecfrData,
     regsGovData,
+    blsData,
+    chplData,
+    contractAwardsData,
+    wageDetData,
+    edgarData,
   ] = await Promise.all([
     safe(enrichWithFederalData({ topic: primaryQuery, agency: agency || undefined, naics: primaryNaics })),
     safe(enrichWithCongress({ topic: primaryQuery })),
@@ -142,6 +161,13 @@ async function runEnrichment(question) {
     safe(enrichWithCALC({ topic: question })),
     safe(enrichWithECFR({ topic: question })),
     safe(enrichWithRegulationsGov({ topic: question })),
+    safe(enrichWithBLS({ topic: question })),
+    safe(enrichWithCHPL({ topic: question })),
+    safe(enrichWithContractAwards({ topic: primaryQuery, agency })),
+    safe(enrichWithWageDeterminations({ topic: question })),
+    // EDGAR takes a competitor list — empty by default until callers can
+    // pass company context. Skipped result is a no-op so no answer regression.
+    safe(enrichWithEDGAR({ competitors: [] })),
   ]);
 
   const context = [
@@ -162,6 +188,11 @@ async function runEnrichment(question) {
     formatCALCContext(calcData),
     formatECFRContext(ecfrData),
     formatRegulationsGovContext(regsGovData),
+    formatBLSContext(blsData || {}),
+    formatCHPLContext(chplData),
+    formatContractAwardsContext(contractAwardsData),
+    formatWageDeterminationsContext(wageDetData),
+    formatEDGARContext(edgarData),
   ].filter(Boolean).join("");
 
   return {
