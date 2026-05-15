@@ -200,15 +200,35 @@ exports.handler = async (event) => {
       return { statusCode: 200, body: JSON.stringify({ received: true, duplicate: true }) };
     }
 
-    await supabase.from("stripe_events").insert({
-      event_id: stripeEvent.id,
-      event_type: stripeEvent.type,
-      processed_at: new Date().toISOString(),
-      payload: stripeEvent.data.object,
-    });
+    // Sprint 7 Phase A1 (2026-05-15): the dedup-row insert was eager here
+    // (before fulfillment ran). If welcome/upsert later threw or silently
+    // failed, the dedup row was already in place — Stripe retries hit the
+    // duplicate-check short-circuit at line ~199 and never ran the welcome
+    // again. That's the May 15 Bridget/Brian missed-welcome failure mode.
+    // The insert is now deferred to immediately before each success/
+    // acknowledged-non-retryable terminal 200 return via
+    // recordEventProcessed(). Warning/error returns ("usage update failed;
+    // logged" etc.) explicitly skip the insert so Stripe retries.
   } catch (ledgerErr) {
     console.warn("stripe-webhook: event ledger unavailable, proceeding without dedup:", ledgerErr.message);
   }
+
+  // Defer-insert helper. Call directly before any 200 return on a success
+  // or acknowledged-non-retryable path. Non-fatal on insert failure — the
+  // worst case is Stripe retries and we hit the duplicate-check short-
+  // circuit at the top instead.
+  const recordEventProcessed = async () => {
+    try {
+      await supabase.from("stripe_events").insert({
+        event_id: stripeEvent.id,
+        event_type: stripeEvent.type,
+        processed_at: new Date().toISOString(),
+        payload: stripeEvent.data.object,
+      });
+    } catch (e) {
+      console.warn("stripe-webhook: dedup insert failed (non-fatal):", e.message);
+    }
+  };
 
   switch (stripeEvent.type) {
     case "checkout.session.completed": {
@@ -240,6 +260,7 @@ exports.handler = async (event) => {
           await upsertCustomer(supabase, { email: normalizedEmail, stripeCustomerId: session.customer, product: 'mmt_premium', amountCents: session.amount_total || null });
           await logCustomerEvent(supabase, { email: normalizedEmail, eventType: 'subscription_checkout', product: 'mmt_premium', amountCents: session.amount_total || null });
         } catch (_syncErr) { console.error("stripe-webhook: customer sync (premium) failed:", _syncErr.message); }
+        await recordEventProcessed();
         return { statusCode: 200, body: JSON.stringify({ received: true, type: "checkout_session_subscription" }) };
       }
 
@@ -320,6 +341,7 @@ exports.handler = async (event) => {
           await logCustomerEvent(supabase, { email: normalizedEmail, eventType: 'purchase', product: 'proposalpulse', amountCents: 1999 });
         } catch (_syncErr) { console.error("stripe-webhook: customer sync failed:", _syncErr.message); }
 
+        await recordEventProcessed();
         return { statusCode: 200, body: JSON.stringify({ received: true }) };
       } catch (err) {
         // Never return 5xx to Stripe unless we actually want retry. Log + ack.
@@ -463,6 +485,34 @@ exports.handler = async (event) => {
       // get a welcome" email. Now fires on any MMT premium tier; tier classification
       // selects the right template variant.
       const tier = classifyMmtPremiumTier(sub);
+      // Sprint 7 Phase A3 (2026-05-15): fail loud when the event survived
+      // the foreign-event filter (so it IS MMT) but the tier classifier
+      // returned null. That means a price.id is live in Stripe but not in
+      // the env whitelist. No future subscriber should miss the welcome
+      // because of a deploy-time env gap.
+      if (isMmtPremium && tier === null && isActive && subEmail) {
+        try {
+          await logOpsEvent(supabase, {
+            event_type: "WELCOME_TIER_UNCLASSIFIED",
+            source_function: "stripe-webhook",
+            severity: "error",
+            signature: "missing_price_id_in_env",
+            affected_entity: sub.id,
+            details: {
+              customer_email: subEmail,
+              subscription_id: sub.id,
+              price_ids: (sub.items && sub.items.data || []).map((i) => i && i.price && i.price.id).filter(Boolean),
+            },
+          });
+          if (Sentry && Sentry.captureMessage) {
+            Sentry.captureMessage("WELCOME_TIER_UNCLASSIFIED", {
+              level: "error",
+              tags: { function: "stripe-webhook", alert_signal: "welcome_tier_unclassified" },
+              extra: { customer_email: subEmail, subscription_id: sub.id },
+            });
+          }
+        } catch { /* observability never breaks the webhook */ }
+      }
       const shouldSendWelcome =
         stripeEvent.type === "customer.subscription.created" &&
         isActive &&
@@ -544,6 +594,26 @@ exports.handler = async (event) => {
                   reason: String(reason).substring(0, 300),
                 },
               });
+              // Sprint 7 Phase A2 (2026-05-15): page Sentry alert. Prior
+              // behavior logged to ops_events only — Mary had no notification
+              // until she manually queried the table or a customer emailed her.
+              try {
+                if (Sentry && Sentry.captureMessage) {
+                  Sentry.captureMessage("WELCOME_EMAIL_FAILED", {
+                    level: "error",
+                    tags: {
+                      function: "stripe-webhook",
+                      tier,
+                      alert_signal: "welcome_email_failed",
+                    },
+                    extra: {
+                      customer_email: subEmail,
+                      subscription_id: sub.id,
+                      reason: String(reason).substring(0, 300),
+                    },
+                  });
+                }
+              } catch { /* never break webhook on telemetry */ }
               console.error(`stripe-webhook: WELCOME_EMAIL_FAILED [${tier}] for ${subEmail}: ${reason}`);
             }
           }
@@ -563,10 +633,32 @@ exports.handler = async (event) => {
               },
             });
           } catch { /* never break webhook */ }
+          // Sprint 7 Phase A2 (2026-05-15): page Sentry alert for the throw
+          // path too. Catches the same alert_signal as the explicit-failure
+          // path above so one Sentry rule covers both.
+          try {
+            if (Sentry && Sentry.captureMessage) {
+              Sentry.captureMessage("WELCOME_EMAIL_FAILED", {
+                level: "error",
+                tags: {
+                  function: "stripe-webhook",
+                  tier: tier || "unknown",
+                  alert_signal: "welcome_email_failed",
+                  exception: "true",
+                },
+                extra: {
+                  customer_email: subEmail,
+                  subscription_id: sub.id,
+                  reason: String(welcomeErr.message || "").substring(0, 300),
+                },
+              });
+            }
+          } catch { /* never break webhook on telemetry */ }
           console.error("stripe-webhook: welcome email path threw:", welcomeErr.message);
         }
       }
 
+      await recordEventProcessed();
       return { statusCode: 200, body: JSON.stringify({ received: true, type: stripeEvent.type }) };
     }
 
@@ -607,6 +699,7 @@ exports.handler = async (event) => {
         severity: "warning",
         payload: { type: stripeEvent.type, subscription_id: sub.id, status: sub.status, customer: sub.customer, email: subEmail, mmt_premium: isMmtPremium },
       });
+      await recordEventProcessed();
       return { statusCode: 200, body: JSON.stringify({ received: true, type: stripeEvent.type }) };
     }
 
@@ -618,10 +711,12 @@ exports.handler = async (event) => {
         severity: "error",
         payload: { type: stripeEvent.type, invoice_id: invoice.id, customer: invoice.customer, amount_due: invoice.amount_due },
       });
+      await recordEventProcessed();
       return { statusCode: 200, body: JSON.stringify({ received: true, type: stripeEvent.type }) };
     }
 
     default:
+      await recordEventProcessed();
       return { statusCode: 200, body: JSON.stringify({ received: true, type: stripeEvent.type }) };
   }
 };

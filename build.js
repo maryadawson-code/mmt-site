@@ -28,6 +28,14 @@ marked.use({
 const RSS_FEED = 'https://api.riverside.fm/hosting/KJvFk8EM.rss';
 const SITE_URL = 'https://missionmeetstech.com';
 
+// Returns "YYYY-MM-DD" in America/New_York. Compare as strings.
+// Why ET: a file dated 2026-05-15 should publish at 00:00 ET on May 15,
+// not at 00:00 UTC (which is 20:00 ET on May 14). Prior UTC-midnight gates
+// caused the 2026-05-15 build to filter out same-day files until 04:00 UTC.
+function todayET() {
+  return new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+}
+
 // News Wire RSS feeds — focused on federal health IT, not generic defense
 const NEWS_FEEDS = [
   // Federal health IT trade press (highest signal)
@@ -2763,7 +2771,7 @@ function injectDashShell(html, activePage) {
   return html;
 }
 
-function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleMap, agencyArticleMap, articles, subscriberCount }) {
+async function copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleMap, agencyArticleMap, articles, subscriberCount }) {
   // Copy root HTML files (with inlined Tailwind CSS + build-time injections)
   const htmlFiles = [
     'index.html', 'about.html', 'podcast.html', 'newsletter.html',
@@ -3289,15 +3297,13 @@ ${innerHtml}
   // future-date pattern in extractAllArticles(). Filenames without a
   // date pattern are always copied (treated as undated standing pages).
   const briefsSrcDir = path.join(__dirname, 'premium', 'briefs');
-  const _briefNowMs = Date.now();
+  const _briefTodayET = todayET();
   if (fs.existsSync(briefsSrcDir)) {
     const allBriefFiles = fs.readdirSync(briefsSrcDir).filter(f => f.endsWith('.html'));
     const briefFiles = allBriefFiles.filter((f) => {
       const m = f.match(/(\d{4}-\d{2}-\d{2})/);
       if (!m) return true;
-      const t = new Date(m[1] + 'T00:00:00Z').getTime();
-      if (Number.isNaN(t)) return true;
-      if (t > _briefNowMs) {
+      if (m[1] > _briefTodayET) {
         console.log(`  ⏳ HOLDING (future-dated): premium/briefs/${f} (publish_date ${m[1]})`);
         return false;
       }
@@ -3611,6 +3617,14 @@ ${innerHtml}
   // been 404-ing in prod since Sprint 5 (2026-05-07) because build.js never
   // shipped them. Top-level only — data/premium/, data/may-15-release/, and
   // other subdirs are build inputs, not public assets.
+  //
+  // Sprint 3 2026-05-15: single-bidder.json is special-cased. The
+  // refresh-single-bidder cron now writes to Supabase Storage
+  // (public-data/single-bidder.json) since its prior lambda-FS writes were
+  // lost on every invocation. We fetch the cron output at build time,
+  // unwrap the { updated_at, count, by_agency, data } envelope, and write
+  // the flat array the page expects. Local data/single-bidder.json is the
+  // fallback for offline / pre-Supabase-bucket builds.
   const dataSrcDir = path.join(__dirname, 'data');
   const dataDistDir = path.join(DIST_DIR, 'data');
   if (fs.existsSync(dataSrcDir)) {
@@ -3619,10 +3633,41 @@ ${innerHtml}
     for (const f of fs.readdirSync(dataSrcDir)) {
       const src = path.join(dataSrcDir, f);
       if (!fs.statSync(src).isFile() || !f.endsWith('.json')) continue;
+      if (f === 'single-bidder.json') continue; // handled below
       fs.copyFileSync(src, path.join(dataDistDir, f));
       dataCopied++;
     }
     console.log(`Copied ${dataCopied} data/*.json file(s) to dist/data/`);
+
+    // single-bidder.json: prefer Supabase Storage (cron output), fall back to local.
+    const sbDestPath = path.join(dataDistDir, 'single-bidder.json');
+    const sbLocalPath = path.join(dataSrcDir, 'single-bidder.json');
+    const sbUrl = process.env.SUPABASE_URL
+      ? `${process.env.SUPABASE_URL}/storage/v1/object/public/public-data/single-bidder.json`
+      : null;
+    let sbWritten = false;
+    if (sbUrl && typeof fetch !== 'undefined') {
+      try {
+        const res = await fetch(sbUrl);
+        if (res.ok) {
+          const wrapper = await res.json();
+          const arr = Array.isArray(wrapper) ? wrapper : (wrapper && wrapper.data) || [];
+          fs.writeFileSync(sbDestPath, JSON.stringify(arr, null, 2));
+          console.log(`Fetched single-bidder.json from Supabase Storage (${arr.length} rows, updated_at=${wrapper && wrapper.updated_at || 'n/a'})`);
+          sbWritten = true;
+        } else {
+          console.warn(`Supabase fetch for single-bidder.json returned ${res.status} — falling back to local file`);
+        }
+      } catch (err) {
+        console.warn(`Supabase fetch for single-bidder.json failed: ${err.message} — falling back to local file`);
+      }
+    }
+    if (!sbWritten && fs.existsSync(sbLocalPath)) {
+      fs.copyFileSync(sbLocalPath, sbDestPath);
+      console.log('Copied local data/single-bidder.json to dist (fallback)');
+    } else if (!sbWritten) {
+      console.warn('single-bidder.json not available from Supabase or local file — page will show empty state');
+    }
   }
 
   // Copy demos
@@ -4300,7 +4345,7 @@ function getBriefFiles() {
   //     Capture Corner replaced the standalone Friday Brief; subscribers
   //     looking for "last Friday's brief" expect this issue here too.)
   const briefsDir = path.join(__dirname, 'premium', 'briefs');
-  const _archiveNowMs = Date.now();
+  const _archiveTodayET = todayET();
   if (fs.existsSync(briefsDir)) {
     const files = fs.readdirSync(briefsDir)
       .filter(f => f.endsWith('.html') && /(?:^|-)(\d{4}-\d{2}-\d{2})\.html$/.test(f));
@@ -4310,8 +4355,7 @@ function getBriefFiles() {
       const dateStr = dateMatch[1];
       // Future-date gate — a 2026-05-05 brief shouldn't show in the
       // archive listing on 2026-05-04. Mirrors the file-copy guard above.
-      const _ts = new Date(dateStr + 'T00:00:00Z').getTime();
-      if (!Number.isNaN(_ts) && _ts > _archiveNowMs) continue;
+      if (dateStr > _archiveTodayET) continue;
       if (out.has(dateStr)) continue; // markdown wins
       const isCaptureCorner = /^capture-corner-/.test(f);
       const parts = dateStr.split('-');
@@ -4365,7 +4409,7 @@ function generateBriefArchiveHtml() {
 function getCaptureCornerFiles() {
   const briefsDir = path.join(__dirname, 'premium', 'briefs');
   if (!fs.existsSync(briefsDir)) return [];
-  const _ccNowMs = Date.now();
+  const _ccTodayET = todayET();
   const files = fs.readdirSync(briefsDir)
     .filter((f) => /^capture-corner-(\d{4}-\d{2}-\d{2})\.html$/.test(f))
     .filter((f) => {
@@ -4374,8 +4418,7 @@ function getCaptureCornerFiles() {
       // /capture-corner archive on 2026-05-04.
       const dm = f.match(/(\d{4}-\d{2}-\d{2})/);
       if (!dm) return true;
-      const t = new Date(dm[1] + 'T00:00:00Z').getTime();
-      return Number.isNaN(t) || t <= _ccNowMs;
+      return dm[1] <= _ccTodayET;
     });
   return files.map((f) => {
     const dateStr = f.match(/(\d{4}-\d{2}-\d{2})/)[1];
@@ -4825,7 +4868,7 @@ async function build() {
 
   // 6. Copy all static files (with build-time injections)
   console.log('\n--- Copying static files ---');
-  copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleMap, agencyArticleMap, articles, subscriberCount });
+  await copyStaticFiles({ archive, feed, newsItems, contracts, contractArticleMap, agencyArticleMap, articles, subscriberCount });
 
   // 6b. Pursuit Calendar — hydrate dist/premium/calendar/index.html
   // from Supabase if creds are present. The placeholder written by

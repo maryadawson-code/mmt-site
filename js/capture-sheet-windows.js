@@ -19,9 +19,18 @@
   var MONTH_LOOKUP = {};
   MONTH_NAMES.forEach(function (name, i) { MONTH_LOOKUP[name.toLowerCase()] = i; });
 
-  function todayUTC() {
-    var d = new Date();
-    return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+  // ET-aware "today" — returns a UTC-epoch ms anchored to midnight in
+  // America/New_York. We compare it against UTC-anchored deadline epochs
+  // (from parseDeadline) so the math stays consistent. Why ET: a deadline
+  // labeled "Proposals due April 17" lapses at end-of-day ET, not at
+  // midnight UTC. Prior todayET() flipped the "Closed" state 4 hours
+  // early during EDT.
+  function todayET() {
+    var parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'America/New_York',
+      year: 'numeric', month: '2-digit', day: '2-digit'
+    }).formatToParts(new Date()).reduce(function (a, p) { a[p.type] = p.value; return a; }, {});
+    return Date.UTC(parseInt(parts.year, 10), parseInt(parts.month, 10) - 1, parseInt(parts.day, 10));
   }
 
   // Parse a label like "Proposals due April 17" or "Closes 05/15/2026"
@@ -51,7 +60,7 @@
       // If the inferred date is more than 6 months in the past with no
       // explicit year, assume next year.
       var d = Date.UTC(year2, mo2, day2);
-      if (!nameMatch[3] && d < todayUTC() - 180 * 86400000) {
+      if (!nameMatch[3] && d < todayET() - 180 * 86400000) {
         year2 = currentYear + 1;
         d = Date.UTC(year2, mo2, day2);
       }
@@ -72,7 +81,7 @@
     var parsed = parseDeadline(text);
     if (!parsed) return;
 
-    var today = todayUTC();
+    var today = todayET();
     var diff = daysBetween(today, parsed.deadline);
 
     // Extract the leading verb ("Proposals due", "Closes", etc.) if present
@@ -107,15 +116,31 @@
   }
 
   function rewriteUpdatedStamp() {
+    // Elements with data-content-updated="YYYY-MM-DD" stamp the actual
+    // editorial-edit month, not whatever month the page renders in. That
+    // matters because window-rewriting runs every page load — if an
+    // element just took "current month" it would silently advance the
+    // hero's "Updated" label every month even when no real edits shipped.
+    // Fallback (no data-content-updated) is current month, preserving
+    // legacy behavior for elements that haven't been opted in.
     var candidates = document.querySelectorAll('.ci-table-count, [data-capture-updated]');
-    var today = new Date();
-    var currentStamp = MONTH_NAMES[today.getUTCMonth()] + ' ' + today.getUTCFullYear();
     candidates.forEach(function (el) {
+      var iso = el.getAttribute('data-content-updated');
+      var stamp;
+      if (iso && /^\d{4}-\d{2}-\d{2}$/.test(iso)) {
+        var d = new Date(iso + 'T12:00:00Z');
+        stamp = MONTH_NAMES[d.getUTCMonth()] + ' ' + d.getUTCFullYear();
+      } else {
+        var today = new Date();
+        stamp = MONTH_NAMES[today.getUTCMonth()] + ' ' + today.getUTCFullYear();
+      }
       if (/Updated\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4}/.test(el.textContent)) {
         el.textContent = el.textContent.replace(
           /Updated\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4}/,
-          'Updated ' + currentStamp
+          'Updated ' + stamp
         );
+      } else if (el.hasAttribute('data-capture-updated')) {
+        el.textContent = stamp;
       }
     });
   }
@@ -195,6 +220,24 @@
         var live = total - pastRows.length;
         countEl.textContent = countEl.textContent.replace(/(\d+)\s+signals/, live + ' live signals (' + pastRows.length + ' closed)');
         countEl.setAttribute('data-live-updated', 'true');
+      }
+    }
+
+    // Mirror the live/closed counter into the hero meta so the top of
+    // the page doesn't drift from the table below as deadlines lapse.
+    // Same one-shot guard as the body counter — re-running run() should
+    // not double-update.
+    var heroCount = document.querySelector('[data-capture-signal-count]');
+    if (heroCount && !heroCount.getAttribute('data-live-updated')) {
+      var hm = heroCount.textContent.match(/(\d+)\s+Signals/i);
+      if (hm) {
+        var hTotal = parseInt(hm[1], 10);
+        var hLive = hTotal - pastRows.length;
+        heroCount.textContent = heroCount.textContent.replace(
+          /(\d+)\s+Signals/i,
+          hLive + ' Live Signals (' + pastRows.length + ' Closed)'
+        );
+        heroCount.setAttribute('data-live-updated', 'true');
       }
     }
   }

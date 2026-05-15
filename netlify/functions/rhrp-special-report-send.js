@@ -22,6 +22,12 @@ const { logOpsEvent } = require("./lib/ops-ledger");
 const { extractBriefContent, buildFridayBriefEmail } = require("./lib/premium-brief-templates");
 
 const SITE_URL = "https://missionmeetstech.com";
+// FIXME (Sprint 2 2026-05-15): this path was migrated to /premium/briefs/rhrp-2026-04
+// (DB-backed, auth-gated via premium-deliverable-render). Constant preserved so the
+// ops_events dedupe signature (signature + affected_entity) doesn't reset on the already-
+// completed April send. Re-invocation requires (1) updating this path AND (2) replacing
+// the SITE_URL fetch-and-scrape with a direct premium_deliverables row read (server-side
+// fetch hits the 401 auth gate now).
 const BRIEF_PATH = "/premium/briefs/rhrp-2026-04.html";
 const SIGNATURE = "rhrp_special_report_sent";
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "mary@missionmeetstech.com,maryadawson@gmail.com")

@@ -100,15 +100,44 @@ async function checkLaborCompliance({ state, county, categories }) {
 }
 
 function formatWageDeterminationsContext(result) {
-  if (!result || !result.flags || result.flags.length === 0) return "";
-  return `\n\nSCA WAGE DETERMINATION COMPLIANCE (SAM.gov Wage Determinations API):
+  if (!result) return "";
+  // Compliance-check shape (existing caller — ProposalPulse): { flags, wd_number, wd_url }
+  if (result.flags && result.flags.length > 0) {
+    return `\n\nSCA WAGE DETERMINATION COMPLIANCE (SAM.gov Wage Determinations API):
 WD ${result.wd_number} (${result.wd_url})
 FLOOR VIOLATIONS:
 ${result.flags.map((f) => `- ${f}`).join("\n")}`;
+  }
+  // Lookup shape (Sprint 5 Ask MMT path): { determinations: [...] }
+  if (result.determinations && Array.isArray(result.determinations) && result.determinations.length) {
+    const rows = result.determinations.slice(0, 5).map((d) =>
+      `- ${d.wd_number || d.number || "WD"}: ${d.title || d.description || ""} | ${d.location || d.state || "n/a"} | ${d.url || ""}`
+    ).join("\n");
+    return `\n\nSCA WAGE DETERMINATIONS (SAM.gov, ${result.determinations.length} match${result.determinations.length === 1 ? "" : "es"}):\n${rows}\n\n`;
+  }
+  return "";
+}
+
+// Sprint 5 2026-05-15: Ask MMT enrichment wrapper. Topic-gated to SCA /
+// Davis-Bacon / wage-determination questions. The existing compliance-check
+// helpers expect a specific labor-category proposal payload, which Ask MMT
+// doesn't have at question time — so this path uses the simpler
+// searchWageDeterminations lookup and the extended formatter above.
+async function enrichWithWageDeterminations({ topic }) {
+  try {
+    if (!/\b(SCA|Service\s+Contract\s+Act|Davis-Bacon|wage\s+determination|prevailing\s+wage|labor\s+compliance)\b/i.test(topic)) {
+      return { skipped: true };
+    }
+    const determinations = await searchWageDeterminations({ keyword: topic, limit: 5 });
+    return { determinations };
+  } catch (err) {
+    return { error: err.message };
+  }
 }
 
 module.exports = {
   searchWageDeterminations,
   checkLaborCompliance,
   formatWageDeterminationsContext,
+  enrichWithWageDeterminations,
 };

@@ -4,7 +4,7 @@
   # validate-dist.js fails the build if dist/ contains any public-facing
   # drift pattern from docs/site-spec.md §14a. If it exits non-zero,
   # Netlify will refuse to deploy.
-  command = "node scripts/sync-newsletters.js; node scripts/sync-linkedin-newsletter.js; node build.js && node scripts/validate-dist.js && node scripts/validate-routes.js && node scripts/newsletter-inventory.js && node scripts/capture-corner-inventory.js && node scripts/qa-contrast-scan.js && node scripts/validate-agency-parity.js && node scripts/validate-agency-profiles.js && node scripts/validate-contract-tracker.js && node scripts/scan-pii.js"
+  command = "node scripts/sync-newsletters.js; node scripts/sync-linkedin-newsletter.js; node build.js && node scripts/validate-dist.js && node scripts/validate-routes.js && node scripts/newsletter-inventory.js && node scripts/capture-corner-inventory.js && node scripts/qa-contrast-scan.js && node scripts/validate-agency-parity.js && node scripts/validate-agency-profiles.js && node scripts/validate-contract-tracker.js && node scripts/scan-pii.js && node scripts/validate-no-scrubbed-stubs.js && node scripts/validate-ask-mmt-coverage.js"
 
 [functions]
   directory = "netlify/functions"
@@ -71,6 +71,17 @@
 # Searches for new Mission Meets Tech articles, creates markdown stubs via GitHub API, triggers rebuild
 [functions."newsletter-sync"]
   schedule = "0 23 * * 2,5"
+
+# Sprint 6 Phase 4 2026-05-15 — hourly Ask MMT API probe + degradation alert
+[functions."api-health-cron"]
+  schedule = "0 * * * *"
+
+# Sprint 7 Phase B 2026-05-15 — welcome-email reconciler. Every 30 min.
+# Catches any paid subscriber whose live stripe-webhook welcome path failed
+# silently. Idempotent via customer_events welcome_sent row check; no
+# double-sends possible.
+[functions."welcome-reconciler"]
+  schedule = "*/30 * * * *"
 
 # Buttondown newsletter send — runs 30 min after newsletter-sync (Tue/Fri 11:30 PM UTC)
 # Checks for new articles from the last 3 days and sends a digest to subscribers
@@ -481,6 +492,89 @@
 [[redirects]]
   from = "/premium/execution-watch/:slug"
   to = "/.netlify/functions/premium-deliverable-render?_path=/premium/execution-watch/:slug"
+  status = 200
+  force = true
+
+# Sprint 6 Phase 3 2026-05-15 — admin-only API health dashboard.
+[[redirects]]
+  from = "/admin/api-health"
+  to = "/premium/api-health.html"
+  status = 200
+
+[[redirects]]
+  from = "/premium/monthly/:slug/"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/monthly/:slug"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/monthly/:slug"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/monthly/:slug"
+  status = 200
+  force = true
+
+# Per-slug redirects for the 5 scrubbed-stub briefs migrated to the
+# render fn (Sprint 2 — 2026-05-15). We can't use a /premium/briefs/:slug
+# wildcard because the 8 live Capture Corner files (capture-corner-*.html)
+# still ship as static HTML at /premium/briefs/ and a wildcard would
+# shadow them.
+[[redirects]]
+  from = "/premium/briefs/2026-03-21"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/briefs/2026-03-21"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/briefs/2026-03-21/"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/briefs/2026-03-21"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/briefs/2026-03-28"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/briefs/2026-03-28"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/briefs/2026-03-28/"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/briefs/2026-03-28"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/briefs/2026-04-04"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/briefs/2026-04-04"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/briefs/2026-04-04/"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/briefs/2026-04-04"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/briefs/2026-04-11"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/briefs/2026-04-11"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/briefs/2026-04-11/"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/briefs/2026-04-11"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/briefs/rhrp-2026-04"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/briefs/rhrp-2026-04"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/premium/briefs/rhrp-2026-04/"
+  to = "/.netlify/functions/premium-deliverable-render?_path=/premium/briefs/rhrp-2026-04"
   status = 200
   force = true
 
