@@ -485,10 +485,15 @@ function getVerdict(composite) {
 // ------------------------------------------------------------
 // Caching (1-week TTL, ops_events-backed)
 // ------------------------------------------------------------
+// Cache version — bump when the response shape or scoring algorithm
+// changes so subscribers don't keep reading pre-fix stale entries for
+// up to a week. v2 = Sprint 8a (SC-1/SC-2/SC-7): USASpending payload
+// fix, FR DHA slug fix, topKeywords dedup, _apiErrors in layer payload.
+const CACHE_VERSION = "v2";
 function cacheKeyFor(topic, agency) {
   const now = new Date();
   const week = Math.floor((now - new Date(now.getUTCFullYear(), 0, 1)) / (7 * DAY_MS));
-  const normalized = `${(topic || "").toLowerCase().trim()}|${agency || ""}|W${now.getUTCFullYear()}-${week}`;
+  const normalized = `${CACHE_VERSION}|${(topic || "").toLowerCase().trim()}|${agency || ""}|W${now.getUTCFullYear()}-${week}`;
   return crypto.createHash("sha256").update(normalized).digest("hex");
 }
 
