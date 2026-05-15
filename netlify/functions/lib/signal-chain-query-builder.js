@@ -97,7 +97,14 @@ function buildQueryTerms(topic, agency) {
     .replace(/[^a-z0-9+ ]/g, " ") // keep + for OASIS+ etc.
     .split(/\s+/)
     .filter((w) => w.length > 2 && !STOPWORDS.has(w));
-  const topKeywords = keywords.slice(0, 4);
+  // Dedup case-insensitively before slicing. When matchedVehicles
+  // expansion joins the canonical name back onto the original topic
+  // ("MHS GENESIS" + expandedSearchTerms → "mhs genesis mhs genesis"),
+  // the unfiltered slice would publish `topKeywords: ["mhs","genesis",
+  // "mhs","genesis"]` to subscribers — cosmetic but signals sloppy
+  // code in a client-visible response.
+  const dedupedKeywords = Array.from(new Set(keywords));
+  const topKeywords = dedupedKeywords.slice(0, 4);
   const base = topKeywords.join(" ");
 
   return {
@@ -143,13 +150,21 @@ const USAJOBS_ORG_CODES = {
   GSA: "GS00",
 };
 
-// Federal Register agency slugs
+// Federal Register agency slugs. Values are arrays so an agency that
+// publishes under multiple slugs (e.g., DHA mostly under DoD's
+// `defense-department` but occasionally under `defense-health-agency`)
+// can fan out to both and union the results.
+//
+// Source of truth: https://www.federalregister.gov/agencies
+// Verified 2026-05-15: DHA queries against `defense-health-agency` alone
+// return 0 documents because the bulk of DHA-relevant rules and notices
+// actually publish under the parent DoD slug.
 const FR_AGENCY_SLUGS = {
-  DHA: "defense-health-agency",
-  VA:  "veterans-affairs-department",
-  HHS: "health-and-human-services-department",
-  DoD: "defense-department",
-  GSA: "general-services-administration",
+  DHA: ["defense-department", "defense-health-agency"],
+  VA:  ["veterans-affairs-department"],
+  HHS: ["health-and-human-services-department"],
+  DoD: ["defense-department"],
+  GSA: ["general-services-administration"],
 };
 
 // USASpending full agency names

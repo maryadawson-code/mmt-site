@@ -28,7 +28,17 @@ const SAM_API_KEY = process.env.SAM_GOV_API_KEY || "";
  * @returns {Promise<{awards: Array, total: number, error?: string}>}
  */
 async function searchUSASpending({ keyword, agency, naics, startDate, endDate, limit = 20 }) {
-  const filters = { keyword: keyword || "" };
+  // USASpending Contract Award mappings: `filters.keyword` (singular) is
+  // deprecated and silently rejected; `keywords` (plural array) is the
+  // current shape. Empty/missing keyword: omit the filter rather than
+  // pass `[""]`, which the API also rejects.
+  const filters = {};
+  if (keyword && String(keyword).trim()) {
+    filters.keywords = [String(keyword).trim()];
+  }
+  // Restrict to contract awards (Definitive Contract, Purchase Order,
+  // Delivery Order, BPA Call). Excludes grants, loans, IDV parents.
+  filters.award_type_codes = ["A", "B", "C", "D"];
 
   if (agency) {
     // Map common agency names to toptier codes
@@ -72,14 +82,30 @@ async function searchUSASpending({ keyword, agency, naics, startDate, endDate, l
         ],
         limit,
         page: 1,
-        sort: "Total Obligated Amount",
+        // "Award Amount" is the valid sort key in the Contract Award
+        // mappings. "Total Obligated Amount" returns HTTP 400 with
+        // {"detail":"Sort value 'Total Obligated Amount' not found in
+        // Contract Award mappings"}.
+        sort: "Award Amount",
         order: "desc",
         subawards: false,
       }),
     });
 
     if (!res.ok) {
-      return { awards: [], total: 0, error: `USASpending API ${res.status}` };
+      let detail = "";
+      try {
+        const body = await res.text();
+        try {
+          const json = JSON.parse(body);
+          detail = json.detail || json.message || body.slice(0, 200);
+        } catch {
+          detail = body.slice(0, 200);
+        }
+      } catch { /* ignore */ }
+      const message = `USASpending API ${res.status}${detail ? `: ${detail}` : ""}`;
+      console.error(message);
+      return { awards: [], total: 0, error: message, status: res.status };
     }
 
     const data = await res.json();
