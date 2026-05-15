@@ -3237,6 +3237,12 @@ ${innerHtml}
     { src: 'premium/key-people.html', dest: 'premium/key-people/index.html' },
     { src: 'premium/forecast-delta.html', dest: 'premium/forecast-delta/index.html' },
     { src: 'premium/cr-exposure.html', dest: 'premium/cr-exposure/index.html' },
+    // Sprint 6 Phase 3 (2026-05-15) follow-up — the page exists at
+    // premium/api-health.html but Sprint 6 missed adding it here, so it
+    // never shipped to dist and /admin/api-health redirected to a 404.
+    // Standalone admin dashboard — no dashPageMap entry, so injectDashShell
+    // won't wrap it in the subscriber chrome.
+    { src: 'premium/api-health.html', dest: 'premium/api-health/index.html' },
     { src: 'agencies/index.html', dest: 'agencies/index.html' },
   ];
   subDirPages.forEach(({ src, dest }) => {
