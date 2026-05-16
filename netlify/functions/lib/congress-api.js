@@ -29,21 +29,30 @@ async function callCongress(path, params = {}) {
 }
 
 /**
- * Search recent bills by keyword. Returns title, status, sponsor, latest action.
+ * Search recent bills. The Congress.gov `/v3/bill/{congress}` endpoint
+ * does NOT honor a `q` keyword filter — it returns recent bills
+ * regardless. We over-fetch a wide window (last 180 days, up to 250
+ * results) and let the caller post-filter against title + latest-action
+ * + bill summaries.
+ *
  * @param {Object} params
- * @param {string} params.keyword - search term
+ * @param {string} [params.keyword] - kept for backward compat / logging only; not sent to API
  * @param {number} [params.congress] - congress number (default current, 119)
- * @param {number} [params.limit] - max results (default 10)
+ * @param {number} [params.limit] - max results (default 250 — API cap)
+ * @param {number} [params.daysBack] - lookback window in days (default 180)
  */
-async function searchBills({ keyword, congress = 119, limit = 10 }) {
+async function searchBills({ keyword, congress = 119, limit = 250, daysBack = 180 }) {
+  const fromDate = new Date(Date.now() - daysBack * 86400000);
+  // API expects ISO 8601 UTC like 2026-01-01T00:00:00Z
+  const fromDateTime = `${fromDate.toISOString().slice(0, 19)}Z`;
   const data = await callCongress(`/bill/${congress}`, {
-    q: keyword || "",
-    limit: String(limit),
+    limit: String(Math.min(limit, 250)),
     sort: "updateDate+desc",
+    fromDateTime,
   });
   if (data.error) return { bills: [], error: data.error };
   return {
-    bills: (data.bills || []).slice(0, limit).map((b) => ({
+    bills: (data.bills || []).map((b) => ({
       congress: b.congress,
       number: b.number,
       type: b.type,
@@ -57,18 +66,56 @@ async function searchBills({ keyword, congress = 119, limit = 10 }) {
 }
 
 /**
+ * Search bill summaries from `/v3/summaries/{congress}`. Summary text is
+ * much more descriptive than bill titles (which are often boilerplate),
+ * which makes post-filtering by keyword work for short program names
+ * that titles don't include verbatim (e.g., "MHS GENESIS" lives in the
+ * summary of a TRICARE-titled bill).
+ *
+ * @param {Object} params
+ * @param {number} [params.congress] - congress number (default 119)
+ * @param {number} [params.limit] - max results (default 250)
+ * @param {number} [params.daysBack] - lookback window in days (default 180)
+ */
+async function searchBillSummaries({ congress = 119, limit = 250, daysBack = 180 } = {}) {
+  const fromDate = new Date(Date.now() - daysBack * 86400000);
+  const fromDateTime = `${fromDate.toISOString().slice(0, 19)}Z`;
+  const data = await callCongress(`/summaries/${congress}`, {
+    limit: String(Math.min(limit, 250)),
+    sort: "updateDate+desc",
+    fromDateTime,
+  });
+  if (data.error) return { summaries: [], error: data.error };
+  return {
+    summaries: (data.summaries || []).map((s) => ({
+      congress: s.bill?.congress || congress,
+      type: s.bill?.type || "",
+      number: s.bill?.number || "",
+      title: s.bill?.title || "",
+      // Summary text is HTML — strip tags for keyword matching
+      text: String(s.text || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(),
+      action_date: s.actionDate || "",
+      update_date: s.updateDate || "",
+      url: s.bill?.url || "",
+    })),
+  };
+}
+
+/**
  * Search committee hearings (transcripts, testimony) by keyword.
  * Useful for finding HASC Readiness, HAC-D, HVAC hearings.
  */
-async function searchHearings({ keyword, congress = 119, chamber, limit = 10 }) {
+async function searchHearings({ keyword, congress = 119, chamber, limit = 250 }) {
+  // Same defect as searchBills: `q` is ignored on `/v3/hearing/{congress}`.
+  // Over-fetch and let the caller post-filter.
   const path = chamber ? `/hearing/${congress}/${chamber}` : `/hearing/${congress}`;
   const data = await callCongress(path, {
-    q: keyword || "",
-    limit: String(limit),
+    limit: String(Math.min(limit, 250)),
+    sort: "updateDate+desc",
   });
   if (data.error) return { hearings: [], error: data.error };
   return {
-    hearings: (data.hearings || []).slice(0, limit).map((h) => ({
+    hearings: (data.hearings || []).map((h) => ({
       congress: h.congress,
       chamber: h.chamber,
       committee: (h.committees || []).map((c) => c.name).join(", "),
@@ -108,14 +155,15 @@ async function searchCRSReports({ keyword, limit = 10 }) {
  * Get committee reports for a given congress/chamber. Useful for finding
  * NDAA markup reports, appropriations conference reports.
  */
-async function searchCommitteeReports({ keyword, congress = 119, limit = 10 }) {
+async function searchCommitteeReports({ keyword, congress = 119, limit = 250 }) {
+  // Same defect: `q` is ignored. Over-fetch and let caller post-filter.
   const data = await callCongress(`/committee-report/${congress}`, {
-    q: keyword || "",
-    limit: String(limit),
+    limit: String(Math.min(limit, 250)),
+    sort: "updateDate+desc",
   });
   if (data.error) return { reports: [], error: data.error };
   return {
-    reports: (data.reports || []).slice(0, limit).map((r) => ({
+    reports: (data.reports || []).map((r) => ({
       congress: r.congress,
       chamber: r.chamber,
       number: r.number,
@@ -217,6 +265,7 @@ function formatCongressContext(data) {
 
 module.exports = {
   searchBills,
+  searchBillSummaries,
   searchHearings,
   searchCRSReports,
   searchCommitteeReports,
