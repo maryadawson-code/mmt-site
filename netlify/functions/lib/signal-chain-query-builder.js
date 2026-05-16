@@ -115,7 +115,14 @@ function buildQueryTerms(topic, agency) {
     forSAM: topKeywords.join(" "),
     forUSAJobs: topKeywords.slice(0, 2).join(" "),
     forFedRegister: topKeywords.join(" "),
-    forUSASpending: topKeywords.join(" "),
+    // USASpending's `keywords` filter is PHRASE match across description
+    // text — passing a 4-token joined string ("mhs genesis defense
+    // healthcare") matches zero awards because that exact phrase doesn't
+    // appear in any description. Cap to first 2 tokens so program names
+    // ("MHS GENESIS", "VA EHRM", "OASIS+") still resolve correctly.
+    // Verified 2026-05-15 against api.usaspending.gov: "MHS GENESIS"
+    // returns Leidos at $572M; "mhs genesis defense healthcare" returns 0.
+    forUSASpending: topKeywords.slice(0, 2).join(" "),
     agencyContextTerms: AGENCY_CONTEXT[agency] || [],
   };
 }
