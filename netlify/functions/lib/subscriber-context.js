@@ -15,6 +15,13 @@
 /**
  * Load subscriber_context by email. Returns null (not error) when
  * no record exists — the caller handles the "no context" banner.
+ *
+ * v2 fields (position_history, jv_partnerships, agency_relationships,
+ * editorial_calendar) added by migration 20260516000000_subscriber_context_v2.
+ * v1 subscribers whose row predates the migration get '[]'::jsonb defaults.
+ * `normalizeContextV2` ensures the returned object always has v2 fields
+ * present (as empty arrays when absent), so the state engine never has
+ * to defensively `|| []` everywhere.
  */
 async function loadSubscriberContext(supabase, email) {
   if (!email) return null;
@@ -29,11 +36,44 @@ async function loadSubscriberContext(supabase, email) {
       console.warn("[subscriber-context] load error:", error.message);
       return null;
     }
-    return data || null;
+    if (!data) return null;
+    return normalizeContextV2(data);
   } catch (err) {
     console.warn("[subscriber-context] unexpected error:", err.message);
     return null;
   }
+}
+
+/**
+ * Coerce a subscriber_context row to the v2 shape. v2 fields default
+ * to empty arrays when null/undefined/absent (covers v1 rows pre-migration
+ * AND the seed-file JSON path where columns might just be missing).
+ * Never mutates the input.
+ *
+ * @param {Object} ctx — raw subscriber_context row OR seed-file JSON
+ * @returns {Object} normalized context with all v2 fields guaranteed
+ */
+function normalizeContextV2(ctx) {
+  if (!ctx) return null;
+  const arr = (v) => (Array.isArray(v) ? v : []);
+  return {
+    ...ctx,
+    // v1 fields — keep existing defaults
+    set_aside_certifications: arr(ctx.set_aside_certifications),
+    lanes: arr(ctx.lanes),
+    active_pursuits: arr(ctx.active_pursuits),
+    incumbent_positions: arr(ctx.incumbent_positions),
+    no_go_list: arr(ctx.no_go_list),
+    oci_exclusions: arr(ctx.oci_exclusions),
+    vehicle_holdings: arr(ctx.vehicle_holdings),
+    teaming_preferred: arr(ctx.teaming_preferred),
+    teaming_no_fly: arr(ctx.teaming_no_fly),
+    // v2 fields — gracefully default for v1 rows
+    position_history: arr(ctx.position_history),
+    jv_partnerships: arr(ctx.jv_partnerships),
+    agency_relationships: arr(ctx.agency_relationships),
+    editorial_calendar: arr(ctx.editorial_calendar),
+  };
 }
 
 /**
@@ -258,6 +298,7 @@ function validateReport({ reportHtml, ctx }) {
 
 module.exports = {
   loadSubscriberContext,
+  normalizeContextV2,
   formatContextBlock,
   contextSystemRules,
   noContextBanner,

@@ -82,5 +82,10 @@
     "Oracle Health",
     "GDIT"
   ],
-  "teaming_no_fly": []
+  "teaming_no_fly": [],
+  "position_history": [],
+  "jv_partnerships": [],
+  "agency_relationships": [],
+  "editorial_calendar": [],
+  "__v2_todo": "TODO(mary): backfill v2 fields. position_history needs AFS-on-HELM sub contract # + PoP + scope. jv_partnerships needs AFS partnership type (SBA M/P vs JV vs teaming) + dates + scope. agency_relationships optional but valuable (VA/DHA/DoD alumni/advisory seats). editorial_calendar needed if running Pursuit Score in platform mode. Until backfilled, HELM scoring lands on INSUFFICIENT_DATA per Sprint 9a acceptance test."
 }
