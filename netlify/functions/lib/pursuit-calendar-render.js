@@ -227,7 +227,13 @@ function renderRow(r, todayStr) {
  * @returns {string}    HTML
  */
 function renderPursuitCalendarHtml(rows, opts = {}) {
-  const todayStr = todayET();
+  // `opts.today` accepts a YYYY-MM-DD override so unit tests can pin
+  // time deterministically. Without this, the "groups rows by month
+  // and orders ascending by event_date" test was brittle — fixture
+  // rows used hard-coded 2026-05/06 dates that flipped from
+  // "upcoming" to "Recently closed" the moment real time passed
+  // 2026-05-01, reordering the rendered HTML and breaking the test.
+  const todayStr = opts.today || todayET();
 
   const sorted = [...(rows || [])].sort((a, b) => {
     const da = a.event_date || "";

@@ -66,7 +66,12 @@ describe("pursuit-calendar-render / renderPursuitCalendarHtml", () => {
       { title: "A Item", event_date: "2026-05-01", category: "proposal_due", agency: "VA" },
       { title: "C Item", event_date: "2026-05-20", category: "industry_day", agency: "DHA" },
     ];
-    const html = render.renderPursuitCalendarHtml(rows);
+    // Pin "today" before the earliest row so all three are upcoming.
+    // Otherwise the test is brittle: once real time passes 2026-05-01,
+    // A flips to "Recently closed" (a section rendered AFTER "Next 90
+    // days"), so A appears after C in the HTML and the assertion
+    // fails for time-of-run reasons rather than a real regression.
+    const html = render.renderPursuitCalendarHtml(rows, { today: "2026-04-15" });
     expect(html).toContain("May 2026");
     expect(html).toContain("June 2026");
     // A should appear before C (both May), and both before B (June)
