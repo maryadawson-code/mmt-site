@@ -51,6 +51,39 @@ async function countActiveFoundingSubs(stripe) {
   return customerIds.size;
 }
 
+// Stripe error messages from `Invalid API Key provided: ...` include
+// a partially-masked key fragment (e.g. `whsec_hM**...rXgD`). Even
+// truncated, that's a secret reaching a public response. Server-side
+// logs can keep the original for debugging; public responses get
+// redacted and reduced to a safe category.
+function classifyAndRedactStripeError(err) {
+  const raw = String(err && err.message ? err.message : err || "");
+  // Strip anything that looks like a Stripe key fragment.
+  const safe = raw
+    .replace(/\b(sk|rk|pk|whsec)_[A-Za-z0-9*_-]+/gi, "$1_***")
+    .slice(0, 160);
+
+  // Detect the most common operator mistake: STRIPE_SECRET_KEY was set
+  // to a webhook secret (whsec_*) rather than an API key (sk_*).
+  const looksLikeWebhookSecretAsApiKey =
+    /whsec_/i.test(raw) && /Invalid API Key/i.test(raw);
+
+  return {
+    publicMessage: safe,
+    code: looksLikeWebhookSecretAsApiKey
+      ? "stripe_key_misconfigured_webhook_secret_in_api_key_slot"
+      : "stripe_error",
+  };
+}
+
+// Detect the wrong-prefix mistake at boot, before we even call Stripe,
+// so the public response carries the correct diagnostic code without
+// surfacing a real Stripe `Invalid API Key` error to the client.
+function looksLikeWrongPrefix(key) {
+  if (!key) return false;
+  return /^whsec_/i.test(key) || /^pk_/i.test(key);
+}
+
 exports.handler = async () => {
   const response = {
     remaining: HARDCODED_FALLBACK,
@@ -60,8 +93,20 @@ exports.handler = async () => {
   };
 
   try {
-    if (process.env.STRIPE_SECRET_KEY) {
-      const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+    const secret = process.env.STRIPE_SECRET_KEY;
+    if (secret && looksLikeWrongPrefix(secret)) {
+      // Server log keeps prefix detail for the operator; client response
+      // gets only the diagnostic code, never a key fragment.
+      console.warn(
+        "founding-count: STRIPE_SECRET_KEY has a non-API-key prefix " +
+        `(starts with "${secret.slice(0, 6)}..."). Expected sk_live_ or sk_test_. ` +
+        "Falling back to env count without calling Stripe."
+      );
+      response.remaining = parseEnvFallback();
+      response.source = "env_fallback_misconfigured_secret";
+      response.diagnostic = "stripe_key_misconfigured_wrong_prefix";
+    } else if (secret) {
+      const stripe = require("stripe")(secret);
       const activeCount = await countActiveFoundingSubs(stripe);
       if (activeCount !== null) {
         response.remaining = Math.max(0, TOTAL - activeCount);
@@ -75,10 +120,14 @@ exports.handler = async () => {
       response.source = "env_fallback_no_secret";
     }
   } catch (err) {
-    console.warn("founding-count: Stripe query failed, using env fallback:", err.message);
+    const { publicMessage, code } = classifyAndRedactStripeError(err);
+    // Server log retains the raw error for operator triage. Public
+    // response gets redacted message + diagnostic code only.
+    console.warn("founding-count: Stripe query failed:", err && err.message ? err.message : err);
     response.remaining = parseEnvFallback();
     response.source = "env_fallback_stripe_error";
-    response.error = err.message;
+    response.diagnostic = code;
+    response.error_message = publicMessage;
   }
 
   return {
@@ -92,3 +141,6 @@ exports.handler = async () => {
     body: JSON.stringify(response),
   };
 };
+
+// Export internals for unit testing without going through the handler.
+exports._internals = { classifyAndRedactStripeError, looksLikeWrongPrefix };
