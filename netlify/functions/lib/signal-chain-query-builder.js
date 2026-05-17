@@ -114,6 +114,13 @@ function buildQueryTerms(topic, agency) {
     forCongress: topKeywords.join(" "),
     forSAM: topKeywords.join(" "),
     forUSAJobs: topKeywords.slice(0, 2).join(" "),
+    // SC-5 broader fallback for USAJobs. The 2-token precise phrase
+    // matches USAJobs almost never because job titles use role
+    // vocabulary ("Health IT Specialist") not program names. The
+    // broad query is the FIRST topKeyword (the program anchor token
+    // — "mhs", "tricare", "ehrm") alone; the layer fires the broad
+    // call when the precise one returns < 3 results.
+    forUSAJobsBroad: topKeywords[0] || "",
     forFedRegister: topKeywords.join(" "),
     // USASpending's `keywords` filter is PHRASE match across description
     // text — passing a 4-token joined string ("mhs genesis defense
@@ -219,8 +226,26 @@ const FALLBACK_SUGGESTIONS = {
   ],
 };
 
-function fallbackSuggestionsFor(agency) {
-  return FALLBACK_SUGGESTIONS[agency] || FALLBACK_SUGGESTIONS.DHA;
+function fallbackSuggestionsFor(agency, currentTopic) {
+  const base = FALLBACK_SUGGESTIONS[agency] || FALLBACK_SUGGESTIONS.DHA;
+  // SC-8: filter suggestions to exclude the query the user just ran.
+  // Subscribers complained about VA + "CCN Next Gen" returning 0
+  // layers and then offering "CCN Next Gen" as a suggestion to try.
+  // Match case-insensitively on both the suggestion's label and its
+  // query string vs the current topic; if either matches as a
+  // substring (in either direction), drop the suggestion.
+  if (!currentTopic) return base;
+  const topic = String(currentTopic || "").toLowerCase().trim();
+  if (!topic) return base;
+  return base.filter((s) => {
+    const label = String(s.label || "").toLowerCase();
+    const q = String(s.query || "").toLowerCase();
+    return !(
+      topic === label || topic === q ||
+      topic.includes(label) || label.includes(topic) ||
+      topic.includes(q) || q.includes(topic)
+    );
+  });
 }
 
 module.exports = {

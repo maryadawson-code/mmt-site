@@ -249,16 +249,52 @@ async function layerLegislative(terms) {
 async function layerWorkforce(terms, agency) {
   const agencyCodeMap = { DHA: "DD17", VA: "VATA", HHS: "HE00", DoD: "DD00", GSA: "GS00" };
   const org = agencyCodeMap[agency];
-  const { jobs = [] } = await searchJobs({
+
+  // SC-5: USAJobs keyword expansion. The precise 2-token keyword
+  // ("mhs genesis") matches almost nothing because USAJobs job titles
+  // use generic role language ("Health IT Specialist," "Project
+  // Manager"), not program names. Run a tiered query:
+  //   primary  = 2-token precise phrase (terms.forUSAJobs)
+  //   broad    = 1-token program anchor (terms.forUSAJobsBroad) — only
+  //              fires when primary returns 0 useful matches.
+  // Union by usajobs.position_id so duplicates don't double-count.
+  const primary = await searchJobs({
     keyword: terms.forUSAJobs,
     agency: org,
     limit: 10,
-  }).catch(() => ({ jobs: [] }));
+  }).catch((e) => ({ jobs: [], error: e && e.message ? e.message : String(e) }));
+
+  const _apiErrors = [];
+  if (primary.error) _apiErrors.push({ source: "usajobs", call: "primary", message: primary.error });
+
+  let jobs = primary.jobs || [];
+  let broadFired = false;
+  if (jobs.length < 3 && terms.forUSAJobsBroad && terms.forUSAJobsBroad !== terms.forUSAJobs) {
+    broadFired = true;
+    const broad = await searchJobs({
+      keyword: terms.forUSAJobsBroad,
+      agency: org,
+      limit: 10,
+    }).catch((e) => ({ jobs: [], error: e && e.message ? e.message : String(e) }));
+    if (broad.error) _apiErrors.push({ source: "usajobs", call: "broad", message: broad.error });
+    // Union by job id (or url as fallback) so a job that matched both
+    // queries doesn't count twice.
+    const seen = new Set(jobs.map((j) => j.id || j.url));
+    for (const j of (broad.jobs || [])) {
+      const key = j.id || j.url;
+      if (key && !seen.has(key)) { seen.add(key); jobs.push(j); }
+    }
+  }
 
   const keywordsLower = terms.topKeywords.map((k) => k.toLowerCase());
+  // Broaden the post-filter so a tier-1 job that matches a single
+  // 4+ char token (e.g., "modernization") is kept. The previous
+  // includes() pass against ALL topKeywords was the second narrowness
+  // bottleneck — drop the AND-style intersection and accept any
+  // single-keyword title overlap.
   const relevant = jobs.filter((p) => {
     const title = (p.position_title || "").toLowerCase();
-    return keywordsLower.some((k) => title.includes(k));
+    return keywordsLower.some((k) => k.length > 3 && title.includes(k));
   });
 
   let score = 0;
@@ -290,10 +326,12 @@ async function layerWorkforce(terms, agency) {
   }));
 
   const reason = signals.length === 0
-    ? `No active federal job postings matching these keywords at ${agency || "any agency"}. Hiring leads contracts by 6–18 months — check back.`
+    ? (_apiErrors.length > 0
+        ? `USAJobs search failed (${_apiErrors[0].message}). No data — distinct from a confirmed zero.`
+        : `No active federal job postings matching these keywords at ${agency || "any agency"}${broadFired ? " (tried both precise and broadened searches)" : ""}. Hiring leads contracts by 6–18 months — check back.`)
     : null;
 
-  return { score, weight: 0.15, source: "USAJobs", signals, noSignalReason: reason };
+  return { score, weight: 0.15, source: "USAJobs", signals, noSignalReason: reason, _apiErrors, _broadFired: broadFired };
 }
 
 // ------------------------------------------------------------
@@ -530,9 +568,14 @@ function getVerdict(composite) {
 // ------------------------------------------------------------
 // Cache version — bump when the response shape or scoring algorithm
 // changes so subscribers don't keep reading pre-fix stale entries for
-// up to a week. v2 = Sprint 8a (SC-1/SC-2/SC-7): USASpending payload
-// fix, FR DHA slug fix, topKeywords dedup, _apiErrors in layer payload.
-const CACHE_VERSION = "v2";
+// up to a week.
+//   v2 = Sprint 8a (SC-1/SC-2/SC-7): USASpending payload fix, FR DHA
+//        slug fix, topKeywords dedup, _apiErrors in layer payload.
+//   v3 = Sprint 8c (SC-5/SC-6/SC-8 + SAM relevance bleed): tiered
+//        USAJobs query w/ broad fallback, top-level apiErrors[],
+//        suggestions exclude current topic, SAM secondary call
+//        drops when primary >= 3 hits.
+const CACHE_VERSION = "v3";
 function cacheKeyFor(topic, agency) {
   const now = new Date();
   const week = Math.floor((now - new Date(now.getUTCFullYear(), 0, 1)) / (7 * DAY_MS));
@@ -693,9 +736,22 @@ exports.handler = async (event) => {
   // layer .catch handlers. Previously every USASpending HTTP 400 (the
   // SC-1 bug) returned awards=[], silently scoring Budget at 0 with no
   // operator visibility. Fire-and-forget — don't block the response.
+  //
+  // SC-6: ALSO aggregate to a top-level `apiErrors` on the response so
+  // the frontend can distinguish "API failed → no data" from "API
+  // succeeded → confirmed zero." Without this top-level surface the
+  // UI shows "no data found" in both cases.
+  const apiErrors = [];
   for (const [layerName, layer] of Object.entries(layers)) {
     if (!layer || !Array.isArray(layer._apiErrors) || layer._apiErrors.length === 0) continue;
     for (const err of layer._apiErrors) {
+      apiErrors.push({
+        layer: layerName,
+        source: err.source,
+        status: err.status || null,
+        call: err.call || null,
+        message: err.message,
+      });
       supabase.from("ops_events").insert({
         event_type: "signal_chain_api_error",
         details: {
@@ -723,7 +779,10 @@ exports.handler = async (event) => {
   const layerScores = Object.values(layers || {}).map((l) => l && typeof l.score === "number" ? l.score : 0);
   const allLayersEmpty = layerScores.every((s) => s === 0);
   const empty_state = (composite < 5 && allLayersEmpty);
-  const suggestions = empty_state ? fallbackSuggestionsFor(resolvedAgency).slice(0, 4) : [];
+  // SC-8: filter suggestions so we never offer the user's current query
+  // back to them when their query returned 0 (the "VA + CCN Next Gen →
+  // suggested: CCN Next Gen" failure mode).
+  const suggestions = empty_state ? fallbackSuggestionsFor(resolvedAgency, topic).slice(0, 4) : [];
 
   const card = {
     topic,
@@ -749,6 +808,11 @@ exports.handler = async (event) => {
     empty_state_message: empty_state
       ? `No federal data signal for "${topic}" at ${resolvedAgency || "any agency"} this window. Try one of the active programs below, or broaden your terms.`
       : undefined,
+    // SC-6: top-level API errors so the frontend can render an
+    // operator-visible "Upstream API issue" badge separate from the
+    // genuine "no data found" empty state. Omitted when empty so
+    // clients can do `if (card.apiErrors)`.
+    apiErrors: apiErrors.length > 0 ? apiErrors : undefined,
   };
 
   // Write to cache (non-blocking)
