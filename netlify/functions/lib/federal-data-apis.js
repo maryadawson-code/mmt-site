@@ -199,67 +199,166 @@ async function getSpendingByCategory({ agency, naics, fiscal_year }) {
   }
 }
 
+// SAM.gov department names — exact strings expected by the `deptname`
+// param. Source: https://api.sam.gov/opportunities/v2/search (response
+// `data.department` field) plus the SAM.gov federal hierarchy.
+// Verified casing matters: SAM rejects lowercase variants.
+const SAM_DEPT_NAMES = {
+  DHA: "DEPT OF DEFENSE",
+  DoD: "DEPT OF DEFENSE",
+  "Department of Defense": "DEPT OF DEFENSE",
+  VA: "VETERANS AFFAIRS, DEPARTMENT OF",
+  "Department of Veterans Affairs": "VETERANS AFFAIRS, DEPARTMENT OF",
+  HHS: "HEALTH AND HUMAN SERVICES, DEPARTMENT OF",
+  "Department of Health and Human Services": "HEALTH AND HUMAN SERVICES, DEPARTMENT OF",
+  GSA: "GENERAL SERVICES ADMINISTRATION",
+  "General Services Administration": "GENERAL SERVICES ADMINISTRATION",
+};
+
 /**
- * Search SAM.gov for active opportunities (solicitations, RFIs, etc.)
+ * Search SAM.gov for active opportunities. SC-4 rewrite: replaces
+ * title-only search with full-text `q` (title + description), restricts
+ * to active solicitation types via `ptype`, optionally narrows by
+ * department, and unions a secondary department-only call so we surface
+ * recently-posted opportunities the keyword doesn't match.
+ *
  * Requires SAM_GOV_API_KEY env var.
  *
  * @param {Object} params
- * @param {string} params.keyword - Search keyword (title search only)
+ * @param {string} params.keyword - Full-text search (title + description)
  * @param {string} [params.naics] - NAICS code filter
- * @param {number} [params.limit] - Max results (default 10)
+ * @param {string} [params.agency] - Agency alias for deptname filter
+ * @param {number} [params.limit] - Max results (default 25)
+ * @param {number} [params.daysBack] - Lookback window (default 180 days)
  * @returns {Promise<{opportunities: Array, total: number, error?: string}>}
  */
-async function searchSAMOpportunities({ keyword, naics, limit = 10 }) {
+async function searchSAMOpportunities({ keyword, naics, agency, limit = 25, daysBack = 180 }) {
   if (!SAM_API_KEY) {
     return { opportunities: [], total: 0, error: "SAM_GOV_API_KEY not configured" };
   }
 
   const now = new Date();
-  const yearAgo = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+  const startWindow = new Date(now.getTime() - daysBack * 86400000);
   const formatDate = (d) => `${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}/${d.getFullYear()}`;
+  const deptName = agency ? SAM_DEPT_NAMES[agency] : undefined;
 
-  const params = new URLSearchParams({
+  // ACTIVE solicitation types only — drop archived/special-notice from
+  // primary call:
+  //   o = Solicitation
+  //   r = Combined Synopsis/Solicitation
+  //   p = Pre-Solicitation
+  //   k = Sources Sought (RFI surrogate)
+  const PTYPE_ACTIVE = "o,r,p,k";
+
+  const baseParams = () => {
+    const p = new URLSearchParams({
+      api_key: SAM_API_KEY,
+      limit: String(limit),
+      offset: "0",
+      postedFrom: formatDate(startWindow),
+      postedTo: formatDate(now),
+      ptype: PTYPE_ACTIVE,
+    });
+    if (naics) p.set("ncode", naics);
+    if (deptName) p.set("deptname", deptName);
+    return p;
+  };
+
+  // Primary call: full-text + ptype + (optional) deptname
+  const primaryParams = baseParams();
+  if (keyword && String(keyword).trim()) {
+    primaryParams.set("q", String(keyword).trim());
+  }
+
+  // Secondary call: same window + deptname only (no q). Used to catch
+  // recently-posted opportunities whose text doesn't quite match the
+  // user's keyword. Smaller window (last 30 days) keeps it focused.
+  const secondaryDaysBack = 30;
+  const secondaryStart = new Date(now.getTime() - secondaryDaysBack * 86400000);
+  const secondaryParams = new URLSearchParams({
     api_key: SAM_API_KEY,
-    limit: String(limit),
+    limit: String(Math.min(limit, 10)),
     offset: "0",
-    postedFrom: formatDate(yearAgo),
+    postedFrom: formatDate(secondaryStart),
     postedTo: formatDate(now),
+    ptype: PTYPE_ACTIVE,
+  });
+  if (deptName) secondaryParams.set("deptname", deptName);
+  if (naics) secondaryParams.set("ncode", naics);
+
+  const mapOpp = (o) => ({
+    notice_id: o.noticeId || "",
+    title: o.title || "",
+    description: (o.description || "").substring(0, 400),
+    solicitation_number: o.solicitationNumber || "",
+    type: o.type || o.baseType || "",
+    ptype: (o.type || o.baseType || "").toLowerCase()[0] || "",
+    posted_date: o.postedDate || "",
+    response_deadline: o.reponseDeadLine || o.responseDeadLine || "",
+    naics: o.naicsCode || "",
+    set_aside: o.setAside || o.setAsideCode || "",
+    agency: o.fullParentPathName || "",
+    department: o.department || "",
+    award: o.data && o.data.award ? {
+      number: o.data.award.number || "",
+      amount: o.data.award.amount || 0,
+      date: o.data.award.date || "",
+      awardee: o.data.award.awardee ? o.data.award.awardee.name || "" : "",
+    } : null,
+    url: o.uiLink || `https://sam.gov/opp/${o.noticeId || ""}/view`,
   });
 
-  if (keyword) params.set("title", keyword);
-  if (naics) params.set("ncode", naics);
-
-  try {
+  const callSam = async (params) => {
     const res = await fetch(`https://api.sam.gov/opportunities/v2/search?${params}`, {
       headers: { Accept: "application/json" },
     });
-
     if (!res.ok) {
-      return { opportunities: [], total: 0, error: `SAM.gov API ${res.status}` };
+      let detail = "";
+      try {
+        const body = await res.text();
+        try { detail = (JSON.parse(body).message || body).slice(0, 200); }
+        catch { detail = body.slice(0, 200); }
+      } catch { /* ignore */ }
+      return { __error: `SAM.gov API ${res.status}${detail ? `: ${detail}` : ""}`, __status: res.status };
+    }
+    return res.json();
+  };
+
+  try {
+    const [primary, secondary] = await Promise.all([
+      callSam(primaryParams),
+      // Only fire secondary if we have a deptname (otherwise it's just
+      // a broader version of primary)
+      deptName ? callSam(secondaryParams) : Promise.resolve(null),
+    ]);
+
+    if (primary.__error) {
+      console.error(primary.__error);
+      return { opportunities: [], total: 0, error: primary.__error, status: primary.__status };
     }
 
-    const data = await res.json();
-    const rawOpps = data.opportunitiesData || data.opportunities || [];
-    const opps = rawOpps.map((o) => ({
-      notice_id: o.noticeId || "",
-      title: o.title || "",
-      solicitation_number: o.solicitationNumber || "",
-      type: o.type || o.baseType || "",
-      posted_date: o.postedDate || "",
-      response_deadline: o.reponseDeadLine || o.responseDeadLine || "",
-      naics: o.naicsCode || "",
-      set_aside: o.setAside || o.setAsideCode || "",
-      agency: o.fullParentPathName || "",
-      award: o.data && o.data.award ? {
-        number: o.data.award.number || "",
-        amount: o.data.award.amount || 0,
-        date: o.data.award.date || "",
-        awardee: o.data.award.awardee ? o.data.award.awardee.name || "" : "",
-      } : null,
-      url: o.uiLink || `https://sam.gov/opp/${o.noticeId || ""}/view`,
-    }));
+    const primaryRaw = primary.opportunitiesData || primary.opportunities || [];
+    const secondaryRaw = (secondary && !secondary.__error)
+      ? (secondary.opportunitiesData || secondary.opportunities || [])
+      : [];
 
-    return { opportunities: opps, total: data.totalRecords || opps.length };
+    // Union by noticeId — primary results win when both contain the same
+    // opportunity; secondary fills in recently-posted gaps.
+    const seen = new Set();
+    const union = [];
+    for (const o of [...primaryRaw, ...secondaryRaw]) {
+      const id = o.noticeId;
+      if (!id || seen.has(id)) continue;
+      seen.add(id);
+      union.push(mapOpp(o));
+    }
+
+    return {
+      opportunities: union,
+      total: primary.totalRecords || union.length,
+      primary_count: primaryRaw.length,
+      secondary_count: secondaryRaw.length,
+    };
   } catch (err) {
     console.error("SAM.gov API error:", err.message);
     return { opportunities: [], total: 0, error: err.message };

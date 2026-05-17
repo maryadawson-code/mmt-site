@@ -18,7 +18,7 @@
 const crypto = require("crypto");
 const { createClient } = require("@supabase/supabase-js");
 const { searchUSASpending, searchFederalRegister, searchGAOReports, searchSAMOpportunities } = require("./lib/federal-data-apis");
-const { searchBills, searchHearings, searchCRSReports, searchCommitteeReports } = require("./lib/congress-api");
+const { searchBills, searchBillSummaries, searchHearings, searchCRSReports, searchCommitteeReports } = require("./lib/congress-api");
 const { searchTrials } = require("./lib/clinicaltrials-api");
 const { searchPubMed, fetchPubMedSummaries } = require("./lib/pubmed-api");
 const { searchJobs } = require("./lib/usajobs-api");
@@ -151,14 +151,25 @@ async function layerResearch(terms, agency) {
 // Layer 2: Legislative (Congress + Committee Reports) — weight 20%
 // ------------------------------------------------------------
 async function layerLegislative(terms) {
-  // Over-fetch then post-filter: Congress.gov's q param returns recently
-  // updated bills regardless of keyword match, so we need to verify each
-  // result actually references our terms.
-  const [bills, hearings, reports] = await Promise.all([
-    searchBills({ keyword: terms.forCongress, congress: 119, limit: 30 }).catch(() => ({ bills: [] })),
-    searchHearings({ keyword: terms.forCongress, congress: 119, limit: 20 }).catch(() => ({ hearings: [] })),
-    searchCommitteeReports({ keyword: terms.forCongress, congress: 119, limit: 15 }).catch(() => ({ reports: [] })),
+  // SC-3: Congress.gov's `q` param does not actually keyword-filter on
+  // `/v3/bill/{congress}` (a query for "TRICARE" returned 2007 Congress
+  // 110 bills about Northern Ireland). Switched the upstream client to
+  // pull a wide window (last 180 days, up to 250 results) and post-filter
+  // here against title + latest-action text AND bill summaries
+  // (richer text — short program names like "MHS GENESIS" show up in
+  // summaries when they don't appear in titles).
+  const [bills, summaries, hearings, reports] = await Promise.all([
+    searchBills({ congress: 119, limit: 250, daysBack: 180 }).catch((e) => ({ bills: [], error: e && e.message })),
+    searchBillSummaries({ congress: 119, limit: 250, daysBack: 180 }).catch((e) => ({ summaries: [], error: e && e.message })),
+    searchHearings({ congress: 119, limit: 100 }).catch((e) => ({ hearings: [], error: e && e.message })),
+    searchCommitteeReports({ congress: 119, limit: 100 }).catch((e) => ({ reports: [], error: e && e.message })),
   ]);
+
+  const _apiErrors = [];
+  if (bills.error) _apiErrors.push({ source: "congress_bills", message: bills.error });
+  if (summaries.error) _apiErrors.push({ source: "congress_summaries", message: summaries.error });
+  if (hearings.error) _apiErrors.push({ source: "congress_hearings", message: hearings.error });
+  if (reports.error) _apiErrors.push({ source: "congress_reports", message: reports.error });
 
   const tokens = (terms.topKeywords || []).map((k) => String(k || "").toLowerCase()).filter(Boolean);
   const matchesAny = (text) => {
@@ -167,7 +178,25 @@ async function layerLegislative(terms) {
     return tokens.some((t) => lc.includes(t));
   };
 
-  const billList = (bills.bills || []).filter((b) => matchesAny(b.title) || matchesAny(b.latest_action)).slice(0, 5);
+  // Build a lookup of bill identity → summary text so we can use summary
+  // text to qualify a bill that otherwise only matches in its summary.
+  // Key shape: `${congress}-${type}-${number}` (case-insensitive on type).
+  const summaryIndex = new Map();
+  for (const s of (summaries.summaries || [])) {
+    const key = `${s.congress}-${String(s.type || "").toLowerCase()}-${s.number}`;
+    // Concatenate summary text if multiple summary actions per bill
+    const prev = summaryIndex.get(key) || "";
+    summaryIndex.set(key, (prev + " " + (s.text || "")).trim());
+  }
+
+  const billList = (bills.bills || [])
+    .filter((b) => {
+      if (matchesAny(b.title) || matchesAny(b.latest_action)) return true;
+      const key = `${b.congress}-${String(b.type || "").toLowerCase()}-${b.number}`;
+      return matchesAny(summaryIndex.get(key));
+    })
+    .slice(0, 5);
+
   const hearingList = (hearings.hearings || []).filter((h) => matchesAny(h.title) || matchesAny(h.committee)).slice(0, 5);
   const reportList = (reports.reports || []).filter((r) => matchesAny(r.title)).slice(0, 3);
 
@@ -211,7 +240,7 @@ async function layerLegislative(terms) {
     ? "No active bills or hearings found in 119th Congress for these terms."
     : null;
 
-  return { score, weight: 0.20, source: "Congress.gov + GovInfo", signals, noSignalReason: reason };
+  return { score, weight: 0.20, source: "Congress.gov + GovInfo", signals, noSignalReason: reason, _apiErrors };
 }
 
 // ------------------------------------------------------------
@@ -344,21 +373,35 @@ const SAM_TYPE_LABELS = {
 
 async function layerContract(terms, agency) {
   const [samOpps, frDocs] = await Promise.all([
-    // Use SAM.gov Opportunities as the PRIMARY source for contract signals.
+    // SC-4: SAM.gov rewrite — full-text `q`, ptype=o,r,p,k (active only),
+    // optional deptname, secondary union call for recently-posted gaps.
     searchSAMOpportunities({
       keyword: terms.forSAM,
-      limit: 10,
-    }).catch(() => ({ opportunities: [], total: 0 })),
+      agency,
+      limit: 25,
+      daysBack: 180,
+    }).catch((e) => ({ opportunities: [], total: 0, error: e && e.message })),
     // Federal Register supplemental, ALWAYS with keyword filter now.
     searchFederalRegister({
       keyword: terms.forFedRegister,
       agencies: FR_AGENCY_SLUGS[agency] || undefined,
       type: ["NOTICE", "RULE"],
       limit: 3,
-    }).catch(() => ({ documents: [], total: 0 })),
+    }).catch((e) => ({ documents: [], total: 0, error: e && e.message })),
   ]);
 
-  const opps = samOpps.opportunities || [];
+  const _apiErrors = [];
+  if (samOpps.error) _apiErrors.push({ source: "sam_gov", status: samOpps.status || null, message: samOpps.error });
+  if (frDocs.error) _apiErrors.push({ source: "federal_register", message: frDocs.error });
+
+  // Archive-style notices have already been filtered out by ptype on the
+  // SAM call. Defensive secondary filter in case the API returns one
+  // anyway — drop anything that isn't in the active-solicitation ptype set.
+  const ACTIVE_PTYPES = new Set(["o", "r", "p", "k"]);
+  const opps = (samOpps.opportunities || []).filter((opp) => {
+    if (!opp.ptype) return true; // permissive when ptype absent
+    return ACTIVE_PTYPES.has(opp.ptype);
+  });
   const docs = frDocs.documents || [];
 
   let score = 0;
@@ -402,7 +445,7 @@ async function layerContract(terms, agency) {
         ? `No active SAM.gov solicitations found. ${docs.length} Federal Register notice${docs.length === 1 ? "" : "s"} — showing most relevant.`
         : null);
 
-  return { score, weight: 0.25, source: "SAM.gov + Federal Register", signals, noSignalReason: reason };
+  return { score, weight: 0.25, source: "SAM.gov + Federal Register", signals, noSignalReason: reason, _apiErrors };
 }
 
 // ------------------------------------------------------------
