@@ -28,21 +28,46 @@ const SAM_API_KEY = process.env.SAM_GOV_API_KEY || "";
  * @returns {Promise<{awards: Array, total: number, error?: string}>}
  */
 async function searchUSASpending({ keyword, agency, naics, startDate, endDate, limit = 20 }) {
-  const filters = { keyword: keyword || "" };
+  // USASpending Contract Award mappings: `filters.keyword` (singular) is
+  // deprecated and silently rejected; `keywords` (plural array) is the
+  // current shape. Empty/missing keyword: omit the filter rather than
+  // pass `[""]`, which the API also rejects.
+  const filters = {};
+  if (keyword && String(keyword).trim()) {
+    filters.keywords = [String(keyword).trim()];
+  }
+  // Restrict to contract awards (Definitive Contract, Purchase Order,
+  // Delivery Order, BPA Call). Excludes grants, loans, IDV parents.
+  filters.award_type_codes = ["A", "B", "C", "D"];
 
   if (agency) {
-    // Map common agency names to toptier codes
-    const agencyMap = {
-      "VA": "036", "Department of Veterans Affairs": "036",
-      "DHA": "097", "Defense Health Agency": "097", "DoD": "097",
-      "HHS": "075", "Department of Health and Human Services": "075",
-      "CMS": "075", "Centers for Medicare and Medicaid Services": "075",
-      "NIH": "075", "National Institutes of Health": "075",
-      "IHS": "075", "Indian Health Service": "075",
+    // USASpending agencies filter accepts `{type, tier, name}` only.
+    // `toptier_code` is rejected ("Unexpected field 'toptier_code' in
+    // parameter filters|agencies"). Map every supported input — short
+    // alias OR full name — to the canonical toptier name. Sub-agencies
+    // (DHA, CMS, NIH, IHS) roll up to their parent toptier; the
+    // keyword filter narrows further.
+    const agencyToToptierName = {
+      "VA": "Department of Veterans Affairs",
+      "Department of Veterans Affairs": "Department of Veterans Affairs",
+      "DHA": "Department of Defense",
+      "Defense Health Agency": "Department of Defense",
+      "DoD": "Department of Defense",
+      "Department of Defense": "Department of Defense",
+      "HHS": "Department of Health and Human Services",
+      "Department of Health and Human Services": "Department of Health and Human Services",
+      "CMS": "Department of Health and Human Services",
+      "Centers for Medicare and Medicaid Services": "Department of Health and Human Services",
+      "NIH": "Department of Health and Human Services",
+      "National Institutes of Health": "Department of Health and Human Services",
+      "IHS": "Department of Health and Human Services",
+      "Indian Health Service": "Department of Health and Human Services",
+      "GSA": "General Services Administration",
+      "General Services Administration": "General Services Administration",
     };
-    const code = agencyMap[agency];
-    if (code) {
-      filters.agencies = [{ type: "funding", tier: "toptier", name: agency, toptier_code: code }];
+    const toptierName = agencyToToptierName[agency];
+    if (toptierName) {
+      filters.agencies = [{ type: "funding", tier: "toptier", name: toptierName }];
     }
   }
 
@@ -72,14 +97,30 @@ async function searchUSASpending({ keyword, agency, naics, startDate, endDate, l
         ],
         limit,
         page: 1,
-        sort: "Total Obligated Amount",
+        // "Award Amount" is the valid sort key in the Contract Award
+        // mappings. "Total Obligated Amount" returns HTTP 400 with
+        // {"detail":"Sort value 'Total Obligated Amount' not found in
+        // Contract Award mappings"}.
+        sort: "Award Amount",
         order: "desc",
         subawards: false,
       }),
     });
 
     if (!res.ok) {
-      return { awards: [], total: 0, error: `USASpending API ${res.status}` };
+      let detail = "";
+      try {
+        const body = await res.text();
+        try {
+          const json = JSON.parse(body);
+          detail = json.detail || json.message || body.slice(0, 200);
+        } catch {
+          detail = body.slice(0, 200);
+        }
+      } catch { /* ignore */ }
+      const message = `USASpending API ${res.status}${detail ? `: ${detail}` : ""}`;
+      console.error(message);
+      return { awards: [], total: 0, error: message, status: res.status };
     }
 
     const data = await res.json();

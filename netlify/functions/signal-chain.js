@@ -277,9 +277,13 @@ async function layerBudget(terms, agency) {
       agency,
       startDate: new Date(Date.now() - 730 * DAY_MS).toISOString().slice(0, 10),
       limit: 10,
-    }).catch(() => ({ awards: [], total: 0 })),
-    searchGAOReports({ keyword: terms.forUSASpending, limit: 3 }).catch(() => ({ reports: [] })),
+    }).catch((e) => ({ awards: [], total: 0, error: e && e.message ? e.message : String(e) })),
+    searchGAOReports({ keyword: terms.forUSASpending, limit: 3 }).catch((e) => ({ reports: [], error: e && e.message ? e.message : String(e) })),
   ]);
+
+  const _apiErrors = [];
+  if (awards.error) _apiErrors.push({ source: "usaspending", status: awards.status || null, message: awards.error });
+  if (gaoReports.error) _apiErrors.push({ source: "gao", message: gaoReports.error });
 
   const awardList = awards.awards || [];
   const totalObligated = awardList.reduce((s, a) => s + (a.obligated || 0), 0);
@@ -326,7 +330,7 @@ async function layerBudget(terms, agency) {
     ? `No obligation data found for these keywords at ${agency || "any agency"} in USASpending. Try a broader search term.`
     : null;
 
-  return { score, weight: 0.25, source: "USASpending + GAO", signals, noSignalReason: reason };
+  return { score, weight: 0.25, source: "USASpending + GAO", signals, noSignalReason: reason, _apiErrors };
 }
 
 // ------------------------------------------------------------
@@ -348,7 +352,7 @@ async function layerContract(terms, agency) {
     // Federal Register supplemental, ALWAYS with keyword filter now.
     searchFederalRegister({
       keyword: terms.forFedRegister,
-      agencies: FR_AGENCY_SLUGS[agency] ? [FR_AGENCY_SLUGS[agency]] : undefined,
+      agencies: FR_AGENCY_SLUGS[agency] || undefined,
       type: ["NOTICE", "RULE"],
       limit: 3,
     }).catch(() => ({ documents: [], total: 0 })),
@@ -481,10 +485,15 @@ function getVerdict(composite) {
 // ------------------------------------------------------------
 // Caching (1-week TTL, ops_events-backed)
 // ------------------------------------------------------------
+// Cache version — bump when the response shape or scoring algorithm
+// changes so subscribers don't keep reading pre-fix stale entries for
+// up to a week. v2 = Sprint 8a (SC-1/SC-2/SC-7): USASpending payload
+// fix, FR DHA slug fix, topKeywords dedup, _apiErrors in layer payload.
+const CACHE_VERSION = "v2";
 function cacheKeyFor(topic, agency) {
   const now = new Date();
   const week = Math.floor((now - new Date(now.getUTCFullYear(), 0, 1)) / (7 * DAY_MS));
-  const normalized = `${(topic || "").toLowerCase().trim()}|${agency || ""}|W${now.getUTCFullYear()}-${week}`;
+  const normalized = `${CACHE_VERSION}|${(topic || "").toLowerCase().trim()}|${agency || ""}|W${now.getUTCFullYear()}-${week}`;
   return crypto.createHash("sha256").update(normalized).digest("hex");
 }
 
@@ -635,6 +644,29 @@ exports.handler = async (event) => {
     contract:    contract.__timedOut || contract.__error ? { ...zero, weight: 0.25 } : contract,
     mmtCoverage: layerMmtCoverage(terms, topic),
   };
+
+  // Surface upstream API errors via ops_events so they show up in the
+  // operator dashboard instead of being silently swallowed by the
+  // layer .catch handlers. Previously every USASpending HTTP 400 (the
+  // SC-1 bug) returned awards=[], silently scoring Budget at 0 with no
+  // operator visibility. Fire-and-forget — don't block the response.
+  for (const [layerName, layer] of Object.entries(layers)) {
+    if (!layer || !Array.isArray(layer._apiErrors) || layer._apiErrors.length === 0) continue;
+    for (const err of layer._apiErrors) {
+      supabase.from("ops_events").insert({
+        event_type: "signal_chain_api_error",
+        details: {
+          layer: layerName,
+          source: err.source,
+          status: err.status || null,
+          message: err.message,
+          topic,
+          agency: resolvedAgency,
+          submitted_at: new Date().toISOString(),
+        },
+      }).then(() => {}, () => {});
+    }
+  }
 
   const composite = computeComposite(layers);
   const { verdict, captureAlert, color } = getVerdict(composite);

@@ -97,7 +97,14 @@ function buildQueryTerms(topic, agency) {
     .replace(/[^a-z0-9+ ]/g, " ") // keep + for OASIS+ etc.
     .split(/\s+/)
     .filter((w) => w.length > 2 && !STOPWORDS.has(w));
-  const topKeywords = keywords.slice(0, 4);
+  // Dedup case-insensitively before slicing. When matchedVehicles
+  // expansion joins the canonical name back onto the original topic
+  // ("MHS GENESIS" + expandedSearchTerms → "mhs genesis mhs genesis"),
+  // the unfiltered slice would publish `topKeywords: ["mhs","genesis",
+  // "mhs","genesis"]` to subscribers — cosmetic but signals sloppy
+  // code in a client-visible response.
+  const dedupedKeywords = Array.from(new Set(keywords));
+  const topKeywords = dedupedKeywords.slice(0, 4);
   const base = topKeywords.join(" ");
 
   return {
@@ -108,7 +115,14 @@ function buildQueryTerms(topic, agency) {
     forSAM: topKeywords.join(" "),
     forUSAJobs: topKeywords.slice(0, 2).join(" "),
     forFedRegister: topKeywords.join(" "),
-    forUSASpending: topKeywords.join(" "),
+    // USASpending's `keywords` filter is PHRASE match across description
+    // text — passing a 4-token joined string ("mhs genesis defense
+    // healthcare") matches zero awards because that exact phrase doesn't
+    // appear in any description. Cap to first 2 tokens so program names
+    // ("MHS GENESIS", "VA EHRM", "OASIS+") still resolve correctly.
+    // Verified 2026-05-15 against api.usaspending.gov: "MHS GENESIS"
+    // returns Leidos at $572M; "mhs genesis defense healthcare" returns 0.
+    forUSASpending: topKeywords.slice(0, 2).join(" "),
     agencyContextTerms: AGENCY_CONTEXT[agency] || [],
   };
 }
@@ -143,13 +157,23 @@ const USAJOBS_ORG_CODES = {
   GSA: "GS00",
 };
 
-// Federal Register agency slugs
+// Federal Register agency slugs. Values are arrays so callers always
+// get a uniform shape (and we can fan out to multiple slugs in the
+// future if a sub-agency gets its own listing).
+//
+// Source of truth: https://www.federalregister.gov/agencies
+// Verified 2026-05-15 via `GET /api/v1/agencies.json`: there is NO
+// `defense-health-agency` slug. DHA's rules and notices publish under
+// the parent DoD slug `defense-department`. The Federal Register API
+// rejects the entire `conditions[agencies][]` array with
+// `{"errors":{"agencies":"invalid value"}}` if any value isn't in
+// their canonical list, so we must only pass valid slugs.
 const FR_AGENCY_SLUGS = {
-  DHA: "defense-health-agency",
-  VA:  "veterans-affairs-department",
-  HHS: "health-and-human-services-department",
-  DoD: "defense-department",
-  GSA: "general-services-administration",
+  DHA: ["defense-department"],
+  VA:  ["veterans-affairs-department"],
+  HHS: ["health-and-human-services-department"],
+  DoD: ["defense-department"],
+  GSA: ["general-services-administration"],
 };
 
 // USASpending full agency names
