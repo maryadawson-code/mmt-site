@@ -30,6 +30,12 @@ const FLAG_DEFAULTS = {
   // (11 states, v2 subscriber_context fields). When off, the v1 ladder
   // (combineVerdict / classifyCapturePosition) stays live.
   PURSUIT_SCORE_V2: "off",
+  // Pursuit Score 2.0 Phase E run history (Sprint 9c). Default "off" —
+  // when on, every score writes to pursuit_score_runs and reads the
+  // prior run for the same (email, keyword, agency) tuple to compute
+  // delta. Migration must be applied first
+  // (migrations/20260517000000_pursuit_score_runs.sql).
+  PURSUIT_SCORE_RUN_HISTORY: "off",
 };
 
 let _logged = false;
