@@ -15,6 +15,7 @@ const { getFlag } = require("./lib/feature-flags");
 const { loadToolContext, buildToolEnvelope, buildEvidencePanel, renderBlockedResponse } = require("./lib/premium-tools-core");
 const { loadSubscriberContext } = require("./lib/subscriber-context");
 const { loadEntitlement, blockMessageFor, logEntitlementMismatch } = require("./lib/entitlement");
+const { computeDelta } = require("./lib/delta-engine");
 
 // Cap + overage values come from lib/mmt-pricing.js (single source of truth)
 const MONTHLY_SCORE_CAP = MMT_PRICING.pursuit_score.premium_monthly_allowance;    // 20
@@ -275,6 +276,51 @@ exports.handler = async (event) => {
     console.warn("pursuit-score: ops_events log failed:", logErr.message);
   }
 
+  // Sprint 9c Phase E — write the run + read prior + compute delta.
+  // Gated behind PURSUIT_SCORE_RUN_HISTORY=on AND the migration
+  // (20260517000000_pursuit_score_runs.sql) being applied to Supabase.
+  // Both reads + writes silently no-op on schema-missing / flag-off so
+  // the engine never breaks when history is disabled.
+  let delta = null;
+  let priorRunAt = null;
+  const HISTORY_ON = String(getFlag("PURSUIT_SCORE_RUN_HISTORY") || "").toLowerCase() === "on";
+  if (HISTORY_ON) {
+    try {
+      const lookupKey = String(keyword || "").toLowerCase();
+      const lookupAgency = agency || "";
+      const { data: priorRow } = await supabase
+        .from("pursuit_score_runs")
+        .select("envelope, composite, recommendation_state, acquisition_state, created_at")
+        .eq("email", email)
+        .ilike("keyword", lookupKey)
+        .eq("agency", lookupAgency || null)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (priorRow && priorRow.envelope) {
+        delta = computeDelta(card, { ...priorRow.envelope, created_at: priorRow.created_at });
+        priorRunAt = priorRow.created_at;
+      } else {
+        delta = computeDelta(card, null);
+      }
+    } catch (deltaErr) {
+      console.warn("pursuit-score: prior-run read failed:", deltaErr.message);
+    }
+    try {
+      await supabase.from("pursuit_score_runs").insert({
+        email,
+        keyword,
+        agency: agency || null,
+        envelope: card,
+        composite: card.totalScore || card.total || card.composite || null,
+        recommendation_state: card.recommendation?.state || null,
+        acquisition_state: card.acquisition_state?.state || (typeof card.acquisition_state === "string" ? card.acquisition_state : null),
+      });
+    } catch (writeErr) {
+      console.warn("pursuit-score: run-history write failed:", writeErr.message);
+    }
+  }
+
   const responseBody = {
     ...card,
     remaining: Math.max(cap - used - 1, 0),
@@ -284,6 +330,8 @@ exports.handler = async (event) => {
       overage_per_score: MMT_PRICING.pursuit_score.premium_overage_per_score,
       standalone_per_score: MMT_PRICING.pursuit_score.standalone_per_score,
     },
+    delta: delta || undefined,
+    prior_run_at: priorRunAt || undefined,
   };
   if (envelope) responseBody.envelope = envelope;
 
