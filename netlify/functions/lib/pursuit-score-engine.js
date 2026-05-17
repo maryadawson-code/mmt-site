@@ -27,9 +27,13 @@ const { detectVehicles, expandedSearchTerms } = require("./known-vehicles");
 const {
   detectPositiveSignals,
   classifyCapturePosition,
+  classifyRecommendationState,
   scoreCompanyFit,
   combineVerdict,
+  combineVerdictV2,
+  RECOMMENDATION_STATES,
 } = require("./company-alignment");
+const { getFlag } = require("./feature-flags");
 const fs = require("fs");
 const path = require("path");
 
@@ -595,14 +599,36 @@ async function scorePursuit({ keyword, agency, naics, subscriberContext }) {
     idiqVehicle?.ceiling_usd ? `$${idiqVehicle.ceiling_usd}` : "",
   ].filter(Boolean).join(" \n ");
   const signals = detectPositiveSignals(signalText);
-  const combined = combineVerdict({
-    marketScore: totalScore,
-    partial,
-    companyFit,
-    capturePosition,
-    signals,
-    opportunity: { keyword, agency: resolvedAgency, naics: resolvedNaics },
-  });
+
+  // ---- Pursuit Score V2 — recommendation state engine (Sprint 9a Phase B)
+  // Behind PURSUIT_SCORE_V2 feature flag. Default OFF — v1 ladder
+  // (combineVerdict) stays as fallback so the existing UI doesn't
+  // regress when the v2 fields are unpopulated in the seed.
+  const PURSUIT_V2_ON = String(getFlag("PURSUIT_SCORE_V2") || "").toLowerCase() === "on";
+  let combined;
+  let recommendation = null;
+  if (PURSUIT_V2_ON) {
+    recommendation = classifyRecommendationState(subscriberContext, {
+      keyword,
+      agency: resolvedAgency,
+      signals,
+    });
+    combined = combineVerdictV2(recommendation.state, totalScore, {
+      reasoning: companyFit && Array.isArray(companyFit.reasoning) ? companyFit.reasoning : [],
+    });
+    combined.recommendation = recommendation;
+    // Preserve v1 capturePosition for UI back-compat
+    combined.capturePosition = capturePosition;
+  } else {
+    combined = combineVerdict({
+      marketScore: totalScore,
+      partial,
+      companyFit,
+      capturePosition,
+      signals,
+      opportunity: { keyword, agency: resolvedAgency, naics: resolvedNaics },
+    });
+  }
 
   const profileLoaded = !!(subscriberContext && subscriberContext.entity_name);
   const profileBanner = profileLoaded

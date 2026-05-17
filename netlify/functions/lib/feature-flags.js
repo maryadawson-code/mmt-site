@@ -25,6 +25,11 @@ const FLAG_DEFAULTS = {
   // Default "off"; flip to "on" to wrap legacy tool output in the v2 ToolEnvelope,
   // add subscriber profile gate, mode dispatcher, evidence panel, Monday Move.
   PREMIUM_TOOLS_V2: "off",
+  // Pursuit Score 2.0 (Sprint 9a Phase B + 9b + 9c). Default "off" —
+  // when on, routes the verdict combiner through classifyRecommendationState
+  // (11 states, v2 subscriber_context fields). When off, the v1 ladder
+  // (combineVerdict / classifyCapturePosition) stays live.
+  PURSUIT_SCORE_V2: "off",
 };
 
 let _logged = false;

@@ -430,11 +430,322 @@ function combineVerdict({ marketScore, partial, companyFit, capturePosition, sig
   return { verdict: "NO-BID", color: "#E63946", band: "very_low", composite, reason: "Both market signal and company fit are weak; no positive signals detected." };
 }
 
+// ============================================================
+// Pursuit Score v2 — Recommendation State Engine (Sprint 9a Phase B)
+//
+// Emits one of 11 recommendation states per pursuit-score-2.0
+// completion spec §2. Reads v2 subscriber_context fields
+// (position_history, jv_partnerships, agency_relationships,
+// editorial_calendar) with graceful v1 fallback to the existing
+// classifyCapturePosition.
+//
+// Behind PURSUIT_SCORE_V2 feature flag. Caller in pursuit-score-engine
+// switches based on flag state — when off, the v1 ladder runs unchanged.
+// ============================================================
+
+const RECOMMENDATION_STATES = {
+  PRIME_DIRECT:        "PRIME_DIRECT",        // No incumbency conflict; subscriber owns vehicle, capability, agency alignment
+  RECOMPETE_DEFENSE:   "RECOMPETE_DEFENSE",   // Subscriber is incumbent; defensive posture
+  SUB_TO_INCUMBENT:    "SUB_TO_INCUMBENT",    // Subscriber is sub on the incumbent contract (via position_history.role=sub)
+  JV_TEAMING:          "JV_TEAMING",          // Has formal JV / mentor-protégé with active partner relevant to scope
+  WATCH_RFI:           "WATCH_RFI",           // RFI / sources-sought open; shaping window — not yet a bid decision
+  WATCH_DRAFT_RFP:     "WATCH_DRAFT_RFP",     // Draft RFP / pre-solicitation; preparation window
+  OCI_BLOCKED:         "OCI_BLOCKED",         // OCI exclusion matches the opportunity scope
+  EDITORIAL_TARGET:    "EDITORIAL_TARGET",    // Platform-mode: in editorial_calendar, NOT a bid candidate
+  NEW_ENTRY_LONGSHOT:  "NEW_ENTRY_LONGSHOT",  // No incumbency, no JV, no agency relationship — green-field, low odds
+  NO_BID:              "NO_BID",              // On no_go_list OR explicit pass
+  INSUFFICIENT_DATA:   "INSUFFICIENT_DATA",   // Profile loaded but lacks the fields needed to classify confidently
+};
+
+// State → composite-score floor/ceiling. The combineVerdictV2 function
+// uses these to anchor the final composite around the state — so a
+// SUB_TO_INCUMBENT can't return CAPTURE_VALIDATION just because the
+// upstream USASpending call returned thin data (the 4/27 incident).
+const STATE_FLOORS = {
+  PRIME_DIRECT:       { floor: 70, ceiling: 100 },
+  RECOMPETE_DEFENSE:  { floor: 60, ceiling: 100 },
+  SUB_TO_INCUMBENT:   { floor: 60, ceiling: 95 },
+  JV_TEAMING:         { floor: 55, ceiling: 95 },
+  WATCH_RFI:          { floor: 40, ceiling: 70 },
+  WATCH_DRAFT_RFP:    { floor: 45, ceiling: 75 },
+  OCI_BLOCKED:        { floor: 0,  ceiling: 20 },
+  EDITORIAL_TARGET:   { floor: 0,  ceiling: 30 },
+  NEW_ENTRY_LONGSHOT: { floor: 20, ceiling: 50 },
+  NO_BID:             { floor: 0,  ceiling: 20 },
+  INSUFFICIENT_DATA:  { floor: 25, ceiling: 50 }, // permissive — don't bury an opp because the profile is sparse
+};
+
+/**
+ * Match a position_history record against an opportunity by program
+ * name token overlap (case-insensitive).
+ */
+function _positionMatchesOpp(position, kw) {
+  if (!position || !kw) return false;
+  const program = normalize(position.program || "");
+  if (!program) return false;
+  const programTokens = program.split(/\s+/).filter((t) => t.length > 2);
+  // Match if any 3+ char token of the program name appears in the keyword
+  // OR the keyword contains the full program name.
+  return programTokens.some((t) => kw.includes(t)) || kw.includes(program);
+}
+
+/**
+ * Match a jv_partnership against an opportunity via scope_keywords
+ * or programs_in_scope arrays.
+ */
+function _jvMatchesOpp(jv, kw, opp_agency) {
+  if (!jv || !kw) return false;
+  const scopeKeywords = Array.isArray(jv.scope_keywords) ? jv.scope_keywords.map(normalize) : [];
+  const programs = Array.isArray(jv.programs_in_scope) ? jv.programs_in_scope.map(normalize) : [];
+  for (const k of scopeKeywords) {
+    if (k && (kw.includes(k) || k.includes(kw))) return true;
+  }
+  for (const p of programs) {
+    if (p && (kw.includes(p) || p.includes(kw))) return true;
+  }
+  return false;
+}
+
+/**
+ * Match editorial calendar entry against an opportunity by program name.
+ */
+function _editorialMatchesOpp(entry, kw) {
+  if (!entry || !kw) return false;
+  const program = normalize(entry.program || "");
+  return program && (kw.includes(program) || program.includes(kw));
+}
+
+/**
+ * Classify the recommendation state for an opportunity against a v2
+ * subscriber_context profile.
+ *
+ * @param {Object|null} ctx — normalized v2 subscriber context
+ * @param {{ keyword: string, agency?: string, signals?: Array }} opp
+ * @returns {{ state: string, detail: string, reference?: Object, evidence?: Array }}
+ */
+function classifyRecommendationState(ctx, { keyword, agency, signals } = {}) {
+  if (!ctx) {
+    return { state: RECOMMENDATION_STATES.INSUFFICIENT_DATA, detail: "No subscriber_context loaded — cannot classify recommendation state." };
+  }
+  const kw = normalize(keyword);
+  if (!kw) {
+    return { state: RECOMMENDATION_STATES.INSUFFICIENT_DATA, detail: "No opportunity keyword provided." };
+  }
+
+  // Priority 1 — NO_BID (on no_go_list) trumps everything else.
+  const passed = (ctx.no_go_list || []).find((p) =>
+    p.name && (kw.includes(normalize(p.name)) || normalize(p.name).includes(kw))
+  );
+  if (passed) {
+    return {
+      state: RECOMMENDATION_STATES.NO_BID,
+      detail: `On the no-go list (${passed.reason || "reason not recorded"}).`,
+      reference: passed,
+    };
+  }
+
+  // Priority 2 — OCI_BLOCKED.
+  const oci = (ctx.oci_exclusions || []).find((o) =>
+    o.blocked_scope && normalize(o.blocked_scope).split(/\s+/).some((t) => t.length > 3 && kw.includes(t))
+  );
+  if (oci) {
+    return {
+      state: RECOMMENDATION_STATES.OCI_BLOCKED,
+      detail: `OCI exclusion: ${oci.notes || oci.blocked_scope}. Cannot pursue without OCI mitigation.`,
+      reference: oci,
+    };
+  }
+
+  // Priority 3 — EDITORIAL_TARGET (platform mode only — when the
+  // subscriber is acting as journalist/analyst on this program).
+  const editorial = (ctx.editorial_calendar || []).find((e) => _editorialMatchesOpp(e, kw));
+  if (editorial) {
+    return {
+      state: RECOMMENDATION_STATES.EDITORIAL_TARGET,
+      detail: `On editorial calendar (${editorial.coverage_type || "coverage"} planned for ${editorial.next_coverage_date || "unspecified date"}). Not a bid candidate in platform mode.`,
+      reference: editorial,
+    };
+  }
+
+  // Priority 4 — RECOMPETE_DEFENSE (incumbent on recompete).
+  const incumbent = (ctx.incumbent_positions || []).find((p) =>
+    p.name && (kw.includes(normalize(p.name)) || normalize(p.name).includes(kw))
+  );
+  if (incumbent) {
+    return {
+      state: RECOMMENDATION_STATES.RECOMPETE_DEFENSE,
+      detail: `Incumbent: ${incumbent.name}${incumbent.contract_number ? ` (${incumbent.contract_number})` : ""}. Defensive recompete posture.`,
+      reference: incumbent,
+    };
+  }
+
+  // Priority 5 — SUB_TO_INCUMBENT (v2 position_history with role=sub on
+  // an active position relevant to the opportunity scope).
+  const subPosition = (ctx.position_history || []).find((p) =>
+    (p.role === "sub" || p.role === "teaming_partner") &&
+    !p.end_date_passed &&
+    _positionMatchesOpp(p, kw)
+  );
+  if (subPosition) {
+    return {
+      state: RECOMMENDATION_STATES.SUB_TO_INCUMBENT,
+      detail: `Sub to ${subPosition.prime_company || "incumbent prime"} on ${subPosition.program}${subPosition.contract_number ? ` (${subPosition.contract_number})` : ""}. Capture posture: protect sub seat, position for next-cycle prime path.`,
+      reference: subPosition,
+    };
+  }
+
+  // Priority 6 — JV_TEAMING (v2 jv_partnerships with active partner whose
+  // scope_keywords or programs_in_scope cover the opp).
+  const jv = (ctx.jv_partnerships || []).find((j) => _jvMatchesOpp(j, kw, agency));
+  if (jv) {
+    return {
+      state: RECOMMENDATION_STATES.JV_TEAMING,
+      detail: `${jv.type === "sba_mentor_protege" ? "SBA mentor-protégé" : (jv.type === "jv_agreement" ? "Joint venture" : "Teaming agreement")} with ${jv.partner_company}. Active scope coverage.`,
+      reference: jv,
+    };
+  }
+
+  // Priority 7 — Active pursuit (IN_FLIGHT). In v2 this surfaces as
+  // RECOMPETE_DEFENSE-adjacent because we don't want to recommend
+  // pursuing something already in-flight. We model this as
+  // RECOMPETE_DEFENSE for state semantics (defensive posture on
+  // current pursuit).
+  const inflight = (ctx.active_pursuits || []).find((p) => (
+    (p.solicitation_number && kw.includes(normalize(p.solicitation_number))) ||
+    (p.name && (kw.includes(normalize(p.name)) || normalize(p.name).includes(kw)))
+  ));
+  if (inflight) {
+    return {
+      state: RECOMMENDATION_STATES.RECOMPETE_DEFENSE,
+      detail: `In-flight pursuit: ${inflight.name}${inflight.solicitation_number ? ` (${inflight.solicitation_number})` : ""}, stage: ${inflight.stage}. Defensive posture — do not recommend pursuing what's already submitted.`,
+      reference: inflight,
+    };
+  }
+
+  // Priority 8 — Shaping-window signals (RFI / Sources Sought / Draft RFP).
+  const signalTags = Array.isArray(signals) ? new Set(signals.map((s) => s.tag)) : new Set();
+  if (signalTags.has("RFI")) {
+    return {
+      state: RECOMMENDATION_STATES.WATCH_RFI,
+      detail: "RFI / sources-sought signal detected — pre-solicitation shaping window is open.",
+    };
+  }
+  if (signalTags.has("INDUSTRY_DAY")) {
+    return {
+      state: RECOMMENDATION_STATES.WATCH_DRAFT_RFP,
+      detail: "Industry Day signal — RFP typically follows in 60–120 days. Preparation window.",
+    };
+  }
+
+  // Priority 9 — PRIME_DIRECT (target_agencies alignment + capabilities
+  // overlap + no conflicts). This is a "no obstacles, you should bid"
+  // state. Requires the profile to have target_agencies and at least
+  // one of {vehicle_holdings, set_aside_certifications}.
+  const agencyAligned = agencyMatches(ctx.target_agencies, agency || keyword);
+  const hasCertifications = Array.isArray(ctx.set_aside_certifications) && ctx.set_aside_certifications.length > 0;
+  const hasVehicles = Array.isArray(ctx.vehicle_holdings) && ctx.vehicle_holdings.length > 0;
+  if (agencyAligned && (hasCertifications || hasVehicles)) {
+    return {
+      state: RECOMMENDATION_STATES.PRIME_DIRECT,
+      detail: `Direct prime path — ${agency || "agency"} is in your target list, ${hasVehicles ? "vehicle holdings" : "set-aside posture"} provides eligibility.`,
+    };
+  }
+
+  // Priority 10 — INSUFFICIENT_DATA when the profile is too sparse to
+  // classify confidently. Specifically: no v2 fields populated AND no
+  // active_pursuits / incumbent_positions reachable.
+  const v2Populated = (ctx.position_history || []).length > 0 ||
+                      (ctx.jv_partnerships || []).length > 0 ||
+                      (ctx.agency_relationships || []).length > 0;
+  const v1Populated = (ctx.active_pursuits || []).length > 0 ||
+                      (ctx.incumbent_positions || []).length > 0;
+  if (!v2Populated && !v1Populated) {
+    return {
+      state: RECOMMENDATION_STATES.INSUFFICIENT_DATA,
+      detail: "Subscriber profile is sparse (no position history, JV partnerships, active pursuits, or incumbent positions). Cannot classify recommendation state without more data.",
+    };
+  }
+
+  // Default — NEW_ENTRY_LONGSHOT.
+  return {
+    state: RECOMMENDATION_STATES.NEW_ENTRY_LONGSHOT,
+    detail: "No incumbency, JV, or agency relationship matches the opportunity. Treat as a green-field new entry with longshot odds.",
+  };
+}
+
+/**
+ * Apply v2 state floor/ceiling to a raw composite score.
+ *
+ * @param {string} state — one of RECOMMENDATION_STATES
+ * @param {number} rawComposite — 0–100 from market + fit blend
+ * @returns {{ verdict, color, band, composite, state, reason }}
+ */
+function combineVerdictV2(state, rawComposite, { reasoning } = {}) {
+  const bounds = STATE_FLOORS[state] || STATE_FLOORS[RECOMMENDATION_STATES.INSUFFICIENT_DATA];
+  const composite = Math.max(bounds.floor, Math.min(bounds.ceiling, Number(rawComposite) || 0));
+  // Verdict label derived from state primarily, composite secondarily.
+  let verdict, color, band;
+  switch (state) {
+    case RECOMMENDATION_STATES.PRIME_DIRECT:
+    case RECOMMENDATION_STATES.SUB_TO_INCUMBENT:
+    case RECOMMENDATION_STATES.JV_TEAMING:
+      verdict = "PURSUE";
+      color = "#15803D";
+      band = "high";
+      break;
+    case RECOMMENDATION_STATES.RECOMPETE_DEFENSE:
+      verdict = "DEFEND";
+      color = "#15803D";
+      band = "high";
+      break;
+    case RECOMMENDATION_STATES.WATCH_RFI:
+    case RECOMMENDATION_STATES.WATCH_DRAFT_RFP:
+      verdict = "WATCH";
+      color = "#457B9D";
+      band = "medium_high";
+      break;
+    case RECOMMENDATION_STATES.NEW_ENTRY_LONGSHOT:
+      verdict = "CAPTURE_VALIDATION";
+      color = "#F97316";
+      band = "low";
+      break;
+    case RECOMMENDATION_STATES.OCI_BLOCKED:
+    case RECOMMENDATION_STATES.NO_BID:
+      verdict = "NO-BID";
+      color = "#E63946";
+      band = "very_low";
+      break;
+    case RECOMMENDATION_STATES.EDITORIAL_TARGET:
+      verdict = "EDITORIAL_TARGET";
+      color = "#6B7280";
+      band = "very_low";
+      break;
+    case RECOMMENDATION_STATES.INSUFFICIENT_DATA:
+    default:
+      verdict = "INSUFFICIENT_DATA";
+      color = "#6B7280";
+      band = "medium";
+      break;
+  }
+  return {
+    verdict,
+    color,
+    band,
+    composite,
+    state,
+    reason: Array.isArray(reasoning) && reasoning.length ? reasoning.join(" ") : `State ${state}: composite ${composite}/100.`,
+  };
+}
+
 module.exports = {
   detectPositiveSignals,
   agencyMatches,
   classifyCapturePosition,
+  classifyRecommendationState,
+  combineVerdictV2,
   scoreCompanyFit,
   combineVerdict,
   POSITIVE_SIGNAL_PATTERNS,
+  RECOMMENDATION_STATES,
+  STATE_FLOORS,
 };
