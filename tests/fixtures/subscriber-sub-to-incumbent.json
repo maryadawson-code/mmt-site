@@ -1,0 +1,34 @@
+{
+  "_comment": "Synthetic test fixture for Sprint 9b acceptance test. NOT a real subscriber.",
+  "subscriber_id": "fixture-sub-to-incumbent-001",
+  "email": "fixture+sub-to-incumbent@missionmeetstech.test",
+  "display_name": "Synthetic Sub-to-Incumbent Fixture",
+  "company": "Fixture Defense Health LLC",
+  "role": "principal",
+  "position_history": [
+    {
+      "contract_number": null,
+      "agency": "VA",
+      "program": "VA SCM DSO (HELM)",
+      "role": "sub",
+      "prime_company": "Accenture Federal Services",
+      "scope": "DevSecOps support under current contract; small team, expansion-oriented",
+      "start_date": "2024-06-01",
+      "end_date": "2027-05-31"
+    }
+  ],
+  "jv_partnerships": [
+    {
+      "partner_company": "Accenture Federal Services",
+      "type": "sba_mentor_protege",
+      "uei": null,
+      "start_date": "2024-01-01",
+      "end_date": "2029-12-31",
+      "scope_keywords": ["federal health", "DHA", "VA", "MHS GENESIS", "VA EHRM", "TRICARE", "DevSecOps"],
+      "programs_in_scope": ["full federal health portfolio"]
+    }
+  ],
+  "agency_relationships": [],
+  "editorial_calendar": [],
+  "oci_exclusions": []
+}
