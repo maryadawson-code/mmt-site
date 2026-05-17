@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capture Corner: DHA Budget &amp; Org Realignment &middot; MMT Premium</title>
+  <meta name="description" content="May 2026 Special Issue. FY2027 DoD budget zeroed the dedicated DHMSM procurement line, cut DHA Medical Development RDT&E 79%, grew IMIT O&M by $228M, and injected $3.14B mandatory into DHA Base Ops/Comms. Where the money moved, who owns it now, and six capture moves.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <style>
+    :root { --mmt-teal:#457B9D; --mmt-navy:#0A192F; --mmt-soft:#F3F4F6; --mmt-white:#FFFFFF; --mmt-text:#102033; --mmt-text-secondary:#5C6B7A; --mmt-border:#D8E0E8; --ci-gold:#92710A; --ci-gold-bg:#FEF9E7; --mmt-red:#E63946; }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--mmt-white); color:var(--mmt-navy); }
+    .brief-body { font-size:15px; line-height:1.75; color:#314155; }
+    .brief-body h2 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:40px 0 14px; letter-spacing:-0.02em; }
+    .brief-body h3 { font-size:17px; font-weight:700; color:var(--mmt-navy); margin:28px 0 10px; }
+    .brief-body h4 { font-size:15px; font-weight:700; color:var(--mmt-navy); margin:20px 0 8px; }
+    .brief-body p { margin-bottom:16px; max-width:65ch; }
+    .brief-body ul { margin-bottom:16px; padding-left:1.25rem; }
+    .brief-body li { margin-bottom:8px; }
+    .brief-body a { color:var(--mmt-teal); text-decoration:underline; text-underline-offset:3px; }
+    .brief-body strong { color:var(--mmt-navy); }
+    .brief-body em { color:var(--mmt-text-secondary); }
+    .brief-body hr { border:none; border-top:1px solid var(--mmt-border); margin:36px 0; }
+    .brief-body blockquote { border-left:3px solid var(--mmt-teal); padding:8px 16px; margin:16px 0; color:var(--mmt-text-secondary); background:rgba(69,123,157,0.04); border-radius:0 6px 6px 0; }
+    .brief-body img { max-width:100%; height:auto; display:block; margin:24px 0; border:1px solid var(--mmt-border); border-radius:8px; }
+    .brief-body table { width:100%; border-collapse:collapse; margin:16px 0 24px; font-size:14px; }
+    .brief-body th, .brief-body td { border:1px solid var(--mmt-border); padding:10px 12px; text-align:left; vertical-align:top; }
+    .brief-body th { background:var(--mmt-soft); color:var(--mmt-navy); font-weight:700; }
+    .pills { margin:8px 0 24px; }
+    .pill { display:inline-block; padding:4px 10px; background:rgba(69,123,157,0.08); color:var(--mmt-teal); border-radius:14px; font-size:11px; font-weight:600; margin:2px 4px 2px 0; }
+    .pill-red { background:rgba(230,57,70,0.08); color:var(--mmt-red); }
+    .pill-gold { background:var(--ci-gold-bg); color:var(--ci-gold); }
+    .back-link { font-size:13px; font-weight:600; color:var(--mmt-teal); text-decoration:none; }
+    .back-link:hover { opacity:0.7; }
+    .gate-notice { background:linear-gradient(180deg,#FFFFFF 0%,#F3F4F6 100%); border:1px solid var(--mmt-border); border-radius:12px; padding:32px 28px; text-align:center; margin:32px auto; max-width:540px; }
+    .gate-notice h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin-bottom:10px; }
+    .gate-notice p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:16px; line-height:1.55; }
+    .gate-cta { display:inline-block; padding:12px 24px; background:var(--mmt-navy); color:var(--mmt-white); font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; }
+    .section-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--ci-gold); }
+    .deep-dive-card { margin:48px 0 16px; padding:32px 28px; border:2px solid var(--ci-gold); border-radius:12px; background:linear-gradient(180deg,#FFFFFF 0%,var(--ci-gold-bg) 100%); }
+    .deep-dive-card h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:0 0 12px; letter-spacing:-0.01em; }
+    .deep-dive-card p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:14px; line-height:1.6; max-width:none; }
+    .deep-dive-price { display:inline-flex; align-items:baseline; gap:8px; margin:4px 0 16px; font-weight:800; color:var(--mmt-navy); }
+    .deep-dive-price .amount { font-size:28px; }
+    .deep-dive-price .unit { font-size:13px; font-weight:600; color:var(--mmt-text-secondary); text-transform:uppercase; letter-spacing:0.06em; }
+    .deep-dive-cta { display:inline-block; padding:14px 26px; background:var(--ci-gold); color:#FFFFFF; font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; letter-spacing:0.02em; }
+    .deep-dive-cta:hover { opacity:0.92; }
+    .deep-dive-examples { font-size:13px; color:var(--mmt-text-secondary); font-style:italic; margin-top:8px; }
+    .pdf-download { display:inline-flex; align-items:center; gap:8px; padding:12px 18px; background:var(--mmt-navy); color:#FFFFFF; font-weight:700; font-size:13px; border-radius:8px; text-decoration:none; margin:8px 0; }
+    .pdf-download:hover { opacity:0.92; }
+  </style>
+</head>
+<body>
+  <nav class="nav-editorial"></nav>
+
+  <main class="wrap" style="padding:48px 0 80px; max-width:820px;">
+    <a href="/capture-corner.html" class="back-link">&larr; Capture Corner</a>
+
+    <div style="margin-top:20px; margin-bottom:8px;">
+      <div class="section-label">MMT Premium &middot; Special Issue &middot; May 17, 2026</div>
+    </div>
+    <h1 style="font-size:clamp(26px,3.2vw,38px);line-height:1.1;letter-spacing:-0.03em;margin-bottom:10px;">DHA Budget &amp; Org Realignment</h1>
+    <p style="font-size:15px;color:var(--mmt-text-secondary);margin-bottom:20px;"><em>The FY2027 DoD budget zeroed the dedicated DHMSM procurement line, cut DHA Medical Development RDT&amp;E 79%, grew IMIT O&amp;M by $228M, and injected $3.14B mandatory into DHA Base Ops/Communications. A new command-level office (OWHA) now controls requirements; an untested PAE structure prepares to hold the contracts. Where the money moved, who owns it now, and six capture moves.</em></p>
+
+    <div class="pills">
+      <span class="pill pill-gold">Special Issue</span>
+      <span class="pill">FY2027 DoD Budget</span>
+      <span class="pill">DHA</span>
+      <span class="pill">OWHA stood up Apr 20, 2026</span>
+      <span class="pill">PAE Med Software FOC July 19, 2026</span>
+      <span class="pill pill-red">DHMSM procurement line: $0</span>
+      <span class="pill">JOMIS growing</span>
+      <span class="pill">$46B Sovereign AI pending</span>
+    </div>
+
+    <div data-gate="free" style="display:block;">
+      <div class="gate-notice">
+        <h3>&#9733; Premium Capture Corner</h3>
+        <p>The three budget pools that actually hold the money, the named decision maker who controls requirements, the unnamed contracting authority who will execute, the six capture moves, and a $50 deep-dive offer on any line you select. Free members see the signal; premium gets the full briefing plus the PDF.</p>
+        <a class="gate-cta" href="/pricing">See premium plans</a>
+      </div>
+    </div>
+
+    <div data-access="premium" data-gate="premium" class="brief-body">
+
+<a href="/premium-briefs/dha-budget-org-realignment-may2026.pdf" class="pdf-download" download>&#128196; Download PDF (5 pages)</a>
+
+<p><em>Special issue. Paid companion to the May 15 SCMDSO brief. Public-record sourced from the FY2027 DoD budget displays, the FY2027 Mandatory Budget Overview, and DHA's April 20, 2026 organizational documents. Built for federal health BD, capture, and proposal leaders who need analytical depth, not headlines.</em></p>
+
+<hr>
+
+<h2>Signal</h2>
+
+<p>The FY2027 DoD budget has <strong>zeroed the dedicated DHMSM procurement line</strong> (from $26.6M in FY2025 to $0), <strong>cut the DHA Medical Development RDT&amp;E account 79%</strong> (from $1.76B enacted in FY2026 to $361M requested in FY2027), and <strong>simultaneously grown the IMIT O&amp;M line by $228M to $2.60B</strong> &mdash; while injecting a <strong>mandatory $3.14B into DHA Base Ops/Communications</strong> under the Warrior Ethos / Mitigating Poor and Failing Facilities appropriation. A new command-level office (<strong>OWHA</strong>) now controls requirements, and an <strong>untested PAE structure</strong> prepares to hold the contracts.</p>
+
+<h2>Why It Matters</h2>
+
+<p>PEO-DHMS <strong>is not the primary acquisition authority for defense health IT modernization anymore</strong> &mdash; the FY2027 budget documents make that official. The procurement lines that funded DHMSM modernization ($0 in FY2027), the EIDS/MIP recompete mechanisms, and the standalone CDAO (residual management line PE 0606135D8Z zeroed; predecessor CDAO investment PEs 0604122D8Z&ndash;0604133D8Z separately zeroed or consolidated) have all been collapsed or eliminated. The money did not disappear &mdash; it migrated into three specific lines, <strong>none controlled by the organizations that held them 12 months ago</strong>.</p>
+
+<h2>Where the Money Moved</h2>
+
+<table>
+<thead><tr><th>Where the Money Moved</th><th>FY2026 Enacted</th><th>FY2027 Request</th><th>Change</th><th>Owner Now</th></tr></thead>
+<tbody>
+<tr><td>IMIT O&amp;M (acct 0130D, BA4)</td><td>$2.37B</td><td>$2.60B</td><td>+$228M</td><td>OWHA sets requirements; PAE executes</td></tr>
+<tr><td>Base Ops/Comms (acct 0130D, BA7)</td><td>$3.22B discretionary</td><td>$5.60B total</td><td>+$2.38B</td><td>DHA CIO (J-6) under AD-SPFO &mdash; mandatory $3.14B injected via Warrior Ethos FSRM</td></tr>
+<tr><td>Replacement/Modernization Proc (BLI 7721)</td><td>$222M</td><td>$231M</td><td>+$9M</td><td>PAE Med Software &amp; Business Systems (FOC July 19)</td></tr>
+<tr><td>DHMSM Procurement (formerly BLI 7787)</td><td>$0 (zeroed FY2026)</td><td>$0</td><td>&mdash;</td><td>Line eliminated</td></tr>
+<tr><td>JOMIS Procurement (BLI 7746)</td><td>$30.7M</td><td>$31.2M</td><td>Growing</td><td>PEO-DHMS remnant / PAE</td></tr>
+<tr><td>CDAO residual mgmt line (PE 0606135D8Z)</td><td>~$9M</td><td>$0</td><td>Zeroed</td><td>Absorbed into OWHA; no dedicated line</td></tr>
+</tbody>
+</table>
+
+<p><strong>OWHA</strong> (stood up April 20, 2026, under RDML Farrill) sets requirements across all three surviving lines. The new <strong>PAE Medical Software &amp; Business Systems</strong> (FOC July 19, 2026) will hold the contracts. The <strong>$46B mandatory Sovereign AI Infrastructure request</strong> &mdash; pending reconciliation &mdash; would fund SCIF-accredited AI compute infrastructure that OWHA must align with for any AI workloads; execution authority for that program has not been publicly confirmed to a single agency.</p>
+
+<blockquote>Three surviving pools. New requirement owner. New contracting structure.</blockquote>
+
+<h2>Action Window</h2>
+
+<h3>Now (0&ndash;60 days)</h3>
+<p>OWHA is <strong>not at FOC</strong> and the PAE <strong>has not named its head of contracting authority</strong>. This is the highest-value relationship window before governance hardens. The vendors who get time with RDML Farrill's team in May&ndash;June 2026 will shape how OWHA's requirements translate into acquisition language for BLI 7721 ($231M) and future IMIT O&amp;M task orders.</p>
+
+<h3>Soon (60&ndash;180 days)</h3>
+<p>By <strong>July 19</strong>, PAE Medical Software &amp; Business Systems reaches FOC and becomes the new contracting authority for EIDS/MIP successor work and IMIT modernization. Watch for the <strong>first PAE-issued RFI or market survey</strong> as the leading indicator that BLI 7721 is moving toward obligation.</p>
+
+<h3>Watch next</h3>
+<p><strong>JOMIS</strong> (BLI 7746, $31.2M procurement + active RDT&amp;E) is the only DHMS-family program with a live, named, growing budget line. The next traceable active acquisition in defense health IT is more likely to originate from JOMIS than any GENESIS or EIDS successor vehicle.</p>
+
+<h2>Capture Moves</h2>
+
+<h3>1. Remap your stakeholder files to OWHA and the PAE &mdash; delete PEO-DHMS as a primary node.</h3>
+<p>Every pursuit touching data, AI, digital health, or enterprise IT in DHA should map RDML Farrill (OWHA) as the upstream requirement owner and PAE Medical Software &amp; Business Systems as the contracting authority. The PAE head of contracting has not been named publicly &mdash; <strong>finding that name is your first intelligence task</strong>.</p>
+
+<h3>2. Build your value proposition around the three surviving budget lines, not around a recompete vehicle that no longer exists.</h3>
+<p>IMIT O&amp;M ($2.60B), Replacement/Modernization Procurement (BLI 7721, $231M), and the Base Ops/Communications infrastructure line ($5.60B, majority mandatory FSRM) are the actual obligation pools. Your capability narrative needs to connect explicitly to OWHA's five lines of effort from the DHA Data and Innovation Strategy &mdash; those are the standards OWHA will use to evaluate vendor alignment when it drafts requirements.</p>
+
+<h3>3. If you want near-term procurement activity, pursue JOMIS.</h3>
+<p>It has a funded, named BLI, growing appropriations, and a dedicated RDT&amp;E line. It is not distracted by a staff reduction or a reorganization. If your firm has deployed/operational medicine IT capability, JOMIS is the <strong>highest-probability active procurement in defense health IT for FY2027</strong>.</p>
+
+<h3>4. Map the GSP IDIQ as your near-term entry point into the $2.60B IMIT pool.</h3>
+<p>The DHA Geographic Service Provider (GSP) IDIQ is a $2.4B, 10-year, small-business set-aside multiple-award vehicle (base period 2024&ndash;2029) covering nine IT service scope areas from service desk through clinical informatics. As OWHA's requirements mature, the first place they will hit the street for execution is <strong>GSP task orders &mdash; not a new large IDIQ</strong>. Task orders are actively competing now: in December 2025, A1FED/NetImpact won a $28M task order competing against 20 bidders. If you hold a GSP award or can team with a holder, this is your fastest path to obligation against the IMIT growth money.</p>
+
+<h3>5. Treat Peraton (EITSI) as a teaming target, not a bystander.</h3>
+<p>Peraton holds the $2B Enterprise IT Services Integrator (EITSI) BPA through approximately 2031 &mdash; the single MSI layer that coordinates all IT service delivery across the MHS and sits above the GSPs. <strong>No new IT capability enters the enterprise without flowing through EITSI coordination.</strong> Peraton's most recent EITSI call order (November 2025) was placed through the CIO J-6, not PEO-DHMS &mdash; confirming the reorientation toward enterprise IT sustainment under the new AD-SPFO structure. Any vendor pursuing OWHA alignment for digital health or data capabilities should map Peraton as a required teaming conversation, not an afterthought.</p>
+
+<h3>6. Watch ESS Next as the integration plumbing signal.</h3>
+<p>PEO DHMS issued a sources sought in March 2026 for the Enterprise Sustainment Services (ESS) Next &mdash; covering development, test, and integration infrastructure for DHMSM, JOMIS, EIDS, and FEHRM. It did not make headlines, but it is the internal acquisition vehicle that keeps all four DHMS-family programs buildable. An award here signals which firm controls the integration environment for every future task order across the DHMS portfolio.</p>
+
+<h2>Confidence: High</h2>
+
+<p>All dollar figures sourced directly from the FY2027 DoD O1 display (account 0130D), R1 display (PE codes confirmed), P1 display (BLI 7721, 7746, 7787), and the FY2027 Mandatory Budget Overview (Warrior Ethos FSRM injection into DHA Base Ops/Comms, $3.14B confirmed). Org chart sourced from DHA official document dated April 20, 2026. The CDAO PE restructure history (0606135D8Z and predecessor PEs 0604122D8Z&ndash;0604133D8Z) sourced from FY2025&ndash;FY2027 R1 exhibits. The Sovereign AI Infrastructure program ($46B mandatory, $4.2B procurement line) confirmed from FY2027 reconciliation budget documents; execution authority remains unconfirmed at publication.</p>
+
+<h2>Why Premium</h2>
+
+<p>Standard GovCon reporting sees a reorg announcement and maps the new org boxes. Premium goes to the budget documents.</p>
+
+<p>The DHMSM line is zeroed &mdash; confirmed in the P1. The CDAO residual management line is zeroed and its predecessor investment PEs are consolidated &mdash; confirmed in the R1. The $2.38B jump in DHA Base Ops/Communications isn't organic growth &mdash; it's a mandatory Warrior Ethos FSRM injection confirmed line-by-line in the mandatory budget exhibit. The three pools that actually hold the money, the named decision maker who controls requirements, and the unnamed contracting authority who will execute &mdash; that is what this brief delivers.</p>
+
+<p>Every number above has a specific budget line citation your BD team can pull and verify before your pipeline review tomorrow.</p>
+
+<p><em>This is the layer Premium is built to provide every month: signal &rarr; implication &rarr; action window &rarr; capture move.</em></p>
+
+<div class="deep-dive-card">
+  <div class="section-label" style="color:var(--ci-gold);margin-bottom:8px;">Custom Deep Dive &middot; Premium Add-On</div>
+  <h3>Want a custom deep-dive on any line in this brief?</h3>
+  <p>This brief surfaces the architecture. Where it surfaces it doesn't yet name names &mdash; the head of contracting at PAE Medical Software &amp; Business Systems, the OWHA requirements-drafting cadence, the EITSI teaming map, the JOMIS prime field, the named decision makers behind the $46B Sovereign AI line, your firm's specific positioning against the three surviving pools &mdash; the next layer of intelligence is <strong>custom by request</strong>.</p>
+  <div class="deep-dive-price"><span class="amount">$50</span><span class="unit">one-time &middot; 5&ndash;7 business day turnaround</span></div>
+  <p>I will pull the additional public-record sources, interview the visible signal, and write a 4&ndash;6 page custom intelligence memo on the area you select. You name the question; I do the BD-grade analysis.</p>
+  <p style="margin-bottom:18px;"><a class="deep-dive-cta" href="mailto:mary@missionmeetstech.com?subject=DHA%20Deep%20Dive%20Request&amp;body=Hi%20Mary%2C%0A%0AI%27d%20like%20to%20request%20a%20%2450%20custom%20deep%20dive%20on%3A%0A%0A%5BYour%20topic%20here%5D%0A%0AKey%20question%20I%20need%20answered%3A%0A%0A%5BYour%20question%20here%5D%0A%0AHow%20I%27ll%20use%20the%20memo%3A%0A%0A%5BPipeline%20review%2C%20capture%20kickoff%2C%20teaming%20decision%2C%20etc.%5D%0A%0AThanks%2C">Request a custom deep dive &rarr;</a></p>
+  <p class="deep-dive-examples">Examples: <em>"DHA Deep Dive &mdash; PAE contracting head intelligence" &middot; "DHA Deep Dive &mdash; JOMIS prime field forecast" &middot; "DHA Deep Dive &mdash; our positioning vs. OWHA's five LOEs" &middot; "DHA Deep Dive &mdash; EITSI teaming gravity map"</em></p>
+  <p style="font-size:12px;color:var(--mmt-text-secondary);margin-bottom:0;">Reply within one business day with scope confirmation, a Stripe invoice for $50, and a delivery commitment.</p>
+</div>
+
+    </div>
+  </main>
+
+  <footer class="footer"></footer>
+</body>
+</html>

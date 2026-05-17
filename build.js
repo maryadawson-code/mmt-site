@@ -2780,7 +2780,7 @@ async function copyStaticFiles({ archive, feed, newsItems, contracts, contractAr
     'contract-tracker.html', 'events.html',
     'privacy.html', 'terms.html', 'security.html', 'glossary.html', 'contracting.html', 'editorial-standards.html',
     'agency-sources.html', 'getting-started.html',
-    'marketpulse.html', 'my-reports.html', 'tactical-brief-confirmed.html',
+    'marketpulse.html', 'my-reports.html', 'tactical-brief.html', 'tactical-brief-confirmed.html',
     'about-team.html', 'about-press.html',
     'ops.html', 'command-center.html',
     'pricing.html',
@@ -3750,6 +3750,21 @@ ${innerHtml}
       fs.copyFileSync(path.join(samplesDir, file), path.join(distSamplesDir, file));
     });
     console.log(`Copied ${sampleFiles.length} sample files`);
+  }
+
+  // Copy premium-brief PDFs (paid-tier downloadable companions to
+  // Capture Corner premium issues). Files live in static/premium-briefs/
+  // and ship to /premium-briefs/<name>.pdf on the live site. Linked
+  // only from premium-gated brief pages — listing is not exposed.
+  const premiumBriefsDir = path.join(__dirname, 'static', 'premium-briefs');
+  const distPremiumBriefsDir = path.join(DIST_DIR, 'premium-briefs');
+  if (fs.existsSync(premiumBriefsDir)) {
+    ensureDir(distPremiumBriefsDir);
+    const briefFiles = fs.readdirSync(premiumBriefsDir).filter(f => f.endsWith('.pdf'));
+    briefFiles.forEach(file => {
+      fs.copyFileSync(path.join(premiumBriefsDir, file), path.join(distPremiumBriefsDir, file));
+    });
+    console.log(`Copied ${briefFiles.length} premium-brief PDF(s)`);
   }
 
   // NOTE: dist/premium/<file>.html is written by the subDirPages loop
