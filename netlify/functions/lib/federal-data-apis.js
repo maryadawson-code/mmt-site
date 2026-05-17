@@ -673,6 +673,97 @@ function formatFederalDataContext(data) {
   return "\n\nVERIFIED FEDERAL DATA (from direct API queries — use these as PRIMARY SOURCES, higher authority than web search results):\n\n" + sections.join("\n\n");
 }
 
+// ============================================================
+// Sprint 9b Phase C — acquisition state derivation
+//
+// Map a SAM.gov opportunity row to a discrete acquisition state
+// per Pursuit Score 2.0 completion spec §3. Pure function — no I/O.
+//
+// Returned states (kept in sync with monday-move.js templates):
+//   RFI_OPEN           — RFI/Sources Sought, response_date >= today
+//   RFI_CLOSED_RECENT  — RFI/Sources Sought, response in last 120d
+//   RFI_CLOSED_STALE   — RFI/Sources Sought, response > 120d ago
+//   DRAFT_RFP          — Pre-Solicitation / Draft
+//   RFP_OPEN           — Combined Synopsis/Solicitation, response >= today
+//   RFP_CLOSED         — Combined Synopsis/Solicitation, response in past
+//   AWARDED            — award_notice present OR opportunity has award block
+//   UNKNOWN            — type/date insufficient to classify
+//
+// PROTESTED is added by the layer (not here) because it requires
+// cross-referencing GAO data.
+// ============================================================
+
+const RFI_TYPE_KEYS = new Set(["k", "j", "i", "s"]);
+// k = Sources Sought, j = Justification (sometimes RFI-ish),
+// i = Intent to Sole Source (treated as informational signal),
+// s = Special Notice (used by some buying offices for RFIs).
+const RFI_FIRST_LETTERS = ["k"];      // strict RFI signal
+const DRAFT_FIRST_LETTERS = ["p"];    // p = Pre-Solicitation
+const RFP_OPEN_LETTERS = ["o", "r"];  // o = Solicitation, r = Combined Synopsis/Solicitation
+
+function _isInPast(dateStr, now = Date.now()) {
+  if (!dateStr) return null; // null when unknown
+  const t = new Date(dateStr).getTime();
+  if (Number.isNaN(t)) return null;
+  return t < now;
+}
+
+function _daysSince(dateStr, now = Date.now()) {
+  if (!dateStr) return null;
+  const t = new Date(dateStr).getTime();
+  if (Number.isNaN(t)) return null;
+  return Math.floor((now - t) / 86400000);
+}
+
+/**
+ * Derive an acquisition state for a SAM opportunity row.
+ *
+ * @param {Object} opp — opportunity record as returned by mapOpp.
+ *                       Must carry { ptype, type, posted_date,
+ *                       response_deadline, award? }.
+ * @param {Object} [params]
+ * @param {number} [params.now]      — override "today" in ms (for tests).
+ * @param {number} [params.staleDays] — RFI closed > N days = STALE (default 120).
+ * @returns {{ state: string, close_date: string|null, days_since_close: number|null }}
+ */
+function deriveAcquisitionState(opp, { now = Date.now(), staleDays = 120 } = {}) {
+  if (!opp) return { state: "UNKNOWN", close_date: null, days_since_close: null };
+  if (opp.award && (opp.award.number || opp.award.amount)) {
+    return { state: "AWARDED", close_date: opp.response_deadline || null, days_since_close: _daysSince(opp.response_deadline, now) };
+  }
+
+  const first = String(opp.ptype || (opp.type || "").toLowerCase()[0] || "").toLowerCase();
+  const response = opp.response_deadline || null;
+  const inPast = _isInPast(response, now);
+
+  // RFI / Sources Sought
+  if (RFI_FIRST_LETTERS.includes(first)) {
+    if (inPast === false) return { state: "RFI_OPEN", close_date: response, days_since_close: null };
+    if (inPast === true) {
+      const since = _daysSince(response, now);
+      return {
+        state: since !== null && since <= staleDays ? "RFI_CLOSED_RECENT" : "RFI_CLOSED_STALE",
+        close_date: response,
+        days_since_close: since,
+      };
+    }
+    // No usable response date — fall through to UNKNOWN.
+  }
+
+  // Pre-Solicitation / Draft RFP
+  if (DRAFT_FIRST_LETTERS.includes(first)) {
+    return { state: "DRAFT_RFP", close_date: response || null, days_since_close: _daysSince(response, now) };
+  }
+
+  // RFP open / closed
+  if (RFP_OPEN_LETTERS.includes(first)) {
+    if (inPast === false) return { state: "RFP_OPEN", close_date: response, days_since_close: null };
+    if (inPast === true) return { state: "RFP_CLOSED", close_date: response, days_since_close: _daysSince(response, now) };
+  }
+
+  return { state: "UNKNOWN", close_date: response || null, days_since_close: _daysSince(response, now) };
+}
+
 module.exports = {
   searchUSASpending,
   getSpendingByCategory,
@@ -683,4 +774,5 @@ module.exports = {
   getAgencySpendingTotals,
   enrichWithFederalData,
   formatFederalDataContext,
+  deriveAcquisitionState,
 };

@@ -34,6 +34,8 @@ const {
   RECOMMENDATION_STATES,
 } = require("./company-alignment");
 const { getFlag } = require("./feature-flags");
+const { deriveAcquisitionState } = require("./federal-data-apis");
+const { buildMondayMove } = require("./monday-move");
 const fs = require("fs");
 const path = require("path");
 
@@ -607,6 +609,8 @@ async function scorePursuit({ keyword, agency, naics, subscriberContext }) {
   const PURSUIT_V2_ON = String(getFlag("PURSUIT_SCORE_V2") || "").toLowerCase() === "on";
   let combined;
   let recommendation = null;
+  let acquisitionState = null;
+  let mondayMove = [];
   if (PURSUIT_V2_ON) {
     recommendation = classifyRecommendationState(subscriberContext, {
       keyword,
@@ -619,6 +623,29 @@ async function scorePursuit({ keyword, agency, naics, subscriberContext }) {
     combined.recommendation = recommendation;
     // Preserve v1 capturePosition for UI back-compat
     combined.capturePosition = capturePosition;
+
+    // Sprint 9b Phase C — derive acquisition state from the top SAM
+    // opportunity (if any). Layer fed via federalResult.sam_opportunities.
+    const samOpps = (federalResult && federalResult.sam_opportunities && federalResult.sam_opportunities.opportunities) || [];
+    const topOpp = samOpps[0] || null;
+    if (topOpp) {
+      acquisitionState = deriveAcquisitionState(topOpp);
+    }
+
+    // Sprint 9b Phase D — Monday Move. Pure render off recommendation
+    // state + context + opportunity + signals + acquisition state.
+    // Empty array if state doesn't produce a template.
+    mondayMove = buildMondayMove({
+      state: recommendation.state,
+      context: subscriberContext,
+      opportunity: topOpp,
+      topic: keyword,
+      agency: resolvedAgency,
+      signals,
+      acquisition: acquisitionState,
+    });
+    combined.acquisition_state = acquisitionState;
+    combined.monday_move = mondayMove;
   } else {
     combined = combineVerdict({
       marketScore: totalScore,
