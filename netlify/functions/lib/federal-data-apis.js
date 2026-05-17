@@ -325,12 +325,14 @@ async function searchSAMOpportunities({ keyword, naics, agency, limit = 25, days
   };
 
   try {
-    const [primary, secondary] = await Promise.all([
-      callSam(primaryParams),
-      // Only fire secondary if we have a deptname (otherwise it's just
-      // a broader version of primary)
-      deptName ? callSam(secondaryParams) : Promise.resolve(null),
-    ]);
+    // Sprint 8c: drop the secondary deptname-only call when the primary
+    // returns >= 3 hits. The original SC-4 design always unioned primary
+    // + secondary, but on narrow queries (e.g., "DHA data governance"
+    // + DHA → deptname=DEPT OF DEFENSE) the deptname-only call dumped
+    // unrelated DoD Pre-Solicitations (Navy ship repairs, brake switches)
+    // that drowned the keyword-relevant primary hits. Now: primary
+    // first, only fall back to secondary when primary is thin.
+    const primary = await callSam(primaryParams);
 
     if (primary.__error) {
       console.error(primary.__error);
@@ -338,19 +340,33 @@ async function searchSAMOpportunities({ keyword, naics, agency, limit = 25, days
     }
 
     const primaryRaw = primary.opportunitiesData || primary.opportunities || [];
-    const secondaryRaw = (secondary && !secondary.__error)
-      ? (secondary.opportunitiesData || secondary.opportunities || [])
-      : [];
+    const PRIMARY_THRESHOLD = 3;
+    let secondary = null;
+    let secondaryRaw = [];
+    if (deptName && primaryRaw.length < PRIMARY_THRESHOLD) {
+      secondary = await callSam(secondaryParams).catch((e) => ({ __error: e && e.message ? e.message : String(e) }));
+      if (secondary && !secondary.__error) {
+        secondaryRaw = secondary.opportunitiesData || secondary.opportunities || [];
+      }
+    }
 
     // Union by noticeId — primary results win when both contain the same
-    // opportunity; secondary fills in recently-posted gaps.
+    // opportunity; secondary fills in recently-posted gaps. Secondary
+    // results carry _secondary=true so layer scoring can deprioritize
+    // them in future (not done in this sprint; documented for SC-9+).
     const seen = new Set();
     const union = [];
-    for (const o of [...primaryRaw, ...secondaryRaw]) {
+    for (const o of primaryRaw) {
       const id = o.noticeId;
       if (!id || seen.has(id)) continue;
       seen.add(id);
       union.push(mapOpp(o));
+    }
+    for (const o of secondaryRaw) {
+      const id = o.noticeId;
+      if (!id || seen.has(id)) continue;
+      seen.add(id);
+      union.push({ ...mapOpp(o), _secondary: true });
     }
 
     return {
