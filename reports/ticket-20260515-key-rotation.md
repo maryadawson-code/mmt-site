@@ -1,20 +1,25 @@
-# Ticket — Rotate Stripe + Supabase keys after env-list leak
+# Ticket — Rotate Stripe + Supabase + MarketPulse internal keys after transcript leaks
 
-Filed: 2026-05-15
+Filed: 2026-05-15 (Stripe + Supabase); appended 2026-05-19 (MARKETPULSE_INTERNAL_SECRET)
 Status: open
 Severity: high (production credentials in conversation transcript)
 Owner: Mary (manual, dashboard only — do not automate)
 
 ## Problem
 
-During the 2026-05-15 subscriber-audit session, an agent ran
-`netlify env:list --plain` inside the active shell, which prints the
-**values** of every environment variable (not just the names) to
-stdout. The conversation transcript and assistant context window
-therefore contain the live production values of multiple
-high-privilege secrets.
+Two separate transcript-leak incidents:
 
-Two keys must be rotated:
+**2026-05-15** — An agent ran `netlify env:list --plain` inside the
+active shell, which prints the **values** of every environment
+variable (not just the names) to stdout. Affected:
+`STRIPE_SECRET_KEY`, `SUPABASE_SERVICE_KEY`.
+
+**2026-05-19** — During verification of the `MARKETPULSE_INTERNAL_SECRET`
+gate (commit `a1fc099`), Mary pasted the literal value of
+`MARKETPULSE_INTERNAL_SECRET` into the chat to confirm setup. The
+secret is now in the same conversation/log surface as the May 15 leak.
+
+Three keys must be rotated:
 
 1. **`STRIPE_SECRET_KEY`** — full Stripe write access (creates
    customers, subscriptions, charges; access to all payment data).
@@ -78,6 +83,43 @@ chat, transcript, or shared terminal.
    `curl https://missionmeetstech.com/.netlify/functions/check-tier`
    with a known premium email). 200 response = good. 500/401 =
    redeploy hasn't propagated yet; wait 60s and retry.
+
+### MARKETPULSE_INTERNAL_SECRET (rotate third — appended 2026-05-19)
+
+This secret protects `netlify/functions/generate-tactical-brief-background.js`
+from direct unauthenticated POSTs that would otherwise drive
+Perplexity + Claude + Resend work without payment. The leak happened
+during gate verification — Mary pasted the literal value into the
+agent chat to confirm setup.
+
+1. **app.netlify.com/projects/curious-pony-0dec76** → **Site
+   configuration** → **Environment variables**.
+2. Locate `MARKETPULSE_INTERNAL_SECRET`. Click **Options** → **Edit value**.
+3. Paste a NEW random 64+ char string. Do not paste the new value into
+   any chat, terminal, or document afterward. Generate it locally with
+   `openssl rand -hex 32` or your password manager's secure-string
+   feature, then copy → paste → save → clear clipboard.
+4. **Deploys** → **Trigger deploy** → **Deploy site**. Required: warm
+   function instances cache `process.env` per-instance, so the new
+   value only reaches the runtime after a redeploy spawns fresh
+   workers. Verified empirically 2026-05-19: live function continued
+   to operate in open-mode after env-var add until the next deploy.
+5. Wait for the deploy to reach `ready`. After it lands, the gate is
+   strict-mode again and any direct unauthenticated POST to
+   `/.netlify/functions/generate-tactical-brief-background` will be
+   rejected before any Perplexity/Claude/email work.
+6. Behavioral verification (no real spend): POST without the header
+   to the background function with a `.invalid` TLD email and a
+   `session_id=verify_gate_strict_*` label. Expected outcome:
+   - HTTP 202 to caller (background-fn contract, doesn't reflect inner result)
+   - NO row inserted into `marketpulse_orders` (gate fires before
+     order-create)
+   - NO Perplexity API call counted
+7. Old secret value is invalidated automatically — no grace window
+   needed because all in-tree callers (`marketpulse-gateway`,
+   `tactical-brief-webhook`, `replay-tactical-brief-background`,
+   `scripts/mp-rescue-and-archive.js`) read the env at invocation,
+   so they pick up the new value on the same deploy.
 
 ### Post-rotation cleanup
 
