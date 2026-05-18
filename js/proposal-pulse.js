@@ -6,7 +6,11 @@ const STATUS_URL = '/.netlify/functions/score-status';
 const GOLD_TEAM_URL = '/.netlify/functions/gold-team-review-background';
 const CHECKOUT_URL = '/.netlify/functions/create-checkout';
 const FEEDBACK_URL = '/.netlify/functions/submit-feedback';
-const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB (matches backend limit)
+// 4MB matches Netlify synchronous-function body limit, the help.html
+// docs (MMT-101 in CLAUDE.md), and every visible "4MB max" caption on
+// the upload form. Prior 15MB allowed the browser to accept uploads
+// the gateway would then reject — confusing UX. 2026-05-19 final-fix.
+const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
 const POLL_INTERVAL_MS = 3000;  // Poll every 3 seconds
 const POLL_SOFT_TIMEOUT_MS = 180000; // 3 minute soft timeout
 const POLL_HARD_TIMEOUT_MS = 600000; // 10 minute hard timeout
@@ -461,8 +465,12 @@ async function submitDeck() {
 // ===== POLLING =====
 
 function showTimeoutMessage(type) {
-  const emailEl = document.getElementById('email');
-  const email = emailEl ? emailEl.value : 'your email';
+  // The email input id is "email-input" (per proposal-pulse.html:1231),
+  // not "email". The prior lookup always returned null, so the timeout
+  // message rendered the literal string "your email" instead of the
+  // customer's actual address. 2026-05-19 final-fix.
+  const emailEl = document.getElementById('email-input') || document.getElementById('email');
+  const email = (emailEl && emailEl.value) ? emailEl.value : 'your inbox';
   const container = document.getElementById('screen-processing');
   if (!container) return;
 

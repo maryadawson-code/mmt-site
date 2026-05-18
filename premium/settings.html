@@ -85,7 +85,7 @@
         <div class="dash-card">
           <h3>Subscription</h3>
           <p style="margin:0 0 12px; color:var(--mmt-text-secondary); font-size:14px;">Manage your subscription, update payment method, or cancel.</p>
-          <a href="https://billing.stripe.com/p/login/7sY28f3vn9N4aAwaEE" style="display:inline-block;background:var(--mmt-navy);color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px;">Manage in Stripe &rarr;</a>
+          <a href="#manage-billing" onclick='event.preventDefault(); var em=(localStorage.getItem("mmt_email")||""); if(!em){alert("Sign in to your dashboard first to manage billing."); return;} this.textContent="Loading…"; fetch("/.netlify/functions/billing-portal",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:em})}).then(function(r){return r.json();}).then(function(d){if(d&&d.url){location.href=d.url;}else{alert((d&&d.error)||"Could not start billing portal"); this.textContent="Manage in Stripe →";}}).catch(function(){alert("Network error. Try again.");});' style="display:inline-block;background:var(--mmt-navy);color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px;">Manage in Stripe &rarr;</a>
         </div>
         <div class="dash-card">
           <h3>Tool Discounts</h3>
@@ -205,7 +205,7 @@
             </div>
             <div style="display:flex;align-items:center;justify-content:space-between;">
               <span style="font-size:14px;">Manage billing / cancel</span>
-              <a href="https://billing.stripe.com/p/login/7sY28f3vn9N4aAwaEE" style="font-size:13px;font-weight:600;color:var(--mmt-teal);text-decoration:none;">Stripe Portal &rarr;</a>
+              <a href="#manage-billing" onclick='event.preventDefault(); var em=(localStorage.getItem("mmt_email")||""); if(!em){alert("Sign in to your dashboard first to manage billing."); return;} this.textContent="Loading…"; fetch("/.netlify/functions/billing-portal",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:em})}).then(function(r){return r.json();}).then(function(d){if(d&&d.url){location.href=d.url;}else{alert((d&&d.error)||"Could not start billing portal"); this.textContent="Manage in Stripe →";}}).catch(function(){alert("Network error. Try again.");});' style="font-size:13px;font-weight:600;color:var(--mmt-teal);text-decoration:none;">Stripe Portal &rarr;</a>
             </div>
             <div style="display:flex;align-items:center;justify-content:space-between;">
               <span style="font-size:14px;">Questions</span>

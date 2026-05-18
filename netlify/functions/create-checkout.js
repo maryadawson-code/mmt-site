@@ -62,7 +62,12 @@ exports.handler = async (event) => {
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
     const { data: user, error: userErr } = await supabase
       .from("mp_users")
-      .select("id, stripe_customer_id, subscription_tier, subscription_status")
+      // Premium-discount logic below references founding_member and tier.
+      // Without selecting them, the columns come back undefined and the
+      // !premium branch fires for legacy paid/founding/admin users, so
+      // they got charged the standard $19.99 instead of the $14.99
+      // member rate. Confirmed by review 2026-05-19.
+      .select("id, stripe_customer_id, subscription_tier, subscription_status, founding_member, tier")
       .eq("email", email)
       .single();
 

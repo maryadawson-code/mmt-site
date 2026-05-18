@@ -230,6 +230,8 @@ exports.handler = wrapHandler(async (event) => {
       });
 
       const bgUrl = `${SITE_URL}/.netlify/functions/generate-tactical-brief-background`;
+      let bgAccepted = false;
+      let bgFailureReason = null;
       try {
         const bgResult = await new Promise((resolve, reject) => {
           const url = new URL(bgUrl);
@@ -253,11 +255,46 @@ exports.handler = wrapHandler(async (event) => {
           req.write(payload);
           req.end();
         });
-        if (bgResult !== 202 && bgResult !== 200 && bgResult !== "timeout-ok") {
+        if (bgResult === 202 || bgResult === 200 || bgResult === "timeout-ok") {
+          bgAccepted = true;
+        } else {
+          bgFailureReason = `background_returned_${bgResult}`;
           console.error(`marketpulse-gateway: background returned unexpected status ${bgResult}`);
         }
       } catch (bgErr) {
+        bgFailureReason = `background_trigger_threw: ${bgErr.message}`;
         console.error("marketpulse-gateway: background trigger error:", bgErr.message);
+      }
+
+      if (!bgAccepted) {
+        // Don't show the user "success" when nothing was actually queued.
+        // Roll the free-use counter back so the customer isn't charged a
+        // free use against a request that never ran.
+        try {
+          await supabase
+            .from("marketpulse_usage")
+            .update({ reports_used: usage.reports_used })
+            .eq("id", usage.id);
+          await supabase.from("ops_events").insert({
+            event_type: "marketpulse_background_trigger_failed",
+            severity: "error",
+            signature: "marketpulse_billing",
+            source_function: "marketpulse-gateway",
+            affected_entity: email,
+            details: { email, reason: bgFailureReason, rolled_back_reports_used: true },
+          });
+        } catch (_) { /* best-effort */ }
+        return {
+          statusCode: 502,
+          headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "error",
+            error: "background_trigger_failed",
+            message: "We couldn't start your report just now. Please try again in a minute, or email support@missionmeetstech.com if it keeps failing.",
+            retry: true,
+            contact_email: "support@missionmeetstech.com",
+          }),
+        };
       }
 
       return {

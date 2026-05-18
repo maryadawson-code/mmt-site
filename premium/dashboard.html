@@ -213,7 +213,7 @@
         <div class="dash-card">
           <h3>Account</h3>
           <p style="margin:0; color:var(--mmt-text-secondary); font-size:14px;">
-            Manage your subscription, update billing, or cancel: <a href="https://billing.stripe.com/p/login/7sY28f3vn9N4aAwaEE" style="color:var(--mmt-teal);">Stripe Customer Portal &rarr;</a>
+            Manage your subscription, update billing, or cancel: <a href="#manage-billing" onclick='event.preventDefault(); var em=(localStorage.getItem("mmt_email")||""); if(!em){alert("Sign in to your dashboard first to manage billing."); return;} this.textContent="Loading…"; fetch("/.netlify/functions/billing-portal",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:em})}).then(function(r){return r.json();}).then(function(d){if(d&&d.url){location.href=d.url;}else{alert((d&&d.error)||"Could not start billing portal"); this.textContent="Manage in Stripe →";}}).catch(function(){alert("Network error. Try again.");});' style="color:var(--mmt-teal);">Stripe Customer Portal &rarr;</a>
           </p>
         </div>
       </div>

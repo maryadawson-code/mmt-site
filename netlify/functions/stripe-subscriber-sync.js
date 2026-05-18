@@ -27,6 +27,17 @@
 const { createClient } = require("@supabase/supabase-js");
 const Stripe = require("stripe");
 
+// 2026-05-19 final-fix sprint: env-var aliases unified in
+// lib/stripe-price-classification.js. Keep these so the rest of the
+// file (status reports, log lines) still has the named refs available.
+const {
+  getFoundingPriceIds,
+  getPremiumNonFoundingPriceIds,
+  getAllMmtPremiumPriceIds,
+  classifySubscription,
+  buildUnclassifiedOpsRow,
+} = require("./lib/stripe-price-classification");
+
 const STRIPE_PRICE_FOUNDING = process.env.STRIPE_PRICE_FOUNDING;
 const STRIPE_PRICE_FOUNDING_YEARLY = process.env.STRIPE_PRICE_FOUNDING_YEARLY;
 const STRIPE_PRICE_FOUNDING_MONTHLY = process.env.STRIPE_PRICE_FOUNDING_MONTHLY;
@@ -34,32 +45,20 @@ const STRIPE_PRICE_FOUNDING_ANNUAL = process.env.STRIPE_PRICE_FOUNDING_ANNUAL;
 const STRIPE_PRICE_PREMIUM_MONTHLY = process.env.STRIPE_PRICE_PREMIUM_MONTHLY;
 const STRIPE_PRICE_PREMIUM_ANNUAL = process.env.STRIPE_PRICE_PREMIUM_ANNUAL;
 
-const FOUNDING_PRICE_IDS = [
-  STRIPE_PRICE_FOUNDING_YEARLY,
-  STRIPE_PRICE_FOUNDING_MONTHLY,
-  STRIPE_PRICE_FOUNDING_ANNUAL,
-  STRIPE_PRICE_FOUNDING,
-].filter(Boolean);
-const PREMIUM_NONFOUNDING_PRICE_IDS = [
-  STRIPE_PRICE_PREMIUM_MONTHLY,
-  STRIPE_PRICE_PREMIUM_ANNUAL,
-].filter(Boolean);
-const ALL_MMT_PREMIUM_PRICE_IDS = [...FOUNDING_PRICE_IDS, ...PREMIUM_NONFOUNDING_PRICE_IDS];
+// Delegated to the centralized helper. Behavior preserved: founding
+// price IDs return "mmt_premium_founding" so existing DB writes match.
+const FOUNDING_PRICE_IDS = getFoundingPriceIds();
+const PREMIUM_NONFOUNDING_PRICE_IDS = getPremiumNonFoundingPriceIds();
+const ALL_MMT_PREMIUM_PRICE_IDS = getAllMmtPremiumPriceIds();
 
 function classifyTier(sub) {
-  if (!sub || !sub.items || !Array.isArray(sub.items.data)) return null;
-  for (const item of sub.items.data) {
-    const pid = item && item.price && item.price.id;
-    if (!pid) continue;
-    if (FOUNDING_PRICE_IDS.includes(pid)) return "mmt_premium_founding";
-    if (PREMIUM_NONFOUNDING_PRICE_IDS.includes(pid)) return "premium";
-  }
-  return null;
+  const { tier } = classifySubscription(sub);
+  if (tier === "founding") return "mmt_premium_founding";
+  return tier; // "premium" | "institutional" | null
 }
 
 function isFoundingPrice(sub) {
-  if (!sub || !sub.items || !Array.isArray(sub.items.data)) return false;
-  return sub.items.data.some((item) => item && item.price && FOUNDING_PRICE_IDS.includes(item.price.id));
+  return classifySubscription(sub).tier === "founding";
 }
 
 exports.handler = async () => {
@@ -110,6 +109,18 @@ exports.handler = async () => {
     if (!email) { skipped_no_email++; continue; }
     const tier = classifyTier(sub);
     const isFounding = isFoundingPrice(sub);
+    // 2026-05-19 final-fix sprint #7: surface "MMT-looking but unclassified"
+    // subscriptions as a loud, actionable ops_event so a new Stripe price
+    // ID never silently breaks welcome / reconciliation / sync. This fires
+    // only when isMmtEvent() upstream said "yes, MMT" but classifyTier
+    // came back null — i.e. a real Stripe price drift.
+    if (!tier) {
+      try {
+        await supabase.from("ops_events").insert(
+          buildUnclassifiedOpsRow(sub, { source_function: "stripe-subscriber-sync", email })
+        );
+      } catch (_) { /* best-effort */ }
+    }
     const cur = existingMap[email];
     const needsUpsert =
       !cur ||
