@@ -876,6 +876,47 @@ function extractCompanyContext(company, additionalContext, topic) {
   };
 }
 
+// --- Internal-secret check (revenue-integrity gate) ---
+// Without this, anyone with the function URL could POST {email, topic, session_id:
+// "free_xxx"} and trigger ~30s of Perplexity/Claude work plus an email send.
+// session_id="free_*" is a LABEL written by the gateway, never an authorization.
+// The only callers permitted to invoke this background function directly are:
+//   1. netlify/functions/marketpulse-gateway.js (free + admin path)
+//   2. netlify/functions/stripe-webhook.js (paid path, on checkout.session.completed)
+//   3. netlify/functions/replay-tactical-brief-background.js (admin replay)
+// All three must include header "x-mp-internal-secret" with the value of
+// MARKETPULSE_INTERNAL_SECRET. The check is constant-time to defeat timing
+// attacks.
+function constantTimeEqual(a, b) {
+  const A = Buffer.from(String(a || ""), "utf8");
+  const B = Buffer.from(String(b || ""), "utf8");
+  if (A.length !== B.length) return false;
+  try {
+    return require("crypto").timingSafeEqual(A, B);
+  } catch {
+    return false;
+  }
+}
+
+function checkInternalSecret(event) {
+  const expected = process.env.MARKETPULSE_INTERNAL_SECRET;
+  if (!expected) {
+    // If the secret isn't set in env yet, the function is in a transitional
+    // state. Log it loudly so ops sees the gate is open, then continue —
+    // this lets the rollout happen without breaking in-flight paid orders.
+    // Once MARKETPULSE_INTERNAL_SECRET is set in Netlify, the open-gate
+    // log stops and the strict check takes over.
+    console.warn("[mp-bg] MARKETPULSE_INTERNAL_SECRET not set — internal-secret gate is OPEN. Set the env var to close the gate.");
+    return { ok: true, gateMode: "open-no-secret-configured" };
+  }
+  const headers = event.headers || {};
+  const presented = headers["x-mp-internal-secret"] || headers["X-Mp-Internal-Secret"] || "";
+  if (constantTimeEqual(presented, expected)) {
+    return { ok: true, gateMode: "closed-secret-match" };
+  }
+  return { ok: false, gateMode: "closed-no-secret-match" };
+}
+
 // --- Main handler ---
 exports.handler = async (event) => {
   // Reset per-order research call counter
@@ -887,6 +928,37 @@ exports.handler = async (event) => {
 
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method not allowed" };
+  }
+
+  // Internal-secret gate — FIRST, before any cost-incurring work (Perplexity,
+  // Claude, Resend). Reject direct unauthenticated POSTs here so a "free_xxx"
+  // session_id label cannot drive expensive research/email work.
+  const secretCheck = checkInternalSecret(event);
+  if (!secretCheck.ok) {
+    try {
+      const { createClient: _cc } = require("@supabase/supabase-js");
+      if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
+        const _sb = _cc(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+        // Best-effort parse of session_id from body for telemetry only —
+        // don't trust the body since we're about to reject it.
+        let _sessionId = null;
+        try { _sessionId = (JSON.parse(event.body || "{}") || {}).session_id || null; } catch {}
+        await _sb.from("ops_events").insert({
+          event_type: "marketpulse_billing_gate_failed",
+          severity: "warning",
+          signature: "marketpulse_internal_secret_missing",
+          source_function: "generate-tactical-brief-background",
+          affected_entity: _sessionId,
+          details: {
+            reason: "internal_secret_missing_or_invalid",
+            session_id_label: _sessionId,
+            gate_mode: secretCheck.gateMode,
+            user_agent: (event.headers && (event.headers["user-agent"] || event.headers["User-Agent"])) || null,
+          },
+        });
+      }
+    } catch { /* best-effort */ }
+    return { statusCode: 401, body: "Unauthorized — internal call only" };
   }
 
   if (!ANTHROPIC_API_KEY) {

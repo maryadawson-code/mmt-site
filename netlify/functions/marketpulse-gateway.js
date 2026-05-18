@@ -148,6 +148,7 @@ exports.handler = wrapHandler(async (event) => {
               headers: {
                 "Content-Type": "application/json",
                 "Content-Length": Buffer.byteLength(payload),
+                ...(process.env.MARKETPULSE_INTERNAL_SECRET ? { "x-mp-internal-secret": process.env.MARKETPULSE_INTERNAL_SECRET } : {}),
               },
               timeout: 5000,
             },
@@ -203,6 +204,18 @@ exports.handler = wrapHandler(async (event) => {
         .update({ reports_used: usage.reports_used + 1 })
         .eq("id", usage.id);
 
+      // Revenue-integrity telemetry — free entitlement consumed.
+      try {
+        await supabase.from("ops_events").insert({
+          event_type: "marketpulse_free_entitlement_used",
+          severity: "info",
+          signature: "marketpulse_billing",
+          source_function: "marketpulse-gateway",
+          affected_entity: email,
+          details: { email, reports_used_before: usage.reports_used, reports_used_after: usage.reports_used + 1 },
+        });
+      } catch (_) { /* best-effort */ }
+
       // Trigger background generation
       const https = require("https");
       const payload = JSON.stringify({
@@ -229,6 +242,7 @@ exports.handler = wrapHandler(async (event) => {
               headers: {
                 "Content-Type": "application/json",
                 "Content-Length": Buffer.byteLength(payload),
+                ...(process.env.MARKETPULSE_INTERNAL_SECRET ? { "x-mp-internal-secret": process.env.MARKETPULSE_INTERNAL_SECRET } : {}),
               },
               timeout: 30000, // 30s — enough for background function to accept (returns 202)
             },
@@ -325,7 +339,11 @@ async function createCheckoutSession({ name, email, company, topic, audience, ad
       },
     ],
     metadata: {
+      app: "mmt",
       product: "tactical_brief",
+      feature: "marketpulse",
+      price_cents: String(unitAmount),
+      price_tier: isPremium ? "premium" : "standard",
       customer_name: truncate(name, 500),
       customer_email: email,
       company: truncate(company, 500),
@@ -336,6 +354,25 @@ async function createCheckoutSession({ name, email, company, topic, audience, ad
     success_url: `${SITE_URL}/tactical-brief-confirmed.html?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${SITE_URL}/marketpulse.html?cancelled=true`,
   });
+
+  // Revenue-integrity telemetry — paired with marketpulse_checkout_completed
+  // emitted by tactical-brief-webhook.js on Stripe payment confirmation.
+  try {
+    await supabase.from("ops_events").insert({
+      event_type: "marketpulse_checkout_started",
+      severity: "info",
+      signature: "marketpulse_billing",
+      source_function: "marketpulse-gateway",
+      affected_entity: session.id,
+      details: {
+        email,
+        stripe_session_id: session.id,
+        price_cents: unitAmount,
+        price_tier: isPremium ? "premium" : "standard",
+        is_premium: isPremium,
+      },
+    });
+  } catch (_) { /* best-effort */ }
 
   return {
     statusCode: 200,

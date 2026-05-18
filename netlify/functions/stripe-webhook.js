@@ -330,6 +330,14 @@ exports.handler = async (event) => {
                 severity: "error",
                 payload: { email: normalizedEmail, user_id: user.id, err: updateErr.message, session_id: session.id },
               });
+              await supabase.from("ops_events").insert({
+                event_type: "proposalpulse_paid_entitlement_failed",
+                severity: "error",
+                signature: "proposalpulse_billing",
+                source_function: "stripe-webhook",
+                affected_entity: session.id,
+                details: { email: normalizedEmail, mp_user_id: user.id, stripe_session_id: session.id, error: updateErr.message },
+              });
             } catch (_) {}
             return { statusCode: 200, body: JSON.stringify({ received: true, warning: "usage update failed; logged" }) };
           }
@@ -340,6 +348,33 @@ exports.handler = async (event) => {
           await upsertCustomer(supabase, { email: normalizedEmail, stripeCustomerId: session.customer, product: 'proposalpulse', amountCents: 1999 });
           await logCustomerEvent(supabase, { email: normalizedEmail, eventType: 'purchase', product: 'proposalpulse', amountCents: 1999 });
         } catch (_syncErr) { console.error("stripe-webhook: customer sync failed:", _syncErr.message); }
+
+        // Revenue-integrity telemetry pair (proposalpulse_checkout_started
+        // is emitted by create-checkout.js; this is its mate).
+        try {
+          await supabase.from("ops_events").insert({
+            event_type: "proposalpulse_checkout_completed",
+            severity: "info",
+            signature: "proposalpulse_billing",
+            source_function: "stripe-webhook",
+            affected_entity: session.id,
+            details: {
+              email: normalizedEmail,
+              mp_user_id: user.id,
+              stripe_session_id: session.id,
+              amount_cents: session.amount_total || 1999,
+              price_tier: (session.metadata && session.metadata.price_tier) || "unknown",
+            },
+          });
+          await supabase.from("ops_events").insert({
+            event_type: "proposalpulse_paid_entitlement_granted",
+            severity: "info",
+            signature: "proposalpulse_billing",
+            source_function: "stripe-webhook",
+            affected_entity: session.id,
+            details: { email: normalizedEmail, mp_user_id: user.id, uses_added: 1 },
+          });
+        } catch (_) { /* best-effort telemetry */ }
 
         await recordEventProcessed();
         return { statusCode: 200, body: JSON.stringify({ received: true }) };

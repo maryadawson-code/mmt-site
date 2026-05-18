@@ -281,9 +281,13 @@ exports.handler = async (event) => {
 
   try {
     const fnUrl = `${SITE_URL}/.netlify/functions/generate-tactical-brief-background`;
+    const replayHeaders = { "Content-Type": "application/json" };
+    if (process.env.MARKETPULSE_INTERNAL_SECRET) {
+      replayHeaders["x-mp-internal-secret"] = process.env.MARKETPULSE_INTERNAL_SECRET;
+    }
     const resp = await fetchWithTimeout(fnUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: replayHeaders,
       body: JSON.stringify(payload),
     }, 30000);
 

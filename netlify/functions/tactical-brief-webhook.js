@@ -63,6 +63,28 @@ exports.handler = async (event) => {
 
   console.log(`tactical-brief-webhook: triggering generation for ${payload.email} (session ${session.id})`);
 
+  // Revenue-integrity telemetry — paired with marketpulse_checkout_started
+  // emitted by marketpulse-gateway.js.
+  try {
+    const { createClient } = require("@supabase/supabase-js");
+    if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
+      const _sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+      await _sb.from("ops_events").insert({
+        event_type: "marketpulse_checkout_completed",
+        severity: "info",
+        signature: "marketpulse_billing",
+        source_function: "tactical-brief-webhook",
+        affected_entity: session.id,
+        details: {
+          email: payload.email,
+          stripe_session_id: session.id,
+          amount_cents: session.amount_total,
+          price_tier: meta.price_tier || "standard",
+        },
+      });
+    }
+  } catch (_) { /* best-effort */ }
+
   // Fire-and-forget: trigger background generation function
   try {
     const bgUrl = `${SITE_URL}/.netlify/functions/generate-tactical-brief-background`;
@@ -79,6 +101,7 @@ exports.handler = async (event) => {
           headers: {
             "Content-Type": "application/json",
             "Content-Length": Buffer.byteLength(postData),
+                ...(process.env.MARKETPULSE_INTERNAL_SECRET ? { "x-mp-internal-secret": process.env.MARKETPULSE_INTERNAL_SECRET } : {}),
           },
           timeout: 30000, // 30s — enough for background function to accept and return 202
         },

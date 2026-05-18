@@ -381,8 +381,28 @@ exports.handler = wrapHandler(async (event) => {
       };
     }
 
-    // Check remaining uses (free tier gate)
+    // Check remaining uses (free tier gate). This MUST fire before any
+    // extraction/scoring/model call — revenue integrity rule. Free users
+    // get exactly 1 completed assessment; #2 routes through Stripe
+    // checkout (create-checkout.js) which grants +1 use via webhook.
     if (user.tier === "free" && usage.uses_remaining <= 0) {
+      // Log the limit hit so the weekly billing report can correlate it
+      // against subsequent checkout starts. Non-fatal if it fails.
+      try {
+        await supabase.from("ops_events").insert({
+          event_type: "proposalpulse_limit_hit",
+          severity: "info",
+          signature: "proposalpulse_billing",
+          source_function: "score-deck",
+          affected_entity: user.id,
+          details: {
+            email,
+            mp_user_id: user.id,
+            uses_remaining: 0,
+            checkout_url: "https://missionmeetstech.com/proposal-pulse.html#upgrade",
+          },
+        });
+      } catch (_) { /* non-fatal */ }
       return {
         statusCode: 403,
         headers: CORS_HEADERS,
@@ -390,6 +410,10 @@ exports.handler = wrapHandler(async (event) => {
           error: "limit_reached",
           message: "You've used your free assessment. Upgrade to score another proposal.",
           uses_remaining: 0,
+          // Frontend reads `checkout_endpoint` so the over-limit modal can
+          // POST { email } and get back a working Stripe checkout URL —
+          // no dead-end "contact support" path.
+          checkout_endpoint: "/.netlify/functions/create-checkout",
         }),
       };
     }

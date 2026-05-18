@@ -16,13 +16,12 @@ function esc(s) {
   );
 }
 
-function firstNameFromEmail(email) {
-  if (!email) return null;
-  const local = (email || "").split("@")[0] || "";
-  const token = local.replace(/[._-]+/g, " ").replace(/\d+/g, " ").trim().split(" ")[0];
-  if (!token) return null;
-  return token.charAt(0).toUpperCase() + token.slice(1).toLowerCase();
-}
+// Per 2026-05-19 revenue-integrity sprint: email local-part is NOT a name.
+// Return null so the upstream `|| "there"` fallback fires. Welcome callers
+// should pass `opts.name` from Stripe customer or mp_users.full_name when
+// they have a real name; an inferred local-part like "j.q.public" produces
+// awkward "Welcome, j q public" copy.
+function firstNameFromEmail(_email) { return null; }
 
 /**
  * Build the tester-comp welcome email.

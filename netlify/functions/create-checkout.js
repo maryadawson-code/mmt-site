@@ -104,6 +104,7 @@ exports.handler = async (event) => {
       user.tier === "paid";
     const unitAmount = isPremium ? PREMIUM_PRICE_CENTS : PRICE_CENTS;
     const priceLabel = isPremium ? "$14.99 (Premium discount)" : "$19.99";
+    const priceTier = isPremium ? "premium" : "standard";
 
     // --- Create Checkout Session ---
     const session = await stripe.checkout.sessions.create({
@@ -124,7 +125,15 @@ exports.handler = async (event) => {
           quantity: 1,
         },
       ],
+      // Stripe metadata: revenue-integrity audit trail. Webhook (and weekly
+      // billing report) read `app` + `product` + `feature` + `price_tier`
+      // to classify the payment back to the right entitlement grant.
       metadata: {
+        app: "mmt",
+        product: "proposalpulse",
+        feature: "lethality_test",
+        price_cents: String(unitAmount),
+        price_tier: priceTier,
         user_email: email,
         mp_user_id: user.id,
       },
@@ -132,13 +141,47 @@ exports.handler = async (event) => {
       cancel_url: `${SITE_URL}/proposal-pulse.html?cancelled=true`,
     });
 
+    // Log proposalpulse_checkout_started — webhook will log _completed when
+    // Stripe fires checkout.session.completed. The pair lets the weekly
+    // report compute "checkout starts → paid conversions" by product.
+    try {
+      await supabase.from("ops_events").insert({
+        event_type: "proposalpulse_checkout_started",
+        severity: "info",
+        signature: "proposalpulse_billing",
+        source_function: "create-checkout",
+        affected_entity: session.id,
+        details: {
+          email,
+          mp_user_id: user.id,
+          stripe_session_id: session.id,
+          stripe_customer_id: customerId,
+          price_cents: unitAmount,
+          price_tier: priceTier,
+          is_premium: isPremium,
+        },
+      });
+    } catch (logErr) {
+      console.warn("create-checkout: ops_events log failed:", logErr.message);
+    }
+
     return {
       statusCode: 200,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
-      body: JSON.stringify({ url: session.url }),
+      body: JSON.stringify({ url: session.url, price_cents: unitAmount, price_tier: priceTier }),
     };
   } catch (err) {
     console.error("create-checkout error:", err);
+    try {
+      const supabase2 = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+      await supabase2.from("ops_events").insert({
+        event_type: "proposalpulse_checkout_failed",
+        severity: "error",
+        signature: "proposalpulse_billing",
+        source_function: "create-checkout",
+        details: { error: String(err.message || err).slice(0, 500) },
+      });
+    } catch (_) { /* best-effort */ }
     return {
       statusCode: 500,
       headers: CORS_HEADERS,

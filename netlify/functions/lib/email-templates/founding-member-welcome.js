@@ -15,14 +15,11 @@ function esc(s) {
   );
 }
 
-function firstNameFromEmail(email) {
-  if (!email) return null;
-  const local = email.split("@")[0] || "";
-  // Strip digits and common separators; capitalize first token
-  const token = local.replace(/[._-]+/g, " ").replace(/\d+/g, " ").trim().split(" ")[0];
-  if (!token) return null;
-  return token.charAt(0).toUpperCase() + token.slice(1).toLowerCase();
-}
+// Per 2026-05-19 revenue-integrity sprint: email local-part is NOT a name.
+// Return null so the upstream `|| "there"` fallback fires. Welcome callers
+// should pass `opts.firstName` from Stripe customer or mp_users.full_name
+// when they have a real name.
+function firstNameFromEmail(_email) { return null; }
 
 /**
  * Build the founding-member welcome email.

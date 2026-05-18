@@ -98,6 +98,50 @@ async function _handler(event) {
       .select("*", { count: "exact", head: true })
       .eq("feature", FEATURE_NAME);
 
+    // --- Per-product billing telemetry from ops_events (2026-05-19) ---
+    // Surfaces revenue leakage: more model runs than free+paid entitlements
+    // = unpaid work happening somewhere. Counts come from the explicit
+    // ops_events written by create-checkout / stripe-webhook / score-deck /
+    // marketpulse-gateway / tactical-brief-webhook / generate-tactical-brief-
+    // background. Any product whose model-run count > free_uses + paid_grants
+    // gets `revenue_leak: true`.
+    async function _opsCount(eventTypes, since) {
+      try {
+        const { count } = await supabase
+          .from("ops_events")
+          .select("*", { count: "exact", head: true })
+          .in("event_type", Array.isArray(eventTypes) ? eventTypes : [eventTypes])
+          .gte("created_at", since);
+        return count || 0;
+      } catch { return 0; }
+    }
+    const billing = {
+      proposalpulse: {
+        limit_hits: await _opsCount("proposalpulse_limit_hit", weekStart),
+        checkout_started: await _opsCount("proposalpulse_checkout_started", weekStart),
+        checkout_completed: await _opsCount("proposalpulse_checkout_completed", weekStart),
+        paid_grants: await _opsCount("proposalpulse_paid_entitlement_granted", weekStart),
+        paid_grant_failures: await _opsCount("proposalpulse_paid_entitlement_failed", weekStart),
+        model_runs: totalAssessments,
+      },
+      marketpulse: {
+        free_used: await _opsCount("marketpulse_free_entitlement_used", weekStart),
+        checkout_started: await _opsCount("marketpulse_checkout_started", weekStart),
+        checkout_completed: await _opsCount("marketpulse_checkout_completed", weekStart),
+        billing_gate_failures: await _opsCount("marketpulse_billing_gate_failed", weekStart),
+        admin_holds_archived: await _opsCount("marketpulse_admin_hold_archived", weekStart),
+        orders_rescued: await _opsCount("marketpulse_order_rescued", weekStart),
+        orders_terminal_failed: await _opsCount("marketpulse_order_terminal_failed", weekStart),
+      },
+    };
+    // Revenue-leak heuristic: if completed model runs exceed (free + paid
+    // grants) for either product, something is doing unpaid work.
+    billing.proposalpulse.revenue_leak =
+      billing.proposalpulse.model_runs >
+      (1 * (newUsers || 0)) + billing.proposalpulse.paid_grants;
+    billing.marketpulse.revenue_leak =
+      billing.marketpulse.billing_gate_failures > 0;
+
     // --- Build and send report ---
     const stats = {
       newUsers: newUsers || 0,
@@ -110,6 +154,9 @@ async function _handler(event) {
       allTimeAssessments: allTimeAssessments || 0,
       weekStart,
       weekEnd,
+      // Surfaced inside buildWeeklyReportHtml — non-breaking addition.
+      // The template may add a section if `billing` is present.
+      billing,
     };
 
     const html = buildWeeklyReportHtml(stats);
