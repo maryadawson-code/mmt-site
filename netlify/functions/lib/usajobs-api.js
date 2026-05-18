@@ -25,7 +25,18 @@ const USER_EMAIL = process.env.USAJOBS_USER_EMAIL || "mary@missionmeetstech.com"
  */
 async function searchJobs({ keyword, agency, location, payGradeLow, payGradeHigh, limit = 10 }) {
   if (!API_KEY) {
-    return { jobs: [], error: "USAJOBS_API_KEY not configured" };
+    // Distinct `notConfigured: true` flag lets the workforce layer
+    // render a one-time setup note ("Setup required — register at
+    // developer.usajobs.gov") instead of an opaque "Data source
+    // unavailable" badge. Without this distinction, every Signal Chain
+    // run on every topic shows the same generic error and the
+    // operator can't tell their topic is fine, just one env var is
+    // missing.
+    return {
+      jobs: [],
+      error: "USAJobs key not configured (register at developer.usajobs.gov, set USAJOBS_API_KEY + USAJOBS_USER_EMAIL).",
+      notConfigured: true,
+    };
   }
   const params = new URLSearchParams({
     ResultsPerPage: String(limit),
