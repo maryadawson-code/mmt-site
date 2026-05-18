@@ -3767,6 +3767,33 @@ ${innerHtml}
     console.log(`Copied ${briefFiles.length} premium-brief PDF(s)`);
   }
 
+  // Copy newsletter article images (static/images/newsletter/<date>/*.{png,jpg,...}).
+  // Each newsletter that ships inline images stages them under
+  // static/images/newsletter/YYYY-MM-DD/ and references them from the
+  // article markdown as /images/newsletter/YYYY-MM-DD/<file>. This step
+  // mirrors the static/premium-briefs PDF copy convention.
+  const newsletterImgRoot = path.join(__dirname, 'static', 'images', 'newsletter');
+  const distNewsletterImgRoot = path.join(DIST_DIR, 'images', 'newsletter');
+  if (fs.existsSync(newsletterImgRoot)) {
+    const imgExts = ['.png', '.jpg', '.jpeg', '.svg', '.webp', '.gif'];
+    let imgCount = 0;
+    const issueDirs = fs.readdirSync(newsletterImgRoot, { withFileTypes: true })
+      .filter(d => d.isDirectory())
+      .map(d => d.name);
+    issueDirs.forEach(issue => {
+      const srcDir = path.join(newsletterImgRoot, issue);
+      const destDir = path.join(distNewsletterImgRoot, issue);
+      ensureDir(destDir);
+      fs.readdirSync(srcDir).forEach(f => {
+        if (imgExts.includes(path.extname(f).toLowerCase())) {
+          fs.copyFileSync(path.join(srcDir, f), path.join(destDir, f));
+          imgCount++;
+        }
+      });
+    });
+    if (imgCount > 0) console.log(`Copied ${imgCount} newsletter image(s) across ${issueDirs.length} issue(s)`);
+  }
+
   // NOTE: dist/premium/<file>.html is written by the subDirPages loop
   // earlier in this function with full BUILD: marker substitution and
   // dashboard-shell injection. Do NOT also copy premium/*.html verbatim
