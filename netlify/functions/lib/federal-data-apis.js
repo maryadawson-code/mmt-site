@@ -314,11 +314,27 @@ async function searchSAMOpportunities({ keyword, naics, agency, limit = 25, days
     });
     if (!res.ok) {
       let detail = "";
+      let parsed = null;
       try {
         const body = await res.text();
-        try { detail = (JSON.parse(body).message || body).slice(0, 200); }
+        try { parsed = JSON.parse(body); detail = (parsed.message || body).slice(0, 200); }
         catch { detail = body.slice(0, 200); }
       } catch { /* ignore */ }
+      // Detect SAM rate-limit / quota-exceeded — SAM signals it via
+      // HTTP 429 OR via HTTP 4xx with code "900804" + nextAccessTime.
+      // Returning a typed throttle marker lets the contract layer
+      // distinguish "quota exhausted, will reset" from a true outage —
+      // very different subscriber UX (amber "resets <date>" badge vs.
+      // red "data source unavailable" badge).
+      const isThrottle = res.status === 429 || (parsed && parsed.code === "900804");
+      if (isThrottle) {
+        return {
+          __error: `SAM.gov rate-limit (quota exceeded). Resets: ${parsed && parsed.nextAccessTime ? parsed.nextAccessTime : "unknown"}.`,
+          __status: res.status,
+          __rateLimited: true,
+          __resetAt: parsed && parsed.nextAccessTime ? parsed.nextAccessTime : null,
+        };
+      }
       return { __error: `SAM.gov API ${res.status}${detail ? `: ${detail}` : ""}`, __status: res.status };
     }
     return res.json();
@@ -336,7 +352,14 @@ async function searchSAMOpportunities({ keyword, naics, agency, limit = 25, days
 
     if (primary.__error) {
       console.error(primary.__error);
-      return { opportunities: [], total: 0, error: primary.__error, status: primary.__status };
+      return {
+        opportunities: [],
+        total: 0,
+        error: primary.__error,
+        status: primary.__status,
+        rateLimited: !!primary.__rateLimited,
+        resetAt: primary.__resetAt || null,
+      };
     }
 
     const primaryRaw = primary.opportunitiesData || primary.opportunities || [];
