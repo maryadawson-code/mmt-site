@@ -1,7 +1,7 @@
 # MarketPulse v4 Research Remediation Pack: Colleen Rooney, FHAS
 
 Subscriber: Colleen Rooney, Chief Growth Officer, Federal Hearings & Appeals Services (FHAS)
-Email: crooney@fhas.com
+Email: <customer-email-redacted — see marketpulse_orders.id=73c7866c-b9bb-4890-80d9-2b59ce3d66f8>
 Tag: fy2027-forecast
 Filed: 2026-05-15
 Status: source-of-truth for the remediated report shipped to Colleen on 2026-05-15

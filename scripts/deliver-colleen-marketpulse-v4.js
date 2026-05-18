@@ -32,7 +32,10 @@ const { sendEmail } = require(path.join(ROOT, "netlify/functions/lib/send-email"
 const { generateReportUrl } = require(path.join(ROOT, "netlify/functions/lib/report-url"));
 
 const ORDER_ID = "73c7866c-b9bb-4890-80d9-2b59ce3d66f8";
-const EMAIL = "crooney@fhas.com";
+// Customer email looked up at runtime from marketpulse_orders.email so the
+// raw address never lives in source. The 2026-05-15 live send already
+// completed (Resend id 67a1ca22-bf07-4473-9630-3b33d3b7d330); this script
+// remains in repo as the audit trail of how the report was built.
 const NAME = "Colleen Rooney";
 const COMPANY = "Federal Hearings & Appeals Services";
 const TOPIC =
@@ -349,7 +352,21 @@ function customGate(report, score, audit) {
   const dryRun = String(process.env.DRY || "").trim() === "1";
   console.log(`=== deliver-colleen-marketpulse-v4 (dry_run=${dryRun}) ===`);
   console.log(`order: ${ORDER_ID}`);
-  console.log(`recipient: ${EMAIL}`);
+
+  // Look up the customer email from marketpulse_orders at runtime so the
+  // raw address never lives in repo source (scan-pii guard).
+  const _sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+  const { data: _orderRow, error: _lookupErr } = await _sb
+    .from("marketpulse_orders")
+    .select("email, name, company")
+    .eq("id", ORDER_ID)
+    .single();
+  if (_lookupErr || !_orderRow || !_orderRow.email) {
+    console.error("FATAL: could not look up customer email from marketpulse_orders:", _lookupErr?.message || "no row");
+    process.exit(1);
+  }
+  const EMAIL = _orderRow.email;
+  console.log(`recipient: ${EMAIL.replace(/(.{2}).*(@.*)/, "$1***$2")}`);
 
   // Score (v4 decomposed) — pass URL strings + named-arg object
   const score = scoreReportV4({
@@ -505,7 +522,7 @@ function customGate(report, score, audit) {
   console.log(`tier1 share: ${(gate.tier1Pct * 100).toFixed(0)}%`);
   console.log(`report URL: ${reportUrl}`);
   console.log(`email subject: ${deliverySubject}`);
-  console.log(`recipient: ${EMAIL}`);
+  console.log(`recipient: ${EMAIL.replace(/(.{2}).*(@.*)/, "$1***$2")}`);
   console.log(`sent at: ${new Date().toISOString()}`);
 })().catch((e) => {
   console.error("FATAL:", e.message, e.stack);
