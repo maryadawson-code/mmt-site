@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-05-14T18:51:50.566Z",
+  "generated_at": "2026-05-18T02:58:37.654Z",
   "source_dir": "content/newsletter",
-  "source_count": 109,
+  "source_count": 110,
   "newest_in_source": {
-    "file": "2026-05-12-the-warfighter-under-the-pendulum.md",
-    "title": "The Warfighter Under the Pendulum",
-    "date": "2026-05-12T00:00:00.000Z",
-    "slug": "the-warfighter-under-the-pendulum",
+    "file": "2026-05-15-the-reorg-lives-or-dies-in-the-loading-dock.md",
+    "title": "The Reorg Lives or Dies in the Loading Dock",
+    "date": "2026-05-15T00:00:00.000Z",
+    "slug": "the-reorg-lives-or-dies-in-the-loading-dock",
     "future_dated": false
   },
   "newest_in_dist_latest": {
-    "slug": "the-warfighter-under-the-pendulum",
-    "title": "The Warfighter Under the Pendulum"
+    "slug": "the-reorg-lives-or-dies-in-the-loading-dock",
+    "title": "The Reorg Lives or Dies in the Loading Dock"
   },
   "in_sync": true,
   "imported_in_this_run": [],
@@ -39,9 +39,9 @@
   ],
   "held_future_articles": [
     {
-      "file": "2026-05-15-the-reorg-lives-or-dies-in-the-loading-dock.md",
-      "title": "The Reorg Lives or Dies in the Loading Dock",
-      "publish_date": "2026-05-15T00:00:00.000Z"
+      "file": "2026-05-19-the-fraud-was-in-the-workflow.md",
+      "title": "The Fraud Was in the Workflow",
+      "publish_date": "2026-05-19T00:00:00.000Z"
     }
   ]
 }

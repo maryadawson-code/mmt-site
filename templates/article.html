@@ -42,7 +42,10 @@
     .article-content a { color: var(--mmt-teal, #457B9D); text-decoration: underline; text-underline-offset: 3px; }
     .article-content a:hover { opacity: 0.7; }
     .article-content strong { color: var(--mmt-navy, #0A192F); font-weight: 600; }
-    .article-content img { border-radius: 8px; margin: 28px 0; }
+    .article-content img { border-radius: 8px; margin: 28px 0; max-width: 100%; height: auto; display: block; }
+    .article-content figure { margin: 32px 0; }
+    .article-content figure img { margin: 0; }
+    .article-content figcaption { font-size: 13px; color: var(--mmt-text-secondary, #5C6B7A); line-height: 1.5; margin-top: 10px; font-style: italic; max-width: 65ch; }
     .article-content hr { border: none; border-top: 1px solid var(--mmt-border, #D8E0E8); margin: 36px 0; }
 
     /* "What this means" summary box */
