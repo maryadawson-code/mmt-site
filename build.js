@@ -900,6 +900,32 @@ function escapeHtml(str) {
   return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+// Decode HTML entities so values pulled out of source HTML (titles,
+// descriptions) become plain text. Pair this with escapeHtml at the
+// render site — otherwise an `&amp;` in the source flows through to
+// the browser as `&amp;amp;` and renders literally as "&amp;". Surfaced
+// 2026-05-18 by the dashboard "Latest Friday Brief" tile showing
+// "DHA Budget &amp; Org Realignment" instead of "DHA Budget & Org
+// Realignment".
+function decodeHtmlEntities(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&middot;/g, '·')
+    .replace(/&mdash;/g, '—')
+    .replace(/&ndash;/g, '–')
+    .replace(/&rarr;/g, '→')
+    .replace(/&larr;/g, '←')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&apos;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(parseInt(n, 10)))
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, n) => String.fromCharCode(parseInt(n, 16)))
+    .replace(/&amp;/g, '&');
+}
+
 function wrapText(text, maxCharsPerLine) {
   const words = text.split(/\s+/);
   const lines = [];
@@ -4439,8 +4465,12 @@ function getBriefFiles() {
       const descMatch = html.match(/<meta name="description" content="([^"]+)"/);
       const titleMatch = html.match(/<title>([^<]+)<\/title>/);
       const h1Match = html.match(/<h1[^>]*>([^<]+)<\/h1>/);
-      const desc = descMatch ? descMatch[1].split('. Weekly')[0] : '';
-      const rawTitle = (h1Match && h1Match[1]) || (titleMatch && titleMatch[1]) || '';
+      // Decode entities — source HTML uses `&amp;` etc., and the
+      // downstream renderer escapeHtml-s again. Without decoding here
+      // the dashboard tile renders "DHA Budget &amp; Org Realignment"
+      // literally. See decodeHtmlEntities note near top of file.
+      const desc = descMatch ? decodeHtmlEntities(descMatch[1].split('. Weekly')[0]) : '';
+      const rawTitle = decodeHtmlEntities((h1Match && h1Match[1]) || (titleMatch && titleMatch[1]) || '');
       const cleanedTitle = rawTitle.replace(/\s*\|\s*Mission Meets Tech.*$/, '').trim();
       out.set(dateStr, {
         file: f,
@@ -4503,9 +4533,11 @@ function getCaptureCornerFiles() {
     const titleMatch = html.match(/<title>([^<]+)<\/title>/);
     const descMatch = html.match(/<meta name="description" content="([^"]+)"/);
     const h1Match = html.match(/<h1[^>]*>([^<]+)<\/h1>/);
-    const rawTitle = (h1Match && h1Match[1]) || (titleMatch && titleMatch[1]) || `Capture Corner — ${formatted}`;
+    // Decode entities at extraction so escapeHtml() at the render
+    // site doesn't double-encode `&amp;` -> `&amp;amp;`.
+    const rawTitle = decodeHtmlEntities((h1Match && h1Match[1]) || (titleMatch && titleMatch[1]) || `Capture Corner — ${formatted}`);
     const title = rawTitle.replace(/\s*\|\s*Mission Meets Tech.*$/, '').replace(/\s*—\s*Capture Corner.*$/, '').trim();
-    const desc = descMatch ? descMatch[1].replace(/\s*\.?\s*Weekly.*$/, '').trim() : '';
+    const desc = descMatch ? decodeHtmlEntities(descMatch[1]).replace(/\s*\.?\s*Weekly.*$/, '').trim() : '';
     return {
       file: f,
       date: dateStr,
