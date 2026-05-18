@@ -480,28 +480,39 @@ function renderAuditBlock(audit) {
 }
 
 /**
- * Tiered audit gating (2026-04-20).
+ * Tiered audit gating (2026-04-20; loosened 2026-05-18 — see note).
  *
  * TIER A (hard stop — always block delivery):
- *   #1 subscriber context, #5 issue coverage, #10 readiness metrics,
- *   #11 capture strategy, #13 source table, #14 decomposed score banner,
- *   #17 fetch quota.
+ *   #1 subscriber context, #10 readiness metrics, #11 capture strategy,
+ *   #13 source table, #14 decomposed score banner.
  * These are structural / wiring gates — if they fail the report is
  * broken regardless of score.
  *
  * TIER B (soft warn — model-compliance micro-issues):
- *   All other audit failures. Blocks delivery only when score < 85.
- *   At score ≥ 85 the report delivers with a "## Verification Notes"
- *   footnote listing the flagged items.
+ *   All other audit failures, including #5 (issue-coverage citation
+ *   depth) and #17 (fetch quota). Blocks delivery only when score
+ *   is below the soft threshold. At score ≥ threshold the report
+ *   delivers with a "## Verification Notes" footnote listing the
+ *   flagged items.
+ *
+ * Loosened 2026-05-18 (Mary directive): #5 + #17 moved from TIER A
+ * to TIER B (issue_coverage at 15/15 in the research score already
+ * counts populated subsections; fetch count is in the score already
+ * — these two checks are model-compliance bars, not structural gates).
+ * Soft threshold lowered from 85 → 70 so reports that score the
+ * deliver-band (50-84) ship with Verification Notes rather than
+ * being withheld for Tier B micro-issues. Score floor stays at 50.
  *
  * The floor condition (score < 50) is still a hard stop regardless of
  * tier — it catches unsanitized garbage that slipped past the audit.
  *
  * MARKETPULSE_STRICT_AUDIT=on preserves the old binary behavior for
- * A/B testing (any audit failure hard-stops).
+ * A/B testing (any audit failure hard-stops). Operators who want
+ * the pre-2026-05-18 strict ≥85 / Tier-A-includes-5-17 behavior
+ * can set MARKETPULSE_STRICT_AUDIT=on at the function-env level.
  */
-const TIER_A_CHECK_IDS = new Set([1, 5, 10, 11, 13, 14, 17]);
-const SOFT_DELIVERY_SCORE_THRESHOLD = 85;
+const TIER_A_CHECK_IDS = new Set([1, 10, 11, 13, 14]);
+const SOFT_DELIVERY_SCORE_THRESHOLD = 70;
 
 /**
  * Check stop conditions under the tiered policy.
