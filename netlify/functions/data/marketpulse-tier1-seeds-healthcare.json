@@ -1,0 +1,233 @@
+{
+  "_schema": "1.0",
+  "_purpose": "Tier 1 healthcare/program-integrity seed sources for MarketPulse v4. Used by generate-tactical-brief-background.js to pre-seed citations whenever a topic intersects CMS, medical review, program integrity, prior authorization, VA community care, MHS readiness, telehealth, hospice, home health, DMEPOS, or Medicaid. The seed pack guarantees the v4 audit reaches its ≥40% Tier 1 share and ≥25 source fetches without depending on Perplexity surfacing the right .gov URLs.",
+  "_provenance": "Seeded from the verified Colleen Rooney / FHAS remediation pack (2026-05-15). See data/marketpulse-v4-source-packs/colleen-rooney-fhas-2026-05-15.md for the audit trail.",
+  "_first_used": "2026-05-15 — Colleen Rooney remediated delivery, score 95/100, audit 18/18.",
+  "trigger_keywords": [
+    "medical review",
+    "claims review",
+    "program integrity",
+    "improper payment",
+    "improper payments",
+    "prior authorization",
+    "pre-payment review",
+    "post-payment review",
+    "appeals",
+    "independent dispute resolution",
+    "idr",
+    "iro",
+    "utilization management",
+    "smrc",
+    "wiser",
+    "cert",
+    "supplemental medical review",
+    "community care",
+    "veterans community care",
+    "consult toolbox",
+    "mhs",
+    "military health system",
+    "tricare",
+    "dha",
+    "defense health agency",
+    "hospice",
+    "home health",
+    "hha",
+    "dmepos",
+    "durable medical equipment",
+    "medicare advantage",
+    "medicaid integrity",
+    "telehealth",
+    "telefraud",
+    "noridian",
+    "moratoria",
+    "moratorium",
+    "enrollment integrity",
+    "fraud waste abuse",
+    "documentation sufficiency",
+    "audit-ready"
+  ],
+  "tier1_sources": [
+    {
+      "url": "https://www.cms.gov/newsroom/fact-sheets/fiscal-year-2025-improper-payments-fact-sheet",
+      "title": "Fiscal Year 2025 Improper Payments Fact Sheet",
+      "domain": "cms.gov",
+      "topic_tags": ["improper-payments", "medicare", "medicaid", "program-integrity"],
+      "claims_supported": "FY2025 Medicare FFS 6.55%/$28.83B, MA 6.09%/$23.67B, Part D 4.00%/$4.23B, Medicaid 6.12%/$37.39B; documentation-failure categories"
+    },
+    {
+      "url": "https://www.cms.gov/files/document/cpi-roi-fy25-pdf.pdf",
+      "title": "Center for Program Integrity FY2025 Return on Investment Report",
+      "domain": "cms.gov",
+      "topic_tags": ["program-integrity", "medicare", "roi", "prevention"],
+      "claims_supported": "FY2025 Medicare PI savings $41.9B; $28.4B cost avoidance / $7.3B payment accuracy / $6.3B recoveries; $22.3:1 ROI"
+    },
+    {
+      "url": "https://www.cms.gov/data-research/monitoring-programs/medicare-fee-service-compliance-programs/medical-review-and-education/supplemental-medical-review-contractor-smrc",
+      "title": "Supplemental Medical Review Contractor (SMRC)",
+      "domain": "cms.gov",
+      "topic_tags": ["smrc", "medical-review", "noridian", "procurement"],
+      "claims_supported": "CMS SMRC scope (Medicaid + Medicare A/B + DMEPOS); Noridian as current SMRC"
+    },
+    {
+      "url": "https://www.cms.gov/priorities/innovation/files/wiser-provider-supplier-guide.pdf",
+      "title": "WISeR Provider and Supplier Guide",
+      "domain": "cms.gov",
+      "topic_tags": ["wiser", "prior-authorization", "pre-payment-review", "innovation-center"],
+      "claims_supported": "WISeR 6 participants, two pathways, UTNs, peer-to-peer, human-clinician review before non-affirmation"
+    },
+    {
+      "url": "https://www.cms.gov/data-research/monitoring-programs/medicare-fee-service-compliance-programs/comprehensive-error-rate-testing-cert",
+      "title": "Comprehensive Error Rate Testing (CERT)",
+      "domain": "cms.gov",
+      "topic_tags": ["cert", "improper-payments", "medical-review"],
+      "claims_supported": "CERT as feeder for SMRC target selection"
+    },
+    {
+      "url": "https://www.cms.gov/medicare/medical-coding-billing/medicare-billing/medicare-provider-compliance",
+      "title": "Medicare Provider Compliance",
+      "domain": "cms.gov",
+      "topic_tags": ["provider-compliance", "medicare", "documentation"],
+      "claims_supported": "CMS Provider Compliance Group context"
+    },
+    {
+      "url": "https://www.cms.gov/priorities/innovation",
+      "title": "CMS Innovation Center",
+      "domain": "cms.gov",
+      "topic_tags": ["innovation-center", "wiser", "value-based"],
+      "claims_supported": "CMS Innovation Center home; parent of WISeR"
+    },
+    {
+      "url": "https://www.cms.gov/newsroom/press-releases/cms-announces-aggressive-nationwide-crackdown-fraud-six-month-hospice-home-health-agency-enrollment",
+      "title": "CMS Announces Aggressive Nationwide Crackdown on Fraud: Six-Month Hospice and Home Health Agency Enrollment Moratoria",
+      "domain": "cms.gov",
+      "topic_tags": ["hospice", "home-health", "moratoria", "enrollment-integrity", "fraud"],
+      "claims_supported": "2026-05-13 six-month HHA/hospice enrollment moratoria; named-state oversight; $70M suspended in Louisiana"
+    },
+    {
+      "url": "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers/chain-ownership-system-pecos/provider-enrollment-moratoria",
+      "title": "Provider Enrollment Moratoria",
+      "domain": "cms.gov",
+      "topic_tags": ["enrollment-integrity", "moratoria", "dmepos", "hha", "hospice"],
+      "claims_supported": "Live moratorium status; DMEPOS moratorium effective 2026-02-27"
+    },
+    {
+      "url": "https://www.cms.gov/medicare/quality/home-health",
+      "title": "CMS Home Health Quality Reporting",
+      "domain": "cms.gov",
+      "topic_tags": ["home-health", "quality-reporting"],
+      "claims_supported": "CMS home health quality reporting context"
+    },
+    {
+      "url": "https://www.cms.gov/medicare/quality/hospice",
+      "title": "CMS Hospice Quality Reporting",
+      "domain": "cms.gov",
+      "topic_tags": ["hospice", "quality-reporting"],
+      "claims_supported": "CMS hospice quality reporting context"
+    },
+    {
+      "url": "https://www.federalregister.gov/d/2026-09717",
+      "title": "Federal Register Notice 2026-09717 — HHA Enrollment Moratorium",
+      "domain": "federalregister.gov",
+      "topic_tags": ["hha", "moratoria", "federal-register"],
+      "claims_supported": "HHA enrollment moratorium FR notice"
+    },
+    {
+      "url": "https://www.federalregister.gov/d/2026-09718",
+      "title": "Federal Register Notice 2026-09718 — Hospice Enrollment Moratorium",
+      "domain": "federalregister.gov",
+      "topic_tags": ["hospice", "moratoria", "federal-register"],
+      "claims_supported": "Hospice enrollment moratorium FR notice"
+    },
+    {
+      "url": "https://oig.hhs.gov/reports/work-plan/",
+      "title": "HHS-OIG Work Plan",
+      "domain": "oig.hhs.gov",
+      "topic_tags": ["oversight", "oig", "work-plan", "medicaid", "medicare-advantage", "post-acute-care", "telehealth"],
+      "claims_supported": "HHS-OIG 2026 oversight items"
+    },
+    {
+      "url": "https://oig.hhs.gov/documents/root/1045/sfa-telefraud.pdf",
+      "title": "HHS-OIG Special Fraud Alert — Telefraud",
+      "domain": "oig.hhs.gov",
+      "topic_tags": ["telefraud", "oig", "fraud-alert", "telehealth"],
+      "claims_supported": "Telefraud suspect characteristics: patient recruitment via call centers, insufficient practitioner contact, volume-based compensation, single-product focus"
+    },
+    {
+      "url": "https://oig.hhs.gov/compliance/alerts/",
+      "title": "HHS-OIG Compliance Alerts",
+      "domain": "oig.hhs.gov",
+      "topic_tags": ["compliance", "alerts", "oig"],
+      "claims_supported": "HHS-OIG compliance alerts hub"
+    },
+    {
+      "url": "https://news.va.gov/press-room/va-makes-it-easier-for-veterans-to-use-community-care/",
+      "title": "VA Makes It Easier for Veterans to Use Community Care",
+      "domain": "va.gov",
+      "topic_tags": ["va", "community-care", "access", "physician-approval"],
+      "claims_supported": "VA removed secondary physician approval; 20-day primary/MH, 28-day specialty, 30-min/60-min drive standards"
+    },
+    {
+      "url": "https://news.va.gov/press-room/va-offers-yearlong-community-care-authorizations-for-30-services/",
+      "title": "VA Offers Yearlong Community Care Authorizations for 30 Services",
+      "domain": "va.gov",
+      "topic_tags": ["va", "community-care", "authorization", "continuity"],
+      "claims_supported": "VA 12-month authorizations for 30 standardized service lines; replaces 90-180 day reevaluation"
+    },
+    {
+      "url": "https://www.va.gov/communitycare/",
+      "title": "VA Community Care",
+      "domain": "va.gov",
+      "topic_tags": ["va", "community-care", "program-landing"],
+      "claims_supported": "VA Community Care program home"
+    },
+    {
+      "url": "https://www.va.gov/COMMUNITYCARE/providers/info_provider.asp",
+      "title": "VA Community Care Provider Information",
+      "domain": "va.gov",
+      "topic_tags": ["va", "community-care", "providers"],
+      "claims_supported": "VA Community Care provider portal"
+    },
+    {
+      "url": "https://www.vaoig.gov/sites/default/files/reports/2025-08/vaoig-24-02154-154_final.pdf",
+      "title": "Facilities Faced Challenges Retrieving Medical Records from Community Providers and Importing Them into Veterans' Electronic Health Records",
+      "domain": "vaoig.gov",
+      "topic_tags": ["va-oig", "community-care", "medical-records", "consult-toolbox"],
+      "claims_supported": "VHA FY2024 Q1-Q2: 2,953,865 closed consults; 2,418,770 with records imported; ~1M administratively closed; ~630K imported-but-unmarked-received; 2-month mammography record delay case"
+    },
+    {
+      "url": "https://health.mil/Reference-Center/Reports/2026/02/27/Assessing-Access-to-Health-Care-Standards",
+      "title": "Assessing Access to Health Care Standards",
+      "domain": "health.mil",
+      "topic_tags": ["mhs", "dha", "access-standards", "readiness"],
+      "claims_supported": "MHS actual averages: 1.6d urgent primary, 9.7d routine primary, 18.0d initial specialty (2026-02-27 report)"
+    },
+    {
+      "url": "https://health.mil/About-MHS/OASDHA/Defense-Health-Agency",
+      "title": "Defense Health Agency",
+      "domain": "health.mil",
+      "topic_tags": ["dha", "mhs", "program-office"],
+      "claims_supported": "DHA program office context"
+    },
+    {
+      "url": "https://www.gao.gov/legal/bid-protests",
+      "title": "GAO Bid Protest Search",
+      "domain": "gao.gov",
+      "topic_tags": ["gao", "bid-protest", "protest-litigation"],
+      "claims_supported": "GAO bid-protest search (cross-check anchor for protest-watch sections)"
+    },
+    {
+      "url": "https://www.usaspending.gov/",
+      "title": "USASpending.gov",
+      "domain": "usaspending.gov",
+      "topic_tags": ["usaspending", "obligations", "contract-awards"],
+      "claims_supported": "USASpending search (cross-check anchor for obligation history)"
+    },
+    {
+      "url": "https://www.sam.gov/opp",
+      "title": "SAM.gov Opportunities",
+      "domain": "sam.gov",
+      "topic_tags": ["sam", "opportunities", "rfp", "rfi"],
+      "claims_supported": "SAM.gov opportunities search (cross-check anchor for live procurement)"
+    }
+  ]
+}
