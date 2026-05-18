@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What changed at HHS this week (May 18, 2026) &middot; MMT Premium</title>
+  <meta name="robots" content="noindex">
+  <meta name="description" content="The eight changes from the May 2026 HHS Acquisition Solutions Day that reshape FY26 BD plans. OMAS, the 10 HCAs, EO 14240, OMB M-25-31, RFO 8.4, Market Hour, FY26 consolidation.">
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <link rel="icon" href="/favicon-v3.png" type="image/png">
+  <style>
+    :root { --mmt-navy:#0A192F; --mmt-teal:#457B9D; --mmt-white:#FFFFFF; --mmt-surface:#F3F4F6; --mmt-text-secondary:#6B7280; --mmt-border:#E5E7EB; --ci-gold:#92710A; --dash-sidebar:220px; }
+    body { font-family:Inter,system-ui,sans-serif; color:var(--mmt-navy); background:var(--mmt-surface); margin:0; line-height:1.6; }
+    .dash-shell { display:grid; grid-template-columns:var(--dash-sidebar) 1fr; min-height:100vh; }
+    .dash-nav { background:var(--mmt-navy); padding:24px 0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto; }
+    .dash-nav-brand { padding:0 20px 24px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px; }
+    .dash-nav-brand a { color:#fff; text-decoration:none; font-weight:800; font-size:14px; }
+    .dash-nav-brand small { display:block; font-size:11px; color:rgba(255,255,255,0.5); font-weight:400; margin-top:2px; }
+    .dash-nav-link { display:flex; align-items:center; gap:10px; padding:10px 20px; color:rgba(255,255,255,0.6); text-decoration:none; font-size:13px; font-weight:500; transition:all 0.15s; }
+    .dash-nav-link:hover { color:#fff; background:rgba(255,255,255,0.05); }
+    .dash-nav-link.active { color:#fff; background:rgba(69,123,157,0.3); border-left:3px solid var(--mmt-teal); }
+    .dash-nav-section { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:rgba(255,255,255,0.3); padding:16px 20px 6px; }
+    .dash-header { background:var(--mmt-white); padding:16px 32px; border-bottom:1px solid var(--mmt-border); display:flex; align-items:center; justify-content:space-between; }
+    .dash-main { padding:32px; max-width:780px; }
+    .dash-card { background:var(--mmt-white); border-radius:12px; padding:28px 32px; margin-bottom:18px; border:1px solid var(--mmt-border); }
+    .eyebrow { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.10em; color:var(--mmt-text-secondary); margin-bottom:8px; }
+    h1 { font-size:30px; font-weight:800; margin:0 0 8px; letter-spacing:-0.02em; line-height:1.15; }
+    h2 { font-size:18px; font-weight:800; margin:0 0 8px; letter-spacing:-0.01em; color:var(--mmt-navy); }
+    .lede { font-size:16px; color:var(--mmt-text-secondary); margin:0 0 14px; line-height:1.6; }
+    .meta-row { font-size:12px; color:var(--mmt-text-secondary); margin-bottom:24px; }
+    .meta-row a { color:var(--mmt-teal); text-decoration:none; }
+    p { font-size:14.5px; margin:0 0 14px; }
+    .item { background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:10px; padding:20px 24px; margin-bottom:12px; }
+    .item-num { display:inline-block; font-size:11px; font-weight:700; letter-spacing:0.10em; color:var(--mmt-teal); margin-bottom:6px; }
+    .item-headline { font-size:17px; font-weight:800; color:var(--mmt-navy); margin:0 0 8px; line-height:1.35; }
+    .item-body { font-size:14.5px; color:var(--mmt-navy); margin:0 0 10px; line-height:1.6; }
+    .item-links { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+    .item-links a { font-size:12px; font-weight:600; color:var(--mmt-teal); text-decoration:none; border-bottom:1px solid rgba(69,123,157,0.3); padding-bottom:1px; }
+    .item-links a:hover { color:var(--mmt-navy); border-bottom-color:var(--mmt-navy); }
+    .closer { background:linear-gradient(180deg, var(--mmt-white) 0%, var(--mmt-surface) 100%); border:1px solid var(--mmt-border); border-radius:12px; padding:24px 28px; margin-top:24px; }
+    .closer h2 { margin-bottom:10px; }
+    .source-block { font-size:12.5px; color:var(--mmt-text-secondary); line-height:1.6; }
+    .source-block a { color:var(--mmt-teal); text-decoration:none; }
+    @media (max-width:768px) { .dash-shell { grid-template-columns:1fr; } .dash-nav { display:none; } .dash-main { padding:16px; padding-bottom:80px; } }
+  </style>
+  <script>
+    (function() {
+      var isPremium = localStorage.getItem('mmt_premium') === 'true';
+      var ts = localStorage.getItem('mmt_premium_ts');
+      var withinWindow = ts && (Date.now() - parseInt(ts)) < 30 * 24 * 60 * 60 * 1000;
+      if (!isPremium || !withinWindow) { window.location.href = '/dashboard.html'; }
+    })();
+  </script>
+</head>
+<body>
+  <div class="dash-shell">
+    <nav class="dash-nav">
+      <div class="dash-nav-brand"><a href="/premium/dashboard.html">&#9733; MMT Premium<small>Intelligence Dashboard</small></a></div>
+      <div class="dash-nav-section">Intelligence</div>
+      <a href="/premium/dashboard.html" class="dash-nav-link">Dashboard</a>
+      <a href="/agencies/" class="dash-nav-link">Agencies</a>
+      <a href="/premium/briefings.html" class="dash-nav-link">Friday Brief</a>
+      <a href="/premium/monthly-briefs.html" class="dash-nav-link">Monthly Brief</a>
+      <a href="/premium/key-people.html" class="dash-nav-link">Key People</a>
+      <a href="/premium/gao-sustain.html" class="dash-nav-link">GAO Sustains</a>
+      <div class="dash-nav-section">Tools</div>
+      <a href="/premium/pursuit-score.html" class="dash-nav-link">Pursuit Score</a>
+      <a href="/premium/compliance-check.html" class="dash-nav-link">Compliance Check</a>
+      <a href="/premium/signal-chain.html" class="dash-nav-link">Signal Chain</a>
+      <div class="dash-nav-section">Policy</div>
+      <a href="/policy/pact" class="dash-nav-link">PACT &amp; EOs</a>
+      <a href="/policy/rfo-8-4" class="dash-nav-link">RFO 8.4</a>
+      <a href="/premium/fpds-migration.html" class="dash-nav-link">FPDS Sunset</a>
+      <a href="/premium/cr-exposure.html" class="dash-nav-link">CR Exposure</a>
+      <div class="dash-nav-section">Resources</div>
+      <a href="/premium/calendar.html" class="dash-nav-link">Pursuit Calendar</a>
+      <a href="/contract-tracker.html" class="dash-nav-link">Contract Tracker</a>
+      <a href="/idiq-tracker.html" class="dash-nav-link">IDIQ Tracker</a>
+      <a href="/premium/ask-mmt.html" class="dash-nav-link">Ask MMT</a>
+      <div class="dash-nav-section">Account</div>
+      <a href="/premium/settings.html" class="dash-nav-link">Settings</a>
+      <a href="/" class="dash-nav-link" style="margin-top:auto; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px;">&larr; Back to site</a>
+    </nav>
+    <div>
+      <div class="dash-header">
+        <span style="font-size:14px; font-weight:700;">&#9733; Premium Dashboard</span>
+        <div style="display:flex; align-items:center; gap:16px;">
+          <span style="font-size:13px; color:var(--mmt-text-secondary);" id="dash-email"></span>
+          <a href="/" style="font-size:12px; color:var(--mmt-teal); text-decoration:none;">Back to site</a>
+          <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_premium_ts');localStorage.removeItem('mmt_email');document.cookie='mmt_premium=;path=/;max-age=0';window.location.href='/';return false;" style="font-size:12px; color:var(--mmt-text-secondary); text-decoration:none;">Sign out</a>
+        </div>
+      </div>
+      <div class="dash-main">
+
+        <div class="eyebrow">Update &middot; May 18, 2026</div>
+        <h1>HHS just made 8 changes that reshape your FY26 BD plan</h1>
+        <p class="lede">Last week's HHS Acquisition Solutions Day quietly rewrote how federal health agencies will buy from your company. I sat with the slide deck, the transcripts, and the official HHS rosters. Here's what changed, and where to go on the site for the deep version.</p>
+        <div class="meta-row">
+          Data current as of April 27, 2026 (HHS HCA roster) and May 15, 2026 (Acquisition Solutions Day).
+          &middot; <a href="/agencies/hhs">HHS profile</a>
+          &middot; <a href="/agencies/hhs/omas">OMAS deep dive</a>
+          &middot; <a href="/agencies/hhs/orgchart">Visual org chart</a>
+        </div>
+
+        <div class="item">
+          <div class="item-num">CHANGE 1 OF 8</div>
+          <h2 class="item-headline">A new HHS contracting activity exists: OMAS.</h2>
+          <p class="item-body">The Office of Mission Acquisition Solutions (formerly OAMS) was realigned under ASFR / Office of Acquisitions in January 2026 and is now a designated HCA on the official HHS roster. Quentin McCoy is the HCA.</p>
+          <div class="item-links">
+            <a href="https://www.hhs.gov/grants-contracts/grants-business-contacts/hca-and-key-managers/index.html" rel="noopener">HHS HCA roster &rarr;</a>
+            <a href="/agencies/hhs/omas">OMAS deep dive &rarr;</a>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="item-num">CHANGE 2 OF 8</div>
+          <h2 class="item-headline">HHS contracting activities dropped from 13 to 10.</h2>
+          <p class="item-body">ACF and AHRQ independent contracting authority was eliminated. Both portfolios now flow through OMAS SBC-Mission (Trish James). Quentin McCoy on the May 2026 transcript: "Those two offices were eliminated, and now we serve those customers."</p>
+          <div class="item-links">
+            <a href="/agencies/hhs/hcas">All 10 HCAs &rarr;</a>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="item-num">CHANGE 3 OF 8</div>
+          <h2 class="item-headline">Common IT and Professional Services consolidate through OMAS.</h2>
+          <p class="item-body">Driven by EO 14240 (Procurement Consolidation, March 20, 2025) and OMB M-25-31 (July 18, 2025). Mission-specific procurement stays with the operating division.</p>
+          <div class="item-links">
+            <a href="/policy/pact">PACT &amp; the 3 EOs &rarr;</a>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="item-num">CHANGE 4 OF 8</div>
+          <h2 class="item-headline">HHS FY25 spend dropped to $28.2B.</h2>
+          <p class="item-body">A $16.3B reduction from final FY25 obligations, driven by the HHS Cost Efficiency Initiative (HCEI). FY22-FY24 averaged ~$40B per year. The contract universe is smaller and tighter than it was 18 months ago.</p>
+        </div>
+
+        <div class="item">
+          <div class="item-num">CHANGE 5 OF 8</div>
+          <h2 class="item-headline">OMAS Market Hour launches June 2026.</h2>
+          <p class="item-body">10-minute capability demo + 5-minute Q&amp;A virtual sessions. Customer-interest-driven selection from a Vendor Profile Form. Contact IndustryLiaison@hhs.gov. Only completed Vendor Profile Forms are considered, so submit early.</p>
+          <div class="item-links">
+            <a href="/agencies/hhs/omas">OMAS deep dive &rarr;</a>
+            <a href="mailto:IndustryLiaison@hhs.gov">IndustryLiaison@hhs.gov</a>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="item-num">CHANGE 6 OF 8</div>
+          <h2 class="item-headline">GSAR 538.7103 / "RFO 8.4" rewrote schedule-based buying.</h2>
+          <p class="item-body">Three tiers (at-or-below MPT / MPT-to-SAT / above-SAT) with different competition rules. RFIs went "from black hole to spotlight" — they now drive whether your firm makes the RFQ list.</p>
+          <div class="item-links">
+            <a href="/policy/rfo-8-4">RFO 8.4 tier playbook &rarr;</a>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="item-num">CHANGE 7 OF 8</div>
+          <h2 class="item-headline">The HHS IDEAS Lab is central, not optional.</h2>
+          <p class="item-body">Kimberly Himes is the new HHS Acquisition Innovation Advocate (AIA) and Industry Liaison. Acquisition Innovation moved from optional practice to key driver under the FAR Overhaul.</p>
+        </div>
+
+        <div class="item">
+          <div class="item-num">CHANGE 8 OF 8</div>
+          <h2 class="item-headline">HHS may consolidate further.</h2>
+          <p class="item-body">The FY2026 Budget in Brief signals consolidation of 28 operating divisions to 15 and closure of 5 of the most costly regional offices. Today's 10-HCA org chart is a snapshot, not a steady state.</p>
+          <div class="item-links">
+            <a href="https://www.hhs.gov/sites/default/files/fy-2026-budget-in-brief.pdf" rel="noopener">FY2026 Budget in Brief (PDF) &rarr;</a>
+          </div>
+        </div>
+
+        <div class="closer">
+          <h2>If you only do one thing this week</h2>
+          <p style="margin-bottom:8px;">Submit the OMAS Vendor Profile Form. The Market Hour roster will fill on customer interest, not on first-come-first-served. Email <a href="mailto:IndustryLiaison@hhs.gov" style="color:var(--mmt-teal); font-weight:600;">IndustryLiaison@hhs.gov</a> and ask for the form.</p>
+          <p style="margin:0;">After that, work the map: <a href="/agencies/hhs">/agencies/hhs</a> for the navigation, <a href="/agencies/hhs/orgchart">/agencies/hhs/orgchart</a> for the visual, <a href="/agencies/hhs/omas">/agencies/hhs/omas</a> for the OMAS strategy, <a href="/agencies/hhs/hcas">/agencies/hhs/hcas</a> for every name and email, <a href="/policy/pact">/policy/pact</a> for the policy backbone, and <a href="/policy/rfo-8-4">/policy/rfo-8-4</a> for the new schedule-buying rules.</p>
+        </div>
+
+        <div class="dash-card source-block">
+          <strong>Primary sources for this update.</strong>
+          <a href="https://www.hhs.gov/grants-contracts/grants-business-contacts/hca-and-key-managers/index.html" rel="noopener">HHS HCA and Key Managers roster</a> (verified 2026-04-27).
+          <a href="https://www.hhs.gov/about/agencies/asfr/key-personnel/index.html" rel="noopener">HHS ASFR Key Personnel</a> (verified 2026-04-27).
+          <a href="https://www.hhs.gov/about/agencies/asfr/acquisition/osdbu/index.html" rel="noopener">HHS OSDBU</a> (verified 2026-05-07).
+          <a href="https://www.hhs.gov/sites/default/files/fy-2026-budget-in-brief.pdf" rel="noopener">HHS FY2026 Budget in Brief</a> (verified 2025-06-02).
+          HHS Acquisition Solutions Day (May 2026) Industry Day deck and Otter.ai transcripts.
+          White House primary text: <a href="https://www.whitehouse.gov/presidential-actions/2025/02/implementing-the-presidents-department-of-government-efficiency-workforce-optimization-initiative/" rel="noopener">EO 14210</a>, <a href="https://www.whitehouse.gov/presidential-actions/2025/02/implementing-the-presidents-department-of-government-efficiency-cost-efficiency-initiative/" rel="noopener">EO 14222</a>, <a href="https://www.whitehouse.gov/wp-content/uploads/2025/07/M-25-31-Consolidating-Federal-Procurement-Activities.pdf" rel="noopener">OMB M-25-31 (covers EO 14240)</a>.<br><br>
+          <strong>Otter mishearings corrected:</strong> ASTR &rarr; ASFR. ARC &rarr; AHRQ. Scott Bluedown &rarr; Scott Bredow. Verified against the official ASFR Key Personnel page and the HCA roster.
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script>
+    var email=localStorage.getItem('mmt_email');var __de=document.getElementById('dash-email');if(__de&&email)__de.textContent=email;
+  </script>
+</body>
+</html>

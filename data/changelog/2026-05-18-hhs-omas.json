@@ -1,0 +1,90 @@
+{
+  "$schema_version": "1.0",
+  "id": "2026-05-18-hhs-omas",
+  "agency": "HHS",
+  "date": "2026-05-18",
+  "title": "HHS just made 8 changes that reshape FY26 BD plans",
+  "summary": "HHS Acquisition Solutions Day (May 2026) quietly rewrote how federal health agencies buy. OMAS is the new HCA, HHS dropped from 13 contracting activities to 10, and all common IT plus professional services consolidates through OMAS. Eight items every paid subscriber should know.",
+  "tier": "paid",
+  "data_as_of": "2026-05-18",
+  "primary_source_date": "2026-04-27",
+  "items": [
+    {
+      "id": "1",
+      "headline": "A new HHS contracting activity exists: OMAS.",
+      "summary": "The Office of Mission Acquisition Solutions (formerly OAMS) was realigned under ASFR / Office of Acquisitions in January 2026 and is now a designated HCA on the official HHS roster. Quentin McCoy is the HCA.",
+      "sources": ["S1", "S13", "S14"],
+      "links": [
+        { "label": "HHS HCA roster", "url": "https://www.hhs.gov/grants-contracts/grants-business-contacts/hca-and-key-managers/index.html" },
+        { "label": "OMAS deep dive", "url": "/agencies/hhs/omas" }
+      ]
+    },
+    {
+      "id": "2",
+      "headline": "HHS contracting activities dropped from 13 to 10.",
+      "summary": "ACF and AHRQ independent contracting authority was eliminated. Both portfolios now flow through OMAS SBC-Mission.",
+      "sources": ["S13 slide 2", "S14"],
+      "links": [
+        { "label": "All 10 HCAs", "url": "/agencies/hhs/hcas" }
+      ]
+    },
+    {
+      "id": "3",
+      "headline": "Common IT and Professional Services centralize through OMAS.",
+      "summary": "Driven by EO 14240 (Procurement Consolidation, March 20, 2025) and OMB M-25-31 (July 18, 2025). Mission-specific procurement stays with the OpDiv.",
+      "sources": ["S9", "S10", "S13 slide 4"],
+      "links": [
+        { "label": "PACT explainer", "url": "/policy/pact" }
+      ]
+    },
+    {
+      "id": "4",
+      "headline": "HHS FY25 spend dropped to $28.2B.",
+      "summary": "A $16.3B reduction from final FY25 obligations driven by the HHS Cost Efficiency Initiative (HCEI). FY22-FY24 averaged ~$40B/yr.",
+      "sources": ["S13 slide 2"],
+      "links": []
+    },
+    {
+      "id": "5",
+      "headline": "OMAS Market Hour launches June 2026.",
+      "summary": "10-minute capability demo plus 5-minute Q&A virtual sessions. Customer-interest-driven selection from a Vendor Profile Form. Contact IndustryLiaison@hhs.gov.",
+      "sources": ["S13 slide 19", "S13 slide 28"],
+      "links": [
+        { "label": "OMAS deep dive", "url": "/agencies/hhs/omas" }
+      ]
+    },
+    {
+      "id": "6",
+      "headline": "GSAR 538.7103 (RFO 8.4) rewrote schedule-based buying.",
+      "summary": "Three tiers (at-or-below MPT / MPT-to-SAT / above-SAT) with different competition requirements. RFIs now drive whether your firm makes the RFQ list.",
+      "sources": ["S13 slides 24-25"],
+      "links": [
+        { "label": "RFO 8.4 tier playbook", "url": "/policy/rfo-8-4" }
+      ]
+    },
+    {
+      "id": "7",
+      "headline": "The HHS IDEAS Lab is central, not optional.",
+      "summary": "Kimberly Himes is the new HHS Acquisition Innovation Advocate (AIA) and Industry Liaison. Acquisition Innovation moved from optional practice to key driver under the FAR Overhaul.",
+      "sources": ["S13 slides 20-21", "S15"],
+      "links": []
+    },
+    {
+      "id": "8",
+      "headline": "HHS may consolidate further.",
+      "summary": "The FY2026 Budget in Brief signals consolidation of 28 operating divisions to 15 and closure of 5 regional offices. Today's 10-HCA org chart is a snapshot, not a steady state.",
+      "sources": ["S5"],
+      "links": [
+        { "label": "FY26 Budget in Brief", "url": "https://www.hhs.gov/sites/default/files/fy-2026-budget-in-brief.pdf" }
+      ]
+    }
+  ],
+  "related_pages": [
+    "/agencies/hhs",
+    "/agencies/hhs/omas",
+    "/agencies/hhs/hcas",
+    "/agencies/hhs/orgchart",
+    "/policy/pact",
+    "/policy/rfo-8-4"
+  ]
+}

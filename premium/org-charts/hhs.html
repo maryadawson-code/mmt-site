@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>HHS Organizational Structure &middot; MMT Premium</title>
+<meta name="description" content="HHS contracting organization as of May 18, 2026 — OMAS, the 10 HCAs, ASFR/Office of Acquisitions, and OSDBU. Sourced from the HHS HCA roster, ASFR Key Personnel page, and the May 2026 Acquisition Solutions Day deck.">
+<link rel="stylesheet" href="/styles/tokens.css">
+<style>
+:root{
+  --mmt-navy:#0A192F;
+  --mmt-teal:#457B9D;
+  --mmt-soft:#F3F4F6;
+  --mmt-white:#FFFFFF;
+  --mmt-border:#D8E0E8;
+  --mmt-text:#102033;
+  --mmt-text-secondary:#5C6B7A;
+  --mmt-text-faint:#8898aa;
+  --mmt-red:#E63946;
+  --status-acting:#457B9D;
+  --status-acting-bg:rgba(69,123,157,0.08);
+  --status-acting-border:rgba(69,123,157,0.35);
+  --status-vacant:#5C6B7A;
+  --status-vacant-bg:rgba(92,107,122,0.08);
+  --status-vacant-border:rgba(92,107,122,0.30);
+  --status-new:#457B9D;
+  --status-new-bg:rgba(69,123,157,0.10);
+  --status-new-border:rgba(69,123,157,0.40);
+  --bg:var(--mmt-white);
+  --surface:var(--mmt-white);
+  --surface-2:var(--mmt-soft);
+  --surface-offset:#E8EDF3;
+  --border:var(--mmt-border);
+  --text:var(--mmt-text);
+  --text-muted:var(--mmt-text-secondary);
+  --text-faint:var(--mmt-text-faint);
+  --primary:var(--mmt-navy);
+  --primary-hover:#06122A;
+  --primary-light:rgba(10,25,47,0.06);
+  --accent:var(--mmt-teal);
+  --accent-light:rgba(69,123,157,0.10);
+  --shadow-sm:0 1px 3px rgba(10,25,47,0.06);
+  --shadow-md:0 4px 16px rgba(10,25,47,0.08);
+  --radius:8px;--radius-lg:12px;
+  --font-body:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;font-size:16px}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+.page-hero{background:var(--primary);color:#fff;padding:32px 24px 40px;border-bottom:3px solid var(--accent)}
+.page-hero-inner{max-width:1400px;margin:0 auto}
+.hero-eyebrow{font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;opacity:0.7;margin-bottom:8px}
+.hero-title{font-weight:700;font-size:clamp(1.5rem,3vw,2.25rem);line-height:1.2;margin-bottom:12px;letter-spacing:-0.01em}
+.hero-meta{display:flex;flex-wrap:wrap;gap:16px;font-size:0.8rem;opacity:0.85}
+.hero-meta span{display:flex;align-items:center;gap:6px}
+.hero-meta span::before{content:'\00B7';opacity:0.5}
+.hero-meta span:first-child::before{display:none}
+.org-container{max-width:1400px;margin:0 auto;padding:32px 24px 64px}
+.section-label{background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--text-muted);margin-bottom:16px;display:inline-block}
+.status-bar{background:var(--accent-light);border:1px solid var(--accent);border-radius:8px;padding:14px 18px;margin-bottom:24px;font-size:0.85rem;color:var(--text);display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;line-height:1.55}
+.status-bar strong{color:var(--primary)}
+.tier{margin-bottom:36px}
+.tier-row{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+.connector-v{width:2px;height:24px;background:var(--border);margin:0 auto}
+.connector-v.thick{background:var(--primary);opacity:0.4;height:32px}
+.node-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 18px;min-width:200px;max-width:280px;display:inline-flex;flex-direction:column;gap:4px;box-shadow:var(--shadow-sm)}
+.node-card.primary-card{border-top:3px solid var(--accent)}
+.node-card.new-card{border-color:var(--status-new-border);background:var(--status-new-bg)}
+.node-card.acting{border-color:var(--status-acting-border);background:var(--status-acting-bg)}
+.node-card.vacant{border-color:var(--status-vacant-border);background:var(--status-vacant-bg);opacity:0.85}
+.node-tier{font-size:0.64rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;margin-bottom:2px;color:var(--text-muted)}
+.node-tier.accent{color:var(--accent)}
+.node-tier.primary-tier{color:var(--primary)}
+.node-name{font-weight:600;font-size:0.9rem;line-height:1.3;color:var(--text)}
+.node-role{font-size:0.78rem;color:var(--text-muted);line-height:1.4}
+.node-meta{font-size:0.72rem;color:var(--text-faint);line-height:1.4;margin-top:2px}
+.node-badge{display:inline-flex;align-items:center;gap:3px;font-size:0.62rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-top:4px;padding:2px 6px;border-radius:20px;background:rgba(69,123,157,0.15);color:var(--accent);align-self:flex-start}
+.node-badge.vacant-badge{background:rgba(92,107,122,0.15);color:var(--text-muted)}
+.node-badge.new-badge{background:rgba(69,123,157,0.18);color:var(--accent)}
+.children-group{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;position:relative;padding-top:24px}
+.children-group::before{content:'';position:absolute;top:0;left:10%;right:10%;height:2px;background:var(--border)}
+.child-col{display:flex;flex-direction:column;align-items:center;position:relative}
+.child-col::before{content:'';position:absolute;top:-24px;left:50%;width:2px;height:24px;background:var(--border);transform:translateX(-50%)}
+.hca-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:16px}
+.hca-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;display:flex;flex-direction:column;gap:4px;transition:border-color 0.15s,transform 0.15s}
+.hca-card:hover{border-color:var(--primary);box-shadow:var(--shadow-sm)}
+.hca-card.is-new{border-color:var(--status-new-border);background:var(--status-new-bg)}
+.hca-card.is-acting{border-left:3px solid var(--status-acting)}
+.hca-opdiv{font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;font-weight:700;color:var(--accent)}
+.hca-name{font-weight:600;font-size:0.95rem;color:var(--text);line-height:1.3}
+.hca-meta{font-size:0.78rem;color:var(--text-muted);line-height:1.45}
+.hca-email{font-size:0.78rem;color:var(--accent);text-decoration:none;word-break:break-all}
+.hca-email:hover{text-decoration:underline}
+.source-footer{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 22px;margin-top:32px;font-size:0.78rem;color:var(--text-muted);line-height:1.6}
+.source-footer strong{color:var(--text);font-weight:600}
+.source-footer a{color:var(--accent);text-decoration:none}
+.source-footer a:hover{text-decoration:underline}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:0.85rem;color:var(--accent);text-decoration:none;margin-bottom:20px;font-weight:500}
+.back-link:hover{text-decoration:underline}
+.callout{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:var(--radius);padding:16px 20px;margin:24px 0;font-size:0.9rem;color:var(--text);line-height:1.55}
+@media(max-width:768px){.org-container{padding:20px 14px 48px}.tier-row{gap:10px}.node-card{min-width:160px;padding:12px 14px}}
+</style>
+<script>
+(function(){
+  var isPremium=localStorage.getItem('mmt_premium')==='true';
+  var ts=localStorage.getItem('mmt_premium_ts');
+  var withinWindow=ts&&(Date.now()-parseInt(ts))<30*24*60*60*1000;
+  if(!isPremium||!withinWindow){window.location.href='/dashboard.html';}
+})();
+</script>
+</head>
+<body>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="hero-eyebrow">Organizational Intelligence &middot; MMT Premium</div>
+    <h1 class="hero-title">U.S. Department of Health and Human Services<br>Contracting Organization</h1>
+    <div class="hero-meta">
+      <span>Structure effective January 2026 (OMAS realignment)</span>
+      <span>Leadership data as of April 27, 2026</span>
+      <span>10 Heads of Contracting Activity</span>
+      <span>Page last updated May 18, 2026</span>
+    </div>
+  </div>
+</div>
+
+<div class="org-container">
+  <a href="/agencies/hhs" class="back-link">&larr; HHS profile</a>
+
+  <div class="status-bar">
+    <span style="font-size:1rem">&#8505;</span>
+    <div><strong>This is a moving picture.</strong> OMAS realigned under ASFR in January 2026 and grew from ~40 staff at standup to ~180 by May 2026. ACF and AHRQ independent contracting authority was eliminated; their portfolios now flow through OMAS SBC-Mission. HHS dropped from 13 contracting activities to 10. The FY26 Budget in Brief signals a further consolidation of 28 operating divisions to 15.</div>
+  </div>
+
+  <!-- TIER 1: Office of the Secretary -->
+  <div class="tier">
+    <div style="text-align:center"><div class="section-label">Office of the Secretary</div></div>
+    <div class="tier-row">
+      <div class="node-card primary-card">
+        <div class="node-tier primary-tier">Cabinet Department</div>
+        <div class="node-name">Office of the Secretary (OS)</div>
+        <div class="node-role">Policy, rulemaking, OCIO-level enterprise coordination</div>
+      </div>
+    </div>
+    <div class="connector-v thick"></div>
+  </div>
+
+  <!-- TIER 2: ASA / ASFR -->
+  <div class="tier">
+    <div style="text-align:center"><div class="section-label">Department-Level Administration</div></div>
+    <div class="tier-row">
+      <div class="node-card">
+        <div class="node-tier">Administration</div>
+        <div class="node-name">Office of the Assistant Secretary for Administration (ASA)</div>
+        <div class="node-role">Department-level administration</div>
+      </div>
+      <div class="node-card primary-card">
+        <div class="node-tier accent">Financial Resources &middot; Owns Acquisitions</div>
+        <div class="node-name">Office of the Assistant Secretary for Financial Resources (ASFR)</div>
+        <div class="node-role">Hubert H. Humphrey Building, Room 514-G</div>
+        <div class="node-meta">Principal Deputy ASFR: VACANT &middot; DAS for Operations &amp; Management: VACANT</div>
+      </div>
+    </div>
+    <div class="connector-v thick"></div>
+  </div>
+
+  <!-- TIER 3: ASFR Sub-Offices (focus on Office of Acquisitions) -->
+  <div class="tier">
+    <div style="text-align:center"><div class="section-label">ASFR Sub-Offices</div></div>
+    <div class="tier-row">
+      <div class="node-card">
+        <div class="node-tier">Budget</div>
+        <div class="node-name">Office of Budget</div>
+        <div class="node-role">DAS: Norris Cochran</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Finance</div>
+        <div class="node-name">Office of Finance</div>
+        <div class="node-role">DAS: Teresa Miranda</div>
+        <div class="node-meta">Also: HHS Deputy CFO</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Grants</div>
+        <div class="node-name">Office of Grants</div>
+        <div class="node-role">DAS: Dale Bell</div>
+      </div>
+      <div class="node-card primary-card">
+        <div class="node-tier accent">Acquisitions &middot; Where OMAS Lives</div>
+        <div class="node-name">Office of Acquisitions (OA)</div>
+        <div class="node-role">DAS: Jennifer Johnson &middot; Senior Procurement Executive</div>
+        <div class="node-meta">771-215-0133 &middot; ~$28B annual contract spend</div>
+      </div>
+    </div>
+    <div class="connector-v thick"></div>
+  </div>
+
+  <!-- TIER 4: OA Divisions -->
+  <div class="tier">
+    <div style="text-align:center"><div class="section-label">Office of Acquisitions Divisions</div></div>
+    <div class="tier-row">
+      <div class="node-card">
+        <div class="node-tier">Strategic Programs</div>
+        <div class="node-name">Strategic Programs &amp; Business Systems Division</div>
+        <div class="node-role">Exec Director: Sonya Carrion</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Policy</div>
+        <div class="node-name">Office of Acquisition Policy, Legislation, Oversight &amp; Workforce</div>
+        <div class="node-role">Exec Director: Mahua Muzamdar</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Small Business</div>
+        <div class="node-name">OSDBU (Office of Small &amp; Disadvantaged Business Utilization)</div>
+        <div class="node-role">Exec Director: Shannon Jackson</div>
+        <div class="node-meta">Reports to HHS Deputy Secretary &middot; Est. 1979, P.L. 95-507</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Recipient Integrity</div>
+        <div class="node-name">Office of Recipient Integrity Coordination</div>
+        <div class="node-role">Director: Tiffani Redding</div>
+      </div>
+      <div class="node-card new-card">
+        <div class="node-tier accent">New Since Jan 2026</div>
+        <div class="node-name">Office of Mission Acquisition Solutions (OMAS)</div>
+        <div class="node-role">Formerly OAMS &middot; The new common-IT and Professional Services HCA</div>
+        <span class="node-badge new-badge">New HCA</span>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Innovation</div>
+        <div class="node-name">HHS IDEAS Lab &amp; Acquisition Program Support</div>
+        <div class="node-role">Director: Kimberly Himes</div>
+        <div class="node-meta">Also: Acquisition Innovation Advocate (AIA) + Industry Liaison</div>
+      </div>
+    </div>
+    <div class="connector-v thick"></div>
+  </div>
+
+  <!-- TIER 5: OMAS Leadership -->
+  <div class="tier">
+    <div style="text-align:center"><div class="section-label">OMAS Leadership</div></div>
+    <div class="tier-row">
+      <div class="node-card primary-card">
+        <div class="node-tier accent">HCA &middot; Permanent</div>
+        <div class="node-name">Quentin McCoy</div>
+        <div class="node-role">Executive Director, Head of Contracting Activity</div>
+        <div class="node-meta">Quentin.McCoy@hhs.gov &middot; 301-492-5456</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Chief of Staff</div>
+        <div class="node-name">Colette Magwood</div>
+        <div class="node-role">Chief of Staff, OMAS</div>
+      </div>
+      <div class="node-card vacant">
+        <div class="node-tier">Deputy</div>
+        <div class="node-name">VACANT</div>
+        <div class="node-role">Deputy Head of Contracting Activity</div>
+        <span class="node-badge vacant-badge">Open Role</span>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Operations Support</div>
+        <div class="node-name">Lisa Portner</div>
+        <div class="node-role">Director, Procurement Operations Support (POS)</div>
+      </div>
+    </div>
+    <div class="connector-v thick"></div>
+  </div>
+
+  <!-- TIER 6: Strategic Buying Centers -->
+  <div class="tier">
+    <div style="text-align:center"><div class="section-label">OMAS Strategic Buying Centers (the three SBCs)</div></div>
+    <div class="tier-row">
+      <div class="node-card primary-card">
+        <div class="node-tier accent">SBC-Mission</div>
+        <div class="node-name">Tatricia (Trish) James</div>
+        <div class="node-role">Director, Strategic Buying Center for Mission</div>
+        <div class="node-meta">Scope: ACF + AHRQ + Staff Divisions + Secretary mission needs</div>
+      </div>
+      <div class="node-card primary-card">
+        <div class="node-tier accent">SBC-IT</div>
+        <div class="node-name">Adam Vance</div>
+        <div class="node-role">Director, Strategic Buying Center for Information Technology</div>
+        <div class="node-meta">Scope: Common enterprise IT, software, cyber, cloud, AI tools</div>
+      </div>
+      <div class="node-card primary-card">
+        <div class="node-tier accent">SBC-PS</div>
+        <div class="node-name">Scott Bredow</div>
+        <div class="node-role">Director, Strategic Buying Center for Professional Services</div>
+        <div class="node-meta">Scope: Advisory, scientific, training, programmatic services</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Category management lead:</strong> Sonya Carrion (Executive Director, Strategic Programs &amp; Business Systems) is featured alongside the three SBC directors on slide 22 for category-management partnership.
+  </div>
+
+  <!-- 10 HCA ROSTER -->
+  <div class="tier" style="margin-top:48px">
+    <div style="text-align:center"><div class="section-label">The 10 HHS Heads of Contracting Activity</div></div>
+    <p style="text-align:center;font-size:0.9rem;color:var(--text-muted);max-width:720px;margin:0 auto 8px">Three of ten are Acting (ARPA-H, CDC, CMS) — three of the biggest spend agencies. Expect leadership churn. The roster table view with all phone numbers, small business specialists, and filters lives at <a href="/agencies/hhs/hcas" style="color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(69,123,157,0.3)">/agencies/hhs/hcas</a>.</p>
+    <div class="hca-grid">
+
+      <div class="hca-card is-new">
+        <div class="hca-opdiv">OMAS (new)</div>
+        <div class="hca-name">Quentin McCoy</div>
+        <div class="hca-meta">Permanent &middot; Office of the Secretary / ASFR</div>
+        <a class="hca-email" href="mailto:Quentin.McCoy@hhs.gov">Quentin.McCoy@hhs.gov</a>
+      </div>
+
+      <div class="hca-card is-acting">
+        <div class="hca-opdiv">ARPA-H</div>
+        <div class="hca-name">Benjamin Bryant</div>
+        <div class="hca-meta">Acting &middot; Advanced Research Projects Agency for Health</div>
+        <a class="hca-email" href="mailto:benjamin.bryant@arpa-h.gov">benjamin.bryant@arpa-h.gov</a>
+      </div>
+
+      <div class="hca-card is-acting">
+        <div class="hca-opdiv">CDC</div>
+        <div class="hca-name">Christine Godfrey</div>
+        <div class="hca-meta">Acting &middot; Centers for Disease Control and Prevention</div>
+        <a class="hca-email" href="mailto:cnp9@cdc.gov">cnp9@cdc.gov</a>
+      </div>
+
+      <div class="hca-card is-acting">
+        <div class="hca-opdiv">CMS</div>
+        <div class="hca-name">Doug Bergevin</div>
+        <div class="hca-meta">Acting &middot; Centers for Medicare &amp; Medicaid Services</div>
+        <a class="hca-email" href="mailto:douglas.bergevin@cms.hhs.gov">douglas.bergevin@cms.hhs.gov</a>
+      </div>
+
+      <div class="hca-card">
+        <div class="hca-opdiv">FDA</div>
+        <div class="hca-name">Leonard Grant</div>
+        <div class="hca-meta">Permanent &middot; Food and Drug Administration</div>
+        <a class="hca-email" href="mailto:Leonard.Grant@fda.hhs.gov">Leonard.Grant@fda.hhs.gov</a>
+      </div>
+
+      <div class="hca-card">
+        <div class="hca-opdiv">HRSA</div>
+        <div class="hca-name">Brian Goodger</div>
+        <div class="hca-meta">Permanent &middot; Health Resources &amp; Services Administration</div>
+        <a class="hca-email" href="mailto:BGoodger@hrsa.gov">BGoodger@hrsa.gov</a>
+      </div>
+
+      <div class="hca-card">
+        <div class="hca-opdiv">IHS</div>
+        <div class="hca-name">Chantel Smith</div>
+        <div class="hca-meta">Permanent &middot; Indian Health Service</div>
+        <a class="hca-email" href="mailto:Chantel.Smith@ihs.gov">Chantel.Smith@ihs.gov</a>
+      </div>
+
+      <div class="hca-card">
+        <div class="hca-opdiv">NIH</div>
+        <div class="hca-name">Olga Acosta</div>
+        <div class="hca-meta">Permanent &middot; National Institutes of Health</div>
+        <a class="hca-email" href="mailto:olga.acosta@nih.gov">olga.acosta@nih.gov</a>
+      </div>
+
+      <div class="hca-card">
+        <div class="hca-opdiv">ASPR</div>
+        <div class="hca-name">Makoto P. Braxton</div>
+        <div class="hca-meta">Permanent &middot; Admin. for Strategic Preparedness and Response</div>
+        <a class="hca-email" href="mailto:makoto.braxton@hhs.gov">makoto.braxton@hhs.gov</a>
+      </div>
+
+      <div class="hca-card">
+        <div class="hca-opdiv">OIG</div>
+        <div class="hca-name">John Marshall</div>
+        <div class="hca-meta">Permanent &middot; Office of Inspector General</div>
+        <a class="hca-email" href="mailto:john.marshall@oig.hhs.gov">john.marshall@oig.hhs.gov</a>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="source-footer">
+    <strong>Sources.</strong> HHS HCA and Key Managers roster (verified 2026-04-27, <a href="https://www.hhs.gov/grants-contracts/grants-business-contacts/hca-and-key-managers/index.html" rel="noopener">hhs.gov</a>). HHS ASFR Key Personnel page (verified 2026-04-27, <a href="https://www.hhs.gov/about/agencies/asfr/key-personnel/index.html" rel="noopener">hhs.gov</a>). HHS OSDBU page (verified 2026-05-07). HHS Acquisition Solutions Day (May 2026) Industry Day deck and transcripts. Otter mishearings corrected against the official ASFR personnel and HCA roster pages. Data current as of April 27, 2026 for the roster; page last updated May 18, 2026.<br><br>
+    <strong>What changed since this was published?</strong> Vacancies fill. Acting designations turn Permanent. We re-verify the HCA roster quarterly. If you spot a stale entry, email <a href="mailto:mary@missionmeetstech.com">mary@missionmeetstech.com</a> — we'll update and re-cite.
+  </div>
+
+</div>
+
+</body>
+</html>

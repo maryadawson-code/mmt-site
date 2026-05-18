@@ -419,6 +419,36 @@
   to = "/agencies/"
   status = 301
 
+# HHS sprint (2026-05-18) — clean URLs for the OMAS realignment coverage.
+# Sub-pages under /agencies/hhs/ each map to a flat file in premium/agencies/
+# or premium/org-charts/. Policy section is new — /policy/pact and
+# /policy/rfo-8-4 map to premium/policy/. /updates/<date>-<slug> is the
+# subscriber-email landing pattern.
+[[redirects]]
+  from = "/agencies/hhs/orgchart"
+  to = "/premium/org-charts/hhs.html"
+  status = 200
+[[redirects]]
+  from = "/agencies/hhs/omas"
+  to = "/premium/agencies/hhs-omas.html"
+  status = 200
+[[redirects]]
+  from = "/agencies/hhs/hcas"
+  to = "/premium/agencies/hhs-hcas.html"
+  status = 200
+[[redirects]]
+  from = "/policy/pact"
+  to = "/premium/policy/pact.html"
+  status = 200
+[[redirects]]
+  from = "/policy/rfo-8-4"
+  to = "/premium/policy/rfo-8-4.html"
+  status = 200
+[[redirects]]
+  from = "/updates/2026-05-18-hhs-omas"
+  to = "/premium/updates/2026-05-18-hhs-omas.html"
+  status = 200
+
 # Canonical clean URLs for /pricing and /dashboard.
 # Internal links should use the bare path; .html variants 301 to clean.
 # (The /pricing -> /pricing.html and /tools -> /tools.html 200-rewrites

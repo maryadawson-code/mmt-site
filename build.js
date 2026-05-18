@@ -900,6 +900,32 @@ function escapeHtml(str) {
   return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+// Decode HTML entities so values pulled out of source HTML (titles,
+// descriptions) become plain text. Pair this with escapeHtml at the
+// render site — otherwise an `&amp;` in the source flows through to
+// the browser as `&amp;amp;` and renders literally as "&amp;". Surfaced
+// 2026-05-18 by the dashboard "Latest Friday Brief" tile showing
+// "DHA Budget &amp; Org Realignment" instead of "DHA Budget & Org
+// Realignment".
+function decodeHtmlEntities(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&middot;/g, '·')
+    .replace(/&mdash;/g, '—')
+    .replace(/&ndash;/g, '–')
+    .replace(/&rarr;/g, '→')
+    .replace(/&larr;/g, '←')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&apos;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(parseInt(n, 10)))
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, n) => String.fromCharCode(parseInt(n, 16)))
+    .replace(/&amp;/g, '&');
+}
+
 function wrapText(text, maxCharsPerLine) {
   const words = text.split(/\s+/);
   const lines = [];
@@ -3387,6 +3413,32 @@ ${innerHtml}
     console.log(`Copied ${ocFiles.length} premium org-chart page(s)`);
   }
 
+  // HHS sprint (2026-05-18) — auto-copy premium/agencies/, premium/policy/,
+  // premium/updates/ subdirs to dist. Same pattern as premium/org-charts/
+  // above. Each .html file in these subdirs is a self-contained paid page
+  // with its own inline dash-shell + mmt_premium gate. Drop a new file in
+  // and the build picks it up.
+  const premiumSubdirs = ['agencies', 'policy', 'updates'];
+  premiumSubdirs.forEach((sub) => {
+    const srcDir = path.join(__dirname, 'premium', sub);
+    if (!fs.existsSync(srcDir)) return;
+    const files = fs.readdirSync(srcDir).filter((f) => f.endsWith('.html'));
+    files.forEach((file) => {
+      const srcPath = path.join(srcDir, file);
+      const destPath = path.join(DIST_DIR, 'premium', sub, file);
+      ensureDir(path.dirname(destPath));
+      let html = fs.readFileSync(srcPath, 'utf8');
+      if (!html.includes('noindex')) {
+        html = html.replace('<head>', '<head>\n  <meta name="robots" content="noindex, nofollow">');
+      }
+      html = html.replace('</body>', siteScriptTag + '\n</body>');
+      html = inlineTailwindCss(html);
+      fs.writeFileSync(destPath, html);
+      console.log(`Copied premium/${sub}/${file}`);
+    });
+    if (files.length) console.log(`Copied ${files.length} premium/${sub} page(s)`);
+  });
+
   // Friday Brief pipeline — render content/friday-briefs/*.md to
   // premium/friday-briefs/<date>.html using the friday-brief-loader.
   // Added 2026-04-24 along with the scheduled_emails.stream='friday_brief'
@@ -4251,7 +4303,7 @@ function generateAgencyProfilePage(agency) {
 
   // Org chart availability — extend this Set when more chart pages land
   // in premium/org-charts/.
-  const ORG_CHART_AGENCIES = new Set(['dha', 'va']);
+  const ORG_CHART_AGENCIES = new Set(['dha', 'va', 'hhs']);
   const orgChartUrl = ORG_CHART_AGENCIES.has(agency.slug) ? `/premium/org-charts/${agency.slug}` : null;
   const orgChartCta = orgChartUrl ? `
     <a href="${orgChartUrl}" class="no-underline" style="display:inline-flex;align-items:center;gap:10px;padding:10px 16px;background:var(--mmt-navy);color:var(--mmt-white);font-weight:600;font-size:13px;border-radius:8px;margin-bottom:24px;">
@@ -4413,8 +4465,12 @@ function getBriefFiles() {
       const descMatch = html.match(/<meta name="description" content="([^"]+)"/);
       const titleMatch = html.match(/<title>([^<]+)<\/title>/);
       const h1Match = html.match(/<h1[^>]*>([^<]+)<\/h1>/);
-      const desc = descMatch ? descMatch[1].split('. Weekly')[0] : '';
-      const rawTitle = (h1Match && h1Match[1]) || (titleMatch && titleMatch[1]) || '';
+      // Decode entities — source HTML uses `&amp;` etc., and the
+      // downstream renderer escapeHtml-s again. Without decoding here
+      // the dashboard tile renders "DHA Budget &amp; Org Realignment"
+      // literally. See decodeHtmlEntities note near top of file.
+      const desc = descMatch ? decodeHtmlEntities(descMatch[1].split('. Weekly')[0]) : '';
+      const rawTitle = decodeHtmlEntities((h1Match && h1Match[1]) || (titleMatch && titleMatch[1]) || '');
       const cleanedTitle = rawTitle.replace(/\s*\|\s*Mission Meets Tech.*$/, '').trim();
       out.set(dateStr, {
         file: f,
@@ -4477,9 +4533,11 @@ function getCaptureCornerFiles() {
     const titleMatch = html.match(/<title>([^<]+)<\/title>/);
     const descMatch = html.match(/<meta name="description" content="([^"]+)"/);
     const h1Match = html.match(/<h1[^>]*>([^<]+)<\/h1>/);
-    const rawTitle = (h1Match && h1Match[1]) || (titleMatch && titleMatch[1]) || `Capture Corner — ${formatted}`;
+    // Decode entities at extraction so escapeHtml() at the render
+    // site doesn't double-encode `&amp;` -> `&amp;amp;`.
+    const rawTitle = decodeHtmlEntities((h1Match && h1Match[1]) || (titleMatch && titleMatch[1]) || `Capture Corner — ${formatted}`);
     const title = rawTitle.replace(/\s*\|\s*Mission Meets Tech.*$/, '').replace(/\s*—\s*Capture Corner.*$/, '').trim();
-    const desc = descMatch ? descMatch[1].replace(/\s*\.?\s*Weekly.*$/, '').trim() : '';
+    const desc = descMatch ? decodeHtmlEntities(descMatch[1]).replace(/\s*\.?\s*Weekly.*$/, '').trim() : '';
     return {
       file: f,
       date: dateStr,

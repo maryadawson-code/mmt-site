@@ -216,6 +216,115 @@ Before declaring work complete, verify:
 
 ---
 
+## Sprint 2026-05-18 — HHS OMAS realignment coverage (Phase 1 site update)
+
+Triggered by Mary's HHS update package delivered 2026-05-18:
+`paid-reader-changes.md` + `orgchart-hhs.json` + `site-update-spec.md`
++ `sources.md` + `email-send-spec.md` + `CLAUDE_CODE_HANDOFF.md`.
+Perplexity-assembled briefing on the May 2026 HHS Acquisition Solutions
+Day. Phase 2 (the email send) is gated on Mary's explicit approval per
+email-send-spec.md — not in this sprint.
+
+Translation note: the spec was written assuming Astro/Next.js. This
+repo is static HTML built by `node build.js` with `mmt_premium`
+localStorage gates, so the translation is: spec routes map to flat HTML
+files in `premium/{agencies,policy,updates,org-charts}/`, with clean
+URLs wired in `netlify.toml`. Every new clean URL is registered in
+`docs/member-features.json` so `validate-routes.js` enforces resolution.
+
+What shipped (single PR):
+
+- **4 data files**:
+  - `data/orgcharts/hhs.json` — verbatim from Mary's package. Canonical
+    HHS contracting org dataset (10 HCAs, OMAS leadership, ASFR
+    sub-offices, FY25 by-the-numbers).
+  - `data/orgcharts/index.json` — registry for future agency orgchart
+    datasets.
+  - `data/policy/eo-procurement.json` — EO 14210 (workforce), EO 14222
+    (cost), EO 14240 (procurement consolidation), OMB M-25-31 (impl).
+  - `data/changelog/2026-05-18-hhs-omas.json` — 8 TL;DR items with
+    source IDs into sources.md (S1, S9, S10, S13 slide refs, S14, S15).
+- **HHS profile JSON update** (`data/premium/agency-profiles/agencies.json`):
+  `description`, `mmtRead`, `role`, `key_offices` (now OMAS-led),
+  `key_vehicles` (OASIS+, NASA SEWP, GSA MAS IT, NITAAC CIO-SP),
+  `upcoming_signals` (OMAS Market Hour, RFO 8.4, FY26 consolidation),
+  `current_read`, `contractorRead`, `policyModule` (PACT + 3 EOs),
+  `opportunityMap` (3 SBCs), `watchNext` (5 entries), `sources` (6 IDs).
+  `lastUpdated` → 2026-05-18. Schema-stable: validate-agency-parity and
+  validate-agency-profiles both pass.
+- **build.js change**: `ORG_CHART_AGENCIES = new Set(['dha','va','hhs'])`
+  — the existing `generateAgencyProfilePage` auto-wires the
+  "View HHS Org Chart" CTA on `/agencies/hhs`. Plus a new auto-discovery
+  loop for `premium/{agencies,policy,updates}/` that mirrors the existing
+  `premium/org-charts/` pattern (siteScriptTag + tailwind inline +
+  noindex meta on copy to dist).
+- **7 new pages**:
+  - `premium/org-charts/hhs.html` (22KB) — visual orgchart: Office of
+    Secretary → ASA/ASFR → OA divisions → OMAS leadership → 3 SBCs →
+    10-HCAs grid. VACANT rows shown (per spec section E rule).
+    Sources footer cites HHS HCA roster + ASFR personnel + OSDBU +
+    Solutions Day deck.
+  - `premium/agencies/hhs-omas.html` (66KB) — OMAS standup, leadership,
+    3 SBCs scope detail, strategic goals (verbatim from deck), 3-year
+    outlook, Market Hour table (June 2026), staffing trajectory
+    (~40 → ~180).
+  - `premium/agencies/hhs-hcas.html` (65KB) — 10-row sortable +
+    filterable table. Filters: All / Permanent / Acting / New since
+    2025. Search box. Notable: 3 of 10 are Acting (ARPA-H, CDC, CMS —
+    the biggest spenders).
+  - `premium/policy/pact.html` (63KB) — PACT (now HHS Agency Priority
+    Goal), 4 doc cards (EO 14210/14222/14240/M-25-31) with plain-English
+    + vendor impact, Standardization Suitability Spectrum callout, FY26
+    consolidation outlook (28 OpDivs → 15).
+  - `premium/policy/rfo-8-4.html` (60KB) — 3 tier cards (MPT / SAT /
+    above SAT), each with rule + GSAR cite + vendor move callout. Plus
+    the 5 other RFO 8.4 changes + "RFIs from black hole to spotlight"
+    verbatim callout. PTAI on AcquisitionGateway.gov referenced.
+  - `premium/updates/2026-05-18-hhs-omas.html` (60KB) — the
+    subscriber-email landing. 8 numbered change-cards with item-level
+    deep links. Closer block ("if you only do one thing this week").
+    Otter mishearings audit (ASTR → ASFR, ARC → AHRQ, Bluedown →
+    Bredow).
+- **6 netlify.toml redirects** (status=200): `/agencies/hhs/orgchart`,
+  `/agencies/hhs/omas`, `/agencies/hhs/hcas`, `/policy/pact`,
+  `/policy/rfo-8-4`, `/updates/2026-05-18-hhs-omas`. validate-routes
+  duplicate-from check passes.
+- **6 docs/member-features.json registry entries** — required by
+  validate-routes.js (every marketed clean URL must register here).
+
+Hard rules added / re-asserted:
+- **Premium content grouped under `premium/{agencies,policy,updates}/`**
+  uses the same flat-file + inline-mmt_premium-gate pattern as
+  `premium/org-charts/`. The auto-discovery loop in build.js picks up
+  any new .html file. No per-feature subdirs beyond the grouping layer.
+- **The `policy/` tier is new** — first two pages are pact.html +
+  rfo-8-4.html. Future federal-procurement policy explainers (FAR Part
+  12 rewrites, FY27 consolidation rules) belong here.
+- **The `updates/` tier is the subscriber-email landing pattern.**
+  `/updates/<date>-<slug>` maps to `premium/updates/<date>-<slug>.html`.
+  Mary's email-send-spec links into this path; the landing surfaces the
+  8-item TL;DR with deep links into the full coverage.
+- **Otter.ai transcripts are a primary source for HHS event coverage**,
+  but mishearings happen (ASTR vs ASFR; ARC vs AHRQ; Bluedown vs
+  Bredow). Cross-check against the official ASFR Key Personnel and HCA
+  roster pages before publishing. Document the corrections in the
+  sources footer so future readers can verify.
+- **A Mary-delivered spec's path conventions are spec hypothesis, not
+  repo reality.** When a spec is authored against a generic stack (the
+  paid-reader-changes.md said "Astro/Next pages"), translate routes to
+  this repo's flat-HTML pattern and adapt the gate to the inline
+  `mmt_premium` localStorage check. Don't fabricate a framework.
+
+Verification (ran 2026-05-18):
+- `node build.js` — clean exit. 392 dist pages.
+- `node scripts/validate-dist.js` — OK, all sweeps pass.
+- `node scripts/validate-routes.js` — ✓ all 29 features resolve.
+- `node scripts/validate-agency-profiles.js` — OK, 11 agencies pass.
+- `node scripts/validate-agency-parity.js` — OK, 11 agencies pass.
+- Local preview against `dist/` — all 7 new URLs return HTTP 200 with
+  expected payload sizes.
+- Zero console errors on the org chart page.
+
 ## Sprint 2026-05-07 (late afternoon) — Digital Mary handoff: data laydown + halt for missing specs
 
 Mary directed: "do sprint 5 wave2 then do the handoff package digital mary".

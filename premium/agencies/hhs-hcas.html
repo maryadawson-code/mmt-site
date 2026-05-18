@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The 10 HHS Heads of Contracting Activity &middot; MMT Premium</title>
+  <meta name="robots" content="noindex">
+  <meta name="description" content="The 10 HHS Heads of Contracting Activity. Names, emails, phones, status (Acting vs Permanent), small business specialists. Sortable and filterable. Sourced from the official HHS HCA roster as of April 27, 2026.">
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <link rel="icon" href="/favicon-v3.png" type="image/png">
+  <style>
+    :root { --mmt-navy:#0A192F; --mmt-teal:#457B9D; --mmt-white:#FFFFFF; --mmt-surface:#F3F4F6; --mmt-text-secondary:#6B7280; --mmt-border:#E5E7EB; --ci-gold:#92710A; --status-acting:#457B9D; --dash-sidebar:220px; }
+    body { font-family:Inter,system-ui,sans-serif; color:var(--mmt-navy); background:var(--mmt-surface); margin:0; line-height:1.55; }
+    .dash-shell { display:grid; grid-template-columns:var(--dash-sidebar) 1fr; min-height:100vh; }
+    .dash-nav { background:var(--mmt-navy); padding:24px 0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto; }
+    .dash-nav-brand { padding:0 20px 24px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px; }
+    .dash-nav-brand a { color:#fff; text-decoration:none; font-weight:800; font-size:14px; }
+    .dash-nav-brand small { display:block; font-size:11px; color:rgba(255,255,255,0.5); font-weight:400; margin-top:2px; }
+    .dash-nav-link { display:flex; align-items:center; gap:10px; padding:10px 20px; color:rgba(255,255,255,0.6); text-decoration:none; font-size:13px; font-weight:500; transition:all 0.15s; }
+    .dash-nav-link:hover { color:#fff; background:rgba(255,255,255,0.05); }
+    .dash-nav-link.active { color:#fff; background:rgba(69,123,157,0.3); border-left:3px solid var(--mmt-teal); }
+    .dash-nav-section { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:rgba(255,255,255,0.3); padding:16px 20px 6px; }
+    .dash-header { background:var(--mmt-white); padding:16px 32px; border-bottom:1px solid var(--mmt-border); display:flex; align-items:center; justify-content:space-between; }
+    .dash-main { padding:32px; max-width:1100px; }
+    .eyebrow { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.10em; color:var(--mmt-text-secondary); margin-bottom:8px; }
+    h1 { font-size:26px; font-weight:800; margin:0 0 8px; letter-spacing:-0.02em; }
+    .lede { font-size:15.5px; color:var(--mmt-text-secondary); margin:0 0 14px; line-height:1.6; }
+    .meta-row { font-size:12px; color:var(--mmt-text-secondary); margin-bottom:24px; }
+    .meta-row a { color:var(--mmt-teal); text-decoration:none; }
+    .filters { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:14px; }
+    .filters input[type=text] { flex:1; min-width:220px; padding:9px 12px; border:1px solid var(--mmt-border); border-radius:6px; font-size:14px; font-family:Inter,sans-serif; }
+    .filters .toggle-group { display:flex; gap:0; background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:6px; overflow:hidden; }
+    .filters .toggle-btn { background:transparent; border:none; padding:8px 14px; font-size:12.5px; font-weight:600; color:var(--mmt-text-secondary); cursor:pointer; font-family:Inter,sans-serif; }
+    .filters .toggle-btn.active { background:var(--mmt-navy); color:#fff; }
+    .count-line { font-size:12.5px; color:var(--mmt-text-secondary); margin-bottom:12px; }
+    table.hca { width:100%; border-collapse:collapse; background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:10px; overflow:hidden; font-size:13.5px; }
+    table.hca th { text-align:left; padding:12px; background:var(--mmt-surface); font-weight:700; border-bottom:2px solid var(--mmt-border); color:var(--mmt-navy); position:sticky; top:0; }
+    table.hca th button { background:none; border:none; font:inherit; font-weight:700; color:inherit; cursor:pointer; padding:0; display:inline-flex; align-items:center; gap:4px; }
+    table.hca th button:hover { color:var(--mmt-teal); }
+    table.hca td { padding:12px; border-bottom:1px solid var(--mmt-border); color:var(--mmt-navy); vertical-align:top; }
+    table.hca tr:hover td { background:rgba(69,123,157,0.04); }
+    table.hca tr.is-new td { background:rgba(69,123,157,0.10); }
+    .opdiv-chip { display:inline-block; padding:3px 10px; border-radius:12px; background:rgba(69,123,157,0.10); color:var(--mmt-teal); font-weight:700; font-size:11.5px; letter-spacing:0.04em; }
+    .status-pill { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700; letter-spacing:0.04em; }
+    .status-pill.acting { background:rgba(69,123,157,0.15); color:var(--mmt-teal); }
+    .status-pill.permanent { background:rgba(10,25,47,0.06); color:var(--mmt-navy); }
+    .status-pill.new { background:rgba(146,113,10,0.10); color:var(--ci-gold); margin-left:6px; }
+    a.contact { color:var(--mmt-teal); text-decoration:none; word-break:break-all; }
+    a.contact:hover { text-decoration:underline; }
+    .source-block { background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:10px; padding:18px 22px; margin-top:24px; font-size:12.5px; color:var(--mmt-text-secondary); line-height:1.6; }
+    .source-block strong { color:var(--mmt-navy); }
+    .source-block a { color:var(--mmt-teal); text-decoration:none; }
+    .empty-state { text-align:center; padding:40px 20px; color:var(--mmt-text-secondary); font-size:14px; }
+    @media (max-width:768px) {
+      .dash-shell { grid-template-columns:1fr; } .dash-nav { display:none; } .dash-main { padding:16px; padding-bottom:80px; }
+      table.hca { font-size:12px; }
+      table.hca th, table.hca td { padding:8px; }
+    }
+  </style>
+  <script>
+    (function() {
+      var isPremium = localStorage.getItem('mmt_premium') === 'true';
+      var ts = localStorage.getItem('mmt_premium_ts');
+      var withinWindow = ts && (Date.now() - parseInt(ts)) < 30 * 24 * 60 * 60 * 1000;
+      if (!isPremium || !withinWindow) { window.location.href = '/dashboard.html'; }
+    })();
+  </script>
+</head>
+<body>
+  <div class="dash-shell">
+    <nav class="dash-nav">
+      <div class="dash-nav-brand"><a href="/premium/dashboard.html">&#9733; MMT Premium<small>Intelligence Dashboard</small></a></div>
+      <div class="dash-nav-section">Intelligence</div>
+      <a href="/premium/dashboard.html" class="dash-nav-link">Dashboard</a>
+      <a href="/agencies/" class="dash-nav-link active">Agencies</a>
+      <a href="/premium/briefings.html" class="dash-nav-link">Friday Brief</a>
+      <a href="/premium/monthly-briefs.html" class="dash-nav-link">Monthly Brief</a>
+      <a href="/premium/key-people.html" class="dash-nav-link">Key People</a>
+      <a href="/premium/gao-sustain.html" class="dash-nav-link">GAO Sustains</a>
+      <div class="dash-nav-section">Tools</div>
+      <a href="/premium/pursuit-score.html" class="dash-nav-link">Pursuit Score</a>
+      <a href="/premium/compliance-check.html" class="dash-nav-link">Compliance Check</a>
+      <a href="/premium/signal-chain.html" class="dash-nav-link">Signal Chain</a>
+      <div class="dash-nav-section">Resources</div>
+      <a href="/premium/calendar.html" class="dash-nav-link">Pursuit Calendar</a>
+      <a href="/contract-tracker.html" class="dash-nav-link">Contract Tracker</a>
+      <a href="/idiq-tracker.html" class="dash-nav-link">IDIQ Tracker</a>
+      <a href="/premium/single-bidder.html" class="dash-nav-link">Sole-Source Watch</a>
+      <a href="/premium/forecast-delta.html" class="dash-nav-link">Forecast Delta</a>
+      <a href="/premium/cr-exposure.html" class="dash-nav-link">CR Exposure</a>
+      <a href="/premium/fpds-migration.html" class="dash-nav-link">FPDS Sunset</a>
+      <a href="/premium/ask-mmt.html" class="dash-nav-link">Ask MMT</a>
+      <div class="dash-nav-section">Account</div>
+      <a href="/premium/settings.html" class="dash-nav-link">Settings</a>
+      <a href="/" class="dash-nav-link" style="margin-top:auto; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px;">&larr; Back to site</a>
+    </nav>
+    <div>
+      <div class="dash-header">
+        <span style="font-size:14px; font-weight:700;">&#9733; Premium Dashboard</span>
+        <div style="display:flex; align-items:center; gap:16px;">
+          <span style="font-size:13px; color:var(--mmt-text-secondary);" id="dash-email"></span>
+          <a href="/" style="font-size:12px; color:var(--mmt-teal); text-decoration:none;">Back to site</a>
+          <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_premium_ts');localStorage.removeItem('mmt_email');document.cookie='mmt_premium=;path=/;max-age=0';window.location.href='/';return false;" style="font-size:12px; color:var(--mmt-text-secondary); text-decoration:none;">Sign out</a>
+        </div>
+      </div>
+      <div class="dash-main">
+
+        <div class="eyebrow">HHS &middot; Heads of Contracting Activity</div>
+        <h1>The 10 HHS HCAs — every name, every email, current as of April 2026</h1>
+        <p class="lede">HHS went from 13 contracting activities to 10. OMAS is new. ACF and AHRQ are gone (their work flows through OMAS SBC-Mission). Three of the remaining HCAs are Acting — and they happen to be the three biggest spenders.</p>
+        <div class="meta-row">
+          Data current as of April 27, 2026 from the HHS HCA roster. Page updated May 18, 2026.
+          &middot; <a href="/agencies/hhs">HHS profile</a>
+          &middot; <a href="/agencies/hhs/orgchart">Visual org chart</a>
+          &middot; <a href="/agencies/hhs/omas">OMAS deep dive</a>
+        </div>
+
+        <div class="filters">
+          <input type="text" id="search" placeholder="Filter by name, agency, or email...">
+          <div class="toggle-group" role="tablist">
+            <button class="toggle-btn active" data-filter="all">All</button>
+            <button class="toggle-btn" data-filter="permanent">Permanent</button>
+            <button class="toggle-btn" data-filter="acting">Acting only</button>
+            <button class="toggle-btn" data-filter="new">New since 2025</button>
+          </div>
+        </div>
+        <div class="count-line" id="countLine">Showing 10 of 10 HCAs.</div>
+
+        <table class="hca" id="hcaTable">
+          <thead>
+            <tr>
+              <th><button type="button" data-sort="opdiv">OpDiv &uarr;&darr;</button></th>
+              <th><button type="button" data-sort="name">HCA name &uarr;&darr;</button></th>
+              <th><button type="button" data-sort="status">Status &uarr;&darr;</button></th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Small business specialist</th>
+            </tr>
+          </thead>
+          <tbody id="hcaBody">
+            <tr data-status="acting" data-new="false">
+              <td><span class="opdiv-chip">ARPA-H</span><br><span style="font-size:11px;color:var(--mmt-text-secondary);">Advanced Research Projects Agency for Health</span></td>
+              <td><strong>Benjamin Bryant</strong></td>
+              <td><span class="status-pill acting">Acting</span></td>
+              <td><a class="contact" href="mailto:benjamin.bryant@arpa-h.gov">benjamin.bryant@arpa-h.gov</a></td>
+              <td>&mdash;</td>
+              <td>Cindy Anderson<br><a class="contact" href="mailto:Cynthia.Anderson@hhs.gov">Cynthia.Anderson@hhs.gov</a> &middot; 202-578-1356</td>
+            </tr>
+
+            <tr data-status="acting" data-new="false">
+              <td><span class="opdiv-chip">CDC</span><br><span style="font-size:11px;color:var(--mmt-text-secondary);">Centers for Disease Control and Prevention</span></td>
+              <td><strong>Christine Godfrey</strong></td>
+              <td><span class="status-pill acting">Acting</span></td>
+              <td><a class="contact" href="mailto:cnp9@cdc.gov">cnp9@cdc.gov</a></td>
+              <td>770-488-2519</td>
+              <td>Gwendolyn Miles &middot; LaTonya Dent</td>
+            </tr>
+
+            <tr data-status="acting" data-new="false">
+              <td><span class="opdiv-chip">CMS</span><br><span style="font-size:11px;color:var(--mmt-text-secondary);">Centers for Medicare &amp; Medicaid Services</span></td>
+              <td><strong>Doug Bergevin</strong></td>
+              <td><span class="status-pill acting">Acting</span></td>
+              <td><a class="contact" href="mailto:douglas.bergevin@cms.hhs.gov">douglas.bergevin@cms.hhs.gov</a></td>
+              <td>443-909-0131</td>
+              <td>Anita Allen &middot; Christine Haber</td>
+            </tr>
+
+            <tr data-status="permanent" data-new="false">
+              <td><span class="opdiv-chip">FDA</span><br><span style="font-size:11px;color:var(--mmt-text-secondary);">Food and Drug Administration</span></td>
+              <td><strong>Leonard Grant</strong></td>
+              <td><span class="status-pill permanent">Permanent</span></td>
+              <td><a class="contact" href="mailto:Leonard.Grant@fda.hhs.gov">Leonard.Grant@fda.hhs.gov</a></td>
+              <td>240-402-7584</td>
+              <td>Cindy Anderson</td>
+            </tr>
+
+            <tr data-status="permanent" data-new="false">
+              <td><span class="opdiv-chip">HRSA</span><br><span style="font-size:11px;color:var(--mmt-text-secondary);">Health Resources &amp; Services Administration</span></td>
+              <td><strong>Brian Goodger</strong></td>
+              <td><span class="status-pill permanent">Permanent</span></td>
+              <td><a class="contact" href="mailto:BGoodger@hrsa.gov">BGoodger@hrsa.gov</a></td>
+              <td>301-945-9380</td>
+              <td>Wayne Berry</td>
+            </tr>
+
+            <tr data-status="permanent" data-new="false">
+              <td><span class="opdiv-chip">IHS</span><br><span style="font-size:11px;color:var(--mmt-text-secondary);">Indian Health Service</span></td>
+              <td><strong>Chantel Smith</strong></td>
+              <td><span class="status-pill permanent">Permanent</span></td>
+              <td><a class="contact" href="mailto:Chantel.Smith@ihs.gov">Chantel.Smith@ihs.gov</a></td>
+              <td>240-460-6876</td>
+              <td>Jonathan Ferguson</td>
+            </tr>
+
+            <tr data-status="permanent" data-new="false">
+              <td><span class="opdiv-chip">NIH</span><br><span style="font-size:11px;color:var(--mmt-text-secondary);">National Institutes of Health</span></td>
+              <td><strong>Olga Acosta</strong></td>
+              <td><span class="status-pill permanent">Permanent</span></td>
+              <td><a class="contact" href="mailto:olga.acosta@nih.gov">olga.acosta@nih.gov</a></td>
+              <td>301-435-4322</td>
+              <td>Natasha Boyce &middot; Melanie Carter &middot; Jonathan Ferguson &middot; Amy Ulisse</td>
+            </tr>
+
+            <tr data-status="permanent" data-new="true" class="is-new">
+              <td><span class="opdiv-chip">OMAS</span><br><span style="font-size:11px;color:var(--mmt-text-secondary);">Office of the Secretary / ASFR / Mission Acquisition Solutions</span></td>
+              <td><strong>Quentin McCoy</strong></td>
+              <td><span class="status-pill permanent">Permanent</span><span class="status-pill new">NEW HCA</span></td>
+              <td><a class="contact" href="mailto:Quentin.McCoy@hhs.gov">Quentin.McCoy@hhs.gov</a></td>
+              <td>301-492-5456</td>
+              <td>Industry Liaison: <a class="contact" href="mailto:IndustryLiaison@hhs.gov">IndustryLiaison@hhs.gov</a></td>
+            </tr>
+
+            <tr data-status="permanent" data-new="false">
+              <td><span class="opdiv-chip">ASPR</span><br><span style="font-size:11px;color:var(--mmt-text-secondary);">Admin. for Strategic Preparedness and Response</span></td>
+              <td><strong>Makoto P. Braxton</strong></td>
+              <td><span class="status-pill permanent">Permanent</span></td>
+              <td><a class="contact" href="mailto:makoto.braxton@hhs.gov">makoto.braxton@hhs.gov</a></td>
+              <td>202-260-6794</td>
+              <td>LaTonya Dent</td>
+            </tr>
+
+            <tr data-status="permanent" data-new="false">
+              <td><span class="opdiv-chip">OIG</span><br><span style="font-size:11px;color:var(--mmt-text-secondary);">Office of Inspector General</span></td>
+              <td><strong>John Marshall</strong></td>
+              <td><span class="status-pill permanent">Permanent</span></td>
+              <td><a class="contact" href="mailto:john.marshall@oig.hhs.gov">john.marshall@oig.hhs.gov</a></td>
+              <td>240-749-1499</td>
+              <td>Amy Ulisse</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="source-block">
+          <strong>Sources.</strong>
+          <a href="https://www.hhs.gov/grants-contracts/grants-business-contacts/hca-and-key-managers/index.html" rel="noopener">HHS HCA and Key Managers roster</a> (verified 2026-04-27).
+          <a href="https://www.hhs.gov/about/agencies/asfr/acquisition/osdbu/index.html" rel="noopener">HHS OSDBU Small Business Specialists by OpDiv</a> (verified 2026-05-07).<br><br>
+          <strong>What's not on this page.</strong> SAMHSA and ACL no longer appear on the HCA roster. SAMHSA's contracting authority is verifying — coverage is likely via OMAS or a parent HCA. ACL is similar. Treat both as "verify before targeting" until HHS publishes a clarification.<br><br>
+          <strong>Refresh cadence.</strong> Quarterly, against the official roster page. Vacancies fill; Acting designations turn Permanent. If you see a name change between refreshes, email <a href="mailto:mary@missionmeetstech.com">mary@missionmeetstech.com</a> and we'll re-verify the source.
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script>
+    var email=localStorage.getItem('mmt_email');var __de=document.getElementById('dash-email');if(__de&&email)__de.textContent=email;
+
+    (function() {
+      var tbody = document.getElementById('hcaBody');
+      var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+      var search = document.getElementById('search');
+      var countLine = document.getElementById('countLine');
+      var toggles = document.querySelectorAll('.toggle-btn');
+      var currentFilter = 'all';
+      var sortKey = null;
+      var sortDir = 1;
+
+      function applyFilters() {
+        var q = (search.value || '').trim().toLowerCase();
+        var visible = 0;
+        rows.forEach(function(r) {
+          var text = r.textContent.toLowerCase();
+          var matchQ = !q || text.indexOf(q) !== -1;
+          var status = r.getAttribute('data-status');
+          var isNew = r.getAttribute('data-new') === 'true';
+          var matchF = currentFilter === 'all' ||
+            (currentFilter === 'permanent' && status === 'permanent') ||
+            (currentFilter === 'acting' && status === 'acting') ||
+            (currentFilter === 'new' && isNew);
+          if (matchQ && matchF) { r.style.display = ''; visible++; }
+          else { r.style.display = 'none'; }
+        });
+        countLine.textContent = 'Showing ' + visible + ' of ' + rows.length + ' HCAs.';
+      }
+
+      search.addEventListener('input', applyFilters);
+      toggles.forEach(function(t) {
+        t.addEventListener('click', function() {
+          toggles.forEach(function(x) { x.classList.remove('active'); });
+          t.classList.add('active');
+          currentFilter = t.getAttribute('data-filter');
+          applyFilters();
+        });
+      });
+
+      function sortBy(key) {
+        if (sortKey === key) sortDir = -sortDir; else { sortKey = key; sortDir = 1; }
+        var keyIdx = key === 'opdiv' ? 0 : key === 'name' ? 1 : 2;
+        rows.sort(function(a, b) {
+          var av = a.cells[keyIdx].textContent.trim().toLowerCase();
+          var bv = b.cells[keyIdx].textContent.trim().toLowerCase();
+          return av < bv ? -sortDir : av > bv ? sortDir : 0;
+        });
+        rows.forEach(function(r) { tbody.appendChild(r); });
+      }
+      document.querySelectorAll('th button[data-sort]').forEach(function(b) {
+        b.addEventListener('click', function() { sortBy(b.getAttribute('data-sort')); });
+      });
+    })();
+  </script>
+</body>
+</html>
