@@ -23,7 +23,7 @@ const { searchTrials } = require("./lib/clinicaltrials-api");
 const { searchPubMed, fetchPubMedSummaries } = require("./lib/pubmed-api");
 const { searchJobs } = require("./lib/usajobs-api");
 const { detectVehicles, expandedSearchTerms } = require("./lib/known-vehicles");
-const { buildQueryTerms, buildPubMedQuery, FR_AGENCY_SLUGS, USASPENDING_AGENCY_NAMES, correctCommonTypos, fallbackSuggestionsFor } = require("./lib/signal-chain-query-builder");
+const { buildQueryTerms, buildPubMedQuery, FR_AGENCY_SLUGS, USASPENDING_AGENCY_NAMES, correctCommonTypos, fallbackSuggestionsFor, smartFallbackSuggestionsFor, jobSeriesFor } = require("./lib/signal-chain-query-builder");
 const { searchCorpus } = require("./lib/content-index");
 const fs = require("fs");
 const path = require("path");
@@ -86,17 +86,22 @@ function race(ms, fn) {
 
 // ------------------------------------------------------------
 // Layer 1: Research (PubMed + ClinicalTrials.gov) — weight 15%
+//
+// SC-6: capture rather than swallow upstream errors. Each layer returns
+// `apiError` when the underlying API call fails so the frontend can show
+// "Data source unavailable" instead of indistinguishable "no signals"
+// language.
 // ------------------------------------------------------------
 async function layerResearch(terms, agency) {
   const pubmedQuery = buildPubMedQuery(terms, agency);
   const [pm, trials] = await Promise.all([
-    searchPubMed({ query: pubmedQuery, retmax: 5, daysBack: 730 }).catch(() => ({ pmids: [], count: 0 })),
+    searchPubMed({ query: pubmedQuery, retmax: 5, daysBack: 730 }).catch((e) => ({ pmids: [], count: 0, error: e.message })),
     searchTrials({
       query: terms.base,
       sponsor: agency === "DHA" || agency === "DoD" ? "Defense Health Agency" : (agency === "VA" ? "VA Office of Research" : undefined),
       status: ["COMPLETED", "ACTIVE_NOT_RECRUITING", "RECRUITING"],
       limit: 5,
-    }).catch(() => ({ studies: [], total: 0 })),
+    }).catch((e) => ({ studies: [], total: 0, error: e.message })),
   ]);
   const articles = pm.pmids.length > 0
     ? (await fetchPubMedSummaries(pm.pmids).catch(() => ({ articles: [] }))).articles || []
@@ -140,11 +145,12 @@ async function layerResearch(terms, agency) {
     })),
   ];
 
+  const apiError = pm.error || trials.error || null;
   const reason = signals.length === 0
     ? `No recent federal-affiliated research found for these keywords in PubMed or ClinicalTrials.gov (${agency || "any agency"}).`
     : null;
 
-  return { score: clamp(score, 0, 100), weight: 0.15, source: "PubMed + ClinicalTrials", signals, noSignalReason: reason };
+  return { score: clamp(score, 0, 100), weight: 0.15, source: "PubMed + ClinicalTrials", signals, noSignalReason: reason, apiError };
 }
 
 // ------------------------------------------------------------
@@ -155,9 +161,9 @@ async function layerLegislative(terms) {
   // updated bills regardless of keyword match, so we need to verify each
   // result actually references our terms.
   const [bills, hearings, reports] = await Promise.all([
-    searchBills({ keyword: terms.forCongress, congress: 119, limit: 30 }).catch(() => ({ bills: [] })),
-    searchHearings({ keyword: terms.forCongress, congress: 119, limit: 20 }).catch(() => ({ hearings: [] })),
-    searchCommitteeReports({ keyword: terms.forCongress, congress: 119, limit: 15 }).catch(() => ({ reports: [] })),
+    searchBills({ keyword: terms.forCongress, congress: 119, limit: 30 }).catch((e) => ({ bills: [], error: e.message })),
+    searchHearings({ keyword: terms.forCongress, congress: 119, limit: 20 }).catch((e) => ({ hearings: [], error: e.message })),
+    searchCommitteeReports({ keyword: terms.forCongress, congress: 119, limit: 15 }).catch((e) => ({ reports: [], error: e.message })),
   ]);
 
   const tokens = (terms.topKeywords || []).map((k) => String(k || "").toLowerCase()).filter(Boolean);
@@ -207,64 +213,127 @@ async function layerLegislative(terms) {
     })),
   ];
 
+  const apiError = bills.error || hearings.error || reports.error || null;
   const reason = signals.length === 0
     ? "No active bills or hearings found in 119th Congress for these terms."
     : null;
 
-  return { score, weight: 0.20, source: "Congress.gov + GovInfo", signals, noSignalReason: reason };
+  return { score, weight: 0.20, source: "Congress.gov + GovInfo", signals, noSignalReason: reason, apiError };
 }
 
 // ------------------------------------------------------------
 // Layer 3: Workforce (USAJobs) — weight 15%
+//
+// SC-5: program names rarely appear in federal job titles. Health-IT
+// hires post under "IT Specialist" (2210), "Program Analyst" (0343),
+// "Contract Specialist" (1102). We resolve the topic + matched
+// vehicles to a list of GS series codes and pass them as
+// JobCategoryCode — that's how USAJobs surfaces relevant postings.
+//
+// Two-pass strategy:
+//   Pass A: title keyword AND agency           (precision — original behavior)
+//   Pass B: agency AND job series, NO keyword  (recall — fallback when
+//                                              titles don't match)
+// We score Pass A higher (direct keyword match) and Pass B lower
+// (program-adjacent hiring, still a leading indicator).
 // ------------------------------------------------------------
-async function layerWorkforce(terms, agency) {
+async function layerWorkforce(terms, agency, matchedVehicles) {
   const agencyCodeMap = { DHA: "DD17", VA: "VATA", HHS: "HE00", DoD: "DD00", GSA: "GS00" };
   const org = agencyCodeMap[agency];
-  const { jobs = [] } = await searchJobs({
-    keyword: terms.forUSAJobs,
-    agency: org,
-    limit: 10,
-  }).catch(() => ({ jobs: [] }));
+  const series = jobSeriesFor(terms.raw, matchedVehicles);
+
+  const [titleMatchRes, seriesMatchRes] = await Promise.all([
+    // Pass A — keyword in title, agency-scoped
+    searchJobs({
+      keyword: terms.forUSAJobs,
+      agency: org,
+      limit: 10,
+    }).catch((e) => ({ jobs: [], error: e.message })),
+    // Pass B — agency + GS series, no keyword. Only run if we actually
+    // resolved series codes for this topic (skip cost otherwise).
+    series.length > 0
+      ? searchJobs({
+          agency: org,
+          jobCategoryCode: series.slice(0, 4),
+          limit: 15,
+        }).catch((e) => ({ jobs: [], error: e.message }))
+      : Promise.resolve({ jobs: [] }),
+  ]);
+
+  const titleJobs = titleMatchRes.jobs || [];
+  const seriesJobs = seriesMatchRes.jobs || [];
+
+  // Dedupe by job_id; titleJobs win because they're keyword-matched.
+  const seen = new Set();
+  const all = [];
+  for (const j of titleJobs) {
+    if (j.job_id && !seen.has(j.job_id)) { seen.add(j.job_id); all.push({ ...j, _matchedBy: "title" }); }
+  }
+  for (const j of seriesJobs) {
+    if (j.job_id && !seen.has(j.job_id)) { seen.add(j.job_id); all.push({ ...j, _matchedBy: "series" }); }
+  }
 
   const keywordsLower = terms.topKeywords.map((k) => k.toLowerCase());
-  const relevant = jobs.filter((p) => {
+  const titleHits = all.filter((p) => {
     const title = (p.position_title || "").toLowerCase();
     return keywordsLower.some((k) => title.includes(k));
   });
+  const seriesHits = all.filter((p) => p._matchedBy === "series" && !titleHits.includes(p));
 
   let score = 0;
-  if (relevant.length > 10) score += 60;
-  else if (relevant.length > 5) score += 45;
-  else if (relevant.length > 2) score += 30;
-  else if (relevant.length > 0) score += 15;
-  else if (jobs.length > 0) score += 5;
-  const senior = relevant.filter((p) => {
+  // Pass A scoring — direct title match weighted heavier
+  if (titleHits.length > 10) score += 60;
+  else if (titleHits.length > 5) score += 45;
+  else if (titleHits.length > 2) score += 30;
+  else if (titleHits.length > 0) score += 15;
+  // Pass B scoring — series adjacency (caps lower, ~half)
+  if (seriesHits.length > 10) score += 25;
+  else if (seriesHits.length > 5) score += 18;
+  else if (seriesHits.length > 2) score += 12;
+  else if (seriesHits.length > 0) score += 6;
+
+  const allRelevant = [...titleHits, ...seriesHits];
+  const senior = allRelevant.filter((p) => {
     const t = (p.position_title || "").toLowerCase();
     if (/senior|lead|director|chief|supervisor/.test(t)) return true;
     const pm = parseFloat(p.pay_max || p.pay_min || 0);
     return pm > 130000;
   });
   score += Math.min(senior.length * 12, 25);
-  const veryRecent = relevant.filter((p) => daysAgo(p.open_date) < 14);
+  const veryRecent = allRelevant.filter((p) => daysAgo(p.open_date) < 14);
   if (veryRecent.length > 0) score += 15;
   score = clamp(score, 0, 100);
 
-  const signals = relevant.slice(0, 5).map((j) => ({
-    title: (j.position_title || "").substring(0, 120),
-    url: j.url,
-    source: "USAJobs",
-    date: j.open_date,
-    organization: `${j.agency || ""}${j.location ? " · " + j.location : ""}`,
-    relevanceNote: /senior|lead|director|chief|supervisor/i.test(j.position_title || "")
-      ? "Senior hire — program leadership signal"
-      : null,
-  }));
+  const signals = allRelevant.slice(0, 5).map((j) => {
+    const isSenior = /senior|lead|director|chief|supervisor/i.test(j.position_title || "");
+    let note = null;
+    if (isSenior) note = "Senior hire — program leadership signal";
+    else if (j._matchedBy === "series") note = "Adjacent series — program-relevant hiring";
+    return {
+      title: (j.position_title || "").substring(0, 120),
+      url: j.url,
+      source: "USAJobs",
+      date: j.open_date,
+      organization: `${j.agency || ""}${j.location ? " · " + j.location : ""}`,
+      relevanceNote: note,
+    };
+  });
 
+  const apiError = titleMatchRes.error || seriesMatchRes.error || null;
   const reason = signals.length === 0
-    ? `No active federal job postings matching these keywords at ${agency || "any agency"}. Hiring leads contracts by 6–18 months — check back.`
+    ? (series.length > 0
+        ? `No active federal postings for these keywords OR for GS series ${series.slice(0, 3).join("/")} at ${agency || "any agency"}. Hiring leads contracts by 6–18 months — check back.`
+        : `No active federal job postings matching these keywords at ${agency || "any agency"}. Hiring leads contracts by 6–18 months — check back.`)
     : null;
 
-  return { score, weight: 0.15, source: "USAJobs", signals, noSignalReason: reason };
+  return {
+    score,
+    weight: 0.15,
+    source: "USAJobs",
+    signals,
+    noSignalReason: reason,
+    apiError,
+  };
 }
 
 // ------------------------------------------------------------
@@ -277,8 +346,8 @@ async function layerBudget(terms, agency) {
       agency,
       startDate: new Date(Date.now() - 730 * DAY_MS).toISOString().slice(0, 10),
       limit: 10,
-    }).catch(() => ({ awards: [], total: 0 })),
-    searchGAOReports({ keyword: terms.forUSASpending, limit: 3 }).catch(() => ({ reports: [] })),
+    }).catch((e) => ({ awards: [], total: 0, error: e.message })),
+    searchGAOReports({ keyword: terms.forUSASpending, limit: 3 }).catch((e) => ({ reports: [], error: e.message })),
   ]);
 
   const awardList = awards.awards || [];
@@ -322,11 +391,12 @@ async function layerBudget(terms, agency) {
     })),
   ];
 
+  const apiError = awards.error || gaoReports.error || null;
   const reason = signals.length === 0
     ? `No obligation data found for these keywords at ${agency || "any agency"} in USASpending. Try a broader search term.`
     : null;
 
-  return { score, weight: 0.25, source: "USASpending + GAO", signals, noSignalReason: reason };
+  return { score, weight: 0.25, source: "USASpending + GAO", signals, noSignalReason: reason, apiError };
 }
 
 // ------------------------------------------------------------
@@ -341,17 +411,22 @@ const SAM_TYPE_LABELS = {
 async function layerContract(terms, agency) {
   const [samOpps, frDocs] = await Promise.all([
     // Use SAM.gov Opportunities as the PRIMARY source for contract signals.
+    // SC-4: pass `agency` so SAM filters by deptname; pump limit to 25 so
+    // we have enough results to score down meaningfully via recency weights.
     searchSAMOpportunities({
       keyword: terms.forSAM,
-      limit: 10,
-    }).catch(() => ({ opportunities: [], total: 0 })),
+      agency,
+      limit: 25,
+    }).catch((e) => ({ opportunities: [], total: 0, error: e.message })),
     // Federal Register supplemental, ALWAYS with keyword filter now.
+    // FR_AGENCY_SLUGS values are arrays so DHA can union under
+    // "defense-department" AND "defense-health-agency" (SC-2).
     searchFederalRegister({
       keyword: terms.forFedRegister,
-      agencies: FR_AGENCY_SLUGS[agency] ? [FR_AGENCY_SLUGS[agency]] : undefined,
+      agencies: FR_AGENCY_SLUGS[agency] || undefined,
       type: ["NOTICE", "RULE"],
-      limit: 3,
-    }).catch(() => ({ documents: [], total: 0 })),
+      limit: 5,
+    }).catch((e) => ({ documents: [], total: 0, error: e.message })),
   ]);
 
   const opps = samOpps.opportunities || [];
@@ -392,13 +467,14 @@ async function layerContract(terms, agency) {
     })),
   ];
 
+  const apiError = samOpps.error || frDocs.error || null;
   const reason = signals.length === 0
     ? `No active SAM.gov solicitations matching these keywords at ${agency || "any agency"}. Zero Federal Register notices in the window.`
     : (opps.length === 0 && docs.length > 0
         ? `No active SAM.gov solicitations found. ${docs.length} Federal Register notice${docs.length === 1 ? "" : "s"} — showing most relevant.`
         : null);
 
-  return { score, weight: 0.25, source: "SAM.gov + Federal Register", signals, noSignalReason: reason };
+  return { score, weight: 0.25, source: "SAM.gov + Federal Register", signals, noSignalReason: reason, apiError };
 }
 
 // ------------------------------------------------------------
@@ -468,6 +544,27 @@ function computeComposite(layers) {
     (layers.budget.score * 0.25) +
     (layers.contract.score * 0.25)
   );
+}
+
+// SC-6: when a layer has an apiError (vs. genuinely returning 0), drop
+// it from the composite denominator. Otherwise a single broken upstream
+// (expired SAM key, USASpending API down) silently collapses every
+// composite score to ~0 — exactly the failure mode the 2026-05-15 audit
+// caught. A pure-zero layer (worked, returned no signals) still counts
+// full weight; that IS a real signal about the program.
+function computePartialComposite(layers) {
+  const weights = { research: 0.15, legislative: 0.20, workforce: 0.15, budget: 0.25, contract: 0.25 };
+  let weighted = 0;
+  let denom = 0;
+  for (const [name, w] of Object.entries(weights)) {
+    const l = layers[name];
+    if (l && l.apiError) continue; // exclude broken layer
+    weighted += (l ? l.score : 0) * w;
+    denom += w;
+  }
+  if (denom === 0) return 0;
+  // weighted / denom rescales to a 0–100 score using only working layers.
+  return Math.round(weighted / denom);
 }
 
 function getVerdict(composite) {
@@ -602,10 +699,24 @@ exports.handler = async (event) => {
   }
 
   // Vehicle detection — resolve aliases (OASIS+ → "OASIS Plus" etc.)
+  // SC-7: dedupe the concat case-insensitively. expandedSearchTerms often
+  // returns the canonical name which is already the input ("MHS GENESIS"
+  // → expandedSearchTerms returns "MHS GENESIS", "MHS GENESIS" twice),
+  // and the resulting resolvedTopic feeds buildQueryTerms which then
+  // had ["mhs","genesis","mhs","genesis"] as topKeywords.
   const matchedVehicles = detectVehicles(topic);
-  const resolvedTopic = matchedVehicles.length > 0
-    ? [topic, ...expandedSearchTerms(matchedVehicles)].join(" ")
-    : topic;
+  let resolvedTopic = topic;
+  if (matchedVehicles.length > 0) {
+    const seen = new Set();
+    const out = [];
+    for (const part of [topic, ...expandedSearchTerms(matchedVehicles)]) {
+      const key = String(part || "").toLowerCase().trim();
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+      out.push(part);
+    }
+    resolvedTopic = out.join(" ");
+  }
   const resolvedAgency = agency || (matchedVehicles[0] && matchedVehicles[0].agency) || null;
 
   const terms = buildQueryTerms(resolvedTopic, resolvedAgency);
@@ -614,30 +725,65 @@ exports.handler = async (event) => {
   const [research, legislative, workforce, budget, contract] = await Promise.all([
     race(6000, () => layerResearch(terms, resolvedAgency)),
     race(6000, () => layerLegislative(terms)),
-    race(6000, () => layerWorkforce(terms, resolvedAgency)),
+    race(6000, () => layerWorkforce(terms, resolvedAgency, matchedVehicles)),
     race(6000, () => layerBudget(terms, resolvedAgency)),
     race(6000, () => layerContract(terms, resolvedAgency)),
   ]);
 
-  const zero = { score: 0, weight: 0, source: "", signals: [], noSignalReason: "Data source timed out — try again." };
-  const timedOut = [];
-  if (research.__timedOut) timedOut.push("research");
-  if (legislative.__timedOut) timedOut.push("legislative");
-  if (workforce.__timedOut) timedOut.push("workforce");
-  if (budget.__timedOut) timedOut.push("budget");
-  if (contract.__timedOut) timedOut.push("contract");
+  // Layer wrapper: distinguishes timeouts (transient) from API errors
+  // (configuration / upstream broken). Each gets a distinct flag the
+  // frontend uses to decide whether to render "no signals matched"
+  // (true zero) vs "Data source unavailable" (api/timeout failure).
+  const buildZero = (weight, reason) => ({
+    score: 0, weight, source: "", signals: [], noSignalReason: reason,
+  });
+  const wrap = (raw, weight, name) => {
+    if (raw.__timedOut) return { ...buildZero(weight, "Data source timed out — try again."), apiError: "timeout", _name: name };
+    if (raw.__error) return { ...buildZero(weight, "Data source unavailable — retry."), apiError: raw.__error, _name: name };
+    return raw;
+  };
 
   const layers = {
-    research:    research.__timedOut || research.__error ? { ...zero, weight: 0.15 } : research,
-    legislative: legislative.__timedOut || legislative.__error ? { ...zero, weight: 0.20 } : legislative,
-    workforce:   workforce.__timedOut || workforce.__error ? { ...zero, weight: 0.15 } : workforce,
-    budget:      budget.__timedOut || budget.__error ? { ...zero, weight: 0.25 } : budget,
-    contract:    contract.__timedOut || contract.__error ? { ...zero, weight: 0.25 } : contract,
+    research:    wrap(research,    0.15, "research"),
+    legislative: wrap(legislative, 0.20, "legislative"),
+    workforce:   wrap(workforce,   0.15, "workforce"),
+    budget:      wrap(budget,      0.25, "budget"),
+    contract:    wrap(contract,    0.25, "contract"),
     mmtCoverage: layerMmtCoverage(terms, topic),
   };
 
-  const composite = computeComposite(layers);
+  // Collect timeouts and API errors so we can surface them in ops_events
+  // and on the response card. SC-6: don't swallow.
+  const timedOut = [];
+  const apiErrors = [];
+  for (const [name, l] of Object.entries(layers)) {
+    if (name === "mmtCoverage") continue;
+    if (l.apiError === "timeout") timedOut.push(name);
+    else if (l.apiError) apiErrors.push({ layer: name, error: l.apiError });
+  }
+
+  // Log any non-timeout API errors so we can spot configuration drift
+  // (key expiry, schema migration, etc.) before subscribers complain.
+  if (apiErrors.length > 0) {
+    try {
+      await supabase.from("ops_events").insert({
+        event_type: "signal_chain_api_error",
+        details: { topic, agency: resolvedAgency, errors: apiErrors, at: new Date().toISOString() },
+      });
+    } catch (_) {}
+  }
+
+  // SC-6 composite math: when a layer is in error (not just zero), exclude
+  // its weight from the denominator so the composite score reflects the
+  // signal we actually have. Pure-zero (working layer returned no signals)
+  // still counts as 0/100 with full weight — that's a real signal.
+  const composite = computePartialComposite(layers);
   const { verdict, captureAlert, color } = getVerdict(composite);
+  const partialReason = (() => {
+    const broken = Object.entries(layers).filter(([n, l]) => n !== "mmtCoverage" && l.apiError);
+    if (broken.length === 0) return null;
+    return `Score is partial — ${broken.map(([n]) => n).join(", ")} layer${broken.length === 1 ? "" : "s"} unavailable.`;
+  })();
 
   // Empty-result intelligence — when composite is effectively zero
   // across all 5 layers, surface fallback suggestions so the
@@ -648,7 +794,10 @@ exports.handler = async (event) => {
   const layerScores = Object.values(layers || {}).map((l) => l && typeof l.score === "number" ? l.score : 0);
   const allLayersEmpty = layerScores.every((s) => s === 0);
   const empty_state = (composite < 5 && allLayersEmpty);
-  const suggestions = empty_state ? fallbackSuggestionsFor(resolvedAgency).slice(0, 4) : [];
+  // SC-8: smart suggestions — never echo back the topic the user just
+  // ran, and fall back to sibling-agency suggestions if filtering empties
+  // the primary list.
+  const suggestions = empty_state ? smartFallbackSuggestionsFor(resolvedAgency, topic) : [];
 
   const card = {
     topic,
@@ -659,8 +808,10 @@ exports.handler = async (event) => {
     verdict,
     captureAlert,
     verdictColor: color,
-    partial: timedOut.length > 0,
+    partial: timedOut.length > 0 || apiErrors.length > 0,
     timedOut,
+    apiErrors: apiErrors.length > 0 ? apiErrors : undefined,
+    partialReason,
     generatedAt: new Date().toISOString(),
     resolved: {
       searchedTopic: resolvedTopic,
@@ -672,7 +823,7 @@ exports.handler = async (event) => {
     empty_state,
     suggestions,
     empty_state_message: empty_state
-      ? `No federal data signal for "${topic}" at ${resolvedAgency || "any agency"} this window. Try one of the active programs below, or broaden your terms.`
+      ? `No federal data signal for "${topic}" at ${resolvedAgency || "any agency"} this window. Federal data lags solicitations by 30–90 days. Try a related program below, broaden your terms, or remove the agency filter.`
       : undefined,
   };
 

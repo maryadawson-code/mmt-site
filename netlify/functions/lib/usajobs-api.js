@@ -21,9 +21,13 @@ const USER_EMAIL = process.env.USAJOBS_USER_EMAIL || "mary@missionmeetstech.com"
  * @param {string} [params.location]
  * @param {string} [params.payGradeLow] - min GS grade (e.g., "13")
  * @param {string} [params.payGradeHigh]
+ * @param {string|string[]} [params.jobCategoryCode] - GS series code(s),
+ *        e.g. "2210" or ["2210","0301"]. USAJobs accepts a semicolon-joined
+ *        list. Use this for SC-5 program-to-series mapping (jobs rarely
+ *        title-match a program name).
  * @param {number} [params.limit] - default 10
  */
-async function searchJobs({ keyword, agency, location, payGradeLow, payGradeHigh, limit = 10 }) {
+async function searchJobs({ keyword, agency, location, payGradeLow, payGradeHigh, jobCategoryCode, limit = 10 }) {
   if (!API_KEY) {
     return { jobs: [], error: "USAJOBS_API_KEY not configured" };
   }
@@ -38,6 +42,10 @@ async function searchJobs({ keyword, agency, location, payGradeLow, payGradeHigh
   if (location) params.set("LocationName", location);
   if (payGradeLow) params.set("PayGradeLow", payGradeLow);
   if (payGradeHigh) params.set("PayGradeHigh", payGradeHigh);
+  if (jobCategoryCode) {
+    const codes = Array.isArray(jobCategoryCode) ? jobCategoryCode : [jobCategoryCode];
+    if (codes.length > 0) params.set("JobCategoryCode", codes.join(";"));
+  }
 
   try {
     const res = await fetch(`${API_BASE}?${params}`, {
@@ -48,7 +56,11 @@ async function searchJobs({ keyword, agency, location, payGradeLow, payGradeHigh
         Accept: "application/json",
       },
     });
-    if (!res.ok) return { jobs: [], error: `USAJobs API ${res.status}` };
+    if (!res.ok) {
+      let detail = "";
+      try { detail = (await res.text()).slice(0, 240); } catch (_) {}
+      return { jobs: [], error: `USAJobs API ${res.status}${detail ? ": " + detail : ""}` };
+    }
     const data = await res.json();
     const items = data.SearchResult?.SearchResultItems || [];
     return {

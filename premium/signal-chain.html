@@ -422,10 +422,19 @@
         banner.style.display = 'none';
       }
 
-      // Partial warning
+      // Partial warning — surfaces both timeouts and API errors so the
+      // user can tell "real zero" apart from "upstream broken".
       var partialEl = document.getElementById('sc-partial-warning');
-      if (r.partial && r.timedOut && r.timedOut.length) {
-        partialEl.textContent = '⚠ ' + r.timedOut.length + ' data source' + (r.timedOut.length === 1 ? '' : 's') + ' timed out: ' + r.timedOut.join(', ') + '. Composite may be understated.';
+      var partialMsgs = [];
+      if (r.timedOut && r.timedOut.length) {
+        partialMsgs.push(r.timedOut.length + ' source' + (r.timedOut.length === 1 ? '' : 's') + ' timed out (' + r.timedOut.join(', ') + ')');
+      }
+      if (r.apiErrors && r.apiErrors.length) {
+        partialMsgs.push(r.apiErrors.length + ' source' + (r.apiErrors.length === 1 ? '' : 's') + ' unavailable (' + r.apiErrors.map(function(e) { return e.layer; }).join(', ') + ')');
+      }
+      if (partialMsgs.length) {
+        var prefix = r.partialReason ? r.partialReason + ' ' : '';
+        partialEl.textContent = '⚠ ' + prefix + partialMsgs.join('; ') + '.';
         partialEl.style.display = 'block';
       } else {
         partialEl.style.display = 'none';
@@ -462,8 +471,19 @@
         var card = document.createElement('div');
         card.className = 'layer-card';
 
+        // SC-6: when a layer's apiError is set, the upstream call failed
+        // (or timed out). Show a distinct unavailable badge so the user
+        // can tell "true zero result" apart from "broken upstream" —
+        // they need very different actions.
+        var apiErr = layer.apiError || null;
+        var unavailableBadge = apiErr
+          ? '<span style="display:inline-block;font-size:10px;font-weight:700;background:rgba(230,57,70,0.12);color:#B91C1C;padding:2px 8px;border-radius:4px;letter-spacing:0.04em;text-transform:uppercase;margin-left:8px;" title="' + escapeHtml(String(apiErr)).slice(0, 200) + '">Data source unavailable</span>'
+          : '';
+
         var signalsHtml;
-        if (layer.signals && layer.signals.length) {
+        if (apiErr && (!layer.signals || layer.signals.length === 0)) {
+          signalsHtml = '<div style="font-size:12px;color:#B91C1C;font-style:italic;margin-top:8px;">Data source unavailable — retry. (' + escapeHtml(apiErr === 'timeout' ? 'Upstream timed out' : 'Upstream API error') + ')</div>';
+        } else if (layer.signals && layer.signals.length) {
           signalsHtml = '<div>' + layer.signals.map(function(s) {
             var safeSrcClass = 'source-' + (s.source || '').replace(/[^A-Za-z0-9]/g, '-');
             var meta = [];
@@ -487,13 +507,13 @@
         var weightPct = Math.round((layer.weight || 0) * 100);
         card.innerHTML =
           '<div class="layer-head">' +
-            '<span class="layer-name">' + LAYER_LABELS[key] + '</span>' +
+            '<span class="layer-name">' + LAYER_LABELS[key] + unavailableBadge + '</span>' +
             '<span class="layer-score">' + layer.score + '<span style="font-size:11px;color:var(--mmt-text-secondary);font-weight:600;"> / 100</span></span>' +
           '</div>' +
-          '<div class="layer-bar"><div class="layer-bar-fill" style="width:' + layer.score + '%;"></div></div>' +
+          '<div class="layer-bar"><div class="layer-bar-fill" style="width:' + layer.score + '%;' + (apiErr ? 'background:rgba(230,57,70,0.4);' : '') + '"></div></div>' +
           '<div style="font-size:11px;color:var(--mmt-text-secondary);margin-bottom:4px;">' + escapeHtml(layer.source || '') + '</div>' +
           signalsHtml +
-          '<div class="layer-weight">Weight: ' + weightPct + '% of composite</div>';
+          '<div class="layer-weight">Weight: ' + weightPct + '% of composite' + (apiErr ? ' · <span style="color:#B91C1C;">excluded</span>' : '') + '</div>';
         grid.appendChild(card);
       });
 

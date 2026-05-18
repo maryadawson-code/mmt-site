@@ -28,21 +28,37 @@ const SAM_API_KEY = process.env.SAM_GOV_API_KEY || "";
  * @returns {Promise<{awards: Array, total: number, error?: string}>}
  */
 async function searchUSASpending({ keyword, agency, naics, startDate, endDate, limit = 20 }) {
-  const filters = { keyword: keyword || "" };
+  // USASpending v2 requires `keywords` (array), not the deprecated singular
+  // `keyword`. It also requires `award_type_codes` to be set when querying
+  // /spending_by_award/ — otherwise the endpoint returns HTTP 400.
+  // Contract award type codes A/B/C/D = Definitive Contract / Purchase Order /
+  // Delivery Order / BPA Call. This was the SC-1 bug (2026-05-15 audit):
+  // every Signal Chain budget call was returning 400 silently and the layer
+  // was scoring 0 for slam-dunk programs like MHS GENESIS and TRICARE.
+  const filters = {
+    keywords: keyword ? [keyword] : [],
+    award_type_codes: ["A", "B", "C", "D"],
+  };
 
   if (agency) {
-    // Map common agency names to toptier codes
-    const agencyMap = {
-      "VA": "036", "Department of Veterans Affairs": "036",
-      "DHA": "097", "Defense Health Agency": "097", "DoD": "097",
-      "HHS": "075", "Department of Health and Human Services": "075",
-      "CMS": "075", "Centers for Medicare and Medicaid Services": "075",
-      "NIH": "075", "National Institutes of Health": "075",
-      "IHS": "075", "Indian Health Service": "075",
+    // USASpending v2 `agencies` filter requires { type, tier, name } —
+    // NO `toptier_code` field (that key produces HTTP 400). The `name`
+    // must match the canonical agency string USASpending uses, and the
+    // tier must be correct (DHA is a SUBTIER under DoD; querying DHA at
+    // toptier returns zero because DHA isn't a toptier agency).
+    const agencyToFilter = {
+      VA:  { type: "funding", tier: "toptier", name: "Department of Veterans Affairs" },
+      DHA: { type: "funding", tier: "subtier", name: "Defense Health Agency" },
+      DoD: { type: "funding", tier: "toptier", name: "Department of Defense" },
+      HHS: { type: "funding", tier: "toptier", name: "Department of Health and Human Services" },
+      CMS: { type: "funding", tier: "subtier", name: "Centers for Medicare and Medicaid Services" },
+      NIH: { type: "funding", tier: "subtier", name: "National Institutes of Health" },
+      IHS: { type: "funding", tier: "subtier", name: "Indian Health Service" },
+      GSA: { type: "funding", tier: "toptier", name: "General Services Administration" },
     };
-    const code = agencyMap[agency];
-    if (code) {
-      filters.agencies = [{ type: "funding", tier: "toptier", name: agency, toptier_code: code }];
+    const filterObj = agencyToFilter[agency];
+    if (filterObj) {
+      filters.agencies = [filterObj];
     }
   }
 
@@ -72,14 +88,21 @@ async function searchUSASpending({ keyword, agency, naics, startDate, endDate, l
         ],
         limit,
         page: 1,
-        sort: "Total Obligated Amount",
+        // "Award Amount" is the valid sort mapping for spending_by_award.
+        // The deprecated string "Total Obligated Amount" returns HTTP 400.
+        sort: "Award Amount",
         order: "desc",
         subawards: false,
       }),
     });
 
     if (!res.ok) {
-      return { awards: [], total: 0, error: `USASpending API ${res.status}` };
+      // Capture body text so the layer can surface what the upstream actually
+      // said — silent zero-result responses were how SC-1 went unnoticed for
+      // weeks. Truncate to keep ops_events rows reasonable.
+      let detail = "";
+      try { detail = (await res.text()).slice(0, 240); } catch (_) {}
+      return { awards: [], total: 0, error: `USASpending API ${res.status}${detail ? ": " + detail : ""}` };
     }
 
     const data = await res.json();
@@ -158,17 +181,41 @@ async function getSpendingByCategory({ agency, naics, fiscal_year }) {
   }
 }
 
+// Map MMT short agency codes to SAM.gov department names. SAM's
+// `deptname` filter does an exact (case-sensitive) match against the
+// top-level department, so we have to use the formal name the agency
+// posts under.
+const SAM_DEPT_NAMES = {
+  DHA: "DEPT OF DEFENSE",        // DHA solicitations post under DoD
+  DoD: "DEPT OF DEFENSE",
+  VA:  "VETERANS AFFAIRS, DEPARTMENT OF",
+  HHS: "HEALTH AND HUMAN SERVICES, DEPARTMENT OF",
+  GSA: "GENERAL SERVICES ADMINISTRATION",
+  NASA: "NATIONAL AERONAUTICS AND SPACE ADMINISTRATION",
+};
+
 /**
  * Search SAM.gov for active opportunities (solicitations, RFIs, etc.)
  * Requires SAM_GOV_API_KEY env var.
  *
+ * SC-4 FIX (2026-05-15 audit): The previous implementation used the
+ * `title=keyword` param, which only matches solicitation titles. Known
+ * active opportunities like HT001126RE011 "DHA Data Governance" never
+ * surfaced because the keyword lives in the description, not the title.
+ * Switched to the `q` param (SAM v2 full-text across title + description)
+ * and added a `ptype` filter to restrict to active solicitation types
+ * (Solicitation/Combined Synopsis/Pre-Solicitation/Sources Sought/RFI/
+ * Special Notice), filtering out archived awards. When an MMT agency
+ * code is known, we also pass `deptname` to narrow the result set.
+ *
  * @param {Object} params
- * @param {string} params.keyword - Search keyword (title search only)
+ * @param {string} params.keyword - Search keyword (full-text)
  * @param {string} [params.naics] - NAICS code filter
+ * @param {string} [params.agency] - MMT short agency code (DHA/VA/HHS/DoD/GSA)
  * @param {number} [params.limit] - Max results (default 10)
  * @returns {Promise<{opportunities: Array, total: number, error?: string}>}
  */
-async function searchSAMOpportunities({ keyword, naics, limit = 10 }) {
+async function searchSAMOpportunities({ keyword, naics, agency, limit = 10 }) {
   if (!SAM_API_KEY) {
     return { opportunities: [], total: 0, error: "SAM_GOV_API_KEY not configured" };
   }
@@ -183,10 +230,22 @@ async function searchSAMOpportunities({ keyword, naics, limit = 10 }) {
     offset: "0",
     postedFrom: formatDate(yearAgo),
     postedTo: formatDate(now),
+    // Active solicitation types only:
+    //   o = Solicitation
+    //   r = Combined Synopsis/Solicitation
+    //   p = Pre-Solicitation
+    //   k = Sources Sought / RFI
+    //   s = Special Notice
+    // Excludes "a" (Award Notice) and "u" (Justification & Approval).
+    ptype: "o,r,p,k,s",
   });
 
-  if (keyword) params.set("title", keyword);
+  // Full-text search across title + description. Falls back to title-only
+  // by passing `title=` if a caller explicitly needs that (none currently
+  // do — `q` is the right primary search for Signal Chain).
+  if (keyword) params.set("q", keyword);
   if (naics) params.set("ncode", naics);
+  if (agency && SAM_DEPT_NAMES[agency]) params.set("deptname", SAM_DEPT_NAMES[agency]);
 
   try {
     const res = await fetch(`https://api.sam.gov/opportunities/v2/search?${params}`, {
@@ -194,7 +253,9 @@ async function searchSAMOpportunities({ keyword, naics, limit = 10 }) {
     });
 
     if (!res.ok) {
-      return { opportunities: [], total: 0, error: `SAM.gov API ${res.status}` };
+      let detail = "";
+      try { detail = (await res.text()).slice(0, 240); } catch (_) {}
+      return { opportunities: [], total: 0, error: `SAM.gov API ${res.status}${detail ? ": " + detail : ""}` };
     }
 
     const data = await res.json();

@@ -92,11 +92,16 @@ const AGENCY_CONTEXT = {
 
 function buildQueryTerms(topic, agency) {
   const raw = String(topic || "");
-  const keywords = raw
+  // SC-7: dedupe case-insensitively. Vehicle detection layers in
+  // expandedSearchTerms which often duplicates the user's original input
+  // ("MHS GENESIS" → ["MHS GENESIS", "MHS GENESIS"]), producing
+  // topKeywords like ["mhs","genesis","mhs","genesis"].
+  const tokens = raw
     .toLowerCase()
     .replace(/[^a-z0-9+ ]/g, " ") // keep + for OASIS+ etc.
     .split(/\s+/)
     .filter((w) => w.length > 2 && !STOPWORDS.has(w));
+  const keywords = Array.from(new Set(tokens));
   const topKeywords = keywords.slice(0, 4);
   const base = topKeywords.join(" ");
 
@@ -111,6 +116,68 @@ function buildQueryTerms(topic, agency) {
     forUSASpending: topKeywords.join(" "),
     agencyContextTerms: AGENCY_CONTEXT[agency] || [],
   };
+}
+
+// SC-5: Federal jobs rarely say "MHS GENESIS" in the title — they say
+// "Health IT Specialist" or "Health Information Technology Manager".
+// To detect workforce signal we need to map programs to the GS series
+// codes those programs actually hire under. Each entry maps a canonical
+// program/vehicle name (uppercase, no symbols) to the relevant series.
+//
+// Series reference:
+//   2210 = IT Specialist
+//   0301 = Misc Admin / Program Management
+//   0343 = Management & Program Analyst
+//   1102 = Contracting / Contract Specialist
+//   0801 = Engineering (general)
+//   0855 = Electronics Engineering
+//   0602 = Medical Officer
+//   0610 = Nurse
+//   0644 = Medical Technologist
+//   0685 = Public Health Program Specialist
+const PROGRAM_TO_JOB_SERIES = {
+  "MHS GENESIS":      ["2210", "0301", "0343"],
+  "DHMSM":            ["2210", "0301", "0343"],
+  "CCN NEXT GEN":     ["1102", "0301", "0343", "0685"],
+  "VA EHRM":          ["2210", "0301", "0343"],
+  "T4NG2":            ["2210", "1102", "0301"],
+  "TRICARE":          ["0301", "0343", "0685", "1102"],
+  "DHITSC":           ["2210", "1102", "0301"],
+  "DHITUC":           ["2210", "1102", "0301"],
+  "HITDSS":           ["2210", "1102", "0301"],
+  "VA ECMS":          ["2210", "1102", "0301"],
+  "ALLIANT 3":        ["2210", "1102"],
+  "OASIS+":           ["0301", "0343", "1102"],
+  "OASIS PLUS":       ["0301", "0343", "1102"],
+  "SEWP VI":          ["2210", "1102"],
+  "VETS 2":           ["2210", "1102"],
+  "8(A) STARS III":   ["2210", "1102"],
+  "STARS III":        ["2210", "1102"],
+  "ITES-3H":          ["2210", "1102"],
+  "ITES-SW2":         ["2210", "1102"],
+  "CIO-SP4":          ["2210", "1102", "0301"],
+  "JWCC":             ["2210", "0855", "0301"],
+  "VA ENTERPRISE IMAGING": ["2210", "0644", "0301"],
+};
+
+/**
+ * Resolve a list of GS series codes from a topic + matched vehicles.
+ * Returns a deduped array of 3-letter series strings. Empty if nothing
+ * known matches — callers should still pass the keyword but won't bias
+ * toward a series.
+ */
+function jobSeriesFor(topic, matchedVehicles) {
+  const out = new Set();
+  const u = String(topic || "").toUpperCase();
+  for (const [k, codes] of Object.entries(PROGRAM_TO_JOB_SERIES)) {
+    if (u.includes(k)) codes.forEach((c) => out.add(c));
+  }
+  for (const v of matchedVehicles || []) {
+    const canonical = String(v.canonical || "").toUpperCase();
+    const codes = PROGRAM_TO_JOB_SERIES[canonical];
+    if (codes) codes.forEach((c) => out.add(c));
+  }
+  return Array.from(out);
 }
 
 /**
@@ -143,13 +210,27 @@ const USAJOBS_ORG_CODES = {
   GSA: "GS00",
 };
 
-// Federal Register agency slugs
+// Federal Register agency slugs.
+//
+// Slug source: https://www.federalregister.gov/agencies (use the URL slug
+// after /agencies/<slug>).
+//
+// IMPORTANT (SC-2, 2026-05-15 audit + 2026-05-17 live verification):
+// DHA does NOT have a dedicated Federal Register slug — "defense-health-agency"
+// returns HTTP 400 "agencies: invalid value" and KILLS the entire call when
+// included alongside a valid slug. DHA notices are filed by DoD and surface
+// under "defense-department" instead. Verified live: TRICARE under
+// "defense-department" returns 679 hits; under "defense-health-agency"
+// returns 400.
+//
+// Values are arrays for forward-compat in case FR ever adds component slugs
+// (BLS-style), but today every agency maps to a single slug.
 const FR_AGENCY_SLUGS = {
-  DHA: "defense-health-agency",
-  VA:  "veterans-affairs-department",
-  HHS: "health-and-human-services-department",
-  DoD: "defense-department",
-  GSA: "general-services-administration",
+  DHA: ["defense-department"],
+  VA:  ["veterans-affairs-department"],
+  HHS: ["health-and-human-services-department"],
+  DoD: ["defense-department"],
+  GSA: ["general-services-administration"],
 };
 
 // USASpending full agency names
@@ -199,6 +280,65 @@ function fallbackSuggestionsFor(agency) {
   return FALLBACK_SUGGESTIONS[agency] || FALLBACK_SUGGESTIONS.DHA;
 }
 
+// Sibling agency map for SC-8 cross-agency fallback. When every primary
+// suggestion at an agency was the topic the user just ran (and got
+// nothing back), surface suggestions from a related agency so the user
+// has something productive to try instead of staring at the same chip
+// they just clicked.
+const SIBLING_AGENCIES = {
+  DHA: ["VA", "DoD"],
+  VA:  ["DHA", "HHS"],
+  HHS: ["VA", "DoD"],
+  DoD: ["DHA", "GSA"],
+  GSA: ["DoD", "HHS"],
+};
+
+/**
+ * SC-8: Build the empty-state suggestion set.
+ *
+ * Rule 1 — never suggest the topic the user just ran. If a primary
+ * suggestion is a case-insensitive substring of (or contains) the
+ * current topic, drop it. Stops the "CCN Next Gen returned 0 → here are
+ * suggestions including CCN Next Gen" UX failure.
+ *
+ * Rule 2 — if filtering drops everything, fall back to the sibling
+ * agency map. DHA ↔ VA, etc.
+ *
+ * Rule 3 — cap at 4 suggestions, prefer primary agency over sibling.
+ */
+function smartFallbackSuggestionsFor(agency, currentTopic) {
+  const topic = String(currentTopic || "").toLowerCase().trim();
+  const filterFn = (s) => {
+    if (!topic) return true;
+    const q = String(s.query || "").toLowerCase().trim();
+    const lbl = String(s.label || "").toLowerCase().trim();
+    // Reject exact match, substring containment in either direction.
+    if (!q && !lbl) return false;
+    if (q === topic || lbl === topic) return false;
+    if (q && (topic.includes(q) || q.includes(topic))) return false;
+    if (lbl && (topic.includes(lbl) || lbl.includes(topic))) return false;
+    return true;
+  };
+
+  const primary = (FALLBACK_SUGGESTIONS[agency] || FALLBACK_SUGGESTIONS.DHA).filter(filterFn);
+  if (primary.length >= 2) return primary.slice(0, 4);
+
+  // Sibling fallback — pull suggestions from related agencies, also filtered.
+  const siblings = SIBLING_AGENCIES[agency] || [];
+  const extras = [];
+  for (const sib of siblings) {
+    const list = (FALLBACK_SUGGESTIONS[sib] || []).filter(filterFn);
+    for (const s of list) {
+      extras.push({ ...s, label: s.label + ` (${sib})` });
+    }
+  }
+  const combined = [...primary, ...extras];
+  if (combined.length > 0) return combined.slice(0, 4);
+
+  // Last resort: return the DHA defaults filtered, unfiltered if even that's empty.
+  return (FALLBACK_SUGGESTIONS.DHA.filter(filterFn).slice(0, 4)) || FALLBACK_SUGGESTIONS.DHA.slice(0, 4);
+}
+
 module.exports = {
   STOPWORDS,
   AGENCY_CONTEXT,
@@ -209,6 +349,10 @@ module.exports = {
   USAJOBS_ORG_CODES,
   FR_AGENCY_SLUGS,
   USASPENDING_AGENCY_NAMES,
+  PROGRAM_TO_JOB_SERIES,
+  jobSeriesFor,
   FALLBACK_SUGGESTIONS,
+  SIBLING_AGENCIES,
   fallbackSuggestionsFor,
+  smartFallbackSuggestionsFor,
 };
