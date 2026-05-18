@@ -1,0 +1,203 @@
+{
+  "schema_version": "1.0",
+  "agency": "HHS",
+  "agency_full_name": "U.S. Department of Health and Human Services",
+  "data_as_of": "2026-05-18",
+  "primary_source_date": "2026-04-27",
+  "primary_sources": [
+    {
+      "label": "HHS Heads of Contracting Activity (HCA) — official roster",
+      "url": "https://www.hhs.gov/grants-contracts/grants-business-contacts/hca-and-key-managers/index.html",
+      "as_of": "2026-04-27"
+    },
+    {
+      "label": "ASFR Key Personnel — official roster",
+      "url": "https://www.hhs.gov/about/agencies/asfr/key-personnel/index.html",
+      "as_of": "2026-04-27"
+    },
+    {
+      "label": "HHS OSDBU — Small Business Specialists by OpDiv",
+      "url": "https://www.hhs.gov/about/agencies/asfr/acquisition/osdbu/index.html",
+      "as_of": "2026-05-07"
+    },
+    {
+      "label": "HHS Organizational Charts (department-level)",
+      "url": "https://www.hhs.gov/about/organization/org-chart/index.html",
+      "as_of": "2025-08-21"
+    },
+    {
+      "label": "HHS Acquisition Solutions Day — Industry Day slide deck",
+      "url": "internal: HHS-Industry-Day-Slides.docx (Mary Womack workspace)",
+      "as_of": "2026-05-15 (event)"
+    },
+    {
+      "label": "HHS Acquisition Solutions Day — Otter.ai transcript",
+      "url": "internal: HHS-Acquisition-Solutions-Day_otter_ai_transcript.txt",
+      "as_of": "2026-05-15 (event)"
+    },
+    {
+      "label": "HHS FY2026 Budget in Brief",
+      "url": "https://www.hhs.gov/sites/default/files/fy-2026-budget-in-brief.pdf",
+      "as_of": "2025-06-02"
+    }
+  ],
+  "department_top": {
+    "secretary_office": "Office of the Secretary (OS)",
+    "asa": {
+      "name": "Office of the Assistant Secretary for Administration (ASA)",
+      "url": "https://www.hhs.gov/about/agencies/asa/about-asa/index.html"
+    },
+    "asfr": {
+      "name": "Office of the Assistant Secretary for Financial Resources (ASFR)",
+      "url": "https://www.hhs.gov/about/agencies/asfr/key-personnel/index.html",
+      "address": "Room 514-G, Hubert H. Humphrey Building, 200 Independence Ave SW, Washington DC 20201",
+      "phone": "202-690-6396",
+      "leadership_notes": "Principal Deputy ASFR — VACANT. Deputy Assistant Secretary for Operations and Management — VACANT.",
+      "sub_offices": [
+        { "name": "Office of Budget", "deputy_assistant_secretary": "Norris Cochran" },
+        { "name": "Office of Finance", "deputy_assistant_secretary": "Teresa Miranda", "title_note": "also HHS Deputy CFO" },
+        { "name": "Office of Grants", "deputy_assistant_secretary": "Dale Bell" },
+        {
+          "name": "Office of Acquisitions (OA)",
+          "deputy_assistant_secretary_for_acquisitions": {
+            "name": "Jennifer Johnson",
+            "title": "Deputy Assistant Secretary for Acquisitions (Senior Procurement Executive)",
+            "phone": "771-215-0133",
+            "responsibilities_per_slide_13": [
+              "Execute procurement-related statutory responsibilities of the Secretary, Deputy Secretary and Chief Acquisition Officer",
+              "Support ~$28B in annual HHS contract spending through policy, workforce, and oversight",
+              "Drive cost-efficiency via category management, workforce development, business systems",
+              "Build partnerships with Division Heads of Contracting and represent HHS in cross-government acquisition forums"
+            ],
+            "oa_managed_areas": [
+              "Procurement Business Systems",
+              "Acquisition Workforce Development",
+              "Industry Engagement",
+              "Procurement Policy",
+              "Oversight of Agency Acquisition Programs",
+              "Category Management",
+              "Procurement Innovation",
+              "Federal Acquisition Support Programs",
+              "Vendor Relations"
+            ]
+          },
+          "associate_deputy": { "name": "Anthony Kram", "phone": "202-578-0045" },
+          "divisions_under_oa": [
+            { "name": "Strategic Programs & Business Systems Division", "exec_director": "Sonya Carrion", "phone": "301-532-2220" },
+            { "name": "Office of Acquisition Policy, Legislation, Oversight & Workforce", "exec_director": "Mahua Muzamdar", "phone": "301-532-2216" },
+            { "name": "Office of Small & Disadvantaged Business Utilization (OSDBU)", "exec_director": "Shannon Jackson", "phone": "202-934-3804 (alt: 202-690-7300)", "email": "Shannon.Jackson@hhs.gov", "reporting_line_note": "Per OSDBU page: reports directly to the HHS Deputy Secretary; OA provides administrative support", "established": "1979 under P.L. 95-507" },
+            { "name": "Office of Recipient Integrity Coordination", "director": "Tiffani Redding", "phone": "202-768-0628" },
+            { "name": "Office of Mission Acquisition Solutions (OMAS)", "is_new_in_2025": true, "see_section": "omas" },
+            { "name": "HHS IDEAS Lab & Acquisition Program Support Division", "director": "Kimberly Himes", "additional_titles": ["HHS Acquisition Innovation Advocate (AIA)", "Industry Liaison"], "function": "HHS acquisition innovation lab (analog to DHS PIL, NASA M.A.I.L., VA SALE)" }
+          ]
+        }
+      ]
+    }
+  },
+  "omas": {
+    "full_name": "Office of Mission Acquisition Solutions",
+    "former_name": "OAMS (Office of Acquisition Management Services)",
+    "renamed_note": "OAMS → OMAS as part of PACT realignment under ASFR/Office of Acquisitions",
+    "joined_asfr": "January 2026 (per Quentin McCoy transcript remarks)",
+    "mission": "Enterprise shared service for common IT & Professional Services procurement across HHS; designated contracting activity for ACF, AHRQ, and Divisions without independent procurement authority",
+    "hca_email": "Quentin.McCoy@hhs.gov",
+    "hca_phone": "301-492-5456",
+    "industry_liaison_email": "IndustryLiaison@hhs.gov",
+    "staffing": {
+      "starting_strength": "~40+ at standup",
+      "current_strength": "~180 (as of May 2026)",
+      "trajectory": "Actively hiring; goal is fully staffed by end of Year 1 (Stand-Up & Stabilize)"
+    },
+    "leadership": [
+      { "name": "Quentin McCoy", "title": "Executive Director, Head of Contracting Activity (HCA)", "background": "Former HCA experience at U.S. Cyber Command and CAO/UMBC office (prior to OMAS)" },
+      { "name": "Colette Magwood", "title": "Chief of Staff" },
+      { "name": "VACANT", "title": "Deputy Head of Contracting Activity" },
+      { "name": "Lisa Portner", "title": "Director, Procurement Operations Support (POS)" }
+    ],
+    "strategic_buying_centers": [
+      {
+        "name": "Strategic Buying Center — Mission (SBC-Mission)",
+        "director": "Tatricia (Trish) James",
+        "scope": "Department-wide mission needs; Secretary initiatives; serves ACF, AHRQ, and Staff Divisions (Note: ACF and AHRQ independent contracting authority eliminated and absorbed by OMAS)"
+      },
+      {
+        "name": "Strategic Buying Center — Information Technology (SBC-IT)",
+        "director": "Adam Vance",
+        "scope": "Common enterprise IT, software, cyber, cloud, AI-related tools"
+      },
+      {
+        "name": "Strategic Buying Center — Professional Services (SBC-PS)",
+        "director": "Scott Bredow",
+        "scope": "Advisory, scientific, training & technical assistance, and programmatic services across HHS"
+      }
+    ],
+    "category_management_lead": {
+      "name": "Sonya Carrion",
+      "title": "Executive Director, Strategic Programs & Business Systems",
+      "note": "Featured on slide 22 alongside Trish James, Scott Bredow, Adam Vance for category management partnership"
+    },
+    "strategic_goals": [
+      "Stand up a fully staffed, trained, and equipped OMAS workforce",
+      "Build a high-impact customer engagement and experience model",
+      "Drive innovation and efficiency across the full acquisition lifecycle to deliver measurable savings",
+      "Establish OMAS as the Acquisition Office of Choice for Common IT and Professional Services across HHS"
+    ],
+    "three_year_outlook": [
+      { "year": "Year 1 — Stand-Up & Stabilize (current)", "milestones": ["OMAS Intake Activated", "Operating Model Established", "PACT Established as Agency Priority Goal", "Systems Modernization Kicked Off (NIH)"] },
+      { "year": "Year 2 — Optimize and Buy Better (enterprise buying)", "milestones": ["Establish Strategic Sourcing Vehicles", "Continue systems modernization/integration (NIH, CDC & CMS)", "Develop Demand Aggregation Initiatives", "Create Category-Based Solutions", "Demonstrate Reduced Duplication and Costs"] },
+      { "year": "Year 3 — Scale and Transform (departmental excellence)", "milestones": ["Enable Enterprise Insights & Analytics", "Leverage Data-Driven Strategies", "Establish a Scalable Acquisition Model", "Become a Strategic Mission Partner"] }
+    ]
+  },
+  "heads_of_contracting_activity_full_roster": [
+    { "opdiv": "ARPA-H", "opdiv_full_name": "Advanced Research Projects Agency for Health", "hca_name": "Benjamin Bryant", "hca_status": "Acting", "email": "benjamin.bryant@arpa-h.gov", "phone": null, "small_business_specialist": "Cindy Anderson (Cynthia.Anderson@hhs.gov, 202-578-1356)" },
+    { "opdiv": "CDC", "opdiv_full_name": "Centers for Disease Control and Prevention", "hca_name": "Christine Godfrey", "hca_status": "Acting", "email": "cnp9@cdc.gov", "phone": "770-488-2519", "small_business_specialists": ["Gwendolyn Miles (Gwendolyn.Miles@hhs.gov, 202-758-5124)", "LaTonya Dent (LaTonya.Dent@hhs.gov, 202-748-0571)"] },
+    { "opdiv": "CMS", "opdiv_full_name": "Centers for Medicare & Medicaid Services", "hca_name": "Doug Bergevin", "hca_status": "Acting", "email": "douglas.bergevin@cms.hhs.gov", "phone": "443-909-0131", "small_business_specialists": ["Anita Allen (Anita.Allen1@cms.hhs.gov, 202-640-0264)", "Christine Haber (Christine.Haber@hhs.gov, 202-853-1616)"] },
+    { "opdiv": "FDA", "opdiv_full_name": "Food and Drug Administration", "hca_name": "Leonard Grant", "hca_status": "Permanent", "email": "Leonard.Grant@fda.hhs.gov", "phone": "240-402-7584", "small_business_specialist": "Cindy Anderson (Cynthia.Anderson@hhs.gov, 202-578-1356)" },
+    { "opdiv": "HRSA", "opdiv_full_name": "Health Resources & Services Administration", "hca_name": "Brian Goodger", "hca_status": "Permanent", "email": "BGoodger@hrsa.gov", "phone": "301-945-9380", "small_business_specialist": "Wayne Berry (Wayne.Berry@hhs.gov, 202-390-5801)" },
+    { "opdiv": "IHS", "opdiv_full_name": "Indian Health Service", "hca_name": "Chantel Smith", "hca_status": "Permanent", "email": "Chantel.Smith@ihs.gov", "phone": "240-460-6876", "small_business_specialist": "Jonathan Ferguson (Jonathan.Ferguson@hhs.gov, 202-740-5509)" },
+    { "opdiv": "NIH", "opdiv_full_name": "National Institutes of Health", "hca_name": "Olga Acosta", "hca_status": "Permanent", "email": "olga.acosta@nih.gov", "phone": "301-435-4322", "small_business_specialists": ["Natasha Boyce", "Melanie Carter", "Jonathan Ferguson", "Anita Allen", "Amy Ulisse (amy.ulisse@hhs.gov, 771-216-7719)", "Martina Williams"] },
+    { "opdiv": "OMAS", "opdiv_full_name": "Office of the Secretary / ASFR / Office of Mission Acquisition Solutions", "hca_name": "Quentin McCoy", "hca_status": "Permanent (NEW HCA designation)", "email": "Quentin.McCoy@hhs.gov", "phone": "301-492-5456", "new_in_2025_2026": true, "note": "OMAS is the designated contracting activity for ACF, AHRQ, and HHS Divisions without independent procurement authority, plus all common IT and Professional Services procurements department-wide" },
+    { "opdiv": "ASPR", "opdiv_full_name": "Administration for Strategic Preparedness and Response", "hca_name": "Makoto P. Braxton", "hca_status": "Permanent", "email": "makoto.braxton@hhs.gov", "phone": "202-260-6794", "small_business_specialist": "LaTonya Dent (LaTonya.Dent@hhs.gov, 202-748-0571)" },
+    { "opdiv": "OIG", "opdiv_full_name": "Office of Inspector General", "hca_name": "John Marshall", "hca_status": "Permanent", "email": "john.marshall@oig.hhs.gov", "phone": "240-749-1499", "small_business_specialist": "Amy Ulisse (amy.ulisse@hhs.gov, 771-216-7719)" }
+  ],
+  "decentralized_opdivs_no_independent_contracting_authority": [
+    "ACF (Administration for Children and Families) — contracting absorbed into OMAS",
+    "AHRQ (Agency for Healthcare Research and Quality) — contracting absorbed into OMAS",
+    "SAMHSA (Substance Abuse and Mental Health Services Administration) — verify with HHS; small business specialist Gwendolyn Miles is OSDBU contact, but no HCA listed on HCA roster; coverage likely via OMAS or another HCA",
+    "ACL (Administration for Community Living) — verify; not listed on current HCA roster"
+  ],
+  "by_the_numbers_fy25": {
+    "fiscal_year": "FY2025",
+    "total_spend_usd": 28.2e9,
+    "yoy_pattern": {
+      "FY22": 41.0e9,
+      "FY23": 40.3e9,
+      "FY24": 39.1e9,
+      "FY25": 28.2e9,
+      "fy25_reduction_note": "HHS saw a $16.3B reduction from its final FY25 obligations due to the HHS Cost Efficiency Initiative (HCEI)"
+    },
+    "active_contracts": 4459,
+    "contract_actions": 56080,
+    "contracting_activities_count": 10,
+    "acquisition_workforce": {
+      "total_certified_count": 11024,
+      "as_of": "April 2026",
+      "fac_c_count": 1107,
+      "fac_p_pm_count": 952,
+      "fac_cor_count": 10688,
+      "note": "Workforce members may hold more than one certification; total is unique count of all acquisition individuals"
+    },
+    "acquisition_tools_count": "20+ acquisition-related systems including 6+ contract writing systems",
+    "fy26_sb_goal_overall": "25%",
+    "fy24_sb_scorecard_grade": "B (one of three federal agencies that did not achieve full SB prime contracting goals)",
+    "fy24_federal_sb_awards_total": "$69.6B (record, up from $66.6B in FY23)",
+    "osdbu_estab_year": 1979,
+    "osdbu_statute": "P.L. 95-507; 15 U.S.C. § 644(k)"
+  },
+  "future_consolidation_warning": {
+    "from": "HHS FY2026 Budget in Brief",
+    "url": "https://www.hhs.gov/sites/default/files/fy-2026-budget-in-brief.pdf",
+    "claim": "HHS plans to consolidate 28 operating divisions to 15 and close five of our most costly regional offices, returning FTE strength to roughly FY1990s levels",
+    "implication_for_subscribers": "Today's 10 HCAs may further consolidate; expect additional OpDiv mergers in FY26-FY27."
+  }
+}

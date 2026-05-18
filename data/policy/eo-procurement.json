@@ -1,0 +1,56 @@
+{
+  "$schema_version": "1.0",
+  "comment": "Executive Orders and OMB memos that are driving the HHS procurement consolidation. Used by /policy/pact and surfaced on the /agencies/hhs profile. Sources: whitehouse.gov primary text + OMB memo PDF. Verified 2026-05-18.",
+  "data_as_of": "2026-05-18",
+  "records": [
+    {
+      "id": "eo-14210",
+      "type": "executive_order",
+      "number": "14210",
+      "title": "Implementing the President's Department of Government Efficiency Workforce Optimization Initiative",
+      "short_title": "DOGE Workforce Optimization Initiative",
+      "signed_date": "2025-02-11",
+      "url": "https://www.whitehouse.gov/presidential-actions/2025/02/implementing-the-presidents-department-of-government-efficiency-workforce-optimization-initiative/",
+      "plain_english": "Sets a 4-to-1 hiring ratio, directs RIF prep, and requires agency reorganization plans within 30 days.",
+      "vendor_impact": "Tightens the acquisition workforce on the buyer side. Expect fewer COs handling more files, longer cycle times, and more emphasis on consolidated buying.",
+      "affected_agencies": ["HHS", "VA", "DoD", "GSA", "all federal"]
+    },
+    {
+      "id": "eo-14222",
+      "type": "executive_order",
+      "number": "14222",
+      "title": "Implementing the President's Department of Government Efficiency Cost Efficiency Initiative",
+      "short_title": "DOGE Cost Efficiency Initiative",
+      "signed_date": "2025-02-26",
+      "url": "https://www.whitehouse.gov/presidential-actions/2025/02/implementing-the-presidents-department-of-government-efficiency-cost-efficiency-initiative/",
+      "plain_english": "Centralizes contract payment justification systems, requires a 30-day contract review, and freezes new CO warrants during the review window.",
+      "vendor_impact": "Existing contracts may be terminated for convenience or de-scoped. Modifications now require a written justification linked to the payment system. Cuts directly feed the FY25 $16.3B HHS spend reduction.",
+      "affected_agencies": ["HHS", "VA", "DoD", "GSA", "all federal"]
+    },
+    {
+      "id": "eo-14240",
+      "type": "executive_order",
+      "number": "14240",
+      "title": "Eliminating Waste and Saving Taxpayer Dollars by Consolidating Procurement",
+      "short_title": "Procurement Consolidation",
+      "signed_date": "2025-03-20",
+      "url": "https://www.whitehouse.gov/wp-content/uploads/2025/07/M-25-31-Consolidating-Federal-Procurement-Activities.pdf",
+      "url_note": "Primary EO text is referenced verbatim in OMB M-25-31; the full Federal Register text is the canonical record.",
+      "plain_english": "Mandates the transfer of common goods and services procurement to GSA. This is the root authority behind the HHS PACT initiative and the OMAS standup.",
+      "vendor_impact": "Common IT and Professional Services contracting consolidates through GSA Best-in-Class vehicles or, at HHS, through OMAS. If your firm sells laptops, cloud, cyber tools, or advisory services into HHS, your CO has moved.",
+      "affected_agencies": ["HHS", "VA", "DoD", "all federal"]
+    },
+    {
+      "id": "omb-m-25-31",
+      "type": "omb_memo",
+      "number": "M-25-31",
+      "title": "Consolidating Federal Procurement Activities",
+      "short_title": "OMB M-25-31",
+      "signed_date": "2025-07-18",
+      "url": "https://www.whitehouse.gov/wp-content/uploads/2025/07/M-25-31-Consolidating-Federal-Procurement-Activities.pdf",
+      "plain_english": "Implementation guidance for EO 14240. Two workstreams: (1) increased GSA use across agencies, (2) physical centralization of procurement function at GSA for specified categories.",
+      "vendor_impact": "Names the canonical buying paths: GSA MAS IT, NASA SEWP, NITAAC CIO-SP, and category-managed BICs. Be on these vehicles or be invisible to OMAS.",
+      "affected_agencies": ["HHS", "VA", "DoD", "GSA", "all federal"]
+    }
+  ]
+}

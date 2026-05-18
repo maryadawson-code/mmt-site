@@ -647,7 +647,7 @@
           "why_it_matters": "Ohio + Indiana + Alaska + Cleveland brings the rollout across multiple VISNs in a single fiscal year. The demand surface expands for change management, clinician training, and interoperability integration."
         }
       ],
-      "caveat": "DigitalVA states 10 medical centers are currently live on the Federal EHR; the extracted deployment table identifies 6 prior sites. Preserve this discrepancy as an integrity signal \u2014 verify before publishing an external numeric live-site count.",
+      "caveat": "DigitalVA states 10 medical centers are currently live on the Federal EHR; the extracted deployment table identifies 6 prior sites. Preserve this discrepancy as an integrity signal — verify before publishing an external numeric live-site count.",
       "source_id": "va_ehr_sched"
     },
     "contractorRead": "VA's 2026 deployment posture moves the conversation from 'will the program continue?' to 'who supports the wave cadence?' Look at integrator vehicles, change-management staffing, clinician-trainer pipelines, telehealth and interoperability adapters, and EHRM-aligned cybersecurity. Michigan in April is the proof point downstream solicitations will cite.",
@@ -681,37 +681,33 @@
     "abbrev": "HHS",
     "name": "Department of Health and Human Services",
     "type": "Cabinet Department (parent of CMS, NIH, FDA, CDC, IHS, ONC, ARPA-H)",
-    "lastUpdated": "2026-05-13",
-    "description": "Department-level map. HHS itself sets policy and coordinates; the buying happens through its operating divisions. OS/OCIO (Office of the Secretary, CIO) is the enterprise IT, cybersecurity, AI governance, and data-operations consolidation point at the department level. Operating divisions: CMS (Medicare, Medicaid, claims), NIH (research IT, NITAAC), FDA (Sentinel, regulated-product data), CDC (data modernization, DCIPHER), IHS (PATH EHR), ASTP/ONC (interoperability, certification), ARPA-H (OTA-funded R&D).",
-    "mmtRead": "HHS IT spend is decentralized, but OS/OCIO is the department-level consolidation seat for AI, data, technology, cybersecurity, and data operations \u2014 that's where cross-OPDIV framing lives (the HHS AI strategy + the HIPAA security rule update + cross-cutting tech and cyber direction). Treat HHS as a navigation layer: route procurement questions to the operating division that owns the program (CMS for claims, NIH for research IT, FDA for surveillance, ASTP/ONC for standards). The departmental level is for policy, rulemaking, and OCIO-level enterprise coordination, not contract awards.",
+    "lastUpdated": "2026-05-18",
+    "description": "HHS just realigned. As of January 2026, OMAS (the Office of Mission Acquisition Solutions) is the new contracting activity for all common IT, professional services, and what used to flow through ACF and AHRQ. The department dropped from 13 contracting activities to 10. If you sell common IT or advisory services into HHS, your contracting officer moved. If you sell mission-unique work to NIH, CDC, CMS, FDA, HRSA, IHS, ASPR, ARPA-H, or OIG, you stay where you are.",
+    "mmtRead": "HHS is two stories now, not one. The mission-unique side (NIH for research IT, CMS for claims, FDA for surveillance, ARPA-H for OTA-funded R&D) still buys at the operating division. The common side (laptops, cloud, cybersecurity tools, advisory services, training) flows through OMAS strategic buying centers under EO 14240 and OMB M-25-31. Your BD calendar needs both maps: the operating-division map for mission, the OMAS SBC map for common. Expect the picture to keep moving — the FY26 Budget in Brief signals 28 operating divisions consolidating to 15 plus 5 regional offices closing.",
     "officialSources": [
       {
-        "label": "HHS About",
-        "url": "https://www.hhs.gov/about/index.html"
+        "label": "HHS HCA and Key Managers roster",
+        "url": "https://www.hhs.gov/grants-contracts/grants-business-contacts/hca-and-key-managers/index.html"
       },
       {
-        "label": "CMS About",
-        "url": "https://www.cms.gov/about-cms"
+        "label": "HHS ASFR Key Personnel",
+        "url": "https://www.hhs.gov/about/agencies/asfr/key-personnel/index.html"
       },
       {
-        "label": "ONC About",
-        "url": "https://healthit.gov/about/"
+        "label": "HHS OSDBU",
+        "url": "https://www.hhs.gov/about/agencies/asfr/acquisition/osdbu/index.html"
       },
       {
-        "label": "ARPA-H Programs",
-        "url": "https://arpa-h.gov/explore-funding/programs/advocate"
+        "label": "HHS Organizational Charts",
+        "url": "https://www.hhs.gov/about/organization/org-chart/index.html"
       },
       {
-        "label": "IHS PATH EHR",
-        "url": "https://www.ihs.gov/hit/path-ehr/"
+        "label": "HHS FY2026 Budget in Brief",
+        "url": "https://www.hhs.gov/sites/default/files/fy-2026-budget-in-brief.pdf"
       },
       {
-        "label": "CDC Data Modernization",
-        "url": "https://www.cdc.gov/data-modernization/php/about/index.html"
-      },
-      {
-        "label": "FDA Sentinel",
-        "url": "https://www.fda.gov/safety/fdas-sentinel-initiative"
+        "label": "OMB M-25-31 (Procurement Consolidation)",
+        "url": "https://www.whitehouse.gov/wp-content/uploads/2025/07/M-25-31-Consolidating-Federal-Procurement-Activities.pdf"
       },
       {
         "label": "HHS AI Strategy & Implementation",
@@ -719,16 +715,18 @@
       }
     ],
     "keyPrograms": [
-      "Department-level coordination",
-      "Cross-OPDIV interoperability and AI governance",
-      "HIPAA modernization (policy)",
-      "OS/OCIO enterprise IT, cybersecurity, AI/data governance, data operations (department level)"
+      "OMAS standup and PACT (Procurement Alignment and Collaboration Task Force) — now an HHS Agency Priority Goal",
+      "Common IT and Professional Services centralization (driven by EO 14240 + OMB M-25-31)",
+      "HHS Cost Efficiency Initiative (HCEI) — drove the FY25 $16.3B spend reduction",
+      "Cross-OPDIV AI governance, data modernization, HIPAA modernization (policy)"
     ],
     "procurementSignals": [
-      "See operating division profiles for actual procurement"
+      "Common IT and PS through OMAS SBC-IT (Adam Vance) and SBC-PS (Scott Bredow)",
+      "ACF / AHRQ mission-unique work now in OMAS SBC-Mission (Trish James)",
+      "NIH, CDC, CMS, FDA, HRSA, IHS, ASPR, ARPA-H, OIG — each retains its own HCA and contracting authority"
     ],
     "openVehicles": [
-      "See CMS / NIH / NITAAC for operating-division vehicles"
+      "OASIS+, NASA SEWP V/VI, GSA MAS IT, NITAAC CIO-SP — the canonical buying paths OMAS leverages today"
     ],
     "premiumLocked": false,
     "budget": {
@@ -744,48 +742,93 @@
         "Public health preparedness funding (proposed cuts)"
       ]
     },
-    "current_read": "HHS at the department level coordinates policy. Buying flows through CMS, NIH, FDA, CDC, IHS, ONC, and ARPA-H. Use the operating-division profiles for actual procurement opportunities.",
-    "key_vehicles": [],
+    "current_read": "OMAS is the new front door for common IT and Professional Services at HHS, effective January 2026. ACF and AHRQ no longer have their own contracting authority — their work flows through OMAS SBC-Mission. The nine other HCAs (ARPA-H, CDC, CMS, FDA, HRSA, IHS, NIH, ASPR, OIG) keep mission-unique procurement. PACT is now an HHS Agency Priority Goal. The FY25 spend total dropped to $28.2B (down $16.3B from final FY25 obligations) on HCEI cuts. Three of the ten HCAs are still Acting (ARPA-H, CDC, CMS) — expect leadership churn at the biggest spenders.",
+    "key_vehicles": [
+      "OASIS+ (consolidated professional-services BIC)",
+      "NASA SEWP V / SEWP VI (IT hardware and software)",
+      "GSA MAS IT (multiple-award schedule)",
+      "NITAAC CIO-SP (NIH-issued, government-wide IT)",
+      "OMAS internal strategic-sourcing vehicles (under development, Year-2 outlook)"
+    ],
     "key_offices": [
-      "OS/OCIO (Office of the Secretary, CIO)",
-      "ASFR (Assistant Secretary for Financial Resources)",
-      "Operating Divisions (CMS, NIH, FDA, CDC, IHS, ONC, ARPA-H)"
+      "OMAS (Office of Mission Acquisition Solutions) — Quentin McCoy, HCA",
+      "OMAS SBC-IT — Adam Vance, Director (common enterprise IT, software, cyber, cloud, AI tools)",
+      "OMAS SBC-PS — Scott Bredow, Director (advisory, scientific, training, programmatic)",
+      "OMAS SBC-Mission — Tatricia (Trish) James, Director (ACF, AHRQ, Staff Divisions, Secretary initiatives)",
+      "ASFR / Office of Acquisitions — Jennifer Johnson, DAS for Acquisitions and Senior Procurement Executive",
+      "OSDBU — Shannon Jackson, Executive Director (reports to HHS Deputy Secretary)",
+      "HHS IDEAS Lab — Kimberly Himes, Acquisition Innovation Advocate and Industry Liaison"
     ],
     "recent_awards": [],
     "upcoming_signals": [
-      "HIPAA security rule update (proposed rulemaking)",
-      "Cross-OPDIV AI governance framework"
+      "OMAS Market Hour launches June 2026 — 10-minute capability demos + 5-minute Q&A. Contact IndustryLiaison@hhs.gov.",
+      "RFO 8.4 / GSAR 538.7103 rewrites schedule ordering. Three tiers (at-or-below MPT, MPT-to-SAT, above-SAT). RFIs now drive who makes the RFQ list.",
+      "FY26 Budget in Brief consolidation: 28 operating divisions to 15, plus 5 regional offices closing.",
+      "SBCX subcontracting opportunity feature in development at osdbu.hhs.gov.",
+      "HIPAA security rule update (proposed rulemaking)."
     ],
     "related_tags": [
+      "HHS",
+      "OMAS",
+      "PACT",
+      "Procurement Consolidation",
       "Healthcare Policy",
       "Interoperability"
     ],
-    "role": "Department-level navigation + AI governance",
+    "role": "Department-level navigation + OMAS shared service for common IT and Professional Services (since January 2026)",
     "premiumModules": [
-      "AI Governance Module",
-      "Confirmed-vs-Watch Split",
-      "Contractor Read"
+      "10 HCA Roster",
+      "OMAS Deep Dive",
+      "OMAS Org Chart",
+      "PACT + 3 EOs + OMB M-25-31",
+      "RFO 8.4 Tier Playbook",
+      "AI Governance"
     ],
     "policyModule": {
-      "title": "HHS Enterprise AI and Digital Governance",
+      "title": "EO 14240 + OMB M-25-31 + PACT",
       "confirmed_facts": [
-        "HHS frames its AI work as making AI available to the federal workforce and integrating AI across internal operations, research, and public health.",
-        "The official AI strategy themes are: driving AI innovation, improving AI governance, and fostering public trust in federal AI use.",
-        "The current public-facing AI artifact does not specify contract clauses, purchasing vehicles, or procurement requirements."
+        "EO 14240 (Procurement Consolidation, March 20, 2025) mandates transfer of common goods/services procurement to GSA — the root authority behind PACT.",
+        "OMB M-25-31 (Consolidating Federal Procurement Activities, July 18, 2025) is the implementation guidance: increased GSA use + procurement function centralization at GSA.",
+        "PACT (Procurement Alignment and Collaboration Task Force) is now an HHS Agency Priority Goal.",
+        "OMAS was realigned under ASFR/Office of Acquisitions in January 2026; staffing grew from ~40 at standup to ~180 by May 2026.",
+        "ACF and AHRQ independent contracting authority was eliminated and absorbed by OMAS SBC-Mission."
       ],
       "vendor_watch": [
-        "Governance artifacts: model documentation, evaluation frameworks, audit-ready logs, bias and fairness measurement.",
-        "Workforce enablement: AI literacy, role-specific training, secure model access for federal employees.",
-        "Responsible implementation: explainability, content provenance, safety/security review documentation.",
-        "Public-trust posture: transparency reports, plain-language disclosures, third-party assurance options.",
-        "Do not market HHS AI procurement requirements that the public page does not state. Treat as watch, not confirmed buy."
+        "Vehicle posture: be on GSA MAS IT, NASA SEWP, NITAAC CIO-SP, OASIS+. These are the canonical buying paths OMAS leverages.",
+        "OMAS Market Hour (June 2026): submit the Vendor Profile Form via IndustryLiaison@hhs.gov. Customer-interest-driven selection.",
+        "RFO 8.4 (GSAR 538.7103) tier rules: RFIs now drive who makes RFQ lists. Respond with facts, not brochures.",
+        "Small business: SBCX (osdbu.hhs.gov) is being expanded with a subcontracting opportunity feature — register and watch."
       ],
-      "source_id": "hhs_ai"
+      "source_id": "hhs_omas_solutions_day"
     },
-    "contractorRead": "HHS is a regulator-of-self for AI rollout across operating divisions, not a single buyer. Treat HHS-level AI direction as setting tone for CMS, CDC, FDA, IHS, NIH operating-division procurements. The right capture move is to map each governance theme to the operating division that actually buys, then position there.",
+    "contractorRead": "Two BD plans, not one. For common IT and Professional Services, build the OMAS SBC relationship and submit the Vendor Profile Form for Market Hour. For mission-unique work, your operating-division contracting officer is unchanged. Watch what comes off ACF and AHRQ recompetes — those move into OMAS SBC-Mission and reopen the field. Confirm presence on OASIS+, NASA SEWP, GSA MAS IT, and NITAAC CIO-SP, because OMAS leverages those vehicles today. Treat any quarterly OMAS Market Hour as a real foot in the door, not a vendor event.",
     "watchNext": [
       {
-        "signal": "HHS AI compliance plan publications and operating-division alignment activity",
+        "signal": "OMAS Market Hour first session (June 2026) — Vendor Profile Form submissions due now",
+        "buyer": "OMAS programs + acquisition staff",
+        "window": "June 2026",
+        "source_id": "hhs_omas_solutions_day"
+      },
+      {
+        "signal": "ACF / AHRQ recompete sweep absorbed into OMAS SBC-Mission",
+        "buyer": "OMAS SBC-Mission (Trish James)",
+        "window": "FY2026-FY2027",
+        "source_id": "hhs_hca_roster"
+      },
+      {
+        "signal": "OMAS strategic-sourcing vehicles announced in Year-2 outlook",
+        "buyer": "OMAS SBC-IT + SBC-PS",
+        "window": "FY2027",
+        "source_id": "hhs_omas_solutions_day"
+      },
+      {
+        "signal": "FY26 Budget consolidation milestones (28 OpDivs to 15; 5 regional offices closing)",
+        "buyer": "HHS department level",
+        "window": "FY2026-FY2027",
+        "source_id": "hhs_fy26_bib"
+      },
+      {
+        "signal": "HHS AI compliance plan publications and OpDiv alignment activity",
         "buyer": "HHS + operating divisions",
         "window": "FY2026-FY2027",
         "source_id": "hhs_ai"
@@ -793,14 +836,71 @@
     ],
     "sources": [
       {
+        "id": "hhs_hca_roster",
+        "label": "HHS HCA and Key Managers roster",
+        "url": "https://www.hhs.gov/grants-contracts/grants-business-contacts/hca-and-key-managers/index.html",
+        "verified_at": "2026-04-27",
+        "confidence": "high"
+      },
+      {
+        "id": "hhs_asfr_personnel",
+        "label": "HHS ASFR Key Personnel page",
+        "url": "https://www.hhs.gov/about/agencies/asfr/key-personnel/index.html",
+        "verified_at": "2026-04-27",
+        "confidence": "high"
+      },
+      {
+        "id": "hhs_osdbu",
+        "label": "HHS OSDBU — Small Business Specialists by OpDiv",
+        "url": "https://www.hhs.gov/about/agencies/asfr/acquisition/osdbu/index.html",
+        "verified_at": "2026-05-07",
+        "confidence": "high"
+      },
+      {
+        "id": "hhs_omas_solutions_day",
+        "label": "HHS Acquisition Solutions Day (May 2026) — Industry Day deck + transcripts",
+        "url": "https://www.hhs.gov/grants-contracts/grants-business-contacts/hca-and-key-managers/index.html",
+        "verified_at": "2026-05-15",
+        "confidence": "high",
+        "caveat": "Event materials sourced from the HHS-owned slide deck (28 slides) and Otter.ai transcripts. Otter mishearings (ASTR → ASFR, ARC → AHRQ) were corrected against the official ASFR and HCA roster pages."
+      },
+      {
+        "id": "hhs_fy26_bib",
+        "label": "HHS FY2026 Budget in Brief",
+        "url": "https://www.hhs.gov/sites/default/files/fy-2026-budget-in-brief.pdf",
+        "verified_at": "2025-06-02",
+        "confidence": "high"
+      },
+      {
+        "id": "hhs_ai",
         "label": "HHS AI Strategy & Implementation",
         "url": "https://www.hhs.gov/programs/topic-sites/ai/strategy-implementation/index.html",
         "verified_at": "2026-05-12",
         "confidence": "high",
-        "caveat": "Page does not state contract clauses, vehicles, or procurement requirements. Vendor implications are watch items, not confirmed buys.",
-        "id": "hhs_ai"
+        "caveat": "Page does not state contract clauses, vehicles, or procurement requirements. Vendor implications are watch items, not confirmed buys."
       }
-    ]
+    ],
+    "opportunityMap": {
+      "title": "OMAS Strategic Buying Centers",
+      "map": [
+        {
+          "sbc": "SBC-IT",
+          "director": "Adam Vance",
+          "what_lands": "Common enterprise IT, software, cyber, cloud, AI-related tools"
+        },
+        {
+          "sbc": "SBC-PS",
+          "director": "Scott Bredow",
+          "what_lands": "Advisory, scientific, training and technical assistance, programmatic services"
+        },
+        {
+          "sbc": "SBC-Mission",
+          "director": "Tatricia (Trish) James",
+          "what_lands": "Department-wide mission needs; Secretary initiatives; ACF, AHRQ, and Staff Divisions"
+        }
+      ],
+      "source_id": "hhs_omas_solutions_day"
+    }
   },
   {
     "slug": "onc",
@@ -901,7 +1001,7 @@
         "The HTI-2 final rule finalizes TEFCA-related provisions supporting electronic health information access, exchange, and use.",
         "The rule establishes 45 CFR Part 172 for TEFCA-related provisions.",
         "The rule amends information-blocking regulations by adding TEFCA Manner Exception definitions.",
-        "The rule makes no changes to the existing TEFCA Manner Exception at 45 CFR \u00a7 171.403."
+        "The rule makes no changes to the existing TEFCA Manner Exception at 45 CFR § 171.403."
       ],
       "vendor_watch": [
         "TEFCA transparency and reliability documentation as a deliverable compliance artifact set.",
@@ -956,7 +1056,7 @@
     "procurementSignals": [
       "ADVOCATE TA1/TA2/TA3 awards (June 2026)",
       "Sprint for Women's Health solicitation rolling",
-      "FY2027 budget zeroed in HHS proposal \u2014 executing on existing FY2026 funds"
+      "FY2027 budget zeroed in HHS proposal — executing on existing FY2026 funds"
     ],
     "openVehicles": [
       "OTA (program-specific, not a unified vehicle)"
@@ -1216,7 +1316,7 @@
     "type": "HHS Operating Division (federal-tribal health system)",
     "lastUpdated": "2026-05-12",
     "description": "Federal health system serving American Indian and Alaska Native populations. Currently executing PATH EHR Modernization on Oracle Cerner / Oracle Health to replace the legacy RPMS system. Vendor: GDIT.",
-    "mmtRead": "IHS PATH is the active EHR modernization arc \u2014 replacing RPMS with Oracle Health on the GDIT platform. Tribal health IT procurement intersects with both federal contracting and tribal sovereignty considerations, which constrains what vendors can compete and how.",
+    "mmtRead": "IHS PATH is the active EHR modernization arc — replacing RPMS with Oracle Health on the GDIT platform. Tribal health IT procurement intersects with both federal contracting and tribal sovereignty considerations, which constrains what vendors can compete and how.",
     "officialSources": [
       {
         "label": "IHS PATH EHR",
@@ -1576,7 +1676,7 @@
     "name": "National Institutes of Health / NIH IT Acquisition and Assessment Center",
     "type": "HHS Research Agency + Acquisition Channel",
     "lastUpdated": "2026-05-12",
-    "description": "NIH is the country's biomedical research agency. NITAAC is NIH's acquisition center and runs CIO-SP3 / CIO-SP4 (canceled) / CIO-CS \u2014 the NIH GWACs that anchor IT procurement across HHS. Treat NIH as both a research buyer and an acquisition channel for the rest of HHS.",
+    "description": "NIH is the country's biomedical research agency. NITAAC is NIH's acquisition center and runs CIO-SP3 / CIO-SP4 (canceled) / CIO-CS — the NIH GWACs that anchor IT procurement across HHS. Treat NIH as both a research buyer and an acquisition channel for the rest of HHS.",
     "mmtRead": "CIO-SP4 was canceled (SAM Amendment 0017 on RFP 75N98121R00001). CIO-SP3 is the active bridge through Apr 29 2027. CIO-CS is the IT commodities vehicle and a follow-on (`The Store`) is in pre-RFP at a reported $20B-$25B.",
     "officialSources": [
       {
@@ -1674,7 +1774,7 @@
         "source_id": "nitaac_cio_sp3"
       },
       {
-        "signal": "CIO-SP4 status \u2014 verify-before-publishing watch; treat any cancellation claim as unverified until primary-source-confirmed",
+        "signal": "CIO-SP4 status — verify-before-publishing watch; treat any cancellation claim as unverified until primary-source-confirmed",
         "buyer": "NITAAC",
         "window": "Verify before quoting",
         "source_id": "nitaac_cio_sp3"
@@ -1697,8 +1797,8 @@
     "name": "General Services Administration",
     "type": "Acquisition Channel (governmentwide IT vehicles)",
     "lastUpdated": "2026-05-13",
-    "description": "Acquisition channel + GSAR owner. Runs Alliant 3 (active, no ceiling), Polaris (small business), 8(a) STARS III ($50B), OASIS+ (professional services). GSAR \u2014 the GSA Acquisition Regulation, including the GSAR 552.239-7001 AI procurement clause \u2014 sets governmentwide AI and IT procurement governance language. Track GSA vehicles AND the GSAR rule-shaping lane.",
-    "mmtRead": "Alliant 3 went live with NTP March 10 2026 (42 Phase 1 contractors). Polaris small business GWAC is active. 8(a) STARS III ordering window runs through Jul 1 2026 with GSA option through 2029. OASIS+ continues on-ramping. The GSAR layer \u2014 particularly the GSAR 552.239-7001 AI procurement clause and the Refresh 32 acceptance work \u2014 is the rule-shaping signal vendors should track alongside vehicle access; AI procurement governance is moving faster than the vehicle on-ramps.",
+    "description": "Acquisition channel + GSAR owner. Runs Alliant 3 (active, no ceiling), Polaris (small business), 8(a) STARS III ($50B), OASIS+ (professional services). GSAR — the GSA Acquisition Regulation, including the GSAR 552.239-7001 AI procurement clause — sets governmentwide AI and IT procurement governance language. Track GSA vehicles AND the GSAR rule-shaping lane.",
+    "mmtRead": "Alliant 3 went live with NTP March 10 2026 (42 Phase 1 contractors). Polaris small business GWAC is active. 8(a) STARS III ordering window runs through Jul 1 2026 with GSA option through 2029. OASIS+ continues on-ramping. The GSAR layer — particularly the GSAR 552.239-7001 AI procurement clause and the Refresh 32 acceptance work — is the rule-shaping signal vendors should track alongside vehicle access; AI procurement governance is moving faster than the vehicle on-ramps.",
     "officialSources": [
       {
         "label": "GSA Alliant 3",
@@ -1722,7 +1822,7 @@
       "Polaris (small business GWAC)",
       "8(a) STARS III ($50B, Jul 2026 ordering end)",
       "OASIS+ (professional services, no ceiling)",
-      "GSAR (GSA Acquisition Regulation) \u2014 AI procurement governance, e.g., 552.239-7001"
+      "GSAR (GSA Acquisition Regulation) — AI procurement governance, e.g., 552.239-7001"
     ],
     "procurementSignals": [
       "Alliant 3 task orders ramping",

@@ -3387,6 +3387,32 @@ ${innerHtml}
     console.log(`Copied ${ocFiles.length} premium org-chart page(s)`);
   }
 
+  // HHS sprint (2026-05-18) — auto-copy premium/agencies/, premium/policy/,
+  // premium/updates/ subdirs to dist. Same pattern as premium/org-charts/
+  // above. Each .html file in these subdirs is a self-contained paid page
+  // with its own inline dash-shell + mmt_premium gate. Drop a new file in
+  // and the build picks it up.
+  const premiumSubdirs = ['agencies', 'policy', 'updates'];
+  premiumSubdirs.forEach((sub) => {
+    const srcDir = path.join(__dirname, 'premium', sub);
+    if (!fs.existsSync(srcDir)) return;
+    const files = fs.readdirSync(srcDir).filter((f) => f.endsWith('.html'));
+    files.forEach((file) => {
+      const srcPath = path.join(srcDir, file);
+      const destPath = path.join(DIST_DIR, 'premium', sub, file);
+      ensureDir(path.dirname(destPath));
+      let html = fs.readFileSync(srcPath, 'utf8');
+      if (!html.includes('noindex')) {
+        html = html.replace('<head>', '<head>\n  <meta name="robots" content="noindex, nofollow">');
+      }
+      html = html.replace('</body>', siteScriptTag + '\n</body>');
+      html = inlineTailwindCss(html);
+      fs.writeFileSync(destPath, html);
+      console.log(`Copied premium/${sub}/${file}`);
+    });
+    if (files.length) console.log(`Copied ${files.length} premium/${sub} page(s)`);
+  });
+
   // Friday Brief pipeline — render content/friday-briefs/*.md to
   // premium/friday-briefs/<date>.html using the friday-brief-loader.
   // Added 2026-04-24 along with the scheduled_emails.stream='friday_brief'
@@ -4251,7 +4277,7 @@ function generateAgencyProfilePage(agency) {
 
   // Org chart availability — extend this Set when more chart pages land
   // in premium/org-charts/.
-  const ORG_CHART_AGENCIES = new Set(['dha', 'va']);
+  const ORG_CHART_AGENCIES = new Set(['dha', 'va', 'hhs']);
   const orgChartUrl = ORG_CHART_AGENCIES.has(agency.slug) ? `/premium/org-charts/${agency.slug}` : null;
   const orgChartCta = orgChartUrl ? `
     <a href="${orgChartUrl}" class="no-underline" style="display:inline-flex;align-items:center;gap:10px;padding:10px 16px;background:var(--mmt-navy);color:var(--mmt-white);font-weight:600;font-size:13px;border-radius:8px;margin-bottom:24px;">

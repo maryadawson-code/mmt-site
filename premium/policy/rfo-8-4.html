@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RFO 8.4 / GSAR 538.7103 Tier Playbook &middot; MMT Premium</title>
+  <meta name="robots" content="noindex">
+  <meta name="description" content="The FAR Overhaul rewrites FSS / schedule ordering procedures. Three tiers (at-or-below MPT, MPT-to-SAT, above-SAT), three different vendor moves. RFIs went from black hole to spotlight.">
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <link rel="icon" href="/favicon-v3.png" type="image/png">
+  <style>
+    :root { --mmt-navy:#0A192F; --mmt-teal:#457B9D; --mmt-white:#FFFFFF; --mmt-surface:#F3F4F6; --mmt-text-secondary:#6B7280; --mmt-border:#E5E7EB; --ci-gold:#92710A; --dash-sidebar:220px; }
+    body { font-family:Inter,system-ui,sans-serif; color:var(--mmt-navy); background:var(--mmt-surface); margin:0; line-height:1.55; }
+    .dash-shell { display:grid; grid-template-columns:var(--dash-sidebar) 1fr; min-height:100vh; }
+    .dash-nav { background:var(--mmt-navy); padding:24px 0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto; }
+    .dash-nav-brand { padding:0 20px 24px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px; }
+    .dash-nav-brand a { color:#fff; text-decoration:none; font-weight:800; font-size:14px; }
+    .dash-nav-brand small { display:block; font-size:11px; color:rgba(255,255,255,0.5); font-weight:400; margin-top:2px; }
+    .dash-nav-link { display:flex; align-items:center; gap:10px; padding:10px 20px; color:rgba(255,255,255,0.6); text-decoration:none; font-size:13px; font-weight:500; transition:all 0.15s; }
+    .dash-nav-link:hover { color:#fff; background:rgba(255,255,255,0.05); }
+    .dash-nav-link.active { color:#fff; background:rgba(69,123,157,0.3); border-left:3px solid var(--mmt-teal); }
+    .dash-nav-section { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:rgba(255,255,255,0.3); padding:16px 20px 6px; }
+    .dash-header { background:var(--mmt-white); padding:16px 32px; border-bottom:1px solid var(--mmt-border); display:flex; align-items:center; justify-content:space-between; }
+    .dash-main { padding:32px; max-width:920px; }
+    .dash-card { background:var(--mmt-white); border-radius:12px; padding:28px; margin-bottom:18px; border:1px solid var(--mmt-border); }
+    .eyebrow { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.10em; color:var(--mmt-text-secondary); margin-bottom:8px; }
+    h1 { font-size:28px; font-weight:800; margin:0 0 8px; letter-spacing:-0.02em; }
+    h2 { font-size:20px; font-weight:800; margin:0 0 10px; letter-spacing:-0.01em; color:var(--mmt-navy); }
+    .lede { font-size:16px; color:var(--mmt-text-secondary); margin:0 0 14px; line-height:1.6; }
+    .meta-row { font-size:12px; color:var(--mmt-text-secondary); margin-bottom:24px; }
+    .meta-row a { color:var(--mmt-teal); text-decoration:none; }
+    p { font-size:14.5px; margin:0 0 12px; }
+    ul, ol { font-size:14.5px; padding-left:22px; margin:0 0 12px; }
+    ul li, ol li { margin-bottom:6px; }
+    .tier-card { background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:12px; padding:22px 24px; margin-bottom:16px; border-top:4px solid var(--mmt-teal); }
+    .tier-eyebrow { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.10em; color:var(--mmt-teal); margin-bottom:6px; }
+    .tier-title { font-size:18px; font-weight:800; color:var(--mmt-navy); margin:0 0 4px; }
+    .tier-cite { font-size:12px; color:var(--mmt-text-secondary); margin-bottom:14px; font-family:'SF Mono','Menlo',monospace; }
+    .tier-section { margin-bottom:12px; }
+    .tier-section h3 { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--mmt-navy); margin:0 0 6px; }
+    .vendor-move { background:var(--mmt-surface); border-left:3px solid var(--ci-gold); border-radius:6px; padding:12px 16px; margin-top:10px; font-size:14px; line-height:1.55; }
+    .vendor-move strong { color:var(--ci-gold); display:inline-block; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; margin-right:6px; }
+    .callout { background:var(--mmt-surface); border:1px solid var(--mmt-border); border-left:3px solid var(--mmt-teal); border-radius:6px; padding:14px 18px; margin:14px 0; font-size:14px; line-height:1.55; }
+    .callout strong { color:var(--mmt-navy); }
+    .source-block { font-size:12.5px; color:var(--mmt-text-secondary); line-height:1.6; }
+    .source-block a { color:var(--mmt-teal); text-decoration:none; }
+    .pill-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+    .pill-row a { font-size:12px; font-weight:600; color:var(--mmt-navy); background:var(--mmt-white); border:1px solid var(--mmt-border); padding:6px 12px; border-radius:6px; text-decoration:none; }
+    .pill-row a:hover { border-color:var(--mmt-navy); }
+    @media (max-width:768px) { .dash-shell { grid-template-columns:1fr; } .dash-nav { display:none; } .dash-main { padding:16px; padding-bottom:80px; } }
+  </style>
+  <script>
+    (function() {
+      var isPremium = localStorage.getItem('mmt_premium') === 'true';
+      var ts = localStorage.getItem('mmt_premium_ts');
+      var withinWindow = ts && (Date.now() - parseInt(ts)) < 30 * 24 * 60 * 60 * 1000;
+      if (!isPremium || !withinWindow) { window.location.href = '/dashboard.html'; }
+    })();
+  </script>
+</head>
+<body>
+  <div class="dash-shell">
+    <nav class="dash-nav">
+      <div class="dash-nav-brand"><a href="/premium/dashboard.html">&#9733; MMT Premium<small>Intelligence Dashboard</small></a></div>
+      <div class="dash-nav-section">Intelligence</div>
+      <a href="/premium/dashboard.html" class="dash-nav-link">Dashboard</a>
+      <a href="/agencies/" class="dash-nav-link">Agencies</a>
+      <a href="/premium/briefings.html" class="dash-nav-link">Friday Brief</a>
+      <a href="/premium/monthly-briefs.html" class="dash-nav-link">Monthly Brief</a>
+      <a href="/premium/key-people.html" class="dash-nav-link">Key People</a>
+      <a href="/premium/gao-sustain.html" class="dash-nav-link">GAO Sustains</a>
+      <div class="dash-nav-section">Tools</div>
+      <a href="/premium/pursuit-score.html" class="dash-nav-link">Pursuit Score</a>
+      <a href="/premium/compliance-check.html" class="dash-nav-link">Compliance Check</a>
+      <a href="/premium/signal-chain.html" class="dash-nav-link">Signal Chain</a>
+      <div class="dash-nav-section">Policy</div>
+      <a href="/policy/pact" class="dash-nav-link">PACT &amp; EOs</a>
+      <a href="/policy/rfo-8-4" class="dash-nav-link active">RFO 8.4</a>
+      <a href="/premium/fpds-migration.html" class="dash-nav-link">FPDS Sunset</a>
+      <a href="/premium/cr-exposure.html" class="dash-nav-link">CR Exposure</a>
+      <div class="dash-nav-section">Resources</div>
+      <a href="/premium/calendar.html" class="dash-nav-link">Pursuit Calendar</a>
+      <a href="/contract-tracker.html" class="dash-nav-link">Contract Tracker</a>
+      <a href="/idiq-tracker.html" class="dash-nav-link">IDIQ Tracker</a>
+      <a href="/premium/ask-mmt.html" class="dash-nav-link">Ask MMT</a>
+      <div class="dash-nav-section">Account</div>
+      <a href="/premium/settings.html" class="dash-nav-link">Settings</a>
+      <a href="/" class="dash-nav-link" style="margin-top:auto; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px;">&larr; Back to site</a>
+    </nav>
+    <div>
+      <div class="dash-header">
+        <span style="font-size:14px; font-weight:700;">&#9733; Premium Dashboard</span>
+        <div style="display:flex; align-items:center; gap:16px;">
+          <span style="font-size:13px; color:var(--mmt-text-secondary);" id="dash-email"></span>
+          <a href="/" style="font-size:12px; color:var(--mmt-teal); text-decoration:none;">Back to site</a>
+          <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_premium_ts');localStorage.removeItem('mmt_email');document.cookie='mmt_premium=;path=/;max-age=0';window.location.href='/';return false;" style="font-size:12px; color:var(--mmt-text-secondary); text-decoration:none;">Sign out</a>
+        </div>
+      </div>
+      <div class="dash-main">
+
+        <div class="eyebrow">Policy &middot; FAR Overhaul</div>
+        <h1>RFO 8.4 / GSAR 538.7103 — the schedule-buying changes vendors must absorb</h1>
+        <p class="lede">The Revised FAR Overhaul (RFO) rewrites schedule ordering procedures (FAR Part 8 / GSAR Subpart 538.7103). Three tiers, three different competition rules, three different vendor moves. The biggest behavior shift: RFIs now determine whether your firm even makes the RFQ list.</p>
+        <div class="meta-row">
+          Data current as of May 18, 2026.
+          &middot; <a href="/policy/pact">PACT &amp; the 3 EOs</a>
+          &middot; <a href="/agencies/hhs/omas">OMAS deep dive</a>
+        </div>
+
+        <div class="tier-card">
+          <div class="tier-eyebrow">Tier 1 &middot; At or below MPT</div>
+          <div class="tier-title">Micro-Purchase Threshold buys</div>
+          <div class="tier-cite">GSAR 538.7103-1</div>
+          <div class="tier-section">
+            <h3>Rule</h3>
+            <p>CO can place an order or establish a BPA with any FSS contractor that can meet the need.</p>
+          </div>
+          <div class="vendor-move"><strong>Vendor move</strong> Keep catalog data current. Make small-dollar buying frictionless. The CO who buys a $9K license renewal isn't running a competition — make sure your terms, pricing, and contact path are accurate in GSA Advantage and your catalog.</div>
+        </div>
+
+        <div class="tier-card">
+          <div class="tier-eyebrow">Tier 2 &middot; Above MPT, at or below SAT</div>
+          <div class="tier-title">Above Micro, up to the Simplified Acquisition Threshold</div>
+          <div class="tier-cite">GSAR 538.7103-2</div>
+          <div class="tier-section">
+            <h3>Rule</h3>
+            <p>CO may place the order after doing one of the following:</p>
+            <ol>
+              <li>Survey 3+ FSS contractors on GSA Advantage.</li>
+              <li>Review FSS catalogs of 3+ FSS contractors.</li>
+              <li>Publish RFQ on GSA eBuy.</li>
+              <li>Issue RFQ to 3+ FSS contractors.</li>
+            </ol>
+          </div>
+          <div class="vendor-move"><strong>Vendor move</strong> Be discoverable in GSA Advantage and eLibrary. Respond quickly and clearly. If a buyer can't find you in 90 seconds on Advantage, you're not in the comparison set.</div>
+        </div>
+
+        <div class="tier-card">
+          <div class="tier-eyebrow">Tier 3 &middot; Above SAT</div>
+          <div class="tier-title">Above the Simplified Acquisition Threshold</div>
+          <div class="tier-cite">GSAR 538.7103-3</div>
+          <div class="tier-section">
+            <h3>Rule</h3>
+            <p>Unless a justification under 538.7104-3(b) applies, the CO must either:</p>
+            <ol>
+              <li>Publish an RFQ on GSA's eBuy, or</li>
+              <li>Issue an RFQ to enough FSS contractors to reasonably ensure quotations from at least three.</li>
+            </ol>
+          </div>
+          <div class="vendor-move"><strong>Vendor move</strong> Your RFI / Market Research responses determine whether you're considered capable and included on the RFQ. If you treat RFIs as optional, you'll be invisible at SAT-plus dollar levels.</div>
+        </div>
+
+        <div class="dash-card">
+          <h2>Other RFO 8.4 changes you should know</h2>
+          <ul>
+            <li><strong>Market Research is critical.</strong> Procurement is now a research-driven process, not an RFP-driven one.</li>
+            <li><strong>FSS ordering procedures are consolidated</strong> in GSAR Subpart 538.7103. One stop for the rules.</li>
+            <li><strong>Unsuccessful quoters may request a brief explanation within 3 days.</strong> Use it. Even one sentence of feedback informs the next quote.</li>
+            <li><strong>No additional order-level responsibility determination</strong> for FSS orders. You are already determined responsible at the schedule level.</li>
+            <li><strong>Expect leaner RFQs with clearer selection basis</strong> — not lengthy FAR Part 15 style proposals. Calibrate your response volume to what the RFQ actually asks.</li>
+          </ul>
+          <div class="callout">
+            <strong>"RFIs went from black hole to spotlight."</strong> Verbatim from Kimberly Himes, HHS Acquisition Innovation Advocate, at the May 2026 Acquisition Solutions Day. The shift is real: market research data is now the input that constructs the RFQ recipient list.
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <h2>What this means for your BD calendar</h2>
+          <p>The capture rhythm changes. Under the old regime, you waited for the RFP, then put a proposal together. Under RFO 8.4:</p>
+          <ul>
+            <li><strong>RFI response quality drives RFQ inclusion.</strong> Treat every RFI like a capability statement that decides your seat at the table.</li>
+            <li><strong>Catalog hygiene is now a capture function</strong>, not a logistics function. Stale GSA Advantage entries cost you Tier-1 and Tier-2 work.</li>
+            <li><strong>The 3-day debrief window is a feedback loop.</strong> Run a standing process to request and capture it.</li>
+            <li><strong>Calibrate proposal volume.</strong> If the RFQ runs 6 pages with a 4-criterion selection basis, a 60-page response isn't compliance — it's noise.</li>
+          </ul>
+        </div>
+
+        <div class="dash-card">
+          <h2>The Periodic Table of Acquisition Innovation</h2>
+          <p>The canonical reference for these techniques is the Periodic Table of Acquisition Innovation (PTAI) on <a href="https://acquisitiongateway.gov" rel="noopener" style="color:var(--mmt-teal);">AcquisitionGateway.gov</a>. It's organized by phase (market research, requirements, evaluation, contract administration) and named technique. Worth a bookmark.</p>
+        </div>
+
+        <div class="dash-card">
+          <h2>How this connects</h2>
+          <div class="pill-row">
+            <a href="/policy/pact">PACT &amp; the 3 EOs</a>
+            <a href="/agencies/hhs/omas">OMAS deep dive</a>
+            <a href="/agencies/hhs/hcas">All 10 HCAs</a>
+            <a href="/agencies/hhs">HHS profile</a>
+            <a href="/premium/fpds-migration.html">FPDS Sunset Watch</a>
+            <a href="/idiq-tracker.html">IDIQ Tracker</a>
+          </div>
+        </div>
+
+        <div class="dash-card source-block">
+          <strong>Sources.</strong> HHS Acquisition Solutions Day (May 2026) Industry Day deck, slides 23-25. "Periodic Table of Acquisition Innovation" reference on <a href="https://acquisitiongateway.gov" rel="noopener">AcquisitionGateway.gov</a>. Kimberly Himes (HHS IDEAS Lab and Acquisition Innovation Advocate) verbatim presentation transcript.<br><br>
+          <strong>What changes after this?</strong> GSAR Subpart 538.7103 is the regulation, and OMB will publish operational guidance through FY26. We re-verify on any rule change.
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script>
+    var email=localStorage.getItem('mmt_email');var __de=document.getElementById('dash-email');if(__de&&email)__de.textContent=email;
+  </script>
+</body>
+</html>

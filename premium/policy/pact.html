@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PACT, the 3 EOs, and OMB M-25-31 &middot; MMT Premium</title>
+  <meta name="robots" content="noindex">
+  <meta name="description" content="The federal procurement consolidation playbook driving the HHS OMAS standup. EO 14210 (workforce), EO 14222 (cost), EO 14240 (procurement consolidation), OMB M-25-31. Plus the FY26 Budget consolidation outlook.">
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <link rel="icon" href="/favicon-v3.png" type="image/png">
+  <style>
+    :root { --mmt-navy:#0A192F; --mmt-teal:#457B9D; --mmt-white:#FFFFFF; --mmt-surface:#F3F4F6; --mmt-text-secondary:#6B7280; --mmt-border:#E5E7EB; --ci-gold:#92710A; --dash-sidebar:220px; }
+    body { font-family:Inter,system-ui,sans-serif; color:var(--mmt-navy); background:var(--mmt-surface); margin:0; line-height:1.55; }
+    .dash-shell { display:grid; grid-template-columns:var(--dash-sidebar) 1fr; min-height:100vh; }
+    .dash-nav { background:var(--mmt-navy); padding:24px 0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto; }
+    .dash-nav-brand { padding:0 20px 24px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px; }
+    .dash-nav-brand a { color:#fff; text-decoration:none; font-weight:800; font-size:14px; }
+    .dash-nav-brand small { display:block; font-size:11px; color:rgba(255,255,255,0.5); font-weight:400; margin-top:2px; }
+    .dash-nav-link { display:flex; align-items:center; gap:10px; padding:10px 20px; color:rgba(255,255,255,0.6); text-decoration:none; font-size:13px; font-weight:500; transition:all 0.15s; }
+    .dash-nav-link:hover { color:#fff; background:rgba(255,255,255,0.05); }
+    .dash-nav-link.active { color:#fff; background:rgba(69,123,157,0.3); border-left:3px solid var(--mmt-teal); }
+    .dash-nav-section { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:rgba(255,255,255,0.3); padding:16px 20px 6px; }
+    .dash-header { background:var(--mmt-white); padding:16px 32px; border-bottom:1px solid var(--mmt-border); display:flex; align-items:center; justify-content:space-between; }
+    .dash-main { padding:32px; max-width:880px; }
+    .dash-card { background:var(--mmt-white); border-radius:12px; padding:28px; margin-bottom:18px; border:1px solid var(--mmt-border); }
+    .eyebrow { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.10em; color:var(--mmt-text-secondary); margin-bottom:8px; }
+    h1 { font-size:28px; font-weight:800; margin:0 0 8px; letter-spacing:-0.02em; }
+    h2 { font-size:20px; font-weight:800; margin:0 0 12px; letter-spacing:-0.01em; color:var(--mmt-navy); }
+    h3 { font-size:15px; font-weight:700; margin:0 0 6px; color:var(--mmt-navy); }
+    .lede { font-size:16px; color:var(--mmt-text-secondary); margin:0 0 14px; line-height:1.6; }
+    .meta-row { font-size:12px; color:var(--mmt-text-secondary); margin-bottom:24px; }
+    .meta-row a { color:var(--mmt-teal); text-decoration:none; }
+    p { font-size:14.5px; margin:0 0 12px; }
+    ul { font-size:14.5px; padding-left:20px; margin:0 0 12px; }
+    ul li { margin-bottom:5px; }
+    .eo-card { background:var(--mmt-white); border:1px solid var(--mmt-border); border-left:3px solid var(--mmt-teal); border-radius:8px; padding:18px 22px; margin-bottom:14px; }
+    .eo-card .eo-meta { display:flex; flex-wrap:wrap; gap:12px; font-size:12px; color:var(--mmt-text-secondary); margin-bottom:6px; }
+    .eo-card .eo-meta span { display:inline-flex; align-items:center; gap:4px; }
+    .eo-card .eo-meta strong { color:var(--mmt-navy); font-weight:700; }
+    .eo-card h3 { margin-top:0; }
+    .eo-block { font-size:13.5px; color:var(--mmt-text-secondary); line-height:1.55; margin:6px 0; }
+    .eo-block strong { color:var(--mmt-navy); display:block; font-size:12px; text-transform:uppercase; letter-spacing:0.06em; font-weight:700; margin-bottom:2px; }
+    .eo-card a.read { font-size:12px; font-weight:600; color:var(--mmt-teal); text-decoration:none; }
+    .eo-card a.read:hover { text-decoration:underline; }
+    .goals-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-top:8px; }
+    .goal-card { background:var(--mmt-surface); border:1px solid var(--mmt-border); border-radius:8px; padding:14px 16px; }
+    .goal-card .num { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--mmt-teal); margin-bottom:6px; }
+    .goal-card .what { font-size:14px; color:var(--mmt-navy); font-weight:600; line-height:1.4; }
+    .callout { background:var(--mmt-surface); border:1px solid var(--mmt-border); border-left:3px solid var(--ci-gold); border-radius:6px; padding:14px 18px; margin:16px 0; font-size:14px; line-height:1.55; }
+    .callout strong { color:var(--mmt-navy); }
+    .source-block { font-size:12.5px; color:var(--mmt-text-secondary); line-height:1.6; }
+    .source-block a { color:var(--mmt-teal); text-decoration:none; }
+    .pill-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+    .pill-row a { font-size:12px; font-weight:600; color:var(--mmt-navy); background:var(--mmt-white); border:1px solid var(--mmt-border); padding:6px 12px; border-radius:6px; text-decoration:none; }
+    .pill-row a:hover { border-color:var(--mmt-navy); }
+    @media (max-width:768px) { .dash-shell { grid-template-columns:1fr; } .dash-nav { display:none; } .dash-main { padding:16px; padding-bottom:80px; } }
+  </style>
+  <script>
+    (function() {
+      var isPremium = localStorage.getItem('mmt_premium') === 'true';
+      var ts = localStorage.getItem('mmt_premium_ts');
+      var withinWindow = ts && (Date.now() - parseInt(ts)) < 30 * 24 * 60 * 60 * 1000;
+      if (!isPremium || !withinWindow) { window.location.href = '/dashboard.html'; }
+    })();
+  </script>
+</head>
+<body>
+  <div class="dash-shell">
+    <nav class="dash-nav">
+      <div class="dash-nav-brand"><a href="/premium/dashboard.html">&#9733; MMT Premium<small>Intelligence Dashboard</small></a></div>
+      <div class="dash-nav-section">Intelligence</div>
+      <a href="/premium/dashboard.html" class="dash-nav-link">Dashboard</a>
+      <a href="/agencies/" class="dash-nav-link">Agencies</a>
+      <a href="/premium/briefings.html" class="dash-nav-link">Friday Brief</a>
+      <a href="/premium/monthly-briefs.html" class="dash-nav-link">Monthly Brief</a>
+      <a href="/premium/key-people.html" class="dash-nav-link">Key People</a>
+      <a href="/premium/gao-sustain.html" class="dash-nav-link">GAO Sustains</a>
+      <div class="dash-nav-section">Tools</div>
+      <a href="/premium/pursuit-score.html" class="dash-nav-link">Pursuit Score</a>
+      <a href="/premium/compliance-check.html" class="dash-nav-link">Compliance Check</a>
+      <a href="/premium/signal-chain.html" class="dash-nav-link">Signal Chain</a>
+      <div class="dash-nav-section">Policy</div>
+      <a href="/policy/pact" class="dash-nav-link active">PACT &amp; EOs</a>
+      <a href="/policy/rfo-8-4" class="dash-nav-link">RFO 8.4</a>
+      <a href="/premium/fpds-migration.html" class="dash-nav-link">FPDS Sunset</a>
+      <a href="/premium/cr-exposure.html" class="dash-nav-link">CR Exposure</a>
+      <div class="dash-nav-section">Resources</div>
+      <a href="/premium/calendar.html" class="dash-nav-link">Pursuit Calendar</a>
+      <a href="/contract-tracker.html" class="dash-nav-link">Contract Tracker</a>
+      <a href="/idiq-tracker.html" class="dash-nav-link">IDIQ Tracker</a>
+      <a href="/premium/ask-mmt.html" class="dash-nav-link">Ask MMT</a>
+      <div class="dash-nav-section">Account</div>
+      <a href="/premium/settings.html" class="dash-nav-link">Settings</a>
+      <a href="/" class="dash-nav-link" style="margin-top:auto; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px;">&larr; Back to site</a>
+    </nav>
+    <div>
+      <div class="dash-header">
+        <span style="font-size:14px; font-weight:700;">&#9733; Premium Dashboard</span>
+        <div style="display:flex; align-items:center; gap:16px;">
+          <span style="font-size:13px; color:var(--mmt-text-secondary);" id="dash-email"></span>
+          <a href="/" style="font-size:12px; color:var(--mmt-teal); text-decoration:none;">Back to site</a>
+          <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_premium_ts');localStorage.removeItem('mmt_email');document.cookie='mmt_premium=;path=/;max-age=0';window.location.href='/';return false;" style="font-size:12px; color:var(--mmt-text-secondary); text-decoration:none;">Sign out</a>
+        </div>
+      </div>
+      <div class="dash-main">
+
+        <div class="eyebrow">Policy &middot; Federal procurement consolidation</div>
+        <h1>PACT, the three Executive Orders, and OMB M-25-31</h1>
+        <p class="lede">If you want to understand why OMAS exists and where this is headed, you have to read the four documents that set the rules. Three EOs and one OMB memo. Plain English version on this page; primary sources linked at the bottom.</p>
+        <div class="meta-row">
+          Data current as of May 18, 2026.
+          &middot; <a href="/agencies/hhs/omas">OMAS deep dive</a>
+          &middot; <a href="/policy/rfo-8-4">RFO 8.4 tier playbook</a>
+          &middot; <a href="/updates/2026-05-18-hhs-omas">May 18 changelog</a>
+        </div>
+
+        <div class="dash-card">
+          <h2>PACT — Procurement Alignment and Collaboration Task Force</h2>
+          <p>PACT was stood up at HHS roughly 12 months ago (early FY25) after the GSA consolidation EO. As of the May 2026 Acquisition Solutions Day, PACT is a formal HHS Agency Priority Goal. The three goals:</p>
+          <div class="goals-grid">
+            <div class="goal-card">
+              <div class="num">Goal 1</div>
+              <div class="what">Centralize common IT and common professional services through OMAS.</div>
+            </div>
+            <div class="goal-card">
+              <div class="num">Goal 2</div>
+              <div class="what">Modernize the acquisition system stack — HCAS and related tools configured for OMAS workflows, financial-system integration, data standardization.</div>
+            </div>
+            <div class="goal-card">
+              <div class="num">Goal 3</div>
+              <div class="what">Preserve mission-specialized procurement at operating divisions with mission-critical authority.</div>
+            </div>
+          </div>
+          <div class="callout">
+            <strong>The standardization spectrum.</strong> OMAS uses a Standardization Suitability Spectrum to decide what consolidates. Less suitable: complex, mission-unique, high program enablement (Divisions handle). More suitable: simple, mission-agnostic, easy to standardize (OMAS handles). Source: Acquisition Solutions Day deck, slide 10.
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <h2>The four documents that made this happen</h2>
+
+          <div class="eo-card">
+            <div class="eo-meta"><span><strong>EO 14210</strong></span> <span>Feb 11, 2025</span> <span>White House</span></div>
+            <h3>Implementing the DOGE Workforce Optimization Initiative</h3>
+            <div class="eo-block"><strong>Plain English</strong> 4-to-1 hiring ratio, RIF prep, agency reorganization plans within 30 days.</div>
+            <div class="eo-block"><strong>Vendor impact</strong> Tightens the acquisition workforce on the buyer side. Expect fewer COs handling more files, longer cycle times, and more emphasis on consolidated buying to scale CO capacity.</div>
+            <a class="read" href="https://www.whitehouse.gov/presidential-actions/2025/02/implementing-the-presidents-department-of-government-efficiency-workforce-optimization-initiative/" rel="noopener">Read the EO &rarr;</a>
+          </div>
+
+          <div class="eo-card">
+            <div class="eo-meta"><span><strong>EO 14222</strong></span> <span>Feb 26, 2025</span> <span>White House</span></div>
+            <h3>Implementing the DOGE Cost Efficiency Initiative</h3>
+            <div class="eo-block"><strong>Plain English</strong> Centralizes contract payment justification systems, requires a 30-day contract review, and freezes new CO warrants during the review window.</div>
+            <div class="eo-block"><strong>Vendor impact</strong> Existing contracts may be terminated for convenience or de-scoped. Modifications now require a written justification linked to the payment system. This is the EO that produced the FY25 $16.3B HHS spend reduction (HCEI).</div>
+            <a class="read" href="https://www.whitehouse.gov/presidential-actions/2025/02/implementing-the-presidents-department-of-government-efficiency-cost-efficiency-initiative/" rel="noopener">Read the EO &rarr;</a>
+          </div>
+
+          <div class="eo-card">
+            <div class="eo-meta"><span><strong>EO 14240</strong></span> <span>Mar 20, 2025</span> <span>White House</span></div>
+            <h3>Eliminating Waste and Saving Taxpayer Dollars by Consolidating Procurement</h3>
+            <div class="eo-block"><strong>Plain English</strong> Mandates the transfer of common goods and services procurement to GSA. This is the root authority behind PACT and the OMAS standup.</div>
+            <div class="eo-block"><strong>Vendor impact</strong> Common IT and Professional Services contracting consolidates through GSA Best-in-Class vehicles or, at HHS, through OMAS. If your firm sells laptops, cloud, cyber tools, or advisory services into HHS, your CO has moved.</div>
+            <a class="read" href="https://www.whitehouse.gov/wp-content/uploads/2025/07/M-25-31-Consolidating-Federal-Procurement-Activities.pdf" rel="noopener">Read the implementing memo &rarr;</a>
+          </div>
+
+          <div class="eo-card">
+            <div class="eo-meta"><span><strong>OMB M-25-31</strong></span> <span>Jul 18, 2025</span> <span>OMB</span></div>
+            <h3>Consolidating Federal Procurement Activities</h3>
+            <div class="eo-block"><strong>Plain English</strong> Implementation guidance for EO 14240. Two workstreams: (1) increased GSA use across agencies, (2) physical centralization of the procurement function at GSA for specified categories.</div>
+            <div class="eo-block"><strong>Vendor impact</strong> Names the canonical buying paths: GSA MAS IT, NASA SEWP, NITAAC CIO-SP, and category-managed Best-in-Class. Be on these vehicles or be invisible to OMAS.</div>
+            <a class="read" href="https://www.whitehouse.gov/wp-content/uploads/2025/07/M-25-31-Consolidating-Federal-Procurement-Activities.pdf" rel="noopener">Read OMB M-25-31 (PDF) &rarr;</a>
+          </div>
+
+          <p style="margin-top:14px;">Additional driver named on the PACT slide: the Secretary's "Make America Healthy Again" framing for realignment of mission support functions.</p>
+        </div>
+
+        <div class="dash-card">
+          <h2>The FY26 consolidation that's coming next</h2>
+          <p>The HHS FY2026 Budget in Brief signals consolidation of 28 operating divisions to 15 and closure of 5 of HHS's most costly regional offices. That returns HHS FTE strength to roughly FY1990s levels.</p>
+          <p>Today's 10 HCAs is a snapshot, not a steady state. Expect additional OpDiv mergers across FY26 and FY27. The OpDivs whose contracting authority has already been absorbed — ACF and AHRQ — are the early signal of the pattern.</p>
+          <p style="margin-bottom:0;"><a href="https://www.hhs.gov/sites/default/files/fy-2026-budget-in-brief.pdf" rel="noopener" style="color:var(--mmt-teal); font-weight:600; text-decoration:none;">Read the FY2026 Budget in Brief (PDF) &rarr;</a></p>
+        </div>
+
+        <div class="dash-card">
+          <h2>What to do with this</h2>
+          <ul>
+            <li><strong>If you sell common IT or professional services into HHS</strong> — build the OMAS SBC-IT (Adam Vance) or SBC-PS (Scott Bredow) relationship. Confirm presence on GSA MAS IT, NASA SEWP, NITAAC CIO-SP, and OASIS+.</li>
+            <li><strong>If you sell mission-unique work to NIH, CDC, CMS, FDA, HRSA, IHS, ASPR, ARPA-H, or OIG</strong> — your CO is unchanged. Watch the FY26 Budget for any merger that affects your buyer.</li>
+            <li><strong>If you sold into ACF or AHRQ</strong> — your CO is now in OMAS SBC-Mission (Trish James). Expect outreach if you hold a current contract.</li>
+            <li><strong>If you're a small business</strong> — register in SBCX (osdbu.hhs.gov). The subcontracting opportunity posting feature is in development. HHS FY26 SB goal is 25% overall, but they earned a B on the FY24 scorecard — strengthening that score is an OSDBU priority.</li>
+          </ul>
+        </div>
+
+        <div class="dash-card">
+          <h2>How this connects</h2>
+          <div class="pill-row">
+            <a href="/agencies/hhs">HHS profile</a>
+            <a href="/agencies/hhs/omas">OMAS deep dive</a>
+            <a href="/agencies/hhs/hcas">All 10 HCAs</a>
+            <a href="/agencies/hhs/orgchart">Visual org chart</a>
+            <a href="/policy/rfo-8-4">RFO 8.4 tier playbook</a>
+            <a href="/premium/fpds-migration.html">FPDS Sunset Watch</a>
+            <a href="/premium/cr-exposure.html">CR &amp; Appropriations Exposure</a>
+          </div>
+        </div>
+
+        <div class="dash-card source-block">
+          <strong>Sources.</strong> White House primary EO text (EO 14210, EO 14222 — direct).
+          OMB M-25-31 PDF (canonical text for EO 14240 and the implementation guidance).
+          <a href="https://www.hhs.gov/sites/default/files/fy-2026-budget-in-brief.pdf" rel="noopener">HHS FY2026 Budget in Brief</a> (verified 2025-06-02).
+          HHS Acquisition Solutions Day deck (May 2026, slides 4 and 10 on PACT and the standardization spectrum).<br><br>
+          <strong>What changes after this?</strong> The implementation timeline. OMB publishes operational guidance throughout FY26. We re-verify quarterly and after any change to the underlying memos.
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script>
+    var email=localStorage.getItem('mmt_email');var __de=document.getElementById('dash-email');if(__de&&email)__de.textContent=email;
+  </script>
+</body>
+</html>

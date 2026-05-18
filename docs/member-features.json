@@ -336,6 +336,90 @@
       "freshness_sla_hours": null,
       "smoke_test_url": "/agencies/",
       "noindex": false
+    },
+    {
+      "feature_name": "HHS Org Chart",
+      "public_marketing_urls": [
+        "/agencies/hhs/orgchart"
+      ],
+      "member_url": "/premium/org-charts/hhs.html",
+      "backing_function": "static page (HHS sprint 2026-05-18) reading data/orgcharts/hhs.json",
+      "entitlement_required": "premium|founding|institutional|admin",
+      "public_locked_preview_behavior": "redirect to dashboard.html (sign-in gate)",
+      "expected_data_source": "data/orgcharts/hhs.json + HHS HCA roster + ASFR Key Personnel + Acquisition Solutions Day deck (May 2026)",
+      "freshness_sla_hours": null,
+      "smoke_test_url": "/agencies/hhs/orgchart",
+      "noindex": true
+    },
+    {
+      "feature_name": "HHS OMAS Deep Dive",
+      "public_marketing_urls": [
+        "/agencies/hhs/omas"
+      ],
+      "member_url": "/premium/agencies/hhs-omas.html",
+      "backing_function": "static page (HHS sprint 2026-05-18)",
+      "entitlement_required": "premium|founding|institutional|admin",
+      "public_locked_preview_behavior": "redirect to dashboard.html (sign-in gate)",
+      "expected_data_source": "HHS Acquisition Solutions Day deck + transcripts (May 2026)",
+      "freshness_sla_hours": null,
+      "smoke_test_url": "/agencies/hhs/omas",
+      "noindex": true
+    },
+    {
+      "feature_name": "HHS 10 HCAs Roster",
+      "public_marketing_urls": [
+        "/agencies/hhs/hcas"
+      ],
+      "member_url": "/premium/agencies/hhs-hcas.html",
+      "backing_function": "static page (HHS sprint 2026-05-18)",
+      "entitlement_required": "premium|founding|institutional|admin",
+      "public_locked_preview_behavior": "redirect to dashboard.html (sign-in gate)",
+      "expected_data_source": "HHS HCA and Key Managers roster + HHS OSDBU (Small Business Specialists by OpDiv)",
+      "freshness_sla_hours": 2160,
+      "smoke_test_url": "/agencies/hhs/hcas",
+      "noindex": true
+    },
+    {
+      "feature_name": "PACT and the 3 EOs",
+      "public_marketing_urls": [
+        "/policy/pact"
+      ],
+      "member_url": "/premium/policy/pact.html",
+      "backing_function": "static page (HHS sprint 2026-05-18) reading data/policy/eo-procurement.json",
+      "entitlement_required": "premium|founding|institutional|admin",
+      "public_locked_preview_behavior": "redirect to dashboard.html (sign-in gate)",
+      "expected_data_source": "EO 14210, EO 14222, EO 14240, OMB M-25-31, HHS FY2026 Budget in Brief",
+      "freshness_sla_hours": null,
+      "smoke_test_url": "/policy/pact",
+      "noindex": true
+    },
+    {
+      "feature_name": "RFO 8.4 Tier Playbook",
+      "public_marketing_urls": [
+        "/policy/rfo-8-4"
+      ],
+      "member_url": "/premium/policy/rfo-8-4.html",
+      "backing_function": "static page (HHS sprint 2026-05-18)",
+      "entitlement_required": "premium|founding|institutional|admin",
+      "public_locked_preview_behavior": "redirect to dashboard.html (sign-in gate)",
+      "expected_data_source": "GSAR 538.7103 + HHS Acquisition Solutions Day deck slides 23-25",
+      "freshness_sla_hours": null,
+      "smoke_test_url": "/policy/rfo-8-4",
+      "noindex": true
+    },
+    {
+      "feature_name": "HHS OMAS Update (2026-05-18)",
+      "public_marketing_urls": [
+        "/updates/2026-05-18-hhs-omas"
+      ],
+      "member_url": "/premium/updates/2026-05-18-hhs-omas.html",
+      "backing_function": "static page (HHS sprint 2026-05-18) \u2014 paid-subscriber email landing",
+      "entitlement_required": "premium|founding|institutional|admin",
+      "public_locked_preview_behavior": "redirect to dashboard.html (sign-in gate)",
+      "expected_data_source": "data/changelog/2026-05-18-hhs-omas.json",
+      "freshness_sla_hours": null,
+      "smoke_test_url": "/updates/2026-05-18-hhs-omas",
+      "noindex": true
     }
   ]
 }

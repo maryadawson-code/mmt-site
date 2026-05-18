@@ -1,0 +1,14 @@
+{
+  "$schema_version": "1.0",
+  "comment": "Canonical index of agency org-chart datasets in data/orgcharts/*.json. Drives the /agencies/<slug>/orgchart pages and the AgencyOrgChart component. Add a new entry when a new agency dataset lands.",
+  "agencies": [
+    {
+      "slug": "hhs",
+      "name": "Department of Health and Human Services",
+      "tier": "paid",
+      "updated": "2026-05-18",
+      "data_path": "/data/orgcharts/hhs.json",
+      "page_url": "/agencies/hhs/orgchart"
+    }
+  ]
+}
