@@ -320,10 +320,17 @@ async function layerWorkforce(terms, agency, matchedVehicles) {
   });
 
   const apiError = titleMatchRes.error || seriesMatchRes.error || null;
+  // notConfigured is a softer state than apiError — it tells the
+  // frontend to show "key not configured" copy instead of "data
+  // source unavailable" so the operator knows it's an ops setup
+  // step, not an upstream outage.
+  const notConfigured = !!(titleMatchRes.notConfigured || seriesMatchRes.notConfigured);
   const reason = signals.length === 0
-    ? (series.length > 0
-        ? `No active federal postings for these keywords OR for GS series ${series.slice(0, 3).join("/")} at ${agency || "any agency"}. Hiring leads contracts by 6–18 months — check back.`
-        : `No active federal job postings matching these keywords at ${agency || "any agency"}. Hiring leads contracts by 6–18 months — check back.`)
+    ? (notConfigured
+        ? "Workforce layer needs USAJOBS_API_KEY in Netlify env (register at developer.usajobs.gov)."
+        : series.length > 0
+          ? `No active federal postings for these keywords OR for GS series ${series.slice(0, 3).join("/")} at ${agency || "any agency"}. Hiring leads contracts by 6–18 months — check back.`
+          : `No active federal job postings matching these keywords at ${agency || "any agency"}. Hiring leads contracts by 6–18 months — check back.`)
     : null;
 
   return {
@@ -333,6 +340,7 @@ async function layerWorkforce(terms, agency, matchedVehicles) {
     signals,
     noSignalReason: reason,
     apiError,
+    notConfigured,
   };
 }
 
@@ -468,13 +476,34 @@ async function layerContract(terms, agency) {
   ];
 
   const apiError = samOpps.error || frDocs.error || null;
+  const rateLimited = !!samOpps.rateLimited;
+  // When SAM is rate-limited but FR returned docs, keep the layer
+  // active rather than treating it as fully broken — the Federal
+  // Register signal is real and should still contribute to score.
+  const samBlockedButFRWorked = rateLimited && docs.length > 0;
   const reason = signals.length === 0
-    ? `No active SAM.gov solicitations matching these keywords at ${agency || "any agency"}. Zero Federal Register notices in the window.`
+    ? (rateLimited
+        ? `SAM.gov quota exceeded (resets ${samOpps.resetAt || "soon"}). Federal Register returned no matches either — contract layer is partial this window.`
+        : `No active SAM.gov solicitations matching these keywords at ${agency || "any agency"}. Zero Federal Register notices in the window.`)
     : (opps.length === 0 && docs.length > 0
-        ? `No active SAM.gov solicitations found. ${docs.length} Federal Register notice${docs.length === 1 ? "" : "s"} — showing most relevant.`
+        ? (rateLimited
+            ? `SAM.gov quota exceeded (resets ${samOpps.resetAt || "soon"}). Showing ${docs.length} Federal Register notice${docs.length === 1 ? "" : "s"} from the supplemental layer.`
+            : `No active SAM.gov solicitations found. ${docs.length} Federal Register notice${docs.length === 1 ? "" : "s"} — showing most relevant.`)
         : null);
 
-  return { score, weight: 0.25, source: "SAM.gov + Federal Register", signals, noSignalReason: reason, apiError };
+  return {
+    score,
+    weight: 0.25,
+    source: "SAM.gov + Federal Register",
+    signals,
+    noSignalReason: reason,
+    // Only flag the layer as "in error" if BOTH sources failed —
+    // surface SAM rate-limit info via `rateLimited` so the UI can
+    // distinguish "partial but real" from "fully broken."
+    apiError: samBlockedButFRWorked ? null : apiError,
+    rateLimited,
+    resetAt: samOpps.resetAt,
+  };
 }
 
 // ------------------------------------------------------------
@@ -611,6 +640,40 @@ async function writeCache(supabase, key, card) {
       details: { cache_key: key, card, stored_at: new Date().toISOString() },
     });
   } catch (_) { /* swallow */ }
+}
+
+// Stale-cache fallback for the rate-limited + upstream-broken case.
+// Unlike readCache (which enforces a 7-day TTL), this looks up the
+// most recent successful card for the same topic + agency regardless
+// of age. Used when SAM is throttled or USASpending is down — we
+// degrade to last-known-good rather than serving an empty card.
+//
+// Returns null if no prior cache exists for this topic.
+async function readAnyPriorCache(supabase, topic, agency) {
+  try {
+    // Cache keys embed the week index, so we can't query by exact key.
+    // Instead, scan recent signal_chain_cache rows and find one whose
+    // payload matches our topic+agency. Limit 50 keeps the query fast.
+    const cutoff = new Date(Date.now() - 90 * DAY_MS).toISOString(); // up to 90d old
+    const { data } = await supabase
+      .from("ops_events")
+      .select("details, created_at")
+      .eq("event_type", "signal_chain_cache")
+      .gte("created_at", cutoff)
+      .order("created_at", { ascending: false })
+      .limit(50);
+    if (!Array.isArray(data)) return null;
+    const tNorm = (topic || "").toLowerCase().trim();
+    const aNorm = agency || "";
+    for (const row of data) {
+      const card = row.details && row.details.card;
+      if (!card) continue;
+      if ((card.topic || "").toLowerCase().trim() === tNorm && (card.agency || "") === aNorm) {
+        return { card, cachedAt: row.created_at };
+      }
+    }
+  } catch (_) { /* swallow */ }
+  return null;
 }
 
 // ------------------------------------------------------------
@@ -826,6 +889,34 @@ exports.handler = async (event) => {
       ? `No federal data signal for "${topic}" at ${resolvedAgency || "any agency"} this window. Federal data lags solicitations by 30–90 days. Try a related program below, broaden your terms, or remove the agency filter.`
       : undefined,
   };
+
+  // Stale-cache fallback — when the contract layer is rate-limited
+  // OR multiple layers are broken AND we have a prior successful run
+  // for this topic, surface the prior run's signals alongside the
+  // current degraded card. This means subscribers see real data
+  // even during a SAM quota outage instead of an empty layer.
+  //
+  // The current card is what we cache (so we don't poison future
+  // freshness), but we attach `stale_fallback` so the frontend can
+  // render "Showing last-known-good from <date>" below the live card.
+  const contractDegraded = (layers.contract && (layers.contract.rateLimited || layers.contract.apiError));
+  if (contractDegraded) {
+    const prior = await readAnyPriorCache(supabase, topic, resolvedAgency);
+    if (prior && prior.card && prior.card.layers && prior.card.layers.contract) {
+      const priorContract = prior.card.layers.contract;
+      // Only attach if the prior contract layer actually had signals
+      // and wasn't itself rate-limited/errored.
+      if (Array.isArray(priorContract.signals) && priorContract.signals.length > 0 && !priorContract.rateLimited && !priorContract.apiError) {
+        card.stale_fallback = {
+          layer: "contract",
+          cachedAt: prior.cachedAt,
+          signals: priorContract.signals.slice(0, 5),
+          composite: prior.card.composite,
+          verdict: prior.card.verdict,
+        };
+      }
+    }
+  }
 
   // Write to cache (non-blocking)
   writeCache(supabase, cacheKey, card).catch(() => {});

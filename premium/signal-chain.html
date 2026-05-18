@@ -422,6 +422,35 @@
         banner.style.display = 'none';
       }
 
+      // Stale-fallback notice — when an upstream is rate-limited but we
+      // had a prior good run for this topic, surface a "last known good"
+      // panel so the subscriber sees real signal instead of an empty card.
+      var staleEl = document.getElementById('sc-stale-fallback');
+      if (!staleEl) {
+        staleEl = document.createElement('div');
+        staleEl.id = 'sc-stale-fallback';
+        staleEl.style.cssText = 'background:rgba(146,113,10,0.06);border:1px solid rgba(146,113,10,0.25);color:#5a4307;padding:12px 16px;border-radius:8px;font-size:13px;margin:14px 0;line-height:1.5;display:none;';
+        var grid = document.getElementById('sc-layers');
+        if (grid && grid.parentNode) grid.parentNode.insertBefore(staleEl, grid.nextSibling);
+      }
+      if (r.stale_fallback && r.stale_fallback.signals && r.stale_fallback.signals.length) {
+        var ageHrs = Math.floor((Date.now() - new Date(r.stale_fallback.cachedAt).getTime()) / 3600000);
+        var ageLabel = ageHrs < 24 ? (ageHrs + ' hour' + (ageHrs === 1 ? '' : 's')) : (Math.floor(ageHrs / 24) + ' day' + (Math.floor(ageHrs / 24) === 1 ? '' : 's'));
+        var staleSigs = r.stale_fallback.signals.slice(0, 3).map(function(s) {
+          var t = s.url
+            ? '<a href="' + escapeHtml(s.url) + '" target="_blank" rel="noopener" style="color:#5a4307;text-decoration:underline;">' + escapeHtml(s.title || '') + '</a>'
+            : escapeHtml(s.title || '');
+          return '<li style="padding:4px 0;">' + t + (s.date ? ' <span style="color:#92710A;">· ' + escapeHtml(s.date) + '</span>' : '') + '</li>';
+        }).join('');
+        staleEl.innerHTML =
+          '<div style="font-size:11px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#92710A;margin-bottom:6px;">Last-known-good · ' + ageLabel + ' ago</div>' +
+          '<p style="margin:0 0 8px;">' + escapeHtml(r.stale_fallback.layer.charAt(0).toUpperCase() + r.stale_fallback.layer.slice(1)) + ' layer is rate-limited this window. Showing the most recent successful results for "' + escapeHtml(r.topic) + '":</p>' +
+          '<ul style="margin:0;padding-left:18px;">' + staleSigs + '</ul>';
+        staleEl.style.display = 'block';
+      } else {
+        staleEl.style.display = 'none';
+      }
+
       // Partial warning — surfaces both timeouts and API errors so the
       // user can tell "real zero" apart from "upstream broken".
       var partialEl = document.getElementById('sc-partial-warning');
@@ -475,14 +504,31 @@
         // (or timed out). Show a distinct unavailable badge so the user
         // can tell "true zero result" apart from "broken upstream" —
         // they need very different actions.
+        //
+        // Three distinct states surface here:
+        //   apiError       → "Data source unavailable" (true failure)
+        //   rateLimited    → "Quota exceeded — resets <date>" (transient)
+        //   notConfigured  → "Setup required" (ops needs to set env var)
         var apiErr = layer.apiError || null;
-        var unavailableBadge = apiErr
-          ? '<span style="display:inline-block;font-size:10px;font-weight:700;background:rgba(230,57,70,0.12);color:#B91C1C;padding:2px 8px;border-radius:4px;letter-spacing:0.04em;text-transform:uppercase;margin-left:8px;" title="' + escapeHtml(String(apiErr)).slice(0, 200) + '">Data source unavailable</span>'
-          : '';
+        var rateLimited = !!layer.rateLimited;
+        var notConfigured = !!layer.notConfigured;
+        var badgeHtml = '';
+        if (notConfigured) {
+          badgeHtml = '<span style="display:inline-block;font-size:10px;font-weight:700;background:rgba(146,113,10,0.12);color:#92710A;padding:2px 8px;border-radius:4px;letter-spacing:0.04em;text-transform:uppercase;margin-left:8px;" title="API key not configured">Setup required</span>';
+        } else if (rateLimited) {
+          var resetTxt = layer.resetAt ? ('Resets ' + escapeHtml(String(layer.resetAt).slice(0, 20))) : 'Quota exceeded';
+          badgeHtml = '<span style="display:inline-block;font-size:10px;font-weight:700;background:rgba(146,113,10,0.12);color:#92710A;padding:2px 8px;border-radius:4px;letter-spacing:0.04em;text-transform:uppercase;margin-left:8px;" title="Rate limited">' + resetTxt + '</span>';
+        } else if (apiErr) {
+          badgeHtml = '<span style="display:inline-block;font-size:10px;font-weight:700;background:rgba(230,57,70,0.12);color:#B91C1C;padding:2px 8px;border-radius:4px;letter-spacing:0.04em;text-transform:uppercase;margin-left:8px;" title="' + escapeHtml(String(apiErr)).slice(0, 200) + '">Data source unavailable</span>';
+        }
 
         var signalsHtml;
-        if (apiErr && (!layer.signals || layer.signals.length === 0)) {
-          signalsHtml = '<div style="font-size:12px;color:#B91C1C;font-style:italic;margin-top:8px;">Data source unavailable — retry. (' + escapeHtml(apiErr === 'timeout' ? 'Upstream timed out' : 'Upstream API error') + ')</div>';
+        if ((apiErr || notConfigured) && (!layer.signals || layer.signals.length === 0)) {
+          var msg;
+          if (notConfigured) msg = 'Setup required — see Settings → API keys.';
+          else if (apiErr === 'timeout') msg = 'Upstream timed out — retry.';
+          else msg = 'Upstream API error — retry.';
+          signalsHtml = '<div style="font-size:12px;color:#92710A;font-style:italic;margin-top:8px;">' + escapeHtml(layer.noSignalReason || msg) + '</div>';
         } else if (layer.signals && layer.signals.length) {
           signalsHtml = '<div>' + layer.signals.map(function(s) {
             var safeSrcClass = 'source-' + (s.source || '').replace(/[^A-Za-z0-9]/g, '-');
@@ -505,15 +551,22 @@
         }
 
         var weightPct = Math.round((layer.weight || 0) * 100);
+        var barColor = apiErr ? 'background:rgba(230,57,70,0.4);'
+                     : (rateLimited || notConfigured) ? 'background:rgba(146,113,10,0.4);'
+                     : '';
+        var weightSuffix = apiErr ? ' · <span style="color:#B91C1C;">excluded</span>'
+                         : rateLimited ? ' · <span style="color:#92710A;">partial</span>'
+                         : notConfigured ? ' · <span style="color:#92710A;">setup required</span>'
+                         : '';
         card.innerHTML =
           '<div class="layer-head">' +
-            '<span class="layer-name">' + LAYER_LABELS[key] + unavailableBadge + '</span>' +
+            '<span class="layer-name">' + LAYER_LABELS[key] + badgeHtml + '</span>' +
             '<span class="layer-score">' + layer.score + '<span style="font-size:11px;color:var(--mmt-text-secondary);font-weight:600;"> / 100</span></span>' +
           '</div>' +
-          '<div class="layer-bar"><div class="layer-bar-fill" style="width:' + layer.score + '%;' + (apiErr ? 'background:rgba(230,57,70,0.4);' : '') + '"></div></div>' +
+          '<div class="layer-bar"><div class="layer-bar-fill" style="width:' + layer.score + '%;' + barColor + '"></div></div>' +
           '<div style="font-size:11px;color:var(--mmt-text-secondary);margin-bottom:4px;">' + escapeHtml(layer.source || '') + '</div>' +
           signalsHtml +
-          '<div class="layer-weight">Weight: ' + weightPct + '% of composite' + (apiErr ? ' · <span style="color:#B91C1C;">excluded</span>' : '') + '</div>';
+          '<div class="layer-weight">Weight: ' + weightPct + '% of composite' + weightSuffix + '</div>';
         grid.appendChild(card);
       });
 

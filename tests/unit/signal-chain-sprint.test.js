@@ -210,6 +210,83 @@ describe("SC-1: USASpending payload shape", () => {
 });
 
 // -----------------------------------------------------------------
+// SC-OPS — SAM throttle handling + USAJobs graceful missing-key
+// -----------------------------------------------------------------
+describe("SC-OPS: SAM.gov throttle parsing", () => {
+  let originalFetch;
+  beforeEach(() => {
+    originalFetch = global.fetch;
+    process.env.SAM_GOV_API_KEY = "test-key";
+  });
+  afterEach(() => { global.fetch = originalFetch; });
+
+  it("detects HTTP 429 + parses nextAccessTime into resetAt", async () => {
+    global.fetch = vi.fn(async () => ({
+      ok: false,
+      status: 429,
+      text: async () => JSON.stringify({
+        code: "900804",
+        message: "Message throttled out",
+        nextAccessTime: "2026-May-19 00:00:00+0000 UTC",
+      }),
+    }));
+    vi.resetModules();
+    const { searchSAMOpportunities } = await import("../../netlify/functions/lib/federal-data-apis.js");
+    const r = await searchSAMOpportunities({ keyword: "x" });
+    expect(r.rateLimited).toBe(true);
+    expect(r.resetAt).toBe("2026-May-19 00:00:00+0000 UTC");
+    expect(r.error).toMatch(/rate-limit/i);
+  });
+
+  it("detects code 900804 even when HTTP status is not 429", async () => {
+    global.fetch = vi.fn(async () => ({
+      ok: false,
+      status: 400, // SAM sometimes returns 400 with code 900804
+      text: async () => JSON.stringify({
+        code: "900804",
+        nextAccessTime: "2026-Jun-01 00:00:00+0000 UTC",
+      }),
+    }));
+    vi.resetModules();
+    const { searchSAMOpportunities } = await import("../../netlify/functions/lib/federal-data-apis.js");
+    const r = await searchSAMOpportunities({ keyword: "x" });
+    expect(r.rateLimited).toBe(true);
+  });
+
+  it("non-throttle errors do NOT set rateLimited", async () => {
+    global.fetch = vi.fn(async () => ({
+      ok: false,
+      status: 500,
+      text: async () => "Internal Server Error",
+    }));
+    vi.resetModules();
+    const { searchSAMOpportunities } = await import("../../netlify/functions/lib/federal-data-apis.js");
+    const r = await searchSAMOpportunities({ keyword: "x" });
+    expect(r.rateLimited).toBeFalsy();
+    expect(r.error).toMatch(/500/);
+  });
+});
+
+describe("SC-OPS: USAJobs missing-key handling", () => {
+  let originalKey;
+  beforeEach(() => {
+    originalKey = process.env.USAJOBS_API_KEY;
+    delete process.env.USAJOBS_API_KEY;
+  });
+  afterEach(() => {
+    if (originalKey !== undefined) process.env.USAJOBS_API_KEY = originalKey;
+  });
+
+  it("returns notConfigured: true (distinct from generic error)", async () => {
+    vi.resetModules();
+    const { searchJobs } = await import("../../netlify/functions/lib/usajobs-api.js");
+    const r = await searchJobs({ keyword: "x" });
+    expect(r.notConfigured).toBe(true);
+    expect(r.error).toMatch(/developer\.usajobs\.gov/);
+  });
+});
+
+// -----------------------------------------------------------------
 // SC-4 — SAM.gov payload shape (via call interception)
 // -----------------------------------------------------------------
 describe("SC-4: SAM.gov payload shape", () => {

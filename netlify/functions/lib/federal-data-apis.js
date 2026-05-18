@@ -254,7 +254,31 @@ async function searchSAMOpportunities({ keyword, naics, agency, limit = 10 }) {
 
     if (!res.ok) {
       let detail = "";
-      try { detail = (await res.text()).slice(0, 240); } catch (_) {}
+      let bodyJson = null;
+      try {
+        const txt = await res.text();
+        detail = txt.slice(0, 240);
+        try { bodyJson = JSON.parse(txt); } catch (_) {}
+      } catch (_) {}
+
+      // SAM.gov uses a custom 429-equivalent (HTTP 429 OR HTTP 200 with
+      // code "900804"). Either way, surface a clear, dated reset
+      // message so the layer can show "Rate limited — resets <date>"
+      // instead of an opaque API error. The `nextAccessTime` field is
+      // ISO-ish: "2026-May-19 00:00:00+0000 UTC" — we pass it through
+      // verbatim because dates that match the SAM wording prevent
+      // confusion when subscribers compare to the SAM portal.
+      const isThrottle = res.status === 429 || (bodyJson && bodyJson.code === "900804");
+      if (isThrottle) {
+        const resetAt = bodyJson && bodyJson.nextAccessTime ? bodyJson.nextAccessTime : "unknown";
+        return {
+          opportunities: [], total: 0,
+          error: `SAM.gov rate-limit (quota exceeded). Resets: ${resetAt}. Subscriber action: contract layer falls back to Federal Register until reset.`,
+          rateLimited: true,
+          resetAt,
+        };
+      }
+
       return { opportunities: [], total: 0, error: `SAM.gov API ${res.status}${detail ? ": " + detail : ""}` };
     }
 
