@@ -668,47 +668,47 @@ exports.handler = async (event) => {
         });
       } catch (_costErr) { /* never break gold team */ }
     } catch (err) {
-      if (err.allRetriesTimeout) {
-        // Degrade path: skip the rewrite, synthesize a minimal rewriteResult from
-        // the original scorecard, and proceed to an expedited review pass. This
-        // delivers SOMETHING useful to the customer instead of silent failure.
-        rewriteSkipped = true;
-        const attempts = ANTHROPIC_MAX_ATTEMPTS;
-        await logOpsEvent(supabase, {
-          event_type: "GOLD_TEAM_REWRITE_SKIPPED",
-          source_function: "gold-team-review-background",
-          severity: "warn",
-          signature: "ALL_RETRIES_TIMEOUT",
-          affected_entity: scoring_id,
-          details: {
-            attempts,
-            elapsed_ms: err.elapsedMs || (Date.now() - _costStartRewrite),
-            model: rewriteModelConfig.model,
-            last_error: err.cause || err.message,
-          },
-        });
-        console.warn(`Gold Team: rewrite skipped after ${attempts} timeouts — proceeding to expedited review`);
-        rewriteResult = {
-          strengthened_sections: scores.map((s) => ({
-            criterion_id: s.id,
-            criterion_title: s.title,
-            original_grade: s.grade,
-            original_excerpt: s.assessment || "",
-            strengthened_text: s.assessment || "",
-            changes_made: "(rewrite pass skipped — expedited delivery)",
-            status: "expedited",
-            rewrite_confidence: null,
-            confidence_rationale: null,
-          })),
-          pwin_estimate: null,
-          pwin_justification: null,
-          _rewrite_skipped: true,
-        };
-      } else {
-        console.error("Gold Team: rewrite call failed:", err);
-        await logOpsEvent(supabase, { event_type: "MODEL_FAILURE", source_function: "gold-team-review-background", severity: "error", signature: "anthropic_rewrite_failure", affected_entity: scoring_id, details: { error: err.message } });
-        return;
-      }
+      // Degrade path: any rewrite failure (timeout, anthropic error, JSON parse
+      // error) falls back to synthesizing a minimal rewriteResult from the
+      // original scorecard and proceeding to an expedited review pass. This
+      // delivers SOMETHING to the customer instead of silently returning.
+      // Bit jmichaud@arcadianpartners.com (2026-04-20) when only the
+      // allRetriesTimeout branch existed; their email never sent.
+      rewriteSkipped = true;
+      const isTimeout = !!err.allRetriesTimeout;
+      const skipSignature = isTimeout ? "ALL_RETRIES_TIMEOUT" : "REWRITE_CALL_FAILED";
+      const attempts = ANTHROPIC_MAX_ATTEMPTS;
+      await logOpsEvent(supabase, {
+        event_type: "GOLD_TEAM_REWRITE_SKIPPED",
+        source_function: "gold-team-review-background",
+        severity: "warn",
+        signature: skipSignature,
+        affected_entity: scoring_id,
+        details: {
+          attempts,
+          elapsed_ms: err.elapsedMs || (Date.now() - _costStartRewrite),
+          model: rewriteModelConfig.model,
+          last_error: err.cause || err.message,
+          is_timeout: isTimeout,
+        },
+      });
+      console.warn(`Gold Team: rewrite skipped (${skipSignature}) — proceeding to expedited review`);
+      rewriteResult = {
+        strengthened_sections: scores.map((s) => ({
+          criterion_id: s.id,
+          criterion_title: s.title,
+          original_grade: s.grade,
+          original_excerpt: s.assessment || "",
+          strengthened_text: s.assessment || "",
+          changes_made: "(rewrite pass skipped — expedited delivery)",
+          status: "expedited",
+          rewrite_confidence: null,
+          confidence_rationale: null,
+        })),
+        pwin_estimate: null,
+        pwin_justification: null,
+        _rewrite_skipped: true,
+      };
     }
 
     if (!rewriteResult.strengthened_sections || rewriteResult.strengthened_sections.length === 0) {
@@ -889,8 +889,9 @@ exports.handler = async (event) => {
     <p style="font-size:14px;color:#475569;margin:0 0 4px;font-weight:600;">Document</p>
     <p style="font-size:16px;color:#1e293b;margin:0 0 24px;">${(file_name || "uploaded document").replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]))}</p>
     <div style="text-align:center;margin:32px 0;">
-      <a href="${reportUrl || '#'}" style="display:inline-block;background:#ef4444;color:#ffffff;font-weight:700;font-size:16px;padding:14px 40px;text-decoration:none;border-radius:6px;">View Red Team Review</a>
+      <a href="${reportUrl ? reportUrl.replace(/&/g, '&amp;') : '#'}" style="display:inline-block;background:#ef4444;color:#ffffff;font-weight:700;font-size:16px;padding:14px 40px;text-decoration:none;border-radius:6px;">View Red Team Review</a>
     </div>
+    ${reportUrl ? `<div style="margin:16px 0 0;padding:12px 16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:6px;"><p style="margin:0 0 6px;font-size:11px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Plain-text link (copy &amp; paste if the button doesn't work)</p><p style="margin:0;font-size:11px;color:#0A192F;font-family:'SFMono-Regular',Menlo,Consolas,monospace;word-break:break-all;line-height:1.5;">${reportUrl.replace(/&/g, '&amp;')}</p></div>` : ''}
     <p style="font-size:12px;color:#9ca3af;margin:24px 0 0;text-align:center;">This link expires in 90 days.</p>
   </div>
   <div style="padding:20px 40px;background:#f9fafb;border-top:1px solid #e2e8f0;text-align:center;font-size:12px;color:#9ca3af;">

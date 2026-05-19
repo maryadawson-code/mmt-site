@@ -450,7 +450,11 @@ exports.handler = wrapHandler(async (event) => {
           ? ({ "application/pdf": "pdf" }[sowContentType] || null)
           : null;
         if (sowResolvedType === "pdf") {
-          const pdfParse = require("pdf-parse");
+          // Use internal entry — `require("pdf-parse")` runs a self-test that tries
+          // to read ./test/data/05-versions-space.pdf which is not bundled into
+          // Netlify Functions, causing ENOENT and silent skip of Gold Team Review.
+          // Customer-affecting: bit Trish Hunter + Ryan Andhavarapu (2026-05-18).
+          const pdfParse = require("pdf-parse/lib/pdf-parse.js");
           const sowBuffer = Buffer.from(sowBase64, "base64");
           const pdfData = await pdfParse(sowBuffer);
           finalSowText = pdfData.text;
@@ -813,7 +817,9 @@ exports.handler = wrapHandler(async (event) => {
     let documentText = extractedText;
     if (!documentText && fileBase64 && fileType === "pdf") {
       try {
-        const pdfParse = require("pdf-parse");
+        // Internal entry — bypass pdf-parse's auto-self-test that ENOENTs in
+        // Netlify Functions when ./test/data/05-versions-space.pdf isn't bundled.
+        const pdfParse = require("pdf-parse/lib/pdf-parse.js");
         const pdfBuffer = Buffer.from(fileBase64, "base64");
         const pdfData = await pdfParse(pdfBuffer);
         documentText = pdfData.text;
@@ -954,8 +960,9 @@ exports.handler = wrapHandler(async (event) => {
     <p style="font-size:14px;color:#475569;margin:0 0 4px;font-weight:600;">Overall Grade</p>
     <p style="font-size:28px;font-weight:700;color:${gradeColorMap(overallGrade)};margin:0 0 24px;">${overallGrade || "N/A"}</p>
     <div style="text-align:center;margin:32px 0;">
-      <a href="${reportUrl || '#'}" style="display:inline-block;background:#0A192F;color:#FFFFFF;font-weight:700;font-size:16px;padding:14px 40px;text-decoration:none;border-radius:6px;">View Score Report</a>
+      <a href="${reportUrl ? reportUrl.replace(/&/g, '&amp;') : '#'}" style="display:inline-block;background:#0A192F;color:#FFFFFF;font-weight:700;font-size:16px;padding:14px 40px;text-decoration:none;border-radius:6px;">View Score Report</a>
     </div>
+    ${reportUrl ? `<div style="margin:16px 0 0;padding:12px 16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:6px;"><p style="margin:0 0 6px;font-size:11px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Plain-text link (copy &amp; paste if the button doesn't work)</p><p style="margin:0;font-size:11px;color:#0A192F;font-family:'SFMono-Regular',Menlo,Consolas,monospace;word-break:break-all;line-height:1.5;">${reportUrl.replace(/&/g, '&amp;')}</p></div>` : ''}
     <p style="font-size:12px;color:#9ca3af;margin:24px 0 0;text-align:center;">This link expires in 90 days.</p>
   </div>
   <div style="padding:20px 40px;background:#f9fafb;border-top:1px solid #e2e8f0;text-align:center;font-size:12px;color:#9ca3af;">

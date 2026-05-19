@@ -319,11 +319,11 @@ function buildScoreReceiptHtml(data) {
     ${scoringId ? `<!-- Feedback Section -->
     <div style="padding:24px 32px;background-color:#fafafa;border-top:1px solid #e5e7eb;text-align:center;">
       <p style="margin:0 0 12px;font-size:14px;color:#6b7280;">Was this scoring helpful?</p>
-      <a href="https://missionmeetstech.com/.netlify/functions/feedback-click?product=proposalpulse&id=${escapeHtml(scoringId)}&rating=5"
+      <a href="https://missionmeetstech.com/.netlify/functions/feedback-click?product=proposalpulse&amp;id=${escapeHtml(scoringId)}&amp;rating=5"
          style="display:inline-block;padding:8px 20px;margin:0 6px;background:#0f766e;color:white;border-radius:6px;text-decoration:none;font-size:13px;">Very Helpful</a>
-      <a href="https://missionmeetstech.com/.netlify/functions/feedback-click?product=proposalpulse&id=${escapeHtml(scoringId)}&rating=3"
+      <a href="https://missionmeetstech.com/.netlify/functions/feedback-click?product=proposalpulse&amp;id=${escapeHtml(scoringId)}&amp;rating=3"
          style="display:inline-block;padding:8px 20px;margin:0 6px;background:#334155;color:white;border-radius:6px;text-decoration:none;font-size:13px;">Somewhat</a>
-      <a href="https://missionmeetstech.com/.netlify/functions/feedback-click?product=proposalpulse&id=${escapeHtml(scoringId)}&rating=1"
+      <a href="https://missionmeetstech.com/.netlify/functions/feedback-click?product=proposalpulse&amp;id=${escapeHtml(scoringId)}&amp;rating=1"
          style="display:inline-block;padding:8px 20px;margin:0 6px;background:#7f1d1d;color:white;border-radius:6px;text-decoration:none;font-size:13px;">Not Helpful</a>
     </div>` : ""}
 
