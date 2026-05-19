@@ -112,11 +112,11 @@ function buildDeliveryEmail({ name, topic, orderId, qualityFail, qualityGrade, q
 
           ${orderId ? `<div style="margin:32px 0 0;padding-top:24px;border-top:1px solid #eee;text-align:center;">
             <p style="color:#94a3b8;font-size:14px;margin:0 0 12px;">How useful was this brief?</p>
-            <a href="https://missionmeetstech.com/.netlify/functions/feedback-click?product=marketpulse&id=${escapeHtml(orderId)}&rating=5"
+            <a href="https://missionmeetstech.com/.netlify/functions/feedback-click?product=marketpulse&amp;id=${escapeHtml(orderId)}&amp;rating=5"
                style="display:inline-block;padding:8px 20px;margin:0 6px;background:#0f766e;color:white;border-radius:6px;text-decoration:none;font-size:13px;">Very Useful</a>
-            <a href="https://missionmeetstech.com/.netlify/functions/feedback-click?product=marketpulse&id=${escapeHtml(orderId)}&rating=3"
+            <a href="https://missionmeetstech.com/.netlify/functions/feedback-click?product=marketpulse&amp;id=${escapeHtml(orderId)}&amp;rating=3"
                style="display:inline-block;padding:8px 20px;margin:0 6px;background:#334155;color:white;border-radius:6px;text-decoration:none;font-size:13px;">Somewhat</a>
-            <a href="https://missionmeetstech.com/.netlify/functions/feedback-click?product=marketpulse&id=${escapeHtml(orderId)}&rating=1"
+            <a href="https://missionmeetstech.com/.netlify/functions/feedback-click?product=marketpulse&amp;id=${escapeHtml(orderId)}&amp;rating=1"
                style="display:inline-block;padding:8px 20px;margin:0 6px;background:#7f1d1d;color:white;border-radius:6px;text-decoration:none;font-size:13px;">Not Useful</a>
           </div>` : ""}
 
