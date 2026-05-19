@@ -43,8 +43,8 @@ capture_corner:
 ## How American Healthcare Keeps Designing the Same Disaster
 
 *The strongest detail in the HealthSplash case is a physical-exam test, documented as performed, on a patient the clinician had never met. The workflow was the fraud.*
-
 ![A clinical postcard bearing a knee anatomy illustration suspended between two empty exam rooms. The documented exam that never physically took place.](/images/newsletter/2026-05-19/cover-exam-never-happened.png)
+
 
 Friends,
 
@@ -79,8 +79,8 @@ The superseding indictment alleged that templates included physical-test languag
 A Pivot Shift test is an in-person knee exam. A One-legged Stand test requires watching the patient stand. These are not phrases that belong in a remote order template unless the encounter actually supported them. They were appearing, by the thousands, in documentation for patients who had never been in the same room as the person who signed the order. An audit reviewer reading the order months later would see a clinician documenting hands-on tests for ligament integrity and balance. The reviewer would have no metadata, no audit trail, and no flag showing those tests did not actually occur.
 
 Somewhere, that language became a product decision. Once it did, the false record could scale. By the time CMS audited a claim, the documentation looked like real medicine had happened. The fraud was in the workflow, and the workflow was designed.
-
 ![The Order Factory. A six-station assembly line showing how a false clinical order is manufactured before the claim: lead, call center intake, telemed routing, template configuration with language substitution, clinician signature, and claim-ready order.](/images/newsletter/2026-05-19/order-factory.png)
+
 
 This is the version of the architecture that does not require AI. A few engineers and a workflow tool can already do this much harm. What comes next has the entire toolkit of generative AI behind it.
 
@@ -89,8 +89,8 @@ This is the version of the architecture that does not require AI. A few engineer
 The HealthSplash architecture has been visible across federal healthcare fraud enforcement for more than a decade. DOJ's 2019 Operation Brace Yourself charged twenty-four defendants and took action against 130 durable medical equipment (DME) companies, with alleged losses over $1.2 billion. The 2022 telemedicine takedown charged thirty-six defendants across thirteen districts in schemes involving more than $1.2 billion in alleged claims. LabSolutions owner Minal Patel was sentenced to twenty-seven years in prison for a $463 million genetic-testing scheme that routed through telemedicine doctors who signed prescriptions without examining beneficiaries. In April of this year DOJ announced a hospice fraud takedown in California, and on May 13 CMS implemented a six-month nationwide moratorium on new Medicare enrollment for hospices and home health agencies, citing operators shifting across state lines and ownership changes used to obscure control. Kaiser Permanente affiliates agreed to pay $556 million and Aetna agreed to pay $117.7 million to resolve Medicare Advantage coding allegations involving invalid diagnosis codes. [6] [7] [8] [9] [10] [11] [12]
 
 Different products. Different tools. The seam moves. The architecture does not.
-
 ![Same Disaster, New Surface. The five-step fraud architecture (acquire, legitimize, document, bill, evade) repeating across DME braces, genetic testing, and hospice product surfaces.](/images/newsletter/2026-05-19/same-disaster-new-surface.png)
+ Acquire vulnerable people. Wrap the transaction in medical legitimacy. Generate the documentation. Route the money. Stay ahead of the auditor.
 
 ## An Older Warning
 
@@ -121,8 +121,8 @@ This is solvable. Fraud-resistance is an engineering discipline. Most of what fo
 Every recommendation below can be written into a Statement of Work, a clinical-systems acquisition contract, or a vendor agreement today. The legal authority exists. The technical capability exists. The federal acquisition workforce has the experience to write these requirements. What is missing is the policy decision to require them.
 
 Every reimbursable order should carry structured provenance: beneficiary identity proof, clinician identity proof, encounter modality, encounter duration, clinical basis, lead source, marketing involvement, AI assistance, template version, and submission path. The field exists on the claim. It can exist on the order.
-
 ![Provenance Before Payment. A verification gate where ten required provenance elements (clinician identity, beneficiary identity, encounter modality, encounter duration, clinical basis, lead source, marketing involvement, AI assistance, submission path, template version) gate every reimbursable order before it reaches payment.](/images/newsletter/2026-05-19/provenance-before-payment.png)
+
 
 Telehealth platforms generating reimbursable orders should be designed to NIST identity-proofing standards rather than to the lowest available level. NIST IAL2 and IAL3 are documented federal standards already in production use. [22]
 
@@ -161,8 +161,8 @@ HealthSplash answered that question for Medicare. The Pivot Shift test was the a
 The American people are paying for design failures we have known how to fix for a decade. The procurement decision being made on the next federal healthcare technology contract is the answer for whatever comes after HealthSplash.
 
 **No reimbursable order should be easier to fake than to verify.**
-
 ![The Fraud Loop. Five-step diagnosis (acquire, legitimize, document, bill, evade) paired with five-step doctrine (verify who, validate why, prove what, control payment, detect and act). Fraud thrives in gaps. Integrity thrives in design.](/images/newsletter/2026-05-19/fraud-loop.png)
+
 
 That is the procurement requirement. That is the engineering requirement. That is the readiness requirement.
 
@@ -177,6 +177,21 @@ Mission Meets Tech
 ---
 
 *The views expressed in this newsletter are my own and do not represent the official position of any organization. This content is for informational purposes only.*
+
+---
+
+## MMT Premium
+
+**Want the capture intelligence behind this analysis?**
+
+MMT Premium subscribers receive the companion Capture Corner with this issue: the program-integrity market mapped to six capture lanes, the May 13 enrollment moratorium translated into procurement action windows, the WISeR participant intelligence, the SMRC recompete monitoring brief, and the specific URLs Founding Members should be watching this week.
+
+**Founding Member rate: $199/year** (locked permanently for the first 100 subscribers)
+**Standard rate: $249/year or $29/month**
+
+Plus: 48-hour early access, deep-dive solicitation analysis when major RFPs drop, direct Q&A access, and tool discounts.
+
+**[Subscribe at missionmeetstech.com/pricing](https://missionmeetstech.com/pricing)**
 
 ---
 

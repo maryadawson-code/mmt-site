@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-05-18T18:57:35.772Z",
+  "generated_at": "2026-05-19T17:22:44.842Z",
   "source_dir": "content/newsletter",
   "source_count": 110,
   "newest_in_source": {
-    "file": "2026-05-15-the-reorg-lives-or-dies-in-the-loading-dock.md",
-    "title": "The Reorg Lives or Dies in the Loading Dock",
-    "date": "2026-05-15T00:00:00.000Z",
-    "slug": "the-reorg-lives-or-dies-in-the-loading-dock",
+    "file": "2026-05-19-the-fraud-was-in-the-workflow.md",
+    "title": "The Fraud Was in the Workflow",
+    "date": "2026-05-19T00:00:00.000Z",
+    "slug": "the-fraud-was-in-the-workflow",
     "future_dated": false
   },
   "newest_in_dist_latest": {
-    "slug": "the-reorg-lives-or-dies-in-the-loading-dock",
-    "title": "The Reorg Lives or Dies in the Loading Dock"
+    "slug": "the-fraud-was-in-the-workflow",
+    "title": "The Fraud Was in the Workflow"
   },
   "in_sync": true,
   "imported_in_this_run": [],
@@ -37,11 +37,5 @@
       "note": "Article body not present in content/newsletter/. See docs/newsletter-source-of-truth-gap.md for resolution paths."
     }
   ],
-  "held_future_articles": [
-    {
-      "file": "2026-05-19-the-fraud-was-in-the-workflow.md",
-      "title": "The Fraud Was in the Workflow",
-      "publish_date": "2026-05-19T00:00:00.000Z"
-    }
-  ]
+  "held_future_articles": []
 }
