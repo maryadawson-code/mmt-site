@@ -842,6 +842,22 @@
   to = "/tools.html"
   status = 200
 
+# Sign-in entry points — /login, /signin, /sign-in all rewrite to the
+# dashboard sign-in form (the proven member-auth flow). Status 200 so
+# the address bar stays at /login (no flash to /dashboard.html).
+[[redirects]]
+  from = "/login"
+  to = "/dashboard.html"
+  status = 200
+[[redirects]]
+  from = "/signin"
+  to = "/dashboard.html"
+  status = 200
+[[redirects]]
+  from = "/sign-in"
+  to = "/dashboard.html"
+  status = 200
+
 # Sprint 4 (MMT-401, MMT-402, MMT-403) — premium feature redirects
 [[redirects]]
   from = "/fpds-migration"

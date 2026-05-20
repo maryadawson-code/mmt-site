@@ -420,6 +420,22 @@
       "freshness_sla_hours": null,
       "smoke_test_url": "/updates/2026-05-18-hhs-omas",
       "noindex": true
+    },
+    {
+      "feature_name": "Member Sign-In",
+      "public_marketing_urls": [
+        "/login",
+        "/signin",
+        "/sign-in"
+      ],
+      "member_url": "/dashboard.html",
+      "backing_function": "netlify/functions/member-auth.js",
+      "entitlement_required": "any (returns no-account / no-active-subscription for non-members)",
+      "public_locked_preview_behavior": "sign-in form on /dashboard.html (rewrite preserves /login in address bar)",
+      "expected_data_source": "Supabase mp_users via loadEntitlement",
+      "freshness_sla_hours": null,
+      "smoke_test_url": "/login",
+      "noindex": true
     }
   ]
 }
