@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capture Corner: The Federal Radiology AI Procurement Vehicle Has Not Been Built &middot; MMT Premium</title>
+  <meta name="description" content="May 22, 2026. Companion to 'The Workflow Was Designed to Deliver.' Five plays this week: the Volpara/Patient Hub template, the NTP NextGen PACS cancellation paper trail, the HCDS imaging-interface scope watchlist, FDA PCCP guidance as procurement language, and the credentialed-third-party architecture rendered as procurement requirements for DME, hospice, home health, and telehealth. Named DHA and VA decision points where vendor-neutral orchestration architectures fit.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <style>
+    :root { --mmt-teal:#457B9D; --mmt-navy:#0A192F; --mmt-soft:#F3F4F6; --mmt-white:#FFFFFF; --mmt-text:#102033; --mmt-text-secondary:#5C6B7A; --mmt-border:#D8E0E8; --ci-gold:#92710A; --ci-gold-bg:#FEF9E7; --mmt-red:#E63946; }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--mmt-white); color:var(--mmt-navy); }
+    .brief-body { font-size:15px; line-height:1.75; color:#314155; }
+    .brief-body h2 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:40px 0 14px; letter-spacing:-0.02em; }
+    .brief-body h3 { font-size:17px; font-weight:700; color:var(--mmt-navy); margin:28px 0 10px; }
+    .brief-body h4 { font-size:15px; font-weight:700; color:var(--mmt-navy); margin:20px 0 8px; }
+    .brief-body p { margin-bottom:16px; max-width:65ch; }
+    .brief-body ul { margin-bottom:16px; padding-left:1.25rem; }
+    .brief-body li { margin-bottom:8px; }
+    .brief-body a { color:var(--mmt-teal); text-decoration:underline; text-underline-offset:3px; }
+    .brief-body strong { color:var(--mmt-navy); }
+    .brief-body em { color:var(--mmt-text-secondary); }
+    .brief-body hr { border:none; border-top:1px solid var(--mmt-border); margin:36px 0; }
+    .brief-body blockquote { border-left:3px solid var(--mmt-teal); padding:8px 16px; margin:16px 0; color:var(--mmt-text-secondary); background:rgba(69,123,157,0.04); border-radius:0 6px 6px 0; }
+    .brief-body img { max-width:100%; height:auto; display:block; margin:24px 0; border:1px solid var(--mmt-border); border-radius:8px; }
+    .brief-body table { width:100%; border-collapse:collapse; margin:16px 0 24px; font-size:14px; }
+    .brief-body th, .brief-body td { border:1px solid var(--mmt-border); padding:10px 12px; text-align:left; vertical-align:top; }
+    .brief-body th { background:var(--mmt-soft); color:var(--mmt-navy); font-weight:700; }
+    .pills { margin:8px 0 24px; }
+    .pill { display:inline-block; padding:4px 10px; background:rgba(69,123,157,0.08); color:var(--mmt-teal); border-radius:14px; font-size:11px; font-weight:600; margin:2px 4px 2px 0; }
+    .pill-red { background:rgba(230,57,70,0.08); color:var(--mmt-red); }
+    .pill-gold { background:var(--ci-gold-bg); color:var(--ci-gold); }
+    .back-link { font-size:13px; font-weight:600; color:var(--mmt-teal); text-decoration:none; }
+    .back-link:hover { opacity:0.7; }
+    .gate-notice { background:linear-gradient(180deg,#FFFFFF 0%,#F3F4F6 100%); border:1px solid var(--mmt-border); border-radius:12px; padding:32px 28px; text-align:center; margin:32px auto; max-width:540px; }
+    .gate-notice h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin-bottom:10px; }
+    .gate-notice p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:16px; line-height:1.55; }
+    .gate-cta { display:inline-block; padding:12px 24px; background:var(--mmt-navy); color:var(--mmt-white); font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; }
+    .section-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--ci-gold); }
+    .deep-dive-card { margin:48px 0 16px; padding:32px 28px; border:2px solid var(--ci-gold); border-radius:12px; background:linear-gradient(180deg,#FFFFFF 0%,var(--ci-gold-bg) 100%); }
+    .deep-dive-card h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:0 0 12px; letter-spacing:-0.01em; }
+    .deep-dive-card p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:14px; line-height:1.6; max-width:none; }
+    .deep-dive-price { display:inline-flex; align-items:baseline; gap:8px; margin:4px 0 16px; font-weight:800; color:var(--mmt-navy); }
+    .deep-dive-price .amount { font-size:28px; }
+    .deep-dive-price .unit { font-size:13px; font-weight:600; color:var(--mmt-text-secondary); text-transform:uppercase; letter-spacing:0.06em; }
+    .deep-dive-cta { display:inline-block; padding:14px 26px; background:var(--ci-gold); color:#FFFFFF; font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; letter-spacing:0.02em; }
+    .deep-dive-cta:hover { opacity:0.92; }
+    .deep-dive-examples { font-size:13px; color:var(--mmt-text-secondary); font-style:italic; margin-top:8px; }
+  </style>
+</head>
+<body>
+  <nav class="nav-editorial"></nav>
+
+  <main class="wrap" style="padding:48px 0 80px; max-width:820px;">
+    <a href="/capture-corner.html" class="back-link">&larr; Capture Corner</a>
+
+    <div style="margin-top:20px; margin-bottom:8px;">
+      <div class="section-label">MMT Premium &middot; Capture Corner &middot; May 22, 2026</div>
+    </div>
+    <h1 style="font-size:clamp(26px,3.2vw,38px);line-height:1.1;letter-spacing:-0.03em;margin-bottom:10px;">The Federal Radiology AI Procurement Vehicle Has Not Been Built. Five Plays to Influence the One That Will Be.</h1>
+    <p style="font-size:15px;color:var(--mmt-text-secondary);margin-bottom:20px;"><em>Companion to "The Workflow Was Designed to Deliver." Five plays. Each one has a vehicle, a window, and a decision point a federal capture lead can act on before the next industry day.</em></p>
+
+    <div class="pills">
+      <span class="pill pill-gold">Capture Corner</span>
+      <span class="pill">Volpara/Patient Hub</span>
+      <span class="pill">NTP NextGen PACS</span>
+      <span class="pill">HCDS EHR Follow-On</span>
+      <span class="pill">FDA PCCP</span>
+      <span class="pill">DHA</span>
+      <span class="pill">VA</span>
+      <span class="pill">Credentialed Service Tier</span>
+    </div>
+
+    <div data-gate="free" style="display:block;">
+      <div class="gate-notice">
+        <h3>&#9733; Premium Capture Corner</h3>
+        <p>The five plays, the Volpara/Patient Hub contract decoded, the NTP cancellation paper trail mapped to the next acquisition window, the HCDS imaging-interface scope watchlist with the August 30, 2026 forcing function, drop-in PCCP SOW language, and the credentialed-third-party architecture rendered as procurement requirements for DME, hospice, home health, and telehealth. Free members see the framing; premium gets the full briefing.</p>
+        <a class="gate-cta" href="/pricing">See premium plans</a>
+      </div>
+    </div>
+
+    <div data-access="premium" data-gate="premium" class="brief-body">
+
+<p><em>Public-record sourced. Independent analysis. Not a recommendation, not vendor advocacy, not capture material. Built for federal health BD, capture, and proposal leaders who need the architectural argument translated into procurement specifics.</em></p>
+
+<hr>
+
+<p>The Friday issue made an architectural argument. Capture Corner is where the architectural argument becomes a procurement vehicle, a NAICS code, a solicitation number, and a deadline.</p>
+
+<p>Five plays this week. Each one has a vehicle, a window, and a decision point a federal capture lead can act on before the next industry day. The credentialed-third-party architecture the Friday issue described is not a product category federal acquisition has built a vehicle for yet. That is the opportunity and the constraint at the same time. The plays below work the constraint.</p>
+
+<hr>
+
+<h2>Play 1: Read the Volpara/Patient Hub structure as the federal radiology AI template</h2>
+
+<p>The $7.3M five-year Volpara Health award to DHA, signed November 4, 2024, is the cleanest reference transaction in the federal radiology AI record.</p>
+
+<table>
+<thead><tr><th>Field</th><th>Detail</th></tr></thead>
+<tbody>
+<tr><td>Awarding agency</td><td>Defense Health Agency, on behalf of the Military Health System</td></tr>
+<tr><td>Vendor</td><td>Volpara Health (now a Lunit company)</td></tr>
+<tr><td>Scope</td><td>Volpara Patient Hub: mammography reporting, risk assessment, patient tracking software deployment across MTFs</td></tr>
+<tr><td>Predecessor incumbency</td><td>Volpara mammography software in DoD service since 1990</td></tr>
+<tr><td>Beneficiary population</td><td>9.6 million MHS-eligible</td></tr>
+<tr><td>Pricing structure</td><td>Software-as-a-service licensing with implementation and support</td></tr>
+<tr><td>Reference architecture</td><td>FDA-cleared imaging software, integrated into MTF workflow, structured reporting output, multi-site enterprise deployment</td></tr>
+</tbody>
+</table>
+
+<p>What DHA demonstrated in writing with this contract: it will buy FDA-cleared imaging AI software directly outside MQS2-NG, will award modest-dollar contracts that fit under existing DHA program-of-record line items, will continue decades-deep imaging vendor relationships rather than recompete every cycle, and will accept enterprise-grade SaaS as the deployment model.</p>
+
+<p><strong>Capture move.</strong> If you are pursuing a federal radiology AI play, the Volpara contract is the structural template. Map your offering against the four characteristics above. Where you match, lean in. Where you do not, identify the closest analog vehicle.</p>
+
+<p><strong>Decision point.</strong> Is your offering FDA-cleared software with multi-year MTF-installable enterprise deployment characteristics? If yes, the Volpara structure is the proof your capture plan should cite. If no, your vehicle question is different. See Play 2.</p>
+
+<hr>
+
+<h2>Play 2: Map the NTP NextGen PACS cancellation paper trail to the next acquisition window</h2>
+
+<p>The September 2023 NTP NextGen PACS award did not deploy to completion. Frontier Acquisitions prime. Mach7 VNA. Blackford AI platform. Nuance voice. Microsoft Azure cloud. Mach7's January 31, 2026 Q2 FY26 earnings call disclosed the removal of NTP from the Contracted Annual Recurring Revenue backlog. A A$2.9M quarter-over-quarter CAR decline driven primarily by that removal.</p>
+
+<p>The architectural reading. The platform layer collapsed publicly when Bayer announced its September 8, 2025 exit from the radiology AI platform business. The federal procurement vehicle was tied to a commercial architecture that did not include a credentialed-service tier underneath the platform. When the platform vendor pulled back, the architecture had no fallback.</p>
+
+<p><strong>The news as of March 19, 2026.</strong> VA TAC New Jersey posted Solicitation 36C10B26Q0213, a sole-source synopsis solicitation to Intelerad Medical Systems for an in-place upgrade of the existing 2013-era IntelePACS from version 4.9 to 5.7, hosted in VAEC. Response deadline was March 20, 2026. One day. Statutory authority: FAR 6.103-1, Only One Responsible Source. Contracting Officer: Kathryn Pantages, the same CO who managed the original 2022 RFI. The cancelled September 2023 Frontier-Mach7-Blackford architecture has been functionally abandoned. The 2013 Intelerad system has been extended through at least 2027. Second consecutive single-source determination on NTP PACS modernization, same CO, same legacy vendor. The pattern is documented.</p>
+
+<p>The original 2025 RFI is the context that frames the procurement intent the next competitive window will inherit:</p>
+
+<table>
+<thead><tr><th>Field</th><th>Detail</th></tr></thead>
+<tbody>
+<tr><td>Solicitation</td><td>National Teleradiology Program NextGen PACS Components</td></tr>
+<tr><td>Solicitation number</td><td>36C10B25Q0189</td></tr>
+<tr><td>Type</td><td>Sources Sought / RFI (Pre-solicitation)</td></tr>
+<tr><td>Contracting agency</td><td>Department of Veterans Affairs, VHA NTP</td></tr>
+<tr><td>Posted</td><td>February 2025</td></tr>
+<tr><td>RFI response deadline</td><td>March 7, 2025 (closed; not followed by competitive RFP)</td></tr>
+<tr><td>Contracting officers</td><td>Heera Polanco (Contract Specialist), Kathryn Pantages (Contracting Officer)</td></tr>
+<tr><td>Annual volume target</td><td>12-15 million HL7 messages, 2 million NTP-read studies, expandable to 9 million in Phase 2</td></tr>
+<tr><td>Architecture preference signaled</td><td>VA Azure GovCloud Virginia (AZ1, AZ2), private cloud within VA subscription, or FedRAMP High SaaS</td></tr>
+<tr><td>Uptime requirement</td><td>99.99%, penalties below 99.9%</td></tr>
+</tbody>
+</table>
+
+<p>Stated scope, verbatim from the RFI: workflow and assignment engine for subspecialty assignment, image routing and turnaround time optimization, real-time productivity tracking, integrated ad-hoc and assigned peer review, tech and image quality feedback, critical result notification and callback, pre-read QC, HL7 integration to VistA and Cerner, scalability to VISN-level deployment with separate worklists.</p>
+
+<p>The credentialed-third-party model the Friday issue described maps directly to the &quot;tech and image quality feedback&quot; and &quot;pre-read QC&quot; line items in the RFI scope. When the next competitive RFP drops, this is the language to use.</p>
+
+<p><strong>Revised capture move.</strong> There is no competitive NTP follow-on to position for in 2026. The capture move is to be ready when this in-place upgrade fails to deliver Phase 2 VISN expansion capability, which is the documented historical pattern. Build the credentialed-third-party architecture capability statement now so it is on the shelf when the next NTP procurement cycle opens. Forecast window: FY27 to FY28. Mach7 has signaled it will continue to compete despite the CAR backlog removal. Frontier Acquisitions remains a likely prime when the next competitive RFP drops. VNA-side players including Sectra, Hyland, and Visage are credible re-entrants.</p>
+
+<p><strong>Decision point.</strong> Are you positioned to respond as a prime, a VNA partner, or a credentialed-services subcontractor when the next competitive NTP RFP opens (forecast FY27-FY28)? If you are not yet on a teaming arrangement with a likely prime, the window to position is between now and the documented Phase 2 failure that triggers the next cycle.</p>
+
+<hr>
+
+<h2>Play 3: HCDS EHR Follow-On imaging-interface scope watchlist</h2>
+
+<p>The Health Care Delivery Solutions Electronic Health Record Follow-On is the recompete for MHS GENESIS, the DoD's deployed Cerner-based EHR.</p>
+
+<table>
+<thead><tr><th>Field</th><th>Detail</th></tr></thead>
+<tbody>
+<tr><td>Solicitation number</td><td>HT003826X0000</td></tr>
+<tr><td>Agency</td><td>Defense Health Agency, through PEO DHMS</td></tr>
+<tr><td>Notice type</td><td>Special Notice / RFI (not yet a solicitation)</td></tr>
+<tr><td>Industry days to date</td><td>November 5, 2025 (Arlington, VA); March 31, 2026 (Arlington, VA), both at Van Metre Hall, Mason Square</td></tr>
+<tr><td>Industry feedback deadline</td><td>January 9, 2026 (passed)</td></tr>
+<tr><td>Response deadline (current Special Notice)</td><td>August 30, 2026</td></tr>
+<tr><td>Award target</td><td>Q4 FY26 (by July 2026 per draft strategy, with bridge period contemplated)</td></tr>
+<tr><td>Set-aside</td><td>Full and Open</td></tr>
+<tr><td>NAICS</td><td>541512 (Computer Systems Design Services)</td></tr>
+<tr><td>Beneficiary population</td><td>9.6 million MHS-eligible, 194,000 system users</td></tr>
+<tr><td>Government POCs</td><td>Sonya Edom, Gabriela Hurte</td></tr>
+<tr><td>Feedback platform</td><td>Bidscale (https://select.bidscale.app)</td></tr>
+<tr><td>Acquisition vehicle</td><td>Multiple-award IDIQ for deployment services, 1-year base + 4 one-year options</td></tr>
+</tbody>
+</table>
+
+<p>Where radiology AI fits in HCDS. The scope is the EHR backbone. Imaging integration is an interface layer, not the core scope. Two interface points to watch:</p>
+
+<ol>
+<li>The DICOM/HL7 integration layer between MHS GENESIS and downstream PACS and radiology systems. This is where credentialed-third-party orchestration architectures plug in.</li>
+<li>The human-centered design and end-user support line items. A credentialed-worker tier producing pre-read work product affects every radiologist end-user of MHS GENESIS.</li>
+</ol>
+
+<p>HCDS is the largest federal health IT recompete in flight. The radiology AI play is not to bid HCDS prime. It is to be the named imaging subcontractor in a winning prime's response. The primes that win HCDS will carry a radiology AI architecture preference forward into MHS GENESIS for the next decade.</p>
+
+<p><strong>Capture move.</strong> Engage the likely HCDS primes about your imaging-orchestration capability before August 30. Leidos as incumbent. Accenture Federal, Booz Allen, GDIT, and Northrop Grumman as credible competitors. If you are not in conversation with any of them about your architecture, you are not in the recompete.</p>
+
+<p><strong>Decision point.</strong> Which HCDS prime is your imaging architecture aligned with? If the answer is &quot;we have not engaged any of them,&quot; the August 30, 2026 response deadline is your forcing function.</p>
+
+<hr>
+
+<h2>Play 4: FDA PCCP guidance translated into procurement requirements language</h2>
+
+<p>On December 4, 2024, FDA finalized its guidance on Predetermined Change Control Plans for AI-enabled device software functions. PCCPs are the regulatory scaffolding that lets a manufacturer pre-specify the modifications it will make to a cleared AI model in market, so that subsequent updates do not require a new 510(k) submission.</p>
+
+<p>Why it matters for federal procurement. Without PCCP language in a contract, every AI model update can become a contract modification, an ATO re-evaluation, or a clinical workflow disruption. With PCCP language, the federal customer accepts in advance the manufacturer's pre-approved update pathway.</p>
+
+<p>Drop-in SOW language, adapt to specific solicitation:</p>
+
+<blockquote>
+<p>Contractor shall maintain an FDA-cleared Predetermined Change Control Plan (PCCP) for all AI-enabled medical device software functions deployed under this contract, in accordance with FDA guidance dated December 4, 2024 (&quot;Marketing Submission Recommendations for a Predetermined Change Control Plan for AI-Enabled Device Software Functions&quot;). Contractor shall provide the Government with: (a) the PCCP documentation submitted to and accepted by FDA; (b) advance notice of all planned modifications within the PCCP scope, not less than thirty (30) calendar days prior to deployment; (c) post-deployment performance monitoring data sufficient to verify continued conformance to the PCCP; and (d) immediate notification of any modification falling outside the PCCP scope, with deployment paused pending Government and FDA review. Modifications outside the PCCP scope shall be treated as a change in product configuration under the terms of this contract.</p>
+</blockquote>
+
+<p>A solicitation that includes PCCP language favors vendors who already operate PCCP-managed products. Of the 28 PCCP-cleared devices in 2024, 15 were radiology. The radiology vendors in your AI platform are operating at the regulatory maturity level the federal customer wants. The DME, hospice, home health, and telemedicine workflow vendors are not.</p>
+
+<p><strong>Capture move.</strong> Push for PCCP language in any RFI response, white paper, or capability statement you submit on radiology AI work. It moves the architectural conversation off &quot;is your AI safe&quot; and onto &quot;is your AI safe to update,&quot; which is the federal customer's actual concern. The HCDS feedback window through August 30, 2026 and the forecast NTP follow-on solicitation in FY27-FY28 are the two near-term venues where PCCP language inserted into capability statements can shape final SOW language before competitive RFPs lock in.</p>
+
+<p><strong>Decision point.</strong> Does your offering have PCCP-cleared algorithms in its platform? If yes, lead with that. If your platform includes algorithms without PCCPs, identify which ones and either move them to PCCP-managed updates or carve them out of federal-facing task orders.</p>
+
+<hr>
+
+<h2>Play 5: Credentialed-third-party architecture as procurement requirements for DME, hospice, home health, and telehealth</h2>
+
+<p>The Friday issue argued that the radiology workflow architecture, a credentialed third party producing structured evidence before the billing party generates a claim, is the architectural primitive missing from DME, hospice, home health, and telehealth fraud-exposed workflows.</p>
+
+<p>The legislative and procurement opening is documented:</p>
+<ul>
+<li>CMS imposed a six-month nationwide moratorium on new hospice and home health enrollment on May 13, 2026</li>
+<li>CMS imposed a comparable DME moratorium earlier in 2026</li>
+<li>The DOJ Brett Blackman conviction on May 14, 2026 documented the workflow gap in template-driven telemedicine fraud</li>
+<li>All three actions are responses to architectural gaps, not vendor-specific failures</li>
+</ul>
+
+<p>Drop-in procurement requirements language, adapt to modality:</p>
+
+<blockquote>
+<p>Contractor shall implement, for all encounters generating claims under this contract, a credentialed-third-party evidence tier meeting the following specifications:</p>
+<p><strong>1. Independent credential.</strong> The pre-encounter evidence shall be produced by a clinical or clinical-support worker holding a credential independent of the billing party, recognized by [applicable accreditation body], and verifiable in real time against the credential authority.</p>
+<p><strong>2. Structured work product.</strong> The pre-encounter work product shall include, at minimum: credential identifier of the producing worker; timestamp to the second; structured indication or finding; reference to the source clinical data (e.g., scan, observation, intake document); audit-trail logging of all access, modification, and export events on the work product.</p>
+<p><strong>3. Workflow dependency.</strong> The billing party shall not be able to generate a claim under this contract without the upstream credentialed work product being present in the record. The system shall enforce this dependency at the workflow layer, not at the audit layer.</p>
+<p><strong>4. Audit trail.</strong> The system shall maintain an audit trail meeting IHE ATNA (Audit Trail and Node Authentication) profile equivalence, with logging of all reads, modifications, exports, and credential events.</p>
+<p><strong>5. Penalty for falsification.</strong> Falsification of pre-encounter evidence shall be treated as a False Claims Act violation per occurrence, with contractor cooperation in DOJ enforcement actions required as a condition of continued performance.</p>
+</blockquote>
+
+<p>Every modality CMS is currently restricting through enrollment moratoria has the same architectural gap. The radiology workflow closes that gap by construction. Translating the radiology pattern into procurement requirements is the lever that moves the rest of healthcare without requiring new legislation. The contract language carries the architecture.</p>
+
+<p><strong>Capture move.</strong> If you are pursuing federal work in any of the moratorium-affected modalities, including telehealth-adjacent contracts at HRSA, CMS Innovation Center, IHS, VA Community Care, or DHA TRICARE managed care, propose the credentialed-third-party architecture as a differentiator in your capability statement. The federal customer is now under documented pressure to procure architectures that close the fraud gap. The contract language above is a starting draft.</p>
+
+<p><strong>Decision point.</strong> Does your offering include a credentialed-third-party evidence tier that meets the five-point specification above? If yes, you have a federal capture differentiator that did not exist twelve months ago. If no, what is the closest analog in your stack, and how quickly can you build or partner to it?</p>
+
+<hr>
+
+<h2>Named DHA and VA decision points where vendor-neutral orchestration architectures fit</h2>
+
+<p><strong>DHA decision points, current FY26:</strong></p>
+
+<ol>
+<li><strong>HCDS EHR Follow-On (HT003826X0000).</strong> Response deadline August 30, 2026. Imaging-interface scope is the entry point.</li>
+<li><strong>Future Volpara-pattern task orders.</strong> Direct DHA awards for FDA-cleared imaging AI continue to be issued through DHA contracting offices. Monitor SAM.gov under NAICS 541512 and PSC R425.</li>
+<li><strong>DHA Medical Q-Coded Support (MQS2-NG), $43B ceiling.</strong> Explicitly excludes Information Technology from scope. Period of performance: June 1, 2024 through May 31, 2034. Radiology AI orchestration is not a fit here. Do not pursue MQS2-NG as the vehicle for this architecture.</li>
+<li><strong>PEO DHMS imaging-interface task orders.</strong> The program office for MHS GENESIS issues smaller imaging-interface task orders outside HCDS. Monitor under PEO DHMS posting channels.</li>
+</ol>
+
+<p><strong>VA decision points, current FY26:</strong></p>
+
+<ol>
+<li><strong>NTP NextGen PACS follow-on.</strong> The original RFI (36C10B25Q0189) closed March 2025. The follow-on action posted March 19, 2026 (Synopsis Solicitation 36C10B26Q0213) is a sole-source in-place upgrade to Intelerad under FAR 6.103-1, not a competitive RFP. The next competitive window for NTP PACS modernization is forecast for FY27 to FY28. Contracting office: VA TAC New Jersey, CO Kathryn Pantages. Stay subscribed to SAM.gov alerts under NAICS 541511, 541512 and PSC DA10 for VA-issued teleradiology procurements.</li>
+<li><strong>VA Strategic Acquisition Center single-source actions.</strong> The May 1 NTP single-source certification is now documented as having failed to deliver. SAC is likely to face increased scrutiny on single-source determinations through FY27. Capture leads should challenge single-source justifications through the GAO bid protest process where qualified competing architectures exist.</li>
+<li><strong>VA Community Care contracts.</strong> Imaging-related Community Care task orders flow through TPA primes (Optum, TriWest). The credentialed-third-party architecture is a capability statement differentiator in these subcontract conversations.</li>
+</ol>
+
+<p><strong>Cross-agency:</strong></p>
+
+<ol>
+<li>MQS2-NG is open to VA, Federal Bureau of Prisons, IHS, and HHS as ordering agencies for medical staffing. Not for IT or AI orchestration.</li>
+<li>The federal radiology AI procurement vehicle that buys the architecture this issue describes does not yet exist as a named program of record. The capture opportunity is to influence the language of the vehicles being drafted now, including HCDS and the NTP follow-on, so that the architectural primitive is procurable when the next solicitation drops.</li>
+</ol>
+
+<hr>
+
+<h2>Closing</h2>
+
+<p>The architecture is real. The procurement vehicle is still drafting. The five plays above are the levers between the architecture and the vehicle.</p>
+
+<p>Pull whichever one matches your capture lane this quarter. The window between now and the August 30 HCDS deadline is the window where federal radiology AI procurement language gets set for the next decade.</p>
+
+<p>The capture lead who walks into an HCDS subcontractor conversation with credentialed-third-party architecture language in their capability statement is positioned for the next decade. The capture lead who walks in without it is not.</p>
+
+<p>Mary</p>
+
+<p>Mission Meets Tech Premium</p>
+
+<hr>
+
+<h2>Editorial discipline note</h2>
+
+<p>Capture Corner is built to be useful, not provocative. It does not name preferred vendors. It does not recommend awards. It does not characterize incumbent performance beyond what public records support. It does not reveal nonpublic information. It does not advocate for any specific offeror's win. What it does is read the public record carefully, project realistic competitive scenarios from public data, and surface the practitioner-level decisions that BD and capture leaders actually have to make. Use it accordingly.</p>
+
+<hr>
+
+<h2>Sources</h2>
+
+<p>[CC1] SAM.gov, HCDS Electronic Health Record Follow-On (MHS GENESIS), Solicitation HT003826X0000, Special Notice, response deadline August 30, 2026.</p>
+
+<p>[CC2] HigherGov, &quot;National Teleradiology Program NextGen PACS Components,&quot; RFI 36C10B25Q0189, posted February 2025.</p>
+
+<p>[CC3] Volpara Health, &quot;Volpara Secures U.S. Defense Health Agency Contract to Modernize Mammography Services,&quot; November 4, 2024.</p>
+
+<p>[CC4] PR Newswire, &quot;Mach7 Technologies Selected as a Solution Provider for VHA National Teleradiology Program NextGen PACS,&quot; September 6, 2023.</p>
+
+<p>[CC5] Defense World, &quot;Mach7 Technologies Q2 FY26 Earnings Call,&quot; January 31, 2026.</p>
+
+<p>[CC6] AuntMinnie, &quot;Bayer Pivots Away from AI Platform Business,&quot; September 8, 2025.</p>
+
+<p>[CC7] FDA, &quot;Marketing Submission Recommendations for a Predetermined Change Control Plan for AI-Enabled Device Software Functions,&quot; final guidance, December 4, 2024.</p>
+
+<p>[CC8] DHA, &quot;Medical Q-Coded Support and Services - NextGen (MQS2-NG),&quot; IDIQ ceiling $43B, awarded May 2024, scope explicitly excludes Information Technology.</p>
+
+<p>[CC9] CMS, &quot;CMS Announces Aggressive Nationwide Crackdown on Fraud with Six-Month Hospice and Home Health Agency Enrollment Moratoria,&quot; May 13, 2026.</p>
+
+<p>[CC10] U.S. Department of Justice, United States v. Brett Blackman et al., Southern District of Florida.</p>
+
+<p>[CC11] SAM.gov, National Teleradiology Program PACS Upgrade, Synopsis Solicitation 36C10B26Q0213, posted March 19, 2026; sole-source to Intelerad Medical Systems under FAR 6.103-1.</p>
+
+<p>[CC12] iQuasar Solutions, &quot;MQS2-NG IDIQ Solicitation Analysis,&quot; September 11, 2023 (citing solicitation HT001523R0003/R0004 scope exclusions).</p>
+
+<p>[CC13] DHA Public Affairs, &quot;Military health care staffing contracts provides effective solutions,&quot; November 19, 2025 (MQS2-NG cross-agency availability).</p>
+
+<hr>
+
+<p><em>Capture Corner is an independent intelligence product. It is not affiliated with VA, DHA, DoD, or with any contractor on the procurements discussed. Premium subscription includes access to the full Capture Intelligence archive.</em></p>
+
+
+<div class="deep-dive-card">
+  <div class="section-label" style="color:var(--ci-gold);margin-bottom:8px;">Custom Deep Dive &middot; Premium Add-On</div>
+  <h3>Want a custom deep-dive on any of the five plays?</h3>
+  <p>This Capture Corner names the vehicles, the windows, and the decision points. Where it stops short &mdash; the specific HCDS prime your imaging architecture should align with, the NTP teaming map for the FY27-FY28 competitive window, the named PEO DHMS task orders worth tracking, your firm's PCCP gap analysis against the 15 cleared radiology devices, the credentialed-third-party reference architecture diagram you walk into a capability briefing with &mdash; the next layer of intelligence is <strong>custom by request</strong>.</p>
+  <div class="deep-dive-price"><span class="amount">$50</span><span class="unit">one-time &middot; 5&ndash;7 business day turnaround</span></div>
+  <p>I will pull the additional public-record sources, interview the visible signal, and write a 4&ndash;6 page custom intelligence memo on the area you select. You name the question; I do the BD-grade analysis.</p>
+  <p style="margin-bottom:18px;"><a class="deep-dive-cta" href="https://buy.stripe.com/6oUdRb2NEaQI3uM6KL4c803">Buy a Custom Deep Dive — $50 &rarr;</a></p>
+  <p class="deep-dive-examples">Examples: <em>"Radiology AI Deep Dive &mdash; HCDS prime alignment for our imaging stack" &middot; "Radiology AI Deep Dive &mdash; NTP FY27-FY28 teaming map" &middot; "Radiology AI Deep Dive &mdash; PCCP gap analysis against our algorithm portfolio" &middot; "Radiology AI Deep Dive &mdash; credentialed-third-party reference architecture for [our modality]"</em></p>
+  <p style="font-size:12px;color:var(--mmt-text-secondary);margin-bottom:0;">Reply within one business day with scope confirmation, a Stripe invoice for $50, and a delivery commitment.</p>
+</div>
+
+    </div>
+  </main>
+
+  <footer class="footer"></footer>
+</body>
+</html>

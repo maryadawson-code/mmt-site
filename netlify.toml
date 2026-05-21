@@ -23,6 +23,7 @@
     "data/may-15-release/**",
     "data/may-17-release/**",
     "data/may-19-release/**",
+    "data/may-22-release/**",
     "migrations/010_subscriber_context_alignment.sql",
     "migrations/011_mp_users_columns_documented.sql",
     "static/lead-magnets/**",
@@ -242,6 +243,17 @@
 # 2026-05-19 UTC. Kill switch: MAY19_FRAUD_WORKFLOW_DISABLED=true.
 # Retire by 2026-06-02 (delete function + data/may-19-release/** entry).
 [functions."may19-fraud-workflow-send"]
+  schedule = "*/15 * * * *"
+
+# May 22, 2026 Capture Corner: "The Federal Radiology AI Procurement
+# Vehicle Has Not Been Built. Five Plays to Influence the One That Will
+# Be." — premium companion to the public Friday article "The Workflow
+# Was Designed to Deliver." Date-guarded (RUN_DATE_UTC=2026-05-22),
+# idempotency-keyed in ops_events as may22_radiology_procurement_sent.
+# Schedule fires every 15 min so it ships within 15 min of deploy on/after
+# 2026-05-22 UTC. Kill switch: MAY22_RADIOLOGY_PROCUREMENT_DISABLED=true.
+# Retire by 2026-06-05 (delete function + data/may-22-release/** entry).
+[functions."may22-radiology-procurement-send"]
   schedule = "*/15 * * * *"
 
 # May 17, 2026 SPECIAL ISSUE Capture Corner: "DHA Budget & Org Realignment"
@@ -669,7 +681,7 @@
 # Target is enforced by scripts/capture-corner-inventory.js.
 [[redirects]]
   from = "/capture-corner/latest"
-  to = "/premium/briefs/capture-corner-2026-05-19.html"
+  to = "/premium/briefs/capture-corner-2026-05-22.html"
   status = 302
 
 # Premium-brief PDF downloads — clean URLs under /premium-briefs/.
