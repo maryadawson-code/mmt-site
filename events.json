@@ -36,6 +36,15 @@
     "description": "Senior executives from industry and government discuss critical policy and acquisition priorities in civilian and military health, with speakers from HHS, VA, and DoD."
   },
   {
+    "name": "VETS26 Conference",
+    "date": "2026-06-01",
+    "location": "Hyatt Regency New Orleans, 601 Loyola Ave., New Orleans, LA 70113",
+    "url": "https://nvsbc.org/events/vets26-conference",
+    "registrationUrl": "https://nvsbc.org/events/vets26-conference",
+    "type": "conference",
+    "description": "National Veteran Small Business Coalition annual conference. Federal procurement matchmaking for SDVOSB, VOSB, and veteran-led firms. Featured on the HHS OSDBU industry calendar."
+  },
+  {
     "name": "AFCEA TechNet Cyber",
     "date": "2026-06-02",
     "endDate": "2026-06-04",
@@ -44,6 +53,33 @@
     "registrationUrl": "https://events.afcea.org/afceacyber26/Public/enter.aspx",
     "type": "conference",
     "description": "Cybersecurity conference with federal health IT security tracks covering HIPAA, zero trust, and health data protection."
+  },
+  {
+    "name": "NGA Mentor-Protege Program Workshop",
+    "date": "2026-06-10",
+    "location": "Residence Inn by Marriott Arlington Ballston, 650 North Quincy Street, Arlington, VA 22203",
+    "url": "https://www.eventbrite.com/e/nga-mentor-protege-program-workshop-arlington-va-tickets-1988421779068",
+    "registrationUrl": "https://www.eventbrite.com/e/nga-mentor-protege-program-workshop-arlington-va-tickets-1988421779068",
+    "type": "conference",
+    "description": "National Geospatial-Intelligence Agency Mentor-Protege Program workshop for small businesses pursuing federal teaming arrangements. Featured on the HHS OSDBU industry calendar."
+  },
+  {
+    "name": "Government Procurement Conference",
+    "date": "2026-06-11",
+    "location": "Walter E. Washington Convention Center Hall C, 801 Mount Vernon Place NW, Washington, DC 20001",
+    "url": "https://www.fbcinc.com/e/procurement",
+    "registrationUrl": "https://www.fbcinc.com/e/procurement",
+    "type": "conference",
+    "description": "Premier federal small business procurement event. Matchmaking with federal agency small business specialists, prime contractor outreach, and contracting officer panels. Featured on the HHS OSDBU industry calendar."
+  },
+  {
+    "name": "NCMA World Congress 2026",
+    "date": "2026-07-26",
+    "location": "Swan and Dolphin Hotel, 1200 Epcot Resorts Blvd., Lake Buena Vista, FL 32830",
+    "url": "https://events.ncmahq.org/event/WorldCongress2026/home",
+    "registrationUrl": "https://events.ncmahq.org/event/WorldCongress2026/home",
+    "type": "conference",
+    "description": "National Contract Management Association annual flagship event for federal contracting and acquisition professionals. Featured on the HHS OSDBU industry calendar."
   },
   {
     "name": "DHITS 2026 \u2014 Defense Health Information Technology Symposium",
