@@ -265,16 +265,22 @@ function renderPursuitCalendarHtml(rows, opts = {}) {
   const next90 = upcoming.filter(inWindow);
   const beyond = upcoming.filter((r) => !inWindow(r));
 
-  // Last refreshed banner.
+  // Last refreshed banner. The MMT-PC-01 spec requires the banner to
+  // surface the calendar date ("Last refreshed: May 21, 2026") not just
+  // an hours-ago counter, so subscribers can spot a stale seed at a
+  // glance. We keep the relative-age suffix because it's still the
+  // fastest read for "is this fresh right now."
   const lastRefreshedAt = opts.lastRefreshedAt || null;
-  let freshnessLine = "Refresh status unknown — confirm at /api/pursuit-calendar/health.";
+  let freshnessLine = "Last refreshed: unknown — refresh status not reported by build.";
   let freshnessClass = "pc-stale";
   if (lastRefreshedAt) {
-    const ageHours = Math.max(0, (Date.now() - new Date(lastRefreshedAt).getTime()) / 3600000);
+    const refreshedDate = new Date(lastRefreshedAt);
+    const dateLabel = refreshedDate.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+    const ageHours = Math.max(0, (Date.now() - refreshedDate.getTime()) / 3600000);
     const ageRound = Math.round(ageHours);
-    if (ageHours <= 24) { freshnessLine = `Last refreshed ${ageRound}h ago.`; freshnessClass = "pc-fresh"; }
-    else if (ageHours <= 48) { freshnessLine = `Last refreshed ${ageRound}h ago — refresh window passing.`; freshnessClass = "pc-stale"; }
-    else { freshnessLine = `Last refreshed ${ageRound}h ago — STALE.`; freshnessClass = "pc-very-stale"; }
+    if (ageHours <= 24) { freshnessLine = `Last refreshed: ${dateLabel} (${ageRound}h ago).`; freshnessClass = "pc-fresh"; }
+    else if (ageHours <= 48) { freshnessLine = `Last refreshed: ${dateLabel} (${ageRound}h ago) — refresh window passing.`; freshnessClass = "pc-stale"; }
+    else { freshnessLine = `Last refreshed: ${dateLabel} (${ageRound}h ago) — STALE.`; freshnessClass = "pc-very-stale"; }
   }
 
   const renderSection = (label, items, emptyMsg) => {

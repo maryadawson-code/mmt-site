@@ -140,6 +140,15 @@
 [functions."pursuit-calendar-sweep"]
   schedule = "0 6 * * *"
 
+# Pursuit Calendar — weekly seed refresh (MMT-PC-01). Mondays 10:00 UTC
+# (06:00 ET). Reads status='active' rows in the next-90-day window from
+# pursuit_calendar, writes them back into data/premium/pursuit-calendar-seed.json
+# via the GitHub Contents API on main, then triggers a Netlify build hook
+# so the static /premium/calendar surface picks up the new seed.
+# Required env: GITHUB_TOKEN (contents:write), NETLIFY_BUILD_HOOK_URL.
+[functions."pursuit-calendar-seed-refresh"]
+  schedule = "0 10 * * 1"
+
 # Capture Corner one-shot: April 21, 2026 at 9 AM EDT (= 13:00 UTC)
 # Cron fires annually on April 21; the function gates on SCHEDULED_DATE
 # so it only actually sends in the configured year. Ops_ledger dedup

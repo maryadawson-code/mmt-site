@@ -1,11 +1,12 @@
 import { describe, it, expect, beforeAll, vi } from "vitest";
 
-let render, relevance, refreshMod;
+let render, relevance, refreshMod, seedRefreshMod;
 
 beforeAll(async () => {
   render = await import("../netlify/functions/lib/pursuit-calendar-render.js");
   relevance = await import("../netlify/functions/lib/pursuit-relevance.js");
   refreshMod = await import("../netlify/functions/pursuit-calendar-refresh.js");
+  seedRefreshMod = await import("../netlify/functions/pursuit-calendar-seed-refresh.js");
 });
 
 describe("pursuit-relevance / scoreRelevance", () => {
@@ -109,5 +110,52 @@ describe("pursuit-calendar-refresh / parseFeeds", () => {
   it("returns [] for empty / undefined", () => {
     expect(refreshMod.parseFeeds("")).toEqual([]);
     expect(refreshMod.parseFeeds(undefined)).toEqual([]);
+  });
+});
+
+describe("pursuit-calendar-seed-refresh", () => {
+  it("builds a seed JSON shape matching the renderer + stamps today as last_curated_at", () => {
+    const rows = [
+      { title: "DHA RFI", event_date: "2026-06-01", agency: "DHA", vehicle: "TPHARM6", category: "rfi", source_url: "https://sam.gov/x", source_system: "sam.gov", notes: "n1" },
+      { title: "VA Final RFP", event_date: "2026-07-15", agency: "VA", vehicle: null, category: "final_rfp", source_url: null, source_system: "manual", notes: null },
+    ];
+    const seed = seedRefreshMod.buildSeedJson(rows);
+    const today = new Date().toISOString().slice(0, 10);
+    expect(seed._meta.last_curated_at).toBe(today);
+    expect(seed._meta.curator).toBe("automated");
+    expect(seed.events.length).toBe(2);
+    expect(seed.events[0]).toMatchObject({
+      title: "DHA RFI",
+      event_date: "2026-06-01",
+      agency: "DHA",
+      vehicle: "TPHARM6",
+      category: "rfi",
+      source_system: "sam.gov",
+    });
+    // The renderer accepts the seed row shape verbatim; round-trip
+    // through renderPursuitCalendarHtml to prove it doesn't throw.
+    const html = render.renderPursuitCalendarHtml(seed.events, { today: "2026-05-15", lastRefreshedAt: new Date(today + "T12:00:00Z").toISOString() });
+    expect(html).toContain("DHA RFI");
+    expect(html).toContain("VA Final RFP");
+    expect(html).toContain("Last refreshed");
+  });
+
+  it("toSeedRow preserves optional fields without losing source info", () => {
+    const row = seedRefreshMod.toSeedRow({
+      id: "abc",
+      title: "T",
+      event_date: "2026-06-01",
+      end_date: "2026-06-03",
+      agency: "DHA",
+      vehicle: "v",
+      category: "event",
+      source_url: "https://x",
+      source_system: "sam.gov",
+      notes: "n",
+    });
+    expect(row.title).toBe("T");
+    expect(row.end_date).toBe("2026-06-03");
+    expect(row.source_system).toBe("sam.gov");
+    expect(row.status_override).toBeNull();
   });
 });

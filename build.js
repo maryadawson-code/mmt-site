@@ -5043,8 +5043,15 @@ async function build() {
       }
     }
 
-    // Merge: Supabase rows beat seed rows on the same ref / title+date key.
-    const keyOf = (r) => (r.ref ? `ref:${String(r.ref).toLowerCase()}` : `td:${r.title}|${r.event_date}`);
+    // Merge: Supabase rows beat seed rows on the same (title, event_date,
+    // agency) — the same UNIQUE constraint the pursuit_calendar table
+    // enforces. Previous keyOf used `ref` first, which collapsed two
+    // legitimately separate milestones that share a solicitation number
+    // (e.g., a Final RFP target date and a Capability Statement deadline
+    // both keyed on HT003826X0000) into a single row. Aligning the
+    // dedupe key with the DB constraint fixes that without changing
+    // Supabase-wins-on-conflict semantics.
+    const keyOf = (r) => `tda:${String(r.title || '').toLowerCase()}|${r.event_date || ''}|${String(r.agency || '').toLowerCase()}`;
     const merged = new Map();
     for (const r of seedRows) merged.set(keyOf(r), r);
     for (const r of supabaseRows) merged.set(keyOf(r), r);
