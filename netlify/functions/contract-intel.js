@@ -7,6 +7,7 @@
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
+const { isRootDomainUrl } = require("./lib/url-validator");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -117,6 +118,22 @@ exports.handler = async (event) => {
     const authToken = event.queryStringParameters?.token;
     const isPremium = hasPremiumCookie || !!authToken;
 
+    // MMT-INTEL-02: sync-validate sources at read time too. The
+    // refresh-side validator does network HEADs which we won't repeat
+    // on every read; the read-side guard catches root-domain URLs
+    // that may have landed before the refresh-side gate was deployed.
+    const rawSources = Array.isArray(record.sources) ? record.sources : [];
+    const cleanSources = [];
+    let droppedCount = 0;
+    for (const s of rawSources) {
+      const u = typeof s === "string" ? s : (s && (s.url || s.link)) || "";
+      if (u && !isRootDomainUrl(u)) cleanSources.push(s);
+      else droppedCount++;
+    }
+    const sourcesWarning = (cleanSources.length === 0 && rawSources.length > 0)
+      ? "All sources failed validation — verify on SAM.gov directly"
+      : null;
+
     return {
       statusCode: 200,
       headers: {
@@ -128,7 +145,9 @@ exports.handler = async (event) => {
         intel: record.intel,
         black_hat: isPremium ? record.black_hat : null,
         black_hat_gated: !isPremium,
-        sources: record.sources,
+        sources: cleanSources,
+        sources_warning: sourcesWarning,
+        sources_dropped: droppedCount,
         last_updated: record.last_updated,
       }),
     };

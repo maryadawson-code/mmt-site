@@ -1,0 +1,136 @@
+// ============================================================
+// intel-quality-report.js — weekly intel pipeline health report.
+//
+// MMT-INTEL-02. Scheduled Friday 10:00 UTC (06:00 ET). Single email
+// to mary@missionmeetstech.com covering:
+//   - Stale contract_intel rows (>14 days since last_updated)
+//   - Bad source URLs in contract_intel (root-domain / failed regex)
+//   - Last successful Opportunity Radar scan
+//   - Last successful SB Vehicle Radar scan
+//   - ops_ledger failure counts in the last 7d
+//
+// Schedule in netlify.toml:
+//   [functions."intel-quality-report"]
+//     schedule = "0 10 * * 5"
+// ============================================================
+
+const { createClient } = require("@supabase/supabase-js");
+const { sendEmail } = require("./lib/send-email");
+const { isRootDomainUrl } = require("./lib/url-validator");
+const { logOpsEvent } = require("./lib/ops-ledger");
+
+const ADMIN_EMAIL = "mary@missionmeetstech.com";
+
+function esc(s) {
+  return String(s || "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+async function _stale(supabase) {
+  const fourteen = new Date(Date.now() - 14 * 24 * 3600 * 1000).toISOString();
+  const { data } = await supabase
+    .from("contract_intel")
+    .select("contract_name, last_updated")
+    .lt("last_updated", fourteen)
+    .order("last_updated");
+  return data || [];
+}
+
+async function _badUrls(supabase) {
+  const { data } = await supabase.from("contract_intel").select("contract_name, sources");
+  const out = [];
+  for (const r of (data || [])) {
+    if (!r.sources) continue;
+    const arr = Array.isArray(r.sources) ? r.sources : [];
+    const bad = arr.filter((s) => {
+      const u = typeof s === "string" ? s : (s && (s.url || s.link)) || "";
+      return u && isRootDomainUrl(u);
+    });
+    if (bad.length) out.push({ contract_name: r.contract_name, bad_count: bad.length });
+  }
+  return out;
+}
+
+async function _radarHealth(supabase, vehicleFilter) {
+  let query = supabase.from("opportunity_radar").select("created_at, scan_date", { count: "exact" });
+  if (vehicleFilter) query = query.not("contract_vehicle", "is", null);
+  const { data, count } = await query.order("created_at", { ascending: false }).limit(1);
+  const lastIso = (data || [])[0]?.created_at || (data || [])[0]?.scan_date || null;
+  const ageHours = lastIso ? Math.round((Date.now() - new Date(lastIso).getTime()) / 3600000) : Infinity;
+  return { last_scan: lastIso, age_hours: ageHours, total: count || 0 };
+}
+
+async function _ledger7d(supabase) {
+  const since = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString();
+  const { data } = await supabase
+    .from("ops_ledger")
+    .select("source_function, event_type, severity")
+    .in("severity", ["error", "critical"])
+    .gte("created_at", since)
+    .limit(500);
+  const tally = {};
+  for (const r of (data || [])) {
+    const key = `${r.source_function} / ${r.event_type}`;
+    tally[key] = (tally[key] || 0) + 1;
+  }
+  return tally;
+}
+
+exports.handler = async () => {
+  const SUPABASE_URL = process.env.SUPABASE_URL;
+  const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+    return { statusCode: 500, body: "Missing env vars" };
+  }
+  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+
+  let stale = [], badUrls = [], radar, vehicle, failures = {};
+  try { stale = await _stale(supabase); } catch (e) { console.warn("stale query failed:", e.message); }
+  try { badUrls = await _badUrls(supabase); } catch (e) { console.warn("badUrls query failed:", e.message); }
+  try { radar = await _radarHealth(supabase, null); } catch { radar = { last_scan: null, age_hours: Infinity, total: 0 }; }
+  try { vehicle = await _radarHealth(supabase, "contract_vehicle"); } catch { vehicle = { last_scan: null, age_hours: Infinity, total: 0 }; }
+  try { failures = await _ledger7d(supabase); } catch { failures = {}; }
+
+  const allGreen = stale.length === 0 && badUrls.length === 0
+    && radar.age_hours <= 48 && vehicle.age_hours <= 168
+    && Object.keys(failures).length === 0;
+  const subject = allGreen
+    ? "MMT intel quality — all green"
+    : `MMT intel quality — ${stale.length} stale, ${badUrls.length} bad URL, radar ${radar.age_hours}h, vehicle ${vehicle.age_hours}h`;
+
+  const html = `<!DOCTYPE html><html><body style="font-family:-apple-system,sans-serif;padding:24px;color:#0A192F;">
+    <h2 style="margin:0 0 8px;">Intel quality report &middot; ${new Date().toISOString().slice(0,10)}</h2>
+    <p style="color:#5C6B7A;font-size:13px;margin:0 0 16px;">Weekly Friday 06:00 ET. Covers contract_intel staleness, source URL validity, radar freshness, and ops_ledger failures.</p>
+    <h3 style="font-size:14px;margin:16px 0 6px;">Stale contract_intel rows (>14d)</h3>
+    ${stale.length === 0 ? "<p>None.</p>" : `<ul>${stale.map((r) => {
+      const ageDays = Math.floor((Date.now() - new Date(r.last_updated).getTime()) / (24*3600*1000));
+      return `<li>${esc(r.contract_name)} &mdash; ${ageDays}d</li>`;
+    }).join("")}</ul>`}
+    <h3 style="font-size:14px;margin:16px 0 6px;">Contracts with root-domain source URLs</h3>
+    ${badUrls.length === 0 ? "<p>None.</p>" : `<ul>${badUrls.map((r) => `<li>${esc(r.contract_name)} &mdash; ${r.bad_count} bad</li>`).join("")}</ul>`}
+    <h3 style="font-size:14px;margin:16px 0 6px;">Opportunity Radar</h3>
+    <p>last_scan: ${esc(radar.last_scan || "never")} &middot; age_hours: ${radar.age_hours} &middot; total_opps: ${radar.total}</p>
+    <h3 style="font-size:14px;margin:16px 0 6px;">SB Vehicle Radar</h3>
+    <p>last_scan: ${esc(vehicle.last_scan || "never")} &middot; age_hours: ${vehicle.age_hours} &middot; total_rows: ${vehicle.total}</p>
+    <h3 style="font-size:14px;margin:16px 0 6px;">ops_ledger failures (last 7d)</h3>
+    ${Object.keys(failures).length === 0 ? "<p>None.</p>" : `<ul>${Object.entries(failures).map(([k, v]) => `<li>${esc(k)} &mdash; ${v}</li>`).join("")}</ul>`}
+  </body></html>`;
+
+  try {
+    await sendEmail({ to: ADMIN_EMAIL, from: "intel@missionmeetstech.com", subject, html });
+  } catch (e) {
+    console.error("intel-quality-report send failed:", e.message);
+    return { statusCode: 500, body: e.message };
+  }
+
+  try {
+    await logOpsEvent(supabase, {
+      event_type: "INTEL_QUALITY_REPORT_SENT",
+      source_function: "intel-quality-report",
+      severity: allGreen ? "info" : "warn",
+      signature: "weekly_qa",
+      details: { stale: stale.length, bad_urls: badUrls.length, radar_age_h: radar.age_hours, vehicle_age_h: vehicle.age_hours, failure_keys: Object.keys(failures).length },
+    });
+  } catch { /* non-blocking */ }
+
+  return { statusCode: 200, body: JSON.stringify({ ok: true, stale: stale.length, bad_urls: badUrls.length, radar, vehicle, failures }) };
+};

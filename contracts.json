@@ -929,5 +929,26 @@
     },
     "slug": "cdc-dibbs-data-integration-building-blocks",
     "content_gap": false
+  },
+  {
+    "name": "VA HELM / SCMDSO (Healthcare Environment and Logistics Management)",
+    "agency": "Department of Veterans Affairs / OIT Product Delivery Services",
+    "vendor": "TBD — RFI closed 2026-05-11; RFP pending",
+    "value": "AI estimate $10M–$50M (60-month potential)",
+    "status": "upcoming",
+    "classification": "Solicitation",
+    "naics": "541512",
+    "psc": "DA01",
+    "description": "Single-contractor sustainment and modernization for VA Healthcare Environment and Logistics Management (HELM) product line. Covers 5 sub-product lines (Environmental and Healthcare Management, Healthcare Technology and Asset Management, Expendable Inventory Management, Prosthetics, Technical Services) and ~34 products across 174 sites. RFI 36C10B26Q0376 + Draft PWS released 2026-04-24, amended 2026-05-05, RFI closed 2026-05-11 12:00 ET. Hybrid FFP base + T&M optional + cost-reimbursable travel. 12-month base + 4 × 12-month options (60 months). Aligns to Zero Trust Architecture, iFAMS, and EHRM integration.",
+    "link": "https://sam.gov/opp/7f1dab9449984bc6aff2fe595831be62/view",
+    "small_business_eligible": false,
+    "source": "https://sam.gov/opp/7f1dab9449984bc6aff2fe595831be62/view",
+    "source_urls": [
+      "https://sam.gov/opp/7f1dab9449984bc6aff2fe595831be62/view",
+      "https://www.linkedin.com/pulse/reorg-lives-dies-loading-dock-mary-womack-dnfue",
+      "https://orangeslices.ai/va-issues-sources-sought-for-supply-chain-devsecops-and-integration-effort/"
+    ],
+    "last_verified": "2026-05-22",
+    "research_focus": "Check SAM.gov 36C10B26Q0376 for RFP release. Track CO Michelle Prinston communications. Monitor Cognosante MVH, Booz Allen, and SDVOSB positioning. Check for iFAMS/EHRM integration scope changes in PWS revisions."
   }
 ]

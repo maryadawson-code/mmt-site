@@ -23,6 +23,11 @@ const { ACTIVE_VEHICLES, CANCELLED_VEHICLES } = require("./lib/contract-facts");
 const { checkKillSwitch } = require("./lib/kill-switch");
 const { trackAnthropic, trackOllama } = require("./lib/cost-tracker");
 const { callModel, isLocalProvider } = require("./lib/inference");
+const { logOpsEvent } = require("./lib/ops-ledger");
+
+// MMT-INTEL-02 (2026-05-22): wrap USASpending fetches in a per-call
+// timeout so a slow upstream can't hang the whole background invoke.
+const USASPENDING_TIMEOUT_MS = 60000;
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -44,6 +49,9 @@ const AGENCIES = [
 // ============================================================
 
 async function fetchAwards(filters) {
+  // MMT-INTEL-02: explicit 60s upstream timeout. Previously a slow
+  // USASpending response could hang the whole 5-fetch loop until
+  // Netlify timed out the entire invocation.
   const response = await fetchWithTimeout("https://api.usaspending.gov/api/v2/search/spending_by_award/", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -61,7 +69,7 @@ async function fetchAwards(filters) {
       sort: "Start Date",
       order: "desc",
     }),
-  });
+  }, USASPENDING_TIMEOUT_MS);
 
   if (!response.ok) {
     console.error(`USASpending error ${response.status}`);
@@ -260,17 +268,7 @@ async function classifyWithClaude(awards, model, _supabase, _modelConfig) {
 // MAIN HANDLER
 // ============================================================
 
-exports.handler = async (event) => {
-  const killCheck = checkKillSwitch("sb-vehicle-radar-background");
-  if (killCheck.blocked) return killCheck.response;
-
-  console.log("SB vehicle radar scan started:", new Date().toISOString());
-
-  if (!ANTHROPIC_API_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
-    console.error("Missing required env vars");
-    return { statusCode: 500, body: "Missing env vars" };
-  }
-
+async function _runSbVehicleScan(event) {
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
   const now = new Date();
   const ninetyDaysAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
@@ -551,6 +549,18 @@ exports.handler = async (event) => {
 
   console.log(`SB vehicle radar complete: Phase 1=${upsertCount}, Phase 2=${phase2Count}, errors=${errorCount}`);
 
+  try {
+    await logOpsEvent(supabase, {
+      event_type: (upsertCount + phase2Count) > 0 ? "SB_VEHICLE_SCAN_OK" : "SB_VEHICLE_SCAN_EMPTY",
+      source_function: "sb-vehicle-radar-background",
+      severity: (upsertCount + phase2Count) === 0 && errorCount > 0 ? "error" : ((upsertCount + phase2Count) === 0 ? "warn" : "info"),
+      signature: "sb_vehicle_scan_complete",
+      details: { fetched: uniqueResults.length, phase1: upsertCount, phase2: phase2Count, errors: errorCount },
+    });
+  } catch (logErr) {
+    console.error("ops_ledger heartbeat failed:", logErr.message);
+  }
+
   return {
     statusCode: 200,
     body: JSON.stringify({
@@ -561,4 +571,39 @@ exports.handler = async (event) => {
       errors: errorCount,
     }),
   };
+}
+
+exports.handler = async (event) => {
+  const killCheck = checkKillSwitch("sb-vehicle-radar-background");
+  if (killCheck.blocked) return killCheck.response;
+
+  console.log("SB vehicle radar scan started:", new Date().toISOString());
+
+  if (!ANTHROPIC_API_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+    console.error("Missing required env vars");
+    return { statusCode: 500, body: "Missing env vars" };
+  }
+
+  // MMT-INTEL-02: wrap the scan so any uncaught error lands in ops_ledger
+  // as sb_vehicle_scan_failed. Without this the page shows "temporarily
+  // unavailable" indefinitely and Mary gets no signal.
+  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+  try {
+    return await _runSbVehicleScan(event);
+  } catch (err) {
+    const errMsg = (err && err.message ? err.message : String(err)).slice(0, 1000);
+    const errStack = (err && err.stack ? err.stack : "").slice(0, 4000);
+    console.error("sb-vehicle-radar-background FAILED:", errMsg);
+    console.error(errStack);
+    try {
+      await logOpsEvent(supabase, {
+        event_type: "SB_VEHICLE_SCAN_FAILED",
+        source_function: "sb-vehicle-radar-background",
+        severity: "error",
+        signature: "sb_vehicle_scan_failed",
+        details: { error_message: errMsg, error_stack: errStack, started_at: new Date().toISOString() },
+      });
+    } catch (_logErr) { /* never mask the real failure */ }
+    return { statusCode: 500, body: JSON.stringify({ error: "sb_vehicle_scan_failed", message: errMsg }) };
+  }
 };

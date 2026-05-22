@@ -25,6 +25,49 @@ const { Sentry } = require("./sentry");
 
 const STACK_TRUNCATE_BYTES = 4 * 1024;
 
+// MMT-INTEL-02: consecutive-failure alert. On the SECOND consecutive
+// run that fails for the same source_function, fire an email to
+// mary@missionmeetstech.com. Single failure could be a transient
+// upstream; two in a row is a real problem.
+const ADMIN_ALERT_EMAIL = "mary@missionmeetstech.com";
+const ADMIN_ALERT_FROM = "intel@missionmeetstech.com";
+
+async function _lastRunWasFailure(supabase, fnName) {
+  if (!supabase) return false;
+  const failEvent = `${fnName.toUpperCase().replace(/[^A-Z0-9_]/g, "_")}_RUN_FAILED`;
+  const okEvent = `${fnName.toUpperCase().replace(/[^A-Z0-9_]/g, "_")}_RUN_OK`;
+  try {
+    const { data } = await supabase
+      .from("ops_ledger")
+      .select("event_type, created_at")
+      .in("event_type", [failEvent, okEvent])
+      .order("created_at", { ascending: false })
+      .limit(1);
+    return !!(data && data[0] && data[0].event_type === failEvent);
+  } catch {
+    return false;
+  }
+}
+
+async function _fireConsecutiveFailureAlert(supabase, fnName, errMsg) {
+  // Lazy-require to avoid pulling Resend deps into modules that don't need them.
+  let sendEmail;
+  try { sendEmail = require("./send-email").sendEmail; } catch { return; }
+  if (!sendEmail) return;
+  try {
+    const subject = `[MMT alert] ${fnName} failed 2x in a row`;
+    const html = `<!DOCTYPE html><html><body style="font-family:-apple-system,sans-serif;padding:24px;color:#0A192F;">
+      <h2 style="margin:0 0 8px;">Scheduled function failing repeatedly</h2>
+      <p><strong>Function:</strong> ${fnName}</p>
+      <p><strong>Latest error:</strong> ${String(errMsg || "").slice(0, 800)}</p>
+      <p>This is the 2nd consecutive failure. Check ops_ledger and Netlify function logs.</p>
+    </body></html>`;
+    await sendEmail({ to: ADMIN_ALERT_EMAIL, from: ADMIN_ALERT_FROM, subject, html });
+  } catch (e) {
+    console.error("[scheduled-fn-wrapper] consecutive-failure alert send failed:", e.message);
+  }
+}
+
 function _truncate(s, bytes = STACK_TRUNCATE_BYTES) {
   if (!s) return s;
   const str = String(s);
@@ -114,6 +157,14 @@ function withOpsLogging(fnName, handler, opts = {}) {
       const errName = err && err.name ? err.name : "Error";
       const errMessage = err && err.message ? String(err.message) : String(err);
       const errStack = err && err.stack ? String(err.stack) : null;
+
+      // MMT-INTEL-02: check ops_ledger for the previous run's outcome
+      // BEFORE writing the current run's failure row. If the previous
+      // run was already a failure, this is the 2nd consecutive — fire
+      // an admin alert.
+      let consecutiveFailure = false;
+      try { consecutiveFailure = await _lastRunWasFailure(supabase, fnName); } catch { /* swallow */ }
+
       await _safeLog(supabase, {
         event_type: failEvent,
         source_function: sourceFunction,
@@ -125,8 +176,13 @@ function withOpsLogging(fnName, handler, opts = {}) {
           error_name: errName,
           error_message: _truncate(errMessage, 1024),
           error_stack: _truncate(errStack, STACK_TRUNCATE_BYTES),
+          consecutive_failure: consecutiveFailure,
         },
       });
+
+      if (consecutiveFailure) {
+        await _fireConsecutiveFailureAlert(supabase, fnName, errMessage);
+      }
       // Sentry tag emission so the *_RUN_FAILED alert rule can fire on the
       // canonical event_type (not just the underlying error). Failures here
       // are non-blocking — the rethrow below is what Netlify acts on.

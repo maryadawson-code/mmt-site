@@ -149,6 +149,13 @@
 [functions."pursuit-calendar-seed-refresh"]
   schedule = "0 10 * * 1"
 
+# Intel pipeline weekly health report — MMT-INTEL-02. Fridays 10:00 UTC
+# (06:00 ET). One email to mary@ covering stale contract_intel rows,
+# bad source URLs, last successful radar scan, last SB vehicle scan, and
+# ops_ledger failure counts in the last 7 days.
+[functions."intel-quality-report"]
+  schedule = "0 10 * * 5"
+
 # Capture Corner one-shot: April 21, 2026 at 9 AM EDT (= 13:00 UTC)
 # Cron fires annually on April 21; the function gates on SCHEDULED_DATE
 # so it only actually sends in the configured year. Ops_ledger dedup

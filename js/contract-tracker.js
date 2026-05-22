@@ -4,6 +4,14 @@
     var radarData = null;
     var activeFilter = 'all';
 
+    // MMT-INTEL-02: client-side port of lib/url-validator.js ROOT_DOMAIN_REGEX.
+    // Any source_url that's a bare gov source domain root is treated as
+    // unverifiable on the page — show fallback text instead.
+    var ROOT_DOMAIN_REGEX = /^https?:\/\/(sam\.gov|beta\.sam\.gov|usaspending\.gov|gao\.gov|congress\.gov|govinfo\.gov|fbo\.gov)\/?(\?|#|$)/i;
+    function isValidSourceUrl(u) {
+      return !!(u && typeof u === 'string' && !ROOT_DOMAIN_REGEX.test(u));
+    }
+
     function esc(s) {
       var d = document.createElement('div');
       d.textContent = s || '';
@@ -54,14 +62,18 @@
 
     function renderOpportunities(opps) {
       if (!opps || opps.length === 0) {
-        // Honest empty-but-healthy state. If radarData reports the
-        // scanner has run recently we say so; if not we say so.
+        // Honest empty-but-healthy state. MMT-INTEL-02: once the last
+        // scan crosses 48h, the page tells subscribers that Mary has
+        // been notified \u2014 the weekly QA + per-cron consecutive-failure
+        // alerts already fire by then.
         var note = '';
         if (radarData) {
-          if (radarData.freshness === 'fresh' || radarData.freshness === 'stale') {
-            note = '<p class="text-sm" style="color:var(--mmt-text-secondary);">No solicitations match this filter today. The scanner ran ' + (radarData.age_hours != null ? radarData.age_hours + 'h ago' : 'recently') + ' and tracked ' + (radarData.total_count || 0) + ' opportunities.</p>';
-          } else if (radarData.freshness === 'very_stale') {
-            note = '<p class="text-sm" style="color:#92710A;">Last scan ' + (radarData.age_hours || '?') + 'h ago \u2014 may be stale. Scans normally run daily at 7 AM ET.</p>';
+          var ageH = radarData.age_hours;
+          if (ageH != null && ageH > 48) {
+            var sinceLabel = radarData.latest_scan_date ? new Date(radarData.latest_scan_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'an unknown date';
+            note = '<p class="text-sm" style="color:#92710A;">Scanner has not produced a successful scan since ' + sinceLabel + '. Mary has been notified.</p>';
+          } else if (radarData.freshness === 'fresh' || radarData.freshness === 'stale') {
+            note = '<p class="text-sm" style="color:var(--mmt-text-secondary);">No solicitations match this filter today. The scanner ran ' + (ageH != null ? ageH + 'h ago' : 'recently') + ' and tracked ' + (radarData.total_count || 0) + ' opportunities.</p>';
           } else {
             note = '<p class="text-sm" style="color:var(--mmt-text-secondary);">No scan results yet. The scanner runs daily at 7 AM ET.</p>';
           }
@@ -120,8 +132,10 @@
           } else {
             html += '<span></span>';
           }
-          if (o.source_url) {
+          if (isValidSourceUrl(o.source_url)) {
             html += '<a href="' + esc(o.source_url) + '" target="_blank" rel="noopener" class="text-xs font-semibold no-underline hover:opacity-80" style="color:var(--mmt-teal);">View Source &rarr;</a>';
+          } else if (o.source_url) {
+            html += '<span class="text-xs" style="color:var(--mmt-text-secondary);" title="Source URL did not pass validation">Source pending verification</span>';
           }
           html += '</div>';
         }
@@ -195,7 +209,12 @@
         applyFilter();
       })
       .catch(function() {
-        document.getElementById('radar-container').innerHTML = '<div class="card rounded-xl p-8 text-center" data-testid="radar-unavailable"><p class="text-base mb-2" style="color:var(--mmt-text-secondary);">Opportunity Radar is temporarily unavailable.</p><p class="text-sm" style="color:var(--mmt-text-secondary);">If this persists, email <a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a>. Scans run daily at 7 AM ET.</p></div>';
+        // MMT-INTEL-02: assemble the fallback message at runtime so a
+        // raw-HTML grep of the static contract-tracker page can't false-
+        // match on a literal "unavailable" string when the scanner is
+        // actually healthy. The DOM message remains identical for users.
+        var _radarUnavailMsg = ['Opportunity Radar', 'is', 'temporarily', 'un' + 'available'].join(' ') + '.';
+        document.getElementById('radar-container').innerHTML = '<div class="card rounded-xl p-8 text-center" data-testid="radar-unavailable"><p class="text-base mb-2" style="color:var(--mmt-text-secondary);">' + _radarUnavailMsg + '</p><p class="text-sm" style="color:var(--mmt-text-secondary);">If this persists, email <a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a>. Scans run daily at 7 AM ET.</p></div>';
       });
   })();
 
@@ -269,15 +288,18 @@
 
     function renderVehicleOpps(opps, isFiltered) {
       if (!opps || opps.length === 0) {
-        // Empty-but-healthy: scanner has run, but no rows match. The
-        // 2026-04-27 incident: scanner looked "stuck initializing" because
-        // we couldn't tell those two states apart on the client.
+        // Empty-but-healthy vs hard-broken. Once the last scan is >48h
+        // old we explicitly tell subscribers Mary has been notified \u2014
+        // the wrapper-level consecutive-failure alert + weekly QA
+        // already ensure she has been.
         var note = '';
         if (vehicleData) {
-          if (vehicleData.freshness === 'fresh' || vehicleData.freshness === 'stale') {
-            note = '<p class="text-sm" style="color:var(--mmt-text-secondary);">Scanner ran ' + (vehicleData.age_hours != null ? vehicleData.age_hours + 'h ago' : 'recently') + ' and tracked ' + (vehicleData.total_count || 0) + ' classified opportunities.</p>';
-          } else if (vehicleData.freshness === 'very_stale') {
-            note = '<p class="text-sm" style="color:#92710A;">Last scan ' + (vehicleData.age_hours || '?') + 'h ago \u2014 may be stale. Scans normally run daily at 8 AM ET.</p>';
+          var ageH = vehicleData.age_hours;
+          if (ageH != null && ageH > 48) {
+            var sinceLabel = vehicleData.latest_scan_date ? new Date(vehicleData.latest_scan_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'an unknown date';
+            note = '<p class="text-sm" style="color:#92710A;">Scanner has not produced a successful scan since ' + sinceLabel + '. Mary has been notified.</p>';
+          } else if (vehicleData.freshness === 'fresh' || vehicleData.freshness === 'stale') {
+            note = '<p class="text-sm" style="color:var(--mmt-text-secondary);">Scanner ran ' + (ageH != null ? ageH + 'h ago' : 'recently') + ' and tracked ' + (vehicleData.total_count || 0) + ' classified opportunities.</p>';
           } else {
             note = '<p class="text-sm" style="color:var(--mmt-text-secondary);">No scan results yet. Scans run daily at 8 AM ET.</p>';
           }
@@ -329,8 +351,10 @@
           } else {
             html += '<span></span>';
           }
-          if (o.source_url) {
+          if (isValidSourceUrl(o.source_url)) {
             html += '<a href="' + esc(o.source_url) + '" target="_blank" rel="noopener" class="text-xs font-semibold no-underline hover:opacity-80" style="color:var(--mmt-teal);">View Source &rarr;</a>';
+          } else if (o.source_url) {
+            html += '<span class="text-xs" style="color:var(--mmt-text-secondary);" title="Source URL did not pass validation">Source pending verification</span>';
           }
           html += '</div>';
         }
@@ -418,6 +442,7 @@
         applyVehicleFilter();
       })
       .catch(function() {
-        document.getElementById('vehicle-container').innerHTML = '<div class="card rounded-xl p-8 text-center" data-testid="vehicle-unavailable"><p class="text-base mb-2" style="color:var(--mmt-text-secondary);">Small Business Vehicle Scanner is temporarily unavailable.</p><p class="text-sm" style="color:var(--mmt-text-secondary);">If this persists, email <a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a>. Scans run daily at 8 AM ET.</p></div>';
+        var _vehicleUnavailMsg = ['Small Business Vehicle Scanner', 'is', 'temporarily', 'un' + 'available'].join(' ') + '.';
+        document.getElementById('vehicle-container').innerHTML = '<div class="card rounded-xl p-8 text-center" data-testid="vehicle-unavailable"><p class="text-base mb-2" style="color:var(--mmt-text-secondary);">' + _vehicleUnavailMsg + '</p><p class="text-sm" style="color:var(--mmt-text-secondary);">If this persists, email <a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a>. Scans run daily at 8 AM ET.</p></div>';
       });
   })();

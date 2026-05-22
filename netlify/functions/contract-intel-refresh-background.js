@@ -23,6 +23,8 @@ const { checkKillSwitch } = require("./lib/kill-switch");
 const { checkFreshness } = require("./lib/stale-detector");
 const { disambiguate } = require("./lib/entity-disambiguator");
 const { trackAnthropic } = require("./lib/cost-tracker");
+const { getRefreshRoster } = require("./lib/refresh-roster");
+const { validateSources } = require("./lib/url-validator");
 
 // --- Module-scoped state for cost tracking ---
 let _supabaseRef = null;
@@ -34,10 +36,13 @@ const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const NETLIFY_BUILD_HOOK_URL = process.env.NETLIFY_BUILD_HOOK_URL;
 
-// Contracts for daily research — enriched with verified domain context
-// to produce specific, useful intel instead of generic summaries.
-// Synced from contracts.json (March 30, 2026 research brief update).
-const CONTRACTS = [
+// Refresh roster is derived from contracts.json at runtime via
+// getRefreshRoster() — see _UNUSED_LEGACY_CONTRACTS below for the old
+// hardcoded list kept only for reference until the next cleanup pass.
+// MMT-INTEL-02. HELM/SCMDSO was missing from the legacy array; with
+// the new roster source any contracts.json entry (status !== 'archived')
+// is automatically picked up.
+const _UNUSED_LEGACY_CONTRACTS = [
   {
     name: "HCDS - Health Care Delivery Solutions (MHS GENESIS Follow-On)",
     agency: "Defense Health Agency (DHA) / PEO DHMS",
@@ -548,6 +553,12 @@ exports.handler = async (event) => {
       .map((r) => r.contract_name)
   );
 
+  // MMT-INTEL-02: Pull the roster from contracts.json instead of the
+  // drifted hardcoded array. Any non-archived contracts.json entry is
+  // automatically enrolled.
+  const CONTRACTS = getRefreshRoster();
+  console.log(`Refresh roster (from contracts.json): ${CONTRACTS.length} contracts`);
+
   // If force_contract is set, only process that one contract
   const contractsToProcess = forceContract
     ? CONTRACTS.filter((c) => c.name === forceContract)
@@ -676,6 +687,39 @@ exports.handler = async (event) => {
         console.error(`  [${contract.name}] Accuracy logging failed (non-blocking):`, accuracyErr.message);
       }
 
+      // MMT-INTEL-02: Validate source URLs before writing.
+      // If zero valid sources, do NOT overwrite — keep the prior row
+      // and log intel_refresh_skipped. Better to show old-but-real
+      // intel than to clobber with a row whose only "evidence" is a
+      // root-domain URL.
+      let validatedSources = result.sources || [];
+      let invalidSourcesCount = 0;
+      try {
+        const { valid, invalid } = await validateSources(result.sources || [], { timeoutMs: 3000 });
+        validatedSources = valid;
+        invalidSourcesCount = invalid.length;
+        if (invalid.length > 0) {
+          console.warn(`  [${contract.name}] Dropped ${invalid.length} invalid source URL(s): ${invalid.slice(0, 3).map((i) => i.reason).join(", ")}`);
+        }
+      } catch (urlErr) {
+        console.warn(`  [${contract.name}] URL validation errored (keeping all sources): ${urlErr.message}`);
+        validatedSources = result.sources || [];
+      }
+
+      if (validatedSources.length === 0 && (result.sources || []).length > 0) {
+        console.warn(`  [${contract.name}] 0 valid sources after validation — skipping overwrite, preserving prior row.`);
+        await logOpsEvent(supabase, {
+          event_type: "intel_refresh_skipped",
+          source_function: "contract-intel-refresh",
+          severity: "warn",
+          signature: "zero_valid_sources",
+          affected_entity: contract.name,
+          details: { invalid_count: invalidSourcesCount, original_count: (result.sources || []).length },
+        });
+        successCount++;
+        continue;
+      }
+
       // Upsert into contract_intel table
       const { error: upsertErr } = await supabase
         .from("contract_intel")
@@ -684,7 +728,7 @@ exports.handler = async (event) => {
             contract_name: contract.name,
             intel: result.intel,
             black_hat: result.black_hat,
-            sources: result.sources,
+            sources: validatedSources,
             last_updated: new Date().toISOString(),
             model_used: result.model_used,
           },

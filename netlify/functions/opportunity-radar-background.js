@@ -12,13 +12,24 @@
 
 const { createClient } = require("@supabase/supabase-js");
 const { getModelConfig } = require("./lib/model-router");
-const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
 const { withRetry } = require("./lib/retry");
 const { validateOpportunity } = require("./lib/contract-validator");
 const { CANCELLED_VEHICLES } = require("./lib/contract-facts");
 const { checkKillSwitch } = require("./lib/kill-switch");
 const { trackAnthropic } = require("./lib/cost-tracker");
 const { logInference } = require("./lib/inference");
+const { logOpsEvent } = require("./lib/ops-ledger");
+
+// MMT-INTEL-02 (2026-05-22): migrated off Anthropic Sonnet
+// web_search_20260209 → Perplexity sonar-pro. CLAUDE.md 2026-04-15
+// flagged that the Anthropic web_search tool fails silently from
+// serverless every few runs; the radar table confirms it: 147 rows
+// total, last scan 2026-04-13, 0 in the last 30 days, ops_ledger
+// has zero rows for opportunity-radar-background. Same migration
+// contract-intel-refresh did April 25.
+const PERPLEXITY_URL = "https://api.perplexity.ai/chat/completions";
+const PERPLEXITY_MODEL = "sonar-pro";
+const PERPLEXITY_TIMEOUT_MS = 60000;
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -92,87 +103,73 @@ Return ONLY valid JSON. No markdown code fences. No text before or after the JSO
 // HELPER: Call Claude API with web_search
 // ============================================================
 
-async function callClaude(systemPrompt, userMessage, maxSearches, model, maxTokens, _supabase) {
+async function callClaude(systemPrompt, userMessage, _maxSearches, model, maxTokens, _supabase) {
+  // Function name preserved (callClaude) for minimal downstream diff,
+  // but the underlying provider is now Perplexity sonar-pro per
+  // MMT-INTEL-02. The `model` argument is logged but not honored —
+  // Perplexity uses sonar-pro for all opportunity scans.
+  const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
+  if (!PERPLEXITY_API_KEY) {
+    throw new Error("PERPLEXITY_API_KEY not configured (required by opportunity-radar-background after web_search migration)");
+  }
+
   const _t = Date.now();
-  const response = await withRetry(() => fetchWithTimeout("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": ANTHROPIC_API_KEY,
-      "anthropic-version": "2023-06-01",
-    },
-    body: JSON.stringify({
-      model,
-      max_tokens: maxTokens,
-      temperature: 0.3,
-      system: systemPrompt,
-      tools: [{ type: "web_search_20260209", name: "web_search", max_uses: maxSearches }],
-      messages: [{ role: "user", content: userMessage }],
-    }),
-  }));
+  const response = await withRetry(() => {
+    const ac = new AbortController();
+    const timer = setTimeout(() => ac.abort(), PERPLEXITY_TIMEOUT_MS);
+    return fetch(PERPLEXITY_URL, {
+      method: "POST",
+      signal: ac.signal,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${PERPLEXITY_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: PERPLEXITY_MODEL,
+        max_tokens: maxTokens,
+        temperature: 0.3,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userMessage },
+        ],
+        web_search_options: { search_context_size: "high" },
+      }),
+    }).finally(() => clearTimeout(timer));
+  }, { maxRetries: 2, baseDelayMs: 3000 });
 
   if (!response.ok) {
     const errText = await response.text();
-    throw new Error(`Claude API error ${response.status}: ${errText}`);
+    throw new Error(`Perplexity API error ${response.status}: ${errText.slice(0, 300)}`);
   }
 
-  let finalData = await response.json();
+  const finalData = await response.json();
 
-  // Handle pause_turn
-  if (finalData.stop_reason === "pause_turn") {
-    const resumeResponse = await fetchWithTimeout("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model,
-        max_tokens: maxTokens,
-        system: systemPrompt,
-        tools: [{ type: "web_search_20260209", name: "web_search", max_uses: maxSearches }],
-        messages: [
-          { role: "user", content: userMessage },
-          { role: "assistant", content: finalData.content },
-          { role: "user", content: "Return the final JSON now." },
-        ],
-      }),
-    });
-    if (resumeResponse.ok) {
-      finalData = await resumeResponse.json();
-    }
-  }
-
-  // Log token usage
   if (finalData.usage) {
     const u = finalData.usage;
-    console.log(`  AI cost: model=${model}, input=${u.input_tokens}, output=${u.output_tokens}`);
+    console.log(`  Perplexity cost: model=${PERPLEXITY_MODEL}, input=${u.prompt_tokens || u.input_tokens}, output=${u.completion_tokens || u.output_tokens} (req model=${model})`);
   }
 
-  // Cost tracking + inference logging for Penny Pincher
   if (_supabase) {
     try {
-      await trackAnthropic(_supabase, { functionName: 'opportunity-radar-background', product: 'mmt-intel', model, usage: finalData.usage, latencyMs: Date.now() - _t });
+      const u = finalData.usage || {};
+      await trackAnthropic(_supabase, {
+        functionName: "opportunity-radar-background",
+        product: "mmt-intel",
+        model: PERPLEXITY_MODEL,
+        usage: { input_tokens: u.prompt_tokens || u.input_tokens || 0, output_tokens: u.completion_tokens || u.output_tokens || 0 },
+        latencyMs: Date.now() - _t,
+      });
     } catch (_costErr) { /* never break parent */ }
   }
   logInference({
-    agent: "opportunity-radar", model, provider: "anthropic",
-    input_tokens: finalData.usage?.input_tokens || 0, output_tokens: finalData.usage?.output_tokens || 0,
+    agent: "opportunity-radar", model: PERPLEXITY_MODEL, provider: "perplexity",
+    input_tokens: finalData.usage?.prompt_tokens || finalData.usage?.input_tokens || 0,
+    output_tokens: finalData.usage?.completion_tokens || finalData.usage?.output_tokens || 0,
     task_type: "opportunity_scan", latency_ms: Date.now() - _t, status: "success",
   });
 
-  const allContent = finalData.content;
+  const textContent = finalData.choices?.[0]?.message?.content || "";
 
-  let textBlocks = allContent
-    .filter((block) => block.type === "text")
-    .map((block) => block.text)
-    .join("");
-
-  // Strip <cite> tags
-  textBlocks = textBlocks.replace(/<cite[^>]*>/g, "").replace(/<\/cite>/g, "");
-
-  // Clean and parse JSON
   function cleanJson(str) {
     str = str.replace(/,\s*([\]}])/g, "$1");
     str = str.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, "");
@@ -194,10 +191,10 @@ async function callClaude(systemPrompt, userMessage, maxSearches, model, maxToke
     return null;
   }
 
-  const parsed = extractJsonString(textBlocks);
+  const parsed = extractJsonString(textContent);
   if (!parsed) {
-    console.error("JSON parse failed. First 500 chars:", textBlocks.substring(0, 500));
-    throw new Error(`Could not parse JSON from Claude response (${textBlocks.length} chars)`);
+    console.error("JSON parse failed. First 500 chars:", textContent.substring(0, 500));
+    throw new Error(`Could not parse JSON from Perplexity response (${textContent.length} chars)`);
   }
 
   return parsed;
@@ -207,17 +204,7 @@ async function callClaude(systemPrompt, userMessage, maxSearches, model, maxToke
 // MAIN HANDLER
 // ============================================================
 
-exports.handler = async (event) => {
-  const killCheck = checkKillSwitch("opportunity-radar-background");
-  if (killCheck.blocked) return killCheck.response;
-
-  console.log("Opportunity radar scan started:", new Date().toISOString());
-
-  if (!ANTHROPIC_API_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
-    console.error("Missing required env vars");
-    return { statusCode: 500, body: "Missing env vars" };
-  }
-
+async function _runRadarScan(event) {
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
   const scanModel = await getModelConfig(null, "opportunity_scan");
   const allOpportunities = [];
@@ -390,6 +377,21 @@ Return opportunities found as JSON.`, 3, scanModel.model, 8000, supabase);
 
   console.log(`Opportunity radar complete: ${upsertCount} upserted, ${errorCount} errors`);
 
+  // MMT-INTEL-02: Always write a heartbeat row to ops_ledger after a
+  // completed scan — success or partial — so the weekly QA report can
+  // see "last successful scan" even if 0 rows were upserted.
+  try {
+    await logOpsEvent(supabase, {
+      event_type: upsertCount > 0 ? "RADAR_SCAN_OK" : "RADAR_SCAN_EMPTY",
+      source_function: "opportunity-radar-background",
+      severity: upsertCount === 0 && errorCount > 0 ? "error" : (upsertCount === 0 ? "warn" : "info"),
+      signature: "radar_scan_complete",
+      details: { scanned: allOpportunities.length, filtered: filtered.length, upserted: upsertCount, errors: errorCount },
+    });
+  } catch (logErr) {
+    console.error("ops_ledger heartbeat failed:", logErr.message);
+  }
+
   return {
     statusCode: 200,
     body: JSON.stringify({
@@ -399,4 +401,40 @@ Return opportunities found as JSON.`, 3, scanModel.model, 8000, supabase);
       errors: errorCount,
     }),
   };
+}
+
+exports.handler = async (event) => {
+  const killCheck = checkKillSwitch("opportunity-radar-background");
+  if (killCheck.blocked) return killCheck.response;
+
+  console.log("Opportunity radar scan started:", new Date().toISOString());
+
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+    console.error("Missing required env vars");
+    return { statusCode: 500, body: "Missing env vars" };
+  }
+
+  // MMT-INTEL-02: wrap the entire scan so any uncaught exception lands
+  // in ops_ledger as a radar_scan_failed event with the error message.
+  // Previously the function would die silently mid-loop and the page
+  // would show "951h ago (refreshing)" indefinitely.
+  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+  try {
+    return await _runRadarScan(event);
+  } catch (err) {
+    const errMsg = (err && err.message ? err.message : String(err)).slice(0, 1000);
+    const errStack = (err && err.stack ? err.stack : "").slice(0, 4000);
+    console.error("opportunity-radar-background FAILED:", errMsg);
+    console.error(errStack);
+    try {
+      await logOpsEvent(supabase, {
+        event_type: "RADAR_SCAN_FAILED",
+        source_function: "opportunity-radar-background",
+        severity: "error",
+        signature: "radar_scan_failed",
+        details: { error_message: errMsg, error_stack: errStack, started_at: new Date().toISOString() },
+      });
+    } catch (_logErr) { /* never mask the real failure */ }
+    return { statusCode: 500, body: JSON.stringify({ error: "radar_scan_failed", message: errMsg }) };
+  }
 };

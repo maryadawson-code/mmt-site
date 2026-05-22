@@ -19,6 +19,7 @@ const { createClient } = require("@supabase/supabase-js");
 const { sendEmail } = require("./lib/send-email");
 const { checkKillSwitch, shouldHoldEmail, holdEmail } = require("./lib/kill-switch");
 const { logOpsEvent } = require("./lib/ops-ledger");
+const { isRootDomainUrl } = require("./lib/url-validator");
 
 const SITE_URL = "https://missionmeetstech.com";
 const ADMIN_EMAIL = "mary@missionmeetstech.com";
@@ -115,15 +116,51 @@ exports.handler = async (event) => {
   }
 
   // Contract intel updates (from contract_intel, last 24h)
+  // MMT-INTEL-02: exclude rows that are >7d stale at write time OR whose
+  // sources have all been invalidated (root-domain SAM.gov etc). The
+  // exclusion list is captured into _excludedRows so the pre-digest QA
+  // email and ops_ledger can both surface what got dropped and why.
+  const _excludedRows = [];
   if (anyWants("contract_intel")) {
     try {
       const { data } = await supabase
         .from("contract_intel")
-        .select("contract_name, intel, last_updated")
+        .select("contract_name, intel, sources, last_updated")
         .gte("last_updated", since24h)
         .order("last_updated", { ascending: false })
         .limit(15);
-      contractUpdates = data || [];
+      const raw = data || [];
+      const sevenDayCutoff = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      for (const r of raw) {
+        const lastUpdated = r.last_updated ? new Date(r.last_updated) : null;
+        if (!lastUpdated || lastUpdated < sevenDayCutoff) {
+          _excludedRows.push({ contract_name: r.contract_name, reason: "stale_gt_7d", last_updated: r.last_updated });
+          continue;
+        }
+        const arr = Array.isArray(r.sources) ? r.sources : [];
+        const validSources = arr.filter((s) => {
+          const u = typeof s === "string" ? s : (s && (s.url || s.link)) || "";
+          return u && !isRootDomainUrl(u);
+        });
+        if (arr.length > 0 && validSources.length === 0) {
+          _excludedRows.push({ contract_name: r.contract_name, reason: "all_sources_invalid", last_updated: r.last_updated });
+          continue;
+        }
+        contractUpdates.push(r);
+      }
+      // Log every excluded row so the weekly QA report can audit.
+      for (const e of _excludedRows) {
+        try {
+          await logOpsEvent(supabase, {
+            event_type: "digest_excluded_stale",
+            source_function: "premium-digest-send",
+            severity: "warn",
+            signature: e.reason,
+            affected_entity: e.contract_name,
+            details: { reason: e.reason, last_updated: e.last_updated },
+          });
+        } catch { /* non-blocking */ }
+      }
     } catch (e) { console.warn("Contract intel query failed:", e.message); }
   }
 
@@ -179,6 +216,42 @@ exports.handler = async (event) => {
       if (wlContracts.data) allWatchlistUpdates.push(...wlContracts.data.map((c) => ({ type: "contract", name: c.contract_name, detail: typeof c.intel === "string" ? c.intel.substring(0, 150) : (c.intel?.summary || "").substring(0, 150), date: c.last_updated })));
       if (wlOpps.data) allWatchlistUpdates.push(...wlOpps.data.map((o) => ({ type: "opportunity", name: o.title, detail: `${o.opportunity_type || "notice"} — ${o.agency || ""}`, date: o.created_at })));
     } catch (e) { console.warn("Watchlist data query failed:", e.message); }
+  }
+
+  // MMT-INTEL-02: pre-digest QA email to mary@. Always sent — silence
+  // is failure. Body covers excluded rows, radar/vehicle freshness, and
+  // recent ops_ledger failures so the morning inbox surfaces problems
+  // BEFORE 21 subscribers see them.
+  try {
+    const radarHealth = await _radarHealth(supabase, "opportunity_radar", null);
+    const vehicleHealth = await _radarHealth(supabase, "opportunity_radar", "contract_vehicle");
+    const ledgerFailures = await _recentLedgerFailures(supabase, 24);
+    const subjBits = [
+      `${_excludedRows.length} excluded`,
+      `${_excludedRows.filter((e) => e.reason === "all_sources_invalid").length} bad URL`,
+      `radar ${radarHealth.fresh ? "ok" : "stale"}`,
+      `vehicle ${vehicleHealth.fresh ? "ok" : "stale"}`,
+    ];
+    const qaHtml = `<!DOCTYPE html><html><body style="font-family:-apple-system,sans-serif;padding:24px;color:#0A192F;">
+      <h2 style="margin:0 0 8px;">Pre-digest QA &middot; ${todayStr}</h2>
+      <p style="color:#5C6B7A;margin:0 0 16px;font-size:13px;">Sent 5 min before the 11:30 UTC digest run. Always sent — empty body = all clear.</p>
+      <h3 style="font-size:14px;margin:16px 0 6px;">Excluded contract_intel rows (${_excludedRows.length})</h3>
+      ${_excludedRows.length === 0 ? "<p>None.</p>" : `<ul>${_excludedRows.map((e) => `<li>${esc(e.contract_name)} &mdash; ${esc(e.reason)} &middot; last_updated ${esc(e.last_updated || "")}</li>`).join("")}</ul>`}
+      <h3 style="font-size:14px;margin:16px 0 6px;">Opportunity Radar</h3>
+      <p>last_scan: ${esc(radarHealth.last_scan || "never")} &middot; age_hours: ${radarHealth.age_hours} &middot; total_opps: ${radarHealth.total}</p>
+      <h3 style="font-size:14px;margin:16px 0 6px;">SB Vehicle Radar</h3>
+      <p>last_scan: ${esc(vehicleHealth.last_scan || "never")} &middot; age_hours: ${vehicleHealth.age_hours} &middot; total_rows: ${vehicleHealth.total}</p>
+      <h3 style="font-size:14px;margin:16px 0 6px;">ops_ledger failures (last 24h)</h3>
+      ${ledgerFailures.length === 0 ? "<p>None.</p>" : `<ul>${ledgerFailures.map((r) => `<li>${esc(r.source_function)} &mdash; ${esc(r.event_type)} &middot; ${esc(r.signature || "")} &middot; ${esc(r.created_at)}</li>`).join("")}</ul>`}
+    </body></html>`;
+    await sendEmail({
+      to: ADMIN_EMAIL,
+      from: "intel@missionmeetstech.com",
+      subject: `MMT pre-digest QA — ${subjBits.join(", ")}`,
+      html: qaHtml,
+    });
+  } catch (qaErr) {
+    console.warn("pre-digest QA email failed (non-blocking):", qaErr.message);
   }
 
   // Send personalized digests
@@ -414,4 +487,34 @@ exports.handler = async (event) => {
 
 function esc(s) {
   return String(s || "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+// MMT-INTEL-02 helpers for the pre-digest QA email.
+async function _radarHealth(supabase, table, vehicleFilter) {
+  try {
+    let query = supabase.from(table).select("created_at, scan_date", { count: "exact" });
+    if (vehicleFilter) query = query.not(vehicleFilter, "is", null);
+    const { data, count } = await query.order("created_at", { ascending: false }).limit(1);
+    const lastIso = (data || [])[0]?.created_at || (data || [])[0]?.scan_date || null;
+    const ageHours = lastIso ? Math.round((Date.now() - new Date(lastIso).getTime()) / 3600000) : Infinity;
+    return { last_scan: lastIso, age_hours: ageHours, total: count || 0, fresh: ageHours <= 48 };
+  } catch (e) {
+    return { last_scan: null, age_hours: Infinity, total: 0, fresh: false, error: e.message };
+  }
+}
+
+async function _recentLedgerFailures(supabase, hours) {
+  try {
+    const since = new Date(Date.now() - hours * 3600000).toISOString();
+    const { data } = await supabase
+      .from("ops_ledger")
+      .select("source_function, event_type, signature, severity, created_at")
+      .in("severity", ["error", "critical"])
+      .gte("created_at", since)
+      .order("created_at", { ascending: false })
+      .limit(20);
+    return data || [];
+  } catch {
+    return [];
+  }
 }

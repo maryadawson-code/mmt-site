@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-05-21T17:35:33.701Z",
-  "total": 180,
+  "generated_at": "2026-05-22T16:24:32.350Z",
+  "total": 181,
   "note": "Public subset of mmt-content-corpus.json (premium=false items only). For unauthenticated endpoints. Per Sprint C 2026-05-14.",
   "counts": {
     "articles": 112,
-    "contracts": 36,
+    "contracts": 37,
     "glossary": 0,
     "idiq_vehicles": 32
   },
@@ -2342,6 +2342,22 @@
       ],
       "url": "https://www.cdc.gov/data-modernization/php/technologies/about-dibbs.html",
       "excerpt": "CDC Data Integration Building Blocks — modular data integration tools for state/local/tribal/territorial (STLT) public health agencies. Standardizes disease reporting and lab results. 2026 target: greater than 30% STLT adoption of at least one DIBBs product.\nAgency: Centers for Disease Control and Prevention (CDC)\nVendor: Multiple (CDC-internal + partners)\nValue: CDC budget\nStatus: active\nNAICS: 541512\nMMT verdict: WATCH — Program watch — STLT adoption tracking",
+      "premium": false
+    },
+    {
+      "id": "contract-va-helm-scmdso-healthcare-environment-and-logistics-manageme",
+      "type": "contract_intel",
+      "title": "VA HELM / SCMDSO (Healthcare Environment and Logistics Management)",
+      "slug": "va-helm-scmdso-healthcare-environment-and-logistics-management-",
+      "date": "2026-05-22",
+      "description": "Single-contractor sustainment and modernization for VA Healthcare Environment and Logistics Management (HELM) product line. Covers 5 sub-product lines (Environmental and Healthcare Management, Healthcare Technology and Asset Management, Exp",
+      "tags": [
+        "Department of Veterans Affairs / OIT Product Delivery Services",
+        "upcoming",
+        "541512"
+      ],
+      "url": "https://sam.gov/opp/7f1dab9449984bc6aff2fe595831be62/view",
+      "excerpt": "Single-contractor sustainment and modernization for VA Healthcare Environment and Logistics Management (HELM) product line. Covers 5 sub-product lines (Environmental and Healthcare Management, Healthcare Technology and Asset Management, Expendable Inventory Management, Prosthetics, Technical Services) and ~34 products across 174 sites. RFI 36C10B26Q0376 + Draft PWS released 2026-04-24, amended 2026-05-05, RFI closed 2026-05-11 12:00 ET. Hybrid FFP base + T&M optional + cost-reimbursable travel. 12-month base + 4 × 12-month options (60 months). Aligns to Zero Trust Architecture, iFAMS, and EHRM integration.\nAgency: Department of Veterans Affairs / OIT Product Delivery Services\nVendor: TBD — RFI closed 2026-05-11; RFP pending\nValue: AI estimate $10M–$50M (60-month potential)\nStatus: upcoming\nNAICS: 541512",
       "premium": false
     },
     {
