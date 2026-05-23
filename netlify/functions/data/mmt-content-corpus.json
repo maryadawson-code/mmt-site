@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-05-22T16:24:32.350Z",
-  "total": 216,
+  "generated_at": "2026-05-23T20:32:36.482Z",
+  "total": 215,
   "counts": {
     "articles": 112,
     "friday_briefs": 15,
     "monthly_briefs": 4,
-    "contracts": 37,
+    "contracts": 36,
     "capture_intel": 16,
     "glossary": 0,
     "idiq_vehicles": 32
@@ -2232,19 +2232,19 @@
       "premium": false
     },
     {
-      "id": "contract-va-supply-chain-devsecops-helm",
+      "id": "contract-va-helm-scmdso-healthcare-environment-and-logistics-manageme",
       "type": "contract_intel",
-      "title": "VA Supply Chain DevSecOps / HELM",
-      "slug": "va-supply-chain-devsecops-helm",
-      "date": "2026-04-29",
-      "description": "Reported VA Supply Chain Management DevSecOps / HELM modernization — SCMDSO/HELM scope across DevSecOps, Zero Trust, cloud, data, and integration. Treat as Sources Sought reported until SAM.gov record is verified.",
+      "title": "VA HELM / SCMDSO (Healthcare Environment and Logistics Management)",
+      "slug": "va-helm-scmdso-healthcare-environment-and-logistics-management-",
+      "date": "2026-05-22",
+      "description": "Single-contractor sustainment and modernization for VA Healthcare Environment and Logistics Management (HELM) product line. Covers 5 sub-product lines (Environmental and Healthcare Management, Healthcare Technology and Asset Management, Exp",
       "tags": [
-        "Department of Veterans Affairs",
+        "Department of Veterans Affairs / OIT Product Delivery Services",
         "upcoming",
         "541512"
       ],
-      "url": "https://sam.gov",
-      "excerpt": "Reported VA Supply Chain Management DevSecOps / HELM modernization — SCMDSO/HELM scope across DevSecOps, Zero Trust, cloud, data, and integration. Treat as Sources Sought reported until SAM.gov record is verified.\nAgency: Department of Veterans Affairs\nVendor: TBD — Sources Sought reported\nValue: TBD\nStatus: upcoming\nNAICS: 541512\nMMT verdict: WATCH — Upcoming — action window within 6 months",
+      "url": "https://sam.gov/opp/7f1dab9449984bc6aff2fe595831be62/view",
+      "excerpt": "Single-contractor sustainment and modernization for VA Healthcare Environment and Logistics Management (HELM) product line. Covers 5 sub-product lines (Environmental and Healthcare Management, Healthcare Technology and Asset Management, Expendable Inventory Management, Prosthetics, Technical Services) and ~34 products across 174 sites. RFI 36C10B26Q0376 + Draft PWS released 2026-04-24, amended 2026-05-05, RFI closed 2026-05-11 12:00 ET. Hybrid FFP base + T&M optional + cost-reimbursable travel. 12-month base + 4 × 12-month options (60 months). Aligns to Zero Trust Architecture, iFAMS, and EHRM integration.\nAgency: Department of Veterans Affairs / OIT Product Delivery Services\nVendor: TBD — RFI closed 2026-05-11; RFP pending\nValue: AI estimate $10M–$50M (60-month potential)\nStatus: upcoming\nNAICS: 541512\nMMT verdict: WATCH — Upcoming — action window within 6 months",
       "premium": false
     },
     {
@@ -2629,22 +2629,6 @@
       ],
       "url": "https://www.cdc.gov/data-modernization/php/technologies/about-dibbs.html",
       "excerpt": "CDC Data Integration Building Blocks — modular data integration tools for state/local/tribal/territorial (STLT) public health agencies. Standardizes disease reporting and lab results. 2026 target: greater than 30% STLT adoption of at least one DIBBs product.\nAgency: Centers for Disease Control and Prevention (CDC)\nVendor: Multiple (CDC-internal + partners)\nValue: CDC budget\nStatus: active\nNAICS: 541512\nMMT verdict: WATCH — Program watch — STLT adoption tracking",
-      "premium": false
-    },
-    {
-      "id": "contract-va-helm-scmdso-healthcare-environment-and-logistics-manageme",
-      "type": "contract_intel",
-      "title": "VA HELM / SCMDSO (Healthcare Environment and Logistics Management)",
-      "slug": "va-helm-scmdso-healthcare-environment-and-logistics-management-",
-      "date": "2026-05-22",
-      "description": "Single-contractor sustainment and modernization for VA Healthcare Environment and Logistics Management (HELM) product line. Covers 5 sub-product lines (Environmental and Healthcare Management, Healthcare Technology and Asset Management, Exp",
-      "tags": [
-        "Department of Veterans Affairs / OIT Product Delivery Services",
-        "upcoming",
-        "541512"
-      ],
-      "url": "https://sam.gov/opp/7f1dab9449984bc6aff2fe595831be62/view",
-      "excerpt": "Single-contractor sustainment and modernization for VA Healthcare Environment and Logistics Management (HELM) product line. Covers 5 sub-product lines (Environmental and Healthcare Management, Healthcare Technology and Asset Management, Expendable Inventory Management, Prosthetics, Technical Services) and ~34 products across 174 sites. RFI 36C10B26Q0376 + Draft PWS released 2026-04-24, amended 2026-05-05, RFI closed 2026-05-11 12:00 ET. Hybrid FFP base + T&M optional + cost-reimbursable travel. 12-month base + 4 × 12-month options (60 months). Aligns to Zero Trust Architecture, iFAMS, and EHRM integration.\nAgency: Department of Veterans Affairs / OIT Product Delivery Services\nVendor: TBD — RFI closed 2026-05-11; RFP pending\nValue: AI estimate $10M–$50M (60-month potential)\nStatus: upcoming\nNAICS: 541512",
       "premium": false
     },
     {

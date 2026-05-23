@@ -1598,7 +1598,13 @@ function generateContractPages(contracts) {
   const template = fs.readFileSync(templatePath, 'utf8');
 
   contracts.forEach(c => {
-    const cSlug = slugify(c.name);
+    // MMT-INTEL-02 fix: honor c.slug when present so a name change
+    // doesn't move the canonical URL. Previously this always re-slugged
+    // from the name, which broke validate-contract-tracker (it asserts
+    // dist/contracts/<c.slug>/index.html exists) the moment a contract
+    // got renamed without also updating EXPECTED_SLUGS. Defaults to the
+    // name-derived slug for contracts that don't carry one.
+    const cSlug = c.slug || slugify(c.name);
     const outDir = path.join(DIST_DIR, 'contracts', cSlug);
     ensureDir(outDir);
 
