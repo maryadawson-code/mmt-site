@@ -74,11 +74,13 @@
       }
       // 2026-05-26 (Danielle Applegate / CGI Federal): subscriber-trust fix.
       // Strip internal chain-of-thought scaffolding from verification_notes
-      // before render. Persistence is also fixed in
-      // netlify/functions/contract-intel-refresh-background.js, but this
-      // render-time filter cleans up rows that were written before the new
-      // persistence logic landed.
-      var STALE_NOTE_PATTERNS = /\b(could not verify|out of date|prior statement|partially unconfirmed|from the provided results|CONTRADICTED:)\b/i;
+      // before render. Persistence is fixed in
+      // netlify/functions/contract-intel-refresh-background.js using the
+      // shared sanitizer at netlify/functions/lib/intel-notes-sanitizer.js
+      // (locked by tests/unit/intel-notes-sanitizer.test.js).
+      // This client-side regex MUST match STALE_NOTE_PATTERNS + CONTRADICTED_PREFIX
+      // in the shared sanitizer — keep them in sync if you change one.
+      var STALE_NOTE_PATTERNS = /(\bcould not verify\b|\bout of date\b|\bprior statement\b|\bpartially unconfirmed\b|\bfrom the provided results\b|\bI could not\b|\bI was unable\b|\bin the provided results\b|^CONTRADICTED:)/i;
       var safeNotes = (intel.verification_notes || [])
         .filter(function(n) { return typeof n === 'string' && n.trim().length > 0; })
         .filter(function(n) { return !STALE_NOTE_PATTERNS.test(n); });

@@ -157,6 +157,19 @@
 [functions."intel-quality-report"]
   schedule = "0 10 * * 5"
 
+# 2026-05-26 (Danielle Applegate / CGI Federal complaint follow-up).
+# Daily 14:00 UTC (10:00 ET, after contract-intel-refresh at 11:00 UTC
+# and after the premium digest at 11:30 UTC). Pulls the oldest 80
+# status='active' opportunity_radar rows, HEAD-checks their source_url,
+# and archives any that 404 / 410 / dead-DNS / redirect to a different
+# host. Archived rows stop appearing in /contract-tracker, the daily
+# digest, and watchlist matching. Kill switch: URL_RECHECK_DISABLED=true
+# (set during known SAM.gov outages so we don't auto-archive the world).
+# Each archive logs to ops_events; the weekly intel-quality-report.js
+# surfaces the 7d sweep summary in Mary's Friday email.
+[functions."opportunity-radar-url-recheck"]
+  schedule = "0 14 * * *"
+
 # Capture Corner one-shot: April 21, 2026 at 9 AM EDT (= 13:00 UTC)
 # Cron fires annually on April 21; the function gates on SCHEDULED_DATE
 # so it only actually sends in the configured year. Ops_ledger dedup

@@ -18,6 +18,7 @@ const { createClient } = require("@supabase/supabase-js");
 const { sendEmail } = require("./lib/send-email");
 const { isRootDomainUrl } = require("./lib/url-validator");
 const { logOpsEvent } = require("./lib/ops-ledger");
+const { hasStaleNotes, strippedNotes } = require("./lib/intel-notes-sanitizer");
 
 const ADMIN_EMAIL = "mary@missionmeetstech.com";
 
@@ -48,6 +49,51 @@ async function _badUrls(supabase) {
     if (bad.length) out.push({ contract_name: r.contract_name, bad_count: bad.length });
   }
   return out;
+}
+
+// 2026-05-26: Added after the CGI/Danielle complaint. Scans every
+// contract_intel row's verification_notes for chain-of-thought
+// leakage. The persistence layer + LLM prompts have been tightened
+// (see lib/intel-notes-sanitizer.js + contract-intel-refresh-background.js)
+// so this should always return zero. If it ever doesn't, the Friday
+// email surfaces it as the regression detector.
+async function _staleNotePatterns(supabase) {
+  const { data } = await supabase
+    .from("contract_intel")
+    .select("contract_name, intel, last_updated");
+  const offenders = [];
+  for (const r of (data || [])) {
+    const notes = (r.intel && r.intel.verification_notes) || [];
+    if (hasStaleNotes(notes)) {
+      const stripped = strippedNotes(notes);
+      offenders.push({
+        contract_name: r.contract_name,
+        last_updated: r.last_updated,
+        stripped_count: stripped.length,
+        total_count: notes.length,
+        sample: String(stripped[0] || "").slice(0, 160),
+      });
+    }
+  }
+  return offenders;
+}
+
+async function _urlRecheckSweep(supabase) {
+  const since = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString();
+  const { data } = await supabase
+    .from("ops_events")
+    .select("event_type, details, created_at")
+    .in("event_type", ["opportunity_radar_archived_broken_url", "OPPORTUNITY_RADAR_URL_RECHECK_SWEEP"])
+    .gte("created_at", since)
+    .order("created_at", { ascending: false })
+    .limit(50);
+  const archived = (data || []).filter((r) => r.event_type === "opportunity_radar_archived_broken_url");
+  const lastSweep = (data || []).find((r) => r.event_type === "OPPORTUNITY_RADAR_URL_RECHECK_SWEEP");
+  return {
+    archived_7d: archived.length,
+    last_sweep_at: lastSweep ? lastSweep.created_at : null,
+    last_sweep_summary: lastSweep ? lastSweep.details : null,
+  };
 }
 
 async function _radarHealth(supabase, vehicleFilter) {
@@ -83,19 +129,21 @@ exports.handler = async () => {
   }
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
-  let stale = [], badUrls = [], radar, vehicle, failures = {};
+  let stale = [], badUrls = [], radar, vehicle, failures = {}, staleNotes = [], urlSweep = {};
   try { stale = await _stale(supabase); } catch (e) { console.warn("stale query failed:", e.message); }
   try { badUrls = await _badUrls(supabase); } catch (e) { console.warn("badUrls query failed:", e.message); }
   try { radar = await _radarHealth(supabase, null); } catch { radar = { last_scan: null, age_hours: Infinity, total: 0 }; }
   try { vehicle = await _radarHealth(supabase, "contract_vehicle"); } catch { vehicle = { last_scan: null, age_hours: Infinity, total: 0 }; }
   try { failures = await _ledger7d(supabase); } catch { failures = {}; }
+  try { staleNotes = await _staleNotePatterns(supabase); } catch (e) { console.warn("staleNotes scan failed:", e.message); }
+  try { urlSweep = await _urlRecheckSweep(supabase); } catch (e) { console.warn("urlSweep query failed:", e.message); urlSweep = {}; }
 
-  const allGreen = stale.length === 0 && badUrls.length === 0
+  const allGreen = stale.length === 0 && badUrls.length === 0 && staleNotes.length === 0
     && radar.age_hours <= 48 && vehicle.age_hours <= 168
     && Object.keys(failures).length === 0;
   const subject = allGreen
     ? "MMT intel quality — all green"
-    : `MMT intel quality — ${stale.length} stale, ${badUrls.length} bad URL, radar ${radar.age_hours}h, vehicle ${vehicle.age_hours}h`;
+    : `MMT intel quality — ${stale.length} stale, ${badUrls.length} bad URL, ${staleNotes.length} note-leak, radar ${radar.age_hours}h`;
 
   const html = `<!DOCTYPE html><html><body style="font-family:-apple-system,sans-serif;padding:24px;color:#0A192F;">
     <h2 style="margin:0 0 8px;">Intel quality report &middot; ${new Date().toISOString().slice(0,10)}</h2>
@@ -107,6 +155,11 @@ exports.handler = async () => {
     }).join("")}</ul>`}
     <h3 style="font-size:14px;margin:16px 0 6px;">Contracts with root-domain source URLs</h3>
     ${badUrls.length === 0 ? "<p>None.</p>" : `<ul>${badUrls.map((r) => `<li>${esc(r.contract_name)} &mdash; ${r.bad_count} bad</li>`).join("")}</ul>`}
+    <h3 style="font-size:14px;margin:16px 0 6px;">Chain-of-thought leakage in verification_notes</h3>
+    <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">Regression detector for the 2026-05-26 CGI complaint. Persistence + prompts should keep this at zero. If non-zero, run scripts/cleanup-may26-subscriber-trust.js and inspect the LLM prompt drift.</p>
+    ${staleNotes.length === 0 ? "<p>None.</p>" : `<ul>${staleNotes.map((r) => `<li>${esc(r.contract_name)} &mdash; ${r.stripped_count}/${r.total_count} stale &mdash; sample: <em>${esc(r.sample)}</em></li>`).join("")}</ul>`}
+    <h3 style="font-size:14px;margin:16px 0 6px;">opportunity_radar URL re-check (last 7d)</h3>
+    <p>archived broken: ${urlSweep.archived_7d || 0} &middot; last sweep: ${esc(urlSweep.last_sweep_at || "never")}</p>
     <h3 style="font-size:14px;margin:16px 0 6px;">Opportunity Radar</h3>
     <p>last_scan: ${esc(radar.last_scan || "never")} &middot; age_hours: ${radar.age_hours} &middot; total_opps: ${radar.total}</p>
     <h3 style="font-size:14px;margin:16px 0 6px;">SB Vehicle Radar</h3>
@@ -128,9 +181,9 @@ exports.handler = async () => {
       source_function: "intel-quality-report",
       severity: allGreen ? "info" : "warn",
       signature: "weekly_qa",
-      details: { stale: stale.length, bad_urls: badUrls.length, radar_age_h: radar.age_hours, vehicle_age_h: vehicle.age_hours, failure_keys: Object.keys(failures).length },
+      details: { stale: stale.length, bad_urls: badUrls.length, stale_notes: staleNotes.length, url_archived_7d: urlSweep.archived_7d || 0, radar_age_h: radar.age_hours, vehicle_age_h: vehicle.age_hours, failure_keys: Object.keys(failures).length },
     });
   } catch { /* non-blocking */ }
 
-  return { statusCode: 200, body: JSON.stringify({ ok: true, stale: stale.length, bad_urls: badUrls.length, radar, vehicle, failures }) };
+  return { statusCode: 200, body: JSON.stringify({ ok: true, stale: stale.length, bad_urls: badUrls.length, stale_notes: staleNotes.length, url_sweep: urlSweep, radar, vehicle, failures }) };
 };

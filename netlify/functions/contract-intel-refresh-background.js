@@ -25,6 +25,7 @@ const { disambiguate } = require("./lib/entity-disambiguator");
 const { trackAnthropic } = require("./lib/cost-tracker");
 const { getRefreshRoster } = require("./lib/refresh-roster");
 const { validateSources } = require("./lib/url-validator");
+const { sanitizeNotes, strippedNotes } = require("./lib/intel-notes-sanitizer");
 
 // --- Module-scoped state for cost tracking ---
 let _supabaseRef = null;
@@ -159,9 +160,15 @@ You MUST assign a confidence percentage (0-100) to every factual claim. Base con
 - Recency: Recent articles (within 6 months) = higher for current-state claims. Older articles = lower for anything time-sensitive.
 - Specificity: Exact dollar amounts, dates, contract numbers from official sources = high. Vague or estimated figures = lower.
 
-CHAIN OF THOUGHT: For each data point, explain your reasoning in the verification_notes: what source said what, how recent the source is, and why you assigned that confidence level.
+REASONING TRACE: For each data point, briefly note the source quality and recency. Reasoning lives in the per-claim "source_type" + "confidence" fields, NOT in verification_notes.
 
-If you cannot find authoritative evidence for a claim, either omit it or include it with low confidence (under 50%) and explain why in verification_notes.
+If you cannot find authoritative evidence for a claim, OMIT the claim. Do not write notes like "I could not verify" or "this is unconfirmed from the provided results" — those phrases leak chain-of-thought to the subscriber and have been filtered out automatically since 2026-05-26.
+
+VERIFICATION_NOTES IS CUSTOMER-FACING. Treat it like a footnote a paid subscriber will read. Rules:
+- At most 3 items.
+- Each item ≤ 25 words.
+- State what is confirmed, what is contextual, or what a competing source says — never your own uncertainty or research process.
+- Do NOT use the words "I", "could not", "out of date", "prior statement", "from the provided results", "partially unconfirmed", or the prefix "CONTRADICTED:". The sanitizer strips lines containing any of those phrases.
 
 Return a JSON object with three top-level keys: "intel", "black_hat", and "sources".
 
@@ -256,9 +263,11 @@ Return a JSON object with these keys:
   "sources": ["URLs consulted during verification"]
 }
 
-CHAIN OF THOUGHT: For each field you verify, state whether the research pass got it right, what evidence supports or contradicts it, and your adjusted confidence.
+For each field you verify, decide CONFIRM / CONTRADICT / UNABLE-TO-VERIFY internally, then express the OUTCOME in adjustments[] and contradictions_found[]. Do NOT narrate your reasoning process into verification_notes.
 
-Be concise. Focus on the highest-impact claims. If the research looks solid, say so — do not manufacture doubt.
+VERIFICATION_NOTES IS CUSTOMER-FACING. The merge layer drops any item that contains "I could not", "out of date", "prior statement", "from the provided results", "partially unconfirmed", or starts with "CONTRADICTED:". Phrases like "I was unable" also get dropped. Write notes that read as confident editorial footnotes, e.g. "Confirmed by SAM.gov listing 2026-01-28" or "Award value cited by trade press; not yet in USASpending."
+
+Be concise. At most 3 verification_notes items, each ≤ 25 words. If the research looks solid, say "Verified against [source]" and stop — do not manufacture doubt.
 
 Return ONLY valid JSON. No markdown code fences. No text before or after the JSON.`;
 
@@ -488,15 +497,35 @@ Use web search to spot-check the most important claims: dollar amounts, dates, c
     // notes already encode what Pass 1 got right or wrong. Replace, don't
     // append. Surface contradictions as a separate, terse "Corrected from
     // earlier research:" line rather than the internal "CONTRADICTED:" tag.
+    // All filtering goes through the shared sanitizer in
+    // lib/intel-notes-sanitizer.js so the rule lives in exactly one place;
+    // the contract is locked by tests/unit/intel-notes-sanitizer.test.js.
     const verifyNotes = verification.verification_notes || [];
     const contradictions = (verification.contradictions_found || []).map(
       (c) => `Corrected from earlier research: ${c.contradiction}`
     );
-    const customerSafeNotes = [...verifyNotes, ...contradictions]
-      .filter((n) => typeof n === "string" && n.trim().length > 0)
-      .filter((n) => !/^CONTRADICTED:/i.test(n))
-      .filter((n) => !/\b(could not verify|out of date|prior statement|partially unconfirmed|from the provided results)\b/i.test(n));
+    const proposedNotes = [...verifyNotes, ...contradictions];
+    const customerSafeNotes = sanitizeNotes(proposedNotes);
+    const dropped = strippedNotes(proposedNotes);
     intel.verification_notes = customerSafeNotes;
+    // Observability: when the sanitizer fires, the LLM produced
+    // chain-of-thought leakage despite the tightened prompt. Surface
+    // it so we can monitor regression in intel-quality-report.js.
+    if (dropped.length > 0) {
+      try {
+        await logOpsEvent(_supabaseRef, {
+          event_type: "INTEL_NOTES_SANITIZER_STRIPPED",
+          source_function: "contract-intel-refresh-background",
+          severity: "warn",
+          signature: "verification_notes_chain_of_thought",
+          details: {
+            contract: contract.name,
+            stripped_count: dropped.length,
+            stripped_preview: dropped.slice(0, 3).map((s) => String(s).slice(0, 240)),
+          },
+        });
+      } catch { /* non-blocking */ }
+    }
 
     // Add verification metadata
     intel.verified = true;

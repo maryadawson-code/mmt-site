@@ -45,18 +45,10 @@ if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
   process.exit(2);
 }
 
-// Same regex as contract-intel-refresh-background.js (Pass 2 merge) and
-// js/contract-detail.js (render-time filter). Keep these in sync.
-const STALE_NOTE_RE = /\b(could not verify|out of date|prior statement|partially unconfirmed|from the provided results)\b/i;
-const CONTRADICTED_PREFIX_RE = /^CONTRADICTED:/i;
-
-function sanitizeNotes(notes) {
-  if (!Array.isArray(notes)) return [];
-  return notes
-    .filter((n) => typeof n === "string" && n.trim().length > 0)
-    .filter((n) => !CONTRADICTED_PREFIX_RE.test(n))
-    .filter((n) => !STALE_NOTE_RE.test(n));
-}
+// Single source of truth for the strip rule — see
+// netlify/functions/lib/intel-notes-sanitizer.js. Locked by
+// tests/unit/intel-notes-sanitizer.test.js.
+const { sanitizeNotes } = require("../netlify/functions/lib/intel-notes-sanitizer");
 
 async function headStatus(url, timeoutMs = 6000) {
   const ac = new AbortController();
