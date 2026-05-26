@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-05-23T20:39:13.613Z",
+  "generated_at": "2026-05-26T00:18:33.147Z",
   "source_dir": "content/newsletter",
-  "source_count": 111,
+  "source_count": 112,
   "newest_in_source": {
-    "file": "2026-05-22-the-workflow-was-designed-to-deliver.md",
-    "title": "The Workflow Was Designed to Deliver",
-    "date": "2026-05-22T00:00:00.000Z",
-    "slug": "the-workflow-was-designed-to-deliver",
+    "file": "2026-05-26-a-researcher-talked-a-clinical-ai-out-of-its-own-rules.md",
+    "title": "A Researcher Talked a Clinical AI Out of Its Own Rules. DHA Is Fielding the Same Design.",
+    "date": "2026-05-26T00:00:00.000Z",
+    "slug": "a-researcher-talked-a-clinical-ai-out-of-its-own-rules",
     "future_dated": false
   },
   "newest_in_dist_latest": {
-    "slug": "the-workflow-was-designed-to-deliver",
-    "title": "The Workflow Was Designed to Deliver"
+    "slug": "a-researcher-talked-a-clinical-ai-out-of-its-own-rules",
+    "title": "A Researcher Talked a Clinical AI Out of Its Own Rules. DHA Is Fielding the Same Design."
   },
   "in_sync": true,
   "imported_in_this_run": [],
