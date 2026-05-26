@@ -479,13 +479,24 @@ Use web search to spot-check the most important claims: dollar amounts, dates, c
       }
     }
 
-    // Merge verification notes
-    const existingNotes = intel.verification_notes || [];
+    // 2026-05-26 (Danielle Applegate / CGI Federal): Subscriber-trust fix.
+    // Pass 1 verification_notes are Claude's chain-of-thought reasoning
+    // ("I couldn't verify in SAM.gov from the provided results..."). When
+    // Pass 2 then DOES verify the claim, blindly concatenating both arrays
+    // produced a self-contradicting block in the customer-facing rendering
+    // (see js/contract-detail.js). Pass 2 is the authoritative voice — its
+    // notes already encode what Pass 1 got right or wrong. Replace, don't
+    // append. Surface contradictions as a separate, terse "Corrected from
+    // earlier research:" line rather than the internal "CONTRADICTED:" tag.
     const verifyNotes = verification.verification_notes || [];
     const contradictions = (verification.contradictions_found || []).map(
-      (c) => `CONTRADICTED: ${c.claim} — ${c.contradiction}`
+      (c) => `Corrected from earlier research: ${c.contradiction}`
     );
-    intel.verification_notes = [...existingNotes, ...verifyNotes, ...contradictions];
+    const customerSafeNotes = [...verifyNotes, ...contradictions]
+      .filter((n) => typeof n === "string" && n.trim().length > 0)
+      .filter((n) => !/^CONTRADICTED:/i.test(n))
+      .filter((n) => !/\b(could not verify|out of date|prior statement|partially unconfirmed|from the provided results)\b/i.test(n));
+    intel.verification_notes = customerSafeNotes;
 
     // Add verification metadata
     intel.verified = true;

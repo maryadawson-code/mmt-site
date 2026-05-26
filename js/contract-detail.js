@@ -72,12 +72,22 @@
         }
         html += '</div>';
       }
-      if (intel.verification_notes && intel.verification_notes.length) {
+      // 2026-05-26 (Danielle Applegate / CGI Federal): subscriber-trust fix.
+      // Strip internal chain-of-thought scaffolding from verification_notes
+      // before render. Persistence is also fixed in
+      // netlify/functions/contract-intel-refresh-background.js, but this
+      // render-time filter cleans up rows that were written before the new
+      // persistence logic landed.
+      var STALE_NOTE_PATTERNS = /\b(could not verify|out of date|prior statement|partially unconfirmed|from the provided results|CONTRADICTED:)\b/i;
+      var safeNotes = (intel.verification_notes || [])
+        .filter(function(n) { return typeof n === 'string' && n.trim().length > 0; })
+        .filter(function(n) { return !STALE_NOTE_PATTERNS.test(n); });
+      if (safeNotes.length) {
         html += '<div class="p-5 rounded-xl" style="background:rgba(251,191,36,0.05);border:1px solid rgba(217,119,6,0.1);">';
         html += '<h3 class="text-sm font-bold uppercase tracking-wider mb-3 flex items-center gap-2" style="color:#D97706;"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm-.75 3.75a.75.75 0 011.5 0v4a.75.75 0 01-1.5 0v-4zm.75 7a.75.75 0 100-1.5.75.75 0 000 1.5z"/></svg>Verification Notes</h3>';
-        html += intel.verification_notes.map(function(n) {
-          var isContradiction = n.indexOf('CONTRADICTED:') === 0;
-          var noteColor = isContradiction ? 'var(--mmt-red, #E63946)' : 'var(--mmt-text-secondary)';
+        html += safeNotes.map(function(n) {
+          var isCorrection = /^Corrected from earlier research:/i.test(n);
+          var noteColor = isCorrection ? '#D97706' : 'var(--mmt-text-secondary)';
           return '<p class="text-sm mb-2 leading-relaxed" style="color:' + noteColor + ';">' + esc(n) + '</p>';
         }).join('');
         html += '</div>';
