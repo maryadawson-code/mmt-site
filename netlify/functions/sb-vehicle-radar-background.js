@@ -375,6 +375,21 @@ async function _runSbVehicleScan(event) {
 
   let upsertCount = 0;
   let errorCount = 0;
+  // Observability: track WHY classifications get filtered so a future
+  // SCAN_EMPTY event tells us if it was zero-results-from-Claude vs
+  // all-rejected-for-relevance vs all-rejected-for-invalid-vehicle.
+  const classifyStats = {
+    candidates_sent: 0,
+    classifications_returned: 0,
+    rejected_invalid_vehicle: 0,
+    rejected_cancelled_vehicle: 0,
+    rejected_validation: 0,
+    rejected_relevance: 0,
+    relevance_0_24: 0,
+    relevance_25_49: 0,
+    relevance_50_79: 0,
+    relevance_80_100: 0,
+  };
   const classifyModel = await getModelConfig(null, "sb_classify");
 
   // ============================================================
@@ -383,7 +398,9 @@ async function _runSbVehicleScan(event) {
 
   if (topResults.length > 0) {
     console.log(`Phase 1: Classifying USASpending awards (${classifyModel.model} via ${classifyModel.provider})...`);
+    classifyStats.candidates_sent = topResults.length;
     const classifications = await classifyWithClaude(topResults, classifyModel.model, supabase, classifyModel);
+    classifyStats.classifications_returned = classifications.length;
     console.log(`Claude classified ${classifications.length} awards`);
 
     for (const cls of classifications) {
@@ -394,9 +411,17 @@ async function _runSbVehicleScan(event) {
       const isValidVehicle = VALID_VEHICLES.includes(cls.contract_vehicle);
       const vehicle = isValidVehicle ? cls.contract_vehicle : "OASIS+";
 
+      // Bucket relevance for observability before any reject paths
+      const r = typeof cls.relevance_score === "number" ? cls.relevance_score : 50;
+      if (r < 25) classifyStats.relevance_0_24++;
+      else if (r < 50) classifyStats.relevance_25_49++;
+      else if (r < 80) classifyStats.relevance_50_79++;
+      else classifyStats.relevance_80_100++;
+
       // Sprint 2: Reject cancelled vehicles
       if (CANCELLED_VEHICLES.includes(cls.contract_vehicle)) {
         console.warn(`Vehicle rejected (cancelled): ${cls.contract_vehicle}`);
+        classifyStats.rejected_cancelled_vehicle++;
         continue;
       }
 
@@ -404,15 +429,20 @@ async function _runSbVehicleScan(event) {
       const vValidation = validateVehicle({ name: vehicle, status: "Active" });
       if (!vValidation.valid) {
         console.warn(`Vehicle validation failed: ${vehicle}`, vValidation.errors);
+        classifyStats.rejected_validation++;
         continue;
       }
 
       if (!isValidVehicle) {
         console.warn(`Vehicle fallback: Claude returned "${cls.contract_vehicle}", defaulting to OASIS+ at confidence 15`);
+        classifyStats.rejected_invalid_vehicle++;
       }
 
       const relevance = typeof cls.relevance_score === "number" ? cls.relevance_score : 50;
-      if (relevance < 25) continue;
+      if (relevance < 25) {
+        classifyStats.rejected_relevance++;
+        continue;
+      }
 
       const confidence = isValidVehicle
         ? (typeof cls.vehicle_confidence === "number"
@@ -555,7 +585,13 @@ async function _runSbVehicleScan(event) {
       source_function: "sb-vehicle-radar-background",
       severity: (upsertCount + phase2Count) === 0 && errorCount > 0 ? "error" : ((upsertCount + phase2Count) === 0 ? "warn" : "info"),
       signature: "sb_vehicle_scan_complete",
-      details: { fetched: uniqueResults.length, phase1: upsertCount, phase2: phase2Count, errors: errorCount },
+      details: {
+        fetched: uniqueResults.length,
+        phase1: upsertCount,
+        phase2: phase2Count,
+        errors: errorCount,
+        classify: classifyStats,
+      },
     });
   } catch (logErr) {
     console.error("ops_ledger heartbeat failed:", logErr.message);
