@@ -166,6 +166,16 @@ exports.handler = async (event) => {
         affected_entity: order_id,
         details: { order_id, customer_email: order.email, reason: "no_session_id_on_order" },
       });
+      try {
+        await supabase
+          .from("marketpulse_orders")
+          .update({
+            workflow_state: "failed",
+            status: "failed",
+            error_message: "[NOT_PAID] no_session_id_on_order",
+          })
+          .eq("id", order_id);
+      } catch { /* non-blocking */ }
       return jsonResponse(402, { error: "not_paid", reason: "no_session_id" });
     }
     const session = await stripe.checkout.sessions.retrieve(order.session_id);
@@ -183,6 +193,16 @@ exports.handler = async (event) => {
         affected_entity: order_id,
         details: { order_id, customer_email: order.email, stripe_status: stripeStatus, session_id: order.session_id },
       });
+      try {
+        await supabase
+          .from("marketpulse_orders")
+          .update({
+            workflow_state: "failed",
+            status: "failed",
+            error_message: `[NOT_PAID] stripe_status=${stripeStatus}`,
+          })
+          .eq("id", order_id);
+      } catch { /* non-blocking */ }
       return jsonResponse(402, { error: "not_paid", stripe_status: stripeStatus });
     }
     stripeStatus = "succeeded";
@@ -196,6 +216,20 @@ exports.handler = async (event) => {
       affected_entity: order_id,
       details: { reason: "STRIPE_ERROR", order_id, customer_email: order.email, error_message: errMsg },
     });
+    // Stamp the order with a non-retryable classification so the nightly
+    // reconciler stops re-invoking this replay. STRIPE_ERROR is not in
+    // RETRYABLE_CODES (see lib/marketpulse-reconcile.js) — without this,
+    // the original retryable error_message remains and we loop forever.
+    try {
+      await supabase
+        .from("marketpulse_orders")
+        .update({
+          workflow_state: "failed",
+          status: "failed",
+          error_message: `[STRIPE_ERROR] ${errMsg}`,
+        })
+        .eq("id", order_id);
+    } catch { /* non-blocking */ }
     return jsonResponse(502, { error: "stripe_error", message: errMsg });
   }
 
