@@ -98,6 +98,14 @@
 [functions."opportunity-radar"]
   schedule = "0 */4 * * *"
 
+# eBuy Open surfacing: triggers ebuy-open-radar-background to scan GSA
+# eBuy Open (Schedule-only RFQs that never hit SAM.gov) for federal
+# health IT RFQs. 11:30 UTC = 7:30 AM ET, 30 min after the SAM/agency
+# radar and offset from every other radar cron (no collision). Requires
+# the opportunity_radar `source` column (migration 20260528193000).
+[functions."ebuy-open-radar"]
+  schedule = "30 11 * * *"
+
 [functions."sb-vehicle-radar"]
   schedule = "0 13 * * *"
 

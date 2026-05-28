@@ -46,6 +46,7 @@ exports.handler = async (event) => {
   const hasVehicle = params.has_vehicle === "true";
   const minConfidence = parseInt(params.min_confidence) || 0;
   const sortBy = params.sort || null;
+  const source = params.source || null;
 
   try {
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
@@ -86,6 +87,10 @@ exports.handler = async (event) => {
       query = query.gte("vehicle_confidence", minConfidence);
     }
 
+    if (source) {
+      query = query.eq("source", source);
+    }
+
     const { data: opportunities, error: fetchErr } = await query;
 
     if (fetchErr) {
@@ -108,6 +113,7 @@ exports.handler = async (event) => {
     if (vehicle) countQuery = countQuery.eq("contract_vehicle", vehicle);
     if (hasVehicle) countQuery = countQuery.not("contract_vehicle", "is", null);
     if (minConfidence > 0) countQuery = countQuery.gte("vehicle_confidence", minConfidence);
+    if (source) countQuery = countQuery.eq("source", source);
 
     const { count } = await countQuery;
 

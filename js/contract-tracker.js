@@ -78,7 +78,8 @@
             note = '<p class="text-sm" style="color:var(--mmt-text-secondary);">No scan results yet. The scanner runs daily at 7 AM ET.</p>';
           }
         }
-        return '<div class="card rounded-xl p-8 text-center" data-testid="radar-empty"><p class="text-base mb-2" style="color:var(--mmt-text-secondary);">No opportunities match the current filter.</p>' + note + '</div>';
+        var fallback = '<p class="text-sm" style="color:var(--mmt-text-secondary);margin-top:12px;">Not seeing it here? Some RFQs post only to GSA eBuy for Schedule holders and never appear on SAM.gov. Search directly: <a href="https://www.ebuy.gsa.gov/advantage/ebuy/start_page.do" target="_blank" rel="noopener" style="color:var(--mmt-teal);font-weight:600;">eBuy Open</a> &middot; <a href="https://sam.gov/search" target="_blank" rel="noopener" style="color:var(--mmt-teal);font-weight:600;">SAM.gov search</a></p>';
+        return '<div class="card rounded-xl p-8 text-center" data-testid="radar-empty"><p class="text-base mb-2" style="color:var(--mmt-text-secondary);">No opportunities match the current filter.</p>' + note + fallback + '</div>';
       }
       var isPremium = isPremiumUser();
       var html = '<div class="grid md:grid-cols-2 gap-4">';
@@ -87,7 +88,10 @@
         // Header with type badge, confidence, and deadline
         html += '<div class="flex items-start justify-between gap-2 mb-2">';
         html += '<div class="flex flex-wrap gap-2">';
-        if (o.opportunity_type) {
+        var isEbuy = o.source === 'ebuy_open' || o.opportunity_type === 'ebuy_rfq';
+        if (isEbuy) {
+          html += '<span class="text-xs font-bold px-2 py-0.5 rounded" style="background:rgba(146,113,10,0.10);color:#92710A;">eBuy RFQ</span>';
+        } else if (o.opportunity_type) {
           html += '<span class="text-xs px-2 py-0.5 rounded" style="background:rgba(69,123,157,0.08);color:var(--mmt-teal);">' + esc(o.opportunity_type) + '</span>';
         }
         if (o.contract_vehicle) {
@@ -104,6 +108,16 @@
         html += '<h3 class="text-sm font-bold mb-1" style="color:var(--mmt-navy);">' + esc(o.title) + '</h3>';
         // Agency (always public)
         html += '<p class="text-xs mb-2" style="color:var(--mmt-teal);">' + esc(o.agency) + '</p>';
+        // eBuy RFQs: public access note + public source link. These are
+        // Schedule-only RFQs that never hit SAM.gov; surface existence so a
+        // search never dead-ends, even for free readers (the Ryan gap).
+        if (isEbuy) {
+          html += '<p class="text-xs mb-2" style="color:#92710A;">Requires a GSA Schedule to respond.';
+          if (isValidSourceUrl(o.source_url)) {
+            html += ' <a href="' + esc(o.source_url) + '" target="_blank" rel="noopener" style="color:#92710A;font-weight:600;text-decoration:underline;">View on eBuy Open &rarr;</a>';
+          }
+          html += '</p>';
+        }
         // Premium content: description, reasoning, metadata
         if (isPremium) {
           if (o.ai_summary) {
@@ -153,6 +167,8 @@
         filtered = opps;
       } else if (activeFilter === 'small_business') {
         filtered = opps.filter(function(o) { return o.small_business_eligible; });
+      } else if (activeFilter === 'ebuy') {
+        filtered = opps.filter(function(o) { return o.source === 'ebuy_open' || o.opportunity_type === 'ebuy_rfq'; });
       } else {
         filtered = opps.filter(function(o) { return o.set_aside_type === activeFilter; });
       }
