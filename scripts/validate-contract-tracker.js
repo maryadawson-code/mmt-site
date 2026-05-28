@@ -5,7 +5,7 @@
 // Does NOT fetch URLs, fact-check content, or visit external pages.
 //
 // Enforces:
-//   1. contracts.json contains exactly the 36 expected slugs.
+//   1. contracts.json contains exactly the 40 expected slugs.
 //   2. Every entry has required structural fields:
 //      slug, name (title), agency, status, description, source_urls,
 //      last_verified.
@@ -56,6 +56,8 @@ const EXPECTED_SLUGS = [
   "ssa-dcps2-disability-claims-processing",
   "nih-strides-cloud-for-biomedical-data",
   "cdc-dibbs-data-integration-building-blocks",
+  "t6-health-systems-aoi-2-peo-dhms-cso", "mantech-dmix-diss-support",
+  "swingtide-market-intelligence-support", "str-zero-day-leidos",
 ];
 
 const REQUIRED_FIELDS = ["slug", "name", "agency", "status", "description", "source_urls", "last_verified"];
