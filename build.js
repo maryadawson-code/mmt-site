@@ -5037,12 +5037,32 @@ async function build() {
           console.warn(`Pursuit calendar hydrate warning: ${error.message}`);
         } else {
           supabaseRows = data || [];
-          const supabaseRefresh = supabaseRows
-            .map((r) => r.updated_at)
-            .filter(Boolean)
-            .sort()
-            .reverse()[0] || null;
-          if (supabaseRefresh) lastRefreshedAt = supabaseRefresh;
+        }
+
+        // Freshness signal — decoupled from the active-rows display set.
+        // The banner's "Last refreshed" must reflect the last time the
+        // pursuit-calendar-refresh cron actually touched the table, NOT the
+        // newest in-window pursuit. Deriving it from active rows alone caused
+        // a recurring FALSE "STALE": RSS-sourced rows carry event_date =
+        // article pubDate and get swept daily, so the active set briefly
+        // empties; when it does, the old active-only max(updated_at) was null
+        // and the banner fell back to seed._meta.last_curated_at (a curation
+        // date, e.g. 2026-05-21) mislabeled as "Last refreshed" → STALE, even
+        // though the 6h cron ran minutes earlier. max(updated_at) over ALL
+        // rows stays honest: it only crosses the STALE threshold if the cron
+        // genuinely stops. See CLAUDE.md sprint 2026-05-28.
+        try {
+          const { data: freshRow, error: freshErr } = await sb
+            .from('pursuit_calendar')
+            .select('updated_at')
+            .order('updated_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          if (!freshErr && freshRow && freshRow.updated_at) {
+            lastRefreshedAt = freshRow.updated_at;
+          }
+        } catch (freshCatchErr) {
+          console.warn(`Pursuit calendar freshness probe warning (non-fatal): ${freshCatchErr.message}`);
         }
       } catch (err) {
         console.warn(`Pursuit calendar hydrate warning (non-fatal): ${err.message}`);

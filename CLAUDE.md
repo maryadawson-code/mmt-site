@@ -216,6 +216,43 @@ Before declaring work complete, verify:
 
 ---
 
+## Sprint 2026-05-28 (later) — Pursuit Calendar false-STALE freshness banner
+
+Mary saw `/premium/calendar` flagged "Last refreshed: May 21, 2026 (149h
+ago) — STALE." The data was NOT stale: the `pursuit-calendar-refresh` cron
+runs every 6h (RSS path adds ~21 rows/run; SAM path was 429-throttled but
+that's non-fatal/unrelated), `rebuild-trigger` rebuilds the site every 4h,
+and the live `pursuit_calendar` table had 21 active rows updated that day.
+
+Root cause was a **false-STALE** in how `build.js` derived the banner's
+`lastRefreshedAt`. The hydrate path computed `supabaseRefresh` as
+`max(updated_at)` over `status='active'` rows ONLY. RSS-sourced rows carry
+`event_date = article pubDate` and get swept daily, so the active set
+briefly empties; when a 4h rebuild landed during an empty-active window,
+`supabaseRefresh` was null and the banner fell back to
+`seed._meta.last_curated_at` ("2026-05-21") — a curation date mislabeled as
+"Last refreshed". Past 48h that renders red "STALE". Mary's screenshot was
+the May 27 ~17:00 build (149h after the seed date).
+
+Fix (single edit, `build.js` pursuit-calendar hydrate path): the freshness
+signal is now a dedicated `max(updated_at)` query over ALL rows (no
+`status` filter), decoupled from the active-rows DISPLAY query. It only
+crosses the STALE threshold if the refresh cron genuinely stops. The active
+query still drives which pursuits render; when the active set is empty the
+merged page shows the 11 curated seed events with an honest fresh banner.
+
+Hard rule (do not regress): **a "last refreshed" freshness signal must
+reflect when the data source was last touched, not whether any row is
+currently in-window.** Never derive it from a filtered/active subset whose
+emptiness is normal churn, and never present a seed/curation date as a
+refresh time.
+
+Verified 2026-05-28 via `netlify dev:exec node build.js`: hydrated 32
+pursuits (11 seed + 21 supabase), banner = "Last refreshed: May 28, 2026
+(4h ago)" `pc-fresh`. `validate-dist` OK (431 pages).
+
+---
+
 ## Sprint 2026-05-28 — Premium dashboard mobile fix (dual-shell collision)
 
 Mary reported `/premium/dashboard.html` "funky" on mobile. Root cause was
