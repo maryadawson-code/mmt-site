@@ -8,31 +8,40 @@
   <link rel="stylesheet" href="/styles/tailwind.css">
   <link rel="icon" href="/favicon-v3.png" type="image/png">
   <style>
-    :root { --mmt-navy:#0A192F; --mmt-teal:#457B9D; --mmt-white:#FFFFFF; --mmt-surface:#F3F4F6; --mmt-text-secondary:#6B7280; --mmt-border:#E5E7EB; --dash-sidebar:220px; }
-    body { font-family:Inter,system-ui,sans-serif; color:var(--mmt-navy); background:var(--mmt-surface); margin:0; }
-    .dash-shell { display:grid; grid-template-columns:var(--dash-sidebar) 1fr; min-height:100vh; }
-    .dash-nav { background:var(--mmt-navy); padding:24px 0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto; }
-    .dash-nav-brand { padding:0 20px 24px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px; }
-    .dash-nav-brand a { color:#fff; text-decoration:none; font-weight:800; font-size:14px; }
-    .dash-nav-brand small { display:block; font-size:11px; color:rgba(255,255,255,0.5); font-weight:400; margin-top:2px; }
-    .dash-nav-link { display:flex; align-items:center; gap:10px; padding:10px 20px; color:rgba(255,255,255,0.6); text-decoration:none; font-size:13px; font-weight:500; transition:all 0.15s; }
-    .dash-nav-link:hover { color:#fff; background:rgba(255,255,255,0.05); }
-    .dash-nav-link.active { color:#fff; background:rgba(69,123,157,0.3); border-left:3px solid var(--mmt-teal); }
-    .dash-nav-section { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:rgba(255,255,255,0.3); padding:16px 20px 6px; }
-    .dash-header { background:var(--mmt-white); padding:16px 32px; border-bottom:1px solid var(--mmt-border); display:flex; align-items:center; justify-content:space-between; }
-    .dash-main { padding:32px; max-width:900px; }
+    /* ------------------------------------------------------------------
+       Dashboard content styles only.
+
+       The page layout shell (sidebar + mobile bottom nav + main padding)
+       is injected at build time by build.js injectDashShell() — the SAME
+       canonical shell every premium page uses. This file intentionally
+       ships NO dash-shell / dash-nav / dash-header / dash-main /
+       dash-mobile-nav markup or CSS, so there is exactly one shell in the
+       built page (no nested-shell collision). See
+       docs/dashboard-mobile-spec.md.
+       ------------------------------------------------------------------ */
+    :root { --mmt-navy:#0A192F; --mmt-teal:#457B9D; --mmt-white:#FFFFFF; --mmt-surface:#F3F4F6; --mmt-text-secondary:#6B7280; --mmt-border:#E5E7EB; }
     .dash-card { background:var(--mmt-white); border-radius:12px; padding:24px; margin-bottom:16px; border:1px solid var(--mmt-border); }
     .dash-card h3 { margin:0 0 8px; font-size:17px; font-weight:700; }
-    .btn-primary { display:inline-block; background:var(--mmt-navy); color:var(--mmt-white); font-weight:700; padding:10px 20px; border-radius:8px; text-decoration:none; font-size:13px; }
+    .btn-primary { display:inline-block; background:var(--mmt-navy); color:var(--mmt-white) !important; font-weight:700; padding:10px 20px; border-radius:8px; text-decoration:none; font-size:13px; }
+
+    /* Slim content-level header (email + sign out). Not class "dash-header"
+       so the build shell-stripper leaves it intact. */
+    .dash-content-header { display:flex; align-items:center; justify-content:space-between; gap:12px 16px; flex-wrap:wrap; margin-bottom:24px; }
+    .dash-content-header .dch-title { font-size:14px; font-weight:700; }
+    .dash-content-header .dch-meta { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+
+    /* Card grids — responsive. Desktop keeps the 3-up / 2-up layout;
+       mobile collapses to a single column so cards never get crushed. */
+    .dash-tools-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:16px; }
+    .dash-pair-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+
     @media (max-width:768px) {
-      .dash-shell { grid-template-columns:1fr; }
-      .dash-nav { display:none; }
-      .dash-mobile-nav { display:flex; position:fixed; bottom:0; left:0; right:0; background:var(--mmt-navy); padding:8px 0; justify-content:space-around; z-index:100; }
-      .dash-mobile-nav a { color:rgba(255,255,255,0.6); text-decoration:none; font-size:10px; text-align:center; padding:6px 8px; }
-      .dash-mobile-nav a.active { color:#fff; }
-      .dash-main { padding:16px; padding-bottom:80px; }
+      .dash-tools-grid { grid-template-columns:1fr; }
+      .dash-pair-grid { grid-template-columns:1fr; }
+      .dash-content-header { align-items:flex-start; }
+      /* Comfortable tap targets for any actionable element in a card. */
+      .dash-card a, .dash-card button { min-height:44px; display:inline-flex; align-items:center; }
     }
-    @media (min-width:769px) { .dash-mobile-nav { display:none; } }
   </style>
   <script>
     (function() {
@@ -46,187 +55,145 @@
   </script>
 </head>
 <body>
-  <div class="dash-shell">
-    <!-- Sidebar -->
-    <nav class="dash-nav">
-      <div class="dash-nav-brand">
-        <a href="/premium/dashboard.html">★ MMT Premium<small>Intelligence Dashboard</small></a>
+  <nav class="nav-editorial"></nav>
+
+  <!-- Slim content header: email + sign out (the build shell has no header) -->
+  <div class="dash-content-header">
+    <span class="dch-title">&#9733; Premium Dashboard</span>
+    <div class="dch-meta">
+      <span style="font-size:13px; color:var(--mmt-text-secondary);" id="dash-email"></span>
+      <a href="/" style="font-size:12px; color:var(--mmt-teal); text-decoration:none;">Back to site</a>
+      <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_premium_ts');localStorage.removeItem('mmt_email');document.cookie='mmt_premium=;path=/;max-age=0';window.location.href='/';return false;" style="font-size:12px; color:var(--mmt-text-secondary); text-decoration:none;">Sign out</a>
+    </div>
+  </div>
+
+  <!-- PMD-05: First-visit onboarding banner -->
+  <div id="first-visit-banner" style="display:none;background:rgba(69,123,157,0.05);border:1px solid rgba(69,123,157,0.2);border-radius:10px;padding:16px 20px;margin-bottom:20px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:4px;">Welcome to MMT Premium</div>
+        <div style="font-size:13px;color:var(--mmt-text-secondary);">Set your agency focus to personalize your dashboard — takes 30 seconds.</div>
       </div>
-      <div class="dash-nav-section">Intelligence</div>
-      <a href="/premium/dashboard.html" class="dash-nav-link active">Dashboard</a>
-      <a href="/intel/capture-intelligence-this-issue/" class="dash-nav-link">Capture Intelligence</a>
-      <a href="/capture-corner.html" class="dash-nav-link">Capture Corner</a>
-      <a href="/premium/briefings.html" class="dash-nav-link">Friday Brief</a>
-      <a href="/premium/monthly-briefs.html" class="dash-nav-link">Monthly Brief</a>
-      <div class="dash-nav-section">Tools</div>
-      <a href="/premium/pursuit-score.html" class="dash-nav-link">Pursuit Score</a>
-      <a href="/premium/compliance-check.html" class="dash-nav-link">Compliance Check</a>
-      <a href="/premium/signal-chain.html" class="dash-nav-link">Signal Chain</a>
-      <a href="/proposal-pulse.html" class="dash-nav-link">ProposalPulse ($14.99)</a>
-      <a href="/marketpulse.html" class="dash-nav-link">MarketPulse ($35)</a>
-      <div class="dash-nav-section">Resources</div>
-      <a href="/latest.html" class="dash-nav-link">Article Archive</a>
-      <a href="/contract-tracker.html" class="dash-nav-link">Contract Tracker</a>
-      <a href="/idiq-tracker.html" class="dash-nav-link">IDIQ Tracker</a>
-      <a href="/glossary.html" class="dash-nav-link">Glossary</a>
-      <a href="/premium/calendar.html" class="dash-nav-link">Pursuit Calendar</a>
-      <a href="/premium/ask-mmt.html" class="dash-nav-link">Ask MMT</a>
-      <div class="dash-nav-section">Account</div>
-      <a href="/premium/settings.html" class="dash-nav-link">Settings</a>
-      <a href="/" class="dash-nav-link" style="margin-top:auto; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px;">&larr; Back to site</a>
-    </nav>
-
-    <!-- Main content -->
-    <div>
-      <div class="dash-header">
-        <span style="font-size:14px; font-weight:700;">★ Premium Dashboard</span>
-        <div style="display:flex; align-items:center; gap:16px;">
-          <span style="font-size:13px; color:var(--mmt-text-secondary);" id="dash-email"></span>
-          <a href="/" style="font-size:12px; color:var(--mmt-teal); text-decoration:none;">Back to site</a>
-          <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_premium_ts');localStorage.removeItem('mmt_email');document.cookie='mmt_premium=;path=/;max-age=0';window.location.href='/';return false;" style="font-size:12px; color:var(--mmt-text-secondary); text-decoration:none;">Sign out</a>
-        </div>
-      </div>
-
-      <div class="dash-main">
-        <!-- PMD-05: First-visit onboarding banner -->
-        <div id="first-visit-banner" style="display:none;background:rgba(69,123,157,0.05);border:1px solid rgba(69,123,157,0.2);border-radius:10px;padding:16px 20px;margin-bottom:20px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
-            <div>
-              <div style="font-size:13px;font-weight:700;margin-bottom:4px;">Welcome to MMT Premium</div>
-              <div style="font-size:13px;color:var(--mmt-text-secondary);">Set your agency focus to personalize your dashboard — takes 30 seconds.</div>
-            </div>
-            <div style="display:flex;gap:10px;align-items:center;flex-shrink:0;">
-              <a href="/premium/settings.html" style="font-size:13px;font-weight:700;color:#fff;background:var(--mmt-teal);padding:8px 16px;border-radius:7px;text-decoration:none;">Set preferences &rarr;</a>
-              <button id="first-visit-dismiss" style="font-size:12px;color:var(--mmt-text-secondary);background:none;border:none;cursor:pointer;">Maybe later</button>
-            </div>
-          </div>
-        </div>
-
-        <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">Welcome back.</h1>
-        <p style="color:var(--mmt-text-secondary); margin:0 0 32px; font-size:14px;">Your Premium access is active.</p>
-
-        <div class="dash-card" style="border-left:3px solid var(--mmt-teal);">
-          <h3>Capture Intelligence — This Month</h3>
-          <p style="margin:0 0 12px; color:var(--mmt-text-secondary); font-size:14px;">Full sheet with all action windows, confidence labels, and deep-dive analysis. 24 signals across 10 agencies.</p>
-          <a href="/intel/capture-intelligence-this-issue/" class="btn-primary">View Full Sheet &rarr;</a>
-        </div>
-
-        <!-- Recent Pursuit Scores — populated from localStorage -->
-        <div id="ps-recent-wrap" style="display:none;margin:24px 0 8px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-            <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin:0;">Recent Pursuit Scores</p>
-            <a href="/premium/pursuit-score.html" style="font-size:12px;color:var(--mmt-teal);text-decoration:none;font-weight:600;">Score another &rarr;</a>
-          </div>
-          <div id="ps-recent-list" style="display:grid;gap:6px;margin-bottom:16px;"></div>
-        </div>
-        <script>
-          (function() {
-            try {
-              var h = JSON.parse(localStorage.getItem('mmt_pursuit_history') || '[]');
-              if (!h.length) return;
-              var wrap = document.getElementById('ps-recent-wrap');
-              var list = document.getElementById('ps-recent-list');
-              var verdictColors = { 'GO':'#15803D','LEAN GO':'#457B9D','DEVELOP':'#92710A','LEAN NO-BID':'#F97316','NO-BID':'#E63946' };
-              h.slice(0, 5).forEach(function(item) {
-                var d = new Date(item.scoredAt).toLocaleDateString();
-                var color = verdictColors[item.verdict] || '#457B9D';
-                var row = document.createElement('a');
-                row.href = '/premium/pursuit-score.html?keyword=' + encodeURIComponent(item.query || '') + (item.agency ? '&agency=' + item.agency : '');
-                row.style.cssText = 'background:#fff;border:1px solid #E5E7EB;border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:12px;text-decoration:none;color:inherit;';
-                row.innerHTML =
-                  '<div style="flex:1;min-width:0;">' +
-                    '<div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (item.query || '—') + '</div>' +
-                    '<div style="font-size:11px;color:#6B7280;">' + (item.agency || 'Any agency') + ' · ' + d + '</div>' +
-                  '</div>' +
-                  '<div style="display:flex;align-items:center;gap:10px;">' +
-                    '<span style="font-size:12px;font-weight:700;padding:3px 10px;border-radius:4px;color:#fff;background:' + color + ';">' + (item.verdict || '—') + '</span>' +
-                    '<span style="font-size:16px;font-weight:800;">' + (item.totalScore || 0) + '</span>' +
-                  '</div>';
-                list.appendChild(row);
-              });
-              wrap.style.display = 'block';
-            } catch (_) { /* noop */ }
-          })();
-        </script>
-
-        <!-- Premium tools row — the three new Premium-included tools -->
-        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin:24px 0 10px;">Premium tools &middot; included with your subscription</p>
-        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:16px;">
-          <a href="/premium/pursuit-score.html" class="dash-card" style="text-decoration:none;color:inherit;display:block;transition:border-color 0.15s;">
-            <h3 style="font-size:15px;margin:0 0 6px;">Pursuit Score</h3>
-            <p style="margin:0 0 6px;color:var(--mmt-text-secondary);font-size:13px;line-height:1.5;">0–100 bid/no-bid card across incumbent vulnerability, budget, legislative, research pipeline.</p>
-            <p style="margin:0 0 10px;font-size:11px;color:var(--mmt-text-secondary);"><strong style="color:var(--mmt-navy);">20/mo included</strong> · overage $3.99 · standalone $29.99</p>
-            <span style="font-size:13px;font-weight:600;color:var(--mmt-teal);">Score a pursuit &rarr;</span>
-          </a>
-          <a href="/premium/compliance-check.html" class="dash-card" style="text-decoration:none;color:inherit;display:block;">
-            <h3 style="font-size:15px;margin:0 0 6px;">Compliance Check</h3>
-            <p style="margin:0 0 6px;color:var(--mmt-text-secondary);font-size:13px;line-height:1.5;">Paste proposal text. Auto-checks ONC CHPL, SCA wage floors, PubMed evidence, FedRAMP/HIPAA gaps.</p>
-            <p style="margin:0 0 10px;font-size:11px;color:var(--mmt-text-secondary);"><strong style="color:var(--mmt-navy);">15/mo included</strong> · overage $4.99 · standalone $49.99</p>
-            <span style="font-size:13px;font-weight:600;color:var(--mmt-teal);">Run a compliance check &rarr;</span>
-          </a>
-          <a href="/premium/signal-chain.html" class="dash-card" style="text-decoration:none;color:inherit;display:block;">
-            <h3 style="font-size:15px;margin:0 0 6px;">Signal Chain</h3>
-            <p style="margin:0 0 6px;color:var(--mmt-text-secondary);font-size:13px;line-height:1.5;">Live 5-layer federal signal monitor: research, legislative, workforce, budget, contract horizon.</p>
-            <p style="margin:0 0 10px;font-size:11px;color:var(--mmt-text-secondary);"><strong style="color:var(--mmt-navy);">Add-on</strong> $49/mo (5 programs) · Pro $149/mo (20)</p>
-            <span style="font-size:13px;font-weight:600;color:var(--mmt-teal);">Open signal chain &rarr;</span>
-          </a>
-        </div>
-
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
-          <div class="dash-card">
-            <h3>ProposalPulse</h3>
-            <p style="margin:0 0 8px; color:var(--mmt-text-secondary); font-size:14px;">Score proposals at your Premium rate.</p>
-            <p style="margin:0 0 12px; font-size:20px; font-weight:800; color:var(--mmt-navy);">$14.99 <span style="font-size:12px; color:var(--mmt-text-secondary); font-weight:400;">per assessment (25% off)</span></p>
-            <a href="/proposal-pulse.html" class="btn-primary">Score a Proposal &rarr;</a>
-          </div>
-          <div class="dash-card">
-            <h3>MarketPulse</h3>
-            <p style="margin:0 0 8px; color:var(--mmt-text-secondary); font-size:14px;">Request briefs at your Premium rate.</p>
-            <p style="margin:0 0 12px; font-size:20px; font-weight:800; color:var(--mmt-navy);">$35 <span style="font-size:12px; color:var(--mmt-text-secondary); font-weight:400;">per brief (30% off)</span></p>
-            <a href="/marketpulse.html" class="btn-primary">Request a Brief &rarr;</a>
-          </div>
-        </div>
-
-        <div class="dash-card">
-          <h3>Premium Article Archive</h3>
-          <p style="margin:0 0 12px; color:var(--mmt-text-secondary); font-size:14px;">All 100 articles with Capture Corner depth unlocked. 48-hour early access on new analysis.</p>
-          <a href="/latest.html" style="color:var(--mmt-teal); font-weight:600; font-size:14px; text-decoration:none;">Browse articles &rarr;</a>
-        </div>
-
-        <div class="dash-card">
-          <h3>Monthly Q&A</h3>
-          <p style="margin:0; color:var(--mmt-text-secondary); font-size:14px;">Reply to any Premium newsletter issue with your question. Selected questions answered in the next issue. Email <a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a> directly.</p>
-        </div>
-
-        <!-- PMD-06: Ask MMT counter widget -->
-        <div class="dash-card" style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 20px;">
-          <div>
-            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin-bottom:4px;">Ask MMT &middot; This Month</div>
-            <div style="font-size:14px;font-weight:600;" id="ask-counter-label">0 of 2 questions used</div>
-            <div style="width:160px;height:4px;background:var(--mmt-border);border-radius:999px;margin-top:8px;overflow:hidden;">
-              <div id="ask-counter-bar" style="height:100%;background:var(--mmt-teal);border-radius:999px;width:0%;transition:width 0.3s;"></div>
-            </div>
-          </div>
-          <a href="/premium/ask-mmt.html" style="font-size:13px;font-weight:600;color:var(--mmt-teal);text-decoration:none;white-space:nowrap;">Ask a question &rarr;</a>
-        </div>
-
-        <div class="dash-card">
-          <h3>Account</h3>
-          <p style="margin:0; color:var(--mmt-text-secondary); font-size:14px;">
-            Manage your subscription, update billing, or cancel: <a href="#manage-billing" onclick='event.preventDefault(); var em=(localStorage.getItem("mmt_email")||""); if(!em){alert("Sign in to your dashboard first to manage billing."); return;} this.textContent="Loading…"; fetch("/.netlify/functions/billing-portal",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:em})}).then(function(r){return r.json();}).then(function(d){if(d&&d.url){location.href=d.url;}else{alert((d&&d.error)||"Could not start billing portal"); this.textContent="Manage in Stripe →";}}).catch(function(){alert("Network error. Try again.");});' style="color:var(--mmt-teal);">Stripe Customer Portal &rarr;</a>
-          </p>
-        </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-shrink:0;">
+        <a href="/premium/settings.html" style="font-size:13px;font-weight:700;color:#fff;background:var(--mmt-teal);padding:8px 16px;border-radius:7px;text-decoration:none;">Set preferences &rarr;</a>
+        <button id="first-visit-dismiss" style="font-size:12px;color:var(--mmt-text-secondary);background:none;border:none;cursor:pointer;">Maybe later</button>
       </div>
     </div>
   </div>
 
-  <!-- Mobile bottom nav -->
-  <div class="dash-mobile-nav">
-    <a href="/premium/dashboard.html" class="active">Dashboard</a>
-    <a href="/intel/capture-intelligence-this-issue/">Intel</a>
-    <a href="/proposal-pulse.html">Score</a>
-    <a href="/marketpulse.html">Brief</a>
-    <a href="/premium/settings.html">Account</a>
+  <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">Welcome back.</h1>
+  <p style="color:var(--mmt-text-secondary); margin:0 0 32px; font-size:14px;">Your Premium access is active.</p>
+
+  <div class="dash-card" style="border-left:3px solid var(--mmt-teal);">
+    <h3>Capture Intelligence — This Month</h3>
+    <p style="margin:0 0 12px; color:var(--mmt-text-secondary); font-size:14px;">Full sheet with all action windows, confidence labels, and deep-dive analysis. 24 signals across 10 agencies.</p>
+    <a href="/intel/capture-intelligence-this-issue/" class="btn-primary">View Full Sheet &rarr;</a>
+  </div>
+
+  <!-- Recent Pursuit Scores — populated from localStorage -->
+  <div id="ps-recent-wrap" style="display:none;margin:24px 0 8px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin:0;">Recent Pursuit Scores</p>
+      <a href="/premium/pursuit-score.html" style="font-size:12px;color:var(--mmt-teal);text-decoration:none;font-weight:600;">Score another &rarr;</a>
+    </div>
+    <div id="ps-recent-list" style="display:grid;gap:6px;margin-bottom:16px;"></div>
+  </div>
+  <script>
+    (function() {
+      try {
+        var h = JSON.parse(localStorage.getItem('mmt_pursuit_history') || '[]');
+        if (!h.length) return;
+        var wrap = document.getElementById('ps-recent-wrap');
+        var list = document.getElementById('ps-recent-list');
+        var verdictColors = { 'GO':'#15803D','LEAN GO':'#457B9D','DEVELOP':'#92710A','LEAN NO-BID':'#F97316','NO-BID':'#E63946' };
+        h.slice(0, 5).forEach(function(item) {
+          var d = new Date(item.scoredAt).toLocaleDateString();
+          var color = verdictColors[item.verdict] || '#457B9D';
+          var row = document.createElement('a');
+          row.href = '/premium/pursuit-score.html?keyword=' + encodeURIComponent(item.query || '') + (item.agency ? '&agency=' + item.agency : '');
+          row.style.cssText = 'background:#fff;border:1px solid #E5E7EB;border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:12px;text-decoration:none;color:inherit;';
+          row.innerHTML =
+            '<div style="flex:1;min-width:0;">' +
+              '<div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (item.query || '—') + '</div>' +
+              '<div style="font-size:11px;color:#6B7280;">' + (item.agency || 'Any agency') + ' · ' + d + '</div>' +
+            '</div>' +
+            '<div style="display:flex;align-items:center;gap:10px;">' +
+              '<span style="font-size:12px;font-weight:700;padding:3px 10px;border-radius:4px;color:#fff;background:' + color + ';">' + (item.verdict || '—') + '</span>' +
+              '<span style="font-size:16px;font-weight:800;">' + (item.totalScore || 0) + '</span>' +
+            '</div>';
+          list.appendChild(row);
+        });
+        wrap.style.display = 'block';
+      } catch (_) { /* noop */ }
+    })();
+  </script>
+
+  <!-- Premium tools row — the three new Premium-included tools -->
+  <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin:24px 0 10px;">Premium tools &middot; included with your subscription</p>
+  <div class="dash-tools-grid">
+    <a href="/premium/pursuit-score.html" class="dash-card" style="text-decoration:none;color:inherit;display:block;transition:border-color 0.15s;">
+      <h3 style="font-size:15px;margin:0 0 6px;">Pursuit Score</h3>
+      <p style="margin:0 0 6px;color:var(--mmt-text-secondary);font-size:13px;line-height:1.5;">0–100 bid/no-bid card across incumbent vulnerability, budget, legislative, research pipeline.</p>
+      <p style="margin:0 0 10px;font-size:11px;color:var(--mmt-text-secondary);"><strong style="color:var(--mmt-navy);">20/mo included</strong> · overage $3.99 · standalone $29.99</p>
+      <span style="font-size:13px;font-weight:600;color:var(--mmt-teal);">Score a pursuit &rarr;</span>
+    </a>
+    <a href="/premium/compliance-check.html" class="dash-card" style="text-decoration:none;color:inherit;display:block;">
+      <h3 style="font-size:15px;margin:0 0 6px;">Compliance Check</h3>
+      <p style="margin:0 0 6px;color:var(--mmt-text-secondary);font-size:13px;line-height:1.5;">Paste proposal text. Auto-checks ONC CHPL, SCA wage floors, PubMed evidence, FedRAMP/HIPAA gaps.</p>
+      <p style="margin:0 0 10px;font-size:11px;color:var(--mmt-text-secondary);"><strong style="color:var(--mmt-navy);">15/mo included</strong> · overage $4.99 · standalone $49.99</p>
+      <span style="font-size:13px;font-weight:600;color:var(--mmt-teal);">Run a compliance check &rarr;</span>
+    </a>
+    <a href="/premium/signal-chain.html" class="dash-card" style="text-decoration:none;color:inherit;display:block;">
+      <h3 style="font-size:15px;margin:0 0 6px;">Signal Chain</h3>
+      <p style="margin:0 0 6px;color:var(--mmt-text-secondary);font-size:13px;line-height:1.5;">Live 5-layer federal signal monitor: research, legislative, workforce, budget, contract horizon.</p>
+      <p style="margin:0 0 10px;font-size:11px;color:var(--mmt-text-secondary);"><strong style="color:var(--mmt-navy);">Add-on</strong> $49/mo (5 programs) · Pro $149/mo (20)</p>
+      <span style="font-size:13px;font-weight:600;color:var(--mmt-teal);">Open signal chain &rarr;</span>
+    </a>
+  </div>
+
+  <div class="dash-pair-grid">
+    <div class="dash-card">
+      <h3>ProposalPulse</h3>
+      <p style="margin:0 0 8px; color:var(--mmt-text-secondary); font-size:14px;">Score proposals at your Premium rate.</p>
+      <p style="margin:0 0 12px; font-size:20px; font-weight:800; color:var(--mmt-navy);">$14.99 <span style="font-size:12px; color:var(--mmt-text-secondary); font-weight:400;">per assessment (25% off)</span></p>
+      <a href="/proposal-pulse.html" class="btn-primary">Score a Proposal &rarr;</a>
+    </div>
+    <div class="dash-card">
+      <h3>MarketPulse</h3>
+      <p style="margin:0 0 8px; color:var(--mmt-text-secondary); font-size:14px;">Request briefs at your Premium rate.</p>
+      <p style="margin:0 0 12px; font-size:20px; font-weight:800; color:var(--mmt-navy);">$35 <span style="font-size:12px; color:var(--mmt-text-secondary); font-weight:400;">per brief (30% off)</span></p>
+      <a href="/marketpulse.html" class="btn-primary">Request a Brief &rarr;</a>
+    </div>
+  </div>
+
+  <div class="dash-card">
+    <h3>Premium Article Archive</h3>
+    <p style="margin:0 0 12px; color:var(--mmt-text-secondary); font-size:14px;">All 100 articles with Capture Corner depth unlocked. 48-hour early access on new analysis.</p>
+    <a href="/latest.html" style="color:var(--mmt-teal); font-weight:600; font-size:14px; text-decoration:none;">Browse articles &rarr;</a>
+  </div>
+
+  <div class="dash-card">
+    <h3>Monthly Q&A</h3>
+    <p style="margin:0; color:var(--mmt-text-secondary); font-size:14px;">Reply to any Premium newsletter issue with your question. Selected questions answered in the next issue. Email <a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a> directly.</p>
+  </div>
+
+  <!-- PMD-06: Ask MMT counter widget -->
+  <div class="dash-card" style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 20px;flex-wrap:wrap;">
+    <div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin-bottom:4px;">Ask MMT &middot; This Month</div>
+      <div style="font-size:14px;font-weight:600;" id="ask-counter-label">0 of 2 questions used</div>
+      <div style="width:160px;height:4px;background:var(--mmt-border);border-radius:999px;margin-top:8px;overflow:hidden;">
+        <div id="ask-counter-bar" style="height:100%;background:var(--mmt-teal);border-radius:999px;width:0%;transition:width 0.3s;"></div>
+      </div>
+    </div>
+    <a href="/premium/ask-mmt.html" style="font-size:13px;font-weight:600;color:var(--mmt-teal);text-decoration:none;white-space:nowrap;">Ask a question &rarr;</a>
+  </div>
+
+  <div class="dash-card">
+    <h3>Account</h3>
+    <p style="margin:0; color:var(--mmt-text-secondary); font-size:14px;">
+      Manage your subscription, update billing, or cancel: <a href="#manage-billing" onclick='event.preventDefault(); var em=(localStorage.getItem("mmt_email")||""); if(!em){alert("Sign in to your dashboard first to manage billing."); return;} this.textContent="Loading…"; fetch("/.netlify/functions/billing-portal",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:em})}).then(function(r){return r.json();}).then(function(d){if(d&&d.url){location.href=d.url;}else{alert((d&&d.error)||"Could not start billing portal"); this.textContent="Manage in Stripe →";}}).catch(function(){alert("Network error. Try again.");});' style="color:var(--mmt-teal);">Stripe Customer Portal &rarr;</a>
+    </p>
   </div>
 
   <script>

@@ -216,6 +216,54 @@ Before declaring work complete, verify:
 
 ---
 
+## Sprint 2026-05-28 — Premium dashboard mobile fix (dual-shell collision)
+
+Mary reported `/premium/dashboard.html` "funky" on mobile. Root cause was
+a dual-shell collision, not a styling gap. Full spec + before/after:
+`docs/dashboard-mobile-spec.md`.
+
+- **Diagnosis**: `premium/dashboard.html` shipped its OWN inline
+  `dash-shell` + `dash-nav` + `dash-header` + `dash-main` +
+  `.dash-mobile-nav`, AND is in `build.js dashPageMap`, so
+  `injectDashShell()` wrapped it a second time. `injectDashShell` strips
+  the inline `<nav class="dash-nav">`, `.dash-mobile-nav`, and
+  `.dash-header`, and renames `<div class="dash-shell">` →
+  `data-dash-shell-stripped`, but it does NOT unwind the dashboard's extra
+  unclassed wrapper `<div>` + inline `<div class="dash-main">`. Result in
+  dist: a `dash-main` nested inside a `data-dash-shell-stripped` inside the
+  injected `dash-main` (2 mains), plus conflicting
+  `@media(max-width:768px)` rules. Desktop happened to render fine; the
+  conflict only fought at ≤768px, which is why it read as "mobile-only."
+  Verified `dist/premium/calendar.html` did NOT have the remnant (1 main) —
+  the collision was dashboard-specific.
+- **Fix (single source file)**: rewrote `premium/dashboard.html` as a
+  content-only document — removed ALL inline `dash-shell` / `dash-nav` /
+  `dash-header` / `dash-main` / `dash-mobile-nav` markup and CSS — so
+  `injectDashShell()` is the single layout owner, identical to every other
+  premium page. Converted the two hardcoded card grids
+  (`1fr 1fr 1fr`, `1fr 1fr`) to `.dash-tools-grid` / `.dash-pair-grid` with
+  a `≤768px` single-column collapse + ≥44px tap targets. Added a slim
+  content-level header (NOT class `dash-header`, so the build stripper
+  leaves it) that restores the Sign-out link the build had been stripping.
+- **Zero `build.js` / shared-shell changes**, so desktop and all other
+  premium pages are byte-identical. Verified in local preview: mobile
+  375px has no horizontal overflow and single-column cards; desktop 1280px
+  sidebar + grids intact; calendar regression check clean.
+
+Hard rule (do not regress): **a page in `dashPageMap` must NOT ship its own
+`dash-shell`/`dash-nav`/`dash-header`/`dash-main`/`dash-mobile-nav`.** Author
+premium pages as content-only documents (`<nav class="nav-editorial"></nav>`
++ content); `injectDashShell()` provides the canonical shell. Shipping an
+inline shell on a mapped page recreates the nested-`dash-main` collision that
+only manifests at mobile widths.
+
+Verification (ran 2026-05-28): `node build.js` clean (exit 0);
+`node scripts/validate-dist.js` → "OK — 431 dist pages, all sweeps pass";
+`dist/premium/dashboard.html` skeleton == `dist/premium/calendar.html`
+(1 shell / 1 nav / 1 main, no `data-dash-shell-stripped`).
+
+---
+
 ## Sprint 2026-05-18 — HHS OMAS realignment coverage (Phase 1 site update)
 
 Triggered by Mary's HHS update package delivered 2026-05-18:
