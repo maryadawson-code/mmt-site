@@ -26,6 +26,7 @@
     "data/may-22-release/**",
     "data/may-26-release/**",
     "data/may-27-release/**",
+    "data/may-29-release/**",
     "migrations/010_subscriber_context_alignment.sql",
     "migrations/011_mp_users_columns_documented.sql",
     "static/lead-magnets/**",
@@ -312,6 +313,18 @@
 # Retire by 2026-06-10 (delete function + data/may-27-release/** entry).
 [functions."may27-potff3-capture-send"]
   schedule = "*/15 * * * *"
+
+# May 29, 2026 Capture Corner: "The DHA Contract Map." Premium companion
+# to the public newsletter "DHA Is Replacing How It Buys. The Budget
+# Already Voted." Teaser-only email: pushes back to the gated page at
+# /premium/briefs/capture-corner-2026-05-29.html. Date-guarded
+# (RUN_DATE_UTC=2026-05-29), idempotency-keyed in ops_events as
+# may29_acq_transformation_capture_sent. Schedule fires at 10:00 UTC
+# (06:00 ET) so it ships Friday morning on/after 2026-05-29 UTC. Kill
+# switch: MAY29_ACQ_TRANSFORMATION_DISABLED=true.
+# Retire by 2026-06-12 (delete function + data/may-29-release/** entry).
+[functions."may29-acq-transformation-capture-send"]
+  schedule = "0 10 * * *"
 
 # May 26, 2026 build trigger: fires Netlify build hook at 13:00 UTC
 # (09:00 ET EDT) to publish the future-dated newsletter article at the
@@ -746,7 +759,7 @@
 # Target is enforced by scripts/capture-corner-inventory.js.
 [[redirects]]
   from = "/capture-corner/latest"
-  to = "/premium/briefs/capture-corner-2026-05-27.html"
+  to = "/premium/briefs/capture-corner-2026-05-29.html"
   status = 302
 
 # Premium-brief PDF downloads — clean URLs under /premium-briefs/.
