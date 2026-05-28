@@ -268,12 +268,41 @@ async function classifyWithClaude(awards, model, _supabase, _modelConfig) {
 // MAIN HANDLER
 // ============================================================
 
+// MMT-INTEL-03 (2026-05-28): the opportunity_radar table did not have the
+// vehicle_confidence / vehicle_reasoning columns this function writes, so
+// PostgREST rejected EVERY row (PGRST204) and the radar was frozen at its
+// last good scan for ~85 days. Probe the schema once per run and only
+// include the optional columns when they actually exist. Migration
+// 20260528000000_opportunity_radar_vehicle_columns.sql adds them; until it
+// lands in a given environment, the radar still writes the core award row
+// (graceful degradation) instead of failing closed.
+const OPTIONAL_VEHICLE_COLS = ["vehicle_confidence", "vehicle_reasoning"];
+
+async function detectVehicleColumns(supabase) {
+  try {
+    const { error } = await supabase
+      .from("opportunity_radar")
+      .select(OPTIONAL_VEHICLE_COLS.join(","))
+      .limit(1);
+    if (error) {
+      console.warn(`opportunity_radar vehicle columns absent (${error.code || "?"}: ${error.message}) — degrading to core-row writes`);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.warn("vehicle-column probe threw:", err.message, "— degrading to core-row writes");
+    return false;
+  }
+}
+
 async function _runSbVehicleScan(event) {
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
   const now = new Date();
   const ninetyDaysAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
   const startDate = ninetyDaysAgo.toISOString().split("T")[0];
   const endDate = now.toISOString().split("T")[0];
+
+  const hasVehicleCols = await detectVehicleColumns(supabase);
 
   const allResults = [];
 
@@ -389,6 +418,7 @@ async function _runSbVehicleScan(event) {
     relevance_25_49: 0,
     relevance_50_79: 0,
     relevance_80_100: 0,
+    schema_degraded: !hasVehicleCols,
   };
   const classifyModel = await getModelConfig(null, "sb_classify");
 
@@ -469,11 +499,15 @@ async function _runSbVehicleScan(event) {
         small_business_eligible: true,
         ai_summary: (cls.ai_summary || "").substring(0, 500),
         contract_vehicle: vehicle,
-        vehicle_confidence: confidence,
-        vehicle_reasoning: (cls.vehicle_reasoning || "").substring(0, 500),
         scan_date: new Date().toISOString().split("T")[0],
         model_used: classifyModel.model,
       };
+      // Only write the vehicle classification columns when the table has
+      // them (see detectVehicleColumns + migration 20260528000000).
+      if (hasVehicleCols) {
+        opp.vehicle_confidence = confidence;
+        opp.vehicle_reasoning = (cls.vehicle_reasoning || "").substring(0, 500);
+      }
 
       try {
         if (opp.solicitation_number) {
@@ -553,14 +587,18 @@ async function _runSbVehicleScan(event) {
             : 50)
           : 15;
 
+        const updatePayload = {
+          contract_vehicle: vehicle,
+          ai_summary: cls.ai_summary ? (cls.ai_summary).substring(0, 500) : record.ai_summary,
+        };
+        if (hasVehicleCols) {
+          updatePayload.vehicle_confidence = confidence;
+          updatePayload.vehicle_reasoning = (cls.vehicle_reasoning || "").substring(0, 500);
+        }
+
         const { error: updateErr } = await supabase
           .from("opportunity_radar")
-          .update({
-            contract_vehicle: vehicle,
-            vehicle_confidence: confidence,
-            vehicle_reasoning: (cls.vehicle_reasoning || "").substring(0, 500),
-            ai_summary: cls.ai_summary ? (cls.ai_summary).substring(0, 500) : record.ai_summary,
-          })
+          .update(updatePayload)
           .eq("id", record.id);
 
         if (updateErr) {
