@@ -14,10 +14,16 @@
 //              posted_date, response_deadline, naics, set_aside,
 //              agency, sam_url }
 //
+// Each call here is exactly ONE SAM.gov request (no pagination).
 // Caller is responsible for date-window filtering (e.g., dropping
-// items with response_deadline outside the next 90 days) and for
-// the SAM.gov rate limit (900 req/hr) — at 5 queries per refresh
-// every 6h this is comfortably under cap.
+// items with response_deadline outside the next 90 days) and for the
+// SAM.gov quota. NOTE: the binding limit for the non-federal
+// Get-Opportunities key is a small DAILY quota (429 "Message throttled
+// out … access after <next UTC midnight>"), NOT an hourly rate — and it
+// is shared across every consumer of this key (pursuit-calendar-refresh,
+// signal-chain, compliance-check, marketpulse/federal-data-apis). Keep
+// scheduled usage minimal: pursuit-calendar-refresh runs the SAM path
+// once/day (see its runSamPath daily-quota gate).
 // ============================================================
 
 function fmtDate(d) {

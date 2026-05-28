@@ -251,6 +251,31 @@ Verified 2026-05-28 via `netlify dev:exec node build.js`: hydrated 32
 pursuits (11 seed + 21 supabase), banner = "Last refreshed: May 28, 2026
 (4h ago)" `pc-fresh`. `validate-dist` OK (431 pages).
 
+**Related — SAM.gov daily-quota throttle (same surface).** While
+diagnosing the above, the pre-digest QA + ops events showed
+`pursuit-calendar-refresh` 429ing on its SAM.gov path
+("900804 Message throttled out … access after <next UTC midnight>") on
+every run after the first each day. Root cause: the SAM.gov non-federal
+Get-Opportunities key enforces a small DAILY quota (not the 900/hr the
+helper comment claimed), and the cron fired 5 queries × 4 runs/day = ~20
+SAM requests/day — over cap — while ALSO sharing that daily pool with the
+on-demand tools (signal-chain, compliance-check, marketpulse via
+`lib/federal-data-apis`). `opportunity-radar`/`sb-vehicle-radar` use
+USASpending (no SAM, no quota), so the calendar cron was the only
+scheduled SAM burner. Fix: `runSamPath` now has a daily-quota gate —
+the SAM path runs ONCE/day on the 00:00 UTC tick of the every-6h cron;
+the free RSS path carries the other three ticks. 20/day → 5/day, no
+agency-coverage loss (all 5 queries preserved). The RSS path is what
+keeps the freshness banner current, so daily SAM cadence is invisible to
+subscribers.
+
+Hard rule (do not regress): **the SAM.gov key has a small SHARED daily
+quota.** Any new scheduled SAM.gov consumer must budget against that
+daily cap (and the on-demand tools), not assume an hourly limit. Prefer
+USASpending.gov (no auth, no quota) for award data; reserve SAM.gov
+Opportunities for genuinely solicitation-only needs and keep scheduled
+calls to a daily cadence.
+
 ---
 
 ## Sprint 2026-05-28 — Premium dashboard mobile fix (dual-shell collision)

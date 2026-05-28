@@ -151,6 +151,24 @@ async function runSamPath(supabase) {
     return { queries_checked: 0, items_seen: 0, count_added: 0, count_skipped: 0, errors: [], note: "SAM_GOV_API_KEY not set — SAM.gov path skipped." };
   }
 
+  // DAILY-QUOTA GATE (2026-05-28). SAM.gov's non-federal Get-Opportunities
+  // endpoint enforces a small DAILY quota (not the 900/hr the helper comment
+  // once claimed). At 5 queries × 4 runs/day this cron alone burned ~20
+  // requests/day and 429'd ("Message throttled out … access after <next UTC
+  // midnight>") on every run after the first — and it shares that daily pool
+  // with the on-demand tools (signal-chain, compliance-check, marketpulse).
+  // A 90-day deadline horizon does not need 6h SAM freshness, so run the SAM
+  // path ONCE per day — on the 00:00 UTC tick of the every-6h cron — and let
+  // the free RSS path carry the other three ticks. Cuts scheduled SAM usage
+  // 20/day → 5/day with no loss of agency coverage.
+  const utcHour = new Date().getUTCHours();
+  if (utcHour >= 6) {
+    return {
+      queries_checked: 0, items_seen: 0, count_added: 0, count_skipped: 0, errors: [],
+      note: `SAM path runs once/day (00:00 UTC tick) to stay under the daily quota; skipped on the ${String(utcHour).padStart(2, "0")}:00 UTC tick. RSS path still ran.`,
+    };
+  }
+
   const today = new Date().toISOString().slice(0, 10);
   const ninetyOut = new Date(Date.now() + 90 * 86400000).toISOString().slice(0, 10);
 
