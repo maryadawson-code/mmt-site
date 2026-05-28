@@ -1,7 +1,7 @@
 {
   "_schema": {
     "version": "1.0",
-    "last_updated": "2026-05-07",
+    "last_updated": "2026-05-28",
     "source_note": "Profiles sourced from official agency leadership pages. Each profile cites its source URL. Quarterly refresh cadence per PAYWALL-ENRICHMENT.md item 4."
   },
   "agencies": [
@@ -9,7 +9,7 @@
       "agency_code": "DHA",
       "agency_name": "Defense Health Agency",
       "source_url": "https://www.dha.mil/About-DHA/Organizational-Structure-NEW",
-      "verified_date": "2026-05-07",
+      "verified_date": "2026-05-28",
       "people": [
         {
           "name": "Vice Adm. Darin K. Via, MC, USN",
@@ -24,7 +24,7 @@
           "why_watch": "Where the operational decisions on DHMSM sustainment and HCDS task-order execution actually land."
         },
         {
-          "name": "Force Master Chief Paul C. Mangaran",
+          "name": "Force Master Chief PatrickPaul \"PaP\" Mangaran",
           "title": "Command Senior Enlisted Leader",
           "scope": "Senior enlisted advisor to the DHA Director.",
           "why_watch": "Voice for the military beneficiary side of MHS GENESIS rollout and clinical-IT usability."
@@ -42,6 +42,42 @@
           "why_watch": "The CAE for DHA. Final acquisition decision authority for medical systems and informatics buys at the component level."
         },
         {
+          "name": "Mr. Brett Scheideman",
+          "title": "Acting Principal Deputy RDA / Deputy CAE (DCAE)",
+          "scope": "NH-IV. S&T, Chief Scientist, Research Support, Industry Engagement, Agreements & Partnerships, Category Management, Acquisition Workforce. Co-chairs WMSIB.",
+          "why_watch": "Industry-engagement and category-management decisions land here. First call for partnering and market research."
+        },
+        {
+          "name": "Mr. James Perkins",
+          "title": "Acting Program Executive Officer, Defense Healthcare Management Systems (PEO DHMS)",
+          "scope": "MHS GENESIS, JOMIS, EIDS. EHR portfolio acquisition reporting runs directly to USW(A&S). Oversees the HCDS recompete (award target July 2026).",
+          "why_watch": "Owns the largest DHA software portfolio. HCDS recompete and Oracle/Cerner interoperability are the watch items."
+        },
+        {
+          "name": "Ms. Caitlyn Felkoski",
+          "title": "Acting Portfolio Acquisition Executive, Medical Products (NH-IV)",
+          "scope": "Medical devices, equipment, warfighter readiness/expeditionary medicine, simulation & training. Stands up at IOC.",
+          "why_watch": "One of three new PAEs replacing the PEO Medical Systems construct. Owns medical-products and devices buys."
+        },
+        {
+          "name": "Mrs. Madeleine Friedman",
+          "title": "Acting Portfolio Acquisition Executive, Medical Services",
+          "scope": "Enterprise medical services, reserve health readiness, virtual health, TRICARE acquisition cell, Acquisition of Services Center of Excellence. Stands up at IOC.",
+          "why_watch": "Services-side PAE. TRICARE and reserve-health services acquisitions route here."
+        },
+        {
+          "name": "Mr. James Watkins",
+          "title": "Director, DHA Contracting Activity (DHACA)",
+          "scope": "Executes contract awards across the DHA enterprise. Receives USAHCA/USAMHCA workload and staff transition by FOC.",
+          "why_watch": "Every DHA award flows through DHACA. Expect workload and staffing pressure as USAHCA folds in by FOC."
+        },
+        {
+          "name": "Maj. Gen. Paula Lodi",
+          "title": "Commanding General, DHA Research & Development / Medical Research & Development Command (MRDC)",
+          "scope": "DHA R&D enterprise after the Army-to-DHA transfer. Direct report under AD-RDA.",
+          "why_watch": "FY2027 RDTE down ~59% vs FY2026 enacted. Research-to-acquisition 'valley of death' is the strategic risk; TATRC/MRDC future under review."
+        },
+        {
           "name": "Mr. Michael Emerson",
           "title": "Assistant Director, Support, Personnel & Financial Operations",
           "scope": "AD-SPFO — comptroller, personnel, contracting support functions.",
@@ -49,9 +85,9 @@
         },
         {
           "name": "Rear Adm. Tracy Farrill",
-          "title": "Office of Women's Health Affairs (OWHA) Lead",
-          "scope": "Per the April 2026 DHA reorg, leads the new Office of Women's Health Affairs.",
-          "why_watch": "New office created in the April 2026 reorg. Watch for women's-health-specific clinical IT and benefits buys flowing through OWHA."
+          "title": "Director, Office of Warfighter Health Advantage (OWHA)",
+          "scope": "Leads the new OWHA, established in the April 2026 reorg and reporting to the DHA Deputy Director. Consolidates the former DIG, CDAO, BID, Digital Health Integration Office, and SIG functions — data, analytics, AI/ML, and digital health.",
+          "why_watch": "OWHA is the new front door for enterprise data, analytics, AI/ML, and digital-health modernization. Co-chairs the Warfighter Modernization & Support Integration Board (WMSIB) with the DCAE. AI/data/digital-health capability now routes through this office."
         }
       ]
     },

@@ -6,7 +6,7 @@
     "type": "Combat Support Agency (DoD)",
     "lastUpdated": "2026-05-13",
     "description": "DoD's combat support agency for the Military Health System. Buys MHS GENESIS, PEO DHMS, OPMED (operational medicine systems including JOMIS and MHS GENESIS-Theater), EIDS, HCDS, enterprise imaging, and the cyber and data modernization layer beneath them. Reorganized April 20, 2026 with FOC target July 19; Office of Warfighter Health Advantage (OWHA) consolidates data, analytics, AI, and digital health.",
-    "mmtRead": "DHA reorganized April 20, 2026 with FOC target July 19. PEO DHMS retains executive authority over MHS GENESIS, OPMED programs (JOMIS, MHS GENESIS-Theater, deployable / Role 1-2-3 medical C2, blood inventory, theater data movement), and DMIX / EIDS while acquisition reporting moves under AD-RDA. The Office of Warfighter Health Advantage (RDML Tracy Farrill, just appointed) consolidates data, analytics, AI, and digital health into a single seat. The HCDS deployment RFP and the Leidos bridge are both inside the PAE transition window.",
+    "mmtRead": "DHA reorganized April 20, 2026 with FOC target July 19. PEO DHMS retains executive authority over MHS GENESIS, OPMED programs (JOMIS, MHS GENESIS-Theater, deployable / Role 1-2-3 medical C2, blood inventory, theater data movement), and DMIX / EIDS. Organizationally PEO DHMS sits under AD-RDA/CAE, but the EHR portfolio's acquisition reporting runs directly to USW(A&S). The Office of Warfighter Health Advantage (RDML Tracy Farrill, just appointed) consolidates data, analytics, AI, and digital health into a single seat. The HCDS deployment RFP and the Leidos bridge are both inside the three-PAE transition window (Medical Products, Medical Services, and — at FOC — Medical Digital Solutions).",
     "officialSources": [
       {
         "label": "DHA program office (health.mil)",
@@ -55,7 +55,7 @@
         "EHRM funding (30% withheld pending June 1 conditions)"
       ]
     },
-    "current_read": "DHA reorganized April 20, 2026. Two senior seats Acting (Arena at AD-RDA; Soliz at HCAO); RDML Tracy Farrill just seated at OWHA. PEO DHMS reporting moves under AD-RDA but executive authority over MHS GENESIS / JOMIS / DMIX-EIDS does not transfer. FOC target is July 19. The HCDS deployment RFP and the Leidos bridge are both inside the PAE transition window.",
+    "current_read": "DHA reorganized April 20, 2026. Two senior seats Acting (Arena at AD-RDA; Soliz at HCAO); RDML Tracy Farrill just seated at OWHA. PEO DHMS sits organizationally under AD-RDA, but EHR portfolio acquisition reporting runs directly to USW(A&S) and executive authority over MHS GENESIS / JOMIS / DMIX-EIDS does not transfer. FOC target is July 19 (briefed town-hall target). The HCDS deployment RFP and the Leidos bridge are both inside the PAE transition window.",
     "key_vehicles": [
       "DHITUC",
       "MHS EITS",
@@ -64,6 +64,7 @@
     ],
     "key_offices": [
       "AD-RDA (Component Acquisition Executive)",
+      "Three PAEs: Medical Products (Felkoski), Medical Services (Friedman), Medical Digital Solutions (at FOC)",
       "PEO DHMS (Defense Healthcare Management Systems)",
       "OWHA (Office of Warfighter Health Advantage)",
       "DHACA (Defense Health Agency Contracting Activity)"
@@ -72,7 +73,7 @@
     "upcoming_signals": [
       "FOC milestone July 19 2026",
       "HCDS deployment RFP this quarter",
-      "PAE Medical Software & Business Systems lead assignment (Key Next Step)"
+      "PAE Medical Digital Solutions lead assignment (Key Next Step)"
     ],
     "related_tags": [
       "Military Health System",
