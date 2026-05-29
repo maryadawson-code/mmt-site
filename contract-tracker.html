@@ -144,6 +144,33 @@
           Export CSV
         </button>
       </div>
+      <!-- S2: filter / search / sort toolbar. Progressive enhancement only —
+           with JS off the build-time cards still render grouped by status and
+           these controls sit inert. JS lives in js/contract-tracker.js. -->
+      <div id="ct-toolbar" class="mb-6" style="position:sticky;top:64px;z-index:20;background:var(--mmt-white);padding:12px 0;border-bottom:1px solid var(--mmt-border,#D8E0E8);">
+        <div class="flex flex-col gap-3">
+          <div class="flex flex-wrap items-center gap-3">
+            <input id="ct-search" type="search" placeholder="Search contracts" aria-label="Search contracts" autocomplete="off"
+              style="flex:1 1 220px;min-width:200px;padding:8px 12px;border:1px solid var(--mmt-border,#D8E0E8);border-radius:8px;font-size:14px;color:var(--mmt-navy);background:var(--mmt-white);" />
+            <label for="ct-sort" class="text-xs" style="color:var(--mmt-text-secondary);">Sort</label>
+            <select id="ct-sort" aria-label="Sort contracts"
+              style="padding:8px 12px;border:1px solid var(--mmt-border,#D8E0E8);border-radius:8px;font-size:13px;color:var(--mmt-navy);background:var(--mmt-white);">
+              <option value="name">Name (A-Z)</option>
+              <option value="agency">Agency</option>
+              <option value="status">Status</option>
+            </select>
+            <button id="ct-sb-toggle" type="button" aria-pressed="false"
+              style="padding:6px 12px;border:1px solid var(--mmt-border,#D8E0E8);border-radius:999px;font-size:13px;font-weight:600;color:var(--mmt-teal);background:var(--mmt-white);cursor:pointer;">Small business only</button>
+          </div>
+          <div id="ct-status-filters" class="flex flex-wrap gap-2" role="group" aria-label="Filter by status"></div>
+          <div id="ct-agency-filters" class="flex flex-wrap gap-2" role="group" aria-label="Filter by agency"></div>
+          <span id="ct-count" class="text-xs" style="color:var(--mmt-text-secondary);"></span>
+        </div>
+      </div>
+      <div id="ct-empty" hidden class="card rounded-xl p-8 text-center" style="margin-bottom:16px;">
+        <p class="text-base mb-1" style="color:var(--mmt-navy);">No contracts match your filters.</p>
+        <p class="text-sm" style="color:var(--mmt-text-secondary);">Try clearing the search box or choosing All.</p>
+      </div>
       <!-- BUILD:CONTRACT_TRACKER -->
     </div>
   </section>

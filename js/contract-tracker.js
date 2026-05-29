@@ -514,3 +514,174 @@
         document.getElementById('vehicle-container').innerHTML = '<div class="card rounded-xl p-8 text-center" data-testid="vehicle-unavailable"><p class="text-base mb-2" style="color:var(--mmt-text-secondary);">' + _vehicleUnavailMsg + '</p><p class="text-sm" style="color:var(--mmt-text-secondary);">If this persists, email <a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a>. Scans run daily at 8 AM ET.</p></div>';
       });
   })();
+
+// ============================================================
+// S2: Contract grid filter / search / sort toolbar.
+// Progressive enhancement over the build-time grouped cards (S1 data-*
+// attrs). No re-fetch. State mirrors to URL params (q, agency, status, sb,
+// sort) so a filtered view is shareable and restores on reload. With JS off
+// the cards still render grouped by status and these controls sit inert.
+// ============================================================
+(function() {
+  var toolbar = document.getElementById('ct-toolbar');
+  if (!toolbar) return;
+  var section = toolbar.closest('section') || document;
+  var cards = Array.prototype.slice.call(section.querySelectorAll('.card[data-search]'));
+  if (!cards.length) return;
+  var groups = Array.prototype.slice.call(section.querySelectorAll('[data-ct-group]'));
+  var headers = Array.prototype.slice.call(section.querySelectorAll('.ct-group-header'));
+  var statusWrap = document.getElementById('ct-status-filters');
+  var agencyWrap = document.getElementById('ct-agency-filters');
+
+  var STATUSES = [
+    { key: 'all', label: 'All' },
+    { key: 'active', label: 'Active' },
+    { key: 'upcoming', label: 'Upcoming' }
+  ];
+
+  var famCount = {};
+  cards.forEach(function(c) {
+    var f = c.getAttribute('data-agency-family') || 'Other';
+    famCount[f] = (famCount[f] || 0) + 1;
+  });
+  var families = Object.keys(famCount).sort(function(a, b) {
+    return famCount[b] - famCount[a] || a.localeCompare(b);
+  });
+
+  var state = { q: '', agency: 'all', status: 'all', sb: false, sort: 'name' };
+
+  function readParams() {
+    var p = new URLSearchParams(window.location.search);
+    if (p.has('q')) state.q = p.get('q') || '';
+    if (p.has('agency')) state.agency = p.get('agency') || 'all';
+    if (p.has('status')) state.status = p.get('status') || 'all';
+    if (p.has('sb')) state.sb = p.get('sb') === '1';
+    if (p.has('sort')) state.sort = p.get('sort') || 'name';
+  }
+  function writeParams() {
+    var p = new URLSearchParams(window.location.search);
+    state.q ? p.set('q', state.q) : p.delete('q');
+    state.agency !== 'all' ? p.set('agency', state.agency) : p.delete('agency');
+    state.status !== 'all' ? p.set('status', state.status) : p.delete('status');
+    state.sb ? p.set('sb', '1') : p.delete('sb');
+    state.sort !== 'name' ? p.set('sort', state.sort) : p.delete('sort');
+    var qs = p.toString();
+    window.history.replaceState(null, '', window.location.pathname + (qs ? '?' + qs : '') + window.location.hash);
+  }
+
+  function styleChip(b, active) {
+    b.style.padding = '6px 12px';
+    b.style.borderRadius = '999px';
+    b.style.fontSize = '13px';
+    b.style.fontWeight = '600';
+    b.style.cursor = 'pointer';
+    b.style.border = '1px solid ' + (active ? 'var(--mmt-teal)' : 'var(--mmt-border, #D8E0E8)');
+    b.style.background = active ? 'var(--mmt-teal)' : 'var(--mmt-white)';
+    b.style.color = active ? '#FFFFFF' : 'var(--mmt-teal)';
+  }
+  function chip(label, key, active) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('data-key', key);
+    b.setAttribute('aria-pressed', active ? 'true' : 'false');
+    b.textContent = label;
+    styleChip(b, active);
+    return b;
+  }
+
+  function buildChips() {
+    if (statusWrap) {
+      statusWrap.innerHTML = '';
+      STATUSES.forEach(function(s) {
+        var cnt = s.key === 'all' ? cards.length : cards.filter(function(c) { return c.getAttribute('data-status') === s.key; }).length;
+        if (s.key !== 'all' && cnt === 0) return;
+        var b = chip(s.label + ' (' + cnt + ')', s.key, state.status === s.key);
+        b.addEventListener('click', function() { state.status = s.key; apply(); });
+        statusWrap.appendChild(b);
+      });
+    }
+    if (agencyWrap) {
+      agencyWrap.innerHTML = '';
+      var allBtn = chip('All agencies (' + cards.length + ')', 'all', state.agency === 'all');
+      allBtn.addEventListener('click', function() { state.agency = 'all'; apply(); });
+      agencyWrap.appendChild(allBtn);
+      families.forEach(function(f) {
+        var b = chip(f + ' (' + famCount[f] + ')', f, state.agency === f);
+        b.addEventListener('click', function() { state.agency = f; apply(); });
+        agencyWrap.appendChild(b);
+      });
+    }
+  }
+  function refreshChipStates() {
+    if (statusWrap) Array.prototype.forEach.call(statusWrap.children, function(b) { var a = b.getAttribute('data-key') === state.status; b.setAttribute('aria-pressed', a ? 'true' : 'false'); styleChip(b, a); });
+    if (agencyWrap) Array.prototype.forEach.call(agencyWrap.children, function(b) { var a = b.getAttribute('data-key') === state.agency; b.setAttribute('aria-pressed', a ? 'true' : 'false'); styleChip(b, a); });
+  }
+
+  function nameOf(c) { return (c.getAttribute('data-name') || '').toLowerCase(); }
+  function matches(card) {
+    if (state.status !== 'all' && card.getAttribute('data-status') !== state.status) return false;
+    if (state.agency !== 'all' && card.getAttribute('data-agency-family') !== state.agency) return false;
+    if (state.sb && card.getAttribute('data-sb') !== '1') return false;
+    if (state.q) {
+      var hay = card.getAttribute('data-search') || '';
+      var terms = state.q.toLowerCase().split(/\s+/).filter(Boolean);
+      if (!terms.every(function(t) { return hay.indexOf(t) !== -1; })) return false;
+    }
+    return true;
+  }
+  function sortCards(list) {
+    var by = state.sort;
+    return list.sort(function(a, b) {
+      if (by === 'agency') return (a.getAttribute('data-agency-family') || '').localeCompare(b.getAttribute('data-agency-family') || '') || nameOf(a).localeCompare(nameOf(b));
+      if (by === 'status') return (a.getAttribute('data-status') || '').localeCompare(b.getAttribute('data-status') || '') || nameOf(a).localeCompare(nameOf(b));
+      return nameOf(a).localeCompare(nameOf(b));
+    });
+  }
+
+  function syncControls() {
+    var s = document.getElementById('ct-search'); if (s && s.value !== state.q) s.value = state.q;
+    var sb = document.getElementById('ct-sb-toggle'); if (sb) { sb.setAttribute('aria-pressed', state.sb ? 'true' : 'false'); styleChip(sb, state.sb); }
+    var sort = document.getElementById('ct-sort'); if (sort && sort.value !== state.sort) sort.value = state.sort;
+  }
+
+  function apply() {
+    var shown = 0;
+    cards.forEach(function(c) { var m = matches(c); c.style.display = m ? '' : 'none'; if (m) shown++; });
+
+    // sort visible+hidden cards within each status grid container
+    groups.forEach(function(g) {
+      var gridEl = g.querySelector('[data-ct-grid]');
+      if (!gridEl) return;
+      sortCards(Array.prototype.slice.call(gridEl.querySelectorAll('.card[data-search]'))).forEach(function(c) { gridEl.appendChild(c); });
+    });
+
+    // search/agency/sb collapse the status groups into one combined list →
+    // hide the section headers. A bare status filter keeps its header.
+    var combined = !!(state.q || state.agency !== 'all' || state.sb);
+    headers.forEach(function(h) { h.style.display = combined ? 'none' : ''; });
+    groups.forEach(function(g) {
+      var anyVisible = Array.prototype.slice.call(g.querySelectorAll('.card[data-search]')).some(function(c) { return c.style.display !== 'none'; });
+      g.style.display = anyVisible ? '' : 'none';
+    });
+
+    var countEl = document.getElementById('ct-count');
+    if (countEl) countEl.textContent = 'Showing ' + shown + ' of ' + cards.length;
+    var emptyEl = document.getElementById('ct-empty');
+    if (emptyEl) emptyEl.hidden = shown !== 0;
+
+    refreshChipStates();
+    syncControls();
+    writeParams();
+  }
+
+  var searchEl = document.getElementById('ct-search');
+  if (searchEl) searchEl.addEventListener('input', function() { state.q = this.value || ''; apply(); });
+  var sortEl = document.getElementById('ct-sort');
+  if (sortEl) sortEl.addEventListener('change', function() { state.sort = this.value || 'name'; apply(); });
+  var sbEl = document.getElementById('ct-sb-toggle');
+  if (sbEl) sbEl.addEventListener('click', function() { state.sb = !state.sb; apply(); });
+
+  readParams();
+  buildChips();
+  apply();
+})();
