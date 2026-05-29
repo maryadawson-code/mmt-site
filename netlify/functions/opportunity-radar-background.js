@@ -47,6 +47,15 @@ const NAICS_CODES = ["541512", "541511", "541519", "541611", "524292", "621999",
 const RADAR_SAM_DIRECT = process.env.RADAR_SAM_DIRECT === "true";
 const SAM_SYSTEM_ACCOUNT_API_KEY = process.env.SAM_SYSTEM_ACCOUNT_API_KEY;
 
+// S-P2: review-queue mode. Default OFF. When on, low-confidence items
+// (relevance < 50) are written with review_status='needs_review' instead of
+// being dropped, and the public feed hides them (opportunity-feed.js, same
+// flag). REQUIRES the review_status column (migration
+// 20260529000000_opportunity_radar_review_status.sql) to be applied FIRST —
+// writing that column before it exists would trip the schema law and kill
+// every radar write. While OFF, the column is never referenced.
+const RADAR_REVIEW_QUEUE = process.env.RADAR_REVIEW_QUEUE === "true";
+
 // ============================================================
 // System prompt for opportunity scanning
 // ============================================================
@@ -72,7 +81,7 @@ For each opportunity found, extract:
 - small_business_eligible: true/false
 - ai_summary: 1-2 sentence summary of why this matters for federal health IT
 
-Only include opportunities that are genuinely related to health IT, health data, EHR, telehealth, medical devices, health analytics, or military/veteran healthcare systems.
+Only include opportunities genuinely related to federal health. That spans health IT, health data, EHR, telehealth, medical devices, health analytics, and military/veteran healthcare systems — AND the adjacent work that often isn't labeled "IT" but is still federal health business a contractor would pursue: CMS and health-payment systems, claims processing and adjudication, medical coding, clinical diagnostics and lab systems, grant-funded health programs, and rule-driven system builds (for example an IDR Gateway or a mandated reporting portal). Score the obviously-core items high and the adjacent ones lower, but do not exclude the adjacent ones.
 
 CHAIN OF THOUGHT: For each opportunity, explain in ai_summary why you scored its relevance at the level you did. What specific factors connect it to federal health IT?
 
@@ -378,16 +387,22 @@ Return opportunities found as JSON.`, 3, scanModel.model, 8000, supabase);
     if (!key || seen.has(key.toLowerCase())) continue;
     seen.add(key.toLowerCase());
 
-    // Filter by relevance
+    // Filter by relevance. P2 review-queue mode keeps low-confidence items
+    // (tagged needs_review below, hidden from the public feed) so nothing the
+    // scan surfaced silently vanishes; legacy mode drops < 40 as before.
     const relevance = typeof opp.relevance_score === "number" ? opp.relevance_score : 50;
-    if (relevance < 40) continue;
+    if (RADAR_REVIEW_QUEUE) {
+      if (relevance < 20) continue; // still drop the clearly-irrelevant
+    } else {
+      if (relevance < 40) continue;
+    }
 
     // Sprint 2: Validate opportunity and filter cancelled vehicles
     const oppValidation = validateOpportunity(opp);
     if (!oppValidation.valid) continue;
     if (opp.contract_vehicle && CANCELLED_VEHICLES.includes(opp.contract_vehicle)) continue;
 
-    filtered.push({
+    const row = {
       title: (opp.title || "Untitled").substring(0, 500),
       solicitation_number: opp.solicitation_number || null,
       agency: (opp.agency || "Unknown").substring(0, 200),
@@ -406,7 +421,14 @@ Return opportunities found as JSON.`, 3, scanModel.model, 8000, supabase);
       // S-P1: carry the source tag (SAM pre-pass rows = 'sam_api'); web-search
       // rows fall back to the column's existing 'radar' default.
       source: opp.source || "radar",
-    });
+    };
+    // S-P2: only attach review_status when the flag is on — the column exists
+    // only after its migration is applied, and writing an unknown column would
+    // kill every radar write (schema law).
+    if (RADAR_REVIEW_QUEUE) {
+      row.review_status = relevance < 50 ? "needs_review" : "published";
+    }
+    filtered.push(row);
   }
 
   console.log(`Total after dedup/filter: ${filtered.length} opportunities`);

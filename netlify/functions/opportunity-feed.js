@@ -47,6 +47,12 @@ exports.handler = async (event) => {
   const minConfidence = parseInt(params.min_confidence) || 0;
   const sortBy = params.sort || null;
   const source = params.source || null;
+  // P2: needs_review items are hidden from the public feed unless explicitly
+  // requested (?include_review=1). Gated by RADAR_REVIEW_QUEUE so the
+  // review_status column is never referenced until its migration is applied —
+  // referencing a non-existent column would 500 the feed (schema law).
+  const reviewQueueOn = process.env.RADAR_REVIEW_QUEUE === "true";
+  const includeReview = params.include_review === "1";
 
   try {
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
@@ -91,6 +97,10 @@ exports.handler = async (event) => {
       query = query.eq("source", source);
     }
 
+    if (reviewQueueOn && !includeReview) {
+      query = query.neq("review_status", "needs_review");
+    }
+
     const { data: opportunities, error: fetchErr } = await query;
 
     if (fetchErr) {
@@ -114,6 +124,7 @@ exports.handler = async (event) => {
     if (hasVehicle) countQuery = countQuery.not("contract_vehicle", "is", null);
     if (minConfidence > 0) countQuery = countQuery.gte("vehicle_confidence", minConfidence);
     if (source) countQuery = countQuery.eq("source", source);
+    if (reviewQueueOn && !includeReview) countQuery = countQuery.neq("review_status", "needs_review");
 
     const { count } = await countQuery;
 
