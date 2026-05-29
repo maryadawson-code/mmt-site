@@ -1481,6 +1481,26 @@ function loadContracts() {
   }
 }
 
+// S1 (Contract Tracker UX): collapse the 19 raw agency strings in
+// contracts.json into a small set of filterable families by substring.
+// Order matters — most specific / disambiguating checks first (e.g. the
+// "DoD / VA Joint Program Office" must resolve to DoD-VA, not VA; "Indian
+// Health Service (IHS) / HHS" to IHS, not HHS).
+function agencyFamily(agency) {
+  const a = String(agency || '');
+  if (/joint program|dod\s*\/\s*va/i.test(a)) return 'DoD-VA';
+  if (/\bCISA\b/i.test(a)) return 'CISA';
+  if (/indian health/i.test(a)) return 'IHS';
+  if (/defense health/i.test(a)) return 'DHA';
+  if (/veterans/i.test(a)) return 'VA';
+  if (/medicare/i.test(a)) return 'CMS';
+  if (/disease control/i.test(a)) return 'CDC';
+  if (/national institutes|\bNIH\b/i.test(a)) return 'NIH';
+  if (/social security/i.test(a)) return 'SSA';
+  if (/health and human|\bHHS\b/i.test(a)) return 'HHS';
+  return 'Other';
+}
+
 function generateContractTrackerHtml(contracts, contractArticleMap) {
   if (!contracts.length) return '<p class="text-center py-10" style="color:var(--mmt-text-secondary);">Contract data coming soon.</p>';
 
@@ -1500,9 +1520,9 @@ function generateContractTrackerHtml(contracts, contractArticleMap) {
     if (items.length === 0) return;
     const color = CONTRACT_STATUS_COLORS[status];
     const label = CONTRACT_STATUS_LABELS[status];
-    html += `<div class="mb-8">
-          <h2 class="text-lg font-bold mb-4 flex items-center gap-2" style="color:var(--mmt-navy);"><span class="w-2 h-2 rounded-full inline-block" style="background:${color};"></span>${escapeHtml(label)}</h2>
-          <div class="grid md:grid-cols-2 gap-4">\n`;
+    html += `<div class="mb-8" data-ct-group="${status}">
+          <h2 class="text-lg font-bold mb-4 flex items-center gap-2 ct-group-header" style="color:var(--mmt-navy);"><span class="w-2 h-2 rounded-full inline-block" style="background:${color};"></span>${escapeHtml(label)}</h2>
+          <div class="grid md:grid-cols-2 gap-4" data-ct-grid="${status}">\n`;
     items.forEach(c => {
       const cSlug = slugify(c.name);
       const relatedAnalysis = generateContractRelatedAnalysisHtml(c.name, articleMap);
@@ -1510,7 +1530,16 @@ function generateContractTrackerHtml(contracts, contractArticleMap) {
       const lastCovered = linkedArticles.length > 0
         ? `<span class="text-xs block mt-1" style="color:var(--mmt-text-secondary);">Last covered: ${linkedArticles[0].formattedDate}</span>`
         : '';
-      html += `            <div class="card rounded-xl p-6 transition-all duration-200 hover:translate-y-[-2px]">
+      // S1: machine-readable facets for client-side filter/search/sort (S2+).
+      // data-search is built ONLY from publicly-rendered text — name, agency,
+      // and the same 40-word teaser shown on the card. It deliberately omits
+      // vendor and the full description, which are premium-gated and must
+      // never appear in HTML source (paywall hard-rule, CLAUDE.md).
+      const ctFamily = agencyFamily(c.agency);
+      const ctTeaser = (c.description || '').split(/\s+/).slice(0, 40).join(' ');
+      const ctSearch = escapeHtml((c.name + ' ' + c.agency + ' ' + ctTeaser).toLowerCase());
+      const ctLastCovered = linkedArticles.length > 0 ? escapeHtml(linkedArticles[0].formattedDate) : '';
+      html += `            <div class="card rounded-xl p-6 transition-all duration-200 hover:translate-y-[-2px]" data-name="${escapeHtml(c.name)}" data-status="${escapeHtml(c.status || 'active')}" data-classification="${escapeHtml(c.classification || '')}" data-sb="${c.small_business_eligible ? '1' : '0'}" data-agency-family="${escapeHtml(ctFamily)}" data-last-covered="${ctLastCovered}" data-search="${ctSearch}">
               <a href="/contracts/${cSlug}/" class="no-underline block">
               <div class="flex items-start justify-between gap-3 mb-2">
                 <h3 class="text-base font-bold" style="color:var(--mmt-navy);">${escapeHtml(c.name)}</h3>
