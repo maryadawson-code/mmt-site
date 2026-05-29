@@ -21,6 +21,14 @@ const { searchUSASpending, searchFederalRegister, searchGAOReports, searchSAMOpp
 const { searchBills, searchBillSummaries, searchHearings, searchCRSReports, searchCommitteeReports } = require("./lib/congress-api");
 const { searchTrials } = require("./lib/clinicaltrials-api");
 const { searchPubMed, fetchPubMedSummaries } = require("./lib/pubmed-api");
+// S-P5: rule/cert enrichment libs, surfaced as an informational layer (no
+// composite weight). Dormant unless INTEL_RULES_CERT_LAYERS=true so prod
+// behavior is unchanged until flipped; each call is try/catch + graceful skip,
+// matching the existing federal-lib pattern.
+const { enrichWithRegulationsGov } = require("./lib/regulations-gov");
+const { enrichWithECFR } = require("./lib/ecfr-api");
+const { enrichWithCHPL } = require("./lib/onc-chpl-api");
+const INTEL_RULES_CERT_LAYERS = process.env.INTEL_RULES_CERT_LAYERS === "true";
 const { searchJobs } = require("./lib/usajobs-api");
 const { detectVehicles, expandedSearchTerms } = require("./lib/known-vehicles");
 const { buildQueryTerms, buildPubMedQuery, FR_AGENCY_SLUGS, USASPENDING_AGENCY_NAMES, correctCommonTypos, fallbackSuggestionsFor } = require("./lib/signal-chain-query-builder");
@@ -571,6 +579,52 @@ function layerMmtCoverage(terms, topic) {
 }
 
 // ------------------------------------------------------------
+// S-P5: informational rule/cert layer — live rulemaking + comment periods
+// (Regulations.gov), current CFR sections (eCFR), and certified health IT
+// products (ONC CHPL). Score 0 / weight 0 — does NOT affect the composite.
+// Dormant unless INTEL_RULES_CERT_LAYERS=true; every call is graceful.
+// ------------------------------------------------------------
+async function layerRulesCert(terms, topic) {
+  const empty = { score: 0, weight: 0, source: "Federal rules & certifications (Regulations.gov, eCFR, ONC CHPL)", signals: [], noSignalReason: null };
+  if (!INTEL_RULES_CERT_LAYERS) return empty;
+  const signals = [];
+  try {
+    const [reg, ecfr, chpl] = await Promise.all([
+      enrichWithRegulationsGov({ topic }).catch(() => null),
+      enrichWithECFR({ topic }).catch(() => null),
+      enrichWithCHPL({ topic }).catch(() => null),
+    ]);
+    const docs = reg && reg.openComments && reg.openComments.documents;
+    if (Array.isArray(docs)) {
+      for (const d of docs.slice(0, 3)) {
+        signals.push({ title: String(d.title || d.id || "Open comment period").substring(0, 140), url: d.url || "", date: d.comment_end || "", source: "Regulations.gov", organization: d.agency || "", relevanceNote: `Open comment period · due ${d.comment_end || "TBD"}` });
+      }
+    }
+    const dockets = reg && reg.dockets && reg.dockets.dockets;
+    if (Array.isArray(dockets)) {
+      for (const d of dockets.slice(0, 2)) {
+        signals.push({ title: String(d.title || d.id || "Rulemaking docket").substring(0, 140), url: d.url || "", date: d.posted || "", source: "Regulations.gov", organization: d.agency || "", relevanceNote: "Active rulemaking docket" });
+      }
+    }
+    if (ecfr && Array.isArray(ecfr.results)) {
+      for (const r of ecfr.results.slice(0, 3)) {
+        signals.push({ title: `${r.hierarchy || "CFR"}${r.section ? ` § ${r.section}` : ""}`.substring(0, 140), url: r.url || "", date: "", source: "eCFR", organization: "", relevanceNote: String(r.headline || "").replace(/\s+/g, " ").substring(0, 160) });
+      }
+    }
+    const products = chpl && (Array.isArray(chpl.products) ? chpl.products : (chpl.products && chpl.products.products));
+    if (Array.isArray(products)) {
+      for (const p of products.slice(0, 3)) {
+        const name = p.product_name || p.product || p.name || "";
+        const dev = p.developer || "";
+        if (!name && !dev) continue;
+        signals.push({ title: `${dev ? dev + " — " : ""}${name}`.substring(0, 140), url: p.url || "https://chpl.healthit.gov", date: p.status_date || "", source: "ONC CHPL", organization: dev, relevanceNote: `${p.edition || "Certified"} · ${p.status || "health IT product"}` });
+      }
+    }
+  } catch (_) { /* graceful — informational layer never breaks the response */ }
+  return { ...empty, signals, noSignalReason: signals.length === 0 ? `No rules/cert signals for "${topic}".` : null };
+}
+
+// ------------------------------------------------------------
 // Composite + verdict
 // ------------------------------------------------------------
 function computeComposite(layers) {
@@ -769,12 +823,13 @@ exports.handler = async (event) => {
   const terms = buildQueryTerms(resolvedTopic, resolvedAgency);
 
   // Run all 5 layers in parallel with 6s per-layer timeout
-  const [research, legislative, workforce, budget, contract] = await Promise.all([
+  const [research, legislative, workforce, budget, contract, rulesCert] = await Promise.all([
     race(6000, () => layerResearch(terms, resolvedAgency)),
     race(6000, () => layerLegislative(terms)),
     race(6000, () => layerWorkforce(terms, resolvedAgency)),
     race(6000, () => layerBudget(terms, resolvedAgency)),
     race(6000, () => layerContract(terms, resolvedAgency)),
+    race(6000, () => layerRulesCert(terms, resolvedTopic)),
   ]);
 
   const zero = { score: 0, weight: 0, source: "", signals: [], noSignalReason: "Data source timed out — try again." };
@@ -792,6 +847,8 @@ exports.handler = async (event) => {
     budget:      budget.__timedOut || budget.__error ? { ...zero, weight: 0.25 } : budget,
     contract:    contract.__timedOut || contract.__error ? { ...zero, weight: 0.25 } : contract,
     mmtCoverage: layerMmtCoverage(terms, topic),
+    // S-P5: informational only (weight 0) — empty/no-op unless INTEL_RULES_CERT_LAYERS=true.
+    rulesCert:   rulesCert.__timedOut || rulesCert.__error ? { ...zero, weight: 0 } : rulesCert,
   };
 
   // Surface upstream API errors via ops_events so they show up in the

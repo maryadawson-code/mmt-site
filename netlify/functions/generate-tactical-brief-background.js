@@ -52,6 +52,13 @@ const { enrichWithCMSProviderData, formatCMSContext } = require("./lib/cms-provi
 const { enrichWithClinicalTrials, formatClinicalTrialsContext } = require("./lib/clinicaltrials-api");
 const { enrichWithONCHealthIT, formatONCHealthITContext } = require("./lib/onc-healthit-api");
 const { enrichWithHHSOpenData, formatHHSOpenDataContext } = require("./lib/hhs-open-data");
+// S-P5: rule/cert enrichment. Dormant unless INTEL_RULES_CERT_LAYERS=true — when
+// off the calls below resolve null and contribute nothing, so prod behavior is
+// unchanged. Same try/catch (safe()) + graceful-empty pattern as every other lib.
+const { enrichWithRegulationsGov, formatRegulationsGovContext } = require("./lib/regulations-gov");
+const { enrichWithECFR, formatECFRContext } = require("./lib/ecfr-api");
+const { enrichWithCHPL, formatCHPLContext } = require("./lib/onc-chpl-api");
+const INTEL_RULES_CERT_LAYERS = process.env.INTEL_RULES_CERT_LAYERS === "true";
 const { loadSubscriberContext, formatContextBlock, contextSystemRules, noContextBanner, validateReport: validateSubscriberReport, gateContext, renderBlockedDiagnostic, waivedContextBanner } = require("./lib/subscriber-context");
 
 // --- v4 Deep Research Loop modules (gated by MARKETPULSE_V4 flag) ---
@@ -1220,6 +1227,9 @@ exports.handler = async (event) => {
         ctgovData,
         oncHealthITData,
         hhsOpenData,
+        regulationsGovData,
+        ecfrData,
+        chplData,
       ] = await Promise.all([
         safe(enrichWithFederalData({ topic: entityName, agency: entityAcronym || undefined, naics: naicsFocus.length > 0 ? naicsFocus : undefined })),
         safe(enrichWithCongress({ topic: entityName })),
@@ -1233,6 +1243,9 @@ exports.handler = async (event) => {
         safe(enrichWithClinicalTrials({ topic: entityName })),
         safe(enrichWithONCHealthIT({ topic: entityName })),
         safe(enrichWithHHSOpenData({ topic: entityName })),
+        safe(INTEL_RULES_CERT_LAYERS ? enrichWithRegulationsGov({ topic: entityName }) : Promise.resolve(null)),
+        safe(INTEL_RULES_CERT_LAYERS ? enrichWithECFR({ topic: entityName }) : Promise.resolve(null)),
+        safe(INTEL_RULES_CERT_LAYERS ? enrichWithCHPL({ topic: entityName }) : Promise.resolve(null)),
       ]);
 
       federalDataContext = [
@@ -1248,6 +1261,9 @@ exports.handler = async (event) => {
         formatClinicalTrialsContext(ctgovData),
         formatONCHealthITContext(oncHealthITData),
         formatHHSOpenDataContext(hhsOpenData),
+        formatRegulationsGovContext(regulationsGovData),
+        formatECFRContext(ecfrData),
+        formatCHPLContext(chplData),
       ].filter(Boolean).join("");
 
       passTimings["Pre-pass — Federal API enrichment"] = Math.round((Date.now() - apiStart) / 1000);
