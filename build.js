@@ -1524,7 +1524,7 @@ function generateContractTrackerHtml(contracts, contractArticleMap) {
           <h2 class="text-lg font-bold mb-4 flex items-center gap-2 ct-group-header" style="color:var(--mmt-navy);"><span class="w-2 h-2 rounded-full inline-block" style="background:${color};"></span>${escapeHtml(label)}</h2>
           <div class="grid md:grid-cols-2 gap-4" data-ct-grid="${status}">\n`;
     items.forEach(c => {
-      const cSlug = slugify(c.name);
+      const cSlug = c.slug || slugify(c.name);
       const relatedAnalysis = generateContractRelatedAnalysisHtml(c.name, articleMap);
       const linkedArticles = articleMap[c.name] || [];
       const lastCovered = linkedArticles.length > 0
