@@ -548,7 +548,38 @@
     return famCount[b] - famCount[a] || a.localeCompare(b);
   });
 
-  var state = { q: '', agency: 'all', status: 'all', sb: false, sort: 'name' };
+  var state = { q: '', agency: 'all', status: 'all', sb: false, sort: 'name', view: 'card' };
+
+  // S3: dense table view, built from the same card nodes (no re-fetch). Each
+  // <tr> carries the same data-* facets as its card so matches()/sortCards()
+  // work on either element. Only public fields are surfaced (no vendor/value/
+  // naics), matching what the cards already expose.
+  var tableWrap = document.getElementById('ct-table-wrap');
+  var tableBody = document.getElementById('ct-table-body');
+  var rows = [];
+  function escapeText(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
+  function statusLabel(s) { return s === 'active' ? 'Active' : s === 'upcoming' ? 'Upcoming' : s === 'awarded' ? 'Awarded' : (s || ''); }
+  function buildTable() {
+    if (!tableBody) return;
+    tableBody.innerHTML = '';
+    rows = cards.map(function(card) {
+      var a = card.querySelector('a[href^="/contracts/"]');
+      var href = a ? a.getAttribute('href') : null;
+      var agencyP = a ? a.querySelector('p') : null; // first <p> in the contract anchor is the agency line
+      var agency = agencyP ? agencyP.textContent.trim() : (card.getAttribute('data-agency-family') || '');
+      var name = card.getAttribute('data-name') || '';
+      var tr = document.createElement('tr');
+      tr.setAttribute('data-name', name);
+      tr.setAttribute('data-status', card.getAttribute('data-status') || '');
+      tr.setAttribute('data-agency-family', card.getAttribute('data-agency-family') || '');
+      tr.setAttribute('data-sb', card.getAttribute('data-sb') || '0');
+      tr.setAttribute('data-search', card.getAttribute('data-search') || '');
+      var nameCell = href ? '<a href="' + escapeText(href) + '">' + escapeText(name) + '</a>' : escapeText(name);
+      tr.innerHTML = '<td>' + nameCell + '</td><td>' + escapeText(agency) + '</td><td>' + escapeText(statusLabel(card.getAttribute('data-status'))) + '</td><td>' + escapeText(card.getAttribute('data-classification') || '') + '</td><td>' + (card.getAttribute('data-sb') === '1' ? 'Yes' : '—') + '</td><td>' + escapeText(card.getAttribute('data-last-covered') || '') + '</td>';
+      tableBody.appendChild(tr);
+      return tr;
+    });
+  }
 
   function readParams() {
     var p = new URLSearchParams(window.location.search);
@@ -557,6 +588,7 @@
     if (p.has('status')) state.status = p.get('status') || 'all';
     if (p.has('sb')) state.sb = p.get('sb') === '1';
     if (p.has('sort')) state.sort = p.get('sort') || 'name';
+    if (p.has('view')) state.view = p.get('view') === 'table' ? 'table' : 'card';
   }
   function writeParams() {
     var p = new URLSearchParams(window.location.search);
@@ -565,6 +597,7 @@
     state.status !== 'all' ? p.set('status', state.status) : p.delete('status');
     state.sb ? p.set('sb', '1') : p.delete('sb');
     state.sort !== 'name' ? p.set('sort', state.sort) : p.delete('sort');
+    state.view === 'table' ? p.set('view', 'table') : p.delete('view');
     var qs = p.toString();
     window.history.replaceState(null, '', window.location.pathname + (qs ? '?' + qs : '') + window.location.hash);
   }
@@ -638,31 +671,55 @@
     });
   }
 
+  function styleViewBtn(b, active) {
+    b.style.background = active ? 'var(--mmt-teal)' : 'var(--mmt-white)';
+    b.style.color = active ? '#FFFFFF' : 'var(--mmt-teal)';
+  }
   function syncControls() {
     var s = document.getElementById('ct-search'); if (s && s.value !== state.q) s.value = state.q;
     var sb = document.getElementById('ct-sb-toggle'); if (sb) { sb.setAttribute('aria-pressed', state.sb ? 'true' : 'false'); styleChip(sb, state.sb); }
     var sort = document.getElementById('ct-sort'); if (sort && sort.value !== state.sort) sort.value = state.sort;
+    var vc = document.getElementById('ct-view-card'), vt = document.getElementById('ct-view-table');
+    if (vc && vt) {
+      var t = state.view === 'table';
+      styleViewBtn(vc, !t); styleViewBtn(vt, t);
+      vc.setAttribute('aria-pressed', t ? 'false' : 'true');
+      vt.setAttribute('aria-pressed', t ? 'true' : 'false');
+    }
   }
 
   function apply() {
+    var tableView = state.view === 'table';
+    var combined = !!(state.q || state.agency !== 'all' || state.sb);
     var shown = 0;
-    cards.forEach(function(c) { var m = matches(c); c.style.display = m ? '' : 'none'; if (m) shown++; });
 
-    // sort visible+hidden cards within each status grid container
+    // CARD view — filter, then sort within each status grid container.
+    cards.forEach(function(c) { var m = matches(c); c.style.display = m ? '' : 'none'; if (m) shown++; });
     groups.forEach(function(g) {
       var gridEl = g.querySelector('[data-ct-grid]');
       if (!gridEl) return;
       sortCards(Array.prototype.slice.call(gridEl.querySelectorAll('.card[data-search]'))).forEach(function(c) { gridEl.appendChild(c); });
     });
-
-    // search/agency/sb collapse the status groups into one combined list →
-    // hide the section headers. A bare status filter keeps its header.
-    var combined = !!(state.q || state.agency !== 'all' || state.sb);
-    headers.forEach(function(h) { h.style.display = combined ? 'none' : ''; });
+    // search/agency/sb collapse the groups into one combined list → hide
+    // headers. A bare status filter keeps its header. Table view hides both.
+    headers.forEach(function(h) { h.style.display = (tableView || combined) ? 'none' : ''; });
     groups.forEach(function(g) {
+      if (tableView) { g.style.display = 'none'; return; }
       var anyVisible = Array.prototype.slice.call(g.querySelectorAll('.card[data-search]')).some(function(c) { return c.style.display !== 'none'; });
       g.style.display = anyVisible ? '' : 'none';
     });
+
+    // TABLE view — same predicate + sort over a flat row list, zebra visibles.
+    if (tableBody) {
+      sortCards(rows).forEach(function(r) { tableBody.appendChild(r); });
+      var zi = 0;
+      rows.forEach(function(r) {
+        var m = matches(r);
+        r.style.display = m ? '' : 'none';
+        if (m) { r.style.background = (zi % 2 === 1) ? 'var(--mmt-soft)' : 'var(--mmt-white)'; zi++; }
+      });
+    }
+    if (tableWrap) tableWrap.hidden = !tableView || shown === 0;
 
     var countEl = document.getElementById('ct-count');
     if (countEl) countEl.textContent = 'Showing ' + shown + ' of ' + cards.length;
@@ -680,8 +737,13 @@
   if (sortEl) sortEl.addEventListener('change', function() { state.sort = this.value || 'name'; apply(); });
   var sbEl = document.getElementById('ct-sb-toggle');
   if (sbEl) sbEl.addEventListener('click', function() { state.sb = !state.sb; apply(); });
+  var vcEl = document.getElementById('ct-view-card');
+  if (vcEl) vcEl.addEventListener('click', function() { state.view = 'card'; apply(); });
+  var vtEl = document.getElementById('ct-view-table');
+  if (vtEl) vtEl.addEventListener('click', function() { state.view = 'table'; apply(); });
 
   readParams();
   buildChips();
+  buildTable();
   apply();
 })();

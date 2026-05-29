@@ -161,6 +161,10 @@
             </select>
             <button id="ct-sb-toggle" type="button" aria-pressed="false"
               style="padding:6px 12px;border:1px solid var(--mmt-border,#D8E0E8);border-radius:999px;font-size:13px;font-weight:600;color:var(--mmt-teal);background:var(--mmt-white);cursor:pointer;">Small business only</button>
+            <div role="group" aria-label="View" style="display:inline-flex;border:1px solid var(--mmt-border,#D8E0E8);border-radius:8px;overflow:hidden;margin-left:auto;">
+              <button id="ct-view-card" type="button" aria-pressed="true" style="padding:7px 14px;font-size:13px;font-weight:600;border:none;cursor:pointer;background:var(--mmt-teal);color:#FFFFFF;">Cards</button>
+              <button id="ct-view-table" type="button" aria-pressed="false" style="padding:7px 14px;font-size:13px;font-weight:600;border:none;cursor:pointer;background:var(--mmt-white);color:var(--mmt-teal);">Table</button>
+            </div>
           </div>
           <div id="ct-status-filters" class="flex flex-wrap gap-2" role="group" aria-label="Filter by status"></div>
           <div id="ct-agency-filters" class="flex flex-wrap gap-2" role="group" aria-label="Filter by agency"></div>
@@ -172,6 +176,25 @@
         <p class="text-sm" style="color:var(--mmt-text-secondary);">Try clearing the search box or choosing All.</p>
       </div>
       <!-- BUILD:CONTRACT_TRACKER -->
+      <!-- S3: dense table view. Built client-side from the same card nodes;
+           obeys the same filter/search/sort state. Cards is the default view. -->
+      <style>
+        #ct-table th { padding:10px 12px; color:var(--mmt-navy); font-weight:700; }
+        #ct-table tbody td { padding:10px 12px; border-bottom:1px solid var(--mmt-border,#D8E0E8); color:var(--mmt-text); vertical-align:top; }
+        #ct-table tbody tr:hover td { background:rgba(69,123,157,0.06); }
+        #ct-table a { color:var(--mmt-teal); font-weight:600; text-decoration:none; }
+        #ct-table a:hover { text-decoration:underline; }
+      </style>
+      <div id="ct-table-wrap" hidden style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+        <table id="ct-table" style="width:100%;border-collapse:collapse;font-size:13px;min-width:680px;">
+          <thead>
+            <tr style="text-align:left;border-bottom:2px solid var(--mmt-border,#D8E0E8);">
+              <th>Contract</th><th>Agency</th><th>Status</th><th>Classification</th><th>SB</th><th>Last covered</th>
+            </tr>
+          </thead>
+          <tbody id="ct-table-body"></tbody>
+        </table>
+      </div>
     </div>
   </section>
 
