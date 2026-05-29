@@ -1501,6 +1501,26 @@ function agencyFamily(agency) {
   return 'Other';
 }
 
+// S4: subtle left-border accent per agency family. Strictly tints of the two
+// approved brand colors — teal (#457B9D) and navy (#0A192F) — at varying alpha.
+// No new hues (design-system rule). A decorative grouping cue, not a legend.
+const FAMILY_ACCENTS = {
+  DHA: '#457B9D',
+  VA: '#0A192F',
+  CMS: 'rgba(69,123,157,0.65)',
+  HHS: 'rgba(10,25,47,0.65)',
+  CDC: 'rgba(69,123,157,0.45)',
+  NIH: 'rgba(10,25,47,0.45)',
+  IHS: '#457B9D',
+  CISA: '#0A192F',
+  'DoD-VA': 'rgba(69,123,157,0.65)',
+  SSA: 'rgba(10,25,47,0.65)',
+  Other: 'rgba(69,123,157,0.35)',
+};
+function familyAccent(family) {
+  return FAMILY_ACCENTS[family] || 'rgba(69,123,157,0.35)';
+}
+
 function generateContractTrackerHtml(contracts, contractArticleMap) {
   if (!contracts.length) return '<p class="text-center py-10" style="color:var(--mmt-text-secondary);">Contract data coming soon.</p>';
 
@@ -1539,7 +1559,7 @@ function generateContractTrackerHtml(contracts, contractArticleMap) {
       const ctTeaser = (c.description || '').split(/\s+/).slice(0, 40).join(' ');
       const ctSearch = escapeHtml((c.name + ' ' + c.agency + ' ' + ctTeaser).toLowerCase());
       const ctLastCovered = linkedArticles.length > 0 ? escapeHtml(linkedArticles[0].formattedDate) : '';
-      html += `            <div class="card rounded-xl p-6 transition-all duration-200 hover:translate-y-[-2px]" data-name="${escapeHtml(c.name)}" data-status="${escapeHtml(c.status || 'active')}" data-classification="${escapeHtml(c.classification || '')}" data-sb="${c.small_business_eligible ? '1' : '0'}" data-agency-family="${escapeHtml(ctFamily)}" data-last-covered="${ctLastCovered}" data-search="${ctSearch}">
+      html += `            <div class="card rounded-xl p-6 transition-all duration-200 hover:translate-y-[-2px]" style="border-left:3px solid ${familyAccent(ctFamily)};" data-name="${escapeHtml(c.name)}" data-status="${escapeHtml(c.status || 'active')}" data-classification="${escapeHtml(c.classification || '')}" data-sb="${c.small_business_eligible ? '1' : '0'}" data-agency-family="${escapeHtml(ctFamily)}" data-last-covered="${ctLastCovered}" data-search="${ctSearch}">
               <a href="/contracts/${cSlug}/" class="no-underline block">
               <div class="flex items-start justify-between gap-3 mb-2">
                 <h3 class="text-base font-bold" style="color:var(--mmt-navy);">${escapeHtml(c.name)}</h3>

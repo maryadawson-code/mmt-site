@@ -1,5 +1,31 @@
 // contract-tracker.js — Opportunity Radar + Vehicle Scanner
 
+// S4: shimmer skeleton placeholders shown in the radar/vehicle containers on
+// load, before the opportunity-feed fetch resolves. Defined once at file scope
+// (both IIFEs call it). The existing success/empty/error branches overwrite
+// innerHTML, so this is purely the pre-fetch state — it replaces the old bare
+// "Scanning..." spinner with ghost cards.
+function ctRenderSkeleton(el, n) {
+  if (!el) return;
+  if (!document.getElementById('ct-skel-style')) {
+    var st = document.createElement('style');
+    st.id = 'ct-skel-style';
+    st.textContent = '@keyframes ctSkelPulse{0%,100%{opacity:.55}50%{opacity:1}}.ct-skel{background:var(--mmt-soft,#F3F4F6);border-radius:6px;animation:ctSkelPulse 1.4s ease-in-out infinite}';
+    document.head.appendChild(st);
+  }
+  var h = '<div class="grid md:grid-cols-2 gap-4" aria-hidden="true">';
+  for (var i = 0; i < n; i++) {
+    h += '<div class="card rounded-xl p-5">'
+      + '<div class="ct-skel" style="height:14px;width:38%;margin-bottom:12px;"></div>'
+      + '<div class="ct-skel" style="height:18px;width:78%;margin-bottom:10px;"></div>'
+      + '<div class="ct-skel" style="height:12px;width:92%;margin-bottom:6px;"></div>'
+      + '<div class="ct-skel" style="height:12px;width:64%;"></div>'
+      + '</div>';
+  }
+  h += '</div>';
+  el.innerHTML = h;
+}
+
 (function() {
     var radarData = null;
     var activeFilter = 'all';
@@ -225,6 +251,7 @@
     });
 
     // Load opportunities
+    ctRenderSkeleton(document.getElementById('radar-container'), 3);
     fetch('/.netlify/functions/opportunity-feed?days=14&limit=20')
       .then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); })
       .then(function(data) {
@@ -492,6 +519,7 @@
     // we've classified onto a known vehicle. has_vehicle=true is the
     // belt-and-suspenders guard so even if vehicle_confidence migrates
     // we still see only classified rows.
+    ctRenderSkeleton(document.getElementById('vehicle-container'), 3);
     fetch('/.netlify/functions/opportunity-feed?min_confidence=1&has_vehicle=true&days=30&limit=60&sort=confidence')
       .then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); })
       .then(function(data) {
