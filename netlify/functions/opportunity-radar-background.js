@@ -56,6 +56,13 @@ const SAM_SYSTEM_ACCOUNT_API_KEY = process.env.SAM_SYSTEM_ACCOUNT_API_KEY;
 // every radar write. While OFF, the column is never referenced.
 const RADAR_REVIEW_QUEUE = process.env.RADAR_REVIEW_QUEUE === "true";
 
+// S-P4: optional forecast-portal scan. Default OFF (so prod behavior is
+// unchanged until flipped). When on, adds a 4th web-search pass over agency
+// acquisition forecasts + industry-day / sources-sought / pre-solicitation
+// notices, tagging those rows source:'forecast'. Pure additive coverage — no
+// schema change, no SAM key, no quota impact beyond one more Perplexity call.
+const RADAR_FORECAST_SCAN = process.env.RADAR_FORECAST_SCAN === "true";
+
 // ============================================================
 // System prompt for opportunity scanning
 // ============================================================
@@ -376,6 +383,36 @@ Return opportunities found as JSON.`, 3, scanModel.model, 8000, supabase);
     }
   } catch (err) {
     console.error("Scan 3 failed:", err.message);
+  }
+
+  // --- Scan 4: Agency acquisition forecasts + pre-solicitation notices (P4) ---
+  // Dormant unless RADAR_FORECAST_SCAN=true. Surfaces work BEFORE the formal
+  // solicitation — forecasts, industry days, sources-sought, pre-solicitation.
+  if (RADAR_FORECAST_SCAN) {
+    try {
+      console.log("Scan 4: Agency forecasts + pre-solicitation notices...");
+      const result4 = await callClaude(SCAN_PROMPT, `Search federal agency acquisition forecasts and early-stage notices for upcoming federal health IT work in the next 6-12 months.${priorityContext}
+
+Focus your 5 web searches on:
+1. DHS APFS acquisition forecast (apfs-cloud.dhs.gov) for health IT
+2. VA and HHS acquisition forecast / procurement forecast pages
+3. Army and DHA acquisition forecasts touching health systems
+4. "industry day" and "sources sought" notices for federal health IT
+5. "pre-solicitation" notices for health IT systems, EHR, claims, telehealth
+
+These are EARLY signals — score relevance on how concretely they point to a
+real upcoming health IT buy. Return opportunities found as JSON.`, 5, scanModel.model, 8000, supabase);
+
+      if (result4.opportunities) {
+        // Tag forecast-sourced rows so the feed/analytics can distinguish
+        // pre-solicitation signals from active solicitations.
+        for (const o of result4.opportunities) { o.source = "forecast"; }
+        allOpportunities.push(...result4.opportunities);
+        console.log(`  Found ${result4.opportunities.length} opportunities from forecast scan`);
+      }
+    } catch (err) {
+      console.error("Scan 4 (forecast) failed:", err.message);
+    }
   }
 
   // --- Deduplicate and filter ---
