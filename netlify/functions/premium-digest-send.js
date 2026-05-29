@@ -59,6 +59,24 @@ exports.handler = async (event) => {
     }
   } catch (e) { /* proceed */ }
 
+  // Claim today's run NOW — before the multi-second send loop. Netlify
+  // delivers scheduled functions at-least-once and fires this cron twice
+  // ~14s apart. The completion marker used to be written only AFTER the
+  // send loop (which runs >14s), so the second invocation passed the check
+  // above before any marker existed and re-sent the digest to every
+  // subscriber. This double-sent daily from 2026-05-20. Writing the claim
+  // up front shrinks the race window from the whole send to a few ms.
+  try {
+    await logOpsEvent(supabase, {
+      event_type: "DIGEST_CLAIMED",
+      source_function: "premium-digest-send",
+      severity: "info",
+      signature: "premium_digest_sent",
+      affected_entity: todayStr,
+      details: { claimed_at: now.toISOString() },
+    });
+  } catch (e) { /* if the claim write fails, proceed rather than skip a day */ }
+
   // Get all premium subscribers with preferences. TKT-4: prior filter
   // matched ANY active subscription_status without a subscription_tier
   // gate, which could match free-tier accounts that happened to have an
@@ -473,11 +491,15 @@ exports.handler = async (event) => {
   // Label fix: historic rows always logged DELIVERY_FAILURE even on clean runs, which tripped
   // dashboards filtering by event_type. Use DIGEST_COMPLETE when failed_count == 0.
   const _failedCount = failCount || 0;
+  // Completion telemetry uses its OWN signature so the day-claim signature
+  // (premium_digest_sent, written at the top) stays exactly one row per day
+  // — the guard reads premium_digest_sent, and a duplicate here would both
+  // muddy that count and re-pollute the dedup history.
   await logOpsEvent(supabase, {
     event_type: _failedCount > 0 ? "DELIVERY_FAILURE" : "DIGEST_COMPLETE",
     source_function: "premium-digest-send",
     severity: _failedCount > 0 ? "error" : "info",
-    signature: "premium_digest_sent",
+    signature: "premium_digest_complete",
     affected_entity: todayStr,
     details: { sent: sentCount, skipped: skipCount, failed: _failedCount, failed_count: _failedCount },
   });
