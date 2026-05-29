@@ -98,6 +98,14 @@
 [functions."opportunity-radar"]
   schedule = "0 */4 * * *"
 
+# P3 award tracking: triggers award-tracker-background to pull recent federal
+# contract AWARDS (USASpending + SAM Contract Awards) into the award_tracker
+# table. 15:00 UTC is offset from the radar (0 */4 → 12/16/20) and
+# pursuit-calendar (0 */6 → 12/18) crons so SAM calls never collide. Dormant
+# until AWARD_TRACKER_ENABLED=true (worker no-ops otherwise).
+[functions."award-tracker"]
+  schedule = "0 15 * * *"
+
 # eBuy Open surfacing: triggers ebuy-open-radar-background to scan GSA
 # eBuy Open (Schedule-only RFQs that never hit SAM.gov) for federal
 # health IT RFQs. 11:30 UTC = 7:30 AM ET, 30 min after the SAM/agency
