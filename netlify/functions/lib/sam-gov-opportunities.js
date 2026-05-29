@@ -33,7 +33,11 @@ function fmtDate(d) {
 }
 
 async function sam_search_opportunities(args = {}) {
-  const apiKey = process.env.SAM_GOV_API_KEY;
+  // Optional args.api_key lets a caller use a different SAM key (e.g. the
+  // higher-limit SAM_SYSTEM_ACCOUNT_API_KEY for the radar pre-pass) without
+  // touching the shared-quota SAM_GOV_API_KEY default. Existing callers pass
+  // nothing and behave exactly as before.
+  const apiKey = args.api_key || process.env.SAM_GOV_API_KEY;
   if (!apiKey) throw new Error("SAM_GOV_API_KEY not configured");
 
   const limit = Math.min(Number(args.limit ?? 10), 25);

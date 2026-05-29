@@ -19,6 +19,7 @@ const { checkKillSwitch } = require("./lib/kill-switch");
 const { trackAnthropic } = require("./lib/cost-tracker");
 const { logInference } = require("./lib/inference");
 const { logOpsEvent } = require("./lib/ops-ledger");
+const { sam_search_opportunities } = require("./lib/sam-gov-opportunities");
 
 // MMT-INTEL-02 (2026-05-22): migrated off Anthropic Sonnet
 // web_search_20260209 → Perplexity sonar-pro. CLAUDE.md 2026-04-15
@@ -37,6 +38,14 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
 // Health IT NAICS codes
 const NAICS_CODES = ["541512", "541511", "541519", "541611", "524292", "621999", "334510"];
+
+// S-P1: optional SAM.gov direct pre-pass. Default OFF. Uses the higher-limit
+// SAM_SYSTEM_ACCOUNT_API_KEY ONLY — never the shared SAM_GOV_API_KEY (small
+// daily quota shared with pursuit-calendar / signal-chain / compliance-check /
+// marketpulse). If the flag is off OR the system key is absent, the pre-pass
+// is skipped and the existing web-search scans run unchanged (no regression).
+const RADAR_SAM_DIRECT = process.env.RADAR_SAM_DIRECT === "true";
+const SAM_SYSTEM_ACCOUNT_API_KEY = process.env.SAM_SYSTEM_ACCOUNT_API_KEY;
 
 // ============================================================
 // System prompt for opportunity scanning
@@ -204,10 +213,70 @@ async function callClaude(systemPrompt, userMessage, _maxSearches, model, maxTok
 // MAIN HANDLER
 // ============================================================
 
+// S-P1: SAM.gov direct pre-pass. Returns raw opportunity objects in the same
+// shape the web-search scans produce, so the existing dedupe/validate/normalize/
+// upsert loop handles them with no special-casing. Dormant unless
+// RADAR_SAM_DIRECT=true AND SAM_SYSTEM_ACCOUNT_API_KEY is set. Per-NAICS
+// try/catch so one failed query never aborts the pre-pass.
+async function runSamPrePass() {
+  if (!RADAR_SAM_DIRECT) return [];
+  if (!SAM_SYSTEM_ACCOUNT_API_KEY) {
+    console.log("runSamPrePass: RADAR_SAM_DIRECT on but SAM_SYSTEM_ACCOUNT_API_KEY absent — skipping SAM pre-pass; web search unaffected.");
+    return [];
+  }
+  const out = [];
+  for (const naics of NAICS_CODES) {
+    try {
+      const { data } = await sam_search_opportunities({
+        naics,
+        api_key: SAM_SYSTEM_ACCOUNT_API_KEY,
+        posted_from_days_ago: 14,
+        limit: 25,
+      });
+      const items = (data && data.items) || [];
+      for (const it of items) {
+        const setAside = it.set_aside || "";
+        out.push({
+          title: it.title,
+          solicitation_number: it.solicitation_number || null,
+          agency: it.agency || "Unknown",
+          description: "",
+          response_deadline: it.response_deadline || null,
+          set_aside_type: setAside,
+          naics_codes: it.naics ? [String(it.naics)] : [naics],
+          source_url: it.sam_url || "",
+          opportunity_type: it.type || "solicitation",
+          source: "sam_api",
+          relevance_score: 80,
+          small_business_eligible: /SDVOSB|VOSB|WOSB|8\(a\)|HUBZone|small business|set.?aside/i.test(setAside),
+        });
+      }
+      console.log(`runSamPrePass: NAICS ${naics} → ${items.length} SAM items`);
+    } catch (err) {
+      console.error(`runSamPrePass: NAICS ${naics} failed:`, err.message);
+    }
+  }
+  console.log(`runSamPrePass: ${out.length} SAM items collected`);
+  return out;
+}
+
 async function _runRadarScan(event) {
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
   const scanModel = await getModelConfig(null, "opportunity_scan");
   const allOpportunities = [];
+
+  // S-P1: SAM.gov direct pre-pass (dormant unless flag+key set) runs BEFORE the
+  // web-search scans so its items flow through the same dedupe/validate/upsert
+  // path and win dedupe over any web-search hit with the same solicitation_number.
+  try {
+    const samItems = await runSamPrePass();
+    if (samItems.length) {
+      allOpportunities.push(...samItems);
+      console.log(`SAM pre-pass contributed ${samItems.length} opportunities`);
+    }
+  } catch (err) {
+    console.error("SAM pre-pass error (non-fatal):", err.message);
+  }
 
   // C4: Consume intelligence signals for priority search terms
   let priorityTerms = [];
@@ -334,6 +403,9 @@ Return opportunities found as JSON.`, 3, scanModel.model, 8000, supabase);
       ai_summary: (opp.ai_summary || "").substring(0, 500),
       scan_date: new Date().toISOString().split("T")[0],
       model_used: scanModel.model,
+      // S-P1: carry the source tag (SAM pre-pass rows = 'sam_api'); web-search
+      // rows fall back to the column's existing 'radar' default.
+      source: opp.source || "radar",
     });
   }
 
