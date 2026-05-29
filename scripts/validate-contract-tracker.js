@@ -58,6 +58,21 @@ const EXPECTED_SLUGS = [
   "cdc-dibbs-data-integration-building-blocks",
   "t6-health-systems-aoi-2-peo-dhms-cso", "mantech-dmix-diss-support",
   "swingtide-market-intelligence-support", "str-zero-day-leidos",
+  "samhsa-bhsis-recompete-behavioral-health-services-information-system",
+  "fda-sirce-ii-systems-for-inspection-recalls-compliance-enforcement",
+  "hrsa-optn-next-gen-it-contracts-phase-2",
+  "cms-sparc-ii-strategic-partners-acquisition-readiness-contract-recompete",
+  "cdc-dmi-successor-nssp-ecosystem-contracts",
+  "ihs-four-directions-warehouse-4dw-clinical-data-repository",
+  "nih-scientific-technical-support-services-idiq-3b",
+  "cms-rmada-3-research-measurement-assessment-design-analysis",
+  "acf-ccwis-support-task-recompete-child-welfare-information-systems",
+  "hhs-ngits-bpa-recompete-application-hosting-operations-engineering",
+  "ihs-path-ehr-future-task-orders-sustainment-deployment-pipeline",
+  "fda-fire-foundational-innovation-and-rapid-engagement",
+  "hrsa-ryan-white-rsr-data-modernization",
+  "cdc-electronic-case-reporting-ecr-modernization",
+  "aspr-npivs-national-provider-identity-verification-system",
 ];
 
 const REQUIRED_FIELDS = ["slug", "name", "agency", "status", "description", "source_urls", "last_verified"];

@@ -1005,5 +1005,703 @@
     "pursuit_score": {"verdict": "AWARDED", "headline": "STR Zero Day — awarded May 2026", "factors": {}},
     "slug": "str-zero-day-leidos",
     "content_gap": false
+  },
+  {
+    "name": "SAMHSA BHSIS Recompete (Behavioral Health Services Information System)",
+    "agency": "Substance Abuse and Mental Health Services Administration (SAMHSA)",
+    "vendor": "TBD — recompete forthcoming; bridge incumbent: Hendall Inc. (SB)",
+    "value": "Est. ~$120M (orig. 2020 award 75S20320C00001 = $122.4M / 5-yr); bridge 75S20326F42004 = $29.7M (1-yr)",
+    "status": "upcoming",
+    "classification": "Solicitation",
+    "naics": "541990",
+    "description": "Full recompete of SAMHSA's flagship behavioral health data system. BHSIS is the backbone of national behavioral health data infrastructure, collecting facility-level substance use and mental health treatment data (N-SUMHSS, TEDS, the Behavioral Health Treatment Services Locator) across all 50 states. The original 2020 award (75S20320C00001) was a Total Small Business Set-Aside at $122.4M over 5 years. Hendall Inc. holds a $29.7M one-year bridge (75S20326F42004); the contracting officer has signaled a full recompete (RFP ID 75S20326Q00002) is imminent. Likely to retain SB set-aside structure. One of the cleanest SB opportunities in the HHS space for firms with behavioral health data management, FHIR, and state-level reporting experience.",
+    "link": "https://orangeslices.ai/hendall-awarded-hhs-samhsa-behavioral-health-services-information-system-bhsis-bridge-contract/",
+    "small_business_eligible": true,
+    "source": "https://orangeslices.ai/hendall-awarded-hhs-samhsa-behavioral-health-services-information-system-bhsis-bridge-contract/",
+    "source_urls": [
+      "https://orangeslices.ai/hendall-awarded-hhs-samhsa-behavioral-health-services-information-system-bhsis-bridge-contract/",
+      "https://www.highergov.com/contract/75S20320C00001/"
+    ],
+    "last_verified": "2026-05-29",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "Imminent SB-set-aside recompete; clean fit",
+      "factors": {
+        "vehicle_fit": {
+          "score": "pass",
+          "note": "Likely Total SB Set-Aside per original award structure"
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "SAMHSA behavioral health data mission — direct fit"
+        },
+        "timeline": {
+          "score": "watch",
+          "note": "Bridge in place; full RFP timing not yet posted"
+        },
+        "competition": {
+          "score": "watch",
+          "note": "Hendall incumbent advantage; SB field expected to be competitive"
+        },
+        "scope_fit": {
+          "score": "pass",
+          "note": "Contained scope (~$120M) suits a focused SB prime"
+        }
+      }
+    },
+    "content_gap": false,
+    "slug": "samhsa-bhsis-recompete-behavioral-health-services-information-system"
+  },
+  {
+    "name": "FDA SIRCE II (Systems for Inspection, Recalls, Compliance & Enforcement)",
+    "agency": "Department of Health and Human Services (HHS) / FDA",
+    "vendor": "TBD — recompete; incumbent: REI Systems (orig. $400M, 75F40121A00019)",
+    "value": "Est. ~$218M+ (floor; full scope may approach $400M)",
+    "status": "upcoming",
+    "classification": "Solicitation",
+    "naics": "541511",
+    "description": "Recompete of FDA's Office of Regulatory Affairs (ORA) IT modernization vehicle. RFI 75F40126Q00072 posted Feb 2026 signals an imminent competitive solicitation covering ORA's full IT stack: imports screening, recall management, inspection compliance, and enforcement systems across 150+ domestic posts and 13 international offices. REI Systems has held the $400M single-award BPA since 2021; single-award BPA structure is expected to continue. Best positioned: firms with cloud-native agile DevSecOps, FedRAMP High environments, and FDA ORA regulatory-workflow experience. Largest near-term FDA opportunity.",
+    "link": "https://www.highergov.com/contract-opportunity/sirce-ii-75f40126q00072-r-815b9/",
+    "small_business_eligible": false,
+    "source": "https://www.highergov.com/contract-opportunity/sirce-ii-75f40126q00072-r-815b9/",
+    "source_urls": [
+      "https://www.highergov.com/contract-opportunity/sirce-ii-75f40126q00072-r-815b9/",
+      "https://www.reisystems.com/fda-awards-rei-systems-400m-sirce-it-modernization-contract/"
+    ],
+    "last_verified": "2026-05-29",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "Largest near-term FDA IT recompete (~$218M+)",
+      "factors": {
+        "vehicle_fit": {
+          "score": "watch",
+          "note": "Single-award BPA — winner-take-all structure"
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "FDA ORA regulatory IT — strong health-IT alignment"
+        },
+        "timeline": {
+          "score": "watch",
+          "note": "RFI posted Feb 2026; RFP timing pending"
+        },
+        "competition": {
+          "score": "watch",
+          "note": "REI Systems incumbent; large-business field expected"
+        },
+        "scope_fit": {
+          "score": "pass",
+          "note": "Broad ORA modernization scope fits SI/DevSecOps primes"
+        }
+      }
+    },
+    "content_gap": false,
+    "slug": "fda-sirce-ii-systems-for-inspection-recalls-compliance-enforcement"
+  },
+  {
+    "name": "HRSA OPTN Next Gen IT Contracts (Phase 2)",
+    "agency": "Health Resources & Services Administration (HRSA)",
+    "vendor": "TBD — open competition; Phase 1 (Sept 2024) awarded to multiple new vendors across IT, Operations, Data/Research, Comms domains",
+    "value": "Undisclosed multi-year (est. $100M+ across domains)",
+    "status": "upcoming",
+    "classification": "Solicitation",
+    "naics": "541511",
+    "description": "Phase 2 of HRSA's dismantling of the 40-year UNOS monopoly over the Organ Procurement and Transplantation Network — the most consequential procurement restructuring in HRSA history. HRSA is moving from Competitive Transition Contracts (Phase 1 multi-vendor awards, Sept 2024) to next-generation, performance-based, multi-domain contracts covering IT management, operations, data analytics/research, and communications. The IT management domain is the highest-value target, requiring organ-matching IT systems, human-centered design for clinical workflows, and interoperability with transplant-center EHRs. Multi-vendor structure creates strong teaming opportunities and open competition for non-UNOS firms.",
+    "link": "https://www.hrsa.gov/optn-modernization/updates",
+    "small_business_eligible": true,
+    "source": "https://www.hrsa.gov/optn-modernization/updates",
+    "source_urls": [
+      "https://www.hrsa.gov/optn-modernization/updates/september-2024",
+      "https://www.hrsa.gov/optn-modernization/updates/january-2025",
+      "https://www.organdonationalliance.org/article/organ-procurement-and-transplantation-network-optn-modernization-initiative-december-2023-updates/"
+    ],
+    "last_verified": "2026-05-29",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "Landmark open competition replacing UNOS monopoly",
+      "factors": {
+        "vehicle_fit": {
+          "score": "pass",
+          "note": "Multi-vendor, multi-domain — open to new entrants"
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "HRSA transplantation IT — high strategic significance"
+        },
+        "timeline": {
+          "score": "watch",
+          "note": "Phased rollout; Next-Gen IT solicitation timing fluid"
+        },
+        "competition": {
+          "score": "watch",
+          "note": "UNOS legacy knowledge advantage; new entrants competing"
+        },
+        "scope_fit": {
+          "score": "pass",
+          "note": "Domain structure allows right-sized bids incl. SB teaming"
+        }
+      }
+    },
+    "content_gap": false,
+    "slug": "hrsa-optn-next-gen-it-contracts-phase-2"
+  },
+  {
+    "name": "CMS SPARC II (Strategic Partners Acquisition Readiness Contract — Recompete)",
+    "agency": "Centers for Medicare & Medicaid Services (CMS)",
+    "vendor": "TBD — recompete; SPARC I (HHSM-500-2016-00046I) held by 40+ primes (Accenture, CGI, Leidos, Deloitte, Booz Allen)",
+    "value": "$25B ceiling (SPARC I, 10-year); SPARC II ceiling TBD",
+    "status": "upcoming",
+    "classification": "Solicitation",
+    "naics": "541511",
+    "description": "Recompete of CMS's primary IT IDIQ vehicle and the single highest-priority CMS opportunity in the 12-24 month window. SPARC I (HHSM-500-2016-00046I, $25B ceiling) expires February 20, 2027. SPARC II will be CMS's most competitive IT vehicle re-competition in a decade. Expect retained IDIQ/MAOC structure with updated cybersecurity (CMMC alignment), AI/ML, and cloud-native requirements. Capture should begin now: teaming arrangements and past-performance documentation are critical. Small businesses should identify prime or teaming partners already holding SPARC I positions to bridge the gap.",
+    "link": "https://www.cms.gov/data-research/cms-information-technology/sparc/faq",
+    "small_business_eligible": false,
+    "source": "https://www.cms.gov/data-research/cms-information-technology/sparc/faq",
+    "source_urls": [
+      "https://www.cms.gov/data-research/cms-information-technology/sparc/faq",
+      "https://www.cms.gov/data-research/cms-information-technology/sparc"
+    ],
+    "last_verified": "2026-05-29",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "FY2027 recompete of CMS's flagship IT vehicle",
+      "factors": {
+        "vehicle_fit": {
+          "score": "pass",
+          "note": "IDIQ/MAOC — bench positioning for task orders"
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "CMS — largest non-DoD health IT buyer"
+        },
+        "timeline": {
+          "score": "watch",
+          "note": "SPARC I expires Feb 2027; SPARC II RFP not yet posted"
+        },
+        "competition": {
+          "score": "watch",
+          "note": "40+ incumbent primes; intense large-business competition"
+        },
+        "scope_fit": {
+          "score": "watch",
+          "note": "Very large vehicle — SB needs teaming to participate"
+        }
+      }
+    },
+    "content_gap": false,
+    "slug": "cms-sparc-ii-strategic-partners-acquisition-readiness-contract-recompete"
+  },
+  {
+    "name": "CDC DMI Successor / NSSP Ecosystem Contracts",
+    "agency": "Centers for Disease Control and Prevention (CDC)",
+    "vendor": "TBD — emerging; NSSP cloud hosting currently Entarian (Sev1Tech), $26.9M on NGITS BPA",
+    "value": "Est. $50M+ aggregate across emerging procurements",
+    "status": "upcoming",
+    "classification": "Program Watch",
+    "naics": "541511",
+    "description": "Watch item covering the conversion of CDC's Data Modernization Initiative (DMI) grant-based activities into recurring contracts, plus the NSSP/BioSense recompete cycle. As CDC's FY2024-2025 DMI appropriations ($100M-$175M/yr) wind down, program-specific IT procurements (eCR, wastewater/environmental surveillance, NHSN modernization, lab reporting) are the likely vehicles. The Entarian (Sev1Tech) NSSP cloud-hosting task (7571TE26F00303 on the NGITS BPA, $26.9M, 2-yr, 2 bidders) recompetes ~2028, likely restructured under a larger cloud modernization vehicle aligned to CDC's Public Health Data Strategy (FHIR, eCR). NAICS 541511/541512 with public-health informatics credentials preferred. Highest uncertainty / highest opportunity in CDC space.",
+    "link": "https://www.cdc.gov/data-modernization/php/about/dm-milestones.html",
+    "small_business_eligible": true,
+    "source": "https://www.cdc.gov/data-modernization/php/about/dm-milestones.html",
+    "source_urls": [
+      "https://www.cdc.gov/data-modernization/php/about/dm-milestones.html",
+      "https://orangeslices.ai/entarian-wins-27m-cdc-national-syndromic-surveillance-program-nssp-cloud-hosting-task/",
+      "https://www.cdc.gov/public-health-data-strategy/php/index.html"
+    ],
+    "last_verified": "2026-05-29",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "DMI grant-to-contract conversion creates new pipeline",
+      "factors": {
+        "vehicle_fit": {
+          "score": "watch",
+          "note": "Mix of NGITS task orders, open-market, and new vehicles"
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "CDC public-health data modernization — strong SB history"
+        },
+        "timeline": {
+          "score": "watch",
+          "note": "Timing tied to appropriations wind-down; uncertain"
+        },
+        "competition": {
+          "score": "watch",
+          "note": "Entarian/incumbent advantages on hosting; field opening"
+        },
+        "scope_fit": {
+          "score": "pass",
+          "note": "$5M-$30M program-specific scopes fit SB primes"
+        }
+      }
+    },
+    "content_gap": true,
+    "content_gap_note": "Placeholder watch item — specific successor solicitation numbers and award vehicles will be added as CDC converts DMI grant activities to contracts and the NSSP recompete (~2028) is posted.",
+    "slug": "cdc-dmi-successor-nssp-ecosystem-contracts"
+  },
+  {
+    "name": "IHS Four Directions Warehouse (4DW) — Clinical Data Repository",
+    "agency": "Indian Health Service (IHS) / HHS",
+    "vendor": "Cherokee Nation Integrated Health, LLC (ISBEE set-aside)",
+    "value": "$36.4M (contract 140D0424C0039; sol 140D0424R0069); 5-year (base + 4 options)",
+    "status": "active",
+    "classification": "Award",
+    "naics": "541519",
+    "description": "IHS Health IT Modernization program contract for development of the Four Directions Warehouse (4DW), a clinical data repository supporting the PATH EHR transition. Awarded Sept 2024 to Cherokee Nation Integrated Health, LLC under an Indian Small Business Economic Enterprise (ISBEE) set-aside — one of the few federal set-aside categories unique to IHS — over a field of 8 bidders. Total value $36.4M with ~$8.7M initial obligation. Contracting managed via DOI Interior Business Center (IBC) AQD on behalf of IHS. Tracks the distinctive ISBEE market-entry pathway for Indian-owned firms and the eventual recompete.",
+    "link": "https://orangeslices.ai/cherokee-nation-subsidiary-wins-hhs-ihs-four-directions-warehouse-4dw-health-it-modernization-and-development/",
+    "small_business_eligible": true,
+    "source": "https://orangeslices.ai/cherokee-nation-subsidiary-wins-hhs-ihs-four-directions-warehouse-4dw-health-it-modernization-and-development/",
+    "source_urls": [
+      "https://orangeslices.ai/cherokee-nation-subsidiary-wins-hhs-ihs-four-directions-warehouse-4dw-health-it-modernization-and-development/",
+      "https://www.highergov.com/contract-opportunity/d-indian-health-ser-140d0424r0069-award-140d0424c0039-cherokee-nation-integrated-health-l-l-c-fb4ef/"
+    ],
+    "last_verified": "2026-05-29",
+    "pursuit_score": {
+      "verdict": "AWARDED",
+      "headline": "ISBEE CDR contract awarded to Cherokee Nation Integrated Health",
+      "factors": {
+        "vehicle_fit": {
+          "score": "pass",
+          "note": "ISBEE set-aside — unique Indian-owned SB pathway"
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "IHS health IT modernization — direct fit"
+        },
+        "timeline": {
+          "score": "pass",
+          "note": "Awarded Sept 2024; track for option years and recompete"
+        },
+        "competition": {
+          "score": "pass",
+          "note": "8 bidders — competitive ISBEE field"
+        },
+        "scope_fit": {
+          "score": "pass",
+          "note": "CDR/data scope fits health-IT data primes"
+        }
+      }
+    },
+    "content_gap": false,
+    "slug": "ihs-four-directions-warehouse-4dw-clinical-data-repository"
+  },
+  {
+    "name": "NIH Scientific & Technical Support Services IDIQ ($3B)",
+    "agency": "National Institutes of Health (NIH)",
+    "vendor": "TBD — award-pending; proposals closed April 27, 2026",
+    "value": "$3B ceiling (5-year); perf. 9/15/2026–9/14/2031",
+    "status": "upcoming",
+    "classification": "Solicitation",
+    "naics": "541714",
+    "description": "NIH's largest multi-award IDIQ in the current pipeline (solicitation 75N98026R00042), Full and Open. Covers bioinformatics, computational biology, BSL 2-4 lab research support, and clinical research across all NIH institutes. Proposals were due April 27, 2026 — that deadline has passed, placing the procurement in evaluation/award-pending status (not open for new bids). Multiple awards expected; period of performance 9/15/2026–9/14/2031. NAICS 541714 primary (541511 secondary). Small-business eligible at the task-order level. Track for award announcement and prepare task-order teaming with awardees.",
+    "link": "https://www.govconwire.com/articles/nih-rfp-scientific-technical-support",
+    "small_business_eligible": true,
+    "source": "https://www.govconwire.com/articles/nih-rfp-scientific-technical-support",
+    "source_urls": [
+      "https://www.govconwire.com/articles/nih-rfp-scientific-technical-support"
+    ],
+    "last_verified": "2026-05-29",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "Award-pending $3B NIH IDIQ; proposals closed Apr 2026",
+      "factors": {
+        "vehicle_fit": {
+          "score": "pass",
+          "note": "Multi-award IDIQ — task-order bench access"
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "NIH biomedical R&D support — core lane"
+        },
+        "timeline": {
+          "score": "watch",
+          "note": "Proposals closed Apr 27 2026; awaiting award decision"
+        },
+        "competition": {
+          "score": "watch",
+          "note": "Full-and-open; large biomedical-support field"
+        },
+        "scope_fit": {
+          "score": "pass",
+          "note": "541714/541511 scope; SB eligible at TO level"
+        }
+      }
+    },
+    "content_gap": false,
+    "slug": "nih-scientific-technical-support-services-idiq-3b"
+  },
+  {
+    "name": "CMS RMADA 3 (Research, Measurement, Assessment, Design & Analysis)",
+    "agency": "Centers for Medicare & Medicaid Services (CMS)",
+    "vendor": "TBD — award-pending; RMADA 2 (2019) awarded to 17 firms (Acumen, RAND, Mathematica, Abt, etc.)",
+    "value": "~$5B ceiling (5-year ordering once open); sol RMADA3APP250186",
+    "status": "upcoming",
+    "classification": "Solicitation",
+    "naics": "541720",
+    "description": "Multiple-award successor to RMADA 2, providing CMS/CMMI with research, measurement, demonstration evaluation, actuarial analysis, and data-analytics services tied to value-based care and payment innovation. RMADA 2 was awarded to 17 companies in 2019 at a $5B ceiling. CMS extended RMADA 3 proposal dates multiple times after the Feb 2025 final solicitation: Phase 1 bids due July 8, 2025; Phase 2 due Aug 26, 2025; oral presentations Aug 26–Sept 23, 2025 — placing it in award-pending status as of May 2026. NAICS 541720 primary (541511 secondary), directly in MMT's lane. A major standing CMS data-services pathway that supplements SPARC for analytics-heavy task orders; CMS emphasizes small-business participation.",
+    "link": "https://www.washingtontechnology.com/contracts/2025/06/cms-extends-its-primary-data-related-research-contract/406335/",
+    "small_business_eligible": true,
+    "source": "https://www.washingtontechnology.com/contracts/2025/06/cms-extends-its-primary-data-related-research-contract/406335/",
+    "source_urls": [
+      "https://www.washingtontechnology.com/contracts/2025/06/cms-extends-its-primary-data-related-research-contract/406335/",
+      "https://www.washingtontechnology.com/contracts/2025/02/cms-launches-35b-data-services-recompete/403149/",
+      "https://sam.gov/opp/6dae4168fe274a959e6370adfa88746f/view"
+    ],
+    "last_verified": "2026-05-29",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "Award-pending ~$5B CMS data/research MA-IDIQ",
+      "factors": {
+        "vehicle_fit": {
+          "score": "pass",
+          "note": "Multiple-award IDIQ — bench positioning"
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "CMS/CMMI research & data analytics — core NAICS lane"
+        },
+        "timeline": {
+          "score": "watch",
+          "note": "Proposals closed 2025; awards pending as of May 2026"
+        },
+        "competition": {
+          "score": "watch",
+          "note": "17 RMADA 2 incumbents; competitive research-firm field"
+        },
+        "scope_fit": {
+          "score": "pass",
+          "note": "SB participation emphasized; data/analytics scope fits"
+        }
+      }
+    },
+    "content_gap": false,
+    "slug": "cms-rmada-3-research-measurement-assessment-design-analysis"
+  },
+  {
+    "name": "ACF CCWIS Support Task Recompete (Child Welfare Information Systems)",
+    "agency": "Department of Health and Human Services (HHS) / ACF",
+    "vendor": "TBD — recompete after CIO-SP3 bridge; incumbent: ICF (75ACF125F80006, $69.7M)",
+    "value": "Est. ~$70M (current ICF task 75ACF125F80006 = $69.7M on CIO-SP3)",
+    "status": "upcoming",
+    "classification": "Solicitation",
+    "naics": "541512",
+    "description": "Recompete watch for ACF Children's Bureau's CCWIS technical-assistance/support task. CCWIS is a mandatory federal program requiring states to modernize child welfare IT systems. ICF currently holds the $69.7M support task (75ACF125F80006) on the CIO-SP3 GWAC; with the CIO-SP3 bridge expiring April 2027 (and CIO-SP4 cancelled), this vehicle will recompete under a new GWAC/IDIQ. Note: separate from ICF's $90.6M Child Welfare Information Gateway award (75N98125F00001). Strong teaming target for firms with child-welfare and state IT-modernization credentials.",
+    "link": "https://orangeslices.ai/hhs-awards-70m-acf-child-welfare-information-systems-support-task-on-cio-sp3-to-icf/",
+    "small_business_eligible": true,
+    "source": "https://orangeslices.ai/hhs-awards-70m-acf-child-welfare-information-systems-support-task-on-cio-sp3-to-icf/",
+    "source_urls": [
+      "https://orangeslices.ai/hhs-awards-70m-acf-child-welfare-information-systems-support-task-on-cio-sp3-to-icf/"
+    ],
+    "last_verified": "2026-05-29",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "ICF's $70M CCWIS task recompetes post-CIO-SP3 (Apr 2027)",
+      "factors": {
+        "vehicle_fit": {
+          "score": "watch",
+          "note": "Vehicle shifts off CIO-SP3 bridge to new GWAC/IDIQ"
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "ACF child-welfare IT — federally mandated, durable need"
+        },
+        "timeline": {
+          "score": "watch",
+          "note": "Recompete tied to SP3 bridge expiry April 2027"
+        },
+        "competition": {
+          "score": "watch",
+          "note": "ICF incumbent; child-welfare-IT specialists competing"
+        },
+        "scope_fit": {
+          "score": "pass",
+          "note": "~$70M contained scope suits mid-tier/SB teaming"
+        }
+      }
+    },
+    "content_gap": false,
+    "slug": "acf-ccwis-support-task-recompete-child-welfare-information-systems"
+  },
+  {
+    "name": "HHS NGITS BPA Recompete (Application Hosting, Operations, Engineering)",
+    "agency": "Department of Health and Human Services (HHS)",
+    "vendor": "TBD — recompete watch; current holders: SAIC, Peraton, Leidos, ManTech, Sev1Tech/Entarian, ActioNet, NuAxis, Salient CRGT",
+    "value": "Est. ~$485M+ aggregate across three BPAs (App Hosting ~$139M, Ops ~$207M, Eng ~$139M)",
+    "status": "upcoming",
+    "classification": "Program Watch",
+    "naics": "541512",
+    "description": "Recompete/consolidation watch across the three HHS Next-Generation IT Services BPAs — Application Hosting, Operations, and Engineering — that form the departmental IT services backbone for HHS OS and staffing divisions (~12,000 employees). The Application Hosting BPA (HHSP233201700023B) is most active for health-IT BD, routing cloud-hosting task orders for operating-division apps (SAMHSA, HRSA, ACF, others). SAIC holds the largest current operations task ($38.4M, Jan 2026, 75P00126F37002). Watch for NGITS program recompete or consolidation as PSC aligns with EO 14240 IT-consolidation mandates. Full-and-open BPAs with SB-restricted task orders.",
+    "link": "https://orangeslices.ai/contract-award-38-5m-hhs-next-generation-it-services-ngits-operations-services/",
+    "small_business_eligible": true,
+    "source": "https://orangeslices.ai/contract-award-38-5m-hhs-next-generation-it-services-ngits-operations-services/",
+    "source_urls": [
+      "https://orangeslices.ai/contract-award-38-5m-hhs-next-generation-it-services-ngits-operations-services/",
+      "https://www.highergov.com/contract/HHSP233201800011B-75P00126F37002/",
+      "https://www.govconwire.com/article/4-firms-awarded-139m-hhs-it-engineering-bpa"
+    ],
+    "last_verified": "2026-05-29",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "Three aging NGITS BPAs face recompete/consolidation",
+      "factors": {
+        "vehicle_fit": {
+          "score": "watch",
+          "note": "BPA structure; recompete vehicle/structure uncertain"
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "HHS departmental IT backbone — routes OPDIV health-IT TOs"
+        },
+        "timeline": {
+          "score": "watch",
+          "note": "Timing tied to EO 14240 consolidation; not yet posted"
+        },
+        "competition": {
+          "score": "watch",
+          "note": "Entrenched large-business holders; SB at TO level"
+        },
+        "scope_fit": {
+          "score": "pass",
+          "note": "Hosting/ops/eng scope broad enough for many entrants"
+        }
+      }
+    },
+    "content_gap": true,
+    "content_gap_note": "Placeholder watch item — exact NGITS recompete/consolidation solicitation and structure pending; will be updated when PSC posts the refresh under EO 14240.",
+    "slug": "hhs-ngits-bpa-recompete-application-hosting-operations-engineering"
+  },
+  {
+    "name": "IHS PATH EHR Future Task Orders (Sustainment & Deployment Pipeline)",
+    "agency": "Indian Health Service (IHS) / HHS",
+    "vendor": "GDIT (IDIQ prime, 140D0424D0001; Oracle Health subcontractor) — TO pipeline",
+    "value": "Per-TO scale (e.g., TO #9 = $325.7M); $2.54B IDIQ ceiling through ~2033",
+    "status": "active",
+    "classification": "Program Watch",
+    "naics": "541511",
+    "description": "Task-order pipeline watch on the IHS EHR Modernization IDIQ (GDIT prime, 140D0424D0001, $2.54B ceiling). With TO #9 ($325.7M, sustainment & operations, awarded May 2026, contract 140D0426F0370) now placed and PATH go-live targeted Aug 2026, the IDIQ will continue generating significant task orders for deployment, training, change management, tribal customization, and interoperability across 12 IHS Areas, 574+ federally recognized tribes, and urban Indian health programs. GDIT holds the prime; second-tier opportunities for analytics, custom workflows, and interoperability subcontracting exist. Distinct from the IDIQ-award entry — this tracks the ongoing TO flow. ISBEE set-aside is the most distinctive entry point for Indian-owned firms.",
+    "link": "https://orangeslices.ai/gdit-secures-326m-hhs-indian-health-service-path-electronic-health-record-ehr-sustainment-and-operational-services-task/",
+    "small_business_eligible": false,
+    "source": "https://orangeslices.ai/gdit-secures-326m-hhs-indian-health-service-path-electronic-health-record-ehr-sustainment-and-operational-services-task/",
+    "source_urls": [
+      "https://orangeslices.ai/gdit-secures-326m-hhs-indian-health-service-path-electronic-health-record-ehr-sustainment-and-operational-services-task/",
+      "https://www.ihs.gov/hit/path-ehr/",
+      "https://www.gdit.com/about-gdit/press-releases/gdit-awarded-usd2-5-billion-idiq-contract-for-electronic-health-record/"
+    ],
+    "last_verified": "2026-05-29",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "Ongoing TO pipeline on $2.54B GDIT IHS EHR IDIQ",
+      "factors": {
+        "vehicle_fit": {
+          "score": "watch",
+          "note": "Single-award IDIQ — subcontracting to GDIT prime"
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "IHS PATH EHR — flagship Indian-country health IT"
+        },
+        "timeline": {
+          "score": "pass",
+          "note": "Active TO flow; go-live Aug 2026 drives more TOs"
+        },
+        "competition": {
+          "score": "watch",
+          "note": "GDIT prime locked; opportunity is subcontract tier"
+        },
+        "scope_fit": {
+          "score": "pass",
+          "note": "Deployment/training/interop scope suits niche subs"
+        }
+      }
+    },
+    "content_gap": false,
+    "slug": "ihs-path-ehr-future-task-orders-sustainment-deployment-pipeline"
+  },
+  {
+    "name": "FDA FIRE (Foundational Innovation and RAPID Engagement)",
+    "agency": "Department of Health and Human Services (HHS) / FDA",
+    "vendor": "TBD — pre-concept; novel VC-prime / portfolio-subcontractor model",
+    "value": "TBD (RFI stage)",
+    "status": "upcoming",
+    "classification": "Solicitation",
+    "naics": "541511",
+    "description": "Pre-concept FDA contracting experiment. FDA's Office of Digital Transformation issued an RFI (posted Dec 17, 2025; responses due Jan 18, 2026) exploring a first-of-kind venture-capital prime / portfolio-subcontractor model to advance public-health innovation. If FDA proceeds past RFI, FIRE would create an unprecedented pathway for venture-backed health-IT companies to compete for FDA task orders. BD implications for VC-backed health-IT firms are significant, but the vehicle's viability is uncertain under current EO/OMB IT-consolidation pressure. Monitor closely for a follow-on solicitation.",
+    "link": "https://www.fda.gov/news-events/press-announcements/fda-explores-new-contracting-approach-advance-public-health-innovation",
+    "small_business_eligible": true,
+    "source": "https://www.fda.gov/news-events/press-announcements/fda-explores-new-contracting-approach-advance-public-health-innovation",
+    "source_urls": [
+      "https://www.fda.gov/news-events/press-announcements/fda-explores-new-contracting-approach-advance-public-health-innovation",
+      "https://advocacy.sba.gov/2025/12/30/fda-requests-information-on-foundational-innovation-and-rapid-engagement-fire/"
+    ],
+    "last_verified": "2026-05-29",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "Novel VC-prime FDA model; RFI stage, uncertain",
+      "factors": {
+        "vehicle_fit": {
+          "score": "watch",
+          "note": "Unprecedented VC-prime/portfolio-sub structure"
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "FDA digital transformation — health-IT innovation fit"
+        },
+        "timeline": {
+          "score": "watch",
+          "note": "RFI responses closed Jan 2026; no solicitation yet"
+        },
+        "competition": {
+          "score": "watch",
+          "note": "Untested model; competitive field undefined"
+        },
+        "scope_fit": {
+          "score": "watch",
+          "note": "Scope undefined pending FDA decision to proceed"
+        }
+      }
+    },
+    "content_gap": true,
+    "content_gap_note": "Placeholder watch item — FIRE is at RFI stage only; value, structure, and solicitation number pending FDA's decision to proceed past the RFI.",
+    "slug": "fda-fire-foundational-innovation-and-rapid-engagement"
+  },
+  {
+    "name": "HRSA Ryan White RSR Data Modernization",
+    "agency": "Health Resources & Services Administration (HRSA)",
+    "vendor": "WRMA (current data-support contractor) — recompete watch",
+    "value": "Est. ~$20–30M (multi-year)",
+    "status": "upcoming",
+    "classification": "Program Watch",
+    "naics": "541511",
+    "description": "Recompete watch on HRSA HIV/AIDS Bureau (HAB) data-support contract underpinning the Ryan White HIV/AIDS Program reporting systems — the Ryan White Services Report (RSR) and AETC reporting infrastructure that track HIV care and surveillance data nationally. WRMA holds the current data-support work (est. $20–30M). As the contract approaches its recompete window, firms with HIV surveillance data management, FHIR, and federal health-reporting credentials should position for capture. Aligned with HRSA's broader data-modernization (UDS+/FHIR) direction.",
+    "link": "https://ryanwhite.hrsa.gov/sites/default/files/ryanwhite/about-program/2025-rsr-manual.pdf",
+    "small_business_eligible": true,
+    "source": "https://ryanwhite.hrsa.gov/sites/default/files/ryanwhite/about-program/2025-rsr-manual.pdf",
+    "source_urls": [
+      "https://ryanwhite.hrsa.gov/sites/default/files/ryanwhite/about-program/2025-rsr-manual.pdf"
+    ],
+    "last_verified": "2026-05-29",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "WRMA Ryan White RSR data contract nearing recompete",
+      "factors": {
+        "vehicle_fit": {
+          "score": "watch",
+          "note": "Recompete vehicle/structure not yet posted"
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "HRSA HAB HIV data — durable federal reporting mandate"
+        },
+        "timeline": {
+          "score": "watch",
+          "note": "Recompete window approaching; exact date TBD"
+        },
+        "competition": {
+          "score": "watch",
+          "note": "WRMA incumbent; specialized HIV-data field"
+        },
+        "scope_fit": {
+          "score": "pass",
+          "note": "~$20–30M scope well-suited to focused SB prime"
+        }
+      }
+    },
+    "content_gap": true,
+    "content_gap_note": "Placeholder watch item — Ryan White RSR data-support recompete solicitation number and date not yet posted; values are estimates pending the official RFP.",
+    "slug": "hrsa-ryan-white-rsr-data-modernization"
+  },
+  {
+    "name": "CDC Electronic Case Reporting (eCR) Modernization",
+    "agency": "Centers for Disease Control and Prevention (CDC)",
+    "vendor": "TBD — emerging procurements; current ecosystem: APHL/AIMS platform, HL7, state vendors",
+    "value": "Est. ~$30–50M (DMI-funded, transitioning grant→contract)",
+    "status": "upcoming",
+    "classification": "Program Watch",
+    "naics": "541511",
+    "description": "Watch item on CDC's electronic case reporting modernization — the automated, real-time exchange of case-report data between EHRs and public health agencies. eCR is a core CDC Data Modernization Initiative (DMI) investment, currently delivered through the APHL/AIMS platform with HL7 and state-level partners. The 2026 Public Health Data Strategy emphasizes increasing eCR processing at public-health departments and expanding eCR among hospitals including Critical Access Hospitals. As DMI grant funding converts to recurring contracts, FHIR-based eCR procurements are expected to emerge. NAICS 541511; firms with FHIR, HL7, and public-health informatics credentials are best positioned.",
+    "link": "https://www.cdc.gov/ecr/php/getting-started/index.html",
+    "small_business_eligible": true,
+    "source": "https://www.cdc.gov/ecr/php/getting-started/index.html",
+    "source_urls": [
+      "https://www.cdc.gov/ecr/php/getting-started/index.html",
+      "https://www.hln.com/cdc-2026phds-summary/",
+      "https://www.cdc.gov/data-modernization/php/about/dm-milestones.html"
+    ],
+    "last_verified": "2026-05-29",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "FHIR-based eCR contracts emerging from DMI grants",
+      "factors": {
+        "vehicle_fit": {
+          "score": "watch",
+          "note": "Procurement vehicle uncertain; grant→contract transition"
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "CDC DMI eCR — high-priority interoperability mandate"
+        },
+        "timeline": {
+          "score": "watch",
+          "note": "Timing tied to DMI appropriations conversion"
+        },
+        "competition": {
+          "score": "watch",
+          "note": "APHL/AIMS ecosystem entrenched; field opening"
+        },
+        "scope_fit": {
+          "score": "pass",
+          "note": "FHIR/HL7 informatics scope fits SB primes"
+        }
+      }
+    },
+    "content_gap": true,
+    "content_gap_note": "Placeholder watch item — eCR procurements are still transitioning from DMI grants to contracts; specific solicitation numbers and vehicles will be added as they post.",
+    "slug": "cdc-electronic-case-reporting-ecr-modernization"
+  },
+  {
+    "name": "ASPR NPIVS (National Provider Identity Verification System)",
+    "agency": "Department of Health and Human Services (HHS) / ASPR",
+    "vendor": "TBD — pre-solicitation (RFI 2025)",
+    "value": "TBD (RFI stage)",
+    "status": "upcoming",
+    "classification": "Solicitation",
+    "naics": "541511",
+    "description": "Pre-solicitation watch on ASPR's National Provider Identity Verification System (RFI/sources-sought 75A50126R00001, targeted ~FY2027). NPIVS supports identity verification of healthcare providers for emergency-response and preparedness operations — a preparedness IT system with strategic national-security implications. ASPR's overall IT contracting footprint is relatively small (it favors 8(a) sole-source and SB set-asides for modest platform-support contracts), making NPIVS the agency's primary near-term IT watch item for FY2026–2027. Monitor for RFP release; SB/8(a) eligibility likely given ASPR's pattern.",
+    "link": "https://www.federalcompass.com/rfp-opportunity-detail/75A50126R00001_RFI_SSN_NPIVS-2027",
+    "small_business_eligible": true,
+    "source": "https://www.federalcompass.com/rfp-opportunity-detail/75A50126R00001_RFI_SSN_NPIVS-2027",
+    "source_urls": [
+      "https://www.federalcompass.com/rfp-opportunity-detail/75A50126R00001_RFI_SSN_NPIVS-2027"
+    ],
+    "last_verified": "2026-05-29",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "ASPR preparedness ID-verification IT; pre-solicitation",
+      "factors": {
+        "vehicle_fit": {
+          "score": "watch",
+          "note": "Pre-solicitation; vehicle/structure undefined"
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "ASPR preparedness IT — national-security alignment"
+        },
+        "timeline": {
+          "score": "watch",
+          "note": "RFI 2025; RFP targeted ~FY2027, not yet posted"
+        },
+        "competition": {
+          "score": "watch",
+          "note": "Field undefined; ASPR favors 8(a)/SB"
+        },
+        "scope_fit": {
+          "score": "pass",
+          "note": "Identity-verification scope fits SB/8(a) primes"
+        }
+      }
+    },
+    "content_gap": true,
+    "content_gap_note": "Placeholder watch item — NPIVS is at RFI/sources-sought stage (75A50126R00001); value and full solicitation pending an FY2027 RFP release.",
+    "slug": "aspr-npivs-national-provider-identity-verification-system"
   }
 ]
