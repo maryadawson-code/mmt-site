@@ -18,6 +18,19 @@
       return d.innerHTML;
     }
 
+    // naics_codes can arrive as a real array, a JSON-encoded array string,
+    // or a bare delimited string depending on how a scan wrote the row.
+    // The old `.length` guard passed for strings too, but strings have no
+    // .join() — one such row threw and blanked the entire feed. Coerce.
+    function naicsList(n) {
+      if (Array.isArray(n)) return n;
+      if (typeof n === 'string' && n.trim()) {
+        try { var p = JSON.parse(n); if (Array.isArray(p)) return p; } catch (e) {}
+        return n.split(/[,\s]+/).filter(Boolean);
+      }
+      return [];
+    }
+
     function deadlineCountdown(iso) {
       if (!iso) return '';
       var deadline = new Date(iso);
@@ -84,6 +97,8 @@
       var isPremium = isPremiumUser();
       var html = '<div class="grid md:grid-cols-2 gap-4">';
       opps.forEach(function(o) {
+        var _mark = html.length;
+        try {
         html += '<div class="card rounded-xl p-5 transition-all duration-200">';
         // Header with type badge, confidence, and deadline
         html += '<div class="flex items-start justify-between gap-2 mb-2">';
@@ -135,7 +150,8 @@
         html += '<div class="flex flex-wrap gap-3 items-center text-xs" style="color:var(--mmt-text-secondary);">';
         if (isPremium && o.value_estimate) html += '<span><strong style="color:var(--mmt-text-secondary);">Value:</strong> ' + esc(o.value_estimate) + '</span>';
         if (isPremium && o.solicitation_number) html += '<span><strong style="color:var(--mmt-text-secondary);">Sol#:</strong> ' + esc(o.solicitation_number) + '</span>';
-        if (isPremium && o.naics_codes && o.naics_codes.length) html += '<span><strong style="color:var(--mmt-text-secondary);">NAICS:</strong> ' + esc(o.naics_codes.join(', ')) + '</span>';
+        var naics = naicsList(o.naics_codes);
+        if (isPremium && naics.length) html += '<span><strong style="color:var(--mmt-text-secondary);">NAICS:</strong> ' + esc(naics.join(', ')) + '</span>';
         html += '</div>';
         // Deadline date + source link
         if (isPremium) {
@@ -154,6 +170,10 @@
           html += '</div>';
         }
         html += '</div>';
+        } catch (_rowErr) {
+          html = html.slice(0, _mark);
+          if (window.console && console.warn) console.warn('contract-tracker: skipped malformed opportunity row', o && o.id, _rowErr);
+        }
       });
       html += '</div>';
       return html;
@@ -222,7 +242,7 @@
         } else if (data.freshness === 'no_scan_yet') {
           document.getElementById('radar-scan-date').textContent = 'No scan yet \u2014 first sweep runs daily at 7 AM ET.';
         }
-        applyFilter();
+        try { applyFilter(); } catch (_renderErr) { if (window.console && console.error) console.error('contract-tracker: radar render failed', _renderErr); }
       })
       .catch(function() {
         // MMT-INTEL-02: assemble the fallback message at runtime so a
@@ -256,6 +276,31 @@
       var d = document.createElement('div');
       d.textContent = s || '';
       return d.innerHTML;
+    }
+
+    // See naicsList note in the radar block above: tolerate array / JSON
+    // string / delimited string so a malformed row never throws .join().
+    function naicsList(n) {
+      if (Array.isArray(n)) return n;
+      if (typeof n === 'string' && n.trim()) {
+        try { var p = JSON.parse(n); if (Array.isArray(p)) return p; } catch (e) {}
+        return n.split(/[,\s]+/).filter(Boolean);
+      }
+      return [];
+    }
+
+    // This IIFE is a SEPARATE closure from the radar block above. Without
+    // local copies of these, renderVehicleOpps threw "isPremiumUser is not
+    // defined" (and isValidSourceUrl) on its first line for every user with
+    // results — the actual reason the Small Business Vehicle Scanner read
+    // "temporarily unavailable". The radar above worked because it owns its
+    // own definitions.
+    var ROOT_DOMAIN_REGEX = /^https?:\/\/(sam\.gov|beta\.sam\.gov|usaspending\.gov|gao\.gov|congress\.gov|govinfo\.gov|fbo\.gov)\/?(\?|#|$)/i;
+    function isValidSourceUrl(u) {
+      return !!(u && typeof u === 'string' && !ROOT_DOMAIN_REGEX.test(u));
+    }
+    function isPremiumUser() {
+      return typeof window.mmtIsPremium === 'function' && window.mmtIsPremium();
     }
 
     function deadlineCountdown(iso) {
@@ -328,6 +373,8 @@
       var isPremium = isPremiumUser();
       var html = '<div class="grid md:grid-cols-2 gap-4">';
       opps.forEach(function(o) {
+        var _mark = html.length;
+        try {
         html += '<div class="card rounded-xl p-5 transition-all duration-200">';
         html += '<div class="flex items-start justify-between gap-2 mb-2">';
         html += '<div class="flex flex-wrap gap-2">';
@@ -357,7 +404,8 @@
         html += '<div class="flex flex-wrap gap-3 items-center text-xs" style="color:var(--mmt-text-secondary);">';
         if (isPremium && o.value_estimate) html += '<span><strong style="color:var(--mmt-text-secondary);">Value:</strong> ' + esc(o.value_estimate) + '</span>';
         if (isPremium && o.solicitation_number) html += '<span><strong style="color:var(--mmt-text-secondary);">Sol#:</strong> ' + esc(o.solicitation_number) + '</span>';
-        if (isPremium && o.naics_codes && o.naics_codes.length) html += '<span><strong style="color:var(--mmt-text-secondary);">NAICS:</strong> ' + esc(o.naics_codes.join(', ')) + '</span>';
+        var naics = naicsList(o.naics_codes);
+        if (isPremium && naics.length) html += '<span><strong style="color:var(--mmt-text-secondary);">NAICS:</strong> ' + esc(naics.join(', ')) + '</span>';
         html += '</div>';
         if (isPremium) {
           html += '<div class="flex items-center justify-between mt-3 pt-3" style="border-top:1px solid rgba(69,123,157,0.08);">';
@@ -375,6 +423,10 @@
           html += '</div>';
         }
         html += '</div>';
+        } catch (_rowErr) {
+          html = html.slice(0, _mark);
+          if (window.console && console.warn) console.warn('contract-tracker: skipped malformed opportunity row', o && o.id, _rowErr);
+        }
       });
       html += '</div>';
       return html;
@@ -455,7 +507,7 @@
         } else if (data.freshness === 'no_scan_yet') {
           document.getElementById('vehicle-scan-date').textContent = 'No scan yet \u2014 first sweep runs daily at 8 AM ET.';
         }
-        applyVehicleFilter();
+        try { applyVehicleFilter(); } catch (_renderErr) { if (window.console && console.error) console.error('contract-tracker: vehicle scanner render failed', _renderErr); }
       })
       .catch(function() {
         var _vehicleUnavailMsg = ['Small Business Vehicle Scanner', 'is', 'temporarily', 'un' + 'available'].join(' ') + '.';
