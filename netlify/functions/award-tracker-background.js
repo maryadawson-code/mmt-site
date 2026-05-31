@@ -20,7 +20,7 @@ const { logOpsEvent } = require("./lib/ops-ledger");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
-const AWARD_TRACKER_ENABLED = (process.env.MMT_API_ON || "").split(",").map((s) => s.trim()).includes("p3");
+const AWARD_TRACKER_ENABLED = true; // P3 activation hardcoded (env vars at AWS 4KB Lambda cap — see opportunity-radar-background.js header for the incident)
 
 // USASpending filters by toptier agency NAME. The 7 health-IT agencies roll up
 // to these three toptiers (HHS covers CMS/CDC/NIH/IHS; DoD covers DHA).

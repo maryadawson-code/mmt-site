@@ -51,7 +51,7 @@ exports.handler = async (event) => {
   // requested (?include_review=1). Gated by RADAR_REVIEW_QUEUE so the
   // review_status column is never referenced until its migration is applied —
   // referencing a non-existent column would 500 the feed (schema law).
-  const reviewQueueOn = (process.env.MMT_API_ON || "").split(",").map((s) => s.trim()).includes("p2");
+  const reviewQueueOn = true; // P2 activation: hidden needs_review rows excluded from public feed (override with ?include_review=1)
   const includeReview = params.include_review === "1";
 
   try {

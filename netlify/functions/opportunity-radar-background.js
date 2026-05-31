@@ -44,11 +44,14 @@ const NAICS_CODES = ["541512", "541511", "541519", "541611", "524292", "621999",
 // daily quota shared with pursuit-calendar / signal-chain / compliance-check /
 // marketpulse). If the flag is off OR the system key is absent, the pre-pass
 // is skipped and the existing web-search scans run unchanged (no regression).
-// S-P* flags consolidated into a single env var (MMT_API_ON=p1,p2,p3,p4,p5)
-// to stay under Lambda's 4KB per-function env limit. Five separate vars pushed
-// the deploy over the cap and broke every function upload (5/30-5/31 incident).
-const _MMT_API_ON = (process.env.MMT_API_ON || "").split(",").map((s) => s.trim());
-const RADAR_SAM_DIRECT = _MMT_API_ON.includes("p1");
+// S-P* flags hardcoded ON. They were originally env-gated (RADAR_SAM_DIRECT,
+// RADAR_REVIEW_QUEUE, RADAR_FORECAST_SCAN), then briefly consolidated into one
+// var (MMT_API_ON), but the site's existing env was already at AWS Lambda's
+// 4KB per-function ceiling — ANY additional env var broke every function
+// upload (5/30-5/31 deploy outage). Hardcoding adds zero bytes. To disable a
+// feature, change the boolean here and redeploy. SAM pre-pass still no-ops
+// gracefully when SAM_SYSTEM_ACCOUNT_API_KEY is absent.
+const RADAR_SAM_DIRECT = true;
 const SAM_SYSTEM_ACCOUNT_API_KEY = process.env.SAM_SYSTEM_ACCOUNT_API_KEY;
 
 // S-P2: review-queue mode. Default OFF. When on, low-confidence items
@@ -58,14 +61,14 @@ const SAM_SYSTEM_ACCOUNT_API_KEY = process.env.SAM_SYSTEM_ACCOUNT_API_KEY;
 // 20260529000000_opportunity_radar_review_status.sql) to be applied FIRST —
 // writing that column before it exists would trip the schema law and kill
 // every radar write. While OFF, the column is never referenced.
-const RADAR_REVIEW_QUEUE = _MMT_API_ON.includes("p2");
+const RADAR_REVIEW_QUEUE = true;
 
 // S-P4: optional forecast-portal scan. Default OFF (so prod behavior is
 // unchanged until flipped). When on, adds a 4th web-search pass over agency
 // acquisition forecasts + industry-day / sources-sought / pre-solicitation
 // notices, tagging those rows source:'forecast'. Pure additive coverage — no
 // schema change, no SAM key, no quota impact beyond one more Perplexity call.
-const RADAR_FORECAST_SCAN = _MMT_API_ON.includes("p4");
+const RADAR_FORECAST_SCAN = true;
 
 // ============================================================
 // System prompt for opportunity scanning
