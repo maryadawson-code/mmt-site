@@ -28,7 +28,7 @@ const { searchPubMed, fetchPubMedSummaries } = require("./lib/pubmed-api");
 const { enrichWithRegulationsGov } = require("./lib/regulations-gov");
 const { enrichWithECFR } = require("./lib/ecfr-api");
 const { enrichWithCHPL } = require("./lib/onc-chpl-api");
-const INTEL_RULES_CERT_LAYERS = process.env.INTEL_RULES_CERT_LAYERS === "true";
+const INTEL_RULES_CERT_LAYERS = (process.env.MMT_API_ON || "").split(",").map((s) => s.trim()).includes("p5");
 const { searchJobs } = require("./lib/usajobs-api");
 const { detectVehicles, expandedSearchTerms } = require("./lib/known-vehicles");
 const { buildQueryTerms, buildPubMedQuery, FR_AGENCY_SLUGS, USASPENDING_AGENCY_NAMES, correctCommonTypos, fallbackSuggestionsFor } = require("./lib/signal-chain-query-builder");

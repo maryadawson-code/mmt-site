@@ -58,7 +58,7 @@ const { enrichWithHHSOpenData, formatHHSOpenDataContext } = require("./lib/hhs-o
 const { enrichWithRegulationsGov, formatRegulationsGovContext } = require("./lib/regulations-gov");
 const { enrichWithECFR, formatECFRContext } = require("./lib/ecfr-api");
 const { enrichWithCHPL, formatCHPLContext } = require("./lib/onc-chpl-api");
-const INTEL_RULES_CERT_LAYERS = process.env.INTEL_RULES_CERT_LAYERS === "true";
+const INTEL_RULES_CERT_LAYERS = (process.env.MMT_API_ON || "").split(",").map((s) => s.trim()).includes("p5");
 const { loadSubscriberContext, formatContextBlock, contextSystemRules, noContextBanner, validateReport: validateSubscriberReport, gateContext, renderBlockedDiagnostic, waivedContextBanner } = require("./lib/subscriber-context");
 
 // --- v4 Deep Research Loop modules (gated by MARKETPULSE_V4 flag) ---
