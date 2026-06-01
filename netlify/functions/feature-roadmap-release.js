@@ -32,6 +32,12 @@ const MAX_ATTEMPTS = 3;
 // Features whose tables ship via a migration the release must ensure-applied.
 const MIGRATION_FEATURES = new Set(["vote_feature.custom_watchlists", "vote_feature.recompete_alerts"]);
 
+// Treat "relation does not exist" (Postgres 42P01) as no-op: the migration
+// hasn't been applied yet, which is the pre-launch state, not a failure.
+function isMissingTable(error) {
+  return !!error && (error.code === "42P01" || /does not exist/i.test(error.message || ""));
+}
+
 async function selectDueFeature(supabase, nowIso) {
   const { data, error } = await supabase
     .from("feature_roadmap")
@@ -41,7 +47,10 @@ async function selectDueFeature(supabase, nowIso) {
     .order("rank", { ascending: true })
     .limit(1)
     .maybeSingle();
-  if (error) throw new Error(`roadmap select failed: ${error.message}`);
+  if (error) {
+    if (isMissingTable(error)) return null; // table not created yet → nothing due
+    throw new Error(`roadmap select failed: ${error.message}`);
+  }
   return data || null;
 }
 

@@ -57,6 +57,16 @@ describe("selectDueFeature", () => {
     const sb = fakeSupabase({ maybeSingle: { data: null, error: null } });
     expect(await selectDueFeature(sb, "2026-06-29T00:00:00Z")).toBe(null);
   });
+
+  it("returns null (no-op) when the table doesn't exist yet (pre-migration)", async () => {
+    const sb = fakeSupabase({ maybeSingle: { data: null, error: { code: "42P01", message: 'relation "feature_roadmap" does not exist' } } });
+    expect(await selectDueFeature(sb, "2026-06-29T00:00:00Z")).toBe(null);
+  });
+
+  it("still throws on a real (non-missing-table) select error", async () => {
+    const sb = fakeSupabase({ maybeSingle: { data: null, error: { code: "08006", message: "connection failure" } } });
+    await expect(selectDueFeature(sb, "2026-06-29T00:00:00Z")).rejects.toThrow(/roadmap select failed/);
+  });
 });
 
 describe("shipFeature", () => {
