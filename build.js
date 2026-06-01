@@ -8,6 +8,14 @@ const sharp = require('sharp');
 const fridayBriefLoader = require('./netlify/functions/lib/friday-brief-loader');
 const { renderPursuitCalendarHtml } = require('./netlify/functions/lib/pursuit-calendar-render');
 const { createClient: createSupabaseClient } = require('@supabase/supabase-js');
+const { getEnabledFlags: getEnabledVoteFlags } = require('./netlify/functions/lib/vote-flags');
+
+// Autonomous feature-vote system: which vote features are live this build.
+// Populated once at build start from the Supabase `feature_flags` table
+// (see lib/vote-flags.js). Read by feature-render helpers via voteFlagOn().
+// Defaults to empty (every feature dormant) when Supabase is unreachable.
+let ENABLED_VOTE_FLAGS = new Set();
+function voteFlagOn(key) { return ENABLED_VOTE_FLAGS.has(key); }
 
 // Configure marked to open external links in new tabs with safe attributes
 marked.use({
@@ -4959,6 +4967,26 @@ async function build() {
   // 0b. Subscriber count — reads from env var or falls back to static value
   // LinkedIn subscriber count is updated manually via Netlify env var
   const subscriberCount = process.env.MMT_SUBSCRIBER_COUNT || '1,750';
+
+  // 0c. Feature-vote flags — fetch which vote features are live so the
+  // feature-render helpers (Sprints 2–3) emit their markup/JS only when
+  // the flag is enabled. Fails closed: no creds / read error → all dormant.
+  if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
+    try {
+      const sbFlags = createSupabaseClient(
+        process.env.SUPABASE_URL,
+        process.env.SUPABASE_SERVICE_KEY
+      );
+      ENABLED_VOTE_FLAGS = await getEnabledVoteFlags(sbFlags);
+      console.log(
+        `Vote features enabled: ${ENABLED_VOTE_FLAGS.size ? Array.from(ENABLED_VOTE_FLAGS).join(', ') : '(none — all dormant)'}`
+      );
+    } catch (flagErr) {
+      console.warn(`Feature-vote flag read warning: ${flagErr.message}`);
+    }
+  } else {
+    console.log('Vote features: Supabase creds absent — all dormant');
+  }
 
   // 1. Load and process newsletter articles
   console.log('--- Processing newsletter articles ---');

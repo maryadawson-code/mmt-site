@@ -45,6 +45,7 @@ const { createClient } = require("@supabase/supabase-js");
 const MIGRATIONS = [
   "010_subscriber_context_alignment.sql",
   "011_mp_users_columns_documented.sql",
+  "20260601000000_feature_vote_system.sql",
 ];
 
 exports.handler = async (event) => {
