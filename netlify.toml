@@ -45,6 +45,13 @@
 [functions."weekly-report"]
   schedule = "0 14 * * 1"
 
+# Feature-vote custom_watchlists (F) + recompete_alerts (G) — daily 7 AM ET
+# (12:00 UTC). DORMANT: no-ops and sends NOTHING unless the
+# vote_feature.custom_watchlists flag is enabled AND VOTE_AUTOPILOT != off.
+# The roadmap-release scheduler flips that flag on the feature's ship date.
+[functions."watchlist-alert"]
+  schedule = "0 12 * * *"
+
 # Premium Friday Brief — every Friday at 6 AM ET (11:00 UTC)
 # Emails the latest brief to all active premium subscribers via Resend
 [functions."premium-brief-send"]
@@ -578,6 +585,14 @@
 [[redirects]]
   from = "/health"
   to = "/.netlify/functions/health"
+  status = 200
+  force = true
+
+# Feature-vote tracker_api (E) — read-only public contract data, key-gated +
+# rate-limited. Returns 404 until vote_feature.tracker_api flag is enabled.
+[[redirects]]
+  from = "/api/contracts"
+  to = "/.netlify/functions/contracts-api"
   status = 200
   force = true
 

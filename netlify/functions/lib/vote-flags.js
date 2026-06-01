@@ -59,4 +59,36 @@ async function getEnabledFlags(supabase) {
   return enabled;
 }
 
-module.exports = { getEnabledFlags, VOTE_FEATURE_KEYS, LETTER_TO_KEY };
+/**
+ * Runtime check for a single flag — used by Netlify functions (the API
+ * endpoint, the alert cron) to stay dormant until the roadmap-release
+ * scheduler flips their flag live. Fails closed (false) on any error.
+ *
+ * @param {object} supabase  client (or null)
+ * @param {string} key       e.g. "vote_feature.tracker_api"
+ * @returns {Promise<boolean>}
+ */
+async function isFlagEnabled(supabase, key) {
+  if (!supabase) return false;
+  try {
+    const { data, error } = await supabase
+      .from("feature_flags")
+      .select("enabled")
+      .eq("key", key)
+      .maybeSingle();
+    if (error) return false;
+    return !!(data && data.enabled);
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Global autopilot kill switch. VOTE_AUTOPILOT=off halts all autonomous
+ * activation + roadmap releases + alert sends. Default on.
+ */
+function autopilotOn() {
+  return String(process.env.VOTE_AUTOPILOT || "on").toLowerCase() !== "off";
+}
+
+module.exports = { getEnabledFlags, isFlagEnabled, autopilotOn, VOTE_FEATURE_KEYS, LETTER_TO_KEY };

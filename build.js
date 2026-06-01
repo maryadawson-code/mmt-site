@@ -9,6 +9,7 @@ const fridayBriefLoader = require('./netlify/functions/lib/friday-brief-loader')
 const { renderPursuitCalendarHtml } = require('./netlify/functions/lib/pursuit-calendar-render');
 const { createClient: createSupabaseClient } = require('@supabase/supabase-js');
 const { getEnabledFlags: getEnabledVoteFlags } = require('./netlify/functions/lib/vote-flags');
+const { monthsToExpiry: voteMonthsToExpiry } = require('./netlify/functions/lib/vote-watchlist-match');
 
 // Autonomous feature-vote system: which vote features are live this build.
 // Populated once at build start from the Supabase `feature_flags` table
@@ -1619,6 +1620,129 @@ function generateTeamingSignalsHtml(c) {
     </div>`;
 }
 
+// ── Feature-vote: teaming_finder (H). Premium-gated panel that, given a
+// tracked opportunity, suggests teaming targets sharing its NAICS family.
+// NAICS codes themselves are premium and are NOT printed; the panel emits
+// only public name + agency of overlapping contracts. Dormant → ''.
+// ── Feature-vote: custom_watchlists (F) — premium panel to create
+// criteria-based watchlists (saved to vote_watchlists via vote-watchlist-api).
+// The daily watchlist-alert cron emails new matches. Dormant → ''.
+function renderVoteWatchlistPanel() {
+  if (!voteFlagOn('vote_feature.custom_watchlists')) return '';
+  return `<section class="py-12 px-6 section-alt" data-access="premium">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-lg font-bold mb-2" style="color:var(--mmt-navy);">Custom watchlists &amp; alerts</h2>
+      <p class="text-sm mb-4" style="color:var(--mmt-text-secondary);">Save a search and we'll email you new matching contracts daily.</p>
+      <form id="vote-wl-form" class="flex flex-wrap gap-2 items-end" style="max-width:720px;">
+        <input id="vote-wl-name" type="text" placeholder="Watchlist name" aria-label="Watchlist name" style="flex:1 1 160px;padding:8px 12px;border:1px solid var(--mmt-border,#D8E0E8);border-radius:8px;font-size:14px;" />
+        <input id="vote-wl-q" type="text" placeholder="Keyword (optional)" aria-label="Keyword" style="flex:1 1 160px;padding:8px 12px;border:1px solid var(--mmt-border,#D8E0E8);border-radius:8px;font-size:14px;" />
+        <input id="vote-wl-agency" type="text" placeholder="Agency (optional)" aria-label="Agency" style="flex:1 1 140px;padding:8px 12px;border:1px solid var(--mmt-border,#D8E0E8);border-radius:8px;font-size:14px;" />
+        <button type="submit" class="btn-primary" style="padding:9px 18px;font-size:14px;">Save watchlist</button>
+      </form>
+      <p id="vote-wl-msg" class="text-sm mt-2" style="color:var(--mmt-teal);" role="status"></p>
+      <div id="vote-wl-list" class="mt-4"></div>
+    </div>
+    <script>
+      (function(){
+        var form=document.getElementById('vote-wl-form');
+        if(!form) return;
+        var msg=document.getElementById('vote-wl-msg');
+        var listEl=document.getElementById('vote-wl-list');
+        function email(){ try{ return (window.mmtGetEmail && window.mmtGetEmail()) || localStorage.getItem('mmt_email') || ''; }catch(e){ return ''; } }
+        function esc(s){var d=document.createElement('div');d.textContent=s==null?'':String(s);return d.innerHTML;}
+        function load(){
+          var em=email(); if(!em){ return; }
+          fetch('/.netlify/functions/vote-watchlist-api?email='+encodeURIComponent(em))
+            .then(function(r){return r.ok?r.json():{watchlists:[]};})
+            .then(function(d){
+              var ws=(d&&d.watchlists)||[];
+              if(!ws.length){ listEl.innerHTML=''; return; }
+              listEl.innerHTML='<ul style="list-style:none;padding:0;margin:0;">'+ws.map(function(w){
+                var c=w.criteria||{}; var parts=Object.keys(c).map(function(k){return k+': '+c[k];}).join(', ');
+                return '<li style="background:var(--mmt-white);border:1px solid var(--mmt-border,#D8E0E8);border-radius:8px;padding:10px 12px;margin-bottom:8px;display:flex;justify-content:space-between;gap:8px;align-items:center;">'
+                  +'<span><strong style="color:var(--mmt-navy);">'+esc(w.name)+'</strong> <span style="font-size:12px;color:var(--mmt-text-secondary);">'+esc(parts)+'</span></span>'
+                  +'<button data-id="'+w.id+'" class="vote-wl-del" style="font-size:12px;color:#E63946;background:none;border:none;cursor:pointer;">Remove</button></li>';
+              }).join('')+'</ul>';
+              Array.prototype.forEach.call(listEl.querySelectorAll('.vote-wl-del'),function(b){
+                b.addEventListener('click',function(){
+                  fetch('/.netlify/functions/vote-watchlist-api',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email(),action:'delete',id:Number(this.getAttribute('data-id'))})}).then(load);
+                });
+              });
+            }).catch(function(){});
+        }
+        form.addEventListener('submit',function(e){
+          e.preventDefault();
+          var em=email();
+          if(!em){ msg.textContent='Sign in to save a watchlist.'; return; }
+          var criteria={};
+          var q=document.getElementById('vote-wl-q').value.trim(); if(q)criteria.q=q;
+          var ag=document.getElementById('vote-wl-agency').value.trim(); if(ag)criteria.agency=ag;
+          if(!Object.keys(criteria).length){ msg.textContent='Add a keyword or agency first.'; return; }
+          fetch('/.netlify/functions/vote-watchlist-api',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:em,action:'save',name:document.getElementById('vote-wl-name').value.trim()||'My watchlist',criteria:criteria})})
+            .then(function(r){return r.json();})
+            .then(function(d){ msg.textContent=d&&d.ok?'Saved. We\\'ll email you new matches.':(d&&d.message||'Could not save.'); form.reset(); load(); })
+            .catch(function(){ msg.textContent='Could not save right now.'; });
+        });
+        load();
+      })();
+    </script>
+  </section>`;
+}
+
+function renderVoteTeamingFinder(contracts) {
+  if (!voteFlagOn('vote_feature.teaming_finder')) return '';
+  const list = (contracts || []).filter(c => c.name);
+  const naicsTokens = (c) => String(c.naics || '').split(/[,\s]+/).map(s => s.trim()).filter(Boolean);
+  // Build adjacency by shared NAICS token. Output carries public fields only.
+  const adjacency = {};
+  list.forEach(c => {
+    const slug = c.slug || slugify(c.name);
+    const toks = new Set(naicsTokens(c));
+    const partners = list
+      .filter(o => o !== c && naicsTokens(o).some(t => toks.has(t)))
+      .map(o => ({ name: o.name, agency: o.agency, slug: o.slug || slugify(o.name) }));
+    adjacency[slug] = { name: c.name, agency: c.agency, hasNaics: toks.size > 0, partners };
+  });
+  const dataJson = JSON.stringify(adjacency).replace(/</g, '\\u003c');
+  const options = list
+    .map(c => `<option value="${escapeHtml(c.slug || slugify(c.name))}">${escapeHtml(c.name)}</option>`)
+    .join('');
+  return `<section class="py-12 px-6" data-access="premium">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-lg font-bold mb-2" style="color:var(--mmt-navy);">Teaming-partner finder</h2>
+      <p class="text-sm mb-4" style="color:var(--mmt-text-secondary);">Pick a tracked opportunity to see others in the same contracting space — potential teaming targets or competitors.</p>
+      <select id="vote-tf-select" aria-label="Choose an opportunity" style="padding:8px 12px;border:1px solid var(--mmt-border,#D8E0E8);border-radius:8px;font-size:14px;color:var(--mmt-navy);background:var(--mmt-white);max-width:420px;width:100%;">
+        <option value="">Choose an opportunity…</option>
+        ${options}
+      </select>
+      <div id="vote-tf-results" class="mt-4"></div>
+    </div>
+    <script>
+      (function(){
+        var DATA = ${dataJson};
+        var sel = document.getElementById('vote-tf-select');
+        var out = document.getElementById('vote-tf-results');
+        if (!sel || !out) return;
+        function esc(s){var d=document.createElement('div');d.textContent=s==null?'':String(s);return d.innerHTML;}
+        sel.addEventListener('change', function(){
+          var rec = DATA[this.value];
+          if (!rec) { out.innerHTML=''; return; }
+          if (!rec.hasNaics) { out.innerHTML='<p class="text-sm" style="color:var(--mmt-text-secondary);">No NAICS on file for this opportunity yet — can\\'t compute overlap.</p>'; return; }
+          if (!rec.partners.length) { out.innerHTML='<p class="text-sm" style="color:var(--mmt-text-secondary);">No other tracked opportunities share this NAICS yet.</p>'; return; }
+          var html='<ul style="list-style:none;padding:0;margin:0;">';
+          rec.partners.forEach(function(p){
+            html += '<li style="border-left:3px solid var(--mmt-teal);background:var(--mmt-soft);border-radius:6px;padding:10px 12px;margin-bottom:8px;">'
+              + '<a href="/contracts/'+esc(p.slug)+'/" style="color:var(--mmt-navy);font-weight:600;text-decoration:none;">'+esc(p.name)+'</a>'
+              + '<div style="font-size:12px;color:var(--mmt-text-secondary);">'+esc(p.agency)+'</div></li>';
+          });
+          html+='</ul>';
+          out.innerHTML=html;
+        });
+      })();
+    </script>
+  </section>`;
+}
+
 function generateContractTrackerHtml(contracts, contractArticleMap) {
   if (!contracts.length) return '<p class="text-center py-10" style="color:var(--mmt-text-secondary);">Contract data coming soon.</p>';
 
@@ -1675,6 +1799,16 @@ function generateContractTrackerHtml(contracts, contractArticleMap) {
                     return `<span class="text-xs whitespace-nowrap px-2 py-1 rounded font-bold" title="Pursuit verdict" style="background:${vBg}; color:${vColor}; letter-spacing:0.04em;">${v}</span>`;
                   })()}
                   ${c.small_business_eligible ? '<span class="text-xs whitespace-nowrap px-2 py-1 rounded font-semibold" style="background:var(--mmt-soft); color:var(--mmt-teal);">SB Eligible</span>' : ''}
+                  ${(() => {
+                    // Feature-vote recompete_alerts (G): months-to-expiry badge.
+                    // Gated; only renders when the contract carries a structured
+                    // expiry date (recompete_date / period_of_performance_end /
+                    // expiry_date). No date → no badge (no fabricated countdowns).
+                    if (!voteFlagOn('vote_feature.recompete_alerts')) return '';
+                    const m = voteMonthsToExpiry(c);
+                    if (m == null || m < 0) return '';
+                    return `<span class="text-xs whitespace-nowrap px-2 py-1 rounded font-semibold" title="Months to recompete" style="background:rgba(146,113,10,0.1); color:#92710A;">Recompete ~${m}mo</span>`;
+                  })()}
                   ${classificationBadgeHtml(c.classification)}
                   <span class="text-xs whitespace-nowrap px-2 py-1 rounded" style="background:var(--mmt-soft); color:${color};">${escapeHtml(label)}</span>
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--mmt-teal);"><path d="M6 3l5 5-5 5"/></svg>
@@ -1815,7 +1949,14 @@ function generateContractPages(contracts) {
       <p style="font-size:12px;color:var(--mmt-text-secondary);margin-top:10px;">Already a member? <a href="#" onclick="if(typeof mmtSignIn==='function')mmtSignIn();return false;" style="color:var(--mmt-teal);font-weight:600;">Sign in</a></p>
     </div>`;
     const teamingHtml = generateTeamingSignalsHtml(c);
-    html = html.replace('<!-- Current Intelligence -->', teamingHtml + gateCard + '\n  <!-- Current Intelligence -->');
+    // Feature-vote proposalpulse_tiein (J): "Score against this opp" button.
+    // Gated → emits nothing when dormant. Pipes opp context to ProposalPulse.
+    const ppTieIn = voteFlagOn('vote_feature.proposalpulse_tiein')
+      ? `\n    <div data-access="premium" style="max-width:56rem;margin:0 auto 24px;text-align:center;">
+      <a href="/proposal-pulse.html?opp=${encodeURIComponent(c.slug || slugify(c.name))}&amp;name=${encodeURIComponent(c.name)}" class="btn-secondary no-underline" style="font-size:13px;padding:10px 18px;display:inline-flex;align-items:center;gap:6px;">Score a draft against this opportunity &rarr;</a>
+    </div>`
+      : '';
+    html = html.replace('<!-- Current Intelligence -->', teamingHtml + ppTieIn + gateCard + '\n  <!-- Current Intelligence -->');
 
     // Inject search overlay after </nav>
     html = html.replace('</nav>', '</nav>' + searchOverlayHtml);
@@ -3052,6 +3193,8 @@ async function copyStaticFiles({ archive, feed, newsItems, contracts, contractAr
     '<!-- BUILD:NEWS_WIDGET -->': generateNewsWidgetHtml(newsItems || []),
     '<!-- BUILD:CONTRACT_TRACKER -->': generateContractTrackerHtml(contracts, contractArticleMap || {}),
     '<!-- BUILD:VOTE_TRACKER_FEATURES -->': renderVoteTrackerFeatures(contracts),
+    '<!-- BUILD:VOTE_TEAMING_FINDER -->': renderVoteTeamingFinder(contracts),
+    '<!-- BUILD:VOTE_WATCHLIST_PANEL -->': renderVoteWatchlistPanel(),
     '<!-- BUILD:BRIEF_ARCHIVE -->': generateBriefArchiveHtml(),
     '<!-- BUILD:BRIEF_LATEST -->': generateBriefLatestHtml(),
     '<!-- BUILD:CAPTURE_CORNER_ARCHIVE -->': generateCaptureCornerArchiveHtml(),
