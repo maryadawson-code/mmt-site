@@ -994,4 +994,53 @@ ${inner}</body></html>`;
   };
 }
 
-module.exports = { buildScoreReceiptHtml, buildWeeklyReportHtml, buildGoldTeamReviewHtml, buildVoteEmailHtml, buildVoteResultHtml };
+// ============================================================
+// Feature-vote "new feature is live" announcement (Sprint 6). Sent to
+// subscribers each time a roadmap feature ships. MMT voice; no em dash /
+// exclamation / banned words. Returns { subject, html, text }.
+// ============================================================
+function buildFeatureAnnounceHtml(feature = {}, opts = {}) {
+  const esc = (s) => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const name = esc(feature.name || "A new feature");
+  const firstName = (opts.firstName && String(opts.firstName).trim()) || "there";
+  const subject = `New on Mission Meets Tech: ${feature.name || "a feature you voted for"}`;
+  const preheader = "You voted for this. It's live today.";
+  const nextLine = feature.next_feature_name
+    ? `<p style="margin:0 0 16px;">Next up, around ${esc(feature.next_ship_date || "four weeks out")}: ${esc(feature.next_feature_name)}.</p>`
+    : "";
+
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>body{margin:0;background:#F3F4F6;font-family:Inter,-apple-system,sans-serif;color:#0A192F;line-height:1.6;}</style></head>
+<body>
+<span style="display:none;max-height:0;overflow:hidden;opacity:0;">${preheader}</span>
+<div style="max-width:600px;margin:0 auto;padding:32px 20px;">
+  <div style="background:#FFFFFF;border-radius:12px;padding:32px;">
+    <p style="margin:0 0 16px;">Hi ${firstName},</p>
+    <p style="margin:0 0 16px;">Another one from your vote just went live: <strong>${name}</strong>.</p>
+    <p style="margin:0 0 8px;"><strong>What it does:</strong> ${esc(feature.description || "")}</p>
+    <p style="margin:0 0 8px;"><strong>Where to find it:</strong> ${esc(feature.location || "")}</p>
+    <p style="margin:0 0 16px;"><strong>How to use it:</strong> ${esc(feature.how_to || "")}</p>
+    <p style="margin:0 0 16px;">This shipped automatically as part of the roadmap you all voted on, a new feature every four weeks until the full list is live.</p>
+    ${nextLine}
+    <p style="margin:0;">Mary<br>Mission Meets Tech<br><em style="color:#457B9D;font-size:13px;">Independent federal health IT intelligence. No vendor sponsorship, ever.</em></p>
+  </div>
+</div>
+</body></html>`;
+
+  const text = [
+    `Hi ${firstName},`,
+    "",
+    `Another one from your vote just went live: ${feature.name || "a new feature"}.`,
+    "",
+    `What it does: ${feature.description || ""}`,
+    `Where to find it: ${feature.location || ""}`,
+    `How to use it: ${feature.how_to || ""}`,
+    "",
+    "This shipped automatically as part of the roadmap you all voted on.",
+    "Mary, Mission Meets Tech",
+  ].join("\n");
+
+  return { subject, preheader, html, text };
+}
+
+module.exports = { buildScoreReceiptHtml, buildWeeklyReportHtml, buildGoldTeamReviewHtml, buildVoteEmailHtml, buildVoteResultHtml, buildFeatureAnnounceHtml };

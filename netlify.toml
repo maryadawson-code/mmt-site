@@ -50,6 +50,12 @@
 [functions."feature-vote-tally"]
   schedule = "0 * * * *"
 
+# Feature-vote roadmap auto-release — hourly. Ships the next due feature
+# (flag flip + rebuild + announcement). No-op unless a queued row is due
+# AND VOTE_AUTOPILOT != off.
+[functions."feature-roadmap-release"]
+  schedule = "0 * * * *"
+
 # Feature-vote custom_watchlists (F) + recompete_alerts (G) — daily 7 AM ET
 # (12:00 UTC). DORMANT: no-ops and sends NOTHING unless the
 # vote_feature.custom_watchlists flag is enabled AND VOTE_AUTOPILOT != off.
