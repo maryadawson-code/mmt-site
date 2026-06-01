@@ -27,6 +27,7 @@
     "data/may-26-release/**",
     "data/may-27-release/**",
     "data/may-29-release/**",
+    "data/jun-2-release/**",
     "migrations/010_subscriber_context_alignment.sql",
     "migrations/011_mp_users_columns_documented.sql",
     "static/lead-magnets/**",
@@ -359,6 +360,27 @@
 # Retire by 2026-06-12 (delete function + data/may-29-release/** entry).
 [functions."may29-acq-transformation-capture-send"]
   schedule = "0 10 * * *"
+
+# June 2, 2026 Capture Corner: "VA Enterprise AI. The Buy Is Greenfield,
+# Direct-to-Lab, and Usage-Only." Premium companion to the public newsletter
+# "Industry Leader, Out of Scope." Teaser-only email that pushes readers back
+# to the gated page at /premium/briefs/capture-corner-2026-06-02.html.
+# Date-guarded (RUN_DATE_UTC=2026-06-02), idempotency-keyed in ops_events as
+# jun2_va_enterprise_ai_capture_sent. Schedule fires at 13:00 UTC (09:00 ET)
+# so it ships with the 9 AM issue on/after 2026-06-02 UTC. Kill switch:
+# JUN2_VA_ENTERPRISE_AI_DISABLED=true.
+# Retire by 2026-06-16 (delete function + data/jun-2-release/** entry).
+[functions."jun2-va-enterprise-ai-capture-send"]
+  schedule = "0 13 * * *"
+
+# June 2, 2026 build trigger: fires the Netlify build hook at 13:00 UTC
+# (09:00 ET EDT) to publish the future-dated newsletter article
+# "Industry Leader, Out of Scope" at the LinkedIn anchor time. Date-guarded
+# (RUN_DATE_UTC=2026-06-02), idempotency-keyed in ops_events as
+# jun2_build_triggered. Kill switch: JUN2_BUILD_TRIGGER_DISABLED=true.
+# Retire by 2026-06-16.
+[functions."jun2-build-trigger"]
+  schedule = "0 13 * * *"
 
 # May 26, 2026 build trigger: fires Netlify build hook at 13:00 UTC
 # (09:00 ET EDT) to publish the future-dated newsletter article at the
@@ -801,7 +823,7 @@
 # Target is enforced by scripts/capture-corner-inventory.js.
 [[redirects]]
   from = "/capture-corner/latest"
-  to = "/premium/briefs/capture-corner-2026-05-29.html"
+  to = "/premium/briefs/capture-corner-2026-06-02.html"
   status = 302
 
 # Premium-brief PDF downloads — clean URLs under /premium-briefs/.
