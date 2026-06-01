@@ -74,31 +74,15 @@
 
         <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin-bottom:8px;">MMT Premium &middot; Monthly Intelligence</p>
         <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">Monthly Brief</h1>
-        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 20px;">Deep-dive intelligence packet delivered the first Tuesday of each month. Full budget signals, contract pipeline, and competitive dynamics.</p>
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 20px;">Back issues of the monthly intelligence series. This cadence is now part of Capture Intelligence Sheets, delivered through Capture Corner.</p>
 
-        <!-- Current month -->
-        <div class="dash-card" style="border-left:3px solid #92710A;background:#FEF9E7;margin-bottom:24px;">
+        <!-- Sunset notice -->
+        <div class="dash-card" style="border-left:3px solid var(--mmt-teal);background:#F3F4F6;margin-bottom:24px;">
           <div>
-            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#92710A;margin-bottom:6px;">Current &middot; April 2026</div>
-            <div style="font-size:17px;font-weight:700;margin-bottom:4px;">FY2027 Federal Health Budget</div>
-            <div style="font-size:14px;color:var(--mmt-text-secondary);margin-bottom:12px;">24 signals across VA, DHA, HHS, ARPA-H. Full action windows and confidence labels.</div>
-            <div style="font-size:13px;color:#92710A;font-weight:600;">First full monthly brief delivers May 6, 2026. Weekly intel is on the <a href="/premium/briefings/" style="color:#92710A;text-decoration:underline;">Friday Brief</a>.</div>
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-teal);margin-bottom:6px;">This series has moved</div>
+            <div style="font-size:15px;font-weight:600;margin-bottom:8px;">Monthly deep-dives are now Capture Intelligence Sheets</div>
+            <div style="font-size:14px;color:var(--mmt-text-secondary);line-height:1.6;">As of May 2026 the monthly cadence folded into Capture Intelligence. The current issue is <a href="/premium/briefs/capture-corner-2026-05-01.html" style="color:var(--mmt-teal);font-weight:600;">VA Enterprise Imaging</a>, and weekly intel lands in the <a href="/premium/briefings/" style="color:var(--mmt-teal);font-weight:600;">Friday Brief</a>. Browse every issue at <a href="/capture-corner.html" style="color:var(--mmt-teal);font-weight:600;">Capture Corner</a>. The monthly back issues stay available below.</div>
           </div>
-        </div>
-
-        <!-- Email delivery -->
-        <div class="dash-card" style="margin-bottom:24px;">
-          <h3 style="margin-bottom:8px;">Get the brief by email</h3>
-          <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 12px;">Enter your email to receive the current monthly brief as a formatted email.</p>
-          <div style="display:flex;gap:8px;max-width:400px;">
-            <input type="email" id="brief-email" placeholder="you@company.com" style="flex:1;padding:10px 14px;border:1px solid var(--mmt-border);border-radius:8px;font-size:14px;">
-            <button id="brief-download-btn" onclick="submitBriefEmail()" style="padding:10px 20px;background:var(--mmt-navy);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;">Request by email &rarr;</button>
-          </div>
-        </div>
-
-        <!-- Cadence note -->
-        <div style="background:#FFFBEB;border-left:3px solid #92710A;padding:12px 16px;border-radius:0 6px 6px 0;margin-bottom:24px;font-size:13px;line-height:1.6;color:var(--mmt-text);">
-          <strong>Cadence note (effective May 2026).</strong> The Monthly Brief cadence is absorbed by Capture Intelligence Sheets going forward. The May 2026 issue is <a href="/premium/briefs/capture-corner-2026-05-01.html" style="color:var(--mmt-teal);font-weight:600;">VA Enterprise Imaging</a>; the April 2026 retrospective below is the bridge issue. Browse all Capture Corner issues at <a href="/capture-corner.html" style="color:var(--mmt-teal);font-weight:600;">Capture Corner</a>.
         </div>
 
         <!-- Archive -->
@@ -138,14 +122,6 @@
   </div>
   <script>
     var email=localStorage.getItem('mmt_email');var __de=document.getElementById('dash-email');if(__de&&email)__de.textContent=email;
-    function submitBriefEmail() {
-      var e = document.getElementById('brief-email').value.trim();
-      if (!e || !e.includes('@')) { alert('Please enter a valid email.'); return; }
-      localStorage.setItem('mmt_email', e);
-      var btn = document.getElementById('brief-download-btn');
-      btn.textContent = 'Request sent \u2713'; btn.disabled = true; btn.style.background = '#457B9D';
-      window.open('mailto:mary@missionmeetstech.com?subject=' + encodeURIComponent('[Monthly Brief] April 2026 request') + '&body=' + encodeURIComponent('Please send me the April 2026 Monthly Brief.\n\nEmail: ' + e), '_blank');
-    }
   </script>
 </body>
 </html>

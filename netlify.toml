@@ -69,10 +69,12 @@
 [functions."premium-brief-send"]
   schedule = "0 11 * * 5"
 
-# Premium Monthly Brief — 1st of month at 6 AM ET (11:00 UTC)
-# Emails the monthly intelligence brief to premium subscribers
+# Premium Monthly Brief — SUNSET 2026-06-01. The monthly cadence folded into
+# Capture Intelligence Sheets (delivered via Capture Corner / Friday Brief), so
+# this cron is disabled to stop the retired series from emailing subscribers.
+# Function code retained; back issues remain readable at /premium/monthly/:slug.
 [functions."monthly-brief-send"]
-  schedule = "0 11 1 * *"
+  # schedule = "0 11 1 * *"
 
 # Premium Digest — daily at 6:30 AM ET (11:30 UTC)
 # Personalized notification digest based on subscriber preferences
