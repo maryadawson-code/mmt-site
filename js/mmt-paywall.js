@@ -33,6 +33,25 @@
     return match ? decodeURIComponent(match[2]) : null;
   }
 
+  // --- Session bridge: localStorage -> mmt_email cookie ---
+  // Server-rendered premium deliverables (/premium/monthly/:slug and the other
+  // premium-deliverable-render routes) gate on the mmt_email cookie. Logins set
+  // it now, but sessions created before that fix carry mmt_email/mmt_premium in
+  // localStorage only, so those subscribers bounce to the upgrade shell even
+  // though they are signed in. Mirror localStorage into the cookie on every page
+  // load so they reach gated deliverables without re-authenticating. Idempotent:
+  // only writes when the cookie is absent.
+  (function bridgeSessionCookies() {
+    try {
+      var lsEmail = localStorage.getItem(EMAIL_KEY);
+      var lsPremium = localStorage.getItem(PREMIUM_KEY) === 'true';
+      if (lsPremium && lsEmail && !getCookie('mmt_email')) {
+        document.cookie = 'mmt_email=' + encodeURIComponent(lsEmail) + '; path=/; max-age=2592000; SameSite=Lax';
+        document.cookie = 'mmt_premium=true; path=/; max-age=2592000; SameSite=Lax';
+      }
+    } catch (e) {}
+  })();
+
   // --- Tier detection ---
   // Returns: 'institutional' | 'premium' | 'free' | 'public'
   function getSubscriberStatus() {

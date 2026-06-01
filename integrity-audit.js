@@ -78,7 +78,7 @@ const ROUTES = [
   // Premium pages
   { path: '/premium/dashboard/',                   label: 'Premium Dashboard' },
   { path: '/premium/briefings/',                   label: 'Friday Brief' },
-  { path: '/premium/monthly-briefs/',              label: 'Monthly Brief' },
+  { path: '/premium/monthly-briefs/',              label: 'Monthly Brief Archive' },
   { path: '/premium/calendar/',                    label: 'Pursuit Calendar' },
   { path: '/premium/ask-mmt/',                     label: 'Ask MMT' },
   { path: '/agencies/',                            label: 'Agency Profiles Index' },
