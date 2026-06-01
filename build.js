@@ -1529,6 +1529,96 @@ function familyAccent(family) {
   return FAMILY_ACCENTS[family] || 'rgba(69,123,157,0.35)';
 }
 
+// ── Feature-vote: vendor_watch (A) platform detection ──────────────
+// Detect platform vendors named in a contract's PUBLIC text (name +
+// agency + 40-word teaser only — never the premium vendor/description).
+// Returns a space-separated slug list for the card's data-platforms attr.
+// No fabrication: a platform tag is emitted only when its name literally
+// appears in the public copy.
+const VOTE_PLATFORMS = [
+  { slug: 'databricks', label: 'Databricks', re: /\bdatabricks\b/i },
+  { slug: 'salesforce', label: 'Salesforce', re: /\bsalesforce\b/i },
+  { slug: 'servicenow', label: 'ServiceNow', re: /\bservice[- ]?now\b/i },
+  { slug: 'palantir', label: 'Palantir', re: /\bpalantir\b/i },
+  { slug: 'snowflake', label: 'Snowflake', re: /\bsnowflake\b/i },
+  { slug: 'oracle', label: 'Oracle', re: /\boracle\b/i },
+  { slug: 'microsoft', label: 'Microsoft / Azure', re: /\b(microsoft|azure)\b/i },
+  { slug: 'aws', label: 'AWS', re: /\b(aws|amazon web services)\b/i },
+  { slug: 'googlecloud', label: 'Google Cloud', re: /\bgoogle cloud\b/i },
+  { slug: 'epic', label: 'Epic', re: /\bepic\b/i },
+  { slug: 'cerner', label: 'Oracle Health / Cerner', re: /\bcerner\b/i },
+  { slug: 'appian', label: 'Appian', re: /\bappian\b/i },
+  { slug: 'pega', label: 'Pega', re: /\bpega\b/i },
+  { slug: 'sap', label: 'SAP', re: /\bsap\b/i },
+];
+const VOTE_PLATFORM_LABELS = VOTE_PLATFORMS.reduce((m, p) => { m[p.slug] = p.label; return m; }, {});
+
+function detectContractPlatforms(c) {
+  const teaser = (c.description || '').split(/\s+/).slice(0, 40).join(' ');
+  const hay = `${c.name || ''} ${c.agency || ''} ${teaser}`;
+  return VOTE_PLATFORMS.filter(p => p.re.test(hay)).map(p => p.slug);
+}
+
+// ── Feature-vote: toolbar add-ons (A platform facet, C saved searches,
+// I timeline view). Each sub-block emits ONLY when its flag is enabled;
+// when all are off this returns '' and the marker collapses to nothing.
+function renderVoteTrackerFeatures(contracts) {
+  const blocks = [];
+
+  if (voteFlagOn('vote_feature.vendor_watch')) {
+    // Union of platforms actually present in public contract text → chips.
+    const present = new Set();
+    (contracts || []).forEach(c => detectContractPlatforms(c).forEach(s => present.add(s)));
+    const dataset = Array.from(present).sort().map(s => `${s}:${VOTE_PLATFORM_LABELS[s] || s}`).join('|');
+    blocks.push(`<div id="ct-platform-filters" class="flex flex-wrap gap-2" role="group" aria-label="Filter by platform" data-platform-labels="${escapeHtml(dataset)}"></div>`);
+  }
+
+  if (voteFlagOn('vote_feature.tracker_filters')) {
+    // Saved searches (the genuine gap — the base toolbar already does
+    // multi-facet filter/sort/search; this adds localStorage persistence).
+    blocks.push(`<div id="ct-saved" class="flex flex-wrap items-center gap-2">
+            <button id="ct-saved-save" type="button" style="padding:6px 12px;border:1px solid var(--mmt-teal);border-radius:999px;font-size:13px;font-weight:600;color:var(--mmt-teal);background:var(--mmt-white);cursor:pointer;">★ Save this search</button>
+            <select id="ct-saved-list" aria-label="Saved searches" style="padding:7px 10px;border:1px solid var(--mmt-border,#D8E0E8);border-radius:8px;font-size:13px;color:var(--mmt-navy);background:var(--mmt-white);display:none;"><option value="">Saved searches…</option></select>
+            <button id="ct-saved-del" type="button" title="Delete selected saved search" style="display:none;padding:6px 10px;border:1px solid var(--mmt-border,#D8E0E8);border-radius:8px;font-size:13px;color:var(--mmt-text-secondary);background:var(--mmt-white);cursor:pointer;">Delete</button>
+          </div>`);
+  }
+
+  if (voteFlagOn('vote_feature.recompete_timeline')) {
+    // Timeline view toggle. The container is created by the JS so we keep
+    // the HTML surface to a single button. Reads each card's data-status
+    // (lifecycle: Upcoming → Active → Awarded) — real data, no fabrication.
+    blocks.push(`<button id="ct-view-timeline" type="button" aria-pressed="false" style="padding:6px 12px;border:1px solid var(--mmt-border,#D8E0E8);border-radius:999px;font-size:13px;font-weight:600;color:var(--mmt-teal);background:var(--mmt-white);cursor:pointer;">Timeline view</button>`);
+  }
+
+  if (!blocks.length) return '';
+  return `<div id="ct-vote-features" class="flex flex-wrap items-center gap-3">\n          ${blocks.join('\n          ')}\n        </div>`;
+}
+
+// ── Feature-vote: teaming_signals (B) — contract-detail teaming section.
+// Reads an OPTIONAL structured `teaming` array on the contract record:
+//   [{ role: 'prime'|'sub'|'jv', name, note? }, ...]
+// Returns '' when the flag is dormant OR no teaming data exists (the spec's
+// "hidden when none"). No teaming relationships are inferred or fabricated —
+// the section only renders what is explicitly in the data.
+function generateTeamingSignalsHtml(c) {
+  if (!voteFlagOn('vote_feature.teaming_signals')) return '';
+  const teaming = Array.isArray(c.teaming) ? c.teaming.filter(t => t && t.name) : [];
+  if (!teaming.length) return '';
+  const roleLabel = { prime: 'Prime', sub: 'Subcontractor', jv: 'Joint Venture' };
+  const rows = teaming.map(t => {
+    const role = roleLabel[(t.role || '').toLowerCase()] || 'Team member';
+    const note = t.note ? `<span style="color:var(--mmt-text-secondary);"> — ${escapeHtml(t.note)}</span>` : '';
+    return `<li style="margin-bottom:6px;"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--mmt-teal);">${escapeHtml(role)}</span> <strong style="color:var(--mmt-navy);">${escapeHtml(t.name)}</strong>${note}</li>`;
+  }).join('\n        ');
+  return `
+    <div data-access="premium" style="max-width:56rem;margin:0 auto 24px;padding:20px 24px;background:var(--mmt-soft);border-radius:12px;">
+      <h2 style="font-size:15px;font-weight:700;color:var(--mmt-navy);margin-bottom:10px;">Partner &amp; teaming signals</h2>
+      <ul style="list-style:none;padding:0;margin:0;font-size:14px;">
+        ${rows}
+      </ul>
+    </div>`;
+}
+
 function generateContractTrackerHtml(contracts, contractArticleMap) {
   if (!contracts.length) return '<p class="text-center py-10" style="color:var(--mmt-text-secondary);">Contract data coming soon.</p>';
 
@@ -1567,7 +1657,12 @@ function generateContractTrackerHtml(contracts, contractArticleMap) {
       const ctTeaser = (c.description || '').split(/\s+/).slice(0, 40).join(' ');
       const ctSearch = escapeHtml((c.name + ' ' + c.agency + ' ' + ctTeaser).toLowerCase());
       const ctLastCovered = linkedArticles.length > 0 ? escapeHtml(linkedArticles[0].formattedDate) : '';
-      html += `            <div class="card rounded-xl p-6 transition-all duration-200 hover:translate-y-[-2px]" style="border-left:3px solid ${familyAccent(ctFamily)};" data-name="${escapeHtml(c.name)}" data-status="${escapeHtml(c.status || 'active')}" data-classification="${escapeHtml(c.classification || '')}" data-sb="${c.small_business_eligible ? '1' : '0'}" data-agency-family="${escapeHtml(ctFamily)}" data-last-covered="${ctLastCovered}" data-search="${ctSearch}">
+      // Feature-vote vendor_watch (A): platform tags from public text only,
+      // emitted only when the flag is live (dormant → attribute absent).
+      const ctPlatformsAttr = voteFlagOn('vote_feature.vendor_watch')
+        ? ` data-platforms="${escapeHtml(detectContractPlatforms(c).join(' '))}"`
+        : '';
+      html += `            <div class="card rounded-xl p-6 transition-all duration-200 hover:translate-y-[-2px]" style="border-left:3px solid ${familyAccent(ctFamily)};" data-name="${escapeHtml(c.name)}" data-status="${escapeHtml(c.status || 'active')}" data-classification="${escapeHtml(c.classification || '')}" data-sb="${c.small_business_eligible ? '1' : '0'}" data-agency-family="${escapeHtml(ctFamily)}" data-last-covered="${ctLastCovered}" data-search="${ctSearch}"${ctPlatformsAttr}>
               <a href="/contracts/${cSlug}/" class="no-underline block">
               <div class="flex items-start justify-between gap-3 mb-2">
                 <h3 class="text-base font-bold" style="color:var(--mmt-navy);">${escapeHtml(c.name)}</h3>
@@ -1719,7 +1814,8 @@ function generateContractPages(contracts) {
       <a href="/pricing.html" class="btn-primary no-underline" style="font-size:14px;padding:12px 24px;">See premium plans &rarr;</a>
       <p style="font-size:12px;color:var(--mmt-text-secondary);margin-top:10px;">Already a member? <a href="#" onclick="if(typeof mmtSignIn==='function')mmtSignIn();return false;" style="color:var(--mmt-teal);font-weight:600;">Sign in</a></p>
     </div>`;
-    html = html.replace('<!-- Current Intelligence -->', gateCard + '\n  <!-- Current Intelligence -->');
+    const teamingHtml = generateTeamingSignalsHtml(c);
+    html = html.replace('<!-- Current Intelligence -->', teamingHtml + gateCard + '\n  <!-- Current Intelligence -->');
 
     // Inject search overlay after </nav>
     html = html.replace('</nav>', '</nav>' + searchOverlayHtml);
@@ -2955,6 +3051,7 @@ async function copyStaticFiles({ archive, feed, newsItems, contracts, contractAr
     '<!-- BUILD:NEWSWIRE_HEADLINES -->': generateNewswireHtml(newsItems || []),
     '<!-- BUILD:NEWS_WIDGET -->': generateNewsWidgetHtml(newsItems || []),
     '<!-- BUILD:CONTRACT_TRACKER -->': generateContractTrackerHtml(contracts, contractArticleMap || {}),
+    '<!-- BUILD:VOTE_TRACKER_FEATURES -->': renderVoteTrackerFeatures(contracts),
     '<!-- BUILD:BRIEF_ARCHIVE -->': generateBriefArchiveHtml(),
     '<!-- BUILD:BRIEF_LATEST -->': generateBriefLatestHtml(),
     '<!-- BUILD:CAPTURE_CORNER_ARCHIVE -->': generateCaptureCornerArchiveHtml(),
@@ -4986,6 +5083,16 @@ async function build() {
     }
   } else {
     console.log('Vote features: Supabase creds absent — all dormant');
+  }
+  // Local verification override: VOTE_FLAGS_FORCE="vote_feature.vendor_watch,..."
+  // force-enables flags for a local build without touching the DB. No effect
+  // in production unless the env var is set (it is not). Keys may be given
+  // with or without the `vote_feature.` prefix.
+  if (process.env.VOTE_FLAGS_FORCE) {
+    process.env.VOTE_FLAGS_FORCE.split(',').map(s => s.trim()).filter(Boolean).forEach(k => {
+      ENABLED_VOTE_FLAGS.add(k.startsWith('vote_feature.') ? k : `vote_feature.${k}`);
+    });
+    console.log(`Vote features FORCED on (local): ${Array.from(ENABLED_VOTE_FLAGS).join(', ')}`);
   }
 
   // 1. Load and process newsletter articles

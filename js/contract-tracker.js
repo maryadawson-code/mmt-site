@@ -576,7 +576,7 @@ function ctRenderSkeleton(el, n) {
     return famCount[b] - famCount[a] || a.localeCompare(b);
   });
 
-  var state = { q: '', agency: 'all', status: 'all', sb: false, sort: 'name', view: 'card' };
+  var state = { q: '', agency: 'all', status: 'all', sb: false, sort: 'name', view: 'card', platform: 'all' };
 
   // S3: dense table view, built from the same card nodes (no re-fetch). Each
   // <tr> carries the same data-* facets as its card so matches()/sortCards()
@@ -616,7 +616,15 @@ function ctRenderSkeleton(el, n) {
     if (p.has('status')) state.status = p.get('status') || 'all';
     if (p.has('sb')) state.sb = p.get('sb') === '1';
     if (p.has('sort')) state.sort = p.get('sort') || 'name';
-    if (p.has('view')) state.view = p.get('view') === 'table' ? 'table' : 'card';
+    if (p.has('platform')) state.platform = p.get('platform') || 'all';
+    if (p.has('view')) {
+      var v = p.get('view');
+      // Only honor 'timeline' when its toggle exists (flag live) so a stale
+      // URL can't strand the page on an empty timeline when dormant.
+      if (v === 'table') state.view = 'table';
+      else if (v === 'timeline' && document.getElementById('ct-view-timeline')) state.view = 'timeline';
+      else state.view = 'card';
+    }
   }
   function writeParams() {
     var p = new URLSearchParams(window.location.search);
@@ -625,7 +633,8 @@ function ctRenderSkeleton(el, n) {
     state.status !== 'all' ? p.set('status', state.status) : p.delete('status');
     state.sb ? p.set('sb', '1') : p.delete('sb');
     state.sort !== 'name' ? p.set('sort', state.sort) : p.delete('sort');
-    state.view === 'table' ? p.set('view', 'table') : p.delete('view');
+    state.platform !== 'all' ? p.set('platform', state.platform) : p.delete('platform');
+    (state.view === 'table' || state.view === 'timeline') ? p.set('view', state.view) : p.delete('view');
     var qs = p.toString();
     window.history.replaceState(null, '', window.location.pathname + (qs ? '?' + qs : '') + window.location.hash);
   }
@@ -683,6 +692,12 @@ function ctRenderSkeleton(el, n) {
     if (state.status !== 'all' && card.getAttribute('data-status') !== state.status) return false;
     if (state.agency !== 'all' && card.getAttribute('data-agency-family') !== state.agency) return false;
     if (state.sb && card.getAttribute('data-sb') !== '1') return false;
+    // Feature-vote vendor_watch (A): platform facet. Inert unless a platform
+    // is selected (only possible when the flag emitted the chips + data-platforms).
+    if (state.platform !== 'all') {
+      var plats = (card.getAttribute('data-platforms') || '').split(/\s+/);
+      if (plats.indexOf(state.platform) === -1) return false;
+    }
     if (state.q) {
       var hay = card.getAttribute('data-search') || '';
       var terms = state.q.toLowerCase().split(/\s+/).filter(Boolean);
@@ -756,7 +771,182 @@ function ctRenderSkeleton(el, n) {
 
     refreshChipStates();
     syncControls();
+    syncVoteFeatures();
     writeParams();
+  }
+
+  // ── Feature-vote toolbar add-ons (A vendor_watch, C saved searches,
+  // I recompete_timeline). Every function below no-ops unless build.js
+  // emitted its DOM anchor (flag live), so they are inert when dormant.
+
+  // A — platform facet chips, built from the union of card data-platforms.
+  function buildPlatformChips() {
+    var wrap = document.getElementById('ct-platform-filters');
+    if (!wrap) return;
+    var labelMap = {};
+    (wrap.getAttribute('data-platform-labels') || '').split('|').forEach(function(pair) {
+      var i = pair.indexOf(':'); if (i > 0) labelMap[pair.slice(0, i)] = pair.slice(i + 1);
+    });
+    var present = {};
+    cards.forEach(function(c) {
+      (c.getAttribute('data-platforms') || '').split(/\s+/).forEach(function(p) { if (p) present[p] = (present[p] || 0) + 1; });
+    });
+    var slugs = Object.keys(present).sort(function(a, b) { return present[b] - present[a] || a.localeCompare(b); });
+    wrap.innerHTML = '';
+    if (!slugs.length) {
+      // 0-state: no tracked contract names a platform yet.
+      var note = document.createElement('span');
+      note.className = 'text-xs';
+      note.style.color = 'var(--mmt-text-secondary)';
+      note.textContent = 'No platform mentions in the current tracker.';
+      wrap.appendChild(note);
+      return;
+    }
+    var all = chip('All platforms (' + cards.length + ')', 'all', state.platform === 'all');
+    all.addEventListener('click', function() { state.platform = 'all'; apply(); });
+    wrap.appendChild(all);
+    slugs.forEach(function(s) {
+      var b = chip((labelMap[s] || s) + ' (' + present[s] + ')', s, state.platform === s);
+      b.addEventListener('click', function() { state.platform = s; apply(); });
+      wrap.appendChild(b);
+    });
+  }
+  function refreshPlatformChips() {
+    var wrap = document.getElementById('ct-platform-filters');
+    if (!wrap) return;
+    Array.prototype.forEach.call(wrap.children, function(b) {
+      if (b.tagName !== 'BUTTON') return;
+      var a = b.getAttribute('data-key') === state.platform;
+      b.setAttribute('aria-pressed', a ? 'true' : 'false'); styleChip(b, a);
+    });
+  }
+
+  // C — saved searches persisted to localStorage.
+  var SAVED_KEY = 'mmt_ct_saved_searches';
+  function loadSaved() {
+    try { return JSON.parse(localStorage.getItem(SAVED_KEY) || '[]') || []; } catch (e) { return []; }
+  }
+  function storeSaved(list) {
+    try { localStorage.setItem(SAVED_KEY, JSON.stringify(list)); } catch (e) { /* private mode / quota — non-fatal */ }
+  }
+  function refreshSavedList() {
+    var sel = document.getElementById('ct-saved-list');
+    var del = document.getElementById('ct-saved-del');
+    if (!sel) return;
+    var list = loadSaved();
+    sel.innerHTML = '<option value="">Saved searches…</option>';
+    list.forEach(function(s, i) {
+      var o = document.createElement('option'); o.value = String(i); o.textContent = s.name; sel.appendChild(o);
+    });
+    sel.style.display = list.length ? '' : 'none';
+    if (del) del.style.display = 'none';
+  }
+  function wireSavedSearches() {
+    var saveBtn = document.getElementById('ct-saved-save');
+    var sel = document.getElementById('ct-saved-list');
+    var del = document.getElementById('ct-saved-del');
+    if (!saveBtn || !sel) return;
+    saveBtn.addEventListener('click', function() {
+      var name = (window.prompt('Name this search', state.q || state.agency || 'My search') || '').trim();
+      if (!name) return;
+      var list = loadSaved();
+      list.push({ name: name, state: { q: state.q, agency: state.agency, status: state.status, sb: state.sb, sort: state.sort, platform: state.platform } });
+      storeSaved(list); refreshSavedList();
+    });
+    sel.addEventListener('change', function() {
+      if (del) del.style.display = this.value === '' ? 'none' : '';
+      if (this.value === '') return;
+      var s = loadSaved()[Number(this.value)];
+      if (!s || !s.state) return;
+      state.q = s.state.q || ''; state.agency = s.state.agency || 'all';
+      state.status = s.state.status || 'all'; state.sb = !!s.state.sb;
+      state.sort = s.state.sort || 'name'; state.platform = s.state.platform || 'all';
+      apply();
+    });
+    if (del) del.addEventListener('click', function() {
+      if (sel.value === '') return;
+      var list = loadSaved(); list.splice(Number(sel.value), 1); storeSaved(list); refreshSavedList();
+    });
+    refreshSavedList();
+  }
+
+  // I — recompete/lifecycle timeline view (Upcoming → Active → Awarded).
+  function ensureTimelineWrap() {
+    var w = document.getElementById('ct-timeline-wrap');
+    if (w) return w;
+    if (!document.getElementById('ct-view-timeline')) return null;
+    w = document.createElement('div');
+    w.id = 'ct-timeline-wrap';
+    w.hidden = true;
+    w.style.cssText = 'margin-top:8px;';
+    var anchor = document.getElementById('ct-table-wrap');
+    if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(w, anchor.nextSibling);
+    else if (section && section.appendChild) section.appendChild(w);
+    return w;
+  }
+  var TL_LANES = [
+    { key: 'upcoming', label: 'Upcoming', color: '#92710A' },
+    { key: 'active', label: 'Active', color: 'var(--mmt-teal)' },
+    { key: 'awarded', label: 'Awarded', color: '#15803D' }
+  ];
+  function renderTimeline() {
+    var w = ensureTimelineWrap();
+    if (!w) return;
+    var visible = cards.filter(function(c) { return matches(c); });
+    var html = '<div style="display:flex;gap:12px;align-items:stretch;overflow-x:auto;padding:4px 0;">';
+    TL_LANES.forEach(function(lane) {
+      var inLane = visible.filter(function(c) { return (c.getAttribute('data-status') || 'active') === lane.key; });
+      html += '<div style="flex:1 1 0;min-width:200px;">'
+        + '<div style="font-size:12px;font-weight:700;color:' + lane.color + ';border-bottom:2px solid ' + lane.color + ';padding-bottom:6px;margin-bottom:8px;">'
+        + lane.label + ' (' + inLane.length + ')</div>';
+      if (!inLane.length) {
+        html += '<p class="text-xs" style="color:var(--mmt-text-secondary);">None</p>';
+      } else {
+        inLane.forEach(function(c) {
+          var a = c.querySelector('a[href^="/contracts/"]');
+          var href = a ? a.getAttribute('href') : null;
+          var name = c.getAttribute('data-name') || '';
+          var fam = c.getAttribute('data-agency-family') || '';
+          var d = document.createElement('div'); d.textContent = name; var safeName = d.innerHTML;
+          d.textContent = fam; var safeFam = d.innerHTML;
+          var label = href ? '<a href="' + href + '" style="color:var(--mmt-navy);font-weight:600;text-decoration:none;">' + safeName + '</a>' : safeName;
+          html += '<div style="border-left:3px solid ' + lane.color + ';background:var(--mmt-soft);border-radius:6px;padding:8px 10px;margin-bottom:8px;">'
+            + '<div style="font-size:13px;">' + label + '</div>'
+            + '<div style="font-size:11px;color:var(--mmt-text-secondary);">' + safeFam + '</div></div>';
+        });
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+    w.innerHTML = html;
+  }
+  function styleVoteToggle(b, active) {
+    if (!b) return;
+    b.setAttribute('aria-pressed', active ? 'true' : 'false');
+    b.style.background = active ? 'var(--mmt-teal)' : 'var(--mmt-white)';
+    b.style.color = active ? '#FFFFFF' : 'var(--mmt-teal)';
+  }
+
+  // Reconciles the vote-feature surfaces with current state. Called at the
+  // tail of apply() so it overrides the base card/table visibility when the
+  // timeline view is active.
+  function syncVoteFeatures() {
+    refreshPlatformChips();
+    var tlBtn = document.getElementById('ct-view-timeline');
+    var w = document.getElementById('ct-timeline-wrap');
+    var timeline = state.view === 'timeline';
+    if (tlBtn) styleVoteToggle(tlBtn, timeline);
+    if (timeline) {
+      // Hide cards + table + group chrome, show the timeline.
+      groups.forEach(function(g) { g.style.display = 'none'; });
+      headers.forEach(function(h) { h.style.display = 'none'; });
+      if (tableWrap) tableWrap.hidden = true;
+      var emptyEl = document.getElementById('ct-empty'); if (emptyEl) emptyEl.hidden = true;
+      renderTimeline();
+      var tw = ensureTimelineWrap(); if (tw) tw.hidden = false;
+    } else if (w) {
+      w.hidden = true;
+    }
   }
 
   var searchEl = document.getElementById('ct-search');
@@ -769,9 +959,13 @@ function ctRenderSkeleton(el, n) {
   if (vcEl) vcEl.addEventListener('click', function() { state.view = 'card'; apply(); });
   var vtEl = document.getElementById('ct-view-table');
   if (vtEl) vtEl.addEventListener('click', function() { state.view = 'table'; apply(); });
+  var tlEl = document.getElementById('ct-view-timeline');
+  if (tlEl) tlEl.addEventListener('click', function() { state.view = state.view === 'timeline' ? 'card' : 'timeline'; apply(); });
 
   readParams();
   buildChips();
   buildTable();
+  buildPlatformChips();
+  wireSavedSearches();
   apply();
 })();
