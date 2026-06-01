@@ -102,7 +102,7 @@
         <div style="display:flex; align-items:center; gap:16px;">
           <span style="font-size:13px; color:var(--mmt-text-secondary);" id="dash-email"></span>
           <a href="/" style="font-size:12px; color:var(--mmt-teal); text-decoration:none;">Back to site</a>
-          <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_premium_ts');localStorage.removeItem('mmt_email');document.cookie='mmt_premium=;path=/;max-age=0';window.location.href='/';return false;" style="font-size:12px; color:var(--mmt-text-secondary); text-decoration:none;">Sign out</a>
+          <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_premium_ts');localStorage.removeItem('mmt_email');document.cookie='mmt_premium=;path=/;max-age=0';document.cookie='mmt_email=;path=/;max-age=0';window.location.href='/';return false;" style="font-size:12px; color:var(--mmt-text-secondary); text-decoration:none;">Sign out</a>
         </div>
       </div>
       <div class="dash-main">

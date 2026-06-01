@@ -654,6 +654,9 @@
           localStorage.setItem("mmt_premium_ts", Date.now().toString());
           localStorage.setItem(EMAIL_KEY, email);
           if (data.token) localStorage.setItem("mmt_subscriber_token", data.token);
+          // Server-side renderers (premium-deliverable-render) gate on these cookies.
+          document.cookie = "mmt_email=" + encodeURIComponent(email) + "; path=/; max-age=2592000; SameSite=Lax";
+          document.cookie = "mmt_premium=true; path=/; max-age=2592000; SameSite=Lax";
           alert("Welcome back! Refreshing to unlock Premium content.");
           location.reload();
         } else {
