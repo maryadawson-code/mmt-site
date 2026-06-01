@@ -15,6 +15,9 @@ const SCOPES = [
   // (re-run ?action=connect) so the stored token carries the new scopes.
   "https://www.googleapis.com/auth/forms.responses.readonly",
   "https://www.googleapis.com/auth/spreadsheets.readonly",
+  // forms.body: lets vote-form-create.js build the vote form via the Forms
+  // API using this same connection (no manual form-building).
+  "https://www.googleapis.com/auth/forms.body",
 ];
 const REDIRECT_URI = "https://missionmeetstech.com/.netlify/functions/google-oauth";
 

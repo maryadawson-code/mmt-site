@@ -21,6 +21,17 @@ function normalizeLetter(raw) {
   return L && VALID.has(L) ? L : null;
 }
 
+// A vote answer is EITHER a bare letter ("A") OR a multiple-choice option
+// label in the form's canonical "A — Vendor watch" shape (letter + dash).
+// Requiring the dash delimiter means free-text prose like "I want more
+// agencies" or "Add CSV please" is NOT mistaken for a vote.
+function leadingOptionLetter(raw) {
+  const s = String(raw == null ? "" : raw).trim().toUpperCase();
+  if (/^[A-J]$/.test(s)) return s;
+  const m = s.match(/^([A-J])\s*[—–-]\s/);
+  return m && VALID.has(m[1]) ? m[1] : null;
+}
+
 /**
  * Compute the full ranking from normalized ballots.
  * @param {Array<{first?:string, runnersUp?:string[]}>} ballots
@@ -118,10 +129,9 @@ function extractBallots(rawResponses) {
     const letters = [];
     const freeText = [];
     for (const t of texts) {
-      const L = normalizeLetter(t);
-      // Treat a short answer that IS a letter as a vote; longer text as free.
-      if (L && String(t).trim().length <= 3) letters.push(L);
-      else freeText.push(t.trim());
+      const L = leadingOptionLetter(t);
+      if (L) letters.push(L);
+      else if (String(t).trim()) freeText.push(t.trim());
     }
     if (letters.length) {
       ballots.push({ first: letters[0], runnersUp: letters.slice(1, 3) });
@@ -147,4 +157,4 @@ function rankPlatformAsks(asks) {
     .map(([name, count]) => ({ name, count }));
 }
 
-module.exports = { computeRanking, decide, extractBallots, normalizeLetter, rankPlatformAsks, COST };
+module.exports = { computeRanking, decide, extractBallots, normalizeLetter, leadingOptionLetter, rankPlatformAsks, COST };

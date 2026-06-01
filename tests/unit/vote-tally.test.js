@@ -108,6 +108,17 @@ describe("extractBallots", () => {
     const { ballots } = extractBallots([mkResp(["Snowflake"])]);
     expect(ballots).toHaveLength(0);
   });
+
+  it("parses canonical 'A - Name' option labels and never reads prose as a vote", () => {
+    const { ballots, platformAsks, suggestions } = extractBallots([
+      mkResp(["A - Vendor watch", "C - Saved searches and advanced filters", "Databricks", "I want more agency coverage"]),
+    ]);
+    expect(ballots[0]).toEqual({ first: "A", runnersUp: ["C"] });
+    expect(platformAsks).toContain("Databricks");
+    // "I want..." must NOT be misread as a vote for I.
+    expect(suggestions).toContain("I want more agency coverage");
+    expect(ballots[0].runnersUp).not.toContain("I");
+  });
 });
 
 describe("rankPlatformAsks", () => {
