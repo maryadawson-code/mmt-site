@@ -861,4 +861,64 @@ function buildGoldTeamReviewHtml(data) {
 </html>`;
 }
 
-module.exports = { buildScoreReceiptHtml, buildWeeklyReportHtml, buildGoldTeamReviewHtml };
+// ============================================================
+// Feature-vote campaign email (Sprint 4). MMT voice: insider, concise,
+// no hype. Button #0A192F, accent #457B9D, Inter. No em dashes, no
+// exclamation points (repo voice rules). Returns { subject, html, text }.
+// ============================================================
+function buildVoteEmailHtml({ firstName, formUrl } = {}) {
+  const name = (firstName && String(firstName).trim()) || "there";
+  const url = String(formUrl || "https://missionmeetstech.com");
+  const hrefSafe = url.replace(/&/g, "&amp;"); // multi-param URLs survive enterprise mail clients
+  const subject = "What should we build next? You decide.";
+  const preheader = "Your top pick moves to the front of our build queue.";
+
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>body{margin:0;background:#F3F4F6;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#0A192F;line-height:1.6;}</style></head>
+<body>
+<span style="display:none;max-height:0;overflow:hidden;opacity:0;">${preheader}</span>
+<div style="max-width:600px;margin:0 auto;padding:32px 20px;">
+  <div style="background:#FFFFFF;border-radius:12px;padding:32px;">
+    <p style="margin:0 0 16px;">Hi ${name},</p>
+    <p style="margin:0 0 16px;">Quick one, and it actually matters.</p>
+    <p style="margin:0 0 16px;">We're deciding what to build next on Mission Meets Tech, and I'd rather you tell me than guess. Especially if you work for a platform (Databricks, Salesforce, ServiceNow, Palantir, Snowflake), because I don't think we serve you as well as we serve the capture and BD crowd yet. I want to fix that.</p>
+    <p style="margin:0 0 24px;">So here's a 60-second vote. Pick your #1, name the platform you want us to track, and suggest anything we missed.</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 24px;"><tr><td style="border-radius:8px;background:#0A192F;">
+      <a href="${hrefSafe}" style="display:inline-block;padding:14px 28px;color:#FFFFFF;text-decoration:none;font-weight:700;font-size:15px;">Vote on what we build next &rarr;</a>
+    </td></tr></table>
+    <p style="margin:0 0 8px;font-weight:700;">A few of the options on the table:</p>
+    <ul style="margin:0 0 24px;padding-left:20px;color:#0A192F;">
+      <li style="margin-bottom:6px;"><strong>Vendor watch</strong>: track which agencies are buying or integrating your platform, and who's reselling it</li>
+      <li style="margin-bottom:6px;"><strong>Partner and teaming signals</strong>: see who's teaming around a platform on health IT awards</li>
+      <li style="margin-bottom:6px;"><strong>Custom watchlists</strong>: get pinged the moment something matches your agency, NAICS, or vendor</li>
+      <li style="margin-bottom:6px;"><strong>Recompete countdowns</strong>: know months ahead when a tracked contract is up</li>
+      <li style="margin-bottom:6px;"><strong>Teaming-partner finder</strong> and incumbent and recompete timelines</li>
+    </ul>
+    <p style="margin:0 0 16px;">Here's the part I'm excited about: the top pick ships automatically the moment voting closes, and then we ship the rest in order, one new feature every four weeks, until everything on this list is live. Your vote sets the whole release calendar. If you want a real say, there's a box to raise your hand as a design partner. Those ship first.</p>
+    <p style="margin:0 0 16px;">Thanks for shaping this with me.</p>
+    <p style="margin:0;">Mary<br>Mission Meets Tech<br><em style="color:#457B9D;font-size:13px;">Independent federal health IT intelligence. No vendor sponsorship, ever.</em></p>
+    <p style="margin:24px 0 0;font-size:12px;color:#94a3b8;">Can't see the button? Copy and paste this link: ${url}</p>
+  </div>
+</div>
+</body></html>`;
+
+  const text = [
+    `Hi ${name},`,
+    "",
+    "Quick one, and it actually matters.",
+    "",
+    "We're deciding what to build next on Mission Meets Tech, and I'd rather you tell me than guess. Especially if you work for a platform (Databricks, Salesforce, ServiceNow, Palantir, Snowflake).",
+    "",
+    "Here's a 60-second vote. Pick your #1, name the platform you want us to track, and suggest anything we missed:",
+    url,
+    "",
+    "The top pick ships automatically the moment voting closes, then we ship the rest one new feature every four weeks until the list is live.",
+    "",
+    "Thanks for shaping this with me.",
+    "Mary, Mission Meets Tech",
+  ].join("\n");
+
+  return { subject, preheader, html, text };
+}
+
+module.exports = { buildScoreReceiptHtml, buildWeeklyReportHtml, buildGoldTeamReviewHtml, buildVoteEmailHtml };

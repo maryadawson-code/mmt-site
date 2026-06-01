@@ -7,7 +7,15 @@
 const { createClient } = require("@supabase/supabase-js");
 const { validateAuth } = require("./lib/auth");
 
-const SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"];
+const SCOPES = [
+  "https://www.googleapis.com/auth/gmail.readonly",
+  // Feature-vote (Sprint 4): read Google Form responses + linked Sheet for
+  // the tally. Reuses this same google connection / refresh token — no
+  // service account. Adding these scopes requires a ONE-TIME re-consent
+  // (re-run ?action=connect) so the stored token carries the new scopes.
+  "https://www.googleapis.com/auth/forms.responses.readonly",
+  "https://www.googleapis.com/auth/spreadsheets.readonly",
+];
 const REDIRECT_URI = "https://missionmeetstech.com/.netlify/functions/google-oauth";
 
 exports.handler = async (event) => {
