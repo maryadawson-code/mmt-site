@@ -53,21 +53,25 @@ exports.handler = async () => {
       }
     }
 
-    // Contract data freshness
-    const { data: contractEvents } = await supabase
-      .from("ops_events")
-      .select("created_at")
-      .eq("event_type", "contract_data_refresh")
-      .order("created_at", { ascending: false })
+    // Contract data freshness — measured from the ACTUAL data the refresh
+    // writes (contract_intel.last_updated), not a single completion-event
+    // name. The refresh background function keeps updating these rows even
+    // when its end-of-run completion event goes silent (e.g. a 15-min
+    // background timeout kills it mid-loop). Reading the table directly
+    // can't be silently broken by an event rename or a missed completion log.
+    const { data: freshestIntel } = await supabase
+      .from("contract_intel")
+      .select("last_updated")
+      .order("last_updated", { ascending: false })
       .limit(1);
 
-    if (contractEvents && contractEvents.length > 0) {
-      const hoursSince = (Date.now() - new Date(contractEvents[0].created_at).getTime()) / 3600000;
+    if (freshestIntel && freshestIntel.length > 0 && freshestIntel[0].last_updated) {
+      const hoursSince = (Date.now() - new Date(freshestIntel[0].last_updated).getTime()) / 3600000;
       if (hoursSince > 48) {
         alerts.push("Contract data is " + Math.round(hoursSince) + " hours stale");
       }
     } else {
-      alerts.push("No contract data refresh events found");
+      alerts.push("No contract intel rows found");
     }
 
     // Held emails

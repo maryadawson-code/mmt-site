@@ -37,6 +37,16 @@ const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const NETLIFY_BUILD_HOOK_URL = process.env.NETLIFY_BUILD_HOOK_URL;
 
+// Netlify background functions are hard-killed at 15 min. With a 55-contract
+// roster each doing 2 slow Claude/Perplexity calls sequentially, the loop can
+// blow past that wall and get killed mid-pass — rows already upserted stay
+// fresh, but the end-of-run completion log (logOpsEvent contract_data_refresh)
+// never fires and, being a platform timeout, leaves NO exception in ops_events.
+// A self-imposed wall-clock budget lets the function break the loop cleanly and
+// reach its completion log every run; contracts not reached are picked up next
+// run via the 20h-fresh skip below (continuation is already designed for).
+const RUN_BUDGET_MS = 13 * 60 * 1000;
+
 // Refresh roster is derived from contracts.json at runtime via
 // getRefreshRoster() — see _UNUSED_LEGACY_CONTRACTS below for the old
 // hardcoded list kept only for reference until the next cleanup pass.
@@ -559,6 +569,7 @@ exports.handler = async (event) => {
   const killCheck = checkKillSwitch("contract-intel-refresh-background");
   if (killCheck.blocked) return killCheck.response;
 
+  const runStart = Date.now();
   console.log("Contract intel refresh triggered:", new Date().toISOString());
 
   if (!ANTHROPIC_API_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
@@ -610,7 +621,17 @@ exports.handler = async (event) => {
   }
 
   // Process contracts sequentially to avoid rate limits
+  let truncatedForBudget = false;
   for (const contract of contractsToProcess) {
+    // Stop before the 15-min platform kill so the end-of-run completion log
+    // still fires. Remaining contracts are refreshed on the next scheduled
+    // run (the 20h-fresh skip above carries the continuation).
+    if (!forceContract && Date.now() - runStart > RUN_BUDGET_MS) {
+      truncatedForBudget = true;
+      console.log(`Run budget (${RUN_BUDGET_MS}ms) reached — stopping loop early; remaining contracts deferred to next run.`);
+      break;
+    }
+
     // Skip contracts that already have fresh data (unless force-refreshing)
     if (!forceContract && freshContracts.has(contract.name)) {
       console.log(`Skipping (fresh): ${contract.name}`);
@@ -811,8 +832,10 @@ exports.handler = async (event) => {
       validated: successCount,
       rejected: errorCount,
       total: contractsToProcess.length,
+      truncated_for_budget: truncatedForBudget,
       cost_estimate: costEstimate,
       api_calls: totalCalls,
+      run_ms: Date.now() - runStart,
     },
   });
 
