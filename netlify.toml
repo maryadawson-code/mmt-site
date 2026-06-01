@@ -45,6 +45,11 @@
 [functions."weekly-report"]
   schedule = "0 14 * * 1"
 
+# Feature-vote Day-7 tally — hourly; the fn checks now >= deadline and
+# exits no-op until the 7-day window closes, then runs once (idempotent).
+[functions."feature-vote-tally"]
+  schedule = "0 * * * *"
+
 # Feature-vote custom_watchlists (F) + recompete_alerts (G) — daily 7 AM ET
 # (12:00 UTC). DORMANT: no-ops and sends NOTHING unless the
 # vote_feature.custom_watchlists flag is enabled AND VOTE_AUTOPILOT != off.

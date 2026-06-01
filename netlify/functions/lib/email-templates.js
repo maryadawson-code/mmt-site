@@ -921,4 +921,77 @@ function buildVoteEmailHtml({ firstName, formUrl } = {}) {
   return { subject, preheader, html, text };
 }
 
-module.exports = { buildScoreReceiptHtml, buildWeeklyReportHtml, buildGoldTeamReviewHtml, buildVoteEmailHtml };
+// ============================================================
+// Feature-vote result email to Mary (Sprint 5). Two states:
+//   held=false → winner shipped + full release calendar (autopilot success)
+//   held=true  → low turnout / unresolvable tie (Mary decides)
+// Internal email; still avoids em dashes for consistency.
+// ============================================================
+function buildVoteResultHtml(opts = {}) {
+  const {
+    held = false, reason = "", winner = null, ranking = [], platformAsks = [],
+    suggestions = [], schedule = [], responseCount = 0, quorum = 15,
+    tieOptions = [], shipped = {},
+  } = opts;
+  const esc = (s) => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  const tallyRows = ranking
+    .map((r) => `<tr><td style="padding:4px 10px;">${r.letter}</td><td style="padding:4px 10px;">${esc(r.key)}</td><td style="padding:4px 10px;text-align:right;">${r.score}</td><td style="padding:4px 10px;text-align:right;">${r.q1count}</td></tr>`)
+    .join("");
+  const tallyTable = `<table style="border-collapse:collapse;font-size:13px;width:100%;max-width:480px;"><thead><tr style="border-bottom:2px solid #D8E0E8;"><th style="padding:4px 10px;text-align:left;">#</th><th style="padding:4px 10px;text-align:left;">Feature</th><th style="padding:4px 10px;text-align:right;">Score</th><th style="padding:4px 10px;text-align:right;">Q1</th></tr></thead><tbody>${tallyRows}</tbody></table>`;
+  const asksHtml = platformAsks.length
+    ? `<ul style="padding-left:18px;">${platformAsks.map((p) => `<li>${esc(p.name || p)}${p.count ? ` <span style="color:#94a3b8;">(${p.count})</span>` : ""}</li>`).join("")}</ul>`
+    : "<p style='color:#94a3b8;'>None.</p>";
+  const suggHtml = suggestions.length
+    ? `<ul style="padding-left:18px;">${suggestions.map((s) => `<li>"${esc(s)}"</li>`).join("")}</ul>`
+    : "<p style='color:#94a3b8;'>None.</p>";
+
+  const shell = (inner) => `<!DOCTYPE html><html><head><meta charset="utf-8"></head>
+<body style="font-family:Inter,-apple-system,sans-serif;color:#0A192F;max-width:640px;margin:0 auto;padding:24px;line-height:1.6;">
+${inner}</body></html>`;
+
+  if (held) {
+    const subject = `Vote closed, holding on ${reason}`;
+    const detail =
+      reason === "low_turnout"
+        ? `only ${responseCount} responses, below the ${quorum} threshold`
+        : reason === "tie"
+        ? `a tie between ${tieOptions.join(" and ")}`
+        : reason;
+    return {
+      subject,
+      html: shell(`
+        <h2 style="margin:0 0 12px;">Vote closed, holding before shipping</h2>
+        <p>I'm holding before activating anything: <strong>${esc(detail)}</strong>.</p>
+        <p style="font-weight:700;margin-top:16px;">Tally</p>
+        ${tallyTable}
+        <p style="font-weight:700;margin-top:16px;">Platform asks</p>${asksHtml}
+        <p style="font-weight:700;margin-top:16px;">Suggestions</p>${suggHtml}
+        <p style="margin-top:16px;">Reply with the letter to ship, or "extend" to keep voting open.</p>
+      `),
+    };
+  }
+
+  const w = winner || (ranking[0] || {});
+  const calendar = schedule.length
+    ? `<ul style="padding-left:18px;">${schedule.map((s) => `<li>${s.rank}. ${esc(s.key || s.name)} — ships ${esc(s.ship_date)}</li>`).join("")}</ul>`
+    : "<p style='color:#94a3b8;'>Winner only.</p>";
+  const subject = `Shipped: ${w.key || w.letter} won, and the next ${Math.max(schedule.length, 0)} features are scheduled`;
+  return {
+    subject,
+    html: shell(`
+      <h2 style="margin:0 0 12px;">The feature vote closed. Here's what happened, start to finish.</h2>
+      <p><strong>Winner: ${esc(w.key)}</strong> (${w.score} weighted votes${w.q1count != null ? `, ${w.q1count} first-place picks` : ""})</p>
+      <p><strong>What shipped now:</strong> flag <code>${esc(w.key)}</code> activated${shipped.deployed_at ? ` &rarr; deploy triggered ${esc(shipped.deployed_at)}` : ""}. Site rebuild kicked off; Netlify's build gate fails closed if anything breaks.</p>
+      <p style="font-weight:700;margin-top:16px;">Release calendar (one every four weeks)</p>
+      ${calendar}
+      <p style="font-weight:700;margin-top:16px;">Platforms you all want covered</p>${asksHtml}
+      <p style="font-weight:700;margin-top:16px;">Subscriber suggestions</p>${suggHtml}
+      <p style="font-weight:700;margin-top:16px;">Full tally</p>${tallyTable}
+      <p style="margin-top:12px;">Turnout: ${responseCount} responses.</p>
+      <p style="margin-top:16px;color:#94a3b8;font-size:13px;">No action needed. To roll back: flip the flag off in feature_flags and rebuild. Set VOTE_AUTOPILOT=off to pause the roadmap.</p>
+    `),
+  };
+}
+
+module.exports = { buildScoreReceiptHtml, buildWeeklyReportHtml, buildGoldTeamReviewHtml, buildVoteEmailHtml, buildVoteResultHtml };
