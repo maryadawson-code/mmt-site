@@ -28,6 +28,7 @@
     "data/may-27-release/**",
     "data/may-29-release/**",
     "data/jun-2-release/**",
+    "data/jun-5-release/**",
     "migrations/010_subscriber_context_alignment.sql",
     "migrations/011_mp_users_columns_documented.sql",
     "static/lead-magnets/**",
@@ -374,6 +375,13 @@
 # Retire by 2026-06-16 (delete function + data/jun-2-release/** entry).
 [functions."jun2-va-enterprise-ai-capture-send"]
   schedule = "0 13 * * *"
+
+# THE FRIDAY BRIEF (June 5, 2026) → active premium subscribers.
+# Fires once: Fri June 5 at 10:00 UTC = 06:00 ET (EDT). Date guard +
+# ops_events idempotency + JUN5_FRIDAY_BRIEF_DISABLED kill switch.
+# Retire by 2026-06-19 (delete function + data/jun-5-release/** entry).
+[functions."jun5-friday-brief-send"]
+  schedule = "0 10 5 6 *"
 
 # June 2, 2026 build trigger: fires the Netlify build hook at 13:00 UTC
 # (09:00 ET EDT) to publish the future-dated newsletter article
