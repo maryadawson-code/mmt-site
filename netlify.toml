@@ -29,6 +29,7 @@
     "data/may-29-release/**",
     "data/jun-2-release/**",
     "data/jun-5-release/**",
+    "content/friday-brief/**",
     "migrations/010_subscriber_context_alignment.sql",
     "migrations/011_mp_users_columns_documented.sql",
     "static/lead-magnets/**",
@@ -65,10 +66,11 @@
 [functions."watchlist-alert"]
   schedule = "0 12 * * *"
 
-# Premium Friday Brief — every Friday at 6 AM ET (11:00 UTC)
-# Emails the latest brief to all active premium subscribers via Resend
+# Premium Friday Brief — every Friday at 6 AM ET (10:00 UTC during EDT).
+# Auto-sends the newest unsent content/friday-brief/YYYY-MM-DD.md to all active
+# premium subscribers via Resend. Publish = drop a markdown file in that folder.
 [functions."premium-brief-send"]
-  schedule = "0 11 * * 5"
+  schedule = "0 10 * * 5"
 
 # Premium Monthly Brief — SUNSET 2026-06-01. The monthly cadence folded into
 # Capture Intelligence Sheets (delivered via Capture Corner / Friday Brief), so

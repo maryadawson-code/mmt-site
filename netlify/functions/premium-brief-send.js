@@ -22,8 +22,26 @@ const {
   buildBriefNotificationEmail,
 } = require("./lib/premium-brief-templates");
 
+const fs = require("fs");
+const path = require("path");
+const { marked } = require("marked");
+
 const SITE_URL = "https://missionmeetstech.com";
 const ADMIN_EMAIL = "mary@missionmeetstech.com";
+
+// Friday Briefs are authored as markdown: content/friday-brief/YYYY-MM-DD.md
+// (bundled via netlify.toml included_files). The Friday 6am cron renders the
+// newest unsent one and emails it to active premium subscribers. To publish a
+// brief, drop a YYYY-MM-DD.md file here — no code or HTML page needed.
+const BRIEF_DIR = (() => {
+  for (const p of [
+    path.join(__dirname, "..", "..", "content", "friday-brief"),
+    path.join(__dirname, "content", "friday-brief"),
+  ]) {
+    try { if (fs.existsSync(p)) return p; } catch {}
+  }
+  return path.join(__dirname, "..", "..", "content", "friday-brief");
+})();
 
 async function _handler(event) {
   const checkedAt = new Date().toISOString();
@@ -83,7 +101,7 @@ async function _handler(event) {
   // Track per-candidate disposition for the observability event if we
   // reach the no-content skip at the end of the loop.
   let dateStr = null;
-  let briefHtml = null;
+  let briefMd = null;
   const alreadySentDates = [];
   const missingFileDates = [];
   for (const candidate of candidateDates) {
@@ -101,11 +119,11 @@ async function _handler(event) {
       }
     } catch (e) { /* proceed on failure */ }
 
-    // Try to fetch
+    // Read the authored Friday Brief markdown for this date.
+    const briefPath = path.join(BRIEF_DIR, `${candidate}.md`);
     try {
-      const res = await fetch(`${SITE_URL}/premium/briefs/${candidate}.html`);
-      if (res.ok) {
-        briefHtml = await res.text();
+      if (fs.existsSync(briefPath)) {
+        briefMd = fs.readFileSync(briefPath, "utf8");
         dateStr = candidate;
         console.log(`premium-brief-send: found brief ${candidate}`);
         break;
@@ -117,7 +135,7 @@ async function _handler(event) {
     }
   }
 
-  if (!briefHtml || !dateStr) {
+  if (!briefMd || !dateStr) {
     // Observability patch: distinguish "all candidates are already sent"
     // (BRIEF_ALREADY_SENT) from "no brief file exists" (BRIEF_SEND_SKIPPED).
     // Both return the same 200 skipped response — behavior unchanged.
@@ -147,8 +165,12 @@ async function _handler(event) {
     return { statusCode: 200, body: JSON.stringify({ skipped: "no_content" }) };
   }
 
-  // Extract content
-  const { title, subtitle, briefBody } = extractBriefContent(briefHtml);
+  // Render the authored markdown. Title = first "# ..." line; the email
+  // template supplies its own date header, so subtitle stays empty.
+  const titleMatch = briefMd.match(/^#\s+(.+)/m);
+  const title = titleMatch ? titleMatch[1].trim() : "The Friday Brief";
+  const subtitle = "";
+  const briefBody = marked.parse(briefMd.replace(/^#\s+.+?\n/, "").trim());
   if (!briefBody || briefBody.length < 100) {
     console.warn("premium-brief-send: brief body too short, skipping");
     // Observability patch: standardized to BRIEF_CONTENT_ERROR taxonomy.
