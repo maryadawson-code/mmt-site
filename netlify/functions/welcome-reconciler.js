@@ -1,3 +1,4 @@
+require("./lib/stripe-ids"); // expand consolidated STRIPE_IDS into process.env (must load before Stripe ID reads)
 // ============================================================
 // welcome-reconciler.js — Half-hourly safety net for the welcome path
 //

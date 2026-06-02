@@ -1,3 +1,4 @@
+require("./lib/stripe-ids"); // expand consolidated STRIPE_IDS into process.env (must load before Stripe ID reads)
 // One-off diagnostic — list Stripe webhook endpoints + recent events.
 // Auth-gated by COMMAND_CENTER_KEY (admin token already in env). Delete
 // this file after the Stripe sync gap is resolved.

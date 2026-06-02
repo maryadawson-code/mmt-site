@@ -1,3 +1,4 @@
+require("./stripe-ids"); // expand consolidated STRIPE_IDS into process.env (must load before Stripe ID reads)
 // ============================================================
 // mmt-pricing.js — Single source of truth for MMT pricing
 //

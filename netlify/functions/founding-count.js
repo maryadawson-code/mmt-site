@@ -1,3 +1,4 @@
+require("./lib/stripe-ids"); // expand consolidated STRIPE_IDS into process.env (must load before Stripe ID reads)
 // founding-count.js — Returns remaining Founding Member spots
 //
 // Strategy (in order):
