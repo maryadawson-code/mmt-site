@@ -92,6 +92,24 @@ exports.handler = async (event) => {
     return { statusCode: 200, body: JSON.stringify({ skipped: "empty_content" }) };
   }
 
+  // Claim this month NOW — before the multi-second send loop. Netlify fires
+  // scheduled functions at-least-once (~14s apart); the completion marker
+  // (signature "monthly_brief_sent") used to be written only AFTER the loop,
+  // so a second invocation passed the duplicate check above before any marker
+  // existed and re-sent to every subscriber. Claimed only after the brief is
+  // confirmed present + non-empty, so a 404/short month never falsely marks
+  // sent. Same fix as premium-brief-send + premium-digest-send.
+  try {
+    await logOpsEvent(supabase, {
+      event_type: "BRIEF_CLAIMED",
+      source_function: "monthly-brief-send",
+      severity: "info",
+      signature: "monthly_brief_sent",
+      affected_entity: dateStr,
+      details: { claimed_at: now.toISOString() },
+    });
+  } catch (e) { /* if the claim write fails, proceed rather than skip the month */ }
+
   // Format month for display
   const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   const displayDate = `${monthNames[parseInt(month) - 1]} ${year}`;

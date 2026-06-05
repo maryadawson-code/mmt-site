@@ -165,6 +165,26 @@ async function _handler(event) {
     return { statusCode: 200, body: JSON.stringify({ skipped: "no_content" }) };
   }
 
+  // Claim this brief NOW — before the multi-second send loop. Netlify
+  // delivers scheduled functions at-least-once and fires this cron twice
+  // ~14s apart. The completion marker (signature "premium_brief_sent") used
+  // to be written only AFTER the send loop, so the second invocation passed
+  // the per-candidate duplicate check above before any marker existed and
+  // re-sent the brief to every subscriber. Writing the claim up front shrinks
+  // the race window from the whole send to a few ms. Same fix the daily
+  // digest got after it double-sent from 2026-05-20 (premium-digest-send.js).
+  // The trailing BRIEF_SEND_COMPLETE row still records the real send stats.
+  try {
+    await logOpsEvent(supabase, {
+      event_type: "BRIEF_CLAIMED",
+      source_function: "premium-brief-send",
+      severity: "info",
+      signature: "premium_brief_sent",
+      affected_entity: dateStr,
+      details: { claimed_at: checkedAt },
+    });
+  } catch (e) { /* if the claim write fails, proceed rather than skip the brief */ }
+
   // Render the authored markdown. Title = first "# ..." line; the email
   // template supplies its own date header, so subtitle stays empty.
   const titleMatch = briefMd.match(/^#\s+(.+)/m);
