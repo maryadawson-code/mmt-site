@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>MMT Premium · Recordable Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0A192F; --teal:#457B9D; --white:#FFFFFF; --surface:#F3F4F6;
+    --muted:#6B7280; --border:#E5E7EB; --red:#E63946;
+    --green:#15803D; --amber:#92710A;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:radial-gradient(1200px 800px at 50% -10%, #11243f 0%, #060d18 60%, #03060c 100%);
+    color:var(--navy); display:flex; flex-direction:column; align-items:center;
+    justify-content:flex-start; min-height:100vh; overflow:hidden; -webkit-font-smoothing:antialiased;
+    padding-top:14px;
+  }
+  #scaler{width:1280px;transform-origin:top center}
+
+  /* ---------- 16:9 recording stage ---------- */
+  #stage{
+    position:relative; width:1280px; height:720px; border-radius:16px;
+    background:var(--white); overflow:hidden;
+    box-shadow:0 40px 120px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.04);
+    transform-origin:center center;
+  }
+  /* browser chrome */
+  .chrome{height:46px;background:#0d1b2e;display:flex;align-items:center;gap:14px;padding:0 16px;flex-shrink:0}
+  .dots{display:flex;gap:7px}
+  .dots i{width:11px;height:11px;border-radius:50%;display:block}
+  .dots i:nth-child(1){background:#ff5f57}.dots i:nth-child(2){background:#febc2e}.dots i:nth-child(3){background:#28c840}
+  .addr{flex:1;height:28px;background:#1b2a40;border-radius:7px;display:flex;align-items:center;padding:0 12px;
+    font-size:12.5px;color:#9fb3cc;font-weight:500;gap:8px}
+  .addr svg{flex-shrink:0;opacity:.7}
+  .addr b{color:#dce6f2;font-weight:600}
+  .viewport{position:relative;width:100%;height:calc(720px - 46px);overflow:hidden;background:var(--white)}
+
+  /* ---------- scenes ---------- */
+  .scene{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .55s ease;}
+  .scene.active{opacity:1;visibility:visible}
+  .pad{padding:34px 44px;height:100%;overflow:hidden}
+
+  /* entrance animation for children of active scene */
+  .scene .rise{opacity:0;transform:translateY(14px)}
+  .scene.active .rise{animation:rise .6s cubic-bezier(.2,.7,.2,1) forwards}
+  .scene.active .rise.d1{animation-delay:.08s}
+  .scene.active .rise.d2{animation-delay:.18s}
+  .scene.active .rise.d3{animation-delay:.30s}
+  .scene.active .rise.d4{animation-delay:.42s}
+  .scene.active .rise.d5{animation-delay:.54s}
+  .scene.active .rise.d6{animation-delay:.66s}
+  .scene.active .rise.d7{animation-delay:.78s}
+  .scene.active .rise.d8{animation-delay:.90s}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  /* ---------- dashboard shell ---------- */
+  .shell{display:flex;height:100%}
+  .side{width:218px;flex-shrink:0;background:var(--navy);color:#cdd9e8;padding:20px 14px;display:flex;flex-direction:column;gap:3px}
+  .side .brand{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:800;color:#fff;padding:4px 8px 16px}
+  .side .brand .star{color:#FFC857;font-size:15px}
+  .side a{display:flex;align-items:center;gap:9px;font-size:12.5px;color:#aebfd4;text-decoration:none;
+    padding:8px 10px;border-radius:7px;font-weight:500}
+  .side a.on{background:rgba(255,255,255,.10);color:#fff;font-weight:700}
+  .side a .dot{width:6px;height:6px;border-radius:50%;background:#5a738f}
+  .side .grp{font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;color:#6b82a0;padding:14px 10px 5px;font-weight:700}
+  .side .hl{outline:2px solid #FFC857;outline-offset:-2px;background:rgba(255,200,87,.14)!important;color:#fff!important}
+  .main{flex:1;background:#fafbfc;padding:30px 36px;overflow:hidden}
+
+  .h1{font-size:25px;font-weight:800;letter-spacing:-.01em}
+  .sub{color:var(--muted);font-size:13.5px;margin-top:3px}
+  .eyebrow{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+
+  .card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+  .card h3{font-size:15px;font-weight:700;margin-bottom:5px}
+  .card p{font-size:12.5px;color:var(--muted);line-height:1.5}
+  .btn{display:inline-flex;align-items:center;gap:6px;background:var(--navy);color:#fff;font-weight:700;
+    font-size:12px;padding:9px 16px;border-radius:8px;text-decoration:none}
+  .btn.teal{background:var(--teal)}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .pill{display:inline-block;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px}
+  .pill.teal{background:rgba(69,123,157,.12);color:var(--teal)}
+  .pill.amber{background:rgba(146,113,10,.14);color:var(--amber)}
+  .pill.green{background:rgba(21,128,61,.12);color:var(--green)}
+
+  /* ---------- agency grid ---------- */
+  .agrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .acard{background:#fff;border:1px solid var(--border);border-radius:11px;padding:14px;position:relative;transition:transform .2s, box-shadow .2s, border-color .2s}
+  .acard .ab{font-size:18px;font-weight:900;color:var(--navy)}
+  .acard .an{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.35;height:30px;overflow:hidden}
+  .acard .at{margin-top:9px;font-size:9px;color:#9aa7b8;text-transform:uppercase;letter-spacing:.06em}
+  .acard .oc{position:absolute;top:11px;right:11px;font-size:8.5px;font-weight:800;color:var(--teal);
+    background:rgba(69,123,157,.10);border-radius:5px;padding:2px 6px;letter-spacing:.03em}
+  .acard.focus{transform:translateY(-3px);box-shadow:0 14px 30px rgba(10,25,47,.16);border-color:var(--teal)}
+
+  /* ---------- profile ---------- */
+  .readbox{background:#fff;border:1px solid var(--border);border-left:3px solid var(--teal);border-radius:12px;padding:18px 20px}
+  .readbox .lbl{font-size:10.5px;font-weight:800;color:var(--teal);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px}
+  .readbox p{font-size:13px;line-height:1.6;color:#34404f}
+  .stat{background:#fff;border:1px solid var(--border);border-radius:10px;padding:13px 16px;text-align:center}
+  .stat b{display:block;font-size:21px;font-weight:900;color:var(--navy)}
+  .stat span{font-size:10.5px;color:var(--muted)}
+  .ocbtn{display:flex;align-items:center;justify-content:space-between;background:linear-gradient(100deg,#0A192F,#16304f);
+    color:#fff;border-radius:12px;padding:18px 22px;text-decoration:none}
+  .ocbtn .t{font-size:16px;font-weight:800}
+  .ocbtn .s{font-size:11.5px;color:#9fb8d4;margin-top:2px}
+  .ocbtn .go{font-size:22px}
+
+  /* ---------- org chart ---------- */
+  .org{display:flex;flex-direction:column;align-items:center;gap:0}
+  .node{background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:9px 16px;text-align:center;min-width:230px}
+  .node .nt{font-size:12.5px;font-weight:800;color:var(--navy)}
+  .node .nn{font-size:10.5px;color:var(--muted);margin-top:1px}
+  .node.lead{border-color:var(--teal);background:rgba(69,123,157,.05)}
+  .node.omas{border-color:var(--navy);border-width:2px;background:var(--navy);color:#fff}
+  .node.omas .nt{color:#fff}.node.omas .nn{color:#b9cbe0}
+  .conn{width:2px;height:14px;background:var(--border)}
+  .sbcrow{display:flex;gap:12px}
+  .sbc{background:#fff;border:1px solid var(--teal);border-radius:9px;padding:8px 12px;text-align:center;min-width:150px}
+  .sbc .st{font-size:11px;font-weight:800;color:var(--teal)}
+  .sbc .sn{font-size:10px;color:var(--muted);margin-top:1px}
+  .hcgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  .hc{background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 9px;text-align:left}
+  .hc .ho{font-size:12px;font-weight:800;color:var(--navy)}
+  .hc .hn{font-size:9.5px;color:var(--muted);margin-top:1px;line-height:1.25}
+  .hc .hs{display:inline-block;margin-top:5px;font-size:8px;font-weight:800;padding:2px 6px;border-radius:4px;letter-spacing:.03em}
+  .hs.act{background:rgba(230,57,70,.10);color:var(--red)}
+  .hs.perm{background:rgba(21,128,61,.10);color:var(--green)}
+  .hs.new{background:rgba(69,123,157,.12);color:var(--teal)}
+  .numstrip{display:flex;gap:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:#fff}
+  .numstrip div{flex:1;text-align:center;padding:10px 6px;border-right:1px solid var(--border)}
+  .numstrip div:last-child{border-right:none}
+  .numstrip b{display:block;font-size:17px;font-weight:900;color:var(--navy)}
+  .numstrip span{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+
+  /* ---------- intro + cta ---------- */
+  .center{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+    background:radial-gradient(900px 600px at 50% 40%,#102a4a 0%,#0A192F 70%);color:#fff;gap:6px}
+  .center .logo{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+  .center .logo .star{width:46px;height:46px;border-radius:12px;background:#FFC857;color:#0A192F;
+    display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900}
+  .center .logo .nm{font-size:21px;font-weight:800;letter-spacing:-.01em}
+  .center .tag{font-size:11px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#FFC857}
+  .center h2{font-size:42px;font-weight:900;letter-spacing:-.02em;line-height:1.08;max-width:780px;margin-top:8px}
+  .center .lede{font-size:16px;color:#b9cbe0;max-width:600px;margin-top:12px;line-height:1.5}
+  .center .price{display:flex;gap:26px;margin-top:26px}
+  .center .price div{text-align:center}
+  .center .price b{display:block;font-size:26px;font-weight:900}
+  .center .price span{font-size:11px;color:#9fb8d4;text-transform:uppercase;letter-spacing:.08em}
+  .center .ctabtn{margin-top:28px;background:#FFC857;color:#0A192F;font-weight:900;font-size:16px;
+    padding:15px 32px;border-radius:11px;text-decoration:none}
+  .center .url{margin-top:14px;font-size:13px;color:#9fb8d4;letter-spacing:.02em}
+
+  /* lower-third caption */
+  .caption{position:absolute;left:50%;bottom:26px;transform:translateX(-50%) translateY(8px);
+    background:rgba(10,25,47,.92);color:#fff;font-size:14px;font-weight:600;padding:11px 22px;border-radius:999px;
+    box-shadow:0 12px 30px rgba(0,0,0,.3);opacity:0;transition:opacity .4s, transform .4s;max-width:80%;text-align:center;
+    backdrop-filter:blur(4px);z-index:40}
+  .caption.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .caption .k{color:#FFC857}
+
+  /* simulated cursor */
+  #cursor{position:absolute;top:0;left:0;width:24px;height:24px;z-index:60;pointer-events:none;
+    transition:transform 1s cubic-bezier(.25,.8,.3,1);filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
+  #cursor svg{display:block}
+  .ripple{position:absolute;z-index:55;width:38px;height:38px;border-radius:50%;border:2px solid var(--teal);
+    transform:translate(-50%,-50%) scale(.2);opacity:0;pointer-events:none}
+  .ripple.go{animation:rip .6s ease-out}
+  @keyframes rip{0%{opacity:.8;transform:translate(-50%,-50%) scale(.2)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.4)}}
+
+  /* ---------- controls (outside stage, not recorded if you frame the stage) ---------- */
+  #bar{margin-top:18px;display:flex;align-items:center;gap:14px;color:#9fb3cc;font-size:13px;
+    font-family:'Inter',sans-serif}
+  #bar button{background:#16243a;color:#cdd9e8;border:1px solid #243650;border-radius:8px;
+    padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+  #bar button:hover{background:#1d2f49;color:#fff}
+  #bar .dotsnav{display:flex;gap:7px;align-items:center}
+  #bar .dotsnav i{width:8px;height:8px;border-radius:50%;background:#33476a;cursor:pointer;display:block}
+  #bar .dotsnav i.on{background:#FFC857;transform:scale(1.25)}
+  #bar .hint{opacity:.6;font-size:12px}
+
+  body.focus #bar{opacity:0;pointer-events:none}
+  body.focus{background:#000}
+
+</style>
+</head>
+<body>
+
+<div id="scaler">
+<div id="stage">
+  <div class="chrome">
+    <div class="dots"><i></i><i></i><i></i></div>
+    <div class="addr">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 2a5 5 0 00-5 5v3H6a2 2 0 00-2 2v7a2 2 0 002 2h12a2 2 0 002-2v-7a2 2 0 00-2-2h-1V7a5 5 0 00-5-5zm3 8H9V7a3 3 0 016 0v3z" fill="#9fb3cc"/></svg>
+      <span>missionmeetstech.com<b id="addrpath">/premium/dashboard</b></span>
+    </div>
+    <div style="font-size:11px;color:#6b82a0;font-weight:700">★ PREMIUM</div>
+  </div>
+
+  <div class="viewport">
+
+    <!-- ============ SCENE 0: INTRO ============ -->
+    <section class="scene" data-scene="intro">
+      <div class="center">
+        <div class="logo rise d1"><div class="star">★</div><div class="nm">Mission Meets Tech</div></div>
+        <div class="tag rise d2">Premium</div>
+        <h2 class="rise d3">The whole federal health IT picture, in one subscription.</h2>
+        <p class="lede rise d4">Agency org charts. Bid/no-bid scoring. Live signal monitoring. A quick tour.</p>
+      </div>
+    </section>
+
+    <!-- ============ SCENE 1: DASHBOARD ============ -->
+    <section class="scene" data-scene="dashboard">
+      <div class="shell">
+        <nav class="side">
+          <div class="brand"><span class="star">★</span> MMT Premium</div>
+          <a class="on" data-nav="dashboard"><span class="dot" style="background:#FFC857"></span> Dashboard</a>
+          <div class="grp">Tools</div>
+          <a data-nav="pursuit"><span class="dot"></span> Pursuit Score</a>
+          <a data-nav="compliance"><span class="dot"></span> Compliance Check</a>
+          <a data-nav="signal"><span class="dot"></span> Signal Chain</a>
+          <div class="grp">Intelligence</div>
+          <a data-nav="agencies"><span class="dot"></span> Agency Profiles</a>
+          <a data-nav="idiq"><span class="dot"></span> IDIQ Tracker</a>
+          <a data-nav="contracts"><span class="dot"></span> Contract Tracker</a>
+          <a data-nav="calendar"><span class="dot"></span> Pursuit Calendar</a>
+          <div class="grp">Briefs</div>
+          <a data-nav="friday"><span class="dot"></span> Friday Brief</a>
+          <a data-nav="ask"><span class="dot"></span> Ask MMT</a>
+        </nav>
+        <div class="main">
+          <div class="rise d1"><div class="h1">Welcome back.</div><div class="sub">Your Premium access is active.</div></div>
+
+          <div class="card rise d2" style="border-left:3px solid var(--teal);margin:18px 0">
+            <h3>Capture Intelligence · This Month</h3>
+            <p style="margin-bottom:11px">Every action window, confidence label, and deep-dive analysis. 24 signals across 10 agencies.</p>
+            <span class="btn">View Full Sheet →</span>
+          </div>
+
+          <div class="eyebrow rise d3" style="margin-bottom:9px">Premium tools · included with your subscription</div>
+          <div class="grid3 rise d4">
+            <div class="card"><h3 style="font-size:14px">Pursuit Score</h3><p>0–100 bid / no-bid card across incumbent vulnerability, budget, and pipeline.</p><div style="margin-top:8px"><span class="pill teal">20 / mo included</span></div></div>
+            <div class="card"><h3 style="font-size:14px">Compliance Check</h3><p>Paste proposal text. Auto-checks CHPL, SCA wage floors, FedRAMP and HIPAA gaps.</p><div style="margin-top:8px"><span class="pill teal">15 / mo included</span></div></div>
+            <div class="card"><h3 style="font-size:14px">Signal Chain</h3><p>Live 5-layer monitor: research, legislative, workforce, budget, contract horizon.</p><div style="margin-top:8px"><span class="pill amber">Add-on</span></div></div>
+          </div>
+
+          <div class="card rise d5" style="margin-top:14px;display:flex;align-items:center;justify-content:space-between">
+            <div><div class="eyebrow">Ask MMT · this month</div><div style="font-size:14px;font-weight:700;margin-top:3px">1 of 2 questions used</div>
+              <div style="width:160px;height:4px;background:var(--border);border-radius:999px;margin-top:8px"><div style="height:100%;width:50%;background:var(--teal);border-radius:999px"></div></div>
+            </div>
+            <span style="font-size:12.5px;font-weight:700;color:var(--teal)">Ask a question →</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SCENE 2: AGENCY PROFILES ============ -->
+    <section class="scene" data-scene="agencies">
+      <div class="pad">
+        <div class="rise d1" style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:5px">
+          <div class="h1">Agency Profiles</div><div class="sub">11 federal health IT buyers · updated monthly</div>
+        </div>
+        <p class="sub rise d1" style="margin-bottom:20px">Who they buy through, what's moving, and the people behind the contracts.</p>
+        <div class="agrid rise d2">
+          <div class="acard" data-ag="dha"><span class="oc">ORG CHART</span><div class="ab">DHA</div><div class="an">Defense Health Agency</div><div class="at">Combat Support · DoD</div></div>
+          <div class="acard" data-ag="va"><span class="oc">ORG CHART</span><div class="ab">VA</div><div class="an">Veterans Health Administration</div><div class="at">Integrated Health System</div></div>
+          <div class="acard" data-ag="hhs"><span class="oc">ORG CHART</span><div class="ab">HHS</div><div class="an">Health &amp; Human Services</div><div class="at">Cabinet Department</div></div>
+          <div class="acard" data-ag="cms"><div class="ab">CMS</div><div class="an">Medicare &amp; Medicaid Services</div><div class="at">Largest US payer</div></div>
+          <div class="acard" data-ag="nih"><div class="ab">NIH</div><div class="an">NIH / NITAAC (CIO-SP)</div><div class="at">Research + Acquisition</div></div>
+          <div class="acard" data-ag="fda"><div class="ab">FDA</div><div class="an">Food &amp; Drug Administration</div><div class="at">Product oversight</div></div>
+          <div class="acard" data-ag="cdc"><div class="ab">CDC</div><div class="an">Disease Control &amp; Prevention</div><div class="at">Public health</div></div>
+          <div class="acard" data-ag="arpah"><div class="ab">ARPA-H</div><div class="an">Adv. Research Projects, Health</div><div class="at">OTA-funded R&amp;D</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SCENE 3: HHS PROFILE ============ -->
+    <section class="scene" data-scene="profile">
+      <div class="pad">
+        <div class="rise d1" style="display:flex;align-items:center;gap:12px;margin-bottom:3px">
+          <div class="h1">Department of Health &amp; Human Services</div>
+          <span class="pill green" style="font-size:9.5px">Updated May 18, 2026</span>
+        </div>
+        <div class="sub rise d1" style="margin-bottom:16px">Cabinet Department · parent of CMS, NIH, FDA, CDC, IHS, ONC, ARPA-H</div>
+
+        <div class="readbox rise d2" data-hi="read">
+          <div class="lbl">The MMT Read</div>
+          <p>HHS is two stories now, not one. The mission-unique side still buys at the operating division: NIH for research IT, CMS for claims, FDA for surveillance, ARPA-H for OTA-funded R&amp;D. The common side (laptops, cloud, cybersecurity, advisory services) now flows through the new OMAS strategic buying centers under EO 14240. Your BD calendar needs both maps.</p>
+        </div>
+
+        <div class="grid3 rise d3" style="margin:14px 0">
+          <div class="stat"><b>$127B</b><span>FY26 discretionary</span></div>
+          <div class="stat"><b>10</b><span>contracting activities</span></div>
+          <div class="stat"><b>$28.2B</b><span>FY25 contract spend</span></div>
+        </div>
+
+        <div class="eyebrow rise d4" style="margin-bottom:8px">What's moving</div>
+        <div class="rise d4" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px">
+          <span class="pill teal">OMAS standup + PACT</span>
+          <span class="pill teal">Common IT centralization (EO 14240)</span>
+          <span class="pill teal">HHS Cost Efficiency Initiative</span>
+          <span class="pill teal">28 → 15 OpDiv consolidation</span>
+        </div>
+
+        <a class="ocbtn rise d5" data-hi="ocbtn">
+          <div><div class="t">View HHS Org Chart →</div><div class="s">Office of the Secretary down to all 10 Heads of Contracting Activity</div></div>
+          <div class="go">→</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- ============ SCENE 4: ORG CHART (HERO) ============ -->
+    <section class="scene" data-scene="orgchart">
+      <div class="pad" style="padding:22px 40px">
+        <div class="rise d1" style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px">
+          <div class="h1" style="font-size:21px">HHS Contracting Org Chart</div>
+          <div class="sub">Source: HHS HCA roster + ASFR · as of May 2026</div>
+        </div>
+
+        <div class="org">
+          <div class="node rise d1"><div class="nt">Office of the Secretary</div></div>
+          <div class="conn rise d1"></div>
+          <div class="node lead rise d2"><div class="nt">ASFR</div><div class="nn">Assistant Secretary for Financial Resources</div></div>
+          <div class="conn rise d2"></div>
+          <div class="node lead rise d3"><div class="nt">Office of Acquisitions (OA)</div><div class="nn">Jennifer Johnson · Senior Procurement Executive</div></div>
+          <div class="conn rise d3"></div>
+          <div class="node omas rise d4" data-hi="omas"><div class="nt">OMAS · Office of Mission Acquisition Solutions</div><div class="nn">Quentin McCoy · Head of Contracting Activity · ~180 staff</div></div>
+          <div class="conn rise d4"></div>
+          <div class="sbcrow rise d5">
+            <div class="sbc"><div class="st">SBC · Mission</div><div class="sn">Trish James</div></div>
+            <div class="sbc"><div class="st">SBC · IT</div><div class="sn">Adam Vance</div></div>
+            <div class="sbc"><div class="st">SBC · Professional Svcs</div><div class="sn">Scott Bredow</div></div>
+          </div>
+        </div>
+
+        <div class="eyebrow rise d6" style="margin:18px 0 8px">10 Heads of Contracting Activity</div>
+        <div class="hcgrid rise d6" data-hi="hcgrid">
+          <div class="hc"><div class="ho">ARPA-H</div><div class="hn">Benjamin Bryant</div><span class="hs act">ACTING</span></div>
+          <div class="hc"><div class="ho">CDC</div><div class="hn">Christine Godfrey</div><span class="hs act">ACTING</span></div>
+          <div class="hc"><div class="ho">CMS</div><div class="hn">Doug Bergevin</div><span class="hs act">ACTING</span></div>
+          <div class="hc"><div class="ho">FDA</div><div class="hn">Leonard Grant</div><span class="hs perm">PERMANENT</span></div>
+          <div class="hc"><div class="ho">HRSA</div><div class="hn">Brian Goodger</div><span class="hs perm">PERMANENT</span></div>
+          <div class="hc"><div class="ho">IHS</div><div class="hn">Chantel Smith</div><span class="hs perm">PERMANENT</span></div>
+          <div class="hc"><div class="ho">NIH</div><div class="hn">Olga Acosta</div><span class="hs perm">PERMANENT</span></div>
+          <div class="hc"><div class="ho">OMAS</div><div class="hn">Quentin McCoy</div><span class="hs new">NEW HCA</span></div>
+          <div class="hc"><div class="ho">ASPR</div><div class="hn">Makoto Braxton</div><span class="hs perm">PERMANENT</span></div>
+          <div class="hc"><div class="ho">OIG</div><div class="hn">John Marshall</div><span class="hs perm">PERMANENT</span></div>
+        </div>
+
+        <div class="numstrip rise d7" style="margin-top:16px">
+          <div><b>$28.2B</b><span>FY25 spend</span></div>
+          <div><b>4,459</b><span>active contracts</span></div>
+          <div><b>56,080</b><span>contract actions</span></div>
+          <div><b>11,024</b><span>certified workforce</span></div>
+          <div><b>28 → 15</b><span>OpDivs (planned)</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SCENE 5: TOOLS MONTAGE ============ -->
+    <section class="scene" data-scene="tools">
+      <div class="pad">
+        <div class="h1 rise d1">It's not just the maps.</div>
+        <p class="sub rise d1" style="margin-bottom:20px">Every Premium subscription includes the working tools too.</p>
+        <div class="grid2 rise d2" style="gap:14px">
+          <div class="card">
+            <div class="eyebrow">Pursuit Score</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
+              <div><div style="font-size:14px;font-weight:700">OASIS+ · IT Services pool</div><div style="font-size:11px;color:var(--muted)">incumbent vulnerability · budget · pipeline</div></div>
+              <div style="text-align:center"><span class="pill" style="background:rgba(69,123,157,.14);color:var(--teal);font-size:12px">LEAN GO</span><div style="font-size:26px;font-weight:900;margin-top:4px">72</div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="eyebrow">Signal Chain · 5 layers</div>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:6px">
+              <div style="display:flex;justify-content:space-between;font-size:11.5px"><span>Research pipeline</span><span class="pill green" style="font-size:9px">2 new</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:11.5px"><span>Legislative</span><span class="pill amber" style="font-size:9px">watch</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:11.5px"><span>Workforce</span><span class="pill teal" style="font-size:9px">stable</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:11.5px"><span>Budget</span><span class="pill green" style="font-size:9px">+3.7%</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:11.5px"><span>Contract horizon</span><span class="pill teal" style="font-size:9px">4 vehicles</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="eyebrow">IDIQ Tracker</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
+              <div style="font-size:13px;font-weight:700">32 vehicles tracked</div>
+              <div style="font-size:11px;color:var(--muted)">ceilings · awardees · burn rate</div>
+            </div>
+            <div style="margin-top:8px;font-size:11px;color:var(--muted)">T4NG2 · OASIS+ · SEWP VI · CIO-SP4 · Alliant 3 …</div>
+          </div>
+          <div class="card">
+            <div class="eyebrow">Every Friday</div>
+            <div style="font-size:14px;font-weight:700;margin-top:10px">The Friday Brief</div>
+            <p style="margin-top:4px">The week's capture moves, in your inbox. Plus the Monthly deep dive and Pursuit Calendar.</p>
+          </div>
+        </div>
+        <p class="sub rise d3" style="margin-top:16px;font-weight:600;color:var(--navy)">DHA and VA have full org charts too. Every flagship buyer, mapped the same way.</p>
+      </div>
+    </section>
+
+    <!-- ============ SCENE 6: CTA ============ -->
+    <section class="scene" data-scene="cta">
+      <div class="center">
+        <div class="logo rise d1"><div class="star">★</div><div class="nm">MMT Premium</div></div>
+        <h2 class="rise d2">Stop guessing who's actually buying.</h2>
+        <p class="lede rise d3">Join 2,200+ readers who get the org charts, the scoring, and the signals before the RFP drops.</p>
+        <div class="price rise d4">
+          <div><b>$199<span style="font-size:13px">/yr</span></b><span>Founding</span></div>
+          <div><b>$249<span style="font-size:13px">/yr</span></b><span>Annual</span></div>
+          <div><b>$29<span style="font-size:13px">/mo</span></b><span>Monthly</span></div>
+        </div>
+        <a class="ctabtn rise d5">Start Premium →</a>
+        <div class="url rise d6">missionmeetstech.com/pricing</div>
+      </div>
+    </section>
+
+    <!-- cursor + caption -->
+    <div class="ripple" id="ripple"></div>
+    <div id="cursor">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 3l15 9-6 1.5L17 20l-3 1-3-6.5L7 18 5 3z" fill="#0A192F" stroke="#fff" stroke-width="1.3" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="caption" id="caption"></div>
+  </div>
+</div>
+</div>
+
+<div id="bar">
+  <button id="restart">↻ Restart</button>
+  <button id="prev">◀ Prev</button>
+  <button id="play">❚❚ Pause</button>
+  <button id="next">Next ▶</button>
+  <div class="dotsnav" id="dotsnav"></div>
+  <button id="focusbtn">⛶ Focus mode</button>
+  <span class="hint">Space = play/pause · ← → = step · F = focus · R = restart</span>
+</div>
+
+<script>
+(function(){
+  var scenes = Array.prototype.slice.call(document.querySelectorAll('.scene'));
+  var sceneByName = {};
+  scenes.forEach(function(s){ sceneByName[s.dataset.scene] = s; });
+  var cursor = document.getElementById('cursor');
+  var ripple = document.getElementById('ripple');
+  var caption = document.getElementById('caption');
+  var addrpath = document.getElementById('addrpath');
+  var viewport = document.querySelector('.viewport');
+
+  // Each beat: scene, addr, caption, target selector (within scene) to point at, click bool, dur ms
+  var beats = [
+    {scene:'intro',    addr:'/premium',                    cap:'',  dur:3200},
+    {scene:'dashboard',addr:'/premium/dashboard',          cap:'Your <span class="k">dashboard</span>: capture intel and every tool, one place.', target:'.card', dur:3600},
+    {scene:'dashboard',addr:'/premium/dashboard',          cap:'Start with <span class="k">Agency Profiles</span>.', target:'[data-nav="agencies"]', hi:'[data-nav="agencies"]', click:true, dur:2600},
+    {scene:'agencies', addr:'/premium/agencies',           cap:'Eleven federal health buyers, mapped.', target:'.agrid', dur:3000},
+    {scene:'agencies', addr:'/premium/agencies',           cap:'Open <span class="k">HHS</span>.', target:'[data-ag="hhs"]', focus:'[data-ag="hhs"]', click:true, dur:2600},
+    {scene:'profile',  addr:'/premium/agencies/hhs',       cap:'The <span class="k">MMT Read</span>: what changed, and who moved.', target:'[data-hi="read"]', dur:4200},
+    {scene:'profile',  addr:'/premium/agencies/hhs',       cap:'Every profile links to a <span class="k">live org chart</span>.', target:'[data-hi="ocbtn"]', hi:'[data-hi="ocbtn"]', click:true, dur:2900},
+    {scene:'orgchart', addr:'/premium/org-charts/hhs',     cap:'Who buys, who reports to whom, right down to <span class="k">OMAS</span>.', target:'[data-hi="omas"]', dur:4400},
+    {scene:'orgchart', addr:'/premium/org-charts/hhs',     cap:'All 10 Heads of Contracting Activity. Who is only <span class="k">Acting</span>, and the FY25 numbers.', target:'[data-hi="hcgrid"]', dur:4600},
+    {scene:'tools',    addr:'/premium/dashboard',          cap:'Plus Pursuit Score, Signal Chain, the IDIQ Tracker, and the Friday Brief.', target:'.grid2', dur:4400},
+    {scene:'cta',      addr:'/premium/pricing',            cap:'', dur:5200}
+  ];
+
+  var i = 0, playing = true, timer = null, t0 = 0, remain = 0;
+
+  // build dots
+  var dotsnav = document.getElementById('dotsnav');
+  beats.forEach(function(_,idx){
+    var d = document.createElement('i');
+    d.addEventListener('click', function(){ go(idx); });
+    dotsnav.appendChild(d);
+  });
+  function paintDots(){ Array.prototype.forEach.call(dotsnav.children, function(d,idx){ d.className = idx===i?'on':''; }); }
+
+  function setCursor(x,y){ cursor.style.transform = 'translate('+x+'px,'+y+'px)'; }
+  function doClick(x,y){
+    ripple.style.left = (x+8)+'px'; ripple.style.top = (y+8)+'px';
+    ripple.classList.remove('go'); void ripple.offsetWidth; ripple.classList.add('go');
+  }
+
+  function clearFocus(){
+    document.querySelectorAll('.acard.focus').forEach(function(e){e.classList.remove('focus');});
+    document.querySelectorAll('.side a.hl').forEach(function(e){e.classList.remove('hl');});
+  }
+
+  function render(b){
+    // scene swap
+    scenes.forEach(function(s){ s.classList.toggle('active', s.dataset.scene===b.scene); });
+    addrpath.textContent = b.addr;
+    clearFocus();
+    // caption
+    if(b.cap){ caption.innerHTML = b.cap; caption.classList.add('show'); }
+    else caption.classList.remove('show');
+
+    // cursor + interactions, after entrance settle
+    var sc = sceneByName[b.scene];
+    if(b.hi){ var hel = sc.querySelector(b.hi); if(hel) hel.classList.add('hl'); }
+    if(b.focus){ var fel = sc.querySelector(b.focus); if(fel) fel.classList.add('focus'); }
+
+    if(b.target){
+      // wait a touch so layout/entrance is in place, then move cursor to element center
+      setTimeout(function(){
+        var el = sc.querySelector(b.target);
+        if(!el){ return; }
+        var vp = viewport.getBoundingClientRect();
+        var r = el.getBoundingClientRect();
+        var x = r.left - vp.left + Math.min(r.width/2, 120);
+        var y = r.top - vp.top + Math.min(r.height/2, 40);
+        setCursor(x, y);
+        if(b.click){ setTimeout(function(){ doClick(x,y); }, 1050); }
+      }, 350);
+    } else {
+      setCursor(640, 380);
+    }
+    paintDots();
+  }
+
+  function schedule(ms){
+    clearTimeout(timer);
+    t0 = Date.now(); remain = ms;
+    timer = setTimeout(function(){ next(); }, ms);
+  }
+  function go(n){
+    i = (n + beats.length) % beats.length;
+    render(beats[i]);
+    if(playing) schedule(beats[i].dur);
+  }
+  function next(){ go(i+1); }
+  function prev(){ go(i-1); }
+
+  function setPlay(p){
+    playing = p;
+    document.getElementById('play').textContent = p ? '❚❚ Pause' : '► Play';
+    if(p){ schedule(remain>0?remain:beats[i].dur); }
+    else { clearTimeout(timer); remain = remain - (Date.now()-t0); }
+  }
+
+  document.getElementById('play').addEventListener('click', function(){ setPlay(!playing); });
+  document.getElementById('next').addEventListener('click', function(){ go(i+1); });
+  document.getElementById('prev').addEventListener('click', function(){ go(i-1); });
+  document.getElementById('restart').addEventListener('click', function(){ go(0); if(!playing) setPlay(true); });
+  document.getElementById('focusbtn').addEventListener('click', function(){ document.body.classList.toggle('focus'); });
+
+  document.addEventListener('keydown', function(e){
+    if(e.code==='Space'){ e.preventDefault(); setPlay(!playing); }
+    else if(e.code==='ArrowRight'){ go(i+1); }
+    else if(e.code==='ArrowLeft'){ go(i-1); }
+    else if(e.key==='f'||e.key==='F'){ document.body.classList.toggle('focus'); }
+    else if(e.key==='r'||e.key==='R'){ go(0); if(!playing) setPlay(true); }
+  });
+
+  // responsive fit — scale stage and collapse the scaler's layout box to the
+  // scaled height so the control bar sits right beneath it and nothing clips.
+  function fit(){
+    var scaler = document.getElementById('scaler');
+    var barH = document.getElementById('bar').offsetHeight || 60;
+    var pad = barH + 60; // room for control bar + breathing space
+    var sx = Math.min(1, (window.innerWidth-40)/1280);
+    var sy = Math.min(1, (window.innerHeight-pad)/720);
+    var s = Math.min(sx, sy);
+    scaler.style.transform = 'scale('+s+')';
+    scaler.style.height = (720*s) + 'px';
+  }
+  window.addEventListener('resize', fit); fit();
+
+  go(0);
+})();
+</script>
+</body>
+</html>
