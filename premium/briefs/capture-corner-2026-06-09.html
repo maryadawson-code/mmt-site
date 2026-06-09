@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capture Corner: The Data-Quality Buy &middot; MMT Premium</title>
+  <meta name="description" content="June 9, 2026. Companion to 'The Honesty Premium.' Where the data-quality and AI-governance money sits across the Department of War, the services, and DHA; which FY2027 provisions (Sec. 1501, 1512, 1513) create it; which platforms and incumbents own the surface; how cost realism will price an AI-efficient bid; and the windows that decide whether any of it is real.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <style>
+    :root { --mmt-teal:#457B9D; --mmt-navy:#0A192F; --mmt-soft:#F3F4F6; --mmt-white:#FFFFFF; --mmt-text:#102033; --mmt-text-secondary:#5C6B7A; --mmt-border:#D8E0E8; --ci-gold:#92710A; --ci-gold-bg:#FEF9E7; --mmt-red:#E63946; }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--mmt-white); color:var(--mmt-navy); }
+    .brief-body { font-size:15px; line-height:1.75; color:#314155; }
+    .brief-body h2 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:40px 0 14px; letter-spacing:-0.02em; }
+    .brief-body h3 { font-size:17px; font-weight:700; color:var(--mmt-navy); margin:28px 0 10px; }
+    .brief-body h4 { font-size:15px; font-weight:700; color:var(--mmt-navy); margin:20px 0 8px; }
+    .brief-body p { margin-bottom:16px; max-width:65ch; }
+    .brief-body ul { margin-bottom:16px; padding-left:1.25rem; }
+    .brief-body ol { margin-bottom:16px; padding-left:1.5rem; }
+    .brief-body li { margin-bottom:8px; }
+    .brief-body a { color:var(--mmt-teal); text-decoration:underline; text-underline-offset:3px; }
+    .brief-body strong { color:var(--mmt-navy); }
+    .brief-body em { color:var(--mmt-text-secondary); }
+    .brief-body hr { border:none; border-top:1px solid var(--mmt-border); margin:36px 0; }
+    .brief-body blockquote { border-left:3px solid var(--mmt-teal); padding:8px 16px; margin:16px 0; color:var(--mmt-text-secondary); background:rgba(69,123,157,0.04); border-radius:0 6px 6px 0; }
+    .brief-body img { max-width:100%; height:auto; display:block; margin:24px 0; border:1px solid var(--mmt-border); border-radius:8px; }
+    .brief-body table { width:100%; border-collapse:collapse; margin:16px 0 24px; font-size:14px; }
+    .brief-body th, .brief-body td { border:1px solid var(--mmt-border); padding:10px 12px; text-align:left; vertical-align:top; }
+    .brief-body th { background:var(--mmt-soft); color:var(--mmt-navy); font-weight:700; }
+    .pills { margin:8px 0 24px; }
+    .pill { display:inline-block; padding:4px 10px; background:rgba(69,123,157,0.08); color:var(--mmt-teal); border-radius:14px; font-size:11px; font-weight:600; margin:2px 4px 2px 0; }
+    .pill-red { background:rgba(230,57,70,0.08); color:var(--mmt-red); }
+    .pill-gold { background:var(--ci-gold-bg); color:var(--ci-gold); }
+    .back-link { font-size:13px; font-weight:600; color:var(--mmt-teal); text-decoration:none; }
+    .back-link:hover { opacity:0.7; }
+    .gate-notice { background:linear-gradient(180deg,#FFFFFF 0%,#F3F4F6 100%); border:1px solid var(--mmt-border); border-radius:12px; padding:32px 28px; text-align:center; margin:32px auto; max-width:540px; }
+    .gate-notice h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin-bottom:10px; }
+    .gate-notice p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:16px; line-height:1.55; }
+    .gate-cta { display:inline-block; padding:12px 24px; background:var(--mmt-navy); color:var(--mmt-white); font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; }
+    .section-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--ci-gold); }
+    .deep-dive-card { margin:48px 0 16px; padding:32px 28px; border:2px solid var(--ci-gold); border-radius:12px; background:linear-gradient(180deg,#FFFFFF 0%,var(--ci-gold-bg) 100%); }
+    .deep-dive-card h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:0 0 12px; letter-spacing:-0.01em; }
+    .deep-dive-card p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:14px; line-height:1.6; max-width:none; }
+    .deep-dive-price { display:inline-flex; align-items:baseline; gap:8px; margin:4px 0 16px; font-weight:800; color:var(--mmt-navy); }
+    .deep-dive-price .amount { font-size:28px; }
+    .deep-dive-price .unit { font-size:13px; font-weight:600; color:var(--mmt-text-secondary); text-transform:uppercase; letter-spacing:0.06em; }
+    .brief-body a.deep-dive-cta,
+    a.deep-dive-cta { display:inline-block; padding:14px 26px; background:var(--ci-gold); color:#FFFFFF; font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; letter-spacing:0.02em; }
+    .brief-body a.deep-dive-cta:hover,
+    a.deep-dive-cta:hover { opacity:0.92; color:#FFFFFF; }
+    .deep-dive-examples { font-size:13px; color:var(--mmt-text-secondary); font-style:italic; margin-top:8px; }
+  </style>
+</head>
+<body>
+  <nav class="nav-editorial"></nav>
+
+  <main class="wrap" style="padding:48px 0 80px; max-width:820px;">
+    <a href="/capture-corner.html" class="back-link">&larr; Capture Corner</a>
+
+    <div style="margin-top:20px; margin-bottom:8px;">
+      <div class="section-label">MMT Premium &middot; Capture Corner &middot; June 9, 2026</div>
+    </div>
+    <h1 style="font-size:clamp(26px,3.2vw,38px);line-height:1.1;letter-spacing:-0.03em;margin-bottom:10px;">The Data-Quality Buy Hiding Inside the AI Acceleration. Where the Money Is, Which Provisions Fund It, and How Cost Realism Prices the Honest Bid.</h1>
+    <p style="font-size:15px;color:var(--mmt-text-secondary);margin-bottom:20px;"><em>Companion to “The Honesty Premium.” The public issue makes the analytical case. This is the procurement picture: the FY2027 provisions, the platforms and incumbents, the cost-realism trap, the speed-versus-governance bifurcation, the DHA instance, and the trigger points between now and the June 11 appropriations mark.</em></p>
+
+    <div class="pills">
+      <span class="pill pill-gold">Capture Corner</span>
+      <span class="pill">Data Quality</span>
+      <span class="pill">FY2027 NDAA</span>
+      <span class="pill">Vantage</span>
+      <span class="pill">Advana</span>
+      <span class="pill">Cost Realism</span>
+      <span class="pill">DHA</span>
+      <span class="pill pill-red">June 11 Markup</span>
+    </div>
+
+    <div data-gate="free" style="display:block;">
+      <div class="gate-notice">
+        <h3>&#9733; Premium Capture Corner</h3>
+        <p>The full BD read: the legislative sequence (authorized June 4, funded maybe June 11), the platforms of record and their incumbents, the six buy signals where the data-quality money sits, the cost-realism trap and how to price the honest bid, the DHA instance with its named procurement signal, and the trigger points between now and the appropriations mark. Free members see the framing; premium gets the full board.</p>
+        <a class="gate-cta" href="/pricing">See premium plans</a>
+      </div>
+    </div>
+
+    <div data-access="premium" data-gate="premium" class="brief-body">
+
+<p><em>Capture Corner is the premium BD intelligence companion to Mission Meets Tech. Public-record sourced. Independent analysis. Not a recommendation, not vendor advocacy, not capture material. Built for federal defense and health BD, capture, and proposal leaders who need analytical depth, not headlines.</em></p>
+<p><em>This issue translates the public thesis into the procurement picture: where the data-quality and AI-governance money sits across the Department of War, the services, and the Defense Health Agency, which FY2027 provisions create it, which platforms and incumbents own the surface, how the cost-realism machinery will price an AI-efficient bid, and the windows that decide whether any of it is real.</em></p>
+<hr>
+<p><strong>Editor&#39;s note on reporting limits.</strong> This issue ships with the public reporting record as it stands on Monday, June 8, 2026. Three items are flagged rather than asserted. First, the House Appropriations Defense Subcommittee FY2027 markup was scheduled for June 11 and, as of this writing, has not occurred; everything tied to it is forward-looking. Second, several dollar figures below originate in secondary or aggregated reporting rather than a parsed budget exhibit, and are labeled accordingly: the Vantage/Palantir ceiling, the FY2027 mandatory-funding lines, and the consumption-based procurement provision. Third, leadership and org-chart facts in defense AI are moving monthly through 2026; treat every named-position claim as current-as-of-date and reconfirm at the point of any capture decision. The NDAA section numbers, the committee vote, the Department of War AI Strategy language, the GSA OneGov terms, and the OMB M-25-21 deadline are confirmed against primary sources.</p>
+<hr>
+<p>The public issue made the analytical case: the most investable signal in federal AI right now is not a model or a platform, it is which organizations will admit how dirty their data is, because data quality caps everything built on top of it. This Capture Corner names where that translates into work, which provisions fund it, which vendors hold the ground, and what to watch between now and the appropriations mark.</p>
+<p>Three things have to be clear before any positioning move.</p>
+<p>First, the buy is not &quot;AI.&quot; The AI procurement layer is already commoditized. Through GSA OneGov, frontier models reached agencies at a nominal $1 per agency for Claude and ChatGPT Enterprise and roughly $0.47 for Gemini, and GSA&#39;s USAi sandbox lets agencies test models before buying. When the model costs a dollar, the model is not the contract. The contract is everything around the model that makes it safe and accurate: data remediation, provenance, evaluation, monitoring, and the reporting workflows that decide whether the data going in is true.</p>
+<p>Second, the demand signal is bifurcated by who you are selling to, and the two halves want opposite pitches. The Department of War is exempt from the civilian AI memo and runs a speed-first regime. The civilian agencies run an enforceable governance regime with a deadline that has already passed. Pitch the same capability two different ways depending on which side of that line the customer sits.</p>
+<p>Third, the authorization tells you what the Pentagon intends to buy. The appropriation tells you whether it can. Those are two different bills on two different tracks, and the gap between them is where FY2027 capture is won or lost.</p>
+<p>Here is the playbook.</p>
+<hr>
+<h2>1. The legislative sequence: authorized June 4, funded (maybe) June 11</h2>
+<p><strong>Authorization.</strong> The House Armed Services Committee advanced the FY2027 National Defense Authorization Act (H.R. 8800) on June 4, 2026, by a 44-12 vote (the final gavel fell at midnight into June 5). The bill&#39;s Cyber, Innovative Technologies, and Information Systems title is the AI-governance core, and three sections matter for this buy.</p>
+<table>
+<thead>
+<tr>
+<th>Provision</th>
+<th>What it directs</th>
+<th>Capture read</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Sec. 1512</strong></td>
+<td>CDAO to establish an AI Model Rapid Deployment Framework with the objective of deploying models on DoD platforms within 30 days of public availability</td>
+<td>The onboarding, ATO, and evaluation pipeline for a 30-day cadence is a recurring services line, not a one-time build</td>
+</tr>
+<tr>
+<td><strong>Sec. 1501</strong></td>
+<td>DoD AI Incident and Vulnerability Reporting Program, with protected disclosure for members, civilians, contractors, and subcontractors at any tier</td>
+<td>Congress just specified the compliance scaffolding. Incident tracking, triage, and remediation tooling is now directed work</td>
+</tr>
+<tr>
+<td><strong>Sec. 1513</strong></td>
+<td>Update of policy on autonomous and AI-enabled systems, including revision of DoD Directive 3000.09</td>
+<td>DoDD 3000.09 already requires a system to go back through test and evaluation when its machine learning changes (2023 update). Recurring T&amp;E and human-oversight work is directed and partly in force, not prospective</td>
+</tr>
+</tbody></table>
+<p>Note the disambiguation: these are FY2027 sections. The FY2026 NDAA carried its own, different Sec. 1512 and Sec. 1513; do not brief the two interchangeably.</p>
+<p>The pairing is the whole point. Sec. 1512 says deploy faster. Sec. 1501 says report what breaks. That is the legislative version of the data-quality argument, and it tells capture teams the government is buying both speed and the accountability loop around it.</p>
+<p><strong>Appropriation.</strong> Authorization sets policy and ceilings. It moves no money. The House Appropriations Defense Subcommittee was scheduled to mark up the FY2027 defense bill on June 11, with full committee to follow. Until an appropriations act funds them, the sections above are intent, not obligation authority. Watch the markup summary text the moment it releases: that is what converts the AI-governance provisions from roadmap to green light.</p>
+<p><strong>The reconciliation lane (flagged).</strong> Per the uploaded scorecard&#39;s sourcing, a meaningful slice of defense modernization now flows through mandatory funding outside the regular appropriations process, with figures in the low hundreds of billions cited for the FY2027 mandatory layer and a prior reconciliation tranche under P.L. 119-21. These figures trace to budget-overview documents and aggregated reporting, not a line-item exhibit, and should be confirmed against the J-Book before they anchor any brief. If they hold, opportunity tracking that watches only the discretionary bills misses a structural share of the money.</p>
+<hr>
+<h2>2. The platforms and the incumbents</h2>
+<p>The data-and-AI-governance surface concentrates in a small number of platforms of record. Position relative to these, not against them.</p>
+<p><strong>Army: Vantage (Palantir).</strong> Vantage is the Army&#39;s platform of record, integrated with the Army Data Catalog and Data Marketplace, and the September 2025 CIO memo ordered business and readiness data onto it with a migration target of March 31, 2026. The scorecard cites a Palantir award in the range of $619 million running toward 2029 (flagged; confirm the exact vehicle and ceiling). Whether the migration actually completed on schedule is unconfirmed in the public record, which is itself the opening: a deadline to reach a platform is not a deadline to trust what is on it. The &quot;Dirty Data&quot; finding is the on-the-record proof that the post-migration work, remediation and provenance, is where the unmet requirement lives.</p>
+<p><strong>OSD enterprise: Advana, restructuring into the War Data Platform.</strong> A January 2026 directive restructured Advana into three programs: the core War Data Platform, an Advana for Financial Management line aimed at a clean Defense audit, and an application-services line. The financial-management carve-out tied to the audit is a discrete, fundable program with its own integration needs and a hard external driver (the audit), which makes it one of the more durable lines in the portfolio.</p>
+<p><strong>The model layer: commoditized.</strong> OneGov put frontier models on the shelf at nominal cost, and USAi is the test-before-buy sandbox. Reporting on USAi is explicit that it adds no governance beyond what is built into the models themselves; providers still need full authorization, and the substantive risk work lands on the customer. Read that as the boundary line between what is now free and what is still billable. The governance is billable.</p>
+<p><strong>Leadership signal.</strong> The Pentagon&#39;s AI office turned over its top two roles this winter: a CDAO from AWS in January and a chief data officer from Databricks in March. The hiring pattern points at commercial data-platform fluency as the house preference. The office also moved under the research and engineering shop last summer, a structural change read by some as a downgrade and by others as an innovation engine. Either reading argues for stability risk in enterprise-level decisions through 2026.</p>
+<hr>
+<h2>3. Where the money actually is</h2>
+<p>The buy signals follow directly from the public thesis. Sell the fix, not the model.</p>
+<ol>
+<li><p><strong>Data-quality remediation and provenance.</strong> The &quot;Dirty Data&quot; thesis is a buy signal in plain language. The work is moving records that are 82% unusable to usable: anomaly detection, validation rules, lineage and provenance tooling, and the reconciliation of data against physical ground truth. This is the least glamorous and most fundable line in the portfolio, because every AI ambition above it depends on it.</p>
+</li>
+<li><p><strong>Incentive-aligned reporting redesign.</strong> The captains&#39; counter-model was a platform where accurate reporting got easier and carried a reward. That is workflow and human-factors work, not platform work. Anyone who can redesign data entry so accuracy is the path of least resistance is selling the actual fix, and almost no one is pitching it that way.</p>
+</li>
+<li><p><strong>The 30-day deployment pipeline (Sec. 1512).</strong> Continuous authorization, automated test and evaluation, model monitoring, and the integration cadence with vendors. A 30-day model-refresh requirement is a standing services demand, not a one-time stand-up.</p>
+</li>
+<li><p><strong>Incident and vulnerability infrastructure (Sec. 1501).</strong> Reporting intake, triage, analysis, and remediation, plus the protected-disclosure handling the section specifies. Congress just described the compliance scaffolding; build to it.</p>
+</li>
+<li><p><strong>The bifurcation pitch.</strong> To the Department of War, lead with speed, barrier removal, and 30-day deployment, and align to the responsible-AI apparatus that already exists (the five principles, the strategy, the evaluation toolkit). To civilian agencies, lead with explainability, monitoring, and alignment to the GAO AI accountability framework, because they are past their April 3, 2026 high-impact deadline and accountable for it. Same capability, two pitches.</p>
+</li>
+<li><p><strong>The audit-driven financial line.</strong> The Advana financial-management carve-out is anchored to the Defense audit, which is the most durable demand driver in the building because it is externally mandated and recurring.</p>
+</li>
+</ol>
+<hr>
+<h2>4. The cost-realism trap: pricing the honest bid</h2>
+<p>This is the second half of the public thesis, translated for the proposal shop. The same incentive structure that lets dirty data survive on a trusted platform penalizes the vendor who prices in real AI productivity.</p>
+<p><strong>The mechanism.</strong> Cost realism scores a bid against an independent government cost estimate. The IGCE is built bottom-up: labor categories, hours, burdened rates, overhead, fee. It assumes the work is performed by people billing by the hour. A bid that prices in AI-augmented delivery comes in low against that baseline, and a low price reads as a low understanding of scope. The offeror who actually cut the labor gets scored as the offeror who misread the requirement.</p>
+<p><strong>Why it bites now.</strong> The small-business and innovation push tells agile, AI-first firms to lean in. The evaluation machinery still rewards the firm that staffs bodies and bills the historical baseline. A small firm that passes the savings through is the most exposed, because it has the least margin to absorb a competitive-range exclusion built on a &quot;price too low&quot; finding.</p>
+<p><strong>Positioning moves, where the offeror has control:</strong></p>
+<ol>
+<li><strong>Make the productivity assumption explicit.</strong> Do not bury the AI efficiency in a low number. Lay the labor model out: here is the task, here is how AI changes the hours, here is the residual human effort. Give the evaluator a model for the honest version, because the default IGCE does not carry one.</li>
+<li><strong>Run cost and technical as one argument.</strong> A price is only realistic if the technical approach explains it. Tie every reduced labor line to a specific AI-enabled method and a basis of estimate the evaluator can check.</li>
+<li><strong>Pre-build the evaluation-notice answer.</strong> Expect an EN questioning a low level of effort. Draft the response that defends the productivity gain instead of padding hours to clear the check. Padding wins the competitive range and loses the thesis.</li>
+<li><strong>Know whether realism even applies, then read how.</strong> Cost-realism analysis is mandatory on cost-reimbursement work (FAR 15.404-1(d)) and reaches a fixed-price competition only when the solicitation invokes price realism. The contract type tells you whether the trap is in play at all. Where it is, if the solicitation&#39;s standard presumes a labor-hour model with no path for technology-driven efficiency, that is a structural disadvantage for an AI-first bid. Raise it in the Q&amp;A window. The answer tells you whether the buyer is open to the productivity case or scoring to the old baseline.</li>
+</ol>
+<p><strong>The reform read.</strong> The government-side fix is to update what realism gets measured against, and to treat AI-augmented delivery as a legitimate technical approach to be tested rather than an anomaly to be marked down. Until that lands in the evaluation language, the burden sits with the offeror to make the honest price legible. Teams that build that legibility into the bid now are positioning for the regime the reform is trying to create, ahead of the evaluators catching up.</p>
+<p><strong>Caveat for the capture lead.</strong> Not every &quot;too low&quot; finding is a good-faith modeling gap. Some solicitations are written to a predetermined answer, and an honest low price can be the pretext for an exclusion the evaluator wanted anyway. Read the competitive landscape before assuming the productivity case gets a fair hearing. The agility the reform rewards on paper can be the same trait a wired procurement is built to screen out.</p>
+<hr>
+<h2>5. People and offices (public record)</h2>
+<p>Contracting officials and senior leaders are public. Technical evaluation composition is not. Engage only within procurement-integrity rules; outside any active solicitation window, public industry days and events are the standard professional channel.</p>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Person / status</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>DoW CDAO</td>
+<td>Cameron Stanley (since Jan 2026, from AWS)</td>
+<td>Speed-first posture; &quot;delivery over enablement&quot;</td>
+</tr>
+<tr>
+<td>DoW Chief Data Officer</td>
+<td>Gavin Kliger (since Mar 2026, from Databricks)</td>
+<td>Commercial data-platform fluency is the house preference signal</td>
+</tr>
+<tr>
+<td>Army Deputy CIO / CDAO</td>
+<td>Dr. David Markowitz</td>
+<td>Continuity through at least Feb 2026; reconfirm current status</td>
+</tr>
+<tr>
+<td>Army CIO</td>
+<td>In transition</td>
+<td>The scorecard reports the prior CIO departed for industry around May 2026; the successor&#39;s direction determines whether the Vantage data-quality problem gets resourced or inherited (flagged; confirm)</td>
+</tr>
+</tbody></table>
+<p><strong>Practitioner reading.</strong> The Army CIO succession is the single highest-value people-signal in this portfolio. The migration mandate, the data-quality gap, and the resourcing decision all run through that office. Whoever fills it sets the Army&#39;s posture on whether remediation gets funded as its own line or left to the program offices that already could not keep the dozers clean.</p>
+<hr>
+<h2>6. Trigger points and action windows</h2>
+<ul>
+<li><strong>Post-June 11.</strong> Release of the House defense appropriations markup summary. This converts Sec. 1501 / 1512 / 1513 from authorized intent to funded work, or signals which ones slipped. Highest-priority near-term signal.</li>
+<li><strong>Army CIO succession.</strong> The direction the new CIO sets on data quality and remediation resourcing. Watch for any new memo on data-quality standards or any reorganization of the stewardship structure.</li>
+<li><strong>Vantage migration confirmation.</strong> Any public confirmation of whether the March 31, 2026 migration completed, and any post-migration data-quality reporting. A second &quot;Dirty Data&quot;-class publication from any service is a market-moving event.</li>
+<li><strong>High-impact-AI enforcement.</strong> With the April 3, 2026 civilian deadline passed and some agencies reported to have missed it, the first OMB or inspector-general findings on non-compliance will set the enforcement tone for the civilian half of the buy.</li>
+<li><strong>NDAA floor and conference.</strong> Sec. 1501 / 1512 / 1513 must survive full-House passage and Senate conference before they are durable. The committee text is a roadmap, not a guarantee.</li>
+<li><strong>The Advana financial-management split.</strong> Track the War Data Platform carve-out as a discrete, audit-driven program with its own solicitation path.</li>
+</ul>
+<hr>
+<h2>7. The MHS instance: the same buy, inside the health enterprise</h2>
+<p>For federal-health BD readers, the most relevant translation of this thesis is that the Defense Health Agency is running the Army&#39;s exact playbook, on a clock, and naming data quality as a pillar.</p>
+<p>DHA released its FY2026-FY2030 Data Strategy this spring, built on five lines of effort that map almost one-to-one onto the Army&#39;s model: strengthen data roles and responsibilities, maximize authoritative data sources, operationalize data as a product (owner, lifecycle, quality measures), build trust through data quality and transparency, and maintain an enterprise data catalog. CDAO Jesus Caban has called data maturity his top priority and is standing up a master data catalog and the MHS Common Data Model for key enterprise metrics. DHA leaders frame the payoff as medical-readiness decision advantage: a real-time view of blood inventories, bed availability, and Joint Trauma System expertise. DHA teams have already prototyped AI on readiness data to model who in the force is medically able to deploy.</p>
+<p><strong>Named procurement signal.</strong> DHA solicitation HT001125RE019 (issued September 5, 2025; responses due September 19; small-business set-aside, NAICS 541512) sought to unify the agency&#39;s fragmented data landscape under the DoD VAULTIS principles, explicitly to enable AI/ML readiness. A protest was filed and dismissed in March 2026, which reads as a live signal the vehicle is moving again. Confirm the current status and follow-on path on SAM.gov before it anchors a pursuit.</p>
+<p><strong>Buy signals here are identical to the Army&#39;s, with a health overlay.</strong> Data-quality remediation and provenance on readiness and clinical-adjacent data. Metadata, cataloging, and common-data-model alignment. The data-as-product lifecycle tooling Caban described. And responsible-AI evaluation and monitoring for the readiness and decision-support models DHA is already building, where the test-and-evaluation burden is higher because the output informs care and deployability. The pitch that scores is the one that treats data quality as the precondition for trustworthy clinical and readiness AI, not as a separate line item.</p>
+<p><strong>Scope note.</strong> This is the data-governance and AI-enablement layer: catalog, quality, stewardship, and model evaluation, the work that makes clinical and readiness AI trustworthy.</p>
+<h2>8. What the record does not yet show</h2>
+<ul>
+<li><strong>Source asymmetry is the central caveat.</strong> The Army publishes far more self-critical analysis of its own data than the other services do. The comparative read in the public piece reflects transparency as much as performance; the quieter services are not demonstrably cleaner, only quieter. Do not brief any service as &quot;clean&quot; on the strength of silence.</li>
+<li><strong>The migration result is unconfirmed.</strong> The mandate to reach Vantage by March 31, 2026 is verified. Completion is not. Build positioning around the post-migration remediation need, which holds either way.</li>
+<li><strong>Several figures are secondary-sourced.</strong> The Vantage/Palantir ceiling, the mandatory-funding lines, and the consumption-based procurement provision are flagged above; confirm against primary exhibits before they anchor a capture decision.</li>
+<li><strong>The appropriations markup had not occurred as of June 8.</strong> Everything tied to June 11 is forward-looking until the summary text releases.</li>
+<li><strong>The cost-realism section is analysis, not a case file.</strong> The pricing guidance reflects how cost-realism evaluation generally treats technology-driven efficiency, drawn from observed practice. It does not describe any specific solicitation, award, or offeror, and should not be read against one.</li>
+<li><strong>Scope.</strong> This issue covers Army, Department of War, and Defense Health Agency data-and-AI-governance: catalogs, stewardship, data quality, and model evaluation.</li>
+</ul>
+
+
+<div class="deep-dive-card">
+  <div class="section-label" style="color:var(--ci-gold);margin-bottom:8px;">Custom Deep Dive &middot; Premium Add-On</div>
+  <h3>Want a custom deep-dive on any line in this brief?</h3>
+  <p>This Capture Corner maps the legislative sequence, the platforms of record, the six buy signals, the cost-realism trap, the DHA instance, and the trigger points. Where it stops short &mdash; your own cost-realism narrative for an AI-efficient bid, the data-quality remediation scope for a specific service or program, the bifurcation pitch tailored to a Department of War versus civilian buyer, the SDVOSB or enablement teaming structure, or a USASpending pull on prior Vantage or Advana awards &mdash; the next layer of intelligence is <strong>custom by request</strong>.</p>
+  <div class="deep-dive-price"><span class="amount">$50</span><span class="unit">one-time &middot; 5&ndash;7 business day turnaround</span></div>
+  <p>I will pull the additional public-record sources, read the visible signal, and write a 4&ndash;6 page custom intelligence memo on the area you select. You name the question; I do the BD-grade analysis.</p>
+  <p style="margin-bottom:18px;"><a class="deep-dive-cta" href="https://buy.stripe.com/6oUdRb2NEaQI3uM6KL4c803">Buy a Custom Deep Dive &mdash; $50 &rarr;</a></p>
+  <p class="deep-dive-examples">Examples: <em>"Honesty Premium Deep Dive &mdash; my cost-realism narrative for an AI-efficient bid" &middot; "Deep Dive &mdash; data-quality remediation scope for [program]" &middot; "Deep Dive &mdash; the bifurcation pitch for [DoW or civilian buyer]" &middot; "Deep Dive &mdash; USASpending pull on prior Vantage and Advana awards"</em></p>
+</div>
+
+    </div>
+  </main>
+
+  <footer class="footer"></footer>
+</body>
+</html>
