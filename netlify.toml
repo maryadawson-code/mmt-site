@@ -29,6 +29,7 @@
     "data/may-29-release/**",
     "data/jun-2-release/**",
     "data/jun-5-release/**",
+    "data/jun-9-release/**",
     "content/friday-brief/**",
     "migrations/010_subscriber_context_alignment.sql",
     "migrations/011_mp_users_columns_documented.sql",
@@ -376,6 +377,16 @@
 # JUN2_VA_ENTERPRISE_AI_DISABLED=true.
 # Retire by 2026-06-16 (delete function + data/jun-2-release/** entry).
 [functions."jun2-va-enterprise-ai-capture-send"]
+  schedule = "0 13 * * *"
+
+# CAPTURE CORNER (June 9, 2026) → active premium subscribers. Teaser email
+# linking to the gated page, companion to the public issue "The Honesty
+# Premium." Date guard (on/after 2026-06-09 UTC) + ops_events idempotency
+# (jun9_honesty_premium_capture_sent). Schedule fires at 13:00 UTC (09:00 ET)
+# so it ships with the 9 AM issue; also HTTP-invocable for an immediate run.
+# Kill switch: JUN9_HONESTY_PREMIUM_DISABLED=true.
+# Retire by 2026-06-23 (delete function + data/jun-9-release/** entry).
+[functions."jun9-honesty-premium-capture-send"]
   schedule = "0 13 * * *"
 
 # THE FRIDAY BRIEF (June 5, 2026) → active premium subscribers.
