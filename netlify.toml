@@ -149,6 +149,17 @@
 [functions."protest-monitor"]
   schedule = "0 12 * * *"
 
+# MMT Loop System v1 (see docs/MMT-Loop-System.md).
+# L1 Opportunity Discovery — daily 12:00 UTC (08:00 ET). Once/day to stay
+# inside the shared SAM.gov daily quota.
+[functions."loop-opportunity-discovery"]
+  schedule = "0 12 * * *"
+
+# L3 Contract Tracker Freshness — hourly. No LLM, no SAM calls; writes the
+# loop_status snapshot that /status.json serves.
+[functions."loop-contract-freshness"]
+  schedule = "0 * * * *"
+
 [functions."score-cleanup"]
   schedule = "*/30 * * * *"
 
@@ -447,6 +458,12 @@
 
 [context.staging]
   command = "node build.js"
+
+# Public data-freshness endpoint (MMT Loop System L3)
+[[redirects]]
+  from = "/status.json"
+  to = "/.netlify/functions/status"
+  status = 200
 
 # Premium dashboard sub-page rewrites (clean URLs)
 [[redirects]]
