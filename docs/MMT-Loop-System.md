@@ -135,10 +135,17 @@ curl -X POST "$SITE/.netlify/functions/loop-runner?key=$LOOP_RUNNER_SECRET" \
 - `SUPABASE_URL`, `SUPABASE_SERVICE_KEY` — already set.
 - `SAM_GOV_API_KEY` — already set (L1 fetch; daily-quota shared).
 - `LOOP_RUNNER_SECRET` — **new**, gates the on-demand `loop-runner` endpoint.
+- `LOOPS_ENABLED` — **new**, must be `true` for the scheduled crons to run.
+  Off by default so the crons no-op (no failure alerts) until the gated
+  migration is applied. The manual `loop-runner` endpoint ignores this flag,
+  so you can test a loop before flipping it on.
 
 ## Deploy checklist
 
 1. Apply `migrations/20260610000000_loop_infra.sql` to production (gated).
 2. Set `LOOP_RUNNER_SECRET` in Netlify.
-3. Deploy. The two scheduled functions self-register from `netlify.toml`.
-4. Verify `/status.json` returns JSON after the first L3 run.
+3. (Optional) Smoke-test via the manual endpoint while the crons are still off:
+   `curl -X POST "$SITE/.netlify/functions/loop-runner?key=$LOOP_RUNNER_SECRET" -d '{"loop_name":"contract_tracker_freshness"}'`
+4. Set `LOOPS_ENABLED=true` to turn on the scheduled crons.
+5. Deploy. The two scheduled functions self-register from `netlify.toml`.
+6. Verify `/status.json` returns JSON after the first L3 run.

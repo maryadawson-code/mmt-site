@@ -281,7 +281,9 @@ Verification (ran 2026-06-10):
 - `npx vitest run tests/unit` — 350/350 pass (28 files).
 - Dry-run + CJS smoke: both specs load, all step/eval fns resolve, scorer +
   dedupe + PII eval behave.
-- Migration NOT applied (gated); `LOOP_RUNNER_SECRET` to be set by Mary.
+- Migration NOT applied (gated). Mary sets `LOOP_RUNNER_SECRET` +
+  `LOOPS_ENABLED=true` (scheduled crons no-op until the flag is on, so
+  they don't error/alert before the migration is applied).
 
 ---
 

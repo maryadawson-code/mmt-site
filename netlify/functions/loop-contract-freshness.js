@@ -11,6 +11,11 @@ const { withOpsLogging } = require("./lib/scheduled-fn-wrapper");
 const { runLoop } = require("./lib/loops/runner");
 
 async function _handler() {
+  // Feature flag — see loop-opportunity-discovery.js. Off until the gated
+  // loop_infra migration is applied and LOOPS_ENABLED=true is set.
+  if (process.env.LOOPS_ENABLED !== "true") {
+    return { statusCode: 200, body: JSON.stringify({ status: "skipped", reason: "LOOPS_ENABLED!=true" }) };
+  }
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
     return { statusCode: 500, body: JSON.stringify({ error: "supabase env missing" }) };
   }

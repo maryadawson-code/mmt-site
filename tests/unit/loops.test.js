@@ -12,6 +12,7 @@ import scanPii from "../../netlify/functions/lib/loops/evals/scan_pii.js";
 import freshness from "../../netlify/functions/lib/loops/evals/freshness.js";
 import dupRate from "../../netlify/functions/lib/loops/evals/dup_rate.js";
 import lagThresholds from "../../netlify/functions/lib/loops/evals/lag_thresholds.js";
+import opportunityUpsert from "../../netlify/functions/lib/loops/publishers/opportunity_upsert.js";
 
 const hoursAgo = (h) => new Date(Date.now() - h * 3_600_000).toISOString();
 const daysAhead = (d) => new Date(Date.now() + d * 86_400_000).toISOString();
@@ -118,6 +119,36 @@ describe("evals", () => {
   it("dup_rate fails a runaway fetcher", async () => {
     const out = await dupRate.run({ data: { dedupe: { dupRate: 0.8, rawCount: 10, uniqueCount: 2 } } }, { max_dup_rate: 0.4 });
     expect(out.passed).toBe(false);
+  });
+
+  it("publisher never sends first_seen_at (DB default preserves it across runs)", async () => {
+    // Minimal Supabase stub capturing what the publisher would upsert.
+    let upserted = null;
+    const supabase = {
+      from() {
+        return {
+          select: () => ({ in: async () => ({ data: [{ notice_id: "A" }] }) }),
+          upsert: async (rows) => {
+            upserted = rows;
+            return { error: null };
+          },
+        };
+      },
+    };
+    const ctx = {
+      supabase,
+      runId: "run-1",
+      log: { warn() {} },
+      data: { score: { items: [
+        { notice_id: "A", title: "seen before", pursuit_score: 50 },
+        { notice_id: "B", title: "new", pursuit_score: 80 },
+      ] } },
+    };
+    const out = await opportunityUpsert.run(ctx);
+    expect(out.written).toBe(2);
+    expect(out.inserted).toBe(1); // B is new, A already existed
+    expect(upserted.every((r) => !("first_seen_at" in r))).toBe(true);
+    expect(upserted.every((r) => typeof r.last_seen_at === "string")).toBe(true);
   });
 
   it("lag_thresholds flags an unhealthy source as drift", async () => {

@@ -15,6 +15,12 @@ const { withOpsLogging } = require("./lib/scheduled-fn-wrapper");
 const { runLoop } = require("./lib/loops/runner");
 
 async function _handler() {
+  // Feature flag: stays off until Mary has applied the gated loop_infra
+  // migration and set LOOPS_ENABLED=true. Prevents this cron from erroring
+  // (and emailing failure alerts) on every run before the tables exist.
+  if (process.env.LOOPS_ENABLED !== "true") {
+    return { statusCode: 200, body: JSON.stringify({ status: "skipped", reason: "LOOPS_ENABLED!=true" }) };
+  }
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
     return { statusCode: 500, body: JSON.stringify({ error: "supabase env missing" }) };
   }
