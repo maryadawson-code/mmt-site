@@ -216,6 +216,75 @@ Before declaring work complete, verify:
 
 ---
 
+## Sprint 2026-06-10 — MMT Loop System v1 (shared runner + L1 + L3)
+
+Triggered by Perplexity's `MMT_LOOP_SYSTEM_v1.md` proposal (8 loops on a
+GitHub-Actions/`lib/loops` stack). Translated to repo reality and shipped a
+deliberate subset. Full doc: `docs/MMT-Loop-System.md`.
+
+What shipped (one PR):
+- **Shared runner** at `netlify/functions/lib/loops/` — one declarative JSON
+  spec per loop (`specs/*.json`), a universal `runner.js` (load spec → run
+  steps → run evals → GATED publish → write `loop_runs` + `loop_evals` +
+  `ops_ledger`), and a static-`require` `registry.js` (so esbuild bundles every
+  step/eval module). Adding a loop = one JSON + its fn modules. CLI dry-run:
+  `node netlify/functions/lib/loops/runner.js --loop <name> --dry-run`.
+- **L1 Opportunity Discovery** (`loop-opportunity-discovery.js`, daily 12:00
+  UTC): SAM fetch → dedupe → USASpending incumbent enrich → quota-safe
+  heuristic score → upsert to the STAGED `loop_opportunities` table. Evals:
+  freshness, score-distribution sanity, PII scan, dup-rate.
+- **L3 Contract Tracker Freshness** (`loop-contract-freshness.js`, hourly):
+  ping unauthenticated upstreams + measure Supabase row-lag → write
+  `loop_status` → drift-alert Mary. Served publicly at `/status.json`
+  (`status.js` + netlify redirect).
+- **On-demand entry** `loop-runner.js` (secret-gated by `LOOP_RUNNER_SECRET`).
+- **Gated migration** `migrations/20260610000000_loop_infra.sql` (loop_runs,
+  loop_evals, loop_config, loop_opportunities, loop_status). NOT applied —
+  awaits Mary's approval per repo convention.
+- 12 new unit tests (`tests/unit/loops.test.js`); full suite 350/350 pass.
+
+Deliberately changed/dropped from the proposal (per Mary's "you have authority
+to change/remove bad loops" + "nothing touching podcast or newsletter"):
+- **L5 (Newsletter QA), L7 (Podcast pipeline)** — OUT. Mary handles newsletter
+  and podcast content independently.
+- **L6 (Friday Brief integrity)** — OUT. It pauses Mary's premium SEND
+  pipeline; her sends are hers to run.
+- **L4 (Agency drift)** — DROPPED as duplicative: `org-chart-monitor.js`
+  already hashes agency leadership pages and emails Mary on change. A second
+  detector would double-notify.
+- **L2 (Pursuit Score QA), L8 (Agent regression)** — DEFERRED. L2 needs Mary's
+  50-row hand-graded golden set (fabricating it would break the
+  no-fabricated-fixtures rule); L8 needs an agent registry + admin dashboard.
+
+Hard rules (do not regress):
+- **Loops stage DATA only; never write a publishable dir.** The runner has no
+  path to `content/newsletter|podcast|friday-briefs|capture-corner`. L1 writes
+  to `loop_opportunities` (separate from live `opportunity_radar`) — a human
+  promotes rows.
+- **Per-item `scorePursuit()` is NOT quota-safe for a daily loop.** It hits
+  SAM.gov per call and SAM has a small SHARED DAILY quota. L1 scores from
+  already-fetched SAM metadata + unauthenticated USASpending data instead (zero
+  extra SAM calls, $0, deterministic). Any new scheduled SAM consumer must
+  budget against the daily cap; L1 fires once/day with 5 queries — do not move
+  it to a tighter cadence. L3 deliberately does NOT live-ping SAM hourly.
+- **`registry.js` must use static `require`** — dynamic requires drop modules
+  from the Netlify bundle.
+- **Evals gate the publish step.** A `"publish": true` step only runs when every
+  eval passes; otherwise it's skipped and Mary is alerted (run still recorded).
+- **New loop = JSON spec + fn modules + registry entry + a scheduled function +
+  a `netlify.toml` schedule block + a `loop_config` seed row.** No new
+  orchestration code.
+
+Verification (ran 2026-06-10):
+- `node build.js` clean (exit 0); `validate-dist` OK (489 pages);
+  `validate-routes` ✓ (30 features).
+- `npx vitest run tests/unit` — 350/350 pass (28 files).
+- Dry-run + CJS smoke: both specs load, all step/eval fns resolve, scorer +
+  dedupe + PII eval behave.
+- Migration NOT applied (gated); `LOOP_RUNNER_SECRET` to be set by Mary.
+
+---
+
 ## Sprint 2026-05-28 (later) — Pursuit Calendar false-STALE freshness banner
 
 Mary saw `/premium/calendar` flagged "Last refreshed: May 21, 2026 (149h

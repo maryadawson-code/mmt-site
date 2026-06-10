@@ -1,0 +1,26 @@
+{
+  "name": "contract_tracker_freshness",
+  "version": 1,
+  "description": "L3 — hourly health + row-lag check on the data sources behind the premium Contract Tracker. Writes a loop_status snapshot served at /status.json. No LLM, no SAM.gov calls (SAM has a shared daily quota; an hourly live ping would exhaust it, so SAM-backed freshness is measured via row lag instead).",
+  "trigger": { "type": "cron", "expr": "0 * * * *" },
+  "steps": [
+    {
+      "id": "health",
+      "fn": "fetchers/api_health",
+      "sources": [
+        { "name": "usaspending", "ping_url": "https://api.usaspending.gov/api/v2/references/toptier_agencies/", "table": "award_tracker", "updated_col": "created_at", "max_lag_hours": 50 },
+        { "name": "opportunity_radar", "table": "opportunity_radar", "updated_col": "created_at", "max_lag_hours": 25 },
+        { "name": "gao", "ping_url": "https://www.gao.gov/", "max_lag_hours": 168 },
+        { "name": "loop_opportunities", "table": "loop_opportunities", "updated_col": "last_seen_at", "max_lag_hours": 30 }
+      ]
+    },
+    { "id": "snapshot", "fn": "publishers/status_snapshot" }
+  ],
+  "evals": [
+    { "name": "lag_thresholds", "fn": "evals/lag_thresholds" }
+  ],
+  "alerts": {
+    "on_fail": { "email": "mary@missionmeetstech.com", "ops_event": "LOOP_FAIL" },
+    "on_drift": { "email": "mary@missionmeetstech.com", "ops_event": "LOOP_DRIFT" }
+  }
+}

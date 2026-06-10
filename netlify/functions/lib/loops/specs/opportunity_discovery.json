@@ -1,0 +1,35 @@
+{
+  "name": "opportunity_discovery",
+  "version": 1,
+  "description": "L1 — daily SAM.gov discovery for federal-health-IT opportunities, deduped, enriched with USASpending incumbents, scored with a quota-safe heuristic, staged to loop_opportunities for Mary to review.",
+  "trigger": { "type": "cron", "expr": "0 12 * * *" },
+  "steps": [
+    {
+      "id": "fetch",
+      "fn": "fetchers/sam_gov",
+      "windowHours": 48,
+      "limit": 15,
+      "queries": [
+        { "keyword": "DHA health IT", "naics": "541512", "usaspending_agency": "Department of Defense" },
+        { "keyword": "MHS GENESIS", "usaspending_agency": "Department of Defense" },
+        { "keyword": "VA electronic health record", "usaspending_agency": "Department of Veterans Affairs" },
+        { "keyword": "VA artificial intelligence health", "usaspending_agency": "Department of Veterans Affairs" },
+        { "keyword": "HHS health information technology", "naics": "541512", "usaspending_agency": "Department of Health and Human Services" }
+      ]
+    },
+    { "id": "dedupe", "fn": "transforms/dedupe" },
+    { "id": "enrich", "fn": "enrichers/usaspending_incumbents", "topN": 3 },
+    { "id": "score", "fn": "scorers/pursuit_score" },
+    { "id": "publish", "fn": "publishers/opportunity_upsert", "publish": true }
+  ],
+  "evals": [
+    { "name": "no_stale_data", "fn": "evals/freshness", "max_age_hours": 72 },
+    { "name": "score_distribution", "fn": "evals/score_sanity", "min_mean": 25, "max_mean": 85, "min_stdev": 6, "min_items": 4 },
+    { "name": "no_pii_leak", "fn": "evals/scan_pii" },
+    { "name": "dup_rate", "fn": "evals/dup_rate", "max_dup_rate": 0.4 }
+  ],
+  "alerts": {
+    "on_fail": { "email": "mary@missionmeetstech.com", "ops_event": "LOOP_FAIL" },
+    "on_drift": { "email": "mary@missionmeetstech.com", "ops_event": "LOOP_DRIFT" }
+  }
+}
