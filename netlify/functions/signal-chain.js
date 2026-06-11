@@ -874,6 +874,7 @@ exports.handler = async (event) => {
       });
       supabase.from("ops_events").insert({
         event_type: "signal_chain_api_error",
+        source_function: "signal-chain",
         details: {
           layer: layerName,
           source: err.source,
@@ -883,7 +884,10 @@ exports.handler = async (event) => {
           agency: resolvedAgency,
           submitted_at: new Date().toISOString(),
         },
-      }).then(() => {}, () => {});
+      }).then(
+        ({ error: logErr }) => { if (logErr) console.error("signal-chain: ops_events insert failed (signal_chain_api_error):", logErr.message); },
+        (logEx) => console.error("signal-chain: ops_events insert threw (signal_chain_api_error):", logEx.message)
+      );
     }
   }
 

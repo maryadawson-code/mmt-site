@@ -75,15 +75,18 @@ exports.handler = async (event) => {
       return_url: `${SITE_URL}/premium/dashboard.html`,
     });
     try {
-      await sb.from("ops_events").insert({
+      const { error: logErr } = await sb.from("ops_events").insert({
         event_type: "billing_portal_session_created",
         severity: "info",
-        signature: "customer_portal",
+        error_signature: "customer_portal",
         source_function: "billing-portal",
-        affected_entity: user.stripe_customer_id,
-        details: { email, tier: user.subscription_tier, status: user.subscription_status },
+        user_email: email,
+        details: { email, stripe_customer_id: user.stripe_customer_id, tier: user.subscription_tier, status: user.subscription_status },
       });
-    } catch (_) { /* best-effort */ }
+      if (logErr) console.error("billing-portal: ops_events insert failed (billing_portal_session_created):", logErr.message);
+    } catch (logEx) {
+      console.error("billing-portal: ops_events insert threw (billing_portal_session_created):", logEx.message);
+    }
     return {
       statusCode: 200,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },

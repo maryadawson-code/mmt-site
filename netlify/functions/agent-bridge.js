@@ -986,18 +986,19 @@ exports.handler = wrapHandler(async (event) => {
               .in("id", deleteIds);
 
             // Log the cleanup
-            await supabase.from("ops_events").insert({
+            const { error: logErr } = await supabase.from("ops_events").insert({
               event_type: "bulk_task_purge",
               severity: "info",
               source_function: "agent-bridge",
-              affected_entity: agent,
               details: {
+                agent,
                 pattern: task_pattern,
                 purged_count: deleteIds.length,
                 kept_task_id: keepTask.id,
                 reason: "duplicate_task_cleanup"
               }
             });
+            if (logErr) console.error("agent-bridge: ops_events insert failed (bulk_task_purge):", logErr.message);
 
             return ok({ 
               purged: true, 
@@ -1292,13 +1293,13 @@ exports.handler = wrapHandler(async (event) => {
         last_active: new Date().toISOString(),
       }).eq("id", agent_id);
       // Log as ops event
-      await supabase.from("ops_events").insert({
+      const { error: cmdLogErr } = await supabase.from("ops_events").insert({
         event_type: "agent_command",
         severity: command === "escalate" ? "warn" : "info",
         source_function: "agent-bridge",
-        affected_entity: agent_id,
         details: { command, agent_id, issued_by: "command_center" },
-      }).catch(() => {});
+      });
+      if (cmdLogErr) console.error("agent-bridge: ops_events insert failed (agent_command):", cmdLogErr.message);
       return ok({ sent: true, command, agent_id, new_status: newStatus });
     }
 

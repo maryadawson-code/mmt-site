@@ -69,12 +69,12 @@ exports.handler = async (event) => {
     const { createClient } = require("@supabase/supabase-js");
     if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
       const _sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
-      await _sb.from("ops_events").insert({
+      const { error: logErr } = await _sb.from("ops_events").insert({
         event_type: "marketpulse_checkout_completed",
         severity: "info",
-        signature: "marketpulse_billing",
+        error_signature: "marketpulse_billing",
         source_function: "tactical-brief-webhook",
-        affected_entity: session.id,
+        user_email: payload.email,
         details: {
           email: payload.email,
           stripe_session_id: session.id,
@@ -82,8 +82,11 @@ exports.handler = async (event) => {
           price_tier: meta.price_tier || "standard",
         },
       });
+      if (logErr) console.error("tactical-brief-webhook: ops_events insert failed (marketpulse_checkout_completed):", logErr.message);
     }
-  } catch (_) { /* best-effort */ }
+  } catch (logEx) {
+    console.error("tactical-brief-webhook: ops_events insert threw (marketpulse_checkout_completed):", logEx.message);
+  }
 
   // Fire-and-forget: trigger background generation function
   try {

@@ -85,15 +85,19 @@ const ADMIN_ARCHIVE_IDS = [
     }
     archiveDone++;
     try {
-      await sb.from("ops_events").insert({
+      const { error: logErr } = await sb.from("ops_events").insert({
         event_type: "marketpulse_admin_hold_archived",
         severity: "info",
-        signature: "marketpulse_drift_cleanup",
+        error_signature: "marketpulse_drift_cleanup",
         source_function: "mp-rescue-and-archive",
-        affected_entity: id,
+        order_id: id,
+        user_email: row.email,
         details: { reason: "admin_quality_failure_archived_20260519", email: row.email, previous_state: `${row.status}/${row.workflow_state}` },
       });
-    } catch (_) { /* best-effort */ }
+      if (logErr) console.error(`    ops_events insert failed (marketpulse_admin_hold_archived): ${logErr.message}`);
+    } catch (logEx) {
+      console.error(`    ops_events insert threw (marketpulse_admin_hold_archived): ${logEx.message}`);
+    }
   }
   console.log(`archive: ${archiveDone}/${ADMIN_ARCHIVE_IDS.length} archived`);
 
@@ -139,15 +143,19 @@ const ADMIN_ARCHIVE_IDS = [
       }
       terminalFailed++;
       try {
-        await sb.from("ops_events").insert({
+        const { error: logErr } = await sb.from("ops_events").insert({
           event_type: "marketpulse_order_terminal_failed",
           severity: "warning",
-          signature: "marketpulse_drift_cleanup",
+          error_signature: "marketpulse_drift_cleanup",
           source_function: "mp-rescue-and-archive",
-          affected_entity: o.id,
+          order_id: o.id,
+          user_email: o.email,
           details: { email: o.email, age_min: ageMin, retry_count: retryCount, reason: "stale_after_requeue" },
         });
-      } catch (_) {}
+        if (logErr) console.error(`    ops_events insert failed (marketpulse_order_terminal_failed): ${logErr.message}`);
+      } catch (logEx) {
+        console.error(`    ops_events insert threw (marketpulse_order_terminal_failed): ${logEx.message}`);
+      }
       continue;
     }
 
@@ -163,14 +171,16 @@ const ADMIN_ARCHIVE_IDS = [
       if (resp.ok || resp.status === 202) {
         await sb.from("marketpulse_orders").update({ retry_count: retryCount + 1, state_updated_at: new Date().toISOString() }).eq("id", o.id);
         requeued++;
-        await sb.from("ops_events").insert({
+        const { error: logErr } = await sb.from("ops_events").insert({
           event_type: "marketpulse_order_rescued",
           severity: "info",
-          signature: "marketpulse_drift_cleanup",
+          error_signature: "marketpulse_drift_cleanup",
           source_function: "mp-rescue-and-archive",
-          affected_entity: o.id,
+          order_id: o.id,
+          user_email: o.email,
           details: { email: o.email, age_min: ageMin, retry_count: retryCount + 1, action: "requeued_via_replay" },
         });
+        if (logErr) console.error(`    ops_events insert failed (marketpulse_order_rescued): ${logErr.message}`);
       }
     } catch (e) {
       console.error(`    replay error: ${e.message}`);

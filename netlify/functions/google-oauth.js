@@ -98,12 +98,14 @@ exports.handler = async (event) => {
       await supabase.from("billing_sync_status").update({ is_enabled: true }).eq("source", "gmail_receipts");
 
       // Log
-      await supabase.from("ops_events").insert({
-        source: "google-oauth",
-        signal: "gmail_connected",
-        detail: { email: profile.emailAddress },
+      const { error: logErr } = await supabase.from("ops_events").insert({
+        event_type: "gmail_connected",
+        source_function: "google-oauth",
+        user_email: profile.emailAddress,
+        details: { email: profile.emailAddress },
         severity: "info",
       });
+      if (logErr) console.error("google-oauth: ops_events insert failed (gmail_connected):", logErr.message);
 
       return {
         statusCode: 302,

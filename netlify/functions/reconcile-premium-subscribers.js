@@ -194,16 +194,21 @@ exports.handler = async (event) => {
   // Log to ops_events for audit trail
   if (!dryRun) {
     try {
-      await supabase.from("ops_events").insert({
+      const { error: logErr } = await supabase.from("ops_events").insert({
         event_type: "premium_reconciliation",
+        source_function: "reconcile-premium-subscribers",
         severity: "info",
-        payload: {
+        user_email: adminEmail,
+        details: {
           triggered_by: adminEmail,
           ...results,
           ts: new Date().toISOString(),
         },
       });
-    } catch (_) {}
+      if (logErr) console.error("reconcile-premium-subscribers: ops_events insert failed (premium_reconciliation):", logErr.message);
+    } catch (logEx) {
+      console.error("reconcile-premium-subscribers: ops_events insert threw (premium_reconciliation):", logEx.message);
+    }
   }
 
   return {

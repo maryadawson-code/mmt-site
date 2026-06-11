@@ -950,12 +950,11 @@ exports.handler = async (event) => {
         // don't trust the body since we're about to reject it.
         let _sessionId = null;
         try { _sessionId = (JSON.parse(event.body || "{}") || {}).session_id || null; } catch {}
-        await _sb.from("ops_events").insert({
+        const { error: logErr } = await _sb.from("ops_events").insert({
           event_type: "marketpulse_billing_gate_failed",
           severity: "warning",
-          signature: "marketpulse_internal_secret_missing",
+          error_signature: "marketpulse_internal_secret_missing",
           source_function: "generate-tactical-brief-background",
-          affected_entity: _sessionId,
           details: {
             reason: "internal_secret_missing_or_invalid",
             session_id_label: _sessionId,
@@ -963,8 +962,11 @@ exports.handler = async (event) => {
             user_agent: (event.headers && (event.headers["user-agent"] || event.headers["User-Agent"])) || null,
           },
         });
+        if (logErr) console.error("generate-tactical-brief-background: ops_events insert failed (marketpulse_billing_gate_failed):", logErr.message);
       }
-    } catch { /* best-effort */ }
+    } catch (logEx) {
+      console.error("generate-tactical-brief-background: ops_events insert threw (marketpulse_billing_gate_failed):", logEx.message);
+    }
     return { statusCode: 401, body: "Unauthorized — internal call only" };
   }
 
@@ -1982,16 +1984,20 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
     // Log customer notification to ops_events
     try {
       if (_supabase) {
-        await _supabase.from("ops_events").insert({
+        const { error: logErr } = await _supabase.from("ops_events").insert({
           event_type: "CUSTOMER_ERROR_EMAIL",
           severity: "warn",
-          source: "generate-tactical-brief-background",
-          entity_id: _orderId || session_id,
-          signature: "error_email_technical",
-          details: { email, topic: (topic || "").substring(0, 200), error_type: "technical_error" },
+          source_function: "generate-tactical-brief-background",
+          order_id: _orderId || null,
+          user_email: email,
+          error_signature: "error_email_technical",
+          details: { email, session_id, topic: (topic || "").substring(0, 200), error_type: "technical_error" },
         });
+        if (logErr) console.error("generate-tactical-brief-background: ops_events insert failed (CUSTOMER_ERROR_EMAIL):", logErr.message);
       }
-    } catch { /* non-blocking */ }
+    } catch (logEx) {
+      console.error("generate-tactical-brief-background: ops_events insert threw (CUSTOMER_ERROR_EMAIL):", logEx.message);
+    }
 
     return { statusCode: 500, body: JSON.stringify({ error: err.message }) };
   }

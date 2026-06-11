@@ -169,11 +169,14 @@ exports.handler = async (event) => {
           amount_cents: 0,
           metadata: { subscription_id: s.sub_id, tier: s.tier, resend_message_id: resendId, sent_via: "welcome-reconciler", is_backfill: isBackfill },
         });
-        await supabase.from("ops_events").insert({
+        const { error: logErr } = await supabase.from("ops_events").insert({
           event_type: "WELCOME_EMAIL_BACKFILLED",
+          source_function: "welcome-reconciler",
           severity: "info",
-          payload: { email: s.email, tier: s.tier, sub_id: s.sub_id, resend_message_id: resendId, source: "welcome-reconciler" },
+          user_email: s.email,
+          details: { email: s.email, tier: s.tier, sub_id: s.sub_id, resend_message_id: resendId, source: "welcome-reconciler" },
         });
+        if (logErr) console.error("welcome-reconciler: ops_events insert failed (WELCOME_EMAIL_BACKFILLED):", logErr.message);
         report.sent++;
       } else {
         report.failed++;

@@ -499,11 +499,13 @@ function customGate(report, score, audit) {
 
   // ops_events row
   try {
-    await sb.from("ops_events").insert({
+    const { error: logErr } = await sb.from("ops_events").insert({
       event_type: "MARKETPULSE_V4_REMEDIATED_DELIVERED",
       severity: "info",
-      signature: "marketpulse_v4_remediated_send",
-      affected_entity: ORDER_ID,
+      error_signature: "marketpulse_v4_remediated_send",
+      source_function: "deliver-colleen-marketpulse-v4",
+      order_id: ORDER_ID,
+      user_email: EMAIL,
       details: {
         email: EMAIL,
         score: score.overall,
@@ -513,6 +515,7 @@ function customGate(report, score, audit) {
         sent_at: new Date().toISOString(),
       },
     });
+    if (logErr) console.warn("ops_events insert failed:", logErr.message);
   } catch (e) {
     console.warn("ops_events insert warning:", e.message);
   }

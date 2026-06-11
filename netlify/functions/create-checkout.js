@@ -150,12 +150,12 @@ exports.handler = async (event) => {
     // Stripe fires checkout.session.completed. The pair lets the weekly
     // report compute "checkout starts → paid conversions" by product.
     try {
-      await supabase.from("ops_events").insert({
+      const { error: logErr } = await supabase.from("ops_events").insert({
         event_type: "proposalpulse_checkout_started",
         severity: "info",
-        signature: "proposalpulse_billing",
+        error_signature: "proposalpulse_billing",
         source_function: "create-checkout",
-        affected_entity: session.id,
+        user_email: email,
         details: {
           email,
           mp_user_id: user.id,
@@ -166,8 +166,9 @@ exports.handler = async (event) => {
           is_premium: isPremium,
         },
       });
-    } catch (logErr) {
-      console.warn("create-checkout: ops_events log failed:", logErr.message);
+      if (logErr) console.warn("create-checkout: ops_events insert failed (proposalpulse_checkout_started):", logErr.message);
+    } catch (logEx) {
+      console.warn("create-checkout: ops_events log threw:", logEx.message);
     }
 
     return {
@@ -179,14 +180,17 @@ exports.handler = async (event) => {
     console.error("create-checkout error:", err);
     try {
       const supabase2 = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
-      await supabase2.from("ops_events").insert({
+      const { error: logErr } = await supabase2.from("ops_events").insert({
         event_type: "proposalpulse_checkout_failed",
         severity: "error",
-        signature: "proposalpulse_billing",
+        error_signature: "proposalpulse_billing",
         source_function: "create-checkout",
         details: { error: String(err.message || err).slice(0, 500) },
       });
-    } catch (_) { /* best-effort */ }
+      if (logErr) console.error("create-checkout: ops_events insert failed (proposalpulse_checkout_failed):", logErr.message);
+    } catch (logEx) {
+      console.error("create-checkout: ops_events insert threw (proposalpulse_checkout_failed):", logEx.message);
+    }
     return {
       statusCode: 500,
       headers: CORS_HEADERS,

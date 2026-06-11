@@ -58,12 +58,13 @@ exports.handler = async (event) => {
   await checkBillingAlerts(supabase);
 
   // Log summary
-  await supabase.from("ops_events").insert({
-    source: "billing-sync",
-    signal: "sync_complete",
-    detail: results,
+  const { error: logErr } = await supabase.from("ops_events").insert({
+    event_type: "billing_sync_complete",
+    source_function: "billing-sync",
+    details: results,
     severity: Object.values(results).some((r) => r.error) ? "warn" : "info",
   });
+  if (logErr) console.error("billing-sync: ops_events insert failed (billing_sync_complete):", logErr.message);
 
   return { statusCode: 200, body: JSON.stringify(results) };
 };

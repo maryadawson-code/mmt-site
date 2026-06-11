@@ -389,12 +389,12 @@ exports.handler = wrapHandler(async (event) => {
       // Log the limit hit so the weekly billing report can correlate it
       // against subsequent checkout starts. Non-fatal if it fails.
       try {
-        await supabase.from("ops_events").insert({
+        const { error: logErr } = await supabase.from("ops_events").insert({
           event_type: "proposalpulse_limit_hit",
           severity: "info",
-          signature: "proposalpulse_billing",
+          error_signature: "proposalpulse_billing",
           source_function: "score-deck",
-          affected_entity: user.id,
+          user_email: email,
           details: {
             email,
             mp_user_id: user.id,
@@ -402,7 +402,10 @@ exports.handler = wrapHandler(async (event) => {
             checkout_url: "https://missionmeetstech.com/proposal-pulse.html#upgrade",
           },
         });
-      } catch (_) { /* non-fatal */ }
+        if (logErr) console.error("score-deck: ops_events insert failed (proposalpulse_limit_hit):", logErr.message);
+      } catch (logEx) {
+        console.error("score-deck: ops_events insert threw (proposalpulse_limit_hit):", logEx.message);
+      }
       return {
         statusCode: 403,
         headers: CORS_HEADERS,

@@ -206,15 +206,18 @@ exports.handler = wrapHandler(async (event) => {
 
       // Revenue-integrity telemetry — free entitlement consumed.
       try {
-        await supabase.from("ops_events").insert({
+        const { error: logErr } = await supabase.from("ops_events").insert({
           event_type: "marketpulse_free_entitlement_used",
           severity: "info",
-          signature: "marketpulse_billing",
+          error_signature: "marketpulse_billing",
           source_function: "marketpulse-gateway",
-          affected_entity: email,
+          user_email: email,
           details: { email, reports_used_before: usage.reports_used, reports_used_after: usage.reports_used + 1 },
         });
-      } catch (_) { /* best-effort */ }
+        if (logErr) console.error("marketpulse-gateway: ops_events insert failed (marketpulse_free_entitlement_used):", logErr.message);
+      } catch (logEx) {
+        console.error("marketpulse-gateway: ops_events insert threw (marketpulse_free_entitlement_used):", logEx.message);
+      }
 
       // Trigger background generation
       const https = require("https");
@@ -275,15 +278,18 @@ exports.handler = wrapHandler(async (event) => {
             .from("marketpulse_usage")
             .update({ reports_used: usage.reports_used })
             .eq("id", usage.id);
-          await supabase.from("ops_events").insert({
+          const { error: logErr } = await supabase.from("ops_events").insert({
             event_type: "marketpulse_background_trigger_failed",
             severity: "error",
-            signature: "marketpulse_billing",
+            error_signature: "marketpulse_billing",
             source_function: "marketpulse-gateway",
-            affected_entity: email,
+            user_email: email,
             details: { email, reason: bgFailureReason, rolled_back_reports_used: true },
           });
-        } catch (_) { /* best-effort */ }
+          if (logErr) console.error("marketpulse-gateway: ops_events insert failed (marketpulse_background_trigger_failed):", logErr.message);
+        } catch (logEx) {
+          console.error("marketpulse-gateway: ops_events insert threw (marketpulse_background_trigger_failed):", logEx.message);
+        }
         return {
           statusCode: 502,
           headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
@@ -395,12 +401,12 @@ async function createCheckoutSession({ name, email, company, topic, audience, ad
   // Revenue-integrity telemetry — paired with marketpulse_checkout_completed
   // emitted by tactical-brief-webhook.js on Stripe payment confirmation.
   try {
-    await supabase.from("ops_events").insert({
+    const { error: logErr } = await supabase.from("ops_events").insert({
       event_type: "marketpulse_checkout_started",
       severity: "info",
-      signature: "marketpulse_billing",
+      error_signature: "marketpulse_billing",
       source_function: "marketpulse-gateway",
-      affected_entity: session.id,
+      user_email: email,
       details: {
         email,
         stripe_session_id: session.id,
@@ -409,7 +415,10 @@ async function createCheckoutSession({ name, email, company, topic, audience, ad
         is_premium: isPremium,
       },
     });
-  } catch (_) { /* best-effort */ }
+    if (logErr) console.error("marketpulse-gateway: ops_events insert failed (marketpulse_checkout_started):", logErr.message);
+  } catch (logEx) {
+    console.error("marketpulse-gateway: ops_events insert threw (marketpulse_checkout_started):", logEx.message);
+  }
 
   return {
     statusCode: 200,
