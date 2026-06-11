@@ -131,12 +131,16 @@ function isAnyMmtPremiumSubscription(sub) {
  */
 function buildUnclassifiedOpsRow(sub, opts = {}) {
   const { unknownPriceIds } = classifySubscription(sub);
+  // ops_events has no `signature` or `affected_entity` columns — the
+  // grouping column is `error_signature`, and the subscription id lives
+  // in details.stripe_subscription_id (fixed 2026-06-11; the old shape
+  // made every insert of this row fail silently).
   return {
     event_type: "WELCOME_TIER_UNCLASSIFIED",
     severity: "warning",
-    signature: "stripe_price_id_drift",
+    error_signature: "stripe_price_id_drift",
     source_function: opts.source_function || "stripe-classifier",
-    affected_entity: sub && sub.id ? sub.id : null,
+    user_email: opts.email || null,
     details: {
       reason: "subscription_carries_unknown_price_ids",
       stripe_subscription_id: sub && sub.id,

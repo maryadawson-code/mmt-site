@@ -280,12 +280,17 @@ exports.handler = async (event) => {
           // Log it for Mary to reconcile.
           console.warn(`stripe-webhook: user not found for ${normalizedEmail} — acknowledging; logging for reconciliation`);
           try {
-            await supabase.from("ops_events").insert({
+            const { error: logErr } = await supabase.from("ops_events").insert({
               event_type: "stripe_user_missing",
+              source_function: "stripe-webhook",
               severity: "warning",
-              payload: { email: normalizedEmail, session_id: session.id, stripe_customer: session.customer, amount: session.amount_total },
+              user_email: normalizedEmail,
+              details: { email: normalizedEmail, session_id: session.id, stripe_customer: session.customer, amount: session.amount_total },
             });
-          } catch (_) {}
+            if (logErr) console.error("stripe-webhook: ops_events insert failed (stripe_user_missing):", logErr.message);
+          } catch (logEx) {
+            console.error("stripe-webhook: ops_events insert threw (stripe_user_missing):", logEx.message);
+          }
           return { statusCode: 200, body: JSON.stringify({ received: true, warning: "user not found; logged for reconciliation" }) };
         }
 
@@ -307,12 +312,17 @@ exports.handler = async (event) => {
             console.error("stripe-webhook: failed to create usage row:", insertErr.message);
             // Still acknowledge — logging is sufficient for Mary to repair manually.
             try {
-              await supabase.from("ops_events").insert({
+              const { error: logErr } = await supabase.from("ops_events").insert({
                 event_type: "stripe_usage_insert_failed",
+                source_function: "stripe-webhook",
                 severity: "error",
-                payload: { email: normalizedEmail, user_id: user.id, err: insertErr.message, session_id: session.id },
+                user_email: normalizedEmail,
+                details: { email: normalizedEmail, user_id: user.id, err: insertErr.message, session_id: session.id },
               });
-            } catch (_) {}
+              if (logErr) console.error("stripe-webhook: ops_events insert failed (stripe_usage_insert_failed):", logErr.message);
+            } catch (logEx) {
+              console.error("stripe-webhook: ops_events insert threw (stripe_usage_insert_failed):", logEx.message);
+            }
             return { statusCode: 200, body: JSON.stringify({ received: true, warning: "usage insert failed; logged" }) };
           }
           console.log(`stripe-webhook: created usage row for ${normalizedEmail} with 1 use`);
@@ -326,20 +336,26 @@ exports.handler = async (event) => {
           if (updateErr) {
             console.error("stripe-webhook: failed to increment usage:", updateErr.message);
             try {
-              await supabase.from("ops_events").insert({
+              const { error: logErr1 } = await supabase.from("ops_events").insert({
                 event_type: "stripe_usage_update_failed",
+                source_function: "stripe-webhook",
                 severity: "error",
-                payload: { email: normalizedEmail, user_id: user.id, err: updateErr.message, session_id: session.id },
+                user_email: normalizedEmail,
+                details: { email: normalizedEmail, user_id: user.id, err: updateErr.message, session_id: session.id },
               });
-              await supabase.from("ops_events").insert({
+              if (logErr1) console.error("stripe-webhook: ops_events insert failed (stripe_usage_update_failed):", logErr1.message);
+              const { error: logErr2 } = await supabase.from("ops_events").insert({
                 event_type: "proposalpulse_paid_entitlement_failed",
                 severity: "error",
-                signature: "proposalpulse_billing",
+                error_signature: "proposalpulse_billing",
                 source_function: "stripe-webhook",
-                affected_entity: session.id,
+                user_email: normalizedEmail,
                 details: { email: normalizedEmail, mp_user_id: user.id, stripe_session_id: session.id, error: updateErr.message },
               });
-            } catch (_) {}
+              if (logErr2) console.error("stripe-webhook: ops_events insert failed (proposalpulse_paid_entitlement_failed):", logErr2.message);
+            } catch (logEx) {
+              console.error("stripe-webhook: ops_events insert threw (usage_update_failed pair):", logEx.message);
+            }
             return { statusCode: 200, body: JSON.stringify({ received: true, warning: "usage update failed; logged" }) };
           }
           console.log(`stripe-webhook: granted +1 use for ${normalizedEmail} (now ${usage.uses_remaining + 1})`);
@@ -353,12 +369,12 @@ exports.handler = async (event) => {
         // Revenue-integrity telemetry pair (proposalpulse_checkout_started
         // is emitted by create-checkout.js; this is its mate).
         try {
-          await supabase.from("ops_events").insert({
+          const { error: logErr1 } = await supabase.from("ops_events").insert({
             event_type: "proposalpulse_checkout_completed",
             severity: "info",
-            signature: "proposalpulse_billing",
+            error_signature: "proposalpulse_billing",
             source_function: "stripe-webhook",
-            affected_entity: session.id,
+            user_email: normalizedEmail,
             details: {
               email: normalizedEmail,
               mp_user_id: user.id,
@@ -367,15 +383,19 @@ exports.handler = async (event) => {
               price_tier: (session.metadata && session.metadata.price_tier) || "unknown",
             },
           });
-          await supabase.from("ops_events").insert({
+          if (logErr1) console.error("stripe-webhook: ops_events insert failed (proposalpulse_checkout_completed):", logErr1.message);
+          const { error: logErr2 } = await supabase.from("ops_events").insert({
             event_type: "proposalpulse_paid_entitlement_granted",
             severity: "info",
-            signature: "proposalpulse_billing",
+            error_signature: "proposalpulse_billing",
             source_function: "stripe-webhook",
-            affected_entity: session.id,
-            details: { email: normalizedEmail, mp_user_id: user.id, uses_added: 1 },
+            user_email: normalizedEmail,
+            details: { email: normalizedEmail, mp_user_id: user.id, stripe_session_id: session.id, uses_added: 1 },
           });
-        } catch (_) { /* best-effort telemetry */ }
+          if (logErr2) console.error("stripe-webhook: ops_events insert failed (proposalpulse_paid_entitlement_granted):", logErr2.message);
+        } catch (logEx) {
+          console.error("stripe-webhook: ops_events telemetry threw (checkout pair):", logEx.message);
+        }
 
         await recordEventProcessed();
         return { statusCode: 200, body: JSON.stringify({ received: true }) };
@@ -383,12 +403,17 @@ exports.handler = async (event) => {
         // Never return 5xx to Stripe unless we actually want retry. Log + ack.
         console.error("stripe-webhook: unhandled error in checkout.session.completed:", err.message);
         try {
-          await supabase.from("ops_events").insert({
+          const { error: logErr } = await supabase.from("ops_events").insert({
             event_type: "stripe_webhook_error",
+            source_function: "stripe-webhook",
             severity: "error",
-            payload: { email: normalizedEmail, session_id: session.id, error: err.message, stack: err.stack },
+            user_email: normalizedEmail,
+            details: { email: normalizedEmail, session_id: session.id, error: err.message, stack: err.stack },
           });
-        } catch (_) {}
+          if (logErr) console.error("stripe-webhook: ops_events insert failed (stripe_webhook_error):", logErr.message);
+        } catch (logEx) {
+          console.error("stripe-webhook: ops_events insert threw (stripe_webhook_error):", logEx.message);
+        }
         return { statusCode: 200, body: JSON.stringify({ received: true, warning: "handler errored; logged" }) };
       }
     }
@@ -509,11 +534,20 @@ exports.handler = async (event) => {
         console.log(`stripe-webhook: ${normalizedEmail} tier → ${isActive ? "premium" : "free"} (${sub.status})`);
       }
 
-      await supabase.from("ops_events").insert({
-        event_type: "stripe_subscription",
-        severity: "info",
-        payload: { type: stripeEvent.type, subscription_id: sub.id, status: sub.status, customer: sub.customer, email: subEmail },
-      });
+      // Health-check signal (2026-05-05 Stripe incident): the presence of
+      // recent stripe_subscription rows is how we detect webhook delivery.
+      // Fixed 2026-06-11: the table column is `details`, not `payload` —
+      // every prior insert here failed silently.
+      {
+        const { error: logErr } = await supabase.from("ops_events").insert({
+          event_type: "stripe_subscription",
+          source_function: "stripe-webhook",
+          severity: "info",
+          user_email: subEmail || null,
+          details: { type: stripeEvent.type, subscription_id: sub.id, status: sub.status, customer: sub.customer, email: subEmail },
+        });
+        if (logErr) console.error("stripe-webhook: ops_events insert failed (stripe_subscription created/updated):", logErr.message);
+      }
 
       // --- MMT Premium welcome email (broadened 2026-04-29) ---
       // Originally founding-only; non-founding tiers (premium_annual, premium_monthly)
@@ -730,11 +764,16 @@ exports.handler = async (event) => {
         console.log(`stripe-webhook: ${subEmail} tier → free (subscription deleted)`);
       }
 
-      await supabase.from("ops_events").insert({
-        event_type: "stripe_subscription",
-        severity: "warning",
-        payload: { type: stripeEvent.type, subscription_id: sub.id, status: sub.status, customer: sub.customer, email: subEmail, mmt_premium: isMmtPremium },
-      });
+      {
+        const { error: logErr } = await supabase.from("ops_events").insert({
+          event_type: "stripe_subscription",
+          source_function: "stripe-webhook",
+          severity: "warning",
+          user_email: subEmail || null,
+          details: { type: stripeEvent.type, subscription_id: sub.id, status: sub.status, customer: sub.customer, email: subEmail, mmt_premium: isMmtPremium },
+        });
+        if (logErr) console.error("stripe-webhook: ops_events insert failed (stripe_subscription deleted):", logErr.message);
+      }
       await recordEventProcessed();
       return { statusCode: 200, body: JSON.stringify({ received: true, type: stripeEvent.type }) };
     }
@@ -742,11 +781,15 @@ exports.handler = async (event) => {
     case "invoice.payment_failed": {
       const invoice = stripeEvent.data.object;
       console.log(`stripe-webhook: payment failed — invoice ${invoice.id} (customer: ${invoice.customer})`);
-      await supabase.from("ops_events").insert({
-        event_type: "stripe_payment_failed",
-        severity: "error",
-        payload: { type: stripeEvent.type, invoice_id: invoice.id, customer: invoice.customer, amount_due: invoice.amount_due },
-      });
+      {
+        const { error: logErr } = await supabase.from("ops_events").insert({
+          event_type: "stripe_payment_failed",
+          source_function: "stripe-webhook",
+          severity: "error",
+          details: { type: stripeEvent.type, invoice_id: invoice.id, customer: invoice.customer, amount_due: invoice.amount_due },
+        });
+        if (logErr) console.error("stripe-webhook: ops_events insert failed (stripe_payment_failed):", logErr.message);
+      }
       await recordEventProcessed();
       return { statusCode: 200, body: JSON.stringify({ received: true, type: stripeEvent.type }) };
     }

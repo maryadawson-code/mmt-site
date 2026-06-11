@@ -117,10 +117,13 @@ exports.handler = async () => {
     // came back null — i.e. a real Stripe price drift.
     if (!tier) {
       try {
-        await supabase.from("ops_events").insert(
+        const { error: logErr } = await supabase.from("ops_events").insert(
           buildUnclassifiedOpsRow(sub, { source_function: "stripe-subscriber-sync", email })
         );
-      } catch (_) { /* best-effort */ }
+        if (logErr) console.error(`  ops_events insert failed (WELCOME_TIER_UNCLASSIFIED): ${logErr.message}`);
+      } catch (logEx) {
+        console.error(`  ops_events insert threw (WELCOME_TIER_UNCLASSIFIED): ${logEx.message}`);
+      }
     }
     const cur = existingMap[email];
     const needsUpsert =
@@ -148,15 +151,18 @@ exports.handler = async () => {
     if (error) {
       console.error(`  upsert failed for ${email}: ${error.message}`);
       try {
-        await supabase.from("ops_events").insert({
+        const { error: logErr } = await supabase.from("ops_events").insert({
           event_type: "STRIPE_SYNC_UPSERT_FAILED",
           source_function: "stripe-subscriber-sync",
           severity: "error",
-          signature: "mp_users_upsert",
-          affected_entity: sub.id,
-          details: { email, error: error.message },
+          error_signature: "mp_users_upsert",
+          user_email: email,
+          details: { email, subscription_id: sub.id, error: error.message },
         });
-      } catch { /* never break */ }
+        if (logErr) console.error(`  ops_events insert failed (STRIPE_SYNC_UPSERT_FAILED): ${logErr.message}`);
+      } catch (logEx) {
+        console.error(`  ops_events insert threw (STRIPE_SYNC_UPSERT_FAILED): ${logEx.message}`);
+      }
       continue;
     }
     upserted++;
@@ -193,12 +199,15 @@ exports.handler = async () => {
   }
 
   // Always log a sweep summary so silent gaps surface in dashboards.
+  // Fixed 2026-06-11: ops_events has no `signature` column (the grouping
+  // column is `error_signature`), so every sweep log since launch failed
+  // silently — zero STRIPE_SYNC_SWEEP rows despite the hourly cron running.
   try {
-    await supabase.from("ops_events").insert({
+    const { error: sweepLogErr } = await supabase.from("ops_events").insert({
       event_type: "STRIPE_SYNC_SWEEP",
       source_function: "stripe-subscriber-sync",
       severity: upserted > 0 ? "warning" : "info",
-      signature: "hourly_sweep",
+      error_signature: "hourly_sweep",
       details: {
         stripe_active_subs: subs.length,
         mmt_premium_subs: mmt.length,
@@ -209,7 +218,10 @@ exports.handler = async () => {
         ran_at: new Date().toISOString(),
       },
     });
-  } catch { /* never break */ }
+    if (sweepLogErr) console.error(`stripe-subscriber-sync: ops_events insert failed (STRIPE_SYNC_SWEEP): ${sweepLogErr.message}`);
+  } catch (logEx) {
+    console.error(`stripe-subscriber-sync: ops_events insert threw (STRIPE_SYNC_SWEEP): ${logEx.message}`);
+  }
 
   return {
     statusCode: 200,

@@ -79,7 +79,13 @@ describe("P1 #6 — centralized Stripe price-ID classification", () => {
     const row = buildUnclassifiedOpsRow(sub, { source_function: "test", email: "x@y.com" });
     expect(row.event_type).toBe("WELCOME_TIER_UNCLASSIFIED");
     expect(row.severity).toBe("warning");
-    expect(row.affected_entity).toBe("sub_unk");
+    // ops_events has no `signature`/`affected_entity` columns — the row must
+    // only carry real columns or the insert fails silently (2026-06-11 fix).
+    expect(row.error_signature).toBe("stripe_price_id_drift");
+    expect(row.signature).toBeUndefined();
+    expect(row.affected_entity).toBeUndefined();
+    expect(row.user_email).toBe("x@y.com");
+    expect(row.details.stripe_subscription_id).toBe("sub_unk");
     expect(row.details.unknown_price_ids).toContain("price_unknown_drifted");
     expect(row.details.remediation).toMatch(/Add the new Stripe price ID/);
   });
