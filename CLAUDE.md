@@ -1384,6 +1384,20 @@ unreliable for production pipelines that must complete within a timeout.
 passes now complete in ~30s (vs 10+ min or timeout). Env var: `PERPLEXITY_API_KEY`.
 Perplexity credits are prepaid — check balance at perplexity.ai/settings/api.
 
+### ops_events has no payload, signature, or affected_entity columns (2026-06-11)
+Real columns: `event_type, source_function, scoring_id, order_id, user_email,
+severity, auto_resolved, resolution, details, error_signature, failure_class,
+cost_estimate, duration_ms, tokens_used`. A direct
+`supabase.from("ops_events").insert({...})` using `payload:`, `signature:`,
+or `affected_entity:` fails on every call — and because these inserts sat in
+empty catch blocks, stripe-webhook logged ZERO stripe_subscription rows ever
+(killing the documented 2026-05-05 health-check signal) and
+stripe-subscriber-sync logged ZERO STRIPE_SYNC_SWEEP rows despite running
+hourly. Use `details:` for the JSON blob, `error_signature:` for grouping,
+`user_email:`/`details` for the entity, and ALWAYS check + log the returned
+`{ error }` (Supabase inserts return errors, they don't throw). `logOpsEvent`
+in lib/ops-ledger.js maps to the real columns and is safe.
+
 ### mp_users column is full_name, not name (2026-04-15)
 The `mp_users` Supabase table uses `full_name` (not `name`). Querying
 `.select("email, name")` returns a 42703 column-not-found error.
