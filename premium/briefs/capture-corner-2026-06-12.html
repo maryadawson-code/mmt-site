@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capture Corner: The Expert Test &middot; MMT Premium</title>
+  <meta name="description" content="June 12, 2026. Companion to &#39;The Expert You Cannot Buy Off the Shelf.&#39; The three-rung diagnostic (chat seat, project, agent), the six-question SME-inside test, the pricing pressure-test against CALC and cost realism, the human-gate standard for AI-generated content, the nine agent-security questions for any vendor selling an agent, and the build-buy call for small shops.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <style>
+    :root { --mmt-teal:#457B9D; --mmt-navy:#0A192F; --mmt-soft:#F3F4F6; --mmt-white:#FFFFFF; --mmt-text:#102033; --mmt-text-secondary:#5C6B7A; --mmt-border:#D8E0E8; --ci-gold:#92710A; --ci-gold-bg:#FEF9E7; --mmt-red:#E63946; }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--mmt-white); color:var(--mmt-navy); }
+    .brief-body { font-size:15px; line-height:1.75; color:#314155; }
+    .brief-body h2 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:40px 0 14px; letter-spacing:-0.02em; }
+    .brief-body h3 { font-size:17px; font-weight:700; color:var(--mmt-navy); margin:28px 0 10px; }
+    .brief-body h4 { font-size:15px; font-weight:700; color:var(--mmt-navy); margin:20px 0 8px; }
+    .brief-body p { margin-bottom:16px; max-width:65ch; }
+    .brief-body ul { margin-bottom:16px; padding-left:1.25rem; }
+    .brief-body ol { margin-bottom:16px; padding-left:1.5rem; }
+    .brief-body li { margin-bottom:8px; }
+    .brief-body a { color:var(--mmt-teal); text-decoration:underline; text-underline-offset:3px; }
+    .brief-body strong { color:var(--mmt-navy); }
+    .brief-body em { color:var(--mmt-text-secondary); }
+    .brief-body hr { border:none; border-top:1px solid var(--mmt-border); margin:36px 0; }
+    .brief-body blockquote { border-left:3px solid var(--mmt-teal); padding:8px 16px; margin:16px 0; color:var(--mmt-text-secondary); background:rgba(69,123,157,0.04); border-radius:0 6px 6px 0; }
+    .brief-body img { max-width:100%; height:auto; display:block; margin:24px 0; border:1px solid var(--mmt-border); border-radius:8px; }
+    .brief-body table { width:100%; border-collapse:collapse; margin:16px 0 24px; font-size:14px; }
+    .brief-body th, .brief-body td { border:1px solid var(--mmt-border); padding:10px 12px; text-align:left; vertical-align:top; }
+    .brief-body th { background:var(--mmt-soft); color:var(--mmt-navy); font-weight:700; }
+    .pills { margin:8px 0 24px; }
+    .pill { display:inline-block; padding:4px 10px; background:rgba(69,123,157,0.08); color:var(--mmt-teal); border-radius:14px; font-size:11px; font-weight:600; margin:2px 4px 2px 0; }
+    .pill-red { background:rgba(230,57,70,0.08); color:var(--mmt-red); }
+    .pill-gold { background:var(--ci-gold-bg); color:var(--ci-gold); }
+    .back-link { font-size:13px; font-weight:600; color:var(--mmt-teal); text-decoration:none; }
+    .back-link:hover { opacity:0.7; }
+    .gate-notice { background:linear-gradient(180deg,#FFFFFF 0%,#F3F4F6 100%); border:1px solid var(--mmt-border); border-radius:12px; padding:32px 28px; text-align:center; margin:32px auto; max-width:540px; }
+    .gate-notice h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin-bottom:10px; }
+    .gate-notice p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:16px; line-height:1.55; }
+    .gate-cta { display:inline-block; padding:12px 24px; background:var(--mmt-navy); color:var(--mmt-white); font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; }
+    .section-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--ci-gold); }
+    .deep-dive-card { margin:48px 0 16px; padding:32px 28px; border:2px solid var(--ci-gold); border-radius:12px; background:linear-gradient(180deg,#FFFFFF 0%,var(--ci-gold-bg) 100%); }
+    .deep-dive-card h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:0 0 12px; letter-spacing:-0.01em; }
+    .deep-dive-card p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:14px; line-height:1.6; max-width:none; }
+    .deep-dive-price { display:inline-flex; align-items:baseline; gap:8px; margin:4px 0 16px; font-weight:800; color:var(--mmt-navy); }
+    .deep-dive-price .amount { font-size:28px; }
+    .deep-dive-price .unit { font-size:13px; font-weight:600; color:var(--mmt-text-secondary); text-transform:uppercase; letter-spacing:0.06em; }
+    .brief-body a.deep-dive-cta,
+    a.deep-dive-cta { display:inline-block; padding:14px 26px; background:var(--ci-gold); color:#FFFFFF; font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; letter-spacing:0.02em; }
+    .brief-body a.deep-dive-cta:hover,
+    a.deep-dive-cta:hover { opacity:0.92; color:#FFFFFF; }
+    .deep-dive-examples { font-size:13px; color:var(--mmt-text-secondary); font-style:italic; margin-top:8px; }
+  </style>
+</head>
+<body>
+  <nav class="nav-editorial"></nav>
+
+  <main class="wrap" style="padding:48px 0 80px; max-width:820px;">
+    <a href="/capture-corner.html" class="back-link">&larr; Capture Corner</a>
+
+    <div style="margin-top:20px; margin-bottom:8px;">
+      <div class="section-label">MMT Premium &middot; Capture Corner &middot; June 12, 2026</div>
+    </div>
+    <h1 style="font-size:clamp(26px,3.2vw,38px);line-height:1.1;letter-spacing:-0.03em;margin-bottom:10px;">The Expert Test. How to Tell a Chat Window From an Agent, and How to Keep AI From Sinking Your Bid.</h1>
+    <p style="font-size:15px;color:var(--mmt-text-secondary);margin-bottom:20px;"><em>Companion to &ldquo;The Expert You Cannot Buy Off the Shelf.&rdquo; The public issue makes the case. This is the operator&rsquo;s layer: the three-rung diagnostic, the six-question SME-inside test, the pricing pressure-test against CALC and cost realism, the human-gate standard for AI-generated content, the nine agent-security questions, and the build-buy call that decides the small-business trap.</em></p>
+
+    <div class="pills">
+      <span class="pill pill-gold">Capture Corner</span>
+      <span class="pill">AI Agents</span>
+      <span class="pill">Cost Realism</span>
+      <span class="pill">GSA CALC</span>
+      <span class="pill">Human Gates</span>
+      <span class="pill">Agent Security</span>
+      <span class="pill">NIST</span>
+      <span class="pill">Small Business</span>
+      <span class="pill pill-red">AI-Misuse Sanctions</span>
+    </div>
+
+    <div data-gate="free" style="display:block;">
+      <div class="gate-notice">
+        <h3>&#9733; Premium Capture Corner</h3>
+        <p>The full operator&rsquo;s companion: the three-rung diagnostic that names what your &ldquo;AI&rdquo; actually is, the six-question SME-inside test for any vendor selling judgment, the pricing pressure-test that catches the 47-percent rate before cost realism does, the human-gate standard with the override-rate metric that proves a review is real, the nine agent-security questions to put in writing, and the what-to-do-this-week list. Free members see the framing; premium gets the full board.</p>
+        <a class="gate-cta" href="/pricing">See premium plans</a>
+      </div>
+    </div>
+
+    <div data-access="premium" data-gate="premium" class="brief-body">
+
+<p><em>Capture Corner is the premium BD intelligence companion to Mission Meets Tech. Public-record sourced. Independent analysis. Not a recommendation, not vendor advocacy, not capture material. Built for federal health BD, capture, and proposal leaders who need analytical depth, not headlines.</em></p>
+<p><em>This issue is the operator&#39;s companion to the public piece, &quot;The Expert You Cannot Buy Off the Shelf.&quot; It turns the argument into the tests a capture lead runs before buying an AI agent, before letting AI output ship, and before signing a vendor&#39;s &quot;agent.&quot; Public-record sourced. Not a recommendation, not vendor advocacy.</em></p>
+<hr>
+<p>The public issue made the case: the expert who makes a federal AI agent safe is the product, not the cost the agent removes. Capture Corner turns that into the checks you run this week, on the tools you are buying, the output you are shipping, and the vendors selling you the word &quot;agent.&quot;</p>
+<p>Two failures from the public issue anchor everything here. A pricing sheet built on AI-invented rates, one line priced 47 percent under GSA for a master&#39;s-degree professional with ten years. A hundred AI-generated questions forwarded to a subcontractor for whom not one of them fit. Neither was a model failure. Both were the failure of the check that was supposed to stand between the tool and the bid. These are the checks.</p>
+<p>The scale of the gap is now measured. Reading Deltek&#39;s 2026 Clarity numbers, GovCon analyst Jean Watterson puts it at 94 percent of firms using AI and 5 percent with governance behind it. Her conclusion is the one to keep: in a protest, the firm that can show a human reviewed and validated the AI&#39;s work is the one that survives.</p>
+<hr>
+<h2>1. The three-rung diagnostic: model, project, or agent?</h2>
+<p>Before any other decision, name what you actually have. Most &quot;AI adoption&quot; is a chat seat, and a chat seat carries none of the judgment a bid needs.</p>
+<table>
+<thead>
+<tr>
+<th>What you have</th>
+<th>What it is</th>
+<th>The tell</th>
+<th>Trust it with</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A chat seat (Claude, ChatGPT)</td>
+<td>A bare model</td>
+<td>Answers anything, grounded in nothing, no memory of your rules</td>
+<td>First drafts a human rewrites in full</td>
+</tr>
+<tr>
+<td>A project</td>
+<td>A model plus your data, prompts, and guardrails</td>
+<td>Knows your context, holds to a defined task</td>
+<td>Structured work inside set lanes, human reviews every output</td>
+</tr>
+<tr>
+<td>An agent</td>
+<td>A project that plans and acts across steps and tools</td>
+<td>Takes actions, calls other systems, picks its own path</td>
+<td>Only what an expert has bounded, gated, and can stop</td>
+</tr>
+</tbody></table>
+<p>If your &quot;agent&quot; cannot show you the rules it enforces, the data it is grounded in, and the actions it will not take without a human, you have a chat window with a markup. Andrew Ng&#39;s benchmark is the reason this matters: a weaker model wired well beat a stronger model used raw, 95 percent against 67. The wiring is the product, and the wiring is what you are auditing in every section below.</p>
+<hr>
+<h2>2. The SME-inside test: is real expertise actually wired in?</h2>
+<p>Run this on any vendor selling you a proposal or capture agent, and on any internal build. The point is to find out whose judgment is inside it.</p>
+<p>Ask, and require evidence:</p>
+<ol>
+<li><strong>Who authored the judgment?</strong> Name the capture and proposal SMEs, their years, their win and loss record. If the only names are engineers, that is the tell.</li>
+<li><strong>Show me the rules it enforces.</strong> Produce the labor-rate bands, the scope boundaries, the compliance logic, the discriminators it weights. A real build can show them. A wrapper cannot.</li>
+<li><strong>What does it refuse to do without a human?</strong> Name the high-stakes actions that halt and hand back control.</li>
+<li><strong>How is it grounded?</strong> Which authoritative sources does it reason over, the current schedule, the actual solicitation, real labor data, versus the base model&#39;s general knowledge.</li>
+<li><strong>How does it get corrected, and re-trained when the model changes underneath?</strong> Ask who owns that loop and how often it runs.</li>
+<li><strong>Who can tell when it has drifted?</strong> If the answer is no one, the agent is unsupervised.</li>
+</ol>
+<p>Scoring: a vendor who can name the SMEs and show the encoded rules is selling you a project or an agent. A vendor who answers in model names and benchmarks is selling you a chat window. Buy accordingly.</p>
+<hr>
+<h2>3. The pricing pressure-test: cost realism before it ships</h2>
+<p>This is the 47-percent failure, turned into a procedure. Run it on any AI-built pricing input before it enters a bid.</p>
+<ol>
+<li><strong>Treat the AI rates as a hypothesis, not an answer.</strong> The tool produced numbers. The numbers are unverified until a human walks them.</li>
+<li><strong>Walk each labor category against the current GSA schedule and real market data.</strong> CALC rates are not-to-exceed ceilings, not market truth, and GSA&#39;s own inspector general found the CALC data incomplete, inaccurate, and duplicative. Use it as a sanity bound, not a source.</li>
+<li><strong>Run the staffing math.</strong> At this rate, can you hire and retain a person who meets the labor-category qualifications? If the rate cannot fill the seat, the rate is wrong.</li>
+<li><strong>Flag anything outside the defensible band for SME review</strong> before it goes in.</li>
+</ol>
+<p>Red flags that should stop a sheet cold:</p>
+<table>
+<thead>
+<tr>
+<th>Red flag</th>
+<th>Why it is dangerous</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A rate far below GSA for the stated qualifications</td>
+<td>The 47-percent line. You cannot staff it</td>
+</tr>
+<tr>
+<td>A labor category that does not map to the SOW</td>
+<td>Fabricated category feeding distorted pricing</td>
+</tr>
+<tr>
+<td>A category your SME does not recognize</td>
+<td>The model invented it</td>
+</tr>
+<tr>
+<td>Round numbers with no build-up</td>
+<td>No basis of estimate behind them</td>
+</tr>
+</tbody></table>
+<p>The standard behind this: FAR 15.404-1 lets the government test whether a price is realistic and downgrade a bid that is not. An under-market rate is not a competitive edge. It is an evaluation risk and a staffing failure waiting for award.</p>
+<hr>
+<h2>4. The human-gate standard for AI-generated content</h2>
+<p>This is the hundred-questions failure, turned into a rule. Nothing AI-generated leaves the building unread by the right human. The proposal field&#39;s own floor says the same: treat every AI output like a first draft from a talented junior analyst, with a human on it at every stage.</p>
+<p><strong>Who reads what:</strong></p>
+<ul>
+<li>Pricing inputs go to the capture or pricing lead.</li>
+<li>Questions or content bound for the government or a teammate go to the person who owns that relationship and knows the scope.</li>
+<li>Technical narrative goes to the SME who owns the solution.</li>
+</ul>
+<p><strong>The relevance check, before anything sends.</strong> Confirm audience and scope. Is this for us, for the prime, or for the government? Does it fit our agreement? The hundred questions failed this one test, and it cost the relationship, not just the hour.</p>
+<p><strong>Measure that the gate is real.</strong> Track the override rate, how often the human actually changes the AI output. A near-zero override rate means a rubber stamp, not a review. Audit a sample of shipped AI content monthly. Microsoft&#39;s AI red team, after a year of testing agent systems, found human-in-the-loop bypass the most consistently exploited failure mode of all. The gate fails hardest where people trust it most.</p>
+<p><strong>Why the stakes are now legal.</strong> Hallucinated citations are drawing consequences. A construction firm&#39;s brief was struck at the ASBCA with more than seventy percent of citations inaccurate. GAO dismissed a protest as a sanction in what appears to be a first. A second GAO protest drew a warning over the hallmarks of AI invention. One tracker counts thirty-one AI-misuse filings in federal procurement disputes last year, twenty-three at GAO. A hallucination that reaches a filing is a sanction exposure with your firm&#39;s name on it.</p>
+<p><strong>It is coming into the solicitations.</strong> OMB M-24-18 advises agencies to consider requirements language asking vendors to report any proposed use of AI in their submissions. Build a gate you can describe and document, because you may soon have to.</p>
+<p><strong>The speed trap.</strong> The busy afternoon before a deadline is exactly when the gate gets skipped. Design it to survive the crunch, or it is not a control.</p>
+<hr>
+<h2>5. The agent-security questions for any vendor selling you an &quot;agent&quot;</h2>
+<p>If a vendor is selling autonomy, these are the questions that separate a built agent from a liability. Put them in writing.</p>
+<ol>
+<li><strong>The trifecta.</strong> Does this agent touch private, PHI, or proprietary data, read untrusted input, and communicate externally? All three together are the exploitable combination. Microsoft published the same boundary in June 2026 as its Agents Rule of Two: never let an agent hold all three at once. Two security shops, one conclusion. Ask how they keep the agent under two.</li>
+<li><strong>Scoped identity.</strong> Can the agent reach only what its task needs? A pricing agent should never be able to touch a personnel or pharmacy record.</li>
+<li><strong>Runtime gating.</strong> Can a wrong action be caught and stopped in the moment before it executes?</li>
+<li><strong>Human approval on high-stakes actions,</strong> defined by the builder and not overridable by the agent.</li>
+<li><strong>Observability.</strong> Is PHI and proprietary data kept out of the logs?</li>
+<li><strong>Hijacking posture.</strong> NIST red-teaming drove agent-hijacking success from 11 percent to 81 percent against the strongest method. Ask how they test against prompt injection.</li>
+<li><strong>Shadow control.</strong> A Cloud Security Alliance survey found 82 percent of organizations had discovered agents running that they did not know about. A separate alliance survey found 47 percent had already had a security incident involving an agent, and most of them needed five hours or more to detect and respond. Ask whether they can see and stop every agent in the environment, and how long detection takes.</li>
+<li><strong>The FAR gap.</strong> No FAR clause governs AI-agent security yet. NIST is developing SP 800-53 control overlays for agent systems through its COSAiS project, with initial public drafts expected in 2026 and the full series not finalized until 2027. No date is locked. Ask whether they build to CISA and OWASP guidance now, and whether they commit to the NIST overlays when they land.</li>
+<li><strong>Model plurality.</strong> If the agent depends on a single frontier lab, ask what happens to your deployment if that lab&#39;s federal standing changes. A program that cannot survive one provider going dark is a continuity risk.</li>
+</ol>
+<p>A vendor who answers all nine with specifics is selling an agent. A vendor who answers with a demo is selling a risk.</p>
+<p>One obligation your readers carry that a general AI buyer does not. There may be no FAR clause for agent security yet, but if the agent touches PHI or CUI, the rules already attach. HIPAA&#39;s minimum-necessary standard and audit-control requirements govern PHI, and CMMC with NIST SP 800-171 and the new 800-172 Revision 3 govern CUI. Treat any agent that can reach email, documents, or a system of record as a privileged integration: role-scoped, logged, and denied unrestricted access by default.</p>
+<hr>
+<h2>6. Build, buy, and the small-business trap</h2>
+<p>Reliability decides this more than capability does. Sol Rashidi, a former chief AI officer, wrote in June that she shut down two of her own agents after weeks of work because they ran a failure rate near 50 percent. Her takeaway: automation is the easy part, reliability is the hard one. If a CAIO cannot hold an agent reliable inside her own shop, a three-person bid team will not either.</p>
+<p><strong>When to build with your SME.</strong> When the judgment is your differentiator, your win themes, your pricing discipline, your past-performance framing, you do not hand that to a vendor&#39;s general model. You encode it with your own expert. The seasoned shops say the same: keep your experts on the win themes, the solutioning, and the price, and let AI take the bios and the matrices.</p>
+<p><strong>When to buy.</strong> When the task is commodity workflow, buy, but only from a vendor who clears Section 2. The agent inherits whatever judgment was wired in. Buy the one with judgment in it.</p>
+<p><strong>The trap that catches small shops.</strong> The smaller the firm, the louder the pitch. The promise sold to a three-person business is that AI lets it bid like a thirty-person business, eighteen to twenty-four bids a quarter instead of six. The capability is real. What the three-person shop does not have is the second capture veteran who catches the agent when it invents a rate or misreads a scope. A large program survives a bad draft because ten people touch it. A small business bets the company on a draft that went out without a senior set of eyes. The tool does not supply that reviewer. You still have to. Do not let the velocity talk you out of the one review you can least afford to skip.</p>
+<p>The goal here is better AI use, not less of it. Mark Freeman, a capture professional, drew the boundary cleanly: AI inside a disciplined pursuit process is a force multiplier, and the same AI in front of a broken go or no-go process is an accelerant. Every check in this issue keeps you on the multiplier side of that line.</p>
+<hr>
+<h2>7. What to do this week</h2>
+<ol>
+<li><strong>Inventory your stack against the three rungs.</strong> For every &quot;AI&quot; your team uses on bids, label it a chat seat, a project, or an agent, and write down what each is allowed to touch unsupervised.</li>
+<li><strong>Run the SME-inside test on your top vendor.</strong> Send the six questions in Section 2. The answers tell you whether you bought judgment or a wrapper.</li>
+<li><strong>Adopt the pricing pressure-test as a gate.</strong> No AI-built rate enters a bid without a walk against GSA and a staffing-math check. Make the four red flags a stop-the-line list.</li>
+<li><strong>Write the human-gate standard down.</strong> Name who reads what, set a relevance check before anything sends, and start tracking override rates so you can prove the gate is real.</li>
+<li><strong>Put the nine security questions in your next vendor evaluation.</strong> Score every &quot;agent&quot; pitch against them before you sign.</li>
+<li><strong>If you are a small shop,</strong> name the one human who reads every bid before it ships, and protect that step from the deadline crunch. It is the cheapest insurance you have.</li>
+</ol>
+<hr>
+<h2>Editorial discipline note</h2>
+<p>Capture Corner is built to be useful, not provocative. It does not name preferred vendors. It does not recommend a build-or-buy choice for your firm. It does not characterize any vendor&#39;s product beyond what public records and the vendor&#39;s own claims support. It does not reveal nonpublic information. What it does is take the public issue&#39;s argument and turn it into the practitioner-level checks BD and capture leaders actually have to run. Use it accordingly. Vendor performance figures cited here are the vendors&#39; own claims, labeled as such, and are competitive context, not endorsements. Practitioner statements are attributed to the named individuals who made them, and the 94 and 5 percent figures are Jean Watterson&#39;s reading of Deltek&#39;s 2026 Clarity report.</p>
+<hr>
+<p>Mary</p>
+<p>Mission Meets Tech Premium</p>
+<hr>
+<h2>Sources</h2>
+<p>[CC1] Jean Watterson, LinkedIn, May 19, 2026, citing Deltek&#39;s 2026 Clarity Report (94% of GovCon firms using AI, 5% with governance; the firm able to show a human reviewed and validated AI output is the one that survives a protest). <a href="https://www.linkedin.com/posts/jean-watterson_govcon-bidandproposal-aigovernance-activity-7462493307206639616-M1Pw">https://www.linkedin.com/posts/jean-watterson_govcon-bidandproposal-aigovernance-activity-7462493307206639616-M1Pw</a></p>
+<p>[CC2] Andrew Ng, &quot;How Agents Can Improve LLM Performance,&quot; DeepLearning.AI, The Batch (HumanEval 48.1% / 67.0% / 95.1%). <a href="https://www.deeplearning.ai/the-batch/how-agents-can-improve-llm-performance/">https://www.deeplearning.ai/the-batch/how-agents-can-improve-llm-performance/</a></p>
+<p>[CC3] U.S. General Services Administration, OASIS+ Buyers Guide / Complete Market Research (CALC+ rates as not-to-exceed ceiling rates). <a href="https://www.gsa.gov/buy-through-us/products-and-services/professional-services/buy-services/oasis-plus/buyers-guide/complete-market-research">https://www.gsa.gov/buy-through-us/products-and-services/professional-services/buy-services/oasis-plus/buyers-guide/complete-market-research</a></p>
+<p>[CC4] GSA Office of Inspector General, Report A180068, December 23, 2019 (CALC data incomplete, inaccurate, and duplicative). <a href="https://www.gsaig.gov/sites/default/files/audit-reports/A180068_1.pdf">https://www.gsaig.gov/sites/default/files/audit-reports/A180068_1.pdf</a></p>
+<p>[CC5] Federal Acquisition Regulation 15.404-1, &quot;Proposal analysis techniques&quot; (cost realism). <a href="https://www.acquisition.gov/far/15.404-1">https://www.acquisition.gov/far/15.404-1</a></p>
+<p>[CC6] Coley GSA, &quot;AI in Government Contracting: Risks and Benefits&quot; (fabricated labor categories). <a href="https://www.coleygsa.com/ai-in-government-contracting-risks-benefits/">https://www.coleygsa.com/ai-in-government-contracting-risks-benefits/</a></p>
+<p>[CC7] GovBidLab, &quot;AI Government Proposal Writing Compliance Guide,&quot; March 26, 2026 (treat output like a junior analyst&#39;s first draft; human review at every stage). <a href="https://govbidlab.com/blog/ai-government-proposal-writing-compliance-guide">https://govbidlab.com/blog/ai-government-proposal-writing-compliance-guide</a></p>
+<p>[CC8] Armed Services Board of Contract Appeals, Huffman Construction, ASBCA Nos. 62591, 62783, October 23, 2025 (over 70% of citations inaccurate; brief struck). <a href="https://www.asbca.mil/LinkClick.aspx?fileticket=eAIy2KSL_Zg%3D&portalid=143">https://www.asbca.mil/LinkClick.aspx?fileticket=eAIy2KSL_Zg%3D&amp;portalid=143</a></p>
+<p>[CC9] Government Accountability Office, Oready, LLC, B-423649, September 25, 2025 (sanctions dismissal, reported as an apparent first), via GovCon Judicata. <a href="https://www.govconjudicata.com/single-post/alert-using-sanctions-gao-dismisses-protest-where-protester-used-non-existent-citations-and-cases">https://www.govconjudicata.com/single-post/alert-using-sanctions-gao-dismisses-protest-where-protester-used-non-existent-citations-and-cases</a></p>
+<p>[CC10] Government Accountability Office, Bramstedt Surgical, B-424064, January 28, 2026 (&quot;hallmarks&quot; of AI-generated authority), via PilieroMazza. <a href="https://www.pilieromazza.com/beware-the-hallmarks-of-ai-recent-gao-decision-provides-cautionary-tale-for-protesters/">https://www.pilieromazza.com/beware-the-hallmarks-of-ai-recent-gao-decision-provides-cautionary-tale-for-protesters/</a></p>
+<p>[CC11] Burr &amp; Forman, &quot;Gen-AI Misuse in Procurement Litigation&quot; (31 filings in 2025; 23 at GAO). <a href="https://www.burr.com/government-contracting/gen-ai-misuse-in-procurement-litigation">https://www.burr.com/government-contracting/gen-ai-misuse-in-procurement-litigation</a></p>
+<p>[CC12] Office of Management and Budget, M-24-18, &quot;Advancing the Responsible Acquisition of Artificial Intelligence in Government,&quot; September 24, 2024 (agencies may require vendors to report proposed AI use in submissions; verified at section 4(a)(i)). <a href="https://www.whitehouse.gov/wp-content/uploads/2024/10/M-24-18-AI-Acquisition-Memorandum.pdf">https://www.whitehouse.gov/wp-content/uploads/2024/10/M-24-18-AI-Acquisition-Memorandum.pdf</a></p>
+<p>[CC13] Microsoft AI Red Team, &quot;Updating the Taxonomy of Failure Modes in Agentic AI Systems,&quot; June 4, 2026 (human-in-the-loop bypass the most consistently exploited failure mode). <a href="https://www.microsoft.com/en-us/security/blog/2026/06/04/updating-taxonomy-failure-modes-agentic-ai-systems-year-red-teaming-taught-us/">https://www.microsoft.com/en-us/security/blog/2026/06/04/updating-taxonomy-failure-modes-agentic-ai-systems-year-red-teaming-taught-us/</a></p>
+<p>[CC14] Simon Willison, &quot;The Lethal Trifecta for AI Agents,&quot; June 16, 2025. <a href="https://simonw.substack.com/p/the-lethal-trifecta-for-ai-agents">https://simonw.substack.com/p/the-lethal-trifecta-for-ai-agents</a></p>
+<p>[CC15] Microsoft Security, &quot;Securing CI/CD in an Agentic World,&quot; June 5, 2026 (the &quot;Agents Rule of Two&quot;: an agent should not simultaneously hold untrusted input, sensitive access, and the ability to change state or communicate externally). <a href="https://www.microsoft.com/en-us/security/blog/2026/06/05/securing-ci-cd-in-agentic-world-claude-code-github-action-case/">https://www.microsoft.com/en-us/security/blog/2026/06/05/securing-ci-cd-in-agentic-world-claude-code-github-action-case/</a></p>
+<p>[CC16] NIST, &quot;Strengthening AI Agent Hijacking Evaluations,&quot; January 2025 (attack success 11% to 81%). <a href="https://www.nist.gov/news-events/news/2025/01/technical-blog-strengthening-ai-agent-hijacking-evaluations">https://www.nist.gov/news-events/news/2025/01/technical-blog-strengthening-ai-agent-hijacking-evaluations</a></p>
+<p>[CC17] Cloud Security Alliance / Token Security, &quot;82% of Enterprises Have Unknown AI Agents in Their Environments,&quot; April 21, 2026. <a href="https://cloudsecurityalliance.org/press-releases/2026/04/21/new-cloud-security-alliance-survey-reveals-82-of-enterprises-have-unknown-ai-agents-in-their-environments">https://cloudsecurityalliance.org/press-releases/2026/04/21/new-cloud-security-alliance-survey-reveals-82-of-enterprises-have-unknown-ai-agents-in-their-environments</a></p>
+<p>[CC18] Cloud Security Alliance, &quot;AI Agent Security Starts with Scope Control,&quot; May 12, 2026 (47% had a security incident involving an AI agent in the past 12 months; 58% take five hours or more to detect and respond). <a href="https://cloudsecurityalliance.org/blog/2026/05/12/ai-agent-security-starts-with-scope-control">https://cloudsecurityalliance.org/blog/2026/05/12/ai-agent-security-starts-with-scope-control</a></p>
+<p>[CC19] NIST, &quot;Announcing the AI Agent Standards Initiative,&quot; February 17, 2026 (promises research, guidelines, and further deliverables; does not commit to an &quot;overlay&quot; timeline). <a href="https://www.nist.gov/news-events/news/2026/02/announcing-ai-agent-standards-initiative-interoperable-and-secure">https://www.nist.gov/news-events/news/2026/02/announcing-ai-agent-standards-initiative-interoperable-and-secure</a></p>
+<p>[CC20] Cloud Security Alliance research note, &quot;Federal Agentic AI Security: NIST&#39;s Emerging Standards Initiative,&quot; March 30, 2026 (NIST COSAiS SP 800-53 control overlays still in development, no timeline announced, full series targeted for 2027; no FAR clause governs AI-agent security; FAR Part 39 is general IT policy). <a href="https://labs.cloudsecurityalliance.org/research/csa-research-note-nist-ai-agent-standards-federal-framework/">https://labs.cloudsecurityalliance.org/research/csa-research-note-nist-ai-agent-standards-federal-framework/</a></p>
+<p>[CC21] OWASP, &quot;AI Agent Security Cheat Sheet&quot; (least-privilege tooling, explicit approval for high-impact or irreversible actions, treat external data as untrusted, log and redact). <a href="https://cheatsheetseries.owasp.org/cheatsheets/AI_Agent_Security_Cheat_Sheet.html">https://cheatsheetseries.owasp.org/cheatsheets/AI_Agent_Security_Cheat_Sheet.html</a></p>
+<p>[CC22] HHS Office for Civil Rights, &quot;Summary of the HIPAA Security Rule&quot; (minimum-necessary standard; audit controls to record and examine activity in systems that contain or use ePHI). <a href="https://www.hhs.gov/hipaa/for-professionals/security/laws-regulations/index.html">https://www.hhs.gov/hipaa/for-professionals/security/laws-regulations/index.html</a></p>
+<p>[CC23] NIST, Special Publication 800-172 Revision 3 (finalized May 13, 2026); CMMC and NIST SP 800-171 govern CUI handling for defense contractors. <a href="https://csrc.nist.gov/pubs/sp/800/172/r3/final">https://csrc.nist.gov/pubs/sp/800/172/r3/final</a></p>
+<p>[CC24] GovDash, &quot;GovCon AI: How AI Can Scale Your Proposal Team,&quot; January 13, 2026 (vendor claim: a three-person team handling 18 to 24 bids per quarter instead of six). <a href="https://www.govdash.com/blog/govcon-ai-how-ai-can-scale-your-proposal-team">https://www.govdash.com/blog/govcon-ai-how-ai-can-scale-your-proposal-team</a></p>
+<p>[CC25] Markon, &quot;Why AI Alone Won&#39;t Win Government Contracts,&quot; August 27, 2025 (keep SMEs on win themes, solutioning, and price; let AI take bios and matrices). <a href="https://www.markonsolutions.com/blog/why-ai-alone-wont-win-government-contracts-and-what-to-do-instead">https://www.markonsolutions.com/blog/why-ai-alone-wont-win-government-contracts-and-what-to-do-instead</a></p>
+<p>[CC26] Sol Rashidi, LinkedIn, June 3, 2026 (shut down two of her own agents over a roughly 50% failure rate; automation is the easy part, reliability is the hard one). <a href="https://www.linkedin.com/posts/sol-rashidi-mba-a672291_on-monday-i-fired-2-agents-so-3-weeks-ago-activity-7468009797192224768-cY4B">https://www.linkedin.com/posts/sol-rashidi-mba-a672291_on-monday-i-fired-2-agents-so-3-weeks-ago-activity-7468009797192224768-cY4B</a></p>
+<p>[CC27] Mark Freeman, LinkedIn, May 14, 2026 (AI inside a disciplined pursuit process is a force multiplier; in front of a broken go/no-go process it is an accelerant). <a href="https://www.linkedin.com/posts/markafreeman1_ai-is-making-your-proposal-team-more-productive-activity-7460645133282349057-Leud">https://www.linkedin.com/posts/markafreeman1_ai-is-making-your-proposal-team-more-productive-activity-7460645133282349057-Leud</a></p>
+
+
+<div class="deep-dive-card">
+  <div class="section-label" style="color:var(--ci-gold);margin-bottom:8px;">Custom Deep Dive &middot; Premium Add-On</div>
+  <h3>Want a custom deep-dive on any line in this brief?</h3>
+  <p>This Capture Corner maps the three-rung diagnostic, the SME-inside test, the pricing pressure-test, the human-gate standard, the nine security questions, and the build-buy call. Where it stops short &mdash; vetting a specific vendor&rsquo;s &ldquo;agent&rdquo; against the SME-inside and security tests, walking your own AI-built pricing sheet against CALC and the staffing math, drafting the human-gate SOP for your shop, or scoping what your own SME should encode into an internal build &mdash; the next layer of intelligence is <strong>custom by request</strong>.</p>
+  <div class="deep-dive-price"><span class="amount">$50</span><span class="unit">one-time &middot; 5&ndash;7 business day turnaround</span></div>
+  <p>I will pull the additional public-record sources, read the visible signal, and write a 4&ndash;6 page custom intelligence memo on the area you select. You name the question; I do the BD-grade analysis.</p>
+  <p style="margin-bottom:18px;"><a class="deep-dive-cta" href="https://buy.stripe.com/6oUdRb2NEaQI3uM6KL4c803">Buy a Custom Deep Dive &mdash; $50 &rarr;</a></p>
+  <p class="deep-dive-examples">Examples: <em>"Expert Test Deep Dive &mdash; score [vendor] against the SME-inside and nine security questions" &middot; "Deep Dive &mdash; pressure-test my AI-built pricing sheet against CALC and staffing math" &middot; "Deep Dive &mdash; the human-gate SOP for my proposal shop" &middot; "Deep Dive &mdash; what my SME should encode into our internal agent build"</em></p>
+</div>
+
+    </div>
+  </main>
+
+  <footer class="footer"></footer>
+</body>
+</html>

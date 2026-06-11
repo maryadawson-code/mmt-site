@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-05-28T21:29:30.281Z",
-  "total": 182,
+  "generated_at": "2026-06-11T18:23:23.872Z",
+  "total": 204,
   "note": "Public subset of mmt-content-corpus.json (premium=false items only). For unauthenticated endpoints. Per Sprint C 2026-05-14.",
   "counts": {
-    "articles": 114,
-    "contracts": 36,
+    "articles": 117,
+    "contracts": 55,
     "glossary": 0,
     "idiq_vehicles": 32
   },
@@ -1810,6 +1810,89 @@
       "premium": false
     },
     {
+      "id": "article-industry-leader-out-of-scope",
+      "type": "article",
+      "title": "Industry Leader, Out of Scope",
+      "slug": "industry-leader-out-of-scope",
+      "date": "2026-06-02",
+      "description": "On May 29, 2026, VA posted RFI 36C10B26Q0485, market research for an enterprise AI buy meant to move a 540,000-person workforce from assistive tools to autonomous agents acting on veteran health data. The same document sends governance out of scope. Here is how VA earns the leadership it claims: sequence the agents by risk, put governance on the quarterly clock the price already runs on, and buy all four parts, the capability and the three preconditions that make it safe.",
+      "tags": [
+        "VA",
+        "Enterprise AI",
+        "Agentic AI",
+        "AI Governance",
+        "RFI 36C10B26Q0485",
+        "Veteran Health",
+        "Clinical AI",
+        "Autonomous Agents",
+        "NIST Agentic Overlay",
+        "Chief AI Officer",
+        "M-25-22",
+        "M-25-21",
+        "VA Directive 6500",
+        "Federal Health IT",
+        "Frontier AI Labs"
+      ],
+      "url": "/articles/industry-leader-out-of-scope/",
+      "excerpt": "Industry Leader, Out of Scope VA's enterprise AI market research says the department intends to be an industry leader, with strong governance and trust. The same document sends governance, an AI-ready workforce, and data infrastructure out of scope of the buy. It keeps the capability to field autonomous agents on veteran health data. Friends, A veteran begins her first round of chemotherapy. The instructions she will follow at home, the warning signs, the dosing, the interactions to avoid, come from a draft an AI agent wrote after reading her chart, and somewhere in that draft a contraindication is missing. The clinician is carrying a full panel that afternoon. The draft reads clean. The signature goes down. That is the kind of work VA is now buying. RFI 36C10B26Q0485, posted May 29, is market research for an enterprise AI buy meant to move a workforce of roughly 540,000 from assistive tools to autonomous agents acting on veteran health data. The agent drafting a first chemotherapy cycle's take-home instructions is VA's own example, written into the document. And the same document removes the safety system from the purchase. Governance, the RFI says, is \"out of scope for this acquisition.\" VA has reached for this once already. A sources-sought went out in February asking industry what autonomous agents could do for the department, and VA withdrew it in April after the market answered, with a line about future efforts remaining possible. Six weeks later it is reaching again, larger. The question worth a federal leader's time is whether VA builds the second reach differently than the first. VA's RFI opens by saying the department intends to be an industry leader in adopting AI, with strong governance and trust. Then it lists five priorities and sends the fifth, governance, out of scope of the buy, to be run by other programs on another schedule. Both cannot be true at once. A leader's governance moves at the speed of its capability. A follower's lags behind and calls the lag caution. I have built this kind of architecture on a federal program, before the RFIs caught up to it. The model was the easy part. The authorization was the hard part, written for a system that never changes, wrapped around one that changed every week. That gap is the whole problem. It is also the whole opportunity. The way VA earns the leadership it has claimed is to close the gap on purpose, and to let risk decide the order the agents go live. Lead where you have already won Start the agents where VA already has proof. That ground is software development. VA's own figures show roughly 2,000 developers using AI-assisted coding and saving eight hours a week, most reporting the time went to better work. That work runs on code, not protected health information, and its mistakes surface in testing and review rather than in a chart. An agent told to build and test a pipeline and open a pull request for a human to approve is the safest place in the enterprise to learn how agents behave when they act on their own. The demand is already there, unprompted. VA's pilot data shows one tool logging more than fifty billion input tokens in a single month against another's six, at identical provisioning and with neither group told to use it. The workforce is reaching for these tools on its own. The job is to point that pull at the lowest-risk work first. Clinical AI already works at VA, in the form that keeps a human in the loop. An AI-assisted decision-support tool was associated with a 22 percent drop in mortality. An AI-powered colonoscopy tool raised adenoma detection by 21 percent. VA's own chat assistant has roughly 95,000 sign-ups, with a subset of users reporting two to three hours saved a week. AI as decision support, with a clinician deciding, already works at VA. Autonomy is the unsolved part. So sequence by readiness. The developer agent leads. The housing-services agent, which carries a built-in human checkpoint and stops short of a clinical emergency, follows. The oncology agent that drafts chemotherapy instructions comes last. The capability is reachable. The consequence of a quiet error is highest there, and the supervision least mature. VA has lived the proof of why order matters. Its Smart Ratings AI, built to propose disability ratings for human review, sits paused with no release date after a review found the underlying decision support missed evidence and surfaced false matches. The administrative end, meanwhile, is paying off now. A Yale study saw clinician burnout fall from 51.9 to 38.8 percent within a month of an ambient scribe going live, and VA has already bought the technology for the new health record. Lead with the agents that draft and summarize for a human to approve. Hold the autonomous clinical decision. Put the two clocks into one The mechanical fix is smaller than the problem sounds. M-25-22, the memo that governs federal AI acquisition, already lets agencies monitor a system's performance quarterly. VA can take the pricing cycle the RFI already builds in, a re-price and a possible model swap at least every quarter, and make each one a mandatory governance checkpoint. Every time the model or the price changes, the risk and impact review runs again. Each checkpoint is a real review: the impact assessment re-run, the new model version re-tested on VA data, the data-handling and refusal-behavior changes logged before the agent keeps acting. The capability clock and the governance clock become one clock, by design. The arithmetic is what makes it urgent. The governance program runs on annual and one-time marks. The federal deadline to document minimum safety practices for high-impact AI, the category healthcare falls into by default, landed on or about April 3 this year, and the rule is blunt: a high-impact use that cannot meet the practices has to be discontinued. The inventory updates once a year. The acquisition runs on quarters. A model that re-benchmarks in the spring can arrive by summer with a wider context window or a different refusal behavior, each of which changes what the agent will attempt on a record, and the calendar schedules no review to catch it. A leader closes that gap with an owner. Federal policy makes the Chief AI Officer the one who decides what counts as high-impact, signs the waivers, and tracks the risk. VA's CAIO announced his departure in March. An agent program acting on veteran PHI cannot run with that seat empty or acting. The official who owns the risk has to exist before the risk does. Fill the seat before the first agent goes live. Build the pathway the inventory does not have The authorization was built for systems that do not act. VA Directive 6500 clears static systems against fixed controls, encryption, access, logging. It does not ask how far an autonomous agent's actions can range, what data it can reach, or which steps must stop for a human. VA's own automation platform shows the mismatch in miniature: its privacy assessment describes the system as transmitting information rather than analyzing it, language built for a passive pipe, and exactly what a reasoning agent breaks. The control pattern that answers those questions already exists, outside this buy. The field has converged on sorting agent actions by stakes. Low-stakes work an agent does on its own, read-only retrieval and drafting. Moderate-stakes work routes through a second check. High-stakes work, anything irreversible, financially significant, or touching PHI, requires a human approval the system's builders define and the agent cannot override. Around those tiers sit a scoped identity that keeps a housing agent from ever touching a pharmacy record, a runtime gate that stops a wrong action in the half-second before it executes, and observability that keeps PHI out of the logs. One move makes this real now. VA should turn the RFI's optional AI safety service into a requirement for any agentic surface, and commit to adopting the NIST agentic overlay the day it p",
+      "premium": false
+    },
+    {
+      "id": "article-the-honesty-premium",
+      "type": "article",
+      "title": "The Honesty Premium",
+      "slug": "the-honesty-premium",
+      "date": "2026-06-09",
+      "description": "Six Army captains audited a fleet of dozer maintenance records, found more than 82% of the entries useless, and published it under their own names. A firm priced a job with real AI productivity and got told the price was too low to be credible. Two cases this spring, one about data and one about price, and the system marked both honest parties down. Here is why the machinery underneath speed, innovation, and small business still pays out to the old model, and what it means for the military health enterprise that has the most at stake.",
+      "tags": [
+        "Army",
+        "Department of War",
+        "Defense Health Agency",
+        "Data Quality",
+        "AI Governance",
+        "Dirty Data",
+        "Vantage",
+        "Cost Realism",
+        "Acquisition Reform",
+        "Small Business",
+        "FY2027 NDAA",
+        "Medical Readiness",
+        "Federal Health IT",
+        "Section 809 Panel",
+        "PPBE Reform"
+      ],
+      "url": "/articles/the-honesty-premium/",
+      "excerpt": "The Honesty Premium The administration is pushing speed, innovation, and small business. Two cases this spring ask whether the machinery underneath was built to deliver it, or only to announce it. Friends, Six Army captains pulled the maintenance records for a fleet of Caterpillar D7 dozers. 4,097 records. 196,516 entries. They checked the numbers against the machines. More than 82% of the entries were useless. Roughly 62% of the dozers carried readings that cannot exist. Odometers running backward. Mileage no engine had turned. Then they published it. On the Army's own website, in Army Sustainment, under their own names. They titled it \"Dirty Data: Vantage is Not Enough.\" Their conclusion ran one sentence, and it belongs on the wall of every program office in the building: the center of gravity for AI is the quality of the data the model trains on, not the sophistication of the model. The grade that should worry everyone else Read that report as an embarrassment for the Army and you have misread it. Every service runs on data this messy. Personnel files, readiness rolls, supply counts, fuel logs, maintenance entries, typed in at the end of long days by people with somewhere else to be, rarely checked against the physical world the way these six captains checked their dozers. The mess is the federal baseline. The Army is the one that measured it, wrote it down, and signed its name. That is the honesty premium. The most useful thing a military service has done in the AI race this year is a confession. It is worth more than the platforms and partnerships announced beside it, because it is the only one that tells you whether the thing underneath the slide is real. Hold that against the year it landed in. The administration has bet the modernization story on three words: speed, innovation, small business. Field the newest models within 30 days. Reward the firm that redesigns the work instead of repeating it. Open the door to the small, fast company over the slow incumbent. The promise is a government that finally moves at the pace of the technology. The captains' report is the first hard test of that promise, and it asks a plain question. Is the machinery underneath built to deliver the promise, or only to announce it? Two cases this spring answer it. The first is about data. The second is about price. Both reward the same thing, and it is not honesty. Why speed makes this worse In January, the Department of War told its AI office to field the newest commercial models within 30 days of release and to treat that speed as a primary buying criterion. The civilian side passed an April deadline to put risk controls around its highest-impact systems. The whole government has its foot on the accelerator at once. A model is only as good as what you feed it. Feed it garbage and it does not break. It does not throw an error or refuse to answer. It answers fast. It sounds certain. It is wrong. The confidence is the danger, because a wrong answer delivered with a clean interface and a quick turnaround is the kind a busy commander acts on. Speed multiplies whatever is already in the data. Point a 30-day model-refresh cadence at records that are 82% unusable and you have built a fast way to reach the wrong conclusion. The accelerator and the dirty tank are the same story from two ends. What the platform cannot fix Every service has built the machinery to look ready. The Army assigned a named owner to every category of data, stood up a hierarchy of stewards from headquarters to the command, and ordered its business and readiness data onto a single platform of record. The other services built their versions: implementation plans with deadlines, stewardship rules, enterprise data environments. On paper, the structure is impressive across the board. The structure is real. Whether the number under it is true is a separate question, and a harder one. In the Army, someone signs for the rifle, the truck, the radio. Accountability carries a name and a person who answers when the count is wrong. Putting a name on every dataset applied that logic to information, which is overdue and genuine progress. It still does not make the number true. A platform makes data findable. Making it true happens at the keyboard, at the moment a tired soldier enters a figure no system will check and no supervisor will reward him for getting right. Consolidating bad data onto a trusted platform leaves you with data that is trusted and bad, which is worse than bad alone, because now the wrong number wears the badge of the authoritative source. The Army built the most structure of any service. It is also the only one that published the grade. That second act is the one a buyer can trust, because a service that will tell you its data is broken is a service you can sell the fix to. The quiet ones are the harder bet. Silence could mean clean. It could mean hidden. From the outside you cannot tell which. The fix is incentives, not dashboards The captains did not stop at the diagnosis. They pointed to the counter-model inside their own house: an aviation maintenance platform where accurate reporting got easier and carried a tangible benefit, and where the data improved for a simple reason. The people entering it finally had a reason to get it right. Lower the cost of accuracy. Attach a reward to it. The numbers got better because the incentives changed, not because anyone bought a better dashboard. That is the whole game, and most modernization money misses it. The dollars chase platforms and models, the visible layer, the part that demos well. Data quality is decided one layer down, in the workflow, where a sergeant weighs the honest entry against the ninety seconds it costs him. No model reaches that decision. No platform reaches it either. A leader who redesigns the reporting so the honest entry is the easy one reaches it. Capability is downstream of incentives. The same trap, one layer up The incentive trap does not stop at the data. It runs straight up into how the government buys. A company priced a piece of work the honest way. It used AI for the drafting, the first-pass analysis, the document assembly. Work that took a team six weeks took a smaller team two. The firm priced the job at what it cost to deliver, plus a fair margin, well below what the same scope ran three years ago. The government came back and said the price was too low, that the firm did not understand the scope. That verdict came out of a cost-realism check, the analysis that governs cost-reimbursement bids and any fixed-price competition where the solicitation calls for it. The bid gets measured against an independent government estimate built the way those estimates are always built. Count the labor categories. Count the hours. Apply the burdened rates. Add overhead and fee. The model assumes the work gets done by people billing by the hour, the way it has been done for thirty years. A bid that prices in real AI productivity does not fit the model. The low number reads as low understanding. The firm that solved the efficiency problem gets marked down for solving it. Staff the job with bodies, bill the burdened hours, price to the historical baseline, and you clear the check without a question. Deliver the same outcome for less and you get a letter asking whether you read the requirement. One firm passes the savings to the government. The other keeps charging for them. The system selects for the second. None of this is bad faith. The realism rule exists to stop the contractor who buys in cheap and reprices later through change orders, and that protection is worth keeping. The rule just cannot tell a lowball apart from a genuine productivity gain. Both show up as a number below the baseline, and the evaluator has no model for the honest version, so the honest number gets treated as the dishonest one. The government has run this experiment before, and the record is public. When commercial cloud arrived, agencies kept scoring propo",
+      "premium": false
+    },
+    {
+      "id": "article-the-expert-you-cannot-buy-off-the-shelf",
+      "type": "article",
+      "title": "The Expert You Cannot Buy Off the Shelf",
+      "slug": "the-expert-you-cannot-buy-off-the-shelf",
+      "date": "2026-06-12",
+      "description": "I was handed an AI-built pricing sheet last week with rates wrong enough to break a contract, and a hundred AI-written questions meant for someone else. Same root cause. The model is now the cheap part. The expert whose judgment makes it safe is the part you cannot buy, and the part the market is busy trying to replace.",
+      "tags": [
+        "AI Agents",
+        "Artificial Intelligence",
+        "Cost Realism",
+        "GSA CALC",
+        "Capture Management",
+        "Proposal Development",
+        "Defense Health Agency",
+        "VA",
+        "NIST",
+        "GAO Protests",
+        "Agent Security",
+        "Small Business",
+        "FAR",
+        "Federal Health IT"
+      ],
+      "url": "/articles/the-expert-you-cannot-buy-off-the-shelf/",
+      "excerpt": "The Expert You Cannot Buy Off the Shelf I was handed an AI-built pricing sheet last week with rates wrong enough to break a contract, and a hundred AI-written questions meant for someone else. Same root cause. The model is now the cheap part. The expert whose judgment makes it safe is the part you cannot buy, and the part the market is busy trying to replace. Friends, Someone handed me a pricing document last week. It set the labor rates for a federal bid, and the market norms inside it were wrong by a margin wide enough to sink the work. Had the company bid those numbers, it would have won a contract it could not staff and walked itself into failure. I knew the rates were wrong the way you know a forged signature. One line priced a master's-degree professional with ten years in the field at 47 percent below the GSA rate. No one with that resume takes that rate. I have spent years walking labor rates against GSA schedules and the real market, and these did not match what it costs to put qualified people in seats. They had come out of an AI tool asked to establish what the market pays. It answered with confidence, and no one had checked the answer against anything real. The same week, a different stack of AI work landed on me. Nearly a hundred questions, AI generated, sent to me to answer as a subcontractor. They had been written for a technology vendor and for the government. Not one of them fit the scope of my agreement. Someone had a machine generate a pile of questions and forwarded it without reading who it was for. Two failures, one cause. A capable tool produced output, and the check that should have caught the error never ran. Sometimes no expert is in the room. Sometimes the expert is there and moving too fast to look. The model performs either way. The judgment that catches it is what goes missing. That missing check is the whole story of AI in federal work right now, and it is not a technology problem. The model is close to a commodity. What makes it safe to use is the judgment of someone who has done the work the agent is now doing, and that judgment has to be built into the agent by hand. The market is selling agents as if that person is the cost they remove. That person is the product. The expert is the product The word \"agent\" hides who does the hardest part. Someone has to decide what the agent should know, what good looks like, and when to stop. That work belongs to a domain expert, and the engineer building the system cannot do it for them. Most organizations never get that far. They buy a seat on Claude or ChatGPT for their people, roll it out, and believe they have adopted AI. They have bought a chat window. A chat window, a project, and an agent are three different things, and most of the building cannot tell them apart. The danger lives in that confusion. A bare model answers every question with the same confidence whether it has the data or not. Ask it for a market rate and it produces one, grounded in nothing, with no rule telling it which source to trust or when to stop. It fills the silence with a confident number. The pricing sheet I was handed is what that looks like printed out. There is no settled definition of an AI agent. Ask three vendors and you get three answers, from a single prompted model to a system that plans and acts on its own. The distance between those is enormous, and the same label covers both. What decides where a given agent lands is not the model. It is how much real expertise got wired into it. Andrew Ng put numbers on that. On a standard coding benchmark, GPT-3.5 prompted once scored 48 percent. GPT-4 prompted once scored 67. The same GPT-3.5, wrapped in a loop that let it draft, test, and revise, scored 95. The weaker model, built well, beat the stronger model used raw. The architecture beat the upgrade. Now carry that into capture. An engineer can build the loop, the retrieval, the place a human signs off. The engineer cannot tell the agent that a labor mix is unstaffable on sight, or which past-performance framing survives an evaluation, or that a question phrased a certain way tells the contracting officer the bidder never read the SOW. That knowledge lives in a capture and proposal SME who has lost bids and won them. The engineer wires the agent. The expert is what the agent knows. I have put AI-guided proposal delivery into production at both ends of the scale, on a billion-dollar federal program and inside a small business, and the failure rhymes at both. On the large program, the scaffolding was already there: the review gates, the pricing discipline, the people who had run the play a hundred times. The agent inherited their judgment because their judgment was already in the building. The small business had none of that. The same tool, dropped into a shop without the expert layer, did not get smarter. It got faster at being wrong. Scale changes the blast radius. It does not change the cause. And it is training, not a one-time build. The SME teaches the agent, corrects it, and teaches it again when the model shifts underneath. The human-in-the-loop discipline the proposal field already preaches for using AI applies just as hard to building it. The difference is that now the human is also the source of what the agent knows. What the experts would have caught Walk back to the pricing sheet. The tool treated reference data as market truth, and federal pricing data does not work that way. GSA's own CALC rates, the ones an AI is most likely to scrape, are not-to-exceed ceilings. GSA says plainly they are one input in building a negotiation objective, not the answer. Its own inspector general found the CALC data incomplete, inaccurate, and duplicative. An AI that pulls those rates and reports them as the going market rate has misused them at the source. A capture SME knows that in their sleep. The tool did not, and neither did the person who sent the sheet. Cost realism is a graded standard. FAR 15.404-1 lets the government test whether a proposed price is realistic for the work and downgrade a bid that is not. A GovCon risk list names the exact failure mode: fabricated labor categories feeding distorted pricing. The company was one submission away from pricing itself into a contract it could not deliver, and the evaluator would not have had to catch it. The math would have caught it for them. The hundred questions are the same failure wearing a different coat. A machine produced volume, and a person forwarded it without checking who it was for or whether it applied. That is the homogenization every contracting shop is now seeing. The Air Force District of Washington's director of contracting, Colonel Villarreal, said it out loud: too many proposals now sound like they were written by the same robot. Volume up, signal down, and the human filter that used to separate them quietly removed. The courts have started charging for it. A construction firm filed a brief at the Armed Services Board with citations more than seventy percent inaccurate. The board struck it. A protester at GAO submitted decisions that did not exist, and GAO dismissed the protest as a sanction, in what appears to be a first. A second GAO protest drew a warning that the citations bore the hallmarks of AI invention. One tracker counts thirty-one AI-misuse filings in federal procurement disputes last year, twenty-three at GAO. Fabricated citations. Struck briefs. Dismissed protests. Firms sanctioned for letting a machine write what an expert was supposed to read. The practitioners who use AI well already know where the line sits. The field's own guidance is to treat every AI output like a first draft from a talented junior analyst, and to keep the experts on the win themes, the solutioning, and the price. Both failures I saw crossed that line in the same place. The expert was supposed to be there, and was not. What the expert builds in Training an agent is not fine-tuning a model. It is a capture professional sitting down and encodi",
+      "premium": false
+    },
+    {
       "id": "article-replace-with-url-slug",
       "type": "article",
       "title": "Headline that makes the reader mad and motivated at the same time",
@@ -1948,7 +2031,7 @@
         "541512"
       ],
       "url": "https://sam.gov/opp/hcds",
-      "excerpt": "Industry day held March 31, 2026. Draft strategy separates work into distinct contract lanes: PMO support, product support, and services support — plus Technical Integration, Product Management, and Human-Centered Design (HCD) carve-outs. There will be no prime systems integrator. Authority stays with the government. The Technical Integration contract performs traditional SI functions (architecture, engineering, integration design, system-level testing, release coordination) but does NOT own solution vendors, control execution, or have subcontracting authority. The HCD carve-out is a small focused team shaping workflows, usability, and requirements rather than owning delivery; likely driven by GAO oversight pressure and the widely cited 40/100 SUS score. Solutions (Oracle, Philips, etc.) and Services (deployment, support, etc.) operate independently with coordination through program governance, not contractual control. Key shifts from November 2025: DHA moved away from prime model due to OCI concerns; more willingness to accept risk in exchange for competition and flexibility; hosting no longer tied to OCI/OC3 — vendors can host in their own cloud if they meet performance/security/cost requirements. T1/T2 helpdesk scope stays with GSC provided by J6 (no changes). RFI close date: Aug 30, 2026.\nAgency: Defense Health Agency (DHA) / PEO DHMS\nVendor: TBD — Pre-solicitation phase. Leidos holds reported $1.4B+ sole-source bridge through ~2028.\nValue: TBD (predecessor DHMSM: $5.5B; reported bridge: $1.4B+; HCDS multi-vehicle successor)\nStatus: upcoming\nNAICS: 541512\nMMT verdict: WATCH — Upcoming — action window within 6 months",
+      "excerpt": "Industry day held March 31, 2026. Draft strategy separates work into distinct contract lanes: PMO support, product support, and services support — plus Technical Integration, Product Management, and Human-Centered Design (HCD) carve-outs. There will be no prime systems integrator. Authority stays with the government. The Technical Integration contract performs traditional SI functions (architecture, engineering, integration design, system-level testing, release coordination) but does NOT own solution vendors, control execution, or have subcontracting authority. The HCD carve-out is a small focused team shaping workflows, usability, and requirements rather than owning delivery; likely driven by GAO oversight pressure and documented usability findings (≈39% of clinicians rated MHS GENESIS patient-centered; ≈21% rated it fast/responsive). No GAO-published composite SUS score exists. Solutions (Oracle, Philips, etc.) and Services (deployment, support, etc.) operate independently with coordination through program governance, not contractual control. Key shifts from November 2025: DHA moved away from prime model due to OCI concerns; more willingness to accept risk in exchange for competition and flexibility; hosting no longer tied to OCI/OC3 — vendors can host in their own cloud if they meet performance/security/cost requirements. T1/T2 helpdesk scope stays with GSC provided by J6 (no changes). RFI close date: Aug 30, 2026.\nAgency: Defense Health Agency (DHA) / PEO DHMS\nVendor: TBD — Pre-solicitation phase. Leidos holds reported $1.4B+ sole-source bridge through ~2028.\nValue: TBD (predecessor DHMSM: $5.5B; reported bridge: $1.4B+; HCDS multi-vehicle successor)\nStatus: upcoming\nNAICS: 541512\nMMT verdict: WATCH — Upcoming — action window within 6 months",
       "premium": false
     },
     {
@@ -2060,7 +2143,7 @@
         "541512"
       ],
       "url": "https://www.health.mil/Military-Health-Topics/Technology/MHS-GENESIS",
-      "excerpt": "DoD enterprise EHR deployed at 3,200+ locations serving 9.6M beneficiaries and 205,000 providers. Worldwide deployment completed March 2024. Leidos bridge is a planned/reported ~$1.4B sole-source extension; competition is delayed to 2028 at the earliest. The reported sole-source bridge has been justified by two factors: (1) documentation gaps — MHS GENESIS documentation lived inside Leidos's institutional knowledge, preventing competitive transition, and (2) the February 2024 Change Healthcare ransomware attack forced DHA to reassess documentation security. Oct 2025: $570M enterprise services task. UPDATE (March 31, 2026): HCDS Industry Day confirmed the MOSA follow-on will NOT use a prime SI model. The bridge-to-HCDS transition now routes through 5 distinct contract lanes (Technical Integration, Product Management, HCD, Solutions, Services) with no single vendor controlling the ecosystem. This is a fundamental shift from the Leidos sole-source model.\nAgency: Defense Health Agency (DHA)\nVendor: Leidos / Oracle Health (Cerner) / Accenture Federal Services / Henry Schein\nValue: $5.5B original; reported ~$1.4B planned sole-source extension\nStatus: active\nNAICS: 541512\nMMT verdict: WATCH — Active award — monitor task orders and mod history",
+      "excerpt": "DoD enterprise EHR deployed at 3,200+ locations serving 9.6M beneficiaries and 205,000 providers. Worldwide deployment completed March 2024. Leidos bridge is a planned/reported ~$1.4B sole-source extension; competition is delayed to 2028 at the earliest. The reported sole-source bridge has been justified by two factors: (1) documentation gaps — MHS GENESIS documentation lived inside Leidos's institutional knowledge, preventing competitive transition, and (2) the February 2024 Change Healthcare ransomware attack forced DHA to reassess documentation security. Oct 2025: $570M enterprise services task. UPDATE (March 31, 2026): HCDS Industry Day confirmed the MOSA follow-on will NOT use a prime SI model. The bridge-to-HCDS transition now routes through 5 distinct contract lanes (Technical Integration, Product Management, HCD, Solutions, Services) with no single vendor controlling the ecosystem. This is a fundamental shift from the Leidos sole-source model.\nAgency: Defense Health Agency (DHA)\nVendor: Leidos / Oracle Health (Cerner) / Accenture Federal Services / Henry Schein\nValue: $5.5B original; sole-source extension: $1.131B IDIQ + $263.34M nine-month transition option\nStatus: active\nNAICS: 541512\nMMT verdict: WATCH — Active award — monitor task orders and mod history",
       "premium": false
     },
     {
@@ -2397,6 +2480,310 @@
       ],
       "url": "https://www.cdc.gov/data-modernization/php/technologies/about-dibbs.html",
       "excerpt": "CDC Data Integration Building Blocks — modular data integration tools for state/local/tribal/territorial (STLT) public health agencies. Standardizes disease reporting and lab results. 2026 target: greater than 30% STLT adoption of at least one DIBBs product.\nAgency: Centers for Disease Control and Prevention (CDC)\nVendor: Multiple (CDC-internal + partners)\nValue: CDC budget\nStatus: active\nNAICS: 541512\nMMT verdict: WATCH — Program watch — STLT adoption tracking",
+      "premium": false
+    },
+    {
+      "id": "contract-t6-health-systems-aoi-2-peo-dhms-cso-",
+      "type": "contract_intel",
+      "title": "T6 Health Systems — AOI 2 (PEO DHMS CSO)",
+      "slug": "t6-health-systems-aoi-2-peo-dhms-cso-",
+      "date": "2026-05-28",
+      "description": "Awarded Nov 19, 2025 under the PEO DHMS Commercial Solutions Opening (CSO HT0038-25-S-C001), Area of Interest 2. Period of performance through 2030. One of the AOIs under the DHMS innovation CSO; AOI 1b proposals due Jul 1, 2026 and AOI 4 (",
+      "tags": [
+        "Defense Health Agency (PEO DHMS)",
+        "active",
+        "541512"
+      ],
+      "url": "https://sam.gov/",
+      "excerpt": "Awarded Nov 19, 2025 under the PEO DHMS Commercial Solutions Opening (CSO HT0038-25-S-C001), Area of Interest 2. Period of performance through 2030. One of the AOIs under the DHMS innovation CSO; AOI 1b proposals due Jul 1, 2026 and AOI 4 (Data Apps) was canceled.\nAgency: Defense Health Agency (PEO DHMS)\nVendor: T6 Health Systems\nValue: $219,728,874.92\nStatus: active\nNAICS: 541512\nMMT verdict: AWARDED — Awarded Nov 2025 — AOI 2 under DHMS CSO",
+      "premium": false
+    },
+    {
+      "id": "contract-mantech-dmix-diss-support",
+      "type": "contract_intel",
+      "title": "ManTech — DMIX / DISS Support",
+      "slug": "mantech-dmix-diss-support",
+      "date": "2026-05-28",
+      "description": "DMIX (Defense Medical Information Exchange) / DISS support task order to ManTech. Award/order number 140D0422F0251.",
+      "tags": [
+        "Defense Health Agency",
+        "active",
+        "541512"
+      ],
+      "url": "https://sam.gov/",
+      "excerpt": "DMIX (Defense Medical Information Exchange) / DISS support task order to ManTech. Award/order number 140D0422F0251.\nAgency: Defense Health Agency\nVendor: ManTech\nValue: $34,772,199.43\nStatus: active\nNAICS: 541512\nMMT verdict: AWARDED — DMIX/DISS support — value verified",
+      "premium": false
+    },
+    {
+      "id": "contract-swingtide-market-intelligence-support",
+      "type": "contract_intel",
+      "title": "Swingtide — Market Intelligence Support",
+      "slug": "swingtide-market-intelligence-support",
+      "date": "2026-05-28",
+      "description": "Market intelligence support, ~$745K, awarded Jan 2026. Solicitation HT003826CE001.",
+      "tags": [
+        "Defense Health Agency",
+        "active",
+        "541618"
+      ],
+      "url": "https://sam.gov/",
+      "excerpt": "Market intelligence support, ~$745K, awarded Jan 2026. Solicitation HT003826CE001.\nAgency: Defense Health Agency\nVendor: Swingtide\nValue: ~$745K\nStatus: active\nNAICS: 541618\nMMT verdict: AWARDED — Market intelligence — awarded Jan 2026",
+      "premium": false
+    },
+    {
+      "id": "contract-str-zero-day-leidos",
+      "type": "contract_intel",
+      "title": "STR Zero Day — Leidos",
+      "slug": "str-zero-day-leidos",
+      "date": "2026-05-28",
+      "description": "STR Zero Day effort, $8.07M, awarded May 7, 2026 to Leidos. Solicitation HT003826FE006.",
+      "tags": [
+        "Defense Health Agency",
+        "active",
+        "541512"
+      ],
+      "url": "https://sam.gov/",
+      "excerpt": "STR Zero Day effort, $8.07M, awarded May 7, 2026 to Leidos. Solicitation HT003826FE006.\nAgency: Defense Health Agency\nVendor: Leidos\nValue: $8.07M\nStatus: active\nNAICS: 541512\nMMT verdict: AWARDED — STR Zero Day — awarded May 2026",
+      "premium": false
+    },
+    {
+      "id": "contract-samhsa-bhsis-recompete-behavioral-health-services-informatio",
+      "type": "contract_intel",
+      "title": "SAMHSA BHSIS Recompete (Behavioral Health Services Information System)",
+      "slug": "samhsa-bhsis-recompete-behavioral-health-services-information-system-",
+      "date": "2026-05-29",
+      "description": "Full recompete of SAMHSA's flagship behavioral health data system. BHSIS is the backbone of national behavioral health data infrastructure, collecting facility-level substance use and mental health treatment data (N-SUMHSS, TEDS, the Behavi",
+      "tags": [
+        "Substance Abuse and Mental Health Services Administration (SAMHSA)",
+        "upcoming",
+        "541990"
+      ],
+      "url": "https://orangeslices.ai/hendall-awarded-hhs-samhsa-behavioral-health-services-information-system-bhsis-bridge-contract/",
+      "excerpt": "Full recompete of SAMHSA's flagship behavioral health data system. BHSIS is the backbone of national behavioral health data infrastructure, collecting facility-level substance use and mental health treatment data (N-SUMHSS, TEDS, the Behavioral Health Treatment Services Locator) across all 50 states. The original 2020 award (75S20320C00001) was a Total Small Business Set-Aside at $122.4M over 5 years. Hendall Inc. holds a $29.7M one-year bridge (75S20326F42004); the contracting officer has signaled a full recompete (RFP ID 75S20326Q00002) is imminent. Likely to retain SB set-aside structure. One of the cleanest SB opportunities in the HHS space for firms with behavioral health data management, FHIR, and state-level reporting experience.\nAgency: Substance Abuse and Mental Health Services Administration (SAMHSA)\nVendor: TBD — recompete forthcoming; bridge incumbent: Hendall Inc. (SB)\nValue: Est. ~$120M (orig. 2020 award 75S20320C00001 = $122.4M / 5-yr); bridge 75S20326F42004 = $29.7M (1-yr)\nStatus: upcoming\nNAICS: 541990\nMMT verdict: WATCH — Imminent SB-set-aside recompete; clean fit\nFactors: vehicle_fit: pass — Likely Total SB Set-Aside per original award structure | agency_alignment: pass — SAMHSA behavioral health data mission — direct fit | timeline: watch — Bridge in place; full RFP timing not yet posted | competition: watch — Hendall incumbent advantage; SB field expected to be competitive | scope_fit: pass — Contained scope (~$120M) suits a focused SB prime",
+      "premium": false
+    },
+    {
+      "id": "contract-fda-sirce-ii-systems-for-inspection-recalls-compliance-enfor",
+      "type": "contract_intel",
+      "title": "FDA SIRCE II (Systems for Inspection, Recalls, Compliance & Enforcement)",
+      "slug": "fda-sirce-ii-systems-for-inspection-recalls-compliance-enforcement-",
+      "date": "2026-05-29",
+      "description": "Recompete of FDA's Office of Regulatory Affairs (ORA) IT modernization vehicle. RFI 75F40126Q00072 posted Feb 2026 signals an imminent competitive solicitation covering ORA's full IT stack: imports screening, recall management, inspection c",
+      "tags": [
+        "Department of Health and Human Services (HHS) / FDA",
+        "upcoming",
+        "541511"
+      ],
+      "url": "https://www.highergov.com/contract-opportunity/sirce-ii-75f40126q00072-r-815b9/",
+      "excerpt": "Recompete of FDA's Office of Regulatory Affairs (ORA) IT modernization vehicle. RFI 75F40126Q00072 posted Feb 2026 signals an imminent competitive solicitation covering ORA's full IT stack: imports screening, recall management, inspection compliance, and enforcement systems across 150+ domestic posts and 13 international offices. REI Systems has held the $400M single-award BPA since 2021; single-award BPA structure is expected to continue. Best positioned: firms with cloud-native agile DevSecOps, FedRAMP High environments, and FDA ORA regulatory-workflow experience. Largest near-term FDA opportunity.\nAgency: Department of Health and Human Services (HHS) / FDA\nVendor: TBD — recompete; incumbent: REI Systems (orig. $400M, 75F40121A00019)\nValue: Est. ~$218M+ (floor; full scope may approach $400M)\nStatus: upcoming\nNAICS: 541511\nMMT verdict: WATCH — Largest near-term FDA IT recompete (~$218M+)\nFactors: vehicle_fit: watch — Single-award BPA — winner-take-all structure | agency_alignment: pass — FDA ORA regulatory IT — strong health-IT alignment | timeline: watch — RFI posted Feb 2026; RFP timing pending | competition: watch — REI Systems incumbent; large-business field expected | scope_fit: pass — Broad ORA modernization scope fits SI/DevSecOps primes",
+      "premium": false
+    },
+    {
+      "id": "contract-hrsa-optn-next-gen-it-contracts-phase-2-",
+      "type": "contract_intel",
+      "title": "HRSA OPTN Next Gen IT Contracts (Phase 2)",
+      "slug": "hrsa-optn-next-gen-it-contracts-phase-2-",
+      "date": "2026-05-29",
+      "description": "Phase 2 of HRSA's dismantling of the 40-year UNOS monopoly over the Organ Procurement and Transplantation Network — the most consequential procurement restructuring in HRSA history. HRSA is moving from Competitive Transition Contracts (Phas",
+      "tags": [
+        "Health Resources & Services Administration (HRSA)",
+        "upcoming",
+        "541511"
+      ],
+      "url": "https://www.hrsa.gov/optn-modernization/updates",
+      "excerpt": "Phase 2 of HRSA's dismantling of the 40-year UNOS monopoly over the Organ Procurement and Transplantation Network — the most consequential procurement restructuring in HRSA history. HRSA is moving from Competitive Transition Contracts (Phase 1 multi-vendor awards, Sept 2024) to next-generation, performance-based, multi-domain contracts covering IT management, operations, data analytics/research, and communications. The IT management domain is the highest-value target, requiring organ-matching IT systems, human-centered design for clinical workflows, and interoperability with transplant-center EHRs. Multi-vendor structure creates strong teaming opportunities and open competition for non-UNOS firms.\nAgency: Health Resources & Services Administration (HRSA)\nVendor: TBD — open competition; Phase 1 (Sept 2024) awarded to multiple new vendors across IT, Operations, Data/Research, Comms domains\nValue: Undisclosed multi-year (est. $100M+ across domains)\nStatus: upcoming\nNAICS: 541511\nMMT verdict: WATCH — Landmark open competition replacing UNOS monopoly\nFactors: vehicle_fit: pass — Multi-vendor, multi-domain — open to new entrants | agency_alignment: pass — HRSA transplantation IT — high strategic significance | timeline: watch — Phased rollout; Next-Gen IT solicitation timing fluid | competition: watch — UNOS legacy knowledge advantage; new entrants competing | scope_fit: pass — Domain structure allows right-sized bids incl. SB teaming",
+      "premium": false
+    },
+    {
+      "id": "contract-cms-sparc-ii-strategic-partners-acquisition-readiness-contra",
+      "type": "contract_intel",
+      "title": "CMS SPARC II (Strategic Partners Acquisition Readiness Contract — Recompete)",
+      "slug": "cms-sparc-ii-strategic-partners-acquisition-readiness-contract-recompete-",
+      "date": "2026-05-29",
+      "description": "Recompete of CMS's primary IT IDIQ vehicle and the single highest-priority CMS opportunity in the 12-24 month window. SPARC I (HHSM-500-2016-00046I, $25B ceiling) expires February 20, 2027. SPARC II will be CMS's most competitive IT vehicle",
+      "tags": [
+        "Centers for Medicare & Medicaid Services (CMS)",
+        "upcoming",
+        "541511"
+      ],
+      "url": "https://www.cms.gov/data-research/cms-information-technology/sparc/faq",
+      "excerpt": "Recompete of CMS's primary IT IDIQ vehicle and the single highest-priority CMS opportunity in the 12-24 month window. SPARC I (HHSM-500-2016-00046I, $25B ceiling) expires February 20, 2027. SPARC II will be CMS's most competitive IT vehicle re-competition in a decade. Expect retained IDIQ/MAOC structure with updated cybersecurity (CMMC alignment), AI/ML, and cloud-native requirements. Capture should begin now: teaming arrangements and past-performance documentation are critical. Small businesses should identify prime or teaming partners already holding SPARC I positions to bridge the gap.\nAgency: Centers for Medicare & Medicaid Services (CMS)\nVendor: TBD — recompete; SPARC I (HHSM-500-2016-00046I) held by 40+ primes (Accenture, CGI, Leidos, Deloitte, Booz Allen)\nValue: $25B ceiling (SPARC I, 10-year); SPARC II ceiling TBD\nStatus: upcoming\nNAICS: 541511\nMMT verdict: WATCH — FY2027 recompete of CMS's flagship IT vehicle\nFactors: vehicle_fit: pass — IDIQ/MAOC — bench positioning for task orders | agency_alignment: pass — CMS — largest non-DoD health IT buyer | timeline: watch — SPARC I expires Feb 2027; SPARC II RFP not yet posted | competition: watch — 40+ incumbent primes; intense large-business competition | scope_fit: watch — Very large vehicle — SB needs teaming to participate",
+      "premium": false
+    },
+    {
+      "id": "contract-cdc-dmi-successor-nssp-ecosystem-contracts",
+      "type": "contract_intel",
+      "title": "CDC DMI Successor / NSSP Ecosystem Contracts",
+      "slug": "cdc-dmi-successor-nssp-ecosystem-contracts",
+      "date": "2026-05-29",
+      "description": "Watch item covering the conversion of CDC's Data Modernization Initiative (DMI) grant-based activities into recurring contracts, plus the NSSP/BioSense recompete cycle. As CDC's FY2024-2025 DMI appropriations ($100M-$175M/yr) wind down, pro",
+      "tags": [
+        "Centers for Disease Control and Prevention (CDC)",
+        "upcoming",
+        "541511"
+      ],
+      "url": "https://www.cdc.gov/data-modernization/php/about/dm-milestones.html",
+      "excerpt": "Watch item covering the conversion of CDC's Data Modernization Initiative (DMI) grant-based activities into recurring contracts, plus the NSSP/BioSense recompete cycle. As CDC's FY2024-2025 DMI appropriations ($100M-$175M/yr) wind down, program-specific IT procurements (eCR, wastewater/environmental surveillance, NHSN modernization, lab reporting) are the likely vehicles. The Entarian (Sev1Tech) NSSP cloud-hosting task (7571TE26F00303 on the NGITS BPA, $26.9M, 2-yr, 2 bidders) recompetes ~2028, likely restructured under a larger cloud modernization vehicle aligned to CDC's Public Health Data Strategy (FHIR, eCR). NAICS 541511/541512 with public-health informatics credentials preferred. Highest uncertainty / highest opportunity in CDC space.\nAgency: Centers for Disease Control and Prevention (CDC)\nVendor: TBD — emerging; NSSP cloud hosting currently Entarian (Sev1Tech), $26.9M on NGITS BPA\nValue: Est. $50M+ aggregate across emerging procurements\nStatus: upcoming\nNAICS: 541511\nMMT verdict: WATCH — DMI grant-to-contract conversion creates new pipeline\nFactors: vehicle_fit: watch — Mix of NGITS task orders, open-market, and new vehicles | agency_alignment: pass — CDC public-health data modernization — strong SB history | timeline: watch — Timing tied to appropriations wind-down; uncertain | competition: watch — Entarian/incumbent advantages on hosting; field opening | scope_fit: pass — $5M-$30M program-specific scopes fit SB primes",
+      "premium": false
+    },
+    {
+      "id": "contract-ihs-four-directions-warehouse-4dw-clinical-data-repository",
+      "type": "contract_intel",
+      "title": "IHS Four Directions Warehouse (4DW) — Clinical Data Repository",
+      "slug": "ihs-four-directions-warehouse-4dw-clinical-data-repository",
+      "date": "2026-05-29",
+      "description": "IHS Health IT Modernization program contract for development of the Four Directions Warehouse (4DW), a clinical data repository supporting the PATH EHR transition. Awarded Sept 2024 to Cherokee Nation Integrated Health, LLC under an Indian ",
+      "tags": [
+        "Indian Health Service (IHS) / HHS",
+        "active",
+        "541519"
+      ],
+      "url": "https://orangeslices.ai/cherokee-nation-subsidiary-wins-hhs-ihs-four-directions-warehouse-4dw-health-it-modernization-and-development/",
+      "excerpt": "IHS Health IT Modernization program contract for development of the Four Directions Warehouse (4DW), a clinical data repository supporting the PATH EHR transition. Awarded Sept 2024 to Cherokee Nation Integrated Health, LLC under an Indian Small Business Economic Enterprise (ISBEE) set-aside — one of the few federal set-aside categories unique to IHS — over a field of 8 bidders. Total value $36.4M with ~$8.7M initial obligation. Contracting managed via DOI Interior Business Center (IBC) AQD on behalf of IHS. Tracks the distinctive ISBEE market-entry pathway for Indian-owned firms and the eventual recompete.\nAgency: Indian Health Service (IHS) / HHS\nVendor: Cherokee Nation Integrated Health, LLC (ISBEE set-aside)\nValue: $36.4M (contract 140D0424C0039; sol 140D0424R0069); 5-year (base + 4 options)\nStatus: active\nNAICS: 541519\nMMT verdict: AWARDED — ISBEE CDR contract awarded to Cherokee Nation Integrated Health\nFactors: vehicle_fit: pass — ISBEE set-aside — unique Indian-owned SB pathway | agency_alignment: pass — IHS health IT modernization — direct fit | timeline: pass — Awarded Sept 2024; track for option years and recompete | competition: pass — 8 bidders — competitive ISBEE field | scope_fit: pass — CDR/data scope fits health-IT data primes",
+      "premium": false
+    },
+    {
+      "id": "contract-nih-scientific-technical-support-services-idiq-3b-",
+      "type": "contract_intel",
+      "title": "NIH Scientific & Technical Support Services IDIQ ($3B)",
+      "slug": "nih-scientific-technical-support-services-idiq-3b-",
+      "date": "2026-05-29",
+      "description": "NIH's largest multi-award IDIQ in the current pipeline (solicitation 75N98026R00042), Full and Open. Covers bioinformatics, computational biology, BSL 2-4 lab research support, and clinical research across all NIH institutes. Proposals were",
+      "tags": [
+        "National Institutes of Health (NIH)",
+        "upcoming",
+        "541714"
+      ],
+      "url": "https://www.govconwire.com/articles/nih-rfp-scientific-technical-support",
+      "excerpt": "NIH's largest multi-award IDIQ in the current pipeline (solicitation 75N98026R00042), Full and Open. Covers bioinformatics, computational biology, BSL 2-4 lab research support, and clinical research across all NIH institutes. Proposals were due April 27, 2026 — that deadline has passed, placing the procurement in evaluation/award-pending status (not open for new bids). Multiple awards expected; period of performance 9/15/2026–9/14/2031. NAICS 541714 primary (541511 secondary). Small-business eligible at the task-order level. Track for award announcement and prepare task-order teaming with awardees.\nAgency: National Institutes of Health (NIH)\nVendor: TBD — award-pending; proposals closed April 27, 2026\nValue: $3B ceiling (5-year); perf. 9/15/2026–9/14/2031\nStatus: upcoming\nNAICS: 541714\nMMT verdict: WATCH — Award-pending $3B NIH IDIQ; proposals closed Apr 2026\nFactors: vehicle_fit: pass — Multi-award IDIQ — task-order bench access | agency_alignment: pass — NIH biomedical R&D support — core lane | timeline: watch — Proposals closed Apr 27 2026; awaiting award decision | competition: watch — Full-and-open; large biomedical-support field | scope_fit: pass — 541714/541511 scope; SB eligible at TO level",
+      "premium": false
+    },
+    {
+      "id": "contract-cms-rmada-3-research-measurement-assessment-design-analysis-",
+      "type": "contract_intel",
+      "title": "CMS RMADA 3 (Research, Measurement, Assessment, Design & Analysis)",
+      "slug": "cms-rmada-3-research-measurement-assessment-design-analysis-",
+      "date": "2026-05-29",
+      "description": "Multiple-award successor to RMADA 2, providing CMS/CMMI with research, measurement, demonstration evaluation, actuarial analysis, and data-analytics services tied to value-based care and payment innovation. RMADA 2 was awarded to 17 compani",
+      "tags": [
+        "Centers for Medicare & Medicaid Services (CMS)",
+        "upcoming",
+        "541720"
+      ],
+      "url": "https://www.washingtontechnology.com/contracts/2025/06/cms-extends-its-primary-data-related-research-contract/406335/",
+      "excerpt": "Multiple-award successor to RMADA 2, providing CMS/CMMI with research, measurement, demonstration evaluation, actuarial analysis, and data-analytics services tied to value-based care and payment innovation. RMADA 2 was awarded to 17 companies in 2019 at a $5B ceiling. CMS extended RMADA 3 proposal dates multiple times after the Feb 2025 final solicitation: Phase 1 bids due July 8, 2025; Phase 2 due Aug 26, 2025; oral presentations Aug 26–Sept 23, 2025 — placing it in award-pending status as of May 2026. NAICS 541720 primary (541511 secondary), directly in MMT's lane. A major standing CMS data-services pathway that supplements SPARC for analytics-heavy task orders; CMS emphasizes small-business participation.\nAgency: Centers for Medicare & Medicaid Services (CMS)\nVendor: TBD — award-pending; RMADA 2 (2019) awarded to 17 firms (Acumen, RAND, Mathematica, Abt, etc.)\nValue: ~$5B ceiling (5-year ordering once open); sol RMADA3APP250186\nStatus: upcoming\nNAICS: 541720\nMMT verdict: WATCH — Award-pending ~$5B CMS data/research MA-IDIQ\nFactors: vehicle_fit: pass — Multiple-award IDIQ — bench positioning | agency_alignment: pass — CMS/CMMI research & data analytics — core NAICS lane | timeline: watch — Proposals closed 2025; awards pending as of May 2026 | competition: watch — 17 RMADA 2 incumbents; competitive research-firm field | scope_fit: pass — SB participation emphasized; data/analytics scope fits",
+      "premium": false
+    },
+    {
+      "id": "contract-acf-ccwis-support-task-recompete-child-welfare-information-s",
+      "type": "contract_intel",
+      "title": "ACF CCWIS Support Task Recompete (Child Welfare Information Systems)",
+      "slug": "acf-ccwis-support-task-recompete-child-welfare-information-systems-",
+      "date": "2026-05-29",
+      "description": "Recompete watch for ACF Children's Bureau's CCWIS technical-assistance/support task. CCWIS is a mandatory federal program requiring states to modernize child welfare IT systems. ICF currently holds the $69.7M support task (75ACF125F80006) o",
+      "tags": [
+        "Department of Health and Human Services (HHS) / ACF",
+        "upcoming",
+        "541512"
+      ],
+      "url": "https://orangeslices.ai/hhs-awards-70m-acf-child-welfare-information-systems-support-task-on-cio-sp3-to-icf/",
+      "excerpt": "Recompete watch for ACF Children's Bureau's CCWIS technical-assistance/support task. CCWIS is a mandatory federal program requiring states to modernize child welfare IT systems. ICF currently holds the $69.7M support task (75ACF125F80006) on the CIO-SP3 GWAC; with the CIO-SP3 bridge expiring April 2027 (and CIO-SP4 cancelled), this vehicle will recompete under a new GWAC/IDIQ. Note: separate from ICF's $90.6M Child Welfare Information Gateway award (75N98125F00001). Strong teaming target for firms with child-welfare and state IT-modernization credentials.\nAgency: Department of Health and Human Services (HHS) / ACF\nVendor: TBD — recompete after CIO-SP3 bridge; incumbent: ICF (75ACF125F80006, $69.7M)\nValue: Est. ~$70M (current ICF task 75ACF125F80006 = $69.7M on CIO-SP3)\nStatus: upcoming\nNAICS: 541512\nMMT verdict: WATCH — ICF's $70M CCWIS task recompetes post-CIO-SP3 (Apr 2027)\nFactors: vehicle_fit: watch — Vehicle shifts off CIO-SP3 bridge to new GWAC/IDIQ | agency_alignment: pass — ACF child-welfare IT — federally mandated, durable need | timeline: watch — Recompete tied to SP3 bridge expiry April 2027 | competition: watch — ICF incumbent; child-welfare-IT specialists competing | scope_fit: pass — ~$70M contained scope suits mid-tier/SB teaming",
+      "premium": false
+    },
+    {
+      "id": "contract-hhs-ngits-bpa-recompete-application-hosting-operations-engin",
+      "type": "contract_intel",
+      "title": "HHS NGITS BPA Recompete (Application Hosting, Operations, Engineering)",
+      "slug": "hhs-ngits-bpa-recompete-application-hosting-operations-engineering-",
+      "date": "2026-05-29",
+      "description": "Recompete/consolidation watch across the three HHS Next-Generation IT Services BPAs — Application Hosting, Operations, and Engineering — that form the departmental IT services backbone for HHS OS and staffing divisions (~12,000 employees). ",
+      "tags": [
+        "Department of Health and Human Services (HHS)",
+        "upcoming",
+        "541512"
+      ],
+      "url": "https://orangeslices.ai/contract-award-38-5m-hhs-next-generation-it-services-ngits-operations-services/",
+      "excerpt": "Recompete/consolidation watch across the three HHS Next-Generation IT Services BPAs — Application Hosting, Operations, and Engineering — that form the departmental IT services backbone for HHS OS and staffing divisions (~12,000 employees). The Application Hosting BPA (HHSP233201700023B) is most active for health-IT BD, routing cloud-hosting task orders for operating-division apps (SAMHSA, HRSA, ACF, others). SAIC holds the largest current operations task ($38.4M, Jan 2026, 75P00126F37002). Watch for NGITS program recompete or consolidation as PSC aligns with EO 14240 IT-consolidation mandates. Full-and-open BPAs with SB-restricted task orders.\nAgency: Department of Health and Human Services (HHS)\nVendor: TBD — recompete watch; current holders: SAIC, Peraton, Leidos, ManTech, Sev1Tech/Entarian, ActioNet, NuAxis, Salient CRGT\nValue: Est. ~$485M+ aggregate across three BPAs (App Hosting ~$139M, Ops ~$207M, Eng ~$139M)\nStatus: upcoming\nNAICS: 541512\nMMT verdict: WATCH — Three aging NGITS BPAs face recompete/consolidation\nFactors: vehicle_fit: watch — BPA structure; recompete vehicle/structure uncertain | agency_alignment: pass — HHS departmental IT backbone — routes OPDIV health-IT TOs | timeline: watch — Timing tied to EO 14240 consolidation; not yet posted | competition: watch — Entrenched large-business holders; SB at TO level | scope_fit: pass — Hosting/ops/eng scope broad enough for many entrants",
+      "premium": false
+    },
+    {
+      "id": "contract-ihs-path-ehr-future-task-orders-sustainment-deployment-pipel",
+      "type": "contract_intel",
+      "title": "IHS PATH EHR Future Task Orders (Sustainment & Deployment Pipeline)",
+      "slug": "ihs-path-ehr-future-task-orders-sustainment-deployment-pipeline-",
+      "date": "2026-05-29",
+      "description": "Task-order pipeline watch on the IHS EHR Modernization IDIQ (GDIT prime, 140D0424D0001, $2.54B ceiling). With TO #9 ($325.7M, sustainment & operations, awarded May 2026, contract 140D0426F0370) now placed and PATH go-live targeted Aug 2026,",
+      "tags": [
+        "Indian Health Service (IHS) / HHS",
+        "active",
+        "541511"
+      ],
+      "url": "https://orangeslices.ai/gdit-secures-326m-hhs-indian-health-service-path-electronic-health-record-ehr-sustainment-and-operational-services-task/",
+      "excerpt": "Task-order pipeline watch on the IHS EHR Modernization IDIQ (GDIT prime, 140D0424D0001, $2.54B ceiling). With TO #9 ($325.7M, sustainment & operations, awarded May 2026, contract 140D0426F0370) now placed and PATH go-live targeted Aug 2026, the IDIQ will continue generating significant task orders for deployment, training, change management, tribal customization, and interoperability across 12 IHS Areas, 574+ federally recognized tribes, and urban Indian health programs. GDIT holds the prime; second-tier opportunities for analytics, custom workflows, and interoperability subcontracting exist. Distinct from the IDIQ-award entry — this tracks the ongoing TO flow. ISBEE set-aside is the most distinctive entry point for Indian-owned firms.\nAgency: Indian Health Service (IHS) / HHS\nVendor: GDIT (IDIQ prime, 140D0424D0001; Oracle Health subcontractor) — TO pipeline\nValue: Per-TO scale (e.g., TO #9 = $325.7M); $2.54B IDIQ ceiling through ~2033\nStatus: active\nNAICS: 541511\nMMT verdict: WATCH — Ongoing TO pipeline on $2.54B GDIT IHS EHR IDIQ\nFactors: vehicle_fit: watch — Single-award IDIQ — subcontracting to GDIT prime | agency_alignment: pass — IHS PATH EHR — flagship Indian-country health IT | timeline: pass — Active TO flow; go-live Aug 2026 drives more TOs | competition: watch — GDIT prime locked; opportunity is subcontract tier | scope_fit: pass — Deployment/training/interop scope suits niche subs",
+      "premium": false
+    },
+    {
+      "id": "contract-fda-fire-foundational-innovation-and-rapid-engagement-",
+      "type": "contract_intel",
+      "title": "FDA FIRE (Foundational Innovation and RAPID Engagement)",
+      "slug": "fda-fire-foundational-innovation-and-rapid-engagement-",
+      "date": "2026-05-29",
+      "description": "Pre-concept FDA contracting experiment. FDA's Office of Digital Transformation issued an RFI (posted Dec 17, 2025; responses due Jan 18, 2026) exploring a first-of-kind venture-capital prime / portfolio-subcontractor model to advance public",
+      "tags": [
+        "Department of Health and Human Services (HHS) / FDA",
+        "upcoming",
+        "541511"
+      ],
+      "url": "https://www.fda.gov/news-events/press-announcements/fda-explores-new-contracting-approach-advance-public-health-innovation",
+      "excerpt": "Pre-concept FDA contracting experiment. FDA's Office of Digital Transformation issued an RFI (posted Dec 17, 2025; responses due Jan 18, 2026) exploring a first-of-kind venture-capital prime / portfolio-subcontractor model to advance public-health innovation. If FDA proceeds past RFI, FIRE would create an unprecedented pathway for venture-backed health-IT companies to compete for FDA task orders. BD implications for VC-backed health-IT firms are significant, but the vehicle's viability is uncertain under current EO/OMB IT-consolidation pressure. Monitor closely for a follow-on solicitation.\nAgency: Department of Health and Human Services (HHS) / FDA\nVendor: TBD — pre-concept; novel VC-prime / portfolio-subcontractor model\nValue: TBD (RFI stage)\nStatus: upcoming\nNAICS: 541511\nMMT verdict: WATCH — Novel VC-prime FDA model; RFI stage, uncertain\nFactors: vehicle_fit: watch — Unprecedented VC-prime/portfolio-sub structure | agency_alignment: pass — FDA digital transformation — health-IT innovation fit | timeline: watch — RFI responses closed Jan 2026; no solicitation yet | competition: watch — Untested model; competitive field undefined | scope_fit: watch — Scope undefined pending FDA decision to proceed",
+      "premium": false
+    },
+    {
+      "id": "contract-hrsa-ryan-white-rsr-data-modernization",
+      "type": "contract_intel",
+      "title": "HRSA Ryan White RSR Data Modernization",
+      "slug": "hrsa-ryan-white-rsr-data-modernization",
+      "date": "2026-05-29",
+      "description": "Recompete watch on HRSA HIV/AIDS Bureau (HAB) data-support contract underpinning the Ryan White HIV/AIDS Program reporting systems — the Ryan White Services Report (RSR) and AETC reporting infrastructure that track HIV care and surveillance",
+      "tags": [
+        "Health Resources & Services Administration (HRSA)",
+        "upcoming",
+        "541511"
+      ],
+      "url": "https://ryanwhite.hrsa.gov/sites/default/files/ryanwhite/about-program/2025-rsr-manual.pdf",
+      "excerpt": "Recompete watch on HRSA HIV/AIDS Bureau (HAB) data-support contract underpinning the Ryan White HIV/AIDS Program reporting systems — the Ryan White Services Report (RSR) and AETC reporting infrastructure that track HIV care and surveillance data nationally. WRMA holds the current data-support work (est. $20–30M). As the contract approaches its recompete window, firms with HIV surveillance data management, FHIR, and federal health-reporting credentials should position for capture. Aligned with HRSA's broader data-modernization (UDS+/FHIR) direction.\nAgency: Health Resources & Services Administration (HRSA)\nVendor: WRMA (current data-support contractor) — recompete watch\nValue: Est. ~$20–30M (multi-year)\nStatus: upcoming\nNAICS: 541511\nMMT verdict: WATCH — WRMA Ryan White RSR data contract nearing recompete\nFactors: vehicle_fit: watch — Recompete vehicle/structure not yet posted | agency_alignment: pass — HRSA HAB HIV data — durable federal reporting mandate | timeline: watch — Recompete window approaching; exact date TBD | competition: watch — WRMA incumbent; specialized HIV-data field | scope_fit: pass — ~$20–30M scope well-suited to focused SB prime",
+      "premium": false
+    },
+    {
+      "id": "contract-cdc-electronic-case-reporting-ecr-modernization",
+      "type": "contract_intel",
+      "title": "CDC Electronic Case Reporting (eCR) Modernization",
+      "slug": "cdc-electronic-case-reporting-ecr-modernization",
+      "date": "2026-05-29",
+      "description": "Watch item on CDC's electronic case reporting modernization — the automated, real-time exchange of case-report data between EHRs and public health agencies. eCR is a core CDC Data Modernization Initiative (DMI) investment, currently deliver",
+      "tags": [
+        "Centers for Disease Control and Prevention (CDC)",
+        "upcoming",
+        "541511"
+      ],
+      "url": "https://www.cdc.gov/ecr/php/getting-started/index.html",
+      "excerpt": "Watch item on CDC's electronic case reporting modernization — the automated, real-time exchange of case-report data between EHRs and public health agencies. eCR is a core CDC Data Modernization Initiative (DMI) investment, currently delivered through the APHL/AIMS platform with HL7 and state-level partners. The 2026 Public Health Data Strategy emphasizes increasing eCR processing at public-health departments and expanding eCR among hospitals including Critical Access Hospitals. As DMI grant funding converts to recurring contracts, FHIR-based eCR procurements are expected to emerge. NAICS 541511; firms with FHIR, HL7, and public-health informatics credentials are best positioned.\nAgency: Centers for Disease Control and Prevention (CDC)\nVendor: TBD — emerging procurements; current ecosystem: APHL/AIMS platform, HL7, state vendors\nValue: Est. ~$30–50M (DMI-funded, transitioning grant→contract)\nStatus: upcoming\nNAICS: 541511\nMMT verdict: WATCH — FHIR-based eCR contracts emerging from DMI grants\nFactors: vehicle_fit: watch — Procurement vehicle uncertain; grant→contract transition | agency_alignment: pass — CDC DMI eCR — high-priority interoperability mandate | timeline: watch — Timing tied to DMI appropriations conversion | competition: watch — APHL/AIMS ecosystem entrenched; field opening | scope_fit: pass — FHIR/HL7 informatics scope fits SB primes",
+      "premium": false
+    },
+    {
+      "id": "contract-aspr-npivs-national-provider-identity-verification-system-",
+      "type": "contract_intel",
+      "title": "ASPR NPIVS (National Provider Identity Verification System)",
+      "slug": "aspr-npivs-national-provider-identity-verification-system-",
+      "date": "2026-05-29",
+      "description": "Pre-solicitation watch on ASPR's National Provider Identity Verification System (RFI/sources-sought 75A50126R00001, targeted ~FY2027). NPIVS supports identity verification of healthcare providers for emergency-response and preparedness oper",
+      "tags": [
+        "Department of Health and Human Services (HHS) / ASPR",
+        "upcoming",
+        "541511"
+      ],
+      "url": "https://www.federalcompass.com/rfp-opportunity-detail/75A50126R00001_RFI_SSN_NPIVS-2027",
+      "excerpt": "Pre-solicitation watch on ASPR's National Provider Identity Verification System (RFI/sources-sought 75A50126R00001, targeted ~FY2027). NPIVS supports identity verification of healthcare providers for emergency-response and preparedness operations — a preparedness IT system with strategic national-security implications. ASPR's overall IT contracting footprint is relatively small (it favors 8(a) sole-source and SB set-asides for modest platform-support contracts), making NPIVS the agency's primary near-term IT watch item for FY2026–2027. Monitor for RFP release; SB/8(a) eligibility likely given ASPR's pattern.\nAgency: Department of Health and Human Services (HHS) / ASPR\nVendor: TBD — pre-solicitation (RFI 2025)\nValue: TBD (RFI stage)\nStatus: upcoming\nNAICS: 541511\nMMT verdict: WATCH — ASPR preparedness ID-verification IT; pre-solicitation\nFactors: vehicle_fit: watch — Pre-solicitation; vehicle/structure undefined | agency_alignment: pass — ASPR preparedness IT — national-security alignment | timeline: watch — RFI 2025; RFP targeted ~FY2027, not yet posted | competition: watch — Field undefined; ASPR favors 8(a)/SB | scope_fit: pass — Identity-verification scope fits SB/8(a) primes",
       "premium": false
     },
     {
