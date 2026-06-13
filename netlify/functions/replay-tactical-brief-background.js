@@ -86,7 +86,7 @@ function buildDryRunPreviewHtml(order, stripeStatus) {
 <p style="background:#F3F4F6;padding:12px;border-radius:6px;">${esc(order.additional_context || "(none)")}</p>
 <h3 style="color:#457B9D;margin:20px 0 8px;">What will happen on live replay</h3>
 <ol style="font-size:14px;line-height:1.6;">
-  <li>Replay endpoint resets this order's workflow_state to <code>order_received</code> and clears error_message.</li>
+  <li>Replay endpoint resets this order's workflow_state to <code>research_queued</code> and clears error_message.</li>
   <li>Endpoint POSTs to <code>/.netlify/functions/generate-tactical-brief-background</code> with the order payload above.</li>
   <li>The existing pipeline runs landscape scan (Perplexity) + deep analysis + synthesis (Claude Sonnet) + cross-validation (Claude Haiku) + report rendering.</li>
   <li>On success: customer receives the brief email (BCC to admin via lib/send-email.js). Order row transitions to workflow_state='delivered' with report_url populated.</li>
@@ -145,17 +145,36 @@ exports.handler = async (event) => {
     return jsonResponse(404, { error: "order_not_found", order_id });
   }
 
-  // Idempotency guard — use workflow_state='delivered' + report_url as proxy (no replay_count column exists)
-  if (order.workflow_state === "delivered" && order.report_url) {
+  // Idempotency guard. A present report_url means the report was rendered
+  // and a URL issued (generate sets it immediately before send), so the
+  // report exists regardless of whether the workflow_state transition chain
+  // completed. Free/admin orders historically delivered with report_url set
+  // but workflow_state stuck non-terminal (transition chain was illegal from
+  // their seed state) — the old `workflow_state === 'delivered'` guard missed
+  // them, so the reconciler kept re-invoking this replay and clobbering a
+  // delivered order with a STRIPE_ERROR. report_url is the durable signal.
+  if (order.report_url) {
     return jsonResponse(409, {
       error: "already_delivered",
       order_id,
       report_url: order.report_url,
+      workflow_state: order.workflow_state,
     });
   }
 
-  // Stripe payment verification (required for every replay, no exceptions)
+  // Free / admin orders ($0, synthetic `free_`/`admin_` session id) have no
+  // Stripe checkout session — verifying payment against Stripe always throws
+  // "No such checkout.session" and dead-ends the replay in STRIPE_ERROR. They
+  // are payment-exempt by construction; skip Stripe verification for them.
+  const isFreeOrder =
+    order.amount_paid === 0 ||
+    /^(free|admin)_/.test(String(order.session_id || ""));
+
+  // Stripe payment verification (required for every PAID replay, no exceptions)
   let stripeStatus = "unknown";
+  if (isFreeOrder) {
+    stripeStatus = "free";
+  } else
   try {
     if (!order.session_id) {
       await logOpsEvent(supabase, {
@@ -280,11 +299,15 @@ exports.handler = async (event) => {
   // --- LIVE REPLAY ---
   // Reset order state so generate-tactical-brief-background processes it fresh.
   // The pipeline looks up by session_id; it finds the existing row and proceeds.
+  // Reset to research_queued (not order_received): generate's first transition
+  // is research_started, which is only legal from research_queued. Resetting to
+  // order_received left every subsequent transition illegal, so the order never
+  // reached a terminal state on replay and the reconciler kept re-flagging it.
   try {
     await supabase
       .from("marketpulse_orders")
       .update({
-        workflow_state: "order_received",
+        workflow_state: "research_queued",
         status: "processing",
         error_message: null,
       })

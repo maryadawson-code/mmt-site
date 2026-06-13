@@ -1031,6 +1031,15 @@ exports.handler = async (event) => {
       if (order) {
         _orderId = order.id;
       } else {
+        // Seed workflow_state = research_queued. This branch only runs for the
+        // free/admin path (paid orders are pre-inserted by checkout/webhook and
+        // found above). research_queued is the state a paid order is in when
+        // generate runs, and it's the only state from which the first
+        // _transition("research_started") below is legal. Without it the order
+        // takes the column default, every transition is an illegal no-op, the
+        // state never reaches a terminal value even on successful delivery, and
+        // the nightly reconciler perpetually flags it STUCK_PROCESSING and
+        // replays it (which then dead-ends in STRIPE_ERROR on the free session).
         const { data: newOrder, error: insertErr } = await _supabase.from("marketpulse_orders").insert({
           session_id,
           email,
@@ -1040,6 +1049,7 @@ exports.handler = async (event) => {
           audience: audience || null,
           additional_context: additional_context || null,
           status: "processing",
+          workflow_state: "research_queued",
         }).select("id").single();
         if (newOrder) _orderId = newOrder.id;
         if (insertErr) console.error("Order insert failed:", insertErr.message || insertErr);

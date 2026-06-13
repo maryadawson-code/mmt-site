@@ -43,7 +43,7 @@ async function findStuckOrders(supabase, { now = Date.now() } = {}) {
   const fortyFiveDaysAgo = new Date(now - 45 * 24 * 3600 * 1000).toISOString();
   const { data, error } = await supabase
     .from("marketpulse_orders")
-    .select("id, session_id, email, name, company, topic, audience, additional_context, workflow_state, error_message, created_at, state_updated_at, amount_paid")
+    .select("id, session_id, email, name, company, topic, audience, additional_context, workflow_state, error_message, report_url, created_at, state_updated_at, amount_paid")
     .gte("created_at", fortyFiveDaysAgo)
     .limit(500);
   if (error) throw new Error(`marketpulse_orders query failed: ${error.message}`);
@@ -55,6 +55,12 @@ async function findStuckOrders(supabase, { now = Date.now() } = {}) {
   const failedRetryable = [];
 
   for (const order of data || []) {
+    // A present report_url means the report was rendered and a URL issued —
+    // the report exists and was delivered, even if the workflow_state chain
+    // never reached a terminal value. Never replay these (it would clobber a
+    // delivered order, and for free orders dead-end in STRIPE_ERROR).
+    if (order.report_url) continue;
+
     const ageMs = now - new Date(order.state_updated_at || order.created_at).getTime();
 
     if (!TERMINAL_STATES.has(order.workflow_state) && ageMs > fifteenMinMs) {

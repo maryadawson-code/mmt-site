@@ -27,8 +27,8 @@ const MARKETPULSE_TRANSITIONS = {
   payment_confirmed: ['research_queued'],
   payment_failed: ['failed_terminal'],
   research_queued: ['research_started'],
-  research_started: ['research_completed', 'research_failed'],
-  research_completed: ['pdf_started'],
+  research_started: ['research_completed', 'research_failed', 'quality_fail'],
+  research_completed: ['pdf_started', 'quality_fail'],
   research_failed: ['retry_pending'],
   pdf_started: ['pdf_completed', 'pdf_failed'],
   pdf_completed: ['email_queued'],
@@ -38,6 +38,7 @@ const MARKETPULSE_TRANSITIONS = {
   email_failed: ['retry_pending'],
   retry_pending: ['research_started', 'pdf_started', 'email_queued', 'failed_terminal'],
   delivered: [],
+  quality_fail: [],
   failed_terminal: []
 };
 
