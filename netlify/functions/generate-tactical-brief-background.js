@@ -1835,6 +1835,12 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
   </div>
 </div>`;
 
+    // Track whether the customer email actually went out. The workflow_state
+    // transition below MUST reflect this — a failed or held send must NOT be
+    // recorded as email_sent/delivered (the bug that left a customer's order
+    // stamped "delivered" while the report never reached them).
+    let emailSent = false;
+    let emailHeld = false;
     if (shouldHoldEmail()) {
       if (_supabase) {
         await holdEmail(_supabase, email, deliverySubject, deliveryHtml, {
@@ -1844,7 +1850,8 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
           attachment_size_kb: 0,
         });
       }
-      console.log(`[degraded] Delivery email held for ${email}`);
+      emailHeld = true;
+      console.log(`[degraded] Delivery email held for ${email} — order stays email_queued until the email worker sends it`);
     } else {
       const deliveryResult = await sendEmail({
         to: email,
@@ -1852,6 +1859,7 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
         html: deliveryHtml,
         from: "Mission Meets Tech <noreply@missionmeetstech.com>",
       });
+      emailSent = !!deliveryResult.success;
 
       if (!deliveryResult.success) {
         console.error("Delivery email failed:", deliveryResult.error);
@@ -1876,9 +1884,17 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
       from: "Mission Meets Tech <noreply@missionmeetstech.com>",
     });
 
-    // State: email_sent → delivered
-    await _transition("email_sent");
-    await _transition("delivered");
+    // State: advance only to reflect what actually happened.
+    //  - send succeeded → email_sent → delivered
+    //  - send failed     → email_failed (reconcile/replay can retry; never "delivered")
+    //  - held (degraded) → stay email_queued; the scheduled email worker owns
+    //    the real send. report_url is set, so reconcile skips re-replay.
+    if (emailSent) {
+      await _transition("email_sent");
+      await _transition("delivered");
+    } else if (!emailHeld) {
+      await _transition("email_failed", { reason: "customer_delivery_email_send_failed" });
+    }
 
     // Submit to customer approval queue for portal visibility
     try {
