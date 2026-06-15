@@ -5,6 +5,8 @@
 // print cleanly, and attach to emails. Replaces PDFKit.
 // ============================================================
 
+const { marked } = require("marked");
+
 function esc(str) {
   if (!str) return "";
   return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -37,8 +39,10 @@ const BASE_STYLES = `
   .header-title { font-size: 24px; font-weight: 700; color: #FFFFFF; letter-spacing: 0.5px; }
   .header-sub { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 4px; }
   .content { padding: 32px 40px; }
+  h1 { font-size: 22px; font-weight: 700; color: #0f172a; margin: 28px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #457B9D; }
   h2 { font-size: 18px; font-weight: 700; color: #0f172a; margin: 28px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #457B9D; }
   h3 { font-size: 15px; font-weight: 600; color: #334155; margin: 20px 0 8px; }
+  blockquote { border-left: 3px solid #457B9D; background: #f8fafc; margin: 12px 0; padding: 8px 16px; color: #334155; font-size: 14px; }
   p { margin: 0 0 12px; font-size: 14px; }
   ul, ol { margin: 0 0 12px; padding-left: 24px; font-size: 14px; }
   li { margin-bottom: 4px; }
@@ -331,69 +335,16 @@ function renderMarketPulseHTML(data) {
 
   body += `<hr style="border:none;border-top:1px solid #e2e8f0;margin:20px 0;">`;
 
-  // Render synthesis markdown-ish content
-  const lines = (synthesis || "").split("\n");
-  let inTable = false;
-  let tableRows = [];
-
-  for (let i = 0; i < lines.length; i++) {
-    const trimmed = lines[i].trim();
-    if (!trimmed) { body += "<br>"; continue; }
-
-    // Skip internal debug
-    if (/^Classification:/i.test(trimmed)) continue;
-    if (/^METHODOLOGY APPENDIX \(Auto-Generated\)/i.test(trimmed)) continue;
-
-    // Tables
-    if (/^\|.*\|$/.test(trimmed)) {
-      if (!inTable) { inTable = true; tableRows = []; }
-      tableRows.push(trimmed);
-      // Check if next line is not a table
-      if (i + 1 >= lines.length || !/^\|.*\|$/.test(lines[i + 1].trim())) {
-        body += renderMarkdownTable(tableRows);
-        inTable = false;
-        tableRows = [];
-      }
-      continue;
-    }
-
-    // Pipeline entries
-    if (trimmed.startsWith("CONTRACT/OPPORTUNITY:")) {
-      const entry = [trimmed];
-      while (i + 1 < lines.length && /^(Agency|Contract\s*#|NAICS|Set-Aside|Estimated Value|Incumbent|Status|Timeline|Source|SDVOSB Relevance):/.test(lines[i + 1].trim())) {
-        entry.push(lines[++i].trim());
-      }
-      body += renderPipelineEntry(entry);
-      continue;
-    }
-
-    // Section headers
-    if (/^#{1,3}\s/.test(trimmed)) {
-      const text = trimmed.replace(/^#+\s*/, "");
-      body += `<h2>${esc(text)}</h2>`;
-      continue;
-    }
-    if (/^[A-Z][A-Z &\/\-]+$/.test(trimmed) && trimmed.length > 3 && trimmed.length < 80) {
-      body += `<h2>${esc(trimmed)}</h2>`;
-      continue;
-    }
-
-    // Subheaders
-    if (/^###?\s/.test(trimmed)) {
-      body += `<h3>${esc(trimmed.replace(/^#+\s*/, ""))}</h3>`;
-      continue;
-    }
-
-    // Lists
-    if (/^\d+\.\s/.test(trimmed) || /^[-•]\s/.test(trimmed)) {
-      const text = trimmed.replace(/^[-•]\s*/, "").replace(/^\d+\.\s*/, "");
-      body += `<ul><li>${renderInlineBold(text)}</li></ul>`;
-      continue;
-    }
-
-    // Paragraphs
-    body += `<p>${renderInlineBold(trimmed)}</p>`;
-  }
+  // Render synthesis markdown → HTML via marked (GFM).
+  //
+  // The prior hand-rolled line loop mangled real model output: a leading
+  // markdown table with no |---| separator row promoted the first DATA row to
+  // <th>, then absorbed the entire report body into <td> cells, so headings
+  // (##) and bold (**) shipped to customers as literal text. marked handles
+  // headings, bold, lists, and tables correctly. We pre-extract the structured
+  // CONTRACT/OPPORTUNITY pipeline blocks into styled cards (which are not
+  // markdown) and inject any missing table separator rows first.
+  body += renderSynthesisBody(synthesis || "");
 
   // Citations
   if (citations && citations.length > 0) {
@@ -415,6 +366,86 @@ function renderMarketPulseHTML(data) {
 }
 
 // --- Helpers ---
+
+// Render the MarketPulse synthesis body (markdown) to HTML using marked (GFM),
+// after (1) dropping internal debug lines, (2) extracting structured
+// CONTRACT/OPPORTUNITY pipeline blocks into styled cards, and (3) repairing
+// markdown tables the model emitted without a |---| separator row.
+function renderSynthesisBody(synthesis) {
+  marked.setOptions({ gfm: true, breaks: false });
+
+  // 1. Drop internal-debug lines the old loop also skipped.
+  let text = String(synthesis || "")
+    .split("\n")
+    .filter((l) => !/^\s*Classification:/i.test(l) && !/^METHODOLOGY APPENDIX \(Auto-Generated\)/i.test(l))
+    .join("\n");
+
+  // 2. Extract CONTRACT/OPPORTUNITY pipeline blocks (plain label: value lines,
+  //    not markdown) into styled cards; leave a placeholder for marked.
+  const cards = [];
+  {
+    const lines = text.split("\n");
+    const out = [];
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].trim().startsWith("CONTRACT/OPPORTUNITY:")) {
+        const entry = [lines[i].trim()];
+        while (i + 1 < lines.length && /^(Agency|Contract\s*#|NAICS|Set-Aside|Estimated Value|Incumbent|Status|Timeline|Source|SDVOSB Relevance|Strategic Significance):/i.test(lines[i + 1].trim())) {
+          entry.push(lines[++i].trim());
+        }
+        const token = `@@PIPELINE_CARD_${cards.length}@@`;
+        cards.push(renderPipelineEntry(entry));
+        out.push("", token, "");
+      } else {
+        out.push(lines[i]);
+      }
+    }
+    text = out.join("\n");
+  }
+
+  // 3. Inject missing GFM table separator rows.
+  text = insertMissingTableSeparators(text);
+
+  // 4. Render markdown.
+  let html = marked.parse(text);
+
+  // 5. Defense-in-depth: marked passes raw HTML through, so strip script/iframe
+  //    and inline event handlers a crafted topic/model echo could introduce.
+  html = html
+    .replace(/<\/?(?:script|iframe|object|embed)\b[^>]*>/gi, "")
+    .replace(/\son\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    .replace(/javascript:/gi, "");
+
+  // 6. Swap pipeline cards back (placeholder may be wrapped in <p>…</p>).
+  html = html
+    .replace(/<p>\s*@@PIPELINE_CARD_(\d+)@@\s*<\/p>/g, (_, n) => cards[Number(n)] || "")
+    .replace(/@@PIPELINE_CARD_(\d+)@@/g, (_, n) => cards[Number(n)] || "");
+
+  return html;
+}
+
+// A contiguous run of |…| lines whose second line is NOT a |---| separator is
+// not a valid GFM table — marked renders it as literal text. Treat the first
+// row as the header and inject a separator so it renders as a table (and the
+// first row stops being misread as data).
+function insertMissingTableSeparators(text) {
+  const lines = text.split("\n");
+  const isPipe = (l) => /^\s*\|.*\|\s*$/.test(l);
+  const isSep = (l) => /-/.test(l) && /^\s*\|?[\s:|-]+\|?\s*$/.test(l);
+  const out = [];
+  for (let i = 0; i < lines.length; i++) {
+    out.push(lines[i]);
+    if (isPipe(lines[i])) {
+      const prevWasPipe = i > 0 && isPipe(lines[i - 1]);
+      const next = lines[i + 1] || "";
+      if (!prevWasPipe && isPipe(next) && !isSep(next)) {
+        let n = lines[i].trim().replace(/^\|/, "").replace(/\|$/, "").split("|").length;
+        if (!Number.isFinite(n) || n < 1) n = 1;
+        out.push("|" + Array(n).fill("---").join("|") + "|");
+      }
+    }
+  }
+  return out.join("\n");
+}
 
 function renderMarkdownTable(rows) {
   const parsed = rows.map((r) => r.split("|").filter((c) => c.trim()).map((c) => c.trim()));

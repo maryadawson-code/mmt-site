@@ -1681,15 +1681,21 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
     }
 
     // === v4 STOP HANDLER ===
-    // If v4 self-audit triggered a stop condition, email the diagnostic
-    // to Mary (not the customer), log the event, and return without
-    // rendering/sending the report.
+    // Policy (2026-06-15, Mary): a quality-gate stop must NOT dead-end the
+    // order. Previously this path emailed the customer "you'll have it within
+    // 24 hours," transitioned to quality_fail, and returned WITHOUT delivering
+    // — but nothing ever fulfilled that promise, so orders stranded until a
+    // human manually replayed them. Now we DELIVER the report flagged with a
+    // prominent verification caveat (consistent with the soft-fail path). The
+    // stop is still logged for ops, and Mary still gets the diagnostic on
+    // catastrophic failures.
+    let v4DeliveredWithCaveat = false;
     if (V4_ON && v4Stop) {
       await logOpsEvent(_supabase, {
         event_type: "MARKETPULSE_V4_STOP",
         source_function: "generate-tactical-brief-background",
-        severity: "error",
-        signature: "v4_self_audit_stop",
+        severity: "warning",
+        signature: "v4_self_audit_stop_delivered_with_caveat",
         affected_entity: session_id,
         details: {
           email,
@@ -1697,14 +1703,13 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
           score: v4Score ? v4Score.total : null,
           band: v4Score ? v4Score.band : null,
           failed_checks: v4Audit ? v4Audit.checks.filter(c => !c.passed).map(c => `#${c.id} ${c.label}`) : [],
+          disposition: "delivered_with_caveat",
         },
       });
-      // Diagnostic email to Mary — silenced by default 2026-04-29 to stop the
-      // noise stream from Tier-B-only failures (e.g. score 84/100 with one
-      // unsourced row). The ops_events MARKETPULSE_V4_STOP entry above is the
-      // permanent durable signal; she can query it any time. Email fires only
-      // for catastrophic failures (score < 70 OR more than 3 failed checks)
-      // OR when MARKETPULSE_V4_DIAGNOSTIC_EMAIL=true is explicitly set.
+      // Diagnostic email to Mary — fires only for catastrophic failures
+      // (score < 70 OR more than 3 failed checks) OR when
+      // MARKETPULSE_V4_DIAGNOSTIC_EMAIL=true. The customer no longer receives a
+      // "still working" email; they get the report with a verification caveat.
       const v4FailedCheckCount = v4Audit ? v4Audit.checks.filter((c) => !c.passed).length : 0;
       const v4Critical = (v4Score && typeof v4Score.total === "number" && v4Score.total < 70) || v4FailedCheckCount > 3;
       const v4DiagnosticEnabled = String(process.env.MARKETPULSE_V4_DIAGNOSTIC_EMAIL || "").toLowerCase() === "true";
@@ -1712,24 +1717,13 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
         try {
           await sendEmail({
             to: "mary@missionmeetstech.com",
-            subject: `[MarketPulse v4] STOP — ${name} (${email}) — score ${v4Score ? v4Score.total : "?"}/100`,
+            subject: `[MarketPulse v4] STOP (delivered w/ caveat) — ${name} (${email}) — score ${v4Score ? v4Score.total : "?"}/100`,
             html: `<pre style="font-family:ui-monospace,monospace;white-space:pre-wrap;background:#f3f4f6;padding:16px;border-radius:8px;">${(v4Diagnostic || "").replace(/[<&>]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]))}</pre>`,
             from: "Mission Meets Tech <noreply@missionmeetstech.com>",
           });
         } catch (_) { /* non-blocking */ }
       }
-
-      // Customer notification: a gentle "we need more time" rather than the raw diagnostic
-      try {
-        await sendEmail({
-          to: email,
-          subject: `We're still working on your MarketPulse Report — ${(topic || "").substring(0, 50)}`,
-          html: `<p>Hi ${(name || "there").split(" ")[0]},</p><p>Our audit flagged that your MarketPulse report needs additional primary-source verification before we deliver it. We don't ship reports that can't be fully grounded in Tier 1 federal sources.</p><p>Our team is working on closing the gaps. You'll have your report within 24 hours.</p><p>— Mission Meets Tech</p>`,
-          from: "Mission Meets Tech <noreply@missionmeetstech.com>",
-        });
-      } catch (_) { /* non-blocking */ }
-      await _transition("quality_fail");
-      return { statusCode: 200, body: JSON.stringify({ success: false, v4_stop: true, score: v4Score ? v4Score.total : null }) };
+      v4DeliveredWithCaveat = true;
     }
 
     await _transition("pdf_started");
@@ -1754,6 +1748,14 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
       reportScore: V4_ON ? undefined : reportScore,
     });
     console.log(`Report HTML generated: ${Math.round(reportHtmlContent.length / 1024)}KB`);
+
+    // If the v4 self-audit hit a stop condition, we still deliver (per policy)
+    // but prepend a prominent verification caveat so the customer knows to
+    // confirm flagged items against primary sources before acting.
+    if (v4DeliveredWithCaveat) {
+      const caveat = `<div style="background:#FFF4E5;border:1px solid #F0C36D;border-radius:8px;padding:14px 18px;margin:0 0 20px;font-size:13px;color:#8A5A00;line-height:1.55;"><strong>&#9888; Verification caveat.</strong> Our automated audit flagged one or more items in this report that warrant primary-source confirmation before you act on them. Treat figures, contract identifiers, and dates as directional and verify them against the cited .gov sources. Any specific items are listed under Verification Notes.</div>`;
+      reportHtmlContent = reportHtmlContent.replace(/(<div class="content">)/i, `$1\n${caveat}`);
+    }
 
     // === MarketPulse v2: subscriber-context post-generation validation ===
     // If no subscriber_context was loaded, prepend the no-context banner.
@@ -1835,6 +1837,12 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
   </div>
 </div>`;
 
+    // Track whether the customer email actually went out. The workflow_state
+    // transition below MUST reflect this — a failed or held send must NOT be
+    // recorded as email_sent/delivered (the bug that left a customer's order
+    // stamped "delivered" while the report never reached them).
+    let emailSent = false;
+    let emailHeld = false;
     if (shouldHoldEmail()) {
       if (_supabase) {
         await holdEmail(_supabase, email, deliverySubject, deliveryHtml, {
@@ -1844,7 +1852,8 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
           attachment_size_kb: 0,
         });
       }
-      console.log(`[degraded] Delivery email held for ${email}`);
+      emailHeld = true;
+      console.log(`[degraded] Delivery email held for ${email} — order stays email_queued until the email worker sends it`);
     } else {
       const deliveryResult = await sendEmail({
         to: email,
@@ -1852,6 +1861,7 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
         html: deliveryHtml,
         from: "Mission Meets Tech <noreply@missionmeetstech.com>",
       });
+      emailSent = !!deliveryResult.success;
 
       if (!deliveryResult.success) {
         console.error("Delivery email failed:", deliveryResult.error);
@@ -1876,9 +1886,17 @@ CRITICAL: An honest "we found limited data" is infinitely more valuable than 18 
       from: "Mission Meets Tech <noreply@missionmeetstech.com>",
     });
 
-    // State: email_sent → delivered
-    await _transition("email_sent");
-    await _transition("delivered");
+    // State: advance only to reflect what actually happened.
+    //  - send succeeded → email_sent → delivered
+    //  - send failed     → email_failed (reconcile/replay can retry; never "delivered")
+    //  - held (degraded) → stay email_queued; the scheduled email worker owns
+    //    the real send. report_url is set, so reconcile skips re-replay.
+    if (emailSent) {
+      await _transition("email_sent");
+      await _transition("delivered");
+    } else if (!emailHeld) {
+      await _transition("email_failed", { reason: "customer_delivery_email_send_failed" });
+    }
 
     // Submit to customer approval queue for portal visibility
     try {
