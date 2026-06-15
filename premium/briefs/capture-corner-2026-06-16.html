@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capture Corner: The Measurement Layer &middot; MMT Premium</title>
+  <meta name="description" content="June 16, 2026. Companion to &#39;Two of Forty-Six.&#39; GAO-26-107677 read as a capture map: the nine recommendations as inventory, measure, and optimize; the three centers of gravity that own the work; the live vehicles already moving against the gap; the five capabilities worth holding; and the what-to-do-this-week list.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <style>
+    :root { --mmt-teal:#457B9D; --mmt-navy:#0A192F; --mmt-soft:#F3F4F6; --mmt-white:#FFFFFF; --mmt-text:#102033; --mmt-text-secondary:#5C6B7A; --mmt-border:#D8E0E8; --ci-gold:#92710A; --ci-gold-bg:#FEF9E7; --mmt-red:#E63946; }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--mmt-white); color:var(--mmt-navy); }
+    .brief-body { font-size:15px; line-height:1.75; color:#314155; }
+    .brief-body h2 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:40px 0 14px; letter-spacing:-0.02em; }
+    .brief-body h3 { font-size:17px; font-weight:700; color:var(--mmt-navy); margin:28px 0 10px; }
+    .brief-body h4 { font-size:15px; font-weight:700; color:var(--mmt-navy); margin:20px 0 8px; }
+    .brief-body p { margin-bottom:16px; max-width:65ch; }
+    .brief-body ul { margin-bottom:16px; padding-left:1.25rem; }
+    .brief-body ol { margin-bottom:16px; padding-left:1.5rem; }
+    .brief-body li { margin-bottom:8px; }
+    .brief-body a { color:var(--mmt-teal); text-decoration:underline; text-underline-offset:3px; }
+    .brief-body strong { color:var(--mmt-navy); }
+    .brief-body em { color:var(--mmt-text-secondary); }
+    .brief-body hr { border:none; border-top:1px solid var(--mmt-border); margin:36px 0; }
+    .brief-body blockquote { border-left:3px solid var(--mmt-teal); padding:8px 16px; margin:16px 0; color:var(--mmt-text-secondary); background:rgba(69,123,157,0.04); border-radius:0 6px 6px 0; }
+    .brief-body img { max-width:100%; height:auto; display:block; margin:24px 0; border:1px solid var(--mmt-border); border-radius:8px; }
+    .brief-body table { width:100%; border-collapse:collapse; margin:16px 0 24px; font-size:14px; }
+    .brief-body th, .brief-body td { border:1px solid var(--mmt-border); padding:10px 12px; text-align:left; vertical-align:top; }
+    .brief-body th { background:var(--mmt-soft); color:var(--mmt-navy); font-weight:700; }
+    .pills { margin:8px 0 24px; }
+    .pill { display:inline-block; padding:4px 10px; background:rgba(69,123,157,0.08); color:var(--mmt-teal); border-radius:14px; font-size:11px; font-weight:600; margin:2px 4px 2px 0; }
+    .pill-red { background:rgba(230,57,70,0.08); color:var(--mmt-red); }
+    .pill-gold { background:var(--ci-gold-bg); color:var(--ci-gold); }
+    .back-link { font-size:13px; font-weight:600; color:var(--mmt-teal); text-decoration:none; }
+    .back-link:hover { opacity:0.7; }
+    .gate-notice { background:linear-gradient(180deg,#FFFFFF 0%,#F3F4F6 100%); border:1px solid var(--mmt-border); border-radius:12px; padding:32px 28px; text-align:center; margin:32px auto; max-width:540px; }
+    .gate-notice h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin-bottom:10px; }
+    .gate-notice p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:16px; line-height:1.55; }
+    .gate-cta { display:inline-block; padding:12px 24px; background:var(--mmt-navy); color:var(--mmt-white); font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; }
+    .section-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--ci-gold); }
+    .deep-dive-card { margin:48px 0 16px; padding:32px 28px; border:2px solid var(--ci-gold); border-radius:12px; background:linear-gradient(180deg,#FFFFFF 0%,var(--ci-gold-bg) 100%); }
+    .deep-dive-card h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:0 0 12px; letter-spacing:-0.01em; }
+    .deep-dive-card p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:14px; line-height:1.6; max-width:none; }
+    .deep-dive-price { display:inline-flex; align-items:baseline; gap:8px; margin:4px 0 16px; font-weight:800; color:var(--mmt-navy); }
+    .deep-dive-price .amount { font-size:28px; }
+    .deep-dive-price .unit { font-size:13px; font-weight:600; color:var(--mmt-text-secondary); text-transform:uppercase; letter-spacing:0.06em; }
+    .brief-body a.deep-dive-cta,
+    a.deep-dive-cta { display:inline-block; padding:14px 26px; background:var(--ci-gold); color:#FFFFFF; font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; letter-spacing:0.02em; }
+    .brief-body a.deep-dive-cta:hover,
+    a.deep-dive-cta:hover { opacity:0.92; color:#FFFFFF; }
+    .deep-dive-examples { font-size:13px; color:var(--mmt-text-secondary); font-style:italic; margin-top:8px; }
+  </style>
+</head>
+<body>
+  <nav class="nav-editorial"></nav>
+
+  <main class="wrap" style="padding:48px 0 80px; max-width:820px;">
+    <a href="/capture-corner.html" class="back-link">&larr; Capture Corner</a>
+
+    <div style="margin-top:20px; margin-bottom:8px;">
+      <div class="section-label">MMT Premium &middot; Capture Corner &middot; June 16, 2026</div>
+    </div>
+    <h1 style="font-size:clamp(26px,3.2vw,38px);line-height:1.1;letter-spacing:-0.03em;margin-bottom:10px;">The Measurement Layer. The Nine GAO Recommendations Read as a Capture Map.</h1>
+    <p style="font-size:15px;color:var(--mmt-text-secondary);margin-bottom:20px;"><em>Companion to &ldquo;Two of Forty-Six.&rdquo; The public issue makes the readiness case. This is the capture case underneath it: GAO-26-107677 read as inventory, measure, and optimize; the three centers of gravity that own the work; the live vehicles already moving against the gap; the five capabilities worth holding; and what to do this week.</em></p>
+
+    <div class="pills">
+      <span class="pill pill-gold">Capture Corner</span>
+      <span class="pill">Clinical Readiness</span>
+      <span class="pill">Joint Trauma System</span>
+      <span class="pill">MHS GENESIS</span>
+      <span class="pill">KSA Metric</span>
+      <span class="pill">DHA</span>
+      <span class="pill">NDAA Section 712</span>
+      <span class="pill">Civilian Partnerships</span>
+    </div>
+
+    <div data-gate="free" style="display:block;">
+      <div class="gate-notice">
+        <h3>&#9733; Premium Capture Corner</h3>
+        <p>The full operator&rsquo;s companion: the nine GAO recommendations read as a capture map, the three centers of gravity that own the work, the live vehicles already moving against the gap (Cherokee Nation JTS support, MQS2-NG, RHRP-4, the Army Medical Simulator IDIQ, and the greenfield Section 712 surge program), the five capabilities that hold ground across recompete cycles, and the what-to-do-this-week list. Free members see the framing; premium gets the full board.</p>
+        <a class="gate-cta" href="/pricing">See premium plans</a>
+      </div>
+    </div>
+
+    <div data-access="premium" data-gate="premium" class="brief-body">
+
+<p><em>Capture Corner is the premium BD intelligence companion to Mission Meets Tech. Public-record sourced. Independent analysis. Not a recommendation, not vendor advocacy, not capture material. Built for federal health BD, capture, and proposal leaders who need analytical depth, not headlines.</em></p>
+<p><em>This issue is the capture companion to the public piece, &quot;Two of Forty-Six.&quot; Tuesday&#39;s issue laid out the readiness problem: the Department of War cannot reliably count its civilian clinical partnerships, and a validated metric says only a fraction of its surgeons are hitting the case volume that combat demands. GAO handed the department a nine-part roadmap, and the department concurred with most of it. A roadmap the government accepted is a buying signal.</em></p>
+<hr>
+<p>The public issue made the readiness case. This is the capture case underneath it.</p>
+<p>GAO-26-107677 is not a complaint. It is a set of nine recommendations the department agreed to act on, which means each one becomes a requirement with an owner, a timeline, and eventually a vehicle. The recommendations cluster into three moves, and the third is where the durable position sits.</p>
+<hr>
+<h2>1. The nine recommendations, read as a capture map</h2>
+<table>
+<thead>
+<tr>
+<th>Cluster</th>
+<th>What GAO asked for</th>
+<th>What it has to buy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Inventory</strong></td>
+<td>A reliable, maintained accounting of the department&#39;s civilian clinical partnerships</td>
+<td>Data collection, partnership-tracking systems, the labor to build and maintain the record</td>
+</tr>
+<tr>
+<td><strong>Measure</strong></td>
+<td>Department-wide guidance to collect clinical-activity data tied to readiness (the KSA layer)</td>
+<td>The clinical-activity data system itself, integration with the medical record, analytics that turn case logs into readiness signal</td>
+</tr>
+<tr>
+<td><strong>Optimize</strong></td>
+<td>Use the data to evaluate whether partnerships sustain skills, and direct providers accordingly</td>
+<td>Decision-support tooling, modeling, the recompetes that follow once the department can finally see what it has</td>
+</tr>
+</tbody>
+</table>
+<p>The measure cluster is the anchor. Everything in the inventory cluster is a one-time-ish build. Everything in the optimize cluster depends on the measure cluster existing first. The clinical-activity data system is the load-bearing requirement, and it is the position worth holding.</p>
+<hr>
+<h2>2. Who owns the work</h2>
+<p>Three originating centers of gravity, and the capture lead who knows which door a given requirement comes through has the advantage.</p>
+<ul>
+<li><strong>PEO Defense Healthcare Management Systems (DHMS)</strong> owns the record. Anything that connects clinical-activity data to MHS GENESIS routes through or around this office. Interoperability with GENESIS is the entry ticket, not a nice-to-have.</li>
+<li><strong>DHA J-3 and the Joint Trauma System</strong> own the readiness and trauma-data mission. The KSA metric, the trauma registry, and the clinical standards that define what counts as a readiness rep live here. This is the credibility door.</li>
+<li><strong>The service surgeons general</strong> own the providers and the partnerships. The inventory work, the C-STARS and trauma-training-center relationships, and the provider-assignment decisions sit at the service level.</li>
+</ul>
+<hr>
+<h2>3. Live vehicles to watch</h2>
+<p>Figures below are drawn from public contract databases and are time-sensitive. Confirm award values, ceilings, and period-of-performance dates against SAM.gov and FPDS before building any pursuit around them.</p>
+<table>
+<thead>
+<tr>
+<th>Vehicle</th>
+<th>Scope</th>
+<th>Capture read</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Cherokee Nation, HT942525C0017</strong> (~$13.4M, sole-source 8(a), JTS Trauma System Development Support, PoP through Feb 28 2027)</td>
+<td>Trauma-system data and development support to JTS</td>
+<td>The recompete is the one to calendar. This is the clearest near-term door into the measurement mission. Track the PoP end and the likely recompete window.</td>
+</tr>
+<tr>
+<td><strong>MQS2-NG</strong> (~$43B DHA medical-services IDIQ, 2024-2034)</td>
+<td>The wide medical-services ceiling</td>
+<td>Position for task orders, not the base. The measurement and analytics work can land here.</td>
+</tr>
+<tr>
+<td><strong>RHRP-4</strong> (~$1.61B, awarded April 2026)</td>
+<td>Reserve health readiness</td>
+<td>Readiness-adjacent; watch for clinical-activity and data scope on task orders.</td>
+</tr>
+<tr>
+<td><strong>Army Medical Simulator IDIQ</strong> (~$186M)</td>
+<td>Simulation and skills sustainment</td>
+<td>The optimize cluster&#39;s training side. Skill-sustainment demand grows as the dispersion model spreads.</td>
+</tr>
+<tr>
+<td><strong>FY2026 NDAA Section 712, Military-Civilian Medical Surge Program</strong> (signed Dec 18 2025, at least 8 sites)</td>
+<td>Embedding military clinicians in high-volume civilian trauma centers</td>
+<td>Greenfield. New sites mean new partnership-management and data requirements with no incumbent locked in. This is the one to get ahead of.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2>4. The position worth holding</h2>
+<p>The department is about to be able to see its own readiness for the first time. The companies that help it see, and that speak the language fluently, hold ground that does not move every recompete cycle. Five capabilities define that position:</p>
+<ol>
+<li><strong>Clinical-activity data fluency.</strong> Not generic health IT. The specific work of turning case logs into a readiness signal the surgeons general can act on.</li>
+<li><strong>KSA fluency.</strong> Understanding the metric, its thresholds, and how it maps to wartime skills. This is what separates a credible bid from a generic one.</li>
+<li><strong>Trauma-system credibility.</strong> Standing with JTS and the trauma registry. Hard to fake, hard to displace.</li>
+<li><strong>MHS GENESIS interoperability.</strong> The data has to live where the record lives. No interoperability story, no entry.</li>
+<li><strong>The cost-savings story.</strong> Every readiness rep recaptured inside a military hospital is also a purchased-care dollar saved. Readiness and cost point the same direction, and the bid that carries both arguments is the one that survives budget scrutiny.</li>
+</ol>
+<hr>
+<h2>What to do this week</h2>
+<ul>
+<li><strong>Calendar the Cherokee Nation PoP end (Feb 28 2027) and work backward</strong> to the likely recompete window. Confirm the date in FPDS first.</li>
+<li><strong>Map your GENESIS interoperability story</strong> in one page. If you can&#39;t tell it, you can&#39;t compete for the measure cluster.</li>
+<li><strong>Pull the Section 712 site list as it stands</strong> and identify which sites have no incumbent partnership-management relationship yet.</li>
+<li><strong>Find your KSA-fluent person.</strong> If you don&#39;t have one, that is the first hire or teaming gap to close.</li>
+</ul>
+<hr>
+<h2>Editorial discipline note</h2>
+<p>This brief is built from public-record sources: the GAO report, the FY2026 NDAA, and public contract databases. It is not vendor advocacy and not a recommendation to bid any specific vehicle. Contract values, ceilings, and dates are time-sensitive and must be confirmed against SAM.gov and FPDS before any capture decision. The framing reflects MMT&#39;s read of where the work is heading, not inside knowledge of any source-selection.</p>
+<hr>
+<p>Mary</p>
+<p>Mission Meets Tech Premium</p>
+<p><em>The views expressed in this newsletter are my own and do not represent the official position of any organization. This content is for informational purposes only.</em></p>
+<hr>
+<h2>Sources</h2>
+<p>[CC1] U.S. Government Accountability Office, &quot;Defense Health Care: Actions Needed to Assess Civilian Partnerships&#39; Contributions to Readiness,&quot; GAO-26-107677, June 4, 2026. <a href="https://www.gao.gov/products/gao-26-107677">https://www.gao.gov/products/gao-26-107677</a></p>
+<p>[CC2] FY2026 National Defense Authorization Act, Section 712, Military-Civilian Medical Surge Program (signed December 18, 2025).</p>
+<p>[CC3] Cherokee Nation award HT942525C0017, JTS Trauma System Development Support (public contract databases; confirm against SAM.gov/FPDS).</p>
+<p>[CC4] DHA MQS2-NG medical-services IDIQ; RHRP-4 reserve health readiness award; Army Medical Simulator IDIQ (public contract databases; figures time-sensitive, confirm before use).</p>
+
+<div class="deep-dive-card">
+  <div class="section-label" style="color:var(--ci-gold);margin-bottom:8px;">Custom Deep Dive &middot; Premium Add-On</div>
+  <h3>Want a custom deep-dive on any line in this brief?</h3>
+  <p>This Capture Corner maps the nine GAO recommendations, the three centers of gravity, the live vehicles, the five capabilities, and the week-one moves. Where it stops short &mdash; profiling a specific vehicle&rsquo;s recompete timeline, scoping a GENESIS interoperability story for your firm, reading the Section 712 site list for open ground, or mapping your team against the five capabilities &mdash; the next layer of intelligence is <strong>custom by request</strong>.</p>
+  <div class="deep-dive-price"><span class="amount">$50</span><span class="unit">one-time &middot; 5&ndash;7 business day turnaround</span></div>
+  <p>I will pull the additional public-record sources, read the visible signal, and write a 4&ndash;6 page custom intelligence memo on the area you select. You name the question; I do the BD-grade analysis.</p>
+  <p style="margin-bottom:18px;"><a class="deep-dive-cta" href="https://buy.stripe.com/6oUdRb2NEaQI3uM6KL4c803">Buy a Custom Deep Dive &mdash; $50 &rarr;</a></p>
+  <p class="deep-dive-examples">Examples: <em>"Measurement Layer Deep Dive &mdash; profile the Cherokee Nation JTS recompete window" &middot; "Deep Dive &mdash; scope a GENESIS interoperability story for [firm]" &middot; "Deep Dive &mdash; read the Section 712 site list for open ground" &middot; "Deep Dive &mdash; map my team against the five capabilities"</em></p>
+</div>
+
+    </div>
+  </main>
+
+  <footer class="footer"></footer>
+</body>
+</html>
