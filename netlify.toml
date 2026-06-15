@@ -1118,14 +1118,15 @@
   to = "/rfp-shredder.html"
   status = 301
 
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "SAMEORIGIN"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; frame-src https://checkout.stripe.com https://open.spotify.com; media-src 'self' https://api.riverside.fm https://hosting-media.rs-prod.riverside.fm; connect-src 'self' https://plausible.io https://*.stripe.com; object-src 'none'; base-uri 'self'; form-action 'self' https://buttondown.com https://checkout.stripe.com"
+# Security headers are intentionally NOT defined here. Ownership (Sprint B
+# 2026-05-13, re-confirmed 2026-06-15): X-Frame-Options, X-Content-Type-Options,
+# and Referrer-Policy live in `_headers`; Content-Security-Policy,
+# Permissions-Policy, and Strict-Transport-Security live in the
+# `security-headers` edge function (path "/*", covers function routes too).
+# A duplicate `[[headers]] for="/*"` block used to live here with a STALE CSP
+# (old jsdelivr + *.stripe.com wildcard) that the edge function silently
+# overrode — dead weight and a divergence risk. Removed so the two owners
+# above are the single source of truth.
 
 # Cache headers
 [[headers]]
