@@ -1,68 +1,26 @@
 {
   "_meta": {
     "description": "Pursuit Calendar seed events. Source of truth when Supabase pursuit_calendar table is unreachable. Times are America/New_York (ET). Status is computed dynamically by the renderer for date-based events; explicit status values (Protest, Protest Due, Watch, Needs Source) are honored as-is.",
-    "last_curated_at": "2026-06-08",
+    "last_curated_at": "2026-06-15",
     "curator": "automated",
     "timezone": "America/New_York",
-    "window_start": "2026-06-08",
-    "window_end": "2026-09-06"
+    "window_start": "2026-06-15",
+    "window_end": "2026-09-13"
   },
   "events": [
     {
-      "id": "f6bd1ec9-6a84-4674-a160-f451a2413f08",
-      "title": "Sherpa 6 Secures $240M Army Contract for Chemical, Biological Detection Technologies",
-      "event_date": "2026-06-08",
+      "id": "631c50bd-7896-46aa-86c0-6a3ee7c4602b",
+      "title": "Notice of Intent - Sole Source to MHS GENESIS Solution providers",
+      "event_date": "2026-06-18",
       "event_time_et": null,
-      "agency": "VA",
-      "vehicle": null,
+      "agency": "DHA",
+      "vehicle": "HT003826CEXXX1",
       "ref": null,
-      "category": "intel_release",
+      "category": "rfi",
       "status_override": null,
-      "source_url": "https://www.govconwire.com/articles/sherpa-6-army-chem-bio-detection-tech",
-      "source_system": "rss:https://www.govconwire.com/feed/",
-      "notes": "Sherpa 6 has landed a $239.6 million Army contract focused on chemical and biological defense The award will support efforts to enhance threat detection and troop protection capabilities The contract was issued through the Army’s Small Business Innovation Research program Sherpa 6 has secured a $239.6 million contract from the U.S. Army to support chemical and"
-    },
-    {
-      "id": "0c1aaca4-d7e8-40c1-bca3-ad9cdc798e87",
-      "title": "TechnoMile Adds Mark McNeely to Advisory Board",
-      "event_date": "2026-06-08",
-      "event_time_et": null,
-      "agency": "VA",
-      "vehicle": null,
-      "ref": null,
-      "category": "intel_release",
-      "status_override": null,
-      "source_url": "https://www.govconwire.com/articles/technomile-mark-mcneely-advisory-board",
-      "source_system": "rss:https://www.govconwire.com/feed/",
-      "notes": "TechnoMile has named Mark McNeely to its board of advisers McNeely most recently served as chief administrative officer at AV He brings more than two decades of leadership experience in federal contracting, national security and DIB TechnoMile has appointed Mark McNeely, a defense innovation executive, to its board of advisers. In a LinkedIn post published"
-    },
-    {
-      "id": "159abb7e-53fe-4ee7-b589-85f91a16de52",
-      "title": "Army T2COM Maj. Gen. Hall to Deliver Advanced Tech GovCon Insights at 2026 Army Summit",
-      "event_date": "2026-06-08",
-      "event_time_et": null,
-      "agency": "VA",
-      "vehicle": null,
-      "ref": null,
-      "category": "event",
-      "status_override": null,
-      "source_url": "https://www.govconwire.com/articles/david-hall-army-summit-t2com-ngc2-training",
-      "source_system": "rss:https://www.govconwire.com/feed/",
-      "notes": "Maj. Gen. David Hall, Army Transformation and Training Command, or T2COM, deputy commanding general for Army National Guard will keynote the 2026 Army Summit on June 18. His expertise in aviation, UAS and data-centric technologies technologies makes him a highly sought-after expert on critical national security technologies. Get your burning questions answered by Maj. Gen."
-    },
-    {
-      "id": "0e9ef222-b2cf-4809-b97f-f2aba282591f",
-      "title": "Palo Alto Networks Acquires Portkey to Expand Prisma AIRS AI Security Platform",
-      "event_date": "2026-06-08",
-      "event_time_et": null,
-      "agency": "VA",
-      "vehicle": null,
-      "ref": null,
-      "category": "intel_release",
-      "status_override": null,
-      "source_url": "https://www.govconwire.com/articles/palo-alto-networks-portkey-acquisition-prisma-airs",
-      "source_system": "rss:https://www.govconwire.com/feed/",
-      "notes": "Palo Alto Networks has acquired Portkey to strengthen the Prisma AIRS AI security platform The Portkey technology will provide centralized governance and control for enterprise AI interactions The deal advances Palo Alto Networks’ strategy to secure autonomous AI agents and production-scale deployments Palo Alto Networks has completed its acquisition of AI gateway provider Portkey, expanding"
+      "source_url": "https://sam.gov/workspace/contract/opp/947fe670c6184824a5def4e406548a8c/view",
+      "source_system": "sam.gov",
+      "notes": "Sol: HT003826CEXXX1 · NAICS 541512"
     },
     {
       "id": "e2c0e9cf-2822-41b5-8219-7c026a493c99",
@@ -77,6 +35,48 @@
       "source_url": "https://sam.gov/workspace/contract/opp/21be43568b9446f1a6c7f8661e177754/view",
       "source_system": "sam.gov",
       "notes": "Sol: DHA_FHP2026RFI · NAICS 541512 · Set-aside: No Set aside used"
+    },
+    {
+      "id": "1b603d61-91fd-487f-87f5-348c2215dc1f",
+      "title": "Forensic Health Program",
+      "event_date": "2026-06-23",
+      "event_time_et": null,
+      "agency": "DHA",
+      "vehicle": "DHA_FHP2026RFI",
+      "ref": null,
+      "category": "rfi",
+      "status_override": null,
+      "source_url": "https://sam.gov/workspace/contract/opp/3cc0990b07604094a36a76275335015d/view",
+      "source_system": "sam.gov",
+      "notes": "Sol: DHA_FHP2026RFI · NAICS 541512 · Set-aside: No Set aside used"
+    },
+    {
+      "id": "287484e6-243b-41d1-b65d-02e584e5dafa",
+      "title": "eContract File Management System (eCFMS) Backend Support",
+      "event_date": "2026-06-26",
+      "event_time_et": null,
+      "agency": "DHA",
+      "vehicle": "HT001126QE022",
+      "ref": null,
+      "category": "rfi",
+      "status_override": null,
+      "source_url": "https://sam.gov/workspace/contract/opp/b69c0e7c37884c0c9a4a0ff6e3f0ee89/view",
+      "source_system": "sam.gov",
+      "notes": "Sol: HT001126QE022 · NAICS 541512 · Set-aside: No Set aside used"
+    },
+    {
+      "id": "b1a778c3-96e3-4143-971d-28dc2cfa293d",
+      "title": "Advanced Research Projects Agency for Health (ARPA-H) Small Business Innovation Research (SBIR)/Small Business Technology Transfer (STTR) Program",
+      "event_date": "2026-07-10",
+      "event_time_et": null,
+      "agency": "ARPA-H",
+      "vehicle": "7599226SN106",
+      "ref": null,
+      "category": "deadline",
+      "status_override": null,
+      "source_url": "https://sam.gov/workspace/contract/opp/34fa75da1d484987bd6dbc882deab889/view",
+      "source_system": "sam.gov",
+      "notes": "Sol: 7599226SN106 · NAICS 541715 · Set-aside: Total Small Business Set-Aside (FAR 19.5)"
     }
   ]
 }
