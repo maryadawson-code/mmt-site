@@ -50,6 +50,18 @@
 [functions."weekly-report"]
   schedule = "0 14 * * 1"
 
+# Agent Access — nightly recommendation scoring (Phase 4). Feeds
+# recommended_cache. No-op until AGENT_SCORING_ENABLED=true AND provider keys
+# land (the router is fail-closed), so the cron is safe to register now.
+[functions."agent-score-batch"]
+  schedule = "0 7 * * *"
+
+# Agent Access — abuse/harvest alert sweep (Phase 5, §5). No-op until
+# AGENT_ALERTS_ENABLED=true. Hourly (Netlify's smallest reliable cadence here);
+# tighten if real-time §5 detection is needed once traffic exists.
+[functions."agent-alert-sweep"]
+  schedule = "0 * * * *"
+
 # Feature-vote Day-7 tally — hourly; the fn checks now >= deadline and
 # exits no-op until the 7-day window closes, then runs once (idempotent).
 [functions."feature-vote-tally"]
