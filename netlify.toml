@@ -692,6 +692,27 @@
   status = 200
   force = true
 
+# ── Agent Access — token management (Phase 2) ───────────────────────────────
+# Auth: verified magic-link session in the POST body (lib/agent-session.js).
+# Raw token shown once on create; only SHA-256 hash + 8-char prefix stored.
+[[redirects]]
+  from = "/api/tokens"
+  to = "/.netlify/functions/tokens-create"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/tokens/list"
+  to = "/.netlify/functions/tokens-list"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/tokens/revoke"
+  to = "/.netlify/functions/tokens-revoke"
+  status = 200
+  force = true
+
 # Capture Corner Premium portal — dynamic markdown renderer
 # Serves premium_deliverables rows when publish_at <= now AND published=true
 [[redirects]]
