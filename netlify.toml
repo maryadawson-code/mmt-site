@@ -713,6 +713,33 @@
   status = 200
   force = true
 
+# ── Agent Access — read API v1 (Phase 3) ────────────────────────────────────
+# Bearer-token auth + budget/session/rate gates live in lib/agent-auth.js.
+# Order matters: the :id rule must precede the bare collection rule.
+[[redirects]]
+  from = "/api/v1/opportunities/:id"
+  to = "/.netlify/functions/agent-opportunities?id=:id"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/v1/opportunities"
+  to = "/.netlify/functions/agent-opportunities"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/v1/tracker"
+  to = "/.netlify/functions/agent-tracker"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/v1/recommended"
+  to = "/.netlify/functions/agent-recommended"
+  status = 200
+  force = true
+
 # Capture Corner Premium portal — dynamic markdown renderer
 # Serves premium_deliverables rows when publish_at <= now AND published=true
 [[redirects]]
