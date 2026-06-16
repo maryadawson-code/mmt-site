@@ -393,16 +393,27 @@ __SOURCE_TABLE__
     process.exit(1);
   }
 
-  // ---- LIVE: requires production env ----
+  // ---- LIVE: requires production Supabase. RESEND + REPORT_VIEWER_SECRET
+  //      are optional. When REPORT_VIEWER_SECRET is absent we reuse the
+  //      ORIGINAL report link (token = HMAC(id+type) is unchanged, so the
+  //      link already in the customer's inbox renders the updated row).
+  //      When RESEND is absent we update the DB only and leave the email
+  //      to an in-thread human reply (better deliverability). ----
   const { createClient } = require(path.join(ROOT, "node_modules/@supabase/supabase-js"));
-  const { sendEmail } = require(path.join(ROOT, "netlify/functions/lib/send-email"));
-  const { generateReportUrl } = require(path.join(ROOT, "netlify/functions/lib/report-url"));
 
-  for (const k of ["SUPABASE_URL", "SUPABASE_SERVICE_KEY", "RESEND_API_KEY", "REPORT_VIEWER_SECRET"]) {
-    if (!process.env[k]) { console.error(`FATAL: ${k} not set — run with production env.`); process.exit(1); }
+  const SUPABASE_URL = process.env.SUPABASE_URL;
+  const SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!SUPABASE_URL || !SERVICE_KEY) {
+    console.error("FATAL: SUPABASE_URL and a service key (SUPABASE_SERVICE_KEY or SUPABASE_SERVICE_ROLE_KEY) are required.");
+    process.exit(1);
   }
 
-  const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+  // The link already delivered to the customer on 2026-06-15. id+type are
+  // unchanged, so its HMAC token stays valid against the updated row.
+  const ORIGINAL_REPORT_URL =
+    "https://missionmeetstech.com/.netlify/functions/view-report?id=34b3eb26-5ebb-4e7d-b9ae-31480f328240&type=marketpulse&token=ce5b7f9501ea6cd840ecb219b449f6dd1157ed55608291336d8eb5a8b1cf1398";
+
+  const sb = createClient(SUPABASE_URL, SERVICE_KEY);
 
   const { data: orderRow, error: lookupErr } = await sb
     .from("marketpulse_orders").select("email, name").eq("id", ORDER_ID).single();
@@ -413,7 +424,13 @@ __SOURCE_TABLE__
   const EMAIL = orderRow.email;
   console.log(`recipient: ${EMAIL.replace(/(.{2}).*(@.*)/, "$1***$2")}`);
 
-  const { url: reportUrl } = generateReportUrl(ORDER_ID, "marketpulse");
+  let reportUrl = ORIGINAL_REPORT_URL;
+  if (process.env.REPORT_VIEWER_SECRET) {
+    const { generateReportUrl } = require(path.join(ROOT, "netlify/functions/lib/report-url"));
+    reportUrl = generateReportUrl(ORDER_ID, "marketpulse").url;
+  } else {
+    console.log("REPORT_VIEWER_SECRET absent — reusing the original (still-valid) report link.");
+  }
 
   const { error: updErr } = await sb.from("marketpulse_orders").update({
     report_html: html,
@@ -450,23 +467,31 @@ __SOURCE_TABLE__
   </div>
 </div>`;
 
-  const sendResult = await sendEmail({
-    to: EMAIL,
-    subject: `Your Revised MarketPulse Report: Avel eCare growth & government-affairs strategy`,
-    html: deliveryHtml,
-    from: "Mission Meets Tech <noreply@missionmeetstech.com>",
-  });
-  console.log("email send result:", JSON.stringify(sendResult, null, 2));
-
-  await sendEmail({
-    to: "mary@missionmeetstech.com",
-    subject: `[MarketPulse] REVISED DELIVERED — Mark Johnston / Avel eCare`,
-    html: `<p>Prospective re-run delivered via local script.</p>
-      <p><strong>Order:</strong> ${ORDER_ID}</p>
-      <p><strong>Score:</strong> ${score.total}/100 · Tier1 ${tier1Pct}%</p>
-      <p><strong>Report URL:</strong> <a href="${reportUrl}">${reportUrl}</a></p>`,
-    from: "Mission Meets Tech <noreply@missionmeetstech.com>",
-  });
+  let sendResult = { skipped: true };
+  if (process.env.RESEND_API_KEY) {
+    const { sendEmail } = require(path.join(ROOT, "netlify/functions/lib/send-email"));
+    sendResult = await sendEmail({
+      to: EMAIL,
+      subject: `Your Revised MarketPulse Report: Avel eCare growth & government-affairs strategy`,
+      html: deliveryHtml,
+      from: "Mission Meets Tech <noreply@missionmeetstech.com>",
+    });
+    console.log("email send result:", JSON.stringify(sendResult, null, 2));
+    await sendEmail({
+      to: "mary@missionmeetstech.com",
+      subject: `[MarketPulse] REVISED DELIVERED — Mark Johnston / Avel eCare`,
+      html: `<p>Prospective re-run delivered via local script.</p>
+        <p><strong>Order:</strong> ${ORDER_ID}</p>
+        <p><strong>Score:</strong> ${score.total}/100 · Tier1 ${tier1Pct}%</p>
+        <p><strong>Report URL:</strong> <a href="${reportUrl}">${reportUrl}</a></p>`,
+      from: "Mission Meets Tech <noreply@missionmeetstech.com>",
+    });
+  } else {
+    console.log("RESEND_API_KEY absent — DB updated, email NOT sent by script.");
+    console.log("The revised report is now LIVE at the customer's existing link:");
+    console.log(reportUrl);
+    console.log("Recommend an in-thread reply to the customer pointing back to that link.");
+  }
 
   try {
     const { error: logErr } = await sb.from("ops_events").insert({
