@@ -752,6 +752,13 @@
   status = 200
   force = true
 
+# Agent Access — marketed clean URL for the setup UX (Phase 5.5)
+[[redirects]]
+  from = "/ai-integrations"
+  to = "/premium/ai-integrations/"
+  status = 301
+  force = true
+
 # Capture Corner Premium portal — dynamic markdown renderer
 # Serves premium_deliverables rows when publish_at <= now AND published=true
 [[redirects]]

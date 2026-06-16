@@ -3,6 +3,21 @@
   "comment": "Canonical registry for marketed member tools. Drives validate-dist + smoke tests + docs. Update this file BEFORE adding a new tool. If a marketed route is missing from built dist/, validate-dist fails the build.",
   "features": [
     {
+      "feature_name": "AI & Integrations",
+      "public_marketing_urls": [
+        "/ai-integrations"
+      ],
+      "member_url": "/premium/ai-integrations.html",
+      "backing_function": "netlify/functions/tokens-create.js",
+      "entitlement_required": "premium|founding|institutional|admin",
+      "public_locked_preview_behavior": "premium gate card → /pricing.html; token CRUD requires a verified magic-link session",
+      "expected_data_source": "Supabase api_tokens + api_audit_log (Agent Access API)",
+      "freshness_sla_hours": null,
+      "title_signature": "AI &amp; Integrations",
+      "smoke_test_url": "/premium/ai-integrations.html",
+      "noindex": true
+    },
+    {
       "feature_name": "Ask MMT",
       "public_marketing_urls": [
         "/ask-mmt",
