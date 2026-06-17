@@ -26,6 +26,8 @@ const crypto = require("crypto");
 const { createClient } = require("@supabase/supabase-js");
 const { hashToken, looksLikeToken } = require("./agent-tokens");
 const { RATE, SESSION_MAX_CALLS, BUDGET } = require("./agent-config");
+const { loadEntitlement } = require("./entitlement");
+const { computeAgentAccess } = require("./agent-entitlement");
 
 let _client = null;
 /** Memoized service-role client. Used only inside lib/ (auth + data layers). */
@@ -121,12 +123,23 @@ async function authenticateAgent(event, requiredScope, dbOverride) {
     return { ok: false, response: forbidden() };
   }
 
-  // 5. Owner email (for owner-scoped tracker reads)
+  // 5. Owner email (for owner-scoped tracker reads) + paid Agent Access check.
+  //    "All Agent Access" is gated to the paid add-on (spec §11b): a lapsed
+  //    add-on must stop API access. Fail OPEN on a lookup error so a transient
+  //    DB blip never locks out a paying member (the token already proved access).
   let email = null;
   try {
-    const { data: u } = await db.from("mp_users").select("email").eq("id", token.user_id).limit(1).single();
+    const { data: u } = await db.from("mp_users").select("email, agent_seats").eq("id", token.user_id).limit(1).single();
     email = u ? String(u.email || "").toLowerCase() : null;
-  } catch { /* email optional for global endpoints */ }
+    if (email) {
+      const ent = await loadEntitlement(db, email);
+      const access = computeAgentAccess(ent, { agent_seats: u.agent_seats || 0 });
+      if (!access.eligible) {
+        await safeAuditFailure(db, token, 403, event, requiredScope);
+        return { ok: false, response: resp(403, { error: "AGENT_ACCESS_REQUIRED", message: "This connection's AI access is no longer active." }) };
+      }
+    }
+  } catch (e) { console.error("agent-auth access check (fail-open):", e.message); }
 
   // 6. BUDGET GATE (pre-call) — red (>100% daily cap) blocks BEFORE any work
   const dayStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())).toISOString();

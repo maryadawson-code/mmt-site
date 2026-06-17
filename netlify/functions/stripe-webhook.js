@@ -48,6 +48,26 @@ const PREMIUM_NONFOUNDING_PRICE_IDS = [
 ].filter(Boolean);
 const ALL_MMT_PREMIUM_PRICE_IDS = [...FOUNDING_PRICE_IDS, ...PREMIUM_NONFOUNDING_PRICE_IDS];
 
+// Agent Access paid add-on (spec §11b). Per-seat subscription; quantity = seats.
+// Monthly + annual variants, comma-separated in one env var. Available to any
+// premium tier (Mary opened it to monthly users too, 2026-06-16).
+const AGENT_ACCESS_ADDON_PRICE_IDS = (process.env.AGENT_ACCESS_ADDON_PRICE_IDS || "")
+  .split(",").map((s) => s.trim()).filter(Boolean);
+
+/** If a subscription carries the Agent Access add-on, return its seat quantity; else null. */
+function agentAddonSeats(sub) {
+  if (AGENT_ACCESS_ADDON_PRICE_IDS.length === 0) return null;
+  const items = (sub && sub.items && sub.items.data) || [];
+  let seats = 0, found = false;
+  for (const it of items) {
+    if (it && it.price && AGENT_ACCESS_ADDON_PRICE_IDS.includes(it.price.id)) {
+      found = true;
+      seats += it.quantity || 1;
+    }
+  }
+  return found ? seats : null;
+}
+
 function classifyMmtPremiumTier(sub) {
   if (!sub || !sub.items || !Array.isArray(sub.items.data)) return null;
   for (const item of sub.items.data) {
@@ -116,6 +136,8 @@ function isMmtEvent(stripeEvent) {
   if (obj.items && Array.isArray(obj.items.data)) {
     const match = obj.items.data.find((i) => i && i.price && ALL_MMT_PREMIUM_PRICE_IDS.includes(i.price.id));
     if (match) return { mmt: true, reason: `price_id_whitelist:${match.price.id}` };
+    const addon = obj.items.data.find((i) => i && i.price && AGENT_ACCESS_ADDON_PRICE_IDS.includes(i.price.id));
+    if (addon) return { mmt: true, reason: `agent_addon_price:${addon.price.id}` };
   }
   return { mmt: false, reason: "no_mmt_signal" };
 }
@@ -450,6 +472,19 @@ exports.handler = async (event) => {
 
       console.log(`stripe-webhook: subscription ${stripeEvent.type} — ${sub.id} (status: ${sub.status}, email: ${subEmail}, premium: ${isMmtPremium}, match: ${isMmtPremiumByMetadata ? "metadata" : isMmtPremiumByPriceId ? "price_id" : "none"})`);
 
+      // Agent Access add-on (spec §11b): set paid agent seats from the add-on
+      // subscription quantity. Independent of the base premium tier — it's a
+      // separate per-seat subscription. Inactive/canceled → seats 0.
+      const addonSeats = agentAddonSeats(sub);
+      if (addonSeats !== null && subEmail) {
+        const seats = isActive ? addonSeats : 0;
+        const { error: seatErr } = await supabase
+          .from("mp_users")
+          .upsert({ email: subEmail.toLowerCase().trim(), agent_seats: seats }, { onConflict: "email" });
+        if (seatErr) console.error(`stripe-webhook: agent_seats upsert failed for ${subEmail}: ${seatErr.message}`);
+        else console.log(`stripe-webhook: ${subEmail} agent_seats → ${seats} (add-on ${sub.status})`);
+      }
+
       // Upsert premium tier in mp_users for any MMT Premium subscription.
       // Always upsert (not update-then-fallback): a Supabase update against a
       // non-existent row returns { data: [], error: null }, so the prior code's
@@ -753,6 +788,16 @@ exports.handler = async (event) => {
       const isMmtPremium = isMmtPremiumByMetadata || isMmtPremiumByPriceId;
 
       console.log(`stripe-webhook: subscription deleted — ${sub.id} (email: ${subEmail}, premium: ${isMmtPremium})`);
+
+      // Agent Access add-on canceled → clear paid seats (revokes API access).
+      if (agentAddonSeats(sub) !== null && subEmail) {
+        const { error: seatErr } = await supabase
+          .from("mp_users")
+          .update({ agent_seats: 0 })
+          .eq("email", subEmail.toLowerCase().trim());
+        if (seatErr) console.error(`stripe-webhook: agent_seats clear failed for ${subEmail}: ${seatErr.message}`);
+        else console.log(`stripe-webhook: ${subEmail} agent_seats → 0 (add-on canceled)`);
+      }
 
       // Revoke premium tier
       if (isMmtPremium && subEmail) {

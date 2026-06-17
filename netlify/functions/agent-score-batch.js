@@ -13,8 +13,12 @@ exports.handler = async () => {
     console.log("agent-score-batch: disabled (AGENT_SCORING_ENABLED!=true) — no-op");
     return { statusCode: 200, body: "disabled" };
   }
+  if (!process.env.ANTHROPIC_API_KEY) {
+    console.log("agent-score-batch: ANTHROPIC_API_KEY missing — no-op");
+    return { statusCode: 200, body: "no_key" };
+  }
   try {
-    const stats = await runBatch(getServiceClient(), { limit: Number(process.env.AGENT_SCORING_LIMIT) || 200 });
+    const stats = await runBatch(getServiceClient());
     console.log("agent-score-batch:", JSON.stringify(stats));
     return { statusCode: 200, body: JSON.stringify(stats) };
   } catch (e) {
