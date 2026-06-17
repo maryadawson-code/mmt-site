@@ -50,6 +50,18 @@
 [functions."weekly-report"]
   schedule = "0 14 * * 1"
 
+# Agent Access — nightly recommendation scoring (Phase 4). Feeds
+# recommended_cache. No-op until AGENT_SCORING_ENABLED=true AND provider keys
+# land (the router is fail-closed), so the cron is safe to register now.
+[functions."agent-score-batch"]
+  schedule = "0 7 * * *"
+
+# Agent Access — abuse/harvest alert sweep (Phase 5, §5). No-op until
+# AGENT_ALERTS_ENABLED=true. Hourly (Netlify's smallest reliable cadence here);
+# tighten if real-time §5 detection is needed once traffic exists.
+[functions."agent-alert-sweep"]
+  schedule = "0 * * * *"
+
 # Feature-vote Day-7 tally — hourly; the fn checks now >= deadline and
 # exits no-op until the 7-day window closes, then runs once (idempotent).
 [functions."feature-vote-tally"]
@@ -690,6 +702,61 @@
   from = "/api/health/marketpulse"
   to = "/.netlify/functions/health-marketpulse"
   status = 200
+  force = true
+
+# ── Agent Access — token management (Phase 2) ───────────────────────────────
+# Auth: verified magic-link session in the POST body (lib/agent-session.js).
+# Raw token shown once on create; only SHA-256 hash + 8-char prefix stored.
+[[redirects]]
+  from = "/api/tokens"
+  to = "/.netlify/functions/tokens-create"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/tokens/list"
+  to = "/.netlify/functions/tokens-list"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/tokens/revoke"
+  to = "/.netlify/functions/tokens-revoke"
+  status = 200
+  force = true
+
+# ── Agent Access — read API v1 (Phase 3) ────────────────────────────────────
+# Bearer-token auth + budget/session/rate gates live in lib/agent-auth.js.
+# Order matters: the :id rule must precede the bare collection rule.
+[[redirects]]
+  from = "/api/v1/opportunities/:id"
+  to = "/.netlify/functions/agent-opportunities?id=:id"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/v1/opportunities"
+  to = "/.netlify/functions/agent-opportunities"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/v1/tracker"
+  to = "/.netlify/functions/agent-tracker"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/v1/recommended"
+  to = "/.netlify/functions/agent-recommended"
+  status = 200
+  force = true
+
+# Agent Access — marketed clean URL for the setup UX (Phase 5.5)
+[[redirects]]
+  from = "/ai-integrations"
+  to = "/premium/ai-integrations/"
+  status = 301
   force = true
 
 # Capture Corner Premium portal — dynamic markdown renderer

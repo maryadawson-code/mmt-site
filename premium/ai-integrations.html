@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI &amp; Integrations — Connect your AI assistant — MMT Premium</title>
+  <meta name="robots" content="noindex">
+  <meta name="description" content="Connect the AI assistant you already use to your live opportunities and market intel. Read-only, revoke anytime, every access logged.">
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <link rel="icon" href="/favicon-v3.png" type="image/png">
+  <style>
+    /* Scoped component styles only — NO dash-shell/dash-nav/dash-main here.
+       injectDashShell() owns the layout (repo hard rule: mapped pages are
+       content-only). MMT tokens; no dark mode; AA contrast; visible focus. */
+    :root { --mmt-navy:#0A192F; --mmt-teal:#457B9D; --mmt-white:#FFFFFF; --mmt-surface:#F3F4F6; --mmt-text-secondary:#5C6B7A; --mmt-border:#E5E7EB; --ok:#437A22; --warn:#964219; --err:#A12C7B; }
+    .ai-wrap { max-width:860px; }
+    .ai-h1 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:0 0 4px; }
+    .ai-sub { font-size:15px; color:var(--mmt-text-secondary); margin:0 0 24px; line-height:1.5; }
+    .ai-card { background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:12px; padding:20px 22px; margin-bottom:16px; }
+    .ai-hero { background:linear-gradient(180deg,#fff, #fbfcfd); border:1px solid var(--mmt-border); border-left:4px solid var(--mmt-teal); }
+    .ai-hero h2 { font-size:18px; font-weight:800; margin:0 0 6px; color:var(--mmt-navy); }
+    .ai-hero p { font-size:14px; color:var(--mmt-text-secondary); margin:0 0 14px; line-height:1.55; }
+    .ai-secondary-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
+    .ai-mini { background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:10px; padding:14px 16px; }
+    .ai-mini h3 { font-size:13px; font-weight:700; margin:0 0 4px; color:var(--mmt-navy); }
+    .ai-mini p { font-size:12px; color:var(--mmt-text-secondary); margin:0; }
+    .ai-trust { display:flex; flex-wrap:wrap; gap:10px; margin:14px 0 0; padding:0; list-style:none; }
+    .ai-trust li { display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:var(--mmt-navy); background:var(--mmt-surface); border:1px solid var(--mmt-border); border-radius:999px; padding:6px 12px; }
+    .ai-btn { display:inline-flex; align-items:center; gap:8px; background:var(--mmt-navy); color:#fff; border:none; padding:11px 18px; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; text-decoration:none; }
+    .ai-btn:hover { background:#13294a; }
+    .ai-btn[disabled] { opacity:.5; cursor:not-allowed; }
+    .ai-btn-ghost { background:transparent; color:var(--mmt-teal); border:1px solid var(--mmt-border); }
+    .ai-btn-danger { background:var(--err); }
+    .ai-btn:focus-visible, .ai-toggle:focus-visible, .ai-scope:focus-within, input:focus-visible, select:focus-visible, a:focus-visible { outline:3px solid var(--mmt-teal); outline-offset:2px; }
+    .ai-field { display:block; margin:0 0 14px; }
+    .ai-field label { display:block; font-size:13px; font-weight:700; color:var(--mmt-navy); margin-bottom:6px; }
+    .ai-field input, .ai-field select { width:100%; box-sizing:border-box; padding:10px 12px; font-size:14px; border:1px solid var(--mmt-border); border-radius:8px; font-family:inherit; }
+    .ai-scope { display:flex; gap:12px; align-items:flex-start; border:1px solid var(--mmt-border); border-radius:10px; padding:12px 14px; margin-bottom:10px; cursor:pointer; }
+    .ai-scope[data-on="true"] { border-color:var(--mmt-teal); background:rgba(69,123,157,.06); }
+    .ai-scope input { margin-top:3px; }
+    .ai-scope .t { font-size:14px; font-weight:700; color:var(--mmt-navy); }
+    .ai-scope .d { font-size:12px; color:var(--mmt-text-secondary); margin-top:2px; }
+    .ai-scope .ex { font-size:12px; color:var(--mmt-teal); margin-top:4px; }
+    .ai-tag { display:inline-block; font-size:11px; font-weight:700; color:var(--mmt-teal); background:rgba(69,123,157,.1); border-radius:6px; padding:2px 8px; margin-left:8px; }
+    .ai-steps { display:flex; gap:8px; margin-bottom:18px; list-style:none; padding:0; }
+    .ai-steps li { flex:1; text-align:center; font-size:11px; font-weight:700; color:var(--mmt-text-secondary); border-top:3px solid var(--mmt-border); padding-top:8px; }
+    .ai-steps li[aria-current="step"] { color:var(--mmt-navy); border-top-color:var(--mmt-teal); }
+    .ai-keybox { display:flex; gap:8px; align-items:stretch; margin:12px 0; }
+    .ai-keybox code { flex:1; font-family:ui-monospace,Menlo,monospace; font-size:13px; background:var(--mmt-surface); border:1px solid var(--mmt-border); border-radius:8px; padding:12px; word-break:break-all; }
+    .ai-warn { font-size:13px; color:var(--warn); font-weight:600; }
+    .ai-conn { display:grid; grid-template-columns:1fr auto; gap:8px 16px; align-items:center; padding:14px 0; border-bottom:1px solid var(--mmt-border); }
+    .ai-conn:last-child { border-bottom:none; }
+    .ai-conn .name { font-size:14px; font-weight:700; color:var(--mmt-navy); }
+    .ai-conn .meta { font-size:12px; color:var(--mmt-text-secondary); margin-top:2px; }
+    .ai-chip { display:inline-block; font-size:11px; font-weight:600; border-radius:6px; padding:2px 8px; margin:2px 4px 0 0; background:var(--mmt-surface); color:var(--mmt-navy); border:1px solid var(--mmt-border); }
+    .ai-badge { font-size:11px; font-weight:700; border-radius:999px; padding:3px 10px; }
+    .ai-badge[data-s="active"] { background:rgba(67,122,34,.12); color:var(--ok); }
+    .ai-badge[data-s="expired"], .ai-badge[data-s="revoked"] { background:rgba(150,66,25,.12); color:var(--warn); }
+    .ai-empty { text-align:center; color:var(--mmt-text-secondary); font-size:14px; padding:24px 0; }
+    .ai-skel { height:48px; border-radius:8px; background:linear-gradient(90deg,#eef1f4,#f6f8fa,#eef1f4); background-size:200% 100%; animation:sk 1.2s infinite; margin-bottom:8px; }
+    @keyframes sk { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    .ai-msg { font-size:13px; border-radius:8px; padding:10px 12px; margin:10px 0; }
+    .ai-msg[data-k="err"] { background:rgba(161,44,123,.08); color:var(--err); border:1px solid rgba(161,44,123,.25); }
+    .ai-msg[data-k="ok"] { background:rgba(67,122,34,.08); color:var(--ok); border:1px solid rgba(67,122,34,.25); }
+    .ai-link { color:var(--mmt-teal); font-weight:600; cursor:pointer; background:none; border:none; padding:0; font-size:inherit; text-decoration:underline; }
+    .ai-activity { font-size:12px; color:var(--mmt-text-secondary); border-top:1px dashed var(--mmt-border); margin-top:8px; padding-top:8px; }
+    .ai-activity div { padding:3px 0; font-family:ui-monospace,monospace; }
+    .ai-toprow { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:18px; }
+    .ai-toggle { font-size:13px; font-weight:600; color:var(--mmt-teal); background:none; border:1px solid var(--mmt-border); border-radius:8px; padding:6px 12px; cursor:pointer; }
+    .ai-hidden { display:none !important; }
+    .ai-table { width:100%; border-collapse:collapse; font-size:13px; }
+    .ai-table th, .ai-table td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--mmt-border); }
+    .ai-table th { font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--mmt-text-secondary); }
+    .ai-snippet { font-family:ui-monospace,monospace; font-size:12px; background:var(--mmt-surface); border:1px solid var(--mmt-border); border-radius:8px; padding:12px; white-space:pre-wrap; word-break:break-all; }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+    @media (max-width:640px) { .ai-secondary-grid { grid-template-columns:1fr; } .ai-conn { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="nav-editorial"></nav>
+
+  <div class="ai-wrap" id="ai-root">
+    <h1 class="ai-h1">AI &amp; Integrations</h1>
+    <p class="ai-sub">Connect the AI you already use to your live opportunities and market intel — so it tells you what to chase before you open your laptop.</p>
+
+    <!-- Live region for screen-reader announcements -->
+    <div class="sr-only" role="status" aria-live="polite" id="ai-live"></div>
+
+    <!-- Premium gate (shown if not a premium member) -->
+    <div class="ai-card ai-hidden" id="ai-gate">
+      <h2 style="font-size:17px;font-weight:800;margin:0 0 8px;">This is a premium feature</h2>
+      <p class="ai-sub" style="margin-bottom:14px;">Connecting an AI assistant is included with MMT Premium.</p>
+      <a class="ai-btn" href="/pricing.html">See premium plans</a>
+    </div>
+
+    <div id="ai-app" class="ai-hidden">
+      <!-- Hero: INTEL front door (71% poll winner) -->
+      <div class="ai-card ai-hero">
+        <h2>Pull intel on your market</h2>
+        <p>Let your assistant read your live federal opportunities and market intel on demand. You stay in control — it can read, never change.</p>
+        <button class="ai-btn" id="ai-start" type="button">Connect your AI</button>
+        <button class="ai-link" id="ai-how" type="button" style="margin-left:14px;">How does this work?</button>
+        <ul class="ai-trust">
+          <li>🔒 Read-only — it can't change anything</li>
+          <li>↩ Revoke anytime</li>
+          <li>👁 Every access logged</li>
+        </ul>
+      </div>
+
+      <div class="ai-secondary-grid">
+        <div class="ai-mini"><h3>Let your AI pick your bids</h3><p>Point your assistant at your pipeline and recommended opportunities.</p></div>
+        <div class="ai-mini"><h3>Score bids before you chase them</h3><p>Pull fit scores into the tools you already work in.</p></div>
+      </div>
+
+      <!-- Sign-in (verified email ownership required to manage connections) -->
+      <div class="ai-card ai-hidden" id="ai-signin">
+        <h2 style="font-size:16px;font-weight:800;margin:0 0 6px;">First, confirm it's you</h2>
+        <p class="ai-sub" style="margin-bottom:12px;">For your security we email you a one-time sign-in link before you can create or remove a connection.</p>
+        <div class="ai-field"><label for="ai-email">Your account email</label><input type="email" id="ai-email" autocomplete="email" placeholder="you@agency.com"></div>
+        <button class="ai-btn" id="ai-sendlink" type="button">Email me a sign-in link</button>
+        <div class="ai-msg ai-hidden" id="ai-signin-msg" data-k="ok"></div>
+        <p class="ai-sub" style="margin-top:12px;font-size:12px;">Already have a link? Open it and you'll come back here signed in.</p>
+      </div>
+
+      <!-- Connected assistants list -->
+      <div class="ai-card ai-hidden" id="ai-list-card">
+        <div class="ai-toprow">
+          <h2 style="font-size:16px;font-weight:800;margin:0;">Your connected assistants</h2>
+          <button class="ai-toggle" id="ai-adv-toggle" type="button" aria-pressed="false">Advanced view</button>
+        </div>
+        <div id="ai-list" aria-busy="true">
+          <div class="ai-skel"></div><div class="ai-skel"></div>
+        </div>
+        <div style="margin-top:14px;"><button class="ai-btn" id="ai-add" type="button">+ Connect an assistant</button></div>
+        <button class="ai-link" id="ai-protect" type="button" style="margin-top:14px;display:inline-block;">How your data is protected</button>
+      </div>
+
+      <!-- Guided wizard -->
+      <div class="ai-card ai-hidden" id="ai-wizard" role="region" aria-label="Connect your AI assistant">
+        <ol class="ai-steps" id="ai-stepper">
+          <li data-step="1" aria-current="step">What it can see</li>
+          <li data-step="2">Name &amp; expiry</li>
+          <li data-step="3">Your key</li>
+        </ol>
+
+        <!-- Step 1: scopes in plain language -->
+        <div data-screen="1">
+          <h2 style="font-size:16px;font-weight:800;margin:0 0 10px;">Pick what your AI can see</h2>
+          <label class="ai-scope" data-on="true">
+            <input type="checkbox" value="intel:read" checked aria-describedby="d-intel">
+            <span><span class="t">My market intel<span class="ai-tag">Most popular</span></span><span class="d" id="d-intel">Opportunities and trend data.</span><span class="ex">For example: "What should I be watching at VA this month?"</span></span>
+          </label>
+          <label class="ai-scope" data-on="false">
+            <input type="checkbox" value="opportunities:read" aria-describedby="d-opp">
+            <span><span class="t">My live opportunities</span><span class="d" id="d-opp">The open bids in your tracker.</span><span class="ex">For example: "Show me open DHA solicitations under NAICS 541512."</span></span>
+          </label>
+          <label class="ai-scope" data-on="false">
+            <input type="checkbox" value="tracker:read" aria-describedby="d-trk">
+            <span><span class="t">My pipeline</span><span class="d" id="d-trk">What you're already tracking.</span><span class="ex">For example: "Summarize everything in my pipeline."</span></span>
+          </label>
+          <p class="ai-sub" style="font-size:12px;margin:6px 0 14px;">You can change this anytime. Your AI can only read — never edit, delete, or spend.</p>
+          <button class="ai-btn" id="ai-s1-next" type="button">Continue</button>
+        </div>
+
+        <!-- Step 2: name + expiry -->
+        <div data-screen="2" class="ai-hidden">
+          <h2 style="font-size:16px;font-weight:800;margin:0 0 10px;">Name it</h2>
+          <div class="ai-field"><label for="ai-name">Give this connection a name</label><input type="text" id="ai-name" maxlength="80" placeholder="My ChatGPT"></div>
+          <div class="ai-field"><label for="ai-expiry">When should it expire?</label>
+            <select id="ai-expiry">
+              <option value="90">90 days (recommended)</option>
+              <option value="30">30 days — tightest</option>
+              <option value="365">1 year — fewer renewals</option>
+              <option value="">Never — not recommended</option>
+            </select>
+          </div>
+          <button class="ai-btn ai-btn-ghost" id="ai-s2-back" type="button">Back</button>
+          <button class="ai-btn" id="ai-s2-create" type="button">Create connection</button>
+          <div class="ai-msg ai-hidden" id="ai-create-msg" data-k="err"></div>
+        </div>
+
+        <!-- Step 3: one-time key + tool picker -->
+        <div data-screen="3" class="ai-hidden">
+          <h2 style="font-size:16px;font-weight:800;margin:0 0 8px;">✓ Your connection is ready</h2>
+          <p class="ai-sub" style="margin-bottom:6px;">Copy your key now.</p>
+          <div class="ai-keybox"><code id="ai-key" tabindex="0" aria-label="Your new connection key"></code><button class="ai-btn" id="ai-copy" type="button">Copy</button></div>
+          <p class="ai-warn">Copy this now — for your security we can't show it again. Lost it? Just make a new one.</p>
+          <div class="ai-field" style="margin-top:16px;"><label for="ai-tool">Now paste it into your AI</label>
+            <select id="ai-tool"><option value="claude">Claude Desktop</option><option value="chatgpt">ChatGPT</option><option value="other">Other</option></select>
+          </div>
+          <div class="ai-snippet" id="ai-setup"></div>
+          <div style="margin-top:14px;"><button class="ai-btn" id="ai-done" type="button">I've connected it</button></div>
+        </div>
+      </div>
+
+      <!-- Drawer: how data is protected (UX §8) -->
+      <div class="ai-card ai-hidden" id="ai-drawer">
+        <h2 style="font-size:16px;font-weight:800;margin:0 0 8px;">How your data is protected</h2>
+        <ul class="ai-sub" style="margin:0;padding-left:18px;line-height:1.7;">
+          <li>Connections are <strong>read-only</strong> and scoped to what you pick.</li>
+          <li>Every read is logged — open any connection's <strong>Activity</strong> to see the last 20.</li>
+          <li>Revoke a connection and your AI loses access immediately.</li>
+          <li>Protected/sensitive data stays inside our secure boundary and is <strong>not</strong> sent to outside AI while security review is underway.</li>
+        </ul>
+        <button class="ai-link" id="ai-drawer-close" type="button" style="margin-top:10px;">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    "use strict";
+    var $ = function (id) { return document.getElementById(id); };
+    var announce = function (m) { $("ai-live").textContent = m; };
+    var BASE = location.origin;
+    var SESS_KEY = "mmt_agent_session";
+
+    // Map raw status codes to human copy (UX §7) — never show a raw code.
+    function humanError(code, status) {
+      if (status === 401) return "That didn't work. Your sign-in may have expired — try sending a new link.";
+      if (status === 403) return "API access is part of MMT Premium. See /pricing to upgrade.";
+      if (status === 429) return "You've hit this period's usage. It resets soon, or upgrade for more.";
+      if (status === 503) return "This isn't available for AI access yet while we finish a security review.";
+      return "Something went wrong. Please try again.";
+    }
+
+    function isPremium() {
+      if (localStorage.getItem("mmt_premium") === "true") {
+        var ts = localStorage.getItem("mmt_premium_ts");
+        return !ts || (Date.now() - parseInt(ts, 10)) < 30 * 864e5;
+      }
+      return document.cookie.indexOf("mmt_premium=true") !== -1;
+    }
+    function session() { return localStorage.getItem(SESS_KEY); }
+
+    async function api(path, body) {
+      var r = await fetch(BASE + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+      var data = {}; try { data = await r.json(); } catch (e) {}
+      return { status: r.status, ok: r.ok, data: data };
+    }
+
+    // ---- bootstrap --------------------------------------------------------
+    function show(id, on) { $(id).classList.toggle("ai-hidden", !on); }
+
+    function boot() {
+      if (!isPremium()) { show("ai-gate", true); return; }
+      show("ai-app", true);
+      // Accept a returning magic-link token (?session=… from the email link).
+      var qp = new URLSearchParams(location.search);
+      if (qp.get("session")) { verifyAndStore(qp.get("session")); return; }
+      if (session()) { showList(); } // already signed in
+    }
+
+    // ---- sign-in (verified email ownership) -------------------------------
+    $("ai-start").onclick = $("ai-add") ? null : null;
+    function gotoSignInOrList() { if (session()) { showWizard(); } else { show("ai-signin", true); $("ai-email").focus(); } }
+    $("ai-start").addEventListener("click", gotoSignInOrList);
+
+    $("ai-sendlink").addEventListener("click", async function () {
+      var email = ($("ai-email").value || "").trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { msg("ai-signin-msg", "err", "Enter a valid email."); return; }
+      this.disabled = true;
+      var r = await api("/.netlify/functions/customer-auth", { action: "request_link", email: email });
+      this.disabled = false;
+      if (r.ok) { msg("ai-signin-msg", "ok", "Check your email for a sign-in link, then come back here."); announce("Sign-in link sent."); }
+      else { msg("ai-signin-msg", "err", humanError(r.data.error, r.status)); }
+    });
+
+    async function verifyAndStore(token) {
+      var r = await api("/.netlify/functions/customer-auth", { action: "verify", token: token });
+      if (r.ok) { localStorage.setItem(SESS_KEY, token); history.replaceState({}, "", location.pathname); showList(); }
+      else { show("ai-signin", true); msg("ai-signin-msg", "err", humanError(r.data.error, r.status)); }
+    }
+
+    function msg(id, kind, text) { var el = $(id); el.dataset.k = kind; el.textContent = text; show(id, true); }
+
+    // ---- connection list --------------------------------------------------
+    async function showList() {
+      ["ai-signin", "ai-wizard"].forEach(function (i) { show(i, false); });
+      show("ai-list-card", true);
+      var box = $("ai-list"); box.setAttribute("aria-busy", "true");
+      var r = await api("/api/tokens/list", { sessionToken: session() });
+      box.setAttribute("aria-busy", "false");
+      if (!r.ok) {
+        if (r.status === 401) { localStorage.removeItem(SESS_KEY); show("ai-list-card", false); show("ai-signin", true); return; }
+        box.innerHTML = '<div class="ai-msg" data-k="err">' + humanError(r.data.error, r.status) + "</div>"; return;
+      }
+      renderList(r.data.connections || []);
+    }
+
+    var _lastConns = [];
+    function renderList(conns) {
+      _lastConns = conns;
+      var box = $("ai-list");
+      if (conns.length === 0) { box.innerHTML = '<div class="ai-empty">No AI assistants connected yet. Connect one to let it work your pipeline for you.</div>'; return; }
+      if (localStorage.getItem(ADV_KEY) === "advanced") { renderAdvanced(conns); return; }
+      box.innerHTML = conns.map(function (c) {
+        var chips = (c.scopes || []).map(function (s) { return '<span class="ai-chip">' + scopeLabel(s) + "</span>"; }).join("");
+        var last = c.last_used_at ? timeAgo(c.last_used_at) : "Never yet";
+        return '<div class="ai-conn" data-id="' + c.id + '">' +
+          '<div><div class="name">' + esc(c.name) + ' <span class="ai-badge" data-s="' + c.status + '">' + c.status + "</span></div>" +
+          '<div class="meta">' + chips + " · last used " + last + " · " + (c.token_prefix ? "key …" + c.token_prefix : "") + "</div>" +
+          '<div class="ai-activity ai-hidden" data-activity></div></div>' +
+          '<div style="display:flex;gap:8px;align-items:center;"><button class="ai-link" data-act="activity">Activity</button>' +
+          (c.status === "active" ? '<button class="ai-btn ai-btn-danger" data-act="revoke" style="padding:6px 12px;">Revoke</button>' : "") +
+          "</div></div>";
+      }).join("");
+      box.querySelectorAll("[data-act=revoke]").forEach(function (b) { b.addEventListener("click", onRevoke); });
+      box.querySelectorAll("[data-act=activity]").forEach(function (b) { b.addEventListener("click", onActivity); });
+    }
+
+    // Advanced/developer view (UX §3b): dense table, raw scope strings, a ready
+    // curl snippet per connection. No explanatory chrome.
+    function renderAdvanced(conns) {
+      var base = BASE + "/api/v1";
+      var rows = conns.map(function (c) {
+        return "<tr data-id=\"" + c.id + "\"><td>" + esc(c.name) + "</td>" +
+          "<td><code>" + (c.scopes || []).join(" ") + "</code></td>" +
+          "<td><code>…" + esc(c.token_prefix || "") + "</code></td>" +
+          "<td><span class=\"ai-badge\" data-s=\"" + c.status + "\">" + c.status + "</span></td>" +
+          "<td>" + (c.last_used_at ? timeAgo(c.last_used_at) : "never") + "</td>" +
+          "<td>" + (c.status === "active" ? "<button class=\"ai-link\" data-act=\"revoke\">revoke</button>" : "") + "</td></tr>";
+      }).join("");
+      $("ai-list").innerHTML =
+        "<table class=\"ai-table\"><thead><tr><th>Name</th><th>Scopes</th><th>Prefix</th><th>Status</th><th>Last used</th><th></th></tr></thead><tbody>" + rows + "</tbody></table>" +
+        "<div class=\"ai-snippet\" style=\"margin-top:12px;\">curl -H \"Authorization: Bearer &lt;your_token&gt;\" " + base + "/opportunities?limit=25\n# MCP base URL: " + base + " · scopes: opportunities:read tracker:read intel:read</div>";
+      $("ai-list").querySelectorAll("[data-act=revoke]").forEach(function (b) { b.addEventListener("click", onRevoke); });
+    }
+
+    async function onRevoke(e) {
+      var host = e.target.closest(".ai-conn") || e.target.closest("[data-id]");
+      var id = host.dataset.id;
+      if (!confirm("Your AI will lose access immediately. You can reconnect anytime.")) return;
+      var r = await api("/api/tokens/revoke", { sessionToken: session(), tokenId: id });
+      if (r.ok) { announce("Connection revoked."); showList(); }
+      else { alert(humanError(r.data.error, r.status)); }
+    }
+
+    async function onActivity(e) {
+      var row = e.target.closest(".ai-conn"); var panel = row.querySelector("[data-activity]");
+      if (!panel.classList.contains("ai-hidden")) { panel.classList.add("ai-hidden"); return; }
+      panel.classList.remove("ai-hidden"); panel.textContent = "Loading…";
+      var r = await api("/api/tokens/activity", { sessionToken: session(), tokenId: row.dataset.id });
+      if (!r.ok) { panel.textContent = humanError(r.data.error, r.status); return; }
+      var reads = r.data.reads || [];
+      panel.innerHTML = reads.length ? reads.map(function (x) { return "<div>" + timeAgo(x.at) + " · " + x.method + " " + esc(x.endpoint) + " · " + x.status + "</div>"; }).join("") : "<div>No reads yet.</div>";
+    }
+
+    // ---- wizard -----------------------------------------------------------
+    function showWizard() { ["ai-list-card", "ai-signin"].forEach(function (i) { show(i, false); }); show("ai-wizard", true); gotoScreen(1); }
+    $("ai-add") && $("ai-add").addEventListener("click", function () { if (session()) showWizard(); else { show("ai-list-card", false); show("ai-signin", true); } });
+
+    function gotoScreen(n) {
+      [1, 2, 3].forEach(function (s) { document.querySelector('[data-screen="' + s + '"]').classList.toggle("ai-hidden", s !== n); });
+      $("ai-stepper").querySelectorAll("li").forEach(function (li) { if (+li.dataset.step === n) li.setAttribute("aria-current", "step"); else li.removeAttribute("aria-current"); });
+    }
+
+    document.querySelectorAll(".ai-scope").forEach(function (lab) {
+      var cb = lab.querySelector("input");
+      var sync = function () { lab.dataset.on = cb.checked ? "true" : "false"; };
+      cb.addEventListener("change", sync); sync();
+    });
+    function pickedScopes() { return Array.prototype.map.call(document.querySelectorAll(".ai-scope input:checked"), function (i) { return i.value; }); }
+    function scopeLabel(s) { return { "intel:read": "Market intel", "opportunities:read": "Live opportunities", "tracker:read": "Pipeline" }[s] || s; }
+
+    $("ai-s1-next").addEventListener("click", function () { if (pickedScopes().length === 0) { announce("Pick at least one thing your AI can see."); return; } gotoScreen(2); $("ai-name").focus(); });
+    $("ai-s2-back").addEventListener("click", function () { gotoScreen(1); });
+
+    $("ai-s2-create").addEventListener("click", async function () {
+      var name = ($("ai-name").value || "").trim();
+      if (!name) { msg("ai-create-msg", "err", "Give this connection a name."); return; }
+      this.disabled = true;
+      var expiry = $("ai-expiry").value;
+      var body = { sessionToken: session(), name: name, scopes: pickedScopes(), expiryDays: expiry === "" ? null : Number(expiry) };
+      var r = await api("/api/tokens", body);
+      this.disabled = false;
+      if (!r.ok) { msg("ai-create-msg", "err", r.data.message || humanError(r.data.error, r.status)); return; }
+      $("ai-key").textContent = r.data.token; renderSetup(); gotoScreen(3); $("ai-key").focus(); announce("Connection created. Copy your key now.");
+    });
+
+    $("ai-copy").addEventListener("click", function () {
+      navigator.clipboard.writeText($("ai-key").textContent).then(function () { announce("Key copied to clipboard."); $("ai-copy").textContent = "Copied"; });
+    });
+    $("ai-tool").addEventListener("change", renderSetup);
+    function renderSetup() {
+      var key = $("ai-key").textContent, tool = $("ai-tool").value;
+      var base = BASE + "/api/v1";
+      if (tool === "claude") $("ai-setup").textContent = "In Claude Desktop → Settings → Connectors, add a custom HTTP header:\n  Authorization: Bearer " + key + "\nBase URL: " + base;
+      else if (tool === "chatgpt") $("ai-setup").textContent = "In ChatGPT → custom action / GPT, set the auth header:\n  Authorization: Bearer " + key + "\nBase URL: " + base;
+      else $("ai-setup").textContent = "curl -H \"Authorization: Bearer " + key + "\" " + base + "/opportunities";
+    }
+    $("ai-done").addEventListener("click", showList);
+
+    // ---- advanced view, drawer, how-it-works ------------------------------
+    var ADV_KEY = "mmt_agent_view"; // NOTE: spec §3 wants server-side persistence
+    $("ai-adv-toggle").addEventListener("click", function () {
+      var on = localStorage.getItem(ADV_KEY) === "advanced";
+      localStorage.setItem(ADV_KEY, on ? "guided" : "advanced");
+      this.setAttribute("aria-pressed", String(!on));
+      this.textContent = on ? "Advanced view" : "Guided view";
+      announce(on ? "Guided view" : "Advanced view");
+      if (_lastConns.length) renderList(_lastConns); // re-render in the new mode
+    });
+    if (localStorage.getItem(ADV_KEY) === "advanced") { var t = $("ai-adv-toggle"); if (t) { t.setAttribute("aria-pressed", "true"); t.textContent = "Guided view"; } }
+
+    function toggleDrawer() { var d = $("ai-drawer"); d.classList.toggle("ai-hidden"); if (!d.classList.contains("ai-hidden")) d.scrollIntoView({ behavior: "smooth" }); }
+    $("ai-how").addEventListener("click", toggleDrawer);
+    $("ai-protect") && $("ai-protect").addEventListener("click", toggleDrawer);
+    $("ai-drawer-close").addEventListener("click", toggleDrawer);
+
+    function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+    function timeAgo(iso) { var d = (Date.now() - new Date(iso).getTime()) / 1000; if (d < 60) return "just now"; if (d < 3600) return Math.floor(d / 60) + "m ago"; if (d < 86400) return Math.floor(d / 3600) + "h ago"; return Math.floor(d / 86400) + "d ago"; }
+
+    boot();
+  })();
+  </script>
+</body>
+</html>

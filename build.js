@@ -3058,7 +3058,8 @@ function injectDashShell(html, activePage) {
     { href: '/glossary.html', label: 'Glossary', id: 'glossary', group: 'Reference' },
     { href: '/newswire.html', label: 'Newswire', id: 'newswire' },
     { href: '/agency-sources.html', label: 'Agency Sources', id: 'agency-sources' },
-    { href: '/premium/settings/', label: 'Settings', id: 'settings', group: 'Account' },
+    { href: '/premium/ai-integrations/', label: 'AI & Integrations', id: 'ai-integrations', group: 'Account' },
+    { href: '/premium/settings/', label: 'Settings', id: 'settings' },
   ];
 
   let navHtml = '<nav class="dash-nav">\n';
@@ -3542,6 +3543,8 @@ ${innerHtml}
     'premium/key-people.html': 'key-people',
     'premium/forecast-delta.html': 'forecast-delta',
     'premium/cr-exposure.html': 'cr-exposure',
+    // Agent Access (2026-06-16) — AI & Integrations setup UX
+    'premium/ai-integrations.html': 'ai-integrations',
   };
 
   // Copy premium and agency subdirectory pages
@@ -3564,6 +3567,7 @@ ${innerHtml}
     { src: 'premium/key-people.html', dest: 'premium/key-people/index.html' },
     { src: 'premium/forecast-delta.html', dest: 'premium/forecast-delta/index.html' },
     { src: 'premium/cr-exposure.html', dest: 'premium/cr-exposure/index.html' },
+    { src: 'premium/ai-integrations.html', dest: 'premium/ai-integrations/index.html' },
     // Sprint 6 Phase 3 (2026-05-15) follow-up — the page exists at
     // premium/api-health.html but Sprint 6 missed adding it here, so it
     // never shipped to dist and /admin/api-health redirected to a 404.
