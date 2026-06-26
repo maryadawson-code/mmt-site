@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capture Corner: Reading the Builder &middot; MMT Premium</title>
+  <meta name="description" content="June 26, 2026. Companion to &#39;Whose Hands Were on It.&#39; How to evaluate work when the output stops telling you who made it: the artifact-not-assertion source-selection checklist, the builder-read, the expert-in-the-loop test, and a standard for protecting apprenticeship inside an AI-tooled team.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <style>
+    :root { --mmt-teal:#457B9D; --mmt-navy:#0A192F; --mmt-soft:#F3F4F6; --mmt-white:#FFFFFF; --mmt-text:#102033; --mmt-text-secondary:#5C6B7A; --mmt-border:#D8E0E8; --ci-gold:#92710A; --ci-gold-bg:#FEF9E7; --mmt-red:#E63946; }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--mmt-white); color:var(--mmt-navy); }
+    .brief-body { font-size:15px; line-height:1.75; color:#314155; }
+    .brief-body h2 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:40px 0 14px; letter-spacing:-0.02em; }
+    .brief-body h3 { font-size:17px; font-weight:700; color:var(--mmt-navy); margin:28px 0 10px; }
+    .brief-body h4 { font-size:15px; font-weight:700; color:var(--mmt-navy); margin:20px 0 8px; }
+    .brief-body p { margin-bottom:16px; max-width:65ch; }
+    .brief-body ul { margin-bottom:16px; padding-left:1.25rem; }
+    .brief-body ol { margin-bottom:16px; padding-left:1.5rem; }
+    .brief-body li { margin-bottom:8px; }
+    .brief-body a { color:var(--mmt-teal); text-decoration:underline; text-underline-offset:3px; }
+    .brief-body strong { color:var(--mmt-navy); }
+    .brief-body em { color:var(--mmt-text-secondary); }
+    .brief-body hr { border:none; border-top:1px solid var(--mmt-border); margin:36px 0; }
+    .brief-body blockquote { border-left:3px solid var(--mmt-teal); padding:8px 16px; margin:16px 0; color:var(--mmt-text-secondary); background:rgba(69,123,157,0.04); border-radius:0 6px 6px 0; }
+    .brief-body img { max-width:100%; height:auto; display:block; margin:24px 0; border:1px solid var(--mmt-border); border-radius:8px; }
+    .brief-body table { width:100%; border-collapse:collapse; margin:16px 0 24px; font-size:14px; }
+    .brief-body th, .brief-body td { border:1px solid var(--mmt-border); padding:10px 12px; text-align:left; vertical-align:top; }
+    .brief-body th { background:var(--mmt-soft); color:var(--mmt-navy); font-weight:700; }
+    .pills { margin:8px 0 24px; }
+    .pill { display:inline-block; padding:4px 10px; background:rgba(69,123,157,0.08); color:var(--mmt-teal); border-radius:14px; font-size:11px; font-weight:600; margin:2px 4px 2px 0; }
+    .pill-red { background:rgba(230,57,70,0.08); color:var(--mmt-red); }
+    .pill-gold { background:var(--ci-gold-bg); color:var(--ci-gold); }
+    .back-link { font-size:13px; font-weight:600; color:var(--mmt-teal); text-decoration:none; }
+    .back-link:hover { opacity:0.7; }
+    .gate-notice { background:linear-gradient(180deg,#FFFFFF 0%,#F3F4F6 100%); border:1px solid var(--mmt-border); border-radius:12px; padding:32px 28px; text-align:center; margin:32px auto; max-width:540px; }
+    .gate-notice h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin-bottom:10px; }
+    .gate-notice p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:16px; line-height:1.55; }
+    .gate-cta { display:inline-block; padding:12px 24px; background:var(--mmt-navy); color:var(--mmt-white); font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; }
+    .section-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--ci-gold); }
+    .deep-dive-card { margin:48px 0 16px; padding:32px 28px; border:2px solid var(--ci-gold); border-radius:12px; background:linear-gradient(180deg,#FFFFFF 0%,var(--ci-gold-bg) 100%); }
+    .deep-dive-card h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:0 0 12px; letter-spacing:-0.01em; }
+    .deep-dive-card p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:14px; line-height:1.6; max-width:none; }
+    .deep-dive-price { display:inline-flex; align-items:baseline; gap:8px; margin:4px 0 16px; font-weight:800; color:var(--mmt-navy); }
+    .deep-dive-price .amount { font-size:28px; }
+    .deep-dive-price .unit { font-size:13px; font-weight:600; color:var(--mmt-text-secondary); text-transform:uppercase; letter-spacing:0.06em; }
+    .brief-body a.deep-dive-cta,
+    a.deep-dive-cta { display:inline-block; padding:14px 26px; background:var(--ci-gold); color:#FFFFFF; font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; letter-spacing:0.02em; }
+    .brief-body a.deep-dive-cta:hover,
+    a.deep-dive-cta:hover { opacity:0.92; color:#FFFFFF; }
+    .deep-dive-examples { font-size:13px; color:var(--mmt-text-secondary); font-style:italic; margin-top:8px; }
+  </style>
+</head>
+<body>
+  <nav class="nav-editorial"></nav>
+
+  <main class="wrap" style="padding:48px 0 80px; max-width:820px;">
+    <a href="/capture-corner.html" class="back-link">&larr; Capture Corner</a>
+
+    <div style="margin-top:20px; margin-bottom:8px;">
+      <div class="section-label">MMT Premium &middot; Capture Corner &middot; June 26, 2026</div>
+    </div>
+    <h1 style="font-size:clamp(26px,3.2vw,38px);line-height:1.1;letter-spacing:-0.03em;margin-bottom:10px;">Reading the Builder.</h1>
+    <p style="font-size:15px;color:var(--mmt-text-secondary);margin-bottom:20px;"><em>Companion to &ldquo;Whose Hands Were on It.&rdquo; The public issue made the case: the build stopped carrying the builder. This is the operator&rsquo;s companion: how to read the builder when you can no longer read the build, demand the artifact instead of the assertion, tell a real expert in the loop from a name on an org chart, and keep the reps that build judgment from disappearing off your own team.</em></p>
+
+    <div class="pills">
+      <span class="pill pill-gold">Capture Corner</span>
+      <span class="pill">Artifact Not Assertion</span>
+      <span class="pill">Source Selection</span>
+      <span class="pill">FedRAMP</span>
+      <span class="pill">NIST 800-171</span>
+      <span class="pill">Expert in the Loop</span>
+      <span class="pill">Apprenticeship</span>
+    </div>
+
+    <div data-gate="free" style="display:block;">
+      <div class="gate-notice">
+        <h3>&#9733; Premium Capture Corner</h3>
+        <p>The full operator&rsquo;s companion: the artifact-not-assertion checklist that pairs every claimed control with the one artifact that proves it, the five-question builder-read, the test that separates a real expert in the loop from a name on an org chart, and the standard for protecting apprenticeship inside an AI-tooled team. Free members see the framing; premium gets the full board.</p>
+        <a class="gate-cta" href="/pricing">See premium plans</a>
+      </div>
+    </div>
+
+    <div data-access="premium" data-gate="premium" class="brief-body">
+
+<p><em>Capture Corner is the premium BD intelligence companion to Mission Meets Tech. Public-record sourced. Independent analysis. Not a recommendation, not vendor advocacy, not capture material. Built for federal health BD, capture, and proposal leaders who need analytical depth, not headlines.</em></p>
+<p><em>This issue is the operator&#39;s companion to the public piece, &quot;Whose Hands Were on It.&quot; It turns the argument into the checks a source selection board, a capture lead, and a program manager run when the deliverable no longer reveals who made it: how to read the builder, how to demand the artifact instead of the assertion, how to tell a real expert in the loop from a name on an org chart, and how to keep the reps that build judgment from disappearing off your own team.</em></p>
+<hr>
+<p>The public issue made the case: the build stopped carrying the builder. AI supplies fluency to anyone who asks, so the polished surface no longer tells you whether a capable person stood behind it. The signal moved off the artifact and onto the person. Capture Corner turns that into the checks you run this week, on the work you are evaluating, the experts you are trusting, and the team you are building.</p>
+<p>One number sets the stakes. Veracode tested AI-generated code across a hundred-plus models and found about 45 percent of it carrying a security flaw, with the newer, more fluent models no safer than the old ones. The work reads finished. The protection underneath is missing in nearly half of cases, and nothing on the surface tells you which half you are holding. A separate governance scan of AI-assisted applications found the same hole from the other side, standard security controls simply absent across app after app. Every check below exists to get you under the surface.</p>
+<hr>
+<h2>1. Artifact, not assertion: the source-selection checklist</h2>
+<p>This is the public issue&#39;s core move, turned into a procurement procedure. For every capability a proposal or a vendor claims, the narrative is the assertion. Demand the artifact. A model writes a flawless description of a control it never built. It cannot produce the control itself, and the firm that built it can hand it over in an afternoon.</p>
+<table>
+<thead>
+<tr>
+<th>The claim on the page</th>
+<th>The artifact that proves it</th>
+<th>What an AI-built fake hands you instead</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;FedRAMP-authorized tooling&quot;</td>
+<td>The FedRAMP marketplace listing or authorization ID for every tool in the pipeline, including the AI ones</td>
+<td>A paragraph asserting FedRAMP compliance</td>
+</tr>
+<tr>
+<td>&quot;Tamper-evident audit logging of CUI access&quot;</td>
+<td>One real log entry tied to a user, an action, a timestamp, and the control that governed it</td>
+<td>A description of the logging approach</td>
+</tr>
+<tr>
+<td>&quot;Least-privilege access controls&quot;</td>
+<td>The actual access control list or IAM policy, exported</td>
+<td>A sentence about role-based access</td>
+</tr>
+<tr>
+<td>&quot;Continuous monitoring&quot;</td>
+<td>The alert configuration and one sample alert that fired</td>
+<td>A bullet claiming round-the-clock coverage</td>
+</tr>
+<tr>
+<td>&quot;Cost-realistic labor build&quot;</td>
+<td>The basis of estimate, category by category, walked against a current schedule</td>
+<td>A clean rate table with no build-up behind it</td>
+</tr>
+<tr>
+<td>&quot;Relevant past performance&quot;</td>
+<td>A reachable reference, the CPARS, or the actual prior deliverable</td>
+<td>A polished narrative with no verifiable anchor</td>
+</tr>
+</tbody>
+</table>
+<p>The rule for the board: score the claim only after the artifact is in hand. Treat a confident description with no underlying artifact as the weakest signal in the proposal, because it is the one a model produces most cleanly. The baselines behind these rows are public, not proprietary: FedRAMP authorization and tamper-evident logging for any tool that touches CUI, the NIST 800-171 control set that sits under CMMC, FAR 15.404-1 cost realism for the rate build, and OMB&#39;s M-25-22, which pushes agencies toward verifiable AI performance over paper description. And know the downside of skipping this. Where unverified AI output has reached federal decision-makers, it has drawn sanctions: tribunals have struck briefs and dismissed protests built on citations that did not exist. Verification is no longer diligence. It is self-protection.</p>
+<hr>
+<h2>2. The builder-read: evaluating the human when you cannot evaluate the build</h2>
+<p>When the deliverable is indistinguishable on its surface, stop reading the deliverable and start reading the person who produced it. The tell is narration. Someone who did the work can walk you through the judgment behind it. Someone who only generated it can re-describe the output and nothing more.</p>
+<p>Run this on a teammate, a subcontractor, or a vendor&#39;s named author:</p>
+<ol>
+<li><strong>Walk me through what you checked, and why.</strong> A real builder names the things that could have gone wrong and what they did about each. A prompt-only builder restates what the document says.</li>
+<li><strong>What did you decide not to do, and why?</strong> Judgment lives in the rejected options. The person who made the calls can name them. The tool left no trace of any.</li>
+<li><strong>Where is this weakest?</strong> Every expert knows the soft spot in their own work. &quot;It&#39;s solid&quot; is the answer of someone who cannot see one.</li>
+<li><strong>Show me the thing you know that is not in the document.</strong> Tacit knowledge, the kind Polanyi described, cannot be fully written down and cannot be prompted in. The genuine expert has a reserve behind the page. The mimic has only the page.</li>
+<li><strong>What would you check next if you had another day?</strong> The real builder has a list. The output has no opinion about its own gaps.</li>
+</ol>
+<p>Scoring: fluent answers about the content of the document tell you nothing, because the document is the part that is now free. Specific answers about the choices, the risks, and the things left unsaid are the signal that a person, and not just a model, is behind the work.</p>
+<hr>
+<h2>3. The expert-in-the-loop test: a real reviewer versus a name on an org chart</h2>
+<p>&quot;Human in the loop&quot; has become a line on a slide. The question is whether the human in that loop has the judgment to catch what the tool missed, and the authority to stop the work when they do. A name with neither is decoration.</p>
+<p>Ask, and require evidence:</p>
+<ol>
+<li><strong>Name the reviewer, their years, and a loss they own.</strong> Reliable expert intuition, as Kahneman and Klein established, is built only from real cues and real feedback over time. A reviewer who has never lost has never been calibrated. A name with no scar is a credential, not a reviewer.</li>
+<li><strong>Show me the last three things this reviewer caught.</strong> A real gate produces a trail of catches. An empty trail means the gate is a signature line.</li>
+<li><strong>What does the review actually consist of?</strong> Read-and-initial is not review. Ask for the override log: what the reviewer changed, rejected, or sent back.</li>
+<li><strong>What is the reviewer empowered to stop?</strong> If they cannot kill a submission, halt a deployment, or refuse a rate, they are not in the loop. They are next to it.</li>
+<li><strong>What happens to the gate on the busy afternoon?</strong> The deadline is the test. A gate that bends under schedule pressure is the one that lets the error through, because the busy afternoon is exactly when the error ships.</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Real expert in the loop</th>
+<th>Name on an org chart</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Years in the domain and a loss record</td>
+<td>A title and a credential</td>
+</tr>
+<tr>
+<td>A trail of specific catches</td>
+<td>&quot;Reviewed and approved&quot; with nothing behind it</td>
+</tr>
+<tr>
+<td>An override log that shows the work</td>
+<td>An initial in a box</td>
+</tr>
+<tr>
+<td>Power to stop the submission</td>
+<td>Visibility with no authority</td>
+</tr>
+<tr>
+<td>Holds the gate under deadline</td>
+<td>Waves it through when it is tight</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2>4. Protecting apprenticeship inside an AI-tooled team</h2>
+<p>This is the section that decides whether your firm can still judge anything in five years. The tool runs the exact reps that used to build judgment. Automate all of them and you get a team that produces fast and cannot tell when it is wrong. The erosion already shows up in the data: GitClear&#39;s read of 211 million changed lines found refactoring falling and duplicated, copy-pasted code climbing as the tools spread, the residue of work shipped without the reps that used to go into it. The seniors who can catch the errors were forged before the tool. The line behind them has to be protected on purpose.</p>
+<table>
+<thead>
+<tr>
+<th>The rep the tool now skips</th>
+<th>What it used to build</th>
+<th>The practice that protects it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Debugging your own mistake</td>
+<td>Pattern recognition, the library an expert reads from</td>
+<td>Periodic no-tool work; juniors solve it before they prompt it</td>
+</tr>
+<tr>
+<td>Walking a labor rate by hand</td>
+<td>Cost-realism instinct, the feel for what a seat costs</td>
+<td>The junior builds the basis of estimate manually before AI drafts it</td>
+</tr>
+<tr>
+<td>Reading a full solicitation cover to cover</td>
+<td>Scope judgment, knowing what the SOW really asks</td>
+<td>The human reads the SOW before any agent summarizes it</td>
+</tr>
+<tr>
+<td>Writing the technical approach cold</td>
+<td>Solution ownership, the architecture in the head</td>
+<td>The SME drafts the spine; AI fills; the human owns the result</td>
+</tr>
+<tr>
+<td>Sitting through a debrief or a loss</td>
+<td>Calibration, the scar that tunes the next bid</td>
+<td>Walk every loss by hand, and make the next cohort walk it too</td>
+</tr>
+</tbody>
+</table>
+<p>The standard, written down:</p>
+<ul>
+<li><strong>Earned reps are mandatory, not nostalgic.</strong> Reserve a defined share of work that juniors do without the tool, because those reps are the only known way to produce the next person who can check the tool.</li>
+<li><strong>Review the builder, not just the build.</strong> In every review, ask the Section 2 questions. You are grading judgment, not surface.</li>
+<li><strong>Track who can actually catch errors, and protect them.</strong> Name the people on your team who can tell a real system from a convincing one. They are your scarcest asset and your succession risk. Know who is behind them, and whether anyone is.</li>
+<li><strong>An organization that automates away all of its own apprenticeships is buying speed today against its ability to judge anything later, and it will not feel the trade until the bill arrives.</strong></li>
+</ul>
+<hr>
+<h2>5. What to do this week</h2>
+<ol>
+<li><strong>Adopt the artifact-not-assertion rule on your next evaluation.</strong> For every claimed control or capability, write down the artifact that would prove it, and refuse to score the claim until the artifact is in hand.</li>
+<li><strong>Run the builder-read on one deliverable.</strong> Pick a recent AI-assisted work product and put the five questions in Section 2 to whoever produced it. The answers will tell you whether you have a builder or a forwarder.</li>
+<li><strong>Audit your &quot;human in the loop.&quot;</strong> For each AI-assisted workflow, name the reviewer, pull their last three catches, and confirm they can actually stop the work. Any loop that fails this is a signature line, not a gate.</li>
+<li><strong>Reserve the reps.</strong> Pick one task your juniors now hand straight to the tool and require them to do it by hand first, on a defined cadence. Start the apprenticeship you are otherwise automating away.</li>
+<li><strong>Name your catchers, and your succession risk.</strong> Write down the people on your team who can tell a real build from a convincing one, and write down who is behind each of them. If a name has no one behind it, you have found next year&#39;s problem today.</li>
+<li><strong>Make verification hold on the busy afternoon.</strong> Put the last human read on the critical path, not after it, and protect it from the deadline crunch. The afternoon you are surest you can skip it is the one where skipping it costs you.</li>
+</ol>
+<hr>
+<h2>Editorial discipline note</h2>
+<p>Capture Corner is built to be useful, not provocative. It does not name preferred vendors. It does not recommend a build-or-buy choice for your firm. It does not characterize any vendor&#39;s product beyond what public records and the vendor&#39;s own claims support. It does not reveal nonpublic information, and it is not tied to any open solicitation. What it does is take the public issue&#39;s argument and turn it into the practitioner-level checks BD, capture, and source selection leaders actually have to run when the deliverable no longer reveals who made it. The 45 percent figure is Veracode&#39;s published result. The sanctions pattern is drawn from public tribunal decisions and the cited survey of them. Use it accordingly.</p>
+<hr>
+<p>Mary</p>
+<p>Mission Meets Tech Premium</p>
+<p><em>The views expressed in this newsletter are my own and do not represent the official position of any organization. This content is for informational purposes only.</em></p>
+<hr>
+<h2>Sources</h2>
+<p>[CC1] Veracode, &quot;2025 GenAI Code Security Report&quot; (100+ models, 80 tasks; ~45% of generated code samples contained a security vulnerability; newer and larger models no more secure than older ones). <a href="https://www.veracode.com/blog/genai-code-security-report/">https://www.veracode.com/blog/genai-code-security-report/</a></p>
+<p>[CC2] Cloud Security Alliance, &quot;Vibe Coding AI Governance Gap&quot; research note (widespread absence of standard security controls in AI-assisted applications, including missing security headers and exposure to routine web attacks). <a href="https://labs.cloudsecurityalliance.org/wp-content/uploads/2026/06/CSA_research_note_vibe_coding_ai_governance_gap_20260602-csa-styled.pdf">https://labs.cloudsecurityalliance.org/wp-content/uploads/2026/06/CSA_research_note_vibe_coding_ai_governance_gap_20260602-csa-styled.pdf</a></p>
+<p>[CC3] Kiteworks, &quot;AI Compliance for Federal Contractors&quot; (identify every AI system that can reach CUI; operation-level access controls; tamper-evident audit logging; FedRAMP verification for every AI tool). <a href="https://www.kiteworks.com/regulatory-compliance/ai-compliance-federal-contractors/">https://www.kiteworks.com/regulatory-compliance/ai-compliance-federal-contractors/</a></p>
+<p>[CC4] NIST, Special Publication 800-171 Revision 3, &quot;Protecting Controlled Unclassified Information&quot; (control baseline for CUI; underlies CMMC for defense contractors). <a href="https://csrc.nist.gov/pubs/sp/800/171/r3/final">https://csrc.nist.gov/pubs/sp/800/171/r3/final</a></p>
+<p>[CC5] Federal Acquisition Regulation 15.404-1, &quot;Proposal analysis techniques&quot; (cost realism; the government may test whether a proposed price is realistic and downgrade a bid that is not). <a href="https://www.acquisition.gov/far/15.404-1">https://www.acquisition.gov/far/15.404-1</a></p>
+<p>[CC6] Office of Management and Budget, M-25-22, &quot;Driving Efficient Acquisition of Artificial Intelligence in Government,&quot; February 2025 (performance-based contracting, continuous performance evaluation, and verifiable oversight of AI in the delivery chain). <a href="https://www.whitehouse.gov/wp-content/uploads/2025/02/M-25-22-Driving-Efficient-Acquisition-of-Artificial-Intelligence-in-Government.pdf">https://www.whitehouse.gov/wp-content/uploads/2025/02/M-25-22-Driving-Efficient-Acquisition-of-Artificial-Intelligence-in-Government.pdf</a></p>
+<p>[CC7] Burr &amp; Forman, &quot;Gen-AI Misuse in Procurement Litigation&quot; (pattern of struck briefs and dismissed protests built on fabricated AI-generated citations across federal tribunals). <a href="https://www.burr.com/government-contracting/gen-ai-misuse-in-procurement-litigation">https://www.burr.com/government-contracting/gen-ai-misuse-in-procurement-litigation</a></p>
+<p>[CC8] Michael Polanyi, <em>The Tacit Dimension</em> (1966; University of Chicago Press reissue, 2009). &quot;We can know more than we can tell.&quot; <a href="https://press.uchicago.edu/ucp/books/book/chicago/T/bo6035368.html">https://press.uchicago.edu/ucp/books/book/chicago/T/bo6035368.html</a></p>
+<p>[CC9] D. Kahneman and G. Klein, &quot;Conditions for intuitive expertise: A failure to disagree,&quot; <em>American Psychologist, 64</em>(6), 2009 (reliable expert intuition requires high-validity cues and prolonged practice with feedback; the conditions for recognition built from consequence). <a href="https://eric.ed.gov/?id=EJ859788">https://eric.ed.gov/?id=EJ859788</a></p>
+<p>[CC10] GitClear, &quot;AI Copilot Code Quality 2025&quot; (211 million changed lines; refactored/moved code fell from ~25% of changes in 2021 to under 10% by 2024; copy-pasted code more than doubled; duplicated blocks up ~8x). <a href="https://www.gitclear.com/ai_assistant_code_quality_2025_research">https://www.gitclear.com/ai_assistant_code_quality_2025_research</a></p>
+
+<div class="deep-dive-card">
+  <div class="section-label" style="color:var(--ci-gold);margin-bottom:8px;">Custom Deep Dive &middot; Premium Add-On</div>
+  <h3>Want a custom deep-dive on any line in this brief?</h3>
+  <p>This Capture Corner gives you the artifact-not-assertion checklist, the builder-read, the expert-in-the-loop test, and the apprenticeship standard. Where it stops short &mdash; running the source-selection artifact map against one live evaluation, building a builder-read script for a specific deliverable or teaming partner, auditing one AI-assisted workflow&rsquo;s human-in-the-loop for real authority, or designing the reserved-reps program for your own team &mdash; the next layer of intelligence is <strong>custom by request</strong>.</p>
+  <div class="deep-dive-price"><span class="amount">$50</span><span class="unit">one-time &middot; 5&ndash;7 business day turnaround</span></div>
+  <p>I will pull the additional public-record sources, read the visible signal, and write a 4&ndash;6 page custom intelligence memo on the area you select. You name the question; I do the BD-grade analysis.</p>
+  <p style="margin-bottom:18px;"><a class="deep-dive-cta" href="https://buy.stripe.com/6oUdRb2NEaQI3uM6KL4c803">Buy a Custom Deep Dive &mdash; $50 &rarr;</a></p>
+  <p class="deep-dive-examples">Examples: <em>&quot;Deep Dive &mdash; build the artifact map for [my open evaluation]&quot; &middot; &quot;Deep Dive &mdash; a builder-read script for [this teaming partner]&quot; &middot; &quot;Deep Dive &mdash; audit my human-in-the-loop on [this AI workflow]&quot; &middot; &quot;Deep Dive &mdash; design the reserved-reps apprenticeship program for my capture team&quot;</em></p>
+</div>
+
+    </div>
+  </main>
+
+  <footer class="footer"></footer>
+</body>
+</html>
