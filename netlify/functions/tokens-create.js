@@ -14,10 +14,14 @@
 const { createClient } = require("@supabase/supabase-js");
 const { json, preflight, parseBody, maskToken } = require("./lib/agent-http");
 const { resolveAgentOwner } = require("./lib/agent-session");
+const { upsellCopy } = require("./lib/agent-entitlement");
 const {
-  generateToken, normalizeScopes, expiryToIso,
-  MAX_ACTIVE_TOKENS_PER_USER, DEFAULT_EXPIRY_DAYS,
+  generateToken, normalizeScopes, expiryToIso, DEFAULT_EXPIRY_DAYS,
 } = require("./lib/agent-tokens");
+
+// Safety ceiling even for "unlimited" (institutional) — prevents runaway token
+// creation while still being effectively unlimited for real use.
+const UNLIMITED_SAFETY_CAP = 100;
 
 exports.handler = async (event) => {
   const pf = preflight(event);
@@ -31,6 +35,15 @@ exports.handler = async (event) => {
   const owner = await resolveAgentOwner(supabase, body.sessionToken);
   if (!owner.ok) return json(owner.status, { error: owner.code, message: owner.message });
 
+  // 1b. Paid Agent Access add-on required to create a connection (spec §11b).
+  if (!owner.agentAccess.eligible) {
+    return json(402, {
+      error: "AGENT_ACCESS_REQUIRED",
+      message: upsellCopy(owner.agentAccess.upsell),
+      upsell: owner.agentAccess.upsell,
+    });
+  }
+
   // 2. Validate inputs
   const name = String(body.name || "").trim();
   if (!name) return json(400, { error: "NAME_REQUIRED", message: "Give this connection a name." });
@@ -43,7 +56,9 @@ exports.handler = async (event) => {
   const expiresAt = expiryToIso(expiryDays);
   if (expiresAt === undefined) return json(400, { error: "INVALID_EXPIRY", message: "Expiry must be 30, 90, 365 days, or never." });
 
-  // 3. Enforce max active tokens (revoked_at IS NULL = active)
+  // 3. Enforce the seat cap: active connections <= paid agent seats (spec §11b).
+  //    Institutional is unlimited (safety-capped); annual/founding = seats bought.
+  const seatCap = owner.agentAccess.unlimited ? UNLIMITED_SAFETY_CAP : owner.agentAccess.seats;
   const { count, error: countErr } = await supabase
     .from("api_tokens")
     .select("id", { count: "exact", head: true })
@@ -53,10 +68,12 @@ exports.handler = async (event) => {
     console.error("tokens-create count error:", countErr.message);
     return json(500, { error: "SERVER_ERROR", message: "Could not create the connection. Try again." });
   }
-  if ((count || 0) >= MAX_ACTIVE_TOKENS_PER_USER) {
+  if ((count || 0) >= seatCap) {
     return json(400, {
-      error: "TOO_MANY_TOKENS",
-      message: `You can have up to ${MAX_ACTIVE_TOKENS_PER_USER} active connections. Revoke one to add another.`,
+      error: "SEAT_LIMIT",
+      message: owner.agentAccess.unlimited
+        ? "You've reached the maximum number of active connections."
+        : `You're using all ${seatCap} of your agent seat${seatCap === 1 ? "" : "s"}. Add a seat or revoke a connection to add another.`,
     });
   }
 

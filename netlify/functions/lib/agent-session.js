@@ -18,6 +18,7 @@
 
 const crypto = require("crypto");
 const { loadEntitlement } = require("./entitlement");
+const { computeAgentAccess } = require("./agent-entitlement");
 
 function hashSessionToken(token) {
   return crypto.createHash("sha256").update(String(token)).digest("hex");
@@ -71,22 +72,26 @@ async function resolveAgentOwner(supabase, sessionToken) {
     };
   }
 
-  // 3. Resolve the owning mp_users row (the FK target for api_tokens.user_id).
-  let userId;
+  // 3. Resolve the owning mp_users row (FK target) + the paid add-on seats.
+  let userId, seats = 0;
   try {
     const { data: user, error } = await supabase
       .from("mp_users")
-      .select("id")
+      .select("id, agent_seats")
       .ilike("email", email)
       .limit(1)
       .single();
     if (error || !user) return { ...GENERIC_AUTH };
     userId = user.id;
+    seats = user.agent_seats || 0;
   } catch {
     return { ...GENERIC_AUTH };
   }
 
-  return { ok: true, userId, email, entitlement };
+  // 4. Compute the Agent Access add-on entitlement (spec §11b).
+  const agentAccess = computeAgentAccess(entitlement, { agent_seats: seats });
+
+  return { ok: true, userId, email, entitlement, agentAccess };
 }
 
 module.exports = { resolveAgentOwner, hashSessionToken };

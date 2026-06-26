@@ -49,5 +49,21 @@ exports.handler = async (event) => {
     status: statusOf(row, now),
   }));
 
-  return json(200, { connections });
+  // Surface the paid-add-on status so the page shows the wizard (eligible) or
+  // the upsell (not). Checkout URLs come from env (Stripe Payment Links Mary
+  // creates); fall back to /pricing if unset.
+  const aa = owner.agentAccess || {};
+  const access = {
+    eligible: !!aa.eligible,
+    unlimited: !!aa.unlimited,
+    seats: aa.unlimited ? null : (aa.seats || 0),
+    used: connections.filter((c) => c.status === "active").length,
+    upsell: aa.upsell || null,
+    checkout: {
+      monthly: process.env.AGENT_ACCESS_CHECKOUT_URL_MONTHLY || "/pricing.html",
+      annual: process.env.AGENT_ACCESS_CHECKOUT_URL_ANNUAL || "/pricing.html",
+    },
+  };
+
+  return json(200, { connections, access });
 };

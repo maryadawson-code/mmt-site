@@ -15,13 +15,18 @@ function fakeDb() {
   const make = (table) => {
     const b = {
       select() { return b; }, eq() { return b; }, gte() { return b; }, is() { return b; },
-      order() { return b; }, limit() { return b; }, update() { return b; },
+      ilike() { return b; }, order() { return b; }, limit() { return b; }, update() { return b; },
       insert() { return Promise.resolve({ error: null }); },
       async single() {
         if (table === "api_tokens") return scenario.token ? { data: scenario.token, error: null } : { data: null, error: { message: "no" } };
-        if (table === "mp_users") return { data: { email: "owner@example.com" }, error: null };
+        if (table === "mp_users") return { data: { email: "owner@example.com", agent_seats: 1 }, error: null };
         if (table === "api_cost_ledger") return scenario.ledger ? { data: scenario.ledger, error: null } : { data: null, error: { message: "none" } };
         return { data: null, error: { message: "none" } };
+      },
+      // loadEntitlement() uses .ilike(...).maybeSingle() — return an active paid member.
+      async maybeSingle() {
+        if (table === "mp_users") return { data: { tier: "premium", subscription_tier: "premium", subscription_status: "active", founding_member: false } };
+        return { data: null };
       },
       then(res) { return table === "api_audit_log" ? res({ count: scenario.auditCount || 0 }) : res({ data: [], count: 0, error: null }); },
     };

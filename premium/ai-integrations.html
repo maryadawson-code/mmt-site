@@ -128,10 +128,18 @@
           <h2 style="font-size:16px;font-weight:800;margin:0;">Your connected assistants</h2>
           <button class="ai-toggle" id="ai-adv-toggle" type="button" aria-pressed="false">Advanced view</button>
         </div>
+        <div id="ai-seatline" class="ai-sub ai-hidden" style="font-size:12px;margin:0 0 8px;"></div>
         <div id="ai-list" aria-busy="true">
           <div class="ai-skel"></div><div class="ai-skel"></div>
         </div>
-        <div style="margin-top:14px;"><button class="ai-btn" id="ai-add" type="button">+ Connect an assistant</button></div>
+        <div id="ai-add-wrap" style="margin-top:14px;"><button class="ai-btn" id="ai-add" type="button">+ Connect an assistant</button></div>
+        <!-- Upsell shown when the member doesn't have the paid AI-access add-on -->
+        <div id="ai-upsell" class="ai-card ai-hidden" style="margin-top:14px;border-left:4px solid var(--mmt-teal);">
+          <h3 style="font-size:15px;font-weight:800;margin:0 0 6px;">Add AI access to your plan</h3>
+          <p id="ai-upsell-copy" class="ai-sub" style="margin:0 0 12px;"></p>
+          <a class="ai-btn" id="ai-buy-monthly" href="/pricing.html">Add — $39/mo per agent</a>
+          <a class="ai-btn ai-btn-ghost" id="ai-buy-annual" href="/pricing.html" style="margin-left:8px;">Pay annually</a>
+        </div>
         <button class="ai-link" id="ai-protect" type="button" style="margin-top:14px;display:inline-block;">How your data is protected</button>
       </div>
 
@@ -286,6 +294,28 @@
         box.innerHTML = '<div class="ai-msg" data-k="err">' + humanError(r.data.error, r.status) + "</div>"; return;
       }
       renderList(r.data.connections || []);
+      applyAccess(r.data.access || { eligible: false, upsell: "buy_addon", checkout: {} });
+    }
+
+    // Show the wizard entry (eligible) or the upsell (no paid add-on). UX §11b.
+    function applyAccess(access) {
+      var eligible = !!access.eligible;
+      show("ai-add-wrap", eligible);
+      show("ai-upsell", !eligible);
+      var seatline = $("ai-seatline");
+      if (eligible) {
+        seatline.textContent = access.unlimited
+          ? "Unlimited agents (institutional plan)."
+          : "Using " + (access.used || 0) + " of " + (access.seats || 0) + " agent seat" + ((access.seats === 1) ? "" : "s") + ".";
+        show("ai-seatline", true);
+      } else {
+        show("ai-seatline", false);
+        $("ai-upsell-copy").textContent = "Connect the AI you already use — $39/mo for your first agent, $29/mo each additional. Cancel anytime.";
+        if (access.checkout) {
+          if (access.checkout.monthly) $("ai-buy-monthly").href = access.checkout.monthly;
+          if (access.checkout.annual) $("ai-buy-annual").href = access.checkout.annual;
+        }
+      }
     }
 
     var _lastConns = [];
@@ -374,6 +404,10 @@
       var body = { sessionToken: session(), name: name, scopes: pickedScopes(), expiryDays: expiry === "" ? null : Number(expiry) };
       var r = await api("/api/tokens", body);
       this.disabled = false;
+      if (r.status === 402) { // no paid add-on → bounce to the upsell
+        showList();
+        return;
+      }
       if (!r.ok) { msg("ai-create-msg", "err", r.data.message || humanError(r.data.error, r.status)); return; }
       $("ai-key").textContent = r.data.token; renderSetup(); gotoScreen(3); $("ai-key").focus(); announce("Connection created. Copy your key now.");
     });
