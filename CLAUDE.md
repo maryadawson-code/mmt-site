@@ -33,6 +33,51 @@
 4. Run `node build.js` after any HTML/CSS/JS change and verify zero errors.
 5. After every content edit, verify copy against the Voice Rules below.
 
+## 🚀 Newsletter Publishing — Standing Authorization (auto-publish, do NOT wait for Mary)
+
+Mary has DURABLY authorized end-to-end auto-publish (2026-06-26). When she
+hands over a finished issue to "schedule it / send it / get it up / put it
+out" — i.e. a publish handoff, not a "review this draft" ask — carry it all
+the way to live WITHOUT stopping for her to merge. The old default (stage →
+open a DRAFT PR → wait for Mary to merge) is what caused the 6/26 issue to sit
+unpublished for hours. Do not repeat it.
+
+The full pipeline you run yourself, start to finish:
+1. **Stage** the article markdown (`content/newsletter/YYYY-MM-DD-slug.md`)
+   with full frontmatter + dek + the Capture Corner teaser/module, place any
+   in-body images per Mary's sequence, drop assets into
+   `static/images/newsletter/YYYY-MM-DD/`, render any premium Capture Corner
+   into `premium/briefs/capture-corner-YYYY-MM-DD.html`, update the
+   `/capture-corner/latest` redirect, and rebuild the content corpus.
+2. **Date = schedule.** Use the publish date Mary names (default: the date in
+   the source filename). The build HOLDS future-dated articles + Capture
+   Corners and auto-publishes them when the date arrives — that IS the
+   scheduling mechanism. Same-day or past-date content publishes on the next
+   build. Never invent a date; if her "tomorrow" conflicts with a filename
+   date, ask the one date question, then proceed unattended.
+3. **Verify**: `node build.js` clean, image refs resolve, voice rules pass.
+4. **Push** to the working branch, **open the PR as READY (not draft)**.
+5. **Merge to `main` yourself** once the content-relevant checks are green
+   (`build-check`, `test`, `lint`, `Redirect rules`, secret/migration/function
+   safety). Squash-merge. The merge push triggers the Netlify production
+   deploy; future-dated content then publishes on its date via
+   `rebuild-trigger`.
+6. **Confirm** to Mary what published and when it goes live.
+
+Guardrails (the only times you pause):
+- The pre-existing **"Header rules - <site>"** Netlify check is red on `main`
+  too and is NOT a blocker — never wait on it. (`[[headers]]` blocks unchanged
+  ⇒ ignore.)
+- If a genuinely NEW check fails (one your change could have caused), STOP,
+  diagnose, fix, and re-push before merging.
+- If the images/assets are missing, pull them from the source Mary points to
+  (Google Drive connector works server-side even when direct download is
+  egress-blocked; large results auto-spill to a `tool-results/*.txt` file —
+  decode with `jq -r '.content' <spill> | base64 -d > out.png`).
+- This authorization covers NEWSLETTER/issue publish handoffs only. It does
+  NOT auto-merge arbitrary code/infra PRs — those still follow the normal
+  draft-and-review default.
+
 ## Cross-Platform Coordination (MissionPulse <> MMT Site)
 - MMT Site (missionmeetstech.com) and MissionPulse (missionpulse.ai) are SEPARATE codebases on SEPARATE Netlify projects. Never confuse them.
 - MissionPulse monitors MMT Site health via `feature_registry` (8 features with health_check_url).
