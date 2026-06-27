@@ -3467,7 +3467,8 @@ ${innerHtml}
       { href: '/glossary.html', label: 'Glossary', id: 'glossary', group: 'Reference' },
       { href: '/newswire.html', label: 'Newswire', id: 'newswire' },
       { href: '/agency-sources.html', label: 'Agency Sources', id: 'agency-sources' },
-      { href: '/premium/settings/', label: 'Settings', id: 'settings', group: 'Account' },
+      { href: '/premium/ai-integrations/', label: 'AI & Integrations', id: 'ai-integrations', group: 'Account' },
+      { href: '/premium/settings/', label: 'Settings', id: 'settings' },
     ];
 
     let navHtml = '<nav class="dash-nav">\n';
