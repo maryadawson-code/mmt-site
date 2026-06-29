@@ -806,13 +806,22 @@
   }
 
   /* ---- Fade animation ---- */
+  /* Progressive enhancement: content is VISIBLE by default. The hidden
+     pre-animation state only applies once the reveal script (mmt-motion.js)
+     has added `js-anim` to <html>. That script is also the only thing that
+     reveals elements, so the code that hides is the same code that guarantees
+     the reveal — if it never runs (blocked/errored in a mobile webview), the
+     page stays fully visible instead of a solid-white screen. */
   .fade-up {
-    opacity: 0;
-    transform: translateY(20px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
 
-  .fade-up.visible {
+  html.js-anim .fade-up {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  html.js-anim .fade-up.visible {
     opacity: 1;
     transform: translateY(0);
   }
