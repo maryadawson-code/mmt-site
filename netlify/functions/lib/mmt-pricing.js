@@ -54,20 +54,23 @@ const MMT_PRICING = {
     standard_per_brief: 50.00,
     premium_discount_pct: 0.30,
   },
-  // Premium subscription tiers (recommended — validate against actual Stripe prices before publishing)
+  // Premium subscription tiers — source of truth: missionmeetstech.com/pricing
+  // (verified 2026-06-08). Founding rate is locked permanently for the first
+  // 100 subscribers; standard annual applies once 100 memberships are claimed.
   premium_tier: {
-    monthly: 79.00,
-    annual:  790.00,   // $65.83/mo effective
+    monthly:        29.00,    // $/mo, billed monthly, cancel anytime
+    annual:         249.00,   // $/yr standard (save $99 vs monthly)
+    founding_annual: 199.00,  // $/yr permanent rate, first 100 subscribers only
+    founding_seats_limit: 100,
   },
-  premium_plus_signal: {
-    monthly: 119.00,
-    annual:  1190.00,
-  },
-  team_tier: {
-    monthly: 299.00,
-    annual:  2990.00,
-    seats:   5,
-    signal_chain_programs: 10,
+  // Institutional / Team — up to 5 seats, tool credits included, priority response.
+  // Published as a range on /pricing; exact figure is deal-dependent (seats,
+  // credit volume, briefing cadence).
+  institutional_tier: {
+    annual_min: 2500.00,
+    annual_max: 5000.00,
+    seats:      5,
+    signal_chain_programs: 20,  // Institutional includes Signal Chain Pro (20 programs)
   },
 };
 
@@ -88,6 +91,12 @@ const PRICING_COPY = {
     short:  `Premium add-on: $${MMT_PRICING.signal_chain.premium_addon_monthly.toFixed(0)}/mo · ${MMT_PRICING.signal_chain.premium_addon_program_limit} programs`,
     full:   `Premium add-on: $${MMT_PRICING.signal_chain.premium_addon_monthly.toFixed(0)}/mo (${MMT_PRICING.signal_chain.premium_addon_program_limit} programs). Signal Chain Pro: $${MMT_PRICING.signal_chain.pro_monthly.toFixed(0)}/mo (${MMT_PRICING.signal_chain.pro_program_limit} programs, real-time alerts).`,
     enterprise: `Enterprise: $${MMT_PRICING.signal_chain.enterprise_monthly.toFixed(0)}/mo · unlimited programs · API webhooks.`,
+  },
+  subscription: {
+    monthly:    `$${MMT_PRICING.premium_tier.monthly.toFixed(0)}/mo · cancel anytime`,
+    annual:     `$${MMT_PRICING.premium_tier.annual.toFixed(0)}/yr · save $99 vs monthly`,
+    founding:   `$${MMT_PRICING.premium_tier.founding_annual.toFixed(0)}/yr · permanent rate · first ${MMT_PRICING.premium_tier.founding_seats_limit} subscribers only`,
+    institutional: `$${MMT_PRICING.institutional_tier.annual_min.toFixed(0)}–$${MMT_PRICING.institutional_tier.annual_max.toFixed(0)}/yr · up to ${MMT_PRICING.institutional_tier.seats} seats · tool credits included`,
   },
 };
 
