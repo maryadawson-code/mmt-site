@@ -26,25 +26,17 @@
 /js/*.js
   Cache-Control: public, max-age=3600, must-revalidate
 
-*.jpg
-  Cache-Control: public, max-age=2592000
-
-*.png
-  Cache-Control: public, max-age=2592000
-
-*.svg
-  Cache-Control: public, max-age=2592000
-
-*.webp
-  Cache-Control: public, max-age=2592000
-
-*.html
-  Cache-Control: public, max-age=0, must-revalidate
+# Extension-based cache rules (images / HTML / fonts) live in
+# netlify.toml [[headers]] (for = "*.jpg" etc.). Netlify's _headers
+# parser does NOT accept bare-extension globs — they were silently
+# rejected here as the "2 invalid header rules" advisory, and the
+# leading-slash form (/*.jpg) fails the deploy outright. netlify.toml's
+# `for` matcher is the supported home for extension-based rules.
 
 # Root path and extensionless pretty URLs. Netlify serves these by
-# rewriting to the corresponding .html file internally, which means
-# the *.html cache rule above does NOT apply to them. Set explicit
-# no-cache so edge caches always revalidate these routes.
+# rewriting to the corresponding .html file internally, so the HTML
+# cache rule (in netlify.toml) does NOT apply to them. Set explicit
+# no-cache here so edge caches always revalidate these routes.
 /
   Cache-Control: public, max-age=0, must-revalidate
 
@@ -58,9 +50,6 @@
 /deploy-id.txt
   Cache-Control: no-cache, no-store, must-revalidate
   Content-Type: text/plain; charset=utf-8
-
-*.woff2
-  Cache-Control: public, max-age=31536000, immutable
 
 /feed.xml
   Cache-Control: public, max-age=3600
