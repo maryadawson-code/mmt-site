@@ -35,6 +35,7 @@
     "migrations/010_subscriber_context_alignment.sql",
     "migrations/011_mp_users_columns_documented.sql",
     "static/lead-magnets/**",
+    "data/agent-access-launch/**",
   ]
 
 [[edge_functions]]
