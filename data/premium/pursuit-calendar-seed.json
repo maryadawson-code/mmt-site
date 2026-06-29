@@ -1,68 +1,40 @@
 {
   "_meta": {
     "description": "Pursuit Calendar seed events. Source of truth when Supabase pursuit_calendar table is unreachable. Times are America/New_York (ET). Status is computed dynamically by the renderer for date-based events; explicit status values (Protest, Protest Due, Watch, Needs Source) are honored as-is.",
-    "last_curated_at": "2026-06-15",
+    "last_curated_at": "2026-06-29",
     "curator": "automated",
     "timezone": "America/New_York",
-    "window_start": "2026-06-15",
-    "window_end": "2026-09-13"
+    "window_start": "2026-06-29",
+    "window_end": "2026-09-27"
   },
   "events": [
     {
-      "id": "631c50bd-7896-46aa-86c0-6a3ee7c4602b",
-      "title": "Notice of Intent - Sole Source to MHS GENESIS Solution providers",
-      "event_date": "2026-06-18",
+      "id": "b9debefd-cecd-4d7f-8e26-6526e5f7449d",
+      "title": "Glucometers and Abbott i-STAT Analyzers RALS   Data Management System (Brand Name or Equal)",
+      "event_date": "2026-07-01",
       "event_time_et": null,
       "agency": "DHA",
-      "vehicle": "HT003826CEXXX1",
+      "vehicle": "HT940626SSN3825",
       "ref": null,
       "category": "rfi",
       "status_override": null,
-      "source_url": "https://sam.gov/workspace/contract/opp/947fe670c6184824a5def4e406548a8c/view",
+      "source_url": "https://sam.gov/workspace/contract/opp/cf5a6d8f02dd42dd9b95a9d0e990e2cc/view",
       "source_system": "sam.gov",
-      "notes": "Sol: HT003826CEXXX1 · NAICS 541512"
+      "notes": "Sol: HT940626SSN3825 · NAICS 541512 · Set-aside: No Set aside used"
     },
     {
-      "id": "e2c0e9cf-2822-41b5-8219-7c026a493c99",
-      "title": "Forensic Health Program",
-      "event_date": "2026-06-18",
+      "id": "0f503421-929e-4dfa-873c-d0701f084a19",
+      "title": "Restorative & health-Enhancing Sleep Time (REST) Proposers’ Day Announcement",
+      "event_date": "2026-07-10",
       "event_time_et": null,
-      "agency": "DHA",
-      "vehicle": "DHA_FHP2026RFI",
+      "agency": "ARPA-H",
+      "vehicle": "ARPA-H-SN-26-159",
       "ref": null,
       "category": "rfi",
       "status_override": null,
-      "source_url": "https://sam.gov/workspace/contract/opp/21be43568b9446f1a6c7f8661e177754/view",
+      "source_url": "https://sam.gov/workspace/contract/opp/ea98367b1e8c4c33a4f0c7efc9389eac/view",
       "source_system": "sam.gov",
-      "notes": "Sol: DHA_FHP2026RFI · NAICS 541512 · Set-aside: No Set aside used"
-    },
-    {
-      "id": "1b603d61-91fd-487f-87f5-348c2215dc1f",
-      "title": "Forensic Health Program",
-      "event_date": "2026-06-23",
-      "event_time_et": null,
-      "agency": "DHA",
-      "vehicle": "DHA_FHP2026RFI",
-      "ref": null,
-      "category": "rfi",
-      "status_override": null,
-      "source_url": "https://sam.gov/workspace/contract/opp/3cc0990b07604094a36a76275335015d/view",
-      "source_system": "sam.gov",
-      "notes": "Sol: DHA_FHP2026RFI · NAICS 541512 · Set-aside: No Set aside used"
-    },
-    {
-      "id": "287484e6-243b-41d1-b65d-02e584e5dafa",
-      "title": "eContract File Management System (eCFMS) Backend Support",
-      "event_date": "2026-06-26",
-      "event_time_et": null,
-      "agency": "DHA",
-      "vehicle": "HT001126QE022",
-      "ref": null,
-      "category": "rfi",
-      "status_override": null,
-      "source_url": "https://sam.gov/workspace/contract/opp/b69c0e7c37884c0c9a4a0ff6e3f0ee89/view",
-      "source_system": "sam.gov",
-      "notes": "Sol: HT001126QE022 · NAICS 541512 · Set-aside: No Set aside used"
+      "notes": "Sol: ARPA-H-SN-26-159 · NAICS 541715 · Set-aside: No Set aside used"
     },
     {
       "id": "b1a778c3-96e3-4143-971d-28dc2cfa293d",
@@ -77,6 +49,20 @@
       "source_url": "https://sam.gov/workspace/contract/opp/34fa75da1d484987bd6dbc882deab889/view",
       "source_system": "sam.gov",
       "notes": "Sol: 7599226SN106 · NAICS 541715 · Set-aside: Total Small Business Set-Aside (FAR 19.5)"
+    },
+    {
+      "id": "e3e19a06-b440-4696-9c6c-c93fdaa6f607",
+      "title": "Restorative and health-Enhancing Sleep Time (REST)",
+      "event_date": "2026-08-12",
+      "event_time_et": null,
+      "agency": "ARPA-H",
+      "vehicle": "ARPA-H-SOL-26-159",
+      "ref": null,
+      "category": "deadline",
+      "status_override": null,
+      "source_url": "https://sam.gov/workspace/contract/opp/6f8c0f1a75ed44b691b7c2a4e6ce0e47/view",
+      "source_system": "sam.gov",
+      "notes": "Sol: ARPA-H-SOL-26-159 · NAICS 541715 · Set-aside: No Set aside used"
     }
   ]
 }
