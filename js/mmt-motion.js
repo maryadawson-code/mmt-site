@@ -9,6 +9,27 @@
 
   if (!('IntersectionObserver' in window)) return;
 
+  // Opt in to the hidden pre-animation state ONLY now that this script is
+  // running. The CSS keeps .fade-up fully visible until <html> has `js-anim`,
+  // so if this script is ever blocked or errors (e.g. an embedded mobile
+  // webview / corporate proxy), the page stays visible instead of going solid
+  // white. This must be the same code path that reveals — see revealAll().
+  document.documentElement.classList.add('js-anim');
+
+  // Failsafe: nothing may stay hidden. If the observer never fires (mobile
+  // webview quirks, bfcache restore, etc.), force-reveal everything.
+  var revealed = false;
+  function revealAll() {
+    if (revealed) return;
+    revealed = true;
+    document.querySelectorAll('.fade-up').forEach(function(el) {
+      el.classList.add('visible');
+    });
+  }
+  // Belt-and-suspenders: reveal on load and after a hard timeout.
+  window.addEventListener('load', function() { setTimeout(revealAll, 1200); });
+  setTimeout(revealAll, 3000);
+
   // Immediately check if an element is in the viewport
   function isInViewport(el) {
     var rect = el.getBoundingClientRect();
