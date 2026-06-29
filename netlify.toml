@@ -63,6 +63,16 @@
 [functions."agent-alert-sweep"]
   schedule = "0 * * * *"
 
+# Agent Access LAUNCH emails — one-shot. Every 10 min so they fire shortly
+# after deploy, then the date-guard + idempotency make every later tick a
+# no-op. Kill switches: AGENT_LAUNCH_DISABLED (premium) / AGENT_FREE_DISABLED
+# (free). RETIRE both crons + functions after they have sent.
+[functions."agent-access-premium-send"]
+  schedule = "*/10 * * * *"
+
+[functions."agent-access-free-send"]
+  schedule = "*/10 * * * *"
+
 # Feature-vote Day-7 tally — hourly; the fn checks now >= deadline and
 # exits no-op until the 7-day window closes, then runs once (idempotent).
 [functions."feature-vote-tally"]
