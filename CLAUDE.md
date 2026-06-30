@@ -267,17 +267,21 @@ Mary comped two active premium members a one-month free beta of the paid
 Agent Access add-on (normally $39/mo) and asked me to invite them as beta
 testers + feedback partners.
 
-- **Who**: `ericbbowman@gmail.com` (Eric) and `kirk.hendler@gmail.com`
-  (Kirk). Both verified `premium/active` in `mp_users` (loadEntitlement
-  ok=true). Eric's `full_name` is null in mp_users; found via email ILIKE.
+- **Who**: Eric Bowman and Kirk Hendler — both active premium members.
+  Their emails are NOT in the tracked repo (PII rule); they live in the
+  `agent_access_beta_grant` ops_events rows and the gitignored
+  `private/agent-access-beta-invite.js`. Both verified `premium/active` in
+  `mp_users` (loadEntitlement ok=true). Eric's `full_name` is null in
+  mp_users; found via email ILIKE.
 - **Access mechanism**: set `mp_users.agent_seats = 1` for each. Per
   `lib/agent-entitlement.js`, `seats>0` on a premium member ⇒ Agent Access
   eligible. This is DURABLE: `stripe-webhook` only writes `agent_seats`
   when the event carries an add-on price (`agentAddonSeats(sub) !== null`),
   so a base-premium renewal will NOT clobber a manual beta grant.
-- **Grant + send**: `scripts/agent-access-beta-invite.js` (one-shot, run
+- **Grant + send**: `private/agent-access-beta-invite.js` (one-shot, run
   via `netlify dev:exec` for prod env — local `.env` only has
-  ANTHROPIC + SENTRY keys). Idempotent per-email via an
+  ANTHROPIC + SENTRY keys; kept in private/ because it carries the
+  recipients' emails). Idempotent per-email via an
   `agent_access_beta_grant` ops_event carrying `beta_until` (+30d =
   2026-07-30). Email copy: `data/agent-access-launch/beta-invite-email.md`
   ({{FIRST_NAME}} token), sent via Resend. Voice-swept (0 em dashes, 0
