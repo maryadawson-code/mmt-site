@@ -1,6 +1,6 @@
 ---
 title: "Recruiting Was the Easy Part"
-date: 2026-07-01
+date: 2026-06-30
 slug: recruiting-was-the-easy-part
 description: "The Army fixed recruiting and started growing again. Keeping that larger force deployable became a contracted market worth hundreds of millions a year, and almost every contract that runs it comes due at once."
 author: "Mary Womack"
@@ -30,7 +30,7 @@ capture_corner:
   - "The vehicle that gates the market, and the NAICS map: durable Army H2F access runs through a Gen VI HRS PLS seat, not the single order, so the FY2026 to FY2028 vehicle competition is the real gate. Plus the size-standard table (541612 / 621340 / 621399 / 541611) that makes the same company small in one service's lane and too large in the next."
 ---
 
-![An isometric illustration of a long line of dark-uniformed soldiers standing in formation. On the ground between them lie red items that signal injury and attrition: a backpack, a boot, a knee brace, a pair of crutches, and a medical form. At the front of the line, one healthy soldier in field gear with a full rucksack is being checked and steadied by a performance specialist, the one kept ready while others fall out of line.](/images/newsletter/2026-07-01/cover-recruiting-was-the-easy-part.png)
+![An isometric illustration of a long line of dark-uniformed soldiers standing in formation. On the ground between them lie red items that signal injury and attrition: a backpack, a boot, a knee brace, a pair of crutches, and a medical form. At the front of the line, one healthy soldier in field gear with a full rucksack is being checked and steadied by a performance specialist, the one kept ready while others fall out of line.](/images/newsletter/2026-06-30/cover-recruiting-was-the-easy-part.png)
 
 # Recruiting Was the Easy Part
 
@@ -68,7 +68,7 @@ For two centuries the Army measured fitness with a test and repaired the soldier
 
 The market grows brigade by brigade, on a published schedule. The Army resourced 28 brigades in 2021, reached 50 by October 2024, and targets 111, roughly half the active force, by 2027. The plan runs to the full Army, about 236 brigades, by 2032. The Army Reserve began its own fielding in 2026.
 
-![An infographic titled "The Readiness Market Is Growing," subtitle "Army H2F expands brigade by brigade." A rising step chart marks 50 brigades in 2024, 111 brigades in 2027 carrying $278M in annual maintenance, and 236 brigades by 2032 carrying $590M in annual maintenance, flagged as an Army-only estimate. Source: U.S. Army H2F fielding schedule and Army cost estimates.](/images/newsletter/2026-07-01/the-readiness-market-is-growing.png)
+![An infographic titled "The Readiness Market Is Growing," subtitle "Army H2F expands brigade by brigade." A rising step chart marks 50 brigades in 2024, 111 brigades in 2027 carrying $278M in annual maintenance, and 236 brigades by 2032 carrying $590M in annual maintenance, flagged as an Army-only estimate. Source: U.S. Army H2F fielding schedule and Army cost estimates.](/images/newsletter/2026-06-30/the-readiness-market-is-growing.png)
 
 The unit economics come from the Army itself, by way of a single Defense News interview, so read them as the Army's figure and not an audited one. Standing up a performance team for an active brigade runs about $3 million, and maintaining it about $2.5 million a year. Reserve teams run roughly half that.
 
@@ -84,7 +84,7 @@ A study from the Army Research Institute of Environmental Medicine, built on mor
 
 Set that against the recruiting numbers. A soldier kept off a profile and a soldier signed at a recruiting station land in the same place: a formation that deploys at strength. One the Army hunts for across a year of advertising and bonuses. The other it already has, and stands to lose to a torn knee on a ruck march. In a growing force, protecting the soldier you already trained is the cheaper half of force generation, and it is the half H2F is built to deliver.
 
-![An infographic titled "Recruiting Is Only the First Step." Four numbered stages run left to right: 1 Recruit, soldier enters the force; 2 Train, Army invests time and money; 3 Protect, H2F prevents avoidable injuries; 4 Deploy, healthy soldiers remain available. A red line reads "Injury removes capacity"; a teal line reads "Prevention preserves capacity"; a closing banner reads: A soldier kept deployable counts like a soldier recruited. Source: U.S. Army H2F program materials and ARIEM readiness research.](/images/newsletter/2026-07-01/recruiting-is-only-the-first-step.png)
+![An infographic titled "Recruiting Is Only the First Step." Four numbered stages run left to right: 1 Recruit, soldier enters the force; 2 Train, Army invests time and money; 3 Protect, H2F prevents avoidable injuries; 4 Deploy, healthy soldiers remain available. A red line reads "Injury removes capacity"; a teal line reads "Prevention preserves capacity"; a closing banner reads: A soldier kept deployable counts like a soldier recruited. Source: U.S. Army H2F program materials and ARIEM readiness research.](/images/newsletter/2026-06-30/recruiting-is-only-the-first-step.png)
 
 ## The number, and what kind of number it is
 
@@ -122,7 +122,7 @@ Four services, four front doors into the same conviction: that human performance
 
 Now stack the calendar. The Serco H2F order expires in May. The Army Reserve is standing up its own performance teams. The Army personnel-services vehicle that H2F rides on is heading into a multibillion-dollar recompete of its own. POTFF III awards in October. Four major actions, one window, the largest concentration of human-performance awards this market has seen. FY2027 is the year it turns over.
 
-![An infographic titled "The Market Turns Over at Once," subtitle "Major human-performance contracts converge in the FY2027 window." A timeline marks four milestones: May 2026, Serco H2F order expires; FY2026, Army Reserve teams begin; Oct. 1, 2026, POTFF III target; and 2027, Army H2F follow-on expected, all feeding an FY2027 teaming window. A red brace beneath the cluster reads "Concentrated transition risk." Source: federal procurement records, company filings, and service forecasts.](/images/newsletter/2026-07-01/the-market-turns-over-at-once.png)
+![An infographic titled "The Market Turns Over at Once," subtitle "Major human-performance contracts converge in the FY2027 window." A timeline marks four milestones: May 2026, Serco H2F order expires; FY2026, Army Reserve teams begin; Oct. 1, 2026, POTFF III target; and 2027, Army H2F follow-on expected, all feeding an FY2027 teaming window. A red brace beneath the cluster reads "Concentrated transition risk." Source: federal procurement records, company filings, and service forecasts.](/images/newsletter/2026-06-30/the-market-turns-over-at-once.png)
 
 The services are diverging on how. SOCOM keeps POTFF single-award, winner-take-all. The Army keeps H2F on a shared vehicle and competes it order by order. The Air Force went the other way in 2024, into a pool of six. The divergence runs down into the fine print, into the codes that decide who is allowed to compete. The Army runs H2F under a human-resources consulting code with a $29 million size standard, wide enough for sizable small businesses. SOCOM uses a physical-therapy code at $12.5 million. The Army Reserve is reaching for a tighter one at $10 million. The same company can be a small business under one program and too large under the next, decided only by which service it chases.
 
