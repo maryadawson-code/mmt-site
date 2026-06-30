@@ -47,12 +47,16 @@ function resp(statusCode, body, extra) {
   return { statusCode, headers: { ...CORS, "Content-Type": "application/json", ...(extra || {}) }, body: JSON.stringify(body) };
 }
 
+// Public discovery URL — handed to a stuck agent so it can recover (find the
+// auth scheme + how to get a token) without us leaking which check failed.
+const DOCS_URL = "https://missionmeetstech.com/api/v1";
+
 // Generic, non-enumerating auth failure (spec §9 — no "expired" vs "not found" leak).
 function unauthorized() {
-  return resp(401, { error: "UNAUTHORIZED", message: "Invalid or missing API key." });
+  return resp(401, { error: "UNAUTHORIZED", message: "Invalid or missing API key.", docs: DOCS_URL });
 }
 function forbidden() {
-  return resp(403, { error: "FORBIDDEN", message: "This key isn't allowed to read that." });
+  return resp(403, { error: "FORBIDDEN", message: "This key isn't allowed to read that.", docs: DOCS_URL });
 }
 
 function bearerFrom(event) {
@@ -136,7 +140,7 @@ async function authenticateAgent(event, requiredScope, dbOverride) {
       const access = computeAgentAccess(ent, { agent_seats: u.agent_seats || 0 });
       if (!access.eligible) {
         await safeAuditFailure(db, token, 403, event, requiredScope);
-        return { ok: false, response: resp(403, { error: "AGENT_ACCESS_REQUIRED", message: "This connection's AI access is no longer active." }) };
+        return { ok: false, response: resp(403, { error: "AGENT_ACCESS_REQUIRED", message: "This connection's AI access is no longer active.", docs: DOCS_URL }) };
       }
     }
   } catch (e) { console.error("agent-auth access check (fail-open):", e.message); }

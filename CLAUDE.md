@@ -261,6 +261,45 @@ Before declaring work complete, verify:
 
 ---
 
+## Sprint 2026-06-30 (later) — Agent Access AX optimization (discovery surface)
+
+Triggered by Netlify's AXIS launch (open-source "Lighthouse for Agent
+Experience", `npm i @netlify/axis`). Audited our own Agent Access API the way
+an agent would: an agent that "looks around" found NOTHING — `/llms.txt`,
+`/api/v1` (index), and `/openapi.json` all 404'd, and a 401 gave no recovery
+path. The endpoints themselves are solid; the gap was discoverability +
+recovery (the exact dims AXIS scores: Environment, Service).
+
+Shipped (all additive, no auth/behavior change to existing endpoints):
+- **`netlify/functions/agent-discovery.js`** — PUBLIC (no auth, no DB, no
+  secrets, CORS `*`). Serves `GET /api/v1` (JSON service catalog: endpoints,
+  scopes, bearer auth + how-to-get-a-token, rate limits, error codes,
+  links) and `GET /api/v1/openapi.json` (OpenAPI 3.1). Reads RATE +
+  PAGINATION from `lib/agent-config` so the catalog CANNOT drift from the
+  live limits. This is the one Agent Access surface intentionally NOT
+  origin-locked (an agent runs anywhere and must be able to discover us).
+- **`llms.txt`** (repo root → copied to dist by build.js next to robots.txt)
+  — points agents at `/api/v1`, the OpenAPI, and `/premium/ai-integrations/`.
+- **Recovery hint**: `lib/agent-auth.js` 401/403 bodies (`unauthorized`,
+  `forbidden`, `AGENT_ACCESS_REQUIRED`) now include `docs:
+  https://missionmeetstech.com/api/v1`. Messages stay non-enumerating
+  (spec §9) — we add a pointer, not a leak. 429s already carry Retry-After.
+- **netlify.toml**: 3 redirects (`/api/v1`, `/api/v1/`, `/api/v1/openapi.json`)
+  placed BEFORE the authed `/api/v1/opportunities…` rules (exact-match, no
+  conflict).
+
+Hard rule (do not regress): **the `/api/v1` discovery catalog must stay
+config-derived** (RATE/PAGINATION from `lib/agent-config`), never hardcoded —
+a hand-typed rate limit that drifts from `agent-auth.js` is worse than no
+catalog. Keep `agent-discovery.js` auth-free and secret-free; it only
+describes the public shape.
+
+Verified 2026-06-30: build exit 0 (llms.txt copied), validate-routes ✓ (31
+features), validate-dist OK (551 pages), scan-pii OK. Handler smoke: catalog
+returns 4 endpoints + bearer auth + rl=60/min; openapi 3.1 with 4 paths.
+AXIS run itself (agent harness against a token-backed scenario) is the next
+step — measurement after the discoverability fix.
+
 ## Sprint 2026-06-30 — Agent Access free-beta invites (Eric Bowman + Kirk Hendler)
 
 Mary comped two active premium members a one-month free beta of the paid

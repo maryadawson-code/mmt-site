@@ -3954,6 +3954,14 @@ ${innerHtml}
     console.log('Copied robots.txt');
   }
 
+  // Copy llms.txt — agent-facing discovery pointer (AX). Standard path an AI
+  // agent checks first to learn what the site/API offers.
+  const llmsSrc = path.join(__dirname, 'llms.txt');
+  if (fs.existsSync(llmsSrc)) {
+    fs.copyFileSync(llmsSrc, path.join(DIST_DIR, 'llms.txt'));
+    console.log('Copied llms.txt');
+  }
+
   // Copy PWA manifest
   const manifestSrc = path.join(__dirname, 'manifest.json');
   if (fs.existsSync(manifestSrc)) {

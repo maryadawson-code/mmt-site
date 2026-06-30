@@ -1,0 +1,22 @@
+# Mission Meets Tech
+
+> Federal health IT intelligence: contract opportunities, market intel, IDIQ vehicles, agency profiles, and capture analysis for people who pursue government work. Written by Mary Womack.
+
+Mission Meets Tech (missionmeetstech.com) publishes a newsletter, a podcast, and a set of premium intelligence tools. Premium members with the Agent Access add-on can connect their own AI agent to their live MMT data through a read-only API.
+
+## Agent Access API
+
+The API lets an AI agent read your federal-contracting intelligence so it can answer from your real pipeline instead of guessing. Bearer-token auth. MMT Premium plus the Agent Access add-on is required.
+
+- [API catalog](https://missionmeetstech.com/api/v1): machine-readable index of every endpoint, scope, auth detail, and rate limit
+- [OpenAPI spec](https://missionmeetstech.com/api/v1/openapi.json): OpenAPI 3.1 description of the read endpoints
+- [Set up Agent Access](https://missionmeetstech.com/premium/ai-integrations/): mint a token, pick what your agent can see, revoke any time
+
+Start at the API catalog. It tells an agent how to authenticate, what each endpoint returns, and how to recover from errors.
+
+## Read
+
+- [Latest intelligence](https://missionmeetstech.com/latest)
+- [Newsletter](https://missionmeetstech.com/newsletter)
+- [Podcast](https://missionmeetstech.com/podcast)
+- [Pricing](https://missionmeetstech.com/pricing)
