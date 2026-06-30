@@ -261,6 +261,40 @@ Before declaring work complete, verify:
 
 ---
 
+## Sprint 2026-06-30 — Agent Access free-beta invites (Eric Bowman + Kirk Hendler)
+
+Mary comped two active premium members a one-month free beta of the paid
+Agent Access add-on (normally $39/mo) and asked me to invite them as beta
+testers + feedback partners.
+
+- **Who**: `ericbbowman@gmail.com` (Eric) and `kirk.hendler@gmail.com`
+  (Kirk). Both verified `premium/active` in `mp_users` (loadEntitlement
+  ok=true). Eric's `full_name` is null in mp_users; found via email ILIKE.
+- **Access mechanism**: set `mp_users.agent_seats = 1` for each. Per
+  `lib/agent-entitlement.js`, `seats>0` on a premium member ⇒ Agent Access
+  eligible. This is DURABLE: `stripe-webhook` only writes `agent_seats`
+  when the event carries an add-on price (`agentAddonSeats(sub) !== null`),
+  so a base-premium renewal will NOT clobber a manual beta grant.
+- **Grant + send**: `scripts/agent-access-beta-invite.js` (one-shot, run
+  via `netlify dev:exec` for prod env — local `.env` only has
+  ANTHROPIC + SENTRY keys). Idempotent per-email via an
+  `agent_access_beta_grant` ops_event carrying `beta_until` (+30d =
+  2026-07-30). Email copy: `data/agent-access-launch/beta-invite-email.md`
+  ({{FIRST_NAME}} token), sent via Resend. Voice-swept (0 em dashes, 0
+  banned words). Ran 2026-06-30: both seats=1, both invites sent.
+- **Expiry enforcement**: Agent Access has NO built-in trial expiry, so
+  `netlify/functions/agent-access-beta-expire.js` (daily cron, date-guarded
+  to 2026-07-30) ends the month. For each beta-grant recipient it checks
+  Stripe BY EMAIL for an active add-on subscription: converted ⇒ keep
+  seats + log `agent_access_beta_converted`; not converted ⇒ `agent_seats=0`
+  + log `agent_access_beta_expired`. Emails Mary a one-time summary.
+  Idempotent per-email; kill switch `AGENT_BETA_EXPIRE_DISABLED`.
+
+Hard rule (do not regress): **a manual/comp `agent_seats` grant has no
+expiry — pair every comp grant with a dated revoke path.** The expire cron
+is the revoke path for this cohort; retire it (function + netlify.toml
+block) after it fires on/after 2026-07-30.
+
 ## Sprint 2026-06-10 — MMT Loop System v1 (shared runner + L1 + L3)
 
 Triggered by Perplexity's `MMT_LOOP_SYSTEM_v1.md` proposal (8 loops on a

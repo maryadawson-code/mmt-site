@@ -483,6 +483,16 @@
   schedule = "15 * * * *"
   external_node_modules = ["stripe"]
 
+# agent-access-beta-expire — ends the Agent Access free-beta month
+# (2026-06-30 grant, beta_until 2026-07-30). No-ops before the date and
+# after each beta recipient is processed once (idempotent per-email
+# markers). Converted users (active add-on in Stripe) keep access;
+# everyone else has agent_seats cleared. Emails Mary a one-time summary.
+# Retire after it has fired. See CLAUDE.md sprint 2026-06-30.
+[functions."agent-access-beta-expire"]
+  schedule = "0 13 * * *"
+  external_node_modules = ["stripe"]
+
 # Sentry Netlify build plugin REMOVED — archived package was failing deploys
 # during onPostBuild (API timeout). Runtime @sentry/node monitoring in Netlify
 # Functions is unaffected. To restore release tracking later, use sentry-cli
