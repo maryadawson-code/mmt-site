@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-29T22:06:25.117Z",
+  "generated_at": "2026-06-30T14:04:39.479Z",
   "total": 209,
   "note": "Public subset of mmt-content-corpus.json (premium=false items only). For unauthenticated endpoints. Per Sprint C 2026-05-14.",
   "counts": {
@@ -1995,7 +1995,7 @@
       "type": "article",
       "title": "Recruiting Was the Easy Part",
       "slug": "recruiting-was-the-easy-part",
-      "date": "2026-07-01",
+      "date": "2026-06-30",
       "description": "The Army fixed recruiting and started growing again. Keeping that larger force deployable became a contracted market worth hundreds of millions a year, and almost every contract that runs it comes due at once.",
       "tags": [
         "Army H2F",
