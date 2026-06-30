@@ -1,0 +1,26 @@
+{
+  "name": "mmt-linkedin-publisher",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Production-safe LinkedIn publisher for the MMT Premium FY-End Campaign (Jun 30 - Sep 30 2026). Dry-run by default, human-in-the-loop, TOS-protective guards.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.6"
+  },
+  "scripts": {
+    "publish": "tsx src/cli.ts publish",
+    "publish:confirm": "tsx src/cli.ts publish --confirm",
+    "tokens:status": "tsx src/cli.ts tokens:status",
+    "calendar:validate": "tsx src/cli.ts calendar:validate",
+    "test": "tsx --test src/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
