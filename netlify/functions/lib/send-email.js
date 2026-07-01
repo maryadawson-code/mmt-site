@@ -139,6 +139,13 @@ async function sendEmail({ to, subject, html, from, attachments, bcc, adminCopy,
       return { success: false, error: "Email service temporarily unavailable (circuit open)" };
     }
     console.error("Email send failed:", err.message);
+    // Log non-circuit failures too. Previously ONLY the circuit-OPEN branch
+    // logged DELIVERY_FAILURE, so a plain transient Resend 500 (which returns
+    // {success:false} here) left ZERO trace — a false "all clear" in ops that
+    // hid the 2026-07-01 sign-in failure. Best-effort; never throws.
+    try {
+      await logOpsEvent(null, { event_type: "DELIVERY_FAILURE", source_function: "send-email", severity: "error", signature: "resend_send_failed", affected_entity: to, details: { subject, status: err.status || null, error: err.message } });
+    } catch (_logErr) { /* never break the caller's return path */ }
     return { success: false, error: err.message };
   }
 }

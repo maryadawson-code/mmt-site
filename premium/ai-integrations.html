@@ -255,7 +255,8 @@
       show("ai-app", true);
       // Accept a returning magic-link token (?session=… from the email link).
       var qp = new URLSearchParams(location.search);
-      if (qp.get("session")) { verifyAndStore(qp.get("session")); return; }
+      var retTok = qp.get("session") || qp.get("token");
+      if (retTok) { verifyAndStore(retTok); return; }
       if (session()) { showList(); } // already signed in
     }
 
@@ -268,7 +269,7 @@
       var email = ($("ai-email").value || "").trim();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { msg("ai-signin-msg", "err", "Enter a valid email."); return; }
       this.disabled = true;
-      var r = await api("/.netlify/functions/customer-auth", { action: "request_link", email: email });
+      var r = await api("/.netlify/functions/customer-auth", { action: "request_link", email: email, redirect: "/premium/ai-integrations/" });
       this.disabled = false;
       if (r.ok) { msg("ai-signin-msg", "ok", "Check your email for a sign-in link, then come back here."); announce("Sign-in link sent."); }
       else { msg("ai-signin-msg", "err", humanError(r.data.error, r.status)); }

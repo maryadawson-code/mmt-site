@@ -25,6 +25,17 @@ function hashToken(token) {
   return crypto.createHash("sha256").update(token).digest("hex");
 }
 
+// Same-site relative path only, so the sign-in link returns the user to the
+// page they started from (e.g. /premium/ai-integrations/) instead of always
+// /my-reports. Rejects absolute URLs, protocol-relative (//evil), and schemes
+// to prevent leaking the session token off-site (open-redirect guard).
+function safeRedirect(r) {
+  if (typeof r !== "string" || !r) return null;
+  if (r.startsWith("//") || r.includes("://") || r.includes("\\")) return null;
+  if (!/^\/[A-Za-z0-9._~/-]*$/.test(r)) return null;
+  return r;
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod === "OPTIONS") return { statusCode: 204, headers: HEADERS, body: "" };
 
@@ -194,9 +205,13 @@ exports.handler = async (event) => {
         expires_at: new Date(Date.now() + 7 * 24 * 3600000).toISOString(),
       });
 
-      const portalUrl = `https://missionmeetstech.com/my-reports?token=${token}`;
+      // Return the user to where they started (validated same-site path).
+      // Default stays /my-reports for the plain portal login. Both destinations
+      // read ?token= (ai-integrations reads ?session= too, for older links).
+      const dest = safeRedirect(body.redirect) || "/my-reports";
+      const portalUrl = `https://missionmeetstech.com${dest}?token=${token}`;
 
-      await sendEmail({
+      const emailOpts = {
         to: normalizedEmail,
         subject: "Your Mission Meets Tech login link",
         from: "Mission Meets Tech <noreply@missionmeetstech.com>",
@@ -212,8 +227,8 @@ exports.handler = async (event) => {
     <span style="color:#FFFFFF;font-size:18px;font-weight:700;">Mission Meets Tech</span>
   </td></tr>
   <tr><td style="padding:32px;">
-    <h1 style="margin:0 0 16px;font-size:22px;color:#0A192F;">Sign in to My Reports</h1>
-    <p style="margin:0 0 24px;color:#5C6B7A;font-size:15px;line-height:1.6;">Click the button below to access your reports, scorecards, and order history.</p>
+    <h1 style="margin:0 0 16px;font-size:22px;color:#0A192F;">Sign in to Mission Meets Tech</h1>
+    <p style="margin:0 0 24px;color:#5C6B7A;font-size:15px;line-height:1.6;">Click the button below to finish signing in and pick up where you left off.</p>
     <a href="${portalUrl}" style="display:inline-block;background:#0A192F;color:#FFFFFF;padding:12px 28px;border-radius:6px;font-weight:700;font-size:15px;text-decoration:none;">Sign In</a>
     <p style="margin:24px 0 0;color:#9ca3af;font-size:12px;">This link expires in 7 days. If you didn't request this, you can ignore it.</p>
   </td></tr>
@@ -225,7 +240,20 @@ exports.handler = async (event) => {
 </table>
 </body>
 </html>`,
-      });
+      };
+
+      // Surface real send failures. sendEmail returns {success:false} (it does
+      // NOT throw) on a Resend error or open circuit breaker. The prior code
+      // ignored that and always returned sent:true — so during any Resend blip
+      // the UI told the user "check your email" for a link that was never sent,
+      // stranding them (the 2026-07-01 sign-in incident). Retry once for a
+      // transient blip, then fail honestly so the UI can say "try again".
+      let sendRes = await sendEmail(emailOpts);
+      if (!sendRes || !sendRes.success) sendRes = await sendEmail(emailOpts);
+      if (!sendRes || !sendRes.success) {
+        console.error("customer-auth request_link: email send failed for", normalizedEmail, sendRes && sendRes.error);
+        return err(502, "We couldn't send your sign-in link right now. Please try again in a moment.");
+      }
 
       return ok({ sent: true });
     }

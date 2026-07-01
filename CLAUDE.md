@@ -261,6 +261,37 @@ Before declaring work complete, verify:
 
 ---
 
+## Sprint 2026-07-01 (later) — Sign-in link incident (silent send failure + wrong redirect)
+
+Mary clicked "Email me a sign-in link" on `/premium/ai-integrations` and (1)
+got no email, then (2) when re-triggered, got a link to `/my-reports` instead
+of back to the Agent Access page. Two independent bugs:
+
+1. **Silent send failure.** `lib/send-email.js sendEmail()` RETURNS
+   `{success:false}` on a Resend error / open circuit — it does NOT throw.
+   `customer-auth.js request_link` ignored the return and always answered
+   `sent:true`, so during a transient Resend 500 (the same blip that hit the
+   LinkedIn autopost that hour) the UI said "check your email" for a link that
+   was never sent. Fix: check the result, retry once, else return 502 with an
+   honest "try again" message. **Hard rule: every user-facing auth/transactional
+   send MUST check `sendEmail().success` — it returns, never throws.**
+2. **Observability blind spot.** Only the circuit-OPEN branch logged
+   `DELIVERY_FAILURE`; plain 500s logged nothing → 0 events in 24h despite a
+   real failure. Fix: `send-email.js` now logs `DELIVERY_FAILURE`
+   (`signature: resend_send_failed`) on every non-circuit failure too.
+3. **Wrong redirect.** `request_link` hardcoded the link to
+   `/my-reports?token=`. The Agent Access page reads `?session=`/`?token=` on
+   ITSELF to finish sign-in, so portal-only links stranded Agent Access users.
+   Fix: `request_link` accepts an optional `redirect` (validated same-site
+   relative path via `safeRedirect()` — open-redirect-safe) and builds
+   `https://missionmeetstech.com<redirect>?token=`. `ai-integrations.html` now
+   passes `redirect:"/premium/ai-integrations/"` and reads `?token=` too. Email
+   copy made destination-neutral. Default stays `/my-reports`.
+
+Resend itself was fine (verified live: direct send 200; `/domains` 401 is just
+the send-only key). Mary unblocked immediately via a minted
+`customer_sessions` token → `/premium/ai-integrations/?session=<token>`.
+
 ## Sprint 2026-07-01 — LinkedIn FY-End campaign auto-publish
 
 Mary asked to approve all 32 posts and automate the FY-End LinkedIn campaign
