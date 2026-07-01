@@ -41,14 +41,26 @@ let _expanded = false;
 function expandStripeIds() {
   if (_expanded) return;
   _expanded = true;
-  const raw = process.env.STRIPE_IDS;
-  if (!raw) return;
   let obj;
-  try {
-    obj = JSON.parse(raw);
-  } catch (e) {
-    console.warn("[stripe-ids] STRIPE_IDS present but not valid JSON — leaving env untouched:", e.message);
-    return;
+  const raw = process.env.STRIPE_IDS;
+  if (raw) {
+    try {
+      obj = JSON.parse(raw);
+    } catch (e) {
+      console.warn("[stripe-ids] STRIPE_IDS present but not valid JSON — leaving env untouched:", e.message);
+      return;
+    }
+  } else {
+    // STRIPE_IDS was relocated OUT of the Netlify env into a bundled file to stay
+    // under AWS Lambda's 4KB function-env cap (2026-07-01). These are Stripe
+    // price/product IDs, NOT secrets (the secret key stays in STRIPE_SECRET_KEY).
+    // esbuild inlines this JSON into each function bundle that imports this lib.
+    try {
+      obj = require("../data/stripe-ids.json");
+    } catch (e) {
+      console.warn("[stripe-ids] no STRIPE_IDS env and bundled data/stripe-ids.json unavailable:", e.message);
+      return;
+    }
   }
   if (!obj || typeof obj !== "object") return;
   for (const [short, full] of Object.entries(KEY_MAP)) {
