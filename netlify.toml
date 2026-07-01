@@ -494,6 +494,16 @@
   schedule = "0 13 * * *"
   external_node_modules = ["stripe"]
 
+# premium-trial-expire — ends comped Premium trials on their date. Generic:
+# reads each `premium_trial_grant` ops_event's own trial_until, so one cron
+# serves every current + future comp trial (no hardcoded global date).
+# No-ops until a trial reaches its end date and per-recipient markers make it
+# idempotent. Converted trials (real paid sub) keep access; the rest flip back
+# to free. Kill switch: PREMIUM_TRIAL_EXPIRE_DISABLED=true. Emails Mary a
+# summary. See CLAUDE.md (comp grant = dated revoke).
+[functions."premium-trial-expire"]
+  schedule = "0 13 * * *"
+
 # linkedin-autopost — publishes the FY-End LinkedIn campaign (24 text posts)
 # to Mary's personal profile via PostPeer, one per day at 13:30 UTC (09:30 ET
 # during the EDT campaign window). GATED OFF by default: no-ops unless
