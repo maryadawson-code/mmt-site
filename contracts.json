@@ -946,9 +946,15 @@
     "link": "https://sam.gov/",
     "small_business_eligible": false,
     "source": "https://sam.gov/",
-    "source_urls": ["https://sam.gov/"],
+    "source_urls": [
+      "https://sam.gov/"
+    ],
     "last_verified": "2026-05-28",
-    "pursuit_score": {"verdict": "AWARDED", "headline": "Awarded Nov 2025 — AOI 2 under DHMS CSO", "factors": {}},
+    "pursuit_score": {
+      "verdict": "AWARDED",
+      "headline": "Awarded Nov 2025 — AOI 2 under DHMS CSO",
+      "factors": {}
+    },
     "slug": "t6-health-systems-aoi-2-peo-dhms-cso",
     "content_gap": false
   },
@@ -964,9 +970,15 @@
     "link": "https://sam.gov/",
     "small_business_eligible": false,
     "source": "https://sam.gov/",
-    "source_urls": ["https://sam.gov/"],
+    "source_urls": [
+      "https://sam.gov/"
+    ],
     "last_verified": "2026-05-28",
-    "pursuit_score": {"verdict": "AWARDED", "headline": "DMIX/DISS support — value verified", "factors": {}},
+    "pursuit_score": {
+      "verdict": "AWARDED",
+      "headline": "DMIX/DISS support — value verified",
+      "factors": {}
+    },
     "slug": "mantech-dmix-diss-support",
     "content_gap": false
   },
@@ -982,9 +994,15 @@
     "link": "https://sam.gov/",
     "small_business_eligible": true,
     "source": "https://sam.gov/",
-    "source_urls": ["https://sam.gov/"],
+    "source_urls": [
+      "https://sam.gov/"
+    ],
     "last_verified": "2026-05-28",
-    "pursuit_score": {"verdict": "AWARDED", "headline": "Market intelligence — awarded Jan 2026", "factors": {}},
+    "pursuit_score": {
+      "verdict": "AWARDED",
+      "headline": "Market intelligence — awarded Jan 2026",
+      "factors": {}
+    },
     "slug": "swingtide-market-intelligence-support",
     "content_gap": false
   },
@@ -1000,9 +1018,15 @@
     "link": "https://sam.gov/",
     "small_business_eligible": false,
     "source": "https://sam.gov/",
-    "source_urls": ["https://sam.gov/"],
+    "source_urls": [
+      "https://sam.gov/"
+    ],
     "last_verified": "2026-05-28",
-    "pursuit_score": {"verdict": "AWARDED", "headline": "STR Zero Day — awarded May 2026", "factors": {}},
+    "pursuit_score": {
+      "verdict": "AWARDED",
+      "headline": "STR Zero Day — awarded May 2026",
+      "factors": {}
+    },
     "slug": "str-zero-day-leidos",
     "content_gap": false
   },
@@ -1703,5 +1727,366 @@
     "content_gap": true,
     "content_gap_note": "Placeholder watch item — NPIVS is at RFI/sources-sought stage (75A50126R00001); value and full solicitation pending an FY2027 RFP release.",
     "slug": "aspr-npivs-national-provider-identity-verification-system"
+  },
+  {
+    "name": "VA EDGE — Enterprise Digital Government Enablement",
+    "agency": "Department of Veterans Affairs",
+    "vendor": "Incumbent: Deloitte Consulting LLP (VetsEZ team, PTEMS 2.0)",
+    "value": "$1B–$1.9B TCV (recompete)",
+    "status": "upcoming",
+    "classification": "Solicitation",
+    "naics": "541512",
+    "description": "VA's marquee digital-modernization recompete (owner Kim Pugh, Product Delivery Service). Platform-agnostic modular low-code/no-code shared-service architecture: PaaS/SaaS integrations, APIs, digital modernization, emerging tech. RFI complete; RFP forecast Q1 FY27, award Q2 FY27. RFP is live on SAM.gov (36C10B26Q0245). Incumbent Deloitte holds the predecessor PTEMS 2.0 (~$726M CDLM order, 2024) — but OIT PDAS Zack Schwartz has stated publicly that \"incumbency is not a guarantee,\" so treat this as genuinely open. Rides GSA Alliant 2 (ceiling raised to $75B; ordering through June 30, 2028). Per VA, APBI content is advisory and subject to change; RFI/RFP/Award quarters are notional and discussion does not guarantee a solicitation.",
+    "link": "https://sam.gov/opp/36C10B26Q0245",
+    "small_business_eligible": false,
+    "source": "https://sam.gov/opp/36C10B26Q0245",
+    "source_urls": [
+      "https://sam.gov/opp/36C10B26Q0245",
+      "https://www.voa.va.gov"
+    ],
+    "last_verified": "2026-07-01",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "Billion-dollar recompete; incumbent Deloitte beatable per 'incumbency is not a guarantee'",
+      "factors": {
+        "vehicle_fit": {
+          "score": "watch",
+          "note": "Forecast vehicle per APBI; confirm at solicitation."
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "VA OIT/OALC FY26 IT APBI priority requirement."
+        },
+        "timeline": {
+          "score": "watch",
+          "note": "RFP live on SAM.gov (36C10B26Q0245); award ~Q2 FY27."
+        },
+        "competition": {
+          "score": "watch",
+          "note": "Deloitte/VetsEZ incumbent defending; Alliant 2 field is deep."
+        },
+        "scope_fit": {
+          "score": "pass",
+          "note": "Modular low-code/no-code shared services on GSA Alliant 2."
+        }
+      }
+    },
+    "slug": "va-edge-enterprise-digital-government-enablement",
+    "content_gap": false
+  },
+  {
+    "name": "VA Cloud Broker Service",
+    "agency": "Department of Veterans Affairs",
+    "vendor": "TBD — new requirement (APBI forecast)",
+    "value": "$1B–$1.9B TCV (new)",
+    "status": "upcoming",
+    "classification": "Program Watch",
+    "naics": "541512",
+    "description": "New billion-dollar cloud requirement (owner Dave Foster, Infrastructure Operations). Unify and optimize multi-cloud operations across the VA Enterprise Cloud: full lifecycle management for FedRAMP High, centralized FinOps, automated intake-to-provisioning, governance/security enforcement, tiered reporting, AI cost optimization and workload placement. RFI forecast Q3 FY26; RFP Q4 FY26; award Q1 FY27. No incumbent named — a genuinely new enterprise buy. Per VA, APBI content is advisory and subject to change; RFI/RFP/Award quarters are notional and discussion does not guarantee a solicitation.",
+    "link": "https://www.voa.va.gov",
+    "small_business_eligible": false,
+    "source": "https://www.voa.va.gov",
+    "source_urls": [
+      "https://www.voa.va.gov"
+    ],
+    "last_verified": "2026-07-01",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "New billion-dollar cloud-broker buy; no incumbent to unseat",
+      "factors": {
+        "vehicle_fit": {
+          "score": "watch",
+          "note": "Forecast vehicle per APBI; confirm at solicitation."
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "VA OIT/OALC FY26 IT APBI priority requirement."
+        },
+        "timeline": {
+          "score": "watch",
+          "note": "RFP forecast Q4 FY26; award Q1 FY27."
+        },
+        "competition": {
+          "score": "watch",
+          "note": "Open field; FinOps + multi-cloud governance depth wins."
+        },
+        "scope_fit": {
+          "score": "pass",
+          "note": "Multi-cloud ops, FinOps, intake-to-provisioning automation."
+        }
+      }
+    },
+    "slug": "va-cloud-broker-service",
+    "content_gap": false
+  },
+  {
+    "name": "VA Enterprise Resource Planning (ERP)",
+    "agency": "Department of Veterans Affairs",
+    "vendor": "TBD — new requirement (APBI forecast)",
+    "value": "$1B–$1.7B TCV (new)",
+    "status": "upcoming",
+    "classification": "Program Watch",
+    "naics": "541512",
+    "description": "New enterprise ERP modernization (owner Patrick Prescott, Infrastructure Operations). Modernize and sustain VA's enterprise-wide IT ERP platform via an updated Enterprise License Agreement plus integrated systems-integration (SI) support: stable operations, compliance, optimization, and AI/financial/logistics/workforce alignment. RFI complete; RFP forecast Q4 FY26; award Q1 FY27. Per VA, APBI content is advisory and subject to change; RFI/RFP/Award quarters are notional and discussion does not guarantee a solicitation.",
+    "link": "https://www.voa.va.gov",
+    "small_business_eligible": false,
+    "source": "https://www.voa.va.gov",
+    "source_urls": [
+      "https://www.voa.va.gov"
+    ],
+    "last_verified": "2026-07-01",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "New billion-dollar ERP ELA + systems-integration play",
+      "factors": {
+        "vehicle_fit": {
+          "score": "watch",
+          "note": "Forecast vehicle per APBI; confirm at solicitation."
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "VA OIT/OALC FY26 IT APBI priority requirement."
+        },
+        "timeline": {
+          "score": "watch",
+          "note": "RFP forecast Q4 FY26; award Q1 FY27."
+        },
+        "competition": {
+          "score": "watch",
+          "note": "SI + ELA scope favors large integrators with ERP depth."
+        },
+        "scope_fit": {
+          "score": "pass",
+          "note": "Enterprise ERP licensing + SI sustainment."
+        }
+      }
+    },
+    "slug": "va-enterprise-resource-planning-erp",
+    "content_gap": false
+  },
+  {
+    "name": "VA HTMSS — Health Services Portfolio Technical Management & Strategic Solutioning Support",
+    "agency": "Department of Veterans Affairs",
+    "vendor": "Incumbent: GovCIO (VA118-16-D-1003, ~$389.9M)",
+    "value": "$300M–$500M TCV (recompete)",
+    "status": "upcoming",
+    "classification": "Program Watch",
+    "naics": "541512",
+    "description": "Health Portfolio technical management recompete (owner Tim McCutcheon, Product Delivery Service): technical management for 331 products across 11 product lines, supporting the Federal EHR/VistA transition, system analysis, portfolio standardization, and CCN/FMBT rollout. Incumbent GovCIO holds the predecessor (VA118-16-D-1003, ~$389.9M). RFI forecast Q1 FY27; RFP/award Q2 FY27. Currently tagged T4NG (ordering ended March 6, 2026) — expected to ride the SDVOSB set-aside successor T4NG2 ($60.7B, 33-prime closed roster, protests resolved March 30, 2026), which makes this an SDVOSB lane. Per VA, APBI content is advisory and subject to change; RFI/RFP/Award quarters are notional and discussion does not guarantee a solicitation.",
+    "link": "https://www.voa.va.gov",
+    "small_business_eligible": true,
+    "source": "https://www.voa.va.gov",
+    "source_urls": [
+      "https://www.voa.va.gov"
+    ],
+    "last_verified": "2026-07-01",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "$390M health-portfolio recompete on the SDVOSB T4NG2 lane",
+      "factors": {
+        "vehicle_fit": {
+          "score": "watch",
+          "note": "Forecast vehicle per APBI; confirm at solicitation."
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "VA OIT/OALC FY26 IT APBI priority requirement."
+        },
+        "timeline": {
+          "score": "watch",
+          "note": "RFI Q1 FY27; RFP/award Q2 FY27."
+        },
+        "competition": {
+          "score": "watch",
+          "note": "GovCIO incumbent; SDVOSB set-aside via T4NG2 narrows field."
+        },
+        "scope_fit": {
+          "score": "pass",
+          "note": "Technical mgmt of 331 products; EHR/VistA transition support."
+        }
+      }
+    },
+    "slug": "va-htmss-health-services-portfolio-technical-mgmt",
+    "content_gap": false
+  },
+  {
+    "name": "VA Transformation Support Services (TSS) 3.0",
+    "agency": "Department of Veterans Affairs",
+    "vendor": "Incumbent: Booz Allen Hamilton",
+    "value": "TBD (recompete)",
+    "status": "upcoming",
+    "classification": "Program Watch",
+    "naics": "541512",
+    "description": "Enterprise technical support recompete (owner Tina Sharp, Office of Information Security): cybersecurity, OIG IT audit and remediation, ATO/ISSO services, EHRM, workforce management, and full-lifecycle SW/HW support. Incumbent Booz Allen Hamilton. RFI forecast Q3 FY26; RFP Q4 FY26; award Q2 FY27. Rides GSA MAS. Per VA, APBI content is advisory and subject to change; RFI/RFP/Award quarters are notional and discussion does not guarantee a solicitation.",
+    "link": "https://www.voa.va.gov",
+    "small_business_eligible": false,
+    "source": "https://www.voa.va.gov",
+    "source_urls": [
+      "https://www.voa.va.gov"
+    ],
+    "last_verified": "2026-07-01",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "Enterprise cyber + ATO/ISSO recompete; BAH incumbent",
+      "factors": {
+        "vehicle_fit": {
+          "score": "watch",
+          "note": "Forecast vehicle per APBI; confirm at solicitation."
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "VA OIT/OALC FY26 IT APBI priority requirement."
+        },
+        "timeline": {
+          "score": "watch",
+          "note": "RFP forecast Q4 FY26; award Q2 FY27."
+        },
+        "competition": {
+          "score": "watch",
+          "note": "Booz Allen incumbent defending on GSA MAS."
+        },
+        "scope_fit": {
+          "score": "pass",
+          "note": "Cyber, OIG audit/remediation, ATO/ISSO, EHRM support."
+        }
+      }
+    },
+    "slug": "va-transformation-support-services-tss-3-0",
+    "content_gap": false
+  },
+  {
+    "name": "VA Cybersecurity Operations Center Support (CSOC)",
+    "agency": "Department of Veterans Affairs",
+    "vendor": "Incumbent: Revolutional LLC (previously Maveris LLC)",
+    "value": "$332M TCV (recompete)",
+    "status": "upcoming",
+    "classification": "Program Watch",
+    "naics": "541519",
+    "description": "VA SOC support recompete (owner Keith Fleming, Office of Information Security): strategic/tactical planning, program development, forensics, vulnerability analysis, compliance scanning, external assessments, deep-dive analysis, threat reporting, and external threat intel. Incumbent Revolutional LLC (previously Maveris). Longer runway — RFI forecast Q1 FY28; RFP Q3 FY28; award Q4 FY28. Rides GSA MAS HACS SIN. Per VA, APBI content is advisory and subject to change; RFI/RFP/Award quarters are notional and discussion does not guarantee a solicitation.",
+    "link": "https://www.voa.va.gov",
+    "small_business_eligible": false,
+    "source": "https://www.voa.va.gov",
+    "source_urls": [
+      "https://www.voa.va.gov"
+    ],
+    "last_verified": "2026-07-01",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "$332M SOC recompete on GSA MAS HACS; long runway",
+      "factors": {
+        "vehicle_fit": {
+          "score": "watch",
+          "note": "Forecast vehicle per APBI; confirm at solicitation."
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "VA OIT/OALC FY26 IT APBI priority requirement."
+        },
+        "timeline": {
+          "score": "watch",
+          "note": "RFI Q1 FY28; RFP Q3 FY28; award Q4 FY28."
+        },
+        "competition": {
+          "score": "watch",
+          "note": "Revolutional (ex-Maveris) incumbent; HACS SIN required."
+        },
+        "scope_fit": {
+          "score": "pass",
+          "note": "Full-scope SOC: forensics, threat intel, vuln analysis."
+        }
+      }
+    },
+    "slug": "va-cybersecurity-operations-center-support-csoc",
+    "content_gap": false
+  },
+  {
+    "name": "VA OMEGA — Onboarding, Management, Engineering, Governance & Assurance Services",
+    "agency": "Department of Veterans Affairs",
+    "vendor": "Incumbent: Sprezzatura Management Consulting LLC (formerly Quantum Management LLC)",
+    "value": "$500M–$999M TCV (recompete)",
+    "status": "upcoming",
+    "classification": "Program Watch",
+    "naics": "541512",
+    "description": "Low-code/no-code product and platform services recompete (owner Jacob Wright, OIT) to enable, manage, operate, and sustain the Digital Transformation Center (DTC) technology ecosystem: modular reusable components for enterprise modernization and cloud migration. Incumbent Sprezzatura Management Consulting LLC (formerly Quantum Management LLC). RFI forecast Q3 FY26; RFP Q3 FY27; award Q4 FY27. Rides GSA MAS. Per VA, APBI content is advisory and subject to change; RFI/RFP/Award quarters are notional and discussion does not guarantee a solicitation.",
+    "link": "https://www.voa.va.gov",
+    "small_business_eligible": false,
+    "source": "https://www.voa.va.gov",
+    "source_urls": [
+      "https://www.voa.va.gov"
+    ],
+    "last_verified": "2026-07-01",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "$500M–$999M LCNC/DTC recompete on GSA MAS",
+      "factors": {
+        "vehicle_fit": {
+          "score": "watch",
+          "note": "Forecast vehicle per APBI; confirm at solicitation."
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "VA OIT/OALC FY26 IT APBI priority requirement."
+        },
+        "timeline": {
+          "score": "watch",
+          "note": "RFI Q3 FY26; RFP Q3 FY27; award Q4 FY27."
+        },
+        "competition": {
+          "score": "watch",
+          "note": "Sprezzatura incumbent; reusable-component depth wins."
+        },
+        "scope_fit": {
+          "score": "pass",
+          "note": "LCNC product/platform services for the DTC ecosystem."
+        }
+      }
+    },
+    "slug": "va-omega-onboarding-mgmt-engineering-governance-assurance",
+    "content_gap": false
+  },
+  {
+    "name": "VA Application Hosting Compute and Storage",
+    "agency": "Department of Veterans Affairs",
+    "vendor": "TBD — new requirement (APBI forecast)",
+    "value": "$100M–$249M TCV ($20M–$49M base year, new)",
+    "status": "upcoming",
+    "classification": "Program Watch",
+    "naics": "541512",
+    "description": "New enterprise app-hosting requirement (owner Marc Tolbert, Infrastructure Operations): server administration, enterprise storage operations, enterprise cloud management, and containerization via VA Platform One. Priorities are hybrid hosting strategy and operational efficiency (IaC, automation). RFI complete; RFP forecast Q4 FY26; award Q1 FY27. Per VA, APBI content is advisory and subject to change; RFI/RFP/Award quarters are notional and discussion does not guarantee a solicitation.",
+    "link": "https://www.voa.va.gov",
+    "small_business_eligible": false,
+    "source": "https://www.voa.va.gov",
+    "source_urls": [
+      "https://www.voa.va.gov"
+    ],
+    "last_verified": "2026-07-01",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "New hybrid app-hosting buy; Platform One containerization",
+      "factors": {
+        "vehicle_fit": {
+          "score": "watch",
+          "note": "Forecast vehicle per APBI; confirm at solicitation."
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "VA OIT/OALC FY26 IT APBI priority requirement."
+        },
+        "timeline": {
+          "score": "watch",
+          "note": "RFP forecast Q4 FY26; award Q1 FY27."
+        },
+        "competition": {
+          "score": "watch",
+          "note": "Open field; hybrid hosting + IaC automation depth wins."
+        },
+        "scope_fit": {
+          "score": "pass",
+          "note": "Server admin, storage ops, cloud mgmt, Platform One."
+        }
+      }
+    },
+    "slug": "va-application-hosting-compute-and-storage",
+    "content_gap": false
   }
 ]

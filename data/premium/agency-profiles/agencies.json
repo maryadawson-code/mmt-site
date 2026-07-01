@@ -189,7 +189,7 @@
     "abbrev": "VA",
     "name": "Department of Veterans Affairs / Veterans Health Administration",
     "type": "Cabinet Department / Integrated Health System",
-    "lastUpdated": "2026-05-13",
+    "lastUpdated": "2026-07-01",
     "description": "Largest integrated US healthcare system (1,298 facilities, 9M+ enrolled veterans). VHA RISE reorganization, HELM / VALIP supply chain DevSecOps, CCN Next Gen community care, and EHRM Oracle Health deployment all run in parallel. VA OIT operates the IT layer through T4NG2 and IHT 2.0; imaging and ambient AI are active growth areas.",
     "mmtRead": "VA is mid-reorganization (VHA RISE, December 2025 announcement) and mid-modernization. EHRM is back on track with four Michigan sites live April 11, 2026 (first wave of 13 sites for 2026). T4NG2 awarded ($60.7B, 33 final awardees post-protest); IHT 2.0 ($14B, 100% SDVOSB, 9 awardees) covers VHA technology services through 2035. CCN Next Gen proposals due April 3, 2026 (in award review). HELM / VALIP supply-chain DevSecOps is the under-tracked acquisition + financial-system integration lane; VA Ambient Scribe IDIQ (36C10B26R0006) is in active GAO protest with decision due August 6, 2026. The capture frame is agency shift before RFP: read RISE, then map to EHRM / CCN / HELM signals.",
     "officialSources": [
@@ -214,7 +214,15 @@
       "T4NG2 IT services",
       "VHA RISE reorganization (18 VISNs to 5 regions, 18-24 months)",
       "HELM / VALIP (VA supply chain DevSecOps)",
-      "Acquisition + financial-system integration (post-RISE pipeline)"
+      "Acquisition + financial-system integration (post-RISE pipeline)",
+      "EDGE - Enterprise Digital Government Enablement ($1B-$1.9B recompete, PDS; Deloitte/VetsEZ incumbent on PTEMS 2.0, rides GSA Alliant 2) [APBI FY26]",
+      "Cloud Broker Service ($1B-$1.9B new, IO; multi-cloud FinOps + FedRAMP High lifecycle) [APBI FY26]",
+      "Enterprise Resource Planning / ERP ($1B-$1.7B new, IO; updated ELA + systems-integration support) [APBI FY26]",
+      "HTMSS - Health Services Portfolio Technical Management & Strategic Solutioning Support ($300M-$500M recompete, PDS; GovCIO incumbent, T4NG expiring to T4NG2) [APBI FY26]",
+      "CSOC - Cybersecurity Operations Center Support ($332M recompete, OIS; Revolutional incumbent, GSA MAS HACS) [APBI FY26]",
+      "TSS 3.0 - Transformation Support Services ($TBD recompete, OIS; Booz Allen incumbent, GSA MAS) [APBI FY26]",
+      "OMEGA - Onboarding, Management, Engineering, Governance & Assurance Services ($500M-$999M recompete, OIT; Sprezzatura incumbent, GSA MAS) [APBI FY26]",
+      "Application Hosting Compute and Storage ($100M-$249M new, IO; VA Platform One containerization) [APBI FY26]"
     ],
     "procurementSignals": [
       "CCN Next Gen Medical 36C10G26R0003 (proposals closed Apr 3 2026)",
@@ -222,12 +230,21 @@
       "VA Enterprise Imaging 36C10X25Q0015 pre-RFP",
       "VA Health Services DevSecOps 36C10B26Q0163 sources sought",
       "VA Supply Chain DevSecOps / HELM sources sought (36C10B26Q0163 adjacent)",
-      "VHA RISE structural milestones (regional consolidation cadence)"
+      "VHA RISE structural milestones (regional consolidation cadence)",
+      "APBI FY26: Q4 FY26 RFP cluster — Application Services, ICMS, EDGE, ERP, Cloud Broker, App Hosting Compute & Storage, Mainframe Services, and CMS (contract writing system) all target Q4 FY26 solicitation (notional per APBI)",
+      "APBI FY26: EDGE RFP live on SAM.gov (36C10B26Q0245); RFI completed, RFP Q1 FY27, award Q2 FY27 (context)",
+      "APBI FY26: CMS (Contract Management System) Industry Day held June 18 2026; RFI Q3 FY26, RFP/award Q4 FY26",
+      "APBI FY26: OIT PDAS Zack Schwartz framed the recompete wave at the June 2026 industry day — 'incumbency is not a guarantee' — signaling EDGE, HTMSS, CSOC, TSS 3.0, OMEGA and CGT are genuinely open competes"
     ],
     "openVehicles": [
       "T4NG2",
       "IHT 2.0 (VA Health Connect)",
-      "CCN Next Gen Medical (post-protest pending)"
+      "CCN Next Gen Medical (post-protest pending)",
+      "Context (public research, dated): T4NG EXPIRED — ordering ended Mar 6 2026; successor is T4NG2 [Washington Technology / HigherGov 2026]",
+      "Context (public research, dated): T4NG2 ACTIVE — $60.7B, SDVOSB set-aside, 33-prime closed roster (no on-ramp); protests resolved Mar 30 2026 (Judge Silfen ruled for VA); HTMSS and DLP reqs tagged T4NG expected to ride T4NG2 [Washington Technology 2026-03-31; Truvisory 2026-05-26]",
+      "Context (public research, dated): NASA SEWP VI awarded June 22 2026 (364 initial awardees); ordering opens Nov 1 2026; SEWP V extended through Sep 30 2026 (options to Apr 30 2027). SEWP-based reqs (Unified Comm Server, ICMS) likely ride SEWP VI once ordering opens [GovConFeed / Washington Technology 2026-06-23]",
+      "Context (public research, dated): GSA Alliant 2 ACTIVE — ceiling raised to $75B, ordering through Jun 30 2028 (task orders to 2033); the vehicle for the EDGE recompete [GovCon Wire; GSA.gov]",
+      "Context (public research, dated): GSA MAS ACTIVE — HACS SIN for cyber; the vehicle for CSOC, OMEGA and TSS 3.0"
     ],
     "premiumLocked": true,
     "budget": {
@@ -248,7 +265,15 @@
       "T4NG2",
       "IHT 2.0",
       "CCN Next Gen",
-      "VA Ambient Scribe IDIQ"
+      "VA Ambient Scribe IDIQ",
+      "EDGE (rides GSA Alliant 2) [APBI FY26]",
+      "HTMSS (rides T4NG expiring to T4NG2) [APBI FY26]",
+      "CSOC (GSA MAS HACS) [APBI FY26]",
+      "OMEGA (GSA MAS) [APBI FY26]",
+      "TSS 3.0 (GSA MAS) [APBI FY26]",
+      "Cloud Broker Service (new, vehicle TBD) [APBI FY26]",
+      "ERP (new, updated Enterprise License Agreement + SI) [APBI FY26]",
+      "ICMS / Unified Comm Server (leverage SEWP authorities, expect SEWP VI) [APBI FY26]"
     ],
     "key_offices": [
       "VA OIT (Office of Information and Technology)",
@@ -256,13 +281,24 @@
       "VA TAC (Technology Acquisition Center)",
       "OAL (Office of Acquisition and Logistics)"
     ],
-    "recent_awards": [],
+    "recent_awards": [
+      "Incumbent to target (EDGE recompete): Deloitte Consulting LLP (VetsEZ team) holds PTEMS 2.0 (~$726M CDLM order 2024); EDGE recompete $1B-$1.9B on GSA Alliant 2 [APBI FY26 + public research]",
+      "Incumbent to target (HTMSS recompete): GovCIO holds VA118-16-D-1003 / 36C10B22N10030034 (~$389.9M); recompete $300M-$500M rides T4NG2 [APBI FY26]",
+      "Incumbent to target (TSS 3.0 recompete): Booz Allen Hamilton; recompete on GSA MAS [APBI FY26]",
+      "Incumbent to target (CSOC recompete): Revolutional LLC (previously Maveris LLC); $332M recompete on GSA MAS HACS [APBI FY26]",
+      "Incumbent to target (OMEGA recompete): Sprezzatura Management Consulting LLC (formerly Quantum Management LLC); $500M-$999M recompete on GSA MAS [APBI FY26]",
+      "Incumbent to target (Cloud Governance Tool recompete): Four Points Technology, LLC (SDVOSB), NASA SEWP NNG15SD22B, incumbent tool TurboT (~$7M); $5M-$9.9M recompete [APBI FY26 + public research]"
+    ],
     "upcoming_signals": [
       "Michigan EHRM go-lives 2 through 13 (rolling 2026)",
       "VA Ambient Scribe protest decision Aug 6 2026",
       "T4NG2 task order ramp-up",
       "VHA RISE: 18-VISN to 5-region rollout milestones (read agency shift before RFP)",
-      "HELM / VALIP supply chain DevSecOps procurement activity (acquisition + financial system integration)"
+      "HELM / VALIP supply chain DevSecOps procurement activity (acquisition + financial system integration)",
+      "APBI FY26 (notional, subject to change): Q4 FY26 RFPs — IATDR, Application Services, EDGE (RFI complete), ERP, Cloud Broker Service, App Hosting Compute & Storage, Mainframe Services, ICMS, TSS 3.0, CMS",
+      "APBI FY26 (notional): Q1 FY27 award cluster — Application Services, Cloud Broker Service, App Hosting Compute & Storage, ERP, ICMS, LEAF, Project Front Door",
+      "APBI FY26 (notional): FY27 — HTMSS RFP/award Q2, OMEGA RFP Q3/award Q4, DLP RFP Q3/award Q4, Printers as a Service award Q3, Unified Comm Server RFP/award Q3",
+      "APBI FY26 (notional): FY28 — CSOC RFI Q1, RFP Q3, award Q4 (latest of the APBI recompetes)"
     ],
     "related_tags": [
       "Veterans Affairs",
@@ -648,12 +684,40 @@
             "Cleveland sites"
           ],
           "why_it_matters": "Ohio + Indiana + Alaska + Cleveland brings the rollout across multiple VISNs in a single fiscal year. The demand surface expands for change management, clinician training, and interoperability integration."
+        },
+        {
+          "window": "APBI FY26 procurement timeline — Q4 FY26 RFPs (notional, advisory, subject to change)",
+          "sites": [
+            "IATDR (RFP/award Q4 FY26)",
+            "Application Services (RFP Q4 FY26, award Q1 FY27)",
+            "EDGE (RFI complete; RFP Q1 FY27)",
+            "ERP (RFP Q4 FY26, award Q1 FY27)",
+            "Cloud Broker Service (RFP Q4 FY26, award Q1 FY27)",
+            "App Hosting Compute & Storage (RFP Q4 FY26, award Q1 FY27)",
+            "Mainframe Services (RFP Q4 FY26, award Q1/Q2 FY27)",
+            "ICMS (RFP Q1 FY27, award Q1 FY27)",
+            "TSS 3.0 (RFP Q4 FY26, award Q2 FY27)",
+            "CMS contract writing system (Industry Day Jun 18 2026; RFP/award Q4 FY26)"
+          ],
+          "why_it_matters": "The heaviest RFP cluster of the FY26 APBI lands in Q4 FY26 — including the marquee dollar plays (EDGE, ERP, Cloud Broker Service). Position now: RFIs on several are already complete."
+        },
+        {
+          "window": "APBI FY26 procurement timeline — FY27/FY28 milestones (notional)",
+          "sites": [
+            "HTMSS (RFI Q1 FY27, RFP/award Q2 FY27; GovCIO incumbent, rides T4NG2)",
+            "OMEGA (RFI Q3 FY26, RFP Q3 FY27, award Q4 FY27; Sprezzatura incumbent)",
+            "DLP (RFI Q2 FY27, RFP Q3 FY27, award Q4 FY27; rides T4NG2)",
+            "Printers as a Service (award Q3 FY27)",
+            "Unified Comm Server Refresh (RFP/award Q3 FY27; expect SEWP VI)",
+            "CSOC (RFI Q1 FY28, RFP Q3 FY28, award Q4 FY28; Revolutional incumbent — latest recompete)"
+          ],
+          "why_it_matters": "The recompete lane stretches into FY27-FY28. CSOC is the last domino. Every quarter here is notional per VA and shifts with the RISE reorg and appropriations cadence."
         }
       ],
-      "caveat": "DigitalVA states 10 medical centers are currently live on the Federal EHR; the extracted deployment table identifies 6 prior sites. Preserve this discrepancy as an integrity signal — verify before publishing an external numeric live-site count.",
+      "caveat": "DigitalVA states 10 medical centers are currently live on the Federal EHR; the extracted deployment table identifies 6 prior sites. Preserve this discrepancy as an integrity signal — verify before publishing an external numeric live-site count. APBI FY26 procurement milestones are advisory and subject to change; RFI/RFP/Award quarters are notional and discussion at industry day does not guarantee a solicitation.",
       "source_id": "va_ehr_sched"
     },
-    "contractorRead": "VA's 2026 deployment posture moves the conversation from 'will the program continue?' to 'who supports the wave cadence?' Look at integrator vehicles, change-management staffing, clinician-trainer pipelines, telehealth and interoperability adapters, and EHRM-aligned cybersecurity. Michigan in April is the proof point downstream solicitations will cite.",
+    "contractorRead": "VA's 2026 deployment posture moves the conversation from 'will the program continue?' to 'who supports the wave cadence?' Look at integrator vehicles, change-management staffing, clinician-trainer pipelines, telehealth and interoperability adapters, and EHRM-aligned cybersecurity. Michigan in April is the proof point downstream solicitations will cite. BD read on the FY26 APBI (all quarters notional, advisory, subject to change): the billion-dollar plays are EDGE ($1B-$1.9B, Deloitte/VetsEZ incumbent, Alliant 2), Cloud Broker Service ($1B-$1.9B, new build) and ERP ($1B-$1.7B, new ELA + SI) — these three are where the dollar concentration and the earliest RFPs (Q4 FY26) collide. The recompete lane is a teaming map: GovCIO on HTMSS ($300M-$500M, rides T4NG2 — note the SDVOSB set-aside, 33-prime closed roster), Booz Allen on TSS 3.0, Revolutional (ex-Maveris) on CSOC ($332M, GSA MAS HACS), Sprezzatura on OMEGA ($500M-$999M), and Four Points (SDVOSB) on the Cloud Governance Tool. Zack Schwartz's 'incumbency is not a guarantee' framing (June 2026 industry day) is the signal these recompetes are genuinely open — position as challenger-teammate or subcontractor to the incumbent, not either/or.",
     "watchNext": [
       {
         "signal": "Post-Michigan cohort lessons-learned + downstream wave staffing",
@@ -666,6 +730,36 @@
         "buyer": "VA OIT",
         "window": "Verify before quoting externally",
         "source_id": "va_ehr_sched"
+      },
+      {
+        "signal": "EDGE recompete RFP ($1B-$1.9B; Deloitte/VetsEZ incumbent on PTEMS 2.0, rides GSA Alliant 2). RFI complete; SAM.gov 36C10B26Q0245",
+        "buyer": "VA OIT / PDS (Kim Pugh)",
+        "window": "RFP Q1 FY27, award Q2 FY27 (notional per APBI)",
+        "source_id": "va_apbi_fy26"
+      },
+      {
+        "signal": "Cloud Broker Service RFP ($1B-$1.9B new; multi-cloud FinOps + FedRAMP High lifecycle)",
+        "buyer": "VA OIT / IO (Dave Foster)",
+        "window": "RFP Q4 FY26, award Q1 FY27 (notional per APBI)",
+        "source_id": "va_apbi_fy26"
+      },
+      {
+        "signal": "Enterprise Resource Planning (ERP) RFP ($1B-$1.7B new; updated ELA + systems-integration support)",
+        "buyer": "VA OIT / IO (Patrick Prescott)",
+        "window": "RFP Q4 FY26, award Q1 FY27 (notional per APBI)",
+        "source_id": "va_apbi_fy26"
+      },
+      {
+        "signal": "HTMSS recompete ($300M-$500M; GovCIO incumbent, T4NG expiring to T4NG2) — teaming target",
+        "buyer": "VA OIT / PDS (Tim McCutcheon)",
+        "window": "RFI Q1 FY27, RFP/award Q2 FY27 (notional per APBI)",
+        "source_id": "va_apbi_fy26"
+      },
+      {
+        "signal": "CSOC recompete ($332M; Revolutional/ex-Maveris incumbent, GSA MAS HACS) — latest APBI recompete",
+        "buyer": "VA OIT / OIS (Keith Fleming)",
+        "window": "RFI Q1 FY28, RFP Q3 FY28, award Q4 FY28 (notional per APBI)",
+        "source_id": "va_apbi_fy26"
       }
     ],
     "sources": [
@@ -676,6 +770,14 @@
         "confidence": "medium",
         "caveat": "Page states 10 medical centers currently live; the deployment table identifies 6 prior sites. Treat live-site count as unverified before quoting.",
         "id": "va_ehr_sched"
+      },
+      {
+        "label": "VA FY26 IT Advanced Planning Brief to Industry (APBI)",
+        "url": "https://www.voa.va.gov",
+        "verified_at": "2026-07-01",
+        "confidence": "high",
+        "caveat": "APBI content is advisory and subject to change; RFI/RFP/Award quarters are notional.",
+        "id": "va_apbi_fy26"
       }
     ]
   },

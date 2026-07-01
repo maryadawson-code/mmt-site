@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-07-01T22:46:52.122Z",
-  "total": 210,
+  "generated_at": "2026-07-01T23:08:48.060Z",
+  "total": 218,
   "note": "Public subset of mmt-content-corpus.json (premium=false items only). For unauthenticated endpoints. Per Sprint C 2026-05-14.",
   "counts": {
     "articles": 123,
-    "contracts": 55,
+    "contracts": 63,
     "glossary": 0,
     "idiq_vehicles": 32
   },
@@ -2929,6 +2929,134 @@
       ],
       "url": "https://www.federalcompass.com/rfp-opportunity-detail/75A50126R00001_RFI_SSN_NPIVS-2027",
       "excerpt": "Pre-solicitation watch on ASPR's National Provider Identity Verification System (RFI/sources-sought 75A50126R00001, targeted ~FY2027). NPIVS supports identity verification of healthcare providers for emergency-response and preparedness operations — a preparedness IT system with strategic national-security implications. ASPR's overall IT contracting footprint is relatively small (it favors 8(a) sole-source and SB set-asides for modest platform-support contracts), making NPIVS the agency's primary near-term IT watch item for FY2026–2027. Monitor for RFP release; SB/8(a) eligibility likely given ASPR's pattern.\nAgency: Department of Health and Human Services (HHS) / ASPR\nVendor: TBD — pre-solicitation (RFI 2025)\nValue: TBD (RFI stage)\nStatus: upcoming\nNAICS: 541511\nMMT verdict: WATCH — ASPR preparedness ID-verification IT; pre-solicitation\nFactors: vehicle_fit: watch — Pre-solicitation; vehicle/structure undefined | agency_alignment: pass — ASPR preparedness IT — national-security alignment | timeline: watch — RFI 2025; RFP targeted ~FY2027, not yet posted | competition: watch — Field undefined; ASPR favors 8(a)/SB | scope_fit: pass — Identity-verification scope fits SB/8(a) primes",
+      "premium": false
+    },
+    {
+      "id": "contract-va-edge-enterprise-digital-government-enablement",
+      "type": "contract_intel",
+      "title": "VA EDGE — Enterprise Digital Government Enablement",
+      "slug": "va-edge-enterprise-digital-government-enablement",
+      "date": "2026-07-01",
+      "description": "VA's marquee digital-modernization recompete (owner Kim Pugh, Product Delivery Service). Platform-agnostic modular low-code/no-code shared-service architecture: PaaS/SaaS integrations, APIs, digital modernization, emerging tech. RFI complet",
+      "tags": [
+        "Department of Veterans Affairs",
+        "upcoming",
+        "541512"
+      ],
+      "url": "https://sam.gov/opp/36C10B26Q0245",
+      "excerpt": "VA's marquee digital-modernization recompete (owner Kim Pugh, Product Delivery Service). Platform-agnostic modular low-code/no-code shared-service architecture: PaaS/SaaS integrations, APIs, digital modernization, emerging tech. RFI complete; RFP forecast Q1 FY27, award Q2 FY27. RFP is live on SAM.gov (36C10B26Q0245). Incumbent Deloitte holds the predecessor PTEMS 2.0 (~$726M CDLM order, 2024) — but OIT PDAS Zack Schwartz has stated publicly that \"incumbency is not a guarantee,\" so treat this as genuinely open. Rides GSA Alliant 2 (ceiling raised to $75B; ordering through June 30, 2028). Per VA, APBI content is advisory and subject to change; RFI/RFP/Award quarters are notional and discussion does not guarantee a solicitation.\nAgency: Department of Veterans Affairs\nVendor: Incumbent: Deloitte Consulting LLP (VetsEZ team, PTEMS 2.0)\nValue: $1B–$1.9B TCV (recompete)\nStatus: upcoming\nNAICS: 541512\nMMT verdict: WATCH — Billion-dollar recompete; incumbent Deloitte beatable per 'incumbency is not a guarantee'\nFactors: vehicle_fit: watch — Forecast vehicle per APBI; confirm at solicitation. | agency_alignment: pass — VA OIT/OALC FY26 IT APBI priority requirement. | timeline: watch — RFP live on SAM.gov (36C10B26Q0245); award ~Q2 FY27. | competition: watch — Deloitte/VetsEZ incumbent defending; Alliant 2 field is deep. | scope_fit: pass — Modular low-code/no-code shared services on GSA Alliant 2.",
+      "premium": false
+    },
+    {
+      "id": "contract-va-cloud-broker-service",
+      "type": "contract_intel",
+      "title": "VA Cloud Broker Service",
+      "slug": "va-cloud-broker-service",
+      "date": "2026-07-01",
+      "description": "New billion-dollar cloud requirement (owner Dave Foster, Infrastructure Operations). Unify and optimize multi-cloud operations across the VA Enterprise Cloud: full lifecycle management for FedRAMP High, centralized FinOps, automated intake-",
+      "tags": [
+        "Department of Veterans Affairs",
+        "upcoming",
+        "541512"
+      ],
+      "url": "https://www.voa.va.gov",
+      "excerpt": "New billion-dollar cloud requirement (owner Dave Foster, Infrastructure Operations). Unify and optimize multi-cloud operations across the VA Enterprise Cloud: full lifecycle management for FedRAMP High, centralized FinOps, automated intake-to-provisioning, governance/security enforcement, tiered reporting, AI cost optimization and workload placement. RFI forecast Q3 FY26; RFP Q4 FY26; award Q1 FY27. No incumbent named — a genuinely new enterprise buy. Per VA, APBI content is advisory and subject to change; RFI/RFP/Award quarters are notional and discussion does not guarantee a solicitation.\nAgency: Department of Veterans Affairs\nVendor: TBD — new requirement (APBI forecast)\nValue: $1B–$1.9B TCV (new)\nStatus: upcoming\nNAICS: 541512\nMMT verdict: WATCH — New billion-dollar cloud-broker buy; no incumbent to unseat\nFactors: vehicle_fit: watch — Forecast vehicle per APBI; confirm at solicitation. | agency_alignment: pass — VA OIT/OALC FY26 IT APBI priority requirement. | timeline: watch — RFP forecast Q4 FY26; award Q1 FY27. | competition: watch — Open field; FinOps + multi-cloud governance depth wins. | scope_fit: pass — Multi-cloud ops, FinOps, intake-to-provisioning automation.",
+      "premium": false
+    },
+    {
+      "id": "contract-va-enterprise-resource-planning-erp-",
+      "type": "contract_intel",
+      "title": "VA Enterprise Resource Planning (ERP)",
+      "slug": "va-enterprise-resource-planning-erp-",
+      "date": "2026-07-01",
+      "description": "New enterprise ERP modernization (owner Patrick Prescott, Infrastructure Operations). Modernize and sustain VA's enterprise-wide IT ERP platform via an updated Enterprise License Agreement plus integrated systems-integration (SI) support: s",
+      "tags": [
+        "Department of Veterans Affairs",
+        "upcoming",
+        "541512"
+      ],
+      "url": "https://www.voa.va.gov",
+      "excerpt": "New enterprise ERP modernization (owner Patrick Prescott, Infrastructure Operations). Modernize and sustain VA's enterprise-wide IT ERP platform via an updated Enterprise License Agreement plus integrated systems-integration (SI) support: stable operations, compliance, optimization, and AI/financial/logistics/workforce alignment. RFI complete; RFP forecast Q4 FY26; award Q1 FY27. Per VA, APBI content is advisory and subject to change; RFI/RFP/Award quarters are notional and discussion does not guarantee a solicitation.\nAgency: Department of Veterans Affairs\nVendor: TBD — new requirement (APBI forecast)\nValue: $1B–$1.7B TCV (new)\nStatus: upcoming\nNAICS: 541512\nMMT verdict: WATCH — New billion-dollar ERP ELA + systems-integration play\nFactors: vehicle_fit: watch — Forecast vehicle per APBI; confirm at solicitation. | agency_alignment: pass — VA OIT/OALC FY26 IT APBI priority requirement. | timeline: watch — RFP forecast Q4 FY26; award Q1 FY27. | competition: watch — SI + ELA scope favors large integrators with ERP depth. | scope_fit: pass — Enterprise ERP licensing + SI sustainment.",
+      "premium": false
+    },
+    {
+      "id": "contract-va-htmss-health-services-portfolio-technical-management-stra",
+      "type": "contract_intel",
+      "title": "VA HTMSS — Health Services Portfolio Technical Management & Strategic Solutioning Support",
+      "slug": "va-htmss-health-services-portfolio-technical-management-strategic-solutioning-support",
+      "date": "2026-07-01",
+      "description": "Health Portfolio technical management recompete (owner Tim McCutcheon, Product Delivery Service): technical management for 331 products across 11 product lines, supporting the Federal EHR/VistA transition, system analysis, portfolio standar",
+      "tags": [
+        "Department of Veterans Affairs",
+        "upcoming",
+        "541512"
+      ],
+      "url": "https://www.voa.va.gov",
+      "excerpt": "Health Portfolio technical management recompete (owner Tim McCutcheon, Product Delivery Service): technical management for 331 products across 11 product lines, supporting the Federal EHR/VistA transition, system analysis, portfolio standardization, and CCN/FMBT rollout. Incumbent GovCIO holds the predecessor (VA118-16-D-1003, ~$389.9M). RFI forecast Q1 FY27; RFP/award Q2 FY27. Currently tagged T4NG (ordering ended March 6, 2026) — expected to ride the SDVOSB set-aside successor T4NG2 ($60.7B, 33-prime closed roster, protests resolved March 30, 2026), which makes this an SDVOSB lane. Per VA, APBI content is advisory and subject to change; RFI/RFP/Award quarters are notional and discussion does not guarantee a solicitation.\nAgency: Department of Veterans Affairs\nVendor: Incumbent: GovCIO (VA118-16-D-1003, ~$389.9M)\nValue: $300M–$500M TCV (recompete)\nStatus: upcoming\nNAICS: 541512\nMMT verdict: WATCH — $390M health-portfolio recompete on the SDVOSB T4NG2 lane\nFactors: vehicle_fit: watch — Forecast vehicle per APBI; confirm at solicitation. | agency_alignment: pass — VA OIT/OALC FY26 IT APBI priority requirement. | timeline: watch — RFI Q1 FY27; RFP/award Q2 FY27. | competition: watch — GovCIO incumbent; SDVOSB set-aside via T4NG2 narrows field. | scope_fit: pass — Technical mgmt of 331 products; EHR/VistA transition support.",
+      "premium": false
+    },
+    {
+      "id": "contract-va-transformation-support-services-tss-3-0",
+      "type": "contract_intel",
+      "title": "VA Transformation Support Services (TSS) 3.0",
+      "slug": "va-transformation-support-services-tss-3-0",
+      "date": "2026-07-01",
+      "description": "Enterprise technical support recompete (owner Tina Sharp, Office of Information Security): cybersecurity, OIG IT audit and remediation, ATO/ISSO services, EHRM, workforce management, and full-lifecycle SW/HW support. Incumbent Booz Allen Ha",
+      "tags": [
+        "Department of Veterans Affairs",
+        "upcoming",
+        "541512"
+      ],
+      "url": "https://www.voa.va.gov",
+      "excerpt": "Enterprise technical support recompete (owner Tina Sharp, Office of Information Security): cybersecurity, OIG IT audit and remediation, ATO/ISSO services, EHRM, workforce management, and full-lifecycle SW/HW support. Incumbent Booz Allen Hamilton. RFI forecast Q3 FY26; RFP Q4 FY26; award Q2 FY27. Rides GSA MAS. Per VA, APBI content is advisory and subject to change; RFI/RFP/Award quarters are notional and discussion does not guarantee a solicitation.\nAgency: Department of Veterans Affairs\nVendor: Incumbent: Booz Allen Hamilton\nValue: TBD (recompete)\nStatus: upcoming\nNAICS: 541512\nMMT verdict: WATCH — Enterprise cyber + ATO/ISSO recompete; BAH incumbent\nFactors: vehicle_fit: watch — Forecast vehicle per APBI; confirm at solicitation. | agency_alignment: pass — VA OIT/OALC FY26 IT APBI priority requirement. | timeline: watch — RFP forecast Q4 FY26; award Q2 FY27. | competition: watch — Booz Allen incumbent defending on GSA MAS. | scope_fit: pass — Cyber, OIG audit/remediation, ATO/ISSO, EHRM support.",
+      "premium": false
+    },
+    {
+      "id": "contract-va-cybersecurity-operations-center-support-csoc-",
+      "type": "contract_intel",
+      "title": "VA Cybersecurity Operations Center Support (CSOC)",
+      "slug": "va-cybersecurity-operations-center-support-csoc-",
+      "date": "2026-07-01",
+      "description": "VA SOC support recompete (owner Keith Fleming, Office of Information Security): strategic/tactical planning, program development, forensics, vulnerability analysis, compliance scanning, external assessments, deep-dive analysis, threat repor",
+      "tags": [
+        "Department of Veterans Affairs",
+        "upcoming",
+        "541519"
+      ],
+      "url": "https://www.voa.va.gov",
+      "excerpt": "VA SOC support recompete (owner Keith Fleming, Office of Information Security): strategic/tactical planning, program development, forensics, vulnerability analysis, compliance scanning, external assessments, deep-dive analysis, threat reporting, and external threat intel. Incumbent Revolutional LLC (previously Maveris). Longer runway — RFI forecast Q1 FY28; RFP Q3 FY28; award Q4 FY28. Rides GSA MAS HACS SIN. Per VA, APBI content is advisory and subject to change; RFI/RFP/Award quarters are notional and discussion does not guarantee a solicitation.\nAgency: Department of Veterans Affairs\nVendor: Incumbent: Revolutional LLC (previously Maveris LLC)\nValue: $332M TCV (recompete)\nStatus: upcoming\nNAICS: 541519\nMMT verdict: WATCH — $332M SOC recompete on GSA MAS HACS; long runway\nFactors: vehicle_fit: watch — Forecast vehicle per APBI; confirm at solicitation. | agency_alignment: pass — VA OIT/OALC FY26 IT APBI priority requirement. | timeline: watch — RFI Q1 FY28; RFP Q3 FY28; award Q4 FY28. | competition: watch — Revolutional (ex-Maveris) incumbent; HACS SIN required. | scope_fit: pass — Full-scope SOC: forensics, threat intel, vuln analysis.",
+      "premium": false
+    },
+    {
+      "id": "contract-va-omega-onboarding-management-engineering-governance-assura",
+      "type": "contract_intel",
+      "title": "VA OMEGA — Onboarding, Management, Engineering, Governance & Assurance Services",
+      "slug": "va-omega-onboarding-management-engineering-governance-assurance-services",
+      "date": "2026-07-01",
+      "description": "Low-code/no-code product and platform services recompete (owner Jacob Wright, OIT) to enable, manage, operate, and sustain the Digital Transformation Center (DTC) technology ecosystem: modular reusable components for enterprise modernizatio",
+      "tags": [
+        "Department of Veterans Affairs",
+        "upcoming",
+        "541512"
+      ],
+      "url": "https://www.voa.va.gov",
+      "excerpt": "Low-code/no-code product and platform services recompete (owner Jacob Wright, OIT) to enable, manage, operate, and sustain the Digital Transformation Center (DTC) technology ecosystem: modular reusable components for enterprise modernization and cloud migration. Incumbent Sprezzatura Management Consulting LLC (formerly Quantum Management LLC). RFI forecast Q3 FY26; RFP Q3 FY27; award Q4 FY27. Rides GSA MAS. Per VA, APBI content is advisory and subject to change; RFI/RFP/Award quarters are notional and discussion does not guarantee a solicitation.\nAgency: Department of Veterans Affairs\nVendor: Incumbent: Sprezzatura Management Consulting LLC (formerly Quantum Management LLC)\nValue: $500M–$999M TCV (recompete)\nStatus: upcoming\nNAICS: 541512\nMMT verdict: WATCH — $500M–$999M LCNC/DTC recompete on GSA MAS\nFactors: vehicle_fit: watch — Forecast vehicle per APBI; confirm at solicitation. | agency_alignment: pass — VA OIT/OALC FY26 IT APBI priority requirement. | timeline: watch — RFI Q3 FY26; RFP Q3 FY27; award Q4 FY27. | competition: watch — Sprezzatura incumbent; reusable-component depth wins. | scope_fit: pass — LCNC product/platform services for the DTC ecosystem.",
+      "premium": false
+    },
+    {
+      "id": "contract-va-application-hosting-compute-and-storage",
+      "type": "contract_intel",
+      "title": "VA Application Hosting Compute and Storage",
+      "slug": "va-application-hosting-compute-and-storage",
+      "date": "2026-07-01",
+      "description": "New enterprise app-hosting requirement (owner Marc Tolbert, Infrastructure Operations): server administration, enterprise storage operations, enterprise cloud management, and containerization via VA Platform One. Priorities are hybrid hosti",
+      "tags": [
+        "Department of Veterans Affairs",
+        "upcoming",
+        "541512"
+      ],
+      "url": "https://www.voa.va.gov",
+      "excerpt": "New enterprise app-hosting requirement (owner Marc Tolbert, Infrastructure Operations): server administration, enterprise storage operations, enterprise cloud management, and containerization via VA Platform One. Priorities are hybrid hosting strategy and operational efficiency (IaC, automation). RFI complete; RFP forecast Q4 FY26; award Q1 FY27. Per VA, APBI content is advisory and subject to change; RFI/RFP/Award quarters are notional and discussion does not guarantee a solicitation.\nAgency: Department of Veterans Affairs\nVendor: TBD — new requirement (APBI forecast)\nValue: $100M–$249M TCV ($20M–$49M base year, new)\nStatus: upcoming\nNAICS: 541512\nMMT verdict: WATCH — New hybrid app-hosting buy; Platform One containerization\nFactors: vehicle_fit: watch — Forecast vehicle per APBI; confirm at solicitation. | agency_alignment: pass — VA OIT/OALC FY26 IT APBI priority requirement. | timeline: watch — RFP forecast Q4 FY26; award Q1 FY27. | competition: watch — Open field; hybrid hosting + IaC automation depth wins. | scope_fit: pass — Server admin, storage ops, cloud mgmt, Platform One.",
       "premium": false
     },
     {

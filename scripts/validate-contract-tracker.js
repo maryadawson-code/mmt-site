@@ -73,6 +73,14 @@ const EXPECTED_SLUGS = [
   "hrsa-ryan-white-rsr-data-modernization",
   "cdc-electronic-case-reporting-ecr-modernization",
   "aspr-npivs-national-provider-identity-verification-system",
+  "va-edge-enterprise-digital-government-enablement",
+  "va-cloud-broker-service",
+  "va-enterprise-resource-planning-erp",
+  "va-htmss-health-services-portfolio-technical-mgmt",
+  "va-transformation-support-services-tss-3-0",
+  "va-cybersecurity-operations-center-support-csoc",
+  "va-omega-onboarding-mgmt-engineering-governance-assurance",
+  "va-application-hosting-compute-and-storage",
 ];
 
 const REQUIRED_FIELDS = ["slug", "name", "agency", "status", "description", "source_urls", "last_verified"];
