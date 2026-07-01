@@ -291,12 +291,22 @@ What shipped to `main`:
   response `{postId, platforms:[{platformPostUrl}]}`; accountId via
   `GET /connect/integrations?profileId=`.
 
-**GATED OFF at deploy** — the cron no-ops until BOTH `LINKEDIN_AUTOPOST_ENABLED`
-=true AND `POSTPEER_API_KEY` + `POSTPEER_LINKEDIN_ACCOUNT_ID` are set in Netlify
-env. Awaiting Mary: set the key, connect her personal LinkedIn in PostPeer, get
-her accountId (agent fetches via /connect/integrations once key is set),
-verify, decide past-due handling (Jun 30 mmt-001 + Jul 1 mmt-002 already
-past), then flip the flag.
+**LIVE as of 2026-07-01.** Mary set `POSTPEER_API_KEY`; agent fetched connected
+accounts via `/connect/integrations` (TWO connected: personal "Mary Womack"
+`6a451fb21226e07b588260d6` + company "Fed Up: Mission Meets Reality" `…d7`).
+Mary chose the **personal** profile (matches first-person copy) →
+`POSTPEER_LINKEDIN_ACCOUNT_ID=…d6`; `LINKEDIN_AUTOPOST_ENABLED=true`. Today's
+overdue post **mmt-002 was fired manually** as the live end-to-end validation
+and published (LinkedIn share urn:li:share:7478110172230529026; PostPeer id
+6a4534d131a8c21e1ec0a5fa) — idempotency recorded so the cron won't repost it.
+mmt-001 (Jun 30) intentionally skipped. The 8 asset posts email Mary on their
+day. Daily cron carries it from here.
+
+Gotcha: the per-post Resend confirmation email hit a transient 500 on the
+mmt-002 run — the post STILL published (email is after the publish +
+idempotency write, best-effort only). A Netlify env-var change needs a redeploy
+to reach the deployed cron, so this go-live commit is what bakes
+POSTPEER_API_KEY / _ACCOUNT_ID / _ENABLED into the function runtime.
 
 Hard rule (do not regress): **never add engagement automation** (connect/like/
 comment/follow/DM/scrape) — publish-only, forever. And **never auto-post media**
