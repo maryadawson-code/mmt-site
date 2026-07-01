@@ -261,6 +261,51 @@ Before declaring work complete, verify:
 
 ---
 
+## Sprint 2026-07-01 — LinkedIn FY-End campaign auto-publish
+
+Mary asked to approve all 32 posts and automate the FY-End LinkedIn campaign
+"without me having to do anything." Context: a standalone publisher app was
+built on branch `feat/linkedin-publisher` (worktree, NEVER merged/deployed) —
+manual, dry-run-by-default, human-in-the-loop, and its PostPeer client was
+entirely GUESSED (`// VERIFY` on every endpoint/field). Nothing had ever
+posted.
+
+What shipped to `main`:
+- **`data/linkedin-campaign/posts.json`** — the 32 posts, all `approved:true`,
+  copied from the worktree. 24 are `format:text` (auto-publishable); 8 need a
+  human-built asset (4 carousel, 1 document, 1 poll, 1 image, 1 video) and
+  CANNOT be auto-posted.
+- **`netlify/functions/linkedin-autopost.js`** — daily cron (`30 13 * * *` =
+  09:30 ET in the EDT window). Publishes the one approved TEXT post whose
+  `publish_date == today` via PostPeer, then alerts Mary (Resend) with the
+  post URL. Ported guards from SAFETY.md: KILL SWITCH
+  (`LINKEDIN_AUTOPOST_ENABLED="true"` required), text-only (asset posts skipped
+  + alert), idempotent (ops_events `linkedin_autopost_sent` keyed on post_id),
+  one/day, fail-safe (1 retry then abort + alert), publish-only (no
+  engagement actions — the TOS-dangerous automation is engagement botting, not
+  scheduled publishing).
+- **PostPeer contract VERIFIED against postpeer.dev/docs 2026-07-01** (the
+  worktree's client was wrong on all of it): auth `x-access-key` header (NOT
+  Bearer); `POST https://api.postpeer.dev/v1/posts` (NOT www/.../api/v1);
+  body `{content, platforms:[{platform:"linkedin", accountId}], publishNow}`;
+  response `{postId, platforms:[{platformPostUrl}]}`; accountId via
+  `GET /connect/integrations?profileId=`.
+
+**GATED OFF at deploy** — the cron no-ops until BOTH `LINKEDIN_AUTOPOST_ENABLED`
+=true AND `POSTPEER_API_KEY` + `POSTPEER_LINKEDIN_ACCOUNT_ID` are set in Netlify
+env. Awaiting Mary: set the key, connect her personal LinkedIn in PostPeer, get
+her accountId (agent fetches via /connect/integrations once key is set),
+verify, decide past-due handling (Jun 30 mmt-001 + Jul 1 mmt-002 already
+past), then flip the flag.
+
+Hard rule (do not regress): **never add engagement automation** (connect/like/
+comment/follow/DM/scrape) — publish-only, forever. And **never auto-post media**
+without a human-built asset; the 8 non-text posts stay manual.
+
+Verified 2026-07-01: build 0, validate-routes ✓ (31), validate-dist OK (551),
+scan-pii OK. Function parses; kill-switch-off no-ops; today's due post resolves
+to mmt-002 (text).
+
 ## Sprint 2026-06-30 (later) — Agent Access AX optimization (discovery surface)
 
 Triggered by Netlify's AXIS launch (open-source "Lighthouse for Agent
