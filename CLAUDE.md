@@ -261,6 +261,53 @@ Before declaring work complete, verify:
 
 ---
 
+## Sprint 2026-07-01 (later still) — AWS Lambda 4KB env cap broke ALL function deploys
+
+Symptom: git deploys failed with `Build script returned non-zero exit code: 2`;
+the real error (only visible in the streamed build log, NOT the deploy
+error_message) was `Failed to create function: ... environment variables exceed
+the 4KB limit imposed by AWS Lambda ... Failed to upload file:
+award-tracker-background`. **Builds passed; function UPLOAD failed.** Cause:
+cumulative Netlify env vars crossed AWS Lambda's hard 4KB per-function env cap.
+The LinkedIn-campaign vars I added (`POSTPEER_API_KEY`,
+`POSTPEER_LINKEDIN_ACCOUNT_ID`, `LINKEDIN_AUTOPOST_ENABLED`) tipped it over; the
+earlier `a7222a8` Stripe consolidation was no longer enough. Blocked BOTH agents
+(my auth/linkedin fns + the other agent's premium-trial fns).
+
+Diagnosis traps (do not repeat):
+- The deploy `error_message` is generic ("exit code 2"). The actual failing
+  step is ONLY in the streamed build log — get it via `netlify logs:deploy`
+  while a build runs, or `netlify deploy --build` (which STREAMS it).
+- `netlify deploy --build` **"deploys functions from cache"** → it can SUCCEED
+  even when git deploys fail, because cached (already-created) Lambdas skip the
+  env-config validation. So a passing CLI dry-run does NOT prove functions will
+  deploy. Only a CHANGED function forces a re-upload that hits the cap.
+- There is **no Netlify dashboard toggle** to disable Lambda-compat / raise the
+  4KB cap (checked the UI). The only lever is reducing function-scoped env size.
+
+Fix (durable): relocated the 585-byte `STRIPE_IDS` blob OUT of the Netlify env
+into a bundled file `netlify/functions/data/stripe-ids.json`;
+`lib/stripe-ids.js` reads it (`require("../data/stripe-ids.json")`, esbuild
+inlines) when the env var is absent. These are non-secret Stripe **price** IDs
+(secret key stays in `STRIPE_SECRET_KEY`; scan-pii only flags sub_/cus_/pi_
+etc., not price_). Sequencing (to protect revenue): bootstrapped under 4KB by
+temporarily unsetting `PURSUIT_FEEDS` (graceful, non-revenue) so the new lib
+could DEPLOY first, THEN unset `STRIPE_IDS` (live lib fell back to the file) and
+restored `PURSUIT_FEEDS`. Net env: 3879 → **3282 bytes (~814 headroom)**.
+Verified live: `founding-count` returns `source:stripe` (price IDs resolve from
+the file), two clean git deploys, all previously-stuck functions now live.
+
+Also promoted prod via CLI restore during the outage (git deploys were red):
+`netlify deploy --build` (dry-run) → publish the draft via
+`netlify api restoreSiteDeploy`. Sanctioned only because git-auto-deploy was
+broken; normally never CLI-deploy over a working git deploy.
+
+Hard rule (do not regress): **the Netlify function env is byte-budgeted against
+AWS Lambda's 4KB cap.** Before adding an env var, check the total
+(`netlify env:list --json`); if near the cap, relocate a large NON-SECRET value
+(price IDs, feed URLs, config JSON) to a bundled file instead. Keep this
+headroom — every new feature's env vars compete for it.
+
 ## Sprint 2026-07-01 (later) — Sign-in link incident (silent send failure + wrong redirect)
 
 Mary clicked "Email me a sign-in link" on `/premium/ai-integrations` and (1)
