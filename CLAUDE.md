@@ -42,7 +42,17 @@ the way to live WITHOUT stopping for her to merge. The old default (stage →
 open a DRAFT PR → wait for Mary to merge) is what caused the 6/26 issue to sit
 unpublished for hours. Do not repeat it.
 
-The full pipeline you run yourself, start to finish:
+**FAST PATH (use this — added 2026-07-01):** `node scripts/stage-newsletter.js
+<issue.manifest.json>` does the entire mechanical cascade below (image
+optimize+place, article md assembly with each graphic inserted after its exact
+`after` sentence, Capture Corner HTML render via marked modeled on the newest
+prior CC, `/capture-corner/latest` redirect, corpus rebuild) from one small
+per-issue manifest. `node scripts/stage-newsletter.js --template` prints the
+manifest schema. Then just: `node build.js && validators`, commit, push. This
+turns the ~30-step manual drop into write-a-manifest + one command. The steps
+below are the reference for what it does / manual fallback.
+
+The full pipeline (now automated by stage-newsletter.js), start to finish:
 1. **Stage** the article markdown (`content/newsletter/YYYY-MM-DD-slug.md`)
    with full frontmatter + dek + the Capture Corner teaser/module, place any
    in-body images per Mary's sequence, drop assets into
