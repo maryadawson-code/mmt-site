@@ -124,37 +124,52 @@
 
   <main id="main-content" class="wrap">
 
-  <!-- Section 1: Hero -->
-  <section style="padding:56px 0 40px;">
-    <div style="max-width:720px;margin:0 auto;text-align:center;">
-      <div class="section-label" style="justify-content:center;margin-bottom:16px;">MMT Premium</div>
-      <h1 style="max-width:none;font-size:clamp(28px,4vw,48px);">The intelligence layer that tells you what to do next.</h1>
-      <p class="lede" style="max-width:58ch;margin:16px auto 0;">Everything currently free stays free. MMT Premium adds the capture depth: monthly Capture Intelligence sheets with action windows, early access to analysis, and direct Q&amp;A.</p>
+  <!-- Section 1: Hero — capture-tools-first conversion block -->
+  <section style="padding:56px 0 8px;">
+    <div style="max-width:880px;margin:0 auto;">
+      <div class="section-label" style="margin-bottom:16px;">MMT Premium</div>
+      <h1 style="max-width:22ch;font-size:clamp(28px,4vw,46px);line-height:1.1;">Org charts, opportunity tracking, and contract intel your capture team can act on.</h1>
+      <p class="lede" style="max-width:62ch;margin:16px 0 0;">The free newsletter tells you what happened. Premium hands your team the working intel: who holds the money at DHA, VA, and HHS, which IDIQs re-compete and when, and the window to move before the field does.</p>
+
+      <div style="margin-top:28px;">
+        <a href="https://buy.stripe.com/fZu7sNag6bUM0iAc554c800" class="btn-primary no-underline" style="padding:14px 28px;" onclick="if(typeof plausible!=='undefined')plausible('Founding Member Click')">Become a Founding Member</a>
+        <div style="font-size:14px;color:var(--mmt-text-secondary);margin-top:12px;">$199/year, locked for life &mdash; first 100 subscribers only. <a href="#plans" style="color:var(--mmt-teal);font-weight:600;">Compare all plans &rarr;</a></div>
+      </div>
     </div>
   </section>
 
-  <!-- Product ladder strip -->
-  <section style="padding:0 0 32px;">
+  <!-- Capture toolkit — the tools free can't give you -->
+  <section style="padding:8px 0 32px;">
     <div style="max-width:900px;margin:0 auto;">
-      <h2 style="text-align:center;font-size:18px;font-weight:700;margin-bottom:20px;color:var(--mmt-navy);">How Mission Meets Tech is structured</h2>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
-        <div style="padding:16px;background:var(--mmt-soft);border-radius:10px;text-align:center;">
-          <div style="font-size:13px;font-weight:700;color:var(--mmt-navy);margin-bottom:4px;">Free newsletter</div>
-          <div style="font-size:12px;color:var(--mmt-text-secondary);">Tuesday + Friday public intel on contracts and policy</div>
+      <h2 style="font-size:18px;font-weight:700;margin-bottom:18px;color:var(--mmt-navy);">The capture toolkit</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;">
+        <div class="card" style="padding:18px;">
+          <div style="font-size:15px;font-weight:700;color:var(--mmt-navy);margin-bottom:6px;">Agency Org Charts</div>
+          <div style="font-size:13px;color:var(--mmt-text-secondary);line-height:1.45;">DHA, VA, HHS, ONC, ARPA-H, CMS. Who holds the money and signs the decision.</div>
         </div>
-        <div style="padding:16px;background:var(--mmt-soft);border:1px solid var(--mmt-teal);border-radius:10px;text-align:center;">
-          <div style="font-size:13px;font-weight:700;color:var(--mmt-teal);margin-bottom:4px;">&#9733; Premium</div>
-          <div style="font-size:12px;color:var(--mmt-text-secondary);">Deeper recurring intelligence + member features + tool discounts</div>
+        <div class="card" style="padding:18px;">
+          <div style="font-size:15px;font-weight:700;color:var(--mmt-navy);margin-bottom:6px;">Opportunity Radar</div>
+          <div style="font-size:13px;color:var(--mmt-text-secondary);line-height:1.45;">Live opportunities with value, solicitation number, and deadline.</div>
         </div>
-        <div style="padding:16px;background:var(--mmt-soft);border-radius:10px;text-align:center;">
-          <div style="font-size:13px;font-weight:700;color:var(--mmt-navy);margin-bottom:4px;">ProposalPulse</div>
-          <div style="font-size:12px;color:var(--mmt-text-secondary);">Proposal scoring tool &mdash; separate purchase, not in Premium</div>
+        <div class="card" style="padding:18px;">
+          <div style="font-size:15px;font-weight:700;color:var(--mmt-navy);margin-bottom:6px;">Contract Tracker</div>
+          <div style="font-size:13px;color:var(--mmt-text-secondary);line-height:1.45;">Vendor, value, NAICS, and source on every award.</div>
         </div>
-        <div style="padding:16px;background:var(--mmt-soft);border-radius:10px;text-align:center;">
-          <div style="font-size:13px;font-weight:700;color:var(--mmt-navy);margin-bottom:4px;">MarketPulse</div>
-          <div style="font-size:12px;color:var(--mmt-text-secondary);">Custom brief service &mdash; separate purchase, not in Premium</div>
+        <div class="card" style="padding:18px;">
+          <div style="font-size:15px;font-weight:700;color:var(--mmt-navy);margin-bottom:6px;">IDIQ Tracker</div>
+          <div style="font-size:13px;color:var(--mmt-text-secondary);line-height:1.45;">Awardees, burn rate, and re-compete signals on every vehicle.</div>
+        </div>
+        <div class="card" style="padding:18px;">
+          <div style="font-size:15px;font-weight:700;color:var(--mmt-navy);margin-bottom:6px;">Vehicle Scanner</div>
+          <div style="font-size:13px;color:var(--mmt-text-secondary);line-height:1.45;">Which contract vehicle fits the buy.</div>
+        </div>
+        <div class="card" style="padding:18px;">
+          <div style="font-size:15px;font-weight:700;color:var(--mmt-navy);margin-bottom:6px;">Pursuit Calendar</div>
+          <div style="font-size:13px;color:var(--mmt-text-secondary);line-height:1.45;">Every action window on one timeline.</div>
         </div>
       </div>
+      <p style="max-width:62ch;margin:22px 0 0;font-size:15px;line-height:1.55;color:var(--mmt-text);">On free, you get the title and the status. On <strong style="color:var(--mmt-teal);">Premium</strong>, you get the vendor, the value, and the window to act.</p>
+      <p style="max-width:62ch;margin:10px 0 0;font-size:13px;color:var(--mmt-text-secondary);">ProposalPulse and MarketPulse are separate tools, not part of Premium.</p>
     </div>
   </section>
 
