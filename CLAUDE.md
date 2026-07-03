@@ -271,6 +271,53 @@ Before declaring work complete, verify:
 
 ---
 
+## Sprint 2026-07-03 — Intel-quality-report leakage regression: full-set scrub path
+
+The weekly Friday `intel-quality-report` fired its "Chain-of-thought leakage
+in verification_notes" regression detector non-zero — 8 offender contract_intel
+rows carrying `CONTRADICTED:` / "could not verify" reasoning traces in a
+customer-facing field (the exact 2026-05-26 Danielle Applegate / CGI complaint
+pattern).
+
+Diagnosis (NOT prompt drift): every offender was 95–106 days stale — last
+written mid-to-late March 2026, i.e. BEFORE the persistence-layer sanitizer +
+tightened prompt landed 2026-05-26. New writes go through
+`sanitizeNotes` in `contract-intel-refresh-background.js` and the prompt bans
+the `CONTRADICTED:` prefix, so fresh rows are clean. The leakage is confined to
+legacy rows that were never re-refreshed. Subscribers were already protected at
+read time (the `js/contract-detail.js` render regex + the digest's >7d-stale
+exclusion), but the DB rows stayed dirty, which is what the DB-level detector
+alerts on.
+
+Fix: the prescribed remediation `scripts/cleanup-may26-subscriber-trust.js`
+could only scrub ONE hardcoded row (VA Health Services DevSecOps); its audit
+sweep (pass C) was read-only with a standing "extend this script to scrub the
+full set" TODO. Added a `--scrub-all` flag: pass C now writes sanitized
+`verification_notes` back to EVERY offender row (spreading the existing intel
+object so only stale/CONTRADICTED lines are removed — all other fields
+preserved), logs a `contract_intel_verification_notes_scrubbed` ops_event per
+row, and honors `--dry-run`. Sweep limit raised 200→500 to cover the full
+table.
+
+Runbook (Mary runs locally with prod env; no creds in the web session):
+```
+# preview
+SUPABASE_URL=... SUPABASE_SERVICE_KEY=... node scripts/cleanup-may26-subscriber-trust.js --scrub-all --dry-run
+# apply
+SUPABASE_URL=... SUPABASE_SERVICE_KEY=... node scripts/cleanup-may26-subscriber-trust.js --scrub-all
+```
+The next Friday `intel-quality-report` should then report leakage = 0.
+
+Hard rule (do not regress): **the persistence sanitizer + prompt are the
+forward guard; the `--scrub-all` sweep is the backfill for legacy rows.** If
+the detector fires again on rows written AFTER 2026-05-26, THAT is prompt drift
+— inspect `contract-intel-refresh-background.js` prompt + write path, don't
+just scrub. Verified 2026-07-03: sanitizer strips all 4 report leakage samples,
+keeps legitimate footnotes; `tests/unit/intel-notes-sanitizer.test.js` 11/11
+pass; script syntax clean.
+
+---
+
 ## Sprint 2026-07-01 (later still) — AWS Lambda 4KB env cap broke ALL function deploys
 
 Symptom: git deploys failed with `Build script returned non-zero exit code: 2`;
