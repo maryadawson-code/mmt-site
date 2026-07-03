@@ -28,14 +28,22 @@
 //   SUPABASE_URL=... SUPABASE_SERVICE_KEY=... node scripts/cleanup-may26-subscriber-trust.js
 //
 // Flags:
-//   --dry-run   : do everything except the UPDATE statements
-//   --no-sweep  : skip the C audit pass
+//   --dry-run    : do everything except the UPDATE statements
+//   --no-sweep   : skip the C audit pass
+//   --scrub-all  : in the C sweep, WRITE sanitized verification_notes back
+//                  to every offender row (not just the one DevSecOps row in
+//                  pass B). Use this to clear the intel-quality-report
+//                  "Chain-of-thought leakage" regression when it fires on
+//                  legacy rows that predate the persistence-layer sanitizer.
+//                  Honors --dry-run. Only stale/CONTRADICTED lines are
+//                  removed; all other intel fields are left untouched.
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
 
 const DRY_RUN = process.argv.includes("--dry-run");
 const SKIP_SWEEP = process.argv.includes("--no-sweep");
+const SCRUB_ALL = process.argv.includes("--scrub-all");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -48,7 +56,7 @@ if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
 // Single source of truth for the strip rule — see
 // netlify/functions/lib/intel-notes-sanitizer.js. Locked by
 // tests/unit/intel-notes-sanitizer.test.js.
-const { sanitizeNotes } = require("../netlify/functions/lib/intel-notes-sanitizer");
+const { sanitizeNotes, strippedNotes } = require("../netlify/functions/lib/intel-notes-sanitizer");
 
 async function headStatus(url, timeoutMs = 6000) {
   const ac = new AbortController();
@@ -206,15 +214,16 @@ async function cleanDevSecOpsIntel(supabase) {
 }
 
 async function auditAllIntel(supabase) {
-  console.log("\n[C] Auditing all contract_intel rows for stale verification_notes (read-only)...");
+  const mode = SCRUB_ALL ? (DRY_RUN ? "SCRUB-ALL / DRY-RUN" : "SCRUB-ALL / LIVE") : "read-only";
+  console.log(`\n[C] Auditing all contract_intel rows for stale verification_notes (${mode})...`);
   const { data: rows, error } = await supabase
     .from("contract_intel")
     .select("id, contract_name, intel, last_updated")
     .order("last_updated", { ascending: false })
-    .limit(200);
+    .limit(500);
   if (error) {
     console.log(`  query error: ${error.message}`);
-    return;
+    return { scanned: 0, dirty: 0, scrubbed: 0, error: error.message };
   }
   let totalRows = 0;
   let dirtyRows = 0;
@@ -229,19 +238,60 @@ async function auditAllIntel(supabase) {
     if (diff > 0) {
       dirtyRows++;
       totalStripped += diff;
-      offenders.push({ id: row.id, name: row.contract_name, diff, before_count: before.length });
+      offenders.push({ row, id: row.id, name: row.contract_name, before, after, diff, before_count: before.length });
     }
   }
   console.log(`  scanned ${totalRows} rows; ${dirtyRows} have stale lines; ${totalStripped} stripped total.`);
-  if (offenders.length) {
-    console.log("  offenders (top 10 by diff):");
-    offenders.sort((a, b) => b.diff - a.diff).slice(0, 10).forEach((o) => {
-      console.log(`    - id=${o.id} "${o.name}" stripped=${o.diff}/${o.before_count}`);
-    });
-    if (!DRY_RUN) {
-      console.log("  re-run with the explicit per-contract path or extend this script to scrub the full set.");
-    }
+  if (!offenders.length) return { scanned: totalRows, dirty: 0, scrubbed: 0 };
+
+  offenders.sort((a, b) => b.diff - a.diff);
+  console.log("  offenders (top 10 by diff):");
+  offenders.slice(0, 10).forEach((o) => {
+    console.log(`    - id=${o.id} "${o.name}" stripped=${o.diff}/${o.before_count}`);
+  });
+
+  if (!SCRUB_ALL) {
+    console.log("  read-only sweep. Re-run with --scrub-all to write sanitized notes back to every offender.");
+    return { scanned: totalRows, dirty: dirtyRows, scrubbed: 0 };
   }
+
+  // --scrub-all: persist the sanitized notes for every offender. Mirrors the
+  // single-row write in pass B, but across the full set. Each write only
+  // removes stale/CONTRADICTED lines (via the shared sanitizer); every other
+  // intel field is preserved by spreading the existing intel object.
+  let scrubbed = 0;
+  for (const o of offenders) {
+    const dropped = strippedNotes(o.before);
+    console.log(`  ${DRY_RUN ? "[dry-run] would scrub" : "scrubbing"} id=${o.id} "${o.name}" (${o.diff} line${o.diff === 1 ? "" : "s"})`);
+    dropped.forEach((n, i) => {
+      console.log(`      [strip ${i + 1}] ${String(n).slice(0, 160)}${String(n).length > 160 ? "..." : ""}`);
+    });
+    if (DRY_RUN) continue;
+    const newIntel = { ...(o.row.intel || {}), verification_notes: o.after };
+    const { error: updErr } = await supabase
+      .from("contract_intel")
+      .update({ intel: newIntel })
+      .eq("id", o.id);
+    if (updErr) {
+      console.log(`      UPDATE failed: ${updErr.message}`);
+      continue;
+    }
+    await supabase.from("ops_events").insert({
+      event_type: "contract_intel_verification_notes_scrubbed",
+      details: {
+        row_id: o.id,
+        contract_name: o.name,
+        before_count: o.before.length,
+        after_count: o.after.length,
+        stripped: dropped,
+        triggered_by: "intel-quality-report leakage regression (--scrub-all sweep)",
+        script: "cleanup-may26-subscriber-trust.js",
+      },
+    });
+    scrubbed++;
+  }
+  console.log(`  scrubbed ${scrubbed}/${dirtyRows} offender row(s).`);
+  return { scanned: totalRows, dirty: dirtyRows, scrubbed };
 }
 
 (async () => {
@@ -250,9 +300,10 @@ async function auditAllIntel(supabase) {
 
   const a = await fixBrokenTelehealthRow(supabase);
   const b = await cleanDevSecOpsIntel(supabase);
-  if (!SKIP_SWEEP) await auditAllIntel(supabase);
+  let c = { skipped: true };
+  if (!SKIP_SWEEP) c = await auditAllIntel(supabase);
 
-  console.log("\nsummary:", { telehealth: a, devsecops: b, dry_run: DRY_RUN });
+  console.log("\nsummary:", { telehealth: a, devsecops: b, sweep: c, dry_run: DRY_RUN, scrub_all: SCRUB_ALL });
   process.exit(0);
 })().catch((err) => {
   console.error("fatal:", err);

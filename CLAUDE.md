@@ -271,6 +271,94 @@ Before declaring work complete, verify:
 
 ---
 
+## Sprint 2026-07-03 — Intel-quality-report leakage regression: full-set scrub path
+
+The weekly Friday `intel-quality-report` fired its "Chain-of-thought leakage
+in verification_notes" regression detector non-zero — 8 offender contract_intel
+rows carrying `CONTRADICTED:` / "could not verify" reasoning traces in a
+customer-facing field (the exact 2026-05-26 Danielle Applegate / CGI complaint
+pattern).
+
+Diagnosis (NOT prompt drift): every offender was 95–106 days stale — last
+written mid-to-late March 2026, i.e. BEFORE the persistence-layer sanitizer +
+tightened prompt landed 2026-05-26. New writes go through
+`sanitizeNotes` in `contract-intel-refresh-background.js` and the prompt bans
+the `CONTRADICTED:` prefix, so fresh rows are clean. The leakage is confined to
+legacy rows that were never re-refreshed. Subscribers were already protected at
+read time (the `js/contract-detail.js` render regex + the digest's >7d-stale
+exclusion), but the DB rows stayed dirty, which is what the DB-level detector
+alerts on.
+
+Fix: the prescribed remediation `scripts/cleanup-may26-subscriber-trust.js`
+could only scrub ONE hardcoded row (VA Health Services DevSecOps); its audit
+sweep (pass C) was read-only with a standing "extend this script to scrub the
+full set" TODO. Added a `--scrub-all` flag: pass C now writes sanitized
+`verification_notes` back to EVERY offender row (spreading the existing intel
+object so only stale/CONTRADICTED lines are removed — all other fields
+preserved), logs a `contract_intel_verification_notes_scrubbed` ops_event per
+row, and honors `--dry-run`. Sweep limit raised 200→500 to cover the full
+table.
+
+Runbook (Mary runs locally with prod env; no creds in the web session):
+```
+# preview
+SUPABASE_URL=... SUPABASE_SERVICE_KEY=... node scripts/cleanup-may26-subscriber-trust.js --scrub-all --dry-run
+# apply
+SUPABASE_URL=... SUPABASE_SERVICE_KEY=... node scripts/cleanup-may26-subscriber-trust.js --scrub-all
+```
+The next Friday `intel-quality-report` should then report leakage = 0.
+
+Hard rule (do not regress): **the persistence sanitizer + prompt are the
+forward guard; the `--scrub-all` sweep is the backfill for legacy rows.** If
+the detector fires again on rows written AFTER 2026-05-26, THAT is prompt drift
+— inspect `contract-intel-refresh-background.js` prompt + write path, don't
+just scrub. Verified 2026-07-03: sanitizer strips all 4 report leakage samples,
+keeps legitimate footnotes; `tests/unit/intel-notes-sanitizer.test.js` 11/11
+pass; script syntax clean.
+
+### Part 2 — the underlying staleness (49 rows, 31–106d)
+
+The same report's "Stale contract_intel rows (>14d)" list was the real problem.
+Two distinct root causes (cross-referenced the 49 stale names against the
+63-name contracts.json roster):
+
+**B — 38 in-roster rows starved by budget/cadence.** `contract-intel-refresh-
+background.js` processed the roster in contracts.json FILE ORDER, spent its
+13-min `RUN_BUDGET_MS` on the first ~half, then hit the platform kill. The 20h
+`freshCutoff` resets before the next 24h cron, so `freshContracts` is empty at
+every run → the loop restarted from file index 0 daily and the roster TAIL
+starved indefinitely. Fix: process **stalest-first** — sort `contractsToProcess`
+by `last_updated` ascending (never-refreshed first) using the `existing` rows
+already fetched. Now every run attacks the oldest rows first, so the full
+roster is covered in a few runs and no row can starve. Zero added cost. This
+self-heals the 38 in-roster rows over the next ~3 daily runs after deploy.
+
+**A — 11 orphaned rows (the oldest, 95–106d; all 8 leakage rows are here).**
+Their `contract_name` has NO exact match in the roster (em-dash vs hyphen,
+parenthetical variants — e.g. row `"Community Care Network (CCN) Next Gen"` vs
+roster `"Community Care Network Next Gen (CCN NG)"`; `"Defense Health Agency
+Telehealth Programs"` vs roster `"DHA Telehealth Programs"`). Drift from the
+MMT-INTEL-02 migration off the hardcoded array. The refresh writes fresh rows
+under the CANONICAL names and leaves these variant-named rows as stale
+duplicates it never targets. Guard added: `intel-quality-report.js` now has an
+**Orphaned contract_intel rows** section (`_orphaned()` diffs contract_intel
+names against `getRefreshRoster()`), so drift surfaces in days, not months.
+Reconciling the existing 11 (rename to canonical vs archive the stale
+duplicate) is a **data decision for Mary** — needs prod creds + a judgment call
+per row; not auto-archived.
+
+Hard rule (do not regress): **the refresh roster must be processed
+stalest-first, never file order** — file order + a per-run budget + a
+sub-cadence freshness cutoff silently starves the roster tail. And **a
+contract_intel row whose name isn't in the roster is invisible to the
+refresh** — renaming a contracts.json entry orphans its old row; the
+orphan detector is the tripwire.
+
+Verified 2026-07-03: both functions `node -c` clean; full unit suite 414/414 +
+`tests/contract-intel-pipeline.test.js` 14/14 pass.
+
+---
+
 ## Sprint 2026-07-01 (later still) — AWS Lambda 4KB env cap broke ALL function deploys
 
 Symptom: git deploys failed with `Build script returned non-zero exit code: 2`;
