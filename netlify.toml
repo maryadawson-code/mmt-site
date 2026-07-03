@@ -98,6 +98,16 @@
 [functions."premium-brief-send"]
   schedule = "0 10 * * 5"
 
+# Capture Corner premium email — DAILY 13:00 UTC (~9 AM ET). Emails each
+# twice-weekly Capture Corner (premium/briefs/capture-corner-YYYY-MM-DD.html)
+# to active premium subscribers ON ITS OWN DATE. Fixes the 2026-07-03 gap:
+# premium-brief-send is Friday-only + reads content/friday-brief/*.md, so it
+# never emailed the Capture Corner. Date-scoped + idempotent (ops_events
+# capture_corner_sent) so it no-ops on non-issue days and never double-sends.
+# Kill switch: CAPTURE_CORNER_AUTOSEND_DISABLED. See CLAUDE.md sprint 2026-07-03.
+[functions."capture-corner-autosend"]
+  schedule = "0 13 * * *"
+
 # Premium Monthly Brief — SUNSET 2026-06-01. The monthly cadence folded into
 # Capture Intelligence Sheets (delivered via Capture Corner / Friday Brief), so
 # this cron is disabled to stop the retired series from emailing subscribers.

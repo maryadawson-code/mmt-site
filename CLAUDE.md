@@ -358,6 +358,35 @@ Verified 2026-07-03: both functions `node -c` clean; full unit suite 414/414 +
 `tests/contract-intel-pipeline.test.js` 14/14 pass.
 
 ---
+## Sprint 2026-07-03 — Capture Corner premium email never auto-sent (twice-weekly gap)
+
+Mary: "why didn't my Capture Corner email go out to premium this morning?" The
+2026-07-03 Capture Corner published fine but no premium email fired. Root cause:
+**`premium-brief-send` is Friday-only AND reads `content/friday-brief/*.md`** —
+it never looks at `premium/briefs/capture-corner-YYYY-MM-DD.html`, and it only
+sends the single NEWEST unsent brief. The Capture Corner cadence moved to twice
+weekly (Tue + Fri) HTML at a different path, so those issues were never emailed
+by any cron. The historical pattern was per-issue one-shot send functions
+(`mayD-premium-capture-send.js`), which stage-newsletter.js did not wire.
+
+Fix (durable): new **`netlify/functions/capture-corner-autosend.js`** — a DAILY
+cron (`0 13 * * *`). Computes today (ET), FETCHES the live
+`/premium/briefs/capture-corner-<today>.html` (the premium body is client-gated
+CSS/JS, so a server-side fetch returns the full brief-body), extracts it, and
+emails active premium subscribers via Resend. Date-scoped (only today's issue,
+so it no-ops on non-issue days), idempotent (`ops_events` `capture_corner_sent`
+keyed on `details.date` — recognizes manual sends too), kill switch
+`CAPTURE_CORNER_AUTOSEND_DISABLED`, 220ms throttle. No stage-newsletter change
+needed: it already drops the date-gated CC HTML; the cron picks it up on the
+date. The 2026-07-03 issue was sent manually ASAP (54/54) and its marker makes
+the cron skip it (verified: handler returns `already_sent`).
+
+Hard rule (do not regress): **`premium-brief-send` (Friday, content/friday-brief
+markdown) and `capture-corner-autosend` (daily, premium/briefs HTML) are
+SEPARATE pipelines with SEPARATE idempotency.** A Capture Corner does NOT need a
+`content/friday-brief/*.md` companion — do not create one (it would double-send
+via premium-brief-send). Publishing a Capture Corner = drop the dated HTML (or
+run stage-newsletter.js); the daily cron emails it.
 
 ## Sprint 2026-07-01 (later still) — AWS Lambda 4KB env cap broke ALL function deploys
 
