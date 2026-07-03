@@ -604,16 +604,37 @@ exports.handler = async (event) => {
       .map((r) => r.contract_name)
   );
 
+  // Name -> last_updated lookup, reused to order the roster STALEST-FIRST
+  // below. A missing entry (never refreshed) sorts oldest.
+  const lastUpdatedMap = new Map(
+    (existing || []).map((r) => [r.contract_name, r.last_updated || null])
+  );
+
   // MMT-INTEL-02: Pull the roster from contracts.json instead of the
   // drifted hardcoded array. Any non-archived contracts.json entry is
   // automatically enrolled.
   const CONTRACTS = getRefreshRoster();
   console.log(`Refresh roster (from contracts.json): ${CONTRACTS.length} contracts`);
 
-  // If force_contract is set, only process that one contract
+  // 2026-07-03 staleness fix: process the roster STALEST-FIRST, not in
+  // contracts.json file order. Root cause of the 95-106d backlog surfaced by
+  // intel-quality-report: the 13-min RUN_BUDGET only reached the first ~half
+  // of the 63-contract roster, and because the 20h fresh-cutoff resets before
+  // the next 24h cron, every run restarted from the top of the file — so the
+  // tail of the roster starved indefinitely. Ordering by last_updated ascending
+  // means each run always attacks the oldest rows first, so the full roster is
+  // covered within a few runs and no row can starve. (The fresh-skip above
+  // still short-circuits anything refreshed in the last 20h — those sort last.)
   const contractsToProcess = forceContract
     ? CONTRACTS.filter((c) => c.name === forceContract)
-    : CONTRACTS;
+    : [...CONTRACTS].sort((a, b) => {
+        const la = lastUpdatedMap.get(a.name);
+        const lb = lastUpdatedMap.get(b.name);
+        if (!la && !lb) return 0;
+        if (!la) return -1; // never-refreshed first
+        if (!lb) return 1;
+        return la < lb ? -1 : la > lb ? 1 : 0; // oldest first
+      });
 
   if (forceContract && contractsToProcess.length === 0) {
     console.error(`Contract not found: ${forceContract}`);

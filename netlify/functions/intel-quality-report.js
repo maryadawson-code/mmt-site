@@ -19,6 +19,7 @@ const { sendEmail } = require("./lib/send-email");
 const { isRootDomainUrl } = require("./lib/url-validator");
 const { logOpsEvent } = require("./lib/ops-ledger");
 const { hasStaleNotes, strippedNotes } = require("./lib/intel-notes-sanitizer");
+const { getRefreshRoster } = require("./lib/refresh-roster");
 
 const ADMIN_EMAIL = "mary@missionmeetstech.com";
 
@@ -48,6 +49,39 @@ async function _badUrls(supabase) {
     });
     if (bad.length) out.push({ contract_name: r.contract_name, bad_count: bad.length });
   }
+  return out;
+}
+
+// 2026-07-03: Orphan detector. A contract_intel row whose contract_name is
+// NOT in the refresh roster (contracts.json non-archived names) can never be
+// targeted by contract-intel-refresh-background — it rots forever. This is how
+// 11 rows reached 95-106d staleness: names drifted from the roster (em-dash vs
+// hyphen, parenthetical variants) during the MMT-INTEL-02 migration, leaving
+// stale duplicates the pipeline writes fresh copies alongside. Surfacing them
+// weekly catches drift in days, not months. Read-only — reconciliation
+// (rename vs archive) is a human decision.
+async function _orphaned(supabase) {
+  let rosterNames;
+  try {
+    rosterNames = new Set(getRefreshRoster().map((c) => c.name));
+  } catch (e) {
+    console.warn("orphan check: roster load failed:", e.message);
+    return [];
+  }
+  if (rosterNames.size === 0) return []; // roster unreadable — don't false-flag everything
+  const { data } = await supabase
+    .from("contract_intel")
+    .select("contract_name, last_updated");
+  const out = [];
+  for (const r of (data || [])) {
+    if (!r.contract_name) continue;
+    if (rosterNames.has(r.contract_name)) continue;
+    const ageDays = r.last_updated
+      ? Math.floor((Date.now() - new Date(r.last_updated).getTime()) / (24 * 3600 * 1000))
+      : null;
+    out.push({ contract_name: r.contract_name, last_updated: r.last_updated, age_days: ageDays });
+  }
+  out.sort((a, b) => (b.age_days || 0) - (a.age_days || 0));
   return out;
 }
 
@@ -129,8 +163,9 @@ exports.handler = async () => {
   }
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
-  let stale = [], badUrls = [], radar, vehicle, failures = {}, staleNotes = [], urlSweep = {};
+  let stale = [], badUrls = [], radar, vehicle, failures = {}, staleNotes = [], urlSweep = {}, orphaned = [];
   try { stale = await _stale(supabase); } catch (e) { console.warn("stale query failed:", e.message); }
+  try { orphaned = await _orphaned(supabase); } catch (e) { console.warn("orphan scan failed:", e.message); }
   try { badUrls = await _badUrls(supabase); } catch (e) { console.warn("badUrls query failed:", e.message); }
   try { radar = await _radarHealth(supabase, null); } catch { radar = { last_scan: null, age_hours: Infinity, total: 0 }; }
   try { vehicle = await _radarHealth(supabase, "contract_vehicle"); } catch { vehicle = { last_scan: null, age_hours: Infinity, total: 0 }; }
@@ -139,11 +174,12 @@ exports.handler = async () => {
   try { urlSweep = await _urlRecheckSweep(supabase); } catch (e) { console.warn("urlSweep query failed:", e.message); urlSweep = {}; }
 
   const allGreen = stale.length === 0 && badUrls.length === 0 && staleNotes.length === 0
+    && orphaned.length === 0
     && radar.age_hours <= 48 && vehicle.age_hours <= 168
     && Object.keys(failures).length === 0;
   const subject = allGreen
     ? "MMT intel quality — all green"
-    : `MMT intel quality — ${stale.length} stale, ${badUrls.length} bad URL, ${staleNotes.length} note-leak, radar ${radar.age_hours}h`;
+    : `MMT intel quality — ${stale.length} stale, ${orphaned.length} orphaned, ${badUrls.length} bad URL, ${staleNotes.length} note-leak, radar ${radar.age_hours}h`;
 
   const html = `<!DOCTYPE html><html><body style="font-family:-apple-system,sans-serif;padding:24px;color:#0A192F;">
     <h2 style="margin:0 0 8px;">Intel quality report &middot; ${new Date().toISOString().slice(0,10)}</h2>
@@ -153,6 +189,9 @@ exports.handler = async () => {
       const ageDays = Math.floor((Date.now() - new Date(r.last_updated).getTime()) / (24*3600*1000));
       return `<li>${esc(r.contract_name)} &mdash; ${ageDays}d</li>`;
     }).join("")}</ul>`}
+    <h3 style="font-size:14px;margin:16px 0 6px;">Orphaned contract_intel rows (name not in refresh roster)</h3>
+    <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">These rows can never be refreshed — their contract_name has no match in contracts.json, so contract-intel-refresh skips them. Usually a naming drift (em-dash vs hyphen, parenthetical variant) leaving a stale duplicate. Reconcile: rename the row to its roster name, or archive it if a fresh canonical row already exists.</p>
+    ${orphaned.length === 0 ? "<p>None.</p>" : `<ul>${orphaned.map((r) => `<li>${esc(r.contract_name)} &mdash; ${r.age_days === null ? "never refreshed" : r.age_days + "d"}</li>`).join("")}</ul>`}
     <h3 style="font-size:14px;margin:16px 0 6px;">Contracts with root-domain source URLs</h3>
     ${badUrls.length === 0 ? "<p>None.</p>" : `<ul>${badUrls.map((r) => `<li>${esc(r.contract_name)} &mdash; ${r.bad_count} bad</li>`).join("")}</ul>`}
     <h3 style="font-size:14px;margin:16px 0 6px;">Chain-of-thought leakage in verification_notes</h3>
@@ -181,9 +220,9 @@ exports.handler = async () => {
       source_function: "intel-quality-report",
       severity: allGreen ? "info" : "warn",
       signature: "weekly_qa",
-      details: { stale: stale.length, bad_urls: badUrls.length, stale_notes: staleNotes.length, url_archived_7d: urlSweep.archived_7d || 0, radar_age_h: radar.age_hours, vehicle_age_h: vehicle.age_hours, failure_keys: Object.keys(failures).length },
+      details: { stale: stale.length, orphaned: orphaned.length, bad_urls: badUrls.length, stale_notes: staleNotes.length, url_archived_7d: urlSweep.archived_7d || 0, radar_age_h: radar.age_hours, vehicle_age_h: vehicle.age_hours, failure_keys: Object.keys(failures).length },
     });
   } catch { /* non-blocking */ }
 
-  return { statusCode: 200, body: JSON.stringify({ ok: true, stale: stale.length, bad_urls: badUrls.length, stale_notes: staleNotes.length, url_sweep: urlSweep, radar, vehicle, failures }) };
+  return { statusCode: 200, body: JSON.stringify({ ok: true, stale: stale.length, orphaned: orphaned.length, bad_urls: badUrls.length, stale_notes: staleNotes.length, url_sweep: urlSweep, radar, vehicle, failures }) };
 };
