@@ -1,27 +1,13 @@
 {
   "_meta": {
     "description": "Pursuit Calendar seed events. Source of truth when Supabase pursuit_calendar table is unreachable. Times are America/New_York (ET). Status is computed dynamically by the renderer for date-based events; explicit status values (Protest, Protest Due, Watch, Needs Source) are honored as-is.",
-    "last_curated_at": "2026-06-29",
+    "last_curated_at": "2026-07-06",
     "curator": "automated",
     "timezone": "America/New_York",
-    "window_start": "2026-06-29",
-    "window_end": "2026-09-27"
+    "window_start": "2026-07-06",
+    "window_end": "2026-10-04"
   },
   "events": [
-    {
-      "id": "b9debefd-cecd-4d7f-8e26-6526e5f7449d",
-      "title": "Glucometers and Abbott i-STAT Analyzers RALS   Data Management System (Brand Name or Equal)",
-      "event_date": "2026-07-01",
-      "event_time_et": null,
-      "agency": "DHA",
-      "vehicle": "HT940626SSN3825",
-      "ref": null,
-      "category": "rfi",
-      "status_override": null,
-      "source_url": "https://sam.gov/workspace/contract/opp/cf5a6d8f02dd42dd9b95a9d0e990e2cc/view",
-      "source_system": "sam.gov",
-      "notes": "Sol: HT940626SSN3825 · NAICS 541512 · Set-aside: No Set aside used"
-    },
     {
       "id": "0f503421-929e-4dfa-873c-d0701f084a19",
       "title": "Restorative & health-Enhancing Sleep Time (REST) Proposers’ Day Announcement",
