@@ -93,20 +93,41 @@ exports.handler = async () => {
   const emailHtml = buildFridayBriefEmail({ title, subtitle, briefBodyHtml: body, briefDate: displayDate });
   const subject = `Capture Corner: ${title.replace(/\.$/, "")}`;
 
+  // CLAIM idempotency BEFORE the send loop. Netlify scheduled functions are
+  // at-least-once and can double-fire ~15s apart. The early check above reads
+  // this marker, but the old code wrote it AFTER the loop, so two overlapping
+  // invocations each sent all recipients (the 2026-07-07 storm: 2 runs x 54).
+  // Write the marker first, then a deterministic guard: if more than one claim
+  // exists for today, only the earliest-created one proceeds.
+  const { data: claim, error: claimErr } = await supabase.from("ops_events").insert({
+    event_type: EVENT, source_function: "capture-corner-autosend",
+    details: { date, title, status: "sending", eligible: recipients.length, checked_at: checkedAt },
+  }).select("id").single();
+  if (claimErr || !claim) return { statusCode: 200, body: JSON.stringify({ skipped: "claim_failed", date, error: claimErr && claimErr.message }) };
+  const { data: claims } = await supabase.from("ops_events").select("id, created_at")
+    .eq("event_type", EVENT).filter("details->>date", "eq", date)
+    .order("created_at", { ascending: true });
+  if (claims && claims.length > 1 && claims[0].id !== claim.id) {
+    return { statusCode: 200, body: JSON.stringify({ skipped: "lost_claim_race", date, claim_id: claim.id }) };
+  }
+
   let sent = 0, failed = 0;
   const errors = [];
   for (const r of recipients) {
     try {
-      const out = await sendEmail({ to: r.email, subject, html: emailHtml, from: "Mary Womack <mary@missionmeetstech.com>", adminCopy: true });
+      // No adminCopy: this is a bulk send. Copying the admin on every recipient
+      // gave Mary one inbox copy per subscriber (54x). The summary email below
+      // is the admin's single point of visibility.
+      const out = await sendEmail({ to: r.email, subject, html: emailHtml, from: "Mary Womack <mary@missionmeetstech.com>" });
       if (out && out.success) sent++; else { failed++; errors.push({ email: r.email, error: out && out.error }); }
     } catch (e) { failed++; errors.push({ email: r.email, error: e.message }); }
     await new Promise((res2) => setTimeout(res2, 220)); // ~4.5 rps, under Resend's cap
   }
 
-  await supabase.from("ops_events").insert({
-    event_type: EVENT, source_function: "capture-corner-autosend",
-    details: { date, title, sent, failed, eligible: recipients.length, checked_at: checkedAt },
-  });
+  // Finalize the claimed marker with the actual counts.
+  await supabase.from("ops_events").update({
+    details: { date, title, status: "sent", sent, failed, eligible: recipients.length, checked_at: checkedAt },
+  }).eq("id", claim.id);
   try {
     await sendEmail({ to: ADMIN_EMAIL, subject: `[Premium] Capture Corner sent — ${sent}/${recipients.length} (${date})`,
       html: `<p>Capture Corner "${title}" emailed to premium subscribers.</p><p>Sent ${sent}, failed ${failed}, eligible ${recipients.length}.</p>`,

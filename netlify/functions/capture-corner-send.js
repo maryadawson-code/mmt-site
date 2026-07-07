@@ -215,12 +215,14 @@ exports.handler = async (event) => {
           attachment_size_kb: 0,
         });
       } else {
+        // No adminCopy on a bulk send: it BCCs the admin on every recipient
+        // (one inbox copy per subscriber). Admin visibility is the ops log /
+        // end-of-run summary, not a per-recipient BCC.
         const result = await sendEmail({
           to: sub.email,
           subject,
           html: emailHtml,
           from: "Mission Meets Tech <noreply@missionmeetstech.com>",
-          adminCopy: true,
         });
         if (result && result.success === false) {
           failed++;
