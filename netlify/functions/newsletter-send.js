@@ -93,22 +93,13 @@ exports.handler = async (event) => {
       body += `\n---\n\n`;
     }
 
-    // Check for new podcast episodes
-    try {
-      const podRes = await fetch(`${SITE_URL}/feed.xml`);
-      if (podRes.ok) {
-        const feedXml = await podRes.text();
-        // Simple check for recent podcast episodes
-        const epMatch = feedXml.match(/<item>[\s\S]*?<title>(.*?)<\/title>/);
-        if (epMatch && epMatch[1] && !epMatch[1].includes('Trailer')) {
-          body += `## Latest podcast\n\n`;
-          body += `**${epMatch[1]}** — [Listen on the site](${SITE_URL}/podcast.html)\n\n`;
-          body += `---\n\n`;
-        }
-      }
-    } catch (e) {
-      // Podcast fetch failed — not critical, skip
-    }
+    // NOTE: No auto "Latest podcast" section. The removed version fetched
+    // /feed.xml — which is the ARTICLE RSS feed, not the podcast feed — and
+    // announced the newest ARTICLE as a podcast episode, so the newsletter
+    // linked subscribers to a podcast episode that does not exist (2026-07-07).
+    // A subscriber-facing email must never reference content that isn't real.
+    // If podcast promotion is wanted, build it deliberately against the actual
+    // Riverside podcast RSS and verify the episode is published before linking.
 
     // Footer
     body += `*Mission Meets Tech covers the gap between policy, procurement, and what actually ships across DHA, VA, and federal health IT.*\n\n`;
