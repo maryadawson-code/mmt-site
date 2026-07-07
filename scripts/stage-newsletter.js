@@ -68,6 +68,11 @@ const TEMPLATE = {
 
 function die(msg) { console.error("stage-newsletter: " + msg); process.exit(1); }
 function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+// Escape $ for use inside a String.replace replacement string, so dynamic
+// content containing "$199", "$55 billion", etc. is inserted literally instead
+// of being read as a $1/$&/$$ backreference (which mangled the gate on the
+// 2026-07-07 issue). Group refs like $1/$2 in the templates below stay literal.
+function rd(s) { return String(s).replace(/\$/g, "$$$$"); }
 
 async function optimizeImage(src, destAbs) {
   if (!fs.existsSync(src)) die("image not found: " + src);
@@ -163,15 +168,15 @@ ${body}`;
     html = html.slice(0, oi) + "\n\n" + ccHtml + "\n\n    " + html.slice(ci);
     const niceDate = new Date(date + "T00:00:00Z").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
     // header swaps (regex on the model's known shapes)
-    html = html.replace(/<title>Capture Corner:[^<]*<\/title>/, `<title>Capture Corner: ${esc(m.cc.title.replace(/\.$/, ""))} &middot; MMT Premium</title>`);
-    html = html.replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${esc(niceDate)}. ${esc(m.cc.dek)}">`);
-    html = html.replace(/(MMT Premium &middot; Capture Corner &middot; )[^<]*/, `$1${esc(niceDate)}`);
-    html = html.replace(/(letter-spacing:-0\.03em;margin-bottom:10px;">)[^<]*(<\/h1>)/, `$1${esc(m.cc.title)}$2`);
-    html = html.replace(/(<p style="font-size:15px;color:var\(--mmt-text-secondary\);margin-bottom:20px;"><em>)[\s\S]*?(<\/em><\/p>)/, `$1${m.cc.dek}$2`);
-    html = html.replace(/<div class="pills">[\s\S]*?<\/div>/, `<div class="pills">\n${(m.cc.pills || []).map((p) => `      <span class="pill ${p.cls}">${esc(p.label)}</span>`).join("\n")}\n    </div>`);
-    html = html.replace(/(<div class="gate-notice">\s*<h3>[^<]*<\/h3>\s*<p>)[\s\S]*?(<\/p>)/, `$1${esc(m.cc.gate)}$2`);
-    if (m.cc.deep_dive) html = html.replace(/(<h3>Want a custom deep-dive on any line in this brief\?<\/h3>\s*<p>)[\s\S]*?(<\/p>)/, `$1${m.cc.deep_dive}$2`);
-    if (m.cc.deep_dive_examples) html = html.replace(/(<p class="deep-dive-examples">Examples: <em>)[\s\S]*?(<\/em><\/p>)/, `$1${m.cc.deep_dive_examples}$2`);
+    html = html.replace(/<title>Capture Corner:[^<]*<\/title>/, `<title>Capture Corner: ${rd(esc(m.cc.title.replace(/\.$/, "")))} &middot; MMT Premium</title>`);
+    html = html.replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${rd(esc(niceDate))}. ${rd(esc(m.cc.dek))}">`);
+    html = html.replace(/(MMT Premium &middot; Capture Corner &middot; )[^<]*/, `$1${rd(esc(niceDate))}`);
+    html = html.replace(/(letter-spacing:-0\.03em;margin-bottom:10px;">)[^<]*(<\/h1>)/, `$1${rd(esc(m.cc.title))}$2`);
+    html = html.replace(/(<p style="font-size:15px;color:var\(--mmt-text-secondary\);margin-bottom:20px;"><em>)[\s\S]*?(<\/em><\/p>)/, `$1${rd(m.cc.dek)}$2`);
+    html = html.replace(/<div class="pills">[\s\S]*?<\/div>/, rd(`<div class="pills">\n${(m.cc.pills || []).map((p) => `      <span class="pill ${p.cls}">${esc(p.label)}</span>`).join("\n")}\n    </div>`));
+    html = html.replace(/(<div class="gate-notice">\s*<h3>[^<]*<\/h3>\s*<p>)[\s\S]*?(<\/p>)/, `$1${rd(esc(m.cc.gate))}$2`);
+    if (m.cc.deep_dive) html = html.replace(/(<h3>Want a custom deep-dive on any line in this brief\?<\/h3>\s*<p>)[\s\S]*?(<\/p>)/, `$1${rd(m.cc.deep_dive)}$2`);
+    if (m.cc.deep_dive_examples) html = html.replace(/(<p class="deep-dive-examples">Examples: <em>)[\s\S]*?(<\/em><\/p>)/, `$1${rd(m.cc.deep_dive_examples)}$2`);
     const ccPath = path.join(REPO, "premium", "briefs", `capture-corner-${date}.html`);
     fs.writeFileSync(ccPath, html);
     console.log(`  capture corner ${path.relative(REPO, ccPath)}`);
