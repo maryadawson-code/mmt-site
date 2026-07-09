@@ -70,3 +70,5 @@ private/
 # (2026-05-13), keep root sitemap.xml out of tip-of-tree so editor
 # auto-saves or build artifacts can't re-introduce a stale copy.
 /sitemap.xml
+HOMEPAGE_PRIMER_SPEC.md
+competitor-research.md

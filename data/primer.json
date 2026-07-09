@@ -1,0 +1,47 @@
+{
+  "$comment": "Drives primer.html (via BUILD:PRIMER_* markers) and the homepage #primer-cta band. Edit content here, not in the HTML. Leadership names and the DHA freshness date are pulled LIVE at build time from data/key-people.json and data/premium/agency-profiles/agencies.json (see the primer builders in build.js) so they never go stale. Comparison figures are sourced in competitor-research.md.",
+  "cta": {
+    "label": "New to federal health IT capture?",
+    "heading": "Start with the primer.",
+    "line": "It walks the federal acquisition timeline and shows which MMT tool to reach for at each stage, from market shaping to proposal.",
+    "button": "Read the primer",
+    "url": "/primer.html"
+  },
+  "lifecycle": [
+    {"stage": "1. Market research and shaping", "window": "12 to 24 months pre-RFP", "goal": "Find opportunities before they go public, and help shape the requirement.", "intel": "Agency budgets, executive priorities, incumbent contracts, recompete forecasts.", "phase": "won"},
+    {"stage": "2. Sources sought and RFI", "window": "6 to 12 months pre-RFP", "goal": "Signal capability to the program office and find teaming gaps.", "intel": "Incumbent performance, competitor capability, teaming partner data.", "phase": "won"},
+    {"stage": "3. Draft RFP and forecast", "window": "3 to 6 months pre-RFP", "goal": "Refine the win strategy and set pricing anchors.", "intel": "Historical pricing, labor categories, likely-bidder analysis.", "phase": "won"},
+    {"stage": "4. Final RFP", "window": "0 to 3 months", "goal": "Make the Go or No-Go call and write a compliant response.", "intel": "RFP shred, compliance matrix (L, M, N), Go/No-Go decision.", "phase": "late"},
+    {"stage": "5. Proposal and evaluation", "window": "at submission", "goal": "Earn the highest technical score you can.", "intel": "Evaluator-style scoring, risk rollups.", "phase": "normal"},
+    {"stage": "6. Award and protest", "window": "post-award", "goal": "Defend the win or learn from the loss for the next bid.", "intel": "GAO protest dockets, debrief patterns.", "phase": "normal"}
+  ],
+  "toolkit": [
+    {"name": "Agency Profiles", "stage_label": "Stage 1", "what": "DHA, VA, and HHS budgets, programs, vehicles, and live procurement signals, each with a source URL and a visible last-updated date.", "how_to_use": "Read the target agency's profile before you shape a pursuit.", "url": "/agencies/", "live_date": true},
+    {"name": "Org Charts", "stage_label": "Stage 1 to 2", "what": "The named people who own programs and sign decisions, auto-monitored so a leadership-page change triggers an alert.", "how_to_use": "Find the program owner and who they report to before an industry day.", "url": "/premium/org-charts/dha"},
+    {"name": "IDIQ and Vehicle Tracker", "stage_label": "Stage 1 to 3", "what": "Vehicles with ceiling, period of performance, NAICS and PSC, set-aside, an incumbent-vulnerability score, and a forecast window with a confidence percentage.", "how_to_use": "Check the vehicle's burn status and forecast window before committing capture hours.", "url": "/idiq-tracker.html"},
+    {"name": "Signal Chain", "stage_label": "Stage 1 to 2", "what": "A five-layer monitor that scores a topic 0 to 100 from live federal APIs and emails you when the composite crosses 75.", "how_to_use": "Set a monitor on your target program and act when it crosses the threshold.", "url": "/premium/signal-chain.html"},
+    {"name": "Pursuit Score", "stage_label": "Stage 3 to 4", "what": "Bid or no-bid support that scores a pursuit across four dimensions, including incumbent vulnerability, with a short analyst take.", "how_to_use": "Run it at your Go/No-Go gate to pressure-test the decision.", "url": "/premium/pursuit-score.html"},
+    {"name": "ProposalPulse", "stage_label": "Stage 5", "what": "Evaluator-style scoring on a draft plus SOW or PWS: a scorecard, top risks, and prioritized fixes in about 90 seconds.", "how_to_use": "Score before red team, not after. First assessment is free.", "url": "/proposal-pulse.html"},
+    {"name": "MarketPulse", "stage_label": "Any stage", "what": "Ask a market question and get a source-cited pursuit brief in 24 hours.", "how_to_use": "Use it when you need the answer synthesized, not the raw firehose. First brief is free.", "url": "/marketpulse.html"},
+    {"name": "Ask MMT", "stage_label": "Any stage", "what": "Question and answer over MMT's source-cited corpus of articles, briefs, contracts, and vehicles.", "how_to_use": "Ask what MMT has published on a program before you research from scratch.", "url": "/premium/ask-mmt.html"},
+    {"name": "Contract Tracker, Newswire, and Glossary", "stage_label": "Reference", "what": "Live contract movement with vendor, value, and NAICS, context notes, and a glossary that ties each term to its pursuit implication.", "how_to_use": "Keep them open as your reference layer while you work a pursuit.", "url": "/contract-tracker.html"}
+  ],
+  "comparison": [
+    {"dimension": "Price", "mmt": "$199 a year; $0 to read the analysis; free tiers on the Pulse tools", "legacy": "GovWin about $12K to $14K per user a year, quote-only; GovSpend about $11.5K a year; Bloomberg Government about $7.5K to $14K"},
+    {"dimension": "Freshness", "mmt": "Auto-refreshed from live APIs, with a source URL and timestamp on each value", "legacy": "Analyst-refresh cycles (GovWin, Bloomberg Government) or the raw un-curated .gov firehose"},
+    {"dimension": "Leadership and org charts", "mmt": "Named, verified, source-cited, and auto-monitored; reorg leadership mapped within days", "legacy": "Often empty, stale, or a month behind on reorgs; small businesses cannot build their own"},
+    {"dimension": "Focus", "mmt": "DHA, VA, HHS, and ONC health IT, with the why behind each buy", "legacy": "Broad federal and state generalists, thin on MHS and VA health IT context"},
+    {"dimension": "AI", "mmt": "Native: ProposalPulse, Pursuit Score, Signal Chain, and Ask MMT, plus connect-your-own agent", "legacy": "AI bolted on, or metered as a per-credit add-on"},
+    {"dimension": "Transparency", "mmt": "Public pricing; every claim carries a source link; no sponsors", "legacy": "Opaque, sales-led pricing and long reported time to value"}
+  ],
+  "deep_access": {
+    "reorg_line": "The DHA reorganized April 20, 2026, with full operating capability targeted July 19.",
+    "note": "The CAE and PAE MDS names below and the DHA freshness date are pulled live at build time from key-people.json and agencies.json."
+  },
+  "sources": [
+    {"label": "GovWin and Bloomberg Government pricing", "url": "https://fed-spend.com/blog/govwin-bloomberg-government-alternative-2026"},
+    {"label": "HigherGov pricing", "url": "https://www.highergov.com/pricing/"},
+    {"label": "GovTribe plans", "url": "https://govtribe.com/docs/govtribe-user-guide/guides/choose-the-right-govtribe-plan/"},
+    {"label": "GovSpend verified pricing", "url": "https://www.vendr.com/marketplace/gov-spend"}
+  ]
+}
