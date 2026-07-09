@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Primer | Federal Health IT Capture, and How MMT Fits Your Workflow</title>
+  <meta name="description" content="How federal acquisition actually works, which intelligence matters at each stage, and how to use every MMT tool across the capture workflow. Written for GovCon capture, BD, and proposal teams.">
+  <link rel="canonical" href="https://missionmeetstech.com/primer.html">
+  <meta property="og:title" content="The Primer | Federal Health IT Capture, and How MMT Fits Your Workflow">
+  <meta property="og:description" content="How federal acquisition works, which intelligence matters at each stage, and how to use every MMT tool across the capture workflow.">
+  <meta property="og:url" content="https://missionmeetstech.com/primer.html">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://missionmeetstech.com/mmt-logo.png">
+  <meta property="og:site_name" content="Mission Meets Tech">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The Primer | Federal Health IT Capture, and How MMT Fits Your Workflow">
+  <meta name="twitter:description" content="How federal acquisition works, which intelligence matters at each stage, and how to use every MMT tool.">
+  <meta name="twitter:image" content="https://missionmeetstech.com/mmt-logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-v3-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-v3.png">
+  <link rel="preconnect" href="https://plausible.io" crossorigin>
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
+  <link rel="alternate" type="application/rss+xml" title="Mission Meets Tech" href="/feed.xml">
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "The Primer: Federal Health IT Capture, and How MMT Fits Your Workflow",
+    "author": { "@type": "Person", "name": "Mary Womack" },
+    "publisher": { "@type": "Organization", "name": "Mission Meets Tech", "logo": { "@type": "ImageObject", "url": "https://missionmeetstech.com/mmt-logo.png" } },
+    "mainEntityOfPage": "https://missionmeetstech.com/primer.html"
+  }
+  </script>
+</head>
+<body class="antialiased">
+
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold" style="background:var(--mmt-navy); color:#FFFFFF;">Skip to main content</a>
+
+    <!-- Navigation -->
+  <nav class="nav-editorial">
+    <div class="wrap nav-inner">
+      <a href="/" class="brand no-underline" aria-label="Mission Meets Tech">
+        <div class="brand-mark"><img src="/mmt-shield-nav.png" alt="" width="44" height="44"></div>
+        <div>
+          <small>Federal Health IT Intelligence</small>
+          <span>Mission Meets Tech</span>
+        </div>
+      </a>
+            <div class="hidden md:flex items-center gap-5">
+        <a href="latest.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Intelligence</a>
+        <a href="proposal-pulse.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">ProposalPulse</a>
+        <a href="marketpulse.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">MarketPulse</a>
+        <a href="resources.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Resources</a>
+        <a href="podcast.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Podcast</a>
+        <a href="about.html" class="text-sm font-semibold no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">About</a>
+        <button id="searchToggle" class="hover:opacity-70" style="color:var(--mmt-text-secondary);background:none;border:none;cursor:pointer;" aria-label="Search"><svg width="16" height="16" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></button>
+        <a href="/tools" class="btn-primary no-underline" style="margin-left:8px;">Choose a Tool</a>
+      </div>
+      <button id="menuToggle" class="md:hidden" style="color:var(--mmt-navy);background:none;border:none;cursor:pointer;" aria-label="Toggle menu">
+        <svg id="menuOpen" width="24" height="24" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
+        <svg id="menuClose" class="hidden" width="24" height="24" viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+      </button>
+    </div>
+        <div id="mobileMenu" class="hidden md:hidden px-6 pb-4" style="background:var(--mmt-white);border-bottom:1px solid var(--mmt-border);">
+      <div class="flex flex-col gap-4 pt-2" style="border-top:1px solid var(--mmt-border);">
+        <a href="latest.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Intelligence</a>
+        <a href="proposal-pulse.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">ProposalPulse</a>
+        <a href="marketpulse.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">MarketPulse</a>
+        <a href="resources.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Resources</a>
+        <a href="podcast.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">Podcast</a>
+        <a href="about.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">About</a>
+        <div class="pt-3 mt-1" style="border-top:1px solid var(--mmt-border);">
+          <a href="/tools" class="btn-primary no-underline">Choose a Tool</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main-content" class="wrap">
+
+  <!-- BLOCK 1 - HERO -->
+  <section style="padding:40px 0 32px;">
+    <div style="max-width:800px;">
+      <div class="text-eyebrow" style="margin-bottom:12px;">The Primer</div>
+      <h1 style="max-width:24ch;">Federal health IT capture, and how to read the field.</h1>
+      <p class="lede">I built MMT so a capture lead walks into a gate review knowing who owns the program, what is funded, and what is about to hit the street, without a $30K seat license. This page shows how acquisition works and where each MMT tool fits.</p>
+      <div class="flex flex-wrap gap-3" style="margin-top:14px;">
+        <a href="#lifecycle" class="btn-primary no-underline">How acquisition works</a>
+        <a href="#toolkit" class="btn-secondary no-underline">Jump to the toolkit</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- BLOCK 2 - HOW FEDERAL ACQUISITION WORKS -->
+  <section class="section" id="lifecycle">
+    <div class="section-head">
+      <div>
+        <div class="section-label">How federal acquisition actually works</div>
+        <h2>If you wait for the RFP, you have already lost.</h2>
+      </div>
+    </div>
+    <p class="lede" style="max-width:72ch;">By the time a solicitation posts to SAM.gov, the winner has usually spent 12 months or more shaping it: meeting the program office, answering the RFI, positioning a team. The public RFP is the finish line, not the start. This section shows the work that happens before it, and where MMT gives you a seat at that table.</p>
+    <p style="font-size:14px;color:var(--mmt-text-secondary);max-width:72ch;margin:0 0 20px;">Most contractors only see stage 4, the public RFP. The teams that win were working stages 1 through 3 a year earlier. That is what this data is for.</p>
+    <!-- BUILD:PRIMER_LIFECYCLE -->
+  </section>
+
+  <!-- BLOCK 3 - THE TOOLKIT, MAPPED TO THE WORKFLOW -->
+  <section class="section" id="toolkit">
+    <div class="section-head">
+      <div>
+        <div class="section-label">The MMT toolkit, mapped to the workflow</div>
+        <h2>Every tool, the stage it serves, and how to use it.</h2>
+      </div>
+    </div>
+    <p style="font-size:15px;color:var(--mmt-text-secondary);max-width:72ch;margin:0 0 22px;">Here is every tool on the platform, what stage it serves, and exactly how to use it.</p>
+    <!-- BUILD:PRIMER_TOOLKIT -->
+  </section>
+
+  <!-- BLOCK 3.5 - WHY $199 IS THE EASIEST YES -->
+  <section class="section" id="deep-access">
+    <div class="section-head">
+      <div>
+        <div class="section-label">Intel you cannot get anywhere else</div>
+        <h2>By the time this shows up elsewhere, you have missed the window.</h2>
+      </div>
+    </div>
+    <!-- BUILD:PRIMER_DEEP_ACCESS -->
+    <div class="grid-3" style="margin-top:22px;">
+      <div class="card" style="padding:24px;">
+        <h3 style="font-size:16px;margin-bottom:8px;color:var(--mmt-navy);">The org chart is the expensive part.</h3>
+        <p style="font-size:14px;line-height:1.6;color:var(--mmt-text-secondary);margin:0;">Building an accurate, current agency org chart takes relationships and hours most small businesses do not have. MMT ships it maintained, with a source URL and a verified date on every name.</p>
+      </div>
+      <div class="card" style="padding:24px;">
+        <h3 style="font-size:16px;margin-bottom:8px;color:var(--mmt-navy);">Deep access, shared.</h3>
+        <p style="font-size:14px;line-height:1.6;color:var(--mmt-text-secondary);margin:0;">I track leadership moves and reorgs as they happen and hand the map to readers, not a month late, and not behind a $30K seat.</p>
+      </div>
+      <div class="card" style="padding:24px;">
+        <h3 style="font-size:16px;margin-bottom:8px;color:var(--mmt-navy);">When it changes, you will know.</h3>
+        <p style="font-size:14px;line-height:1.6;color:var(--mmt-text-secondary);margin:0;">Leadership pages are auto-monitored, so a change triggers an alert and the chart does not quietly go stale like the others.</p>
+      </div>
+    </div>
+    <p style="font-size:15px;color:var(--mmt-text);margin:22px 0 0;max-width:72ch;">That single org chart is worth more than the $199 for anyone who understands what a warm intro to the right PAE is worth. <a href="/premium/org-charts/dha" class="no-underline" style="color:var(--mmt-teal);font-weight:600;">See the DHA org chart &rarr;</a></p>
+  </section>
+
+  <!-- BLOCK 4 - WHAT KEEPS THE DATA LIVE -->
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-label">What keeps the data live</div>
+        <h2>How the numbers stay current.</h2>
+      </div>
+    </div>
+    <div class="split">
+      <div class="card" style="padding:30px;">
+        <h3 style="font-size:20px;margin-bottom:10px;color:var(--mmt-navy);">Live federal sources, auto-refreshed</h3>
+        <p style="font-size:15px;line-height:1.6;color:var(--mmt-text);margin:0 0 12px;">MMT reads directly from official APIs: SAM.gov, USASpending, Congress.gov, the Federal Register, and GAO, plus health-specific sources most GovCon tools ignore, including PubMed, ClinicalTrials.gov, and ONC. The Loop System discovers and refreshes data on a schedule, and every value carries a source URL and a retrieved-at time.</p>
+        <p style="font-size:13px;line-height:1.6;color:var(--mmt-text-secondary);margin:0;">By contrast, legacy tools refresh on analyst cycles, and reviewers report empty or stale records; the free .gov sites are the raw un-curated firehose.</p>
+      </div>
+      <div class="card" style="padding:30px;">
+        <h3 style="font-size:20px;margin-bottom:10px;color:var(--mmt-navy);">Connect your own AI (Agent Access)</h3>
+        <p style="font-size:15px;line-height:1.6;color:var(--mmt-text);margin:0 0 12px;">Premium members can connect the AI they already use, such as Claude, to their live MMT data through a read-only API and MCP server. Your assistant answers from your real pipeline, never guesses, and can read but never edit, delete, or spend.</p>
+        <p style="font-size:13px;line-height:1.6;color:var(--mmt-text-secondary);margin:0;"><strong style="color:var(--mmt-navy);">How to use it:</strong> set it up at <a href="/premium/ai-integrations/" class="no-underline" style="color:var(--mmt-teal);font-weight:600;">/premium/ai-integrations/</a>; the machine-readable catalog lives at <a href="/api/v1" class="no-underline" style="color:var(--mmt-teal);font-weight:600;">/api/v1</a>. No other tool here ships a connect-your-own-agent, read-only path; GovTribe meters AI per credit and GovWin bolts on an assistant.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BLOCK 5 - HOW MMT COMPARES -->
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-label">How MMT compares</div>
+        <h2>Honest, and sourced.</h2>
+      </div>
+    </div>
+    <div class="card" style="padding:30px;">
+      <!-- BUILD:PRIMER_COMPARISON -->
+      <p style="font-size:12px;color:var(--mmt-text-secondary);margin:16px 0 0;">Pricing figures are third-party 2026 benchmarks; confirm current vendor pricing directly.</p>
+      <!-- src: competitor-research.md - fed-spend.com, highergov.com/pricing, govtribe.com, vendr.com/marketplace/gov-spend -->
+    </div>
+  </section>
+
+  <!-- BLOCK 6 - IF YOU ARE NEW, START HERE -->
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-label">If you are new, start here</div>
+        <h2>Three ways in.</h2>
+      </div>
+    </div>
+    <div class="grid-3">
+      <a href="/getting-started.html#new" class="card no-underline" style="padding:24px;display:flex;flex-direction:column;gap:6px;">
+        <strong style="font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mmt-teal);">Orientation</strong>
+        <h3 style="font-size:18px;line-height:1.2;color:var(--mmt-navy);">Learn the language &rarr;</h3>
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0;">The getting-started path for people new to federal health IT.</p>
+      </a>
+      <a href="/contracting.html" class="card no-underline" style="padding:24px;display:flex;flex-direction:column;gap:6px;">
+        <strong style="font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mmt-teal);">Vehicles</strong>
+        <h3 style="font-size:18px;line-height:1.2;color:var(--mmt-navy);">Understand the vehicles &rarr;</h3>
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0;">How IDIQs, GWACs, and task orders actually work.</p>
+      </a>
+      <a href="/glossary.html" class="card no-underline" style="padding:24px;display:flex;flex-direction:column;gap:6px;">
+        <strong style="font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mmt-teal);">Reference</strong>
+        <h3 style="font-size:18px;line-height:1.2;color:var(--mmt-navy);">Decode a term &rarr;</h3>
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0;">A glossary that ties each term to its pursuit implication.</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- BLOCK 7 - CTA -->
+  <section class="section" style="padding-bottom:48px;">
+    <div class="card" style="padding:34px;max-width:680px;margin:0 auto;text-align:center;">
+      <div class="section-label" style="margin-bottom:12px;">Start reading</div>
+      <h2 style="margin-bottom:12px;">Get the Tuesday and Friday briefing. Free.</h2>
+      <p style="color:var(--mmt-text-secondary);margin-bottom:22px;">Federal health IT analysis for people who have to act on it. No sponsors, unsubscribe anytime.</p>
+      <div class="flex flex-wrap gap-3" style="justify-content:center;align-items:center;">
+        <a href="/newsletter.html" class="btn-primary no-underline">Get the briefing, free</a>
+        <a href="/pricing.html" class="no-underline" style="font-size:14px;font-weight:600;color:var(--mmt-teal);">See what Premium adds &rarr;</a>
+      </div>
+    </div>
+    <div class="quote-card" style="max-width:680px;margin:24px auto 0;">
+      <p>"You summarize complex federal technology issues in such a clear, concise way. Please keep the articles coming."</p>
+      <strong style="display:block;margin-top:18px;color:var(--mmt-navy);font-size:14px;">Karen Brazell, DSL, PMP</strong>
+      <span class="text-caption">Senior VA Innovation Leader</span>
+    </div>
+  </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="wrap" style="padding:28px 0 58px;">
+    <div style="border-top:1px solid var(--mmt-border);padding-top:24px;display:grid;grid-template-columns:1fr auto auto auto auto;gap:32px;color:var(--mmt-text-secondary);font-size:13px;">
+      <div>
+        <p style="margin-bottom:6px;"><strong style="color:var(--mmt-navy);">Mission Meets Tech</strong></p>
+        <p>Federal health IT intelligence. Mission first.</p>
+        <p style="margin-top:10px;">Views expressed are those of the authors and do not represent any employer or government agency.</p>
+        <p>&copy; 2026 Mission Meets Tech. All rights reserved.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Read</strong>
+        <a href="latest.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Latest Intelligence</a>
+        <a href="topics.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Topics</a>
+        <a href="podcast.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Podcast</a>
+        <a href="newsletter.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Subscribe</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Tools</strong>
+        <a href="proposal-pulse.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">ProposalPulse</a>
+        <a href="marketpulse.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">MarketPulse</a>
+        <a href="contract-tracker.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Contract Tracker</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Reference</strong>
+        <a href="getting-started.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Getting Started</a>
+        <a href="primer.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">The Primer</a>
+        <a href="contracting.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Contracting Hub</a>
+        <a href="glossary.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Glossary</a>
+        <a href="agency-sources.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Agency Sources</a>
+        <a href="newswire.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Newswire</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <strong style="color:var(--mmt-navy);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Trust</strong>
+        <a href="about.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">About</a>
+        <a href="editorial-standards.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Editorial Standards</a>
+        <a href="security.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Security</a>
+        <a href="privacy.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Privacy</a>
+        <a href="terms.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Terms</a>
+        <a href="mailto:mary@missionmeetstech.com" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

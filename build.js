@@ -819,6 +819,7 @@ function generateSitemap(articles, tags, contracts) {
     { loc: '/contract-tracker.html', priority: '0.7' },
     { loc: '/glossary.html', priority: '0.6' },
     { loc: '/getting-started.html', priority: '0.7' },
+    { loc: '/primer.html', priority: '0.7' },
     { loc: '/topics.html', priority: '0.7' },
     { loc: '/newswire.html', priority: '0.7' },
     { loc: '/idiq-tracker.html', priority: '0.7' },
@@ -3121,6 +3122,7 @@ async function copyStaticFiles({ archive, feed, newsItems, contracts, contractAr
     'compliance-check.html',
     'tools.html',
     'rfp-shredder.html',
+    'primer.html',
   ];
   // Premium subdirectory pages
   const premiumPages = [
@@ -3167,8 +3169,23 @@ async function copyStaticFiles({ archive, feed, newsItems, contracts, contractAr
   // Filter to on-site articles only (excludes LinkedIn-only entries)
   const onsiteArchive = archive.filter(item => item.url && item.url.startsWith('/newsletter/'));
 
+  // ---- The Primer builders (data/primer.json + LIVE leadership/agency data) ----
+  const primerData = (() => { try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'primer.json'), 'utf8')); } catch (e) { console.warn('primer.json load failed:', e.message); return null; } })();
+  const primerDhaDate = (() => { try { const ag = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'premium', 'agency-profiles', 'agencies.json'), 'utf8')); const l = ag.agencies || ag; const d = l.find(x => x.slug === 'dha'); return d ? d.lastUpdated : null; } catch { return null; } })();
+  const primerLeader = (inc) => { try { const kp = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'key-people.json'), 'utf8')); const dha = (kp.agencies || []).find(a => a.agency_code === 'DHA'); if (!dha) return null; const p = (dha.people || []).find(x => (x.title || '').includes(inc)); return p ? p.name : null; } catch { return null; } };
+  function primerCta(d) { if (!d || !d.cta) return ''; const c = d.cta; return `<div class="section-head"><div><div class="section-label">${c.label}</div><h2>${c.heading}</h2></div></div>\n    <div class="card" style="padding:26px;display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between;">\n      <p style="font-size:15px;color:var(--mmt-text);margin:0;max-width:60ch;">${c.line}</p>\n      <a href="${c.url}" class="btn-primary no-underline" style="white-space:nowrap;">${c.button} &rarr;</a>\n    </div>`; }
+  function primerLifecycle(d) { if (!d || !d.lifecycle) return ''; const rows = d.lifecycle.map(s => { const tag = s.phase === 'won' ? '<span class="pill" style="font-size:11px;background:rgba(69,123,157,0.10);color:var(--mmt-teal);">Where deals are won</span>' : s.phase === 'late' ? '<span class="pill" style="font-size:11px;background:rgba(230,57,70,0.08);color:#E63946;">Where most contractors start (too late)</span>' : ''; return `<li class="ladder-step" style="align-items:flex-start;"><span class="step-label">${s.window}</span><span class="step-name">${s.stage}</span><span class="step-desc"><strong style="color:var(--mmt-navy);">Goal:</strong> ${s.goal}<br><strong style="color:var(--mmt-navy);">What you need to know here:</strong> ${s.intel} ${tag}</span></li>`; }).join('\n'); return `<section class="product-ladder" aria-label="Federal acquisition lifecycle"><div class="ladder-eyebrow">The six-stage lifecycle</div><ol class="ladder-steps">\n${rows}\n</ol></section>`; }
+  function primerToolkit(d, dt) { if (!d || !d.toolkit) return ''; const cards = d.toolkit.map(t => { const dl = (t.live_date && dt) ? ` <span style="color:var(--mmt-text-secondary);">(DHA profile last updated ${dt})</span>` : ''; return `<a href="${t.url}" class="card no-underline" style="padding:24px;display:flex;flex-direction:column;gap:8px;"><strong style="font-size:11px;text-transform:uppercase;letter-spacing:0.10em;color:var(--mmt-teal);">${t.stage_label}</strong><h3 style="font-size:18px;line-height:1.2;color:var(--mmt-navy);margin:0;">${t.name}</h3><p style="font-size:14px;line-height:1.6;color:var(--mmt-text);margin:0;">${t.what}${dl}</p><p style="font-size:13px;line-height:1.6;color:var(--mmt-text-secondary);margin:4px 0 0;"><strong style="color:var(--mmt-navy);">How to use it:</strong> ${t.how_to_use}</p></a>`; }).join('\n'); return `<div class="grid-3">\n${cards}\n</div>`; }
+  function primerComparison(d) { if (!d || !d.comparison) return ''; const rows = d.comparison.map(r => `<tr style="border-top:1px solid var(--mmt-border);"><td style="padding:12px 14px;font-weight:700;color:var(--mmt-navy);vertical-align:top;">${r.dimension}</td><td style="padding:12px 14px;color:var(--mmt-text);vertical-align:top;">${r.mmt}</td><td style="padding:12px 14px;color:var(--mmt-text-secondary);vertical-align:top;">${r.legacy}</td></tr>`).join('\n'); return `<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:13px;min-width:620px;"><thead><tr style="border-bottom:2px solid var(--mmt-navy);"><th style="text-align:left;padding:10px 14px;color:var(--mmt-text-secondary);">What matters</th><th style="text-align:left;padding:10px 14px;color:var(--mmt-navy);">Mission Meets Tech</th><th style="text-align:left;padding:10px 14px;color:var(--mmt-text-secondary);">Legacy market tools</th></tr></thead><tbody>\n${rows}\n</tbody></table></div>`; }
+  function primerDeepAccess(d) { if (!d) return ''; const reorg = (d.deep_access && d.deep_access.reorg_line) || ''; const cae = primerLeader('Component Acquisition Executive'); const pae = primerLeader('Medical Digital Solutions'); const caeBit = cae ? ` (${cae})` : ''; const paeBit = pae ? ` (${pae})` : ''; const dateBit = primerDhaDate ? ` It is in the DHA profile you can open right now, last updated ${primerDhaDate}.` : ' It is in the profile you can open right now.'; return `<p class="lede" style="max-width:74ch;">${reorg} I have the new acquisition leadership mapped and verified: the confirmed Component Acquisition Executive${caeBit}, the Deputy CAE, and the Portfolio Acquisition Executive for Medical Digital Solutions${paeBit}, the seat that succeeds PEO DHMS. If you are chasing DHA health IT work, those are the people who will own your program. Most market tools will not have this org chart current for a month or more, and small businesses usually cannot build it at all. I already did.${dateBit}</p>`; }
+
   // Build-time injection map
   const injections = {
+    '<!-- BUILD:PRIMER_CTA -->': primerCta(primerData),
+    '<!-- BUILD:PRIMER_LIFECYCLE -->': primerLifecycle(primerData),
+    '<!-- BUILD:PRIMER_TOOLKIT -->': primerToolkit(primerData, primerDhaDate),
+    '<!-- BUILD:PRIMER_COMPARISON -->': primerComparison(primerData),
+    '<!-- BUILD:PRIMER_DEEP_ACCESS -->': primerDeepAccess(primerData),
     '<!-- BUILD:LEAD_STORY -->': generateLeadStoryHtml(archive),
     '<!-- BUILD:LATEST_ARTICLES -->': generateLatestArticlesHtml(archive, 2),
     '<!-- BUILD:TOPIC_CHIPS -->': generateTopicChipsHtml(archive),
@@ -3251,7 +3268,7 @@ async function copyStaticFiles({ archive, feed, newsItems, contracts, contractAr
       // Add page shell classes based on page type
       const trustPages = ['security.html', 'privacy.html', 'terms.html', 'editorial-standards.html'];
       const productPages = ['proposal-pulse.html', 'marketpulse.html'];
-      const referencePages = ['resources.html', 'contract-tracker.html', 'glossary.html', 'newswire.html', 'agency-sources.html', 'getting-started.html', 'contracting.html', 'idiq-tracker.html'];
+      const referencePages = ['resources.html', 'contract-tracker.html', 'glossary.html', 'newswire.html', 'agency-sources.html', 'getting-started.html', 'contracting.html', 'idiq-tracker.html', 'primer.html'];
       const utilityPages = ['pricing.html', 'dashboard.html', 'subscribed.html', 'upgrade.html', 'welcome-premium.html'];
       let pageShellClass = '';
       if (trustPages.includes(file)) pageShellClass = 'page-trust';
