@@ -149,6 +149,16 @@
 [functions."welcome-reconciler"]
   schedule = "*/30 * * * *"
 
+# Comp-grant welcome reconciler — every 15 min. The Stripe welcome-reconciler
+# only sees Stripe subscriptions, so a comped grant (SQL editor or CLI without
+# email) never gets a welcome. This scans recent comp_access_grants and emails
+# the tester-comp welcome to any active comped user not yet welcomed. Recipient
+# comes from the DB (no PII in source). Idempotent via customer_events
+# welcome_sent + ops_ledger resend_message_id checks; 24h lookback bounds it.
+# Kill switch: COMP_WELCOME_RECONCILER_DISABLED. Manual retry: GET ?force_email=<addr>.
+[functions."comp-welcome-reconciler"]
+  schedule = "*/15 * * * *"
+
 # Buttondown newsletter send — runs 30 min after newsletter-sync (Tue/Fri 11:30 PM UTC)
 # Checks for new articles from the last 3 days and sends a digest to subscribers
 [functions."newsletter-send"]
