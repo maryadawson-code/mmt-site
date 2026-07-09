@@ -37,6 +37,7 @@
     "static/lead-magnets/**",
     "data/agent-access-launch/**",
     "data/linkedin-campaign/**",
+    "data/jul9-dha-cae-release/**",
   ]
 
 [[edge_functions]]
@@ -499,6 +500,15 @@
 # in ops_events as jul9_dha_cae_confirmed_sent (claimed before the send loop).
 # Kill switch: JUL9_DHA_CAE_DISABLED=true. Retire by 2026-07-23.
 [functions."jul9-dha-cae-confirmed-send"]
+  schedule = "*/15 * * * *"
+
+# FREE companion to the above: same DHA CAE-confirmed update, sent to the
+# Buttondown newsletter (free) list. Independent pipeline (Buttondown, not
+# Resend), idempotent via Buttondown's own sent-email history so it cannot
+# collide with the paid ops_events marker. Body: data/jul9-dha-cae-release/
+# free-newsletter.md. Kill switch: JUL9_DHA_CAE_FREE_DISABLED=true.
+# Retire by 2026-07-23 alongside the paid companion.
+[functions."jul9-dha-cae-free-send"]
   schedule = "*/15 * * * *"
 
 # Hourly Stripe -> mp_users safety-net sync.
