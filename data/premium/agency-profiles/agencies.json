@@ -9,16 +9,16 @@
     "mmtRead": "DHA reorganized April 20, 2026 with FOC target July 19. PEO DHMS retains executive authority over MHS GENESIS, OPMED programs (JOMIS, MHS GENESIS-Theater, deployable / Role 1-2-3 medical C2, blood inventory, theater data movement), and DMIX / EIDS. Organizationally PEO DHMS sits under AD-RDA/CAE, but the EHR portfolio's acquisition reporting runs directly to USW(A&S). The Office of Warfighter Health Advantage (RDML Tracy Farrill, just appointed) consolidates data, analytics, AI, and digital health into a single seat. The HCDS deployment RFP and the Leidos bridge are both inside the three-PAE transition window. Per the June 9, 2026 AD-RDA All Hands, the formal portfolios are PAE Medical Systems (MS), Medical Products (MP), and Medical Digital Solutions (MDS); PAE MDS is the consolidation seat absorbing PEO DHMS and PEO Medical Systems.",
     "officialSources": [
       {
-        "label": "DHA program office (health.mil)",
-        "url": "https://www.health.mil/About-MHS/OASDHA/Defense-Health-Agency"
+        "label": "DHA organizational structure (dha.mil)",
+        "url": "https://dha.mil/About-DHA/Organizational-Structure"
       },
       {
-        "label": "MHS GENESIS deployment update",
-        "url": "https://health.mil/News/Dvids-Articles/2024/10/18/news483461"
+        "label": "PEO DHMS program office (health.mil)",
+        "url": "https://health.mil/Military-Health-Topics/Technology/PEO-DHMS"
       },
       {
-        "label": "PEO DHMS",
-        "url": "https://www.health.mil/Military-Health-Topics/Technology/PEO-DHMS"
+        "label": "DHMSM / MHS GENESIS fact sheet (health.mil, Mar 2026)",
+        "url": "https://www.health.mil/Reference-Center/Fact-Sheets/2026/03/24/DOD-Healthcare-Management-System-Modernization-Fact-Sheet"
       }
     ],
     "keyPrograms": [
@@ -125,7 +125,7 @@
       "items": [
         {
           "label": "Beneficiaries",
-          "value": "9.5M+",
+          "value": "9.6M+",
           "context": "MHS GENESIS reach"
         },
         {
@@ -189,20 +189,20 @@
     "abbrev": "VA",
     "name": "Department of Veterans Affairs / Veterans Health Administration",
     "type": "Cabinet Department / Integrated Health System",
-    "lastUpdated": "2026-07-01",
+    "lastUpdated": "2026-07-09",
     "description": "Largest integrated US healthcare system (1,298 facilities, 9M+ enrolled veterans). VHA RISE reorganization, HELM / VALIP supply chain DevSecOps, CCN Next Gen community care, and EHRM Oracle Health deployment all run in parallel. VA OIT operates the IT layer through T4NG2 and IHT 2.0; imaging and ambient AI are active growth areas.",
     "mmtRead": "VA is mid-reorganization (VHA RISE, December 2025 announcement) and mid-modernization. EHRM is back on track with four Michigan sites live April 11, 2026 (first wave of 13 sites for 2026). T4NG2 awarded ($60.7B, 33 final awardees post-protest); IHT 2.0 ($14B, 100% SDVOSB, 9 awardees) covers VHA technology services through 2035. CCN Next Gen proposals due April 3, 2026 (in award review). HELM / VALIP supply-chain DevSecOps is the under-tracked acquisition + financial-system integration lane; VA Ambient Scribe IDIQ (36C10B26R0006) is in active GAO protest with decision due August 6, 2026. The capture frame is agency shift before RFP: read RISE, then map to EHRM / CCN / HELM signals.",
     "officialSources": [
       {
-        "label": "VHA About",
-        "url": "https://www.va.gov/health/aboutvha.asp"
+        "label": "VA OIT — EHR deployment schedule (digital.va.gov)",
+        "url": "https://digital.va.gov/ehr-modernization/ehr-deployment-schedule/"
       },
       {
-        "label": "VA EHRM Michigan deployments",
+        "label": "VA EHRM Michigan deployments (news.va.gov, Apr 2026)",
         "url": "https://news.va.gov/press-room/va-health-record-system-back-on-track-with-michigan-deployments/"
       },
       {
-        "label": "IHT 2.0 award context",
+        "label": "IHT 2.0 award context (GovConWire, 2026)",
         "url": "https://www.govconwire.com/articles/va-vha-iht-2-contract-award-sdvosb"
       }
     ],
@@ -222,7 +222,15 @@
       "CSOC - Cybersecurity Operations Center Support ($332M recompete, OIS; Revolutional incumbent, GSA MAS HACS) [APBI FY26]",
       "TSS 3.0 - Transformation Support Services ($TBD recompete, OIS; Booz Allen incumbent, GSA MAS) [APBI FY26]",
       "OMEGA - Onboarding, Management, Engineering, Governance & Assurance Services ($500M-$999M recompete, OIT; Sprezzatura incumbent, GSA MAS) [APBI FY26]",
-      "Application Hosting Compute and Storage ($100M-$249M new, IO; VA Platform One containerization) [APBI FY26]"
+      "Application Hosting Compute and Storage ($100M-$249M new, IO; VA Platform One containerization) [APBI FY26]",
+      "Contact Center CRM Modernization ($350M-$400M new, PDS/Rob Orifici; unify VA contact-center CRMs, AI + agent assist) [APBI FY26]",
+      "Inventory Management Modernization ($500M-$700M new IDIQ, PDS/Sandi Williamson; enterprise procurement + inventory, 30+ system interoperability) [APBI FY26]",
+      "Contact Center Infrastructure / CCI ($50M/5yr new, EUS/Bob Cunningham; cloud ACD/IVR, AI-first, 24/7) [APBI FY26]",
+      "Endpoints 3.0 - Endpoints as a Service ($100M/yr new, EUS/Sean Mohler; zero-touch leasing, 170+ facilities, ServiceNow/AutoPilot/Intune) [APBI FY26]",
+      "Supporting Technology 3.0 ($50M-$99M new, EUS/Sean Mohler; scanners/printers/monitors/peripherals) [APBI FY26]",
+      "Enterprise Guest Wi-Fi 2.0 ($100M-$249M new, CCS/Brad Mills; standardized guest Wi-Fi + LEO satellite backup, 10 pilots) [APBI FY26]",
+      "Unified Communication Server Replacement ($20M-$49M new on SEWP, CCS/Ryan Dillon; replace 300+ EOL Cisco M5 across 150+ sites) [APBI FY26]",
+      "Data Loss Prevention / DLP ($20M-$49M recompete, OIS/Tamara Neal; Maveris/T4NG incumbent; ZTA data-pillar) [APBI FY26]"
     ],
     "procurementSignals": [
       "CCN Next Gen Medical 36C10G26R0003 (proposals closed Apr 3 2026)",
@@ -234,7 +242,9 @@
       "APBI FY26: Q4 FY26 RFP cluster — Application Services, ICMS, EDGE, ERP, Cloud Broker, App Hosting Compute & Storage, Mainframe Services, and CMS (contract writing system) all target Q4 FY26 solicitation (notional per APBI)",
       "APBI FY26: EDGE RFP live on SAM.gov (36C10B26Q0245); RFI completed, RFP Q1 FY27, award Q2 FY27 (context)",
       "APBI FY26: CMS (Contract Management System) Industry Day held June 18 2026; RFI Q3 FY26, RFP/award Q4 FY26",
-      "APBI FY26: OIT PDAS Zack Schwartz framed the recompete wave at the June 2026 industry day — 'incumbency is not a guarantee' — signaling EDGE, HTMSS, CSOC, TSS 3.0, OMEGA and CGT are genuinely open competes"
+      "APBI FY26: OIT PDAS Zack Schwartz framed the recompete wave at the June 2026 industry day — 'incumbency is not a guarantee' — signaling EDGE, HTMSS, CSOC, TSS 3.0, OMEGA and CGT are genuinely open competes",
+      "APBI FY26: new-start cluster off the June deck — Contact Center CRM Modernization ($350M-$400M, PDS), Inventory Management Modernization IDIQ ($500M-$700M, PDS), Cloud Broker Service ($1B-$1.9B, IO) and ERP ($1B-$1.7B, IO) are the large NEW starts (not recompetes)",
+      "APBI FY26: EUS end-user refresh lane — Endpoints 3.0 / EaaS ($100M/yr), Supporting Technology 3.0 ($50M-$99M), Contact Center Infrastructure ($50M/5yr); CCS lane — Enterprise Guest Wi-Fi 2.0 ($100M-$249M) and Unified Comm Server on SEWP ($20M-$49M)"
     ],
     "openVehicles": [
       "T4NG2",
