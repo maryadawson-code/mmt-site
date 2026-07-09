@@ -481,6 +481,16 @@
 [functions."may17-dha-budget-realignment-send"]
   schedule = "*/15 * * * *"
 
+# One-off LEADERSHIP UPDATE: DHA Component Acquisition Executive (AD-RDA /
+# CAE) seat is now CONFIRMED (was Acting since the April 2026 reorg). Emails
+# active premium subscribers and points them to /premium/org-charts/dha. The
+# email does NOT name the person, by Mary's direction. Fires every 15 min so
+# it ships within 15 min of deploy on/after 2026-07-09 UTC; idempotency-keyed
+# in ops_events as jul9_dha_cae_confirmed_sent (claimed before the send loop).
+# Kill switch: JUL9_DHA_CAE_DISABLED=true. Retire by 2026-07-23.
+[functions."jul9-dha-cae-confirmed-send"]
+  schedule = "*/15 * * * *"
+
 # Hourly Stripe -> mp_users safety-net sync.
 # Stripe Payment Links (the pricing page checkout) periodically produce
 # subscriptions whose webhook events never reach /.netlify/functions/
