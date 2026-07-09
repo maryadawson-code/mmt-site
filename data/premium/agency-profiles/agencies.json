@@ -222,7 +222,15 @@
       "CSOC - Cybersecurity Operations Center Support ($332M recompete, OIS; Revolutional incumbent, GSA MAS HACS) [APBI FY26]",
       "TSS 3.0 - Transformation Support Services ($TBD recompete, OIS; Booz Allen incumbent, GSA MAS) [APBI FY26]",
       "OMEGA - Onboarding, Management, Engineering, Governance & Assurance Services ($500M-$999M recompete, OIT; Sprezzatura incumbent, GSA MAS) [APBI FY26]",
-      "Application Hosting Compute and Storage ($100M-$249M new, IO; VA Platform One containerization) [APBI FY26]"
+      "Application Hosting Compute and Storage ($100M-$249M new, IO; VA Platform One containerization) [APBI FY26]",
+      "Contact Center CRM Modernization ($350M-$400M new, PDS/Rob Orifici; unify VA contact-center CRMs, AI + agent assist) [APBI FY26]",
+      "Inventory Management Modernization ($500M-$700M new IDIQ, PDS/Sandi Williamson; enterprise procurement + inventory, 30+ system interoperability) [APBI FY26]",
+      "Contact Center Infrastructure / CCI ($50M/5yr new, EUS/Bob Cunningham; cloud ACD/IVR, AI-first, 24/7) [APBI FY26]",
+      "Endpoints 3.0 - Endpoints as a Service ($100M/yr new, EUS/Sean Mohler; zero-touch leasing, 170+ facilities, ServiceNow/AutoPilot/Intune) [APBI FY26]",
+      "Supporting Technology 3.0 ($50M-$99M new, EUS/Sean Mohler; scanners/printers/monitors/peripherals) [APBI FY26]",
+      "Enterprise Guest Wi-Fi 2.0 ($100M-$249M new, CCS/Brad Mills; standardized guest Wi-Fi + LEO satellite backup, 10 pilots) [APBI FY26]",
+      "Unified Communication Server Replacement ($20M-$49M new on SEWP, CCS/Ryan Dillon; replace 300+ EOL Cisco M5 across 150+ sites) [APBI FY26]",
+      "Data Loss Prevention / DLP ($20M-$49M recompete, OIS/Tamara Neal; Maveris/T4NG incumbent; ZTA data-pillar) [APBI FY26]"
     ],
     "procurementSignals": [
       "CCN Next Gen Medical 36C10G26R0003 (proposals closed Apr 3 2026)",
@@ -234,7 +242,9 @@
       "APBI FY26: Q4 FY26 RFP cluster — Application Services, ICMS, EDGE, ERP, Cloud Broker, App Hosting Compute & Storage, Mainframe Services, and CMS (contract writing system) all target Q4 FY26 solicitation (notional per APBI)",
       "APBI FY26: EDGE RFP live on SAM.gov (36C10B26Q0245); RFI completed, RFP Q1 FY27, award Q2 FY27 (context)",
       "APBI FY26: CMS (Contract Management System) Industry Day held June 18 2026; RFI Q3 FY26, RFP/award Q4 FY26",
-      "APBI FY26: OIT PDAS Zack Schwartz framed the recompete wave at the June 2026 industry day — 'incumbency is not a guarantee' — signaling EDGE, HTMSS, CSOC, TSS 3.0, OMEGA and CGT are genuinely open competes"
+      "APBI FY26: OIT PDAS Zack Schwartz framed the recompete wave at the June 2026 industry day — 'incumbency is not a guarantee' — signaling EDGE, HTMSS, CSOC, TSS 3.0, OMEGA and CGT are genuinely open competes",
+      "APBI FY26: new-start cluster off the June deck — Contact Center CRM Modernization ($350M-$400M, PDS), Inventory Management Modernization IDIQ ($500M-$700M, PDS), Cloud Broker Service ($1B-$1.9B, IO) and ERP ($1B-$1.7B, IO) are the large NEW starts (not recompetes)",
+      "APBI FY26: EUS end-user refresh lane — Endpoints 3.0 / EaaS ($100M/yr), Supporting Technology 3.0 ($50M-$99M), Contact Center Infrastructure ($50M/5yr); CCS lane — Enterprise Guest Wi-Fi 2.0 ($100M-$249M) and Unified Comm Server on SEWP ($20M-$49M)"
     ],
     "openVehicles": [
       "T4NG2",
