@@ -9,7 +9,7 @@
       "agency_code": "DHA",
       "agency_name": "Defense Health Agency",
       "source_url": "https://www.dha.mil/About-DHA/Organizational-Structure-NEW",
-      "verified_date": "2026-05-28",
+      "verified_date": "2026-07-09",
       "people": [
         {
           "name": "Vice Adm. Darin K. Via, MC, USN",
@@ -36,10 +36,10 @@
           "why_watch": "Per the April 2026 reorg, AD-HCAO oversees one of four IOC PMO clusters. Five PMOs roll up here through FOC."
         },
         {
-          "name": "Rear Adm. Ivonne Arena",
-          "title": "Acting Assistant Director, Research, Development & Acquisition; Component Acquisition Executive",
-          "scope": "AD-RDA — DHA acquisition authority, including PEO DHMS and PEO Medical Systems oversight.",
-          "why_watch": "The CAE for DHA. Final acquisition decision authority for medical systems and informatics buys at the component level."
+          "name": "Dr. Matthew G. Clark",
+          "title": "Assistant Director, Research, Development & Acquisition; Component Acquisition Executive (Confirmed)",
+          "scope": "AD-RDA — DHA acquisition authority, including PEO DHMS and PEO Medical Systems oversight. Confirmed to the seat in 2026, succeeding RDML Ivonne Arena, who held it in an Acting capacity through the IOC stand-up.",
+          "why_watch": "The confirmed CAE for DHA — the seat is no longer Acting. Final acquisition decision authority for medical systems and informatics buys at the component level."
         },
         {
           "name": "Mr. Brett Scheideman",
@@ -48,10 +48,10 @@
           "why_watch": "Industry-engagement and category-management decisions land here. First call for partnering and market research."
         },
         {
-          "name": "PEO DHMS (Acting official not publicly confirmed)",
-          "title": "Program Executive Officer, Defense Healthcare Management Systems (PEO DHMS). James Perkins no longer serving as Acting; not confirmed in the role.",
-          "scope": "MHS GENESIS, JOMIS, EIDS. EHR portfolio acquisition reporting runs directly to USD(A&S). Oversees the HCDS recompete (award target July 2026).",
-          "why_watch": "James Perkins is no longer serving as Acting PEO DHMS and is not confirmed in the role; the current acting official for PEO DHMS is not publicly confirmed. The seat owns the largest DHA software portfolio, so the HCDS recompete and Oracle/Cerner interoperability stay the watch items regardless of who holds it."
+          "name": "Mr. James Perkins",
+          "title": "Portfolio Acquisition Executive, Medical Digital Solutions (PAE MDS) — Confirmed; the seat succeeding PEO DHMS",
+          "scope": "MHS GENESIS, JOMIS, EIDS. PAE MDS absorbs the PEO DHMS and PEO Medical Systems portfolios at FOC. EHR portfolio acquisition reporting runs directly to USD(A&S). Oversees the HCDS recompete (award target July 2026).",
+          "why_watch": "Confirmed in his PAE seat (Portfolio Acquisition Executive, Medical Digital Solutions) in 2026, after the June 9 All Hands — filling the PAE MDS assignment the deck still listed as open. Owns the largest DHA software portfolio, so the HCDS recompete and Oracle/Cerner interoperability are the watch items."
         },
         {
           "name": "Ms. Caitlyn Felkoski",
@@ -88,6 +88,12 @@
           "title": "Director, Office of Warfighter Health Advantage (OWHA)",
           "scope": "Leads the new OWHA, established in the April 2026 reorg and reporting to the DHA Deputy Director. Consolidates the former DIG, CDAO, BID, Digital Health Integration Office, and SIG functions — data, analytics, AI/ML, and digital health.",
           "why_watch": "OWHA is the new front door for enterprise data, analytics, AI/ML, and digital-health modernization. Co-chairs the Warfighter Modernization & Support Integration Board (WMSIB) with the DCAE. AI/data/digital-health capability now routes through this office."
+        },
+        {
+          "name": "Mr. Pat Flanders",
+          "title": "Chief Information Officer (J-6) — Confirmed",
+          "scope": "DHA enterprise IT and the J-6 Chief Information Office. J-6 transitions under AD-SPFO at FOC (19 July 2026).",
+          "why_watch": "Confirmed as the DHA CIO after the June 9, 2026 All Hands. Owns the enterprise IT and cyber layer beneath MHS GENESIS and the DHMS portfolio; the J-6 CIO shop is a required stop for infrastructure, hosting, and cybersecurity requirements."
         }
       ]
     },

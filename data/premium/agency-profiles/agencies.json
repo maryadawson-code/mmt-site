@@ -4,7 +4,7 @@
     "abbrev": "DHA",
     "name": "Defense Health Agency",
     "type": "Combat Support Agency (DoD)",
-    "lastUpdated": "2026-06-11",
+    "lastUpdated": "2026-07-09",
     "description": "DoD's combat support agency for the Military Health System. Buys MHS GENESIS, PEO DHMS, OPMED (operational medicine systems including JOMIS and MHS GENESIS-Theater), EIDS, HCDS, enterprise imaging, and the cyber and data modernization layer beneath them. Reorganized April 20, 2026 with FOC target July 19; Office of Warfighter Health Advantage (OWHA) consolidates data, analytics, AI, and digital health.",
     "mmtRead": "DHA reorganized April 20, 2026 with FOC target July 19. PEO DHMS retains executive authority over MHS GENESIS, OPMED programs (JOMIS, MHS GENESIS-Theater, deployable / Role 1-2-3 medical C2, blood inventory, theater data movement), and DMIX / EIDS. Organizationally PEO DHMS sits under AD-RDA/CAE, but the EHR portfolio's acquisition reporting runs directly to USW(A&S). The Office of Warfighter Health Advantage (RDML Tracy Farrill, just appointed) consolidates data, analytics, AI, and digital health into a single seat. The HCDS deployment RFP and the Leidos bridge are both inside the three-PAE transition window. Per the June 9, 2026 AD-RDA All Hands, the formal portfolios are PAE Medical Systems (MS), Medical Products (MP), and Medical Digital Solutions (MDS); PAE MDS is the consolidation seat absorbing PEO DHMS and PEO Medical Systems.",
     "officialSources": [
@@ -55,7 +55,7 @@
         "EHRM funding (30% withheld pending June 1 conditions)"
       ]
     },
-    "current_read": "DHA reorganization is in execution: IOC began April 20, 2026, FOC target July 19. Per the June 9, 2026 AD-RDA All Hands, the front office is Acting across the top (RDML Arena, AD-RDA/CAE; Brett Scheideman, Principal Deputy/DCAE; COL Basia Bujak, Military Deputy; CMSgt Christine Collins, Senior Enlisted Leader). The construct consolidates to three PAEs (Medical Systems, Medical Products, Medical Digital Solutions); PAE MDS has captured roughly 80 percent of the combined PEO DHMS + PEO Medical Systems portfolio and is mid 90-day stand-up behind a Unified IT Systems Migration Plan. EHR portfolio acquisition reporting still runs directly to USW(A&S). DHACA obligated $15.8B in FY26 (up $2.9B over FY25) on fewer actions. The HCDS deployment RFP and the Leidos bridge remain inside the transition window.",
+    "current_read": "DHA reorganization is in execution: IOC began April 20, 2026, FOC target July 19. The Component Acquisition Executive seat is now confirmed: Dr. Matthew G. Clark holds AD-RDA/CAE, succeeding RDML Arena, who ran it Acting through the IOC stand-up. The rest of the front office is still Acting (Brett Scheideman, Principal Deputy/DCAE; COL Basia Bujak, Military Deputy; CMSgt Christine Collins, Senior Enlisted Leader). The construct consolidates to three PAEs (Medical Systems, Medical Products, Medical Digital Solutions); PAE MDS has captured roughly 80 percent of the combined PEO DHMS + PEO Medical Systems portfolio and is mid 90-day stand-up behind a Unified IT Systems Migration Plan. EHR portfolio acquisition reporting still runs directly to USW(A&S). DHACA obligated $15.8B in FY26 (up $2.9B over FY25) on fewer actions. The HCDS deployment RFP and the Leidos bridge remain inside the transition window.",
     "key_vehicles": [
       "DHITUC",
       "MHS EITS",

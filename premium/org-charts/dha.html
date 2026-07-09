@@ -155,7 +155,7 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
     <h1 class="hero-title">Defense Health Agency<br>Organizational Structure</h1>
     <div class="hero-meta">
       <span>Structure effective 20 APR 2026</span>
-      <span>Leadership as of 09 JUN 2026</span>
+      <span>Leadership as of 09 JUL 2026</span>
       <span>IOC: 20 APR 2026 (in execution) &middot; FOC Target: 19 JUL 2026</span>
       <span>Source: AD-RDA All Hands 09 JUN 2026 (UNCLASSIFIED)</span>
     </div>
@@ -283,11 +283,11 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
 
       <!-- AD-RDA/CAE -->
       <div style="display:flex;flex-direction:column;align-items:center;min-width:280px;max-width:400px">
-        <div class="node-card acting-badge" onclick="showDetail('arena')" style="width:100%;text-align:center">
-          <div class="node-tier tier-2" style="color:var(--acting)">AD-RDA / CAE</div>
-          <div class="node-name">RDML Ivonne Arena</div>
-          <div class="node-role">Acting Asst. Director &middot; Research, Development &amp; Acquisition / Component Acquisition Executive</div>
-          <span class="node-badge acting">Acting &middot; O-7 RDML (USPHS)</span>
+        <div class="node-card" onclick="showDetail('clark')" style="width:100%;text-align:center;border-color:var(--primary)">
+          <div class="node-tier tier-2" style="color:var(--primary)">AD-RDA / CAE</div>
+          <div class="node-name">Dr. Matthew G. Clark</div>
+          <div class="node-role">Assistant Director &middot; Research, Development &amp; Acquisition / Component Acquisition Executive</div>
+          <span class="node-badge" style="background:rgba(10,25,47,0.10);color:var(--primary)">&#9679; Confirmed CAE</span>
         </div>
         <div class="connector-v thick"></div>
         <button class="expand-btn" id="rda-toggle" onclick="toggleSection('rda')" style="font-size:0.72rem;margin-bottom:8px">&#9660; AD-RDA Sub-Units (IOC)</button>
@@ -311,13 +311,13 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
           </div>
           <div class="section-label" style="font-size:0.62rem;margin-top:6px">AD-RDA at IOC (20 APR 2026, in execution) &middot; 4 Acting program execs + DHACA + DHA R&amp;D &middot; consolidating to 3 PAEs (Medical Systems / Medical Products / Medical Digital Solutions) by FOC per AD-RDA All Hands 09 JUN 2026</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
-            <!-- PEO DHMS: acting official not publicly confirmed (James Perkins no longer serving as Acting): 3 DHMS PMOs at IOC -->
-            <div style="border:1px solid var(--acting-border);border-radius:10px;padding:10px;background:var(--acting-bg)">
-              <div class="node-card acting-badge" onclick="showDetail('perkins')" style="margin-bottom:6px">
-                <div class="node-tier tier-3">PEO DHMS</div>
-                <div class="node-name">Acting official not publicly confirmed</div>
-                <div class="node-role">PEO DHMS &middot; James Perkins no longer serving as Acting</div>
-                <span class="node-badge acting" style="background:rgba(92,107,122,0.15);color:#5C6B7A">Unconfirmed</span>
+            <!-- PEO DHMS: James Perkins confirmed in his PAE seat (PAE Medical Digital Solutions, the successor to PEO DHMS): 3 DHMS PMOs at IOC -->
+            <div style="border:1px solid var(--primary);border-radius:10px;padding:10px;background:var(--surface)">
+              <div class="node-card" onclick="showDetail('perkins')" style="margin-bottom:6px;border-color:var(--primary)">
+                <div class="node-tier tier-3">PEO DHMS &rarr; PAE MDS</div>
+                <div class="node-name">Mr. James Perkins</div>
+                <div class="node-role">Confirmed PAE Medical Digital Solutions (MDS) &middot; MHS GENESIS / JOMIS / EIDS</div>
+                <span class="node-badge" style="background:rgba(10,25,47,0.10);color:var(--primary)">&#9679; Confirmed PAE</span>
               </div>
               <div class="pmo-grid" style="grid-template-columns:1fr;gap:4px">
                 <div class="pmo-card"><div class="pmo-card-title">DOD Healthcare Mgmt System Modernization</div><div class="pmo-card-sub">MHS GENESIS &middot; HCDS recompete (award target Jul 2026)</div></div>
@@ -392,7 +392,7 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
             </div>
           </div>
           <div class="ioc-foc-note" style="margin-top:10px">
-            <strong>FOC (19 JUL 2026 &middot; in execution):</strong> The IOC construct consolidates into three Portfolio Acquisition Executives. Per the 09 JUN 2026 All Hands, the formal portfolios are PAE Medical Systems (MS), PAE Medical Products (MP), and PAE Medical Digital Solutions (MDS). PAE MDS absorbs the PEO DHMS + PEO Medical Systems portfolios; both PEOs are actively transitioning personnel, funding, and the ICS/MST PMOs to AD-RDA/CAE. The PAE MDS Working Group has captured ~80% of that combined portfolio and is running a 90-day stand-up behind a Unified IT Systems Migration Plan. DHACA and DHA R&amp;D continue as direct reports. PAE MDS still has no named Acting lead &middot; leadership assignment remains a Key Next Step.
+            <strong>FOC (19 JUL 2026 &middot; in execution):</strong> The IOC construct consolidates into three Portfolio Acquisition Executives. Per the 09 JUN 2026 All Hands, the formal portfolios are PAE Medical Systems (MS), PAE Medical Products (MP), and PAE Medical Digital Solutions (MDS). PAE MDS absorbs the PEO DHMS + PEO Medical Systems portfolios; both PEOs are actively transitioning personnel, funding, and the ICS/MST PMOs to AD-RDA/CAE. The PAE MDS Working Group has captured ~80% of that combined portfolio and is running a 90-day stand-up behind a Unified IT Systems Migration Plan. DHACA and DHA R&amp;D continue as direct reports. Update (post 09 JUN All Hands): PAE MDS is now led by Mr. James Perkins (confirmed) &middot; the leadership assignment the deck listed as a Key Next Step is filled.
           </div>
           <div style="margin-top:10px;padding:8px 12px;background:var(--mmt-soft);border-radius:6px;font-size:0.68rem;color:var(--mmt-text-secondary);line-height:1.5">
             <strong>Source:</strong> AD-RDA All Hands 09 JUN 2026 (front-office structure, FOC progress, PAE POAMs, DHACA FY26 execution) updating the AD-RDA Town Hall briefing slides, 29 APR 2026 (DHA Org Structure as of 20 APR 2026, AD-RDA Day 2 / IOC, AD-RDA Day 90 / FOC, Key Next Steps IOC to FOC).
@@ -416,7 +416,7 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
             <div class="pmo-card"><div class="pmo-card-title">J-8 Financial Management</div><div class="pmo-card-sub">TRICARE Program Resource Mgmt &middot; Defense Health Programming</div></div>
             <div class="pmo-card" style="border-color:var(--foc-border)"><div class="pmo-card-title" style="color:var(--foc)">J-4 Medical Logistics &#8592; FOC</div></div>
             <div class="pmo-card"><div class="pmo-card-title">DHA Facilities Enterprise</div></div>
-            <div class="pmo-card" style="border-color:var(--foc-border)"><div class="pmo-card-title" style="color:var(--foc)">J-6 Chief Information Office &#8592; FOC</div></div>
+            <div class="pmo-card" style="border-color:var(--foc-border)"><div class="pmo-card-title" style="color:var(--foc)">J-6 Chief Information Office &#8592; FOC</div><div class="pmo-card-sub">CIO: Mr. Pat Flanders (confirmed)</div></div>
           </div>
         </div>
       </div>
@@ -463,6 +463,10 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
         <span style="color:var(--text-muted)">IOC begins &middot; AD-RDA stood up under RDML Arena (Acting). Acting leaders in place across all PAEs, PEOs, and DHACA. Transition in execution as of the 09 JUN 2026 All Hands.</span>
       </div>
       <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.8rem;padding:8px;border-radius:6px;background:var(--surface-2)">
+        <span style="min-width:90px;font-weight:600;color:var(--primary)">&#10003; JUL 2026</span>
+        <span style="color:var(--text-muted)">Confirmations after the 09 JUN All Hands &middot; Dr. Matthew G. Clark confirmed AD-RDA / CAE (succeeding RDML Arena, Acting); Mr. James Perkins confirmed PAE Medical Digital Solutions (MDS); Mr. Pat Flanders confirmed DHA CIO (J-6). These three seats are no longer Acting or unfilled.</span>
+      </div>
+      <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.8rem;padding:8px;border-radius:6px;background:var(--surface-2)">
         <span style="min-width:90px;font-weight:600;color:var(--foc)">&#8594; 19 JUL 2026</span>
         <span style="color:var(--text-muted)">FOC &middot; PEO DHMS consolidates under AD-RDA. J-4/J-6 move to AD-SPFO. USAHCA workload &#8594; DHACA. Three PAEs fully stood up with signed charters and delegation memos.</span>
       </div>
@@ -470,7 +474,7 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
   </div>
 
   <p style="font-size:0.7rem;color:var(--text-faint);margin-top:24px;text-align:center">
-    Sources: DHA-ORG-20APR26 &middot; AD-RDA Town Hall 29APR26 &middot; AD-RDA All Hands 09 JUN 2026 (UNCLASSIFIED) &middot; DHA.mil &middot; Mission Meets Tech Research &middot; Verified 11 JUN 2026
+    Sources: DHA-ORG-20APR26 &middot; AD-RDA Town Hall 29APR26 &middot; AD-RDA All Hands 09 JUN 2026 (UNCLASSIFIED) &middot; CAE / PAE MDS / CIO confirmations (post 09 JUN All Hands) JUL 2026 &middot; DHA.mil &middot; Mission Meets Tech Research &middot; Verified 09 JUL 2026
   </p>
 </div>
 
@@ -494,16 +498,16 @@ const leaders={
   marty:{tier:'Director HQ Operations',name:'Mr. Stephen Marty',role:'Director, Headquarters Operations',sections:[{title:'Role',items:['Manages DHA HQ administrative operations','Coordination of staff, schedules, internal communications']}],tags:['HQ Operations']},
   farrill:{tier:'OWHA Director',name:'RDML Tracy Farrill',role:'Director, Office of Warfighter Health Advantage',sections:[{title:'About OWHA',items:['New entity: created April 20, 2026 reorg','Consolidates: CDAO, BID, Digital Health Integration, DIG, SIG elements','Focused on warfighter health data, AI/ML, digital health modernization','Reports directly to DHA Director']},{title:'Background',items:['Rear Admiral: O-7, U.S. Navy','Former DHA Deputy CIO and digital health leader']}],tags:['O-7 RDML','OWHA','New Entity','Digital Health','AI/ML']},
   soliz:{tier:'Acting AD-HCAO',name:'BG Bill A. Soliz',role:'Acting Assistant Director: Healthcare Administration & Operations',sections:[{title:'Background',items:['Brigadier General: O-7, U.S. Army','Acting AD-HCAO as of April 2026 restructuring','Oversees direct care, TRICARE, public health, behavioral health, readiness ops']},{title:'Budget Oversight',items:['COMP direct care accounts','TRICARE Health Plan program management','DSPO program ($23M+ FY2027)']}],tags:['O-7 BGen','Acting AD-HCAO','Healthcare Ops','TRICARE']},
-  arena:{tier:'Acting AD-RDA / CAE',name:'RDML Ivonne Arena',role:'Acting Asst. Director: RDA / Component Acquisition Executive',sections:[{title:'Background',items:['Rear Admiral: O-7, USPHS','Former Deputy CIO, Defense Health Agency','Deputy, Business Operations, PEO DHMS','PM, Joint Pathology Center','Chief Health Services Admin, TSA']},{title:'Education',items:['MS Health Informatics: George Washington University','MS Healthcare Administration: Univ. of Puerto Rico Medical Science Campus']},{title:'Acquisition Authority',items:['CAE for DHA: all acquisition authority','Oversees 19 PMOs under PEO DHMS','Standing up 3 new PAEs by FOC 19 JUL 2026','Manages DHACA and DHA R&D/MRDC']},{title:'Personal',items:['Hobbies: Spartan Races, CrossFit']}],tags:['O-7 RDML (USPHS)','Acting AD-RDA','CAE','Former Deputy CIO']},
+  clark:{tier:'AD-RDA / CAE (Confirmed)',name:'Dr. Matthew G. Clark',role:'Assistant Director: Research, Development & Acquisition / Component Acquisition Executive',sections:[{title:'Status',items:['Confirmed as the DHA Component Acquisition Executive (2026): the AD-RDA / CAE seat is no longer Acting','Succeeds RDML Ivonne Arena, who held AD-RDA / CAE in an Acting capacity through the IOC stand-up']},{title:'Background',items:['PhD; PMP','Joint Project Manager, CBRN Medical (JPEO-CBRND)','Lead Program Manager, vaccine team, Operation Warp Speed','Director, COVID-19 International Response Operations, White House COVID-19 Response Team','Former Director, Office of Medical Systems, ASA(ALT)']},{title:'Acquisition Authority',items:['CAE for DHA: all component-level acquisition authority','Oversees the PEO DHMS and PEO Medical Systems portfolios in transition','Standing up 3 PAEs (Medical Systems / Medical Products / Medical Digital Solutions) by FOC 19 JUL 2026','Manages DHACA and DHA R&D/MRDC']}],tags:['Confirmed CAE','AD-RDA','PhD / PMP']},
   scheideman:{tier:'Acting Principal Deputy RDA / DCAE',name:'Mr. Brett Scheideman',role:'Acting Principal Deputy RDA / Deputy CAE',sections:[{title:'Role',items:['NH-IV civilian (highest non-SES acq pay band)','S&T, Chief Scientist, Research Support, Industry Engagement, Agreements & Partnerships, Category Management, Acquisition Workforce']}],tags:['Acting NH-IV','Principal Deputy RDA','DCAE']},
-  collins:{tier:'AD-RDA Senior Enlisted Leader (Acting)',name:'CMSgt Christine Collins',role:'Acting Senior Enlisted Leader, AD-RDA',sections:[{title:'Role',items:['Senior enlisted advisor to the Acting AD-RDA / CAE','Front-office leadership node per the 09 JUN 2026 All Hands','Distinct from the DHA-wide Command Senior Enlisted Leader']}],tags:['Acting','Senior Enlisted Leader','AD-RDA Front Office']},
-  perkins:{tier:'PEO DHMS &middot; Acting official unconfirmed',name:'PEO DHMS (Acting official not publicly confirmed)',role:'Program Executive Officer: Defense Healthcare Management Systems. James Perkins no longer serving as Acting; successor not publicly confirmed.',sections:[{title:'Status',items:['James Perkins is no longer serving as Acting PEO DHMS and is not confirmed in the role','The current acting official for PEO DHMS is not publicly confirmed','The seat continues to own MHS GENESIS and the DHMS PMOs regardless of who holds it']},{title:'Key Watch',items:['HCDS recompete: Leidos bridge active; projected award July 2026','Oracle Cerner interoperability dependency','Terry Dover named Chief of Products, April 2026']}],tags:['PEO DHMS','Unconfirmed','HCDS Recompete']},
+  collins:{tier:'AD-RDA Senior Enlisted Leader (Acting)',name:'CMSgt Christine Collins',role:'Acting Senior Enlisted Leader, AD-RDA',sections:[{title:'Role',items:['Senior enlisted advisor to the AD-RDA / CAE','Front-office leadership node per the 09 JUN 2026 All Hands','Distinct from the DHA-wide Command Senior Enlisted Leader']}],tags:['Acting','Senior Enlisted Leader','AD-RDA Front Office']},
+  perkins:{tier:'PEO DHMS to PAE MDS (Confirmed)',name:'Mr. James Perkins',role:'Confirmed Portfolio Acquisition Executive, Medical Digital Solutions (PAE MDS): the seat succeeding PEO DHMS',sections:[{title:'Status',items:['Confirmed in his PAE seat (Portfolio Acquisition Executive, Medical Digital Solutions) in 2026, after the 09 JUN 2026 All Hands','PAE MDS absorbs the PEO DHMS and PEO Medical Systems portfolios (MHS GENESIS, JOMIS, EIDS) at FOC 19 JUL 2026','Fills the PAE MDS leadership assignment the 09 JUN All Hands still listed as a Key Next Step']},{title:'Key Watch',items:['HCDS recompete: Leidos bridge active; projected award July 2026','Oracle Cerner interoperability dependency','Terry Dover named Chief of Products, April 2026']}],tags:['PAE MDS','Confirmed','PEO DHMS','HCDS Recompete']},
   moss:{tier:'Acting PEO Medical Systems',name:'COL Marcus Moss',role:'Acting PEO Medical Systems (IOC only)',sections:[{title:'Role',items:['Acting PEO Medical Systems at IOC','Construct transitions to PAE structure by FOC 19 JUL 2026','PAE Medical Services and PAE Medical Products absorb MS mission areas']}],tags:['Acting PEO','O-6 Colonel','IOC Leadership']},
   friedman:{tier:'Acting PAE Medical Services',name:'Mrs. Madeleine Friedman',role:'Acting Portfolio Acquisition Executive: Medical Services',sections:[{title:'Role',items:['New PAE: fully stood up by FOC 19 JUL 2026','Manages acquisition of medical services contracts','Authority defined by charters and delegation memos']}],tags:['Acting PAE','New Organization','Medical Services']},
   felkoski:{tier:'Acting PAE Medical Products',name:'Ms. Caitlyn Felkoski',role:'Acting Portfolio Acquisition Executive: Medical Products (NH-IV)',sections:[{title:'Role',items:['New PAE: NH-IV civilian','Medical products, devices, equipment acquisition','Fully stood up by FOC 19 JUL 2026']}],tags:['Acting PAE','NH-IV','New Organization','Medical Products']},
   watkins:{tier:'DHACA Director',name:'Mr. James Watkins',role:'Director, DHA Contracting Activity',sections:[{title:'Role',items:['Executes contract awards across DHA enterprise','Receives USAHCA/USAMHCA workload and staff transition by FOC','Major workload and staffing impact expected']},{title:'FY26 Execution (09 JUN 2026 All Hands)',items:['$15.8B obligated FY26 vs $12.9B FY25 (+$2.9B) on fewer actions (6,676 vs 6,861)','Deobligations down $215.4M (to $312.2M)','PMR 09-27 MAR 2026: deficiencies cut 44 to 8 since 2022; 10 best practices','USAHCA workload + personnel transferred in; MQS portfolio consolidating','Awards: Cognitive Monitoring (Operation Epic Fury, CICA stay override); STR Zero-Day Pilot','CDMRP program announcements posted (EO 14332 approval process)']}],tags:['DHACA','Contracting Authority','USAHCA Transition','$15.8B FY26']},
   lodi:{tier:'DHA R&D / MRDC Commander',name:'MG Paula Lodi',role:'CG, DHA Research & Development / MRDC',sections:[{title:'Background',items:['Major General: O-8, U.S. Army Medical Corps','Commands MRDC after transfer from Army to DHA (June 2024)']},{title:'Budget Crisis',items:['FY2027 RDTE: ~$1.0B vs $2.47B FY2026 enacted = -$1.45B (-59%)','Army Medical SAG 124: -$5.2M, -43 FTEs to PEO Soldier','TATRC described as "dead in name and spirit" (Quinn, Apr 2026)','MRDC described as "on life support" after Kathy Berst departure']},{title:'Valley of Death',items:['Research outputs not transitioning to acquisition','April 29, 2026 All-Hands called to address TATRC/MRDC future']}],tags:['O-8 Major General','MRDC','Budget Crisis -59%','TATRC','Valley of Death']},
-  emerson:{tier:'AD-SPFO',name:'Mr. Michael R. Emerson',role:'Assistant Director: Support, Personnel & Financial Operations',sections:[{title:'Role',items:['Confirmed (non-acting): stable senior civilian','J-1 (Personnel), J-8 (Financial Mgmt), Facilities Enterprise, Medical Logistics']},{title:'FOC Additions by 19 JUL',items:['J-4 Medical Logistics consolidating under SPFO','J-6 CIO transitioning under SPFO']},{title:'Budget',items:['Defense Health Programming, Budgeting & Justification','TRICARE Program Resource Management (direct J-8 report)']}],tags:['AD-SPFO','SES Civilian','J-1 J-4 J-6 J-8','Financial Management']}
+  emerson:{tier:'AD-SPFO',name:'Mr. Michael R. Emerson',role:'Assistant Director: Support, Personnel & Financial Operations',sections:[{title:'Role',items:['Confirmed (non-acting): stable senior civilian','J-1 (Personnel), J-8 (Financial Mgmt), Facilities Enterprise, Medical Logistics']},{title:'FOC Additions by 19 JUL',items:['J-4 Medical Logistics consolidating under SPFO','J-6 CIO (Mr. Pat Flanders, confirmed) transitioning under SPFO']},{title:'Budget',items:['Defense Health Programming, Budgeting & Justification','TRICARE Program Resource Management (direct J-8 report)']}],tags:['AD-SPFO','SES Civilian','J-1 J-4 J-6 J-8','Financial Management']}
 };
 function showDetail(id){const d=leaders[id];if(!d)return;document.getElementById('detailTier').textContent=d.tier;document.getElementById('detailName').textContent=d.name;document.getElementById('detailRole').textContent=d.role;let h='';d.sections.forEach(s=>{h+=`<div class="detail-section"><div class="detail-section-title">${s.title}</div>`;s.items.forEach(i=>h+=`<div class="detail-item">&bull; ${i}</div>`);h+='</div>';});if(d.tags){h+='<div class="detail-section"><div class="detail-section-title">Tags</div><div class="detail-tags">';d.tags.forEach(t=>h+=`<span class="detail-tag">${t}</span>`);h+='</div></div>';}document.getElementById('detailBody').innerHTML=h;document.getElementById('detailPanel').classList.add('open');document.getElementById('overlay').style.display='block';}
 function closeDetail(){document.getElementById('detailPanel').classList.remove('open');document.getElementById('overlay').style.display='none';}

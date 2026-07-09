@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-05-07T18:11:48.476Z",
-  "node_count": 408,
-  "edge_count": 507,
+  "generated_at": "2026-07-09T19:37:02.294Z",
+  "node_count": 455,
+  "edge_count": 639,
   "nodes": [
     {
       "id": "peo-dhms-deployment",
@@ -684,14 +684,14 @@
       }
     },
     {
-      "id": "va-supply-chain-devsecops-helm",
+      "id": "va-helm-scmdso-healthcare-environment-and-logistics-manageme",
       "type": "Solicitation",
-      "canonical_name": "VA Supply Chain DevSecOps / HELM",
+      "canonical_name": "VA HELM / SCMDSO (Healthcare Environment and Logistics Management)",
       "properties": {
         "classification": "Solicitation",
         "status": "upcoming",
         "naics": "541512",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-05-22"
       }
     },
     {
@@ -1163,6 +1163,381 @@
       }
     },
     {
+      "id": "t6-health-systems-aoi-2-peo-dhms-cso",
+      "type": "Program",
+      "canonical_name": "T6 Health Systems — AOI 2 (PEO DHMS CSO)",
+      "properties": {
+        "classification": "Award",
+        "status": "active",
+        "naics": "541512",
+        "last_verified": "2026-05-28"
+      }
+    },
+    {
+      "id": "t6-health-systems",
+      "type": "Contractor",
+      "canonical_name": "T6 Health Systems",
+      "properties": {}
+    },
+    {
+      "id": "mantech-dmix-diss-support",
+      "type": "Program",
+      "canonical_name": "ManTech — DMIX / DISS Support",
+      "properties": {
+        "classification": "Award",
+        "status": "active",
+        "naics": "541512",
+        "last_verified": "2026-05-28"
+      }
+    },
+    {
+      "id": "mantech",
+      "type": "Contractor",
+      "canonical_name": "ManTech",
+      "properties": {}
+    },
+    {
+      "id": "swingtide-market-intelligence-support",
+      "type": "Program",
+      "canonical_name": "Swingtide — Market Intelligence Support",
+      "properties": {
+        "classification": "Award",
+        "status": "active",
+        "naics": "541618",
+        "last_verified": "2026-05-28"
+      }
+    },
+    {
+      "id": "swingtide",
+      "type": "Contractor",
+      "canonical_name": "Swingtide",
+      "properties": {}
+    },
+    {
+      "id": "str-zero-day-leidos",
+      "type": "Program",
+      "canonical_name": "STR Zero Day — Leidos",
+      "properties": {
+        "classification": "Award",
+        "status": "active",
+        "naics": "541512",
+        "last_verified": "2026-05-28"
+      }
+    },
+    {
+      "id": "samhsa-bhsis-recompete-behavioral-health-services-informatio",
+      "type": "Solicitation",
+      "canonical_name": "SAMHSA BHSIS Recompete (Behavioral Health Services Information System)",
+      "properties": {
+        "classification": "Solicitation",
+        "status": "upcoming",
+        "naics": "541990",
+        "last_verified": "2026-05-29"
+      }
+    },
+    {
+      "id": "substance-abuse-and-mental-health-services-administration-sa",
+      "type": "Agency",
+      "canonical_name": "Substance Abuse and Mental Health Services Administration (SAMHSA)",
+      "properties": {}
+    },
+    {
+      "id": "fda-sirce-ii-systems-for-inspection-recalls-compliance-enfor",
+      "type": "Solicitation",
+      "canonical_name": "FDA SIRCE II (Systems for Inspection, Recalls, Compliance & Enforcement)",
+      "properties": {
+        "classification": "Solicitation",
+        "status": "upcoming",
+        "naics": "541511",
+        "last_verified": "2026-05-29"
+      }
+    },
+    {
+      "id": "hrsa-optn-next-gen-it-contracts-phase-2",
+      "type": "Solicitation",
+      "canonical_name": "HRSA OPTN Next Gen IT Contracts (Phase 2)",
+      "properties": {
+        "classification": "Solicitation",
+        "status": "upcoming",
+        "naics": "541511",
+        "last_verified": "2026-05-29"
+      }
+    },
+    {
+      "id": "health-resources-services-administration-hrsa",
+      "type": "Agency",
+      "canonical_name": "Health Resources & Services Administration (HRSA)",
+      "properties": {}
+    },
+    {
+      "id": "cms-sparc-ii-strategic-partners-acquisition-readiness-contra",
+      "type": "Solicitation",
+      "canonical_name": "CMS SPARC II (Strategic Partners Acquisition Readiness Contract — Recompete)",
+      "properties": {
+        "classification": "Solicitation",
+        "status": "upcoming",
+        "naics": "541511",
+        "last_verified": "2026-05-29"
+      }
+    },
+    {
+      "id": "cdc-dmi-successor-nssp-ecosystem-contracts",
+      "type": "Program",
+      "canonical_name": "CDC DMI Successor / NSSP Ecosystem Contracts",
+      "properties": {
+        "classification": "Program Watch",
+        "status": "upcoming",
+        "naics": "541511",
+        "last_verified": "2026-05-29"
+      }
+    },
+    {
+      "id": "ihs-four-directions-warehouse-4dw-clinical-data-repository",
+      "type": "Program",
+      "canonical_name": "IHS Four Directions Warehouse (4DW) — Clinical Data Repository",
+      "properties": {
+        "classification": "Award",
+        "status": "active",
+        "naics": "541519",
+        "last_verified": "2026-05-29"
+      }
+    },
+    {
+      "id": "cherokee-nation-integrated-health",
+      "type": "Contractor",
+      "canonical_name": "Cherokee Nation Integrated Health",
+      "properties": {}
+    },
+    {
+      "id": "nih-scientific-technical-support-services-idiq-3b",
+      "type": "Solicitation",
+      "canonical_name": "NIH Scientific & Technical Support Services IDIQ ($3B)",
+      "properties": {
+        "classification": "Solicitation",
+        "status": "upcoming",
+        "naics": "541714",
+        "last_verified": "2026-05-29"
+      }
+    },
+    {
+      "id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "type": "Solicitation",
+      "canonical_name": "CMS RMADA 3 (Research, Measurement, Assessment, Design & Analysis)",
+      "properties": {
+        "classification": "Solicitation",
+        "status": "upcoming",
+        "naics": "541720",
+        "last_verified": "2026-05-29"
+      }
+    },
+    {
+      "id": "acf-ccwis-support-task-recompete-child-welfare-information-s",
+      "type": "Solicitation",
+      "canonical_name": "ACF CCWIS Support Task Recompete (Child Welfare Information Systems)",
+      "properties": {
+        "classification": "Solicitation",
+        "status": "upcoming",
+        "naics": "541512",
+        "last_verified": "2026-05-29"
+      }
+    },
+    {
+      "id": "hhs-ngits-bpa-recompete-application-hosting-operations-engin",
+      "type": "Program",
+      "canonical_name": "HHS NGITS BPA Recompete (Application Hosting, Operations, Engineering)",
+      "properties": {
+        "classification": "Program Watch",
+        "status": "upcoming",
+        "naics": "541512",
+        "last_verified": "2026-05-29"
+      }
+    },
+    {
+      "id": "ihs-path-ehr-future-task-orders-sustainment-deployment-pipel",
+      "type": "Program",
+      "canonical_name": "IHS PATH EHR Future Task Orders (Sustainment & Deployment Pipeline)",
+      "properties": {
+        "classification": "Program Watch",
+        "status": "active",
+        "naics": "541511",
+        "last_verified": "2026-05-29"
+      }
+    },
+    {
+      "id": "gdit-to-pipeline",
+      "type": "Contractor",
+      "canonical_name": "GDIT — TO pipeline",
+      "properties": {}
+    },
+    {
+      "id": "fda-fire-foundational-innovation-and-rapid-engagement",
+      "type": "Solicitation",
+      "canonical_name": "FDA FIRE (Foundational Innovation and RAPID Engagement)",
+      "properties": {
+        "classification": "Solicitation",
+        "status": "upcoming",
+        "naics": "541511",
+        "last_verified": "2026-05-29"
+      }
+    },
+    {
+      "id": "hrsa-ryan-white-rsr-data-modernization",
+      "type": "Program",
+      "canonical_name": "HRSA Ryan White RSR Data Modernization",
+      "properties": {
+        "classification": "Program Watch",
+        "status": "upcoming",
+        "naics": "541511",
+        "last_verified": "2026-05-29"
+      }
+    },
+    {
+      "id": "wrma-recompete-watch",
+      "type": "Contractor",
+      "canonical_name": "WRMA — recompete watch",
+      "properties": {}
+    },
+    {
+      "id": "cdc-electronic-case-reporting-ecr-modernization",
+      "type": "Program",
+      "canonical_name": "CDC Electronic Case Reporting (eCR) Modernization",
+      "properties": {
+        "classification": "Program Watch",
+        "status": "upcoming",
+        "naics": "541511",
+        "last_verified": "2026-05-29"
+      }
+    },
+    {
+      "id": "aspr-npivs-national-provider-identity-verification-system",
+      "type": "Solicitation",
+      "canonical_name": "ASPR NPIVS (National Provider Identity Verification System)",
+      "properties": {
+        "classification": "Solicitation",
+        "status": "upcoming",
+        "naics": "541511",
+        "last_verified": "2026-05-29"
+      }
+    },
+    {
+      "id": "va-edge-enterprise-digital-government-enablement",
+      "type": "Solicitation",
+      "canonical_name": "VA EDGE — Enterprise Digital Government Enablement",
+      "properties": {
+        "classification": "Solicitation",
+        "status": "upcoming",
+        "naics": "541512",
+        "last_verified": "2026-07-01"
+      }
+    },
+    {
+      "id": "incumbent-deloitte-consulting-llp",
+      "type": "Contractor",
+      "canonical_name": "Incumbent: Deloitte Consulting LLP",
+      "properties": {}
+    },
+    {
+      "id": "va-cloud-broker-service",
+      "type": "Program",
+      "canonical_name": "VA Cloud Broker Service",
+      "properties": {
+        "classification": "Program Watch",
+        "status": "upcoming",
+        "naics": "541512",
+        "last_verified": "2026-07-01"
+      }
+    },
+    {
+      "id": "va-enterprise-resource-planning-erp",
+      "type": "Program",
+      "canonical_name": "VA Enterprise Resource Planning (ERP)",
+      "properties": {
+        "classification": "Program Watch",
+        "status": "upcoming",
+        "naics": "541512",
+        "last_verified": "2026-07-01"
+      }
+    },
+    {
+      "id": "va-htmss-health-services-portfolio-technical-management-stra",
+      "type": "Program",
+      "canonical_name": "VA HTMSS — Health Services Portfolio Technical Management & Strategic Solutioning Support",
+      "properties": {
+        "classification": "Program Watch",
+        "status": "upcoming",
+        "naics": "541512",
+        "last_verified": "2026-07-01"
+      }
+    },
+    {
+      "id": "incumbent-govcio",
+      "type": "Contractor",
+      "canonical_name": "Incumbent: GovCIO",
+      "properties": {}
+    },
+    {
+      "id": "va-transformation-support-services-tss-3-0",
+      "type": "Program",
+      "canonical_name": "VA Transformation Support Services (TSS) 3.0",
+      "properties": {
+        "classification": "Program Watch",
+        "status": "upcoming",
+        "naics": "541512",
+        "last_verified": "2026-07-01"
+      }
+    },
+    {
+      "id": "incumbent-booz-allen-hamilton",
+      "type": "Contractor",
+      "canonical_name": "Incumbent: Booz Allen Hamilton",
+      "properties": {}
+    },
+    {
+      "id": "va-cybersecurity-operations-center-support-csoc",
+      "type": "Program",
+      "canonical_name": "VA Cybersecurity Operations Center Support (CSOC)",
+      "properties": {
+        "classification": "Program Watch",
+        "status": "upcoming",
+        "naics": "541519",
+        "last_verified": "2026-07-01"
+      }
+    },
+    {
+      "id": "incumbent-revolutional-llc",
+      "type": "Contractor",
+      "canonical_name": "Incumbent: Revolutional LLC",
+      "properties": {}
+    },
+    {
+      "id": "va-omega-onboarding-management-engineering-governance-assura",
+      "type": "Program",
+      "canonical_name": "VA OMEGA — Onboarding, Management, Engineering, Governance & Assurance Services",
+      "properties": {
+        "classification": "Program Watch",
+        "status": "upcoming",
+        "naics": "541512",
+        "last_verified": "2026-07-01"
+      }
+    },
+    {
+      "id": "incumbent-sprezzatura-management-consulting-llc",
+      "type": "Contractor",
+      "canonical_name": "Incumbent: Sprezzatura Management Consulting LLC",
+      "properties": {}
+    },
+    {
+      "id": "va-application-hosting-compute-and-storage",
+      "type": "Program",
+      "canonical_name": "VA Application Hosting Compute and Storage",
+      "properties": {
+        "classification": "Program Watch",
+        "status": "upcoming",
+        "naics": "541512",
+        "last_verified": "2026-07-01"
+      }
+    },
+    {
       "id": "hcds",
       "type": "Vehicle",
       "canonical_name": "HCDS",
@@ -1530,9 +1905,9 @@
       }
     },
     {
-      "id": "force-master-chief-paul-c-mangaran",
+      "id": "force-master-chief-patrickpaul-pap-mangaran",
       "type": "Person",
-      "canonical_name": "Force Master Chief Paul C. Mangaran",
+      "canonical_name": "Force Master Chief PatrickPaul \"PaP\" Mangaran",
       "properties": {
         "title": "Command Senior Enlisted Leader"
       }
@@ -1546,11 +1921,59 @@
       }
     },
     {
-      "id": "rear-adm-ivonne-arena",
+      "id": "dr-matthew-g-clark",
       "type": "Person",
-      "canonical_name": "Rear Adm. Ivonne Arena",
+      "canonical_name": "Dr. Matthew G. Clark",
       "properties": {
-        "title": "Acting Assistant Director, Research, Development & Acquisition; Component Acquisition Executive"
+        "title": "Assistant Director, Research, Development & Acquisition; Component Acquisition Executive (Confirmed)"
+      }
+    },
+    {
+      "id": "mr-brett-scheideman",
+      "type": "Person",
+      "canonical_name": "Mr. Brett Scheideman",
+      "properties": {
+        "title": "Acting Principal Deputy RDA / Deputy CAE (DCAE)"
+      }
+    },
+    {
+      "id": "mr-james-perkins",
+      "type": "Person",
+      "canonical_name": "Mr. James Perkins",
+      "properties": {
+        "title": "Portfolio Acquisition Executive, Medical Digital Solutions (PAE MDS) — Confirmed; the seat succeeding PEO DHMS"
+      }
+    },
+    {
+      "id": "ms-caitlyn-felkoski",
+      "type": "Person",
+      "canonical_name": "Ms. Caitlyn Felkoski",
+      "properties": {
+        "title": "Acting Portfolio Acquisition Executive, Medical Products (NH-IV)"
+      }
+    },
+    {
+      "id": "mrs-madeleine-friedman",
+      "type": "Person",
+      "canonical_name": "Mrs. Madeleine Friedman",
+      "properties": {
+        "title": "Acting Portfolio Acquisition Executive, Medical Services"
+      }
+    },
+    {
+      "id": "mr-james-watkins",
+      "type": "Person",
+      "canonical_name": "Mr. James Watkins",
+      "properties": {
+        "title": "Director, DHA Contracting Activity (DHACA)"
+      }
+    },
+    {
+      "id": "maj-gen-paula-lodi",
+      "type": "Person",
+      "canonical_name": "Maj. Gen. Paula Lodi",
+      "properties": {
+        "title": "Commanding General, DHA Research & Development / Medical Research & Development Command (MRDC)"
       }
     },
     {
@@ -1566,7 +1989,15 @@
       "type": "Person",
       "canonical_name": "Rear Adm. Tracy Farrill",
       "properties": {
-        "title": "Office of Women's Health Affairs (OWHA) Lead"
+        "title": "Director, Office of Warfighter Health Advantage (OWHA)"
+      }
+    },
+    {
+      "id": "mr-pat-flanders",
+      "type": "Person",
+      "canonical_name": "Mr. Pat Flanders",
+      "properties": {
+        "title": "Chief Information Officer (J-6) — Confirmed"
       }
     },
     {
@@ -2990,6 +3421,193 @@
       }
     },
     {
+      "id": "article-what-the-budget-is-catching-up-to",
+      "type": "Article",
+      "canonical_name": "What the Budget Is Catching Up To",
+      "properties": {
+        "slug": "what-the-budget-is-catching-up-to",
+        "type": "article",
+        "url": "/articles/what-the-budget-is-catching-up-to/",
+        "published": "2026-05-08"
+      }
+    },
+    {
+      "id": "article-the-warfighter-under-the-pendulum",
+      "type": "Article",
+      "canonical_name": "The Warfighter Under the Pendulum",
+      "properties": {
+        "slug": "the-warfighter-under-the-pendulum",
+        "type": "article",
+        "url": "/articles/the-warfighter-under-the-pendulum/",
+        "published": "2026-05-12"
+      }
+    },
+    {
+      "id": "article-the-reorg-lives-or-dies-in-the-loading-dock",
+      "type": "Article",
+      "canonical_name": "The Reorg Lives or Dies in the Loading Dock",
+      "properties": {
+        "slug": "the-reorg-lives-or-dies-in-the-loading-dock",
+        "type": "article",
+        "url": "/articles/the-reorg-lives-or-dies-in-the-loading-dock/",
+        "published": "2026-05-15"
+      }
+    },
+    {
+      "id": "article-the-fraud-was-in-the-workflow",
+      "type": "Article",
+      "canonical_name": "The Fraud Was in the Workflow",
+      "properties": {
+        "slug": "the-fraud-was-in-the-workflow",
+        "type": "article",
+        "url": "/articles/the-fraud-was-in-the-workflow/",
+        "published": "2026-05-19"
+      }
+    },
+    {
+      "id": "article-the-workflow-was-designed-to-deliver",
+      "type": "Article",
+      "canonical_name": "The Workflow Was Designed to Deliver",
+      "properties": {
+        "slug": "the-workflow-was-designed-to-deliver",
+        "type": "article",
+        "url": "/articles/the-workflow-was-designed-to-deliver/",
+        "published": "2026-05-22"
+      }
+    },
+    {
+      "id": "article-a-researcher-talked-a-clinical-ai-out-of-its-own-rules",
+      "type": "Article",
+      "canonical_name": "A Researcher Talked a Clinical AI Out of Its Own Rules. DHA Is Fielding the Same Design.",
+      "properties": {
+        "slug": "a-researcher-talked-a-clinical-ai-out-of-its-own-rules",
+        "type": "article",
+        "url": "/articles/a-researcher-talked-a-clinical-ai-out-of-its-own-rules/",
+        "published": "2026-05-26"
+      }
+    },
+    {
+      "id": "article-dha-is-replacing-how-it-buys",
+      "type": "Article",
+      "canonical_name": "DHA Is Replacing How It Buys. The Budget Already Voted.",
+      "properties": {
+        "slug": "dha-is-replacing-how-it-buys",
+        "type": "article",
+        "url": "/articles/dha-is-replacing-how-it-buys/",
+        "published": "2026-05-29"
+      }
+    },
+    {
+      "id": "article-industry-leader-out-of-scope",
+      "type": "Article",
+      "canonical_name": "Industry Leader, Out of Scope",
+      "properties": {
+        "slug": "industry-leader-out-of-scope",
+        "type": "article",
+        "url": "/articles/industry-leader-out-of-scope/",
+        "published": "2026-06-02"
+      }
+    },
+    {
+      "id": "article-the-honesty-premium",
+      "type": "Article",
+      "canonical_name": "The Honesty Premium",
+      "properties": {
+        "slug": "the-honesty-premium",
+        "type": "article",
+        "url": "/articles/the-honesty-premium/",
+        "published": "2026-06-09"
+      }
+    },
+    {
+      "id": "article-the-expert-you-cannot-buy-off-the-shelf",
+      "type": "Article",
+      "canonical_name": "The Expert You Cannot Buy Off the Shelf",
+      "properties": {
+        "slug": "the-expert-you-cannot-buy-off-the-shelf",
+        "type": "article",
+        "url": "/articles/the-expert-you-cannot-buy-off-the-shelf/",
+        "published": "2026-06-12"
+      }
+    },
+    {
+      "id": "article-two-of-forty-six",
+      "type": "Article",
+      "canonical_name": "Two of Forty-Six",
+      "properties": {
+        "slug": "two-of-forty-six",
+        "type": "article",
+        "url": "/articles/two-of-forty-six/",
+        "published": "2026-06-16"
+      }
+    },
+    {
+      "id": "article-what-the-rural-hospital-knows",
+      "type": "Article",
+      "canonical_name": "What the Rural Hospital Knows, and the Network the Military Already Built",
+      "properties": {
+        "slug": "what-the-rural-hospital-knows",
+        "type": "article",
+        "url": "/articles/what-the-rural-hospital-knows/",
+        "published": "2026-06-19"
+      }
+    },
+    {
+      "id": "article-the-interoperability-problem-va-already-solved",
+      "type": "Article",
+      "canonical_name": "The Interoperability Problem VA Already Solved",
+      "properties": {
+        "slug": "the-interoperability-problem-va-already-solved",
+        "type": "article",
+        "url": "/articles/the-interoperability-problem-va-already-solved/",
+        "published": "2026-06-22"
+      }
+    },
+    {
+      "id": "article-whose-hands-were-on-it",
+      "type": "Article",
+      "canonical_name": "Whose Hands Were on It",
+      "properties": {
+        "slug": "whose-hands-were-on-it",
+        "type": "article",
+        "url": "/articles/whose-hands-were-on-it/",
+        "published": "2026-06-26"
+      }
+    },
+    {
+      "id": "article-recruiting-was-the-easy-part",
+      "type": "Article",
+      "canonical_name": "Recruiting Was the Easy Part",
+      "properties": {
+        "slug": "recruiting-was-the-easy-part",
+        "type": "article",
+        "url": "/articles/recruiting-was-the-easy-part/",
+        "published": "2026-06-30"
+      }
+    },
+    {
+      "id": "article-the-operational-imperative-that-almost-wasnt",
+      "type": "Article",
+      "canonical_name": "The Operational Imperative That Almost Wasn't",
+      "properties": {
+        "slug": "the-operational-imperative-that-almost-wasnt",
+        "type": "article",
+        "url": "/articles/the-operational-imperative-that-almost-wasnt/",
+        "published": "2026-07-03"
+      }
+    },
+    {
+      "id": "article-the-casualty-record-that-starts-over-at-the-aid-station",
+      "type": "Article",
+      "canonical_name": "The Casualty Record That Starts Over at the Aid Station",
+      "properties": {
+        "slug": "the-casualty-record-that-starts-over-at-the-aid-station",
+        "type": "article",
+        "url": "/articles/the-casualty-record-that-starts-over-at-the-aid-station/",
+        "published": "2026-07-07"
+      }
+    },
+    {
       "id": "article-replace-with-url-slug",
       "type": "Article",
       "canonical_name": "Headline that makes the reader mad and motivated at the same time",
@@ -2998,61 +3616,6 @@
         "type": "article",
         "url": "/articles/replace-with-url-slug/",
         "published": "2026-04-27"
-      }
-    },
-    {
-      "id": "article-2026-03-21",
-      "type": "Article",
-      "canonical_name": "Week of March 21, 2026",
-      "properties": {
-        "slug": "2026-03-21",
-        "type": "premium_brief",
-        "url": "/premium/briefs/2026-03-21.html",
-        "published": "2026-03-21"
-      }
-    },
-    {
-      "id": "article-2026-03-28",
-      "type": "Article",
-      "canonical_name": "Week of March 28, 2026",
-      "properties": {
-        "slug": "2026-03-28",
-        "type": "premium_brief",
-        "url": "/premium/briefs/2026-03-28.html",
-        "published": "2026-03-28"
-      }
-    },
-    {
-      "id": "article-2026-04-04",
-      "type": "Article",
-      "canonical_name": "Week of April 4, 2026",
-      "properties": {
-        "slug": "2026-04-04",
-        "type": "premium_brief",
-        "url": "/premium/briefs/2026-04-04.html",
-        "published": "2026-04-04"
-      }
-    },
-    {
-      "id": "article-2026-04-11",
-      "type": "Article",
-      "canonical_name": "Week of April 11, 2026",
-      "properties": {
-        "slug": "2026-04-11",
-        "type": "premium_brief",
-        "url": "/premium/briefs/2026-04-11.html",
-        "published": "2026-04-11"
-      }
-    },
-    {
-      "id": "article-capture-corner-2026-04-21",
-      "type": "Article",
-      "canonical_name": "8(a) Dismantling Tactical Intelligence for Federal Health IT",
-      "properties": {
-        "slug": "capture-corner-2026-04-21",
-        "type": "premium_brief",
-        "url": "/premium/briefs/capture-corner-2026-04-21.html",
-        "published": "capture-corner-2026-04-21"
       }
     },
     {
@@ -3089,57 +3652,321 @@
       }
     },
     {
-      "id": "article-rhrp-2026-04",
+      "id": "article-capture-corner-2026-05-08",
+      "type": "Article",
+      "canonical_name": "COMP/PSCP Vendors, Vehicles, and the Mandatory Floor That Lives in One Subaccount",
+      "properties": {
+        "slug": "capture-corner-2026-05-08",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-05-08.html",
+        "published": "capture-corner-2026-05-08"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-05-12",
+      "type": "Article",
+      "canonical_name": "Where the Pendulum Becomes Spend",
+      "properties": {
+        "slug": "capture-corner-2026-05-12",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-05-12.html",
+        "published": "capture-corner-2026-05-12"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-05-15",
+      "type": "Article",
+      "canonical_name": "SCMDSO Intelligence Brief &mdash; Solicitation 36C10B26Q0376",
+      "properties": {
+        "slug": "capture-corner-2026-05-15",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-05-15.html",
+        "published": "capture-corner-2026-05-15"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-05-17",
+      "type": "Article",
+      "canonical_name": "DHA Budget & Org Realignment",
+      "properties": {
+        "slug": "capture-corner-2026-05-17",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-05-17.html",
+        "published": "capture-corner-2026-05-17"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-05-19",
+      "type": "Article",
+      "canonical_name": "The Program-Integrity Market Just Moved Upstream",
+      "properties": {
+        "slug": "capture-corner-2026-05-19",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-05-19.html",
+        "published": "capture-corner-2026-05-19"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-05-22",
+      "type": "Article",
+      "canonical_name": "The Federal Radiology AI Procurement Vehicle Has Not Been Built. Five Plays to Influence the One That Will Be.",
+      "properties": {
+        "slug": "capture-corner-2026-05-22",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-05-22.html",
+        "published": "capture-corner-2026-05-22"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-05-26",
+      "type": "Article",
+      "canonical_name": "Clinical AI Assurance. Four DHA Offices, Six Contract Clauses, Eight Questions, and the Window Before the Requirement Is Written.",
+      "properties": {
+        "slug": "capture-corner-2026-05-26",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-05-26.html",
+        "published": "capture-corner-2026-05-26"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-05-27",
+      "type": "Article",
+      "canonical_name": "How POTFF III Gets Won. Four SOW Changes, One Oral in Tampa, 24 Labor Categories, and Where the Eight-Year Incumbent Is Exposed.",
+      "properties": {
+        "slug": "capture-corner-2026-05-27",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-05-27.html",
+        "published": "capture-corner-2026-05-27"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-05-29",
+      "type": "Article",
+      "canonical_name": "The Contract Map. Every Live DHA Medical Vehicle, Which Side of the Reform It Sits On, and the One Authority Gap About to Strand Production Money.",
+      "properties": {
+        "slug": "capture-corner-2026-05-29",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-05-29.html",
+        "published": "capture-corner-2026-05-29"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-06-02",
+      "type": "Article",
+      "canonical_name": "VA Enterprise AI. The Buy Is Greenfield, Direct-to-Lab, and Usage-Only. The Governance VA Left Out Is the Opening.",
+      "properties": {
+        "slug": "capture-corner-2026-06-02",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-06-02.html",
+        "published": "capture-corner-2026-06-02"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-06-09",
+      "type": "Article",
+      "canonical_name": "The Data-Quality Buy Hiding Inside the AI Acceleration. Where the Money Is, Which Provisions Fund It, and How Cost Realism Prices the Honest Bid.",
+      "properties": {
+        "slug": "capture-corner-2026-06-09",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-06-09.html",
+        "published": "capture-corner-2026-06-09"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-06-12",
+      "type": "Article",
+      "canonical_name": "The Expert Test. How to Tell a Chat Window From an Agent, and How to Keep AI From Sinking Your Bid.",
+      "properties": {
+        "slug": "capture-corner-2026-06-12",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-06-12.html",
+        "published": "capture-corner-2026-06-12"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-06-16",
+      "type": "Article",
+      "canonical_name": "The Measurement Layer. The Nine GAO Recommendations Read as a Capture Map.",
+      "properties": {
+        "slug": "capture-corner-2026-06-16",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-06-16.html",
+        "published": "capture-corner-2026-06-16"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-06-19",
+      "type": "Article",
+      "canonical_name": "The Demand Signal Is Operational, Not Consumer.",
+      "properties": {
+        "slug": "capture-corner-2026-06-19",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-06-19.html",
+        "published": "capture-corner-2026-06-19"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-06-22",
+      "type": "Article",
+      "canonical_name": "The VA EHRM Opportunity Map.",
+      "properties": {
+        "slug": "capture-corner-2026-06-22",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-06-22.html",
+        "published": "capture-corner-2026-06-22"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-06-26",
+      "type": "Article",
+      "canonical_name": "Reading the Builder.",
+      "properties": {
+        "slug": "capture-corner-2026-06-26",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-06-26.html",
+        "published": "capture-corner-2026-06-26"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-06-30",
+      "type": "Article",
+      "canonical_name": "The FY2027 Human-Performance Cliff.",
+      "properties": {
+        "slug": "capture-corner-2026-06-30",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-06-30.html",
+        "published": "capture-corner-2026-06-30"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-07-03",
+      "type": "Article",
+      "canonical_name": "The Measurement Mandate.",
+      "properties": {
+        "slug": "capture-corner-2026-07-03",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-07-03.html",
+        "published": "capture-corner-2026-07-03"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-07-07",
+      "type": "Article",
+      "canonical_name": "The Casualty-Care Capture Play Is at DARPA Now.",
+      "properties": {
+        "slug": "capture-corner-2026-07-07",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-07-07.html",
+        "published": "capture-corner-2026-07-07"
+      }
+    },
+    {
+      "id": "article-premium-briefs-2026-03-21",
+      "type": "Article",
+      "canonical_name": "Week of March 21, 2026",
+      "properties": {
+        "slug": "/premium/briefs/2026-03-21",
+        "type": "premium_brief",
+        "url": "/premium/briefs/2026-03-21",
+        "published": "2026-03-21"
+      }
+    },
+    {
+      "id": "article-premium-briefs-2026-03-28",
+      "type": "Article",
+      "canonical_name": "Week of March 28, 2026",
+      "properties": {
+        "slug": "/premium/briefs/2026-03-28",
+        "type": "premium_brief",
+        "url": "/premium/briefs/2026-03-28",
+        "published": "2026-03-28"
+      }
+    },
+    {
+      "id": "article-premium-briefs-2026-04-04",
+      "type": "Article",
+      "canonical_name": "Week of April 4, 2026",
+      "properties": {
+        "slug": "/premium/briefs/2026-04-04",
+        "type": "premium_brief",
+        "url": "/premium/briefs/2026-04-04",
+        "published": "2026-04-04"
+      }
+    },
+    {
+      "id": "article-premium-briefs-2026-04-11",
+      "type": "Article",
+      "canonical_name": "Week of April 11, 2026",
+      "properties": {
+        "slug": "/premium/briefs/2026-04-11",
+        "type": "premium_brief",
+        "url": "/premium/briefs/2026-04-11",
+        "published": "2026-04-11"
+      }
+    },
+    {
+      "id": "article-premium-briefs-rhrp-2026-04",
       "type": "Article",
       "canonical_name": "RHRP-4 Market Intelligence Dashboard",
       "properties": {
-        "slug": "rhrp-2026-04",
+        "slug": "/premium/briefs/rhrp-2026-04",
         "type": "premium_brief",
-        "url": "/premium/briefs/rhrp-2026-04.html",
-        "published": "rhrp-2026-04"
-      }
-    },
-    {
-      "id": "article-2026-02",
-      "type": "Article",
-      "canonical_name": "February 2026 — DOGE Impact Assessment",
-      "properties": {
-        "slug": "2026-02",
-        "type": "monthly_brief",
-        "url": "/premium/monthly/2026-02.html",
-        "published": "2026-02"
-      }
-    },
-    {
-      "id": "article-2026-03",
-      "type": "Article",
-      "canonical_name": "March 2026 — Q2 Pipeline Forecast",
-      "properties": {
-        "slug": "2026-03",
-        "type": "monthly_brief",
-        "url": "/premium/monthly/2026-03.html",
-        "published": "2026-03"
-      }
-    },
-    {
-      "id": "article-2026-04",
-      "type": "Article",
-      "canonical_name": "April 2026: The DHA Reorg Quarter",
-      "properties": {
-        "slug": "2026-04",
-        "type": "monthly_brief",
-        "url": "/premium/monthly/2026-04.html",
+        "url": "/premium/briefs/rhrp-2026-04",
         "published": "2026-04"
       }
     },
     {
-      "id": "article-2026-05",
+      "id": "article-premium-capture-corner-2026-04-21",
+      "type": "Article",
+      "canonical_name": "8(a) Dismantling Tactical Intelligence for Federal Health IT",
+      "properties": {
+        "slug": "/premium/capture-corner/2026-04-21",
+        "type": "capture_corner",
+        "url": "/premium/capture-corner/2026-04-21",
+        "published": "2026-04-21"
+      }
+    },
+    {
+      "id": "article-premium-monthly-2026-02",
+      "type": "Article",
+      "canonical_name": "February 2026 — DOGE Impact Assessment",
+      "properties": {
+        "slug": "/premium/monthly/2026-02",
+        "type": "monthly_brief",
+        "url": "/premium/monthly/2026-02",
+        "published": "2026-02"
+      }
+    },
+    {
+      "id": "article-premium-monthly-2026-03",
+      "type": "Article",
+      "canonical_name": "March 2026 — Q2 Pipeline Forecast",
+      "properties": {
+        "slug": "/premium/monthly/2026-03",
+        "type": "monthly_brief",
+        "url": "/premium/monthly/2026-03",
+        "published": "2026-03"
+      }
+    },
+    {
+      "id": "article-premium-monthly-2026-04",
+      "type": "Article",
+      "canonical_name": "April 2026: The DHA Reorg Quarter",
+      "properties": {
+        "slug": "/premium/monthly/2026-04",
+        "type": "monthly_brief",
+        "url": "/premium/monthly/2026-04",
+        "published": "2026-04"
+      }
+    },
+    {
+      "id": "article-premium-monthly-2026-05",
       "type": "Article",
       "canonical_name": "VA Enterprise Imaging: Procurement Map, Action Windows, Capture Priorities",
       "properties": {
-        "slug": "2026-05",
+        "slug": "/premium/monthly/2026-05",
         "type": "monthly_brief",
-        "url": "/premium/monthly/2026-05.html",
+        "url": "/premium/monthly/2026-05",
         "published": "2026-05"
       }
     },
@@ -3265,14 +4092,14 @@
       }
     },
     {
-      "id": "article-va-supply-chain-devsecops-helm",
+      "id": "article-va-helm-scmdso-healthcare-environment-and-logistics-manageme",
       "type": "Article",
-      "canonical_name": "VA Supply Chain DevSecOps / HELM",
+      "canonical_name": "VA HELM / SCMDSO (Healthcare Environment and Logistics Management)",
       "properties": {
-        "slug": "va-supply-chain-devsecops-helm",
+        "slug": "va-helm-scmdso-healthcare-environment-and-logistics-management-",
         "type": "contract_intel",
-        "url": "https://sam.gov",
-        "published": "2026-04-29"
+        "url": "https://sam.gov/opp/7f1dab9449984bc6aff2fe595831be62/view",
+        "published": "2026-05-22"
       }
     },
     {
@@ -3540,487 +4367,91 @@
       }
     },
     {
-      "id": "article-signal-0",
+      "id": "article-t6-health-systems-aoi-2-peo-dhms-cso",
       "type": "Article",
-      "canonical_name": "CCN Next Gen (36C10G26R0003)",
+      "canonical_name": "T6 Health Systems — AOI 2 (PEO DHMS CSO)",
       "properties": {
-        "slug": "signal-0",
-        "type": "capture_intel",
-        "url": "/intel/capture-intelligence-this-issue/",
-        "published": ""
+        "slug": "t6-health-systems-aoi-2-peo-dhms-cso-",
+        "type": "contract_intel",
+        "url": "https://sam.gov/",
+        "published": "2026-05-28"
       }
     },
     {
-      "id": "article-signal-1",
+      "id": "article-mantech-dmix-diss-support",
       "type": "Article",
-      "canonical_name": "CCN Dental (36C10G26R0004)",
+      "canonical_name": "ManTech — DMIX / DISS Support",
       "properties": {
-        "slug": "signal-1",
-        "type": "capture_intel",
-        "url": "/intel/capture-intelligence-this-issue/",
-        "published": ""
+        "slug": "mantech-dmix-diss-support",
+        "type": "contract_intel",
+        "url": "https://sam.gov/",
+        "published": "2026-05-28"
       }
     },
     {
-      "id": "article-signal-2",
+      "id": "article-swingtide-market-intelligence-support",
       "type": "Article",
-      "canonical_name": "EHRM / Oracle Health (MHS GENESIS at VA)",
+      "canonical_name": "Swingtide — Market Intelligence Support",
       "properties": {
-        "slug": "signal-2",
-        "type": "capture_intel",
-        "url": "/intel/capture-intelligence-this-issue/",
-        "published": ""
+        "slug": "swingtide-market-intelligence-support",
+        "type": "contract_intel",
+        "url": "https://sam.gov/",
+        "published": "2026-05-28"
       }
     },
     {
-      "id": "article-signal-3",
+      "id": "article-str-zero-day-leidos",
       "type": "Article",
-      "canonical_name": "Digital Health Initiative",
+      "canonical_name": "STR Zero Day — Leidos",
       "properties": {
-        "slug": "signal-3",
-        "type": "capture_intel",
-        "url": "/intel/capture-intelligence-this-issue/",
-        "published": ""
+        "slug": "str-zero-day-leidos",
+        "type": "contract_intel",
+        "url": "https://sam.gov/",
+        "published": "2026-05-28"
       }
     },
     {
-      "id": "article-signal-4",
+      "id": "article-samhsa-bhsis-recompete-behavioral-health-services-informatio",
       "type": "Article",
-      "canonical_name": "Interoperability Enforcement Expansion",
+      "canonical_name": "SAMHSA BHSIS Recompete (Behavioral Health Services Information System)",
       "properties": {
-        "slug": "signal-4",
-        "type": "capture_intel",
-        "url": "/intel/capture-intelligence-this-issue/",
-        "published": ""
+        "slug": "samhsa-bhsis-recompete-behavioral-health-services-information-system-",
+        "type": "contract_intel",
+        "url": "https://orangeslices.ai/hendall-awarded-hhs-samhsa-behavioral-health-services-information-system-bhsis-bridge-contract/",
+        "published": "2026-05-29"
       }
     },
     {
-      "id": "article-signal-5",
+      "id": "article-fda-sirce-ii-systems-for-inspection-recalls-compliance-enfor",
       "type": "Article",
-      "canonical_name": "Enterprise Imaging (DIPS recompete)",
+      "canonical_name": "FDA SIRCE II (Systems for Inspection, Recalls, Compliance & Enforcement)",
       "properties": {
-        "slug": "signal-5",
-        "type": "capture_intel",
-        "url": "/intel/capture-intelligence-this-issue/",
-        "published": ""
+        "slug": "fda-sirce-ii-systems-for-inspection-recalls-compliance-enforcement-",
+        "type": "contract_intel",
+        "url": "https://www.highergov.com/contract-opportunity/sirce-ii-75f40126q00072-r-815b9/",
+        "published": "2026-05-29"
       }
     },
     {
-      "id": "article-signal-6",
+      "id": "article-hrsa-optn-next-gen-it-contracts-phase-2",
       "type": "Article",
-      "canonical_name": "Clinical AI Safety Program",
+      "canonical_name": "HRSA OPTN Next Gen IT Contracts (Phase 2)",
       "properties": {
-        "slug": "signal-6",
-        "type": "capture_intel",
-        "url": "/intel/capture-intelligence-this-issue/",
-        "published": ""
+        "slug": "hrsa-optn-next-gen-it-contracts-phase-2-",
+        "type": "contract_intel",
+        "url": "https://www.hrsa.gov/optn-modernization/updates",
+        "published": "2026-05-29"
       }
     },
     {
-      "id": "article-signal-7",
+      "id": "article-cms-sparc-ii-strategic-partners-acquisition-readiness-contra",
       "type": "Article",
-      "canonical_name": "ClaimsCore RFP (Modernization)",
+      "canonical_name": "CMS SPARC II (Strategic Partners Acquisition Readiness Contract — Recompete)",
       "properties": {
-        "slug": "signal-7",
-        "type": "capture_intel",
-        "url": "/intel/capture-intelligence-this-issue/",
-        "published": ""
-      }
-    },
-    {
-      "id": "article-signal-8",
-      "type": "Article",
-      "canonical_name": "MHS GENESIS Sustainment",
-      "properties": {
-        "slug": "signal-8",
-        "type": "capture_intel",
-        "url": "/intel/capture-intelligence-this-issue/",
-        "published": ""
-      }
-    },
-    {
-      "id": "article-signal-9",
-      "type": "Article",
-      "canonical_name": "TDR Mandatory Compliance (GSA MAS)",
-      "properties": {
-        "slug": "signal-9",
-        "type": "capture_intel",
-        "url": "/intel/capture-intelligence-this-issue/",
-        "published": ""
-      }
-    },
-    {
-      "id": "article-signal-10",
-      "type": "Article",
-      "canonical_name": "Cybersecurity Maturity (CMMC for Health)",
-      "properties": {
-        "slug": "signal-10",
-        "type": "capture_intel",
-        "url": "/intel/capture-intelligence-this-issue/",
-        "published": ""
-      }
-    },
-    {
-      "id": "article-signal-11",
-      "type": "Article",
-      "canonical_name": "Military Operational Medicine Research",
-      "properties": {
-        "slug": "signal-11",
-        "type": "capture_intel",
-        "url": "/intel/capture-intelligence-this-issue/",
-        "published": ""
-      }
-    },
-    {
-      "id": "article-signal-12",
-      "type": "Article",
-      "canonical_name": "RPMS Modernization",
-      "properties": {
-        "slug": "signal-12",
-        "type": "capture_intel",
-        "url": "/intel/capture-intelligence-this-issue/",
-        "published": ""
-      }
-    },
-    {
-      "id": "article-signal-13",
-      "type": "Article",
-      "canonical_name": "Data Modernization Initiative",
-      "properties": {
-        "slug": "signal-13",
-        "type": "capture_intel",
-        "url": "/intel/capture-intelligence-this-issue/",
-        "published": ""
-      }
-    },
-    {
-      "id": "article-signal-14",
-      "type": "Article",
-      "canonical_name": "RHRP-4 (HT001126DE001)",
-      "properties": {
-        "slug": "signal-14",
-        "type": "capture_intel",
-        "url": "/intel/capture-intelligence-this-issue/",
-        "published": ""
-      }
-    },
-    {
-      "id": "article-signal-15",
-      "type": "Article",
-      "canonical_name": "8(a) Program Restructuring",
-      "properties": {
-        "slug": "signal-15",
-        "type": "capture_intel",
-        "url": "/intel/capture-intelligence-this-issue/",
-        "published": ""
-      }
-    },
-    {
-      "id": "article-peo-dhms-deployment",
-      "type": "Article",
-      "canonical_name": "PEO DHMS Deployment Solutions IDIQ",
-      "properties": {
-        "slug": "peo-dhms-deployment",
-        "type": "idiq_vehicle",
-        "url": "https://sam.gov/workspace/contract/opp/111847a96d214505b4d398a931dfdf1d/view",
-        "published": "2026-06-01"
-      }
-    },
-    {
-      "id": "article-dha-gsp",
-      "type": "Article",
-      "canonical_name": "DHA Geographic Service Provider IDIQ",
-      "properties": {
-        "slug": "dha-gsp",
-        "type": "idiq_vehicle",
-        "url": "https://www.choisystechnology.com/contract-vehicles/dha-gsp/",
-        "published": "2024-01-31"
-      }
-    },
-    {
-      "id": "article-dha-omnibus-iv",
-      "type": "Article",
-      "canonical_name": "DHA OMNIBUS IV IDIQ",
-      "properties": {
-        "slug": "dha-omnibus-iv",
-        "type": "idiq_vehicle",
-        "url": "https://www.sysplus.com/contract/dha-omnibus-iv-idiq/",
-        "published": "2022-06-20"
-      }
-    },
-    {
-      "id": "article-dha-mss",
-      "type": "Article",
-      "canonical_name": "DHA Medical Support Services IDIQ",
-      "properties": {
-        "slug": "dha-mss",
-        "type": "idiq_vehicle",
-        "url": "Clinical/medical support at MTFs",
-        "published": ""
-      }
-    },
-    {
-      "id": "article-dha-medlog-jhuapl",
-      "type": "Article",
-      "canonical_name": "DHA MEDLOG Enterprise Engineering IDC",
-      "properties": {
-        "slug": "dha-medlog-jhuapl",
-        "type": "idiq_vehicle",
-        "url": "https://www.federalcompass.com/award-contract-detail/HT001121D0002",
-        "published": ""
-      }
-    },
-    {
-      "id": "article-aix-tech-dha",
-      "type": "Article",
-      "canonical_name": "DHA Acquisition Support IDIQ (AIX Tech)",
-      "properties": {
-        "slug": "aix-tech-dha",
-        "type": "idiq_vehicle",
-        "url": "https://www.govconwire.com/articles/aix-tech-dha-acquisition-support-idiq",
-        "published": ""
-      }
-    },
-    {
-      "id": "article-va-t4ng2",
-      "type": "Article",
-      "canonical_name": "VA T4NG2",
-      "properties": {
-        "slug": "va-t4ng2",
-        "type": "idiq_vehicle",
-        "url": "https://sam.gov/opp/62249040a30c4cf8a905a03bf590f55d/view",
-        "published": "2026-03-01"
-      }
-    },
-    {
-      "id": "article-va-ehrm-idiq",
-      "type": "Article",
-      "canonical_name": "VA EHRM IDIQ (Oracle Health)",
-      "properties": {
-        "slug": "va-ehrm-idiq",
-        "type": "idiq_vehicle",
-        "url": "https://www.gdit.com/about-gdit/press-releases/gdit-awarded-usd2-5-billion-idiq-contract-for-electronic-health-record/",
-        "published": "2018-05-17"
-      }
-    },
-    {
-      "id": "article-va-vector",
-      "type": "Article",
-      "canonical_name": "VA VECTOR",
-      "properties": {
-        "slug": "va-vector",
-        "type": "idiq_vehicle",
-        "url": "https://rbci.com/contracts/va-vector/",
-        "published": "2018-08-27"
-      }
-    },
-    {
-      "id": "article-vha-iht",
-      "type": "Article",
-      "canonical_name": "VHA Integrated Healthcare Transformation IDIQ",
-      "properties": {
-        "slug": "vha-iht",
-        "type": "idiq_vehicle",
-        "url": "https://insights.govforum.io/2022/12/va-awards-ehrm-support-contract/",
-        "published": ""
-      }
-    },
-    {
-      "id": "article-cms-sparc",
-      "type": "Article",
-      "canonical_name": "CMS SPARC",
-      "properties": {
-        "slug": "cms-sparc",
-        "type": "idiq_vehicle",
-        "url": "https://www.cms.gov/data-research/cms-information-technology/sparc",
-        "published": "2016-06-08"
-      }
-    },
-    {
-      "id": "article-nitaac-cio-sp4",
-      "type": "Article",
-      "canonical_name": "NITAAC CIO-SP4",
-      "properties": {
-        "slug": "nitaac-cio-sp4",
-        "type": "idiq_vehicle",
-        "url": "https://sam.gov/opp/40c9559870aa4e23b5e10e65e2f7cdc8/view",
-        "published": ""
-      }
-    },
-    {
-      "id": "article-nitaac-ecs-iii",
-      "type": "Article",
-      "canonical_name": "NITAAC ECS III",
-      "properties": {
-        "slug": "nitaac-ecs-iii",
-        "type": "idiq_vehicle",
-        "url": "https://redriver.com/contracts/ecs-iii",
-        "published": ""
-      }
-    },
-    {
-      "id": "article-nih-arpah-stats",
-      "type": "Article",
-      "canonical_name": "NIH/ARPA-H STATS IDIQ",
-      "properties": {
-        "slug": "nih-arpah-stats",
-        "type": "idiq_vehicle",
-        "url": "https://orangeslices.ai/ecs-beats-out-3-to-win-88-5m-nih-arpa-h-stats-idiq-professional-support-services/",
-        "published": "2024-11-01"
-      }
-    },
-    {
-      "id": "article-cdc-itopss-4",
-      "type": "Article",
-      "canonical_name": "CDC ITOPSS 4.0",
-      "properties": {
-        "slug": "cdc-itopss-4",
-        "type": "idiq_vehicle",
-        "url": "https://orangeslices.ai/cdc-awards-45m-international-technical-operational-and-professional-support-services-itopss-4-0-idiq/",
-        "published": ""
-      }
-    },
-    {
-      "id": "article-cdc-tass",
-      "type": "Article",
-      "canonical_name": "CDC OCIO TASS",
-      "properties": {
-        "slug": "cdc-tass",
-        "type": "idiq_vehicle",
-        "url": "https://orangeslices.ai/research-request-75m-cdc-ocio-technical-applications-support-services-rfp/",
-        "published": ""
-      }
-    },
-    {
-      "id": "article-ihs-path-ehr",
-      "type": "Article",
-      "canonical_name": "IHS PATH EHR IDIQ",
-      "properties": {
-        "slug": "ihs-path-ehr",
-        "type": "idiq_vehicle",
-        "url": "https://www.gdit.com/about-gdit/press-releases/gdit-awarded-usd2-5-billion-idiq-contract-for-electronic-health-record/",
-        "published": "2023-10-01"
-      }
-    },
-    {
-      "id": "article-fda-ead-bpa",
-      "type": "Article",
-      "canonical_name": "FDA Enterprise IT App Dev BPA (CANCELLED)",
-      "properties": {
-        "slug": "fda-ead-bpa",
-        "type": "idiq_vehicle",
-        "url": "https://orangeslices.ai/fda-rfi-enterprise-it-application-development-ead-bpa-to-centralize-streamline-and-rationalize-acquisition",
-        "published": ""
-      }
-    },
-    {
-      "id": "article-dla-mspv-gen-vi",
-      "type": "Article",
-      "canonical_name": "DLA MedSurg Prime Vendor Gen VI",
-      "properties": {
-        "slug": "dla-mspv-gen-vi",
-        "type": "idiq_vehicle",
-        "url": "70",
-        "published": ""
-      }
-    },
-    {
-      "id": "article-va-mspv-gen-z",
-      "type": "Article",
-      "canonical_name": "VA MSPV Gen-Z V1",
-      "properties": {
-        "slug": "va-mspv-gen-z",
-        "type": "idiq_vehicle",
-        "url": "https://department.va.gov/procurement-acquisition-and-logistics/strategic-acquisition-center/sac-medical-surgical-prime-vendor-program-mspv-updated",
-        "published": ""
-      }
-    },
-    {
-      "id": "article-usace-medcom-dbmatoc",
-      "type": "Article",
-      "canonical_name": "USACE MEDCOM Nationwide Design-Build MATOC",
-      "properties": {
-        "slug": "usace-medcom-dbmatoc",
-        "type": "idiq_vehicle",
-        "url": "https://www.doyongovgrp.com/2021/03/10/usace-medcom-design-build-nationwide-matoc-230m/",
-        "published": "2021-03-01"
-      }
-    },
-    {
-      "id": "article-usace-huntsville-medae",
-      "type": "Article",
-      "canonical_name": "USACE Huntsville Medical Facilities A&E MATOC",
-      "properties": {
-        "slug": "usace-huntsville-medae",
-        "type": "idiq_vehicle",
-        "url": "https://www.hnc.usace.army.mil/Media/News-Releases/Article/2053676/huntsville-center-awards-medical-facilities-architecture",
-        "published": "2019-12-01"
-      }
-    },
-    {
-      "id": "article-usace-mobile-dha-west",
-      "type": "Article",
-      "canonical_name": "USACE Mobile DHA Western Region IDIQ MATOC",
-      "properties": {
-        "slug": "usace-mobile-dha-west",
-        "type": "idiq_vehicle",
-        "url": "https://www.highergov.com/contract-opportunity/design-build-idiq-matoc-in-support-of-the-dha-prog-w9127826ra017-o-7ec48/",
-        "published": "2026-07-01"
-      }
-    },
-    {
-      "id": "article-gsa-alliant-2",
-      "type": "Article",
-      "canonical_name": "GSA Alliant 2",
-      "properties": {
-        "slug": "gsa-alliant-2",
-        "type": "idiq_vehicle",
-        "url": "https://gsa.gov/alliant",
-        "published": "2018-07-01"
-      }
-    },
-    {
-      "id": "article-gsa-alliant-3",
-      "type": "Article",
-      "canonical_name": "GSA Alliant 3",
-      "properties": {
-        "slug": "gsa-alliant-3",
-        "type": "idiq_vehicle",
-        "url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/alliant-3",
-        "published": "2026-03-10"
-      }
-    },
-    {
-      "id": "article-gsa-oasis-plus",
-      "type": "Article",
-      "canonical_name": "GSA OASIS+",
-      "properties": {
-        "slug": "gsa-oasis-plus",
-        "type": "idiq_vehicle",
-        "url": "https://www.gsa.gov/buy-through-us/products-and-services/professional-services/buy-services/oasis-plus",
-        "published": "2024-01-01"
-      }
-    },
-    {
-      "id": "article-gsa-stars-iii",
-      "type": "Article",
-      "canonical_name": "GSA 8(a) STARS III",
-      "properties": {
-        "slug": "gsa-stars-iii",
-        "type": "idiq_vehicle",
-        "url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/8a-stars-iii",
-        "published": "2021-07-02"
-      }
-    },
-    {
-      "id": "article-gsa-vets-2",
-      "type": "Article",
-      "canonical_name": "GSA VETS 2",
-      "properties": {
-        "slug": "gsa-vets-2",
-        "type": "idiq_vehicle",
-        "url": "https://gsa.gov/vets2",
-        "published": "2018-02-01"
+        "slug": "cms-sparc-ii-strategic-partners-acquisition-readiness-contract-recompete-",
+        "type": "contract_intel",
+        "url": "https://www.cms.gov/data-research/cms-information-technology/sparc/faq",
+        "published": "2026-05-29"
       }
     }
   ],
@@ -4616,7 +5047,7 @@
     },
     {
       "from_id": "va",
-      "to_id": "va-supply-chain-devsecops-helm",
+      "to_id": "va-helm-scmdso-healthcare-environment-and-logistics-manageme",
       "relation": "manages",
       "properties": {},
       "weight": 1
@@ -5252,6 +5683,363 @@
       "weight": 1
     },
     {
+      "from_id": "dha",
+      "to_id": "t6-health-systems-aoi-2-peo-dhms-cso",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "t6-health-systems",
+      "to_id": "t6-health-systems-aoi-2-peo-dhms-cso",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "t6-health-systems-aoi-2-peo-dhms-cso",
+      "to_id": "t6-health-systems",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "dha",
+      "to_id": "mantech-dmix-diss-support",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "mantech",
+      "to_id": "mantech-dmix-diss-support",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "mantech-dmix-diss-support",
+      "to_id": "mantech",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "dha",
+      "to_id": "swingtide-market-intelligence-support",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "swingtide",
+      "to_id": "swingtide-market-intelligence-support",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "swingtide-market-intelligence-support",
+      "to_id": "swingtide",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "dha",
+      "to_id": "str-zero-day-leidos",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "leidos",
+      "to_id": "str-zero-day-leidos",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "str-zero-day-leidos",
+      "to_id": "leidos",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "substance-abuse-and-mental-health-services-administration-sa",
+      "to_id": "samhsa-bhsis-recompete-behavioral-health-services-informatio",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "hhs",
+      "to_id": "fda-sirce-ii-systems-for-inspection-recalls-compliance-enfor",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "health-resources-services-administration-hrsa",
+      "to_id": "hrsa-optn-next-gen-it-contracts-phase-2",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cms",
+      "to_id": "cms-sparc-ii-strategic-partners-acquisition-readiness-contra",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cdc",
+      "to_id": "cdc-dmi-successor-nssp-ecosystem-contracts",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "hhs",
+      "to_id": "ihs-four-directions-warehouse-4dw-clinical-data-repository",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cherokee-nation-integrated-health",
+      "to_id": "ihs-four-directions-warehouse-4dw-clinical-data-repository",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "ihs-four-directions-warehouse-4dw-clinical-data-repository",
+      "to_id": "cherokee-nation-integrated-health",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "nih",
+      "to_id": "nih-scientific-technical-support-services-idiq-3b",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cms",
+      "to_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "hhs",
+      "to_id": "acf-ccwis-support-task-recompete-child-welfare-information-s",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "hhs",
+      "to_id": "hhs-ngits-bpa-recompete-application-hosting-operations-engin",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "hhs",
+      "to_id": "ihs-path-ehr-future-task-orders-sustainment-deployment-pipel",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "gdit-to-pipeline",
+      "to_id": "ihs-path-ehr-future-task-orders-sustainment-deployment-pipel",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "ihs-path-ehr-future-task-orders-sustainment-deployment-pipel",
+      "to_id": "gdit-to-pipeline",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "hhs",
+      "to_id": "fda-fire-foundational-innovation-and-rapid-engagement",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "health-resources-services-administration-hrsa",
+      "to_id": "hrsa-ryan-white-rsr-data-modernization",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "wrma-recompete-watch",
+      "to_id": "hrsa-ryan-white-rsr-data-modernization",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "hrsa-ryan-white-rsr-data-modernization",
+      "to_id": "wrma-recompete-watch",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cdc",
+      "to_id": "cdc-electronic-case-reporting-ecr-modernization",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "hhs",
+      "to_id": "aspr-npivs-national-provider-identity-verification-system",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "va",
+      "to_id": "va-edge-enterprise-digital-government-enablement",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "incumbent-deloitte-consulting-llp",
+      "to_id": "va-edge-enterprise-digital-government-enablement",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "va-edge-enterprise-digital-government-enablement",
+      "to_id": "incumbent-deloitte-consulting-llp",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "va",
+      "to_id": "va-cloud-broker-service",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "va",
+      "to_id": "va-enterprise-resource-planning-erp",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "va",
+      "to_id": "va-htmss-health-services-portfolio-technical-management-stra",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "incumbent-govcio",
+      "to_id": "va-htmss-health-services-portfolio-technical-management-stra",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "va-htmss-health-services-portfolio-technical-management-stra",
+      "to_id": "incumbent-govcio",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "va",
+      "to_id": "va-transformation-support-services-tss-3-0",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "incumbent-booz-allen-hamilton",
+      "to_id": "va-transformation-support-services-tss-3-0",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "va-transformation-support-services-tss-3-0",
+      "to_id": "incumbent-booz-allen-hamilton",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "va",
+      "to_id": "va-cybersecurity-operations-center-support-csoc",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "incumbent-revolutional-llc",
+      "to_id": "va-cybersecurity-operations-center-support-csoc",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "va-cybersecurity-operations-center-support-csoc",
+      "to_id": "incumbent-revolutional-llc",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "va",
+      "to_id": "va-omega-onboarding-management-engineering-governance-assura",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "incumbent-sprezzatura-management-consulting-llc",
+      "to_id": "va-omega-onboarding-management-engineering-governance-assura",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "va-omega-onboarding-management-engineering-governance-assura",
+      "to_id": "incumbent-sprezzatura-management-consulting-llc",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "va",
+      "to_id": "va-application-hosting-compute-and-storage",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "vice-adm-darin-k-via-mc-usn",
       "to_id": "dha",
       "relation": "leads",
@@ -5270,7 +6058,7 @@
       "weight": 1
     },
     {
-      "from_id": "force-master-chief-paul-c-mangaran",
+      "from_id": "force-master-chief-patrickpaul-pap-mangaran",
       "to_id": "dha",
       "relation": "leads",
       "properties": {
@@ -5288,11 +6076,65 @@
       "weight": 1
     },
     {
-      "from_id": "rear-adm-ivonne-arena",
+      "from_id": "dr-matthew-g-clark",
       "to_id": "dha",
       "relation": "leads",
       "properties": {
-        "title": "Acting Assistant Director, Research, Development & Acquisition; Component Acquisition Executive"
+        "title": "Assistant Director, Research, Development & Acquisition; Component Acquisition Executive (Confirmed)"
+      },
+      "weight": 1
+    },
+    {
+      "from_id": "mr-brett-scheideman",
+      "to_id": "dha",
+      "relation": "leads",
+      "properties": {
+        "title": "Acting Principal Deputy RDA / Deputy CAE (DCAE)"
+      },
+      "weight": 1
+    },
+    {
+      "from_id": "mr-james-perkins",
+      "to_id": "dha",
+      "relation": "leads",
+      "properties": {
+        "title": "Portfolio Acquisition Executive, Medical Digital Solutions (PAE MDS) — Confirmed; the seat succeeding PEO DHMS"
+      },
+      "weight": 1
+    },
+    {
+      "from_id": "ms-caitlyn-felkoski",
+      "to_id": "dha",
+      "relation": "leads",
+      "properties": {
+        "title": "Acting Portfolio Acquisition Executive, Medical Products (NH-IV)"
+      },
+      "weight": 1
+    },
+    {
+      "from_id": "mrs-madeleine-friedman",
+      "to_id": "dha",
+      "relation": "leads",
+      "properties": {
+        "title": "Acting Portfolio Acquisition Executive, Medical Services"
+      },
+      "weight": 1
+    },
+    {
+      "from_id": "mr-james-watkins",
+      "to_id": "dha",
+      "relation": "leads",
+      "properties": {
+        "title": "Director, DHA Contracting Activity (DHACA)"
+      },
+      "weight": 1
+    },
+    {
+      "from_id": "maj-gen-paula-lodi",
+      "to_id": "dha",
+      "relation": "leads",
+      "properties": {
+        "title": "Commanding General, DHA Research & Development / Medical Research & Development Command (MRDC)"
       },
       "weight": 1
     },
@@ -5310,7 +6152,16 @@
       "to_id": "dha",
       "relation": "leads",
       "properties": {
-        "title": "Office of Women's Health Affairs (OWHA) Lead"
+        "title": "Director, Office of Warfighter Health Advantage (OWHA)"
+      },
+      "weight": 1
+    },
+    {
+      "from_id": "mr-pat-flanders",
+      "to_id": "dha",
+      "relation": "leads",
+      "properties": {
+        "title": "Chief Information Officer (J-6) — Confirmed"
       },
       "weight": 1
     },
@@ -5954,70 +6805,301 @@
       "weight": 1
     },
     {
-      "from_id": "article-2026-03-21",
+      "from_id": "article-what-the-budget-is-catching-up-to",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-what-the-budget-is-catching-up-to",
+      "to_id": "dhp",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-what-the-budget-is-catching-up-to",
+      "to_id": "asw-ha",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-what-the-budget-is-catching-up-to",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-what-the-budget-is-catching-up-to",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-warfighter-under-the-pendulum",
+      "to_id": "dha-director",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-warfighter-under-the-pendulum",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-warfighter-under-the-pendulum",
+      "to_id": "dhp",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-warfighter-under-the-pendulum",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-warfighter-under-the-pendulum",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-reorg-lives-or-dies-in-the-loading-dock",
       "to_id": "federal-ehr",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-2026-03-21",
-      "to_id": "hcds",
+      "from_id": "article-the-reorg-lives-or-dies-in-the-loading-dock",
+      "to_id": "vista",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-2026-03-21",
-      "to_id": "va-ehrm",
+      "from_id": "article-a-researcher-talked-a-clinical-ai-out-of-its-own-rules",
+      "to_id": "defense-health-agency",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-2026-03-28",
-      "to_id": "fda-sentinel-3-0",
+      "from_id": "article-a-researcher-talked-a-clinical-ai-out-of-its-own-rules",
+      "to_id": "far",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-2026-03-28",
-      "to_id": "hcds",
+      "from_id": "article-a-researcher-talked-a-clinical-ai-out-of-its-own-rules",
+      "to_id": "mhs",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-2026-03-28",
-      "to_id": "va-ehrm",
+      "from_id": "article-a-researcher-talked-a-clinical-ai-out-of-its-own-rules",
+      "to_id": "mhs-genesis",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-2026-04-04",
-      "to_id": "va-ehrm",
+      "from_id": "article-dha-is-replacing-how-it-buys",
+      "to_id": "defense-health-agency",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-2026-04-11",
-      "to_id": "va-ehrm",
+      "from_id": "article-dha-is-replacing-how-it-buys",
+      "to_id": "dhp",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-capture-corner-2026-04-21",
-      "to_id": "oasis",
+      "from_id": "article-dha-is-replacing-how-it-buys",
+      "to_id": "jomis",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-capture-corner-2026-04-21",
+      "from_id": "article-dha-is-replacing-how-it-buys",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-dha-is-replacing-how-it-buys",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-dha-is-replacing-how-it-buys",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-dha-is-replacing-how-it-buys",
+      "to_id": "peo-dhms",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-industry-leader-out-of-scope",
+      "to_id": "far",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-expert-you-cannot-buy-off-the-shelf",
+      "to_id": "far",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-two-of-forty-six",
+      "to_id": "dha-director",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-two-of-forty-six",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-two-of-forty-six",
+      "to_id": "far",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-two-of-forty-six",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-what-the-rural-hospital-knows",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-what-the-rural-hospital-knows",
+      "to_id": "far",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-what-the-rural-hospital-knows",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-interoperability-problem-va-already-solved",
+      "to_id": "far",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-interoperability-problem-va-already-solved",
+      "to_id": "vista",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-recruiting-was-the-easy-part",
+      "to_id": "chess",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-operational-imperative-that-almost-wasnt",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-operational-imperative-that-almost-wasnt",
+      "to_id": "asw-ha",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-operational-imperative-that-almost-wasnt",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-casualty-record-that-starts-over-at-the-aid-station",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-casualty-record-that-starts-over-at-the-aid-station",
+      "to_id": "dhp",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-casualty-record-that-starts-over-at-the-aid-station",
+      "to_id": "asw-ha",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-casualty-record-that-starts-over-at-the-aid-station",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-casualty-record-that-starts-over-at-the-aid-station",
       "to_id": "ota",
       "relation": "mentions",
       "properties": {},
@@ -6108,231 +7190,756 @@
       "weight": 1
     },
     {
-      "from_id": "article-rhrp-2026-04",
+      "from_id": "article-capture-corner-2026-05-08",
       "to_id": "mhs",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-rhrp-2026-04",
+      "from_id": "article-capture-corner-2026-05-08",
       "to_id": "mhs-genesis",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-rhrp-2026-04",
+      "from_id": "article-capture-corner-2026-05-08",
       "to_id": "ota",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-rhrp-2026-04",
-      "to_id": "rhrp-4",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-2026-02",
-      "to_id": "mhs",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-2026-02",
-      "to_id": "mhs-genesis",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-2026-02",
-      "to_id": "t4ng2",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-2026-02",
+      "from_id": "article-capture-corner-2026-05-08",
       "to_id": "va-ehrm",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-2026-02",
-      "to_id": "va-oit",
+      "from_id": "article-capture-corner-2026-05-12",
+      "to_id": "dhp",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-2026-03",
-      "to_id": "dhmsm",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-2026-03",
-      "to_id": "defense-health-agency",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-2026-03",
-      "to_id": "peo-dhms-deployment",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-2026-03",
-      "to_id": "jomis",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-2026-03",
+      "from_id": "article-capture-corner-2026-05-12",
       "to_id": "mhs",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-2026-03",
-      "to_id": "mhs-genesis",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-2026-03",
+      "from_id": "article-capture-corner-2026-05-12",
       "to_id": "ota",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-2026-03",
-      "to_id": "peo-dhms",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-2026-03",
-      "to_id": "va-ehrm",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-2026-03",
-      "to_id": "va-oit",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-2026-04",
-      "to_id": "nitaac-cio-sp4",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-2026-04",
-      "to_id": "cio-sp4",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-2026-04",
-      "to_id": "dhmsm",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-2026-04",
-      "to_id": "defense-health-agency",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-2026-04",
+      "from_id": "article-capture-corner-2026-05-15",
       "to_id": "far",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-2026-04",
-      "to_id": "peo-dhms-deployment",
+      "from_id": "article-capture-corner-2026-05-15",
+      "to_id": "t4ng2",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-2026-04",
+      "from_id": "article-capture-corner-2026-05-15",
+      "to_id": "va-oit",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-15",
+      "to_id": "vista",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-17",
+      "to_id": "dhmsm",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-17",
+      "to_id": "far",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-17",
+      "to_id": "federal-ehr",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-17",
+      "to_id": "jomis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-17",
       "to_id": "mhs",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-2026-04",
-      "to_id": "mhs-genesis",
+      "from_id": "article-capture-corner-2026-05-17",
+      "to_id": "ota",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-2026-04",
+      "from_id": "article-capture-corner-2026-05-17",
       "to_id": "peo-dhms",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-2026-04",
-      "to_id": "t4ng2",
+      "from_id": "article-capture-corner-2026-05-22",
+      "to_id": "defense-health-agency",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-2026-04",
-      "to_id": "va-ehrm",
+      "from_id": "article-capture-corner-2026-05-22",
+      "to_id": "far",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-2026-05",
+      "from_id": "article-capture-corner-2026-05-22",
       "to_id": "fedramp",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-2026-05",
+      "from_id": "article-capture-corner-2026-05-22",
+      "to_id": "hcds",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-22",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-22",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-22",
+      "to_id": "peo-dhms",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-22",
+      "to_id": "vista",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-26",
+      "to_id": "dha-j-6",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-26",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-26",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-26",
+      "to_id": "peo-dhms",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-27",
+      "to_id": "cmmc",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-27",
+      "to_id": "far",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-27",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-29",
+      "to_id": "dha-director",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-29",
+      "to_id": "dhmsm",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-29",
+      "to_id": "dhp",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-29",
+      "to_id": "hcds",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-29",
+      "to_id": "peo-dhms-deployment",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-29",
+      "to_id": "jomis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-29",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-29",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-29",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-29",
+      "to_id": "peo-dhms",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-06-02",
+      "to_id": "far",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-06-09",
+      "to_id": "advana",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-06-09",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-06-12",
+      "to_id": "far",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-06-16",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-06-16",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-06-16",
+      "to_id": "rhrp-4",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-06-19",
+      "to_id": "asw-ha",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-06-22",
+      "to_id": "federal-ehr",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-06-22",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-06-22",
+      "to_id": "va-ehrm",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-06-22",
+      "to_id": "vista",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-06-26",
+      "to_id": "cmmc",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-06-26",
+      "to_id": "cpars",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-06-26",
+      "to_id": "far",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-06-26",
+      "to_id": "fedramp",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-07-03",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-07-03",
+      "to_id": "asw-ha",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-07-03",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-07-07",
+      "to_id": "dhp",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-07-07",
+      "to_id": "federal-ehr",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-07-07",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-briefs-2026-03-21",
+      "to_id": "federal-ehr",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-briefs-2026-03-21",
+      "to_id": "hcds",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-briefs-2026-03-21",
+      "to_id": "va-ehrm",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-briefs-2026-03-28",
+      "to_id": "fda-sentinel-3-0",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-briefs-2026-03-28",
+      "to_id": "hcds",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-briefs-2026-03-28",
+      "to_id": "va-ehrm",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-briefs-2026-04-04",
+      "to_id": "va-ehrm",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-briefs-2026-04-11",
+      "to_id": "va-ehrm",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-briefs-rhrp-2026-04",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-briefs-rhrp-2026-04",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-briefs-rhrp-2026-04",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-briefs-rhrp-2026-04",
+      "to_id": "rhrp-4",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-capture-corner-2026-04-21",
+      "to_id": "oasis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-capture-corner-2026-04-21",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-02",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-02",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-02",
       "to_id": "t4ng2",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-2026-05",
+      "from_id": "article-premium-monthly-2026-02",
+      "to_id": "va-ehrm",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-02",
+      "to_id": "va-oit",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-03",
+      "to_id": "dhmsm",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-03",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-03",
+      "to_id": "peo-dhms-deployment",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-03",
+      "to_id": "jomis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-03",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-03",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-03",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-03",
+      "to_id": "peo-dhms",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-03",
+      "to_id": "va-ehrm",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-03",
+      "to_id": "va-oit",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-04",
+      "to_id": "nitaac-cio-sp4",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-04",
+      "to_id": "cio-sp4",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-04",
+      "to_id": "dhmsm",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-04",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-04",
+      "to_id": "far",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-04",
+      "to_id": "peo-dhms-deployment",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-04",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-04",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-04",
+      "to_id": "peo-dhms",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-04",
+      "to_id": "t4ng2",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-04",
+      "to_id": "va-ehrm",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-05",
+      "to_id": "fedramp",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-05",
+      "to_id": "t4ng2",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-premium-monthly-2026-05",
       "to_id": "vista",
       "relation": "mentions",
       "properties": {},
@@ -6551,13 +8158,6 @@
     {
       "from_id": "article-va-data-center-and-telecommunications-modernization",
       "to_id": "va-data-center-and-telecommunications-modernization",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-va-supply-chain-devsecops-helm",
-      "to_id": "va-supply-chain-devsecops-helm",
       "relation": "mentions",
       "properties": {},
       "weight": 1
@@ -7102,393 +8702,85 @@
       "weight": 1
     },
     {
-      "from_id": "article-signal-1",
-      "to_id": "ccn-dental-36c10g26r0004",
+      "from_id": "article-t6-health-systems-aoi-2-peo-dhms-cso",
+      "to_id": "defense-health-agency",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-signal-2",
-      "to_id": "mhs",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-signal-2",
-      "to_id": "mhs-genesis",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-signal-5",
-      "to_id": "mosa",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-signal-8",
-      "to_id": "mhs",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-signal-8",
-      "to_id": "mhs-genesis",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-signal-8",
+      "from_id": "article-t6-health-systems-aoi-2-peo-dhms-cso",
       "to_id": "peo-dhms",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-signal-10",
-      "to_id": "cmmc",
+      "from_id": "article-mantech-dmix-diss-support",
+      "to_id": "defense-health-agency",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-signal-12",
-      "to_id": "indian-health-service",
+      "from_id": "article-swingtide-market-intelligence-support",
+      "to_id": "defense-health-agency",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-signal-14",
-      "to_id": "rhrp-4",
+      "from_id": "article-str-zero-day-leidos",
+      "to_id": "defense-health-agency",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-signal-15",
-      "to_id": "oasis",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-peo-dhms-deployment",
-      "to_id": "peo-dhms-deployment",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-peo-dhms-deployment",
-      "to_id": "peo-dhms",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-dha-gsp",
-      "to_id": "dha-gsp",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-dha-gsp",
+      "from_id": "article-samhsa-bhsis-recompete-behavioral-health-services-informatio",
       "to_id": "mhs",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-dha-gsp",
+      "from_id": "article-samhsa-bhsis-recompete-behavioral-health-services-informatio",
       "to_id": "ota",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-dha-omnibus-iv",
-      "to_id": "dha-omnibus-iv",
+      "from_id": "article-fda-sirce-ii-systems-for-inspection-recalls-compliance-enfor",
+      "to_id": "department-of-health-and-human-services",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-dha-mss",
-      "to_id": "dha-mss",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-dha-medlog-jhuapl",
-      "to_id": "dha-medlog-jhuapl",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-aix-tech-dha",
-      "to_id": "aix-tech-dha",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-va-t4ng2",
-      "to_id": "t4ng2",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-va-t4ng2",
-      "to_id": "va-oit",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-va-t4ng2",
-      "to_id": "va-t4ng2",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-va-ehrm-idiq",
-      "to_id": "va-ehrm-idiq",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-va-ehrm-idiq",
-      "to_id": "va-ehrm",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-va-vector",
-      "to_id": "ota",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-va-vector",
-      "to_id": "va-vector",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-vha-iht",
-      "to_id": "t4ng2",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-vha-iht",
-      "to_id": "vha-iht",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cms-sparc",
-      "to_id": "cms-sparc",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-nitaac-cio-sp4",
-      "to_id": "nitaac-cio-sp4",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-nitaac-cio-sp4",
-      "to_id": "cio-sp4",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-nitaac-ecs-iii",
-      "to_id": "nitaac-ecs-iii",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-nih-arpah-stats",
-      "to_id": "nih-arpah-stats",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cdc-itopss-4",
-      "to_id": "cdc-itopss-4",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cdc-tass",
-      "to_id": "cdc-tass",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-ihs-path-ehr",
+      "from_id": "article-fda-sirce-ii-systems-for-inspection-recalls-compliance-enfor",
       "to_id": "fedramp",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-ihs-path-ehr",
-      "to_id": "ihs-path-ehr",
+      "from_id": "article-cms-sparc-ii-strategic-partners-acquisition-readiness-contra",
+      "to_id": "cmmc",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-ihs-path-ehr",
-      "to_id": "indian-health-service",
+      "from_id": "article-cms-sparc-ii-strategic-partners-acquisition-readiness-contra",
+      "to_id": "cms-sparc",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-fda-ead-bpa",
-      "to_id": "fda-ead-bpa",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-dla-mspv-gen-vi",
-      "to_id": "dla-mspv-gen-vi",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-va-mspv-gen-z",
-      "to_id": "va-mspv-gen-z",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-usace-medcom-dbmatoc",
-      "to_id": "usace-medcom-dbmatoc",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-usace-huntsville-medae",
-      "to_id": "usace-huntsville-medae",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-usace-mobile-dha-west",
-      "to_id": "usace-mobile-dha-west",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-gsa-alliant-2",
-      "to_id": "alliant-3",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-gsa-alliant-2",
-      "to_id": "gsa-alliant-2",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-gsa-alliant-3",
-      "to_id": "alliant-3",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-gsa-alliant-3",
-      "to_id": "gsa-alliant-3",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-gsa-oasis-plus",
-      "to_id": "gsa-oasis-plus",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-gsa-oasis-plus",
-      "to_id": "oasis",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-gsa-stars-iii",
-      "to_id": "gsa-stars-iii",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-gsa-stars-iii",
-      "to_id": "ota",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-gsa-stars-iii",
-      "to_id": "stars-iii",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-gsa-vets-2",
-      "to_id": "gsa-vets-2",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-gsa-vets-2",
-      "to_id": "ota",
+      "from_id": "article-cms-sparc-ii-strategic-partners-acquisition-readiness-contra",
+      "to_id": "centers-for-medicare-medicaid-services",
       "relation": "mentions",
       "properties": {},
       "weight": 1
@@ -7599,6 +8891,36 @@
       "relation": "incumbent_of",
       "properties": {
         "via_contract": "tpharm5-tricare-pharmacy",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "dha",
+      "to_id": "t6-health-systems",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "t6-health-systems-aoi-2-peo-dhms-cso",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "dha",
+      "to_id": "mantech",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "mantech-dmix-diss-support",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "dha",
+      "to_id": "swingtide",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "swingtide-market-intelligence-support",
         "derived": true
       },
       "weight": 0.8
@@ -7734,6 +9056,56 @@
       "weight": 0.8
     },
     {
+      "from_id": "va",
+      "to_id": "incumbent-deloitte-consulting-llp",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "va-edge-enterprise-digital-government-enablement",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "va",
+      "to_id": "incumbent-govcio",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "va-htmss-health-services-portfolio-technical-management-stra",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "va",
+      "to_id": "incumbent-booz-allen-hamilton",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "va-transformation-support-services-tss-3-0",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "va",
+      "to_id": "incumbent-revolutional-llc",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "va-cybersecurity-operations-center-support-csoc",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "va",
+      "to_id": "incumbent-sprezzatura-management-consulting-llc",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "va-omega-onboarding-management-engineering-governance-assura",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
       "from_id": "hhs",
       "to_id": "general-dynamics-it-platform-oracle-cerner",
       "relation": "incumbent_of",
@@ -7759,6 +9131,26 @@
       "relation": "incumbent_of",
       "properties": {
         "via_contract": "tefca-rce-health-information-exchange",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "hhs",
+      "to_id": "cherokee-nation-integrated-health",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "ihs-four-directions-warehouse-4dw-clinical-data-repository",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "hhs",
+      "to_id": "gdit-to-pipeline",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "ihs-path-ehr-future-task-orders-sustainment-deployment-pipel",
         "derived": true
       },
       "weight": 0.8
@@ -7799,6 +9191,16 @@
       "relation": "incumbent_of",
       "properties": {
         "via_contract": "cdc-dcipher-disease-surveillance",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "health-resources-services-administration-hrsa",
+      "to_id": "wrma-recompete-watch",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "hrsa-ryan-white-rsr-data-modernization",
         "derived": true
       },
       "weight": 0.8
