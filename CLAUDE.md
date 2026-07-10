@@ -357,6 +357,57 @@ orphan detector is the tripwire.
 Verified 2026-07-03: both functions `node -c` clean; full unit suite 414/414 +
 `tests/contract-intel-pipeline.test.js` 14/14 pass.
 
+### Follow-up 2026-07-10 — the orphan RECONCILER (closes the loop the 07-03 detector opened)
+
+The 07-03 sprint shipped the orphan *detector* but left reconciliation as a
+manual data decision. It stayed unfixed: the 2026-07-10 weekly report showed **7
+orphaned rows at 48-113d, and every stale (>14d) row was one of those 7** — the
+in-roster canonical rows are all fresh (the stalest-first fix works), so orphan
+duplicates were the *entire* remaining staleness problem. All 7 are pure naming
+drift against the current roster:
+
+- `VA Health Connect` → `VA Health Connect / IHT 2.0`
+- `TRICARE Managed Care Support (MCS) Contracts` → `TRICARE Managed Care Support - T-5 (MCS)`
+- `T4NG / T4NG2 (VA IT Services)` → `T4NG2 (VA IT Services)`
+- `Defense Health Agency Telehealth Programs` → `DHA Telehealth Programs`
+- `TRICARE Managed Care Support — T-5 (MCS)` → `TRICARE Managed Care Support - T-5 (MCS)` (em-dash vs hyphen)
+- `VA HELM / SCMDSO (…Logistics Management — Supply Chain…Integration)` → `VA HELM / SCMDSO (Healthcare Environment and Logistics Management)`
+- `T-5 BPA (IT Services)` → **no roster home; manual review** (a mislabeled/retired T-5 variant — not the TRICARE MCS contract).
+
+Shipped `scripts/reconcile-orphan-intel.js`. For each orphan it resolves the
+canonical roster name (explicit alias map + a generic dash/case/whitespace
+normalized match that auto-catches em-dash drift), then decides **at runtime
+from live DB state**: canonical row EXISTS → DELETE the orphan (stale duplicate
+the refresh keeps fresh); canonical MISSING → RENAME the orphan's
+`contract_name` to canonical so the refresh adopts it (non-destructive). Unmapped
+orphans are reported for manual review, never guess-deleted. Dry-run by default,
+`--apply` to write, one `contract_intel_orphan_reconciled` ops_event per action.
+
+Why safe: an orphan-named row is **invisible to subscribers** — the site renders
+contract detail pages from contracts.json canonical names and reads intel by
+canonical name (`contract-intel.js ?contract=`), so an orphan name is in neither.
+These are DB-only cruft. Refresh upserts `onConflict: "contract_name"`, so a
+rename can't collide (the script re-checks + falls back to delete on a race).
+
+Runbook (Mary, local prod env — no creds in the web session):
+```
+# preview (writes nothing):
+SUPABASE_URL=... SUPABASE_SERVICE_KEY=... node scripts/reconcile-orphan-intel.js
+# apply:
+SUPABASE_URL=... SUPABASE_SERVICE_KEY=... node scripts/reconcile-orphan-intel.js --apply
+```
+Then decide the one `T-5 BPA (IT Services)` review row (map it in `ALIASES` or
+delete by hand). Next Friday's `intel-quality-report` should show orphaned=0,
+stale=0.
+
+Hard rule (do not regress): **renaming a contracts.json entry orphans its old
+contract_intel row** (refresh writes only roster names, upsert-by-name). The
+detector is the tripwire; `reconcile-orphan-intel.js` is the remediation. Keep it
+manual + dry-run-first — never auto-delete DB rows on a cron.
+
+Verified 2026-07-10: `node -c` clean; offline resolution test against the live
+roster maps 6/7 orphans to a valid in-roster canonical, 1 to manual review.
+
 ---
 ## Sprint 2026-07-03 — Capture Corner premium email never auto-sent (twice-weekly gap)
 
