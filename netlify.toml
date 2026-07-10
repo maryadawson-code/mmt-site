@@ -37,6 +37,7 @@
     "static/lead-magnets/**",
     "data/agent-access-launch/**",
     "data/linkedin-campaign/**",
+    "data/jul9-dha-cae-release/**",
   ]
 
 [[edge_functions]]
@@ -148,6 +149,16 @@
 # double-sends possible.
 [functions."welcome-reconciler"]
   schedule = "*/30 * * * *"
+
+# Comp-grant welcome reconciler — every 15 min. The Stripe welcome-reconciler
+# only sees Stripe subscriptions, so a comped grant (SQL editor or CLI without
+# email) never gets a welcome. This scans recent comp_access_grants and emails
+# the tester-comp welcome to any active comped user not yet welcomed. Recipient
+# comes from the DB (no PII in source). Idempotent via customer_events
+# welcome_sent + ops_ledger resend_message_id checks; 24h lookback bounds it.
+# Kill switch: COMP_WELCOME_RECONCILER_DISABLED. Manual retry: GET ?force_email=<addr>.
+[functions."comp-welcome-reconciler"]
+  schedule = "*/15 * * * *"
 
 # Buttondown newsletter send — runs 30 min after newsletter-sync (Tue/Fri 11:30 PM UTC)
 # Checks for new articles from the last 3 days and sends a digest to subscribers
@@ -479,6 +490,25 @@
 # may17_dha_budget_realignment_sent. Kill switch:
 # MAY17_DHA_BUDGET_DISABLED=true. Retire by 2026-05-31.
 [functions."may17-dha-budget-realignment-send"]
+  schedule = "*/15 * * * *"
+
+# One-off LEADERSHIP UPDATE: DHA Component Acquisition Executive (AD-RDA /
+# CAE) seat is now CONFIRMED (was Acting since the April 2026 reorg). Emails
+# active premium subscribers and points them to /premium/org-charts/dha. The
+# email does NOT name the person, by Mary's direction. Fires every 15 min so
+# it ships within 15 min of deploy on/after 2026-07-09 UTC; idempotency-keyed
+# in ops_events as jul9_dha_cae_confirmed_sent (claimed before the send loop).
+# Kill switch: JUL9_DHA_CAE_DISABLED=true. Retire by 2026-07-23.
+[functions."jul9-dha-cae-confirmed-send"]
+  schedule = "*/15 * * * *"
+
+# FREE companion to the above: same DHA CAE-confirmed update, sent to the
+# Buttondown newsletter (free) list. Independent pipeline (Buttondown, not
+# Resend), idempotent via Buttondown's own sent-email history so it cannot
+# collide with the paid ops_events marker. Body: data/jul9-dha-cae-release/
+# free-newsletter.md. Kill switch: JUL9_DHA_CAE_FREE_DISABLED=true.
+# Retire by 2026-07-23 alongside the paid companion.
+[functions."jul9-dha-cae-free-send"]
   schedule = "*/15 * * * *"
 
 # Hourly Stripe -> mp_users safety-net sync.
