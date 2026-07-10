@@ -1013,7 +1013,7 @@
 # Target is enforced by scripts/capture-corner-inventory.js.
 [[redirects]]
   from = "/capture-corner/latest"
-  to = "/premium/briefs/capture-corner-2026-07-07.html"
+  to = "/premium/briefs/capture-corner-2026-07-10.html"
   status = 302
 
 # Premium-brief PDF downloads — clean URLs under /premium-briefs/.
