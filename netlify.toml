@@ -511,6 +511,17 @@
 [functions."jul9-dha-cae-free-send"]
   schedule = "*/15 * * * *"
 
+# One-off PREMIUM ORG-INTELLIGENCE briefing: the April 2026 DHA reorg +
+# June AD-RDA All Hands split SDD into two lanes. Emails active premium
+# subscribers and points them to the full briefing at
+# /updates/2026-07-14-sdd-dha-org-placement (premium-gated). Follow-on to
+# jul9-dha-cae-confirmed-send. Fires every 15 min so it ships within 15 min
+# of deploy on/after 2026-07-14 UTC; idempotency-keyed in ops_events as
+# jul14_sdd_dha_placement_sent (claimed before the send loop). Kill switch:
+# JUL14_SDD_DHA_DISABLED=true. Retire by 2026-07-28.
+[functions."jul14-sdd-dha-placement-send"]
+  schedule = "*/15 * * * *"
+
 # Hourly Stripe -> mp_users safety-net sync.
 # Stripe Payment Links (the pricing page checkout) periodically produce
 # subscriptions whose webhook events never reach /.netlify/functions/
@@ -737,6 +748,10 @@
 [[redirects]]
   from = "/updates/2026-05-18-hhs-omas"
   to = "/premium/updates/2026-05-18-hhs-omas.html"
+  status = 200
+[[redirects]]
+  from = "/updates/2026-07-14-sdd-dha-org-placement"
+  to = "/premium/updates/2026-07-14-sdd-dha-org-placement.html"
   status = 200
 
 # Canonical clean URLs for /pricing and /dashboard.

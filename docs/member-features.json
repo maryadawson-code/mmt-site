@@ -437,6 +437,20 @@
       "noindex": true
     },
     {
+      "feature_name": "SDD / DHA Org Placement Update (2026-07-14)",
+      "public_marketing_urls": [
+        "/updates/2026-07-14-sdd-dha-org-placement"
+      ],
+      "member_url": "/premium/updates/2026-07-14-sdd-dha-org-placement.html",
+      "backing_function": "static page (org-intelligence briefing) — paid-subscriber email landing",
+      "entitlement_required": "premium|founding|institutional|admin",
+      "public_locked_preview_behavior": "redirect to dashboard.html (sign-in gate)",
+      "expected_data_source": "DHA Org Chart 20 APR 26 + AD-RDA All Hands 9 JUN 26 (client-provided briefing)",
+      "freshness_sla_hours": null,
+      "smoke_test_url": "/updates/2026-07-14-sdd-dha-org-placement",
+      "noindex": true
+    },
+    {
       "feature_name": "Member Sign-In",
       "public_marketing_urls": [
         "/login",

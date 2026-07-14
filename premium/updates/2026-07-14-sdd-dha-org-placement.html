@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Where SDD lands in the new DHA org (July 14, 2026) &middot; MMT Premium</title>
+  <meta name="robots" content="noindex">
+  <meta name="description" content="The April 2026 DHA reorg and the June AD-RDA All Hands split SDD into two lanes. This briefing maps SDD, IOD/I&O, ESA-BAD, and DCOPS to their new homes and names who owns each one.">
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <link rel="icon" href="/favicon-v3.png" type="image/png">
+  <style>
+    :root { --mmt-navy:#0A192F; --mmt-teal:#457B9D; --mmt-white:#FFFFFF; --mmt-surface:#F3F4F6; --mmt-text-secondary:#6B7280; --mmt-border:#E5E7EB; --ci-gold:#92710A; --dash-sidebar:220px; }
+    body { font-family:Inter,system-ui,sans-serif; color:var(--mmt-navy); background:var(--mmt-surface); margin:0; line-height:1.6; }
+    .dash-shell { display:grid; grid-template-columns:var(--dash-sidebar) 1fr; min-height:100vh; }
+    .dash-nav { background:var(--mmt-navy); padding:24px 0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto; }
+    .dash-nav-brand { padding:0 20px 24px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px; }
+    .dash-nav-brand a { color:#fff; text-decoration:none; font-weight:800; font-size:14px; }
+    .dash-nav-brand small { display:block; font-size:11px; color:rgba(255,255,255,0.5); font-weight:400; margin-top:2px; }
+    .dash-nav-link { display:flex; align-items:center; gap:10px; padding:10px 20px; color:rgba(255,255,255,0.6); text-decoration:none; font-size:13px; font-weight:500; transition:all 0.15s; }
+    .dash-nav-link:hover { color:#fff; background:rgba(255,255,255,0.05); }
+    .dash-nav-link.active { color:#fff; background:rgba(69,123,157,0.3); border-left:3px solid var(--mmt-teal); }
+    .dash-nav-section { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:rgba(255,255,255,0.3); padding:16px 20px 6px; }
+    .dash-header { background:var(--mmt-white); padding:16px 32px; border-bottom:1px solid var(--mmt-border); display:flex; align-items:center; justify-content:space-between; }
+    .dash-main { padding:32px; max-width:820px; }
+    .dash-card { background:var(--mmt-white); border-radius:12px; padding:28px 32px; margin-bottom:18px; border:1px solid var(--mmt-border); }
+    .eyebrow { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.10em; color:var(--mmt-text-secondary); margin-bottom:8px; }
+    h1 { font-size:30px; font-weight:800; margin:0 0 8px; letter-spacing:-0.02em; line-height:1.15; }
+    h2 { font-size:18px; font-weight:800; margin:0 0 8px; letter-spacing:-0.01em; color:var(--mmt-navy); }
+    .lede { font-size:16px; color:var(--mmt-text-secondary); margin:0 0 14px; line-height:1.6; }
+    .meta-row { font-size:12px; color:var(--mmt-text-secondary); margin-bottom:24px; }
+    .meta-row a { color:var(--mmt-teal); text-decoration:none; }
+    p { font-size:14.5px; margin:0 0 14px; }
+    .item { background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:10px; padding:20px 24px; margin-bottom:12px; }
+    .item-num { display:inline-block; font-size:11px; font-weight:700; letter-spacing:0.10em; color:var(--mmt-teal); margin-bottom:6px; }
+    .item-headline { font-size:17px; font-weight:800; color:var(--mmt-navy); margin:0 0 8px; line-height:1.35; }
+    .item-body { font-size:14.5px; color:var(--mmt-navy); margin:0 0 10px; line-height:1.6; }
+    .lane-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:0 0 18px; }
+    .lane { border:1px solid var(--mmt-border); border-radius:10px; padding:18px 20px; background:var(--mmt-white); }
+    .lane-tag { font-size:10px; font-weight:800; letter-spacing:0.10em; text-transform:uppercase; color:var(--mmt-teal); margin-bottom:6px; }
+    .lane-name { font-size:16px; font-weight:800; margin:0 0 6px; }
+    .lane-body { font-size:13.5px; color:var(--mmt-navy); margin:0; line-height:1.55; }
+    table.map { width:100%; border-collapse:collapse; font-size:13px; margin:6px 0 8px; }
+    table.map th { text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:var(--mmt-text-secondary); border-bottom:2px solid var(--mmt-border); padding:8px 10px; }
+    table.map td { border-bottom:1px solid var(--mmt-border); padding:10px; vertical-align:top; line-height:1.5; }
+    table.map td.conf { white-space:nowrap; font-weight:700; color:var(--mmt-teal); font-size:12px; }
+    .chain { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12.5px; background:var(--mmt-surface); border:1px solid var(--mmt-border); border-radius:8px; padding:12px 14px; margin:0 0 10px; line-height:1.7; color:var(--mmt-navy); overflow-x:auto; }
+    .chain strong { color:var(--ci-gold); }
+    ul.gaps { margin:0; padding-left:18px; }
+    ul.gaps li { font-size:14px; margin-bottom:10px; line-height:1.55; }
+    .closer { background:linear-gradient(180deg, var(--mmt-white) 0%, var(--mmt-surface) 100%); border:1px solid var(--mmt-border); border-radius:12px; padding:24px 28px; margin-top:24px; }
+    .closer h2 { margin-bottom:10px; }
+    .source-block { font-size:12.5px; color:var(--mmt-text-secondary); line-height:1.6; }
+    .source-block a { color:var(--mmt-teal); text-decoration:none; }
+    @media (max-width:768px) { .dash-shell { grid-template-columns:1fr; } .dash-nav { display:none; } .dash-main { padding:16px; padding-bottom:80px; } .lane-grid { grid-template-columns:1fr; } table.map { display:block; overflow-x:auto; } }
+  </style>
+  <script>
+    (function() {
+      var isPremium = localStorage.getItem('mmt_premium') === 'true';
+      var ts = localStorage.getItem('mmt_premium_ts');
+      var withinWindow = ts && (Date.now() - parseInt(ts)) < 30 * 24 * 60 * 60 * 1000;
+      if (!isPremium || !withinWindow) { window.location.href = '/dashboard.html'; }
+    })();
+  </script>
+</head>
+<body>
+  <div class="dash-shell">
+    <nav class="dash-nav">
+      <div class="dash-nav-brand"><a href="/premium/dashboard.html">&#9733; MMT Premium<small>Intelligence Dashboard</small></a></div>
+      <div class="dash-nav-section">Intelligence</div>
+      <a href="/premium/dashboard.html" class="dash-nav-link">Dashboard</a>
+      <a href="/agencies/" class="dash-nav-link">Agencies</a>
+      <a href="/premium/org-charts/dha" class="dash-nav-link active">DHA Org Chart</a>
+      <a href="/premium/briefings.html" class="dash-nav-link">Friday Brief</a>
+      <a href="/premium/key-people.html" class="dash-nav-link">Key People</a>
+      <a href="/premium/gao-sustain.html" class="dash-nav-link">GAO Sustains</a>
+      <div class="dash-nav-section">Tools</div>
+      <a href="/premium/pursuit-score.html" class="dash-nav-link">Pursuit Score</a>
+      <a href="/premium/compliance-check.html" class="dash-nav-link">Compliance Check</a>
+      <a href="/premium/signal-chain.html" class="dash-nav-link">Signal Chain</a>
+      <div class="dash-nav-section">Policy</div>
+      <a href="/policy/pact" class="dash-nav-link">PACT &amp; EOs</a>
+      <a href="/policy/rfo-8-4" class="dash-nav-link">RFO 8.4</a>
+      <a href="/premium/fpds-migration.html" class="dash-nav-link">FPDS Sunset</a>
+      <a href="/premium/cr-exposure.html" class="dash-nav-link">CR Exposure</a>
+      <div class="dash-nav-section">Resources</div>
+      <a href="/premium/calendar.html" class="dash-nav-link">Pursuit Calendar</a>
+      <a href="/contract-tracker.html" class="dash-nav-link">Contract Tracker</a>
+      <a href="/idiq-tracker.html" class="dash-nav-link">IDIQ Tracker</a>
+      <a href="/premium/ask-mmt.html" class="dash-nav-link">Ask MMT</a>
+      <div class="dash-nav-section">Account</div>
+      <a href="/premium/settings.html" class="dash-nav-link">Settings</a>
+      <a href="/" class="dash-nav-link" style="margin-top:auto; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px;">&larr; Back to site</a>
+    </nav>
+    <div>
+      <div class="dash-header">
+        <span style="font-size:14px; font-weight:700;">&#9733; Premium Dashboard</span>
+        <div style="display:flex; align-items:center; gap:16px;">
+          <span style="font-size:13px; color:var(--mmt-text-secondary);" id="dash-email"></span>
+          <a href="/" style="font-size:12px; color:var(--mmt-teal); text-decoration:none;">Back to site</a>
+          <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_premium_ts');localStorage.removeItem('mmt_email');document.cookie='mmt_premium=;path=/;max-age=0';document.cookie='mmt_email=;path=/;max-age=0';window.location.href='/';return false;" style="font-size:12px; color:var(--mmt-text-secondary); text-decoration:none;">Sign out</a>
+        </div>
+      </div>
+      <div class="dash-main">
+
+        <div class="eyebrow">Org Intelligence &middot; July 14, 2026</div>
+        <h1>Where your legacy SDD work reports now</h1>
+        <p class="lede">The April reorg and the June AD-RDA All Hands did something people keep getting wrong: they did not move the Solution Delivery Division into one box. They cut it in two. If you are still calling the old PEO Medical Systems / CIO line for a health-IT pursuit, you are calling a seat that no longer owns the decision. Here is where each piece landed, and who signs now.</p>
+        <div class="meta-row">
+          Sources: DHA Org Chart (20 APR 26) and AD-RDA All Hands (9 JUN 26). Leadership moves confirmed by client, July 2026.
+          &middot; <a href="/premium/org-charts/dha">DHA org chart</a>
+          &middot; <a href="/agencies/dha">DHA profile</a>
+        </div>
+
+        <div class="dash-card">
+          <h2>The one-line answer</h2>
+          <p style="margin-bottom:0;">SDD is a functional split, not a single-box move. Its acquisition and product-delivery work follows PEO Medical Systems into AD-RDA / CAE, where the Portfolio Acquisition Executives roll up to the Component Acquisition Executive. Its infrastructure, data-center, cyber, and CIO-governance functions realign under AD-SPFO / CIO (J-6). Two lanes. Two owners. Two call paths.</p>
+        </div>
+
+        <h2 style="margin:26px 0 12px;">The two lanes now have named owners</h2>
+        <div class="lane-grid">
+          <div class="lane">
+            <div class="lane-tag">Acquisition / Product Delivery</div>
+            <div class="lane-name">James Perkins</div>
+            <p class="lane-body">Now officially a Portfolio Acquisition Executive (PAE) under the CAE. This confirms the AD-RDA / CAE PAE construct is stood up with named leadership. The legacy SDD and PEO MS product-delivery portfolio reports up through the PAE line to the CAE. Perkins is a PAE reporting to the CAE, not the CAE himself.</p>
+          </div>
+          <div class="lane">
+            <div class="lane-tag">Enterprise IT Control-Plane</div>
+            <div class="lane-name">Pat Flanders</div>
+            <p class="lane-body">Now CIO only, no longer a PEO. He keeps the Chief Information Office (J-6) hat under AD-SPFO. The acquisition authority he used to carry has moved to the PAE line under AD-RDA / CAE. The old dual-hat is gone.</p>
+          </div>
+        </div>
+        <p>Why this matters for capture: the personnel split removes the old dual-hat ambiguity. Acquisition and product-delivery pursuits anchor to the PAE line under the CAE. Enterprise infrastructure, cyber, and IT-governance conversations anchor to Flanders on the CIO / J-6 side. Know which one you are in before the meeting starts.</p>
+
+        <div class="item">
+          <div class="item-num">WHAT CHANGED</div>
+          <h2 class="item-headline">The 20 APR chart broke apart the model SDD used to live inside.</h2>
+          <p class="item-body">Before the reorg, SDD sat inside the PEO Medical Systems / CIO (J-6) operating model, described publicly as a division of the Program Executive Office for Medical Systems. The new chart separates the J-6 control-plane and operations home from the acquisition and product-delivery home. All acquisition functions and support stay in AD-RDA, and PEO MS acquisition functions move into the new Portfolio Acquisition Executive structure. The 9 JUN All Hands then names the landing zone: PAE Medical Digital Solutions (PAE MDS) is the explicit home for the PEO DHMS and PEO MS digital portfolio.</p>
+        </div>
+
+        <div class="item">
+          <div class="item-num">ADJACENT, NOT THE HOME</div>
+          <h2 class="item-headline">OWHA is a transformation node, not the SDD landing zone.</h2>
+          <p class="item-body">The chart keeps Director, DHA at the top with the Deputy Director beneath, creates an Office of Warfighter Health Advantage (OWHA) under the Deputy Director, and retains the nine Defense Health Networks. OWHA consolidates DIG, CDAO, BID, the Digital Health Integration Office, and most SIG functions. It is a strategy-and-innovation node. It is not the home for SDD's legacy acquisition PMOs. Route CDAO and Digital Health Integration strategy conversations here, and nothing else.</p>
+        </div>
+
+        <h2 style="margin:26px 0 10px;">Placement map: SDD and its sub-elements</h2>
+        <div class="dash-card" style="padding:18px 20px;">
+          <table class="map">
+            <thead>
+              <tr><th style="width:34%;">Legacy element / function</th><th>New reporting home</th><th style="width:18%;">Confidence</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>SDD overall (PEO MS product / acquisition-delivery org)</td>
+                <td>Director, DHA &rarr; AD-RDA / CAE &rarr; CAE &rarr; PAE (Perkins) &rarr; PAE MDS</td>
+                <td class="conf">High for AD-RDA / CAE; med-high for PAE MDS</td>
+              </tr>
+              <tr>
+                <td>SDD digital apps, web / mobile, analytics, MEDLOG IT, CBIS, clinical-support PMOs</td>
+                <td>AD-RDA / CAE &rarr; PAE MDS (portfolio mapping and governance in progress)</td>
+                <td class="conf">Medium-high</td>
+              </tr>
+              <tr>
+                <td>ICS &amp; MST inside SDD</td>
+                <td>AD-RDA / CAE &rarr; PAE structure, likely split across PAE MDS / PAE MS / PAE MP by item type</td>
+                <td class="conf">Medium</td>
+              </tr>
+              <tr>
+                <td>IOD / I&amp;O (infrastructure &amp; operations)</td>
+                <td>Director, DHA &rarr; AD-SPFO &rarr; CIO (J-6, Flanders) &rarr; enterprise IT operations</td>
+                <td class="conf">Medium-high</td>
+              </tr>
+              <tr>
+                <td>ESA-BAD (engineering, architecture, IT analytics)</td>
+                <td>Split: product-delivery engineering &rarr; AD-RDA / PAE MDS; enterprise architecture, CIO standards, cyber / RMF, data mgmt &rarr; AD-SPFO / CIO (J-6)</td>
+                <td class="conf">Medium</td>
+              </tr>
+              <tr>
+                <td>DCOPS (best read as data-center operations)</td>
+                <td>AD-SPFO &rarr; CIO (J-6) for data-center / network / IA / cyber ops; AD-RDA / PAE MDS only where the work is an acquisition or modernization program</td>
+                <td class="conf">Low for exact acronym; med for placement</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="item">
+          <div class="item-num">WHY PAE MDS IS THE KEY LANDING ZONE</div>
+          <h2 class="item-headline">The June All Hands is the newest source, and it shows the transition below the boxes.</h2>
+          <p class="item-body">It states that PAE MDS ran an initial coordination meeting among the CAE, PEO DHMS, and PEO MS (SDD), launched an MDS working group, captured roughly 80 percent of the PEO DHMS and PEO MS portfolio, and drafted the PAE MDS charter, portfolio map, org-structure alignment, governance processes, and a unified IT-systems migration plan.</p>
+          <p class="item-body" style="margin-bottom:0;">PEO MS transition activities include moving personnel and resources to AD-RDA / CAE, realigning supervisors to report directly to AD-RDA / CAE, aligning funding, and building a transfer plan for the ICS and MST PMOs. The market-facing read: SDD becomes part of the AD-RDA acquisition and product-management world, while its infrastructure, architecture, and cyber functions stay under CIO / J-6 in AD-SPFO whenever they are enterprise operations rather than PAE-managed delivery.</p>
+        </div>
+
+        <h2 style="margin:26px 0 10px;">Working reporting chains</h2>
+        <div class="chain">SDD product / application / acquisition work<br>Director, DHA &rarr; AD-RDA / CAE &rarr; CAE &rarr; PAE (<strong>James Perkins</strong>) &rarr; PAE MDS &rarr; legacy PEO MS / SDD PMOs &amp; branches</div>
+        <div class="chain">IOD / I&amp;O, infrastructure, network, data center, service desk, IA / cyber / RMF, CIO governance<br>Director, DHA &rarr; AD-SPFO &rarr; CIO (J-6, <strong>Pat Flanders</strong>, CIO only) &rarr; enterprise IT ops / cyber / infrastructure</div>
+        <div class="chain">CDAO / digital health integration / innovation<br>Director, DHA &rarr; Deputy Director &rarr; OWHA (adjacent, not the direct SDD home)</div>
+
+        <div class="dash-card" style="margin-top:24px;">
+          <h2>What is still open</h2>
+          <ul class="gaps">
+            <li>Neither the 20 APR chart nor the June All Hands shows named boxes for IOD / I&amp;O, ESA-BAD, or DCOPS. These are functional mappings, not confirmed post-reorg subdivision names.</li>
+            <li>The June All Hands is a transition brief, not a final manpower document. It targets full operating capability on 19 JUL 2026, with PAE portfolio and org-alignment milestones running into August and September 2026.</li>
+            <li>The expansion "Defense Cyber Operations" for DCOPS is not verified in public DHA sources. The evidence supports "Data Center Operations" as a J-6 service line, with a separate Cyber Security Division / RMF function.</li>
+            <li>Final disposition of the individual SDD PMOs (CBIS, Clinical Support, HSS, LEAP, MEDLOG IT, WMT, ICS, MST) should be validated against the final PAE MDS / MS / MP workforce map once it is issued.</li>
+            <li>Confirm which specific PAE portfolio Perkins leads. He is a PAE reporting to the CAE within AD-RDA / CAE, not the CAE itself and not above the PAE structure.</li>
+          </ul>
+        </div>
+
+        <div class="closer">
+          <h2>The analyst takeaway</h2>
+          <p style="margin-bottom:8px;">For capture and market intelligence, treat legacy SDD opportunities as moving out of a PEO MS / CIO (J-6) label and into an AD-RDA / CAE PAE construct, especially PAE Medical Digital Solutions. Keep a separate call path open into AD-SPFO / CIO (J-6) for infrastructure, cyber, data-center, architecture, service-management, and enterprise IT governance.</p>
+          <p style="margin:0;">The most defensible shorthand: SDD product delivery goes to AD-RDA / CAE &rarr; CAE &rarr; PAE (James Perkins) / PAE MDS. IOD / I&amp;O and data-center / cyber ops go to AD-SPFO / CIO (J-6, Pat Flanders, CIO only). CDAO and Digital Health Integration strategy go to the Deputy Director / OWHA. See the full picture on the <a href="/premium/org-charts/dha" style="color:var(--mmt-teal); font-weight:600;">DHA org chart</a>.</p>
+        </div>
+
+        <div class="dash-card source-block">
+          <strong>Source index.</strong>
+          [1] DHA Org Chart, 20 APR 2026 (slides 3&ndash;4). [2] AD-RDA All Hands, 9 JUN 2026 (slides 9&ndash;17, 32). [3] Health.mil Solution Delivery Division page. [4] Health.mil SDD Fact Sheet, May 2025. [5] Defense Health Program FY 2026 Budget Justification. [6] DHA News, 13 May 2026 (OWHA). [7] IntelliDyne DHA services page (data-center operations). [8] HIMSS cyber / RMF handout.<br><br>
+          Leadership updates (James Perkins as PAE; Pat Flanders as CIO only) confirmed by client, July 2026.
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script>
+    var email=localStorage.getItem('mmt_email');var __de=document.getElementById('dash-email');if(__de&&email)__de.textContent=email;
+  </script>
+</body>
+</html>
