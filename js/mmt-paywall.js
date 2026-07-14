@@ -839,6 +839,32 @@
     }
   }
 
+  // --- Canonical sign-out ---
+  // Clears BOTH localStorage and the auth cookies, then returns home.
+  // The nav "Sign Out" link used to clear only localStorage, but
+  // getSubscriberStatus() reads the mmt_premium cookie FIRST, so the
+  // page reload re-authenticated the user and logout appeared to do
+  // nothing on the home page (it "worked" on the dashboard only because
+  // that page's own handler cleared the cookies too). One helper, loaded
+  // on every page, keeps every sign-out surface consistent.
+  window.mmtSignOut = function () {
+    try {
+      localStorage.removeItem(PREMIUM_KEY);
+      localStorage.removeItem("mmt_premium_ts");
+      localStorage.removeItem(EMAIL_KEY);
+      localStorage.removeItem("mmt_subscriber_token");
+      localStorage.removeItem("mmt_institutional");
+      localStorage.removeItem("mmt_tier_cache");
+    } catch (e) {}
+    var expire = "; path=/; max-age=0; SameSite=Lax";
+    document.cookie = "mmt_email=" + expire;
+    document.cookie = "mmt_premium=" + expire;
+    document.cookie = "mmt_institutional=" + expire;
+    document.cookie = "mmt_subscriber=" + expire;
+    window.location.href = "/";
+    return false;
+  };
+
   // --- Nav premium state toggle ---
   function applyNavPremiumState() {
     var status = getSubscriberStatus();

@@ -183,13 +183,24 @@ exports.handler = async (event) => {
         return err(429, "Too many login requests. Please try again later.");
       }
 
-      // Check if email exists in customer_profiles or has any orders
-      const [profileRes, mpRes, ppRes] = await Promise.all([
+      // Check if email exists in any account table. customer_profiles +
+      // marketpulse_orders + mp_scoring_history cover one-off product buyers
+      // (the /my-reports portal). But PREMIUM SUBSCRIBERS live in mp_users and
+      // may have zero one-off purchases — Agent Access beta members (e.g. the
+      // /premium/ai-integrations sign-in) are exactly this case. Without the
+      // mp_users check, request_link returned {sent:true} for them but never
+      // sent the link (the 2026-07-10 Eric Bowman report: "no email even though
+      // it says check your email"). The magic link only proves email ownership;
+      // downstream entitlement checks still gate what the session can access, so
+      // recognizing an mp_users row here is safe. Case-insensitive to match
+      // loadEntitlement's ilike lookup.
+      const [profileRes, mpRes, ppRes, userRes] = await Promise.all([
         sb.from("customer_profiles").select("id").eq("email", normalizedEmail).limit(1),
         sb.from("marketpulse_orders").select("id").eq("email", normalizedEmail).limit(1),
         sb.from("mp_scoring_history").select("id").eq("email", normalizedEmail).limit(1),
+        sb.from("mp_users").select("email").ilike("email", normalizedEmail).limit(1),
       ]);
-      const hasAccount = (profileRes.data?.length > 0) || (mpRes.data?.length > 0) || (ppRes.data?.length > 0);
+      const hasAccount = (profileRes.data?.length > 0) || (mpRes.data?.length > 0) || (ppRes.data?.length > 0) || (userRes.data?.length > 0);
       if (!hasAccount) {
         // Don't reveal whether account exists — always return success
         return ok({ sent: true });

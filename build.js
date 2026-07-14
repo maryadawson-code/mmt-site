@@ -2640,7 +2640,7 @@ function inlineTailwindCss(html) {
             <a href="/premium/briefings/">My Briefs</a>
             <a href="/premium/calendar/">Pursuit Calendar</a>
             <hr>
-            <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_email');location.reload();return false;">Sign Out</a>
+            <a href="#" onclick="return mmtSignOut();">Sign Out</a>
           </div>
         </span>
         <a href="/tools" class="btn-primary btn-sm no-underline">Choose a Tool</a>
@@ -2665,6 +2665,7 @@ function inlineTailwindCss(html) {
         <span class="mobile-logged-in" style="display:none;">
           <a href="/premium/dashboard/" class="text-sm font-semibold no-underline" style="color:var(--mmt-teal);">★ Dashboard</a>
           <a href="/premium/briefings/" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">My Briefs</a>
+          <a href="#" onclick="return mmtSignOut();" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">Sign Out</a>
         </span>
         <div class="pt-3 mt-1" style="border-top:1px solid var(--mmt-border);">
           <a href="/tools" class="btn-primary no-underline">Choose a Tool</a>
