@@ -31,7 +31,7 @@ capture_corner:
   - "The AI scope audit that postdates every System Security Plan on file, plus how to build a two-page RFI response the task force can use before the August 14 close: split your spend into the three columns no filer has separated, lead with the invoices the record does not contain, and watch the CUI-in-the-chatbot trap that moves the document describing how you protect CUI into an unassessed system."
 ---
 
-![A timeline on a cream field. A handwritten signature line runs left to right. At the left, a node marked 2015 to 2018 carries annual cybersecurity certifications to DHA and alleged gaps in scanning, patching, access controls, firewalls, end-of-life hardware, and password policies. At the right, a second signature leads to a 2025 node marked DOJ settlement, where the line frays into red roots labeled 11.25 million dollars, Health Net Federal Services and Centene settlement. A footnote reads that the companies denied liability and admitted no wrongdoing. The headline reads: Health Net had no CMMC deadline. No CMMC. No breach required. The statement carried the case.](/images/newsletter/2026-07-17/cover-health-net-cmmc.png)
+![An isometric illustration. A woman in a blue suit sits alone at a large, mostly empty table, looking down at a single signed sheet of paper. The chair across from her is empty. Beneath the lit surface of the table, in shadow, a dense web of connected nodes spreads out: AI agents, two red exposed API key nodes wired together, health data nodes, unpatched demo servers, and government contract obligations. The signature sits directly above the hidden network it vouches for.](/images/newsletter/2026-07-17/cover-signature-network.png)
 
 # Health Net Never Had a CMMC Deadline
 
@@ -81,7 +81,7 @@ Between 2015 and 2018, per the Justice Department, Health Net failed to timely s
 
 Health Net and Centene denied everything, admitted no liability, and maintain that no vulnerability was exploited, no breach occurred, and no servicemember data was lost. They settled to avoid protracted litigation. Hold that in frame, because it is true and it is the point. No breach was required. The false statement was the violation.
 
-![An isometric illustration. A woman in a blue suit sits alone at a large, mostly empty table, looking down at a single signed sheet of paper. The chair across from her is empty. Beneath the lit surface of the table, in shadow, a dense web of connected nodes spreads out: AI agents, two red exposed API key nodes wired together, health data nodes, unpatched demo servers, and government contract obligations. The signature sits directly above the hidden network it vouches for.](/images/newsletter/2026-07-17/signature-mechanism-network.png)
+![A timeline on a cream field. A handwritten signature line runs left to right. At the left, a node marked 2015 to 2018 carries annual cybersecurity certifications to DHA and alleged gaps in scanning, patching, access controls, firewalls, end-of-life hardware, and password policies. At the right, a second signature leads to a 2025 node marked DOJ settlement, where the line frays into red roots labeled 11.25 million dollars, Health Net Federal Services and Centene settlement. A footnote reads that the companies denied liability and admitted no wrongdoing. The headline reads: Health Net had no CMMC deadline. No CMMC. No breach required. The statement carried the case.](/images/newsletter/2026-07-17/health-net-cmmc-timeline.png)
 
 
 
