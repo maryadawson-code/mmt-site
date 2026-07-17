@@ -903,34 +903,35 @@
   // These back the "Track" buttons (Contract Tracker + contract detail) and the
   // My Pipeline page. They write to mmt_watchlist, the SAME table the Agent
   // Access API reads for "your pipeline" — so tracking a contract here is what
-  // makes an AI agent's pipeline non-empty. All three return the fetch promise
-  // so callers can await the result and update UI.
-  window.mmtWatchlistAdd = function(entryId, title, url) {
-    var email = localStorage.getItem(EMAIL_KEY);
-    if (!email) return Promise.reject(new Error('not signed in'));
+  // makes an AI agent's pipeline non-empty. Every call carries the HMAC-signed
+  // mmt_subscriber_token; the server derives the email from it (the endpoint no
+  // longer trusts an email in the body). All three return the fetch promise so
+  // callers can await the result and update UI.
+  var TOKEN_KEY = "mmt_subscriber_token";
+  function postWatchlist(payload) {
+    var token = localStorage.getItem(TOKEN_KEY);
+    if (!token) return Promise.reject(new Error('not signed in'));
+    payload.token = token;
     return fetch('/.netlify/functions/member-watchlist', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email, action: 'add', entry_id: entryId, entry_title: title, entry_url: url }),
-    }).then(function(r) { if (!r.ok) throw new Error('save failed'); return r.json(); });
+      body: JSON.stringify(payload),
+    }).then(function(r) { if (!r.ok) throw new Error('watchlist ' + r.status); return r.json(); });
+  }
+
+  window.mmtWatchlistAdd = function(entryId, title, url) {
+    return postWatchlist({ action: 'add', entry_id: entryId, entry_title: title, entry_url: url });
   };
 
   window.mmtWatchlistRemove = function(entryId) {
-    var email = localStorage.getItem(EMAIL_KEY);
-    if (!email) return Promise.reject(new Error('not signed in'));
-    return fetch('/.netlify/functions/member-watchlist', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email, action: 'remove', entry_id: entryId }),
-    }).then(function(r) { if (!r.ok) throw new Error('remove failed'); return r.json(); });
+    return postWatchlist({ action: 'remove', entry_id: entryId });
   };
 
-  // GET the signed-in member's tracked items (their pipeline).
+  // POST list — returns the signed-in member's tracked items (their pipeline).
+  // POST (not GET) so the token never rides in a URL query string.
   window.mmtWatchlistList = function() {
-    var email = localStorage.getItem(EMAIL_KEY);
-    if (!email) return Promise.resolve([]);
-    return fetch('/.netlify/functions/member-watchlist?email=' + encodeURIComponent(email))
-      .then(function(r) { return r.ok ? r.json() : { items: [] }; })
+    if (!localStorage.getItem(TOKEN_KEY)) return Promise.resolve([]);
+    return postWatchlist({ action: 'list' })
       .then(function(d) { return (d && d.items) || []; })
       .catch(function() { return []; });
   };
@@ -942,8 +943,10 @@
     var btns = document.querySelectorAll('.mmt-track-btn[data-track-id]');
     if (!btns.length) return;
     if (!isAtLeastPremium(getSubscriberStatus())) return; // stays hidden for non-premium
-    var email = localStorage.getItem(EMAIL_KEY);
-    if (!email) return;
+    // The token is what the API authenticates on. Without it (rare: premium
+    // flagged via cache but no member-auth token), leave the buttons hidden
+    // rather than show a control that would 401 on click.
+    if (!localStorage.getItem('mmt_subscriber_token')) return;
 
     function setState(btn, tracked) {
       btn.setAttribute('data-tracked', tracked ? '1' : '0');
