@@ -825,6 +825,7 @@ function generateSitemap(articles, tags, contracts) {
     { loc: '/idiq-tracker.html', priority: '0.7' },
     { loc: '/help.html', priority: '0.5' },
     { loc: '/agent-access-guide.html', priority: '0.6' },
+    { loc: '/pipeline-guide.html', priority: '0.6' },
     { loc: '/agencies/', priority: '0.6' },
     { loc: '/premium/briefings/', priority: '0.5' },
     { loc: '/premium/monthly-briefs/', priority: '0.5' },
@@ -1843,6 +1844,7 @@ function generateContractTrackerHtml(contracts, contractArticleMap) {
               </div>
               <p class="text-xs mt-2 font-semibold" style="color:var(--mmt-teal);">View Intel &rarr;</p>
               </a>${relatedAnalysis}
+              <button type="button" class="mmt-track-btn" data-track-id="${escapeHtml(cSlug)}" data-track-title="${escapeHtml(c.name)}" data-track-url="/contracts/${cSlug}/" aria-pressed="false" title="Save this contract to your pipeline" style="display:none;margin-top:12px;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--mmt-teal);background:rgba(69,123,157,0.08);border:1px solid rgba(69,123,157,0.25);border-radius:8px;padding:6px 12px;cursor:pointer;"><span class="mmt-track-icon">&#9734;</span> <span class="mmt-track-label">Track</span></button>
             </div>\n`;
     });
     html += `          </div>
@@ -1936,6 +1938,7 @@ function generateContractPages(contracts) {
         ? `<div><span style="color:var(--mmt-text-secondary);">NAICS:</span> <span class="contract-premium-field" data-field="naics" style="color:var(--mmt-navy);">Premium</span></div>`
         : '')
       .replace(/\{\{BUILD_DATE\}\}/g, new Date().toISOString().split('T')[0])
+      .replace(/\{\{TRACK_BUTTON\}\}/g, `<button type="button" class="mmt-track-btn" data-track-id="${escapeHtml(cSlug)}" data-track-title="${escapeHtml(c.name)}" data-track-url="/contracts/${cSlug}/" data-track-long="1" aria-pressed="false" title="Save this contract to your pipeline" style="display:none;align-items:center;gap:6px;font-size:0.75rem;font-weight:700;color:var(--mmt-teal);background:rgba(69,123,157,0.1);border:1px solid rgba(69,123,157,0.25);border-radius:8px;padding:6px 12px;cursor:pointer;"><span class="mmt-track-icon">&#9734;</span> <span class="mmt-track-label">Track this contract</span></button>`)
       .replace(/\{\{CANONICAL_URL\}\}/g, `${SITE_URL}/contracts/${cSlug}/`);
 
     // Inject slug-only placeholder; the premium payload is served by
@@ -3046,6 +3049,7 @@ function injectDashShell(html, activePage) {
     { href: '/contract-tracker.html', label: 'Contract Tracker', id: 'contract-tracker', group: 'Pursuit Tools' },
     { href: '/idiq-tracker.html', label: 'IDIQ Tracker', id: 'idiq-tracker' },
     { href: '/premium/calendar/', label: 'Pursuit Calendar', id: 'calendar' },
+    { href: '/premium/pipeline/', label: 'My Pipeline', id: 'pipeline' },
     { href: '/premium/single-bidder/', label: 'Sole-Source Watch', id: 'single-bidder', group: 'Capture Watch' },
     { href: '/premium/gao-sustain/', label: 'GAO Sustains', id: 'gao-sustain' },
     { href: '/premium/fpds-migration/', label: 'FPDS Sunset', id: 'fpds-migration' },
@@ -3126,6 +3130,7 @@ async function copyStaticFiles({ archive, feed, newsItems, contracts, contractAr
     'rfp-shredder.html',
     'primer.html',
     'agent-access-guide.html',
+    'pipeline-guide.html',
   ];
   // Premium subdirectory pages
   const premiumPages = [
@@ -3135,6 +3140,7 @@ async function copyStaticFiles({ archive, feed, newsItems, contracts, contractAr
     { src: 'premium/ask-mmt.html', dest: 'premium/ask-mmt.html', index: 'premium/ask-mmt/index.html' },
     { src: 'premium/dashboard.html', dest: 'premium/dashboard.html', index: 'premium/dashboard/index.html' },
     { src: 'premium/settings.html', dest: 'premium/settings.html', index: 'premium/settings/index.html' },
+    { src: 'premium/pipeline.html', dest: 'premium/pipeline.html', index: 'premium/pipeline/index.html' },
     // Sprint 4 (2026-05-06) — Wave 1 paywall enrichment
     { src: 'premium/fpds-migration.html', dest: 'premium/fpds-migration.html', index: 'premium/fpds-migration/index.html' },
     { src: 'premium/single-bidder.html', dest: 'premium/single-bidder.html', index: 'premium/single-bidder/index.html' },
@@ -3472,6 +3478,7 @@ ${innerHtml}
       { href: '/contract-tracker.html', label: 'Contract Tracker', id: 'contract-tracker', group: 'Pursuit Tools' },
       { href: '/idiq-tracker.html', label: 'IDIQ Tracker', id: 'idiq-tracker' },
       { href: '/premium/calendar/', label: 'Pursuit Calendar', id: 'calendar' },
+      { href: '/premium/pipeline/', label: 'My Pipeline', id: 'pipeline' },
       { href: '/premium/single-bidder/', label: 'Sole-Source Watch', id: 'single-bidder', group: 'Capture Watch' },
       { href: '/premium/gao-sustain/', label: 'GAO Sustains', id: 'gao-sustain' },
       { href: '/premium/fpds-migration/', label: 'FPDS Sunset', id: 'fpds-migration' },
@@ -3556,6 +3563,7 @@ ${innerHtml}
     'premium/compliance-check.html': 'compliance-check',
     'premium/signal-chain.html': 'signal-chain',
     'premium/settings.html': 'settings',
+    'premium/pipeline.html': 'pipeline',
     // Sprint 4 (2026-05-06) — Wave 1 paywall enrichment
     'premium/fpds-migration.html': 'fpds-migration',
     'premium/single-bidder.html': 'single-bidder',
@@ -3579,6 +3587,7 @@ ${innerHtml}
     { src: 'premium/signal-chain.html', dest: 'premium/signal-chain/index.html' },
     { src: 'premium/dashboard.html', dest: 'premium/dashboard/index.html' },
     { src: 'premium/settings.html', dest: 'premium/settings/index.html' },
+    { src: 'premium/pipeline.html', dest: 'premium/pipeline/index.html' },
     { src: 'premium/profile.html', dest: 'premium/profile/index.html' },
     // Sprint 4 (2026-05-06) — Wave 1 paywall enrichment
     { src: 'premium/fpds-migration.html', dest: 'premium/fpds-migration/index.html' },
