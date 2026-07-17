@@ -19,18 +19,17 @@
 //   node netlify/functions/lib/loops/runner.js --loop opportunity_discovery --dry-run
 // ============================================================
 
-const fs = require("fs");
-const path = require("path");
-const { resolve: resolveFn } = require("./registry");
-
-const SPEC_DIR = path.join(__dirname, "specs");
+const { resolve: resolveFn, SPECS } = require("./registry");
 
 function loadSpec(loopName) {
-  const file = path.join(SPEC_DIR, `${loopName}.json`);
-  if (!fs.existsSync(file)) {
-    throw new Error(`loop spec not found: ${file}`);
+  const raw = SPECS[loopName];
+  if (!raw) {
+    throw new Error(`loop spec not found: ${loopName}`);
   }
-  const spec = JSON.parse(fs.readFileSync(file, "utf8"));
+  // Clone so a step can't mutate the require()-cached spec across warm
+  // Lambda invocations (fs.readFileSync + JSON.parse used to give a fresh
+  // object each call; preserve that guarantee).
+  const spec = JSON.parse(JSON.stringify(raw));
   if (spec.name !== loopName) {
     throw new Error(`spec.name "${spec.name}" != requested "${loopName}"`);
   }
