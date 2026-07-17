@@ -1,0 +1,24 @@
+{
+  "name": "contract_intel_freshness",
+  "version": 1,
+  "description": "Independent watchdog on contract_intel coverage/freshness. Reuses the pure computeCoverage() the nightly refresh uses inline, but observes from OUTSIDE the refresh function, so it catches both 'refresh fell behind its roster' and 'refresh stopped running entirely' (a dead cron logs nothing the inline guard could see). Writes loop_runs/loop_evals + a loop_status snapshot (source=contract_intel) for /status.json, and alerts Mary on drift. No LLM, no external API — one Supabase read.",
+  "trigger": { "type": "cron", "expr": "0 */6 * * *" },
+  "steps": [
+    {
+      "id": "coverage",
+      "fn": "fetchers/contract_intel_coverage",
+      "stale_hours": 48,
+      "behind_hours": 72,
+      "never_refreshed_fraction": 0.15,
+      "max_refresh_gap_hours": 26
+    },
+    { "id": "snapshot", "fn": "publishers/intel_coverage_snapshot" }
+  ],
+  "evals": [
+    { "name": "intel_coverage", "fn": "evals/intel_coverage" }
+  ],
+  "alerts": {
+    "on_fail": { "email": "mary@missionmeetstech.com", "ops_event": "LOOP_FAIL" },
+    "on_drift": { "email": "mary@missionmeetstech.com", "ops_event": "LOOP_DRIFT" }
+  }
+}
