@@ -43,6 +43,18 @@ const REGISTRY = {
   // budget-delta tracking — not to run two parallel change-detectors.
 };
 
+// Static id -> spec map. Same reason as REGISTRY above: esbuild follows
+// static require()s (and inlines .json), so every spec is bundled into the
+// loop function. loadSpec() previously fs.readFileSync'd __dirname/specs,
+// which breaks once esbuild flattens the bundle — the source dir no longer
+// exists at /var/task and the JSON was never bundled. Requiring the specs
+// statically is the only bundler-safe way to ship them.
+const SPECS = {
+  opportunity_discovery: require("./specs/opportunity_discovery.json"),
+  contract_tracker_freshness: require("./specs/contract_tracker_freshness.json"),
+  contract_intel_freshness: require("./specs/contract_intel_freshness.json"),
+};
+
 function resolve(fnId) {
   const mod = REGISTRY[fnId];
   if (!mod || typeof mod.run !== "function") {
@@ -51,4 +63,4 @@ function resolve(fnId) {
   return mod.run;
 }
 
-module.exports = { REGISTRY, resolve };
+module.exports = { REGISTRY, resolve, SPECS };
