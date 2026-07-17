@@ -987,13 +987,15 @@
   window.mmtInitTrackButtons = initTrackButtons;
 
   // --- AUT-08: Read state API helper ---
+  // member-read-state now authenticates on the signed token; email is derived
+  // server-side. Send the token, not the email.
   window.mmtMarkRead = function(entryId) {
-    var email = localStorage.getItem(EMAIL_KEY);
-    if (!email) return;
+    var token = localStorage.getItem(TOKEN_KEY);
+    if (!token) return;
     fetch('/.netlify/functions/member-read-state', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email, entry_id: entryId }),
+      body: JSON.stringify({ token: token, entry_id: entryId }),
     }).catch(function() {});
   };
 
