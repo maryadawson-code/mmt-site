@@ -24,6 +24,7 @@ const { checkFreshness } = require("./lib/stale-detector");
 const { disambiguate } = require("./lib/entity-disambiguator");
 const { trackAnthropic } = require("./lib/cost-tracker");
 const { getRefreshRoster } = require("./lib/refresh-roster");
+const { computeCoverage } = require("./lib/refresh-coverage");
 const { validateSources } = require("./lib/url-validator");
 const { sanitizeNotes, strippedNotes } = require("./lib/intel-notes-sanitizer");
 
@@ -840,6 +841,52 @@ exports.handler = async (event) => {
     console.error("Threshold adjustment failed (non-blocking):", threshErr.message);
   }
 
+  // --- Self-observing coverage guard (durable-loop tripwire) ---------------
+  // The loop resumes stalest-first every run (last_updated IS the checkpoint),
+  // so it self-heals as long as throughput >= roster growth. The ONE case that
+  // ordering can't fix is the roster outpacing a 13-min budget: rows then age
+  // past SLA and today only the WEEKLY intel-quality-report notices. Measure
+  // coverage on the POST-run state so "the loop is falling behind" surfaces the
+  // same day, in the ledger. Best-effort — never let it fail the run. Skipped
+  // for single-contract force refreshes (not a roster-coverage pass).
+  let coverage = null;
+  if (!forceContract) {
+    try {
+      const { data: afterRows } = await supabase
+        .from("contract_intel")
+        .select("contract_name, last_updated");
+      const postMap = new Map((afterRows || []).map((r) => [r.contract_name, r.last_updated || null]));
+      coverage = computeCoverage(CONTRACTS.map((c) => c.name), postMap);
+      console.log(
+        `Coverage: ${coverage.coveragePct}% fresh (${coverage.covered}/${coverage.total}), ` +
+        `stale=${coverage.staleCount}, never=${coverage.neverRefreshed}, oldest=${coverage.oldestHours ?? "∞"}h, behind=${coverage.behind}`,
+      );
+      // Leading-indicator tripwire: distinct, queryable ledger row the moment
+      // the loop can't keep the roster inside SLA — days ahead of the weekly
+      // report. No email (the weekly report already escalates; this is the
+      // earlier ledger signal MissionPulse / the report can pick up).
+      if (coverage.behind) {
+        await logOpsEvent(supabase, {
+          event_type: "intel_refresh_behind",
+          source_function: "contract-intel-refresh",
+          severity: "warn",
+          signature: "roster_outpacing_budget",
+          details: {
+            reason: coverage.behindReason,
+            coverage_pct: coverage.coveragePct,
+            stale_count: coverage.staleCount,
+            never_refreshed: coverage.neverRefreshed,
+            oldest_hours: coverage.oldestHours,
+            roster_total: coverage.total,
+            truncated_for_budget: truncatedForBudget,
+          },
+        });
+      }
+    } catch (covErr) {
+      console.error("Coverage computation failed (non-blocking):", covErr.message);
+    }
+  }
+
   // Log to ops_events with cost estimate
   // Claude Sonnet + web_search: ~$3-6 per 1000 requests. 2 calls per contract (research + verify).
   const totalCalls = successCount * 2;
@@ -857,6 +904,7 @@ exports.handler = async (event) => {
       cost_estimate: costEstimate,
       api_calls: totalCalls,
       run_ms: Date.now() - runStart,
+      coverage,
     },
   });
 

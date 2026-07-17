@@ -30,6 +30,11 @@ const REGISTRY = {
   "publishers/status_snapshot": require("./publishers/status_snapshot"),
   "evals/lag_thresholds": require("./evals/lag_thresholds"),
 
+  // --- contract_intel_freshness (intel-coverage watchdog) ---
+  "fetchers/contract_intel_coverage": require("./fetchers/contract_intel_coverage"),
+  "publishers/intel_coverage_snapshot": require("./publishers/intel_coverage_snapshot"),
+  "evals/intel_coverage": require("./evals/intel_coverage"),
+
   // NOTE: L4 (agency drift) is intentionally NOT a loop. The existing
   // netlify/functions/org-chart-monitor.js already hashes the canonical
   // agency leadership pages and emails Mary on change (weekly, no

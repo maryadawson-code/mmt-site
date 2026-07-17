@@ -23,6 +23,7 @@ no path to a publishable directory.
 |---|---|---|
 | **L1 Opportunity Discovery** | ✅ shipped | Daily SAM.gov discovery, staged for review |
 | **L3 Contract Tracker Freshness** | ✅ shipped | Hourly data-trust guard + public `/status.json` |
+| **Contract Intel Freshness** | ✅ shipped | 6-hourly independent watchdog on `contract_intel` coverage; catches the nightly refresh falling behind its roster or stopping entirely |
 | L2 Pursuit Score QA | ⏸ deferred | Needs Mary's 50-row hand-graded golden set; fabricating it would violate the repo's no-fabricated-fixtures rule. Fast-follow once the golden set exists. |
 | L4 Agency Drift | ❌ dropped | `netlify/functions/org-chart-monitor.js` already hashes agency leadership pages and emails Mary on change. A second detector would just double-notify. Future: port org-chart-monitor into this framework + add budget-delta. |
 | L5 Newsletter QA | ❌ out of scope | Mary handles newsletter content independently. |
@@ -103,6 +104,27 @@ reachable-but-stale or non-2xx source as **drift** → alerts Mary.
 - Unknown lag (table/column unresolved) is treated as "unknown", never a false
   STALE (see the CLAUDE.md false-STALE sprint).
 - `/status.json` serves the newest row per source for an uptime badge.
+
+## Contract Intel Freshness (intel-coverage watchdog)
+
+`specs/contract_intel_freshness.json`. Every 6h.
+
+`coverage` (read `contract_intel` + roster, run the SAME pure
+`computeCoverage()` the nightly `contract-intel-refresh` uses inline) →
+`snapshot` (best-effort `loop_status` row, `source=contract_intel`). Eval
+`intel_coverage` marks **drift** when the refresh has fallen behind its roster
+**or** appears to have stopped running entirely → alerts Mary.
+
+- **Why a loop AND an inline guard?** The inline coverage guard in
+  `contract-intel-refresh-background.js` only fires *when the refresh runs* — a
+  dead/disabled cron logs nothing, so "the refresh stopped" is invisible to it.
+  This loop observes from the outside: it also tracks the age of the newest
+  `contract_intel` row (`newestRowAgeHours`); if that climbs past the expected
+  daily gap, the whole pipeline has stalled and this catches it within one tick.
+- No LLM, no external API — one Supabase read. Detection-only (no data writes).
+- Best-effort snapshot: the drift alert needs no tables, so a missing
+  `loop_status` (pre-migration) never suppresses the alert.
+- `loop_config` seed: `migrations/20260717000000_contract_intel_freshness_loop.sql`.
 
 ## Running locally
 
