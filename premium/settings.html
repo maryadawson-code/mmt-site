@@ -229,7 +229,20 @@
   </div>
   <script>
     var email=localStorage.getItem('mmt_email');
+    var token=localStorage.getItem('mmt_subscriber_token');
     var __de=document.getElementById('dash-email');if(__de&&email)__de.textContent=email;
+
+    // Preferences are read/written through member-preferences, which now
+    // authenticates on the signed token (not a trusted email). POST both ways
+    // so the token never rides in a URL.
+    function prefsPost(payload) {
+      payload.token = token;
+      return fetch('/.netlify/functions/member-preferences', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    }
 
     // --- Notification preferences ---
     var solCheck = document.getElementById('notif-solicitations');
@@ -276,10 +289,14 @@
     if (wlInput) wlInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); addWatchlistItem(); } });
 
     function loadNotifications() {
-      if (!email) { document.getElementById('notif-loading').textContent = 'Sign in to manage notifications.'; return; }
-      fetch('/.netlify/functions/member-preferences?email=' + encodeURIComponent(email))
-        .then(function(r) { return r.json(); })
+      if (!token) { document.getElementById('notif-loading').textContent = 'Sign in to manage notifications.'; return; }
+      prefsPost({ action: 'get' })
+        .then(function(r) {
+          if (r.status === 401) { document.getElementById('notif-loading').textContent = 'Your session has expired. Sign in again to manage notifications.'; return null; }
+          return r.json();
+        })
         .then(function(data) {
+          if (!data) return;
           var n = (data.prefs && data.prefs.notifications) || {};
           if (n.solicitations) { solCheck.checked = true; solFreq.style.display = 'block'; }
           var freq = n.solicitation_frequency || 'weekly';
@@ -301,7 +318,7 @@
     }
 
     function saveNotifications() {
-      if (!email) return;
+      if (!token) return;
       var btn = document.getElementById('notif-save-btn');
       btn.disabled = true; btn.textContent = 'Saving...';
       var freqRadio = document.querySelector('input[name="sol-freq"]:checked');
@@ -314,16 +331,16 @@
         new_articles: document.getElementById('notif-articles').checked,
         watchlist: _watchlist.slice()
       };
-      fetch('/.netlify/functions/member-preferences', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, notifications: notifications })
+      prefsPost({ notifications: notifications })
+      .then(function(r) {
+        if (r.status === 401) { return { _expired: true }; }
+        return r.json();
       })
-      .then(function(r) { return r.json(); })
       .then(function(data) {
         btn.disabled = false; btn.textContent = 'Save preferences';
         var status = document.getElementById('notif-status');
-        if (data.saved) { status.textContent = 'Saved'; status.style.color = '#16A34A'; }
+        if (data && data._expired) { status.textContent = 'Session expired — sign in again'; status.style.color = '#E63946'; }
+        else if (data.saved) { status.textContent = 'Saved'; status.style.color = '#16A34A'; }
         else { status.textContent = 'Error saving'; status.style.color = '#E63946'; }
         status.style.display = 'inline';
         setTimeout(function() { status.style.display = 'none'; }, 3000);
