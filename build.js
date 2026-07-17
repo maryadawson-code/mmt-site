@@ -824,6 +824,7 @@ function generateSitemap(articles, tags, contracts) {
     { loc: '/newswire.html', priority: '0.7' },
     { loc: '/idiq-tracker.html', priority: '0.7' },
     { loc: '/help.html', priority: '0.5' },
+    { loc: '/agent-access-guide.html', priority: '0.6' },
     { loc: '/agencies/', priority: '0.6' },
     { loc: '/premium/briefings/', priority: '0.5' },
     { loc: '/premium/monthly-briefs/', priority: '0.5' },
@@ -3124,6 +3125,7 @@ async function copyStaticFiles({ archive, feed, newsItems, contracts, contractAr
     'tools.html',
     'rfp-shredder.html',
     'primer.html',
+    'agent-access-guide.html',
   ];
   // Premium subdirectory pages
   const premiumPages = [

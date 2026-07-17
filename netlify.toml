@@ -1222,6 +1222,11 @@
   status = 200
 
 [[redirects]]
+  from = "/agent-access-guide"
+  to = "/agent-access-guide.html"
+  status = 200
+
+[[redirects]]
   from = "/pricing"
   to = "/pricing.html"
   status = 200

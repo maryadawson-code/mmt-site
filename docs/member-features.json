@@ -251,6 +251,20 @@
       "noindex": false
     },
     {
+      "feature_name": "Agent Access Setup Guide",
+      "public_marketing_urls": [
+        "/agent-access-guide"
+      ],
+      "member_url": "/agent-access-guide.html",
+      "backing_function": "static page",
+      "entitlement_required": "public",
+      "public_locked_preview_behavior": "n/a",
+      "expected_data_source": "static",
+      "freshness_sla_hours": null,
+      "smoke_test_url": "/agent-access-guide.html",
+      "noindex": false
+    },
+    {
       "feature_name": "FPDS Sunset Watch",
       "public_marketing_urls": [
         "/fpds-migration"
