@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Pipeline — Mission Meets Tech</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <link rel="icon" href="/favicon-v3.png" type="image/png">
+  <style>
+    /* Content styles only. The layout shell (sidebar + mobile nav) is injected
+       at build time by build.js injectDashShell(). This file ships NO
+       dash-shell / dash-nav / dash-header / dash-main markup, so there is
+       exactly one shell in the built page. See docs/dashboard-mobile-spec.md. */
+    :root { --mmt-navy:#0A192F; --mmt-teal:#457B9D; --mmt-white:#FFFFFF; --mmt-surface:#F3F4F6; --mmt-text-secondary:#6B7280; --mmt-border:#E5E7EB; }
+    .dash-card { background:var(--mmt-white); border-radius:12px; padding:24px; margin-bottom:16px; border:1px solid var(--mmt-border); }
+    .btn-primary { display:inline-block; background:var(--mmt-navy); color:var(--mmt-white) !important; font-weight:700; padding:10px 20px; border-radius:8px; text-decoration:none; font-size:13px; }
+    .dash-content-header { display:flex; align-items:center; justify-content:space-between; gap:12px 16px; flex-wrap:wrap; margin-bottom:24px; }
+    .dash-content-header .dch-title { font-size:14px; font-weight:700; }
+    .dash-content-header .dch-meta { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+    .pl-item { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding:16px 0; border-bottom:1px solid var(--mmt-border); }
+    .pl-item:last-child { border-bottom:none; }
+    .pl-item h3 { margin:0 0 4px; font-size:16px; font-weight:700; }
+    .pl-item h3 a { color:var(--mmt-navy); text-decoration:none; }
+    .pl-item h3 a:hover { color:var(--mmt-teal); text-decoration:underline; }
+    .pl-meta { font-size:12px; color:var(--mmt-text-secondary); }
+    .pl-remove { flex:0 0 auto; background:none; border:1px solid var(--mmt-border); color:var(--mmt-text-secondary); border-radius:8px; padding:6px 12px; font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap; }
+    .pl-remove:hover { border-color:#E63946; color:#E63946; }
+    .pl-empty { text-align:center; padding:32px 16px; }
+    .pl-empty p { color:var(--mmt-text-secondary); font-size:15px; margin-bottom:16px; }
+    @media (max-width:768px) { .dash-card a, .dash-card button { min-height:44px; } }
+  </style>
+  <script>
+    (function() {
+      var isPremium = localStorage.getItem('mmt_premium') === 'true';
+      var ts = localStorage.getItem('mmt_premium_ts');
+      var withinWindow = ts && (Date.now() - parseInt(ts)) < 30 * 24 * 60 * 60 * 1000;
+      if (!isPremium || !withinWindow) {
+        window.location.href = '/dashboard.html?next=' + encodeURIComponent(window.location.pathname);
+      }
+    })();
+  </script>
+</head>
+<body>
+  <nav class="nav-editorial"></nav>
+
+  <div class="dash-content-header">
+    <span class="dch-title">&#9733; My Pipeline</span>
+    <div class="dch-meta">
+      <span style="font-size:13px; color:var(--mmt-text-secondary);" id="pl-email"></span>
+      <a href="/contract-tracker.html" style="font-size:12px; color:var(--mmt-teal); text-decoration:none;">Browse Contract Tracker</a>
+    </div>
+  </div>
+
+  <h1 style="font-size:clamp(24px,3vw,32px);line-height:1.1;letter-spacing:-0.02em;margin:0 0 8px;color:var(--mmt-navy);">My Pipeline</h1>
+  <p style="font-size:15px;line-height:1.6;color:var(--mmt-text-secondary);max-width:64ch;margin-bottom:24px;">
+    The contracts you are tracking. Add one by clicking <strong style="color:var(--mmt-navy);">&#9734; Track</strong> on any contract in the
+    <a href="/contract-tracker.html" style="color:var(--mmt-teal);text-decoration:none;font-weight:600;">Contract Tracker</a>
+    or on a contract detail page. Your connected AI assistant reads this same list when you ask it about your pipeline.
+    <a href="/pipeline-guide" style="color:var(--mmt-teal);text-decoration:none;font-weight:600;">See how it works.</a>
+  </p>
+
+  <div class="dash-card">
+    <div id="pl-list" aria-busy="true">
+      <p style="color:var(--mmt-text-secondary);font-size:14px;">Loading your pipeline&hellip;</p>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var email = localStorage.getItem('mmt_email');
+      var listEl = document.getElementById('pl-list');
+      var emailEl = document.getElementById('pl-email');
+      if (emailEl && email) emailEl.textContent = email;
+
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+      function fmtDate(iso) {
+        try { return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
+        catch (e) { return ''; }
+      }
+      function emptyState() {
+        listEl.setAttribute('aria-busy', 'false');
+        listEl.innerHTML =
+          '<div class="pl-empty">' +
+          '<p>You are not tracking anything yet. Open the Contract Tracker and click <strong>&#9734; Track</strong> on any contract to build your pipeline.</p>' +
+          '<a class="btn-primary" href="/contract-tracker.html">Browse the Contract Tracker</a>' +
+          '</div>';
+      }
+
+      function render(items) {
+        listEl.setAttribute('aria-busy', 'false');
+        if (!items || !items.length) { emptyState(); return; }
+        listEl.innerHTML = items.map(function (it) {
+          var url = it.entry_url || ('/contracts/' + encodeURIComponent(it.entry_id) + '/');
+          var title = it.entry_title || it.entry_id;
+          return '<div class="pl-item" data-id="' + esc(it.entry_id) + '">' +
+            '<div><h3><a href="' + esc(url) + '">' + esc(title) + '</a></h3>' +
+            '<div class="pl-meta">Tracked ' + esc(fmtDate(it.saved_at)) + '</div></div>' +
+            '<button class="pl-remove" data-remove="' + esc(it.entry_id) + '">Remove</button>' +
+            '</div>';
+        }).join('');
+        Array.prototype.forEach.call(listEl.querySelectorAll('[data-remove]'), function (btn) {
+          btn.addEventListener('click', function () {
+            var id = btn.getAttribute('data-remove');
+            btn.disabled = true; btn.textContent = 'Removing…';
+            fetch('/.netlify/functions/member-watchlist', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email: email, action: 'remove', entry_id: id })
+            }).then(function (r) {
+              if (!r.ok) throw new Error('remove failed');
+              var row = listEl.querySelector('.pl-item[data-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]');
+              if (row) row.parentNode.removeChild(row);
+              if (!listEl.querySelector('.pl-item')) emptyState();
+            }).catch(function () {
+              btn.disabled = false; btn.textContent = 'Remove';
+              alert('Could not remove that item. Please try again.');
+            });
+          });
+        });
+      }
+
+      if (!email) { emptyState(); return; }
+      fetch('/.netlify/functions/member-watchlist?email=' + encodeURIComponent(email))
+        .then(function (r) { return r.ok ? r.json() : { items: [] }; })
+        .then(function (d) { render((d && d.items) || []); })
+        .catch(function () {
+          listEl.setAttribute('aria-busy', 'false');
+          listEl.innerHTML = '<p style="color:var(--mmt-text-secondary);font-size:14px;">Could not load your pipeline right now. Refresh to try again.</p>';
+        });
+    })();
+  </script>
+</body>
+</html>

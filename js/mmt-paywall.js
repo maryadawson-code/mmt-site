@@ -899,26 +899,89 @@
     });
   }
 
-  // --- AUT-05: Watchlist API helpers ---
+  // --- AUT-05: Watchlist / Pipeline API helpers ---
+  // These back the "Track" buttons (Contract Tracker + contract detail) and the
+  // My Pipeline page. They write to mmt_watchlist, the SAME table the Agent
+  // Access API reads for "your pipeline" — so tracking a contract here is what
+  // makes an AI agent's pipeline non-empty. All three return the fetch promise
+  // so callers can await the result and update UI.
   window.mmtWatchlistAdd = function(entryId, title, url) {
     var email = localStorage.getItem(EMAIL_KEY);
-    if (!email) return;
-    fetch('/.netlify/functions/member-watchlist', {
+    if (!email) return Promise.reject(new Error('not signed in'));
+    return fetch('/.netlify/functions/member-watchlist', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: email, action: 'add', entry_id: entryId, entry_title: title, entry_url: url }),
-    }).catch(function() {});
+    }).then(function(r) { if (!r.ok) throw new Error('save failed'); return r.json(); });
   };
 
   window.mmtWatchlistRemove = function(entryId) {
     var email = localStorage.getItem(EMAIL_KEY);
-    if (!email) return;
-    fetch('/.netlify/functions/member-watchlist', {
+    if (!email) return Promise.reject(new Error('not signed in'));
+    return fetch('/.netlify/functions/member-watchlist', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: email, action: 'remove', entry_id: entryId }),
-    }).catch(function() {});
+    }).then(function(r) { if (!r.ok) throw new Error('remove failed'); return r.json(); });
   };
+
+  // GET the signed-in member's tracked items (their pipeline).
+  window.mmtWatchlistList = function() {
+    var email = localStorage.getItem(EMAIL_KEY);
+    if (!email) return Promise.resolve([]);
+    return fetch('/.netlify/functions/member-watchlist?email=' + encodeURIComponent(email))
+      .then(function(r) { return r.ok ? r.json() : { items: [] }; })
+      .then(function(d) { return (d && d.items) || []; })
+      .catch(function() { return []; });
+  };
+
+  // Wire every "Track" button on the page. Premium-only: the buttons ship
+  // hidden (display:none) and are only revealed for a signed-in premium member,
+  // so the public Contract Tracker stays clean for free/public visitors.
+  function initTrackButtons() {
+    var btns = document.querySelectorAll('.mmt-track-btn[data-track-id]');
+    if (!btns.length) return;
+    if (!isAtLeastPremium(getSubscriberStatus())) return; // stays hidden for non-premium
+    var email = localStorage.getItem(EMAIL_KEY);
+    if (!email) return;
+
+    function setState(btn, tracked) {
+      btn.setAttribute('data-tracked', tracked ? '1' : '0');
+      btn.setAttribute('aria-pressed', tracked ? 'true' : 'false');
+      var label = btn.querySelector('.mmt-track-label');
+      var icon = btn.querySelector('.mmt-track-icon');
+      if (label) label.textContent = tracked ? (btn.getAttribute('data-track-long') ? 'Tracking this contract' : 'Tracking') : (btn.getAttribute('data-track-long') ? 'Track this contract' : 'Track');
+      if (icon) icon.textContent = tracked ? '★' : '☆'; // ★ / ☆
+    }
+
+    for (var i = 0; i < btns.length; i++) { btns[i].style.display = 'inline-flex'; }
+
+    window.mmtWatchlistList().then(function(items) {
+      var set = {};
+      items.forEach(function(it) { set[it.entry_id] = true; });
+      for (var j = 0; j < btns.length; j++) {
+        setState(btns[j], !!set[btns[j].getAttribute('data-track-id')]);
+      }
+    });
+
+    for (var k = 0; k < btns.length; k++) {
+      (function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault(); e.stopPropagation();
+          var id = btn.getAttribute('data-track-id');
+          var title = btn.getAttribute('data-track-title') || '';
+          var url = btn.getAttribute('data-track-url') || '';
+          var wasTracked = btn.getAttribute('data-tracked') === '1';
+          btn.disabled = true; btn.style.opacity = '0.6';
+          var op = wasTracked ? window.mmtWatchlistRemove(id) : window.mmtWatchlistAdd(id, title, url);
+          op.then(function() { setState(btn, !wasTracked); })
+            .catch(function() {})
+            .then(function() { btn.disabled = false; btn.style.opacity = '1'; });
+        });
+      })(btns[k]);
+    }
+  }
+  window.mmtInitTrackButtons = initTrackButtons;
 
   // --- AUT-08: Read state API helper ---
   window.mmtMarkRead = function(entryId) {
@@ -956,6 +1019,7 @@
     trackGateViews(status);
     initStickyBar();
     initDashboardButton();
+    initTrackButtons();
   }
 
   if (document.readyState === "loading") {

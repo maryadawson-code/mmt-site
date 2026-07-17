@@ -62,6 +62,20 @@
       "noindex": true
     },
     {
+      "feature_name": "My Pipeline",
+      "public_marketing_urls": [
+        "/pipeline"
+      ],
+      "member_url": "/premium/pipeline.html",
+      "backing_function": "netlify/functions/member-watchlist.js",
+      "entitlement_required": "premium|founding|institutional|admin",
+      "public_locked_preview_behavior": "redirect to dashboard.html (sign-in gate)",
+      "expected_data_source": "Supabase mmt_watchlist table (entry-based tracked contracts)",
+      "freshness_sla_hours": null,
+      "smoke_test_url": "/premium/pipeline.html",
+      "noindex": true
+    },
+    {
       "feature_name": "Capture Corner",
       "public_marketing_urls": [
         "/capture-corner"
@@ -262,6 +276,20 @@
       "expected_data_source": "static",
       "freshness_sla_hours": null,
       "smoke_test_url": "/agent-access-guide.html",
+      "noindex": false
+    },
+    {
+      "feature_name": "Pipeline Setup Guide",
+      "public_marketing_urls": [
+        "/pipeline-guide"
+      ],
+      "member_url": "/pipeline-guide.html",
+      "backing_function": "static page",
+      "entitlement_required": "public",
+      "public_locked_preview_behavior": "n/a",
+      "expected_data_source": "static",
+      "freshness_sla_hours": null,
+      "smoke_test_url": "/pipeline-guide.html",
       "noindex": false
     },
     {
