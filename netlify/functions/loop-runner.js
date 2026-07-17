@@ -5,13 +5,18 @@
 // Lets Mary (or a CI step) trigger a named loop out of band, including a
 // --dry-run plan. Scheduled execution does NOT go through here — each
 // loop has its own thin scheduled function (loop-opportunity-discovery,
-// loop-contract-freshness) so Netlify's cron can target it directly.
+// loop-contract-freshness, loop-contract-intel-freshness) so Netlify's
+// cron can target it directly.
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
 const { runLoop } = require("./lib/loops/runner");
 
-const ALLOWED = new Set(["opportunity_discovery", "contract_tracker_freshness"]);
+const ALLOWED = new Set([
+  "opportunity_discovery",
+  "contract_tracker_freshness",
+  "contract_intel_freshness",
+]);
 
 function unauthorized() {
   return { statusCode: 401, body: JSON.stringify({ error: "Unauthorized" }) };
