@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Access Setup Guide — Mission Meets Tech</title>
+  <meta name="description" content="A plain-English, step-by-step guide to connecting your AI assistant to your live Mission Meets Tech intelligence with Agent Access. No technical background needed.">
+  <link rel="canonical" href="https://missionmeetstech.com/agent-access-guide">
+  <meta property="og:title" content="Agent Access Setup Guide — Mission Meets Tech">
+  <meta property="og:description" content="Connect the AI assistant you already use to your live federal health IT intelligence. A step-by-step guide anyone can follow.">
+  <meta property="og:url" content="https://missionmeetstech.com/agent-access-guide">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <style>
+    :root { --mmt-teal:#457B9D; --mmt-navy:#0A192F; --mmt-soft:#F3F4F6; --mmt-white:#FFFFFF; --mmt-text:#102033; --mmt-text-secondary:#5C6B7A; --mmt-border:#D8E0E8; }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--mmt-white); color:var(--mmt-navy); }
+    .guide-body h2 { font-size:1.5rem; font-weight:800; margin:48px 0 16px; padding-top:24px; border-top:1px solid var(--mmt-border); color:var(--mmt-navy); }
+    .guide-body h3 { font-size:1.15rem; font-weight:700; margin:28px 0 10px; color:var(--mmt-navy); }
+    .guide-body p { font-size:15px; line-height:1.75; color:var(--mmt-text-secondary); margin-bottom:12px; max-width:66ch; }
+    .guide-body ul, .guide-body ol { font-size:15px; line-height:1.75; color:var(--mmt-text-secondary); margin-bottom:16px; padding-left:24px; max-width:66ch; }
+    .guide-body li { margin-bottom:8px; }
+    .guide-body strong { color:var(--mmt-navy); }
+    .guide-body a { color:var(--mmt-teal); text-decoration:none; font-weight:600; }
+    .guide-body a:hover { text-decoration:underline; }
+    .guide-body hr { border:none; border-top:1px solid var(--mmt-border); margin:32px 0; }
+    .guide-toc { background:var(--mmt-soft); border-radius:12px; padding:24px; margin-bottom:32px; }
+    .guide-toc a { display:block; padding:4px 0; font-size:14px; color:var(--mmt-teal); text-decoration:none; }
+    .guide-toc a:hover { text-decoration:underline; }
+    .step { display:flex; gap:16px; align-items:flex-start; margin:0 0 20px; max-width:70ch; }
+    .step-num { flex:0 0 auto; width:34px; height:34px; border-radius:50%; background:var(--mmt-navy); color:#fff; font-weight:800; font-size:15px; display:flex; align-items:center; justify-content:center; margin-top:2px; }
+    .step-body { flex:1; }
+    .step-body h3 { margin:2px 0 6px; }
+    .callout { border:1px solid var(--mmt-border); border-left:4px solid var(--mmt-teal); background:var(--mmt-soft); border-radius:8px; padding:18px 20px; margin:20px 0; max-width:70ch; }
+    .callout h3 { margin-top:0; }
+    .callout p { margin-bottom:8px; }
+    .code { display:block; background:var(--mmt-navy); color:#EAF2F8; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:13px; line-height:1.6; padding:12px 14px; border-radius:8px; margin:10px 0; overflow-x:auto; white-space:pre; }
+    .lede { font-size:17px; line-height:1.6; color:var(--mmt-text-secondary); margin-bottom:32px; max-width:68ch; }
+  </style>
+</head>
+<body>
+  <nav class="nav-editorial"></nav>
+
+  <main class="wrap" style="max-width:820px;padding:40px 24px 80px;">
+    <div class="section-label" style="margin-bottom:12px;">Premium Guide</div>
+    <h1 style="font-size:clamp(28px,3.5vw,40px);line-height:1.1;letter-spacing:-0.03em;margin-bottom:12px;">Connect Your AI Assistant: Agent Access Setup</h1>
+    <p class="lede">Agent Access lets the AI assistant you already use pull answers straight from your live Mission Meets Tech intelligence, instead of a general training cutoff that is a year behind. This guide walks you through it start to finish. You do not need any technical background. If you can copy and paste, you can do this in about five minutes.</p>
+
+    <div class="guide-toc">
+      <strong style="display:block;margin-bottom:8px;font-size:13px;text-transform:uppercase;letter-spacing:0.08em;color:var(--mmt-text-secondary);">On this page</strong>
+      <a href="#what">What Agent Access does</a>
+      <a href="#before">Before you start</a>
+      <a href="#steps">Step-by-step setup</a>
+      <a href="#ask">What to ask once it is connected</a>
+      <a href="#privacy">Your data and privacy</a>
+      <a href="#practices">Best practices</a>
+      <a href="#trouble">Troubleshooting</a>
+      <a href="#help">Get help</a>
+    </div>
+
+    <div class="guide-body">
+
+      <h2 id="what">What Agent Access does</h2>
+      <p>Most of us keep an AI assistant open all day. It is sharp about general things and blank about the one thing you actually need: what is moving in federal health IT this week, and whether it is worth your time.</p>
+      <p>Agent Access closes that gap. You connect your assistant once, and from then on it can read your current Mission Meets Tech intelligence: market intel, open opportunities, and the pipeline you track on the site. You ask it what to chase, and it answers from live data, with the sourcing. It is read-only, so it can look but never change anything.</p>
+
+      <h2 id="before">Before you start</h2>
+      <p>You will need two things:</p>
+      <ul>
+        <li><strong>An MMT Premium membership with Agent Access turned on.</strong> Agent Access is a premium add-on. If you open the connection page and see a prompt to "Add AI access to your plan," that add-on is not on your account yet. You can add it from the <a href="/pricing">pricing page</a>, or reply to your account contact.</li>
+        <li><strong>An AI assistant that accepts a connector.</strong> The two most common are <strong>Claude Desktop</strong> and <strong>ChatGPT</strong>. Any assistant or tool that lets you set a custom authorization header works too. If your company runs a locked-down corporate version, see <a href="#trouble">Troubleshooting</a>.</li>
+      </ul>
+
+      <h2 id="steps">Step-by-step setup</h2>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>Open the connection page</h3>
+          <p>In your browser, go to <a href="/ai-integrations">missionmeetstech.com/ai-integrations</a>. This is where you create and manage the connections between your assistant and your MMT data.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>Confirm it is you</h3>
+          <p>For security, you sign in with a one-time email link before you can create a connection. Enter your account email, click <strong>Email me a sign-in link</strong>, then open the link we send you. It brings you back to the page already signed in. Use the same email your MMT membership is under.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>Start a new connection</h3>
+          <p>Click <strong>+ Connect an assistant</strong>. A short three-step wizard opens: what it can see, name and expiry, then your key.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h3>Choose what your AI can see</h3>
+          <p>Pick any combination of the three. You can change this later.</p>
+          <ul>
+            <li><strong>My market intel:</strong> opportunities and trend data. Good for questions like "What should I be watching at VA this month?"</li>
+            <li><strong>My live opportunities:</strong> the open bids in your tracker. Good for "Show me open DHA solicitations under NAICS 541512."</li>
+            <li><strong>My pipeline:</strong> what you are already tracking on the site. Good for "Summarize everything in my pipeline."</li>
+          </ul>
+          <p>Whatever you pick, your assistant can only read it. It can never edit, delete, or spend. Click <strong>Continue</strong>.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h3>Name it and set an expiry</h3>
+          <p>Give the connection a name you will recognize later, like "My Claude" or your name plus the tool. Then set an expiry. <strong>90 days is the recommended default</strong>: it is a good balance of security and not having to renew too often. Click <strong>Create connection</strong>.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <h3>Copy your key</h3>
+          <p>You will see a key on screen. Click <strong>Copy</strong> and keep it somewhere safe for the next step. <strong>This is the only time the full key is shown.</strong> If you lose it, no harm done: just delete that connection and make a new one.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">7</div>
+        <div class="step-body">
+          <h3>Paste it into your assistant</h3>
+          <p>This is the one step that differs by tool. You are giving your assistant two things: the address of your MMT data, and the key that proves it is you.</p>
+          <p style="margin-bottom:4px;"><strong>In Claude Desktop:</strong> open <strong>Settings &rarr; Connectors</strong>, add a connector, and set a custom HTTP header:</p>
+          <span class="code">Base URL:  https://missionmeetstech.com/api/v1
+Header:    Authorization: Bearer YOUR_KEY_HERE</span>
+          <p style="margin-bottom:4px;"><strong>In ChatGPT</strong> (custom GPT or action): set the same base URL and the same authorization header:</p>
+          <span class="code">Base URL:  https://missionmeetstech.com/api/v1
+Header:    Authorization: Bearer YOUR_KEY_HERE</span>
+          <p>Replace <strong>YOUR_KEY_HERE</strong> with the key you copied in step 6. Back on the MMT page, click <strong>I've connected it</strong>.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">8</div>
+        <div class="step-body">
+          <h3>Test it</h3>
+          <p>Ask your assistant a real question, like "What should I be watching at DHA this month?" If it answers with current opportunities and sourcing, you are connected. That is it.</p>
+        </div>
+      </div>
+
+      <h2 id="ask">What to ask once it is connected</h2>
+      <p>A few prompts to get your team started:</p>
+      <ul>
+        <li>"What should I be watching in federal health IT this week?"</li>
+        <li>"Show me open DHA solicitations under NAICS 541512."</li>
+        <li>"Summarize everything in my pipeline and flag anything with a deadline in the next 30 days."</li>
+        <li>"Who is the likely incumbent on this recompete, and when does it expire?"</li>
+        <li>"Is this opportunity worth our time given what we do? Give me the sourcing."</li>
+      </ul>
+
+      <h2 id="privacy">Your data and privacy</h2>
+      <div class="callout">
+        <h3>Short version: it is a one-way, read-only pull.</h3>
+        <p>Your assistant reaches into MMT to get intelligence out. MMT is never connected to your systems, your files, or your CRM, and it does not store your company's data. The only thing that reaches us is the question someone chooses to type, and that is only used to return the matching intel.</p>
+        <p><strong>Read-only.</strong> The connection can read your intelligence. It cannot write, change, delete, or buy anything.</p>
+        <p><strong>Logged.</strong> Every read is recorded. Open any connection's Activity to see the most recent reads, so you always have an audit trail.</p>
+        <p><strong>Revocable.</strong> Revoke a connection and the assistant loses access immediately.</p>
+        <p><strong>In your environment.</strong> Whatever your assistant does with the answer stays inside your own AI tool, under your own agreement with that provider.</p>
+      </div>
+
+      <h2 id="practices">Best practices</h2>
+      <ul>
+        <li><strong>One key per person.</strong> If your team shares a membership, each person creates their own connection rather than passing one key around. It keeps the audit log clean and lets you revoke one person without disrupting everyone.</li>
+        <li><strong>Name connections clearly.</strong> "Trish - Claude Desktop" beats "connection 1" when you have a few of them.</li>
+        <li><strong>Use the 90-day expiry.</strong> It renews often enough to stay secure without becoming a chore. Avoid "Never."</li>
+        <li><strong>Treat the key like a password.</strong> Do not paste it into email or chat in plain text. Copy it, use it, and if it ever gets loose, revoke it and make a new one.</li>
+        <li><strong>Revoke when someone leaves</strong> or changes roles. It takes one click and takes effect instantly.</li>
+        <li><strong>Check the Activity log</strong> now and then to see what is being read and confirm everything looks right.</li>
+      </ul>
+
+      <h2 id="trouble">Troubleshooting</h2>
+      <h3>I see "Add AI access to your plan"</h3>
+      <p>That means your membership does not have the Agent Access add-on yet. Add it from the <a href="/pricing">pricing page</a>, or reply to your account contact and we will turn it on.</p>
+      <h3>My assistant will not connect</h3>
+      <p>Double-check that you pasted the full key, that the header reads exactly <strong>Authorization: Bearer</strong> followed by your key, and that the base URL is <strong>https://missionmeetstech.com/api/v1</strong>.</p>
+      <h3>My company runs a locked-down corporate assistant</h3>
+      <p>Some enterprise deployments block outside connectors by default. If that is your situation, your IT team may need to allow the connector. Give them the base URL above and let them know it is an outbound, read-only HTTPS connection authenticated with a bearer token. If they want more detail, point them to <a href="/ai-integrations">the connection page</a>, which links to the full technical reference.</p>
+      <h3>I lost my key</h3>
+      <p>No problem. Revoke that connection and create a new one. Keys are shown once on purpose, so a fresh one is the fix.</p>
+
+      <h2 id="help">Get help</h2>
+      <p>Stuck on any step? Email <a href="mailto:support@missionmeetstech.com">support@missionmeetstech.com</a> and we will walk you through it. For questions about adding Agent Access to your plan or setting up a team, see the <a href="/pricing">pricing page</a> or reply to any premium email.</p>
+
+    </div>
+  </main>
+
+  <footer class="wrap"></footer>
+</body>
+</html>
