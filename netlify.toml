@@ -206,6 +206,12 @@
 [functions."loop-contract-freshness"]
   schedule = "0 * * * *"
 
+# Contract Intel Freshness — every 6h. Independent watchdog on contract_intel
+# coverage (reuses computeCoverage); catches the refresh falling behind its
+# roster OR stopping entirely. No LLM, no external API; writes loop_status.
+[functions."loop-contract-intel-freshness"]
+  schedule = "0 */6 * * *"
+
 [functions."score-cleanup"]
   schedule = "*/30 * * * *"
 
