@@ -3,8 +3,12 @@
 // gates and the quota-safe scorer against regression.
 
 import { describe, it, expect } from "vitest";
+import { readdirSync, readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
 import { runLoop, loadSpec } from "../../netlify/functions/lib/loops/runner.js";
-import { resolve } from "../../netlify/functions/lib/loops/registry.js";
+import { resolve, SPECS } from "../../netlify/functions/lib/loops/registry.js";
+import statusSnapshot from "../../netlify/functions/lib/loops/publishers/status_snapshot.js";
 import dedupe from "../../netlify/functions/lib/loops/transforms/dedupe.js";
 import { scoreOne } from "../../netlify/functions/lib/loops/scorers/pursuit_score.js";
 import scoreSanity from "../../netlify/functions/lib/loops/evals/score_sanity.js";
@@ -29,6 +33,61 @@ describe("spec + registry wiring", () => {
 
   it("loadSpec throws on unknown loop", () => {
     expect(() => loadSpec("does_not_exist")).toThrow();
+  });
+
+  // Regression guard for #138. Root cause of the 2026-07-17 loop RUN_FAILED
+  // burst: loadSpec() read specs via fs.readFileSync(__dirname/specs/*.json),
+  // which esbuild does NOT bundle — so every loop threw "loop spec not found:
+  // /var/task/..." on Lambda the moment LOOPS_ENABLED was turned on. It passed
+  // locally (files exist on disk), so no test caught it. The fix was a static
+  // require() SPECS map in registry.js. This asserts EVERY spec .json on disk
+  // is present in that bundled map, so a new spec that ships without a static
+  // require (invisible to esbuild, fatal on Lambda) fails CI here, not in prod.
+  it("every specs/*.json is registered in the bundled SPECS map (esbuild-safe)", () => {
+    const specsDir = join(dirname(fileURLToPath(import.meta.url)), "../../netlify/functions/lib/loops/specs");
+    const files = readdirSync(specsDir).filter((f) => f.endsWith(".json"));
+    expect(files.length).toBeGreaterThan(0);
+    for (const file of files) {
+      const name = file.replace(/\.json$/, "");
+      // Registered in the static map the runner reads (require-based, bundled).
+      expect(SPECS, `specs/${file} missing from registry.SPECS`).toHaveProperty(name);
+      // The bundled copy matches the file on disk, and loadSpec resolves it.
+      const onDisk = JSON.parse(readFileSync(join(specsDir, file), "utf8"));
+      expect(SPECS[name].name).toBe(onDisk.name);
+      expect(loadSpec(name).name).toBe(name);
+    }
+  });
+});
+
+describe("publishers/status_snapshot resilience", () => {
+  // A loop_status write failure (transient, or the gated loop_infra migration
+  // not applied yet) must NOT throw the loop — that would re-fire the exact
+  // hourly loop_contract_freshness *_RUN_FAILED the QA report flagged, and
+  // skip the lag_thresholds eval that runs after this step. Degrade to a skip.
+  const health = { sources: [{ source: "usaspending", http_status: 200, latency_ms: 5, lag_hours: 1, healthy: true }] };
+
+  it("returns a recorded skip (does not throw) when the insert errors", async () => {
+    const supabase = { from: () => ({ insert: async () => ({ error: { message: 'relation "loop_status" does not exist' } }) }) };
+    const out = await statusSnapshot.run({ supabase, data: { health } });
+    expect(out.written).toBe(0);
+    expect(out.skipped).toMatch(/^loop_status_unavailable:/);
+  });
+
+  it("returns a recorded skip (does not throw) when the insert rejects", async () => {
+    const supabase = { from: () => ({ insert: async () => { throw new Error("network down"); } }) };
+    const out = await statusSnapshot.run({ supabase, data: { health } });
+    expect(out.written).toBe(0);
+    expect(out.skipped).toMatch(/^loop_status_unavailable:/);
+  });
+
+  it("writes one row per source on success", async () => {
+    let received = null;
+    const supabase = { from: () => ({ insert: async (rows) => { received = rows; return { error: null }; } }) };
+    const out = await statusSnapshot.run({ supabase, data: { health }, runId: "run-1" });
+    expect(out.written).toBe(1);
+    expect(received).toHaveLength(1);
+    expect(received[0].source).toBe("usaspending");
+    expect(received[0].run_id).toBe("run-1");
   });
 });
 

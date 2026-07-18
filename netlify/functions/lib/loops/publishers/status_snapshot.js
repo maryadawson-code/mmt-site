@@ -5,6 +5,16 @@
 // want the unhealthy state recorded too, so this is a normal step, not a
 // gated publish). The public /status.json endpoint reads the newest row
 // per source from this table.
+//
+// BEST-EFFORT by design (mirrors publishers/intel_coverage_snapshot): the
+// /status.json snapshot is a bonus surface. A transient loop_status write
+// error — or the table not existing yet (the loop_infra migration is gated
+// on Mary's approval) — must NOT throw the whole loop. Throwing here fired a
+// spurious loop_contract_freshness *_RUN_FAILED dead-man alert on every hourly
+// tick AND, because this step runs BEFORE the lag_thresholds eval, blinded the
+// drift detector (the loop's other deliverable) whenever the write hiccuped.
+// Degrade to a recorded skip instead; a persistently unwritable table shows up
+// as a stale /status.json, which is itself observable.
 // ============================================================
 
 async function run(ctx) {
@@ -26,7 +36,7 @@ async function run(ctx) {
     const { error } = await ctx.supabase.from("loop_status").insert(rows);
     if (error) throw error;
   } catch (e) {
-    throw new Error(`loop_status insert failed: ${e.message}`);
+    return { written: 0, skipped: `loop_status_unavailable:${String(e && e.message).slice(0, 80)}` };
   }
   ctx.outputRef = `loop_status:${rows.length}`;
   return { written: rows.length };
