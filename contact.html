@@ -195,8 +195,8 @@
 
   <script>
   (function(){
-    var m=document.getElementById('menuToggle'),o=document.getElementById('menuOpen'),c=document.getElementById('menuClose'),d=document.getElementById('mobileMenu');
-    if(m&&o&&c&&d){m.addEventListener('click',function(){var v=d.classList.contains('hidden');d.classList.toggle('hidden');o.classList.toggle('hidden',!v);c.classList.toggle('hidden',v);});}
+    // Mobile menu toggle is handled globally by /js/site.js (injected at build
+    // time). No inline handler here — a second binding cancels the first tap.
     var sb=document.getElementById('subscribeToggle'),sp=document.getElementById('subscribePanel');
     if(sb&&sp){sb.addEventListener('click',function(){sp.classList.toggle('hidden');sb.setAttribute('aria-expanded',!sp.classList.contains('hidden'));});document.addEventListener('click',function(e){if(!sb.contains(e.target)&&!sp.contains(e.target)){sp.classList.add('hidden');sb.setAttribute('aria-expanded','false');}});}
     var b=document.getElementById('btt');if(b){var t=window.innerHeight;window.addEventListener('scroll',function(){if(window.scrollY>t){b.style.opacity='1';b.style.pointerEvents='auto';}else{b.style.opacity='0';b.style.pointerEvents='none';}},{passive:true});b.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});}
