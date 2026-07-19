@@ -237,23 +237,8 @@
     </div>
   </footer>
 
-  <script>
-    (function(){
-      var toggle = document.getElementById('menuToggle');
-      var menu = document.getElementById('mobileMenu');
-      var openIcon = document.getElementById('menuOpen');
-      var closeIcon = document.getElementById('menuClose');
-      if (toggle && menu) {
-        toggle.addEventListener('click', function(){
-          var hidden = menu.classList.toggle('hidden');
-          if (openIcon && closeIcon) {
-            openIcon.classList.toggle('hidden', !hidden);
-            closeIcon.classList.toggle('hidden', hidden);
-          }
-        });
-      }
-    })();
-  </script>
+  <!-- Mobile menu toggle is handled globally by /js/site.js (injected at build
+       time). No inline handler here — a second binding cancels the first tap. -->
 
 </body>
 </html>

@@ -9,6 +9,12 @@
     var openIcon = document.getElementById('menuOpen');
     var closeIcon = document.getElementById('menuClose');
     if (!toggle || !menu) return;
+    // Idempotency guard: never bind the toggle twice. A second binding would
+    // fire a second classList.toggle('hidden') on the same tap, canceling the
+    // first so the drawer never opens. Protects against this script (or an
+    // inline duplicate) being loaded more than once on a page.
+    if (toggle.dataset.mmtMenuBound === '1') return;
+    toggle.dataset.mmtMenuBound = '1';
 
     toggle.addEventListener('click', function(e) {
       e.preventDefault();

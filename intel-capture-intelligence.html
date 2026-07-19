@@ -1810,19 +1810,8 @@
       });
     });
 
-    // Mobile menu toggle
-    var toggle = document.getElementById('menuToggle');
-    var menu = document.getElementById('mobileMenu');
-    var openIcon = document.getElementById('menuOpen');
-    var closeIcon = document.getElementById('menuClose');
-    if (toggle && menu) {
-      toggle.addEventListener('click', function() {
-        var open = menu.classList.contains('hidden');
-        menu.classList.toggle('hidden');
-        openIcon.classList.toggle('hidden', open);
-        closeIcon.classList.toggle('hidden', !open);
-      });
-    }
+    // Mobile menu toggle is handled globally by /js/site.js (injected at build
+    // time). No inline handler here — a second binding cancels the first tap.
   </script>
   <script src="/js/mmt-paywall.js" defer></script>
   <script src="/js/nav-active.js"></script>

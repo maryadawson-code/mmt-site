@@ -236,15 +236,8 @@
   </footer>
 
   <script>
-    // Mobile menu toggle
-    document.getElementById('menuToggle').addEventListener('click', function() {
-      var menu = document.getElementById('mobileMenu');
-      var open = document.getElementById('menuOpen');
-      var close = document.getElementById('menuClose');
-      menu.classList.toggle('hidden');
-      open.classList.toggle('hidden');
-      close.classList.toggle('hidden');
-    });
+    // Mobile menu toggle is handled globally by /js/site.js (injected at build
+    // time). No inline handler here — a second binding cancels the first tap.
 
     function toast(msg) { var t = document.getElementById('toast'); t.textContent = msg; t.style.display = 'block'; setTimeout(function() { t.style.display = 'none'; }, 3000); }
     function esc(s) { return (s||'').replace(/[<>&"]/g, function(c) { return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]; }); }
