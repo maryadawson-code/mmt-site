@@ -1,27 +1,13 @@
 {
   "_meta": {
     "description": "Pursuit Calendar seed events. Source of truth when Supabase pursuit_calendar table is unreachable. Times are America/New_York (ET). Status is computed dynamically by the renderer for date-based events; explicit status values (Protest, Protest Due, Watch, Needs Source) are honored as-is.",
-    "last_curated_at": "2026-07-13",
+    "last_curated_at": "2026-07-20",
     "curator": "automated",
     "timezone": "America/New_York",
-    "window_start": "2026-07-13",
-    "window_end": "2026-10-11"
+    "window_start": "2026-07-20",
+    "window_end": "2026-10-18"
   },
   "events": [
-    {
-      "id": "b4505243-185e-4941-a442-450c2fb5cd1c",
-      "title": "Advanced Research Projects Agency for Health (ARPA-H) Small Business Innovation Research (SBIR)/Small Business Technology Transfer (STTR) Program",
-      "event_date": "2026-07-17",
-      "event_time_et": null,
-      "agency": "ARPA-H",
-      "vehicle": "7599226SN106",
-      "ref": null,
-      "category": "deadline",
-      "status_override": null,
-      "source_url": "https://sam.gov/workspace/contract/opp/79fbc7d8aca34f289c5da860d7865925/view",
-      "source_system": "sam.gov",
-      "notes": "Sol: 7599226SN106 · NAICS 541715 · Set-aside: Total Small Business Set-Aside (FAR 19.5)"
-    },
     {
       "id": "5c535880-ac1e-48be-b579-4807c7f763d5",
       "title": "Integrated Workforce and Readiness Platform (ARMOR)",
@@ -46,7 +32,7 @@
       "ref": null,
       "category": "deadline",
       "status_override": null,
-      "source_url": "https://sam.gov/workspace/contract/opp/aebb77b57cb34cd386e93e8a7caf0f9e/view",
+      "source_url": "https://sam.gov/workspace/contract/opp/ed3db118c1a247e9b6137dfad6c754ee/view",
       "source_system": "sam.gov",
       "notes": "Sol: ARPA-H-SOL-26-159 · NAICS 541715 · Set-aside: No Set aside used"
     }
