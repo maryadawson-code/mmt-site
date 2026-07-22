@@ -72,3 +72,10 @@ private/
 /sitemap.xml
 HOMEPAGE_PRIMER_SPEC.md
 competitor-research.md
+
+# Generated eval + delivery report artifacts. `eval/run-baseline.js` and
+# `scripts/deliver-mark-avel-marketpulse-v4.js` write HTML/JSON here on
+# every run; they are output, not source. Keeping them untracked stops
+# `git status` churn after each eval run (noted as stray in
+# reports/closeout-20260515-data-deploy.md).
+eval/reports/
