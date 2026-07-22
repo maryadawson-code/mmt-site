@@ -409,6 +409,46 @@ Verified 2026-07-10: `node -c` clean; offline resolution test against the live
 roster maps 6/7 orphans to a valid in-roster canonical, 1 to manual review.
 
 ---
+## Sprint 2026-07-22 — False "Health Check FAILED" alert (Cloudflare 522)
+
+The 6-hourly `health-check` emailed Mary "Anthropic API returned 522." Nothing
+was broken. **522 is a Cloudflare edge code** (`api.anthropic.com` sits behind
+Cloudflare) meaning the edge could not reach the origin in time — a transient
+network blip that says NOTHING about our key or billing. Verified live the same
+morning: 3/3 probes returned 200.
+
+Two defects, both fixed:
+
+1. **`health-check.js` fired one un-retried probe and classified any non-ok
+   status outside 401/403/429/529 as a hard failure.** So a momentary blip
+   produced a red alert phrased like a broken key. Now: the probe runs through
+   `withRetry` (2 retries, exponential backoff) and results are classified —
+   401/403 and malformed-request 4xx stay hard failures; 408/429/5xx/520-524
+   and total network failures become **warnings**, not failures. Warnings alone
+   return `200 DEGRADED` and send no email. Each run writes a
+   `HEALTH_CHECK_UPSTREAM` ops_ledger row carrying `details.degraded`; if the
+   PREVIOUS run was also degraded, the second consecutive one (~12h of real
+   outage) escalates to the alert email. Same 2-consecutive convention as
+   `scheduled-fn-wrapper`.
+2. **`lib/retry.js` did not treat the Cloudflare codes as retryable.**
+   `RETRYABLE_STATUSES` was `{429,500,502,503,529}`, so a single 522 also blew
+   straight through every Claude-calling background job that uses the helper
+   (contract-intel-refresh, gold-team-review, score-deck, tactical-brief,
+   opportunity-radar, sb-vehicle-radar, ebuy-open-radar, fact-check,
+   claude-search). Added `504, 520, 521, 522, 523, 524`.
+
+Hard rule (do not regress): **a transient upstream status is not a health-check
+failure.** This check exists to catch broken keys and missing config — things
+Mary must fix. Alerting on somebody else's edge timeout trains her to ignore the
+alert, which is worse than no alert. Any new upstream probe added here must
+classify (hard vs transient) and retry before it is allowed to email.
+
+Verified 2026-07-22: `node -c` clean on both files; 8 new tests in
+`tests/unit/health-check-anthropic.test.js` (200 / 401 / 403 / persistent 522 /
+522-then-recover / all CF codes / 400 / network failure); full unit suite
+**467/467** pass; `node build.js` exit 0; `validate-dist` OK (591 pages).
+
+---
 ## Sprint 2026-07-03 — Capture Corner premium email never auto-sent (twice-weekly gap)
 
 Mary: "why didn't my Capture Corner email go out to premium this morning?" The
