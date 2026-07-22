@@ -1,8 +1,16 @@
 // Retry with exponential backoff for transient API failures.
 // Retries on 429 (rate limit), 529 (overloaded), and 5xx server errors.
 // Does NOT retry on 4xx client errors (except 429).
+//
+// 504 and the Cloudflare edge codes 520-524 are included: api.anthropic.com
+// sits behind Cloudflare, so a momentary edge-to-origin hiccup surfaces as
+// 522 ("Connection timed out") rather than a 5xx from Anthropic itself.
+// Without these, one blip fails a whole background job. (Added 2026-07-22
+// after a 522 tripped the 6-hourly health check.)
 
-const RETRYABLE_STATUSES = new Set([429, 500, 502, 503, 529]);
+const RETRYABLE_STATUSES = new Set([
+  429, 500, 502, 503, 504, 520, 521, 522, 523, 524, 529,
+]);
 
 async function withRetry(fn, { maxRetries = 2, baseDelayMs = 2000 } = {}) {
   let lastError;
