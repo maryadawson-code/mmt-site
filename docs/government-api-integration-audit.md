@@ -46,7 +46,7 @@ Every key-protected federal call is proxied through `netlify/functions/*` with c
 | `protest-monitor` | daily 12:00 | GAO bid-protest case checks |
 | `sb-vehicle-radar` | daily 13:00 | small-business vehicles |
 | `pursuit-calendar-refresh` | every 6h | curated PURSUIT_FEEDS |
-| `sam-key-expiration-reminder` | daily 14:00 | SAM key expiration (currently 2026-07-28) |
+| `sam-key-expiration-reminder` | daily 14:00 | SAM key expiration (currently 2026-10-10) |
 | `org-chart-monitor` | weekly Mon 11:00 | DHA + VA leadership pages |
 | `stripe-subscriber-sync` | hourly | Stripe (not federal, listed for completeness) |
 
@@ -98,7 +98,7 @@ None identified in this audit pass. All government-API calls are server-side. Th
 
 | Env var | Source | Where read | Auth pattern |
 |---|---|---|---|
-| `SAM_GOV_API_KEY` | SAM.gov Opportunities / Entity / PSC / Wage Determinations / Assistance | `federal-data-apis.js`, `sam-wage-determinations.js`, `sam-assistance.js`, `sam-key-expiration-reminder.js` | `?api_key=` query parameter. **Rotates every 90 days.** Current expiry **2026-07-28**. |
+| `SAM_GOV_API_KEY` | SAM.gov Opportunities / Entity / PSC / Wage Determinations / Assistance | `federal-data-apis.js`, `sam-wage-determinations.js`, `sam-assistance.js`, `sam-key-expiration-reminder.js` | `?api_key=` query parameter. **Rotates every 90 days.** Current expiry **2026-10-10**. |
 | `SAM_SYSTEM_ACCOUNT_API_KEY` | SAM.gov Contract Awards | `sam-contract-awards.js` | System account; distinct from `SAM_GOV_API_KEY`. |
 | `REGULATIONS_GOV_API_KEY` | Regulations.gov v4 | `regulations-gov.js` | `?api_key=`. Falls back to `DEMO_KEY` (rate-limited) if unset. |
 | `CONGRESS_API_KEY` | Congress.gov + GovInfo (shared) | `congress-api.js`, `govinfo-api.js` | per-API. |

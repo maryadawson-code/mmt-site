@@ -2,8 +2,8 @@
 // sam-key-expiration-reminder.js — SAM.gov API key expiration watcher
 //
 // SAM.gov public API keys expire 90 days after creation. The current
-// SAM_GOV_API_KEY was regenerated 2026-04-30 with 89 days remaining,
-// which puts the next expiration on 2026-07-28. This cron emails Mary
+// SAM_GOV_API_KEY was regenerated 2026-07-22 with 80 days remaining,
+// which puts the next expiration on 2026-10-10. This cron emails Mary
 // at 30 / 14 / 7 / 3 / 1 days before expiration so she has time to
 // regenerate before Ask MMT's SAM-backed responses go dark again.
 //
@@ -21,7 +21,7 @@ const { createClient } = require("@supabase/supabase-js");
 const { sendEmail } = require("./lib/send-email");
 
 // Update this when the SAM.gov key is regenerated. Format: YYYY-MM-DD UTC.
-const SAM_KEY_EXPIRES_UTC = "2026-07-28";
+const SAM_KEY_EXPIRES_UTC = "2026-10-10";
 
 const REMINDER_THRESHOLDS = [30, 14, 7, 3, 1];
 const NOTIFY_TO = "mary@missionmeetstech.com";

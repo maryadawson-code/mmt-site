@@ -1486,7 +1486,7 @@ surfaces, and locking the May 1 release pipeline. Hard rules added:
   `lib/regulations-gov.js` modules each follow this pattern so a single
   upstream 4xx never breaks the assistant.
 - **SAM.gov API key has a hard 90-day expiration.** The key was rotated
-  2026-04-30, expiring 2026-07-28. `netlify/functions/sam-key-expiration-reminder.js`
+  2026-07-22, expiring 2026-10-10. `netlify/functions/sam-key-expiration-reminder.js`
   fires daily 14:00 UTC, emails Mary at 30 / 14 / 7 / 3 / 1 days out
   (idempotency-keyed in `ops_events`), and nags daily once expired.
   **Update `SAM_KEY_EXPIRES_UTC` in that file every time the key rotates.**
