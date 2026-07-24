@@ -10,9 +10,10 @@ The API lets an AI agent read your federal-contracting intelligence so it can an
 
 - [API catalog](https://missionmeetstech.com/api/v1): machine-readable index of every endpoint, scope, auth detail, and rate limit
 - [OpenAPI spec](https://missionmeetstech.com/api/v1/openapi.json): OpenAPI 3.1 description of the read endpoints
-- [Set up Agent Access](https://missionmeetstech.com/premium/ai-integrations/): mint a token, pick what your agent can see, revoke any time
+- [MCP server](https://missionmeetstech.com/api/mcp): Model Context Protocol endpoint for assistants that "add a connector" (Claude Desktop, Claude.ai, ChatGPT). Streamable HTTP, JSON-RPC. OAuth sign-in via [protected-resource metadata](https://missionmeetstech.com/.well-known/oauth-protected-resource) and [authorization server metadata](https://missionmeetstech.com/.well-known/oauth-authorization-server)
+- [Set up Agent Access](https://missionmeetstech.com/premium/ai-integrations/): mint a token or connect an assistant, pick what your agent can see, revoke any time
 
-Start at the API catalog. It tells an agent how to authenticate, what each endpoint returns, and how to recover from errors.
+Start at the API catalog for scripting (bearer token), or add the MCP server as a connector for a click-to-connect sign-in. Both are read-only.
 
 ## Read
 

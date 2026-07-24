@@ -69,14 +69,18 @@ function applyOppFilters(query, f) {
 async function listOpportunities(db, filters, paging) {
   const { limit, offset } = paging;
   let countQ = applyOppFilters(db.from("opportunity_radar").select("id", { count: "exact", head: true }), filters);
-  const { count } = await countQ;
+  const { count, error: countErr } = await countQ;
+  if (countErr) console.error("agent-data opportunities count:", countErr.message);
   let q = applyOppFilters(db.from("opportunity_radar").select(OPP_COLS), filters)
     .order("scan_date", { ascending: false })
     .order("relevance_score", { ascending: false })
     .range(offset, offset + limit - 1);
   const { data, error } = await q;
   if (error) throw new Error(`opportunities: ${error.message}`);
-  return envelope((data || []).map(serializeOpp), count || 0, limit, offset);
+  const rows = (data || []).map(serializeOpp);
+  // count ?? fallback: on a count-query failure, don't report total_count:0
+  // alongside real rows (which would stall an agent paginating on has_more).
+  return envelope(rows, count ?? (offset + rows.length), limit, offset);
 }
 
 async function getOpportunity(db, id) {
@@ -91,7 +95,8 @@ async function getOpportunity(db, id) {
 async function listTracker(db, email, paging) {
   const { limit, offset } = paging;
   if (!email) return envelope([], 0, limit, offset);
-  const { count } = await db.from("mmt_watchlist").select("entry_id", { count: "exact", head: true }).eq("email", email);
+  const { count, error: countErr } = await db.from("mmt_watchlist").select("entry_id", { count: "exact", head: true }).eq("email", email);
+  if (countErr) console.error("agent-data tracker count:", countErr.message);
   const { data, error } = await db.from("mmt_watchlist")
     .select("entry_id, entry_title, entry_url, saved_at")
     .eq("email", email)
@@ -99,14 +104,15 @@ async function listTracker(db, email, paging) {
     .range(offset, offset + limit - 1);
   if (error) throw new Error(`tracker: ${error.message}`);
   const rows = (data || []).map((r) => ({ id: r.entry_id, title: r.entry_title, url: r.entry_url, saved_at: r.saved_at }));
-  return envelope(rows, count || 0, limit, offset);
+  return envelope(rows, count ?? (offset + rows.length), limit, offset);
 }
 
 // ---- recommended (per-owner: recommended_cache, READ ONLY, no LLM) ---------
 
 async function listRecommended(db, userId, paging) {
   const { limit, offset } = paging;
-  const { count } = await db.from("recommended_cache").select("id", { count: "exact", head: true }).eq("user_id", userId);
+  const { count, error: countErr } = await db.from("recommended_cache").select("id", { count: "exact", head: true }).eq("user_id", userId);
+  if (countErr) console.error("agent-data recommended count:", countErr.message);
   const { data, error } = await db.from("recommended_cache")
     .select("opportunity_id, fit_score, rationale, scored_model, scored_at")
     .eq("user_id", userId)
@@ -117,7 +123,7 @@ async function listRecommended(db, userId, paging) {
     opportunity_id: r.opportunity_id, fit_score: Number(r.fit_score),
     rationale: r.rationale, scored_model: r.scored_model, scored_at: r.scored_at,
   }));
-  return envelope(rows, count || 0, limit, offset);
+  return envelope(rows, count ?? (offset + rows.length), limit, offset);
 }
 
 module.exports = { parsePaging, listOpportunities, getOpportunity, listTracker, listRecommended };

@@ -135,31 +135,43 @@ async function authenticateAgent(event, requiredScope, dbOverride) {
   //    DB blip never locks out a paying member (the token already proved access).
   let email = null;
   try {
-    const { data: u } = await db.from("mp_users").select("email, agent_seats").eq("id", token.user_id).limit(1).single();
+    const { data: u, error: uErr } = await db.from("mp_users").select("email, agent_seats").eq("id", token.user_id).limit(1).single();
+    // A genuine DB error → fail-open (rethrow into the catch below) so a blip
+    // never locks out a paying member. PGRST116 (no row) is NOT a blip — it's an
+    // orphaned token with no resolvable member, which must NOT read.
+    if (uErr && uErr.code !== "PGRST116") throw new Error(uErr.message);
     email = u ? String(u.email || "").toLowerCase() : null;
-    if (email) {
-      const ent = await loadEntitlement(db, email);
-      const access = computeAgentAccess(ent, { agent_seats: u.agent_seats || 0 });
-      if (!access.eligible) {
-        await safeAuditFailure(db, token, 403, event, requiredScope);
-        return { ok: false, response: resp(403, { error: "AGENT_ACCESS_REQUIRED", message: "This connection's AI access is no longer active.", docs: DOCS_URL }) };
-      }
+    if (!email) {
+      // Valid token but no resolvable member/email → not eligible. (Closes the
+      // fail-open where a deleted/blank-email owner kept global-intel access.)
+      await safeAuditFailure(db, token, 403, event, requiredScope);
+      return { ok: false, response: resp(403, { error: "AGENT_ACCESS_REQUIRED", message: "This connection's AI access is no longer active.", docs: DOCS_URL }) };
+    }
+    const ent = await loadEntitlement(db, email);
+    const access = computeAgentAccess(ent, { agent_seats: u.agent_seats || 0 });
+    if (!access.eligible) {
+      await safeAuditFailure(db, token, 403, event, requiredScope);
+      return { ok: false, response: resp(403, { error: "AGENT_ACCESS_REQUIRED", message: "This connection's AI access is no longer active.", docs: DOCS_URL }) };
     }
   } catch (e) { console.error("agent-auth access check (fail-open):", e.message); }
 
   // 6. BUDGET GATE (pre-call) — red (>100% daily cap) blocks BEFORE any work
   const dayStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())).toISOString();
   try {
-    const { data: ledger } = await db
+    const { data: ledger, error: ledgerErr } = await db
       .from("api_cost_ledger")
       .select("spend_usd, budget_usd")
       .eq("token_id", token.id).eq("window_kind", "day").eq("window_start", dayStart)
       .limit(1).single();
-    if (ledger && Number(ledger.spend_usd) >= Number(ledger.budget_usd)) {
+    // PGRST116 = no ledger row yet = $0 spent = pass. Any OTHER error is a real
+    // read failure — log it (don't silently treat a DB blip as "budget OK").
+    if (ledgerErr && ledgerErr.code !== "PGRST116") {
+      console.error("agent-auth budget gate ledger read (fail-open):", ledgerErr.message);
+    } else if (ledger && Number(ledger.spend_usd) >= Number(ledger.budget_usd)) {
       await safeAuditFailure(db, token, 429, event, requiredScope);
       return { ok: false, response: resp(429, { error: "BUDGET_EXCEEDED", message: "You've reached this period's usage." }, { "Retry-After": String(nextUtcMidnightSec()) }) };
     }
-  } catch { /* no ledger row yet = $0 spent = pass */ }
+  } catch (e) { console.error("agent-auth budget gate (fail-open):", e.message); }
 
   // 7. SESSION GATE — >100 calls per session
   const sessionId = isUuid(event.headers && (event.headers["x-session-id"] || event.headers["X-Session-Id"]))
