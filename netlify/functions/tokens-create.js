@@ -8,7 +8,8 @@
 //   scopes       — optional, defaults to opportunities:read
 //   expiryDays   — optional, one of 30/90/365/null; defaults to 90
 //
-// Enforces: max 5 active tokens/user. Stores SHA-256 hash + 8-char prefix only.
+// Enforces: active connections <= paid agent seats (institutional safety-capped
+// at 100). Stores SHA-256 hash + 8-char prefix only — never the raw token.
 // ============================================================================
 
 const { createClient } = require("@supabase/supabase-js");
@@ -58,12 +59,18 @@ exports.handler = async (event) => {
 
   // 3. Enforce the seat cap: active connections <= paid agent seats (spec §11b).
   //    Institutional is unlimited (safety-capped); annual/founding = seats bought.
+  //    "Active" must match tokens-list's statusOf(): not revoked AND not expired.
+  //    Counting expired tokens here would let a lapsed connection consume a seat
+  //    the member can't see (the UI only shows Revoke on active rows), dead-ending
+  //    a 1-seat member who can't re-connect. Exclude expired to stay consistent.
   const seatCap = owner.agentAccess.unlimited ? UNLIMITED_SAFETY_CAP : owner.agentAccess.seats;
+  const nowIso = new Date().toISOString();
   const { count, error: countErr } = await supabase
     .from("api_tokens")
     .select("id", { count: "exact", head: true })
     .eq("user_id", owner.userId)
-    .is("revoked_at", null);
+    .is("revoked_at", null)
+    .or(`expires_at.is.null,expires_at.gt.${nowIso}`);
   if (countErr) {
     console.error("tokens-create count error:", countErr.message);
     return json(500, { error: "SERVER_ERROR", message: "Could not create the connection. Try again." });

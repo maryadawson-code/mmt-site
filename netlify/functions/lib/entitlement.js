@@ -184,8 +184,10 @@ async function logEntitlementMismatch(supabase, { email, tool, entitlement, expe
         observed_at: new Date().toISOString(),
       },
     });
-  } catch {
-    // ops_events may not exist in some envs — swallow.
+  } catch (e) {
+    // ops_events may not exist in some envs — non-fatal, but log so a real
+    // insert failure isn't invisible (repo rule: no silent empty catch).
+    console.warn("logEntitlementMismatch (non-fatal):", e && e.message);
   }
 }
 

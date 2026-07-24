@@ -127,7 +127,7 @@ function personalReasons(opp, userProfile) {
  */
 async function runBatch(db, { fetchImpl = fetch } = {}) {
   const { maxCalls, dailyBudgetUsd, opportunityLimit } = cfg();
-  const stats = { scanned: 0, scored: 0, skipped: 0, spentUsd: 0, usersWithProfile: 0, stoppedReason: null };
+  const stats = { scanned: 0, scored: 0, skipped: 0, calls: 0, spentUsd: 0, usersWithProfile: 0, stoppedReason: null };
 
   // Eligible users only (institutional OR paid seats) — don't score for free riders.
   const { data: users } = await db.from("mp_users")
@@ -161,19 +161,28 @@ async function runBatch(db, { fetchImpl = fetch } = {}) {
 
   const expiresAt = new Date(Date.now() + SCORE_RE_TTL_DAYS * 864e5).toISOString();
   const freshCutoff = new Date(Date.now() - SCORE_RE_TTL_DAYS * 864e5).toISOString();
+  const eligibleIds = eligible.map((u) => u.id);
 
   for (const opp of opps) {
     stats.scanned++;
-    if (stats.scored >= maxCalls) { stats.stoppedReason = "max_calls"; break; }
+    // Gate on LLM CALLS, not successful writes — a run of upsert failures must
+    // not keep calling (and paying) Claude past the cap.
+    if (stats.calls >= maxCalls) { stats.stoppedReason = "max_calls"; break; }
     if (stats.spentUsd >= dailyBudgetUsd) { stats.stoppedReason = "daily_budget"; break; }
 
-    // TTL skip — already scored recently for anyone? (one probe row is enough)
-    const { data: existing } = await db.from("recommended_cache")
-      .select("id").eq("opportunity_id", String(opp.id)).gte("scored_at", freshCutoff).limit(1);
-    if (existing && existing.length) { stats.skipped++; continue; }
+    // Skip this opp ONLY if every currently-eligible user already has a fresh
+    // row for it. Counting fresh rows for the eligible set (not "any one row")
+    // means a newly-eligible or profile-changed member still gets scored — a
+    // per-opp "anyone scored it" skip would leave a new subscriber's
+    // /recommended empty for up to SCORE_RE_TTL_DAYS, wasting the personalization.
+    const { count: freshCount } = await db.from("recommended_cache")
+      .select("id", { count: "exact", head: true })
+      .eq("opportunity_id", String(opp.id)).gte("scored_at", freshCutoff)
+      .in("user_id", eligibleIds);
+    if ((freshCount || 0) >= eligible.length) { stats.skipped++; continue; }
 
     let result;
-    try { result = await scoreOne(opp, fetchImpl); }
+    try { result = await scoreOne(opp, fetchImpl); stats.calls++; }
     catch (e) { console.error(`score opp ${opp.id}:`, e.message); stats.skipped++; continue; }
     stats.spentUsd += result.cost || 0;
     if (!result.parsed) { stats.skipped++; continue; }

@@ -264,6 +264,12 @@ exports.handler = async (event) => {
 
   // A JSON-RPC batch is an array; a single call is an object. Handle both.
   const isBatch = Array.isArray(payload);
+  if (isBatch && payload.length === 0) {
+    // An empty batch array is itself an invalid request (JSON-RPC 2.0 §6).
+    const err = rpcError(null, INVALID_REQUEST, "Empty batch.");
+    const b = JSON.stringify(err);
+    return { statusCode: 200, headers: { ...MCP_CORS, "Content-Type": "application/json", ...ctx.rateHeaders }, body: b };
+  }
   const messages = isBatch ? payload : [payload];
   const responses = [];
   for (const msg of messages) {

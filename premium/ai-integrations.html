@@ -244,7 +244,7 @@
 
     async function api(path, body) {
       var r = await fetch(BASE + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-      var data = {}; try { data = await r.json(); } catch (e) {}
+      var data = {}; try { data = await r.json(); } catch (e) { /* non-JSON body (204/HTML error) — data stays {} */ }
       return { status: r.status, ok: r.ok, data: data };
     }
 
@@ -262,8 +262,15 @@
     }
 
     // ---- sign-in (verified email ownership) -------------------------------
-    $("ai-start").onclick = $("ai-add") ? null : null;
-    function gotoSignInOrList() { if (session()) { showWizard(); } else { show("ai-signin", true); $("ai-email").focus(); } }
+    // Last-known add-on access, refreshed by applyAccess() on every list load.
+    var _access = { eligible: false };
+    function gotoSignInOrList() {
+      if (!session()) { show("ai-signin", true); $("ai-email").focus(); return; }
+      // Signed in but no paid add-on → send to the list (which shows the upsell),
+      // don't walk them through a create wizard that ends in a silent 402.
+      if (!_access.eligible) { showList(); return; }
+      showWizard();
+    }
     $("ai-start").addEventListener("click", gotoSignInOrList);
 
     $("ai-sendlink").addEventListener("click", async function () {
@@ -301,6 +308,7 @@
 
     // Show the wizard entry (eligible) or the upsell (no paid add-on). UX §11b.
     function applyAccess(access) {
+      _access = access || { eligible: false };
       var eligible = !!access.eligible;
       show("ai-add-wrap", eligible);
       show("ai-upsell", !eligible);

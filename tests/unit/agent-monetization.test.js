@@ -74,12 +74,14 @@ function mockDb(scenario) {
     from(table) {
       const b = {
         select() { return b; }, eq() { return b; }, gte() { return b; }, or() { return b; },
-        order() { return b; }, limit() { return b; },
+        in() { return b; }, order() { return b; }, limit() { return b; },
         upsert() { return Promise.resolve({ error: null }); },
         then(res) {
           if (table === "mp_users") return res({ data: scenario.users });
           if (table === "opportunity_radar") return res({ data: scenario.opps });
-          if (table === "recommended_cache") return res({ data: scenario.fresh ? [{ id: "x" }] : [] });
+          // The freshness probe is now a HEAD count over the eligible set: when
+          // "fresh", every eligible user already has a row → count >= eligible.
+          if (table === "recommended_cache") return res({ count: scenario.fresh ? (scenario.users ? scenario.users.length : 1) : 0, data: [] });
           return res({ data: [] });
         },
       };

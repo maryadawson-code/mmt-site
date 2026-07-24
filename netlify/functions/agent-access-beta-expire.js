@@ -142,12 +142,15 @@ exports.handler = async (event) => {
       ...failures.map((f) => `<tr><td style="padding:4px 12px;">${f.email}</td><td style="padding:4px 12px;color:#E65100;">error: ${f.err}</td></tr>`),
     ].join("");
     try {
-      await sendEmail({
+      // sendEmail RETURNS {success} (never throws) — check it, or a failed
+      // Resend/open-circuit send silently means Mary never learns the month closed.
+      const r = await sendEmail({
         to: MARY, from: FROM,
         subject: `Agent Access beta month ended — ${converted.length} kept, ${expired.length} revoked`,
         html: `<div style="font-family:Inter,sans-serif;color:#102033;"><p>The Agent Access free-beta month (${EXPIRE_DATE_UTC}) was processed.</p><table style="border-collapse:collapse;font-size:14px;">${rows}</table><p style="font-size:12px;color:#5C6B7A;">Revoked users can re-enable any time by buying the add-on at /premium/ai-integrations.</p></div>`,
       });
-    } catch (mailErr) { console.warn("agent-access-beta-expire: summary email failed:", mailErr.message); }
+      if (!r || !r.success) console.error("agent-access-beta-expire: summary email not sent:", r && r.error);
+    } catch (mailErr) { console.warn("agent-access-beta-expire: summary email threw:", mailErr.message); }
   }
 
   return { statusCode: 200, body: JSON.stringify({ mode: dry ? "dry_run" : "run", converted, expired, skipped, failures, checkedAt }) };

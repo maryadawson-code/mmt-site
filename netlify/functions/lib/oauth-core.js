@@ -47,7 +47,11 @@ function timingEqual(a, b) {
  *  server. Rotating SUPABASE_SERVICE_KEY invalidates in-flight codes (60-90s)
  *  and forces refresh re-auth — access tokens (api_tokens rows) are unaffected. */
 function signingKey() {
-  const seed = process.env.OAUTH_SIGNING_SECRET || process.env.SUPABASE_SERVICE_KEY || "mmt-dev-oauth-signing-seed";
+  // Derive from an existing server secret (no new env var). Fail CLOSED if none
+  // is present — signing with a hardcoded constant would let anyone forge a
+  // client_id / auth code / refresh blob and mint a token for any account.
+  const seed = process.env.OAUTH_SIGNING_SECRET || process.env.SUPABASE_SERVICE_KEY;
+  if (!seed) throw new Error("OAuth signing secret unavailable (set OAUTH_SIGNING_SECRET or SUPABASE_SERVICE_KEY)");
   return crypto.createHmac("sha256", seed).update("mmt-oauth-signing-v1").digest();
 }
 
