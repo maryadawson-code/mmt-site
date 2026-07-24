@@ -827,6 +827,13 @@
   status = 200
   force = true
 
+# Per-connection read activity for the member dashboard "Activity" panel.
+[[redirects]]
+  from = "/api/tokens/activity"
+  to = "/.netlify/functions/tokens-activity"
+  status = 200
+  force = true
+
 # ── Agent Access — read API v1 (Phase 3) ────────────────────────────────────
 # Bearer-token auth + budget/session/rate gates live in lib/agent-auth.js.
 # Order matters: the :id rule must precede the bare collection rule.
