@@ -355,7 +355,7 @@
       }).join("");
       $("ai-list").innerHTML =
         "<table class=\"ai-table\"><thead><tr><th>Name</th><th>Scopes</th><th>Prefix</th><th>Status</th><th>Last used</th><th></th></tr></thead><tbody>" + rows + "</tbody></table>" +
-        "<div class=\"ai-snippet\" style=\"margin-top:12px;\">curl -H \"Authorization: Bearer &lt;your_token&gt;\" " + base + "/opportunities?limit=25\n# MCP base URL: " + base + " · scopes: opportunities:read tracker:read intel:read</div>";
+        "<div class=\"ai-snippet\" style=\"margin-top:12px;\">curl -H \"Authorization: Bearer &lt;your_token&gt;\" " + base + "/opportunities?limit=25\n# MCP connector URL (Claude/ChatGPT): " + BASE + "/api/mcp · scopes: opportunities:read tracker:read intel:read</div>";
       $("ai-list").querySelectorAll("[data-act=revoke]").forEach(function (b) { b.addEventListener("click", onRevoke); });
     }
 
@@ -420,10 +420,25 @@
     $("ai-tool").addEventListener("change", renderSetup);
     function renderSetup() {
       var key = $("ai-key").textContent, tool = $("ai-tool").value;
-      var base = BASE + "/api/v1";
-      if (tool === "claude") $("ai-setup").textContent = "In Claude Desktop → Settings → Connectors, add a custom HTTP header:\n  Authorization: Bearer " + key + "\nBase URL: " + base;
-      else if (tool === "chatgpt") $("ai-setup").textContent = "In ChatGPT → custom action / GPT, set the auth header:\n  Authorization: Bearer " + key + "\nBase URL: " + base;
-      else $("ai-setup").textContent = "curl -H \"Authorization: Bearer " + key + "\" " + base + "/opportunities";
+      var rest = BASE + "/api/v1";
+      var mcp = BASE + "/api/mcp";
+      if (tool === "claude") $("ai-setup").textContent =
+        "In Claude Desktop or Claude.ai:\n" +
+        "  1. Settings → Connectors → Add custom connector\n" +
+        "  2. Name: Mission Meets Tech\n" +
+        "  3. URL: " + mcp + "\n" +
+        "  4. Click Connect, then sign in with your MMT email to approve.\n" +
+        "That's it. Claude signs you in, so you don't paste a key.";
+      else if (tool === "chatgpt") $("ai-setup").textContent =
+        "In ChatGPT → Settings → Connectors → add a connector:\n" +
+        "  URL: " + mcp + "\n" +
+        "  then Connect and sign in with your MMT email.\n\n" +
+        "Prefer a custom GPT Action? Use your key instead:\n" +
+        "  Authorization: Bearer " + key + "\n  Base URL: " + rest;
+      else $("ai-setup").textContent =
+        "MCP connector URL (any assistant that adds connectors):\n  " + mcp + "\n\n" +
+        "Or call the REST API directly with your key:\n" +
+        "  curl -H \"Authorization: Bearer " + key + "\" " + rest + "/opportunities";
     }
     $("ai-done").addEventListener("click", showList);
 

@@ -90,6 +90,14 @@ function buildCatalog() {
     base_url: `${BASE}/api/v1`,
     documentation: CATALOG_URL,
     openapi: OPENAPI_URL,
+    // The REST endpoints above are for scripts/curl. AI assistants that "add a
+    // connector" (Claude Desktop, Claude.ai, ChatGPT) speak MCP — point them here.
+    mcp: {
+      endpoint: `${BASE}/api/mcp`,
+      transport: "streamable-http",
+      description: "Model Context Protocol server. POST JSON-RPC 2.0. Same bearer token; read-only tools: mmt_list_opportunities, mmt_get_opportunity, mmt_list_tracker, mmt_list_recommended.",
+      protected_resource_metadata: `${BASE}/.well-known/oauth-protected-resource`,
+    },
     authentication: {
       type: "bearer",
       header: "Authorization: Bearer <token>",

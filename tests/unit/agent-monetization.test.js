@@ -2,7 +2,7 @@
 
 import { describe, it, expect } from "vitest";
 import { computeAgentAccess, upsellCopy, UNLIMITED } from "../../netlify/functions/lib/agent-entitlement.js";
-import { parseScore, personalize, runBatch } from "../../netlify/functions/lib/agent-score-batch.js";
+import { parseScore, personalize, personalReasons, normalizeList, runBatch } from "../../netlify/functions/lib/agent-score-batch.js";
 
 describe("computeAgentAccess (§11b, monthly allowed too)", () => {
   it("non-premium → not eligible, go_premium upsell", () => {
@@ -46,6 +46,23 @@ describe("scoring helpers", () => {
     expect(personalize(50, opp, { naics: ["541512"], agencies: ["DHA"] })).toBe(70);
     expect(personalize(95, opp, { naics: ["541512"], agencies: ["DHA"] })).toBe(100);
     expect(personalize(50, opp, null)).toBe(50);
+  });
+  it("personalize matches agency by substring (short code vs full name)", () => {
+    const opp = { naics_codes: [], agency: "Defense Health Agency (DHA)" };
+    expect(personalize(50, opp, { agencies: ["DHA"] })).toBe(60);
+  });
+  it("normalizeList coerces array / csv / {items} / null", () => {
+    expect(normalizeList(["541512", " 541511 "])).toEqual(["541512", "541511"]);
+    expect(normalizeList("541512, 541511")).toEqual(["541512", "541511"]);
+    expect(normalizeList({ items: ["VA"] })).toEqual(["VA"]);
+    expect(normalizeList(null)).toEqual([]);
+  });
+  it("personalReasons explains the personal match, empty without a profile", () => {
+    const opp = { naics_codes: ["541512"], agency: "DHA" };
+    const r = personalReasons(opp, { naics: ["541512"], agencies: ["DHA"] });
+    expect(r.join(" ")).toMatch(/NAICS 541512/);
+    expect(r.join(" ")).toMatch(/agency you follow/);
+    expect(personalReasons(opp, null)).toEqual([]);
   });
 });
 
@@ -107,5 +124,67 @@ describe("runBatch cost ceilings (no token overrun)", () => {
     expect(calls).toBe(0);
     expect(s.skipped).toBe(10);
     expect(s.scored).toBe(0);
+  });
+});
+
+// ---- runBatch PERSONALIZATION (the score is actually per-user) -------------
+// A mock that supports .in() and captures every recommended_cache upsert so we
+// can prove the score + rationale differ per subscriber, not one generic value.
+function personalizeMockDb(scenario) {
+  const upserts = [];
+  const db = {
+    _upserts: () => upserts,
+    from(table) {
+      const b = {
+        select() { return b; }, eq() { return b; }, gte() { return b; },
+        or() { return b; }, in() { return b; }, order() { return b; }, limit() { return b; },
+        upsert(rows) { upserts.push(...rows); return Promise.resolve({ error: null }); },
+        then(res) {
+          if (table === "mp_users") return res({ data: scenario.users });
+          if (table === "mmt_preferences") return res({ data: scenario.prefs || [] });
+          if (table === "opportunity_radar") return res({ data: scenario.opps });
+          if (table === "recommended_cache") return res({ data: [] });
+          return res({ data: [] });
+        },
+      };
+      return b;
+    },
+  };
+  return db;
+}
+
+describe("runBatch personalization (per-user score, not one generic number)", () => {
+  it("scores the LLM once but writes a personalized row per subscriber", async () => {
+    const users = [
+      { id: "u_match", email: "match@fhas.com", agent_seats: 1 },
+      { id: "u_plain", email: "plain@fhas.com", agent_seats: 1 },
+    ];
+    const prefs = [
+      { email: "match@fhas.com", agencies: ["DHA"], naics: ["541512"] },
+      // plain@ has NO preferences row → generic score, no reasons
+    ];
+    const opps = [{ id: 1, title: "DHA EHR modernization", agency: "DHA", naics_codes: ["541512"], relevance_score: 90 }];
+    const db = personalizeMockDb({ users, prefs, opps });
+
+    const s = await runBatch(db, { fetchImpl: okFetch }); // generic fit = 80
+    expect(s.scored).toBe(1);
+    expect(s.usersWithProfile).toBe(1);
+
+    const rows = db._upserts();
+    expect(rows).toHaveLength(2); // one per user, single LLM call
+    const match = rows.find((r) => r.user_id === "u_match");
+    const plain = rows.find((r) => r.user_id === "u_plain");
+
+    // Matching subscriber: +10 NAICS +10 agency over the generic 80 → 100
+    expect(match.fit_score).toBe(100);
+    expect(match.rationale).toMatch(/NAICS 541512/);
+    expect(match.rationale).toMatch(/agency you follow/);
+
+    // Non-matching subscriber: generic score + generic rationale, no reasons
+    expect(plain.fit_score).toBe(80);
+    expect(plain.rationale).toBe("ok");
+
+    // The whole point: the same opp is NOT the same score for both users.
+    expect(match.fit_score).not.toBe(plain.fit_score);
   });
 });

@@ -121,8 +121,10 @@ async function authenticateAgent(event, requiredScope, dbOverride) {
     return { ok: false, response: unauthorized() };
   }
 
-  // 4. Scope
-  if (!Array.isArray(token.scopes) || !token.scopes.includes(requiredScope)) {
+  // 4. Scope. requiredScope may be null for the MCP handshake (initialize /
+  //    tools/list only need a VALID token; per-tool scope is enforced at
+  //    tools/call time). REST handlers always pass a concrete scope.
+  if (requiredScope && (!Array.isArray(token.scopes) || !token.scopes.includes(requiredScope))) {
     await safeAuditFailure(db, token, 403, event, requiredScope);
     return { ok: false, response: forbidden() };
   }
