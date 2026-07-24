@@ -4,11 +4,12 @@
 import { describe, it, expect } from "vitest";
 import crypto from "node:crypto";
 import {
-  verifyPkce, base64url, isValidRedirectUri, validateRegistration,
+  verifyPkce, b64u, isValidRedirectUri, validateRegistration,
   redirectUriAllowed, resolveScopes, buildRedirect, authServerMetadata, SCOPES,
+  signBlob, verifyBlob,
 } from "../../netlify/functions/lib/oauth-core.js";
 
-const s256 = (v) => base64url(crypto.createHash("sha256").update(v).digest());
+const s256 = (v) => b64u(crypto.createHash("sha256").update(v).digest());
 
 describe("PKCE (S256)", () => {
   it("accepts a correct verifier, rejects a wrong one", () => {
@@ -77,6 +78,32 @@ describe("buildRedirect", () => {
     const u = buildRedirect("https://claude.ai/cb", { code: "abc", state: undefined });
     expect(u).toContain("code=abc");
     expect(u).not.toContain("state=");
+  });
+});
+
+describe("signed blobs (stateless clients / codes / refresh — no DB)", () => {
+  const key = crypto.createHmac("sha256", "test-seed").update("x").digest();
+  it("round-trips a payload and rejects tampering", () => {
+    const tok = signBlob({ t: "code", uid: "u1", sc: "opportunities:read" }, key);
+    expect(verifyBlob(tok, key)).toMatchObject({ t: "code", uid: "u1" });
+    // tamper the body → signature no longer matches
+    const [body, sig] = tok.split(".");
+    const forged = body.slice(0, -2) + "AA" + "." + sig;
+    expect(verifyBlob(forged, key)).toBeNull();
+    // wrong key → reject
+    const otherKey = crypto.createHmac("sha256", "other").update("x").digest();
+    expect(verifyBlob(tok, otherKey)).toBeNull();
+  });
+  it("honors expiry (exp is epoch ms)", () => {
+    const expired = signBlob({ t: "code", exp: Date.now() - 1000 }, key);
+    expect(verifyBlob(expired, key)).toBeNull();
+    const live = signBlob({ t: "code", exp: Date.now() + 60000 }, key);
+    expect(verifyBlob(live, key)).toMatchObject({ t: "code" });
+  });
+  it("rejects malformed input", () => {
+    expect(verifyBlob("no-dot", key)).toBeNull();
+    expect(verifyBlob("", key)).toBeNull();
+    expect(verifyBlob(null, key)).toBeNull();
   });
 });
 

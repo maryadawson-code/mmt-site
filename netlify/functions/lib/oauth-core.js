@@ -1,15 +1,20 @@
 // ============================================================================
 // lib/oauth-core.js — pure OAuth 2.1 helpers for the Agent Access MCP flow.
 //
-// This is the click-to-connect path: Claude Desktop / Claude.ai discover the
-// authorization server (RFC 8414), dynamically register (RFC 7591), send the
-// member through /oauth/authorize (Authorization Code + PKCE, RFC 7636), then
-// exchange the code at /oauth/token. The issued access token IS a normal
-// api_tokens row (mmt_pat_*), so lib/agent-auth validates it unchanged and it
-// shows up as a revocable connection in the member dashboard.
+// This is the click-to-connect path: Claude Desktop / Claude.ai / ChatGPT
+// discover the authorization server (RFC 8414), dynamically register
+// (RFC 7591), send the member through /oauth/authorize (Authorization Code +
+// PKCE, RFC 7636), then exchange the code at /oauth/token.
 //
-// Everything here is PURE (no IO) so it can be unit-tested exhaustively. The
-// handler (agent-oauth.js) does the DB + email + HTML around it.
+// STATELESS BY DESIGN: clients, the in-flight auth request, the login proof,
+// the authorization code, and the refresh token are all HMAC-signed blobs — no
+// new database tables. The only persisted artifact is the ACCESS token, which
+// is minted as a normal api_tokens row (already in production), so
+// lib/agent-auth validates it unchanged and it shows up as a revocable
+// connection in the member dashboard. That means this ships with a plain deploy
+// — no gated migration to apply.
+//
+// Everything here is PURE (crypto only, no IO) so it can be unit-tested.
 // ============================================================================
 
 const crypto = require("crypto");
@@ -17,26 +22,18 @@ const crypto = require("crypto");
 const SCOPES = ["opportunities:read", "tracker:read", "intel:read"];
 const DEFAULT_SCOPES = ["opportunities:read", "intel:read"];
 
-// Lifetimes
+// Lifetimes (ms)
 const AUTH_REQUEST_TTL_MS = 10 * 60 * 1000;   // sign-in window
 const LOGIN_TOKEN_TTL_MS = 10 * 60 * 1000;    // magic-link window
-const AUTH_CODE_TTL_MS = 60 * 1000;           // code is single-use + 60s
+const AUTH_CODE_TTL_MS = 90 * 1000;           // short-lived, PKCE-bound
 const ACCESS_TOKEN_TTL_DAYS = 365;            // the minted api_tokens row
 const REFRESH_TOKEN_TTL_MS = 90 * 24 * 60 * 60 * 1000;
 
-const sha256 = (s) => crypto.createHash("sha256").update(String(s)).digest("hex");
-const base64url = (buf) => Buffer.from(buf).toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+const sha256hex = (s) => crypto.createHash("sha256").update(String(s)).digest("hex");
+const b64u = (buf) => Buffer.from(buf).toString("base64url");
 const randomId = (bytes = 24) => crypto.randomBytes(bytes).toString("hex");
 
-/** PKCE: does code_verifier match the stored code_challenge? S256 (and plain). */
-function verifyPkce(codeVerifier, codeChallenge, method = "S256") {
-  if (!codeVerifier || !codeChallenge) return false;
-  if (method === "plain") return timingEqual(codeVerifier, codeChallenge);
-  if (method !== "S256") return false;
-  const derived = base64url(crypto.createHash("sha256").update(codeVerifier).digest());
-  return timingEqual(derived, codeChallenge);
-}
-
+/** Timing-safe string compare. */
 function timingEqual(a, b) {
   const ba = Buffer.from(String(a));
   const bb = Buffer.from(String(b));
@@ -44,17 +41,56 @@ function timingEqual(a, b) {
   return crypto.timingSafeEqual(ba, bb);
 }
 
-/** A redirect_uri is valid for DCR if https, or http(s) to localhost/127.0.0.1,
- *  or a custom app scheme (e.g. Claude's). No fragments (RFC 6749 §3.1.2). */
+/** Signing key for the stateless blobs. Derived from an existing server secret
+ *  so NO new env var is needed (keeps us under the Lambda 4KB env cap). A
+ *  dedicated OAUTH_SIGNING_SECRET overrides if ever set. Never leaves the
+ *  server. Rotating SUPABASE_SERVICE_KEY invalidates in-flight codes (60-90s)
+ *  and forces refresh re-auth — access tokens (api_tokens rows) are unaffected. */
+function signingKey() {
+  const seed = process.env.OAUTH_SIGNING_SECRET || process.env.SUPABASE_SERVICE_KEY || "mmt-dev-oauth-signing-seed";
+  return crypto.createHmac("sha256", seed).update("mmt-oauth-signing-v1").digest();
+}
+
+/** Sign a JSON payload → `body.sig` (both base64url). exp is honored on verify. */
+function signBlob(payload, key = signingKey()) {
+  const body = b64u(Buffer.from(JSON.stringify(payload)));
+  const sig = b64u(crypto.createHmac("sha256", key).update(body).digest());
+  return `${body}.${sig}`;
+}
+
+/** Verify + decode a signed blob. Returns the payload, or null if the signature
+ *  is bad, it's malformed, or it's expired (payload.exp is epoch ms). */
+function verifyBlob(token, key = signingKey()) {
+  if (typeof token !== "string" || token.indexOf(".") < 0) return null;
+  const [body, sig] = token.split(".");
+  if (!body || !sig) return null;
+  const expected = b64u(crypto.createHmac("sha256", key).update(body).digest());
+  if (!timingEqual(sig, expected)) return null;
+  let payload;
+  try { payload = JSON.parse(Buffer.from(body, "base64url").toString("utf8")); } catch { return null; }
+  if (payload && payload.exp && Date.now() > payload.exp) return null;
+  return payload;
+}
+
+/** PKCE: does code_verifier match the stored code_challenge? S256 (and plain). */
+function verifyPkce(codeVerifier, codeChallenge, method = "S256") {
+  if (!codeVerifier || !codeChallenge) return false;
+  if (method === "plain") return timingEqual(codeVerifier, codeChallenge);
+  if (method !== "S256") return false;
+  const derived = b64u(crypto.createHash("sha256").update(codeVerifier).digest());
+  return timingEqual(derived, codeChallenge);
+}
+
+/** A redirect_uri is valid for DCR if https, or http to localhost/127.0.0.1,
+ *  or a custom app scheme (native clients). No fragments (RFC 6749 §3.1.2). */
 function isValidRedirectUri(uri) {
   if (typeof uri !== "string" || !uri) return false;
   if (uri.includes("#")) return false;
   let u;
   try { u = new URL(uri); } catch { return false; }
   if (u.protocol === "https:") return true;
-  if ((u.protocol === "http:" || u.protocol === "https:") && (u.hostname === "localhost" || u.hostname === "127.0.0.1")) return true;
-  // Custom app scheme (native clients) — must have a scheme and some body.
-  if (/^[a-z][a-z0-9+.-]*:$/i.test(u.protocol) && u.protocol !== "http:") return true;
+  if (u.protocol === "http:" && (u.hostname === "localhost" || u.hostname === "127.0.0.1")) return true;
+  if (/^[a-z][a-z0-9+.-]*:$/i.test(u.protocol) && u.protocol !== "http:") return true; // custom scheme
   return false;
 }
 
@@ -69,7 +105,7 @@ function validateRegistration(body) {
   return {
     ok: true,
     client: {
-      client_name: typeof b.client_name === "string" ? b.client_name.slice(0, 120) : "MCP client",
+      client_name: typeof b.client_name === "string" && b.client_name ? b.client_name.slice(0, 120) : "MCP client",
       redirect_uris: uris,
       grant_types: ["authorization_code", "refresh_token"],
       response_types: ["code"],
@@ -94,9 +130,7 @@ function resolveScopes(requested) {
 /** Build a redirect URL with query params appended (preserves existing query). */
 function buildRedirect(baseUri, params) {
   const u = new URL(baseUri);
-  for (const [k, v] of Object.entries(params)) {
-    if (v != null) u.searchParams.set(k, v);
-  }
+  for (const [k, v] of Object.entries(params)) if (v != null) u.searchParams.set(k, v);
   return u.toString();
 }
 
@@ -119,6 +153,6 @@ function authServerMetadata(base) {
 module.exports = {
   SCOPES, DEFAULT_SCOPES,
   AUTH_REQUEST_TTL_MS, LOGIN_TOKEN_TTL_MS, AUTH_CODE_TTL_MS, ACCESS_TOKEN_TTL_DAYS, REFRESH_TOKEN_TTL_MS,
-  sha256, base64url, randomId, verifyPkce, timingEqual,
+  sha256hex, b64u, randomId, timingEqual, signingKey, signBlob, verifyBlob, verifyPkce,
   isValidRedirectUri, validateRegistration, redirectUriAllowed, resolveScopes, buildRedirect, authServerMetadata,
 };
