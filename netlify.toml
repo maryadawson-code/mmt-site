@@ -875,6 +875,55 @@
   status = 200
   force = true
 
+# Agent Access — MCP server (what "add a connector" in Claude/ChatGPT speaks).
+# POST JSON-RPC, bearer-token auth (lib/agent-auth). Streamable HTTP, stateless.
+[[redirects]]
+  from = "/api/mcp"
+  to = "/.netlify/functions/agent-mcp"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/mcp/"
+  to = "/.netlify/functions/agent-mcp"
+  status = 200
+  force = true
+
+# OAuth protected-resource metadata (RFC 9728) — the recovery pointer a
+# compliant MCP client discovers from the 401. Served by the MCP function.
+[[redirects]]
+  from = "/.well-known/oauth-protected-resource"
+  to = "/.netlify/functions/agent-mcp"
+  status = 200
+  force = true
+
+# Agent Access — OAuth 2.1 authorization server (click-to-connect for Claude
+# Desktop / Claude.ai / ChatGPT). Discovery + DCR + authorize + token.
+# agent-oauth.js mints a normal api_tokens row as the access token.
+[[redirects]]
+  from = "/.well-known/oauth-authorization-server"
+  to = "/.netlify/functions/agent-oauth"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/oauth/register"
+  to = "/.netlify/functions/agent-oauth"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/oauth/authorize"
+  to = "/.netlify/functions/agent-oauth"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/oauth/token"
+  to = "/.netlify/functions/agent-oauth"
+  status = 200
+  force = true
+
 # Agent Access — marketed clean URL for the setup UX (Phase 5.5)
 [[redirects]]
   from = "/ai-integrations"

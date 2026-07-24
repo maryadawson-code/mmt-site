@@ -77,6 +77,18 @@ async function scoreOne(opp, fetchImpl) {
   return { parsed: parseScore(text), cost };
 }
 
+/**
+ * Coerce an mmt_preferences JSONB field into a flat string list.
+ * The column can arrive as an array (["541512"]), a comma-joined string
+ * ("541512, 541511"), or a {items:[...]} wrapper. Anything else → [].
+ */
+function normalizeList(v) {
+  if (Array.isArray(v)) return v.map((x) => String(x).trim()).filter(Boolean);
+  if (v && typeof v === "object" && Array.isArray(v.items)) return normalizeList(v.items);
+  if (typeof v === "string") return v.split(",").map((s) => s.trim()).filter(Boolean);
+  return [];
+}
+
 /** Heuristic per-user fit (no LLM): blend the opp's generic score with profile match. */
 function personalize(genericFit, opp, userProfile) {
   if (!userProfile) return genericFit;
@@ -85,24 +97,61 @@ function personalize(genericFit, opp, userProfile) {
   const userNaics = (userProfile.naics || []).map(String);
   if (userNaics.some((n) => naics.includes(n))) bonus += 10;
   const agencies = (userProfile.agencies || []).map((a) => String(a).toLowerCase());
-  if (opp.agency && agencies.includes(String(opp.agency).toLowerCase())) bonus += 10;
+  const oppAgency = String(opp.agency || "").toLowerCase();
+  if (oppAgency && agencies.some((a) => a && (oppAgency.includes(a) || a.includes(oppAgency)))) bonus += 10;
   return Math.max(0, Math.min(100, genericFit + bonus));
 }
 
 /**
+ * Plain-language reasons THIS opp fits THIS user's profile, appended to the
+ * generic rationale so /recommended explains *why it's personal*. Empty when
+ * there's no profile match (score is then just the generic fit).
+ */
+function personalReasons(opp, userProfile) {
+  if (!userProfile) return [];
+  const reasons = [];
+  const naics = (opp.naics_codes || []).map(String);
+  const naicsHit = (userProfile.naics || []).map(String).find((n) => naics.includes(n));
+  if (naicsHit) reasons.push(`Matches your tracked NAICS ${naicsHit}.`);
+  const agencies = (userProfile.agencies || []).map((a) => String(a).toLowerCase());
+  const oppAgency = String(opp.agency || "").toLowerCase();
+  if (oppAgency && agencies.some((a) => a && (oppAgency.includes(a) || a.includes(oppAgency)))) {
+    reasons.push(`In ${opp.agency}, an agency you follow.`);
+  }
+  return reasons;
+}
+
+/**
  * Run the nightly batch. All IO injected for testability.
- * @returns {Promise<{scanned, scored, skipped, spentUsd, stoppedReason}>}
+ * @returns {Promise<{scanned, scored, skipped, spentUsd, usersWithProfile, stoppedReason}>}
  */
 async function runBatch(db, { fetchImpl = fetch } = {}) {
   const { maxCalls, dailyBudgetUsd, opportunityLimit } = cfg();
-  const stats = { scanned: 0, scored: 0, skipped: 0, spentUsd: 0, stoppedReason: null };
+  const stats = { scanned: 0, scored: 0, skipped: 0, spentUsd: 0, usersWithProfile: 0, stoppedReason: null };
 
   // Eligible users only (institutional OR paid seats) — don't score for free riders.
   const { data: users } = await db.from("mp_users")
-    .select("id, agent_seats, subscription_tier, tier")
+    .select("id, email, agent_seats, subscription_tier, tier")
     .or("agent_seats.gt.0,subscription_tier.eq.institutional,tier.eq.institutional");
   const eligible = users || [];
   if (eligible.length === 0) { stats.stoppedReason = "no_eligible_users"; return stats; }
+
+  // Per-user personalization profiles (agencies + NAICS from mmt_preferences,
+  // email-keyed). Without this the "personal" score collapses to one generic
+  // number for everyone — the profile is what makes /recommended personal.
+  const profileByEmail = {};
+  const emails = eligible.map((u) => u.email).filter(Boolean);
+  if (emails.length) {
+    const { data: prefs } = await db.from("mmt_preferences")
+      .select("email, agencies, naics").in("email", emails);
+    for (const p of prefs || []) {
+      profileByEmail[String(p.email).toLowerCase()] = {
+        naics: normalizeList(p.naics),
+        agencies: normalizeList(p.agencies),
+      };
+    }
+  }
+  stats.usersWithProfile = Object.keys(profileByEmail).length;
 
   const { data: opps } = await db.from("opportunity_radar")
     .select("id, title, agency, naics_codes, set_aside_type, ai_summary, description, relevance_score")
@@ -130,20 +179,29 @@ async function runBatch(db, { fetchImpl = fetch } = {}) {
     if (!result.parsed) { stats.skipped++; continue; }
 
     // Write one cache row per eligible user (cheap; LLM ran ONCE for this opp).
-    const rows = eligible.map((u) => ({
-      user_id: u.id,
-      opportunity_id: String(opp.id),
-      fit_score: personalize(result.parsed.fit, opp, u.profile),
-      rationale: result.parsed.rationale,
-      data_class: "public",
-      scored_model: MODEL,
-      scored_at: new Date().toISOString(),
-      expires_at: expiresAt,
-    }));
+    // The generic fit is scored once; each user's row is personalized from
+    // their own profile so the score AND the rationale differ per subscriber.
+    const rows = eligible.map((u) => {
+      const profile = profileByEmail[String(u.email || "").toLowerCase()] || null;
+      const reasons = personalReasons(opp, profile);
+      const rationale = reasons.length
+        ? `${result.parsed.rationale} ${reasons.join(" ")}`.slice(0, 400)
+        : result.parsed.rationale;
+      return {
+        user_id: u.id,
+        opportunity_id: String(opp.id),
+        fit_score: personalize(result.parsed.fit, opp, profile),
+        rationale,
+        data_class: "public",
+        scored_model: MODEL,
+        scored_at: new Date().toISOString(),
+        expires_at: expiresAt,
+      };
+    });
     const { error } = await db.from("recommended_cache").upsert(rows, { onConflict: "user_id,opportunity_id" });
     if (!error) stats.scored++;
   }
   return stats;
 }
 
-module.exports = { buildPrompt, parseScore, personalize, runBatch, SCORE_RE_TTL_DAYS, cfg };
+module.exports = { buildPrompt, parseScore, personalize, personalReasons, normalizeList, runBatch, SCORE_RE_TTL_DAYS, cfg };
