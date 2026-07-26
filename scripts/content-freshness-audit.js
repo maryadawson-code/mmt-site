@@ -223,6 +223,106 @@ function checkFeaturedDrift() {
   }
 }
 
+// ─── 6. SOURCE-DATA FRESHNESS ─────────────────────────────────────
+// The 2026-07-26 staleness slipped through because the ROOT CAUSE is stale
+// source data (an old Capture Intelligence sheet, an aging newsletter), which
+// then makes every teaser that reads from it look stale. The homepage +
+// resources teasers now render from capture-intelligence.json at build time,
+// so the durable guard is to watch the DATA age itself.
+function checkDataFreshness() {
+  const now = new Date();
+  const days = (d) => Math.floor((now - d) / (1000 * 60 * 60 * 24));
+
+  // Capture Intelligence sheet — drives homepage signals + resources teaser.
+  // Cadence is roughly monthly; flag once it is clearly overdue.
+  const capPath = path.join(ROOT, 'capture-intelligence.json');
+  if (fs.existsSync(capPath)) {
+    try {
+      const cap = JSON.parse(fs.readFileSync(capPath, 'utf8'));
+      if (cap.published_at) {
+        const age = days(new Date(cap.published_at));
+        if (age > 45) {
+          warnings.push(`STALE DATA: capture-intelligence.json is ${age} days old ("${cap.title || 'sheet'}", ${cap.month || cap.published_at}). Publish a new sheet — it feeds the homepage signals and the resources featured teaser.`);
+        }
+      }
+    } catch (err) {
+      warnings.push(`capture-intelligence.json parse failed: ${err.message}`);
+    }
+  }
+
+  // Latest published newsletter article.
+  const nlDir = path.join(ROOT, 'content', 'newsletter');
+  if (fs.existsSync(nlDir)) {
+    const dates = fs.readdirSync(nlDir)
+      .map(f => (f.match(/^(\d{4}-\d{2}-\d{2})/) || [])[1])
+      .filter(Boolean)
+      .filter(d => new Date(d) <= now)   // ignore future-dated (held) drafts
+      .sort();
+    const newest = dates[dates.length - 1];
+    if (newest) {
+      const age = days(new Date(newest));
+      if (age > 10) {
+        warnings.push(`STALE DATA: newest published newsletter is ${age} days old (${newest}). Cadence is Tuesday + Friday.`);
+      }
+    }
+  }
+
+  // Events calendar — must always have upcoming entries.
+  const evPath = path.join(ROOT, 'events.json');
+  if (fs.existsSync(evPath)) {
+    try {
+      const events = JSON.parse(fs.readFileSync(evPath, 'utf8'));
+      const upcoming = events.filter(e => e.date && new Date(e.date) >= now).length;
+      if (upcoming < 2) {
+        warnings.push(`STALE DATA: only ${upcoming} upcoming event(s) in events.json — add future events so the calendar isn't empty.`);
+      }
+    } catch (err) {
+      warnings.push(`events.json parse failed: ${err.message}`);
+    }
+  }
+}
+
+// ─── 7. FORWARD-LOOKING DATES THAT HAVE PASSED ────────────────────
+// Catches copy like "Awards expected June 2026" / "proposals due April 17,
+// 2026" that reads as upcoming but whose date is now in the past. Conservative:
+// requires a future-intent keyword on the same line AND a parseable full-month
+// date, and skips lines already phrased in the past tense. Point-in-time
+// documents (the dated Capture Intelligence sheet) are exempt — they are
+// snapshots, refreshed wholesale, and covered by checkDataFreshness instead.
+function checkForwardDates() {
+  const monthIdx = { january:0,february:1,march:2,april:3,may:4,june:5,july:6,august:7,september:8,october:9,november:10,december:11 };
+  // Keep keywords UNAMBIGUOUSLY forward-looking. Words like "opens"/"go-live"
+  // also appear in product names ("eBuy Open") and historical statements
+  // ("Michigan's April 2026 go-live"), so they are deliberately excluded.
+  const FUTURE_KW = /\b(expected|anticipated|proposals? due|due (?:by|before|on|in)?\b|deadline|release window|scheduled (?:for|to)|no later than)\b/i;
+  const PAST_INTENT = /\b(cancell?ed|awarded|received|closed|dissolved|completed|withheld|retired|was|were|has been|had been|as of|since|ago|already|go-live|are live)\b/i;
+  const dateRe = /\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+(?:(\d{1,2}),?\s+)?(20\d{2})\b/gi;
+  // Snapshots / internal pages — dates here are historical to the document.
+  const exempt = new Set([
+    'intel-capture-intelligence.html', 'command-center.html', 'ops.html',
+    'my-reports.html', '404.html',
+  ]);
+  const now = new Date();
+  for (const file of fs.readdirSync(ROOT).filter(f => f.endsWith('.html'))) {
+    if (exempt.has(file)) continue;
+    const lines = fs.readFileSync(path.join(ROOT, file), 'utf8').split('\n');
+    lines.forEach((line, i) => {
+      if (!FUTURE_KW.test(line) || PAST_INTENT.test(line)) return;
+      let m;
+      dateRe.lastIndex = 0;
+      while ((m = dateRe.exec(line)) !== null) {
+        const day = m[2] ? parseInt(m[2], 10) : 28; // no day → grace to month end
+        const d = new Date(parseInt(m[3], 10), monthIdx[m[1].toLowerCase()], day);
+        const past = Math.floor((now - d) / (1000 * 60 * 60 * 24));
+        if (past > 15) {
+          const ctx = line.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 90);
+          warnings.push(`PAST DEADLINE in ${file}:${i + 1}: "${m[0]}" is ~${past}d past but framed as upcoming — "${ctx}"`);
+        }
+      }
+    });
+  }
+}
+
 // ─── RUN ──────────────────────────────────────────────────────────
 function run() {
   checkOrphans();
@@ -230,6 +330,8 @@ function run() {
   checkBannedPhrases();
   checkBrokenLinks();
   checkFeaturedDrift();
+  checkDataFreshness();
+  checkForwardDates();
 
   console.log('\n=== Content Freshness Audit ===');
   if (warnings.length === 0 && errors.length === 0) {
