@@ -2079,6 +2079,71 @@ function generateEventsListHtml() {
   return html;
 }
 
+// --- Capture Intelligence (single source of truth: capture-intelligence.json) ---
+// The homepage featured-signals section and the resources featured-sheet teaser
+// are rendered from capture-intelligence.json at build time so they auto-refresh
+// on every deploy (site rebuilds every 4h via rebuild-trigger). When Mary
+// publishes a new sheet by updating that JSON, every teaser follows — no more
+// hand-edited counts drifting out of sync (the 2026-07-26 staleness fix).
+function loadCaptureSheet() {
+  try {
+    const p = path.join(__dirname, 'capture-intelligence.json');
+    if (!fs.existsSync(p)) return null;
+    return JSON.parse(fs.readFileSync(p, 'utf8'));
+  } catch (err) {
+    console.warn('capture-intelligence.json parse failed (non-fatal):', err.message);
+    return null;
+  }
+}
+
+// Strip a trailing solicitation-number parenthetical for the compact card label,
+// e.g. "CCN Next Gen (36C10G26R0003)" -> "CCN Next Gen".
+function captureProgramShort(program) {
+  return String(program || '').replace(/\s*\([^)]*\)\s*$/, '').trim();
+}
+
+const CAPTURE_LOCK_SVG = '<svg width="12" height="12" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg>';
+
+// Number of free-preview signal cards shown on the homepage.
+function captureShownCount(sheet, n) {
+  if (!sheet || !Array.isArray(sheet.signals)) return 0;
+  const free = sheet.signals.filter(s => s.free_preview);
+  const pool = free.length ? free.length : sheet.signals.length;
+  return Math.min(n, pool);
+}
+
+// Render the free-preview signal cards for the homepage. Action window +
+// confidence stay as locked (greyed) teaser chips — the actual values remain
+// premium, so this leaks no gated data.
+function generateCaptureSignalsHtml(sheet, n) {
+  const fallback = `      <div class="card" style="padding:22px;">
+        <p style="font-size:15px;line-height:1.6;color:var(--mmt-navy);font-weight:600;margin:0 0 6px;">This issue's capture signals are in the full sheet.</p>
+        <a href="/intel/capture-intelligence-this-issue/" style="font-size:13px;font-weight:600;color:var(--mmt-teal);text-decoration:none;">View the full sheet &rarr;</a>
+      </div>`;
+  if (!sheet || !Array.isArray(sheet.signals) || sheet.signals.length === 0) return fallback;
+  let picks = sheet.signals.filter(s => s.free_preview);
+  if (picks.length === 0) picks = sheet.signals.slice();
+  picks = picks.slice(0, n);
+  if (picks.length === 0) return fallback;
+  const chip = (label) => `<span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--mmt-text-secondary);opacity:0.5;">
+              ${CAPTURE_LOCK_SVG}
+              ${label}
+            </span>`;
+  return picks.map(s => `      <div class="card" style="padding:22px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;">
+        <div>
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+            <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#92710A;">${escapeHtml(s.agency || '')}</span>
+            <span style="font-size:11px;color:var(--mmt-text-secondary);">&middot; ${escapeHtml(captureProgramShort(s.program))}</span>
+          </div>
+          <p style="font-size:15px;line-height:1.6;color:var(--mmt-navy);font-weight:600;margin-bottom:6px;">${escapeHtml(s.signal || '')}</p>
+          <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;">
+            ${chip('Action window')}
+            ${chip('Confidence')}
+          </div>
+        </div>
+      </div>`).join('\n');
+}
+
 // --- JSON-LD Generators ---
 
 function injectBreadcrumbJsonLd(html, filename) {
@@ -3197,6 +3262,16 @@ async function copyStaticFiles({ archive, feed, newsItems, contracts, contractAr
   function primerComparison(d) { if (!d || !d.comparison) return ''; const rows = d.comparison.map(r => `<tr style="border-top:1px solid var(--mmt-border);"><td style="padding:12px 14px;font-weight:700;color:var(--mmt-navy);vertical-align:top;">${r.dimension}</td><td style="padding:12px 14px;color:var(--mmt-text);vertical-align:top;">${r.mmt}</td><td style="padding:12px 14px;color:var(--mmt-text-secondary);vertical-align:top;">${r.legacy}</td></tr>`).join('\n'); return `<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:13px;min-width:620px;"><thead><tr style="border-bottom:2px solid var(--mmt-navy);"><th style="text-align:left;padding:10px 14px;color:var(--mmt-text-secondary);">What matters</th><th style="text-align:left;padding:10px 14px;color:var(--mmt-navy);">Mission Meets Tech</th><th style="text-align:left;padding:10px 14px;color:var(--mmt-text-secondary);">Legacy market tools</th></tr></thead><tbody>\n${rows}\n</tbody></table></div>`; }
   function primerDeepAccess(d) { if (!d) return ''; const reorg = (d.deep_access && d.deep_access.reorg_line) || ''; const cae = primerLeader('Component Acquisition Executive'); const pae = primerLeader('Medical Digital Solutions'); const caeBit = cae ? ` (${cae})` : ''; const paeBit = pae ? ` (${pae})` : ''; const dateBit = primerDhaDate ? ` It is in the DHA profile you can open right now, last updated ${primerDhaDate}.` : ' It is in the profile you can open right now.'; return `<p class="lede" style="max-width:74ch;">${reorg} I have the new acquisition leadership mapped and verified: the confirmed Component Acquisition Executive${caeBit}, the Deputy CAE, and the Portfolio Acquisition Executive for Medical Digital Solutions${paeBit}, the seat that succeeds PEO DHMS. If you are chasing DHA health IT work, those are the people who will own your program. Most market tools will not have this org chart current for a month or more, and small businesses usually cannot build it at all. I already did.${dateBit}</p>`; }
 
+  // Capture Intelligence teasers — rendered from capture-intelligence.json so
+  // the homepage + resources counts/titles can never drift out of sync again.
+  const captureSheet = loadCaptureSheet();
+  const captureShown = captureShownCount(captureSheet, 3) || 3;
+  const captureSignalCount = (captureSheet && captureSheet.signal_count) ? captureSheet.signal_count : 24;
+  const captureMoreCount = Math.max(0, captureSignalCount - captureShown);
+  const captureTitle = (captureSheet && captureSheet.title)
+    ? captureSheet.title.replace(/^Capture Intelligence:\s*/i, '').trim()
+    : 'FY2027 Federal Health Budget';
+
   // Build-time injection map
   const injections = {
     '<!-- BUILD:PRIMER_CTA -->': primerCta(primerData),
@@ -3236,6 +3311,12 @@ async function copyStaticFiles({ archive, feed, newsItems, contracts, contractAr
     '<!-- BUILD:CONTRACT_SUMMARY -->': generateContractSummaryHtml(contracts),
     '<!-- BUILD:EVENTS_LIST -->': generateEventsListHtml(),
     '<!-- BUILD:LATEST_ANALYSIS -->': generateLatestAnalysisHtml(articles || []),
+    // Capture Intelligence teasers (source: capture-intelligence.json)
+    '<!-- BUILD:CAPTURE_SIGNALS -->': generateCaptureSignalsHtml(captureSheet, captureShown),
+    '<!-- BUILD:CAPTURE_SIGNAL_COUNT -->': String(captureSignalCount),
+    '<!-- BUILD:CAPTURE_FREE_COUNT -->': String(captureShown),
+    '<!-- BUILD:CAPTURE_MORE_COUNT -->': String(captureMoreCount),
+    '<!-- BUILD:CAPTURE_TITLE -->': escapeHtml(captureTitle),
     // Dynamic stats
     '<!-- BUILD:STAT_ARTICLES -->': String(archive.length),
     '<!-- BUILD:STAT_CONTRACTS -->': String(contracts.length),
