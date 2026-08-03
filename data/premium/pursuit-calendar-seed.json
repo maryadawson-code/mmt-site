@@ -1,41 +1,13 @@
 {
   "_meta": {
     "description": "Pursuit Calendar seed events. Source of truth when Supabase pursuit_calendar table is unreachable. Times are America/New_York (ET). Status is computed dynamically by the renderer for date-based events; explicit status values (Protest, Protest Due, Watch, Needs Source) are honored as-is.",
-    "last_curated_at": "2026-07-27",
+    "last_curated_at": "2026-08-03",
     "curator": "automated",
     "timezone": "America/New_York",
-    "window_start": "2026-07-27",
-    "window_end": "2026-10-25"
+    "window_start": "2026-08-03",
+    "window_end": "2026-11-01"
   },
   "events": [
-    {
-      "id": "e72c0e3b-7c51-407c-9deb-0e76389ed2a0",
-      "title": "Periodic Health Assessment (PHA) Modernization Capability ISO PARATUS AOI 1",
-      "event_date": "2026-07-27",
-      "event_time_et": null,
-      "agency": "DHA",
-      "vehicle": "HT003826SC004AOI1",
-      "ref": null,
-      "category": "deadline",
-      "status_override": null,
-      "source_url": "https://sam.gov/workspace/contract/opp/53b337e7deec4fa683c84e6e74a3735e/view",
-      "source_system": "sam.gov",
-      "notes": "Sol: HT003826SC004AOI1 · NAICS 541512"
-    },
-    {
-      "id": "707b6113-2a15-43b5-9c7e-b35e99a47653",
-      "title": "Notice of Intent to Sole Source- Abbott Remote Automated Laboratory System (RALS)",
-      "event_date": "2026-07-28",
-      "event_time_et": null,
-      "agency": "DHA",
-      "vehicle": "PANHCA26P0000031247",
-      "ref": null,
-      "category": "rfi",
-      "status_override": null,
-      "source_url": "https://sam.gov/workspace/contract/opp/4165f524c92e457286964139d7bdd976/view",
-      "source_system": "sam.gov",
-      "notes": "Sol: PANHCA26P0000031247 · NAICS 541512 · Set-aside: No Set aside used"
-    },
     {
       "id": "e3e19a06-b440-4696-9c6c-c93fdaa6f607",
       "title": "Restorative and health-Enhancing Sleep Time (REST)",
@@ -49,6 +21,20 @@
       "source_url": "https://sam.gov/workspace/contract/opp/ed3db118c1a247e9b6137dfad6c754ee/view",
       "source_system": "sam.gov",
       "notes": "Sol: ARPA-H-SOL-26-159 · NAICS 541715 · Set-aside: No Set aside used"
+    },
+    {
+      "id": "8e518775-5cd1-4518-810e-02e176a79398",
+      "title": "Notice to Sole Source Qiagen",
+      "event_date": "2026-08-17",
+      "event_time_et": null,
+      "agency": "DHA",
+      "vehicle": "FY26-0865",
+      "ref": null,
+      "category": "deadline",
+      "status_override": null,
+      "source_url": "https://sam.gov/workspace/contract/opp/c1147df1195d4052a3cc4e656e218926/view",
+      "source_system": "sam.gov",
+      "notes": "Sol: FY26-0865 · NAICS 541512"
     }
   ]
 }
