@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capture Corner: Size It on the Devices, Not the Force &middot; MMT Premium</title>
+  <meta name="description" content="August 4, 2026. The companion to "Ten Years to Build It. Ten Months to Field It." The public piece reads the fielding decision and the mechanism behind it. This one works the money: the closed prime slots and the vehicles carrying the follow-on, what the OMIS-A SAFe release train does to your bid model, the six lanes ranked by how soon they are biddable, and why the Nett Warrior basis of issue is the market size.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <style>
+    :root { --mmt-teal:#457B9D; --mmt-navy:#0A192F; --mmt-soft:#F3F4F6; --mmt-white:#FFFFFF; --mmt-text:#102033; --mmt-text-secondary:#5C6B7A; --mmt-border:#D8E0E8; --ci-gold:#92710A; --ci-gold-bg:#FEF9E7; --mmt-red:#E63946; }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--mmt-white); color:var(--mmt-navy); }
+    .brief-body { font-size:15px; line-height:1.75; color:#314155; }
+    .brief-body h2 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:40px 0 14px; letter-spacing:-0.02em; }
+    .brief-body h3 { font-size:17px; font-weight:700; color:var(--mmt-navy); margin:28px 0 10px; }
+    .brief-body h4 { font-size:15px; font-weight:700; color:var(--mmt-navy); margin:20px 0 8px; }
+    .brief-body p { margin-bottom:16px; max-width:65ch; }
+    .brief-body ul { margin-bottom:16px; padding-left:1.25rem; }
+    .brief-body ol { margin-bottom:16px; padding-left:1.5rem; }
+    .brief-body li { margin-bottom:8px; }
+    .brief-body a { color:var(--mmt-teal); text-decoration:underline; text-underline-offset:3px; }
+    .brief-body strong { color:var(--mmt-navy); }
+    .brief-body em { color:var(--mmt-text-secondary); }
+    .brief-body hr { border:none; border-top:1px solid var(--mmt-border); margin:36px 0; }
+    .brief-body blockquote { border-left:3px solid var(--mmt-teal); padding:8px 16px; margin:16px 0; color:var(--mmt-text-secondary); background:rgba(69,123,157,0.04); border-radius:0 6px 6px 0; }
+    .brief-body img { max-width:100%; height:auto; display:block; margin:24px 0; border:1px solid var(--mmt-border); border-radius:8px; }
+    .brief-body table { width:100%; border-collapse:collapse; margin:16px 0 24px; font-size:14px; }
+    .brief-body th, .brief-body td { border:1px solid var(--mmt-border); padding:10px 12px; text-align:left; vertical-align:top; }
+    .brief-body th { background:var(--mmt-soft); color:var(--mmt-navy); font-weight:700; }
+    .pills { margin:8px 0 24px; }
+    .pill { display:inline-block; padding:4px 10px; background:rgba(69,123,157,0.08); color:var(--mmt-teal); border-radius:14px; font-size:11px; font-weight:600; margin:2px 4px 2px 0; }
+    .pill-red { background:rgba(230,57,70,0.08); color:var(--mmt-red); }
+    .pill-gold { background:var(--ci-gold-bg); color:var(--ci-gold); }
+    .back-link { font-size:13px; font-weight:600; color:var(--mmt-teal); text-decoration:none; }
+    .back-link:hover { opacity:0.7; }
+    .gate-notice { background:linear-gradient(180deg,#FFFFFF 0%,#F3F4F6 100%); border:1px solid var(--mmt-border); border-radius:12px; padding:32px 28px; text-align:center; margin:32px auto; max-width:540px; }
+    .gate-notice h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin-bottom:10px; }
+    .gate-notice p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:16px; line-height:1.55; }
+    .gate-cta { display:inline-block; padding:12px 24px; background:var(--mmt-navy); color:var(--mmt-white); font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; }
+    .section-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--ci-gold); }
+    .deep-dive-card { margin:48px 0 16px; padding:32px 28px; border:2px solid var(--ci-gold); border-radius:12px; background:linear-gradient(180deg,#FFFFFF 0%,var(--ci-gold-bg) 100%); }
+    .deep-dive-card h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:0 0 12px; letter-spacing:-0.01em; }
+    .deep-dive-card p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:14px; line-height:1.6; max-width:none; }
+    .deep-dive-price { display:inline-flex; align-items:baseline; gap:8px; margin:4px 0 16px; font-weight:800; color:var(--mmt-navy); }
+    .deep-dive-price .amount { font-size:28px; }
+    .deep-dive-price .unit { font-size:13px; font-weight:600; color:var(--mmt-text-secondary); text-transform:uppercase; letter-spacing:0.06em; }
+    .brief-body a.deep-dive-cta,
+    a.deep-dive-cta { display:inline-block; padding:14px 26px; background:var(--ci-gold); color:#FFFFFF; font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; letter-spacing:0.02em; }
+    .brief-body a.deep-dive-cta:hover,
+    a.deep-dive-cta:hover { opacity:0.92; color:#FFFFFF; }
+    .deep-dive-examples { font-size:13px; color:var(--mmt-text-secondary); font-style:italic; margin-top:8px; }
+  </style>
+</head>
+<body>
+  <nav class="nav-editorial"></nav>
+
+  <main class="wrap" style="padding:48px 0 80px; max-width:820px;">
+    <a href="/capture-corner.html" class="back-link">&larr; Capture Corner</a>
+
+    <div style="margin-top:20px; margin-bottom:8px;">
+      <div class="section-label">MMT Premium &middot; Capture Corner &middot; August 4, 2026</div>
+    </div>
+    <h1 style="font-size:clamp(26px,3.2vw,38px);line-height:1.1;letter-spacing:-0.03em;margin-bottom:10px;">Size It on the Devices, Not the Force</h1>
+    <p style="font-size:15px;color:var(--mmt-text-secondary);margin-bottom:20px;"><em>The companion to "Ten Years to Build It. Ten Months to Field It." The public piece reads the fielding decision and the mechanism behind it. This one works the money: the closed prime slots and the vehicles carrying the follow-on, what the OMIS-A SAFe release train does to your bid model, the six lanes ranked by how soon they are biddable, and why the Nett Warrior basis of issue is the market size.</em></p>
+
+    <div class="pills">
+      <span class="pill pill-gold">Capture Corner</span>
+      <span class="pill ">BATDOK-J · OMIS-A · Maven</span>
+      <span class="pill pill-red">FY28 Sustainment Risk</span>
+    </div>
+
+    <div data-gate="free" style="display:block;">
+      <div class="gate-notice">
+        <h3>&#9733; Premium Capture Corner</h3>
+        <p>The public issue reads the fielding decision and the mechanism behind it. This Capture Corner works the money behind the JOMIS portfolio's FY26 prototype-to-fielding transition: which prime slots are closed and which contract vehicles carry the follow-on, why the operational medical data backbone was mod'd sole-source seven weeks before the approval, what the OMIS-A SAFe release train does to your bid model, the six lanes ranked by how soon they are biddable, why the Nett Warrior basis of issue is the real market size rather than Army end strength, and the two FY28 budget lines that tell you whether sustainment was funded or assumed. Premium members read the full brief. Subscribe at missionmeetstech.com/pricing.</p>
+        <a class="gate-cta" href="/pricing">See premium plans</a>
+      </div>
+    </div>
+
+    <div data-access="premium" data-gate="premium" class="brief-body">
+
+<p><em>Capture Corner is the premium BD intelligence companion to Mission Meets Tech. Public-record sourced. Independent analysis. Not a recommendation, not vendor advocacy, not capture material. Built for federal health BD, capture, and proposal leaders who need analytical depth, not headlines.</em></p>
+<p><em>This issue is the companion to &quot;Ten Years to Build It. Ten Months to Field It.,&quot; published this week. The public piece reads the fielding decision and the mechanism behind it. This one works the money: which prime slots are closed and which contract vehicles carry the follow-on, why the addressable user base is a resourcing document rather than an end-strength number, what the SAFe release train does to your bid model, the six lanes that open behind the approval ranked by how soon they are biddable, and the two FY28 budget lines that will tell you whether sustainment was funded or assumed.</em></p>
+<hr>
+<h2>1. The decision at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Action</td>
+<td>BATDOK-J approved for Army-wide fielding</td>
+</tr>
+<tr>
+<td>Approving authority</td>
+<td>CPE Ground - Soldier Systems</td>
+</tr>
+<tr>
+<td>Date</td>
+<td>July 27, 2026, effective immediately</td>
+</tr>
+<tr>
+<td>Delivery mechanism</td>
+<td>Authorized download to Nett Warrior end-user devices. No hardware fielding action.</td>
+</tr>
+<tr>
+<td>Host network</td>
+<td>Integrated Tactical Network, Secure-But-Unclassified Encrypted enclave</td>
+</tr>
+<tr>
+<td>Downstream fusion</td>
+<td>Operational medical data services backbone to MedCOP and MedHub to Maven Smart System</td>
+</tr>
+<tr>
+<td>Portfolio</td>
+<td>One of six JOMIS-managed applications; the only one operating at point of injury</td>
+</tr>
+<tr>
+<td>Army delivery office</td>
+<td>OMIS-A, formally established April 12, 2024</td>
+</tr>
+<tr>
+<td>Delivery model</td>
+<td>SAFe Agile release train</td>
+</tr>
+<tr>
+<td>Development prime</td>
+<td>BAE Systems, selected July 3, 2025 under AFRL FORGE-IT</td>
+</tr>
+<tr>
+<td>Portfolio status</td>
+<td>JOMIS transitioning prototype to fielding across all six applications in FY26</td>
+</tr>
+</tbody></table>
+<p><strong>Confidence: High on the approval, the delivery mechanism, and the portfolio structure.</strong> The approval and the download authorization come from the announcement by the 46th Surgeon General&#39;s strategic communications office, verified against the post text. Portfolio structure, the five operational medicine functions, and the FY26 transition come from the DOT&amp;E FY2025 JOMIS report [CC1][CC2].</p>
+<p><strong>The lead finding is that this fielding decision does not tell you the size of the market.</strong> An authorized download reaches the population that already holds the device. Nett Warrior is a dismounted-leader end-user device, issued against a basis of issue plan that covers leader positions rather than the whole formation. Every sizing model built off Army end strength, off medic density, or off &quot;the Army fielded it&quot; is wrong by an unknown multiple, and the correction lives in a resourcing document rather than a press release.</p>
+<p>Section 5 works that problem. Everything before it is the contract picture.</p>
+<hr>
+<h2>2. The prime slots, and what they cover</h2>
+<p><strong>Confidence: High on the awards named. Medium on completeness, because sub-tier and task-order-level work under these vehicles is only findable one record at a time.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Holder</th>
+<th>Contract signal</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BATDOK-J development</td>
+<td>BAE Systems</td>
+<td>Selected July 3, 2025 under AFRL FORGE-IT to continue development [CC3]</td>
+</tr>
+<tr>
+<td>Operational medical data services backbone</td>
+<td>Omni Federal (Omni Fed LLC)</td>
+<td>DHA sole-source modification, HT0038-21-F-0035, SAM.gov notice June 26, 2026 [CC4]</td>
+</tr>
+<tr>
+<td>OpMed CDP, Roles 1 through 2</td>
+<td>Peraton with T6 Health Systems</td>
+<td>$28M firm-fixed-price prototype award, February 13, 2025 [CC5]</td>
+</tr>
+<tr>
+<td>Maven Smart System</td>
+<td>Palantir Technologies</td>
+<td>$480M IDIQ May 2024, ceiling raised toward $1.3B through 2029; $99.8M multi-service expansion September 2024; Army Enterprise Agreement up to $10B, July 31, 2025 [CC6]</td>
+</tr>
+<tr>
+<td>Nett Warrior EUD and ITN radios</td>
+<td>Samsung baseline hardware; radio primes under PEO C3T and C3N</td>
+<td>[CC7]</td>
+</tr>
+<tr>
+<td>OMEIS teleradiology add-on</td>
+<td>Open. RFI closed January 26, 2026, sources sought</td>
+<td>Secondary aggregator source. Verify on SAM.gov before acting [CC8]</td>
+</tr>
+</tbody></table>
+<p><strong>Three things a competitive assessment should carry that most will not.</strong></p>
+<p>The development seat sits with AFRL, not with the Army. BAE holds BATDOK development through an Air Force research vehicle while the Army holds the fielding decision and OMIS-A holds Army delivery. Three organizations, three funding streams, one application. A teaming plan that treats this as a single-customer pursuit is aimed at one third of the buyer.</p>
+<p>The backbone was mod&#39;d sole-source seven weeks before the fielding approval. The June 26, 2026 notice on HT0038-21-F-0035 is the clearest public signal that DHA moved to secure data-layer continuity ahead of a fielding event. Sole-source posture on the backbone constrains what a challenger can bid at that layer and tells you where DHA judged the schedule risk to be.</p>
+<p>Maven is consolidating, not fragmenting. Reporting in March 2026 indicates the Maven Smart System is moving to a formal program of record by end of FY26 with future contracting handled by the Army [CC9]. Anything that writes into Maven inherits that stability. It also inherits Palantir&#39;s integration gate.</p>
+<hr>
+<h2>3. What the release train does to your bid model</h2>
+<p><strong>Confidence: Medium. The SAFe 6.0 model is documented for OMIS-A. The bid-behavior consequences are my analytical construction.</strong></p>
+<p>OMIS-A runs Scaled Agile. Documented publicly at the program&#39;s transition from MC4 [CC10]. Three consequences for how you price and staff.</p>
+<p><strong>Recurring delivery orders replace the single large capture.</strong> Award value distributes across program increments rather than concentrating at a five-year base-plus-options event. A capture team that allocates B&amp;P on the assumption of one decisive proposal will underfund the follow-on orders where most of the value sits.</p>
+<p><strong>Past performance is measured in cadence.</strong> On a release train, the discriminator is whether you delivered on increment boundaries, not whether you completed a program. Firms with a record of hitting sprint commitments on federal work have a citable advantage that traditional past-performance narratives do not surface. Write it in increments and cite the dates.</p>
+<p><strong>The staffing profile is flat and continuous.</strong> No surge to a milestone and taper after. Price a steady team that can plug into an existing release train, and expect the government to evaluate whether your people can work inside someone else&#39;s ceremony structure rather than stand up their own.</p>
+<p><strong>The capture consequence.</strong> If your pipeline model prices this portfolio as one opportunity per application, it is mis-sized in both directions: too large on any single award, too small in aggregate across increments.</p>
+<hr>
+<h2>4. Six lanes behind the approval, ranked by how soon they are biddable</h2>
+<p><strong>Confidence: Medium throughout. The lanes are grounded in documented program activity. The ranking and the timing are my read.</strong></p>
+<p><strong>Near term, next two to four quarters.</strong></p>
+<p><em>Paired sensor integration.</em> BATDOK ingests vitals from paired sensors. Getting a device onto an approved list is the gate, and the list is the market. The approval path is the pursuit, not the sale. Any sensor OEM already carrying an FDA clearance and a military form factor should be working the qualification path now, because the fielding wave rewards whoever is already on the list rather than whoever is best.</p>
+<p><em>RMF and ATO sustainment.</em> JITC operational testing surfaced cyber survivability deficiencies of the kind typical of first-fielding software [CC2]. A medical application riding the tactical network carries a continuing authorization burden. This is unglamorous, recurring, and it is the most reliably funded lane on this list.</p>
+<p><strong>Medium term, FY27.</strong></p>
+<p><em>iOS sustainment for the evacuation variant.</em> The 445th Aeromedical Evacuation Squadron and the 711th Human Performance Wing built an iOS variant with JOMIS funding the FY25 work [CC11]. Two operating systems, two form factors, one record. Sustainment tail follows fielding, and the aeromedical evacuation community is a distinct buying center from Ground.</p>
+<p><em>Training and simulation.</em> Virtual BATDOK is already in the peer-reviewed literature [CC12]. The Navy finalized its JOMIS training systems plan in February 2026 [CC13]. Expect solicitations for TCCC training that documents natively into BATDOK-J rather than into a simulation-only record. The Army&#39;s training pipeline for this application is the open question; ask about it in the fall.</p>
+<p><strong>Longer term, FY28 and beyond, higher variance.</strong></p>
+<p><em>Coalition extension.</em> OpMed CDP is deployed at Balikatan in the Philippines at Role 2 [CC14]. An application living on an encrypted-but-unclassified enclave is a far shorter conversation with a partner nation than one requiring classified infrastructure on both ends. The constraint is data-sharing agreements rather than software. Treat foreign military sales interest as plausible and unpriced.</p>
+<p><em>Civilian prehospital.</em> Maryland State Police put BATDOK on medevac helicopters in December 2025, the first civilian deployment [CC15]. Civilian prehospital care has the same documentation gap with different regulatory constraints and a much larger user base. If outcome data emerges from that deployment, state EMS becomes a real conversation and AFRL ends up holding a technology transfer story it did not set out to write. This is the highest-variance lane on the list and the one with the largest ceiling.</p>
+<p><strong>Deliberately excluded.</strong> The garrison-to-VA record continuity seam. It is the strategic endpoint of this architecture and it is a separate analysis with its own conflict boundaries. It does not appear in this issue.</p>
+<hr>
+<h2>5. The basis of issue is the market size</h2>
+<p><strong>Confidence: High on the device characterization. High on the logic. The specific distribution numbers are not public at the level this question requires, and I am not going to estimate them.</strong></p>
+<p>Read the authorization language exactly: any Soldier equipped with a Nett Warrior end-user device is authorized to download BATDOK-J and use it operationally.</p>
+<p>Nett Warrior is the Army&#39;s dismounted-leader device. It is issued against a basis of issue plan tied to leader positions on the Integrated Tactical Network, which is a narrower population than the force. A company medic may or may not hold one. That is a resourcing decision, and it is the single variable that converts this fielding approval into a number.</p>
+<p><strong>What this means for anyone sizing a play in Section 4.</strong></p>
+<p>A sensor integration business case priced against Army medic population is priced against a population that cannot currently run the application. The addressable base today is the intersection of medic positions and Nett Warrior distribution, and the second set is the binding constraint.</p>
+<p>A training and simulation play has the inverse exposure. Training demand tracks the doctrinal population rather than the device population, because units train medics who will eventually receive devices. That lane is less gated by basis of issue than the sensor lane, and it is worth more than a device-count model would suggest.</p>
+<p><strong>The three questions that resolve this.</strong></p>
+<p>Whether the fielding approval triggers a basis-of-issue plan review for Nett Warrior that adds medic positions. Whether OMIS-A or PEO Ground carries that action. And whether it lands in the FY28 request or waits for FY29.</p>
+<p><strong>The capture consequence.</strong> Until one of those three is answered, any pipeline number attached to a BATDOK-J-adjacent pursuit carries an error bar the size of the device distribution question. Say so in your pursuit review rather than picking a number and defending it. The teams that acknowledge the gate will be the ones positioned when it opens.</p>
+<hr>
+<h2>6. What the FY28 request will tell you</h2>
+<p><strong>Confidence: Medium. The FY26 portfolio transition is documented. The budget-signal read is analytical.</strong></p>
+<p>DOT&amp;E records the JOMIS portfolio transitioning from prototype to fielding across all six managed applications in FY26 [CC2]. Fielding six applications and sustaining six applications are different cost structures, and the second one is where programs quietly starve.</p>
+<p><strong>Two places to look when the FY2028 President&#39;s Budget drops.</strong></p>
+<p><em>Migration from RDT&amp;E to O&amp;M within the Defense Health Program.</em> A capability that fields and stays funded shows a declining research line and a rising operations and maintenance line covering sustainment, help desk, training, and cybersecurity. A capability that fielded and was assumed shows a declining research line and no corresponding operations growth. That pattern is visible in the DHP justification books without any special access.</p>
+<p><em>Whether OMIS-A&#39;s line grows with the delivery scope.</em> The Army office now owns delivery for an application authorized force-wide. If the Army delivery line stays flat while the fielded footprint expands, the sustainment burden is being absorbed rather than resourced, and the recompete environment two years out will be shaped by that gap.</p>
+<p><strong>The capture consequence.</strong> A sustainment pursuit priced against an assumed funding line, in a portfolio that just fielded six applications simultaneously, is the highest-risk bid on this list. Read the exhibits before you commit B&amp;P.</p>
+<hr>
+<h2>7. Positioning that works now, and what it costs later</h2>
+<p><strong>Confidence: Analytical construction throughout. This section is my read, not reported fact.</strong></p>
+<p>The Army demonstrated a specific play in September 2025: a senior technical authority challenged an existing capability to prove itself at a training rotation already on the calendar, with a date attached and a real possibility of failure. Ninety days from challenge to demonstration. Ten months from demonstration to fielding approval.</p>
+<p><strong>Three positioning moves consistent with that pattern.</strong></p>
+<p><em>Bring a capability that already works somewhere else.</em> The demonstration succeeded because the software had six years of operational use behind it and the ask was integration rather than invention. A vendor pitching a new build into this environment is asking for a program start in an organization that has publicly committed to the opposite. A vendor pitching an existing product that has never touched the Integrated Tactical Network is asking the question the Army is currently rewarding.</p>
+<p><em>Aim at the network, not the requirement.</em> The discriminator in September 2025 was whether data survived the ITN and rendered in Maven. Integration evidence against that specific path is worth more in this market than feature depth.</p>
+<p><em>Find the rotation.</em> Combat training center rotations are on a published calendar. A demonstration that consumes an event already scheduled costs the government a slot rather than a new start, and that arithmetic is why the play worked.</p>
+<p><strong>What expires.</strong> A challenge that becomes routine stops being falsifiable, because organizations eventually learn to schedule the demonstration they know will pass. The window where this play carries real weight is the window where failure is still a live outcome. My read is that window is open now and narrows as the model institutionalizes.</p>
+<hr>
+<h2>8. What would falsify this read</h2>
+<p>Stated plainly, because a brief that cannot be wrong is not intelligence.</p>
+<p><strong>If Nett Warrior basis of issue already covers medic positions at scale,</strong> Section 5 overstates the gate and the sensor lane is larger and nearer than ranked.</p>
+<p><strong>If the FY28 request shows flat operations and maintenance growth across the JOMIS portfolio,</strong> Section 6 is right about the risk and every sustainment lane in Section 4 should be repriced downward.</p>
+<p><strong>If Maven&#39;s transition to a program of record shifts the integration gate to the Army rather than the vendor,</strong> Section 2&#39;s read on inherited stability changes, and the qualification path for anything writing into Maven gets shorter.</p>
+<p><strong>If the OMEIS requirement was cancelled rather than deferred,</strong> the teleradiology line in Section 2 comes out entirely. That one is a SAM.gov check, and it should be the first thing anybody acting on this issue verifies.</p>
+<hr>
+<h2>Editorial discipline note</h2>
+<p>Capture Corner is built to be useful, not provocative. It does not name preferred vendors. It does not recommend awards. It does not characterize any firm&#39;s compliance posture beyond what public records support. It does not reveal nonpublic information. It does not advocate for any specific offeror&#39;s win. Every company named here is named because it appears in a public award record or a public program announcement.</p>
+<p>Named government officials and named practitioners are omitted throughout. Where a program office or an action matters, the approving organization and the award identifier are given so subscribers can go to the record directly.</p>
+<p>Several items are my construction rather than reported fact and are marked at the section level: the bid-model consequences in Section 3, the lane ranking and timing in Section 4, the sizing logic in Section 5, the budget-signal read in Section 6, and all of Section 7.</p>
+<p>The OMEIS line in Section 2 rests on a secondary aggregator rather than a primary notice. Verify on SAM.gov before acting on it.</p>
+<p>The garrison-to-VA record continuity seam is deliberately excluded from this issue.</p>
+<hr>
+<p>Mary</p>
+<p>Mission Meets Tech Premium</p>
+<hr>
+<p><em>Next Capture Corner: scheduled for the next major federal health or defense-health opportunity in active capture. Subscribers will receive an alert when the next issue publishes.</em></p>
+<p><em>Capture Corner is an independent intelligence product. It is not affiliated with the Department of War, the Defense Health Agency, the Department of the Army, or any company named here, and it is not connected to any offeror&#39;s bid strategy. Premium subscription includes access to the standing intelligence sidebar plus the searchable archive.</em></p>
+<hr>
+<h2>Sources</h2>
+<p>[CC1] Announcement of CPE Ground - Soldier Systems approval of BATDOK-J for Army-wide fielding, July 27, 2026, published July 28, 2026 by the Office of the 46th Surgeon General, strategic communications. Source for the approval, the effective-immediately download authorization to Nett Warrior end-user devices, Maven Smart System and NGC2 integration, the September 2025 JRTC stress test, and participating units. Post text verified directly.</p>
+<p>[CC2] Director, Operational Test and Evaluation, FY2025 JOMIS Report. Source for the six managed applications, the five operational medicine functions, JITC operational assessments and cyber survivability testing, the MedCOP classified-variant fielding to combatant commands, and the FY26 prototype-to-fielding transition across the portfolio. <a href="https://www.dote.osd.mil/Portals/97/pub/reports/FY2025/dow/2025jomis.pdf">https://www.dote.osd.mil/Portals/97/pub/reports/FY2025/dow/2025jomis.pdf</a></p>
+<p>[CC3] Joint Forces News, &quot;US AFRL selects BAE Systems for BATDOK development,&quot; July 4, 2025 (FORGE-IT selection dated July 3, 2025). <a href="https://www.joint-forces.com/ew-and-cyber/83659-us-afrl-selects-bae-systems-for-batdok-development">https://www.joint-forces.com/ew-and-cyber/83659-us-afrl-selects-bae-systems-for-batdok-development</a></p>
+<p>[CC4] SAM.gov, DHA sole-source notice on operational medical data services, contract HT0038-21-F-0035, posted June 26, 2026. <a href="https://sam.gov/workspace/contract/opp/b7ff49e907764979bc23723f15910ad5/view">https://sam.gov/workspace/contract/opp/b7ff49e907764979bc23723f15910ad5/view</a></p>
+<p>[CC5] Peraton, &quot;Peraton awarded $28M to continue supporting the DHA&#39;s JOMIS health care delivery program,&quot; February 13, 2025 (OpMed CDP, firm-fixed-price prototype, with T6 Health Systems). <a href="https://www.peraton.com/news/peraton-awarded-28m-to-continue-supporting-the-dhas-jomis-health-care-delivery-program/">https://www.peraton.com/news/peraton-awarded-28m-to-continue-supporting-the-dhas-jomis-health-care-delivery-program/</a></p>
+<p>[CC6] DefenseScoop, &quot;DOD raises Palantir Maven Smart System contract ceiling,&quot; May 23, 2025; Business Wire, &quot;Palantir Expands Maven Smart System AI/ML Capabilities to Military Services,&quot; September 20, 2024 ($99.8M multi-service expansion); CNBC, &quot;Palantir lands $10 billion Army software and data contract,&quot; August 1, 2025 (Army Enterprise Agreement awarded July 31, 2025). <a href="https://defensescoop.com/2025/05/23/dod-palantir-maven-smart-system-contract-increase/">https://defensescoop.com/2025/05/23/dod-palantir-maven-smart-system-contract-increase/</a> · <a href="https://www.businesswire.com/news/home/20240920746094/en/Palantir-Expands-Maven-Smart-System-AIML-Capabilities-to-Military-Services">https://www.businesswire.com/news/home/20240920746094/en/Palantir-Expands-Maven-Smart-System-AIML-Capabilities-to-Military-Services</a> · <a href="https://www.cnbc.com/2025/08/01/palantir-lands-10-billion-army-software-and-data-contract.html">https://www.cnbc.com/2025/08/01/palantir-lands-10-billion-army-software-and-data-contract.html</a></p>
+<p>[CC7] Army.mil, &quot;Stryking towards networked battlefield communications,&quot; March 2, 2023, and CPE Ground Nett Warrior program page. Source for the Nett Warrior dismounted-leader end-user device, TSM waveform, SBU-E enclave, and Integrated Tactical Network. <a href="https://www.army.mil/article/264225/stryking_towards_networked_battlefield_communications">https://www.army.mil/article/264225/stryking_towards_networked_battlefield_communications</a> · <a href="https://cpeground.army.mil/Equipment/Equipment-Portfolio/PM-MBCT-Enablers-Portfolio/Nett-Warrior/">https://cpeground.army.mil/Equipment/Equipment-Portfolio/PM-MBCT-Enablers-Portfolio/Nett-Warrior/</a></p>
+<p>[CC8] OMEIS teleradiology RFI, responses closed January 26, 2026, sourced via a third-party contract aggregator rather than a primary SAM.gov notice. Treated as indicative and flagged for verification.</p>
+<p>[CC9] Reuters, &quot;Pentagon to adopt Palantir AI as core US military system, memo says,&quot; March 20, 2026 (memo dated March 9, 2026; Maven Smart System transition to program of record by end of FY26, future contracting handled by the Army). <a href="https://www.reuters.com/technology/pentagon-adopt-palantir-ai-as-core-us-military-system-memo-says-2026-03-20/">https://www.reuters.com/technology/pentagon-adopt-palantir-ai-as-core-us-military-system-memo-says-2026-03-20/</a></p>
+<p>[CC10] DVIDS, &quot;MC4 prepares for transformation into agile-focused OMIS,&quot; April 21, 2025, and CPE Ground OMIS-A program page. Source for the SAFe 6.0 Agile delivery model, the MC4 sunset schedule, the FY24 appropriations slip, and OMIS-A formal establishment April 12, 2024. <a href="https://www.dvidshub.net/news/460281/mc4-prepares-transformation-into-agile-focused-omis">https://www.dvidshub.net/news/460281/mc4-prepares-transformation-into-agile-focused-omis</a> · <a href="https://cpeground.army.mil/Soldier-Systems/OMIS-A/">https://cpeground.army.mil/Soldier-Systems/OMIS-A/</a></p>
+<p>[CC11] Air Force Medical Service, &quot;445th AES, 711th HPW collaborate to improve en route patient care,&quot; July 29, 2024 (iOS variant; JOMIS FY25 funding). <a href="https://www.airforcemedicine.af.mil/News/Display/Article/3852546/445th-aes-711th-hpw-collaborate-to-improve-en-route-patient-care/">https://www.airforcemedicine.af.mil/News/Display/Article/3852546/445th-aes-711th-hpw-collaborate-to-improve-en-route-patient-care/</a></p>
+<p>[CC12] Military Medicine, &quot;Virtual BATDOK,&quot; 188(Supplement 6), November 8, 2023. <a href="https://academic.oup.com/milmed/article/188/Supplement_6/110/7388199">https://academic.oup.com/milmed/article/188/Supplement_6/110/7388199</a></p>
+<p>[CC13] Navy Medicine, &quot;Navy Medicine forges training plan for JOMIS, boosting fleet medical readiness,&quot; March 12, 2026 (JOMIS Navy Training Systems Plan finalized February 2026). <a href="https://www.med.navy.mil/Media/News/Article/4434246/navy-medicine-forges-training-plan-for-jomis-boosting-fleet-medical-readiness/">https://www.med.navy.mil/Media/News/Article/4434246/navy-medicine-forges-training-plan-for-jomis-boosting-fleet-medical-readiness/</a></p>
+<p>[CC14] Defense Healthcare Management Systems public program communication, 2026 (OpMed CDP at Balikatan, Role 2). Program-office social channel rather than a primary release. Treated as indicative.</p>
+<p>[CC15] Air Force Research Laboratory, &quot;AFRL invention deployed by Maryland State Police,&quot; December 5, 2025 (first civilian deployment; BATDOK development timeline anchor). <a href="https://www.afrl.af.mil/News/Article-Display/Article/4350895/afrl-invention-deployed-by-maryland-state-police/">https://www.afrl.af.mil/News/Article-Display/Article/4350895/afrl-invention-deployed-by-maryland-state-police/</a></p>
+<p>[CC16] Soldier Systems Daily, &quot;US Army activates Capability Program Executive Enterprise Software and Services (ES2),&quot; March 1, 2026; CPE Ground, &quot;A new force in Army acquisition: PEOs Soldier and Ground Combat Systems merge,&quot; April 10, 2026. Source for the Capability Program Executive reorganization and CPE Ground establishment. <a href="https://soldiersystems.net/2026/03/01/us-army-activates-capability-program-executive-cpe-enterprise-software-and-services-es2/">https://soldiersystems.net/2026/03/01/us-army-activates-capability-program-executive-cpe-enterprise-software-and-services-es2/</a> · <a href="https://cpeground.army.mil/News/Article-Display/Article/4456266/a-new-force-in-army-acquisition-peos-soldier-and-ground-combat-systems-merge-to/">https://cpeground.army.mil/News/Article-Display/Article/4456266/a-new-force-in-army-acquisition-peos-soldier-and-ground-combat-systems-merge-to/</a></p>
+
+
+    <div class="deep-dive-card">
+  <div class="section-label" style="color:var(--ci-gold);margin-bottom:8px;">Custom Deep Dive &middot; Premium Add-On</div>
+  <h3>Want a custom deep-dive on any line in this brief?</h3>
+  <p>Every line in this brief traces to a public record: the CPE Ground - Soldier Systems fielding announcement, the DOT&E FY2025 JOMIS report, the SAM.gov sole-source notice on HT0038-21-F-0035, the Peraton and BAE award records, and the Palantir Maven contract history. Want the prime-slot read or the six-lane ranking turned into a one-page position for a specific portfolio or program office? Reply to this issue and tell me the office and the vehicle.</p>
+  <div class="deep-dive-price"><span class="amount">$50</span><span class="unit">one-time &middot; 5&ndash;7 business day turnaround</span></div>
+  <p>I will pull the additional public-record sources, read the visible signal, and write a 4&ndash;6 page custom intelligence memo on the area you select. You name the question; I do the BD-grade analysis.</p>
+  <p style="margin-bottom:18px;"><a class="deep-dive-cta" href="https://buy.stripe.com/6oUdRb2NEaQI3uM6KL4c803">Buy a Custom Deep Dive &mdash; $50 &rarr;</a></p>
+  <p class="deep-dive-examples">Examples: <em>Deep Dive — the DFARS 252.225-7052(c) exception language mapped to a named medical-device assembly · Deep Dive — the SCRIPTS teaming map across the nine BPA holders for a specific pursuit</em></p>
+</div>
+
+    </div>
+  </main>
+
+  <footer class="footer"></footer>
+</body>
+</html>
