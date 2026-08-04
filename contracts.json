@@ -2088,5 +2088,33 @@
     },
     "slug": "va-application-hosting-compute-and-storage",
     "content_gap": false
+  },
+  {
+    "name": "DHA PEO DHMS Workforce 3.0 (WF3) IDIQ",
+    "agency": "Defense Health Agency / PEO DHMS (DHMS-CD)",
+    "vendor": "6 primes. Lot 1 (large): BCG Federal (HT003822D0001), Capgemini Government Solutions (HT003822D0002, released 04/04/26 on OCI), Deloitte Consulting (HT003822D0003). Lot 2 (small business): Blue Clarity, Edera L3C, Optimal Strategix Group. BCG Federal holds ~94% of obligations ($709.3M).",
+    "value": "$1.425B ceiling (6-year); $752.2M obligated, 90% complete",
+    "status": "active",
+    "classification": "IDIQ",
+    "naics": "541611",
+    "psc": "R499",
+    "description": "The $1.425B DHA PEO DHMS managed-solution workforce transformation IDIQ (RFP HT003821R0001, awarded by DHMS-CD). Six-year multiple-award vehicle in its final ordering year: $752.2M obligated, 90% complete, ordering period ending January 26, 2027 (sooner than the widely cited January 2028 estimated completion). Structured in two Lots. Lot 1 (unrestricted, large business) runs a Design-to-Outcome (DTO) plus Core Task Order (CTO) pairing, where each year's CTO is justified as a logical follow-on of the prior DTO under Exception to Fair Opportunity FAR 16.505(b)(2)(i)(C). BCG Federal has held that core managed-solution stream continuously from CTO1 through CTO5, drawing a sole-source CTO5 justification posted July 31, 2026. BCG accounts for roughly 94% of all vehicle obligations ($709.3M) and about 99% of Lot 1 large-business dollars, a material protest surface if a CTO6 sole-source award is attempted (see GAO B-420535, Booz Allen Hamilton, denied on interested-party grounds, not the merits). Lot 2 is a small-business set-aside (Blue Clarity, Edera L3C, Optimal Strategix Group) with Accelerator and project-specific orders. Capgemini's Lot 1 prime (HT003822D0002) was released April 4, 2026 on OCI grounds. Notably, DHA is migrating discrete, project-scoped work off WF3 into two parallel DHMS-CD Commercial Solutions Openings (OTAs under 10 U.S.C. 4022 / 3458): HT003825SC001 (Innovative Healthcare IT Solutions, NAICS 541512, open through July 1, 2026, awards expected December 2026) and HT003826SC001 (PEO DHMS Innovation Solutions, NAICS 541618, responses through January 28, 2027). No DTO6/CTO6 pre-solicitation and no successor-IDIQ RFI has posted, so the CSO framework may be the de facto successor. OCI mitigation is a defined Phase 1a proposal element on the CSOs, not a bar to entry, making them the practical re-entry lane for large businesses that lost or exited a WF3 seat.",
+    "link": "https://www.fedhealthit.com/2022/01/1-4b-dha-peo-dhmsm-workplace-3-0-idiq/",
+    "small_business_eligible": true,
+    "sb_note": "Lot 2 is a small-business set-aside (Blue Clarity, Edera L3C, Optimal Strategix Group) with off-ramp discipline (removal for non-response to more than 75% of the four most recent Lot 2 solicitations) and on-ramps triggered when average bidders fall below two. Parallel DHMS-CD CSOs also carry small-business-accessible AOIs/IPRs.",
+    "source": "https://www.fedhealthit.com/2022/01/1-4b-dha-peo-dhmsm-workplace-3-0-idiq/",
+    "source_urls": [
+      "https://www.fedhealthit.com/2022/01/1-4b-dha-peo-dhmsm-workplace-3-0-idiq/",
+      "https://orangeslices.ai/bcg-scores-180-5m-dha-outcome-based-services-task-on-peo-dhms-workforce-3-0-idiq/",
+      "https://orangeslices.ai/edera-l3c-beats-out-2-to-win-defense-health-agency-dha-peo-dhms-workforce-3-0-transformation-and-services-task-order/"
+    ],
+    "last_verified": "2026-08-04",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "Final ordering year; CSO re-entry lane open, CTO6/successor unsignaled",
+      "factors": {}
+    },
+    "slug": "dha-peo-dhms-workforce-3-0-wf3-idiq",
+    "content_gap": false
   }
 ]

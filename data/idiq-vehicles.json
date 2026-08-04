@@ -1,7 +1,7 @@
 {
   "generated_at": "2026-04-29T00:00:00.000Z",
   "source_csv": "data/research-agent/idiq-vehicles.csv",
-  "total": 32,
+  "total": 33,
   "vehicles": [
     {
       "vehicle_id": "peo-dhms-deployment",
@@ -33,6 +33,39 @@
       ],
       "notes": "$300M ceiling. Solicitation HT003826RE001. NAICS 541512. Deployment / training / change management / data migration for DHMS products. Proposals due Apr. 21, 2026.",
       "mmt_note": "Solicitation HT003826RE001. Deployment / training / change management / data migration for DHMS products. Proposals due Apr. 21, 2026."
+    },
+    {
+      "vehicle_id": "dha-wf3",
+      "name": "DHA PEO DHMS Workforce 3.0 (WF3) IDIQ",
+      "agency": "DHA",
+      "sub_agency": "DHA / PEO DHMS (DHMS-CD)",
+      "contract_number": "HT003821R0001",
+      "ceiling_usd": 1425000000,
+      "pop_start": "2022-01-27",
+      "pop_end": "2027-01-26",
+      "pop_years": 5,
+      "naics_primary": "541611",
+      "naics_secondary": "541618",
+      "psc": "R499",
+      "set_aside": "Two Lots - Lot 1 Unrestricted / Lot 2 Small Business Set-Aside",
+      "vehicle_type": "Multiple Award IDIQ",
+      "award_type": "Multiple",
+      "primes_count": "6 (Lot 1: BCG Federal, Capgemini [released 04/04/26, OCI], Deloitte; Lot 2: Blue Clarity, Edera L3C, Optimal Strategix Group)",
+      "status": "Active / final ordering year",
+      "obligated_estimate_usd": 752167880,
+      "burn_status": "Saturating",
+      "incumbent_vulnerability_score": 2,
+      "forecast_event": "Ordering period ends Jan 26, 2027; watch for CTO6 J&A or successor RFI (Sep 2026-Jan 2027)",
+      "forecast_window": "2026-09-01 to 2027-01-26",
+      "forecast_confidence_pct": 60,
+      "primary_source_url": "https://www.fedhealthit.com/2022/01/1-4b-dha-peo-dhmsm-workplace-3-0-idiq/",
+      "source_urls": [
+        "https://www.fedhealthit.com/2022/01/1-4b-dha-peo-dhmsm-workplace-3-0-idiq/",
+        "https://orangeslices.ai/bcg-scores-180-5m-dha-outcome-based-services-task-on-peo-dhms-workforce-3-0-idiq/",
+        "https://orangeslices.ai/edera-l3c-beats-out-2-to-win-defense-health-agency-dha-peo-dhms-workforce-3-0-transformation-and-services-task-order/"
+      ],
+      "notes": "$1.425B ceiling multiple-award IDIQ for DHA PEO DHMS managed-solution workforce transformation (RFP HT003821R0001, DHMS-CD). Two Lots: Lot 1 unrestricted (BCG Federal HT003822D0001; Capgemini Government Solutions HT003822D0002, released 04/04/26 on OCI; Deloitte Consulting HT003822D0003) and Lot 2 small-business set-aside (Blue Clarity, Edera L3C, Optimal Strategix Group). $752.2M obligated, 90% complete. Ordering period ends 01/26/2027, sooner than the widely cited Jan 2028 estimated completion. Lot 1 uses a Design-to-Outcome (DTO) plus Core Task Order (CTO) pairing under Exception to Fair Opportunity FAR 16.505(b)(2)(i)(C); BCG has held the core managed-solution stream continuously from CTO1 through CTO5, with a sole-source CTO5 justification posted 07/31/2026. BCG holds roughly 94% of vehicle obligations ($709.3M) and about 99% of Lot 1 large-business dollars, a material protest surface for any CTO6. The Scope and Ordering Guide contemplated up to six Lot 1 CTO cycles. Discrete and prototype-scoped work is migrating into two parallel DHMS-CD Commercial Solutions Openings (OTAs): HT003825SC001 (Innovative Healthcare IT Solutions, NAICS 541512, open through 07/01/2026, awards expected Dec 2026) and HT003826SC001 (PEO DHMS Innovation Solutions, NAICS 541618, responses through 01/28/2027).",
+      "mmt_note": "Final ordering year: WF3 ends 01/26/2027, sooner than the cited Jan 2028 completion date. BCG Federal holds about 94% of obligations through a continuous sole-source CTO1 to CTO5 chain (CTO5 justification posted 07/31/2026). No DTO6 or CTO6 pre-solicitation and no successor-IDIQ RFI has posted yet. Discrete scope is shifting to two DHMS-CD Commercial Solutions Openings (OTAs), HT003825SC001 and HT003826SC001, which are the practical re-entry lane for large businesses that lost or exited a WF3 seat. OCI mitigation is a defined Phase 1a proposal element on the CSOs, not a bar to entry."
     },
     {
       "vehicle_id": "dha-gsp",
