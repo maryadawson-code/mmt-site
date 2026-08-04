@@ -81,6 +81,7 @@ const EXPECTED_SLUGS = [
   "va-cybersecurity-operations-center-support-csoc",
   "va-omega-onboarding-mgmt-engineering-governance-assurance",
   "va-application-hosting-compute-and-storage",
+  "dha-peo-dhms-workforce-3-0-wf3-idiq",
 ];
 
 const REQUIRED_FIELDS = ["slug", "name", "agency", "status", "description", "source_urls", "last_verified"];
