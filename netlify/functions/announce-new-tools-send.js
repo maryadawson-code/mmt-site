@@ -161,7 +161,11 @@ exports.handler = async () => {
     return { statusCode: 500, body: "supabase not configured" };
   }
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
-  const GO = process.env.ANNOUNCE_TOOLS_GO === "true";
+  // 2026-08-05: Mary green-lit the real send. Default is now GO (send for
+  // real) so a deploy releases it without a Netlify env change. Set
+  // ANNOUNCE_TOOLS_GO=false to force preview mode again, or
+  // ANNOUNCE_TOOLS_DISABLED=true (checked above) to halt entirely.
+  const GO = process.env.ANNOUNCE_TOOLS_GO !== "false";
 
   // ---- PREVIEW MODE (default): send both versions to admin only, once ----
   if (!GO) {
