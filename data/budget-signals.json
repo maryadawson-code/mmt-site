@@ -1,0 +1,354 @@
+{
+  "_schema": {
+    "version": "1.0",
+    "last_verified": "2026-08-05",
+    "note": "FY2027 federal health / health-IT appropriation lines from the congressional budget justifications. Each line's FY26 enacted -> FY27 request change and percentage were verified internally consistent before publish. Dollars in $ millions. This is budget INTENT (where money is planned), distinct from obligated-contract data.",
+    "verification": "30 of the workbook's 104 rows retained: the internally-consistent budget-justification block. The Treasury account-level rows below it use different column semantics (FY25->FY26 account resources) and were excluded to avoid a mixed table.",
+    "sources": [
+      {
+        "label": "VA FY2027 Budget Submission (Budget in Brief)",
+        "url": "https://department.va.gov/wp-content/uploads/2026/04/2027-BiB.pdf"
+      },
+      {
+        "label": "Military Health System FY2027 Budget Estimates, Vol. 1",
+        "url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/"
+      },
+      {
+        "label": "HHS FY2027 Budget in Brief",
+        "url": "https://www.hhs.gov/sites/default/files/fy-2027-budget-in-brief.pdf"
+      }
+    ]
+  },
+  "lines": [
+    {
+      "agency": "VA",
+      "line": "VA total budget authority (discretionary + mandatory, incl. MCCF and RETF)",
+      "fy25_m": 401294.0,
+      "fy26_m": 453343.0,
+      "fy27_m": 488211.0,
+      "change_m": 34868.0,
+      "change_pct": 0.0769,
+      "basis": "FY25: (enacted w/ transfers) | FY26: (enacted w/ transfers)",
+      "source_url": "https://department.va.gov/wp-content/uploads/2026/04/2027-BiB.pdf"
+    },
+    {
+      "agency": "VA",
+      "line": "VA total discretionary (with MCCF and RETF)",
+      "fy25_m": 134134.0,
+      "fy26_m": 138291.0,
+      "fy27_m": 150562.0,
+      "change_m": 12271.0,
+      "change_pct": 0.0887,
+      "basis": "FY26: (enacted)",
+      "source_url": "https://department.va.gov/wp-content/uploads/2026/04/2027-BiB.pdf"
+    },
+    {
+      "agency": "VA",
+      "line": "VHA Medical Services \u2014 discretionary",
+      "fy25_m": 69129.0,
+      "fy26_m": 57241.0,
+      "fy27_m": 59958.0,
+      "change_m": 2717.0,
+      "change_pct": 0.0475,
+      "basis": "FY26: (enacted)",
+      "source_url": "https://department.va.gov/wp-content/uploads/2026/04/2027-BiB.pdf"
+    },
+    {
+      "agency": "VA",
+      "line": "VHA Medical Services \u2014 all funding sources (disc + Toxic Exposures Fund)",
+      "fy25_m": 81013.0,
+      "fy26_m": 92611.0,
+      "fy27_m": 95177.0,
+      "change_m": 2566.0,
+      "change_pct": 0.0277,
+      "basis": "FY26: (enacted)",
+      "source_url": "https://department.va.gov/wp-content/uploads/2026/04/2027-BiB.pdf"
+    },
+    {
+      "agency": "VA",
+      "line": "VHA Medical Community Care \u2014 discretionary",
+      "fy25_m": 22555.0,
+      "fy26_m": 34000.0,
+      "fy27_m": 39727.0,
+      "change_m": 5727.0,
+      "change_pct": 0.1684,
+      "basis": "FY26: (enacted)",
+      "source_url": "https://department.va.gov/wp-content/uploads/2026/04/2027-BiB.pdf"
+    },
+    {
+      "agency": "VA",
+      "line": "VHA Medical Community Care \u2014 all funding sources",
+      "fy25_m": 38249.0,
+      "fy26_m": 48030.0,
+      "fy27_m": 56174.0,
+      "change_m": 8144.0,
+      "change_pct": 0.1696,
+      "basis": "FY26: (enacted)",
+      "source_url": "https://department.va.gov/wp-content/uploads/2026/04/2027-BiB.pdf"
+    },
+    {
+      "agency": "VA",
+      "line": "VHA Medical Support and Compliance \u2014 discretionary",
+      "fy25_m": 11719.0,
+      "fy26_m": 11669.0,
+      "fy27_m": 11050.0,
+      "change_m": -619.0,
+      "change_pct": -0.053,
+      "basis": "FY26: (enacted)",
+      "source_url": "https://department.va.gov/wp-content/uploads/2026/04/2027-BiB.pdf"
+    },
+    {
+      "agency": "VA",
+      "line": "VHA Medical Support and Compliance \u2014 all funding sources",
+      "fy25_m": 11719.0,
+      "fy26_m": 12069.0,
+      "fy27_m": 11455.0,
+      "change_m": -614.0,
+      "change_pct": -0.0509,
+      "basis": "FY26: (enacted)",
+      "source_url": "https://department.va.gov/wp-content/uploads/2026/04/2027-BiB.pdf"
+    },
+    {
+      "agency": "VA",
+      "line": "VHA Medical Facilities \u2014 discretionary",
+      "fy25_m": 9548.0,
+      "fy26_m": 11876.0,
+      "fy27_m": 12650.0,
+      "change_m": 774.0,
+      "change_pct": 0.0652,
+      "basis": "FY26: (enacted)",
+      "source_url": "https://department.va.gov/wp-content/uploads/2026/04/2027-BiB.pdf"
+    },
+    {
+      "agency": "VA",
+      "line": "VHA Medical Facilities \u2014 all funding sources (incl. PACT \u00a7707 leases)",
+      "fy25_m": 9748.0,
+      "fy26_m": 12276.0,
+      "fy27_m": 13100.0,
+      "change_m": 824.0,
+      "change_pct": 0.0671,
+      "basis": "FY26: (enacted)",
+      "source_url": "https://department.va.gov/wp-content/uploads/2026/04/2027-BiB.pdf"
+    },
+    {
+      "agency": "VA",
+      "line": "Subtotal, Medical Care Appropriations (all funding sources)",
+      "fy25_m": 140729.0,
+      "fy26_m": 164986.0,
+      "fy27_m": 175906.0,
+      "change_m": 10920.0,
+      "change_pct": 0.0662,
+      "basis": "FY26: (enacted)",
+      "source_url": "https://department.va.gov/wp-content/uploads/2026/04/2027-BiB.pdf"
+    },
+    {
+      "agency": "VA",
+      "line": "Information Technology Systems (OIT) \u2014 discretionary",
+      "fy25_m": 6192.0,
+      "fy26_m": 6219.0,
+      "fy27_m": 6308.0,
+      "change_m": 89.0,
+      "change_pct": 0.0143,
+      "basis": "FY26: (enacted)",
+      "source_url": "https://department.va.gov/wp-content/uploads/2026/04/2027-BiB.pdf"
+    },
+    {
+      "agency": "VA",
+      "line": "Information Technology Systems \u2014 total (disc + TEF mandatory)",
+      "fy25_m": 7556.0,
+      "fy26_m": 7604.0,
+      "fy27_m": 7364.0,
+      "change_m": -240.0,
+      "change_pct": -0.0316,
+      "basis": "FY26: (enacted)",
+      "source_url": "https://department.va.gov/wp-content/uploads/2026/04/2027-BiB.pdf"
+    },
+    {
+      "agency": "VA",
+      "line": "Electronic Health Record Modernization (EHRM)",
+      "fy25_m": 1306.0,
+      "fy26_m": 3400.0,
+      "fy27_m": 4240.0,
+      "change_m": 840.0,
+      "change_pct": 0.2471,
+      "basis": "FY26: (enacted)",
+      "source_url": "https://department.va.gov/wp-content/uploads/2026/04/2027-BiB.pdf"
+    },
+    {
+      "agency": "VA",
+      "line": "Medical and Prosthetic Research \u2014 discretionary",
+      "fy25_m": 935.0,
+      "fy26_m": 945.0,
+      "fy27_m": 922.0,
+      "change_m": -23.0,
+      "change_pct": -0.0243,
+      "basis": "FY26: (enacted)",
+      "source_url": "https://department.va.gov/wp-content/uploads/2026/04/2027-BiB.pdf"
+    },
+    {
+      "agency": "VA",
+      "line": "Medical and Prosthetic Research \u2014 all funding sources (incl. TEF 57)",
+      "fy25_m": 994.0,
+      "fy26_m": 1002.0,
+      "fy27_m": 979.0,
+      "change_m": -23.0,
+      "change_pct": -0.023,
+      "basis": "FY26: (enacted)",
+      "source_url": "https://department.va.gov/wp-content/uploads/2026/04/2027-BiB.pdf"
+    },
+    {
+      "agency": "DHA",
+      "line": "Defense Health Program total \u2014 discretionary",
+      "fy25_m": 39847.4,
+      "fy26_m": 41775.2,
+      "fy27_m": 42517.1,
+      "change_m": 741.9,
+      "change_pct": 0.0178,
+      "basis": "FY25: (actual execution) | FY26: (enacted) | FY27: (COMP 20,341.643 + PSCP 22,175.472)",
+      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/"
+    },
+    {
+      "agency": "DHA",
+      "line": "DHP/COMP mandatory funding",
+      "fy25_m": 2000.0,
+      "fy26_m": 1687.0,
+      "fy27_m": 3138.9,
+      "change_m": 1451.9,
+      "change_pct": 0.8607,
+      "basis": "FY25: (OBBBA, available beginning FY2025) | FY26: (FY2026 \"Mandatory Spend\", O-1 exhibit)",
+      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/"
+    },
+    {
+      "agency": "DHA",
+      "line": "DHP O&M \u2014 Private Sector Care (purchased care / TRICARE)",
+      "fy25_m": 20201.0,
+      "fy26_m": 20773.9,
+      "fy27_m": 22175.5,
+      "change_m": 1401.6,
+      "change_pct": 0.0675,
+      "basis": "FY26: (enacted) | FY27: (moved to new account 0146D PSCP)",
+      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/"
+    },
+    {
+      "agency": "DHA",
+      "line": "DHP O&M \u2014 In-House Care",
+      "fy25_m": 10294.5,
+      "fy26_m": 10735.1,
+      "fy27_m": 10863.3,
+      "change_m": 128.2,
+      "change_pct": 0.0119,
+      "basis": "FY26: disc enacted (11,435.135 incl. $700.0 mandatory)",
+      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/"
+    },
+    {
+      "agency": "DHA",
+      "line": "DHP O&M \u2014 Information Management / IM-IT",
+      "fy25_m": 2452.6,
+      "fy26_m": 2271.8,
+      "fy27_m": 2600.2,
+      "change_m": 328.4,
+      "change_pct": 0.1445,
+      "basis": "FY26: disc enacted (2,371.798 incl. $100.0 mandatory)",
+      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/"
+    },
+    {
+      "agency": "DHA",
+      "line": "DHP Procurement (BA 03)",
+      "fy25_m": 398.9,
+      "fy26_m": 354.8,
+      "fy27_m": 366.7,
+      "change_m": 11.9,
+      "change_pct": 0.0336,
+      "basis": "FY26: (enacted)",
+      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/"
+    },
+    {
+      "agency": "DHA",
+      "line": "DHP RDT&E (BA 02)",
+      "fy25_m": 1695.4,
+      "fy26_m": 2472.7,
+      "fy27_m": 1019.4,
+      "change_m": -1453.3,
+      "change_pct": -0.5878,
+      "basis": "FY26: (enacted)",
+      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/"
+    },
+    {
+      "agency": "DHA",
+      "line": "MHS GENESIS / DHMSM (O&M, within IM/IT)",
+      "fy25_m": 606.1,
+      "fy26_m": 487.8,
+      "fy27_m": 491.2,
+      "change_m": 3.4,
+      "change_pct": 0.0069,
+      "basis": "FY26: (enacted)",
+      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/"
+    },
+    {
+      "agency": "DHA",
+      "line": "DHMSM (RDT&E PE 0605026DHA)",
+      "fy25_m": 5.9,
+      "fy26_m": 6.0,
+      "fy27_m": 5.1,
+      "change_m": -0.9,
+      "change_pct": -0.1486,
+      "basis": "FY26: (enacted)",
+      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/"
+    },
+    {
+      "agency": "DHA",
+      "line": "Joint Operational Medicine Information System (JOMIS)",
+      "fy25_m": 242.5,
+      "fy26_m": 254.2,
+      "fy27_m": 255.3,
+      "change_m": 1.1,
+      "change_pct": 0.0044,
+      "basis": "FY26: (enacted)",
+      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/"
+    },
+    {
+      "agency": "DHA",
+      "line": "IT Technology Development \u2014 integrated EHR (iEHR)",
+      "fy25_m": 23.4,
+      "fy26_m": 24.2,
+      "fy27_m": 24.3,
+      "change_m": 0.0,
+      "change_pct": 0.0014,
+      "basis": "FY26: (enacted)",
+      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/"
+    },
+    {
+      "agency": "HHS",
+      "line": "HHS total discretionary budget authority",
+      "fy25_m": 128167.0,
+      "fy26_m": 128737.0,
+      "fy27_m": 112238.0,
+      "change_m": -16499.0,
+      "change_pct": -0.1282,
+      "basis": "FY25: (reorg-comparable) / 128,054 (existing structure) | FY26: reorg-comparable / 128,459 existing structure (enacted) | FY27: (\"Total, Discretionary Budget Authority\"); 111,062 after NEF cancellation/rescissions",
+      "source_url": "https://www.hhs.gov/sites/default/files/fy-2027-budget-in-brief.pdf"
+    },
+    {
+      "agency": "CMS",
+      "line": "CMS total program level (discretionary program level)",
+      "fy25_m": 7562.0,
+      "fy26_m": 8282.0,
+      "fy27_m": 6848.0,
+      "change_m": -1434.0,
+      "change_pct": -0.1731,
+      "basis": "FY25: (reorg-comparable) / 7,550 (existing structure) | FY26: / 8,270 (enacted) | FY27: / 6,836",
+      "source_url": "https://www.hhs.gov/sites/default/files/fy-2027-budget-in-brief.pdf"
+    },
+    {
+      "agency": "CMS",
+      "line": "CMS Program Management account \u2014 Total Program Management",
+      "fy25_m": 7562.0,
+      "fy26_m": 8282.0,
+      "fy27_m": 6848.0,
+      "change_m": -1434.0,
+      "change_pct": -0.1731,
+      "basis": "FY25: (BA 4,137) | FY26: (enacted; BA 4,137) | FY27: (BA 3,700)",
+      "source_url": "https://www.hhs.gov/sites/default/files/fy-2027-budget-in-brief.pdf"
+    }
+  ]
+}
