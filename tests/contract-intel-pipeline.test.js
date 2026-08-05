@@ -42,6 +42,27 @@ describe("url-validator", () => {
     expect(r.valid).toBe(false);
   });
 
+  it("rejects fabricated SAM permalinks built from a solicitation number (2026-08-05)", async () => {
+    for (const u of [
+      "https://sam.gov/opp/HT001126R00TH",
+      "https://sam.gov/opp/ihs-26-it-0037",
+      "https://sam.gov/opp/36c10x26f0113",
+      "https://sam.gov/workspace/contract/opp/7571TE26Q00034/view",
+    ]) {
+      const r = await urlValidator.isValidSourceUrl(u, { skipNetwork: true });
+      expect(r.valid, u).toBe(false);
+      expect(r.reason, u).toBe("malformed_sam_permalink");
+    }
+  });
+
+  it("isMalformedSamPermalink is a network-free format check", () => {
+    expect(urlValidator.isMalformedSamPermalink("https://sam.gov/opp/HT001126R00TH")).toBe(true);
+    expect(urlValidator.isMalformedSamPermalink("https://sam.gov/opp/7f1dab9449984bc6aff2fe595831be62/view")).toBe(false);
+    expect(urlValidator.isMalformedSamPermalink("https://www.highergov.com/contract-opportunity/x")).toBe(false);
+    expect(urlValidator.isMalformedSamPermalink("https://sam.gov/search")).toBe(false);
+    expect(urlValidator.isMalformedSamPermalink(null)).toBe(false);
+  });
+
   it("ROOT_DOMAIN_REGEX matches every flagged source domain", () => {
     const rx = urlValidator.ROOT_DOMAIN_REGEX;
     for (const d of ["sam.gov", "usaspending.gov", "gao.gov", "congress.gov", "govinfo.gov", "fbo.gov", "beta.sam.gov"]) {

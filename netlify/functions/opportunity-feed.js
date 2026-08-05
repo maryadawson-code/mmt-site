@@ -6,6 +6,7 @@
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
+const { applyRadarHygiene } = require("./lib/radar-hygiene");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -53,6 +54,10 @@ exports.handler = async (event) => {
   // referencing a non-existent column would 500 the feed (schema law).
   const reviewQueueOn = true; // P2 activation: hidden needs_review rows excluded from public feed (override with ?include_review=1)
   const includeReview = params.include_review === "1";
+  // 2026-08-05 radar hygiene: past-deadline (closed) notices are dropped
+  // from the feed by default. ?include_closed=1 opts back in. Archived rows
+  // and duplicate notices are always removed — see lib/radar-hygiene.js.
+  const includeClosed = params.include_closed === "1";
 
   try {
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
@@ -71,7 +76,12 @@ exports.handler = async (event) => {
     } else {
       query = query.order("scan_date", { ascending: false });
     }
-    query = query.order("relevance_score", { ascending: false }).limit(limit);
+    // Over-fetch a candidate pool: hygiene (archived/closed/duplicate
+    // removal) runs in JS AFTER the DB read, so fetching exactly `limit`
+    // rows could under-fill the page once dead rows are dropped. Cap keeps
+    // the payload bounded.
+    const fetchLimit = Math.min(Math.max(limit * 4, 60), 300);
+    query = query.order("relevance_score", { ascending: false }).limit(fetchLimit);
 
     if (setAside) {
       query = query.eq("set_aside_type", setAside);
@@ -112,6 +122,13 @@ exports.handler = async (event) => {
       };
     }
 
+    // Read-time hygiene: drop archived + closed (past-deadline) rows and
+    // collapse duplicate notices before trimming back to the requested
+    // limit. This is the forward guard; the DB backfill lives in
+    // scripts/cleanup-opportunity-radar.js.
+    const hygiene = applyRadarHygiene(opportunities || [], { includeClosed });
+    const cleaned = hygiene.opportunities.slice(0, limit);
+
     // Get total count for the same filters
     let countQuery = supabase
       .from("opportunity_radar")
@@ -129,7 +146,7 @@ exports.handler = async (event) => {
     const { count } = await countQuery;
 
     // Most recent scan date for the filtered set.
-    let scanDate = opportunities.length > 0 ? opportunities[0].scan_date : null;
+    let scanDate = cleaned.length > 0 ? cleaned[0].scan_date : null;
 
     // Fallback: when the filter yields zero rows, query the table-wide
     // most-recent scan_date so the UI can still distinguish "scanner is
@@ -171,8 +188,13 @@ exports.handler = async (event) => {
         "Cache-Control": "public, max-age=1800",
       },
       body: JSON.stringify({
-        opportunities: opportunities || [],
+        opportunities: cleaned,
+        returned_count: cleaned.length,
+        // total_count is the DB-side count before read-time hygiene; it
+        // stays the scanner-health signal the empty-state note reports.
         total_count: count || 0,
+        // What read-time hygiene removed from the candidate pool this call.
+        filtered_out: hygiene.removed,
         scan_date: scanDate,
         latest_scan_date: latestScanDate,
         freshness,

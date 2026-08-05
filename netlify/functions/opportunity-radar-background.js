@@ -20,6 +20,7 @@ const { trackAnthropic } = require("./lib/cost-tracker");
 const { logInference } = require("./lib/inference");
 const { logOpsEvent } = require("./lib/ops-ledger");
 const { sam_search_opportunities } = require("./lib/sam-gov-opportunities");
+const { isMalformedSamPermalink } = require("./lib/url-validator");
 
 // MMT-INTEL-02 (2026-05-22): migrated off Anthropic Sonnet
 // web_search_20260209 → Perplexity sonar-pro. CLAUDE.md 2026-04-15
@@ -425,7 +426,20 @@ real upcoming health IT buy. Return opportunities found as JSON.`, 5, scanModel.
   // --- Deduplicate and filter ---
   const seen = new Set();
   const filtered = [];
+  let fabricatedDropped = 0;
   for (const opp of allOpportunities) {
+    // Fabrication guard (2026-08-05): a web-search row whose source_url is a
+    // built-from-solicitation SAM permalink (sam.gov/opp/<sol#>, not a
+    // 32-hex notice id) never resolved to a real notice. These co-occur with
+    // hallucinated opportunities and were reaching premium subscribers as
+    // "published". Refuse to persist them. SAM-API rows carry the real uiLink
+    // /32-hex noticeId (lib/federal-data-apis.js), so this only trips the
+    // fabricated web-search rows.
+    if (isMalformedSamPermalink(opp.source_url)) {
+      fabricatedDropped++;
+      continue;
+    }
+
     // Deduplicate by solicitation_number or title
     const key = opp.solicitation_number || opp.title;
     if (!key || seen.has(key.toLowerCase())) continue;
@@ -475,7 +489,8 @@ real upcoming health IT buy. Return opportunities found as JSON.`, 5, scanModel.
     filtered.push(row);
   }
 
-  console.log(`Total after dedup/filter: ${filtered.length} opportunities`);
+  console.log(`Total after dedup/filter: ${filtered.length} opportunities` +
+    (fabricatedDropped ? ` (${fabricatedDropped} fabricated SAM-permalink rows dropped)` : ""));
 
   // --- Upsert into Supabase ---
   let upsertCount = 0;
@@ -524,7 +539,7 @@ real upcoming health IT buy. Return opportunities found as JSON.`, 5, scanModel.
       source_function: "opportunity-radar-background",
       severity: upsertCount === 0 && errorCount > 0 ? "error" : (upsertCount === 0 ? "warn" : "info"),
       signature: "radar_scan_complete",
-      details: { scanned: allOpportunities.length, filtered: filtered.length, upserted: upsertCount, errors: errorCount },
+      details: { scanned: allOpportunities.length, filtered: filtered.length, upserted: upsertCount, errors: errorCount, fabricated_dropped: fabricatedDropped },
     });
   } catch (logErr) {
     console.error("ops_ledger heartbeat failed:", logErr.message);

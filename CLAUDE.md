@@ -1,5 +1,68 @@
 # Mission Meets Tech - Developer & Content Governance
 
+## Sprint 2026-08-05 — Fabricated opportunities in the radar (paid product) + Top-100 workbook fact-check
+
+A fact-check of the Opportunity Radar against Daniel's Top-100 health-spend
+workbook found the radar was serving **fabricated solicitations to premium
+subscribers**. 17 of 101 pipeline notices were hallucinated. The tell was the
+source link: a real SAM.gov opportunity permalink carries a **32-hex notice
+id** (`sam.gov/opp/<32-hex>/view`), but the fabricated rows linked to
+`sam.gov/opp/<solicitation-number>` — a URL the web-search discovery path
+BUILT from a solicitation number it never resolved to a notice id, next to a
+hallucinated opportunity. **SAM.gov returns HTTP 200 for any `/opp/` path**
+(SPA shell), so `lib/url-validator.js`'s HEAD/404 check never caught them, and
+an independent web-footprint search (HigherGov/GovTribe/FederalCompass) found
+7 of 8 sampled solicitations had zero trace. These rows were
+`review_status:'published'` — live in a paid product.
+
+Root cause: `lib/federal-data-apis.js` gives SAM-**API** rows the real
+`uiLink`/32-hex `noticeId`, so those are fine. The **web-search LLM path** in
+`opportunity-radar-background.js` fabricated opportunities and built bogus
+permalinks (the prompt example literally showed `sam.gov/opp/abc123`).
+
+Fix — the URL-format guard is the objective fabrication signal, enforced at
+three layers (forward guard + backfill, same split as the intel sanitizer):
+- **`lib/url-validator.js`** — new `isMalformedSamPermalink(url)` (sync,
+  network-free): a `sam.gov`/`beta.sam.gov` `/opp/<id>` URL whose id isn't
+  32-hex is invalid. `isValidSourceUrl` now returns
+  `reason:"malformed_sam_permalink"`. This also protects contract_intel + the
+  url-recheck cron.
+- **WRITE guard** — `opportunity-radar-background.js` refuses to persist any
+  row whose `source_url` is a malformed SAM permalink (logs
+  `fabricated_dropped`). Fabrications never reach the table again.
+- **READ guard** — new **`lib/radar-hygiene.js`** (`isFabricated`, `isClosed`,
+  `isArchived`, `dedupeOpportunities`, `applyRadarHygiene`) wired into
+  **`opportunity-feed.js`**. The feed over-fetches a candidate pool then drops
+  fabricated + archived + past-deadline (closed) rows and collapses duplicate
+  notices before trimming to `limit`. `?include_closed=1` opts closed rows
+  back in. Response gains `filtered_out` + `returned_count`. **This also fixed
+  a latent bug**: the feed never filtered `status='archived'`, so
+  `opportunity-radar-url-recheck.js`'s whole purpose (archiving dead-URL rows)
+  was defeated — archived rows still rendered.
+- **BACKFILL** — `scripts/cleanup-opportunity-radar.js` (dry-run default,
+  `--apply`) archives existing fabricated/closed/duplicate rows and logs
+  `opportunity_radar_hygiene_archived` per row. Mary runs it with prod creds.
+- **TRIPWIRE** — `intel-quality-report.js` gains a live-table fabrication
+  detector (`_radarFabrication`); the weekly email now surfaces
+  fabricated/closed/duplicate counts and flags any still `published`.
+
+Workbook for Daniel (`scripts/fix-workbook.py` output): removed 18 unverifiable
+notices from Tab 6 (the 17 flagged + 1 more with the same signature in a
+`/workspace/` path), preserved them in a new **Tab 6b** for audit, added a
+**Source Confidence** column to the 83 survivors (43 .gov/USAspending, 23 trade
+press, 17 aggregator; open-with-live-deadline down to 3), and documented the
+pass in Tab 7. **Tabs 1–5 left unchanged** — they rest on USAspending/FPDS
+systems of record (top awards re-queried live, matched to the dollar).
+
+Hard rule (do not regress): **a SAM.gov opportunity link is only real if its
+`/opp/` id is 32-hex.** A link built from a solicitation number is unresolvable
+AND a fabrication signal — SAM 200s any path, so format is the only tell. The
+web-search radar path may surface *leads* but must never invent a SAM permalink;
+the write guard + `isMalformedSamPermalink` enforce this. Never trust
+`review_status:'published'` alone — it's set by relevance score, not veracity.
+Verified 2026-08-05: 534/534 unit tests, `node -c` clean on all touched
+functions, build + validate-dist (625 pages) + validate-routes (35) pass.
+
 ## 📜 Canonical Specification
 - All structural and UX work MUST follow `ARCHITECTURE_SPEC.md`.
 - This is the final word on site architecture and wireframes.

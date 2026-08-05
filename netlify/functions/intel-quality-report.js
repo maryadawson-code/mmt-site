@@ -20,6 +20,7 @@ const { isRootDomainUrl } = require("./lib/url-validator");
 const { logOpsEvent } = require("./lib/ops-ledger");
 const { hasStaleNotes, strippedNotes } = require("./lib/intel-notes-sanitizer");
 const { getRefreshRoster } = require("./lib/refresh-roster");
+const { isFabricated, isClosed, dedupKey } = require("./lib/radar-hygiene");
 
 const ADMIN_EMAIL = "mary@missionmeetstech.com";
 
@@ -139,6 +140,44 @@ async function _radarHealth(supabase, vehicleFilter) {
   return { last_scan: lastIso, age_hours: ageHours, total: count || 0 };
 }
 
+// 2026-08-05 fabrication tripwire. A fact-check of the radar against the
+// Top-100 workbook found 17 of 101 notices were hallucinated — the tell was
+// a sam.gov/opp/<solicitation-number> source_url (not a resolvable 32-hex
+// permalink). The write path now refuses these and the feed drops them, but
+// this scans the LIVE table weekly so any that slip in (or legacy rows) get
+// surfaced instead of quietly sitting in a paid product. Also counts still-
+// live past-deadline rows and duplicate notices. Read-only — remediation is
+// scripts/cleanup-opportunity-radar.js.
+async function _radarFabrication(supabase) {
+  const { data } = await supabase
+    .from("opportunity_radar")
+    .select("id, title, solicitation_number, source_url, response_deadline, scan_date, relevance_score, review_status")
+    .neq("status", "archived")
+    .limit(2000);
+  const rows = data || [];
+  const now = new Date();
+  const fabricated = rows.filter((r) => isFabricated(r));
+  const publishedFabricated = fabricated.filter((r) => r.review_status === "published");
+  const closed = rows.filter((r) => !isFabricated(r) && isClosed(r, now));
+  // duplicate losers: any dedup-key group of >1, minus one survivor each
+  const groups = new Map();
+  for (const r of rows) {
+    const key = dedupKey(r);
+    if (!key) continue;
+    if (!groups.has(key)) groups.set(key, 0);
+    groups.set(key, groups.get(key) + 1);
+  }
+  let duplicates = 0;
+  for (const n of groups.values()) if (n > 1) duplicates += n - 1;
+  return {
+    fabricated: fabricated.length,
+    published_fabricated: publishedFabricated.length,
+    closed: closed.length,
+    duplicates,
+    samples: fabricated.slice(0, 8).map((r) => ({ id: r.id, title: r.title, source_url: r.source_url, published: r.review_status === "published" })),
+  };
+}
+
 async function _ledger7d(supabase) {
   const since = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString();
   const { data } = await supabase
@@ -164,8 +203,10 @@ exports.handler = async () => {
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
   let stale = [], badUrls = [], radar, vehicle, failures = {}, staleNotes = [], urlSweep = {}, orphaned = [];
+  let radarFab = { fabricated: 0, published_fabricated: 0, closed: 0, duplicates: 0, samples: [] };
   try { stale = await _stale(supabase); } catch (e) { console.warn("stale query failed:", e.message); }
   try { orphaned = await _orphaned(supabase); } catch (e) { console.warn("orphan scan failed:", e.message); }
+  try { radarFab = await _radarFabrication(supabase); } catch (e) { console.warn("radar fabrication scan failed:", e.message); }
   try { badUrls = await _badUrls(supabase); } catch (e) { console.warn("badUrls query failed:", e.message); }
   try { radar = await _radarHealth(supabase, null); } catch { radar = { last_scan: null, age_hours: Infinity, total: 0 }; }
   try { vehicle = await _radarHealth(supabase, "contract_vehicle"); } catch { vehicle = { last_scan: null, age_hours: Infinity, total: 0 }; }
@@ -175,11 +216,12 @@ exports.handler = async () => {
 
   const allGreen = stale.length === 0 && badUrls.length === 0 && staleNotes.length === 0
     && orphaned.length === 0
+    && radarFab.fabricated === 0 && radarFab.duplicates === 0
     && radar.age_hours <= 48 && vehicle.age_hours <= 168
     && Object.keys(failures).length === 0;
   const subject = allGreen
     ? "MMT intel quality — all green"
-    : `MMT intel quality — ${stale.length} stale, ${orphaned.length} orphaned, ${badUrls.length} bad URL, ${staleNotes.length} note-leak, radar ${radar.age_hours}h`;
+    : `MMT intel quality — ${stale.length} stale, ${orphaned.length} orphaned, ${radarFab.fabricated} fabricated radar, ${badUrls.length} bad URL, ${staleNotes.length} note-leak, radar ${radar.age_hours}h`;
 
   const html = `<!DOCTYPE html><html><body style="font-family:-apple-system,sans-serif;padding:24px;color:#0A192F;">
     <h2 style="margin:0 0 8px;">Intel quality report &middot; ${new Date().toISOString().slice(0,10)}</h2>
@@ -197,6 +239,10 @@ exports.handler = async () => {
     <h3 style="font-size:14px;margin:16px 0 6px;">Chain-of-thought leakage in verification_notes</h3>
     <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">Regression detector for the 2026-05-26 CGI complaint. Persistence + prompts should keep this at zero. If non-zero, run scripts/cleanup-may26-subscriber-trust.js and inspect the LLM prompt drift.</p>
     ${staleNotes.length === 0 ? "<p>None.</p>" : `<ul>${staleNotes.map((r) => `<li>${esc(r.contract_name)} &mdash; ${r.stripped_count}/${r.total_count} stale &mdash; sample: <em>${esc(r.sample)}</em></li>`).join("")}</ul>`}
+    <h3 style="font-size:14px;margin:16px 0 6px;">Fabricated / stale / duplicate radar rows (live table)</h3>
+    <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">Fabrication tripwire (2026-08-05). Fabricated = source_url is a built-from-solicitation SAM link (sam.gov/opp/&lt;sol#&gt;, not a 32-hex permalink) &mdash; the signature of a hallucinated opportunity. The write path refuses these and the feed drops them; a non-zero count here means legacy rows or a new leak. Remediate with scripts/cleanup-opportunity-radar.js.</p>
+    <p>fabricated: ${radarFab.fabricated}${radarFab.published_fabricated ? ` (<strong style="color:#E63946;">${radarFab.published_fabricated} reaching premium subscribers</strong>)` : ""} &middot; past-deadline still live: ${radarFab.closed} &middot; duplicate notices: ${radarFab.duplicates}</p>
+    ${radarFab.samples.length === 0 ? "" : `<ul>${radarFab.samples.map((s) => `<li>#${s.id} ${esc(String(s.title || "").slice(0, 70))} &mdash; <em>${esc(String(s.source_url || "").slice(0, 60))}</em>${s.published ? " &middot; <strong style='color:#E63946;'>published</strong>" : ""}</li>`).join("")}</ul>`}
     <h3 style="font-size:14px;margin:16px 0 6px;">opportunity_radar URL re-check (last 7d)</h3>
     <p>archived broken: ${urlSweep.archived_7d || 0} &middot; last sweep: ${esc(urlSweep.last_sweep_at || "never")}</p>
     <h3 style="font-size:14px;margin:16px 0 6px;">Opportunity Radar</h3>
@@ -220,9 +266,9 @@ exports.handler = async () => {
       source_function: "intel-quality-report",
       severity: allGreen ? "info" : "warn",
       signature: "weekly_qa",
-      details: { stale: stale.length, orphaned: orphaned.length, bad_urls: badUrls.length, stale_notes: staleNotes.length, url_archived_7d: urlSweep.archived_7d || 0, radar_age_h: radar.age_hours, vehicle_age_h: vehicle.age_hours, failure_keys: Object.keys(failures).length },
+      details: { stale: stale.length, orphaned: orphaned.length, bad_urls: badUrls.length, stale_notes: staleNotes.length, radar_fabricated: radarFab.fabricated, radar_published_fabricated: radarFab.published_fabricated, radar_duplicates: radarFab.duplicates, url_archived_7d: urlSweep.archived_7d || 0, radar_age_h: radar.age_hours, vehicle_age_h: vehicle.age_hours, failure_keys: Object.keys(failures).length },
     });
   } catch { /* non-blocking */ }
 
-  return { statusCode: 200, body: JSON.stringify({ ok: true, stale: stale.length, orphaned: orphaned.length, bad_urls: badUrls.length, stale_notes: staleNotes.length, url_sweep: urlSweep, radar, vehicle, failures }) };
+  return { statusCode: 200, body: JSON.stringify({ ok: true, stale: stale.length, orphaned: orphaned.length, bad_urls: badUrls.length, stale_notes: staleNotes.length, radar_fabrication: radarFab, url_sweep: urlSweep, radar, vehicle, failures }) };
 };
