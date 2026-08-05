@@ -36,6 +36,30 @@ function isRootDomainUrl(u) {
   return ROOT_DOMAIN_REGEX.test(u);
 }
 
+// A REAL SAM.gov opportunity permalink carries a 32-hex notice id:
+//   https://sam.gov/opp/<32-hex>/view
+//   https://sam.gov/workspace/contract/opp/<32-hex>/view
+// A URL of the form sam.gov/opp/<solicitation-number> (letters, hyphens,
+// underscores, wrong length) is NOT resolvable. SAM.gov serves its SPA
+// shell (HTTP 200) for ANY /opp/ path, so a HEAD/404 check can't catch it —
+// the id FORMAT is the only tell. These come from the web-search radar path
+// building a link out of the solicitation number it never resolved to a
+// notice id (2026-08-05 fabricated-opportunity incident: 17 of 101 radar
+// notices carried sam.gov/opp/<sol#> links and did not exist). Because the
+// fabricated permalink co-occurs with a hallucinated notice, this doubles as
+// a fabrication signal, not just a broken link.
+const SAM_OPP_PATH = /\/opp\/([^/?#]+)/i;
+function isMalformedSamPermalink(u) {
+  if (!u || typeof u !== "string") return false;
+  const parsed = _urlObj(u);
+  if (!parsed) return false;
+  const host = parsed.hostname.toLowerCase();
+  if (host !== "sam.gov" && host !== "beta.sam.gov") return false;
+  const m = parsed.pathname.match(SAM_OPP_PATH);
+  if (!m) return false; // not an /opp/ permalink (e.g. /search) — out of scope
+  return !/^[0-9a-f]{32}$/i.test(m[1]);
+}
+
 function _toUrlString(s) {
   if (!s) return null;
   if (typeof s === "string") return s;
@@ -82,6 +106,11 @@ async function isValidSourceUrl(url, opts = {}) {
   // Reject root-domain URLs without doing a network call.
   if (isRootDomainUrl(url)) return { valid: false, reason: "root_domain_url" };
 
+  // Reject fabricated/unresolved SAM.gov permalinks (sam.gov/opp/<sol#>).
+  // No network call: SAM.gov 200s any /opp/ path, so only the id format
+  // distinguishes a real notice link from a built-from-solicitation guess.
+  if (isMalformedSamPermalink(url)) return { valid: false, reason: "malformed_sam_permalink" };
+
   // Bypass the network check for unit tests + when explicitly disabled.
   if (opts.skipNetwork) return { valid: true };
 
@@ -125,6 +154,7 @@ async function validateSources(sources, opts = {}) {
 module.exports = {
   ROOT_DOMAIN_REGEX,
   isRootDomainUrl,
+  isMalformedSamPermalink,
   isValidSourceUrl,
   validateSources,
 };
