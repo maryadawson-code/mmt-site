@@ -35,7 +35,22 @@
     .portal-card .note { font-size:12px; color:var(--mmt-navy); line-height:1.55; margin:0 0 10px; }
     .portal-card a.go { font-size:12px; font-weight:700; color:var(--mmt-teal); text-decoration:none; }
     .portal-card a.go:hover { text-decoration:underline; }
-    @media (max-width:768px) { .dash-shell { grid-template-columns:1fr; } .dash-nav { display:none; } .dash-main { padding:16px; padding-bottom:80px; } }
+    .fp-controls { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:12px; }
+    .fp-filter { font-size:12px; font-weight:600; padding:5px 12px; border-radius:16px; border:1px solid var(--mmt-border); background:var(--mmt-white); color:var(--mmt-teal); cursor:pointer; }
+    .fp-filter.active { background:var(--mmt-teal); color:#fff; border-color:var(--mmt-teal); }
+    .fp-search { flex:1; min-width:180px; font-size:13px; padding:7px 12px; border:1px solid var(--mmt-border); border-radius:8px; font-family:inherit; }
+    table.fp-table { border-collapse:collapse; width:100%; font-size:13px; background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:10px; overflow:hidden; }
+    table.fp-table th { text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:0.04em; color:var(--mmt-text-secondary); padding:10px 12px; background:var(--mmt-surface); border-bottom:1px solid var(--mmt-border); white-space:nowrap; }
+    table.fp-table td { padding:10px 12px; border-bottom:1px solid var(--mmt-border); vertical-align:top; }
+    table.fp-table tr:last-child td { border-bottom:none; }
+    .fp-agency { font-size:11px; font-weight:700; padding:2px 7px; border-radius:10px; background:rgba(69,123,157,0.1); color:var(--mmt-teal); white-space:nowrap; }
+    .fp-recompete { font-size:11px; font-weight:700; padding:2px 7px; border-radius:10px; background:rgba(217,119,6,0.1); color:#B45309; white-space:nowrap; }
+    .fp-new { font-size:11px; font-weight:700; padding:2px 7px; border-radius:10px; background:rgba(27,122,75,0.1); color:#1B7A4B; white-space:nowrap; }
+    .fp-date { font-weight:700; white-space:nowrap; }
+    .fp-src { color:var(--mmt-teal); text-decoration:none; font-weight:600; font-size:12px; white-space:nowrap; }
+    .fp-src:hover { text-decoration:underline; }
+    .fp-count { font-size:12px; color:var(--mmt-text-secondary); margin-left:auto; }
+    @media (max-width:768px) { .dash-shell { grid-template-columns:1fr; } .dash-nav { display:none; } .dash-main { padding:16px; padding-bottom:80px; } table.fp-table { font-size:12px; } table.fp-table th, table.fp-table td { padding:8px 9px; } }
   </style>
   <script>
     (function() {
@@ -102,6 +117,18 @@
         </div>
 
         <div class="dash-card">
+          <h2 style="font-size:18px;font-weight:700;margin:0 0 4px;">Forecast Pipeline &mdash; what agencies say is coming</h2>
+          <p style="font-size:13px;color:var(--mmt-text-secondary);margin:0 0 14px;">Named opportunities pulled straight from the official agency forecasts &mdash; the CMS Forecast of Contracting Opportunities and the DHA Long Range Acquisition Forecast &mdash; each with the anticipated solicitation and award dates the agency published. Recompetes are where an incumbent is defending; sort by solicitation date to see what fires first. This is the agency&rsquo;s own forecast, not a market rumor.</p>
+          <div class="fp-controls">
+            <div id="fpFilters" style="display:flex;gap:8px;"></div>
+            <input type="text" id="fpSearch" class="fp-search" placeholder="Search program or office...">
+            <span class="fp-count" id="fpCount"></span>
+          </div>
+          <div id="fpTableWrap" style="overflow-x:auto;"></div>
+          <p style="font-size:12px;color:var(--mmt-text-secondary);margin:12px 0 0;" id="fpNote"></p>
+        </div>
+
+        <div class="dash-card">
           <h2 style="font-size:18px;font-weight:700;margin:0 0 4px;">Forecast Portals &mdash; the official sources we monitor</h2>
           <p style="font-size:13px;color:var(--mmt-text-secondary);margin:0 0 16px;">Direct links to each agency's procurement forecast page, with our read on data accessibility and refresh cadence. Click through to verify the source for any signal we surface.</p>
           <div id="portalGrid" class="portal-grid"></div>
@@ -129,6 +156,70 @@
         document.getElementById('portalGrid').innerHTML = html;
       }).catch(function(){
         document.getElementById('portalGrid').innerHTML = '<p style="color:var(--mmt-text-secondary);">Could not load portal data.</p>';
+      });
+
+      // Forecast Pipeline table (data/forecast-pipeline.json)
+      var fmtDate = function(d){
+        if(!d) return '<span style="color:var(--mmt-text-secondary);">TBD</span>';
+        var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(d);
+        if(!m) return esc(d);
+        var mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][parseInt(m[2],10)-1];
+        return mo+' '+parseInt(m[3],10)+', '+m[1];
+      };
+      var sortKey = function(d){ var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(d||''); return m?d.slice(0,10):'9999'; };
+      var recompeteBadge = function(t){
+        if(!t) return '';
+        var s=String(t).toLowerCase();
+        if(s.indexOf('recompete')>-1) return '<span class="fp-recompete">Recompete</span>';
+        if(s.indexOf('new')>-1) return '<span class="fp-new">New</span>';
+        return '<span style="font-size:11px;color:var(--mmt-text-secondary);">'+esc(t)+'</span>';
+      };
+      fetch('/data/forecast-pipeline.json').then(function(r){return r.json();}).then(function(d){
+        var items = (d.items||[]).slice();
+        var active='All', term='';
+        var agencies = ['All'].concat(Object.keys(items.reduce(function(m,i){m[i.agency]=1;return m;},{})));
+        function render(){
+          var rows = items.filter(function(i){
+            if(active!=='All' && i.agency!==active) return false;
+            if(term){ var hay=((i.item||'')+' '+(i.office||'')).toLowerCase(); if(hay.indexOf(term)<0) return false; }
+            return true;
+          });
+          rows.sort(function(a,b){ return sortKey(a.anticipated_solicitation).localeCompare(sortKey(b.anticipated_solicitation)); });
+          document.getElementById('fpCount').textContent = rows.length + ' of ' + items.length + ' shown';
+          var html = '<table class="fp-table"><thead><tr>' +
+            '<th>Agency</th><th>Opportunity</th><th>Est. value</th><th>Solicitation</th><th>Award</th><th>Type</th><th>Source</th>' +
+            '</tr></thead><tbody>' +
+            rows.map(function(i){
+              return '<tr>' +
+                '<td><span class="fp-agency">'+esc(i.agency)+'</span></td>' +
+                '<td><div style="font-weight:600;">'+esc(i.item)+'</div>'+(i.office?'<div style="font-size:11px;color:var(--mmt-text-secondary);margin-top:2px;">'+esc(i.office)+'</div>':'')+(i.vehicle&&i.vehicle!=='None'?'<div style="font-size:11px;color:var(--mmt-teal);margin-top:2px;">Vehicle: '+esc(i.vehicle)+'</div>':'')+'</td>' +
+                '<td style="white-space:nowrap;">'+esc(i.est_value||'—')+'</td>' +
+                '<td class="fp-date">'+fmtDate(i.anticipated_solicitation)+'</td>' +
+                '<td class="fp-date">'+fmtDate(i.anticipated_award)+'</td>' +
+                '<td>'+recompeteBadge(i.type)+'</td>' +
+                '<td>'+(i.source_url?'<a class="fp-src" href="'+esc(i.source_url)+'" target="_blank" rel="noopener">Forecast &rarr;</a>':'—')+'</td>' +
+              '</tr>';
+            }).join('') +
+            '</tbody></table>';
+          document.getElementById('fpTableWrap').innerHTML = html;
+        }
+        document.getElementById('fpFilters').innerHTML = agencies.map(function(a){
+          return '<button class="fp-filter'+(a==='All'?' active':'')+'" data-ag="'+esc(a)+'">'+esc(a)+'</button>';
+        }).join('');
+        Array.prototype.forEach.call(document.querySelectorAll('.fp-filter'), function(btn){
+          btn.addEventListener('click', function(){
+            active=this.getAttribute('data-ag');
+            Array.prototype.forEach.call(document.querySelectorAll('.fp-filter'), function(b){ b.classList.toggle('active', b===btn); });
+            render();
+          });
+        });
+        var si=document.getElementById('fpSearch');
+        if(si) si.addEventListener('input', function(){ term=this.value.trim().toLowerCase(); render(); });
+        var verified=(d._schema&&d._schema.last_verified)||'';
+        document.getElementById('fpNote').innerHTML = esc(items.length)+' official forecast items (CMS + DHA). Dates are the agency&rsquo;s anticipated solicitation/award, subject to change. Verified '+esc(verified)+'. Cross-reference with the <a href="/contract-tracker.html" style="color:var(--mmt-teal);">Contract Tracker</a> and <a href="/premium/cr-exposure.html" style="color:var(--mmt-teal);">Budget Signals</a>.';
+        render();
+      }).catch(function(){
+        document.getElementById('fpTableWrap').innerHTML = '<p style="color:var(--mmt-text-secondary);">Could not load forecast pipeline data.</p>';
       });
     })();
   </script>
