@@ -109,6 +109,14 @@
 [functions."capture-corner-autosend"]
   schedule = "0 13 * * *"
 
+# One-shot announcement blast for Budget Signals + Forecast Pipeline (2026-08-05).
+# Ships DORMANT: default = preview to admin only. Set ANNOUNCE_TOOLS_GO=true to
+# release the real send (Version A -> premium via Resend, Version B -> free
+# Buttondown list minus paid). ANNOUNCE_TOOLS_DISABLED=true halts. Retire this
+# block + the function once both real-send markers exist in ops_events.
+[functions."announce-new-tools-send"]
+  schedule = "*/15 * * * *"
+
 # Premium Monthly Brief — SUNSET 2026-06-01. The monthly cadence folded into
 # Capture Intelligence Sheets (delivered via Capture Corner / Friday Brief), so
 # this cron is disabled to stop the retired series from emailing subscribers.
