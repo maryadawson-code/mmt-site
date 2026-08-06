@@ -7,6 +7,11 @@
 // premium/briefs/capture-corner-YYYY-MM-DD.html issues (Tue AND Fri) were never
 // emailed by a cron. This runs daily and sends only today's Capture Corner.
 //
+// The email is a PREVIEW, not the whole brief (Mary's standing rule,
+// 2026-08-06): send the lead-in portion of the Capture Corner, then point
+// subscribers to the full version behind the paywall. The gated page stays the
+// canonical home; the email drives the click. See previewFromBody() below.
+//
 // Publish path stays: stage-newsletter.js drops premium/briefs/
 // capture-corner-<date>.html (date-gated by build.js). Once that page is live,
 // this cron emails it on <date>.
@@ -45,6 +50,39 @@ function extractBody(html) {
   const mainIdx = html.indexOf("</main>", start);
   const close = html.lastIndexOf("</div>", mainIdx);
   return { title, subtitle, body: html.slice(start, close).trim() };
+}
+
+// Build the PREVIEW that actually goes in the email: the lead-in portion of the
+// brief plus a CTA to the full version behind the paywall. Never email the whole
+// Capture Corner (Mary's standing rule 2026-08-06). Cut at the second <h2>
+// section boundary (intro + first section), or at a ~1600-char paragraph
+// boundary when the brief has fewer than two sections. Cutting before the second
+// <h2> also drops the deep-dive upsell card, which belongs on the page, not in
+// the preview.
+function previewFromBody(bodyHtml, fullUrl) {
+  const h2s = [];
+  const re = /<h2[ >]/gi;
+  let mm;
+  while ((mm = re.exec(bodyHtml))) h2s.push(mm.index);
+  let excerpt;
+  if (h2s.length >= 2) {
+    excerpt = bodyHtml.slice(0, h2s[1]);
+  } else {
+    const cap = 1600;
+    if (bodyHtml.length <= cap) {
+      excerpt = bodyHtml;
+    } else {
+      const cut = bodyHtml.lastIndexOf("</p>", cap);
+      excerpt = bodyHtml.slice(0, cut > 0 ? cut + 4 : cap);
+    }
+  }
+  const cta =
+    '<div style="background:#FEF9E7;border:1px solid rgba(146,113,10,0.28);border-radius:10px;padding:20px 22px;margin:28px 0 6px;text-align:center;">' +
+    '<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#92710A;margin-bottom:8px;">Premium Capture Corner</div>' +
+    '<p style="font-size:14px;color:#314155;line-height:1.6;margin:0 0 14px;">This is a preview. The full Capture Corner, with the complete breakdown and every action window, is on the site.</p>' +
+    '<a href="' + fullUrl + '" style="display:inline-block;background:#0A192F;color:#FFFFFF;font-weight:700;font-size:14px;text-decoration:none;padding:12px 24px;border-radius:8px;">Read the full Capture Corner &rarr;</a>' +
+    "</div>";
+  return excerpt + cta;
 }
 
 exports.handler = async () => {
@@ -90,7 +128,8 @@ exports.handler = async () => {
   if (recipients.length === 0) return { statusCode: 200, body: JSON.stringify({ skipped: "no_subscribers", date }) };
 
   const displayDate = new Date(date + "T12:00:00Z").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
-  const emailHtml = buildFridayBriefEmail({ title, subtitle, briefBodyHtml: body, briefDate: displayDate });
+  const preview = previewFromBody(body, url); // `url` is the paywalled full brief page
+  const emailHtml = buildFridayBriefEmail({ title, subtitle, briefBodyHtml: preview, briefDate: displayDate });
   const subject = `Capture Corner: ${title.replace(/\.$/, "")}`;
 
   // CLAIM idempotency BEFORE the send loop. Netlify scheduled functions are
