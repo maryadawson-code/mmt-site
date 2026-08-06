@@ -542,6 +542,22 @@ SEPARATE pipelines with SEPARATE idempotency.** A Capture Corner does NOT need a
 via premium-brief-send). Publishing a Capture Corner = drop the dated HTML (or
 run stage-newsletter.js); the daily cron emails it.
 
+### Follow-up 2026-08-06 — the Capture Corner email is a PREVIEW, not the whole brief
+
+Mary's standing rule (given on "The Pentagon Asked" handoff): the Capture Corner
+email must send **a part** of the brief and then point subscribers to the full
+version behind the paywall — always, going forward. The gated page is the
+canonical home; the email drives the click. `capture-corner-autosend.js` now
+runs the extracted brief-body through **`previewFromBody()`**, which cuts at the
+second `<h2>` (intro + first section), or a ~1600-char paragraph boundary when
+the brief has fewer than two sections, and appends a CTA linking to the paywalled
+`/premium/briefs/capture-corner-<date>.html`. Cutting before the second `<h2>`
+also drops the deep-dive upsell card, which belongs on the page, not the email.
+
+Hard rule (do not regress): **never email the full Capture Corner body.** Any new
+CC send path (or a revival of the pinned `capture-corner-send.js`) sends the
+preview + paywall link, not the whole brief.
+
 ## Sprint 2026-07-01 (later still) — AWS Lambda 4KB env cap broke ALL function deploys
 
 Symptom: git deploys failed with `Build script returned non-zero exit code: 2`;
