@@ -1123,7 +1123,7 @@ function generateLeadStoryHtml(archive) {
 }
 
 function generateLatestArticlesHtml(archive, count) {
-  const items = archive.slice(1, 1 + count); // Skip lead story
+  const items = archive.slice(0, count); // Newest first (no separate lead-story block on the homepage)
   if (items.length === 0) return '<p class="text-center py-10 col-span-3" style="color:var(--mmt-text-secondary);">No articles yet. Check back soon!</p>';
   return items.map(item => {
     const tags = (item.tags || []).map(t =>
@@ -3337,8 +3337,7 @@ async function copyStaticFiles({ archive, feed, newsItems, contracts, contractAr
       // Inject subscriber count (from env var or fallback)
       if (subscriberCount && html.includes('subscriberCount')) {
         html = html.replace(/(<strong id="subscriberCount">)[^<]*(<\/strong>)/g, `$1${subscriberCount}$2`);
-        html = html.replace(/Join 1,750\+/g, `Join ${subscriberCount}+`);
-        html = html.replace(/Join 1,528\+/g, `Join ${subscriberCount}+`);
+        html = html.replace(/Join [\d,]+\+ subscribers/g, `Join ${subscriberCount}+ subscribers`);
       }
 
       // Inject build-time content
@@ -5336,7 +5335,7 @@ async function build() {
 
   // 0b. Subscriber count — reads from env var or falls back to static value
   // LinkedIn subscriber count is updated manually via Netlify env var
-  const subscriberCount = process.env.MMT_SUBSCRIBER_COUNT || '1,750';
+  const subscriberCount = process.env.MMT_SUBSCRIBER_COUNT || '5,597';
 
   // 0c. Feature-vote flags — fetch which vote features are live so the
   // feature-render helpers (Sprints 2–3) emit their markup/JS only when
