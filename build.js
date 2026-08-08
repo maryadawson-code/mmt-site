@@ -1123,7 +1123,7 @@ function generateLeadStoryHtml(archive) {
 }
 
 function generateLatestArticlesHtml(archive, count) {
-  const items = archive.slice(1, 1 + count); // Skip lead story
+  const items = archive.slice(0, count); // Newest first (no separate lead-story block on the homepage)
   if (items.length === 0) return '<p class="text-center py-10 col-span-3" style="color:var(--mmt-text-secondary);">No articles yet. Check back soon!</p>';
   return items.map(item => {
     const tags = (item.tags || []).map(t =>
