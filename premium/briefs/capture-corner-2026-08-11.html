@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capture Corner: Price the Audit Log, Not the Policy &middot; MMT Premium</title>
+  <meta name="description" content="August 4, 2026. The companion to "Ten Years to Build It. Ten Months to Field It." The public piece reads the fielding decision and the mechanism behind it. This one works the money: the closed prime slots and the vehicles carrying the follow-on, what the OMIS-A SAFe release train does to your bid model, the six lanes ranked by how soon they are biddable, and why the Nett Warrior basis of issue is the market size.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <style>
+    :root { --mmt-teal:#457B9D; --mmt-navy:#0A192F; --mmt-soft:#F3F4F6; --mmt-white:#FFFFFF; --mmt-text:#102033; --mmt-text-secondary:#5C6B7A; --mmt-border:#D8E0E8; --ci-gold:#92710A; --ci-gold-bg:#FEF9E7; --mmt-red:#E63946; }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--mmt-white); color:var(--mmt-navy); }
+    .brief-body { font-size:15px; line-height:1.75; color:#314155; }
+    .brief-body h2 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:40px 0 14px; letter-spacing:-0.02em; }
+    .brief-body h3 { font-size:17px; font-weight:700; color:var(--mmt-navy); margin:28px 0 10px; }
+    .brief-body h4 { font-size:15px; font-weight:700; color:var(--mmt-navy); margin:20px 0 8px; }
+    .brief-body p { margin-bottom:16px; max-width:65ch; }
+    .brief-body ul { margin-bottom:16px; padding-left:1.25rem; }
+    .brief-body ol { margin-bottom:16px; padding-left:1.5rem; }
+    .brief-body li { margin-bottom:8px; }
+    .brief-body a { color:var(--mmt-teal); text-decoration:underline; text-underline-offset:3px; }
+    .brief-body strong { color:var(--mmt-navy); }
+    .brief-body em { color:var(--mmt-text-secondary); }
+    .brief-body hr { border:none; border-top:1px solid var(--mmt-border); margin:36px 0; }
+    .brief-body blockquote { border-left:3px solid var(--mmt-teal); padding:8px 16px; margin:16px 0; color:var(--mmt-text-secondary); background:rgba(69,123,157,0.04); border-radius:0 6px 6px 0; }
+    .brief-body img { max-width:100%; height:auto; display:block; margin:24px 0; border:1px solid var(--mmt-border); border-radius:8px; }
+    .brief-body table { width:100%; border-collapse:collapse; margin:16px 0 24px; font-size:14px; }
+    .brief-body th, .brief-body td { border:1px solid var(--mmt-border); padding:10px 12px; text-align:left; vertical-align:top; }
+    .brief-body th { background:var(--mmt-soft); color:var(--mmt-navy); font-weight:700; }
+    .pills { margin:8px 0 24px; }
+    .pill { display:inline-block; padding:4px 10px; background:rgba(69,123,157,0.08); color:var(--mmt-teal); border-radius:14px; font-size:11px; font-weight:600; margin:2px 4px 2px 0; }
+    .pill-red { background:rgba(230,57,70,0.08); color:var(--mmt-red); }
+    .pill-gold { background:var(--ci-gold-bg); color:var(--ci-gold); }
+    .back-link { font-size:13px; font-weight:600; color:var(--mmt-teal); text-decoration:none; }
+    .back-link:hover { opacity:0.7; }
+    .gate-notice { background:linear-gradient(180deg,#FFFFFF 0%,#F3F4F6 100%); border:1px solid var(--mmt-border); border-radius:12px; padding:32px 28px; text-align:center; margin:32px auto; max-width:540px; }
+    .gate-notice h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin-bottom:10px; }
+    .gate-notice p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:16px; line-height:1.55; }
+    .gate-cta { display:inline-block; padding:12px 24px; background:var(--mmt-navy); color:var(--mmt-white); font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; }
+    .section-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--ci-gold); }
+    .deep-dive-card { margin:48px 0 16px; padding:32px 28px; border:2px solid var(--ci-gold); border-radius:12px; background:linear-gradient(180deg,#FFFFFF 0%,var(--ci-gold-bg) 100%); }
+    .deep-dive-card h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:0 0 12px; letter-spacing:-0.01em; }
+    .deep-dive-card p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:14px; line-height:1.6; max-width:none; }
+    .deep-dive-price { display:inline-flex; align-items:baseline; gap:8px; margin:4px 0 16px; font-weight:800; color:var(--mmt-navy); }
+    .deep-dive-price .amount { font-size:28px; }
+    .deep-dive-price .unit { font-size:13px; font-weight:600; color:var(--mmt-text-secondary); text-transform:uppercase; letter-spacing:0.06em; }
+    .brief-body a.deep-dive-cta,
+    a.deep-dive-cta { display:inline-block; padding:14px 26px; background:var(--ci-gold); color:#FFFFFF; font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; letter-spacing:0.02em; }
+    .brief-body a.deep-dive-cta:hover,
+    a.deep-dive-cta:hover { opacity:0.92; color:#FFFFFF; }
+    .deep-dive-examples { font-size:13px; color:var(--mmt-text-secondary); font-style:italic; margin-top:8px; }
+  </style>
+</head>
+<body>
+  <nav class="nav-editorial"></nav>
+
+  <main class="wrap" style="padding:48px 0 80px; max-width:820px;">
+    <a href="/capture-corner.html" class="back-link">&larr; Capture Corner</a>
+
+    <div style="margin-top:20px; margin-bottom:8px;">
+      <div class="section-label">MMT Premium &middot; Capture Corner &middot; August 11, 2026</div>
+    </div>
+    <h1 style="font-size:clamp(26px,3.2vw,38px);line-height:1.1;letter-spacing:-0.03em;margin-bottom:10px;">Price the Audit Log, Not the Policy</h1>
+    <p style="font-size:15px;color:var(--mmt-text-secondary);margin-bottom:20px;"><em>The privacy control in this market is not a policy, a certification, or a vendor assurance. It is a log, and whether you can read it is a contract term.</em></p>
+
+    <div class="pills">
+      <span class="pill pill-gold">Capture Corner</span>
+      <span class="pill ">ALPR &amp; DFR Acquisition</span>
+      <span class="pill pill-red">Protestable Terms</span>
+    </div>
+
+    <div data-gate="free" style="display:block;">
+      <div class="gate-notice">
+        <h3>&#9733; Premium Capture Corner</h3>
+        <p>Three California jurisdictions set restrictions their platforms did not enforce. Every one could produce a written policy, and none could produce the query log without an audit. This Capture Corner prices the six contract terms that decide whether a federal health buyer specifies the control or inherits the vendor default, what the June 29 Chatrie decision did to every retention-window defense, and why the false-positive threshold is the protestable term. Premium members read the full brief. Subscribe at missionmeetstech.com/pricing.</p>
+        <a class="gate-cta" href="/pricing">See premium plans</a>
+      </div>
+    </div>
+
+    <div data-access="premium" data-gate="premium" class="brief-body">
+
+<p><em>Capture Corner is the premium BD intelligence companion to Mission Meets Tech. Public-record sourced. Independent analysis. Not a recommendation, not vendor advocacy, not capture material. Built for federal health BD, capture, and proposal leaders who need analytical depth, not headlines.</em></p>
+<p><em>This issue is the companion to &quot;A Plate Read Launches an Aircraft,&quot; published this week. The public piece reads the documents and the trajectory. This one works the buy: which grant programs now pay for plate readers and drone-as-first-responder systems and what that does to physical security scope on VA and DHA work, where false-positive acceptance criteria get set in solicitations and why that creates a protestable term, the audit-log language to demand as a deliverable instead of a reported feature, the data ownership and termination clauses worth pricing before award, the retention-period language that stopped being a privacy control on June 29, and the federal-access opt-out that has to be a contract term because a setting is not a control.</em></p>
+<hr>
+<h2>1. The picture at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Federal buyers on record</td>
+<td>VA (two awards, 36C25023P1216 and 36C25025P1681), Interior/US Park Police (140D0425P0230) [CC1]</td>
+</tr>
+<tr>
+<td>Total federal obligation, Flock Group Inc.</td>
+<td>Roughly $297,050 across three prime awards</td>
+</tr>
+<tr>
+<td>Platform authorization</td>
+<td>FedRAMP Certified, 20x, Class B (Low baseline), package FR2527955211, since July 25, 2025 [CC2]</td>
+</tr>
+<tr>
+<td>Governing records notice</td>
+<td>103VA07B, republished 89 FR 23638, April 4, 2024. No reference to cameras, plate readers, drones, or aerial systems [CC3]</td>
+</tr>
+<tr>
+<td>Constitutional development</td>
+<td>Chatrie v. United States, 609 U.S. ___ , decided June 29, 2026, 6-3 [CC4]</td>
+</tr>
+<tr>
+<td>Pending federal restriction</td>
+<td>PRIVACY Act, H.R. introduced July 15, 2026, House Judiciary and House Oversight [CC5]</td>
+</tr>
+<tr>
+<td>Aerial market gate</td>
+<td>FAA Part 91 DFR waivers; more issued April 2025 to February 2026 than in the prior seven years combined; 1,000-plus agencies holding [CC6]</td>
+</tr>
+<tr>
+<td>Product convergence</td>
+<td>Flock acquired Aerodome October 2024 for over $300M; Alpha dispatches on 911, gunshot, or plate-reader hit [CC7][CC8]</td>
+</tr>
+</tbody></table>
+<p><strong>Confidence: High on the awards, the FedRAMP package, the records notice, and Chatrie.</strong> All four are primary-source verified. <strong>Medium on the FAA waiver counts</strong>, which come from EFF&#39;s reading of FAA-provided figures, not an FAA publication.</p>
+<p><strong>The lead finding for a capture team is that the privacy control in this market is not a policy, a certification, or a vendor assurance. It is a log, and whether you can read it is a contract term.</strong> Three California jurisdictions set restrictions their platforms did not enforce. [CC16] Every one of them could produce a written policy. None of them could produce the query log without an audit.</p>
+<p>That is the discriminator to write into a requirement and the discriminator to bid against.</p>
+<hr>
+<h2>2. Where the money comes from</h2>
+<p><strong>Confidence: Medium. The statutory and appropriations figures below trace to secondary legal and trade analysis, not to appropriations text I verified line by line for this brief. Verify against the FY2026 Joint Explanatory Statement and the applicable NOFO before pricing a bid on them.</strong></p>
+<p>The FY2026 NDAA amended the Omnibus Crime Control and Safe Streets Act to make unmanned aircraft systems and counter-UAS explicitly grant-eligible. That is the structural change most vendors have not priced. It converts a local surveillance purchase into a federally reimbursable line item, which means the buying decision and the funding decision sit in different places and move on different clocks.</p>
+<p>Three passthroughs carry most of it: DOJ Byrne JAG, COPS Technology and Equipment, and DHS/FEMA Homeland Security Grant Program, with Byrne JAG the largest by a wide margin. [CC13]</p>
+<p><strong>What this does to federal health capture specifically.</strong> VA and DHA physical security scope has historically been priced as guard services, access control, and CCTV. A grant-eligible sensor market sitting alongside a federal facility market creates two effects worth modeling:</p>
+<ul>
+<li><strong>Requirement language migrates.</strong> SLTT solicitations move faster than federal ones, so the acceptance criteria, data-handling clauses, and audit provisions that appear in a county sheriff&#39;s RFP in Q1 tend to show up in federal facility security scope two to four quarters later. Reading SLTT solicitations is cheap market research for a federal pursuit.</li>
+<li><strong>Incumbency forms outside your view.</strong> A vendor that wins a no-cost pilot at a municipality adjacent to a VA medical center builds an operational relationship with the same regional law enforcement partners the VA Police coordinate with. That is not a contract, and it is a reference.</li>
+</ul>
+<p><strong>The no-cost pilot is the mechanism to understand.</strong> The pattern documented in municipal records is a free or heavily discounted trial that converts to a multi-year paid contract unless the buyer affirmatively withdraws by a date. A governing body votes on a pilot. It does not vote on the conversion. If you are bidding against that structure, the competitive fact is that the incumbent arrives with deployed hardware and an installed integration before the competitive action exists. [CC14]</p>
+<hr>
+<h2>3. The field, and where the gates are</h2>
+<p><strong>Confidence: Medium. Vendor positions below are drawn from public reporting and company materials. Treat the competitive read as analysis.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Player</th>
+<th>Position</th>
+<th>Gate that matters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Flock Safety</td>
+<td>Largest ALPR install base; Alpha DFR after the Aerodome acquisition; Nova people-lookup platform</td>
+<td>FedRAMP Low baseline caps the federal data it can carry; sharing-default architecture is now a live procurement question</td>
+</tr>
+<tr>
+<td>Skydio</td>
+<td>Blue UAS Cleared List across its lineup; R10 positioned as the cleared DFR system</td>
+<td>Blue UAS status is grant eligibility, not a badge</td>
+</tr>
+<tr>
+<td>Motorola Solutions</td>
+<td>CAPE software plus airframes; Plano five-year award July 27, 2026; Yonkers running Nokia airframes on CAPE</td>
+<td>Software layer is the durable position, airframe is substitutable</td>
+</tr>
+<tr>
+<td>BRINC</td>
+<td>Equipment plus software plus training bundles at municipal scale</td>
+<td>Training-inclusive delivery is a differentiator in agencies with no aviation unit</td>
+</tr>
+<tr>
+<td>Axon</td>
+<td>Evidence.com FedRAMP authorized; Axon Air integration; Lightpole ALPR entry</td>
+<td>Evidence management is the sticky layer</td>
+</tr>
+<tr>
+<td>Leonardo (ELSAG)</td>
+<td>SignalTrace device-signal collection add-on; US arm holds USSOCOM and GSA contracts [CC9]</td>
+<td>Federal vehicles already in place; device collection sits outside the requirement language currently in circulation</td>
+</tr>
+</tbody></table>
+<p><strong>Two competitive observations worth carrying into a bid review.</strong></p>
+<p><strong>The airframe is not the position.</strong> Yonkers runs Nokia aircraft on Motorola software, and Plano bought a Motorola program. [CC12] A team that bids hardware into this market is bidding the substitutable layer. The durable positions are the dispatch software, the evidence chain, and the integration into an existing records management or computer-aided dispatch system.</p>
+<p><strong>Leonardo is the name missing from most competitive assessments.</strong> SignalTrace is a Bluetooth, Wi-Fi, and RFID collection add-on for plate reader infrastructure, first reported in June, and it belongs to a company that already holds federal vehicles. Much of the public conversation this month has misattributed that capability to Flock. If your competitive intelligence file has that wrong, your requirement language will be aimed at the wrong vendor and your teaming decision will be built on a false picture of who can actually deliver device-level collection.</p>
+<hr>
+<h2>4. The six terms to price before award</h2>
+<p><strong>Confidence: High on the underlying facts each term responds to. The contract language framing is my analytical construction.</strong></p>
+<p>Each of these is a place where a buyer either specifies a control or inherits a vendor default. Every one of them has a documented failure behind it.</p>
+<p><strong>1. Audit-log access as a deliverable, not a feature.</strong> The failure it answers: Oxnard, Ventura County, San Francisco, Pasadena, and Illinois all learned what had happened in their data from an audit, and in Pasadena&#39;s case corrected a public statement afterward. A vendor-generated report substitutes the seller&#39;s account of the log for the log. The term should specify the buyer&#39;s ability to export the complete query log, including querying agency, authority asserted, justification text, and timestamp, on demand and without vendor mediation, in a machine-readable format, for the full retention period.</p>
+<p><strong>2. Enumerated query authorities.</strong> Who may query, under what authority, is a list. If the list lives in a settings panel, it is a preference. If it lives in the contract, it is a control. For a federal health facility, this is also the term that connects to the Privacy Act, because a routine use is exactly an enumerated disclosure authority and the two documents should say the same thing.</p>
+<p><strong>3. Federal-access opt-out as a contract term.</strong> Flock&#39;s stated position is that federal sharing is disabled by default and requires explicit local grant. Three jurisdictions had set restrictions and were queried anyway. The distinction that matters at award is between a setting the vendor can change with a feature release and a term the vendor cannot change without a modification.</p>
+<p><strong>4. Data ownership and disposition at termination.</strong> Oakland County commissioners amended a drone deal specifically to guarantee the sheriff owned the data. That amendment happened because someone read the default. Specify ownership, export format, deletion verification, and the vendor&#39;s obligation to certify deletion at termination or non-renewal.</p>
+<p><strong>5. Retention as a records provision, not a privacy control.</strong> See Section 5. This one changed on June 29.</p>
+<p><strong>6. False-positive threshold in the acceptance criteria.</strong> See Section 6. This is the protestable one.</p>
+<hr>
+<h2>5. What Chatrie did to retention language</h2>
+<p><strong>Confidence: High on the holding. Medium on the acquisition consequence, which is my read.</strong></p>
+<p>On June 29, 2026, the Supreme Court held 6-3 in Chatrie v. United States that police conduct a Fourth Amendment search when they acquire a person&#39;s cell-phone location history, and it rejected the government&#39;s argument that a narrow, time-limited slice of a larger dataset falls outside the Amendment [CC4].</p>
+<p>The reason this belongs in a capture brief and not a legal one: <strong>retention windows have been doing double duty in this market as both a records-management provision and a privacy control, and only one of those two jobs survived the decision.</strong></p>
+<p>A federal district court upheld Norfolk&#39;s plate reader network in January on reasoning that a rolling 21-day window did not capture enough of a person&#39;s life to matter constitutionally [CC10]. That case is now at the Fourth Circuit, the same circuit Chatrie came from, and Norfolk requested additional time specifically to respond to the decision [CC11].</p>
+<p><strong>Three practical consequences.</strong></p>
+<p>A requirement that specifies a retention period and stops there has specified a storage cost, not a safeguard. If your technical volume treats a 30-day window as the privacy answer, expect that to age badly inside the period of performance.</p>
+<p>The question shifting into view is capability rather than use. The Institute for Justice is arguing that Chatrie moves the analysis toward what a system is able to collect instead of what officers actually pulled. Whether or not a court adopts it, that framing is already in requirement-writing circulation, and a system description that emphasizes restraint in use while the capability is unbounded is the profile most exposed to it.</p>
+<p>Anything with a multi-year period of performance should carry a change-in-law clause that contemplates a retention or warrant requirement arriving mid-performance. Pricing a five-year DFR program in this environment without one is taking a regulatory position you were not paid to take.</p>
+<hr>
+<h2>6. The false-positive threshold, and why it is protestable</h2>
+<p><strong>Confidence: Medium. The LAPD audit figures are from public reporting on the Inspector General&#39;s findings. The protest analysis is my construction.</strong></p>
+<p>The Los Angeles Police Department&#39;s Inspector General reviewed plate reader hot-list alerts over a two-month sample and found 161 incorrect stolen-vehicle flags against 337 correct ones. [CC15] Roughly one alert in three was wrong.</p>
+<p><strong>Here is the acquisition problem.</strong> In most solicitations for this class of system, accuracy shows up as a marketing claim in a capability statement, with no measurable acceptance criterion carrying a threshold, a test method, and a remedy. That produces three consequences a capture lead should be able to name in a bid/no-bid meeting.</p>
+<p><strong>It removes a discriminator.</strong> If the requirement does not specify a false-positive threshold, a bidder with a demonstrably better matching engine cannot price a premium for it, because the government has not created a place to evaluate it. Technical superiority with no evaluation hook is B&amp;P spent on nothing.</p>
+<p><strong>It creates protest exposure for the government.</strong> A solicitation that evaluates accuracy without defining how accuracy is measured invites a challenge to the evaluation criteria&#39;s adequacy. If your competitor wins on an accuracy claim the RFP never defined a way to test, the evaluation record on that factor is thin.</p>
+<p><strong>It is the strongest question to ask in an industry day.</strong> Requesting that the government define a measurable accuracy threshold, a test protocol, and a remedy for exceedance is a question that improves the requirement and simultaneously advantages whoever can actually meet the threshold. That is the rare industry-day question that serves both sides, which is also why it usually gets answered.</p>
+<p>Then extend the same logic upward. That matching logic is now mounted on an aircraft that dispatches on a plate hit and reads plates from two thousand feet. The error rate did not improve on the way up, and the consequence of an error changed.</p>
+<hr>
+<h2>7. The designation mechanism inside the privacy bill</h2>
+<p><strong>Confidence: Medium. The bill text summary is from public reporting on introduction. Verify against the referred text before briefing it internally.</strong></p>
+<p>Representative Keith Self introduced the Protecting Rights in Video and Equipment Acquired Discovery Act on July 15, 2026. It would require a warrant before federal law enforcement queries state or local surveillance data, purge warrant-obtained data after thirty days, <strong>direct the creation of a federal list of covered surveillance technologies</strong>, and <strong>bar federal funds from buying or installing them</strong>, with exceptions [CC5].</p>
+<p>Most coverage has treated this as a privacy bill. For a capture team it is something else.</p>
+<p>A federal list of covered surveillance technologies is a designation process. Designation processes decide who is in scope, who is exempt, and what an exception costs to obtain. Section 848 supply chain restrictions and the Blue UAS Cleared List already demonstrate the pattern in the aerial market: a list that begins as a security measure becomes the eligibility gate that decides which vendors can be bought with federal money.</p>
+<p><strong>Watch three things.</strong> Whether the bill moves out of Judiciary. Whether the list construct survives markup, because that is the durable part even if the warrant requirement does not. And whether any exception language distinguishes facility-perimeter security from investigative network participation, because that distinction is the difference between a VA medical center being able to buy a camera at all and having to buy it from a different market.</p>
+<hr>
+<h2>8. What to do in the next ninety days</h2>
+<p><strong>Federal health pursuits.</strong> If you are positioning physical security scope on VA or DHA work, pull 103VA07B and read it against whatever sensor scope is in your solution. A capability that the customer&#39;s own published records notice does not describe is a capability the customer may not be able to accept without a notice amendment, and a notice amendment is a schedule risk you should price rather than discover.</p>
+<p><strong>Solicitation review.</strong> For any active or forecast opportunity touching plate readers, cameras, or drone-as-first-responder capability, check for six things: audit-log export, enumerated query authorities, federal-access terms, data disposition at termination, retention with a stated purpose, and a defined accuracy threshold. Missing terms are questions to ask, and they are also where a protest lives if you lose to a claim the RFP never made testable.</p>
+<p><strong>Teaming.</strong> The durable layer is software and evidence chain, not airframe. If your team is assembled around a hardware position, look at what happens to it when the customer switches airframes and keeps the dispatch software.</p>
+<p><strong>Competitive files.</strong> Correct the SignalTrace attribution if you have it wrong. It is Leonardo&#39;s, not Flock&#39;s, and a requirement aimed at the wrong vendor is worse than no requirement.</p>
+<hr>
+<p>Let&#39;s roll.</p>
+<p>Mary</p>
+<p>Mission Meets Tech Premium</p>
+<hr>
+<p><em>Next Capture Corner: scheduled for the next major federal health or defense-health opportunity in active capture. Subscribers will receive an alert when the next issue publishes.</em></p>
+<p><em>Capture Corner is an independent intelligence product. It is not affiliated with the Department of Veterans Affairs, the Department of War, the Defense Health Agency, or any company named here, and it is not connected to any offeror&#39;s bid strategy. Premium subscription includes access to the standing intelligence sidebar plus the searchable archive.</em></p>
+<hr>
+<h2>Sources</h2>
+<p>[CC1] USAspending.gov, <code>spending_by_award</code> API, recipient &quot;Flock Group,&quot; FY21 to present, contract award types A/B/C/D. Award 140D0425P0230, Department of the Interior, $231,600, start September 25, 2025. Award 36C25023P1216, Department of Veterans Affairs, $44,450, start July 2, 2023. Award 36C25025P1681, Department of Veterans Affairs, $21,000, start September 18, 2025. <a href="https://www.usaspending.gov/">https://www.usaspending.gov/</a></p>
+<p>[CC2] FedRAMP Marketplace, Flock Safety Platform, package FR2527955211, FedRAMP Certified, 20x, Class B (Low), authorized July 25, 2025. <a href="https://www.fedramp.gov/marketplace/products/FR2527955211/">https://www.fedramp.gov/marketplace/products/FR2527955211/</a></p>
+<p>[CC3] Department of Veterans Affairs, &quot;Privacy Act of 1974; System of Records,&quot; 89 FR 23638, April 4, 2024, full republication of 103VA07B. Full text checked August 9, 2026 for references to license plate readers, ALPR, cameras, drones, aircraft, and unmanned or aerial systems; none appear. <a href="https://www.federalregister.gov/documents/2024/04/04/2024-07137/privacy-act-of-1974-system-of-records">https://www.federalregister.gov/documents/2024/04/04/2024-07137/privacy-act-of-1974-system-of-records</a></p>
+<p>[CC4] Chatrie v. United States, No. 25-112, 609 U.S. ___ (June 29, 2026), Kagan, J., 6-3. <a href="https://www.supremecourt.gov/opinions/25pdf/25-112_0am4.pdf">https://www.supremecourt.gov/opinions/25pdf/25-112_0am4.pdf</a></p>
+<p>[CC5] Protecting Rights in Video and Equipment Acquired Discovery (PRIVACY) Act, introduced by Rep. Keith Self (R-TX-3), July 15, 2026; referred to House Judiciary and House Oversight and Government Reform. Bill summary from public reporting on introduction; verify against referred text. <a href="https://tx3dnews.com/keith-self-privacy-act-flock-camera-warrant/">https://tx3dnews.com/keith-self-privacy-act-flock-camera-warrant/</a></p>
+<p>[CC6] Electronic Frontier Foundation, &quot;Hundreds of Drone-as-First-Responder Programs Could Soon Be Launched Across the Country,&quot; July 2026. FAA waiver counts attributed to an FAA representative; not independently verified against an FAA publication. <a href="https://www.eff.org/deeplinks/2026/07/hundreds-drone-first-responder-programs-could-soon-be-launched-across-country">https://www.eff.org/deeplinks/2026/07/hundreds-drone-first-responder-programs-could-soon-be-launched-across-country</a></p>
+<p>[CC7] TechCrunch, &quot;Flock Safety paid over $300 million for 17-month-old drone startup Aerodome,&quot; October 23, 2024. <a href="https://techcrunch.com/2024/10/23/flock-safety-paid-over-300-million-for-17-month-old-drone-startup-aerodome/">https://techcrunch.com/2024/10/23/flock-safety-paid-over-300-million-for-17-month-old-drone-startup-aerodome/</a></p>
+<p>[CC8] Flock Safety, &quot;Flock DFR - Drone as First Responder&quot; product page. Source for dispatch to the geo-coordinates of 911 calls, LPR hits, gunshot detection, or manual operator command; 60 mph; plate reads to 2,000 feet. <a href="https://www.flocksafety.com/products/flock-dfr">https://www.flocksafety.com/products/flock-dfr</a></p>
+<p>[CC9] Joseph Cox, &quot;This Company Will Add Phone, AirPod, and Smartwatch Trackers to License Plate Readers,&quot; 404 Media, June 8, 2026. Source for SignalTrace as a Leonardo ELSAG product and Leonardo&#39;s US arm holding USSOCOM and GSA contracts. <a href="https://www.404media.co/this-company-will-add-phone-airpod-and-smartwatch-trackers-to-license-plate-readers/">https://www.404media.co/this-company-will-add-phone-airpod-and-smartwatch-trackers-to-license-plate-readers/</a></p>
+<p>[CC10] Courthouse News Service, &quot;Judge holds Norfolk&#39;s license plate reader use constitutional,&quot; January 27, 2026. Source for Judge Mark Davis&#39;s summary judgment, the 176-camera network in roughly 75 clusters, and the 21-day retention reasoning. <a href="https://www.courthousenews.com/judge-holds-norfolks-license-plate-reader-use-constitutional/">https://www.courthousenews.com/judge-holds-norfolks-license-plate-reader-use-constitutional/</a></p>
+<p>[CC11] 13News Now, &quot;Norfolk license plate reader lawsuit gains momentum after US Supreme Court ruling,&quot; July 8, 2026. Source for the Fourth Circuit appeal in Schmidt v. City of Norfolk, Norfolk&#39;s request for additional time to respond to Chatrie, the Institute for Justice capability-versus-use framing, and expected oral argument timing. <a href="https://www.13newsnow.com/article/news/local/mycity/norfolk/norfolk-license-plate-reader-lawsuit-gains-momentum-after-us-supreme-court-ruling/291-7785e25b-7a48-4d3e-8560-b456b4925dc5">https://www.13newsnow.com/article/news/local/mycity/norfolk/norfolk-license-plate-reader-lawsuit-gains-momentum-after-us-supreme-court-ruling/291-7785e25b-7a48-4d3e-8560-b456b4925dc5</a></p>
+<p>[CC12] Government Technology, &quot;Flock Drones Spark Debate in Two Connecticut Cities,&quot; August 2026; Audacy KRLD, Plano City Council five-year drone-as-first-responder contract with Motorola Solutions, approved July 27, 2026; reporting on Yonkers Police drones operating on Motorola CAPE software. <a href="https://www.govtech.com/public-safety/flock-drones-spark-debate-in-two-connecticut-cities">https://www.govtech.com/public-safety/flock-drones-spark-debate-in-two-connecticut-cities</a> · <a href="https://www.audacy.com/krld/news/local/plano-is-latest-dfw-community-to-add-drones-to-first-responder-program">https://www.audacy.com/krld/news/local/plano-is-latest-dfw-community-to-add-drones-to-first-responder-program</a></p>
+<p>[CC13] Grant eligibility framing: FY2026 NDAA amendments to the Omnibus Crime Control and Safe Streets Act making UAS and counter-UAS grant-eligible, and the DOJ Byrne JAG, COPS Technology and Equipment, and DHS/FEMA HSGP passthroughs. Traced to secondary legal and trade analysis, not appropriations text verified for this brief. Verify against the FY2026 Joint Explanatory Statement and the applicable notice of funding opportunity before pricing.</p>
+<p>[CC14] Municipal contract structures, including the no-cost pilot converting to a multi-year paid contract absent affirmative withdrawal, and the Oakland County amendment guaranteeing sheriff ownership of data. Drawn from local government reporting and meeting records. Treated as indicative of the pattern; verify the specific instrument before citing in a bid.</p>
+<p>[CC15] Los Angeles Police Department Inspector General audit findings on ALPR hot-list alerts, two-month sample, 161 incorrect stolen-vehicle flags against 337 correct. From public reporting on the audit, not the audit document itself. Verify against the OIG report before external use.</p>
+<p>[CC16] Oxnard Police Department statement of February 27, 2026 on its Flock audit; Pasadena Now on VA Police queries of Pasadena PD data and the initial no-federal-access report subsequently corrected; Mission Local on the San Francisco audit finding 1.6 million federal and out-of-state queries across seven months; edhat on the Ventura County Sheriff&#39;s National Lookup disablement and approximately 364,000 out-of-state queries in a one-month window. <a href="https://vidanewspaper.com/2026/03/05/oxnard-police-department-suspends-use-of-cameras/">https://vidanewspaper.com/2026/03/05/oxnard-police-department-suspends-use-of-cameras/</a> · <a href="https://pasadenanow.com/main/veterans-affairs-police-accessed-local-flock-license-plate-reader-database">https://pasadenanow.com/main/veterans-affairs-police-accessed-local-flock-license-plate-reader-database</a> · <a href="https://missionlocal.org/2026/06/federal-agencies-sf-surveillance-flock-data-audit/">https://missionlocal.org/2026/06/federal-agencies-sf-surveillance-flock-data-audit/</a> · <a href="https://www.edhat.com/ventura/news/oxnard-police-suspend-flock-license-plate-readers-ventura-agencies-tighten-controls-after-out-of-state-access/">https://www.edhat.com/ventura/news/oxnard-police-suspend-flock-license-plate-readers-ventura-agencies-tighten-controls-after-out-of-state-access/</a></p>
+<p>Sources verified as of August 9, 2026.</p>
+
+
+    <div class="deep-dive-card">
+  <div class="section-label" style="color:var(--ci-gold);margin-bottom:8px;">Custom Deep Dive &middot; Premium Add-On</div>
+  <h3>Want a custom deep-dive on any line in this brief?</h3>
+  <p>Every line in this brief traces to a public record: the three Flock Group prime awards, the FedRAMP package, the FY2026 NDAA grant-eligibility amendment and its Byrne JAG, COPS, and HSGP passthroughs, 103VA07B, Chatrie, and the pending PRIVACY Act. Want any one line turned into a one-page position for a specific capability or program office, or the six contract terms drafted against an active solicitation? Reply to this issue and tell me the office and the vehicle.</p>
+  <div class="deep-dive-price"><span class="amount">$50</span><span class="unit">one-time &middot; 5&ndash;7 business day turnaround</span></div>
+  <p>I will pull the additional public-record sources, read the visible signal, and write a 4&ndash;6 page custom intelligence memo on the area you select. You name the question; I do the BD-grade analysis.</p>
+  <p style="margin-bottom:18px;"><a class="deep-dive-cta" href="https://buy.stripe.com/6oUdRb2NEaQI3uM6KL4c803">Buy a Custom Deep Dive &mdash; $50 &rarr;</a></p>
+  <p class="deep-dive-examples">Examples: <em>Deep Dive — the grant pathways (Byrne JAG, COPS, HSGP) that fund ALPR and DFR at a named facility · Deep Dive — the six audit-log and query-authority terms drafted against your active solicitation · Deep Dive — pricing a change-in-law clause for a five-year DFR period of performance after Chatrie</em></p>
+</div>
+
+    </div>
+  </main>
+
+  <footer class="footer"></footer>
+</body>
+</html>
