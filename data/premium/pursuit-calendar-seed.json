@@ -1,11 +1,11 @@
 {
   "_meta": {
     "description": "Pursuit Calendar seed events. Source of truth when Supabase pursuit_calendar table is unreachable. Times are America/New_York (ET). Status is computed dynamically by the renderer for date-based events; explicit status values (Protest, Protest Due, Watch, Needs Source) are honored as-is.",
-    "last_curated_at": "2026-08-03",
+    "last_curated_at": "2026-08-10",
     "curator": "automated",
     "timezone": "America/New_York",
-    "window_start": "2026-08-03",
-    "window_end": "2026-11-01"
+    "window_start": "2026-08-10",
+    "window_end": "2026-11-08"
   },
   "events": [
     {
