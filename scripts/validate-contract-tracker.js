@@ -134,6 +134,56 @@ function validateContractsJson() {
   return data;
 }
 
+// --- Freshness audit ------------------------------------------------------
+// contracts.json is HAND-MAINTAINED. Nothing auto-refreshes the listing facts
+// (status / value / last_verified): the contract-intel-refresh cron writes the
+// Supabase contract_intel table used on DETAIL pages, never this file. Without a
+// tripwire the /contract-tracker LISTING silently ages — on 2026-08-17, 33 of 64
+// entries were >100 days stale, so closed April solicitations still rendered as
+// "upcoming."
+//
+// Default: NON-FATAL. It prints the rot in every build log + local run so the
+// staleness can never hide again, but never breaks a deploy. Once the backlog is
+// re-verified, make it enforcing by setting a hard ceiling:
+//   CONTRACT_TRACKER_MAX_AGE_DAYS=60 node scripts/validate-contract-tracker.js
+const WARN_AGE_DAYS = Number(process.env.CONTRACT_TRACKER_WARN_AGE_DAYS || 45);
+const MAX_AGE_DAYS = Number(process.env.CONTRACT_TRACKER_MAX_AGE_DAYS || 0); // 0 = non-fatal
+
+function ageInDays(lastVerified) {
+  // last_verified is a YYYY-MM-DD date string. Parse as UTC midnight.
+  const t = Date.parse(String(lastVerified || "") + "T00:00:00Z");
+  if (Number.isNaN(t)) return { ageDays: Infinity, valid: false };
+  return { ageDays: Math.floor((Date.now() - t) / 86400000), valid: true };
+}
+
+function auditFreshness(data) {
+  if (!Array.isArray(data)) return;
+  const rows = data
+    .map((c) => ({ slug: c.slug || c.name || "?", status: c.status, last_verified: c.last_verified, ...ageInDays(c.last_verified) }))
+    .sort((a, b) => b.ageDays - a.ageDays);
+
+  const malformed = rows.filter((r) => !r.valid);
+  const stale = rows.filter((r) => r.valid && r.ageDays > WARN_AGE_DAYS);
+
+  // Malformed last_verified is always a hard failure — a listing with an
+  // unparseable date can never be age-checked.
+  malformed.forEach((r) => fail(`freshness:${r.slug}`, `last_verified not a parseable YYYY-MM-DD date: ${JSON.stringify(r.last_verified)}`));
+
+  if (!stale.length) {
+    console.log(`validate-contract-tracker: freshness OK — all ${rows.length} listings verified within ${WARN_AGE_DAYS}d`);
+  } else {
+    const oldest = stale[0];
+    console.warn(`\nvalidate-contract-tracker: ⚠ FRESHNESS — ${stale.length}/${rows.length} listings not verified in ${WARN_AGE_DAYS}+ days (oldest ${oldest.ageDays}d: ${oldest.slug}). contracts.json is hand-maintained; re-verify status/value/last_verified.`);
+    stale.slice(0, 15).forEach((r) => console.warn(`    ${String(r.ageDays).padStart(4)}d  ${r.last_verified}  [${r.status}]  ${r.slug}`));
+    if (stale.length > 15) console.warn(`    …and ${stale.length - 15} more`);
+    if (MAX_AGE_DAYS > 0) {
+      const overMax = stale.filter((r) => r.ageDays > MAX_AGE_DAYS);
+      overMax.forEach((r) => fail(`freshness:${r.slug}`, `last_verified ${r.ageDays}d old exceeds CONTRACT_TRACKER_MAX_AGE_DAYS=${MAX_AGE_DAYS}`));
+    }
+  }
+  return { total: rows.length, stale: stale.length, malformed: malformed.length };
+}
+
 function validateGeneratedHtml() {
   const tracker = path.join(DIST, "contract-tracker.html");
   if (!fs.existsSync(tracker)) {
@@ -164,6 +214,7 @@ function main() {
   console.log("validate-contract-tracker: starting…");
   const data = validateContractsJson();
   validateGeneratedHtml();
+  const freshness = auditFreshness(data);
   if (failures.length) {
     console.error("\nvalidate-contract-tracker: FAIL");
     failures.forEach((f) => console.error(f));
@@ -171,7 +222,8 @@ function main() {
   }
   const n = Array.isArray(data) ? data.length : 0;
   const gaps = Array.isArray(data) ? data.filter((c) => c.content_gap === true).length : 0;
-  console.log(`validate-contract-tracker: OK — ${n} contracts pass structure + delivery integrity (${gaps} placeholder records flagged with content_gap_note)`);
+  const staleNote = freshness && freshness.stale ? `, ${freshness.stale} stale >${WARN_AGE_DAYS}d` : "";
+  console.log(`validate-contract-tracker: OK — ${n} contracts pass structure + delivery integrity (${gaps} placeholder records flagged with content_gap_note${staleNote})`);
 }
 
 main();
