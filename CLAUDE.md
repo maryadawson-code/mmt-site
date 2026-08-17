@@ -1,5 +1,74 @@
 # Mission Meets Tech - Developer & Content Governance
 
+## Sprint 2026-08-17 — Contract Tracker listing was months stale (paid product): full re-verification + freshness guards
+
+Mary flagged `/contract-tracker` serving old/stale data. Root cause: the
+**listing renders at build time from the hand-maintained `contracts.json`, and
+nothing auto-refreshes its listing facts** (`status`, `value`, `last_verified`).
+The only live automation, `contract-intel-refresh` (cron), writes the Supabase
+`contract_intel` table behind the DETAIL pages via `getRefreshRoster()` — it
+reads `contracts.json` as its roster but never writes back to it. So the listing
+silently rotted: **63 of 64 entries were >45 days stale, 33 >100 days**, and
+closed April solicitations still rendered as "upcoming" (e.g. PEO DHMS
+Deployment Solutions, awarded July 31, still showed upcoming). `AUTO_INTELLIGENCE_SPEC.md`
+promised "Contract Tracker (premium auto-updates)" that was never built for the
+listing — a spec-vs-reality gap that set the false expectation (now corrected in
+that file with a reality-check note).
+
+Nobody caught it because `validate-contract-tracker.js` checked that
+`last_verified` EXISTS but never its AGE.
+
+Fix (shipped):
+- **Build tripwire** (`scripts/validate-contract-tracker.js`): a freshness audit,
+  NON-FATAL by default (prints the stale count + oldest offenders in every build
+  log; exit 0 so it never breaks a deploy given the backlog). Malformed
+  `last_verified` is a hard failure. Opt-in enforcement once the backlog is clear:
+  `CONTRACT_TRACKER_MAX_AGE_DAYS=60` makes aging entries fatal;
+  `CONTRACT_TRACKER_WARN_AGE_DAYS` tunes the warn line (default 45). (PR #163.)
+- **Watched-channel tripwire** (`intel-quality-report.js`): new
+  `_trackerListingStale()` reads `contracts.json` (bundled, no Supabase) and the
+  weekly Friday email now carries a "Contract Tracker listings not re-verified
+  (>45d)" section + count in the subject + `tracker_listing_stale` in the
+  ops_event. Build logs go unread; this email does not.
+- **Full re-verification pass**: 8 parallel research subagents WebSearched the
+  current status of all 64 entries (SAM.gov/USASpending/GovCon trade press),
+  returning sourced, confidence-scored findings. Reconciled conservatively
+  (`scratchpad/reconcile.js` pattern): high/medium confidence → update
+  `status`/`value`, prepend a dated `Update Aug 17, 2026:` line to the
+  description, add the source URL (SAM links only if 32-hex per the 08-05 rule),
+  bump `last_verified`. **23 status corrections** (many upcoming→awarded/active,
+  e.g. T4NG2, CMS RMADA 3, CMS RHTP, IHS RPMS, VA IHT 2.0, CMS OCI), **12 value
+  updates**, **56/64 re-verified to today**. Low/unknown confidence (8 entries)
+  were LEFT unverified — `last_verified` NOT bumped — so the tripwire keeps
+  flagging them honestly rather than stamping a date we did not earn.
+- **New `closed` status bucket** in `build.js` (`CONTRACT_STATUS_LABELS`/`COLORS`
+  + render group + `js/contract-tracker.js statusLabel`): HRSA OPTN Next Gen
+  (cancelled) and CMS SPARC II (CMS confirms no successor) now render as
+  "Closed / Cancelled" instead of a false "upcoming".
+- **Data-quality fixes surfaced by the pass**: `va-edge` carried a malformed SAM
+  solicitation-number link (not 32-hex) — replaced with the real permalink;
+  `aspr-npivs` is misidentified (its solicitation 75A50126R00001 resolves to a
+  BARDA pandemic-influenza vaccine effort, not a provider identity system) —
+  flagged in-description and left unverified for Mary's decision (rename/replace).
+
+Not fixed here (needs prod access this web session lacks — egress policy blocks
+`missionmeetstech.com`, `sam.gov`, `usaspending.gov`, and there are no prod
+Supabase creds): the premium **Opportunity Radar "stale" banner**. The feed
+freshness math is correct and the worker stamps `scan_date` on every write, so a
+stale banner means the `opportunity-radar` cron is not completing writes. Confirm
+via Netlify function logs + the `RADAR_SCAN_OK`/`RADAR_SCAN_EMPTY`/error rows the
+worker writes to `ops_ledger`, and `select max(scan_date) from opportunity_radar`.
+
+Hard rule (do not regress): **`contracts.json` is hand-maintained. No cron
+refreshes the LISTING facts (`status`/`value`/`last_verified`) — `contract-intel-refresh`
+only touches the Supabase `contract_intel` behind DETAIL pages.** Re-verify the
+listing on a cadence against SAM.gov/USASpending and bump `last_verified`; the
+build tripwire + weekly email are the guards, not a substitute for the
+re-verification. Never bump `last_verified` without an actual current source —
+an unverified date is worse than an honestly-old one. Verified 2026-08-17:
+`node -c` clean on all touched files; freshness audit reports 8 stale (was 63);
+build + validators below.
+
 ## Sprint 2026-08-05 — Fabricated opportunities in the radar (paid product) + Top-100 workbook fact-check
 
 A fact-check of the Opportunity Radar against Daniel's Top-100 health-spend
