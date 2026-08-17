@@ -1444,11 +1444,13 @@ const CONTRACT_STATUS_COLORS = {
   'active': 'var(--mmt-teal)',
   'upcoming': 'var(--mmt-teal)',
   'awarded': '#FBBF24',
+  'closed': '#6B7280',
 };
 const CONTRACT_STATUS_LABELS = {
   'active': 'Active',
   'upcoming': 'Upcoming',
   'awarded': 'Recently Awarded',
+  'closed': 'Closed / Cancelled',
 };
 
 // Classification taxonomy (see CLAUDE.md / contracts.json schema).
@@ -1752,7 +1754,7 @@ function generateContractTrackerHtml(contracts, contractArticleMap) {
   const articleMap = contractArticleMap || {};
 
   // Group by status
-  const groups = { active: [], upcoming: [], awarded: [] };
+  const groups = { active: [], upcoming: [], awarded: [], closed: [] };
   contracts.forEach(c => {
     const key = c.status || 'active';
     if (groups[key]) groups[key].push(c);
@@ -1760,7 +1762,7 @@ function generateContractTrackerHtml(contracts, contractArticleMap) {
   });
 
   let html = '';
-  ['active', 'upcoming', 'awarded'].forEach(status => {
+  ['active', 'upcoming', 'awarded', 'closed'].forEach(status => {
     const items = groups[status];
     if (items.length === 0) return;
     const color = CONTRACT_STATUS_COLORS[status];

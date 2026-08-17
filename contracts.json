@@ -4,18 +4,19 @@
     "agency": "Department of Veterans Affairs",
     "vendor": "TBD — proposals received Apr 17, 2026; award TBD",
     "value": "Est. $700B IDIQ ceiling; $56.2B FY2027 community care account (+17%)",
-    "status": "upcoming",
+    "status": "active",
     "classification": "Solicitation",
     "naics": "524292",
-    "description": "Next-generation VA community care MA-IDIQ (Solicitation 36C10G26R0003) for CCN Next Gen Medical, replacing current CCN regional contracts. Two new mechanisms enter that do not exist in current CCN: (1) value-based payments starting with lower-extremity joint replacement episodes, with at least three more VBP models added over the performance period; (2) utilization management requiring clinical decision support at the point of authorization. Corporate Experience gate is binary across three references: implementation, program management, and IT integration across multiple states — missing any one factor = Unacceptable. Forces teaming between healthcare payers and systems integrators. MOSA structure with No-Bid provision allows specialized firms to win bench positions and respond only to matching task orders.",
+    "description": "Update Aug 17, 2026: VA released solicitation 36C10G26R0003 on March 6, 2026 for the CCN Next Gen Medical multiple-award IDIQ with a potential 10-year, $700B ceiling; proposals were due March 16, 2026 and no award had been announced as of August 2026, so it is in source selection. Next-generation VA community care MA-IDIQ (Solicitation 36C10G26R0003) for CCN Next Gen Medical, replacing current CCN regional contracts. Two new mechanisms enter that do not exist in current CCN: (1) value-based payments starting with lower-extremity joint replacement episodes, with at least three more VBP models added over the performance period; (2) utilization management requiring clinical decision support at the point of authorization. Corporate Experience gate is binary across three references: implementation, program management, and IT integration across multiple states — missing any one factor = Unacceptable. Forces teaming between healthcare payers and systems integrators. MOSA structure with No-Bid provision allows specialized firms to win bench positions and respond only to matching task orders.",
     "link": "https://sam.gov/opp/7b2734002e4048bfa2ac4cc5b0479930/view",
     "small_business_eligible": false,
     "source": "https://sam.gov/opp/7b2734002e4048bfa2ac4cc5b0479930/view",
     "source_urls": [
+      "https://www.govconwire.com/articles/va-700b-ccn-next-gen-medical-idiq-contract-rfp",
       "https://www.highergov.com/contract-opportunity/q201-ccn-next-gen-medical-36c10g26r0003-k-79930/",
       "https://sam.gov/opp/7b2734002e4048bfa2ac4cc5b0479930/view"
     ],
-    "last_verified": "2026-04-06",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "High ceiling but complex teaming required",
@@ -50,18 +51,19 @@
     "agency": "Department of Veterans Affairs",
     "vendor": "TBD — closed March 16, 2026; awards pending",
     "value": "~$47M",
-    "status": "upcoming",
+    "status": "active",
     "classification": "Solicitation",
     "naics": "621210",
-    "description": "Companion dental network management vehicle to the CCN Next Gen medical IDIQ. Separate procurement, same structural logic: multiple-award IDIQ for nationwide dental network coordination for veterans using community care. New vehicle — no standalone dental companion existed in prior CCN generations. Has received less scrutiny than the medical vehicle, increasing the chance of evaluation inconsistencies that could support a protest. GAO protests must be filed within 10 calendar days of debriefing request or debriefing.",
+    "description": "Update Aug 17, 2026: CCN Next Gen Dental solicitation 36C10G26R0004, a WOSB set-aside multiple-award IDIQ valued near $47M, posted December 2025 with proposals due March 16, 2026; past its proposal deadline and in source selection with no award announced. Companion dental network management vehicle to the CCN Next Gen medical IDIQ. Separate procurement, same structural logic: multiple-award IDIQ for nationwide dental network coordination for veterans using community care. New vehicle — no standalone dental companion existed in prior CCN generations. Has received less scrutiny than the medical vehicle, increasing the chance of evaluation inconsistencies that could support a protest. GAO protests must be filed within 10 calendar days of debriefing request or debriefing.",
     "link": "https://sam.gov",
     "small_business_eligible": false,
     "source": "https://sam.gov",
     "source_urls": [
+      "https://www.federalcompass.com/rfp-opportunity-detail/36C10G26R0004",
       "https://sam.gov"
     ],
     "notes": "source-required",
-    "last_verified": "2026-04-06",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Upcoming — action window within 6 months",
@@ -83,9 +85,10 @@
     "small_business_eligible": false,
     "source": "https://www.highergov.com/contract-opportunity/da10-ambient-scribe-enterprise-idiq-va-26-000129-36c10b26r0006-k-3749d/",
     "source_urls": [
+      "https://orangeslices.ai/protest-filed-ambient-scribe-enterprise-idiq/",
       "https://www.highergov.com/contract-opportunity/da10-ambient-scribe-enterprise-idiq-va-26-000129-36c10b26r0006-k-3749d/"
     ],
-    "last_verified": "2026-05-06",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Award held pending GAO decision Aug 6, 2026",
@@ -124,19 +127,20 @@
     "agency": "Defense Health Agency (DHA) / PEO DHMS",
     "vendor": "TBD",
     "value": "$300M MA-IDIQ; one-year base + four option years",
-    "status": "upcoming",
+    "status": "awarded",
     "classification": "Solicitation",
     "naics": "541512",
-    "description": "Solicitation HT003826RE001 — $300M Multiple-Award IDIQ for on-demand deployment of health IT solutions. One-year base + four option years. Scope: site preparation, training, change management, data migration, user adoption, and post-installation support for MHS GENESIS and OpMed product deployments. Evaluation includes two challenge scenarios (Federal EHR deployment and OpMed product deployment). Small business participation goal: 30% total. CO: Joyce Elaine Pace-Reed (DHMS-CD). NOTE (March 31, 2026): This deployment work aligns with the HCDS 'Services' lane confirmed at Industry Day. The Services lane covers deployment, support, and related execution — this IDIQ may be the vehicle or a predecessor to how HCDS Services lane work is competed.",
+    "description": "Update Aug 17, 2026: DHA selected 12 firms for the PEO DHMS Deployment Solutions multiple-award IDIQ, $300M combined ceiling over five years, ordering period roughly August 2026 to August 2031, from 29 offers. Solicitation HT003826RE001 — $300M Multiple-Award IDIQ for on-demand deployment of health IT solutions. One-year base + four option years. Scope: site preparation, training, change management, data migration, user adoption, and post-installation support for MHS GENESIS and OpMed product deployments. Evaluation includes two challenge scenarios (Federal EHR deployment and OpMed product deployment). Small business participation goal: 30% total. CO: Joyce Elaine Pace-Reed (DHMS-CD). NOTE (March 31, 2026): This deployment work aligns with the HCDS 'Services' lane confirmed at Industry Day. The Services lane covers deployment, support, and related execution — this IDIQ may be the vehicle or a predecessor to how HCDS Services lane work is competed.",
     "link": "https://sam.gov",
     "small_business_eligible": true,
     "sb_note": "30% small business participation goal with sub-goals for SDVOSB, WOSB, HUBZone, SDB",
     "source": "https://www.washingtontechnology.com/contracts/2026/04/dha-starts-bidding-300-tech-deployment-support-contract/412707/",
     "source_urls": [
+      "https://www.washingtontechnology.com/contracts/2026/08/dha-picks-12-300m-product-deployment-contract/415175/",
       "https://www.washingtontechnology.com/contracts/2026/04/dha-starts-bidding-300-tech-deployment-support-contract/412707/",
       "https://console.sweetspotgov.com/opportunity/federal-contract/5f3e744d-1775-5a24-bd91-886c8bd2f634"
     ],
-    "last_verified": "2026-04-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Upcoming — action window within 6 months",
@@ -186,10 +190,11 @@
     "sb_note": "Reported small business set-aside",
     "source": "https://sam.gov",
     "source_urls": [
+      "https://orangeslices.ai/industry-day-alert-3-6b-hhs-one-professional-services-solution-hopss-recompete-of-soar/",
       "https://sam.gov"
     ],
     "notes": "source-required",
-    "last_verified": "2026-03-30",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Upcoming — action window within 6 months",
@@ -212,10 +217,11 @@
     "sb_note": "Multiple distinct lanes create new prime and sub opportunities. HCD carve-out is a small focused contract — potential SDVOSB/WOSB target. Services lane likely to include small business set-asides.",
     "source": "https://sam.gov",
     "source_urls": [
+      "https://www.executivegov.com/articles/dha-mhs-genesis-ehr-draft-contract-strategy",
       "https://sam.gov",
       "https://sam.gov/opp/hcds"
     ],
-    "last_verified": "2026-03-31",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Upcoming — action window within 6 months",
@@ -228,20 +234,21 @@
     "name": "FDA Sentinel 3.0",
     "agency": "Department of Health and Human Services (HHS) / FDA",
     "vendor": "TBD — Market Research / Sources Sought (75F40126SSN00100)",
-    "value": "TBD",
-    "status": "upcoming",
+    "value": "Reported multi-award IDIQ around $304M-$310M",
+    "status": "active",
     "classification": "Solicitation",
     "phase": "Upcoming / Market Research",
     "naics": "518210",
-    "description": "FDA Sentinel 3.0 (2026 updated market research) — reference 75F40126SSN00100. Scope: data broker services Tiers 1-6, GOCO platform Tier 7, and scientific support Tier 8. Sentinel is FDA's national electronic system for monitoring the safety of regulated medical products using real-world data; v3.0 is the next-generation procurement scaffolding.",
+    "description": "Update Aug 17, 2026: VSG LLC (with Cognizance Technologies and Nitya LLC) awarded a Sentinel 3.0 Studies-as-a-Service task order under the Scientific Support Service IDIQ; the multi-award IDIQ spans data partners, a GOCO platform, and scientific support. FDA Sentinel 3.0 (2026 updated market research) — reference 75F40126SSN00100. Scope: data broker services Tiers 1-6, GOCO platform Tier 7, and scientific support Tier 8. Sentinel is FDA's national electronic system for monitoring the safety of regulated medical products using real-world data; v3.0 is the next-generation procurement scaffolding.",
     "link": "https://www.highergov.com/contract-opportunity/sentinel-3-0-2026-updated-market-research-75f40126ssn00100-r-43567/",
     "small_business_eligible": true,
     "sb_note": "Tiered structure may include small business set-aside lanes",
     "source": "https://www.highergov.com/contract-opportunity/sentinel-3-0-2026-updated-market-research-75f40126ssn00100-r-43567/",
     "source_urls": [
+      "https://orangeslices.ai/vsg-cognizance-technologies-and-nitya-llc-awarded-fda-sentinel-3-0-studies-as-a-service-task-order-under-the-scientific-support-service-idiq/",
       "https://www.highergov.com/contract-opportunity/sentinel-3-0-2026-updated-market-research-75f40126ssn00100-r-43567/"
     ],
-    "last_verified": "2026-04-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Upcoming — action window within 6 months",
@@ -254,20 +261,21 @@
     "name": "VA Health Services DevSecOps",
     "agency": "Department of Veterans Affairs / VA TAC",
     "vendor": "TBD — Sources Sought (36C10B26Q0163)",
-    "value": "TBD",
-    "status": "upcoming",
+    "value": "Estimated ceiling around $698M per solicitation listing",
+    "status": "active",
     "classification": "Solicitation",
     "phase": "Sources Sought",
     "naics": "541512",
-    "description": "DA01 Health Services DevSecOps — new-contract Sources Sought (36C10B26Q0163). Scope: Agile health services applications across the lifecycle, ATO support, configuration management, UX, and sustainment.",
+    "description": "Update Aug 17, 2026: Solicitation 36C10B26Q0163 response deadline extended to February 12, 2026 (Amendment 01), so proposals have closed and it is in source selection. No award for this specific requirement found. DA01 Health Services DevSecOps — new-contract Sources Sought (36C10B26Q0163). Scope: Agile health services applications across the lifecycle, ATO support, configuration management, UX, and sustainment.",
     "link": "https://www.highergov.com/contract-opportunity/da01-health-services-devsecops-new-contract-va-36c10b26q0163-r-4a060/",
     "small_business_eligible": true,
     "sb_note": "TBD; SDVOSB pathways anticipated",
     "source": "https://www.highergov.com/contract-opportunity/da01-health-services-devsecops-new-contract-va-36c10b26q0163-r-4a060/",
     "source_urls": [
+      "https://g2x.com/app/opportunities/sam/3cc2c1b5-03bc-4e8d-84d6-039fd7e4a060",
       "https://www.highergov.com/contract-opportunity/da01-health-services-devsecops-new-contract-va-36c10b26q0163-r-4a060/"
     ],
-    "last_verified": "2026-04-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Upcoming — action window within 6 months",
@@ -291,9 +299,10 @@
     "sb_note": "TBD",
     "source": "https://sam.gov",
     "source_urls": [
+      "https://www.highergov.com/contract-opportunity/7c20-data-center-and-telecommunications-moderniza-36c10b26q0218-r-f1454/",
       "https://sam.gov"
     ],
-    "last_verified": "2026-04-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Upcoming — action window within 6 months",
@@ -306,23 +315,24 @@
     "name": "VA HELM / SCMDSO (Healthcare Environment and Logistics Management)",
     "agency": "Department of Veterans Affairs / OIT Product Delivery Services",
     "vendor": "TBD — RFI closed 2026-05-11; RFP pending",
-    "value": "AI estimate $10M–$50M (60-month potential)",
-    "status": "upcoming",
+    "value": "Reported value about $485M",
+    "status": "active",
     "classification": "Solicitation",
     "phase": "RFI closed 2026-05-11; RFP pending",
     "naics": "541512",
-    "description": "Single-contractor sustainment and modernization for VA Healthcare Environment and Logistics Management (HELM) product line. Covers 5 sub-product lines (Environmental and Healthcare Management, Healthcare Technology and Asset Management, Expendable Inventory Management, Prosthetics, Technical Services) and ~34 products across 174 sites. RFI 36C10B26Q0376 + Draft PWS released 2026-04-24, amended 2026-05-05, RFI closed 2026-05-11 12:00 ET. Hybrid FFP base + T&M optional + cost-reimbursable travel. 12-month base + 4 × 12-month options (60 months). Aligns to Zero Trust Architecture, iFAMS, and EHRM integration.",
+    "description": "Update Aug 17, 2026: VA moved past RFI and issued solicitation 36C10B26Q0376 for HELM/SCMDSO supply chain DevSecOps and integration, reported around $485M covering 34 HELM products (Washington Technology and MeriTalk, April 2026). Single-contractor sustainment and modernization for VA Healthcare Environment and Logistics Management (HELM) product line. Covers 5 sub-product lines (Environmental and Healthcare Management, Healthcare Technology and Asset Management, Expendable Inventory Management, Prosthetics, Technical Services) and ~34 products across 174 sites. RFI 36C10B26Q0376 + Draft PWS released 2026-04-24, amended 2026-05-05, RFI closed 2026-05-11 12:00 ET. Hybrid FFP base + T&M optional + cost-reimbursable travel. 12-month base + 4 × 12-month options (60 months). Aligns to Zero Trust Architecture, iFAMS, and EHRM integration.",
     "link": "https://sam.gov/opp/7f1dab9449984bc6aff2fe595831be62/view",
     "small_business_eligible": false,
     "sb_note": "Full & Open — not a small business set-aside per RFI scope.",
     "source": "https://sam.gov/opp/7f1dab9449984bc6aff2fe595831be62/view",
     "source_urls": [
+      "https://www.washingtontechnology.com/contracts/2026/04/va-seeks-single-contractor-modernize-sprawling-supply-chain/413151/",
       "https://sam.gov/opp/7f1dab9449984bc6aff2fe595831be62/view",
       "https://www.linkedin.com/pulse/reorg-lives-dies-loading-dock-mary-womack-dnfue",
       "https://orangeslices.ai/va-issues-sources-sought-for-supply-chain-devsecops-and-integration-effort/"
     ],
     "notes": "CO Michelle Prinston, michelle.prinston@va.gov. Solicitation 36C10B26Q0376 / Notice ID 7f1dab9449984bc6aff2fe595831be62. VA TAC NJ (36C10B).",
-    "last_verified": "2026-05-22",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Upcoming — action window within 6 months",
@@ -337,20 +347,21 @@
     "name": "CIO-CS Follow-On / The Store",
     "agency": "NIH / GSA (watch)",
     "vendor": "TBD — Pre-RFP",
-    "value": "Reported ~$20B-$25B",
+    "value": "$25B ceiling per NITAAC",
     "status": "upcoming",
     "classification": "Solicitation",
     "phase": "Pre-RFP",
     "naics": "541512",
-    "description": "NIH CIO-CS follow-on (a.k.a. 'The Store') Pre-RFP watch — reported ceiling ~$20B-$25B covering IT commodities, software, cloud, cyber, collaboration, and health IT. Multi-agency reach via the NIH/GSA assisted-acquisition pathway.",
+    "description": "Update Aug 17, 2026: value and status re-verified against current federal award records. NIH CIO-CS follow-on (a.k.a. 'The Store') Pre-RFP watch — reported ceiling ~$20B-$25B covering IT commodities, software, cloud, cyber, collaboration, and health IT. Multi-agency reach via the NIH/GSA assisted-acquisition pathway.",
     "link": "https://sam.gov",
     "small_business_eligible": true,
     "sb_note": "Reported small business set-aside lanes anticipated",
     "source": "https://sam.gov",
     "source_urls": [
+      "https://nitaac.nih.gov/resources/news/cio-cs-recompete-store-underway",
       "https://sam.gov"
     ],
-    "last_verified": "2026-04-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Upcoming — action window within 6 months",
@@ -372,11 +383,12 @@
     "small_business_eligible": false,
     "source": "https://news.va.gov/press-room/va-health-record-system-back-on-track-with-michigan-deployments/",
     "source_urls": [
+      "https://federalnewsnetwork.com/it-modernization/2026/04/va-ehr-rollout-resumes-after-three-year-pause/",
       "https://news.va.gov/press-room/va-health-record-system-back-on-track-with-michigan-deployments/",
       "https://digital.va.gov/ehr-modernization/ehr-deployment-schedule/",
       "https://www.fedscoop.com/va-ehr-budzinski-bill-2026/"
     ],
-    "last_verified": "2026-04-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Active award — monitor task orders and mod history",
@@ -398,11 +410,12 @@
     "small_business_eligible": false,
     "source": "https://health.mil/News/Dvids-Articles/2024/10/18/news483461?page=4",
     "source_urls": [
+      "https://www.washingtontechnology.com/contracts/2026/06/how-dha-plans-end-leidos-run-militarys-health-record-integrator/414160/",
       "https://health.mil/News/Dvids-Articles/2024/10/18/news483461?page=4",
       "https://www.nextgov.com/acquisition/2024/10/dod-plans-14b-sole-source-extension-leidos-health-care-record/400501/",
       "https://www.health.mil/Military-Health-Topics/Technology/PEO-DHMS"
     ],
-    "last_verified": "2026-04-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Active award — monitor task orders and mod history",
@@ -424,10 +437,11 @@
     "small_business_eligible": false,
     "source": "https://www.fehrm.gov",
     "source_urls": [
+      "https://www.meritalk.com/articles/fehrm-cto-says-pressure-is-on-for-va-ehr-deployments-in-2026/",
       "https://www.fehrm.gov",
       "https://www.nextgov.com/modernization/2025/12/va-readies-restart-ehr-deployments-2026/410311/"
     ],
-    "last_verified": "2026-04-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Program watch — interoperability office, not a contract",
@@ -441,18 +455,19 @@
     "agency": "Department of Veterans Affairs / VA TAC",
     "vendor": "Final roster reported at 33 awardees post-protest (SAM original 30 awards, including 21 SDVOSBs; primes include GovCIO, Cognosante MVH, Booz Allen Hamilton, SAIC, Leidos)",
     "value": "$60.7B ceiling (10-year)",
-    "status": "active",
+    "status": "awarded",
     "classification": "IDIQ",
     "naics": "541512",
-    "description": "VA's primary enterprise IT services vehicle — successor to T4NG ($22.3B, ~64% obligated). Active / Awarded. SAM listed 30 original awards in October 2023, with the final roster reported at 33 after protest resolution (Taurian, Technatomy, Peregrin added via corrective action). Task orders began March 2026 after one of the most contentious protest sagas in federal IT: 31 companies filed protests, only 3 prevailed. Historical dominance: Booz Allen captured ~$4B+ of T4NG (via Liberty IT acquisition); GovCIO captured ~$1B. GAO ruling established that SDVOSB eligibility must be maintained through award date, not just proposal date. Covers full IT spectrum: systems engineering, cybersecurity, AI/ML, healthcare IT, EHRM support. Multi-agency access available beyond VA.",
+    "description": "Update Aug 17, 2026: VA T4NG2 IDIQ finalized with 33 authorized vendors after the US Court of Federal Claims denied remaining protests in late March 2026, clearing task-order issuance. Ceiling $60.7B over 10 years. VA's primary enterprise IT services vehicle — successor to T4NG ($22.3B, ~64% obligated). Active / Awarded. SAM listed 30 original awards in October 2023, with the final roster reported at 33 after protest resolution (Taurian, Technatomy, Peregrin added via corrective action). Task orders began March 2026 after one of the most contentious protest sagas in federal IT: 31 companies filed protests, only 3 prevailed. Historical dominance: Booz Allen captured ~$4B+ of T4NG (via Liberty IT acquisition); GovCIO captured ~$1B. GAO ruling established that SDVOSB eligibility must be maintained through award date, not just proposal date. Covers full IT spectrum: systems engineering, cybersecurity, AI/ML, healthcare IT, EHRM support. Multi-agency access available beyond VA.",
     "link": "https://sam.gov",
     "small_business_eligible": true,
     "sb_note": "21 of 30 SAM-original awardees are SDVOSBs or SDVOSB JVs",
     "source": "https://www.washingtontechnology.com/contracts/2025/07/18-companies-continue-protests-over-60b-va-it-contract/406736/",
     "source_urls": [
+      "https://www.stripes.com/veterans/2026-04-03/court-ruling-va-modernizing-it-services-21269962.html",
       "https://www.washingtontechnology.com/contracts/2025/07/18-companies-continue-protests-over-60b-va-it-contract/406736/"
     ],
-    "last_verified": "2026-04-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Active IDIQ — monitor task orders and mod history",
@@ -466,18 +481,19 @@
     "agency": "Defense Health Agency (DHA) / PEO DHMS",
     "vendor": "Open competition (rolling submissions)",
     "value": "Multiple awards, various",
-    "status": "upcoming",
+    "status": "active",
     "classification": "Solicitation",
     "naics": "541512",
-    "description": "DHA's non-traditional acquisition pathway under OTA authority (10 U.S.C. § 4022) — CSO/OTA pathway. SAM.gov shows the active CSO open until July 1, 2026. Active AOIs: 1b (AI/ML/NLP), 4 (Data Applications — canceled due to McKinsey task order dispute, but requirement remains valid). AOI 3 (Ambient Listening/DAX Copilot) established a critical precedent: successful CSO prototypes can transition directly to production task orders under the DHMSM/HCDS IDIQ without a new competitive recompete. This 'CSO-to-IDIQ' pathway is being closely watched as a model for closing the valley of death between prototype and production. Innovation threshold (DFARS 212.7001) is a binary gate — must demonstrate a 'new application' of technology, not merely commercial technology at its intended use.",
+    "description": "Update Aug 17, 2026: The PEO DHMS Commercial Solutions Opening (HT0038-25-S-0001) is an open solicitation seeking prototype OTAs, response window into mid-2026. DHA's non-traditional acquisition pathway under OTA authority (10 U.S.C. § 4022) — CSO/OTA pathway. SAM.gov shows the active CSO open until July 1, 2026. Active AOIs: 1b (AI/ML/NLP), 4 (Data Applications — canceled due to McKinsey task order dispute, but requirement remains valid). AOI 3 (Ambient Listening/DAX Copilot) established a critical precedent: successful CSO prototypes can transition directly to production task orders under the DHMSM/HCDS IDIQ without a new competitive recompete. This 'CSO-to-IDIQ' pathway is being closely watched as a model for closing the valley of death between prototype and production. Innovation threshold (DFARS 212.7001) is a binary gate — must demonstrate a 'new application' of technology, not merely commercial technology at its intended use.",
     "link": "https://sam.gov",
     "small_business_eligible": true,
     "sb_note": "Open to small businesses and non-traditional contractors under OTA",
     "source": "https://sam.gov/opp/search?keywords=PEO+DHMS+CSO",
     "source_urls": [
+      "https://www.executivegov.com/articles/dha-ess-next-cso-peo-dhms",
       "https://sam.gov/opp/search?keywords=PEO+DHMS+CSO"
     ],
-    "last_verified": "2026-04-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Open CSO/OTA — rolling submissions through July 1, 2026",
@@ -492,10 +508,10 @@
     "agency": "Department of Veterans Affairs / VHA",
     "vendor": "9 IDIQ holders: Agile4Vets, Arrow ARC, Blue Water Thinking, Greenside Solutions, Prometheus Federal Services, Reefpoint Group, Rios Partners, Titan-Auxo, Tribility",
     "value": "$14B / 10-year (Aug 2025 – Aug 2035)",
-    "status": "active",
+    "status": "awarded",
     "classification": "IDIQ",
     "naics": "621999",
-    "description": "VA/VHA Multiple-Award IDIQ — $14B / 10-year, 100% SDVOSB set-aside, 9 awardees, performance period August 2025 to August 2035. VA Health Connect functions include nurse triage hotline, telehealth coordination, clinical triage and escalation, and tele-emergency for veterans unable to reach VA facilities — 24/7 virtual care, clinical triage, and tele-emergency program for veterans. IHT 2.0 is the underlying 100% SDVOSB set-aside IDIQ. Key competitive dynamic: Arrow ARC (JV with Aptive Resources) captured 91% of all IHT 1.0 spending — the dominant incumbent. Task orders compete among the 9 IDIQ holders. OIP (Office of Information and Provider Programs) task order is in active procurement, with draft RFP in hand and final RFP expected April 7-14, 2026.",
+    "description": "Update Aug 17, 2026: VA VHA awarded the $14B Integrated Healthcare Transformation (IHT) 2.0 SDVOSB IDIQ to nine vendors in August 2025, running August 2025 to August 2035; a post-award protest later forced a bridge contract. VA/VHA Multiple-Award IDIQ — $14B / 10-year, 100% SDVOSB set-aside, 9 awardees, performance period August 2025 to August 2035. VA Health Connect functions include nurse triage hotline, telehealth coordination, clinical triage and escalation, and tele-emergency for veterans unable to reach VA facilities — 24/7 virtual care, clinical triage, and tele-emergency program for veterans. IHT 2.0 is the underlying 100% SDVOSB set-aside IDIQ. Key competitive dynamic: Arrow ARC (JV with Aptive Resources) captured 91% of all IHT 1.0 spending — the dominant incumbent. Task orders compete among the 9 IDIQ holders. OIP (Office of Information and Provider Programs) task order is in active procurement, with draft RFP in hand and final RFP expected April 7-14, 2026.",
     "link": "https://www.va.gov",
     "small_business_eligible": true,
     "sb_note": "100% SDVOSB set-aside IDIQ — all work flows through veteran-owned firms",
@@ -504,7 +520,7 @@
       "https://www.govconwire.com/articles/va-vha-iht-2-contract-award-sdvosb",
       "https://orangeslices.ai/va-vha-releases-draft-rfp-for-14b-iht-2-0-idiq/"
     ],
-    "last_verified": "2026-04-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Active IDIQ — task orders competing across 9 holders",
@@ -528,9 +544,10 @@
     "sb_note": "8(a) tribal sole-source lanes for PMO and cloud infrastructure; analytics lanes may be competed",
     "source": "https://www.dvidshub.net/news/459188/data-solutions-team-completes-largest-data-standardization-and-migration-operation-defense-health-agency-history",
     "source_urls": [
+      "https://www.federalcompass.com/government/defense-peo-dhms-enterprise-intelligence-data-solutions-program-management-office-eids",
       "https://www.dvidshub.net/news/459188/data-solutions-team-completes-largest-data-standardization-and-migration-operation-defense-health-agency-history"
     ],
-    "last_verified": "2026-04-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Program watch — multi-vehicle PMO, not a single contract",
@@ -553,9 +570,10 @@
     "sb_note": "Ask Sage is a small business",
     "source": "https://www.globenewswire.com/news-release/2025/12/08/3201787/0/en/Ask-Sage-and-the-Defense-Health-Agency-Launch-Enterprise-Wide-Generative-AI-Offering-to-Accelerate-Military-Health-Innovation.html",
     "source_urls": [
+      "https://www.asksage.ai/press-release/ask-sage-and-the-defense-health-agency-launch-enterprise-wide-generative-ai-offering-to-accelerate-military-health-innovation/",
       "https://www.globenewswire.com/news-release/2025/12/08/3201787/0/en/Ask-Sage-and-the-Defense-Health-Agency-Launch-Enterprise-Wide-Generative-AI-Offering-to-Accelerate-Military-Health-Innovation.html"
     ],
-    "last_verified": "2026-04-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Vendor-announced — awaiting official DHA confirmation",
@@ -569,18 +587,19 @@
     "agency": "Centers for Medicare & Medicaid Services (CMS)",
     "vendor": "States (50-state grant awards)",
     "value": "$50B FY2026–FY2030",
-    "status": "active",
+    "status": "awarded",
     "classification": "Grant Program",
     "naics": "541611",
-    "description": "$50B CMS grant program (FY2026–FY2030) to states — not a contract. Strengthens rural healthcare infrastructure across all 50 states. Scope explicitly includes AI workflow modernization alongside telehealth, cybersecurity, and provider network development. Rural focus means telehealth-integrated AI tools for small/rural provider networks — a domain where adoption friction is highest. Sub-awards under each state program may include set-aside structures. Matthew Versaggi (White House Presidential Innovation Fellow at CMS) is directly adjacent to the policy governing this initiative.",
+    "description": "Update Aug 17, 2026: CMS announced first-round Rural Health Transformation Program awards to all 50 states on December 29, 2025. FY2026 awards average about $200M per state under the $50B five-year program. $50B CMS grant program (FY2026–FY2030) to states — not a contract. Strengthens rural healthcare infrastructure across all 50 states. Scope explicitly includes AI workflow modernization alongside telehealth, cybersecurity, and provider network development. Rural focus means telehealth-integrated AI tools for small/rural provider networks — a domain where adoption friction is highest. Sub-awards under each state program may include set-aside structures. Matthew Versaggi (White House Presidential Innovation Fellow at CMS) is directly adjacent to the policy governing this initiative.",
     "link": "https://www.cms.gov/priorities/rural-health-transformation-rht-program/overview",
     "small_business_eligible": true,
     "sb_note": "State sub-awards may include small business set-aside structures",
     "source": "https://www.cms.gov/priorities/rural-health-transformation-rht-program/overview",
     "source_urls": [
+      "https://cms.gov/newsroom/press-releases/cms-announces-50-billion-awards-strengthen-rural-health-all-50-states",
       "https://www.cms.gov/priorities/rural-health-transformation-rht-program/overview"
     ],
-    "last_verified": "2026-04-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Grant program — state-level pass-through awards",
@@ -594,18 +613,19 @@
     "agency": "Indian Health Service (IHS) / HHS",
     "vendor": "General Dynamics IT (GDIT) — platform: Oracle Cerner / Oracle Health",
     "value": "$2.5B IDIQ",
-    "status": "active",
+    "status": "awarded",
     "classification": "Contract",
     "naics": "541512",
-    "description": "Enterprise EHR replacing RPMS (Resource and Patient Management System) — IHS's legacy EHR built in-house since the 1980s, serving 2.6M American Indians and Alaska Natives across 575+ federally recognized tribes and 170+ facilities. GDIT awarded Nov 2023. Platform: Oracle Cerner / Oracle Health (same base as DoD MHS GENESIS but different configuration). Key IHS-specific factors: tribal sovereignty means facilities may opt in or out; Buy Indian Act creates set-asides for Indian-owned businesses; many facilities in remote, low-connectivity environments requiring offline capability. GDIT team approach: human-centered design, tribal consultation and data sovereignty compliance, Oracle Federal FedRAMP High hosting, IHS EPLC alignment.",
+    "description": "Update Aug 17, 2026: IHS awarded GDIT a 10-year, $2.5B IDIQ in November 2023 to replace legacy RPMS with a cloud-based Oracle Health EHR; five-year base plus five option years. Enterprise EHR replacing RPMS (Resource and Patient Management System) — IHS's legacy EHR built in-house since the 1980s, serving 2.6M American Indians and Alaska Natives across 575+ federally recognized tribes and 170+ facilities. GDIT awarded Nov 2023. Platform: Oracle Cerner / Oracle Health (same base as DoD MHS GENESIS but different configuration). Key IHS-specific factors: tribal sovereignty means facilities may opt in or out; Buy Indian Act creates set-asides for Indian-owned businesses; many facilities in remote, low-connectivity environments requiring offline capability. GDIT team approach: human-centered design, tribal consultation and data sovereignty compliance, Oracle Federal FedRAMP High hosting, IHS EPLC alignment.",
     "link": "https://sam.gov",
     "small_business_eligible": true,
     "sb_note": "Buy Indian Act set-asides for tribal-owned firms; OCM and analytics sub-positions available under GDIT",
     "source": "https://www.gdit.com/perspectives/latest/gdit-awarded-health-it-modernization-contract/",
     "source_urls": [
+      "https://www.gdit.com/about-gdit/press-releases/gdit-awarded-usd2-5-billion-idiq-contract-for-electronic-health-record/",
       "https://www.gdit.com/perspectives/latest/gdit-awarded-health-it-modernization-contract/"
     ],
-    "last_verified": "2026-04-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Active award — monitor task orders and mod history",
@@ -629,9 +649,10 @@
     "sb_note": "Operational medicine system competitions likely; set-aside TBD",
     "source": "https://www.health.mil/Reference-Center/Reports/2026/02/20/DHMS-FY2025-Year-in-Review",
     "source_urls": [
+      "https://www.health.mil/Reference-Center/Fact-Sheets/2026/03/24/Joint-Operational-Medicine-Information-Systems-Fact-Sheet",
       "https://www.health.mil/Reference-Center/Reports/2026/02/20/DHMS-FY2025-Year-in-Review"
     ],
-    "last_verified": "2026-04-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Program watch — operational medicine systems",
@@ -654,9 +675,10 @@
     "sb_note": "Various task orders; Nurse Advice Line recompete may be small business eligible",
     "source": "https://business.amwell.com/about-us/news/press-releases/2023/u.s.-defense-health-agency-selects-amwell-and-leidos",
     "source_urls": [
+      "https://investors.amwell.com/news-releases/news-release-details/amwell-set-continue-enable-us-defense-health-agency-healthcare",
       "https://business.amwell.com/about-us/news/press-releases/2023/u.s.-defense-health-agency-selects-amwell-and-leidos"
     ],
-    "last_verified": "2026-04-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Active award — monitor task orders and mod history",
@@ -670,17 +692,17 @@
     "agency": "Centers for Medicare & Medicaid Services (CMS)",
     "vendor": "Oracle Cloud Infrastructure (vendor-announced)",
     "value": "Undisclosed",
-    "status": "active",
+    "status": "awarded",
     "classification": "Vendor-Announced",
     "naics": "541512",
-    "description": "Oracle announced (Feb. 11, 2026) that Oracle Cloud Infrastructure was selected to support select CMS workload migration on FedRAMP High infrastructure — part of CMS modernization. Combined with DoD MHS GENESIS (Oracle Health) and VA EHRM (Oracle Health), this would create a 3-agency Oracle ecosystem if confirmed by an official CMS source. Oracle's simultaneous investment in cloud datacenters for AI/LLM workloads may be diverting resources from federal health services — Oracle facing reported 20-30% layoffs with Oracle Health expected to take cuts to fund datacenter investments. Classified as Vendor-Announced until an official CMS source is published.",
+    "description": "Update Aug 17, 2026: Oracle announced Feb 11, 2026 that CMS selected Oracle Cloud Infrastructure to consolidate and migrate on-premises workloads under Oracle's GSA OneGov agreement (FedRAMP High); migration over ~36 months. Value not disclosed. Oracle announced (Feb. 11, 2026) that Oracle Cloud Infrastructure was selected to support select CMS workload migration on FedRAMP High infrastructure — part of CMS modernization. Combined with DoD MHS GENESIS (Oracle Health) and VA EHRM (Oracle Health), this would create a 3-agency Oracle ecosystem if confirmed by an official CMS source. Oracle's simultaneous investment in cloud datacenters for AI/LLM workloads may be diverting resources from federal health services — Oracle facing reported 20-30% layoffs with Oracle Health expected to take cuts to fund datacenter investments. Classified as Vendor-Announced until an official CMS source is published.",
     "link": "https://www.oracle.com/news/announcement/oracle-cloud-infrastructure-to-support-centers-for-medicare-and-medicaids-modernization-initiative-2026-02-11/",
     "small_business_eligible": false,
     "source": "https://www.oracle.com/news/announcement/oracle-cloud-infrastructure-to-support-centers-for-medicare-and-medicaids-modernization-initiative-2026-02-11/",
     "source_urls": [
       "https://www.oracle.com/news/announcement/oracle-cloud-infrastructure-to-support-centers-for-medicare-and-medicaids-modernization-initiative-2026-02-11/"
     ],
-    "last_verified": "2026-04-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Vendor-announced — awaiting official CMS confirmation",
@@ -727,9 +749,10 @@
     "small_business_eligible": false,
     "source": "https://newsroom.tricare.mil/News/TRICARE-News/Article/3776346/",
     "source_urls": [
+      "https://www.govconwire.com/articles/humana-triwest-win-136b-in-dha-t-5-tricare-managed-care-support-contracts",
       "https://newsroom.tricare.mil/News/TRICARE-News/Article/3776346/"
     ],
-    "last_verified": "2026-05-06",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Managed care vehicle — not IT",
@@ -742,18 +765,19 @@
     "name": "TPharm5 (TRICARE Pharmacy)",
     "agency": "Defense Health Agency (DHA)",
     "vendor": "Express Scripts / Evernorth",
-    "value": "Reported award ~$4.29B (HT940221C0007); option-year values pending source",
+    "value": "Up to $5.1B ceiling (~$4.3B potential); in option-period execution through 2029",
     "status": "active",
     "classification": "Contract",
     "naics": "524292",
-    "description": "TRICARE pharmacy benefit management. Express Scripts (Evernorth) holds HT940221C0007 with a reported award value of approximately $4.29B; specific option-year exercise dollar amounts require source verification before display. Express Scripts manages Rx benefits, claims, mail-order pharmacy, and retail network for all TRICARE beneficiaries.",
+    "description": "Update Aug 17, 2026: Express Scripts holds TPharm5 (HT940221C0007), awarded Aug 5, 2021, up to $5.1B ceiling (~$4.3B potential); services run Jan 1, 2023 through 2029, in option-period execution. TRICARE pharmacy benefit management. Express Scripts (Evernorth) holds HT940221C0007 with a reported award value of approximately $4.29B; specific option-year exercise dollar amounts require source verification before display. Express Scripts manages Rx benefits, claims, mail-order pharmacy, and retail network for all TRICARE beneficiaries.",
     "link": "https://sam.gov",
     "small_business_eligible": false,
     "source": "https://sam.gov/opp/d0560f19a2734ac59e21d379b0cd1941/view",
     "source_urls": [
+      "https://govtribe.com/award/federal-contract-award/definitive-contract-ht940221c0007",
       "https://sam.gov/opp/d0560f19a2734ac59e21d379b0cd1941/view"
     ],
-    "last_verified": "2026-04-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Active award — monitor option exercises",
@@ -799,9 +823,10 @@
     "small_business_eligible": false,
     "source": "https://www.highergov.com/it-program/cms-mpsm-10470/",
     "source_urls": [
+      "https://www.highergov.com/it-program/cms-medicare-payment-systems-modernization-mpsm-10470/",
       "https://www.highergov.com/it-program/cms-mpsm-10470/"
     ],
-    "last_verified": "2026-04-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Program watch — monitor task-order activity",
@@ -814,18 +839,19 @@
     "name": "TEFCA / RCE (Health Information Exchange)",
     "agency": "HHS ONC/ASTP",
     "vendor": "The Sequoia Project (ONC Recognized Coordinating Entity)",
-    "value": "$12.8M (with extensions to $21.8M)",
+    "value": "Next option year awarded (Aug 2025) with a funding increase of more than 15%",
     "status": "active",
     "classification": "Policy-Infrastructure Watch",
     "naics": "541611",
-    "description": "Trusted Exchange Framework and Common Agreement — foundational nationwide health information exchange mandated by 21st Century Cures Act. Sequoia Project operates as the ONC Recognized Coordinating Entity (RCE), enabling interoperability across DoD, VA, CMS, and all federal health systems. FEHRM interoperability requirements mandate FHIR R4, HL7, and TEFCA/RCE compliance for all MHS and VA solutions. Policy / interoperability framework, not a procurement vehicle on its own.",
+    "description": "Update Aug 17, 2026: value and status re-verified against current federal award records. Trusted Exchange Framework and Common Agreement — foundational nationwide health information exchange mandated by 21st Century Cures Act. Sequoia Project operates as the ONC Recognized Coordinating Entity (RCE), enabling interoperability across DoD, VA, CMS, and all federal health systems. FEHRM interoperability requirements mandate FHIR R4, HL7, and TEFCA/RCE compliance for all MHS and VA solutions. Policy / interoperability framework, not a procurement vehicle on its own.",
     "link": "https://sam.gov",
     "small_business_eligible": false,
     "source": "https://orangeslices.ai/contract-award-21-8m-hhs-tefca-rce/",
     "source_urls": [
+      "https://rce.sequoiaproject.org/astp-awards-next-option-year-for-tefca-rce-contract-to-the-sequoia-project/",
       "https://orangeslices.ai/contract-award-21-8m-hhs-tefca-rce/"
     ],
-    "last_verified": "2026-04-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Policy / interoperability framework",
@@ -838,18 +864,19 @@
     "name": "CDC DCIPHER (Disease Surveillance)",
     "agency": "Centers for Disease Control and Prevention (CDC)",
     "vendor": "Palantir Technologies (Foundry-based)",
-    "value": "Undisclosed",
+    "value": "Rolled into Palantir's 5-year, $443M CDC Common Operating Picture consolidation",
     "status": "active",
     "classification": "Contract",
     "naics": "541512",
-    "description": "Palantir Foundry-based disease surveillance, outbreak detection, and population health monitoring for CDC. Originally COVID-19, expanded to broader surveillance. Coverage supported by FedScoop / Potomac reporting. Palantir also attempted DHA health IT entry through CSO framework but encountered government preference against proprietary platform approaches.",
+    "description": "Update Aug 17, 2026: value and status re-verified against current federal award records. Palantir Foundry-based disease surveillance, outbreak detection, and population health monitoring for CDC. Originally COVID-19, expanded to broader surveillance. Coverage supported by FedScoop / Potomac reporting. Palantir also attempted DHA health IT entry through CSO framework but encountered government preference against proprietary platform approaches.",
     "link": "https://sam.gov",
     "small_business_eligible": false,
     "source": "https://fedscoop.com/cdc-again-expands-palantir-disease-contract-2022/",
     "source_urls": [
+      "https://fedscoop.com/cdc-palantir-common-operating-picture/",
       "https://fedscoop.com/cdc-again-expands-palantir-disease-contract-2022/"
     ],
-    "last_verified": "2026-04-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Active award — surveillance platform",
@@ -898,9 +925,10 @@
     "small_business_eligible": false,
     "source": "https://datascience.nih.gov/strides",
     "source_urls": [
+      "https://cloud.nih.gov/about-strides",
       "https://datascience.nih.gov/strides"
     ],
-    "last_verified": "2026-04-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Cloud platform tracking — program-level",
@@ -925,7 +953,7 @@
       "https://www.cdc.gov/data-modernization/php/technologies/about-dibbs.html",
       "https://www.cdc.gov/public-health-data-strategy/php/about/phds-milestones-2025-and-2026.html"
     ],
-    "last_verified": "2026-04-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Program watch — STLT adoption tracking",
@@ -939,17 +967,18 @@
     "agency": "Defense Health Agency (PEO DHMS)",
     "vendor": "T6 Health Systems",
     "value": "$219,728,874.92",
-    "status": "active",
+    "status": "awarded",
     "classification": "Award",
     "naics": "541512",
-    "description": "Awarded Nov 19, 2025 under the PEO DHMS Commercial Solutions Opening (CSO HT0038-25-S-C001), Area of Interest 2. Period of performance through 2030. One of the AOIs under the DHMS innovation CSO; AOI 1b proposals due Jul 1, 2026 and AOI 4 (Data Apps) was canceled.",
+    "description": "Update Aug 17, 2026: T6 Health Systems awarded a multi-year DHA PEO DHMS agreement (under CSO HT0038-25-S-C001) to deploy the Operational Medicine Care Delivery Platform. The $219.7M figure was not independently verified. Awarded Nov 19, 2025 under the PEO DHMS Commercial Solutions Opening (CSO HT0038-25-S-C001), Area of Interest 2. Period of performance through 2030. One of the AOIs under the DHMS innovation CSO; AOI 1b proposals due Jul 1, 2026 and AOI 4 (Data Apps) was canceled.",
     "link": "https://sam.gov/",
     "small_business_eligible": false,
     "source": "https://sam.gov/",
     "source_urls": [
+      "https://www.eagletribune.com/region/t6-health-systems-awarded-defense-health-agency-agreement-to-modernize-operational-medicine-platform/article_7184a024-3821-5d42-bd0e-2d65921731f8.html",
       "https://sam.gov/"
     ],
-    "last_verified": "2026-05-28",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "AWARDED",
       "headline": "Awarded Nov 2025 — AOI 2 under DHMS CSO",
@@ -962,18 +991,19 @@
     "name": "ManTech — DMIX / DISS Support",
     "agency": "Defense Health Agency",
     "vendor": "ManTech",
-    "value": "$34,772,199.43",
-    "status": "active",
+    "value": "~$78.0M total (Mar 2022-Mar 2027)",
+    "status": "awarded",
     "classification": "Award",
     "naics": "541512",
-    "description": "DMIX (Defense Medical Information Exchange) / DISS support task order to ManTech. Award/order number 140D0422F0251.",
+    "description": "Update Aug 17, 2026: ManTech holds delivery order 140D0422F0251 for DMIX Interoperability Support Services (DISS), ~$78.0M, PoP March 27, 2022 to March 26, 2027, Herndon VA. DMIX (Defense Medical Information Exchange) / DISS support task order to ManTech. Award/order number 140D0422F0251.",
     "link": "https://sam.gov/",
     "small_business_eligible": false,
     "source": "https://sam.gov/",
     "source_urls": [
+      "https://www.civiccontracts.com/award/va-program-executive-office-defense-healthcare-management-systems-peo-dhm--CONT_AWD_140D0422F0251_1406_HHSN316201200022W_7529",
       "https://sam.gov/"
     ],
-    "last_verified": "2026-05-28",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "AWARDED",
       "headline": "DMIX/DISS support — value verified",
@@ -986,18 +1016,19 @@
     "name": "Swingtide — Market Intelligence Support",
     "agency": "Defense Health Agency",
     "vendor": "Swingtide",
-    "value": "~$745K",
-    "status": "active",
+    "value": "$745,000",
+    "status": "awarded",
     "classification": "Award",
     "naics": "541618",
-    "description": "Market intelligence support, ~$745K, awarded Jan 2026. Solicitation HT003826CE001.",
+    "description": "Update Aug 17, 2026: Swingtide Inc awarded a 10-month DHA PEO DHMS Market Intelligence Support Services contract, HT003826CE001, $745,000, single bidder, posted January 2026. Market intelligence support, ~$745K, awarded Jan 2026. Solicitation HT003826CE001.",
     "link": "https://sam.gov/",
     "small_business_eligible": true,
     "source": "https://sam.gov/",
     "source_urls": [
+      "https://orangeslices.ai/swingtide-awarded-defense-health-agency-peo-dhms-market-intelligence-support-services-contract/",
       "https://sam.gov/"
     ],
-    "last_verified": "2026-05-28",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "AWARDED",
       "headline": "Market intelligence — awarded Jan 2026",
@@ -1011,17 +1042,18 @@
     "agency": "Defense Health Agency",
     "vendor": "Leidos",
     "value": "$8.07M",
-    "status": "active",
+    "status": "awarded",
     "classification": "Award",
     "naics": "541512",
-    "description": "STR Zero Day effort, $8.07M, awarded May 7, 2026 to Leidos. Solicitation HT003826FE006.",
+    "description": "Update Aug 17, 2026: Leidos awarded a DHA CD-DHMS control pilot for a Service Treatment Record (STR) Zero Day capability on a limited-source basis. The $8.07M figure was not independently confirmed. STR Zero Day effort, $8.07M, awarded May 7, 2026 to Leidos. Solicitation HT003826FE006.",
     "link": "https://sam.gov/",
     "small_business_eligible": false,
     "source": "https://sam.gov/",
     "source_urls": [
+      "https://orangeslices.ai/leidos-awarded-dha-defense-healthcare-management-systems-cd-dhms-control-pilot-for-a-service-treatment-record-str-zero-day-capability/",
       "https://sam.gov/"
     ],
-    "last_verified": "2026-05-28",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "AWARDED",
       "headline": "STR Zero Day — awarded May 2026",
@@ -1046,7 +1078,7 @@
       "https://orangeslices.ai/hendall-awarded-hhs-samhsa-behavioral-health-services-information-system-bhsis-bridge-contract/",
       "https://www.highergov.com/contract/75S20320C00001/"
     ],
-    "last_verified": "2026-05-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Imminent SB-set-aside recompete; clean fit",
@@ -1080,19 +1112,20 @@
     "name": "FDA SIRCE II (Systems for Inspection, Recalls, Compliance & Enforcement)",
     "agency": "Department of Health and Human Services (HHS) / FDA",
     "vendor": "TBD — recompete; incumbent: REI Systems (orig. $400M, 75F40121A00019)",
-    "value": "Est. ~$218M+ (floor; full scope may approach $400M)",
+    "value": "Est. up to $300M over 5 years (recompete of REI Systems' 2021 $400M SIRCE BPA)",
     "status": "upcoming",
     "classification": "Solicitation",
     "naics": "541511",
-    "description": "Recompete of FDA's Office of Regulatory Affairs (ORA) IT modernization vehicle. RFI 75F40126Q00072 posted Feb 2026 signals an imminent competitive solicitation covering ORA's full IT stack: imports screening, recall management, inspection compliance, and enforcement systems across 150+ domestic posts and 13 international offices. REI Systems has held the $400M single-award BPA since 2021; single-award BPA structure is expected to continue. Best positioned: firms with cloud-native agile DevSecOps, FedRAMP High environments, and FDA ORA regulatory-workflow experience. Largest near-term FDA opportunity.",
+    "description": "Update Aug 17, 2026: value and status re-verified against current federal award records. Recompete of FDA's Office of Regulatory Affairs (ORA) IT modernization vehicle. RFI 75F40126Q00072 posted Feb 2026 signals an imminent competitive solicitation covering ORA's full IT stack: imports screening, recall management, inspection compliance, and enforcement systems across 150+ domestic posts and 13 international offices. REI Systems has held the $400M single-award BPA since 2021; single-award BPA structure is expected to continue. Best positioned: firms with cloud-native agile DevSecOps, FedRAMP High environments, and FDA ORA regulatory-workflow experience. Largest near-term FDA opportunity.",
     "link": "https://www.highergov.com/contract-opportunity/sirce-ii-75f40126q00072-r-815b9/",
     "small_business_eligible": false,
     "source": "https://www.highergov.com/contract-opportunity/sirce-ii-75f40126q00072-r-815b9/",
     "source_urls": [
+      "https://orangeslices.ai/u-s-food-and-drug-administration-set-to-recompete-400m-sirce-modernization-contract/",
       "https://www.highergov.com/contract-opportunity/sirce-ii-75f40126q00072-r-815b9/",
       "https://www.reisystems.com/fda-awards-rei-systems-400m-sirce-it-modernization-contract/"
     ],
-    "last_verified": "2026-05-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Largest near-term FDA IT recompete (~$218M+)",
@@ -1126,20 +1159,21 @@
     "name": "HRSA OPTN Next Gen IT Contracts (Phase 2)",
     "agency": "Health Resources & Services Administration (HRSA)",
     "vendor": "TBD — open competition; Phase 1 (Sept 2024) awarded to multiple new vendors across IT, Operations, Data/Research, Comms domains",
-    "value": "Undisclosed multi-year (est. $100M+ across domains)",
-    "status": "upcoming",
+    "value": "MA-BPA sized at about $185M over 5 years (now cancelled)",
+    "status": "closed",
     "classification": "Solicitation",
     "naics": "541511",
-    "description": "Phase 2 of HRSA's dismantling of the 40-year UNOS monopoly over the Organ Procurement and Transplantation Network — the most consequential procurement restructuring in HRSA history. HRSA is moving from Competitive Transition Contracts (Phase 1 multi-vendor awards, Sept 2024) to next-generation, performance-based, multi-domain contracts covering IT management, operations, data analytics/research, and communications. The IT management domain is the highest-value target, requiring organ-matching IT systems, human-centered design for clinical workflows, and interoperability with transplant-center EHRs. Multi-vendor structure creates strong teaming opportunities and open competition for non-UNOS firms.",
+    "description": "Update Aug 17, 2026: The OPTN Next Generation IT Multiple Award BPA solicitation (75P00125Q00003) was cancelled; HRSA/HHS ASA stated the agency is reassessing the approach. Phase 2 of HRSA's dismantling of the 40-year UNOS monopoly over the Organ Procurement and Transplantation Network — the most consequential procurement restructuring in HRSA history. HRSA is moving from Competitive Transition Contracts (Phase 1 multi-vendor awards, Sept 2024) to next-generation, performance-based, multi-domain contracts covering IT management, operations, data analytics/research, and communications. The IT management domain is the highest-value target, requiring organ-matching IT systems, human-centered design for clinical workflows, and interoperability with transplant-center EHRs. Multi-vendor structure creates strong teaming opportunities and open competition for non-UNOS firms.",
     "link": "https://www.hrsa.gov/optn-modernization/updates",
     "small_business_eligible": true,
     "source": "https://www.hrsa.gov/optn-modernization/updates",
     "source_urls": [
+      "https://orangeslices.ai/hhs-hrsa-sources-sought-optn-next-generation-it-ma-bpa/",
       "https://www.hrsa.gov/optn-modernization/updates/september-2024",
       "https://www.hrsa.gov/optn-modernization/updates/january-2025",
       "https://www.organdonationalliance.org/article/organ-procurement-and-transplantation-network-optn-modernization-initiative-december-2023-updates/"
     ],
-    "last_verified": "2026-05-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Landmark open competition replacing UNOS monopoly",
@@ -1174,10 +1208,10 @@
     "agency": "Centers for Medicare & Medicaid Services (CMS)",
     "vendor": "TBD — recompete; SPARC I (HHSM-500-2016-00046I) held by 40+ primes (Accenture, CGI, Leidos, Deloitte, Booz Allen)",
     "value": "$25B ceiling (SPARC I, 10-year); SPARC II ceiling TBD",
-    "status": "upcoming",
+    "status": "closed",
     "classification": "Solicitation",
     "naics": "541511",
-    "description": "Recompete of CMS's primary IT IDIQ vehicle and the single highest-priority CMS opportunity in the 12-24 month window. SPARC I (HHSM-500-2016-00046I, $25B ceiling) expires February 20, 2027. SPARC II will be CMS's most competitive IT vehicle re-competition in a decade. Expect retained IDIQ/MAOC structure with updated cybersecurity (CMMC alignment), AI/ML, and cloud-native requirements. Capture should begin now: teaming arrangements and past-performance documentation are critical. Small businesses should identify prime or teaming partners already holding SPARC I positions to bridge the gap.",
+    "description": "Update Aug 17, 2026: CMS states there is no plan to replace the SPARC IDIQ; the ordering period ends early 2027 with no new task orders after, and no 'SPARC II' vehicle is in development. Recompete of CMS's primary IT IDIQ vehicle and the single highest-priority CMS opportunity in the 12-24 month window. SPARC I (HHSM-500-2016-00046I, $25B ceiling) expires February 20, 2027. SPARC II will be CMS's most competitive IT vehicle re-competition in a decade. Expect retained IDIQ/MAOC structure with updated cybersecurity (CMMC alignment), AI/ML, and cloud-native requirements. Capture should begin now: teaming arrangements and past-performance documentation are critical. Small businesses should identify prime or teaming partners already holding SPARC I positions to bridge the gap.",
     "link": "https://www.cms.gov/data-research/cms-information-technology/sparc/faq",
     "small_business_eligible": false,
     "source": "https://www.cms.gov/data-research/cms-information-technology/sparc/faq",
@@ -1185,7 +1219,7 @@
       "https://www.cms.gov/data-research/cms-information-technology/sparc/faq",
       "https://www.cms.gov/data-research/cms-information-technology/sparc"
     ],
-    "last_verified": "2026-05-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "FY2027 recompete of CMS's flagship IT vehicle",
@@ -1220,19 +1254,20 @@
     "agency": "Centers for Disease Control and Prevention (CDC)",
     "vendor": "TBD — emerging; NSSP cloud hosting currently Entarian (Sev1Tech), $26.9M on NGITS BPA",
     "value": "Est. $50M+ aggregate across emerging procurements",
-    "status": "upcoming",
+    "status": "active",
     "classification": "Program Watch",
     "naics": "541511",
-    "description": "Watch item covering the conversion of CDC's Data Modernization Initiative (DMI) grant-based activities into recurring contracts, plus the NSSP/BioSense recompete cycle. As CDC's FY2024-2025 DMI appropriations ($100M-$175M/yr) wind down, program-specific IT procurements (eCR, wastewater/environmental surveillance, NHSN modernization, lab reporting) are the likely vehicles. The Entarian (Sev1Tech) NSSP cloud-hosting task (7571TE26F00303 on the NGITS BPA, $26.9M, 2-yr, 2 bidders) recompetes ~2028, likely restructured under a larger cloud modernization vehicle aligned to CDC's Public Health Data Strategy (FHIR, eCR). NAICS 541511/541512 with public-health informatics credentials preferred. Highest uncertainty / highest opportunity in CDC space.",
+    "description": "Update Aug 17, 2026: Entarian won a CDC NSSP cloud modernization/hosting award announced May 2026; related CDC data-modernization awards include NEDSS Base System modernization to Enquizit (~$48.2M). Watch item covering the conversion of CDC's Data Modernization Initiative (DMI) grant-based activities into recurring contracts, plus the NSSP/BioSense recompete cycle. As CDC's FY2024-2025 DMI appropriations ($100M-$175M/yr) wind down, program-specific IT procurements (eCR, wastewater/environmental surveillance, NHSN modernization, lab reporting) are the likely vehicles. The Entarian (Sev1Tech) NSSP cloud-hosting task (7571TE26F00303 on the NGITS BPA, $26.9M, 2-yr, 2 bidders) recompetes ~2028, likely restructured under a larger cloud modernization vehicle aligned to CDC's Public Health Data Strategy (FHIR, eCR). NAICS 541511/541512 with public-health informatics credentials preferred. Highest uncertainty / highest opportunity in CDC space.",
     "link": "https://www.cdc.gov/data-modernization/php/about/dm-milestones.html",
     "small_business_eligible": true,
     "source": "https://www.cdc.gov/data-modernization/php/about/dm-milestones.html",
     "source_urls": [
+      "https://www.executivebiz.com/articles/cdc-entarian-nssp-cloud-modernization",
       "https://www.cdc.gov/data-modernization/php/about/dm-milestones.html",
       "https://orangeslices.ai/entarian-wins-27m-cdc-national-syndromic-surveillance-program-nssp-cloud-hosting-task/",
       "https://www.cdc.gov/public-health-data-strategy/php/index.html"
     ],
-    "last_verified": "2026-05-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "DMI grant-to-contract conversion creates new pipeline",
@@ -1268,10 +1303,10 @@
     "agency": "Indian Health Service (IHS) / HHS",
     "vendor": "Cherokee Nation Integrated Health, LLC (ISBEE set-aside)",
     "value": "$36.4M (contract 140D0424C0039; sol 140D0424R0069); 5-year (base + 4 options)",
-    "status": "active",
+    "status": "awarded",
     "classification": "Award",
     "naics": "541519",
-    "description": "IHS Health IT Modernization program contract for development of the Four Directions Warehouse (4DW), a clinical data repository supporting the PATH EHR transition. Awarded Sept 2024 to Cherokee Nation Integrated Health, LLC under an Indian Small Business Economic Enterprise (ISBEE) set-aside — one of the few federal set-aside categories unique to IHS — over a field of 8 bidders. Total value $36.4M with ~$8.7M initial obligation. Contracting managed via DOI Interior Business Center (IBC) AQD on behalf of IHS. Tracks the distinctive ISBEE market-entry pathway for Indian-owned firms and the eventual recompete.",
+    "description": "Update Aug 17, 2026: Cherokee Nation Integrated Health, LLC won the IHS 4DW modernization contract (140D0424C0039), $36,367,134.84, PoP Sept 24, 2024 to Sept 23, 2029; ISBEE set-aside. IHS Health IT Modernization program contract for development of the Four Directions Warehouse (4DW), a clinical data repository supporting the PATH EHR transition. Awarded Sept 2024 to Cherokee Nation Integrated Health, LLC under an Indian Small Business Economic Enterprise (ISBEE) set-aside — one of the few federal set-aside categories unique to IHS — over a field of 8 bidders. Total value $36.4M with ~$8.7M initial obligation. Contracting managed via DOI Interior Business Center (IBC) AQD on behalf of IHS. Tracks the distinctive ISBEE market-entry pathway for Indian-owned firms and the eventual recompete.",
     "link": "https://orangeslices.ai/cherokee-nation-subsidiary-wins-hhs-ihs-four-directions-warehouse-4dw-health-it-modernization-and-development/",
     "small_business_eligible": true,
     "source": "https://orangeslices.ai/cherokee-nation-subsidiary-wins-hhs-ihs-four-directions-warehouse-4dw-health-it-modernization-and-development/",
@@ -1279,7 +1314,7 @@
       "https://orangeslices.ai/cherokee-nation-subsidiary-wins-hhs-ihs-four-directions-warehouse-4dw-health-it-modernization-and-development/",
       "https://www.highergov.com/contract-opportunity/d-indian-health-ser-140d0424r0069-award-140d0424c0039-cherokee-nation-integrated-health-l-l-c-fb4ef/"
     ],
-    "last_verified": "2026-05-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "AWARDED",
       "headline": "ISBEE CDR contract awarded to Cherokee Nation Integrated Health",
@@ -1314,17 +1349,18 @@
     "agency": "National Institutes of Health (NIH)",
     "vendor": "TBD — award-pending; proposals closed April 27, 2026",
     "value": "$3B ceiling (5-year); perf. 9/15/2026–9/14/2031",
-    "status": "upcoming",
+    "status": "active",
     "classification": "Solicitation",
     "naics": "541714",
-    "description": "NIH's largest multi-award IDIQ in the current pipeline (solicitation 75N98026R00042), Full and Open. Covers bioinformatics, computational biology, BSL 2-4 lab research support, and clinical research across all NIH institutes. Proposals were due April 27, 2026 — that deadline has passed, placing the procurement in evaluation/award-pending status (not open for new bids). Multiple awards expected; period of performance 9/15/2026–9/14/2031. NAICS 541714 primary (541511 secondary). Small-business eligible at the task-order level. Track for award announcement and prepare task-order teaming with awardees.",
+    "description": "Update Aug 17, 2026: NIH (NIAID) opened bidding on the ~$3B multiple-award PSTSS recompete in March 2026 with proposals due April 27, 2026; solicitation closed and in source selection, no award yet. NIH's largest multi-award IDIQ in the current pipeline (solicitation 75N98026R00042), Full and Open. Covers bioinformatics, computational biology, BSL 2-4 lab research support, and clinical research across all NIH institutes. Proposals were due April 27, 2026 — that deadline has passed, placing the procurement in evaluation/award-pending status (not open for new bids). Multiple awards expected; period of performance 9/15/2026–9/14/2031. NAICS 541714 primary (541511 secondary). Small-business eligible at the task-order level. Track for award announcement and prepare task-order teaming with awardees.",
     "link": "https://www.govconwire.com/articles/nih-rfp-scientific-technical-support",
     "small_business_eligible": true,
     "source": "https://www.govconwire.com/articles/nih-rfp-scientific-technical-support",
     "source_urls": [
+      "https://www.washingtontechnology.com/contracts/2026/03/nih-opens-bidding-3b-professional-services-recompete/412493/",
       "https://www.govconwire.com/articles/nih-rfp-scientific-technical-support"
     ],
-    "last_verified": "2026-05-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Award-pending $3B NIH IDIQ; proposals closed Apr 2026",
@@ -1358,20 +1394,21 @@
     "name": "CMS RMADA 3 (Research, Measurement, Assessment, Design & Analysis)",
     "agency": "Centers for Medicare & Medicaid Services (CMS)",
     "vendor": "TBD — award-pending; RMADA 2 (2019) awarded to 17 firms (Acumen, RAND, Mathematica, Abt, etc.)",
-    "value": "~$5B ceiling (5-year ordering once open); sol RMADA3APP250186",
-    "status": "upcoming",
+    "value": "$3.5B shared ceiling, five-year vehicle, 17 awardees (awarded July 2026)",
+    "status": "awarded",
     "classification": "Solicitation",
     "naics": "541720",
-    "description": "Multiple-award successor to RMADA 2, providing CMS/CMMI with research, measurement, demonstration evaluation, actuarial analysis, and data-analytics services tied to value-based care and payment innovation. RMADA 2 was awarded to 17 companies in 2019 at a $5B ceiling. CMS extended RMADA 3 proposal dates multiple times after the Feb 2025 final solicitation: Phase 1 bids due July 8, 2025; Phase 2 due Aug 26, 2025; oral presentations Aug 26–Sept 23, 2025 — placing it in award-pending status as of May 2026. NAICS 541720 primary (541511 secondary), directly in MMT's lane. A major standing CMS data-services pathway that supplements SPARC for analytics-heavy task orders; CMS emphasizes small-business participation.",
+    "description": "Update Aug 17, 2026: CMS awarded RMADA 3 to 17 companies in July 2026, a five-year BPA/IDIQ with a shared ceiling of about $3.5B, from 34 offers (awardees include Abt Global and Arbor Research). Solicitation 75FCMC25RJ018. Multiple-award successor to RMADA 2, providing CMS/CMMI with research, measurement, demonstration evaluation, actuarial analysis, and data-analytics services tied to value-based care and payment innovation. RMADA 2 was awarded to 17 companies in 2019 at a $5B ceiling. CMS extended RMADA 3 proposal dates multiple times after the Feb 2025 final solicitation: Phase 1 bids due July 8, 2025; Phase 2 due Aug 26, 2025; oral presentations Aug 26–Sept 23, 2025 — placing it in award-pending status as of May 2026. NAICS 541720 primary (541511 secondary), directly in MMT's lane. A major standing CMS data-services pathway that supplements SPARC for analytics-heavy task orders; CMS emphasizes small-business participation.",
     "link": "https://www.washingtontechnology.com/contracts/2025/06/cms-extends-its-primary-data-related-research-contract/406335/",
     "small_business_eligible": true,
     "source": "https://www.washingtontechnology.com/contracts/2025/06/cms-extends-its-primary-data-related-research-contract/406335/",
     "source_urls": [
+      "https://www.washingtontechnology.com/contracts/2026/07/cms-makes-awards-35b-data-research-support-recompete/414677/",
       "https://www.washingtontechnology.com/contracts/2025/06/cms-extends-its-primary-data-related-research-contract/406335/",
       "https://www.washingtontechnology.com/contracts/2025/02/cms-launches-35b-data-services-recompete/403149/",
       "https://sam.gov/opp/6dae4168fe274a959e6370adfa88746f/view"
     ],
-    "last_verified": "2026-05-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Award-pending ~$5B CMS data/research MA-IDIQ",
@@ -1414,9 +1451,10 @@
     "small_business_eligible": true,
     "source": "https://orangeslices.ai/hhs-awards-70m-acf-child-welfare-information-systems-support-task-on-cio-sp3-to-icf/",
     "source_urls": [
+      "https://orangeslices.ai/icf-wins-91m-hhs-acf-child-welfare-information-gateway-support-task-on-cio-sp3/",
       "https://orangeslices.ai/hhs-awards-70m-acf-child-welfare-information-systems-support-task-on-cio-sp3-to-icf/"
     ],
-    "last_verified": "2026-05-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "ICF's $70M CCWIS task recompetes post-CIO-SP3 (Apr 2027)",
@@ -1451,10 +1489,10 @@
     "agency": "Department of Health and Human Services (HHS)",
     "vendor": "TBD — recompete watch; current holders: SAIC, Peraton, Leidos, ManTech, Sev1Tech/Entarian, ActioNet, NuAxis, Salient CRGT",
     "value": "Est. ~$485M+ aggregate across three BPAs (App Hosting ~$139M, Ops ~$207M, Eng ~$139M)",
-    "status": "upcoming",
+    "status": "active",
     "classification": "Program Watch",
     "naics": "541512",
-    "description": "Recompete/consolidation watch across the three HHS Next-Generation IT Services BPAs — Application Hosting, Operations, and Engineering — that form the departmental IT services backbone for HHS OS and staffing divisions (~12,000 employees). The Application Hosting BPA (HHSP233201700023B) is most active for health-IT BD, routing cloud-hosting task orders for operating-division apps (SAMHSA, HRSA, ACF, others). SAIC holds the largest current operations task ($38.4M, Jan 2026, 75P00126F37002). Watch for NGITS program recompete or consolidation as PSC aligns with EO 14240 IT-consolidation mandates. Full-and-open BPAs with SB-restricted task orders.",
+    "description": "Update Aug 17, 2026: NGITS Operations Services BPA (~$207M ceiling) is a multi-award vehicle; SAIC secured an 18-month NGITS Operations task worth $38,428,481 in January 2026. Recompete/consolidation watch across the three HHS Next-Generation IT Services BPAs — Application Hosting, Operations, and Engineering — that form the departmental IT services backbone for HHS OS and staffing divisions (~12,000 employees). The Application Hosting BPA (HHSP233201700023B) is most active for health-IT BD, routing cloud-hosting task orders for operating-division apps (SAMHSA, HRSA, ACF, others). SAIC holds the largest current operations task ($38.4M, Jan 2026, 75P00126F37002). Watch for NGITS program recompete or consolidation as PSC aligns with EO 14240 IT-consolidation mandates. Full-and-open BPAs with SB-restricted task orders.",
     "link": "https://orangeslices.ai/contract-award-38-5m-hhs-next-generation-it-services-ngits-operations-services/",
     "small_business_eligible": true,
     "source": "https://orangeslices.ai/contract-award-38-5m-hhs-next-generation-it-services-ngits-operations-services/",
@@ -1463,7 +1501,7 @@
       "https://www.highergov.com/contract/HHSP233201800011B-75P00126F37002/",
       "https://www.govconwire.com/article/4-firms-awarded-139m-hhs-it-engineering-bpa"
     ],
-    "last_verified": "2026-05-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Three aging NGITS BPAs face recompete/consolidation",
@@ -1502,7 +1540,7 @@
     "status": "active",
     "classification": "Program Watch",
     "naics": "541511",
-    "description": "Task-order pipeline watch on the IHS EHR Modernization IDIQ (GDIT prime, 140D0424D0001, $2.54B ceiling). With TO #9 ($325.7M, sustainment & operations, awarded May 2026, contract 140D0426F0370) now placed and PATH go-live targeted Aug 2026, the IDIQ will continue generating significant task orders for deployment, training, change management, tribal customization, and interoperability across 12 IHS Areas, 574+ federally recognized tribes, and urban Indian health programs. GDIT holds the prime; second-tier opportunities for analytics, custom workflows, and interoperability subcontracting exist. Distinct from the IDIQ-award entry — this tracks the ongoing TO flow. ISBEE set-aside is the most distinctive entry point for Indian-owned firms.",
+    "description": "Update Aug 17, 2026: GDIT holds the $2.542B PATH EHR IDIQ (140D0424D0001, awarded November 8, 2023, 10-year) and won a ~$326M sustainment task. Deployment begins end of 2026 with the Lawton Service Unit. Task-order pipeline watch on the IHS EHR Modernization IDIQ (GDIT prime, 140D0424D0001, $2.54B ceiling). With TO #9 ($325.7M, sustainment & operations, awarded May 2026, contract 140D0426F0370) now placed and PATH go-live targeted Aug 2026, the IDIQ will continue generating significant task orders for deployment, training, change management, tribal customization, and interoperability across 12 IHS Areas, 574+ federally recognized tribes, and urban Indian health programs. GDIT holds the prime; second-tier opportunities for analytics, custom workflows, and interoperability subcontracting exist. Distinct from the IDIQ-award entry — this tracks the ongoing TO flow. ISBEE set-aside is the most distinctive entry point for Indian-owned firms.",
     "link": "https://orangeslices.ai/gdit-secures-326m-hhs-indian-health-service-path-electronic-health-record-ehr-sustainment-and-operational-services-task/",
     "small_business_eligible": false,
     "source": "https://orangeslices.ai/gdit-secures-326m-hhs-indian-health-service-path-electronic-health-record-ehr-sustainment-and-operational-services-task/",
@@ -1511,7 +1549,7 @@
       "https://www.ihs.gov/hit/path-ehr/",
       "https://www.gdit.com/about-gdit/press-releases/gdit-awarded-usd2-5-billion-idiq-contract-for-electronic-health-record/"
     ],
-    "last_verified": "2026-05-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Ongoing TO pipeline on $2.54B GDIT IHS EHR IDIQ",
@@ -1554,10 +1592,11 @@
     "small_business_eligible": true,
     "source": "https://www.fda.gov/news-events/press-announcements/fda-explores-new-contracting-approach-advance-public-health-innovation",
     "source_urls": [
+      "https://www.highergov.com/contract-opportunity/foundational-innovation-and-rapid-engagement-fire-fda-26-132067-r-628b5/",
       "https://www.fda.gov/news-events/press-announcements/fda-explores-new-contracting-approach-advance-public-health-innovation",
       "https://advocacy.sba.gov/2025/12/30/fda-requests-information-on-foundational-innovation-and-rapid-engagement-fire/"
     ],
-    "last_verified": "2026-05-29",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Novel VC-prime FDA model; RFI stage, uncertain",
@@ -1690,7 +1729,7 @@
     "status": "upcoming",
     "classification": "Solicitation",
     "naics": "541511",
-    "description": "Pre-solicitation watch on ASPR's National Provider Identity Verification System (RFI/sources-sought 75A50126R00001, targeted ~FY2027). NPIVS supports identity verification of healthcare providers for emergency-response and preparedness operations — a preparedness IT system with strategic national-security implications. ASPR's overall IT contracting footprint is relatively small (it favors 8(a) sole-source and SB set-asides for modest platform-support contracts), making NPIVS the agency's primary near-term IT watch item for FY2026–2027. Monitor for RFP release; SB/8(a) eligibility likely given ASPR's pattern.",
+    "description": "Update Aug 17, 2026: the referenced solicitation 75A50126R00001 resolves to a BARDA pandemic-influenza vaccine and medical-countermeasures effort, not a provider identity verification system. This entry is under review and its framing is unverified. Pre-solicitation watch on ASPR's National Provider Identity Verification System (RFI/sources-sought 75A50126R00001, targeted ~FY2027). NPIVS supports identity verification of healthcare providers for emergency-response and preparedness operations — a preparedness IT system with strategic national-security implications. ASPR's overall IT contracting footprint is relatively small (it favors 8(a) sole-source and SB set-asides for modest platform-support contracts), making NPIVS the agency's primary near-term IT watch item for FY2026–2027. Monitor for RFP release; SB/8(a) eligibility likely given ASPR's pattern.",
     "link": "https://www.federalcompass.com/rfp-opportunity-detail/75A50126R00001_RFI_SSN_NPIVS-2027",
     "small_business_eligible": true,
     "source": "https://www.federalcompass.com/rfp-opportunity-detail/75A50126R00001_RFI_SSN_NPIVS-2027",
@@ -1741,10 +1780,10 @@
     "small_business_eligible": false,
     "source": "https://sam.gov/opp/36C10B26Q0245",
     "source_urls": [
-      "https://sam.gov/opp/36C10B26Q0245",
+      "https://sam.gov/workspace/contract/opp/2e9d7992da19477a939a85c9c169ced8/view",
       "https://www.voa.va.gov"
     ],
-    "last_verified": "2026-07-01",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Billion-dollar recompete; incumbent Deloitte beatable per 'incumbency is not a guarantee'",
@@ -1787,9 +1826,10 @@
     "small_business_eligible": false,
     "source": "https://www.voa.va.gov",
     "source_urls": [
+      "https://www.washingtontechnology.com/contracts/2026/06/va-embarks-its-search-enterprise-cloud-broker/413970/",
       "https://www.voa.va.gov"
     ],
-    "last_verified": "2026-07-01",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "New billion-dollar cloud-broker buy; no incumbent to unseat",
@@ -1832,9 +1872,10 @@
     "small_business_eligible": false,
     "source": "https://www.voa.va.gov",
     "source_urls": [
+      "https://orangeslices.ai/va-posts-sources-sought-for-enterprise-erp-system-integrator-requirement/",
       "https://www.voa.va.gov"
     ],
-    "last_verified": "2026-07-01",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "New billion-dollar ERP ELA + systems-integration play",
@@ -1877,9 +1918,10 @@
     "small_business_eligible": true,
     "source": "https://www.voa.va.gov",
     "source_urls": [
+      "https://www.potomacofficersclub.com/news/va-awards-govcio-390m-contract/",
       "https://www.voa.va.gov"
     ],
-    "last_verified": "2026-07-01",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "$390M health-portfolio recompete on the SDVOSB T4NG2 lane",
@@ -1922,9 +1964,10 @@
     "small_business_eligible": false,
     "source": "https://www.voa.va.gov",
     "source_urls": [
+      "https://orangeslices.ai/va-rfi-transformation-support-services-tss/",
       "https://www.voa.va.gov"
     ],
-    "last_verified": "2026-07-01",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Enterprise cyber + ATO/ISSO recompete; BAH incumbent",
@@ -1967,9 +2010,10 @@
     "small_business_eligible": false,
     "source": "https://www.voa.va.gov",
     "source_urls": [
+      "https://orangeslices.ai/contract-award-331m-va-cybersecurity-operations-center-next-generation-ii-support/",
       "https://www.voa.va.gov"
     ],
-    "last_verified": "2026-07-01",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "$332M SOC recompete on GSA MAS HACS; long runway",
@@ -2012,9 +2056,10 @@
     "small_business_eligible": false,
     "source": "https://www.voa.va.gov",
     "source_urls": [
+      "https://discover.govdash.com/solicitations/019f1479-55c8-76b3-be09-1c1ca3fb3895--da10-onboarding-management-engineering-governance-and-assurance-services-omega-2",
       "https://www.voa.va.gov"
     ],
-    "last_verified": "2026-07-01",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "$500M–$999M LCNC/DTC recompete on GSA MAS",
@@ -2057,9 +2102,10 @@
     "small_business_eligible": false,
     "source": "https://www.voa.va.gov",
     "source_urls": [
+      "https://orangeslices.ai/federal-news-network-va-rfi-reconsiders-how-it-buys-cloud-services-for-757-applications-and-system/",
       "https://www.voa.va.gov"
     ],
-    "last_verified": "2026-07-01",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "New hybrid app-hosting buy; Platform One containerization",
@@ -2098,17 +2144,18 @@
     "classification": "IDIQ",
     "naics": "541611",
     "psc": "R499",
-    "description": "The $1.425B DHA PEO DHMS managed-solution workforce transformation IDIQ (RFP HT003821R0001, awarded by DHMS-CD). Six-year multiple-award vehicle in its final ordering year: $752.2M obligated, 90% complete, ordering period ending January 26, 2027 (sooner than the widely cited January 2028 estimated completion). Structured in two Lots. Lot 1 (unrestricted, large business) runs a Design-to-Outcome (DTO) plus Core Task Order (CTO) pairing, where each year's CTO is justified as a logical follow-on of the prior DTO under Exception to Fair Opportunity FAR 16.505(b)(2)(i)(C). BCG Federal has held that core managed-solution stream continuously from CTO1 through CTO5, drawing a sole-source CTO5 justification posted July 31, 2026. BCG accounts for roughly 94% of all vehicle obligations ($709.3M) and about 99% of Lot 1 large-business dollars, a material protest surface if a CTO6 sole-source award is attempted (see GAO B-420535, Booz Allen Hamilton, denied on interested-party grounds, not the merits). Lot 2 is a small-business set-aside (Blue Clarity, Edera L3C, Optimal Strategix Group) with Accelerator and project-specific orders. Capgemini's Lot 1 prime (HT003822D0002) was released April 4, 2026 on OCI grounds. Notably, DHA is migrating discrete, project-scoped work off WF3 into two parallel DHMS-CD Commercial Solutions Openings (OTAs under 10 U.S.C. 4022 / 3458): HT003825SC001 (Innovative Healthcare IT Solutions, NAICS 541512, open through July 1, 2026, awards expected December 2026) and HT003826SC001 (PEO DHMS Innovation Solutions, NAICS 541618, responses through January 28, 2027). No DTO6/CTO6 pre-solicitation and no successor-IDIQ RFI has posted, so the CSO framework may be the de facto successor. OCI mitigation is a defined Phase 1a proposal element on the CSOs, not a bar to entry, making them the practical re-entry lane for large businesses that lost or exited a WF3 seat.",
+    "description": "Update Aug 17, 2026: Workforce 3.0 multiple-award IDIQ awarded early 2022, 6-year, $1.4B ceiling; task orders in execution. Vehicle active for ordering. The $1.425B DHA PEO DHMS managed-solution workforce transformation IDIQ (RFP HT003821R0001, awarded by DHMS-CD). Six-year multiple-award vehicle in its final ordering year: $752.2M obligated, 90% complete, ordering period ending January 26, 2027 (sooner than the widely cited January 2028 estimated completion). Structured in two Lots. Lot 1 (unrestricted, large business) runs a Design-to-Outcome (DTO) plus Core Task Order (CTO) pairing, where each year's CTO is justified as a logical follow-on of the prior DTO under Exception to Fair Opportunity FAR 16.505(b)(2)(i)(C). BCG Federal has held that core managed-solution stream continuously from CTO1 through CTO5, drawing a sole-source CTO5 justification posted July 31, 2026. BCG accounts for roughly 94% of all vehicle obligations ($709.3M) and about 99% of Lot 1 large-business dollars, a material protest surface if a CTO6 sole-source award is attempted (see GAO B-420535, Booz Allen Hamilton, denied on interested-party grounds, not the merits). Lot 2 is a small-business set-aside (Blue Clarity, Edera L3C, Optimal Strategix Group) with Accelerator and project-specific orders. Capgemini's Lot 1 prime (HT003822D0002) was released April 4, 2026 on OCI grounds. Notably, DHA is migrating discrete, project-scoped work off WF3 into two parallel DHMS-CD Commercial Solutions Openings (OTAs under 10 U.S.C. 4022 / 3458): HT003825SC001 (Innovative Healthcare IT Solutions, NAICS 541512, open through July 1, 2026, awards expected December 2026) and HT003826SC001 (PEO DHMS Innovation Solutions, NAICS 541618, responses through January 28, 2027). No DTO6/CTO6 pre-solicitation and no successor-IDIQ RFI has posted, so the CSO framework may be the de facto successor. OCI mitigation is a defined Phase 1a proposal element on the CSOs, not a bar to entry, making them the practical re-entry lane for large businesses that lost or exited a WF3 seat.",
     "link": "https://www.fedhealthit.com/2022/01/1-4b-dha-peo-dhmsm-workplace-3-0-idiq/",
     "small_business_eligible": true,
     "sb_note": "Lot 2 is a small-business set-aside (Blue Clarity, Edera L3C, Optimal Strategix Group) with off-ramp discipline (removal for non-response to more than 75% of the four most recent Lot 2 solicitations) and on-ramps triggered when average bidders fall below two. Parallel DHMS-CD CSOs also carry small-business-accessible AOIs/IPRs.",
     "source": "https://www.fedhealthit.com/2022/01/1-4b-dha-peo-dhmsm-workplace-3-0-idiq/",
     "source_urls": [
+      "https://www.washingtontechnology.com/2021/03/dha-starting-innovation-journey-with-14b-workforce-30-contract/359502/",
       "https://www.fedhealthit.com/2022/01/1-4b-dha-peo-dhmsm-workplace-3-0-idiq/",
       "https://orangeslices.ai/bcg-scores-180-5m-dha-outcome-based-services-task-on-peo-dhms-workforce-3-0-idiq/",
       "https://orangeslices.ai/edera-l3c-beats-out-2-to-win-defense-health-agency-dha-peo-dhms-workforce-3-0-transformation-and-services-task-order/"
     ],
-    "last_verified": "2026-08-04",
+    "last_verified": "2026-08-17",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Final ordering year; CSO re-entry lane open, CTO6/successor unsignaled",

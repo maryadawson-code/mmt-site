@@ -14,6 +14,8 @@
 //     schedule = "0 10 * * 5"
 // ============================================================
 
+const fs = require("fs");
+const path = require("path");
 const { createClient } = require("@supabase/supabase-js");
 const { sendEmail } = require("./lib/send-email");
 const { isRootDomainUrl } = require("./lib/url-validator");
@@ -194,6 +196,36 @@ async function _ledger7d(supabase) {
   return tally;
 }
 
+// Contract Tracker LISTING freshness — reads contracts.json (bundled, no
+// Supabase). The /contract-tracker listing renders from this hand-maintained
+// file; nothing auto-refreshes its status/value/last_verified (the
+// contract-intel-refresh cron writes the Supabase contract_intel table behind
+// the DETAIL pages, never this file). Build-time validate-contract-tracker.js
+// prints the same signal, but build logs go unread — this surfaces it in the
+// weekly email so the listing can never silently rot again (2026-08-17:
+// 63/64 entries were >45d stale, closed April solicitations still "upcoming").
+const TRACKER_STALE_DAYS = 45;
+function _trackerListingStale() {
+  const candidates = [
+    path.resolve(__dirname, "..", "..", "contracts.json"),
+    path.resolve(__dirname, "..", "..", "..", "contracts.json"),
+    path.resolve(process.cwd(), "contracts.json"),
+  ];
+  let contracts = [];
+  for (const p of candidates) {
+    try { if (fs.existsSync(p)) { contracts = JSON.parse(fs.readFileSync(p, "utf8")); break; } } catch (_e) { /* try next */ }
+  }
+  if (!Array.isArray(contracts)) contracts = [];
+  const now = Date.now();
+  const rows = contracts.map((c) => {
+    const t = Date.parse(String(c.last_verified || "") + "T00:00:00Z");
+    const ageDays = Number.isNaN(t) ? Infinity : Math.floor((now - t) / 86400000);
+    return { slug: c.slug || c.name || "?", status: c.status, ageDays };
+  });
+  const stale = rows.filter((r) => r.ageDays > TRACKER_STALE_DAYS).sort((a, b) => b.ageDays - a.ageDays);
+  return { total: rows.length, stale_count: stale.length, worst: stale[0] ? stale[0].ageDays : 0, samples: stale.slice(0, 12) };
+}
+
 exports.handler = async () => {
   const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -213,15 +245,17 @@ exports.handler = async () => {
   try { failures = await _ledger7d(supabase); } catch { failures = {}; }
   try { staleNotes = await _staleNotePatterns(supabase); } catch (e) { console.warn("staleNotes scan failed:", e.message); }
   try { urlSweep = await _urlRecheckSweep(supabase); } catch (e) { console.warn("urlSweep query failed:", e.message); urlSweep = {}; }
+  let trackerStale = { total: 0, stale_count: 0, worst: 0, samples: [] };
+  try { trackerStale = _trackerListingStale(); } catch (e) { console.warn("tracker listing freshness failed:", e.message); }
 
   const allGreen = stale.length === 0 && badUrls.length === 0 && staleNotes.length === 0
-    && orphaned.length === 0
+    && orphaned.length === 0 && trackerStale.stale_count === 0
     && radarFab.fabricated === 0 && radarFab.duplicates === 0
     && radar.age_hours <= 48 && vehicle.age_hours <= 168
     && Object.keys(failures).length === 0;
   const subject = allGreen
     ? "MMT intel quality — all green"
-    : `MMT intel quality — ${stale.length} stale, ${orphaned.length} orphaned, ${radarFab.fabricated} fabricated radar, ${badUrls.length} bad URL, ${staleNotes.length} note-leak, radar ${radar.age_hours}h`;
+    : `MMT intel quality — ${stale.length} stale, ${trackerStale.stale_count} listing-stale, ${orphaned.length} orphaned, ${radarFab.fabricated} fabricated radar, ${badUrls.length} bad URL, ${staleNotes.length} note-leak, radar ${radar.age_hours}h`;
 
   const html = `<!DOCTYPE html><html><body style="font-family:-apple-system,sans-serif;padding:24px;color:#0A192F;">
     <h2 style="margin:0 0 8px;">Intel quality report &middot; ${new Date().toISOString().slice(0,10)}</h2>
@@ -231,6 +265,9 @@ exports.handler = async () => {
       const ageDays = Math.floor((Date.now() - new Date(r.last_updated).getTime()) / (24*3600*1000));
       return `<li>${esc(r.contract_name)} &mdash; ${ageDays}d</li>`;
     }).join("")}</ul>`}
+    <h3 style="font-size:14px;margin:16px 0 6px;">Contract Tracker listings not re-verified (&gt;${TRACKER_STALE_DAYS}d)</h3>
+    <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">The /contract-tracker LISTING renders from the hand-maintained contracts.json. Nothing auto-refreshes its status/value/last_verified (contract-intel-refresh writes the Supabase contract_intel table behind the DETAIL pages, not this file), so the listing rots silently unless re-verified. Re-verify against SAM.gov / USASpending and bump last_verified. Build-time validate-contract-tracker.js prints the same signal; CONTRACT_TRACKER_MAX_AGE_DAYS makes it a hard build failure once the backlog is clear.</p>
+    ${trackerStale.stale_count === 0 ? `<p>None — all ${trackerStale.total} listings verified within ${TRACKER_STALE_DAYS}d.</p>` : `<p>${trackerStale.stale_count} of ${trackerStale.total} stale (oldest ${trackerStale.worst}d).</p><ul>${trackerStale.samples.map((r) => `<li>${esc(r.slug)} &mdash; ${r.ageDays === Infinity ? "no/invalid date" : r.ageDays + "d"} [${esc(r.status || "?")}]</li>`).join("")}</ul>`}
     <h3 style="font-size:14px;margin:16px 0 6px;">Orphaned contract_intel rows (name not in refresh roster)</h3>
     <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">These rows can never be refreshed — their contract_name has no match in contracts.json, so contract-intel-refresh skips them. Usually a naming drift (em-dash vs hyphen, parenthetical variant) leaving a stale duplicate. Reconcile: rename the row to its roster name, or archive it if a fresh canonical row already exists.</p>
     ${orphaned.length === 0 ? "<p>None.</p>" : `<ul>${orphaned.map((r) => `<li>${esc(r.contract_name)} &mdash; ${r.age_days === null ? "never refreshed" : r.age_days + "d"}</li>`).join("")}</ul>`}
@@ -266,7 +303,7 @@ exports.handler = async () => {
       source_function: "intel-quality-report",
       severity: allGreen ? "info" : "warn",
       signature: "weekly_qa",
-      details: { stale: stale.length, orphaned: orphaned.length, bad_urls: badUrls.length, stale_notes: staleNotes.length, radar_fabricated: radarFab.fabricated, radar_published_fabricated: radarFab.published_fabricated, radar_duplicates: radarFab.duplicates, url_archived_7d: urlSweep.archived_7d || 0, radar_age_h: radar.age_hours, vehicle_age_h: vehicle.age_hours, failure_keys: Object.keys(failures).length },
+      details: { stale: stale.length, tracker_listing_stale: trackerStale.stale_count, orphaned: orphaned.length, bad_urls: badUrls.length, stale_notes: staleNotes.length, radar_fabricated: radarFab.fabricated, radar_published_fabricated: radarFab.published_fabricated, radar_duplicates: radarFab.duplicates, url_archived_7d: urlSweep.archived_7d || 0, radar_age_h: radar.age_hours, vehicle_age_h: vehicle.age_hours, failure_keys: Object.keys(failures).length },
     });
   } catch { /* non-blocking */ }
 

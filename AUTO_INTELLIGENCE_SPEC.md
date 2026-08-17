@@ -147,6 +147,8 @@ One-click per update. Resource-level history. Source-to-impact tracing. Daily su
 ### Contract Tracker (premium auto-updates)
 Related analysis, what changed, why it matters, readiness shift, vendor note, change log, last refreshed.
 
+> **Reality check (2026-08-17): this is aspirational, NOT implemented for the LISTING facts.** The `/contract-tracker` listing renders at build time from the hand-maintained `contracts.json` (`name`, `status`, `value`, `last_verified`). Nothing auto-refreshes those fields. The only live automation is `contract-intel-refresh` (cron), which writes the Supabase `contract_intel` table that feeds the *Current Intelligence* block on the DETAIL pages — it never writes back to `contracts.json`. Result: the listing status/value silently ages unless a human re-verifies it (on 2026-08-17, 63/64 entries were >45 days stale, and closed April solicitations still showed "upcoming"). Guardrails now in place: `scripts/validate-contract-tracker.js` prints a freshness audit on every build (fatal via `CONTRACT_TRACKER_MAX_AGE_DAYS`), and the weekly `intel-quality-report` email surfaces the stale-listing count. Re-verify the listing against SAM.gov / USASpending and bump `last_verified`; do not assume any cron does it.
+
 ### IDIQ Tracker (premium auto-updates)
 Recompete watch note, task-order intel note, timing changes, teaming note, pursuit outlook, change log.
 

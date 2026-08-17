@@ -586,7 +586,7 @@ function ctRenderSkeleton(el, n) {
   var tableBody = document.getElementById('ct-table-body');
   var rows = [];
   function escapeText(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
-  function statusLabel(s) { return s === 'active' ? 'Active' : s === 'upcoming' ? 'Upcoming' : s === 'awarded' ? 'Awarded' : (s || ''); }
+  function statusLabel(s) { return s === 'active' ? 'Active' : s === 'upcoming' ? 'Upcoming' : s === 'awarded' ? 'Awarded' : s === 'closed' ? 'Closed / Cancelled' : (s || ''); }
   function buildTable() {
     if (!tableBody) return;
     tableBody.innerHTML = '';

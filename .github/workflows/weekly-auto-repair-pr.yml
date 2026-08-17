@@ -65,8 +65,12 @@ jobs:
             **Repairs applied:**
             - Stale "Assessment as of [old month]" dates bumped to current month
             - Copyright year bumped if outdated
-            - `contracts.json` `last_verified` dates refreshed (>60 days old)
             - Broken glossary cross-link patterns fixed
+
+            > `contracts.json` `last_verified` is NOT touched here. Blindly
+            > bumping it faked freshness and hid stale status/value from paying
+            > subscribers. Real re-verification runs in
+            > `.github/workflows/contract-tracker-reverify.yml`.
 
             **Validation:**
             - Build passed

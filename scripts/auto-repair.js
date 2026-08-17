@@ -9,7 +9,7 @@
  * Safe fixes:
  *   1. Bump "Assessment as of [old month]" → current month
  *   2. Update copyright year (e.g. "© 2025" → "© 2026" if past Jan 1)
- *   3. Refresh "last_verified" dates in contracts.json that are >60 days
+ *   3. (REMOVED) blind last_verified bump — faked freshness; see REPAIR 3 note
  *      old AND haven't otherwise been touched (we keep the old value but
  *      bump it to today when re-running, so the audit doesn't flag them)
  *   4. Auto-fix specific known broken-link patterns (e.g. /glossary/{slug}/
@@ -104,30 +104,19 @@ function repairCopyrightYear() {
   }
 }
 
-// ─── REPAIR 3: Refresh contracts.json last_verified dates ─────────
-// Only refreshes entries where last_verified is >60 days old
-// AND the rest of the entry hasn't changed (we just touch the date).
-function repairContractsLastVerified() {
-  const contractsPath = path.join(ROOT, 'contracts.json');
-  if (!fs.existsSync(contractsPath)) return;
-  const contracts = JSON.parse(fs.readFileSync(contractsPath, 'utf8'));
-  const now = new Date();
-  const today = now.toISOString().split('T')[0];
-  let modified = false;
-  for (const c of contracts) {
-    if (!c.last_verified) continue;
-    const then = new Date(c.last_verified);
-    const days = Math.floor((now - then) / (1000 * 60 * 60 * 24));
-    if (days > 60) {
-      recordChange('contracts.json', `${c.name}: last_verified ${c.last_verified} → ${today} (${days} days old)`, c.last_verified, today);
-      c.last_verified = today;
-      modified = true;
-    }
-  }
-  if (modified && apply) {
-    fs.writeFileSync(contractsPath, JSON.stringify(contracts, null, 2) + '\n');
-  }
-}
+// ─── REPAIR 3: (REMOVED 2026-08-17) blind last_verified bump ──────
+// This used to stamp contracts.json last_verified to today for any entry
+// >60 days old WITHOUT re-verifying the entry against a source. That is an
+// anti-pattern: it fakes freshness, makes last_verified meaningless, and
+// permanently HIDES stale status/value from paying subscribers (the exact
+// failure that left the tracker months stale on 2026-08-17). Re-verification
+// is NOT a mechanical repair — it requires checking SAM.gov / USASpending and
+// changing status/value with evidence. That work lives in
+// scripts/reverify-contract-tracker.js (federal-data-backed, opens a review
+// PR via .github/workflows/contract-tracker-reverify.yml). auto-repair only
+// touches unambiguous, reversible cosmetic fixes; it must never bump
+// last_verified. Do not reintroduce this.
+function repairContractsLastVerified() { /* intentionally a no-op — see note above */ }
 
 // ─── REPAIR 4: Fix known broken-link patterns ─────────────────────
 // /glossary/{slug}/ → /glossary/{slug}.html
