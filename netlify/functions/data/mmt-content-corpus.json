@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-09T23:20:14.532Z",
+  "generated_at": "2026-08-17T04:39:43.099Z",
   "total": 291,
   "counts": {
     "articles": 131,
@@ -2838,7 +2838,7 @@
       "type": "contract_intel",
       "title": "Community Care Network Next Gen (CCN NG)",
       "slug": "community-care-network-next-gen-ccn-ng-",
-      "date": "2026-04-06",
+      "date": "2026-08-17",
       "description": "Next-generation VA community care MA-IDIQ (Solicitation 36C10G26R0003) for CCN Next Gen Medical, replacing current CCN regional contracts. Two new mechanisms enter that do not exist in current CCN: (1) value-based payments starting with low",
       "tags": [
         "Department of Veterans Affairs",
@@ -2854,7 +2854,7 @@
       "type": "contract_intel",
       "title": "CCN Dental (36C10G26R0004)",
       "slug": "ccn-dental-36c10g26r0004-",
-      "date": "2026-04-06",
+      "date": "2026-08-17",
       "description": "Companion dental network management vehicle to the CCN Next Gen medical IDIQ. Separate procurement, same structural logic: multiple-award IDIQ for nationwide dental network coordination for veterans using community care. New vehicle — no st",
       "tags": [
         "Department of Veterans Affairs",
@@ -2870,7 +2870,7 @@
       "type": "contract_intel",
       "title": "VA Ambient Scribe IDIQ (36C10B26R0006)",
       "slug": "va-ambient-scribe-idiq-36c10b26r0006-",
-      "date": "2026-05-06",
+      "date": "2026-08-17",
       "description": "Five-year IDIQ for COTS cloud AI ambient scribe at VA — enterprise IDIQ. Proposals received April 2026; in active GAO protest (B-424447.1) with decision due August 6, 2026. Funded through the FY2027 VA Medical Services account. Prior contra",
       "tags": [
         "Department of Veterans Affairs",
@@ -2886,7 +2886,7 @@
       "type": "contract_intel",
       "title": "DHA Data Governance (WOSB Set-Aside)",
       "slug": "dha-data-governance-wosb-set-aside-",
-      "date": "2026-03-31",
+      "date": "2026-08-17",
       "description": "Solicitation HT001126RE011 — WOSB set-aside for enterprise data governance using a VAULTIS-Guided Framework. Scope: comprehensive baseline data inventory, centralized metadata repository, Analysis of Alternatives for enterprise data catalog",
       "tags": [
         "Defense Health Agency (DHA)",
@@ -2902,7 +2902,7 @@
       "type": "contract_intel",
       "title": "PEO DHMS Deployment Solutions (New IDIQ)",
       "slug": "peo-dhms-deployment-solutions-new-idiq-",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "Solicitation HT003826RE001 — $300M Multiple-Award IDIQ for on-demand deployment of health IT solutions. One-year base + four option years. Scope: site preparation, training, change management, data migration, user adoption, and post-install",
       "tags": [
         "Defense Health Agency (DHA) / PEO DHMS",
@@ -2918,7 +2918,7 @@
       "type": "contract_intel",
       "title": "VA Enterprise Imaging (NEIS + Multi-VISN PACS + Bi-Directional)",
       "slug": "va-enterprise-imaging-neis-multi-visn-pacs-bi-directional-",
-      "date": "2026-03-30",
+      "date": "2026-08-17",
       "description": "Three connected VA imaging modernization procurements. (1) NEIS — National Enterprise Imaging Solution (36C10X25Q0015, est. $300-500M, FY2027) replacing fragmented PACS/VNA across 170+ VA medical centers. NEIS scope includes FedRAMP cloud s",
       "tags": [
         "Department of Veterans Affairs",
@@ -2934,7 +2934,7 @@
       "type": "contract_intel",
       "title": "HHS HOPSS - HHS One Professional Services Solutions",
       "slug": "hhs-hopss-hhs-one-professional-services-solutions",
-      "date": "2026-03-30",
+      "date": "2026-08-17",
       "description": "Reported upcoming small business vehicle covering HHS-wide STEM and IT services — health data analytics, cybersecurity, and digital transformation for CMS, CDC, NIH, and FDA. If awarded, HOPSS would provide direct vehicle access for HHS-wid",
       "tags": [
         "Department of Health and Human Services (HHS)",
@@ -2950,7 +2950,7 @@
       "type": "contract_intel",
       "title": "HCDS - Health Care Delivery Solutions (MHS GENESIS Follow-On)",
       "slug": "hcds-health-care-delivery-solutions-mhs-genesis-follow-on-",
-      "date": "2026-03-31",
+      "date": "2026-08-17",
       "description": "Industry day held March 31, 2026. Draft strategy separates work into distinct contract lanes: PMO support, product support, and services support — plus Technical Integration, Product Management, and Human-Centered Design (HCD) carve-outs. T",
       "tags": [
         "Defense Health Agency (DHA) / PEO DHMS",
@@ -2966,7 +2966,7 @@
       "type": "contract_intel",
       "title": "FDA Sentinel 3.0",
       "slug": "fda-sentinel-3-0",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "FDA Sentinel 3.0 (2026 updated market research) — reference 75F40126SSN00100. Scope: data broker services Tiers 1-6, GOCO platform Tier 7, and scientific support Tier 8. Sentinel is FDA's national electronic system for monitoring the safety",
       "tags": [
         "Department of Health and Human Services (HHS) / FDA",
@@ -2982,7 +2982,7 @@
       "type": "contract_intel",
       "title": "VA Health Services DevSecOps",
       "slug": "va-health-services-devsecops",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "DA01 Health Services DevSecOps — new-contract Sources Sought (36C10B26Q0163). Scope: Agile health services applications across the lifecycle, ATO support, configuration management, UX, and sustainment.",
       "tags": [
         "Department of Veterans Affairs / VA TAC",
@@ -2998,7 +2998,7 @@
       "type": "contract_intel",
       "title": "VA Data Center and Telecommunications Modernization",
       "slug": "va-data-center-and-telecommunications-modernization",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "VA TAC Sources Sought 36C10B26Q0218 for infrastructure modernization — EOL replacement, standardization, and unified data center / telecommunications baseline supporting clinical and enterprise services.",
       "tags": [
         "Department of Veterans Affairs / VA TAC",
@@ -3014,7 +3014,7 @@
       "type": "contract_intel",
       "title": "VA HELM / SCMDSO (Healthcare Environment and Logistics Management)",
       "slug": "va-helm-scmdso-healthcare-environment-and-logistics-management-",
-      "date": "2026-05-22",
+      "date": "2026-08-17",
       "description": "Single-contractor sustainment and modernization for VA Healthcare Environment and Logistics Management (HELM) product line. Covers 5 sub-product lines (Environmental and Healthcare Management, Healthcare Technology and Asset Management, Exp",
       "tags": [
         "Department of Veterans Affairs / OIT Product Delivery Services",
@@ -3030,7 +3030,7 @@
       "type": "contract_intel",
       "title": "CIO-CS Follow-On / The Store",
       "slug": "cio-cs-follow-on-the-store",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "NIH CIO-CS follow-on (a.k.a. 'The Store') Pre-RFP watch — reported ceiling ~$20B-$25B covering IT commodities, software, cloud, cyber, collaboration, and health IT. Multi-agency reach via the NIH/GSA assisted-acquisition pathway.",
       "tags": [
         "NIH / GSA (watch)",
@@ -3046,7 +3046,7 @@
       "type": "contract_intel",
       "title": "VA EHRM (Electronic Health Record Modernization)",
       "slug": "va-ehrm-electronic-health-record-modernization-",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "VA's enterprise EHR modernization replacing VistA. Four Michigan sites went live April 11, 2026 (Detroit, Saginaw, Ann Arbor, Battle Creek) — the first wave of 13 sites planned for 2026 deployments (Ohio, Indiana, Kentucky, and Alaska to fo",
       "tags": [
         "Department of Veterans Affairs",
@@ -3062,7 +3062,7 @@
       "type": "contract_intel",
       "title": "MHS GENESIS (DHMSM Bridge)",
       "slug": "mhs-genesis-dhmsm-bridge-",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "DoD enterprise EHR deployed at 3,200+ locations serving 9.6M beneficiaries and 205,000 providers. Worldwide deployment completed March 2024. Leidos bridge is a planned/reported ~$1.4B sole-source extension; competition is delayed to 2028 at",
       "tags": [
         "Defense Health Agency (DHA)",
@@ -3078,7 +3078,7 @@
       "type": "contract_intel",
       "title": "Federal Electronic Health Record Modernization (FEHRM)",
       "slug": "federal-electronic-health-record-modernization-fehrm-",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "FEHRM is the joint DoD-VA interoperability office — not a contract. Both agencies use the Oracle Health platform, but government ownership, data governance, and workflows differ. DoD completed MHS GENESIS deployment (March 2024). VA is in a",
       "tags": [
         "DoD / VA Joint Program Office",
@@ -3094,7 +3094,7 @@
       "type": "contract_intel",
       "title": "T4NG2 (VA IT Services)",
       "slug": "t4ng2-va-it-services-",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "VA's primary enterprise IT services vehicle — successor to T4NG ($22.3B, ~64% obligated). Active / Awarded. SAM listed 30 original awards in October 2023, with the final roster reported at 33 after protest resolution (Taurian, Technatomy, P",
       "tags": [
         "Department of Veterans Affairs / VA TAC",
@@ -3110,7 +3110,7 @@
       "type": "contract_intel",
       "title": "PEO DHMS CSO (Competitive Solutions Opening)",
       "slug": "peo-dhms-cso-competitive-solutions-opening-",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "DHA's non-traditional acquisition pathway under OTA authority (10 U.S.C. § 4022) — CSO/OTA pathway. SAM.gov shows the active CSO open until July 1, 2026. Active AOIs: 1b (AI/ML/NLP), 4 (Data Applications — canceled due to McKinsey task orde",
       "tags": [
         "Defense Health Agency (DHA) / PEO DHMS",
@@ -3126,7 +3126,7 @@
       "type": "contract_intel",
       "title": "VA Health Connect / IHT 2.0",
       "slug": "va-health-connect-iht-2-0",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "VA/VHA Multiple-Award IDIQ — $14B / 10-year, 100% SDVOSB set-aside, 9 awardees, performance period August 2025 to August 2035. VA Health Connect functions include nurse triage hotline, telehealth coordination, clinical triage and escalation",
       "tags": [
         "Department of Veterans Affairs / VHA",
@@ -3142,7 +3142,7 @@
       "type": "contract_intel",
       "title": "Enterprise Intelligence & Data Solutions (EIDS)",
       "slug": "enterprise-intelligence-data-solutions-eids-",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "EIDS is a PEO DHMS program / PMO — not a single contract — administering multiple vehicles. Scope spans the MIP (MHS Information Platform), the MHS Common Data Model, and data / AI / analytics / application hosting. Key accomplishment: Oper",
       "tags": [
         "Defense Health Agency (DHA) / PEO DHMS",
@@ -3158,7 +3158,7 @@
       "type": "contract_intel",
       "title": "DHA Enterprise Generative AI",
       "slug": "dha-enterprise-generative-ai",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "Ask Sage announced (Dec. 8, 2025) an enterprise-wide generative AI agreement with DHA, claiming the first Impact Level 5 (IL5) GenAI offering authorized for Protected Health Information (PHI) in the Military Health System. The IL5 ATO for G",
       "tags": [
         "Defense Health Agency (DHA)",
@@ -3174,7 +3174,7 @@
       "type": "contract_intel",
       "title": "CMS Rural Health Transformation",
       "slug": "cms-rural-health-transformation",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "$50B CMS grant program (FY2026–FY2030) to states — not a contract. Strengthens rural healthcare infrastructure across all 50 states. Scope explicitly includes AI workflow modernization alongside telehealth, cybersecurity, and provider netwo",
       "tags": [
         "Centers for Medicare & Medicaid Services (CMS)",
@@ -3190,7 +3190,7 @@
       "type": "contract_intel",
       "title": "IHS Health IT Modernization (RPMS Replacement)",
       "slug": "ihs-health-it-modernization-rpms-replacement-",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "Enterprise EHR replacing RPMS (Resource and Patient Management System) — IHS's legacy EHR built in-house since the 1980s, serving 2.6M American Indians and Alaska Natives across 575+ federally recognized tribes and 170+ facilities. GDIT awa",
       "tags": [
         "Indian Health Service (IHS) / HHS",
@@ -3206,7 +3206,7 @@
       "type": "contract_intel",
       "title": "MHS GENESIS-Theater + JOMIS (Operational Medicine Systems)",
       "slug": "mhs-genesis-theater-jomis-operational-medicine-systems-",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "Per current PEO DHMS terminology, this program covers MHS GENESIS-Theater and JOMIS operational medicine systems — the deployed/theater version of MHS GENESIS for disconnected, low-bandwidth military operations. JOMIS is installed on USNS M",
       "tags": [
         "Defense Health Agency (DHA) / PEO DHMS",
@@ -3222,7 +3222,7 @@
       "type": "contract_intel",
       "title": "DHA Telehealth Programs",
       "slug": "dha-telehealth-programs",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "Two key DHA telehealth programs. (1) Amwell Converge platform — Amwell/Leidos Digital First task order up to $180M over 22 months, replacing MHS Video Connect as the enterprise virtual health platform. Supports synchronous video, async mess",
       "tags": [
         "Defense Health Agency (DHA)",
@@ -3238,7 +3238,7 @@
       "type": "contract_intel",
       "title": "CMS Cloud Infrastructure (OCI)",
       "slug": "cms-cloud-infrastructure-oci-",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "Oracle announced (Feb. 11, 2026) that Oracle Cloud Infrastructure was selected to support select CMS workload migration on FedRAMP High infrastructure — part of CMS modernization. Combined with DoD MHS GENESIS (Oracle Health) and VA EHRM (O",
       "tags": [
         "Centers for Medicare & Medicaid Services (CMS)",
@@ -3254,7 +3254,7 @@
       "type": "contract_intel",
       "title": "CDM DEFEND (Health Data Cybersecurity)",
       "slug": "cdm-defend-health-data-cybersecurity-",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "Continuous Diagnostics and Mitigation DEFEND program. Protects health data and IT infrastructure across HHS agencies including CMS, CDC, NIH, FDA. Implements zero trust architecture and continuous monitoring. Specific vendor and ceiling for",
       "tags": [
         "CISA / DHS",
@@ -3270,7 +3270,7 @@
       "type": "contract_intel",
       "title": "TRICARE Managed Care Support - T-5 (MCS)",
       "slug": "tricare-managed-care-support-t-5-mcs-",
-      "date": "2026-05-06",
+      "date": "2026-08-17",
       "description": "Managed healthcare delivery for 9.6M+ TRICARE beneficiaries — not IT. T-5 generation went live January 1, 2025, replacing T-2017 contracts (Humana / TriWest regional transition). Option Period Two in execution: Humana East $7.34B and Everno",
       "tags": [
         "Defense Health Agency (DHA)",
@@ -3286,7 +3286,7 @@
       "type": "contract_intel",
       "title": "TPharm5 (TRICARE Pharmacy)",
       "slug": "tpharm5-tricare-pharmacy-",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "TRICARE pharmacy benefit management. Express Scripts (Evernorth) holds HT940221C0007 with a reported award value of approximately $4.29B; specific option-year exercise dollar amounts require source verification before display. Express Scrip",
       "tags": [
         "Defense Health Agency (DHA)",
@@ -3302,7 +3302,7 @@
       "type": "contract_intel",
       "title": "DHA Zero Trust 2.0 / GSP",
       "slug": "dha-zero-trust-2-0-gsp",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "Strategy watch — FY2026 initiative consolidating expiring health IT infrastructure contracts under a Global Service Provider model with Zero Trust 2.0 architecture. Strategy doc, not a discrete procurement at this stage. Covers network ops,",
       "tags": [
         "Defense Health Agency (DHA)",
@@ -3318,7 +3318,7 @@
       "type": "contract_intel",
       "title": "MPSM (Medicare Payment Systems Modernization)",
       "slug": "mpsm-medicare-payment-systems-modernization-",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "Legacy Medicare claims system transformation — a CMS program (PMO), not a single contract. Multiple task orders for modernizing Part A, B, and D payment processing. Small businesses can access CMS analytics work through existing IDIQ paths ",
       "tags": [
         "Centers for Medicare & Medicaid Services (CMS)",
@@ -3334,7 +3334,7 @@
       "type": "contract_intel",
       "title": "TEFCA / RCE (Health Information Exchange)",
       "slug": "tefca-rce-health-information-exchange-",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "Trusted Exchange Framework and Common Agreement — foundational nationwide health information exchange mandated by 21st Century Cures Act. Sequoia Project operates as the ONC Recognized Coordinating Entity (RCE), enabling interoperability ac",
       "tags": [
         "HHS ONC/ASTP",
@@ -3350,7 +3350,7 @@
       "type": "contract_intel",
       "title": "CDC DCIPHER (Disease Surveillance)",
       "slug": "cdc-dcipher-disease-surveillance-",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "Palantir Foundry-based disease surveillance, outbreak detection, and population health monitoring for CDC. Originally COVID-19, expanded to broader surveillance. Coverage supported by FedScoop / Potomac reporting. Palantir also attempted DH",
       "tags": [
         "Centers for Disease Control and Prevention (CDC)",
@@ -3366,7 +3366,7 @@
       "type": "contract_intel",
       "title": "SSA DCPS2 (Disability Claims Processing)",
       "slug": "ssa-dcps2-disability-claims-processing-",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "Disability claims processing modernization with heavy health records integration. Processes medical evidence for disability determinations. Insufficient current evidence as a discrete federal health IT contract item — treat as Needs Source ",
       "tags": [
         "Social Security Administration (SSA)",
@@ -3382,7 +3382,7 @@
       "type": "contract_intel",
       "title": "NIH STRIDES (Cloud for Biomedical Data)",
       "slug": "nih-strides-cloud-for-biomedical-data-",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "Cloud platform tracking — NIH STRIDES Initiative provides discounted commercial cloud access for NIH-funded biomedical research, genomics processing, and AI/ML workloads. Specific vendor agreement values are not always public; treat as Clou",
       "tags": [
         "National Institutes of Health (NIH)",
@@ -3398,7 +3398,7 @@
       "type": "contract_intel",
       "title": "CDC DIBBs (Data Integration Building Blocks)",
       "slug": "cdc-dibbs-data-integration-building-blocks-",
-      "date": "2026-04-29",
+      "date": "2026-08-17",
       "description": "CDC Data Integration Building Blocks — modular data integration tools for state/local/tribal/territorial (STLT) public health agencies. Standardizes disease reporting and lab results. 2026 target: greater than 30% STLT adoption of at least ",
       "tags": [
         "Centers for Disease Control and Prevention (CDC)",
@@ -3414,7 +3414,7 @@
       "type": "contract_intel",
       "title": "T6 Health Systems — AOI 2 (PEO DHMS CSO)",
       "slug": "t6-health-systems-aoi-2-peo-dhms-cso-",
-      "date": "2026-05-28",
+      "date": "2026-08-17",
       "description": "Awarded Nov 19, 2025 under the PEO DHMS Commercial Solutions Opening (CSO HT0038-25-S-C001), Area of Interest 2. Period of performance through 2030. One of the AOIs under the DHMS innovation CSO; AOI 1b proposals due Jul 1, 2026 and AOI 4 (",
       "tags": [
         "Defense Health Agency (PEO DHMS)",
@@ -3430,7 +3430,7 @@
       "type": "contract_intel",
       "title": "ManTech — DMIX / DISS Support",
       "slug": "mantech-dmix-diss-support",
-      "date": "2026-05-28",
+      "date": "2026-08-17",
       "description": "DMIX (Defense Medical Information Exchange) / DISS support task order to ManTech. Award/order number 140D0422F0251.",
       "tags": [
         "Defense Health Agency",
@@ -3446,7 +3446,7 @@
       "type": "contract_intel",
       "title": "Swingtide — Market Intelligence Support",
       "slug": "swingtide-market-intelligence-support",
-      "date": "2026-05-28",
+      "date": "2026-08-17",
       "description": "Market intelligence support, ~$745K, awarded Jan 2026. Solicitation HT003826CE001.",
       "tags": [
         "Defense Health Agency",
@@ -3462,7 +3462,7 @@
       "type": "contract_intel",
       "title": "STR Zero Day — Leidos",
       "slug": "str-zero-day-leidos",
-      "date": "2026-05-28",
+      "date": "2026-08-17",
       "description": "STR Zero Day effort, $8.07M, awarded May 7, 2026 to Leidos. Solicitation HT003826FE006.",
       "tags": [
         "Defense Health Agency",
@@ -3478,7 +3478,7 @@
       "type": "contract_intel",
       "title": "SAMHSA BHSIS Recompete (Behavioral Health Services Information System)",
       "slug": "samhsa-bhsis-recompete-behavioral-health-services-information-system-",
-      "date": "2026-05-29",
+      "date": "2026-08-17",
       "description": "Full recompete of SAMHSA's flagship behavioral health data system. BHSIS is the backbone of national behavioral health data infrastructure, collecting facility-level substance use and mental health treatment data (N-SUMHSS, TEDS, the Behavi",
       "tags": [
         "Substance Abuse and Mental Health Services Administration (SAMHSA)",
@@ -3494,7 +3494,7 @@
       "type": "contract_intel",
       "title": "FDA SIRCE II (Systems for Inspection, Recalls, Compliance & Enforcement)",
       "slug": "fda-sirce-ii-systems-for-inspection-recalls-compliance-enforcement-",
-      "date": "2026-05-29",
+      "date": "2026-08-17",
       "description": "Recompete of FDA's Office of Regulatory Affairs (ORA) IT modernization vehicle. RFI 75F40126Q00072 posted Feb 2026 signals an imminent competitive solicitation covering ORA's full IT stack: imports screening, recall management, inspection c",
       "tags": [
         "Department of Health and Human Services (HHS) / FDA",
@@ -3510,7 +3510,7 @@
       "type": "contract_intel",
       "title": "HRSA OPTN Next Gen IT Contracts (Phase 2)",
       "slug": "hrsa-optn-next-gen-it-contracts-phase-2-",
-      "date": "2026-05-29",
+      "date": "2026-08-17",
       "description": "Phase 2 of HRSA's dismantling of the 40-year UNOS monopoly over the Organ Procurement and Transplantation Network — the most consequential procurement restructuring in HRSA history. HRSA is moving from Competitive Transition Contracts (Phas",
       "tags": [
         "Health Resources & Services Administration (HRSA)",
@@ -3526,7 +3526,7 @@
       "type": "contract_intel",
       "title": "CMS SPARC II (Strategic Partners Acquisition Readiness Contract — Recompete)",
       "slug": "cms-sparc-ii-strategic-partners-acquisition-readiness-contract-recompete-",
-      "date": "2026-05-29",
+      "date": "2026-08-17",
       "description": "Recompete of CMS's primary IT IDIQ vehicle and the single highest-priority CMS opportunity in the 12-24 month window. SPARC I (HHSM-500-2016-00046I, $25B ceiling) expires February 20, 2027. SPARC II will be CMS's most competitive IT vehicle",
       "tags": [
         "Centers for Medicare & Medicaid Services (CMS)",
@@ -3542,7 +3542,7 @@
       "type": "contract_intel",
       "title": "CDC DMI Successor / NSSP Ecosystem Contracts",
       "slug": "cdc-dmi-successor-nssp-ecosystem-contracts",
-      "date": "2026-05-29",
+      "date": "2026-08-17",
       "description": "Watch item covering the conversion of CDC's Data Modernization Initiative (DMI) grant-based activities into recurring contracts, plus the NSSP/BioSense recompete cycle. As CDC's FY2024-2025 DMI appropriations ($100M-$175M/yr) wind down, pro",
       "tags": [
         "Centers for Disease Control and Prevention (CDC)",
@@ -3558,7 +3558,7 @@
       "type": "contract_intel",
       "title": "IHS Four Directions Warehouse (4DW) — Clinical Data Repository",
       "slug": "ihs-four-directions-warehouse-4dw-clinical-data-repository",
-      "date": "2026-05-29",
+      "date": "2026-08-17",
       "description": "IHS Health IT Modernization program contract for development of the Four Directions Warehouse (4DW), a clinical data repository supporting the PATH EHR transition. Awarded Sept 2024 to Cherokee Nation Integrated Health, LLC under an Indian ",
       "tags": [
         "Indian Health Service (IHS) / HHS",
@@ -3574,7 +3574,7 @@
       "type": "contract_intel",
       "title": "NIH Scientific & Technical Support Services IDIQ ($3B)",
       "slug": "nih-scientific-technical-support-services-idiq-3b-",
-      "date": "2026-05-29",
+      "date": "2026-08-17",
       "description": "NIH's largest multi-award IDIQ in the current pipeline (solicitation 75N98026R00042), Full and Open. Covers bioinformatics, computational biology, BSL 2-4 lab research support, and clinical research across all NIH institutes. Proposals were",
       "tags": [
         "National Institutes of Health (NIH)",
@@ -3590,7 +3590,7 @@
       "type": "contract_intel",
       "title": "CMS RMADA 3 (Research, Measurement, Assessment, Design & Analysis)",
       "slug": "cms-rmada-3-research-measurement-assessment-design-analysis-",
-      "date": "2026-05-29",
+      "date": "2026-08-17",
       "description": "Multiple-award successor to RMADA 2, providing CMS/CMMI with research, measurement, demonstration evaluation, actuarial analysis, and data-analytics services tied to value-based care and payment innovation. RMADA 2 was awarded to 17 compani",
       "tags": [
         "Centers for Medicare & Medicaid Services (CMS)",
@@ -3606,7 +3606,7 @@
       "type": "contract_intel",
       "title": "ACF CCWIS Support Task Recompete (Child Welfare Information Systems)",
       "slug": "acf-ccwis-support-task-recompete-child-welfare-information-systems-",
-      "date": "2026-05-29",
+      "date": "2026-08-17",
       "description": "Recompete watch for ACF Children's Bureau's CCWIS technical-assistance/support task. CCWIS is a mandatory federal program requiring states to modernize child welfare IT systems. ICF currently holds the $69.7M support task (75ACF125F80006) o",
       "tags": [
         "Department of Health and Human Services (HHS) / ACF",
@@ -3622,7 +3622,7 @@
       "type": "contract_intel",
       "title": "HHS NGITS BPA Recompete (Application Hosting, Operations, Engineering)",
       "slug": "hhs-ngits-bpa-recompete-application-hosting-operations-engineering-",
-      "date": "2026-05-29",
+      "date": "2026-08-17",
       "description": "Recompete/consolidation watch across the three HHS Next-Generation IT Services BPAs — Application Hosting, Operations, and Engineering — that form the departmental IT services backbone for HHS OS and staffing divisions (~12,000 employees). ",
       "tags": [
         "Department of Health and Human Services (HHS)",
@@ -3638,7 +3638,7 @@
       "type": "contract_intel",
       "title": "IHS PATH EHR Future Task Orders (Sustainment & Deployment Pipeline)",
       "slug": "ihs-path-ehr-future-task-orders-sustainment-deployment-pipeline-",
-      "date": "2026-05-29",
+      "date": "2026-08-17",
       "description": "Task-order pipeline watch on the IHS EHR Modernization IDIQ (GDIT prime, 140D0424D0001, $2.54B ceiling). With TO #9 ($325.7M, sustainment & operations, awarded May 2026, contract 140D0426F0370) now placed and PATH go-live targeted Aug 2026,",
       "tags": [
         "Indian Health Service (IHS) / HHS",
@@ -3654,7 +3654,7 @@
       "type": "contract_intel",
       "title": "FDA FIRE (Foundational Innovation and RAPID Engagement)",
       "slug": "fda-fire-foundational-innovation-and-rapid-engagement-",
-      "date": "2026-05-29",
+      "date": "2026-08-17",
       "description": "Pre-concept FDA contracting experiment. FDA's Office of Digital Transformation issued an RFI (posted Dec 17, 2025; responses due Jan 18, 2026) exploring a first-of-kind venture-capital prime / portfolio-subcontractor model to advance public",
       "tags": [
         "Department of Health and Human Services (HHS) / FDA",
@@ -3670,7 +3670,7 @@
       "type": "contract_intel",
       "title": "HRSA Ryan White RSR Data Modernization",
       "slug": "hrsa-ryan-white-rsr-data-modernization",
-      "date": "2026-05-29",
+      "date": "2026-08-17",
       "description": "Recompete watch on HRSA HIV/AIDS Bureau (HAB) data-support contract underpinning the Ryan White HIV/AIDS Program reporting systems — the Ryan White Services Report (RSR) and AETC reporting infrastructure that track HIV care and surveillance",
       "tags": [
         "Health Resources & Services Administration (HRSA)",
@@ -3686,7 +3686,7 @@
       "type": "contract_intel",
       "title": "CDC Electronic Case Reporting (eCR) Modernization",
       "slug": "cdc-electronic-case-reporting-ecr-modernization",
-      "date": "2026-05-29",
+      "date": "2026-08-17",
       "description": "Watch item on CDC's electronic case reporting modernization — the automated, real-time exchange of case-report data between EHRs and public health agencies. eCR is a core CDC Data Modernization Initiative (DMI) investment, currently deliver",
       "tags": [
         "Centers for Disease Control and Prevention (CDC)",
@@ -3702,7 +3702,7 @@
       "type": "contract_intel",
       "title": "ASPR NPIVS (National Provider Identity Verification System)",
       "slug": "aspr-npivs-national-provider-identity-verification-system-",
-      "date": "2026-05-29",
+      "date": "2026-08-17",
       "description": "Pre-solicitation watch on ASPR's National Provider Identity Verification System (RFI/sources-sought 75A50126R00001, targeted ~FY2027). NPIVS supports identity verification of healthcare providers for emergency-response and preparedness oper",
       "tags": [
         "Department of Health and Human Services (HHS) / ASPR",
