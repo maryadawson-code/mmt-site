@@ -1,27 +1,13 @@
 {
   "_meta": {
     "description": "Pursuit Calendar seed events. Source of truth when Supabase pursuit_calendar table is unreachable. Times are America/New_York (ET). Status is computed dynamically by the renderer for date-based events; explicit status values (Protest, Protest Due, Watch, Needs Source) are honored as-is.",
-    "last_curated_at": "2026-08-10",
+    "last_curated_at": "2026-08-17",
     "curator": "automated",
     "timezone": "America/New_York",
-    "window_start": "2026-08-10",
-    "window_end": "2026-11-08"
+    "window_start": "2026-08-17",
+    "window_end": "2026-11-15"
   },
   "events": [
-    {
-      "id": "e3e19a06-b440-4696-9c6c-c93fdaa6f607",
-      "title": "Restorative and health-Enhancing Sleep Time (REST)",
-      "event_date": "2026-08-12",
-      "event_time_et": null,
-      "agency": "ARPA-H",
-      "vehicle": "ARPA-H-SOL-26-159",
-      "ref": null,
-      "category": "deadline",
-      "status_override": null,
-      "source_url": "https://sam.gov/workspace/contract/opp/ed3db118c1a247e9b6137dfad6c754ee/view",
-      "source_system": "sam.gov",
-      "notes": "Sol: ARPA-H-SOL-26-159 · NAICS 541715 · Set-aside: No Set aside used"
-    },
     {
       "id": "8e518775-5cd1-4518-810e-02e176a79398",
       "title": "Notice to Sole Source Qiagen",
@@ -35,6 +21,20 @@
       "source_url": "https://sam.gov/workspace/contract/opp/c1147df1195d4052a3cc4e656e218926/view",
       "source_system": "sam.gov",
       "notes": "Sol: FY26-0865 · NAICS 541512"
+    },
+    {
+      "id": "e0548ea4-332a-4621-9912-ca9f7f140f4a",
+      "title": "Notice of Intent to Sole Source - Plexus Location Asset Tracking System Installation and Maintenance Services",
+      "event_date": "2026-08-21",
+      "event_time_et": null,
+      "agency": "DHA",
+      "vehicle": "HT941026N0099",
+      "ref": null,
+      "category": "rfi",
+      "status_override": null,
+      "source_url": "https://sam.gov/workspace/contract/opp/8400d75a4c804a26a27c4b6a0bbf9c5b/view",
+      "source_system": "sam.gov",
+      "notes": "Sol: HT941026N0099 · NAICS 541512 · Set-aside: No Set aside used"
     }
   ]
 }
