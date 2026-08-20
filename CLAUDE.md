@@ -1,5 +1,67 @@
 # Mission Meets Tech - Developer & Content Governance
 
+## Sprint 2026-08-20 — Member email changes: Stripe is upstream, plus self-serve
+
+A founding member asked to move her account back to a prior address. The same
+member had been moved once before, on 2026-07-17, by an ad-hoc
+`manual-support-fix` script that lives **nowhere in this repo**. It updated
+`mp_users` and Stripe but left `mmt_preferences` and `customer_profiles` at the
+old address, and left nothing reusable behind, so the second request started
+from zero.
+
+**The durability rule (do not regress): Stripe's customer record is the
+UPSTREAM source of truth for a member's email.** `stripe-subscriber-sync`
+(hourly) and `stripe-webhook` both derive the account email from
+`customer.email` and upsert `mp_users` on it. Update `mp_users` WITHOUT
+updating the Stripe customer and the hourly sync re-creates a row under the OLD
+address within the hour. Any path that changes a member's email must update
+Stripe **in the same operation**, and must update it **first** so a failure
+aborts having written nothing.
+
+Shipped (PR #168):
+- **`netlify/functions/lib/email-migration.js`** — ONE source of truth for what
+  moves. `mp_users` + 8 email-keyed satellite tables (verified against the live
+  prod schema), Stripe, Buttondown. Tables keyed on `mp_users.id`
+  (`mp_scoring_history`, `mp_feature_usage`, `api_tokens`) follow the account
+  automatically and are deliberately NOT listed. Old sessions are
+  **invalidated**, not carried across an identity change. Never clobbers a row
+  that already exists at the destination; reports the conflict instead.
+  Dry-run support.
+- **`netlify/functions/member-email-change.js`** — self-serve request/confirm.
+  Acting email DERIVED from the HMAC subscriber token, never read from the body
+  (same IDOR-closing pattern as `member-preferences.js`). Confirmation goes to
+  the **NEW** address (proves control of the destination, so a stolen session
+  alone cannot walk a paid account elsewhere); the **OLD** address gets a notice
+  while the link is unconfirmed, so a hijack is visible to the real owner.
+  One-time token stored hashed, 60-min expiry, single use, 5 requests/hour.
+- **`scripts/change-member-email.js`** — operator CLI, dry-run by default,
+  running the same core so a support fix and a member-initiated change cannot
+  drift. `netlify dev:exec -- node scripts/change-member-email.js --from a --to b`
+  (note the `--` or the Netlify CLI eats the flags).
+- **`premium/settings.html`** — Email Address card.
+
+Pending state lives in **`ops_events`**, not a new table, deliberately: a gated
+migration would have left the feature inert on deploy, the same false-green
+shape as the `opportunity_radar.status` outage documented below.
+
+**Buttondown gotcha (do not regress):** the documented `?email=` LIST filter is
+**broken upstream** — it ignores the filter and returns the whole list, so
+`results[0]` is an unrelated subscriber. Verified live 2026-08-20: returns
+`count: 48` with an unrelated first row. Always use the detail route
+`GET /v1/subscribers/{email}`, which 404s cleanly. Use the exported
+`buttondownGet()` helper rather than writing a third lookup shape.
+**Known live bug, not fixed in this sprint:** `member-preferences.js`
+`syncButtondownTags()` still uses the broken filter and PATCHes `results[0]`,
+so every member who saves notification preferences overwrites one unrelated
+subscriber's tags. Flagged for a scoped follow-up.
+
+Verified 2026-08-20: `node -c` clean; unit suite **556/556** (+18 in
+`tests/unit/email-migration.test.js`, which assert the guards have teeth —
+including that a Stripe failure leaves `mp_users` untouched and that a dry run
+writes nothing anywhere); build exit 0; validate-dist OK (654), validate-routes
+OK (35), validate-contract-tracker OK (65), scan-pii OK. Prod migration applied
+and verified via `loadEntitlement` (ok=true, tier=founding, $199 intact).
+
 ## Sprint 2026-08-20 — DHA Enterprise-Wide CSO (HT003826SC005) + structured AoI tracking
 
 Mary supplied the signed FINAL announcement PDF for the **DHA Enterprise-Wide
