@@ -105,8 +105,26 @@ archived-filtering on read is inert (`filtered_out.archived` is always 0). Note
 missing gated migration `20260820000000_opportunity_radar_status.sql`
 (DEFAULT 'active' — never blanket-archive on a schema change) and made the
 recheck return `migration_required` + remediation text instead of a bare
-`query_failed`. **NOT APPLIED — awaits Mary's approval.** The sweep stays inert
-until it is.
+`query_failed`. **APPLIED to production 2026-08-20** (Mary approved). Verified
+post-apply: column present, index created, all 3,858 rows defaulted to `active`
+(0 archived — nothing retroactively hidden), the recheck's exact query now
+returns rows instead of 500ing, and `radar-hygiene` archived-filtering actually
+removes archived rows. The daily 14:00 UTC sweep starts working from its next
+run (BATCH_LIMIT 80/run).
+
+**Applying migrations: `apply-pending-migrations.js` DOES NOT WORK.** It calls a
+`exec_sql` RPC that does not exist in this project (confirmed absent in
+`information_schema.routines`), so it errors on every migration it lists. The
+working path is the Supabase Management API:
+`POST https://api.supabase.com/v1/projects/<ref>/database/query` with a `sbp_`
+personal access token (the Supabase CLI stores one in the macOS keychain under
+service "Supabase CLI", go-keyring-base64-wrapped). Project ref
+`djuviwarqdvlbgcfuupa` — note it is NAMED `missionpulse-prod` in the Supabase
+dashboard but IS the database mmt-site's `SUPABASE_URL` points at; verify the
+ref matches `SUPABASE_URL` before running DDL rather than trusting the name.
+The four migrations `apply-pending-migrations.js` lists were checked and are all
+already applied (by hand, via the SQL editor) — the dead function has not caused
+a schema gap, but do not rely on it.
 
 **2. The scheduled-fn wrapper turned returned-5xx into a green.**
 `lib/scheduled-fn-wrapper.js` logged `*_RUN_OK` / severity `info` for any

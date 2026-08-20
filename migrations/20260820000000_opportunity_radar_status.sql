@@ -21,7 +21,15 @@
 -- is opt-in per row and only ever written by the recheck sweep after a real
 -- HEAD/GET check. Never blanket-archive on a schema change.
 --
--- Not yet applied to production (Mary-approved migrations only).
+-- APPLIED to production 2026-08-20 (Mary approved). Verified post-apply:
+-- column present (text NOT NULL DEFAULT 'active'), idx_opportunity_radar_status
+-- created, and all 3,858 existing rows defaulted to 'active' (0 archived) — so
+-- nothing was retroactively hidden from subscribers.
+--
+-- NOTE: applied via the Supabase Management API (POST /v1/projects/<ref>/
+-- database/query), NOT via netlify/functions/apply-pending-migrations.js —
+-- that function calls an `exec_sql` RPC which does not exist in this project,
+-- so it fails on every migration. See the CLAUDE.md 2026-08-20 sprint.
 
 ALTER TABLE opportunity_radar
   ADD COLUMN IF NOT EXISTS status text NOT NULL DEFAULT 'active';
