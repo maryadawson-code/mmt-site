@@ -42,7 +42,11 @@ What shipped:
   `related_slug`, duplicate ids, unknown status, malformed dates, malformed
   SAM permalinks, and **`status:"open"` with a `response_due` already past**.
   Staleness is SOFT (warn at 45d, `CSO_AOI_MAX_AGE_DAYS` to enforce), matching
-  the 08-17 freshness-audit posture.
+  the 08-17 freshness-audit posture. **Wired into the `netlify.toml` build
+  command** (after `validate-contract-tracker.js`) — that wiring is what makes
+  the hard failures real. A validator that no build invokes is an inert guard,
+  the same false-green shape as the 08-20 sprint below; the canonical build
+  chain is the `command` in `netlify.toml`, NOT `package.json`'s `build` script.
 - **Weekly tripwire** (`intel-quality-report.js`): new `_csoAoiHealth()` adds
   a "CSO Areas of Interest" section, `cso_aoi_stale` +
   `cso_aoi_past_due_open` in the ops_event, and AoI counts in the subject.
