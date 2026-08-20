@@ -81,6 +81,18 @@
           <p style="margin:0 0 12px; color:var(--mmt-text-secondary); font-size:14px;">Pursuit Score, Compliance Check, and Signal Chain read your company profile to score opportunities against <em>your</em> company &mdash; not as generic market signals. Without it, scoring is a generic preliminary read.</p>
           <a href="/premium/profile.html" style="display:inline-block;background:var(--mmt-navy);color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px;">Edit company profile &rarr;</a>
         </div>
+        <!-- Email Address -->
+        <div class="dash-card" id="email-card">
+          <h3 style="margin:0 0 6px;">Email Address</h3>
+          <p style="margin:0 0 12px; color:var(--mmt-text-secondary); font-size:14px;">This is the address you sign in with and the one every brief goes to. Changing jobs? Move it yourself &mdash; your subscription, your price, and everything you have saved come with you.</p>
+          <p style="margin:0 0 14px; font-size:14px;">Currently: <strong id="email-current">&mdash;</strong></p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+            <input type="email" id="email-new" placeholder="new@yourcompany.com" autocomplete="email" style="flex:1;min-width:220px;padding:9px 12px;border:1px solid var(--mmt-border);border-radius:6px;font-size:13px;font-family:inherit;">
+            <button id="email-save-btn" onclick="requestEmailChange()" style="padding:10px 20px;background:var(--mmt-navy);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;">Send confirmation</button>
+          </div>
+          <p id="email-status" style="display:none;font-size:13px;font-weight:600;margin:12px 0 0;"></p>
+          <p style="margin:12px 0 0;font-size:13px;color:var(--mmt-text-secondary);">We email a confirmation link to the new address. Nothing moves until you click it, and we let the old address know a change was asked for.</p>
+        </div>
         <div class="dash-card">
           <h3>Subscription</h3>
           <p style="margin:0 0 12px; color:var(--mmt-text-secondary); font-size:14px;">Manage your subscription, update payment method, or cancel.</p>
@@ -241,6 +253,56 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
+      });
+    }
+
+    // --- Email address change ---
+    // Requests a change; the account only moves when the member clicks the
+    // link we mail to the NEW address. See netlify/functions/member-email-change.js.
+    var __ec = document.getElementById('email-current');
+    if (__ec && email) __ec.textContent = email;
+
+    function emailStatus(msg, good) {
+      var el = document.getElementById('email-status');
+      if (!el) return;
+      el.textContent = msg;
+      el.style.color = good ? '#16A34A' : '#E63946';
+      el.style.display = 'block';
+    }
+
+    function requestEmailChange() {
+      var input = document.getElementById('email-new');
+      var btn = document.getElementById('email-save-btn');
+      if (!input || !btn) return;
+      var next = (input.value || '').trim();
+      if (!next || next.indexOf('@') < 0 || next.indexOf('.') < 0) {
+        emailStatus('Enter a valid email address.', false);
+        return;
+      }
+      if (!token) {
+        emailStatus('Please sign in again to change your email.', false);
+        return;
+      }
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+      fetch('/.netlify/functions/member-email-change', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: token, action: 'request', new_email: next })
+      }).then(function (r) {
+        return r.json().then(function (d) { return { status: r.status, body: d }; });
+      }).then(function (res) {
+        if (res.status === 200 && res.body.requested) {
+          emailStatus(res.body.message, true);
+          input.value = '';
+        } else {
+          emailStatus((res.body && res.body.message) || 'Could not start the change. Try again.', false);
+        }
+      }).catch(function () {
+        emailStatus('Network error. Try again.', false);
+      }).then(function () {
+        btn.disabled = false;
+        btn.textContent = 'Send confirmation';
       });
     }
 
