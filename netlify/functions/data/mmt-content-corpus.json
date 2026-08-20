@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-17T20:24:22.753Z",
-  "total": 293,
+  "generated_at": "2026-08-20T16:35:20.224Z",
+  "total": 294,
   "counts": {
     "articles": 132,
     "friday_briefs": 36,
     "monthly_briefs": 4,
-    "contracts": 64,
+    "contracts": 65,
     "capture_intel": 24,
     "glossary": 0,
     "idiq_vehicles": 33
@@ -3145,6 +3145,21 @@
       "premium": false
     },
     {
+      "id": "contract-dha-enterprise-wide-cso-ht003826sc005-",
+      "type": "contract_intel",
+      "title": "DHA Enterprise-Wide CSO (HT003826SC005)",
+      "slug": "dha-enterprise-wide-cso-ht003826sc005-",
+      "date": "2026-08-20",
+      "description": "Update Aug 20, 2026: DHA issued an enterprise-wide Commercial Solutions Opening, HT003826SC005, active 07 August 2026 through 06 August 2027. This replaces the single-office pattern: where prior CSOs (HT003825SC001, HT003826SC001) were scop",
+      "tags": [
+        "Defense Health Agency (DHA) / DHACA",
+        "active"
+      ],
+      "url": "/documents/dha-enterprise-wide-cso-ht003826sc005.pdf",
+      "excerpt": "Update Aug 20, 2026: DHA issued an enterprise-wide Commercial Solutions Opening, HT003826SC005, active 07 August 2026 through 06 August 2027. This replaces the single-office pattern: where prior CSOs (HT003825SC001, HT003826SC001) were scoped to PEO DHMS, this one may be used by any current or future PAE or PMO across the DHA enterprise. It covers all three Portfolio Acquisition Executives: Medical Digital Solutions (EHR, operational medicine, enterprise data and analytics, logistics and business systems), Medical Services (Q-category service acquisitions under DoDI 5000.74), and Medical Products. Read it as a framework, not a requirement. The announcement carries no NAICS, no PSC, no dollar ceiling and no response date; every one of those is set by the individual Areas of Interest (AoIs) issued under it, and the Government may post, extend or revise AoIs at any time. Authorities are 10 U.S.C. 3458 as amended by Section 1823 of the FY2026 NDAA, plus 10 U.S.C. 3201, research OTs under 4021, prototype OTs under 4022, experimental purchases under 4023, Executive Order 14271, FAR Part 12 and DFARS Subpart 212.70. Three phases: Phase I is a pitch deck or concept paper scored Go/No-Go on strategic alignment and basic feasibility; Phase II is an optional demo or oral presentation; Phase III is a full technical and cost proposal by invitation only. Each AoI may publish its own criteria for each phase. Two structural details matter for capture. First, the instrument is chosen from solution maturity: a solution that is immediately deployable points to a FAR Part 12 firm-fixed-price contract (FFP or FFP with performance incentives is mandatory for FAR-based awards here), while anything needing testing, integration or pilot-scale modification to prove feasibility in a DHA clinical or operational environment points to a prototype OT under 4022. Second, 10 U.S.C. 4022(f) carries through: a participant who successfully completes a competitively awarded prototype can receive a sole-source follow-on production award, and Section 1823 extends that follow-on authority to commercial products, commercial services and non-developmental items used in the prototype. That is the same prototype-to-production path AoI 3 proved on the PEO DHMS CSO, now available enterprise-wide. Submission grants the Government authority to use non-Government advisors in review across all phases, after OCI screening; firms with proprietary-data concerns are directed to raise them with the Contracting or Agreement Officer before submitting. Unless an AoI says otherwise there are no restrictions on who may respond, and the Government pays no proposal costs. Administered by the DHACA Defense Healthcare Management Systems Contracting Division (DHMS-CD); pre-AoI coordination runs through J.R. Oliver (DHMS-CD).\nAgency: Defense Health Agency (DHA) / DHACA\nVendor: Open competition. Multiple awards anticipated; the Government selects the instrument per Area of Interest.\nValue: No ceiling stated in the CSO. Dollar values are set by each Area of Interest, not by this announcement.\nStatus: active\nNAICS: \nMMT verdict: WATCH — Standing enterprise vehicle. The real action is each AoI, so watch the AoI feed, not this notice.\nFactors: vehicle_fit: pass — Open to any responder unless an AoI restricts; OT paths reach non-traditionals | agency_alignment: pass — Spans all three DHA PAEs, so almost any DHA-facing capability has a lane | timeline: watch — No due date on the CSO itself; each AoI sets its own and can be posted with little notice | competition: watch — Phase I is a low-cost Go/No-Go, which invites high response volume | scope_fit: watch — Scope is only knowable per AoI; the CSO alone cannot be bid",
+      "premium": false
+    },
+    {
       "id": "contract-peo-dhms-cso-competitive-solutions-opening-",
       "type": "contract_intel",
       "title": "PEO DHMS CSO (Competitive Solutions Opening)",
@@ -3157,7 +3172,7 @@
         "541512"
       ],
       "url": "https://sam.gov",
-      "excerpt": "Update Aug 17, 2026: The PEO DHMS Commercial Solutions Opening (HT0038-25-S-0001) is an open solicitation seeking prototype OTAs, response window into mid-2026. DHA's non-traditional acquisition pathway under OTA authority (10 U.S.C. § 4022) — CSO/OTA pathway. SAM.gov shows the active CSO open until July 1, 2026. Active AOIs: 1b (AI/ML/NLP), 4 (Data Applications — canceled due to McKinsey task order dispute, but requirement remains valid). AOI 3 (Ambient Listening/DAX Copilot) established a critical precedent: successful CSO prototypes can transition directly to production task orders under the DHMSM/HCDS IDIQ without a new competitive recompete. This 'CSO-to-IDIQ' pathway is being closely watched as a model for closing the valley of death between prototype and production. Innovation threshold (DFARS 212.7001) is a binary gate — must demonstrate a 'new application' of technology, not merely commercial technology at its intended use.\nAgency: Defense Health Agency (DHA) / PEO DHMS\nVendor: Open competition (rolling submissions)\nValue: Multiple awards, various\nStatus: active\nNAICS: 541512\nMMT verdict: WATCH — Open CSO/OTA — rolling submissions through July 1, 2026",
+      "excerpt": "Update Aug 17, 2026: The PEO DHMS Commercial Solutions Opening (HT0038-25-S-0001) is an open solicitation seeking prototype OTAs, response window into mid-2026. DHA's non-traditional acquisition pathway under OTA authority (10 U.S.C. § 4022) — CSO/OTA pathway. SAM.gov shows the active CSO open until July 1, 2026. Active AOIs: 1b (AI/ML/NLP), 4 (Data Applications — canceled due to McKinsey task order dispute, but requirement remains valid). AOI 3 (Ambient Listening/DAX Copilot) established a critical precedent: successful CSO prototypes can transition directly to production task orders under the DHMSM/HCDS IDIQ without a new competitive recompete. This 'CSO-to-IDIQ' pathway is being closely watched as a model for closing the valley of death between prototype and production. Innovation threshold (DFARS 212.7001) is a binary gate — must demonstrate a 'new application' of technology, not merely commercial technology at its intended use. Superseded in breadth (not cancelled) by the DHA Enterprise-Wide CSO HT003826SC005, issued Aug 7, 2026, which extends the same CSO framework beyond PEO DHMS to any PAE or PMO across the DHA enterprise; AoIs under this CSO are tracked in data/cso-aois.json.\nAgency: Defense Health Agency (DHA) / PEO DHMS\nVendor: Open competition (rolling submissions)\nValue: Multiple awards, various\nStatus: active\nNAICS: 541512\nMMT verdict: WATCH — Open CSO/OTA — rolling submissions through July 1, 2026",
       "premium": false
     },
     {

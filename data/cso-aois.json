@@ -1,0 +1,114 @@
+{
+  "_meta": {
+    "purpose": "Structured registry of Commercial Solutions Opening (CSO) Areas of Interest (AoIs). A CSO is a standing framework; the AoIs issued under it carry the actual scope, NAICS, evaluation criteria and due dates. Before this file those AoIs lived only as prose inside contracts.json descriptions, which made them unsearchable, unrenderable and impossible to date-check.",
+    "hand_maintained": true,
+    "refresh_rule": "No cron writes this file. Re-verify each open AoI against SAM.gov / the issuing office on a cadence and bump its last_verified. Never bump last_verified without an actual current source - an unverified date is worse than an honestly old one.",
+    "parent_link": "Every entry's parent_slug MUST match a slug in contracts.json. scripts/validate-cso-aois.js enforces this.",
+    "status_values": ["open", "upcoming", "closed", "awarded", "cancelled"],
+    "last_reviewed": "2026-08-20"
+  },
+  "csos": [
+    {
+      "parent_slug": "dha-enterprise-wide-cso-ht003826sc005",
+      "cso_number": "HT003826SC005",
+      "title": "DHA Enterprise-Wide Commercial Solutions Opening",
+      "issuing_office": "DHA Contracting Activity (DHACA) / Defense Healthcare Management Systems Contracting Division (DHMS-CD)",
+      "active_from": "2026-08-07",
+      "active_through": "2027-08-06",
+      "scope_note": "Usable by any current or future PAE or PMO across the DHA enterprise: Medical Digital Solutions, Medical Services, Medical Products.",
+      "aoi_watch_note": "No AoIs had posted under this CSO as of the last review. The CSO announcement itself establishes only the procedures; the Government may post, extend or revise AoIs at any time, and each one sets its own authority, problem statement, evaluation criteria, submission criteria and anticipated time to award.",
+      "last_verified": "2026-08-20",
+      "source_urls": [
+        "https://missionmeetstech.com/documents/dha-enterprise-wide-cso-ht003826sc005.pdf",
+        "https://orangeslices.ai/dha-opens-enterprise-wide-commercial-solutions-opportunity/"
+      ],
+      "aois": []
+    },
+    {
+      "parent_slug": "peo-dhms-cso-competitive-solutions-opening",
+      "cso_number": "HT0038-25-S-0001 / HT003825SC001",
+      "title": "PEO DHMS Commercial Solutions Opening (Innovative Healthcare IT Solutions)",
+      "issuing_office": "DHA PEO DHMS / DHMS-CD",
+      "active_from": null,
+      "active_through": "2026-07-01",
+      "scope_note": "Predecessor CSO scoped to PEO DHMS rather than the DHA enterprise. Superseded in breadth by HT003826SC005.",
+      "aoi_watch_note": "AoIs below are carried over from verified contracts.json coverage as of the 2026-08-17 re-verification pass. AoI 3 established the prototype-to-production precedent now available enterprise-wide under HT003826SC005.",
+      "last_verified": "2026-08-17",
+      "source_urls": [
+        "https://www.executivegov.com/articles/dha-ess-next-cso-peo-dhms"
+      ],
+      "aois": [
+        {
+          "aoi_id": "1b",
+          "title": "AI / ML / Natural Language Processing",
+          "status": "closed",
+          "response_due": "2026-07-01",
+          "award_expected": "2026-12",
+          "awardee": null,
+          "value": null,
+          "note": "Proposals due July 1, 2026, with awards expected December 2026. Response window has closed; award not yet announced as of the last review.",
+          "last_verified": "2026-08-17",
+          "source_urls": [
+            "https://www.executivegov.com/articles/dha-ess-next-cso-peo-dhms"
+          ]
+        },
+        {
+          "aoi_id": "2",
+          "title": "Healthcare Delivery (Operational Medicine Care Delivery Platform)",
+          "status": "awarded",
+          "response_due": null,
+          "award_expected": null,
+          "awardee": "T6 Health Systems",
+          "value": "$219,728,874.92 (not independently verified)",
+          "note": "Awarded November 19, 2025 under CSO HT0038-25-S-C001, period of performance through 2030. Tracked in detail as its own listing entry.",
+          "last_verified": "2026-08-17",
+          "related_slug": "t6-health-systems-aoi-2-peo-dhms-cso",
+          "source_urls": [
+            "https://www.eagletribune.com/region/t6-health-systems-awarded-defense-health-agency-agreement-to-modernize-operational-medicine-platform/article_7184a024-3821-5d42-bd0e-2d65921731f8.html"
+          ]
+        },
+        {
+          "aoi_id": "3",
+          "title": "Ambient Listening (DAX Copilot)",
+          "status": "awarded",
+          "response_due": null,
+          "award_expected": null,
+          "awardee": null,
+          "value": null,
+          "note": "The precedent-setting AoI. A successful CSO prototype transitioned directly to production task orders under the DHMSM/HCDS IDIQ with no new competitive recompete. That prototype-to-production path is the reason this CSO family matters more than its individual dollar values.",
+          "last_verified": "2026-08-17",
+          "source_urls": [
+            "https://www.executivegov.com/articles/dha-ess-next-cso-peo-dhms"
+          ]
+        },
+        {
+          "aoi_id": "4",
+          "title": "Data Applications",
+          "status": "cancelled",
+          "response_due": null,
+          "award_expected": null,
+          "awardee": null,
+          "value": null,
+          "note": "Cancelled amid the McKinsey task order dispute. The underlying requirement remains valid, so this scope is a candidate to resurface as an AoI under the enterprise-wide CSO.",
+          "last_verified": "2026-08-17",
+          "source_urls": [
+            "https://www.executivegov.com/articles/dha-ess-next-cso-peo-dhms"
+          ]
+        }
+      ]
+    },
+    {
+      "parent_slug": "dha-peo-dhms-workforce-3-0-wf3-idiq",
+      "cso_number": "HT003826SC001",
+      "title": "PEO DHMS Innovation Solutions CSO",
+      "issuing_office": "DHA PEO DHMS / DHMS-CD",
+      "active_from": null,
+      "active_through": "2027-01-28",
+      "scope_note": "NAICS 541618. Tracked because DHA is migrating discrete, project-scoped work off the Workforce 3.0 IDIQ into this CSO and HT003825SC001. OCI mitigation is a defined Phase 1a proposal element rather than a bar to entry.",
+      "aoi_watch_note": "Responses accepted through January 28, 2027. No individual AoIs recorded yet in this registry.",
+      "last_verified": "2026-08-17",
+      "source_urls": [],
+      "aois": []
+    }
+  ]
+}

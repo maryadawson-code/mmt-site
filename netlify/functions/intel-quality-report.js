@@ -226,6 +226,62 @@ function _trackerListingStale() {
   return { total: rows.length, stale_count: stale.length, worst: stale[0] ? stale[0].ageDays : 0, samples: stale.slice(0, 12) };
 }
 
+// CSO Areas of Interest freshness + deadline integrity (2026-08-20).
+// The AoI registry (data/cso-aois.json) is hand-maintained like
+// contracts.json and carries RESPONSE DEADLINES, so a stale row can tell a
+// paying subscriber that a closed window is still open. Two signals:
+//   stale_count    - CSO/AoI entries not re-verified within TRACKER_STALE_DAYS
+//   past_due_open  - AoIs still marked "open" whose response_due has passed
+//                    (a correctness bug, not staleness - should always be 0)
+//   closing_soon   - open AoIs due within 14 days, so Mary sees the window
+//                    while there is still time to act on it
+// Bundled file read, no Supabase.
+function _csoAoiHealth() {
+  const candidates = [
+    path.resolve(__dirname, "..", "..", "data", "cso-aois.json"),
+    path.resolve(__dirname, "..", "..", "..", "data", "cso-aois.json"),
+    path.resolve(process.cwd(), "data", "cso-aois.json"),
+  ];
+  let reg = null;
+  for (const p of candidates) {
+    try { if (fs.existsSync(p)) { reg = JSON.parse(fs.readFileSync(p, "utf8")); break; } } catch (_e) { /* try next */ }
+  }
+  const out = { total_csos: 0, total_aois: 0, stale_count: 0, worst: 0, samples: [], past_due_open: [], closing_soon: [] };
+  if (!reg || !Array.isArray(reg.csos)) return out;
+  const now = Date.now();
+  const age = (iso) => {
+    if (!iso || typeof iso !== "string") return Infinity;
+    const norm = /^\d{4}-\d{2}$/.test(iso) ? iso + "-01" : iso;
+    const t = Date.parse(norm + "T00:00:00Z");
+    return Number.isNaN(t) ? Infinity : Math.floor((now - t) / 86400000);
+  };
+  const consider = (label, lastVerified) => {
+    const a = age(lastVerified);
+    if (a > TRACKER_STALE_DAYS) {
+      out.stale_count += 1;
+      if (a > out.worst && a !== Infinity) out.worst = a;
+      out.samples.push({ label, ageDays: a });
+    }
+  };
+  for (const cso of reg.csos) {
+    out.total_csos += 1;
+    consider(cso.parent_slug || cso.cso_number || "?", cso.last_verified);
+    for (const a of cso.aois || []) {
+      out.total_aois += 1;
+      const label = (cso.cso_number || cso.parent_slug || "?") + " AoI " + (a.aoi_id || "?");
+      consider(label, a.last_verified);
+      if (String(a.status || "").toLowerCase() === "open" && a.response_due) {
+        const d = age(a.response_due);
+        if (d > 0) out.past_due_open.push({ label, response_due: a.response_due, daysPast: d });
+        else if (d > -14) out.closing_soon.push({ label, response_due: a.response_due, daysLeft: Math.abs(d) });
+      }
+    }
+  }
+  out.samples.sort((x, y) => y.ageDays - x.ageDays);
+  out.samples = out.samples.slice(0, 12);
+  return out;
+}
+
 exports.handler = async () => {
   const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -246,16 +302,19 @@ exports.handler = async () => {
   try { staleNotes = await _staleNotePatterns(supabase); } catch (e) { console.warn("staleNotes scan failed:", e.message); }
   try { urlSweep = await _urlRecheckSweep(supabase); } catch (e) { console.warn("urlSweep query failed:", e.message); urlSweep = {}; }
   let trackerStale = { total: 0, stale_count: 0, worst: 0, samples: [] };
+  let aoiHealth = { total_csos: 0, total_aois: 0, stale_count: 0, worst: 0, samples: [], past_due_open: [], closing_soon: [] };
   try { trackerStale = _trackerListingStale(); } catch (e) { console.warn("tracker listing freshness failed:", e.message); }
+  try { aoiHealth = _csoAoiHealth(); } catch (e) { console.warn("CSO AoI health scan failed:", e.message); }
 
   const allGreen = stale.length === 0 && badUrls.length === 0 && staleNotes.length === 0
     && orphaned.length === 0 && trackerStale.stale_count === 0
+    && aoiHealth.stale_count === 0 && aoiHealth.past_due_open.length === 0
     && radarFab.fabricated === 0 && radarFab.duplicates === 0
     && radar.age_hours <= 48 && vehicle.age_hours <= 168
     && Object.keys(failures).length === 0;
   const subject = allGreen
     ? "MMT intel quality — all green"
-    : `MMT intel quality — ${stale.length} stale, ${trackerStale.stale_count} listing-stale, ${orphaned.length} orphaned, ${radarFab.fabricated} fabricated radar, ${badUrls.length} bad URL, ${staleNotes.length} note-leak, radar ${radar.age_hours}h`;
+    : `MMT intel quality — ${stale.length} stale, ${trackerStale.stale_count} listing-stale, ${aoiHealth.stale_count} AoI-stale${aoiHealth.past_due_open.length ? `, ${aoiHealth.past_due_open.length} AoI PAST-DUE-OPEN` : ""}, ${orphaned.length} orphaned, ${radarFab.fabricated} fabricated radar, ${badUrls.length} bad URL, ${staleNotes.length} note-leak, radar ${radar.age_hours}h`;
 
   const html = `<!DOCTYPE html><html><body style="font-family:-apple-system,sans-serif;padding:24px;color:#0A192F;">
     <h2 style="margin:0 0 8px;">Intel quality report &middot; ${new Date().toISOString().slice(0,10)}</h2>
@@ -268,6 +327,11 @@ exports.handler = async () => {
     <h3 style="font-size:14px;margin:16px 0 6px;">Contract Tracker listings not re-verified (&gt;${TRACKER_STALE_DAYS}d)</h3>
     <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">The /contract-tracker LISTING renders from the hand-maintained contracts.json. Nothing auto-refreshes its status/value/last_verified (contract-intel-refresh writes the Supabase contract_intel table behind the DETAIL pages, not this file), so the listing rots silently unless re-verified. Re-verify against SAM.gov / USASpending and bump last_verified. Build-time validate-contract-tracker.js prints the same signal; CONTRACT_TRACKER_MAX_AGE_DAYS makes it a hard build failure once the backlog is clear.</p>
     ${trackerStale.stale_count === 0 ? `<p>None — all ${trackerStale.total} listings verified within ${TRACKER_STALE_DAYS}d.</p>` : `<p>${trackerStale.stale_count} of ${trackerStale.total} stale (oldest ${trackerStale.worst}d).</p><ul>${trackerStale.samples.map((r) => `<li>${esc(r.slug)} &mdash; ${r.ageDays === Infinity ? "no/invalid date" : r.ageDays + "d"} [${esc(r.status || "?")}]</li>`).join("")}</ul>`}
+    <h3 style="font-size:14px;margin:16px 0 6px;">CSO Areas of Interest (data/cso-aois.json)</h3>
+    <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">A CSO is a standing framework; its AoIs carry the scope, criteria and RESPONSE DEADLINES. This registry is hand-maintained and no cron refreshes it, so it rots the same way the tracker listing did. "Past-due open" is a correctness bug, not staleness: an AoI marked open whose deadline has passed tells a paying subscriber a closed window is still live. Fix those first. Build-time scripts/validate-cso-aois.js fails hard on the same condition.</p>
+    ${aoiHealth.past_due_open.length === 0 ? "<p>Past-due open: none.</p>" : `<p style="color:#E63946;font-weight:700;">Past-due open: ${aoiHealth.past_due_open.length} — FIX THESE.</p><ul>${aoiHealth.past_due_open.map((r) => `<li>${esc(r.label)} &mdash; due ${esc(r.response_due)}, ${r.daysPast}d past</li>`).join("")}</ul>`}
+    ${aoiHealth.closing_soon.length === 0 ? "" : `<p style="font-weight:700;">Closing within 14 days: ${aoiHealth.closing_soon.length}</p><ul>${aoiHealth.closing_soon.map((r) => `<li>${esc(r.label)} &mdash; due ${esc(r.response_due)} (${r.daysLeft}d left)</li>`).join("")}</ul>`}
+    ${aoiHealth.stale_count === 0 ? `<p>Freshness: all ${aoiHealth.total_csos} CSO(s) / ${aoiHealth.total_aois} AoI(s) re-verified within ${TRACKER_STALE_DAYS}d.</p>` : `<p>${aoiHealth.stale_count} entr${aoiHealth.stale_count === 1 ? "y" : "ies"} not re-verified in ${TRACKER_STALE_DAYS}d (oldest ${aoiHealth.worst}d).</p><ul>${aoiHealth.samples.map((r) => `<li>${esc(r.label)} &mdash; ${r.ageDays === Infinity ? "no/invalid date" : r.ageDays + "d"}</li>`).join("")}</ul>`}
     <h3 style="font-size:14px;margin:16px 0 6px;">Orphaned contract_intel rows (name not in refresh roster)</h3>
     <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">These rows can never be refreshed — their contract_name has no match in contracts.json, so contract-intel-refresh skips them. Usually a naming drift (em-dash vs hyphen, parenthetical variant) leaving a stale duplicate. Reconcile: rename the row to its roster name, or archive it if a fresh canonical row already exists.</p>
     ${orphaned.length === 0 ? "<p>None.</p>" : `<ul>${orphaned.map((r) => `<li>${esc(r.contract_name)} &mdash; ${r.age_days === null ? "never refreshed" : r.age_days + "d"}</li>`).join("")}</ul>`}
@@ -303,9 +367,9 @@ exports.handler = async () => {
       source_function: "intel-quality-report",
       severity: allGreen ? "info" : "warn",
       signature: "weekly_qa",
-      details: { stale: stale.length, tracker_listing_stale: trackerStale.stale_count, orphaned: orphaned.length, bad_urls: badUrls.length, stale_notes: staleNotes.length, radar_fabricated: radarFab.fabricated, radar_published_fabricated: radarFab.published_fabricated, radar_duplicates: radarFab.duplicates, url_archived_7d: urlSweep.archived_7d || 0, radar_age_h: radar.age_hours, vehicle_age_h: vehicle.age_hours, failure_keys: Object.keys(failures).length },
+      details: { stale: stale.length, tracker_listing_stale: trackerStale.stale_count, cso_aoi_stale: aoiHealth.stale_count, cso_aoi_past_due_open: aoiHealth.past_due_open.length, orphaned: orphaned.length, bad_urls: badUrls.length, stale_notes: staleNotes.length, radar_fabricated: radarFab.fabricated, radar_published_fabricated: radarFab.published_fabricated, radar_duplicates: radarFab.duplicates, url_archived_7d: urlSweep.archived_7d || 0, radar_age_h: radar.age_hours, vehicle_age_h: vehicle.age_hours, failure_keys: Object.keys(failures).length },
     });
   } catch { /* non-blocking */ }
 
-  return { statusCode: 200, body: JSON.stringify({ ok: true, stale: stale.length, orphaned: orphaned.length, bad_urls: badUrls.length, stale_notes: staleNotes.length, radar_fabrication: radarFab, url_sweep: urlSweep, radar, vehicle, failures }) };
+  return { statusCode: 200, body: JSON.stringify({ ok: true, stale: stale.length, cso_aoi: aoiHealth, orphaned: orphaned.length, bad_urls: badUrls.length, stale_notes: staleNotes.length, radar_fabrication: radarFab, url_sweep: urlSweep, radar, vehicle, failures }) };
 };

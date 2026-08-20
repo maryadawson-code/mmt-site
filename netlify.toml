@@ -19,6 +19,7 @@
     "contracts.json",
     "capture-intelligence.json",
     "data/idiq-vehicles.json",
+    "data/cso-aois.json",
     "data/premium/agency-profiles/agencies.json",
     "data/may-15-release/**",
     "data/may-17-release/**",
