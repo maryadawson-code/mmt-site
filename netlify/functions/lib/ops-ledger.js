@@ -84,8 +84,14 @@ async function logOpsEvent(supabase, event) {
   }
 
   try {
-    // Write to new ops_ledger table
-    await supabase.from("ops_ledger").insert({
+    // Write to new ops_ledger table.
+    //
+    // A Supabase insert RESOLVES with { error } — it does NOT throw. Ignoring
+    // that return is why a 2026-08-20 backfill archived 552 rows but only
+    // logged 548 ops_ledger / 495 ops_events audit rows: the losses were
+    // invisible because nothing inspected the result. Same failure family as
+    // the stripe-webhook events that never landed. Check the error, always.
+    const { error: ledgerErr } = await supabase.from("ops_ledger").insert({
       event_type,
       source_function,
       severity,
@@ -95,10 +101,19 @@ async function logOpsEvent(supabase, event) {
       resolution,
       resolved_at: resolution ? new Date().toISOString() : null,
     });
+    if (ledgerErr) {
+      console.error(
+        "ops-ledger: ops_ledger insert failed:",
+        ledgerErr.message,
+        JSON.stringify({ event_type, source_function })
+      );
+    }
 
-    // Also write to legacy ops_events table for backward compat
+    // Also write to legacy ops_events table for backward compat. Best-effort on
+    // the WRITE, but never silent — a swallowed failure here is what made the
+    // legacy table quietly diverge from ops_ledger.
     try {
-      await supabase.from("ops_events").insert({
+      const { error: legacyErr } = await supabase.from("ops_events").insert({
         event_type,
         source_function,
         scoring_id: scoring_id || null,
@@ -111,8 +126,15 @@ async function logOpsEvent(supabase, event) {
         error_signature: sig,
         failure_class: failure_class || null,
       });
-    } catch {
-      // Legacy table write is best-effort
+      if (legacyErr) {
+        console.warn(
+          "ops-ledger: legacy ops_events insert failed:",
+          legacyErr.message,
+          JSON.stringify({ event_type, source_function })
+        );
+      }
+    } catch (legacyThrow) {
+      console.warn("ops-ledger: legacy ops_events insert threw:", legacyThrow.message);
     }
   } catch (err) {
     // Never crash the caller
