@@ -114,7 +114,21 @@ async function _handler() {
     .limit(BATCH_LIMIT);
 
   if (error) {
-    return { statusCode: 500, body: JSON.stringify({ error: "query_failed", detail: error.message }) };
+    // The whole sweep depends on opportunity_radar.status, which shipped in code
+    // before any migration created it (found 2026-08-20: every run 500'd here for
+    // the function's entire life). Name that case explicitly so the alert says
+    // what to DO instead of just "query_failed".
+    const missingColumn = /column .*\bstatus\b.* does not exist/i.test(error.message || "");
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        error: missingColumn ? "migration_required" : "query_failed",
+        detail: error.message,
+        ...(missingColumn && {
+          remediation: "Apply migrations/20260820000000_opportunity_radar_status.sql — the dead-link sweep cannot archive anything until opportunity_radar.status exists.",
+        }),
+      }),
+    };
   }
 
   const summary = { checked: 0, archived: 0, warn: 0, live: 0, errors: 0, archived_rows: [] };

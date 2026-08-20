@@ -229,11 +229,20 @@ function withOpsLogging(fnName, handler, opts = {}) {
       summary = result || {};
     }
 
+    // A handler that RETURNS a 5xx has failed just as surely as one that threw.
+    // Logging it as *_RUN_OK / severity info is a false green: it hides the
+    // failure from ops and from the Sentry rule that alerts on *_RUN_FAILED.
+    // This is how opportunity-radar-url-recheck 500'd on EVERY run for its
+    // entire life (missing opportunity_radar.status column) without anyone
+    // noticing — found 2026-08-20. A returned 5xx is a failure. Classify it.
+    const returned5xx = Number.isFinite(summary.status_code) && summary.status_code >= 500;
+
     await _safeLog(supabase, {
-      event_type: okEvent,
+      event_type: returned5xx ? failEvent : okEvent,
       source_function: sourceFunction,
-      severity: "info",
-      signature: "run_ok",
+      severity: returned5xx ? "error" : "info",
+      signature: returned5xx ? `run_failed_status_${summary.status_code}` : "run_ok",
+      ...(returned5xx ? { failure_class: "returned_5xx" } : {}),
       details: {
         started_at: startedAt,
         elapsed_ms: elapsedMs,

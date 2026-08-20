@@ -75,6 +75,23 @@ function samOk(url) {
   return /^[0-9a-f]{32}$/i.test(m[1]);
 }
 
+// Pure: classify a searchSAMOpportunities() response as an upstream FAILURE
+// (quota/5xx/network) vs a real answer. The helper RESOLVES on failure with
+// { opportunities: [], error, rateLimited } instead of throwing, so an
+// unanswered lookup otherwise reads as "checked, no match" — a verification
+// claim for a check that never happened. Returns null when SAM genuinely
+// answered (including a legitimate zero-result answer).
+function samFailure(res) {
+  if (!res || typeof res !== "object") return { reason: "SAM lookup returned no response" };
+  if (!res.error) return null;
+  const rateLimited = !!res.rateLimited;
+  return {
+    rateLimited,
+    reason: (rateLimited ? "SAM quota exhausted" : "SAM lookup error") +
+      `: ${res.error}${res.resetAt ? ` (resets ${res.resetAt})` : ""}`,
+  };
+}
+
 async function checkOne(c) {
   const sol = extractSolNum(c);
   if (!sol || !fedApis.searchSAMOpportunities || !fedApis.deriveAcquisitionState) {
@@ -83,6 +100,13 @@ async function checkOne(c) {
   let opps = [];
   try {
     const res = await fedApis.searchSAMOpportunities({ keyword: sol, limit: 10, daysBack: 365 });
+    // searchSAMOpportunities RESOLVES on upstream failure (429 quota, 5xx) with
+    // { opportunities: [], error, rateLimited } — it does not throw. Without this
+    // branch an unanswered lookup falls through as "checked, no SAM match", which
+    // claims a verification that never happened. Same class of lie as the removed
+    // REPAIR 3 blind last_verified bump. An unanswered lookup is NOT a check.
+    const failure = samFailure(res);
+    if (failure) return { slug: c.slug, sol, samCalled: true, checked: false, ...failure };
     opps = (res && (res.opportunities || res.results || res)) || [];
   } catch (e) {
     return { slug: c.slug, sol, samCalled: true, checked: false, reason: "SAM lookup failed: " + e.message };
@@ -150,10 +174,24 @@ async function main() {
     unchecked.slice(0, 30).forEach((r) => console.log(`    ${r.slug}: ${r.reason}`));
   }
   if (APPLY && applied === 0) console.log("\n  No entries had a live signal this run — nothing written (correct: never stamp an unearned date).");
+
+  // A quota-blocked run writes nothing and opens no PR, which is indistinguishable
+  // from "checked everything, all current" unless we say so. Surface it loudly, and
+  // fail the run when SAM answered nothing at all — a silent green "no changes" on a
+  // week where re-verification never ran is the failure this script exists to prevent.
+  const throttled = results.filter((r) => r.rateLimited);
+  if (throttled.length) {
+    console.warn(`\n  WARNING: ${throttled.length} lookup(s) blocked by SAM.gov daily quota — those entries were NOT re-verified.`);
+    console.warn("  SAM.gov enforces a small SHARED daily quota across every consumer (see CLAUDE.md).");
+  }
+  if (throttled.length && checked.length === 0) {
+    console.error("\nreverify-contract-tracker: FAILED — SAM.gov answered zero lookups this run. Nothing was re-verified.");
+    process.exitCode = 1;
+  }
 }
 
 if (require.main === module) {
   main().catch((e) => { console.error("reverify-contract-tracker failed:", e.stack || e.message); process.exit(1); });
 }
 
-module.exports = { acqStateToStatus, extractSolNum, samOk };
+module.exports = { acqStateToStatus, extractSolNum, samOk, samFailure };
