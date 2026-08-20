@@ -119,6 +119,41 @@ describe("scheduled-fn-wrapper / withOpsLogging", () => {
     expect(okRow.row.details.ok).toBe(true);
   });
 
+  // A handler that RETURNS a 5xx has failed as surely as one that threw. Logging
+  // it as *_RUN_OK / info is a false green — it hid opportunity-radar-url-recheck
+  // 500ing on every run for its entire life (found 2026-08-20).
+  it("handler returning 5xx → FAILED row with error severity, not a false-green OK", async () => {
+    const supabase = mockSupabase();
+    const handler = vi.fn(async () => ({
+      statusCode: 500,
+      body: JSON.stringify({ error: "query_failed", detail: "column x does not exist" }),
+    }));
+    const wrapped = withOpsLogging("busted_fn", handler, { supabase });
+
+    const result = await wrapped({});
+    expect(result.statusCode).toBe(500); // inner return still preserved verbatim
+
+    const rows = supabase._calls.filter((c) => c.table === "ops_ledger");
+    expect(rows.some((c) => c.row.event_type === "BUSTED_FN_RUN_OK")).toBe(false);
+
+    const failRow = rows.find((c) => c.row.event_type === "BUSTED_FN_RUN_FAILED");
+    expect(failRow).toBeTruthy();
+    expect(failRow.row.severity).toBe("error");
+    expect(failRow.row.details.status_code).toBe(500);
+    expect(failRow.row.details.error).toBe("query_failed");
+  });
+
+  it("handler returning 2xx/4xx still logs OK (only 5xx is a failure)", async () => {
+    for (const code of [200, 202, 404]) {
+      const supabase = mockSupabase();
+      const wrapped = withOpsLogging("code_fn", async () => ({ statusCode: code, body: "{}" }), { supabase });
+      await wrapped({});
+      const rows = supabase._calls.filter((c) => c.table === "ops_ledger");
+      expect(rows.some((c) => c.row.event_type === "CODE_FN_RUN_OK")).toBe(true);
+      expect(rows.some((c) => c.row.event_type === "CODE_FN_RUN_FAILED")).toBe(false);
+    }
+  });
+
   it("rejects bad inputs", () => {
     expect(() => withOpsLogging("", async () => {})).toThrow();
     expect(() => withOpsLogging("ok_name", null)).toThrow();

@@ -1,5 +1,79 @@
 # Mission Meets Tech - Developer & Content Governance
 
+## Sprint 2026-08-20 — False greens: three ways the platform reported work it never did
+
+Follow-on to 2026-08-17. Armed the re-verify workflow, then diagnosed the
+Opportunity Radar staleness report against prod. The radar scanner itself is
+**healthy** (`RADAR_SCAN_OK` every 4h, `max(scan_date)` = today, live feed
+reports `freshness: "fresh"`, age 17h) — the banner Mary saw had already
+self-healed. But the diagnosis surfaced three independent bugs that share one
+shape: **a system reporting success for work it never performed.** Same family
+as the removed auto-repair REPAIR 3.
+
+**1. `opportunity_radar.status` never existed.** `opportunity-radar-url-recheck.js`
+(the dead-link sweep) selects/filters/updates `status`, and
+`lib/radar-hygiene.js isArchived()` reads `row.status === "archived"` — but NO
+migration ever created that column. Every run has returned HTTP 500
+(`column opportunity_radar.status does not exist`) for the function's entire
+life. Net effect: the sweep has never archived a single dead-link row, and
+archived-filtering on read is inert (`filtered_out.archived` is always 0). Note
+**`status` is NOT `review_status`** — review_status is the P2 review queue
+(published | needs_review, migration 20260529000000); status is the lifecycle
+(active | archived). They are independent; do not conflate them. Added the
+missing gated migration `20260820000000_opportunity_radar_status.sql`
+(DEFAULT 'active' — never blanket-archive on a schema change) and made the
+recheck return `migration_required` + remediation text instead of a bare
+`query_failed`. **NOT APPLIED — awaits Mary's approval.** The sweep stays inert
+until it is.
+
+**2. The scheduled-fn wrapper turned returned-5xx into a green.**
+`lib/scheduled-fn-wrapper.js` logged `*_RUN_OK` / severity `info` for any
+handler that returned normally — including `{statusCode: 500}`. Only an
+uncaught *throw* produced `*_RUN_FAILED`. That is exactly why bug 1 hid for its
+whole life, and it defeated the Sentry rule that alerts on `*_RUN_FAILED`. Now a
+returned 5xx logs `*_RUN_FAILED` / severity `error` / `failure_class:
+"returned_5xx"`. Blast radius measured against prod before changing it: over 7
+days the ONLY function returning 5xx was `opportunity_radar_url_recheck` — every
+other scheduled function is genuinely healthy, so this adds zero alert noise.
+
+**3. `reverify-contract-tracker.js` counted un-answered SAM lookups as checks.**
+`searchSAMOpportunities()` RESOLVES on upstream failure with
+`{opportunities: [], error, rateLimited}` — it does not throw — and `checkOne`
+only caught throws. So a quota-throttled lookup fell through as
+`checked: true, "no SAM match"`. Proven live (SAM was throttled that day): the
+run reported **"3 checked, 0 with signal"** when SAM had answered nothing. No
+data was corrupted (the write guard requires `checked && signal`), but the run
+*report* claimed verification that never happened — and a quota-blocked weekly
+run opening no PR is otherwise indistinguishable from "checked everything, all
+current." Added pure `samFailure(res)` classification, a loud warning, and
+`process.exitCode = 1` when SAM answers zero lookups, so the workflow goes red
+instead of silently green.
+
+Also: set the `SAM_GOV_API_KEY` GitHub Actions repo secret, arming
+`.github/workflows/contract-tracker-reverify.yml` (it was a no-op without it).
+Key verified live against SAM.gov — authenticates fine (the 429 it returns is
+the documented shared daily quota, not a bad key).
+
+Hard rules (do not regress):
+- **A returned 5xx is a failure.** Any boundary logger that classifies only on
+  throw will miss handlers that return their errors — most of ours do. Classify
+  on the returned status code too.
+- **An upstream helper that resolves-on-error is not a check.** Before treating
+  a response as an answer, ask whether the helper THROWS or RESOLVES on failure.
+  `federal-data-apis` resolves with an `error` field. Silence from an upstream
+  must never be recorded as a verified negative result.
+- **A column referenced in code but created by no migration is a permanent
+  outage, not a bug you notice later.** Both writer and reader referenced
+  `opportunity_radar.status`; because the reader was defensively fail-safe
+  (undefined => not archived) and the writer's 500 was logged as OK, the feature
+  was silently dead. When adding a column-dependent feature, ship the migration
+  in the same change.
+
+Verified 2026-08-20: `node -c` clean on all three touched functions; unit suite
+**535/535** pass (44 files, incl. 4 new tests covering 5xx classification and
+SAM failure classification); build exit 0; validate-dist / validate-routes /
+scan-pii pass. Prod queried read-only throughout; no migration applied.
+
 ## Sprint 2026-08-17 — Contract Tracker listing was months stale (paid product): full re-verification + freshness guards
 
 Mary flagged `/contract-tracker` serving old/stale data. Root cause: the
