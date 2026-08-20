@@ -51,16 +51,29 @@ const NEWS_FEEDS = [
   { name: 'FedScoop', url: 'https://fedscoop.com/feed/', category: 'policy' },
   { name: 'Nextgov/FCW', url: 'https://www.nextgov.com/rss/all/', category: 'policy' },
   { name: 'MeriTalk', url: 'https://www.meritalk.com/articles/feed/meritalk-news-podcast/', category: 'policy' },
-  { name: 'Healthcare IT News', url: 'https://www.healthcareitnews.com/feed', category: 'health-it' },
+  // Healthcare IT News DISABLED 2026-08-20: every feed path (/feed, /home/feed,
+  // /taxonomy/term/1/feed) returns 403 to server-side fetches — bot protection,
+  // not a bad URL (a browser User-Agent gets 403 too). It has therefore been
+  // contributing ZERO items while printing a warning on every build. Re-enable
+  // only after confirming a path that actually returns items from a server.
+  // { name: 'Healthcare IT News', url: 'https://www.healthcareitnews.com/feed', category: 'health-it' },
   { name: 'Healthcare Dive', url: 'https://www.healthcaredive.com/feeds/news/', category: 'health-it' },
   // Government direct sources
   { name: 'Health IT Buzz', url: 'https://www.healthit.gov/buzz-blog/feed', category: 'health-it' },
-  { name: 'VA.gov News', url: 'https://www.va.gov/rss/', category: 'health-it' },
-  { name: 'GAO Reports', url: 'https://www.gao.gov/reports-testimonies/api/feed', category: 'oversight' },
+  // VA: /rss/ 404s (dead since at least 2026-08-20). news.va.gov is the live feed.
+  { name: 'VA.gov News', url: 'https://news.va.gov/feed/', category: 'health-it' },
+  // GAO: /reports-testimonies/api/feed 403s server-side. /rss/reports.xml is live.
+  { name: 'GAO Reports', url: 'https://www.gao.gov/rss/reports.xml', category: 'oversight' },
   // Defense health (targeted, not broad defense)
   { name: 'DefenseScoop', url: 'https://defensescoop.com/feed', category: 'defense' },
   { name: 'Military Times', url: 'https://www.militarytimes.com/arc/outboundfeeds/rss/?outputType=xml', category: 'defense' },
-  { name: 'TRICARE', url: 'https://tricare.mil/rss/All-Feeds', category: 'health-it' },
+  // TRICARE DISABLED 2026-08-20: tricare.mil/rss/All-Feeds returns HTTP 200 and
+  // VALID RSS with ZERO <item>s — the publisher stopped populating it. It parsed
+  // without error, so it counted as a "working" feed while contributing nothing
+  // (the same false-green shape as the 08-20 sprint). health.mil's RSS
+  // (/News/Articles?filter=rss) is NOT a drop-in replacement: it serves
+  // malformed XML that rss-parser rejects ("Invalid character in entity name").
+  // { name: 'TRICARE', url: 'https://tricare.mil/rss/All-Feeds', category: 'health-it' },
   { name: 'Federal News Network', url: 'https://federalnewsnetwork.com/category/defense-news/feed/', category: 'policy' },
 ];
 const CONTENT_DIR = path.join(__dirname, 'content', 'newsletter');

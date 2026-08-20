@@ -368,6 +368,62 @@ the write guard + `isMalformedSamPermalink` enforce this. Never trust
 Verified 2026-08-05: 534/534 unit tests, `node -c` clean on all touched
 functions, build + validate-dist (625 pages) + validate-routes (35) pass.
 
+## Sprint 2026-08-20 (later) — Site-health pass: 55 fabricated rows still live, 3 dead feeds, a capped backfill
+
+Follow-on to the migration apply. With `opportunity_radar.status` finally in
+place, ran the backfill that had never been runnable and swept the live site.
+Four independent defects, all the same family as the sprints above: **something
+reporting a clean result over work it only partly did.**
+
+**1. The radar backfill was capped at a quarter of the table.**
+`scripts/cleanup-opportunity-radar.js` fetched with a single `.limit(2000)` —
+but **PostgREST caps ONE request at 1000 rows**, so it examined the first 1,000
+of 3,869 and printed a confident `Plan:` for 122 rows. The real numbers were
+**552**. Paginated it with `.range()`. Applied: **55 fabricated SAM permalinks
+(every one `review_status:'published'` — live in the paid product)**, 463
+past-deadline, 34 duplicates. Verified after: 0 fabricated live, 3,317 active,
+552 archived. Note this script archives via `status`, so it could NEVER have
+run before today's migration — the 08-05 backfill was specced but never executed.
+
+**2. `logOpsEvent` never checked the returned `{ error }`.** The backfill
+archived 552 rows but wrote only **548 ops_ledger / 495 ops_events** audit rows.
+Supabase inserts RESOLVE with `{ error }`, they do not throw, so both writes
+lost rows invisibly (the legacy write was additionally inside a bare `catch {}`).
+Now both inserts inspect and log their error. This helper backs every ops event
+on the platform, so the blind spot was platform-wide.
+
+**3. Three Newswire feeds were dead; one was worse than dead.** The build printed
+`Failed to fetch` warnings for months and nobody read them. `VA.gov /rss/` 404s
+(→ `news.va.gov/feed/`), GAO `/reports-testimonies/api/feed` 403s server-side
+(→ `/rss/reports.xml`). Healthcare IT News 403s on every path even with a browser
+UA (bot protection) — disabled, not "fixed". **TRICARE was the interesting one:
+`tricare.mil/rss/All-Feeds` returns HTTP 200 and VALID RSS with ZERO `<item>`s**,
+so it parsed without error and counted as a working feed while contributing
+nothing. Disabled with a note (`health.mil`'s RSS is NOT a drop-in replacement —
+it serves malformed XML that rss-parser rejects). Net: **40 headlines from 8/12
+feeds → 95 headlines from 10/10 feeds, zero warnings.**
+
+**4. The dashboard billing link was dead.** `dashboard.html` hardcoded
+`billing.stripe.com/p/login/7sY28f3vn9N4aAwaEE`, which **404s** — a paying
+subscriber clicking "cancel or update billing" hit a dead end. Repointed to
+`/premium/dashboard.html`, where the portal link is properly wired to the
+signed-in email via `/.netlify/functions/billing-portal`.
+
+Hard rules (do not regress):
+- **Never trust a single `.limit(n)` above 1000 against Supabase.** PostgREST
+  caps one request at 1000 rows and returns no signal that it truncated. Any
+  sweep/backfill over a whole table must paginate with `.range()`, or it will
+  silently do a fraction of the work and report success.
+- **A feed that returns 200 + valid RSS + zero items is a dead feed.** Parse
+  success is not content. Count items, not exit codes.
+- **`logOpsEvent` must check the returned `{ error }` on both inserts.** An
+  audit trail that silently drops rows is worse than none — it makes an
+  incomplete sweep look complete.
+
+Verified 2026-08-20: `node -c` clean on all touched files; unit suite
+**556/556**; build exit 0; validate-dist OK (654), validate-routes ✓ (35),
+validate-cso-aois OK, scan-pii OK; integrity-audit SUCCESS/SYNCED (40 routes).
+
 ## 📜 Canonical Specification
 - All structural and UX work MUST follow `ARCHITECTURE_SPEC.md`.
 - This is the final word on site architecture and wireframes.

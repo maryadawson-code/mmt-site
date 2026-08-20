@@ -110,17 +110,31 @@ async function main() {
   console.log(`opportunity_radar cleanup — ${DRY ? "DRY RUN (no writes)" : "APPLY"}${KEEP_CLOSED ? " [keeping closed rows]" : ""}\n`);
 
   // Only touch rows that are currently live. Already-archived rows are done.
-  const { data: rows, error } = await supabase
-    .from("opportunity_radar")
-    .select("id, title, solicitation_number, agency, source_url, response_deadline, scan_date, relevance_score, status, review_status")
-    .neq("status", "archived")
-    .limit(2000);
+  //
+  // PAGINATED on purpose. This used to be a single `.limit(2000)`, but PostgREST
+  // caps ONE request at 1000 rows, so the sweep silently examined the first 1000
+  // of a ~3,900-row table and reported a clean "Plan:" for a quarter of it —
+  // a backfill that looks complete while leaving fabricated rows live in a paid
+  // product. Page until the table is exhausted; never trust a single .limit()
+  // above the PostgREST cap.
+  const PAGE = 1000;
+  const rows = [];
+  for (let from = 0; ; from += PAGE) {
+    const { data, error } = await supabase
+      .from("opportunity_radar")
+      .select("id, title, solicitation_number, agency, source_url, response_deadline, scan_date, relevance_score, status, review_status")
+      .neq("status", "archived")
+      .order("id", { ascending: true })
+      .range(from, from + PAGE - 1);
 
-  if (error) {
-    console.error("Query failed:", error.message);
-    process.exit(1);
+    if (error) {
+      console.error("Query failed:", error.message);
+      process.exit(1);
+    }
+    rows.push(...data);
+    if (data.length < PAGE) break;
   }
-  console.log(`Fetched ${rows.length} live rows.\n`);
+  console.log(`Fetched ${rows.length} live rows (paginated).\n`);
 
   const now = new Date();
   const dupLosers = findDuplicateLosers(rows);
