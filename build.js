@@ -1600,6 +1600,140 @@ function renderVoteTrackerFeatures(contracts) {
   return `<div id="ct-vote-features" class="flex flex-wrap items-center gap-3">\n          ${blocks.join('\n          ')}\n        </div>`;
 }
 
+// --- CSO Areas of Interest (AoI) registry ---
+// A Commercial Solutions Opening is a standing framework, not a requirement.
+// The AoIs issued under it carry the real scope, NAICS, evaluation criteria
+// and due dates, and the Government may post, extend or revise them at any
+// time. Before data/cso-aois.json those AoIs lived only as prose inside
+// contracts.json descriptions, so they could not be rendered, searched or
+// date-checked. This loader is read-only and fails soft: a missing or
+// malformed registry degrades the page, it never breaks the build.
+let _csoAoiCache = null;
+function loadCsoAoiRegistry() {
+  if (_csoAoiCache) return _csoAoiCache;
+  const regPath = path.join(__dirname, 'data', 'cso-aois.json');
+  const byParent = {};
+  if (!fs.existsSync(regPath)) {
+    console.warn('CSO AoI registry not found at data/cso-aois.json - AoI sections will not render.');
+    _csoAoiCache = byParent;
+    return byParent;
+  }
+  try {
+    const parsed = JSON.parse(fs.readFileSync(regPath, 'utf8'));
+    (parsed.csos || []).forEach(cso => {
+      if (cso && cso.parent_slug) byParent[cso.parent_slug] = cso;
+    });
+  } catch (err) {
+    // Never swallow: a broken registry is loud in the build log but
+    // non-fatal, matching the contract-tracker freshness-audit posture.
+    console.error('Error parsing data/cso-aois.json:', err.message);
+  }
+  _csoAoiCache = byParent;
+  return byParent;
+}
+
+const AOI_STATUS_STYLE = {
+  open: { label: 'Open', color: '#15803D', bg: 'rgba(21,128,61,0.1)' },
+  upcoming: { label: 'Upcoming', color: '#92710A', bg: 'rgba(146,113,10,0.1)' },
+  closed: { label: 'Closed', color: '#5C6B7A', bg: 'var(--mmt-soft)' },
+  awarded: { label: 'Awarded', color: '#457B9D', bg: 'rgba(69,123,157,0.1)' },
+  cancelled: { label: 'Cancelled', color: '#E63946', bg: 'rgba(230,57,70,0.08)' },
+};
+
+function formatAoiDate(iso) {
+  if (!iso || typeof iso !== 'string') return '';
+  // Accept YYYY-MM-DD and YYYY-MM. Anything else renders verbatim rather
+  // than guessing at a date we did not earn.
+  const full = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  const month = /^(\d{4})-(\d{2})$/.exec(iso);
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  if (full) return `${MONTHS[Number(full[2]) - 1]} ${Number(full[3])}, ${full[1]}`;
+  if (month) return `${MONTHS[Number(month[2]) - 1]} ${month[1]}`;
+  return iso;
+}
+
+// Count of AoIs a CSO parent carries, for the tracker card signal.
+function csoAoiCount(slug) {
+  const cso = loadCsoAoiRegistry()[slug];
+  if (!cso) return null;
+  return Array.isArray(cso.aois) ? cso.aois.length : 0;
+}
+
+// Renders the Areas of Interest section on a CSO parent's detail page.
+// Returns '' for any contract that is not a registered CSO parent.
+//
+// Gating follows the site paywall rule: the factual grid (AoI number,
+// title, status, dates, awardee) is public record and stays public, so the
+// page is worth linking and indexing. MMT's read on each AoI is the paid
+// analysis and sits behind data-access="premium".
+function generateCsoAoiHtml(c) {
+  const slug = c.slug || slugify(c.name);
+  const cso = loadCsoAoiRegistry()[slug];
+  if (!cso) return '';
+
+  const aois = Array.isArray(cso.aois) ? cso.aois : [];
+  const activeWindow = cso.active_from || cso.active_through
+    ? `<p class="text-xs" style="color:var(--mmt-text-secondary);margin-bottom:14px;">CSO ${escapeHtml(cso.cso_number || '')} active ${cso.active_from ? escapeHtml(formatAoiDate(cso.active_from)) : 'now'}${cso.active_through ? ` through ${escapeHtml(formatAoiDate(cso.active_through))}` : ''}.</p>`
+    : '';
+
+  let rows;
+  if (!aois.length) {
+    // Honest empty state. An empty AoI list is a real, meaningful state for
+    // a freshly issued CSO - it is not a loading failure, and it must not
+    // read like one (see the 2026-04-27 "initializing" scanner bug).
+    rows = `<div style="padding:16px 18px;background:var(--mmt-soft);border-radius:10px;">
+          <p class="text-sm" style="color:var(--mmt-text);margin:0;">No Areas of Interest have posted under this CSO yet.</p>
+          ${cso.aoi_watch_note ? `<p class="text-xs" style="color:var(--mmt-text-secondary);margin:8px 0 0;">${escapeHtml(cso.aoi_watch_note)}</p>` : ''}
+        </div>`;
+  } else {
+    rows = aois.map(a => {
+      const st = AOI_STATUS_STYLE[String(a.status || '').toLowerCase()] || { label: a.status || 'Unknown', color: '#5C6B7A', bg: 'var(--mmt-soft)' };
+      const facts = [];
+      if (a.response_due) facts.push(`<span><strong style="color:var(--mmt-text);">Responses due:</strong> ${escapeHtml(formatAoiDate(a.response_due))}</span>`);
+      if (a.award_expected) facts.push(`<span><strong style="color:var(--mmt-text);">Award expected:</strong> ${escapeHtml(formatAoiDate(a.award_expected))}</span>`);
+      if (a.awardee) facts.push(`<span><strong style="color:var(--mmt-text);">Awardee:</strong> ${escapeHtml(a.awardee)}</span>`);
+      const factRow = facts.length
+        ? `<div class="flex flex-wrap gap-3 text-xs" style="color:var(--mmt-text-secondary);margin-top:6px;">${facts.join('')}</div>`
+        : '';
+      const related = a.related_slug
+        ? `<a href="/contracts/${escapeHtml(a.related_slug)}/" class="text-xs font-semibold no-underline" style="color:var(--mmt-teal);display:inline-block;margin-top:6px;">Full intel on this award &rarr;</a>`
+        : '';
+      const note = a.note
+        ? `<div data-access="premium" style="margin-top:8px;"><p class="text-sm leading-relaxed" style="color:var(--mmt-text);margin:0;">${escapeHtml(a.note)}</p></div>
+           <div data-gate-overlay="premium" style="margin-top:8px;padding:8px 12px;background:rgba(146,113,10,0.04);border:1px dashed rgba(146,113,10,0.2);border-radius:8px;">
+             <span style="font-size:10px;font-weight:800;background:#FACC15;color:#0A192F;padding:2px 6px;border-radius:3px;">PREMIUM</span>
+             <a href="/pricing.html" class="text-xs font-semibold no-underline" style="color:#92710A;margin-left:8px;">Read the MMT take on this AoI &rarr;</a>
+           </div>`
+        : '';
+      return `<div style="padding:14px 16px;background:var(--mmt-soft);border-radius:10px;margin-bottom:10px;">
+          <div class="flex items-start justify-between gap-3">
+            <h3 class="text-sm font-bold" style="color:var(--mmt-navy);margin:0;">AoI ${escapeHtml(String(a.aoi_id || '?'))} &middot; ${escapeHtml(a.title || 'Untitled')}</h3>
+            <span class="text-xs whitespace-nowrap px-2 py-1 rounded font-semibold" style="background:${st.bg};color:${st.color};">${escapeHtml(st.label)}</span>
+          </div>
+          ${factRow}
+          ${related}
+          ${note}
+        </div>`;
+    }).join('\n        ');
+    if (cso.aoi_watch_note) {
+      rows += `\n        <p class="text-xs" style="color:var(--mmt-text-secondary);margin-top:4px;">${escapeHtml(cso.aoi_watch_note)}</p>`;
+    }
+  }
+
+  const verified = cso.last_verified
+    ? `<p class="text-xs" style="color:var(--mmt-text-secondary);margin-top:12px;">Areas of Interest last re-verified ${escapeHtml(formatAoiDate(cso.last_verified))}. This registry is hand-maintained; no cron refreshes it.</p>`
+    : '';
+
+  return `
+    <div style="max-width:56rem;margin:0 auto 24px;padding:20px 24px;border:1px solid var(--mmt-border,#D8E0E8);border-radius:12px;">
+      <h2 style="font-size:15px;font-weight:700;color:var(--mmt-navy);margin-bottom:4px;">Areas of Interest</h2>
+      <p class="text-xs" style="color:var(--mmt-text-secondary);margin-bottom:10px;">A CSO cannot be bid on its own. Each Area of Interest carries the scope, criteria and due date you actually respond to.</p>
+      ${activeWindow}
+      ${rows}
+      ${verified}
+    </div>`;
+}
+
 // ── Feature-vote: teaming_signals (B) — contract-detail teaming section.
 // Reads an OPTIONAL structured `teaming` array on the contract record:
 //   [{ role: 'prime'|'sub'|'jv', name, note? }, ...]
@@ -1814,6 +1948,14 @@ function generateContractTrackerHtml(contracts, contractArticleMap) {
                     if (m == null || m < 0) return '';
                     return `<span class="text-xs whitespace-nowrap px-2 py-1 rounded font-semibold" title="Months to recompete" style="background:rgba(146,113,10,0.1); color:#92710A;">Recompete ~${m}mo</span>`;
                   })()}
+                  ${(() => {
+                    // CSO parents carry an AoI registry. Surface the count so
+                    // the card says what can actually be bid underneath.
+                    const n = csoAoiCount(cSlug);
+                    if (n === null) return '';
+                    const lbl = n === 0 ? 'AoI watch' : `${n} AoI${n === 1 ? '' : 's'}`;
+                    return `<span class="text-xs whitespace-nowrap px-2 py-1 rounded font-semibold" title="Areas of Interest tracked under this CSO" style="background:rgba(69,123,157,0.1); color:var(--mmt-teal);">${lbl}</span>`;
+                  })()}
                   ${classificationBadgeHtml(c.classification)}
                   <span class="text-xs whitespace-nowrap px-2 py-1 rounded" style="background:var(--mmt-soft); color:${color};">${escapeHtml(label)}</span>
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--mmt-teal);"><path d="M6 3l5 5-5 5"/></svg>
@@ -1956,6 +2098,8 @@ function generateContractPages(contracts) {
       <p style="font-size:12px;color:var(--mmt-text-secondary);margin-top:10px;">Already a member? <a href="#" onclick="if(typeof mmtSignIn==='function')mmtSignIn();return false;" style="color:var(--mmt-teal);font-weight:600;">Sign in</a></p>
     </div>`;
     const teamingHtml = generateTeamingSignalsHtml(c);
+    // CSO parents render their Areas of Interest registry; '' for everything else.
+    const aoiHtml = generateCsoAoiHtml(c);
     // Feature-vote proposalpulse_tiein (J): "Score against this opp" button.
     // Gated → emits nothing when dormant. Pipes opp context to ProposalPulse.
     const ppTieIn = voteFlagOn('vote_feature.proposalpulse_tiein')
@@ -1963,7 +2107,7 @@ function generateContractPages(contracts) {
       <a href="/proposal-pulse.html?opp=${encodeURIComponent(c.slug || slugify(c.name))}&amp;name=${encodeURIComponent(c.name)}" class="btn-secondary no-underline" style="font-size:13px;padding:10px 18px;display:inline-flex;align-items:center;gap:6px;">Score a draft against this opportunity &rarr;</a>
     </div>`
       : '';
-    html = html.replace('<!-- Current Intelligence -->', teamingHtml + ppTieIn + gateCard + '\n  <!-- Current Intelligence -->');
+    html = html.replace('<!-- Current Intelligence -->', aoiHtml + teamingHtml + ppTieIn + gateCard + '\n  <!-- Current Intelligence -->');
 
     // Inject search overlay after </nav>
     html = html.replace('</nav>', '</nav>' + searchOverlayHtml);
@@ -4251,6 +4395,22 @@ ${innerHtml}
       fs.copyFileSync(path.join(premiumBriefsDir, file), path.join(distPremiumBriefsDir, file));
     });
     console.log(`Copied ${briefFiles.length} premium-brief PDF(s)`);
+  }
+
+  // Copy source solicitation documents (static/documents/*.pdf) to
+  // /documents/<name>.pdf. These are public federal announcements mirrored
+  // so a tracker entry can cite a primary source that stays reachable even
+  // when SAM.gov is not linkable (SAM 200s any /opp/ path, so an
+  // unresolved permalink is worse than none - see the 2026-08-05 rule).
+  const docsDir = path.join(__dirname, 'static', 'documents');
+  const distDocsDir = path.join(DIST_DIR, 'documents');
+  if (fs.existsSync(docsDir)) {
+    ensureDir(distDocsDir);
+    const docFiles = fs.readdirSync(docsDir).filter(f => f.endsWith('.pdf'));
+    docFiles.forEach(file => {
+      fs.copyFileSync(path.join(docsDir, file), path.join(distDocsDir, file));
+    });
+    console.log(`Copied ${docFiles.length} source document(s)`);
   }
 
   // Copy newsletter article images (static/images/newsletter/<date>/*.{png,jpg,...}).

@@ -1,5 +1,87 @@
 # Mission Meets Tech - Developer & Content Governance
 
+## Sprint 2026-08-20 — DHA Enterprise-Wide CSO (HT003826SC005) + structured AoI tracking
+
+Mary supplied the signed FINAL announcement PDF for the **DHA Enterprise-Wide
+Commercial Solutions Opening, HT003826SC005**, active **07 Aug 2026 through 06
+Aug 2027**, and asked to get it on the site and start tracking it "and
+associated AoIs." (Her note said "AOAs"; the document says **Areas of Interest
+(AoI)**.)
+
+Why this one matters: prior DHA CSOs were scoped to **PEO DHMS**
+(HT0038-25-S-0001 / HT003825SC001, HT003826SC001). This one may be used by
+**any current or future PAE or PMO across the DHA enterprise** — Medical
+Digital Solutions, Medical Services, Medical Products. It also carries
+10 U.S.C. 4022(f) follow-on production authority, extended by Sec. 1823 of the
+FY2026 NDAA to commercial products, commercial services and non-developmental
+items — the same prototype-to-production path AoI 3 (Ambient Listening / DAX
+Copilot) proved on the PEO DHMS CSO, now available enterprise-wide.
+
+What shipped:
+- **Tracker entry** `dha-enterprise-wide-cso-ht003826sc005` in `contracts.json`
+  (slug registered in `validate-contract-tracker.js EXPECTED_SLUGS`; 64 → 65).
+  Carries a structured `cso` block: number, active window, contracting office,
+  POC, the 8 authorities, the 3 phases, the award instruments, PAE scope.
+  Deliberately **no NAICS, no PSC value, no ceiling, no due date** — the
+  announcement contains none of those, and the entry says so. They are set by
+  the individual AoIs.
+- **`data/cso-aois.json`** — new hand-maintained AoI registry keyed by
+  `parent_slug`. Seeds the enterprise CSO (no AoIs posted yet — an honest
+  empty state, not a loading failure) plus the PEO DHMS CSO's AoIs **1b**
+  (AI/ML/NLP, closed Jul 1 2026), **2** (Healthcare Delivery, T6 Health
+  Systems awarded), **3** (Ambient Listening, the precedent), **4** (Data
+  Applications, cancelled), and HT003826SC001. Those AoIs previously existed
+  **only as prose inside contracts.json descriptions**, so they could not be
+  rendered, searched or date-checked.
+- **Rendering** (`build.js`): `loadCsoAoiRegistry()` / `generateCsoAoiHtml()`
+  put an "Areas of Interest" section on the parent CSO's detail page, and an
+  AoI-count badge ("4 AoIs" / "AoI watch") on the tracker card. Factual grid
+  (AoI number, title, status, dates, awardee) is public; MMT's read per AoI
+  sits behind `data-access="premium"`, matching `generateTeamingSignalsHtml`.
+- **`scripts/validate-cso-aois.js`** — HARD-fails on orphaned `parent_slug` /
+  `related_slug`, duplicate ids, unknown status, malformed dates, malformed
+  SAM permalinks, and **`status:"open"` with a `response_due` already past**.
+  Staleness is SOFT (warn at 45d, `CSO_AOI_MAX_AGE_DAYS` to enforce), matching
+  the 08-17 freshness-audit posture. **Wired into the `netlify.toml` build
+  command** (after `validate-contract-tracker.js`) — that wiring is what makes
+  the hard failures real. A validator that no build invokes is an inert guard,
+  the same false-green shape as the 08-20 sprint below; the canonical build
+  chain is the `command` in `netlify.toml`, NOT `package.json`'s `build` script.
+- **Weekly tripwire** (`intel-quality-report.js`): new `_csoAoiHealth()` adds
+  a "CSO Areas of Interest" section, `cso_aoi_stale` +
+  `cso_aoi_past_due_open` in the ops_event, and AoI counts in the subject.
+  Also surfaces **closing within 14 days** so Mary sees a window while there
+  is still time to act. `data/cso-aois.json` added to `included_files`.
+- **`static/documents/`** → `/documents/*.pdf` build copy. The signed CSO PDF
+  is mirrored there and cited as the primary source.
+
+**No SAM.gov permalink is cited.** A search surfaced a 32-hex id but SAM.gov
+and its API are egress-blocked from this session, so the id could not be
+resolved to HT003826SC005. Per the 2026-08-05 rule, a link that merely *looks*
+well-formed is not evidence — an unverified permalink is worse than none.
+**Open item for Mary: confirm the SAM notice id and add the permalink.**
+
+Hard rules (do not regress):
+- **A CSO is a framework, not a requirement.** Never put a NAICS, ceiling or
+  due date on a CSO listing entry unless the announcement itself carries one.
+  Those belong to the AoIs.
+- **AoIs live in `data/cso-aois.json`, not in prose.** An AoI buried in a
+  description cannot be rendered, searched, or checked for a passed deadline.
+- **`status:"open"` + a past `response_due` is a correctness bug, not
+  staleness.** It tells a paying subscriber a closed window is still live.
+  The validator hard-fails it and the weekly email flags it in red.
+- **No cron writes this registry.** Same rule as `contracts.json`: re-verify
+  against SAM.gov / the issuing office and bump `last_verified` only with an
+  actual current source.
+
+Verified 2026-08-20: `node -c` clean on all touched files; `node build.js`
+completes (654 dist pages, "Copied 1 source document(s)"; the process then
+holds an egress-blocked handle to missionmeetstech.com, which is
+environmental); validate-dist OK (654), validate-routes ✓ (35),
+validate-contract-tracker OK (65 contracts), validate-cso-aois OK (3 CSOs /
+4 AoIs), scan-pii OK; unit suite **538/538** (+15 new in
+`tests/unit/cso-aoi-registry.test.js`, which assert the validator's teeth, not
+just that today's data passes).
 ## Sprint 2026-08-20 — False greens: three ways the platform reported work it never did
 
 Follow-on to 2026-08-17. Armed the re-verify workflow, then diagnosed the
