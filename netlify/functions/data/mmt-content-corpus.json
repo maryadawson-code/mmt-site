@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-20T16:35:20.224Z",
-  "total": 294,
+  "generated_at": "2026-08-20T23:47:22.319Z",
+  "total": 293,
   "counts": {
     "articles": 132,
     "friday_briefs": 36,
     "monthly_briefs": 4,
-    "contracts": 65,
+    "contracts": 64,
     "capture_intel": 24,
     "glossary": 0,
     "idiq_vehicles": 33
@@ -3749,22 +3749,6 @@
       ],
       "url": "https://www.cdc.gov/ecr/php/getting-started/index.html",
       "excerpt": "Watch item on CDC's electronic case reporting modernization — the automated, real-time exchange of case-report data between EHRs and public health agencies. eCR is a core CDC Data Modernization Initiative (DMI) investment, currently delivered through the APHL/AIMS platform with HL7 and state-level partners. The 2026 Public Health Data Strategy emphasizes increasing eCR processing at public-health departments and expanding eCR among hospitals including Critical Access Hospitals. As DMI grant funding converts to recurring contracts, FHIR-based eCR procurements are expected to emerge. NAICS 541511; firms with FHIR, HL7, and public-health informatics credentials are best positioned.\nAgency: Centers for Disease Control and Prevention (CDC)\nVendor: TBD — emerging procurements; current ecosystem: APHL/AIMS platform, HL7, state vendors\nValue: Est. ~$30–50M (DMI-funded, transitioning grant→contract)\nStatus: upcoming\nNAICS: 541511\nMMT verdict: WATCH — FHIR-based eCR contracts emerging from DMI grants\nFactors: vehicle_fit: watch — Procurement vehicle uncertain; grant→contract transition | agency_alignment: pass — CDC DMI eCR — high-priority interoperability mandate | timeline: watch — Timing tied to DMI appropriations conversion | competition: watch — APHL/AIMS ecosystem entrenched; field opening | scope_fit: pass — FHIR/HL7 informatics scope fits SB primes",
-      "premium": false
-    },
-    {
-      "id": "contract-aspr-npivs-national-provider-identity-verification-system-",
-      "type": "contract_intel",
-      "title": "ASPR NPIVS (National Provider Identity Verification System)",
-      "slug": "aspr-npivs-national-provider-identity-verification-system-",
-      "date": "2026-05-29",
-      "description": "Update Aug 17, 2026: the referenced solicitation 75A50126R00001 resolves to a BARDA pandemic-influenza vaccine and medical-countermeasures effort, not a provider identity verification system. This entry is under review and its framing is un",
-      "tags": [
-        "Department of Health and Human Services (HHS) / ASPR",
-        "upcoming",
-        "541511"
-      ],
-      "url": "https://www.federalcompass.com/rfp-opportunity-detail/75A50126R00001_RFI_SSN_NPIVS-2027",
-      "excerpt": "Update Aug 17, 2026: the referenced solicitation 75A50126R00001 resolves to a BARDA pandemic-influenza vaccine and medical-countermeasures effort, not a provider identity verification system. This entry is under review and its framing is unverified. Pre-solicitation watch on ASPR's National Provider Identity Verification System (RFI/sources-sought 75A50126R00001, targeted ~FY2027). NPIVS supports identity verification of healthcare providers for emergency-response and preparedness operations — a preparedness IT system with strategic national-security implications. ASPR's overall IT contracting footprint is relatively small (it favors 8(a) sole-source and SB set-asides for modest platform-support contracts), making NPIVS the agency's primary near-term IT watch item for FY2026–2027. Monitor for RFP release; SB/8(a) eligibility likely given ASPR's pattern.\nAgency: Department of Health and Human Services (HHS) / ASPR\nVendor: TBD — pre-solicitation (RFI 2025)\nValue: TBD (RFI stage)\nStatus: upcoming\nNAICS: 541511\nMMT verdict: WATCH — ASPR preparedness ID-verification IT; pre-solicitation\nFactors: vehicle_fit: watch — Pre-solicitation; vehicle/structure undefined | agency_alignment: pass — ASPR preparedness IT — national-security alignment | timeline: watch — RFI 2025; RFP targeted ~FY2027, not yet posted | competition: watch — Field undefined; ASPR favors 8(a)/SB | scope_fit: pass — Identity-verification scope fits SB/8(a) primes",
       "premium": false
     },
     {
