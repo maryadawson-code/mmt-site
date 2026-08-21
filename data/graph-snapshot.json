@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-07-09T19:37:02.294Z",
-  "node_count": 455,
-  "edge_count": 639,
+  "generated_at": "2026-08-20T23:45:22.756Z",
+  "node_count": 463,
+  "edge_count": 678,
   "nodes": [
     {
       "id": "peo-dhms-deployment",
@@ -27,6 +27,26 @@
       "id": "naics-541512",
       "type": "Topic",
       "canonical_name": "NAICS 541512",
+      "properties": {}
+    },
+    {
+      "id": "dha-wf3",
+      "type": "Vehicle",
+      "canonical_name": "DHA PEO DHMS Workforce 3.0 (WF3) IDIQ",
+      "properties": {
+        "contract_number": "HT003821R0001",
+        "ceiling_usd": 1425000000,
+        "pop_start": "2022-01-27",
+        "pop_end": "2027-01-26",
+        "set_aside": "Two Lots - Lot 1 Unrestricted / Lot 2 Small Business Set-Aside",
+        "vehicle_type": "Multiple Award IDIQ",
+        "status": "Active / final ordering year"
+      }
+    },
+    {
+      "id": "naics-541611",
+      "type": "Topic",
+      "canonical_name": "NAICS 541611",
       "properties": {}
     },
     {
@@ -172,12 +192,6 @@
         "vehicle_type": "Multiple Award IDIQ",
         "status": "Active"
       }
-    },
-    {
-      "id": "naics-541611",
-      "type": "Topic",
-      "canonical_name": "NAICS 541611",
-      "properties": {}
     },
     {
       "id": "vha-iht",
@@ -568,9 +582,9 @@
       "canonical_name": "Community Care Network Next Gen (CCN NG)",
       "properties": {
         "classification": "Solicitation",
-        "status": "upcoming",
+        "status": "active",
         "naics": "524292",
-        "last_verified": "2026-04-06"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -579,9 +593,9 @@
       "canonical_name": "CCN Dental (36C10G26R0004)",
       "properties": {
         "classification": "Solicitation",
-        "status": "upcoming",
+        "status": "active",
         "naics": "621210",
-        "last_verified": "2026-04-06"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -592,7 +606,7 @@
         "classification": "Solicitation",
         "status": "active",
         "naics": "541512",
-        "last_verified": "2026-05-06"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -612,9 +626,9 @@
       "canonical_name": "PEO DHMS Deployment Solutions (New IDIQ)",
       "properties": {
         "classification": "Solicitation",
-        "status": "upcoming",
+        "status": "awarded",
         "naics": "541512",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -636,7 +650,7 @@
         "classification": "Solicitation",
         "status": "upcoming",
         "naics": "541512, 541519, 541611",
-        "last_verified": "2026-03-30"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -647,7 +661,7 @@
         "classification": "Solicitation",
         "status": "upcoming",
         "naics": "541512",
-        "last_verified": "2026-03-31"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -656,9 +670,9 @@
       "canonical_name": "FDA Sentinel 3.0",
       "properties": {
         "classification": "Solicitation",
-        "status": "upcoming",
+        "status": "active",
         "naics": "518210",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -667,9 +681,9 @@
       "canonical_name": "VA Health Services DevSecOps",
       "properties": {
         "classification": "Solicitation",
-        "status": "upcoming",
+        "status": "active",
         "naics": "541512",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -680,7 +694,7 @@
         "classification": "Solicitation",
         "status": "upcoming",
         "naics": "541512",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -689,9 +703,9 @@
       "canonical_name": "VA HELM / SCMDSO (Healthcare Environment and Logistics Management)",
       "properties": {
         "classification": "Solicitation",
-        "status": "upcoming",
+        "status": "active",
         "naics": "541512",
-        "last_verified": "2026-05-22"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -702,7 +716,7 @@
         "classification": "Solicitation",
         "status": "upcoming",
         "naics": "541512",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -719,7 +733,7 @@
         "classification": "Contract",
         "status": "active",
         "naics": "541512",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -736,7 +750,7 @@
         "classification": "Contract",
         "status": "active",
         "naics": "541512",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -765,7 +779,7 @@
         "classification": "Program Watch",
         "status": "active",
         "naics": "541512",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -786,9 +800,9 @@
       "canonical_name": "T4NG2 (VA IT Services)",
       "properties": {
         "classification": "IDIQ",
-        "status": "active",
+        "status": "awarded",
         "naics": "541512",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -798,14 +812,30 @@
       "properties": {}
     },
     {
+      "id": "dha-enterprise-wide-cso-ht003826sc005",
+      "type": "Solicitation",
+      "canonical_name": "DHA Enterprise-Wide CSO (HT003826SC005)",
+      "properties": {
+        "classification": "Solicitation",
+        "status": "active",
+        "last_verified": "2026-08-20"
+      }
+    },
+    {
+      "id": "the-government-selects-the-instrument-per-area-of-interest",
+      "type": "Contractor",
+      "canonical_name": "the Government selects the instrument per Area of Interest.",
+      "properties": {}
+    },
+    {
       "id": "peo-dhms-cso-competitive-solutions-opening",
       "type": "Solicitation",
       "canonical_name": "PEO DHMS CSO (Competitive Solutions Opening)",
       "properties": {
         "classification": "Solicitation",
-        "status": "upcoming",
+        "status": "active",
         "naics": "541512",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -814,9 +844,9 @@
       "canonical_name": "VA Health Connect / IHT 2.0",
       "properties": {
         "classification": "IDIQ",
-        "status": "active",
+        "status": "awarded",
         "naics": "621999",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -881,7 +911,7 @@
         "classification": "Program Watch",
         "status": "active",
         "naics": "541611",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -892,7 +922,7 @@
         "classification": "Vendor-Announced",
         "status": "active",
         "naics": "541512",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -907,9 +937,9 @@
       "canonical_name": "CMS Rural Health Transformation",
       "properties": {
         "classification": "Grant Program",
-        "status": "active",
+        "status": "awarded",
         "naics": "541611",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -924,9 +954,9 @@
       "canonical_name": "IHS Health IT Modernization (RPMS Replacement)",
       "properties": {
         "classification": "Contract",
-        "status": "active",
+        "status": "awarded",
         "naics": "541512",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -943,7 +973,7 @@
         "classification": "Program Watch",
         "status": "active",
         "naics": "541512",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -954,7 +984,7 @@
         "classification": "Contract",
         "status": "active",
         "naics": "621999",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -975,9 +1005,9 @@
       "canonical_name": "CMS Cloud Infrastructure (OCI)",
       "properties": {
         "classification": "Vendor-Announced",
-        "status": "active",
+        "status": "awarded",
         "naics": "541512",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1011,7 +1041,7 @@
         "classification": "Managed Care",
         "status": "active",
         "naics": "524292",
-        "last_verified": "2026-05-06"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1034,7 +1064,7 @@
         "classification": "Contract",
         "status": "active",
         "naics": "524292",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1068,7 +1098,7 @@
         "classification": "Program Watch",
         "status": "active",
         "naics": "541512",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1079,7 +1109,7 @@
         "classification": "Policy-Infrastructure Watch",
         "status": "active",
         "naics": "541611",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1096,7 +1126,7 @@
         "classification": "Contract",
         "status": "active",
         "naics": "541512",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1136,7 +1166,7 @@
         "classification": "Cloud Program Watch",
         "status": "active",
         "naics": "541512",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1159,7 +1189,7 @@
         "classification": "Program Watch",
         "status": "active",
         "naics": "541512",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1168,9 +1198,9 @@
       "canonical_name": "T6 Health Systems — AOI 2 (PEO DHMS CSO)",
       "properties": {
         "classification": "Award",
-        "status": "active",
+        "status": "awarded",
         "naics": "541512",
-        "last_verified": "2026-05-28"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1185,9 +1215,9 @@
       "canonical_name": "ManTech — DMIX / DISS Support",
       "properties": {
         "classification": "Award",
-        "status": "active",
+        "status": "awarded",
         "naics": "541512",
-        "last_verified": "2026-05-28"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1202,9 +1232,9 @@
       "canonical_name": "Swingtide — Market Intelligence Support",
       "properties": {
         "classification": "Award",
-        "status": "active",
+        "status": "awarded",
         "naics": "541618",
-        "last_verified": "2026-05-28"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1219,9 +1249,9 @@
       "canonical_name": "STR Zero Day — Leidos",
       "properties": {
         "classification": "Award",
-        "status": "active",
+        "status": "awarded",
         "naics": "541512",
-        "last_verified": "2026-05-28"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1232,7 +1262,7 @@
         "classification": "Solicitation",
         "status": "upcoming",
         "naics": "541990",
-        "last_verified": "2026-05-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1249,7 +1279,7 @@
         "classification": "Solicitation",
         "status": "upcoming",
         "naics": "541511",
-        "last_verified": "2026-05-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1258,9 +1288,9 @@
       "canonical_name": "HRSA OPTN Next Gen IT Contracts (Phase 2)",
       "properties": {
         "classification": "Solicitation",
-        "status": "upcoming",
+        "status": "closed",
         "naics": "541511",
-        "last_verified": "2026-05-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1275,9 +1305,9 @@
       "canonical_name": "CMS SPARC II (Strategic Partners Acquisition Readiness Contract — Recompete)",
       "properties": {
         "classification": "Solicitation",
-        "status": "upcoming",
+        "status": "closed",
         "naics": "541511",
-        "last_verified": "2026-05-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1286,9 +1316,9 @@
       "canonical_name": "CDC DMI Successor / NSSP Ecosystem Contracts",
       "properties": {
         "classification": "Program Watch",
-        "status": "upcoming",
+        "status": "active",
         "naics": "541511",
-        "last_verified": "2026-05-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1297,9 +1327,9 @@
       "canonical_name": "IHS Four Directions Warehouse (4DW) — Clinical Data Repository",
       "properties": {
         "classification": "Award",
-        "status": "active",
+        "status": "awarded",
         "naics": "541519",
-        "last_verified": "2026-05-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1314,9 +1344,9 @@
       "canonical_name": "NIH Scientific & Technical Support Services IDIQ ($3B)",
       "properties": {
         "classification": "Solicitation",
-        "status": "upcoming",
+        "status": "active",
         "naics": "541714",
-        "last_verified": "2026-05-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1325,9 +1355,9 @@
       "canonical_name": "CMS RMADA 3 (Research, Measurement, Assessment, Design & Analysis)",
       "properties": {
         "classification": "Solicitation",
-        "status": "upcoming",
+        "status": "awarded",
         "naics": "541720",
-        "last_verified": "2026-05-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1338,7 +1368,7 @@
         "classification": "Solicitation",
         "status": "upcoming",
         "naics": "541512",
-        "last_verified": "2026-05-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1347,9 +1377,9 @@
       "canonical_name": "HHS NGITS BPA Recompete (Application Hosting, Operations, Engineering)",
       "properties": {
         "classification": "Program Watch",
-        "status": "upcoming",
+        "status": "active",
         "naics": "541512",
-        "last_verified": "2026-05-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1360,7 +1390,7 @@
         "classification": "Program Watch",
         "status": "active",
         "naics": "541511",
-        "last_verified": "2026-05-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1377,7 +1407,7 @@
         "classification": "Solicitation",
         "status": "upcoming",
         "naics": "541511",
-        "last_verified": "2026-05-29"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1409,17 +1439,6 @@
       }
     },
     {
-      "id": "aspr-npivs-national-provider-identity-verification-system",
-      "type": "Solicitation",
-      "canonical_name": "ASPR NPIVS (National Provider Identity Verification System)",
-      "properties": {
-        "classification": "Solicitation",
-        "status": "upcoming",
-        "naics": "541511",
-        "last_verified": "2026-05-29"
-      }
-    },
-    {
       "id": "va-edge-enterprise-digital-government-enablement",
       "type": "Solicitation",
       "canonical_name": "VA EDGE — Enterprise Digital Government Enablement",
@@ -1427,7 +1446,7 @@
         "classification": "Solicitation",
         "status": "upcoming",
         "naics": "541512",
-        "last_verified": "2026-07-01"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1444,7 +1463,7 @@
         "classification": "Program Watch",
         "status": "upcoming",
         "naics": "541512",
-        "last_verified": "2026-07-01"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1455,7 +1474,7 @@
         "classification": "Program Watch",
         "status": "upcoming",
         "naics": "541512",
-        "last_verified": "2026-07-01"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1466,7 +1485,7 @@
         "classification": "Program Watch",
         "status": "upcoming",
         "naics": "541512",
-        "last_verified": "2026-07-01"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1483,7 +1502,7 @@
         "classification": "Program Watch",
         "status": "upcoming",
         "naics": "541512",
-        "last_verified": "2026-07-01"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1500,7 +1519,7 @@
         "classification": "Program Watch",
         "status": "upcoming",
         "naics": "541519",
-        "last_verified": "2026-07-01"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1517,7 +1536,7 @@
         "classification": "Program Watch",
         "status": "upcoming",
         "naics": "541512",
-        "last_verified": "2026-07-01"
+        "last_verified": "2026-08-17"
       }
     },
     {
@@ -1534,8 +1553,49 @@
         "classification": "Program Watch",
         "status": "upcoming",
         "naics": "541512",
-        "last_verified": "2026-07-01"
+        "last_verified": "2026-08-17"
       }
+    },
+    {
+      "id": "dha-peo-dhms-workforce-3-0-wf3-idiq",
+      "type": "Vehicle",
+      "canonical_name": "DHA PEO DHMS Workforce 3.0 (WF3) IDIQ",
+      "properties": {
+        "classification": "IDIQ",
+        "status": "active",
+        "naics": "541611",
+        "last_verified": "2026-08-17"
+      }
+    },
+    {
+      "id": "6-primes-lot-1-bcg-federal",
+      "type": "Contractor",
+      "canonical_name": "6 primes. Lot 1 : BCG Federal",
+      "properties": {}
+    },
+    {
+      "id": "capgemini-government-solutions",
+      "type": "Contractor",
+      "canonical_name": "Capgemini Government Solutions",
+      "properties": {}
+    },
+    {
+      "id": "deloitte-consulting-lot-2-blue-clarity",
+      "type": "Contractor",
+      "canonical_name": "Deloitte Consulting . Lot 2 : Blue Clarity",
+      "properties": {}
+    },
+    {
+      "id": "edera-l3c",
+      "type": "Contractor",
+      "canonical_name": "Edera L3C",
+      "properties": {}
+    },
+    {
+      "id": "optimal-strategix-group-bcg-federal-holds-94-of-obligations",
+      "type": "Contractor",
+      "canonical_name": "Optimal Strategix Group. BCG Federal holds ~94% of obligations .",
+      "properties": {}
     },
     {
       "id": "hcds",
@@ -3608,6 +3668,94 @@
       }
     },
     {
+      "id": "article-the-government-bought-frontier-ai-for-a-dollar",
+      "type": "Article",
+      "canonical_name": "The Government Bought Frontier AI for a Dollar",
+      "properties": {
+        "slug": "the-government-bought-frontier-ai-for-a-dollar",
+        "type": "article",
+        "url": "/articles/the-government-bought-frontier-ai-for-a-dollar/",
+        "published": "2026-07-10"
+      }
+    },
+    {
+      "id": "article-health-net-never-had-a-cmmc-deadline",
+      "type": "Article",
+      "canonical_name": "Health Net Never Had a CMMC Deadline",
+      "properties": {
+        "slug": "health-net-never-had-a-cmmc-deadline",
+        "type": "article",
+        "url": "/articles/health-net-never-had-a-cmmc-deadline/",
+        "published": "2026-07-17"
+      }
+    },
+    {
+      "id": "article-the-memo-never-says-veteran",
+      "type": "Article",
+      "canonical_name": "The Memo Never Says \"Veteran\"",
+      "properties": {
+        "slug": "the-memo-never-says-veteran",
+        "type": "article",
+        "url": "/articles/the-memo-never-says-veteran/",
+        "published": "2026-07-24"
+      }
+    },
+    {
+      "id": "article-seven-steps-to-a-magnet",
+      "type": "Article",
+      "canonical_name": "Seven Steps to a Magnet",
+      "properties": {
+        "slug": "seven-steps-to-a-magnet",
+        "type": "article",
+        "url": "/articles/seven-steps-to-a-magnet/",
+        "published": "2026-07-31"
+      }
+    },
+    {
+      "id": "article-ten-years-to-build-it-ten-months-to-field-it",
+      "type": "Article",
+      "canonical_name": "Ten Years to Build It. Ten Months to Field It.",
+      "properties": {
+        "slug": "ten-years-to-build-it-ten-months-to-field-it",
+        "type": "article",
+        "url": "/articles/ten-years-to-build-it-ten-months-to-field-it/",
+        "published": "2026-08-04"
+      }
+    },
+    {
+      "id": "article-the-pentagon-asked",
+      "type": "Article",
+      "canonical_name": "The Pentagon Asked",
+      "properties": {
+        "slug": "the-pentagon-asked",
+        "type": "article",
+        "url": "/articles/the-pentagon-asked/",
+        "published": "2026-08-07"
+      }
+    },
+    {
+      "id": "article-a-plate-read-launches-an-aircraft",
+      "type": "Article",
+      "canonical_name": "A Plate Read Launches an Aircraft",
+      "properties": {
+        "slug": "a-plate-read-launches-an-aircraft",
+        "type": "article",
+        "url": "/articles/a-plate-read-launches-an-aircraft/",
+        "published": "2026-08-11"
+      }
+    },
+    {
+      "id": "article-the-marine-corps-answered-him-first",
+      "type": "Article",
+      "canonical_name": "The Marine Corps Answered Him First",
+      "properties": {
+        "slug": "the-marine-corps-answered-him-first",
+        "type": "article",
+        "url": "/articles/the-marine-corps-answered-him-first/",
+        "published": "2026-08-18"
+      }
+    },
+    {
       "id": "article-replace-with-url-slug",
       "type": "Article",
       "canonical_name": "Headline that makes the reader mad and motivated at the same time",
@@ -3861,6 +4009,94 @@
       }
     },
     {
+      "id": "article-capture-corner-2026-07-10",
+      "type": "Article",
+      "canonical_name": "The Layers Under the Dollar.",
+      "properties": {
+        "slug": "capture-corner-2026-07-10",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-07-10.html",
+        "published": "capture-corner-2026-07-10"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-07-17",
+      "type": "Article",
+      "canonical_name": "The Sixty-Day Window",
+      "properties": {
+        "slug": "capture-corner-2026-07-17",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-07-17.html",
+        "published": "capture-corner-2026-07-17"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-07-24",
+      "type": "Article",
+      "canonical_name": "The Ninety-Day Window",
+      "properties": {
+        "slug": "capture-corner-2026-07-24",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-07-24.html",
+        "published": "capture-corner-2026-07-24"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-07-31",
+      "type": "Article",
+      "canonical_name": "Fifteen Days on the Wrong Side",
+      "properties": {
+        "slug": "capture-corner-2026-07-31",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-07-31.html",
+        "published": "capture-corner-2026-07-31"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-08-04",
+      "type": "Article",
+      "canonical_name": "Size It on the Devices, Not the Force",
+      "properties": {
+        "slug": "capture-corner-2026-08-04",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-08-04.html",
+        "published": "capture-corner-2026-08-04"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-08-07",
+      "type": "Article",
+      "canonical_name": "The Measurement Buy Behind the Spouse Commission",
+      "properties": {
+        "slug": "capture-corner-2026-08-07",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-08-07.html",
+        "published": "capture-corner-2026-08-07"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-08-11",
+      "type": "Article",
+      "canonical_name": "Price the Audit Log, Not the Policy",
+      "properties": {
+        "slug": "capture-corner-2026-08-11",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-08-11.html",
+        "published": "capture-corner-2026-08-11"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-08-18",
+      "type": "Article",
+      "canonical_name": "The Efficiency Cut Landed on the Hospital, Not the IT Shop",
+      "properties": {
+        "slug": "capture-corner-2026-08-18",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-08-18.html",
+        "published": "capture-corner-2026-08-18"
+      }
+    },
+    {
       "id": "article-premium-briefs-2026-03-21",
       "type": "Article",
       "canonical_name": "Week of March 21, 2026",
@@ -3978,7 +4214,7 @@
         "slug": "community-care-network-next-gen-ccn-ng-",
         "type": "contract_intel",
         "url": "https://sam.gov/opp/7b2734002e4048bfa2ac4cc5b0479930/view",
-        "published": "2026-04-06"
+        "published": "2026-08-17"
       }
     },
     {
@@ -3989,7 +4225,7 @@
         "slug": "ccn-dental-36c10g26r0004-",
         "type": "contract_intel",
         "url": "https://sam.gov",
-        "published": "2026-04-06"
+        "published": "2026-08-17"
       }
     },
     {
@@ -4000,7 +4236,7 @@
         "slug": "va-ambient-scribe-idiq-36c10b26r0006-",
         "type": "contract_intel",
         "url": "https://www.highergov.com/contract-opportunity/da10-ambient-scribe-enterprise-idiq-va-26-000129-36c10b26r0006-k-3749d/",
-        "published": "2026-05-06"
+        "published": "2026-08-17"
       }
     },
     {
@@ -4022,7 +4258,7 @@
         "slug": "peo-dhms-deployment-solutions-new-idiq-",
         "type": "contract_intel",
         "url": "https://sam.gov",
-        "published": "2026-04-29"
+        "published": "2026-08-17"
       }
     },
     {
@@ -4044,7 +4280,7 @@
         "slug": "hhs-hopss-hhs-one-professional-services-solutions",
         "type": "contract_intel",
         "url": "https://sam.gov",
-        "published": "2026-03-30"
+        "published": "2026-08-17"
       }
     },
     {
@@ -4055,7 +4291,7 @@
         "slug": "hcds-health-care-delivery-solutions-mhs-genesis-follow-on-",
         "type": "contract_intel",
         "url": "https://sam.gov/opp/hcds",
-        "published": "2026-03-31"
+        "published": "2026-08-17"
       }
     },
     {
@@ -4066,7 +4302,7 @@
         "slug": "fda-sentinel-3-0",
         "type": "contract_intel",
         "url": "https://www.highergov.com/contract-opportunity/sentinel-3-0-2026-updated-market-research-75f40126ssn00100-r-43567/",
-        "published": "2026-04-29"
+        "published": "2026-08-17"
       }
     },
     {
@@ -4077,7 +4313,7 @@
         "slug": "va-health-services-devsecops",
         "type": "contract_intel",
         "url": "https://www.highergov.com/contract-opportunity/da01-health-services-devsecops-new-contract-va-36c10b26q0163-r-4a060/",
-        "published": "2026-04-29"
+        "published": "2026-08-17"
       }
     },
     {
@@ -4088,7 +4324,7 @@
         "slug": "va-data-center-and-telecommunications-modernization",
         "type": "contract_intel",
         "url": "https://sam.gov",
-        "published": "2026-04-29"
+        "published": "2026-08-17"
       }
     },
     {
@@ -4099,7 +4335,7 @@
         "slug": "va-helm-scmdso-healthcare-environment-and-logistics-management-",
         "type": "contract_intel",
         "url": "https://sam.gov/opp/7f1dab9449984bc6aff2fe595831be62/view",
-        "published": "2026-05-22"
+        "published": "2026-08-17"
       }
     },
     {
@@ -4110,7 +4346,7 @@
         "slug": "cio-cs-follow-on-the-store",
         "type": "contract_intel",
         "url": "https://sam.gov",
-        "published": "2026-04-29"
+        "published": "2026-08-17"
       }
     },
     {
@@ -4121,7 +4357,7 @@
         "slug": "va-ehrm-electronic-health-record-modernization-",
         "type": "contract_intel",
         "url": "https://digital.va.gov/ehr-modernization/ehr-deployment-schedule/",
-        "published": "2026-04-29"
+        "published": "2026-08-17"
       }
     },
     {
@@ -4132,7 +4368,7 @@
         "slug": "mhs-genesis-dhmsm-bridge-",
         "type": "contract_intel",
         "url": "https://www.health.mil/Military-Health-Topics/Technology/MHS-GENESIS",
-        "published": "2026-04-29"
+        "published": "2026-08-17"
       }
     },
     {
@@ -4143,7 +4379,7 @@
         "slug": "federal-electronic-health-record-modernization-fehrm-",
         "type": "contract_intel",
         "url": "https://www.fehrm.gov",
-        "published": "2026-04-29"
+        "published": "2026-08-17"
       }
     },
     {
@@ -4154,7 +4390,18 @@
         "slug": "t4ng2-va-it-services-",
         "type": "contract_intel",
         "url": "https://sam.gov",
-        "published": "2026-04-29"
+        "published": "2026-08-17"
+      }
+    },
+    {
+      "id": "article-dha-enterprise-wide-cso-ht003826sc005",
+      "type": "Article",
+      "canonical_name": "DHA Enterprise-Wide CSO (HT003826SC005)",
+      "properties": {
+        "slug": "dha-enterprise-wide-cso-ht003826sc005-",
+        "type": "contract_intel",
+        "url": "/documents/dha-enterprise-wide-cso-ht003826sc005.pdf",
+        "published": "2026-08-20"
       }
     },
     {
@@ -4165,7 +4412,7 @@
         "slug": "peo-dhms-cso-competitive-solutions-opening-",
         "type": "contract_intel",
         "url": "https://sam.gov",
-        "published": "2026-04-29"
+        "published": "2026-08-17"
       }
     },
     {
@@ -4176,7 +4423,7 @@
         "slug": "va-health-connect-iht-2-0",
         "type": "contract_intel",
         "url": "https://www.va.gov",
-        "published": "2026-04-29"
+        "published": "2026-08-17"
       }
     },
     {
@@ -4187,7 +4434,7 @@
         "slug": "enterprise-intelligence-data-solutions-eids-",
         "type": "contract_intel",
         "url": "https://sam.gov",
-        "published": "2026-04-29"
+        "published": "2026-08-17"
       }
     },
     {
@@ -4198,7 +4445,7 @@
         "slug": "dha-enterprise-generative-ai",
         "type": "contract_intel",
         "url": "https://sam.gov",
-        "published": "2026-04-29"
+        "published": "2026-08-17"
       }
     },
     {
@@ -4209,7 +4456,7 @@
         "slug": "cms-rural-health-transformation",
         "type": "contract_intel",
         "url": "https://www.cms.gov/priorities/rural-health-transformation-rht-program/overview",
-        "published": "2026-04-29"
+        "published": "2026-08-17"
       }
     },
     {
@@ -4220,7 +4467,7 @@
         "slug": "ihs-health-it-modernization-rpms-replacement-",
         "type": "contract_intel",
         "url": "https://sam.gov",
-        "published": "2026-04-29"
+        "published": "2026-08-17"
       }
     },
     {
@@ -4231,7 +4478,7 @@
         "slug": "mhs-genesis-theater-jomis-operational-medicine-systems-",
         "type": "contract_intel",
         "url": "https://sam.gov",
-        "published": "2026-04-29"
+        "published": "2026-08-17"
       }
     },
     {
@@ -4242,7 +4489,7 @@
         "slug": "dha-telehealth-programs",
         "type": "contract_intel",
         "url": "https://www.health.mil/Military-Health-Topics/Technology/Telehealth",
-        "published": "2026-04-29"
+        "published": "2026-08-17"
       }
     },
     {
@@ -4253,7 +4500,7 @@
         "slug": "cms-cloud-infrastructure-oci-",
         "type": "contract_intel",
         "url": "https://www.oracle.com/news/announcement/oracle-cloud-infrastructure-to-support-centers-for-medicare-and-medicaids-modernization-initiative-2026-02-11/",
-        "published": "2026-04-29"
+        "published": "2026-08-17"
       }
     },
     {
@@ -4265,193 +4512,6 @@
         "type": "contract_intel",
         "url": "https://sam.gov",
         "published": "2026-04-29"
-      }
-    },
-    {
-      "id": "article-tricare-managed-care-support-t-5-mcs",
-      "type": "Article",
-      "canonical_name": "TRICARE Managed Care Support - T-5 (MCS)",
-      "properties": {
-        "slug": "tricare-managed-care-support-t-5-mcs-",
-        "type": "contract_intel",
-        "url": "https://tricare.mil",
-        "published": "2026-05-06"
-      }
-    },
-    {
-      "id": "article-tpharm5-tricare-pharmacy",
-      "type": "Article",
-      "canonical_name": "TPharm5 (TRICARE Pharmacy)",
-      "properties": {
-        "slug": "tpharm5-tricare-pharmacy-",
-        "type": "contract_intel",
-        "url": "https://sam.gov",
-        "published": "2026-04-29"
-      }
-    },
-    {
-      "id": "article-dha-zero-trust-2-0-gsp",
-      "type": "Article",
-      "canonical_name": "DHA Zero Trust 2.0 / GSP",
-      "properties": {
-        "slug": "dha-zero-trust-2-0-gsp",
-        "type": "contract_intel",
-        "url": "https://sam.gov",
-        "published": "2026-04-29"
-      }
-    },
-    {
-      "id": "article-mpsm-medicare-payment-systems-modernization",
-      "type": "Article",
-      "canonical_name": "MPSM (Medicare Payment Systems Modernization)",
-      "properties": {
-        "slug": "mpsm-medicare-payment-systems-modernization-",
-        "type": "contract_intel",
-        "url": "https://sam.gov",
-        "published": "2026-04-29"
-      }
-    },
-    {
-      "id": "article-tefca-rce-health-information-exchange",
-      "type": "Article",
-      "canonical_name": "TEFCA / RCE (Health Information Exchange)",
-      "properties": {
-        "slug": "tefca-rce-health-information-exchange-",
-        "type": "contract_intel",
-        "url": "https://sam.gov",
-        "published": "2026-04-29"
-      }
-    },
-    {
-      "id": "article-cdc-dcipher-disease-surveillance",
-      "type": "Article",
-      "canonical_name": "CDC DCIPHER (Disease Surveillance)",
-      "properties": {
-        "slug": "cdc-dcipher-disease-surveillance-",
-        "type": "contract_intel",
-        "url": "https://sam.gov",
-        "published": "2026-04-29"
-      }
-    },
-    {
-      "id": "article-ssa-dcps2-disability-claims-processing",
-      "type": "Article",
-      "canonical_name": "SSA DCPS2 (Disability Claims Processing)",
-      "properties": {
-        "slug": "ssa-dcps2-disability-claims-processing-",
-        "type": "contract_intel",
-        "url": "https://sam.gov",
-        "published": "2026-04-29"
-      }
-    },
-    {
-      "id": "article-nih-strides-cloud-for-biomedical-data",
-      "type": "Article",
-      "canonical_name": "NIH STRIDES (Cloud for Biomedical Data)",
-      "properties": {
-        "slug": "nih-strides-cloud-for-biomedical-data-",
-        "type": "contract_intel",
-        "url": "https://datascience.nih.gov/strides",
-        "published": "2026-04-29"
-      }
-    },
-    {
-      "id": "article-cdc-dibbs-data-integration-building-blocks",
-      "type": "Article",
-      "canonical_name": "CDC DIBBs (Data Integration Building Blocks)",
-      "properties": {
-        "slug": "cdc-dibbs-data-integration-building-blocks-",
-        "type": "contract_intel",
-        "url": "https://www.cdc.gov/data-modernization/php/technologies/about-dibbs.html",
-        "published": "2026-04-29"
-      }
-    },
-    {
-      "id": "article-t6-health-systems-aoi-2-peo-dhms-cso",
-      "type": "Article",
-      "canonical_name": "T6 Health Systems — AOI 2 (PEO DHMS CSO)",
-      "properties": {
-        "slug": "t6-health-systems-aoi-2-peo-dhms-cso-",
-        "type": "contract_intel",
-        "url": "https://sam.gov/",
-        "published": "2026-05-28"
-      }
-    },
-    {
-      "id": "article-mantech-dmix-diss-support",
-      "type": "Article",
-      "canonical_name": "ManTech — DMIX / DISS Support",
-      "properties": {
-        "slug": "mantech-dmix-diss-support",
-        "type": "contract_intel",
-        "url": "https://sam.gov/",
-        "published": "2026-05-28"
-      }
-    },
-    {
-      "id": "article-swingtide-market-intelligence-support",
-      "type": "Article",
-      "canonical_name": "Swingtide — Market Intelligence Support",
-      "properties": {
-        "slug": "swingtide-market-intelligence-support",
-        "type": "contract_intel",
-        "url": "https://sam.gov/",
-        "published": "2026-05-28"
-      }
-    },
-    {
-      "id": "article-str-zero-day-leidos",
-      "type": "Article",
-      "canonical_name": "STR Zero Day — Leidos",
-      "properties": {
-        "slug": "str-zero-day-leidos",
-        "type": "contract_intel",
-        "url": "https://sam.gov/",
-        "published": "2026-05-28"
-      }
-    },
-    {
-      "id": "article-samhsa-bhsis-recompete-behavioral-health-services-informatio",
-      "type": "Article",
-      "canonical_name": "SAMHSA BHSIS Recompete (Behavioral Health Services Information System)",
-      "properties": {
-        "slug": "samhsa-bhsis-recompete-behavioral-health-services-information-system-",
-        "type": "contract_intel",
-        "url": "https://orangeslices.ai/hendall-awarded-hhs-samhsa-behavioral-health-services-information-system-bhsis-bridge-contract/",
-        "published": "2026-05-29"
-      }
-    },
-    {
-      "id": "article-fda-sirce-ii-systems-for-inspection-recalls-compliance-enfor",
-      "type": "Article",
-      "canonical_name": "FDA SIRCE II (Systems for Inspection, Recalls, Compliance & Enforcement)",
-      "properties": {
-        "slug": "fda-sirce-ii-systems-for-inspection-recalls-compliance-enforcement-",
-        "type": "contract_intel",
-        "url": "https://www.highergov.com/contract-opportunity/sirce-ii-75f40126q00072-r-815b9/",
-        "published": "2026-05-29"
-      }
-    },
-    {
-      "id": "article-hrsa-optn-next-gen-it-contracts-phase-2",
-      "type": "Article",
-      "canonical_name": "HRSA OPTN Next Gen IT Contracts (Phase 2)",
-      "properties": {
-        "slug": "hrsa-optn-next-gen-it-contracts-phase-2-",
-        "type": "contract_intel",
-        "url": "https://www.hrsa.gov/optn-modernization/updates",
-        "published": "2026-05-29"
-      }
-    },
-    {
-      "id": "article-cms-sparc-ii-strategic-partners-acquisition-readiness-contra",
-      "type": "Article",
-      "canonical_name": "CMS SPARC II (Strategic Partners Acquisition Readiness Contract — Recompete)",
-      "properties": {
-        "slug": "cms-sparc-ii-strategic-partners-acquisition-readiness-contract-recompete-",
-        "type": "contract_intel",
-        "url": "https://www.cms.gov/data-research/cms-information-technology/sparc/faq",
-        "published": "2026-05-29"
       }
     }
   ],
@@ -4468,6 +4528,22 @@
     {
       "from_id": "peo-dhms-deployment",
       "to_id": "naics-541512",
+      "relation": "covers_naics",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "dha",
+      "to_id": "dha-wf3",
+      "relation": "manages",
+      "properties": {
+        "sub_agency": "DHA / PEO DHMS (DHMS-CD)"
+      },
+      "weight": 1
+    },
+    {
+      "from_id": "dha-wf3",
+      "to_id": "naics-541611",
       "relation": "covers_naics",
       "properties": {},
       "weight": 1
@@ -5201,6 +5277,27 @@
     },
     {
       "from_id": "dha",
+      "to_id": "dha-enterprise-wide-cso-ht003826sc005",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "the-government-selects-the-instrument-per-area-of-interest",
+      "to_id": "dha-enterprise-wide-cso-ht003826sc005",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "dha-enterprise-wide-cso-ht003826sc005",
+      "to_id": "the-government-selects-the-instrument-per-area-of-interest",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "dha",
       "to_id": "peo-dhms-cso-competitive-solutions-opening",
       "relation": "manages",
       "properties": {},
@@ -5907,13 +6004,6 @@
       "weight": 1
     },
     {
-      "from_id": "hhs",
-      "to_id": "aspr-npivs-national-provider-identity-verification-system",
-      "relation": "manages",
-      "properties": {},
-      "weight": 1
-    },
-    {
       "from_id": "va",
       "to_id": "va-edge-enterprise-digital-government-enablement",
       "relation": "manages",
@@ -6036,6 +6126,83 @@
       "from_id": "va",
       "to_id": "va-application-hosting-compute-and-storage",
       "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "dha",
+      "to_id": "dha-peo-dhms-workforce-3-0-wf3-idiq",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "6-primes-lot-1-bcg-federal",
+      "to_id": "dha-peo-dhms-workforce-3-0-wf3-idiq",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "dha-peo-dhms-workforce-3-0-wf3-idiq",
+      "to_id": "6-primes-lot-1-bcg-federal",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "capgemini-government-solutions",
+      "to_id": "dha-peo-dhms-workforce-3-0-wf3-idiq",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "dha-peo-dhms-workforce-3-0-wf3-idiq",
+      "to_id": "capgemini-government-solutions",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "deloitte-consulting-lot-2-blue-clarity",
+      "to_id": "dha-peo-dhms-workforce-3-0-wf3-idiq",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "dha-peo-dhms-workforce-3-0-wf3-idiq",
+      "to_id": "deloitte-consulting-lot-2-blue-clarity",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "edera-l3c",
+      "to_id": "dha-peo-dhms-workforce-3-0-wf3-idiq",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "dha-peo-dhms-workforce-3-0-wf3-idiq",
+      "to_id": "edera-l3c",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "optimal-strategix-group-bcg-federal-holds-94-of-obligations",
+      "to_id": "dha-peo-dhms-workforce-3-0-wf3-idiq",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "dha-peo-dhms-workforce-3-0-wf3-idiq",
+      "to_id": "optimal-strategix-group-bcg-federal-holds-94-of-obligations",
+      "relation": "awarded_to",
       "properties": {},
       "weight": 1
     },
@@ -7106,6 +7273,160 @@
       "weight": 1
     },
     {
+      "from_id": "article-the-government-bought-frontier-ai-for-a-dollar",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-government-bought-frontier-ai-for-a-dollar",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-government-bought-frontier-ai-for-a-dollar",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-health-net-never-had-a-cmmc-deadline",
+      "to_id": "cmmc",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-health-net-never-had-a-cmmc-deadline",
+      "to_id": "dfars",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-health-net-never-had-a-cmmc-deadline",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-health-net-never-had-a-cmmc-deadline",
+      "to_id": "far",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-seven-steps-to-a-magnet",
+      "to_id": "dfars",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-seven-steps-to-a-magnet",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-seven-steps-to-a-magnet",
+      "to_id": "far",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-ten-years-to-build-it-ten-months-to-field-it",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-ten-years-to-build-it-ten-months-to-field-it",
+      "to_id": "dhp",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-ten-years-to-build-it-ten-months-to-field-it",
+      "to_id": "far",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-ten-years-to-build-it-ten-months-to-field-it",
+      "to_id": "jomis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-ten-years-to-build-it-ten-months-to-field-it",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-pentagon-asked",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-marine-corps-answered-him-first",
+      "to_id": "dhmsm",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-marine-corps-answered-him-first",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-marine-corps-answered-him-first",
+      "to_id": "far",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-marine-corps-answered-him-first",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-marine-corps-answered-him-first",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-marine-corps-answered-him-first",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "article-capture-corner-2026-04-29",
       "to_id": "dhmsm",
       "relation": "mentions",
@@ -7639,6 +7960,160 @@
     },
     {
       "from_id": "article-capture-corner-2026-07-07",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-07-10",
+      "to_id": "dhmsm",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-07-10",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-07-10",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-07-10",
+      "to_id": "peo-dhms",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-07-10",
+      "to_id": "stars-iii",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-07-10",
+      "to_id": "va-ehrm",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-07-17",
+      "to_id": "cmmc",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-07-17",
+      "to_id": "dfars",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-07-17",
+      "to_id": "far",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-07-24",
+      "to_id": "dhp",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-07-24",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-07-31",
+      "to_id": "dfars",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-07-31",
+      "to_id": "far",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-08-04",
+      "to_id": "jomis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-08-07",
+      "to_id": "advana",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-08-07",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-08-11",
+      "to_id": "fedramp",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-08-11",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-08-18",
+      "to_id": "dhp",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-08-18",
+      "to_id": "peo-dhms-deployment",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-08-18",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-08-18",
       "to_id": "ota",
       "relation": "mentions",
       "properties": {},
@@ -8289,6 +8764,41 @@
       "weight": 1
     },
     {
+      "from_id": "article-t4ng2-va-it-services",
+      "to_id": "va-t4ng2",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-dha-enterprise-wide-cso-ht003826sc005",
+      "to_id": "dfars",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-dha-enterprise-wide-cso-ht003826sc005",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-dha-enterprise-wide-cso-ht003826sc005",
+      "to_id": "far",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-dha-enterprise-wide-cso-ht003826sc005",
+      "to_id": "peo-dhms",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "article-peo-dhms-cso-competitive-solutions-opening",
       "to_id": "dfars",
       "relation": "mentions",
@@ -8569,223 +9079,6 @@
       "weight": 1
     },
     {
-      "from_id": "article-tricare-managed-care-support-t-5-mcs",
-      "to_id": "defense-health-agency",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-tricare-managed-care-support-t-5-mcs",
-      "to_id": "tricare-managed-care-support-t-5-mcs",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-tpharm5-tricare-pharmacy",
-      "to_id": "defense-health-agency",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-tpharm5-tricare-pharmacy",
-      "to_id": "tpharm5-tricare-pharmacy",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-dha-zero-trust-2-0-gsp",
-      "to_id": "dha-zero-trust-2-0-gsp",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-dha-zero-trust-2-0-gsp",
-      "to_id": "defense-health-agency",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-dha-zero-trust-2-0-gsp",
-      "to_id": "mhs",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-mpsm-medicare-payment-systems-modernization",
-      "to_id": "centers-for-medicare-medicaid-services",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-mpsm-medicare-payment-systems-modernization",
-      "to_id": "hopss",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-mpsm-medicare-payment-systems-modernization",
-      "to_id": "mpsm-medicare-payment-systems-modernization",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-tefca-rce-health-information-exchange",
-      "to_id": "federal-ehr",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-tefca-rce-health-information-exchange",
-      "to_id": "mhs",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-tefca-rce-health-information-exchange",
-      "to_id": "tefca-rce-health-information-exchange",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cdc-dcipher-disease-surveillance",
-      "to_id": "cdc-dcipher-disease-surveillance",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cdc-dcipher-disease-surveillance",
-      "to_id": "centers-for-disease-control-and-prevention",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-ssa-dcps2-disability-claims-processing",
-      "to_id": "ssa-dcps2-disability-claims-processing",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-nih-strides-cloud-for-biomedical-data",
-      "to_id": "nih-strides-cloud-for-biomedical-data",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cdc-dibbs-data-integration-building-blocks",
-      "to_id": "cdc-dibbs-data-integration-building-blocks",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cdc-dibbs-data-integration-building-blocks",
-      "to_id": "centers-for-disease-control-and-prevention",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-t6-health-systems-aoi-2-peo-dhms-cso",
-      "to_id": "defense-health-agency",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-t6-health-systems-aoi-2-peo-dhms-cso",
-      "to_id": "peo-dhms",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-mantech-dmix-diss-support",
-      "to_id": "defense-health-agency",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-swingtide-market-intelligence-support",
-      "to_id": "defense-health-agency",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-str-zero-day-leidos",
-      "to_id": "defense-health-agency",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-samhsa-bhsis-recompete-behavioral-health-services-informatio",
-      "to_id": "mhs",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-samhsa-bhsis-recompete-behavioral-health-services-informatio",
-      "to_id": "ota",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-fda-sirce-ii-systems-for-inspection-recalls-compliance-enfor",
-      "to_id": "department-of-health-and-human-services",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-fda-sirce-ii-systems-for-inspection-recalls-compliance-enfor",
-      "to_id": "fedramp",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cms-sparc-ii-strategic-partners-acquisition-readiness-contra",
-      "to_id": "cmmc",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cms-sparc-ii-strategic-partners-acquisition-readiness-contra",
-      "to_id": "cms-sparc",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cms-sparc-ii-strategic-partners-acquisition-readiness-contra",
-      "to_id": "centers-for-medicare-medicaid-services",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
       "from_id": "dha",
       "to_id": "leidos",
       "relation": "incumbent_of",
@@ -8821,6 +9114,16 @@
       "relation": "incumbent_of",
       "properties": {
         "via_contract": "mhs-genesis-dhmsm-bridge",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "dha",
+      "to_id": "the-government-selects-the-instrument-per-area-of-interest",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "dha-enterprise-wide-cso-ht003826sc005",
         "derived": true
       },
       "weight": 0.8
@@ -8921,6 +9224,56 @@
       "relation": "incumbent_of",
       "properties": {
         "via_contract": "swingtide-market-intelligence-support",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "dha",
+      "to_id": "6-primes-lot-1-bcg-federal",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "dha-peo-dhms-workforce-3-0-wf3-idiq",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "dha",
+      "to_id": "capgemini-government-solutions",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "dha-peo-dhms-workforce-3-0-wf3-idiq",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "dha",
+      "to_id": "deloitte-consulting-lot-2-blue-clarity",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "dha-peo-dhms-workforce-3-0-wf3-idiq",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "dha",
+      "to_id": "edera-l3c",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "dha-peo-dhms-workforce-3-0-wf3-idiq",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "dha",
+      "to_id": "optimal-strategix-group-bcg-federal-holds-94-of-obligations",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "dha-peo-dhms-workforce-3-0-wf3-idiq",
         "derived": true
       },
       "weight": 0.8

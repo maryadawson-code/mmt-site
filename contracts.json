@@ -1803,52 +1803,6 @@
     "slug": "cdc-electronic-case-reporting-ecr-modernization"
   },
   {
-    "name": "ASPR NPIVS (National Provider Identity Verification System)",
-    "agency": "Department of Health and Human Services (HHS) / ASPR",
-    "vendor": "TBD — pre-solicitation (RFI 2025)",
-    "value": "TBD (RFI stage)",
-    "status": "upcoming",
-    "classification": "Solicitation",
-    "naics": "541511",
-    "description": "Update Aug 17, 2026: the referenced solicitation 75A50126R00001 resolves to a BARDA pandemic-influenza vaccine and medical-countermeasures effort, not a provider identity verification system. This entry is under review and its framing is unverified. Pre-solicitation watch on ASPR's National Provider Identity Verification System (RFI/sources-sought 75A50126R00001, targeted ~FY2027). NPIVS supports identity verification of healthcare providers for emergency-response and preparedness operations — a preparedness IT system with strategic national-security implications. ASPR's overall IT contracting footprint is relatively small (it favors 8(a) sole-source and SB set-asides for modest platform-support contracts), making NPIVS the agency's primary near-term IT watch item for FY2026–2027. Monitor for RFP release; SB/8(a) eligibility likely given ASPR's pattern.",
-    "link": "https://www.federalcompass.com/rfp-opportunity-detail/75A50126R00001_RFI_SSN_NPIVS-2027",
-    "small_business_eligible": true,
-    "source": "https://www.federalcompass.com/rfp-opportunity-detail/75A50126R00001_RFI_SSN_NPIVS-2027",
-    "source_urls": [
-      "https://www.federalcompass.com/rfp-opportunity-detail/75A50126R00001_RFI_SSN_NPIVS-2027"
-    ],
-    "last_verified": "2026-05-29",
-    "pursuit_score": {
-      "verdict": "WATCH",
-      "headline": "ASPR preparedness ID-verification IT; pre-solicitation",
-      "factors": {
-        "vehicle_fit": {
-          "score": "watch",
-          "note": "Pre-solicitation; vehicle/structure undefined"
-        },
-        "agency_alignment": {
-          "score": "pass",
-          "note": "ASPR preparedness IT — national-security alignment"
-        },
-        "timeline": {
-          "score": "watch",
-          "note": "RFI 2025; RFP targeted ~FY2027, not yet posted"
-        },
-        "competition": {
-          "score": "watch",
-          "note": "Field undefined; ASPR favors 8(a)/SB"
-        },
-        "scope_fit": {
-          "score": "pass",
-          "note": "Identity-verification scope fits SB/8(a) primes"
-        }
-      }
-    },
-    "content_gap": true,
-    "content_gap_note": "Placeholder watch item — NPIVS is at RFI/sources-sought stage (75A50126R00001); value and full solicitation pending an FY2027 RFP release.",
-    "slug": "aspr-npivs-national-provider-identity-verification-system"
-  },
-  {
     "name": "VA EDGE — Enterprise Digital Government Enablement",
     "agency": "Department of Veterans Affairs",
     "vendor": "Incumbent: Deloitte Consulting LLP (VetsEZ team, PTEMS 2.0)",

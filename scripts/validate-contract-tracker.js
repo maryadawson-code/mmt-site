@@ -73,7 +73,13 @@ const EXPECTED_SLUGS = [
   "fda-fire-foundational-innovation-and-rapid-engagement",
   "hrsa-ryan-white-rsr-data-modernization",
   "cdc-electronic-case-reporting-ecr-modernization",
-  "aspr-npivs-national-provider-identity-verification-system",
+  // REMOVED 2026-08-20: "ASPR NPIVS (National Provider Identity Verification
+  // System)" was fabricated. NPIVS is the National Pre-pandemic Influenza
+  // Vaccine Stockpile — a real ASPR/BARDA program — and solicitation
+  // 75A50126R00001_RFI_SSN_NPIVS-2027 is a Sources Sought for BARDA vaccine
+  // medical countermeasures (NAICS 541714, bidders must hold a US influenza
+  // vaccine license/BLA), closed 2025-12-19. The acronym was expanded into an
+  // IT system that does not exist. Do not re-add without a primary source.
   "va-edge-enterprise-digital-government-enablement",
   "va-cloud-broker-service",
   "va-enterprise-resource-planning-erp",
