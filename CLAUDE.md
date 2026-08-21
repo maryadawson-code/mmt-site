@@ -424,6 +424,41 @@ Verified 2026-08-20: `node -c` clean on all touched files; unit suite
 **556/556**; build exit 0; validate-dist OK (654), validate-routes ✓ (35),
 validate-cso-aois OK, scan-pii OK; integrity-audit SUCCESS/SYNCED (40 routes).
 
+### Follow-on — the `aspr-npivs` entry was fabricated (resolved: REMOVED)
+
+The 08-17 pass flagged `aspr-npivs-national-provider-identity-verification-system`
+as misidentified and left it for a decision. Resolved: **the described system
+does not exist**, and the entry was removed (65 → 64).
+
+**NPIVS is the National Pre-pandemic Influenza Vaccine Stockpile** — a real
+ASPR/BARDA program with its own ASPR program page. Solicitation
+`75A50126R00001_RFI_SSN_NPIVS-2027` is a Sources Sought for *"BARDA Vaccine
+Medical Countermeasures for Pandemic Influenza Preparedness & Response"*,
+**NAICS 541714** (R&D in Biotechnology), posted 2025-11-07, **closed
+2025-12-19**; bidders must hold a US influenza vaccine license or a submitted
+BLA. Someone expanded the acronym into "National Provider Identity Verification
+System" and built an entire federal-health-IT opportunity on top of it. Every
+field was wrong — name, scope, NAICS (541511 vs 541714), status ("upcoming",
+RFP ~FY2027, when the response deadline passed in Dec 2025),
+`small_business_eligible`, and the full `pursuit_score` rationale. The claimed
+system has **zero web footprint**: no ASPR page, no trade press, no SAM notice.
+
+Also regenerated `data/graph-snapshot.json` — a COMMITTED generated artifact,
+stale since 2026-07-09, which was still carrying the fabricated node into
+`dist/` after the entry itself was deleted.
+
+Hard rules (do not regress):
+- **Never expand an unfamiliar acronym into a program name.** An acronym inside
+  a solicitation slug (`..._NPIVS-2027`) identifies the REAL program; resolve it
+  against the issuing office before writing a tracker entry. A plausible
+  expansion plus a real solicitation number reads as sourced and is not.
+- **A tracked entry whose NAICS contradicts its described scope is a red flag.**
+  541714 (biotech R&D) on something described as identity-verification IT should
+  have failed review long before a subscriber saw it.
+- **Deleting a `contracts.json` entry is not enough.** `data/graph-snapshot.json`
+  is generated but committed; regenerate it (`node scripts/build-graph.js` —
+  snapshot-only when Supabase env is absent) or the removed node ships anyway.
+
 ## 📜 Canonical Specification
 - All structural and UX work MUST follow `ARCHITECTURE_SPEC.md`.
 - This is the final word on site architecture and wireframes.
