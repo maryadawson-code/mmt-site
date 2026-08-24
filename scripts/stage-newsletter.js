@@ -67,7 +67,7 @@ const TEMPLATE = {
 };
 
 function die(msg) { console.error("stage-newsletter: " + msg); process.exit(1); }
-function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
 // Escape $ for use inside a String.replace replacement string, so dynamic
 // content containing "$199", "$55 billion", etc. is inserted literally instead
 // of being read as a $1/$&/$$ backreference (which mangled the gate on the
@@ -169,7 +169,7 @@ ${body}`;
     const niceDate = new Date(date + "T00:00:00Z").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
     // header swaps (regex on the model's known shapes)
     html = html.replace(/<title>Capture Corner:[^<]*<\/title>/, `<title>Capture Corner: ${rd(esc(m.cc.title.replace(/\.$/, "")))} &middot; MMT Premium</title>`);
-    html = html.replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${rd(esc(niceDate))}. ${rd(esc(m.cc.dek))}">`);
+    html = html.replace(/<meta name="description" content=".*">/, `<meta name="description" content="${rd(esc(niceDate))}. ${rd(esc(m.cc.dek))}">`);
     html = html.replace(/(MMT Premium &middot; Capture Corner &middot; )[^<]*/, `$1${rd(esc(niceDate))}`);
     html = html.replace(/(letter-spacing:-0\.03em;margin-bottom:10px;">)[^<]*(<\/h1>)/, `$1${rd(esc(m.cc.title))}$2`);
     html = html.replace(/(<p style="font-size:15px;color:var\(--mmt-text-secondary\);margin-bottom:20px;"><em>)[\s\S]*?(<\/em><\/p>)/, `$1${rd(m.cc.dek)}$2`);
