@@ -1,40 +1,54 @@
 {
   "_meta": {
     "description": "Pursuit Calendar seed events. Source of truth when Supabase pursuit_calendar table is unreachable. Times are America/New_York (ET). Status is computed dynamically by the renderer for date-based events; explicit status values (Protest, Protest Due, Watch, Needs Source) are honored as-is.",
-    "last_curated_at": "2026-08-17",
+    "last_curated_at": "2026-08-24",
     "curator": "automated",
     "timezone": "America/New_York",
-    "window_start": "2026-08-17",
-    "window_end": "2026-11-15"
+    "window_start": "2026-08-24",
+    "window_end": "2026-11-22"
   },
   "events": [
     {
-      "id": "8e518775-5cd1-4518-810e-02e176a79398",
-      "title": "Notice to Sole Source Qiagen",
-      "event_date": "2026-08-17",
+      "id": "e758d7de-332a-4204-b4f5-9f661f479b6f",
+      "title": "Image Management Systems (IMS) and Dental IT Services",
+      "event_date": "2026-08-27",
       "event_time_et": null,
       "agency": "DHA",
-      "vehicle": "FY26-0865",
-      "ref": null,
-      "category": "deadline",
-      "status_override": null,
-      "source_url": "https://sam.gov/workspace/contract/opp/c1147df1195d4052a3cc4e656e218926/view",
-      "source_system": "sam.gov",
-      "notes": "Sol: FY26-0865 · NAICS 541512"
-    },
-    {
-      "id": "e0548ea4-332a-4621-9912-ca9f7f140f4a",
-      "title": "Notice of Intent to Sole Source - Plexus Location Asset Tracking System Installation and Maintenance Services",
-      "event_date": "2026-08-21",
-      "event_time_et": null,
-      "agency": "DHA",
-      "vehicle": "HT941026N0099",
+      "vehicle": "HT9427-26-RFI-1000",
       "ref": null,
       "category": "rfi",
       "status_override": null,
-      "source_url": "https://sam.gov/workspace/contract/opp/8400d75a4c804a26a27c4b6a0bbf9c5b/view",
+      "source_url": "https://sam.gov/workspace/contract/opp/e93506075e2443458a2eebe02f7d5e03/view",
       "source_system": "sam.gov",
-      "notes": "Sol: HT941026N0099 · NAICS 541512 · Set-aside: No Set aside used"
+      "notes": "Sol: HT9427-26-RFI-1000 · NAICS 541512 · Set-aside: Small Business Set Aside - Total"
+    },
+    {
+      "id": "b8b39ca4-1520-48c4-a3f9-e0fce14f1941",
+      "title": "Advanced Research Projects Agency for Health (ARPA-H) Small Business Innovation Research (SBIR)/Small Business Technology Transfer (STTR) Program",
+      "event_date": "2026-09-11",
+      "event_time_et": null,
+      "agency": "ARPA-H",
+      "vehicle": "7599226SN106",
+      "ref": null,
+      "category": "deadline",
+      "status_override": null,
+      "source_url": "https://sam.gov/workspace/contract/opp/bdd2026ead744527be7b623032a4c79a/view",
+      "source_system": "sam.gov",
+      "notes": "Sol: 7599226SN106 · NAICS 541715 · Set-aside: Small Business Set Aside - Total"
+    },
+    {
+      "id": "09ce892f-9084-4f45-8a99-aa07deed78f0",
+      "title": "JOMIS Joint Medical Planning, Modeling and Simulation Capabilities",
+      "event_date": "2026-09-13",
+      "event_time_et": null,
+      "agency": "DHA",
+      "vehicle": "DHA_JOMIS_JMP_20260813",
+      "ref": null,
+      "category": "rfi",
+      "status_override": null,
+      "source_url": "https://sam.gov/workspace/contract/opp/213a2fe3a447465e8f30699c9f056ec4/view",
+      "source_system": "sam.gov",
+      "notes": "Sol: DHA_JOMIS_JMP_20260813 · NAICS 541512"
     }
   ]
 }
