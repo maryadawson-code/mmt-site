@@ -22,7 +22,10 @@ async function run(ctx, config) {
 
   const byAgency = {};
   await mapLimit(agencies, 3, async (agencyName) => {
-    const awards = await fetchAwardsByAgency(agencyName, { limit: topN, daysBack: 365 });
+    // Amount-sorted ON PURPOSE: this wants the agency's biggest awardees (the
+    // likely incumbents), not whoever signed something yesterday. The client's
+    // default is recency — do not drop this override.
+    const awards = await fetchAwardsByAgency(agencyName, { limit: topN, daysBack: 365, sort: "Award Amount" });
     byAgency[agencyName] = awards.slice(0, topN).map((a) => ({
       recipient: a.recipient,
       value: a.value,

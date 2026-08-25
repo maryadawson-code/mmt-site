@@ -42,7 +42,9 @@ async function collectAwards() {
   // --- USASpending.gov (no key) ---
   for (const agency of USASPENDING_AGENCIES) {
     try {
-      const awards = await fetchAwardsByAgency(agency, { limit: 25, daysBack: 365 });
+      // Recency-sorted (client default), 90-day window: the 25 most recently
+      // SIGNED awards per agency, so new rows actually land each day.
+      const awards = await fetchAwardsByAgency(agency, { limit: 25, daysBack: 90 });
       for (const a of awards) {
         if (!a.award_id) continue;
         rows.push({
