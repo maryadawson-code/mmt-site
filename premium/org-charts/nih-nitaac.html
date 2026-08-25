@@ -5,39 +5,267 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
 <title>NIH / NITAAC Organizational Structure &middot; MMT Premium</title>
+<meta name="description" content="NIH and NITAAC leadership as of August 25, 2026: Director Bhattacharya, the OALM/OLAO contracting chain, and the official October 29, 2026 sunset of the entire NITAAC GWAC portfolio. Sourced from nih.gov, oalm.od.nih.gov, and nitaac.nih.gov.">
 <link rel="stylesheet" href="/styles/tokens.css">
 <style>
-body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:#FFFFFF;color:#102033;margin:0;min-height:100vh;line-height:1.5}
-.page-hero{background:#0A192F;color:#fff;padding:32px 24px 40px;border-bottom:3px solid #457B9D}
-.page-hero-inner{max-width:900px;margin:0 auto}
+:root{
+  --mmt-navy:#0A192F;
+  --mmt-teal:#457B9D;
+  --mmt-soft:#F3F4F6;
+  --mmt-white:#FFFFFF;
+  --mmt-border:#D8E0E8;
+  --mmt-text:#102033;
+  --mmt-text-secondary:#5C6B7A;
+  --mmt-text-faint:#8898aa;
+  --mmt-red:#E63946;
+  --status-acting:#457B9D;
+  --status-acting-bg:rgba(69,123,157,0.08);
+  --status-acting-border:rgba(69,123,157,0.35);
+  --status-vacant:#5C6B7A;
+  --status-vacant-bg:rgba(92,107,122,0.08);
+  --status-vacant-border:rgba(92,107,122,0.30);
+  --status-new:#457B9D;
+  --status-new-bg:rgba(69,123,157,0.10);
+  --status-new-border:rgba(69,123,157,0.40);
+  --bg:var(--mmt-white);
+  --surface:var(--mmt-white);
+  --surface-2:var(--mmt-soft);
+  --surface-offset:#E8EDF3;
+  --border:var(--mmt-border);
+  --text:var(--mmt-text);
+  --text-muted:var(--mmt-text-secondary);
+  --text-faint:var(--mmt-text-faint);
+  --primary:var(--mmt-navy);
+  --primary-hover:#06122A;
+  --primary-light:rgba(10,25,47,0.06);
+  --accent:var(--mmt-teal);
+  --accent-light:rgba(69,123,157,0.10);
+  --shadow-sm:0 1px 3px rgba(10,25,47,0.06);
+  --shadow-md:0 4px 16px rgba(10,25,47,0.08);
+  --radius:8px;--radius-lg:12px;
+  --font-body:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;font-size:16px}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+.page-hero{background:var(--primary);color:#fff;padding:32px 24px 40px;border-bottom:3px solid var(--accent)}
+.page-hero-inner{max-width:1400px;margin:0 auto}
 .hero-eyebrow{font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;opacity:0.7;margin-bottom:8px}
-.hero-title{font-weight:700;font-size:clamp(1.4rem,3vw,2rem);line-height:1.2;margin:0;letter-spacing:-0.01em}
-.wrap{max-width:900px;margin:0 auto;padding:40px 24px}
-.card{background:#F3F4F6;border:1px solid #D8E0E8;border-radius:12px;padding:28px 32px}
-.card h2{font-size:1.05rem;margin:0 0 10px;color:#0A192F}
-.card p{font-size:0.9rem;color:#5C6B7A;margin:0 0 16px;max-width:64ch}
-.links a{display:inline-block;margin-right:14px;font-size:0.85rem;color:#457B9D;font-weight:600;text-decoration:none}
-.links a:hover{text-decoration:underline}
-.note{font-size:0.72rem;color:#8898b0;margin-top:24px}
+.hero-title{font-weight:700;font-size:clamp(1.5rem,3vw,2.25rem);line-height:1.2;margin-bottom:12px;letter-spacing:-0.01em}
+.hero-meta{display:flex;flex-wrap:wrap;gap:16px;font-size:0.8rem;opacity:0.85}
+.hero-meta span{display:flex;align-items:center;gap:6px}
+.hero-meta span::before{content:'\00B7';opacity:0.5}
+.hero-meta span:first-child::before{display:none}
+.org-container{max-width:1400px;margin:0 auto;padding:32px 24px 64px}
+.section-label{background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--text-muted);margin-bottom:16px;display:inline-block}
+.status-bar{background:var(--accent-light);border:1px solid var(--accent);border-radius:8px;padding:14px 18px;margin-bottom:24px;font-size:0.85rem;color:var(--text);display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;line-height:1.55}
+.status-bar strong{color:var(--primary)}
+.tier{margin-bottom:36px}
+.tier-row{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+.connector-v{width:2px;height:24px;background:var(--border);margin:0 auto}
+.connector-v.thick{background:var(--primary);opacity:0.4;height:32px}
+.node-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 18px;min-width:200px;max-width:280px;display:inline-flex;flex-direction:column;gap:4px;box-shadow:var(--shadow-sm)}
+.node-card.primary-card{border-top:3px solid var(--accent)}
+.node-card.new-card{border-color:var(--status-new-border);background:var(--status-new-bg)}
+.node-card.acting{border-color:var(--status-acting-border);background:var(--status-acting-bg)}
+.node-card.vacant{border-color:var(--status-vacant-border);background:var(--status-vacant-bg);opacity:0.85}
+.node-tier{font-size:0.64rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;margin-bottom:2px;color:var(--text-muted)}
+.node-tier.accent{color:var(--accent)}
+.node-tier.primary-tier{color:var(--primary)}
+.node-name{font-weight:600;font-size:0.9rem;line-height:1.3;color:var(--text)}
+.node-role{font-size:0.78rem;color:var(--text-muted);line-height:1.4}
+.node-meta{font-size:0.72rem;color:var(--text-faint);line-height:1.4;margin-top:2px}
+.node-badge{display:inline-flex;align-items:center;gap:3px;font-size:0.62rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-top:4px;padding:2px 6px;border-radius:20px;background:rgba(69,123,157,0.15);color:var(--accent);align-self:flex-start}
+.node-badge.vacant-badge{background:rgba(92,107,122,0.15);color:var(--text-muted)}
+.node-badge.new-badge{background:rgba(69,123,157,0.18);color:var(--accent)}
+.children-group{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;position:relative;padding-top:24px}
+.children-group::before{content:'';position:absolute;top:0;left:10%;right:10%;height:2px;background:var(--border)}
+.child-col{display:flex;flex-direction:column;align-items:center;position:relative}
+.child-col::before{content:'';position:absolute;top:-24px;left:50%;width:2px;height:24px;background:var(--border);transform:translateX(-50%)}
+.hca-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:16px}
+.hca-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;display:flex;flex-direction:column;gap:4px;transition:border-color 0.15s,transform 0.15s}
+.hca-card:hover{border-color:var(--primary);box-shadow:var(--shadow-sm)}
+.hca-card.is-new{border-color:var(--status-new-border);background:var(--status-new-bg)}
+.hca-card.is-acting{border-left:3px solid var(--status-acting)}
+.hca-opdiv{font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;font-weight:700;color:var(--accent)}
+.hca-name{font-weight:600;font-size:0.95rem;color:var(--text);line-height:1.3}
+.hca-meta{font-size:0.78rem;color:var(--text-muted);line-height:1.45}
+.hca-email{font-size:0.78rem;color:var(--accent);text-decoration:none;word-break:break-all}
+.hca-email:hover{text-decoration:underline}
+.source-footer{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 22px;margin-top:32px;font-size:0.78rem;color:var(--text-muted);line-height:1.6}
+.source-footer strong{color:var(--text);font-weight:600}
+.source-footer a{color:var(--accent);text-decoration:none}
+.source-footer a:hover{text-decoration:underline}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:0.85rem;color:var(--accent);text-decoration:none;margin-bottom:20px;font-weight:500}
+.back-link:hover{text-decoration:underline}
+.callout{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:var(--radius);padding:16px 20px;margin:24px 0;font-size:0.9rem;color:var(--text);line-height:1.55}
+@media(max-width:768px){.org-container{padding:20px 14px 48px}.tier-row{gap:10px}.node-card{min-width:160px;padding:12px 14px}}
 </style>
+<script>
+(function(){
+  var isPremium=localStorage.getItem('mmt_premium')==='true';
+  var ts=localStorage.getItem('mmt_premium_ts');
+  var withinWindow=ts&&(Date.now()-parseInt(ts))<30*24*60*60*1000;
+  if(!isPremium||!withinWindow){window.location.href='/dashboard.html';}
+})();
+</script>
 </head>
 <body>
+
 <div class="page-hero">
   <div class="page-hero-inner">
-    <div class="hero-eyebrow">Organizational Intelligence</div>
-    <h1 class="hero-title">National Institutes of Health / NITAAC<br>Organizational Structure</h1>
-  </div>
-</div>
-<div class="wrap">
-  <div class="card">
-    <h2>Org chart coming soon</h2>
-    <p>The NIH / NITAAC leadership org chart is in source inventory. I only publish an org chart once every named principal traces to an official, current source, so this one goes up when the sourcing pass is done rather than half-verified.</p>
-    <div class="links">
-      <a href="/agencies/nih-nitaac">NIH / NITAAC agency profile &rarr;</a>
-      <a href="/premium/dashboard.html">Premium dashboard &rarr;</a>
+    <div class="hero-eyebrow">Organizational Intelligence &middot; MMT Premium</div>
+    <h1 class="hero-title">NIH and NITAAC<br>Leadership and the GWAC Sunset</h1>
+    <div class="hero-meta">
+      <span>Current as of August 25, 2026</span>
+      <span>&#8226; NIH Director: Jay Bhattacharya (since Apr 1, 2025)</span>
+      <span>&#8226; All NITAAC GWACs sunset Oct 29, 2026</span>
     </div>
   </div>
-  <p class="note">Live now: <a href="/premium/org-charts/dha" style="color:#457B9D">DHA</a> &middot; <a href="/premium/org-charts/va" style="color:#457B9D">VA</a> &middot; <a href="/premium/org-charts/hhs" style="color:#457B9D">HHS</a> org charts.</p>
 </div>
+
+<div class="org-container">
+  <a href="/agencies/nih-nitaac" class="back-link">&larr; NIH / NITAAC profile</a>
+
+  <div class="status-bar">
+    <span style="font-size:1rem">&#9888;</span>
+    <div><strong>NITAAC is winding down. This is official, dated, and load-bearing for your pipeline.</strong> On June 9, 2026, NITAAC published notice that the HHS Senior Procurement Executive, acting under EO 14240 and OMB M-25-31, sunsets ALL NITAAC GWACs (CIO-SP3, CIO-SP3 Small Business, CIO-CS) on October 29, 2026: that is the last day to award new orders. Orders awarded on or after June 8, 2026 cannot run past December 31, 2028, and all NITAAC program functions cease that day. Future requirements move to GSA vehicles. There is no successor: CIO-SP4 was cancelled via a January 30, 2026 court filing (trade press; the vehicle is verifiably gone from the official portfolio). If you hold CIO-SP3 seats, your recompete path is Alliant 3, Polaris, or MAS IT.</div>
+  </div>
+
+  <!-- TIER 1: NIH Director -->
+  <div class="tier">
+    <div style="text-align:center"><div class="section-label">Office of the Director, NIH</div></div>
+    <div class="tier-row">
+      <div class="node-card primary-card">
+        <div class="node-tier accent">Director &middot; Senate-Confirmed</div>
+        <div class="node-name">Jay Bhattacharya, MD, PhD</div>
+        <div class="node-role">Director, NIH (18th)</div>
+        <div class="node-meta">Confirmed Mar 25, 2025; took office Apr 1, 2025 &middot; also served as acting CDC director in 2026 until Schwartz's confirmation</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Principal Deputy</div>
+        <div class="node-name">Matthew J. Memoli, MD, MS</div>
+        <div class="node-role">Principal Deputy Director</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Management</div>
+        <div class="node-name">Alfred C. Johnson, PhD</div>
+        <div class="node-role">Deputy Director for Management</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Extramural</div>
+        <div class="node-name">Jon R. Lorsch, PhD</div>
+        <div class="node-role">Deputy Director for Extramural Research</div>
+      </div>
+      <div class="node-card acting">
+        <div class="node-tier">Intramural</div>
+        <div class="node-name">Roland A. Owens, PhD</div>
+        <div class="node-role">Acting Deputy Director for Intramural Research</div>
+        <span class="node-badge">Acting</span>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Strategy</div>
+        <div class="node-name">Nicole C. Kleinstreuer, PhD</div>
+        <div class="node-role">Deputy Director for Program Coordination, Planning, and Strategic Initiatives</div>
+      </div>
+    </div>
+    <div class="connector-v thick"></div>
+  </div>
+
+  <!-- TIER 2: IT -->
+  <div class="tier">
+    <div style="text-align:center"><div class="section-label">Information Technology</div></div>
+    <div class="tier-row">
+      <div class="node-card primary-card">
+        <div class="node-tier accent">CIO &middot; Permanent as of Jul 26, 2026</div>
+        <div class="node-name">Maureen Falvella</div>
+        <div class="node-role">NIH CIO &middot; Director, Office of the CIO</div>
+        <div class="node-meta">Acting since Sep 2025, made permanent Jul 26, 2026</div>
+      </div>
+      <div class="node-card acting">
+        <div class="node-tier">Deputy CIO</div>
+        <div class="node-name">Joe Henke</div>
+        <div class="node-role">Acting NIH Deputy CIO</div>
+        <div class="node-meta">Concurrently CIO, National Human Genome Research Institute</div>
+        <span class="node-badge">Acting</span>
+      </div>
+      <div class="node-card acting">
+        <div class="node-tier">Security</div>
+        <div class="node-name">Craig Hayn</div>
+        <div class="node-role">Acting NIH CISO</div>
+        <div class="node-meta">Concurrently CISO, National Cancer Institute</div>
+        <span class="node-badge">Acting</span>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">The 27 ICs</div>
+        <div class="node-name">27 Institutes and Centers</div>
+        <div class="node-role">Still operating as 27. The FY2026 budget proposed consolidating to 8 entities with a ~40% cut; that is a proposal requiring Congressional action, not an enacted change.</div>
+      </div>
+    </div>
+    <div class="connector-v thick"></div>
+  </div>
+
+  <!-- TIER 3: Contracting chain -->
+  <div class="tier">
+    <div style="text-align:center"><div class="section-label">The Contracting Chain</div></div>
+    <div class="tier-row">
+      <div class="node-card primary-card">
+        <div class="node-tier accent">HCA &middot; Permanent</div>
+        <div class="node-name">Olga M. Acosta</div>
+        <div class="node-role">Director, Office of Acquisition and Logistics Management (OALM) &middot; Head of Contracting Activity</div>
+        <div class="node-meta">Verified live Aug 25, 2026 on the OALM homepage; consistent with the April 2026 HHS HCA roster &middot; olga.acosta@nih.gov</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">OLAO</div>
+        <div class="node-name">Office of Logistics and Acquisition Operations</div>
+        <div class="node-role">OALM sub-office and NITAAC's parent. Four divisions; no current director is named on its official page.</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">NITAAC</div>
+        <div class="node-name">Ricky Clark</div>
+        <div class="node-role">Director, NITAAC</div>
+        <div class="node-meta">Named Director Jan 17, 2025 (deputy since 2021; succeeded Brian Goodger, now HRSA HCA). Deputy seat: no successor announced. Now running the wind-down.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vehicle sunset board -->
+  <div class="tier" style="margin-top:48px">
+    <div style="text-align:center"><div class="section-label">The NITAAC Portfolio: Sunset Board</div></div>
+    <div class="hca-grid">
+      <div class="hca-card is-acting">
+        <div class="hca-opdiv">CIO-SP3</div>
+        <div class="hca-name">Sunsetting</div>
+        <div class="hca-meta">Last day for new orders Oct 29, 2026 &middot; orders awarded on/after Jun 8, 2026 capped at POP end Dec 31, 2028 &middot; CO: Tracy Holmes</div>
+      </div>
+      <div class="hca-card is-acting">
+        <div class="hca-opdiv">CIO-SP3 Small Business</div>
+        <div class="hca-name">Sunsetting</div>
+        <div class="hca-meta">All tracks (SB/WOSB, 8(a), SDVOSB, HUBZone) &middot; same Oct 29, 2026 cutoff</div>
+      </div>
+      <div class="hca-card is-acting">
+        <div class="hca-opdiv">CIO-CS</div>
+        <div class="hca-name">Sunsetting</div>
+        <div class="hca-meta">IT commodities vehicle; its OMB mandatory-source role for laptop/desktop buys ends with the program &middot; CO: Wanda M. Holliday</div>
+      </div>
+      <div class="hca-card">
+        <div class="hca-opdiv">CIO-SP4</div>
+        <div class="hca-name">Cancelled &middot; never awarded</div>
+        <div class="hca-meta">Withdrawn via Jan 30, 2026 court filing citing EO 14240 (trade press); absent from the official portfolio</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Capture read:</strong> the wind-down makes the org chart above a countdown clock. Task orders you want under CIO-SP3 pricing must be awarded by October 29, 2026 and delivered by December 31, 2028. Everything after that competes on GSA paper, where the buyer relationships are the ASD program offices, not NITAAC. Move your NIH customer conversations to "which GSA vehicle do we meet on next" now.
+  </div>
+
+  <div class="source-footer">
+    <strong>Sources.</strong> NIH leadership roster (verified 2026-08-25, page reviewed 2026-07-29, <a href="https://www.nih.gov/about-nih/organization/nih-leadership" rel="noopener">nih.gov</a>). NIH Director bio (<a href="https://www.nih.gov/about-nih/who-we-are/nih-director" rel="noopener">nih.gov</a>). NIH OCIO leadership (<a href="https://ocio.nih.gov/about-us/organization-and-leadership" rel="noopener">ocio.nih.gov</a>). OALM homepage naming Acosta as Director and HCA (<a href="https://oalm.od.nih.gov/" rel="noopener">oalm.od.nih.gov</a>). NITAAC sunset notice, June 9, 2026 (<a href="https://nitaac.nih.gov/resources/news/important-notice-nitaac-gwacs-cio-sp3-cio-sp3-sb-and-cio-cs" rel="noopener">nitaac.nih.gov</a>). Clark appointment (<a href="https://nitaac.nih.gov/resources/news/ricky-clark-named-director-nih-information-technology-acquisition-and-assessment" rel="noopener">nitaac.nih.gov</a>). GWAC status pages (<a href="https://nitaac.nih.gov/gwacs/cio-sp3" rel="noopener">CIO-SP3</a>, <a href="https://nitaac.nih.gov/gwacs/cio-sp3-small-business" rel="noopener">CIO-SP3 SB</a>, <a href="https://nitaac.nih.gov/gwacs/cio-cs" rel="noopener">CIO-CS</a>). CIO-SP4 cancellation detail: Washington Technology and Federal News Network, pending a primary court document. FY2026 IC-consolidation proposal: STAT reporting on the Congressional budget justification. Data current as of August 25, 2026.<br><br>
+    <strong>What changed since this was published?</strong> Vacancies fill. Acting designations turn Permanent. We re-verify quarterly. If you spot a stale entry, email <a href="mailto:mary@missionmeetstech.com">mary@missionmeetstech.com</a> &middot; we will update and re-cite.
+  </div>
+
+</div>
+
 </body>
 </html>

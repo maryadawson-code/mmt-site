@@ -4,40 +4,257 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
-<title>ASTP/ONC Organizational Structure &middot; MMT Premium</title>
+<title>ONC Organizational Structure &middot; MMT Premium</title>
+<meta name="description" content="ONC (Office of the National Coordinator for Health IT) leadership as of August 25, 2026, after the March 2026 reversal of the ASTP reorganization. Sourced from the healthit.gov leadership page.">
 <link rel="stylesheet" href="/styles/tokens.css">
 <style>
-body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:#FFFFFF;color:#102033;margin:0;min-height:100vh;line-height:1.5}
-.page-hero{background:#0A192F;color:#fff;padding:32px 24px 40px;border-bottom:3px solid #457B9D}
-.page-hero-inner{max-width:900px;margin:0 auto}
+:root{
+  --mmt-navy:#0A192F;
+  --mmt-teal:#457B9D;
+  --mmt-soft:#F3F4F6;
+  --mmt-white:#FFFFFF;
+  --mmt-border:#D8E0E8;
+  --mmt-text:#102033;
+  --mmt-text-secondary:#5C6B7A;
+  --mmt-text-faint:#8898aa;
+  --mmt-red:#E63946;
+  --status-acting:#457B9D;
+  --status-acting-bg:rgba(69,123,157,0.08);
+  --status-acting-border:rgba(69,123,157,0.35);
+  --status-vacant:#5C6B7A;
+  --status-vacant-bg:rgba(92,107,122,0.08);
+  --status-vacant-border:rgba(92,107,122,0.30);
+  --status-new:#457B9D;
+  --status-new-bg:rgba(69,123,157,0.10);
+  --status-new-border:rgba(69,123,157,0.40);
+  --bg:var(--mmt-white);
+  --surface:var(--mmt-white);
+  --surface-2:var(--mmt-soft);
+  --surface-offset:#E8EDF3;
+  --border:var(--mmt-border);
+  --text:var(--mmt-text);
+  --text-muted:var(--mmt-text-secondary);
+  --text-faint:var(--mmt-text-faint);
+  --primary:var(--mmt-navy);
+  --primary-hover:#06122A;
+  --primary-light:rgba(10,25,47,0.06);
+  --accent:var(--mmt-teal);
+  --accent-light:rgba(69,123,157,0.10);
+  --shadow-sm:0 1px 3px rgba(10,25,47,0.06);
+  --shadow-md:0 4px 16px rgba(10,25,47,0.08);
+  --radius:8px;--radius-lg:12px;
+  --font-body:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;font-size:16px}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+.page-hero{background:var(--primary);color:#fff;padding:32px 24px 40px;border-bottom:3px solid var(--accent)}
+.page-hero-inner{max-width:1400px;margin:0 auto}
 .hero-eyebrow{font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;opacity:0.7;margin-bottom:8px}
-.hero-title{font-weight:700;font-size:clamp(1.4rem,3vw,2rem);line-height:1.2;margin:0;letter-spacing:-0.01em}
-.wrap{max-width:900px;margin:0 auto;padding:40px 24px}
-.card{background:#F3F4F6;border:1px solid #D8E0E8;border-radius:12px;padding:28px 32px}
-.card h2{font-size:1.05rem;margin:0 0 10px;color:#0A192F}
-.card p{font-size:0.9rem;color:#5C6B7A;margin:0 0 16px;max-width:64ch}
-.links a{display:inline-block;margin-right:14px;font-size:0.85rem;color:#457B9D;font-weight:600;text-decoration:none}
-.links a:hover{text-decoration:underline}
-.note{font-size:0.72rem;color:#8898b0;margin-top:24px}
+.hero-title{font-weight:700;font-size:clamp(1.5rem,3vw,2.25rem);line-height:1.2;margin-bottom:12px;letter-spacing:-0.01em}
+.hero-meta{display:flex;flex-wrap:wrap;gap:16px;font-size:0.8rem;opacity:0.85}
+.hero-meta span{display:flex;align-items:center;gap:6px}
+.hero-meta span::before{content:'\00B7';opacity:0.5}
+.hero-meta span:first-child::before{display:none}
+.org-container{max-width:1400px;margin:0 auto;padding:32px 24px 64px}
+.section-label{background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--text-muted);margin-bottom:16px;display:inline-block}
+.status-bar{background:var(--accent-light);border:1px solid var(--accent);border-radius:8px;padding:14px 18px;margin-bottom:24px;font-size:0.85rem;color:var(--text);display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;line-height:1.55}
+.status-bar strong{color:var(--primary)}
+.tier{margin-bottom:36px}
+.tier-row{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+.connector-v{width:2px;height:24px;background:var(--border);margin:0 auto}
+.connector-v.thick{background:var(--primary);opacity:0.4;height:32px}
+.node-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 18px;min-width:200px;max-width:280px;display:inline-flex;flex-direction:column;gap:4px;box-shadow:var(--shadow-sm)}
+.node-card.primary-card{border-top:3px solid var(--accent)}
+.node-card.new-card{border-color:var(--status-new-border);background:var(--status-new-bg)}
+.node-card.acting{border-color:var(--status-acting-border);background:var(--status-acting-bg)}
+.node-card.vacant{border-color:var(--status-vacant-border);background:var(--status-vacant-bg);opacity:0.85}
+.node-tier{font-size:0.64rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;margin-bottom:2px;color:var(--text-muted)}
+.node-tier.accent{color:var(--accent)}
+.node-tier.primary-tier{color:var(--primary)}
+.node-name{font-weight:600;font-size:0.9rem;line-height:1.3;color:var(--text)}
+.node-role{font-size:0.78rem;color:var(--text-muted);line-height:1.4}
+.node-meta{font-size:0.72rem;color:var(--text-faint);line-height:1.4;margin-top:2px}
+.node-badge{display:inline-flex;align-items:center;gap:3px;font-size:0.62rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-top:4px;padding:2px 6px;border-radius:20px;background:rgba(69,123,157,0.15);color:var(--accent);align-self:flex-start}
+.node-badge.vacant-badge{background:rgba(92,107,122,0.15);color:var(--text-muted)}
+.node-badge.new-badge{background:rgba(69,123,157,0.18);color:var(--accent)}
+.children-group{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;position:relative;padding-top:24px}
+.children-group::before{content:'';position:absolute;top:0;left:10%;right:10%;height:2px;background:var(--border)}
+.child-col{display:flex;flex-direction:column;align-items:center;position:relative}
+.child-col::before{content:'';position:absolute;top:-24px;left:50%;width:2px;height:24px;background:var(--border);transform:translateX(-50%)}
+.hca-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:16px}
+.hca-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;display:flex;flex-direction:column;gap:4px;transition:border-color 0.15s,transform 0.15s}
+.hca-card:hover{border-color:var(--primary);box-shadow:var(--shadow-sm)}
+.hca-card.is-new{border-color:var(--status-new-border);background:var(--status-new-bg)}
+.hca-card.is-acting{border-left:3px solid var(--status-acting)}
+.hca-opdiv{font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;font-weight:700;color:var(--accent)}
+.hca-name{font-weight:600;font-size:0.95rem;color:var(--text);line-height:1.3}
+.hca-meta{font-size:0.78rem;color:var(--text-muted);line-height:1.45}
+.hca-email{font-size:0.78rem;color:var(--accent);text-decoration:none;word-break:break-all}
+.hca-email:hover{text-decoration:underline}
+.source-footer{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 22px;margin-top:32px;font-size:0.78rem;color:var(--text-muted);line-height:1.6}
+.source-footer strong{color:var(--text);font-weight:600}
+.source-footer a{color:var(--accent);text-decoration:none}
+.source-footer a:hover{text-decoration:underline}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:0.85rem;color:var(--accent);text-decoration:none;margin-bottom:20px;font-weight:500}
+.back-link:hover{text-decoration:underline}
+.callout{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:var(--radius);padding:16px 20px;margin:24px 0;font-size:0.9rem;color:var(--text);line-height:1.55}
+@media(max-width:768px){.org-container{padding:20px 14px 48px}.tier-row{gap:10px}.node-card{min-width:160px;padding:12px 14px}}
 </style>
+<script>
+(function(){
+  var isPremium=localStorage.getItem('mmt_premium')==='true';
+  var ts=localStorage.getItem('mmt_premium_ts');
+  var withinWindow=ts&&(Date.now()-parseInt(ts))<30*24*60*60*1000;
+  if(!isPremium||!withinWindow){window.location.href='/dashboard.html';}
+})();
+</script>
 </head>
 <body>
+
 <div class="page-hero">
   <div class="page-hero-inner">
-    <div class="hero-eyebrow">Organizational Intelligence</div>
-    <h1 class="hero-title">Assistant Secretary for Technology Policy / ONC<br>Organizational Structure</h1>
-  </div>
-</div>
-<div class="wrap">
-  <div class="card">
-    <h2>Org chart coming soon</h2>
-    <p>The ASTP/ONC leadership org chart is in source inventory. I only publish an org chart once every named principal traces to an official, current source, so this one goes up when the sourcing pass is done rather than half-verified.</p>
-    <div class="links">
-      <a href="/agencies/onc">ASTP/ONC agency profile &rarr;</a>
-      <a href="/premium/dashboard.html">Premium dashboard &rarr;</a>
+    <div class="hero-eyebrow">Organizational Intelligence &middot; MMT Premium</div>
+    <h1 class="hero-title">Office of the National Coordinator<br>for Health Information Technology</h1>
+    <div class="hero-meta">
+      <span>Current as of August 25, 2026</span>
+      <span>&#8226; ASTP dual title dropped March 31, 2026 &middot; singular ONC restored</span>
+      <span>&#8226; Sources: healthit.gov leadership page (updated April 1, 2026)</span>
     </div>
   </div>
-  <p class="note">Live now: <a href="/premium/org-charts/dha" style="color:#457B9D">DHA</a> &middot; <a href="/premium/org-charts/va" style="color:#457B9D">VA</a> &middot; <a href="/premium/org-charts/hhs" style="color:#457B9D">HHS</a> org charts.</p>
 </div>
+
+<div class="org-container">
+  <a href="/agencies/onc" class="back-link">&larr; ONC profile</a>
+
+  <div class="status-bar">
+    <span style="font-size:1rem">&#8505;</span>
+    <div><strong>The ASTP experiment is over.</strong> On March 31, 2026, HHS reversed the July 2024 reorganization that created the Assistant Secretary for Technology Policy. The office reverted to the singular ONC, and the Chief Technology Officer, Chief AI Officer, and Chief Data Officer functions moved back under the HHS Office of the CIO (Clark Minor). Per Keane, ONC now concentrates on standards, certification, and policy while OCIO runs infrastructure and cybersecurity. The OCIO transfer detail is reported by NextGov and HIT Consultant and is pending confirmation on an official HHS page; the ONC roster below is official.</div>
+  </div>
+
+  <!-- TIER 1: National Coordinator -->
+  <div class="tier">
+    <div style="text-align:center"><div class="section-label">National Coordinator</div></div>
+    <div class="tier-row">
+      <div class="node-card primary-card">
+        <div class="node-tier accent">Head of Office</div>
+        <div class="node-name">Thomas Keane, MD, MBA</div>
+        <div class="node-role">National Coordinator for Health Information Technology</div>
+        <div class="node-meta">Appointed June 3, 2025 (succeeded Micky Tripathi) &middot; healthit.gov/about/leadership</div>
+      </div>
+    </div>
+    <div class="connector-v thick"></div>
+  </div>
+
+  <!-- TIER 2: Immediate Office -->
+  <div class="tier">
+    <div style="text-align:center"><div class="section-label">Immediate Office of the National Coordinator</div></div>
+    <div class="tier-row">
+      <div class="node-card primary-card">
+        <div class="node-tier accent">Principal Deputy</div>
+        <div class="node-name">Steven Posnack, MS, MHS</div>
+        <div class="node-role">Principal Deputy National Coordinator</div>
+        <div class="node-meta">Signs official TEFCA communications</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Operations</div>
+        <div class="node-name">Adrienne Kimble, MS</div>
+        <div class="node-role">Deputy National Coordinator &middot; Chief Operating Officer</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Policy</div>
+        <div class="node-name">Mark Atalla, PharmD, MBA</div>
+        <div class="node-role">Deputy National Coordinator, Policy</div>
+        <div class="node-meta">Owns information blocking policy</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Interoperability</div>
+        <div class="node-name">Sam Kaardal</div>
+        <div class="node-role">Deputy National Coordinator, Interoperability</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Deputy</div>
+        <div class="node-name">Jason Funderburk, MD, MBA</div>
+        <div class="node-role">Deputy National Coordinator</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Chief of Staff</div>
+        <div class="node-name">Matt Swain</div>
+        <div class="node-role">Chief of Staff</div>
+      </div>
+    </div>
+    <div class="connector-v thick"></div>
+  </div>
+
+  <!-- TIER 3: Immediate-office chiefs -->
+  <div class="tier">
+    <div style="text-align:center"><div class="section-label">Immediate-Office Chiefs</div></div>
+    <div class="tier-row">
+      <div class="node-card">
+        <div class="node-tier">Privacy</div>
+        <div class="node-name">Kathryn Marchesini, JD</div>
+        <div class="node-role">Chief Privacy Officer</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Medicine</div>
+        <div class="node-name">Thomas Mason, MD</div>
+        <div class="node-role">Chief Medical Officer</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Nursing</div>
+        <div class="node-name">Melinda Kidder, DHA, MSN, RN</div>
+        <div class="node-role">Chief Nursing Officer</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Communications</div>
+        <div class="node-name">Zhan Caplan, MBA</div>
+        <div class="node-role">Director, Public Affairs and Communications</div>
+      </div>
+    </div>
+    <div class="connector-v thick"></div>
+  </div>
+
+  <!-- TIER 4: The two program offices -->
+  <div class="tier">
+    <div style="text-align:center"><div class="section-label">Program Offices (post-reorg ONC is three offices: the Immediate Office plus these two)</div></div>
+    <div class="tier-row">
+      <div class="node-card primary-card">
+        <div class="node-tier accent">Programs</div>
+        <div class="node-name">Office of Programs and Implementation (OPI)</div>
+        <div class="node-role">Exec Director: Elise Sweeney Anthony, JD &middot; Deputy National Coordinator</div>
+      </div>
+      <div class="node-card primary-card">
+        <div class="node-tier accent">Standards &middot; CHPL &middot; USCDI</div>
+        <div class="node-name">Office of Standards, Certification, and Analysis (OSCA)</div>
+        <div class="node-role">Exec Director: Avinash Shanbhag &middot; Deputy National Coordinator</div>
+        <div class="node-meta">Principal Deputy: Molly Prieto &middot; Deputy: John Rancourt &middot; Owns the Health IT Certification Program (CHPL) and USCDI</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Program ownership our readers ask about:</strong> TEFCA is ONC-led with The Sequoia Project as Recognized Coordinating Entity under a 5-year contract awarded August 2023. Information blocking splits two ways: ONC handles certified-developer non-conformities and runs the Report Information Blocking Portal; HHS OIG investigates claims against all actor types. Certification and USCDI live in OSCA.
+  </div>
+
+  <!-- CONTRACTING -->
+  <div class="tier" style="margin-top:48px">
+    <div style="text-align:center"><div class="section-label">How ONC Buys</div></div>
+    <div class="tier-row">
+      <div class="node-card">
+        <div class="node-tier">No Independent HCA</div>
+        <div class="node-name">Contracting flows through the Office of the Secretary</div>
+        <div class="node-role">ONC sits inside the HHS Office of the Secretary and does not appear on the HHS HCA roster. Its procurement (the RCE contract to The Sequoia Project, for example) runs at the OS level, which since the January 2026 realignment means OMAS.</div>
+        <div class="node-meta">See the <a href="/premium/org-charts/hhs" style="color:var(--accent)">HHS contracting org chart</a> and the <a href="/agencies/hhs/omas" style="color:var(--accent)">OMAS deep dive</a> for the buying organization behind ONC work.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="source-footer">
+    <strong>Sources.</strong> healthit.gov leadership roster (verified 2026-08-25, page updated 2026-04-01, <a href="https://www.healthit.gov/about/leadership/" rel="noopener">healthit.gov</a>). ONC three-office structure (<a href="https://www.healthit.gov/topic/about-astponc" rel="noopener">healthit.gov/topic/about-astponc</a>, verified 2026-08-25). TEFCA / RCE (<a href="https://www.healthit.gov/topic/interoperability/policy/trusted-exchange-framework-and-common-agreement-tefca" rel="noopener">healthit.gov</a>). Information blocking split (<a href="https://www.healthit.gov/topic/information-blocking" rel="noopener">healthit.gov</a>). March 31, 2026 reorg reversal and the CTO/CAIO/CDO move to OCIO: NextGov and HIT Consultant reporting, pending confirmation on an official HHS page. Keane appointment date: FedScoop, June 3, 2025. Data current as of August 25, 2026.<br><br>
+    <strong>What changed since this was published?</strong> Vacancies fill. Acting designations turn Permanent. We re-verify quarterly. If you spot a stale entry, email <a href="mailto:mary@missionmeetstech.com">mary@missionmeetstech.com</a> &middot; we will update and re-cite.
+  </div>
+
+</div>
+
 </body>
 </html>
