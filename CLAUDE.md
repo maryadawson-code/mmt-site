@@ -1,5 +1,95 @@
 # Mission Meets Tech - Developer & Content Governance
 
+## Sprint 2026-08-25 — Missed Capture Corner send, Buttondown stranger-PATCH, E2E QA, VA org chart
+
+Four work streams in one day. The morning incident: the 2026-08-25 issue merged
+at 13:47 UTC — 47 minutes after `capture-corner-autosend` (13:00 UTC daily) had
+fetched a 404 and given up. Because a 404 writes no marker, the next run asks
+for the NEXT day's issue: the missed send was skipped PERMANENTLY, with no
+error anywhere. Rescued by hand (68/68 sent, idempotency verified), then fixed
+at the root.
+
+**1. Capture Corner catch-up window (PR #173).** The cron now walks today plus
+`LOOKBACK_DAYS` (3) and sends the NEWEST live, unsent issue. `RESCUE_FLOOR`
+(2026-08-25) keeps the lookback out of the pre-fix era, whose issues were sent
+by bespoke one-shots and may carry no marker — without the floor, widening the
+window would re-mail history. A rescued send is labeled in the ops_event and
+the admin email. `scripts/send-capture-corner-now.js` (same-day operator
+rescue) calls the handler's exported `selectIssue()` so cron and operator
+cannot disagree about which issue is outstanding. Catch-up tests use PINNED
+dates, not the real clock — clock-derived fixtures went vacuous the moment
+today drifted past the floor, and were caught only by mutation-testing the
+guards (revert each guard, confirm a test fails).
+
+**2. Buttondown tag sync PATCHed a stranger (PR #173).** `member-preferences.js
+syncButtondownTags` used the `?email=` LIST filter — broken upstream (verified
+live: 200, count=48, unrelated first row), so every preferences save PATCHed
+`results[0]`, an unrelated subscriber. Now uses the shared `buttondownGet()`
+detail route. Fixing the lookup EXPOSED a second bug it had been hiding: the
+PATCH replaced the whole `tags` array, which would have deleted lead-magnet
+tags (`fy2027-forecast`) the moment writes aimed at the right member. Only the
+`agency:*` namespace is replaced now. No backfill needed — checked prod: all 66
+`mmt_preferences` rows have zero agencies selected and no subscriber carries an
+`agency:*` tag, so the feature never had real tags to lose.
+
+**3. E2E QA sweep (PR #174 + prod data).** Paywall verified anon in a real
+browser (64/64 gated sections hidden, placeholders only, endpoints fail
+closed); ops clean (0 error events 48h, radar 4-hourly, digest 64/day, Stripe
+sync hourly). Three data defects found and fixed:
+- **`award_tracker` frozen 19 days while logging `RUN_OK, upserted: 75`** —
+  `fetchAwardsByAgency` sorted a 365-day window by "Award Amount", so every
+  run fetched the SAME top-75. Same top-N-by-amount defect as the 05-07
+  single-bidder pivot. Now sorts "Base Obligation Date" desc over 90 days
+  (live-verified: awards signed 2 days ago). NOT "Start Date" — that is
+  period-of-performance start and can sit years in the FUTURE. Sort is
+  caller-selectable; the L1 incumbent enricher explicitly keeps
+  "Award Amount" (it wants biggest awardees, the one legitimate use).
+- **L3 pinged `gao.gov/` root, which 403s server-side** (same bot-block family
+  as the 08-20 newswire fix) → permanent false "unhealthy" on /status.json.
+  Ping moved to `/rss/reports.xml` (200).
+- **The fabricated `aspr-npivs` contract_intel row was still in prod** —
+  removing the tracker entry (#172) ORPHANED its intel row (the documented
+  07-03 failure mode). Deleted by hand with a
+  `contract_intel_orphan_reconciled` ops_event; 64 rows = 64 roster names.
+
+**4. VA org chart + routes (PR #175).** All 11 `/premium/org-charts/<slug>`
+routes resolve (8 new "coming soon / source inventory in progress" pages
+instead of 404s). VA chart refreshed per the 08-25 monitor: 18 changes
+(Figueroa Acting USH, Baehr GC, Bergin OCLA, Engelbaum HR&A, Topping CFO,
+Kasperowicz OPIA, Mason OIG, Devlin PDUSB, Scavella CMO, Sofocleous FEHRM,
+Neill TAC, Radway OAWP, BVA vacant + Arnold, etc.). 8 names verified live
+against VA.gov Official Biographies (va.gov/opa/bios) and cite it inline;
+monitor-only nodes are annotated "pending official confirmation". Private
+phone numbers stripped from TAC and HHS contact blocks. **DHA content
+untouched** — internally vetted by Mary; never change DHA nodes from public
+sources.
+
+Hard rules (do not regress):
+- **A once-a-day, today-only consumer of published content is a permanent-skip
+  machine.** Any cron that looks for date-stamped content must either walk a
+  bounded catch-up window or write a retriable marker on miss. And any
+  lookback over content history needs a FLOOR older than which it never
+  reaches — the pre-automation era carries no idempotency markers.
+- **Buttondown lookups use `buttondownGet()` (detail route), never the
+  `?email=` list filter.** The filter is broken upstream and `results[0]` is a
+  stranger. Third occurrence of this shape; the helper exists, use it.
+- **Never replace a whole third-party `tags`/attribute array you don't fully
+  own — replace only your namespace.** Another writer's tags die silently
+  otherwise.
+- **A tracker that "upserts N rows" daily can still be dead.** Sort by a
+  recency field and watch max(created_at), not the upsert count. Top-N-by-
+  amount over a long window is a static set.
+- **Date-pinned test fixtures, not clock-derived.** A test whose meaning
+  changes as the calendar moves goes silently vacuous. Mutation-test guards
+  (revert the guard, confirm a failure) before trusting a green suite.
+- **Removing/renaming a contracts.json entry: delete or rename its
+  contract_intel row in the same operation** (07-03 rule, now with a second
+  incident proving it).
+
+Verified 2026-08-25: 576/576 unit tests (+20); build exit 0; validate-dist OK
+(669); validate-routes OK (35); scan-pii OK; integrity-audit SUCCESS/SYNCED
+(40 routes) run twice against live prod; anon paywall verified in-browser.
+
 ## Sprint 2026-08-20 — Member email changes: Stripe is upstream, plus self-serve
 
 A founding member asked to move her account back to a prior address. The same
