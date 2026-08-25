@@ -23,7 +23,11 @@ const API_BASE = "https://api.usaspending.gov/api/v2";
  */
 async function fetchAwardsByAgency(agencyName, opts = {}) {
   const limit = Math.min(opts.limit || 25, 100);
-  const daysBack = opts.daysBack || 365;
+  // Default window shrunk 365 → 90 days (2026-08-25). With the old year-long
+  // window sorted by Award Amount, every daily run returned the SAME top-N
+  // awards — award_tracker logged "upserted: 75" for 19 straight days while
+  // gaining zero new rows. A tracker of RECENT awards must sort by recency.
+  const daysBack = opts.daysBack || 90;
   const end = new Date();
   const start = new Date(end.getTime() - daysBack * 86400000);
   const body = {
@@ -32,10 +36,19 @@ async function fetchAwardsByAgency(agencyName, opts = {}) {
       agencies: [{ type: "awarding", tier: "toptier", name: agencyName }],
       time_period: [{ start_date: start.toISOString().slice(0, 10), end_date: end.toISOString().slice(0, 10) }],
     },
-    fields: ["Award ID", "Recipient Name", "Awarding Agency", "Award Amount", "Start Date", "Award Type", "generated_internal_id"],
+    fields: ["Award ID", "Recipient Name", "Awarding Agency", "Award Amount", "Start Date", "Award Type", "Base Obligation Date", "generated_internal_id"],
     page: 1,
     limit,
-    sort: "Award Amount",
+    // Default sort is RECENCY ("Base Obligation Date" = when the base award
+    // was signed). Sorting by "Award Amount" over a long window makes the
+    // result set static (the year's biggest awards barely change day to day)
+    // — that defect froze award_tracker for 19 days while it logged
+    // "upserted: 75" every run. And "Start Date" is period-of-performance
+    // start, which can sit years in the FUTURE. Callers that genuinely want
+    // the biggest awards (the L1 incumbent enricher) pass
+    // opts.sort = "Award Amount" explicitly. The sort field must be one of
+    // `fields` above.
+    sort: opts.sort || "Base Obligation Date",
     order: "desc",
   };
   const ctrl = new AbortController();
@@ -57,7 +70,7 @@ async function fetchAwardsByAgency(agencyName, opts = {}) {
       recipient: a["Recipient Name"] || "",
       agency: a["Awarding Agency"] || agencyName,
       value: a["Award Amount"] != null ? String(a["Award Amount"]) : "",
-      action_date: a["Start Date"] || "",
+      action_date: a["Base Obligation Date"] || a["Start Date"] || "",
       description: a["Award Type"] || "",
       naics: "",
       generated_internal_id: a.generated_internal_id || "",
