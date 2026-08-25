@@ -5,39 +5,291 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
 <title>IHS Organizational Structure &middot; MMT Premium</title>
+<meta name="description" content="Indian Health Service leadership and contracting organization as of August 25, 2026: Director Mark Cruz, the OIT/PATH EHR modernization chain, and the Division of Acquisition Policy HCA. Sourced from ihs.gov leadership and DAP staff pages.">
 <link rel="stylesheet" href="/styles/tokens.css">
 <style>
-body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:#FFFFFF;color:#102033;margin:0;min-height:100vh;line-height:1.5}
-.page-hero{background:#0A192F;color:#fff;padding:32px 24px 40px;border-bottom:3px solid #457B9D}
-.page-hero-inner{max-width:900px;margin:0 auto}
+:root{
+  --mmt-navy:#0A192F;
+  --mmt-teal:#457B9D;
+  --mmt-soft:#F3F4F6;
+  --mmt-white:#FFFFFF;
+  --mmt-border:#D8E0E8;
+  --mmt-text:#102033;
+  --mmt-text-secondary:#5C6B7A;
+  --mmt-text-faint:#8898aa;
+  --mmt-red:#E63946;
+  --status-acting:#457B9D;
+  --status-acting-bg:rgba(69,123,157,0.08);
+  --status-acting-border:rgba(69,123,157,0.35);
+  --status-vacant:#5C6B7A;
+  --status-vacant-bg:rgba(92,107,122,0.08);
+  --status-vacant-border:rgba(92,107,122,0.30);
+  --status-new:#457B9D;
+  --status-new-bg:rgba(69,123,157,0.10);
+  --status-new-border:rgba(69,123,157,0.40);
+  --bg:var(--mmt-white);
+  --surface:var(--mmt-white);
+  --surface-2:var(--mmt-soft);
+  --surface-offset:#E8EDF3;
+  --border:var(--mmt-border);
+  --text:var(--mmt-text);
+  --text-muted:var(--mmt-text-secondary);
+  --text-faint:var(--mmt-text-faint);
+  --primary:var(--mmt-navy);
+  --primary-hover:#06122A;
+  --primary-light:rgba(10,25,47,0.06);
+  --accent:var(--mmt-teal);
+  --accent-light:rgba(69,123,157,0.10);
+  --shadow-sm:0 1px 3px rgba(10,25,47,0.06);
+  --shadow-md:0 4px 16px rgba(10,25,47,0.08);
+  --radius:8px;--radius-lg:12px;
+  --font-body:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;font-size:16px}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+.page-hero{background:var(--primary);color:#fff;padding:32px 24px 40px;border-bottom:3px solid var(--accent)}
+.page-hero-inner{max-width:1400px;margin:0 auto}
 .hero-eyebrow{font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;opacity:0.7;margin-bottom:8px}
-.hero-title{font-weight:700;font-size:clamp(1.4rem,3vw,2rem);line-height:1.2;margin:0;letter-spacing:-0.01em}
-.wrap{max-width:900px;margin:0 auto;padding:40px 24px}
-.card{background:#F3F4F6;border:1px solid #D8E0E8;border-radius:12px;padding:28px 32px}
-.card h2{font-size:1.05rem;margin:0 0 10px;color:#0A192F}
-.card p{font-size:0.9rem;color:#5C6B7A;margin:0 0 16px;max-width:64ch}
-.links a{display:inline-block;margin-right:14px;font-size:0.85rem;color:#457B9D;font-weight:600;text-decoration:none}
-.links a:hover{text-decoration:underline}
-.note{font-size:0.72rem;color:#8898b0;margin-top:24px}
+.hero-title{font-weight:700;font-size:clamp(1.5rem,3vw,2.25rem);line-height:1.2;margin-bottom:12px;letter-spacing:-0.01em}
+.hero-meta{display:flex;flex-wrap:wrap;gap:16px;font-size:0.8rem;opacity:0.85}
+.hero-meta span{display:flex;align-items:center;gap:6px}
+.hero-meta span::before{content:'\00B7';opacity:0.5}
+.hero-meta span:first-child::before{display:none}
+.org-container{max-width:1400px;margin:0 auto;padding:32px 24px 64px}
+.section-label{background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--text-muted);margin-bottom:16px;display:inline-block}
+.status-bar{background:var(--accent-light);border:1px solid var(--accent);border-radius:8px;padding:14px 18px;margin-bottom:24px;font-size:0.85rem;color:var(--text);display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;line-height:1.55}
+.status-bar strong{color:var(--primary)}
+.tier{margin-bottom:36px}
+.tier-row{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+.connector-v{width:2px;height:24px;background:var(--border);margin:0 auto}
+.connector-v.thick{background:var(--primary);opacity:0.4;height:32px}
+.node-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 18px;min-width:200px;max-width:280px;display:inline-flex;flex-direction:column;gap:4px;box-shadow:var(--shadow-sm)}
+.node-card.primary-card{border-top:3px solid var(--accent)}
+.node-card.new-card{border-color:var(--status-new-border);background:var(--status-new-bg)}
+.node-card.acting{border-color:var(--status-acting-border);background:var(--status-acting-bg)}
+.node-card.vacant{border-color:var(--status-vacant-border);background:var(--status-vacant-bg);opacity:0.85}
+.node-tier{font-size:0.64rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;margin-bottom:2px;color:var(--text-muted)}
+.node-tier.accent{color:var(--accent)}
+.node-tier.primary-tier{color:var(--primary)}
+.node-name{font-weight:600;font-size:0.9rem;line-height:1.3;color:var(--text)}
+.node-role{font-size:0.78rem;color:var(--text-muted);line-height:1.4}
+.node-meta{font-size:0.72rem;color:var(--text-faint);line-height:1.4;margin-top:2px}
+.node-badge{display:inline-flex;align-items:center;gap:3px;font-size:0.62rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-top:4px;padding:2px 6px;border-radius:20px;background:rgba(69,123,157,0.15);color:var(--accent);align-self:flex-start}
+.node-badge.vacant-badge{background:rgba(92,107,122,0.15);color:var(--text-muted)}
+.node-badge.new-badge{background:rgba(69,123,157,0.18);color:var(--accent)}
+.children-group{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;position:relative;padding-top:24px}
+.children-group::before{content:'';position:absolute;top:0;left:10%;right:10%;height:2px;background:var(--border)}
+.child-col{display:flex;flex-direction:column;align-items:center;position:relative}
+.child-col::before{content:'';position:absolute;top:-24px;left:50%;width:2px;height:24px;background:var(--border);transform:translateX(-50%)}
+.hca-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:16px}
+.hca-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;display:flex;flex-direction:column;gap:4px;transition:border-color 0.15s,transform 0.15s}
+.hca-card:hover{border-color:var(--primary);box-shadow:var(--shadow-sm)}
+.hca-card.is-new{border-color:var(--status-new-border);background:var(--status-new-bg)}
+.hca-card.is-acting{border-left:3px solid var(--status-acting)}
+.hca-opdiv{font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;font-weight:700;color:var(--accent)}
+.hca-name{font-weight:600;font-size:0.95rem;color:var(--text);line-height:1.3}
+.hca-meta{font-size:0.78rem;color:var(--text-muted);line-height:1.45}
+.hca-email{font-size:0.78rem;color:var(--accent);text-decoration:none;word-break:break-all}
+.hca-email:hover{text-decoration:underline}
+.source-footer{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 22px;margin-top:32px;font-size:0.78rem;color:var(--text-muted);line-height:1.6}
+.source-footer strong{color:var(--text);font-weight:600}
+.source-footer a{color:var(--accent);text-decoration:none}
+.source-footer a:hover{text-decoration:underline}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:0.85rem;color:var(--accent);text-decoration:none;margin-bottom:20px;font-weight:500}
+.back-link:hover{text-decoration:underline}
+.callout{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:var(--radius);padding:16px 20px;margin:24px 0;font-size:0.9rem;color:var(--text);line-height:1.55}
+@media(max-width:768px){.org-container{padding:20px 14px 48px}.tier-row{gap:10px}.node-card{min-width:160px;padding:12px 14px}}
 </style>
+<script>
+(function(){
+  var isPremium=localStorage.getItem('mmt_premium')==='true';
+  var ts=localStorage.getItem('mmt_premium_ts');
+  var withinWindow=ts&&(Date.now()-parseInt(ts))<30*24*60*60*1000;
+  if(!isPremium||!withinWindow){window.location.href='/dashboard.html';}
+})();
+</script>
 </head>
 <body>
+
 <div class="page-hero">
   <div class="page-hero-inner">
-    <div class="hero-eyebrow">Organizational Intelligence</div>
-    <h1 class="hero-title">Indian Health Service<br>Organizational Structure</h1>
-  </div>
-</div>
-<div class="wrap">
-  <div class="card">
-    <h2>Org chart coming soon</h2>
-    <p>The IHS leadership org chart is in source inventory. I only publish an org chart once every named principal traces to an official, current source, so this one goes up when the sourcing pass is done rather than half-verified.</p>
-    <div class="links">
-      <a href="/agencies/ihs">IHS agency profile &rarr;</a>
-      <a href="/premium/dashboard.html">Premium dashboard &rarr;</a>
+    <div class="hero-eyebrow">Organizational Intelligence &middot; MMT Premium</div>
+    <h1 class="hero-title">Indian Health Service<br>Leadership and Contracting Organization</h1>
+    <div class="hero-meta">
+      <span>Current as of August 25, 2026</span>
+      <span>&#8226; Director: Mark Cruz (confirmed Aug 7, 2026)</span>
+      <span>&#8226; Sources: ihs.gov/aboutihs/keyleaders &middot; ihs.gov/DAP/staff</span>
     </div>
   </div>
-  <p class="note">Live now: <a href="/premium/org-charts/dha" style="color:#457B9D">DHA</a> &middot; <a href="/premium/org-charts/va" style="color:#457B9D">VA</a> &middot; <a href="/premium/org-charts/hhs" style="color:#457B9D">HHS</a> org charts.</p>
 </div>
+
+<div class="org-container">
+  <a href="/agencies/ihs" class="back-link">&larr; IHS profile</a>
+
+  <div class="status-bar">
+    <span style="font-size:1rem">&#8505;</span>
+    <div><strong>IHS has a confirmed Director again.</strong> Mark Cruz (Klamath Tribes) was Senate-confirmed August 7, 2026 as the 12th IHS Director, ending roughly 18 months without one. The bench under him is thin: 6 of 12 Area Director seats are Acting, two headquarters offices are Vacant, and the DAP staff page shows multiple open contracting officer positions. For contractors, the load-bearing facts are lower down: CIO Mitchell Thornbrugh owns the PATH EHR modernization (GDIT integrator, Oracle Health EHR, Lawton pilot go-live 2026), and Chantel Smith remains the permanent Head of Contracting Activity.</div>
+  </div>
+
+  <!-- TIER 1: Director -->
+  <div class="tier">
+    <div style="text-align:center"><div class="section-label">Office of the Director</div></div>
+    <div class="tier-row">
+      <div class="node-card primary-card">
+        <div class="node-tier accent">Director &middot; Senate-Confirmed</div>
+        <div class="node-name">Mark Cruz</div>
+        <div class="node-role">Director, Indian Health Service (12th Director)</div>
+        <div class="node-meta">Confirmed Aug 7, 2026 &middot; previously Tribal Senior Advisor to the HHS Secretary</div>
+      </div>
+    </div>
+    <div class="connector-v thick"></div>
+  </div>
+
+  <!-- TIER 2: Front office -->
+  <div class="tier">
+    <div style="text-align:center"><div class="section-label">Front Office</div></div>
+    <div class="tier-row">
+      <div class="node-card">
+        <div class="node-tier">Deputy</div>
+        <div class="node-name">Benjamin Smith</div>
+        <div class="node-role">Deputy Director</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Chief of Staff</div>
+        <div class="node-name">Clayton W. Fulton</div>
+        <div class="node-role">Chief of Staff &middot; Delegated Authority of the IHS Director</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Management Ops</div>
+        <div class="node-name">Darrell LaRoche</div>
+        <div class="node-role">Deputy Director for Management Operations</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Medicine</div>
+        <div class="node-name">Loretta Christensen, MD</div>
+        <div class="node-role">Chief Medical Officer</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Field Ops</div>
+        <div class="node-name">Beverly Cotton</div>
+        <div class="node-role">Deputy Director for Field Operations</div>
+        <div class="node-meta">Two additional Field Operations deputy seats listed Vacant</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Intergov &amp; External</div>
+        <div class="node-name">Stacey Ecoffey</div>
+        <div class="node-role">Deputy Director for Intergovernmental and External Affairs</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Quality</div>
+        <div class="node-name">Michelle Boylan</div>
+        <div class="node-role">Deputy Director for Quality Healthcare and Enterprise Risk Management</div>
+      </div>
+    </div>
+    <div class="connector-v thick"></div>
+  </div>
+
+  <!-- TIER 3: HQ offices -->
+  <div class="tier">
+    <div style="text-align:center"><div class="section-label">Headquarters Offices</div></div>
+    <div class="tier-row">
+      <div class="node-card primary-card">
+        <div class="node-tier accent">Health IT &middot; PATH EHR</div>
+        <div class="node-name">Mitchell Thornbrugh</div>
+        <div class="node-role">CIO &middot; Director, Office of Information Technology (OIT)</div>
+        <div class="node-meta">Owns the RPMS replacement: PATH EHR &middot; GDIT integrator, Oracle Health EHR &middot; pilot at Lawton Service Unit, go-live 2026</div>
+      </div>
+      <div class="node-card primary-card">
+        <div class="node-tier accent">Management &middot; Parent of Acquisitions</div>
+        <div class="node-name">Santiago Almaraz</div>
+        <div class="node-role">Director, Office of Management Services (OMS)</div>
+        <div class="node-meta">Deputy: Evonne Bennett &middot; the acquisition chain runs Director &rarr; OMS &rarr; DAP</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Finance</div>
+        <div class="node-name">Jillian Curtis</div>
+        <div class="node-role">Director, Office of Finance and Accounting</div>
+      </div>
+      <div class="node-card acting">
+        <div class="node-tier">Resource Access</div>
+        <div class="node-name">Cmdr. Tracy Sanchez</div>
+        <div class="node-role">Acting Director, Office of Resource Access and Partnerships</div>
+        <span class="node-badge">Acting</span>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Environmental Health</div>
+        <div class="node-name">Capt. Martin L. Smith, RS, MPH</div>
+        <div class="node-role">Director, Office of Environmental Health and Engineering</div>
+      </div>
+      <div class="node-card acting">
+        <div class="node-tier">Clinical Services</div>
+        <div class="node-name">Vijay Kannan, MD, MPH</div>
+        <div class="node-role">Acting Director, Office of Clinical and Preventive Services</div>
+        <span class="node-badge">Acting</span>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Public Health</div>
+        <div class="node-name">Rear Adm. Francis Frazier</div>
+        <div class="node-role">Director, Office of Public Health Support</div>
+      </div>
+      <div class="node-card acting">
+        <div class="node-tier">Self-Determination</div>
+        <div class="node-name">Rena Macy</div>
+        <div class="node-role">Acting Director, Office of Indian Self-Determination and Self-Governance</div>
+        <span class="node-badge">Acting</span>
+      </div>
+      <div class="node-card vacant">
+        <div class="node-tier">External Affairs</div>
+        <div class="node-name">VACANT</div>
+        <div class="node-role">Director, Office of External Affairs</div>
+        <span class="node-badge vacant-badge">Open Role</span>
+      </div>
+      <div class="node-card vacant">
+        <div class="node-tier">Tribal &amp; Urban Affairs</div>
+        <div class="node-name">VACANT</div>
+        <div class="node-role">Director, Office of Tribal and Urban Affairs</div>
+        <span class="node-badge vacant-badge">Open Role</span>
+      </div>
+    </div>
+    <div class="connector-v thick"></div>
+  </div>
+
+  <!-- TIER 4: Contracting chain -->
+  <div class="tier">
+    <div style="text-align:center"><div class="section-label">The Contracting Chain</div></div>
+    <div class="tier-row">
+      <div class="node-card primary-card">
+        <div class="node-tier accent">HCA &middot; Permanent</div>
+        <div class="node-name">Chantel Smith</div>
+        <div class="node-role">Director, Division of Acquisition Policy (DAP) &middot; Head of Contracting Activity</div>
+        <div class="node-meta">Verified live Aug 25, 2026 on both the DAP and OMS staff pages &middot; Chantel.Smith@ihs.gov</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Deputy (Conflicting Listings)</div>
+        <div class="node-name">Unconfirmed</div>
+        <div class="node-role">Deputy Director, DAP</div>
+        <div class="node-meta">Two live official pages disagree: the DAP staff page lists Jeffrey Johnston; the OMS staff page lists Magdelenda Hudson as Acting. One is stale. Treat the seat as unconfirmed until IHS reconciles.</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Field Contracting</div>
+        <div class="node-name">12 Area Chiefs of the Contracting Office</div>
+        <div class="node-role">Named per-Area on the DAP staff page, plus a Division of Engineering Services contracting chief</div>
+        <div class="node-meta">4+ headquarters contracting officer seats listed vacant</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>The Area picture:</strong> 12 Areas (Alaska, Albuquerque, Bemidji, Billings, California, Great Plains, Nashville, Navajo, Oklahoma City, Phoenix, Portland, Tucson). As of Aug 25, 2026, six Area Director seats are Acting: Alaska (Lyle J. Claw), Bemidji (Cmdr. Craig Morin), Billings (Asha Petoskey), Nashville (Joni Lyon), Oklahoma City (Travis Scott), and Phoenix (Dixie Gaikowski, who is simultaneously the permanent Tucson Area Director). Permanent: Albuquerque (Leonard Thomas, MD), California (Beverly Miller), Great Plains (Joe Amiotte), Navajo (DuWayne Begay), Portland (Rear Adm. Marcus Martinez, PE).
+  </div>
+
+  <div class="source-footer">
+    <strong>Sources.</strong> IHS Key Leaders roster (verified 2026-08-25, <a href="https://www.ihs.gov/aboutihs/keyleaders/" rel="noopener">ihs.gov/aboutihs/keyleaders</a>). Division of Acquisition Policy staff page (verified 2026-08-25, <a href="https://www.ihs.gov/DAP/staff/" rel="noopener">ihs.gov/DAP/staff</a>). Office of Management Services staff page (verified 2026-08-25, <a href="https://www.ihs.gov/oms/staff/" rel="noopener">ihs.gov/oms/staff</a>). PATH EHR program page (<a href="https://www.ihs.gov/HIT/path-ehr/" rel="noopener">ihs.gov/HIT/path-ehr</a>; official pages give both August and September 2026 for the Lawton pilot go-live). IHS June 8, 2026 update to Tribes (Cruz nomination, leadership departures). Cruz confirmation date via the National Indian Health Board. Data current as of August 25, 2026.<br><br>
+    <strong>What changed since this was published?</strong> Vacancies fill. Acting designations turn Permanent. We re-verify quarterly. If you spot a stale entry, email <a href="mailto:mary@missionmeetstech.com">mary@missionmeetstech.com</a> &middot; we will update and re-cite.
+  </div>
+
+</div>
+
 </body>
 </html>

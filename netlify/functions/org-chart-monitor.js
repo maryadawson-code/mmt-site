@@ -35,6 +35,61 @@ const TARGETS = [
     url: "https://www.va.gov/oig/leadership/",
     chart_url: "https://missionmeetstech.com/premium/org-charts/va",
   },
+  // Added 2026-08-25 with the 8 new org charts. Each URL is the official
+  // roster page the chart cites, so a hash change here means the chart
+  // may be stale. hhs.gov and cdc.gov bot-block plain fetches (403) —
+  // fetchAndHash treats non-200 as a fetch failure, not a change, so
+  // those rows degrade gracefully; keep them for the day the block lifts.
+  {
+    agency: "HHS",
+    url: "https://www.hhs.gov/grants-contracts/grants-business-contacts/hca-and-key-managers/index.html",
+    chart_url: "https://missionmeetstech.com/premium/org-charts/hhs",
+  },
+  {
+    agency: "ONC",
+    url: "https://www.healthit.gov/about/leadership/",
+    chart_url: "https://missionmeetstech.com/premium/org-charts/onc",
+  },
+  {
+    agency: "IHS",
+    url: "https://www.ihs.gov/aboutihs/keyleaders/",
+    chart_url: "https://missionmeetstech.com/premium/org-charts/ihs",
+  },
+  {
+    agency: "IHS-DAP",
+    url: "https://www.ihs.gov/DAP/staff/",
+    chart_url: "https://missionmeetstech.com/premium/org-charts/ihs",
+  },
+  {
+    agency: "CDC",
+    url: "https://www.cdc.gov/about/leadership/index.html",
+    chart_url: "https://missionmeetstech.com/premium/org-charts/cdc",
+  },
+  {
+    agency: "ARPA-H",
+    url: "https://arpa-h.gov/about/people",
+    chart_url: "https://missionmeetstech.com/premium/org-charts/arpa-h",
+  },
+  {
+    agency: "GSA",
+    url: "https://www.gsa.gov/about-gsa/organization/leadership-directory",
+    chart_url: "https://missionmeetstech.com/premium/org-charts/gsa",
+  },
+  {
+    agency: "CMS",
+    url: "https://www.cms.gov/about-cms/leadership",
+    chart_url: "https://missionmeetstech.com/premium/org-charts/cms",
+  },
+  {
+    agency: "FDA",
+    url: "https://www.fda.gov/about-fda/fda-organization",
+    chart_url: "https://missionmeetstech.com/premium/org-charts/fda",
+  },
+  {
+    agency: "NIH",
+    url: "https://www.nih.gov/about-nih/who-we-are/nih-director",
+    chart_url: "https://missionmeetstech.com/premium/org-charts/nih-nitaac",
+  },
 ];
 
 const NOTIFY_TO = "mary@missionmeetstech.com";

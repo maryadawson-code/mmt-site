@@ -4910,7 +4910,7 @@ function generateAgencyProfilePage(agency) {
 
   // Org chart availability — extend this Set when more chart pages land
   // in premium/org-charts/.
-  const ORG_CHART_AGENCIES = new Set(['dha', 'va', 'hhs']);
+  const ORG_CHART_AGENCIES = new Set(['dha', 'va', 'hhs', 'onc', 'arpa-h', 'cms', 'ihs', 'cdc', 'fda', 'nih-nitaac', 'gsa']);
   const orgChartUrl = ORG_CHART_AGENCIES.has(agency.slug) ? `/premium/org-charts/${agency.slug}` : null;
   const orgChartCta = orgChartUrl ? `
     <a href="${orgChartUrl}" class="no-underline" style="display:inline-flex;align-items:center;gap:10px;padding:10px 16px;background:var(--mmt-navy);color:var(--mmt-white);font-weight:600;font-size:13px;border-radius:8px;margin-bottom:24px;">

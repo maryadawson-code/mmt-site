@@ -1,5 +1,75 @@
 # Mission Meets Tech - Developer & Content Governance
 
+## Sprint 2026-08-25 (later) — The 8 remaining agency org charts, researched and built
+
+PR #175 shipped 11 `/premium/org-charts/<slug>` routes, but 8 of them were
+"coming soon / source inventory in progress" placeholders. This pass researched
+and built all 8: **ONC, IHS, CDC, ARPA-H, GSA, CMS, FDA, NIH/NITAAC**. Every
+chart is now a real chart. 132 leadership nodes total.
+
+**Method.** 8 parallel research subagents, one per agency, each required to
+FETCH live official .gov pages (not search snippets) and return structured JSON
+with a source URL and an `official: true|false` flag per person. Names appearing
+only in trade press are rendered with an inline "pending official confirmation"
+annotation rather than dropped or laundered into fact. Anything unverifiable came
+back in an `unverified` array and was NOT published. No phone numbers (PII rule).
+
+**Findings that change what we tell subscribers:**
+- **NITAAC is sunsetting, entirely.** Official notice dated 2026-06-09: the HHS
+  SPE, under EO 14240 / OMB M-25-31, sunsets ALL NITAAC GWACs (CIO-SP3,
+  CIO-SP3 SB, CIO-CS) on **2026-10-29** — last day to award new orders. Orders
+  awarded on/after 2026-06-08 cannot run past 2028-12-31, when all NITAAC
+  program functions cease. Future work moves to GSA. **There is no successor**:
+  CIO-SP4 was cancelled via a 2026-01-30 COFC filing. This is a hard date on a
+  vehicle our readers hold seats on.
+- **GSA's category offices no longer exist.** The 2026-05-01 FAS reorg replaced
+  ITC/PSHC with five portfolios; the Office of Acquisition Solutions Development
+  (ASD, Lawrence Hale) now owns MAS, Alliant 3, Polaris, AND OASIS+. Capture
+  notes routing OASIS+ to PSHC are pointing at a dead office.
+- **The ASTP experiment ended 2026-03-31.** ONC reverted to its singular name;
+  CTO/CAIO/CDO moved back to HHS OCIO. ONC no longer holds the HHS CAIO function.
+- **New confirmations:** CDC Director Erica Schwartz (2026-08-05), IHS Director
+  Mark Cruz (2026-08-07), NIH CIO Maureen Falvella made permanent (2026-07-26).
+- **FDA is the most unsettled:** Commissioner Makary resigned 2026-05-12,
+  Diamantas Acting, Overton nominated 2026-08-18; CDER and CBER both Acting
+  (CBER on its 4th acting director since Jan 2025); CIO Acting after the April
+  2025 RIF gutted the Office of Digital Transformation.
+- **CMS kept its own contracting shop** — the OMAS consolidation did NOT absorb
+  it — but the OAGM front office has been Acting since Heard retired mid-2025.
+- **Stale official pages are a live hazard.** The cms.gov OAGM page (last
+  modified 2024-01) still lists a departed director; FDA's OAGS division roster
+  predates the April 2025 RIF; two IHS pages disagree on the DAP deputy. Each is
+  annotated in-page rather than silently resolved.
+
+Also wired: `build.js ORG_CHART_AGENCIES` 3 → all 11 slugs, so every agency
+profile now renders its "View org chart" CTA (verified: 11/11 in dist).
+`org-chart-monitor.js` TARGETS 2 → 13 (added the official roster page each new
+chart cites, so a hash change flags a possibly-stale chart).
+
+Hard rules (do not regress):
+- **Every named principal traces to a fetched official page, or it ships with
+  "pending official confirmation" attached.** An org chart is a trust artifact;
+  a plausible-but-unsourced name is the `aspr-npivs` failure mode wearing a
+  person's name. `official: false` research findings are rendered as annotated,
+  never as fact.
+- **A live .gov page is not automatically a CURRENT .gov page.** Check the
+  page's own content/modified date and say so when it is old. Several agencies
+  serve stale acquisition rosters that read as authoritative.
+- **The org-chart page template is head-only.** When cloning the shared
+  head/CSS block from `hhs.html`, cut at `</head>` — slicing by line number
+  drags the HHS hero markup into the new page and yields a duplicated `<body>`.
+  (Hit this exact bug in this sprint; caught by a `<body>`-count assertion.)
+- **New chart ⇒ add its source page to `org-chart-monitor.js` TARGETS and its
+  slug to `ORG_CHART_AGENCIES`.** A chart nobody monitors silently rots, and a
+  chart the profile page does not link is a chart nobody finds.
+
+Verified 2026-08-25: `node -c` clean on both touched functions; build exit 0
+(all 11 charts copied to dist); validate-dist OK (669), validate-routes ✓ (35),
+validate-contract-tracker OK (64), validate-cso-aois OK, scan-pii OK; voice
+sweep clean (0 banned words, 0 em dashes, 0 exclamation points); 0 phone
+numbers; browser-verified premium gate (anon → /dashboard.html, 0 chart nodes),
+0 console errors, and no horizontal overflow at 375px.
+
 ## Sprint 2026-08-25 — Missed Capture Corner send, Buttondown stranger-PATCH, E2E QA, VA org chart
 
 Four work streams in one day. The morning incident: the 2026-08-25 issue merged

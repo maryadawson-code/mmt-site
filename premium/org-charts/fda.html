@@ -5,39 +5,301 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
 <title>FDA Organizational Structure &middot; MMT Premium</title>
+<meta name="description" content="FDA leadership and contracting organization as of August 25, 2026: Acting Commissioner Diamantas, the post-RIF center bench, and the OAGS contracting chain including the IT acquisitions division. Sourced from fda.gov leadership and OAGS pages.">
 <link rel="stylesheet" href="/styles/tokens.css">
 <style>
-body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:#FFFFFF;color:#102033;margin:0;min-height:100vh;line-height:1.5}
-.page-hero{background:#0A192F;color:#fff;padding:32px 24px 40px;border-bottom:3px solid #457B9D}
-.page-hero-inner{max-width:900px;margin:0 auto}
+:root{
+  --mmt-navy:#0A192F;
+  --mmt-teal:#457B9D;
+  --mmt-soft:#F3F4F6;
+  --mmt-white:#FFFFFF;
+  --mmt-border:#D8E0E8;
+  --mmt-text:#102033;
+  --mmt-text-secondary:#5C6B7A;
+  --mmt-text-faint:#8898aa;
+  --mmt-red:#E63946;
+  --status-acting:#457B9D;
+  --status-acting-bg:rgba(69,123,157,0.08);
+  --status-acting-border:rgba(69,123,157,0.35);
+  --status-vacant:#5C6B7A;
+  --status-vacant-bg:rgba(92,107,122,0.08);
+  --status-vacant-border:rgba(92,107,122,0.30);
+  --status-new:#457B9D;
+  --status-new-bg:rgba(69,123,157,0.10);
+  --status-new-border:rgba(69,123,157,0.40);
+  --bg:var(--mmt-white);
+  --surface:var(--mmt-white);
+  --surface-2:var(--mmt-soft);
+  --surface-offset:#E8EDF3;
+  --border:var(--mmt-border);
+  --text:var(--mmt-text);
+  --text-muted:var(--mmt-text-secondary);
+  --text-faint:var(--mmt-text-faint);
+  --primary:var(--mmt-navy);
+  --primary-hover:#06122A;
+  --primary-light:rgba(10,25,47,0.06);
+  --accent:var(--mmt-teal);
+  --accent-light:rgba(69,123,157,0.10);
+  --shadow-sm:0 1px 3px rgba(10,25,47,0.06);
+  --shadow-md:0 4px 16px rgba(10,25,47,0.08);
+  --radius:8px;--radius-lg:12px;
+  --font-body:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;font-size:16px}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+.page-hero{background:var(--primary);color:#fff;padding:32px 24px 40px;border-bottom:3px solid var(--accent)}
+.page-hero-inner{max-width:1400px;margin:0 auto}
 .hero-eyebrow{font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;opacity:0.7;margin-bottom:8px}
-.hero-title{font-weight:700;font-size:clamp(1.4rem,3vw,2rem);line-height:1.2;margin:0;letter-spacing:-0.01em}
-.wrap{max-width:900px;margin:0 auto;padding:40px 24px}
-.card{background:#F3F4F6;border:1px solid #D8E0E8;border-radius:12px;padding:28px 32px}
-.card h2{font-size:1.05rem;margin:0 0 10px;color:#0A192F}
-.card p{font-size:0.9rem;color:#5C6B7A;margin:0 0 16px;max-width:64ch}
-.links a{display:inline-block;margin-right:14px;font-size:0.85rem;color:#457B9D;font-weight:600;text-decoration:none}
-.links a:hover{text-decoration:underline}
-.note{font-size:0.72rem;color:#8898b0;margin-top:24px}
+.hero-title{font-weight:700;font-size:clamp(1.5rem,3vw,2.25rem);line-height:1.2;margin-bottom:12px;letter-spacing:-0.01em}
+.hero-meta{display:flex;flex-wrap:wrap;gap:16px;font-size:0.8rem;opacity:0.85}
+.hero-meta span{display:flex;align-items:center;gap:6px}
+.hero-meta span::before{content:'\00B7';opacity:0.5}
+.hero-meta span:first-child::before{display:none}
+.org-container{max-width:1400px;margin:0 auto;padding:32px 24px 64px}
+.section-label{background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--text-muted);margin-bottom:16px;display:inline-block}
+.status-bar{background:var(--accent-light);border:1px solid var(--accent);border-radius:8px;padding:14px 18px;margin-bottom:24px;font-size:0.85rem;color:var(--text);display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;line-height:1.55}
+.status-bar strong{color:var(--primary)}
+.tier{margin-bottom:36px}
+.tier-row{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+.connector-v{width:2px;height:24px;background:var(--border);margin:0 auto}
+.connector-v.thick{background:var(--primary);opacity:0.4;height:32px}
+.node-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 18px;min-width:200px;max-width:280px;display:inline-flex;flex-direction:column;gap:4px;box-shadow:var(--shadow-sm)}
+.node-card.primary-card{border-top:3px solid var(--accent)}
+.node-card.new-card{border-color:var(--status-new-border);background:var(--status-new-bg)}
+.node-card.acting{border-color:var(--status-acting-border);background:var(--status-acting-bg)}
+.node-card.vacant{border-color:var(--status-vacant-border);background:var(--status-vacant-bg);opacity:0.85}
+.node-tier{font-size:0.64rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;margin-bottom:2px;color:var(--text-muted)}
+.node-tier.accent{color:var(--accent)}
+.node-tier.primary-tier{color:var(--primary)}
+.node-name{font-weight:600;font-size:0.9rem;line-height:1.3;color:var(--text)}
+.node-role{font-size:0.78rem;color:var(--text-muted);line-height:1.4}
+.node-meta{font-size:0.72rem;color:var(--text-faint);line-height:1.4;margin-top:2px}
+.node-badge{display:inline-flex;align-items:center;gap:3px;font-size:0.62rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-top:4px;padding:2px 6px;border-radius:20px;background:rgba(69,123,157,0.15);color:var(--accent);align-self:flex-start}
+.node-badge.vacant-badge{background:rgba(92,107,122,0.15);color:var(--text-muted)}
+.node-badge.new-badge{background:rgba(69,123,157,0.18);color:var(--accent)}
+.children-group{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;position:relative;padding-top:24px}
+.children-group::before{content:'';position:absolute;top:0;left:10%;right:10%;height:2px;background:var(--border)}
+.child-col{display:flex;flex-direction:column;align-items:center;position:relative}
+.child-col::before{content:'';position:absolute;top:-24px;left:50%;width:2px;height:24px;background:var(--border);transform:translateX(-50%)}
+.hca-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:16px}
+.hca-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;display:flex;flex-direction:column;gap:4px;transition:border-color 0.15s,transform 0.15s}
+.hca-card:hover{border-color:var(--primary);box-shadow:var(--shadow-sm)}
+.hca-card.is-new{border-color:var(--status-new-border);background:var(--status-new-bg)}
+.hca-card.is-acting{border-left:3px solid var(--status-acting)}
+.hca-opdiv{font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;font-weight:700;color:var(--accent)}
+.hca-name{font-weight:600;font-size:0.95rem;color:var(--text);line-height:1.3}
+.hca-meta{font-size:0.78rem;color:var(--text-muted);line-height:1.45}
+.hca-email{font-size:0.78rem;color:var(--accent);text-decoration:none;word-break:break-all}
+.hca-email:hover{text-decoration:underline}
+.source-footer{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 22px;margin-top:32px;font-size:0.78rem;color:var(--text-muted);line-height:1.6}
+.source-footer strong{color:var(--text);font-weight:600}
+.source-footer a{color:var(--accent);text-decoration:none}
+.source-footer a:hover{text-decoration:underline}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:0.85rem;color:var(--accent);text-decoration:none;margin-bottom:20px;font-weight:500}
+.back-link:hover{text-decoration:underline}
+.callout{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:var(--radius);padding:16px 20px;margin:24px 0;font-size:0.9rem;color:var(--text);line-height:1.55}
+@media(max-width:768px){.org-container{padding:20px 14px 48px}.tier-row{gap:10px}.node-card{min-width:160px;padding:12px 14px}}
 </style>
+<script>
+(function(){
+  var isPremium=localStorage.getItem('mmt_premium')==='true';
+  var ts=localStorage.getItem('mmt_premium_ts');
+  var withinWindow=ts&&(Date.now()-parseInt(ts))<30*24*60*60*1000;
+  if(!isPremium||!withinWindow){window.location.href='/dashboard.html';}
+})();
+</script>
 </head>
 <body>
+
 <div class="page-hero">
   <div class="page-hero-inner">
-    <div class="hero-eyebrow">Organizational Intelligence</div>
-    <h1 class="hero-title">Food and Drug Administration<br>Organizational Structure</h1>
-  </div>
-</div>
-<div class="wrap">
-  <div class="card">
-    <h2>Org chart coming soon</h2>
-    <p>The FDA leadership org chart is in source inventory. I only publish an org chart once every named principal traces to an official, current source, so this one goes up when the sourcing pass is done rather than half-verified.</p>
-    <div class="links">
-      <a href="/agencies/fda">FDA agency profile &rarr;</a>
-      <a href="/premium/dashboard.html">Premium dashboard &rarr;</a>
+    <div class="hero-eyebrow">Organizational Intelligence &middot; MMT Premium</div>
+    <h1 class="hero-title">Food and Drug Administration<br>Leadership and Contracting Organization</h1>
+    <div class="hero-meta">
+      <span>Current as of August 25, 2026</span>
+      <span>&#8226; Acting Commissioner: Kyle Diamantas (since May 12, 2026)</span>
+      <span>&#8226; Sources: fda.gov leadership profiles (July 31, 2026) &middot; OAGS page</span>
     </div>
   </div>
-  <p class="note">Live now: <a href="/premium/org-charts/dha" style="color:#457B9D">DHA</a> &middot; <a href="/premium/org-charts/va" style="color:#457B9D">VA</a> &middot; <a href="/premium/org-charts/hhs" style="color:#457B9D">HHS</a> org charts.</p>
 </div>
+
+<div class="org-container">
+  <a href="/agencies/fda" class="back-link">&larr; FDA profile</a>
+
+  <div class="status-bar">
+    <span style="font-size:1rem">&#8505;</span>
+    <div><strong>The most unsettled chart in this set.</strong> Commissioner Marty Makary resigned May 12, 2026; Kyle Diamantas is Acting, and the White House announced August 18 its intent to nominate Heidi Overton, MD (pending Senate confirmation, not yet on fda.gov). CDER and CBER are both on Acting directors, and CBER is on its 4th acting director and 6th leader since January 2025. The April 2025 RIF cut roughly 3,500 FTEs and eliminated nearly the whole Office of Digital Transformation executive team; the CIO seat is Acting. The stable island is the contracting shop: Leonard Grant has been the permanent HCA throughout.</div>
+  </div>
+
+  <!-- TIER 1: Commissioner -->
+  <div class="tier">
+    <div style="text-align:center"><div class="section-label">Office of the Commissioner</div></div>
+    <div class="tier-row">
+      <div class="node-card primary-card acting">
+        <div class="node-tier accent">Acting Commissioner</div>
+        <div class="node-name">Kyle A. Diamantas, JD</div>
+        <div class="node-role">Acting Commissioner of Food and Drugs</div>
+        <div class="node-meta">Since May 12, 2026 &middot; nominee announced Aug 18: Heidi Overton, MD (pending confirmation, trade press)</div>
+        <span class="node-badge">Acting</span>
+      </div>
+      <div class="node-card vacant">
+        <div class="node-tier">Principal Deputy</div>
+        <div class="node-name">VACANT</div>
+        <div class="node-role">Principal Deputy Commissioner</div>
+        <span class="node-badge vacant-badge">Open Role</span>
+      </div>
+      <div class="node-card acting">
+        <div class="node-tier">Chief of Staff</div>
+        <div class="node-name">Lowell M. Zeta, JD</div>
+        <div class="node-role">Acting Chief of Staff &middot; Deputy Commissioner for Strategic Initiatives</div>
+        <span class="node-badge">Acting</span>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Operations</div>
+        <div class="node-name">Melanie Keller, MBA</div>
+        <div class="node-role">Deputy Commissioner for Operations &middot; COO</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Policy &amp; Legislation</div>
+        <div class="node-name">Grace Graham, MPP</div>
+        <div class="node-role">Deputy Commissioner for Policy, Legislation, and International Affairs</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Science</div>
+        <div class="node-name">Steven Kozlowski, MD</div>
+        <div class="node-role">Chief Scientist</div>
+      </div>
+    </div>
+    <div class="connector-v thick"></div>
+  </div>
+
+  <!-- TIER 2: Centers -->
+  <div class="tier">
+    <div style="text-align:center"><div class="section-label">The Centers</div></div>
+    <div class="tier-row">
+      <div class="node-card acting">
+        <div class="node-tier">Drugs</div>
+        <div class="node-name">Michael Davis, MD, PhD</div>
+        <div class="node-role">Acting Director, CDER</div>
+        <span class="node-badge">Acting</span>
+      </div>
+      <div class="node-card acting">
+        <div class="node-tier">Biologics</div>
+        <div class="node-name">Karim Mikhail, BPharm, MSc</div>
+        <div class="node-role">Acting Director, CBER</div>
+        <div class="node-meta">4th acting director, 6th leader since Jan 2025</div>
+        <span class="node-badge">Acting</span>
+      </div>
+      <div class="node-card primary-card">
+        <div class="node-tier accent">Devices &middot; Digital Health</div>
+        <div class="node-name">Michelle E. Tarver, MD, PhD</div>
+        <div class="node-role">Director, CDRH</div>
+        <div class="node-meta">Digital Health Center of Excellence director: Rick Abramson, MD (Feb 2026, trade press; pending official confirmation)</div>
+      </div>
+      <div class="node-card acting">
+        <div class="node-tier">Food (Replaced CFSAN)</div>
+        <div class="node-name">Donald A. Prater, DVM</div>
+        <div class="node-role">Acting Deputy Commissioner for Food, Human Foods Program</div>
+        <div class="node-meta">CFSAN no longer exists; the unified HFP replaced it</div>
+        <span class="node-badge">Acting</span>
+      </div>
+      <div class="node-card acting">
+        <div class="node-tier">Tobacco</div>
+        <div class="node-name">Bret Koplow, PhD, JD</div>
+        <div class="node-role">Acting Director, CTP</div>
+        <span class="node-badge">Acting</span>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Veterinary</div>
+        <div class="node-name">Timothy C. Schell, PhD</div>
+        <div class="node-role">Director, CVM</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Oncology</div>
+        <div class="node-name">Angelo de Claro, MD</div>
+        <div class="node-role">Director, Oncology Center of Excellence</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Inspections</div>
+        <div class="node-name">Elizabeth Miller, PharmD</div>
+        <div class="node-role">Associate Commissioner for Inspections and Investigations</div>
+      </div>
+    </div>
+    <div class="connector-v thick"></div>
+  </div>
+
+  <!-- TIER 3: IT -->
+  <div class="tier">
+    <div style="text-align:center"><div class="section-label">Information Technology After the RIF</div></div>
+    <div class="tier-row">
+      <div class="node-card acting">
+        <div class="node-tier">CIO</div>
+        <div class="node-name">Sanjay Kumar Sahoo</div>
+        <div class="node-role">Acting Chief Information Officer</div>
+        <div class="node-meta">The Office of Digital Transformation lost its CIO and nearly all executive leadership in the April 2025 RIF; ODT no longer appears on the May 2026 overview org chart and its formal status is unclear</div>
+        <span class="node-badge">Acting</span>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Finance</div>
+        <div class="node-name">Benjamin D. Moncarz</div>
+        <div class="node-role">Chief Financial Officer</div>
+      </div>
+      <div class="node-card vacant">
+        <div class="node-tier">Medicine</div>
+        <div class="node-name">VACANT</div>
+        <div class="node-role">Chief Medical Officer</div>
+        <span class="node-badge vacant-badge">Open Role</span>
+      </div>
+    </div>
+    <div class="connector-v thick"></div>
+  </div>
+
+  <!-- TIER 4: Contracting chain -->
+  <div class="tier">
+    <div style="text-align:center"><div class="section-label">The Contracting Chain (OAGS, under Operations)</div></div>
+    <div class="tier-row">
+      <div class="node-card primary-card">
+        <div class="node-tier accent">HCA &middot; Permanent</div>
+        <div class="node-name">Leonard Grant</div>
+        <div class="node-role">Head of Contracting Activity &middot; Director, Office of Acquisitions and Grants Services</div>
+        <div class="node-meta">Verified on FDA's live OAGS page Aug 25, 2026; consistent with the April 2026 HHS HCA roster &middot; Associate Director: Ron Loube</div>
+      </div>
+      <div class="node-card primary-card acting">
+        <div class="node-tier accent">IT Acquisitions</div>
+        <div class="node-name">Natalie Mitchell</div>
+        <div class="node-role">Acting Director, Division of Information Technology Acquisitions (DITA)</div>
+        <div class="node-meta">All FDA IT buys flow through this division</div>
+        <span class="node-badge">Acting</span>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Acquisition Operations</div>
+        <div class="node-name">Vidya Vish</div>
+        <div class="node-role">Director, Division of Acquisition Operations (professional services, training, BAA)</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Policy &amp; Systems</div>
+        <div class="node-name">Bryan Jones</div>
+        <div class="node-role">Director, Division of Policy, Systems and Program Support</div>
+      </div>
+      <div class="node-card">
+        <div class="node-tier">Grants</div>
+        <div class="node-name">Kimberly Pendleton</div>
+        <div class="node-role">Director, Division of Grants, Agreements, and Acquisition Support</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Caveat on the OAGS division roster:</strong> the OAGS page is live but its content date is January 7, 2025, which predates the April 2025 RIF. Grant and Loube are corroborated by the HHS roster; the division directors below them may have changed without the page updating. We flag rather than guess.
+  </div>
+
+  <div class="source-footer">
+    <strong>Sources.</strong> FDA leadership profiles (verified 2026-08-25, content current 2026-07-31, <a href="https://www.fda.gov/about-fda/fda-organization/fda-leadership-profiles" rel="noopener">fda.gov</a>). FDA overview org chart, text version (<a href="https://www.fda.gov/about-fda/fda-organization-charts/fda-overview-organization-chart-text-version" rel="noopener">fda.gov</a>, current 2026-05-20). Acting Commissioner page (<a href="https://www.fda.gov/about-fda/fda-commissioner" rel="noopener">fda.gov</a>, current 2026-05-15). OAGS and additional resources (<a href="https://www.fda.gov/about-fda/doing-business-fda/about-oags-and-additional-resources" rel="noopener">fda.gov</a>). HHS restructuring fact sheet (<a href="https://www.hhs.gov/press-room/hhs-restructuring-doge-fact-sheet.html" rel="noopener">hhs.gov</a>). Makary resignation, Overton nomination, CBER succession, DHCoE appointment, and RIF detail: STAT, CNBC, AABB, FedScoop reporting, annotated in-line where pending official confirmation. Data current as of August 25, 2026.<br><br>
+    <strong>What changed since this was published?</strong> Vacancies fill. Acting designations turn Permanent. We re-verify quarterly. If you spot a stale entry, email <a href="mailto:mary@missionmeetstech.com">mary@missionmeetstech.com</a> &middot; we will update and re-cite.
+  </div>
+
+</div>
+
 </body>
 </html>
