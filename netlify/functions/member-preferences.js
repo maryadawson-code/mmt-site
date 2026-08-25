@@ -18,6 +18,8 @@
 
 const { createClient } = require('@supabase/supabase-js');
 const { verifySubscriberToken } = require('./lib/subscriber-token');
+// Shared Buttondown lookup — the ONLY correct shape (see syncButtondownTags).
+const { buttondownGet } = require('./lib/email-migration');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -36,22 +38,48 @@ function json(statusCode, obj) {
   return { statusCode, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' }, body: JSON.stringify(obj) };
 }
 
+const AGENCY_TAG_PREFIX = 'agency:';
+
+/**
+ * Mirror a member's agency preferences onto their Buttondown subscriber record.
+ *
+ * TWO bugs lived here until 2026-08-25, and they hid each other:
+ *
+ * 1. LOOKUP. This used the documented `?email=` LIST filter. That filter is
+ *    BROKEN upstream — Buttondown ignores it and returns the whole list, so
+ *    `results[0]` was an arbitrary unrelated subscriber. Every member who saved
+ *    preferences PATCHed that stranger's record and never got their own tags.
+ *    Use the detail route via buttondownGet(), which 404s cleanly. Do not
+ *    reintroduce a third lookup shape.
+ *
+ * 2. CLOBBER. The PATCH replaced the whole `tags` array with just the
+ *    `agency:*` set, so any tag written by another path — `fy2027-forecast`
+ *    from the lead-magnet form, and anything else added by hand — was dropped.
+ *    That was invisible while bug 1 aimed the write at the wrong person; fixing
+ *    the lookup alone would have pointed a working clobber at the RIGHT member.
+ *    So this now replaces only the `agency:` namespace and preserves the rest.
+ *
+ * Non-fatal by contract: preferences are already committed to Supabase before
+ * this runs, and a newsletter tag is not worth failing the member's save over.
+ */
 async function syncButtondownTags(email, agencies) {
   if (!BUTTONDOWN_API_KEY || !email) return;
 
   try {
-    // Get subscriber ID first
-    const searchRes = await fetch(`https://api.buttondown.email/v1/subscribers?email=${encodeURIComponent(email)}`, {
-      headers: { Authorization: `Token ${BUTTONDOWN_API_KEY}` },
-    });
-    const searchData = await searchRes.json();
-    const subscriber = searchData.results?.[0];
-    if (!subscriber) return;
+    const subscriber = await buttondownGet(BUTTONDOWN_API_KEY, email);
+    if (!subscriber) return; // not on the newsletter list — nothing to tag
 
-    // Build tags: agency preferences + role
-    const tags = agencies.map(a => `agency:${a}`);
+    // Keep every tag this function does not own; replace only `agency:*`.
+    const existing = Array.isArray(subscriber.tags) ? subscriber.tags : [];
+    const preserved = existing.filter(
+      (t) => typeof t === 'string' && !t.startsWith(AGENCY_TAG_PREFIX)
+    );
+    const agencyTags = (agencies || [])
+      .filter((a) => typeof a === 'string' && a.trim())
+      .map((a) => `${AGENCY_TAG_PREFIX}${a.trim()}`);
+    const tags = [...new Set([...preserved, ...agencyTags])];
 
-    await fetch(`https://api.buttondown.email/v1/subscribers/${subscriber.id}`, {
+    const res = await fetch(`https://api.buttondown.email/v1/subscribers/${subscriber.id}`, {
       method: 'PATCH',
       headers: {
         Authorization: `Token ${BUTTONDOWN_API_KEY}`,
@@ -59,11 +87,23 @@ async function syncButtondownTags(email, agencies) {
       },
       body: JSON.stringify({ tags }),
     });
+    if (!res.ok) {
+      // Buttondown returns its errors, it does not throw. Without this check a
+      // rejected PATCH looked identical to a successful one.
+      console.warn(
+        `Buttondown tag sync: PATCH ${subscriber.id} returned HTTP ${res.status}`,
+        (await res.text().catch(() => '')).slice(0, 200)
+      );
+    }
   } catch (err) {
     console.warn('Buttondown tag sync failed:', err.message);
     // Non-fatal — preferences still saved to Supabase
   }
 }
+
+// Exported for tests: the lookup shape and the tag-preservation rule are the
+// two things that broke here, and both need to be assertable.
+exports.syncButtondownTags = syncButtondownTags;
 
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') {

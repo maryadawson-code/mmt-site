@@ -18,8 +18,25 @@
 //
 // Schedule (netlify.toml): "0 13 * * *" (13:00 UTC / ~9 AM ET) — after the
 // 00:00 UTC date-gate opens and the 4-hourly rebuild-trigger publishes.
-// Guards: date-scoped (only today's issue), idempotent (ops_events
-// capture_corner_sent by details.date), kill switch CAPTURE_CORNER_AUTOSEND_DISABLED.
+// Guards: idempotent (ops_events capture_corner_sent by details.date), kill
+// switch CAPTURE_CORNER_AUTOSEND_DISABLED.
+//
+// CATCH-UP WINDOW (2026-08-25). This used to look at TODAY only. It fires once
+// a day, so an issue that went live even a minute after 13:00 UTC was fetched
+// as a 404, returned `no_capture_corner_today`, and — because a 404 writes no
+// marker — was skipped PERMANENTLY: the next run 24h later asks for the NEXT
+// day's issue, which does not exist. That is what stranded the 2026-08-25
+// issue (merged 13:47 UTC, 47 minutes after the cron gave up). A single missed
+// deploy window silently cost a paid send with no error anywhere.
+//
+// So the run now walks today first, then back LOOKBACK_DAYS, and takes the
+// NEWEST date that is live on the site AND carries no marker. A late publish
+// self-heals on the next daily run instead of needing an operator.
+//
+// Two things keep the lookback from mailing history: the per-date marker (an
+// issue already sent is skipped), and RESCUE_FLOOR — issues before that date
+// were handled by bespoke one-shot senders and may carry no marker at all, so
+// they are never candidates no matter how wide the window gets.
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
@@ -31,8 +48,61 @@ const ADMIN_EMAIL = "mary@missionmeetstech.com";
 const EVENT = "capture_corner_sent";
 const TZ = "America/New_York";
 
+// How many days back a missed issue can still be rescued. 3 covers a weekend
+// of failed deploys without ever reaching the previous week's issue.
+const LOOKBACK_DAYS = 3;
+// Never consider an issue older than this. Everything before it predates the
+// catch-up path and was sent by hand, sometimes with no marker to prove it.
+const RESCUE_FLOOR = "2026-08-25";
+
 function todayET() {
   return new Intl.DateTimeFormat("en-CA", { timeZone: TZ }).format(new Date());
+}
+
+// `days` before `base` (default: today's ET calendar date). Anchored at noon
+// UTC so a DST shift can never move the result onto the wrong calendar day.
+function etDateMinus(days, base = todayET()) {
+  const d = new Date(base + "T12:00:00Z");
+  d.setUTCDate(d.getUTCDate() - days);
+  return d.toISOString().slice(0, 10);
+}
+
+/**
+ * Pick the issue to send: the newest date in the catch-up window that is live
+ * on the site and has no `capture_corner_sent` marker.
+ *
+ * Exported so the operator re-send script runs the SAME selection as the cron.
+ * A second copy of this logic would drift, and the two paths disagreeing about
+ * which issue is outstanding is exactly how a send goes to the wrong day.
+ *
+ * `today` and `floor` are injectable so tests can pin the window to fixed
+ * dates. Without that the suite silently changes meaning as the calendar
+ * moves — the rescue case stops being exercised the moment today drifts past
+ * the floor, and a green run stops proving anything.
+ *
+ * @returns {{date, url, html, rescued}|null} null when nothing is outstanding.
+ */
+async function selectIssue(supabase, examined = [], opts = {}) {
+  const today = opts.today || todayET();
+  const floor = opts.floor || RESCUE_FLOOR;
+  for (let i = 0; i <= LOOKBACK_DAYS; i++) {
+    const cand = etDateMinus(i, today);
+    if (cand < floor) break; // YYYY-MM-DD compares correctly as a string
+
+    const { data: already } = await supabase
+      .from("ops_events").select("id")
+      .eq("event_type", EVENT).filter("details->>date", "eq", cand).limit(1).maybeSingle();
+    if (already) { examined.push({ date: cand, skip: "already_sent" }); continue; }
+
+    const url = `${SITE_URL}/premium/briefs/capture-corner-${cand}.html`;
+    let res;
+    try { res = await fetch(url); }
+    catch (e) { examined.push({ date: cand, skip: "fetch_error", error: e.message }); continue; }
+    if (!res.ok) { examined.push({ date: cand, skip: "not_published", status: res.status }); continue; }
+
+    return { date: cand, url, html: await res.text(), rescued: cand !== today };
+  }
+  return null;
 }
 
 // The Capture Corner's premium body is client-gated (CSS/JS), so it is present
@@ -86,29 +156,27 @@ function previewFromBody(bodyHtml, fullUrl) {
 }
 
 exports.handler = async () => {
-  const date = todayET();
+  const today = todayET();
   const checkedAt = new Date().toISOString();
 
   if (String(process.env.CAPTURE_CORNER_AUTOSEND_DISABLED || "").toLowerCase() === "true") {
-    return { statusCode: 200, body: JSON.stringify({ skipped: "kill_switch", date }) };
+    return { statusCode: 200, body: JSON.stringify({ skipped: "kill_switch", date: today }) };
   }
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
     return { statusCode: 500, body: JSON.stringify({ error: "supabase_not_configured" }) };
   }
   const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
-  // Already sent today's issue? (recognizes both this fn and any manual send)
-  const { data: already } = await supabase
-    .from("ops_events").select("id")
-    .eq("event_type", EVENT).filter("details->>date", "eq", date).limit(1).maybeSingle();
-  if (already) return { statusCode: 200, body: JSON.stringify({ skipped: "already_sent", date }) };
+  // Newest live+unsent issue in the catch-up window (today, then back
+  // LOOKBACK_DAYS). `examined` records why each date was passed over, so a
+  // no-op run says which dates it looked at rather than just "nothing today".
+  const examined = [];
+  const picked = await selectIssue(supabase, examined);
+  if (!picked) {
+    return { statusCode: 200, body: JSON.stringify({ noop: "no_unsent_capture_corner", today, examined }) };
+  }
+  const { date, url, html, rescued } = picked;
 
-  // Is there a Capture Corner published for today?
-  const url = `${SITE_URL}/premium/briefs/capture-corner-${date}.html`;
-  let res;
-  try { res = await fetch(url); } catch (e) { return { statusCode: 200, body: JSON.stringify({ skipped: "fetch_error", date, error: e.message }) }; }
-  if (!res.ok) return { statusCode: 200, body: JSON.stringify({ noop: "no_capture_corner_today", date, status: res.status }) };
-  const html = await res.text();
   const { title, subtitle, body } = extractBody(html);
   if (!body || body.length < 500) {
     return { statusCode: 200, body: JSON.stringify({ skipped: "body_too_short", date, len: (body || "").length }) };
@@ -140,7 +208,7 @@ exports.handler = async () => {
   // exists for today, only the earliest-created one proceeds.
   const { data: claim, error: claimErr } = await supabase.from("ops_events").insert({
     event_type: EVENT, source_function: "capture-corner-autosend",
-    details: { date, title, status: "sending", eligible: recipients.length, checked_at: checkedAt },
+    details: { date, title, status: "sending", eligible: recipients.length, checked_at: checkedAt, rescued },
   }).select("id").single();
   if (claimErr || !claim) return { statusCode: 200, body: JSON.stringify({ skipped: "claim_failed", date, error: claimErr && claimErr.message }) };
   const { data: claims } = await supabase.from("ops_events").select("id, created_at")
@@ -165,13 +233,22 @@ exports.handler = async () => {
 
   // Finalize the claimed marker with the actual counts.
   await supabase.from("ops_events").update({
-    details: { date, title, status: "sent", sent, failed, eligible: recipients.length, checked_at: checkedAt },
+    details: { date, title, status: "sent", sent, failed, eligible: recipients.length, checked_at: checkedAt, rescued },
   }).eq("id", claim.id);
   try {
-    await sendEmail({ to: ADMIN_EMAIL, subject: `[Premium] Capture Corner sent — ${sent}/${recipients.length} (${date})`,
-      html: `<p>Capture Corner "${title}" emailed to premium subscribers.</p><p>Sent ${sent}, failed ${failed}, eligible ${recipients.length}.</p>`,
+    await sendEmail({ to: ADMIN_EMAIL, subject: `[Premium] Capture Corner sent${rescued ? " (late catch-up)" : ""} — ${sent}/${recipients.length} (${date})`,
+      html: `<p>Capture Corner "${title}" emailed to premium subscribers.</p><p>Sent ${sent}, failed ${failed}, eligible ${recipients.length}.</p>` +
+        (rescued ? `<p><strong>This was a catch-up send.</strong> The ${date} issue was not live when that day's run fired, so it went out today instead. Worth checking why the deploy landed late.</p>` : ""),
       from: "Mission Meets Tech <noreply@missionmeetstech.com>" });
   } catch { /* best-effort */ }
 
-  return { statusCode: 200, body: JSON.stringify({ date, title, sent, failed, eligible: recipients.length }) };
+  return { statusCode: 200, body: JSON.stringify({ date, title, sent, failed, eligible: recipients.length, rescued }) };
 };
+
+// Exported for the operator re-send script + tests. The script MUST use this
+// rather than its own copy, so both paths agree on which issue is outstanding.
+exports.selectIssue = selectIssue;
+exports.LOOKBACK_DAYS = LOOKBACK_DAYS;
+exports.RESCUE_FLOOR = RESCUE_FLOOR;
+exports.etDateMinus = etDateMinus;
+exports.todayET = todayET;

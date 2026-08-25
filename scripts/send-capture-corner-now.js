@@ -3,14 +3,20 @@
 // send-capture-corner-now.js — operator re-send for a MISSED Capture Corner.
 //
 // Why this exists (2026-08-25 incident):
-// `capture-corner-autosend` fires ONCE a day at 13:00 UTC and only ever looks
-// for TODAY's issue. If the issue is not live on the site at that instant — a
-// late merge, a slow deploy, a red build — the run fetches a 404, returns
-// `no_capture_corner_today`, and deliberately writes NO idempotency marker.
-// The next run is 24h later, by which point todayET() has advanced and that
-// issue is skipped PERMANENTLY. On 2026-08-25 the issue merged at ~13:47 UTC,
-// 47 minutes after the cron had already given up, and there was no way to
-// re-fire it. This is that missing path.
+// `capture-corner-autosend` fired ONCE a day at 13:00 UTC and only ever looked
+// for TODAY's issue. If the issue was not live at that instant — a late merge,
+// a slow deploy, a red build — the run fetched a 404, returned
+// `no_capture_corner_today`, wrote NO marker, and the next run 24h later asked
+// for the NEXT day's issue. The missed one was skipped permanently. That is
+// what stranded the 2026-08-25 issue: merged 13:47 UTC, 47 minutes late.
+//
+// The cron now carries a catch-up window and heals that case by itself on the
+// next daily run, so this script is no longer the only way out. Keep it for
+// when you do not want to wait for that run — the same-day rescue.
+//
+// It calls the handler's own selectIssue(), so "which issue is outstanding" is
+// decided in ONE place. A private copy of that rule here could disagree with
+// the cron and mail the wrong day.
 //
 // It invokes the REAL handler, so the preview cut, recipient query, idempotency
 // claim, 220ms throttle and admin summary cannot drift from the scheduled path.
@@ -24,32 +30,14 @@
 // NOTE the `--`, or the Netlify CLI eats the flags.
 //
 // --date=YYYY-MM-DD is accepted ONLY to confirm you mean the issue the handler
-// will actually pick (it always uses today in America/New_York). A mismatch
-// aborts rather than silently mailing the wrong issue.
+// will actually pick. A mismatch aborts rather than silently mailing the wrong
+// issue.
 // ============================================================
 
 const DRY = process.argv.includes("--dry-run");
 const dateArg = (process.argv.find((a) => a.startsWith("--date=")) || "").split("=")[1];
 
-const SITE_URL = "https://missionmeetstech.com";
-const EVENT = "capture_corner_sent";
-
-function todayET() {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(new Date());
-}
-
 async function main() {
-  const date = todayET();
-
-  if (dateArg && dateArg !== date) {
-    console.error(`ABORT: --date=${dateArg} but the handler will send today's issue (${date}).`);
-    console.error("The scheduled path is hardcoded to today in America/New_York. It cannot send a back-dated issue.");
-    process.exitCode = 1;
-    return;
-  }
-
-  console.log(`Capture Corner re-send · target date ${date} (America/New_York)`);
-
   if (String(process.env.CAPTURE_CORNER_AUTOSEND_DISABLED || "").toLowerCase() === "true") {
     console.error("ABORT: CAPTURE_CORNER_AUTOSEND_DISABLED=true. Unset the kill switch first.");
     process.exitCode = 1;
@@ -61,38 +49,36 @@ async function main() {
     return;
   }
 
-  // ---- Preflight (read-only; the same three things the handler gates on) ----
+  // ---- Preflight (read-only), using the handler's OWN selection ----
   const { createClient } = require("@supabase/supabase-js");
   const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+  const { selectIssue, todayET } = require("../netlify/functions/capture-corner-autosend.js");
 
-  const { data: already } = await supabase
-    .from("ops_events").select("id, details")
-    .eq("event_type", EVENT).filter("details->>date", "eq", date).limit(1).maybeSingle();
-  if (already) {
-    console.log(`ALREADY SENT: an ops_event marker exists for ${date}. Nothing to do.`);
-    console.log(`  ${JSON.stringify(already.details)}`);
+  const examined = [];
+  const picked = await selectIssue(supabase, examined);
+  if (!picked) {
+    console.log(`Nothing outstanding as of ${todayET()} (America/New_York). Nothing to do.`);
+    for (const e of examined) {
+      console.log(`  ${e.date}: ${e.skip}${e.status ? ` (HTTP ${e.status})` : ""}${e.error ? ` (${e.error})` : ""}`);
+    }
     return;
   }
+  const { date, url, html, rescued } = picked;
+
+  if (dateArg && dateArg !== date) {
+    console.error(`ABORT: --date=${dateArg} but the outstanding issue is ${date}.`);
+    console.error("Re-run with the correct date, or without --date to accept the handler's pick.");
+    process.exitCode = 1;
+    return;
+  }
+
+  console.log(`Capture Corner re-send · target date ${date} (America/New_York)`);
+  if (rescued) console.log(`  NOTE               : this is a CATCH-UP for ${date}, not today's issue.`);
   console.log("  idempotency marker : none (this issue has not been emailed)");
-
-  const url = `${SITE_URL}/premium/briefs/capture-corner-${date}.html`;
-  let res;
-  try { res = await fetch(url); }
-  catch (e) {
-    console.error(`ABORT: cannot reach ${url} — ${e.message}`);
-    process.exitCode = 1;
-    return;
-  }
-  if (!res.ok) {
-    console.error(`ABORT: ${url} returned HTTP ${res.status}. The issue is not live yet.`);
-    console.error("Wait for the Netlify deploy to finish, then re-run. Sending is pointless until the page is up.");
-    process.exitCode = 1;
-    return;
-  }
-  const html = await res.text();
   const mark = 'class="brief-body">';
   const bodyLen = html.indexOf(mark) === -1 ? 0 : html.length - html.indexOf(mark);
-  console.log(`  live page          : HTTP ${res.status} (${(html.length / 1024) | 0}KB, brief-body present: ${bodyLen > 0})`);
+  console.log(`  live page          : ${url}`);
+  console.log(`  page body          : ${(html.length / 1024) | 0}KB, brief-body present: ${bodyLen > 0}`);
 
   const { data: subs } = await supabase
     .from("mp_users").select("email")
