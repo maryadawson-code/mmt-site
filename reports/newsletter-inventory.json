@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-05-28T20:56:25.241Z",
+  "generated_at": "2026-08-25T18:00:35.178Z",
   "source_dir": "content/newsletter",
-  "source_count": 112,
+  "source_count": 132,
   "newest_in_source": {
-    "file": "2026-05-26-a-researcher-talked-a-clinical-ai-out-of-its-own-rules.md",
-    "title": "A Researcher Talked a Clinical AI Out of Its Own Rules. DHA Is Fielding the Same Design.",
-    "date": "2026-05-26T00:00:00.000Z",
-    "slug": "a-researcher-talked-a-clinical-ai-out-of-its-own-rules",
+    "file": "2026-08-25-filed-under-document-drafting.md",
+    "title": "Filed Under Document Drafting",
+    "date": "2026-08-25T00:00:00.000Z",
+    "slug": "filed-under-document-drafting",
     "future_dated": false
   },
   "newest_in_dist_latest": {
-    "slug": "a-researcher-talked-a-clinical-ai-out-of-its-own-rules",
-    "title": "A Researcher Talked a Clinical AI Out of Its Own Rules. DHA Is Fielding the Same Design."
+    "slug": "filed-under-document-drafting",
+    "title": "Filed Under Document Drafting"
   },
   "in_sync": true,
   "imported_in_this_run": [],
