@@ -1,27 +1,13 @@
 {
   "_meta": {
     "description": "Pursuit Calendar seed events. Source of truth when Supabase pursuit_calendar table is unreachable. Times are America/New_York (ET). Status is computed dynamically by the renderer for date-based events; explicit status values (Protest, Protest Due, Watch, Needs Source) are honored as-is.",
-    "last_curated_at": "2026-08-24",
+    "last_curated_at": "2026-08-31",
     "curator": "automated",
     "timezone": "America/New_York",
-    "window_start": "2026-08-24",
-    "window_end": "2026-11-22"
+    "window_start": "2026-08-31",
+    "window_end": "2026-11-29"
   },
   "events": [
-    {
-      "id": "e758d7de-332a-4204-b4f5-9f661f479b6f",
-      "title": "Image Management Systems (IMS) and Dental IT Services",
-      "event_date": "2026-08-27",
-      "event_time_et": null,
-      "agency": "DHA",
-      "vehicle": "HT9427-26-RFI-1000",
-      "ref": null,
-      "category": "rfi",
-      "status_override": null,
-      "source_url": "https://sam.gov/workspace/contract/opp/e93506075e2443458a2eebe02f7d5e03/view",
-      "source_system": "sam.gov",
-      "notes": "Sol: HT9427-26-RFI-1000 · NAICS 541512 · Set-aside: Small Business Set Aside - Total"
-    },
     {
       "id": "b8b39ca4-1520-48c4-a3f9-e0fce14f1941",
       "title": "Advanced Research Projects Agency for Health (ARPA-H) Small Business Innovation Research (SBIR)/Small Business Technology Transfer (STTR) Program",
@@ -49,6 +35,20 @@
       "source_url": "https://sam.gov/workspace/contract/opp/213a2fe3a447465e8f30699c9f056ec4/view",
       "source_system": "sam.gov",
       "notes": "Sol: DHA_JOMIS_JMP_20260813 · NAICS 541512"
+    },
+    {
+      "id": "a026007a-c479-47b8-8c04-4356005f8c8d",
+      "title": "Portfolio Acquisition Executive, Medical Digital Solutions, (PAE MDS) End User Services (EUS) Area of Interest Application, Workflow, Adoption, and Change Support (AWACS)",
+      "event_date": "2026-09-14",
+      "event_time_et": null,
+      "agency": "DHA",
+      "vehicle": "HT003826SC005-AOI0001",
+      "ref": null,
+      "category": "deadline",
+      "status_override": null,
+      "source_url": "https://sam.gov/workspace/contract/opp/65cc015d3f22488dab4189e52174339c/view",
+      "source_system": "sam.gov",
+      "notes": "Sol: HT003826SC005-AOI0001 · NAICS 541512 · Set-aside: No Set aside used"
     }
   ]
 }
