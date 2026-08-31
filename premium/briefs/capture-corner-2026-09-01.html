@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capture Corner: Thirty Days of Leverage &middot; MMT Premium</title>
+  <meta name="description" content="September 1, 2026. GSA OneGov AI expiration September 30, 2026 · conflicting expiration dates and model scope in reseller collateral · proposed GSAR 552.239-7001 benchmarking right">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <style>
+    :root { --mmt-teal:#457B9D; --mmt-navy:#0A192F; --mmt-soft:#F3F4F6; --mmt-white:#FFFFFF; --mmt-text:#102033; --mmt-text-secondary:#5C6B7A; --mmt-border:#D8E0E8; --ci-gold:#92710A; --ci-gold-bg:#FEF9E7; --mmt-red:#E63946; }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--mmt-white); color:var(--mmt-navy); }
+    .brief-body { font-size:15px; line-height:1.75; color:#314155; }
+    .brief-body h2 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:40px 0 14px; letter-spacing:-0.02em; }
+    .brief-body h3 { font-size:17px; font-weight:700; color:var(--mmt-navy); margin:28px 0 10px; }
+    .brief-body h4 { font-size:15px; font-weight:700; color:var(--mmt-navy); margin:20px 0 8px; }
+    .brief-body p { margin-bottom:16px; max-width:65ch; }
+    .brief-body ul { margin-bottom:16px; padding-left:1.25rem; }
+    .brief-body ol { margin-bottom:16px; padding-left:1.5rem; }
+    .brief-body li { margin-bottom:8px; }
+    .brief-body a { color:var(--mmt-teal); text-decoration:underline; text-underline-offset:3px; }
+    .brief-body strong { color:var(--mmt-navy); }
+    .brief-body em { color:var(--mmt-text-secondary); }
+    .brief-body hr { border:none; border-top:1px solid var(--mmt-border); margin:36px 0; }
+    .brief-body blockquote { border-left:3px solid var(--mmt-teal); padding:8px 16px; margin:16px 0; color:var(--mmt-text-secondary); background:rgba(69,123,157,0.04); border-radius:0 6px 6px 0; }
+    .brief-body img { max-width:100%; height:auto; display:block; margin:24px 0; border:1px solid var(--mmt-border); border-radius:8px; }
+    .brief-body table { width:100%; border-collapse:collapse; margin:16px 0 24px; font-size:14px; }
+    .brief-body th, .brief-body td { border:1px solid var(--mmt-border); padding:10px 12px; text-align:left; vertical-align:top; }
+    .brief-body th { background:var(--mmt-soft); color:var(--mmt-navy); font-weight:700; }
+    .pills { margin:8px 0 24px; }
+    .pill { display:inline-block; padding:4px 10px; background:rgba(69,123,157,0.08); color:var(--mmt-teal); border-radius:14px; font-size:11px; font-weight:600; margin:2px 4px 2px 0; }
+    .pill-red { background:rgba(230,57,70,0.08); color:var(--mmt-red); }
+    .pill-gold { background:var(--ci-gold-bg); color:var(--ci-gold); }
+    .back-link { font-size:13px; font-weight:600; color:var(--mmt-teal); text-decoration:none; }
+    .back-link:hover { opacity:0.7; }
+    .gate-notice { background:linear-gradient(180deg,#FFFFFF 0%,#F3F4F6 100%); border:1px solid var(--mmt-border); border-radius:12px; padding:32px 28px; text-align:center; margin:32px auto; max-width:540px; }
+    .gate-notice h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin-bottom:10px; }
+    .gate-notice p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:16px; line-height:1.55; }
+    .gate-cta { display:inline-block; padding:12px 24px; background:var(--mmt-navy); color:var(--mmt-white); font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; }
+    .section-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--ci-gold); }
+    .deep-dive-card { margin:48px 0 16px; padding:32px 28px; border:2px solid var(--ci-gold); border-radius:12px; background:linear-gradient(180deg,#FFFFFF 0%,var(--ci-gold-bg) 100%); }
+    .deep-dive-card h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:0 0 12px; letter-spacing:-0.01em; }
+    .deep-dive-card p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:14px; line-height:1.6; max-width:none; }
+    .deep-dive-price { display:inline-flex; align-items:baseline; gap:8px; margin:4px 0 16px; font-weight:800; color:var(--mmt-navy); }
+    .deep-dive-price .amount { font-size:28px; }
+    .deep-dive-price .unit { font-size:13px; font-weight:600; color:var(--mmt-text-secondary); text-transform:uppercase; letter-spacing:0.06em; }
+    .brief-body a.deep-dive-cta,
+    a.deep-dive-cta { display:inline-block; padding:14px 26px; background:var(--ci-gold); color:#FFFFFF; font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; letter-spacing:0.02em; }
+    .brief-body a.deep-dive-cta:hover,
+    a.deep-dive-cta:hover { opacity:0.92; color:#FFFFFF; }
+    .deep-dive-examples { font-size:13px; color:var(--mmt-text-secondary); font-style:italic; margin-top:8px; }
+  </style>
+</head>
+<body>
+  <nav class="nav-editorial"></nav>
+
+  <main class="wrap" style="padding:48px 0 80px; max-width:820px;">
+    <a href="/capture-corner.html" class="back-link">&larr; Capture Corner</a>
+
+    <div style="margin-top:20px; margin-bottom:8px;">
+      <div class="section-label">MMT Premium &middot; Capture Corner &middot; September 1, 2026</div>
+    </div>
+    <h1 style="font-size:clamp(26px,3.2vw,38px);line-height:1.1;letter-spacing:-0.03em;margin-bottom:10px;">Thirty Days of Leverage</h1>
+    <p style="font-size:15px;color:var(--mmt-text-secondary);margin-bottom:20px;"><em>GSA OneGov AI expiration September 30, 2026 · conflicting expiration dates and model scope in reseller collateral · proposed GSAR 552.239-7001 benchmarking right</em></p>
+
+    <div class="pills">
+      <span class="pill pill-gold">Capture Corner</span>
+      <span class="pill ">GSA OneGov AI</span>
+      <span class="pill pill-red">Risk: September 30 Expiration</span>
+    </div>
+
+    <div data-gate="free" style="display:block;">
+      <div class="gate-notice">
+        <h3>&#9733; Premium Capture Corner</h3>
+        <p>On September 30 the federal government's negotiating position on frontier AI expires along with the dollar-per-agency pricing, and the collateral agencies are using to plan the renewal contains errors a buyer would act on. This Capture Corner works the buy: the reseller one-pager carrying an expiration date seven weeks early and a model scope narrower than its own headline, the free-provisioning trap inside the Gemini offer that reprices agencies on seats they never used, the proposed GSAR clause that already contains the behavior-verification right no vendor sells at any published tier, the four OMB M-26-04 artifacts every post-September renewal must carry on its own footing, and the thirty-day action list for a capture team that wants to be the one who makes the phone call. Premium members read the full brief. Subscribe at missionmeetstech.com/pricing.</p>
+        <a class="gate-cta" href="/pricing">See premium plans</a>
+      </div>
+    </div>
+
+    <div data-access="premium" data-gate="premium" class="brief-body">
+
+<p><em>Capture Corner is the premium BD intelligence companion to Mission Meets Tech. Public-record sourced. Independent analysis. Not a recommendation, not vendor advocacy, not capture material. Built for federal health BD, capture, and proposal leaders who need analytical depth, not headlines.</em></p>
+<p><em>This issue is the companion to &quot;The Week She Stopped Saying Please,&quot; published this week. The public piece reads the commercial record: what changed inside three frontier products, who paid to find out, and why every published service tier promises capacity and none promises behavior. This one works the buy: the September 30 expiration that ends the government&#39;s negotiating position, the date and model-scope contradictions sitting in the reseller collateral right now, the free-provisioning trap inside the Gemini offer, the one proposed clause that already contains the behavior-verification right no vendor sells, and what agencies do not hold on October 1.</em></p>
+<hr>
+<h2>1. The picture at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Expiring instruments</td>
+<td>GSA OneGov limited-time offers for OpenAI ChatGPT Enterprise, Anthropic Claude, Google Gemini for Government [CC1]</td>
+</tr>
+<tr>
+<td>Operative expiration date</td>
+<td>September 30, 2026, per GSA&#39;s own Buy AI catalog and FedScoop reporting [CC1][CC2]</td>
+</tr>
+<tr>
+<td>Conflicting date in reseller collateral</td>
+<td>Anthropic OneGov purchase guide states the offer and access expire after August 10, 2026, a date now three weeks past [CC3]</td>
+</tr>
+<tr>
+<td>Original pricing</td>
+<td>$1 per agency (OpenAI, announced Aug 6, 2025), $1 per agency across three branches (Anthropic, Aug 12, 2025), $0.47 per agency (Google, Aug 21, 2025) [CC4][CC5]</td>
+</tr>
+<tr>
+<td>Anthropic model scope, fine print</td>
+<td>Haiku and Sonnet base models only, priced per organization [CC3]</td>
+</tr>
+<tr>
+<td>Anthropic model scope, headline</td>
+<td>Same document describes frontier models with continuous updates as capabilities release [CC3]</td>
+</tr>
+<tr>
+<td>OpenAI term structure</td>
+<td>8/14/2025 to 9/30/2026, end date fixed regardless of customer start date; pricing tiered by user count, 1K to 50K; customers not trued up; promo SKU CHATGPTENTBASE-FED [CC6]</td>
+</tr>
+<tr>
+<td>Google term structure</td>
+<td>$0.47 per agency through September 30, 2026; standard environment includes 1,000 users with additional users provisioned at no cost during the promotional period; renewal converts to per-user pricing [CC7]</td>
+</tr>
+<tr>
+<td>Procurement path</td>
+<td>Carahsoft as distributor, GSA Multiple Award Schedule as the vehicle [CC1]</td>
+</tr>
+<tr>
+<td>Adoption at last public count</td>
+<td>More than 120 orders; technology or availability extended to approximately 3.4 million across government, per GSA Office of IT Products director Birgit Smeltzer, May 2026. Seats made available, not measured active users. [CC1]</td>
+</tr>
+<tr>
+<td>Claimed savings</td>
+<td>$1.4 billion attributed to the AI limited-time offers alone; $1.6 billion across all OneGov categories [CC1][CC2]</td>
+</tr>
+<tr>
+<td>Renewal plan</td>
+<td>No public successor plan as of August 11, 2026; GSA did not respond to requests for comment [CC1]</td>
+</tr>
+<tr>
+<td>Partial signal</td>
+<td>August 13, 2026: Smeltzer said some manufacturers agreed to extend limited-time offers and some are producing new offers; no vendors or dates named [CC2]</td>
+</tr>
+<tr>
+<td>Behavior commitment in any published tier</td>
+<td>None located, at any price, from any vendor [CC8][CC9]</td>
+</tr>
+<tr>
+<td>Federal authorization structure</td>
+<td>Infrastructure-level; new models inherit authorization with no per-model FedRAMP audit and no agency action [CC10]</td>
+</tr>
+<tr>
+<td>Proposed clause containing a benchmarking right</td>
+<td>GSAR 552.239-7001, 91 FR 36559, June 17, 2026, comments closed August 3, 2026; no final rule [CC11]</td>
+</tr>
+<tr>
+<td>Governing disclosure memo</td>
+<td>OMB M-26-04, December 11, 2025, four minimum vendor disclosures, applies to any LLM procured by an agency [CC12]</td>
+</tr>
+<tr>
+<td>Measured infrastructure drift</td>
+<td>23.85 percent of safety prompts flipped classification in both directions with weights held constant [CC13]</td>
+</tr>
+<tr>
+<td>Shadow AI exposure</td>
+<td>27 percent of government professionals report using unsanctioned AI tools [CC1]</td>
+</tr>
+</tbody></table>
+<p><strong>Confidence: High on the term structures, pricing, and model scope</strong>, all read from the published reseller and GSA pages. <strong>High on the GSAR and OMB text</strong>, read from the Federal Register and the memoranda. <strong>High on the drift measurement</strong>, read from the paper and its published abstract. <strong>High on the absence of a published behavior commitment</strong>, established by reading the service tier documentation; this does not establish absence in privately negotiated enterprise agreements, which are not public. <strong>Medium on the adoption figures</strong>, which are official statements reported in trade coverage rather than a published order record. <strong>Unresolved on the Anthropic expiration date</strong>, where the reseller one-pager and the GSA catalog disagree; see Section 3. <strong>Medium on the competitive analysis in Sections 4 through 8</strong>, which is my construction from public documents.</p>
+<p><strong>The lead finding for a capture team: on September 30 the federal government&#39;s negotiating position on frontier AI expires along with the pricing, and the collateral agencies are using to plan that renewal contains at least two errors a buyer would act on. The Anthropic purchase guide carries an expiration date seven weeks early and limits the offer to Haiku and Sonnet while its own headline paragraph promises frontier models. The Gemini offer let agencies provision unlimited additional users at no cost for thirteen months and then reprices per user against whatever headcount that produced. Any agency that has not run a deprovisioning audit before September 30 is about to be priced on seats it never used, and no vendor at any published tier sells a commitment about how the model will behave after renewal. GSA has already drafted that clause. Nobody is required to honor it yet.</strong></p>
+<hr>
+<h2>2. Why the leverage expires with the price</h2>
+<p><strong>Confidence: High. Published statements and a named academic source.</strong></p>
+<p>The OneGov AI offers were structured as limited-time entry pricing: OpenAI at $1 per agency, Anthropic at $1 covering the executive, legislative, and judicial branches, Google at $0.47 per agency, all flowing through Carahsoft against the Multiple Award Schedule. [CC4][CC5] By May 2026 that had produced more than 120 orders, with GSA describing technology or availability extended to roughly 3.4 million across government. [CC1]</p>
+<p>Read that figure carefully, because the distinction carries the whole dependency argument. Smeltzer&#39;s wording is availability, meaning seats an agency could have used. The only hard usage number in the public record is an OpenAI spokesperson&#39;s claim of more than a million users across federal, state, and local government, which is a party statement mixing non-federal users into the count. [CC1] Nobody has published measured federal active usage. The vendors have it. The agencies mostly do not.</p>
+<p>Jessica Tillipman, associate dean for government procurement law studies at George Washington University, published the governing analysis in 2026 under the title &quot;Twenty-Five Cent AI: The Hidden Costs of Promotional AI Deals.&quot; [CC14] Her scope is wider than the three expiring deals, covering promotional pricing from free to a dollar per agency across six products. Her argument is that promotional pricing looks low-risk while the real economics arrive later in lifecycle cost, operational dependency, and reduced negotiating position, and her conclusion is that the leverage agencies hold today will not survive renewal. [CC1][CC14]</p>
+<p>Her remedy framework is worth reading before drafting anything, because it lands on the same four items a capture team would propose from the other side of the table: binding post-promotional pricing, structured pilot constraints, dependency tracking, and uniform public disclosure of lifecycle terms as a condition of OneGov participation. [CC14] That is independent corroboration from a procurement-law authority rather than a vendor talking its book.</p>
+<p>Her illustration of behavioral lock-in is the most quotable thing in this subject, and she is describing herself. Asked what would happen if she had to abandon the account holding her own projects, she said she would weep. [CC1] A procurement law dean describing her personal switching cost in those terms is the argument making itself.</p>
+<p>Tillipman cites the buying-in framework at FAR 3.501. [CC14] Whether these offers meet that definition is a legal question outside this analysis. The commercial dynamic is not in dispute, and the outgoing federal CIO has already said he expects vendors to price renewal against usage data collected during the promotional period. [CC1] The vendors spent a year measuring dependency. The agencies spent a year creating it.</p>
+<hr>
+<h2>3. Three renewal pages, three different problems</h2>
+<p><strong>Confidence: High on the page text. The Anthropic date conflict is reported as unresolved.</strong></p>
+<p><strong>Anthropic: the date does not resolve, and the scope is narrower than the announcement.</strong></p>
+<p>The Carahsoft OneGov purchase guide one-pager states that the offer and access expire after August 10, 2026. [CC3] That date passed three weeks ago. The main Anthropic page on the same distributor carries no expiration date at all. GSA&#39;s own Buy AI catalog lists Claude Enterprise at $1 through September 2026 for all federal, and FedScoop reports a September 30 expiration. [CC1][CC2]</p>
+<p>Treat GSA&#39;s catalog as the operative date and treat the discrepancy as a finding rather than noise. A capture team or an agency pricing a renewal off the reseller one-pager is working from a date seven weeks early.</p>
+<p>The same one-pager carries the more consequential problem. Its fine print limits the offer to &quot;Access to Haiku and Sonnet base models only,&quot; priced per organization, with eligibility to federal civilian, judicial, and legislative agencies. Its headline paragraph describes the company&#39;s frontier models with continuous updates as new capabilities release. [CC3] Those two statements sit in the same document.</p>
+<p>That contradiction is the public issue&#39;s thesis appearing inside federal procurement collateral. An agency that built a workflow expecting frontier-class reasoning, on the strength of the headline, was provisioned the base tier. Nobody had to change a model for that gap to exist. It was there at signature, in writing, two paragraphs apart.</p>
+<p><strong>Google: the free-provisioning trap.</strong></p>
+<p>The Carahsoft Gemini page confirms $0.47 per agency through September 30 and states that at the end of the promotional period, &quot;customers must renew at a per user price.&quot; The same page describes a standard environment including a thousand users, with additional users provisioned at no cost for the duration of the promotional period. [CC7]</p>
+<p>The incentive during the promotional window runs exactly opposite to the incentive at renewal. Agencies were encouraged to provision freely for thirteen months, and renewal converts to per-user pricing against whatever headcount that produced. An agency that never tracked provisioned seats against active seats is about to be priced on the former.</p>
+<p><strong>OpenAI: the fixed end date.</strong></p>
+<p>The Carahsoft page states the term runs 8/14/2025 to 9/30/2026 with the end date fixed no matter the customer&#39;s start date, with pricing tiered by user count from one thousand to fifty thousand, customers not trued up, purchase on GSA Schedule, promo SKU CHATGPTENTBASE-FED. [CC6]</p>
+<p>The trade reporting that subscriptions do not automatically renew does not appear on that page in either direction. [CC1] The fixed end date is the stronger and verifiable fact, and it has a consequence nobody has priced. An agency that onboarded in June 2026 bought roughly four months of a fourteen-month promotional window at the same nominal price, and arrives at renewal with a fraction of the dependency data the vendor will use to price it.</p>
+<hr>
+<h2>4. The clause that already exists</h2>
+<p><strong>Confidence: High on the clause text. Medium on finalization.</strong></p>
+<p>The public issue establishes that no vendor sells a behavior guarantee at any published tier. The relevant capture fact is that the government has already drafted the requirement, and the drafting is better than either the market or the commentary has noticed.</p>
+<p>Proposed GSAR 552.239-7001, titled &quot;Basic Safeguarding of Data Within Large Language Model Artificial Intelligence Systems (LLMs),&quot; published at 91 FR 36559 on June 17, 2026 with comments closed August 3, provides at paragraph (j)(2): [CC11]</p>
+<blockquote>
+<p>(i) The Government reserves the right to conduct automated assessments of the LLM, as deployed and configured for government users, at any time using its own benchmarks. These evaluations may assess bias, truthfulness, safety, unsolicited ideological content, and other factors determined by the Government in order to facilitate evaluations.</p>
+<p>(ii) The Contractor must provide tools and interfaces that enable the Government to run its benchmarks in an automated fashion to test the production LLM and identify any material gaps.</p>
+<p>(iv) All benchmarks, test data, and methodologies developed or used by the Government for such assessments are considered Government Data. The Government is under no obligation to disclose or provide access to the underlying data, methodologies, or systems.</p>
+</blockquote>
+<p>Three details drive the capture position.</p>
+<p>The clause reaches the LLM as deployed and configured for government users. That is the configuration layer above the weights, which is precisely where the documented degradation happens and precisely what a FedRAMP authorization does not describe.</p>
+<p>Subparagraph (ii) is an affirmative build obligation on the contractor rather than a permission granted to the Government. Somebody has to engineer the test interface, which makes it a scoped, priceable deliverable with engineering lead time longer than any proposal cycle.</p>
+<p>Subparagraph (iv) keeps the Government&#39;s benchmarks and methodology confidential. That is what makes the test un-gameable, and it is the commercial argument for the assurance services play: a benchmark the vendor can see is a benchmark the vendor can optimize against.</p>
+<p>The direction of travel supports betting on this clause. The June 17 text is a revised, narrowed draft issued as Notice-MVAC-2026-01 after industry pushback on a broader earlier version. The scope narrowed from AI systems generally to LLMs while the compliance demands broadened. [CC15] A rule that gets more demanding as it gets narrower has institutional weight behind it.</p>
+<hr>
+<h2>5. What the drift measurement actually supports</h2>
+<p><strong>Confidence: High. Read from the paper and its published abstract.</strong></p>
+<p>DriftBench, sole-authored by Gianluigi Vitale of Universitas Mercatorum and presented at MLSys 2026, holds model weights constant, varies only serving infrastructure, and measures 236,985 prompt-response pairs across 105 configurations spanning five models, four GPU platforms, three serving frameworks, and three numeric precisions. Drift varies up to 186-fold by workload: math flips at 16.74 percent, code generation at 0.09 percent. [CC13]</p>
+<p>Use that spread precisely rather than loosely. A validation run on code generation would surface roughly half a percent of the flip rate the same change produces on math. That comparison is arithmetic on the paper&#39;s two published figures rather than a finding the paper states, and it should be presented that way in any technical volume.</p>
+<p>The headline number needs the same discipline. The blocked upgrade flipped 23.85 percent of safety prompts, and those flips ran in both directions, safe to unsafe and unsafe to safe, with the net unsafe rate barely moving. The classification was performed by LlamaGuard-3-8B at 85.21 percent recall. The paper&#39;s claim is that operators cannot predict which prompts will be affected. [CC13]</p>
+<p>For acceptance testing, unpredictability is the worse finding and the better argument. A measurable decline can be corrected for in a threshold. Instability with no predictable locus cannot, which is exactly why the remedy is a workload-specific canary set rather than a benchmark score.</p>
+<p>One further finding is directly useful to a program office. The paper separates predictable from unpredictable drift: hardware and precision changes exhibit systematic drift that can be modeled in advance, while framework and model changes are idiosyncratic and require re-measurement each time. [CC13] That distinction tells an agency which infrastructure events can be handled by prediction and which demand full revalidation, and it is a defensible basis for a tiered testing regime in a technical approach.</p>
+<p>The mechanism in the blocked upgrade is worth naming because of how ordinary it is: H100 at FP16 to B200 at FP8, same serving framework. A hardware refresh plus a precision change.</p>
+<hr>
+<h2>6. What agencies do not hold on October 1</h2>
+<p><strong>Confidence: High on the absence. This is the thirty-day argument in one section.</strong></p>
+<p>Nothing in the three reseller pages addresses data portability at expiration. [CC3][CC6][CC7] Google&#39;s renewal converts to per-user, OpenAI&#39;s window closes on a fixed date with tiered pricing, Anthropic has published no renewal terms at all, and GSA has confirmed only that some offers get extended, some get replaced, and prices eventually increase. [CC2]</p>
+<p>Set that against what the proposed clause would guarantee: open-format export with documented APIs, migration tooling, certified deletion, and Government data ownership. [CC11] None of it is in force.</p>
+<p>So on October 1 an agency holds a year of accumulated work inside a system, no published export obligation, no version-pinning right, no notice obligation covering model or configuration changes, and an authorization written at a layer that does not describe behavior. [CC10] The switching cost Tillipman describes is only partly technical. Most of it is the absence of any contractual instrument that would make switching possible.</p>
+<p>That gap is the entire pitch. It is also why the assurance and portability work is a services opportunity before it is a product opportunity, because somebody has to build export tooling, canary sets, scheduled regression runs, and an evidence package an authorizing official can accept. No incumbent is scoped for it, because no contract requires it yet.</p>
+<hr>
+<h2>7. The four artifacts</h2>
+<p><strong>Confidence: High. OMB memorandum text.</strong></p>
+<p>OMB M-26-04, issued December 11, 2025 under EO 14319, applies to any LLM procured by an agency, requires compliance terms in solicitations and orders issued after that date, and specifies four minimum vendor disclosures. [CC12]</p>
+<p>Every OneGov renewal executed after September 30 is a new order, which has to carry M-26-04 compliance language on its own footing rather than inheriting 2025 terms, and 552.239-7001 obligations if the rule finalizes. A vendor arriving with the four artifacts already produced, plus a documented regression testing method, is answering questions the incumbent has not been asked.</p>
+<p>Acceptable Use Policy. Model, system, and data cards. End user resources. An end user feedback mechanism. [CC12] Cheap to produce now, expensive under deadline.</p>
+<hr>
+<h2>8. The counterargument</h2>
+<p><strong>Confidence: Medium. The strongest case against acting now.</strong></p>
+<p>GSA may extend. Smeltzer&#39;s August 13 statement points that way, and an extension at promotional pricing would push this analysis to a later date. [CC2] A team that spends September rewriting technical volumes around behavior terms may find the market unchanged in October.</p>
+<p>The clause is proposed, not final. Comments closed August 3, no final rule has published, and law firm analyses treat it as still in flux. [CC11][CC15] Building a capability around a proposed rule is a bet on a regulatory outcome, and proposed rules die.</p>
+<p>And the operational harm is undocumented. The DriftBench upgrade was blocked, meaning the process worked, the net unsafe rate barely moved, and the classifier itself runs at 85.21 percent recall. [CC13] No federal AI incident attributable to silent behavior change appears in the public record. A contracting officer can reasonably call this a hypothetical risk with a hypothetical remedy.</p>
+<p>The counter to the counter is the calendar and the collateral. Renewal happens regardless of what the FAR council does, terms secured in a renewal persist regardless of the rule, and the two contradictions documented in Section 3 are live errors in the material agencies are using to plan right now. Those do not require a regulatory outcome to be worth a phone call.</p>
+<hr>
+<h2>9. What to do in the next thirty days</h2>
+<p><strong>Run the deprovisioning audit, and run it first.</strong> Any customer on the Gemini offer provisioned users at zero marginal cost for thirteen months and gets repriced per user at renewal. [CC7] The gap between provisioned and active seats is pure renewal cost, it is calculable this week, and nobody has an incentive to raise it except you. This is the most immediate item in the window.</p>
+<p><strong>Flag the Anthropic date and scope conflict to any customer on that offer.</strong> The reseller one-pager says access expired August 10; GSA&#39;s catalog says September 2026. [CC1][CC3] The same one-pager promises frontier models and delivers Haiku and Sonnet base. An agency that built a workflow on the headline should know before it prices a renewal, and being the one who tells them is worth more than a capability brief.</p>
+<p><strong>Call every customer with a OneGov order and ask one question.</strong> Has anyone priced October 1, and does the renewal instrument contain any notice obligation covering model or configuration changes. Most will not have an answer, and the absence is the opening.</p>
+<p><strong>Draft the three clauses into your next technical volume.</strong> Notice before model, configuration, or serving-infrastructure changes rather than retirements alone. A version-pinning right with a defined support period. Regression testing against the government&#39;s workload rather than published benchmarks. No competitor located offers these, and offering them costs nothing until accepted.</p>
+<p><strong>Price the (j)(2)(ii) build obligation now.</strong> Automated government benchmarking against your production model requires an interface, a harness, and a support commitment, and subparagraph (iv) means you will never see the tests. [CC11] Engineering lead time exceeds proposal lead time, which is the argument for scoping it before a final rule rather than after.</p>
+<p><strong>Produce the four M-26-04 artifacts this month.</strong> They apply to any LLM sold to any agency, and every post-September renewal is a new order. [CC12]</p>
+<p><strong>Scope the assurance and portability service separately from the product.</strong> Canary set construction from agency traffic, scheduled regression runs keyed to the predictable-versus-idiosyncratic distinction, export tooling, and an evidence package for an authorizing official. [CC13] Sellable as a modification into an existing vehicle rather than waiting for a competition.</p>
+<p><strong>Set an alert on the successor instrument.</strong> Whatever replaces the OneGov AI offers is the largest federal AI acquisition event of the fiscal year, and there is no public plan for it. [CC1][CC2]</p>
+<hr>
+<p>Mary</p>
+<p>Mission Meets Tech Premium</p>
+<hr>
+<p><em>Next Capture Corner: scheduled for the next major federal health or defense-health opportunity in active capture. Subscribers will receive an alert when the next issue publishes.</em></p>
+<p><em>Capture Corner is an independent intelligence product. It is not affiliated with the General Services Administration, the Department of Veterans Affairs, the Defense Health Agency, or any company named here, and it is not connected to any offeror&#39;s bid strategy. Mission Meets Tech is produced using Anthropic&#39;s Claude, and Anthropic is a named party in this issue. Premium subscription includes access to the standing intelligence sidebar plus the searchable archive.</em></p>
+<hr>
+<h2>Sources</h2>
+<p>[CC1] K. Sophie Will, &quot;OneGov AI deals are ending, but behavioral dependency might lock in federal workers,&quot; FedScoop, August 11, 2026. Source for the September 30, 2026 expiration; Carahsoft as distributor and GSA Multiple Award Schedule as the vehicle; GSA&#39;s non-response to requests for comment on renewal plans; Birgit Smeltzer&#39;s May 2026 statement of more than 120 orders and technology or availability extended to approximately 3.4 million across government; the OpenAI spokesperson&#39;s claim of more than one million users across federal, state, and local government; Laura Stanton&#39;s $1.6 billion OneGov-wide savings figure; Jessica Tillipman&#39;s statements on lifecycle cost, behavioral lock-in, FAR buying-in, the leverage window, and her own switching cost; Greg Barbaccia&#39;s expectation of usage-based renewal pricing; the trade characterization that OpenAI subscriptions do not automatically renew, which does not appear on the Carahsoft page itself; and the Thomson Reuters finding that 27 percent of government professionals report unsanctioned AI tool use. Adoption figures are official statements reported in trade coverage rather than a published order record; verify against the federal award record before pricing. <a href="https://fedscoop.com/onegov-ai-deals-expiring-whats-next/">https://fedscoop.com/onegov-ai-deals-expiring-whats-next/</a></p>
+<p>[CC2] K. Sophie Will, &quot;GSA official on OneGov AI deals: Some extensions, some new offers coming,&quot; FedScoop, August 13, 2026, together with GSA&#39;s &quot;Buy AI&quot; catalog listing Anthropic Claude Enterprise at $1 through September 2026 for all federal. Source for Smeltzer&#39;s statement that some manufacturers agreed to extend limited-time offers and some are producing new offers, without named vendors or dates; the $1.4 billion figure attributed to the AI limited-time offers alone; and the GSA catalog date treated here as operative. The $1.4 billion and the $1.6 billion at [CC1] measure different scopes and both attributions hold; label the scope whenever either is cited. <a href="https://fedscoop.com/gsa-onegov-ai-deals-some-extensions-new-offers/">https://fedscoop.com/gsa-onegov-ai-deals-some-extensions-new-offers/</a> and <a href="https://www.gsa.gov/artificial-intelligence/buy-ai">https://www.gsa.gov/artificial-intelligence/buy-ai</a></p>
+<p>[CC3] Carahsoft, &quot;Anthropic OneGov Purchase Guide&quot; one-pager, and Carahsoft Anthropic for Government product page. Source for the stated expiration after August 10, 2026; per-organization pricing; the limitation to Haiku and Sonnet base models; eligibility limited to federal civilian, judicial, and legislative agencies; and the headline description of frontier models with continuous updates that the same document&#39;s fine print contradicts. The main product page carries no expiration date. Reseller collateral is a party statement, not neutral authority, and the expiration date it carries conflicts with GSA&#39;s own catalog at [CC2]. This conflict is reported rather than resolved. <a href="https://static.carahsoft.com/concrete/files/1717/5578/8356/Purchase_Guide_One_Pager_Anthropic_-_FINAL.pdf">https://static.carahsoft.com/concrete/files/1717/5578/8356/Purchase_Guide_One_Pager_Anthropic_-_FINAL.pdf</a></p>
+<p>[CC4] General Services Administration OneGov announcements and contemporaneous trade coverage of the August 2025 AI agreements. Source for the OpenAI agreement announced August 6, 2025 and the Anthropic agreement announced August 12, 2025, both at $1 per agency, the Anthropic agreement covering executive, legislative, and judicial branches, and the addition of Claude, Gemini, and ChatGPT to the Multiple Award Schedule. <a href="https://www.gfmreview.com/technology/gsa-inks-another-1-onegov-vendor-deal-this-time-with-anthropic">https://www.gfmreview.com/technology/gsa-inks-another-1-onegov-vendor-deal-this-time-with-anthropic</a></p>
+<p>[CC5] General Services Administration, &quot;GSA, Google Announce Transformative &#39;Gemini for Government&#39; OneGov Agreement,&quot; August 21, 2025. Source for the $0.47 per agency price and the stated validity through 2026. <a href="https://www.gsa.gov/about-gsa/newsroom/news-releases/gsa-google-announce-gemini-onegov-agreement-08212025">https://www.gsa.gov/about-gsa/newsroom/news-releases/gsa-google-announce-gemini-onegov-agreement-08212025</a></p>
+<p>[CC6] Carahsoft, &quot;OpenAI ChatGPT Enterprise GSA OneGov&quot; pricing page. Source for the term running 8/14/2025 to 9/30/2026 with the end date fixed regardless of customer start date; pricing tiered by user count from 1,000 to 50,000; the statement that these customers will not be trued up; the requirement that purchase be made on a GSA Schedule contract; and promo SKU CHATGPTENTBASE-FED. This page contains no statement about automatic renewal in either direction. Reseller collateral is a party statement. <a href="https://www.carahsoft.com/openai/gsa-onegov">https://www.carahsoft.com/openai/gsa-onegov</a></p>
+<p>[CC7] Carahsoft, &quot;Google Gemini for Government GSA OneGov&quot; page. Source for $0.47 per agency through September 30, 2026; the statement that at the end of the promotional period customers must renew at a per user price; and the standard environment including 1,000 users with additional users provisioned at no cost during the promotional period. Reseller collateral is a party statement. <a href="https://www.carahsoft.com/google/gsa-onegov/gemini">https://www.carahsoft.com/google/gsa-onegov/gemini</a></p>
+<p>[CC8] Anthropic API service tiers documentation and OpenAI Flex, priority, scale, reserved, and guaranteed capacity documentation. Source for the finding that published service tiers commit to capacity, latency, or uptime and contain no commitment regarding output quality or model behavior. This is an absence established from published tier documentation; it does not establish absence in privately negotiated enterprise agreements, which are not public. <a href="https://platform.claude.com/docs/en/api/service-tiers">https://platform.claude.com/docs/en/api/service-tiers</a></p>
+<p>[CC9] OpenAI, &quot;ChatGPT Enterprise and API Platform for FedRAMP.&quot; Source for the absence of a behavior-change notification commitment in the published federal guidance. <a href="https://help.openai.com/en/articles/20001070-chatgpt-enterprise-and-api-platform-for-fedramp">https://help.openai.com/en/articles/20001070-chatgpt-enterprise-and-api-platform-for-fedramp</a></p>
+<p>[CC10] Anthropic, &quot;Model availability in Claude for Government,&quot; support documentation. Source for agencies taking no action to receive new models, which appear in the model picker once enabled; the absence of a separate FedRAMP audit per model; the statement that the underlying Vertex authorization is infrastructure-level rather than per-model; and the statement that new models inherit that authorization automatically without the agency re-engaging the FedRAMP process. <a href="https://support.claude.com/en/articles/14503794-model-availability-in-claude-for-government">https://support.claude.com/en/articles/14503794-model-availability-in-claude-for-government</a></p>
+<p>[CC11] General Services Administration, &quot;General Services Acquisition Regulation; Acquisition of Information and Communication Technology,&quot; proposed clause 552.239-7001, &quot;Basic Safeguarding of Data Within Large Language Model Artificial Intelligence Systems (LLMs),&quot; 91 FR 36559, June 17, 2026, comments closed August 3, 2026. Source for paragraph (j)(2)(i), (ii), and (iv) as quoted; the four flowdown roles mapped to NIST AI RMF 1.0 Appendix A; Government data ownership; the prohibition on training or fine-tuning on Government Data; certified deletion; open-format export and migration tooling; suspension pending remediation; and decommissioning cost liability. Federal Register text is a US Government work. No final rule has published as of this analysis date. <a href="https://www.federalregister.gov/documents/full_text/text/2026/06/17/2026-12205.txt">https://www.federalregister.gov/documents/full_text/text/2026/06/17/2026-12205.txt</a></p>
+<p>[CC12] Office of Management and Budget, Memorandum M-26-04, &quot;Increasing Public Trust in Artificial Intelligence Through Unbiased AI Principles,&quot; December 11, 2025, implementing EO 14319. Source for applicability to any LLM procured by an agency, the requirement that solicitations and orders issued after December 11, 2025 include compliance terms, the March 11, 2026 deadline for agency policies, and the four minimum vendor disclosures. <a href="https://www.whitehouse.gov/wp-content/uploads/2025/12/M-26-04-Increasing-Public-Trust-in-Artificial-Intelligence-Through-Unbiased-AI-Principles.pdf">https://www.whitehouse.gov/wp-content/uploads/2025/12/M-26-04-Increasing-Public-Trust-in-Artificial-Intelligence-Through-Unbiased-AI-Principles.pdf</a></p>
+<p>[CC13] Gianluigi Vitale (sole author), Universitas Mercatorum, Rome, &quot;DriftBench: Measuring and Predicting Infrastructure Drift in LLM Serving Systems,&quot; MLSys 2026. Source for 236,985 prompt-response pairs across 105 configurations spanning 5 models, 4 GPU platforms, 3 serving frameworks, and 3 numeric precisions; drift varying up to 186-fold by workload with math at 16.74 percent against code generation at 0.09 percent; the Portability Risk Index and the dichotomy between systematic hardware and precision drift and idiosyncratic framework and model drift; and the production validation that blocked an upgrade in which 23.85 percent of safety prompts flipped classification with weights held constant. Qualifications: the blocked upgrade did not ship; flips ran in both directions, safe to unsafe and unsafe to safe, with the net unsafe rate changing by roughly one percent, making the paper&#39;s claim unpredictability rather than net degradation; the classification was performed by LlamaGuard-3-8B at 85.21 percent recall; and the migration was H100 at FP16 to B200 at FP8 on an unchanged serving framework. The comparison drawn in Section 5 between the code and math flip rates is arithmetic on the paper&#39;s published figures, not a finding the paper states. <a href="https://mlsys.org/virtual/2026/poster/3576">https://mlsys.org/virtual/2026/poster/3576</a></p>
+<p>[CC14] Jessica Tillipman, &quot;FEATURE COMMENT: Twenty-Five Cent AI: The Hidden Costs of Promotional AI Deals,&quot; 68 GC para. 49 (2026), GW Law Paper Series 2026-23. Source for the scope covering ChatGPT, Claude, Gemini, Grok, Copilot, and Perplexity at promotional prices from free to one dollar per agency; the argument on lifecycle cost, operational dependency, and reduced negotiating leverage; the FAR 3.501 buying-in framework; the statement that the leverage agencies hold today will not survive renewal; and the four-part remedy framework of binding post-promotional pricing, structured pilot constraints, dependency tracking, and uniform public disclosure of lifecycle terms as a condition of OneGov participation. Preprint at SSRN 6379819. The publication month is characterized as March in trade coverage; the scholarship listing carries the year alone. <a href="https://scholarship.law.gwu.edu/faculty_publications/1852/">https://scholarship.law.gwu.edu/faculty_publications/1852/</a></p>
+<p>[CC15] PilieroMazza, &quot;GSA&#39;s Revised AI Clause: Narrower Scope, Broader Compliance Demands on Government Contractors,&quot; and Holland &amp; Knight, &quot;GSA Proposes Sweeping AI Data Safeguarding Rules for LLM Contractors,&quot; June 2026. Source for the June 17 text being a revised draft issued as Notice-MVAC-2026-01 following industry pushback on a broader earlier version titled &quot;Basic Safeguarding of Artificial Intelligence Systems,&quot; and for the narrowing of scope to LLMs alongside broadened compliance obligations. Law firm client alerts are secondary analysis. <a href="https://www.pilieromazza.com/gsas-revised-ai-clause-narrower-scope-broader-compliance-demands-on-government-contractors/">https://www.pilieromazza.com/gsas-revised-ai-clause-narrower-scope-broader-compliance-demands-on-government-contractors/</a></p>
+<p>Sources verified as of August 31, 2026.</p>
+
+
+    <div class="deep-dive-card">
+  <div class="section-label" style="color:var(--ci-gold);margin-bottom:8px;">Custom Deep Dive &middot; Premium Add-On</div>
+  <h3>Want a custom deep-dive on any line in this brief?</h3>
+  <p>This brief works the September 30 expiration: the date and scope contradictions in the reseller collateral, the free-provisioning trap in the Gemini offer, the proposed benchmarking clause, the four required OMB artifacts, and the thirty-day action list. It stops short of your position: which of your customers hold OneGov orders and what their renewal exposure looks like agency by agency, how your technical volume reads against the (j)(2)(ii) build obligation, and what an assurance and portability service would look like scoped as a modification into your existing vehicle. A custom deep-dive picks it up there.</p>
+  <div class="deep-dive-price"><span class="amount">$50</span><span class="unit">one-time &middot; 5&ndash;7 business day turnaround</span></div>
+  <p>I will pull the additional public-record sources, read the visible signal, and write a 4&ndash;6 page custom intelligence memo on the area you select. You name the question; I do the BD-grade analysis.</p>
+  <p style="margin-bottom:18px;"><a class="deep-dive-cta" href="https://buy.stripe.com/6oUdRb2NEaQI3uM6KL4c803">Buy a Custom Deep Dive &mdash; $50 &rarr;</a></p>
+  <p class="deep-dive-examples">Examples: <em>Deep Dive — our customers' OneGov renewal exposure, agency by agency · Deep Dive — scoping the (j)(2)(ii) benchmarking interface before the rule finalizes</em></p>
+</div>
+
+    </div>
+  </main>
+
+  <footer class="footer"></footer>
+</body>
+</html>
