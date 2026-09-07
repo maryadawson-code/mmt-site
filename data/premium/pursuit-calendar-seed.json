@@ -1,11 +1,11 @@
 {
   "_meta": {
     "description": "Pursuit Calendar seed events. Source of truth when Supabase pursuit_calendar table is unreachable. Times are America/New_York (ET). Status is computed dynamically by the renderer for date-based events; explicit status values (Protest, Protest Due, Watch, Needs Source) are honored as-is.",
-    "last_curated_at": "2026-08-31",
+    "last_curated_at": "2026-09-07",
     "curator": "automated",
     "timezone": "America/New_York",
-    "window_start": "2026-08-31",
-    "window_end": "2026-11-29"
+    "window_start": "2026-09-07",
+    "window_end": "2026-12-06"
   },
   "events": [
     {
@@ -49,6 +49,20 @@
       "source_url": "https://sam.gov/workspace/contract/opp/65cc015d3f22488dab4189e52174339c/view",
       "source_system": "sam.gov",
       "notes": "Sol: HT003826SC005-AOI0001 · NAICS 541512 · Set-aside: No Set aside used"
+    },
+    {
+      "id": "71af6ea8-8f85-4a92-bf65-c4fd52af92cc",
+      "title": "Advanced Research Projects Agency for Health (ARPA-H) Small Business Innovation Research (SBIR)/Small Business Technology Transfer (STTR) Program",
+      "event_date": "2026-10-01",
+      "event_time_et": null,
+      "agency": "ARPA-H",
+      "vehicle": "7599226SN106",
+      "ref": null,
+      "category": "deadline",
+      "status_override": null,
+      "source_url": "https://sam.gov/workspace/contract/opp/fd5c6361a1454bd5b9cb387d3845d228/view",
+      "source_system": "sam.gov",
+      "notes": "Sol: 7599226SN106 · NAICS 541715 · Set-aside: Small Business Set Aside - Total"
     }
   ]
 }
