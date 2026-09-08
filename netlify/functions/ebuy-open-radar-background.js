@@ -27,6 +27,7 @@ const { checkKillSwitch } = require("./lib/kill-switch");
 const { trackAnthropic } = require("./lib/cost-tracker");
 const { logInference } = require("./lib/inference");
 const { logOpsEvent } = require("./lib/ops-ledger");
+const { toStr, dedupeKey } = require("./lib/radar-normalize");
 
 const PERPLEXITY_URL = "https://api.perplexity.ai/chat/completions";
 const PERPLEXITY_MODEL = "sonar-pro";
@@ -174,13 +175,15 @@ Return the RFQs found as JSON. source_url must be the ebuy.gsa.gov RFQ URL when 
     console.error("eBuy scan failed:", err.message);
   }
 
-  // Dedup + filter + stamp source
+  // Dedup + filter + stamp source. Every model-returned field goes through
+  // toStr() — Perplexity's JSON does not guarantee types, and a bare-number
+  // solicitation_number or value_estimate must not abort the scan.
   const seen = new Set();
   const filtered = [];
   for (const opp of allOpportunities) {
-    const key = opp.solicitation_number || opp.title;
-    if (!key || seen.has(key.toLowerCase())) continue;
-    seen.add(key.toLowerCase());
+    const key = dedupeKey(opp);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
 
     const relevance = typeof opp.relevance_score === "number" ? opp.relevance_score : 50;
     if (relevance < 40) continue;
@@ -190,19 +193,19 @@ Return the RFQs found as JSON. source_url must be the ebuy.gsa.gov RFQ URL when 
     if (opp.contract_vehicle && CANCELLED_VEHICLES.includes(opp.contract_vehicle)) continue;
 
     filtered.push({
-      title: (opp.title || "Untitled").substring(0, 500),
-      solicitation_number: opp.solicitation_number || null,
-      agency: (opp.agency || "Unknown").substring(0, 200),
-      description: (opp.description || "").substring(0, 1000),
-      value_estimate: (opp.value_estimate || "").substring(0, 100),
+      title: toStr(opp.title, 500) || "Untitled",
+      solicitation_number: toStr(opp.solicitation_number) || null,
+      agency: toStr(opp.agency, 200) || "Unknown",
+      description: toStr(opp.description, 1000),
+      value_estimate: toStr(opp.value_estimate, 100),
       response_deadline: opp.response_deadline || null,
-      set_aside_type: (opp.set_aside_type || "").substring(0, 50),
-      naics_codes: Array.isArray(opp.naics_codes) ? opp.naics_codes.slice(0, 10) : [],
-      source_url: (opp.source_url || "").substring(0, 500),
+      set_aside_type: toStr(opp.set_aside_type, 50),
+      naics_codes: Array.isArray(opp.naics_codes) ? opp.naics_codes.slice(0, 10).map((c) => toStr(c, 10)) : [],
+      source_url: toStr(opp.source_url, 500),
       relevance_score: relevance,
       opportunity_type: "ebuy_rfq",
       small_business_eligible: opp.small_business_eligible === true,
-      ai_summary: (opp.ai_summary || "").substring(0, 500),
+      ai_summary: toStr(opp.ai_summary, 500),
       scan_date: new Date().toISOString().split("T")[0],
       model_used: PERPLEXITY_MODEL,
       source: "ebuy_open",
