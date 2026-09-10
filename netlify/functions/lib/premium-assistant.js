@@ -37,7 +37,12 @@ const { detectVehicles, formatVehiclesContext, expandedSearchTerms } = require("
 // 2026-09-10: per-answer `sources` array. The catalog in ask-mmt-sources.js is
 // the same list build.js renders on /ask/sources, so the page and the code
 // cannot drift.
-const { buildSources, splitFederalData } = require("./ask-mmt-sources");
+const { buildSources, splitFederalData, CATALOG_BY_ID } = require("./ask-mmt-sources");
+// 2026-09-10: question -> search terms (no more sending the sentence as the
+// keyword), and a federal-sites-only web search when the structured
+// award/opportunity sources are silent.
+const { extractSearchTerms } = require("./query-terms");
+const { webFederalSearch, formatWebFederalContext, shouldWebFallback } = require("./web-federal-search");
 // Sprint 6 Phase 2 2026-05-15: optional circuit breakers + metrics.
 // Both gates default OFF — code paths byte-identical to Sprint 5 unless
 // ASK_MMT_CIRCUITS_ENABLED=true and/or ASK_MMT_METRICS_ENABLED=true are
@@ -162,6 +167,8 @@ HARD RULES:
 - If the block contains MMT articles relevant to the question, lead with what Mary wrote. Quote a specific excerpt when it sharpens the answer. Link to the URL.
 - Do not invent contract numbers, dollar amounts, deadlines, hiring counts, or citations that aren't in the block.
 - If the block is genuinely empty on the question, say so plainly and recommend what to check next. Never fabricate to fill a gap. (Empty means zero MMT articles AND zero API results, not just "the API returned nothing for this specific keyword.") Use this exact shape for the bottom line in that case: "I don't have a source for that in the systems I read. Where I'd look: <the one or two primary sources most likely to hold it>. If you want it researched properly, MarketPulse delivers a source-cited brief in 24 hours (https://missionmeetstech.com/marketpulse)." Do not pad an empty answer with general knowledge dressed up as fact.
+- If a system listed under SYSTEMS NOT REACHED would normally hold the answer (SAM.gov for solicitations, USASpending for awards), say that it could not be checked this turn and name it. Never imply "no such record exists" because a system was silent.
+- WEB SEARCH OF FEDERAL SITES results are leads, not verified facts: attribute them to the page URL, say they came from a web search, and tell the subscriber to verify on the page.
 - Quote sources inline. Examples: "(Mission Meets Tech, Mar 24 2026)", "(USASpending: PIID xxx)", "(SAM.gov notice xxx)", "(Congress.gov HR xxx)", "(PubMed PMID xxx)".
 - Prefer specific numbers over generalities. If the verified facts give a dollar figure or date, use it.
 - Be concise — 3-6 short paragraphs. Use bullets for lists of contracts, bills, or hearings.
@@ -183,7 +190,8 @@ async function runEnrichment(question) {
   // 'OASIS+ OR OASIS Plus' instead of just tokenizing the question text.
   const matchedVehicles = detectVehicles(question);
   const vehicleAgency = matchedVehicles.length > 0 ? matchedVehicles[0].agency : null;
-  const agency = detectAgency(question) || vehicleAgency;
+  const terms = extractSearchTerms(question);
+  const agency = detectAgency(question) || terms.agency || vehicleAgency;
   const agencyCodeMap = { VA: "036", DHA: "097", HHS: "075", DoD: "097", GSA: "047", NASA: "080", Army: "097" };
   const agencyCode = agencyCodeMap[agency];
 
@@ -191,9 +199,12 @@ async function runEnrichment(question) {
   // as the primary query for USASpending/SAM. Otherwise fall back to
   // the raw question text (same behavior as before).
   const vehicleSearchTerms = expandedSearchTerms(matchedVehicles);
+  // Never the raw sentence: "Tell me all about data governence awards in
+  // the DHA" becomes "data governance" (agency carried separately).
+  const topicQuery = terms.phrase || question;
   const primaryQuery = vehicleSearchTerms.length > 0
     ? vehicleSearchTerms.join(" ")
-    : question;
+    : topicQuery;
   const primaryNaics = matchedVehicles.length > 0 && matchedVehicles[0].naics.length > 0
     ? matchedVehicles[0].naics
     : undefined;
@@ -209,7 +220,7 @@ async function runEnrichment(question) {
 
   // MMT content corpus search — uses the raw question so it picks up
   // nuance the vehicle dictionary doesn't know about.
-  const corpusMatches = searchCorpus(question, 5);
+  const corpusMatches = searchCorpus(terms.corrected || question, 5, terms.phrase);
 
   const [
     federalData,
@@ -234,25 +245,25 @@ async function runEnrichment(question) {
     edgarData,
   ] = await Promise.all([
     instrument("usaspending",             () => enrichWithFederalData({ topic: primaryQuery, agency: agency || undefined, naics: primaryNaics }), metricsSb),
-    instrument("congress",                () => enrichWithCongress({ topic: primaryQuery }),                                     metricsSb),
+    instrument("congress",                () => enrichWithCongress({ topic: primaryQuery, relevanceTokens: vehicleSearchTerms.length > 0 ? undefined : terms.tokens }), metricsSb),
     instrument("govinfo",                 () => enrichWithGovInfo({ topic: primaryQuery }),                                      metricsSb),
-    instrument("pubmed",                  () => enrichWithPubMed({ topic: question, yearsBack: 5 }),                             metricsSb),
+    instrument("pubmed",                  () => enrichWithPubMed({ topic: topicQuery, yearsBack: 5 }),                             metricsSb),
     instrument("grants",                  () => enrichWithGrants({ topic: primaryQuery }),                                       metricsSb),
     instrument("sam_assistance",          () => enrichWithAssistance({ topic: primaryQuery, agency }),                           metricsSb),
     instrument("usajobs",                 () => enrichWithUSAJobs({ topic: primaryQuery }),                                      metricsSb),
     instrument("it_dashboard",            () => enrichWithITDashboard({ topic: primaryQuery, agencyCode }),                      metricsSb),
-    instrument("cms",                     () => enrichWithCMSProviderData({ topic: question }),                                  metricsSb),
-    instrument("clinicaltrials",          () => enrichWithClinicalTrials({ topic: question }),                                   metricsSb),
-    instrument("onc_healthit",            () => enrichWithONCHealthIT({ topic: question }),                                      metricsSb),
-    instrument("hhs_open",                () => enrichWithHHSOpenData({ topic: question }),                                      metricsSb),
+    instrument("cms",                     () => enrichWithCMSProviderData({ topic: topicQuery }),                                  metricsSb),
+    instrument("clinicaltrials",          () => enrichWithClinicalTrials({ topic: topicQuery }),                                   metricsSb),
+    instrument("onc_healthit",            () => enrichWithONCHealthIT({ topic: topicQuery }),                                      metricsSb),
+    instrument("hhs_open",                () => enrichWithHHSOpenData({ topic: topicQuery }),                                      metricsSb),
     // CALC has no circuit per Sprint 6 mapping (GSA, low traffic). safe() = withTimeout().
-    safe(enrichWithCALC({ topic: question })),
-    instrument("ecfr",                    () => enrichWithECFR({ topic: question }),                                             metricsSb),
-    instrument("regulations_gov",         () => enrichWithRegulationsGov({ topic: question }),                                   metricsSb),
-    instrument("bls",                     () => enrichWithBLS({ topic: question }),                                              metricsSb),
-    instrument("onc_chpl",                () => enrichWithCHPL({ topic: question }),                                             metricsSb),
+    safe(enrichWithCALC({ topic: topicQuery })),
+    instrument("ecfr",                    () => enrichWithECFR({ topic: topicQuery }),                                             metricsSb),
+    instrument("regulations_gov",         () => enrichWithRegulationsGov({ topic: topicQuery }),                                   metricsSb),
+    instrument("bls",                     () => enrichWithBLS({ topic: topicQuery }),                                              metricsSb),
+    instrument("onc_chpl",                () => enrichWithCHPL({ topic: topicQuery }),                                             metricsSb),
     instrument("sam_contract_awards",     () => enrichWithContractAwards({ topic: primaryQuery, agency }),                       metricsSb),
-    instrument("sam_wage_determinations", () => enrichWithWageDeterminations({ topic: question }),                               metricsSb),
+    instrument("sam_wage_determinations", () => enrichWithWageDeterminations({ topic: topicQuery }),                               metricsSb),
     // EDGAR takes a competitor list — empty by default until callers can
     // pass company context. Skipped result is a no-op so no answer regression.
     instrument("sec_edgar",               () => enrichWithEDGAR({ competitors: [] }),                                            metricsSb),
@@ -262,6 +273,13 @@ async function runEnrichment(question) {
   // plus the raw data (for link extraction). `used` = that system actually
   // contributed text to the prompt, which is the honest definition of
   // "this answer drew on X".
+  // Fallback web search of federal sites, only when the structured
+  // award/opportunity sources returned nothing (never throws).
+  let webData = { skipped: "not_needed" };
+  if (shouldWebFallback({ federalData, contractAwardsData })) {
+    webData = await webFederalSearch({ query: primaryQuery, agency, question });
+  }
+
   const federalText = formatFederalDataContext(federalData);
   const systemBlocks = [
     // federal-data-apis fans out to several systems; split so the answer
@@ -286,13 +304,23 @@ async function runEnrichment(question) {
     { id: "sam_contract_awards",     text: formatContractAwardsContext(contractAwardsData), data: contractAwardsData },
     { id: "sam_wage_determinations", text: formatWageDeterminationsContext(wageDetData),   data: wageDetData },
     { id: "sec_edgar",               text: formatEDGARContext(edgarData),                  data: edgarData },
+    { id: "web_federal",             text: formatWebFederalContext(webData),               data: webData },
   ].map((b) => ({ ...b, text: b.text || "", used: b.used !== undefined ? b.used : (b.text || "").length > 0 }));
+
+  // Systems that were queried but did not answer (timeout, quota, HTTP
+  // error, missing key). Their silence must never read as "no record
+  // exists": the model is told, the widget shows it, and ops can see it.
+  const unavailable = collectUnavailable({ federalData, systemBlocks });
+  const unavailableText = unavailable.length
+    ? `\n\nSYSTEMS NOT REACHED THIS TURN (queried but no answer; do not treat as "no records exist"; if the question depends on one of these, say it could not be checked):\n${unavailable.map((u) => `- ${u.name}: ${u.reason}`).join("\n")}`
+    : "";
 
   const context = [
     formatVehiclesContext(matchedVehicles),
     formatCorpusContext(corpusMatches),
     federalText,
     ...systemBlocks.map((b) => b.text),
+    unavailableText,
   ].filter(Boolean).join("");
 
   const sources = buildSources({ systems: systemBlocks, corpusMatches });
@@ -300,11 +328,50 @@ async function runEnrichment(question) {
   return {
     agency,
     context,
-    hasAnyData: context.length > 0,
+    hasAnyData: context.length > unavailableText.length,
     corpusMatches: corpusMatches.length,
     vehiclesDetected: matchedVehicles.map((v) => v.canonical),
     sources,
+    unavailable,
+    searchPhrase: primaryQuery,
+    corrections: terms.corrections,
   };
+}
+
+function shortReason(err) {
+  const s = String(err || "").replace(/\s+/g, " ").trim();
+  return s.length > 120 ? `${s.slice(0, 117)}...` : s;
+}
+
+/**
+ * Pure: derive the "not reached" list from the raw enrichment results.
+ * federal-data-apis resolves with per-system {error} fields; the other
+ * clients resolve with a top-level {error} (or {configured:false}).
+ */
+function collectUnavailable({ federalData, systemBlocks }) {
+  const out = [];
+  const push = (id, reason) => {
+    const cat = CATALOG_BY_ID[id];
+    if (!cat || out.some((u) => u.id === id)) return;
+    out.push({ id, name: cat.name, reason: shortReason(reason) || "no answer" });
+  };
+  if (federalData && federalData.error && !federalData.usaspending_awards) {
+    push("usaspending", federalData.error);
+    push("sam_opportunities", federalData.error);
+  } else if (federalData) {
+    if (federalData.usaspending_awards && federalData.usaspending_awards.error) push("usaspending", federalData.usaspending_awards.error);
+    const so = federalData.sam_opportunities;
+    if (so && so.error) push("sam_opportunities", so.rateLimited ? `rate limited (shared daily quota${so.resetAt ? `, resets ${so.resetAt}` : ""})` : so.error);
+    if (federalData.federal_register && federalData.federal_register.error) push("federal_register", federalData.federal_register.error);
+    if (federalData.gao_reports && federalData.gao_reports.error) push("gao_reports", federalData.gao_reports.error);
+  }
+  for (const b of systemBlocks || []) {
+    const d = b.data;
+    if (!d || typeof d !== "object" || b.id === "web_federal") continue;
+    if (d.error) push(b.id, d.error);
+    else if (d.configured === false) push(b.id, "not configured");
+  }
+  return out;
 }
 
 function formatHistory(history) {
@@ -362,10 +429,10 @@ Answer the subscriber now, following the voice and format rules in the system pr
  */
 async function answerQuestion({ question, history = [], maxTokens = 1500 }) {
   if (!question || question.trim().length < 3) {
-    return { answer: "", error: "question too short", agency: null, hasData: false, sources: [] };
+    return { answer: "", error: "question too short", agency: null, hasData: false, sources: [], unavailable: [] };
   }
   try {
-    const { agency, context, hasAnyData, sources } = await runEnrichment(question);
+    const { agency, context, hasAnyData, sources, unavailable, searchPhrase, corrections } = await runEnrichment(question);
     const { answer, model, usage } = await callClaude({ question, context, history, maxTokens });
     return {
       answer,
@@ -374,6 +441,9 @@ async function answerQuestion({ question, history = [], maxTokens = 1500 }) {
       model,
       usage,
       sources,
+      unavailable,
+      searchPhrase,
+      corrections,
     };
   } catch (err) {
     return {
@@ -381,6 +451,7 @@ async function answerQuestion({ question, history = [], maxTokens = 1500 }) {
       agency: null,
       hasData: false,
       sources: [],
+      unavailable: [],
       error: err.message,
     };
   }
@@ -390,4 +461,5 @@ module.exports = {
   detectAgency,
   runEnrichment,
   answerQuestion,
+  collectUnavailable,
 };

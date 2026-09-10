@@ -297,6 +297,7 @@ function makeHandler(overrides = {}) {
   }
 
   const sources = Array.isArray(result.sources) ? result.sources : [];
+  const unavailable = Array.isArray(result.unavailable) ? result.unavailable : [];
   const remaining = Math.max(cap - used - 1, 0);
 
   if (mode === "member") {
@@ -305,11 +306,12 @@ function makeHandler(overrides = {}) {
       user_email: email,
       details: {
         email, tier, question, answer: result.answer, agency: result.agency, has_data: result.hasData,
-        model: result.model, source_ids: sources.map((s) => s.id), history_turns: history.length,
+        model: result.model, source_ids: sources.map((s) => s.id), unavailable: unavailable.map((u) => u.id),
+        search_phrase: result.searchPhrase, history_turns: history.length,
         submitted_at: now.toISOString(), month,
       },
     });
-    return reply(200, { answer: result.answer, agency: result.agency, hasData: result.hasData, model: result.model, sources, remaining, cap, mode, tier });
+    return reply(200, { answer: result.answer, agency: result.agency, hasData: result.hasData, model: result.model, sources, unavailable, remaining, cap, mode, tier });
   }
 
   const turnId = access.newTurnId();
@@ -318,13 +320,14 @@ function makeHandler(overrides = {}) {
     user_email: email,
     details: {
       turn_id: turnId, email, ip_hash: ipHash, question, answer: result.answer, agency: result.agency,
-      has_data: result.hasData, model: result.model, sources, history_turns: history.length,
+      has_data: result.hasData, model: result.model, sources, unavailable: unavailable.map((u) => u.id),
+      search_phrase: result.searchPhrase, history_turns: history.length,
       submitted_at: now.toISOString(), month, hint,
     },
   });
 
   if (mode === "free") {
-    return reply(200, { answer: result.answer, agency: result.agency, hasData: result.hasData, model: result.model, sources, remaining, cap, mode, hint });
+    return reply(200, { answer: result.answer, agency: result.agency, hasData: result.hasData, model: result.model, sources, unavailable, remaining, cap, mode, hint });
   }
   // Anonymous: the gate. Sources are held until an email unlocks them.
   return reply(200, {
@@ -334,6 +337,7 @@ function makeHandler(overrides = {}) {
     model: result.model,
     sources: [],
     sources_count: sources.length,
+    unavailable,
     gated: true,
     unlock_id: turnRowId ? turnId : null,
     remaining,

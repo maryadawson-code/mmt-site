@@ -27,7 +27,37 @@ const SAM_API_KEY = process.env.SAM_GOV_API_KEY || "";
  * @param {number} [params.limit] - Max results (default 20)
  * @returns {Promise<{awards: Array, total: number, error?: string}>}
  */
-async function searchUSASpending({ keyword, agency, naics, startDate, endDate, limit = 20 }) {
+const { extractSearchTerms } = require("./query-terms");
+
+/**
+ * Keyword for the award/opportunity searches, derived from a question or
+ * topic. Strips question scaffolding, agency wording and generic
+ * procurement nouns and corrects domain misspellings (2026-09-10: the raw
+ * sentence "Tell me all about data governence awards in the DHA" was being
+ * sent verbatim as the USASpending keyword). Falls back to the trimmed
+ * input when nothing specific survives (short entity names pass through).
+ */
+function deriveKeywords(topic) {
+  const t = extractSearchTerms(topic);
+  return (t.phrase || String(topic || "").trim()).substring(0, 120);
+}
+
+// USASpending sub-agency (subtier) names. DHA questions used to be filtered
+// to all of DoD; a subtier filter scopes to the agency itself. If the
+// subtier query errors or returns nothing, searchUSASpending retries at the
+// toptier so a misnamed subtier can never blank an answer.
+const USASPENDING_SUBTIER = {
+  DHA: "Defense Health Agency",
+  "Defense Health Agency": "Defense Health Agency",
+  CMS: "Centers for Medicare and Medicaid Services",
+  "Centers for Medicare and Medicaid Services": "Centers for Medicare and Medicaid Services",
+  NIH: "National Institutes of Health",
+  "National Institutes of Health": "National Institutes of Health",
+  IHS: "Indian Health Service",
+  "Indian Health Service": "Indian Health Service",
+};
+
+async function searchUSASpending({ keyword, agency, naics, startDate, endDate, limit = 20, _tier }) {
   // USASpending Contract Award mappings: `filters.keyword` (singular) is
   // deprecated and silently rejected; `keywords` (plural array) is the
   // current shape. Empty/missing keyword: omit the filter rather than
@@ -66,10 +96,15 @@ async function searchUSASpending({ keyword, agency, naics, startDate, endDate, l
       "General Services Administration": "General Services Administration",
     };
     const toptierName = agencyToToptierName[agency];
-    if (toptierName) {
+    const subtierName = _tier === "toptier" ? null : USASPENDING_SUBTIER[agency];
+    if (subtierName) {
+      filters.agencies = [{ type: "funding", tier: "subtier", name: subtierName }];
+    } else if (toptierName) {
       filters.agencies = [{ type: "funding", tier: "toptier", name: toptierName }];
     }
   }
+  const usedSubtier = !!(filters.agencies && filters.agencies[0] && filters.agencies[0].tier === "subtier");
+  const retryToptier = () => searchUSASpending({ keyword, agency, naics, startDate, endDate, limit, _tier: "toptier" });
 
   if (naics && naics.length > 0) {
     filters.naics_codes = naics.map(String);
@@ -120,10 +155,20 @@ async function searchUSASpending({ keyword, agency, naics, startDate, endDate, l
       } catch { /* ignore */ }
       const message = `USASpending API ${res.status}${detail ? `: ${detail}` : ""}`;
       console.error(message);
+      if (usedSubtier) {
+        console.warn(`[USASPENDING] subtier filter rejected for ${agency}; retrying at toptier`);
+        return retryToptier();
+      }
       return { awards: [], total: 0, error: message, status: res.status };
     }
 
     const data = await res.json();
+    if (usedSubtier && (!data.results || data.results.length === 0)) {
+      // Nothing at the sub-agency: widen to the department so a scoped
+      // question still gets the department's records rather than silence.
+      const wider = await retryToptier();
+      return { ...wider, widened_from_subtier: true };
+    }
     const awards = (data.results || []).map((r) => ({
       piid: r["Award ID"] || "unknown",
       recipient: r["Recipient Name"] || "",
@@ -574,7 +619,7 @@ async function getAgencySpendingTotals({ agency_code, fiscal_year }) {
  * @returns {Promise<Object>} Combined API results
  */
 async function enrichWithFederalData({ topic, agency, naics }) {
-  const keywords = topic.split(/\s+/).filter((w) => w.length > 3).slice(0, 5).join(" ");
+  const keywords = deriveKeywords(topic);
   const agencySlugMap = {
     "VA": "veterans-affairs-department",
     "DHA": "defense-department",
@@ -605,6 +650,9 @@ async function enrichWithFederalData({ topic, agency, naics }) {
     searchSAMOpportunities({
       keyword: keywords.substring(0, 60),
       naics: naics && naics[0] ? naics[0] : undefined,
+      // Was never passed here, so the assistant's SAM.gov query ran
+      // unscoped across every department (2026-09-10).
+      agency: agency || undefined,
       limit: 15,
     }),
     searchFederalRegister({
@@ -804,6 +852,8 @@ function deriveAcquisitionState(opp, { now = Date.now(), staleDays = 120 } = {})
 }
 
 module.exports = {
+  deriveKeywords,
+  USASPENDING_SUBTIER,
   searchUSASpending,
   getSpendingByCategory,
   searchSAMOpportunities,

@@ -27,6 +27,7 @@
     .src-mode.live { background:rgba(69,123,157,0.12); color:var(--mmt-teal,#457B9D); }
     .src-mode.index { background:rgba(10,25,47,0.08); color:var(--mmt-navy,#0A192F); }
     .src-mode.conditional { background:#FEF3C7; color:#92400E; }
+    .src-mode.fallback { background:#FEE2E2; color:#991B1B; }
     .src-note { display:block; margin-top:4px; font-size:12px; color:var(--mmt-text-secondary,#6B7280); }
   </style>
 </head>
@@ -38,7 +39,7 @@
     <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-teal,#457B9D);margin-bottom:8px;"><a href="/ask" style="color:inherit;text-decoration:none;">Ask MMT</a> &middot; Sources</p>
     <h1 style="font-size:36px;font-weight:800;letter-spacing:-0.02em;margin:0 0 12px;">What Ask MMT reads.</h1>
     <p style="font-size:16px;color:var(--mmt-text-secondary,#6B7280);margin:0 0 8px;line-height:1.55;max-width:70ch;">Ask MMT answers from the sources below and nothing else. If the answer is not in these systems, it tells you it does not know. Every answer lists which of these it used.</p>
-    <p style="font-size:13px;color:var(--mmt-text-secondary,#6B7280);margin:0 0 28px;line-height:1.55;max-width:70ch;">This table is generated at build time from the same source list the assistant runs, so it cannot say one thing while the code does another. <span class="src-mode live">Live</span> means queried the moment you ask. <span class="src-mode index">Index</span> means the MMT archive, re-indexed on every site build. <span class="src-mode conditional">Conditional</span> means the client is wired but returns nothing until a credential or input it needs exists; those are listed so you know they will not be cited yet.</p>
+    <p style="font-size:13px;color:var(--mmt-text-secondary,#6B7280);margin:0 0 28px;line-height:1.55;max-width:70ch;">This table is generated at build time from the same source list the assistant runs, so it cannot say one thing while the code does another. <span class="src-mode live">Live</span> means queried the moment you ask. <span class="src-mode index">Index</span> means the MMT archive, re-indexed on every site build. <span class="src-mode conditional">Conditional</span> means the client is wired but returns nothing until a credential or input it needs exists; those are listed so you know they will not be cited yet. <span class="src-mode fallback">Fallback</span> means a web search of federal sites only, run when the structured sources return nothing; the answer labels those results as leads to verify.</p>
 
     <div class="card" style="padding:0 16px;overflow-x:auto;margin-bottom:28px;">
       <table class="src-table">
@@ -51,6 +52,7 @@
 
     <div class="card" style="padding:20px 24px;background:var(--mmt-soft,#F3F4F6);margin-bottom:28px;">
       <p style="margin:0 0 8px;font-size:14px;line-height:1.55;"><strong>Scope note.</strong> Ask MMT pulls federal data by agency. When the APIs return thin results for a question, the answer is labeled "limited API data" so you know to go to the primary source yourself.</p>
+      <p style="margin:0 0 8px;font-size:14px;line-height:1.55;" id="fallback"><strong>When a system does not answer.</strong> SAM.gov has a small daily query quota and any API can time out. When that happens the answer says which system was not reached this turn, instead of treating silence as "no such record exists".</p>
       <p style="margin:0;font-size:14px;line-height:1.55;"><strong>Not on this list:</strong> the MMT Newswire (ten feeds refreshed every four hours) and the Opportunity Radar. Those are separate surfaces on the site; the assistant does not read them when it answers.</p>
     </div>
 

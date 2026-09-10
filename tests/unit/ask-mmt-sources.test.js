@@ -34,12 +34,13 @@ describe("SOURCE_CATALOG", () => {
       expect(seen.has(s.id)).toBe(false);
       seen.add(s.id);
       expect(s.url).toMatch(/^https:\/\//);
-      expect(["live", "index", "conditional"]).toContain(s.mode);
+      expect(["live", "index", "conditional", "fallback"]).toContain(s.mode);
       expect(s.provides.length).toBeGreaterThan(10);
       expect(s.use.length).toBeGreaterThan(10);
-      if (s.mode === "conditional") expect(s.note.length).toBeGreaterThan(10);
+      if (s.mode === "conditional" || s.mode === "fallback") expect(s.note.length).toBeGreaterThan(10);
     }
     expect(CATALOG_BY_ID.mmt_archive.mode).toBe("index");
+    expect(CATALOG_BY_ID.web_federal.mode).toBe("fallback");
   });
 
   it("carries no em dashes (voice rule)", () => {

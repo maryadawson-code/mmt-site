@@ -1,5 +1,88 @@
 # Mission Meets Tech - Developer & Content Governance
 
+## Sprint 2026-09-10 (evening) — Ask MMT sent the whole sentence to the APIs
+
+Mary asked the live tool "Tell me all about data governence awards in the
+DHA" and got "I don't have a source for that", with SAM.gov absent from the
+sources list, while `contracts.json` holds a **DHA Data Governance (WOSB
+Set-Aside)** entry. Four defects, all in the question-to-query step:
+
+1. **The sentence was the keyword.** `enrichWithFederalData` split the
+   topic on spaces, kept words longer than three letters and took five, so
+   USASpending received `keywords: ["Tell about data governence awards"]`
+   and SAM.gov `q=` the same string. Every topic enricher (PubMed, CMS,
+   eCFR...) got the raw question too. New `lib/query-terms.js`
+   `extractSearchTerms()` strips question scaffolding, agency wording and
+   generic procurement nouns, keeps acronyms, and corrects unambiguous
+   domain misspellings (edit distance 2 against a vocabulary; six-letter
+   minimum; never acronyms). The failing question becomes `data governance`
+   + agency DHA. `federal-data-apis.deriveKeywords()` and the assistant's
+   `topicQuery` both use it.
+2. **SAM.gov was never scoped to the agency.** `enrichWithFederalData`
+   called `searchSAMOpportunities` without `agency`, so `deptname` was
+   never set. Fixed.
+3. **DHA meant all of DoD on USASpending.** Added `USASPENDING_SUBTIER`
+   (DHA, CMS, NIH, IHS) so the agencies filter is `tier: subtier`; a 4xx or
+   an empty subtier result retries at toptier (`widened_from_subtier`), so
+   a misnamed subtier can never blank an answer.
+4. **The corpus ranked scope over topic.** `content-index.js` weighted every
+   acronym 5x, so "DHA" alone outranked the entry whose title IS the
+   question. Agency acronyms now weigh 2x and `searchCorpus(q, n, phrase)`
+   adds an exact-phrase bonus (title +25, description/tags +12, excerpt +8).
+   The DHA Data Governance entry now ranks first for the exact question.
+   Contract items in the corpus link to the MMT page
+   (`/contracts/<slug>/`, `source_url` kept separately) instead of the
+   entry's bare `https://sam.gov` link that used to ship as a "source".
+
+Two additions so silence is never mistaken for absence:
+- **`unavailable`**: `collectUnavailable()` lists every system that was
+  queried and did not answer (timeout, HTTP error, SAM quota, missing key)
+  with a plain reason. It goes into the prompt as SYSTEMS NOT REACHED THIS
+  TURN with a rule that the model must say so rather than imply "no such
+  record", into the response, the widget ("Not reached this turn: ..."),
+  and the ops_event.
+- **Federal-sites web fallback** (`lib/web-federal-search.js`, Perplexity
+  `sonar`, `search_domain_filter` = 15 .gov/.mil domains, 20s timeout):
+  runs ONLY when USASpending awards, SAM opportunities and the
+  contract-award client all returned nothing (`shouldWebFallback`). Results
+  enter the context as LEADS, are cited as "web search, verify on the
+  page", and any sam.gov `/opp/` citation that is not 32-hex is dropped
+  first (08-05 rule). Catalog row `web_federal`, mode `fallback`, rendered
+  on `/ask/sources`. Off without `PERPLEXITY_API_KEY`; kill switch
+  `ASK_MMT_WEB_FALLBACK_DISABLED`.
+
+Tests (23 new, 701 total): `query-terms.test.js` (the verbatim failing
+question), `federal-search-wire.test.js` (stubbed fetch; asserts the exact
+USASpending body and SAM query string the APIs receive, subtier widening
+and the 4xx retry), `ask-mmt-enrichment.test.js` (full `runEnrichment` with
+every upstream down: the archive still cites the DHA Data Governance page
+and the silent systems are named; with USASpending up it is a cited source;
+the fallback fires once and only when the award sources were silent),
+`web-federal-search.test.js`.
+
+**Not verifiable from this session:** every .gov/.mil host and Perplexity
+are egress-blocked here, so the live answer was not re-run. The wire tests
+prove what is sent; the accuracy pass (campaign checklist item 1) is the
+live proof and is queued as a local task.
+
+Hard rules (do not regress):
+- **A question is not a keyword.** Anything that reaches an API `keywords`,
+  `q` or `query` parameter goes through `extractSearchTerms()` first. The
+  wire test asserts the request body for the failing question.
+- **Scope the sub-agency, then widen.** DHA/CMS/NIH/IHS questions filter at
+  subtier and fall back to the department; never the reverse.
+- **Silence from a system is reported, not interpreted.** Every enrichment
+  result with `error`/`configured:false`/`rateLimited` is listed as NOT
+  REACHED in the prompt, the response and the widget.
+- **Web search is a fallback of last resort, federal domains only, labeled
+  as leads.** It never runs when the structured award sources answered,
+  and a malformed SAM permalink from it never reaches the model.
+
+Verified 2026-09-10: unit suite 701/701 (59 files); build exit 0 (688
+pages, zero raw markers); validate-dist, validate-routes (36),
+validate-ask-mmt-coverage, validate-data-freshness, scan-pii pass; corpus
+rebuilt (`scripts/build-content-corpus.js`).
+
 ## Sprint 2026-09-10 (later) — Ask MMT campaign: one product name, token auth, free tier, sources on every answer, autonomous campaign
 
 Mary handed over the "Ask MMT Campaign Package" (research with receipts,
