@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What Ask MMT reads | Mission Meets Tech</title>
+  <meta name="description" content="Every system Ask MMT queries, what each one provides, and how the answer uses it. Federal sources and the MMT archive. Nothing else.">
+  <link rel="canonical" href="https://missionmeetstech.com/ask/sources">
+  <meta property="og:title" content="What Ask MMT reads">
+  <meta property="og:description" content="Every system Ask MMT queries, what each one provides, and how the answer uses it.">
+  <meta property="og:url" content="https://missionmeetstech.com/ask/sources">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://missionmeetstech.com/mmt-logo.png">
+  <meta property="og:site_name" content="Mission Meets Tech">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-v3.png">
+  <link rel="preconnect" href="https://plausible.io" crossorigin>
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <link rel="stylesheet" href="/styles/tokens.css">
+  <style>
+    .src-table { width:100%; border-collapse:collapse; font-size:14px; }
+    .src-table th, .src-table td { text-align:left; padding:12px 10px; border-top:1px solid var(--mmt-border,#E5E7EB); vertical-align:top; line-height:1.5; }
+    .src-table th { font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--mmt-text-secondary,#6B7280); border-top:none; }
+    .src-mode { display:inline-block; font-size:10px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; padding:2px 8px; border-radius:999px; white-space:nowrap; }
+    .src-mode.live { background:rgba(69,123,157,0.12); color:var(--mmt-teal,#457B9D); }
+    .src-mode.index { background:rgba(10,25,47,0.08); color:var(--mmt-navy,#0A192F); }
+    .src-mode.conditional { background:#FEF3C7; color:#92400E; }
+    .src-note { display:block; margin-top:4px; font-size:12px; color:var(--mmt-text-secondary,#6B7280); }
+  </style>
+</head>
+<body>
+  <!-- Nav (build.js will inject the canonical nav before </nav>) -->
+  <nav class="site-nav"></nav>
+
+  <main class="max-w-5xl mx-auto px-4 py-12">
+    <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-teal,#457B9D);margin-bottom:8px;"><a href="/ask" style="color:inherit;text-decoration:none;">Ask MMT</a> &middot; Sources</p>
+    <h1 style="font-size:36px;font-weight:800;letter-spacing:-0.02em;margin:0 0 12px;">What Ask MMT reads.</h1>
+    <p style="font-size:16px;color:var(--mmt-text-secondary,#6B7280);margin:0 0 8px;line-height:1.55;max-width:70ch;">Ask MMT answers from the sources below and nothing else. If the answer is not in these systems, it tells you it does not know. Every answer lists which of these it used.</p>
+    <p style="font-size:13px;color:var(--mmt-text-secondary,#6B7280);margin:0 0 28px;line-height:1.55;max-width:70ch;">This table is generated at build time from the same source list the assistant runs, so it cannot say one thing while the code does another. <span class="src-mode live">Live</span> means queried the moment you ask. <span class="src-mode index">Index</span> means the MMT archive, re-indexed on every site build. <span class="src-mode conditional">Conditional</span> means the client is wired but returns nothing until a credential or input it needs exists; those are listed so you know they will not be cited yet.</p>
+
+    <div class="card" style="padding:0 16px;overflow-x:auto;margin-bottom:28px;">
+      <table class="src-table">
+        <thead><tr><th>Source</th><th>How</th><th>What it provides</th><th>How Ask MMT uses it</th></tr></thead>
+        <tbody>
+          <!-- BUILD:ASK_MMT_SOURCES_TABLE -->
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card" style="padding:20px 24px;background:var(--mmt-soft,#F3F4F6);margin-bottom:28px;">
+      <p style="margin:0 0 8px;font-size:14px;line-height:1.55;"><strong>Scope note.</strong> Ask MMT pulls federal data by agency. When the APIs return thin results for a question, the answer is labeled "limited API data" so you know to go to the primary source yourself.</p>
+      <p style="margin:0;font-size:14px;line-height:1.55;"><strong>Not on this list:</strong> the MMT Newswire (ten feeds refreshed every four hours) and the Opportunity Radar. Those are separate surfaces on the site; the assistant does not read them when it answers.</p>
+    </div>
+
+    <p style="font-size:15px;line-height:1.6;margin:0 0 24px;">No vendor sites. No sponsored content. No training on your questions. Full practices at <a href="/security" style="color:var(--mmt-teal,#457B9D);font-weight:600;">missionmeetstech.com/security</a>.</p>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <a href="/ask" class="btn-primary no-underline">Ask a question &rarr;</a>
+      <a href="/pricing?utm_source=askmmt&amp;utm_medium=sources&amp;utm_campaign=ask-mmt-2026&amp;utm_content=sources" class="btn-secondary no-underline" onclick="if(typeof plausible!=='undefined')plausible('ask_premium_click',{props:{from:'sources'}})">See Premium</a>
+    </div>
+  </main>
+
+  <footer></footer>
+</body>
+</html>

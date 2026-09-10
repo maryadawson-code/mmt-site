@@ -80,7 +80,7 @@
         <li>1 free MarketPulse brief</li>
       </ul>
 
-      <h3>MMT Premium ($199/yr Founding, $249/yr Annual, or $29/mo)</h3>
+      <h3>MMT Premium ($199/yr Founding, $249/yr Annual, or $29.99/mo)</h3>
       <p>Everything free, plus:</p>
       <table>
         <thead><tr><th>Feature</th><th>What you get</th></tr></thead>
@@ -91,7 +91,8 @@
           <tr><td>Weekly Friday Brief</td><td>New solicitations, awards, vehicle status, top signals</td></tr>
           <tr><td>Monthly PDF Brief</td><td>Formatted intelligence packet for your leadership team</td></tr>
           <tr><td>Pursuit Calendar</td><td>Expected RFP dates, proposal deadlines, award windows</td></tr>
-          <tr><td>Ask MMT</td><td>2 questions/month answered editorially</td></tr>
+          <tr><td>Ask MMT (AI research assistant)</td><td><!-- BUILD:ASK_MMT_CAP_PREMIUM --> questions/month, sources on every answer (everyone gets <!-- BUILD:ASK_MMT_CAP_FREE -->/month free)</td></tr>
+          <tr><td>Analyst Q&amp;A with Mary</td><td>1 question/month (2 on Founding with priority review), answered editorially</td></tr>
           <tr><td>Agency Intelligence Profiles</td><td>DHA, VA, HHS, ONC, ARPA-H, CMS deep data</td></tr>
           <tr><td>Contract Tracker (full)</td><td>Vendor, value, NAICS, competitive intelligence</td></tr>
           <tr><td>IDIQ Tracker (full)</td><td>Awardees, burn rate, re-compete signals</td></tr>
@@ -106,7 +107,7 @@
       </table>
 
       <h3>Institutional ($2,500 - $5,000/yr)</h3>
-      <p>Everything in Premium, plus up to 5 team seats, Watchlist Alerts, exportable intelligence, included tool credits, priority Q&A (3/month), and a 1:1 onboarding session.</p>
+      <p>Everything in Premium, plus up to 5 team seats, <!-- BUILD:ASK_MMT_CAP_INSTITUTIONAL --> Ask MMT questions a month pooled across seats, Watchlist Alerts, exportable intelligence, included tool credits, Analyst Q&amp;A with Mary (3/month, 2-business-day SLA), and a 1:1 onboarding session.</p>
 
       <hr>
 
@@ -164,10 +165,25 @@
 
       <hr>
 
+      <!-- ASK MMT -->
+      <h2 id="ask-mmt">Using Ask MMT</h2>
+      <p>Ask MMT is the research assistant. Type a federal health IT question the way you would ask a colleague: a contract, a vehicle, an agency, a budget line, a trend. It answers in seconds and lists the sources it used under the answer.</p>
+      <ol>
+        <li>Go to <a href="/ask">missionmeetstech.com/ask</a>. Premium members also have the floating button on every member page and a card on the dashboard.</li>
+        <li>Ask. Follow-up questions carry the last two turns, so "and who holds the bridge?" works after a first question about the program.</li>
+        <li>Open the sources. Every answer lists the systems it drew on and the MMT articles it cited. Check them before the answer goes in a slide.</li>
+      </ol>
+      <p><strong>What it reads:</strong> live federal sources (SAM.gov, USASpending, Congress.gov, PubMed, and more) and the MMT article archive. The full list, with what each provides, is at <a href="/ask/sources">missionmeetstech.com/ask/sources</a>.</p>
+      <p><strong>Limits:</strong> <!-- BUILD:ASK_MMT_CAP_FREE --> questions a month free (email required to see sources). <!-- BUILD:ASK_MMT_CAP_PREMIUM --> a month on Premium and Founding. <!-- BUILD:ASK_MMT_CAP_INSTITUTIONAL --> a month pooled on Institutional. Counts reset on the 1st.</p>
+      <p><strong>When it does not know:</strong> it says so. If the answer is not in the sources it reads, you get "I don't have a source for that" and a suggestion for where to look, rather than a guess.</p>
+      <p><strong>Privacy:</strong> Your question and answer stay in your browser and in MMT's usage log for quota counting. The AI provider does not train on them. Details on the <a href="/security">Security page</a>.</p>
+
+      <hr>
+
       <!-- DASHBOARD -->
       <h2 id="dashboard">Premium Dashboard</h2>
       <p>Access at <a href="/dashboard.html">missionmeetstech.com/dashboard</a>. Enter your subscriber email to sign in.</p>
-      <p>The sidebar includes: Home, Latest Analysis, Agency Profiles, Friday Brief, Monthly Brief, Contract Tracker, IDIQ Tracker, Pursuit Calendar, ProposalPulse, MarketPulse, Glossary, Newswire, Agency Sources, Ask MMT, and Settings.</p>
+      <p>The sidebar includes: Home, Latest Analysis, Agency Profiles, Friday Brief, Monthly Brief, Contract Tracker, IDIQ Tracker, Pursuit Calendar, ProposalPulse, MarketPulse, Glossary, Newswire, Agency Sources, Analyst Q&amp;A, and Settings.</p>
       <p>When signed in, a member chip appears in the site header with quick access to Dashboard, My Briefs, Pursuit Calendar, and Sign Out.</p>
 
       <hr>
@@ -272,13 +288,16 @@
       <p>A monthly brief covering programs, vehicles, and budget signals. Each signal includes an action window and confidence label.</p>
 
       <h3>How does Ask MMT work?</h3>
-      <p>Premium subscribers submit up to 2 questions per month through the Ask MMT portal. Answers are published editorially so every subscriber benefits.</p>
+      <p>Ask MMT is the AI research assistant. It answers federal health IT questions in seconds from live federal sources and the MMT archive, and it lists its sources under every answer. <!-- BUILD:ASK_MMT_CAP_FREE --> questions a month free, <!-- BUILD:ASK_MMT_CAP_PREMIUM --> on Premium, <!-- BUILD:ASK_MMT_CAP_INSTITUTIONAL --> pooled on Institutional. See <a href="#ask-mmt">Using Ask MMT</a>.</p>
+
+      <h3>How does Analyst Q&amp;A work?</h3>
+      <p>The human channel. Premium subscribers send Mary 1 question a month (2 on Founding, 3 on Institutional) through the Analyst Q&amp;A portal in the dashboard. Answers are published editorially so every subscriber benefits.</p>
 
       <h3>Can I switch plans?</h3>
       <p>Yes. Email <a href="mailto:support@missionmeetstech.com">support@missionmeetstech.com</a>.</p>
 
       <h3>Is my data private?</h3>
-      <p>Yes. Documents not stored. Not used to train models. Encrypted in transit and at rest.</p>
+      <p>Yes. Documents not stored. Not used to train models. Encrypted in transit and at rest. Ask MMT questions are not used for training either; your chat history lives in your own browser.</p>
 
       <h3>Who writes the analysis?</h3>
       <p>Mary Womack. Career federal health IT professional. Independent. No vendor relationships.</p>

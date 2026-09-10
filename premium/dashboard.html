@@ -202,21 +202,23 @@
     <a href="/latest.html" style="color:var(--mmt-teal); font-weight:600; font-size:14px; text-decoration:none;">Browse articles &rarr;</a>
   </div>
 
-  <div class="dash-card">
-    <h3>Monthly Q&A</h3>
-    <p style="margin:0; color:var(--mmt-text-secondary); font-size:14px;">Reply to any Premium newsletter issue with your question. Selected questions answered in the next issue. Email <a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a> directly.</p>
+  <div class="dash-card" style="border-left:3px solid var(--mmt-teal);">
+    <h3>Ask MMT</h3>
+    <p style="margin:0 0 12px; color:var(--mmt-text-secondary); font-size:14px;">Instant, sourced answers from SAM.gov, USASpending, Congress.gov, PubMed, and the archive. Your allowance: <span id="ask-chat-cap"><!-- BUILD:ASK_MMT_CAP_PREMIUM --></span> questions a month.</p>
+    <button type="button" class="btn-primary" style="cursor:pointer;" onclick="if(typeof window.mmtOpenAskMMT==='function'){window.mmtOpenAskMMT();}else{window.location.href='/ask';}">Ask a question &rarr;</button>
+    <a href="/ask/sources" style="margin-left:12px;font-size:13px;color:var(--mmt-teal);text-decoration:none;">What it reads &rarr;</a>
   </div>
 
   <!-- PMD-06: Ask MMT counter widget -->
   <div class="dash-card" style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 20px;flex-wrap:wrap;">
     <div>
-      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin-bottom:4px;">Ask MMT &middot; This Month</div>
-      <div style="font-size:14px;font-weight:600;" id="ask-counter-label">0 of 2 questions used</div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin-bottom:4px;">Analyst Q&amp;A &middot; This Month</div>
+      <div style="font-size:14px;font-weight:600;" id="ask-counter-label">Loading your allowance&hellip;</div>
       <div style="width:160px;height:4px;background:var(--mmt-border);border-radius:999px;margin-top:8px;overflow:hidden;">
         <div id="ask-counter-bar" style="height:100%;background:var(--mmt-teal);border-radius:999px;width:0%;transition:width 0.3s;"></div>
       </div>
     </div>
-    <a href="/premium/ask-mmt.html" style="font-size:13px;font-weight:600;color:var(--mmt-teal);text-decoration:none;white-space:nowrap;">Ask a question &rarr;</a>
+    <a href="/premium/ask-mmt.html" style="font-size:13px;font-weight:600;color:var(--mmt-teal);text-decoration:none;white-space:nowrap;">Ask Mary a question &rarr;</a>
   </div>
 
   <div class="dash-card">
@@ -241,15 +243,34 @@
       document.getElementById('first-visit-banner').style.display = 'none';
     });
 
-    // PMD-06: Ask MMT counter
+    // PMD-06: Analyst Q&A counter. The total is the member's TIER cap, read
+    // from the same endpoint the portal uses (ask-mmt-submit GET), never a
+    // hardcoded 2. Falls back to the local count with no total while loading.
     var monthKey = 'mmt_ask_count_' + new Date().toISOString().slice(0, 7);
-    var used = parseInt(localStorage.getItem(monthKey) || '0');
-    var total = 2;
+    var localUsed = parseInt(localStorage.getItem(monthKey) || '0');
     var counterLabel = document.getElementById('ask-counter-label');
     var counterBar = document.getElementById('ask-counter-bar');
-    if (counterLabel) counterLabel.textContent = used + ' of ' + total + ' questions used';
-    if (counterBar) counterBar.style.width = Math.min(100, (used / total) * 100) + '%';
-    if (used >= total && counterLabel) counterLabel.style.color = '#D97706';
+    function paintAskCounter(used, total) {
+      if (counterLabel) counterLabel.textContent = used + ' of ' + total + ' question' + (total === 1 ? '' : 's') + ' used';
+      if (counterBar) counterBar.style.width = Math.min(100, (used / Math.max(total, 1)) * 100) + '%';
+      if (used >= total && counterLabel) counterLabel.style.color = '#D97706';
+    }
+    (function loadAskCounter() {
+      var tok = localStorage.getItem('mmt_subscriber_token');
+      if (!tok) {
+        // Older sessions have no token: fall back to what the portal last saved.
+        var c = parseInt(localStorage.getItem('mmt_ask_cap') || '0'), r = parseInt(localStorage.getItem('mmt_ask_remaining') || '0');
+        if (c > 0) paintAskCounter(c - r, c); else if (counterLabel) counterLabel.textContent = 'Sign in again to see your allowance';
+        return;
+      }
+      fetch('/.netlify/functions/ask-mmt-submit?token=' + encodeURIComponent(tok))
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          if (d && typeof d.limit === 'number') paintAskCounter(d.used || 0, d.limit);
+          else if (counterLabel) counterLabel.textContent = localUsed + ' used this month';
+        })
+        .catch(function () { if (counterLabel) counterLabel.textContent = localUsed + ' used this month'; });
+    })();
   </script>
 </body>
 </html>

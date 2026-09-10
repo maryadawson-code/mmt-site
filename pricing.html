@@ -202,7 +202,8 @@
           <div style="border-top:1px solid var(--mmt-border-light);padding-top:20px;display:flex;flex-direction:column;gap:2px;">
             <div class="plan-feature"><span class="check">&#10003;</span> Everything in Annual plan</div>
             <div class="plan-feature"><span class="check" style="color:#92710A;">&#9733;</span> <strong style="color:var(--mmt-navy);">Permanent rate, never increases</strong></div>
-            <div class="plan-feature"><span class="check" style="color:#92710A;">&#9733;</span> <strong style="color:var(--mmt-navy);">Ask MMT &mdash; 2 questions/month with priority review</strong></div>
+            <div class="plan-feature"><span class="check">&#10003;</span> Ask MMT: <!-- BUILD:ASK_MMT_CAP_PREMIUM --> questions/month, sources on every answer</div>
+            <div class="plan-feature"><span class="check" style="color:#92710A;">&#9733;</span> <strong style="color:var(--mmt-navy);">Analyst Q&amp;A with Mary: 2 questions/month with priority review</strong></div>
             <div class="plan-feature"><span class="check" style="color:#92710A;">&#9733;</span> <strong style="color:var(--mmt-navy);">Personal reply on product &amp; tool suggestions</strong> (whether or not they publish)</div>
             <div class="plan-feature"><span class="check" style="color:#92710A;">&#9733;</span> <strong style="color:var(--mmt-navy);">Direct line to Mary on what MMT becomes</strong></div>
             <div class="plan-feature"><span class="check" style="color:#92710A;">&#9733;</span> <strong style="color:var(--mmt-navy);">Founding Member recognition</strong></div>
@@ -219,7 +220,7 @@
         <div style="margin-bottom:24px;">
           <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.12em;color:var(--mmt-teal);margin-bottom:12px;">Annual</div>
           <div class="plan-price">$249<span class="period">/yr</span></div>
-          <p style="margin-top:8px;font-size:14px;font-weight:600;color:var(--mmt-navy);">Save $99 vs monthly</p>
+          <p style="margin-top:8px;font-size:14px;font-weight:600;color:var(--mmt-navy);">Save $110 vs monthly</p>
           <p style="margin-top:10px;">Full access to all Premium content. Cancel anytime before renewal.</p>
         </div>
         <div style="flex:1;display:flex;flex-direction:column;">
@@ -233,7 +234,8 @@
             <div class="plan-feature"><span class="check">&#10003;</span> Weekly Friday Brief</div>
             <div class="plan-feature"><span class="check">&#10003;</span> Monthly PDF Intelligence Brief</div>
             <div class="plan-feature"><span class="check">&#10003;</span> Pursuit Calendar</div>
-            <div class="plan-feature"><span class="check">&#10003;</span> Ask MMT &mdash; 1 question/month (best answered in monthly Q&amp;A issue)</div>
+            <div class="plan-feature"><span class="check">&#10003;</span> Ask MMT: <!-- BUILD:ASK_MMT_CAP_PREMIUM --> questions/month, sources on every answer</div>
+            <div class="plan-feature"><span class="check">&#10003;</span> Analyst Q&amp;A with Mary: 1 question/month, best answered in the monthly Q&amp;A issue</div>
             <div class="plan-feature"><span class="check">&#10003;</span> Agency Intelligence Profiles (6 agencies)</div>
             <div class="plan-feature"><span class="check">&#10003;</span> Full Contract Tracker + IDIQ Tracker</div>
             <div class="plan-feature"><span class="check">&#10003;</span> Full Glossary (200+ terms)</div>
@@ -287,7 +289,8 @@
             <div class="plan-feature"><span class="check">&#10003;</span> Compliance Check Team Pack &mdash; 50 checks/mo, 3 seats</div>
             <div class="plan-feature"><span class="check">&#10003;</span> Pursuit Score Team Pack &mdash; 75 scores/mo, 5 seats</div>
             <div class="plan-feature"><span class="check">&#10003;</span> Signal Chain Pro &mdash; 20 tracked programs, real-time alerts</div>
-            <div class="plan-feature"><span class="check">&#10003;</span> Ask MMT &mdash; 3 questions/month with 2-business-day response SLA</div>
+            <div class="plan-feature"><span class="check">&#10003;</span> Ask MMT: <!-- BUILD:ASK_MMT_CAP_INSTITUTIONAL --> questions/month pooled across seats</div>
+            <div class="plan-feature"><span class="check">&#10003;</span> Analyst Q&amp;A with Mary: 3 questions/month, 2-business-day SLA</div>
             <div class="plan-feature"><span class="check">&#10003;</span> Exportable intelligence (CSV/PDF)</div>
             <div class="plan-feature"><span class="check">&#10003;</span> Quarterly briefings</div>
             <div class="plan-feature"><span class="check">&#10003;</span> 1:1 onboarding session</div>
@@ -383,9 +386,14 @@
                 <td style="color:var(--mmt-teal);font-weight:700;">Full analysis</td>
               </tr>
               <tr>
-                <td style="color:var(--mmt-navy);font-weight:600;">Monthly Q&amp;A access</td>
+                <td style="color:var(--mmt-navy);font-weight:600;">Ask MMT (AI research assistant)</td>
+                <td><!-- BUILD:ASK_MMT_CAP_FREE --> questions/month</td>
+                <td style="color:var(--mmt-teal);font-weight:700;"><!-- BUILD:ASK_MMT_CAP_PREMIUM -->/month (Institutional: <!-- BUILD:ASK_MMT_CAP_INSTITUTIONAL --> pooled)</td>
+              </tr>
+              <tr>
+                <td style="color:var(--mmt-navy);font-weight:600;">Analyst Q&amp;A with Mary</td>
                 <td style="opacity:0.4;">Not included</td>
-                <td style="color:var(--mmt-teal);font-weight:700;">2 questions/month &middot; Ask MMT portal</td>
+                <td style="color:var(--mmt-teal);font-weight:700;">1 question/month (2 on Founding, 3 on Institutional)</td>
               </tr>
               <tr>
                 <td style="color:var(--mmt-navy);font-weight:600;">Early access (48-72hr)</td>
@@ -486,8 +494,12 @@
           <p style="margin-top:12px;font-size:14px;">A monthly intelligence brief covering the specific programs, vehicles, and budget signals with active opportunity in federal health IT. Each signal includes an action window (what to do and when) and a confidence label (High / Medium / Speculative). Free readers get 3 preview signals. Premium subscribers get all signals immediately, with every action window.</p>
         </details>
         <details style="background:var(--mmt-soft);border-radius:12px;padding:20px 24px;">
-          <summary style="cursor:pointer;font-weight:700;color:var(--mmt-navy);font-size:15px;list-style:none;">How does Monthly Q&amp;A work?</summary>
-          <p style="margin-top:12px;font-size:14px;">Premium subscribers can submit up to 2 questions per month through the Ask MMT portal. Questions are answered editorially and the best answers are published (anonymized by default) in the monthly Q&amp;A issue so every subscriber benefits.</p>
+          <summary style="cursor:pointer;font-weight:700;color:var(--mmt-navy);font-size:15px;list-style:none;">How does Ask MMT work?</summary>
+          <p style="margin-top:12px;font-size:14px;">Ask MMT is the AI research assistant. Ask a federal health IT question and it answers in seconds from live federal sources (SAM.gov, USASpending, Congress.gov, PubMed, and more) and the MMT article archive, with the sources listed under every answer. Everyone gets <!-- BUILD:ASK_MMT_CAP_FREE --> questions a month free at <a href="/ask" style="color:var(--mmt-teal);">missionmeetstech.com/ask</a>. Premium members get <!-- BUILD:ASK_MMT_CAP_PREMIUM --> a month; Institutional gets <!-- BUILD:ASK_MMT_CAP_INSTITUTIONAL --> pooled across seats. Counts reset on the 1st.</p>
+        </details>
+        <details style="background:var(--mmt-soft);border-radius:12px;padding:20px 24px;">
+          <summary style="cursor:pointer;font-weight:700;color:var(--mmt-navy);font-size:15px;list-style:none;">How does Analyst Q&amp;A work?</summary>
+          <p style="margin-top:12px;font-size:14px;">The human channel. Premium subscribers can send Mary 1 question a month (2 on Founding with priority review, 3 on Institutional with a 2-business-day SLA) through the Analyst Q&amp;A portal in the dashboard. The best answers are published (anonymized by default) in the monthly Q&amp;A issue so every subscriber benefits.</p>
         </details>
         <details style="background:var(--mmt-soft);border-radius:12px;padding:20px 24px;">
           <summary style="cursor:pointer;font-weight:700;color:var(--mmt-navy);font-size:15px;list-style:none;">Can I switch from monthly to annual?</summary>

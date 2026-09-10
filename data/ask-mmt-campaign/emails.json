@@ -1,0 +1,123 @@
+{
+  "campaign": "ask-mmt-2026",
+  "source": "Ask MMT Campaign Package, 2026-09-10 (sections 7.1, 7.4, 7.5)",
+  "notes": [
+    "Tokens: {{CAP_PREMIUM}}, {{CAP_INSTITUTIONAL}}, {{FREE_CAP}} are filled from netlify/functions/lib/ask-mmt-access.js at send time so the number in the email is the number the server enforces.",
+    "Founding Member lines assume spots are still open (package checklist item 16). If Founding closes, remove the Founding sentences here and in data/linkedin-campaign/posts.json.",
+    "Step 4 of the welcome sequence (Reader Questions) stays disabled until a real Friday Reader Questions block exists; a template with placeholders never sends."
+  ],
+  "soft_launch": {
+    "key": "soft-launch-2026-09-14",
+    "send_on": "2026-09-14",
+    "audience": "premium",
+    "subject": "You have a new tool. Try it before anyone else.",
+    "body": [
+      "Ask MMT is live in your Premium dashboard as of this morning, a week before it goes public.",
+      "It's a research assistant built on two things: live federal data (SAM.gov, USASpending, Congress.gov, and PubMed among them) and the MMT article archive. Ask it about a contract, a vehicle, an agency, a budget line, or a trend. It answers in seconds and shows you where the answer came from.",
+      "Three to try:",
+      "- What's the status of CCN Next Gen?",
+      "- Who are the incumbents on T4NG2?",
+      "- What's moving in DHA's FY2027 IT budget?",
+      "Then ask it the one you actually need answered this week.",
+      "Two things to know. It's research, not a bid decision, so check the sources it hands you. And your monthly question to me hasn't gone anywhere. That's now called Analyst Q&A, and it's still in the dashboard.",
+      "If Ask MMT fumbles a question this week, reply here and tell me. You're the first people using it, and that's how it gets better before everyone else sees it.",
+      "Talk soon,",
+      "Mary"
+    ],
+    "cta": { "label": "Open your dashboard", "url": "https://missionmeetstech.com/premium/dashboard.html" }
+  },
+  "welcome": [
+    {
+      "step": 1,
+      "day": 0,
+      "enabled": true,
+      "key": "welcome-1",
+      "subject": "Your three questions",
+      "body": [
+        "You asked Ask MMT something and it showed you where the answer came from. That's the whole idea.",
+        "You have {{FREE_CAP}} questions a month, free. They reset on the 1st.",
+        "What it reads: SAM.gov, USASpending, Congress.gov, PubMed, and every MMT article, plus the rest of the list at missionmeetstech.com/ask/sources. If the answer isn't in those systems, it tells you it doesn't know instead of guessing.",
+        "What to ask next: the question your pipeline review is going to ask you.",
+        "You're also now on the Tuesday and Friday list. Federal health IT analysis, no sponsors, unsubscribe anytime.",
+        "Talk soon,",
+        "Mary"
+      ],
+      "cta": { "label": "Ask your next question", "url": "https://missionmeetstech.com/ask" }
+    },
+    {
+      "step": 2,
+      "day": 2,
+      "enabled": true,
+      "key": "welcome-2",
+      "subject": "One question before you spend B&P",
+      "body": [
+        "Most B&P money gets wasted on pursuits that should have died at the first gate.",
+        "Try this with one of your free questions: \"Who currently holds [program], when does it expire, and what did the last award look like?\"",
+        "If the answer shows a strong incumbent, a recent extension, and a sole-source justification, you just saved a red team. If it shows a re-compete window and a thin obligation history, you found something.",
+        "Either way, you'll see the SAM.gov and USASpending records it used. That's the part to put in front of your leadership.",
+        "Talk soon,",
+        "Mary"
+      ],
+      "cta": { "label": "Run the first gate", "url": "https://missionmeetstech.com/ask" }
+    },
+    {
+      "step": 3,
+      "day": 5,
+      "enabled": true,
+      "key": "welcome-3",
+      "subject": "Nobody pays for the answer",
+      "body": [
+        "Ask MMT reads federal sources and MMT's own archive. That's it. No vendor content, no sponsored research, no \"partner\" data.",
+        "That matters more than it sounds. Most free federal IT media is funded by the vendors it covers. When you ask a question about a vehicle, you want an answer that wasn't shaped by whoever bought the ad.",
+        "MMT is reader-funded. The subscription pays for the independence, and the independence is why the answers are worth checking.",
+        "Talk soon,",
+        "Mary"
+      ],
+      "cta": { "label": "Full source list", "url": "https://missionmeetstech.com/ask/sources" }
+    },
+    {
+      "step": 4,
+      "day": 8,
+      "enabled": false,
+      "disabled_reason": "Needs a real Reader Questions block. Fill `body` from the first published Friday block, then set enabled=true.",
+      "key": "welcome-4",
+      "subject": "What people asked this week",
+      "body": [
+        "Every Friday I publish one or two questions readers asked Ask MMT, the sourced answer, and my take.",
+        "Premium members get {{CAP_PREMIUM}} questions a month, and their questions are the ones that end up here. If you've been rationing your {{FREE_CAP}}, that's the fix.",
+        "Talk soon,",
+        "Mary"
+      ],
+      "cta": { "label": "See Premium", "url": "https://missionmeetstech.com/pricing" }
+    },
+    {
+      "step": 5,
+      "day": 12,
+      "enabled": true,
+      "key": "welcome-5",
+      "subject": "Your questions reset on the 1st. Or don't wait.",
+      "body": [
+        "You've had Ask MMT for almost two weeks. If it's answered something you would have spent an hour on, here's the math.",
+        "$29.99 a month, or $249 a year, gets you {{CAP_PREMIUM}} questions a month plus the rest of Premium: the Capture Intelligence sheets with action windows, the agency org charts, the Contract and IDIQ trackers, the Pursuit Calendar, early access to every analysis, and a question a month to me directly.",
+        "The Founding Member rate is $199 a year, locked for life, while spots last.",
+        "The enterprise platforms that do part of this charge $7,000 to $75,000 a seat.",
+        "If this isn't the moment, nothing changes. Your {{FREE_CAP}} questions come back on the 1st.",
+        "Talk soon,",
+        "Mary"
+      ],
+      "cta": { "label": "See Premium pricing", "url": "https://missionmeetstech.com/pricing" }
+    }
+  ],
+  "monthly_reset": {
+    "subject": "Your three questions are back",
+    "question_of_month": null,
+    "body": [
+      "New month. {{FREE_CAP}} fresh Ask MMT questions.",
+      "{{QUESTION_OF_MONTH}}",
+      "Talk soon,",
+      "Mary"
+    ],
+    "cta": { "label": "Ask it", "url": "https://missionmeetstech.com/ask" }
+  },
+  "footer": "You're getting this because you asked Ask MMT a question and gave this address. Reply with \"stop\" to end these notes, or use the unsubscribe link in any Tuesday or Friday issue to leave the list entirely."
+}

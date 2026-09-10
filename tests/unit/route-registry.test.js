@@ -30,9 +30,15 @@ describe("docs/member-features.json — canonical feature registry", () => {
     }
   });
 
-  it("Ask MMT marketing URLs include canonical /ask-mmt plus typo aliases /askmtt and /ask-mtt", () => {
+  it("Analyst Q&A (the human channel, formerly named Ask MMT) keeps /ask-mmt plus the typo aliases /askmtt and /ask-mtt", () => {
+    const qa = reg.features.find((f) => f.feature_name === "Analyst Q&A with Mary");
+    expect(qa.public_marketing_urls).toEqual(expect.arrayContaining(["/ask-mmt", "/askmtt", "/ask-mtt"]));
+  });
+
+  it("Ask MMT (the AI research assistant) markets /ask and /ask/sources, backed by premium-chat", () => {
     const askMmt = reg.features.find((f) => f.feature_name === "Ask MMT");
-    expect(askMmt.public_marketing_urls).toEqual(expect.arrayContaining(["/ask-mmt", "/askmtt", "/ask-mtt"]));
+    expect(askMmt.public_marketing_urls).toEqual(expect.arrayContaining(["/ask", "/ask/sources"]));
+    expect(askMmt.backing_function).toBe("netlify/functions/premium-chat.js");
   });
 
   it("data-backed tools declare freshness_sla_hours", () => {

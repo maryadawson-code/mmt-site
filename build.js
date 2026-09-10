@@ -10,6 +10,10 @@ const { renderPursuitCalendarHtml } = require('./netlify/functions/lib/pursuit-c
 const { createClient: createSupabaseClient } = require('@supabase/supabase-js');
 const { getEnabledFlags: getEnabledVoteFlags } = require('./netlify/functions/lib/vote-flags');
 const { monthsToExpiry: voteMonthsToExpiry } = require('./netlify/functions/lib/vote-watchlist-match');
+// Ask MMT: the sources table on /ask and /ask/sources and every cap number on
+// /ask, /pricing and /help come from the same modules the server runs.
+const { SOURCE_CATALOG: askMmtSourceCatalog } = require('./netlify/functions/lib/ask-mmt-sources');
+const { CHAT_CAPS: askMmtChatCaps, FREE_CAP: askMmtFreeCap } = require('./netlify/functions/lib/ask-mmt-access');
 
 // Autonomous feature-vote system: which vote features are live this build.
 // Populated once at build start from the Supabase `feature_flags` table
@@ -382,6 +386,22 @@ const searchOverlayHtml = `
   </div>`;
 
 // External script tags injected before </body> on all pages
+// Ask MMT sources table rows, rendered from lib/ask-mmt-sources.js SOURCE_CATALOG
+// so the public "what it reads" list is the list the assistant actually queries.
+function generateAskMmtSourcesRows(catalog, full) {
+  const esc = (v) => String(v || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const modeLabel = { live: 'Live query', index: 'Index', conditional: 'Conditional' };
+  const rows = (catalog || []).filter((src) => full || src.mode !== 'conditional').map((src) => {
+    const mode = `<span class="src-mode ${esc(src.mode)}" style="display:inline-block;font-size:10px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;padding:2px 8px;border-radius:999px;white-space:nowrap;${src.mode === 'live' ? 'background:rgba(69,123,157,0.12);color:#457B9D;' : src.mode === 'index' ? 'background:rgba(10,25,47,0.08);color:#0A192F;' : 'background:#FEF3C7;color:#92400E;'}">${esc(modeLabel[src.mode] || src.mode)}</span>`;
+    const note = src.note ? `<span class="src-note" style="display:block;margin-top:4px;font-size:12px;color:#6B7280;">${esc(src.note)}</span>` : '';
+    const name = `<a href="${esc(src.url)}" target="_blank" rel="noopener" style="color:#0A192F;font-weight:600;">${esc(src.name)}</a>`;
+    return full
+      ? `<tr><td>${name}${note}</td><td>${mode}</td><td>${esc(src.provides)}</td><td>${esc(src.use)}</td></tr>`
+      : `<tr><td>${name}</td><td>${mode}</td><td>${esc(src.provides)}</td></tr>`;
+  });
+  return rows.join('\n            ');
+}
+
 const siteScriptTag = '  <script src="/js/site.js" defer></script>\n  <script src="/js/nav-active.js" defer></script>\n  <script src="/js/mmt-paywall.js" defer></script>\n  <script src="/js/support-widget.js" defer></script>\n  <script src="/js/premium-chat-widget.js" defer></script>';
 
 // --- Premium Gate HTML generators (per article category from PAYWALL_SPEC.md) ---
@@ -3364,6 +3384,8 @@ async function copyStaticFiles({ archive, feed, newsItems, contracts, contractAr
     'primer.html',
     'agent-access-guide.html',
     'pipeline-guide.html',
+    'ask.html',
+    'ask-sources.html',
   ];
   // Premium subdirectory pages
   const premiumPages = [
@@ -3433,6 +3455,11 @@ async function copyStaticFiles({ archive, feed, newsItems, contracts, contractAr
 
   // Build-time injection map
   const injections = {
+    '<!-- BUILD:ASK_MMT_SOURCES_TABLE -->': generateAskMmtSourcesRows(askMmtSourceCatalog, true),
+    '<!-- BUILD:ASK_MMT_SOURCES_SHORT -->': generateAskMmtSourcesRows(askMmtSourceCatalog, false),
+    '<!-- BUILD:ASK_MMT_CAP_PREMIUM -->': String(askMmtChatCaps.premium),
+    '<!-- BUILD:ASK_MMT_CAP_INSTITUTIONAL -->': String(askMmtChatCaps.institutional),
+    '<!-- BUILD:ASK_MMT_CAP_FREE -->': String(askMmtFreeCap),
     '<!-- BUILD:PRIMER_CTA -->': primerCta(primerData),
     '<!-- BUILD:PRIMER_LIFECYCLE -->': primerLifecycle(primerData),
     '<!-- BUILD:PRIMER_TOOLKIT -->': primerToolkit(primerData, primerDhaDate),
@@ -3523,7 +3550,10 @@ async function copyStaticFiles({ archive, feed, newsItems, contracts, contractAr
       // Inject build-time content
       for (const [marker, content] of Object.entries(injections)) {
         if (html.includes(marker)) {
-          html = html.replace(marker, content);
+          // split/join: a marker can appear more than once on a page (the
+          // Ask MMT cap numbers do), and String.replace(string) only hits the
+          // first occurrence, shipping raw markers for the rest.
+          html = html.split(marker).join(content);
         }
       }
       // Inject BreadcrumbList JSON-LD
@@ -3901,7 +3931,10 @@ ${innerHtml}
       // <!-- BUILD:BRIEF_LATEST --> and <!-- BUILD:BRIEF_ARCHIVE -->.
       for (const [marker, content] of Object.entries(injections)) {
         if (html.includes(marker)) {
-          html = html.replace(marker, content);
+          // split/join: a marker can appear more than once on a page (the
+          // Ask MMT cap numbers do), and String.replace(string) only hits the
+          // first occurrence, shipping raw markers for the rest.
+          html = html.split(marker).join(content);
         }
       }
       html = html.replace('</body>', siteScriptTag + '\n</body>');

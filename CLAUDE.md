@@ -1,5 +1,122 @@
 # Mission Meets Tech - Developer & Content Governance
 
+## Sprint 2026-09-10 (later) — Ask MMT campaign: one product name, token auth, free tier, sources on every answer, autonomous campaign
+
+Mary handed over the "Ask MMT Campaign Package" (research with receipts,
+public launch 2026-09-21) and asked for the associated fixes plus the campaign
+running "just like the current EOFFY" (the FY-End LinkedIn autopilot). The
+package's own audit of the deployed build was right on every count that
+mattered: **two things were named Ask MMT** (the AI chat widget and the human
+Q&A portal), the chat function **authorized on a body email alone** (anyone who
+knew a member's address could spend the Claude budget), the response had **no
+`sources` field** so "shows its sources" was not true, there was **no free
+tier**, the dashboard card was hardcoded "of 2", help said $29 while pricing
+said $29.99, and the widget carried em dashes and hardcoded colors.
+
+Decisions applied (package section 2): **Ask MMT = the AI research assistant.
+The human channel is renamed "Analyst Q&A with Mary"** (same 1/2/3 caps, same
+portal at `/ask-mmt`). Ask MMT caps: **3/month free, 100/month Premium and
+Founding, 500/month Institutional** (pooled; counted per seat email today).
+Monthly price is **$29.99** everywhere ("Save $110 vs monthly", not $99).
+Free tier opens **2026-09-21** (America/New_York) by a constant, not an env var.
+
+Shipped:
+- **`lib/ask-mmt-access.js`** — pure rules: `resolveCaller` (member only via a
+  verified `mmt_subscriber_token`; an email without a token is FREE, never
+  member), `CHAT_CAPS`, `FREE_CAP`, `FREE_LAUNCH_DATE`, `freeTierEnabled`
+  (kill switch `ASK_MMT_FREE_DISABLED`, date override `ASK_MMT_FREE_LAUNCH`),
+  `sanitizeHistory` (last 2 turns, bounded, so follow-ups work).
+- **`lib/ask-mmt-sources.js`** — `SOURCE_CATALOG`, the ONE list of what Ask MMT
+  reads (20 fan-out systems + the MMT archive, each marked live / index /
+  conditional with an honest note when a client returns nothing until a
+  credential exists). `buildSources()` turns "which systems contributed text
+  to the prompt" into the per-answer `sources` array. **build.js renders
+  `/ask/sources` and the short table on `/ask` from this same file**, and a
+  test fails if the assistant fans out to an id the catalog lacks.
+- **`lib/premium-assistant.js`** — tracks per-system context, returns
+  `sources`, accepts `history`, and the system prompt now has the exact
+  "I don't have a source for that in the systems I read. Where I'd look: ...
+  MarketPulse ..." shape for an empty block.
+- **`premium-chat.js`** rewritten around three callers. Member: token-derived
+  email, `loadEntitlement`, `premium_chat_turn` count vs `CHAT_CAPS`. Free
+  (email, no token): `ask_mmt_free_turn` count per email, sources shown.
+  Anonymous: answer returned, **sources held back**, `unlock_id` issued;
+  `{action:"unlock", turn_id, email}` attributes the turn, adds the address to
+  Buttondown (tag `source=askmmt`), writes ONE `ask_mmt_free_signup`, sends
+  welcome step 1, returns the sources. Anonymous use is capped per salted IP
+  hash. Every ops_events insert checks `{ error }`. Deps are injectable
+  (`makeHandler`) and `tests/unit/premium-chat-handler.test.js` runs the whole
+  thing against a scripted Supabase double (14 cases, pinned dates).
+- **`ask-mmt-submit.js`** — new `GET ?token=` returns `{used, limit}` for the
+  TOKEN's email so the dashboard Analyst Q&A counter shows the tier cap.
+- **`js/premium-chat-widget.js`** rewritten: sends the token; renders the
+  sources list under every answer; embeds inline on `/ask` (`#mmt-ask-embed`)
+  for everyone and floats on member pages; email gate after an anonymous
+  answer (sources blurred until unlocked); limit card with Go Premium; copy
+  from package 5.6 (no em dashes); CSS variables with canonical fallbacks;
+  Plausible events `ask_started`, `ask_gated`, `ask_email_submit`,
+  `ask_limit_hit`, `ask_premium_click`; `window.mmtOpenAskMMT()` for the
+  dashboard card.
+- **Pages**: new `/ask` (landing, embedded widget, "what it reads", free vs
+  Premium table, FAQ) and `/ask/sources`; homepage hero secondary CTA "Ask MMT
+  free", a fourth door, a newsletter bullet, a ladder step; pricing (Ask MMT
+  rows with caps, Analyst Q&A rename, FAQ split, $110); help ("Using Ask MMT"
+  section, table rows, FAQ split, $29.99); security (Ask MMT no-training and
+  retention line); dashboard (new Ask MMT card, counter renamed and tier-aware);
+  portal title/intro; tools hub. **Every cap number on these pages is a
+  `BUILD:ASK_MMT_CAP_*` marker filled from `ask-mmt-access.js`**, so the number
+  a prospect reads is the number the server enforces. build.js injection loops
+  now use split/join: `String.replace(string)` only replaced the FIRST marker
+  occurrence and shipped raw markers for the rest.
+- **Campaign autopilot**: 12 `askmmt-*` posts appended to
+  `data/linkedin-campaign/posts.json` (section 8). Posts that still carry a
+  `[BRACKET]` placeholder (launch video, "one miss", week-one carousel,
+  side-by-side, month-one lessons) ship **`approved:false` with an
+  `approval_note`**; `linkedin-autopost.js` now alerts Mary on the day an
+  unapproved post is due instead of skipping silently, labels alerts by
+  campaign, and includes the `first_comment` to paste (the autopilot is
+  publish-only and never posts comments). `askmmt-002`/`-003` moved to
+  9/24 and 9/25 because FY-End `mmt-031` already owns 9/23 and the cron posts
+  ONE a day; a test fails if two approved posts ever share a date.
+- **`ask-mmt-campaign-emails.js`** (daily 13:15 UTC) + `lib/ask-mmt-campaign.js`
+  + `data/ask-mmt-campaign/emails.json`: the 9/14 Premium soft-launch note
+  (once, keyed), the welcome sequence (days 0/2/5/12; step 4 "Reader
+  Questions" **disabled until real content exists**, and a template with
+  placeholder copy can never send), the monthly reset on the 1st. One step per
+  address per run; every marketing send checks Buttondown via `buttondownGet`
+  (detail route) and skips unsubscribed addresses; a lookup failure defers.
+  Kill switch `ASK_MMT_CAMPAIGN_EMAILS_DISABLED`.
+
+**Needs Mary (cannot be done from code):** the accuracy pass (checklist 1;
+`/ask` deliberately has no "three real answers" section until it exists),
+filling the five placeholder posts and flipping `approved:true`, the 30-second
+video, Founding-spots confirmation (checklist 16; Founding lines are in
+`emails.json` and `posts.json` and come out if spots close), the
+`question_of_month` in `emails.json` each month (optional; the line is dropped
+when null), and creating the Plausible goals in the Plausible UI.
+
+Hard rules (do not regress):
+- **Ask MMT authorizes on the token, never on a body email.** `resolveCaller`
+  is the only place that decides; an email alone is the free tier.
+- **Numbers that appear in copy come from code.** Caps render from
+  `ask-mmt-access.js` via build markers and email tokens; the sources table
+  renders from `ask-mmt-sources.js`. Do not hand-type a cap or a source list.
+- **A campaign asset with a `[PLACEHOLDER]` ships `approved:false`, and a
+  test enforces it.** The autopilot's job on that day is to alert, not post.
+- **One LinkedIn post a day.** Two approved posts on one date is a test failure,
+  not a silent skip.
+- **A marketing sequence never sends a template with unfilled copy**, and
+  checks the list's unsubscribe state before every send.
+
+Verified 2026-09-10: `node -c` clean on every touched function; unit suite
+**678/678** (56 files, +5 new: access, sources, campaign, linkedin-campaign,
+premium-chat-handler); build exit 0 (688 dist pages, zero raw `BUILD:ASK_MMT`
+markers); validate-dist, validate-routes (36 features), validate-agency-*,
+validate-contract-tracker, validate-cso-aois, validate-forecast-delta,
+validate-data-freshness, validate-ask-mmt-coverage, scan-pii,
+validate-no-scrubbed-stubs, capture-corner-inventory all pass; voice sweep
+clean on new copy (0 em dashes, 0 banned words, 0 exclamation points).
+
 ## Sprint 2026-09-10 (later) — Site-wide freshness sweep: NITAAC sunset contradiction, GAO Sustain, key people, aged datasets
 
 Mary: "fix all to ensure that the site is the best it can be." The Forecast

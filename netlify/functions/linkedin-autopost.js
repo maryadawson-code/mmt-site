@@ -1,6 +1,7 @@
 // ============================================================================
-// linkedin-autopost.js — daily cron that publishes the FY-End LinkedIn campaign
-// to Mary's personal profile via PostPeer, hands-off.
+// linkedin-autopost.js — daily cron that publishes the LinkedIn campaigns in
+// data/linkedin-campaign/posts.json (FY-End 2026, Ask MMT 2026) to Mary's
+// personal profile via PostPeer, hands-off.
 //
 // Runs 13:30 UTC daily (= 09:30 America/New_York during the EDT campaign window
 // Jun 30 – Sep 30 2026). For "today" it publishes the one approved TEXT post
@@ -30,6 +31,7 @@ const BASE_URL = process.env.POSTPEER_BASE_URL || "https://api.postpeer.dev/v1";
 const SENT_EVENT = "linkedin_autopost_sent";
 const FAIL_EVENT = "linkedin_autopost_failed";
 const SKIP_EVENT = "linkedin_autopost_skipped_asset";
+const UNAPPROVED_EVENT = "linkedin_autopost_skipped_unapproved";
 const MARY = "mary@missionmeetstech.com";
 const FROM = "MMT LinkedIn <mary@missionmeetstech.com>";
 
@@ -57,15 +59,46 @@ function contentFor(post) {
   return `${post.body}\n\n${post.link_target}`;
 }
 
-async function alreadySent(supabase, postId) {
+async function hasEvent(supabase, eventType, postId) {
   const { data } = await supabase
     .from("ops_events")
     .select("id")
-    .eq("event_type", SENT_EVENT)
+    .eq("event_type", eventType)
     .filter("details->>post_id", "eq", postId)
     .limit(1)
     .maybeSingle();
   return !!data;
+}
+const alreadySent = (supabase, postId) => hasEvent(supabase, SENT_EVENT, postId);
+
+// Which campaign a post belongs to, for the alert emails. Posts added after
+// 2026-09-10 carry their own `campaign`; the original FY-End posts inherit
+// the file-level name.
+function campaignLabel(post, campaign) {
+  const key = (post && post.campaign) || (campaign && campaign.campaign) || "campaign";
+  const meta = campaign && campaign.campaigns && campaign.campaigns[key];
+  return (meta && meta.label) || key;
+}
+
+// The autopilot is publish-only and never posts comments, so the "link in
+// the first comment" convention is a human step. Every alert carries it.
+function firstCommentHtml(post) {
+  if (!post || !post.first_comment) return "";
+  return `<p style="margin-top:14px;"><b>Paste this as the first comment now</b> (the link stays out of the body on purpose):</p><pre style="white-space:pre-wrap;font-family:inherit;background:#F3F4F6;padding:12px;border-radius:6px;">${String(post.first_comment).replace(/</g, "&lt;")}</pre>`;
+}
+
+/**
+ * Pick today's post. One publish per day, ever: the first APPROVED post due
+ * today. If nothing approved is due but an unapproved one is, return it
+ * flagged so the handler can alert Mary instead of silently skipping a
+ * campaign day (the placeholder-bearing Ask MMT posts ship approved=false).
+ */
+function selectDue(posts, today) {
+  const dueToday = (posts || []).filter((p) => p.publish_date === today);
+  const approved = dueToday.find((p) => p.approved === true);
+  if (approved) return { post: approved, unapproved: false };
+  const pending = dueToday.find((p) => p.approved !== true);
+  return pending ? { post: pending, unapproved: true } : { post: null, unapproved: false };
 }
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -136,16 +169,36 @@ exports.handler = async () => {
   const campaign = loadCampaign();
   if (!campaign) return { statusCode: 500, body: JSON.stringify({ error: "campaign_missing" }) };
 
-  const due = (campaign.posts || []).find((p) => p.publish_date === today && p.approved === true);
+  const picked = selectDue(campaign.posts, today);
+  const due = picked.post;
   if (!due) return { statusCode: 200, body: JSON.stringify({ noop: "nothing_due", today }) };
+  const label = campaignLabel(due, campaign);
+
+  // Unapproved post on its day: tell Mary once, publish nothing.
+  if (picked.unapproved) {
+    if (!(await hasEvent(supabase, UNAPPROVED_EVENT, due.id))) {
+      await logEvent(supabase, UNAPPROVED_EVENT, { post_id: due.id, format: due.format, date: today, campaign: label });
+      await alertMary(
+        `LinkedIn post today is NOT approved: ${due.id} (${label})`,
+        `<p>Today's ${label} post (<b>${due.id}</b>, ${today}) is still <b>approved: false</b>, so the autopilot did not publish it.</p>` +
+        (due.approval_note ? `<p><b>What it needs:</b> ${String(due.approval_note).replace(/</g, "&lt;")}</p>` : "") +
+        `<p>Either fill it in and post it by hand today, or set <code>approved: true</code> in data/linkedin-campaign/posts.json for a future date. Body as drafted:</p><pre style="white-space:pre-wrap;font-family:inherit;background:#F3F4F6;padding:12px;border-radius:6px;">${(due.body || "").replace(/</g, "&lt;")}</pre>` +
+        firstCommentHtml(due)
+      );
+    }
+    return { statusCode: 200, body: JSON.stringify({ skipped: "unapproved", id: due.id, today }) };
+  }
 
   // Text-only guard: asset posts need a human. Alert once, don't publish.
   if (due.format !== "text") {
     if (!(await alreadySent(supabase, due.id))) {
       await logEvent(supabase, SKIP_EVENT, { post_id: due.id, format: due.format, date: today });
       await alertMary(
-        `LinkedIn post today needs YOU: ${due.format} (${due.id})`,
-        `<p>Today's campaign post (<b>${due.id}</b>, ${today}) is a <b>${due.format}</b> that needs a human-built asset, so the autopilot skipped it.</p><p>Post it manually if you want it to run. Body:</p><pre style="white-space:pre-wrap;font-family:inherit;background:#F3F4F6;padding:12px;border-radius:6px;">${(due.body || "").replace(/</g, "&lt;")}</pre>`
+        `LinkedIn post today needs YOU: ${due.format} (${due.id}, ${label})`,
+        `<p>Today's ${label} post (<b>${due.id}</b>, ${today}) is a <b>${due.format}</b> that needs a human-built asset, so the autopilot skipped it.</p>` +
+        (due.asset_notes ? `<p><b>Asset:</b> ${String(due.asset_notes).replace(/</g, "&lt;")}</p>` : "") +
+        `<p>Post it manually if you want it to run. Body:</p><pre style="white-space:pre-wrap;font-family:inherit;background:#F3F4F6;padding:12px;border-radius:6px;">${(due.body || "").replace(/</g, "&lt;")}</pre>` +
+        firstCommentHtml(due)
       );
     }
     return { statusCode: 200, body: JSON.stringify({ skipped: "needs_human_asset", id: due.id, format: due.format, today }) };
@@ -159,14 +212,16 @@ exports.handler = async () => {
   // Publish.
   try {
     const result = await publishToPostPeer({ apiKey, accountId, content: contentFor(due) });
-    await logEvent(supabase, SENT_EVENT, { post_id: due.id, date: today, postpeer_id: result.postId, url: result.url });
+    await logEvent(supabase, SENT_EVENT, { post_id: due.id, date: today, postpeer_id: result.postId, url: result.url, campaign: label });
     await alertMary(
-      `LinkedIn post published: ${due.id}`,
-      `<p>Today's FY-End campaign post went live on your LinkedIn.</p><p><b>${due.id}</b> · ${today}${result.url ? ` · <a href="${result.url}">view post</a>` : ""}</p><p style="color:#5C6B7A;font-size:13px;">Reply to comments in the first ~90 minutes for reach.</p>`
+      `LinkedIn post published: ${due.id} (${label})`,
+      `<p>Today's ${label} post went live on your LinkedIn.</p><p><b>${due.id}</b> · ${today}${result.url ? ` · <a href="${result.url}">view post</a>` : ""}</p>` +
+      firstCommentHtml(due) +
+      `<p style="color:#5C6B7A;font-size:13px;">Reply to comments in the first ~90 minutes for reach.</p>`
     );
     return { statusCode: 200, body: JSON.stringify({ published: due.id, url: result.url, today }) };
   } catch (e) {
-    await logEvent(supabase, FAIL_EVENT, { post_id: due.id, date: today, error: e.message });
+    await logEvent(supabase, FAIL_EVENT, { post_id: due.id, date: today, error: e.message, campaign: label });
     await alertMary(
       `LinkedIn post FAILED: ${due.id}`,
       `<p>The autopilot could not publish today's post (<b>${due.id}</b>, ${today}).</p><p style="color:#C62828;">${(e.message || "").replace(/</g, "&lt;")}</p><p>Nothing was posted. It will NOT retry automatically today. Post manually or fix the PostPeer connection.</p>`
@@ -174,3 +229,8 @@ exports.handler = async () => {
     return { statusCode: 500, body: JSON.stringify({ error: "publish_failed", id: due.id, detail: e.message, today }) };
   }
 };
+
+// Exported for tests (pure selection + labels; no I/O).
+exports.selectDue = selectDue;
+exports.campaignLabel = campaignLabel;
+exports.contentFor = contentFor;
