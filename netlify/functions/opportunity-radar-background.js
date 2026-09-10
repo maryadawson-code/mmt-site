@@ -21,6 +21,7 @@ const { logInference } = require("./lib/inference");
 const { logOpsEvent } = require("./lib/ops-ledger");
 const { sam_search_opportunities } = require("./lib/sam-gov-opportunities");
 const { isMalformedSamPermalink } = require("./lib/url-validator");
+const { toStr, dedupeKey } = require("./lib/radar-normalize");
 
 // MMT-INTEL-02 (2026-05-22): migrated off Anthropic Sonnet
 // web_search_20260209 → Perplexity sonar-pro. CLAUDE.md 2026-04-15
@@ -440,10 +441,13 @@ real upcoming health IT buy. Return opportunities found as JSON.`, 5, scanModel.
       continue;
     }
 
-    // Deduplicate by solicitation_number or title
-    const key = opp.solicitation_number || opp.title;
-    if (!key || seen.has(key.toLowerCase())) continue;
-    seen.add(key.toLowerCase());
+    // Deduplicate by solicitation_number or title. dedupeKey/toStr coerce
+    // model-returned fields safely — Perplexity's JSON does not guarantee
+    // types, and a bare-number solicitation_number must not abort the scan
+    // (the 2026-09-07 EBUY_SCAN_FAILED failure mode).
+    const key = dedupeKey(opp);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
 
     // Filter by relevance. P2 review-queue mode keeps low-confidence items
     // (tagged needs_review below, hidden from the public feed) so nothing the
@@ -461,24 +465,24 @@ real upcoming health IT buy. Return opportunities found as JSON.`, 5, scanModel.
     if (opp.contract_vehicle && CANCELLED_VEHICLES.includes(opp.contract_vehicle)) continue;
 
     const row = {
-      title: (opp.title || "Untitled").substring(0, 500),
-      solicitation_number: opp.solicitation_number || null,
-      agency: (opp.agency || "Unknown").substring(0, 200),
-      description: (opp.description || "").substring(0, 1000),
-      value_estimate: (opp.value_estimate || "").substring(0, 100),
+      title: toStr(opp.title, 500) || "Untitled",
+      solicitation_number: toStr(opp.solicitation_number) || null,
+      agency: toStr(opp.agency, 200) || "Unknown",
+      description: toStr(opp.description, 1000),
+      value_estimate: toStr(opp.value_estimate, 100),
       response_deadline: opp.response_deadline || null,
-      set_aside_type: (opp.set_aside_type || "").substring(0, 50),
-      naics_codes: Array.isArray(opp.naics_codes) ? opp.naics_codes.slice(0, 10) : [],
-      source_url: (opp.source_url || "").substring(0, 500),
+      set_aside_type: toStr(opp.set_aside_type, 50),
+      naics_codes: Array.isArray(opp.naics_codes) ? opp.naics_codes.slice(0, 10).map((c) => toStr(c, 10)) : [],
+      source_url: toStr(opp.source_url, 500),
       relevance_score: relevance,
-      opportunity_type: (opp.opportunity_type || "solicitation").substring(0, 50),
+      opportunity_type: toStr(opp.opportunity_type, 50) || "solicitation",
       small_business_eligible: opp.small_business_eligible === true,
-      ai_summary: (opp.ai_summary || "").substring(0, 500),
+      ai_summary: toStr(opp.ai_summary, 500),
       scan_date: new Date().toISOString().split("T")[0],
       model_used: scanModel.model,
       // S-P1: carry the source tag (SAM pre-pass rows = 'sam_api'); web-search
       // rows fall back to the column's existing 'radar' default.
-      source: opp.source || "radar",
+      source: toStr(opp.source, 50) || "radar",
     };
     // S-P2: only attach review_status when the flag is on — the column exists
     // only after its migration is applied, and writing an unknown column would
