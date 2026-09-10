@@ -1,34 +1,58 @@
 {
   "_schema": {
-    "version": "1.0",
-    "last_verified": "2026-05-07",
+    "version": "1.1",
+    "last_verified": "2026-09-10",
     "source": "https://www.acquisition.gov/procurement-forecasts",
-    "note": "Curated to federal-health-IT-relevant agencies. Each entry includes the official forecast URL plus our read on data accessibility (HTML-only, downloadable, or API)."
+    "note": "Curated to federal-health-IT-relevant agencies. Each entry includes the official forecast URL plus our read on data accessibility (HTML-only, downloadable, or API). Every URL below was fetched live on 2026-09-10; where an agency's old forecast page has moved or gone dark, the entry says so and points at where the forecast actually lives now."
   },
   "agencies": [
     {
       "agency": "Department of Veterans Affairs",
       "code": "VA",
-      "url": "https://www.va.gov/osdbu/acquisition/",
-      "format": "HTML + downloadable spreadsheet",
-      "cadence": "Quarterly refresh",
-      "mmt_note": "VA OSDBU posts a forecast spreadsheet quarterly. Health-IT relevant items concentrate in the OIT portfolio (T4NG2 task orders) and VHA medical IT. Cross-check against contracts.json for Tracker overlap."
+      "url": "https://acquisitiongateway.gov/forecast",
+      "format": "Governmentwide FCO tool (filter Agency = Department of Veterans Affairs). Searchable, CSV export, JSON behind the UI",
+      "cadence": "Continuous; VA rows updated as recently as 2026-09-04",
+      "mmt_note": "VA publishes its forecast into the governmentwide Forecast of Contracting Opportunities tool that GSA hosts (688 VA rows on 2026-09-10, 607 of them from the Technology Acquisition Center). VA's own query tool at vendorportal.ecms.va.gov/eVP/FCO/fco.aspx is FY2026-scoped, interactive only, and was last reviewed 05/07/2026. The old OSDBU acquisition page (va.gov/osdbu/acquisition/) now returns 403 in a browser too."
     },
     {
-      "agency": "Defense Health Agency (via DoD Acquisition Forecasts)",
+      "agency": "Defense Health Agency",
       "code": "DHA",
-      "url": "https://business.defense.gov/Archived-Pages/Acquisition-Forecasts/",
-      "format": "HTML — links to each Component's forecast",
-      "cadence": "Per-component cadence varies; DHA refreshes annually with intra-year addenda",
-      "mmt_note": "DHA-specific items live within the broader Defense Health Program forecast. PEO DHMS and DHA J-6 procurement signals show up here before they land on SAM.gov."
+      "url": "https://www.dha.mil/Working-with-DHA",
+      "format": "Downloadable Excel (Long Range Acquisition Forecast) linked from Working with DHA",
+      "cadence": "Annual; the posted file is still the FY2025 forecast (workbook modified 2025-05-22)",
+      "mmt_note": "dha.mil sits behind a bot challenge, so the workbook only downloads in a real browser. As of 2026-09-10 the link still serves the FY25 LRAF; no FY26 or FY27 forecast has been posted. Map any DHA line to the post-reorg PAE that will own it."
     },
     {
-      "agency": "Department of Health and Human Services",
+      "agency": "Department of Health and Human Services (all OpDivs)",
       "code": "HHS",
-      "url": "https://mysbcx.hhs.gov/#search-opportunities",
-      "format": "Search interface (mySBCX) — filterable, exportable",
-      "cadence": "Continuous updates",
-      "mmt_note": "HHS uses mySBCX as the unified small-business forecast portal across CMS, NIH, ARPA-H, CDC, FDA, IHS, ONC. Filter by Operating Division for component-specific signals."
+      "url": "https://osdbu.hhs.gov/industry/opportunity-forecast",
+      "format": "SBCX search interface (mySBCX moved to osdbu.hhs.gov). Filterable by OpDiv and contracting office; JSON export behind the UI",
+      "cadence": "Continuous, but OpDivs refresh unevenly: CMS, IHS and FDA carry FY26/FY27 rows; CDC, NIH and the Office of the Secretary (ASA/PSC) still show FY24/FY25 dates",
+      "mmt_note": "HHS's unified small-business forecast across CMS, NIH, ARPA-H, CDC, FDA, IHS and ONC. 5,375 published rows on 2026-09-10, 3,928 of them IHS. Filter by OpDiv; NIH's own OAMP page points here as the NIH Procurement Forecast."
+    },
+    {
+      "agency": "Centers for Medicare & Medicaid Services",
+      "code": "CMS",
+      "url": "https://www.cms.gov/about-cms/work-us/business-resources/contract-opportunities",
+      "format": "Downloadable Excel (Forecast of Opportunities), updated around the first of every month",
+      "cadence": "Monthly; current file is dated 1 September 2026 (51 rows)",
+      "mmt_note": "The old forecast-contracting-opportunities URL is gone; the workbook now lives under Work With Us > Business Resources > Contract Opportunities. CMS also mirrors a subset into HHS SBCX."
+    },
+    {
+      "agency": "General Services Administration",
+      "code": "GSA",
+      "url": "https://acquisitiongateway.gov/forecast",
+      "format": "Forecast Tool on the Acquisition Gateway (replaced forecast.gsa.gov, which no longer resolves). Searchable, CSV export",
+      "cadence": "Continuous; 9,219 rows governmentwide on 2026-09-10, 391 of them GSA's own",
+      "mmt_note": "GSA's own rows cover FAS, PBS and OCIO buys plus assisted acquisitions GSA runs for other agencies (HHS OIG cloud, HHS MSO). Governmentwide vehicles (OASIS+, Alliant 3, MAS) show up here before SAM.gov."
+    },
+    {
+      "agency": "Advanced Research Projects Agency for Health",
+      "code": "ARPA-H",
+      "url": "https://arpa-h.gov/explore-funding/open-funding-opportunities",
+      "format": "HTML program announcements (no procurement forecast); solicitations posted on SAM.gov",
+      "cadence": "Rolling; new programs announced throughout the year",
+      "mmt_note": "ARPA-H does not publish a forecast and has no rows in HHS SBCX. The arpa-h.gov/research-funding URL we linked in May now 404s; program announcements live under Explore Funding. Set a recurring check here rather than on the acquisition.gov hub."
     },
     {
       "agency": "Department of Homeland Security (model platform)",
@@ -39,18 +63,10 @@
       "mmt_note": "DHS APFS is the gold-standard federal forecast UX. Not health-relevant directly, but worth watching as the format other agencies emulate."
     },
     {
-      "agency": "General Services Administration",
-      "code": "GSA",
-      "url": "https://www.gsa.gov/small-business/forecast-of-contracting-opportunities",
-      "format": "HTML + downloadable Excel",
-      "cadence": "Quarterly refresh",
-      "mmt_note": "GSA forecast covers Schedules, governmentwide IDIQs (Alliant 3, OASIS+, etc.), and FAS/PBS buys. Health-IT relevant when DHA or VA buys via GSA vehicles."
-    },
-    {
       "agency": "Department of Defense (umbrella)",
       "code": "DoD",
       "url": "https://business.defense.gov/Archived-Pages/Acquisition-Forecasts/",
-      "format": "HTML — links to Component forecasts",
+      "format": "HTML. Links to Component forecasts",
       "cadence": "Component-dependent",
       "mmt_note": "Each Service medical department (Army MEDCOM, AFMS, BUMED) maintains its own forecast linked from the DoD hub."
     }

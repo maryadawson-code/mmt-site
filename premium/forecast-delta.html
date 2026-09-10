@@ -118,7 +118,7 @@
 
         <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin-bottom:8px;">MMT Premium &middot; Procurement Signal</p>
         <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">Forecast Delta Tracker</h1>
-        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 10px;">Monthly editorial diff of federal agency procurement forecasts &mdash; what was added, what slipped, what was removed. VA, DHA, HHS, ARPA-H, GSA. Plus a vetted portal of the official sources we monitor.</p>
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 10px;">Monthly editorial diff of federal agency procurement forecasts &mdash; what was added, what slipped, what was removed. All 11 agencies we profile: VA, DHA, GSA, HHS and its OpDivs (CMS, NIH, CDC, FDA, IHS, ONC, ARPA-H). Plus a vetted portal of the official sources we monitor.</p>
         <p style="margin:0 0 24px;"><!-- BUILD:FORECAST_DELTA_FRESHNESS --></p>
 
         <div class="dash-card editorial">
@@ -246,7 +246,7 @@
         var covered = agencies.slice(1);
         var missing = TARGET_AGENCIES.filter(function(a){ return covered.indexOf(a)<0; });
         document.getElementById('fpCoverage').innerHTML = 'Agencies in the pipeline: <strong>'+esc(covered.join(', ')||'none')+'</strong>.' +
-          (missing.length ? ' <span class="missing">Not yet covered: '+esc(missing.join(', '))+'</span> &mdash; their official forecasts are linked in the portal below until their rows land here.' : ' All tracked agencies covered.');
+          (missing.length ? ' <span class="missing">No rows this month: '+esc(missing.join(', '))+'</span> &mdash; the latest read above says why (a forecast that has not refreshed, or nothing health-IT in it); their official forecasts are linked in the portal below.' : ' All tracked agencies covered.');
         var vAge = ageDays(verified);
         var verifiedHtml = vAge > 45
           ? '<span class="fp-verified-stale">Verified '+esc(verified)+' ('+vAge+' days ago &mdash; overdue for re-verification against the agency forecasts)</span>'
