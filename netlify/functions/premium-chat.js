@@ -311,7 +311,7 @@ function makeHandler(overrides = {}) {
         submitted_at: now.toISOString(), month,
       },
     });
-    return reply(200, { answer: result.answer, agency: result.agency, hasData: result.hasData, model: result.model, sources, unavailable, remaining, cap, mode, tier });
+    return reply(200, { answer: result.answer, agency: result.agency, agencyName: result.agencyName || null, hasData: result.hasData, model: result.model, sources, unavailable, remaining, cap, mode, tier });
   }
 
   const turnId = access.newTurnId();
@@ -327,12 +327,13 @@ function makeHandler(overrides = {}) {
   });
 
   if (mode === "free") {
-    return reply(200, { answer: result.answer, agency: result.agency, hasData: result.hasData, model: result.model, sources, unavailable, remaining, cap, mode, hint });
+    return reply(200, { answer: result.answer, agency: result.agency, agencyName: result.agencyName || null, hasData: result.hasData, model: result.model, sources, unavailable, remaining, cap, mode, hint });
   }
   // Anonymous: the gate. Sources are held until an email unlocks them.
   return reply(200, {
     answer: result.answer,
     agency: result.agency,
+    agencyName: result.agencyName || null,
     hasData: result.hasData,
     model: result.model,
     sources: [],

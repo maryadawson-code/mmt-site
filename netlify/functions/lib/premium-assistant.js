@@ -42,6 +42,7 @@ const { buildSources, splitFederalData, CATALOG_BY_ID } = require("./ask-mmt-sou
 // keyword), and a federal-sites-only web search when the structured
 // award/opportunity sources are silent.
 const { extractSearchTerms } = require("./query-terms");
+const { detectAgencies, agencyCgac, agencyName } = require("./federal-agencies");
 const { webFederalSearch, formatWebFederalContext, shouldWebFallback } = require("./web-federal-search");
 // Sprint 6 Phase 2 2026-05-15: optional circuit breakers + metrics.
 // Both gates default OFF — code paths byte-identical to Sprint 5 unless
@@ -135,24 +136,13 @@ async function instrument(circuitName, fn, supabase) {
 // the model's job is to synthesize already-verified facts.
 const DEFAULT_MODEL = "claude-haiku-4-5-20251001";
 
-// Agency hints extracted from questions → acronym/code
-const AGENCY_HINTS = {
-  "veterans affairs": "VA", "va ": "VA", " va.": "VA", " va,": "VA",
-  "defense health": "DHA", "dha ": "DHA",
-  "health and human services": "HHS", "hhs ": "HHS",
-  "medicare": "CMS", "medicaid": "CMS", "cms ": "CMS",
-  "nih ": "NIH", "national institutes of health": "NIH",
-  "indian health": "IHS",
-  "department of defense": "DoD", "dod ": "DoD",
-};
-
+// Agency detection is the registry's job (lib/federal-agencies.js, 27
+// agencies). It used to be an eight-entry substring map here, so a question
+// about FDA, CDC, HRSA, ARPA-H, ONC or the Army detected no agency at all
+// and every downstream filter ran unscoped.
 function detectAgency(text) {
   if (!text) return null;
-  const lower = ` ${text.toLowerCase()} `;
-  for (const [hint, code] of Object.entries(AGENCY_HINTS)) {
-    if (lower.includes(hint)) return code;
-  }
-  return null;
+  return detectAgencies(text)[0] || null;
 }
 
 const SYSTEM_PROMPT = `You are the Mission Meets Tech premium research assistant. You answer federal health IT procurement, policy, and market questions for paid subscribers.
@@ -192,8 +182,7 @@ async function runEnrichment(question) {
   const vehicleAgency = matchedVehicles.length > 0 ? matchedVehicles[0].agency : null;
   const terms = extractSearchTerms(question);
   const agency = detectAgency(question) || terms.agency || vehicleAgency;
-  const agencyCodeMap = { VA: "036", DHA: "097", HHS: "075", DoD: "097", GSA: "047", NASA: "080", Army: "097" };
-  const agencyCode = agencyCodeMap[agency];
+  const agencyCode = agency ? agencyCgac(agency) : undefined;
 
   // If a vehicle was detected, use its canonical + alias search terms
   // as the primary query for USASpending/SAM. Otherwise fall back to
@@ -327,6 +316,7 @@ async function runEnrichment(question) {
 
   return {
     agency,
+    agencyName: agency ? agencyName(agency) : null,
     context,
     hasAnyData: context.length > unavailableText.length,
     corpusMatches: corpusMatches.length,
@@ -432,11 +422,12 @@ async function answerQuestion({ question, history = [], maxTokens = 1500 }) {
     return { answer: "", error: "question too short", agency: null, hasData: false, sources: [], unavailable: [] };
   }
   try {
-    const { agency, context, hasAnyData, sources, unavailable, searchPhrase, corrections } = await runEnrichment(question);
+    const { agency, agencyName: scopeName, context, hasAnyData, sources, unavailable, searchPhrase, corrections } = await runEnrichment(question);
     const { answer, model, usage } = await callClaude({ question, context, history, maxTokens });
     return {
       answer,
       agency,
+      agencyName: scopeName,
       hasData: hasAnyData,
       model,
       usage,

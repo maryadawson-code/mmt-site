@@ -27,35 +27,36 @@ const SAM_API_KEY = process.env.SAM_GOV_API_KEY || "";
  * @param {number} [params.limit] - Max results (default 20)
  * @returns {Promise<{awards: Array, total: number, error?: string}>}
  */
-const { extractSearchTerms } = require("./query-terms");
+const { extractSearchTerms, searchPhrase, keywordLadder } = require("./query-terms");
+// ONE agency registry for every filter below (27 agencies). Before it, each
+// API had its own hand-typed table covering 5 to 8 agencies, so a question
+// about FDA, CDC, HRSA, ARPA-H, ONC, the Army or NASA got no agency filter
+// at all, or the wrong parent department. See lib/federal-agencies.js.
+const {
+  usaspendingAgencyFilter,
+  hasSubtier,
+  samDeptName,
+  federalRegisterSlugs,
+  agencyCgac,
+} = require("./federal-agencies");
 
 /**
  * Keyword for the award/opportunity searches, derived from a question or
  * topic. Strips question scaffolding, agency wording and generic
  * procurement nouns and corrects domain misspellings (2026-09-10: the raw
  * sentence "Tell me all about data governence awards in the DHA" was being
- * sent verbatim as the USASpending keyword). Falls back to the trimmed
- * input when nothing specific survives (short entity names pass through).
+ * sent verbatim as the USASpending keyword). Never falls back to the raw
+ * sentence: when nothing specific survives it returns the content tokens,
+ * or "" so the caller runs an agency-filtered search with no keyword.
  */
 function deriveKeywords(topic) {
-  const t = extractSearchTerms(topic);
-  return (t.phrase || String(topic || "").trim()).substring(0, 120);
+  return searchPhrase(topic).substring(0, 120);
 }
 
-// USASpending sub-agency (subtier) names. DHA questions used to be filtered
-// to all of DoD; a subtier filter scopes to the agency itself. If the
-// subtier query errors or returns nothing, searchUSASpending retries at the
-// toptier so a misnamed subtier can never blank an answer.
-const USASPENDING_SUBTIER = {
-  DHA: "Defense Health Agency",
-  "Defense Health Agency": "Defense Health Agency",
-  CMS: "Centers for Medicare and Medicaid Services",
-  "Centers for Medicare and Medicaid Services": "Centers for Medicare and Medicaid Services",
-  NIH: "National Institutes of Health",
-  "National Institutes of Health": "National Institutes of Health",
-  IHS: "Indian Health Service",
-  "Indian Health Service": "Indian Health Service",
-};
+// At most two keyword attempts per fan-out. Rung 0 is the subscriber's own
+// wording; rung 1 is the most specific term (or no keyword). Bounded because
+// the whole federal fan-out sits under an 8s timeout in premium-assistant.
+const MAX_KEYWORD_ATTEMPTS = 2;
 
 async function searchUSASpending({ keyword, agency, naics, startDate, endDate, limit = 20, _tier }) {
   // USASpending Contract Award mappings: `filters.keyword` (singular) is
@@ -77,33 +78,12 @@ async function searchUSASpending({ keyword, agency, naics, startDate, endDate, l
     // alias OR full name — to the canonical toptier name. Sub-agencies
     // (DHA, CMS, NIH, IHS) roll up to their parent toptier; the
     // keyword filter narrows further.
-    const agencyToToptierName = {
-      "VA": "Department of Veterans Affairs",
-      "Department of Veterans Affairs": "Department of Veterans Affairs",
-      "DHA": "Department of Defense",
-      "Defense Health Agency": "Department of Defense",
-      "DoD": "Department of Defense",
-      "Department of Defense": "Department of Defense",
-      "HHS": "Department of Health and Human Services",
-      "Department of Health and Human Services": "Department of Health and Human Services",
-      "CMS": "Department of Health and Human Services",
-      "Centers for Medicare and Medicaid Services": "Department of Health and Human Services",
-      "NIH": "Department of Health and Human Services",
-      "National Institutes of Health": "Department of Health and Human Services",
-      "IHS": "Department of Health and Human Services",
-      "Indian Health Service": "Department of Health and Human Services",
-      "GSA": "General Services Administration",
-      "General Services Administration": "General Services Administration",
-    };
-    const toptierName = agencyToToptierName[agency];
-    const subtierName = _tier === "toptier" ? null : USASPENDING_SUBTIER[agency];
-    if (subtierName) {
-      filters.agencies = [{ type: "funding", tier: "subtier", name: subtierName }];
-    } else if (toptierName) {
-      filters.agencies = [{ type: "funding", tier: "toptier", name: toptierName }];
-    }
+    // Registry-driven: sub-agency filter when the agency has one (DHA, CMS,
+    // NIH, IHS, FDA, CDC, HRSA, VHA, Army, Navy...), department otherwise.
+    const agencyFilter = usaspendingAgencyFilter(agency, { tier: _tier });
+    if (agencyFilter) filters.agencies = [agencyFilter];
   }
-  const usedSubtier = !!(filters.agencies && filters.agencies[0] && filters.agencies[0].tier === "subtier");
+  const usedSubtier = !!(filters.agencies && filters.agencies[0] && filters.agencies[0].tier === "subtier") && hasSubtier(agency);
   const retryToptier = () => searchUSASpending({ keyword, agency, naics, startDate, endDate, limit, _tier: "toptier" });
 
   if (naics && naics.length > 0) {
@@ -201,11 +181,11 @@ async function getSpendingByCategory({ agency, naics, fiscal_year }) {
   const filters = {};
 
   if (agency) {
-    const agencyMap = {
-      "VA": "036", "DHA": "097", "HHS": "075", "DoD": "097",
-      "Department of Veterans Affairs": "036",
-    };
-    const code = agencyMap[agency];
+    // CGAC from the registry, so every tracked agency resolves rather than
+    // the five that used to be hardcoded here. NOTE: this endpoint takes
+    // `toptier_code`, which spending_by_award rejects; the shape is
+    // unverified against the live API and is on the live accuracy pass.
+    const code = agencyCgac(agency);
     if (code) {
       filters.agencies = [{ type: "funding", tier: "toptier", toptier_code: code }];
     }
@@ -248,17 +228,6 @@ async function getSpendingByCategory({ agency, naics, fiscal_year }) {
 // param. Source: https://api.sam.gov/opportunities/v2/search (response
 // `data.department` field) plus the SAM.gov federal hierarchy.
 // Verified casing matters: SAM rejects lowercase variants.
-const SAM_DEPT_NAMES = {
-  DHA: "DEPT OF DEFENSE",
-  DoD: "DEPT OF DEFENSE",
-  "Department of Defense": "DEPT OF DEFENSE",
-  VA: "VETERANS AFFAIRS, DEPARTMENT OF",
-  "Department of Veterans Affairs": "VETERANS AFFAIRS, DEPARTMENT OF",
-  HHS: "HEALTH AND HUMAN SERVICES, DEPARTMENT OF",
-  "Department of Health and Human Services": "HEALTH AND HUMAN SERVICES, DEPARTMENT OF",
-  GSA: "GENERAL SERVICES ADMINISTRATION",
-  "General Services Administration": "GENERAL SERVICES ADMINISTRATION",
-};
 
 /**
  * Search SAM.gov for active opportunities. SC-4 rewrite: replaces
@@ -277,7 +246,7 @@ const SAM_DEPT_NAMES = {
  * @param {number} [params.daysBack] - Lookback window (default 180 days)
  * @returns {Promise<{opportunities: Array, total: number, error?: string}>}
  */
-async function searchSAMOpportunities({ keyword, naics, agency, limit = 25, daysBack = 180 }) {
+async function searchSAMOpportunities({ keyword, relaxKeyword, naics, agency, limit = 25, daysBack = 180 }) {
   if (!SAM_API_KEY) {
     return { opportunities: [], total: 0, error: "SAM_GOV_API_KEY not configured" };
   }
@@ -285,7 +254,9 @@ async function searchSAMOpportunities({ keyword, naics, agency, limit = 25, days
   const now = new Date();
   const startWindow = new Date(now.getTime() - daysBack * 86400000);
   const formatDate = (d) => `${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}/${d.getFullYear()}`;
-  const deptName = agency ? SAM_DEPT_NAMES[agency] : undefined;
+  // SAM.gov filters at the department level; the registry maps every
+  // sub-agency (DHA, CMS, FDA, Army...) to its department name.
+  const deptName = agency ? samDeptName(agency) || undefined : undefined;
 
   // ACTIVE solicitation types only — drop archived/special-notice from
   // primary call:
@@ -315,9 +286,12 @@ async function searchSAMOpportunities({ keyword, naics, agency, limit = 25, days
     primaryParams.set("q", String(keyword).trim());
   }
 
-  // Secondary call: same window + deptname only (no q). Used to catch
-  // recently-posted opportunities whose text doesn't quite match the
-  // user's keyword. Smaller window (last 30 days) keeps it focused.
+  // Secondary call: same window, RELAXED keyword (the most specific term
+  // from the question) or no q at all. Used to catch recently-posted
+  // opportunities whose text doesn't quite match the full phrase. Smaller
+  // window (last 30 days) keeps it focused. SAM has a small shared daily
+  // quota, so this stays the only extra call: two SAM requests per question,
+  // same as before the relaxation ladder.
   const secondaryDaysBack = 30;
   const secondaryStart = new Date(now.getTime() - secondaryDaysBack * 86400000);
   const secondaryParams = new URLSearchParams({
@@ -330,6 +304,9 @@ async function searchSAMOpportunities({ keyword, naics, agency, limit = 25, days
   });
   if (deptName) secondaryParams.set("deptname", deptName);
   if (naics) secondaryParams.set("ncode", naics);
+  if (relaxKeyword && String(relaxKeyword).trim() && String(relaxKeyword).trim() !== String(keyword || "").trim()) {
+    secondaryParams.set("q", String(relaxKeyword).trim());
+  }
 
   const mapOpp = (o) => ({
     notice_id: o.noticeId || "",
@@ -411,7 +388,7 @@ async function searchSAMOpportunities({ keyword, naics, agency, limit = 25, days
     const PRIMARY_THRESHOLD = 3;
     let secondary = null;
     let secondaryRaw = [];
-    if (deptName && primaryRaw.length < PRIMARY_THRESHOLD) {
+    if ((deptName || relaxKeyword) && primaryRaw.length < PRIMARY_THRESHOLD) {
       secondary = await callSam(secondaryParams).catch((e) => ({ __error: e && e.message ? e.message : String(e) }));
       if (secondary && !secondary.__error) {
         secondaryRaw = secondary.opportunitiesData || secondary.opportunities || [];
@@ -619,29 +596,38 @@ async function getAgencySpendingTotals({ agency_code, fiscal_year }) {
  * @returns {Promise<Object>} Combined API results
  */
 async function enrichWithFederalData({ topic, agency, naics }) {
+  const terms = extractSearchTerms(topic);
+  const ladder = keywordLadder(terms);
   const keywords = deriveKeywords(topic);
-  const agencySlugMap = {
-    "VA": "veterans-affairs-department",
-    "DHA": "defense-department",
-    "HHS": "health-and-human-services-department",
-    "CMS": "centers-for-medicare-medicaid-services",
-    "NIH": "national-institutes-of-health",
-    "IHS": "indian-health-service",
-  };
+  const frSlugs = agency ? federalRegisterSlugs(agency) : [];
 
   console.log(`[FEDERAL-API] Enriching: "${keywords}" agency=${agency || "all"} naics=${(naics || []).join(",")}`);
 
-  const agencyCodeMap = { "VA": "036", "DHA": "097", "HHS": "075", "DoD": "097" };
-
   // Run all queries in parallel — comprehensive federal data gathering
   const [awards, categories, samOpps, fedRegDocs, gaoReports, agencySpending] = await Promise.all([
-    searchUSASpending({
-      keyword: keywords,
-      agency: agency || undefined,
-      naics: naics || undefined,
-      startDate: "2023-10-01", // FY2024 start — 2+ years of data
-      limit: 20,
-    }),
+    // Walk the keyword ladder: the subscriber's own wording first, then the
+    // most specific term, so a wordy or unusual question relaxes into a hit
+    // instead of returning zero. An ERROR is never retried (it is not a
+    // miss, and retrying would multiply the failure).
+    (async () => {
+      let last = null;
+      for (let i = 0; i < Math.min(ladder.length, MAX_KEYWORD_ATTEMPTS); i++) {
+        const res = await searchUSASpending({
+          keyword: ladder[i],
+          agency: agency || undefined,
+          naics: naics || undefined,
+          startDate: "2023-10-01", // FY2024 start — 2+ years of data
+          limit: 20,
+        });
+        if (res.error) return res;
+        if (res.awards && res.awards.length > 0) {
+          return i === 0 ? res : { ...res, relaxed_keyword: ladder[i], original_keyword: ladder[0] };
+        }
+        last = res;
+        if (!ladder[i]) break; // "" was the widest query there is
+      }
+      return last || { awards: [], total: 0 };
+    })(),
     getSpendingByCategory({
       agency: agency || undefined,
       naics: naics || undefined,
@@ -649,6 +635,7 @@ async function enrichWithFederalData({ topic, agency, naics }) {
     }),
     searchSAMOpportunities({
       keyword: keywords.substring(0, 60),
+      relaxKeyword: (ladder[1] || "").substring(0, 60),
       naics: naics && naics[0] ? naics[0] : undefined,
       // Was never passed here, so the assistant's SAM.gov query ran
       // unscoped across every department (2026-09-10).
@@ -657,13 +644,13 @@ async function enrichWithFederalData({ topic, agency, naics }) {
     }),
     searchFederalRegister({
       keyword: keywords,
-      agencies: agency && agencySlugMap[agency] ? [agencySlugMap[agency]] : undefined,
+      agencies: frSlugs.length > 0 ? frSlugs : undefined,
       type: ["RULE", "PRORULE", "NOTICE"],
       limit: 5,
     }),
     searchGAOReports({ keyword: keywords, limit: 5 }),
-    agency && agencyCodeMap[agency]
-      ? getAgencySpendingTotals({ agency_code: agencyCodeMap[agency], fiscal_year: 2026 })
+    agency && agencyCgac(agency)
+      ? getAgencySpendingTotals({ agency_code: agencyCgac(agency), fiscal_year: 2026 })
       : Promise.resolve({ spending: null }),
   ]);
 
@@ -853,7 +840,6 @@ function deriveAcquisitionState(opp, { now = Date.now(), staleDays = 120 } = {})
 
 module.exports = {
   deriveKeywords,
-  USASPENDING_SUBTIER,
   searchUSASpending,
   getSpendingByCategory,
   searchSAMOpportunities,
