@@ -4,7 +4,19 @@
   "published_at": "2026-07-26T12:00:00Z",
   "signal_count": 24,
   "agency_count": 11,
-  "agencies": ["VA", "DHA", "PEO DHMS", "HHS/ONC", "ARPA-H", "CMS", "NIH", "FDA", "IHS", "TRICARE", "SBA / Gov-wide"],
+  "agencies": [
+    "VA",
+    "DHA",
+    "PEO DHMS",
+    "HHS/ONC",
+    "ARPA-H",
+    "CMS",
+    "NIH",
+    "FDA",
+    "IHS",
+    "TRICARE",
+    "SBA / Gov-wide"
+  ],
   "signals": [
     {
       "id": "s1",
@@ -251,12 +263,12 @@
     {
       "id": "s23",
       "agency": "CMS",
-      "program": "CIO-CS Follow-On / \"The Store\" & MPSM",
-      "signal": "Reported ~$20B-$25B NITAAC CIO-CS follow-on plus ongoing Medicare Payment Systems Modernization task orders — the commodity-plus-services and claims-modernization backbone.",
-      "confidence": "directional",
-      "action_window": "Solicitation / task-order stages.",
-      "urgent": false,
-      "what_to_do": "Product-and-services resellers and claims-systems integrators should map which vehicle carries their scope; CIO-CS successor positioning affects every downstream health-IT buy that rides it.",
+      "program": "NITAAC sunset (CIO-SP3 / CIO-CS) & MPSM",
+      "signal": "The reported CIO-CS follow-on is off: NITAAC's June 9, 2026 notice sunsets CIO-SP3, CIO-SP3 SB and CIO-CS on October 29, 2026 (last day to award new orders; performance ends by December 31, 2028), with no successor. Medicare Payment Systems Modernization task orders continue, but the commodity-plus-services backbone they rode moves to GSA paper.",
+      "confidence": "confirmed",
+      "action_window": "Orders under CIO-SP3 / CIO-CS must be awarded by Oct 29, 2026.",
+      "urgent": true,
+      "what_to_do": "Resellers and claims-systems integrators holding NITAAC seats: get pending orders awarded before Oct 29, 2026, then position the same scope on Alliant 3, Polaris, or GSA MAS. Stop building capture plans around a CIO-CS successor; the official notice says there is none.",
       "free_preview": false
     },
     {

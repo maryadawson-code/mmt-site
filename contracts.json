@@ -346,26 +346,39 @@
   {
     "name": "CIO-CS Follow-On / The Store",
     "agency": "NIH / GSA (watch)",
-    "vendor": "TBD — Pre-RFP",
-    "value": "$25B ceiling per NITAAC",
-    "status": "upcoming",
+    "vendor": "None. No successor vehicle",
+    "value": "No successor. NITAAC GWAC portfolio (CIO-SP3, CIO-SP3 SB, CIO-CS) sunsets Oct 29, 2026",
+    "status": "closed",
     "classification": "Solicitation",
-    "phase": "Pre-RFP",
+    "phase": "Sunset",
     "naics": "541512",
-    "description": "Update Aug 17, 2026: value and status re-verified against current federal award records. NIH CIO-CS follow-on (a.k.a. 'The Store') Pre-RFP watch — reported ceiling ~$20B-$25B covering IT commodities, software, cloud, cyber, collaboration, and health IT. Multi-agency reach via the NIH/GSA assisted-acquisition pathway.",
-    "link": "https://sam.gov",
-    "small_business_eligible": true,
-    "sb_note": "Reported small business set-aside lanes anticipated",
-    "source": "https://sam.gov",
+    "description": "Update Sep 10, 2026: there is no CIO-CS follow-on. On June 9, 2026 NITAAC published notice that the HHS Senior Procurement Executive, acting under EO 14240 and OMB M-25-31, sunsets ALL NITAAC GWACs (CIO-SP3, CIO-SP3 Small Business, CIO-CS) on October 29, 2026, the last day to award new orders. Orders awarded on or after June 8, 2026 cannot run past December 31, 2028, when all NITAAC program functions cease. Future requirements move to GSA vehicles. CIO-SP4 was cancelled in January 2026, so nothing replaces this portfolio at NIH. If you hold CIO-CS or CIO-SP3 seats, the recompete path is Alliant 3, Polaris, or GSA MAS, and the buyer relationships shift to the GSA program offices. The earlier 'The Store' pre-RFP watch (reported $20B to $25B ceiling) is superseded by the sunset notice.",
+    "link": "https://nitaac.nih.gov/resources/news/important-notice-nitaac-gwacs-cio-sp3-cio-sp3-sb-and-cio-cs",
+    "small_business_eligible": false,
+    "sb_note": "No follow-on to set aside. CIO-SP3 SB seat holders move to GSA small-business lanes (Polaris, 8(a) STARS III, MAS).",
+    "source": "https://nitaac.nih.gov/resources/news/important-notice-nitaac-gwacs-cio-sp3-cio-sp3-sb-and-cio-cs",
     "source_urls": [
-      "https://nitaac.nih.gov/resources/news/cio-cs-recompete-store-underway",
-      "https://sam.gov"
+      "https://nitaac.nih.gov/resources/news/important-notice-nitaac-gwacs-cio-sp3-cio-sp3-sb-and-cio-cs",
+      "https://nitaac.nih.gov/gwacs/cio-cs"
     ],
-    "last_verified": "2026-08-17",
+    "last_verified": "2026-09-10",
     "pursuit_score": {
       "verdict": "WATCH",
-      "headline": "Upcoming — action window within 6 months",
-      "factors": {}
+      "headline": "Sunset. No successor; plan the move to GSA paper before Oct 29, 2026",
+      "factors": {
+        "vehicle_fit": {
+          "score": "fail",
+          "note": "Vehicle family sunsets Oct 29, 2026; no follow-on solicitation exists"
+        },
+        "timeline": {
+          "score": "watch",
+          "note": "Last new-order date Oct 29, 2026; performance ceiling Dec 31, 2028"
+        },
+        "competition": {
+          "score": "watch",
+          "note": "Recompete path is Alliant 3, Polaris, or GSA MAS"
+        }
+      }
     },
     "slug": "cio-cs-follow-on-the-store",
     "content_gap": false

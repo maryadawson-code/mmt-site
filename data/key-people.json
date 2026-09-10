@@ -1,8 +1,8 @@
 {
   "_schema": {
     "version": "1.0",
-    "last_updated": "2026-05-28",
-    "source_note": "Profiles sourced from official agency leadership pages. Each profile cites its source URL. Quarterly refresh cadence per PAYWALL-ENRICHMENT.md item 4."
+    "last_updated": "2026-09-10",
+    "source_note": "Profiles sourced from official agency leadership pages. Each profile cites its source URL. Quarterly refresh cadence per PAYWALL-ENRICHMENT.md item 4. Per-person verified_date/verification_note override the block date when a name was last confirmed on an older page pull."
   },
   "agencies": [
     {
@@ -193,8 +193,8 @@
       "agency_code": "ARPA-H",
       "agency_name": "Advanced Research Projects Agency for Health (ARPA-H)",
       "source_url": "https://arpa-h.gov/about/people",
-      "verified_date": "2026-05-07",
-      "note": "ARPA-H is HHS's high-risk biomedical R&D agency. Program managers run individual programs with significant autonomy. Capture work focuses on the four mission offices: Health Science Futures, Proactive Health, Resilient Systems, Scalable Solutions.",
+      "verified_date": "2026-08-25",
+      "note": "ARPA-H is HHS's high-risk biomedical R&D agency. Program managers run individual programs with significant autonomy. Capture work focuses on the four mission offices: Health Science Futures, Proactive Health, Resilient Systems (no director or program managers listed as of Aug 25, 2026), Scalable Solutions. The Business Innovation Division Director seat is vacant and recruiting; the Deputy Director is the working Acting Head of Contracting Activity.",
       "people": [
         {
           "name": "Alicia Jackson",
@@ -260,31 +260,57 @@
           "name": "Andrew Carney",
           "title": "Program Manager, Resilient Systems",
           "scope": "Programs in the Resilient Systems mission office.",
-          "why_watch": "PMs at ARPA-H run their programs with significant autonomy. Direct relationships matter."
+          "why_watch": "PMs at ARPA-H run their programs with significant autonomy. Direct relationships matter.",
+          "verified_date": "2026-05-07",
+          "verification_note": "Program-level role; not listed on the Aug 25, 2026 leadership page. Last confirmed May 7, 2026."
         },
         {
           "name": "James Coburn",
           "title": "Portfolio Lead, Scalable Solutions",
           "scope": "Portfolio-level coordination across multiple Scalable Solutions programs.",
-          "why_watch": "Sets cross-program priorities within Scalable Solutions."
+          "why_watch": "Sets cross-program priorities within Scalable Solutions.",
+          "verified_date": "2026-05-07",
+          "verification_note": "Program-level role; not listed on the Aug 25, 2026 leadership page. Last confirmed May 7, 2026."
         },
         {
           "name": "Karen Schmaling",
           "title": "Portfolio Lead, Proactive Health",
           "scope": "Portfolio-level coordination across multiple Proactive Health programs.",
-          "why_watch": "Sets cross-program priorities within Proactive Health."
+          "why_watch": "Sets cross-program priorities within Proactive Health.",
+          "verified_date": "2026-05-07",
+          "verification_note": "Program-level role; not listed on the Aug 25, 2026 leadership page. Last confirmed May 7, 2026."
         },
         {
           "name": "David Gunning",
           "title": "Program Manager, Proactive Health",
           "scope": "Specific program in the Proactive Health portfolio.",
-          "why_watch": "AI/ML-adjacent program manager — historically connected to defense AI work."
+          "why_watch": "AI/ML-adjacent program manager — historically connected to defense AI work.",
+          "verified_date": "2026-05-07",
+          "verification_note": "Program-level role; not listed on the Aug 25, 2026 leadership page. Last confirmed May 7, 2026."
         },
         {
           "name": "Jen Cama",
           "title": "Director, Division of Government Relations and Strategy",
           "scope": "ARPA-H external affairs; congressional and interagency engagement.",
           "why_watch": "Where Hill engagement and strategic positioning flows."
+        },
+        {
+          "name": "Keith Martin",
+          "title": "Director, Administration and Management; Executive Officer",
+          "scope": "Agency administration, operations, and the executive office.",
+          "why_watch": "Owns the administrative machinery behind hiring, facilities, and internal approvals that gate program launches."
+        },
+        {
+          "name": "Neil Wyant",
+          "title": "Director, Office of Commercialization",
+          "scope": "Transition of ARPA-H program outputs to market and to federal customers.",
+          "why_watch": "The commercialization office is where prototype-to-production conversations start; relevant to any performer planning a follow-on."
+        },
+        {
+          "name": "Benjamin Bryant",
+          "title": "Deputy Director, Business Innovation Division; Acting Head of Contracting Activity",
+          "scope": "Runs the acquisition shop day to day and signs as Acting HCA while the BID Director seat is vacant.",
+          "why_watch": "Both the deputy running the shop and the Acting HCA signing for it. The working POC for OT, CSO, and SBIR acquisition questions. A new BID Director hire resets acquisition risk tolerance across every open solicitation."
         }
       ]
     },
@@ -292,7 +318,7 @@
       "agency_code": "VA-OIT",
       "agency_name": "Department of Veterans Affairs — Office of Information & Technology",
       "source_url": "https://department.va.gov/administrations-and-offices/information-and-technology/",
-      "verified_date": "2026-05-07",
+      "verified_date": "2026-08-25",
       "note": "Largest civilian IT shop in the federal government. Owns VA EHRM, legacy VistA, and VA-wide infrastructure.",
       "people": [
         {
@@ -312,15 +338,15 @@
     {
       "agency_code": "VBA",
       "agency_name": "Department of Veterans Affairs — Veterans Benefits Administration",
-      "source_url": "https://benefits.va.gov/benefits/leadership.asp",
-      "verified_date": "2026-05-07",
-      "note": "VBA owns benefits delivery systems — claims processing, GI Bill, compensation/pension IT. Distinct procurement footprint from OIT.",
+      "source_url": "https://www.va.gov/opa/bios/",
+      "verified_date": "2026-08-25",
+      "note": "VBA owns benefits delivery systems — claims processing, GI Bill, compensation/pension IT. Distinct procurement footprint from OIT. The Under Secretary seat is unfilled as of Aug 25, 2026; the May 2026 listing of Michael Frueh as Acting USB is superseded by VA.gov Official Biographies.",
       "people": [
         {
-          "name": "Michael Frueh",
-          "title": "Acting Under Secretary for Benefits",
+          "name": "Margarita Devlin",
+          "title": "Principal Deputy Under Secretary for Benefits, performing the duties of the Under Secretary",
           "scope": "VBA enterprise; benefits IT, claims modernization.",
-          "why_watch": "Replaced Margarita Devlin in early 2026. VBA modernization priorities flow through this office."
+          "why_watch": "Leads the VBA front office while the Under Secretary seat awaits a confirmed appointee. VBA modernization priorities flow through this office."
         }
       ]
     }

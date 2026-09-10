@@ -40,6 +40,8 @@
     .agency-jump { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
     .agency-jump a { padding:6px 12px; background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:6px; font-size:12px; font-weight:600; color:var(--mmt-navy); text-decoration:none; transition:all 0.15s; }
     .agency-jump a:hover { background:var(--mmt-navy); color:var(--mmt-white); border-color:var(--mmt-navy); }
+    .agency-meta.stale { color:#E63946; font-weight:700; }
+    .verify-note { font-size:11px; color:#B45309; margin:6px 0 0; font-style:italic; }
     @media (max-width:768px) { .dash-shell { grid-template-columns:1fr; } .dash-nav { display:none; } .dash-main { padding:16px; padding-bottom:80px; } .person-grid { grid-template-columns:1fr; } }
   </style>
   <script>
@@ -107,6 +109,7 @@
 
     (function(){
       var esc = function(s){ if(s==null) return ''; return String(s).replace(/[&<>"']/g, function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); };
+      var ageDays = function(iso){ var t=Date.parse(String(iso||'').slice(0,10)+'T00:00:00Z'); return isNaN(t)?Infinity:Math.floor((Date.now()-t)/86400000); };
       function render(data){
         var jump = document.getElementById('agencyJump');
         var root = document.getElementById('people');
@@ -121,10 +124,14 @@
               '<p class="role">'+esc(p.title)+'</p>' +
               (p.scope ? '<p class="scope">'+esc(p.scope)+'</p>' : '') +
               (p.why_watch ? '<p class="why"><strong>Why watch:</strong> '+esc(p.why_watch)+'</p>' : '') +
+              (p.verification_note ? '<p class="verify-note">'+esc(p.verification_note)+'</p>' : '') +
             '</div>';
           }).join('');
-          var meta = '<span class="agency-meta">' +
-            'Verified ' + esc(a.verified_date || '—') +
+          // Quarterly cadence: past 100 days the block date turns red so a
+          // stale roster says so instead of reading as current.
+          var vAge = ageDays(a.verified_date);
+          var meta = '<span class="agency-meta' + (vAge > 100 ? ' stale' : '') + '">' +
+            'Verified ' + esc(a.verified_date || '—') + (vAge === Infinity ? '' : ' (' + vAge + 'd)') + (vAge > 100 ? ' &middot; re-verification due' : '') +
             (a.source_url ? ' &middot; <a href="'+esc(a.source_url)+'" target="_blank" rel="noopener">Source &rarr;</a>' : '') +
             '</span>';
           return '<section id="'+esc(a.agency_code)+'" class="agency-block">' +
