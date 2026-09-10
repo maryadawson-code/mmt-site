@@ -282,6 +282,63 @@ function _csoAoiHealth() {
   return out;
 }
 
+// Forecast Delta Tracker freshness (2026-09-10). The page renders its
+// editorial read from content/forecast-delta/YYYY-MM.md and its pipeline
+// table from data/forecast-pipeline.json. Both are hand-maintained; no cron
+// touches them. Mary found the page frozen since May because the May read
+// was hardcoded in the HTML and nothing aged the pipeline's last_verified.
+// Build-time scripts/validate-forecast-delta.js prints the same signal, but
+// build logs go unread — this puts it in the Friday email. Bundled files,
+// no Supabase. Both files are listed in netlify.toml included_files.
+const FORECAST_TARGET_AGENCIES = ["DHA", "VA", "HHS", "ONC", "ARPA-H", "CMS", "IHS", "CDC", "FDA", "NIH", "GSA"];
+function _forecastDeltaHealth() {
+  const roots = [
+    path.resolve(__dirname, "..", ".."),
+    path.resolve(__dirname, "..", "..", ".."),
+    process.cwd(),
+  ];
+  const out = { latest_file: null, latest_date: null, entry_age_days: Infinity, pipeline_last_verified: null, pipeline_age_days: Infinity, pipeline_rows: 0, pipeline_past_rows: 0, covered: [], missing: FORECAST_TARGET_AGENCIES.slice() };
+  const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+  const age = (iso) => {
+    const t = Date.parse(String(iso || "").slice(0, 10) + "T00:00:00Z");
+    return Number.isNaN(t) ? Infinity : Math.floor((Date.parse(today + "T00:00:00Z") - t) / 86400000);
+  };
+  for (const root of roots) {
+    const dir = path.join(root, "content", "forecast-delta");
+    if (!fs.existsSync(dir)) continue;
+    const published = [];
+    for (const f of fs.readdirSync(dir)) {
+      if (!/^\d{4}-\d{2}\.md$/.test(f)) continue;
+      const raw = fs.readFileSync(path.join(dir, f), "utf8");
+      const m = raw.match(/^---[\s\S]*?\ndate:\s*["']?(\d{4}-\d{2}-\d{2})/);
+      if (m && m[1] <= today) published.push({ file: f, date: m[1] });
+    }
+    published.sort((a, b) => b.date.localeCompare(a.date));
+    if (published[0]) {
+      out.latest_file = published[0].file;
+      out.latest_date = published[0].date;
+      out.entry_age_days = age(published[0].date);
+    }
+    break;
+  }
+  for (const root of roots) {
+    const p = path.join(root, "data", "forecast-pipeline.json");
+    if (!fs.existsSync(p)) continue;
+    try {
+      const d = JSON.parse(fs.readFileSync(p, "utf8"));
+      out.pipeline_last_verified = (d._schema && d._schema.last_verified) || null;
+      out.pipeline_age_days = age(out.pipeline_last_verified);
+      const items = Array.isArray(d.items) ? d.items : [];
+      out.pipeline_rows = items.length;
+      out.pipeline_past_rows = items.filter((it) => /^\d{4}-\d{2}-\d{2}$/.test(String(it.anticipated_solicitation || "")) && String(it.anticipated_solicitation) < today).length;
+      out.covered = Array.from(new Set(items.map((it) => String(it.agency || "")).filter(Boolean)));
+      out.missing = FORECAST_TARGET_AGENCIES.filter((a) => !out.covered.includes(a));
+    } catch (e) { console.warn("forecast-pipeline.json read failed:", e.message); }
+    break;
+  }
+  return out;
+}
+
 exports.handler = async () => {
   const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -305,16 +362,20 @@ exports.handler = async () => {
   let aoiHealth = { total_csos: 0, total_aois: 0, stale_count: 0, worst: 0, samples: [], past_due_open: [], closing_soon: [] };
   try { trackerStale = _trackerListingStale(); } catch (e) { console.warn("tracker listing freshness failed:", e.message); }
   try { aoiHealth = _csoAoiHealth(); } catch (e) { console.warn("CSO AoI health scan failed:", e.message); }
+  let forecast = { latest_file: null, latest_date: null, entry_age_days: Infinity, pipeline_last_verified: null, pipeline_age_days: Infinity, pipeline_rows: 0, pipeline_past_rows: 0, covered: [], missing: [] };
+  try { forecast = _forecastDeltaHealth(); } catch (e) { console.warn("forecast delta health scan failed:", e.message); }
+  const forecastStale = forecast.entry_age_days > TRACKER_STALE_DAYS || forecast.pipeline_age_days > TRACKER_STALE_DAYS;
 
   const allGreen = stale.length === 0 && badUrls.length === 0 && staleNotes.length === 0
     && orphaned.length === 0 && trackerStale.stale_count === 0
     && aoiHealth.stale_count === 0 && aoiHealth.past_due_open.length === 0
+    && !forecastStale
     && radarFab.fabricated === 0 && radarFab.duplicates === 0
     && radar.age_hours <= 48 && vehicle.age_hours <= 168
     && Object.keys(failures).length === 0;
   const subject = allGreen
     ? "MMT intel quality — all green"
-    : `MMT intel quality — ${stale.length} stale, ${trackerStale.stale_count} listing-stale, ${aoiHealth.stale_count} AoI-stale${aoiHealth.past_due_open.length ? `, ${aoiHealth.past_due_open.length} AoI PAST-DUE-OPEN` : ""}, ${orphaned.length} orphaned, ${radarFab.fabricated} fabricated radar, ${badUrls.length} bad URL, ${staleNotes.length} note-leak, radar ${radar.age_hours}h`;
+    : `MMT intel quality — ${stale.length} stale, ${trackerStale.stale_count} listing-stale, ${aoiHealth.stale_count} AoI-stale${aoiHealth.past_due_open.length ? `, ${aoiHealth.past_due_open.length} AoI PAST-DUE-OPEN` : ""}${forecastStale ? `, forecast-delta ${forecast.entry_age_days === Infinity ? "none" : forecast.entry_age_days + "d"}/pipeline ${forecast.pipeline_age_days === Infinity ? "none" : forecast.pipeline_age_days + "d"}` : ""}, ${orphaned.length} orphaned, ${radarFab.fabricated} fabricated radar, ${badUrls.length} bad URL, ${staleNotes.length} note-leak, radar ${radar.age_hours}h`;
 
   const html = `<!DOCTYPE html><html><body style="font-family:-apple-system,sans-serif;padding:24px;color:#0A192F;">
     <h2 style="margin:0 0 8px;">Intel quality report &middot; ${new Date().toISOString().slice(0,10)}</h2>
@@ -332,6 +393,11 @@ exports.handler = async () => {
     ${aoiHealth.past_due_open.length === 0 ? "<p>Past-due open: none.</p>" : `<p style="color:#E63946;font-weight:700;">Past-due open: ${aoiHealth.past_due_open.length} — FIX THESE.</p><ul>${aoiHealth.past_due_open.map((r) => `<li>${esc(r.label)} &mdash; due ${esc(r.response_due)}, ${r.daysPast}d past</li>`).join("")}</ul>`}
     ${aoiHealth.closing_soon.length === 0 ? "" : `<p style="font-weight:700;">Closing within 14 days: ${aoiHealth.closing_soon.length}</p><ul>${aoiHealth.closing_soon.map((r) => `<li>${esc(r.label)} &mdash; due ${esc(r.response_due)} (${r.daysLeft}d left)</li>`).join("")}</ul>`}
     ${aoiHealth.stale_count === 0 ? `<p>Freshness: all ${aoiHealth.total_csos} CSO(s) / ${aoiHealth.total_aois} AoI(s) re-verified within ${TRACKER_STALE_DAYS}d.</p>` : `<p>${aoiHealth.stale_count} entr${aoiHealth.stale_count === 1 ? "y" : "ies"} not re-verified in ${TRACKER_STALE_DAYS}d (oldest ${aoiHealth.worst}d).</p><ul>${aoiHealth.samples.map((r) => `<li>${esc(r.label)} &mdash; ${r.ageDays === Infinity ? "no/invalid date" : r.ageDays + "d"}</li>`).join("")}</ul>`}
+    <h3 style="font-size:14px;margin:16px 0 6px;">Forecast Delta Tracker (/premium/forecast-delta)</h3>
+    <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">The monthly read renders from content/forecast-delta/YYYY-MM.md and the pipeline table from data/forecast-pipeline.json. Both are hand-maintained; no cron writes them. A read older than ${TRACKER_STALE_DAYS}d means a month was skipped &mdash; write the next YYYY-MM.md. A pipeline older than ${TRACKER_STALE_DAYS}d means the agency forecasts have not been re-pulled; rows whose published solicitation date has passed are labeled on the page but want re-verification. Build-time scripts/validate-forecast-delta.js prints the same signal; FORECAST_DELTA_MAX_AGE_DAYS makes it a hard build failure.</p>
+    <p>Latest read: ${forecast.latest_file ? `${esc(forecast.latest_file)} (${forecast.entry_age_days}d old)` : "<strong style=\"color:#E63946;\">none published</strong>"}${forecast.entry_age_days > TRACKER_STALE_DAYS ? ` &mdash; <strong style="color:#E63946;">OVERDUE</strong>` : ""}</p>
+    <p>Pipeline: ${forecast.pipeline_rows} rows, verified ${esc(forecast.pipeline_last_verified || "never")} (${forecast.pipeline_age_days === Infinity ? "n/a" : forecast.pipeline_age_days + "d"})${forecast.pipeline_age_days > TRACKER_STALE_DAYS ? ` &mdash; <strong style="color:#E63946;">OVERDUE</strong>` : ""} &middot; ${forecast.pipeline_past_rows} rows past their published solicitation date</p>
+    <p>Agencies covered: ${esc(forecast.covered.join(", ") || "none")}${forecast.missing.length ? ` &middot; <strong>not yet covered: ${esc(forecast.missing.join(", "))}</strong>` : " &middot; all target agencies covered"}</p>
     <h3 style="font-size:14px;margin:16px 0 6px;">Orphaned contract_intel rows (name not in refresh roster)</h3>
     <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">These rows can never be refreshed — their contract_name has no match in contracts.json, so contract-intel-refresh skips them. Usually a naming drift (em-dash vs hyphen, parenthetical variant) leaving a stale duplicate. Reconcile: rename the row to its roster name, or archive it if a fresh canonical row already exists.</p>
     ${orphaned.length === 0 ? "<p>None.</p>" : `<ul>${orphaned.map((r) => `<li>${esc(r.contract_name)} &mdash; ${r.age_days === null ? "never refreshed" : r.age_days + "d"}</li>`).join("")}</ul>`}
@@ -367,7 +433,7 @@ exports.handler = async () => {
       source_function: "intel-quality-report",
       severity: allGreen ? "info" : "warn",
       signature: "weekly_qa",
-      details: { stale: stale.length, tracker_listing_stale: trackerStale.stale_count, cso_aoi_stale: aoiHealth.stale_count, cso_aoi_past_due_open: aoiHealth.past_due_open.length, orphaned: orphaned.length, bad_urls: badUrls.length, stale_notes: staleNotes.length, radar_fabricated: radarFab.fabricated, radar_published_fabricated: radarFab.published_fabricated, radar_duplicates: radarFab.duplicates, url_archived_7d: urlSweep.archived_7d || 0, radar_age_h: radar.age_hours, vehicle_age_h: vehicle.age_hours, failure_keys: Object.keys(failures).length },
+      details: { stale: stale.length, tracker_listing_stale: trackerStale.stale_count, cso_aoi_stale: aoiHealth.stale_count, cso_aoi_past_due_open: aoiHealth.past_due_open.length, forecast_delta_age_d: forecast.entry_age_days === Infinity ? null : forecast.entry_age_days, forecast_pipeline_age_d: forecast.pipeline_age_days === Infinity ? null : forecast.pipeline_age_days, forecast_pipeline_missing: forecast.missing.length, orphaned: orphaned.length, bad_urls: badUrls.length, stale_notes: staleNotes.length, radar_fabricated: radarFab.fabricated, radar_published_fabricated: radarFab.published_fabricated, radar_duplicates: radarFab.duplicates, url_archived_7d: urlSweep.archived_7d || 0, radar_age_h: radar.age_hours, vehicle_age_h: vehicle.age_hours, failure_keys: Object.keys(failures).length },
     });
   } catch { /* non-blocking */ }
 

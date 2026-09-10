@@ -1,5 +1,77 @@
 # Mission Meets Tech - Developer & Content Governance
 
+## Sprint 2026-09-10 — Forecast Delta Tracker frozen since May: the page never read its own markdown
+
+Mary: "this hasn't been updated since May" (`/premium/forecast-delta`). Root
+cause was structural, not editorial. The May 2026 read was **hardcoded in
+`premium/forecast-delta.html`**; the page footer promised "monthly entries
+land at `content/forecast-delta/YYYY-MM.md`" but `build.js` never read that
+directory. A new entry could not have published even if one had been written.
+Second, silent defect: `data/forecast-pipeline.json` (the "what agencies say
+is coming" table) carried a `last_verified` nobody aged, and its 19 DHA rows
+come from the **FY25** DHA forecast with dates already in the past, rendered
+under a heading that says "coming". The table also covers only CMS + DHA; Mary
+asked for all 11 tracked agencies.
+
+Shipped (PR #182):
+- **`build.js`**: `getForecastDeltaEntries()` reads `content/forecast-delta/
+  YYYY-MM.md` (gray-matter + marked, future-dated entries held until their
+  date ET, same as Capture Corner) and powers three markers on the page:
+  `BUILD:FORECAST_DELTA_LATEST` (newest read), `_ARCHIVE` (older months),
+  `_FRESHNESS` (a badge: green "Updated <date>" within 45d, red "Last read
+  <date> · N days old · a new month is overdue" past it). The stale state
+  is deliberately visible to subscribers — an honest date beats a stale read
+  masquerading as current.
+- **`premium/forecast-delta.html`**: hardcoded May block replaced with the
+  markers. Pipeline table now (a) names which of the 11 target agencies are
+  in the data and which are **not yet covered** (visible gap, not a silent
+  one), (b) labels a published solicitation date that has already passed
+  with a "passed" chip, and (c) turns the "Verified <date>" line red past 45d.
+- **`scripts/validate-forecast-delta.js`** (wired into the `netlify.toml`
+  build command): HARD-fails if any marker is missing from the page source
+  (the hardcoded regression), on a bad/mismatched frontmatter date, empty
+  body, placeholder copy, a pipeline row with a non-http source or a
+  free-text date, or a raw marker shipped to dist. SOFT-warns on a read or
+  pipeline older than 45d and on past-dated rows; `FORECAST_DELTA_MAX_AGE_DAYS`
+  makes staleness fatal; `FORECAST_DELTA_TODAY` pins the clock for tests.
+  `"TBD"` / `"n.a."` are accepted as dates: they are the agency's own
+  published values (the CMS forecast prints TBD), not placeholder copy.
+- **`intel-quality-report.js`**: new "Forecast Delta Tracker" section in the
+  Friday email (latest read age, pipeline age, rows past date, agencies
+  covered / missing), subject flag, `forecast_delta_age_d` /
+  `forecast_pipeline_age_d` / `forecast_pipeline_missing` in the ops_event.
+  `content/forecast-delta/**` + `data/forecast-pipeline.json` added to
+  `included_files`.
+- 12 unit tests (`tests/unit/forecast-delta.test.js`) with PINNED dates that
+  assert the validator's teeth by mutation.
+
+**NOT done here, and why:** the September read and the all-agency pipeline
+need the official forecast portals (va.gov, hhs.gov/mySBCX, dha.mil, nih.gov,
+gsa.gov, arpa-h.gov). Every .gov/.mil host is egress-blocked from the web
+session (curl and WebFetch both), and Drive holds no forecast workbook. Per
+the 08-05/08-25 rules an unfetched source is not a source, so no read was
+written and no rows were invented. Queued as a suggested task for a local
+session where those hosts resolve; until it runs the page says, in red,
+that the read is overdue and which agencies the pipeline lacks.
+
+Hard rules (do not regress):
+- **A page that promises to render from a content directory must actually
+  read it.** If a `content/<feature>/` directory exists, `build.js` owns a
+  marker for it and the validator asserts the marker is in the page source.
+  A "latest" block pasted into HTML is the failure mode, whatever the footer
+  says. (GAO Sustain's page makes the same promise about
+  `content/gao-sustain/` — check it before trusting it.)
+- **Hand-maintained JSON that renders under a "coming" heading needs an aged
+  `last_verified` AND a past-date check.** A forecast row is a claim with a
+  date on it; once the date passes it is either re-verified or labeled.
+- **Coverage gaps are shown, not hidden.** When a dataset is meant to span N
+  agencies, the page names the ones missing.
+
+Verified 2026-09-10: `node -c` clean; unit suite 598/598 (+12); build exit 0;
+validate-dist / validate-routes / validate-forecast-delta / scan-pii pass;
+dist page renders the May read from markdown with the red overdue badge and
+zero raw markers.
+
 ## Sprint 2026-08-25 (later) — The 8 remaining agency org charts, researched and built
 
 PR #175 shipped 11 `/premium/org-charts/<slug>` routes, but 8 of them were
